@@ -1,5 +1,15 @@
 package com.x.cms.assemble.control.jaxrs.form;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.zip.CRC32;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -11,29 +21,23 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.Business;
+import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.element.Form;
 import com.x.cms.core.entity.element.FormProperties;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import java.util.zip.CRC32;
 
 class V2LookupDoc extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(V2LookupDoc.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(V2LookupDoc.class);
 
 	private Form form = null;
 	private Form readForm = null;
 	private Wo wo = new Wo();
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String docId) throws Exception {
+
+		LOGGER.debug("execute;{}. docId:{}.", effectivePerson::getDistinguishedName, () -> docId);
 
 		ActionResult<Wo> result = new ActionResult<>();
 
@@ -48,7 +52,7 @@ class V2LookupDoc extends BaseAction {
 			readFormId = readForm.getId();
 			this.wo.setReadFormId(readFormId);
 		}
-		if(StringUtils.isNotEmpty(formId) || StringUtils.isNotEmpty(readFormId)){
+		if (StringUtils.isNotEmpty(formId) || StringUtils.isNotEmpty(readFormId)) {
 			CacheKey cacheKey = new CacheKey(this.getClass(), formId, readFormId);
 			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 			if (optional.isPresent()) {
@@ -56,7 +60,8 @@ class V2LookupDoc extends BaseAction {
 			} else {
 				List<String> list = new ArrayList<>();
 				if (null != this.form) {
-					CompletableFuture<List<String>> relatedFormFuture = this.relatedFormFuture(this.form.getProperties());
+					CompletableFuture<List<String>> relatedFormFuture = this
+							.relatedFormFuture(this.form.getProperties());
 					CompletableFuture<List<String>> relatedScriptFuture = this
 							.relatedScriptFuture(this.form.getProperties());
 					list.add(this.form.getId() + this.form.getUpdateTime().getTime());
@@ -64,7 +69,8 @@ class V2LookupDoc extends BaseAction {
 					list.addAll(relatedScriptFuture.get(10, TimeUnit.SECONDS));
 				}
 				if (null != this.readForm && !formId.equals(readFormId)) {
-					CompletableFuture<List<String>> relatedFormFuture = this.relatedFormFuture(this.readForm.getProperties());
+					CompletableFuture<List<String>> relatedFormFuture = this
+							.relatedFormFuture(this.readForm.getProperties());
 					CompletableFuture<List<String>> relatedScriptFuture = this
 							.relatedScriptFuture(this.readForm.getProperties());
 					list.add(this.readForm.getId() + this.readForm.getUpdateTime().getTime());
@@ -85,12 +91,12 @@ class V2LookupDoc extends BaseAction {
 	private void getDocForm(String docId) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			Document document = emc.fetch(docId, Document.class, ListTools.toList(JpaObject.id_FIELDNAME, Document.form_FIELDNAME,
-					Document.readFormId_FIELDNAME, Document.categoryId_FIELDNAME));
+			Document document = emc.fetch(docId, Document.class, ListTools.toList(JpaObject.id_FIELDNAME,
+					Document.form_FIELDNAME, Document.readFormId_FIELDNAME, Document.categoryId_FIELDNAME));
 			if (null != document) {
 				String formId = document.getForm();
 				String readFormId = document.getReadFormId();
-				if(StringUtils.isNotBlank(formId)) {
+				if (StringUtils.isNotBlank(formId)) {
 					this.form = business.getFormFactory().pick(formId);
 				}
 				if (null == this.form) {
@@ -100,10 +106,10 @@ class V2LookupDoc extends BaseAction {
 						this.form = business.getFormFactory().pick(formId);
 					}
 				}
-				if(StringUtils.isNotBlank(readFormId)) {
-					if(readFormId.equals(formId)){
+				if (StringUtils.isNotBlank(readFormId)) {
+					if (readFormId.equals(formId)) {
 						this.readForm = this.form;
-					}else {
+					} else {
 						this.readForm = business.getFormFactory().pick(readFormId);
 					}
 				}
@@ -125,17 +131,18 @@ class V2LookupDoc extends BaseAction {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					Form f;
 					for (String id : properties.getRelatedFormList()) {
-						f = emc.fetch(id, Form.class, ListTools.toList(JpaObject.id_FIELDNAME, JpaObject.updateTime_FIELDNAME));
+						f = emc.fetch(id, Form.class,
+								ListTools.toList(JpaObject.id_FIELDNAME, JpaObject.updateTime_FIELDNAME));
 						if (null != f) {
 							list.add(f.getId() + f.getUpdateTime().getTime());
 						}
 					}
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
 			}
 			return list;
-		});
+		},ThisApplication.threadPool());
 	}
 
 	private CompletableFuture<List<String>> relatedScriptFuture(FormProperties properties) {
@@ -146,11 +153,11 @@ class V2LookupDoc extends BaseAction {
 					Business business = new Business(emc);
 					list = convertScriptToCacheTag(business, properties.getRelatedScriptMap());
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
 			}
 			return list;
-		});
+		},ThisApplication.threadPool());
 	}
 
 	public static class Wo extends AbstractWo {

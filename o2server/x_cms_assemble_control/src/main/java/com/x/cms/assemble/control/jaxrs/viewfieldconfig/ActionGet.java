@@ -18,8 +18,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.element.ViewFieldConfig;
 
-import net.sf.ehcache.Element;
-
 public class ActionGet extends BaseAction {
 
 	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, String id ) throws Exception {

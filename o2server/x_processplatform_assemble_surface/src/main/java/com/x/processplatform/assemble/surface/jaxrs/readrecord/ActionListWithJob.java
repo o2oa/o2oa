@@ -1,5 +1,14 @@
 package com.x.processplatform.assemble.surface.jaxrs.readrecord;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.config.Config;
@@ -9,19 +18,13 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.core.entity.content.*;
-import org.apache.commons.lang3.BooleanUtils;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
+import com.x.processplatform.assemble.surface.ThisApplication;
+import com.x.processplatform.core.entity.content.Read;
+import com.x.processplatform.core.entity.content.ReadCompleted;
 
 class ActionListWithJob extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionListWithJob.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWithJob.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String job) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -29,8 +32,8 @@ class ActionListWithJob extends BaseAction {
 			CompletableFuture<List<Wo>> listFuture = this.listFuture(job);
 			CompletableFuture<Boolean> checkControlFuture = this.checkControlFuture(effectivePerson, job);
 
-			if (BooleanUtils
-					.isFalse(checkControlFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS))) {
+			if (BooleanUtils.isFalse(
+					checkControlFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS))) {
 				throw new ExceptionAccessDenied(effectivePerson, job);
 			}
 
@@ -45,9 +48,12 @@ class ActionListWithJob extends BaseAction {
 			List<Wo> wos = new ArrayList<>();
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				List<Read> readList = emc.listEqual(Read.class, Read.job_FIELDNAME, flag);
-				List<ReadCompleted> readCompletedList = emc.listEqual(ReadCompleted.class, ReadCompleted.job_FIELDNAME, flag);
-				readList = readList.stream().sorted(Comparator.comparing(Read::getStartTime)).collect(Collectors.toList());
-				readCompletedList = readCompletedList.stream().sorted(Comparator.comparing(ReadCompleted::getStartTime)).collect(Collectors.toList());
+				List<ReadCompleted> readCompletedList = emc.listEqual(ReadCompleted.class, ReadCompleted.job_FIELDNAME,
+						flag);
+				readList = readList.stream().sorted(Comparator.comparing(Read::getStartTime))
+						.collect(Collectors.toList());
+				readCompletedList = readCompletedList.stream().sorted(Comparator.comparing(ReadCompleted::getStartTime))
+						.collect(Collectors.toList());
 				for (ReadCompleted readCompleted : readCompletedList) {
 					Wo wo = new Wo();
 					readCompleted.copyTo(wo, true, "type");
@@ -61,10 +67,10 @@ class ActionListWithJob extends BaseAction {
 					wos.add(wo);
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 			return wos;
-		});
+		}, ThisApplication.threadPool());
 	}
 
 	private CompletableFuture<Boolean> checkControlFuture(EffectivePerson effectivePerson, String flag) {
@@ -74,10 +80,10 @@ class ActionListWithJob extends BaseAction {
 				Business business = new Business(emc);
 				value = business.readableWithJob(effectivePerson, flag);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 			return value;
-		});
+		}, ThisApplication.threadPool());
 	}
 
 	public static class Wo extends ReadRecord {

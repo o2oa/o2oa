@@ -1,8 +1,8 @@
 package com.x.jpush.assemble.control;
 
 import com.x.base.core.container.EntityManagerContainer;
-import com.x.organization.core.express.Organization;
 import com.x.jpush.assemble.control.factory.SampleEntityClassNameFactory;
+import com.x.organization.core.express.Organization;
 
 public class Business {
 

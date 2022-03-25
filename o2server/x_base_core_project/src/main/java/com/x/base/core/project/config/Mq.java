@@ -1,6 +1,7 @@
 package com.x.base.core.project.config;
 
 import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.project.annotation.FieldDescribe;
 
 public class Mq extends ConfigObject {

@@ -1,14 +1,9 @@
 package com.x.organization.core.express.unit;
 
-import com.google.gson.JsonElement;
 import com.x.base.core.project.AbstractContext;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.jaxrs.WrapBoolean;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 class ActionHasPerson extends BaseAction {
 

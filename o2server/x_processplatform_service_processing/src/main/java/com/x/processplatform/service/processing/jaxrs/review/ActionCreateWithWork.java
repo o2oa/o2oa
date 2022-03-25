@@ -9,7 +9,6 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.annotation.ActionLogger;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
@@ -26,16 +25,14 @@ import com.x.processplatform.service.processing.Business;
 
 class ActionCreateWithWork extends BaseAction {
 
-	@ActionLogger
-	private static Logger logger = LoggerFactory.getLogger(ActionCreateWithWork.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCreateWithWork.class);
 
 	protected ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, JsonElement jsonElement)
 			throws Exception {
 
-		ActionResult<List<Wo>> result = new ActionResult<>();
-		List<Wo> wos = new ArrayList<>();
-		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		String executorSeed = null;
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -46,47 +43,61 @@ class ActionCreateWithWork extends BaseAction {
 			executorSeed = work.getJob();
 		}
 
-		Callable<String> callable = new Callable<String>() {
-			public String call() throws Exception {
-				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+		CallableImpl impl = new CallableImpl(wi);
 
-					Business business = new Business(emc);
-					Work work = emc.find(wi.getWork(), Work.class);
-					if (null == work) {
-						throw new ExceptionEntityNotExist(wi.getWork(), Work.class);
-					}
+		return ProcessPlatformExecutorFactory.get(executorSeed).submit(impl).get(300, TimeUnit.SECONDS);
 
-					List<String> people = business.organization().person().list(wi.getPersonList());
-					if (ListTools.isEmpty(people)) {
-						throw new ExceptionPersonEmpty();
-					}
-					if (ListTools.isNotEmpty(people)) {
-						emc.beginTransaction(Review.class);
-						for (String person : people) {
-							Long count = emc.countEqualAndEqual(Review.class, Review.job_FIELDNAME, work.getJob(),
-									Review.person_FIELDNAME, person);
-							if(count < 1) {
-								Review review = new Review(work, person);
-								emc.persist(review, CheckPersistType.all);
-								Wo wo = new Wo();
-								wo.setId(review.getId());
-								wos.add(wo);
-							}
-						}
-						emc.commit();
-					}
+	}
+
+	private class CallableImpl implements Callable<ActionResult<List<Wo>>> {
+
+		private Wi wi;
+
+		private CallableImpl(Wi wi) {
+			this.wi = wi;
+		}
+
+		@Override
+		public ActionResult<List<Wo>> call() throws Exception {
+
+			ActionResult<List<Wo>> result = new ActionResult<>();
+			List<Wo> wos = new ArrayList<>();
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+
+				Business business = new Business(emc);
+				Work work = emc.find(wi.getWork(), Work.class);
+				if (null == work) {
+					throw new ExceptionEntityNotExist(wi.getWork(), Work.class);
 				}
-				return "";
+
+				List<String> people = business.organization().person().list(wi.getPersonList());
+				if (ListTools.isEmpty(people)) {
+					throw new ExceptionPersonEmpty();
+				}
+				if (ListTools.isNotEmpty(people)) {
+					emc.beginTransaction(Review.class);
+					for (String person : people) {
+						Long count = emc.countEqualAndEqual(Review.class, Review.job_FIELDNAME, work.getJob(),
+								Review.person_FIELDNAME, person);
+						if (count < 1) {
+							Review review = new Review(work, person);
+							emc.persist(review, CheckPersistType.all);
+							Wo wo = new Wo();
+							wo.setId(review.getId());
+							wos.add(wo);
+						}
+					}
+					emc.commit();
+				}
+				result.setData(wos);
 			}
-		};
-
-		ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get(300, TimeUnit.SECONDS);
-
-		result.setData(wos);
-		return result;
+			return result;
+		}
 	}
 
 	public static class Wi extends GsonPropertyObject {
+
+		private static final long serialVersionUID = -3102009396497823348L;
 
 		@FieldDescribe("工作标识")
 		private String work;
@@ -113,6 +124,8 @@ class ActionCreateWithWork extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = 2342261573830876941L;
 	}
 
 }

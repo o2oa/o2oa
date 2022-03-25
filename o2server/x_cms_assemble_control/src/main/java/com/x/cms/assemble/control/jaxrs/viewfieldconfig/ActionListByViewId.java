@@ -19,8 +19,6 @@ import com.x.cms.assemble.control.Business;
 import com.x.cms.assemble.control.factory.ViewFieldConfigFactory;
 import com.x.cms.core.entity.element.ViewFieldConfig;
 
-import net.sf.ehcache.Element;
-
 public class ActionListByViewId extends BaseAction {
 
 	@SuppressWarnings("unchecked")

@@ -9,13 +9,9 @@ import com.x.cms.assemble.control.service.LogService;
 import com.x.cms.assemble.control.service.PermissionQueryService;
 import com.x.cms.assemble.control.service.UserManagerService;
 import com.x.cms.assemble.control.service.ViewServiceAdv;
-import com.x.cms.core.entity.Document;
-import com.x.cms.core.entity.element.Script;
 import com.x.cms.core.entity.element.View;
-
 import com.x.cms.core.entity.element.ViewCategory;
 import com.x.cms.core.entity.element.ViewFieldConfig;
-import net.sf.ehcache.Ehcache;
 
 public class BaseAction extends StandardJaxrsAction {
 	

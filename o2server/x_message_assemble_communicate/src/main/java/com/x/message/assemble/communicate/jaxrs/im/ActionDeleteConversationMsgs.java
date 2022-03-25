@@ -1,5 +1,9 @@
 package com.x.message.assemble.communicate.jaxrs.im;
 
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.http.ActionResult;
@@ -10,9 +14,6 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.message.assemble.communicate.Business;
 import com.x.message.core.entity.IMConversation;
 import com.x.message.core.entity.IMMsg;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.List;
 
 
 public class ActionDeleteConversationMsgs extends BaseAction {

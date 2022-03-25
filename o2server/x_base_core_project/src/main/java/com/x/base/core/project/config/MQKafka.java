@@ -1,18 +1,8 @@
 package com.x.base.core.project.config;
 
-import java.io.File;
-import java.util.Calendar;
-import java.util.Date;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.connection.HttpConnection;
-import com.x.base.core.project.gson.GsonPropertyObject;
-import com.x.base.core.project.gson.XGsonBuilder;
-import com.x.base.core.project.tools.DefaultCharset;
 
 public class MQKafka extends ConfigObject {
 	

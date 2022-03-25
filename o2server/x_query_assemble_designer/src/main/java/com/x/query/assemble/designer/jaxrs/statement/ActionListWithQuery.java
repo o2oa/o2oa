@@ -1,6 +1,5 @@
 package com.x.query.assemble.designer.jaxrs.statement;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.x.base.core.container.EntityManagerContainer;

@@ -1,21 +1,21 @@
 package com.x.bbs.assemble.control.queue;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.queue.AbstractQueue;
 import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.MessageFactory;
 import com.x.bbs.entity.BBSForumInfo;
-import com.x.bbs.entity.BBSSubjectInfo;
 import com.x.bbs.entity.BBSSectionInfo;
-import org.apache.commons.lang3.StringUtils;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
+import com.x.bbs.entity.BBSSubjectInfo;
 
 /**
  * 新的主题发布后根据配置需要给指定人员发送消息通知

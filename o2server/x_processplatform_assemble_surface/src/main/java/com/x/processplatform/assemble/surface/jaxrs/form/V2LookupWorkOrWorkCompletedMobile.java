@@ -14,8 +14,8 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.cache.Cache.CacheKey;
-import com.x.base.core.project.config.Config;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -23,6 +23,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkCompletedProperties.StoreForm;
@@ -33,13 +34,16 @@ import com.x.processplatform.core.entity.element.FormProperties;
 
 class V2LookupWorkOrWorkCompletedMobile extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(V2LookupWorkOrWorkCompletedMobile.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(V2LookupWorkOrWorkCompletedMobile.class);
 
 	private Form form = null;
 	private Wo wo = new Wo();
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workOrWorkCompleted) throws Exception {
 
+		LOGGER.debug("execute:{}, workOrWorkCompleted:{}.", effectivePerson::getDistinguishedName,
+				() -> workOrWorkCompleted);
+		
 		ActionResult<Wo> result = new ActionResult<>();
 
 		this.getWorkWorkCompletedForm(workOrWorkCompleted);
@@ -121,11 +125,11 @@ class V2LookupWorkOrWorkCompletedMobile extends BaseAction {
 						}
 					}
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
 			}
 			return list;
-		});
+		},ThisApplication.threadPool());
 	}
 
 	private CompletableFuture<List<String>> relatedScriptFuture(FormProperties properties) {
@@ -137,11 +141,11 @@ class V2LookupWorkOrWorkCompletedMobile extends BaseAction {
 					Business business = new Business(emc);
 					list = convertScriptToCacheTag(business, properties.getMobileRelatedScriptMap());
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
 			}
 			return list;
-		});
+		},ThisApplication.threadPool());
 	}
 
 	public static class Wo extends AbstractWo {

@@ -4,7 +4,6 @@ import java.util.Objects;
 
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.tools.LanguageTools;
 
 public class ExceptionAccessDenied extends LanguagePromptException {
 

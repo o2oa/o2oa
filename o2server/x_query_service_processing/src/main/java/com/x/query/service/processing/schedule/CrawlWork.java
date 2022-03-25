@@ -8,6 +8,11 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -26,11 +31,6 @@ import com.x.query.core.entity.segment.Entry_;
 import com.x.query.core.express.program.Arguments;
 import com.x.query.service.processing.Business;
 import com.x.query.service.processing.ThisApplication;
-
-import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 
 public class CrawlWork extends AbstractJob {
 

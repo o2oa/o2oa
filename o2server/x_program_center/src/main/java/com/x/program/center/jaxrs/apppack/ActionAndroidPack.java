@@ -1,20 +1,5 @@
 package com.x.program.center.jaxrs.apppack;
 
-import com.google.gson.reflect.TypeToken;
-import com.x.base.core.project.config.Collect;
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.connection.ConnectionAction;
-import com.x.base.core.project.gson.XGsonBuilder;
-import com.x.base.core.project.http.ActionResult;
-import com.x.base.core.project.jaxrs.WrapBoolean;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.DefaultCharset;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,6 +10,22 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+
+import com.google.gson.reflect.TypeToken;
+import com.x.base.core.project.config.Collect;
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.connection.ConnectionAction;
+import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.http.ActionResult;
+import com.x.base.core.project.jaxrs.WrapBoolean;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.DefaultCharset;
 
 /**
  * android 打包 Created by fancyLou on 6/15/21. Copyright © 2021 O2. All rights

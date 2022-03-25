@@ -8,12 +8,13 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.cms.assemble.control.AbstractFactory;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.DocumentCommend;
 import com.x.cms.core.entity.DocumentCommend_;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * 文档点赞基础功能服务类

@@ -1,20 +1,18 @@
 package com.x.cms.assemble.control.jaxrs.appinfo;
 
+import java.util.Optional;
+
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.cache.Cache;
 import com.x.base.core.project.cache.CacheManager;
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.cms.core.entity.AppInfo;
-
-import net.sf.ehcache.Element;
-
-import java.util.Optional;
 
 public class ActionGetAnonymous extends BaseAction {
 

@@ -3,7 +3,6 @@ package com.x.program.center;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.x.program.center.core.entity.wrap.WrapServiceModule;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -12,6 +11,7 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.cms.core.entity.element.wrap.WrapCms;
 import com.x.portal.core.entity.wrap.WrapPortal;
 import com.x.processplatform.core.entity.element.wrap.WrapProcessPlatform;
+import com.x.program.center.core.entity.wrap.WrapServiceModule;
 import com.x.query.core.entity.wrap.WrapQuery;
 
 public class WrapModule extends GsonPropertyObject {

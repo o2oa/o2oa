@@ -1,7 +1,6 @@
 package com.x.program.center.jaxrs.zhengwudingding;
 
 import com.x.base.core.project.exception.LanguagePromptException;
-import com.x.base.core.project.exception.PromptException;
 
 class ExceptionGetRegistCallback extends LanguagePromptException {
 

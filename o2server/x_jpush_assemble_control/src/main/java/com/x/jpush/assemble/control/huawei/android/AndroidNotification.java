@@ -15,17 +15,18 @@
  */
 package com.x.jpush.assemble.control.huawei.android;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.annotations.SerializedName;
 import com.x.jpush.assemble.control.huawei.CollectionUtils;
 import com.x.jpush.assemble.control.huawei.ValidatorUtils;
 import com.x.jpush.assemble.control.huawei.model.Importance;
 import com.x.jpush.assemble.control.huawei.model.Notification;
 import com.x.jpush.assemble.control.huawei.model.Visibility;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 public class AndroidNotification {
 

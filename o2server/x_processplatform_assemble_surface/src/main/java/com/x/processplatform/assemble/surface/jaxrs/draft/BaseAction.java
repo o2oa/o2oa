@@ -2,6 +2,8 @@ package com.x.processplatform.assemble.surface.jaxrs.draft;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.TokenType;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
@@ -13,8 +15,6 @@ import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Begin;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Route;
-
-import org.apache.commons.lang3.StringUtils;
 
 abstract class BaseAction extends StandardJaxrsAction {
     protected String decideCreatorIdentity(Business business, EffectivePerson effectivePerson, String identityValue)

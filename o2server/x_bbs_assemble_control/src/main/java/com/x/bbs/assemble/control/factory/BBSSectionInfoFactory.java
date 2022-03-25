@@ -9,13 +9,14 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.AbstractFactory;
 import com.x.bbs.assemble.control.Business;
 import com.x.bbs.entity.BBSSectionInfo;
 import com.x.bbs.entity.BBSSectionInfo_;
-import org.apache.commons.lang3.BooleanUtils;
 
 /**
  * 类   名：BBSSectionInfoFactory<br/>

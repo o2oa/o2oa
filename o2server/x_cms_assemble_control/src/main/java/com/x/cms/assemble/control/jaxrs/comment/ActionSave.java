@@ -2,6 +2,8 @@ package com.x.cms.assemble.control.jaxrs.comment;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
@@ -15,8 +17,6 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.DocumentCommentInfo;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.hadoop.yarn.webapp.hamlet2.Hamlet;
 
 public class ActionSave extends BaseAction {
 

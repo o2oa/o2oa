@@ -22,7 +22,6 @@ import com.x.processplatform.assemble.designer.Business;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Application_;
 import com.x.processplatform.core.entity.element.Form;
-import com.x.processplatform.core.entity.element.Form_;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Process_;
 

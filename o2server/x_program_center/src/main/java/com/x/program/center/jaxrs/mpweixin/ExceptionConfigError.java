@@ -1,7 +1,6 @@
 package com.x.program.center.jaxrs.mpweixin;
 
 import com.x.base.core.project.exception.LanguagePromptException;
-import com.x.base.core.project.exception.PromptException;
 
 /**
  * Created by fancyLou on 3/3/21.

@@ -1,8 +1,5 @@
 package com.x.program.center.qiyeweixin;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.x.base.core.project.gson.GsonPropertyObject;
 
 public class Department extends GsonPropertyObject {

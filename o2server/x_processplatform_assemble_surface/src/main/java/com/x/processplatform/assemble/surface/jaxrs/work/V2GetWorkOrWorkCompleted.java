@@ -33,6 +33,7 @@ import com.x.base.core.project.organization.Person;
 import com.x.base.core.project.organization.Unit;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.Read;
@@ -157,7 +158,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 			} catch (Exception e) {
 				logger.error(e);
 			}
-		});
+		}, ThisApplication.threadPool());
 	}
 
 	private CompletableFuture<Void> taskFuture(EffectivePerson effectivePerson, String job, String workId, Wo wo) {
@@ -169,7 +170,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 			} catch (Exception e) {
 				logger.error(e);
 			}
-		});
+		}, ThisApplication.threadPool());
 	}
 
 	private CompletableFuture<Void> attachmentFuture(EffectivePerson effectivePerson, String job, Wo wo) {
@@ -202,7 +203,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 			} catch (Exception e) {
 				logger.error(e);
 			}
-		});
+		}, ThisApplication.threadPool());
 	}
 
 	private CompletableFuture<Void> readFuture(EffectivePerson effectivePerson, String job, Wo wo) {
@@ -214,7 +215,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 			} catch (Exception e) {
 				logger.error(e);
 			}
-		});
+		}, ThisApplication.threadPool());
 	}
 
 	private CompletableFuture<Void> workJsonFuture(Work work, Wo wo) {
@@ -224,7 +225,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 			} catch (Exception e) {
 				logger.error(e);
 			}
-		});
+		}, ThisApplication.threadPool());
 	}
 
 	private CompletableFuture<Void> activityRouteFuture(Work work, Wo wo) {
@@ -243,7 +244,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 			} catch (Exception e) {
 				logger.error(e);
 			}
-		});
+		}, ThisApplication.threadPool());
 	}
 
 	private CompletableFuture<Void> creatorIdentityFuture(String creatorIdentity, Wo wo) {
@@ -254,7 +255,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 			} catch (Exception e) {
 				logger.error(e);
 			}
-		});
+		}, ThisApplication.threadPool());
 	}
 
 	private CompletableFuture<Void> creatorPersonFuture(String creatorPerson, Wo wo) {
@@ -265,7 +266,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 			} catch (Exception e) {
 				logger.error(e);
 			}
-		});
+		}, ThisApplication.threadPool());
 	}
 
 	private CompletableFuture<Void> creatorUnitFuture(String creatorUnit, Wo wo) {
@@ -276,7 +277,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 			} catch (Exception e) {
 				logger.error(e);
 			}
-		});
+		}, ThisApplication.threadPool());
 	}
 
 	private CompletableFuture<Void> workCompletedJsonFuture(WorkCompleted workCompleted, Wo wo) {
@@ -286,7 +287,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 			} catch (Exception e) {
 				logger.error(e);
 			}
-		});
+		}, ThisApplication.threadPool());
 	}
 
 	private CompletableFuture<Void> recordFuture(EffectivePerson effectivePerson, String job, Wo wo) {
@@ -297,7 +298,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 			} catch (Exception e) {
 				logger.error(e);
 			}
-		});
+		}, ThisApplication.threadPool());
 	}
 
 	private CompletableFuture<Void> workCompletedRecordFuture(EffectivePerson effectivePerson,
@@ -315,7 +316,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 			} catch (Exception e) {
 				logger.error(e);
 			}
-		});
+		}, ThisApplication.threadPool());
 	}
 
 	private CompletableFuture<Void> workCompletedDataFuture(WorkCompleted workCompleted, Wo wo) {
@@ -337,7 +338,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 					logger.error(e);
 				}
 			}
-		});
+		}, ThisApplication.threadPool());
 	}
 
 	private boolean attachmentRead(Attachment attachment, EffectivePerson effectivePerson, List<String> identities,

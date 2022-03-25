@@ -1,5 +1,16 @@
 package com.x.cms.assemble.control.jaxrs.document;
 
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Tuple;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -13,15 +24,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.DocumentViewRecord;
 import com.x.cms.core.entity.DocumentViewRecord_;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Tuple;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import java.util.List;
 
 class ActionQueryListViewRecordPaging extends BaseAction {
 

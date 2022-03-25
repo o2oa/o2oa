@@ -1,8 +1,12 @@
 package com.x.processplatform.assemble.surface.jaxrs.sign;
 
+import java.util.List;
+
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.annotation.ActionLogger;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
@@ -16,17 +20,13 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.DocSign;
 import com.x.processplatform.core.entity.content.DocSignScrawl;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.List;
 
 class ActionDelete extends BaseAction {
 
-	@ActionLogger
-	private static Logger logger = LoggerFactory.getLogger(ActionDelete.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDelete.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
-		logger.debug(effectivePerson.getDistinguishedName());
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -34,16 +34,18 @@ class ActionDelete extends BaseAction {
 			if (null == docSign) {
 				throw new ExceptionEntityNotExist(id, DocSign.class);
 			}
-			if(!business.canManageApplication(effectivePerson, null) &&
-					!docSign.getPerson().equals(effectivePerson.getDistinguishedName())){
+			if (BooleanUtils.isNotTrue(business.canManageApplication(effectivePerson, null)
+					&& !docSign.getPerson().equals(effectivePerson.getDistinguishedName()))) {
 				throw new ExceptionAccessDenied(effectivePerson, id);
 			}
-			List<DocSignScrawl> signScrawlList = emc.listEqual(DocSignScrawl.class, DocSignScrawl.signId_FIELDNAME, docSign.getId());
-			if(ListTools.isNotEmpty(signScrawlList)) {
+			List<DocSignScrawl> signScrawlList = emc.listEqual(DocSignScrawl.class, DocSignScrawl.signId_FIELDNAME,
+					docSign.getId());
+			if (ListTools.isNotEmpty(signScrawlList)) {
 				emc.beginTransaction(DocSignScrawl.class);
 				for (DocSignScrawl signScrawl : signScrawlList) {
-					if(StringUtils.isNotBlank(signScrawl.getStorage())) {
-						StorageMapping mapping = ThisApplication.context().storageMappings().get(DocSignScrawl.class, signScrawl.getStorage());
+					if (StringUtils.isNotBlank(signScrawl.getStorage())) {
+						StorageMapping mapping = ThisApplication.context().storageMappings().get(DocSignScrawl.class,
+								signScrawl.getStorage());
 						signScrawl.deleteContent(mapping);
 					}
 					emc.remove(signScrawl);
@@ -60,6 +62,8 @@ class ActionDelete extends BaseAction {
 	}
 
 	public static class Wo extends WrapBoolean {
+
+		private static final long serialVersionUID = -4171621878203110262L;
 
 	}
 

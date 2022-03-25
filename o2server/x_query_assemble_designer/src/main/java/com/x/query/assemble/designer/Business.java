@@ -343,7 +343,7 @@ public class Business {
 				+ StringUtils.join(paths, File.pathSeparator) + "\" " + Enhance.class.getName() + " \""
 				+ target.getAbsolutePath() + "\"";
 
-		LOGGER.info("enhance command:{}.", () -> command);
+		LOGGER.debug("enhance command:{}.", () -> command);
 
 		ProcessBuilder processBuilder = new ProcessBuilder();
 

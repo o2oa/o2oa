@@ -1,5 +1,7 @@
 package com.x.cms.assemble.control.jaxrs.permission;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -8,9 +10,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.cms.assemble.control.service.DocumentPersistService;
 import com.x.cms.core.entity.Document;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class ActionRefreshCategoryDocPermission extends BaseAction {
 

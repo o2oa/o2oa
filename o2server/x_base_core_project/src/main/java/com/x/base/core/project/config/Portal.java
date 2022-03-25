@@ -3,12 +3,12 @@ package com.x.base.core.project.config;
 import java.io.File;
 import java.util.LinkedHashMap;
 
+import org.apache.commons.io.FileUtils;
+
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.BaseTools;
 import com.x.base.core.project.tools.DefaultCharset;
-
-import org.apache.commons.io.FileUtils;
 
 public class Portal extends ConfigObject {
 

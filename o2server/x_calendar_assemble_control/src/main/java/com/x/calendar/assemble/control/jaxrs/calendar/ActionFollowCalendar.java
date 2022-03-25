@@ -1,5 +1,9 @@
 package com.x.calendar.assemble.control.jaxrs.calendar;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -7,9 +11,6 @@ import com.x.base.core.project.http.WrapOutBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.calendar.core.entity.Calendar;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * 关注一个公开的日历（非公开的日历不允许被关注）

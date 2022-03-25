@@ -1,5 +1,9 @@
 package com.x.cms.assemble.control.jaxrs.categoryinfo;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -12,9 +16,6 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.query.core.entity.View;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * 单独更新分类绑定的导入列表ID

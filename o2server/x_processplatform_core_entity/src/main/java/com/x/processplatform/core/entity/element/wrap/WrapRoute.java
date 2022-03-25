@@ -3,7 +3,6 @@ package com.x.processplatform.core.entity.element.wrap;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.element.Route;
 
 public class WrapRoute extends Route {

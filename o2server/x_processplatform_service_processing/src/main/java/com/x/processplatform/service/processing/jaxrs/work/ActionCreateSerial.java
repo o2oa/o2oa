@@ -1,9 +1,18 @@
 package com.x.processplatform.service.processing.jaxrs.work;
 
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.jaxrs.WrapInteger;
@@ -14,19 +23,9 @@ import com.x.processplatform.core.entity.content.SerialNumber_;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.service.processing.Business;
 
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.ReentrantLock;
 /**
  * 创建工作序列号
+ * 
  * @author jian
  *
  */
@@ -44,7 +43,7 @@ class ActionCreateSerial extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			Process process = business.element().get(processId, Process.class);
-			if(process == null){
+			if (process == null) {
 				throw new ExceptionEntityNotExist(processId, Process.class);
 			}
 			application = process.getApplication();
@@ -55,36 +54,29 @@ class ActionCreateSerial extends BaseAction {
 		lock.lock();
 		try {
 			appLock = processMap.get(application);
-			if(appLock == null){
+			if (appLock == null) {
 				appLock = new ReentrantLock();
 				processMap.put(application, appLock);
 			}
-		}finally {
+		} finally {
 			lock.unlock();
 		}
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
-		if(appLock != null){
-			appLock.lock();
-			try {
-				Integer serial = this.createSerial(processId, application, name);
-				wo.setValue(serial);
-				logger.info("为流程:{}的关键字:{}创建序列号：{}", processName, name, serial);
-			}finally {
-				appLock.unlock();
-			}
-		}else{
+		appLock.lock();
+		try {
 			Integer serial = this.createSerial(processId, application, name);
 			wo.setValue(serial);
+			logger.info("为流程:{}的关键字:{}创建序列号：{}", processName, name, serial);
+		} finally {
+			appLock.unlock();
 		}
-
-
 		result.setData(wo);
 		return result;
 	}
 
-	private Integer createSerial(String processId, String application, String name) throws Exception{
-		if(EMPTY_SYMBOL.equals(name)){
+	private Integer createSerial(String processId, String application, String name) throws Exception {
+		if (EMPTY_SYMBOL.equals(name)) {
 			name = "";
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {

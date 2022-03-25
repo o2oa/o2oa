@@ -6,7 +6,6 @@ import java.util.concurrent.TimeUnit;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
-import com.x.base.core.project.annotation.ActionLogger;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
@@ -20,13 +19,12 @@ import com.x.processplatform.service.processing.MessageFactory;
 
 class ActionDelete extends BaseAction {
 
-	@ActionLogger
-	private static Logger logger = LoggerFactory.getLogger(ActionDelete.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDelete.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
 
-		ActionResult<Wo> result = new ActionResult<>();
-		Wo wo = new Wo();
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+
 		String executorSeed = null;
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -38,30 +36,43 @@ class ActionDelete extends BaseAction {
 			executorSeed = readCompleted.getJob();
 		}
 
-		Callable<String> callable = new Callable<String>() {
-			public String call() throws Exception {
-				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					ReadCompleted readCompleted = emc.find(id, ReadCompleted.class);
-					if (null == readCompleted) {
-						throw new ExceptionEntityNotExist(id, ReadCompleted.class);
-					}
-					emc.beginTransaction(ReadCompleted.class);
-					emc.remove(readCompleted, CheckRemoveType.all);
-					emc.commit();
-					MessageFactory.readCompleted_delete(readCompleted);
-					wo.setId(readCompleted.getId());
+		CallableImpl impl = new CallableImpl(id);
+
+		return ProcessPlatformExecutorFactory.get(executorSeed).submit(impl).get(300, TimeUnit.SECONDS);
+	}
+
+	private class CallableImpl implements Callable<ActionResult<Wo>> {
+
+		private String id;
+
+		private CallableImpl(String id) {
+			this.id = id;
+		}
+
+		@Override
+		public ActionResult<Wo> call() throws Exception {
+			ActionResult<Wo> result = new ActionResult<>();
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				ReadCompleted readCompleted = emc.find(id, ReadCompleted.class);
+				if (null == readCompleted) {
+					throw new ExceptionEntityNotExist(id, ReadCompleted.class);
 				}
-				return "";
+				emc.beginTransaction(ReadCompleted.class);
+				emc.remove(readCompleted, CheckRemoveType.all);
+				emc.commit();
+				MessageFactory.readCompleted_delete(readCompleted);
+				Wo wo = new Wo();
+				wo.setId(readCompleted.getId());
+				result.setData(wo);
 			}
-		};
+			return result;
+		}
 
-		ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get(300, TimeUnit.SECONDS);
-
-		result.setData(wo);
-		return result;
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = 978361088939191102L;
 	}
 
 }

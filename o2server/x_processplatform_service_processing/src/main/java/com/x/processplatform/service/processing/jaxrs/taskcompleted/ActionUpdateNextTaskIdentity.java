@@ -9,7 +9,6 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.annotation.ActionLogger;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -22,7 +21,6 @@ import com.x.processplatform.core.express.service.processing.jaxrs.taskcompleted
 
 class ActionUpdateNextTaskIdentity extends BaseAction {
 
-	@ActionLogger
 	private static Logger logger = LoggerFactory.getLogger(ActionUpdateNextTaskIdentity.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {

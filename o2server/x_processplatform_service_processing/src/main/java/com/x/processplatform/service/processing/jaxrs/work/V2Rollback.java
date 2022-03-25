@@ -18,6 +18,8 @@ import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
@@ -36,7 +38,11 @@ import com.x.processplatform.service.processing.Business;
 
 class V2Rollback extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(V2Rollback.class);
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
 		final Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 
@@ -64,6 +70,9 @@ class V2Rollback extends BaseAction {
 					Node workLogNode = tree.find(workLog);
 					Nodes nodes = tree.down(workLogNode);
 					List<String> activityTokens = activityTokenOfNodes(nodes);
+
+					LOGGER.debug("activityTokens:{}.", () -> gson.toJson(activityTokens));
+
 					emc.beginTransaction(Task.class);
 					emc.beginTransaction(TaskCompleted.class);
 					emc.beginTransaction(Read.class);
@@ -85,14 +94,14 @@ class V2Rollback extends BaseAction {
 
 					deleteWorks(business, work.getJob(), workIds);
 
-					update(work, workLog);
+					update(business, work, workLog);
 
 					List<String> manualTaskIdentityList = new ArrayList<>();
 
 					List<TaskCompleted> taskCompleteds = new ArrayList<>();
 
 					if (ListTools.isNotEmpty(wi.getTaskCompletedIdentityList())) {
-						/* 如果指定了回退人 */
+						// 如果指定了回退人
 						taskCompleteds = emc.listEqualAndEqualAndIn(TaskCompleted.class, TaskCompleted.job_FIELDNAME,
 								work.getJob(), TaskCompleted.activity_FIELDNAME, workLog.getFromActivity(),
 								TaskCompleted.identity_FIELDNAME, wi.getTaskCompletedIdentityList());
@@ -141,7 +150,7 @@ class V2Rollback extends BaseAction {
 		return work;
 	}
 
-	private void update(Work work, WorkLog workLog) {
+	private void update(Business business, Work work, WorkLog workLog) throws Exception {
 		work.setActivity(workLog.getFromActivity());
 		work.setActivityType(workLog.getFromActivityType());
 		work.setActivityAlias(workLog.getFromActivityAlias());
@@ -150,10 +159,11 @@ class V2Rollback extends BaseAction {
 		work.setSplitting(workLog.getSplitting());
 		work.setSplitToken(workLog.getSplitToken());
 		work.setSplitValue(workLog.getSplitValue());
+		work.setForm(business.element().lookupSuitableForm(work.getProcess(), work.getActivity()));
 		workLog.setConnected(false);
 	}
 
-	private WorkLog getTargetWorkLog(List<WorkLog> list, String id) throws Exception {
+	private WorkLog getTargetWorkLog(List<WorkLog> list, String id) throws ExceptionEntityNotExist {
 		WorkLog workLog = list.stream().filter(o -> StringUtils.equals(o.getId(), id)).findFirst().orElse(null);
 		if (null == workLog) {
 			throw new ExceptionEntityNotExist(id, WorkLog.class);

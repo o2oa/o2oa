@@ -1,5 +1,7 @@
 package com.x.query.assemble.designer.jaxrs.statement;
 
+import java.util.List;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -10,8 +12,6 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.query.assemble.designer.Business;
 import com.x.query.core.entity.schema.Statement;
-
-import java.util.List;
 
 class ActionManageList extends BaseAction {
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson) throws Exception {

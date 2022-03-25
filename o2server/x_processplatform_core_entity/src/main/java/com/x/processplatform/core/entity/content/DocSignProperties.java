@@ -1,10 +1,10 @@
 package com.x.processplatform.core.entity.content;
 
-import com.x.base.core.entity.JsonProperties;
-import com.x.base.core.project.annotation.FieldDescribe;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.x.base.core.entity.JsonProperties;
+import com.x.base.core.project.annotation.FieldDescribe;
 
 /**
  * 文件签批扩展信息

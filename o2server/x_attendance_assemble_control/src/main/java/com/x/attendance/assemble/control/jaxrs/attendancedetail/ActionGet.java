@@ -1,5 +1,7 @@
 package com.x.attendance.assemble.control.jaxrs.attendancedetail;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import com.x.attendance.entity.AttendanceAppealAuditInfo;
@@ -14,8 +16,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-
-import java.util.List;
 
 public class ActionGet extends BaseAction {
 

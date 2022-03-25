@@ -1,14 +1,14 @@
 package com.x.cms.core.entity.element.wrap;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.core.entity.AppInfo;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class WrapCms extends AppInfo {
 

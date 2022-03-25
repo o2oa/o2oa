@@ -6,7 +6,6 @@ import java.util.concurrent.TimeUnit;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.annotation.ActionLogger;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
@@ -20,11 +19,14 @@ import com.x.processplatform.service.processing.Business;
 
 class ActionUpdateWithWorkPath6 extends BaseAction {
 
-	@ActionLogger
-	private static Logger logger = LoggerFactory.getLogger(ActionUpdateWithWorkPath6.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionUpdateWithWorkPath6.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String path0, String path1, String path2,
 			String path3, String path4, String path5, String path6, JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}, path0:{}, path1:{}, path2:{}, path3:{}, path4:{}, path5:{}, path6:{}.",
+				effectivePerson::getDistinguishedName, () -> id, () -> path0, () -> path1, () -> path2, () -> path3,
+				() -> path4, () -> path5, () -> path6);
 
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
@@ -63,6 +65,8 @@ class ActionUpdateWithWorkPath6 extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = 5692604287906339250L;
 
 	}
 

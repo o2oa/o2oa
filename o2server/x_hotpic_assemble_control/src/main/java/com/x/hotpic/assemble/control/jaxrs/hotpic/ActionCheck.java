@@ -3,8 +3,6 @@ package com.x.hotpic.assemble.control.jaxrs.hotpic;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.http.WrapOutString;
-import com.x.hotpic.assemble.control.jaxrs.hotpic.ActionCipherGet.Wo;
 import com.x.hotpic.assemble.control.service.HotPictureInfoServiceAdv;
 
 public class ActionCheck extends BaseAction {

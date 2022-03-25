@@ -1,5 +1,9 @@
 package com.x.program.center.jaxrs.jest;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.jaxrs.WrapBoolean;
@@ -9,12 +13,23 @@ import com.x.cms.core.entity.element.AppDict;
 import com.x.cms.core.entity.element.AppDictItem;
 import com.x.cms.core.entity.element.Form;
 import com.x.cms.core.entity.element.Script;
-import com.x.organization.core.entity.*;
+import com.x.organization.core.entity.Group;
+import com.x.organization.core.entity.Identity;
+import com.x.organization.core.entity.Person;
+import com.x.organization.core.entity.PersonAttribute;
+import com.x.organization.core.entity.Role;
+import com.x.organization.core.entity.Unit;
+import com.x.organization.core.entity.UnitAttribute;
+import com.x.organization.core.entity.UnitDuty;
 import com.x.organization.core.entity.accredit.Empower;
 import com.x.portal.core.entity.Page;
 import com.x.portal.core.entity.Portal;
 import com.x.portal.core.entity.Widget;
-import com.x.processplatform.core.entity.element.*;
+import com.x.processplatform.core.entity.element.Application;
+import com.x.processplatform.core.entity.element.ApplicationDict;
+import com.x.processplatform.core.entity.element.ApplicationDictItem;
+import com.x.processplatform.core.entity.element.FormField;
+import com.x.processplatform.core.entity.element.Invoke;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.program.center.core.entity.Agent;
 import com.x.query.core.entity.Reveal;
@@ -22,9 +37,6 @@ import com.x.query.core.entity.Stat;
 import com.x.query.core.entity.View;
 import com.x.query.core.entity.schema.Statement;
 import com.x.query.core.entity.schema.Table;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.servlet.http.HttpServletRequest;
 
 class ActionClearCache extends BaseAction {
 

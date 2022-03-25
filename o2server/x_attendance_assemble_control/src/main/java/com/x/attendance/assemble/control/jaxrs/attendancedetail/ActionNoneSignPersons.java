@@ -1,11 +1,16 @@
 package com.x.attendance.assemble.control.jaxrs.attendancedetail;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.assemble.control.ExceptionWrapInConvert;
-import com.x.attendance.assemble.control.processor.monitor.StatusSystemImportOpt;
 import com.x.attendance.entity.AttendanceEmployeeConfig;
-import com.x.attendance.entity.AttendanceStatisticalCycle;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -14,10 +19,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.Person;
 import com.x.base.core.project.tools.ListTools;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.*;
 
 /**
  * 获取上班时间前X分钟未打卡人员信息的接口

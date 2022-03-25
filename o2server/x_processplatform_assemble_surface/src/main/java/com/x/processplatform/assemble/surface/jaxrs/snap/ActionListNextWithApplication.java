@@ -2,11 +2,7 @@ package com.x.processplatform.assemble.surface.jaxrs.snap;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -18,8 +14,6 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.assemble.surface.jaxrs.snap.ActionListMyFilterPaging.Wo;
-import com.x.processplatform.core.entity.content.Snap;
 import com.x.processplatform.core.entity.content.Snap;
 import com.x.processplatform.core.entity.element.Application;
 

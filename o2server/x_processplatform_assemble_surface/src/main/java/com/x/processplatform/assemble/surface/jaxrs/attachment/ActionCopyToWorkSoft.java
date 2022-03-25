@@ -1,10 +1,15 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Applications;
-import com.x.base.core.project.annotation.ActionLogger;
+import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
@@ -15,23 +20,20 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 
-import java.util.ArrayList;
-import java.util.List;
-
 class ActionCopyToWorkSoft extends BaseAction {
 
-	@ActionLogger
-	private static Logger logger = LoggerFactory.getLogger(ActionCopyToWorkSoft.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCopyToWorkSoft.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String workId, JsonElement jsonElement)
 			throws Exception {
+
+		LOGGER.debug("execute:{}, workId:{}.", effectivePerson::getDistinguishedName, () -> workId);
 
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wos = new ArrayList<>();
@@ -49,7 +51,7 @@ class ActionCopyToWorkSoft extends BaseAction {
 			}
 			if (effectivePerson.isNotManager()) {
 				WoWorkControl workControl = business.getControl(effectivePerson, work, WoWorkControl.class);
-				if (!workControl.getAllowProcessing()) {
+				if (BooleanUtils.isNotTrue(workControl.getAllowProcessing())) {
 					throw new ExceptionAccessDenied(effectivePerson, work);
 				}
 			}
@@ -86,6 +88,8 @@ class ActionCopyToWorkSoft extends BaseAction {
 
 	public static class Wi extends GsonPropertyObject {
 
+		private static final long serialVersionUID = -6412354165514602742L;
+
 		@FieldDescribe("附件对象")
 		private List<WiAttachment> attachmentList = new ArrayList<>();
 
@@ -101,6 +105,8 @@ class ActionCopyToWorkSoft extends BaseAction {
 
 	public static class Req extends GsonPropertyObject {
 
+		private static final long serialVersionUID = 2981325868837244369L;
+
 		List<ReqAttachment> attachmentList = new ArrayList<>();
 
 		public List<ReqAttachment> getAttachmentList() {
@@ -114,6 +120,8 @@ class ActionCopyToWorkSoft extends BaseAction {
 	}
 
 	public static class WiAttachment extends GsonPropertyObject {
+
+		private static final long serialVersionUID = -4069950002054692120L;
 
 		private String id;
 		private String name;
@@ -147,8 +155,12 @@ class ActionCopyToWorkSoft extends BaseAction {
 
 	public static class Wo extends WoId {
 
+		private static final long serialVersionUID = -5204038819582876943L;
+
 	}
 
 	public static class WoWorkControl extends WorkControl {
+
+		private static final long serialVersionUID = 2685810262366338193L;
 	}
 }

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -21,7 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.dataitem.ItemCategory;
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.logger.Logger;
@@ -40,18 +41,16 @@ import com.x.query.core.entity.Item_;
 
 public class ProcessPlatformPlan extends Plan {
 
-	private static Logger logger = LoggerFactory.getLogger(ProcessPlatformPlan.class);
+	private static final long serialVersionUID = 8346759115447768182L;
 
-	public ProcessPlatformPlan() {
+	private static final Logger LOGGER = LoggerFactory.getLogger(ProcessPlatformPlan.class);
 
-	}
-
-	public ProcessPlatformPlan(Runtime runtime) {
+	public ProcessPlatformPlan(Runtime runtime, ExecutorService threadPool) {
+		super(threadPool);
 		this.runtime = runtime;
 		this.selectList = new SelectEntries();
 		this.where = new WhereEntry();
 		this.filterList = new TreeList<FilterEntry>();
-		// this.calculate = new Calculate();
 		this.columnList = new TreeList<String>();
 	}
 
@@ -60,12 +59,11 @@ public class ProcessPlatformPlan extends Plan {
 	void adjust() throws Exception {
 		this.adjustRuntime();
 		this.adjustWhere();
-		/* 先调整slectEntry 顺序不能改 */
+		// 先调整slectEntry 顺序不能改
 		this.adjustSelectList();
-		// this.adjustCalculate();
 	}
 
-	private void adjustRuntime() throws Exception {
+	private void adjustRuntime() {
 		if (null == this.runtime) {
 			this.runtime = new Runtime();
 		}
@@ -82,10 +80,10 @@ public class ProcessPlatformPlan extends Plan {
 		this.where.dateRange.adjust();
 	}
 
-	private void adjustSelectList() throws Exception {
+	private void adjustSelectList() {
 		SelectEntries list = new SelectEntries();
 		for (SelectEntry o : ListTools.trim(this.selectList, true, true)) {
-			if (o.available()) {
+			if (BooleanUtils.isTrue(o.available())) {
 				list.add(o);
 			}
 		}
@@ -93,46 +91,44 @@ public class ProcessPlatformPlan extends Plan {
 	}
 
 	List<String> listBundle() throws Exception {
-		List<String> jobs = new TreeList<>();
+		List<String> jobs;
 		switch (StringUtils.trim(this.where.scope)) {
 		case (SCOPE_ALL):
-			jobs = ListUtils.union(this.listBundle_workCompleted(), this.listBundle_work());
+			jobs = ListUtils.union(this.listBundleWorkCompleted(), this.listBundleWork());
 			break;
 		case (SCOPE_WORKCOMPLETED):
-			jobs = this.listBundle_workCompleted();
+			jobs = this.listBundleWorkCompleted();
 			break;
 		default:
-			jobs = this.listBundle_work();
+			jobs = this.listBundleWork();
 			break;
 		}
-		if (BooleanUtils.isTrue(this.where.accessible)) {
-			if (StringUtils.isNotEmpty(runtime.person)) {
-				jobs = this.listBundle_accessible(jobs, runtime.person);
-			}
+		if (BooleanUtils.isTrue(this.where.accessible) && (StringUtils.isNotEmpty(runtime.person))) {
+			jobs = this.listBundleAccessible(jobs, runtime.person, threadPool);
 		}
-		/** 针对DataItem进行判断 */
+		// 针对DataItem进行判断
 		List<FilterEntry> filterEntries = new TreeList<>();
-		for (FilterEntry _o : ListTools.trim(this.filterList, true, true)) {
-			if (_o.available()) {
-				filterEntries.add(_o);
+		for (FilterEntry o : ListTools.trim(this.filterList, true, true)) {
+			if (BooleanUtils.isTrue(o.available())) {
+				filterEntries.add(o);
 			}
 		}
 		if (!filterEntries.isEmpty()) {
-			jobs = listBundle_filterEntry(jobs, filterEntries);
+			jobs = listBundleFilterEntry(jobs, filterEntries, threadPool);
 		}
 		filterEntries.clear();
-		for (FilterEntry _o : ListTools.trim(this.runtime.filterList, true, true)) {
-			if (_o.available()) {
-				filterEntries.add(_o);
+		for (FilterEntry o : ListTools.trim(this.runtime.filterList, true, true)) {
+			if (BooleanUtils.isTrue(o.available())) {
+				filterEntries.add(o);
 			}
 		}
 		if (!filterEntries.isEmpty()) {
-			jobs = listBundle_filterEntry(jobs, filterEntries);
+			jobs = listBundleFilterEntry(jobs, filterEntries, threadPool);
 		}
 		return jobs;
 	}
 
-	private List<String> listBundle_work() throws Exception {
+	private List<String> listBundleWork() throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			EntityManager em = emc.get(Work.class);
 			CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -144,7 +140,7 @@ public class ProcessPlatformPlan extends Plan {
 		}
 	}
 
-	private List<String> listBundle_workCompleted() throws Exception {
+	private List<String> listBundleWorkCompleted() throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			EntityManager em = emc.get(WorkCompleted.class);
 			CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -156,8 +152,8 @@ public class ProcessPlatformPlan extends Plan {
 		}
 	}
 
-	private List<String> listBundle_accessible(List<String> jobs, String person) throws Exception {
-		logger.debug("开始过滤权限.");
+	private List<String> listBundleAccessible(List<String> jobs, String person, ExecutorService threadPool)
+			throws Exception {
 		List<String> list = new TreeList<>();
 		List<CompletableFuture<List<String>>> futures = new TreeList<>();
 		for (List<String> _part_bundles : ListTools.batch(jobs, Config.query().getPlanQueryBatchSize())) {
@@ -168,9 +164,7 @@ public class ProcessPlatformPlan extends Plan {
 					CriteriaQuery<String> cq = cb.createQuery(String.class);
 					Root<Review> root = cq.from(Review.class);
 					HashMap<String, String> map = new HashMap<>();
-					_part_bundles.stream().forEach(o -> {
-						map.put(o, o);
-					});
+					_part_bundles.stream().forEach(o -> map.put(o, o));
 					Expression<Set<String>> expression = cb.keys(map);
 					Predicate p = cb.isMember(root.get(Review_.job), expression);
 					p = cb.and(p, cb.equal(root.get(Review_.person), person));
@@ -180,28 +174,28 @@ public class ProcessPlatformPlan extends Plan {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				return new TreeList<String>();
-			});
+				return new TreeList<>();
+			}, threadPool);
 			futures.add(future);
 		}
 		for (CompletableFuture<List<String>> future : futures) {
 			list.addAll(future.get(300, TimeUnit.SECONDS));
-			logger.debug("批次数据填充完成.");
+			LOGGER.debug("批次数据填充完成.");
 		}
-		logger.debug("开始过滤权限完成,完成后剩余: {} 个bunlde.", list.size());
+		LOGGER.debug("开始过滤权限完成,完成后剩余: {} 个bunlde.", () -> list.size());
 		return list;
 	}
 
-	private List<String> listBundle_filterEntry(List<String> jobs, List<FilterEntry> filterEntries) throws Exception {
-		/** 运行FilterEntry */
+	private List<String> listBundleFilterEntry(List<String> jobs, List<FilterEntry> filterEntries,
+			ExecutorService threadPool) throws Exception {
 		List<String> partJobs = new TreeList<>();
-		List<List<String>> batch_jobs = ListTools.batch(jobs, Config.query().getPlanQueryBatchSize());
+		List<List<String>> batchJobs = ListTools.batch(jobs, Config.query().getPlanQueryBatchSize());
 		for (int i = 0; i < filterEntries.size(); i++) {
 			FilterEntry f = filterEntries.get(i);
-			logger.debug("listBundle_filterEntry:{}.", f);
+			LOGGER.debug("listBundle_filterEntry:{}.", () -> f);
 			List<String> os = new TreeList<>();
 			List<CompletableFuture<List<String>>> futures = new TreeList<>();
-			for (List<String> _batch : batch_jobs) {
+			for (List<String> _batch : batchJobs) {
 				CompletableFuture<List<String>> future = CompletableFuture.supplyAsync(() -> {
 					try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 						EntityManager em = emc.get(Item.class);
@@ -216,15 +210,15 @@ public class ProcessPlatformPlan extends Plan {
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-					return new TreeList<String>();
-				});
+					return new TreeList<>();
+				}, threadPool);
 				futures.add(future);
 			}
 			for (CompletableFuture<List<String>> future : futures) {
 				os.addAll(future.get(300, TimeUnit.SECONDS));
-				logger.debug("批次数据填充完成.");
+				LOGGER.debug("批次数据填充完成.");
 			}
-			/** 不等于在这里单独通过等于处理 */
+			// 不等于在这里单独通过等于处理
 			if (Comparison.isNotEquals(f.comparison)) {
 				os = ListUtils.subtract(jobs, os);
 			}
@@ -244,9 +238,7 @@ public class ProcessPlatformPlan extends Plan {
 
 	public static class WhereEntry extends GsonPropertyObject {
 
-		public WhereEntry() {
-
-		}
+		private static final long serialVersionUID = 8233208785074889649L;
 
 		public Boolean accessible = false;
 
@@ -260,11 +252,8 @@ public class ProcessPlatformPlan extends Plan {
 		public List<CreatorIdentityEntry> creatorIdentityList;
 
 		Boolean available() {
-			if ((!StringUtils.equals(this.scope, SCOPE_WORK)) && (!StringUtils.equals(this.scope, SCOPE_WORKCOMPLETED))
-					&& (!StringUtils.equals(this.scope, SCOPE_ALL))) {
-				return false;
-			}
-			return true;
+			return StringUtils.equals(this.scope, SCOPE_WORK) || StringUtils.equals(this.scope, SCOPE_WORKCOMPLETED)
+					|| StringUtils.equals(this.scope, SCOPE_ALL);
 		}
 
 		public static class ApplicationEntry {
@@ -313,75 +302,71 @@ public class ProcessPlatformPlan extends Plan {
 
 		private Predicate workPredicate(CriteriaBuilder cb, Root<Work> root) throws Exception {
 			List<Predicate> ps = new TreeList<>();
-			ps.add(this.workPredicate_application(cb, root));
-			ps.add(this.workPredicate_creator(cb, root));
-			ps.add(this.workPredicate_date(cb, root));
+			ps.add(this.workPredicateApplication(cb, root));
+			ps.add(this.workPredicateCreator(cb, root));
+			ps.add(this.workPredicateDate(cb, root));
 			ps = ListTools.trim(ps, true, false);
 			if (ps.isEmpty()) {
-				throw new Exception("where is empty.");
+				throw new IllegalAccessException("where is empty.");
 			}
 			return cb.and(ps.toArray(new Predicate[] {}));
 		}
 
 		private Predicate workCompletedPredicate(CriteriaBuilder cb, Root<WorkCompleted> root) throws Exception {
 			List<Predicate> ps = new TreeList<>();
-			ps.add(this.workCompletedPredicate_application(cb, root));
-			ps.add(this.workCompletedPredicate_creator(cb, root));
-			ps.add(this.workCompletedPredicate_date(cb, root));
+			ps.add(this.workCompletedPredicateApplication(cb, root));
+			ps.add(this.workCompletedPredicateCreator(cb, root));
+			ps.add(this.workCompletedPredicateDate(cb, root));
 			ps = ListTools.trim(ps, true, false);
 			if (ps.isEmpty()) {
-				throw new Exception("where is empty.");
+				throw new IllegalAccessException("where is empty.");
 			}
 			return cb.and(ps.toArray(new Predicate[] {}));
 		}
 
-		private Predicate workPredicate_application(CriteriaBuilder cb, Root<Work> root) throws Exception {
-			List<String> _application_ids = ListTools.extractField(this.applicationList, Application.id_FIELDNAME,
+		private Predicate workPredicateApplication(CriteriaBuilder cb, Root<Work> root) throws Exception {
+			List<String> applicationIds = ListTools.extractField(this.applicationList, JpaObject.id_FIELDNAME,
 					String.class, true, true);
-			List<String> _process_ids = ListTools.extractField(this.processList, Process.id_FIELDNAME, String.class,
+			List<String> processIds = ListTools.extractField(this.processList, JpaObject.id_FIELDNAME, String.class,
 					true, true);
-			_application_ids = _application_ids.stream().filter(o -> {
-				return StringUtils.isNotEmpty(o);
-			}).collect(Collectors.toList());
-			_process_ids = _process_ids.stream().filter(o -> {
-				return StringUtils.isNotEmpty(o);
-			}).collect(Collectors.toList());
-			if (_application_ids.isEmpty() && _process_ids.isEmpty()) {
+			applicationIds = applicationIds.stream().filter(StringUtils::isNotEmpty).collect(Collectors.toList());
+			processIds = processIds.stream().filter(StringUtils::isNotEmpty).collect(Collectors.toList());
+			if (applicationIds.isEmpty() && processIds.isEmpty()) {
 				return null;
 			}
 			Predicate p = cb.disjunction();
-			if (!_application_ids.isEmpty()) {
-				p = cb.or(p, root.get(Work_.application).in(_application_ids));
+			if (!applicationIds.isEmpty()) {
+				p = cb.or(p, root.get(Work_.application).in(applicationIds));
 			}
-			if (!_process_ids.isEmpty()) {
-				p = cb.or(p, root.get(Work_.process).in(_process_ids));
+			if (!processIds.isEmpty()) {
+				p = cb.or(p, root.get(Work_.process).in(processIds));
 			}
 			return p;
 		}
 
-		private Predicate workPredicate_creator(CriteriaBuilder cb, Root<Work> root) throws Exception {
-			List<String> _creatorUnits = ListTools.extractField(this.creatorUnitList, "name", String.class, true, true);
-			List<String> _creatorPersons = ListTools.extractField(this.creatorPersonList, "name", String.class, true,
+		private Predicate workPredicateCreator(CriteriaBuilder cb, Root<Work> root) throws Exception {
+			List<String> creatorUnits = ListTools.extractField(this.creatorUnitList, "name", String.class, true, true);
+			List<String> creatorPersons = ListTools.extractField(this.creatorPersonList, "name", String.class, true,
 					true);
-			List<String> _creatorIdentitys = ListTools.extractField(this.creatorIdentityList, "name", String.class,
-					true, true);
-			if (_creatorUnits.isEmpty() && _creatorPersons.isEmpty() && _creatorIdentitys.isEmpty()) {
+			List<String> creatorIdentitys = ListTools.extractField(this.creatorIdentityList, "name", String.class, true,
+					true);
+			if (creatorUnits.isEmpty() && creatorPersons.isEmpty() && creatorIdentitys.isEmpty()) {
 				return null;
 			}
 			Predicate p = cb.disjunction();
-			if (!_creatorUnits.isEmpty()) {
-				p = cb.or(p, root.get(Work_.creatorUnit).in(_creatorUnits));
+			if (!creatorUnits.isEmpty()) {
+				p = cb.or(p, root.get(Work_.creatorUnit).in(creatorUnits));
 			}
-			if (!_creatorPersons.isEmpty()) {
-				p = cb.or(p, root.get(Work_.creatorPerson).in(_creatorPersons));
+			if (!creatorPersons.isEmpty()) {
+				p = cb.or(p, root.get(Work_.creatorPerson).in(creatorPersons));
 			}
-			if (!_creatorIdentitys.isEmpty()) {
-				p = cb.or(p, root.get(Work_.creatorIdentity).in(_creatorIdentitys));
+			if (!creatorIdentitys.isEmpty()) {
+				p = cb.or(p, root.get(Work_.creatorIdentity).in(creatorIdentitys));
 			}
 			return p;
 		}
 
-		private Predicate workPredicate_date(CriteriaBuilder cb, Root<Work> root) throws Exception {
+		private Predicate workPredicateDate(CriteriaBuilder cb, Root<Work> root) throws Exception {
 			if (null == this.dateRange || (!this.dateRange.available())) {
 				return null;
 			}
@@ -394,88 +379,75 @@ public class ProcessPlatformPlan extends Plan {
 			}
 		}
 
-		private Predicate workCompletedPredicate_application(CriteriaBuilder cb, Root<WorkCompleted> root)
+		private Predicate workCompletedPredicateApplication(CriteriaBuilder cb, Root<WorkCompleted> root)
 				throws Exception {
-			List<String> _application_ids = ListTools.extractField(this.applicationList, Application.id_FIELDNAME,
+			List<String> applicationIds = ListTools.extractField(this.applicationList, JpaObject.id_FIELDNAME,
 					String.class, true, true);
-			List<String> _application_names = ListTools.extractField(this.applicationList, Application.name_FIELDNAME,
+			List<String> applicationNames = ListTools.extractField(this.applicationList, Application.name_FIELDNAME,
 					String.class, true, true);
-			List<String> _application_alias = ListTools.extractField(this.applicationList, Application.alias_FIELDNAME,
+			List<String> applicationAlias = ListTools.extractField(this.applicationList, Application.alias_FIELDNAME,
 					String.class, true, true);
-			List<String> _process_ids = ListTools.extractField(this.processList, Process.id_FIELDNAME, String.class,
+			List<String> processIds = ListTools.extractField(this.processList, JpaObject.id_FIELDNAME, String.class,
 					true, true);
-			List<String> _process_names = ListTools.extractField(this.processList, Process.name_FIELDNAME, String.class,
+			List<String> processNames = ListTools.extractField(this.processList, Process.name_FIELDNAME, String.class,
 					true, true);
-			List<String> _process_alias = ListTools.extractField(this.processList, Process.alias_FIELDNAME,
-					String.class, true, true);
-			_application_ids = _application_ids.stream().filter(o -> {
-				return StringUtils.isNotEmpty(o);
-			}).collect(Collectors.toList());
-			_application_names = _application_names.stream().filter(o -> {
-				return StringUtils.isNotEmpty(o);
-			}).collect(Collectors.toList());
-			_application_alias = _application_alias.stream().filter(o -> {
-				return StringUtils.isNotEmpty(o);
-			}).collect(Collectors.toList());
-			_process_ids = _process_ids.stream().filter(o -> {
-				return StringUtils.isNotEmpty(o);
-			}).collect(Collectors.toList());
-			_process_names = _process_names.stream().filter(o -> {
-				return StringUtils.isNotEmpty(o);
-			}).collect(Collectors.toList());
-			_process_alias = _process_alias.stream().filter(o -> {
-				return StringUtils.isNotEmpty(o);
-			}).collect(Collectors.toList());
-			if (_application_ids.isEmpty() && _application_names.isEmpty() && _application_alias.isEmpty()
-					&& _process_ids.isEmpty() && _process_names.isEmpty() && _process_alias.isEmpty()) {
+			List<String> processAlias = ListTools.extractField(this.processList, Process.alias_FIELDNAME, String.class,
+					true, true);
+			applicationIds = applicationIds.stream().filter(StringUtils::isNotEmpty).collect(Collectors.toList());
+			applicationNames = applicationNames.stream().filter(StringUtils::isNotEmpty).collect(Collectors.toList());
+			applicationAlias = applicationAlias.stream().filter(StringUtils::isNotEmpty).collect(Collectors.toList());
+			processIds = processIds.stream().filter(StringUtils::isNotEmpty).collect(Collectors.toList());
+			processNames = processNames.stream().filter(StringUtils::isNotEmpty).collect(Collectors.toList());
+			processAlias = processAlias.stream().filter(StringUtils::isNotEmpty).collect(Collectors.toList());
+			if (applicationIds.isEmpty() && applicationNames.isEmpty() && applicationAlias.isEmpty()
+					&& processIds.isEmpty() && processNames.isEmpty() && processAlias.isEmpty()) {
 				return null;
 			}
 			Predicate p = cb.disjunction();
-			if (!_application_ids.isEmpty()) {
-				p = cb.or(p, root.get(WorkCompleted_.application).in(_application_ids));
+			if (!applicationIds.isEmpty()) {
+				p = cb.or(p, root.get(WorkCompleted_.application).in(applicationIds));
 			}
-			if (!_application_names.isEmpty()) {
-				p = cb.or(p, root.get(WorkCompleted_.applicationName).in(_application_names));
+			if (!applicationNames.isEmpty()) {
+				p = cb.or(p, root.get(WorkCompleted_.applicationName).in(applicationNames));
 			}
-			if (!_application_alias.isEmpty()) {
-				p = cb.or(p, root.get(WorkCompleted_.applicationAlias).in(_application_alias));
+			if (!applicationAlias.isEmpty()) {
+				p = cb.or(p, root.get(WorkCompleted_.applicationAlias).in(applicationAlias));
 			}
-			if (!_process_ids.isEmpty()) {
-				p = cb.or(p, root.get(WorkCompleted_.process).in(_process_ids));
+			if (!processIds.isEmpty()) {
+				p = cb.or(p, root.get(WorkCompleted_.process).in(processIds));
 			}
-			if (!_process_names.isEmpty()) {
-				p = cb.or(p, root.get(WorkCompleted_.processName).in(_process_names));
+			if (!processNames.isEmpty()) {
+				p = cb.or(p, root.get(WorkCompleted_.processName).in(processNames));
 			}
-			if (!_process_alias.isEmpty()) {
-				p = cb.or(p, root.get(WorkCompleted_.processAlias).in(_process_alias));
+			if (!processAlias.isEmpty()) {
+				p = cb.or(p, root.get(WorkCompleted_.processAlias).in(processAlias));
 			}
 			return p;
 		}
 
-		private Predicate workCompletedPredicate_creator(CriteriaBuilder cb, Root<WorkCompleted> root)
-				throws Exception {
-			List<String> _creatorUnits = ListTools.extractField(this.creatorUnitList, "name", String.class, true, true);
-			List<String> _creatorPersons = ListTools.extractField(this.creatorPersonList, "name", String.class, true,
+		private Predicate workCompletedPredicateCreator(CriteriaBuilder cb, Root<WorkCompleted> root) throws Exception {
+			List<String> creatorUnits = ListTools.extractField(this.creatorUnitList, "name", String.class, true, true);
+			List<String> creatorPersons = ListTools.extractField(this.creatorPersonList, "name", String.class, true,
 					true);
-			List<String> _creatorIdentitys = ListTools.extractField(this.creatorIdentityList, "name", String.class,
-					true, true);
-			if (_creatorUnits.isEmpty() && _creatorPersons.isEmpty() && _creatorIdentitys.isEmpty()) {
+			List<String> creatorIdentitys = ListTools.extractField(this.creatorIdentityList, "name", String.class, true,
+					true);
+			if (creatorUnits.isEmpty() && creatorPersons.isEmpty() && creatorIdentitys.isEmpty()) {
 				return null;
 			}
 			Predicate p = cb.disjunction();
-			if (!_creatorUnits.isEmpty()) {
-				p = cb.or(p, root.get(WorkCompleted_.creatorUnit).in(_creatorUnits));
+			if (!creatorUnits.isEmpty()) {
+				p = cb.or(p, root.get(WorkCompleted_.creatorUnit).in(creatorUnits));
 			}
-			if (!_creatorPersons.isEmpty()) {
-				p = cb.or(p, root.get(WorkCompleted_.creatorPerson).in(_creatorPersons));
+			if (!creatorPersons.isEmpty()) {
+				p = cb.or(p, root.get(WorkCompleted_.creatorPerson).in(creatorPersons));
 			}
-			if (!_creatorIdentitys.isEmpty()) {
-				p = cb.or(p, root.get(WorkCompleted_.creatorIdentity).in(_creatorIdentitys));
+			if (!creatorIdentitys.isEmpty()) {
+				p = cb.or(p, root.get(WorkCompleted_.creatorIdentity).in(creatorIdentitys));
 			}
 			return p;
 		}
 
-		private Predicate workCompletedPredicate_date(CriteriaBuilder cb, Root<WorkCompleted> root) throws Exception {
+		private Predicate workCompletedPredicateDate(CriteriaBuilder cb, Root<WorkCompleted> root) {
 			if (null == this.dateRange || (!this.dateRange.available())) {
 				return null;
 			}

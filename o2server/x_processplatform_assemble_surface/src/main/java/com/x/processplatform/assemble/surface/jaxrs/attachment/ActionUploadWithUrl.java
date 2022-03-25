@@ -1,5 +1,10 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.tika.Tika;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -8,7 +13,6 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.connection.CipherConnectionAction;
-import com.x.base.core.project.connection.ConnectionAction;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityFieldEmpty;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
@@ -26,13 +30,8 @@ import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
-import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.End;
 import com.x.processplatform.core.entity.element.Process;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.tika.Tika;
-
-import java.util.List;
 
 class ActionUploadWithUrl extends BaseAction {
 

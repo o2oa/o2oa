@@ -1,7 +1,6 @@
 package com.x.organization.assemble.control.jaxrs.role;
 
 import com.x.base.core.project.exception.LanguagePromptException;
-import com.x.base.core.project.http.EffectivePerson;
 
 class ExceptionDenyDeleteDefaultRole extends LanguagePromptException {
 

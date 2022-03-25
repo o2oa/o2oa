@@ -24,7 +24,6 @@ import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.file.assemble.control.ThisApplication;
 import com.x.file.core.entity.open.File;

@@ -1,6 +1,8 @@
 package com.x.file.assemble.control.jaxrs.attachment2;
 
-import com.x.base.core.project.tools.StringTools;
+import java.io.File;
+import java.io.FileInputStream;
+
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
@@ -15,15 +17,13 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
+import com.x.base.core.project.tools.StringTools;
 import com.x.file.assemble.control.Business;
 import com.x.file.assemble.control.FileUtil;
 import com.x.file.assemble.control.ThisApplication;
 import com.x.file.core.entity.open.OriginFile;
 import com.x.file.core.entity.personal.Attachment2;
 import com.x.file.core.entity.personal.Folder2;
-
-import java.io.File;
-import java.io.FileInputStream;
 
 class ActionUpload extends BaseAction {
 

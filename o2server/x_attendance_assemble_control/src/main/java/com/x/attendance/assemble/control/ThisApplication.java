@@ -7,13 +7,11 @@ import com.x.attendance.assemble.control.processor.thread.DataProcessThreadFacto
 import com.x.attendance.assemble.control.schedule.AttendanceStatisticTask;
 import com.x.attendance.assemble.control.schedule.DetailLastDayRecordAnalyseTask;
 import com.x.attendance.assemble.control.schedule.DingdingAttendanceSyncScheduleTask;
-import com.x.attendance.assemble.control.schedule.MobileRecordAnalyseTask;
 import com.x.attendance.assemble.control.schedule.QywxAttendanceSyncScheduleTask;
 import com.x.attendance.assemble.control.service.AttendanceSettingService;
 import com.x.base.core.project.Context;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.logger.LoggerFactory;
 
 public class ThisApplication {
 

@@ -4,19 +4,12 @@ import java.util.List;
 
 import org.quartz.JobExecutionContext;
 
-import com.google.gson.Gson;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.schedule.AbstractJob;
 import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.service.BBSOperationRecordService;
-import com.x.bbs.assemble.control.service.BBSPermissionInfoService;
-import com.x.bbs.assemble.control.service.BBSReplyInfoService;
-import com.x.bbs.assemble.control.service.BBSRoleInfoService;
-import com.x.bbs.assemble.control.service.BBSSubjectInfoService;
 import com.x.bbs.assemble.control.service.BBSUserInfoService;
-import com.x.bbs.assemble.control.service.bean.RoleAndPermission;
 import com.x.bbs.entity.BBSUserInfo;
 
 /**

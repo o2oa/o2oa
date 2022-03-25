@@ -15,7 +15,6 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.annotation.ActionLogger;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
@@ -36,13 +35,15 @@ import com.x.processplatform.service.processing.MessageFactory;
 
 class ActionCreateWithWorkCompleted extends BaseAction {
 
-	@ActionLogger
-	private static Logger logger = LoggerFactory.getLogger(ActionCreateWithWorkCompleted.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCreateWithWorkCompleted.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String workCompletedId, JsonElement jsonElement)
 			throws Exception {
+
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+
 		ActionResult<List<Wo>> result = new ActionResult<>();
-		List<Wo> wos = new ArrayList<Wo>();
+		List<Wo> wos = new ArrayList<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 
 		String executorSeed = null;
@@ -158,6 +159,8 @@ class ActionCreateWithWorkCompleted extends BaseAction {
 
 	public static class Wi extends GsonPropertyObject {
 
+		private static final long serialVersionUID = -2275510505339993205L;
+
 		@FieldDescribe("待阅标识")
 		private List<String> identityList = new ArrayList<>();
 
@@ -183,6 +186,8 @@ class ActionCreateWithWorkCompleted extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = -1692814680748900168L;
 	}
 
 	public Read get(Business business, WorkCompleted workCompleted, String person) throws Exception {

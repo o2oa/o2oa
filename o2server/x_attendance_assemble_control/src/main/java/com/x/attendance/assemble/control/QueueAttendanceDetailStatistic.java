@@ -1,16 +1,20 @@
 package com.x.attendance.assemble.control;
 
-import com.x.attendance.assemble.control.service.*;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.x.attendance.assemble.control.service.AttendanceStatisticRequireLogServiceAdv;
+import com.x.attendance.assemble.control.service.AttendanceStatisticServiceAdv;
+import com.x.attendance.assemble.control.service.AttendanceStatisticalCycleServiceAdv;
+import com.x.attendance.assemble.control.service.AttendanceWorkDayConfigServiceAdv;
 import com.x.attendance.entity.AttendanceStatisticRequireLog;
 import com.x.attendance.entity.AttendanceStatisticalCycle;
 import com.x.attendance.entity.AttendanceWorkDayConfig;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.queue.AbstractQueue;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * 对单个员工的打卡信息进行分析的队列

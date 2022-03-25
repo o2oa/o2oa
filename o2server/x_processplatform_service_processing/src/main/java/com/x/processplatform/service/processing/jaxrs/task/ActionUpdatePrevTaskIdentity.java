@@ -4,12 +4,13 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.collections4.ListUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.annotation.ActionLogger;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -21,14 +22,13 @@ import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskProperties.PrevTask;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapUpdatePrevTaskIdentity;
 
-import org.apache.commons.collections4.ListUtils;
-
 class ActionUpdatePrevTaskIdentity extends BaseAction {
 
-	@ActionLogger
-	private static Logger logger = LoggerFactory.getLogger(ActionUpdatePrevTaskIdentity.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionUpdatePrevTaskIdentity.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 
 		final Bag bag = new Bag();
 		bag.wi = this.convertToWrapIn(jsonElement, Wi.class);
@@ -97,9 +97,13 @@ class ActionUpdatePrevTaskIdentity extends BaseAction {
 	}
 
 	public static class Wo extends WrapStringList {
+
+		private static final long serialVersionUID = -449564137697660569L;
 	}
 
 	public static class Wi extends WrapUpdatePrevTaskIdentity {
+
+		private static final long serialVersionUID = -3748933646812429331L;
 
 	}
 

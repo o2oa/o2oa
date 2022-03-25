@@ -1,10 +1,15 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Applications;
-import com.x.base.core.project.annotation.ActionLogger;
+import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
@@ -15,23 +20,20 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 
-import java.util.ArrayList;
-import java.util.List;
-
 class ActionCopyToWorkCompletedSoft extends BaseAction {
 
-	@ActionLogger
-	private static Logger logger = LoggerFactory.getLogger(ActionCopyToWorkCompletedSoft.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCopyToWorkCompletedSoft.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String workCompletedId, JsonElement jsonElement)
 			throws Exception {
+
+		LOGGER.debug("execute:{}, workCompletedId:{}.", effectivePerson::getDistinguishedName, () -> workCompletedId);
 
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wos = new ArrayList<>();
@@ -44,11 +46,11 @@ class ActionCopyToWorkCompletedSoft extends BaseAction {
 			Business business = new Business(emc);
 
 			workCompleted = emc.flag(workCompletedId, WorkCompleted.class);
-			if((null == workCompleted)){
+			if ((null == workCompleted)) {
 				throw new ExceptionEntityNotExist(workCompletedId, WorkCompleted.class);
 			}
-			if (!business.canManageApplicationOrProcess(effectivePerson, workCompleted.getApplication(),
-					workCompleted.getProcess())) {
+			if (BooleanUtils.isNotTrue(business.canManageApplicationOrProcess(effectivePerson,
+					workCompleted.getApplication(), workCompleted.getProcess()))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 
@@ -74,7 +76,8 @@ class ActionCopyToWorkCompletedSoft extends BaseAction {
 		if (ListTools.isNotEmpty(req.getAttachmentList())) {
 			wos = ThisApplication.context().applications()
 					.postQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
-							Applications.joinQueryUri("attachment", "copy", "workcompleted", workCompleted.getId()), req, workCompleted.getJob())
+							Applications.joinQueryUri("attachment", "copy", "workcompleted", workCompleted.getId()),
+							req, workCompleted.getJob())
 					.getDataAsList(Wo.class);
 		}
 
@@ -83,6 +86,8 @@ class ActionCopyToWorkCompletedSoft extends BaseAction {
 	}
 
 	public static class Wi extends GsonPropertyObject {
+
+		private static final long serialVersionUID = 5985047915141241981L;
 
 		@FieldDescribe("附件对象")
 		private List<WiAttachment> attachmentList = new ArrayList<>();
@@ -99,6 +104,7 @@ class ActionCopyToWorkCompletedSoft extends BaseAction {
 
 	public static class Req extends GsonPropertyObject {
 
+		private static final long serialVersionUID = 1921672558827401969L;
 		List<ReqAttachment> attachmentList = new ArrayList<>();
 
 		public List<ReqAttachment> getAttachmentList() {
@@ -113,6 +119,7 @@ class ActionCopyToWorkCompletedSoft extends BaseAction {
 
 	public static class WiAttachment extends GsonPropertyObject {
 
+		private static final long serialVersionUID = -3403542752129489723L;
 		private String id;
 		private String name;
 		private String site;
@@ -145,8 +152,12 @@ class ActionCopyToWorkCompletedSoft extends BaseAction {
 
 	public static class Wo extends WoId {
 
+		private static final long serialVersionUID = 8508643992679779378L;
+
 	}
 
 	public static class WoWorkControl extends WorkControl {
+
+		private static final long serialVersionUID = -8524598299951678738L;
 	}
 }

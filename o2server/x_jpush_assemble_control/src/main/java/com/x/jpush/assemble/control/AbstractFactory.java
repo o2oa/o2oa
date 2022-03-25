@@ -1,12 +1,14 @@
 package com.x.jpush.assemble.control;
 
-import cn.jiguang.common.ClientConfig;
-import cn.jpush.api.JPushClient;
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import org.apache.commons.lang3.StringUtils;
+
+import cn.jiguang.common.ClientConfig;
+import cn.jpush.api.JPushClient;
 
 public abstract class AbstractFactory {
 	private static Logger logger = LoggerFactory.getLogger(AbstractFactory.class );

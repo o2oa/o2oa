@@ -1,8 +1,11 @@
 package com.x.bbs.assemble.control.jaxrs.replyinfo;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -16,8 +19,6 @@ import com.x.bbs.assemble.control.jaxrs.replyinfo.exception.ExceptionReplyNotExi
 import com.x.bbs.entity.BBSReplyInfo;
 import com.x.bbs.entity.BBSSectionInfo;
 import com.x.bbs.entity.BBSSubjectInfo;
-
-import java.util.List;
 
 public class ActionDelete extends BaseAction {
 

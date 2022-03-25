@@ -1,4 +1,8 @@
 package com.x.mind.assemble.control.queue;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.queue.AbstractQueue;
@@ -6,9 +10,6 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.mind.assemble.control.MessageFactory;
 import com.x.mind.assemble.control.service.UserManagerService;
 import com.x.mind.entity.MindBaseInfo;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 
 /**
  * 脑图分享之后，向所有的被分享者推送消息通知

@@ -3,12 +3,13 @@ package com.x.processplatform.assemble.surface.jaxrs.attachment;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
-import com.x.base.core.project.annotation.ActionLogger;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
@@ -27,11 +28,12 @@ import com.x.processplatform.core.entity.content.Work;
 
 class ActionCopyToWork extends BaseAction {
 
-	@ActionLogger
-	private static Logger logger = LoggerFactory.getLogger(ActionCopyToWork.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCopyToWork.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String workId, JsonElement jsonElement)
 			throws Exception {
+
+		LOGGER.debug("execute:{}, workId:{}.", effectivePerson::getDistinguishedName, () -> workId);
 
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wos = new ArrayList<>();
@@ -49,7 +51,7 @@ class ActionCopyToWork extends BaseAction {
 			}
 			if (effectivePerson.isNotManager()) {
 				WoWorkControl workControl = business.getControl(effectivePerson, work, WoWorkControl.class);
-				if (!workControl.getAllowProcessing()) {
+				if (BooleanUtils.isNotTrue(workControl.getAllowProcessing())) {
 					throw new ExceptionAccessDenied(effectivePerson, work);
 				}
 			}
@@ -85,6 +87,8 @@ class ActionCopyToWork extends BaseAction {
 
 	public static class Wi extends GsonPropertyObject {
 
+		private static final long serialVersionUID = 4382689061793305054L;
+
 		@FieldDescribe("附件对象")
 		private List<WiAttachment> attachmentList = new ArrayList<>();
 
@@ -100,6 +104,8 @@ class ActionCopyToWork extends BaseAction {
 
 	public static class Req extends GsonPropertyObject {
 
+		private static final long serialVersionUID = 4048752456611022400L;
+
 		List<ReqAttachment> attachmentList = new ArrayList<>();
 
 		public List<ReqAttachment> getAttachmentList() {
@@ -114,6 +120,7 @@ class ActionCopyToWork extends BaseAction {
 
 	public static class WiAttachment extends GsonPropertyObject {
 
+		private static final long serialVersionUID = 6570042412000311813L;
 		private String id;
 		private String name;
 		private String site;
@@ -146,8 +153,12 @@ class ActionCopyToWork extends BaseAction {
 
 	public static class Wo extends WoId {
 
+		private static final long serialVersionUID = -5986602289699981815L;
+
 	}
 
 	public static class WoWorkControl extends WorkControl {
+
+		private static final long serialVersionUID = -7984236444647769198L;
 	}
 }

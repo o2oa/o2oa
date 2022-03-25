@@ -1,9 +1,8 @@
 package com.x.program.center.jaxrs.collect;
 
-import com.x.base.core.project.exception.LanguagePromptException;
-import com.x.base.core.project.exception.PromptException;
-
 import java.util.Objects;
+
+import com.x.base.core.project.exception.LanguagePromptException;
 
 class ExceptionInvalidMail extends LanguagePromptException {
 

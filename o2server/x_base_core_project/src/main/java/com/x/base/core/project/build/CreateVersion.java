@@ -5,13 +5,13 @@ import java.io.FileReader;
 import java.util.Date;
 import java.util.LinkedHashMap;
 
-import com.x.base.core.project.gson.XGsonBuilder;
-import com.x.base.core.project.tools.DateTools;
-import com.x.base.core.project.tools.DefaultCharset;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+
+import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.tools.DateTools;
+import com.x.base.core.project.tools.DefaultCharset;
 
 public class CreateVersion {
 	public static void main(String... args) throws Exception {

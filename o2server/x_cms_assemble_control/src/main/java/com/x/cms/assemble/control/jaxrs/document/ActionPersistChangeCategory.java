@@ -1,5 +1,12 @@
 package com.x.cms.assemble.control.jaxrs.document;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -14,11 +21,6 @@ import com.x.cms.assemble.control.service.CmsBatchOperationPersistService;
 import com.x.cms.assemble.control.service.CmsBatchOperationProcessService;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ActionPersistChangeCategory extends BaseAction {
 

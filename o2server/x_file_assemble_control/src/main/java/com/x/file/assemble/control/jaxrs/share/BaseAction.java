@@ -8,16 +8,16 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import com.x.base.core.project.organization.Group;
-import com.x.base.core.project.tools.ListTools;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.message.MessageConnector;
+import com.x.base.core.project.organization.Group;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.organization.Unit;
+import com.x.base.core.project.tools.ListTools;
 import com.x.file.assemble.control.Business;
 import com.x.file.assemble.control.service.FileCommonService;
 import com.x.file.core.entity.personal.Share;

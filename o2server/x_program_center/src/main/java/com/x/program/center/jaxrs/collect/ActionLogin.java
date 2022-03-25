@@ -1,5 +1,13 @@
 package com.x.program.center.jaxrs.collect;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Collect;
 import com.x.base.core.project.config.Config;
@@ -10,12 +18,6 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpToken;
 import com.x.base.core.project.http.TokenType;
-import org.apache.commons.lang3.BooleanUtils;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.Map;
 
 class ActionLogin extends BaseAction {
 

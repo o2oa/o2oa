@@ -19,8 +19,6 @@ import com.x.bbs.assemble.control.service.bean.RoleAndPermission;
 import com.x.bbs.entity.BBSPermissionInfo;
 import com.x.bbs.entity.BBSUserInfo;
 
-import net.sf.ehcache.Element;
-
 /**
  * 用户组织顶层组织信息管理服务类
  * 

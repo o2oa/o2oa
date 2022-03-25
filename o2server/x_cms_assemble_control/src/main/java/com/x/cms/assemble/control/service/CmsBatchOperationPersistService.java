@@ -2,7 +2,6 @@ package com.x.cms.assemble.control.service;
 
 import java.util.List;
 
-import com.x.cms.core.entity.Document;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -12,6 +11,7 @@ import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.core.entity.CmsBatchOperation;
+import com.x.cms.core.entity.Document;
 
 /**
  * 对批处理操作信息持久化服务类利用Service完成事务控制

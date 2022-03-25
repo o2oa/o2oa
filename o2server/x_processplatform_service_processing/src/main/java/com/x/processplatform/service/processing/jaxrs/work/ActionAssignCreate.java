@@ -16,7 +16,6 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.annotation.ActionLogger;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
@@ -54,7 +53,6 @@ import com.x.processplatform.service.processing.WorkDataHelper;
  */
 class ActionAssignCreate extends BaseAction {
 
-	@ActionLogger
 	private static Logger logger = LoggerFactory.getLogger(ActionAssignCreate.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
