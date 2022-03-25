@@ -1,5 +1,7 @@
 package com.x.bbs.assemble.control.jaxrs.subjectinfo;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import com.x.base.core.project.tools.ListTools;
@@ -11,8 +13,6 @@ import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionSectionTy
 import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionSectionTypeCategoryInvalid;
 import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionSubjectPropertyEmpty;
 import com.x.bbs.entity.BBSSectionInfo;
-
-import java.util.List;
 
 public class SubjectPropertyValidator{
 	

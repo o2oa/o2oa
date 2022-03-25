@@ -1,5 +1,17 @@
 package com.x.processplatform.assemble.surface.jaxrs.application;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.apache.commons.collections4.ListUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -8,23 +20,12 @@ import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Application_;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Process_;
-import org.apache.commons.collections4.ListUtils;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 class ActionManageListWithPersonComplex extends BaseAction {
 

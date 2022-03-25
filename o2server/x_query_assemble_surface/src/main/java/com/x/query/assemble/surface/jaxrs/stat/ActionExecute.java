@@ -14,6 +14,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.query.assemble.surface.Business;
+import com.x.query.assemble.surface.ThisApplication;
 import com.x.query.core.entity.Query;
 import com.x.query.core.entity.Stat;
 import com.x.query.core.express.plan.Calculate;
@@ -49,7 +50,7 @@ class ActionExecute extends BaseAction {
 			}
 			logger.debug("wi:{}", wi);
 			this.append(effectivePerson, business, wi);
-			StatPlan statPlan = new StatPlan(emc, stat, wi);
+			StatPlan statPlan = new StatPlan(emc, stat, wi, ThisApplication.threadPool());
 			statPlan.access();
 			Wo wo = new Wo();
 			wo.setCalculate(statPlan.getCalculate());

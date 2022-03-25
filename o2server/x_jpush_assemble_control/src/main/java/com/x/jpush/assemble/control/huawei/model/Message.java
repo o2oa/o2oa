@@ -15,6 +15,11 @@
  */
 package com.x.jpush.assemble.control.huawei.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.common.base.Strings;
 import com.google.common.primitives.Booleans;
 import com.google.gson.annotations.SerializedName;
@@ -22,10 +27,6 @@ import com.x.jpush.assemble.control.huawei.CollectionUtils;
 import com.x.jpush.assemble.control.huawei.ValidatorUtils;
 import com.x.jpush.assemble.control.huawei.android.AndroidConfig;
 import com.x.jpush.assemble.control.huawei.apns.ApnsConfig;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Message {
     @SerializedName( "data")

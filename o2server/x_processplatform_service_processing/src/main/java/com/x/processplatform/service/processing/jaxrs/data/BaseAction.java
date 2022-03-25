@@ -16,7 +16,6 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.dataitem.DataItemConverter;
 import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.entity.dataitem.ItemType;
-import com.x.base.core.project.annotation.ActionLogger;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
@@ -41,8 +40,7 @@ import com.x.query.core.entity.Item;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
-	@ActionLogger
-	private static Logger logger = LoggerFactory.getLogger(BaseAction.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(BaseAction.class);
 
 	protected Gson gson = XGsonBuilder.instance();
 
@@ -418,7 +416,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 							try {
 								ProjectionFactory.projectionWork(list, data, o);
 							} catch (Exception e) {
-								logger.error(e);
+								LOGGER.error(e);
 							}
 						});
 				projectionTask(business, work.getJob(), data, list);
@@ -451,7 +449,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			try {
 				ProjectionFactory.projectionTask(list, data, o);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		});
 	}
@@ -463,7 +461,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 					try {
 						ProjectionFactory.projectionTaskCompleted(list, data, o);
 					} catch (Exception e) {
-						logger.error(e);
+						LOGGER.error(e);
 					}
 				});
 	}
@@ -473,7 +471,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			try {
 				ProjectionFactory.projectionRead(list, data, o);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		});
 	}
@@ -485,7 +483,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 					try {
 						ProjectionFactory.projectionReadCompleted(list, data, o);
 					} catch (Exception e) {
-						logger.error(e);
+						LOGGER.error(e);
 					}
 				});
 	}
@@ -495,7 +493,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			try {
 				ProjectionFactory.projectionReview(list, data, o);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		});
 	}

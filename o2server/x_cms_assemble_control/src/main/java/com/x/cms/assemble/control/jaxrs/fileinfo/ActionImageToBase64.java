@@ -8,13 +8,13 @@ import java.util.Optional;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 
-import com.x.base.core.project.cache.Cache;
-import com.x.base.core.project.cache.CacheManager;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.imgscalr.Scalr;
 
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -23,8 +23,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.core.entity.FileInfo;
-
-import net.sf.ehcache.Element;
 
 public class ActionImageToBase64 extends BaseAction {
 

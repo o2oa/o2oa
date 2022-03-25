@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
-import com.x.base.core.project.tools.ListTools;
 import org.apache.commons.collections4.list.TreeList;
 import org.apache.commons.lang3.BooleanUtils;
 
@@ -20,6 +19,7 @@ import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.queue.AbstractQueue;
+import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
@@ -52,7 +52,7 @@ public class ProjectionExecuteQueue extends AbstractQueue<String> {
 			logger.error(e);
 		}
 		try {
-			if(process!=null) {
+			if (process != null) {
 				if (XGsonBuilder.isJsonArray(process.getProjection())) {
 					List<Projection> projections = XGsonBuilder.instance().fromJson(process.getProjection(),
 							new TypeToken<List<Projection>>() {
@@ -76,26 +76,26 @@ public class ProjectionExecuteQueue extends AbstractQueue<String> {
 			Business business = new Business(emc);
 			jobList = business.work().listJobWithProcess(process.getId());
 		}
-		if(ListTools.isNotEmpty(jobList)){
-			logger.print("流转中工作需要执行数据映射个数：{}",jobList.size());
-			for (List<String> partJobs : ListTools.batch(jobList, 10)){
+		if (ListTools.isNotEmpty(jobList)) {
+			logger.print("流转中工作需要执行数据映射个数：{}", jobList.size());
+			for (List<String> partJobs : ListTools.batch(jobList, 10)) {
 				List<CompletableFuture<Void>> futures = new TreeList<>();
-				for (String job : partJobs){
+				for (String job : partJobs) {
 					CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
 						try {
 							this.workProjection(job, process.getId(), projections);
 						} catch (Exception e) {
-							logger.warn("流程{}的工作job={}数据映射异常：{}",process.getId(),job,e.getMessage());
+							logger.warn("流程{}的工作job={}数据映射异常：{}", process.getId(), job, e.getMessage());
 							logger.error(e);
 						}
-					});
+					}, ThisApplication.threadPool());
 					futures.add(future);
 				}
 				for (CompletableFuture<Void> future : futures) {
 					try {
 						future.get(300, TimeUnit.SECONDS);
 					} catch (Exception e) {
-						logger.warn("允许流程数据映射任务异常：{}",e.getMessage());
+						logger.warn("允许流程数据映射任务异常：{}", e.getMessage());
 					}
 				}
 				futures.clear();
@@ -103,7 +103,7 @@ public class ProjectionExecuteQueue extends AbstractQueue<String> {
 		}
 	}
 
-	private void workProjection(String job, String process, List<Projection> projections) throws Exception{
+	private void workProjection(String job, String process, List<Projection> projections) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			Data data = this.data(business, job);
@@ -113,20 +113,20 @@ public class ProjectionExecuteQueue extends AbstractQueue<String> {
 			emc.beginTransaction(Read.class);
 			emc.beginTransaction(ReadCompleted.class);
 			emc.beginTransaction(Review.class);
-			for (Work work : business.entityManagerContainer().listEqualAndEqual(Work.class, Work.job_FIELDNAME,
-					job, Work.process_FIELDNAME, process)) {
+			for (Work work : business.entityManagerContainer().listEqualAndEqual(Work.class, Work.job_FIELDNAME, job,
+					Work.process_FIELDNAME, process)) {
 				ProjectionFactory.projectionWork(projections, data, work);
 			}
-			for (Task task : business.entityManagerContainer().listEqualAndEqual(Task.class, Task.job_FIELDNAME,
-					job, Task.process_FIELDNAME, process)) {
+			for (Task task : business.entityManagerContainer().listEqualAndEqual(Task.class, Task.job_FIELDNAME, job,
+					Task.process_FIELDNAME, process)) {
 				ProjectionFactory.projectionTask(projections, data, task);
 			}
 			for (TaskCompleted taskCompleted : business.entityManagerContainer().listEqualAndEqual(TaskCompleted.class,
 					TaskCompleted.job_FIELDNAME, job, TaskCompleted.process_FIELDNAME, process)) {
 				ProjectionFactory.projectionTaskCompleted(projections, data, taskCompleted);
 			}
-			for (Read read : business.entityManagerContainer().listEqualAndEqual(Read.class, Read.job_FIELDNAME,
-					job, Read.process_FIELDNAME, process)) {
+			for (Read read : business.entityManagerContainer().listEqualAndEqual(Read.class, Read.job_FIELDNAME, job,
+					Read.process_FIELDNAME, process)) {
 				ProjectionFactory.projectionRead(projections, data, read);
 			}
 			for (ReadCompleted readCompleted : business.entityManagerContainer().listEqualAndEqual(ReadCompleted.class,
@@ -147,26 +147,27 @@ public class ProjectionExecuteQueue extends AbstractQueue<String> {
 			Business business = new Business(emc);
 			workComList = business.workCompleted().listWithProcess(process.getId());
 		}
-		if(ListTools.isNotEmpty(workComList)){
-			logger.print("已完成工作需要执行数据映射个数：{}",workComList.size());
-			for (List<String> partWorkComList : ListTools.batch(workComList, 10)){
+		if (ListTools.isNotEmpty(workComList)) {
+			logger.print("已完成工作需要执行数据映射个数：{}", workComList.size());
+			for (List<String> partWorkComList : ListTools.batch(workComList, 10)) {
 				List<CompletableFuture<Void>> futures = new TreeList<>();
-				for (String workCompletedId : partWorkComList){
+				for (String workCompletedId : partWorkComList) {
 					CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
 						try {
 							this.workCompletedProjection(workCompletedId, projections);
 						} catch (Exception e) {
-							logger.warn("流程{}的工作workCompletedId={}数据映射异常：{}",process.getId(),workCompletedId,e.getMessage());
+							logger.warn("流程{}的工作workCompletedId={}数据映射异常：{}", process.getId(), workCompletedId,
+									e.getMessage());
 							logger.error(e);
 						}
-					});
+					}, ThisApplication.threadPool());
 					futures.add(future);
 				}
 				for (CompletableFuture<Void> future : futures) {
 					try {
 						future.get(300, TimeUnit.SECONDS);
 					} catch (Exception e) {
-						logger.warn("允许流程数据映射任务异常：{}",e.getMessage());
+						logger.warn("允许流程数据映射任务异常：{}", e.getMessage());
 					}
 				}
 				futures.clear();
@@ -174,7 +175,7 @@ public class ProjectionExecuteQueue extends AbstractQueue<String> {
 		}
 	}
 
-	private void workCompletedProjection(String workCompletedId, List<Projection> projections) throws Exception{
+	private void workCompletedProjection(String workCompletedId, List<Projection> projections) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			WorkCompleted o = emc.find(workCompletedId, WorkCompleted.class);

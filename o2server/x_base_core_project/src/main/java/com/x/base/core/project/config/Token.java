@@ -1,15 +1,11 @@
 package com.x.base.core.project.config;
 
 import java.io.File;
-import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
-import com.x.base.core.project.tools.BaseTools;
-import com.x.base.core.project.tools.Crypto;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
@@ -20,6 +16,8 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.organization.OrganizationDefinition;
+import com.x.base.core.project.tools.BaseTools;
+import com.x.base.core.project.tools.Crypto;
 import com.x.base.core.project.tools.DefaultCharset;
 
 public class Token extends ConfigObject {

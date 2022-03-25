@@ -1,9 +1,9 @@
 package com.x.cms.core.entity.query;
 
+import java.util.List;
+
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
-
-import java.util.List;
 
 /**
  * 消息通知对象

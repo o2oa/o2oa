@@ -8,7 +8,6 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import com.x.base.core.entity.AbstractPersistenceProperties;
 import org.apache.openjpa.persistence.jdbc.Index;
 
 import com.x.base.core.entity.JpaObject;

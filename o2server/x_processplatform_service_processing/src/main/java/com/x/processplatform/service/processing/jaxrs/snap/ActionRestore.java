@@ -5,7 +5,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
-import com.x.processplatform.core.entity.content.*;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -23,6 +22,20 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.processplatform.core.entity.content.Attachment;
+import com.x.processplatform.core.entity.content.DocSign;
+import com.x.processplatform.core.entity.content.DocSignScrawl;
+import com.x.processplatform.core.entity.content.DocumentVersion;
+import com.x.processplatform.core.entity.content.Read;
+import com.x.processplatform.core.entity.content.ReadCompleted;
+import com.x.processplatform.core.entity.content.Record;
+import com.x.processplatform.core.entity.content.Review;
+import com.x.processplatform.core.entity.content.Snap;
+import com.x.processplatform.core.entity.content.Task;
+import com.x.processplatform.core.entity.content.TaskCompleted;
+import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.content.WorkCompleted;
+import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
 import com.x.processplatform.service.processing.ThisApplication;
@@ -31,9 +44,12 @@ import com.x.query.core.entity.Item;
 
 class ActionRestore extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionRestore.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionRestore.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+
 		String job = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Snap snap = emc.fetch(id, Snap.class, ListTools.toList(Snap.job_FIELDNAME));
@@ -70,15 +86,14 @@ class ActionRestore extends BaseAction {
 							deleteReadCompleted(business, snap.getJob()), deleteReview(business, snap.getJob()),
 							deleteWorkLog(business, snap.getJob()), deleteRecord(business, snap.getJob()),
 							deleteAttachment(business, snap.getJob()), deleteDocumentVersion(business, snap.getJob()),
-							deleteDocSign(business, snap.getJob()), deleteDocSignScrawl(business, snap.getJob()))
-							.get();
+							deleteDocSign(business, snap.getJob()), deleteDocSignScrawl(business, snap.getJob())).get();
 				} else {
-					CompletableFuture.allOf(deleteItem(business, snap.getJob()), deleteWork(business, snap.getJob()),
-							deleteTask(business, snap.getJob()), deleteTaskCompleted(business, snap.getJob()),
-							deleteRead(business, snap.getJob()), deleteReadCompleted(business, snap.getJob()),
-							deleteReview(business, snap.getJob()), deleteWorkLog(business, snap.getJob()),
-							deleteRecord(business, snap.getJob()), deleteAttachment(business, snap.getJob()),
-							deleteDocumentVersion(business, snap.getJob()),
+					CompletableFuture.allOf(deleteItem(business, snap.getJob()),
+							deleteWork(business, snap.getJob()), deleteTask(business, snap.getJob()),
+							deleteTaskCompleted(business, snap.getJob()), deleteRead(business, snap.getJob()),
+							deleteReadCompleted(business, snap.getJob()), deleteReview(business, snap.getJob()),
+							deleteWorkLog(business, snap.getJob()), deleteRecord(business, snap.getJob()),
+							deleteAttachment(business, snap.getJob()), deleteDocumentVersion(business, snap.getJob()),
 							deleteDocSign(business, snap.getJob()), deleteDocSignScrawl(business, snap.getJob())).get();
 				}
 				emc.commit();

@@ -2,10 +2,10 @@ package com.x.processplatform.service.processing.jaxrs.data;
 
 import java.util.Objects;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.project.exception.PromptException;
-
-import org.apache.commons.lang3.StringUtils;
 
 class ExceptionUnexpectedData extends PromptException {
 

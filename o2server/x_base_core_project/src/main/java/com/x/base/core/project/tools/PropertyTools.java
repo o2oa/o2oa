@@ -6,10 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.x.base.core.project.gson.XGsonBuilder;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
+
+import com.x.base.core.project.gson.XGsonBuilder;
 
 public class PropertyTools {
 	@SuppressWarnings("unchecked")

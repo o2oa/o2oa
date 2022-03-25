@@ -1,18 +1,22 @@
 package com.x.attendance.assemble.control.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.x.attendance.assemble.control.ThisApplication;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.x_processplatform_assemble_surface;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.gson.GsonPropertyObject;
-import com.x.base.core.project.x_processplatform_assemble_surface;
-import com.x.processplatform.core.entity.content.*;
+import com.x.processplatform.core.entity.content.Read;
+import com.x.processplatform.core.entity.content.Task;
+import com.x.processplatform.core.entity.content.TaskCompleted;
+import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.ActivityType;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class WorkFlowSyncService {
 

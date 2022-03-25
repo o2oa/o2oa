@@ -1,5 +1,11 @@
 package com.x.organization.assemble.express.jaxrs.unit;
 
+import java.util.List;
+import java.util.Optional;
+
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -15,11 +21,6 @@ import com.x.organization.assemble.express.Business;
 import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Unit;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.List;
-import java.util.Optional;
 
 class ActionHasPerson extends BaseAction {
 

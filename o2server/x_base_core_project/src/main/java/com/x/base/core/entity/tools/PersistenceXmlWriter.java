@@ -21,7 +21,6 @@ import org.dom4j.QName;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 
-import com.x.base.core.project.Deployable;
 import com.x.base.core.project.annotation.Module;
 import com.x.base.core.project.tools.MainTools;
 

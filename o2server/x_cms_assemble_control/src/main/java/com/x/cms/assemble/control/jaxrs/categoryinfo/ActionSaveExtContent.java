@@ -1,5 +1,12 @@
 package com.x.cms.assemble.control.jaxrs.categoryinfo;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.AuditLog;
@@ -12,11 +19,6 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.cms.assemble.control.service.LogService;
 import com.x.cms.core.entity.CategoryExt;
 import com.x.cms.core.entity.CategoryInfo;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class ActionSaveExtContent extends BaseAction {

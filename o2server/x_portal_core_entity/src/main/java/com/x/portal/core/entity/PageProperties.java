@@ -1,12 +1,12 @@
 package com.x.portal.core.entity;
 
-import com.x.base.core.entity.JsonProperties;
-import com.x.base.core.project.annotation.FieldDescribe;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.x.base.core.entity.JsonProperties;
+import com.x.base.core.project.annotation.FieldDescribe;
 
 public class PageProperties extends JsonProperties {
 

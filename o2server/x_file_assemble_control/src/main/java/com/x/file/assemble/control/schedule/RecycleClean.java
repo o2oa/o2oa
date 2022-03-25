@@ -1,5 +1,18 @@
 package com.x.file.assemble.control.schedule;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject_;
@@ -13,18 +26,11 @@ import com.x.file.assemble.control.Business;
 import com.x.file.assemble.control.ThisApplication;
 import com.x.file.core.entity.open.FileConfig;
 import com.x.file.core.entity.open.OriginFile;
-import com.x.file.core.entity.personal.*;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import com.x.file.core.entity.personal.Attachment2;
+import com.x.file.core.entity.personal.Folder2;
+import com.x.file.core.entity.personal.Recycle;
+import com.x.file.core.entity.personal.Recycle_;
+import com.x.file.core.entity.personal.Share;
 
 /**
  * 定时清理回收站数据

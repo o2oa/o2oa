@@ -2,7 +2,6 @@ package com.x.organization.assemble.control.jaxrs.unitduty;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -16,6 +15,8 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.exception.ExceptionPersonNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -26,8 +27,6 @@ import com.x.organization.core.entity.Identity_;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Unit;
 import com.x.organization.core.entity.UnitDuty;
-import com.x.base.core.project.cache.Cache.CacheKey;
-import com.x.base.core.project.cache.CacheManager;
 
 class ActionGet extends BaseAction {
 

@@ -34,7 +34,7 @@ import com.x.base.core.project.gson.XGsonBuilder;
 public class JsonPropertiesValueHandler extends AbstractValueHandler {
 
 	private static final long serialVersionUID = 1L;
-	private static final String PROXY_SUFFIX = "$proxy";
+	// private static final String PROXY_SUFFIX = "$proxy";
 
 	private Gson gson = XGsonBuilder.instance();
 

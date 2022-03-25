@@ -1,5 +1,10 @@
 package com.x.bbs.assemble.control.jaxrs.permissioninfo;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -8,22 +13,13 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.SortTools;
 import com.x.bbs.assemble.control.Business;
-import com.x.bbs.assemble.control.jaxrs.permissioninfo.exception.ExceptionPermissionInfoProcess;
-import com.x.bbs.assemble.control.jaxrs.permissioninfo.exception.ExceptionSectionIdEmpty;
-import com.x.bbs.assemble.control.jaxrs.permissioninfo.exception.ExceptionSectionNotExists;
 import com.x.bbs.assemble.control.service.bean.RoleAndPermission;
 import com.x.bbs.entity.BBSForumInfo;
 import com.x.bbs.entity.BBSSectionInfo;
 import com.x.bbs.entity.enums.BbsRoleEnum;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 查询用户的权限

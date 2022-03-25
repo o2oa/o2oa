@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 
-import com.x.base.core.project.tools.BaseTools;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -12,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.connection.HttpConnection;
 import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.tools.BaseTools;
 import com.x.base.core.project.tools.DefaultCharset;
 
 public class Dingding extends ConfigObject {

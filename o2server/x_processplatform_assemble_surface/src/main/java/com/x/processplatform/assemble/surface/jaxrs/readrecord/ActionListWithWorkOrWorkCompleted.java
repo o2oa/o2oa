@@ -1,5 +1,14 @@
 package com.x.processplatform.assemble.surface.jaxrs.readrecord;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.config.Config;
@@ -11,15 +20,10 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.core.entity.content.*;
-import org.apache.commons.lang3.BooleanUtils;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
+import com.x.processplatform.assemble.surface.ThisApplication;
+import com.x.processplatform.core.entity.content.Read;
+import com.x.processplatform.core.entity.content.ReadCompleted;
+import com.x.processplatform.core.entity.content.WorkCompleted;
 
 class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
@@ -80,7 +84,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 				logger.error(e);
 			}
 			return wos;
-		});
+		},ThisApplication.threadPool());
 	}
 
 	private CompletableFuture<Boolean> checkControlFuture(EffectivePerson effectivePerson, String flag) {
@@ -94,10 +98,12 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 				logger.error(e);
 			}
 			return value;
-		});
+		},ThisApplication.threadPool());
 	}
 
 	public static class Wo extends ReadRecord {
+
+		private static final long serialVersionUID = 5265413899966270497L;
 
 	}
 

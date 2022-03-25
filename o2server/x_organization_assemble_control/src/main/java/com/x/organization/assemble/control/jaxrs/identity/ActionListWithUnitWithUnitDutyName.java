@@ -15,6 +15,8 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
@@ -25,8 +27,6 @@ import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Unit;
 import com.x.organization.core.entity.UnitDuty;
 import com.x.organization.core.entity.UnitDuty_;
-import com.x.base.core.project.cache.Cache.CacheKey;
-import com.x.base.core.project.cache.CacheManager;
 
 class ActionListWithUnitWithUnitDutyName extends BaseAction {
 

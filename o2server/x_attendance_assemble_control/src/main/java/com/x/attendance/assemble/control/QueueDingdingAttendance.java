@@ -1,5 +1,19 @@
 package com.x.attendance.assemble.control;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.attendance.entity.AttendanceDingtalkDetail;
 import com.x.attendance.entity.AttendanceDingtalkDetail_;
 import com.x.attendance.entity.DingdingQywxSyncRecord;
@@ -8,6 +22,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.Application;
 import com.x.base.core.project.Applications;
+import com.x.base.core.project.x_organization_assemble_control;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.config.Config;
@@ -20,19 +35,6 @@ import com.x.base.core.project.organization.Unit;
 import com.x.base.core.project.queue.AbstractQueue;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
-import com.x.base.core.project.x_organization_assemble_control;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class QueueDingdingAttendance extends AbstractQueue<DingdingQywxSyncRecord> {
 

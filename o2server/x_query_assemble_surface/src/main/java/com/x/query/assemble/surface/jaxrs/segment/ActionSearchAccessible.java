@@ -15,8 +15,6 @@ import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.hankcs.hanlp.HanLP;
-import com.hankcs.hanlp.seg.common.Term;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;

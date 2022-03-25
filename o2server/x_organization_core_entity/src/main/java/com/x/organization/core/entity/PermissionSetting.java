@@ -10,7 +10,6 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
-
 import javax.persistence.UniqueConstraint;
 
 import org.apache.openjpa.persistence.PersistentCollection;
@@ -25,7 +24,6 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.entity.annotation.Flag;
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.tools.DateTools;
 
 @Entity
 @ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)

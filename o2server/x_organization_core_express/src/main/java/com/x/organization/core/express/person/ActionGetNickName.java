@@ -1,9 +1,10 @@
 package com.x.organization.core.express.person;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.project.AbstractContext;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.jaxrs.WrapString;
-import org.apache.commons.lang3.StringUtils;
 
 class ActionGetNickName extends BaseAction {
 

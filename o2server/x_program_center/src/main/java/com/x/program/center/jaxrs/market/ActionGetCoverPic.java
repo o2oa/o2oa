@@ -1,5 +1,7 @@
 package com.x.program.center.jaxrs.market;
 
+import java.util.List;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
@@ -9,8 +11,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapString;
 import com.x.program.center.core.entity.Application;
 import com.x.program.center.core.entity.Attachment;
-
-import java.util.List;
 
 class ActionGetCoverPic extends BaseAction {
 

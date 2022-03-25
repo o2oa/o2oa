@@ -21,9 +21,8 @@ class ActionUpdateWithJob extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionUpdateWithJob.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String job,  JsonElement jsonElement)
-			throws Exception {
-		LOGGER.debug("{} access.", effectivePerson::getDistinguishedName);
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String job, JsonElement jsonElement) throws Exception {
+		LOGGER.debug("execute:{}, job:{}.", effectivePerson::getDistinguishedName, () -> job);
 		ActionResult<Wo> result = new ActionResult<>();
 
 		String executorSeed = null;

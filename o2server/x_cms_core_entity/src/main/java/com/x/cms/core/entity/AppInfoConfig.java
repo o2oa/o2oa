@@ -1,12 +1,22 @@
 package com.x.cms.core.entity;
 
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.Lob;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.persistence.*;
 
 /**
  * 内容管理栏目配置支持信息

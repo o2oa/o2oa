@@ -1,15 +1,16 @@
 package com.x.program.center.jaxrs.mpweixin;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.program.center.core.entity.MPWeixinMenu;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 abstract class BaseAction extends StandardJaxrsAction {
 

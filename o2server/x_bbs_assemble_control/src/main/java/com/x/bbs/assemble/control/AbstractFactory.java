@@ -1,9 +1,6 @@
 package com.x.bbs.assemble.control;
 
 import com.x.base.core.container.EntityManagerContainer;
-import com.x.bbs.entity.BBSReplyInfo;
-
-import java.util.List;
 
 public abstract class AbstractFactory {
 

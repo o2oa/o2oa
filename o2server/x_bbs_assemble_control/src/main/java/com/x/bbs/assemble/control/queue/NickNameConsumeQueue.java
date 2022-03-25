@@ -1,5 +1,10 @@
 package com.x.bbs.assemble.control.queue;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.cache.CacheManager;
@@ -7,13 +12,8 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.queue.AbstractQueue;
 import com.x.bbs.assemble.control.Business;
-import com.x.bbs.entity.BBSConfigSetting;
 import com.x.bbs.entity.BBSReplyInfo;
 import com.x.bbs.entity.BBSSubjectInfo;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 批量更新指定用户帖子和回复的昵称

@@ -3,9 +3,11 @@ package com.x.processplatform.service.processing.jaxrs.work;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.annotation.ActionLogger;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
@@ -20,20 +22,13 @@ import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.service.processing.Business;
 
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
-/**
- * 
- * @author Rui
- *
- */
 class ActionDeleteDraft extends BaseAction {
 
-	@ActionLogger
-	private static Logger logger = LoggerFactory.getLogger(ActionDeleteDraft.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDeleteDraft.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
 		String executorSeed = null;
 
@@ -45,58 +40,58 @@ class ActionDeleteDraft extends BaseAction {
 			executorSeed = work.getJob();
 		}
 
-		Callable<ActionResult<Wo>> callable = new Callable<ActionResult<Wo>>() {
-			public ActionResult<Wo> call() throws Exception {
-				ActionResult<Wo> result = new ActionResult<>();
-				Wo wo = new Wo();
-				Work work = null;
-				String workId = null;
-				String workTitle = null;
-				String workSequence = null;
-				try {
-					try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-						Business business = new Business(emc);
-						work = emc.find(id, Work.class);
-						if (null != work) {
-							workId = work.getId();
-							workTitle = work.getTitle();
-							workSequence = work.getSequence();
-							if (BooleanUtils.isFalse(work.getWorkThroughManual())) {
-								if (StringUtils.equals(work.getWorkCreateType(), Work.WORKCREATETYPE_SURFACE)) {
-									if (emc.countEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME,
-											work.getJob()) == 0) {
-										if (emc.countEqual(Read.class, Read.job_FIELDNAME, work.getJob()) == 0) {
-											if (emc.countEqual(ReadCompleted.class, ReadCompleted.job_FIELDNAME,
-													work.getJob()) == 0) {
-												cascadeDeleteWorkBeginButNotCommit(business, work);
-												emc.commit();
-												logger.print("删除长期处于草稿状态的工作, id:{}, title:{}, sequence:{}", workId,
-														workTitle, workSequence);
-											}
-										}
-									}
-								}
-							}
-						}
-					} catch (Exception e) {
-						throw new ExceptionDeleteDraft(e, workId, workTitle, workSequence);
-					}
-				} catch (Exception e) {
-					logger.error(e);
-				}
-				if (null != work) {
+		CallableImpl impl = new CallableImpl(id);
+
+		return ProcessPlatformExecutorFactory.get(executorSeed).submit(impl).get(300, TimeUnit.SECONDS);
+	}
+
+	private class CallableImpl implements Callable<ActionResult<Wo>> {
+
+		private String id;
+
+		private CallableImpl(String id) {
+			this.id = id;
+		}
+
+		@Override
+		public ActionResult<Wo> call() throws Exception {
+			ActionResult<Wo> result = new ActionResult<>();
+			Wo wo = new Wo();
+			Work work = null;
+			String workId = null;
+			String workTitle = null;
+			String workSequence = null;
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
+				work = emc.find(id, Work.class);
+				if ((null != work) && checkCanDelete(business, work)) {
+					cascadeDeleteWorkBeginButNotCommit(business, work);
+					emc.commit();
+					LOGGER.info("删除长期处于草稿状态的工作, id:{}, title:{}, sequence:{}", work::getId, work::getTitle,
+							work::getSequence);
 					wo.setId(work.getId());
 				}
-				result.setData(wo);
-				return result;
+			} catch (Exception e) {
+				throw new ExceptionDeleteDraft(e, workId, workTitle, workSequence);
 			}
-		};
+			result.setData(wo);
+			return result;
+		}
 
-		return ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get(300, TimeUnit.SECONDS);
+		private boolean checkCanDelete(Business business, Work work) throws Exception {
+			EntityManagerContainer emc = business.entityManagerContainer();
+			return (BooleanUtils.isFalse(work.getWorkThroughManual()))
+					&& (StringUtils.equals(work.getWorkCreateType(), Work.WORKCREATETYPE_SURFACE))
+					&& (emc.countEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME, work.getJob()) == 0)
+					&& (emc.countEqual(Read.class, Read.job_FIELDNAME, work.getJob()) == 0)
+					&& (emc.countEqual(ReadCompleted.class, ReadCompleted.job_FIELDNAME, work.getJob()) == 0);
+		}
+
 	}
 
 	public static class Wo extends WoId {
 
-	}
+		private static final long serialVersionUID = -3251315008033833155L;
 
+	}
 }

@@ -42,13 +42,16 @@ import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Form;
 import com.x.processplatform.core.entity.element.Script;
 import com.x.processplatform.service.processing.Business;
+import com.x.processplatform.service.processing.ThisApplication;
 import com.x.query.core.entity.Item;
 
 class ActionMerge extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionMerge.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionMerge.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
 		String executorSeed = null;
 
@@ -118,17 +121,11 @@ class ActionMerge extends BaseAction {
 					emc.beginTransaction(WorkCompleted.class);
 					workCompleted.setMerged(true);
 					emc.commit();
-//					CompletableFuture
-//							.allOf(deleteItem(business, items), deleteTaskCompleted(business, taskCompleteds),
-//									deleteReadCompleted(business, readCompleteds), deleteReview(business, reviews),
-//									deleteWorkLog(business, workLogs), deleteRecord(business, records),
-//									deleteRead(business, reads), deleteDocumentVersion(business, documentVersions))
-//							.get();
 					CompletableFuture.allOf(deleteItem(business, items), deleteWorkLog(business, workLogs),
 							deleteRecord(business, records), deleteRead(business, reads),
 							deleteDocumentVersion(business, documentVersions)).get();
 					emc.commit();
-					logger.print("已完成工作合并, id: {}, title:{}, sequence:{}.", workCompleted.getId(),
+					LOGGER.print("已完成工作合并, id: {}, title:{}, sequence:{}.", workCompleted.getId(),
 							workCompleted.getTitle(), workCompleted.getSequence());
 				}
 			} catch (InterruptedException e) {
@@ -153,9 +150,9 @@ class ActionMerge extends BaseAction {
 					workCompleted.getProperties().setData(gson.fromJson(jsonElement, Data.class));
 					items.addAll(os);
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
-			});
+			}, ThisApplication.threadPool());
 		}
 
 		private CompletableFuture<Void> mergeTaskCompleted(Business business, WorkCompleted workCompleted,
@@ -170,9 +167,9 @@ class ActionMerge extends BaseAction {
 					workCompleted.getProperties().setTaskCompletedList(os);
 					taskCompleteds.addAll(os);
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
-			});
+			}, ThisApplication.threadPool());
 		}
 
 		private CompletableFuture<Void> mergeReadCompleted(Business business, WorkCompleted workCompleted,
@@ -187,9 +184,9 @@ class ActionMerge extends BaseAction {
 					workCompleted.getProperties().setReadCompletedList(os);
 					readCompleteds.addAll(os);
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
-			});
+			}, ThisApplication.threadPool());
 		}
 
 		private CompletableFuture<Void> mergeReview(Business business, WorkCompleted workCompleted,
@@ -203,9 +200,9 @@ class ActionMerge extends BaseAction {
 					workCompleted.getProperties().setReviewList(os);
 					reviews.addAll(os);
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
-			});
+			}, ThisApplication.threadPool());
 		}
 
 		private CompletableFuture<Void> mergeWorkLog(Business business, WorkCompleted workCompleted,
@@ -219,9 +216,9 @@ class ActionMerge extends BaseAction {
 					workCompleted.getProperties().setWorkLogList(os);
 					workLogs.addAll(os);
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
-			});
+			}, ThisApplication.threadPool());
 		}
 
 		private CompletableFuture<Void> mergeRecord(Business business, WorkCompleted workCompleted,
@@ -235,9 +232,9 @@ class ActionMerge extends BaseAction {
 					workCompleted.getProperties().setRecordList(os);
 					records.addAll(os);
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
-			});
+			}, ThisApplication.threadPool());
 		}
 
 		private CompletableFuture<Void> listDocumentVersion(Business business, WorkCompleted workCompleted,
@@ -248,9 +245,9 @@ class ActionMerge extends BaseAction {
 							DocumentVersion.job_FIELDNAME, workCompleted.getJob());
 					documentVersions.addAll(os);
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
-			});
+			}, ThisApplication.threadPool());
 		}
 
 		private CompletableFuture<Void> listRead(Business business, WorkCompleted workCompleted, List<Read> reads) {
@@ -262,9 +259,9 @@ class ActionMerge extends BaseAction {
 							.collect(Collectors.toList());
 					reads.addAll(os);
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
-			});
+			}, ThisApplication.threadPool());
 		}
 
 		private CompletableFuture<Void> deleteItem(Business business, List<Item> items) {
@@ -275,49 +272,10 @@ class ActionMerge extends BaseAction {
 						business.entityManagerContainer().remove(o);
 					}
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
-			});
+			}, ThisApplication.threadPool());
 		}
-
-//		private CompletableFuture<Void> deleteTaskCompleted(Business business, List<TaskCompleted> taskCompleteds) {
-//			return CompletableFuture.runAsync(() -> {
-//				try {
-//					business.entityManagerContainer().beginTransaction(TaskCompleted.class);
-//					for (TaskCompleted o : taskCompleteds) {
-//						business.entityManagerContainer().remove(o);
-//					}
-//				} catch (Exception e) {
-//					logger.error(e);
-//				}
-//			});
-//		}
-
-//		private CompletableFuture<Void> deleteReadCompleted(Business business, List<ReadCompleted> readCompleteds) {
-//			return CompletableFuture.runAsync(() -> {
-//				try {
-//					business.entityManagerContainer().beginTransaction(ReadCompleted.class);
-//					for (ReadCompleted o : readCompleteds) {
-//						business.entityManagerContainer().remove(o);
-//					}
-//				} catch (Exception e) {
-//					logger.error(e);
-//				}
-//			});
-//		}
-
-//		private CompletableFuture<Void> deleteReview(Business business, List<Review> reviews) {
-//			return CompletableFuture.runAsync(() -> {
-//				try {
-//					business.entityManagerContainer().beginTransaction(Review.class);
-//					for (Review o : reviews) {
-//						business.entityManagerContainer().remove(o);
-//					}
-//				} catch (Exception e) {
-//					logger.error(e);
-//				}
-//			});
-//		}
 
 		private CompletableFuture<Void> deleteWorkLog(Business business, List<WorkLog> workLogs) {
 			return CompletableFuture.runAsync(() -> {
@@ -327,9 +285,9 @@ class ActionMerge extends BaseAction {
 						business.entityManagerContainer().remove(o);
 					}
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
-			});
+			}, ThisApplication.threadPool());
 		}
 
 		private CompletableFuture<Void> deleteRecord(Business business, List<Record> records) {
@@ -340,9 +298,9 @@ class ActionMerge extends BaseAction {
 						business.entityManagerContainer().remove(o);
 					}
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
-			});
+			}, ThisApplication.threadPool());
 		}
 
 		private CompletableFuture<Void> deleteDocumentVersion(Business business,
@@ -354,9 +312,9 @@ class ActionMerge extends BaseAction {
 						business.entityManagerContainer().remove(o);
 					}
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
-			});
+			}, ThisApplication.threadPool());
 		}
 
 		private CompletableFuture<Void> deleteRead(Business business, List<Read> reads) {
@@ -367,9 +325,9 @@ class ActionMerge extends BaseAction {
 						business.entityManagerContainer().remove(o);
 					}
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
-			});
+			}, ThisApplication.threadPool());
 		}
 
 		private CompletableFuture<Void> relateForm(Business business, Form form, StoreForm storeForm) {
@@ -384,10 +342,10 @@ class ActionMerge extends BaseAction {
 						}
 					}
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
 				storeForm.setRelatedFormMap(map);
-			});
+			}, ThisApplication.threadPool());
 		}
 
 		private CompletableFuture<Void> relateScript(Business business, Form form, StoreForm storeForm) {
@@ -410,10 +368,10 @@ class ActionMerge extends BaseAction {
 						}
 					}
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
 				storeForm.setRelatedScriptMap(map);
-			});
+			}, ThisApplication.threadPool());
 		}
 
 		private CompletableFuture<Void> relateFormMobile(Business business, Form form, StoreForm storeForm) {
@@ -428,10 +386,10 @@ class ActionMerge extends BaseAction {
 						}
 					}
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
 				storeForm.setRelatedFormMap(map);
-			});
+			}, ThisApplication.threadPool());
 		}
 
 		private CompletableFuture<Void> relateScriptMobile(Business business, Form form, StoreForm storeForm) {
@@ -454,10 +412,10 @@ class ActionMerge extends BaseAction {
 						}
 					}
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
 				storeForm.setRelatedScriptMap(map);
-			});
+			}, ThisApplication.threadPool());
 		}
 
 		private void portalScript(Business business, Map<String, RelatedScript> map, Entry<String, String> entry)

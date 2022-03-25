@@ -1,17 +1,15 @@
 package com.x.attendance.assemble.control.service;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.x.attendance.assemble.control.ThisApplication;
-import com.x.base.core.project.tools.ListTools;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.assemble.control.ThisApplication;
 import com.x.attendance.assemble.control.factory.AttendanceStatisticRequireLogFactory;
 import com.x.attendance.entity.AttendanceDetail;
 import com.x.attendance.entity.AttendanceScheduleSetting;
@@ -24,6 +22,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 
 /**
  * 考勤打卡记录分析服务类

@@ -1,5 +1,7 @@
 package com.x.processplatform.assemble.surface.jaxrs.record;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -22,8 +24,6 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
-
-import org.apache.commons.lang3.BooleanUtils;
 
 class ActionManageCreateWithJob extends BaseAction {
 

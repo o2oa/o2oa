@@ -5,6 +5,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -19,15 +28,13 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.express.Business;
-import com.x.organization.core.entity.*;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import com.x.organization.core.entity.Group;
+import com.x.organization.core.entity.Group_;
+import com.x.organization.core.entity.Identity;
+import com.x.organization.core.entity.Person;
+import com.x.organization.core.entity.Unit;
+import com.x.organization.core.entity.UnitDuty;
+import com.x.organization.core.entity.UnitDuty_;
 
 class ActionListObject extends BaseAction {
 

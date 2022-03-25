@@ -1,5 +1,7 @@
 package com.x.query.assemble.designer.jaxrs.statement;
 
+import java.util.Date;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -18,8 +20,6 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.query.assemble.designer.Business;
 import com.x.query.core.entity.Query;
 import com.x.query.core.entity.schema.Statement;
-
-import java.util.Date;
 
 class ActionEditPermission extends BaseAction {
 

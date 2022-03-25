@@ -1,18 +1,14 @@
 package com.x.attendance.assemble.control.service;
 
-import com.x.attendance.assemble.common.date.DateOperation;
-import com.x.attendance.assemble.control.Business;
-import com.x.attendance.assemble.control.factory.AttendanceStatisticRequireLogFactory;
-import com.x.attendance.assemble.control.jaxrs.attendancedetail.AttendanceCycles;
-import com.x.attendance.entity.*;
-import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
+import java.util.Date;
+
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.*;
+import com.x.attendance.assemble.common.date.DateOperation;
+import com.x.attendance.entity.AttendanceDetail;
+import com.x.attendance.entity.AttendanceScheduleSetting;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 
 /**
  * 考勤打卡记录分析服务类

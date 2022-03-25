@@ -10,7 +10,6 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.dataitem.ItemPrimitiveType;
 import com.x.base.core.entity.dataitem.ItemType;
-import com.x.base.core.project.annotation.ActionLogger;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
@@ -24,14 +23,13 @@ import com.x.processplatform.service.processing.Business;
 import com.x.query.core.entity.Item;
 
 class ActionUpdateWithWorkCompletedPrimitivePath0 extends BaseAction {
-	/*
-	 * 更新workCompletedPath0 基本类型数据
-	 */
 
-	@ActionLogger
-	private static Logger logger = LoggerFactory.getLogger(ActionUpdateWithWorkCompletedPrimitivePath0.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionUpdateWithWorkCompletedPrimitivePath0.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String path0, String val) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}, path0:{}, value:{}.", effectivePerson::getDistinguishedName, () -> id,
+				() -> path0, () -> val);
 
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
@@ -106,6 +104,8 @@ class ActionUpdateWithWorkCompletedPrimitivePath0 extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = 2065286950686207673L;
 
 	}
 

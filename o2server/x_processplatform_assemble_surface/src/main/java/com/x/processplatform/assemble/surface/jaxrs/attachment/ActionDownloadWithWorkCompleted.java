@@ -3,6 +3,10 @@ package com.x.processplatform.assemble.surface.jaxrs.attachment;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.config.Config;
@@ -18,10 +22,6 @@ import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkCompletedControl;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.WorkCompleted;
-
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 
 class ActionDownloadWithWorkCompleted extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String workCompletedId, String fileName)

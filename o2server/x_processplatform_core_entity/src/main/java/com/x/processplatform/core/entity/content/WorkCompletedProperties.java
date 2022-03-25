@@ -9,7 +9,6 @@ import com.x.base.core.entity.JsonProperties;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.processplatform.core.entity.element.Form;
-import com.x.processplatform.core.entity.element.Script;
 
 public class WorkCompletedProperties extends JsonProperties {
 

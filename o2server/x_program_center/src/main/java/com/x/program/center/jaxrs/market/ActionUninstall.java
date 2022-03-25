@@ -1,9 +1,22 @@
 package com.x.program.center.jaxrs.market;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.net.Socket;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.enums.CommonStatus;
-import com.x.base.core.project.*;
+import com.x.base.core.project.Applications;
+import com.x.base.core.project.x_cms_assemble_control;
+import com.x.base.core.project.x_portal_assemble_designer;
+import com.x.base.core.project.x_processplatform_assemble_designer;
+import com.x.base.core.project.x_query_assemble_designer;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.Nodes;
 import com.x.base.core.project.connection.CipherConnectionAction;
@@ -27,15 +40,6 @@ import com.x.program.center.core.entity.wrap.WrapAgent;
 import com.x.program.center.core.entity.wrap.WrapInvoke;
 import com.x.program.center.core.entity.wrap.WrapServiceModule;
 import com.x.query.core.entity.wrap.WrapQuery;
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.net.Socket;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 class ActionUninstall extends BaseAction {
 

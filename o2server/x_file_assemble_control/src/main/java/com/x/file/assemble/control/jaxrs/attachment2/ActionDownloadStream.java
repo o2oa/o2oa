@@ -1,7 +1,7 @@
 package com.x.file.assemble.control.jaxrs.attachment2;
 
-import java.io.InputStream;
-import java.io.OutputStream;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -16,9 +16,6 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.file.assemble.control.ThisApplication;
 import com.x.file.core.entity.open.OriginFile;
 import com.x.file.core.entity.personal.Attachment2;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.StreamingOutput;
 
 class ActionDownloadStream extends BaseAction {
 

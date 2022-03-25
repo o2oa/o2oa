@@ -1,5 +1,11 @@
 package com.x.query.assemble.surface.jaxrs.statement;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -17,11 +23,6 @@ import com.x.query.assemble.surface.Business;
 import com.x.query.core.entity.Query;
 import com.x.query.core.entity.View;
 import com.x.query.core.entity.schema.Statement;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 class ActionListWithQuery extends BaseAction {
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String queryFlag, JsonElement jsonElement) throws Exception {

@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.collections4.ListUtils;
@@ -29,9 +30,12 @@ import com.x.query.core.entity.View;
 
 public class StatPlan extends GsonPropertyObject {
 
-	private static Logger logger = LoggerFactory.getLogger(StatPlan.class);
+	protected ExecutorService threadPool;
 
-	public StatPlan(EntityManagerContainer emc, Stat stat, Runtime runtime) {
+	private static final Logger LOGGER = LoggerFactory.getLogger(StatPlan.class);
+
+	public StatPlan(EntityManagerContainer emc, Stat stat, Runtime runtime, ExecutorService threadPool) {
+		this.threadPool = threadPool;
 		this.calculate = XGsonBuilder.instance().fromJson(stat.getData(), StatPlan.class).getCalculate();
 		this.runtime = runtime;
 		this.emc = emc;
@@ -45,10 +49,8 @@ public class StatPlan extends GsonPropertyObject {
 		} else {
 			this.findPlan(plans);
 		}
-		/* 添加运行时状态 */
-		plans.values().forEach(o -> {
-			o.runtime = runtime;
-		});
+		// 添加运行时状态
+		plans.values().forEach(o -> o.runtime = runtime);
 		List<CompletableFuture<Void>> futures = new ArrayList<>();
 		plans.values().stream().forEach(o -> {
 			CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
@@ -57,7 +59,7 @@ public class StatPlan extends GsonPropertyObject {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-			});
+			}, threadPool);
 			futures.add(future);
 		});
 		for (CompletableFuture<Void> future : futures) {
@@ -104,7 +106,7 @@ public class StatPlan extends GsonPropertyObject {
 				if (null != view) {
 					if (StringUtils.equals((view.getType()), View.TYPE_CMS)) {
 						CmsPlan cmsPlan = gson.fromJson(view.getData(), CmsPlan.class);
-						if ((null != cmsPlan.group) && cmsPlan.group.available()) {
+						if ((null != cmsPlan.group) && BooleanUtils.isTrue(cmsPlan.group.available())) {
 							List<SelectEntry> uselessSelectList = new ArrayList<>();
 							cmsPlan.selectList.stream().forEachOrdered(s -> {
 								if ((!(s.groupEntry && s.available())) && (!StringUtils.equals(s.column, o.column))) {
@@ -117,7 +119,8 @@ public class StatPlan extends GsonPropertyObject {
 					} else if (StringUtils.equals((view.getType()), View.TYPE_PROCESSPLATFORM)) {
 						ProcessPlatformPlan processPlatformPlan = gson.fromJson(view.getData(),
 								ProcessPlatformPlan.class);
-						if ((null != processPlatformPlan.group) && processPlatformPlan.group.available()) {
+						if ((null != processPlatformPlan.group)
+								&& BooleanUtils.isTrue(processPlatformPlan.group.available())) {
 							List<SelectEntry> uselessSelectList = new ArrayList<>();
 							processPlatformPlan.selectList.stream().forEachOrdered(s -> {
 								if ((!(s.groupEntry && s.available())) && (!StringUtils.equals(s.column, o.column))) {
@@ -130,12 +133,12 @@ public class StatPlan extends GsonPropertyObject {
 					}
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		});
 	}
 
-	private void findPlan(Map<String, Plan> plans) throws Exception {
+	private void findPlan(Map<String, Plan> plans) {
 		calculate.calculateList.stream().forEach(o -> {
 			View view;
 			try {
@@ -143,7 +146,7 @@ public class StatPlan extends GsonPropertyObject {
 				if (null != view) {
 					if (StringUtils.equals((view.getType()), View.TYPE_CMS)) {
 						CmsPlan cmsPlan = gson.fromJson(view.getData(), CmsPlan.class);
-						/* 非分类视图或者分类视图都可以 */
+						// 非分类视图或者分类视图都可以
 						List<SelectEntry> uselessSelectList = new ArrayList<>();
 						cmsPlan.selectList.stream().forEachOrdered(s -> {
 							if (!StringUtils.equals(s.column, o.column)) {
@@ -167,7 +170,7 @@ public class StatPlan extends GsonPropertyObject {
 					}
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		});
 	}
@@ -177,26 +180,24 @@ public class StatPlan extends GsonPropertyObject {
 		final List<Object> keys = new ArrayList<>();
 		/* 计算group值 */
 		for (Entry<String, Plan> en : plans.entrySet()) {
-			logger.debug("merge group plan:{}.", en.getValue());
+			LOGGER.debug("merge group plan:{}.", () -> en.getValue());
 			if ((null != en.getValue()) && (null != en.getValue().groupGrid)) {
-				en.getValue().groupGrid.stream().forEach(o -> {
-					keys.add(o.group);
-				});
+				en.getValue().groupGrid.stream().forEach(o -> keys.add(o.group));
 				if (ListTools.isNotEmpty(calculate.groupSpecifiedList)) {
 					if (StringUtils.equals(Calculate.GROUPMERGETYPE_SPECIFIED, calculate.groupMergeType)) {
 						keys.clear();
 						keys.addAll(calculate.groupSpecifiedList);
-						logger.debug("group {}:{}.", Calculate.GROUPMERGETYPE_SPECIFIED, keys);
+						LOGGER.debug("group:{}, keys{}.", () -> Calculate.GROUPMERGETYPE_SPECIFIED, () -> keys);
 					} else if (StringUtils.equals(Calculate.GROUPMERGETYPE_INTERSECTION, calculate.groupMergeType)) {
 						List<Object> os = ListUtils.intersection(keys, calculate.groupSpecifiedList);
 						keys.clear();
 						keys.addAll(os);
-						logger.debug("group {}:{}.", Calculate.GROUPMERGETYPE_INTERSECTION, keys);
+						LOGGER.debug("group {}:{}.", Calculate.GROUPMERGETYPE_INTERSECTION, keys);
 					} else if (StringUtils.equals(Calculate.GROUPMERGETYPE_SUM, calculate.groupMergeType)) {
 						List<Object> os = ListUtils.sum(keys, calculate.groupSpecifiedList);
 						keys.clear();
 						keys.addAll(os);
-						logger.debug("group {}:{}.", Calculate.GROUPMERGETYPE_SUM, keys);
+						LOGGER.debug("group {}:{}.", Calculate.GROUPMERGETYPE_SUM, keys);
 					}
 				}
 			}
@@ -215,9 +216,9 @@ public class StatPlan extends GsonPropertyObject {
 			}
 			table.add(row);
 		});
-		logger.debug("init group calculateGrid table:{}.", table);
+		LOGGER.debug("init group calculateGrid table:{}.", () -> table);
 		for (Entry<String, Plan> en : plans.entrySet()) {
-			if ((null != en.getValue().group) && en.getValue().group.available()) {
+			if ((null != en.getValue().group) && BooleanUtils.isTrue(en.getValue().group.available())) {
 				en.getValue().selectList.stream().forEach(o -> {
 					/* 分类统计只能统计分类视图 */
 					if (!StringUtils.equals(o.column, en.getValue().group.column)) {
@@ -272,7 +273,7 @@ public class StatPlan extends GsonPropertyObject {
 		return table;
 	}
 
-	private CalculateRow merge(Map<String, Plan> plans) throws Exception {
+	private CalculateRow merge(Map<String, Plan> plans) {
 		CalculateRow row = new CalculateRow();
 		for (CalculateEntry c : calculate.calculateList) {
 			NumberFormat numberFormat = this.getNumberFormat(c);
@@ -284,9 +285,8 @@ public class StatPlan extends GsonPropertyObject {
 		}
 		for (Entry<String, Plan> en : plans.entrySet()) {
 			if ((null == en.getValue().group) || (!en.getValue().group.available())) {
-				/* 分类视图非分类统计 */
+				// 分类视图非分类统计
 				en.getValue().selectList.stream().forEach(o -> {
-					// if (!StringUtils.equals(o.column, en.getValue().group.column)) {
 					List<Double> values = new ArrayList<>();
 					CalculateEntry calculateEntry = calculate.find(en.getKey());
 					NumberFormat numberFormat = this.getNumberFormat(calculateEntry);
@@ -294,9 +294,7 @@ public class StatPlan extends GsonPropertyObject {
 						en.getValue().groupGrid.stream().forEach(r -> {
 							CalculateCell cell = row.getCell(calculateEntry.id);
 							if (null != cell) {
-								r.list.stream().forEach(c -> {
-									values.add(c.getAsDouble(o.column));
-								});
+								r.list.stream().forEach(c -> values.add(c.getAsDouble(o.column)));
 								if (StringUtils.equals(calculateEntry.calculateType, Plan.CALCULATE_AVERAGE)) {
 									cell.value = numberFormat
 											.format(values.stream().mapToDouble(d -> d).average().orElse(0));
@@ -308,10 +306,9 @@ public class StatPlan extends GsonPropertyObject {
 							}
 						});
 					}
-					// }
 				});
 			} else if ((null != en.getValue()) && (null != en.getValue().grid)) {
-				/* 非分类视图非分类统计 */
+				// 非分类视图非分类统计
 				en.getValue().selectList.stream().forEach(o -> {
 					List<Double> values = new ArrayList<>();
 					CalculateEntry calculateEntry = calculate.find(en.getKey());

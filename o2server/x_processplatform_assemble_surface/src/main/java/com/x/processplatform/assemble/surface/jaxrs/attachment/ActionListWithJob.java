@@ -24,6 +24,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Attachment;
 
 class ActionListWithJob extends BaseAction {
@@ -74,8 +75,7 @@ class ActionListWithJob extends BaseAction {
 				logger.error(e);
 			}
 			return wos;
-		});
-
+		}, ThisApplication.threadPool());
 	}
 
 	public static class Wo extends Attachment {

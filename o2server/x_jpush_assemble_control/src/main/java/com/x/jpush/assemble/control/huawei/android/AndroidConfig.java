@@ -15,11 +15,12 @@
  */
 package com.x.jpush.assemble.control.huawei.android;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.annotations.SerializedName;
 import com.x.jpush.assemble.control.huawei.ValidatorUtils;
 import com.x.jpush.assemble.control.huawei.model.Notification;
 import com.x.jpush.assemble.control.huawei.model.Urgency;
-import org.apache.commons.lang3.StringUtils;
 
 public class AndroidConfig {
     private static final String TTL_PATTERN = "\\d+|\\d+[sS]|\\d+.\\d{1,9}|\\d+.\\d{1,9}[sS]";

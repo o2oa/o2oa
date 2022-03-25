@@ -8,7 +8,6 @@ import org.apache.commons.lang3.BooleanUtils;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.annotation.ActionLogger;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.gson.XGsonBuilder;
@@ -18,17 +17,16 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.service.processing.Business;
-import com.x.processplatform.service.processing.jaxrs.data.ActionUpdateWithWork.Wo;
 
 class ActionUpdateWithWorkCompleted extends BaseAction {
 
-	@ActionLogger
-	private static Logger logger = LoggerFactory.getLogger(ActionUpdateWithWorkCompleted.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionUpdateWithWorkCompleted.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
@@ -84,6 +82,8 @@ class ActionUpdateWithWorkCompleted extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = -8616306011949609536L;
 
 	}
 

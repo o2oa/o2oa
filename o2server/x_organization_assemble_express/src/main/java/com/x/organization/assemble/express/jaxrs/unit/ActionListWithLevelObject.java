@@ -3,7 +3,6 @@ package com.x.organization.assemble.express.jaxrs.unit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -20,7 +19,6 @@ import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.express.Business;
 import com.x.organization.core.entity.Unit;
 import com.x.organization.core.entity.Unit_;

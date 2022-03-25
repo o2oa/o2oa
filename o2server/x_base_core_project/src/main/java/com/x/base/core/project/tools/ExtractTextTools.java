@@ -2,13 +2,11 @@ package com.x.base.core.project.tools;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.util.List;
 
 import javax.imageio.ImageIO;
 
 import org.apache.commons.collections4.list.UnmodifiableList;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.pdfbox.cos.COSDocument;
 import org.apache.pdfbox.io.RandomAccessBuffer;

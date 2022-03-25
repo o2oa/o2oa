@@ -6,7 +6,6 @@ import java.util.concurrent.TimeUnit;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
-import com.x.base.core.project.annotation.ActionLogger;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
@@ -26,10 +25,11 @@ import com.x.processplatform.service.processing.ThisApplication;
  */
 class ActionDeleteWithWork extends BaseAction {
 
-	@ActionLogger
-	private static Logger logger = LoggerFactory.getLogger(ActionDeleteWithWork.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDeleteWithWork.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String workId) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}, workId:{}.", effectivePerson::getDistinguishedName, () -> id, () -> workId);
 
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
@@ -78,6 +78,8 @@ class ActionDeleteWithWork extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = -5596429363453836366L;
 
 	}
 

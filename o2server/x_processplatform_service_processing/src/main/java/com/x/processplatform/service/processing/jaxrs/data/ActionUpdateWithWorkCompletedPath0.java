@@ -8,7 +8,6 @@ import org.apache.commons.lang3.BooleanUtils;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.annotation.ActionLogger;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
@@ -22,12 +21,13 @@ import com.x.processplatform.service.processing.Business;
 
 class ActionUpdateWithWorkCompletedPath0 extends BaseAction {
 
-	@ActionLogger
-	private static Logger logger = LoggerFactory.getLogger(ActionUpdateWithWorkCompletedPath0.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionUpdateWithWorkCompletedPath0.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String path0, JsonElement jsonElement)
 			throws Exception {
-
+		
+		LOGGER.debug("execute:{}, id:{}, path0:{}.", effectivePerson::getDistinguishedName, () -> id, () -> path0);
+		
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		String executorSeed = null;
@@ -52,8 +52,6 @@ class ActionUpdateWithWorkCompletedPath0 extends BaseAction {
 					if (BooleanUtils.isTrue(workCompleted.getMerged())) {
 						throw new ExceptionModifyMerged(workCompleted.getId());
 					}
-
-					Wo wo = new Wo();
 					wo.setId(workCompleted.getId());
 					updateData(business, workCompleted, jsonElement, path0);
 				}
@@ -68,6 +66,8 @@ class ActionUpdateWithWorkCompletedPath0 extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = -7437967246393300913L;
 
 	}
 

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -28,7 +29,7 @@ import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
 
 class ActionListAddSplitWithWork extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionListAddSplitWithWork.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListAddSplitWithWork.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String workId) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -53,40 +54,35 @@ class ActionListAddSplitWithWork extends BaseAction {
 
 			List<WorkLog> os = new ArrayList<>();
 
-			Stream<Node> splitNodes = nodes.stream().filter(o -> {
-				return Objects.equals(o.getWorkLog().getFromActivityType(), ActivityType.split)
-						&& StringUtils.startsWith(StringUtils.join(work.getSplitTokenList(), ","),
-								StringUtils.join(o.getWorkLog().getProperties().getSplitTokenList(), ","));
-			});
+			Stream<Node> splitNodes = nodes.stream()
+					.filter(o -> Objects.equals(o.getWorkLog().getFromActivityType(), ActivityType.split)
+							&& StringUtils.startsWith(StringUtils.join(work.getSplitTokenList(), ","),
+									StringUtils.join(o.getWorkLog().getProperties().getSplitTokenList(), ",")));
 
-			if (business.canManageApplicationOrProcess(effectivePerson, work.getApplication(), work.getProcess())) {
-				splitNodes.forEach(o -> {
-					o.upTo(ActivityType.manual, ActivityType.split, ActivityType.agent, ActivityType.choice,
-							ActivityType.delay, ActivityType.embed, ActivityType.invoke).forEach(n -> {
-								try {
-									os.add(o.getWorkLog());
-								} catch (Exception e) {
-									logger.error(e);
-								}
-							});
-				});
+			if (BooleanUtils.isTrue(business.canManageApplicationOrProcess(effectivePerson, work.getApplication(),
+					work.getProcess()))) {
+				splitNodes.forEach(o -> o.upTo(ActivityType.manual, ActivityType.split, ActivityType.agent,
+						ActivityType.choice, ActivityType.delay, ActivityType.embed, ActivityType.invoke).forEach(n -> {
+							try {
+								os.add(o.getWorkLog());
+							} catch (Exception e) {
+								LOGGER.error(e);
+							}
+						}));
 			} else {
-				splitNodes.forEach(o -> {
-					o.upTo(ActivityType.manual, ActivityType.split, ActivityType.agent, ActivityType.choice,
-							ActivityType.delay, ActivityType.embed, ActivityType.invoke).forEach(n -> {
-								try {
-									Long count = emc.countEqualAndEqual(TaskCompleted.class,
-											TaskCompleted.person_FIELDNAME, effectivePerson.getDistinguishedName(),
-											TaskCompleted.activityToken_FIELDNAME,
-											n.getWorkLog().getFromActivityToken());
-									if (count > 0) {
-										os.add(o.getWorkLog());
-									}
-								} catch (Exception e) {
-									logger.error(e);
+				splitNodes.forEach(o -> o.upTo(ActivityType.manual, ActivityType.split, ActivityType.agent,
+						ActivityType.choice, ActivityType.delay, ActivityType.embed, ActivityType.invoke).forEach(n -> {
+							try {
+								Long count = emc.countEqualAndEqual(TaskCompleted.class, TaskCompleted.person_FIELDNAME,
+										effectivePerson.getDistinguishedName(), TaskCompleted.activityToken_FIELDNAME,
+										n.getWorkLog().getFromActivityToken());
+								if (count > 0) {
+									os.add(o.getWorkLog());
 								}
-							});
-				});
+							} catch (Exception e) {
+								LOGGER.error(e);
+							}
+						}));
 			}
 
 			wos = Wo.copier.copy(os);

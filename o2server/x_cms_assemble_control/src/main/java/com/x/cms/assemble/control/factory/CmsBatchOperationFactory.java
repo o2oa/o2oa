@@ -14,7 +14,6 @@ import com.x.cms.assemble.control.AbstractFactory;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.CmsBatchOperation;
 import com.x.cms.core.entity.CmsBatchOperation_;
-import com.x.processplatform.core.entity.content.Task_;
 
 /**
  * 批处理操作信息记录，比如需要级联删除大量的分类，文档等等

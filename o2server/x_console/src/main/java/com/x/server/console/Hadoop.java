@@ -1,9 +1,5 @@
 package com.x.server.console;
 
-import java.util.Iterator;
-import java.util.Map.Entry;
-import java.util.Properties;
-
 import com.x.base.core.project.config.Config;
 
 public class Hadoop {

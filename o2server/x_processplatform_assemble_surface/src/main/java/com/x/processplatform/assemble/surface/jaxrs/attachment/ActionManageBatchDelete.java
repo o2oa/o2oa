@@ -1,5 +1,7 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
+import java.util.List;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -16,8 +18,6 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Attachment;
-
-import java.util.List;
 
 class ActionManageBatchDelete extends BaseAction {
 

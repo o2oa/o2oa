@@ -1,5 +1,19 @@
 package com.x.mind.assemble.control.jaxrs.mind;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.imgscalr.Scalr;
+
 import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -10,18 +24,6 @@ import com.x.mind.assemble.control.jaxrs.exception.ExceptionMindNotExists;
 import com.x.mind.assemble.control.jaxrs.exception.ExceptionMindQuery;
 import com.x.mind.assemble.control.jaxrs.exception.ExceptionParameterEmpty;
 import com.x.mind.entity.MindBaseInfo;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.StringUtils;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.imgscalr.Scalr;
-
-import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletRequest;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
 public class ActionMindIconUpdate extends BaseAction {
 	

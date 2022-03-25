@@ -2,18 +2,17 @@ package com.x.cms.assemble.control.queue;
 
 import java.util.List;
 
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.queue.AbstractQueue;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.DocumentDataHelper;
 import com.x.cms.assemble.control.jaxrs.document.ActionPersistImportDataExcel.WiParam;
-import com.x.cms.assemble.control.service.CmsBatchOperationPersistService;
 import com.x.cms.assemble.control.service.CmsBatchOperationProcessService;
 import com.x.cms.common.excel.reader.ExcelReadRuntime;
 import com.x.cms.common.excel.reader.ExcelReadRuntime.DocTemplate;

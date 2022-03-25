@@ -10,21 +10,20 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import com.x.base.core.entity.SliceJpaObject;
-import com.x.file.core.entity.open.FileStatus;
-import com.x.file.core.entity.open.FileType;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.openjpa.persistence.jdbc.Index;
 
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
-import com.x.base.core.entity.annotation.CitationExist;
 import com.x.base.core.entity.annotation.CitationNotExist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.entity.annotation.Equal;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.file.core.entity.PersistenceProperties;
+import com.x.file.core.entity.open.FileStatus;
+import com.x.file.core.entity.open.FileType;
 
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity

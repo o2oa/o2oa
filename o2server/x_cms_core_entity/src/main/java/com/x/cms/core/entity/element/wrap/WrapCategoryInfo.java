@@ -6,11 +6,6 @@ import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.cms.core.entity.CategoryInfo;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.Lob;
-
 public class WrapCategoryInfo extends CategoryInfo {
 
 	private static final long serialVersionUID = 1439909268641168987L;

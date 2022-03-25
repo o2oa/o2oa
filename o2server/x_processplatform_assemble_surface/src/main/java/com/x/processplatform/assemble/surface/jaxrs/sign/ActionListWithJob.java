@@ -1,5 +1,12 @@
 package com.x.processplatform.assemble.surface.jaxrs.sign;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -14,14 +21,9 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.SortTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.DocSign;
 import com.x.processplatform.core.entity.content.DocSignStatus;
-import org.apache.commons.lang3.BooleanUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 class ActionListWithJob extends BaseAction {
 
@@ -60,8 +62,7 @@ class ActionListWithJob extends BaseAction {
 				logger.error(e);
 			}
 			return wos;
-		});
-
+		},ThisApplication.threadPool());
 	}
 
 	private CompletableFuture<Boolean> checkJobControlFuture(EffectivePerson effectivePerson, String job) {
@@ -74,10 +75,12 @@ class ActionListWithJob extends BaseAction {
 				logger.error(e);
 			}
 			return value;
-		});
+		},ThisApplication.threadPool());
 	}
 
 	public static class Wo extends DocSign {
+
+		private static final long serialVersionUID = -3511566791010885542L;
 
 		static WrapCopier<DocSign, Wo> copier = WrapCopierFactory.wo(DocSign.class, Wo.class, null,
 				JpaObject.FieldsInvisible);

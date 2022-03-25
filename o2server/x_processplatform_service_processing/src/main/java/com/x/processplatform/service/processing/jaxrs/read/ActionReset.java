@@ -1,5 +1,13 @@
 package com.x.processplatform.service.processing.jaxrs.read;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -16,16 +24,10 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.processplatform.core.entity.content.*;
+import com.x.processplatform.core.entity.content.Read;
+import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
 
 class ActionReset extends BaseAction {
 
@@ -118,16 +120,18 @@ class ActionReset extends BaseAction {
 		}
 	}
 
-	private List<ReadCompleted> listExist(Business business, Read read) throws Exception {
-		return business.entityManagerContainer().listEqualAndEqual(ReadCompleted.class, ReadCompleted.job_FIELDNAME,
-				read.getJob(), ReadCompleted.person_FIELDNAME, read.getPerson());
-	}
+//	private List<ReadCompleted> listExist(Business business, Read read) throws Exception {
+//		return business.entityManagerContainer().listEqualAndEqual(ReadCompleted.class, ReadCompleted.job_FIELDNAME,
+//				read.getJob(), ReadCompleted.person_FIELDNAME, read.getPerson());
+//	}
 
 	public static class CallWrap {
 		String job;
 	}
 
 	public static class Wi extends GsonPropertyObject {
+
+		private static final long serialVersionUID = 3966536547959075002L;
 
 		@FieldDescribe("身份")
 		private List<String> identityList;
@@ -153,6 +157,8 @@ class ActionReset extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = 2035801489227371292L;
 
 	}
 

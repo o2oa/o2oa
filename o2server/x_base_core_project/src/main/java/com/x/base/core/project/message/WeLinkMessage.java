@@ -1,8 +1,8 @@
 package com.x.base.core.project.message;
 
-import com.x.base.core.project.gson.GsonPropertyObject;
-
 import java.util.List;
+
+import com.x.base.core.project.gson.GsonPropertyObject;
 
 /**
  * Created by fancyLou on 2020-07-29.

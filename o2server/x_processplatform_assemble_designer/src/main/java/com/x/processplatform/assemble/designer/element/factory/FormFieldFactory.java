@@ -10,8 +10,6 @@ import javax.persistence.criteria.Root;
 
 import com.x.processplatform.assemble.designer.AbstractFactory;
 import com.x.processplatform.assemble.designer.Business;
-import com.x.processplatform.core.entity.element.Embed;
-import com.x.processplatform.core.entity.element.Embed_;
 import com.x.processplatform.core.entity.element.FormField;
 import com.x.processplatform.core.entity.element.FormField_;
 

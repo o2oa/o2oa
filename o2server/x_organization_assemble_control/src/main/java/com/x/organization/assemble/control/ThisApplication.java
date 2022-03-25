@@ -1,5 +1,9 @@
 package com.x.organization.assemble.control;
 
+import java.util.List;
+
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -11,9 +15,6 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Person;
-import org.apache.commons.lang3.BooleanUtils;
-
-import java.util.List;
 
 /**
  * @author sword

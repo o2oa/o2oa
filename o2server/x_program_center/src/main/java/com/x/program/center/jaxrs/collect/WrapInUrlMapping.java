@@ -1,9 +1,9 @@
 package com.x.program.center.jaxrs.collect;
 
-import com.x.base.core.project.config.Collect;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.x.base.core.project.config.Collect;
 
 public class WrapInUrlMapping extends Collect {
 

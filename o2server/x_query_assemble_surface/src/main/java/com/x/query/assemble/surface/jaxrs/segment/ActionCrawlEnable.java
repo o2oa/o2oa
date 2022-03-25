@@ -1,5 +1,7 @@
 package com.x.query.assemble.surface.jaxrs.segment;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -7,8 +9,6 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-
-import org.apache.commons.lang3.BooleanUtils;
 
 class ActionCrawlEnable extends BaseAction {
 

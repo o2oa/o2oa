@@ -1,5 +1,7 @@
 package com.x.processplatform.assemble.surface.jaxrs.sign;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.config.StorageMapping;
@@ -11,7 +13,6 @@ import com.x.base.core.project.jaxrs.WoFile;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.DocSignScrawl;
-import org.apache.commons.lang3.StringUtils;
 
 class ActionDownload extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String scrawlId)
@@ -43,6 +44,8 @@ class ActionDownload extends BaseAction {
 	}
 
 	public static class Wo extends WoFile {
+
+		private static final long serialVersionUID = 805473447869674408L;
 
 		public Wo(byte[] bytes, String contentType, String contentDisposition) {
 			super(bytes, contentType, contentDisposition);

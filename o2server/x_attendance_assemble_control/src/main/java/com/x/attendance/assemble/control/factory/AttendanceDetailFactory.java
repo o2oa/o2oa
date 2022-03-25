@@ -7,16 +7,19 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Order;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Selection;
 
-import com.x.attendance.assemble.control.CriteriaQueryTools;
-import com.x.attendance.entity.StatisticUnitForDay;
-import com.x.attendance.entity.StatisticUnitForDay_;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.attendance.assemble.common.date.DateOperation;
 import com.x.attendance.assemble.control.AbstractFactory;
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.assemble.control.CriteriaQueryTools;
 import com.x.attendance.assemble.control.jaxrs.attendancedetail.AttendanceCycles;
 import com.x.attendance.assemble.control.jaxrs.attendancedetail.WrapInFilter;
 import com.x.attendance.entity.AttendanceDetail;

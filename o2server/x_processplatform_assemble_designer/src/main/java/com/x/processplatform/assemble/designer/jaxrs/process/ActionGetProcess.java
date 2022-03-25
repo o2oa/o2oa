@@ -8,8 +8,8 @@ import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.processplatform.assemble.designer.Business;
+import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
-import com.x.processplatform.core.entity.element.*;
 
 class ActionGetProcess extends BaseAction {
 

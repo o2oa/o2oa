@@ -2,17 +2,18 @@ package com.x.hotpic.assemble.control.jaxrs.hotpic;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+
 import com.google.gson.reflect.TypeToken;
+import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.bean.WrapCopier;
+import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.WrapOutId;
 import com.x.hotpic.assemble.control.service.HotPictureInfoServiceAdv;
 import com.x.hotpic.entity.HotPictureInfo;
-import com.x.base.core.entity.JpaObject;
-import com.x.base.core.project.bean.WrapCopier;
-import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.CacheManager;
 
 public class ActionDeleteById extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {

@@ -2,7 +2,6 @@ package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import javax.persistence.EntityManager;
@@ -11,16 +10,15 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import com.x.base.core.project.cache.Cache;
-import com.x.base.core.project.cache.CacheManager;
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.ProcessPlatform;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.ProcessPlatform;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.EffectivePerson;
@@ -30,6 +28,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Attachment_;
 
@@ -37,7 +36,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(BaseAction.class);
 
-	protected final static String OFD_ATT_KEY = ".ofd";
+	protected static final String OFD_ATT_KEY = ".ofd";
 
 	public static class WiExtraParam {
 		private String site;
@@ -61,9 +60,6 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}
 
 	}
-
-	// public static Ehcache cache =
-	// ApplicationCache.instance().getCache(CacheResultObject.class);
 
 	public static class CacheResultObject extends GsonPropertyObject {
 
@@ -132,9 +128,6 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	}
 
-	// public static Ehcache cachePreviewImage =
-	// ApplicationCache.instance().getCache(PreviewImageResultObject.class);
-
 	public static class PreviewImageResultObject extends GsonPropertyObject {
 
 		private byte[] bytes;
@@ -168,6 +161,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 	}
 
 	public static class ReqAttachment extends GsonPropertyObject {
+
+		private static final long serialVersionUID = -3590703578295962581L;
 
 		private String id;
 		private String name;
@@ -259,7 +254,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 	public boolean control(Attachment attachment, EffectivePerson effectivePerson, List<String> identities,
 			List<String> units, Business business) throws Exception {
 		boolean value = false;
-		if (business.canManageApplication(effectivePerson, null)) {
+		if (BooleanUtils.isTrue(business.canManageApplication(effectivePerson, null))) {
 			value = true;
 		} else if (effectivePerson.isPerson(attachment.getPerson())) {
 			value = true;
@@ -285,7 +280,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				logger.error(e);
 			}
 			return value;
-		});
+		}, ThisApplication.threadPool());
 	}
 
 	protected CompletableFuture<Boolean> checkControlFuture(EffectivePerson effectivePerson, String flag) {
@@ -299,45 +294,44 @@ abstract class BaseAction extends StandardJaxrsAction {
 				logger.error(e);
 			}
 			return value;
-		});
+		}, ThisApplication.threadPool());
 	}
 
 	/**
 	 * 判断附件是否符合大小、文件类型的约束
+	 * 
 	 * @param size
 	 * @param fileName
 	 * @param callback
 	 * @throws Exception
 	 */
-	protected void verifyConstraint(long size, String fileName, String callback) throws Exception{
+	protected void verifyConstraint(long size, String fileName, String callback) throws Exception {
 		ProcessPlatform.AttachmentConfig attConfig = Config.processPlatform().getAttachmentConfig();
-		if(attConfig.getFileSize()!=null && attConfig.getFileSize()>0) {
+		if (attConfig.getFileSize() != null && attConfig.getFileSize() > 0) {
 			size = size / (1024 * 1024);
 			if (size > attConfig.getFileSize()) {
-				if (StringUtils.isNotEmpty(callback)){
+				if (StringUtils.isNotEmpty(callback)) {
 					throw new ExceptionAttachmentInvalidCallback(callback, fileName, attConfig.getFileSize());
-				}else{
+				} else {
 					throw new ExceptionAttachmentInvalid(fileName, attConfig.getFileSize());
 				}
 			}
 		}
 		String fileType = FilenameUtils.getExtension(fileName).toLowerCase();
-		if(attConfig.getFileTypeIncludes()!=null && !attConfig.getFileTypeIncludes().isEmpty()){
-			if(!ListTools.contains(attConfig.getFileTypeIncludes(), fileType)){
-				if (StringUtils.isNotEmpty(callback)){
-					throw new ExceptionAttachmentInvalidCallback(callback, fileName);
-				}else{
-					throw new ExceptionAttachmentInvalid(fileName);
-				}
+		if ((attConfig.getFileTypeIncludes() != null && !attConfig.getFileTypeIncludes().isEmpty())
+				&& (!ListTools.contains(attConfig.getFileTypeIncludes(), fileType))) {
+			if (StringUtils.isNotEmpty(callback)) {
+				throw new ExceptionAttachmentInvalidCallback(callback, fileName);
+			} else {
+				throw new ExceptionAttachmentInvalid(fileName);
 			}
 		}
-		if(attConfig.getFileTypeExcludes()!=null && !attConfig.getFileTypeExcludes().isEmpty()){
-			if(ListTools.contains(attConfig.getFileTypeExcludes(), fileType)){
-				if (StringUtils.isNotEmpty(callback)){
-					throw new ExceptionAttachmentInvalidCallback(callback, fileName);
-				}else{
-					throw new ExceptionAttachmentInvalid(fileName);
-				}
+		if ((attConfig.getFileTypeExcludes() != null && !attConfig.getFileTypeExcludes().isEmpty())
+				&& (ListTools.contains(attConfig.getFileTypeExcludes(), fileType))) {
+			if (StringUtils.isNotEmpty(callback)) {
+				throw new ExceptionAttachmentInvalidCallback(callback, fileName);
+			} else {
+				throw new ExceptionAttachmentInvalid(fileName);
 			}
 		}
 	}

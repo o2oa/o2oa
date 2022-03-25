@@ -1,5 +1,13 @@
 package com.x.cms.assemble.control.jaxrs.document;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -9,7 +17,6 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.CacheManager;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -22,13 +29,6 @@ import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.FileInfo;
 import com.x.cms.core.entity.element.Form;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 public class ActionPersistSaveDocument extends BaseAction {
 

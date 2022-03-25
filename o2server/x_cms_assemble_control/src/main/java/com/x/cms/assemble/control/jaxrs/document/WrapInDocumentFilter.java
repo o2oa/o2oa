@@ -1,16 +1,21 @@
 package com.x.cms.assemble.control.jaxrs.document;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.express.tools.DateOperation;
 import com.x.cms.core.express.tools.filter.QueryFilter;
-import com.x.cms.core.express.tools.filter.term.*;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import com.x.cms.core.express.tools.filter.term.EqualsTerm;
+import com.x.cms.core.express.tools.filter.term.InTerm;
+import com.x.cms.core.express.tools.filter.term.IsFalseTerm;
+import com.x.cms.core.express.tools.filter.term.IsTrueTerm;
+import com.x.cms.core.express.tools.filter.term.LikeTerm;
 
 public class WrapInDocumentFilter {
 

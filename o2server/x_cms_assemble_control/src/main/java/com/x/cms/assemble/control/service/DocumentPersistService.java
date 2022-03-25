@@ -1,5 +1,22 @@
 package com.x.cms.assemble.control.service;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.apache.commons.collections4.list.TreeList;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
+
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 import com.x.base.core.container.EntityManagerContainer;
@@ -12,6 +29,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.DocumentDataHelper;
+import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.assemble.control.factory.ProjectionFactory;
 import com.x.cms.assemble.control.jaxrs.document.ActionPersistBatchModifyData.WiDataChange;
 import com.x.cms.assemble.control.jaxrs.document.ActionPersistBatchModifyData.Wo;
@@ -22,21 +40,6 @@ import com.x.cms.core.entity.Document_;
 import com.x.cms.core.entity.Projection;
 import com.x.cms.core.entity.content.Data;
 import com.x.query.core.entity.Item;
-import org.apache.commons.collections4.list.TreeList;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 对文档信息进行持久化服务类
@@ -391,7 +394,7 @@ public class DocumentPersistService {
 										} catch (Exception e) {
 											logger.warn("刷新文档权限异常1：{}", e.getMessage());
 										}
-									});
+									},ThisApplication.threadPool());
 									futures.add(future);
 								}
 								if(!flag){
@@ -458,7 +461,7 @@ public class DocumentPersistService {
 								} catch (Exception e) {
 									logger.warn("刷新文档权限异常1：{}", e.getMessage());
 								}
-							});
+							},ThisApplication.threadPool());
 							futures.add(future);
 						}
 						for (CompletableFuture<Void> future : futures) {

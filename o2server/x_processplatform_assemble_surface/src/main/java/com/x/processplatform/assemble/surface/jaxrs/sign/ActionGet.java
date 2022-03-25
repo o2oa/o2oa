@@ -16,10 +16,10 @@ import com.x.processplatform.core.entity.content.DocSign;
 
 class ActionGet extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionGet.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionGet.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
-		logger.debug(effectivePerson.getDistinguishedName());
+		LOGGER.debug(effectivePerson.getDistinguishedName());
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -38,6 +38,8 @@ class ActionGet extends BaseAction {
 
 	public static class Wo extends DocSign {
 
+		private static final long serialVersionUID = -5697087829473068711L;
+		
 		static WrapCopier<DocSign, Wo> copier = WrapCopierFactory.wo(DocSign.class, Wo.class,
 				null, JpaObject.FieldsInvisible);
 

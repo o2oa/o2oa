@@ -16,7 +16,6 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
-import com.x.base.core.project.http.HttpToken;
 import com.x.base.core.project.tools.JarTools;
 
 public class ActionConfig extends ActionBase {

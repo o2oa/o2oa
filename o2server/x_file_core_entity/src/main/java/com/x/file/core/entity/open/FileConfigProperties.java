@@ -1,10 +1,10 @@
 package com.x.file.core.entity.open;
 
-import com.x.base.core.entity.JsonProperties;
-import com.x.base.core.project.annotation.FieldDescribe;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.x.base.core.entity.JsonProperties;
+import com.x.base.core.project.annotation.FieldDescribe;
 
 /**
  * 云文件系统扩展配置

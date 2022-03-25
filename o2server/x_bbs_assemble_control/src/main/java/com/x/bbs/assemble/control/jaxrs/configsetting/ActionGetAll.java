@@ -18,8 +18,6 @@ import com.x.base.core.project.tools.SortTools;
 import com.x.bbs.assemble.control.jaxrs.configsetting.exception.ExceptionConfigSettingInfoProcess;
 import com.x.bbs.entity.BBSConfigSetting;
 
-import net.sf.ehcache.Element;
-
 public class ActionGetAll extends BaseAction {
 	
 	private static  Logger logger = LoggerFactory.getLogger( ActionGetAll.class );

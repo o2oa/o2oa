@@ -12,9 +12,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
-import com.x.base.core.entity.AbstractPersistenceProperties;
 import org.apache.commons.lang3.StringUtils;
 
+import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;

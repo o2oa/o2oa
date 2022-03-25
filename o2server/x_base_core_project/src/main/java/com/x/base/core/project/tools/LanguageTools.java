@@ -1,12 +1,13 @@
 package com.x.base.core.project.tools;
 
+import java.util.Locale;
+import java.util.ResourceBundle;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 public class LanguageTools {
 

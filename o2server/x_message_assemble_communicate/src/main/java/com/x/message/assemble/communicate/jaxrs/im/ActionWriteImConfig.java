@@ -1,5 +1,8 @@
 package com.x.message.assemble.communicate.jaxrs.im;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
@@ -12,9 +15,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.WrapOutBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class ActionWriteImConfig extends BaseAction {
 

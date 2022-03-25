@@ -20,6 +20,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.Review;
@@ -68,7 +69,7 @@ class ActionCountWithPerson extends BaseAction {
 				logger.error(e);
 			}
 			return count;
-		});
+		},ThisApplication.threadPool());
 	}
 
 	private CompletableFuture<Long> taskCompletedFuture(String dn) {
@@ -89,8 +90,7 @@ class ActionCountWithPerson extends BaseAction {
 				logger.error(e);
 			}
 			return count;
-		});
-
+		},ThisApplication.threadPool());
 	}
 
 	private CompletableFuture<Long> readFuture(String dn) {
@@ -102,7 +102,7 @@ class ActionCountWithPerson extends BaseAction {
 				logger.error(e);
 			}
 			return count;
-		});
+		},ThisApplication.threadPool());
 	}
 
 	private CompletableFuture<Long> readCompletedFuture(String dn) {
@@ -114,7 +114,7 @@ class ActionCountWithPerson extends BaseAction {
 				logger.error(e);
 			}
 			return count;
-		});
+		},ThisApplication.threadPool());
 	}
 
 	private CompletableFuture<Long> reviewFuture(String dn) {
@@ -126,7 +126,7 @@ class ActionCountWithPerson extends BaseAction {
 				logger.error(e);
 			}
 			return count;
-		});
+		},ThisApplication.threadPool());
 	}
 
 	public static class Wo extends GsonPropertyObject {

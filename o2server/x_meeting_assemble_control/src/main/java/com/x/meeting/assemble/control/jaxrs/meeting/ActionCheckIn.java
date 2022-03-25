@@ -9,7 +9,6 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.meeting.assemble.control.jaxrs.meeting.BaseAction;
 import com.x.meeting.core.entity.Meeting;
 
 /**

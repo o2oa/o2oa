@@ -15,8 +15,9 @@
  */
 package com.x.jpush.assemble.control.huawei.android;
 
-import com.x.jpush.assemble.control.huawei.ValidatorUtils;
 import org.apache.commons.lang3.StringUtils;
+
+import com.x.jpush.assemble.control.huawei.ValidatorUtils;
 
 public class ClickAction {
     private static final String PATTERN = "^https.*";

@@ -1,7 +1,6 @@
 package com.x.base.core.project.http;
 
 import com.x.base.core.project.gson.GsonPropertyObject;
-import com.x.base.core.project.jaxrs.WrapInteger;
 
 public class WrapOutInteger extends GsonPropertyObject {
 

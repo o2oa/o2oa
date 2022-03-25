@@ -1,10 +1,34 @@
 package com.x.program.center.jaxrs.datastructure;
 
-import com.x.base.core.project.*;
+import java.util.List;
+
+import com.x.base.core.project.x_attendance_assemble_control;
+import com.x.base.core.project.x_bbs_assemble_control;
+import com.x.base.core.project.x_calendar_assemble_control;
+import com.x.base.core.project.x_cms_assemble_control;
+import com.x.base.core.project.x_component_assemble_control;
+import com.x.base.core.project.x_file_assemble_control;
+import com.x.base.core.project.x_general_assemble_control;
+import com.x.base.core.project.x_hotpic_assemble_control;
+import com.x.base.core.project.x_jpush_assemble_control;
+import com.x.base.core.project.x_meeting_assemble_control;
+import com.x.base.core.project.x_message_assemble_communicate;
+import com.x.base.core.project.x_mind_assemble_control;
+import com.x.base.core.project.x_organization_assemble_authentication;
+import com.x.base.core.project.x_organization_assemble_control;
+import com.x.base.core.project.x_organization_assemble_express;
+import com.x.base.core.project.x_organization_assemble_personal;
+import com.x.base.core.project.x_portal_assemble_designer;
+import com.x.base.core.project.x_portal_assemble_surface;
+import com.x.base.core.project.x_processplatform_assemble_bam;
+import com.x.base.core.project.x_processplatform_assemble_designer;
+import com.x.base.core.project.x_processplatform_assemble_surface;
+import com.x.base.core.project.x_processplatform_service_processing;
+import com.x.base.core.project.x_query_assemble_designer;
+import com.x.base.core.project.x_query_assemble_surface;
+import com.x.base.core.project.x_query_service_processing;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.tools.ListTools;
-
-import java.util.List;
 
 abstract class BaseAction extends StandardJaxrsAction {
 

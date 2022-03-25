@@ -1,11 +1,10 @@
 package com.x.program.center.jaxrs.collect;
 
-import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.tools.StringTools;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.config.Collect;
@@ -14,6 +13,7 @@ import com.x.base.core.project.config.Person;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
+import com.x.base.core.project.tools.StringTools;
 import com.x.program.center.ThisApplication;
 import com.x.program.center.schedule.CollectMarket;
 import com.x.program.center.schedule.CollectPerson;

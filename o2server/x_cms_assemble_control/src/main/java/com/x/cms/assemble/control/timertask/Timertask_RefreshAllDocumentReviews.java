@@ -1,10 +1,10 @@
 package com.x.cms.assemble.control.timertask;
 
+import org.quartz.JobExecutionContext;
+
 import com.x.base.core.project.schedule.AbstractJob;
 import com.x.cms.assemble.control.service.CmsBatchOperationPersistService;
 import com.x.cms.assemble.control.service.DocumentPersistService;
-import com.x.cms.assemble.control.service.ReviewService;
-import org.quartz.JobExecutionContext;
 
 /**
  * 重新计算所有文档的权限信息

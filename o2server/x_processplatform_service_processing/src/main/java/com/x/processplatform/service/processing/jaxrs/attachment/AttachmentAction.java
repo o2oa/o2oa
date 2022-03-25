@@ -31,7 +31,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 @JaxrsDescribe("附件操作")
 public class AttachmentAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(AttachmentAction.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AttachmentAction.class);
 
 	@JaxrsMethodDescribe(value = "更新附件信息.", action = ActionEdit.class)
 	@PUT
@@ -45,7 +45,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 		try {
 			result = new ActionEdit().execute(effectivePerson, id, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -63,7 +63,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 		try {
 			result = new ActionEditText().execute(effectivePerson, id, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -81,7 +81,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 		try {
 			result = new ActionDelete().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -100,7 +100,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 		try {
 			result = new ActionDeleteWithWork().execute(effectivePerson, id, workId);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -119,7 +119,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 		try {
 			result = new ActionDeleteWithWorkCompleted().execute(effectivePerson, id, workCompletedId);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -137,7 +137,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 		try {
 			result = new ActionCopyToWork().execute(effectivePerson, workId, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -155,7 +155,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 		try {
 			result = new ActionCopyToWorkCompleted().execute(effectivePerson, workCompletedId, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
