@@ -45,6 +45,8 @@ import com.x.query.core.entity.Item_;
 
 public abstract class Plan extends GsonPropertyObject {
 
+	private static final long serialVersionUID = -4281507899642115426L;
+
 	public static final String SCOPE_WORK = "work";
 	public static final String SCOPE_CMS_INFO = "cms_info";
 	public static final String SCOPE_CMS_DATA = "cms_data";
@@ -55,11 +57,12 @@ public abstract class Plan extends GsonPropertyObject {
 	public static final String CALCULATE_AVERAGE = "average";
 	public static final String CALCULATE_COUNT = "count";
 
-	protected Plan(ExecutorService threadPool) {
+	protected transient ExecutorService threadPool;
+
+	public void init(Runtime runtime, ExecutorService threadPool) {
+		this.runtime = runtime;
 		this.threadPool = threadPool;
 	}
-
-	protected ExecutorService threadPool;
 
 	public Runtime runtime;
 

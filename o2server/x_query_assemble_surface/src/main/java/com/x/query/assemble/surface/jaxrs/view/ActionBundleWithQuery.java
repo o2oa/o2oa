@@ -20,6 +20,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapStringList;
 import com.x.base.core.project.tools.MD5Tool;
 import com.x.query.assemble.surface.Business;
+import com.x.query.assemble.surface.ThisApplication;
 import com.x.query.core.entity.Query;
 import com.x.query.core.entity.View;
 import com.x.query.core.express.plan.FilterEntry;
@@ -58,14 +59,16 @@ class ActionBundleWithQuery extends BaseAction {
 					wi.getCount(), true);
 		}
 		Wo wo = new Wo();
-		wo.setValueList(this.fetchBundle(business, view, runtime));
-		wo.setKey(MD5Tool.getMD5Str(effectivePerson.getDistinguishedName()+ Config.token().getCipher()));
+		wo.setValueList(this.fetchBundle(business, view, runtime, ThisApplication.threadPool()));
+		wo.setKey(MD5Tool.getMD5Str(effectivePerson.getDistinguishedName() + Config.token().getCipher()));
 		result.setData(wo);
 		return result;
 	}
 
 	public static class Wo extends WrapStringList {
 
+		private static final long serialVersionUID = 5605585771471176727L;
+		
 		@FieldDescribe("访问execute秘钥串.")
 		private String key;
 
@@ -80,10 +83,11 @@ class ActionBundleWithQuery extends BaseAction {
 	}
 
 	public static class Wi extends GsonPropertyObject {
+		
+		private static final long serialVersionUID = 6425066184455473281L;
+
 		@FieldDescribe("过滤")
-		@FieldTypeDescribe(fieldType="class",fieldTypeName = "com.x.query.core.express.plan.FilterEntry",
-		fieldValue="{value='',otherValue='',path='',formatType='',logic='',comparison=''}",
-		fieldSample="{'logic':'逻辑运算:and|or','path':'data数据的路径:$work.title','comparison':'比较运算符:equals|notEquals|like|notLike|greaterThan|greaterThanOrEqualTo|lessThan|lessThanOrEqualTo|range','value':'7月','formatType':'textValue|numberValue|dateTimeValue|booleanValue'}")
+		@FieldTypeDescribe(fieldType = "class", fieldTypeName = "com.x.query.core.express.plan.FilterEntry", fieldValue = "{value='',otherValue='',path='',formatType='',logic='',comparison=''}", fieldSample = "{'logic':'逻辑运算:and|or','path':'data数据的路径:$work.title','comparison':'比较运算符:equals|notEquals|like|notLike|greaterThan|greaterThanOrEqualTo|lessThan|lessThanOrEqualTo|range','value':'7月','formatType':'textValue|numberValue|dateTimeValue|booleanValue'}")
 
 		private List<FilterEntry> filterList = new TreeList<>();
 

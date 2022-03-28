@@ -20,6 +20,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.MD5Tool;
 import com.x.query.assemble.designer.Business;
+import com.x.query.assemble.designer.ThisApplication;
 import com.x.query.core.entity.View;
 import com.x.query.core.express.plan.CmsPlan;
 import com.x.query.core.express.plan.FilterEntry;
@@ -41,18 +42,20 @@ class ActionBundle extends BaseAction {
 			}
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 
-			Runtime runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getParameter(), wi.getCount(), true);
+			Runtime runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getParameter(),
+					wi.getCount(), true);
 
 			List<String> os = null;
 			switch (StringUtils.trimToEmpty(view.getType())) {
 
 			case View.TYPE_CMS:
 				CmsPlan cmsPlan = gson.fromJson(view.getData(), CmsPlan.class);
-				cmsPlan.runtime = runtime;
+				cmsPlan.init(runtime, ThisApplication.threadPool());
 				os = cmsPlan.fetchBundles();
 				break;
 			case View.TYPE_PROCESSPLATFORM:
 				ProcessPlatformPlan processPlatformPlan = gson.fromJson(view.getData(), ProcessPlatformPlan.class);
+				processPlatformPlan.init(runtime, ThisApplication.threadPool());
 				this.setProcessEdition(business, processPlatformPlan);
 				processPlatformPlan.runtime = runtime;
 				os = processPlatformPlan.fetchBundles();
@@ -62,7 +65,7 @@ class ActionBundle extends BaseAction {
 			}
 			Wo wo = new Wo();
 			wo.setValueList(os);
-			wo.setKey(MD5Tool.getMD5Str(effectivePerson.getDistinguishedName()+ Config.token().getCipher()));
+			wo.setKey(MD5Tool.getMD5Str(effectivePerson.getDistinguishedName() + Config.token().getCipher()));
 			result.setData(wo);
 			return result;
 		}

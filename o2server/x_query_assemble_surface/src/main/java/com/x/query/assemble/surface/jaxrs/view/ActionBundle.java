@@ -22,6 +22,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.MD5Tool;
 import com.x.query.assemble.surface.Business;
+import com.x.query.assemble.surface.ThisApplication;
 import com.x.query.core.entity.Query;
 import com.x.query.core.entity.View;
 import com.x.query.core.express.plan.FilterEntry;
@@ -60,10 +61,10 @@ class ActionBundle extends BaseAction {
 			runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getParameter(),
 					wi.getCount(), true);
 		}
-		List<String> os = this.fetchBundle(business, view, runtime);
+		List<String> os = this.fetchBundle(business, view, runtime, ThisApplication.threadPool());
 		Wo wo = new Wo();
 		wo.setValueList(os);
-		wo.setKey(MD5Tool.getMD5Str(effectivePerson.getDistinguishedName()+ Config.token().getCipher()));
+		wo.setKey(MD5Tool.getMD5Str(effectivePerson.getDistinguishedName() + Config.token().getCipher()));
 		result.setData(wo);
 		return result;
 	}
@@ -71,9 +72,7 @@ class ActionBundle extends BaseAction {
 	public static class Wi extends GsonPropertyObject {
 
 		@FieldDescribe("过滤")
-		@FieldTypeDescribe(fieldType="class",fieldTypeName = "com.x.query.core.express.plan.FilterEntry",
-		fieldValue="{value='',otherValue='',path='',formatType='',logic='',comparison=''}",
-		fieldSample="{'logic':'逻辑运算:and|or','path':'data数据的路径:$work.title','comparison':'比较运算符:equals|notEquals|like|notLike|greaterThan|greaterThanOrEqualTo|lessThan|lessThanOrEqualTo|range','value':'7月','formatType':'textValue|numberValue|dateTimeValue|booleanValue'}")
+		@FieldTypeDescribe(fieldType = "class", fieldTypeName = "com.x.query.core.express.plan.FilterEntry", fieldValue = "{value='',otherValue='',path='',formatType='',logic='',comparison=''}", fieldSample = "{'logic':'逻辑运算:and|or','path':'data数据的路径:$work.title','comparison':'比较运算符:equals|notEquals|like|notLike|greaterThan|greaterThanOrEqualTo|lessThan|lessThanOrEqualTo|range','value':'7月','formatType':'textValue|numberValue|dateTimeValue|booleanValue'}")
 
 		private List<FilterEntry> filterList = new TreeList<>();
 

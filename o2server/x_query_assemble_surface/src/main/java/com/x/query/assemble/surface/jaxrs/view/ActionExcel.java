@@ -23,6 +23,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.MD5Tool;
 import com.x.query.assemble.surface.Business;
+import com.x.query.assemble.surface.ThisApplication;
 import com.x.query.core.entity.Query;
 import com.x.query.core.entity.View;
 import com.x.query.core.express.plan.FilterEntry;
@@ -36,8 +37,8 @@ class ActionExcel extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		if (ListTools.isNotEmpty(wi.getBundleList())){
-			String curKey = MD5Tool.getMD5Str(effectivePerson.getDistinguishedName()+ Config.token().getCipher());
+		if (ListTools.isNotEmpty(wi.getBundleList())) {
+			String curKey = MD5Tool.getMD5Str(effectivePerson.getDistinguishedName() + Config.token().getCipher());
 			if (!curKey.equals(wi.key)) {
 				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 			}
@@ -65,7 +66,7 @@ class ActionExcel extends BaseAction {
 					wi.getCount(), false);
 			runtime.bundleList = wi.getBundleList();
 		}
-		Plan plan = this.accessPlan(business, view, runtime);
+		Plan plan = this.accessPlan(business, view, runtime, ThisApplication.threadPool());
 		String excelFlag = this.girdWriteToExcel(effectivePerson, business, plan, view, wi.getExcelName());
 		Wo wo = new Wo();
 		wo.setId(excelFlag);
@@ -75,11 +76,16 @@ class ActionExcel extends BaseAction {
 
 	public static class Wo extends WoId {
 
+		private static final long serialVersionUID = -3109718021928716742L;
+
 	}
 
 	public static class Wi extends GsonPropertyObject {
+
+		private static final long serialVersionUID = 137649837114991882L;
+
 		@FieldDescribe("过滤")
-		@FieldTypeDescribe(fieldType="class",fieldTypeName = "com.x.query.core.express.plan.FilterEntry",fieldValue="{title='',value='',otherValue='',path='',formatType='',logic='',comparison=''}")
+		@FieldTypeDescribe(fieldType = "class", fieldTypeName = "com.x.query.core.express.plan.FilterEntry", fieldValue = "{title='',value='',otherValue='',path='',formatType='',logic='',comparison=''}")
 		private List<FilterEntry> filterList = new TreeList<>();
 
 		@FieldDescribe("参数")
