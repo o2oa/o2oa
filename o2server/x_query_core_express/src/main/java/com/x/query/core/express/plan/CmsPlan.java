@@ -38,9 +38,9 @@ import com.x.query.core.entity.Item_;
 
 public class CmsPlan extends Plan {
 
-	public CmsPlan(Runtime runtime, ExecutorService threadPool) {
-		super(threadPool);
-		this.runtime = runtime;
+	private static final long serialVersionUID = -752841556895959631L;
+
+	public CmsPlan() {
 		this.selectList = new SelectEntries();
 		this.where = new WhereEntry();
 		this.filterList = new TreeList<FilterEntry>();
