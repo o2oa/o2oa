@@ -10,9 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -29,6 +27,8 @@ import com.x.query.core.entity.Stat;
 import com.x.query.core.entity.View;
 
 public class StatPlan extends GsonPropertyObject {
+
+	private static final long serialVersionUID = -5053000443343214766L;
 
 	protected ExecutorService threadPool;
 
@@ -50,21 +50,15 @@ public class StatPlan extends GsonPropertyObject {
 			this.findPlan(plans);
 		}
 		// 添加运行时状态
-		plans.values().forEach(o -> o.runtime = runtime);
-		List<CompletableFuture<Void>> futures = new ArrayList<>();
-		plans.values().stream().forEach(o -> {
-			CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-				try {
-					o.access();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}, threadPool);
-			futures.add(future);
+		plans.values().forEach(o -> o.init(runtime, threadPool));
+		plans.values().forEach(o -> {
+			try {
+				o.access();
+			} catch (Exception e) {
+				LOGGER.error(e);
+			}
 		});
-		for (CompletableFuture<Void> future : futures) {
-			future.get(300, TimeUnit.SECONDS);
-		}
+		
 		if (BooleanUtils.isTrue(calculate.isGroup)) {
 			this.setCalculateGrid(this.mergeGroup(plans));
 		} else {
@@ -158,7 +152,7 @@ public class StatPlan extends GsonPropertyObject {
 					} else if (StringUtils.equals((view.getType()), View.TYPE_PROCESSPLATFORM)) {
 						ProcessPlatformPlan processPlatformPlan = gson.fromJson(view.getData(),
 								ProcessPlatformPlan.class);
-						/* 非分类视图或者分类视图都可以 */
+						// 非分类视图或者分类视图都可以
 						List<SelectEntry> uselessSelectList = new ArrayList<>();
 						processPlatformPlan.selectList.stream().forEachOrdered(s -> {
 							if (!StringUtils.equals(s.column, o.column)) {
@@ -220,7 +214,7 @@ public class StatPlan extends GsonPropertyObject {
 		for (Entry<String, Plan> en : plans.entrySet()) {
 			if ((null != en.getValue().group) && BooleanUtils.isTrue(en.getValue().group.available())) {
 				en.getValue().selectList.stream().forEach(o -> {
-					/* 分类统计只能统计分类视图 */
+					// 分类统计只能统计分类视图
 					if (!StringUtils.equals(o.column, en.getValue().group.column)) {
 						CalculateEntry calculateEntry = calculate.find(en.getKey());
 						if (null != calculateEntry) {
@@ -234,7 +228,7 @@ public class StatPlan extends GsonPropertyObject {
 										r.list.stream().forEach(c -> {
 											values.add(c.getAsDouble(o.column));
 										});
-										/* 如果有添加的分类值,有可能取得的是null */
+										// 如果有添加的分类值,有可能取得的是null
 										if (StringUtils.equals(calculateEntry.calculateType, Plan.CALCULATE_AVERAGE)) {
 											cell.value = numberFormat
 													.format(values.stream().mapToDouble(d -> d).average().orElse(0));
@@ -254,9 +248,9 @@ public class StatPlan extends GsonPropertyObject {
 		}
 		if (StringUtils.equalsIgnoreCase(SelectEntry.ORDER_DESC, calculate.orderType)
 				|| StringUtils.equalsIgnoreCase(SelectEntry.ORDER_ASC, calculate.orderType)) {
-			/* 需要进行排序如果为空则对标题进行排序 */
+			// 需要进行排序如果为空则对标题进行排序
 			if (StringUtils.isEmpty(calculate.orderColumn)) {
-				/* 按分类值进行排序 */
+				// 按分类值进行排序
 				if (StringUtils.equalsIgnoreCase(SelectEntry.ORDER_ASC, calculate.orderType)) {
 					table.sort(new GroupComparator());
 				} else {

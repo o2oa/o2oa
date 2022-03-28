@@ -22,6 +22,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.MD5Tool;
 import com.x.query.assemble.surface.Business;
+import com.x.query.assemble.surface.ThisApplication;
 import com.x.query.core.entity.Query;
 import com.x.query.core.entity.View;
 import com.x.query.core.express.plan.FilterEntry;
@@ -58,8 +59,8 @@ class ActionExecute extends BaseAction {
 			if (null == wi) {
 				wi = new Wi();
 			}
-			if (ListTools.isNotEmpty(wi.getBundleList())){
-				String curKey = MD5Tool.getMD5Str(effectivePerson.getDistinguishedName()+ Config.token().getCipher());
+			if (ListTools.isNotEmpty(wi.getBundleList())) {
+				String curKey = MD5Tool.getMD5Str(effectivePerson.getDistinguishedName() + Config.token().getCipher());
 				if (!curKey.equals(wi.key)) {
 					throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 				}
@@ -68,16 +69,14 @@ class ActionExecute extends BaseAction {
 					wi.getCount(), false);
 			runtime.bundleList = wi.getBundleList();
 		}
-		Plan plan = this.accessPlan(business, view, runtime);
+		Plan plan = this.accessPlan(business, view, runtime, ThisApplication.threadPool());
 		result.setData(plan);
 		return result;
 	}
 
 	public static class Wi extends GsonPropertyObject {
 		@FieldDescribe("过滤")
-		@FieldTypeDescribe(fieldType="class",fieldTypeName = "com.x.query.core.express.plan.FilterEntry",
-		fieldValue="{value='',otherValue='',path='',formatType='',logic='',comparison=''}",
-		fieldSample="{'logic':'逻辑运算:and|or','path':'data数据的路径:$work.title','comparison':'比较运算符:equals|notEquals|like|notLike|greaterThan|greaterThanOrEqualTo|lessThan|lessThanOrEqualTo|range','value':'7月','formatType':'textValue|numberValue|dateTimeValue|booleanValue'}")
+		@FieldTypeDescribe(fieldType = "class", fieldTypeName = "com.x.query.core.express.plan.FilterEntry", fieldValue = "{value='',otherValue='',path='',formatType='',logic='',comparison=''}", fieldSample = "{'logic':'逻辑运算:and|or','path':'data数据的路径:$work.title','comparison':'比较运算符:equals|notEquals|like|notLike|greaterThan|greaterThanOrEqualTo|lessThan|lessThanOrEqualTo|range','value':'7月','formatType':'textValue|numberValue|dateTimeValue|booleanValue'}")
 
 		private List<FilterEntry> filterList = new TreeList<>();
 
