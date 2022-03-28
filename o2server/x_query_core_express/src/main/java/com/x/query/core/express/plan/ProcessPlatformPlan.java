@@ -45,9 +45,7 @@ public class ProcessPlatformPlan extends Plan {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ProcessPlatformPlan.class);
 
-	public ProcessPlatformPlan(Runtime runtime, ExecutorService threadPool) {
-		super(threadPool);
-		this.runtime = runtime;
+	public ProcessPlatformPlan() {
 		this.selectList = new SelectEntries();
 		this.where = new WhereEntry();
 		this.filterList = new TreeList<FilterEntry>();

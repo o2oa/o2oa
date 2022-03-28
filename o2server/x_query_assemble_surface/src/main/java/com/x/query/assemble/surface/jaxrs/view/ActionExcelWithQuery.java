@@ -21,6 +21,7 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.MD5Tool;
 import com.x.query.assemble.surface.Business;
+import com.x.query.assemble.surface.ThisApplication;
 import com.x.query.core.entity.Query;
 import com.x.query.core.entity.View;
 import com.x.query.core.express.plan.FilterEntry;
@@ -33,8 +34,8 @@ class ActionExcelWithQuery extends BaseAction {
 			throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		if (ListTools.isNotEmpty(wi.getBundleList())){
-			String curKey = MD5Tool.getMD5Str(effectivePerson.getDistinguishedName()+ Config.token().getCipher());
+		if (ListTools.isNotEmpty(wi.getBundleList())) {
+			String curKey = MD5Tool.getMD5Str(effectivePerson.getDistinguishedName() + Config.token().getCipher());
 			if (!curKey.equals(wi.key)) {
 				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 			}
@@ -63,7 +64,7 @@ class ActionExcelWithQuery extends BaseAction {
 					wi.getCount(), false);
 			runtime.bundleList = wi.getBundleList();
 		}
-		Plan plan = this.accessPlan(business, view, runtime);
+		Plan plan = this.accessPlan(business, view, runtime, ThisApplication.threadPool());
 		String excelFlag = this.girdWriteToExcel(effectivePerson, business, plan, view, wi.getExcelName());
 		Wo wo = new Wo();
 		wo.setId(excelFlag);
@@ -77,8 +78,7 @@ class ActionExcelWithQuery extends BaseAction {
 
 	public static class Wi extends GsonPropertyObject {
 		@FieldDescribe("过滤")
-		@FieldTypeDescribe(fieldType="class",fieldValue="{value='',otherValue='',path='',formatType='',logic='',comparison=''}",fieldTypeName = "com.x.query.core.express.plan.FilterEntry",
-		fieldSample="{'logic':'逻辑运算:and|or','path':'data数据的路径:$work.title','comparison':'比较运算符:equals|notEquals|like|notLike|greaterThan|greaterThanOrEqualTo|lessThan|lessThanOrEqualTo|range','value':'7月','formatType':'textValue|numberValue|dateTimeValue|booleanValue'}")
+		@FieldTypeDescribe(fieldType = "class", fieldValue = "{value='',otherValue='',path='',formatType='',logic='',comparison=''}", fieldTypeName = "com.x.query.core.express.plan.FilterEntry", fieldSample = "{'logic':'逻辑运算:and|or','path':'data数据的路径:$work.title','comparison':'比较运算符:equals|notEquals|like|notLike|greaterThan|greaterThanOrEqualTo|lessThan|lessThanOrEqualTo|range','value':'7月','formatType':'textValue|numberValue|dateTimeValue|booleanValue'}")
 
 		private List<FilterEntry> filterList = new TreeList<>();
 

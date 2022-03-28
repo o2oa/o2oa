@@ -50,14 +50,15 @@ abstract class BaseAction extends StandardJaxrsAction {
 	}
 
 	protected Runtime runtime(EffectivePerson effectivePerson, Business business, View view,
-							  List<FilterEntry> filterList, Map<String, String> parameter, Integer count, boolean isBundle) throws Exception {
+			List<FilterEntry> filterList, Map<String, String> parameter, Integer count, boolean isBundle)
+			throws Exception {
 		Runtime runtime = new Runtime();
 		runtime.person = effectivePerson.getDistinguishedName();
 		runtime.identityList = business.organization().identity().listWithPerson(effectivePerson);
 		List<String> list = new ArrayList<>();
-		if(runtime.identityList!=null){
-			for(String identity : runtime.identityList){
-				if(identity.indexOf("@")>-1) {
+		if (runtime.identityList != null) {
+			for (String identity : runtime.identityList) {
+				if (identity.indexOf("@") > -1) {
 					list.add(StringUtils.substringAfter(identity, "@"));
 				}
 			}
@@ -65,9 +66,9 @@ abstract class BaseAction extends StandardJaxrsAction {
 			list.clear();
 		}
 		runtime.unitList = business.organization().unit().listWithPerson(effectivePerson);
-		if(runtime.unitList!=null){
-			for(String item : runtime.unitList){
-				if(item.indexOf("@")>-1) {
+		if (runtime.unitList != null) {
+			for (String item : runtime.unitList) {
+				if (item.indexOf("@") > -1) {
 					list.add(StringUtils.substringAfter(item, "@"));
 				}
 			}
@@ -75,20 +76,20 @@ abstract class BaseAction extends StandardJaxrsAction {
 			list.clear();
 		}
 		runtime.unitAllList = business.organization().unit().listWithPersonSupNested(effectivePerson);
-		if(runtime.unitAllList!=null){
-			for(String item : runtime.unitAllList){
-				if(item.indexOf("@")>-1) {
+		if (runtime.unitAllList != null) {
+			for (String item : runtime.unitAllList) {
+				if (item.indexOf("@") > -1) {
 					list.add(StringUtils.substringAfter(item, "@"));
 				}
 			}
 			runtime.unitAllList.addAll(list);
 			list.clear();
 		}
-		runtime.groupList = business.organization().group().listWithPersonReference(
-				ListTools.toList(effectivePerson.getDistinguishedName()), true, true, true);
-		if(runtime.groupList!=null){
-			for(String item : runtime.groupList){
-				if(item.indexOf("@")>-1) {
+		runtime.groupList = business.organization().group()
+				.listWithPersonReference(ListTools.toList(effectivePerson.getDistinguishedName()), true, true, true);
+		if (runtime.groupList != null) {
+			for (String item : runtime.groupList) {
+				if (item.indexOf("@") > -1) {
 					list.add(StringUtils.substringAfter(item, "@"));
 				}
 			}
@@ -96,9 +97,9 @@ abstract class BaseAction extends StandardJaxrsAction {
 			list.clear();
 		}
 		runtime.roleList = business.organization().role().listWithPerson(effectivePerson);
-		if(runtime.roleList!=null){
-			for(String item : runtime.roleList){
-				if(item.indexOf("@")>-1) {
+		if (runtime.roleList != null) {
+			for (String item : runtime.roleList) {
+				if (item.indexOf("@") > -1) {
 					list.add(StringUtils.substringAfter(item, "@"));
 				}
 			}
@@ -113,26 +114,26 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	protected Integer getCount(View view, Integer count, boolean isBundle) {
 		Integer viewCount = view.getCount();
-		if(isBundle) {
-			if(viewCount==null || viewCount < 1){
+		if (isBundle) {
+			if (viewCount == null || viewCount < 1) {
 				viewCount = View.MAX_COUNT;
 			}
-			Integer wiCount = ((count == null) || (count < 1)) ? viewCount : count;
-			return wiCount;
-		}else{
+			return ((count == null) || (count < 1)) ? viewCount : count;
+		} else {
 			Integer wiCount = ((count == null) || (count < 1) || (count > View.MAX_COUNT)) ? View.MAX_COUNT : count;
 			return NumberUtils.min(viewCount, wiCount);
 		}
 	}
 
 	protected void setProcessEdition(Business business, ProcessPlatformPlan processPlatformPlan) throws Exception {
-		if(!processPlatformPlan.where.processList.isEmpty()){
-			List<String> _process_ids = ListTools.extractField(processPlatformPlan.where.processList, Process.id_FIELDNAME, String.class,
-					true, true);
-			List<Process> processList = business.process().listObjectWithProcess(_process_ids, true);
+		if (!processPlatformPlan.where.processList.isEmpty()) {
+			List<String> processIds = ListTools.extractField(processPlatformPlan.where.processList,
+					Process.id_FIELDNAME, String.class, true, true);
+			List<Process> processList = business.process().listObjectWithProcess(processIds, true);
 			List<ProcessPlatformPlan.WhereEntry.ProcessEntry> listProcessEntry = gson.fromJson(gson.toJson(processList),
-					new TypeToken<List<ProcessPlatformPlan.WhereEntry.ProcessEntry>>(){}.getType());
-			if(!listProcessEntry.isEmpty()) {
+					new TypeToken<List<ProcessPlatformPlan.WhereEntry.ProcessEntry>>() {
+					}.getType());
+			if (!listProcessEntry.isEmpty()) {
 				processPlatformPlan.where.processList = listProcessEntry;
 			}
 		}
