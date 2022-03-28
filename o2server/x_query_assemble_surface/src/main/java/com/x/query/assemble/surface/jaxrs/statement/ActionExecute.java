@@ -24,6 +24,8 @@ import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.script.AbstractResources;
 import com.x.base.core.project.scripting.JsonScriptingExecutor;
 import com.x.base.core.project.scripting.ScriptingFactory;
@@ -37,10 +39,17 @@ import com.x.query.core.express.statement.Runtime;
 
 class ActionExecute extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionExecute.class);
+
 	private static final String[] pageKeys = { "GROUP BY", " COUNT(" };
 
 	ActionResult<Object> execute(EffectivePerson effectivePerson, String flag, Integer page, Integer size,
 			JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}, flag:{}, page:{}, size:{}.", effectivePerson::getDistinguishedName, () -> flag,
+				() -> page, () -> size);
+		ClassLoader classLoader = Business.getDynamicEntityClassLoader();
+		Thread.currentThread().setContextClassLoader(classLoader);
 
 		ActionResult<Object> result = new ActionResult<>();
 		Statement statement = this.getStatement(flag);

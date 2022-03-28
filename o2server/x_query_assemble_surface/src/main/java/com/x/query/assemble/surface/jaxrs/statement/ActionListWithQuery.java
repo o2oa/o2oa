@@ -18,6 +18,8 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.SortTools;
 import com.x.query.assemble.surface.Business;
 import com.x.query.core.entity.Query;
@@ -25,7 +27,16 @@ import com.x.query.core.entity.View;
 import com.x.query.core.entity.schema.Statement;
 
 class ActionListWithQuery extends BaseAction {
-	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String queryFlag, JsonElement jsonElement) throws Exception {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionGet.class);
+
+	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String queryFlag, JsonElement jsonElement)
+			throws Exception {
+
+		LOGGER.debug("execute:{}, queryFlag:{}.", effectivePerson::getDistinguishedName, () -> queryFlag);
+		ClassLoader classLoader = Business.getDynamicEntityClassLoader();
+		Thread.currentThread().setContextClassLoader(classLoader);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -41,10 +52,10 @@ class ActionListWithQuery extends BaseAction {
 			for (String id : emc.idsEqual(Statement.class, Statement.query_FIELDNAME, query.getId())) {
 				Statement o = business.pick(id, Statement.class);
 				if (null != o) {
-					if(BooleanUtils.isTrue(wi.getHasView()) && StringUtils.isBlank(o.getView())){
+					if (BooleanUtils.isTrue(wi.getHasView()) && StringUtils.isBlank(o.getView())) {
 						continue;
 					}
-					if(BooleanUtils.isTrue(wi.getJustSelect()) && !Statement.TYPE_SELECT.equals(o.getType())){
+					if (BooleanUtils.isTrue(wi.getJustSelect()) && !Statement.TYPE_SELECT.equals(o.getType())) {
 						continue;
 					}
 					if (business.readable(effectivePerson, o)) {
@@ -58,7 +69,7 @@ class ActionListWithQuery extends BaseAction {
 		}
 	}
 
-	public static class Wi extends GsonPropertyObject{
+	public static class Wi extends GsonPropertyObject {
 
 		@FieldDescribe("是否只查询select语句.")
 		private Boolean justSelect;

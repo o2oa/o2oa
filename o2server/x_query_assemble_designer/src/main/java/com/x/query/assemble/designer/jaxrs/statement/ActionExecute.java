@@ -19,6 +19,8 @@ import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.script.AbstractResources;
 import com.x.base.core.project.scripting.JsonScriptingExecutor;
 import com.x.base.core.project.scripting.ScriptingFactory;
@@ -34,8 +36,15 @@ class ActionExecute extends BaseAction {
 
 	private static final String[] pageKeys = { "GROUP BY", " COUNT(" };
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionExecute.class);
+
 	ActionResult<Object> execute(EffectivePerson effectivePerson, String flag, Integer page, Integer size,
 			JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}, flag:{}, page:{}, size:{}.", effectivePerson::getDistinguishedName, () -> flag,
+				() -> page, () -> size);
+		ClassLoader classLoader = Business.getDynamicEntityClassLoader();
+		Thread.currentThread().setContextClassLoader(classLoader);
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Object> result = new ActionResult<>();
@@ -53,9 +62,9 @@ class ActionExecute extends BaseAction {
 			Object data = null;
 
 			if (StringUtils.equalsIgnoreCase(statement.getFormat(), Statement.FORMAT_SCRIPT)) {
-				data = this.script(effectivePerson, business, statement, runtime);
+				data = this.script(effectivePerson, business, classLoader, statement, runtime);
 			} else {
-				data = this.jpql(business, statement, runtime);
+				data = this.jpql(business, classLoader, statement, runtime);
 			}
 
 			result.setData(data);
@@ -63,13 +72,13 @@ class ActionExecute extends BaseAction {
 		}
 	}
 
-	private Object script(EffectivePerson effectivePerson, Business business, Statement statement, Runtime runtime)
-			throws Exception {
+	private Object script(EffectivePerson effectivePerson, Business business, ClassLoader classLoader,
+			Statement statement, Runtime runtime) throws Exception {
 		Object data = null;
 		ScriptContext scriptContext = this.scriptContext(effectivePerson, runtime);
 		CompiledScript cs = ScriptingFactory.functionalizationCompile(statement.getScriptText());
 		String text = JsonScriptingExecutor.evalString(cs, scriptContext);
-		Class<? extends JpaObject> cls = this.clazz(business, statement);
+		Class<? extends JpaObject> cls = this.clazz(business, classLoader, statement);
 		EntityManager em;
 		if (StringUtils.equalsIgnoreCase(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)
 				&& StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)) {
@@ -97,9 +106,10 @@ class ActionExecute extends BaseAction {
 		return data;
 	}
 
-	private Object jpql(Business business, Statement statement, Runtime runtime) throws Exception {
+	private Object jpql(Business business, ClassLoader classLoader, Statement statement, Runtime runtime)
+			throws Exception {
 		Object data = null;
-		Class<? extends JpaObject> cls = this.clazz(business, statement);
+		Class<? extends JpaObject> cls = this.clazz(business, classLoader, statement);
 		EntityManager em;
 		if (StringUtils.equalsIgnoreCase(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)
 				&& StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)) {
@@ -137,20 +147,20 @@ class ActionExecute extends BaseAction {
 		return true;
 	}
 
-	private Class<? extends JpaObject> clazz(Business business, Statement statement) throws Exception {
+	@SuppressWarnings("unchecked")
+	private Class<? extends JpaObject> clazz(Business business, ClassLoader classLoader, Statement statement)
+			throws Exception {
 		Class<? extends JpaObject> cls = null;
 		if (StringUtils.equals(Statement.ENTITYCATEGORY_OFFICIAL, statement.getEntityCategory())
 				|| StringUtils.equals(Statement.ENTITYCATEGORY_CUSTOM, statement.getEntityCategory())) {
-			cls = (Class<? extends JpaObject>) Thread.currentThread().getContextClassLoader()
-					.loadClass(statement.getEntityClassName());
+			cls = (Class<? extends JpaObject>) classLoader.loadClass(statement.getEntityClassName());
 		} else {
 			Table table = business.entityManagerContainer().flag(statement.getTable(), Table.class);
 			if (null == table) {
 				throw new ExceptionEntityNotExist(statement.getTable(), Table.class);
 			}
 			DynamicEntity dynamicEntity = new DynamicEntity(table.getName());
-			cls = (Class<? extends JpaObject>) Thread.currentThread().getContextClassLoader()
-					.loadClass(dynamicEntity.className());
+			cls = (Class<? extends JpaObject>) classLoader.loadClass(dynamicEntity.className());
 		}
 		return cls;
 	}
