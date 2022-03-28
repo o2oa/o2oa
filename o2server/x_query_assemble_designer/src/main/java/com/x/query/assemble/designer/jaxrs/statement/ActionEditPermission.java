@@ -23,10 +23,14 @@ import com.x.query.core.entity.schema.Statement;
 
 class ActionEditPermission extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionEditPermission.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionEditPermission.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, JsonElement jsonElement) throws Exception {
-		logger.debug(effectivePerson.getDistinguishedName());
+
+		LOGGER.debug("execute:{}, flag:{}.", effectivePerson::getDistinguishedName, () -> flag);
+		ClassLoader classLoader = Business.getDynamicEntityClassLoader();
+		Thread.currentThread().setContextClassLoader(classLoader);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -59,6 +63,8 @@ class ActionEditPermission extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = -272543657827689218L;
 
 	}
 

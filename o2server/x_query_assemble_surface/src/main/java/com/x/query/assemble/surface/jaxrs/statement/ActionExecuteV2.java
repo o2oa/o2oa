@@ -56,6 +56,12 @@ class ActionExecuteV2 extends BaseAction {
 
 	ActionResult<Object> execute(EffectivePerson effectivePerson, String flag, String mode, Integer page, Integer size,
 			JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}, flag:{}, page:{}, size:{}.", effectivePerson::getDistinguishedName, () -> flag,
+				() -> page, () -> size);
+		ClassLoader classLoader = Business.getDynamicEntityClassLoader();
+		Thread.currentThread().setContextClassLoader(classLoader);
+		
 		Statement statement = null;
 		ActionResult<Object> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
