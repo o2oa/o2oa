@@ -22,20 +22,29 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.query.assemble.designer.Business;
 import com.x.query.core.entity.schema.Statement;
 import com.x.query.core.entity.schema.Table;
 
 class ActionGetEntityProperties extends BaseAction {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionGetEntityProperties.class);
+
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String entity, String entityCategory)
 			throws Exception {
+
+		LOGGER.debug("execute:{}, entity:{}, entityCategory:{}.", effectivePerson::getDistinguishedName, () -> entity,
+				() -> entityCategory);
+		ClassLoader classLoader = Business.getDynamicEntityClassLoader();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Business business = new Business(emc);
 			if (!business.controllable(effectivePerson)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
-			Class<? extends JpaObject> cls = this.clazz(business, entity, entityCategory);
+			Class<? extends JpaObject> cls = this.clazz(business, classLoader, entity, entityCategory);
 			result.setData(this.getEntityDes(cls, true, false));
 			return result;
 		}
@@ -72,12 +81,13 @@ class ActionGetEntityProperties extends BaseAction {
 	}
 
 	@SuppressWarnings("unchecked")
-	private Class<? extends JpaObject> clazz(Business business, String entity, String entityCategory) throws Exception {
+	private Class<? extends JpaObject> clazz(Business business, ClassLoader classLoader, String entity,
+			String entityCategory) throws Exception {
 		Class<? extends JpaObject> cls = null;
 		if (StringUtils.equals(Statement.ENTITYCATEGORY_OFFICIAL, entityCategory)
 				|| StringUtils.equals(Statement.ENTITYCATEGORY_CUSTOM, entityCategory)) {
 			try {
-				cls = (Class<? extends JpaObject>) Thread.currentThread().getContextClassLoader().loadClass(entity);
+				cls = (Class<? extends JpaObject>) classLoader.loadClass(entity);
 			} catch (Exception e) {
 				throw new ExceptionEntityNotExist(entity, entityCategory);
 			}
@@ -88,8 +98,7 @@ class ActionGetEntityProperties extends BaseAction {
 			}
 			DynamicEntity dynamicEntity = new DynamicEntity(table.getName());
 			try {
-				cls = (Class<? extends JpaObject>) Thread.currentThread().getContextClassLoader()
-						.loadClass(dynamicEntity.className());
+				cls = (Class<? extends JpaObject>) classLoader.loadClass(dynamicEntity.className());
 			} catch (Exception e) {
 				throw new ExceptionEntityNotExist(entity, entityCategory);
 			}

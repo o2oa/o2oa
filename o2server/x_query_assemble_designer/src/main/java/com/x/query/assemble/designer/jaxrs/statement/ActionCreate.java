@@ -19,6 +19,8 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.query.assemble.designer.Business;
 import com.x.query.core.entity.Query;
@@ -26,7 +28,13 @@ import com.x.query.core.entity.schema.Statement;
 import com.x.query.core.entity.schema.Table;
 
 class ActionCreate extends BaseAction {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCreate.class);
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
+		LOGGER.debug("execute;{}.", effectivePerson::getDistinguishedName);
+		ClassLoader classLoader = Business.getDynamicEntityClassLoader();
+		Thread.currentThread().setContextClassLoader(classLoader);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -45,12 +53,11 @@ class ActionCreate extends BaseAction {
 				statement.setTable(table.getId());
 			} else {
 				try {
-					Thread.currentThread().getContextClassLoader().loadClass(statement.getEntityClassName());
+					classLoader.loadClass(statement.getEntityClassName());
 				} catch (Exception e) {
 					throw new ExceptionEntityClass(statement.getEntityClassName());
 				}
 			}
-
 			if (!business.editable(effectivePerson, query)) {
 				throw new ExceptionAccessDenied(effectivePerson, query);
 			}
@@ -76,6 +83,8 @@ class ActionCreate extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = -6780522841538599608L;
 
 	}
 

@@ -31,7 +31,6 @@ class ActionExecute extends BaseAction {
 		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 		ClassLoader classLoader = Business.getDynamicEntityClassLoader();
 		Thread.currentThread().setContextClassLoader(classLoader);
-		Thread.currentThread().setContextClassLoader(Business.getDynamicEntityClassLoader());
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Object> result = new ActionResult<>();
 			Business business = new Business(emc);

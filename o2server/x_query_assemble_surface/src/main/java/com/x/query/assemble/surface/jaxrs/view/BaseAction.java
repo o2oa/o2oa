@@ -20,6 +20,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import com.google.gson.reflect.TypeToken;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.project.cache.CacheManager;
@@ -88,7 +89,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 	private void setProcessEdition(ProcessPlatformPlan processPlatformPlan) throws Exception {
 		if (!processPlatformPlan.where.processList.isEmpty()) {
 			List<String> processIds = ListTools.extractField(processPlatformPlan.where.processList,
-					Process.id_FIELDNAME, String.class, true, true);
+					JpaObject.id_FIELDNAME, String.class, true, true);
 			List<Process> processList;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);

@@ -29,9 +29,12 @@ import com.x.query.core.entity.schema.Table;
 
 class ActionEdit extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionEdit.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionEdit.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, JsonElement jsonElement) throws Exception {
+		LOGGER.debug("execute;{}, flag:{}.", effectivePerson::getDistinguishedName, () -> flag);
+		ClassLoader classLoader = Business.getDynamicEntityClassLoader();
+		Thread.currentThread().setContextClassLoader(classLoader);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -58,7 +61,7 @@ class ActionEdit extends BaseAction {
 				statement.setTable(table.getId());
 			} else {
 				try {
-					Thread.currentThread().getContextClassLoader().loadClass(statement.getEntityClassName());
+					classLoader.loadClass(statement.getEntityClassName());
 				} catch (Exception e) {
 					throw new ExceptionEntityClass(statement.getEntityClassName());
 				}
@@ -85,6 +88,8 @@ class ActionEdit extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = 2191345451588705624L;
 
 	}
 
