@@ -212,7 +212,7 @@ function createXFormConcatTask(path, isMin, thisOptions) {
             'source/' + path + '/ViewSelector.js',
             'source/' + path + '/*.js',
             'source/x_component_process_Work/Processor.js',
-            '!/source/' + path + '/Documenteditor.js ',
+            '!source/' + path + '/Documenteditor.js ',
             '!source/' + path + '/Office.js'
         ];
         var dest = option.dest+'/' + path + '/';
