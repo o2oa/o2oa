@@ -46,6 +46,7 @@ import com.x.query.core.express.statement.Runtime;
 class ActionExecuteV2 extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionExecuteV2.class);
+	
 	private static final String[] keys = { "group by", "GROUP BY", "order by", "ORDER BY", "limit", "LIMIT" };
 	private static final String[] pageKeys = { "GROUP BY", " COUNT(" };
 	private static final String JOIN_KEY = " JOIN ";
