@@ -48,6 +48,11 @@ class ActionExecuteV2 extends BaseAction {
 	ActionResult<Object> execute(EffectivePerson effectivePerson, String flag, String mode, Integer page, Integer size,
 			JsonElement jsonElement) throws Exception {
 
+		LOGGER.debug("execute:{}, flag:{}, page:{}, size:{}.", effectivePerson::getDistinguishedName, () -> flag,
+				() -> page, () -> size);
+		ClassLoader classLoader = Business.getDynamicEntityClassLoader();
+		Thread.currentThread().setContextClassLoader(classLoader);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Object> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -67,10 +72,10 @@ class ActionExecuteV2 extends BaseAction {
 			case Statement.MODE_DATA:
 				switch (Objects.toString(statement.getFormat(), "")) {
 				case Statement.FORMAT_SCRIPT:
-					data = this.script(effectivePerson, business, statement, runtime, mode);
+					data = this.script(effectivePerson, business, classLoader, statement, runtime, mode);
 					break;
 				default:
-					data = this.jpql(business, statement, runtime, mode);
+					data = this.jpql(business, classLoader, statement, runtime, mode);
 					break;
 				}
 				result.setData(data);
@@ -78,10 +83,10 @@ class ActionExecuteV2 extends BaseAction {
 			case Statement.MODE_COUNT:
 				switch (Objects.toString(statement.getFormat(), "")) {
 				case Statement.FORMAT_SCRIPT:
-					count = this.script(effectivePerson, business, statement, runtime, mode);
+					count = this.script(effectivePerson, business, classLoader, statement, runtime, mode);
 					break;
 				default:
-					count = this.jpql(business, statement, runtime, mode);
+					count = this.jpql(business, classLoader, statement, runtime, mode);
 					break;
 				}
 				result.setData(count);
@@ -90,12 +95,13 @@ class ActionExecuteV2 extends BaseAction {
 			default:
 				switch (Objects.toString(statement.getFormat(), "")) {
 				case Statement.FORMAT_SCRIPT:
-					data = this.script(effectivePerson, business, statement, runtime, Statement.MODE_DATA);
-					count = this.script(effectivePerson, business, statement, runtime, Statement.MODE_COUNT);
+					data = this.script(effectivePerson, business, classLoader, statement, runtime, Statement.MODE_DATA);
+					count = this.script(effectivePerson, business, classLoader, statement, runtime,
+							Statement.MODE_COUNT);
 					break;
 				default:
-					data = this.jpql(business, statement, runtime, Statement.MODE_DATA);
-					count = this.jpql(business, statement, runtime, Statement.MODE_COUNT);
+					data = this.jpql(business, classLoader, statement, runtime, Statement.MODE_DATA);
+					count = this.jpql(business, classLoader, statement, runtime, Statement.MODE_COUNT);
 					break;
 				}
 				result.setData(data);
@@ -105,8 +111,8 @@ class ActionExecuteV2 extends BaseAction {
 		}
 	}
 
-	private Object script(EffectivePerson effectivePerson, Business business, Statement statement, Runtime runtime,
-			String mode) throws Exception {
+	private Object script(EffectivePerson effectivePerson, Business business, ClassLoader classLoader,
+			Statement statement, Runtime runtime, String mode) throws Exception {
 		Object data = null;
 		ScriptContext scriptContext = this.scriptContext(effectivePerson, runtime);
 		String scriptText = statement.getScriptText();
@@ -115,7 +121,7 @@ class ActionExecuteV2 extends BaseAction {
 		}
 		CompiledScript cs = ScriptingFactory.functionalizationCompile(scriptText);
 		String jpql = JsonScriptingExecutor.evalString(cs, scriptContext);
-		Class<? extends JpaObject> cls = this.clazz(business, statement);
+		Class<? extends JpaObject> cls = this.clazz(business, classLoader, statement);
 		EntityManager em;
 		if (StringUtils.equalsIgnoreCase(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)
 				&& StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)) {
@@ -155,9 +161,10 @@ class ActionExecuteV2 extends BaseAction {
 		return data;
 	}
 
-	private Object jpql(Business business, Statement statement, Runtime runtime, String mode) throws Exception {
+	private Object jpql(Business business, ClassLoader classLoader, Statement statement, Runtime runtime, String mode)
+			throws Exception {
 		Object data = null;
-		Class<? extends JpaObject> cls = this.clazz(business, statement);
+		Class<? extends JpaObject> cls = this.clazz(business, classLoader, statement);
 		EntityManager em;
 		if (StringUtils.equalsIgnoreCase(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)
 				&& StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)) {
@@ -217,20 +224,20 @@ class ActionExecuteV2 extends BaseAction {
 		return true;
 	}
 
-	private Class<? extends JpaObject> clazz(Business business, Statement statement) throws Exception {
+	@SuppressWarnings("unchecked")
+	private Class<? extends JpaObject> clazz(Business business, ClassLoader classLoader, Statement statement)
+			throws Exception {
 		Class<? extends JpaObject> cls = null;
 		if (StringUtils.equals(Statement.ENTITYCATEGORY_OFFICIAL, statement.getEntityCategory())
 				|| StringUtils.equals(Statement.ENTITYCATEGORY_CUSTOM, statement.getEntityCategory())) {
-			cls = (Class<? extends JpaObject>) Thread.currentThread().getContextClassLoader()
-					.loadClass(statement.getEntityClassName());
+			cls = (Class<? extends JpaObject>) classLoader.loadClass(statement.getEntityClassName());
 		} else {
 			Table table = business.entityManagerContainer().flag(statement.getTable(), Table.class);
 			if (null == table) {
 				throw new ExceptionEntityNotExist(statement.getTable(), Table.class);
 			}
 			DynamicEntity dynamicEntity = new DynamicEntity(table.getName());
-			cls = (Class<? extends JpaObject>) Thread.currentThread().getContextClassLoader()
-					.loadClass(dynamicEntity.className());
+			cls = (Class<? extends JpaObject>) classLoader.loadClass(dynamicEntity.className());
 		}
 		return cls;
 	}
