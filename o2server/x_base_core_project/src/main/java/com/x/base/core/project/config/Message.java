@@ -9,6 +9,8 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 
 public class Message extends GsonPropertyObject {
 
+	private static final long serialVersionUID = 2536141863287117519L;
+
 	public Message() {
 
 	}
@@ -19,22 +21,21 @@ public class Message extends GsonPropertyObject {
 
 	public Message(List<String> list, Map<String, String> map) {
 		this.consumers.addAll(list);
-		if(map!=null) {
+		if (map != null) {
 			this.consumersV2.putAll(map);
 		}
 	}
 
 	public Message(String... args) {
-		if(args!=null){
-			for (String arg : args){
-				this.consumersV2.put(arg,"");
+		if (args != null) {
+			for (String arg : args) {
+				this.consumersV2.put(arg, "");
 			}
 		}
-		//this.consumers.addAll(ListTools.toList(args));
 	}
 
-	public Message(Map<String, String> map){
-		if(map!=null) {
+	public Message(Map<String, String> map) {
+		if (map != null) {
 			this.consumersV2.putAll(map);
 		}
 	}
@@ -45,7 +46,7 @@ public class Message extends GsonPropertyObject {
 
 	private List<String> consumers = new ArrayList<>();
 
-	private Map<String,String> consumersV2 = new HashMap<>();
+	private Map<String, String> consumersV2 = new HashMap<>();
 
 	public List<String> getConsumers() {
 		return consumers;

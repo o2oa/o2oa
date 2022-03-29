@@ -40,16 +40,18 @@ class ActionCreate extends BaseAction {
 	private static ConcurrentMap<String, CompiledScript> scriptMap = new ConcurrentHashMap<>();
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
-		LOGGER.debug(effectivePerson.getDistinguishedName());
+
+		LOGGER.debug("execute:{}, jsonElement:{}.", effectivePerson::getDistinguishedName, () -> jsonElement);
+
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		List<String> consumers = Config.messages().getConsumers(wi.getType());
+//		List<String> consumers = Config.messages().getConsumers(wi.getType());
 		Map<String, String> consumersV2 = Config.messages().getConsumersV2(wi.getType());
-		for (String consumer : consumers) {
-			if (!consumersV2.containsKey(consumer)) {
-				consumersV2.put(consumer, "");
-			}
-		}
+//		for (String consumer : consumers) {
+//			if (BooleanUtils.isFalse(consumersV2.containsKey(consumer))) {
+//				consumersV2.put(consumer, "");
+//			}
+//		}
 		Instant instant = this.instant(wi, new ArrayList<>(consumersV2.keySet()));
 		List<Message> messages = new ArrayList<>();
 		assemble(wi, consumersV2, instant, messages);
@@ -159,6 +161,9 @@ class ActionCreate extends BaseAction {
 		case MessageConnector.CONSUME_MPWEIXIN:
 			message = this.mpweixinMessage(cpWi, instant);
 			break;
+//		case MessageConnector.CONSUME_MPWEIXtN:
+//			message = this.mpweixinMessage(cpWi, instant);
+//			break;
 		default:
 			if (consumer.startsWith(MessageConnector.CONSUME_MQ)) {
 				message = this.mqMessage(cpWi, instant, consumer);

@@ -143,6 +143,8 @@ public class MessageConnector {
 
 	public static final String CONSUME_MQ = "mq";
 
+	public static final String CONSUME_QUERY = "query";
+
 	private static Context context;
 
 	private static LinkedBlockingQueue<Wrap> connectQueue = new LinkedBlockingQueue<>(10000);
@@ -157,8 +159,9 @@ public class MessageConnector {
 	public static void stop() {
 		try {
 			connectQueue.put(new StopSignal());
-		} catch (Exception e) {
+		} catch (InterruptedException e) {
 			e.printStackTrace();
+			Thread.currentThread().interrupt();
 		}
 	}
 
@@ -172,6 +175,7 @@ public class MessageConnector {
 	}
 
 	public static class ConnectorThread extends Thread {
+		@Override
 		public void run() {
 			while (true) {
 				try {
