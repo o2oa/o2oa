@@ -43,7 +43,7 @@ public class WebServerTools extends JettySeverTools {
 	private static Logger logger = LoggerFactory.getLogger(WebServerTools.class);
 
 	private static final int WEBSERVER_THREAD_POOL_SIZE_MIN = 20;
-	private static final int WEBSERVER_THREAD_POOL_SIZE_MAX = 500;
+	private static final int WEBSERVER_THREAD_POOL_SIZE_MAX = 2000;
 
 	public static Server start(WebServer webServer) throws Exception {
 

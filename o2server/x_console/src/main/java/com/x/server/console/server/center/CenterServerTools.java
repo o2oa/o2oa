@@ -48,7 +48,7 @@ public class CenterServerTools extends JettySeverTools {
 	private static Logger logger = LoggerFactory.getLogger(CenterServerTools.class);
 
 	private static final int CENTERSERVER_THREAD_POOL_SIZE_MIN = 20;
-	private static final int CENTERSERVER_THREAD_POOL_SIZE_MAX = 500;
+	private static final int CENTERSERVER_THREAD_POOL_SIZE_MAX = 2000;
 
 	public static Server start(CenterServer centerServer) throws Exception {
 

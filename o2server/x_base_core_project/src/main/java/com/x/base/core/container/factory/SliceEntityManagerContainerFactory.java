@@ -29,6 +29,7 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.CheckRemove;
 import com.x.base.core.entity.annotation.Flag;
 import com.x.base.core.entity.annotation.RestrictFlag;
+import com.x.base.core.entity.dynamic.DynamicEntity;
 
 public abstract class SliceEntityManagerContainerFactory {
 
@@ -76,7 +77,14 @@ public abstract class SliceEntityManagerContainerFactory {
 			flagMap.put(clz, Collections.unmodifiableList(flagFields));
 			restrictFlagMap.put(clz, Collections.unmodifiableList(restrictFlagFields));
 		}
-		if (null != classLoader) {
+		boolean hasDynamicEntityClass = false;
+		for (String className : classNames) {
+			if (StringUtils.startsWith(className, DynamicEntity.CLASS_PACKAGE)) {
+				hasDynamicEntityClass = true;
+				break;
+			}
+		}
+		if ((null != classLoader) && hasDynamicEntityClass) {
 			clz = (Class<? extends JpaObject>) cl.loadClass("com.x.base.core.entity.dynamic.DynamicBaseEntity");
 			checkPersistFieldMap.put(clz, new HashMap<>());
 			checkRemoveFieldMap.put(clz, new HashMap<>());

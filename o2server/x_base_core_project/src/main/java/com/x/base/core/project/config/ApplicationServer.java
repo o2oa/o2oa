@@ -9,6 +9,8 @@ import com.x.base.core.project.annotation.FieldDescribe;
 
 public class ApplicationServer extends ConfigObject {
 
+	private static final long serialVersionUID = 4182216855396608843L;
+
 	public static ApplicationServer defaultInstance() {
 		return new ApplicationServer();
 	}
@@ -22,7 +24,7 @@ public class ApplicationServer extends ConfigObject {
 	private static final Integer DEFAULT_MAXFORMCONTENT = 20;
 	private static final Boolean DEFAULT_EXPOSEJEST = true;
 	private static final Boolean DEFAULT_PERSISTENTCONNECTIONSENABLE = true;
-	private static final Integer DEFAULT_MAXTHREAD = 500;
+	private static final Integer DEFAULT_MAXTHREAD = 2000;
 	private static final Boolean DEFAULT_REQUESTLOGENABLE = false;
 	private static final String DEFAULT_REQUESTLOGFORMAT = "";
 	private static final Integer DEFAULT_REQUESTLOGRETAINDAYS = 7;
@@ -36,10 +38,10 @@ public class ApplicationServer extends ConfigObject {
 		this.proxyPort = DEFAULT_PORT;
 		this.redeploy = true;
 		this.scanInterval = DEFAULT_SCANINTERVAL;
-		this.includes = new CopyOnWriteArrayList<String>();
-		this.excludes = new CopyOnWriteArrayList<String>();
-		this.weights = new CopyOnWriteArrayList<NameWeightPair>();
-		this.scheduleWeights = new CopyOnWriteArrayList<NameWeightPair>();
+		this.includes = new CopyOnWriteArrayList<>();
+		this.excludes = new CopyOnWriteArrayList<>();
+		this.weights = new CopyOnWriteArrayList<>();
+		this.scheduleWeights = new CopyOnWriteArrayList<>();
 		this.statEnable = DEFAULT_STATENABLE;
 		this.statExclusions = DEFAULT_STATEXCLUSIONS;
 		this.maxFormContent = DEFAULT_MAXFORMCONTENT;
