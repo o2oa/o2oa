@@ -662,7 +662,7 @@ if (!window.o2) {
          * <pre><code class="language-js">options参数格式如下：
          * {
          *      "noCache":  是否使用缓存，默认true,
-         *      "reload":   如果相同路径的js文件已经在如果了，是否重新载入,默认为：false
+         *      "reload":   如果相同路径的js文件已经加载了，是否重新载入,默认为：false
          *      "sequence": 当urls参数为数组时，多个脚本文件是否按数组顺序依次载入,默认为false
          *      "type":     载入脚本的类型,默认为"text/javascript"
          *      "baseUrl":  要载入脚本的url的base路径,默认""
