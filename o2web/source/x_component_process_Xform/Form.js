@@ -2350,7 +2350,14 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 MWF.xDesktop.requireApp("process.Xform", "Subform", null, false);
             }
             var submitFormContainer = new Element("div").inject(layout.mobile ? $(document.body) : this.app.content);
-            this.submitFormModule = new MWF["APPSubmitform"](submitFormContainer, this.json, this);
+            this.submitFormModule = new MWF["APPSubmitform"](submitFormContainer, {
+                id: this.json.id,
+                submitFormSelected: this.json.submitFormSelected,
+                submitFormAppSelected: this.json.submitFormAppSelected,
+                submitFormType: this.json.submitFormType,
+                submitFormScript: this.json.submitFormScript,
+                submitScript: this.json.submitScript
+            }, this);
             this.submitFormModule.addEvent("afterModulesLoad", function () {
                 this.submitFormModule.show();
                 this.fireEvent("afterLoadProcessor", [this.submitFormModule]);
