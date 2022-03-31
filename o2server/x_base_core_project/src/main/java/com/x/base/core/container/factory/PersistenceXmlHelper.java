@@ -156,7 +156,8 @@ public class PersistenceXmlHelper {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static List<String> write(String path, List<String> entities, ClassLoader classLoader) {
+	public static List<String> write(String path, List<String> entities, boolean loadDynamicEntityClass,
+			ClassLoader classLoader) {
 		List<String> names = new ArrayList<>();
 		String name = "";
 		try {
@@ -177,7 +178,7 @@ public class PersistenceXmlHelper {
 					unit.addElement("class").addText(o.getName());
 				}
 			}
-			if (null != classLoader) {
+			if (loadDynamicEntityClass) {
 				names.addAll(addDynamicClassCreateCombineUnit(persistence, cl));
 			}
 			OutputFormat format = OutputFormat.createPrettyPrint();
@@ -221,13 +222,13 @@ public class PersistenceXmlHelper {
 					unit.addElement("class").addText(o.getName());
 				}
 			}
-			Element unit = persistence.addElement("persistence-unit");
-			unit.addAttribute("name", DynamicBaseEntity.class.getName());
-			unit.addAttribute("transaction-type", "RESOURCE_LOCAL");
-			unit.addElement("provider").addText(PersistenceProviderImpl.class.getName());
-			for (String name : combineNames) {
-				unit.addElement("class").addText(name);
-			}
+		}
+		Element unit = persistence.addElement("persistence-unit");
+		unit.addAttribute("name", DynamicBaseEntity.class.getName());
+		unit.addAttribute("transaction-type", "RESOURCE_LOCAL");
+		unit.addElement("provider").addText(PersistenceProviderImpl.class.getName());
+		for (String name : combineNames) {
+			unit.addElement("class").addText(name);
 		}
 		return names;
 	}

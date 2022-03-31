@@ -49,9 +49,10 @@ public abstract class SliceEntityManagerContainerFactory {
 
 	@SuppressWarnings("unchecked")
 	protected SliceEntityManagerContainerFactory(String webApplicationDirectory, List<String> entities,
-			boolean sliceFeatureEnable, ClassLoader classLoader) throws Exception {
+			boolean sliceFeatureEnable, boolean loadDynamicEntityClass, ClassLoader classLoader) throws Exception {
 		File path = new File(webApplicationDirectory + "/WEB-INF/classes/" + PERSISTENCE_XML_PATH);
-		List<String> classNames = PersistenceXmlHelper.write(path.getAbsolutePath(), entities, classLoader);
+		List<String> classNames = PersistenceXmlHelper.write(path.getAbsolutePath(), entities, loadDynamicEntityClass,
+				classLoader);
 		ClassLoader cl = null == classLoader ? Thread.currentThread().getContextClassLoader() : classLoader;
 		Class<? extends JpaObject> clz;
 		for (String className : classNames) {
@@ -77,14 +78,7 @@ public abstract class SliceEntityManagerContainerFactory {
 			flagMap.put(clz, Collections.unmodifiableList(flagFields));
 			restrictFlagMap.put(clz, Collections.unmodifiableList(restrictFlagFields));
 		}
-		boolean hasDynamicEntityClass = false;
-		for (String className : classNames) {
-			if (StringUtils.startsWith(className, DynamicEntity.CLASS_PACKAGE)) {
-				hasDynamicEntityClass = true;
-				break;
-			}
-		}
-		if ((null != classLoader) && hasDynamicEntityClass) {
+		if (loadDynamicEntityClass) {
 			clz = (Class<? extends JpaObject>) cl.loadClass("com.x.base.core.entity.dynamic.DynamicBaseEntity");
 			checkPersistFieldMap.put(clz, new HashMap<>());
 			checkRemoveFieldMap.put(clz, new HashMap<>());

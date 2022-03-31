@@ -74,7 +74,7 @@ public class Business {
 		try {
 			EntityManagerContainerFactory.close();
 			Business.refreshDynamicEntityClassLoader();
-			ThisApplication.context().initDatas(Business.getDynamicEntityClassLoader());
+			ThisApplication.context().initDatas(false, Business.getDynamicEntityClassLoader());
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}

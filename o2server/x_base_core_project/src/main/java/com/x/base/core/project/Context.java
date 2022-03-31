@@ -138,15 +138,14 @@ public class Context extends AbstractContext {
 		this.token = UUID.randomUUID().toString();
 		this.applications = new Applications();
 		this.queues = new ArrayList<>();
-
 	}
 
 	public static Context concrete(ServletContextEvent servletContextEvent) throws Exception {
-		return concrete(servletContextEvent, null);
+		return concrete(servletContextEvent, false, null);
 	}
 
-	public static Context concrete(ServletContextEvent servletContextEvent, ClassLoader dynamicEntityClassLoader)
-			throws Exception {
+	public static Context concrete(ServletContextEvent servletContextEvent, boolean loadDynamicEntityClass,
+			ClassLoader classLoader) throws Exception {
 		// 强制忽略ssl服务器认证
 		SslTools.ignoreSsl();
 		ServletContext servletContext = servletContextEvent.getServletContext();
@@ -162,7 +161,7 @@ public class Context extends AbstractContext {
 		context.weight = Config.currentNode().getApplication().weight(context.clazz);
 		context.scheduleWeight = Config.currentNode().getApplication().scheduleWeight(context.clazz);
 		context.sslEnable = Config.currentNode().getApplication().getSslEnable();
-		context.initDatas(dynamicEntityClassLoader);
+		context.initDatas(loadDynamicEntityClass, classLoader);
 		servletContext.setAttribute(AbstractContext.class.getName(), context);
 		SchedulerFactoryProperties schedulerFactoryProperties = SchedulerFactoryProperties.concrete();
 		schedulerFactoryProperties.setProperty("org.quartz.scheduler.instanceName",
@@ -275,15 +274,16 @@ public class Context extends AbstractContext {
 		if (ArrayUtils.isNotEmpty(this.module.containerEntities())) {
 			logger.info("{} loading datas, entity size:{}.", this.clazz.getName(),
 					this.module.containerEntities().length);
-			EntityManagerContainerFactory.init(path, ListTools.toList(this.module.containerEntities()), null);
+			EntityManagerContainerFactory.init(path, ListTools.toList(this.module.containerEntities()), false, null);
 		}
 	}
 
-	public void initDatas(ClassLoader classLoader) throws Exception {
+	public void initDatas(boolean loadDynamicEntityClass, ClassLoader classLoader) throws Exception {
 		if (ArrayUtils.isNotEmpty(this.module.containerEntities())) {
 			logger.info("{} loading datas, entity size:{}.", this.clazz.getName(),
 					this.module.containerEntities().length);
-			EntityManagerContainerFactory.init(path, ListTools.toList(this.module.containerEntities()), classLoader);
+			EntityManagerContainerFactory.init(path, ListTools.toList(this.module.containerEntities()),
+					loadDynamicEntityClass, classLoader);
 		}
 	}
 

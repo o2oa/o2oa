@@ -4,7 +4,7 @@ import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.component.core.entity.Component;
 
-class ActionBase extends StandardJaxrsAction {
+class BaseAction extends StandardJaxrsAction {
 
 	CacheCategory cacheCategory = new CacheCategory(Component.class);
 

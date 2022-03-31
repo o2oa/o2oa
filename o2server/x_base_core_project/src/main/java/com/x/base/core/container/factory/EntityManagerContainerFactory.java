@@ -24,17 +24,18 @@ public class EntityManagerContainerFactory extends SliceEntityManagerContainerFa
 			if (instance != null) {
 				EntityManagerContainerFactory.close();
 			}
-			instance = new EntityManagerContainerFactory(webApplicationDirectory, entities, null);
+			instance = new EntityManagerContainerFactory(webApplicationDirectory, entities, false, null);
 		}
 	}
 
-	public static void init(String webApplicationDirectory, List<String> entities, ClassLoader classLoader)
-			throws Exception {
+	public static void init(String webApplicationDirectory, List<String> entities, boolean loadDynamicEntityClass,
+			ClassLoader classLoader) throws Exception {
 		synchronized (EntityManagerContainerFactory.class) {
 			if (instance != null) {
 				EntityManagerContainerFactory.close();
 			}
-			instance = new EntityManagerContainerFactory(webApplicationDirectory, entities, classLoader);
+			instance = new EntityManagerContainerFactory(webApplicationDirectory, entities, loadDynamicEntityClass,
+					classLoader);
 		}
 	}
 
@@ -64,8 +65,8 @@ public class EntityManagerContainerFactory extends SliceEntityManagerContainerFa
 	}
 
 	private EntityManagerContainerFactory(String webApplicationDirectory, List<String> entities,
-			ClassLoader classLoader) throws Exception {
-		super(webApplicationDirectory, entities, false, classLoader);
+			boolean loadDynamicEntityClass, ClassLoader classLoader) throws Exception {
+		super(webApplicationDirectory, entities, false, loadDynamicEntityClass, classLoader);
 	}
 
 	private EntityManagerContainerFactory(String source) {
