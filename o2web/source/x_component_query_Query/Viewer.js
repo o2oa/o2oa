@@ -1672,6 +1672,8 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         this.searchMorph = null;
         this.viewSearchCustomContentNode = null;
 
+        this.paging = null;
+
         var newJson = Object.merge( Object.clone(this.originalJson), json );
         this.container.empty();
         this.initialize( this.container, newJson, Object.clone(this.options), this.app, this.parentMacro);
