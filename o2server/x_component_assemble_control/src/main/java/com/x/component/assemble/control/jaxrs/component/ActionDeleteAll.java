@@ -13,7 +13,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.component.assemble.control.Business;
 import com.x.component.core.entity.Component;
 
-class ActionDeleteAll extends ActionBase {
+class ActionDeleteAll extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionDeleteAll.class);
 

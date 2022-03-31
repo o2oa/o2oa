@@ -1,10 +1,12 @@
 package com.x.base.core.entity.tools;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
@@ -12,12 +14,16 @@ import java.util.TreeSet;
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.criteria.Path;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.openjpa.persistence.jdbc.ElementColumn;
 
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.entity.JsonProperties;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.tools.StringTools;
 
@@ -138,6 +144,115 @@ public class JpaObjectTools {
 			}
 		}
 		return set;
+	}
+
+	public static String type(Field field) {
+		String value = singleType(field);
+		if (StringUtils.isNotEmpty(value)) {
+			return value;
+		}
+		if (Collection.class.isAssignableFrom(field.getType())) {
+			value = collectionType(field);
+			if (StringUtils.isNotEmpty(value)) {
+				return value;
+			}
+		}
+		if (Map.class.isAssignableFrom(field.getType())) {
+			value = mapType(field);
+			if (StringUtils.isNotEmpty(value)) {
+				return value;
+			}
+		}
+		return value;
+	}
+
+	private static String singleType(Field field) {
+		if (String.class.isAssignableFrom(field.getType())) {
+			return JpaObject.TYPE_STRING;
+		}
+		if (Integer.class.isAssignableFrom(field.getType())) {
+			return JpaObject.TYPE_INTEGER;
+		}
+		if (Long.class.isAssignableFrom(field.getType())) {
+			return JpaObject.TYPE_LONG;
+		}
+		if (Float.class.isAssignableFrom(field.getType())) {
+			return JpaObject.TYPE_FLOAT;
+		}
+		if (Double.class.isAssignableFrom(field.getType())) {
+			return JpaObject.TYPE_DOUBLE;
+		}
+		if (Boolean.class.isAssignableFrom(field.getType())) {
+			return JpaObject.TYPE_BOOLEAN;
+		}
+		if (JsonProperties.class.isAssignableFrom(field.getType())) {
+			return JpaObject.TYPE_JSONPROPERTIES;
+		}
+		if ((new byte[] {}).getClass().isAssignableFrom(field.getType())) {
+			return JpaObject.TYPE_BYTEARRAY;
+		}
+		if (Date.class.isAssignableFrom(field.getType())) {
+			Temporal temporal = field.getAnnotation(Temporal.class);
+			if ((null != temporal) && (Objects.equals(temporal.value(), TemporalType.DATE))) {
+				return JpaObject.TYPE_DATE;
+			}
+			return JpaObject.TYPE_DATETIME;
+		}
+		return null;
+	}
+
+	private static String collectionType(Field field) {
+		ParameterizedType parameterized = (ParameterizedType) field.getGenericType();
+		Class<?> actualClass = (Class<?>) parameterized.getActualTypeArguments()[0];
+		if (String.class.isAssignableFrom(actualClass)) {
+			return JpaObject.TYPE_STRINGLIST;
+		}
+		if (Integer.class.isAssignableFrom(actualClass)) {
+			return JpaObject.TYPE_INTEGERLIST;
+		}
+		if (Long.class.isAssignableFrom(actualClass)) {
+			return JpaObject.TYPE_LONGLIST;
+		}
+		if (Double.class.isAssignableFrom(actualClass)) {
+			return JpaObject.TYPE_DOUBLELIST;
+		}
+		if (Float.class.isAssignableFrom(actualClass)) {
+			return JpaObject.TYPE_FLOATLIST;
+		}
+		if (Date.class.isAssignableFrom(actualClass)) {
+			return JpaObject.TYPE_DATETIMELIST;
+		}
+		if (Boolean.class.isAssignableFrom(actualClass)) {
+			return JpaObject.TYPE_BOOLEANLIST;
+		}
+		return null;
+	}
+
+	private static String mapType(Field field) {
+		ParameterizedType parameterized = (ParameterizedType) field.getGenericType();
+		Class<?> actualClass = (Class<?>) parameterized.getActualTypeArguments()[1];
+		if (String.class.isAssignableFrom(actualClass)) {
+			return JpaObject.TYPE_STRINGMAP;
+		}
+		if (Integer.class.isAssignableFrom(actualClass)) {
+			return JpaObject.TYPE_INTEGERMAP;
+		}
+		if (Long.class.isAssignableFrom(actualClass)) {
+			return JpaObject.TYPE_LONGMAP;
+		}
+		if (Float.class.isAssignableFrom(actualClass)) {
+			return JpaObject.TYPE_FLOATMAP;
+		}
+		if (Double.class.isAssignableFrom(actualClass)) {
+			return JpaObject.TYPE_DOUBLEMAP;
+		}
+		if (Date.class.isAssignableFrom(actualClass)) {
+			return JpaObject.TYPE_DATETIMEMAP;
+		}
+		if (Boolean.class.isAssignableFrom(actualClass)) {
+			return JpaObject.TYPE_BOOLEANMAP;
+		}
+		return null;
 	}
 
 }

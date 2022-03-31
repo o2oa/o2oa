@@ -91,7 +91,7 @@ public class DumpData {
 				logger.print("find {} data to dump, start at {}.", classNames.size(), DateTools.format(start));
 				Path xml = Paths.get(Config.dir_local_temp_classes().getAbsolutePath(),
 						DateTools.compact(start) + "_dump.xml");
-				PersistenceXmlHelper.write(xml.toString(), classNames, classLoader);
+				PersistenceXmlHelper.write(xml.toString(), classNames, true, classLoader);
 				StorageMappings storageMappings = Config.storageMappings();
 				Stream<String> stream = BooleanUtils.isTrue(Config.dumpRestoreData().getParallel())
 						? classNames.parallelStream()

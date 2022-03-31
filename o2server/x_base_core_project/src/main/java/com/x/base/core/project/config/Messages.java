@@ -71,11 +71,7 @@ public class Messages extends ConcurrentSkipListMap<String, Message> {
 				MessageConnector.CONSUME_QIYEWEIXIN, MessageConnector.CONSUME_WELINK, MessageConnector.CONSUME_MQ));
 
 		// 待办转已办通知
-		o.put(MessageConnector.TYPE_TASK_TO_TASKCOMPLETED,
-				new Message(MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS,
-						MessageConnector.CONSUME_DINGDING, MessageConnector.CONSUME_ZHENGWUDINGDING,
-						MessageConnector.CONSUME_QIYEWEIXIN, MessageConnector.CONSUME_WELINK,
-						MessageConnector.CONSUME_MQ));
+		o.put(MessageConnector.TYPE_TASK_TO_TASKCOMPLETED, new Message(MessageConnector.CONSUME_MQ));
 		// 待办提醒通知
 		o.put(MessageConnector.TYPE_TASK_PRESS, new Message(MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS,
 				MessageConnector.CONSUME_DINGDING, MessageConnector.CONSUME_ZHENGWUDINGDING,

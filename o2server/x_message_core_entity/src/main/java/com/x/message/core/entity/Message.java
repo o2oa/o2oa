@@ -48,12 +48,8 @@ public class Message extends SliceJpaObject {
 	/* 以上为 JpaObject 默认字段 */
 
 	public void onPersist() throws Exception {
+		// nothing
 	}
-
-	/* 更新运行方法 */
-
-	/* flag标志位 */
-	/* Entity 默认字段结束 */
 
 	public static final String title_FIELDNAME = "title";
 	@FieldDescribe("通知标题.")
@@ -103,6 +99,20 @@ public class Message extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + instant_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String instant;
+
+	public static final String TARGET_FIELDNAME = "target";
+	@FieldDescribe("目标对象.")
+	@Column(length = length_255B, name = ColumnNamePrefix + TARGET_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String target;
+
+	public String getTarget() {
+		return target;
+	}
+
+	public void setTarget(String target) {
+		this.target = target;
+	}
 
 	public String getBody() {
 		return body;

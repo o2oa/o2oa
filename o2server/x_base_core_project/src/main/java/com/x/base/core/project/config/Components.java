@@ -56,7 +56,7 @@ public class Components extends ConfigObject {
 		case NAME_ORG:
 			return new Component(NAME_ORG, NAME_ORG, "组织管理", APPICON_PNG, 2, Component.TYPE_SYSTEM);
 		case NAME_CMSMANAGER:
-			return new Component(NAME_CMSMANAGER, "cms.Column", "内容管理平台", APPICON_PNG, 3, Component.TYPE_SYSTEM);
+			return new Component(NAME_CMSMANAGER, "cms.Column", "内容管理设置", APPICON_PNG, 3, Component.TYPE_SYSTEM);
 		case NAME_APPLICATIONEXPLORER:
 			return new Component(NAME_APPLICATIONEXPLORER, "process.ApplicationExplorer", "流程管理平台", APPICON_PNG, 4,
 					Component.TYPE_SYSTEM);
@@ -80,7 +80,7 @@ public class Components extends ConfigObject {
 		case NAME_BAM:
 			return new Component(NAME_BAM, NAME_BAM, "流程监控", APPICON_PNG, 12, Component.TYPE_SYSTEM);
 		case NAME_CMS:
-			return new Component(NAME_CMS, "cms.Index", "信息平台", APPICON_PNG, 12, Component.TYPE_SYSTEM);
+			return new Component(NAME_CMS, "cms.Index", "内容管理首页", APPICON_PNG, 12, Component.TYPE_SYSTEM);
 		case NAME_WORKCENTER:
 			return new Component(NAME_WORKCENTER, "process.workcenter", "办公中心", APPICON_PNG, 13, Component.TYPE_SYSTEM);
 		case NAME_HOMEPAGE:

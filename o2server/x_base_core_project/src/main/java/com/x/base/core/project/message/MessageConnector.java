@@ -142,8 +142,8 @@ public class MessageConnector {
 	public static final String CONSUME_MPWEIXIN = "mpweixin"; // 微信公众号
 
 	public static final String CONSUME_MQ = "mq";
-
-	public static final String CONSUME_QUERY = "query";
+	// 同步到数据中心自定义表
+	public static final String CONSUME_UPDATEQUERYTABLE = "updateQueryTable";
 
 	private static Context context;
 
