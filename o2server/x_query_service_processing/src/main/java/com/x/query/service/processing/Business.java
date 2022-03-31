@@ -1,16 +1,66 @@
 package com.x.query.service.processing;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.IOFileFilter;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
+
 import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.dynamic.DynamicEntity;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.organization.core.express.Organization;
 import com.x.query.service.processing.factory.QueryFactory;
 
 public class Business {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(Business.class);
+
 	private EntityManagerContainer emc;
 
 	public Business() {
+	}
+
+	private static ClassLoader dynamicEntityClassLoader = null;
+
+	public static ClassLoader getDynamicEntityClassLoader() throws IOException, URISyntaxException {
+		if (null == dynamicEntityClassLoader) {
+			refreshDynamicEntityClassLoader();
+		}
+		return dynamicEntityClassLoader;
+	}
+
+	public static synchronized void refreshDynamicEntityClassLoader() throws IOException, URISyntaxException {
+		List<URL> urlList = new ArrayList<>();
+		IOFileFilter filter = new WildcardFileFilter(DynamicEntity.JAR_PREFIX + "*.jar");
+		for (File o : FileUtils.listFiles(Config.dir_dynamic_jars(true), filter, null)) {
+			urlList.add(o.toURI().toURL());
+		}
+		URL[] urls = new URL[urlList.size()];
+		dynamicEntityClassLoader = URLClassLoader.newInstance(urlList.toArray(urls),
+				null != ThisApplication.context() ? ThisApplication.context().servletContext().getClassLoader()
+						: Thread.currentThread().getContextClassLoader());
+	}
+
+	public static void reloadClassLoader() {
+		try {
+			EntityManagerContainerFactory.close();
+			Business.refreshDynamicEntityClassLoader();
+			ThisApplication.context().initDatas(false, Business.getDynamicEntityClassLoader());
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 	}
 
 	public Business(EntityManagerContainer emc) throws Exception {

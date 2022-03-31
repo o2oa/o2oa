@@ -7,6 +7,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Application;
 import com.x.base.core.project.x_query_assemble_designer;
 import com.x.base.core.project.x_query_assemble_surface;
+import com.x.base.core.project.x_query_service_processing;
 import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
@@ -53,6 +54,7 @@ class ActionBuildQueryDispatch extends BaseAction {
 			});
 		}
 		refreshSurface();
+		refreshProcessing();
 		wo.setValue(true);
 
 		result.setData(wo);
@@ -66,6 +68,22 @@ class ActionBuildQueryDispatch extends BaseAction {
 			apps.stream().forEach(o -> {
 				try {
 					String url = o.getUrlJaxrsRoot() + "table/reload/dynamic";
+					LOGGER.info("refresh surface:{}.", url);
+					CipherConnectionAction.get(false, url);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			});
+		}
+	}
+
+	private void refreshProcessing() throws Exception {
+		List<Application> apps = ThisApplication.context().applications().get(x_query_service_processing.class);
+		if (ListTools.isNotEmpty(apps)) {
+			apps.stream().forEach(o -> {
+				try {
+					String url = o.getUrlJaxrsRoot() + "table/reload/dynamic";
+					LOGGER.info("refresh processing:{}.", url);
 					CipherConnectionAction.get(false, url);
 				} catch (Exception e) {
 					e.printStackTrace();

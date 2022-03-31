@@ -37,6 +37,8 @@ public class ThisApplication {
 
 	public static final MPWeixinConsumeQueue mpWeixinConsumeQueue = new MPWeixinConsumeQueue();
 
+	public static final UpdateQueryTableConsumeQueue updateQueryTableConsumeQueue = new UpdateQueryTableConsumeQueue();
+
 	public static Context context() {
 		return context;
 	}
@@ -58,16 +60,7 @@ public class ThisApplication {
 	}
 
 	private static void startQueue() throws Exception {
-		if (BooleanUtils.isTrue(Config.communicate().wsEnable())) {
-			context().startQueue(wsConsumeQueue);
-		}
-		if (BooleanUtils.isTrue(Config.communicate().pmsEnable())) {
-			context().startQueue(pmsConsumeQueue);
-		}
-		if (BooleanUtils.isTrue(Config.communicate().calendarEnable())) {
-			context().startQueue(calendarConsumeQueue);
-		}
-
+		startCommunicateQueue();
 		if (BooleanUtils.isTrue(Config.qiyeweixin().getEnable())
 				&& BooleanUtils.isTrue(Config.qiyeweixin().getMessageEnable())) {
 			context().startQueue(qiyeweixinConsumeQueue);
@@ -85,13 +78,27 @@ public class ThisApplication {
 		if (Config.weLink().getEnable() && Config.weLink().getMessageEnable()) {
 			context().startQueue(weLinkConsumeQueue);
 		}
-
 		if (BooleanUtils.isTrue(Config.mq().getEnable())) {
 			context().startQueue(mqConsumeQueue);
 		}
 		if (BooleanUtils.isTrue(Config.mPweixin().getEnable())
 				&& BooleanUtils.isTrue(Config.mPweixin().getMessageEnable())) {
 			context().startQueue(mpWeixinConsumeQueue);
+		}
+	}
+
+	private static void startCommunicateQueue() throws Exception {
+		if (BooleanUtils.isTrue(Config.communicate().wsEnable())) {
+			context().startQueue(wsConsumeQueue);
+		}
+		if (BooleanUtils.isTrue(Config.communicate().pmsEnable())) {
+			context().startQueue(pmsConsumeQueue);
+		}
+		if (BooleanUtils.isTrue(Config.communicate().calendarEnable())) {
+			context().startQueue(calendarConsumeQueue);
+		}
+		if (BooleanUtils.isTrue(Config.communicate().updateQueryTableEnable())) {
+			context().startQueue(updateQueryTableConsumeQueue);
 		}
 	}
 
