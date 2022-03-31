@@ -10,7 +10,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.component.core.entity.Component;
 
-class ActionGet extends ActionBase {
+class ActionGet extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {

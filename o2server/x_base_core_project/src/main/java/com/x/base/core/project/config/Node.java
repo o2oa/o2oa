@@ -201,7 +201,7 @@ public class Node extends ConfigObject {
 		private String path = "";
 
 		public Boolean enable() {
-			return (BooleanUtils.isTrue(this.enable)) ? true : false;
+			return BooleanUtils.isTrue(this.enable);
 		}
 
 		public String cron() {

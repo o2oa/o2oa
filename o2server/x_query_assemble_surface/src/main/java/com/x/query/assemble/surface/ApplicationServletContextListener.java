@@ -12,7 +12,8 @@ public class ApplicationServletContextListener implements ServletContextListener
 	@Override
 	public void contextInitialized(ServletContextEvent servletContextEvent) {
 		try {
-			ThisApplication.setContext(Context.concrete(servletContextEvent, Business.getDynamicEntityClassLoader()));
+			ThisApplication
+					.setContext(Context.concrete(servletContextEvent, true, Business.getDynamicEntityClassLoader()));
 			ThisApplication.init();
 			ThisApplication.context().regist();
 		} catch (Exception e) {

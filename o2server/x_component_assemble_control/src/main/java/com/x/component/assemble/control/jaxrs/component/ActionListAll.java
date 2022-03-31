@@ -21,7 +21,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.component.core.entity.Component;
 
-class ActionListAll extends ActionBase {
+class ActionListAll extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionListAll.class);
 

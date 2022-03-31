@@ -45,16 +45,9 @@ class ActionCreate extends BaseAction {
 
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-//		List<String> consumers = Config.messages().getConsumers(wi.getType());
 		Map<String, String> consumersV2 = Config.messages().getConsumersV2(wi.getType());
-//		for (String consumer : consumers) {
-//			if (BooleanUtils.isFalse(consumersV2.containsKey(consumer))) {
-//				consumersV2.put(consumer, "");
-//			}
-//		}
 		Instant instant = this.instant(wi, new ArrayList<>(consumersV2.keySet()));
-		List<Message> messages = new ArrayList<>();
-		assemble(wi, consumersV2, instant, messages);
+		List<Message> messages = assemble(wi, consumersV2, instant);
 		save(instant, messages);
 		this.sendMessage(messages);
 		Wo wo = new Wo();
@@ -77,8 +70,8 @@ class ActionCreate extends BaseAction {
 		}
 	}
 
-	private void assemble(Wi wi, Map<String, String> consumersV2, Instant instant, List<Message> messages)
-			throws Exception {
+	private List<Message> assemble(Wi wi, Map<String, String> consumersV2, Instant instant) throws Exception {
+		List<Message> messages = new ArrayList<>();
 		if (!consumersV2.isEmpty()) {
 			for (Map.Entry<String, String> en : consumersV2.entrySet()) {
 				String func = consumersV2.get(en.getKey());
@@ -91,6 +84,7 @@ class ActionCreate extends BaseAction {
 				}
 			}
 		}
+		return messages;
 	}
 
 	private Wi executeFun(Wi wi, String func, String consumer) {
@@ -161,9 +155,9 @@ class ActionCreate extends BaseAction {
 		case MessageConnector.CONSUME_MPWEIXIN:
 			message = this.mpweixinMessage(cpWi, instant);
 			break;
-//		case MessageConnector.CONSUME_MPWEIXtN:
-//			message = this.mpweixinMessage(cpWi, instant);
-//			break;
+		case MessageConnector.CONSUME_UPDATEQUERYTABLE:
+			message = this.updateQueryTableMessage(cpWi, instant);
+			break;
 		default:
 			if (consumer.startsWith(MessageConnector.CONSUME_MQ)) {
 				message = this.mqMessage(cpWi, instant, consumer);
@@ -208,6 +202,9 @@ class ActionCreate extends BaseAction {
 				break;
 			case MessageConnector.CONSUME_MPWEIXIN:
 				sendMessageMPWeixin(message);
+				break;
+			case MessageConnector.CONSUME_UPDATEQUERYTABLE:
+				sendMessageUpdateQueryTable(message);
 				break;
 			default:
 				if (message.getConsumer().startsWith(MessageConnector.CONSUME_MQ)
@@ -281,6 +278,12 @@ class ActionCreate extends BaseAction {
 	private void sendMessageWs(Message message) throws Exception {
 		if (BooleanUtils.isTrue(Config.communicate().wsEnable())) {
 			ThisApplication.wsConsumeQueue.send(message);
+		}
+	}
+
+	private void sendMessageUpdateQueryTable(Message message) throws Exception {
+		if (BooleanUtils.isTrue(Config.communicate().updateQueryTableEnable())) {
+			ThisApplication.updateQueryTableConsumeQueue.send(message);
 		}
 	}
 
@@ -438,6 +441,26 @@ class ActionCreate extends BaseAction {
 				message.setPerson(wi.getPerson());
 				message.setTitle(wi.getTitle());
 				message.setConsumer(MessageConnector.CONSUME_MPWEIXIN);
+				message.setConsumed(false);
+				message.setInstant(instant.getId());
+			}
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		return message;
+	}
+
+	private Message updateQueryTableMessage(Wi wi, Instant instant) {
+		Message message = null;
+		try {
+			if (BooleanUtils.isTrue(Config.mPweixin().getEnable())
+					&& BooleanUtils.isTrue(Config.mPweixin().getMessageEnable())) {
+				message = new Message();
+				message.setBody(Objects.toString(wi.getBody()));
+				message.setType(wi.getType());
+				message.setPerson(wi.getPerson());
+				message.setTitle(wi.getTitle());
+				message.setConsumer(MessageConnector.CONSUME_UPDATEQUERYTABLE);
 				message.setConsumed(false);
 				message.setInstant(instant.getId());
 			}

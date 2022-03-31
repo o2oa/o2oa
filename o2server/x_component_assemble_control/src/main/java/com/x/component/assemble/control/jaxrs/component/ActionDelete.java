@@ -14,7 +14,7 @@ import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.component.assemble.control.Business;
 import com.x.component.core.entity.Component;
 
-class ActionDelete extends ActionBase {
+class ActionDelete extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
