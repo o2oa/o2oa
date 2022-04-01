@@ -991,5 +991,22 @@ public class ProcessPlatform extends ConfigObject {
 		public void setEnable(Boolean enable) {
 			this.enable = enable;
 		}
+
+		public Integer getRetryMinutes() {
+			return NumberTools.nullOrLessThan(this.retryMinutes, 0) ? DEFAULT_RETRYMINUTES : this.retryMinutes;
+		}
+
+		public void setRetryMinutes(Integer retryMinutes) {
+			this.retryMinutes = retryMinutes;
+		}
+
+		public Integer getThresholdMinutes() {
+			return NumberTools.nullOrLessThan(this.thresholdMinutes, 0) ? DEFAULT_THRESHOLDMINUTES : this.thresholdMinutes;
+		}
+
+		public void setThresholdMinutes(Integer thresholdMinutes) {
+			this.thresholdMinutes = thresholdMinutes;
+		}
+
 	}
 }

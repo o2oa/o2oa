@@ -55,12 +55,11 @@ public class Event extends SliceJpaObject {
 		this.failure = 0;
 	}
 
-	public static final String WORKCOMPLETED_FIELDNAME = "workCompleted";
+	public static final String JOB_FIELDNAME = "job";
 	@FieldDescribe("任务标识.")
-	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + WORKCOMPLETED_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + WORKCOMPLETED_FIELDNAME)
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + JOB_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	private String workCompleted;
+	private String job;
 
 	public static final String TARGET_FIELDNAME = "target";
 	@FieldDescribe("目标对象标识.")
@@ -80,6 +79,14 @@ public class Event extends SliceJpaObject {
 	@Column(name = ColumnNamePrefix + FAILURE_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Integer failure;
+
+	public String getJob() {
+		return job;
+	}
+
+	public void setJob(String job) {
+		this.job = job;
+	}
 
 	public Integer getFailure() {
 		return failure;
@@ -103,14 +110,6 @@ public class Event extends SliceJpaObject {
 
 	public void setType(String type) {
 		this.type = type;
-	}
-
-	public String getWorkCompleted() {
-		return workCompleted;
-	}
-
-	public void setWorkCompleted(String workCompleted) {
-		this.workCompleted = workCompleted;
 	}
 
 }

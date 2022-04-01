@@ -68,22 +68,4 @@ public class TableAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "获取可使用的自建表.", action = ActionListTableStatusBuild.class)
-	@GET
-	@Path("list/status/build")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void listTableStatusBuild(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request) {
-		ActionResult<List<ActionListTableStatusBuild.Wo>> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionListTableStatusBuild().execute(effectivePerson);
-		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
-
 }

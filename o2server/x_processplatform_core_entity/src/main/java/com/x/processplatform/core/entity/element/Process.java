@@ -105,7 +105,7 @@ public class Process extends SliceJpaObject {
 		return updateTableEnable;
 	}
 
-	public void setAsyncSupported(Boolean updateTableEnable) {
+	public void setUpdateTableEnable(Boolean updateTableEnable) {
 		this.updateTableEnable = updateTableEnable;
 		this.getProperties().setUpdateTableEnable(updateTableEnable);
 	}
