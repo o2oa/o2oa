@@ -279,7 +279,7 @@ o2.widget.O2Unit = new Class({
     getPersonData: function(){
         if (!this.data.distinguishedName || !this.data.levelName){
             this.action.actions = {"getUnit": {"uri": "/jaxrs/unit/{id}"}};
-            this.action.invoke({"name": "getUnit", "async": false, "parameter": {"id": (this.data.id || this.data.name)}, "success": function(json){
+            this.action.invoke({"name": "getUnit", "async": false, "parameter": {"id": (this.data.id || this.data.distinguishedName || this.data.name)}, "success": function(json){
                 this.data = json.data;
             }.bind(this)});
         }
