@@ -100,20 +100,6 @@ public class Message extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false)
 	private String instant;
 
-	public static final String TARGET_FIELDNAME = "target";
-	@FieldDescribe("目标对象.")
-	@Column(length = length_255B, name = ColumnNamePrefix + TARGET_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private String target;
-
-	public String getTarget() {
-		return target;
-	}
-
-	public void setTarget(String target) {
-		this.target = target;
-	}
-
 	public String getBody() {
 		return body;
 	}

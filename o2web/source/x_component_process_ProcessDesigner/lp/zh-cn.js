@@ -279,6 +279,9 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"dataPath": "数据路径",
 		"dataType": "数据类型",
 		"mappingOnFlow": "每次流转刷新映射数据",
+		"mappingDataToTable": "映射数据表",
+		"mappingTableEnabled": "流转结束后将数据存储到数据表",
+		"queryTable": "数据表",
 
 		"allowReroute": "是否允许调度",
 		"allowRerouteTo": "允许调度到此活动",
