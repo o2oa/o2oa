@@ -37,8 +37,6 @@ public class ThisApplication {
 
 	public static final MPWeixinConsumeQueue mpWeixinConsumeQueue = new MPWeixinConsumeQueue();
 
-	public static final UpdateQueryTableConsumeQueue updateQueryTableConsumeQueue = new UpdateQueryTableConsumeQueue();
-
 	public static Context context() {
 		return context;
 	}
@@ -96,9 +94,6 @@ public class ThisApplication {
 		}
 		if (BooleanUtils.isTrue(Config.communicate().calendarEnable())) {
 			context().startQueue(calendarConsumeQueue);
-		}
-		if (BooleanUtils.isTrue(Config.communicate().updateQueryTableEnable())) {
-			context().startQueue(updateQueryTableConsumeQueue);
 		}
 	}
 

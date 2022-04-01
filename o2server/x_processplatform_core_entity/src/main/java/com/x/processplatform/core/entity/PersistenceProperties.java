@@ -236,6 +236,21 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 		}
 	}
 
+	public static class Message {
+
+		private Message() {
+		}
+
+		public static class Event {
+
+			private Event() {
+			}
+
+			public static final String table = "PP_M_EVENT";
+
+		}
+	}
+
 	public static class Temporary {
 		public static class TriggerWorkRecord {
 			public static final String table = "PP_T_TRIGGERWORKRECORD";
