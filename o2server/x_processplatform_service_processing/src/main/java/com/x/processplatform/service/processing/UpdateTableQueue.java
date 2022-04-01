@@ -10,6 +10,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
 import com.google.gson.Gson;
@@ -35,7 +36,9 @@ public class UpdateTableQueue extends AbstractQueue<String> {
 	private Gson gson = XGsonBuilder.instance();
 
 	protected void execute(String id) throws Exception {
-		update(id);
+		if (StringUtils.isNotEmpty(id)) {
+			update(id);
+		}
 		List<String> ids = this.checkOverstay();
 		if (!ids.isEmpty()) {
 			for (String s : ids) {
@@ -131,8 +134,34 @@ public class UpdateTableQueue extends AbstractQueue<String> {
 			list.addAll(em.createQuery(cq.select(root.get(Event_.id)).where(p)).setMaxResults(100).getResultList());
 		}
 		if (!list.isEmpty()) {
-			LOGGER.info("found {} overstay {} message.", () -> list.size(), () -> Event.EVENTTYPE_UPDATETABLE);
+			LOGGER.info("查找到 {} 条处理失败的同步到自建表事件.", () -> list.size());
 		}
 		return list;
+	}
+
+	private void clean() throws Exception {
+		List<String> list = new ArrayList<>();
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			EntityManager em = emc.get(Event.class);
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<String> cq = cb.createQuery(String.class);
+			Root<Event> root = cq.from(Event.class);
+			Predicate p = cb.equal(root.get(Event_.type), Event.EVENTTYPE_UPDATETABLE);
+			p = cb.and(p, cb.lessThanOrEqualTo(root.get(Event_.updateTime), DateUtils.addDays(new Date(), -7)));
+			list.addAll(em.createQuery(cq.select(root.get(Event_.id)).where(p)).setMaxResults(100).getResultList());
+			if (!list.isEmpty()) {
+				emc.beginTransaction(Event.class);
+				for (String id : list) {
+					Event event = emc.find(id, Event.class);
+					if (null != event) {
+						emc.remove(event);
+					}
+				}
+				emc.commit();
+			}
+		}
+		if (!list.isEmpty()) {
+			LOGGER.info("删除 {} 条超期的同步到自建表事件.", () -> list.size());
+		}
 	}
 }
