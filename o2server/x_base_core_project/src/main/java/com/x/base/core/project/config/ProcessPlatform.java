@@ -81,6 +81,7 @@ public class ProcessPlatform extends ConfigObject {
 		this.touchDetained = new TouchDetained();
 		this.deleteDraft = new DeleteDraft();
 		this.passExpired = new PassExpired();
+		this.updateTable = new UpdateTable();
 		this.processingSignalPersistEnable = DEFAULT_PROCESSINGSIGNALPERSISTENABLE;
 		this.asynchronousTimeout = DEFAULT_ASYNCHRONOUSTIMEOUT;
 		this.attachmentConfig = new AttachmentConfig();
@@ -182,6 +183,9 @@ public class ProcessPlatform extends ConfigObject {
 	@FieldDescribe("提醒设置,设置提醒间隔.")
 	private Press press;
 
+	@FieldDescribe("同步到自建表设置.")
+	private UpdateTable updateTable;
+
 	@FieldDescribe("事件扩充.")
 	private ExtensionEvents extensionEvents;
 
@@ -229,6 +233,10 @@ public class ProcessPlatform extends ConfigObject {
 
 	public Expire getExpire() {
 		return this.expire == null ? new Expire() : this.expire;
+	}
+
+	public UpdateTable getUpdateTable() {
+		return this.updateTable == null ? new UpdateTable() : this.updateTable;
 	}
 
 	public PassExpired getPassExpired() {
@@ -936,4 +944,52 @@ public class ProcessPlatform extends ConfigObject {
 
 	}
 
+	public static class UpdateTable extends ConfigObject {
+
+		private static final long serialVersionUID = -7066262450518673067L;
+
+		public static UpdateTable defaultInstance() {
+			return new UpdateTable();
+		}
+
+		public static final Boolean DEFAULT_ENABLE = true;
+
+		public static final String DEFAULT_CRON = "20 20 * * * ?";
+
+		public static final Integer DEFAULT_RETRYMINUTES = 20;
+
+		public static final Integer DEFAULT_THRESHOLDMINUTES = 60 * 24 * 7;
+
+		@FieldDescribe("是否启用")
+		private Boolean enable = DEFAULT_ENABLE;
+
+		@FieldDescribe("定时cron表达式.")
+		private String cron = DEFAULT_CRON;
+
+		@FieldDescribe("重试间隔(分钟),默认20分钟.")
+		private Integer retryMinutes = DEFAULT_RETRYMINUTES;
+
+		@FieldDescribe("最大保留期限(分钟),默认10080分钟(7天).")
+		private Integer thresholdMinutes = DEFAULT_THRESHOLDMINUTES;
+
+		public String getCron() {
+			if (StringUtils.isNotEmpty(this.cron) && CronExpression.isValidExpression(this.cron)) {
+				return this.cron;
+			} else {
+				return DEFAULT_CRON;
+			}
+		}
+
+		public Boolean getEnable() {
+			return BooleanUtils.isTrue(this.enable);
+		}
+
+		public void setCron(String cron) {
+			this.cron = cron;
+		}
+
+		public void setEnable(Boolean enable) {
+			this.enable = enable;
+		}
+	}
 }
