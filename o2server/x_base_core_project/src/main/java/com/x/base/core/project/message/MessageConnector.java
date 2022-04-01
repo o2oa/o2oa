@@ -142,8 +142,6 @@ public class MessageConnector {
 	public static final String CONSUME_MPWEIXIN = "mpweixin"; // 微信公众号
 
 	public static final String CONSUME_MQ = "mq";
-	// 同步到数据中心自定义表
-	public static final String CONSUME_UPDATEQUERYTABLE = "updateQueryTable";
 
 	private static Context context;
 
@@ -174,6 +172,10 @@ public class MessageConnector {
 		connectQueue.put(wrap);
 	}
 
+	public static void updateTable(Wrap warp) {
+
+	}
+
 	public static class ConnectorThread extends Thread {
 		@Override
 		public void run() {
@@ -194,6 +196,8 @@ public class MessageConnector {
 
 	public static class Wrap extends GsonPropertyObject {
 
+		private static final long serialVersionUID = 2603938363315602487L;
+
 		@FieldDescribe("类型")
 		private String type;
 
@@ -205,6 +209,28 @@ public class MessageConnector {
 
 		@FieldDescribe("推送内容")
 		private JsonElement body;
+
+		@FieldDescribe("用于传输的唯一标识(id,job).")
+		private String bundle;
+
+		@FieldDescribe("目标对象标识.")
+		private String target;
+
+		public String getBundle() {
+			return bundle;
+		}
+
+		public void setBundle(String bundle) {
+			this.bundle = bundle;
+		}
+
+		public String getTarget() {
+			return target;
+		}
+
+		public void setTarget(String target) {
+			this.target = target;
+		}
 
 		public String getType() {
 			return type;

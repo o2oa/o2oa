@@ -1,5 +1,7 @@
 package com.x.processplatform.core.entity.element;
 
+import java.util.List;
+
 import com.x.base.core.entity.JsonProperties;
 import com.x.base.core.project.annotation.FieldDescribe;
 
@@ -24,6 +26,28 @@ public class ProcessProperties extends JsonProperties {
 
 	@FieldDescribe("人工活动有停留脚本文本.")
 	private String manualStayScriptText;
+
+	@FieldDescribe("启用同步到自建表.")
+	private Boolean updateTableEnable;
+
+	@FieldDescribe("同步到自建表.")
+	private List<String> updateTableList;
+
+	public Boolean getUpdateTableEnable() {
+		return updateTableEnable;
+	}
+
+	public void setUpdateTableEnable(Boolean updateTableEnable) {
+		this.updateTableEnable = updateTableEnable;
+	}
+
+	public List<String> getUpdateTableList() {
+		return updateTableList;
+	}
+
+	public void setUpdateTableList(List<String> updateTableList) {
+		this.updateTableList = updateTableList;
+	}
 
 	public String getManualBeforeTaskScript() {
 		return manualBeforeTaskScript;
@@ -73,6 +97,4 @@ public class ProcessProperties extends JsonProperties {
 		this.manualStayScriptText = manualStayScriptText;
 	}
 
-	
-	
 }

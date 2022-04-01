@@ -50,6 +50,8 @@ public class ThisApplication {
 
 	public static final SyncJaxwsInvokeQueue syncJaxwsInvokeQueue = new SyncJaxwsInvokeQueue();
 
+	public static final UpdateTableQueue updateTableQueue = new UpdateTableQueue();
+
 	private static ProcessingToProcessingSignalStack processingToProcessingSignalStack = new ProcessingToProcessingSignalStack();
 
 	public static ProcessingToProcessingSignalStack getProcessingToProcessingSignalStack() {
@@ -67,6 +69,7 @@ public class ThisApplication {
 			MessageConnector.start(context());
 			context().startQueue(syncJaxrsInvokeQueue);
 			context().startQueue(syncJaxwsInvokeQueue);
+			context().startQueue(updateTableQueue);
 			if (BooleanUtils.isTrue(Config.processPlatform().getMerge().getEnable())) {
 				context.schedule(Merge.class, Config.processPlatform().getMerge().getCron());
 			}
