@@ -2961,7 +2961,7 @@ MDomItem.Org = new Class({
     loadOrgWidget: function(value, node, canRemove){
         this.OrgWidgetList = this.OrgWidgetList || [];
         MWF.require("MWF.widget.O2Identity", null, false);
-        var options = { "style": this.options.orgStyle || "xform", "canRemove": canRemove , "onRemove" : this.removeOrgItem };
+        var options = { "style": this.options.orgStyle || "xform", "canRemove": canRemove , "onRemove" : this.removeOrgItem, "lazy": true };
         if( this.options.orgWidgetOptions ){
             options = Object.merge( options, this.options.orgWidgetOptions );
         }
