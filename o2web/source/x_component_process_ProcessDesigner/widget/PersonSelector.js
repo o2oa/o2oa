@@ -191,6 +191,7 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
                 "isImage": this.options.isImage,
                 "include" : include,
                 "onComplete": function(items){
+                    debugger;
                     if( typeOf(this.options.validFun)==="function" && !this.options.validFun( items ) ){
                         return;
                     }

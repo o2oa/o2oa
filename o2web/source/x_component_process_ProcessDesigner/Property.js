@@ -459,6 +459,7 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
         // var personDepartmentNodes = this.propertyContent.getElements(".MWFPersonDepartment");
         // var personCompanyNodes = this.propertyContent.getElements(".MWFPersonCompany");
         var dutyNodes = this.propertyContent.getElements(".MWFDutySelector");
+        var tableNodes = this.propertyContent.getElements(".MWFTableSelector");
         MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.PersonSelector", function(){
             personIdentityNodes.each(function(node){
                 count = node.get("count") || 0;
@@ -501,6 +502,13 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
             dutyNameNodes.each(function(node){
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.process.designer, {
                     "type": "dutyName",
+                    "names": this.data[node.get("name")],
+                    "onChange": function(ids){this.savePersonItem(node, ids);}.bind(this)
+                });
+            }.bind(this));
+            tableNodes.each(function(node){
+                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.process.designer, {
+                    "type": "queryTable",
                     "names": this.data[node.get("name")],
                     "onChange": function(ids){this.savePersonItem(node, ids);}.bind(this)
                 });
@@ -567,6 +575,7 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
         this.data[node.get("name")] = JSON.encode(values);
     },
     savePersonItem: function(node, ids){
+        debugger;
         count = node.get("count") || 0;
         var values = [];
         ids.each(function(id){
