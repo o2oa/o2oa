@@ -280,6 +280,9 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"dataPath": "Path",
 		"dataType": "Type",
 		"mappingOnFlow": "Mapping data every time after flow",
+		"mappingDataToTable": "Mapping Query Table",
+		"mappingTableEnabled": "Store the data in the query table after work completed",
+		"queryTable": "tables",
 
 		"allowReroute": "Allow Reroute",
 		"allowRerouteTo": "Allow Reroute to here",

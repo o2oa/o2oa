@@ -14,11 +14,14 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.message.MessageConnector;
 import com.x.base.core.project.scripting.JsonScriptingExecutor;
 import com.x.base.core.project.scripting.ScriptingFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.element.ActivityType;
@@ -26,9 +29,11 @@ import com.x.processplatform.core.entity.element.Embed;
 import com.x.processplatform.core.entity.element.End;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.log.Signal;
+import com.x.processplatform.core.entity.message.Event;
 import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.Processing;
+import com.x.processplatform.service.processing.ThisApplication;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
 public class EndProcessor extends AbstractEndProcessor {
@@ -161,6 +166,33 @@ public class EndProcessor extends AbstractEndProcessor {
 		}
 		// 回写到父Work
 		tryUpdateParentWork(aeiObjects);
+		addUpdateTableEvent(aeiObjects);
+	}
+
+	private void addUpdateTableEvent(AeiObjects aeiObjects) throws Exception {
+		if (BooleanUtils.isTrue(aeiObjects.getProcess().getUpdateTableEnable())
+				&& ListTools.isNotEmpty(aeiObjects.getProcess().getUpdateTableList())) {
+			List<Event> events = new ArrayList<>();
+			for (String table : aeiObjects.getProcess().getUpdateTableList()) {
+				if (StringUtils.isNotEmpty(table)) {
+					Event event = new Event();
+					event.setTarget(table);
+					event.setJob(aeiObjects.getWork().getJob());
+					event.setType(Event.EVENTTYPE_UPDATETABLE);
+					events.add(event);
+				}
+			}
+			if (!events.isEmpty()) {
+				aeiObjects.entityManagerContainer().beginTransaction(Event.class);
+				for (Event event : events) {
+					aeiObjects.entityManagerContainer().persist(event, CheckPersistType.all);
+				}
+				aeiObjects.entityManagerContainer().commit();
+				for (Event event : events) {
+					ThisApplication.updateTableQueue.send(event.getId());
+				}
+			}
+		}
 	}
 
 	private void tryUpdateParentWork(AeiObjects aeiObjects) {

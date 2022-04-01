@@ -294,6 +294,26 @@
             </tr>
         </table>
 
+
+
+        <div style="margin: 20px 0 0 0; border-top: 1px solid #cccccc; height: 20px; padding: 5px; background-color: #F6F6F6; line-height: 20px; text-align: center">{{$.lp.mappingDataToTable}}</div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableValue">
+                    <b>{{$.lp.mappingTableEnabled}}: </b>
+                    <input class="editTableRadio" name="updateTableEnable" text{($.updateTableEnable===true)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
+                    <input class="editTableRadio" name="updateTableEnable" text{($.updateTableEnable!==true)?'checked':''} type="radio" value="false"/>{{$.lp.no}}
+                </td>
+            </tr>
+        </table>
+
+
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">{{$.lp.queryTable}}:</td>
+                <td class="editTableValue"><div class="MWFTableSelector" name="updateTableList"></div></td>
+            </tr>
+        </table>
     </div>
 
     <div title="{{$.lp.event}}"  class="MWFTab" data-o2-advanced="yes">

@@ -96,6 +96,34 @@ public class Process extends SliceJpaObject {
 		}
 	}
 
+	@FieldDescribe("启用同步到自建表.")
+	public static final String UPDATETABLEENABLE_FIELDNAME = "updateTableEnable";
+	@Transient
+	private Boolean updateTableEnable;
+
+	public Boolean getUpdateTableEnable() {
+		return updateTableEnable;
+	}
+
+	public void setUpdateTableEnable(Boolean updateTableEnable) {
+		this.updateTableEnable = updateTableEnable;
+		this.getProperties().setUpdateTableEnable(updateTableEnable);
+	}
+
+	@FieldDescribe("同步到自建表.")
+	public static final String UPDATETABLELIST_FIELDNAME = "updateTableList";
+	@Transient
+	private List<String> updateTableList;
+
+	public List<String> getUpdateTableList() {
+		return updateTableList;
+	}
+
+	public void setUpdateTableList(List<String> updateTableList) {
+		this.updateTableList = updateTableList;
+		this.getProperties().setUpdateTableList(updateTableList);
+	}
+
 	public Boolean getProjectionFully() {
 		return BooleanUtils.isTrue(this.projectionFully);
 	}
@@ -172,6 +200,8 @@ public class Process extends SliceJpaObject {
 			this.manualAfterTaskScriptText = this.getProperties().getManualAfterTaskScriptText();
 			this.manualStayScript = this.getProperties().getManualStayScript();
 			this.manualStayScriptText = this.getProperties().getManualStayScriptText();
+			this.updateTableEnable = this.getProperties().getUpdateTableEnable();
+			this.updateTableList = this.getProperties().getUpdateTableList();
 		}
 	}
 

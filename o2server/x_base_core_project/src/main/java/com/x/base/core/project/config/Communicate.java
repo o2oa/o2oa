@@ -61,13 +61,6 @@ public class Communicate extends ConfigObject {
 		return this.cronMq == null ? new CronMq() : this.cronMq;
 	}
 
-	@FieldDescribe("定时触发同步到数据中心自定表.")
-	private CronUpdateQueryTable cronUpdateQueryTable;
-
-	public CronUpdateQueryTable cronUpdateQueryTable() {
-		return this.cronUpdateQueryTable == null ? new CronUpdateQueryTable() : this.cronUpdateQueryTable;
-	}
-
 	public static class CronMq extends ConfigObject {
 
 		private static final long serialVersionUID = 1559477154694423422L;
@@ -77,44 +70,6 @@ public class Communicate extends ConfigObject {
 		}
 
 		public static final Boolean DEFAULT_ENABLE = false;
-		public static final String DEFAULT_CRON = "0 0 * * * ?"; // 每小时运行一次
-
-		@FieldDescribe("是否启用")
-		private Boolean enable = DEFAULT_ENABLE;
-
-		@FieldDescribe("定时cron表达式")
-		private String cron = DEFAULT_CRON;
-
-		public String getCron() {
-			if (StringUtils.isNotEmpty(this.cron) && CronExpression.isValidExpression(this.cron)) {
-				return this.cron;
-			} else {
-				return DEFAULT_CRON;
-			}
-		}
-
-		public Boolean getEnable() {
-			return BooleanUtils.isTrue(this.enable);
-		}
-
-		public void setCron(String cron) {
-			this.cron = cron;
-		}
-
-		public void setEnable(Boolean enable) {
-			this.enable = enable;
-		}
-	}
-
-	public static class CronUpdateQueryTable extends ConfigObject {
-
-		private static final long serialVersionUID = 1844626333347011848L;
-
-		public static CronUpdateQueryTable defaultInstance() {
-			return new CronUpdateQueryTable();
-		}
-
-		public static final Boolean DEFAULT_ENABLE = true;
 		public static final String DEFAULT_CRON = "0 0 * * * ?"; // 每小时运行一次
 
 		@FieldDescribe("是否启用")
