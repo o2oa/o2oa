@@ -22,6 +22,7 @@ import com.x.processplatform.service.processing.schedule.Merge;
 import com.x.processplatform.service.processing.schedule.PassExpired;
 import com.x.processplatform.service.processing.schedule.TouchDelay;
 import com.x.processplatform.service.processing.schedule.TouchDetained;
+import com.x.processplatform.service.processing.schedule.UpdateTable;
 import com.x.processplatform.service.processing.schedule.Urge;
 
 public class ThisApplication {
@@ -93,6 +94,9 @@ public class ThisApplication {
 			}
 			if (BooleanUtils.isTrue(Config.processPlatform().getUrge().getEnable())) {
 				context.schedule(Urge.class, Config.processPlatform().getUrge().getCron());
+			}
+			if (BooleanUtils.isTrue(Config.processPlatform().getUpdateTable().getEnable())) {
+				context.schedule(UpdateTable.class, Config.processPlatform().getUpdateTable().getCron());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

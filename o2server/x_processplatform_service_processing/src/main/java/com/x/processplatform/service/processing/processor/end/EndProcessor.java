@@ -169,7 +169,7 @@ public class EndProcessor extends AbstractEndProcessor {
 		addUpdateTableEvent(aeiObjects);
 	}
 
-	public void addUpdateTableEvent(AeiObjects aeiObjects) throws Exception {
+	private void addUpdateTableEvent(AeiObjects aeiObjects) throws Exception {
 		if (BooleanUtils.isTrue(aeiObjects.getProcess().getUpdateTableEnable())
 				&& ListTools.isNotEmpty(aeiObjects.getProcess().getUpdateTableList())) {
 			List<Event> events = new ArrayList<>();
@@ -177,7 +177,7 @@ public class EndProcessor extends AbstractEndProcessor {
 				if (StringUtils.isNotEmpty(table)) {
 					Event event = new Event();
 					event.setTarget(table);
-					event.setId(aeiObjects.getWork().getJob());
+					event.setJob(aeiObjects.getWork().getJob());
 					event.setType(Event.EVENTTYPE_UPDATETABLE);
 					events.add(event);
 				}
@@ -188,7 +188,9 @@ public class EndProcessor extends AbstractEndProcessor {
 					aeiObjects.entityManagerContainer().persist(event, CheckPersistType.all);
 				}
 				aeiObjects.entityManagerContainer().commit();
-				ThisApplication.updateTableQueue.send(aeiObjects.getWork().getJob());
+				for (Event event : events) {
+					ThisApplication.updateTableQueue.send(event.getId());
+				}
 			}
 		}
 	}

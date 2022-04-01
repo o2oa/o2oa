@@ -41,6 +41,10 @@ class ActionUpdate extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, String bundle, JsonElement jsonElement)
 			throws Exception {
+
+		LOGGER.debug("execute:{}, flag:{}, bundle:{}.", effectivePerson::getDistinguishedName, () -> flag,
+				() -> bundle);
+
 		ClassLoader classLoader = Business.getDynamicEntityClassLoader();
 		Thread.currentThread().setContextClassLoader(classLoader);
 		ActionResult<Wo> result = new ActionResult<>();
@@ -71,6 +75,7 @@ class ActionUpdate extends BaseAction {
 			}
 			emc.commit();
 			Wo wo = new Wo();
+			wo.setValue(true);
 			result.setData(wo);
 		}
 		return result;
