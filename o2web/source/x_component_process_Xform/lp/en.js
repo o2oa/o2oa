@@ -96,6 +96,7 @@ MWF.xApplication.process.Xform.LP = {
     "notValidation": "Data validation failed",
     "lineNotValidation": "Line data validation failed",
     "notValidation_number": "Only allow numbers",
+    "notAttachmentValidation": "Attachment validation failed.",
 
     "retractTitle": "Retract Confirmation",
     "retractText": "Are you sure you want to retract this document?",

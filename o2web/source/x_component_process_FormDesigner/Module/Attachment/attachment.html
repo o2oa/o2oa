@@ -244,9 +244,9 @@
                 </td>
             </tr>
         </table>
-        <div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">上传时校验</div>
-        <div>可以通过this.target.uploadingFiles获取当前正在上传的附件。返回true表示通过，返回文本系统提示文本后中断上传。</div>
-        <div class="MWFScriptArea" name="uploadValidation" title="上传时校验脚本 (S)"></div>
+        <div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">{{$.lp.attachmentValidation}}</div>
+        <div>{{$.lp.attachmentValidationNote}}</div>
+        <div class="MWFScriptArea" name="uploadValidation" title="{{$.lp.attachmentValidationScript}} (S)"></div>
 
     </div>
 
