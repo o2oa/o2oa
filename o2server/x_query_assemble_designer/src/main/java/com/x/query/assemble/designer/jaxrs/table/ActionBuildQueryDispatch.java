@@ -42,7 +42,7 @@ class ActionBuildQueryDispatch extends BaseAction {
 		List<Application> apps = ThisApplication.context().applications().get(x_query_assemble_designer.class);
 		if (ListTools.isNotEmpty(apps)) {
 			apps.stream().forEach(o -> {
-				String url = o.getUrlJaxrsRoot() + "table/" + queryId + "/build?timestamp="
+				String url = o.getUrlJaxrsRoot() + "table/query/" + queryId + "/build?timestamp="
 						+ System.currentTimeMillis();
 				LOGGER.info("{} do dispatch build query {} table request to : {}.",
 						effectivePerson.getDistinguishedName(), queryId, url);
@@ -53,6 +53,7 @@ class ActionBuildQueryDispatch extends BaseAction {
 				}
 			});
 		}
+		refreshDesigner();
 		refreshSurface();
 		refreshProcessing();
 		wo.setValue(true);
@@ -60,6 +61,21 @@ class ActionBuildQueryDispatch extends BaseAction {
 		result.setData(wo);
 
 		return result;
+	}
+
+	private void refreshDesigner() throws Exception {
+		List<Application> apps = ThisApplication.context().applications().get(x_query_assemble_designer.class);
+		if (ListTools.isNotEmpty(apps)) {
+			apps.stream().forEach(o -> {
+				try {
+					String url = o.getUrlJaxrsRoot() + "table/reload/dynamic";
+					LOGGER.info("refresh surface:{}.", url);
+					CipherConnectionAction.get(false, url);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			});
+		}
 	}
 
 	private void refreshSurface() throws Exception {

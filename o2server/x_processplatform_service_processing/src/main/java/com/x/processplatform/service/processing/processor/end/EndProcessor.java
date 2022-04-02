@@ -18,7 +18,6 @@ import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.message.MessageConnector;
 import com.x.base.core.project.scripting.JsonScriptingExecutor;
 import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
