@@ -305,6 +305,7 @@ MWF.xApplication.Setting.LP = {
     "mobile_apppack_message_app_logo_need_png": "Logo image must be PNG format!",
     "mobile_apppack_message_portocol_not_empty": "HTTP protocol cannot be empty!",
     "mobile_apppack_message_host_not_empty": "Central server domain name cannot be empty!",
+    "mobile_apppack_message_host_format_error": "Please fill in the domain name or IP address of the central server, such as www.o2oa.com Don't wear a head like http !",
     "mobile_apppack_message_port_not_empty": "Central server port number cannot be empty!",
     "mobile_apppack_message_context_not_empty": "Central server context cannot be empty!",
     "mobile_apppack_message_portocol_http_https": "HTTP protocol just support http or https !",

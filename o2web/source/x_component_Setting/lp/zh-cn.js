@@ -307,6 +307,7 @@ MWF.xApplication.Setting.LP = {
     "mobile_apppack_message_app_logo_need_png": "Logo图片必须要png格式！",
     "mobile_apppack_message_portocol_not_empty": "HTTP协议不能为空！",
     "mobile_apppack_message_host_not_empty": "中心服务器域名不能为空！",
+    "mobile_apppack_message_host_format_error": "请填写中心服务器域名或IP，如www.o2oa.net，不要带http这样的头！",
     "mobile_apppack_message_port_not_empty": "中心服务器端口号不能为空！",
     "mobile_apppack_message_context_not_empty": "中心服务器上下文不能为空！",
     "mobile_apppack_message_portocol_http_https": "HTTP协议只能是 http 或 https ！",
