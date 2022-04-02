@@ -311,7 +311,8 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
         //this.createLoadding();
 
         this.loadViewRes = o2.Actions.load("x_query_assemble_surface").StatementAction.executeV2(
-            this.options.statementId || this.options.statementName || this.json.statementId || this.json.statementName,
+            this.options.statementId || this.options.statementName || this.options.statementAlias ||
+            this.json.statementId || this.json.statementName || this.json.statementAlias,
             type || "data", p, this.json.pageSize, d, function (json) {
 
                 if (type === "all" || type === "count") {
@@ -348,17 +349,20 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
             }.bind(this), null, async === false ? false : true);
     },
     getView: function (callback) {
-        this.getViewRes = o2.Actions.load("x_query_assemble_surface").StatementAction.get(this.json.statementId || this.json.statementName, function (json) {
-            debugger;
-            var viewData = JSON.decode(json.data.view);
-            if (!this.json.pageSize) this.json.pageSize = viewData.pageSize || "20";
-            this.viewJson = viewData.data;
-            this.json.application = json.data.query;
-            //this.json = Object.merge(this.json, json.data);
-            this.statementJson = json.data;
-            this.statementJson.viewJson = this.viewJson;
-            if (callback) callback();
-        }.bind(this));
+        this.getViewRes = o2.Actions.load("x_query_assemble_surface").StatementAction.get(
+            this.json.statementId || this.json.statementName || this.json.statementAlias,
+            function (json) {
+                debugger;
+                var viewData = JSON.decode(json.data.view);
+                if (!this.json.pageSize) this.json.pageSize = viewData.pageSize || "20";
+                this.viewJson = viewData.data;
+                this.json.application = json.data.query;
+                //this.json = Object.merge(this.json, json.data);
+                this.statementJson = json.data;
+                this.statementJson.viewJson = this.viewJson;
+                if (callback) callback();
+            }.bind(this)
+        );
     },
 
     loadData: function () {
@@ -630,7 +634,8 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
         exportArray.push(titleArray);
 
         o2.Actions.load("x_query_assemble_surface").StatementAction.executeV2(
-            this.options.statementId || this.options.statementName || this.json.statementId || this.json.statementName,
+            this.options.statementId || this.options.statementName || this.options.statementAlias ||
+            this.json.statementId || this.json.statementName || this.json.statementAlias,
             "data", 1, 100000, d, function (json) {
 
                 json.data.each(function (d, i) {
