@@ -96,6 +96,7 @@ MWF.xApplication.process.Xform.LP = {
     "notValidation": "数据校验未通过",
     "lineNotValidation": "行数据校验未通过",
     "notValidation_number": "必须输入数字",
+    "notAttachmentValidation": "附件校验未通过。",
 
     "retractTitle": "撤回确认",
     "retractText": "您确认要撤回此文件吗？",

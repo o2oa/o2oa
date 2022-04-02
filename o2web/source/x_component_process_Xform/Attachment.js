@@ -1383,7 +1383,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             this.uploadingFiles = files;
             if (this.json.uploadValidation && this.json.uploadValidation.code) {
                 var flag = this.form.Macro.exec(this.json.uploadValidation.code, this);
-                if (!flag) flag = "附件校验未通过。";
+                if (!flag) flag = MWF.xApplication.process.Xform.LP.notAttachmentValidation;
                 if (flag.toString()!="true"){
                     this.form.notice(flag, "error");
                     return false;
