@@ -683,6 +683,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "hideSettingButton": "隐藏设置操作组",
         "hideModeButton": "隐藏模式操作",
         "showInDatagrid": "数据表格中的展现",
+        "attachmentValidation": "上传时校验",
+        "attachmentValidationNote": "可以通过this.target.uploadingFiles获取当前正在上传的附件。返回true表示通过，返回文本系统提示文本后中断上传。",
+        "attachmentValidationScript": "上传时校验脚本",
 
         "hideEraserButton": "隐藏橡皮按钮",
         "hideEraserRadioButton": "隐藏橡皮大小按钮",
