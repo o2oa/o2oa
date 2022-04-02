@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jblas.util.Logger;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -16,6 +17,7 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.program.center.core.entity.validation.Meta;
 
@@ -36,8 +38,10 @@ class ActionMeta extends BaseAction {
 			assignmentFloatValue(meta);
 			assignmentDoubleValue(meta);
 			assignmentListValue(meta);
-			assignmentMapValue(meta);
 			assignmentProperties(meta);
+			assignmentStringValueMap(meta);
+			assignmentDateValueMap(meta);
+			assignmentDateTimeValueMap(meta);
 			emc.beginTransaction(Meta.class);
 			emc.persist(meta, CheckPersistType.all);
 			emc.commit();
@@ -249,13 +253,25 @@ class ActionMeta extends BaseAction {
 		persistObject.setListValueList(list);
 	}
 
-	private static void assignmentMapValue(Meta persistObject) {
+	private static void assignmentStringValueMap(Meta persistObject) {
 		LinkedHashMap<String, String> map = new LinkedHashMap<>();
 		map.put("1", "aaaa");
 		map.put("2", "bbbb");
 		map.put("3", "cccc");
 		map.put("4", "dddd");
-		persistObject.setMapValueMap(map);
+		persistObject.setStringValueMap(map);
+	}
+
+	private static void assignmentDateValueMap(Meta persistObject)  {
+		try {
+			
+		LinkedHashMap<String, Date> map = new LinkedHashMap<>();
+		Date date = DateTools.parse("2020-01-01 12:13:14", DateTools.format_yyyyMMddHHmm);
+		map.put("date", date);
+		persistObject.setDateValueMap(map);
+		} catch (Exception e) {
+			Logger
+		}
 	}
 
 	private static void assignmentProperties(Meta persistObject) {

@@ -157,28 +157,84 @@ public class Meta extends SliceJpaObject {
 	@Column(name = ColumnNamePrefix + doubleValue_FIELDNAME)
 	private Double doubleValue;
 
-	public static final String listValueList_FIELDNAME = "listValueList";
+	public static final String STRINGVALUELIST_FIELDNAME = "stringValueList";
 	@FieldDescribe("List类型.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + listValueList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + listValueList_FIELDNAME + JoinIndexNameSuffix))
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ STRINGVALUELIST_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + STRINGVALUELIST_FIELDNAME
+					+ JoinIndexNameSuffix))
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ElementColumn(length = length_255B, name = ColumnNamePrefix + listValueList_FIELDNAME)
-	@ElementIndex(name = TABLE + IndexNameMiddle + listValueList_FIELDNAME + ElementIndexNameSuffix)
+	@ElementColumn(length = length_255B, name = ColumnNamePrefix + STRINGVALUELIST_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + STRINGVALUELIST_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
-	private List<String> listValueList;
+	private List<String> stringValueList;
 
-	public static final String mapValueMap_FIELDNAME = "mapValueMap";
+	public static final String DATEVALUELIST_FIELDNAME = "dateValueList";
+	@FieldDescribe("List类型.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ DATEVALUELIST_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + DATEVALUELIST_FIELDNAME
+					+ JoinIndexNameSuffix))
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ElementColumn(length = length_255B, name = ColumnNamePrefix + DATEVALUELIST_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + DATEVALUELIST_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	@Temporal(TemporalType.DATE)
+	private List<Date> dateValueList;
+
+	public static final String DATETIMEVALUELIST_FIELDNAME = "dateTimeValueList";
+	@FieldDescribe("List类型.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ DATETIMEVALUELIST_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
+					+ DATETIMEVALUELIST_FIELDNAME + JoinIndexNameSuffix))
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ElementColumn(length = length_255B, name = ColumnNamePrefix + DATETIMEVALUELIST_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + DATETIMEVALUELIST_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	@Temporal(TemporalType.TIMESTAMP)
+	private List<Date> dateTimeValueList;
+
+	public static final String STRINGVALUEMAP_FIELDNAME = "stringValueMap";
 	@FieldDescribe("Map类型.")
 	@CheckPersist(allowEmpty = true)
 	@PersistentMap(fetch = FetchType.EAGER, elementType = String.class, keyType = String.class)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + mapValueMap_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + mapValueMap_FIELDNAME + JoinIndexNameSuffix))
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ STRINGVALUEMAP_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + STRINGVALUEMAP_FIELDNAME
+					+ JoinIndexNameSuffix))
 	@KeyColumn(name = ColumnNamePrefix + key_FIELDNAME)
-	@ElementColumn(length = length_255B, name = ColumnNamePrefix + mapValueMap_FIELDNAME)
-	@ElementIndex(name = TABLE + IndexNameMiddle + mapValueMap_FIELDNAME + ElementIndexNameSuffix)
-	@KeyIndex(name = TABLE + IndexNameMiddle + mapValueMap_FIELDNAME + KeyIndexNameSuffix)
-	private LinkedHashMap<String, String> mapValueMap;
+	@ElementColumn(length = length_255B, name = ColumnNamePrefix + STRINGVALUEMAP_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + STRINGVALUEMAP_FIELDNAME + ElementIndexNameSuffix)
+	@KeyIndex(name = TABLE + IndexNameMiddle + STRINGVALUEMAP_FIELDNAME + KeyIndexNameSuffix)
+	private LinkedHashMap<String, String> stringValueMap;
+
+	public static final String DATEVALUEMAP_FIELDNAME = "dateValueMap";
+	@FieldDescribe("Map类型.")
+	@CheckPersist(allowEmpty = true)
+	@PersistentMap(fetch = FetchType.EAGER, elementType = String.class, keyType = String.class)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ DATEVALUEMAP_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + DATEVALUEMAP_FIELDNAME
+					+ JoinIndexNameSuffix))
+	@KeyColumn(name = ColumnNamePrefix + key_FIELDNAME)
+	@ElementColumn(length = length_255B, name = ColumnNamePrefix + DATEVALUEMAP_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + DATEVALUEMAP_FIELDNAME + ElementIndexNameSuffix)
+	@KeyIndex(name = TABLE + IndexNameMiddle + DATEVALUEMAP_FIELDNAME + KeyIndexNameSuffix)
+	@Temporal(TemporalType.DATE)
+	private LinkedHashMap<String, Date> dateValueMap;
+
+	public static final String DATETIMEVALUEMAP_FIELDNAME = "dateTimeValueMap";
+	@FieldDescribe("Map类型.")
+	@CheckPersist(allowEmpty = true)
+	@PersistentMap(fetch = FetchType.EAGER, elementType = String.class, keyType = String.class)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ DATETIMEVALUEMAP_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + DATETIMEVALUEMAP_FIELDNAME
+					+ JoinIndexNameSuffix))
+	@KeyColumn(name = ColumnNamePrefix + key_FIELDNAME)
+	@ElementColumn(length = length_255B, name = ColumnNamePrefix + DATETIMEVALUEMAP_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + DATETIMEVALUEMAP_FIELDNAME + ElementIndexNameSuffix)
+	@KeyIndex(name = TABLE + IndexNameMiddle + DATETIMEVALUEMAP_FIELDNAME + KeyIndexNameSuffix)
+	@Temporal(TemporalType.TIMESTAMP)
+	private LinkedHashMap<String, Date> dateTimeValueMap;
 
 	public static final String properties_FIELDNAME = "properties";
 	@FieldDescribe("属性对象存储字段.")
@@ -260,18 +316,6 @@ public class Meta extends SliceJpaObject {
 		this.floatValue = floatValue;
 	}
 
-	public List<String> getListValueList() {
-		return listValueList;
-	}
-
-	public void setListValueList(List<String> listValueList) {
-		this.listValueList = listValueList;
-	}
-
-	public static String getDoublevalueFieldname() {
-		return doubleValue_FIELDNAME;
-	}
-
 	public Double getDoubleValue() {
 		return doubleValue;
 	}
@@ -280,12 +324,52 @@ public class Meta extends SliceJpaObject {
 		this.doubleValue = doubleValue;
 	}
 
-	public LinkedHashMap<String, String> getMapValueMap() {
-		return mapValueMap;
+	public List<String> getStringValueList() {
+		return stringValueList;
 	}
 
-	public void setMapValueMap(LinkedHashMap<String, String> mapValueMap) {
-		this.mapValueMap = mapValueMap;
+	public void setStringValueList(List<String> stringValueList) {
+		this.stringValueList = stringValueList;
+	}
+
+	public List<Date> getDateValueList() {
+		return dateValueList;
+	}
+
+	public void setDateValueList(List<Date> dateValueList) {
+		this.dateValueList = dateValueList;
+	}
+
+	public List<Date> getDateTimeValueList() {
+		return dateTimeValueList;
+	}
+
+	public void setDateTimeValueList(List<Date> dateTimeValueList) {
+		this.dateTimeValueList = dateTimeValueList;
+	}
+
+	public LinkedHashMap<String, String> getStringValueMap() {
+		return stringValueMap;
+	}
+
+	public void setStringValueMap(LinkedHashMap<String, String> stringValueMap) {
+		this.stringValueMap = stringValueMap;
+	}
+
+	public LinkedHashMap<String, Date> getDateValueMap() {
+		return dateValueMap;
+	}
+
+	public void setDateValueMap(LinkedHashMap<String, Date> dateValueMap) {
+		this.dateValueMap = dateValueMap;
+	}
+
+	public LinkedHashMap<String, Date> getDateTimeValueMap() {
+		return dateTimeValueMap;
+	}
+
+	public void setDateTimeValueMap(LinkedHashMap<String, Date> dateTimeValueMap) {
+		this.dateTimeValueMap = dateTimeValueMap;
 	}
 
 }
