@@ -154,54 +154,6 @@ public abstract class JpaObject extends GsonPropertyObject implements Serializab
 		this.sequence = sequence;
 	}
 
-//	/* 暂存String */
-//	@Column(length = length_255B, name = ColumnNamePrefix + scratchString_FIELDNAME)
-//	private String scratchString;
-//
-//	/* 暂存Boolean */
-//	@Column(name = ColumnNamePrefix + scratchBoolean_FIELDNAME)
-//	private Boolean scratchBoolean;
-//
-//	/* 暂存Date */
-//	@Column(name = ColumnNamePrefix + scratchDate_FIELDNAME)
-//	private Date scratchDate;
-//
-//	/* 暂存Integer */
-//	@Column(name = ColumnNamePrefix + scratchInteger_FIELDNAME)
-//	private Date scratchInteger;
-//
-//	public String getScratchString() {
-//		return scratchString;
-//	}
-//
-//	public void setScratchString(String scratchString) {
-//		this.scratchString = scratchString;
-//	}
-//
-//	public Boolean getScratchBoolean() {
-//		return scratchBoolean;
-//	}
-//
-//	public void setScratchBoolean(Boolean scratchBoolean) {
-//		this.scratchBoolean = scratchBoolean;
-//	}
-//
-//	public Date getScratchDate() {
-//		return scratchDate;
-//	}
-//
-//	public void setScratchDate(Date scratchDate) {
-//		this.scratchDate = scratchDate;
-//	}
-//
-//	public Date getScratchInteger() {
-//		return scratchInteger;
-//	}
-//
-//	public void setScratchInteger(Date scratchInteger) {
-//		this.scratchInteger = scratchInteger;
-//	}
-
 	public static final int length_1B = 1;
 
 	public static final int length_2B = 2;
@@ -265,10 +217,10 @@ public abstract class JpaObject extends GsonPropertyObject implements Serializab
 	public static final String TYPE_LONG = "long";
 	public static final String TYPE_FLOAT = "float";
 	public static final String TYPE_DOUBLE = "double";
-	public static final String TYPE_BOOLEAN = "boolean";
+	public static final String TYPE_DATETIME = "dateTime";
 	public static final String TYPE_DATE = "date";
 	public static final String TYPE_TIME = "time";
-	public static final String TYPE_DATETIME = "dateTime";
+	public static final String TYPE_BOOLEAN = "boolean";
 	public static final String TYPE_JSONPROPERTIES = "JsonProperties";
 	public static final String TYPE_BYTEARRAY = "byteArray";
 
@@ -278,16 +230,19 @@ public abstract class JpaObject extends GsonPropertyObject implements Serializab
 	public static final String TYPE_FLOATLIST = "floatList";
 	public static final String TYPE_DOUBLELIST = "doubleList";
 	public static final String TYPE_DATETIMELIST = "dateTimeList";
+	public static final String TYPE_DATELIST = "dateList";
 	public static final String TYPE_BOOLEANLIST = "booleanList";
 
 	public static final String TYPE_STRINGLOB = "stringLob";
+
 	public static final String TYPE_STRINGMAP = "stringMap";
 	public static final String TYPE_INTEGERMAP = "integerMap";
 	public static final String TYPE_LONGMAP = "longMap";
 	public static final String TYPE_FLOATMAP = "floatMap";
 	public static final String TYPE_DOUBLEMAP = "doubleMap";
-	public static final String TYPE_BOOLEANMAP = "booleanMap";
 	public static final String TYPE_DATETIMEMAP = "dateTimeMap";
+	public static final String TYPE_DATEMAP = "dateMap";
+	public static final String TYPE_BOOLEANMAP = "booleanMap";
 
 	public static final String[] ID_DISTRIBUTEFACTOR = new String[] { id_FIELDNAME, distributeFactor_FIELDNAME };
 
