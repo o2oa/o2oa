@@ -61,7 +61,7 @@ public class DataItemConverter<T extends DataItem> {
 	}
 
 	private List<T> disassemble(JsonElement root, List<String> paths, List<T> list) throws Exception {
-		T t = clz.newInstance();
+		T t = clz.getDeclaredConstructor().newInstance();
 		t.path(paths);
 		list.add(t);
 		if (root.isJsonPrimitive()) {
@@ -253,25 +253,6 @@ public class DataItemConverter<T extends DataItem> {
 		return ObjectUtils.compare(pl1, pl2);
 	}
 
-//	public List<T> subtract(List<T> l1, List<T> l2) throws Exception {
-//		List<T> result = new ArrayList<>();
-//		List<T> list2 = new ArrayList<>(l2);
-//		T dummy = null;
-//		next: for (T t1 : l1) {
-//			if (null != dummy) {
-//				list2.remove(dummy);
-//			}
-//			for (T t2 : list2) {
-//				if (this.equate(t1, t2)) {
-//					dummy = t2;
-//					continue next;
-//				}
-//			}
-//			result.add(t1);
-//		}
-//		return result;
-//	}
-
 	public boolean equate(T t1, T t2) {
 		if (!Objects.equals(t1.getPath0(), t2.getPath0())) {
 			return false;
@@ -447,41 +428,4 @@ public class DataItemConverter<T extends DataItem> {
 			return true;
 		}
 	}
-
-//	private final List<Pair<BiFunction<Object, Object, Integer>, Function<T, Object>>> COMPARE_SEQ = Arrays.asList(
-//			comparePathLocationOf(DataItem::getPath0Location), comparePathLocationOf(DataItem::getPath1Location),
-//			comparePathOf(DataItem::getPath1), comparePathLocationOf(DataItem::getPath2Location),
-//			comparePathOf(DataItem::getPath2), comparePathLocationOf(DataItem::getPath3Location),
-//			comparePathOf(DataItem::getPath3), comparePathLocationOf(DataItem::getPath4Location),
-//			comparePathOf(DataItem::getPath4), comparePathLocationOf(DataItem::getPath5Location),
-//			comparePathOf(DataItem::getPath5), comparePathLocationOf(DataItem::getPath6Location),
-//			comparePathOf(DataItem::getPath6), comparePathLocationOf(DataItem::getPath7Location),
-//			comparePathOf(DataItem::getPath7));
-//
-//	private Pair<BiFunction<Object, Object, Integer>, Function<T, Object>> comparePathLocationOf(
-//			final Function<T, Object> mapper) {
-//		return Pair.of(DataItemConverter::comparePathLocation, mapper);
-//	}
-//
-//	private Pair<BiFunction<Object, Object, Integer>, Function<T, Object>> comparePathOf(
-//			final Function<T, Object> mapper) {
-//		return Pair.of(DataItemConverter::comparePath, mapper);
-//	}
-//
-//	private   final Comparator<T> comparator = new Comparator<T>() {
-//			public int compare(final T o1, final T o2) {
-//				return COMPARE_SEQ.stream()
-//					.mapToInt(t -> {
-//						final Function<T, Object> getter = Pair.getRight();
-//						return Pair.getLeft().apply(getter.apply(o1), getter.apply(o2));
-//					})
-//					.filter(t -> t != 0)
-//					.findAny()
-//					.orElse(0);
-//			}
-//		}
-//
-//	public void sort(List<T> list) {
-//		Collections.sort(list, comparator);
-//	}
 }

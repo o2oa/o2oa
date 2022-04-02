@@ -324,7 +324,6 @@ public class Business {
 			File jar = new File(Config.dir_dynamic_jars(true), DynamicEntity.JAR_PREFIX + query + DOT_JAR);
 			JarTools.jar(target, jar);
 			LOGGER.info("build table reload jar:{}", jar.getName());
-			this.reloadClassLoader();
 		}
 		FileUtils.cleanDirectory(dir);
 		return result;
@@ -363,7 +362,7 @@ public class Business {
 
 	}
 
-	private void reloadClassLoader() {
+	public static void reloadClassLoader() {
 		try {
 			EntityManagerContainerFactory.close();
 			Business.refreshDynamicEntityClassLoader();
