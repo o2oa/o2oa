@@ -33,7 +33,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 @JaxrsDescribe("表")
 public class TableAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(TableAction.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TableAction.class);
 
 	@JaxrsMethodDescribe(value = "根据query列示table对象.", action = ActionListWithQuery.class)
 	@GET
@@ -47,14 +47,11 @@ public class TableAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListWithQuery().execute(effectivePerson, flag);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
-
-	 
- 
 
 	@JaxrsMethodDescribe(value = "编译指定应用所有表,执行后需要立即重新启动，支持集群环境.", action = ActionBuildQueryDispatch.class)
 	@GET
@@ -68,7 +65,7 @@ public class TableAction extends StandardJaxrsAction {
 		try {
 			result = new ActionBuildQueryDispatch().execute(effectivePerson, query);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -76,7 +73,7 @@ public class TableAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "编译指定应用所有表,执行后需要立即重新启动，仅对当前服务器.", action = ActionBuildQuery.class)
 	@GET
-	@Path("{query}/build")
+	@Path("query/{query}/build")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void buildQuery(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
@@ -86,7 +83,7 @@ public class TableAction extends StandardJaxrsAction {
 		try {
 			result = new ActionBuildQuery().execute(effectivePerson, query);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -104,7 +101,7 @@ public class TableAction extends StandardJaxrsAction {
 		try {
 			result = new ActionGet().execute(effectivePerson, flag);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -122,7 +119,7 @@ public class TableAction extends StandardJaxrsAction {
 		try {
 			result = new ActionStatusDraft().execute(effectivePerson, flag);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -140,7 +137,7 @@ public class TableAction extends StandardJaxrsAction {
 		try {
 			result = new ActionStatusBuild().execute(effectivePerson, flag);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -157,7 +154,7 @@ public class TableAction extends StandardJaxrsAction {
 		try {
 			result = new ActionCreate().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -175,7 +172,7 @@ public class TableAction extends StandardJaxrsAction {
 		try {
 			result = new ActionEdit().execute(effectivePerson, flag, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -193,7 +190,7 @@ public class TableAction extends StandardJaxrsAction {
 		try {
 			result = new ActionEditPermission().execute(effectivePerson, id, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -211,7 +208,7 @@ public class TableAction extends StandardJaxrsAction {
 		try {
 			result = new ActionDelete().execute(effectivePerson, flag);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -230,7 +227,7 @@ public class TableAction extends StandardJaxrsAction {
 		try {
 			result = new ActionRowGet().execute(effectivePerson, tableFlag, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -249,7 +246,7 @@ public class TableAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListRowSelectWhere().execute(effectivePerson, tableFlag, where);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -268,7 +265,7 @@ public class TableAction extends StandardJaxrsAction {
 		try {
 			result = new ActionRowCountWhere().execute(effectivePerson, tableFlag, where);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -286,7 +283,7 @@ public class TableAction extends StandardJaxrsAction {
 		try {
 			result = new ActionRowInsert().execute(effectivePerson, tableFlag, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -305,7 +302,7 @@ public class TableAction extends StandardJaxrsAction {
 		try {
 			result = new ActionRowUpdate().execute(effectivePerson, tableFlag, id, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -324,7 +321,7 @@ public class TableAction extends StandardJaxrsAction {
 		try {
 			result = new ActionRowDelete().execute(effectivePerson, tableFlag, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -342,7 +339,7 @@ public class TableAction extends StandardJaxrsAction {
 		try {
 			result = new ActionRowDeleteAll().execute(effectivePerson, tableFlag);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -362,7 +359,7 @@ public class TableAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListRowNext().execute(effectivePerson, tableFlag, id, count);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -382,7 +379,7 @@ public class TableAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListRowPrev().execute(effectivePerson, tableFlag, id, count);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -400,7 +397,7 @@ public class TableAction extends StandardJaxrsAction {
 		try {
 			result = new ActionExecute().execute(effectivePerson, flag, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -418,7 +415,7 @@ public class TableAction extends StandardJaxrsAction {
 		try {
 			result = new ActionRowExport().execute(effectivePerson, tableFlag, count);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -436,7 +433,7 @@ public class TableAction extends StandardJaxrsAction {
 		try {
 			result = new ActionRowSave().execute(effectivePerson, tableFlag, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -453,7 +450,24 @@ public class TableAction extends StandardJaxrsAction {
 		try {
 			result = new ActionManageList().execute(effectivePerson);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "在服务器重新编译dynamicEntity之后需要重新初始化EntityManagerContainerFactory.", action = ActionReloadDynamic.class)
+	@GET
+	@Path("reload/dynamic")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void reloadDynamic(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+		ActionResult<ActionReloadDynamic.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionReloadDynamic().execute(effectivePerson);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
