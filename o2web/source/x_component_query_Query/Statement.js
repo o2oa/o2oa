@@ -79,6 +79,9 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
     },
     _loadPageNode: function () {
         this.viewPageAreaNode.empty();
+        if( this.viewJson.pagingbarHidden === true ){
+            return;
+        }
         if (!this.paging) {
             var json;
             if (!this.viewJson.pagingList || !this.viewJson.pagingList.length) {

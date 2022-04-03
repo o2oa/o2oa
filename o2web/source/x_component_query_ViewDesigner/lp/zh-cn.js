@@ -209,6 +209,8 @@ MWF.xApplication.query.ViewDesigner.LP = {
         "pageSize":"每页行数",
         "pageMaxCountNotice":"注：每页最大行数为2000条",
         "actionbarHidden":"隐藏操作条",
+        "pagingbarHidden":"隐藏分页条",
+        "searchbarHidden":"隐藏搜索条",
         "radio": "单选",
         "checkbox": "多选",
         "selectBoxShow":"选择框显示",
