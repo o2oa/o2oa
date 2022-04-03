@@ -517,6 +517,9 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     // },
     _loadPageNode : function(){
         this.viewPageAreaNode.empty();
+        if( this.viewJson.pagingbarHidden === true ){
+            return;
+        }
         if( !this.paging ){
             var json;
             if( !this.viewJson.pagingList || !this.viewJson.pagingList.length ){
@@ -954,6 +957,9 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
 
     //搜索相关开始
     createSearchNode: function(){
+        if( this.viewJson.searchbarHidden === true ){
+            return;
+        }
         if (this.viewJson.customFilterList && this.viewJson.customFilterList.length){
             this.searchStatus = "default";
             this.loadFilterSearch();

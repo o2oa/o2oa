@@ -576,9 +576,20 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
         }
         if( !noSetHeight )this.setContentHeight();
     },
-    loadPaging: function( noSetHeight ){
+    loadPaging: function(){
         this.pagingNode = new Element("div#pagingNode", {"styles": this.css.pagingNode}).inject(this.areaNode);
         this.pagingList = [];
+
+        if( !this.json.data.pagingbarHidden ){
+            this.showPagingbar( true );
+        }
+    },
+    hidePagingbar : function(){
+        this.pagingNode.hide();
+        this.setContentHeight();
+    },
+    showPagingbar : function( noSetHeight ){
+        this.pagingNode.show();
         if( !this.json.data.pagingList )this.json.data.pagingList = [];
         if( !this.pagingList || this.pagingList.length == 0 ){
             if( this.json.data.pagingList.length ){
@@ -589,7 +600,7 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
                 this.pagingList.push( new MWF.xApplication.query.ViewDesigner.View.Paging( null, this.json.data.pagingList, this) )
             }
         }
-        // if( !noSetHeight )this.setContentHeight();
+        if( !noSetHeight )this.setContentHeight();
     },
     setViewWidth: function(){
         if( !this.viewAreaNode )return;
@@ -823,6 +834,13 @@ MWF.xApplication.query.ViewDesigner.View = new Class({
                 this.hideActionbar()
             }else{
                 this.showActionbar()
+            }
+        }
+        if (name == "data.pagingbarHidden") {
+            if (this.json.data.pagingbarHidden) {
+                this.hidePagingbar()
+            } else {
+                this.showPagingbar()
             }
         }
         if( name=="data.selectAllEnable" ){
@@ -2285,6 +2303,7 @@ MWF.xApplication.query.ViewDesigner.View.Paging = new Class({
     },
     loadWidget : function( isReset ){
         debugger;
+
         var visiblePages = this.json.visiblePages ? this.json.visiblePages.toInt() : 9;
         this.pagingWidget = new o2.widget.Paging(this.pagingNode, {
             style : this.json.style || "default",
