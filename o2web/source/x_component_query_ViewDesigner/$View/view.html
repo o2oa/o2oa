@@ -67,6 +67,20 @@
                 </td>
             </tr>
             <tr>
+                <td class="editTableTitle">{{$.lp.pagingbarHidden}}:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="data.pagingbarHidden" text{($.data.pagingbarHidden===true)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
+                    <input class="editTableRadio" name="data.pagingbarHidden" text{($.data.pagingbarHidden!==true)?'checked':''} type="radio" value="false"/>{{$.lp.no}}
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.searchbarHidden}}:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="data.searchbarHidden" text{($.data.searchbarHidden===true)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
+                    <input class="editTableRadio" name="data.searchbarHidden" text{($.data.searchbarHidden!==true)?'checked':''} type="radio" value="false"/>{{$.lp.no}}
+                </td>
+            </tr>
+            <tr>
                 <td class="editTableTitle">{{$.lp.select}}:</td>
                 <td class="editTableValue">
                     <input class="editTableRadio" name="data.select" text{($.data.select!=='single' || $.data.select!=='multi' )?'checked':''} type="radio" value="none" onclick="
