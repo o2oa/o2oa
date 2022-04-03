@@ -1498,9 +1498,8 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
         }
         if (!noSetHeight) this.setContentHeight();
     },
-    loadPaging: function (noSetHeight) {
-        this.pagingNode = new Element("div#pagingNode", {"styles": this.css.pagingNode}).inject(this.areaNode);
-        this.pagingList = [];
+    showPagingbar: function (noSetHeight) {
+        this.pagingNode.show();
         if (!this.json.data.pagingList) this.json.data.pagingList = [];
         if (!this.pagingList || this.pagingList.length == 0) {
             if (this.json.data.pagingList.length) {
@@ -1511,7 +1510,7 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
                 this.pagingList.push(new MWF.xApplication.query.StatementDesigner.View.Paging(null, this.json.data.pagingList, this))
             }
         }
-        // if( !noSetHeight )this.setContentHeight();
+        if( !noSetHeight )this.setContentHeight();
     },
     setViewWidth: function () {
         if (!this.viewAreaNode) return;
@@ -1541,6 +1540,13 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
                 this.hideActionbar()
             } else {
                 this.showActionbar()
+            }
+        }
+        if (name == "data.pagingbarHidden") {
+            if (this.json.data.pagingbarHidden) {
+                this.hidePagingbar()
+            } else {
+                this.showPagingbar()
             }
         }
         if (name == "data.selectAllEnable") {
