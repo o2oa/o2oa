@@ -252,6 +252,11 @@ public abstract class StorageObject extends SliceJpaObject {
 					+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + ":"
 					+ mapping.getPort();
 			break;
+		case ali:
+			prefix = "ali://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
+					+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + "/"
+					+ mapping.getName();
+			break;
 		case file:
 			prefix = "file://";
 			break;
@@ -261,7 +266,18 @@ public abstract class StorageObject extends SliceJpaObject {
 		default:
 			break;
 		}
-		return prefix + (StringUtils.isEmpty(mapping.getPrefix()) ? "" : ("/" + mapping.getPrefix()));
+		String mappingPrefix = "";
+		if(StringUtils.isNotBlank(mapping.getPrefix())){
+			if(mapping.getPrefix().startsWith("/")){
+				mappingPrefix = mapping.getPrefix();
+			}else{
+				mappingPrefix = "/" + mapping.getPrefix();
+			}
+			if(mappingPrefix.endsWith("/")) {
+				mappingPrefix = mappingPrefix.substring(0, mappingPrefix.length()-1);
+			}
+		}
+		return prefix + mappingPrefix;
 	}
 
 	private FileSystemOptions getOptions(StorageMapping mapping) throws Exception {
@@ -356,7 +372,8 @@ public abstract class StorageObject extends SliceJpaObject {
 				length = IOUtils.copyLarge(inputStream, output);
 				this.setLength(length);
 				if ((!Objects.equals(StorageProtocol.webdav, mapping.getProtocol()))
-						&& (!Objects.equals(StorageProtocol.sftp, mapping.getProtocol()))) {
+						&& (!Objects.equals(StorageProtocol.sftp, mapping.getProtocol()))
+						&& (!Objects.equals(StorageProtocol.ali, mapping.getProtocol()))) {
 					/* webdav关闭会试图去关闭commons.httpClient */
 					manager.closeFileSystem(fo.getFileSystem());
 				}
