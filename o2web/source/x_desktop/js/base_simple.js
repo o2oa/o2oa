@@ -464,7 +464,7 @@ o2.addReady(function () {
         if (status) statusStr = JSON.encode(status);
 
         var port = uri.get("port");
-        window.location = uri.get("scheme") + "://" + uri.get("host") + ((port) ? ":" + port + "/" : "") + uri.get("directory ") + "?app=" + encodeURIComponent(appNames) + "&status=" + encodeURIComponent(statusStr) + "&option=" + encodeURIComponent((options) ? JSON.encode(options) : "") + ((layout.debugger) ? "&debugger" : "");
+        window.location = uri.get("scheme") + "://" + uri.get("host") + ((port) ? ":" + port : "") + uri.get("directory ") + "?app=" + encodeURIComponent(appNames) + "&status=" + encodeURIComponent(statusStr) + "&option=" + encodeURIComponent((options) ? JSON.encode(options) : "") + ((layout.debugger) ? "&debugger" : "");
     };
 
     layout.load = function (appNames, options, statusObj) {
