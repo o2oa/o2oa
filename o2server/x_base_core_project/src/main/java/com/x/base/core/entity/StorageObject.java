@@ -16,11 +16,7 @@ import javax.persistence.Transient;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.vfs2.CacheStrategy;
-import org.apache.commons.vfs2.FileObject;
-import org.apache.commons.vfs2.FileSystemException;
-import org.apache.commons.vfs2.FileSystemManager;
-import org.apache.commons.vfs2.FileSystemOptions;
+import org.apache.commons.vfs2.*;
 import org.apache.commons.vfs2.cache.NullFilesCache;
 import org.apache.commons.vfs2.impl.StandardFileSystemManager;
 import org.apache.commons.vfs2.provider.ftp.FtpFileSystemConfigBuilder;
@@ -412,7 +408,8 @@ public abstract class StorageObject extends SliceJpaObject {
 				throw new FileNotFoundException(
 						fo.getPublicURIString() + " not existed, object:" + this.toString() + ".");
 			}
-			if (!Objects.equals(StorageProtocol.webdav, mapping.getProtocol())) {
+			if (!Objects.equals(StorageProtocol.webdav, mapping.getProtocol())
+					&& (!Objects.equals(StorageProtocol.ali, mapping.getProtocol()))) {
 				/* webdav关闭会试图去关闭commons.httpClient */
 				manager.closeFileSystem(fo.getFileSystem());
 			}
@@ -451,7 +448,8 @@ public abstract class StorageObject extends SliceJpaObject {
 					}
 				}
 			}
-			if (!Objects.equals(StorageProtocol.webdav, mapping.getProtocol())) {
+			if (!Objects.equals(StorageProtocol.webdav, mapping.getProtocol())
+					&& (!Objects.equals(StorageProtocol.ali, mapping.getProtocol()))) {
 				// webdav关闭会试图去关闭commons.httpClient
 				manager.closeFileSystem(fo.getFileSystem());
 			}
