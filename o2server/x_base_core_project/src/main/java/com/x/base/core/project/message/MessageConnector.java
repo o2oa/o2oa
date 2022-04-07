@@ -142,6 +142,10 @@ public class MessageConnector {
 	public static final String CONSUME_MPWEIXIN = "mpweixin"; // 微信公众号
 
 	public static final String CONSUME_MQ = "mq";
+	// restful类型
+	public static final String CONSUME_RESTFUL = "restful";
+	// 内部调用
+	public static final String CONSUME_INVOKE = "invoke";
 
 	private static Context context;
 
