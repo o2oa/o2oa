@@ -2328,7 +2328,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         debugger;
         this._contentNodeWitdh();
 
-        var w = this.contentNode.getSize().x;
+        var w = this.contentNode.offsetWidth.toFloat();
         w = (this.scale) ? this.scale*w : w;
         var count = 1;
         var docPageFullWidth = (this.scale) ? this.scale*this.options.docPageFullWidth : this.options.docPageFullWidth;
