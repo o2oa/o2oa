@@ -2203,7 +2203,8 @@ if (!window.o2) {
                     if (!loadAsync) return err;
                     resPromise.err = err;
                     var r = o2.runCallback(callback, "failure", [err.xhr, err.text, err.error], null);
-                    if (r) return r;
+                    if (r) return Promise.reject(r);
+                    return Promise.reject(err);
                 }).catch(function (err) { throw err;});
                 resPromise.res = res;
 
