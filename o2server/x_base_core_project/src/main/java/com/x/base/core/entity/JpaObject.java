@@ -336,14 +336,14 @@ public abstract class JpaObject extends GsonPropertyObject implements Serializab
 	}
 
 	public static <T extends JpaObject> T cast(Class<T> cls, List<String> fields, Object[] objects) throws Exception {
-		T t = cls.newInstance();
+		T t = cls.getDeclaredConstructor().newInstance();
 		for (int i = 0; i < fields.size(); i++) {
 			PropertyUtils.setProperty(t, fields.get(i), objects[i]);
 		}
 		return t;
 	}
 
-	public abstract static class EntityProperties {
-	}
+//	public abstract static class EntityProperties {
+//	}
 
 }

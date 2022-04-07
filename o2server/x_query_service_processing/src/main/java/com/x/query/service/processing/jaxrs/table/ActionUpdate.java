@@ -11,6 +11,7 @@ import javax.persistence.Column;
 import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.openjpa.persistence.jdbc.ElementColumn;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -29,7 +30,7 @@ import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
-import com.x.processplatform.core.entity.content.Data;
+import com.x.base.core.project.tools.StringTools;
 import com.x.query.core.entity.schema.Table;
 import com.x.query.service.processing.Business;
 
@@ -86,78 +87,64 @@ class ActionUpdate extends BaseAction {
 			IllegalArgumentException, SecurityException {
 		List<Field> fields = FieldUtils.getFieldsListWithAnnotation(cls, Column.class);
 		T t = cls.getConstructor().newInstance();
-		JsonObject data = null;
-		JsonObject work = null;
+		JsonObject jsonObject = null;
 		if ((jsonElement != null) && jsonElement.isJsonObject()) {
-			data = jsonElement.getAsJsonObject();
-			if (data.has(Data.WORK_PROPERTY)) {
-				JsonElement jsonElementWork = data.get(Data.WORK_PROPERTY);
-				if ((null != jsonElementWork) && jsonElementWork.isJsonObject()) {
-					work = jsonElementWork.getAsJsonObject();
-				}
-			}
+			jsonObject = jsonElement.getAsJsonObject();
 		}
 		for (Field field : fields) {
 			switch (JpaObjectTools.type(field)) {
 			case JpaObject.TYPE_STRING:
-				propertyUtilsBean.setProperty(t, field.getName(),
-						extractStringOrDistinguishedName(processPlatformGetJsonElement(data, work, field)));
+				propertyUtilsBean.setProperty(t, field.getName(), extractStringOrDistinguishedName(
+						getJsonElement(jsonObject, field), getColumnDefinedStringLength(field)));
 				break;
 			case JpaObject.TYPE_INTEGER:
-				propertyUtilsBean.setProperty(t, field.getName(),
-						extractInteger(processPlatformGetJsonElement(data, work, field)));
+				propertyUtilsBean.setProperty(t, field.getName(), extractInteger(getJsonElement(jsonObject, field)));
 				break;
 			case JpaObject.TYPE_LONG:
-				propertyUtilsBean.setProperty(t, field.getName(),
-						extractLong(processPlatformGetJsonElement(data, work, field)));
+				propertyUtilsBean.setProperty(t, field.getName(), extractLong(getJsonElement(jsonObject, field)));
 				break;
 			case JpaObject.TYPE_FLOAT:
-				propertyUtilsBean.setProperty(t, field.getName(),
-						extractFloat(processPlatformGetJsonElement(data, work, field)));
+				propertyUtilsBean.setProperty(t, field.getName(), extractFloat(getJsonElement(jsonObject, field)));
 				break;
 			case JpaObject.TYPE_DOUBLE:
-				propertyUtilsBean.setProperty(t, field.getName(),
-						extractDouble(processPlatformGetJsonElement(data, work, field)));
+				propertyUtilsBean.setProperty(t, field.getName(), extractDouble(getJsonElement(jsonObject, field)));
 				break;
 			case JpaObject.TYPE_DATETIME:
-				propertyUtilsBean.setProperty(t, field.getName(),
-						extractDateTime(processPlatformGetJsonElement(data, work, field)));
+				propertyUtilsBean.setProperty(t, field.getName(), extractDateTime(getJsonElement(jsonObject, field)));
 				break;
 			case JpaObject.TYPE_DATE:
-				propertyUtilsBean.setProperty(t, field.getName(),
-						extractDate(processPlatformGetJsonElement(data, work, field)));
+				propertyUtilsBean.setProperty(t, field.getName(), extractDate(getJsonElement(jsonObject, field)));
 				break;
 			case JpaObject.TYPE_BOOLEAN:
-				propertyUtilsBean.setProperty(t, field.getName(),
-						extractBoolean(processPlatformGetJsonElement(data, work, field)));
+				propertyUtilsBean.setProperty(t, field.getName(), extractBoolean(getJsonElement(jsonObject, field)));
 				break;
 			case JpaObject.TYPE_STRINGLIST:
-				propertyUtilsBean.setProperty(t, field.getName(),
-						extractStringOrDistinguishedNameList(processPlatformGetJsonElement(data, work, field)));
+				propertyUtilsBean.setProperty(t, field.getName(), extractStringOrDistinguishedNameList(
+						getJsonElement(jsonObject, field), getElementColumnDefinedStringLength(field)));
 				break;
 			case JpaObject.TYPE_INTEGERLIST:
 				propertyUtilsBean.setProperty(t, field.getName(),
-						extractIntegerList(processPlatformGetJsonElement(data, work, field)));
+						extractIntegerList(getJsonElement(jsonObject, field)));
 				break;
 			case JpaObject.TYPE_LONGLIST:
 				propertyUtilsBean.setProperty(t, field.getName(),
-						extractLongList(processPlatformGetJsonElement(data, work, field)));
+						extractLongList(getJsonElement(jsonObject, field)));
 				break;
 			case JpaObject.TYPE_FLOATLIST:
 				propertyUtilsBean.setProperty(t, field.getName(),
-						extractFloatList(processPlatformGetJsonElement(data, work, field)));
+						extractFloatList(getJsonElement(jsonObject, field)));
 				break;
 			case JpaObject.TYPE_DOUBLELIST:
 				propertyUtilsBean.setProperty(t, field.getName(),
-						extractDoubleList(processPlatformGetJsonElement(data, work, field)));
+						extractDoubleList(getJsonElement(jsonObject, field)));
 				break;
 			case JpaObject.TYPE_DATETIMELIST:
 				propertyUtilsBean.setProperty(t, field.getName(),
-						extractDateTimeList(processPlatformGetJsonElement(data, work, field)));
+						extractDateTimeList(getJsonElement(jsonObject, field)));
 				break;
 			case JpaObject.TYPE_BOOLEANLIST:
 				propertyUtilsBean.setProperty(t, field.getName(),
-						extractBooleanList(processPlatformGetJsonElement(data, work, field)));
+						extractBooleanList(getJsonElement(jsonObject, field)));
 				break;
 			default:
 				break;
@@ -166,17 +153,25 @@ class ActionUpdate extends BaseAction {
 		return t;
 	}
 
-	private JsonElement processPlatformGetJsonElement(JsonObject data, JsonObject work, Field field) {
+	private int getColumnDefinedStringLength(Field field) {
+		Column column = field.getAnnotation(Column.class);
+		return (null != column) ? column.length() : JpaObject.length_255B;
+	}
+
+	private int getElementColumnDefinedStringLength(Field field) {
+		ElementColumn elementColumn = field.getAnnotation(ElementColumn.class);
+		return (null != elementColumn) ? elementColumn.length() : JpaObject.length_255B;
+	}
+
+	private JsonElement getJsonElement(JsonObject jsonObject, Field field) {
 		JsonElement element = null;
-		if ((null != work) && work.has(field.getName())) {
-			element = work.get(field.getName());
-		} else if ((null != data) && data.has(field.getName())) {
-			element = data.get(field.getName());
+		if ((null != jsonObject) && jsonObject.has(field.getName())) {
+			element = jsonObject.get(field.getName());
 		}
 		return element;
 	}
 
-	private String extractStringOrDistinguishedName(JsonElement jsonElement) {
+	private String extractStringOrDistinguishedName(JsonElement jsonElement, int maxLength) {
 		String value = null;
 		if (null != jsonElement) {
 			if (jsonElement.isJsonPrimitive()) {
@@ -189,27 +184,27 @@ class ActionUpdate extends BaseAction {
 			} else if (jsonElement.isJsonArray()) {
 				JsonArray os = jsonElement.getAsJsonArray();
 				if (os.size() > 0) {
-					value = extractStringOrDistinguishedName(os.get(0));
+					value = extractStringOrDistinguishedName(os.get(0), maxLength);
 				}
 			}
 		}
-		return value;
+		return StringTools.utf8SubString(value, maxLength);
 	}
 
-	private List<String> extractStringOrDistinguishedNameList(JsonElement jsonElement) {
+	private List<String> extractStringOrDistinguishedNameList(JsonElement jsonElement, int maxLength) {
 		List<String> values = new ArrayList<>();
 		if (null != jsonElement) {
 			if (jsonElement.isJsonPrimitive()) {
-				values.add(jsonElement.getAsString());
+				values.add(StringTools.utf8SubString(jsonElement.getAsString(), maxLength));
 			} else if (jsonElement.isJsonObject()) {
 				JsonObject o = jsonElement.getAsJsonObject();
 				if (o.has(JpaObject.DISTINGUISHEDNAME)) {
-					values.add(o.get(JpaObject.DISTINGUISHEDNAME).getAsString());
+					values.add(StringTools.utf8SubString(o.get(JpaObject.DISTINGUISHEDNAME).getAsString(), maxLength));
 				}
 			} else if (jsonElement.isJsonArray()) {
 				JsonArray os = jsonElement.getAsJsonArray();
 				for (JsonElement o : os) {
-					values.add(extractStringOrDistinguishedName(o));
+					values.add(extractStringOrDistinguishedName(o, maxLength));
 				}
 			}
 		}
