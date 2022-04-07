@@ -230,7 +230,6 @@ public abstract class JpaObject extends GsonPropertyObject implements Serializab
 	public static final String TYPE_FLOATLIST = "floatList";
 	public static final String TYPE_DOUBLELIST = "doubleList";
 	public static final String TYPE_DATETIMELIST = "dateTimeList";
-	public static final String TYPE_DATELIST = "dateList";
 	public static final String TYPE_BOOLEANLIST = "booleanList";
 
 	public static final String TYPE_STRINGLOB = "stringLob";
@@ -241,7 +240,6 @@ public abstract class JpaObject extends GsonPropertyObject implements Serializab
 	public static final String TYPE_FLOATMAP = "floatMap";
 	public static final String TYPE_DOUBLEMAP = "doubleMap";
 	public static final String TYPE_DATETIMEMAP = "dateTimeMap";
-	public static final String TYPE_DATEMAP = "dateMap";
 	public static final String TYPE_BOOLEANMAP = "booleanMap";
 
 	public static final String[] ID_DISTRIBUTEFACTOR = new String[] { id_FIELDNAME, distributeFactor_FIELDNAME };
@@ -338,14 +336,14 @@ public abstract class JpaObject extends GsonPropertyObject implements Serializab
 	}
 
 	public static <T extends JpaObject> T cast(Class<T> cls, List<String> fields, Object[] objects) throws Exception {
-		T t = cls.newInstance();
+		T t = cls.getDeclaredConstructor().newInstance();
 		for (int i = 0; i < fields.size(); i++) {
 			PropertyUtils.setProperty(t, fields.get(i), objects[i]);
 		}
 		return t;
 	}
 
-	public abstract static class EntityProperties {
-	}
+//	public abstract static class EntityProperties {
+//	}
 
 }
