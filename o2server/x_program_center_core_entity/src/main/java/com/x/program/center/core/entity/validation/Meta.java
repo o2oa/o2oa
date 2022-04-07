@@ -1,8 +1,8 @@
 package com.x.program.center.core.entity.validation;
 
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -71,6 +71,7 @@ public class Meta extends SliceJpaObject {
 	private String id = createId();
 
 	public void onPersist() throws Exception {
+		// nothing
 	}
 
 	public MetaProperties getProperties() {
@@ -84,81 +85,82 @@ public class Meta extends SliceJpaObject {
 		this.properties = properties;
 	}
 
-	public static final String stringValue_FIELDNAME = "stringValue";
-	@FieldDescribe("文本字段.")
-	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + stringValue_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + stringValue_FIELDNAME)
+	public static final String STRINGVALUE_FIELDNAME = "stringValue";
+	@FieldDescribe("String 值.")
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + STRINGVALUE_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + STRINGVALUE_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String stringValue;
 
-	public static final String stringLobValue_FIELDNAME = "stringLobValue";
-	@FieldDescribe("长文本.")
+	public static final String STRINGLOBVALUE_FIELDNAME = "stringLobValue";
+	@FieldDescribe("String Lob 值.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
-	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + stringLobValue_FIELDNAME)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + STRINGLOBVALUE_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
 	private String stringLobValue;
 
-	public static final String booleanValue_FIELDNAME = "booleanValue";
-	@FieldDescribe("布尔值.")
-	@Column(name = ColumnNamePrefix + booleanValue_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + booleanValue_FIELDNAME)
+	public static final String INTEGERVALUE_FIELDNAME = "integerValue";
+	@FieldDescribe("Integer 值.")
+	@CheckPersist(allowEmpty = true)
+	@Index(name = TABLE + IndexNameMiddle + INTEGERVALUE_FIELDNAME)
+	@Column(name = ColumnNamePrefix + INTEGERVALUE_FIELDNAME)
+	private Integer integerValue;
+
+	public static final String LONGVALUE_FIELDNAME = "longValue";
+	@FieldDescribe("Long 值.")
+	@CheckPersist(allowEmpty = true)
+	@Index(name = TABLE + IndexNameMiddle + LONGVALUE_FIELDNAME)
+	@Column(name = ColumnNamePrefix + LONGVALUE_FIELDNAME)
+	private Long longValue;
+
+	public static final String FLOATVALUE_FIELDNAME = "floatValue";
+	@FieldDescribe("Float 值.")
+	@CheckPersist(allowEmpty = true)
+	@Index(name = TABLE + IndexNameMiddle + FLOATVALUE_FIELDNAME)
+	@Column(name = ColumnNamePrefix + FLOATVALUE_FIELDNAME)
+	private Float floatValue;
+
+	public static final String DOUBLEVALUE_FIELDNAME = "doubleValue";
+	@FieldDescribe("Double 值.")
+	@CheckPersist(allowEmpty = true)
+	@Index(name = TABLE + IndexNameMiddle + DOUBLEVALUE_FIELDNAME)
+	@Column(name = ColumnNamePrefix + DOUBLEVALUE_FIELDNAME)
+	private Double doubleValue;
+
+	public static final String DATETIMEVALUE_FIELDNAME = "dateTimeValue";
+	@FieldDescribe("DateTime 值.")
+	@CheckPersist(allowEmpty = true)
+	@Column(name = ColumnNamePrefix + DATETIMEVALUE_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + DATETIMEVALUE_FIELDNAME)
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date dateTimeValue;
+
+	public static final String DATEVALUE_FIELDNAME = "dateValue";
+	@FieldDescribe("Date 值.")
+	@CheckPersist(allowEmpty = true)
+	@Column(name = ColumnNamePrefix + DATEVALUE_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + DATEVALUE_FIELDNAME)
+	@Temporal(TemporalType.DATE)
+	private Date dateValue;
+
+	public static final String TIMEVALUE_FIELDNAME = "timeValue";
+	@FieldDescribe("Time 值.")
+	@CheckPersist(allowEmpty = true)
+	@Column(name = ColumnNamePrefix + TIMEVALUE_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + TIMEVALUE_FIELDNAME)
+	@Temporal(TemporalType.TIME)
+	private Date timeValue;
+
+	public static final String BOOLEANVALUE_FIELDNAME = "booleanValue";
+	@FieldDescribe("Boolean 值.")
+	@Column(name = ColumnNamePrefix + BOOLEANVALUE_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + BOOLEANVALUE_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean booleanValue;
 
-	public static final String dateTimeValue_FIELDNAME = "dateTimeValue";
-	@Temporal(TemporalType.TIMESTAMP)
-	@FieldDescribe("日期和时间值.")
-	@CheckPersist(allowEmpty = true)
-	@Column(name = ColumnNamePrefix + dateTimeValue_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + dateTimeValue_FIELDNAME)
-	private Date dateTimeValue;
-
-	public static final String dateValue_FIELDNAME = "dateValue";
-	@Temporal(TemporalType.DATE)
-	@FieldDescribe("日期值.")
-	@CheckPersist(allowEmpty = true)
-	@Column(name = ColumnNamePrefix + dateValue_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + dateValue_FIELDNAME)
-	private Date dateValue;
-
-	public static final String timeValue_FIELDNAME = "timeValue";
-	@Temporal(TemporalType.TIME)
-	@FieldDescribe("时间值.")
-	@CheckPersist(allowEmpty = true)
-	@Column(name = ColumnNamePrefix + timeValue_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + timeValue_FIELDNAME)
-	private Date timeValue;
-
-	public static final String integerValue_FIELDNAME = "integerValue";
-	@FieldDescribe("整型.")
-	@CheckPersist(allowEmpty = true)
-	@Index(name = TABLE + IndexNameMiddle + integerValue_FIELDNAME)
-	@Column(name = ColumnNamePrefix + integerValue_FIELDNAME)
-	private Integer integerValue;
-
-	public static final String longValue_FIELDNAME = "longValue";
-	@FieldDescribe("长整型.")
-	@CheckPersist(allowEmpty = true)
-	@Index(name = TABLE + IndexNameMiddle + longValue_FIELDNAME)
-	@Column(name = ColumnNamePrefix + longValue_FIELDNAME)
-	private Long longValue;
-
-	public static final String floatValue_FIELDNAME = "floatValue";
-	@FieldDescribe("浮点数.")
-	@CheckPersist(allowEmpty = true)
-	@Index(name = TABLE + IndexNameMiddle + floatValue_FIELDNAME)
-	@Column(name = ColumnNamePrefix + floatValue_FIELDNAME)
-	private Double floatValue;
-
-	public static final String doubleValue_FIELDNAME = "doubleValue";
-	@FieldDescribe("双精度浮点数.")
-	@CheckPersist(allowEmpty = true)
-	@Index(name = TABLE + IndexNameMiddle + doubleValue_FIELDNAME)
-	@Column(name = ColumnNamePrefix + doubleValue_FIELDNAME)
-	private Double doubleValue;
-
 	public static final String STRINGVALUELIST_FIELDNAME = "stringValueList";
-	@FieldDescribe("List类型.")
+	@FieldDescribe("String List 值.")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ STRINGVALUELIST_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + STRINGVALUELIST_FIELDNAME
@@ -169,34 +171,80 @@ public class Meta extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private List<String> stringValueList;
 
-	public static final String DATEVALUELIST_FIELDNAME = "dateValueList";
-	@FieldDescribe("List类型.")
+	public static final String INTEGERVALUELIST_FIELDNAME = "integerValueList";
+	@FieldDescribe("Integer List 值.")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
-			+ DATEVALUELIST_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + DATEVALUELIST_FIELDNAME
+			+ INTEGERVALUELIST_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + INTEGERVALUELIST_FIELDNAME
 					+ JoinIndexNameSuffix))
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ElementColumn(length = length_255B, name = ColumnNamePrefix + DATEVALUELIST_FIELDNAME)
-	@ElementIndex(name = TABLE + IndexNameMiddle + DATEVALUELIST_FIELDNAME + ElementIndexNameSuffix)
+	@ElementColumn(name = ColumnNamePrefix + INTEGERVALUELIST_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + INTEGERVALUELIST_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
-	@Temporal(TemporalType.DATE)
-	private List<Date> dateValueList;
+	private List<Integer> integerValueList;
+
+	public static final String LONGVALUELIST_FIELDNAME = "longValueList";
+	@FieldDescribe("Long List类型.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ LONGVALUELIST_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + LONGVALUELIST_FIELDNAME
+					+ JoinIndexNameSuffix))
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ElementColumn(name = ColumnNamePrefix + LONGVALUELIST_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + LONGVALUELIST_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	private List<Long> longValueList;
+
+	public static final String FLOATVALUELIST_FIELDNAME = "floatValueList";
+	@FieldDescribe("Float List 值.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ FLOATVALUELIST_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + FLOATVALUELIST_FIELDNAME
+					+ JoinIndexNameSuffix))
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ElementColumn(name = ColumnNamePrefix + FLOATVALUELIST_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + FLOATVALUELIST_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	private List<Float> floatValueList;
+
+	public static final String DOUBLEVALUELIST_FIELDNAME = "doubleValueList";
+	@FieldDescribe("Double List 值.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ DOUBLEVALUELIST_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + DOUBLEVALUELIST_FIELDNAME
+					+ JoinIndexNameSuffix))
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ElementColumn(name = ColumnNamePrefix + DOUBLEVALUELIST_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + DOUBLEVALUELIST_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	private List<Double> doubleValueList;
 
 	public static final String DATETIMEVALUELIST_FIELDNAME = "dateTimeValueList";
-	@FieldDescribe("List类型.")
+	@FieldDescribe("DateTime List 值.")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ DATETIMEVALUELIST_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
 					+ DATETIMEVALUELIST_FIELDNAME + JoinIndexNameSuffix))
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ElementColumn(length = length_255B, name = ColumnNamePrefix + DATETIMEVALUELIST_FIELDNAME)
+	@ElementColumn(name = ColumnNamePrefix + DATETIMEVALUELIST_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + DATETIMEVALUELIST_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
-	@Temporal(TemporalType.TIMESTAMP)
 	private List<Date> dateTimeValueList;
 
+	public static final String BOOLEANVALUELIST_FIELDNAME = "booleanValueList";
+	@FieldDescribe("Boolean List 值.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ BOOLEANVALUELIST_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + BOOLEANVALUELIST_FIELDNAME
+					+ JoinIndexNameSuffix))
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ElementColumn(name = ColumnNamePrefix + BOOLEANVALUELIST_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + BOOLEANVALUELIST_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	private List<Boolean> booleanValueList;
+
 	public static final String STRINGVALUEMAP_FIELDNAME = "stringValueMap";
-	@FieldDescribe("Map类型.")
+	@FieldDescribe("String Map 值.")
 	@CheckPersist(allowEmpty = true)
 	@PersistentMap(fetch = FetchType.EAGER, elementType = String.class, keyType = String.class)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
@@ -206,41 +254,91 @@ public class Meta extends SliceJpaObject {
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + STRINGVALUEMAP_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + STRINGVALUEMAP_FIELDNAME + ElementIndexNameSuffix)
 	@KeyIndex(name = TABLE + IndexNameMiddle + STRINGVALUEMAP_FIELDNAME + KeyIndexNameSuffix)
-	private LinkedHashMap<String, String> stringValueMap;
+	private Map<String, String> stringValueMap;
 
-	public static final String DATEVALUEMAP_FIELDNAME = "dateValueMap";
-	@FieldDescribe("Map类型.")
+	public static final String INTEGERVALUEMAP_FIELDNAME = "integerValueMap";
+	@FieldDescribe("Integer Map 值.")
 	@CheckPersist(allowEmpty = true)
 	@PersistentMap(fetch = FetchType.EAGER, elementType = String.class, keyType = String.class)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
-			+ DATEVALUEMAP_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + DATEVALUEMAP_FIELDNAME
+			+ INTEGERVALUEMAP_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + INTEGERVALUEMAP_FIELDNAME
 					+ JoinIndexNameSuffix))
 	@KeyColumn(name = ColumnNamePrefix + key_FIELDNAME)
-	@ElementColumn(length = length_255B, name = ColumnNamePrefix + DATEVALUEMAP_FIELDNAME)
-	@ElementIndex(name = TABLE + IndexNameMiddle + DATEVALUEMAP_FIELDNAME + ElementIndexNameSuffix)
-	@KeyIndex(name = TABLE + IndexNameMiddle + DATEVALUEMAP_FIELDNAME + KeyIndexNameSuffix)
-	@Temporal(TemporalType.DATE)
-	private LinkedHashMap<String, Date> dateValueMap;
+	@ElementColumn(name = ColumnNamePrefix + INTEGERVALUEMAP_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + INTEGERVALUEMAP_FIELDNAME + ElementIndexNameSuffix)
+	@KeyIndex(name = TABLE + IndexNameMiddle + INTEGERVALUEMAP_FIELDNAME + KeyIndexNameSuffix)
+	private Map<String, Integer> integerValueMap;
+
+	public static final String LONGVALUEMAP_FIELDNAME = "longValueMap";
+	@FieldDescribe("Long Map 值.")
+	@CheckPersist(allowEmpty = true)
+	@PersistentMap(fetch = FetchType.EAGER, elementType = String.class, keyType = String.class)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ LONGVALUEMAP_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + LONGVALUEMAP_FIELDNAME
+					+ JoinIndexNameSuffix))
+	@KeyColumn(name = ColumnNamePrefix + key_FIELDNAME)
+	@ElementColumn(name = ColumnNamePrefix + LONGVALUEMAP_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + LONGVALUEMAP_FIELDNAME + ElementIndexNameSuffix)
+	@KeyIndex(name = TABLE + IndexNameMiddle + LONGVALUEMAP_FIELDNAME + KeyIndexNameSuffix)
+	private Map<String, Long> longValueMap;
+
+	public static final String FLOATVALUEMAP_FIELDNAME = "floatValueMap";
+	@FieldDescribe("Float Map 值.")
+	@CheckPersist(allowEmpty = true)
+	@PersistentMap(fetch = FetchType.EAGER, elementType = String.class, keyType = String.class)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ FLOATVALUEMAP_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + FLOATVALUEMAP_FIELDNAME
+					+ JoinIndexNameSuffix))
+	@KeyColumn(name = ColumnNamePrefix + key_FIELDNAME)
+	@ElementColumn(name = ColumnNamePrefix + FLOATVALUEMAP_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + FLOATVALUEMAP_FIELDNAME + ElementIndexNameSuffix)
+	@KeyIndex(name = TABLE + IndexNameMiddle + FLOATVALUEMAP_FIELDNAME + KeyIndexNameSuffix)
+	private Map<String, Float> floatValueMap;
+
+	public static final String DOUBLEVALUEMAP_FIELDNAME = "doubleValueMap";
+	@FieldDescribe("Double Map 值.")
+	@CheckPersist(allowEmpty = true)
+	@PersistentMap(fetch = FetchType.EAGER, elementType = String.class, keyType = String.class)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ DOUBLEVALUEMAP_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + DOUBLEVALUEMAP_FIELDNAME
+					+ JoinIndexNameSuffix))
+	@KeyColumn(name = ColumnNamePrefix + key_FIELDNAME)
+	@ElementColumn(name = ColumnNamePrefix + DOUBLEVALUEMAP_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + DOUBLEVALUEMAP_FIELDNAME + ElementIndexNameSuffix)
+	@KeyIndex(name = TABLE + IndexNameMiddle + DOUBLEVALUEMAP_FIELDNAME + KeyIndexNameSuffix)
+	private Map<String, Double> doubleValueMap;
 
 	public static final String DATETIMEVALUEMAP_FIELDNAME = "dateTimeValueMap";
-	@FieldDescribe("Map类型.")
+	@FieldDescribe("DateTime Map 值.")
 	@CheckPersist(allowEmpty = true)
 	@PersistentMap(fetch = FetchType.EAGER, elementType = String.class, keyType = String.class)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ DATETIMEVALUEMAP_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + DATETIMEVALUEMAP_FIELDNAME
 					+ JoinIndexNameSuffix))
 	@KeyColumn(name = ColumnNamePrefix + key_FIELDNAME)
-	@ElementColumn(length = length_255B, name = ColumnNamePrefix + DATETIMEVALUEMAP_FIELDNAME)
+	@ElementColumn(name = ColumnNamePrefix + DATETIMEVALUEMAP_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + DATETIMEVALUEMAP_FIELDNAME + ElementIndexNameSuffix)
 	@KeyIndex(name = TABLE + IndexNameMiddle + DATETIMEVALUEMAP_FIELDNAME + KeyIndexNameSuffix)
-	@Temporal(TemporalType.TIMESTAMP)
-	private LinkedHashMap<String, Date> dateTimeValueMap;
+	private Map<String, Date> dateTimeValueMap;
 
-	public static final String properties_FIELDNAME = "properties";
+	public static final String BOOLEANVALUEMAP_FIELDNAME = "booleanValueMap";
+	@FieldDescribe("Boolean Map值.")
+	@CheckPersist(allowEmpty = true)
+	@PersistentMap(fetch = FetchType.EAGER, elementType = String.class, keyType = String.class)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ BOOLEANVALUEMAP_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + BOOLEANVALUEMAP_FIELDNAME
+					+ JoinIndexNameSuffix))
+	@KeyColumn(name = ColumnNamePrefix + key_FIELDNAME)
+	@ElementColumn(name = ColumnNamePrefix + BOOLEANVALUEMAP_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + BOOLEANVALUEMAP_FIELDNAME + ElementIndexNameSuffix)
+	@KeyIndex(name = TABLE + IndexNameMiddle + BOOLEANVALUEMAP_FIELDNAME + KeyIndexNameSuffix)
+	private Map<String, Boolean> booleanValueMap;
+
+	public static final String PROPERTIES_FIELDNAME = "properties";
 	@FieldDescribe("属性对象存储字段.")
 	@Persistent
 	@Strategy(JsonPropertiesValueHandler)
-	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + properties_FIELDNAME)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + PROPERTIES_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private MetaProperties properties;
 
@@ -260,12 +358,36 @@ public class Meta extends SliceJpaObject {
 		this.stringLobValue = stringLobValue;
 	}
 
-	public Boolean getBooleanValue() {
-		return booleanValue;
+	public Integer getIntegerValue() {
+		return integerValue;
 	}
 
-	public void setBooleanValue(Boolean booleanValue) {
-		this.booleanValue = booleanValue;
+	public void setIntegerValue(Integer integerValue) {
+		this.integerValue = integerValue;
+	}
+
+	public Long getLongValue() {
+		return longValue;
+	}
+
+	public void setLongValue(Long longValue) {
+		this.longValue = longValue;
+	}
+
+	public Float getFloatValue() {
+		return floatValue;
+	}
+
+	public void setFloatValue(Float floatValue) {
+		this.floatValue = floatValue;
+	}
+
+	public Double getDoubleValue() {
+		return doubleValue;
+	}
+
+	public void setDoubleValue(Double doubleValue) {
+		this.doubleValue = doubleValue;
 	}
 
 	public Date getDateTimeValue() {
@@ -292,36 +414,12 @@ public class Meta extends SliceJpaObject {
 		this.timeValue = timeValue;
 	}
 
-	public Integer getIntegerValue() {
-		return integerValue;
+	public Boolean getBooleanValue() {
+		return booleanValue;
 	}
 
-	public void setIntegerValue(Integer integerValue) {
-		this.integerValue = integerValue;
-	}
-
-	public Long getLongValue() {
-		return longValue;
-	}
-
-	public void setLongValue(Long longValue) {
-		this.longValue = longValue;
-	}
-
-	public Double getFloatValue() {
-		return floatValue;
-	}
-
-	public void setFloatValue(Double floatValue) {
-		this.floatValue = floatValue;
-	}
-
-	public Double getDoubleValue() {
-		return doubleValue;
-	}
-
-	public void setDoubleValue(Double doubleValue) {
-		this.doubleValue = doubleValue;
+	public void setBooleanValue(Boolean booleanValue) {
+		this.booleanValue = booleanValue;
 	}
 
 	public List<String> getStringValueList() {
@@ -332,12 +430,36 @@ public class Meta extends SliceJpaObject {
 		this.stringValueList = stringValueList;
 	}
 
-	public List<Date> getDateValueList() {
-		return dateValueList;
+	public List<Integer> getIntegerValueList() {
+		return integerValueList;
 	}
 
-	public void setDateValueList(List<Date> dateValueList) {
-		this.dateValueList = dateValueList;
+	public void setIntegerValueList(List<Integer> integerValueList) {
+		this.integerValueList = integerValueList;
+	}
+
+	public List<Long> getLongValueList() {
+		return longValueList;
+	}
+
+	public void setLongValueList(List<Long> longValueList) {
+		this.longValueList = longValueList;
+	}
+
+	public List<Float> getFloatValueList() {
+		return floatValueList;
+	}
+
+	public void setFloatValueList(List<Float> floatValueList) {
+		this.floatValueList = floatValueList;
+	}
+
+	public List<Double> getDoubleValueList() {
+		return doubleValueList;
+	}
+
+	public void setDoubleValueList(List<Double> doubleValueList) {
+		this.doubleValueList = doubleValueList;
 	}
 
 	public List<Date> getDateTimeValueList() {
@@ -348,28 +470,68 @@ public class Meta extends SliceJpaObject {
 		this.dateTimeValueList = dateTimeValueList;
 	}
 
-	public LinkedHashMap<String, String> getStringValueMap() {
+	public List<Boolean> getBooleanValueList() {
+		return booleanValueList;
+	}
+
+	public void setBooleanValueList(List<Boolean> booleanValueList) {
+		this.booleanValueList = booleanValueList;
+	}
+
+	public Map<String, String> getStringValueMap() {
 		return stringValueMap;
 	}
 
-	public void setStringValueMap(LinkedHashMap<String, String> stringValueMap) {
+	public void setStringValueMap(Map<String, String> stringValueMap) {
 		this.stringValueMap = stringValueMap;
 	}
 
-	public LinkedHashMap<String, Date> getDateValueMap() {
-		return dateValueMap;
+	public Map<String, Integer> getIntegerValueMap() {
+		return integerValueMap;
 	}
 
-	public void setDateValueMap(LinkedHashMap<String, Date> dateValueMap) {
-		this.dateValueMap = dateValueMap;
+	public void setIntegerValueMap(Map<String, Integer> integerValueMap) {
+		this.integerValueMap = integerValueMap;
 	}
 
-	public LinkedHashMap<String, Date> getDateTimeValueMap() {
+	public Map<String, Long> getLongValueMap() {
+		return longValueMap;
+	}
+
+	public void setLongValueMap(Map<String, Long> longValueMap) {
+		this.longValueMap = longValueMap;
+	}
+
+	public Map<String, Float> getFloatValueMap() {
+		return floatValueMap;
+	}
+
+	public void setFloatValueMap(Map<String, Float> floatValueMap) {
+		this.floatValueMap = floatValueMap;
+	}
+
+	public Map<String, Double> getDoubleValueMap() {
+		return doubleValueMap;
+	}
+
+	public void setDoubleValueMap(Map<String, Double> doubleValueMap) {
+		this.doubleValueMap = doubleValueMap;
+	}
+
+	public Map<String, Date> getDateTimeValueMap() {
 		return dateTimeValueMap;
 	}
 
-	public void setDateTimeValueMap(LinkedHashMap<String, Date> dateTimeValueMap) {
+	public void setDateTimeValueMap(Map<String, Date> dateTimeValueMap) {
 		this.dateTimeValueMap = dateTimeValueMap;
+	}
+
+	public Map<String, Boolean> getBooleanValueMap() {
+		return booleanValueMap;
+	}
+
+	public void setBooleanValueMap(Map<String, Boolean> booleanValueMap) {
+		this.booleanValueMap = booleanValueMap;
 	}
 
 }
