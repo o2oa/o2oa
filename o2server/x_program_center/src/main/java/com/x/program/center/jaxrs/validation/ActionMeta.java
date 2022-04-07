@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
@@ -13,30 +12,90 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.gson.GsonPropertyObject;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.program.center.core.entity.validation.Meta;
 
 class ActionMeta extends BaseAction {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionMeta.class);
+
+	public static final String DATETIMESTRING1 = "2021-01-01 01:01:01";
+	public static final String DATETIMESTRING2 = "2022-02-02 02:02:02";
+
+	public static final String DATESTRING1 = "2021-01-01";
+	public static final String DATESTRING2 = "2022-02-02";
+
+	public static final String TIMESTRING1 = "01:01:01";
+	public static final String TIMESTRING2 = "02:02:02";
+
+	public static final String STRING1 = "o2oa";
+	public static final String STRING2 = "o2server";
+	public static final Integer INTEGER1 = 1;
+	public static final Integer INTEGER2 = 2;
+	public static final Long LONG1 = 10000000000L;
+	public static final Long LONG2 = 20000000000L;
+	public static final Float FLOAT1 = 1.1f;
+	public static final Float FLOAT2 = 2.2f;
+	public static final Double DOUBLE1 = 3.3d;
+	public static final Double DOUBLE2 = 4.4d;
+	protected static Date dateTime1 = null;
+	protected static Date dateTime2 = null;
+	protected static Date date1 = null;
+	protected static Date date2 = null;
+	protected static Date time1 = null;
+	protected static Date time2 = null;
+	public static final Boolean BOOLEAN1 = true;
+	public static final Boolean BOOLEAN2 = false;
+	static {
+		try {
+			dateTime1 = DateTools.parse(DATETIMESTRING1, DateTools.format_yyyyMMddHHmmss);
+			dateTime2 = DateTools.parse(DATETIMESTRING2, DateTools.format_yyyyMMddHHmmss);
+			date1 = DateTools.parse(DATESTRING1, DateTools.format_yyyyMMdd);
+			date2 = DateTools.parse(DATESTRING2, DateTools.format_yyyyMMdd);
+			time1 = DateTools.parse(TIMESTRING1, DateTools.format_HHmmss);
+			time2 = DateTools.parse(TIMESTRING2, DateTools.format_HHmmss);
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
+
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+
 		String id = StringTools.uniqueToken();
 		Meta meta = new Meta();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			meta.setId(id);
 			assignmentStringValue(meta);
 			assignmentStringLobValue(meta);
-			assignmentBooleanValue(meta);
-			assignmentDateTimeValue(meta);
-			assignmentDateValue(meta);
-			assignmentTimeValue(meta);
 			assignmentIntegerValue(meta);
 			assignmentLongValue(meta);
 			assignmentFloatValue(meta);
 			assignmentDoubleValue(meta);
-			assignmentListValue(meta);
-			assignmentMapValue(meta);
+			assignmentDateTimeValue(meta);
+			assignmentDateValue(meta);
+			assignmentTimeValue(meta);
+			assignmentBooleanValue(meta);
+			assignmentStringValueList(meta);
+			assignmentIntegerValueList(meta);
+			assignmentLongValueList(meta);
+			assignmentFloatValueList(meta);
+			assignmentDoubleValueList(meta);
+			assignmentDateTimeValueList(meta);
+			assignmentBooleanValueList(meta);
+			assignmentStringValueMap(meta);
+			assignmentIntegerValueMap(meta);
+			assignmentLongValueMap(meta);
+			assignmentFloatValueMap(meta);
+			assignmentDoubleValueMap(meta);
+			assignmentDateTimeValueMap(meta);
+			assignmentBooleanValueMap(meta);
 			assignmentProperties(meta);
 			emc.beginTransaction(Meta.class);
 			emc.persist(meta, CheckPersistType.all);
@@ -47,17 +106,14 @@ class ActionMeta extends BaseAction {
 			Meta o = emc.find(id, Meta.class);
 			wo.setAssertStringValue(assertStringValue(o, meta));
 			wo.setAssertStringLobValue(assertStringLobValue(o, meta));
-			wo.setAssertBooleanValue(assertBooleanValue(o, meta));
-			wo.setAssertDateTimeValue(assertDateTimeValue(o, meta));
-			wo.setAssertDateValue(assertDateValue(o, meta));
-			wo.setAssertTimeValue(assertTimeValue(o, meta));
 			wo.setAssertIntegerValue(assertIntegerValue(o, meta));
 			wo.setAssertLongValue(assertLongValue(o, meta));
 			wo.setAssertFloatValue(assertFloatValue(o, meta));
 			wo.setAssertDoubleValue(assertDoubleValue(o, meta));
-			wo.setAssertListValue(assertListValue(o, meta));
-			wo.setAssertMapValue(assertMapValue(o, meta));
-			wo.setAssertProperties(assertProperties(o, meta));
+			wo.setAssertDateTimeValue(assertDateTimeValue(o, meta));
+			wo.setAssertDateValue(assertDateValue(o, meta));
+			wo.setAssertTimeValue(assertTimeValue(o, meta));
+			wo.setAssertBooleanValue(assertBooleanValue(o, meta));
 		}
 		ActionResult<Wo> result = new ActionResult<>();
 		result.setData(wo);
@@ -72,14 +128,6 @@ class ActionMeta extends BaseAction {
 
 		private String assertStringLobValue;
 
-		private String assertBooleanValue;
-
-		private String assertDateTimeValue;
-
-		private String assertDateValue;
-
-		private String assertTimeValue;
-
 		private String assertIntegerValue;
 
 		private String assertLongValue;
@@ -88,11 +136,12 @@ class ActionMeta extends BaseAction {
 
 		private String assertDoubleValue;
 
-		private String assertListValue;
+		private String assertDateTimeValue;
 
-		private String assertMapValue;
+		private String assertDateValue;
 
-		private String assertProperties;
+		private String assertTimeValue;
+		private String assertBooleanValue;
 
 		public String getAssertStringValue() {
 			return assertStringValue;
@@ -174,93 +223,149 @@ class ActionMeta extends BaseAction {
 			this.assertDoubleValue = assertDoubleValue;
 		}
 
-		public String getAssertListValue() {
-			return assertListValue;
-		}
-
-		public void setAssertListValue(String assertListValue) {
-			this.assertListValue = assertListValue;
-		}
-
-		public String getAssertMapValue() {
-			return assertMapValue;
-		}
-
-		public void setAssertMapValue(String assertMapValue) {
-			this.assertMapValue = assertMapValue;
-		}
-
-		public String getAssertProperties() {
-			return assertProperties;
-		}
-
-		public void setAssertProperties(String assertProperties) {
-			this.assertProperties = assertProperties;
-		}
-
 	}
 
 	private static void assignmentStringValue(Meta persistObject) {
-		persistObject.setStringValue("123456789");
+		persistObject.setStringValue(STRING1);
 	}
 
 	private static void assignmentStringLobValue(Meta persistObject) {
-		persistObject.setStringLobValue(StringUtils.repeat("123456789", 40));
-	}
-
-	private static void assignmentBooleanValue(Meta persistObject) {
-		persistObject.setBooleanValue(true);
-	}
-
-	private static void assignmentDateTimeValue(Meta persistObject) {
-		persistObject.setDateTimeValue(new Date());
-	}
-
-	private static void assignmentDateValue(Meta persistObject) {
-		persistObject.setDateValue(new Date());
-	}
-
-	private static void assignmentTimeValue(Meta persistObject) {
-		persistObject.setTimeValue(new Date());
+		persistObject.setStringLobValue(StringUtils.repeat(STRING2, 40));
 	}
 
 	private static void assignmentIntegerValue(Meta persistObject) {
-		persistObject.setIntegerValue(123456789);
+		persistObject.setIntegerValue(INTEGER1);
 	}
 
 	private static void assignmentLongValue(Meta persistObject) {
-		persistObject.setLongValue(Integer.MAX_VALUE * 10L);
+		persistObject.setLongValue(LONG1);
 	}
 
 	private static void assignmentFloatValue(Meta persistObject) {
-		persistObject.setFloatValue(12345.6789);
+		persistObject.setFloatValue(FLOAT1);
 	}
 
 	private static void assignmentDoubleValue(Meta persistObject) {
-		persistObject.setDoubleValue(12345.6789);
+		persistObject.setDoubleValue(DOUBLE1);
 	}
 
-	private static void assignmentListValue(Meta persistObject) {
+	private static void assignmentDateTimeValue(Meta persistObject) {
+		persistObject.setDateTimeValue(dateTime1);
+	}
+
+	private static void assignmentDateValue(Meta persistObject) {
+		persistObject.setDateValue(date1);
+	}
+
+	private static void assignmentTimeValue(Meta persistObject) {
+		persistObject.setTimeValue(time1);
+	}
+
+	private static void assignmentBooleanValue(Meta persistObject) {
+		persistObject.setBooleanValue(BOOLEAN1);
+	}
+
+	private static void assignmentStringValueList(Meta persistObject) {
 		List<String> list = new ArrayList<>();
-		list.add("aaaa");
-		list.add("bbbb");
-		list.add("cccc");
-		list.add("dddd");
-		persistObject.setListValueList(list);
+		list.add(STRING1);
+		list.add(STRING2);
+		persistObject.setStringValueList(list);
 	}
 
-	private static void assignmentMapValue(Meta persistObject) {
+	private static void assignmentIntegerValueList(Meta persistObject) {
+		List<Integer> list = new ArrayList<>();
+		list.add(INTEGER1);
+		list.add(INTEGER2);
+		persistObject.setIntegerValueList(list);
+	}
+
+	private static void assignmentLongValueList(Meta persistObject) {
+		List<Long> list = new ArrayList<>();
+		list.add(LONG1);
+		list.add(LONG2);
+		persistObject.setLongValueList(list);
+	}
+
+	private static void assignmentFloatValueList(Meta persistObject) {
+		List<Float> list = new ArrayList<>();
+		list.add(FLOAT1);
+		list.add(FLOAT2);
+		persistObject.setFloatValueList(list);
+	}
+
+	private static void assignmentDoubleValueList(Meta persistObject) {
+		List<Double> list = new ArrayList<>();
+		list.add(DOUBLE1);
+		list.add(DOUBLE2);
+		persistObject.setDoubleValueList(list);
+	}
+
+	private static void assignmentDateTimeValueList(Meta persistObject) {
+		List<Date> list = new ArrayList<>();
+		list.add(dateTime1);
+		list.add(dateTime2);
+		persistObject.setDateTimeValueList(list);
+	}
+
+	private static void assignmentBooleanValueList(Meta persistObject) {
+		List<Boolean> list = new ArrayList<>();
+		list.add(BOOLEAN1);
+		list.add(BOOLEAN1);
+		persistObject.setBooleanValueList(list);
+	}
+
+	private static void assignmentStringValueMap(Meta persistObject) {
 		LinkedHashMap<String, String> map = new LinkedHashMap<>();
-		map.put("1", "aaaa");
-		map.put("2", "bbbb");
-		map.put("3", "cccc");
-		map.put("4", "dddd");
-		persistObject.setMapValueMap(map);
+		map.put(STRING1, STRING1);
+		map.put(STRING2, STRING2);
+		persistObject.setStringValueMap(map);
+	}
+
+	private static void assignmentIntegerValueMap(Meta persistObject) {
+		LinkedHashMap<String, Integer> map = new LinkedHashMap<>();
+		map.put(STRING1, INTEGER1);
+		map.put(STRING2, INTEGER2);
+		persistObject.setIntegerValueMap(map);
+	}
+
+	private static void assignmentLongValueMap(Meta persistObject) {
+		LinkedHashMap<String, Long> map = new LinkedHashMap<>();
+		map.put(STRING1, LONG1);
+		map.put(STRING2, LONG2);
+		persistObject.setLongValueMap(map);
+	}
+
+	private static void assignmentFloatValueMap(Meta persistObject) {
+		LinkedHashMap<String, Float> map = new LinkedHashMap<>();
+		map.put(STRING1, FLOAT1);
+		map.put(STRING2, FLOAT2);
+		persistObject.setFloatValueMap(map);
+	}
+
+	private static void assignmentDoubleValueMap(Meta persistObject) {
+		LinkedHashMap<String, Double> map = new LinkedHashMap<>();
+		map.put(STRING1, DOUBLE1);
+		map.put(STRING2, DOUBLE2);
+		persistObject.setDoubleValueMap(map);
+	}
+
+	private static void assignmentDateTimeValueMap(Meta persistObject) {
+		LinkedHashMap<String, Date> map = new LinkedHashMap<>();
+		map.put(STRING1, dateTime1);
+		map.put(STRING2, dateTime2);
+		persistObject.setDateTimeValueMap(map);
+	}
+
+	private static void assignmentBooleanValueMap(Meta persistObject) {
+		LinkedHashMap<String, Boolean> map = new LinkedHashMap<>();
+		map.put(STRING1, BOOLEAN1);
+		map.put(STRING2, BOOLEAN2);
+		persistObject.setBooleanValueMap(map);
 	}
 
 	private static void assignmentProperties(Meta persistObject) {
-		persistObject.getProperties().setName("aaaa");
-		persistObject.getProperties().setConut(1);
+		persistObject.getProperties().setName(STRING1);
+		persistObject.getProperties().setConut(INTEGER1);
 	}
 
 	private String assertStringValue(Meta fromDbObject, Meta persistObject) {
@@ -276,38 +381,6 @@ class ActionMeta extends BaseAction {
 		message = String.format(message,
 				StringUtils.equals(fromDbObject.getStringLobValue(), persistObject.getStringLobValue()),
 				fromDbObject.getStringLobValue(), persistObject.getStringLobValue());
-		return message;
-	}
-
-	private String assertBooleanValue(Meta fromDbObject, Meta persistObject) {
-		String message = "booleanValue %s formDbObject:%s, persistObject:%s.";
-		message = String.format(message,
-				Objects.equals(fromDbObject.getBooleanValue(), persistObject.getBooleanValue()),
-				fromDbObject.getBooleanValue(), persistObject.getBooleanValue());
-		return message;
-	}
-
-	private String assertDateTimeValue(Meta fromDbObject, Meta persistObject) {
-		String message = "dateTimeValue %s formDbObject:%s, persistObject:%s.";
-		message = String.format(message,
-				Objects.equals(fromDbObject.getDateTimeValue().getTime(), persistObject.getDateTimeValue().getTime()),
-				fromDbObject.getDateTimeValue(), persistObject.getDateTimeValue());
-		return message;
-	}
-
-	private String assertDateValue(Meta fromDbObject, Meta persistObject) {
-		String message = "dateValue %s formDbObject:%s, persistObject:%s.";
-		message = String.format(message,
-				Objects.equals(fromDbObject.getDateValue().getTime(), persistObject.getDateValue().getTime()),
-				fromDbObject.getDateValue(), persistObject.getDateValue());
-		return message;
-	}
-
-	private String assertTimeValue(Meta fromDbObject, Meta persistObject) {
-		String message = "timeValue %s formDbObject:%s, persistObject:%s.";
-		message = String.format(message,
-				Objects.equals(fromDbObject.getTimeValue().getTime(), persistObject.getTimeValue().getTime()),
-				fromDbObject.getTimeValue(), persistObject.getTimeValue());
 		return message;
 	}
 
@@ -340,46 +413,35 @@ class ActionMeta extends BaseAction {
 		return message;
 	}
 
-	private String assertListValue(Meta fromDbObject, Meta persistObject) {
-		String message = "listValue %s formDbObject:%s, persistObject:%s.";
-		boolean check = true;
-		for (int i = 0; i < fromDbObject.getListValueList().size(); i++) {
-			if (!StringUtils.equals(fromDbObject.getListValueList().get(i), persistObject.getListValueList().get(i))) {
-				check = false;
-			}
-		}
-		for (int i = 0; i < persistObject.getListValueList().size(); i++) {
-			if (!StringUtils.equals(persistObject.getListValueList().get(i), fromDbObject.getListValueList().get(i))) {
-				check = false;
-			}
-		}
-		message = String.format(message, check, XGsonBuilder.toJson(fromDbObject.getListValueList()),
-				XGsonBuilder.toJson(persistObject.getListValueList()));
+	private String assertDateTimeValue(Meta fromDbObject, Meta persistObject) {
+		String message = "dateTimeValue %s formDbObject:%s, persistObject:%s.";
+		message = String.format(message,
+				Objects.equals(fromDbObject.getDateTimeValue().getTime(), persistObject.getDateTimeValue().getTime()),
+				fromDbObject.getDateTimeValue(), persistObject.getDateTimeValue());
 		return message;
 	}
 
-	private String assertMapValue(Meta fromDbObject, Meta persistObject) {
-		String message = "mapValue %s formDbObject:%s, persistObject:%s.";
-		boolean check = true;
-		for (Entry<String, String> en : fromDbObject.getMapValueMap().entrySet()) {
-			if (!StringUtils.equals(en.getValue(), persistObject.getMapValueMap().get(en.getKey()))) {
-				check = false;
-			}
-		}
-		for (Entry<String, String> en : persistObject.getMapValueMap().entrySet()) {
-			if (!StringUtils.equals(en.getValue(), fromDbObject.getMapValueMap().get(en.getKey()))) {
-				check = false;
-			}
-		}
-		message = String.format(message, check, XGsonBuilder.toJson(fromDbObject.getMapValueMap()),
-				XGsonBuilder.toJson(persistObject.getMapValueMap()));
+	private String assertDateValue(Meta fromDbObject, Meta persistObject) {
+		String message = "dateValue %s formDbObject:%s, persistObject:%s.";
+		message = String.format(message,
+				Objects.equals(fromDbObject.getDateValue().getTime(), persistObject.getDateValue().getTime()),
+				fromDbObject.getDateValue(), persistObject.getDateValue());
 		return message;
 	}
 
-	private String assertProperties(Meta fromDbObject, Meta persistObject) {
-		String message = "properties %s formDbObject:%s, persistObject:%s.";
-		message = String.format(message, Objects.equals(fromDbObject.getProperties(), persistObject.getProperties()),
-				fromDbObject.getProperties(), persistObject.getProperties());
+	private String assertTimeValue(Meta fromDbObject, Meta persistObject) {
+		String message = "timeValue %s formDbObject:%s, persistObject:%s.";
+		message = String.format(message,
+				Objects.equals(fromDbObject.getTimeValue().getTime(), persistObject.getTimeValue().getTime()),
+				fromDbObject.getTimeValue(), persistObject.getTimeValue());
+		return message;
+	}
+
+	private String assertBooleanValue(Meta fromDbObject, Meta persistObject) {
+		String message = "booleanValue %s formDbObject:%s, persistObject:%s.";
+		message = String.format(message,
+				Objects.equals(fromDbObject.getBooleanValue(), persistObject.getBooleanValue()),
+				fromDbObject.getBooleanValue(), persistObject.getBooleanValue());
 		return message;
 	}
 
