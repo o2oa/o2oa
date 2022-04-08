@@ -74,6 +74,10 @@ public class Config {
 	public static final String PATH_CONFIG_DUMPRESTORESTORAGE = "config/dumpRestoreStorage.json";
 	public static final String PATH_CONFIG_MESSAGES = "config/messages.json";
 	public static final String PATH_CONFIG_MESSAGES_SEND_RULE = "config/messageSendRule.js";
+	public static final String PATH_CONFIG_MESSAGERESTFUL = "config/messageRestful.json";
+	public static final String PATH_CONFIG_MESSAGEMQ = "config/messageMq.json";
+	public static final String PATH_CONFIG_MESSAGEMAIL = "config/messageMail.json";
+	public static final String PATH_CONFIG_MESSAGEAPI = "config/messageApi.json";
 	public static final String PATH_CONFIG_SSLKEYSTORE = "config/keystore";
 	public static final String PATH_CONFIG_SSLKEYSTORESAMPLE = "config/sample/keystore";
 	public static final String PATH_CONFIG_STARTIMAGE = "config/startImage.png";
@@ -86,7 +90,6 @@ public class Config {
 	public static final String PATH_CONFIG_ZHENGWUDINGDING = "config/zhengwuDingding.json";
 	public static final String PATH_CONFIG_QIYEWEIXIN = "config/qiyeweixin.json";
 	public static final String PATH_CONFIG_MPWEIXIN = "config/mpweixin.json";
-	public static final String PATH_CONFIG_MQ = "config/mq.json";
 	public static final String PATH_CONFIG_LOGLEVEL = "config/logLevel.json";
 	public static final String PATH_CONFIG_BINDLOGO = "config/bindLogo.png";
 	public static final String PATH_CONFIG_SLICE = "config/slice.json";
@@ -128,11 +131,6 @@ public class Config {
 	public static final String DIR_DYNAMIC = "dynamic";
 	public static final String DIR_DYNAMIC_JARS = "dynamic/jars";
 	public static final String DIR_JVM = "jvm";
-//	public static final String DIR_JVM_AIX = "jvm/aix";
-//	public static final String DIR_JVM_LINUX = "jvm/linux";
-//	public static final String DIR_JVM_MACOS = "jvm/macos";
-//	public static final String DIR_JVM_WINDOWS = "jvm/windows";
-//	public static final String DIR_JVM_NEOKYLIN_LOONGSON = "jvm/neokylin_loongson";
 	public static final String DIR_LOCAL = "local";
 	public static final String DIR_LOCAL_BACKUP = "local/backup";
 	public static final String DIR_LOCAL_UPDATE = "local/update";
@@ -238,10 +236,6 @@ public class Config {
 	public static Path dir_commons_fonts() throws Exception {
 		return Paths.get(base()).resolve(DIR_COMMONS_FONTS);
 	}
-
-//	public static File dir_commons_ext() throws Exception {
-//		return new File(base(), DIR_COMMONS_EXT);
-//	}
 
 	public static Path dir_commons_ext() throws IOException, URISyntaxException {
 		if (SystemUtils.IS_JAVA_11) {
@@ -350,7 +344,7 @@ public class Config {
 		return new File(base(), DIR_LOCAL_TEMP);
 	}
 
-	public static File dir_local_temp_classes() throws IOException, URISyntaxException  {
+	public static File dir_local_temp_classes() throws IOException, URISyntaxException {
 		return new File(base(), DIR_LOCAL_TEMP_CLASSES);
 	}
 
@@ -933,6 +927,58 @@ public class Config {
 		return instance().messages;
 	}
 
+	private MessageRestful messageRestful;
+
+	public static synchronized MessageRestful messageRestful() throws Exception {
+		if (null == instance().messageRestful) {
+			MessageRestful obj = BaseTools.readConfigObject(PATH_CONFIG_MESSAGERESTFUL, MessageRestful.class);
+			if (null == obj) {
+				obj = MessageRestful.defaultInstance();
+			}
+			instance().messageRestful = obj;
+		}
+		return instance().messageRestful;
+	}
+
+	private MessageMq messageMq;
+
+	public static synchronized MessageMq messageMq() throws Exception {
+		if (null == instance().messageMq) {
+			MessageMq obj = BaseTools.readConfigObject(PATH_CONFIG_MESSAGEMQ, MessageMq.class);
+			if (null == obj) {
+				obj = MessageMq.defaultInstance();
+			}
+			instance().messageMq = obj;
+		}
+		return instance().messageMq;
+	}
+
+	private MessageMail messageMail;
+
+	public static synchronized MessageMail messageMail() throws Exception {
+		if (null == instance().messageMail) {
+			MessageMail obj = BaseTools.readConfigObject(PATH_CONFIG_MESSAGEMAIL, MessageMail.class);
+			if (null == obj) {
+				obj = MessageMail.defaultInstance();
+			}
+			instance().messageMail = obj;
+		}
+		return instance().messageMail;
+	}
+	
+	private MessageApi messageApi;
+
+	public static synchronized MessageApi messageApi() throws Exception {
+		if (null == instance().messageApi) {
+			MessageApi obj = BaseTools.readConfigObject(PATH_CONFIG_MESSAGEAPI, MessageApi.class);
+			if (null == obj) {
+				obj = MessageApi.defaultInstance();
+			}
+			instance().messageApi = obj;
+		}
+		return instance().messageApi;
+	}
+
 	private String messageSendRuleScript;
 
 	public static synchronized String messageSendRuleScript() throws Exception {
@@ -1049,19 +1095,6 @@ public class Config {
 			instance().zhengwuDingding = obj;
 		}
 		return instance().zhengwuDingding;
-	}
-
-	private Mq mq;
-
-	public static synchronized Mq mq() throws Exception {
-		if (null == instance().mq) {
-			Mq obj = BaseTools.readConfigObject(PATH_CONFIG_MQ, Mq.class);
-			if (null == obj) {
-				obj = Mq.defaultInstance();
-			}
-			instance().mq = obj;
-		}
-		return instance().mq;
 	}
 
 	private Vfs vfs;

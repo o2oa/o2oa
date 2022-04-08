@@ -7,7 +7,7 @@ import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.message.MessageConnector;
 import com.x.message.assemble.communicate.schedule.Clean;
-import com.x.message.assemble.communicate.schedule.TriggerMq;
+import com.x.message.assemble.communicate.schedule.TriggerMessageConsumeQueue;
 
 public class ThisApplication {
 
@@ -37,6 +37,12 @@ public class ThisApplication {
 
 	public static final MPWeixinConsumeQueue mpWeixinConsumeQueue = new MPWeixinConsumeQueue();
 
+	public static final RestfulConsumeQueue restfulConsumeQueue = new RestfulConsumeQueue();
+
+	public static final MailConsumeQueue mailConsumeQueue = new MailConsumeQueue();
+
+	public static final ApiConsumeQueue apiConsumeQueue = new ApiConsumeQueue();
+
 	public static Context context() {
 		return context;
 	}
@@ -49,8 +55,9 @@ public class ThisApplication {
 			if (BooleanUtils.isTrue(Config.communicate().clean().getEnable())) {
 				context().schedule(Clean.class, Config.communicate().clean().getCron());
 			}
-			if (BooleanUtils.isTrue(Config.communicate().cronMq().getEnable())) {
-				context().schedule(TriggerMq.class, Config.communicate().cronMq().getCron());
+			if (BooleanUtils.isTrue(Config.communicate().triggerMessageConsumeQueue().getEnable())) {
+				context().schedule(TriggerMessageConsumeQueue.class,
+						Config.communicate().triggerMessageConsumeQueue().getCron());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -59,6 +66,10 @@ public class ThisApplication {
 
 	private static void startQueue() throws Exception {
 		startCommunicateQueue();
+		context().startQueue(restfulConsumeQueue);
+		context().startQueue(apiConsumeQueue);
+		context().startQueue(mailConsumeQueue);
+		context().startQueue(mqConsumeQueue);
 		if (BooleanUtils.isTrue(Config.qiyeweixin().getEnable())
 				&& BooleanUtils.isTrue(Config.qiyeweixin().getMessageEnable())) {
 			context().startQueue(qiyeweixinConsumeQueue);
@@ -75,9 +86,6 @@ public class ThisApplication {
 		}
 		if (Config.weLink().getEnable() && Config.weLink().getMessageEnable()) {
 			context().startQueue(weLinkConsumeQueue);
-		}
-		if (BooleanUtils.isTrue(Config.mq().getEnable())) {
-			context().startQueue(mqConsumeQueue);
 		}
 		if (BooleanUtils.isTrue(Config.mPweixin().getEnable())
 				&& BooleanUtils.isTrue(Config.mPweixin().getMessageEnable())) {

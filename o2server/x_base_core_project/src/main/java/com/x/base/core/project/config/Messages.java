@@ -6,16 +6,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListMap;
 
+import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.config.Message.Consumer;
 import com.x.base.core.project.message.MessageConnector;
+
+import org.apache.commons.lang3.BooleanUtils;
 
 public class Messages extends ConcurrentSkipListMap<String, Message> {
 
 	private static final long serialVersionUID = 1336172131736006743L;
 
 	public static final Boolean DEFAULT_WEBSOCKETENABLE = true;
+	public static final Boolean DEFAULT_V3ENABLE = false;
 
 	public Messages() {
 		super();
+	}
+
+	@FieldDescribe("是否启用V3配置")
+	private Boolean v3Enable;
+
+	public Boolean v3Enable() {
+		return BooleanUtils.isTrue(this.v3Enable);
 	}
 
 	public static Messages defaultInstance() {
@@ -114,6 +126,7 @@ public class Messages extends ConcurrentSkipListMap<String, Message> {
 				new Message(MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS));
 		// im聊天消息发送
 		o.put(MessageConnector.TYPE_IM_CREATE, new Message(MessageConnector.CONSUME_WS));
+		o.v3Enable = DEFAULT_V3ENABLE;
 		return o;
 	}
 
@@ -136,6 +149,15 @@ public class Messages extends ConcurrentSkipListMap<String, Message> {
 			map.putAll(o.getConsumersV2());
 		}
 		return map;
+	}
+
+	public List<Consumer> getConsumersV3(String type) {
+		Message o = this.get(type);
+		List<Consumer> list = new ArrayList<>();
+		if ((null != o) && (null != o.getConsumersV3())) {
+			list.addAll(o.getConsumersV3());
+		}
+		return list;
 	}
 
 }

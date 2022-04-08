@@ -19,20 +19,21 @@ import com.x.message.core.entity.Message;
 
 public class WsConsumeQueue extends AbstractQueue<Message> {
 
-	private static Logger logger = LoggerFactory.getLogger(WsConsumeQueue.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(WsConsumeQueue.class);
 
 	private static final String TASK_FIRST = "first";
 	private static final String WORKCREATETYPE = "workCreateType";
 	private static final String SURFACE = "surface";
 
 	protected void execute(Message message) throws Exception {
+		LOGGER.debug("execute:{}.", message::getTitle);
 		WsMessage ws = new WsMessage();
 		ws.setType(message.getType());
 		ws.setPerson(message.getPerson());
 		ws.setTitle(message.getTitle());
 		JsonElement jsonElement = XGsonBuilder.instance().fromJson(message.getBody(), JsonElement.class);
 		ws.setBody(jsonElement);
-		Boolean result = false;
+		boolean result = false;
 		/* 跳过第一条待办的提醒 */
 		if (StringUtils.equalsIgnoreCase(ws.getType(), MessageConnector.TYPE_TASK_CREATE)
 				&& BooleanUtils.isTrue(XGsonBuilder.extractBoolean(jsonElement, TASK_FIRST))
