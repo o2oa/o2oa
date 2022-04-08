@@ -54,23 +54,24 @@ public class Communicate extends ConfigObject {
 		return BooleanUtils.isTrue(this.updateQueryTableEnable);
 	}
 
-	@FieldDescribe("定时触发发送到消息队列MQ.")
-	private CronMq cronMq;
+	@FieldDescribe("定时触发消息消费队列.")
+	private TriggerMessageConsumeQueue triggerMessageConsumeQueue;
 
-	public CronMq cronMq() {
-		return this.cronMq == null ? new CronMq() : this.cronMq;
+	public TriggerMessageConsumeQueue triggerMessageConsumeQueue() {
+		return this.triggerMessageConsumeQueue == null ? new TriggerMessageConsumeQueue()
+				: this.triggerMessageConsumeQueue;
 	}
 
-	public static class CronMq extends ConfigObject {
+	public static class TriggerMessageConsumeQueue extends ConfigObject {
 
 		private static final long serialVersionUID = 1559477154694423422L;
 
-		public static CronMq defaultInstance() {
-			return new CronMq();
+		public static TriggerMessageConsumeQueue defaultInstance() {
+			return new TriggerMessageConsumeQueue();
 		}
 
-		public static final Boolean DEFAULT_ENABLE = false;
-		public static final String DEFAULT_CRON = "0 0 * * * ?"; // 每小时运行一次
+		public static final Boolean DEFAULT_ENABLE = true;
+		public static final String DEFAULT_CRON = "20 20 * * * ?"; // 每小时运行一次
 
 		@FieldDescribe("是否启用")
 		private Boolean enable = DEFAULT_ENABLE;

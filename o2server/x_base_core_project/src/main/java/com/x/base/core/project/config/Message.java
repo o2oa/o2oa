@@ -50,14 +50,10 @@ public class Message extends GsonPropertyObject {
 
 	private Map<String, String> consumersV2 = new HashMap<>();
 
-	private Map<String, Consumer> consumersV3 = new HashMap<>();
+	private List<Consumer> consumersV3 = new ArrayList<>();
 
-	public Map<String, Consumer> getConsumersV3() {
+	public List<Consumer> getConsumersV3() {
 		return consumersV3;
-	}
-
-	public void setConsumersV3(Map<String, Consumer> consumersV3) {
-		this.consumersV3 = consumersV3;
 	}
 
 	public List<String> getConsumers() {
@@ -76,22 +72,28 @@ public class Message extends GsonPropertyObject {
 		this.consumersV2 = consumersV2;
 	}
 
-	public boolean v3Enable() {
-		return (null != this.consumersV3) && (!this.consumersV3.isEmpty());
-	}
-
 	public static class Consumer implements Serializable {
 
+		private static final long serialVersionUID = 392932139617988800L;
+		
 		@FieldDescribe("消费者名称")
 		private String type;
 		@FieldDescribe("是否启用")
 		private Boolean enable;
 		@FieldDescribe("装载器")
 		private String loader;
-		@FieldDescribe("地址")
-		private String url;
-		@FieldDescribe("方法")
-		private String method;
+		@FieldDescribe("过滤器")
+		private String filter;
+		@FieldDescribe("配置条目")
+		private String item;
+
+		public String getFilter() {
+			return filter;
+		}
+
+		public void setFilter(String filter) {
+			this.filter = filter;
+		}
 
 		public String getType() {
 			return type;
@@ -117,20 +119,12 @@ public class Message extends GsonPropertyObject {
 			this.loader = loader;
 		}
 
-		public String getUrl() {
-			return url;
+		public String getItem() {
+			return item;
 		}
 
-		public void setUrl(String url) {
-			this.url = url;
-		}
-
-		public String getMethod() {
-			return method;
-		}
-
-		public void setMethod(String method) {
-			this.method = method;
+		public void setItem(String item) {
+			this.item = item;
 		}
 
 	}
