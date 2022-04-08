@@ -2,6 +2,8 @@ package com.x.base.core.project.config;
 
 import java.util.LinkedHashMap;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.project.annotation.FieldDescribe;
 
 public class MessageMail extends LinkedHashMap<String, MessageMail.Item> {
@@ -9,7 +11,9 @@ public class MessageMail extends LinkedHashMap<String, MessageMail.Item> {
 	private static final long serialVersionUID = 2536141863287117519L;
 
 	public static MessageMail defaultInstance() {
-		return new MessageMail();
+		MessageMail messageMail = new MessageMail();
+		messageMail.put("o2oa", new Item());
+		return messageMail;
 	}
 
 	public static class Item {
@@ -49,51 +53,27 @@ public class MessageMail extends LinkedHashMap<String, MessageMail.Item> {
 		private String password;
 
 		public String getHost() {
-			return host;
-		}
-
-		public void setHost(String host) {
-			this.host = host;
+			return StringUtils.isBlank(this.host) ? DEFAULT_HOST : this.host;
 		}
 
 		public Integer getPort() {
-			return port;
-		}
-
-		public void setPort(Integer port) {
-			this.port = port;
+			return null == port ? DEFAULT_PORT : this.port;
 		}
 
 		public Boolean getSslEnable() {
-			return sslEnable;
-		}
-
-		public void setSslEnable(Boolean sslEnable) {
-			this.sslEnable = sslEnable;
+			return null == sslEnable ? DEFAULT_SSLENABLE : this.sslEnable;
 		}
 
 		public Boolean getAuth() {
-			return auth;
-		}
-
-		public void setAuth(Boolean auth) {
-			this.auth = auth;
+			return null == auth ? DEFAULT_AUTH : this.auth;
 		}
 
 		public String getFrom() {
-			return from;
-		}
-
-		public void setFrom(String from) {
-			this.from = from;
+			return StringUtils.isBlank(this.from) ? DEFAULT_FROM : this.from;
 		}
 
 		public String getPassword() {
 			return password;
-		}
-
-		public void setPassword(String password) {
-			this.password = password;
 		}
 
 	}

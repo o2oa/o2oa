@@ -117,7 +117,7 @@ public class Message extends SliceJpaObject {
 	@FieldDescribe("配置项.")
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + ITEM_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + ITEM_FIELDNAME)
-	@CheckPersist(allowEmpty = false)
+	@CheckPersist(allowEmpty = true)
 	private String item;
 
 	public static final String PROPERTIES_FIELDNAME = "properties";

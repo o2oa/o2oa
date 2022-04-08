@@ -6,8 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.message.MessageConnector;
 
 public class Message extends GsonPropertyObject {
 
@@ -32,6 +35,7 @@ public class Message extends GsonPropertyObject {
 		if (args != null) {
 			for (String arg : args) {
 				this.consumersV2.put(arg, "");
+				this.consumersV3.add(new Consumer(arg));
 			}
 		}
 	}
@@ -75,7 +79,36 @@ public class Message extends GsonPropertyObject {
 	public static class Consumer implements Serializable {
 
 		private static final long serialVersionUID = 392932139617988800L;
-		
+
+		private static final String[] V3HASITEMCONSUMER = new String[] { MessageConnector.CONSUME_API,
+				MessageConnector.CONSUME_MAIL, MessageConnector.CONSUME_MQ, MessageConnector.CONSUME_RESTFUL };
+
+		private static final Boolean DEFAULT_ENABLE = true;
+		private static final String DEFAULT_TYPE = "";
+		private static final String DEFAULT_LOADER = "";
+		private static final String DEFAULT_FILTER = "";
+		private static final String DEFAULT_ITEM = "";
+
+		public Consumer() {
+			this.type = DEFAULT_TYPE;
+			this.enable = DEFAULT_ENABLE;
+			this.loader = DEFAULT_LOADER;
+			this.filter = DEFAULT_FILTER;
+			this.item = DEFAULT_ITEM;
+		}
+
+		public Consumer(String type) {
+			this.type = type;
+			this.enable = DEFAULT_ENABLE;
+			this.loader = DEFAULT_LOADER;
+			this.filter = DEFAULT_FILTER;
+			if (StringUtils.containsAny(type, V3HASITEMCONSUMER)) {
+				this.item = DEFAULT_ITEM;
+			} else {
+				this.item = null;
+			}
+		}
+
 		@FieldDescribe("消费者名称")
 		private String type;
 		@FieldDescribe("是否启用")
@@ -87,44 +120,24 @@ public class Message extends GsonPropertyObject {
 		@FieldDescribe("配置条目")
 		private String item;
 
-		public String getFilter() {
-			return filter;
+		public Boolean getEnable() {
+			return (null == this.enable) ? DEFAULT_ENABLE : this.enable;
 		}
 
-		public void setFilter(String filter) {
-			this.filter = filter;
+		public String getFilter() {
+			return StringUtils.isBlank(this.filter) ? DEFAULT_FILTER : this.filter;
 		}
 
 		public String getType() {
-			return type;
-		}
-
-		public void setType(String type) {
-			this.type = type;
-		}
-
-		public Boolean getEnable() {
-			return enable;
-		}
-
-		public void setEnable(Boolean enable) {
-			this.enable = enable;
+			return StringUtils.isBlank(this.type) ? DEFAULT_TYPE : this.type;
 		}
 
 		public String getLoader() {
-			return loader;
-		}
-
-		public void setLoader(String loader) {
-			this.loader = loader;
+			return StringUtils.isBlank(this.loader) ? DEFAULT_LOADER : this.loader;
 		}
 
 		public String getItem() {
-			return item;
-		}
-
-		public void setItem(String item) {
-			this.item = item;
+			return StringUtils.isBlank(this.item) ? DEFAULT_ITEM : this.item;
 		}
 
 	}

@@ -38,6 +38,7 @@ public class MailConsumeQueue extends AbstractQueue<Message> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MailConsumeQueue.class);
 
 	protected void execute(Message message) throws Exception {
+		LOGGER.debug("execute:{}, to person:{}.", message.getTitle(), message.getPerson());
 		if (null != message && StringUtils.isNotEmpty(message.getItem())) {
 			update(message);
 		}

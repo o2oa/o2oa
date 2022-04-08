@@ -915,15 +915,22 @@ public class Config {
 
 	public static synchronized Messages messages() throws Exception {
 		if (null == instance().messages) {
-			Messages obj = Messages.defaultInstance();
-			Messages custom = BaseTools.readConfigObject(PATH_CONFIG_MESSAGES, Messages.class);
-			if (null != custom) {
-				custom.entrySet().stream().forEach(o -> {
-					obj.put(o.getKey(), new Message(o.getValue().getConsumers(), o.getValue().getConsumersV2()));
-				});
+			Messages obj = BaseTools.readConfigObject(PATH_CONFIG_MESSAGES, Messages.class);
+			if (null == obj) {
+				obj = Messages.defaultInstance();
 			}
 			instance().messages = obj;
 		}
+//		if (null == instance().messages) {
+//			Messages obj = Messages.defaultInstance();
+//			Messages custom = BaseTools.readConfigObject(PATH_CONFIG_MESSAGES, Messages.class);
+//			if (null != custom) {
+//				custom.entrySet().stream().forEach(o -> {
+//					obj.put(o.getKey(), new Message(o.getValue().getConsumers(), o.getValue().getConsumersV2()));
+//				});
+//			}
+//			instance().messages = obj;
+//		}
 		return instance().messages;
 	}
 
@@ -965,7 +972,7 @@ public class Config {
 		}
 		return instance().messageMail;
 	}
-	
+
 	private MessageApi messageApi;
 
 	public static synchronized MessageApi messageApi() throws Exception {
