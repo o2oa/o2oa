@@ -7,10 +7,14 @@ import com.x.base.core.entity.StorageProtocol;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.Crypto;
 
+/**
+ * 第三方附件存储配置
+ * @author sword
+ */
 public class ExternalStorageSource extends ConfigObject {
 
 	private static final long serialVersionUID = 5926439816241094368L;
-	
+
 	// 无需保存
 	private transient String _password;
 
@@ -43,13 +47,13 @@ public class ExternalStorageSource extends ConfigObject {
 	public static final String DEFAULT_NAME = "251";
 	public static final Boolean DEFAULT_DEEPPATH = false;
 
-	@FieldDescribe("协议,可选值ftp,webdav...")
+	@FieldDescribe("协议,可选值ftp、sftp、webdav、file、hdfs、ali")
 	private StorageProtocol protocol;
 	@FieldDescribe("登录用户名.")
 	private String username;
 	@FieldDescribe("登录密码.")
 	private String password;
-	@FieldDescribe("主机地址.")
+	@FieldDescribe("主机地址或阿里云endpoint.")
 	private String host;
 	@FieldDescribe("端口.")
 	private Integer port;
@@ -59,7 +63,7 @@ public class ExternalStorageSource extends ConfigObject {
 	private Boolean enable;
 	@FieldDescribe("设置权重.")
 	private Integer weight;
-	@FieldDescribe("存储节点名,对应存储名称,谨慎修改.")
+	@FieldDescribe("存储节点名,对应存储名称,阿里云为bucket(桶)名称.")
 	private String name;
 	@FieldDescribe("是否使用更深的路径.")
 	private Boolean deepPath;
