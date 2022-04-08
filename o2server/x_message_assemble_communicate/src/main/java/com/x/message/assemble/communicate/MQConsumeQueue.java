@@ -96,11 +96,6 @@ public class MQConsumeQueue extends AbstractQueue<Message> {
 	private void kafka(Message message, MessageMq.Item item) throws InterruptedException, ExecutionException {
 		Properties properties = new Properties();
 		properties.put("bootstrap.servers", item.getKafkaBootstrapServers());
-		properties.put("acks", item.getKafkaAcks());
-		properties.put("retries", item.getKafkaRetries());
-		properties.put("batch.size", item.getKafkaBatchSize());
-		properties.put("linger.ms", item.getKafkaLingerMs());
-		properties.put("buffer.memory", item.getKafkaBufferMemory());
 		properties.put("key.serializer", org.apache.kafka.common.serialization.StringSerializer.class.getName());
 		properties.put("value.serializer", org.apache.kafka.common.serialization.StringSerializer.class.getName());
 		try (KafkaProducer<String, String> producer = new KafkaProducer<>(properties)) {

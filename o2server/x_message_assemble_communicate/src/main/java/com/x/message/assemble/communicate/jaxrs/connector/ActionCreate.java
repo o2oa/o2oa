@@ -10,6 +10,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Collectors;
 
 import javax.script.Bindings;
 import javax.script.CompiledScript;
@@ -52,8 +53,9 @@ class ActionCreate extends BaseAction {
 
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		if (BooleanUtils.isTrue(Config.messages().v3Enable())) {
-			List<Consumer> consumers = Config.messages().getConsumersV3(wi.getType());
+		List<Consumer> consumers = Config.messages().getConsumersV3(wi.getType());
+		consumers = consumers.stream().filter(Consumer::getEnable).collect(Collectors.toList());
+		if (!ListTools.isEmpty(consumers)) {
 			Instant instant = v3instant(wi);
 			List<Message> messages = v3Assemble(wi, instant, consumers);
 			v3Save(instant, messages);
@@ -518,6 +520,10 @@ class ActionCreate extends BaseAction {
 	}
 
 	private List<Message> v3Assemble(Wi wi, Instant instant, List<Consumer> consumers) {
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		System.out.println(consumers);
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
 		List<Message> messages = new ArrayList<>();
 		if (!consumers.isEmpty()) {
 			for (Consumer consumer : consumers) {
