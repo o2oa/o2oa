@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListMap;
 
+import com.x.base.core.project.config.Message.Consumer;
 import com.x.base.core.project.message.MessageConnector;
 
 public class Messages extends ConcurrentSkipListMap<String, Message> {
@@ -13,6 +14,7 @@ public class Messages extends ConcurrentSkipListMap<String, Message> {
 	private static final long serialVersionUID = 1336172131736006743L;
 
 	public static final Boolean DEFAULT_WEBSOCKETENABLE = true;
+	public static final Boolean DEFAULT_V3ENABLE = false;
 
 	public Messages() {
 		super();
@@ -136,6 +138,15 @@ public class Messages extends ConcurrentSkipListMap<String, Message> {
 			map.putAll(o.getConsumersV2());
 		}
 		return map;
+	}
+
+	public List<Consumer> getConsumersV3(String type) {
+		Message o = this.get(type);
+		List<Consumer> list = new ArrayList<>();
+		if ((null != o) && (null != o.getConsumersV3())) {
+			list.addAll(o.getConsumersV3());
+		}
+		return list;
 	}
 
 }

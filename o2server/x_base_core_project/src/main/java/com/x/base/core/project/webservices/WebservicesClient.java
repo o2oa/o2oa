@@ -125,9 +125,6 @@ public class WebservicesClient {
 
 	private List<NameValuePair> jaxrsHeads(Map<String, String> heads) {
 		List<NameValuePair> list = new ArrayList<>();
-//		if (null == heads || (!heads.containsKey(ConnectionAction.CONTENT_TYPE))) {
-//			list.add(new NameValuePair(ConnectionAction.CONTENT_TYPE, ConnectionAction.CONTENT_TYPE_VALUE));
-//		}
 		if (null != heads) {
 			heads.entrySet().forEach(en -> list.add(new NameValuePair(en.getKey(), en.getValue())));
 		}

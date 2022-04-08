@@ -12,6 +12,10 @@ import com.x.base.core.project.gson.XGsonBuilder;
 
 public class MessageConnector {
 
+	private MessageConnector() {
+		// nothing
+	}
+
 	private static Gson gson = XGsonBuilder.instance();
 
 	public static final String TYPE_APPLICATION_CREATE = "application_create";
@@ -142,6 +146,12 @@ public class MessageConnector {
 	public static final String CONSUME_MPWEIXIN = "mpweixin"; // 微信公众号
 
 	public static final String CONSUME_MQ = "mq";
+	// restful类型
+	public static final String CONSUME_RESTFUL = "restful";
+	// 邮件类型
+	public static final String CONSUME_MAIL = "mail";
+	// 内部调用
+	public static final String CONSUME_API = "api";
 
 	private static Context context;
 
@@ -170,10 +180,6 @@ public class MessageConnector {
 		wrap.setPerson(person);
 		wrap.setBody(gson.toJsonTree(body));
 		connectQueue.put(wrap);
-	}
-
-	public static void updateTable(Wrap warp) {
-
 	}
 
 	public static class ConnectorThread extends Thread {
@@ -267,6 +273,8 @@ public class MessageConnector {
 	}
 
 	public static class StopSignal extends Wrap {
+
+		private static final long serialVersionUID = -5631247237688117035L;
 
 	}
 

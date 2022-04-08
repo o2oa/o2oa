@@ -15,6 +15,7 @@ import org.quartz.JobExecutionException;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.JpaObject_;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -23,13 +24,11 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.utils.time.TimeStamp;
 import com.x.message.assemble.communicate.Business;
 import com.x.message.core.entity.Instant;
-import com.x.message.core.entity.Instant_;
 import com.x.message.core.entity.Message;
-import com.x.message.core.entity.Message_;
 
 public class Clean extends AbstractJob {
 
-	private static Logger logger = LoggerFactory.getLogger(Clean.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Clean.class);
 
 	@Override
 	public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
@@ -38,10 +37,10 @@ public class Clean extends AbstractJob {
 			Business business = new Business(emc);
 			Long instantCount = this.clearInstant(business);
 			Long messageCount = this.clearMessage(business);
-			logger.print("清理过期的消息内容,其中主体消息: {} 条, 消息: {} 条, 耗时: {}.", instantCount, messageCount,
-					stamp.consumingMilliseconds());
+			LOGGER.info("清理过期的消息内容,其中主体消息: {} 条, 消息: {} 条, 耗时: {}.", () -> instantCount, () -> messageCount,
+					stamp::consumingMilliseconds);
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 			throw new JobExecutionException(e);
 		}
 	}
@@ -69,7 +68,7 @@ public class Clean extends AbstractJob {
 		CriteriaQuery<Instant> cq = cb.createQuery(Instant.class);
 		Root<Instant> root = cq.from(Instant.class);
 		Date limit = DateUtils.addDays(new Date(), -Config.communicate().clean().getKeep());
-		Predicate p = cb.lessThan(root.get(Instant_.createTime), limit);
+		Predicate p = cb.lessThan(root.get(JpaObject_.createTime), limit);
 		return em.createQuery(cq.select(root).where(p)).setMaxResults(2000).getResultList();
 	}
 
@@ -97,7 +96,7 @@ public class Clean extends AbstractJob {
 		CriteriaQuery<Message> cq = cb.createQuery(Message.class);
 		Root<Message> root = cq.from(Message.class);
 		Date limit = DateUtils.addDays(new Date(), -Config.communicate().clean().getKeep());
-		Predicate p = cb.lessThan(root.get(Message_.createTime), limit);
+		Predicate p = cb.lessThan(root.get(JpaObject_.createTime), limit);
 		return em.createQuery(cq.select(root).where(p)).setMaxResults(200).getResultList();
 	}
 

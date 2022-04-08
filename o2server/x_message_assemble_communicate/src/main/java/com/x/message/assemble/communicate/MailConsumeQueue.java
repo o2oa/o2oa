@@ -5,49 +5,40 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.concurrent.ExecutionException;
 
-import javax.jms.Connection;
-import javax.jms.DeliveryMode;
-import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.MessageProducer;
-import javax.jms.Session;
-import javax.jms.TextMessage;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.ProducerRecord;
 
-import com.google.gson.Gson;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject_;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.MessageMq;
-import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.config.MessageMail;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.MessageConnector;
+import com.x.base.core.project.organization.Person;
 import com.x.base.core.project.queue.AbstractQueue;
-import com.x.base.core.project.tools.ListTools;
 import com.x.message.core.entity.Message;
 import com.x.message.core.entity.Message_;
 
-public class MQConsumeQueue extends AbstractQueue<Message> {
+public class MailConsumeQueue extends AbstractQueue<Message> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(MQConsumeQueue.class);
-
-	private static final Gson gson = XGsonBuilder.instance();
+	private static final Logger LOGGER = LoggerFactory.getLogger(MailConsumeQueue.class);
 
 	protected void execute(Message message) throws Exception {
+		LOGGER.debug("execute:{}, to person:{}.", message.getTitle(), message.getPerson());
 		if (null != message && StringUtils.isNotEmpty(message.getItem())) {
 			update(message);
 		}
@@ -73,59 +64,52 @@ public class MQConsumeQueue extends AbstractQueue<Message> {
 
 	private void update(Message message) {
 		try {
-			MessageMq.Item item = Config.messageMq().get(message.getItem());
+			MessageMail.Item item = Config.messageMail().get(message.getItem());
 			if (null != item) {
-				if (StringUtils.equalsIgnoreCase(message.getType(), MessageMq.Item.TYPE_KAFKA)) {
-					kafka(message, item);
-				} else if (StringUtils.equalsIgnoreCase(message.getType(), MessageMq.Item.TYPE_ACTIVEMQ)) {
-					activeMQ(message, item);
-				}
+				send(message, item);
 				success(message.getId());
 			} else {
-				throw new ExceptionMessageMqItem(message.getItem());
+				throw new ExceptionMessageMailItem(message.getItem());
 			}
-		} catch (InterruptedException ie) {
-			LOGGER.error(ie);
-			Thread.currentThread().interrupt();
+
 		} catch (Exception e) {
 			failure(message.getId(), e);
 			LOGGER.error(e);
 		}
 	}
 
-	private void kafka(Message message, MessageMq.Item item) throws InterruptedException, ExecutionException {
-		Properties properties = new Properties();
-		properties.put("bootstrap.servers", item.getKafkaBootstrapServers());
-		properties.put("key.serializer", org.apache.kafka.common.serialization.StringSerializer.class.getName());
-		properties.put("value.serializer", org.apache.kafka.common.serialization.StringSerializer.class.getName());
-		try (KafkaProducer<String, String> producer = new KafkaProducer<>(properties)) {
-			String topic = item.getKafkaTopic();
-			String msg = gson.toJson(message);
-			producer.send(new ProducerRecord<>(topic, msg)).get();
+	private String getRecipient(Message message) throws Exception {
+		String value = "";
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Business business = new Business(emc);
+			Person person = business.organization().person().getObject(message.getPerson());
+			value = person.getMail();
 		}
+		return value;
 	}
 
-	private void activeMQ(Message message, MessageMq.Item item) throws JMSException {
-
-		ActiveMQConnectionFactory connectionFactory;
-
-		if (StringUtils.isNotBlank(item.getActiveMQUsername())) {
-			connectionFactory = new ActiveMQConnectionFactory(item.getActiveMQUsername(), item.getActiveMQPassword(),
-					item.getActiveMQUrl());
-		} else {
-			connectionFactory = new ActiveMQConnectionFactory(item.getActiveMQUrl());
+	private void send(Message message, MessageMail.Item item) throws Exception {
+		String recipient = getRecipient(message);
+		if (StringUtils.isBlank(recipient)) {
+			throw new ExceptionEmptyRecipient(message.getPerson());
 		}
-		connectionFactory.setTrustedPackages(ListTools.toList(MQConsumeQueue.class.getPackage().getName()));
-		try (Connection connection = connectionFactory.createConnection()) {
-			connection.start();
-			try (Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE)) {
-				Destination destination = session.createQueue(item.getActiveMQQueueName());
-				MessageProducer producer = session.createProducer(destination);
-				producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-				TextMessage textMessage = session.createTextMessage(gson.toJson(message));
-				producer.send(textMessage);
+		Properties properties = new Properties();
+		properties.put("mail.smtp.host", item.getHost());
+		properties.put("mail.smtp.port", item.getPort());
+		properties.put("mail.smtp.ssl.enable", item.getSslEnable());
+		properties.put("mail.smtp.auth", item.getAuth());
+		Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
+			@Override
+			protected PasswordAuthentication getPasswordAuthentication() {
+				return new PasswordAuthentication(item.getFrom(), item.getPassword());
 			}
-		}
+		});
+		MimeMessage mime = new MimeMessage(session);
+		mime.setFrom(new InternetAddress(item.getFrom()));
+		mime.addRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(recipient));
+		mime.setSubject(message.getTitle());
+		mime.setText(message.getBody());
+		Transport.send(mime);
 	}
 
 	private void success(String id) {
@@ -163,7 +147,7 @@ public class MQConsumeQueue extends AbstractQueue<Message> {
 			CriteriaBuilder cb = em.getCriteriaBuilder();
 			CriteriaQuery<String> cq = cb.createQuery(String.class);
 			Root<Message> root = cq.from(Message.class);
-			Predicate p = cb.equal(root.get(Message_.consumer), MessageConnector.CONSUME_MQ);
+			Predicate p = cb.equal(root.get(Message_.consumer), MessageConnector.CONSUME_MAIL);
 			p = cb.and(p, cb.notEqual(root.get(Message_.consumed), true));
 			p = cb.and(p, cb.lessThan(root.get(JpaObject_.updateTime), DateUtils.addMinutes(new Date(), -20)));
 			cq.select(root.get(Message_.id)).where(p);
