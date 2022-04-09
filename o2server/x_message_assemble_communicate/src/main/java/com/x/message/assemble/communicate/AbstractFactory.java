@@ -20,23 +20,19 @@ public abstract class AbstractFactory {
 
 	protected Ehcache cache;
 
-	public AbstractFactory(Business business) throws Exception {
-		try {
-			if (null == business) {
-				throw new Exception("business can not be null.");
-			}
-			this.business = business;
-		} catch (Exception e) {
-			throw new Exception("can not instantiating factory.");
+	protected AbstractFactory(Business business) {
+		if (null == business) {
+			throw new IllegalArgumentException("business can not be null.");
 		}
+		this.business = business;
 	}
 
-	public EntityManagerContainer entityManagerContainer() throws Exception {
+	public EntityManagerContainer entityManagerContainer() {
 		return this.business.entityManagerContainer();
 	}
 
 	@SuppressWarnings("unchecked")
-	protected <T extends JpaObject> T pick(String flag, Class<T> clz, String... attributes) throws Exception {
+	protected <T extends JpaObject> T pick(String flag, Class<T> clz) throws Exception {
 		if (StringUtils.isEmpty(flag)) {
 			return null;
 		}

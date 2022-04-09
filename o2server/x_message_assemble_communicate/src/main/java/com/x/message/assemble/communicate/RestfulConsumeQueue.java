@@ -24,6 +24,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject_;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.MessageRestful;
+import com.x.base.core.project.connection.HttpConnectionResponse;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -47,12 +48,16 @@ public class RestfulConsumeQueue extends AbstractQueue<Message> {
 		if (null != message && StringUtils.isNotEmpty(message.getItem())) {
 			update(message);
 		}
-		for (String id : listOverStay()) {
-			Optional<Message> optional = find(id);
-			if (optional.isPresent()) {
-				message = optional.get();
-				if (StringUtils.isNotEmpty(message.getItem())) {
-					update(message);
+		List<String> ids = listOverStay();
+		if (!ids.isEmpty()) {
+			LOGGER.info("滞留 restful 消息数量:{}.", ids.size());
+			for (String id : ids) {
+				Optional<Message> optional = find(id);
+				if (optional.isPresent()) {
+					message = optional.get();
+					if (StringUtils.isNotEmpty(message.getItem())) {
+						update(message);
+					}
 				}
 			}
 		}
@@ -72,12 +77,15 @@ public class RestfulConsumeQueue extends AbstractQueue<Message> {
 			MessageRestful.Item item = Config.messageRestful().get(message.getItem());
 			if (null != item) {
 				String url = url(message, item);
-				client.restful(item.getMethod(), url, null, message.getBody(), 5000, 5000);
+				HttpConnectionResponse response = client.restful(item.getMethod(), url, null, message.getBody(), 5000,
+						5000);
+				if (null == response) {
+					throw new ExceptionRestful(message.getTitle(), message.getPerson(), url);
+				}
 				success(message.getId());
 			} else {
 				throw new ExceptionMessageRestfulItem(message.getItem());
 			}
-
 		} catch (Exception e) {
 			failure(message.getId(), e);
 			LOGGER.error(e);
