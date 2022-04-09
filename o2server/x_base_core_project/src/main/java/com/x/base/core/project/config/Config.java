@@ -78,6 +78,7 @@ public class Config {
 	public static final String PATH_CONFIG_MESSAGEMQ = "config/messageMq.json";
 	public static final String PATH_CONFIG_MESSAGEMAIL = "config/messageMail.json";
 	public static final String PATH_CONFIG_MESSAGEAPI = "config/messageApi.json";
+	public static final String PATH_CONFIG_MESSAGEJDBC = "config/messageJdbc.json";
 	public static final String PATH_CONFIG_SSLKEYSTORE = "config/keystore";
 	public static final String PATH_CONFIG_SSLKEYSTORESAMPLE = "config/sample/keystore";
 	public static final String PATH_CONFIG_STARTIMAGE = "config/startImage.png";
@@ -984,6 +985,19 @@ public class Config {
 			instance().messageApi = obj;
 		}
 		return instance().messageApi;
+	}
+
+	private MessageJdbc messageJdbc;
+
+	public static synchronized MessageJdbc messageJdbc() throws Exception {
+		if (null == instance().messageJdbc) {
+			MessageJdbc obj = BaseTools.readConfigObject(PATH_CONFIG_MESSAGEJDBC, MessageJdbc.class);
+			if (null == obj) {
+				obj = MessageJdbc.defaultInstance();
+			}
+			instance().messageJdbc = obj;
+		}
+		return instance().messageJdbc;
 	}
 
 	private String messageSendRuleScript;

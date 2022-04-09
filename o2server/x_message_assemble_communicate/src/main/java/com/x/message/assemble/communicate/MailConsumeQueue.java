@@ -38,16 +38,19 @@ public class MailConsumeQueue extends AbstractQueue<Message> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MailConsumeQueue.class);
 
 	protected void execute(Message message) throws Exception {
-		LOGGER.debug("execute:{}, to person:{}.", message.getTitle(), message.getPerson());
 		if (null != message && StringUtils.isNotEmpty(message.getItem())) {
 			update(message);
 		}
-		for (String id : listOverStay()) {
-			Optional<Message> optional = find(id);
-			if (optional.isPresent()) {
-				message = optional.get();
-				if (StringUtils.isNotEmpty(message.getItem())) {
-					update(message);
+		List<String> ids = listOverStay();
+		if (!ids.isEmpty()) {
+			LOGGER.info("滞留 mail 消息数量:{}.", ids.size());
+			for (String id : ids) {
+				Optional<Message> optional = find(id);
+				if (optional.isPresent()) {
+					message = optional.get();
+					if (StringUtils.isNotEmpty(message.getItem())) {
+						update(message);
+					}
 				}
 			}
 		}

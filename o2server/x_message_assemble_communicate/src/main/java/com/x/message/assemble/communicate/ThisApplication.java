@@ -33,7 +33,7 @@ public class ThisApplication {
 
 	public static final PmsInnerConsumeQueue pmsInnerConsumeQueue = new PmsInnerConsumeQueue();
 
-	public static final MQConsumeQueue mqConsumeQueue = new MQConsumeQueue();
+	public static final MqConsumeQueue mqConsumeQueue = new MqConsumeQueue();
 
 	public static final MPWeixinConsumeQueue mpWeixinConsumeQueue = new MPWeixinConsumeQueue();
 

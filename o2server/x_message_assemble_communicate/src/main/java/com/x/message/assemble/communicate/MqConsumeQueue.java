@@ -41,9 +41,9 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.message.core.entity.Message;
 import com.x.message.core.entity.Message_;
 
-public class MQConsumeQueue extends AbstractQueue<Message> {
+public class MqConsumeQueue extends AbstractQueue<Message> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(MQConsumeQueue.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MqConsumeQueue.class);
 
 	private static final Gson gson = XGsonBuilder.instance();
 
@@ -51,12 +51,16 @@ public class MQConsumeQueue extends AbstractQueue<Message> {
 		if (null != message && StringUtils.isNotEmpty(message.getItem())) {
 			update(message);
 		}
-		for (String id : listOverStay()) {
-			Optional<Message> optional = find(id);
-			if (optional.isPresent()) {
-				message = optional.get();
-				if (StringUtils.isNotEmpty(message.getItem())) {
-					update(message);
+		List<String> ids = listOverStay();
+		if (!ids.isEmpty()) {
+			LOGGER.info("滞留 api 消息数量:{}.", ids.size());
+			for (String id : ids) {
+				Optional<Message> optional = find(id);
+				if (optional.isPresent()) {
+					message = optional.get();
+					if (StringUtils.isNotEmpty(message.getItem())) {
+						update(message);
+					}
 				}
 			}
 		}
@@ -115,7 +119,7 @@ public class MQConsumeQueue extends AbstractQueue<Message> {
 		} else {
 			connectionFactory = new ActiveMQConnectionFactory(item.getActiveMQUrl());
 		}
-		connectionFactory.setTrustedPackages(ListTools.toList(MQConsumeQueue.class.getPackage().getName()));
+		connectionFactory.setTrustedPackages(ListTools.toList(MqConsumeQueue.class.getPackage().getName()));
 		try (Connection connection = connectionFactory.createConnection()) {
 			connection.start();
 			try (Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE)) {
