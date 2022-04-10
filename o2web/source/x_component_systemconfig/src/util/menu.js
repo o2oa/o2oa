@@ -7,7 +7,7 @@ function getMenuJson(){
             "icon": "config",
             "expand": true,
             'children': [
-                {'title': lp.systemInfor, 'component': 'SystemInfor', 'icon': 'config', "expand": true},
+                {'title': lp.systemInfo, 'component': 'SystemInfo', 'icon': 'config', "expand": true},
                 {'title': lp.uiConfig, 'component': 'UIConfig', 'icon': 'ui'},
                 {'title': lp.componentDeploy, 'component': '', 'icon': 'component'},
                 {'title': lp.resourceDeploy, 'component': '', 'icon': 'upload' },

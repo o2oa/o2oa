@@ -1,10 +1,10 @@
 MWF.xApplication.systemconfig.LP = {
     "title": "系统配置",
-    "searchkey": "搜索设置项",
+    "searchKey": "搜索设置项",
 
 
     "baseConfig": "基础配置",
-    "systemInfor": "系统信息",
+    "systemInfo": "系统信息",
     "uiConfig": "界面配置",
     "componentDeploy": "组件部署",
     "resourceDeploy": "资源部署",
@@ -44,6 +44,16 @@ MWF.xApplication.systemconfig.LP = {
     "ddConfig": "钉钉集成", //钉钉 政务钉钉 专属钉
     "wechatConfig": "微信集成",  //微信公众号 企业微信
     // "welinkConfig": "welink集成",
-    "appTools": "APP工具"
+    "appTools": "APP工具",
+
+    "_systemInfo": {
+        "title": "配置系统的基础信息",
+        "systemName": "系统名称",
+        "systemNameInfo": "您的系统名称，它将会显示在您的登录页面和浏览器标题栏",
+        "systemSubTitle": "系统副标题",
+        "systemSubTitleInfo": "您的系统副标题，它将会显示在您的登录页面下方",
+        "systemVersion": "当前系统版本",
+        "systemVersionInfo": "当前系统版本"
+    }
 
 }

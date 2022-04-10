@@ -8,7 +8,7 @@
 <!--      <div class="searchInputArea">-->
 <!--        <i class="o2icon-search"></i>-->
 <!--        <div>-->
-<!--          <input :placeholder="lp.searchkey">-->
+<!--          <input :placeholder="lp.searchKey">-->
 <!--        </div>-->
 <!--      </div>-->
 <!--    </div>-->
