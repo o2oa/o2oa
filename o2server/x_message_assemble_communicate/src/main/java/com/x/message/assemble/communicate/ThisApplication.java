@@ -43,6 +43,10 @@ public class ThisApplication {
 
 	public static final ApiConsumeQueue apiConsumeQueue = new ApiConsumeQueue();
 
+	public static final JdbcConsumeQueue jdbcConsumeQueue = new JdbcConsumeQueue();
+
+	public static final TableConsumeQueue tableConsumeQueue = new TableConsumeQueue();
+
 	public static Context context() {
 		return context;
 	}
@@ -70,6 +74,8 @@ public class ThisApplication {
 		context().startQueue(apiConsumeQueue);
 		context().startQueue(mailConsumeQueue);
 		context().startQueue(mqConsumeQueue);
+		context().startQueue(jdbcConsumeQueue);
+		context().startQueue(tableConsumeQueue);
 		if (BooleanUtils.isTrue(Config.qiyeweixin().getEnable())
 				&& BooleanUtils.isTrue(Config.qiyeweixin().getMessageEnable())) {
 			context().startQueue(qiyeweixinConsumeQueue);
