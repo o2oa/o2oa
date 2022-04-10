@@ -1,7 +1,5 @@
 package com.x.query.service.processing.jaxrs.table;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -32,18 +30,36 @@ public class TableAction extends StandardJaxrsAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TableAction.class);
 
-	@JaxrsMethodDescribe(value = "更新指定表中的行.", action = ActionUpdate.class)
+	@JaxrsMethodDescribe(value = "更新指定表中的行.", action = ActionUpdateWithBundle.class)
 	@POST
 	@Path("{flag}/update/{bundle}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void listNext(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void updateWithBundle(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("标识") @PathParam("flag") String flag,
 			@JaxrsParameterDescribe("数据行标识") @PathParam("bundle") String bundle, JsonElement jsonElement) {
-		ActionResult<ActionUpdate.Wo> result = new ActionResult<>();
+		ActionResult<ActionUpdateWithBundle.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdate().execute(effectivePerson, flag, bundle, jsonElement);
+			result = new ActionUpdateWithBundle().execute(effectivePerson, flag, bundle, jsonElement);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "指定表中插入行.", action = ActionInsert.class)
+	@POST
+	@Path("{flag}/insert")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void insert(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("标识") @PathParam("flag") String flag, JsonElement jsonElement) {
+		ActionResult<ActionInsert.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionInsert().execute(effectivePerson, flag, jsonElement);
 		} catch (Exception e) {
 			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);

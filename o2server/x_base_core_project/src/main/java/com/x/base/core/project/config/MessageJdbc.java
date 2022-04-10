@@ -2,8 +2,6 @@ package com.x.base.core.project.config;
 
 import java.util.LinkedHashMap;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.project.annotation.FieldDescribe;
 
 public class MessageJdbc extends LinkedHashMap<String, MessageJdbc.Item> {
@@ -11,63 +9,56 @@ public class MessageJdbc extends LinkedHashMap<String, MessageJdbc.Item> {
 	private static final long serialVersionUID = 2536141863287117519L;
 
 	public static MessageJdbc defaultInstance() {
-		MessageJdbc messageMq = new MessageJdbc();
-		messageMq.put("o2oa", new Item());
-		return messageMq;
+		MessageJdbc messageJdbc = new MessageJdbc();
+		messageJdbc.put("o2oa", new Item());
+		return messageJdbc;
 	}
 
 	public static class Item {
 
 		public Item() {
-			 
+			this.driverClass = DEFAULT_DRIVERCLASS;
+			this.url = DEFAULT_URL;
+			this.username = DEFAULT_USERNAME;
+			this.password = DEFAULT_PASSWORD;
+			this.catalog = DEFAULT_CATALOG;
+			this.schema = DEFAULT_SCHEMA;
+			this.table = DEFAULT_TABLE;
 		}
 
-		public static final String TYPE_KAFKA = "kafka";
-		public static final String TYPE_ACTIVEMQ = "activeMQ";
+		public static final String DEFAULT_DRIVERCLASS = "com.mysql.cj.jdbc.Driver";
 
-		public static final String DEFAULT_TYPE = TYPE_KAFKA;
+		public static final String DEFAULT_URL = "jdbc:mysql://127.0.0.1:3306/TEST?autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&characterEncoding=UTF-8&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8";
 
-		public static final String DEFAULT_KAFKABOOTSTRAPSERVERS = "";
+		public static final String DEFAULT_USERNAME = "root";
 
-		public static final String DEFAULT_KAFKATOPIC = "";
+		public static final String DEFAULT_PASSWORD = "password";
 
-		public static final String DEFAULT_KAFKAACKS = "";
+		public static final String DEFAULT_CATALOG = "";
 
-		public static final Integer DEFAULT_KAFKARETRIES = 3;
+		public static final String DEFAULT_SCHEMA = "";
 
-		public static final String DEFAULT_KAFKABATCHSIZE = "";
+		public static final String DEFAULT_TABLE = "NEWTABLE";
 
-		public static final Integer DEFAULT_KAFKALINGERMS = 5000;
-
-		public static final String DEFAULT_KAFKABUFFERMEMORY = "";
-
-		public static final String DEFAULT_ACTIVEMQUSERNAME = "";
-
-		public static final String DEFAULT_ACTIVEMQPASSWORD = "";
-
-		public static final String DEFAULT_ACTIVEMQURL = "";
-
-		public static final String DEFAULT_ACTIVEMQQUEUENAME = "";
-
-		@FieldDescribe("类型,kafka或者activeMQ")
+		@FieldDescribe("驱动类")
 		private String driverClass;
 
-		@FieldDescribe("服务器地址")
+		@FieldDescribe("地址")
 		private String url;
 
-		@FieldDescribe("主题")
+		@FieldDescribe("用户名")
 		private String username;
 
-		@FieldDescribe("用户名")
+		@FieldDescribe("密码")
 		private String password;
 
-		@FieldDescribe("密码")
+		@FieldDescribe("catalog")
 		private String catalog;
 
-		@FieldDescribe("服务器地址")
+		@FieldDescribe("schema")
 		private String schema;
 
-		@FieldDescribe("消息队列名")
+		@FieldDescribe("表名")
 		private String table;
 
 		public String getDriverClass() {

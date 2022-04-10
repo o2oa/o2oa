@@ -13,11 +13,14 @@ public class TriggerMessageConsumeQueue extends AbstractJob {
 
 	@Override
 	public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
-		LOGGER.debug("schedule trigger restfulConsumeQueue, mqConsumeQueue, mailConsumeQueue, apiConsumeQueue.");
+		LOGGER.debug(
+				"schedule trigger restfulConsumeQueue, mqConsumeQueue, mailConsumeQueue, apiConsumeQueue, jdbcConsumeQueue, tableConsumeQueue.");
 		ThisApplication.restfulConsumeQueue.send(null);
 		ThisApplication.mqConsumeQueue.send(null);
 		ThisApplication.mailConsumeQueue.send(null);
 		ThisApplication.apiConsumeQueue.send(null);
+		ThisApplication.jdbcConsumeQueue.send(null);
+		ThisApplication.tableConsumeQueue.send(null);
 	}
 
 }

@@ -566,7 +566,7 @@ class ActionCreate extends BaseAction {
 		case MessageConnector.CONSUME_CALENDAR:
 			message = this.v3CalendarMessage(wi, consumer);
 			break;
-		// restful, mq, api, mail, custom_消息没有其他判断条件
+		// restful, mq, api, mail, jdbc, custom_消息没有其他判断条件
 		default:
 			message = this.v3Message(wi, consumer);
 			break;
@@ -816,6 +816,9 @@ class ActionCreate extends BaseAction {
 				break;
 			case MessageConnector.CONSUME_API:
 				ThisApplication.apiConsumeQueue.send(message);
+				break;
+			case MessageConnector.CONSUME_JDBC:
+				ThisApplication.jdbcConsumeQueue.send(message);
 				break;
 			default:
 				break;
