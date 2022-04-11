@@ -13,7 +13,7 @@ import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.WsMessage;
-import com.x.message.assemble.communicate.ws.collaboration.ActionCollaboration;
+import com.x.message.assemble.communicate.ThisApplication;
 
 class ActionCreate extends BaseAction {
 
@@ -28,7 +28,7 @@ class ActionCreate extends BaseAction {
 		Wo wo = new Wo();
 		wo.setValue(false);
 
-		for (Entry<Session, String> entry : ActionCollaboration.clients.entrySet()) {
+		for (Entry<Session, String> entry : ThisApplication.wsClients().entrySet()) {
 			if (StringUtils.equals(entry.getValue(), wi.getPerson())) {
 				Session session = entry.getKey();
 				if (session != null && session.isOpen()) {
