@@ -1,8 +1,5 @@
 <?xml version="1.0"?>
-<project
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>o2oa</groupId>
@@ -39,7 +36,6 @@
 			<artifactId>javapns-jdk16</artifactId>
 			<version>2.4.0</version>
 		</dependency>
-
 	</dependencies>
 	<build>
 		<plugins>
@@ -57,8 +53,7 @@
 							<addOutputToClasspath>true</addOutputToClasspath>
 							<includePluginDependencies>true</includePluginDependencies>
 							<includeProjectDependencies>true</includeProjectDependencies>
-							<mainClass>com.x.base.core.project.annotation.DescribeBuilder
-							</mainClass>
+							<mainClass>com.x.base.core.project.annotation.DescribeBuilder</mainClass>
 							<arguments>
 								<argument>${basedir}</argument>
 								<argument>${project.build.sourceDirectory}</argument>
@@ -92,8 +87,7 @@
 							<addOutputToClasspath>true</addOutputToClasspath>
 							<includePluginDependencies>true</includePluginDependencies>
 							<includeProjectDependencies>true</includeProjectDependencies>
-							<mainClass>com.x.base.core.project.build.CheckAssemble
-							</mainClass>
+							<mainClass>com.x.base.core.project.build.CheckAssemble</mainClass>
 						</configuration>
 					</execution>
 					<execution>
@@ -139,31 +133,11 @@
 				</executions>
 			</plugin>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-deploy-plugin</artifactId>
+				<version>3.0.0</version>
 				<configuration>
 					<skip>true</skip>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>3.2.3</version>
-				<configuration>
-					<archive>
-						<addMavenDescriptor>false</addMavenDescriptor>
-					</archive>
-					<packagingExcludes>persistence.xml,WEB-INF/lib/**,META-INF
-					</packagingExcludes>
-					<failOnMissingWebXml>false</failOnMissingWebXml>
-					<webResources>
-						<resource>
-							<directory>ext</directory>
-							<includes>
-								<include>**/*.jar</include>
-							</includes>
-							<targetPath>WEB-INF/ext</targetPath>
-						</resource>
-					</webResources>
 				</configuration>
 			</plugin>
 		</plugins>
