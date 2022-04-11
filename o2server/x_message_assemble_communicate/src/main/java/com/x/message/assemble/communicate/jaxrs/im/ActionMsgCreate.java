@@ -20,7 +20,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.MessageConnector;
 import com.x.message.assemble.communicate.ThisApplication;
-import com.x.message.assemble.communicate.ws.collaboration.ActionCollaboration;
 import com.x.message.core.entity.IMConversation;
 import com.x.message.core.entity.IMMsg;
 import com.x.message.core.entity.Message;
@@ -73,7 +72,7 @@ public class ActionMsgCreate extends BaseAction {
 				MessageConnector.send(MessageConnector.TYPE_IM_CREATE, title, person, msg);
 				// 如果消息接收者没有在线 连接ws 就发送一个推送消息
 				try {
-					if (!ActionCollaboration.clients.containsValue(person)) {
+					if (!ThisApplication.wsClients().containsValue(person)) {
 						LOGGER.info("向app 推送im消息， person: " + person);
 						Message message = new Message();
 						String body = imMessageBody(msg);

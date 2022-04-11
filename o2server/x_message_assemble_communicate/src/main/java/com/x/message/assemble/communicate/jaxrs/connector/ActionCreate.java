@@ -566,7 +566,7 @@ class ActionCreate extends BaseAction {
 		case MessageConnector.CONSUME_CALENDAR:
 			message = this.v3CalendarMessage(wi, consumer);
 			break;
-		// restful, mq, api, mail, jdbc, custom_消息没有其他判断条件
+		// restful, mq, api, mail, jdbc, table, custom_消息没有其他判断条件
 		default:
 			message = this.v3Message(wi, consumer);
 			break;
@@ -579,7 +579,7 @@ class ActionCreate extends BaseAction {
 
 	private Message v3Message(Wi wi, Consumer consumer) {
 		Message message = new Message();
-		message.setBody(Objects.toString(v3load(wi, consumer)));
+		message.setBody(Objects.toString(v3Load(wi, consumer)));
 		message.setType(wi.getType());
 		message.setPerson(wi.getPerson());
 		message.setTitle(wi.getTitle());
@@ -654,8 +654,7 @@ class ActionCreate extends BaseAction {
 		Message message = null;
 		try {
 			if (BooleanUtils.isTrue(Config.qiyeweixin().getEnable())
-					&& BooleanUtils.isTrue(Config.qiyeweixin().getMessageEnable())
-					&& BooleanUtils.isTrue(v3Filter(wi, consumer))) {
+					&& BooleanUtils.isTrue(Config.qiyeweixin().getMessageEnable())) {
 				message = v3Message(wi, consumer);
 			}
 		} catch (Exception e) {
@@ -733,7 +732,7 @@ class ActionCreate extends BaseAction {
 		return true;
 	}
 
-	private JsonElement v3load(Wi wi, Consumer consumer) {
+	private JsonElement v3Load(Wi wi, Consumer consumer) {
 		JsonElement jsonElement = wi.getBody();
 		try {
 			if (StringUtils.isNotBlank(consumer.getLoader())) {

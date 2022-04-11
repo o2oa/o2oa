@@ -1,5 +1,10 @@
 package com.x.message.assemble.communicate;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.websocket.Session;
+
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.project.Context;
@@ -46,6 +51,12 @@ public class ThisApplication {
 	public static final JdbcConsumeQueue jdbcConsumeQueue = new JdbcConsumeQueue();
 
 	public static final TableConsumeQueue tableConsumeQueue = new TableConsumeQueue();
+
+	private static final Map<Session, String> WSCLIENTS = new ConcurrentHashMap<>();
+
+	public static Map<Session, String> wsClients() {
+		return WSCLIENTS;
+	}
 
 	public static Context context() {
 		return context;
