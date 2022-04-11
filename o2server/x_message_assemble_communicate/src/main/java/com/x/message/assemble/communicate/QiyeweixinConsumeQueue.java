@@ -4,12 +4,14 @@ import java.net.URLEncoder;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.HttpConnection;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.QiyeweixinMessage;
@@ -20,6 +22,8 @@ import com.x.message.core.entity.Message;
 public class QiyeweixinConsumeQueue extends AbstractQueue<Message> {
 
 	private static Logger logger = LoggerFactory.getLogger(QiyeweixinConsumeQueue.class);
+
+	private static final Gson gson = XGsonBuilder.instance();
 
 	protected void execute(Message message) throws Exception {
 
@@ -33,11 +37,11 @@ public class QiyeweixinConsumeQueue extends AbstractQueue<Message> {
 				if (needTransferLink(message.getType())) {
 					String workUrl = getQywxOpenWorkUrl(message.getBody());
 					if (StringUtils.isNotEmpty(workUrl)) {
-						content = "<a href=\"" + workUrl +"\">" + message.getTitle() + "</a>";
+						content = "<a href=\"" + workUrl + "\">" + message.getTitle() + "</a>";
 					}
 				}
 				m.getText().setContent(content);
-				logger.info("微信消息："+m.toString());
+				logger.info("微信消息：" + m.toString());
 				String address = Config.qiyeweixin().getApiAddress() + "/cgi-bin/message/send?access_token="
 						+ Config.qiyeweixin().corpAccessToken();
 				QiyeweixinMessageResp resp = HttpConnection.postAsObject(address, null, m.toString(),
@@ -59,6 +63,7 @@ public class QiyeweixinConsumeQueue extends AbstractQueue<Message> {
 
 	/**
 	 * 生成单点登录和打开工作的地址
+	 * 
 	 * @param messageBody
 	 * @return
 	 */
@@ -75,23 +80,21 @@ public class QiyeweixinConsumeQueue extends AbstractQueue<Message> {
 			String workUrl = "workmobilewithaction.html?workid=" + work;
 			String messageRedirectPortal = Config.qiyeweixin().getMessageRedirectPortal();
 			if (messageRedirectPortal != null && !"".equals(messageRedirectPortal)) {
-				String portal = "portalmobile.html?id="+messageRedirectPortal;
+				String portal = "portalmobile.html?id=" + messageRedirectPortal;
 				portal = URLEncoder.encode(portal, DefaultCharset.name);
 				workUrl += "&redirectlink=" + portal;
 			}
 			workUrl = URLEncoder.encode(workUrl, DefaultCharset.name);
-			o2oaUrl = o2oaUrl+"qiyeweixinsso.html?redirect="+workUrl;
-			logger.info("o2oa 地址："+o2oaUrl);
+			o2oaUrl = o2oaUrl + "qiyeweixinsso.html?redirect=" + workUrl;
+			logger.info("o2oa 地址：" + o2oaUrl);
 			o2oaUrl = URLEncoder.encode(o2oaUrl, DefaultCharset.name);
-			logger.info("encode url :"+o2oaUrl);
-			String url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid="+corpId
-					+"&response_type=code&scope=snsapi_base"
-					+"&agentid="+agentId
-					+"&redirect_uri="+o2oaUrl
-					+"&#wechat_redirect" ;
-			logger.info("final url :" +url);
+			logger.info("encode url :" + o2oaUrl);
+			String url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + corpId
+					+ "&response_type=code&scope=snsapi_base" + "&agentid=" + agentId + "&redirect_uri=" + o2oaUrl
+					+ "&#wechat_redirect";
+			logger.info("final url :" + url);
 			return url;
-		}catch (Exception e) {
+		} catch (Exception e) {
 			logger.error(e);
 		}
 
@@ -100,12 +103,13 @@ public class QiyeweixinConsumeQueue extends AbstractQueue<Message> {
 
 	/**
 	 * 获取workid
+	 * 
 	 * @param messageBody
 	 * @return
 	 */
 	private String getWorkIdFromBody(String messageBody) {
 		try {
-			JsonObject object =new JsonParser().parse(messageBody).getAsJsonObject();
+			JsonObject object = gson.fromJson(messageBody, JsonObject.class);
 			if (object.get("work") != null) {
 				return object.get("work").getAsString();
 			}
@@ -119,8 +123,8 @@ public class QiyeweixinConsumeQueue extends AbstractQueue<Message> {
 	}
 
 	/**
-	 * 是否需要把企业微信消息转成超链接消息
-	 * 根据是否配置了企业微信应用链接、是否是工作消息（目前只支持工作消息）
+	 * 是否需要把企业微信消息转成超链接消息 根据是否配置了企业微信应用链接、是否是工作消息（目前只支持工作消息）
+	 * 
 	 * @param messageType 消息类型 判断是否是工作消息
 	 * @return
 	 */
