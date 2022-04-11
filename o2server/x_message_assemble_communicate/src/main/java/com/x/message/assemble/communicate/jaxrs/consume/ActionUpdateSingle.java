@@ -11,15 +11,15 @@ import com.x.message.core.entity.Message;
 
 class ActionUpdateSingle extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionUpdateSingle.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionUpdateSingle.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String type) throws Exception {
+		LOGGER.debug("execute:{}, id:{}, type:{}.", effectivePerson::getDistinguishedName, () -> id, () -> type);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Message message = emc.find(id, Message.class);
 			if (null != message) {
 				emc.beginTransaction(Message.class);
-//				emc.remove(message);
 				message.setConsumed(true);
 				emc.commit();
 			}
@@ -31,6 +31,8 @@ class ActionUpdateSingle extends BaseAction {
 	}
 
 	public static class Wo extends WrapBoolean {
+
+		private static final long serialVersionUID = -8396900361845254097L;
 
 	}
 

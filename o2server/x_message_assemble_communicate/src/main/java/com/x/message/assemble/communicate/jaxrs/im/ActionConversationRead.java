@@ -13,35 +13,38 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.message.assemble.communicate.Business;
 import com.x.message.core.entity.IMConversationExt;
 
-public class ActionConversationRead extends BaseAction  {
+public class ActionConversationRead extends BaseAction {
 
-    private final Logger logger = LoggerFactory.getLogger(ActionConversationRead.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionConversationRead.class);
 
-    ActionResult<WoId> execute(EffectivePerson effectivePerson, String conversationId) throws Exception {
-        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-            ActionResult<WoId> result = new ActionResult<>();
-            Business business = new Business(emc);
-            IMConversationExt ext = business.imConversationFactory()
-                    .getConversationExt(effectivePerson.getDistinguishedName(), conversationId);
-            if (ext == null) {
-                ext = new IMConversationExt();
-                ext.setConversationId(conversationId);
-                ext.setPerson(effectivePerson.getDistinguishedName());
-                ext.setLastReadTime(new Date());
-                emc.beginTransaction(IMConversationExt.class);
-                emc.persist(ext, CheckPersistType.all);
-                emc.commit();
-            }else {
-                ext.setLastReadTime(new Date());
-                emc.beginTransaction(IMConversationExt.class);
-                emc.persist(ext, CheckPersistType.all);
-                emc.commit();
-            }
+	ActionResult<WoId> execute(EffectivePerson effectivePerson, String conversationId) throws Exception {
 
-            WoId woId = new WoId();
-            woId.setId(ext.getId());
-            result.setData(woId);
-            return result;
-        }
-    }
+		LOGGER.debug("execute:{}, conversationId:{}.", effectivePerson::getDistinguishedName, () -> conversationId);
+
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			ActionResult<WoId> result = new ActionResult<>();
+			Business business = new Business(emc);
+			IMConversationExt ext = business.imConversationFactory()
+					.getConversationExt(effectivePerson.getDistinguishedName(), conversationId);
+			if (ext == null) {
+				ext = new IMConversationExt();
+				ext.setConversationId(conversationId);
+				ext.setPerson(effectivePerson.getDistinguishedName());
+				ext.setLastReadTime(new Date());
+				emc.beginTransaction(IMConversationExt.class);
+				emc.persist(ext, CheckPersistType.all);
+				emc.commit();
+			} else {
+				ext.setLastReadTime(new Date());
+				emc.beginTransaction(IMConversationExt.class);
+				emc.persist(ext, CheckPersistType.all);
+				emc.commit();
+			}
+
+			WoId woId = new WoId();
+			woId.setId(ext.getId());
+			result.setData(woId);
+			return result;
+		}
+	}
 }

@@ -17,23 +17,25 @@ import com.x.message.core.entity.Org;
 
 class ActionUpdateConsumed extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionUpdateConsumed.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionUpdateConsumed.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String type, JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}, type:{}.", effectivePerson::getDistinguishedName, () -> type);
+		
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			List<Org> orgs = emc.list(Org.class, wi.getIdList());
-			
+
 			if (!orgs.isEmpty()) {
 				emc.beginTransaction(Org.class);
 				for (Org o : orgs) {
-//					emc.remove(o);
 					o.setConsumed(true);
 				}
 				emc.commit();
 			}
-			
+
 			Wo wo = new Wo();
 			wo.setValue(orgs.size());
 			result.setData(wo);
@@ -43,8 +45,10 @@ class ActionUpdateConsumed extends BaseAction {
 
 	public static class Wi extends GsonPropertyObject {
 
+		private static final long serialVersionUID = 7876440743723658022L;
+		
 		@FieldDescribe("标识")
-		List<String> idList = new ArrayList<>();
+		private List<String> idList = new ArrayList<>();
 
 		public List<String> getIdList() {
 			return idList;
@@ -57,6 +61,8 @@ class ActionUpdateConsumed extends BaseAction {
 	}
 
 	public static class Wo extends WrapNumber {
+
+		private static final long serialVersionUID = 6474672395918874871L;
 
 	}
 
