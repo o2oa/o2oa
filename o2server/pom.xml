@@ -750,7 +750,7 @@
 			<dependency>
 				<groupId>net.sourceforge.tess4j</groupId>
 				<artifactId>tess4j</artifactId>
-				<version>4.4.0</version>
+				<version>5.2.0</version>
 			</dependency>
 			<dependency>
 				<groupId>io.github.classgraph</groupId>

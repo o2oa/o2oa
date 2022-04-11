@@ -13,9 +13,12 @@ import com.x.message.core.entity.Instant;
 
 class ActionCurrentPersonConsumedAll extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionCurrentPersonConsumedAll.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCurrentPersonConsumedAll.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
+
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			List<Instant> os = emc.listEqual(Instant.class, Instant.person_FIELDNAME,
@@ -35,6 +38,8 @@ class ActionCurrentPersonConsumedAll extends BaseAction {
 	}
 
 	public static class Wo extends WrapBoolean {
+
+		private static final long serialVersionUID = -1093854084336722449L;
 
 	}
 

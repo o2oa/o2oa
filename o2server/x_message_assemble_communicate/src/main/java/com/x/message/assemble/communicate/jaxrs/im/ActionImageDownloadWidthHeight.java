@@ -30,10 +30,14 @@ import com.x.message.core.entity.IMMsgFile;
  */
 public class ActionImageDownloadWidthHeight extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionImageDownloadWidthHeight.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionImageDownloadWidthHeight.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, Integer width, Integer height)
 			throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}, width:{}, height:{}.", effectivePerson::getDistinguishedName, () -> id,
+				() -> width, () -> height);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wo wo = null;
@@ -43,13 +47,13 @@ public class ActionImageDownloadWidthHeight extends BaseAction {
 				throw new ExceptionFileNotExist(id);
 			}
 			if (!ArrayUtils.contains(IMAGE_EXTENSIONS, file.getExtension())) {
-				throw new Exception("file is not image file.");
+				throw new IllegalStateException("file is not image file.");
 			}
 			if (width < 0 || width > 5000) {
-				throw new Exception("invalid width:" + width + ".");
+				throw new IllegalStateException("invalid width:" + width + ".");
 			}
 			if (height < 0 || height > 5000) {
-				throw new Exception("invalid height:" + height + ".");
+				throw new IllegalStateException("invalid height:" + height + ".");
 			}
 
 			CacheCategory cacheCategory = new CacheCategory(ActionImageDownloadWidthHeight.class);
@@ -90,7 +94,7 @@ public class ActionImageDownloadWidthHeight extends BaseAction {
 					}
 				} catch (Exception e) {
 					if (e.getMessage().indexOf("existed") > -1) {
-						logger.warn("原始附件{}-{}不存在，删除记录！", file.getId(), file.getName());
+						LOGGER.warn("原始附件{}-{}不存在，删除记录！", file.getId(), file.getName());
 						emc.beginTransaction(IMMsgFile.class);
 						emc.delete(IMMsgFile.class, file.getId());
 						emc.commit();

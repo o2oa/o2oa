@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -34,10 +35,12 @@ import com.x.organization.core.entity.Person;
 
 class ActionCreate extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionCreate.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCreate.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
-		logger.debug("receive{}.", jsonElement);
+
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			if (effectivePerson.isNotManager() && (!business.organization().person().hasRole(effectivePerson,
@@ -66,16 +69,17 @@ class ActionCreate extends BaseAction {
 			people.addAll(business.organization().person().listWithGroup(mass.getGroupList()));
 			mass.setSendPersonList(ListTools.trim(people, true, true));
 			List<List<String>> list = ListTools.batch(mass.getSendPersonList(), 500);
-			if (Config.qiyeweixin().getEnable()) {
+			if (BooleanUtils.isTrue(Config.qiyeweixin().getEnable())) {
 				this.qiyeweixin(business, mass.getBody(), list);
 				mass.setType(Mass.TYPE_QIYEWEIXIN);
-			} else if (Config.dingding().getEnable()) {
+			} else if (BooleanUtils.isTrue(Config.dingding().getEnable())) {
 				this.dingding(business, mass.getBody(), list);
 				mass.setType(Mass.TYPE_DINGDING);
-			} else if (Config.zhengwuDingding().getEnable()) {
+			} else if (BooleanUtils.isTrue(Config.zhengwuDingding().getEnable())) {
 				this.zhengwuDingding(business, mass.getBody(), list);
 				mass.setType(Mass.TYPE_ZHENGWUDINGDING);
-			} else if (Config.weLink().getEnable() && Config.weLink().getMessageEnable()) {
+			} else if (BooleanUtils.isTrue(Config.weLink().getEnable())
+					&& BooleanUtils.isTrue(Config.weLink().getMessageEnable())) {
 				this.welink(business, mass.getBody(), list);
 				mass.setType(Mass.TYPE_WELINK);
 			}
@@ -154,11 +158,11 @@ class ActionCreate extends BaseAction {
 			m.setMsgTitle("消息");
 			m.setMsgContent(body);
 			Date now = new Date();
-			m.setCreateTime(now.getTime()+"");
-			logger.info("welink send body: " + m.toString());
+			m.setCreateTime(now.getTime() + "");
+			LOGGER.info("welink send body: " + m.toString());
 
 			String address = Config.weLink().getOapiAddress() + "/messages/v3/send";
-			logger.info("welink send url: " + address);
+			LOGGER.info("welink send url: " + address);
 			List<NameValuePair> heads = new ArrayList<>();
 			heads.add(new NameValuePair(WeLink.WeLink_Auth_Head_Key, Config.weLink().accessToken()));
 			WeLinkMessageResp resp = HttpConnection.postAsObject(address, heads, m.toString(), WeLinkMessageResp.class);
@@ -167,9 +171,7 @@ class ActionCreate extends BaseAction {
 			}
 		}
 
-
 	}
-
 
 	public static class WeLinkMessageResp {
 
@@ -307,14 +309,6 @@ class ActionCreate extends BaseAction {
 	}
 
 	public static class QiyeweixinMessageResp {
-
-		// {
-		// "errcode" : 0,
-		// "errmsg" : "ok",
-		// "invaliduser" : "userid1|userid2", // 不区分大小写，返回的列表都统一转为小写
-		// "invalidparty" : "partyid1|partyid2",
-		// "invalidtag":"tagid1|tagid2"
-		// }
 
 		private Integer errcode;
 		private String errmsg;

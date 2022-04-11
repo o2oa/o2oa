@@ -17,53 +17,56 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.message.assemble.communicate.Business;
 import com.x.message.core.entity.IMMsg;
 
-
 public class ActionMsgListWithConversationByPage extends BaseAction {
 
-    private final Logger logger = LoggerFactory.getLogger(ActionMsgListWithConversationByPage.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionMsgListWithConversationByPage.class);
 
+	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, Integer page, Integer size, JsonElement jsonElement)
+			throws Exception {
 
-    ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, Integer page, Integer size,
-                                   JsonElement jsonElement) throws Exception {
-        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-            ActionResult<List<Wo>> result = new ActionResult<>();
-            Business business = new Business(emc);
-            Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-            if (wi == null) {
-                wi = new Wi();
-            }
-            if (wi.getConversationId() == null || wi.getConversationId().isEmpty()) {
-                throw new ExceptionMsgEmptyConversationId();
-            }
-            Integer adjustPage = this.adjustPage(page);
-            Integer adjustPageSize = this.adjustSize(size);
-            List<IMMsg> msgList = business.imConversationFactory().listMsgWithConversationByPage(adjustPage, adjustPageSize, wi.getConversationId());
-            List<Wo> wos = Wo.copier.copy(msgList);
-            result.setData(wos);
-            result.setCount(business.imConversationFactory().count(wi.getConversationId()));
-            return result;
-        }
-    }
+		LOGGER.debug("execute:{}, page:{}, size:{}.", effectivePerson::getDistinguishedName, () -> page, () -> size);
 
-    public class Wi extends GsonPropertyObject {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			ActionResult<List<Wo>> result = new ActionResult<>();
+			Business business = new Business(emc);
+			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+			if (wi == null) {
+				wi = new Wi();
+			}
+			if (wi.getConversationId() == null || wi.getConversationId().isEmpty()) {
+				throw new ExceptionMsgEmptyConversationId();
+			}
+			Integer adjustPage = this.adjustPage(page);
+			Integer adjustPageSize = this.adjustSize(size);
+			List<IMMsg> msgList = business.imConversationFactory().listMsgWithConversationByPage(adjustPage,
+					adjustPageSize, wi.getConversationId());
+			List<Wo> wos = Wo.copier.copy(msgList);
+			result.setData(wos);
+			result.setCount(business.imConversationFactory().count(wi.getConversationId()));
+			return result;
+		}
+	}
 
-        @FieldDescribe("会话id")
-        private String conversationId;
+	public class Wi extends GsonPropertyObject {
 
+		private static final long serialVersionUID = 33404493425589133L;
 
-        public String getConversationId() {
-            return conversationId;
-        }
+		@FieldDescribe("会话id")
+		private String conversationId;
 
-        public void setConversationId(String conversationId) {
-            this.conversationId = conversationId;
-        }
-    }
+		public String getConversationId() {
+			return conversationId;
+		}
 
-    public static class Wo extends IMMsg {
+		public void setConversationId(String conversationId) {
+			this.conversationId = conversationId;
+		}
+	}
 
-        private static final long serialVersionUID = 3434938936805201380L;
-        static WrapCopier<IMMsg, Wo> copier = WrapCopierFactory.wo(IMMsg.class, Wo.class, null,
-                JpaObject.FieldsInvisible);
-    }
+	public static class Wo extends IMMsg {
+
+		private static final long serialVersionUID = 3434938936805201380L;
+		static WrapCopier<IMMsg, Wo> copier = WrapCopierFactory.wo(IMMsg.class, Wo.class, null,
+				JpaObject.FieldsInvisible);
+	}
 }

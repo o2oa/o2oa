@@ -16,85 +16,85 @@ import com.x.message.core.entity.IMConversation;
 import com.x.message.core.entity.IMConversationExt;
 import com.x.message.core.entity.IMMsg;
 
-
 public class ActionGetConversation extends BaseAction {
 
-    private final Logger logger = LoggerFactory.getLogger(ActionGetConversation.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionGetConversation.class);
 
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String conversationId) throws Exception {
 
-    ActionResult<Wo> execute(EffectivePerson effectivePerson, String conversationId) throws Exception {
-        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-            ActionResult<Wo> result = new ActionResult<>();
-            Business business = new Business(emc);
-            IMConversation conversation = emc.find(conversationId, IMConversation.class);
-            Wo wo = Wo.copier.copy(conversation);
-            IMConversationExt ext = business.imConversationFactory()
-                    .getConversationExt(effectivePerson.getDistinguishedName(), wo.getId());
-            if (ext != null) {
-                wo.setIsTop(ext.getIsTop());
-                wo.setUnreadNumber(business.imConversationFactory().unreadNumber(ext));
-            }else {
-                IMConversationExt conversationExt = new IMConversationExt();
-                conversationExt.setConversationId(conversation.getId());
-                conversationExt.setPerson(effectivePerson.getDistinguishedName());
-                emc.beginTransaction(IMConversationExt.class);
-                emc.persist(conversationExt, CheckPersistType.all);
-                emc.commit();
-                wo.setIsTop(false);
-                wo.setUnreadNumber(business.imConversationFactory().unreadNumber(conversationExt));
+		LOGGER.debug("execute:{}, conversationId:{}.", effectivePerson::getDistinguishedName, () -> conversationId);
 
-            }
-            wo.setLastMessage(WoMsg.copier.copy(business.imConversationFactory().lastMessage(wo.getId())));
-            result.setData(wo);
-            return result;
-        }
-    }
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			ActionResult<Wo> result = new ActionResult<>();
+			Business business = new Business(emc);
+			IMConversation conversation = emc.find(conversationId, IMConversation.class);
+			Wo wo = Wo.copier.copy(conversation);
+			IMConversationExt ext = business.imConversationFactory()
+					.getConversationExt(effectivePerson.getDistinguishedName(), wo.getId());
+			if (ext != null) {
+				wo.setIsTop(ext.getIsTop());
+				wo.setUnreadNumber(business.imConversationFactory().unreadNumber(ext));
+			} else {
+				IMConversationExt conversationExt = new IMConversationExt();
+				conversationExt.setConversationId(conversation.getId());
+				conversationExt.setPerson(effectivePerson.getDistinguishedName());
+				emc.beginTransaction(IMConversationExt.class);
+				emc.persist(conversationExt, CheckPersistType.all);
+				emc.commit();
+				wo.setIsTop(false);
+				wo.setUnreadNumber(business.imConversationFactory().unreadNumber(conversationExt));
 
-    public static class Wo extends IMConversation {
+			}
+			wo.setLastMessage(WoMsg.copier.copy(business.imConversationFactory().lastMessage(wo.getId())));
+			result.setData(wo);
+			return result;
+		}
+	}
 
-        private static final long serialVersionUID = -1795342785531291824L;
-        @FieldDescribe( "是否置顶." )
-        private Boolean isTop = false;
+	public static class Wo extends IMConversation {
 
-        @FieldDescribe( "未读数量." )
-        private Long unreadNumber;
+		private static final long serialVersionUID = -1795342785531291824L;
+		@FieldDescribe("是否置顶.")
+		private Boolean isTop = false;
 
-        @FieldDescribe( "最后一条消息." )
-        private WoMsg lastMessage;
+		@FieldDescribe("未读数量.")
+		private Long unreadNumber;
 
+		@FieldDescribe("最后一条消息.")
+		private WoMsg lastMessage;
 
-        static WrapCopier<IMConversation, Wo> copier = WrapCopierFactory.wo(IMConversation.class, Wo.class, null,
-                JpaObject.FieldsInvisible);
+		static WrapCopier<IMConversation, Wo> copier = WrapCopierFactory.wo(IMConversation.class, Wo.class, null,
+				JpaObject.FieldsInvisible);
 
-        public Boolean getIsTop() {
-            return isTop;
-        }
+		public Boolean getIsTop() {
+			return isTop;
+		}
 
-        public void setIsTop(Boolean isTop) {
-            this.isTop = isTop;
-        }
+		public void setIsTop(Boolean isTop) {
+			this.isTop = isTop;
+		}
 
-        public Long getUnreadNumber() {
-            return unreadNumber;
-        }
+		public Long getUnreadNumber() {
+			return unreadNumber;
+		}
 
-        public void setUnreadNumber(Long unreadNumber) {
-            this.unreadNumber = unreadNumber;
-        }
+		public void setUnreadNumber(Long unreadNumber) {
+			this.unreadNumber = unreadNumber;
+		}
 
-        public WoMsg getLastMessage() {
-            return lastMessage;
-        }
+		public WoMsg getLastMessage() {
+			return lastMessage;
+		}
 
-        public void setLastMessage(WoMsg lastMessage) {
-            this.lastMessage = lastMessage;
-        }
-    }
+		public void setLastMessage(WoMsg lastMessage) {
+			this.lastMessage = lastMessage;
+		}
+	}
 
-    public static class WoMsg extends IMMsg {
+	public static class WoMsg extends IMMsg {
 
-        private static final long serialVersionUID = -8403558908120739864L;
-        static WrapCopier<IMMsg, WoMsg> copier = WrapCopierFactory.wo(IMMsg.class, WoMsg.class, null,
-                JpaObject.FieldsInvisible);
-    }
+		private static final long serialVersionUID = -8403558908120739864L;
+		static WrapCopier<IMMsg, WoMsg> copier = WrapCopierFactory.wo(IMMsg.class, WoMsg.class, null,
+				JpaObject.FieldsInvisible);
+	}
 }

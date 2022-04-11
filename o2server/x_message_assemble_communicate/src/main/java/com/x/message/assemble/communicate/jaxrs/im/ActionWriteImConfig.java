@@ -18,170 +18,168 @@ import com.x.base.core.project.logger.LoggerFactory;
 
 public class ActionWriteImConfig extends BaseAction {
 
-    private static Logger logger = LoggerFactory.getLogger(ActionWriteImConfig.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionWriteImConfig.class);
 
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 
-    ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement)  throws Exception {
-        ActionResult<Wo> result = new ActionResult<Wo>();
-        Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-        LinkedHashMap<String, Object> map = new LinkedHashMap<>();
-        for (Map.Entry<String, JsonElement> en : Config.web().entrySet()) {
-            map.put(en.getKey(), en.getValue());
-        }
-        map.put(IM_CONFIG_KEY_NAME, wi);
-        String content = gson.toJson(map);
-        String fileName = "web.json";
-        logger.info("更新配置文件。。。。。。。。。。。。。。");
-        logger.info("文件：" + fileName);
-        logger.info("内容：" + content);
-        WebConfigSaveWi saveWi = new WebConfigSaveWi();
-        saveWi.setFileName(fileName);
-        saveWi.setFileContent(content);
-        ActionResponse response = CipherConnectionAction.post(false, Config.url_x_program_center_jaxrs("config", "save"), saveWi);
-        Wo wo = new Wo();
-        if (response != null) {
-            SaveConfigWo saveWo = response.getData(SaveConfigWo.class);
-            if (saveWo != null && saveWo.getStatus() != null) {
-                logger.info("修改保存["+fileName+"]配置文件成功！");
-                try {
-                    WebServers.updateWebServerConfigJson();
-                    logger.info("更新 config.json 成功！！！！");
-                    wo.setValue(true);
-                    result.setData(wo);
-                } catch (Exception e) {
-                    logger.info("更新前端 config.json 出错");
-                    wo.setValue(false);
-                    result.setData(wo);
-                    logger.error(e);
-                }
-            } else {
-                logger.info("保存["+fileName+"]配置文件data返回为空！！！！");
-                wo.setValue(false);
-                result.setData(wo);
-            }
-        } else {
-            logger.info("保存["+fileName+"]配置文件 返回为空！！");
-            wo.setValue(false);
-            result.setData(wo);
-        }
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 
-        return result;
-    }
+		ActionResult<Wo> result = new ActionResult<Wo>();
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+		LinkedHashMap<String, Object> map = new LinkedHashMap<>();
+		for (Map.Entry<String, JsonElement> en : Config.web().entrySet()) {
+			map.put(en.getKey(), en.getValue());
+		}
+		map.put(IM_CONFIG_KEY_NAME, wi);
+		String content = gson.toJson(map);
+		String fileName = "web.json";
+		WebConfigSaveWi saveWi = new WebConfigSaveWi();
+		saveWi.setFileName(fileName);
+		saveWi.setFileContent(content);
+		ActionResponse response = CipherConnectionAction.post(false,
+				Config.url_x_program_center_jaxrs("config", "save"), saveWi);
+		Wo wo = new Wo();
+		if (response != null) {
+			SaveConfigWo saveWo = response.getData(SaveConfigWo.class);
+			if (saveWo != null && saveWo.getStatus() != null) {
+				try {
+					WebServers.updateWebServerConfigJson();
+					wo.setValue(true);
+					result.setData(wo);
+				} catch (Exception e) {
+					wo.setValue(false);
+					result.setData(wo);
+					LOGGER.error(e);
+				}
+			} else {
+				wo.setValue(false);
+				result.setData(wo);
+			}
+		} else {
+			wo.setValue(false);
+			result.setData(wo);
+		}
 
+		return result;
+	}
 
+	public static class WebConfigSaveWi extends GsonPropertyObject {
+		
+		private static final long serialVersionUID = -7474510912629527669L;
+		
+		private String fileName;
+		private String fileContent;
 
-    public static class WebConfigSaveWi extends GsonPropertyObject {
-        private String fileName;
-        private String fileContent;
+		public String getFileName() {
+			return fileName;
+		}
 
-        public String getFileName() {
-            return fileName;
-        }
+		public void setFileName(String fileName) {
+			this.fileName = fileName;
+		}
 
-        public void setFileName(String fileName) {
-            this.fileName = fileName;
-        }
+		public String getFileContent() {
+			return fileContent;
+		}
 
-        public String getFileContent() {
-            return fileContent;
-        }
+		public void setFileContent(String fileContent) {
+			this.fileContent = fileContent;
+		}
+	}
 
-        public void setFileContent(String fileContent) {
-            this.fileContent = fileContent;
-        }
-    }
+	/**
+	 * IM的配置文件，这个配置文件默认写入到 web.json key=imConfig
+	 */
+	static class Wi extends GsonPropertyObject {
 
-    /**
-     * IM的配置文件，这个配置文件默认写入到 web.json key=imConfig
-     */
-    static class Wi extends GsonPropertyObject {
+		private static final long serialVersionUID = -8090262801050845005L;
+		
+		@FieldDescribe("是否开启清空聊天记录的功能.")
+		private Boolean enableClearMsg;
+		@FieldDescribe("是否开启撤回聊天消息的功能.")
+		private Boolean enableRevokeMsg;
 
+		public Boolean getEnableClearMsg() {
+			return enableClearMsg;
+		}
 
+		public void setEnableClearMsg(Boolean enableClearMsg) {
+			this.enableClearMsg = enableClearMsg;
+		}
 
+		public Boolean getEnableRevokeMsg() {
+			return enableRevokeMsg;
+		}
 
-        @FieldDescribe("是否开启清空聊天记录的功能.")
-        private Boolean enableClearMsg;
-        @FieldDescribe("是否开启撤回聊天消息的功能.")
-        private Boolean enableRevokeMsg;
+		public void setEnableRevokeMsg(Boolean enableRevokeMsg) {
+			this.enableRevokeMsg = enableRevokeMsg;
+		}
+	}
 
-        public Boolean getEnableClearMsg() {
-            return enableClearMsg;
-        }
+	static class Wo extends WrapOutBoolean {
 
-        public void setEnableClearMsg(Boolean enableClearMsg) {
-            this.enableClearMsg = enableClearMsg;
-        }
+		private static final long serialVersionUID = 5620692994281685875L;
 
-        public Boolean getEnableRevokeMsg() {
-            return enableRevokeMsg;
-        }
+	}
 
-        public void setEnableRevokeMsg(Boolean enableRevokeMsg) {
-            this.enableRevokeMsg = enableRevokeMsg;
-        }
-    }
+	public static class SaveConfigWo extends GsonPropertyObject {
 
-    static class Wo extends WrapOutBoolean {
+		private static final long serialVersionUID = -2114718746836340460L;
 
-    }
+		@FieldDescribe("执行时间")
+		private String time;
 
+		@FieldDescribe("执行结果")
+		private String status;
 
-    public static class SaveConfigWo extends GsonPropertyObject {
+		@FieldDescribe("执行消息")
+		private String message;
 
-        @FieldDescribe("执行时间")
-        private String time;
+		@FieldDescribe("config文件内容")
+		private String fileContent;
 
-        @FieldDescribe("执行结果")
-        private String status;
+		@FieldDescribe("是否Sample")
+		private boolean isSample;
 
-        @FieldDescribe("执行消息")
-        private String message;
+		public String getTime() {
+			return time;
+		}
 
-        @FieldDescribe("config文件内容")
-        private String fileContent;
+		public void setTime(String time) {
+			this.time = time;
+		}
 
-        @FieldDescribe("是否Sample")
-        private boolean isSample;
+		public String getStatus() {
+			return status;
+		}
 
-        public String getTime() {
-            return time;
-        }
+		public void setStatus(String status) {
+			this.status = status;
+		}
 
-        public void setTime(String time) {
-            this.time = time;
-        }
+		public String getFileContent() {
+			return fileContent;
+		}
 
-        public String getStatus() {
-            return status;
-        }
+		public void setFileContent(String fileContent) {
+			this.fileContent = fileContent;
+		}
 
-        public void setStatus(String status) {
-            this.status = status;
-        }
+		public boolean isSample() {
+			return isSample;
+		}
 
-        public String getFileContent() {
-            return fileContent;
-        }
+		public void setSample(boolean isSample) {
+			this.isSample = isSample;
+		}
 
-        public void setFileContent(String fileContent) {
-            this.fileContent = fileContent;
-        }
+		public String getMessage() {
+			return message;
+		}
 
-        public boolean isSample() {
-            return isSample;
-        }
+		public void setMessage(String message) {
+			this.message = message;
+		}
 
-        public void setSample(boolean isSample) {
-            this.isSample = isSample;
-        }
-
-        public String getMessage() {
-            return message;
-        }
-
-        public void setMessage(String message) {
-            this.message = message;
-        }
-
-    }
+	}
 }

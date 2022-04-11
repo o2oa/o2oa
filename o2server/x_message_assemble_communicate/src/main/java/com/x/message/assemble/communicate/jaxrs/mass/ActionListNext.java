@@ -11,12 +11,20 @@ import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.message.assemble.communicate.Business;
 import com.x.message.core.entity.Mass;
 
 class ActionListNext extends BaseAction {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListNext.class);
+
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String id, Integer count) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}, count:{}.", effectivePerson::getDistinguishedName, () -> id, () -> count);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			if (effectivePerson.isNotManager() && (!business.organization().person().hasRole(effectivePerson,
@@ -25,8 +33,8 @@ class ActionListNext extends BaseAction {
 			}
 		}
 		ActionResult<List<Wo>> result = new ActionResult<>();
-		result = this.standardListNext(Wo.copier, id, count,  JpaObject.sequence_FIELDNAME, null, null, null, null, null, null, null, null,
-				true, DESC);
+		result = this.standardListNext(Wo.copier, id, count, JpaObject.sequence_FIELDNAME, null, null, null, null, null,
+				null, null, null, true, DESC);
 		return result;
 	}
 

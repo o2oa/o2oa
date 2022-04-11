@@ -17,43 +17,48 @@ import com.x.message.core.entity.Org;
 
 class ActionUpdateReceiveSystem extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionUpdateReceiveSystem.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionUpdateReceiveSystem.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id,String consumedModule) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String consumedModule) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}, consumedModule:{}.", effectivePerson::getDistinguishedName, () -> id,
+				() -> consumedModule);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			
+
 			ActionResult<Wo> result = new ActionResult<>();
 			emc.beginTransaction(Org.class);
-			
+
 			Org org = emc.find(id, Org.class);
-			
+
 			if (null == org) {
 				throw new ExceptionEntityNotExist(id, Org.class);
 			}
-						
-			String module =  org.getConsumedModule(); 
-			if(module ==null) {
+
+			String module = org.getConsumedModule();
+			if (module == null) {
 				module = "," + consumedModule + ",";
-			}else {
-				module  = module + "," +consumedModule;
+			} else {
+				module = module + "," + consumedModule;
 			}
-			
+
 			org.setConsumedModule(module);
-			
+
 			emc.commit();
-			
+
 			Wo wo = new Wo();
 			wo.setId(org.getId());
 			result.setData(wo);
 			return result;
-			
+
 		}
 	}
 
 	public static class Wi extends GsonPropertyObject {
 
+		private static final long serialVersionUID = 190542415736219081L;
 		@FieldDescribe("标识")
-		List<String> idList = new ArrayList<>();
+		private List<String> idList = new ArrayList<>();
 
 		public List<String> getIdList() {
 			return idList;
@@ -66,7 +71,9 @@ class ActionUpdateReceiveSystem extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
-		
+
+		private static final long serialVersionUID = -6792568328153220475L;
+
 	}
 
 }

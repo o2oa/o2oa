@@ -9,18 +9,22 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.entity.JpaObject_;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.message.assemble.communicate.Business;
 import com.x.message.core.entity.Message;
@@ -28,8 +32,13 @@ import com.x.message.core.entity.Message_;
 
 class ActionListPaging extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCustomCreate.class);
+
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, Integer page, Integer size, JsonElement jsonElement)
 			throws Exception {
+
+		LOGGER.debug("execute:{}, page:{}, size:{}.", effectivePerson::getDistinguishedName, () -> page, () -> size);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<List<Wo>> result = new ActionResult<>();
@@ -50,28 +59,30 @@ class ActionListPaging extends BaseAction {
 		Root<Message> root = cq.from(Message.class);
 		Predicate p = cb.conjunction();
 
-		if(StringUtils.isNotEmpty(wi.getPerson())){
+		if (StringUtils.isNotEmpty(wi.getPerson())) {
 			p = cb.and(p, cb.equal(root.get(Message_.person), wi.getPerson()));
 		}
 
-		if(StringUtils.isNotEmpty(wi.getType())){
+		if (StringUtils.isNotEmpty(wi.getType())) {
 			p = cb.and(p, cb.equal(root.get(Message_.type), wi.getType()));
 		}
 
-		if(StringUtils.isNotEmpty(wi.getConsume())){
+		if (StringUtils.isNotEmpty(wi.getConsume())) {
 			p = cb.and(p, cb.equal(root.get(Message_.consumer), wi.getConsume()));
 		}
 
-		if (DateTools.isDateTimeOrDate(wi.getStartTime())) {
-			p = cb.and(p, cb.greaterThan(root.get(Message_.createTime), DateTools.parse(wi.getStartTime())));
+		if (BooleanUtils.isTrue(DateTools.isDateTimeOrDate(wi.getStartTime()))) {
+			p = cb.and(p, cb.greaterThan(root.get(JpaObject_.createTime), DateTools.parse(wi.getStartTime())));
 		}
-		if (DateTools.isDateTimeOrDate(wi.getEndTime())) {
-			p = cb.and(p, cb.lessThan(root.get(Message_.createTime), DateTools.parse(wi.getEndTime())));
+		if (BooleanUtils.isTrue(DateTools.isDateTimeOrDate(wi.getEndTime()))) {
+			p = cb.and(p, cb.lessThan(root.get(JpaObject_.createTime), DateTools.parse(wi.getEndTime())));
 		}
 		return p;
 	}
 
 	public class Wi extends GsonPropertyObject {
+
+		private static final long serialVersionUID = -8335537395971819377L;
 
 		@FieldDescribe("用户")
 		private String person;

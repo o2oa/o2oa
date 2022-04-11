@@ -22,11 +22,14 @@ import com.x.message.assemble.communicate.ThisApplication;
 
 class ActionCustomCreate extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionCustomCreate.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCustomCreate.class);
 
 	private static final String CUSTOM_PREFIX = "custom_";
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
+		
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+		
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
@@ -44,6 +47,8 @@ class ActionCustomCreate extends BaseAction {
 	}
 
 	public static class Wi extends GsonPropertyObject {
+
+		private static final long serialVersionUID = 130960158845033826L;
 
 		static WrapCopier<Wi, MessageConnector.Wrap> copier = WrapCopierFactory.wi(Wi.class,
 				MessageConnector.Wrap.class, null, JpaObject.FieldsUnmodify);
@@ -95,6 +100,8 @@ class ActionCustomCreate extends BaseAction {
 	}
 
 	public static class Wo extends WrapBoolean {
+
+		private static final long serialVersionUID = 7102367852270900958L;
 
 	}
 
