@@ -16,6 +16,10 @@ import javax.script.Bindings;
 import javax.script.CompiledScript;
 import javax.script.ScriptContext;
 
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.x.base.core.container.EntityManagerContainer;
@@ -31,16 +35,15 @@ import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.MessageConnector;
+import com.x.base.core.project.script.AbstractResources;
 import com.x.base.core.project.scripting.JsonScriptingExecutor;
 import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.webservices.WebservicesClient;
 import com.x.message.assemble.communicate.ThisApplication;
 import com.x.message.core.entity.Instant;
 import com.x.message.core.entity.Message;
-
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
+import com.x.organization.core.express.Organization;
 
 class ActionCreate extends BaseAction {
 
@@ -579,10 +582,17 @@ class ActionCreate extends BaseAction {
 
 	private Message v3Message(Wi wi, Consumer consumer) {
 		Message message = new Message();
-		message.setBody(Objects.toString(v3Load(wi, consumer)));
+		EvalMessage evalMessage = this.v3Load(wi, consumer);
+		if (null != evalMessage) {
+			message.setBody(gson.toJson(evalMessage.getBody()));
+			message.setTitle(evalMessage.getTitle());
+			message.setPerson(evalMessage.getPerson());
+		} else {
+			message.setBody(gson.toJson(wi.getBody()));
+			message.setTitle(wi.getTitle());
+			message.setPerson(wi.getPerson());
+		}
 		message.setType(wi.getType());
-		message.setPerson(wi.getPerson());
-		message.setTitle(wi.getTitle());
 		message.setConsumed(false);
 		message.setConsumer(consumer.getType());
 		message.setItem(consumer.getItem());
@@ -718,7 +728,13 @@ class ActionCreate extends BaseAction {
 				if (compiledScript != null) {
 					ScriptContext scriptContext = ScriptingFactory.scriptContextEvalInitialServiceScript();
 					Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
-					bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_MESSAGE, wi.getBody().toString());
+					Resources resources = new Resources();
+					resources.setContext(ThisApplication.context());
+					resources.setOrganization(new Organization(ThisApplication.context()));
+					resources.setApplications(ThisApplication.context().applications());
+					resources.setWebservicesClient(new WebservicesClient());
+					bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_RESOURCES, resources);
+					bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_MESSAGE, gson.toJson(new EvalMessage(wi)));
 					Boolean filter = JsonScriptingExecutor.evalBoolean(compiledScript, scriptContext);
 					boolean value = BooleanUtils.isTrue(filter);
 					LOGGER.debug("message type:{}, title:{}, person:{}, filter:{}, result:{}.", consumer::getType,
@@ -732,8 +748,7 @@ class ActionCreate extends BaseAction {
 		return true;
 	}
 
-	private JsonElement v3Load(Wi wi, Consumer consumer) {
-		JsonElement jsonElement = wi.getBody();
+	private EvalMessage v3Load(Wi wi, Consumer consumer) {
 		try {
 			if (StringUtils.isNotBlank(consumer.getLoader())) {
 				CacheKey cacheKey = new CacheKey(this.getClass(), consumer.getLoader());
@@ -750,14 +765,20 @@ class ActionCreate extends BaseAction {
 				if (compiledScript != null) {
 					ScriptContext scriptContext = ScriptingFactory.scriptContextEvalInitialServiceScript();
 					Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
-					bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_MESSAGE, wi.getBody().toString());
-					jsonElement = JsonScriptingExecutor.jsonElement(compiledScript, scriptContext);
+					Resources resources = new Resources();
+					resources.setContext(ThisApplication.context());
+					resources.setOrganization(new Organization(ThisApplication.context()));
+					resources.setApplications(ThisApplication.context().applications());
+					resources.setWebservicesClient(new WebservicesClient());
+					bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_RESOURCES, resources);
+					bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_MESSAGE, gson.toJson(new EvalMessage(wi)));
+					return JsonScriptingExecutor.eval(compiledScript, scriptContext, EvalMessage.class);
 				}
 			}
 		} catch (Exception e) {
 			LOGGER.warn("执行loader脚本 {} 异常:{}.", consumer.getLoader(), e.getMessage());
 		}
-		return jsonElement;
+		return null;
 	}
 
 	private void v3Save(Instant instant, List<Message> messages) throws Exception {
@@ -823,6 +844,74 @@ class ActionCreate extends BaseAction {
 				break;
 			}
 		}
+	}
+
+	public static class EvalMessage {
+
+		public EvalMessage(Wi wi) {
+			this.title = wi.getTitle();
+			this.person = wi.getPerson();
+			this.body = wi.getBody();
+			this.type = wi.getType();
+		}
+
+		public EvalMessage() {
+
+		}
+
+		private String person;
+
+		private String title;
+
+		private String type;
+
+		private JsonElement body;
+
+		public String getPerson() {
+			return person;
+		}
+
+		public void setPerson(String person) {
+			this.person = person;
+		}
+
+		public String getTitle() {
+			return title;
+		}
+
+		public void setTitle(String title) {
+			this.title = title;
+		}
+
+		public JsonElement getBody() {
+			return body;
+		}
+
+		public void setBody(JsonElement body) {
+			this.body = body;
+		}
+
+		public String getType() {
+			return type;
+		}
+
+		public void setType(String type) {
+			this.type = type;
+		}
+
+	}
+
+	public static class Resources extends AbstractResources {
+		private Organization organization;
+
+		public Organization getOrganization() {
+			return organization;
+		}
+
+		public void setOrganization(Organization organization) {
+			this.organization = organization;
+		}
+
 	}
 
 }
