@@ -152,6 +152,8 @@ public class MessageConnector {
 	public static final String CONSUME_MAIL = "mail";
 	// 内部调用
 	public static final String CONSUME_API = "api";
+	// jdbc写入
+	public static final String CONSUME_JDBC = "jdbc";
 
 	private static Context context;
 

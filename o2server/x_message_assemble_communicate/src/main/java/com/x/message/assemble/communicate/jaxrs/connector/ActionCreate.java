@@ -520,14 +520,10 @@ class ActionCreate extends BaseAction {
 	}
 
 	private List<Message> v3Assemble(Wi wi, Instant instant, List<Consumer> consumers) {
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		System.out.println(consumers);
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-
 		List<Message> messages = new ArrayList<>();
 		if (!consumers.isEmpty()) {
 			for (Consumer consumer : consumers) {
-				if (BooleanUtils.isTrue(consumer.getEnable())) {
+				if (BooleanUtils.isTrue(consumer.getEnable()) && v3Filter(wi, consumer)) {
 					Message message = this.v3AssembleMessage(wi, consumer, instant);
 					if (message != null) {
 						messages.add(message);
@@ -570,20 +566,9 @@ class ActionCreate extends BaseAction {
 		case MessageConnector.CONSUME_CALENDAR:
 			message = this.v3CalendarMessage(wi, consumer);
 			break;
-		case MessageConnector.CONSUME_RESTFUL:
-			message = this.v3Message(wi, consumer);
-			break;
-		case MessageConnector.CONSUME_MQ:
-			message = this.v3Message(wi, consumer);
-			break;
-		case MessageConnector.CONSUME_API:
-			message = this.v3Message(wi, consumer);
-			break;
-		case MessageConnector.CONSUME_MAIL:
-			message = this.v3Message(wi, consumer);
-			break;
+		// restful, mq, api, mail, jdbc, custom_消息没有其他判断条件
 		default:
-			message = this.v3DefaultMessage(wi, consumer);
+			message = this.v3Message(wi, consumer);
 			break;
 		}
 		if (null != message) {
@@ -607,7 +592,7 @@ class ActionCreate extends BaseAction {
 	private Message v3WsMessage(Wi wi, Consumer consumer) {
 		Message message = null;
 		try {
-			if (BooleanUtils.isTrue(Config.communicate().wsEnable()) && BooleanUtils.isTrue(v3Filter(wi, consumer))) {
+			if (BooleanUtils.isTrue(Config.communicate().wsEnable())) {
 				message = v3Message(wi, consumer);
 			}
 		} catch (Exception e) {
@@ -619,7 +604,7 @@ class ActionCreate extends BaseAction {
 	private Message v3PmsMessage(Wi wi, Consumer consumer) {
 		Message message = null;
 		try {
-			if (BooleanUtils.isTrue(Config.communicate().pmsEnable()) && BooleanUtils.isTrue(v3Filter(wi, consumer))) {
+			if (BooleanUtils.isTrue(Config.communicate().pmsEnable())) {
 				message = v3Message(wi, consumer);
 			}
 		} catch (Exception e) {
@@ -631,7 +616,7 @@ class ActionCreate extends BaseAction {
 	private Message v3PmsInnerMessage(Wi wi, Consumer consumer) {
 		Message message = null;
 		try {
-			if (BooleanUtils.isTrue(Config.pushConfig().getEnable()) && BooleanUtils.isTrue(v3Filter(wi, consumer))) {
+			if (BooleanUtils.isTrue(Config.pushConfig().getEnable())) {
 				message = v3Message(wi, consumer);
 			}
 		} catch (Exception e) {
@@ -644,8 +629,7 @@ class ActionCreate extends BaseAction {
 		Message message = null;
 		try {
 			if (BooleanUtils.isTrue(Config.dingding().getEnable())
-					&& BooleanUtils.isTrue(Config.dingding().getMessageEnable())
-					&& BooleanUtils.isTrue(v3Filter(wi, consumer))) {
+					&& BooleanUtils.isTrue(Config.dingding().getMessageEnable())) {
 				message = v3Message(wi, consumer);
 			}
 		} catch (Exception e) {
@@ -657,8 +641,7 @@ class ActionCreate extends BaseAction {
 	private Message v3ZhengwudingdingMessage(Wi wi, Consumer consumer) {
 		Message message = null;
 		try {
-			if (Config.zhengwuDingding().getEnable() && Config.zhengwuDingding().getMessageEnable()
-					&& BooleanUtils.isTrue(v3Filter(wi, consumer))) {
+			if (Config.zhengwuDingding().getEnable() && Config.zhengwuDingding().getMessageEnable()) {
 				message = v3Message(wi, consumer);
 			}
 		} catch (Exception e) {
@@ -685,8 +668,7 @@ class ActionCreate extends BaseAction {
 		Message message = null;
 		try {
 			if (BooleanUtils.isTrue(Config.weLink().getEnable())
-					&& BooleanUtils.isTrue(Config.weLink().getMessageEnable())
-					&& BooleanUtils.isTrue(v3Filter(wi, consumer))) {
+					&& BooleanUtils.isTrue(Config.weLink().getMessageEnable())) {
 				message = v3Message(wi, consumer);
 			}
 		} catch (Exception e) {
@@ -699,8 +681,7 @@ class ActionCreate extends BaseAction {
 		Message message = null;
 		try {
 			if (BooleanUtils.isTrue(Config.mPweixin().getEnable())
-					&& BooleanUtils.isTrue(Config.mPweixin().getMessageEnable())
-					&& BooleanUtils.isTrue(v3Filter(wi, consumer))) {
+					&& BooleanUtils.isTrue(Config.mPweixin().getMessageEnable())) {
 				message = v3Message(wi, consumer);
 			}
 		} catch (Exception e) {
@@ -712,18 +693,13 @@ class ActionCreate extends BaseAction {
 	private Message v3CalendarMessage(Wi wi, Consumer consumer) {
 		Message message = null;
 		try {
-			if (BooleanUtils.isTrue(Config.communicate().calendarEnable())
-					&& BooleanUtils.isTrue(v3Filter(wi, consumer))) {
+			if (BooleanUtils.isTrue(Config.communicate().calendarEnable())) {
 				message = v3Message(wi, consumer);
 			}
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
 		return message;
-	}
-
-	private Message v3DefaultMessage(Wi wi, Consumer consumer) {
-		return v3Message(wi, consumer);
 	}
 
 	private boolean v3Filter(Wi wi, Consumer consumer) {
@@ -743,9 +719,12 @@ class ActionCreate extends BaseAction {
 				if (compiledScript != null) {
 					ScriptContext scriptContext = ScriptingFactory.scriptContextEvalInitialServiceScript();
 					Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
-					bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_MESSAGE, wi.getBody());
+					bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_MESSAGE, wi.getBody().toString());
 					Boolean filter = JsonScriptingExecutor.evalBoolean(compiledScript, scriptContext);
-					return BooleanUtils.isTrue(filter);
+					boolean value = BooleanUtils.isTrue(filter);
+					LOGGER.debug("message type:{}, title:{}, person:{}, filter:{}, result:{}.", consumer::getType,
+							wi::getTitle, wi::getPerson, consumer::getFilter, () -> value);
+					return value;
 				}
 			}
 		} catch (Exception e) {
@@ -772,7 +751,7 @@ class ActionCreate extends BaseAction {
 				if (compiledScript != null) {
 					ScriptContext scriptContext = ScriptingFactory.scriptContextEvalInitialServiceScript();
 					Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
-					bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_MESSAGE, wi.getBody());
+					bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_MESSAGE, wi.getBody().toString());
 					jsonElement = JsonScriptingExecutor.jsonElement(compiledScript, scriptContext);
 				}
 			}
@@ -837,6 +816,9 @@ class ActionCreate extends BaseAction {
 				break;
 			case MessageConnector.CONSUME_API:
 				ThisApplication.apiConsumeQueue.send(message);
+				break;
+			case MessageConnector.CONSUME_JDBC:
+				ThisApplication.jdbcConsumeQueue.send(message);
 				break;
 			default:
 				break;

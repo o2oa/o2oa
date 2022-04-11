@@ -35,6 +35,7 @@ import com.x.base.core.project.config.LogLevel;
 import com.x.base.core.project.config.MPweixin;
 import com.x.base.core.project.config.Meeting;
 import com.x.base.core.project.config.MessageApi;
+import com.x.base.core.project.config.MessageJdbc;
 import com.x.base.core.project.config.MessageMail;
 import com.x.base.core.project.config.MessageMq;
 import com.x.base.core.project.config.MessageRestful;
@@ -91,6 +92,7 @@ public class CreateConfigSample {
 		classes.add(MessageMail.class);
 		classes.add(MessageMq.class);
 		classes.add(MessageApi.class);
+		classes.add(MessageJdbc.class);
 		classes.add(Mock.class);
 		classes.add(MPweixin.class);
 		classes.add(Node.class);

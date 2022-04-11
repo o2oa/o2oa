@@ -1,4 +1,4 @@
-package com.x.query.service.processing.jaxrs.test;
+package com.x.query.service.processing.jaxrs.touch;
 
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;

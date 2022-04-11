@@ -7,8 +7,8 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.config.Config;
@@ -16,6 +16,7 @@ import com.x.base.core.project.config.MPweixin;
 import com.x.base.core.project.config.MPweixinMessageTemp;
 import com.x.base.core.project.connection.HttpConnection;
 import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.queue.AbstractQueue;
@@ -31,7 +32,8 @@ public class MPWeixinConsumeQueue extends AbstractQueue<Message> {
 
 	private static Logger logger = LoggerFactory.getLogger(MPWeixinConsumeQueue.class);
 
-	//
+	private static final Gson gson = XGsonBuilder.instance();
+
 	// creatorPerson 创建人 activityName 当前节点 processName 流程名称 startTime 开始时间 title 标题
 
 	@Override
@@ -48,7 +50,7 @@ public class MPWeixinConsumeQueue extends AbstractQueue<Message> {
 					String openId = person.getMpwxopenId();
 					logger.info("openId : " + openId);
 					if (StringUtils.isNotEmpty(openId)) {
-						JsonObject object = new JsonParser().parse(message.getBody()).getAsJsonObject();
+						JsonObject object = gson.fromJson(message.getBody(), JsonObject.class);
 						Map<String, WeixinTempMessageFieldObj> data = new HashMap<>();
 						WeixinTempMessageFieldObj wobj = new WeixinTempMessageFieldObj();
 						wobj.setValue(message.getTitle());
