@@ -98,6 +98,8 @@ class ActionExecute extends BaseAction {
 
 	public static class Wo extends WoId {
 
+		private static final long serialVersionUID = 1334633437933937791L;
+
 	}
 
 	public static class Resources extends AbstractResources {

@@ -29,7 +29,8 @@ class ActionListWithCurrentPerson extends BaseAction {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWithCurrentPerson.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String consume, Integer count) throws Exception {
-		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+		LOGGER.debug("execute:{}, consume:{}, count:{}.", effectivePerson::getDistinguishedName, () -> consume,
+				() -> count);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<List<Wo>> result = new ActionResult<>();
