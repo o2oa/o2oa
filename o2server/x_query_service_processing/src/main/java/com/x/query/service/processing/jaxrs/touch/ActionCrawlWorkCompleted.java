@@ -1,4 +1,4 @@
-package com.x.query.service.processing.jaxrs.test;
+package com.x.query.service.processing.jaxrs.touch;
 
 import org.apache.commons.lang3.StringUtils;
 

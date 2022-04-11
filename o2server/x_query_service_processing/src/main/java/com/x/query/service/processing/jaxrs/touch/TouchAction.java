@@ -1,18 +1,14 @@
-package com.x.query.service.processing.jaxrs.test;
+package com.x.query.service.processing.jaxrs.touch;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
@@ -24,11 +20,11 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
-@Path("test")
-@JaxrsDescribe("测试")
-public class TestAction extends StandardJaxrsAction {
+@Path("touch")
+@JaxrsDescribe("触发任务")
+public class TouchAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(TestAction.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TouchAction.class);
 
 	@JaxrsMethodDescribe(value = "执行crawlCms.", action = ActionCrawlCms.class)
 	@GET
@@ -41,7 +37,7 @@ public class TestAction extends StandardJaxrsAction {
 		try {
 			result = new ActionCrawlCms().execute(effectivePerson);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -58,7 +54,7 @@ public class TestAction extends StandardJaxrsAction {
 		try {
 			result = new ActionCrawlWork().execute(effectivePerson);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -75,64 +71,10 @@ public class TestAction extends StandardJaxrsAction {
 		try {
 			result = new ActionCrawlWorkCompleted().execute(effectivePerson);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
-
-	@JaxrsMethodDescribe(value = "执行group.", action = ActionGroup2.class)
-	@GET
-	@Path("group1")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void group1(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
-		ActionResult<ActionGroup1.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionGroup1().execute(effectivePerson);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
-
-	@JaxrsMethodDescribe(value = "执行group.", action = ActionGroup2.class)
-	@GET
-	@Path("group2")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void group2(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
-		ActionResult<ActionGroup2.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionGroup2().execute(effectivePerson);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
-
-	@JaxrsMethodDescribe(value = "文字转换.", action = ActionExtract.class)
-	@POST
-	@Path("extract")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	public void extract(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@FormDataParam(FILE_FIELD) final byte[] bytes,
-			@FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
-		ActionResult<ActionExtract.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionExtract().execute(effectivePerson, bytes, disposition);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-
 	}
 
 }
