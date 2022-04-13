@@ -63,7 +63,7 @@ MWF.xApplication.Setting.Document.Input = new Class({
             if (!this.okButton) this.okButton = this.createButton(this.lp.ok, function(e){
                 if (this.data.lp.confirm){
                     var _self = this;
-                    this.app.confirm("warn", e, "", {"html": this.data.lp.confirm}, 400, 200, function(){
+                    this.app.confirm("warn", e, "", {"html": this.data.lp.confirm}, 400, 230, function(){
                         if (_self.submitData()) _self.editCancel();
                         this.close();
                     }, function(){this.close();})
