@@ -192,7 +192,7 @@ var O2CMSComment = MWF.xApplication.cms.Xform.widget.Comment = new Class({
         this.view.reload();
     },
     isAnonymous : function(){
-        return this.options.anonymousAccess;
+        return this.options.anonymousAccess || this.options.anonymous;
     },
     getUserIcon: function( name ){
         var icon = "";
