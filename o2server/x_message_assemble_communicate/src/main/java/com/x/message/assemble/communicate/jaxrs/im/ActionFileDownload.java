@@ -22,9 +22,12 @@ import com.x.message.core.entity.IMMsgFile;
  */
 public class ActionFileDownload extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionFileDownload.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionFileDownload.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wo wo = null;
@@ -56,7 +59,7 @@ public class ActionFileDownload extends BaseAction {
 					}
 				} catch (Exception e) {
 					if (e.getMessage().indexOf("existed") > -1) {
-						logger.warn("原始附件{}-{}不存在，删除记录！", file.getId(), file.getName());
+						LOGGER.warn("原始附件{}-{}不存在，删除记录！", file.getId(), file.getName());
 						emc.beginTransaction(IMMsgFile.class);
 						emc.delete(IMMsgFile.class, file.getId());
 						emc.commit();
@@ -70,6 +73,8 @@ public class ActionFileDownload extends BaseAction {
 	}
 
 	public static class Wo extends WoFile {
+
+		private static final long serialVersionUID = 4287911201461304784L;
 
 		public Wo(byte[] bytes, String contentType, String contentDisposition) {
 			super(bytes, contentType, contentDisposition);

@@ -1,11 +1,12 @@
 package com.x.message.assemble.communicate;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -15,15 +16,15 @@ import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.hadoop.fs.FSDataOutputStream;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject_;
-import com.x.base.core.project.config.Message.ApiConsumer;
-import com.x.base.core.project.connection.ConnectionAction;
+import com.x.base.core.project.config.Message.HadoopConsumer;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -32,13 +33,13 @@ import com.x.base.core.project.queue.AbstractQueue;
 import com.x.message.core.entity.Message;
 import com.x.message.core.entity.Message_;
 
-public class ApiConsumeQueue extends AbstractQueue<Message> {
+public class HadoopConsumeQueue extends AbstractQueue<Message> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ApiConsumeQueue.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(HadoopConsumeQueue.class);
 
-	private static final Pattern pattern = Pattern.compile("\\{\\$(.+?)\\}");
-
-	private static Gson gson = XGsonBuilder.instance();
+	private static final String ATTRIBUTE_FS_DEFAULTFS = "fs.defaultFS";
+	private static final String SYSTEM_PROPERTY_HADOOP_USER_NAME = "HADOOP_USER_NAME";
+	private static final Gson gson = XGsonBuilder.instance();
 
 	protected void execute(Message message) throws Exception {
 		if (null != message && StringUtils.isNotEmpty(message.getItem())) {
@@ -46,7 +47,7 @@ public class ApiConsumeQueue extends AbstractQueue<Message> {
 		}
 		List<String> ids = listOverStay();
 		if (!ids.isEmpty()) {
-			LOGGER.info("滞留 api 消息数量:{}.", ids.size());
+			LOGGER.info("滞留 hadoop 消息数量:{}.", ids.size());
 			for (String id : ids) {
 				Optional<Message> optional = find(id);
 				if (optional.isPresent()) {
@@ -70,46 +71,46 @@ public class ApiConsumeQueue extends AbstractQueue<Message> {
 
 	private void update(Message message) {
 		try {
-			ApiConsumer consumer = gson.fromJson(message.getProperties().getConsumerJsonElement(), ApiConsumer.class);
-			String path = path(message, consumer);
-			if (StringUtils.equalsIgnoreCase(consumer.getMethod(), ConnectionAction.METHOD_GET)) {
-				ThisApplication.context().applications().getQuery(consumer.getApplication(), path).getData();
-			} else if (StringUtils.equalsIgnoreCase(consumer.getMethod(), ConnectionAction.METHOD_POST)) {
-				ThisApplication.context().applications().postQuery(consumer.getApplication(), path, message.getBody())
-						.getData();
-			} else if (StringUtils.equalsIgnoreCase(consumer.getMethod(), ConnectionAction.METHOD_DELETE)) {
-				ThisApplication.context().applications().deleteQuery(consumer.getApplication(), path).getData();
-			} else if (StringUtils.equalsIgnoreCase(consumer.getMethod(), ConnectionAction.METHOD_PUT)) {
-				ThisApplication.context().applications().putQuery(consumer.getApplication(), path, message.getBody())
-						.getData();
+			HadoopConsumer consumer = gson.fromJson(message.getProperties().getConsumerJsonElement(),
+					HadoopConsumer.class);
+			try (FileSystem fileSystem = FileSystem.get(configuration(consumer));
+					InputStream inputStream = new ByteArrayInputStream(
+							message.getBody().getBytes(StandardCharsets.UTF_8));
+					FSDataOutputStream outputStream = fileSystem.create(path(message, consumer))) {
+				inputStream.transferTo(outputStream);
 			}
 			success(message.getId());
-
 		} catch (Exception e) {
 			failure(message.getId(), e);
 			LOGGER.error(e);
 		}
 	}
 
-	private String path(Message message, ApiConsumer consumer) {
-		String path = consumer.getPath();
-		JsonElement jsonElement = gson.toJsonTree(message.getBody());
-		if (jsonElement.isJsonObject()) {
-			JsonObject jsonObject = jsonElement.getAsJsonObject();
-			if (null != jsonObject) {
-				Matcher matcher = pattern.matcher(path);
-				while (matcher.find()) {
-					String key = matcher.group(1);
-					if (jsonObject.has(key)) {
-						String value = jsonObject.get(key).getAsString();
-						if (null != value) {
-							path = StringUtils.replace(path, matcher.group(), value);
-						}
-					}
-				}
-			}
+	private org.apache.hadoop.fs.Path path(Message message, HadoopConsumer consumer) {
+		org.apache.hadoop.fs.Path path;
+		if (StringUtils.isEmpty(consumer.getPath())) {
+			path = new org.apache.hadoop.fs.Path(Path.SEPARATOR);
+		} else if (StringUtils.startsWith(consumer.getPath(), Path.SEPARATOR)) {
+			path = new org.apache.hadoop.fs.Path(consumer.getPath());
+		} else {
+			path = new org.apache.hadoop.fs.Path(Path.SEPARATOR + consumer.getPath());
+		}
+		if (StringUtils.isNotEmpty(message.getPerson())) {
+			path = new org.apache.hadoop.fs.Path(path, new org.apache.hadoop.fs.Path(message.getPerson()));
+		}
+		if (StringUtils.isNotEmpty(message.getTitle())) {
+			path = new org.apache.hadoop.fs.Path(path, new org.apache.hadoop.fs.Path(message.getTitle()));
 		}
 		return path;
+	}
+
+	private org.apache.hadoop.conf.Configuration configuration(HadoopConsumer consumer) {
+		if (StringUtils.isNotEmpty(consumer.getUsername())) {
+			System.setProperty(SYSTEM_PROPERTY_HADOOP_USER_NAME, consumer.getUsername());
+		}
+		org.apache.hadoop.conf.Configuration configuration = new org.apache.hadoop.conf.Configuration();
+		configuration.set(ATTRIBUTE_FS_DEFAULTFS, consumer.getFsDefaultFS());
+		return configuration;
 	}
 
 	private void success(String id) {
@@ -147,7 +148,7 @@ public class ApiConsumeQueue extends AbstractQueue<Message> {
 			CriteriaBuilder cb = em.getCriteriaBuilder();
 			CriteriaQuery<String> cq = cb.createQuery(String.class);
 			Root<Message> root = cq.from(Message.class);
-			Predicate p = cb.equal(root.get(Message_.consumer), MessageConnector.CONSUME_API);
+			Predicate p = cb.equal(root.get(Message_.consumer), MessageConnector.CONSUME_HADOOP);
 			p = cb.and(p, cb.notEqual(root.get(Message_.consumed), true));
 			p = cb.and(p, cb.lessThan(root.get(JpaObject_.updateTime), DateUtils.addMinutes(new Date(), -20)));
 			cq.select(root.get(Message_.id)).where(p);
@@ -157,4 +158,5 @@ public class ApiConsumeQueue extends AbstractQueue<Message> {
 		}
 		return new ArrayList<>();
 	}
+
 }

@@ -80,6 +80,7 @@ public class Config {
 	public static final String PATH_CONFIG_MESSAGEAPI = "config/messageApi.json";
 	public static final String PATH_CONFIG_MESSAGEJDBC = "config/messageJdbc.json";
 	public static final String PATH_CONFIG_MESSAGETABLE = "config/messageTable.json";
+	public static final String PATH_CONFIG_MESSAGEHADOOP = "config/messageHadoop.json";
 	public static final String PATH_CONFIG_SSLKEYSTORE = "config/keystore";
 	public static final String PATH_CONFIG_SSLKEYSTORESAMPLE = "config/sample/keystore";
 	public static final String PATH_CONFIG_STARTIMAGE = "config/startImage.png";
@@ -936,83 +937,96 @@ public class Config {
 		return instance().messages;
 	}
 
-	private MessageRestful messageRestful;
-
-	public static synchronized MessageRestful messageRestful() throws Exception {
-		if (null == instance().messageRestful) {
-			MessageRestful obj = BaseTools.readConfigObject(PATH_CONFIG_MESSAGERESTFUL, MessageRestful.class);
-			if (null == obj) {
-				obj = MessageRestful.defaultInstance();
-			}
-			instance().messageRestful = obj;
-		}
-		return instance().messageRestful;
-	}
-
-	private MessageMq messageMq;
-
-	public static synchronized MessageMq messageMq() throws Exception {
-		if (null == instance().messageMq) {
-			MessageMq obj = BaseTools.readConfigObject(PATH_CONFIG_MESSAGEMQ, MessageMq.class);
-			if (null == obj) {
-				obj = MessageMq.defaultInstance();
-			}
-			instance().messageMq = obj;
-		}
-		return instance().messageMq;
-	}
-
-	private MessageMail messageMail;
-
-	public static synchronized MessageMail messageMail() throws Exception {
-		if (null == instance().messageMail) {
-			MessageMail obj = BaseTools.readConfigObject(PATH_CONFIG_MESSAGEMAIL, MessageMail.class);
-			if (null == obj) {
-				obj = MessageMail.defaultInstance();
-			}
-			instance().messageMail = obj;
-		}
-		return instance().messageMail;
-	}
-
-	private MessageApi messageApi;
-
-	public static synchronized MessageApi messageApi() throws Exception {
-		if (null == instance().messageApi) {
-			MessageApi obj = BaseTools.readConfigObject(PATH_CONFIG_MESSAGEAPI, MessageApi.class);
-			if (null == obj) {
-				obj = MessageApi.defaultInstance();
-			}
-			instance().messageApi = obj;
-		}
-		return instance().messageApi;
-	}
-
-	private MessageJdbc messageJdbc;
-
-	public static synchronized MessageJdbc messageJdbc() throws Exception {
-		if (null == instance().messageJdbc) {
-			MessageJdbc obj = BaseTools.readConfigObject(PATH_CONFIG_MESSAGEJDBC, MessageJdbc.class);
-			if (null == obj) {
-				obj = MessageJdbc.defaultInstance();
-			}
-			instance().messageJdbc = obj;
-		}
-		return instance().messageJdbc;
-	}
-
-	private MessageTable messageTable;
-
-	public static synchronized MessageTable messageTable() throws Exception {
-		if (null == instance().messageTable) {
-			MessageTable obj = BaseTools.readConfigObject(PATH_CONFIG_MESSAGETABLE, MessageTable.class);
-			if (null == obj) {
-				obj = MessageTable.defaultInstance();
-			}
-			instance().messageTable = obj;
-		}
-		return instance().messageTable;
-	}
+//	private MessageRestful messageRestful;
+//
+//	public static synchronized MessageRestful messageRestful() throws Exception {
+//		if (null == instance().messageRestful) {
+//			MessageRestful obj = BaseTools.readConfigObject(PATH_CONFIG_MESSAGERESTFUL, MessageRestful.class);
+//			if (null == obj) {
+//				obj = MessageRestful.defaultInstance();
+//			}
+//			instance().messageRestful = obj;
+//		}
+//		return instance().messageRestful;
+//	}
+//
+//	private MessageMq messageMq;
+//
+//	public static synchronized MessageMq messageMq() throws Exception {
+//		if (null == instance().messageMq) {
+//			MessageMq obj = BaseTools.readConfigObject(PATH_CONFIG_MESSAGEMQ, MessageMq.class);
+//			if (null == obj) {
+//				obj = MessageMq.defaultInstance();
+//			}
+//			instance().messageMq = obj;
+//		}
+//		return instance().messageMq;
+//	}
+//
+//	private MessageMail messageMail;
+//
+//	public static synchronized MessageMail messageMail() throws Exception {
+//		if (null == instance().messageMail) {
+//			MessageMail obj = BaseTools.readConfigObject(PATH_CONFIG_MESSAGEMAIL, MessageMail.class);
+//			if (null == obj) {
+//				obj = MessageMail.defaultInstance();
+//			}
+//			instance().messageMail = obj;
+//		}
+//		return instance().messageMail;
+//	}
+//
+//	private MessageApi messageApi;
+//
+//	public static synchronized MessageApi messageApi() throws Exception {
+//		if (null == instance().messageApi) {
+//			MessageApi obj = BaseTools.readConfigObject(PATH_CONFIG_MESSAGEAPI, MessageApi.class);
+//			if (null == obj) {
+//				obj = MessageApi.defaultInstance();
+//			}
+//			instance().messageApi = obj;
+//		}
+//		return instance().messageApi;
+//	}
+//
+//	private MessageJdbc messageJdbc;
+//
+//	public static synchronized MessageJdbc messageJdbc() throws Exception {
+//		if (null == instance().messageJdbc) {
+//			MessageJdbc obj = BaseTools.readConfigObject(PATH_CONFIG_MESSAGEJDBC, MessageJdbc.class);
+//			if (null == obj) {
+//				obj = MessageJdbc.defaultInstance();
+//			}
+//			instance().messageJdbc = obj;
+//		}
+//		return instance().messageJdbc;
+//	}
+//
+//	private MessageTable messageTable;
+//
+//	public static synchronized MessageTable messageTable() throws Exception {
+//		if (null == instance().messageTable) {
+//			MessageTable obj = BaseTools.readConfigObject(PATH_CONFIG_MESSAGETABLE, MessageTable.class);
+//			if (null == obj) {
+//				obj = MessageTable.defaultInstance();
+//			}
+//			instance().messageTable = obj;
+//		}
+//		return instance().messageTable;
+//	}
+//	
+//	private MessageHadoop messageHadoop;
+//
+//	public static synchronized MessageHadoop messageHadoop() throws Exception {
+//		if (null == instance().messageHadoop) {
+//			MessageHadoop obj = BaseTools.readConfigObject(PATH_CONFIG_MESSAGEHADOOP, MessageHadoop.class);
+//			if (null == obj) {
+//				obj = MessageHadoop.defaultInstance();
+//			}
+//			instance().messageHadoop = obj;
+//		}
+//		return instance().messageHadoop;
+//	}
 
 	private String messageSendRuleScript;
 

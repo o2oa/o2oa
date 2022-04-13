@@ -26,9 +26,12 @@ import com.x.message.core.entity.Instant_;
 
 class ActionListWithCurrentPersonWithoutIMDesc extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionListWithCurrentPersonWithoutIMDesc.class);
+	private static final Logger LOGGER= LoggerFactory.getLogger(ActionListWithCurrentPersonWithoutIMDesc.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, Integer count) throws Exception {
+		
+		LOGGER.debug("execute:{}, count:{}.", effectivePerson::getDistinguishedName, () -> count);
+		
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<List<Wo>> result = new ActionResult<>();

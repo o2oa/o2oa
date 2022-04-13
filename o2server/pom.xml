@@ -379,10 +379,6 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>com.sun.mail</groupId>
-			<artifactId>javax.mail</artifactId>
-		</dependency>
 	</dependencies>
 	<build>
 		<finalName>${project.artifactId}</finalName>
@@ -754,7 +750,7 @@
 			<dependency>
 				<groupId>net.sourceforge.tess4j</groupId>
 				<artifactId>tess4j</artifactId>
-				<version>4.4.0</version>
+				<version>5.2.0</version>
 			</dependency>
 			<dependency>
 				<groupId>io.github.classgraph</groupId>
