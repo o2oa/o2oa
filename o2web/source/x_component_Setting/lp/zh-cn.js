@@ -54,7 +54,7 @@ MWF.xApplication.Setting.LP = {
     "base_adminPassword": "超级管理员密码",
     "base_adminPassword_infor": "超级管理员xadmin的密码，",
     "base_adminPassword_action": "修改超级管理员密码",
-    "base_adminPassword_confirm": "<div style='color:red'>超级管理员密码关联默认数据库口令等，请慎重修改超级管理员密码！</div><br>您确定要修改吗？",
+    "base_adminPassword_confirm": "<div style='color:red'>超级管理员密码关联默认数据库口令等，请慎重修改超级管理员密码！<br>修改密码后请立即重启，否则系统可能出错！</div><br>您确定要修改吗？",
 
 
     "base_loginSetting": "配置用户登录选项",

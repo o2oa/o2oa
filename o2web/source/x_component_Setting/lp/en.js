@@ -55,7 +55,7 @@ MWF.xApplication.Setting.LP = {
     "base_adminPassword": "Super administrator password",
     "base_adminPassword_infor": "Password of the super administrator xadmin",
     "base_adminPassword_action": "Modify the super administrator password",
-    "base_adminPassword_confirm": "<div style='color:red'>The super administrator password is associated with the default database password, etc. Please carefully modify the super administrator password! </div><br>Are you sure you want to modify?",
+    "base_adminPassword_confirm": "<div style='color:red'>The super administrator password is associated with the default database password, etc. Please carefully modify the super administrator password! <br>Please restart immediately after changing the password, otherwise the system may go wrong!</div><br>Are you sure you want to modify?",
 
 
     "base_loginSetting": "Configure user login options",
