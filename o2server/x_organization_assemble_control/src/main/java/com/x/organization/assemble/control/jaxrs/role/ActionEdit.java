@@ -1,5 +1,6 @@
 package com.x.organization.assemble.control.jaxrs.role;
 
+import com.x.base.core.project.organization.OrganizationDefinition;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.Gson;
@@ -38,12 +39,15 @@ class ActionEdit extends BaseAction {
 			if (StringUtils.isEmpty(wi.getName())) {
 				throw new ExceptionNameEmpty();
 			}
-			/** 重新取出 */
+
 			role = emc.find(role.getId(), Role.class);
-			
+			if (OrganizationDefinition.DEFAULTROLES.contains(role.getName()) && !role.getName().equals(wi.getName())) {
+				throw new ExceptionDenyUpdateDefaultRole(role.getName());
+			}
+
 			Gson gsontool = new Gson();
 			String strRole = gsontool.toJson(role);
-			
+
 			Wi.copier.copy(wi, role);
 			/** 如果唯一标识不为空,要检查唯一标识是否唯一 */
 			if (this.uniqueDuplicateWhenNotEmpty(business, role)) {
@@ -59,11 +63,11 @@ class ActionEdit extends BaseAction {
 			emc.check(role, CheckPersistType.all);
 			emc.commit();
 			CacheManager.notify(Role.class);
-			
+
 			/**创建 组织变更org消息通信 */
 			OrgMessageFactory  orgMessageFactory = new OrgMessageFactory();
 			orgMessageFactory.createMessageCommunicate("modfiy", "role",strRole, role, effectivePerson);
-			
+
 			Wo wo = new Wo();
 			wo.setId(role.getId());
 			result.setData(wo);
@@ -82,6 +86,6 @@ class ActionEdit extends BaseAction {
 				ListTools.toList(JpaObject.FieldsUnmodify, "pinyin", "pinyinInitial"));
 
 	}
-	
+
 
 }
