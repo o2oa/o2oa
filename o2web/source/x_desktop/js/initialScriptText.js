@@ -2594,6 +2594,7 @@ bind.Table = function(name){
      * @methodOf module:server.Table
      * @instance
      * @param {String} id 需要修改的数据id。
+     * @param {Object} data 需要修改的数据。
      * @param {Function} [success] 调用成功时的回调函数。
      * @param {Function} [failure] 调用错误时的回调函数。
      * @o2syntax
