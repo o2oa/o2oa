@@ -56,10 +56,10 @@ public class ScriptingFactory {
 	public static final String BINDING_NAME_SERVICE_REQUESTTEXT = "java_requestText";
 	public static final String BINDING_NAME_SERVICE_REQUEST = "java_request";
 	public static final String BINDING_NAME_SERVICE_PARAMETERS = "java_parameters";
+	public static final String BINDING_NAME_SERVICE_MESSAGE = "java_message";
 
 	public static final String BINDING_NAME_SERVICE_PERSON = "person";
 	public static final String BINDING_NAME_SERVICE_BODY = "body";
-	public static final String BINDING_NAME_SERVICE_MESSAGE = "message";
 
 	public static ScriptEngine newScriptEngine() {
 		return (new ScriptEngineManager()).getEngineByName(Config.SCRIPTING_ENGINE_NAME);
@@ -94,10 +94,6 @@ public class ScriptingFactory {
 		sb.append(
 				"(o && (o !== false) && o.getClass && (typeof o == 'object')) ? Java.type('com.x.base.core.project.gson.XGsonBuilder').toJson(o) : JSON.stringify(o);");
 		return sb.toString();
-//		StringBuilder sb = new StringBuilder();
-//		sb.append("JSON.stringify((function(){").append(System.lineSeparator());
-//		sb.append("}).apply(this));");
-//		return sb.toString();
 	}
 
 	public static CompiledScript functionalizationCompile(String text) throws ScriptException {

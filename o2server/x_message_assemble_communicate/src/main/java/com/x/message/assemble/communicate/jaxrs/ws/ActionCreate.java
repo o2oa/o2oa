@@ -13,23 +13,26 @@ import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.WsMessage;
-import com.x.message.assemble.communicate.ws.collaboration.ActionCollaboration;
+import com.x.message.assemble.communicate.ThisApplication;
 
 class ActionCreate extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionCreate.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCreate.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		Wo wo = new Wo();
 		wo.setValue(false);
 
-		for (Entry<Session, String> entry : ActionCollaboration.clients.entrySet()) {
+		for (Entry<Session, String> entry : ThisApplication.wsClients().entrySet()) {
 			if (StringUtils.equals(entry.getValue(), wi.getPerson())) {
 				Session session = entry.getKey();
 				if (session != null && session.isOpen()) {
-					logger.debug(effectivePerson, "send ws, message: {}.", wi);
+					LOGGER.debug("send ws, message: {}.", () -> wi);
 					session.getBasicRemote().sendText(jsonElement.toString());
 					wo.setValue(true);
 				}
@@ -41,9 +44,13 @@ class ActionCreate extends BaseAction {
 	}
 
 	public static class Wi extends WsMessage {
+
+		private static final long serialVersionUID = -8691888252305620999L;
 	}
 
 	public static class Wo extends WrapBoolean {
+
+		private static final long serialVersionUID = -7273918635205899723L;
 
 	}
 

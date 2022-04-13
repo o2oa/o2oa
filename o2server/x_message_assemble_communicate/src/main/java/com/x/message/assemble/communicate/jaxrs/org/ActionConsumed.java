@@ -18,9 +18,12 @@ import com.x.message.core.entity.Org;
 
 public class ActionConsumed extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionConsumed.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionConsumed.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
@@ -43,8 +46,10 @@ public class ActionConsumed extends BaseAction {
 
 	public static class Wi extends GsonPropertyObject {
 
+		private static final long serialVersionUID = -3369205088748865633L;
+
 		@FieldDescribe("标识")
-		List<String> idList = new ArrayList<>();
+		private List<String> idList = new ArrayList<>();
 
 		public List<String> getIdList() {
 			return idList;
@@ -57,6 +62,8 @@ public class ActionConsumed extends BaseAction {
 	}
 
 	public static class Wo extends WrapBoolean {
+
+		private static final long serialVersionUID = -8756482612373916930L;
 
 	}
 }

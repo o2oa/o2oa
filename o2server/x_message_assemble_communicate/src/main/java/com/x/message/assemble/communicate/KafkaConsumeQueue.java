@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Properties;
+import java.util.concurrent.ExecutionException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -15,15 +15,16 @@ import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.security.plain.PlainLoginModule;
+import org.apache.kafka.common.security.scram.ScramLoginModule;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject_;
-import com.x.base.core.project.config.Message.ApiConsumer;
-import com.x.base.core.project.connection.ConnectionAction;
+import com.x.base.core.project.config.Message.KafkaConsumer;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -32,13 +33,11 @@ import com.x.base.core.project.queue.AbstractQueue;
 import com.x.message.core.entity.Message;
 import com.x.message.core.entity.Message_;
 
-public class ApiConsumeQueue extends AbstractQueue<Message> {
+public class KafkaConsumeQueue extends AbstractQueue<Message> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ApiConsumeQueue.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(KafkaConsumeQueue.class);
 
-	private static final Pattern pattern = Pattern.compile("\\{\\$(.+?)\\}");
-
-	private static Gson gson = XGsonBuilder.instance();
+	private static final Gson gson = XGsonBuilder.instance();
 
 	protected void execute(Message message) throws Exception {
 		if (null != message && StringUtils.isNotEmpty(message.getItem())) {
@@ -46,7 +45,7 @@ public class ApiConsumeQueue extends AbstractQueue<Message> {
 		}
 		List<String> ids = listOverStay();
 		if (!ids.isEmpty()) {
-			LOGGER.info("滞留 api 消息数量:{}.", ids.size());
+			LOGGER.info("滞留 kafka 消息数量:{}.", ids.size());
 			for (String id : ids) {
 				Optional<Message> optional = find(id);
 				if (optional.isPresent()) {
@@ -70,46 +69,41 @@ public class ApiConsumeQueue extends AbstractQueue<Message> {
 
 	private void update(Message message) {
 		try {
-			ApiConsumer consumer = gson.fromJson(message.getProperties().getConsumerJsonElement(), ApiConsumer.class);
-			String path = path(message, consumer);
-			if (StringUtils.equalsIgnoreCase(consumer.getMethod(), ConnectionAction.METHOD_GET)) {
-				ThisApplication.context().applications().getQuery(consumer.getApplication(), path).getData();
-			} else if (StringUtils.equalsIgnoreCase(consumer.getMethod(), ConnectionAction.METHOD_POST)) {
-				ThisApplication.context().applications().postQuery(consumer.getApplication(), path, message.getBody())
-						.getData();
-			} else if (StringUtils.equalsIgnoreCase(consumer.getMethod(), ConnectionAction.METHOD_DELETE)) {
-				ThisApplication.context().applications().deleteQuery(consumer.getApplication(), path).getData();
-			} else if (StringUtils.equalsIgnoreCase(consumer.getMethod(), ConnectionAction.METHOD_PUT)) {
-				ThisApplication.context().applications().putQuery(consumer.getApplication(), path, message.getBody())
-						.getData();
-			}
+			KafkaConsumer consumer = gson.fromJson(message.getProperties().getConsumerJsonElement(),
+					KafkaConsumer.class);
+			producer(message, consumer);
 			success(message.getId());
-
+		} catch (InterruptedException ie) {
+			LOGGER.error(ie);
+			Thread.currentThread().interrupt();
 		} catch (Exception e) {
 			failure(message.getId(), e);
 			LOGGER.error(e);
 		}
 	}
 
-	private String path(Message message, ApiConsumer consumer) {
-		String path = consumer.getPath();
-		JsonElement jsonElement = gson.toJsonTree(message.getBody());
-		if (jsonElement.isJsonObject()) {
-			JsonObject jsonObject = jsonElement.getAsJsonObject();
-			if (null != jsonObject) {
-				Matcher matcher = pattern.matcher(path);
-				while (matcher.find()) {
-					String key = matcher.group(1);
-					if (jsonObject.has(key)) {
-						String value = jsonObject.get(key).getAsString();
-						if (null != value) {
-							path = StringUtils.replace(path, matcher.group(), value);
-						}
-					}
-				}
+	private void producer(Message message, KafkaConsumer consumer) throws InterruptedException, ExecutionException {
+		Properties properties = new Properties();
+		properties.put("bootstrap.servers", consumer.getBootstrapServers());
+		properties.put("acks", "all");
+		properties.put("key.serializer", org.apache.kafka.common.serialization.StringSerializer.class.getName());
+		properties.put("value.serializer", org.apache.kafka.common.serialization.StringSerializer.class.getName());
+		if (StringUtils.isNotBlank(consumer.getUsername()) && StringUtils.isNotBlank(consumer.getSaslMechanism())) {
+			properties.put("security.protocol", consumer.getSecurityProtocol());
+			properties.put("sasl.mechanism", consumer.getSaslMechanism());
+			if (StringUtils.equalsIgnoreCase(consumer.getSaslMechanism(), "PLAIN")) {
+				properties.put("sasl.jaas.config", PlainLoginModule.class.getName() + " required username=\""
+						+ consumer.getUsername() + "\" password=\"" + consumer.getPassword() + "\";");
+			} else if (StringUtils.equalsIgnoreCase(consumer.getSaslMechanism(), "SCRAM-SHA-256")) {
+				properties.put("sasl.jaas.config", ScramLoginModule.class.getName() + " required username=\""
+						+ consumer.getUsername() + "\" password=\"" + consumer.getPassword() + "\";");
 			}
 		}
-		return path;
+		try (KafkaProducer<String, String> producer = new KafkaProducer<>(properties)) {
+			String topic = consumer.getTopic();
+			String msg = gson.toJson(message);
+			producer.send(new ProducerRecord<>(topic, msg)).get();
+		}
 	}
 
 	private void success(String id) {
@@ -147,7 +141,7 @@ public class ApiConsumeQueue extends AbstractQueue<Message> {
 			CriteriaBuilder cb = em.getCriteriaBuilder();
 			CriteriaQuery<String> cq = cb.createQuery(String.class);
 			Root<Message> root = cq.from(Message.class);
-			Predicate p = cb.equal(root.get(Message_.consumer), MessageConnector.CONSUME_API);
+			Predicate p = cb.equal(root.get(Message_.consumer), MessageConnector.CONSUME_KAFKA);
 			p = cb.and(p, cb.notEqual(root.get(Message_.consumed), true));
 			p = cb.and(p, cb.lessThan(root.get(JpaObject_.updateTime), DateUtils.addMinutes(new Date(), -20)));
 			cq.select(root.get(Message_.id)).where(p);

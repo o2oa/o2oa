@@ -1,5 +1,10 @@
 package com.x.message.assemble.communicate;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.websocket.Session;
+
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.project.Context;
@@ -19,8 +24,6 @@ public class ThisApplication {
 
 	public static final WsConsumeQueue wsConsumeQueue = new WsConsumeQueue();
 
-	public static final PmsConsumeQueue pmsConsumeQueue = new PmsConsumeQueue();
-
 	public static final CalendarConsumeQueue calendarConsumeQueue = new CalendarConsumeQueue();
 
 	public static final QiyeweixinConsumeQueue qiyeweixinConsumeQueue = new QiyeweixinConsumeQueue();
@@ -33,9 +36,11 @@ public class ThisApplication {
 
 	public static final PmsInnerConsumeQueue pmsInnerConsumeQueue = new PmsInnerConsumeQueue();
 
-	public static final MqConsumeQueue mqConsumeQueue = new MqConsumeQueue();
-
 	public static final MPWeixinConsumeQueue mpWeixinConsumeQueue = new MPWeixinConsumeQueue();
+
+	public static final ActiveMqConsumeQueue activeMqConsumeQueue = new ActiveMqConsumeQueue();
+
+	public static final KafkaConsumeQueue kafkaConsumeQueue = new KafkaConsumeQueue();
 
 	public static final RestfulConsumeQueue restfulConsumeQueue = new RestfulConsumeQueue();
 
@@ -46,6 +51,14 @@ public class ThisApplication {
 	public static final JdbcConsumeQueue jdbcConsumeQueue = new JdbcConsumeQueue();
 
 	public static final TableConsumeQueue tableConsumeQueue = new TableConsumeQueue();
+
+	public static final HadoopConsumeQueue hadoopConsumeQueue = new HadoopConsumeQueue();
+
+	private static final Map<Session, String> WSCLIENTS = new ConcurrentHashMap<>();
+
+	public static Map<Session, String> wsClients() {
+		return WSCLIENTS;
+	}
 
 	public static Context context() {
 		return context;
@@ -69,13 +82,14 @@ public class ThisApplication {
 	}
 
 	private static void startQueue() throws Exception {
-		startCommunicateQueue();
+		context().startQueue(kafkaConsumeQueue);
+		context().startQueue(activeMqConsumeQueue);
 		context().startQueue(restfulConsumeQueue);
 		context().startQueue(apiConsumeQueue);
 		context().startQueue(mailConsumeQueue);
-		context().startQueue(mqConsumeQueue);
 		context().startQueue(jdbcConsumeQueue);
 		context().startQueue(tableConsumeQueue);
+		context().startQueue(hadoopConsumeQueue);
 		if (BooleanUtils.isTrue(Config.qiyeweixin().getEnable())
 				&& BooleanUtils.isTrue(Config.qiyeweixin().getMessageEnable())) {
 			context().startQueue(qiyeweixinConsumeQueue);
@@ -97,14 +111,8 @@ public class ThisApplication {
 				&& BooleanUtils.isTrue(Config.mPweixin().getMessageEnable())) {
 			context().startQueue(mpWeixinConsumeQueue);
 		}
-	}
-
-	private static void startCommunicateQueue() throws Exception {
 		if (BooleanUtils.isTrue(Config.communicate().wsEnable())) {
 			context().startQueue(wsConsumeQueue);
-		}
-		if (BooleanUtils.isTrue(Config.communicate().pmsEnable())) {
-			context().startQueue(pmsConsumeQueue);
 		}
 		if (BooleanUtils.isTrue(Config.communicate().calendarEnable())) {
 			context().startQueue(calendarConsumeQueue);

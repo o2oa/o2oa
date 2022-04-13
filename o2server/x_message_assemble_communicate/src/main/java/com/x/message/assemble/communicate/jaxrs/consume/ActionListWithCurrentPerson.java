@@ -13,6 +13,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.entity.JpaObject_;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.ActionResult;
@@ -25,9 +26,11 @@ import com.x.message.core.entity.Message_;
 
 class ActionListWithCurrentPerson extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionListWithCurrentPerson.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWithCurrentPerson.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String consume, Integer count) throws Exception {
+		LOGGER.debug("execute:{}, consume:{}, count:{}.", effectivePerson::getDistinguishedName, () -> consume,
+				() -> count);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<List<Wo>> result = new ActionResult<>();
@@ -45,14 +48,11 @@ class ActionListWithCurrentPerson extends BaseAction {
 		Root<Message> root = cq.from(Message.class);
 		Predicate p = cb.equal(root.get(Message_.consumer), consume);
 		p = cb.and(p, cb.equal(root.get(Message_.person), name));
-		p = cb.and( p, cb.isFalse( root.get(Message_.consumed) ));
-		List<Message> os = em.createQuery(cq.select(root).where(p).orderBy(cb.asc(root.get(Message_.createTime))))
+		p = cb.and(p, cb.isFalse(root.get(Message_.consumed)));
+		List<Message> os = em.createQuery(cq.select(root).where(p).orderBy(cb.asc(root.get(JpaObject_.createTime))))
 				.setMaxResults(count).getResultList();
 		return Wo.copier.copy(os);
 	}
-    /*
-	public static class Wi extends WsMessage {
-	}*/
 
 	public static class Wo extends Message {
 

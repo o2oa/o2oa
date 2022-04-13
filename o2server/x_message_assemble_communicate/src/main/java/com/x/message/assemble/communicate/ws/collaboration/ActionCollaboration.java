@@ -3,7 +3,6 @@ package com.x.message.assemble.communicate.ws.collaboration;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -23,6 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.JpaObject_;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpToken;
@@ -31,25 +31,24 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.MessageConnector;
 import com.x.base.core.project.message.WsMessage;
+import com.x.message.assemble.communicate.ThisApplication;
 import com.x.message.core.entity.Message;
 import com.x.message.core.entity.Message_;
 
 @ServerEndpoint(value = "/ws/collaboration", configurator = WsConfigurator.class)
 public class ActionCollaboration {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionCollaboration.class);
-
-	public static final ConcurrentHashMap<Session, String> clients = new ConcurrentHashMap<Session, String>();
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCollaboration.class);
 
 	@OnOpen
 	public void open(Session session) {
 		EffectivePerson effectivePerson = (EffectivePerson) session.getUserProperties().get(HttpToken.X_Person);
-		logger.debug("@OnOpen: tokenType:{}, distinguishedName:{}.", effectivePerson.getTokenType(),
-				effectivePerson.getDistinguishedName());
-		if (TokenType.anonymous.equals(effectivePerson.getTokenType())) {
-			return;
-		} else {
-			clients.put(session, effectivePerson.getDistinguishedName());
+
+		LOGGER.debug("@OnOpen: tokenType:{}, distinguishedName:{}.", effectivePerson::getTokenType,
+				effectivePerson::getDistinguishedName);
+
+		if (!TokenType.anonymous.equals(effectivePerson.getTokenType())) {
+			ThisApplication.wsClients().put(session, effectivePerson.getDistinguishedName());
 			try {
 				List<Message> messages = this.load(effectivePerson);
 				WsMessage ws = null;
@@ -63,26 +62,27 @@ public class ActionCollaboration {
 					session.getBasicRemote().sendText(XGsonBuilder.toJson(ws));
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}
 	}
 
 	@OnClose
-	public void close(Session session, CloseReason reason) throws IOException {
-		clients.remove(session);
+	public void close(Session session, CloseReason reason) {
+		ThisApplication.wsClients().remove(session);
 	}
 
 	@OnError
-	public void error(Throwable t) throws Throwable {
-
+	public void error(Throwable t) {
+		// nothing
 	}
 
 	@OnMessage
-	public void message(String input, Session session) throws Exception {
+	public void message(String input, Session session) throws IOException {
 		EffectivePerson effectivePerson = (EffectivePerson) session.getUserProperties().get(HttpToken.X_Person);
-		logger.debug("@OnMessage1 receive: message {}, person:{}, ip:{}, client:{} .", input,
-				effectivePerson.getDistinguishedName(), effectivePerson.getRemoteAddress(), effectivePerson.getUserAgent());
+		LOGGER.debug("@OnMessage receive: message {}, person:{}, ip:{}, client:{} .", () -> input,
+				effectivePerson::getDistinguishedName, effectivePerson::getRemoteAddress,
+				effectivePerson::getUserAgent);
 		if (StringUtils.isBlank(input)) {
 			return;
 		}
@@ -102,7 +102,7 @@ public class ActionCollaboration {
 			Predicate p = cb.equal(root.get(Message_.person), effectivePerson.getDistinguishedName());
 			p = cb.and(p, cb.equal(root.get(Message_.consumer), MessageConnector.CONSUME_WS));
 			p = cb.and(p, cb.equal(root.get(Message_.consumed), false));
-			cq.select(root).where(p).orderBy(cb.desc(root.get(Message_.createTime)));
+			cq.select(root).where(p).orderBy(cb.desc(root.get(JpaObject_.createTime)));
 			os = em.createQuery(cq).setMaxResults(10).getResultList();
 			emc.beginTransaction(Message.class);
 			for (Message o : os) {
@@ -110,7 +110,7 @@ public class ActionCollaboration {
 			}
 			emc.commit();
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 		return os;
 	}
