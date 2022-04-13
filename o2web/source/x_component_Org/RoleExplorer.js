@@ -80,6 +80,31 @@ MWF.xApplication.Org.RoleExplorer.Role = new Class({
     showItemProperty: function(){
         this.content = new MWF.xApplication.Org.RoleExplorer.RoleContent(this);
     },
+    addActions: function(){
+        if (this.isEditor){
+            if (this.data.id && !this.data.isSystemRole){
+                if (this.data.control.allowDelete){
+                    if (!this.deleteNode){
+                        this.deleteNode = new Element("div", {"styles": this.style.actionDeleteNode}).inject(this.actionNode);
+                        this.deleteNode.addEvent("click", function(e){
+                            if (!this.notDelete){
+                                if (!this.deleteSelected){
+                                    this.setDelete();
+                                }else{
+                                    this.setUndelete();
+                                }
+                            }
+                            e.stopPropagation();
+                        }.bind(this));
+
+                        if (this.explorer.currentItem===this){
+                            if (this.deleteNode) this.deleteNode.setStyles(this.style.actionDeleteNode_selected);
+                        }
+                    }
+                }
+            }
+        }
+    },
     "delete": function(success, failure){
         this.explorer.actions.deleteRole(this.data.id, function(){
             this.destroy();
@@ -429,14 +454,20 @@ MWF.xApplication.Org.RoleExplorer.RoleContent.BaseInfor = new Class({
         if (this.data.control.allowEdit){
             this.baseInforEditActionAreaNode = new Element("div", {"styles": this.style.baseInforEditActionAreaNode}).inject(actionArea);
 
-            this.editNode = new Element("div", {"styles": this.style.actionEditNode, "text": this.explorer.app.lp.editRole}).inject(this.baseInforEditActionAreaNode);
-            this.saveNode = new Element("div", {"styles": this.style.actionSaveNode, "text": this.explorer.app.lp.saveRole}).inject(this.baseInforEditActionAreaNode);
-            this.cancelNode = new Element("div", {"styles": this.style.actionCancelNode, "text": this.explorer.app.lp.cancel}).inject(this.baseInforEditActionAreaNode);
+            if( this.data.isSystemRole ) {
+                this.editNode = new Element("div");
+                this.saveNode = new Element("div");
+                this.cancelNode = new Element("div");
+            }else{
+                this.editNode = new Element("div", {"styles": this.style.actionEditNode, "text": this.explorer.app.lp.editRole}).inject(this.baseInforEditActionAreaNode);
+                this.saveNode = new Element("div", {"styles": this.style.actionSaveNode, "text": this.explorer.app.lp.saveRole}).inject(this.baseInforEditActionAreaNode);
+                this.cancelNode = new Element("div", {"styles": this.style.actionCancelNode, "text": this.explorer.app.lp.cancel}).inject(this.baseInforEditActionAreaNode);
 
-            this.editNode.setStyle("display", "block");
-            this.editNode.addEvent("click", this.edit.bind(this));
-            this.saveNode.addEvent("click", function(){this.save();}.bind(this));
-            this.cancelNode.addEvent("click", this.cancel.bind(this));
+                this.editNode.setStyle("display", "block");
+                this.editNode.addEvent("click", this.edit.bind(this));
+                this.saveNode.addEvent("click", function(){this.save();}.bind(this));
+                this.cancelNode.addEvent("click", this.cancel.bind(this));
+            }
         }else{
 
         }
