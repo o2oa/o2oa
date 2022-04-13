@@ -112,7 +112,7 @@ class ActionGet extends BaseAction {
 		}
 
 		public void setIsSystemRole(Boolean isSystemRole) {
-			isSystemRole = isSystemRole;
+			this.isSystemRole = isSystemRole;
 		}
 	}
 
