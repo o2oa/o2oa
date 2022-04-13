@@ -8,12 +8,14 @@ import java.util.stream.Collectors;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Group;
@@ -46,6 +48,9 @@ class ActionGet extends BaseAction {
 			throw new ExceptionRoleNotExist(flag);
 		}
 		Wo wo = Wo.copier.copy(o);
+		if (OrganizationDefinition.DEFAULTROLES.contains(wo.getName())) {
+			wo.setIsSystemRole(true);
+		}
 		this.referenceGroup(business, wo);
 		this.referencePerson(business, wo);
 		return wo;
@@ -76,6 +81,9 @@ class ActionGet extends BaseAction {
 
 		private static final long serialVersionUID = -127291000673692614L;
 
+		@FieldDescribe("是否是系统角色")
+		private Boolean isSystemRole = false;
+
 		private List<WoGroup> woGroupList;
 
 		private List<WoPerson> woPersonList;
@@ -99,6 +107,13 @@ class ActionGet extends BaseAction {
 			this.woPersonList = woPersonList;
 		}
 
+		public Boolean getIsSystemRole() {
+			return isSystemRole;
+		}
+
+		public void setIsSystemRole(Boolean isSystemRole) {
+			isSystemRole = isSystemRole;
+		}
 	}
 
 	public static class WoGroup extends Group {
