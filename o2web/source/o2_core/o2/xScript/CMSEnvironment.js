@@ -2055,6 +2055,9 @@ MWF.xScript.createTable = function(){
         this.insertRow = function(data, success, error, async){
             this.action.rowInsert(this.name, data, success, error, async);
         };
+        this.addRow = function(data, success, error, async){
+            this.action.rowInsertOne(this.name, data, success, error, async);
+        };
         this.updateRow = function(id, data, success, error, async){
             this.action.rowUpdate(this.name, id, data, success, error, async);
         };
