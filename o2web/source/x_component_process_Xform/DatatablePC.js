@@ -165,8 +165,13 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			 * @event MWF.xApplication.process.Xform.DatatablePC#import
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
+			/**
+			 * 在导入excel，数据设置回数据表格以后触发，this.event指向整理过的导入数据，格式见{@link DatatableData}。
+			 * @event MWF.xApplication.process.Xform.DatatablePC#afterImport
+			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+			 */
 			"moduleEvents": ["queryLoad","postLoad","load", "afterLoad",
-				"beforeLoadLine", "afterLoadLine", "addLine", "deleteLine", "afterDeleteLine", "editLine", "completeLineEdit", "cancelLineEdit", "export", "import", "validImport"]
+				"beforeLoadLine", "afterLoadLine", "addLine", "deleteLine", "afterDeleteLine", "editLine", "completeLineEdit", "cancelLineEdit", "export", "import", "validImport", "afterImport"]
 		},
 
 		initialize: function(node, json, form, options){
@@ -476,19 +481,24 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.table.setStyles(this.json.tableStyles);
 			this.table.set(this.json.properties);
 		},
-		_getValue: function(){
-			if (this.moduleValueAG) return this.moduleValueAG;
-			var value = this._getBusinessData();
-			if (!value){
-				if (this.json.defaultData && this.json.defaultData.code) value = this.form.Macro.exec(this.json.defaultData.code, this);
-				if (value && !value.then) if (o2.typeOf(value)==="array") value = {"data": value || [], "total":{}};
-			}
+		getDefaultValue: function(){
+			var value;
+			if (this.json.defaultData && this.json.defaultData.code) value = this.form.Macro.exec(this.json.defaultData.code, this);
+			if (value && !value.then) if (o2.typeOf(value)==="array") value = {"data": value || [], "total":{}};
 			if(!value && this.multiEditMode){
 				value = {"data": [], "total":{}};
 				var count = this.json.defaultCount ? this.json.defaultCount.toInt() : 0;
 				for( var i=0; i<count; i++ ){
 					value.data.push({})
 				}
+			}
+			return value;
+		},
+		_getValue: function(){
+			if (this.moduleValueAG) return this.moduleValueAG;
+			var value = this._getBusinessData();
+			if (!value){
+				value = this.getDefaultValue();
 			}
 			return value || {"data": [], "total":{}};
 		},
@@ -828,7 +838,8 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		 * this.form.get('fieldId').resetData();
 		 */
 		resetData: function(){
-			this.setData(this._getValue());
+			var value = this.getDefaultValue() || {"data": [], "total":{}};
+			this.setData( value );
 		},
 		/**当参数为Promise的时候，请查看文档: {@link  https://www.yuque.com/o2oa/ixsnyt/ws07m0|使用Promise处理表单异步}<br/>
 		 * 当表单上没有对应组件的时候，可以使用this.data[fieldId] = data赋值。
@@ -2400,6 +2411,9 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 		this.datatable.fireEvent("import", [data] );
 
 		this.datatable.setData( { "data" : data } );
+
+		this.datatable.fireEvent("afterImport", [data] );
+
 		this.form.notice( MWF.xApplication.process.Xform.LP.importSuccess );
 
 	},
