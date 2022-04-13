@@ -22,8 +22,7 @@ import com.google.gson.JsonObject;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject_;
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.MessageApi;
+import com.x.base.core.project.config.Message.ApiConsumer;
 import com.x.base.core.project.connection.ConnectionAction;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
@@ -71,25 +70,20 @@ public class ApiConsumeQueue extends AbstractQueue<Message> {
 
 	private void update(Message message) {
 		try {
-			MessageApi.Item item = Config.messageApi().get(message.getItem());
-			if (null != item) {
-				String path = path(message, item);
-				if (StringUtils.equalsIgnoreCase(item.getMethod(), ConnectionAction.METHOD_GET)) {
-					ThisApplication.context().applications().getQuery(item.getApplication(), path).getData();
-					ThisApplication.context().applications().getQuery(item.getApplication(), path).getData();
-				} else if (StringUtils.equalsIgnoreCase(item.getMethod(), ConnectionAction.METHOD_POST)) {
-					ThisApplication.context().applications().postQuery(item.getApplication(), path, message.getBody())
-							.getData();
-				} else if (StringUtils.equalsIgnoreCase(item.getMethod(), ConnectionAction.METHOD_DELETE)) {
-					ThisApplication.context().applications().deleteQuery(item.getApplication(), path).getData();
-				} else if (StringUtils.equalsIgnoreCase(item.getMethod(), ConnectionAction.METHOD_PUT)) {
-					ThisApplication.context().applications().putQuery(item.getApplication(), path, message.getBody())
-							.getData();
-				}
-				success(message.getId());
-			} else {
-				throw new ExceptionMessageRestfulItem(message.getItem());
+			ApiConsumer consumer = gson.fromJson(message.getProperties().getConsumerJsonElement(), ApiConsumer.class);
+			String path = path(message, consumer);
+			if (StringUtils.equalsIgnoreCase(consumer.getMethod(), ConnectionAction.METHOD_GET)) {
+				ThisApplication.context().applications().getQuery(consumer.getApplication(), path).getData();
+			} else if (StringUtils.equalsIgnoreCase(consumer.getMethod(), ConnectionAction.METHOD_POST)) {
+				ThisApplication.context().applications().postQuery(consumer.getApplication(), path, message.getBody())
+						.getData();
+			} else if (StringUtils.equalsIgnoreCase(consumer.getMethod(), ConnectionAction.METHOD_DELETE)) {
+				ThisApplication.context().applications().deleteQuery(consumer.getApplication(), path).getData();
+			} else if (StringUtils.equalsIgnoreCase(consumer.getMethod(), ConnectionAction.METHOD_PUT)) {
+				ThisApplication.context().applications().putQuery(consumer.getApplication(), path, message.getBody())
+						.getData();
 			}
+			success(message.getId());
 
 		} catch (Exception e) {
 			failure(message.getId(), e);
@@ -97,8 +91,8 @@ public class ApiConsumeQueue extends AbstractQueue<Message> {
 		}
 	}
 
-	private String path(Message message, MessageApi.Item item) {
-		String path = item.getPath();
+	private String path(Message message, ApiConsumer consumer) {
+		String path = consumer.getPath();
 		JsonElement jsonElement = gson.toJsonTree(message.getBody());
 		if (jsonElement.isJsonObject()) {
 			JsonObject jsonObject = jsonElement.getAsJsonObject();
@@ -153,7 +147,7 @@ public class ApiConsumeQueue extends AbstractQueue<Message> {
 			CriteriaBuilder cb = em.getCriteriaBuilder();
 			CriteriaQuery<String> cq = cb.createQuery(String.class);
 			Root<Message> root = cq.from(Message.class);
-			Predicate p = cb.equal(root.get(Message_.consumer), MessageConnector.CONSUME_RESTFUL);
+			Predicate p = cb.equal(root.get(Message_.consumer), MessageConnector.CONSUME_API);
 			p = cb.and(p, cb.notEqual(root.get(Message_.consumed), true));
 			p = cb.and(p, cb.lessThan(root.get(JpaObject_.updateTime), DateUtils.addMinutes(new Date(), -20)));
 			cq.select(root.get(Message_.id)).where(p);

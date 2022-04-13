@@ -22,8 +22,7 @@ import com.google.gson.JsonObject;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject_;
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.MessageRestful;
+import com.x.base.core.project.config.Message.RestfulConsumer;
 import com.x.base.core.project.connection.HttpConnectionResponse;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
@@ -74,26 +73,23 @@ public class RestfulConsumeQueue extends AbstractQueue<Message> {
 
 	private void update(Message message) {
 		try {
-			MessageRestful.Item item = Config.messageRestful().get(message.getItem());
-			if (null != item) {
-				String url = url(message, item);
-				HttpConnectionResponse response = client.restful(item.getMethod(), url, null, message.getBody(), 5000,
-						5000);
-				if (null == response) {
-					throw new ExceptionRestful(message.getTitle(), message.getPerson(), url);
-				}
-				success(message.getId());
-			} else {
-				throw new ExceptionMessageRestfulItem(message.getItem());
+			RestfulConsumer consumer = gson.fromJson(message.getProperties().getConsumerJsonElement(),
+					RestfulConsumer.class);
+			String url = url(message, consumer);
+			HttpConnectionResponse response = client.restful(consumer.getMethod(), url, null, message.getBody(), 5000,
+					5000);
+			if (null == response) {
+				throw new ExceptionRestful(message.getTitle(), message.getPerson(), url);
 			}
+			success(message.getId());
 		} catch (Exception e) {
 			failure(message.getId(), e);
 			LOGGER.error(e);
 		}
 	}
 
-	private String url(Message message, MessageRestful.Item item) {
-		String url = item.getUrl();
+	private String url(Message message, RestfulConsumer consumer) {
+		String url = consumer.getUrl();
 		JsonElement jsonElement = gson.toJsonTree(message.getBody());
 		if (jsonElement.isJsonObject()) {
 			JsonObject jsonObject = jsonElement.getAsJsonObject();

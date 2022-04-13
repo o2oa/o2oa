@@ -35,8 +35,7 @@ import com.google.gson.JsonPrimitive;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject_;
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.MessageJdbc;
+import com.x.base.core.project.config.Message.JdbcConsumer;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -82,13 +81,13 @@ public class JdbcConsumeQueue extends AbstractQueue<Message> {
 
 	private void update(Message message) {
 		try {
-			MessageJdbc.Item item = Config.messageJdbc().get(message.getItem());
-			Class.forName(item.getDriverClass());
-			try (Connection connection = DriverManager.getConnection(item.getUrl(), item.getUsername(),
-					item.getPassword()); Statement statement = connection.createStatement()) {
-				List<Column> columns = this.columns(connection, item);
+			JdbcConsumer consumer = gson.fromJson(message.getProperties().getConsumerJsonElement(), JdbcConsumer.class);
+			Class.forName(consumer.getDriverClass());
+			try (Connection connection = DriverManager.getConnection(consumer.getUrl(), consumer.getUsername(),
+					consumer.getPassword()); Statement statement = connection.createStatement()) {
+				List<Column> columns = this.columns(connection, consumer);
 				Map<String, Object> map = values(columns, gson.fromJson(message.getBody(), JsonObject.class));
-				String sql = createSql(item.getSchema(), item.getTable(), map);
+				String sql = createSql(consumer.getSchema(), consumer.getTable(), map);
 				PreparedStatement preparedStatement = connection.prepareStatement(sql);
 				int idx = 1;
 				for (Entry<String, Object> en : map.entrySet()) {
@@ -580,11 +579,11 @@ public class JdbcConsumeQueue extends AbstractQueue<Message> {
 		return null;
 	}
 
-	private List<Column> columns(Connection connection, MessageJdbc.Item item) throws SQLException {
+	private List<Column> columns(Connection connection, JdbcConsumer consumer) throws SQLException {
 		DatabaseMetaData databaseMetaData = connection.getMetaData();
-		String catalog = StringUtils.isEmpty(item.getCatalog()) ? null : item.getCatalog();
-		String schema = StringUtils.isEmpty(item.getSchema()) ? "%" : item.getSchema();
-		String table = item.getTable();
+		String catalog = StringUtils.isEmpty(consumer.getCatalog()) ? null : consumer.getCatalog();
+		String schema = StringUtils.isEmpty(consumer.getSchema()) ? "%" : consumer.getSchema();
+		String table = consumer.getTable();
 		List<Column> list = new ArrayList<>();
 		try (ResultSet resultSet = databaseMetaData.getColumns(catalog, schema, table, "%")) {
 			while (resultSet.next()) {

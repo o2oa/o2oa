@@ -20,11 +20,12 @@ import javax.persistence.criteria.Root;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
+import com.google.gson.Gson;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject_;
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.MessageMail;
+import com.x.base.core.project.config.Message.MailConsumer;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.MessageConnector;
@@ -36,6 +37,8 @@ import com.x.message.core.entity.Message_;
 public class MailConsumeQueue extends AbstractQueue<Message> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MailConsumeQueue.class);
+
+	private static final Gson gson = XGsonBuilder.instance();
 
 	protected void execute(Message message) throws Exception {
 		if (null != message && StringUtils.isNotEmpty(message.getItem())) {
@@ -67,14 +70,9 @@ public class MailConsumeQueue extends AbstractQueue<Message> {
 
 	private void update(Message message) {
 		try {
-			MessageMail.Item item = Config.messageMail().get(message.getItem());
-			if (null != item) {
-				send(message, item);
-				success(message.getId());
-			} else {
-				throw new ExceptionMessageMailItem(message.getItem());
-			}
-
+			MailConsumer consumer = gson.fromJson(message.getProperties().getConsumerJsonElement(), MailConsumer.class);
+			send(message, consumer);
+			success(message.getId());
 		} catch (Exception e) {
 			failure(message.getId(), e);
 			LOGGER.error(e);
@@ -91,24 +89,24 @@ public class MailConsumeQueue extends AbstractQueue<Message> {
 		return value;
 	}
 
-	private void send(Message message, MessageMail.Item item) throws Exception {
+	private void send(Message message, MailConsumer consumer) throws Exception {
 		String recipient = getRecipient(message);
 		if (StringUtils.isBlank(recipient)) {
 			throw new ExceptionEmptyRecipient(message.getPerson());
 		}
 		Properties properties = new Properties();
-		properties.put("mail.smtp.host", item.getHost());
-		properties.put("mail.smtp.port", item.getPort());
-		properties.put("mail.smtp.ssl.enable", item.getSslEnable());
-		properties.put("mail.smtp.auth", item.getAuth());
+		properties.put("mail.smtp.host", consumer.getHost());
+		properties.put("mail.smtp.port", consumer.getPort());
+		properties.put("mail.smtp.ssl.enable", consumer.getSslEnable());
+		properties.put("mail.smtp.auth", consumer.getAuth());
 		Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
 			@Override
 			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication(item.getFrom(), item.getPassword());
+				return new PasswordAuthentication(consumer.getFrom(), consumer.getPassword());
 			}
 		});
 		MimeMessage mime = new MimeMessage(session);
-		mime.setFrom(new InternetAddress(item.getFrom()));
+		mime.setFrom(new InternetAddress(consumer.getFrom()));
 		mime.addRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(recipient));
 		mime.setSubject(message.getTitle());
 		mime.setText(message.getBody());

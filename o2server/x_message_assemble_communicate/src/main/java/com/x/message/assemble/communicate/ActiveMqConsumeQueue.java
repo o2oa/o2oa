@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
-import java.util.concurrent.ExecutionException;
 
 import javax.jms.Connection;
 import javax.jms.DeliveryMode;
@@ -23,15 +21,12 @@ import javax.persistence.criteria.Root;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.ProducerRecord;
 
 import com.google.gson.Gson;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject_;
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.MessageMq;
+import com.x.base.core.project.config.Message.ActiveMqConsumer;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -41,9 +36,9 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.message.core.entity.Message;
 import com.x.message.core.entity.Message_;
 
-public class MqConsumeQueue extends AbstractQueue<Message> {
+public class ActiveMqConsumeQueue extends AbstractQueue<Message> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(MqConsumeQueue.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActiveMqConsumeQueue.class);
 
 	private static final Gson gson = XGsonBuilder.instance();
 
@@ -53,7 +48,7 @@ public class MqConsumeQueue extends AbstractQueue<Message> {
 		}
 		List<String> ids = listOverStay();
 		if (!ids.isEmpty()) {
-			LOGGER.info("滞留 api 消息数量:{}.", ids.size());
+			LOGGER.info("滞留 activeMq 消息数量:{}.", ids.size());
 			for (String id : ids) {
 				Optional<Message> optional = find(id);
 				if (optional.isPresent()) {
@@ -77,53 +72,31 @@ public class MqConsumeQueue extends AbstractQueue<Message> {
 
 	private void update(Message message) {
 		try {
-			MessageMq.Item item = Config.messageMq().get(message.getItem());
-			if (null != item) {
-				if (StringUtils.equalsIgnoreCase(message.getType(), MessageMq.Item.TYPE_KAFKA)) {
-					kafka(message, item);
-				} else if (StringUtils.equalsIgnoreCase(message.getType(), MessageMq.Item.TYPE_ACTIVEMQ)) {
-					activeMQ(message, item);
-				}
-				success(message.getId());
-			} else {
-				throw new ExceptionMessageMqItem(message.getItem());
-			}
-		} catch (InterruptedException ie) {
-			LOGGER.error(ie);
-			Thread.currentThread().interrupt();
+			ActiveMqConsumer consumer = gson.fromJson(message.getProperties().getConsumerJsonElement(),
+					ActiveMqConsumer.class);
+			producer(message, consumer);
+			success(message.getId());
 		} catch (Exception e) {
 			failure(message.getId(), e);
 			LOGGER.error(e);
 		}
 	}
 
-	private void kafka(Message message, MessageMq.Item item) throws InterruptedException, ExecutionException {
-		Properties properties = new Properties();
-		properties.put("bootstrap.servers", item.getKafkaBootstrapServers());
-		properties.put("key.serializer", org.apache.kafka.common.serialization.StringSerializer.class.getName());
-		properties.put("value.serializer", org.apache.kafka.common.serialization.StringSerializer.class.getName());
-		try (KafkaProducer<String, String> producer = new KafkaProducer<>(properties)) {
-			String topic = item.getKafkaTopic();
-			String msg = gson.toJson(message);
-			producer.send(new ProducerRecord<>(topic, msg)).get();
-		}
-	}
-
-	private void activeMQ(Message message, MessageMq.Item item) throws JMSException {
+	private void producer(Message message, ActiveMqConsumer consumer) throws JMSException {
 
 		ActiveMQConnectionFactory connectionFactory;
 
-		if (StringUtils.isNotBlank(item.getActiveMQUsername())) {
-			connectionFactory = new ActiveMQConnectionFactory(item.getActiveMQUsername(), item.getActiveMQPassword(),
-					item.getActiveMQUrl());
+		if (StringUtils.isNotBlank(consumer.getUsername())) {
+			connectionFactory = new ActiveMQConnectionFactory(consumer.getUsername(), consumer.getPassword(),
+					consumer.getUrl());
 		} else {
-			connectionFactory = new ActiveMQConnectionFactory(item.getActiveMQUrl());
+			connectionFactory = new ActiveMQConnectionFactory(consumer.getUrl());
 		}
-		connectionFactory.setTrustedPackages(ListTools.toList(MqConsumeQueue.class.getPackage().getName()));
+		connectionFactory.setTrustedPackages(ListTools.toList(ActiveMqConsumeQueue.class.getPackage().getName()));
 		try (Connection connection = connectionFactory.createConnection()) {
 			connection.start();
 			try (Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE)) {
-				Destination destination = session.createQueue(item.getActiveMQQueueName());
+				Destination destination = session.createQueue(consumer.getQueueName());
 				MessageProducer producer = session.createProducer(destination);
 				producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 				TextMessage textMessage = session.createTextMessage(gson.toJson(message));
@@ -167,7 +140,7 @@ public class MqConsumeQueue extends AbstractQueue<Message> {
 			CriteriaBuilder cb = em.getCriteriaBuilder();
 			CriteriaQuery<String> cq = cb.createQuery(String.class);
 			Root<Message> root = cq.from(Message.class);
-			Predicate p = cb.equal(root.get(Message_.consumer), MessageConnector.CONSUME_MQ);
+			Predicate p = cb.equal(root.get(Message_.consumer), MessageConnector.CONSUME_ACTIVEMQ);
 			p = cb.and(p, cb.notEqual(root.get(Message_.consumed), true));
 			p = cb.and(p, cb.lessThan(root.get(JpaObject_.updateTime), DateUtils.addMinutes(new Date(), -20)));
 			cq.select(root.get(Message_.id)).where(p);
