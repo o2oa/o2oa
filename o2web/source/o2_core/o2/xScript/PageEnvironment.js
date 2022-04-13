@@ -1476,7 +1476,7 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
             //    if (callback) callback.apply(this);
             //    return;
             //}
-            if (options.enableAnonymous && type === "cms") {
+            if (( options.enableAnonymous || options.anonymous ) && type === "cms") {
                 o2.Actions.load("x_cms_assemble_control").ScriptAnonymousAction.getWithAppWithName(application, name, function (json) {
                     if (json.data) {
                         includedScripts.push(key);
@@ -2542,7 +2542,7 @@ if (!MWF.xScript.createDict) {
         if (path.indexOf("root") !== 0) path = "root." + path;
 
         var type = options.appType || "process";
-        var enableAnonymous = options.enableAnonymous || false;
+        var enableAnonymous = ( options.enableAnonymous || options.anonymous ) || false;
 
         var appFlagList = [];
         if (options.application) appFlagList.push(options.application);
@@ -2709,7 +2709,7 @@ if (!MWF.xScript.createDict) {
         //  type : "", //默认为process, 可以为  process  cms
         //  application : "", //流程/CMS的名称/别名/id, 默认为当前应用
         //  name : "", // 数据字典名称/别名/id
-        //  enableAnonymous : false //允许在未登录的情况下读取CMS的数据字典
+        //  anonymous : false //允许在未登录的情况下读取CMS的数据字典， 该参数名也可以是 enableAnonymous
         //}
         //或者name: "" // 数据字典名称/别名/id
         return function (optionsOrName) {
@@ -2720,7 +2720,7 @@ if (!MWF.xScript.createDict) {
             var name = this.name = options.name;
             var type = (options.type && options.application) ? options.type : "process";
             var applicationId = options.application || application;
-            var enableAnonymous = options.enableAnonymous || false;
+            var enableAnonymous = ( options.enableAnonymous || options.anonymous ) || false;
 
             var opt = {
                 "appType": type,
