@@ -135,7 +135,7 @@ MWF.xApplication.cms.Document.Main = new Class({
         this.json_form = null;
 
         //只读或者匿名查看
-        var readonly = this.options.readonly !== false || this.options.anonymousAccess;
+        var readonly = this.options.readonly !== false || this.options.anonymousAccess || this.options.anonymous;
 
         var formId = "";
         if( this.options.forceFormId ) { //有确定的id
@@ -197,7 +197,7 @@ MWF.xApplication.cms.Document.Main = new Class({
         var readonly = this.options.readonly !== false;
 
         var documentMethod;
-        if( this.options.anonymousAccess ){
+        if( this.options.anonymousAccess || this.options.anonymous ){
             documentMethod = "getDocumentByAnonymous"
         }else if( readonly && !this.options.printFormId){
             documentMethod = "viewDocument";
@@ -205,7 +205,7 @@ MWF.xApplication.cms.Document.Main = new Class({
             documentMethod = "getDocument";
         }
 
-        var attachmentMethod = this.options.anonymousAccess ? "listAttachmentByAnonymous" : "listAttachment";
+        var attachmentMethod = ( this.options.anonymousAccess || this.options.anonymous ) ? "listAttachmentByAnonymous" : "listAttachment";
 
         o2.Actions.invokeAsync([
             {"action": this.action, "name": documentMethod},
@@ -224,7 +224,7 @@ MWF.xApplication.cms.Document.Main = new Class({
 
                     //编辑状态要先获取document再判断有没有权限编辑
 
-                    var toLoadForm = !(this.options.readonly !== false || this.options.anonymousAccess);
+                    var toLoadForm = !(this.options.readonly !== false || this.options.anonymousAccess || this.options.anonymous );
                     // var toLoadForm = this.options.readonly !== true && !this.options.anonymousAccess;
                     this.checkLoad( toLoadForm )
                 }else{
@@ -236,7 +236,7 @@ MWF.xApplication.cms.Document.Main = new Class({
     },
     getFormV2 : function( formId, cacheTag, ignoreFromCategory ){
         var formMethod;
-        if( this.options.anonymousAccess ){
+        if( this.options.anonymousAccess || this.options.anonymous ){
             formMethod =  layout.mobile ? "getFormMobileAnonymousV2" : "getFormAnonymousV2";
         }else{
             formMethod = layout.mobile ? "getFormMobileV2" : "getFormV2";
@@ -274,7 +274,7 @@ MWF.xApplication.cms.Document.Main = new Class({
         var id = this.options.documentId || this.options.id;
 
         var lookupMethod;
-        if( this.options.anonymousAccess ){
+        if( this.options.anonymousAccess || this.options.anonymous ){
             lookupMethod =  layout.mobile ? "lookupFormWithDocMobileAnonymousV2" : "lookupFormWithDocAnonymousV2";
         }else{
             lookupMethod = layout.mobile ? "lookupFormWithDocMobileV2" : "lookupFormWithDocV2";
