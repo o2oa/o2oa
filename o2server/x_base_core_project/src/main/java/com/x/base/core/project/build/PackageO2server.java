@@ -21,7 +21,7 @@ import com.x.base.core.project.tools.DefaultCharset;
 
 public class PackageO2server {
 
-	private static Logger logger = LoggerFactory.getLogger(PackageO2server.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(PackageO2server.class);
 
 	public static void main(String... args) throws Exception {
 		File base = new File(args[0]).getParentFile();
@@ -29,50 +29,6 @@ public class PackageO2server {
 		CreateConfigSample.main(base.getAbsolutePath());
 		CreateLocalSample.main(base.getAbsolutePath());
 		CreateVersion.main(base.getAbsolutePath());
-		// File file = new File(base, "o2server.zip");
-		// FileUtils.forceMkdir(new File(base.getAbsolutePath(), "servers"));
-		// try (ZipOutputStream outputStream = new ZipOutputStream(new FileOutputStream(file))) {
-		// 	compress(outputStream, base.getAbsolutePath(), "configSample");
-		// 	compress(outputStream, base.getAbsolutePath(), "jvm");
-		// 	compress(outputStream, base.getAbsolutePath(), "commons");
-		// 	compress(outputStream, base.getAbsolutePath(), "store");
-		// 	compress(outputStream, base.getAbsolutePath(), "localSample");
-		// 	compress(outputStream, base.getAbsolutePath(), "servers");
-		// 	compress(outputStream, base.getAbsolutePath(), "console.jar");
-		// 	compress(outputStream, base.getAbsolutePath(), "index.html");
-		// 	compress(outputStream, base.getAbsolutePath(), "service_windows.bat");
-		// 	compress(outputStream, base.getAbsolutePath(), "start_windows.bat");
-		// 	compress(outputStream, base.getAbsolutePath(), "start_windows_debug.bat");
-		// 	compress(outputStream, base.getAbsolutePath(), "stop_windows.bat");
-		// 	compress(outputStream, base.getAbsolutePath(), "console_windows.bat");
-		// 	compress(outputStream, base.getAbsolutePath(), "start_linux.sh");
-		// 	compress(outputStream, base.getAbsolutePath(), "start_linux_debug.sh");
-		// 	compress(outputStream, base.getAbsolutePath(), "stop_linux.sh");
-		// 	compress(outputStream, base.getAbsolutePath(), "console_linux.sh");
-		// 	compress(outputStream, base.getAbsolutePath(), "start_macos.sh");
-		// 	compress(outputStream, base.getAbsolutePath(), "start_macos_debug.sh");
-		// 	compress(outputStream, base.getAbsolutePath(), "stop_macos.sh");
-		// 	compress(outputStream, base.getAbsolutePath(), "console_macos.sh");
-		// 	compress(outputStream, base.getAbsolutePath(), "start_aix.sh");
-		// 	compress(outputStream, base.getAbsolutePath(), "start_aix_debug.sh");
-		// 	compress(outputStream, base.getAbsolutePath(), "stop_aix.sh");
-		// 	compress(outputStream, base.getAbsolutePath(), "console_aix.sh");
-		// 	compress(outputStream, base.getAbsolutePath(), "start_raspberrypi.sh");
-		// 	compress(outputStream, base.getAbsolutePath(), "start_raspberrypi_debug.sh");
-		// 	compress(outputStream, base.getAbsolutePath(), "stop_raspberrypi.sh");
-		// 	compress(outputStream, base.getAbsolutePath(), "console_raspberrypi.sh");
-		// 	compress(outputStream, base.getAbsolutePath(), "start_neokylin_loongson.sh");
-		// 	compress(outputStream, base.getAbsolutePath(), "start_neokylin_loongson_debug.sh");
-		// 	compress(outputStream, base.getAbsolutePath(), "stop_neokylin_loongson.sh");
-		// 	compress(outputStream, base.getAbsolutePath(), "console_neokylin_loongson.sh");
-		// 	compress(outputStream, base.getAbsolutePath(), "start_kylinos_phytium.sh");
-		// 	compress(outputStream, base.getAbsolutePath(), "start_kylinos_phytium_debug.sh");
-		// 	compress(outputStream, base.getAbsolutePath(), "stop_kylinos_phytium.sh");
-		// 	compress(outputStream, base.getAbsolutePath(), "console_kylinos_phytium.sh");
-		// 	compress(outputStream, base.getAbsolutePath(), "version.o2");
-		// } catch (IOException e) {
-		// 	e.printStackTrace();
-		// }
 	}
 
 	public static void compress(ZipOutputStream outputStream, String base, String path) throws Exception {

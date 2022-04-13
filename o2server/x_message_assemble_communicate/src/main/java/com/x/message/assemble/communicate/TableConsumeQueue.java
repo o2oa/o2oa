@@ -11,6 +11,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
@@ -21,8 +22,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject_;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_query_service_processing;
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.MessageTable;
+import com.x.base.core.project.config.Message.TableConsumer;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
@@ -68,14 +68,15 @@ public class TableConsumeQueue extends AbstractQueue<Message> {
 
 	private void update(Message message) {
 		try {
-			MessageTable.Item item = Config.messageTable().get(message.getItem());
+			TableConsumer consumer = gson.fromJson(message.getProperties().getConsumerJsonElement(),
+					TableConsumer.class);
 			JsonElement jsonElement = gson.fromJson(message.getBody(), JsonElement.class);
 			WrapBoolean resp = ThisApplication.context().applications()
 					.postQuery(x_query_service_processing.class,
-							Applications.joinQueryUri("table", item.getTable(), "insert"), jsonElement)
+							Applications.joinQueryUri("table", consumer.getTable(), "insert"), jsonElement)
 					.getData(WrapBoolean.class);
-			if (!resp.getValue()) {
-				throw new ExceptionTableReturn(message.getId(), message.getTitle(), item.getTable());
+			if (BooleanUtils.isNotTrue(resp.getValue())) {
+				throw new ExceptionTableReturn(message.getId(), message.getTitle(), consumer.getTable());
 			}
 			success(message.getId());
 		} catch (Exception e) {
