@@ -2553,12 +2553,48 @@ bind.Table = function(name){
     this.insertRow = function(data, success, error, async){
         this.action.rowInsert(this.name, data, success, error, async);
     };
+
+    /**
+     * 往数据表中插入单条数据。
+     * @method addRow
+     * @methodOf module:Table
+     * @instance
+     * @param {Object} data 需要插入的数据。
+     * @param {Function} [success] 调用成功时的回调函数。
+     * @param {Function} [failure] 调用错误时的回调函数。
+     * @o2syntax
+     * table.addRow( data, success, failure, async )
+     * @example
+     * var table = new this.Table("table1");
+     * var data = {
+     *    "subject": "标题一",
+     *    ... //其他字段
+     *  };
+     * table.addRow( data, function(data){
+     *    //data 形如
+     *    //{
+     *    //   "type": "success",
+     *    //  "data": {
+     *    //      "id": 2cf3a20d-b166-490b-8d29-05544db3d79b //true表示修改成功
+     *    //  },
+     *    //  "message": "",
+     *    //  "date": "2021-11-01 18:32:27"
+     *    //}
+     * }, function(xhr){
+     *    //xhr 为 xmlHttpRequest
+     * });
+     */
+    this.addRow = function(data, success, error, async){
+        this.action.rowInsertOne(this.name, data, success, error, async);
+    };
+
     /**
      * 往数据表中修改单条数据。
      * @method updateRow
      * @methodOf module:server.Table
      * @instance
      * @param {String} id 需要修改的数据id。
+     * @param {Object} data 需要修改的数据。
      * @param {Function} [success] 调用成功时的回调函数。
      * @param {Function} [failure] 调用错误时的回调函数。
      * @o2syntax
