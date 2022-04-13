@@ -144,8 +144,13 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			 * @event MWF.xApplication.process.Xform.Datatemplate#import
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
+			/**
+			 * 在导入excel，数据设置回数据模板以后触发，this.event指向整理过的导入数据，格式见{@link DatatemplateData}。
+			 * @event MWF.xApplication.process.Xform.Datatemplate#afterImport
+			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+			 */
 			"moduleEvents": ["queryLoad","postLoad","load", "afterLoad",
-				"beforeLoadLine", "afterLoadLine","addLine", "deleteLine", "afterDeleteLine","export", "import", "validImport"]
+				"beforeLoadLine", "afterLoadLine","addLine", "deleteLine", "afterDeleteLine","export", "import", "validImport", "afterImport"]
 		},
 
 		initialize: function(node, json, form, options){
@@ -326,18 +331,32 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			//去要表单的所有组件加载完成以后再去获取外部组件
 			this.form.addEvent("afterModulesLoad", this.bindEvent );
 		},
-		_getValue: function(){
-			if (this.moduleValueAG) return this.moduleValueAG;
-			var value = this._getBusinessData();
-			if (!value){
-				if (this.json.defaultData && this.json.defaultData.code) value = this.form.Macro.exec(this.json.defaultData.code, this);
-				if (value && !value.then) if (o2.typeOf(value)==="object") value = [value];
-			}
+		getDefaultValue: function(){
+			var value;
+			if (this.json.defaultData && this.json.defaultData.code) value = this.form.Macro.exec(this.json.defaultData.code, this);
+			if (value && !value.then) if (o2.typeOf(value)==="object") value = [value];
 			if(!value){
 				value = [];
 				var count = this.json.defaultCount ? this.json.defaultCount.toInt() : 0;
 				for( var i=0; i<count; i++ )value.push({})
 			}
+			return value;
+		},
+		_getValue: function(){
+			if (this.moduleValueAG) return this.moduleValueAG;
+			var value = this._getBusinessData();
+			if( !value ){
+				value = this.getDefaultValue();
+			}
+			// if (!value){
+			// 	if (this.json.defaultData && this.json.defaultData.code) value = this.form.Macro.exec(this.json.defaultData.code, this);
+			// 	if (value && !value.then) if (o2.typeOf(value)==="object") value = [value];
+			// }
+			// if(!value){
+			// 	value = [];
+			// 	var count = this.json.defaultCount ? this.json.defaultCount.toInt() : 0;
+			// 	for( var i=0; i<count; i++ )value.push({})
+			// }
 			return value;
 		},
 		getValue: function(){
@@ -623,7 +642,8 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 		 * this.form.get('fieldId').resetData();
 		 */
 		resetData: function(){
-			this.setData(this._getValue());
+			var value = this.getDefaultValue() || [];
+			this.setData(value);
 		},
 		/**当参数为Promise的时候，请查看文档: {@link  https://www.yuque.com/o2oa/ixsnyt/ws07m0|使用Promise处理表单异步}<br/>
 		 * 当表单上没有对应组件的时候，可以使用this.data[fieldId] = data赋值。
@@ -1802,6 +1822,9 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 		this.template.fireEvent("import", [data] );
 
 		this.template.setData( data );
+
+		this.template.fireEvent("afterImport", [data] );
+
 		this.form.notice( MWF.xApplication.process.Xform.LP.importSuccess );
 
 	},
