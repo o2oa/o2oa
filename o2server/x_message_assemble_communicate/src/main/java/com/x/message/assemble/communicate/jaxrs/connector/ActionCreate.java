@@ -77,6 +77,7 @@ class ActionCreate extends BaseAction {
 		return result;
 	}
 
+	@Deprecated
 	private void save(Instant instant, List<Message> messages) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			emc.beginTransaction(Instant.class);
@@ -91,6 +92,7 @@ class ActionCreate extends BaseAction {
 		}
 	}
 
+	@Deprecated
 	private List<Message> assemble(Wi wi, Map<String, String> consumersV2, Instant instant) throws Exception {
 		List<Message> messages = new ArrayList<>();
 		if (!consumersV2.isEmpty()) {
@@ -108,6 +110,7 @@ class ActionCreate extends BaseAction {
 		return messages;
 	}
 
+	@Deprecated
 	private Wi executeFun(Wi wi, String func, String consumer) {
 		Wi cpWi = wi;
 		try {
@@ -143,6 +146,7 @@ class ActionCreate extends BaseAction {
 		return cpWi;
 	}
 
+	@Deprecated
 	private Message assembleMessage(String consumer, Wi cpWi, Instant instant) throws Exception {
 		Message message = null;
 		switch (Objects.toString(consumer, "")) {
@@ -177,6 +181,7 @@ class ActionCreate extends BaseAction {
 
 	}
 
+	@Deprecated
 	private void sendMessage(List<Message> messages) throws Exception {
 		for (Message message : messages) {
 			switch (message.getConsumer()) {
@@ -210,6 +215,7 @@ class ActionCreate extends BaseAction {
 		}
 	}
 
+	@Deprecated
 	private void sendMessageMPWeixin(Message message) throws Exception {
 		if (BooleanUtils.isTrue(Config.mPweixin().getEnable())
 				&& BooleanUtils.isTrue(Config.mPweixin().getMessageEnable())) {
@@ -217,12 +223,15 @@ class ActionCreate extends BaseAction {
 		}
 	}
 
+	@Deprecated
 	private void sendMessagePmsInner(Message message) throws Exception {
 		if (BooleanUtils.isTrue(Config.pushConfig().getEnable())) {
 			ThisApplication.pmsInnerConsumeQueue.send(message);
 		}
+	
 	}
-
+	
+	@Deprecated
 	private void sendMessageQiyeweixin(Message message) throws Exception {
 		if (BooleanUtils.isTrue(Config.qiyeweixin().getEnable())
 				&& BooleanUtils.isTrue(Config.qiyeweixin().getMessageEnable())) {
@@ -230,6 +239,7 @@ class ActionCreate extends BaseAction {
 		}
 	}
 
+	@Deprecated
 	private void sendMessageZhengwuDingding(Message message) throws Exception {
 		if (BooleanUtils.isTrue(Config.zhengwuDingding().getEnable())
 				&& BooleanUtils.isTrue(Config.zhengwuDingding().getMessageEnable())) {
@@ -237,6 +247,7 @@ class ActionCreate extends BaseAction {
 		}
 	}
 
+	@Deprecated
 	private void sendMessageWeLink(Message message) throws Exception {
 		if (BooleanUtils.isTrue(Config.weLink().getEnable())
 				&& BooleanUtils.isTrue(Config.weLink().getMessageEnable())) {
@@ -244,6 +255,7 @@ class ActionCreate extends BaseAction {
 		}
 	}
 
+	@Deprecated
 	private void sendMessageDingding(Message message) throws Exception {
 		if (BooleanUtils.isTrue(Config.dingding().getEnable())
 				&& BooleanUtils.isTrue(Config.dingding().getMessageEnable())) {
@@ -251,18 +263,21 @@ class ActionCreate extends BaseAction {
 		}
 	}
 
+	@Deprecated
 	private void sendMessageCalendar(Message message) throws Exception {
 		if (BooleanUtils.isTrue(Config.communicate().calendarEnable())) {
 			ThisApplication.calendarConsumeQueue.send(message);
 		}
 	}
 
+	@Deprecated
 	private void sendMessageWs(Message message) throws Exception {
 		if (BooleanUtils.isTrue(Config.communicate().wsEnable())) {
 			ThisApplication.wsConsumeQueue.send(message);
 		}
 	}
 
+	@Deprecated
 	private Instant instant(Wi wi, List<String> consumers) {
 		Instant instant = new Instant();
 		instant.setBody(Objects.toString(wi.getBody()));
@@ -274,6 +289,7 @@ class ActionCreate extends BaseAction {
 		return instant;
 	}
 
+	@Deprecated
 	private Message wsMessage(Wi wi, Instant instant) throws Exception {
 		Message message = null;
 		if (BooleanUtils.isTrue(Config.communicate().wsEnable())) {
@@ -289,6 +305,7 @@ class ActionCreate extends BaseAction {
 		return message;
 	}
 
+	@Deprecated
 	private Message pmsInnerMessage(Wi wi, Instant instant) {
 		Message message = null;
 		try {
@@ -308,6 +325,7 @@ class ActionCreate extends BaseAction {
 		return message;
 	}
 
+	@Deprecated
 	private Message dingdingMessage(Wi wi, Instant instant) {
 		Message message = null;
 		try {
@@ -328,6 +346,7 @@ class ActionCreate extends BaseAction {
 		return message;
 	}
 
+	@Deprecated
 	private Message weLinkMessage(Wi wi, Instant instant) {
 		Message message = null;
 		try {
@@ -348,6 +367,7 @@ class ActionCreate extends BaseAction {
 		return message;
 	}
 
+	@Deprecated
 	private Message zhengwudingdingMessage(Wi wi, Instant instant) {
 		Message message = null;
 		try {
@@ -367,6 +387,7 @@ class ActionCreate extends BaseAction {
 		return message;
 	}
 
+	@Deprecated
 	private Message qiyeweixinMessage(Wi wi, Instant instant) {
 		Message message = null;
 		try {
@@ -387,6 +408,7 @@ class ActionCreate extends BaseAction {
 		return message;
 	}
 
+	@Deprecated
 	private Message mpweixinMessage(Wi wi, Instant instant) {
 		Message message = null;
 		try {
@@ -407,6 +429,7 @@ class ActionCreate extends BaseAction {
 		return message;
 	}
 
+	@Deprecated
 	private Message calendarMessage(Wi wi, Instant instant) {
 		Message message = null;
 		try {
