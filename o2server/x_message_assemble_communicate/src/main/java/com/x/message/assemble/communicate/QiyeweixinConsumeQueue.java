@@ -20,7 +20,7 @@ import com.x.message.core.entity.Message;
 
 public class QiyeweixinConsumeQueue extends AbstractQueue<Message> {
 
-	private static Logger logger = LoggerFactory.getLogger(QiyeweixinConsumeQueue.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(QiyeweixinConsumeQueue.class);
 
 	private static final Gson gson = XGsonBuilder.instance();
 
@@ -40,14 +40,14 @@ public class QiyeweixinConsumeQueue extends AbstractQueue<Message> {
 					}
 				}
 				m.getText().setContent(content);
-				logger.info("微信消息：" + m.toString());
+				LOGGER.debug("微信消息：" + m.toString());
 				String address = Config.qiyeweixin().getApiAddress() + "/cgi-bin/message/send?access_token="
 						+ Config.qiyeweixin().corpAccessToken();
 				QiyeweixinMessageResp resp = HttpConnection.postAsObject(address, null, m.toString(),
 						QiyeweixinMessageResp.class);
 				if (resp.getErrcode() != 0) {
 					ExceptionQiyeweixinMessage e = new ExceptionQiyeweixinMessage(resp.getErrcode(), resp.getErrmsg());
-					logger.error(e);
+					LOGGER.error(e);
 				} else {
 					Message messageEntityObject = emc.find(message.getId(), Message.class);
 					if (null != messageEntityObject) {
@@ -85,16 +85,16 @@ public class QiyeweixinConsumeQueue extends AbstractQueue<Message> {
 			}
 			workUrl = URLEncoder.encode(workUrl, DefaultCharset.name);
 			o2oaUrl = o2oaUrl + "qiyeweixinsso.html?redirect=" + workUrl;
-			logger.info("o2oa 地址：" + o2oaUrl);
+			LOGGER.debug("o2oa 地址：" + o2oaUrl);
 			o2oaUrl = URLEncoder.encode(o2oaUrl, DefaultCharset.name);
-			logger.info("encode url :" + o2oaUrl);
+			LOGGER.debug("encode url :" + o2oaUrl);
 			String url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + corpId
 					+ "&response_type=code&scope=snsapi_base" + "&agentid=" + agentId + "&redirect_uri=" + o2oaUrl
 					+ "&#wechat_redirect";
-			logger.info("final url :" + url);
+			LOGGER.debug("final url :" + url);
 			return url;
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 
 		return "";
@@ -116,7 +116,7 @@ public class QiyeweixinConsumeQueue extends AbstractQueue<Message> {
 				return object.get("workCompleted").getAsString();
 			}
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 		return null;
 	}
@@ -134,46 +134,23 @@ public class QiyeweixinConsumeQueue extends AbstractQueue<Message> {
 				return true;
 			}
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 		return false;
 	}
 
-//	private List<String> workMessageTypeList() {
-//		List<String> list = new ArrayList<>();
-//		list.add(MessageConnector.TYPE_WORK_TO_WORKCOMPLETED);
-//		list.add(MessageConnector.TYPE_WORK_CREATE);
-//		list.add(MessageConnector.TYPE_WORK_DELETE);
-//		list.add(MessageConnector.TYPE_WORKCOMPLETED_CREATE);
-//		list.add(MessageConnector.TYPE_WORKCOMPLETED_DELETE);
-//		list.add(MessageConnector.TYPE_TASK_TO_TASKCOMPLETED);
-//		list.add(MessageConnector.TYPE_TASK_CREATE);
-//		list.add(MessageConnector.TYPE_TASK_DELETE);
-//		list.add(MessageConnector.TYPE_TASK_URGE);
-//		list.add(MessageConnector.TYPE_TASK_EXPIRE);
-//		list.add(MessageConnector.TYPE_TASK_PRESS);
-//		list.add(MessageConnector.TYPE_TASKCOMPLETED_CREATE);
-//		list.add(MessageConnector.TYPE_TASKCOMPLETED_DELETE);
-//		list.add(MessageConnector.TYPE_READ_TO_READCOMPLETED);
-//		list.add(MessageConnector.TYPE_READ_CREATE);
-//		list.add(MessageConnector.TYPE_READ_DELETE);
-//		list.add(MessageConnector.TYPE_READCOMPLETED_CREATE);
-//		list.add(MessageConnector.TYPE_READCOMPLETED_DELETE);
-//		list.add(MessageConnector.TYPE_REVIEW_CREATE);
-//		list.add(MessageConnector.TYPE_REVIEW_DELETE);
-//
-//		return list;
-//	}
-
 	public static class QiyeweixinMessageResp {
 
-		// {
-		// "errcode" : 0,
-		// "errmsg" : "ok",
-		// "invaliduser" : "userid1|userid2", // 不区分大小写，返回的列表都统一转为小写
-		// "invalidparty" : "partyid1|partyid2",
-		// "invalidtag":"tagid1|tagid2"
-		// }
+		/**
+		 * <code>	 {
+		 * "errcode" : 0,
+		 * "errmsg" : "ok",
+		 * "invaliduser" : "userid1|userid2", // 不区分大小写，返回的列表都统一转为小写
+		 * "invalidparty" : "partyid1|partyid2",
+		 * "invalidtag":"tagid1|tagid2"
+		 * }
+		 * </code>
+		 */
 
 		private Integer errcode;
 		private String errmsg;

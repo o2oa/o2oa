@@ -101,6 +101,8 @@ public class ActionCreateFormProcessPlatform extends BaseAction {
 
 	public static class Wi extends GsonPropertyObject {
 
+		private static final long serialVersionUID = 6580325043986545552L;
+
 		@FieldDescribe("会议标识")
 		private String meeting;
 		@FieldDescribe("工作标识")
@@ -135,6 +137,8 @@ public class ActionCreateFormProcessPlatform extends BaseAction {
 	}
 
 	public static class Wo extends WrapBoolean {
+
+		private static final long serialVersionUID = 8768553670253961229L;
 
 	}
 

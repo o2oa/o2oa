@@ -2,7 +2,6 @@ package com.x.processplatform.assemble.surface.jaxrs.work;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -42,17 +41,17 @@ import com.x.processplatform.core.entity.element.Process;
 
 class ActionCreate extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionCreate.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCreate.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String processFlag, JsonElement jsonElement)
 			throws Exception {
-		/* 新建工作id */
+		LOGGER.debug("execute:{}, processFlag:{}.", effectivePerson::getDistinguishedName, () -> processFlag);
+		// 新建工作id
 		String workId = "";
-		/* 已存在草稿id */
+		// 已存在草稿id
 		String lastestWorkId = "";
 		String identity = null;
 		Process process = null;
-		List<Wo> wos = new ArrayList<>();
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -91,29 +90,7 @@ class ActionCreate extends BaseAction {
 		}
 		// 设置Work信息
 		if (BooleanUtils.isFalse(wi.getLatest()) || (StringUtils.isEmpty(lastestWorkId))) {
-			// 如果不是草稿那么需要进行设置
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				Business business = new Business(emc);
-				Organization organization = business.organization();
-				emc.beginTransaction(Work.class);
-				Work work = emc.find(workId, Work.class);
-				if (null == work) {
-					throw new ExceptionWorkNotExist(workId);
-				}
-				work.setTitle(wi.getTitle());
-				// 写入父work标识
-				if (StringUtils.isNotBlank(wi.getParentWork())) {
-					work.getProperties().setParentWork(wi.getParentWork());
-				}
-				work.setCreatorIdentity(identity);
-				work.setCreatorPerson(organization.person().getWithIdentity(identity));
-				work.setCreatorUnit(organization.unit().getWithIdentity(identity));
-				if (StringUtils.isNotEmpty(work.getCreatorUnit())) {
-					Unit unit = organization.unit().getObject(work.getCreatorUnit());
-					work.setCreatorUnitLevelName(unit.getLevelName());
-				}
-				emc.commit();
-			}
+			updateWork(wi, identity, workId);
 			/* 驱动工作,使用非队列方式 */
 			ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
 					Applications.joinQueryUri("work", workId, "processing", "nonblocking"), null);
@@ -121,7 +98,21 @@ class ActionCreate extends BaseAction {
 			// 如果是草稿,准备后面的直接打开
 			workId = lastestWorkId;
 		}
-		// 拼装返回结果
+		List<Wo> wos = assemble(effectivePerson, workId);
+		result.setData(wos);
+		return result;
+	}
+
+	/**
+	 * 拼装返回结果
+	 * 
+	 * @param effectivePerson
+	 * @param workId
+	 * @return
+	 * @throws Exception
+	 */
+	private List<Wo> assemble(EffectivePerson effectivePerson, String workId) throws Exception {
+		List<Wo> wos = new ArrayList<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			Work work = emc.find(workId, Work.class);
@@ -144,11 +135,46 @@ class ActionCreate extends BaseAction {
 				}
 			}
 		}
-		result.setData(wos);
-		return result;
+		return wos;
+	}
+
+	/**
+	 * 如果不是草稿那么需要进行设置
+	 * 
+	 * @param wi
+	 * @param identity
+	 * @param workId
+	 * @throws Exception
+	 * @throws ExceptionWorkNotExist
+	 */
+	private void updateWork(Wi wi, String identity, String workId) throws Exception, ExceptionWorkNotExist {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Business business = new Business(emc);
+			Organization organization = business.organization();
+			emc.beginTransaction(Work.class);
+			Work work = emc.find(workId, Work.class);
+			if (null == work) {
+				throw new ExceptionWorkNotExist(workId);
+			}
+			work.setTitle(wi.getTitle());
+			// 写入父work标识
+			if (StringUtils.isNotBlank(wi.getParentWork())) {
+				work.getProperties().setParentWork(wi.getParentWork());
+			}
+			work.setCreatorIdentity(identity);
+			work.setCreatorPerson(organization.person().getWithIdentity(identity));
+			work.setCreatorUnit(organization.unit().getWithIdentity(identity));
+			if (StringUtils.isNotEmpty(work.getCreatorUnit())) {
+				Unit unit = organization.unit().getObject(work.getCreatorUnit());
+				work.setCreatorUnitLevelName(unit.getLevelName());
+			}
+			emc.commit();
+		}
 	}
 
 	public static class Wi extends GsonPropertyObject {
+
+		private static final long serialVersionUID = -5662577213571345720L;
 
 		@FieldDescribe("直接打开指定人员已经有的草稿,草稿判断:工作没有已办,只有一条此人的待办.")
 		private Boolean latest;
@@ -325,8 +351,8 @@ class ActionCreate extends BaseAction {
 			if (BooleanUtils.isNotTrue(o.getConnected())) {
 				this.referenceTask(business, wo);
 			} else {
-				/** 已经完成的不会有待办，返回一个空数组 */
-				wo.setTaskList(new ArrayList<WoTask>());
+				// 已经完成的不会有待办，返回一个空数组
+				wo.setTaskList(new ArrayList<>());
 			}
 			this.referenceTaskCompleted(business, wo);
 			os.add(wo);
@@ -346,11 +372,9 @@ class ActionCreate extends BaseAction {
 			} else if (identities.size() == 1) {
 				return identities.get(0);
 			} else {
-				/* 有多个身份需要逐一判断是否包含. */
-				for (String o : identities) {
-					if (StringUtils.equals(o, wi.getIdentity())) {
-						return o;
-					}
+				// 必须包含在已有身份中.
+				if (identities.contains(wi.getIdentity())) {
+					return wi.getIdentity();
 				}
 			}
 		} else {
@@ -366,7 +390,7 @@ class ActionCreate extends BaseAction {
 	private void referenceTask(Business business, Wo wo) throws Exception {
 		List<String> ids = business.task().listWithActivityToken(wo.getFromActivityToken());
 		List<WoTask> list = WoTask.copier.copy(business.entityManagerContainer().list(Task.class, ids));
-		SortTools.asc(list, false, "startTime");
+		SortTools.asc(list, false, Task.startTime_FIELDNAME);
 		wo.setTaskList(list);
 	}
 
@@ -374,11 +398,7 @@ class ActionCreate extends BaseAction {
 		List<String> ids = business.taskCompleted().listWithActivityToken(wo.getFromActivityToken());
 		List<WoTaskCompleted> list = WoTaskCompleted.copier
 				.copy(business.entityManagerContainer().list(TaskCompleted.class, ids));
-		Collections.sort(list, new Comparator<WoTaskCompleted>() {
-			public int compare(WoTaskCompleted o1, WoTaskCompleted o2) {
-				return ObjectUtils.compare(o1.getCompletedTime(), o2.getCompletedTime(), true);
-			}
-		});
+		Collections.sort(list, (o1, o2) -> ObjectUtils.compare(o1.getCompletedTime(), o2.getCompletedTime(), true));
 		wo.setTaskCompletedList(list);
 	}
 
