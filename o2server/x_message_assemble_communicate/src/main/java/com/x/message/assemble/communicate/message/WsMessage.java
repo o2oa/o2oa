@@ -1,13 +1,13 @@
-package com.x.base.core.project.message;
+package com.x.message.assemble.communicate.message;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.gson.GsonPropertyObject;
 
-public class WsMessage extends Message {
+public class WsMessage extends GsonPropertyObject {
 
-	public WsMessage() {
-	}
-	
+	private static final long serialVersionUID = -3163827472907732223L;
+
 	@FieldDescribe("Ws消息类别.")
 	private String type;
 

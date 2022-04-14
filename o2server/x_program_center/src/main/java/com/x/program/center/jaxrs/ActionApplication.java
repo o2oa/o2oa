@@ -30,7 +30,6 @@ import com.x.program.center.jaxrs.market.MarketAction;
 import com.x.program.center.jaxrs.module.ModuleAction;
 import com.x.program.center.jaxrs.mpweixin.MPWeixinAction;
 import com.x.program.center.jaxrs.output.OutputAction;
-import com.x.program.center.jaxrs.pms.PmsAction;
 import com.x.program.center.jaxrs.prompterrorlog.PromptErrorLogAction;
 import com.x.program.center.jaxrs.qiyeweixin.QiyeweixinAction;
 import com.x.program.center.jaxrs.schedule.ScheduleAction;
@@ -59,7 +58,6 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(CommandAction.class);
 		classes.add(JestAction.class);
 		classes.add(ModuleAction.class);
-		classes.add(PmsAction.class);
 		classes.add(AgentAction.class);
 		classes.add(InvokeAction.class);
 		classes.add(AppStyleAction.class);

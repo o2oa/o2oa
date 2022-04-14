@@ -13,9 +13,9 @@ import com.x.base.core.project.connection.HttpConnection;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.message.QiyeweixinMessage;
 import com.x.base.core.project.queue.AbstractQueue;
 import com.x.base.core.project.tools.DefaultCharset;
+import com.x.message.assemble.communicate.message.QiyeweixinMessage;
 import com.x.message.core.entity.Message;
 
 public class QiyeweixinConsumeQueue extends AbstractQueue<Message> {
@@ -138,6 +138,8 @@ public class QiyeweixinConsumeQueue extends AbstractQueue<Message> {
 		}
 		return false;
 	}
+
+
 
 	public static class QiyeweixinMessageResp {
 
