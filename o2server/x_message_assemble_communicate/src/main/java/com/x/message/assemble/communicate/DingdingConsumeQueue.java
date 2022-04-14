@@ -15,6 +15,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.DingdingMessage;
 import com.x.base.core.project.message.MessageConnector;
+import com.x.base.core.project.organization.Person;
 import com.x.base.core.project.queue.AbstractQueue;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.message.core.entity.Message;
@@ -28,62 +29,85 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 	protected void execute(Message message) throws Exception {
 
 		if (Config.dingding().getEnable() && Config.dingding().getMessageEnable()) {
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				Business business = new Business(emc);
-				DingdingMessage m = new DingdingMessage();
-				m.setAgent_id(Long.parseLong(Config.dingding().getAgentId(), 10));
-				m.setUserid_list(business.organization().person().getObject(message.getPerson()).getDingdingId());
-				if (StringUtils.isEmpty(m.getUserid_list())) {
-					LOGGER.info("没有接收钉钉消息的人员。。。。。。。。。。。。。");
-					return;
+			DingdingMessage m = new DingdingMessage();
+			Person person = this.getPerson(message.getPerson());
+			m.setAgent_id(Long.parseLong(Config.dingding().getAgentId(), 10));
+			m.setUserid_list(person.getDingdingId());
+			if (StringUtils.isEmpty(m.getUserid_list())) {
+				LOGGER.warn("没有接收钉钉消息的人员:{}.", message.getPerson());
+				return;
+			}
+			if (needTransferLink(message.getType())) {
+				String openUrl = getOpenUrl(message);
+				if (StringUtils.isNotEmpty(openUrl)) {
+					// dingtalk://dingtalkclient/action/openapp?corpid=免登企业corpId&container_type=work_platform&app_id=0_{应用agentid}&redirect_type=jump&redirect_url=跳转url
+					String dingtalkUrl = "dingtalk://dingtalkclient/action/openapp?corpid="
+							+ Config.dingding().getCorpId() + "&container_type=work_platform&app_id=0_"
+							+ Config.dingding().getAgentId() + "&redirect_type=jump&redirect_url="
+							+ URLEncoder.encode(openUrl, DefaultCharset.name);
+					LOGGER.info("钉钉pc 打开消息 url：" + dingtalkUrl);
+					m.getMsg().setMsgtype("markdown");
+					m.getMsg().getMarkdown().setTitle(message.getTitle());
+					m.getMsg().getMarkdown().setText("[" + message.getTitle() + "](" + dingtalkUrl + ")");
 				}
-				if (needTransferLink(message.getType())) {
-					String openUrl = "";
-					// cms 文档
-					if (MessageConnector.TYPE_CMS_PUBLISH.equals(message.getType())
-							|| MessageConnector.TYPE_CMS_PUBLISH_TO_CREATOR.equals(message.getType())) {
-						openUrl = getDingdingOpenCMSDocumentUrl(message.getBody());
-					} else { // 流程工作相关的
-						openUrl = getDingdingOpenWorkUrl(message.getBody());
-					}
+			} else {
+				m.getMsg().getText().setContent(message.getTitle());
+			}
+			// https://oapi.dingtalk.com/topapi/message/corpconversation/asyncsend_v2?access_token=ACCESS_TOKEN
+			String address = Config.dingding().getOapiAddress()
+					+ "/topapi/message/corpconversation/asyncsend_v2?access_token="
+					+ Config.dingding().corpAccessToken();
+			LOGGER.debug("钉钉发送消息url：" + address);
+			LOGGER.debug("钉钉消息体：" + m.toString());
+			DingdingMessageResp resp = HttpConnection.postAsObject(address, null, m.toString(),
+					DingdingMessageResp.class);
+			if (resp.getErrcode() != 0) {
+				ExceptionDingdingMessage e = new ExceptionDingdingMessage(resp.getErrcode(), resp.getErrmsg());
+				LOGGER.error(e);
+			} else {
+				success(message.getId());
+			}
+		}
+	}
 
-					if (StringUtils.isNotEmpty(openUrl)) {
-						LOGGER.debug("openUrl: " + openUrl);
-						// dingtalk://dingtalkclient/action/openapp?corpid=免登企业corpId&container_type=work_platform&app_id=0_{应用agentid}&redirect_type=jump&redirect_url=跳转url
-						String dingtalkUrl = "dingtalk://dingtalkclient/action/openapp?corpid="
-								+ Config.dingding().getCorpId() + "&container_type=work_platform&app_id=0_"
-								+ Config.dingding().getAgentId() + "&redirect_type=jump&redirect_url="
-								+ URLEncoder.encode(openUrl, DefaultCharset.name);
-						LOGGER.info("钉钉pc 打开消息 url：" + dingtalkUrl);
-						m.getMsg().setMsgtype("markdown");
-						m.getMsg().getMarkdown().setTitle(message.getTitle());
-						m.getMsg().getMarkdown().setText("[" + message.getTitle() + "](" + dingtalkUrl + ")");
-					} else {
-						m.getMsg().getText().setContent(message.getTitle());
-					}
-				} else {
-					m.getMsg().getText().setContent(message.getTitle());
-				}
+	/**
+	 * 判断打开地址
+	 * 
+	 * @param message
+	 * @return
+	 */
+	private String getOpenUrl(Message message) {
+		String openUrl = "";
+		// cms 文档
+		if (MessageConnector.TYPE_CMS_PUBLISH.equals(message.getType())
+				|| MessageConnector.TYPE_CMS_PUBLISH_TO_CREATOR.equals(message.getType())) {
+			openUrl = getDingdingOpenCMSDocumentUrl(message.getBody());
+		} else { // 流程工作相关的
+			openUrl = getDingdingOpenWorkUrl(message.getBody());
+		}
+		return openUrl;
+	}
 
-				// https://oapi.dingtalk.com/topapi/message/corpconversation/asyncsend_v2?access_token=ACCESS_TOKEN
-				String address = Config.dingding().getOapiAddress()
-						+ "/topapi/message/corpconversation/asyncsend_v2?access_token="
-						+ Config.dingding().corpAccessToken();
-				LOGGER.debug("钉钉发送消息url：" + address);
-				LOGGER.debug("钉钉消息体：" + m.toString());
-				DingdingMessageResp resp = HttpConnection.postAsObject(address, null, m.toString(),
-						DingdingMessageResp.class);
-				if (resp.getErrcode() != 0) {
-					ExceptionDingdingMessage e = new ExceptionDingdingMessage(resp.getErrcode(), resp.getErrmsg());
-					LOGGER.error(e);
-				} else {
-					Message messageEntityObject = emc.find(message.getId(), Message.class);
-					if (null != messageEntityObject) {
-						emc.beginTransaction(Message.class);
-						messageEntityObject.setConsumed(true);
-						emc.commit();
-					}
-				}
+	private Person getPerson(String person) throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Business business = new Business(emc);
+			return business.organization().person().getObject(person);
+		}
+	}
+
+	/**
+	 * 标志消息消费成功
+	 * 
+	 * @param id
+	 * @throws Exception
+	 */
+	private void success(String id) throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Message message = emc.find(id, Message.class);
+			if (null != message) {
+				emc.beginTransaction(Message.class);
+				message.setConsumed(true);
+				emc.commit();
 			}
 		}
 	}
@@ -97,16 +121,16 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 	private String getDingdingOpenCMSDocumentUrl(String messageBody) {
 		try {
 			String openPage = getOpenPageUrl(messageBody);
-			String o2oaUrl = Config.dingding().getWorkUrl();
+			String o2oaUrl = Config.dingding().getWorkUrl() + "ddsso.html?redirect=";
 			if (StringUtils.isEmpty(openPage)) {
 				String id = getCmsDocumentId(messageBody);
 				if (StringUtils.isEmpty(id)) {
 					return null;
 				}
 				String docUrl = "cmsdocMobile.html?id=" + id;
-				o2oaUrl = o2oaUrl + "ddsso.html?redirect=" + docUrl;
+				o2oaUrl = o2oaUrl + docUrl;
 			} else {
-				o2oaUrl = o2oaUrl + "ddsso.html?redirect=" + openPage;
+				o2oaUrl = o2oaUrl + openPage;
 			}
 			LOGGER.info("o2oa 地址：" + o2oaUrl);
 			return o2oaUrl;
@@ -125,7 +149,7 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 	private String getDingdingOpenWorkUrl(String messageBody) {
 		try {
 			String openPage = getOpenPageUrl(messageBody);
-			String o2oaUrl = Config.dingding().getWorkUrl();
+			String o2oaUrl = Config.dingding().getWorkUrl() + "ddsso.html?redirect=";
 			if (StringUtils.isEmpty(openPage)) {
 				String work = getWorkIdFromBody(messageBody);
 				if (StringUtils.isEmpty(work) || StringUtils.isEmpty(o2oaUrl)) {
@@ -140,9 +164,9 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 				}
 				// 2021-11-1 钉钉那边无法使用了 不能进行encode 否则签名不通过
 				LOGGER.debug("o2oa workUrl：" + workUrl);
-				o2oaUrl = o2oaUrl + "ddsso.html?redirect=" + workUrl;
+				o2oaUrl = o2oaUrl + workUrl;
 			} else {
-				o2oaUrl = o2oaUrl + "ddsso.html?redirect=" + openPage;
+				o2oaUrl = o2oaUrl + openPage;
 			}
 			LOGGER.info("o2oa 地址：" + o2oaUrl);
 			return o2oaUrl;

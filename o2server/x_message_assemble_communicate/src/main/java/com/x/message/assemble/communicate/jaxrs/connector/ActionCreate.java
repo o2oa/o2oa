@@ -228,9 +228,9 @@ class ActionCreate extends BaseAction {
 		if (BooleanUtils.isTrue(Config.pushConfig().getEnable())) {
 			ThisApplication.pmsInnerConsumeQueue.send(message);
 		}
-	
+
 	}
-	
+
 	@Deprecated
 	private void sendMessageQiyeweixin(Message message) throws Exception {
 		if (BooleanUtils.isTrue(Config.qiyeweixin().getEnable())
@@ -535,11 +535,13 @@ class ActionCreate extends BaseAction {
 		case MessageConnector.CONSUME_HADOOP:
 			message = this.v3Message(wi, consumer);
 			break;
-		// custom_消息没有其他判断条件
-		default:
-			if (StringUtils.startsWith(consumer.getType(), MessageConnector.CONSUME_CUSTOM_PREFIX)) {
+		// custom_消息需要判断事件类型
+		case MessageConnector.CONSUME_CUSTOM:
+			if (StringUtils.startsWith(wi.getType(), type)) {
 				message = this.v3Message(wi, consumer);
 			}
+			break;
+		default:
 			break;
 		}
 		if (null != message) {
