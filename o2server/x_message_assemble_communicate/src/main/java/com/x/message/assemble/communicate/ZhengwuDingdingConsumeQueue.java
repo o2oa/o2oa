@@ -6,8 +6,8 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.HttpConnection;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.message.ZhengwuDingdingMessage;
 import com.x.base.core.project.queue.AbstractQueue;
+import com.x.message.assemble.communicate.message.ZhengwuDingdingMessage;
 import com.x.message.core.entity.Message;
 
 public class ZhengwuDingdingConsumeQueue extends AbstractQueue<Message> {

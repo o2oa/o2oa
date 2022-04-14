@@ -12,8 +12,8 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.message.WsMessage;
 import com.x.message.assemble.communicate.ThisApplication;
+import com.x.message.assemble.communicate.message.WsMessage;
 
 class ActionCreate extends BaseAction {
 

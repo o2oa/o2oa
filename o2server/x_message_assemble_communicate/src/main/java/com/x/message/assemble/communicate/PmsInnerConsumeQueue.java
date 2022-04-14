@@ -8,8 +8,8 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Application;
 import com.x.base.core.project.x_jpush_assemble_control;
 import com.x.base.core.project.jaxrs.WrapBoolean;
-import com.x.base.core.project.message.PmsInnerMessage;
 import com.x.base.core.project.queue.AbstractQueue;
+import com.x.message.assemble.communicate.message.PmsInnerMessage;
 import com.x.message.core.entity.Message;
 
 public class PmsInnerConsumeQueue extends AbstractQueue<Message> {
@@ -21,9 +21,9 @@ public class PmsInnerConsumeQueue extends AbstractQueue<Message> {
 			PmsInnerMessage innerMessage = new PmsInnerMessage();
 			innerMessage.setPerson(message.getPerson());
 			innerMessage.setMessage(message.getTitle());
-			WrapBoolean wrapBoolean = ThisApplication.context().applications().postQuery(false, app, "message/send", innerMessage)
-					.getData(WrapBoolean.class);
-			//单独发送推送消息用，没有存message对象 所以没有id，不需要更新
+			WrapBoolean wrapBoolean = ThisApplication.context().applications()
+					.postQuery(false, app, "message/send", innerMessage).getData(WrapBoolean.class);
+			// 单独发送推送消息用，没有存message对象 所以没有id，不需要更新
 			if (StringUtils.isEmpty(message.getId())) {
 				return;
 			}
@@ -39,4 +39,5 @@ public class PmsInnerConsumeQueue extends AbstractQueue<Message> {
 			}
 		}
 	}
+
 }
