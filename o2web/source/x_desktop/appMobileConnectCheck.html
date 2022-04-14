@@ -16,6 +16,12 @@
     <meta content="telephone=no" name="format-detection" />
 </head>
 <body style="height: 100%;overflow: auto; margin:0px;display: block;">
+    <div id="errorArea" style="margin: 30px 20px; word-break: break-all;display: none;">
+    </div>
+    <div id="centerArea" style="margin: 30px 20px; word-break: break-all;">
+    </div>
+    <div id="appArea" style="margin: 30px 20px; word-break: break-all;">
+    </div>
     <div id="contentArea" style="margin: 30px 20px; word-break: break-all;">
     </div>
 
@@ -24,19 +30,20 @@
         layout.addReady(function(){
           
             (function(layout){
-                var uri = new URI(window.location.href);
-                var host = window.location.host;
-                console.log(host)
+                //var uri = new URI(window.location.href);
+                var hostname = window.location.hostname;
+                console.log(hostname)
                 var _showJson = function(json) {
                     if (json) {
-                        var jsonstr=JSON.stringify(json);
-                        new Element("div", {
+                        var jsonstr=JSON.stringify(json, null, 2);
+                        var divNode = new Element("div", {
                             styles:{
                                 "margin": "10px",
                                 "color": "#666666"
                             },
-                            html: "返回数据："+jsonstr
+                            html: "返回数据："
                         }).inject( $("contentArea") );
+                        new Element("pre", {html: jsonstr}).inject(divNode);
                     }
                 };
 
@@ -46,40 +53,66 @@
                             "margin": "10px",
                             "color": "#ff0000"
                         }
-                    }).inject( $("contentArea") );
+                    }).inject( $("errorArea") );
+                    $("errorArea").setStyle("display", "block");
                     new Element("p", {"html": "错误，"+error}).inject(errorNode);
-                    _showJson(json);
                 };
 
-                var _showSuccess = function(info,json) {
+                var _showSuccess = function(info,area) {
                     new Element("div", {
                         styles:{
                             "margin": "10px",
                             "color": "#5fbf78"
                         },
                         text: info
-                    }).inject( $("contentArea") );
-                    _showJson(json);
+                    }).inject( $(area) );
                 };
-
+                // 测试连接认证服务器
+                var _loadAuthApp = function(authApp, webServer) {
+                    if (authApp && authApp.host && authApp.port) {
+                        var protocal = "http://";
+                        if (webServer && webServer.sslEnable == true) {
+                            protocal = "https://";
+                        }
+                        var url =protocal+authApp.host+":"+authApp.port+"/x_organization_assemble_authentication/jaxrs/echo";
+                        o2.xhr_get(url, function(json) {
+                            console.log(json);
+                            if (json && json.response) {
+                                var res = JSON.parse(json.response);
+                                if (res && res.type == "success") {
+                                    _showSuccess("连接应用服务器成功！", "appArea");
+                                    return;
+                                }
+                            }
+                            _showError("获取应用服务器地址信息失败！");
+                        })
+                    } else {
+                        _showError("获取应用服务器失败！");
+                    }
+                };
+                // 测试连接中心服务器
                 var _loadCenter = function() {
-                    o2.Actions.load("x_program_center").DistributeAction.assembleWithWebServer(host, function(json){
+                    o2.Actions.load("x_program_center").DistributeAction.assembleWithWebServer(hostname, function(json){
                         // 中心服务器连接成功
-                        _showSuccess("中心服务器连接成功");
+                        _showSuccess("中心服务器连接成功", "centerArea");
 
                         if (json && json.type === "success") {
                             if (json.data && json.data.assembles) {
-                                _showSuccess("应用服务器连接成功", json.data);
+                                _loadAuthApp(json.data.assembles.x_organization_assemble_authentication, json.data.webServer);
+                                _showJson(json);
                             } else {
                                 // 应用服务器获取不到
-                                _showError("获取应用服务器失败！", json);
+                                _showError("获取应用服务器失败！");
+                                _showJson(json);
                             }
                         } else {
                             // 获取地址信息失败
-                            _showError("获取中心服务器地址信息失败！", json);
+                            _showError("获取中心服务器地址信息失败！");
+                            _showJson(json);
                         }
                     }.bind(this));
                 };
+               
 
                 _loadCenter();
 
