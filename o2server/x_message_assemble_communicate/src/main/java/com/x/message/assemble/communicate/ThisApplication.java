@@ -22,6 +22,10 @@ public class ThisApplication {
 
 	protected static Context context;
 
+	public static void setContext(Context context) {
+		ThisApplication.context = context;
+	}
+
 	public static final WsConsumeQueue wsConsumeQueue = new WsConsumeQueue();
 
 	public static final CalendarConsumeQueue calendarConsumeQueue = new CalendarConsumeQueue();
@@ -36,7 +40,7 @@ public class ThisApplication {
 
 	public static final PmsInnerConsumeQueue pmsInnerConsumeQueue = new PmsInnerConsumeQueue();
 
-	public static final MPWeixinConsumeQueue mpWeixinConsumeQueue = new MPWeixinConsumeQueue();
+	public static final MpWeixinConsumeQueue mpWeixinConsumeQueue = new MpWeixinConsumeQueue();
 
 	public static final ActiveMqConsumeQueue activeMqConsumeQueue = new ActiveMqConsumeQueue();
 

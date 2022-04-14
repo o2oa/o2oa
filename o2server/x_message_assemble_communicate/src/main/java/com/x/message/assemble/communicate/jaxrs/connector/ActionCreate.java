@@ -536,12 +536,10 @@ class ActionCreate extends BaseAction {
 			message = this.v3Message(wi, consumer);
 			break;
 		// custom_消息需要判断事件类型
-		case MessageConnector.CONSUME_CUSTOM:
-			if (StringUtils.startsWith(wi.getType(), type)) {
+		default:
+			if (StringUtils.startsWith(type, MessageConnector.CONSUME_CUSTOM_PREFIX)) {
 				message = this.v3Message(wi, consumer);
 			}
-			break;
-		default:
 			break;
 		}
 		if (null != message) {
