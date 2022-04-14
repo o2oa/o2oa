@@ -13,11 +13,11 @@ import com.x.base.core.project.connection.HttpConnection;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.message.DingdingMessage;
 import com.x.base.core.project.message.MessageConnector;
 import com.x.base.core.project.organization.Person;
 import com.x.base.core.project.queue.AbstractQueue;
 import com.x.base.core.project.tools.DefaultCharset;
+import com.x.message.assemble.communicate.message.DingdingMessage;
 import com.x.message.core.entity.Message;
 
 public class DingdingConsumeQueue extends AbstractQueue<Message> {

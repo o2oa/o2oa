@@ -23,13 +23,13 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.message.DingdingMessage;
-import com.x.base.core.project.message.QiyeweixinMessage;
-import com.x.base.core.project.message.WeLinkMessage;
-import com.x.base.core.project.message.ZhengwuDingdingMessage;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.message.assemble.communicate.Business;
+import com.x.message.assemble.communicate.message.DingdingMessage;
+import com.x.message.assemble.communicate.message.QiyeweixinMessage;
+import com.x.message.assemble.communicate.message.WeLinkMessage;
+import com.x.message.assemble.communicate.message.ZhengwuDingdingMessage;
 import com.x.message.core.entity.Mass;
 import com.x.organization.core.entity.Person;
 
@@ -160,7 +160,6 @@ class ActionCreate extends BaseAction {
 			Date now = new Date();
 			m.setCreateTime(now.getTime() + "");
 			LOGGER.info("welink send body: " + m.toString());
-
 			String address = Config.weLink().getOapiAddress() + "/messages/v3/send";
 			LOGGER.info("welink send url: " + address);
 			List<NameValuePair> heads = new ArrayList<>();

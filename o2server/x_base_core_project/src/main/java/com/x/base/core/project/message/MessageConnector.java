@@ -181,9 +181,6 @@ public class MessageConnector {
 	// IM 聊天消息发送
 	public static final String TYPE_IM_CREATE = "im_create";
 
-	// 自定义消息前缀
-	public static final String TYPE_CUSTOM_FREFIX = "custom_";
-
 	public static final String CONSUME_WS = "ws";
 
 	public static final String CONSUME_PMS_INNER = "pmsinner";
@@ -215,8 +212,8 @@ public class MessageConnector {
 	public static final String CONSUME_TABLE = "table";
 	// hadoop dfs
 	public static final String CONSUME_HADOOP = "hadoop";
-	// 自定消费者类型
-	public static final String CONSUME_CUSTOM = "custom";
+	// 自定消费者类型前缀
+	public static final String CONSUME_CUSTOM_PREFIX = "custom_";
 
 	private static Context context;
 
