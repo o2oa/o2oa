@@ -57,6 +57,16 @@ public class ArchiveHadoopQueue extends AbstractQueue<String> {
 	private static final int RETRYMINUTES = 60;
 	private static final int THRESHOLDMINUTES = 60 * 24 * 3;
 
+	private static final String FILENAME_WORKCOMPLETED = "workCompleted.json";
+	private static final String FILENAME_DATA = "data.json";
+	private static final String FILENAME_TASKCOMPLETEDS = "taskCompleteds.json";
+	private static final String FILENAME_READCOMPLETEDS = "readCompleteds.json";
+	private static final String FILENAME_REVIEWS = "reviews.json";
+	private static final String FILENAME_RECORDS = "records.json";
+	private static final String FILENAME_WORKLOGS = "workLogs.json";
+	private static final String FILENAME_ATTACHMENTS = "attachments.json";
+	private static final String FILENAME_ATTACHMENT_PREFIX = "attachment_";
+
 	private final Gson gson = XGsonBuilder.compactInstance();
 
 	private final DataItemConverter<Item> converter = new DataItemConverter<>(Item.class);
@@ -138,7 +148,7 @@ public class ArchiveHadoopQueue extends AbstractQueue<String> {
 
 	private void transferWorkCompleted(FileSystem fileSystem, Path dir, WorkCompleted workCompleted)
 			throws IOException {
-		Path path = new Path(dir, "workCompleted.json");
+		Path path = new Path(dir, FILENAME_WORKCOMPLETED);
 		try (FSDataOutputStream out = fileSystem.create(path);
 				OutputStreamWriter outputStreamWriter = new OutputStreamWriter(out, StandardCharsets.UTF_8);
 				BufferedWriter bufferedOutputStreamWriter = new BufferedWriter(outputStreamWriter)) {
@@ -147,7 +157,7 @@ public class ArchiveHadoopQueue extends AbstractQueue<String> {
 	}
 
 	private void transferData(FileSystem fileSystem, Path dir, List<Item> itemList) throws IOException {
-		Path path = new Path(dir, "data.json");
+		Path path = new Path(dir, FILENAME_DATA);
 		try (FSDataOutputStream out = fileSystem.create(path);
 				OutputStreamWriter outputStreamWriter = new OutputStreamWriter(out, StandardCharsets.UTF_8);
 				BufferedWriter bufferedOutputStreamWriter = new BufferedWriter(outputStreamWriter)) {
@@ -157,7 +167,7 @@ public class ArchiveHadoopQueue extends AbstractQueue<String> {
 
 	private void transferTaskCompleteds(FileSystem fileSystem, Path dir, List<TaskCompleted> taskCompletedList)
 			throws IOException {
-		Path path = new Path(dir, "taskCompleteds.json");
+		Path path = new Path(dir, FILENAME_TASKCOMPLETEDS);
 		try (FSDataOutputStream out = fileSystem.create(path);
 				OutputStreamWriter outputStreamWriter = new OutputStreamWriter(out, StandardCharsets.UTF_8);
 				BufferedWriter bufferedOutputStreamWriter = new BufferedWriter(outputStreamWriter)) {
@@ -172,7 +182,7 @@ public class ArchiveHadoopQueue extends AbstractQueue<String> {
 
 	private void transferReadCompleteds(FileSystem fileSystem, Path dir, List<ReadCompleted> readCompletedList)
 			throws IOException {
-		Path path = new Path(dir, "readCompleteds.json");
+		Path path = new Path(dir, FILENAME_READCOMPLETEDS);
 		try (FSDataOutputStream out = fileSystem.create(path);
 				OutputStreamWriter outputStreamWriter = new OutputStreamWriter(out, StandardCharsets.UTF_8);
 				BufferedWriter bufferedOutputStreamWriter = new BufferedWriter(outputStreamWriter)) {
@@ -186,7 +196,7 @@ public class ArchiveHadoopQueue extends AbstractQueue<String> {
 	}
 
 	private void transferReviews(FileSystem fileSystem, Path dir, List<Review> reviewList) throws IOException {
-		Path path = new Path(dir, "reviews.json");
+		Path path = new Path(dir, FILENAME_REVIEWS);
 		try (FSDataOutputStream out = fileSystem.create(path);
 				OutputStreamWriter outputStreamWriter = new OutputStreamWriter(out, StandardCharsets.UTF_8);
 				BufferedWriter bufferedOutputStreamWriter = new BufferedWriter(outputStreamWriter)) {
@@ -200,7 +210,7 @@ public class ArchiveHadoopQueue extends AbstractQueue<String> {
 	}
 
 	private void transferRecords(FileSystem fileSystem, Path dir, List<Record> recordList) throws IOException {
-		Path path = new Path(dir, "records.json");
+		Path path = new Path(dir, FILENAME_RECORDS);
 		try (FSDataOutputStream out = fileSystem.create(path);
 				OutputStreamWriter outputStreamWriter = new OutputStreamWriter(out, StandardCharsets.UTF_8);
 				BufferedWriter bufferedOutputStreamWriter = new BufferedWriter(outputStreamWriter)) {
@@ -214,7 +224,7 @@ public class ArchiveHadoopQueue extends AbstractQueue<String> {
 	}
 
 	private void transferWorkLogs(FileSystem fileSystem, Path dir, List<WorkLog> workLogList) throws IOException {
-		Path path = new Path(dir, "workLogs.json");
+		Path path = new Path(dir, FILENAME_WORKLOGS);
 		try (FSDataOutputStream out = fileSystem.create(path);
 				OutputStreamWriter outputStreamWriter = new OutputStreamWriter(out, StandardCharsets.UTF_8);
 				BufferedWriter bufferedOutputStreamWriter = new BufferedWriter(outputStreamWriter)) {
@@ -229,7 +239,7 @@ public class ArchiveHadoopQueue extends AbstractQueue<String> {
 
 	private void transferAttachments(FileSystem fileSystem, Path dir, List<Attachment> attachmentList)
 			throws Exception {
-		Path path = new Path(dir, "attachments.json");
+		Path path = new Path(dir, FILENAME_ATTACHMENTS);
 		try (FSDataOutputStream out = fileSystem.create(path);
 				OutputStreamWriter outputStreamWriter = new OutputStreamWriter(out, StandardCharsets.UTF_8);
 				BufferedWriter bufferedOutputStreamWriter = new BufferedWriter(outputStreamWriter)) {
@@ -241,7 +251,7 @@ public class ArchiveHadoopQueue extends AbstractQueue<String> {
 			}
 		}
 		for (Attachment attachment : attachmentList) {
-			Path attachmentPath = new Path(dir, "attachment_" + attachment.getId());
+			Path attachmentPath = new Path(dir, FILENAME_ATTACHMENT_PREFIX + attachment.getId());
 			try (FSDataOutputStream out = fileSystem.create(attachmentPath)) {
 				StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
 						attachment.getStorage());
