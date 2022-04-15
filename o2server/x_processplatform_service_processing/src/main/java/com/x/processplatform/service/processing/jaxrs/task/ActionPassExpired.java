@@ -25,9 +25,11 @@ import com.x.processplatform.service.processing.MessageFactory;
 
 class ActionPassExpired extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionPassExpired.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionPassExpired.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
 		String executorSeed = null;
 
@@ -48,32 +50,30 @@ class ActionPassExpired extends BaseAction {
 				String taskTitle = null;
 				String taskSequence = null;
 				try {
-						try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-							Task task = emc.find(id, Task.class);
-							if (null != task) {
-								taskId = task.getId();
-								taskTitle = task.getTitle();
-								taskSequence = task.getSequence();
-								Business business = new Business(emc);
-								Manual manual = manual(business, task);
-								if (null == manual) {
-									throw new ExceptionEntityNotExist(task.getActivity(), Manual.class);
-								}
-								Route route = route(business, task, manual);
-								if (null == route) {
-									throw new ExceptionPassExpiredRoute(taskId, taskTitle, taskSequence);
-								}
-								emc.beginTransaction(Task.class);
-								task.setRouteName(route.getName());
-								emc.commit();
-								wo.setValue(true);
-								MessageFactory.task_expire(task);
-								logger.print("执行过期待办默认路由, id:{}, title:{}, sequence:{}.", taskId, taskTitle,
-										taskSequence);
+					try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+						Task task = emc.find(id, Task.class);
+						if (null != task) {
+							taskId = task.getId();
+							taskTitle = task.getTitle();
+							taskSequence = task.getSequence();
+							Business business = new Business(emc);
+							Manual manual = manual(business, task);
+							if (null == manual) {
+								throw new ExceptionEntityNotExist(task.getActivity(), Manual.class);
 							}
+							Route route = route(business, task, manual);
+							if (null == route) {
+								throw new ExceptionPassExpiredRoute(taskId, taskTitle, taskSequence);
+							}
+							emc.beginTransaction(Task.class);
+							task.setRouteName(route.getName());
+							emc.commit();
+							wo.setValue(true);
+							MessageFactory.task_expire(task);
 						}
+					}
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
 				result.setData(wo);
 				return result;
@@ -85,6 +85,8 @@ class ActionPassExpired extends BaseAction {
 	}
 
 	public static class Wo extends WrapBoolean {
+
+		private static final long serialVersionUID = 857072729127236835L;
 
 	}
 

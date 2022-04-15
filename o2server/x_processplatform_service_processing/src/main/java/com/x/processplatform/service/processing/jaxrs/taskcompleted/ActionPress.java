@@ -24,9 +24,12 @@ import com.x.processplatform.service.processing.MessageFactory;
 
 class ActionPress extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionPress.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionPress.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String workId) throws Exception {
+		
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+		
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		String executorSeed = null;
@@ -88,6 +91,8 @@ class ActionPress extends BaseAction {
 	}
 
 	public static class Wo extends WrapStringList {
+
+		private static final long serialVersionUID = -6014071118281134836L;
 	}
 
 }

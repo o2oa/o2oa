@@ -46,6 +46,8 @@ class ActionAppend extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+
 		final Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 
 		String executorSeed = initJob(id);

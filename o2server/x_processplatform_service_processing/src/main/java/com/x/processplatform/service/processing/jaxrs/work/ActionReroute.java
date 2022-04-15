@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.Applications;
@@ -32,10 +33,13 @@ import com.x.processplatform.service.processing.ThisApplication;
 
 class ActionReroute extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionReroute.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionReroute.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String activityId, JsonElement jsonElement)
 			throws Exception {
+		
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+		
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
@@ -62,7 +66,6 @@ class ActionReroute extends BaseAction {
 					}
 					emc.beginTransaction(Work.class);
 					emc.beginTransaction(Task.class);
-					// work.setForceRoute(true);
 					work.setSplitting(false);
 					work.setSplitToken("");
 					work.getSplitTokenList().clear();
@@ -96,9 +99,13 @@ class ActionReroute extends BaseAction {
 
 	public static class Wi extends ProcessingAttributes {
 
+		private static final long serialVersionUID = 4974042099520226536L;
+
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = -179926711404067030L;
 	}
 
 	private void removeTask(Business business, Work work) throws Exception {
@@ -110,20 +117,20 @@ class ActionReroute extends BaseAction {
 				business.entityManagerContainer().remove(o, CheckRemoveType.all);
 				MessageFactory.task_delete(o);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		});
 	}
 
 	private void removeOtherWork(Business business, Work work) throws Exception {
 		List<Work> os = business.entityManagerContainer().listEqualAndNotEqual(Work.class, Work.job_FIELDNAME,
-				work.getJob(), Work.id_FIELDNAME, work.getId());
+				work.getJob(), JpaObject.id_FIELDNAME, work.getId());
 		os.stream().forEach(o -> {
 			try {
 				business.entityManagerContainer().remove(o, CheckRemoveType.all);
 				MessageFactory.work_delete(o);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		});
 	}
@@ -136,7 +143,7 @@ class ActionReroute extends BaseAction {
 			try {
 				business.entityManagerContainer().remove(o, CheckRemoveType.all);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		});
 	}

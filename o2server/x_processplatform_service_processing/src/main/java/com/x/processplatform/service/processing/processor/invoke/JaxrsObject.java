@@ -6,6 +6,8 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 
 public class JaxrsObject extends GsonPropertyObject {
 
+	private static final long serialVersionUID = -1094802895782587629L;
+
 	private String method;
 
 	private String body;

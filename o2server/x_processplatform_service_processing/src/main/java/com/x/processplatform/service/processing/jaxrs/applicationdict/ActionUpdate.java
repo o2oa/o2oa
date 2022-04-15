@@ -55,6 +55,8 @@ class ActionUpdate extends BaseAction {
 
 	public static class Wo extends WoId {
 
+		private static final long serialVersionUID = 5709352378321901902L;
+
 	}
 
 	public class Wi extends ApplicationDict {

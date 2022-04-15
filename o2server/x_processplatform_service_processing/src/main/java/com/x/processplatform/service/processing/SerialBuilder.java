@@ -20,8 +20,6 @@ import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.jaxrs.WrapInteger;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.scripting.JsonScriptingExecutor;
 import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
@@ -36,8 +34,6 @@ import com.x.processplatform.service.processing.processor.AeiObjects;
  * @author sword
  */
 public class SerialBuilder {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(SerialBuilder.class);
 
 	private static final String EMPTY_SYMBOL = "(0)";
 

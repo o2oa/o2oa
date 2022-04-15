@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
@@ -20,6 +21,8 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.content.Task;
@@ -33,8 +36,12 @@ import com.x.processplatform.service.processing.Processing;
 
 class ActionAddSplit extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionAddSplit.class);
+
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement)
 			throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		String executorSeed = null;
@@ -76,9 +83,8 @@ class ActionAddSplit extends BaseAction {
 
 					WorkLogTree tree = new WorkLogTree(workLogs);
 
-					WorkLog arrived = workLogs.stream().filter(o -> {
-						return StringUtils.equals(o.getId(), wi.getWorkLog());
-					}).findFirst().orElse(null);
+					WorkLog arrived = workLogs.stream().filter(o -> StringUtils.equals(o.getId(), wi.getWorkLog()))
+							.findFirst().orElse(null);
 
 					WorkLog from = tree.children(arrived).stream().findFirst().orElse(null);
 
@@ -179,6 +185,8 @@ class ActionAddSplit extends BaseAction {
 
 	public static class Wi extends ProcessingAttributes {
 
+		private static final long serialVersionUID = -7177155760489740464L;
+
 		@FieldDescribe("添加的拆分值.")
 		private List<String> splitValueList;
 
@@ -208,7 +216,7 @@ class ActionAddSplit extends BaseAction {
 		private static final long serialVersionUID = 8122551349295505134L;
 
 		static WrapCopier<Work, Wo> copier = WrapCopierFactory.wo(Work.class, Wo.class,
-				ListTools.toList(Work.id_FIELDNAME, Work.activityName_FIELDNAME), null);
+				ListTools.toList(JpaObject.id_FIELDNAME, Work.activityName_FIELDNAME), null);
 
 		private List<WoTask> taskList = new ArrayList<>();
 

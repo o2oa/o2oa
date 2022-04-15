@@ -31,9 +31,12 @@ import com.x.query.core.entity.Item;
 
 class ActionTypeSnapWorkCompleted extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionTypeSnapWorkCompleted.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionTypeSnapWorkCompleted.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workCompletedId) throws Exception {
+
+		LOGGER.debug("execute:{}, workCompletedId:{}.", effectivePerson::getDistinguishedName, () -> workCompletedId);
+
 		String job = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			WorkCompleted workCompleted = emc.find(workCompletedId, WorkCompleted.class);
@@ -79,9 +82,6 @@ class ActionTypeSnapWorkCompleted extends BaseAction {
 				emc.beginTransaction(Snap.class);
 				emc.persist(snap, CheckPersistType.all);
 				emc.commit();
-//				clean(business, items, workCompleted, taskCompleteds, reads, readCompleteds, reviews, workLogs, records,
-//						attachments);
-//				emc.commit();
 				Wo wo = new Wo();
 				wo.setId(snap.getId());
 				result.setData(wo);

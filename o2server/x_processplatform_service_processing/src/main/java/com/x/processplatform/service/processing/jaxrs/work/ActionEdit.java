@@ -14,12 +14,18 @@ import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Work;
 
 class ActionEdit extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionEdit.class);
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
 		String executorSeed = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -63,6 +69,8 @@ class ActionEdit extends BaseAction {
 	}
 
 	public static class Wo extends WrapBoolean {
+
+		private static final long serialVersionUID = -6594276702678769138L;
 
 	}
 

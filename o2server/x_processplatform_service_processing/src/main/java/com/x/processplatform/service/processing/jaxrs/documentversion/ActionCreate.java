@@ -23,9 +23,11 @@ import com.x.processplatform.core.entity.content.Work;
 
 class ActionCreate extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionCreate.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCreate.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workId, JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}, workId:{}.", effectivePerson::getDistinguishedName, () -> workId);
 
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		String executorSeed = null;
@@ -80,6 +82,8 @@ class ActionCreate extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = 7501733209869516518L;
 
 	}
 

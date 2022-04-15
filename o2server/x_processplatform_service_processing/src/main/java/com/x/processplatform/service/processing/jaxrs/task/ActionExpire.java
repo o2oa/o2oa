@@ -22,9 +22,11 @@ import com.x.processplatform.service.processing.MessageFactory;
 
 class ActionExpire extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionExpire.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionExpire.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
@@ -43,6 +45,7 @@ class ActionExpire extends BaseAction {
 				String taskId = null;
 				String taskTitle = null;
 				String taskSequence = null;
+				ActionResult<Wo> result = new ActionResult<>();
 				try {
 					try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 						Task task = emc.find(id, Task.class);
@@ -60,16 +63,17 @@ class ActionExpire extends BaseAction {
 							Record record = record(workLog, task);
 							emc.persist(record, CheckPersistType.all);
 							emc.commit();
+							Wo wo = new Wo();
+							wo.setId(task.getId());
+							result.setData(wo);
 							MessageFactory.task_expire(task);
 						}
 					} catch (Exception e) {
 						throw new ExceptionExpired(e, taskId, taskTitle, taskSequence);
 					}
-					logger.print("标识待办过期, id:{}, title:{}, sequence:{}.", taskId, taskTitle, taskSequence);
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
-				ActionResult<Wo> result = new ActionResult<>();
 				return result;
 			}
 		};
@@ -87,6 +91,8 @@ class ActionExpire extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = -760822471493162529L;
 
 	}
 

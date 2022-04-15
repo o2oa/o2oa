@@ -34,9 +34,11 @@ import com.x.processplatform.service.processing.Processing;
 
 class ActionReset extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionReset.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionReset.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
@@ -64,12 +66,11 @@ class ActionReset extends BaseAction {
 						throw new ExceptionEntityNotExist(task.getWork(), Work.class);
 					}
 
-					/* 检查reset人员 */
+					// 检查reset人员
 					List<String> identites = ListTools
 							.trim(business.organization().identity().list(wi.getIdentityList()), true, true);
 
-					/* 在新增待办人员中删除当前的处理人 */
-
+					// 在新增待办人员中删除当前的处理人
 					identites = ListUtils.subtract(identites, ListTools.toList(task.getIdentity()));
 
 					if (identites.isEmpty()) {
@@ -116,6 +117,8 @@ class ActionReset extends BaseAction {
 
 	public static class Wi extends GsonPropertyObject {
 
+		private static final long serialVersionUID = -563586484778909479L;
+
 		@FieldDescribe("身份")
 		private List<String> identityList;
 
@@ -140,6 +143,8 @@ class ActionReset extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = -3609474511834394555L;
 
 	}
 

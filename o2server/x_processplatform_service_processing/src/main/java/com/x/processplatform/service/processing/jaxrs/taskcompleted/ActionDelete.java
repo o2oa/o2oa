@@ -23,9 +23,11 @@ import com.x.processplatform.core.entity.content.TaskCompleted;
 
 class ActionDelete extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionDelete.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDelete.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
@@ -76,6 +78,8 @@ class ActionDelete extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = 2429998472082228232L;
 	}
 
 }

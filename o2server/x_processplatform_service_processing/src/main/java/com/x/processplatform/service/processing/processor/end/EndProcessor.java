@@ -178,7 +178,7 @@ public class EndProcessor extends AbstractEndProcessor {
 				event.setType(Event.EVENTTYPE_ARCHIVEHADOOP);
 				aeiObjects.entityManagerContainer().persist(event, CheckPersistType.all);
 				aeiObjects.entityManagerContainer().commit();
-				ThisApplication.updateTableQueue.send(event.getId());
+				ThisApplication.archiveHadoopQueue.send(event.getId());
 			}
 		} catch (Exception e) {
 			LOGGER.error(e);

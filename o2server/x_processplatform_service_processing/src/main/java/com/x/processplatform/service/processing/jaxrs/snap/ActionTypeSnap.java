@@ -34,9 +34,12 @@ import com.x.query.core.entity.Item;
 
 class ActionTypeSnap extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionTypeSnap.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionTypeSnap.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workId) throws Exception {
+
+		LOGGER.debug("execute:{}, workId:{}.", effectivePerson::getDistinguishedName, () -> workId);
+
 		String job = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Work work = emc.fetch(workId, Work.class, ListTools.toList(Work.job_FIELDNAME));
@@ -79,8 +82,9 @@ class ActionTypeSnap extends BaseAction {
 				List<DocSign> docSigns = new ArrayList<>();
 				List<DocSignScrawl> docSignScrawls = new ArrayList<>();
 				Snap snap = new Snap(work);
-				snap.setProperties(snap(business, work.getJob(), items, works, tasks, taskCompleteds, reads,
-						readCompleteds, reviews, workLogs, records, attachments, documentVersions, docSigns, docSignScrawls));
+				snap.setProperties(
+						snap(business, work.getJob(), items, works, tasks, taskCompleteds, reads, readCompleteds,
+								reviews, workLogs, records, attachments, documentVersions, docSigns, docSignScrawls));
 
 				snap.setType(Snap.TYPE_SNAP);
 				emc.beginTransaction(Snap.class);

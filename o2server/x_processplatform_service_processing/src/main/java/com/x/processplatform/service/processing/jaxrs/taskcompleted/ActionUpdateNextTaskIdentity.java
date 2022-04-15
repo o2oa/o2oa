@@ -21,9 +21,11 @@ import com.x.processplatform.core.express.service.processing.jaxrs.taskcompleted
 
 class ActionUpdateNextTaskIdentity extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionUpdateNextTaskIdentity.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionUpdateNextTaskIdentity.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 
 		final Bag bag = new Bag();
 		bag.wi = this.convertToWrapIn(jsonElement, Wi.class);
@@ -71,9 +73,13 @@ class ActionUpdateNextTaskIdentity extends BaseAction {
 	}
 
 	public static class Wo extends WrapStringList {
+
+		private static final long serialVersionUID = -9080785224119859692L;
 	}
 
 	public static class Wi extends WrapUpdateNextTaskIdentity {
+
+		private static final long serialVersionUID = -350603662290508983L;
 
 	}
 
