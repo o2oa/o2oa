@@ -1,20 +1,13 @@
 package com.x.message.assemble.communicate;
 
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.Gson;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.bean.NameValuePair;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.WeLink;
 import com.x.base.core.project.connection.HttpConnection;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.MessageConnector;
@@ -23,10 +16,17 @@ import com.x.base.core.project.tools.DefaultCharset;
 import com.x.message.assemble.communicate.message.WeLinkMessage;
 import com.x.message.core.entity.Message;
 import com.x.organization.core.entity.Person;
+import org.apache.commons.lang3.StringUtils;
+
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class WeLinkConsumeQueue extends AbstractQueue<Message> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(WeLinkConsumeQueue.class);
+	private static final Gson gson = XGsonBuilder.instance();
 
 	protected void execute(Message message) throws Exception {
 
@@ -55,7 +55,7 @@ public class WeLinkConsumeQueue extends AbstractQueue<Message> {
 			// 是否添加超链接
 			addHyperlink(message, m);
 			String address = Config.weLink().getOapiAddress() + "/messages/v3/send";
-			LOGGER.info("welink send url: " + address);
+			LOGGER.info("welink send url: {}" ,()-> address);
 			List<NameValuePair> heads = new ArrayList<>();
 			heads.add(new NameValuePair(WeLink.WeLink_Auth_Head_Key, Config.weLink().accessToken()));
 			WeLinkMessageResp resp = HttpConnection.postAsObject(address, heads, m.toString(), WeLinkMessageResp.class);
@@ -70,7 +70,7 @@ public class WeLinkConsumeQueue extends AbstractQueue<Message> {
 
 	private void addHyperlink(Message message, WeLinkMessage m) {
 		if (needTransferLink(message.getType())) {
-			String workUrl = getDingdingOpenWorkUrl(message.getBody());
+			String workUrl = getOpenUrl(message);
 			if (workUrl != null && !"".equals(workUrl)) {
 				m.setUrlType("html");
 				m.setUrlPath(workUrl);
@@ -108,28 +108,70 @@ public class WeLinkConsumeQueue extends AbstractQueue<Message> {
 		}
 	}
 
+
+	/**
+	 * 判断打开地址
+	 *
+	 * @param message
+	 * @return
+	 */
+	private String getOpenUrl(Message message) {
+		String openUrl = "";
+		// cms 文档
+		if (MessageConnector.TYPE_CMS_PUBLISH.equals(message.getType())
+				|| MessageConnector.TYPE_CMS_PUBLISH_TO_CREATOR.equals(message.getType())) {
+			openUrl = getWeiLinkOpenCMSDocumentUrl(message.getBody());
+		} else { // 流程工作相关的
+			openUrl = getWeiLinkOpenWorkUrl(message.getBody());
+		}
+		return openUrl;
+	}
+
+
+	/**
+	 * 文档打开的url
+	 *
+	 * @param messageBody
+	 * @return
+	 */
+	private String getWeiLinkOpenCMSDocumentUrl(String messageBody) {
+		String o2oaUrl = null;
+		try {
+			o2oaUrl = Config.weLink().getWorkUrl() + "welinksso.html?redirect=";
+			return DingdingConsumeQueue.OuterMessageHelper.getOpenCMSDocumentUrl(o2oaUrl, messageBody);
+		} catch (Exception e) {
+			LOGGER.error(e);
+			return null;
+		}
+	}
+
 	/**
 	 * 生成单点登录和打开工作的地址
 	 * 
 	 * @param messageBody
 	 * @return
 	 */
-	private String getDingdingOpenWorkUrl(String messageBody) {
+	private String getWeiLinkOpenWorkUrl(String messageBody) {
 		try {
-			String work = getWorkIdFromBody(messageBody);
+			String work = DingdingConsumeQueue.OuterMessageHelper.getWorkIdFromBody(messageBody);
 			String o2oaUrl = Config.weLink().getWorkUrl();
 			if (work == null || "".equals(work) || o2oaUrl == null || "".equals(o2oaUrl)) {
 				return null;
 			}
-			String workUrl = "workmobilewithaction.html?workid=" + work;
-			String messageRedirectPortal = Config.weLink().getMessageRedirectPortal();
-			if (messageRedirectPortal != null && !"".equals(messageRedirectPortal)) {
-				String portal = "portalmobile.html?id=" + messageRedirectPortal;
-				portal = URLEncoder.encode(portal, DefaultCharset.name);
-				workUrl += "&redirectlink=" + portal;
+			String openPage = DingdingConsumeQueue.OuterMessageHelper.getOpenPageUrl(messageBody);
+			if (StringUtils.isNotEmpty(openPage)) {
+				o2oaUrl = o2oaUrl + "welinksso.html?redirect=" + openPage;
+			} else {
+				String workUrl = "workmobilewithaction.html?workid=" + work;
+				String messageRedirectPortal = Config.weLink().getMessageRedirectPortal();
+				if (messageRedirectPortal != null && !"".equals(messageRedirectPortal)) {
+					String portal = "portalmobile.html?id=" + messageRedirectPortal;
+					portal = URLEncoder.encode(portal, DefaultCharset.name);
+					workUrl += "&redirectlink=" + portal;
+				}
+				workUrl = URLEncoder.encode(workUrl, DefaultCharset.name);
+				o2oaUrl = o2oaUrl + "welinksso.html?redirect=" + workUrl;
 			}
-			workUrl = URLEncoder.encode(workUrl, DefaultCharset.name);
-			o2oaUrl = o2oaUrl + "welinksso.html?redirect=" + workUrl;
 			return o2oaUrl;
 		} catch (Exception e) {
 			LOGGER.error(e);
@@ -137,21 +179,7 @@ public class WeLinkConsumeQueue extends AbstractQueue<Message> {
 		return "";
 	}
 
-	/**
-	 * 获取workid
-	 * 
-	 * @param messageBody
-	 * @return
-	 */
-	private String getWorkIdFromBody(String messageBody) {
-		try {
-			JsonObject object = new JsonParser().parse(messageBody).getAsJsonObject();
-			return object.get("work").getAsString();
-		} catch (Exception e) {
-			LOGGER.error(e);
-		}
-		return "";
-	}
+
 
 	/**
 	 * 是否需要把钉钉消息转成markdown格式消息 根据是否配置了钉钉工作链接、是否是工作消息（目前只支持工作消息）
@@ -162,7 +190,7 @@ public class WeLinkConsumeQueue extends AbstractQueue<Message> {
 	private boolean needTransferLink(String messageType) {
 		try {
 			String workUrl = Config.weLink().getWorkUrl();
-			if (workUrl != null && !"".equals(workUrl) && workMessageTypeList().contains(messageType)) {
+			if (StringUtils.isNotEmpty(workUrl)) {
 				return true;
 			}
 		} catch (Exception e) {
