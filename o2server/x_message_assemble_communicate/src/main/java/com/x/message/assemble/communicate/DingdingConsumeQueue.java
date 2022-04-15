@@ -45,7 +45,7 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 							+ Config.dingding().getCorpId() + "&container_type=work_platform&app_id=0_"
 							+ Config.dingding().getAgentId() + "&redirect_type=jump&redirect_url="
 							+ URLEncoder.encode(openUrl, DefaultCharset.name);
-					LOGGER.info("钉钉pc 打开消息 url：" + dingtalkUrl);
+					LOGGER.info("钉钉pc 打开消息 url：{}", ()-> dingtalkUrl);
 					m.getMsg().setMsgtype("markdown");
 					m.getMsg().getMarkdown().setTitle(message.getTitle());
 					m.getMsg().getMarkdown().setText("[" + message.getTitle() + "](" + dingtalkUrl + ")");
@@ -53,12 +53,11 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 			} else {
 				m.getMsg().getText().setContent(message.getTitle());
 			}
-			// https://oapi.dingtalk.com/topapi/message/corpconversation/asyncsend_v2?access_token=ACCESS_TOKEN
 			String address = Config.dingding().getOapiAddress()
 					+ "/topapi/message/corpconversation/asyncsend_v2?access_token="
 					+ Config.dingding().corpAccessToken();
-			LOGGER.debug("钉钉发送消息url：" + address);
-			LOGGER.debug("钉钉消息体：" + m.toString());
+			LOGGER.debug("钉钉发送消息url：{}" , () -> address);
+			LOGGER.debug("钉钉消息体：{}" , m::toString);
 			DingdingMessageResp resp = HttpConnection.postAsObject(address, null, m.toString(),
 					DingdingMessageResp.class);
 			if (resp.getErrcode() != 0) {
@@ -119,25 +118,14 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 	 * @return
 	 */
 	private String getDingdingOpenCMSDocumentUrl(String messageBody) {
+		String o2oaUrl = null;
 		try {
-			String openPage = getOpenPageUrl(messageBody);
-			String o2oaUrl = Config.dingding().getWorkUrl() + "ddsso.html?redirect=";
-			if (StringUtils.isEmpty(openPage)) {
-				String id = getCmsDocumentId(messageBody);
-				if (StringUtils.isEmpty(id)) {
-					return null;
-				}
-				String docUrl = "cmsdocMobile.html?id=" + id;
-				o2oaUrl = o2oaUrl + docUrl;
-			} else {
-				o2oaUrl = o2oaUrl + openPage;
-			}
-			LOGGER.info("o2oa 地址：" + o2oaUrl);
-			return o2oaUrl;
+			o2oaUrl = Config.dingding().getWorkUrl() + "ddsso.html?redirect=";
+			return OuterMessageHelper.getOpenCMSDocumentUrl(o2oaUrl, messageBody);
 		} catch (Exception e) {
 			LOGGER.error(e);
+			return null;
 		}
-		return null;
 	}
 
 	/**
@@ -148,10 +136,10 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 	 */
 	private String getDingdingOpenWorkUrl(String messageBody) {
 		try {
-			String openPage = getOpenPageUrl(messageBody);
+			String openPage = OuterMessageHelper.getOpenPageUrl(messageBody);
 			String o2oaUrl = Config.dingding().getWorkUrl() + "ddsso.html?redirect=";
 			if (StringUtils.isEmpty(openPage)) {
-				String work = getWorkIdFromBody(messageBody);
+				String work = OuterMessageHelper.getWorkIdFromBody(messageBody);
 				if (StringUtils.isEmpty(work) || StringUtils.isEmpty(o2oaUrl)) {
 					return null;
 				}
@@ -174,65 +162,6 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 			LOGGER.error(e);
 		}
 
-		return null;
-	}
-
-	/**
-	 * 获取workid or workCompleted
-	 * 
-	 * @param messageBody
-	 * @return
-	 */
-	private String getWorkIdFromBody(String messageBody) {
-		try {
-			JsonObject object = gson.fromJson(messageBody, JsonObject.class);
-			if (object.get("work") != null) {
-				return object.get("work").getAsString();
-			}
-			if (object.get("workCompleted") != null) {
-				return object.get("workCompleted").getAsString();
-			}
-		} catch (Exception e) {
-			LOGGER.error(e);
-		}
-		return null;
-	}
-
-	/**
-	 * 这个执行的前提是 MessageConnector.TYPE_CMS_PUBLISH.equals(message.getType()) ||
-	 * MessageConnector.TYPE_CMS_PUBLISH_TO_CREATOR.equals(message.getType()) cms的消息
-	 * body获取文档id
-	 * 
-	 * @param messageBody
-	 * @return
-	 */
-	private String getCmsDocumentId(String messageBody) {
-		try {
-			JsonObject object = gson.fromJson(messageBody, JsonObject.class);
-			if (object.get("id") != null) {
-				return object.get("id").getAsString();
-			}
-		} catch (Exception e) {
-			LOGGER.error(e);
-		}
-		return null;
-	}
-
-	/**
-	 * body里面是否有 openPageUrl 这个字段 有就用这个字段作为跳转页面
-	 * 
-	 * @param messageBody
-	 * @return
-	 */
-	private String getOpenPageUrl(String messageBody) {
-		try {
-			JsonObject object = gson.fromJson(messageBody, JsonObject.class);
-			if (object.get("openPageUrl") != null) {
-				return object.get("openPageUrl").getAsString();
-			}
-		} catch (Exception e) {
-			LOGGER.error(e);
-		}
 		return null;
 	}
 
@@ -284,5 +213,96 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 			this.errcode = errcode;
 		}
 
+	}
+
+	/**
+	 * 一些公用方法
+	 */
+	public static class OuterMessageHelper {
+		/**
+		 * 文档打开的url
+		 * @param messageBody
+		 * @return
+		 */
+		public static String getOpenCMSDocumentUrl(String bizBaseUrl, String messageBody) {
+			try {
+				String openPage = getOpenPageUrl(messageBody);
+				String o2oaUrl = bizBaseUrl;
+				if (StringUtils.isEmpty(openPage)) {
+					String id = getCmsDocumentId(messageBody);
+					if (StringUtils.isEmpty(id)) {
+						return null;
+					}
+					String docUrl = "cmsdocMobile.html?id=" + id;
+					o2oaUrl = o2oaUrl + docUrl;
+				} else {
+					o2oaUrl = o2oaUrl + openPage;
+				}
+				LOGGER.info("o2oa 业务地址：" + o2oaUrl);
+				return o2oaUrl;
+			} catch (Exception e) {
+				LOGGER.error(e);
+			}
+			return null;
+		}
+
+		/**
+		 * body里面是否有 openPageUrl 这个字段 有就用这个字段作为跳转页面
+		 *
+		 * @param messageBody
+		 * @return
+		 */
+		public static String getOpenPageUrl(String messageBody) {
+			try {
+				JsonObject object = gson.fromJson(messageBody, JsonObject.class);
+				if (object.get("openPageUrl") != null) {
+					return object.get("openPageUrl").getAsString();
+				}
+			} catch (Exception e) {
+				LOGGER.error(e);
+			}
+			return null;
+		}
+
+		/**
+		 * 获取workid
+		 *
+		 * @param messageBody
+		 * @return
+		 */
+		public static  String getWorkIdFromBody(String messageBody) {
+			try {
+				JsonObject object = gson.fromJson(messageBody, JsonObject.class);
+				if (object.get("work") != null) {
+					return object.get("work").getAsString();
+				}
+				if (object.get("workCompleted") != null) {
+					return object.get("workCompleted").getAsString();
+				}
+			} catch (Exception e) {
+				LOGGER.error(e);
+			}
+			return "";
+		}
+
+		/**
+		 * 这个执行的前提是 MessageConnector.TYPE_CMS_PUBLISH.equals(message.getType()) ||
+		 * MessageConnector.TYPE_CMS_PUBLISH_TO_CREATOR.equals(message.getType()) cms的消息
+		 * body获取文档id
+		 *
+		 * @param messageBody
+		 * @return
+		 */
+		private static String getCmsDocumentId(String messageBody) {
+			try {
+				JsonObject object = gson.fromJson(messageBody, JsonObject.class);
+				if (object.get("id") != null) {
+					return object.get("id").getAsString();
+				}
+			} catch (Exception e) {
+				LOGGER.error(e);
+			}
+			return null;
+		}
 	}
 }

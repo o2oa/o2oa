@@ -1,12 +1,5 @@
 package com.x.message.assemble.communicate;
 
-import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.x.base.core.container.EntityManagerContainer;
@@ -24,6 +17,12 @@ import com.x.message.assemble.communicate.message.WeixinTempMessage;
 import com.x.message.assemble.communicate.message.WeixinTempMessage.WeixinTempMessageFieldObj;
 import com.x.message.core.entity.Message;
 import com.x.organization.core.entity.Person;
+import org.apache.commons.lang3.StringUtils;
+
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 发送微信公众号模版消息 Created by fancyLou on 3/11/21. Copyright © 2021 O2. All rights
@@ -50,8 +49,7 @@ public class MpweixinConsumeQueue extends AbstractQueue<Message> {
 				if (StringUtils.isNotEmpty(openId)) {
 					JsonObject object = gson.fromJson(message.getBody(), JsonObject.class);
 					Map<String, WeixinTempMessageFieldObj> data = concreteData(message, object, list);
-					String workId = object.get("work").getAsString();
-					String workUrl = getOpenUrl(workId);
+					String workUrl = getOpenUrl(message);
 					WeixinTempMessage wxMessage = new WeixinTempMessage();
 					wxMessage.setTouser(openId);
 					wxMessage.setUrl(workUrl);
@@ -82,6 +80,22 @@ public class MpweixinConsumeQueue extends AbstractQueue<Message> {
 			LOGGER.warn("配置文件配置条件不足.");
 		}
 
+	}
+
+	/**
+	 * 判断打开地址
+	 *
+	 * @param message
+	 * @return
+	 */
+	private String getOpenUrl(Message message) {
+		String openPage = DingdingConsumeQueue.OuterMessageHelper.getOpenPageUrl(message.getBody());
+		if (StringUtils.isNotEmpty(openPage)) {
+			return openPage;
+		} else {
+			String workId = DingdingConsumeQueue.OuterMessageHelper.getWorkIdFromBody(message.getBody());
+			return getOpenWorkUrl(workId);
+		}
 	}
 
 	private Map<String, WeixinTempMessageFieldObj> concreteData(Message message, JsonObject object,
@@ -146,7 +160,7 @@ public class MpweixinConsumeQueue extends AbstractQueue<Message> {
 		}
 	}
 
-	private String getOpenUrl(String workId) {
+	private String getOpenWorkUrl(String workId) {
 		try {
 			String httpProtocol = Config.currentNode().getCenter().getHttpProtocol();
 			if (StringUtils.isEmpty(httpProtocol)) {

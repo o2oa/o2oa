@@ -46,7 +46,7 @@ public class Dingding extends ConfigObject {
 	@FieldDescribe("回调encodingAesKey")
 	private String encodingAesKey = "";
 
-	@FieldDescribe("钉钉消息打开工作的url地址，如：http://dev.o2oa.net/x_desktop/")
+	@FieldDescribe("钉钉消息打开工作的url地址，如：https://sample.o2oa.net/x_desktop/")
 	private String workUrl = "";
 
 	@FieldDescribe("钉钉消息处理完成后跳转到特定的门户页面的Id")
