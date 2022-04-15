@@ -149,7 +149,8 @@ class ActionCreate extends BaseAction {
 	@Deprecated
 	private Message assembleMessage(String consumer, Wi cpWi, Instant instant) throws Exception {
 		Message message = null;
-		switch (Objects.toString(consumer, "")) {
+		String type = StringUtils.lowerCase(Objects.toString(consumer, ""));
+		switch (type) {
 		case MessageConnector.CONSUME_WS:
 			message = this.wsMessage(cpWi, instant);
 			break;
@@ -184,7 +185,7 @@ class ActionCreate extends BaseAction {
 	@Deprecated
 	private void sendMessage(List<Message> messages) throws Exception {
 		for (Message message : messages) {
-			switch (message.getConsumer()) {
+			switch (StringUtils.lowerCase(message.getConsumer())) {
 			case MessageConnector.CONSUME_WS:
 				sendMessageWs(message);
 				break;
@@ -219,14 +220,14 @@ class ActionCreate extends BaseAction {
 	private void sendMessageMPWeixin(Message message) throws Exception {
 		if (BooleanUtils.isTrue(Config.mPweixin().getEnable())
 				&& BooleanUtils.isTrue(Config.mPweixin().getMessageEnable())) {
-			ThisApplication.mpWeixinConsumeQueue.send(message);
+			ThisApplication.mpweixinConsumeQueue.send(message);
 		}
 	}
 
 	@Deprecated
 	private void sendMessagePmsInner(Message message) throws Exception {
 		if (BooleanUtils.isTrue(Config.pushConfig().getEnable())) {
-			ThisApplication.pmsInnerConsumeQueue.send(message);
+			ThisApplication.pmsinnerConsumeQueue.send(message);
 		}
 
 	}
@@ -243,7 +244,7 @@ class ActionCreate extends BaseAction {
 	private void sendMessageZhengwuDingding(Message message) throws Exception {
 		if (BooleanUtils.isTrue(Config.zhengwuDingding().getEnable())
 				&& BooleanUtils.isTrue(Config.zhengwuDingding().getMessageEnable())) {
-			ThisApplication.zhengwuDingdingConsumeQueue.send(message);
+			ThisApplication.zhengwudingdingConsumeQueue.send(message);
 		}
 	}
 
@@ -251,7 +252,7 @@ class ActionCreate extends BaseAction {
 	private void sendMessageWeLink(Message message) throws Exception {
 		if (BooleanUtils.isTrue(Config.weLink().getEnable())
 				&& BooleanUtils.isTrue(Config.weLink().getMessageEnable())) {
-			ThisApplication.weLinkConsumeQueue.send(message);
+			ThisApplication.welinkConsumeQueue.send(message);
 		}
 	}
 
@@ -485,7 +486,7 @@ class ActionCreate extends BaseAction {
 
 	private Message v3AssembleMessage(Wi wi, Consumer consumer, Instant instant) {
 		Message message = null;
-		String type = Objects.toString(consumer.getType(), "");
+		String type = StringUtils.lowerCase(Objects.toString(consumer.getType(), ""));
 		switch (type) {
 		case MessageConnector.CONSUME_WS:
 			message = v3WsMessage(wi, consumer);
@@ -565,7 +566,7 @@ class ActionCreate extends BaseAction {
 		}
 		message.setType(wi.getType());
 		message.setConsumed(false);
-		message.setConsumer(wi.getType());
+		message.setConsumer(consumer.getType());
 		message.getProperties().setConsumerJsonElement(gson.toJsonTree(consumer));
 		return message;
 	}
@@ -756,7 +757,8 @@ class ActionCreate extends BaseAction {
 
 	private void v3SendMessage(List<Message> messages) throws Exception {
 		for (Message message : messages) {
-			switch (message.getConsumer()) {
+			String type = StringUtils.lowerCase(message.getConsumer());
+			switch (type) {
 			case MessageConnector.CONSUME_WS:
 				ThisApplication.wsConsumeQueue.send(message);
 				break;
@@ -767,25 +769,25 @@ class ActionCreate extends BaseAction {
 				ThisApplication.dingdingConsumeQueue.send(message);
 				break;
 			case MessageConnector.CONSUME_WELINK:
-				ThisApplication.weLinkConsumeQueue.send(message);
+				ThisApplication.welinkConsumeQueue.send(message);
 				break;
 			case MessageConnector.CONSUME_ZHENGWUDINGDING:
-				ThisApplication.zhengwuDingdingConsumeQueue.send(message);
+				ThisApplication.zhengwudingdingConsumeQueue.send(message);
 				break;
 			case MessageConnector.CONSUME_QIYEWEIXIN:
 				ThisApplication.qiyeweixinConsumeQueue.send(message);
 				break;
 			case MessageConnector.CONSUME_PMS_INNER:
-				ThisApplication.pmsInnerConsumeQueue.send(message);
+				ThisApplication.pmsinnerConsumeQueue.send(message);
 				break;
 			case MessageConnector.CONSUME_MPWEIXIN:
-				ThisApplication.mpWeixinConsumeQueue.send(message);
+				ThisApplication.mpweixinConsumeQueue.send(message);
 				break;
 			case MessageConnector.CONSUME_KAFKA:
 				ThisApplication.kafkaConsumeQueue.send(message);
 				break;
 			case MessageConnector.CONSUME_ACTIVEMQ:
-				ThisApplication.activeMqConsumeQueue.send(message);
+				ThisApplication.activemqConsumeQueue.send(message);
 				break;
 			case MessageConnector.CONSUME_RESTFUL:
 				ThisApplication.restfulConsumeQueue.send(message);

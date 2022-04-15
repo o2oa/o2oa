@@ -42,7 +42,8 @@ public class HadoopConsumeQueue extends AbstractQueue<Message> {
 	private static final Gson gson = XGsonBuilder.instance();
 
 	protected void execute(Message message) throws Exception {
-		if (null != message && StringUtils.isNotEmpty(message.getItem())) {
+		LOGGER.debug("execute message:{}.", message::toString);
+		if (null != message) {
 			update(message);
 		}
 		List<String> ids = listOverStay();
@@ -52,9 +53,7 @@ public class HadoopConsumeQueue extends AbstractQueue<Message> {
 				Optional<Message> optional = find(id);
 				if (optional.isPresent()) {
 					message = optional.get();
-					if (StringUtils.isNotEmpty(message.getItem())) {
-						update(message);
-					}
+					update(message);
 				}
 			}
 		}
@@ -75,9 +74,14 @@ public class HadoopConsumeQueue extends AbstractQueue<Message> {
 					HadoopConsumer.class);
 			try (FileSystem fileSystem = FileSystem.get(configuration(consumer));
 					InputStream inputStream = new ByteArrayInputStream(
-							message.getBody().getBytes(StandardCharsets.UTF_8));
-					FSDataOutputStream outputStream = fileSystem.create(path(message, consumer))) {
-				inputStream.transferTo(outputStream);
+							message.getBody().getBytes(StandardCharsets.UTF_8))) {
+				org.apache.hadoop.fs.Path path = path(message, consumer);
+				if (fileSystem.exists(path)) {
+					fileSystem.delete(path, false);
+				}
+				try (FSDataOutputStream outputStream = fileSystem.create(path)) {
+					inputStream.transferTo(outputStream);
+				}
 			}
 			success(message.getId());
 		} catch (Exception e) {
@@ -97,10 +101,10 @@ public class HadoopConsumeQueue extends AbstractQueue<Message> {
 		}
 		if (StringUtils.isNotEmpty(message.getPerson())) {
 			path = new org.apache.hadoop.fs.Path(path, new org.apache.hadoop.fs.Path(message.getPerson()));
+		} else {
+			path = new org.apache.hadoop.fs.Path(path, new org.apache.hadoop.fs.Path("default"));
 		}
-		if (StringUtils.isNotEmpty(message.getTitle())) {
-			path = new org.apache.hadoop.fs.Path(path, new org.apache.hadoop.fs.Path(message.getTitle()));
-		}
+		path = new org.apache.hadoop.fs.Path(path, new org.apache.hadoop.fs.Path(message.getId()));
 		return path;
 	}
 

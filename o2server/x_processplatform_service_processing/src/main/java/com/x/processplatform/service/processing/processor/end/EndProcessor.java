@@ -166,30 +166,55 @@ public class EndProcessor extends AbstractEndProcessor {
 		// 回写到父Work
 		tryUpdateParentWork(aeiObjects);
 		addUpdateTableEvent(aeiObjects);
+		addArchiveHadoopEvent(aeiObjects);
 	}
 
-	private void addUpdateTableEvent(AeiObjects aeiObjects) throws Exception {
-		if (BooleanUtils.isTrue(aeiObjects.getProcess().getUpdateTableEnable())
-				&& ListTools.isNotEmpty(aeiObjects.getProcess().getUpdateTableList())) {
-			List<Event> events = new ArrayList<>();
-			for (String table : aeiObjects.getProcess().getUpdateTableList()) {
-				if (StringUtils.isNotEmpty(table)) {
-					Event event = new Event();
-					event.setTarget(table);
-					event.setJob(aeiObjects.getWork().getJob());
-					event.setType(Event.EVENTTYPE_UPDATETABLE);
-					events.add(event);
-				}
-			}
-			if (!events.isEmpty()) {
+	private void addArchiveHadoopEvent(AeiObjects aeiObjects) {
+		try {
+			if (BooleanUtils.isTrue(Config.processPlatform().getArchiveHadoop().getEnable())) {
 				aeiObjects.entityManagerContainer().beginTransaction(Event.class);
-				for (Event event : events) {
-					aeiObjects.entityManagerContainer().persist(event, CheckPersistType.all);
-				}
+				Event event = new Event();
+				event.setJob(aeiObjects.getWork().getJob());
+				event.setType(Event.EVENTTYPE_ARCHIVEHADOOP);
+				aeiObjects.entityManagerContainer().persist(event, CheckPersistType.all);
 				aeiObjects.entityManagerContainer().commit();
-				for (Event event : events) {
-					ThisApplication.updateTableQueue.send(event.getId());
+				ThisApplication.updateTableQueue.send(event.getId());
+			}
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
+
+	private void addUpdateTableEvent(AeiObjects aeiObjects) {
+		try {
+			if (BooleanUtils.isTrue(aeiObjects.getProcess().getUpdateTableEnable())
+					&& ListTools.isNotEmpty(aeiObjects.getProcess().getUpdateTableList())) {
+				List<Event> events = new ArrayList<>();
+				for (String table : aeiObjects.getProcess().getUpdateTableList()) {
+					if (StringUtils.isNotEmpty(table)) {
+						Event event = new Event();
+						event.setTarget(table);
+						event.setJob(aeiObjects.getWork().getJob());
+						event.setType(Event.EVENTTYPE_UPDATETABLE);
+						events.add(event);
+					}
 				}
+				sendUpdateTableEvent(aeiObjects, events);
+			}
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
+
+	private void sendUpdateTableEvent(AeiObjects aeiObjects, List<Event> events) throws Exception {
+		if (!events.isEmpty()) {
+			aeiObjects.entityManagerContainer().beginTransaction(Event.class);
+			for (Event event : events) {
+				aeiObjects.entityManagerContainer().persist(event, CheckPersistType.all);
+			}
+			aeiObjects.entityManagerContainer().commit();
+			for (Event event : events) {
+				ThisApplication.updateTableQueue.send(event.getId());
 			}
 		}
 	}

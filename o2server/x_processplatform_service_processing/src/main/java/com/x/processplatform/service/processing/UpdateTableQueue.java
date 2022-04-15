@@ -17,9 +17,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.JpaObject_;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_query_service_processing;
-import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
@@ -35,6 +35,9 @@ public class UpdateTableQueue extends AbstractQueue<String> {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UpdateTableQueue.class);
 
 	private Gson gson = XGsonBuilder.instance();
+
+	private static final int RETRYMINUTES = 20;
+	private static final int THRESHOLDMINUTES = 60 * 24 * 3;
 
 	protected void execute(String id) throws Exception {
 		if (StringUtils.isNotEmpty(id)) {
@@ -73,7 +76,7 @@ public class UpdateTableQueue extends AbstractQueue<String> {
 					data = new WorkDataHelper(emc, workCompleted).get();
 				}
 			}
-			if ((null != data) && (null != workCompleted)) {
+			if (null != data) {
 				JsonElement jsonElement = XGsonBuilder.merge(gson.toJsonTree(workCompleted), gson.toJsonTree(data));
 				WrapBoolean resp = ThisApplication.context().applications().postQuery(x_query_service_processing.class,
 						Applications.joinQueryUri("table", event.getTarget(), "update", event.getJob()), jsonElement)
@@ -131,12 +134,12 @@ public class UpdateTableQueue extends AbstractQueue<String> {
 			CriteriaQuery<String> cq = cb.createQuery(String.class);
 			Root<Event> root = cq.from(Event.class);
 			Predicate p = cb.equal(root.get(Event_.type), Event.EVENTTYPE_UPDATETABLE);
-			p = cb.and(p, cb.lessThanOrEqualTo(root.get(Event_.updateTime),
-					DateUtils.addMinutes(new Date(), -Config.processPlatform().getUpdateTable().getRetryMinutes())));
+			p = cb.and(p, cb.lessThanOrEqualTo(root.get(JpaObject_.updateTime),
+					DateUtils.addMinutes(new Date(), -RETRYMINUTES)));
 			list.addAll(em.createQuery(cq.select(root.get(Event_.id)).where(p)).setMaxResults(100).getResultList());
 		}
 		if (!list.isEmpty()) {
-			LOGGER.info("查找到 {} 条处理失败的同步到自建表事件.", () -> list.size());
+			LOGGER.info("查找到 {} 条处理失败的同步到自建表事件.", list::size);
 		}
 		return list;
 	}
@@ -149,8 +152,8 @@ public class UpdateTableQueue extends AbstractQueue<String> {
 			CriteriaQuery<String> cq = cb.createQuery(String.class);
 			Root<Event> root = cq.from(Event.class);
 			Predicate p = cb.equal(root.get(Event_.type), Event.EVENTTYPE_UPDATETABLE);
-			p = cb.and(p, cb.lessThanOrEqualTo(root.get(Event_.createTime), DateUtils.addMinutes(new Date(),
-					-Config.processPlatform().getUpdateTable().getThresholdMinutes())));
+			p = cb.and(p, cb.lessThanOrEqualTo(root.get(JpaObject_.createTime),
+					DateUtils.addMinutes(new Date(), -THRESHOLDMINUTES)));
 			list.addAll(em.createQuery(cq.select(root.get(Event_.id)).where(p)).setMaxResults(100).getResultList());
 			if (!list.isEmpty()) {
 				emc.beginTransaction(Event.class);
@@ -164,7 +167,7 @@ public class UpdateTableQueue extends AbstractQueue<String> {
 			}
 		}
 		if (!list.isEmpty()) {
-			LOGGER.info("删除 {} 条超期的同步到自建表事件.", () -> list.size());
+			LOGGER.info("删除 {} 条超期的同步到自建表事件.", list::size);
 		}
 	}
 }

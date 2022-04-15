@@ -12,7 +12,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
 import com.google.gson.Gson;
@@ -39,7 +38,7 @@ public class TableConsumeQueue extends AbstractQueue<Message> {
 	private static final Gson gson = XGsonBuilder.instance();
 
 	protected void execute(Message message) throws Exception {
-		if (null != message && StringUtils.isNotEmpty(message.getItem())) {
+		if (null != message) {
 			update(message);
 		}
 		List<String> ids = listOverStay();
@@ -49,9 +48,7 @@ public class TableConsumeQueue extends AbstractQueue<Message> {
 				Optional<Message> optional = find(id);
 				if (optional.isPresent()) {
 					message = optional.get();
-					if (StringUtils.isNotEmpty(message.getItem())) {
-						update(message);
-					}
+					update(message);
 				}
 			}
 		}

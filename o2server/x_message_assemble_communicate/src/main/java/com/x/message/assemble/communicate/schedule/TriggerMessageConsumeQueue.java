@@ -16,7 +16,7 @@ public class TriggerMessageConsumeQueue extends AbstractJob {
 		LOGGER.debug(
 				"schedule trigger kafkaConsumeQueue, activeMqConsumeQueue, restfulConsumeQueue, mailConsumeQueue, apiConsumeQueue, jdbcConsumeQueue, tableConsumeQueue, hadoopConsumeQueue.");
 		ThisApplication.kafkaConsumeQueue.send(null);
-		ThisApplication.activeMqConsumeQueue.send(null);
+		ThisApplication.activemqConsumeQueue.send(null);
 		ThisApplication.restfulConsumeQueue.send(null);
 		ThisApplication.mailConsumeQueue.send(null);
 		ThisApplication.apiConsumeQueue.send(null);
