@@ -41,9 +41,13 @@ class ActionProcessingNonblocking extends BaseAction {
 
 	public static class Wi extends ProcessingAttributes {
 
+		private static final long serialVersionUID = -8976200758779439062L;
+
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = -7961340769014991809L;
 	}
 
 }

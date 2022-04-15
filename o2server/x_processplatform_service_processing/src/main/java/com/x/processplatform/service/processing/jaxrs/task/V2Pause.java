@@ -20,9 +20,11 @@ import com.x.processplatform.core.entity.content.Task;
 
 class V2Pause extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(V2Pause.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(V2Pause.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
 		final String job;
 

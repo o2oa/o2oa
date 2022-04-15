@@ -3,8 +3,6 @@ package com.x.processplatform.service.processing.processor.begin;
 import java.util.List;
 
 import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Begin;
 import com.x.processplatform.core.entity.element.Route;
@@ -12,8 +10,6 @@ import com.x.processplatform.service.processing.processor.AbstractProcessor;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
 public abstract class AbstractBeginProcessor extends AbstractProcessor {
-
-	private static Logger logger = LoggerFactory.getLogger(AbstractBeginProcessor.class);
 
 	protected AbstractBeginProcessor(EntityManagerContainer entityManagerContainer) throws Exception {
 		super(entityManagerContainer);

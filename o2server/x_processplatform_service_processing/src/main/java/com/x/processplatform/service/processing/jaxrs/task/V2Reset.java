@@ -26,9 +26,11 @@ import com.x.processplatform.service.processing.Business;
 
 class V2Reset extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(V2Reset.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(V2Reset.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
 		final Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 
@@ -92,9 +94,13 @@ class V2Reset extends BaseAction {
 
 	public static class Wi extends V2ResetWi {
 
+		private static final long serialVersionUID = -36317314462442492L;
+
 	}
 
 	public static class Wo extends WrapBoolean {
+
+		private static final long serialVersionUID = -1577970926042381340L;
 
 	}
 

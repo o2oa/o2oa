@@ -20,30 +20,32 @@ import com.x.processplatform.core.entity.content.Record;
 
 class ActionDelete extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionDelete.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDelete.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
 		final Bag bag = new Bag();
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Record record = emc.find(id, Record.class);
-			if (null == record) {
+			Record r = emc.find(id, Record.class);
+			if (null == r) {
 				throw new ExceptionEntityNotExist(id, Record.class);
 			}
-			bag.job = record.getJob();
+			bag.job = r.getJob();
 		}
 
 		Callable<ActionResult<Wo>> callable = new Callable<ActionResult<Wo>>() {
 			public ActionResult<Wo> call() throws Exception {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					Record record = emc.find(id, Record.class);
+					Record r = emc.find(id, Record.class);
 					emc.beginTransaction(Record.class);
-					emc.remove(record, CheckRemoveType.all);
+					emc.remove(r, CheckRemoveType.all);
 					emc.commit();
 					ActionResult<Wo> result = new ActionResult<>();
 					Wo wo = new Wo();
-					wo.setId(record.getId());
+					wo.setId(r.getId());
 					result.setData(wo);
 					return result;
 				}
@@ -68,6 +70,8 @@ class ActionDelete extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = -4431392874250866910L;
 
 	}
 

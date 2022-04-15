@@ -8,8 +8,6 @@ import javax.script.CompiledScript;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.scripting.JsonScriptingExecutor;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Agent;
@@ -19,8 +17,6 @@ import com.x.processplatform.service.processing.processor.AbstractProcessor;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
 public abstract class AbstractAgentProcessor extends AbstractProcessor {
-
-	private static Logger logger = LoggerFactory.getLogger(AbstractAgentProcessor.class);
 
 	protected AbstractAgentProcessor(EntityManagerContainer entityManagerContainer) throws Exception {
 		super(entityManagerContainer);

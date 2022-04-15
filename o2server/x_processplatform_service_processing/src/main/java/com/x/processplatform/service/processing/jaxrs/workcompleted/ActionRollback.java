@@ -20,6 +20,8 @@ import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Read;
@@ -41,7 +43,11 @@ import com.x.processplatform.service.processing.ThisApplication;
 
 class ActionRollback extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionRollback.class);
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}, flag:{}.", effectivePerson::getDistinguishedName, () -> flag);
 
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		ActionResult<Wo> result = new ActionResult<>();
@@ -162,7 +168,7 @@ class ActionRollback extends BaseAction {
 		work.setActivityType(workLog.getFromActivityType());
 //		work.setErrorRetry(0);
 		work.setWorkStatus(WorkStatus.processing);
-		//因为workCompleted没有workCreateType属性，回溯到任何环节都必须要有待办，默认置为assign
+		// 因为workCompleted没有workCreateType属性，回溯到任何环节都必须要有待办，默认置为assign
 		work.setWorkCreateType(Work.WORKCREATETYPE_ASSIGN);
 		return work;
 	}
@@ -259,6 +265,7 @@ class ActionRollback extends BaseAction {
 
 	public static class Wi extends ProcessingAttributes {
 
+		private static final long serialVersionUID = 8702103487706268746L;
 		@FieldDescribe("工作日志标识")
 		private String workLog;
 
@@ -273,6 +280,8 @@ class ActionRollback extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = -8686903170476114111L;
 	}
 
 }

@@ -46,6 +46,8 @@ class ActionProcessing extends BaseAction {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionProcessing.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+		
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
 		final Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 

@@ -8,8 +8,6 @@ import javax.script.CompiledScript;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.scripting.JsonScriptingExecutor;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Choice;
@@ -19,8 +17,6 @@ import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
 public class ChoiceProcessor extends AbstractChoiceProcessor {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(ChoiceProcessor.class);
 
 	public ChoiceProcessor(EntityManagerContainer entityManagerContainer) throws Exception {
 		super(entityManagerContainer);
@@ -63,7 +59,8 @@ public class ChoiceProcessor extends AbstractChoiceProcessor {
 		for (Route o : aeiObjects.getRoutes()) {
 			CompiledScript compiledScript = aeiObjects.business().element()
 					.getCompiledScript(aeiObjects.getWork().getApplication(), o, Business.EVENT_ROUTE);
-			if (BooleanUtils.isTrue(JsonScriptingExecutor.evalBoolean(compiledScript, aeiObjects.scriptContext(),Boolean.FALSE))) {
+			if (BooleanUtils.isTrue(
+					JsonScriptingExecutor.evalBoolean(compiledScript, aeiObjects.scriptContext(), Boolean.FALSE))) {
 				results.add(o);
 				break;
 			}

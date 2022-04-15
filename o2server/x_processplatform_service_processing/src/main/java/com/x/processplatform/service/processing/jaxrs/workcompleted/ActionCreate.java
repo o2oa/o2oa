@@ -20,6 +20,8 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.Unit;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.content.Data;
@@ -31,8 +33,12 @@ import com.x.query.core.entity.Item;
 
 class ActionCreate extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCreate.class);
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String processId, JsonElement jsonElement)
 			throws Exception {
+
+		LOGGER.debug("execute:{}, processId:{}.", effectivePerson::getDistinguishedName, () -> processId);
 
 		String executorSeed = processId;
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
@@ -103,14 +109,17 @@ class ActionCreate extends BaseAction {
 				}
 			}
 		};
-		ActionResult<Wo> result = ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get(300, TimeUnit.SECONDS);
-		return result;
+		return ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get(300, TimeUnit.SECONDS);
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = -8304167991098790325L;
 	}
 
 	public static class Wi extends GsonPropertyObject {
+
+		private static final long serialVersionUID = 7817819508116690487L;
 
 		@FieldDescribe("标题.")
 		private String title;
