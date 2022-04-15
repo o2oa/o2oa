@@ -34,9 +34,12 @@ import com.x.query.core.entity.Item;
 
 class ActionTypeSuspend extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionTypeSuspend.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionTypeSuspend.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workId) throws Exception {
+
+		LOGGER.debug("execute:{}, workId:{}.", effectivePerson::getDistinguishedName, () -> workId);
+
 		String job = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Work work = emc.fetch(workId, Work.class, ListTools.toList(Work.job_FIELDNAME));
@@ -78,9 +81,9 @@ class ActionTypeSuspend extends BaseAction {
 				List<DocumentVersion> documentVersions = new ArrayList<>();
 				List<DocSign> docSigns = new ArrayList<>();
 				List<DocSignScrawl> docSignScrawls = new ArrayList<>();
-				snap.setProperties(snap(business, work.getJob(), items, works, tasks, taskCompleteds, reads,
-						readCompleteds, reviews, workLogs, records, attachments, documentVersions,
-						docSigns, docSignScrawls));
+				snap.setProperties(
+						snap(business, work.getJob(), items, works, tasks, taskCompleteds, reads, readCompleteds,
+								reviews, workLogs, records, attachments, documentVersions, docSigns, docSignScrawls));
 				snap.setType(Snap.TYPE_SUSPEND);
 				emc.beginTransaction(Snap.class);
 				emc.persist(snap, CheckPersistType.all);

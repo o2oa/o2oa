@@ -15,6 +15,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
+import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapInteger;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -31,15 +32,17 @@ import com.x.processplatform.service.processing.Business;
  */
 class ActionCreateSerial extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionCreateSerial.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDelete.class);
 
-	private static ConcurrentHashMap<String, ReentrantLock> processMap = new ConcurrentHashMap();
+	private static ConcurrentHashMap<String, ReentrantLock> processMap = new ConcurrentHashMap<>();
 
 	private static ReentrantLock lock = new ReentrantLock();
 
-	ActionResult<Wo> execute(String processId, String name) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String processId, String name) throws Exception {
+
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+
 		String application = "";
-		String processName = "";
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			Process process = business.element().get(processId, Process.class);
@@ -48,7 +51,6 @@ class ActionCreateSerial extends BaseAction {
 			}
 			application = process.getApplication();
 			processId = process.getId();
-			processName = process.getName();
 		}
 		ReentrantLock appLock = null;
 		lock.lock();
@@ -67,7 +69,6 @@ class ActionCreateSerial extends BaseAction {
 		try {
 			Integer serial = this.createSerial(processId, application, name);
 			wo.setValue(serial);
-			logger.info("为流程:{}的关键字:{}创建序列号：{}", processName, name, serial);
 		} finally {
 			appLock.unlock();
 		}
@@ -109,6 +110,8 @@ class ActionCreateSerial extends BaseAction {
 	}
 
 	public static class Wo extends WrapInteger {
+
+		private static final long serialVersionUID = 8667007945527601792L;
 
 	}
 

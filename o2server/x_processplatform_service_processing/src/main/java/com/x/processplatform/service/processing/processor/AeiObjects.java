@@ -774,7 +774,7 @@ public class AeiObjects extends GsonPropertyObject {
 					this.entityManagerContainer().beginTransaction(cls);
 					JpaObject o = this.entityManagerContainer().find(workCompleted.getJob(), cls);
 					if (null == o) {
-						o = cls.newInstance();
+						o = cls.getDeclaredConstructor().newInstance();
 						o.setId(workCompleted.getJob());
 						this.entityManagerContainer().persist(o, CheckPersistType.all);
 					}

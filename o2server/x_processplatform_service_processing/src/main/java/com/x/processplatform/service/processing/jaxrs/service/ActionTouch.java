@@ -23,11 +23,14 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.ActivityType;
 
-class ActionTouch extends BaseAction{
+class ActionTouch extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionTouch.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionTouch.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+
 		String job = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Work work = emc.fetch(id, Work.class, ListTools.toList(Work.job_FIELDNAME));
@@ -36,7 +39,8 @@ class ActionTouch extends BaseAction{
 			}
 			job = work.getJob();
 		}
-		return ProcessPlatformExecutorFactory.get(job).submit(new CallableAction(id, jsonElement)).get(300, TimeUnit.SECONDS);
+		return ProcessPlatformExecutorFactory.get(job).submit(new CallableAction(id, jsonElement)).get(300,
+				TimeUnit.SECONDS);
 	}
 
 	public class CallableAction implements Callable<ActionResult<Wo>> {
@@ -75,6 +79,8 @@ class ActionTouch extends BaseAction{
 	}
 
 	public static class Wo extends WrapBoolean {
+
+		private static final long serialVersionUID = -8724942302046741821L;
 	}
 
 }

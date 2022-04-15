@@ -21,9 +21,11 @@ import com.x.processplatform.service.processing.MessageFactory;
 
 class ActionUrge extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionUrge.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionUrge.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
@@ -42,6 +44,7 @@ class ActionUrge extends BaseAction {
 				String taskId = null;
 				String taskTitle = null;
 				String taskSequence = null;
+				ActionResult<Wo> result = new ActionResult<>();
 				try {
 					try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 						Task task = emc.find(id, Task.class);
@@ -60,17 +63,19 @@ class ActionUrge extends BaseAction {
 							Record record = record(workLog, task);
 							emc.persist(record, CheckPersistType.all);
 							emc.commit();
+							Wo wo = new Wo();
+							wo.setId(task.getId());
+							result.setData(wo);
 							MessageFactory.task_urge(task);
-							logger.print("催办待办, person: {}, id: {}, title: {}, sequence:{}.", task.getPerson(),
+							LOGGER.print("催办待办, person: {}, id: {}, title: {}, sequence:{}.", task.getPerson(),
 									task.getId(), task.getTitle(), task.getSequence());
 						}
 					} catch (Exception e) {
 						throw new ExceptionExpired(e, taskId, taskTitle, taskSequence);
 					}
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
-				ActionResult<Wo> result = new ActionResult<>();
 				return result;
 			}
 		};
@@ -88,6 +93,8 @@ class ActionUrge extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = -7637560939968150835L;
 
 	}
 

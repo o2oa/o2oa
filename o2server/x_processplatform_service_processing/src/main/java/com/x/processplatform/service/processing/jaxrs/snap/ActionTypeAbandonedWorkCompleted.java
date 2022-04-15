@@ -31,9 +31,12 @@ import com.x.query.core.entity.Item;
 
 class ActionTypeAbandonedWorkCompleted extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionTypeAbandonedWorkCompleted.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionTypeAbandonedWorkCompleted.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workCompletedId) throws Exception {
+
+		LOGGER.debug("execute:{}, workCompletedId:{}.", effectivePerson::getDistinguishedName, () -> workCompletedId);
+
 		String job = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			WorkCompleted workCompleted = emc.find(workCompletedId, WorkCompleted.class);

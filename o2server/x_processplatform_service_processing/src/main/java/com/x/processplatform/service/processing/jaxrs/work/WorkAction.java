@@ -293,7 +293,7 @@ public class WorkAction extends StandardJaxrsAction {
 	@Path("v2/{id}/reroute")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void V2Reroute(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void v2Reroute(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id, JsonElement jsonElement) {
 		ActionResult<V2Reroute.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -311,7 +311,7 @@ public class WorkAction extends StandardJaxrsAction {
 	@Path("v2/{id}/retract")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void V2Retract(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void v2Retract(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id, JsonElement jsonElement) {
 		ActionResult<V2Retract.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -329,7 +329,7 @@ public class WorkAction extends StandardJaxrsAction {
 	@Path("v2/{id}/rollback")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void V2Rollback(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void v2Rollback(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id, JsonElement jsonElement) {
 		ActionResult<V2Rollback.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -347,7 +347,7 @@ public class WorkAction extends StandardJaxrsAction {
 	@Path("v2/{id}/add/split")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void V2AddSplit(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void v2AddSplit(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id, JsonElement jsonElement) {
 		ActionResult<V2AddSplit.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -366,12 +366,12 @@ public class WorkAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void createWorkSerial(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-					@JaxrsParameterDescribe("流程标识") @PathParam("processId") String processId,
-					@JaxrsParameterDescribe("编号名称") @PathParam("name") String name) {
+			@JaxrsParameterDescribe("流程标识") @PathParam("processId") String processId,
+			@JaxrsParameterDescribe("编号名称") @PathParam("name") String name) {
 		ActionResult<ActionCreateSerial.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCreateSerial().execute(processId, name);
+			result = new ActionCreateSerial().execute(effectivePerson, processId, name);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

@@ -42,5 +42,7 @@ class ActionUpdateDataPath0 extends BaseAction {
 
 	public static class Wo extends WoId {
 
+		private static final long serialVersionUID = -7844250017265542218L;
+
 	}
 }

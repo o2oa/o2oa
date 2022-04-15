@@ -22,9 +22,11 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 
 class ActionCreateWithJob extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionCreateWithJob.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCreateWithJob.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String job, JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}, job:{}.", effectivePerson::getDistinguishedName, () -> job);
 
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 
@@ -35,12 +37,12 @@ class ActionCreateWithJob extends BaseAction {
 					throw new ExceptionEntityNotExist(job, "job");
 				}
 				emc.beginTransaction(Record.class);
-				Record record = Wi.copier.copy(wi);
-				record.setJob(job);
-				emc.persist(record);
+				Record r = Wi.copier.copy(wi);
+				r.setJob(job);
+				emc.persist(r);
 				emc.commit();
 				Wo wo = new Wo();
-				wo.setId(record.getId());
+				wo.setId(r.getId());
 				ActionResult<Wo> result = new ActionResult<>();
 				result.setData(wo);
 				return result;
@@ -61,6 +63,8 @@ class ActionCreateWithJob extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = -6397936830449100267L;
 
 	}
 

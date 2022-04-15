@@ -23,9 +23,11 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 
 class ActionEdit extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionEdit.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionEdit.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
 		final Bag bag = new Bag();
 
@@ -41,18 +43,18 @@ class ActionEdit extends BaseAction {
 		Callable<ActionResult<Wo>> callable = new Callable<ActionResult<Wo>>() {
 			public ActionResult<Wo> call() throws Exception {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					Record record = emc.find(id, Record.class);
-					Wi.copier.copy(bag.wi, record);
-					if ((emc.countEqual(Work.class, Work.job_FIELDNAME, record.getJob()) == 0) && (emc
-							.countEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME, record.getJob()) == 0)) {
-						throw new ExceptionWorkOrWorkCompletedNotExist(record.getJob());
+					Record r = emc.find(id, Record.class);
+					Wi.copier.copy(bag.wi, r);
+					if ((emc.countEqual(Work.class, Work.job_FIELDNAME, r.getJob()) == 0)
+							&& (emc.countEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME, r.getJob()) == 0)) {
+						throw new ExceptionWorkOrWorkCompletedNotExist(r.getJob());
 					}
 					emc.beginTransaction(Record.class);
-					emc.check(record, CheckPersistType.all);
+					emc.check(r, CheckPersistType.all);
 					emc.commit();
 					ActionResult<Wo> result = new ActionResult<>();
 					Wo wo = new Wo();
-					wo.setId(record.getId());
+					wo.setId(r.getId());
 					result.setData(wo);
 					return result;
 				}
@@ -79,6 +81,8 @@ class ActionEdit extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = -6313207070375921023L;
 
 	}
 
