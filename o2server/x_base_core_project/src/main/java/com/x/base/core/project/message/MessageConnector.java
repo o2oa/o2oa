@@ -191,7 +191,7 @@ public class MessageConnector {
 
 	public static final String CONSUME_WELINK = "welink";
 
-	public static final String CONSUME_ZHENGWUDINGDING = "zhengwuDingding";
+	public static final String CONSUME_ZHENGWUDINGDING = "zhengwudingding";
 
 	public static final String CONSUME_QIYEWEIXIN = "qiyeweixin";
 
@@ -199,7 +199,7 @@ public class MessageConnector {
 
 	public static final String CONSUME_KAFKA = "kafka";
 
-	public static final String CONSUME_ACTIVEMQ = "activeMq";
+	public static final String CONSUME_ACTIVEMQ = "activemq";
 	// restful类型
 	public static final String CONSUME_RESTFUL = "restful";
 	// 邮件类型

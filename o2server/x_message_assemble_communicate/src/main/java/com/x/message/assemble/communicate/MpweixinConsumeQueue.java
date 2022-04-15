@@ -29,9 +29,9 @@ import com.x.organization.core.entity.Person;
  * 发送微信公众号模版消息 Created by fancyLou on 3/11/21. Copyright © 2021 O2. All rights
  * reserved.
  */
-public class MpWeixinConsumeQueue extends AbstractQueue<Message> {
+public class MpweixinConsumeQueue extends AbstractQueue<Message> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(MpWeixinConsumeQueue.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MpweixinConsumeQueue.class);
 
 	private static final Gson gson = XGsonBuilder.instance();
 

@@ -41,7 +41,7 @@ public class ApiConsumeQueue extends AbstractQueue<Message> {
 	private static Gson gson = XGsonBuilder.instance();
 
 	protected void execute(Message message) throws Exception {
-		if (null != message && StringUtils.isNotEmpty(message.getItem())) {
+		if (null != message) {
 			update(message);
 		}
 		List<String> ids = listOverStay();
@@ -51,9 +51,7 @@ public class ApiConsumeQueue extends AbstractQueue<Message> {
 				Optional<Message> optional = find(id);
 				if (optional.isPresent()) {
 					message = optional.get();
-					if (StringUtils.isNotEmpty(message.getItem())) {
-						update(message);
-					}
+					update(message);
 				}
 			}
 		}

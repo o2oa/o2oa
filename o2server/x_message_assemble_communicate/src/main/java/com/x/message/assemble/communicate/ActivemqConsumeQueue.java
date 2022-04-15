@@ -26,7 +26,7 @@ import com.google.gson.Gson;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject_;
-import com.x.base.core.project.config.Message.ActiveMqConsumer;
+import com.x.base.core.project.config.Message.ActivemqConsumer;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -36,14 +36,14 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.message.core.entity.Message;
 import com.x.message.core.entity.Message_;
 
-public class ActiveMqConsumeQueue extends AbstractQueue<Message> {
+public class ActivemqConsumeQueue extends AbstractQueue<Message> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActiveMqConsumeQueue.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActivemqConsumeQueue.class);
 
 	private static final Gson gson = XGsonBuilder.instance();
 
 	protected void execute(Message message) throws Exception {
-		if (null != message && StringUtils.isNotEmpty(message.getItem())) {
+		if (null != message) {
 			update(message);
 		}
 		List<String> ids = listOverStay();
@@ -53,9 +53,7 @@ public class ActiveMqConsumeQueue extends AbstractQueue<Message> {
 				Optional<Message> optional = find(id);
 				if (optional.isPresent()) {
 					message = optional.get();
-					if (StringUtils.isNotEmpty(message.getItem())) {
-						update(message);
-					}
+					update(message);
 				}
 			}
 		}
@@ -72,8 +70,8 @@ public class ActiveMqConsumeQueue extends AbstractQueue<Message> {
 
 	private void update(Message message) {
 		try {
-			ActiveMqConsumer consumer = gson.fromJson(message.getProperties().getConsumerJsonElement(),
-					ActiveMqConsumer.class);
+			ActivemqConsumer consumer = gson.fromJson(message.getProperties().getConsumerJsonElement(),
+					ActivemqConsumer.class);
 			producer(message, consumer);
 			success(message.getId());
 		} catch (Exception e) {
@@ -82,7 +80,7 @@ public class ActiveMqConsumeQueue extends AbstractQueue<Message> {
 		}
 	}
 
-	private void producer(Message message, ActiveMqConsumer consumer) throws JMSException {
+	private void producer(Message message, ActivemqConsumer consumer) throws JMSException {
 
 		ActiveMQConnectionFactory connectionFactory;
 
@@ -92,7 +90,7 @@ public class ActiveMqConsumeQueue extends AbstractQueue<Message> {
 		} else {
 			connectionFactory = new ActiveMQConnectionFactory(consumer.getUrl());
 		}
-		connectionFactory.setTrustedPackages(ListTools.toList(ActiveMqConsumeQueue.class.getPackage().getName()));
+		connectionFactory.setTrustedPackages(ListTools.toList(ActivemqConsumeQueue.class.getPackage().getName()));
 		try (Connection connection = connectionFactory.createConnection()) {
 			connection.start();
 			try (Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE)) {

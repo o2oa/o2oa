@@ -10,9 +10,9 @@ import com.x.base.core.project.queue.AbstractQueue;
 import com.x.message.assemble.communicate.message.ZhengwuDingdingMessage;
 import com.x.message.core.entity.Message;
 
-public class ZhengwuDingdingConsumeQueue extends AbstractQueue<Message> {
+public class ZhengwudingdingConsumeQueue extends AbstractQueue<Message> {
 
-	private static Logger logger = LoggerFactory.getLogger(ZhengwuDingdingConsumeQueue.class);
+	private static Logger logger = LoggerFactory.getLogger(ZhengwudingdingConsumeQueue.class);
 
 	protected void execute(Message message) throws Exception {
 
