@@ -41,5 +41,7 @@ class ActionDeleteDataPath4 extends BaseAction {
 
 	public static class Wo extends WoId {
 
+		private static final long serialVersionUID = -251698498180634109L;
+
 	}
 }

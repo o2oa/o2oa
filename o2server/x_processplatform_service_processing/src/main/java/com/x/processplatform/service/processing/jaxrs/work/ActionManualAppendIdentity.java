@@ -20,6 +20,8 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapStringList;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.Work;
@@ -28,11 +30,11 @@ import com.x.processplatform.service.processing.Business;
 
 class ActionManualAppendIdentity extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionManualAppendIdentity.class);
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 
-		ActionResult<Wo> result = new ActionResult<>();
-
-		Wo wo = new Wo();
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 
@@ -45,71 +47,14 @@ class ActionManualAppendIdentity extends BaseAction {
 			}
 			executorSeed = work.getJob();
 		}
-		Callable<String> callable = new Callable<String>() {
-			public String call() throws Exception {
-				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+		return ProcessPlatformExecutorFactory.get(executorSeed).submit(new CallableImpl(id, wi)).get(300,
+				TimeUnit.SECONDS);
 
-					Business business = new Business(emc);
-
-					Work work = emc.find(id, Work.class);
-
-					if (null == work) {
-						throw new ExceptionEntityNotExist(id, Work.class);
-					}
-
-					// ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-					// 		Applications.joinQueryUri("work", work.getId(), "processing"), null, work.getJob());
-
-					result.setData(wo);
-
-					if (!Objects.equals(ActivityType.manual, work.getActivityType())) {
-						throw new ExceptionNotManual(work.getActivity());
-					}
-
-					List<String> taskIdentities = business.organization().identity().list(wi.getTaskIdentityList());
-
-					taskIdentities = ListUtils.subtract(taskIdentities, work.getManualTaskIdentityList());
-
-					work.setManualTaskIdentityList(
-							ListUtils.sum(work.getManualTaskIdentityList(), wi.getTaskIdentityList()));
-
-					List<Review> addReviews = new ArrayList<>();
-					for (String identity : taskIdentities) {
-						String person = business.organization().person().getWithIdentity(identity);
-						if (StringUtils.isNotEmpty(person)) {
-							if (count(business, work, person) < 1) {
-								Review review = new Review(work, person);
-								addReviews.add(review);
-							}
-						}
-					}
-
-					emc.beginTransaction(Work.class);
-
-					emc.check(work, CheckPersistType.all);
-
-					if (!addReviews.isEmpty()) {
-						emc.beginTransaction(Review.class);
-						for (Review review : addReviews) {
-							emc.persist(review, CheckPersistType.all);
-						}
-					}
-
-					emc.commit();
-
-					wo.setTaskIdentityList(taskIdentities);
-				}
-
-				return "";
-			}
-		};
-		ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get(300, TimeUnit.SECONDS);
-
-		result.setData(wo);
-		return result;
 	}
 
 	public static class Wi extends GsonPropertyObject {
+
+		private static final long serialVersionUID = 6857844608423951314L;
 
 		@FieldDescribe("添加的待办身份.")
 		private List<String> taskIdentityList;
@@ -147,6 +92,8 @@ class ActionManualAppendIdentity extends BaseAction {
 	}
 
 	public static class Wo extends WrapStringList {
+
+		private static final long serialVersionUID = 3490090127579620225L;
 
 		@FieldDescribe("添加的待办身份.")
 		private List<String> taskIdentityList;
@@ -186,6 +133,74 @@ class ActionManualAppendIdentity extends BaseAction {
 	public Long count(Business business, Work work, String person) throws Exception {
 		return business.entityManagerContainer().countEqualAndEqual(Review.class, Review.job_FIELDNAME, work.getJob(),
 				Review.person_FIELDNAME, person);
+	}
+
+	private class CallableImpl implements Callable<ActionResult<Wo>> {
+
+		private String id;
+		private Wi wi;
+
+		CallableImpl(String id, Wi wi) {
+			this.id = id;
+			this.wi = wi;
+		}
+
+		public ActionResult<Wo> call() throws Exception {
+
+			ActionResult<Wo> result = new ActionResult<>();
+
+			Wo wo = new Wo();
+
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+
+				Business business = new Business(emc);
+
+				Work work = emc.find(id, Work.class);
+
+				if (null == work) {
+					throw new ExceptionEntityNotExist(id, Work.class);
+				}
+
+				result.setData(wo);
+
+				if (!Objects.equals(ActivityType.manual, work.getActivityType())) {
+					throw new ExceptionNotManual(work.getActivity());
+				}
+
+				List<String> taskIdentities = business.organization().identity().list(wi.getTaskIdentityList());
+
+				taskIdentities = ListUtils.subtract(taskIdentities, work.getManualTaskIdentityList());
+
+				work.setManualTaskIdentityList(
+						ListUtils.sum(work.getManualTaskIdentityList(), wi.getTaskIdentityList()));
+
+				List<Review> addReviews = new ArrayList<>();
+				for (String identity : taskIdentities) {
+					String person = business.organization().person().getWithIdentity(identity);
+					if (StringUtils.isNotEmpty(person) && (count(business, work, person) < 1)) {
+						Review review = new Review(work, person);
+						addReviews.add(review);
+					}
+				}
+
+				emc.beginTransaction(Work.class);
+
+				emc.check(work, CheckPersistType.all);
+
+				if (!addReviews.isEmpty()) {
+					emc.beginTransaction(Review.class);
+					for (Review review : addReviews) {
+						emc.persist(review, CheckPersistType.all);
+					}
+				}
+
+				emc.commit();
+
+				wo.setTaskIdentityList(taskIdentities);
+			}
+
+			return result;
+		}
 	}
 
 }

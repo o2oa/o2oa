@@ -13,8 +13,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.scripting.JsonScriptingExecutor;
 import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.tools.NumberTools;
@@ -28,8 +26,6 @@ import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
 public class BeginProcessor extends AbstractBeginProcessor {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(BeginProcessor.class);
 
 	public BeginProcessor(EntityManagerContainer entityManagerContainer) throws Exception {
 		super(entityManagerContainer);

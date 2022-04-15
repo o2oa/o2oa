@@ -17,6 +17,8 @@ import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapStringList;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.content.Work;
@@ -28,7 +30,11 @@ import com.x.processplatform.service.processing.Business;
 
 class V2AddSplit extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(V2AddSplit.class);
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
 		final String job;
 		final Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
@@ -152,9 +158,13 @@ class V2AddSplit extends BaseAction {
 
 	public static class Wi extends V2AddSplitWi {
 
+		private static final long serialVersionUID = 6460190818209523936L;
+
 	}
 
 	public static class Wo extends WrapStringList {
+
+		private static final long serialVersionUID = -5717489826043523199L;
 
 	}
 

@@ -11,6 +11,8 @@ import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.service.processing.Business;
@@ -18,7 +20,11 @@ import com.x.processplatform.service.processing.MessageFactory;
 
 public class ActionDelete extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDelete.class);
+
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String job) throws Exception {
+
+		LOGGER.debug("execute:{}, job:{}.", effectivePerson::getDistinguishedName, () -> job);
 
 		Callable<ActionResult<List<Wo>>> callable = new Callable<ActionResult<List<Wo>>>() {
 			public ActionResult<List<Wo>> call() throws Exception {
@@ -65,6 +71,8 @@ public class ActionDelete extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = -2910714914090486687L;
 
 	}
 }

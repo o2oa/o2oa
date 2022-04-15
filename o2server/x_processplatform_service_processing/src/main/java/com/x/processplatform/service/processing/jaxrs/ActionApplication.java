@@ -9,6 +9,7 @@ import com.x.processplatform.service.processing.jaxrs.applicationdict.Applicatio
 import com.x.processplatform.service.processing.jaxrs.attachment.AttachmentAction;
 import com.x.processplatform.service.processing.jaxrs.data.DataAction;
 import com.x.processplatform.service.processing.jaxrs.documentversion.DocumentVersionAction;
+import com.x.processplatform.service.processing.jaxrs.event.EventAction;
 import com.x.processplatform.service.processing.jaxrs.form.FormAction;
 import com.x.processplatform.service.processing.jaxrs.job.JobAction;
 import com.x.processplatform.service.processing.jaxrs.read.ReadAction;
@@ -44,6 +45,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(ServiceAction.class);
 		classes.add(SnapAction.class);
 		classes.add(FormAction.class);
+		classes.add(EventAction.class);
 		return classes;
 	}
 

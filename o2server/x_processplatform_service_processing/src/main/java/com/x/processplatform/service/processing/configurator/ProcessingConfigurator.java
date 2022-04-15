@@ -13,11 +13,14 @@ import com.x.processplatform.core.entity.element.ActivityType;
  */
 public class ProcessingConfigurator extends GsonPropertyObject {
 
+	private static final long serialVersionUID = 51911707452285728L;
+
 	private Boolean continueLoop = Boolean.TRUE;
 
 	private Boolean joinAtExecute = Boolean.TRUE;
 
 	public ProcessingConfigurator() {
+		// nothing
 	}
 
 	public ActivityProcessingConfigurator get(ActivityType activityType) {

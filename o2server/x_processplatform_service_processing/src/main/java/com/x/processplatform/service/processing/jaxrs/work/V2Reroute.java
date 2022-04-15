@@ -27,20 +27,21 @@ import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Activity;
-import com.x.processplatform.core.entity.element.Form;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2RerouteWi;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
 
 class V2Reroute extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(V2Reroute.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(V2Reroute.class);
 
 	/**
 	 * @param effectivePerson current person
 	 */
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+		
 		final String job;
 		final Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -124,7 +125,7 @@ class V2Reroute extends BaseAction {
 				business.entityManagerContainer().remove(o, CheckRemoveType.all);
 				MessageFactory.task_delete(o);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		});
 	}
@@ -136,7 +137,7 @@ class V2Reroute extends BaseAction {
 					try {
 						o.setWork(work.getId());
 					} catch (Exception e) {
-						logger.error(e);
+						LOGGER.error(e);
 					}
 				});
 	}
@@ -148,7 +149,7 @@ class V2Reroute extends BaseAction {
 						business.entityManagerContainer().remove(o, CheckRemoveType.all);
 						MessageFactory.task_delete(o);
 					} catch (Exception e) {
-						logger.error(e);
+						LOGGER.error(e);
 					}
 				});
 	}
@@ -161,7 +162,7 @@ class V2Reroute extends BaseAction {
 				business.entityManagerContainer().remove(o, CheckRemoveType.all);
 				MessageFactory.work_delete(o);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		});
 	}
@@ -174,7 +175,7 @@ class V2Reroute extends BaseAction {
 			try {
 				business.entityManagerContainer().remove(o, CheckRemoveType.all);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		});
 	}

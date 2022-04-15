@@ -13,9 +13,12 @@ import com.x.processplatform.service.processing.MessageFactory;
 
 class ActionPress extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionPress.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionPress.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 
@@ -24,7 +27,6 @@ class ActionPress extends BaseAction {
 			if (null == task) {
 				throw new ExceptionEntityNotExist(id, Task.class);
 			}
-			logger.info("{}提醒待办【{}】给【{}】", effectivePerson.getDistinguishedName(), task.getTitle(), task.getPerson());
 			MessageFactory.task_press(task, "系统");
 			wo.setValue(task.getPerson());
 		}
@@ -35,6 +37,8 @@ class ActionPress extends BaseAction {
 	}
 
 	public static class Wo extends WrapString {
+
+		private static final long serialVersionUID = 6127898394613135325L;
 	}
 
 }
