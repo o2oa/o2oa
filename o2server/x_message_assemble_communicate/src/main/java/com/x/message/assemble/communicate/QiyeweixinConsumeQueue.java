@@ -2,6 +2,7 @@ package com.x.message.assemble.communicate;
 
 import java.net.URLEncoder;
 
+import com.x.base.core.project.message.MessageConnector;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.Gson;
@@ -34,13 +35,13 @@ public class QiyeweixinConsumeQueue extends AbstractQueue<Message> {
 				m.setTouser(business.organization().person().getObject(message.getPerson()).getQiyeweixinId());
 				String content = message.getTitle();
 				if (needTransferLink(message.getType())) {
-					String workUrl = getQywxOpenWorkUrl(message.getBody());
+					String workUrl = getOpenUrl(message);
 					if (StringUtils.isNotEmpty(workUrl)) {
 						content = "<a href=\"" + workUrl + "\">" + message.getTitle() + "</a>";
 					}
 				}
 				m.getText().setContent(content);
-				LOGGER.debug("微信消息：" + m.toString());
+				LOGGER.debug("微信消息：{}", m::toString);
 				String address = Config.qiyeweixin().getApiAddress() + "/cgi-bin/message/send?access_token="
 						+ Config.qiyeweixin().corpAccessToken();
 				QiyeweixinMessageResp resp = HttpConnection.postAsObject(address, null, m.toString(),
@@ -60,6 +61,43 @@ public class QiyeweixinConsumeQueue extends AbstractQueue<Message> {
 		}
 	}
 
+
+
+	/**
+	 * 判断打开地址
+	 *
+	 * @param message
+	 * @return
+	 */
+	private String getOpenUrl(Message message) {
+		String openUrl = "";
+		// cms 文档
+		if (MessageConnector.TYPE_CMS_PUBLISH.equals(message.getType())
+				|| MessageConnector.TYPE_CMS_PUBLISH_TO_CREATOR.equals(message.getType())) {
+			openUrl = getQywxOpenCMSDocumentUrl(message.getBody());
+		} else { // 流程工作相关的
+			openUrl = getQywxOpenWorkUrl(message.getBody());
+		}
+		return openUrl;
+	}
+
+	/**
+	 * 文档打开的url
+	 *
+	 * @param messageBody
+	 * @return
+	 */
+	private String getQywxOpenCMSDocumentUrl(String messageBody) {
+		String o2oaUrl = null;
+		try {
+			o2oaUrl = Config.qiyeweixin().getWorkUrl() + "qiyeweixinsso.html?redirect=";
+			return DingdingConsumeQueue.OuterMessageHelper.getOpenCMSDocumentUrl(o2oaUrl, messageBody);
+		} catch (Exception e) {
+			LOGGER.error(e);
+			return null;
+		}
+	}
+
 	/**
 	 * 生成单点登录和打开工作的地址
 	 * 
@@ -68,7 +106,7 @@ public class QiyeweixinConsumeQueue extends AbstractQueue<Message> {
 	 */
 	private String getQywxOpenWorkUrl(String messageBody) {
 		try {
-			String work = getWorkIdFromBody(messageBody);
+			String work = DingdingConsumeQueue.OuterMessageHelper.getWorkIdFromBody(messageBody);
 			String o2oaUrl = Config.qiyeweixin().getWorkUrl();
 			String corpId = Config.qiyeweixin().getCorpId();
 			String agentId = Config.qiyeweixin().getAgentId();
@@ -76,22 +114,27 @@ public class QiyeweixinConsumeQueue extends AbstractQueue<Message> {
 					|| StringUtils.isEmpty(agentId)) {
 				return null;
 			}
-			String workUrl = "workmobilewithaction.html?workid=" + work;
-			String messageRedirectPortal = Config.qiyeweixin().getMessageRedirectPortal();
-			if (messageRedirectPortal != null && !"".equals(messageRedirectPortal)) {
-				String portal = "portalmobile.html?id=" + messageRedirectPortal;
-				portal = URLEncoder.encode(portal, DefaultCharset.name);
-				workUrl += "&redirectlink=" + portal;
+			String openPage = DingdingConsumeQueue.OuterMessageHelper.getOpenPageUrl(messageBody);
+			if (StringUtils.isNotEmpty(openPage)) {
+				o2oaUrl = o2oaUrl + "qiyeweixinsso.html?redirect=" + openPage;
+			} else {
+				String workUrl = "workmobilewithaction.html?workid=" + work;
+				String messageRedirectPortal = Config.qiyeweixin().getMessageRedirectPortal();
+				if (messageRedirectPortal != null && !"".equals(messageRedirectPortal)) {
+					String portal = "portalmobile.html?id=" + messageRedirectPortal;
+					portal = URLEncoder.encode(portal, DefaultCharset.name);
+					workUrl += "&redirectlink=" + portal;
+				}
+				workUrl = URLEncoder.encode(workUrl, DefaultCharset.name);
+				o2oaUrl = o2oaUrl + "qiyeweixinsso.html?redirect=" + workUrl;
 			}
-			workUrl = URLEncoder.encode(workUrl, DefaultCharset.name);
-			o2oaUrl = o2oaUrl + "qiyeweixinsso.html?redirect=" + workUrl;
 			LOGGER.debug("o2oa 地址：" + o2oaUrl);
 			o2oaUrl = URLEncoder.encode(o2oaUrl, DefaultCharset.name);
 			LOGGER.debug("encode url :" + o2oaUrl);
 			String url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + corpId
 					+ "&response_type=code&scope=snsapi_base" + "&agentid=" + agentId + "&redirect_uri=" + o2oaUrl
 					+ "&#wechat_redirect";
-			LOGGER.debug("final url :" + url);
+			LOGGER.debug("final url : {}" ,()-> url);
 			return url;
 		} catch (Exception e) {
 			LOGGER.error(e);
@@ -100,26 +143,6 @@ public class QiyeweixinConsumeQueue extends AbstractQueue<Message> {
 		return "";
 	}
 
-	/**
-	 * 获取workid
-	 * 
-	 * @param messageBody
-	 * @return
-	 */
-	private String getWorkIdFromBody(String messageBody) {
-		try {
-			JsonObject object = gson.fromJson(messageBody, JsonObject.class);
-			if (object.get("work") != null) {
-				return object.get("work").getAsString();
-			}
-			if (object.get("workCompleted") != null) {
-				return object.get("workCompleted").getAsString();
-			}
-		} catch (Exception e) {
-			LOGGER.error(e);
-		}
-		return null;
-	}
 
 	/**
 	 * 是否需要把企业微信消息转成超链接消息 根据是否配置了企业微信应用链接、是否是工作消息（目前只支持工作消息）
