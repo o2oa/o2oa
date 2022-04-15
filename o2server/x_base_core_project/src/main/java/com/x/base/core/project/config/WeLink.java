@@ -36,7 +36,7 @@ public class WeLink extends ConfigObject {
 	@FieldDescribe("是否启用消息推送")
 	private Boolean messageEnable;
 
-	@FieldDescribe("WeLink消息打开工作的url地址，如：http://dev.o2oa.net/x_desktop/")
+	@FieldDescribe("WeLink消息打开工作的url地址，如：https://sample.o2oa.net/x_desktop/")
 	private String workUrl = "";
 
 	@FieldDescribe("WeLink消息处理完成后跳转到特定的门户页面的Id")

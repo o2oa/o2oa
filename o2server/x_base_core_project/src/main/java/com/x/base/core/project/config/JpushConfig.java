@@ -39,9 +39,9 @@ public class JpushConfig extends ConfigObject {
     private String appKey;
     @FieldDescribe("极光推送应用的Master Secret")
     private String masterSecret;
-    @FieldDescribe("是否开启华为推送")
+    @FieldDescribe("是否开启华为推送，已废弃")
     private Boolean huaweiPushEnable;
-    @FieldDescribe("华为推送的配置")
+    @FieldDescribe("华为推送的配置，已废弃")
     private HuaweiPushConfig huaweiPushConfig;
     @FieldDescribe("苹果推送证书路径")
     private String apnsKeystorePath;

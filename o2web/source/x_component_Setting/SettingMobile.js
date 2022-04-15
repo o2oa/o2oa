@@ -503,6 +503,11 @@ MWF.xApplication.Setting.AppPackOnlineDocument = new Class({
             this.app.notice(this.lp.mobile_apppack_message_host_format_error, "error", this.contentAreaNode);
             return;
         }
+        if (host.indexOf(":") > 0) {
+            this.app.notice(this.lp.mobile_apppack_message_host_format_error, "error", this.contentAreaNode);
+            return;
+        }
+
         var port = this.apppackPortInputNode.get("value");
         if (!port || port === "") {
             this.app.notice(this.lp.mobile_apppack_message_port_not_empty, "error", this.contentAreaNode);
