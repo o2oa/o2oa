@@ -81,7 +81,7 @@ public class ActionMsgCreate extends BaseAction {
 						message.setType(MessageConnector.TYPE_IM_CREATE);
 						message.setId("");
 						if (BooleanUtils.isTrue(Config.pushConfig().getEnable())) {
-							ThisApplication.pmsInnerConsumeQueue.send(message);
+							ThisApplication.pmsinnerConsumeQueue.send(message);
 						}
 					}
 				} catch (Exception e) {

@@ -47,8 +47,6 @@ public class Message extends SliceJpaObject {
 	@Column(length = length_id, name = ColumnNamePrefix + id_FIELDNAME)
 	private String id = createId();
 
-	/* 以上为 JpaObject 默认字段 */
-
 	public void onPersist() throws Exception {
 		// nothing
 	}
@@ -113,13 +111,6 @@ public class Message extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false)
 	private String instant;
 
-	public static final String ITEM_FIELDNAME = "item";
-	@FieldDescribe("配置项.")
-	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + ITEM_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + ITEM_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private String item;
-
 	public static final String PROPERTIES_FIELDNAME = "properties";
 	@FieldDescribe("属性对象存储字段.")
 	@Persistent
@@ -178,14 +169,6 @@ public class Message extends SliceJpaObject {
 
 	public String getInstant() {
 		return instant;
-	}
-
-	public String getItem() {
-		return item;
-	}
-
-	public void setItem(String item) {
-		this.item = item;
 	}
 
 	public void setInstant(String instant) {

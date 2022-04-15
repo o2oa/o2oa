@@ -44,7 +44,7 @@ public class RestfulConsumeQueue extends AbstractQueue<Message> {
 	private static WebservicesClient client = new WebservicesClient();
 
 	protected void execute(Message message) throws Exception {
-		if (null != message && StringUtils.isNotEmpty(message.getItem())) {
+		if (null != message) {
 			update(message);
 		}
 		List<String> ids = listOverStay();
@@ -54,9 +54,7 @@ public class RestfulConsumeQueue extends AbstractQueue<Message> {
 				Optional<Message> optional = find(id);
 				if (optional.isPresent()) {
 					message = optional.get();
-					if (StringUtils.isNotEmpty(message.getItem())) {
-						update(message);
-					}
+					update(message);
 				}
 			}
 		}

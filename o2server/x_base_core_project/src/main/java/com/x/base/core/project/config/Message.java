@@ -131,11 +131,27 @@ public class Message extends GsonPropertyObject {
 	}
 
 	public static Consumer concreteConsumer(String type) {
-		switch (Objects.toString(type, "")) {
+		switch (StringUtils.lowerCase(Objects.toString(type, ""))) {
+		case MessageConnector.CONSUME_WS:
+			return new WsConsumer();
+		case MessageConnector.CONSUME_PMS_INNER:
+			return new PmsinnerConsumer();
+		case MessageConnector.CONSUME_CALENDAR:
+			return new CalendarConsumer();
+		case MessageConnector.CONSUME_DINGDING:
+			return new DingdingConsumer();
+		case MessageConnector.CONSUME_WELINK:
+			return new WelinkConsumer();
+		case MessageConnector.CONSUME_ZHENGWUDINGDING:
+			return new ZhengwudingdingConsumer();
+		case MessageConnector.CONSUME_QIYEWEIXIN:
+			return new QiyeweixinConsumer();
+		case MessageConnector.CONSUME_MPWEIXIN:
+			return new MpweixinConsumer();
 		case MessageConnector.CONSUME_KAFKA:
 			return new KafkaConsumer();
 		case MessageConnector.CONSUME_ACTIVEMQ:
-			return new ActiveMqConsumer();
+			return new ActivemqConsumer();
 		case MessageConnector.CONSUME_RESTFUL:
 			return new RestfulConsumer();
 		case MessageConnector.CONSUME_MAIL:
@@ -151,6 +167,86 @@ public class Message extends GsonPropertyObject {
 		default:
 			return new Consumer(type);
 		}
+	}
+
+	public static class WsConsumer extends Consumer {
+
+		private static final long serialVersionUID = 8702816982685612136L;
+
+		public WsConsumer() {
+			super(MessageConnector.CONSUME_WS, true);
+		}
+
+	}
+
+	public static class PmsinnerConsumer extends Consumer {
+
+		private static final long serialVersionUID = -1246633610717846231L;
+
+		public PmsinnerConsumer() {
+			super(MessageConnector.CONSUME_PMS_INNER, true);
+		}
+
+	}
+
+	public static class CalendarConsumer extends Consumer {
+
+		private static final long serialVersionUID = -1453591270935170682L;
+
+		public CalendarConsumer() {
+			super(MessageConnector.CONSUME_CALENDAR, false);
+		}
+
+	}
+
+	public static class DingdingConsumer extends Consumer {
+
+		private static final long serialVersionUID = -2273422698767839910L;
+
+		public DingdingConsumer() {
+			super(MessageConnector.CONSUME_DINGDING, true);
+		}
+
+	}
+
+	public static class WelinkConsumer extends Consumer {
+
+		private static final long serialVersionUID = -5796171639649346866L;
+
+		public WelinkConsumer() {
+			super(MessageConnector.CONSUME_WELINK, true);
+		}
+
+	}
+
+	public static class ZhengwudingdingConsumer extends Consumer {
+
+		private static final long serialVersionUID = -1805579720843025600L;
+
+		public ZhengwudingdingConsumer() {
+			super(MessageConnector.CONSUME_ZHENGWUDINGDING, true);
+		}
+
+	}
+
+	public static class QiyeweixinConsumer extends Consumer {
+
+		private static final long serialVersionUID = -3957612144231971034L;
+
+		public QiyeweixinConsumer() {
+			super(MessageConnector.CONSUME_QIYEWEIXIN, true);
+		}
+
+	}
+
+	public static class MpweixinConsumer extends Consumer {
+
+		private static final long serialVersionUID = -9116678126784563430L;
+
+		public MpweixinConsumer() {
+			super(MessageConnector.CONSUME_MPWEIXIN, true);
+		}
+
 	}
 
 	public static class ApiConsumer extends Consumer {
@@ -270,7 +366,7 @@ public class Message extends GsonPropertyObject {
 		}
 
 		private static final String DEFAULT_DRIVERCLASS = "com.mysql.cj.jdbc.Driver";
-		private static final String DEFAULT_URL = "jdbc:mysql://127.0.0.1:3306/TEST?autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&characterEncoding=UTF-8&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8";
+		private static final String DEFAULT_URL = "jdbc:mysql://";
 		private static final String DEFAULT_USERNAME = "root";
 		private static final String DEFAULT_PASSWORD = "password";
 		private static final String DEFAULT_CATALOG = "";
@@ -386,7 +482,7 @@ public class Message extends GsonPropertyObject {
 			this.path = DEFAULT_PATH;
 		}
 
-		private static final String DEFAULT_FS_DEFAULTFS = "hdfs://127.0.0.1:9000";
+		private static final String DEFAULT_FS_DEFAULTFS = "hdfs://";
 		private static final String DEFAULT_USERNAME = "";
 		private static final String DEFAULT_PATH = "";
 
@@ -426,7 +522,7 @@ public class Message extends GsonPropertyObject {
 			this.password = DEFAULT_PASSWORD;
 		}
 
-		private static final String DEFAULT_BOOTSTRAPSERVERS = "127.0.0.1:9092";
+		private static final String DEFAULT_BOOTSTRAPSERVERS = "";
 		private static final String DEFAULT_TOPIC = "o2oa";
 		private static final String DEFAULT_SECURITYPROTOCOL = "SASL_PLAINTEXT";
 		private static final String DEFAULT_SASLMECHANISM = "PLAIN";
@@ -477,11 +573,11 @@ public class Message extends GsonPropertyObject {
 
 	}
 
-	public static class ActiveMqConsumer extends Consumer {
+	public static class ActivemqConsumer extends Consumer {
 
 		private static final long serialVersionUID = -7469816290407400176L;
 
-		public ActiveMqConsumer() {
+		public ActivemqConsumer() {
 			super(MessageConnector.CONSUME_ACTIVEMQ, false);
 			this.username = DEFAULT_USERNAME;
 			this.password = DEFAULT_PASSWORD;

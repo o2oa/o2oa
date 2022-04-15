@@ -32,17 +32,17 @@ public class ThisApplication {
 
 	public static final QiyeweixinConsumeQueue qiyeweixinConsumeQueue = new QiyeweixinConsumeQueue();
 
-	public static final ZhengwuDingdingConsumeQueue zhengwuDingdingConsumeQueue = new ZhengwuDingdingConsumeQueue();
+	public static final ZhengwudingdingConsumeQueue zhengwudingdingConsumeQueue = new ZhengwudingdingConsumeQueue();
 
 	public static final DingdingConsumeQueue dingdingConsumeQueue = new DingdingConsumeQueue();
 
-	public static final WeLinkConsumeQueue weLinkConsumeQueue = new WeLinkConsumeQueue();
+	public static final WelinkConsumeQueue welinkConsumeQueue = new WelinkConsumeQueue();
 
-	public static final PmsInnerConsumeQueue pmsInnerConsumeQueue = new PmsInnerConsumeQueue();
+	public static final PmsinnerConsumeQueue pmsinnerConsumeQueue = new PmsinnerConsumeQueue();
 
-	public static final MpWeixinConsumeQueue mpWeixinConsumeQueue = new MpWeixinConsumeQueue();
+	public static final MpweixinConsumeQueue mpweixinConsumeQueue = new MpweixinConsumeQueue();
 
-	public static final ActiveMqConsumeQueue activeMqConsumeQueue = new ActiveMqConsumeQueue();
+	public static final ActivemqConsumeQueue activemqConsumeQueue = new ActivemqConsumeQueue();
 
 	public static final KafkaConsumeQueue kafkaConsumeQueue = new KafkaConsumeQueue();
 
@@ -87,7 +87,7 @@ public class ThisApplication {
 
 	private static void startQueue() throws Exception {
 		context().startQueue(kafkaConsumeQueue);
-		context().startQueue(activeMqConsumeQueue);
+		context().startQueue(activemqConsumeQueue);
 		context().startQueue(restfulConsumeQueue);
 		context().startQueue(apiConsumeQueue);
 		context().startQueue(mailConsumeQueue);
@@ -100,20 +100,20 @@ public class ThisApplication {
 		}
 		if (BooleanUtils.isTrue(Config.zhengwuDingding().getEnable())
 				&& BooleanUtils.isTrue(Config.zhengwuDingding().getMessageEnable())) {
-			context().startQueue(zhengwuDingdingConsumeQueue);
+			context().startQueue(zhengwudingdingConsumeQueue);
 		}
 		if (Config.dingding().getEnable() && Config.dingding().getMessageEnable()) {
 			context().startQueue(dingdingConsumeQueue);
 		}
 		if (BooleanUtils.isTrue(Config.pushConfig().getEnable())) {
-			context().startQueue(pmsInnerConsumeQueue);
+			context().startQueue(pmsinnerConsumeQueue);
 		}
 		if (Config.weLink().getEnable() && Config.weLink().getMessageEnable()) {
-			context().startQueue(weLinkConsumeQueue);
+			context().startQueue(welinkConsumeQueue);
 		}
 		if (BooleanUtils.isTrue(Config.mPweixin().getEnable())
 				&& BooleanUtils.isTrue(Config.mPweixin().getMessageEnable())) {
-			context().startQueue(mpWeixinConsumeQueue);
+			context().startQueue(mpweixinConsumeQueue);
 		}
 		if (BooleanUtils.isTrue(Config.communicate().wsEnable())) {
 			context().startQueue(wsConsumeQueue);
