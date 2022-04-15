@@ -1108,6 +1108,8 @@ library.defineProperties(response, {
 });
 
 
+
+
 var o= {
     "entityManager": { "configurable": true, "get": function(){return null;} },
     "context": { "configurable": true, "get": function(){return ((bind.java_resources) ? bind.java_resources.getContext() : null)} },
@@ -1177,7 +1179,8 @@ var o= {
     "requestText": { "configurable": true, "get": function(){return bind.java_requestText || null; } },
     "request": { "configurable": true, "get": function(){return bind.java_request || null; } },
     "resources": { "configurable": true, "get": function(){return (bind.java_resources || null)} },
-    "customResponse": { "configurable": true, "get": function(){return (bind.java_customResponse || null)} }
+    "customResponse": { "configurable": true, "get": function(){return (bind.java_customResponse || null)} },
+    "message": { "configurable": true, "get": function(){return (bind.java_message) ? JSON.parse(bind.java_message) : null;} }
 
 }
 library.defineProperties(bind, o);
