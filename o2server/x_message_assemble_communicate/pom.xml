@@ -25,16 +25,15 @@
 			<groupId>o2oa</groupId>
 			<artifactId>x_message_core_entity</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.apache.kafka</groupId>
 			<artifactId>kafka-clients</artifactId>
-			<version>2.6.0</version>
+			<version>3.1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
 			<artifactId>activemq-client</artifactId>
-			<version>5.14.5</version>
+			<version>5.17.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.apache.geronimo.specs</groupId>

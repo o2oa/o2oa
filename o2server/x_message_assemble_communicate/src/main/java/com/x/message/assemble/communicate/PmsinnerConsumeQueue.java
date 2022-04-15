@@ -12,7 +12,7 @@ import com.x.base.core.project.queue.AbstractQueue;
 import com.x.message.assemble.communicate.message.PmsInnerMessage;
 import com.x.message.core.entity.Message;
 
-public class PmsInnerConsumeQueue extends AbstractQueue<Message> {
+public class PmsinnerConsumeQueue extends AbstractQueue<Message> {
 
 	protected void execute(Message message) throws Exception {
 		Application app = ThisApplication.context().applications()

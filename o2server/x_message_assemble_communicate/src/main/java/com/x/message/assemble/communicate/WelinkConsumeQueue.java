@@ -24,9 +24,9 @@ import com.x.message.assemble.communicate.message.WeLinkMessage;
 import com.x.message.core.entity.Message;
 import com.x.organization.core.entity.Person;
 
-public class WeLinkConsumeQueue extends AbstractQueue<Message> {
+public class WelinkConsumeQueue extends AbstractQueue<Message> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(WeLinkConsumeQueue.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(WelinkConsumeQueue.class);
 
 	protected void execute(Message message) throws Exception {
 

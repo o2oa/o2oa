@@ -6,18 +6,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListMap;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.x.base.core.project.config.Message.ActiveMqConsumer;
+import com.x.base.core.project.config.Message.ActivemqConsumer;
 import com.x.base.core.project.config.Message.ApiConsumer;
+import com.x.base.core.project.config.Message.CalendarConsumer;
 import com.x.base.core.project.config.Message.Consumer;
+import com.x.base.core.project.config.Message.DingdingConsumer;
 import com.x.base.core.project.config.Message.HadoopConsumer;
 import com.x.base.core.project.config.Message.JdbcConsumer;
 import com.x.base.core.project.config.Message.KafkaConsumer;
 import com.x.base.core.project.config.Message.MailConsumer;
+import com.x.base.core.project.config.Message.MpweixinConsumer;
+import com.x.base.core.project.config.Message.PmsinnerConsumer;
+import com.x.base.core.project.config.Message.QiyeweixinConsumer;
 import com.x.base.core.project.config.Message.RestfulConsumer;
 import com.x.base.core.project.config.Message.TableConsumer;
+import com.x.base.core.project.config.Message.WelinkConsumer;
+import com.x.base.core.project.config.Message.WsConsumer;
+import com.x.base.core.project.config.Message.ZhengwudingdingConsumer;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.message.MessageConnector;
 
@@ -33,10 +43,10 @@ public class Messages extends ConcurrentSkipListMap<String, Message> {
 			MessageConnector.CONSUME_API, MessageConnector.CONSUME_JDBC, MessageConnector.CONSUME_TABLE,
 			MessageConnector.CONSUME_HADOOP);
 
-	private static final Message MESSAGE_INNER = new Message(MessageConnector.CONSUME_WS,
-			MessageConnector.CONSUME_PMS_INNER, MessageConnector.CONSUME_CALENDAR, MessageConnector.CONSUME_DINGDING,
-			MessageConnector.CONSUME_WELINK, MessageConnector.CONSUME_ZHENGWUDINGDING,
-			MessageConnector.CONSUME_QIYEWEIXIN, MessageConnector.CONSUME_MPWEIXIN);
+	private static final Message MESSAGE_NOTICE = new Message(MessageConnector.CONSUME_WS,
+			MessageConnector.CONSUME_PMS_INNER, MessageConnector.CONSUME_DINGDING, MessageConnector.CONSUME_WELINK,
+			MessageConnector.CONSUME_ZHENGWUDINGDING, MessageConnector.CONSUME_QIYEWEIXIN,
+			MessageConnector.CONSUME_MPWEIXIN);
 
 	private static final Message MESSAGE_OUTER = new Message(MessageConnector.CONSUME_KAFKA,
 			MessageConnector.CONSUME_ACTIVEMQ, MessageConnector.CONSUME_RESTFUL, MessageConnector.CONSUME_MAIL,
@@ -93,9 +103,9 @@ public class Messages extends ConcurrentSkipListMap<String, Message> {
 		o.put(MessageConnector.TYPE_TEAMWORK_TASKUPDATE, MESSAGE_ALL.cloneThenSetDescription("工作管理任务更新"));
 		o.put(MessageConnector.TYPE_TEAMWORK_TASKDELETE, MESSAGE_ALL.cloneThenSetDescription("工作管理任务删除"));
 		o.put(MessageConnector.TYPE_TEAMWORK_TASKOVERTIME, MESSAGE_ALL.cloneThenSetDescription("工作管理任务超时"));
-		o.put(MessageConnector.TYPE_TEAMWORK_CHAT, MESSAGE_INNER.cloneThenSetDescription("工作管理聊天"));
+		o.put(MessageConnector.TYPE_TEAMWORK_CHAT, MESSAGE_NOTICE.cloneThenSetDescription("工作管理聊天"));
 		o.put(MessageConnector.TYPE_CMS_PUBLISH, MESSAGE_OUTER.cloneThenSetDescription("内容管理发布"));
-		o.put(MessageConnector.TYPE_CMS_PUBLISH_TO_CREATOR, MESSAGE_INNER.cloneThenSetDescription("内容管理发布创建者通知"));
+		o.put(MessageConnector.TYPE_CMS_PUBLISH_TO_CREATOR, MESSAGE_NOTICE.cloneThenSetDescription("内容管理发布创建者通知"));
 		o.put(MessageConnector.TYPE_BBS_SUBJECTCREATE, MESSAGE_ALL.cloneThenSetDescription("论坛创建贴子"));
 		o.put(MessageConnector.TYPE_BBS_REPLYCREATE, MESSAGE_ALL.cloneThenSetDescription("论坛创建回复"));
 		o.put(MessageConnector.TYPE_MIND_FILESEND, MESSAGE_ALL.cloneThenSetDescription("脑图发送"));
@@ -130,12 +140,36 @@ public class Messages extends ConcurrentSkipListMap<String, Message> {
 			JsonObject jsonObject = jsonElement.getAsJsonObject();
 			JsonElement typeElement = jsonObject.get(Message.Consumer.FIELD_TYPE);
 			if (null != typeElement && typeElement.isJsonPrimitive()) {
-				switch (typeElement.getAsString()) {
+				switch (StringUtils.lowerCase(typeElement.getAsString())) {
+				case MessageConnector.CONSUME_WS:
+					list.add(gson.fromJson(jsonElement, WsConsumer.class));
+					break;
+				case MessageConnector.CONSUME_PMS_INNER:
+					list.add(gson.fromJson(jsonElement, PmsinnerConsumer.class));
+					break;
+				case MessageConnector.CONSUME_CALENDAR:
+					list.add(gson.fromJson(jsonElement, CalendarConsumer.class));
+					break;
+				case MessageConnector.CONSUME_DINGDING:
+					list.add(gson.fromJson(jsonElement, DingdingConsumer.class));
+					break;
+				case MessageConnector.CONSUME_WELINK:
+					list.add(gson.fromJson(jsonElement, WelinkConsumer.class));
+					break;
+				case MessageConnector.CONSUME_ZHENGWUDINGDING:
+					list.add(gson.fromJson(jsonElement, ZhengwudingdingConsumer.class));
+					break;
+				case MessageConnector.CONSUME_QIYEWEIXIN:
+					list.add(gson.fromJson(jsonElement, QiyeweixinConsumer.class));
+					break;
+				case MessageConnector.CONSUME_MPWEIXIN:
+					list.add(gson.fromJson(jsonElement, MpweixinConsumer.class));
+					break;
 				case MessageConnector.CONSUME_KAFKA:
 					list.add(gson.fromJson(jsonElement, KafkaConsumer.class));
 					break;
 				case MessageConnector.CONSUME_ACTIVEMQ:
-					list.add(gson.fromJson(jsonElement, ActiveMqConsumer.class));
+					list.add(gson.fromJson(jsonElement, ActivemqConsumer.class));
 					break;
 				case MessageConnector.CONSUME_RESTFUL:
 					list.add(gson.fromJson(jsonElement, RestfulConsumer.class));

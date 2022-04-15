@@ -186,6 +186,9 @@ public class ProcessPlatform extends ConfigObject {
 	@FieldDescribe("同步到自建表设置.")
 	private UpdateTable updateTable;
 
+	@FieldDescribe("归档到Hadoop.")
+	private ArchiveHadoop archiveHadoop;
+
 	@FieldDescribe("事件扩充.")
 	private ExtensionEvents extensionEvents;
 
@@ -223,8 +226,8 @@ public class ProcessPlatform extends ConfigObject {
 		return this.attachmentConfig == null ? new AttachmentConfig() : attachmentConfig;
 	}
 
-	public void setAttachmentConfig(AttachmentConfig attachmentConfig) {
-		this.attachmentConfig = attachmentConfig;
+	public ArchiveHadoop getArchiveHadoop() {
+		return this.archiveHadoop == null ? new ArchiveHadoop() : this.archiveHadoop;
 	}
 
 	public Urge getUrge() {
@@ -306,13 +309,6 @@ public class ProcessPlatform extends ConfigObject {
 			return BooleanUtils.isTrue(this.enable);
 		}
 
-		public void setCron(String cron) {
-			this.cron = cron;
-		}
-
-		public void setEnable(Boolean enable) {
-			this.enable = enable;
-		}
 	}
 
 	public static class Expire extends ConfigObject {
@@ -637,14 +633,6 @@ public class ProcessPlatform extends ConfigObject {
 			return (count == null || count < 0) ? DEFAULT_COUNT : this.count;
 		}
 
-		public void setIntervalMinutes(Integer intervalMinutes) {
-			this.intervalMinutes = intervalMinutes;
-		}
-
-		public void setCount(Integer count) {
-			this.count = count;
-		}
-
 	}
 
 	public static class AttachmentConfig extends ConfigObject {
@@ -670,25 +658,14 @@ public class ProcessPlatform extends ConfigObject {
 			return fileSize;
 		}
 
-		public void setFileSize(Integer fileSize) {
-			this.fileSize = fileSize;
-		}
-
 		public List<String> getFileTypeIncludes() {
 			return fileTypeIncludes;
-		}
-
-		public void setFileTypeIncludes(List<String> fileTypeIncludes) {
-			this.fileTypeIncludes = fileTypeIncludes;
 		}
 
 		public List<String> getFileTypeExcludes() {
 			return fileTypeExcludes;
 		}
 
-		public void setFileTypeExcludes(List<String> fileTypeExcludes) {
-			this.fileTypeExcludes = fileTypeExcludes;
-		}
 	}
 
 	public static class ExtensionEvents {
@@ -821,48 +798,24 @@ public class ProcessPlatform extends ConfigObject {
 			return enable;
 		}
 
-		public void setEnable(Boolean enable) {
-			this.enable = enable;
-		}
-
 		public List<String> getApplications() {
 			return applications;
-		}
-
-		public void setApplications(List<String> applications) {
-			this.applications = applications;
 		}
 
 		public List<String> getProcesses() {
 			return processes;
 		}
 
-		public void setProcesses(List<String> processes) {
-			this.processes = processes;
-		}
-
 		public List<String> getActivities() {
 			return activities;
-		}
-
-		public void setActivities(List<String> activities) {
-			this.activities = activities;
 		}
 
 		public String getUrl() {
 			return url;
 		}
 
-		public void setUrl(String url) {
-			this.url = url;
-		}
-
 		public String getCustom() {
 			return custom;
-		}
-
-		public void setCustom(String custom) {
-			this.custom = custom;
 		}
 
 	}
@@ -906,42 +859,84 @@ public class ProcessPlatform extends ConfigObject {
 			return enable;
 		}
 
-		public void setEnable(Boolean enable) {
-			this.enable = enable;
-		}
-
 		public List<String> getApplications() {
 			return applications;
-		}
-
-		public void setApplications(List<String> applications) {
-			this.applications = applications;
 		}
 
 		public List<String> getProcesses() {
 			return processes;
 		}
 
-		public void setProcesses(List<String> processes) {
-			this.processes = processes;
-		}
-
 		public String getUrl() {
 			return url;
-		}
-
-		public void setUrl(String url) {
-			this.url = url;
 		}
 
 		public String getCustom() {
 			return custom;
 		}
 
-		public void setCustom(String custom) {
-			this.custom = custom;
+	}
+
+	public static class ArchiveHadoop extends ConfigObject {
+
+		private static final long serialVersionUID = -8274136904009320770L;
+
+		public static ArchiveHadoop defaultInstance() {
+			return new ArchiveHadoop();
 		}
 
+		public ArchiveHadoop() {
+			this.enable = DEFAULT_ENABLE;
+			this.cron = DEFAULT_CRON;
+			this.fsDefaultFS = DEFAULT_FS_DEFAULTFS;
+			this.username = DEFAULT_USERNAME;
+			this.path = DEFAULT_PATH;
+		}
+
+		private static final Boolean DEFAULT_ENABLE = false;
+		public static final String DEFAULT_CRON = "20 20 * * * ?";
+		private static final String DEFAULT_FS_DEFAULTFS = "hdfs://";
+		private static final String DEFAULT_USERNAME = "";
+		private static final String DEFAULT_PATH = "";
+
+		@FieldDescribe("是否启用")
+		private Boolean enable = DEFAULT_ENABLE;
+
+		@FieldDescribe("定时cron表达式.")
+		private String cron = DEFAULT_CRON;
+
+		@FieldDescribe("hadoop地址.")
+		private String fsDefaultFS;
+
+		@FieldDescribe("hadoop用户名.")
+		private String username;
+
+		@FieldDescribe("fs路径前缀.")
+		private String path;
+
+		public String getCron() {
+			if (StringUtils.isNotEmpty(this.cron) && CronExpression.isValidExpression(this.cron)) {
+				return this.cron;
+			} else {
+				return DEFAULT_CRON;
+			}
+		}
+
+		public Boolean getEnable() {
+			return BooleanUtils.isTrue(this.enable);
+		}
+
+		public String getFsDefaultFS() {
+			return StringUtils.isEmpty(this.fsDefaultFS) ? DEFAULT_FS_DEFAULTFS : this.fsDefaultFS;
+		}
+
+		public String getUsername() {
+			return StringUtils.isEmpty(this.username) ? DEFAULT_USERNAME : this.username;
+		}
+
+		public String getPath() {
+			return StringUtils.isEmpty(this.path) ? DEFAULT_PATH : this.path;
+		}
 	}
 
 	public static class UpdateTable extends ConfigObject {
@@ -956,21 +951,11 @@ public class ProcessPlatform extends ConfigObject {
 
 		public static final String DEFAULT_CRON = "20 20 * * * ?";
 
-		public static final Integer DEFAULT_RETRYMINUTES = 20;
-
-		public static final Integer DEFAULT_THRESHOLDMINUTES = 60 * 24 * 7;
-
 		@FieldDescribe("是否启用")
 		private Boolean enable = DEFAULT_ENABLE;
 
 		@FieldDescribe("定时cron表达式.")
 		private String cron = DEFAULT_CRON;
-
-		@FieldDescribe("重试间隔(分钟),默认20分钟.")
-		private Integer retryMinutes = DEFAULT_RETRYMINUTES;
-
-		@FieldDescribe("最大保留期限(分钟),默认10080分钟(7天).")
-		private Integer thresholdMinutes = DEFAULT_THRESHOLDMINUTES;
 
 		public String getCron() {
 			if (StringUtils.isNotEmpty(this.cron) && CronExpression.isValidExpression(this.cron)) {
@@ -982,30 +967,6 @@ public class ProcessPlatform extends ConfigObject {
 
 		public Boolean getEnable() {
 			return BooleanUtils.isTrue(this.enable);
-		}
-
-		public void setCron(String cron) {
-			this.cron = cron;
-		}
-
-		public void setEnable(Boolean enable) {
-			this.enable = enable;
-		}
-
-		public Integer getRetryMinutes() {
-			return NumberTools.nullOrLessThan(this.retryMinutes, 0) ? DEFAULT_RETRYMINUTES : this.retryMinutes;
-		}
-
-		public void setRetryMinutes(Integer retryMinutes) {
-			this.retryMinutes = retryMinutes;
-		}
-
-		public Integer getThresholdMinutes() {
-			return NumberTools.nullOrLessThan(this.thresholdMinutes, 0) ? DEFAULT_THRESHOLDMINUTES : this.thresholdMinutes;
-		}
-
-		public void setThresholdMinutes(Integer thresholdMinutes) {
-			this.thresholdMinutes = thresholdMinutes;
 		}
 
 	}
