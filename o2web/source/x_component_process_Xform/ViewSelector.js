@@ -29,6 +29,9 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
 			"styles": this.form.css.buttonStyles,
 			"MWFType": this.json.type
 		});
+        if(this.json.recoveryStyles){
+            this.node.setStyles(this.json.recoveryStyles);
+        }
         this.node.addEvent("click", function(){
             this.selectedData = null;
             this.selectView(function(data){
