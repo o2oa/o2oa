@@ -169,10 +169,10 @@ public class MessageConnector {
 	// 论坛创建回复
 	public static final String TYPE_BBS_REPLYCREATE = "bbs_replyCreate";
 
-	// ??????
+	// 脑图文件发送
 	public static final String TYPE_MIND_FILESEND = "mind_fileSend";
 
-	// ??????
+	// 脑图文件分享
 	public static final String TYPE_MIND_FILESHARE = "mind_fileShare";
 
 	// 审计日志通知
