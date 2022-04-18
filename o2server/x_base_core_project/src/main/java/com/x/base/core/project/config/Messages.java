@@ -36,9 +36,9 @@ public class Messages extends ConcurrentSkipListMap<String, Message> {
 	private static final long serialVersionUID = 1336172131736006743L;
 
 	private static final Message MESSAGE_ALL = new Message(MessageConnector.CONSUME_WS,
-			MessageConnector.CONSUME_PMS_INNER, MessageConnector.CONSUME_CALENDAR, MessageConnector.CONSUME_DINGDING,
-			MessageConnector.CONSUME_WELINK, MessageConnector.CONSUME_ZHENGWUDINGDING,
-			MessageConnector.CONSUME_QIYEWEIXIN, MessageConnector.CONSUME_MPWEIXIN, MessageConnector.CONSUME_KAFKA,
+			MessageConnector.CONSUME_PMS_INNER, MessageConnector.CONSUME_DINGDING, MessageConnector.CONSUME_WELINK,
+			MessageConnector.CONSUME_ZHENGWUDINGDING, MessageConnector.CONSUME_QIYEWEIXIN,
+			MessageConnector.CONSUME_MPWEIXIN, MessageConnector.CONSUME_CALENDAR, MessageConnector.CONSUME_KAFKA,
 			MessageConnector.CONSUME_ACTIVEMQ, MessageConnector.CONSUME_RESTFUL, MessageConnector.CONSUME_MAIL,
 			MessageConnector.CONSUME_API, MessageConnector.CONSUME_JDBC, MessageConnector.CONSUME_TABLE,
 			MessageConnector.CONSUME_HADOOP);
