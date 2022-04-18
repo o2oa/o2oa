@@ -1171,7 +1171,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 notifyCreatePerson: true
             };
         }
-        if( sendOptions ) {
+        if( sendOptions && o2.Actions.load("x_cms_assemble_control").DocumentAction.publishNotify ) {
             o2.Actions.load("x_cms_assemble_control").DocumentAction.publishNotify(this.businessData.document.id, sendOptions, function () {
                 if (callback) callback();
             }, function () {
