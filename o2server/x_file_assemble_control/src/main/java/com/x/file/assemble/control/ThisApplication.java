@@ -49,7 +49,7 @@ public class ThisApplication {
 			CacheManager.init(context.clazz().getSimpleName());
 			initThreadPool();
 			MessageConnector.start(context());
-			context.schedule(RecycleClean.class, "0 20 15 * * ?");
+			context.schedule(RecycleClean.class, "0 20 2 * * ?");
 			context().startQueue(fileRemoveQueue);
 		} catch (Exception e) {
 			e.printStackTrace();

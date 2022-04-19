@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -24,7 +26,11 @@ import com.x.file.core.entity.personal.Attachment2;
 import com.x.file.core.entity.personal.Folder2;
 import com.x.file.core.entity.personal.Share;
 
+import javax.ws.rs.core.StreamingOutput;
+
 class ActionDownload extends BaseAction {
+
+	private static Logger logger = LoggerFactory.getLogger(ActionDownload.class);
 
 	private static final int CACHE_SIZE = 1024 * 1024 * 10;
 
@@ -76,17 +82,21 @@ class ActionDownload extends BaseAction {
 					if (null == mapping) {
 						throw new ExceptionStorageNotExist(originFile.getStorage());
 					}
-					try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
-						originFile.readContent(mapping, os);
-						byte[] bs = os.toByteArray();
-						wo = new Wo(bs, this.contentType(false, attachment.getName()),
-								this.contentDisposition(false, attachment.getName()));
-						/**
-						 * 对10M以下的文件进行缓存
-						 */
-						if (bs.length < CACHE_SIZE) {
-							CacheManager.put(cacheCategory, cacheKey, wo);
+
+					StreamingOutput streamingOutput = output -> {
+						try {
+							originFile.readContent(mapping, output);
+							output.flush();
+						} catch (Exception e) {
+							logger.warn("{}附件下载异常：{}", attachment.getName(), e.getMessage());
 						}
+					};
+					String fastETag = attachment.getId()+attachment.getUpdateTime().getTime();
+					wo = new Wo(streamingOutput, this.contentType(false, attachment.getName()),
+							this.contentDisposition(false, attachment.getName()),
+							originFile.getLength(), fastETag);
+					if (originFile.getLength() < CACHE_SIZE) {
+						CacheManager.put(cacheCategory, cacheKey, wo);
 					}
 				}
 			}else{
@@ -113,6 +123,10 @@ class ActionDownload extends BaseAction {
 
 		public Wo(byte[] bytes, String contentType, String contentDisposition) {
 			super(bytes, contentType, contentDisposition);
+		}
+
+		public Wo(StreamingOutput streamingOutput, String contentType, String contentDisposition, Long contentLength, String fastETag) {
+			super(streamingOutput, contentType, contentDisposition, contentLength, fastETag);
 		}
 
 	}
