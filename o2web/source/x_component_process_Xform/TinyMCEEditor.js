@@ -129,7 +129,7 @@ MWF.xApplication.process.Xform.TinyMCEEditor = MWF.APPTinyMCEEditor = new Class(
             };
         },
         getEditorId: function(){
-           return this.form.businessData.work.id +"_"+this.json.id + "_" + (layout.mobile ? "mobile" : "pc");
+           return this.form.businessData.work.id +"_"+this.json.id.split(".").join("_") + "_" + (layout.mobile ? "mobile" : "pc");
         },
         loadTinyMCEEditor: function (config) {
             this.loadResource( function( defaultConfig ){
@@ -259,6 +259,9 @@ MWF.xApplication.process.Xform.TinyMCEEditor = MWF.APPTinyMCEEditor = new Class(
         setData: function (data) {
             this._setBusinessData(data);
             if (this.editor) this.editor.setContent(data);
+        },
+        destroy: function(){
+            if( this.editor )this.editor.destroy();
         },
         createErrorNode: function (text) {
             var node = new Element("div");
