@@ -187,6 +187,8 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
 
             this.editor.on("change", function(){
                 //this._setBusinessData(this.getData());
+                //在数据模板和数据表格中时
+                if( this.parentLine )this._setBusinessData(this.getData());
             }.bind(this));
 
             if (this.json.ecnet==="y"){
@@ -228,7 +230,7 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
         var newNode = node.node.ownerDocument.createElement("span");
 
         var increment = 0;
-        var html = node.node.nodeValue;;
+        var html = node.node.nodeValue;
         node.ecnets.each(function(ecnet){
             var s = ecnet.begin+increment-node.start;
             var e = ecnet.end+increment-node.start;
@@ -515,6 +517,9 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
     setData: function(data){
         this._setBusinessData(data);
         if (this.editor) this.editor.setData(data);
+    },
+    destroy: function(){
+        if( this.editor )this.editor.destroy();
     },
     createErrorNode: function(text){
         var node = new Element("div");

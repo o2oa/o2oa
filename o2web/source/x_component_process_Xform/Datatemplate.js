@@ -1329,6 +1329,7 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 			var module = this.all[key];
 			//如果嵌套数据模板或者数据表格，还要清除掉下级
 			if(module.clearSubModules)module.clearSubModules();
+			if( module.json && (module.json.type==="TinyMCEEditor" || module.json.type==="Htmleditor"))module.destroy();
 			this.form.modules.erase(module);
 			if (this.form.all[key]) delete this.form.all[key];
 			if (this.form.forms[key])delete this.form.forms[key];
