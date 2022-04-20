@@ -58,6 +58,8 @@ class ActionDisable extends BaseAction {
 
 	public static class Wo extends WrapBoolean {
 
+		private static final long serialVersionUID = -7913258923002248145L;
+
 	}
 
 	private void updateCreatePersonLastUpdatePerson(EffectivePerson effectivePerson, Business business, Process process)

@@ -56,22 +56,22 @@ class ActionDeleteEdition extends BaseAction {
 			}
 			for(Process process : list) {
 				/* 先删除content内容 */
-				this.delete_draft(business, process);
-				this.delete_task(business, process);
-				this.delete_taskCompleted(business, process, onlyRemoveNotCompleted);
-				this.delete_read(business, process);
-				this.delete_readCompleted(business, process, onlyRemoveNotCompleted);
-				this.delete_review(business, process, onlyRemoveNotCompleted);
-				this.delete_attachment(business, process, onlyRemoveNotCompleted);
-				this.delete_item(business, process, onlyRemoveNotCompleted);
-				this.delete_serialNumber(business, process);
-				this.delete_record(business, process);
-				this.delete_documentVersion(business, process);
-				this.delete_work(business, process);
+				this.deleteDraft(business, process);
+				this.deleteTask(business, process);
+				this.deleteTaskCompleted(business, process, onlyRemoveNotCompleted);
+				this.deleteRead(business, process);
+				this.deleteReadCompleted(business, process, onlyRemoveNotCompleted);
+				this.deleteReview(business, process, onlyRemoveNotCompleted);
+				this.deleteAttachment(business, process, onlyRemoveNotCompleted);
+				this.deleteItem(business, process, onlyRemoveNotCompleted);
+				this.deleteSerialNumber(business, process);
+				this.deleteRecord(business, process);
+				this.deleteDocumentVersion(business, process);
+				this.deleteWork(business, process);
 				if (!onlyRemoveNotCompleted) {
-					this.delete_workCompleted(business, process);
+					this.deleteWorkCompleted(business, process);
 				}
-				this.delete_workLog(business, process, onlyRemoveNotCompleted);
+				this.deleteWorkLog(business, process, onlyRemoveNotCompleted);
 			}
 			/* 再删除设计 */
 			emc.beginTransaction(Process.class);
@@ -90,20 +90,20 @@ class ActionDeleteEdition extends BaseAction {
 			emc.beginTransaction(Split.class);
 			emc.beginTransaction(Route.class);
 			for(Process process : list) {
-				this.delete_agent(business, process);
-				this.delete_begin(business, process);
-				this.delete_cancel(business, process);
-				this.delete_choice(business, process);
-				this.delete_delay(business, process);
-				this.delete_embed(business, process);
-				this.delete_end(business, process);
-				this.delete_invoke(business, process);
-				this.delete_manual(business, process);
-				this.delete_merge(business, process);
-				this.delete_parallel(business, process);
-				this.delete_route(business, process);
-				this.delete_service(business, process);
-				this.delete_split(business, process);
+				this.deleteAgent(business, process);
+				this.deleteBegin(business, process);
+				this.deleteCancel(business, process);
+				this.deleteChoice(business, process);
+				this.deleteDelay(business, process);
+				this.deleteEmbed(business, process);
+				this.deleteEnd(business, process);
+				this.deleteInvoke(business, process);
+				this.deleteManual(business, process);
+				this.deleteMerge(business, process);
+				this.deleteParallel(business, process);
+				this.deleteRoute(business, process);
+				this.deleteService(business, process);
+				this.deleteSplit(business, process);
 
 				emc.remove(process);
 			}
@@ -118,6 +118,8 @@ class ActionDeleteEdition extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = 6611167570394259500L;
 
 	}
 

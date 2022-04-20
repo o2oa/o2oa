@@ -69,28 +69,33 @@ class ActionDelete extends BaseAction {
 			if (null == application) {
 				throw new ExceptionApplicationNotExist(id);
 			}
+			Long workConut = emc.countEqual(Work.class, Work.application_FIELDNAME, application.getId());
+			if (workConut > 0) {
+				throw new ExceptionWorkProcessing(application.getName(), application.getId(), workConut);
+			}
+
 			if (!business.editable(effectivePerson, application)) {
 				throw new ExceptionInsufficientPermission(effectivePerson.getDistinguishedName());
 			}
 			/** 先删除content内容,删除内容的时候在方法内进行批量删除,在方法内部进行beginTransaction和commit */
-			this.delete_task(business, application);
-			this.delete_taskCompleted(business, application, onlyRemoveNotCompleted);
-			this.delete_read(business, application);
-			this.delete_readCompleted(business, application, onlyRemoveNotCompleted);
-			this.delete_review(business, application, onlyRemoveNotCompleted);
-			this.delete_attachment(business, application, onlyRemoveNotCompleted);
-			this.delete_dataItem(business, application, onlyRemoveNotCompleted);
-			this.delete_serialNumber(business, application);
-			this.delete_record(business, application);
-			this.delete_documentVersion(business, application);
-			this.delete_work(business, application);
+			this.deleteTask(business, application);
+			this.deleteTaskCompleted(business, application, onlyRemoveNotCompleted);
+			this.deleteRead(business, application);
+			this.deleteReadCompleted(business, application, onlyRemoveNotCompleted);
+			this.deleteReview(business, application, onlyRemoveNotCompleted);
+			this.deleteAttachment(business, application, onlyRemoveNotCompleted);
+			this.deleteDataItem(business, application, onlyRemoveNotCompleted);
+			this.deleteSerialNumber(business, application);
+			this.deleteRecord(business, application);
+			this.deleteDocumentVersion(business, application);
+			this.deleteWork(business, application);
 			if (!onlyRemoveNotCompleted) {
-				this.delete_workCompleted(business, application);
+				this.deleteWorkCompleted(business, application);
 			}
-			this.delete_workLog(business, application, onlyRemoveNotCompleted);
+			this.deleteWorkLog(business, application, onlyRemoveNotCompleted);
 			/** 删除数据字典和数据字典数据 */
-			this.delete_applicationDictItem(business, application);
-			this.delete_applicationDict(business, application);
+			this.deleteApplicationDictItem(business, application);
+			this.deleteApplicationDict(business, application);
 			/** 再删除设计,开启事务进行统一删除 */
 			emc.beginTransaction(Application.class);
 			emc.beginTransaction(Process.class);
@@ -119,31 +124,31 @@ class ActionDelete extends BaseAction {
 				/** 流程 1种 */
 				Process process = emc.find(str, Process.class);
 				/** 流程Activity 14种 */
-				this.delete_agent(business, process);
-				this.delete_begin(business, process);
-				this.delete_cancel(business, process);
-				this.delete_choice(business, process);
-				this.delete_delay(business, process);
-				this.delete_embed(business, process);
-				this.delete_end(business, process);
-				this.delete_invoke(business, process);
-				this.delete_manual(business, process);
-				this.delete_merge(business, process);
-				this.delete_parallel(business, process);
-				this.delete_service(business, process);
-				this.delete_split(business, process);
+				this.deleteAgent(business, process);
+				this.deleteBegin(business, process);
+				this.deleteCancel(business, process);
+				this.deleteChoice(business, process);
+				this.deleteDelay(business, process);
+				this.deleteEmbed(business, process);
+				this.deleteEnd(business, process);
+				this.deleteInvoke(business, process);
+				this.deleteManual(business, process);
+				this.deleteMerge(business, process);
+				this.deleteParallel(business, process);
+				this.deleteService(business, process);
+				this.deleteSplit(business, process);
 				/** 路由 1种 */
-				this.delete_route(business, process);
+				this.deleteRoute(business, process);
 				emc.remove(process);
 			}
 			/** 应用内容 6种 */
-			this.delete_formField(business, application);
-			this.delete_form(business, application);
-			this.delete_script(business, application);
-			this.delete_file(business, application);
-			this.delete_serialNumber(business, application);
-			this.delete_queryView(business, application);
-			this.delete_queryStat(business, application);
+			this.deleteFormField(business, application);
+			this.deleteForm(business, application);
+			this.deleteScript(business, application);
+			this.deleteFile(business, application);
+			this.deleteSerialNumber(business, application);
+			this.deleteQueryView(business, application);
+			this.deleteQueryStat(business, application);
 			/** 应用本体 1种 */
 			emc.remove(application);
 			emc.commit();
@@ -180,16 +185,18 @@ class ActionDelete extends BaseAction {
 
 	public static class Wo extends WoId {
 
+		private static final long serialVersionUID = 5079652219303230570L;
+
 	}
 
-	private void delete_agent(Business business, Process process) throws Exception {
+	private void deleteAgent(Business business, Process process) throws Exception {
 		for (String str : business.agent().listWithProcess(process.getId())) {
 			Agent o = business.entityManagerContainer().find(str, Agent.class);
 			business.entityManagerContainer().remove(o);
 		}
 	}
 
-	private void delete_begin(Business business, Process process) throws Exception {
+	private void deleteBegin(Business business, Process process) throws Exception {
 		String str = business.begin().getWithProcess(process.getId());
 		if (StringUtils.isNotEmpty(str)) {
 			Begin o = business.entityManagerContainer().find(str, Begin.class);
@@ -197,129 +204,128 @@ class ActionDelete extends BaseAction {
 		}
 	}
 
-	private void delete_cancel(Business business, Process process) throws Exception {
+	private void deleteCancel(Business business, Process process) throws Exception {
 		for (String str : business.cancel().listWithProcess(process.getId())) {
 			Cancel o = business.entityManagerContainer().find(str, Cancel.class);
 			business.entityManagerContainer().remove(o);
 		}
 	}
 
-	private void delete_choice(Business business, Process process) throws Exception {
+	private void deleteChoice(Business business, Process process) throws Exception {
 		for (String str : business.choice().listWithProcess(process.getId())) {
 			Choice o = business.entityManagerContainer().find(str, Choice.class);
 			business.entityManagerContainer().remove(o);
 		}
 	}
 
-	private void delete_delay(Business business, Process process) throws Exception {
+	private void deleteDelay(Business business, Process process) throws Exception {
 		for (String str : business.delay().listWithProcess(process.getId())) {
 			Delay o = business.entityManagerContainer().find(str, Delay.class);
 			business.entityManagerContainer().remove(o);
 		}
 	}
 
-	private void delete_embed(Business business, Process process) throws Exception {
+	private void deleteEmbed(Business business, Process process) throws Exception {
 		for (String str : business.embed().listWithProcess(process.getId())) {
 			Embed o = business.entityManagerContainer().find(str, Embed.class);
 			business.entityManagerContainer().remove(o);
 		}
 	}
 
-	private void delete_end(Business business, Process process) throws Exception {
+	private void deleteEnd(Business business, Process process) throws Exception {
 		for (String str : business.end().listWithProcess(process.getId())) {
 			End o = business.entityManagerContainer().find(str, End.class);
 			business.entityManagerContainer().remove(o);
 		}
 	}
 
-	private void delete_invoke(Business business, Process process) throws Exception {
+	private void deleteInvoke(Business business, Process process) throws Exception {
 		for (String str : business.invoke().listWithProcess(process.getId())) {
 			Invoke o = business.entityManagerContainer().find(str, Invoke.class);
 			business.entityManagerContainer().remove(o);
 		}
 	}
 
-	private void delete_manual(Business business, Process process) throws Exception {
+	private void deleteManual(Business business, Process process) throws Exception {
 		for (String str : business.manual().listWithProcess(process.getId())) {
 			Manual o = business.entityManagerContainer().find(str, Manual.class);
 			business.entityManagerContainer().remove(o);
 		}
 	}
 
-	private void delete_merge(Business business, Process process) throws Exception {
+	private void deleteMerge(Business business, Process process) throws Exception {
 		for (String str : business.merge().listWithProcess(process.getId())) {
 			Merge o = business.entityManagerContainer().find(str, Merge.class);
 			business.entityManagerContainer().remove(o);
 		}
 	}
 
-	private void delete_parallel(Business business, Process process) throws Exception {
+	private void deleteParallel(Business business, Process process) throws Exception {
 		for (String str : business.parallel().listWithProcess(process.getId())) {
 			Parallel o = business.entityManagerContainer().find(str, Parallel.class);
 			business.entityManagerContainer().remove(o);
 		}
 	}
 
-	private void delete_route(Business business, Process process) throws Exception {
+	private void deleteRoute(Business business, Process process) throws Exception {
 		for (String str : business.route().listWithProcess(process.getId())) {
 			Route o = business.entityManagerContainer().find(str, Route.class);
 			business.entityManagerContainer().remove(o);
 		}
 	}
 
-	private void delete_service(Business business, Process process) throws Exception {
+	private void deleteService(Business business, Process process) throws Exception {
 		for (String str : business.service().listWithProcess(process.getId())) {
 			Service o = business.entityManagerContainer().find(str, Service.class);
 			business.entityManagerContainer().remove(o);
 		}
 	}
 
-	private void delete_split(Business business, Process process) throws Exception {
+	private void deleteSplit(Business business, Process process) throws Exception {
 		for (String str : business.split().listWithProcess(process.getId())) {
 			Split o = business.entityManagerContainer().find(str, Split.class);
 			business.entityManagerContainer().remove(o);
 		}
 	}
 
-	private void delete_form(Business business, Application application) throws Exception {
+	private void deleteForm(Business business, Application application) throws Exception {
 		for (String str : business.form().listWithApplication(application.getId())) {
 			Form o = business.entityManagerContainer().find(str, Form.class);
 			business.entityManagerContainer().remove(o);
 		}
 	}
 
-	private void delete_formField(Business business, Application application) throws Exception {
+	private void deleteFormField(Business business, Application application) throws Exception {
 		for (String str : business.formField().listWithApplication(application.getId())) {
 			FormField o = business.entityManagerContainer().find(str, FormField.class);
 			business.entityManagerContainer().remove(o);
 		}
 	}
 
-	private void delete_script(Business business, Application application) throws Exception {
+	private void deleteScript(Business business, Application application) throws Exception {
 		for (String str : business.script().listWithApplication(application.getId())) {
 			Script o = business.entityManagerContainer().find(str, Script.class);
 			business.entityManagerContainer().remove(o);
 		}
 	}
 
-	private void delete_file(Business business, Application application) throws Exception {
+	private void deleteFile(Business business, Application application) throws Exception {
 		for (File o : business.entityManagerContainer().listEqual(File.class, File.application_FIELDNAME,
 				application.getId())) {
 			business.entityManagerContainer().remove(o);
 		}
 	}
 
-	private void delete_applicationDict(Business business, Application application) throws Exception {
+	private void deleteApplicationDict(Business business, Application application) throws Exception {
 		List<String> ids = business.applicationDict().listWithApplication(application.getId());
-		this.delete_batch(business.entityManagerContainer(), ApplicationDict.class, ids);
+		this.deleteBatch(business.entityManagerContainer(), ApplicationDict.class, ids);
 	}
 
-	private void delete_applicationDictItem(Business business, Application application) throws Exception {
+	private void deleteApplicationDictItem(Business business, Application application) throws Exception {
 		List<String> ids = business.applicationDictItem().listWithApplication(application.getId());
 		EntityManagerContainer emc = business.entityManagerContainer();
 		for (List<String> list : ListTools.batch(ids, 1000)) {
 			emc.beginTransaction(ApplicationDictItem.class);
-			// emc.beginTransaction(ApplicationDictLobItem.class);
 			for (ApplicationDictItem o : emc.list(ApplicationDictItem.class, list)) {
 				emc.remove(o);
 			}
@@ -327,7 +333,7 @@ class ActionDelete extends BaseAction {
 		}
 	}
 
-	private void delete_batch(EntityManagerContainer emc, Class<? extends JpaObject> clz, List<String> ids)
+	private void deleteBatch(EntityManagerContainer emc, Class<? extends JpaObject> clz, List<String> ids)
 			throws Exception {
 		List<String> list = new ArrayList<>();
 		for (int i = 0; i < ids.size(); i++) {
@@ -343,7 +349,7 @@ class ActionDelete extends BaseAction {
 		}
 	}
 
-	private void delete_attachment(Business business, Application application, boolean onlyRemoveNotCompleted)
+	private void deleteAttachment(Business business, Application application, boolean onlyRemoveNotCompleted)
 			throws Exception {
 		List<String> ids = onlyRemoveNotCompleted
 				? business.attachment().listWithApplicationWithCompleted(application.getId(), false)
@@ -364,7 +370,7 @@ class ActionDelete extends BaseAction {
 		}
 	}
 
-	private void delete_dataItem(Business business, Application application, boolean onlyRemoveNotCompleted)
+	private void deleteDataItem(Business business, Application application, boolean onlyRemoveNotCompleted)
 			throws Exception {
 		List<String> jobs = business.work().listJobWithApplication(application.getId());
 		if (!onlyRemoveNotCompleted) {
@@ -380,83 +386,83 @@ class ActionDelete extends BaseAction {
 		}
 	}
 
-	private void delete_serialNumber(Business business, Application application) throws Exception {
+	private void deleteSerialNumber(Business business, Application application) throws Exception {
 		List<String> ids = business.serialNumber().listWithApplication(application.getId());
-		this.delete_batch(business.entityManagerContainer(), SerialNumber.class, ids);
+		this.deleteBatch(business.entityManagerContainer(), SerialNumber.class, ids);
 	}
 
-	private void delete_queryView(Business business, Application application) throws Exception {
+	private void deleteQueryView(Business business, Application application) throws Exception {
 		List<String> ids = business.queryView().listWithApplication(application.getId());
-		this.delete_batch(business.entityManagerContainer(), QueryView.class, ids);
+		this.deleteBatch(business.entityManagerContainer(), QueryView.class, ids);
 	}
 
-	private void delete_queryStat(Business business, Application application) throws Exception {
+	private void deleteQueryStat(Business business, Application application) throws Exception {
 		List<String> ids = business.queryStat().listWithApplication(application.getId());
-		this.delete_batch(business.entityManagerContainer(), QueryStat.class, ids);
+		this.deleteBatch(business.entityManagerContainer(), QueryStat.class, ids);
 	}
 
-	private void delete_task(Business business, Application application) throws Exception {
+	private void deleteTask(Business business, Application application) throws Exception {
 		List<String> ids = business.task().listWithApplication(application.getId());
-		this.delete_batch(business.entityManagerContainer(), Task.class, ids);
+		this.deleteBatch(business.entityManagerContainer(), Task.class, ids);
 	}
 
-	private void delete_work(Business business, Application application) throws Exception {
+	private void deleteWork(Business business, Application application) throws Exception {
 		List<String> ids = business.work().listWithApplication(application.getId());
-		this.delete_batch(business.entityManagerContainer(), Work.class, ids);
+		this.deleteBatch(business.entityManagerContainer(), Work.class, ids);
 	}
 
-	private void delete_record(Business business, Application application) throws Exception {
+	private void deleteRecord(Business business, Application application) throws Exception {
 		List<String> ids = business.entityManagerContainer().idsEqual(Record.class, Record.application_FIELDNAME,
 				application.getId());
-		this.delete_batch(business.entityManagerContainer(), Record.class, ids);
+		this.deleteBatch(business.entityManagerContainer(), Record.class, ids);
 	}
 
-	private void delete_documentVersion(Business business, Application application) throws Exception {
+	private void deleteDocumentVersion(Business business, Application application) throws Exception {
 		List<String> ids = business.entityManagerContainer().idsEqual(DocumentVersion.class,
 				DocumentVersion.application_FIELDNAME, application.getId());
-		this.delete_batch(business.entityManagerContainer(), DocumentVersion.class, ids);
+		this.deleteBatch(business.entityManagerContainer(), DocumentVersion.class, ids);
 	}
 
-	private void delete_workCompleted(Business business, Application application) throws Exception {
+	private void deleteWorkCompleted(Business business, Application application) throws Exception {
 		List<String> ids = business.workCompleted().listWithApplication(application.getId());
-		this.delete_batch(business.entityManagerContainer(), WorkCompleted.class, ids);
+		this.deleteBatch(business.entityManagerContainer(), WorkCompleted.class, ids);
 	}
 
-	private void delete_workLog(Business business, Application application, Boolean onlyRemoveNotCompleted)
+	private void deleteWorkLog(Business business, Application application, boolean onlyRemoveNotCompleted)
 			throws Exception {
 		List<String> ids = onlyRemoveNotCompleted
 				? business.workLog().listWithApplicationWithCompleted(application.getId(), false)
 				: business.workLog().listWithApplication(application.getId());
-		this.delete_batch(business.entityManagerContainer(), WorkLog.class, ids);
+		this.deleteBatch(business.entityManagerContainer(), WorkLog.class, ids);
 	}
 
-	private void delete_taskCompleted(Business business, Application application, Boolean onlyRemoveNotCompleted)
+	private void deleteTaskCompleted(Business business, Application application, boolean onlyRemoveNotCompleted)
 			throws Exception {
 		List<String> ids = onlyRemoveNotCompleted
 				? business.taskCompleted().listWithApplicationWithCompleted(application.getId(), false)
 				: business.taskCompleted().listWithApplication(application.getId());
-		this.delete_batch(business.entityManagerContainer(), TaskCompleted.class, ids);
+		this.deleteBatch(business.entityManagerContainer(), TaskCompleted.class, ids);
 	}
 
-	private void delete_read(Business business, Application application) throws Exception {
+	private void deleteRead(Business business, Application application) throws Exception {
 		List<String> ids = business.read().listWithApplication(application.getId());
-		this.delete_batch(business.entityManagerContainer(), Read.class, ids);
+		this.deleteBatch(business.entityManagerContainer(), Read.class, ids);
 	}
 
-	private void delete_readCompleted(Business business, Application application, Boolean onlyRemoveNotCompleted)
+	private void deleteReadCompleted(Business business, Application application, boolean onlyRemoveNotCompleted)
 			throws Exception {
 		List<String> ids = onlyRemoveNotCompleted
 				? business.readCompleted().listWithApplicationWithCompleted(application.getId(), false)
 				: business.readCompleted().listWithApplication(application.getId());
-		this.delete_batch(business.entityManagerContainer(), ReadCompleted.class, ids);
+		this.deleteBatch(business.entityManagerContainer(), ReadCompleted.class, ids);
 	}
 
-	private void delete_review(Business business, Application application, Boolean onlyRemoveNotCompleted)
+	private void deleteReview(Business business, Application application, boolean onlyRemoveNotCompleted)
 			throws Exception {
 		List<String> ids = onlyRemoveNotCompleted
 				? business.review().listWithApplicationWithCompleted(application.getId(), false)
 				: business.review().listWithApplication(application.getId());
-		this.delete_batch(business.entityManagerContainer(), Review.class, ids);
+		this.deleteBatch(business.entityManagerContainer(), Review.class, ids);
 	}
 
 }
