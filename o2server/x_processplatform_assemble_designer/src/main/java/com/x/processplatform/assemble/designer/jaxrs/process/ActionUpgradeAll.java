@@ -42,5 +42,7 @@ class ActionUpgradeAll extends BaseAction {
 
 	public static class Wo extends WrapBoolean {
 
+		private static final long serialVersionUID = 5740098922538311966L;
+
 	}
 }

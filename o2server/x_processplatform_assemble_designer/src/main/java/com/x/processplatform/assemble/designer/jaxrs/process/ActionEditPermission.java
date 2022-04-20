@@ -51,6 +51,8 @@ class ActionEditPermission extends BaseAction {
 
 	public static class Wo extends WoId {
 
+		private static final long serialVersionUID = 3775499690533897285L;
+
 	}
 
 	public static class Wi extends Process {

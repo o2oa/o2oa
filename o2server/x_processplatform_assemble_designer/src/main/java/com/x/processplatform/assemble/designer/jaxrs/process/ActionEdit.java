@@ -74,20 +74,20 @@ class ActionEdit extends BaseAction {
 			this.updateEdition(oldProcess, process);
 			process.setLastUpdateTime(new Date());
 			emc.check(process, CheckPersistType.all);
-			update_agent(business, wrap.getAgentList(), process);
-			update_begin(business, wrap.getBegin(), process);
-			update_cancel(business, wrap.getCancelList(), process);
-			update_choice(business, wrap.getChoiceList(), process);
-			update_delay(business, wrap.getDelayList(), process);
-			update_embed(business, wrap.getEmbedList(), process);
-			update_end(business, wrap.getEndList(), process);
-			update_invoke(business, wrap.getInvokeList(), process);
-			update_manual(business, wrap.getManualList(), process);
-			update_merge(business, wrap.getMergeList(), process);
-			update_parallel(business, wrap.getParallelList(), process);
-			update_route(business, wrap.getRouteList(), process);
-			update_service(business, wrap.getServiceList(), process);
-			update_split(business, wrap.getSplitList(), process);
+			updateAgent(business, wrap.getAgentList(), process);
+			updateBegin(business, wrap.getBegin(), process);
+			updateCancel(business, wrap.getCancelList(), process);
+			updateChoice(business, wrap.getChoiceList(), process);
+			updateDelay(business, wrap.getDelayList(), process);
+			updateEmbed(business, wrap.getEmbedList(), process);
+			updateEnd(business, wrap.getEndList(), process);
+			updateInvoke(business, wrap.getInvokeList(), process);
+			updateManual(business, wrap.getManualList(), process);
+			updateMerge(business, wrap.getMergeList(), process);
+			updateParallel(business, wrap.getParallelList(), process);
+			updateRoute(business, wrap.getRouteList(), process);
+			updateService(business, wrap.getServiceList(), process);
+			updateSplit(business, wrap.getSplitList(), process);
 			emc.commit();
 			cacheNotify();
 			/* 保存历史版本 */
@@ -102,6 +102,8 @@ class ActionEdit extends BaseAction {
 
 	public static class Wo extends WoId {
 
+		private static final long serialVersionUID = -696493651089351788L;
+
 	}
 
 	private void updateCreatePersonLastUpdatePerson(EffectivePerson effectivePerson, Business business, Process process)
@@ -115,14 +117,14 @@ class ActionEdit extends BaseAction {
 		}
 	}
 
-	private void updateEdition(Process oldProcess, Process process) throws Exception {
-		//更新流程时保持流程的版本信息不变，但当不存在版本信息则添加版本信息
+	private void updateEdition(Process oldProcess, Process process) {
+		// 更新流程时保持流程的版本信息不变，但当不存在版本信息则添加版本信息
 		if (StringUtils.isEmpty(oldProcess.getEdition())) {
 			process.setEdition(process.getId());
 			process.setEditionEnable(true);
 			process.setEditionNumber(1.0);
 			process.setEditionName(process.getName() + "_V" + process.getEditionNumber());
-		}else{
+		} else {
 			process.setEdition(oldProcess.getEdition());
 			process.setEditionEnable(oldProcess.getEditionEnable());
 			process.setEditionNumber(oldProcess.getEditionNumber());

@@ -66,6 +66,8 @@ class ActionEnable extends BaseAction {
 
 	public static class Wo extends WrapBoolean {
 
+		private static final long serialVersionUID = 4191812620073853271L;
+
 	}
 
 	private void updateCreatePersonLastUpdatePerson(EffectivePerson effectivePerson, Business business, Process process)
