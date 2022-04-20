@@ -77,20 +77,20 @@ class ActionUpgrade extends BaseAction {
 			newProcess.setLastUpdateTime(new Date());
 			List<JpaObject> jpaObjects = new ArrayList<>();
 			jpaObjects.add(newProcess);
-			jpaObjects.addAll(create_agent(wrapIn.getAgentList(), newProcess));
-			jpaObjects.add(create_begin(wrapIn.getBegin(), newProcess));
-			jpaObjects.addAll(create_cancel(wrapIn.getCancelList(), newProcess));
-			jpaObjects.addAll(create_choice(wrapIn.getChoiceList(), newProcess));
-			jpaObjects.addAll(create_delay(wrapIn.getDelayList(), newProcess));
-			jpaObjects.addAll(create_embed(wrapIn.getEmbedList(), newProcess));
-			jpaObjects.addAll(create_end(wrapIn.getEndList(), newProcess));
-			jpaObjects.addAll(create_invoke(wrapIn.getInvokeList(), newProcess));
-			jpaObjects.addAll(create_manual(wrapIn.getManualList(), newProcess));
-			jpaObjects.addAll(create_merge(wrapIn.getMergeList(), newProcess));
-			jpaObjects.addAll(create_parallel(wrapIn.getParallelList(), newProcess));
-			jpaObjects.addAll(create_service(wrapIn.getServiceList(), newProcess));
-			jpaObjects.addAll(create_split(wrapIn.getSplitList(), newProcess));
-			jpaObjects.addAll(create_route(wrapIn.getRouteList(), newProcess));
+			jpaObjects.addAll(createAgent(wrapIn.getAgentList(), newProcess));
+			jpaObjects.add(createBegin(wrapIn.getBegin(), newProcess));
+			jpaObjects.addAll(createCancel(wrapIn.getCancelList(), newProcess));
+			jpaObjects.addAll(createChoice(wrapIn.getChoiceList(), newProcess));
+			jpaObjects.addAll(createDelay(wrapIn.getDelayList(), newProcess));
+			jpaObjects.addAll(createEmbed(wrapIn.getEmbedList(), newProcess));
+			jpaObjects.addAll(createEnd(wrapIn.getEndList(), newProcess));
+			jpaObjects.addAll(createInvoke(wrapIn.getInvokeList(), newProcess));
+			jpaObjects.addAll(createManual(wrapIn.getManualList(), newProcess));
+			jpaObjects.addAll(createMerge(wrapIn.getMergeList(), newProcess));
+			jpaObjects.addAll(createParallel(wrapIn.getParallelList(), newProcess));
+			jpaObjects.addAll(createService(wrapIn.getServiceList(), newProcess));
+			jpaObjects.addAll(createSplit(wrapIn.getSplitList(), newProcess));
+			jpaObjects.addAll(createRoute(wrapIn.getRouteList(), newProcess));
 			emc.beginTransaction(Process.class);
 			emc.beginTransaction(Agent.class);
 			emc.beginTransaction(Begin.class);
@@ -120,6 +120,8 @@ class ActionUpgrade extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = 1505436423551324289L;
 
 	}
 
