@@ -1938,6 +1938,15 @@ debugger;
                         var p = dom_pageRule.style[i].split("-")[1];
                         var v = dom_pageRule.style["margin"+p.capitalize()].toFloat()*20;
                         var oo_pgMar = this.getOrCreateEl(oo_sectPr, "pgMar");
+
+                        if (p==="bottom"){
+                            var footer = oo_pgMar.getAttributeNS(this.nsResolver("w"), "footer");
+                            if ((parseInt(footer)+454)>v){
+                                footer = v-454;
+                                this.setAttrs(oo_pgMar, {"footer": footer});
+                            }
+                        }
+
                         var attrs = {};
                         attrs[p] = v
                         this.setAttrs(oo_pgMar, attrs);
