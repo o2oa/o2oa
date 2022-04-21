@@ -1021,6 +1021,10 @@ bind.service = {
     soap: function(wsdl, method, pars){
         var service = bind.java_resources.getWebservicesClient();
         return service.soap(wsdl, method, pars);
+    },
+    soapXml: function(wsdl, xml){
+        var service = bind.java_resources.getWebservicesClient();
+        return service.jaxwsXml(wsdl, xml);
     }
 }
 //----------------------------------------------------------
