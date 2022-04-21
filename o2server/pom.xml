@@ -474,6 +474,12 @@
 					<packagingExcludes>persistence.xml,WEB-INF/lib/**,META-INF
 					</packagingExcludes>
 					<failOnMissingWebXml>false</failOnMissingWebXml>
+					<webResources>
+						<resource>
+							<directory>ext</directory>
+							<targetPath>WEB-INF/ext</targetPath>
+						</resource>
+					</webResources>
 				</configuration>
 			</plugin>
 			<plugin>

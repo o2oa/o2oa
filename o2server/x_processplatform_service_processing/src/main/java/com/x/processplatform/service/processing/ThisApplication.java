@@ -15,6 +15,7 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.message.MessageConnector;
 import com.x.processplatform.service.processing.processor.invoke.SyncJaxrsInvokeQueue;
 import com.x.processplatform.service.processing.processor.invoke.SyncJaxwsInvokeQueue;
+import com.x.processplatform.service.processing.schedule.ArchiveHadoop;
 import com.x.processplatform.service.processing.schedule.DeleteDraft;
 import com.x.processplatform.service.processing.schedule.Expire;
 import com.x.processplatform.service.processing.schedule.LogLongDetained;
@@ -52,7 +53,7 @@ public class ThisApplication {
 	public static final SyncJaxwsInvokeQueue syncJaxwsInvokeQueue = new SyncJaxwsInvokeQueue();
 
 	public static final UpdateTableQueue updateTableQueue = new UpdateTableQueue();
-	
+
 	public static final ArchiveHadoopQueue archiveHadoopQueue = new ArchiveHadoopQueue();
 
 	private static ProcessingToProcessingSignalStack processingToProcessingSignalStack = new ProcessingToProcessingSignalStack();
@@ -102,7 +103,7 @@ public class ThisApplication {
 				context.schedule(UpdateTable.class, Config.processPlatform().getUpdateTable().getCron());
 			}
 			if (BooleanUtils.isTrue(Config.processPlatform().getArchiveHadoop().getEnable())) {
-				context.schedule(UpdateTable.class, Config.processPlatform().getArchiveHadoop().getCron());
+				context.schedule(ArchiveHadoop.class, Config.processPlatform().getArchiveHadoop().getCron());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
