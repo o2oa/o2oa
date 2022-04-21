@@ -34,10 +34,10 @@ public class WebservicesClient {
 		return jaxws(wsdl, method, objects);
 	}
 
-	public String jaxwsXml(String wsdlURL, String soapXML) throws Exception {
+	public String jaxwsXml(String url, String soapXML) throws Exception {
 		List<NameValuePair> heads = new ArrayList<>();
 		heads.add(new NameValuePair(ConnectionAction.CONTENT_TYPE, MediaType.TEXT_XML));
-		return HttpConnection.postAsString(wsdlURL, heads, soapXML);
+		return HttpConnection.postAsString(url, heads, soapXML);
 	}
 
 	public HttpConnectionResponse restful(String method, String url, Map<String, String> heads, String body,

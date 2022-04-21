@@ -90,12 +90,6 @@ public abstract class JettySeverTools {
 				jars.add(file.getAbsolutePath());
 			}
 		}
-//		if (module.dynamicJars() != null && module.dynamicJars().length > 0) {
-//			IOFileFilter filter = new WildcardFileFilter(DynamicEntity.JAR_PREFIX + "*.jar");
-//			for (File o : FileUtils.listFiles(Config.dir_dynamic_jars(true), filter, null)) {
-//				jars.add(o.getAbsolutePath());
-//			}
-//		}
 		for (Path path : paths) {
 			if (Files.exists(path) && Files.isDirectory(path)) {
 				try (Stream<Path> stream = Files.walk(path, FileVisitOption.FOLLOW_LINKS)) {
@@ -116,12 +110,14 @@ public abstract class JettySeverTools {
 		}
 		filter = new WildcardFileFilter("openjpa-*.jar");
 		filter = FileFilterUtils.or(filter, new WildcardFileFilter("ehcache-*.jar"));
-		/* 如果不单独导入会导致java.lang.NoClassDefFoundError: org/eclipse/jetty/http/MimeTypes */
+		// 如果不单独导入会导致java.lang.NoClassDefFoundError: org/eclipse/jetty/http/MimeTypes
 		filter = FileFilterUtils.or(filter, new WildcardFileFilter("jetty-all-*.jar"));
 		filter = FileFilterUtils.or(filter, new WildcardFileFilter("jetty-proxy-*.jar"));
 		filter = FileFilterUtils.or(filter, new WildcardFileFilter("quartz-*.jar"));
 		filter = FileFilterUtils.or(filter, new WildcardFileFilter("filters-*.jar"));
-		/* jersey从AppClassLoader加载 */
+		// JaxWsDynamicClientFactory 需要在WebAppClassLoader加载 jakarta.xml.bind-api-*.jar
+		filter = FileFilterUtils.or(filter, new WildcardFileFilter("jakarta.xml.bind-api-*.jar"));
+		// jersey从AppClassLoader加载
 		for (File o : FileUtils.listFiles(Config.dir_commons_ext().toFile(), filter, null)) {
 			jars.add(o.getAbsolutePath());
 		}
