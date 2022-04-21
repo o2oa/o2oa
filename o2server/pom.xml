@@ -474,12 +474,6 @@
 					<packagingExcludes>persistence.xml,WEB-INF/lib/**,META-INF
 					</packagingExcludes>
 					<failOnMissingWebXml>false</failOnMissingWebXml>
-					<webResources>
-						<resource>
-							<directory>ext</directory>
-							<targetPath>WEB-INF/ext</targetPath>
-						</resource>
-					</webResources>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -612,57 +606,57 @@
 			<dependency>
 				<groupId>org.apache.ftpserver</groupId>
 				<artifactId>ftpserver-core</artifactId>
-				<version>1.1.1</version>
+				<version>1.2.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.ftpserver</groupId>
 				<artifactId>ftplet-api</artifactId>
-				<version>1.1.1</version>
+				<version>1.2.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-core</artifactId>
-				<version>3.3.10</version>
+				<version>3.5.2</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-rt-frontend-jaxws</artifactId>
-				<version>3.3.10</version>
+				<version>3.5.2</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-rt-frontend-simple</artifactId>
-				<version>3.3.10</version>
+				<version>3.5.2</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-rt-wsdl</artifactId>
-				<version>3.3.10</version>
+				<version>3.5.2</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-rt-databinding-jaxb</artifactId>
-				<version>3.3.10</version>
+				<version>3.5.2</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-rt-transports-http</artifactId>
-				<version>3.3.10</version>
+				<version>3.5.2</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-rt-bindings-soap</artifactId>
-				<version>3.3.10</version>
+				<version>3.5.2</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-rt-bindings-xml</artifactId>
-				<version>3.3.10</version>
+				<version>3.5.2</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-rt-ws-addr</artifactId>
-				<version>3.3.10</version>
+				<version>3.5.2</version>
 			</dependency>
 
 			<dependency>
