@@ -241,6 +241,29 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 			this.loadDatatable();
 		},
+		reload: function(){
+			this.reloading = true;
+			var tr = this.titleTr;
+			var node;
+			if( tr ){
+				var node = tr.getElement("th.mwf_addlineaction");
+				if( node )node.destroy();
+				node = tr.getElement("th.mwf_moveaction");
+				if( node )node.destroy();
+			}
+
+			tr = this.templateTr;
+			if( tr ){
+				node = tr.getElement("td.mwf_editaction");
+				if( node )node.destroy();
+				node = tr.getElement("td.mwf_moveaction");
+				if( node )node.destroy();
+			}
+
+			this.clearSubModules();
+			this.loadDatatable();
+			this.reloading = false;
+		},
 		loadDatatable: function(){
 			this._loadStyles();
 
@@ -275,14 +298,18 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				if (json){
 					var module = this.form._loadModule(json, th);
 					this.form.modules.push(module);
-					if( json.isShow === false )th.hide(); //隐藏列
+					if( json.isShow === false ){
+						th.hide(); //隐藏列
+					}else if( this.reloading && json.isShow === true){
+						th.setStyle("display", "");
+					}
 					if((json.total === "number") || (json.total === "count"))this.totalFlag = true;
 				}
 			}.bind(this));
 
 
 			if(this.editable){
-				var actionTh = new Element("th", {"styles": {"width": "46px"}}).inject(this.titleTr, "top"); //操作列
+				var actionTh = new Element("th.mwf_addlineaction", {"styles": {"width": "46px"}}).inject(this.titleTr, "top"); //操作列
 				if(this.addable){
 					var addLineAction = new Element("div", {
 						"styles": this.form.css.addLineAction,
@@ -291,7 +318,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 						}
 					}).inject(actionTh);
 				}
-				var moveTh = new Element("th").inject(this.titleTr, "bottom"); //总计列
+				var moveTh = new Element("th.mwf_moveaction").inject(this.titleTr, "bottom"); //总计列
 				if (this.json.border){
 					Array.each([actionTh,moveTh], function(th){
 						th.setStyles({
@@ -334,7 +361,11 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 					// var module = this.form._loadModule(json, td);
 					// this.form.modules.push(module);
 					if( json.cellType === "sequence" )td.addClass("mwf_sequence"); //序号列
-					if( json.isShow === false )td.hide(); //隐藏列
+					if( json.isShow === false ){
+						td.hide(); //隐藏列
+					}else if( this.reloading && json.isShow === true){
+						td.setStyle("display", "");
+					}
 				}
 			}.bind(this));
 
@@ -378,7 +409,11 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 				var json = this.form._getDomjson(th);
 				if (json){
-					if( json.isShow === false )td.hide(); //隐藏列
+					if( json.isShow === false ){
+						td.hide(); //隐藏列
+					}else if( this.reloading && json.isShow === true){
+						td.setStyle("display", "");
+					}
 					if ((json.total === "number") || (json.total === "count")){
 						this.totalColumns.push({
 							"th" : th,
