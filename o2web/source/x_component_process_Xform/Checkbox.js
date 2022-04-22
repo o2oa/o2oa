@@ -66,6 +66,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
 				"display": "inline"
 			}
 		});
+		if( this.json.newline )this.node.setStyle("display", "block");
 		this.setOptions();
 	},
     _loadDomEvents: function(){
@@ -165,19 +166,26 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
                     var text = tmps[0];
                     var value = tmps[1] || text;
 
+                    var node;
+                    if( this.json.newline ){
+                        node = new Element("div").inject(this.node);
+                    }else{
+                        node = this.node;
+                    }
+
                     var radio = new Element("input", {
                         "type": "checkbox",
                         "name": ((this.json.properties) ? this.json.properties.name : null) || flag+this.json.id,
                         "value": value,
                         "showText": text,
                         "styles": this.json.buttonStyles
-                    }).inject(this.node);
+                    }).inject(node);
                     //radio.appendText(text, "after");
 
                     var textNode = new Element( "span", {
                         "text" : text,
                         "styles" : { "cursor" : "default" }
-                    }).inject(this.node);
+                    }).inject(node);
                     textNode.addEvent("click", function( ev ){
                         if( this.radio.get("disabled") === true || this.radio.get("disabled") === "true" )return;
                         this.radio.checked = ! this.radio.checked;
