@@ -701,6 +701,7 @@ public class AeiObjects extends GsonPropertyObject {
 		}
 	}
 
+	// 计算需要更新的内容
 	private void executeProjectionFullyNotIncludeNormal() throws Exception {
 		if (BooleanUtils.isTrue(this.getProcess().getProjectionFully())) {
 			executeProjectionFullyNotIncludeNormalWork();

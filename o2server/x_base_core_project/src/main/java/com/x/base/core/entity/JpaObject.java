@@ -221,7 +221,7 @@ public abstract class JpaObject extends GsonPropertyObject implements Serializab
 	public static final String TYPE_DATE = "date";
 	public static final String TYPE_TIME = "time";
 	public static final String TYPE_BOOLEAN = "boolean";
-	public static final String TYPE_JSONPROPERTIES = "JsonProperties";
+	public static final String TYPE_JSONPROPERTIES = "jsonProperties";
 	public static final String TYPE_BYTEARRAY = "byteArray";
 
 	public static final String TYPE_STRINGLIST = "stringList";
