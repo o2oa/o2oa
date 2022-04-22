@@ -277,6 +277,7 @@
     border-radius: 14px;
     color: #666666;
     cursor: pointer;
+    overflow: hidden;
 }
 .o2_process_AppExp_item_content_element_over {
     background-color: #f0f0f0;
