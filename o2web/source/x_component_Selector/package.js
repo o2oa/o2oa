@@ -53,6 +53,12 @@ o2.xApplication.Selector.package = MWF.O2Selector = new Class({
                         if( delayLoad !== true )this.selector.load();
                         this.loading = false;
                     }.bind(this));
+                }else if ((type.toLowerCase()==="identity") && (this.options.unitType) ){ //&& this.options.categoryType.toLowerCase()==="unit"
+                    MWF.xDesktop.requireApp("Selector", "IdentityWithType", function(){
+                        this.selector = new MWF.xApplication.Selector.IdentityWithType(this.container, options);
+                        if( delayLoad !== true )this.selector.load();
+                        this.loading = false;
+                    }.bind(this));
                 }else{
                     MWF.xDesktop.requireApp("Selector", type, function(){
                         this.selector = new MWF.xApplication.Selector[type](this.container, options);
