@@ -2112,6 +2112,7 @@ MWF.APPOrg.IdentityOptions = new Class({
             return {
                 "count": count,
                 "units": selectUnits,
+                "unitType": this.json.unitType || "",
                 "dutys": selectDutys,
                 "expandSubEnable" : (this.json.identityExpandSubEnable=="no") ? false : true,
                 "resultType" : this.json.identityResultType,
