@@ -12,8 +12,6 @@ import org.eclipse.jetty.util.DateCache;
 import org.eclipse.jetty.util.annotation.ManagedObject;
 
 import com.x.base.core.project.http.HttpToken;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
 
 /**
  * A flexible RequestLog, which produces log strings in a customizable format.
@@ -242,8 +240,6 @@ import com.x.base.core.project.logger.LoggerFactory;
  */
 @ManagedObject("Custom format request log with body")
 public class ServerRequestLogBody extends ServerRequestLog {
-
-	private static Logger logger = LoggerFactory.getLogger(ServerRequestLogBody.class);
 
 	public ServerRequestLogBody(ServerRequestLog.Writer writer, String formatString) {
 		super(writer, formatString);

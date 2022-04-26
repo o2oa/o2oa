@@ -12,16 +12,10 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
-
-
-/**
- * @author zhourui
- */
 public class ProcessPlatformExecutor {
 
-	private static Logger logger = LoggerFactory.getLogger(ProcessPlatformExecutor.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ProcessPlatformExecutor.class);
 
-	 
 	public void execute() throws Exception {
 		ExecutorService[] executorServices = Config.resource_node_processPlatformExecutors();
 		List<String> list = new ArrayList<>();
@@ -39,7 +33,7 @@ public class ProcessPlatformExecutor {
 				list.add("  +++ blocking: " + StringUtils.join(os, ",") + ".");
 			}
 		}
-		System.out.println(StringUtils.join(list, StringUtils.LF));
+		LOGGER.print(StringUtils.join(list, StringUtils.LF));
 
 	}
 }

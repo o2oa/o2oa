@@ -232,6 +232,7 @@ public class ActionControl extends ActionBase {
 			new EraseContentOrg().execute();
 			break;
 		default:
+			@SuppressWarnings("unchecked")
 			List<String> names = Stream.of(StringUtils.split(type, ","))
 					.filter(((List<String>) Config.resource(Config.RESOURCE_CONTAINERENTITYNAMES))::contains)
 					.collect(Collectors.toList());
@@ -245,7 +246,7 @@ public class ActionControl extends ActionBase {
 		}
 	}
 
-	private void td(CommandLine cmd) throws Exception {
+	private void td(CommandLine cmd) {
 		Integer count = this.getArgInteger(cmd, CMD_TD, 10);
 		ThreadDump threadDump = new ThreadDump();
 		threadDump.execute(count);
