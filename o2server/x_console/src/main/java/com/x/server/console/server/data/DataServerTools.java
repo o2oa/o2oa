@@ -12,7 +12,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 
 public class DataServerTools {
 
-	private static Logger logger = LoggerFactory.getLogger(DataServerTools.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DataServerTools.class);
 
 	public static DataTcpWebServer start(DataServer dataServer) throws Exception {
 		File dataBaseDir = new File(Config.base(), "local/repository/data");
@@ -39,6 +39,9 @@ public class DataServerTools {
 			webs[2] = "-webPort";
 			webs[3] = webPort.toString();
 			webServer = Server.createWebServer(webs).start();
+		}
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("data server repository:{}.", dataBaseDir);
 		}
 		System.out.println("****************************************");
 		System.out.println("* data server start completed.");

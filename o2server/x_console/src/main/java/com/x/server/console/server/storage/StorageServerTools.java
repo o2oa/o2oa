@@ -22,17 +22,15 @@ import org.apache.ftpserver.usermanager.impl.WritePermission;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageServer;
 import com.x.base.core.project.config.StorageServer.Account;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
 
 public class StorageServerTools {
 
-	private static Logger logger = LoggerFactory.getLogger(StorageServerTools.class);
+	private StorageServerTools() {
+		// nothing
+	}
 
 	public static FtpServer start(StorageServer storageServer) throws Exception {
-		/** 服务器工厂 */
 		FtpServerFactory serverFactory = new FtpServerFactory();
-		/*** 连接工厂 */
 		ConnectionConfigFactory connectionConfigFactory = new ConnectionConfigFactory();
 		connectionConfigFactory.setAnonymousLoginEnabled(false);
 		connectionConfigFactory.setMaxLogins(1000);
@@ -54,14 +52,6 @@ public class StorageServerTools {
 		listenerFactory
 				.setDataConnectionConfiguration(dataConnectionConfigurationFactory.createDataConnectionConfiguration());
 		listenerFactory.setPort(storageServer.getPort());
-		// if (storageServer.getSslEnable()) {
-		// File keystoreFile = new File(Config.base(), "config/o2.keystore");
-		// SslConfigurationFactory ssl = new SslConfigurationFactory();
-		// ssl.setKeystoreFile(keystoreFile);
-		// ssl.setKeystorePassword(Config.token().getSsl());
-		// listenerFactory.setSslConfiguration(ssl.createSslConfiguration());
-		// listenerFactory.setImplicitSsl(true);
-		// }
 		Listener listener = listenerFactory.createListener();
 		serverFactory.addListener("default", listener);
 		serverFactory.setConnectionConfig(connectionConfigFactory.createConnectionConfig());

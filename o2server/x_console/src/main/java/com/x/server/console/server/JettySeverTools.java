@@ -6,7 +6,10 @@ import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
@@ -27,6 +30,17 @@ import com.x.base.core.project.annotation.Module;
 import com.x.base.core.project.config.Config;
 
 public abstract class JettySeverTools {
+
+	/**
+	 * jetty-all-*.jar 如果不单独导入会导致java.lang.NoClassDefFoundError:
+	 * org/eclipse/jetty/http/MimeTypes JaxWsDynamicClientFactory
+	 * 需要在WebAppClassLoader加载 jakarta.xml.bind-api-*.jar
+	 */
+	private static final Collection<String> FILTER_STRINGS = Arrays.asList("openjpa-*.jar", "ehcache-*.jar",
+			"jetty-all-*.jar", "jetty-proxy-*.jar", "quartz-*.jar", "filters-*.jar", "jakarta.xml.bind-api-*.jar");
+
+	private static final Optional<IOFileFilter> JARS_FILTER = FILTER_STRINGS.stream().map(WildcardFileFilter::new)
+			.map(FileFilterUtils::or).reduce(FileFilterUtils::or);
 
 	protected JettySeverTools() {
 		// nothing
@@ -108,17 +122,7 @@ public abstract class JettySeverTools {
 		for (File o : FileUtils.listFiles(Config.dir_store_jars(), filter, null)) {
 			jars.add(o.getAbsolutePath());
 		}
-		filter = new WildcardFileFilter("openjpa-*.jar");
-		filter = FileFilterUtils.or(filter, new WildcardFileFilter("ehcache-*.jar"));
-		// 如果不单独导入会导致java.lang.NoClassDefFoundError: org/eclipse/jetty/http/MimeTypes
-		filter = FileFilterUtils.or(filter, new WildcardFileFilter("jetty-all-*.jar"));
-		filter = FileFilterUtils.or(filter, new WildcardFileFilter("jetty-proxy-*.jar"));
-		filter = FileFilterUtils.or(filter, new WildcardFileFilter("quartz-*.jar"));
-		filter = FileFilterUtils.or(filter, new WildcardFileFilter("filters-*.jar"));
-		// JaxWsDynamicClientFactory 需要在WebAppClassLoader加载 jakarta.xml.bind-api-*.jar
-		filter = FileFilterUtils.or(filter, new WildcardFileFilter("jakarta.xml.bind-api-*.jar"));
-		// jersey从AppClassLoader加载
-		for (File o : FileUtils.listFiles(Config.dir_commons_ext().toFile(), filter, null)) {
+		for (File o : FileUtils.listFiles(Config.dir_commons_ext().toFile(), JARS_FILTER.get(), null)) {
 			jars.add(o.getAbsolutePath());
 		}
 		return jars;
