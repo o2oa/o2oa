@@ -1,6 +1,7 @@
 package com.x.base.core.project.webservices;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -35,8 +36,7 @@ public class WebservicesClient {
 	}
 
 	public String jaxwsXml(String url, String soapXML) throws Exception {
-		List<NameValuePair> heads = new ArrayList<>();
-		heads.add(new NameValuePair(ConnectionAction.CONTENT_TYPE, MediaType.TEXT_XML));
+		List<NameValuePair> heads = Arrays.asList(new NameValuePair(ConnectionAction.CONTENT_TYPE, MediaType.TEXT_XML));
 		return HttpConnection.postAsString(url, heads, soapXML);
 	}
 

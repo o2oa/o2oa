@@ -23,7 +23,7 @@ import com.x.server.console.server.Servers;
  */
 public class HttpStatus extends Thread {
 
-	private static Logger logger = LoggerFactory.getLogger(HttpStatus.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(HttpStatus.class);
 
 	private Integer repeat;
 
@@ -72,9 +72,12 @@ public class HttpStatus extends Thread {
 						Servers.webServer.dump(writer);
 					}
 				}
-				System.out.println(StringUtils.join(list, StringUtils.LF));
+				LOGGER.print(StringUtils.join(list, StringUtils.LF));
 				Thread.sleep(2000);
 			}
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

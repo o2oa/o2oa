@@ -8,7 +8,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 
 public class OperatingSystem extends Thread {
 
-	private static Logger logger = LoggerFactory.getLogger(OperatingSystem.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(OperatingSystem.class);
 
 	private Integer count;
 
@@ -16,6 +16,7 @@ public class OperatingSystem extends Thread {
 		this.count = count;
 	}
 
+	@Override
 	public void run() {
 		OperatingSystemMXBean bean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
 		try {
@@ -26,8 +27,7 @@ public class OperatingSystem extends Thread {
 						bean.getTotalPhysicalMemorySize() / (1024 * 1024),
 						bean.getFreePhysicalMemorySize() / (1024 * 1024),
 						bean.getCommittedVirtualMemorySize() / (1024 * 1024));
-				System.out.println(msg);
-				Thread.sleep(2000);
+				LOGGER.print(msg);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

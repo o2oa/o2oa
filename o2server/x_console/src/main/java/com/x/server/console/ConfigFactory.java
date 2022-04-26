@@ -37,6 +37,8 @@ public class ConfigFactory {
 
 	private static class ReturnWoString extends WrapString {
 
+		private static final long serialVersionUID = 5128454714367834150L;
+
 	}
 
 }
