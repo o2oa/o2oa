@@ -2131,20 +2131,27 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         debugger
         // var flag = force || this.view.json.select || this.view.viewJson.select ||  "none";
         var flag = force || this.view.getSelectFlag();
+        var selected;
         if (this.isSelected){
             if (flag==="single"){
                 this.unSelectedSingle();
             }else{
                 this.unSelected();
             }
+            selected = false;
         }else{
             if (flag==="single"){
                 this.selectedSingle();
             }else{
                 this.selected();
             }
+            selected = true;
         }
-        this.view.fireEvent("select"); //options 传入的事件
+        this.view.fireEvent("select", [{
+            "selected": selected,
+            "item": this,
+            "data": this.data
+        }]); //options 传入的事件
     },
 
     selected: function( from ){
