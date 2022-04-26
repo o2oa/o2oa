@@ -2131,27 +2131,19 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         debugger
         // var flag = force || this.view.json.select || this.view.viewJson.select ||  "none";
         var flag = force || this.view.getSelectFlag();
-        var selected;
         if (this.isSelected){
             if (flag==="single"){
                 this.unSelectedSingle();
             }else{
                 this.unSelected();
             }
-            selected = false;
         }else{
             if (flag==="single"){
                 this.selectedSingle();
             }else{
                 this.selected();
             }
-            selected = true;
         }
-        this.view.fireEvent("select", [{
-            "selected": selected,
-            "item": this,
-            "data": this.data
-        }]); //options 传入的事件
     },
 
     selected: function( from ){
@@ -2177,6 +2169,11 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
             if( this.category )this.category.checkSelectAllStatus();
         }
         this.view.fireEvent("selectRow", [this]);
+        this.view.fireEvent("select", [{
+            "selected": true,
+            "item": this,
+            "data": this.data
+        }]); //options 传入的事件
     },
     unSelected: function( from ){
         for(var i=0; i<this.view.selectedItems.length; i++){
@@ -2207,6 +2204,11 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
             if( this.category )this.category.checkSelectAllStatus();
         }
         this.view.fireEvent("unselectRow", [this]);
+        this.view.fireEvent("select", [{
+            "selected": false,
+            "item": this,
+            "data": this.data
+        }]); //options 传入的事件
     },
     selectedSingle: function(){
         if (this.view.currentSelectedItem) this.view.currentSelectedItem.unSelectedSingle();
@@ -2222,6 +2224,11 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         }
         this.isSelected = true;
         this.view.fireEvent("selectRow", [this]);
+        this.view.fireEvent("select", [{
+            "selected": true,
+            "item": this,
+            "data": this.data
+        }]); //options 传入的事件
     },
     unSelectedSingle: function(){
         this.view.selectedItems = [];
@@ -2243,6 +2250,11 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         }
         this.isSelected = false;
         this.view.fireEvent("unselectRow", [this]);
+        this.view.fireEvent("select", [{
+            "selected": false,
+            "item": this,
+            "data": this.data
+        }]); //options 传入的事件
     }
 });
 
