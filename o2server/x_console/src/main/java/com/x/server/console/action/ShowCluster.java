@@ -1,6 +1,5 @@
 package com.x.server.console.action;
 
-import java.util.Date;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
@@ -12,9 +11,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 
 public class ShowCluster {
 
-	private static Logger logger = LoggerFactory.getLogger(ShowCluster.class);
-
-	private Date start = new Date();
+	private static final Logger LOGGER = LoggerFactory.getLogger(ShowCluster.class);
 
 	public boolean execute() throws Exception {
 		StringBuilder sb = new StringBuilder();
@@ -29,7 +26,7 @@ public class ShowCluster {
 		sb.append("center pirmary sslEnable:" + Config.resource_node_centersPirmarySslEnable()).append(StringUtils.LF);
 		sb.append("applications:").append(StringUtils.LF);
 		sb.append(Config.resource_node_applications());
-		logger.print(sb.toString());
+		LOGGER.print(sb.toString());
 		return true;
 	}
 

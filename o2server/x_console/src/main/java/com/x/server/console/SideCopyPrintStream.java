@@ -11,7 +11,7 @@ public class SideCopyPrintStream extends PrintStream {
 	private PrintStream copy;
 
 	public SideCopyPrintStream(PrintStream original, PrintStream copy) {
-		super(new NullOutputStream());
+		super(NullOutputStream.NULL_OUTPUT_STREAM);
 		this.original = original;
 		this.copy = copy;
 	}

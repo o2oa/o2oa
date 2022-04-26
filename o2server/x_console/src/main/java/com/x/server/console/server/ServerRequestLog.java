@@ -36,14 +36,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.servlet.http.Cookie;
-
-import org.eclipse.jetty.http.HttpFields;
 import org.eclipse.jetty.http.QuotedCSV;
 import org.eclipse.jetty.http.pathmap.PathMappings;
 import org.eclipse.jetty.server.Authentication;
@@ -51,8 +46,6 @@ import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.RequestLog;
 import org.eclipse.jetty.server.RequestLogWriter;
 import org.eclipse.jetty.server.Response;
-import org.eclipse.jetty.server.UserIdentity;
-import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.util.DateCache;
 import org.eclipse.jetty.util.annotation.ManagedAttribute;
 import org.eclipse.jetty.util.annotation.ManagedObject;
@@ -436,17 +429,6 @@ public class ServerRequestLog extends ContainerLifeCycle implements RequestLog {
 		super.doStart();
 	}
 
-	private static void append(StringBuilder buf, String s) {
-		if (s == null || s.length() == 0)
-			buf.append('-');
-		else
-			buf.append(s);
-	}
-
-	private static void append(String s, StringBuilder buf) {
-		append(buf, s);
-	}
-
 	private MethodHandle getLogHandle(String formatString) throws NoSuchMethodException, IllegalAccessException {
 		MethodHandles.Lookup lookup = MethodHandles.lookup();
 		MethodHandle append = lookup.findStatic(ServerRequestLog.class, "append",
@@ -547,25 +529,11 @@ public class ServerRequestLog extends ContainerLifeCycle implements RequestLog {
 			return (literal != null);
 		}
 
-		public boolean isPercentCode() {
-			return (code != null);
-		}
 	}
 
 	private MethodHandle updateLogHandle(MethodHandle logHandle, MethodHandle append, String literal) {
 		return foldArguments(logHandle,
 				dropArguments(dropArguments(append.bindTo(literal), 1, Request.class), 2, Response.class));
-	}
-
-//TODO use integer comparisons instead of strings
-	private static boolean modify(List<String> modifiers, Boolean negated, StringBuilder b, Request request,
-			Response response) {
-		String responseCode = Integer.toString(response.getStatus());
-		if (negated) {
-			return (!modifiers.contains(responseCode));
-		} else {
-			return (modifiers.contains(responseCode));
-		}
 	}
 
 	private MethodHandle updateLogHandle(MethodHandle logHandle, MethodHandle append, MethodHandles.Lookup lookup,
@@ -574,8 +542,6 @@ public class ServerRequestLog extends ContainerLifeCycle implements RequestLog {
 		MethodType logType = methodType(Void.TYPE, StringBuilder.class, Request.class, Response.class);
 		MethodType logTypeArg = methodType(Void.TYPE, String.class, StringBuilder.class, Request.class, Response.class);
 
-		// TODO should we throw IllegalArgumentExceptions when given arguments for codes
-		// which do not take them
 		MethodHandle specificHandle;
 		switch (code) {
 		case "%": {
@@ -882,244 +848,4 @@ public class ServerRequestLog extends ContainerLifeCycle implements RequestLog {
 		return foldArguments(logHandle, specificHandle);
 	}
 
-//-----------------------------------------------------------------------------------//
-
-	private static void logNothing(StringBuilder b, Request request, Response response) {
-	}
-
-	private static void logServerHost(StringBuilder b, Request request, Response response) {
-		append(b, request.getServerName());
-	}
-
-	private static void logClientHost(StringBuilder b, Request request, Response response) {
-		append(b, request.getRemoteHost());
-	}
-
-	private static void logLocalHost(StringBuilder b, Request request, Response response) {
-		append(b, request.getHttpChannel().getEndPoint().getLocalAddress().getAddress().getHostAddress());
-	}
-
-	private static void logRemoteHost(StringBuilder b, Request request, Response response) {
-		append(b, request.getHttpChannel().getEndPoint().getRemoteAddress().getAddress().getHostAddress());
-	}
-
-	private static void logServerPort(StringBuilder b, Request request, Response response) {
-		b.append(request.getServerPort());
-	}
-
-	private static void logClientPort(StringBuilder b, Request request, Response response) {
-		b.append(request.getRemotePort());
-	}
-
-	private static void logLocalPort(StringBuilder b, Request request, Response response) {
-		b.append(request.getHttpChannel().getEndPoint().getLocalAddress().getPort());
-	}
-
-	private static void logRemotePort(StringBuilder b, Request request, Response response) {
-		b.append(request.getHttpChannel().getEndPoint().getRemoteAddress().getPort());
-	}
-
-	private static void logResponseSize(StringBuilder b, Request request, Response response) {
-		long written = response.getHttpChannel().getBytesWritten();
-		b.append(written);
-	}
-
-	private static void logResponseSizeCLF(StringBuilder b, Request request, Response response) {
-		long written = response.getHttpChannel().getBytesWritten();
-		if (written == 0)
-			b.append('-');
-		else
-			b.append(written);
-	}
-
-	private static void logBytesSent(StringBuilder b, Request request, Response response) {
-		b.append(response.getHttpChannel().getBytesWritten());
-	}
-
-	private static void logBytesSentCLF(StringBuilder b, Request request, Response response) {
-		long sent = response.getHttpChannel().getBytesWritten();
-		if (sent == 0)
-			b.append('-');
-		else
-			b.append(sent);
-	}
-
-	private static void logBytesReceived(StringBuilder b, Request request, Response response) {
-		// todo this be content received rather than consumed
-		b.append(request.getHttpInput().getContentConsumed());
-	}
-
-	private static void logBytesReceivedCLF(StringBuilder b, Request request, Response response) {
-		// todo this be content received rather than consumed
-		long received = request.getHttpInput().getContentConsumed();
-		if (received == 0)
-			b.append('-');
-		else
-			b.append(received);
-	}
-
-	private static void logBytesTransferred(StringBuilder b, Request request, Response response) {
-		// todo this be content received rather than consumed
-		b.append(request.getHttpInput().getContentConsumed() + response.getHttpOutput().getWritten());
-	}
-
-	private static void logBytesTransferredCLF(StringBuilder b, Request request, Response response) {
-		// todo this be content received rather than consumed
-		long transferred = request.getHttpInput().getContentConsumed() + response.getHttpOutput().getWritten();
-		if (transferred == 0)
-			b.append('-');
-		else
-			b.append(transferred);
-	}
-
-	private static void logRequestCookie(String arg, StringBuilder b, Request request, Response response) {
-		for (Cookie c : request.getCookies()) {
-			if (arg.equals(c.getName())) {
-				b.append(c.getValue());
-				return;
-			}
-		}
-
-		b.append('-');
-	}
-
-	private static void logRequestCookies(StringBuilder b, Request request, Response response) {
-		Cookie[] cookies = request.getCookies();
-		if (cookies == null || cookies.length == 0)
-			b.append("-");
-		else {
-			for (int i = 0; i < cookies.length; i++) {
-				if (i != 0)
-					b.append(';');
-				b.append(cookies[i].getName());
-				b.append('=');
-				b.append(cookies[i].getValue());
-			}
-		}
-	}
-
-	private static void logEnvironmentVar(String arg, StringBuilder b, Request request, Response response) {
-		append(b, System.getenv(arg));
-	}
-
-	private static void logFilename(StringBuilder b, Request request, Response response) {
-		UserIdentity.Scope scope = request.getUserIdentityScope();
-		if (scope == null || scope.getContextHandler() == null)
-			b.append('-');
-		else {
-			ContextHandler context = scope.getContextHandler();
-			int lengthToStrip = scope.getContextPath().length() > 1 ? scope.getContextPath().length() : 0;
-			String filename = context.getServletContext().getRealPath(request.getPathInfo().substring(lengthToStrip));
-			append(b, filename);
-		}
-	}
-
-	private static void logRequestProtocol(StringBuilder b, Request request, Response response) {
-		append(b, request.getProtocol());
-	}
-
-	private static void logRequestHeader(String arg, StringBuilder b, Request request, Response response) {
-		append(b, request.getHeader(arg));
-	}
-
-	private static void logKeepAliveRequests(StringBuilder b, Request request, Response response) {
-		long requests = request.getHttpChannel().getConnection().getMessagesIn();
-		if (requests >= 0)
-			b.append(requests);
-		else
-			b.append('-');
-	}
-
-	private static void logRequestMethod(StringBuilder b, Request request, Response response) {
-		append(b, request.getMethod());
-	}
-
-	private static void logResponseHeader(String arg, StringBuilder b, Request request, Response response) {
-		append(b, response.getHeader(arg));
-	}
-
-	private static void logQueryString(StringBuilder b, Request request, Response response) {
-		append(b, "?" + request.getQueryString());
-	}
-
-	private static void logRequestFirstLine(StringBuilder b, Request request, Response response) {
-		append(b, request.getMethod());
-		b.append(" ");
-		append(b, request.getOriginalURI());
-		b.append(" ");
-		append(b, request.getProtocol());
-	}
-
-	private static void logRequestHandler(StringBuilder b, Request request, Response response) {
-		append(b, request.getServletName());
-	}
-
-	private static void logResponseStatus(StringBuilder b, Request request, Response response) {
-		// todo can getCommittedMetaData be null? check what happens when its aborted
-		b.append(response.getCommittedMetaData().getStatus());
-	}
-
-	private static void logRequestTime(DateCache dateCache, StringBuilder b, Request request, Response response) {
-		b.append('[');
-		append(b, dateCache.format(request.getTimeStamp()));
-		b.append(']');
-	}
-
-	private static void logLatencyMicroseconds(StringBuilder b, Request request, Response response) {
-		long currentTime = System.currentTimeMillis();
-		long requestTime = request.getTimeStamp();
-
-		long latencyMs = currentTime - requestTime;
-		long latencyUs = TimeUnit.MILLISECONDS.toMicros(latencyMs);
-
-		b.append(latencyUs);
-	}
-
-	private static void logLatencyMilliseconds(StringBuilder b, Request request, Response response) {
-		long latency = System.currentTimeMillis() - request.getTimeStamp();
-		b.append(latency);
-	}
-
-	private static void logLatencySeconds(StringBuilder b, Request request, Response response) {
-		long latency = System.currentTimeMillis() - request.getTimeStamp();
-		b.append(TimeUnit.MILLISECONDS.toSeconds(latency));
-	}
-
-	private static void logRequestAuthentication(StringBuilder b, Request request, Response response) {
-		append(b, getAuthentication(request, false));
-	}
-
-	private static void logRequestAuthenticationWithDeferred(StringBuilder b, Request request, Response response) {
-		append(b, getAuthentication(request, true));
-	}
-
-	private static void logUrlRequestPath(StringBuilder b, Request request, Response response) {
-		append(b, request.getRequestURI());
-	}
-
-	private static void logConnectionStatus(StringBuilder b, Request request, Response response) {
-		b.append(request.getHttpChannel().isResponseCompleted() ? (request.getHttpChannel().isPersistent() ? '+' : '-')
-				: 'X');
-	}
-
-	private static void logRequestTrailer(String arg, StringBuilder b, Request request, Response response) {
-		HttpFields trailers = request.getTrailers();
-		if (trailers != null)
-			append(b, trailers.get(arg));
-		else
-			b.append('-');
-	}
-
-	private static void logResponseTrailer(String arg, StringBuilder b, Request request, Response response) {
-		Supplier<HttpFields> supplier = response.getTrailers();
-		if (supplier != null) {
-			HttpFields trailers = supplier.get();
-
-			if (trailers != null)
-				append(b, trailers.get(arg));
-			else
-				b.append('-');
-		} else
-			b.append("-");
-	}
 }

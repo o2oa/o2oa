@@ -9,6 +9,7 @@ public class GarbageCollection {
 
 	public boolean execute() {
 		Runtime.getRuntime().gc();
+		LOGGER.print("runtime gc called.");
 		return true;
 	}
 
