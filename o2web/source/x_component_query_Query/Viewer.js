@@ -346,9 +346,13 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             //序号
             if (this.viewJson.isSequence==="yes"){
                 this.sequenceTitleCell = new Element("td", {
-                    "styles": viewTitleCellNode
+                    "styles": viewTitleCellNode,
+                    "text": this.lp.sequence
                 }).inject(this.viewTitleLine);
-                this.sequenceTitleCell.setStyle("width", "10px");
+                this.sequenceTitleCell.setStyles({
+                    "width": "30px",
+                    "text-align": "center"
+                });
                 if (this.json.titleStyles) this.sequenceTitleCell.setStyles(this.json.titleStyles);
                 if( !this.expandTitleCell )this.expandTitleCell = this.sequenceTitleCell;
             }
@@ -1826,7 +1830,10 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         this.data["$sequence"] = sequence;
         if (this.view.viewJson.isSequence==="yes"){
             this.sequenceTd = new Element("td", {"styles": viewContentTdNode}).inject(this.node);
-            this.sequenceTd.setStyle("width", "10px");
+            this.sequenceTd.setStyles({
+                "width": "30px",
+                "text-align": "center"
+            });
             this.sequenceTd.set("text", sequence);
         }
 
