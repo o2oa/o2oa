@@ -69,7 +69,7 @@ MWF.xApplication.process.Xform.Tab = MWF.APPTab =  new Class(
 		}.bind(this));
 
 		if( this.json.defaultIndex && this.tab.pages[this.json.defaultIndex]){
-            his.tab.pages[this.json.defaultIndex]._showTab();
+            this.tab.pages[this.json.defaultIndex]._showTab();
         }else{
             this.tab.pages[0]._showTab();
         }
