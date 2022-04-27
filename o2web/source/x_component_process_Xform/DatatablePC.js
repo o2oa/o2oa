@@ -246,7 +246,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			var tr = this.titleTr;
 			var node;
 			if( tr ){
-				var node = tr.getElement("th.mwf_addlineaction");
+				node = tr.getElement("th.mwf_addlineaction");
 				if( node )node.destroy();
 				node = tr.getElement("th.mwf_moveaction");
 				if( node )node.destroy();
