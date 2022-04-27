@@ -119,8 +119,9 @@ MWF.xApplication.process.Xform.View = MWF.APPView =  new Class(
                 "onLoadView": function(){
                     this.fireEvent("loadView");
                 }.bind(this),
-                "onSelect": function(){
-                    this.fireEvent("select");
+                "onSelect": function(item){
+                    debugger;
+                    this.fireEvent("select", [item]);
                 }.bind(this),
                 "onOpenDocument": function(options, item){
                     this.openOptions = {
