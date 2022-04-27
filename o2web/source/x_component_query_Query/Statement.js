@@ -796,7 +796,10 @@ MWF.xApplication.query.Query.Statement.Item = new Class({
         this.data["$sequence"] = sequence;
         if (this.view.viewJson.isSequence === "yes") {
             this.sequenceTd = new Element("td", {"styles": viewContentTdNode}).inject(this.node);
-            this.sequenceTd.setStyle("width", "10px");
+            this.sequenceTd.setStyles({
+                "width": "30px",
+                "text-align": "center"
+            });
             this.sequenceTd.set("text", sequence);
         }
 

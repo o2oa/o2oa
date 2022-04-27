@@ -67,8 +67,12 @@ MWF.xApplication.process.Xform.Tab = MWF.APPTab =  new Class(
 		tabs.each(function(tab, idx){
 			this.tab.rebuildTab(contents[idx], contents[idx].getFirst(), tab);
 		}.bind(this));
-		
-		this.tab.pages[0]._showTab();
+
+		if( this.json.defaultIndex && this.tab.pages[this.json.defaultIndex]){
+            this.tab.pages[this.json.defaultIndex]._showTab();
+        }else{
+            this.tab.pages[0]._showTab();
+        }
         this.loadSubModule();
 	},
     loadSubModule: function(){

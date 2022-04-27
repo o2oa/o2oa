@@ -346,9 +346,13 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             //序号
             if (this.viewJson.isSequence==="yes"){
                 this.sequenceTitleCell = new Element("td", {
-                    "styles": viewTitleCellNode
+                    "styles": viewTitleCellNode,
+                    "text": this.lp.sequence
                 }).inject(this.viewTitleLine);
-                this.sequenceTitleCell.setStyle("width", "10px");
+                this.sequenceTitleCell.setStyles({
+                    "width": "30px",
+                    "text-align": "center"
+                });
                 if (this.json.titleStyles) this.sequenceTitleCell.setStyles(this.json.titleStyles);
                 if( !this.expandTitleCell )this.expandTitleCell = this.sequenceTitleCell;
             }
@@ -1820,7 +1824,10 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         this.data["$sequence"] = sequence;
         if (this.view.viewJson.isSequence==="yes"){
             this.sequenceTd = new Element("td", {"styles": viewContentTdNode}).inject(this.node);
-            this.sequenceTd.setStyle("width", "10px");
+            this.sequenceTd.setStyles({
+                "width": "30px",
+                "text-align": "center"
+            });
             this.sequenceTd.set("text", sequence);
         }
 
@@ -2138,7 +2145,6 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
                 this.selected();
             }
         }
-        this.view.fireEvent("select"); //options 传入的事件
     },
 
     selected: function( from ){
@@ -2164,6 +2170,11 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
             if( this.category )this.category.checkSelectAllStatus();
         }
         this.view.fireEvent("selectRow", [this]);
+        this.view.fireEvent("select", [{
+            "selected": true,
+            "item": this,
+            "data": this.data
+        }]); //options 传入的事件
     },
     unSelected: function( from ){
         for(var i=0; i<this.view.selectedItems.length; i++){
@@ -2194,6 +2205,11 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
             if( this.category )this.category.checkSelectAllStatus();
         }
         this.view.fireEvent("unselectRow", [this]);
+        this.view.fireEvent("select", [{
+            "selected": false,
+            "item": this,
+            "data": this.data
+        }]); //options 传入的事件
     },
     selectedSingle: function(){
         if (this.view.currentSelectedItem) this.view.currentSelectedItem.unSelectedSingle();
@@ -2209,6 +2225,11 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         }
         this.isSelected = true;
         this.view.fireEvent("selectRow", [this]);
+        this.view.fireEvent("select", [{
+            "selected": true,
+            "item": this,
+            "data": this.data
+        }]); //options 传入的事件
     },
     unSelectedSingle: function(){
         this.view.selectedItems = [];
@@ -2230,6 +2251,11 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         }
         this.isSelected = false;
         this.view.fireEvent("unselectRow", [this]);
+        this.view.fireEvent("select", [{
+            "selected": false,
+            "item": this,
+            "data": this.data
+        }]); //options 传入的事件
     }
 });
 
