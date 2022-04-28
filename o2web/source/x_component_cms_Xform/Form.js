@@ -945,7 +945,9 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             this.businessData.data.isNew = false;
             this.fireEvent("afterSave");
             if (callback && typeof callback === "function") callback();
-            this._reloadReadForm();
+            if( !this.json.notReloadWhenSave ){
+                this._reloadReadForm();
+            }
             //}.bind(this), null, this.businessData.document.id, data, !sync );
         }.bind(this), null, !sync);
     },
