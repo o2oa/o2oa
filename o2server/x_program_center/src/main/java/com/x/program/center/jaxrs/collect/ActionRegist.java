@@ -1,8 +1,5 @@
 package com.x.program.center.jaxrs.collect;
 
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
@@ -15,8 +12,9 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.tools.StringTools;
 import com.x.program.center.ThisApplication;
-import com.x.program.center.schedule.CollectMarket;
 import com.x.program.center.schedule.CollectPerson;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionRegist extends BaseAction {
 
@@ -62,7 +60,6 @@ class ActionRegist extends BaseAction {
 			this.configFlush(effectivePerson);
 			// 人员和应用市场同步
 			ThisApplication.context().scheduleLocal(CollectPerson.class);
-			ThisApplication.context().scheduleLocal(CollectMarket.class);
 		}
 		result.setData(wo);
 		return result;

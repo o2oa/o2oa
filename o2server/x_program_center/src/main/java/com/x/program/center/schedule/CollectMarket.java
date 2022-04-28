@@ -29,6 +29,9 @@ import com.x.program.center.Business;
 import com.x.program.center.core.entity.Application;
 import com.x.program.center.core.entity.Attachment;
 
+/**
+ * @author sword
+ */
 public class CollectMarket extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(CollectMarket.class);
@@ -41,8 +44,7 @@ public class CollectMarket extends BaseAction {
 		try {
 			if (pirmaryCenter() && BooleanUtils.isTrue(Config.collect().getEnable())) {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-					Business business = new Business(emc);
-					String token = business.loginCollect();
+					String token = Business.loginCollect();
 					if (StringUtils.isNotEmpty(token)) {
 						logger.info("start sync market data.");
 						List<Wi> wiList = null;
