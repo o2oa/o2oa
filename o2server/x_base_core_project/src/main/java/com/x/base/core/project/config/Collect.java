@@ -36,7 +36,7 @@ public class Collect extends ConfigObject {
 	public static String ADDRESS_COLLECT_VALIDATE_CODE = "/o2_collect_assemble/jaxrs/unit/validate/codeanswer";
 	public static String ADDRESS_COLLECT_APPLICATION_LIST = "/o2_collect_assemble/jaxrs/application/list";
 	public static String ADDRESS_COLLECT_MARKET = "/market";
-	public static String ADDRESS_COLLECT_APPLICATION_DOWN = "/o2_collect_assemble/jaxrs/application/download";
+	public static String ADDRESS_COLLECT_APPLICATION_DOWN = "/o2_collect_assemble/jaxrs/application2/download";
 	public static String COLLECT_TOKEN = "c-token";
 	public static String ADDRESS_APPPACK_AUTH = "/auth/collect";
 	public static String ADDRESS_APPPACK_SAVE = "/pack/info/save";
