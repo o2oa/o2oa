@@ -82,6 +82,40 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         this.parentLine = null;
     },
     /**
+     * @summary 根据组件的校验设置进行校验。
+     *  @param {String} [routeName] - 可选，路由名称.
+     *  @example
+     *  if( !this.form.get('fieldId').validation() ){
+     *      return false;
+     *  }
+     *  @return {Boolean} 是否通过校验
+     */
+    validation: function (routeName, opinion) {
+        if (!this.readonly && !this.json.isReadonly){
+            if (this.getInputData){
+                this._setBusinessData(this.getInputData("change"));
+            }
+            if (this.validationFormat){
+                if (!this.validationFormat()) return false;
+            }
+            if (!this.validationConfig(routeName, opinion)) return false;
+
+            if (!this.json.validation) return true;
+            if (!this.json.validation.code) return true;
+
+            this.currentRouteName = routeName;
+            var flag = this.form.Macro.exec(this.json.validation.code, this);
+            this.currentRouteName = "";
+
+            if (!flag) flag = MWF.xApplication.process.Xform.LP.notValidation;
+            if (flag.toString() !== "true") {
+                this.notValidationMode(flag);
+                return false;
+            }
+        }
+        return true;
+    },
+    /**
      * 当前组件在数据源组件中时，可以通过此方法获取所在的上级数据源/子数据源/子数项组件.
      * @param {String} [type] 需要获取的类型，"source"为表示数据源,"subSource"表示子数据源,"subSourceItem"表示子数据项组件。
      * 如果该参数省略，则获取离当前组件最近的上述组件。
