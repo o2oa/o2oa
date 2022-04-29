@@ -282,7 +282,7 @@ MWF.xDesktop.WebSocket = new Class({
             var options = {"workId": id, "appId": "process.Work"+id};
             layout.desktop.openApplication(e, "process.Work", options);
         }.bind(this), function(){
-            layout.desktop.openApplication(e, "process.TaskCenter", null, {
+            layout.desktop.openApplication(e, "process.workcenter", null, {
                 "status": {
                     "navi": "task"
                 }
