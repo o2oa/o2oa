@@ -1980,32 +1980,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         }
         return true;
     },
-    /**
-     * @summary 根据组件的校验设置进行校验。
-     *  @param {String} [routeName] - 可选，路由名称.
-     *  @example
-     *  if( !this.form.get('fieldId').validation() ){
-     *      return false;
-     *  }
-     *  @return {Boolean} 是否通过校验
-     */
-    validation: function (routeName, opinion) {
-        if (!this.validationConfig(routeName, opinion)) return false;
 
-        if (!this.json.validation) return true;
-        if (!this.json.validation.code) return true;
-
-        this.currentRouteName = routeName;
-        var flag = this.form.Macro.exec(this.json.validation.code, this);
-        this.currentRouteName = "";
-
-        if (!flag) flag = MWF.xApplication.process.Xform.LP.notValidation;
-        if (flag.toString() != "true") {
-            this.notValidationMode(flag);
-            return false;
-        }
-        return true;
-    }
 
 });
 MWF.xApplication.process.Xform.AttachmenPreview = new Class({
