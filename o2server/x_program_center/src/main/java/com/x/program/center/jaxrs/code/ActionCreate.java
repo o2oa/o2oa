@@ -1,5 +1,7 @@
 package com.x.program.center.jaxrs.code;
 
+import com.x.base.core.project.Applications;
+import com.x.program.center.ThisApplication;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -13,6 +15,7 @@ import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.jaxrs.WrapString;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionCreate extends BaseAction {
 
@@ -22,7 +25,15 @@ class ActionCreate extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wo wo = new Wo();
-			if (BooleanUtils.isNotTrue(Config.collect().getEnable())) {
+			String customSms = ThisApplication.context().applications().findApplicationName(CUSTOM_SMS_APPLICATION);
+			if(StringUtils.isNotBlank(customSms) && Config.customConfig(CUSTOM_SMS_CONFIG_NAME) != null){
+				ActionResponse resp = ThisApplication.context().applications()
+						.getQuery(customSms, Applications.joinQueryUri("sms", "send", "code", "mobile", mobile, "token", "(0)"));
+				RespWi respWi = resp.getData(RespWi.class);
+				if (BooleanUtils.isNotTrue(respWi.getValue())) {
+					throw new ExceptionTransferCodeError(resp);
+				}
+			}else if (BooleanUtils.isNotTrue(Config.collect().getEnable())) {
 				logger.warn("短信无法发送,系统没有启用O2云服务.");
 			} else {
 				Message message = new Message();
