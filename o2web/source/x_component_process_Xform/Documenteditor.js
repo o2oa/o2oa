@@ -195,7 +195,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             var pageContentNode = this._createNewPage().getFirst();
             pageContentNode.set("html", html);
 
-            if (this.json.toWordPageNumber=="y") this.doPageStyles(pageContentNode);
             if (this.attachmentTemplete){
                 var attNode = pageContentNode.getElement(".doc_layout_attachment_content");
                 if (attNode) attNode.empty();
@@ -224,73 +223,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             this.layout_copyto2ContentTrP = null;
         }
     },
-    doPageStyles: function(pageContentNode){
-        var style = pageContentNode.getLast("style");
-        if (style){
-            var origin = window.location.origin;
-            var header = o2.filterUrl(origin+"/x_component_process_FormDesigner/Module/Documenteditor/header.htm");
 
-            var text = style.get("html");
-            var pageRex = /(?:@page\s*\{)([\s\S]*?)(?:\})/;
-            var arr = text.match(pageRex);
-            if (arr && arr.length){
-                cssText = arr[2];
-                if (cssText){
-                    var last = cssText.substr(cssText.length-1,1);
-                    if (last!==";") cssText = cssText+";";
-                    cssText += "mso-page-border-surround-header:no;\n" +
-                        "        mso-page-border-surround-footer:no;\n" +
-                        "        mso-footnote-separator:url(\""+header+"\") fs;\n" +
-                        "        mso-footnote-continuation-separator:url(\""+header+"\") fcs;\n" +
-                        "        mso-endnote-separator:url(\""+header+"\") es;\n" +
-                        "        mso-endnote-continuation-separator:url(\""+header+"\") ecs;\n" +
-                        "        mso-facing-pages:yes;";
-                    text = text.replace(arr[0], arr[1]+cssText+arr[3]);
-                }
-            }else{
-                text += "@page\n" +
-                    "    {mso-page-border-surround-header:no;\n" +
-                    "        mso-page-border-surround-footer:no;\n" +
-                    "        mso-footnote-separator:url(\""+header+"\") fs;\n" +
-                    "        mso-footnote-continuation-separator:url(\""+header+"\") fcs;\n" +
-                    "        mso-endnote-separator:url(\""+header+"\") es;\n" +
-                    "        mso-endnote-continuation-separator:url(\""+header+"\") ecs;\n" +
-                    "        mso-facing-pages:yes;}"
-            }
-
-            pageRex = /(@page\s*WordSection1\s*\{)([\s\S]*?)(\})/;
-            arr = text.match(pageRex);
-            if (arr && arr.length){
-                cssText = arr[2];
-                if (cssText){
-                    var last = cssText.substr(cssText.length-1,1);
-                    if (last!==";") cssText = cssText+";";
-                    cssText += "mso-header-margin:42.55pt;\n" +
-                        "        mso-footer-margin:70.9pt;\n" +
-                        "        mso-even-footer:url(\""+header+"\") ef1;\n" +
-                        "        mso-footer:url(\""+header+"\") f1;\n" +
-                        "        mso-paper-source:0;";
-                    text = text.replace(arr[0], arr[1]+cssText+arr[3]);
-                }
-            }else{
-                text += "@page WordSection1\n" +
-                    "    {size:595.3pt 841.9pt;\n" +
-                    "        margin:104.9pt 73.7pt 99.25pt 79.4pt;\n" +
-                    "        layout-grid:15.6pt;\n" +
-                    "        line-height:normal;\n" +
-                    "        font-size:16.0pt;\n" +
-                    "        font-family:仿宋;\n" +
-                    "        letter-spacing:-0.4pt;\n" +
-                    "        mso-header-margin:42.55pt;\n" +
-                    "        mso-footer-margin:70.9pt;\n" +
-                    "        mso-even-footer:url(\""+header+"\") ef1;\n" +
-                    "        mso-footer:url(\""+header+"\") f1;\n" +
-                    "        mso-paper-source:0;\n" +
-                    "    }"
-            }
-            style.set("html", text)
-        }
-    },
     getTempleteJson: function(callback){
         if (this.templeteJson){
             if (callback) callback();
