@@ -117,8 +117,6 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 		this.processAlias = work.getProcessAlias();
 		this.serial = work.getSerial();
 		this.form = work.getForm();
-//		this.formData = formData;
-//		this.formMobileData = formMobileData;
 		this.work = work.getId();
 		this.expireTime = work.getExpireTime();
 		if ((null != expireTime) && (completedTime.after(expireTime))) {
@@ -316,7 +314,6 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 	public static final String expired_FIELDNAME = "expired";
 	@FieldDescribe("是否超时.")
 	@Column(name = ColumnNamePrefix + expired_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + expired_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Boolean expired;
 
@@ -329,7 +326,6 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 	public static final String allowRollback_FIELDNAME = "allowRollback";
 	@FieldDescribe("完成后是否允许回滚.")
 	@Column(name = ColumnNamePrefix + allowRollback_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + allowRollback_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean allowRollback;
 
@@ -372,7 +368,6 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 	public static final String merged_FIELDNAME = "merged";
 	@FieldDescribe("合并数据")
 	@Column(name = ColumnNamePrefix + merged_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + merged_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean merged;
 
@@ -449,14 +444,12 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 	public static final String booleanValue01_FIELDNAME = "booleanValue01";
 	@FieldDescribe("业务数据Boolean值01.")
 	@Column(name = ColumnNamePrefix + booleanValue01_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + booleanValue01_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean booleanValue01;
 
 	public static final String booleanValue02_FIELDNAME = "booleanValue02";
 	@FieldDescribe("业务数据Boolean值02.")
 	@Column(name = ColumnNamePrefix + booleanValue02_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + booleanValue02_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean booleanValue02;
 

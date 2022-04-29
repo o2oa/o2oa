@@ -31,6 +31,7 @@ import com.x.processplatform.core.entity.PersistenceProperties;
 
 /**
  * 签批涂鸦信息
+ * 
  * @author sword
  */
 @Entity
@@ -47,11 +48,11 @@ public class DocSignScrawl extends StorageObject {
 
 	private static final String TABLE = PersistenceProperties.Content.DocSignScrawl.table;
 
-	public static String SCRAWL_TYPE_PLACEHOLDER = "placeholder";
+	public static final String SCRAWL_TYPE_PLACEHOLDER = "placeholder";
 
-	public static String SCRAWL_TYPE_BASE64 = "base64";
+	public static final String SCRAWL_TYPE_BASE64 = "base64";
 
-	public static String SCRAWL_TYPE_IMAGE = "image";
+	public static final String SCRAWL_TYPE_IMAGE = "image";
 
 	@Override
 	public String getId() {
@@ -70,7 +71,7 @@ public class DocSignScrawl extends StorageObject {
 
 	@Override
 	public void onPersist() throws Exception {
-		if(StringUtils.isNotBlank(this.name)){
+		if (StringUtils.isNotBlank(this.name)) {
 			this.extension = StringUtils.lowerCase(FilenameUtils.getExtension(name));
 		}
 	}
@@ -140,7 +141,6 @@ public class DocSignScrawl extends StorageObject {
 	@FieldDescribe("是否使用更深的路径.")
 	@CheckPersist(allowEmpty = true)
 	@Column(name = ColumnNamePrefix + deepPath_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + deepPath_FIELDNAME)
 	private Boolean deepPath;
 
 	@Override

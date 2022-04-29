@@ -380,13 +380,11 @@ public class Agent extends Activity {
 	@FieldDescribe("允许调度")
 	@CheckPersist(allowEmpty = true)
 	@Column(name = ColumnNamePrefix + allowReroute_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + allowReroute_FIELDNAME)
 	private Boolean allowReroute;
 
 	@FieldDescribe("允许调度到此节点")
 	@CheckPersist(allowEmpty = true)
 	@Column(name = ColumnNamePrefix + allowRerouteTo_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + allowRerouteTo_FIELDNAME)
 	private Boolean allowRerouteTo;
 
 	@FieldDescribe("允许挂起")
