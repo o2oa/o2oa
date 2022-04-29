@@ -85,7 +85,6 @@ public class Agent extends SliceJpaObject {
 	public static final String enable_FIELDNAME = "enable";
 	@FieldDescribe("是否启用.")
 	@Column(name = ColumnNamePrefix + enable_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + enable_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Boolean enable;
 

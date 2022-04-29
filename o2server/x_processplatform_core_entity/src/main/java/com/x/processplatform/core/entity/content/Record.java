@@ -204,7 +204,6 @@ public class Record extends SliceJpaObject {
 	@FieldDescribe("工作是否已经完成.")
 	/* 必填值 */
 	@Column(name = ColumnNamePrefix + completed_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + completed_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Boolean completed;
 

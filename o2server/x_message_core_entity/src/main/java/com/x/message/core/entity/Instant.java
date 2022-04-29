@@ -93,7 +93,6 @@ public class Instant extends SliceJpaObject {
 	public static final String consumed_FIELDNAME = "consumed";
 	@FieldDescribe("是否已经消费掉.")
 	@Column(name = ColumnNamePrefix + consumed_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + consumed_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Boolean consumed;
 

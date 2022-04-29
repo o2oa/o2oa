@@ -142,7 +142,6 @@ public class View extends SliceJpaObject {
 	@FieldDescribe("是否对结果进行缓存.")
 	@CheckPersist(allowEmpty = true)
 	@Column(name = ColumnNamePrefix + enableCache_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + enableCache_FIELDNAME)
 	private Boolean enableCache;
 
 	public static final String layout_FIELDNAME = "layout";
@@ -196,7 +195,6 @@ public class View extends SliceJpaObject {
 	public static final String display_FIELDNAME = "display";
 	@FieldDescribe("是否前端可见.")
 	@Column(name = ColumnNamePrefix + display_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + display_FIELDNAME)
 	private Boolean display;
 
 	public static final String type_FIELDNAME = "type";

@@ -123,7 +123,6 @@ public class Calendar extends SliceJpaObject {
 	public static final String isPublic_FIELDNAME = "isPublic";
 	@FieldDescribe("是否公开的日历")
 	@Column(name = ColumnNamePrefix + isPublic_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + isPublic_FIELDNAME)
 	private Boolean isPublic = false;
 
 	public static final String manageablePersonList_FIELDNAME = "manageablePersonList";

@@ -95,7 +95,6 @@ public class Entry extends SliceJpaObject {
 	public static final String wait_FIELDNAME = "wait";
 	@FieldDescribe("等待处理")
 	@Column(name = ColumnNamePrefix + wait_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + wait_FIELDNAME)
 	private Boolean wait;
 
 	public static final String summary_FIELDNAME = "summary";

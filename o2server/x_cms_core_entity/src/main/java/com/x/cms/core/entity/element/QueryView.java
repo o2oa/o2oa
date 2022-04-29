@@ -110,7 +110,6 @@ public class QueryView extends SliceJpaObject {
 	@FieldDescribe("是否是定时任务.")
 	@CheckPersist(allowEmpty = true)
 	@Column(name = ColumnNamePrefix + timingEnable_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + timingEnable_FIELDNAME)
 	private Boolean timingEnable;
 
 	public static final String timingTouch_FIELDNAME = "timingTouch";
@@ -202,7 +201,6 @@ public class QueryView extends SliceJpaObject {
 	public static final String display_FIELDNAME = "display";
 	@FieldDescribe("是否前端可见.")
 	@Column(name = ColumnNamePrefix + display_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + display_FIELDNAME)
 	private Boolean display;
 
 	public static final String code_FIELDNAME = "code";
