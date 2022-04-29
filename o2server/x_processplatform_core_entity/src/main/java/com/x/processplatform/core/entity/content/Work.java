@@ -351,14 +351,12 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	public static final String dataChanged_FIELDNAME = "dataChanged";
 	@FieldDescribe("当前工作是否经过保存修改的操作,用于判断是否是默认生成的未经修改的.")
 	@Column(name = ColumnNamePrefix + dataChanged_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + dataChanged_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean dataChanged;
 
 	public static final String workThroughManual_FIELDNAME = "workThroughManual";
 	@FieldDescribe("是否已经经过人工节点,用于判断是否是草稿.在到达环节进行判断.")
 	@Column(name = ColumnNamePrefix + workThroughManual_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + workThroughManual_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean workThroughManual;
 
@@ -404,7 +402,6 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	/** Split Attribute */
 	public static final String splitting_FIELDNAME = "splitting";
 	@FieldDescribe("是否是拆分中的工作")
-	@Index(name = TABLE + IndexNameMiddle + splitting_FIELDNAME)
 	@Column(name = ColumnNamePrefix + splitting_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Boolean splitting;
@@ -562,14 +559,12 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	public static final String booleanValue01_FIELDNAME = "booleanValue01";
 	@FieldDescribe("业务数据Boolean值01.")
 	@Column(name = ColumnNamePrefix + booleanValue01_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + booleanValue01_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean booleanValue01;
 
 	public static final String booleanValue02_FIELDNAME = "booleanValue02";
 	@FieldDescribe("业务数据Boolean值02.")
 	@Column(name = ColumnNamePrefix + booleanValue02_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + booleanValue02_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean booleanValue02;
 

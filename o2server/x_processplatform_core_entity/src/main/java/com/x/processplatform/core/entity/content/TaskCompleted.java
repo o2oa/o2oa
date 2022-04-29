@@ -406,7 +406,6 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	public static final String completed_FIELDNAME = "completed";
 	@FieldDescribe("整个job是否已经完成.")
 	@Column(name = ColumnNamePrefix + completed_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + completed_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean completed;
 
@@ -481,14 +480,12 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	public static final String empowerToIdentity_FIELDNAME = "empowerToIdentity";
 	@FieldDescribe("授权给谁处理,在processType=empower时记录授权对象")
 	@Column(length = length_255B, name = ColumnNamePrefix + empowerToIdentity_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + empowerToIdentity_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String empowerToIdentity;
 
 	public static final String empowerFromIdentity_FIELDNAME = "empowerFromIdentity";
 	@FieldDescribe("授权自Identity")
 	@Column(length = length_255B, name = ColumnNamePrefix + empowerFromIdentity_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + empowerFromIdentity_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String empowerFromIdentity;
 
@@ -516,7 +513,6 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	public static final String activityAlias_FIELDNAME = "activityAlias";
 	@FieldDescribe("活动别名.")
 	@Column(length = length_255B, name = ColumnNamePrefix + activityAlias_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + activityAlias_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String activityAlias;
 
@@ -530,7 +526,6 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	@FieldDescribe("活动类型.")
 	@Enumerated(EnumType.STRING)
 	@Column(length = ActivityType.length, name = ColumnNamePrefix + activityType_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + activityType_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private ActivityType activityType;
 
@@ -600,7 +595,6 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	public static final String expired_FIELDNAME = "expired";
 	@FieldDescribe("是否超时.")
 	@Column(name = ColumnNamePrefix + expired_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + expired_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Boolean expired;
 
@@ -626,7 +620,6 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	public static final String latest_FIELDNAME = "latest";
 	@FieldDescribe("同一Job中同一用户是否是最新的,多人可以有多条已办,页面显示的时候可以通过此标记仅显示一条最新的.")
 	@Column(name = ColumnNamePrefix + latest_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + latest_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean latest;
 
@@ -748,14 +741,12 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	public static final String booleanValue01_FIELDNAME = "booleanValue01";
 	@FieldDescribe("业务数据Boolean值01.")
 	@Column(name = ColumnNamePrefix + booleanValue01_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + booleanValue01_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean booleanValue01;
 
 	public static final String booleanValue02_FIELDNAME = "booleanValue02";
 	@FieldDescribe("业务数据Boolean值02.")
 	@Column(name = ColumnNamePrefix + booleanValue02_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + booleanValue02_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean booleanValue02;
 

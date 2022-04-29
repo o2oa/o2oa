@@ -41,16 +41,18 @@ public class CheckCore {
 			checkColumnName(classes);
 			checkColumnLength(classes);
 			checkLobIndex(classes);
+			checkBooleanIndex(classes);
 			checkListFieldContainerTableName(classes);
 			checkFieldDescribeOnStatic(classes);
 			checkTableNameUniqueConstraintName(classes);
 			checkIdCreateTimeUpdateTimeSequenceIndex(classes);
 			checkEnum(classes);
 			checkDumpSize(classes);
+
 		}
 	}
 
-	public static String packageName(String name) throws Exception {
+	public static String packageName(String name) throws ClassNotFoundException {
 		try (ScanResult scanResult = new ClassGraph().enableAnnotationInfo().scan()) {
 			List<ClassInfo> classInfos = scanResult.getClassesWithAnnotation(Module.class.getName());
 			for (ClassInfo info : classInfos) {
@@ -67,16 +69,14 @@ public class CheckCore {
 	/*
 	 * 检查数据库字段名是否是ColumnNamePrefix + fieldName
 	 */
-	public static void checkColumnName(List<Class<?>> classes) throws Exception {
+	public static void checkColumnName(List<Class<?>> classes) {
 		for (Class<?> cls : classes) {
 			List<Field> fields = FieldUtils.getAllFieldsList(cls);
 			for (Field field : fields) {
 				Column col = field.getAnnotation(Column.class);
-				if (null != col) {
-					if (!StringUtils.equals(JpaObject.ColumnNamePrefix + field.getName(), col.name())) {
-						System.err.println(String.format("checkColumnName error: class: %s, field: %s.", cls.getName(),
-								field.getName()));
-					}
+				if ((null != col) && (!StringUtils.equals(JpaObject.ColumnNamePrefix + field.getName(), col.name()))) {
+					System.err.println(String.format("checkColumnName error: class: %s, field: %s.", cls.getName(),
+							field.getName()));
 				}
 			}
 		}
@@ -85,7 +85,7 @@ public class CheckCore {
 	/*
 	 * 检查是否有将Lob类型字段增加索引
 	 */
-	public static void checkLobIndex(List<Class<?>> classes) throws Exception {
+	public static void checkLobIndex(List<Class<?>> classes) {
 		for (Class<?> cls : classes) {
 			List<Field> fields = FieldUtils.getAllFieldsList(cls);
 			for (Field field : fields) {
@@ -100,28 +100,25 @@ public class CheckCore {
 	}
 
 	/*
-	 * 检查StringList从表名
-	 * 
-	 * @FieldDescribe("群组的个人成员.存放个人 ID.")
-	 * 
-	 * @PersistentCollection(fetch = FetchType.EAGER)
-	 * 
-	 * @OrderColumn(name = ORDERCOLUMNCOLUMN)
-	 * 
-	 * @ContainerTable(name = TABLE + ContainerTableNameMiddle +
-	 * personList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle +
-	 * personList_FIELDNAME + JoinIndexNameSuffix))
-	 * 
-	 * @ElementColumn(length = JpaObject.length_id, name = ColumnNamePrefix +
-	 * personList_FIELDNAME)
-	 * 
-	 * @ElementIndex(name = TABLE + IndexNameMiddle + personList_FIELDNAME +
-	 * ElementIndexNameSuffix)
-	 * 
-	 * @CheckPersist(allowEmpty = true, citationExists = @CitationExist(type =
-	 * Person.class)) private List<String> personList;
+	 * 检查是否有将Boolean类型字段增加索引
 	 */
-	public static void checkListFieldContainerTableName(List<Class<?>> classes) throws Exception {
+	public static void checkBooleanIndex(List<Class<?>> classes) {
+		for (Class<?> cls : classes) {
+			List<Field> fields = FieldUtils.getAllFieldsList(cls);
+			for (Field field : fields) {
+				if (Boolean.class.isAssignableFrom(field.getType())) {
+					org.apache.openjpa.persistence.jdbc.Index index = field
+							.getAnnotation(org.apache.openjpa.persistence.jdbc.Index.class);
+					if (null != index) {
+						System.err.println(String.format("checkBooleanIndex error: class: %s, field: %s.",
+								cls.getName(), field.getName()));
+					}
+				}
+			}
+		}
+	}
+
+	public static void checkListFieldContainerTableName(List<Class<?>> classes) throws IllegalAccessException {
 		for (Class<?> cls : classes) {
 			List<Field> fields = FieldUtils.getAllFieldsList(cls);
 			for (Field field : fields) {
@@ -144,7 +141,7 @@ public class CheckCore {
 	/*
 	 * 检查是否将@FieldDescribe注解到static字段上,如果是意味着上下行搞错了
 	 */
-	public static void checkFieldDescribeOnStatic(List<Class<?>> classes) throws Exception {
+	public static void checkFieldDescribeOnStatic(List<Class<?>> classes) {
 		for (Class<?> cls : classes) {
 			List<Field> fields = FieldUtils.getFieldsListWithAnnotation(cls, FieldDescribe.class);
 			for (Field field : fields) {
@@ -159,12 +156,12 @@ public class CheckCore {
 	/*
 	 * 检查约束名中的table名称和entity类中的TABLE名称是否一致
 	 */
-	public static void checkTableNameUniqueConstraintName(List<Class<?>> classes) throws Exception {
+	public static void checkTableNameUniqueConstraintName(List<Class<?>> classes) throws IllegalAccessException {
 		for (Class<?> cls : classes) {
 			Table table = cls.getAnnotation(Table.class);
 			String name = Objects.toString(FieldUtils.readStaticField(cls, "TABLE", true));
 			if (!StringUtils.equals(table.name(), name)) {
-				System.out.println("table name not match:" + cls);
+				System.err.println("table name not match:" + cls);
 			}
 			for (UniqueConstraint u : table.uniqueConstraints()) {
 				if (!StringUtils.startsWith(u.name(), table.name())) {
@@ -178,7 +175,7 @@ public class CheckCore {
 	/*
 	 * 检查类中是否有在createTime,updateTime和sequence上的索引,这几个索引已经用约束在类上了
 	 */
-	public static void checkIdCreateTimeUpdateTimeSequenceIndex(List<Class<?>> classes) throws Exception {
+	public static void checkIdCreateTimeUpdateTimeSequenceIndex(List<Class<?>> classes) {
 		for (Class<?> cls : classes) {
 			Field idField = FieldUtils.getField(cls, JpaObject.id_FIELDNAME, true);
 			Field createTimeField = FieldUtils.getField(cls, JpaObject.createTime_FIELDNAME, true);
@@ -196,7 +193,7 @@ public class CheckCore {
 	/*
 	 * 检查entity是否有重复的字段
 	 */
-	public static void checkEnum(List<Class<?>> classes) throws Exception {
+	public static void checkEnum(List<Class<?>> classes) {
 		for (Class<?> cls : classes) {
 			List<Field> fields = FieldUtils.getFieldsListWithAnnotation(cls, FieldDescribe.class);
 			for (Field field : fields) {
@@ -214,7 +211,7 @@ public class CheckCore {
 	}
 
 	/* 检查是否有对String lob 之外的字段设定长度 */
-	public static void checkColumnLength(List<Class<?>> classes) throws Exception {
+	public static void checkColumnLength(List<Class<?>> classes) {
 		for (Class<?> cls : classes) {
 			List<Field> fields = FieldUtils.getFieldsListWithAnnotation(cls, Column.class);
 			for (Field field : fields) {
@@ -234,7 +231,7 @@ public class CheckCore {
 	}
 
 	/* 检查StorageObject的dumpSize是否设置正确 */
-	public static void checkDumpSize(List<Class<?>> classes) throws Exception {
+	public static void checkDumpSize(List<Class<?>> classes) {
 		for (Class<?> cls : classes) {
 			if (StorageObject.class.isAssignableFrom(cls)) {
 				ContainerEntity containerEntity = cls.getAnnotation(ContainerEntity.class);
@@ -245,7 +242,7 @@ public class CheckCore {
 		}
 	}
 
-	public static void checkIdUnique(List<Class<?>> classes) throws Exception {
+	public static void checkIdUnique(List<Class<?>> classes) {
 		for (Class<?> cls : classes) {
 			Field idField = FieldUtils.getField(cls, JpaObject.id_FIELDNAME, true);
 			Column column = idField.getAnnotation(Column.class);
