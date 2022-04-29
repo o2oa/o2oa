@@ -1672,7 +1672,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         }.bind(this), "", null, true);
     },
     _historyDoc: function(){
-        debugger;
         this._readFiletext();
         this.editMode = false;
 
@@ -1714,7 +1713,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (this.filetextEditor) this.filetextEditor.destroy();
         if (this.filetextScrollNode){
             if (this.reLocationFiletextToolbarFun){
-                debugger;
                 this.filetextScrollNode.removeEvent("scroll", this.reLocationFiletextToolbarFun);
                 //this.form.app.removeEvent("resize", this.reLocationFiletextToolbarFun);
                 this.reLocationFiletextToolbarFun = null;
@@ -1725,7 +1723,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
         this.layout_filetext.setAttribute('contenteditable', false);
         this.data = this.getData();
-        // debugger;
         if (!this.data.filetext){
             //this.data.filetext = this.json.defaultValue.filetext;
             this.layout_filetext.set("html", this.json.defaultValue.filetext);
@@ -1735,37 +1732,13 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         this.scaleTo(scale);
     },
     _editFiletext: function(inline){
-        debugger;
-        // this._returnScale();
-        // this.zoom(1);
-        // this._singlePage();
-        //this.pages = [];
-        //this.contentNode.empty();
-        //this._createPage(function(control){
-            //this._loadPageLayout(control);
+        if (this.data.filetext == this.json.defaultValue.filetext) this.data.filetext = "　　";
+        this.setData(this.data);
 
-            // var docData = this._getBusinessData();
-            // if (!docData) docData = this._getDefaultData();
-            if (this.data.filetext == this.json.defaultValue.filetext) this.data.filetext = "　　";
-            this.setData(this.data);
-
-            //this._checkScale();
-            this.node.setStyles({
-                "height":"auto"
-            });
-
-        // o2.load("../o2_lib/htmleditor/ckeditor4161/ckeditor.js", function() {
-        //     CKEDITOR.disableAutoInline = true;
-        //     this.layout_filetext.setAttribute('contenteditable', true);
-        //     editor = CKEDITOR.inline(this.layout_filetext);
-        //     editor.on("instanceReady", function(e){
-        //         e.editor.focus();
-        //     }.bind(this));
-        // }.bind(this));
-
+        this.node.setStyles({
+            "height":"auto"
+        });
         this._createEditor(inline);
-        // alert("ok")
-        //}.bind(this));
     },
     _createEditor: function(inline, node, data, editorName, callback){
         if (this.allowEdit){
@@ -1859,9 +1832,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         var toolbarNode = (editorName) ? this[editorName+"ToolbarNode"] : this.filetextToolbarNode;
         var editor = (editorName) ? this[editorName] : this.filetextEditor;
         var node = (editorName) ? this.layout_attachmentText : this.layout_filetext;
-
-        debugger;
-        //if (editorName)
 
         if (toolbarNode){
             if (!this.filetextScrollNode){
@@ -2325,7 +2295,6 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         });
     },
     _pageMargin: function(){
-        debugger;
         this._contentNodeWitdh();
 
         var w = this.contentNode.offsetWidth.toFloat();
@@ -2686,6 +2655,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
         editorConfig.pasteFromWordRemoveFontStyles = false;
         editorConfig.pasteFromWordRemoveStyles = false;
+        editorConfig.pasteFromWordNumberedHeadingToList = false;
 
         //editorConfig.removeButtons = 'NewPage,Templates,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Bold,Italic,Underline,Strike,Subscript,Superscript,Blockquote,CreateDiv,BidiLtr,BidiRtl,Language,Link,Unlink,Anchor,Image,Flash,HorizontalRule,Smiley,SpecialChar,Iframe,Styles,Font,FontSize,TextColor,BGColor,ShowBlocks,About';
         editorConfig.removePlugins = ['magicline','cloudservices','easyimage', 'exportpdf'];
@@ -2694,7 +2664,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         // editorConfig.extraPlugins = ['ecnet','mathjax'];
         // editorConfig.removePlugins = ['magicline'];
         // editorConfig.mathJaxLib = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_HTML';
-debugger;
+
         if (this.json.ckeditConfigOptions && this.json.ckeditConfigOptions.code){
             var o = this.form.Macro.exec(this.json.ckeditConfigOptions.code, this);
             if (o) editorConfig = Object.merge(editorConfig, o);
@@ -3370,26 +3340,17 @@ debugger;
         this.resetData();
     },
     resetData: function(diffFiletext){
-        if (this.editMode){ this._switchReadOrEditInline(); }
-
         this._computeData(false);
-
         this.pages = [];
         this.contentNode.empty();
-        // if (this.allowEdit) this.toolbar.childrenButton[0].setText((layout.mobile) ? MWF.xApplication.process.Xform.LP.editdoc_mobile : MWF.xApplication.process.Xform.LP.editdoc);
         this.editMode = false;
 
         this._createPage(function(control){
             this._loadPageLayout(control);
-
             this.setData(this.data, diffFiletext);
-            //this._checkSplitPage(this.pages[0]);
-
             this._repage();
-
             if (!this.editMode && this.allowEdit && !this.historyMode) {
                 this._editFiletext("inline");
-                //if (this.loadFileTextEditFun) this.layout_filetext.removeEvent("click", this.loadFileTextEditFun);
                 this.editMode = true;
             }
         }.bind(this));
