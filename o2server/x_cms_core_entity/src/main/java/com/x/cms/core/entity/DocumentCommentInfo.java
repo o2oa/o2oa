@@ -107,7 +107,6 @@ public class DocumentCommentInfo extends SliceJpaObject {
 	public static final String isPrivate_FIELDNAME = "isPrivate";
 	@FieldDescribe("是否私信评论")
 	@Column(name = ColumnNamePrefix + isPrivate_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + isPrivate_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean isPrivate = false;
 

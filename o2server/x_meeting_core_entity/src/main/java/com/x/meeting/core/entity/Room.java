@@ -139,7 +139,6 @@ public class Room extends SliceJpaObject {
 	public static final String available_FIELDNAME = "available";
 	@FieldDescribe("会议室状态,可用,不可用")
 	@Column(name = ColumnNamePrefix + available_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + available_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Boolean available;
 

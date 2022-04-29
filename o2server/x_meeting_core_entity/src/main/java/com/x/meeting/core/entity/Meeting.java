@@ -215,7 +215,6 @@ public class Meeting extends SliceJpaObject {
 	public static final String manualCompleted_FIELDNAME = "manualCompleted";
 	@FieldDescribe("会议是否手工结束")
 	@Column(name = ColumnNamePrefix + manualCompleted_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + manualCompleted_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean manualCompleted;
 

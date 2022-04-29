@@ -250,14 +250,12 @@ public class CategoryInfo extends SliceJpaObject {
 	public static final String allPeopleView_FIELDNAME = "allPeopleView";
 	@FieldDescribe("可见范围为所有人可见.")
 	@Column(name = ColumnNamePrefix + allPeopleView_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + allPeopleView_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean allPeopleView = true;
 
 	public static final String allPeoplePublish_FIELDNAME = "allPeoplePublish";
 	@FieldDescribe("发布范围栏目为所有人可发布.")
 	@Column(name = ColumnNamePrefix + allPeoplePublish_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + allPeoplePublish_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean allPeoplePublish = true;
 

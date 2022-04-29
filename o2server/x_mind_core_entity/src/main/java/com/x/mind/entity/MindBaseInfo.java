@@ -138,7 +138,6 @@ public class MindBaseInfo extends SliceJpaObject {
 	public static final String shared_FIELDNAME = "shared";
 	@FieldDescribe("自动生成，是否已经分享")
 	@Column(name = ColumnNamePrefix + shared_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + shared_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Boolean shared = false;
 
