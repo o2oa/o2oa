@@ -96,8 +96,8 @@ public class Process extends SliceJpaObject {
 		}
 	}
 
-	@FieldDescribe("启用同步到自建表.")
 	public static final String UPDATETABLEENABLE_FIELDNAME = "updateTableEnable";
+	@FieldDescribe("启用同步到自建表.")
 	@Transient
 	private Boolean updateTableEnable;
 
@@ -110,8 +110,8 @@ public class Process extends SliceJpaObject {
 		this.getProperties().setUpdateTableEnable(updateTableEnable);
 	}
 
-	@FieldDescribe("同步到自建表.")
 	public static final String UPDATETABLELIST_FIELDNAME = "updateTableList";
+	@FieldDescribe("同步到自建表.")
 	@Transient
 	private List<String> updateTableList;
 

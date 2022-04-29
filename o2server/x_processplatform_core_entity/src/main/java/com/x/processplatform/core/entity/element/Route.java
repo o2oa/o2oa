@@ -118,18 +118,18 @@ public class Route extends SliceJpaObject {
 		this.getProperties().setDefaultSelected(defaultSelected);
 	}
 
-	@FieldDescribe("是否启用异步返回.")
 	public static final String ASYNCSUPPORTED_FIELDNAME = "asyncSupported";
+	@FieldDescribe("是否启用异步返回.")
 	@Transient
 	private Boolean asyncSupported;
 
-	@FieldDescribe("选择优先路由时是否直接执行路由(一票否决),默认null.")
 	public static final String SOLEDIRECT_FIELDNAME = "soleDirect";
+	@FieldDescribe("选择优先路由时是否直接执行路由(一票否决),默认null.")
 	@Transient
 	private Boolean soleDirect;
 
-	@FieldDescribe("默认选中的路由.")
 	public static final String DEFAULTSELECTED_FIELDNAME = "defaultSelected";
+	@FieldDescribe("默认选中的路由.")
 	@Transient
 	private Boolean defaultSelected;
 

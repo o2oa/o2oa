@@ -369,7 +369,6 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 	public static final String expired_FIELDNAME = "expired";
 	@FieldDescribe("是否已经超时.")
 	@Column(name = ColumnNamePrefix + expired_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + expired_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean expired;
 
@@ -385,7 +384,6 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 	public static final String urged_FIELDNAME = "urged";
 	@FieldDescribe("是否已经催办过.")
 	@Column(name = ColumnNamePrefix + urged_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + urged_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean urged;
 
@@ -453,14 +451,12 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 	public static final String modified_FIELDNAME = "modified";
 	@FieldDescribe("是否在前台保存过数据.")
 	@Column(name = ColumnNamePrefix + modified_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + modified_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean modified;
 
 	public static final String viewed_FIELDNAME = "viewed";
 	@FieldDescribe("是否查看过.")
 	@Column(name = ColumnNamePrefix + viewed_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + viewed_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean viewed;
 
@@ -725,14 +721,12 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 	public static final String booleanValue01_FIELDNAME = "booleanValue01";
 	@FieldDescribe("业务数据Boolean值01.")
 	@Column(name = ColumnNamePrefix + booleanValue01_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + booleanValue01_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean booleanValue01;
 
 	public static final String booleanValue02_FIELDNAME = "booleanValue02";
 	@FieldDescribe("业务数据Boolean值02.")
 	@Column(name = ColumnNamePrefix + booleanValue02_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + booleanValue02_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean booleanValue02;
 

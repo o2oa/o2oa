@@ -201,7 +201,6 @@ public class Read extends SliceJpaObject implements ProjectionInterface {
 	public static final String completed_FIELDNAME = "completed";
 	@FieldDescribe("整个job是否已经完成.")
 	@Column(name = ColumnNamePrefix + completed_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + completed_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean completed;
 
@@ -376,7 +375,6 @@ public class Read extends SliceJpaObject implements ProjectionInterface {
 	public static final String viewed_FIELDNAME = "viewed";
 	@FieldDescribe("是否查看过.")
 	@Column(name = ColumnNamePrefix + viewed_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + viewed_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean viewed;
 
@@ -468,14 +466,12 @@ public class Read extends SliceJpaObject implements ProjectionInterface {
 	public static final String booleanValue01_FIELDNAME = "booleanValue01";
 	@FieldDescribe("业务数据Boolean值01.")
 	@Column(name = ColumnNamePrefix + booleanValue01_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + booleanValue01_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean booleanValue01;
 
 	public static final String booleanValue02_FIELDNAME = "booleanValue02";
 	@FieldDescribe("业务数据Boolean值02.")
 	@Column(name = ColumnNamePrefix + booleanValue02_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + booleanValue02_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean booleanValue02;
 
