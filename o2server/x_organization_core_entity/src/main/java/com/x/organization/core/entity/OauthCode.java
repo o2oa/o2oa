@@ -96,7 +96,6 @@ public class OauthCode extends SliceJpaObject {
 
 	public static final String codeUsed_FIELDNAME = "codeUsed";
 	@FieldDescribe("code是否已经使用过.")
-	@Index(name = TABLE + IndexNameMiddle + codeUsed_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	@Column(name = ColumnNamePrefix + codeUsed_FIELDNAME)
 	private Boolean codeUsed;

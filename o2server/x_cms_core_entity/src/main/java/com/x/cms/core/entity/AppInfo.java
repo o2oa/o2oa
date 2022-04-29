@@ -161,28 +161,24 @@ public class AppInfo extends SliceJpaObject {
 	@FieldDescribe("是否允许匿名访问.")
 	@Column(name = ColumnNamePrefix + anonymousAble_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	@Index(name = TABLE + IndexNameMiddle + anonymousAble_FIELDNAME)
 	private Boolean anonymousAble = true;
 
 	public static final String allPeopleView_FIELDNAME = "allPeopleView";
 	@FieldDescribe("可见范围为所有人可见.")
 	@Column(name = ColumnNamePrefix + allPeopleView_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	@Index(name = TABLE + IndexNameMiddle + allPeopleView_FIELDNAME)
 	private Boolean allPeopleView = true;
 
 	public static final String allPeoplePublish_FIELDNAME = "allPeoplePublish";
 	@FieldDescribe("发布范围栏目为所有人可发布.")
 	@Column(name = ColumnNamePrefix + allPeoplePublish_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	@Index(name = TABLE + IndexNameMiddle + allPeoplePublish_FIELDNAME)
 	private Boolean allPeoplePublish = true;
 
 	public static final String sendNotify_FIELDNAME = "sendNotify";
 	@FieldDescribe("发布文档后是否通知阅读者：true | false")
 	@Column(name = ColumnNamePrefix + sendNotify_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	@Index(name = TABLE + IndexNameMiddle + sendNotify_FIELDNAME)
 	private Boolean sendNotify = true;
 
 	public static final String showAllDocuments_FIELDNAME = "showAllDocuments";

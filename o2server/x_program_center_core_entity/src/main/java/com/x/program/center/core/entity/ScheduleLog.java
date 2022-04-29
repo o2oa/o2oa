@@ -111,10 +111,7 @@ public class ScheduleLog extends SliceJpaObject {
 	public static final String success_FIELDNAME = "success";
 	@FieldDescribe("运行成功.")
 	@Column(name = ColumnNamePrefix + success_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + success_FIELDNAME)
 	private Boolean success;
-
-	// public static String[] FLAGS = new String[] { "id" };
 
 	public String getApplication() {
 		return application;

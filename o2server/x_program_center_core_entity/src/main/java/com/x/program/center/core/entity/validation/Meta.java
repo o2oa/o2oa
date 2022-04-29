@@ -155,7 +155,6 @@ public class Meta extends SliceJpaObject {
 	public static final String BOOLEANVALUE_FIELDNAME = "booleanValue";
 	@FieldDescribe("Boolean 值.")
 	@Column(name = ColumnNamePrefix + BOOLEANVALUE_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + BOOLEANVALUE_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean booleanValue;
 

@@ -342,7 +342,6 @@ public class FileInfo extends StorageObject {
 	@FieldDescribe("是否使用更深的路径.")
 	@CheckPersist(allowEmpty = true)
 	@Column(name = ColumnNamePrefix + deepPath_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + deepPath_FIELDNAME)
 	private Boolean deepPath;
 
 	/**

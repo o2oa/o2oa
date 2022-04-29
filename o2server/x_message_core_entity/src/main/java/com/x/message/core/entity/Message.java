@@ -100,7 +100,6 @@ public class Message extends SliceJpaObject {
 	public static final String CONSUMED_FIELDNAME = "consumed";
 	@FieldDescribe("是否已经消费掉.")
 	@Column(name = ColumnNamePrefix + CONSUMED_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + CONSUMED_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Boolean consumed;
 
