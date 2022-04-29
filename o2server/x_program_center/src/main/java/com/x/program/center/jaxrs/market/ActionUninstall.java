@@ -5,8 +5,10 @@ import java.io.DataOutputStream;
 import java.net.Socket;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import com.x.base.core.project.tools.ListTools;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -62,13 +64,13 @@ class ActionUninstall extends BaseAction {
 			logger.print("{}发起卸载应用：{}", effectivePerson.getDistinguishedName(), app.getName());
 			Wo wo = new Wo();
 			InstallData installData = gson.fromJson(installLog.getData(), InstallData.class);
-			WrapModule module = installData.getWrapModule();
-			if(module!=null) {
-				this.uninstall(module);
+			List<WrapModule> moduleList = installData.getWrapModuleList();
+			if(ListTools.isNotEmpty(moduleList)) {
+				for(WrapModule module : moduleList){
+					this.uninstall(module);
+				}
 			}
-			if(StringUtils.isNotEmpty(installData.getCustomApp())){
-				this.uninstallCustomApp(installData.getCustomApp());
-			}
+
 			emc.beginTransaction(InstallLog.class);
 			installLog.setStatus(CommonStatus.INVALID.getValue());
 			installLog.setUnInstallPerson(effectivePerson.getDistinguishedName());
