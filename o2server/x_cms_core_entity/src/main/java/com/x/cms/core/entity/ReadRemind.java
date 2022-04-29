@@ -138,13 +138,11 @@ public class ReadRemind extends SliceJpaObject {
 	public static final String reminded_FIELDNAME = "reminded";
 	@FieldDescribe("是否已经提醒.")
 	@Column(name = ColumnNamePrefix + reminded_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + reminded_FIELDNAME)
 	private Boolean reminded = false;
 
 	public static final String readed_FIELDNAME = "readed";
 	@FieldDescribe("是否已经阅读.")
 	@Column(name = ColumnNamePrefix + readed_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + readed_FIELDNAME)
 	private Boolean readed = false;
 
 	public String getDocumentId() {

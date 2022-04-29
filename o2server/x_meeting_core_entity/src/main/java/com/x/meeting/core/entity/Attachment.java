@@ -170,7 +170,6 @@ public class Attachment extends StorageObject {
 	public static final String summary_FIELDNAME = "summary";
 	@FieldDescribe("是否是会议纪要附件.")
 	@Column(name = ColumnNamePrefix + summary_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + summary_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Boolean summary;
 
@@ -192,7 +191,6 @@ public class Attachment extends StorageObject {
 	@FieldDescribe("是否使用更深的路径.")
 	@CheckPersist(allowEmpty = true)
 	@Column(name = ColumnNamePrefix + deepPath_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + deepPath_FIELDNAME)
 	private Boolean deepPath;
 
 	public String getMeeting() {

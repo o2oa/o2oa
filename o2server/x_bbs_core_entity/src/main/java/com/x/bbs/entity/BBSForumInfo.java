@@ -266,7 +266,6 @@ public class BBSForumInfo extends SliceJpaObject {
 	public static final String replyMessageNotify_FIELDNAME = "replyMessageNotify";
 	@FieldDescribe("回复消息通知：true|false")
 	@Column(name = ColumnNamePrefix + replyMessageNotify_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + replyMessageNotify_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean replyMessageNotify = false;
 
@@ -279,7 +278,6 @@ public class BBSForumInfo extends SliceJpaObject {
 	public static final String subjectMessageNotify_FIELDNAME = "subjectMessageNotify";
 	@FieldDescribe("新主题发布消息通知：true|false")
 	@Column(name = ColumnNamePrefix + subjectMessageNotify_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + subjectMessageNotify_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean subjectMessageNotify = false;
 

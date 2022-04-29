@@ -159,7 +159,6 @@ public class Identity extends SliceJpaObject {
 	public static final String major_FIELDNAME = "major";
 	@FieldDescribe("主身份标识")
 	@Column(name = ColumnNamePrefix + major_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + major_FIELDNAME)
 	private Boolean major;
 
 	/** flag标志位 */

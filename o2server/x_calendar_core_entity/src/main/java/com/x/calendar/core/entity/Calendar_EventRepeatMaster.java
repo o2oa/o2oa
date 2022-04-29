@@ -267,7 +267,6 @@ public class Calendar_EventRepeatMaster extends SliceJpaObject implements Clonea
 	public static final String isAllDayEvent_FIELDNAME = "isAllDayEvent";
 	@FieldDescribe("是否为全天事件")
 	@Column(name = ColumnNamePrefix + isAllDayEvent_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + isAllDayEvent_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Boolean isAllDayEvent = false;
 
@@ -281,7 +280,6 @@ public class Calendar_EventRepeatMaster extends SliceJpaObject implements Clonea
 	public static final String isPublic_FIELDNAME = "isPublic";
 	@FieldDescribe("是否公开的事件")
 	@Column(name = ColumnNamePrefix + isPublic_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + isPublic_FIELDNAME)
 	private Boolean isPublic = false;
 
 	public static final String source_FIELDNAME = "source";

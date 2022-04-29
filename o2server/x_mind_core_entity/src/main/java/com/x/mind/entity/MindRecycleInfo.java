@@ -134,7 +134,6 @@ public class MindRecycleInfo extends SliceJpaObject {
 	public static final String shared_FIELDNAME = "shared";
 	@FieldDescribe("是否已经分享")
 	@Column(name = ColumnNamePrefix + shared_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + shared_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Boolean shared = false;
 
