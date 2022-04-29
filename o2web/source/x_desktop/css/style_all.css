@@ -12,17 +12,29 @@ body {
 	font-family: "Microsoft YaHei","Microsoft YaHei","SimSun","宋体";
     font-size:14px;
 	-webkit-overflow-scrolling: touch;
-	/*background-color: #F1F1F1;*/
 }
-/*
-.table-tr-selected {
-	background-color: #FFFFDD;
-}*/
+
+.appContent *{
+	box-sizing: content-box!important;
+}
+.layout_main *{
+	box-sizing: content-box!important;
+}
+.o2_vue{
+	box-sizing: border-box!important;
+}
+.o2_vue *{
+	box-sizing: border-box!important;
+}
 
 input,button,select,textarea{outline:none}
 
 select.script::-ms-expand { display: none; }
 ::-ms-clear, ::-ms-reveal{display: none;}
+
+.WordSection1 table{
+	border: 0 !important;
+}
 
 
 /* Notice-Theme: default */
