@@ -197,7 +197,6 @@ public class Record extends SliceJpaObject {
 	public static final String workCompleted_FIELDNAME = "workCompleted";
 	@FieldDescribe("已完成工作")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + workCompleted_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + workCompleted_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String workCompleted;
 
@@ -213,7 +212,6 @@ public class Record extends SliceJpaObject {
 	@FieldDescribe("是否显示.")
 	/* 必填值 */
 	@Column(name = ColumnNamePrefix + display_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + display_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Boolean display;
 

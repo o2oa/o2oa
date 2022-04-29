@@ -129,7 +129,6 @@ public class QueryStat extends SliceJpaObject {
 	@FieldDescribe("是否是定时任务.")
 	@CheckPersist(allowEmpty = true)
 	@Column(name = ColumnNamePrefix + timingEnable_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + timingEnable_FIELDNAME)
 	private Boolean timingEnable;
 
 	public static final String timingInterval_FIELDNAME = "timingInterval";

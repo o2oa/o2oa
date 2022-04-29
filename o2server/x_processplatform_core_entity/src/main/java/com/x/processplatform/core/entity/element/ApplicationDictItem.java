@@ -213,7 +213,6 @@ public class ApplicationDictItem extends DataItem {
 	private Date timeValue;
 
 	@Column(name = ColumnNamePrefix + booleanValue_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + booleanValue_FIELDNAME)
 	private Boolean booleanValue;
 
 	public static final String application_FIELDNAME = "application";

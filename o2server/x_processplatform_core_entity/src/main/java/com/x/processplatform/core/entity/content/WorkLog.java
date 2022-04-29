@@ -132,7 +132,6 @@ public class WorkLog extends SliceJpaObject {
 	@FieldDescribe("工作是否已经完成.")
 	/* 必填值 */
 	@Column(name = ColumnNamePrefix + completed_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + completed_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Boolean completed;
 
@@ -310,7 +309,6 @@ public class WorkLog extends SliceJpaObject {
 	public static final String connected_FIELDNAME = "connected";
 	@FieldDescribe("是否已经完整填写了From和Arrived.")
 	@Column(name = ColumnNamePrefix + connected_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + connected_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Boolean connected;
 

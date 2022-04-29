@@ -471,13 +471,11 @@ public class Embed extends Activity {
 	@FieldDescribe("允许调度")
 	@CheckPersist(allowEmpty = true)
 	@Column(name = ColumnNamePrefix + allowReroute_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + allowReroute_FIELDNAME)
 	private Boolean allowReroute;
 
 	@FieldDescribe("允许调度到此节点")
 	@CheckPersist(allowEmpty = true)
 	@Column(name = ColumnNamePrefix + allowRerouteTo_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + allowRerouteTo_FIELDNAME)
 	private Boolean allowRerouteTo;
 
 	@FieldDescribe("允许挂起")
@@ -552,14 +550,12 @@ public class Embed extends Activity {
 	@FieldDescribe("是否继承Data")
 	@CheckPersist(allowEmpty = true)
 	@Column(name = ColumnNamePrefix + inheritData_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + inheritData_FIELDNAME)
 	private Boolean inheritData;
 
 	public static final String inheritAttachment_FIELDNAME = "inheritAttachment";
 	@FieldDescribe("是否继承附件")
 	@CheckPersist(allowEmpty = true)
 	@Column(name = ColumnNamePrefix + inheritAttachment_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + inheritAttachment_FIELDNAME)
 	private Boolean inheritAttachment;
 
 	public static final String embedCreatorType_FIELDNAME = "embedCreatorType";

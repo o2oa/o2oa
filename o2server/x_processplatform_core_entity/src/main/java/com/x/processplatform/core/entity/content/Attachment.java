@@ -342,7 +342,6 @@ public class Attachment extends StorageObject {
 	public static final String completed_FIELDNAME = "completed";
 	@FieldDescribe("整个job是否已经完成.")
 	@Column(name = ColumnNamePrefix + completed_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + completed_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Boolean completed;
 
@@ -456,7 +455,6 @@ public class Attachment extends StorageObject {
 	@FieldDescribe("是否使用更深的路径.")
 	@CheckPersist(allowEmpty = true)
 	@Column(name = ColumnNamePrefix + deepPath_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + deepPath_FIELDNAME)
 	private Boolean deepPath;
 
 	public static final String orderNumber_FIELDNAME = "orderNumber";
