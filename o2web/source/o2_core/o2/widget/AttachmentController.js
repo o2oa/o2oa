@@ -1580,6 +1580,10 @@ o2.widget.AttachmentController.Attachment = new Class({
             "click": function(e){e.stopPropagation();}.bind(this),
             "dblclick": function(e){this.openAttachment(e);}.bind(this)
         });
+
+        if (this.iconImgNode){
+            this.iconImgNode.set("draggable", false);
+        }
     },
 
     selected: function(e){
@@ -1963,6 +1967,10 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
             "click": function(e){e.stopPropagation();}.bind(this),
             "dblclick": function(e){this.openAttachment(e);}.bind(this)
         });
+
+        if (this.iconImgNode){
+            this.iconImgNode.set("draggable", false);
+        }
     },
 
     selected: function(e){
