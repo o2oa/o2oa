@@ -35,7 +35,7 @@ MWF.xApplication.Forum.Attachment = new Class({
             "isSizeChange": this.options.isSizeChange,
             "readonly": (!this.options.isNew && !this.options.isEdited )
         };
-        this.attachmentController = new MWF.xApplication.Forum.AttachmentController(this.node, this, options);
+        this.attachmentController = new MWF.widget.ATTER(this.node, this, options);
         this.attachmentController.load();
 
         //this.actions.listAttachmentInfo.each(function (att) {
