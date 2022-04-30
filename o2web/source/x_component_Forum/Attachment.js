@@ -1,35 +1,5 @@
 MWF.require("MWF.widget.AttachmentController", null,false);
 
-MWF.xApplication.Forum.AttachmentController = new Class({
-    Extends: o2.widget.AttachmentController
-})
-
-MWF.xApplication.Forum.AttachmentController.Attachment = new Class({
-    Extends: o2.widget.AttachmentController.Attachment,
-    createInforNode: function(callback){
-        var size = "";
-        var k = this.data.length/1024;
-        if (k>1024){
-            var m = k/1024;
-            m = Math.round(m*100)/100;
-            size = m+"M";
-        }else{
-            k = Math.round(k*100)/100;
-            size = k+"K";
-        }
-        this.inforNode = new Element("div", {"styles": this.css.attachmentInforNode});
-        var html = "<div style='overflow:hidden; font-weight: bold'>"+this.data.name+"</div>";
-        html += "<div style='clear: both; overflow:hidden'><div style='width:40px; float:left; font-weight: bold'>"+o2.LP.widget.uploader+": </div><div style='width:120px; float:left; margin-left:10px'>"+( this.data.person || this.data.creatorUid )+"</div></div>";
-        html += "<div style='clear: both; overflow:hidden'><div style='width:40px; float:left; font-weight: bold'>"+o2.LP.widget.uploadTime+": </div><div style='width:120px; float:left; margin-left:10px'>"+this.data.createTime+"</div></div>";
-        html += "<div style='clear: both; overflow:hidden'><div style='width:40px; float:left; font-weight: bold'>"+o2.LP.widget.modifyTime+": </div><div style='width:120px; float:left; margin-left:10px'>"+this.data.lastUpdateTime+"</div></div>";
-        if(this.data.activityName)html += "<div style='clear: both; overflow:hidden'><div style='width:40px; float:left; font-weight: bold'>"+o2.LP.widget.uploadActivity+": </div><div style='width:120px; float:left; margin-left:10px'>"+(this.data.activityName || o2.LP.widget.unknow)+"</div></div>";
-        html += "<div style='clear: both; overflow:hidden'><div style='width:40px; float:left; font-weight: bold'>"+o2.LP.widget.size+": </div><div style='width:120px; float:left; margin-left:10px'>"+size+"</div></div>";
-        this.inforNode.set("html", html);
-
-        if (callback) callback();
-    },
-})
-
 MWF.xApplication.Forum.Attachment = new Class({
     Implements: [Options, Events],
     options: {
