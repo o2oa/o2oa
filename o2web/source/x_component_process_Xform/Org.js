@@ -52,7 +52,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
          * @event MWF.xApplication.process.Xform.Org#select
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
-        "moduleEvents": ["load", "queryLoad", "postLoad", "change", "select"],
+        "moduleEvents": ["load", "queryLoad", "postLoad", "change", "select", "removeItem"],
         /**
          * 人员选择框事件：加载前执行。this.target指向人员选择框。
          * @event MWF.xApplication.process.Xform.Org#queryLoadSelector
@@ -607,8 +607,24 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
         var v = this._getBusinessData();
         if (!v || !v.length){
             if( this.descriptionNode ){
-                this.descriptionNode.setStyle("display", "block");
+                debugger;
+                if( this.node.getFirst() ){
+                    var size = this.node.getFirst().getSize();
+                    var w = size.x-3;
+                    if( this.json.showIcon!='no' && !this.form.json.hideModuleIcon ) {
+                        if (COMMON.Browser.safari) w = w - 20;
+                    }
+                    this.descriptionNode.setStyles({
+                        "display": "block",
+                        "width": ""+w+"px",
+                        "height": ""+size.y+"px",
+                        "line-height": ""+size.y+"px"
+                    });
+                }else{
+                    this.descriptionNode.setStyle("display", "block");
+                }
             }else{
+                debugger;
                 this.loadDescription();
             }
         }else{
@@ -1328,8 +1344,6 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
         this.node.store("data", values);
         this._setBusinessData(values);
 
-        this.checkDescription();
-
         if (this.json.isInput){
 
             if (this.combox){
@@ -1364,6 +1378,8 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
             }
         }
 
+        this.checkDescription();
+
         //if (this.readonly) this.loadOrgWidget(values, this.node)
         //this.node.set("text", value);
     },
@@ -1386,8 +1402,10 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
         return (this.json.selectType==="unit") ? "getUnit" : "getIdentity";
     },
     loadOrgWidget: function(value, node){
+        var _self = this;
         var disableInfor = layout.mobile ? true : false;
         if( this.json.showCard === "no" )disableInfor = true;
+        var canRemove = this.json.canRemove  ? true : false;
         var height = node.getStyle("height").toInt();
         if (node.getStyle("overflow")==="visible" && !height) node.setStyle("overflow", "hidden");
         if (value && value.length){
@@ -1403,22 +1421,29 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
                     this.currentData = null;
                 }
 
+                var opt = {"style": "xform","lazy":true,"disableInfor" : disableInfor, "canRemove":canRemove, "onRemove": function () {
+                        _self.fireEvent("removeItem", [{
+                            data: data,
+                            item: this
+                        }])
+                    }}
+
                 var widget;
                 switch (flag.toLowerCase()){
                     case "@i":
-                        widget = new MWF.widget.O2Identity(copyData, node, {"style": "xform","lazy":true,"disableInfor" : disableInfor});
+                        widget = new MWF.widget.O2Identity(copyData, node, opt);
                         break;
                     case "@p":
-                        widget = new MWF.widget.O2Person(copyData, node, {"style": "xform","lazy":true,"disableInfor" : disableInfor});
+                        widget = new MWF.widget.O2Person(copyData, node, opt);
                         break;
                     case "@u":
-                        widget = new MWF.widget.O2Unit(copyData, node, {"style": "xform","lazy":true,"disableInfor" : disableInfor});
+                        widget = new MWF.widget.O2Unit(copyData, node, opt);
                         break;
                     case "@g":
-                        widget = new MWF.widget.O2Group(copyData, node, {"style": "xform","lazy":true,"disableInfor" : disableInfor});
+                        widget = new MWF.widget.O2Group(copyData, node, opt);
                         break;
                     default:
-                        widget = new MWF.widget.O2Other(copyData, node, {"style": "xform","lazy":true,"disableInfor" : disableInfor});
+                        widget = new MWF.widget.O2Other(copyData, node, opt);
                 }
                 widget.field = this;
                 if( layout.mobile ){
