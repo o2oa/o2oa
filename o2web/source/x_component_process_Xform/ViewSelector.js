@@ -16,6 +16,29 @@ MWF.xDesktop.requireApp("process.Xform", "Button", null, false);
 MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
 	Implements: [Events],
 	Extends: MWF.xApplication.process.Xform.Button,
+    options: {
+        /**
+         * 视图参数（options）已经准备好，还未加载视图时执行。可以通过this.event得到视图参数，并可修改this.event修改视图的加载。
+         * @event MWF.xApplication.process.Xform.View#beforeLoadView
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 异步加载视图后执行。
+         * @event MWF.xApplication.process.Xform.View#loadView
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 选中视图中的一条记录后执行。
+         * @event MWF.xApplication.process.Xform.View#select
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        /**
+         * 打开视图中的一条记录后执行。
+         * @event MWF.xApplication.process.Xform.View#openDocument
+         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+         */
+        "moduleEvents": ["load", "beforeLoadView", "loadView", "queryLoad", "postLoad", "select", "openDocument"]
+    },
 
 	_loadUserInterface: function(){
         var button = this.node.getElement("button");
@@ -303,6 +326,9 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
                 "defaultSelectedScript" : this.json.defaultSelectedScript ? this.json.defaultSelectedScript.code : null,
                 "selectedAbleScript" : this.json.selectedAbleScript ? this.json.selectedAbleScript.code : null
             };
+
+            this.fireEvent("beforeLoadView", [viewJson]);
+
             var options = {};
             // var width = options.width || "850";
             // var height = options.height || "700";
@@ -361,7 +387,27 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
                             dlg.node.setStyle("z-index",200);
                         }
                         MWF.xDesktop.requireApp("query.Query", "Viewer", function(){
-                            this.view = new MWF.xApplication.query.Query.Viewer(dlg.content, viewJson, {"style": "select"}, this.form.app, this.form.Macro );
+                            // this.view = new MWF.xApplication.query.Query.Viewer(dlg.content, viewJson, {
+                            //     "style": "select"
+                            // }, this.form.app, this.form.Macro );
+                            this.view = new MWF.xApplication.query.Query.Viewer(dlg.content, viewJson, {
+                                "style": "select",
+                                "onLoadView": function(){
+                                    this.fireEvent("loadView");
+                                }.bind(this),
+                                "onSelect": function(item){
+                                    debugger;
+                                    this.fireEvent("select", [item]);
+                                }.bind(this),
+                                "onOpenDocument": function(options, item){
+                                    this.openOptions = {
+                                        "options": options,
+                                        "item": item
+                                    };
+                                    this.fireEvent("openDocument");
+                                    this.openOptions = null;
+                                }.bind(this)
+                            }, this.form.app, this.form.Macro);
                         }.bind(this));
                     }.bind(this)
                 });
