@@ -28,8 +28,8 @@ MWF.xApplication.Template.utils.ExcelUtils = new Class({
     },
     _loadResource : function( callback ){
         if( !window.XLSX || !window.xlsxUtils ){
-            var uri = "../x_component_Template/framework/xlsx-js-style/xlsx.full.js";
-            var uri2 = "../x_component_Template/framework/xlsx-js-style/xlsxUtils.js";
+            var uri = "../x_component_Template/framework/xlsx/xlsx.full.js";
+            var uri2 = "../x_component_Template/framework/xlsx/xlsxUtils.js";
             COMMON.AjaxModule.load(uri, function(){
                 COMMON.AjaxModule.load(uri2, function(){
                     callback();
