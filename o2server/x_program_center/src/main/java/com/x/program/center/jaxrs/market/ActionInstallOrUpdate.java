@@ -5,6 +5,7 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.enums.CommonStatus;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.NameValuePair;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Collect;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.ActionResponse;
@@ -82,6 +83,7 @@ class ActionInstallOrUpdate extends BaseAction {
                     emc.persist(installLog);
                 }
                 emc.commit();
+                CacheManager.notify(InstallLog.class);
             }
 
             result.setData(wo);

@@ -47,6 +47,26 @@ public class MarketAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
+	@JaxrsMethodDescribe(value = "根据分类查找应用应用.", action = ActionListByCategoryPaging.class)
+	@GET
+	@Path("list/paging/{page}/size/{size}/category/{category}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listByCategoryPaging(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+						   @JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
+						   @JaxrsParameterDescribe("每页数量") @PathParam("size") Integer size,
+							@JaxrsParameterDescribe("分类((0)表示全部分类)") @PathParam("category") String category) {
+		ActionResult<List<ActionListByCategoryPaging.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListByCategoryPaging().execute(effectivePerson, page, size, category);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "获取对象.", action = ActionGet.class)
 	@GET
 	@Path("{flag}")
@@ -130,6 +150,23 @@ public class MarketAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionListCategory().execute(effectivePerson);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "列示推荐的3个应用.", action = ActionTopThree.class)
+	@GET
+	@Path("list/top/three")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listTopThree(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+		ActionResult<List<ActionTopThree.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionTopThree().execute(effectivePerson);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
