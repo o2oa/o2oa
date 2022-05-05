@@ -220,6 +220,13 @@ public class BBSSubjectAttachment extends StorageObject {
 	@CheckPersist(allowEmpty = false)
 	private String creatorUid;
 
+	public static final String creatorNickName_FIELDNAME = "nickName";
+	@FieldDescribe("创建者昵称")
+	@Column(length = JpaObject.length_64B, name = ColumnNamePrefix + creatorNickName_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + creatorNickName_FIELDNAME)
+	@CheckPersist(allowEmpty = false)
+	private String nickName;
+
 	public static final String extension_FIELDNAME = "extension";
 	@FieldDescribe("扩展名")
 	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + extension_FIELDNAME)
@@ -244,6 +251,14 @@ public class BBSSubjectAttachment extends StorageObject {
 	@CheckPersist(allowEmpty = true)
 	@Column(name = ColumnNamePrefix + deepPath_FIELDNAME)
 	private Boolean deepPath;
+
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
 
 	public String getForumId() {
 		return forumId;
