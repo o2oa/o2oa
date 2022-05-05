@@ -265,4 +265,21 @@ public class MarketAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "下载应用安装包", action = ActionDownload.class)
+	@GET
+	@Path("{id}/download")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void download(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+						 @JaxrsParameterDescribe("应用标识") @PathParam("id") String id) {
+		ActionResult<ActionDownload.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDownload().execute(effectivePerson, id);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 }
