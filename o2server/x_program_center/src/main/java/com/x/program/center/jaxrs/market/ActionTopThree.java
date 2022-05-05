@@ -1,5 +1,6 @@
 package com.x.program.center.jaxrs.market;
 
+import com.google.gson.JsonObject;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.enums.CommonStatus;
@@ -11,6 +12,7 @@ import com.x.base.core.project.config.Collect;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.connection.ConnectionAction;
+import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
@@ -24,64 +26,61 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-class ActionGet extends BaseAction {
+class ActionTopThree extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionGet.class);
+	private static Logger logger = LoggerFactory.getLogger(ActionTopThree.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
-		if(logger.isDebugEnabled()) {
-			logger.debug(effectivePerson.getDistinguishedName());
-		}
-		ActionResult<Wo> result = new ActionResult<>();
-		Wo wo = new Wo();
-		Cache.CacheKey cacheKey = new Cache.CacheKey(ActionGet.class, id);
+	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson) throws Exception {
+
+		ActionResult<List<Wo>> result = new ActionResult<>();
+		List<Wo> wos = new ArrayList<>();
+		Cache.CacheKey cacheKey = new Cache.CacheKey(ActionTopThree.class);
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 		if (optional.isPresent()) {
-			wo = (Wo) optional.get();
+			wos = (List<Wo>) optional.get();
 		} else {
 			String token = Business.loginCollect();
 			if (StringUtils.isNotEmpty(token)) {
 				try {
-					ActionResponse response = ConnectionAction.get(
-							Config.collect().url(COLLECT_MARKET_INFO + id),
-							ListTools.toList(new NameValuePair(Collect.COLLECT_TOKEN, token)));
-					wo = response.getData(Wo.class);
+					JsonObject jsonObject = new JsonObject();
+					jsonObject.addProperty("orderBy", "recommend");
+					jsonObject.addProperty("isAsc", Boolean.TRUE);
+					jsonObject.addProperty("status", "publish");
+					String url = StringUtils.replaceEach(COLLECT_MARKET_LIST_INFO, new String[]{"{page}", "{size}"},
+							new String[]{"1", "3"});
+					ActionResponse response = ConnectionAction.post(
+							Config.collect().url(url),
+							ListTools.toList(new NameValuePair(Collect.COLLECT_TOKEN, token)), jsonObject);
+					wos = response.getDataAsList(Wo.class);
+					result.setCount(response.getCount());
 				} catch (Exception e) {
-					logger.warn("get market info form o2cloud error: {}.", e.getMessage());
+					logger.warn("list market form o2cloud error: {}.", e.getMessage());
 				}
 			}
-			if(StringUtils.isNotBlank(wo.getId())) {
-				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				for (Wo wo : wos) {
 					InstallLog installLog = emc.find(wo.getId(), InstallLog.class);
 					if (installLog != null && CommonStatus.VALID.getValue().equals(installLog.getStatus())) {
 						wo.setInstalledVersion(installLog.getVersion());
 					} else {
 						wo.setInstalledVersion("");
 					}
-					result.setData(wo);
 				}
-				CacheManager.put(cacheCategory, cacheKey, wo);
+			}
+
+			if(ListTools.isNotEmpty(wos)){
+				CacheManager.put(cacheCategory, cacheKey, wos);
 			}
 		}
-		result.setData(wo);
+		result.setData(wos);
 		return result;
 	}
 
 	public static class Wo extends Application2 {
 
-		@FieldDescribe("展示图片url列表.")
-		private List<String> picList = new ArrayList<>();
-
 		@FieldDescribe("已安装的版本，空表示未安装")
 		private String installedVersion;
-
-		public List<String> getPicList() {
-			return picList;
-		}
-
-		public void setPicList(List<String> picList) {
-			this.picList = picList;
-		}
 
 		public String getInstalledVersion() {
 			return installedVersion;
@@ -90,5 +89,8 @@ class ActionGet extends BaseAction {
 		public void setInstalledVersion(String installedVersion) {
 			this.installedVersion = installedVersion;
 		}
+
+
 	}
+
 }

@@ -46,6 +46,9 @@ class ActionLogin extends BaseAction {
 		wo.setCollectToken(loginWo.getToken());
 		wo.setCollectTokenType(loginWo.getTokenType());
 		wo.setCollectUrl(Config.collect().url());
+		if(BooleanUtils.isTrue(loginWo.getVipUnit())){
+			wo.setVipUnit(true);
+		}
 		result.setData(wo);
 		return result;
 	}
@@ -57,6 +60,8 @@ class ActionLogin extends BaseAction {
 		private String collectToken;
 		@FieldDescribe("collect令牌类型")
 		private TokenType collectTokenType;
+		@FieldDescribe("是否是VIP组织")
+		private Boolean vipUnit = false;
 
 		public String getCollectUrl() {
 			return collectUrl;
@@ -81,6 +86,14 @@ class ActionLogin extends BaseAction {
 		public void setCollectTokenType(TokenType collectTokenType) {
 			this.collectTokenType = collectTokenType;
 		}
+
+		public Boolean getVipUnit() {
+			return vipUnit;
+		}
+
+		public void setVipUnit(Boolean vipUnit) {
+			this.vipUnit = vipUnit;
+		}
 	}
 
 	public static class LoginWo extends GsonPropertyObject {
@@ -91,6 +104,8 @@ class ActionLogin extends BaseAction {
 		private String name;
 		@FieldDescribe("令牌类型")
 		private TokenType tokenType;
+		@FieldDescribe("是否是VIP组织")
+		private Boolean vipUnit;
 
 		public String getToken() {
 			return token;
@@ -116,6 +131,13 @@ class ActionLogin extends BaseAction {
 			this.tokenType = tokenType;
 		}
 
+		public Boolean getVipUnit() {
+			return vipUnit;
+		}
+
+		public void setVipUnit(Boolean vipUnit) {
+			this.vipUnit = vipUnit;
+		}
 	}
 
 }

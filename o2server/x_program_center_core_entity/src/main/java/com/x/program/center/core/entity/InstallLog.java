@@ -34,10 +34,12 @@ public class InstallLog extends SliceJpaObject {
 
 	private static final String TABLE = PersistenceProperties.InstallLog.table;
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -49,6 +51,7 @@ public class InstallLog extends SliceJpaObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
+	@Override
 	public void onPersist() throws Exception {
 	}
 
@@ -82,7 +85,7 @@ public class InstallLog extends SliceJpaObject {
 	@FieldDescribe("安装概要内容.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
-	@Column(length = JpaObject.length_4K, name = ColumnNamePrefix + data_FIELDNAME)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + data_FIELDNAME)
 	private String data;
 
 	public static final String installPerson_FIELDNAME = "installPerson";
