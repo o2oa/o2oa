@@ -246,6 +246,143 @@ MWF.xApplication.Forum.AttachmentController.AttachmentMin = new Class({
             });
         }
         this.setEvent();
+    },
+    loadList: function() {
+        debugger;
+        this.node.setStyles( layout.mobile ? this.css.minAttachmentNode_list_mobile : this.css.minAttachmentNode_list);
+
+        if( !layout.mobile ){
+            this.sepNode = new Element("div", {"styles": this.css.minAttachmentSepNode_list}).inject(this.node);
+        }
+
+        this.actionAreaNode = new Element("div", {"styles": this.css.minAttachmentActionAreaNode}).inject(this.node);
+
+        if ( this.controller.isAttDownloadAvailable(this) ) {
+            this.downloadAction = this.createAction(this.actionAreaNode, "download_single", "download_single_over", o2.LP.widget.download, function (e, node) {
+                this.controller.downloadAttachment(e, node);
+            }.bind(this));
+        }
+        //this.actions.push( this.downloadAction );
+
+        if ( this.controller.isAttDeleteAvailable(this) ) {
+            this.deleteAction = this.createAction(this.actionAreaNode, "delete_single", "delete_single_over", o2.LP.widget["delete"], function (e, node) {
+                this.controller.deleteAttachment(e, node);
+            }.bind(this));
+        }
+        //this.actions.push( this.deleteAction );
+
+        if (this.controller.configAttachment) {
+            if ( this.controller.isAttConfigAvailable(this) ) {
+                this.configAction = this.createAction(this.actionAreaNode, "config_single", "config_single_over", o2.LP.widget.configAttachment, function (e, node) {
+                    this.controller.configAttachment(e, node);
+                }.bind(this), o2.LP.widget.configAttachmentText );
+                //this.actions.push( this.configAction );
+            }
+        }
+
+        if (this.isSelected) this.node.setStyles(this.css.minAttachmentNode_list_selected);
+
+        this.iconNode = new Element("div", {"styles": this.css.minAttachmentIconNode_list}).inject(this.node);
+        this.iconImgAreaNode = new Element("div", {"styles": this.css.minAttachmentIconImgAreaNode_list}).inject(this.iconNode);
+        this.iconImgNode = new Element("img", {"styles": this.css.minAttachmentIconImgNode_list}).inject(this.iconImgAreaNode);
+        this.iconImgNode.set({"src": this.getIcon(), "border": 0});
+
+        this.textNode = new Element("div", {"styles": this.css.minAttachmentTextNode_list}).inject(this.node);
+        this.textNode.set("text", this.data.name);
+
+        var size = "";
+        var k = this.data.length/1024;
+        if (k>1024){
+            var m = k/1024;
+            m = Math.round(m*100)/100;
+            size = m+"M";
+        }else{
+            k = Math.round(k*100)/100;
+            size = k+"K";
+        }
+        this.textSizeNode = new Element("div", {"styles": this.css.minAttachmentSizeNode_list}).inject(this.textNode);
+        this.textSizeNode.set("text", "（"+size+"）");
+
+        this.node.set("title",this.data.name + "（"+size+"）");
+
+    },
+    loadSequence: function(){
+        this.node.setStyles(this.css.minAttachmentNode_sequence);
+
+        this.actionAreaNode = new Element("div", {"styles":this.css.minAttachmentActionAreaNode}).inject(this.node);
+
+        if ( this.controller.isAttDownloadAvailable(this) ) {
+            this.downloadAction = this.createAction(this.actionAreaNode, "download_single", "download_single_over", o2.LP.widget.download, function (e, node) {
+                this.controller.downloadAttachment(e, node);
+            }.bind(this));
+        }
+        //this.actions.push( this.downloadAction );
+
+        if ( this.controller.isAttDeleteAvailable(this) ) {
+            this.deleteAction = this.createAction(this.actionAreaNode, "delete_single", "delete_single_over", o2.LP.widget["delete"], function (e, node) {
+                this.controller.deleteAttachment(e, node);
+            }.bind(this));
+        }
+        //this.actions.push( this.deleteAction );
+
+
+        if (this.controller.configAttachment) {
+            if ( this.controller.isAttConfigAvailable(this) ) {
+                this.configAction = this.createAction(this.actionAreaNode, "config_single", "config_single_over", MWF.LP.widget.configAttachment, function (e, node) {
+                    this.controller.configAttachment(e, node);
+                }.bind(this));
+                //this.actions.push( this.configAction );
+            }
+        }
+
+        if (this.isSelected) this.node.setStyles(this.css.minAttachmentNode_list_selected);
+
+        this.sequenceNode = new Element("div", {"styles": this.css.attachmentSeqNode_sequence, "text": (this.seq || 1)}).inject(this.node);
+        this.iconNode = new Element("div", {"styles": this.css.minAttachmentIconNode_list}).inject(this.node);
+        this.iconImgAreaNode = new Element("div", {"styles": this.css.minAttachmentIconImgAreaNode_list}).inject(this.iconNode);
+        this.iconImgNode = new Element("img", {"styles": this.css.minAttachmentIconImgNode_list}).inject(this.iconImgAreaNode);
+        this.iconImgNode.set({"src": this.getIcon(), "border": 0});
+
+        this.textNode = new Element("div", {"styles": this.css.minAttachmentTextNode_list}).inject(this.node);
+        this.textNode.set("text", this.data.name);
+        var size = "";
+        var k = this.data.length/1024;
+        if (k>1024){
+            var m = k/1024;
+            m = Math.round(m*100)/100;
+            size = m+"M";
+        }else{
+            k = Math.round(k*100)/100;
+            size = k+"K";
+        }
+        this.textSizeNode = new Element("div", {"styles": this.css.minAttachmentSizeNode_list}).inject(this.textNode);
+        this.textSizeNode.set("text", "（"+size+"）");
+    },
+    setEvent: function(){
+        this.node.addEvents({
+            "mouseover": function(){
+                if (!this.isSelected){
+                    if (this.controller.options.listStyle==="list" || this.controller.options.listStyle==="sequence"){
+                        this.node.setStyles(this.css["minAttachmentNode_"+this.controller.options.listStyle+"_over"]);
+                    }else{
+                        this.node.setStyles(this.css["attachmentNode_"+this.controller.options.listStyle+"_over"]);
+                    }
+                }
+            }.bind(this),
+            "mouseout": function(){
+                if (!this.isSelected){
+                    if (this.controller.options.listStyle==="list" || this.controller.options.listStyle==="sequence"){
+                        var cssKey = "minAttachmentNode_"+this.controller.options.listStyle + ( layout.mobile ? "_mobile" : "" );
+                        this.node.setStyles(this.css[cssKey]);
+                    }else{
+                        this.node.setStyles(this.css["attachmentNode_"+this.controller.options.listStyle]);
+                    }
+                }
+            }.bind(this),
+            "mousedown": function(e){this.selected(e);e.stopPropagation();}.bind(this),
+            "click": function(e){e.stopPropagation();}.bind(this),
+            "dblclick": function(e){this.openAttachment(e);}.bind(this)
+        });
     }
 
 });
