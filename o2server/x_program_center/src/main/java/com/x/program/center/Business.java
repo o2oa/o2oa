@@ -4,11 +4,10 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import com.x.base.core.project.tools.DateTools;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -33,6 +32,8 @@ import com.x.program.center.factory.UnitFactory;
 public class Business {
 
 	private static Logger logger = LoggerFactory.getLogger(Business.class);
+
+	private static Map<String, String> tokenMap = new HashMap();
 
 	private EntityManagerContainer emc;
 
@@ -88,18 +89,23 @@ public class Business {
 		return resp.getData(WoValidateCollect.class).getValue();
 	}
 
-	public String loginCollect() throws Exception {
-		String url = Config.collect().url(Collect.ADDRESS_COLLECT_LOGIN);
-		Map<String, String> map = new HashMap<>();
-		map.put("credential", Config.collect().getName());
-		map.put("password", Config.collect().getPassword());
-		ActionResponse resp = ConnectionAction.post(url, null, map);
-		LoginWo loginWo = resp.getData(LoginWo.class);
-		if(loginWo!=null) {
-			return loginWo.getToken();
-		}else{
-			return null;
+	public static String loginCollect() throws Exception {
+		String date = DateTools.compactDate(new Date());
+		if(tokenMap.get(date)!=null){
+			return tokenMap.get(date);
+		}else if (BooleanUtils.isTrue(Config.collect().getEnable())) {
+			String url = Config.collect().url(Collect.ADDRESS_COLLECT_LOGIN);
+			Map<String, String> map = new HashMap<>();
+			map.put("credential", Config.collect().getName());
+			map.put("password", Config.collect().getPassword());
+			ActionResponse resp = ConnectionAction.post(url, null, map);
+			LoginWo loginWo = resp.getData(LoginWo.class);
+			if (loginWo != null) {
+				tokenMap.put(date, loginWo.getToken());
+				return loginWo.getToken();
+			}
 		}
+		return null;
 	}
 
 	public String getUnitName() throws Exception {

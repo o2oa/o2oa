@@ -1,96 +1,81 @@
 package com.x.program.center.jaxrs.market;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Tuple;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.enums.CommonStatus;
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.bean.WrapCopier;
-import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.bean.NameValuePair;
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.config.Collect;
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.connection.ActionResponse;
+import com.x.base.core.project.connection.ConnectionAction;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.tools.DateTools;
-import com.x.base.core.project.tools.StringTools;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.tools.MD5Tool;
 import com.x.program.center.Business;
-import com.x.program.center.core.entity.Application;
-import com.x.program.center.core.entity.Application_;
 import com.x.program.center.core.entity.InstallLog;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 class ActionListPaging extends BaseAction {
 
+	private static Logger logger = LoggerFactory.getLogger(ActionListPaging.class);
+
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, Integer page, Integer size, JsonElement jsonElement)
 			throws Exception {
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
 
-			ActionResult<List<Wo>> result = new ActionResult<>();
-			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-			Predicate p = this.toFilterPredicate(effectivePerson, business, wi);
-			String orderBy = Application.createTime_FIELDNAME;
-			if(StringUtils.isNotEmpty(wi.getOrderBy())){
-				orderBy = wi.getOrderBy();
-			}
-			List<Wo> wos = new ArrayList<>();
-			if(BooleanUtils.isTrue(wi.getAsc())){
-				wos = emc.fetchAscPaging(Application.class, Wo.copier, p, page, size, orderBy);
-			}else {
-				wos = emc.fetchDescPaging(Application.class, Wo.copier, p, page, size, orderBy);
-			}
-			for(Wo wo : wos){
-				InstallLog installLog = emc.find(wo.getId(), InstallLog.class);
-				if(installLog!=null && CommonStatus.VALID.getValue().equals(installLog.getStatus())){
-					wo.setInstalledVersion(installLog.getVersion());
-				}else{
-					wo.setInstalledVersion("");
+		ActionResult<List<Wo>> result = new ActionResult<>();
+		List<Wo> wos = new ArrayList<>();
+		Cache.CacheKey cacheKey = new Cache.CacheKey(ActionListPaging.class, page, size, MD5Tool.getMD5Str(gson.toJson(jsonElement)));
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+		if (optional.isPresent()) {
+			wos = (List<Wo>) optional.get();
+		} else {
+			String token = Business.loginCollect();
+			if (StringUtils.isNotEmpty(token)) {
+				try {
+					JsonObject jsonObject = jsonElement.getAsJsonObject();
+					jsonObject.addProperty("status", "publish");
+					String url = StringUtils.replaceEach(COLLECT_MARKET_LIST_INFO, new String[]{"{page}", "{size}"},
+							new String[]{String.valueOf(page), String.valueOf(size)});
+					ActionResponse response = ConnectionAction.post(
+							Config.collect().url(url),
+							ListTools.toList(new NameValuePair(Collect.COLLECT_TOKEN, token)), jsonObject);
+					wos = response.getDataAsList(Wo.class);
+					result.setCount(response.getCount());
+				} catch (Exception e) {
+					logger.warn("list market form o2cloud error: {}.", e.getMessage());
 				}
 			}
-			result.setData(wos);
-			result.setCount(emc.count(Application.class, p));
-			return result;
-		}
-	}
 
-	private Predicate toFilterPredicate(EffectivePerson effectivePerson, Business business, Wi wi) throws Exception {
-		EntityManager em = business.entityManagerContainer().get(Application.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
-		Root<Application> root = cq.from(Application.class);
-		Predicate p = cb.conjunction();
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				for (Wo wo : wos) {
+					InstallLog installLog = emc.find(wo.getId(), InstallLog.class);
+					if (installLog != null && CommonStatus.VALID.getValue().equals(installLog.getStatus())) {
+						wo.setInstalledVersion(installLog.getVersion());
+					} else {
+						wo.setInstalledVersion("");
+					}
+				}
+			}
 
-		if(StringUtils.isNotEmpty(wi.getName())){
-			String key = StringTools.escapeSqlLikeKey(wi.getName());
-			if (StringUtils.isNotEmpty(key)) {
-				p = cb.and(p,cb.like(root.get(Application_.name), "%" + key + "%", StringTools.SQL_ESCAPE_CHAR));
+			if(ListTools.isNotEmpty(wos)){
+				CacheManager.put(cacheCategory, cacheKey, wos);
 			}
 		}
-
-		if(StringUtils.isNotEmpty(wi.getCategory())){
-			p = cb.and(p, cb.equal(root.get(Application_.category), wi.getCategory()));
-		}
-
-		if (DateTools.isDateTimeOrDate(wi.getStartTime())) {
-			p = cb.and(p, cb.greaterThan(root.get(Application_.createTime), DateTools.parse(wi.getStartTime())));
-		}
-		if (DateTools.isDateTimeOrDate(wi.getEndTime())) {
-			p = cb.and(p, cb.lessThan(root.get(Application_.createTime), DateTools.parse(wi.getEndTime())));
-		}
-		return p;
+		result.setData(wos);
+		return result;
 	}
 
 	public class Wi extends GsonPropertyObject {
@@ -162,12 +147,7 @@ class ActionListPaging extends BaseAction {
 		}
 	}
 
-	public static class Wo extends Application {
-
-		private static final long serialVersionUID = 9206739553467260926L;
-
-		static WrapCopier<Application, Wo> copier = WrapCopierFactory.wo(Application.class, Wo.class,
-				JpaObject.singularAttributeField(Application.class, true, false), Arrays.asList("abort", "installSteps", "describe"));
+	public static class Wo extends Application2 {
 
 		@FieldDescribe("已安装的版本，空表示未安装")
 		private String installedVersion;
