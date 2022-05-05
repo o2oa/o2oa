@@ -10,49 +10,32 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.project.Applications;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.connection.ConnectionAction;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.jaxrs.WrapBoolean;
+import com.x.program.center.ThisApplication;
 import com.x.program.center.core.entity.Code;
 import com.x.program.center.core.entity.Code_;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionValidate extends BaseAction {
 	ActionResult<Wo> execute(String mobile, String answer) throws Exception {
-		/*try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
-			Wo wo = new Wo();
-			wo.setValue(false);
-			if(StringUtils.isNotEmpty(answer) && StringUtils.isNotEmpty(mobile)) {
-				Code code = this.get(emc, mobile);
-				if (null != code) {
-					if (answer.equals(code.getAnswer())) {
-						emc.beginTransaction(Code.class);
-						emc.remove(code);
-						emc.commit();
-						wo.setValue(true);
-					} else {
-						int vn = code.getVerifyNumber() == null ? 0 : code.getVerifyNumber();
-						vn++;
-						emc.beginTransaction(Code.class);
-						if (vn < 6) {
-							code.setVerifyNumber(vn);
-						} else {
-							emc.remove(code);
-						}
-						emc.commit();
-					}
-				}
-			}
-			result.setData(wo);
-			return result;
-		}*/
 		ActionResult<Wo> result = new ActionResult<>();
-		ActionResponse resp = ConnectionAction.get(Config.collect().url()
-				+ "/o2_collect_assemble/jaxrs/code/validate/mobile/" + mobile + "/answer/" + answer, null);
-		Wo wo = new Wo();
-		wo.setValue(resp.getData(ActionValidateCascade.Wo.class).getValue());
+		Wo wo;
+		String customSms = ThisApplication.context().applications().findApplicationName(CUSTOM_SMS_APPLICATION);
+		if(StringUtils.isNotBlank(customSms) && Config.customConfig(CUSTOM_SMS_CONFIG_NAME) != null){
+			ActionResponse resp = ThisApplication.context().applications()
+					.getQuery(customSms, Applications.joinQueryUri("sms", "validate", "mobile", mobile, "answer", answer, "token", "(0)"));
+			wo = resp.getData(Wo.class);
+		}else {
+			ActionResponse resp = ConnectionAction.get(Config.collect().url()
+					+ "/o2_collect_assemble/jaxrs/code/validate/mobile/" + mobile + "/answer/" + answer, null);
+			wo = resp.getData(Wo.class);
+		}
 		result.setData(wo);
 		return result;
 	}
