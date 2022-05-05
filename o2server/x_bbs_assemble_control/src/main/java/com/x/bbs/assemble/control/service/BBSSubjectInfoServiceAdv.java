@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.x.base.core.project.organization.Person;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -767,6 +768,7 @@ public class BBSSubjectInfoServiceAdv {
 					subject.getAttachmentList().add(attachment.getId() );
 				}
 				emc.check( subject, CheckPersistType.all );
+
 				attachment.setTitle( subject.getTitle() );
 				attachment.setSubjectId( subject.getId() );
 				attachment.setSectionId( subject.getSectionId() );
@@ -786,6 +788,11 @@ public class BBSSubjectInfoServiceAdv {
 				attachment.setMainSectionName( "null" );
 			}
 			attachment.setFilePath( "null" );
+
+			Business business = new Business(emc);
+			attachment.setNickName(business.organization().person().getNickName(attachment.getCreatorUid()));
+
+
 			emc.persist(attachment, CheckPersistType.all);
 			emc.commit();
 		}catch( Exception e ){

@@ -1,5 +1,392 @@
 MWF.require("MWF.widget.AttachmentController", null,false);
 
+MWF.xApplication.Forum.AttachmentController = new Class({
+    Extends: o2.widget.AttachmentController,
+
+    reloadAttachments: function(){
+        if (this.options.size==="min"){
+            this.minContent.empty();
+            var atts = this.attachments;
+            this.attachments = [];
+            while (atts.length){
+                var att = atts.shift();
+                this.attachments.push(new MWF.xApplication.Forum.AttachmentController.AttachmentMin(att.data, this));
+            }
+        }else{
+            this.content.empty();
+            var atts = this.attachments;
+            this.attachments = [];
+            while (atts.length){
+                var att = atts.shift();
+                this.attachments.push(new MWF.xApplication.Forum.AttachmentController.Attachment(att.data, this));
+            }
+        }
+        this.checkActions();
+    },
+    loadMax: function(){
+        if (!this.node) this.node = new Element("div", {"styles": this.css.container});
+
+        this.createTopNode();
+
+        if (!this.contentScrollNode){
+            //this.createTopNode();
+            this.createContentNode();
+
+
+            if (this.options.resize){
+                this.createBottomNode();
+                this.createResizeNode();
+            }
+
+            this.node.inject(this.container);
+
+            //if (this.options.readonly) this.setReadonly();
+            this.checkActions();
+
+            this.setEvent();
+        }else{
+            this.contentScrollNode.setStyle("display", "block");
+            if (this.bottomNode) this.bottomNode.setStyle("display", "block");
+            if (this.titleNode) this.titleNode.setStyle("display", "block");
+            //this.topNode.setStyle("display", "block");
+            this.content.empty();
+        }
+        var atts = this.attachments;
+        this.attachments = [];
+        while (atts.length){
+            var att = atts.shift();
+            this.attachments.push(new MWF.xApplication.Forum.AttachmentController.Attachment(att.data, this));
+        }
+        this.checkActions();
+        //this.attachments = atts;
+    },
+    loadMin: function(){
+
+        if (!this.node) this.node = new Element("div", {"styles": this.css.container_min});
+
+        if (!this.minActionAreaNode){
+            this.minActionAreaNode = new Element("div", {"styles": this.css.minActionAreaNode }).inject(this.node);
+            //this.minContent = new Element("div", {"styles": this.css.minContentNode}).inject(this.node);
+
+            this.loadMinActions();
+
+            this.node.inject(this.container);
+
+            this.setEvent();
+        }else{
+            this.minActionAreaNode.setStyle("display", "");
+
+            this.minActionAreaNode.empty();
+
+            this.loadMinActions();
+
+            this.setEvent();
+        }
+        var hiddenGroup = this.options.toolbarGroupHidden;
+        var flag = hiddenGroup.contains("edit") && hiddenGroup.contains("read")  && hiddenGroup.contains("view");
+
+        if( flag )this.minActionAreaNode.setStyle("display","none");
+
+        if( !this.minContent ){
+
+            this.minContent = new Element("div", {"styles":
+                    layout.mobile ? this.css.minContentNode_mobile : this.css.minContentNode
+            }).inject(this.node);
+            if( layout.mobile ){
+                this.minContent.setStyle("clear","both");
+            }
+        }else{
+            this.minContent.setStyle("display", "block");
+            this.minContent.empty();
+        }
+
+        var atts = this.attachments;
+        this.attachments = [];
+        while (atts.length){
+            var att = atts.shift();
+            this.attachments.push(new MWF.xApplication.Forum.AttachmentController.AttachmentMin(att.data, this));
+        }
+        this.checkActions();
+        //this.attachments = atts;
+    },
+    addAttachment: function(data, messageId, isCheckPosition){
+        if (this.options.size=="min"){
+            this.attachments.push(new MWF.xApplication.Forum.AttachmentController.AttachmentMin(data, this, messageId, isCheckPosition));
+        }else{
+            this.attachments.push(new MWF.xApplication.Forum.AttachmentController.Attachment(data, this, messageId, isCheckPosition));
+        }
+        this.checkActions();
+    }
+});
+
+MWF.xApplication.Forum.AttachmentController.Attachment = new Class({
+    Extends: o2.widget.AttachmentController.Attachment,
+    initialize: function(data, controller, messageId, isCheckPosition){
+        this.data = data;
+
+        if(MWFForum.isUseNickName()){
+            this.data.person = this.data.nickName;
+        }else if(!this.data.person && this.data.creatorUid ){
+            this.data.person = this.data.creatorUid;
+        }
+
+        this.controller = controller;
+        this.css = this.controller.css;
+        this.listStyle = this.controller.options.listStyle;
+        this.content = this.controller.content;
+        this.isSelected = false;
+        this.seq = this.controller.attachments.length+1;
+        this.isCheckPosition = isCheckPosition;
+        this.actions = [];
+
+        if (messageId && this.controller.messageItemList) {
+            this.message = this.controller.messageItemList[messageId];
+        }
+
+        this.load();
+    },
+    createInforNode: function(callback){
+        var size = "";
+        var k = this.data.length/1024;
+        if (k>1024){
+            var m = k/1024;
+            m = Math.round(m*100)/100;
+            size = m+"M";
+        }else{
+            k = Math.round(k*100)/100;
+            size = k+"K";
+        }
+        this.inforNode = new Element("div", {"styles": this.css.attachmentInforNode});
+
+        var person = MWFForum.isUseNickName()?this.data.nickName:( this.data.person || this.data.creatorUid );
+
+        var html = "<div style='overflow:hidden; font-weight: bold'>"+this.data.name+"</div>";
+        html += "<div style='clear: both; overflow:hidden'><div style='width:40px; float:left; font-weight: bold'>"+o2.LP.widget.uploader+": </div><div style='width:120px; float:left; margin-left:10px'>"+ person +"</div></div>";
+        html += "<div style='clear: both; overflow:hidden'><div style='width:40px; float:left; font-weight: bold'>"+o2.LP.widget.uploadTime+": </div><div style='width:120px; float:left; margin-left:10px'>"+this.data.createTime+"</div></div>";
+        html += "<div style='clear: both; overflow:hidden'><div style='width:40px; float:left; font-weight: bold'>"+o2.LP.widget.modifyTime+": </div><div style='width:120px; float:left; margin-left:10px'>"+this.data.lastUpdateTime+"</div></div>";
+        if(this.data.activityName)html += "<div style='clear: both; overflow:hidden'><div style='width:40px; float:left; font-weight: bold'>"+o2.LP.widget.uploadActivity+": </div><div style='width:120px; float:left; margin-left:10px'>"+(this.data.activityName || o2.LP.widget.unknow)+"</div></div>";
+        html += "<div style='clear: both; overflow:hidden'><div style='width:40px; float:left; font-weight: bold'>"+o2.LP.widget.size+": </div><div style='width:120px; float:left; margin-left:10px'>"+size+"</div></div>";
+        this.inforNode.set("html", html);
+
+        if (callback) callback();
+    }
+});
+MWF.xApplication.Forum.AttachmentController.AttachmentMin = new Class({
+    Extends: MWF.xApplication.Forum.AttachmentController.Attachment,
+
+    initialize: function(data, controller, messageId, isCheckPosition){
+        this.data = data;
+
+        if(MWFForum.isUseNickName()){
+            this.data.person = this.data.nickName;
+        }else if(!this.data.person && this.data.creatorUid ){
+            this.data.person = this.data.creatorUid;
+        }
+
+//        if( !this.data.person && this.data.creatorUid )this.data.person = this.data.creatorUid;
+
+        this.controller = controller;
+        this.css = this.controller.css;
+        this.content = this.controller.minContent;
+        this.isSelected = false;
+        this.isCheckPosition = isCheckPosition;
+        this.seq = this.controller.attachments.length+1;
+
+        if (messageId && this.controller.messageItemList) {
+            this.message = this.controller.messageItemList[messageId];
+        }
+
+        this.load();
+    },
+    load: function(){
+        debugger;
+        if (this.message){
+            this.node = new Element("div").inject(this.message.node, "after");
+            this.message.node.destroy();
+            delete this.controller.messageItemList[this.message.data.id];
+        }else{
+            this.node = new Element("div").inject(this.content);
+        }
+
+        if( this.isCheckPosition && this.isNumber(this.data.orderNumber) ){
+            var attList = this.controller.attachments;
+            for( var i=0; i<attList.length; i++ ){
+                var att = attList[i];
+                if( !this.isNumber(att.data.orderNumber) || this.data.orderNumber < att.data.orderNumber ){
+                    this.node.inject( att.node, "before" );
+                    break;
+                }
+            }
+        }
+
+        //this.node = new Element("div").inject(this.content);
+        //this.loadList();
+        switch (this.controller.options.listStyle){
+            case "list":
+                this.loadList();
+                break;
+            case "icon":
+                this.loadIcon();
+                break;
+            case "preview":
+                this.loadPreview();
+                break;
+            case "sequence":
+                this.loadSequence();
+                break;
+        }
+
+        this.createInforNode();
+        if (!Browser.Platform.ios && !layout.mobile){
+            this.tooltip = new mBox.Tooltip({
+                content: this.inforNode,
+                setStyles: {content: {padding: 15, lineHeight: 20}},
+                attach: this.iconImgNode,
+                transition: 'flyin'
+            });
+        }
+        this.setEvent();
+    },
+    loadList: function() {
+        debugger;
+        this.node.setStyles( layout.mobile ? this.css.minAttachmentNode_list_mobile : this.css.minAttachmentNode_list);
+
+        if( !layout.mobile ){
+            this.sepNode = new Element("div", {"styles": this.css.minAttachmentSepNode_list}).inject(this.node);
+        }
+
+        this.actionAreaNode = new Element("div", {"styles": this.css.minAttachmentActionAreaNode}).inject(this.node);
+
+        if ( this.controller.isAttDownloadAvailable(this) ) {
+            this.downloadAction = this.createAction(this.actionAreaNode, "download_single", "download_single_over", o2.LP.widget.download, function (e, node) {
+                this.controller.downloadAttachment(e, node);
+            }.bind(this));
+        }
+        //this.actions.push( this.downloadAction );
+
+        if ( this.controller.isAttDeleteAvailable(this) ) {
+            this.deleteAction = this.createAction(this.actionAreaNode, "delete_single", "delete_single_over", o2.LP.widget["delete"], function (e, node) {
+                this.controller.deleteAttachment(e, node);
+            }.bind(this));
+        }
+        //this.actions.push( this.deleteAction );
+
+        if (this.controller.configAttachment) {
+            if ( this.controller.isAttConfigAvailable(this) ) {
+                this.configAction = this.createAction(this.actionAreaNode, "config_single", "config_single_over", o2.LP.widget.configAttachment, function (e, node) {
+                    this.controller.configAttachment(e, node);
+                }.bind(this), o2.LP.widget.configAttachmentText );
+                //this.actions.push( this.configAction );
+            }
+        }
+
+        if (this.isSelected) this.node.setStyles(this.css.minAttachmentNode_list_selected);
+
+        this.iconNode = new Element("div", {"styles": this.css.minAttachmentIconNode_list}).inject(this.node);
+        this.iconImgAreaNode = new Element("div", {"styles": this.css.minAttachmentIconImgAreaNode_list}).inject(this.iconNode);
+        this.iconImgNode = new Element("img", {"styles": this.css.minAttachmentIconImgNode_list}).inject(this.iconImgAreaNode);
+        this.iconImgNode.set({"src": this.getIcon(), "border": 0});
+
+        this.textNode = new Element("div", {"styles": this.css.minAttachmentTextNode_list}).inject(this.node);
+        this.textNode.set("text", this.data.name);
+
+        var size = "";
+        var k = this.data.length/1024;
+        if (k>1024){
+            var m = k/1024;
+            m = Math.round(m*100)/100;
+            size = m+"M";
+        }else{
+            k = Math.round(k*100)/100;
+            size = k+"K";
+        }
+        this.textSizeNode = new Element("div", {"styles": this.css.minAttachmentSizeNode_list}).inject(this.textNode);
+        this.textSizeNode.set("text", "（"+size+"）");
+
+        this.node.set("title",this.data.name + "（"+size+"）");
+
+    },
+    loadSequence: function(){
+        this.node.setStyles(this.css.minAttachmentNode_sequence);
+
+        this.actionAreaNode = new Element("div", {"styles":this.css.minAttachmentActionAreaNode}).inject(this.node);
+
+        if ( this.controller.isAttDownloadAvailable(this) ) {
+            this.downloadAction = this.createAction(this.actionAreaNode, "download_single", "download_single_over", o2.LP.widget.download, function (e, node) {
+                this.controller.downloadAttachment(e, node);
+            }.bind(this));
+        }
+        //this.actions.push( this.downloadAction );
+
+        if ( this.controller.isAttDeleteAvailable(this) ) {
+            this.deleteAction = this.createAction(this.actionAreaNode, "delete_single", "delete_single_over", o2.LP.widget["delete"], function (e, node) {
+                this.controller.deleteAttachment(e, node);
+            }.bind(this));
+        }
+        //this.actions.push( this.deleteAction );
+
+
+        if (this.controller.configAttachment) {
+            if ( this.controller.isAttConfigAvailable(this) ) {
+                this.configAction = this.createAction(this.actionAreaNode, "config_single", "config_single_over", MWF.LP.widget.configAttachment, function (e, node) {
+                    this.controller.configAttachment(e, node);
+                }.bind(this));
+                //this.actions.push( this.configAction );
+            }
+        }
+
+        if (this.isSelected) this.node.setStyles(this.css.minAttachmentNode_list_selected);
+
+        this.sequenceNode = new Element("div", {"styles": this.css.attachmentSeqNode_sequence, "text": (this.seq || 1)}).inject(this.node);
+        this.iconNode = new Element("div", {"styles": this.css.minAttachmentIconNode_list}).inject(this.node);
+        this.iconImgAreaNode = new Element("div", {"styles": this.css.minAttachmentIconImgAreaNode_list}).inject(this.iconNode);
+        this.iconImgNode = new Element("img", {"styles": this.css.minAttachmentIconImgNode_list}).inject(this.iconImgAreaNode);
+        this.iconImgNode.set({"src": this.getIcon(), "border": 0});
+
+        this.textNode = new Element("div", {"styles": this.css.minAttachmentTextNode_list}).inject(this.node);
+        this.textNode.set("text", this.data.name);
+        var size = "";
+        var k = this.data.length/1024;
+        if (k>1024){
+            var m = k/1024;
+            m = Math.round(m*100)/100;
+            size = m+"M";
+        }else{
+            k = Math.round(k*100)/100;
+            size = k+"K";
+        }
+        this.textSizeNode = new Element("div", {"styles": this.css.minAttachmentSizeNode_list}).inject(this.textNode);
+        this.textSizeNode.set("text", "（"+size+"）");
+    },
+    setEvent: function(){
+        this.node.addEvents({
+            "mouseover": function(){
+                if (!this.isSelected){
+                    if (this.controller.options.listStyle==="list" || this.controller.options.listStyle==="sequence"){
+                        this.node.setStyles(this.css["minAttachmentNode_"+this.controller.options.listStyle+"_over"]);
+                    }else{
+                        this.node.setStyles(this.css["attachmentNode_"+this.controller.options.listStyle+"_over"]);
+                    }
+                }
+            }.bind(this),
+            "mouseout": function(){
+                if (!this.isSelected){
+                    if (this.controller.options.listStyle==="list" || this.controller.options.listStyle==="sequence"){
+                        var cssKey = "minAttachmentNode_"+this.controller.options.listStyle + ( layout.mobile ? "_mobile" : "" );
+                        this.node.setStyles(this.css[cssKey]);
+                    }else{
+                        this.node.setStyles(this.css["attachmentNode_"+this.controller.options.listStyle]);
+                    }
+                }
+            }.bind(this),
+            "mousedown": function(e){this.selected(e);e.stopPropagation();}.bind(this),
+            "click": function(e){e.stopPropagation();}.bind(this),
+            "dblclick": function(e){this.openAttachment(e);}.bind(this)
+        });
+    }
+
+});
+
 MWF.xApplication.Forum.Attachment = new Class({
     Implements: [Options, Events],
     options: {
@@ -35,7 +422,7 @@ MWF.xApplication.Forum.Attachment = new Class({
             "isSizeChange": this.options.isSizeChange,
             "readonly": (!this.options.isNew && !this.options.isEdited )
         };
-        this.attachmentController = new MWF.widget.ATTER(this.node, this, options);
+        this.attachmentController = new MWF.xApplication.Forum.AttachmentController(this.node, this, options);
         this.attachmentController.load();
 
         //this.actions.listAttachmentInfo.each(function (att) {
