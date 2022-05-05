@@ -4,6 +4,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.enums.CommonStatus;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -56,6 +57,7 @@ class ActionInstallOffline extends BaseAction {
                     emc.persist(installLog);
                 }
                 emc.commit();
+                CacheManager.notify(InstallLog.class);
             }
 
             result.setData(wo);
