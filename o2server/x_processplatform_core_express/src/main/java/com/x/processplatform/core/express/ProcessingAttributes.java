@@ -13,6 +13,8 @@ import com.x.processplatform.core.entity.log.SignalStack;
 
 public class ProcessingAttributes extends GsonPropertyObject {
 
+	private static final long serialVersionUID = 4904585805951490393L;
+
 	public static final String TYPE_TASK = "task";
 	public static final String TYPE_APPENDTASK = "appendTask";
 	public static final String TYPE_ADDSPLIT = "addSplit";
