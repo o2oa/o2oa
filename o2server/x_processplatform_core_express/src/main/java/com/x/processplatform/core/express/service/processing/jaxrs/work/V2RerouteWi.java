@@ -10,6 +10,8 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 
 public class V2RerouteWi extends GsonPropertyObject {
 
+	private static final long serialVersionUID = -6729193803512068864L;
+
 	@FieldDescribe("活动节点")
 	private String activity;
 

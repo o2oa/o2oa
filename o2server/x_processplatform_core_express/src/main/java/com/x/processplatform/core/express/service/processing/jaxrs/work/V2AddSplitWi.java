@@ -7,7 +7,9 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 
 public class V2AddSplitWi extends GsonPropertyObject {
 
-    @FieldDescribe("添加的拆分值.")
+    private static final long serialVersionUID = 5556104841725659921L;
+
+	@FieldDescribe("添加的拆分值.")
     private List<String> splitValueList;
 
     @FieldDescribe("排除已经存在的拆分值.")

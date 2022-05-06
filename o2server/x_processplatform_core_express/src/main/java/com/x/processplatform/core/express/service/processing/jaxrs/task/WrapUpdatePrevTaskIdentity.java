@@ -77,6 +77,8 @@ public class WrapUpdatePrevTaskIdentity extends GsonPropertyObject {
 
 	public static class PrevTask extends GsonPropertyObject {
 
+		private static final long serialVersionUID = -3547224997595040435L;
+
 		private String identity;
 		private String person;
 		private String unit;

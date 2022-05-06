@@ -6,7 +6,9 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 
 public class ActionCreateWi extends GsonPropertyObject {
 
-    @FieldDescribe("直接打开指定人员已经有的草稿,草稿判断:工作没有已办,只有一条此人的待办.")
+    private static final long serialVersionUID = 5859638898776917745L;
+
+	@FieldDescribe("直接打开指定人员已经有的草稿,草稿判断:工作没有已办,只有一条此人的待办.")
     private Boolean latest;
 
     @FieldDescribe("标题.")
