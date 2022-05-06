@@ -9,6 +9,8 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 
 public class V2RollbackWi extends GsonPropertyObject {
 
+	private static final long serialVersionUID = 4148950553127792266L;
+
 	@FieldDescribe("工作日志")
 	private String workLog;
 
