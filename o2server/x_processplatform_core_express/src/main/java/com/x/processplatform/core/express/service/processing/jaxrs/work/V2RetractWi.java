@@ -5,6 +5,8 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 
 public class V2RetractWi extends GsonPropertyObject {
 
+	private static final long serialVersionUID = -4469000409900931079L;
+
 	@FieldDescribe("工作日志.")
 	private String workLog;
 

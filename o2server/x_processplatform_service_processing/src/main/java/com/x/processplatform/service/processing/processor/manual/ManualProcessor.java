@@ -64,7 +64,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 	protected Work arriving(AeiObjects aeiObjects, Manual manual) throws Exception {
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes().push(Signal.manualArrive(aeiObjects.getWork().getActivityToken(), manual));
-		// 根据manual计算出来的活动处理人parallelSoleTaskCompleted
+		// 根据manual计算出来的活动处理人
 		List<String> identities = calculateTaskIdentities(aeiObjects, manual);
 		// 启用同类工作相同活动节点合并,如果有合并的工作,那么直接返回这个工作.
 		Work merge = this.arrivingMergeSameJob(aeiObjects, manual, identities);

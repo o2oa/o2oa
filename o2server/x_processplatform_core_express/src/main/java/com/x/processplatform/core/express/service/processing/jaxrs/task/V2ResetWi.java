@@ -8,6 +8,8 @@ import com.x.base.core.project.tools.StringTools;
 
 public class V2ResetWi extends GsonPropertyObject {
 
+	private static final long serialVersionUID = -8631082471633729236L;
+
 	@FieldDescribe("路由名称")
 	private String routeName;
 

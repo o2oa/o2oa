@@ -120,8 +120,6 @@ public class ActionAssignCreateWi extends GsonPropertyObject {
 
 		private static final long serialVersionUID = 1954637399762611493L;
 
-		private static final List<String> Excludes = new ArrayList<>(JpaObject.FieldsInvisible);
-
 		public static final WrapCopier<WiAttachment, Attachment> copier = WrapCopierFactory.wi(WiAttachment.class,
 				Attachment.class, null, JpaObject.FieldsUnmodify);
 
