@@ -61,7 +61,13 @@ class ActionListWithUnit extends BaseAction {
 		CriteriaQuery<Identity> cq = cb.createQuery(Identity.class);
 		Root<Identity> root = cq.from(Identity.class);
 		Predicate p = cb.equal(root.get(Identity_.unit), unit.getId());
-		List<Identity> os = em.createQuery(cq.select(root).where(p)).getResultList();
+
+		Predicate p2 = cb.isFalse(root.get(Identity_.disable));
+		p2 = cb.or(p2,cb.isNull(root.get(Identity_.disable)));
+
+		Predicate where = cb.and( p, p2 );
+
+		List<Identity> os = em.createQuery(cq.select(root).where(where)).getResultList();
 		List<Wo> wos = Wo.copier.copy(os);
 		wos = business.identity().sort(wos);
 		return wos;

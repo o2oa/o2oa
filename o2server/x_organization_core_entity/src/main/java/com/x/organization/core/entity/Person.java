@@ -346,6 +346,13 @@ public class Person extends SliceJpaObject {
 	@Column(name = ColumnNamePrefix + age_FIELDNAME)
 	private Integer age;
 
+	public static final String disable_FIELDNAME = "disable";
+	@FieldDescribe("是否禁用")
+	@CheckPersist(allowEmpty = true)
+	@Column(name = ColumnNamePrefix + disable_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + disable_FIELDNAME)
+	private Boolean disable;
+
 	public static final String dingdingId_FIELDNAME = "dingdingId";
 	@FieldDescribe("钉钉人员ID.")
 	@Column(length = length_255B, name = ColumnNamePrefix + dingdingId_FIELDNAME)
@@ -485,6 +492,15 @@ public class Person extends SliceJpaObject {
 
 	public void setLastLoginAddress(String lastLoginAddress) {
 		this.lastLoginAddress = StringTools.utf8SubString(this.lastLoginAddress, Person.length_64B);
+	}
+
+
+	public Boolean getDisable() {
+		return disable;
+	}
+
+	public void setDisable(Boolean disable) {
+		this.disable = disable;
 	}
 
 	public List<String> getTopUnitList() {

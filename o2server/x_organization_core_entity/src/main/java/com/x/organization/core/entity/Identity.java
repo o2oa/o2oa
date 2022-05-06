@@ -125,6 +125,13 @@ public class Identity extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false, citationExists = { @CitationExist(type = Person.class) })
 	private String person;
 
+	public static final String disable_FIELDNAME = "disable";
+	@FieldDescribe("是否禁用,从个人中读取,为空默认false.")
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + disable_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + disable_FIELDNAME)
+	@CheckPersist(allowEmpty = true, citationExists = { @CitationExist(type = Person.class) })
+	private Boolean disable;
+
 	public static final String unit_FIELDNAME = "unit";
 	@FieldDescribe("属性所属组织,不可为空.")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + unit_FIELDNAME)
@@ -167,6 +174,14 @@ public class Identity extends SliceJpaObject {
 	// public static String[] FLA GS = new String[] { JpaObject.id_FIELDNAME,
 	// unique_FIELDNAME,
 	// distinguishedName_FIELDNAME };
+
+	public Boolean getDisable() {
+		return disable;
+	}
+
+	public void setDisable(Boolean disable) {
+		this.disable = disable;
+	}
 
 	public String getName() {
 		return name;
