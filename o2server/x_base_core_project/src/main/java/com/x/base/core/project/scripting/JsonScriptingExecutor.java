@@ -41,7 +41,7 @@ public class JsonScriptingExecutor {
 	 * 将脚本运行后的对象toJson成JsonElement返回.
 	 * 
 	 * @param cs
-	 * @param scriptContextXGsonBuilder
+	 * @param scriptContext
 	 * @return null 将返回JsonNull
 	 */
 	public static JsonElement jsonElement(CompiledScript cs, ScriptContext scriptContext) {
