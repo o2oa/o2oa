@@ -1,0 +1,25 @@
+{
+  "name": "x_component_appstore",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "deploy": "vue-cli-service build && vue-cli-service deploy",
+    "o2-deploy": "vue-cli-service build --dest ../../dest/x_component_appstore"
+  },
+  "dependencies": {
+    "@o2oa/component": "^1.1.0",
+    "vue": "^2.6.11"
+  },
+  "devDependencies": {
+    "@o2oa/vue-cli-plugin-o2component-vue2": "latest",
+    "@vue/cli-service": "~4.5.17",
+    "vue-template-compiler": "^2.6.11"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}
