@@ -458,7 +458,7 @@ public class Data extends ListOrderedMap<String, Object> {
 	}
 
 	@Override
-	/*需要重载,前端toString需要这个方法.*/
+	/* 需要重载,前端toString需要这个方法. */
 	public String toString() {
 		return XGsonBuilder.toJson(this);
 	}
