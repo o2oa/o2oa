@@ -71,6 +71,10 @@
     "icon": "market.png",
     "color": "#66CC80"
   },
+  "appstore": {
+    "icon": "market.png",
+    "color": "#66CC80"
+  },
   "Meeting": {
     "icon": "meeting.png",
     "color": "#F5A623"
