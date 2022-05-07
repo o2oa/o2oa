@@ -19,6 +19,8 @@ public class Organization extends ConfigObject {
 	public static final Boolean DEFAULT_PICKPERSONWITHNAME = true;
 	/* 默认改为false,避免自动补发待办 */
 	public static final Boolean DEFAULT_PICKIDENTITYWITHNAME = false;
+	// // 7.1版本以后默认改为true,已经修改了待办补发机制
+	// public static final Boolean DEFAULT_PICKIDENTITYWITHNAME = true;
 	public static final Integer DEFAULT_EXECUTORCOUNT = 3;
 
 	public static Organization defaultInstance() {

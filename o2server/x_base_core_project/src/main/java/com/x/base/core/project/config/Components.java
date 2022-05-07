@@ -22,7 +22,8 @@ public class Components extends ConfigObject {
 	public static final String NAME_PORTALEXPLORER = "PortalExplorer";
 	public static final String NAME_DATAEXPLORER = "DataExplorer";
 	public static final String NAME_SERVICEMANAGER = "service.ServiceManager";
-	public static final String NAME_APPMARKET = "AppMarketV2";
+	// public static final String NAME_APPMARKET = "AppMarketV2";
+	public static final String NAME_APPSTORE = "appstore";
 	public static final String NAME_APPCENTER = "AppCenter";
 	public static final String NAME_LOGVIEWER = "LogViewer";
 	public static final String NAME_PROFILE = "Profile";
@@ -42,7 +43,7 @@ public class Components extends ConfigObject {
 	public static final String NAME_IM = "IMV2";
 
 	public static final List<String> SYSTEM_NAME_NAMES = ListTools.toList(NAME_SETTING, NAME_ORG, NAME_CMSMANAGER,
-			NAME_APPLICATIONEXPLORER, NAME_PORTALEXPLORER, NAME_DATAEXPLORER, NAME_SERVICEMANAGER, NAME_APPMARKET,
+			NAME_APPLICATIONEXPLORER, NAME_PORTALEXPLORER, NAME_DATAEXPLORER, NAME_SERVICEMANAGER, NAME_APPSTORE,
 			NAME_APPCENTER, NAME_LOGVIEWER, NAME_PROFILE, NAME_BAM, NAME_CMS, NAME_WORKCENTER, NAME_HOMEPAGE,
 			NAME_HOTARTICLE, NAME_NOTE, NAME_MEETING, NAME_ATTENDANCE, NAME_FORUM, NAME_MINDER, NAME_CALENDAR, NAME_ANN,
 			NAME_SEARCH, NAME_IM);
@@ -69,8 +70,8 @@ public class Components extends ConfigObject {
 		case NAME_SERVICEMANAGER:
 			return new Component(NAME_SERVICEMANAGER, NAME_SERVICEMANAGER, "服务管理平台", APPICON_PNG, 7,
 					Component.TYPE_SYSTEM);
-		case NAME_APPMARKET:
-			return new Component(NAME_APPMARKET, NAME_APPMARKET, "应用市场", APPICON_PNG, 8, Component.TYPE_SYSTEM);
+		case NAME_APPSTORE:
+			return new Component(NAME_APPSTORE, NAME_APPSTORE, "应用市场", APPICON_PNG, 8, Component.TYPE_SYSTEM);
 		case NAME_APPCENTER:
 			return new Component(NAME_APPCENTER, NAME_APPCENTER, "应用管理", APPICON_PNG, 9, Component.TYPE_SYSTEM);
 		case NAME_LOGVIEWER:
@@ -120,7 +121,7 @@ public class Components extends ConfigObject {
 		o.systems.add(systemComponent(NAME_PORTALEXPLORER));
 		o.systems.add(systemComponent(NAME_DATAEXPLORER));
 		o.systems.add(systemComponent(NAME_SERVICEMANAGER));
-		o.systems.add(systemComponent(NAME_APPMARKET));
+		o.systems.add(systemComponent(NAME_APPSTORE));
 		o.systems.add(systemComponent(NAME_APPCENTER));
 		o.systems.add(systemComponent(NAME_LOGVIEWER));
 		o.systems.add(systemComponent(NAME_PROFILE));
