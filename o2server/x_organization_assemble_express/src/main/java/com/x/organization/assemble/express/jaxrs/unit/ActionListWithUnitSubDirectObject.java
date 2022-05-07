@@ -39,8 +39,8 @@ class ActionListWithUnitSubDirectObject extends BaseAction {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Business business = new Business(emc);
-			CacheKey cacheKey = new CacheKey(this.getClass(), wi.getUnitList(),
-					wi.getCountSubDirectIdentity(), wi.getCountSubDirectUnit());
+			CacheKey cacheKey = new CacheKey(this.getClass(), wi.getUnitList(), wi.getCountSubDirectUnit(),
+					wi.getCountSubDirectIdentity());
 			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 			if (optional.isPresent()) {
 				result.setData((List<Wo>) optional.get());
@@ -75,7 +75,7 @@ class ActionListWithUnitSubDirectObject extends BaseAction {
 		}
 
 		public Boolean getCountSubDirectUnit() {
-			return countSubDirectUnit;
+			return BooleanUtils.isTrue(countSubDirectUnit);
 		}
 
 		public void setCountSubDirectUnit(Boolean countSubDirectUnit) {
@@ -83,7 +83,7 @@ class ActionListWithUnitSubDirectObject extends BaseAction {
 		}
 
 		public Boolean getCountSubDirectIdentity() {
-			return countSubDirectIdentity;
+			return BooleanUtils.isTrue(countSubDirectIdentity);
 		}
 
 		public void setCountSubDirectIdentity(Boolean countSubDirectIdentity) {

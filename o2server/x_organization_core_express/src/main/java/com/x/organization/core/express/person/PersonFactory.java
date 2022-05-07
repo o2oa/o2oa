@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.x.base.core.project.AbstractContext;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.organization.IdentityPersonPair;
 import com.x.base.core.project.organization.Person;
 import com.x.base.core.project.tools.ListTools;
 
@@ -227,6 +228,26 @@ public class PersonFactory {
 	/** 根据组织获取组织的递归下级成员对应的个人 */
 	public List<String> listWithUnitSubNested(String... values) throws Exception {
 		return ActionListWithUnitSubNested.execute(context, Arrays.asList(values));
+	}
+
+	// 根据身份获取个人,返回身份人员匹配对
+	public IdentityPersonPair getPairIdentity(String value) throws Exception {
+		List<IdentityPersonPair> os = ActionListPairIdentity.execute(context, Arrays.asList(value));
+		if (ListTools.isEmpty(os)) {
+			return null;
+		} else {
+			return os.get(0);
+		}
+	}
+
+	// 批量根据身份获取个人,返回身份人员匹配对
+	public List<IdentityPersonPair> listPairIdentity(Collection<String> values) throws Exception {
+		return ActionListPairIdentity.execute(context, values);
+	}
+
+	// 批量根据身份获取个人,返回身份人员匹配对
+	public List<IdentityPersonPair> listPairIdentity(String... values) throws Exception {
+		return ActionListPairIdentity.execute(context, Arrays.asList(values));
 	}
 
 }
