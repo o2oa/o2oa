@@ -12,6 +12,7 @@ import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.base.core.project.organization.IdentityPersonPair;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.express.Business;
@@ -32,6 +33,8 @@ class BaseAction extends StandardJaxrsAction {
 
 	static class WoPersonListAbstract extends GsonPropertyObject {
 
+		private static final long serialVersionUID = -7127921596529046623L;
+
 		@FieldDescribe("个人识别名")
 		private List<String> personList = new ArrayList<>();
 
@@ -45,9 +48,26 @@ class BaseAction extends StandardJaxrsAction {
 
 	}
 
+	static class WoIdentityPersonPairListAbstract extends GsonPropertyObject {
+
+		private static final long serialVersionUID = -9040303659095981652L;
+
+		@FieldDescribe("身份人员匹配对")
+		private List<IdentityPersonPair> identityPersonPairList = new ArrayList<>();
+
+		public List<IdentityPersonPair> getIdentityPersonPairList() {
+			return identityPersonPairList;
+		}
+
+		public void setIdentityPersonPairList(List<IdentityPersonPair> identityPersonPairList) {
+			this.identityPersonPairList = identityPersonPairList;
+		}
+
+	}
+
 	protected <T extends com.x.base.core.project.organization.Person> T convert(Business business, Person person,
 			Class<T> clz) throws Exception {
-		T t = clz.newInstance();
+		T t = clz.getDeclaredConstructor().newInstance();
 		t.setId(person.getId());
 		t.setName(person.getName());
 		t.setGenderType(person.getGenderType());
@@ -85,29 +105,24 @@ class BaseAction extends StandardJaxrsAction {
 
 	protected <T extends Person> void hide(EffectivePerson effectivePerson, Business business, List<T> list)
 			throws Exception {
-		if (!effectivePerson.isManager() && (!effectivePerson.isCipher())) {
-			if (!business.hasAnyRole(effectivePerson, OrganizationDefinition.OrganizationManager,
-					OrganizationDefinition.Manager)) {
-				for (Person o : list) {
-					if (BooleanUtils.isTrue(o.getHiddenMobile()) && (!StringUtils
-							.equals(effectivePerson.getDistinguishedName(), o.getDistinguishedName()))) {
-						o.setMobile(Person.HIDDENMOBILESYMBOL);
-					}
+		if ((!effectivePerson.isManager()) && (!effectivePerson.isCipher()) && (!business.hasAnyRole(effectivePerson,
+				OrganizationDefinition.OrganizationManager, OrganizationDefinition.Manager))) {
+			for (Person o : list) {
+				if (BooleanUtils.isTrue(o.getHiddenMobile())
+						&& (!StringUtils.equals(effectivePerson.getDistinguishedName(), o.getDistinguishedName()))) {
+					o.setMobile(Person.HIDDENMOBILESYMBOL);
 				}
 			}
 		}
 	}
 
-	protected <T extends Person> void hide(EffectivePerson effectivePerson, Business business, T t)
-			throws Exception {
-		if (!effectivePerson.isManager() && (!effectivePerson.isCipher())) {
-			if (!business.hasAnyRole(effectivePerson, OrganizationDefinition.OrganizationManager,
-					OrganizationDefinition.Manager)) {
-				if (BooleanUtils.isTrue(t.getHiddenMobile())
-						&& (!StringUtils.equals(effectivePerson.getDistinguishedName(), t.getDistinguishedName()))) {
-					t.setMobile(Person.HIDDENMOBILESYMBOL);
-				}
-			}
+	protected <T extends Person> void hide(EffectivePerson effectivePerson, Business business, T t) throws Exception {
+		if ((!effectivePerson.isManager()) && (!effectivePerson.isCipher())
+				&& (!business.hasAnyRole(effectivePerson, OrganizationDefinition.OrganizationManager,
+						OrganizationDefinition.Manager))
+				&& (BooleanUtils.isTrue(t.getHiddenMobile())
+						&& (!StringUtils.equals(effectivePerson.getDistinguishedName(), t.getDistinguishedName())))) {
+			t.setMobile(Person.HIDDENMOBILESYMBOL);
 		}
 	}
 
