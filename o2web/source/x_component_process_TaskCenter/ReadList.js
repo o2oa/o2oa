@@ -166,8 +166,7 @@ MWF.xApplication.process.TaskCenter.ReadList.Item = new Class({
     },
     openWorkByTaskCompleted: function(e, id){
         // 判断是否是钉钉环境 是否是独立窗口
-        var ua = navigator.userAgent.toLowerCase();
-        if (layout.inBrowser && ua.indexOf('dingtalk') >= 0 && !layout.mobile) {
+        if (layout.inBrowser && (o2.thridparty.isDingdingPC() || o2.thridparty.isQywxPC())) {
             var url = "../x_desktop/work.html?workid=" + id;
             window.location = o2.filterUrl(url);
         } else {
@@ -188,7 +187,7 @@ MWF.xApplication.process.TaskCenter.ReadList.Item = new Class({
     openWorkCompleteedByTaskCompleted: function(e, id){
         // 判断是否是钉钉环境 是否是独立窗口
         var ua = navigator.userAgent.toLowerCase();
-        if (layout.inBrowser && ua.indexOf('dingtalk') >= 0 && !layout.mobile) {
+        if (layout.inBrowser && (o2.thridparty.isDingdingPC() || o2.thridparty.isQywxPC())) {
             var url = "../x_desktop/work.html?workCompletedId=" + id;
             window.location = o2.filterUrl(url);
         } else {
