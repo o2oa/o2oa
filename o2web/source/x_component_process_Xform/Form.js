@@ -3432,7 +3432,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         url = o2.filterUrl(o2.Actions.getHost("x_processplatform_assemble_surface") + url);
 
         var downloadUrl = o2.filterUrl(url + "?fileName=&flag=" + htmlFormId);
-        if (this.isDingtalkPc()) {
+        if ((o2.thridparty.isDingdingPC() || o2.thridparty.isQywxPC())) {
             var xtoken = Cookie.read(o2.tokenName);
             downloadUrl += "&" + o2.tokenName + "=" + xtoken;
         }
@@ -4414,7 +4414,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         if (this.businessData.workCompleted) {
             var application = app || this.businessData.workCompleted.application;
             var url = o2.filterUrl("../x_desktop/printWork.html?workCompletedId=" + this.businessData.workCompleted.id + "&app=" + application + "&form=" + form);
-            if (this.isDingtalkPc()) {
+            if ((o2.thridparty.isDingdingPC() || o2.thridparty.isQywxPC())) {
                 var xtoken = Cookie.read(o2.tokenName);
                 url += "&" + o2.tokenName + "=" + xtoken;
             }
@@ -4422,7 +4422,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         } else {
             var application = app || this.businessData.work.application;
             var url = o2.filterUrl("../x_desktop/printWork.html?workid=" + this.businessData.work.id + "&app=" + application + "&form=" + form);
-            if (this.isDingtalkPc()) {
+            if ((o2.thridparty.isDingdingPC() || o2.thridparty.isQywxPC())) {
                 var xtoken = Cookie.read(o2.tokenName);
                 url += "&" + o2.tokenName + "=" + xtoken;
             }
@@ -4591,7 +4591,7 @@ debugger;
         if (this.businessData.workCompleted) {
             var application = app || this.businessData.workCompleted.application;
             var url = o2.filterUrl("../x_desktop/printWork.html?workCompletedId=" + this.businessData.workCompleted.id + "&app=" + application + "&form=" + form);
-            if (this.isDingtalkPc()) {
+            if ((o2.thridparty.isDingdingPC() || o2.thridparty.isQywxPC())) {
                 var xtoken = Cookie.read(o2.tokenName);
                 url += "&" + o2.tokenName + "=" + xtoken;
             }
@@ -4599,7 +4599,7 @@ debugger;
         } else {
             var application = app || this.businessData.work.application;
             var url = o2.filterUrl("../x_desktop/printWork.html?workid=" + this.businessData.work.id + "&app=" + application + "&form=" + form);
-            if (this.isDingtalkPc()) {
+            if ((o2.thridparty.isDingdingPC() || o2.thridparty.isQywxPC())) {
                 var xtoken = Cookie.read(o2.tokenName);
                 url += "&" + o2.tokenName + "=" + xtoken;
             }
@@ -4775,40 +4775,41 @@ debugger;
             var url = this.Macro.exec(this.json.afterProcessRedirectScript.code, this);
             (new URI(url)).go();
         } else {
-            var len = window.history.length;
-            if (len > 1) {
-                history.back();
+            // var len = window.history.length;
+            // if (len > 1) {
+            //     history.back();
+            // } else {
+            //     var uri = new URI(window.location.href);
+            //     var redirectlink = uri.getData("redirectlink");
+            //     if (redirectlink) {
+            //         history.replaceState(null, "work", redirectlink);
+            //         redirectlink.toURI().go();
+            //     } else {
+            //         // window.location = o2.filterUrl("../x_desktop/appMobile.html?app=process.TaskCenter");
+            //         history.replaceState(null, "work", o2.filterUrl("../x_desktop/appMobile.html?app=process.TaskCenter"));
+            //         o2.filterUrl("../x_desktop/appMobile.html?app=process.TaskCenter").toURI().go();
+            //     }
+            // }
+            var uri = new URI(window.location.href);
+            var redirectlink = uri.getData("redirectlink");
+            if (redirectlink) {
+                history.replaceState(null, "work", redirectlink);
+                redirectlink.toURI().go();
             } else {
-                var uri = new URI(window.location.href);
-                var redirectlink = uri.getData("redirectlink");
-                if (redirectlink) {
-                    history.replaceState(null, "work", redirectlink);
-                    redirectlink.toURI().go();
-                } else {
-                    // window.location = o2.filterUrl("../x_desktop/appMobile.html?app=process.TaskCenter");
-                    history.replaceState(null, "work", o2.filterUrl("../x_desktop/appMobile.html?app=process.TaskCenter"));
-                    o2.filterUrl("../x_desktop/appMobile.html?app=process.TaskCenter").toURI().go();
-                }
+                // window.location = o2.filterUrl("../x_desktop/appMobile.html?app=process.TaskCenter");
+                history.replaceState(null, "work", o2.filterUrl("../x_desktop/appMobile.html?app=process.TaskCenter"));
+                o2.filterUrl("../x_desktop/appMobile.html?app=process.TaskCenter").toURI().go();
             }
         }
     },
     // 判断是否是钉钉pc上 
     dingTalkPcCloseOrAppClose: function () {
-        if (this.isDingtalkPc() && layout.inBrowser) { // 如果是钉钉pc上 并且是浏览器模式
+        if ((o2.thridparty.isDingdingPC() || o2.thridparty.isQywxPC()) && layout.inBrowser) { // 如果是钉钉pc上 并且是浏览器模式
             var centerUrl = o2.filterUrl("../x_desktop/app.html?app=process.TaskCenter");
             history.replaceState(null, "work", centerUrl);
             centerUrl.toURI().go();
         } else {
             this.app.close();
-        }
-    },
-     // 判断是否是钉钉环境
-    isDingtalkPc: function () {
-        var ua = navigator.userAgent.toLowerCase();
-        if (!(o2.session.isMobile || layout.mobile) && ua.indexOf('dingtalk') >= 0) {
-            return true;
-        } else {
-            return false;
         }
     },
     /**
