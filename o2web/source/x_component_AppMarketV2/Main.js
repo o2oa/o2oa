@@ -37,7 +37,14 @@ MWF.xApplication.AppMarketV2.Main = new Class({
     },
     loadApplication: function(callback){
 		if (MWF.AC.isAdministrator()){	//this.checkO2Collect();
-		
+			this.actions.CollectAction.login().then(function( json ){
+					this.loadApp(callback);
+				}.bind(this),
+				function( json ){
+					this.loadCloudConnectTip(callback);
+				}.bind(this)
+			);
+
 			this.content.loadHtml(this.viewPath, {"bind": {"lp": this.lp}, "module": this}, function(){
 				if (!this.options.isRefresh){
 					this.maxSize(function(){
@@ -57,7 +64,6 @@ MWF.xApplication.AppMarketV2.Main = new Class({
 							}.bind(this)
 							,false //同步执行 
 						);
-						
 					}.bind(this));
 				}else{
 					this.loadApp(callback);
@@ -68,12 +74,9 @@ MWF.xApplication.AppMarketV2.Main = new Class({
 		}
 	},
 	loadApp: function(callback){
-		//this.initNode();
 		this.initNodeSize();
-
 		this.recommondLoaded = false;
 		this.applicationsLoaded = true;
-
 		this.loadRecommondContent(function(){ this.recommondLoaded = true; this.checkAppLoaded(callback); }.bind(this));
 		this.loadApplicationsContent(function(){ this.applicationsLoaded = true; this.checkAppLoaded(callback); }.bind(this));
 	},
@@ -103,17 +106,15 @@ MWF.xApplication.AppMarketV2.Main = new Class({
 		this.marketnode.setStyle("height", ""+height+"px");
 	},
 	loadRecommondContent: function(callback){
-		debugger;
 		this.recommendContent = new MWF.xApplication.AppMarketV2.RecommendContent(this, this.topRecommendNode, {
-			"onLoad": function(){if (callback) callback();}
+			"onLoad": callback
 		});
 	},
 
 	loadApplicationsContent: function(callback){
-		
 		o2.requireApp("AppMarketV2", "ApplicationsContent", function(){
 			this.applicationsContent = new MWF.xApplication.AppMarketV2.ApplicationsContent(this, this.applicationsNode, {
-				"onLoad": function(){if (callback) callback();}
+				"onLoad": callback
 			});
 		}.bind(this));
 		
