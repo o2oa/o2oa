@@ -1,0 +1,183 @@
+.application-root{
+  overflow: auto;
+  padding: 20px 40px;
+}
+.application-root *{
+  box-sizing: border-box !important;
+}
+.application-content{
+  height: 100%;
+  box-sizing: border-box !important;
+}
+.application-baseContent{
+  height: 510px;
+  padding: 30px;
+  background: #FFFFFF;
+  border-radius: 16px;
+  min-width: 1200px;
+}
+.application-indexpic{
+  width: 300px;
+  height: 450px;
+  border-radius: 16px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  float: left;
+}
+.application-actions{
+  float: right;
+  width: 260px;
+  height: 450px;
+  padding: 40px 0;
+}
+.application-baseinfo{
+  height: 450px;
+  padding: 30px 40px;
+  margin-left: 300px;
+  margin-right: 260px;
+  text-align: left;
+}
+.application-actions-price{
+  height: 40px;
+  font-size: 22px;
+  color: #4A90E2;
+  text-align: left;
+  padding: 0 10px;
+}
+.application-actions-button{
+  width: 240px;
+  height: 58px;
+  border-radius: 40px;
+  margin-bottom: 20px;
+  font-size: 22px;
+  color: #666666;
+  line-height: 58px;
+  cursor: pointer;
+}
+.application-actions-infotitle{
+  margin-top: 40px;
+  height: 30px;
+  font-size: 18px;
+  line-height: 30px;
+  padding-left: 30px;
+  background-position: left center;
+  background-repeat: no-repeat;
+  background-image: url("./assets/icon_deng.png");
+  text-align: left;
+}
+.application-actions-communityInfo{
+  width: 240px;
+  font-size: 16px;
+  color: #333333;
+  line-height: 30px;
+  text-align: left;
+  margin-top: 10px;
+}
+.application-baseinfo-name{
+  height: 50px;
+  font-size: 36px;
+  color: #333333;
+  line-height: 50px;
+}
+.application-baseinfo-version{
+  margin-top: 10px;
+}
+.application-baseinfo-vip{
+  border: 2px solid #FFCB17;
+  padding: 0 5px;
+  border-radius: 20px;
+  color: #FFCB17;
+  font-size: 12px;
+  display: inline-block;
+  font-weight: bold;
+
+  margin-right: 20px;
+  cursor: default;
+}
+.application-baseinfo-version-text{
+  height: 20px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333333;
+  line-height: 20px;
+  display: inline-block;
+  margin-right: 20px;
+}
+.application-baseinfo-o2version-text{
+  height: 20px;
+  font-size: 14px;
+  color: #999999;
+  line-height: 20px;
+  display: inline-block;
+  margin-right: 10px;
+}
+.application-baseinfo-category{
+  height: 20px;
+  font-size: 14px;
+  color: #999999;
+  line-height: 20px;
+  margin-top: 40px;
+}
+.application-baseinfo-abort{
+  font-size: 18px;
+  color: #333333;
+  line-height: 40px;
+  margin-top: 20px;
+  text-align: justify;
+}
+.application-navi{
+  margin: 40px 0;
+  height: 40px;
+  text-align: center;
+}
+.application-navi-item{
+  display: inline-block;
+  font-size: 20px;
+  color: #333333;
+
+  height: 40px;
+  border-width: 0;
+  border-bottom-width: 2px;
+  border-style: solid;
+  border-color: transparent;
+  margin: 0 20px;
+  cursor: pointer;
+}
+.application-content-area{
+  padding: 0;
+  text-align: left;
+  width: 70%;
+  margin: auto;
+  min-width: 1200px;
+  overflow: hidden;
+}
+.application-content-rtf{
+  font-size: 18px;
+  text-align: left;
+}
+.application-actions-download{
+  margin-top: 40px;
+  cursor: pointer;
+  font-size: 16px;
+  text-decoration: underline;
+  width: 240px;
+}
+.application-content-title{
+  margin-top: 40px;
+  height: 60px;
+  font-size: 28px;
+  font-weight: bold;
+  color: #333333;
+  line-height: 60px;
+  text-align: left;
+}
+.application-content-pic{
+  width: 280px;
+  height: 158px;
+  border-radius: 8px;
+  float: left;
+  margin: 0 20px 20px 0;
+  background-size: cover;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}

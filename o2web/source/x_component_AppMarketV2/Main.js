@@ -1,43 +1,43 @@
 MWF.require("MWF.widget.MaskNode", null, false);
 o2.requireApp("AppMarketV2", "RecommendContent", null, false);
 MWF.xApplication.AppMarketV2.Main = new Class({
-    Extends: MWF.xApplication.Common.Main,
-    Implements: [Options, Events],
-    options: {
-        "style": "default",
-        "mvcStyle": "style.css",
-        "name": "AppMarketV2",
-        "icon": "icon.png",
-        "width": "1000",
-        "height": "700",
-        "isResize": true,
+	Extends: MWF.xApplication.Common.Main,
+	Implements: [Options, Events],
+	options: {
+		"style": "default",
+		"mvcStyle": "style.css",
+		"name": "AppMarketV2",
+		"icon": "icon.png",
+		"width": "1000",
+		"height": "700",
+		"isResize": true,
 		"isMax": true,
-        "title": MWF.xApplication.AppMarketV2.LP.title,
-        "minHeight": 700
-    },
-    onQueryLoad: function(){		
-        this.lp = MWF.xApplication.AppMarketV2.LP;
-        this.actions = MWF.Actions.load("x_program_center");
+		"title": MWF.xApplication.AppMarketV2.LP.title,
+		"minHeight": 700
+	},
+	onQueryLoad: function(){
+		this.lp = MWF.xApplication.AppMarketV2.LP;
+		this.actions = MWF.Actions.load("x_program_center");
 		this.viewPath = this.path+this.options.style+"/view.html";
-		this.iconPath = this.path+this.options.style+"/icon/";		
+		this.iconPath = this.path+this.options.style+"/icon/";
 	},
 	mask: function(){
-        if (!this.maskNode){
+		if (!this.maskNode){
 			this.marketnode.setStyle("overflow","hidden");
-            this.maskNode = new MWF.widget.MaskNode(this.marketnode, {"style": "bam"});
+			this.maskNode = new MWF.widget.MaskNode(this.marketnode, {"style": "bam"});
 			this.maskNode.load();
-        }
-    },
-    unmask: function(){
-        if (this.maskNode) this.maskNode.hide(function(){
-            MWF.release(this.maskNode);
+		}
+	},
+	unmask: function(){
+		if (this.maskNode) this.maskNode.hide(function(){
+			MWF.release(this.maskNode);
 			this.maskNode = null;
 			this.marketnode.setStyle("overflow","auto");
-        }.bind(this));
-    },
-    loadApplication: function(callback){
+		}.bind(this));
+	},
+	loadApplication: function(callback){
 		if (MWF.AC.isAdministrator()){	//this.checkO2Collect();
-		
+
 			this.content.loadHtml(this.viewPath, {"bind": {"lp": this.lp}, "module": this}, function(){
 				if (!this.options.isRefresh){
 					this.maxSize(function(){
@@ -55,9 +55,9 @@ MWF.xApplication.AppMarketV2.Main = new Class({
 									this.loadCloudConnectTip(callback);
 								}
 							}.bind(this)
-							,false //同步执行 
+							,false //同步执行
 						);
-						
+
 					}.bind(this));
 				}else{
 					this.loadApp(callback);
@@ -84,7 +84,7 @@ MWF.xApplication.AppMarketV2.Main = new Class({
 				"onLoad": function(){if (callback) callback();}
 			});
 		}.bind(this));
-		
+
 	},
 	checkAppLoaded: function(callback){
 		if (this.recommondLoaded && this.applicationsLoaded){
@@ -110,12 +110,12 @@ MWF.xApplication.AppMarketV2.Main = new Class({
 	},
 
 	loadApplicationsContent: function(callback){
-		
+
 		o2.requireApp("AppMarketV2", "ApplicationsContent", function(){
 			this.applicationsContent = new MWF.xApplication.AppMarketV2.ApplicationsContent(this, this.applicationsNode, {
 				"onLoad": function(){if (callback) callback();}
 			});
 		}.bind(this));
-		
+
 	}
 });
