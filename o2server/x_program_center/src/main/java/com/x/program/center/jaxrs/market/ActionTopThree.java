@@ -44,7 +44,7 @@ class ActionTopThree extends BaseAction {
 				try {
 					JsonObject jsonObject = new JsonObject();
 					jsonObject.addProperty("orderBy", "recommend");
-					jsonObject.addProperty("isAsc", Boolean.TRUE);
+					jsonObject.addProperty("isAsc", Boolean.FALSE);
 					jsonObject.addProperty("status", "publish");
 					String url = StringUtils.replaceEach(COLLECT_MARKET_LIST_INFO, new String[]{"{page}", "{size}"},
 							new String[]{"1", "3"});
