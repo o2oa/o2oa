@@ -26,6 +26,7 @@ import com.x.processplatform.core.entity.element.wrap.WrapProcessPlatform;
 import com.x.program.center.Business;
 import com.x.program.center.ThisApplication;
 import com.x.program.center.WrapModule;
+import com.x.program.center.core.entity.InstallLog;
 import com.x.program.center.core.entity.InstallTypeEnum;
 import com.x.program.center.core.entity.wrap.WrapAgent;
 import com.x.program.center.core.entity.wrap.WrapInvoke;
@@ -49,7 +50,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 	protected static final String COLLECT_UNIT_IS_VIP = "/o2_collect_assemble/jaxrs/unit/is/vip";
 	private static final String APP_SETUP_NAME = "setup.json";
 
-	protected Cache.CacheCategory cacheCategory = new Cache.CacheCategory(InstallData.class);
+	protected Cache.CacheCategory cacheCategory = new Cache.CacheCategory(InstallLog.class);
 
 	public boolean hasAuth(EffectivePerson effectivePerson, String person){
 		if(effectivePerson.isManager()){
