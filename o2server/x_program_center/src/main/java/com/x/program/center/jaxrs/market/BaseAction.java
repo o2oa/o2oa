@@ -32,6 +32,7 @@ import com.x.program.center.core.entity.wrap.WrapAgent;
 import com.x.program.center.core.entity.wrap.WrapInvoke;
 import com.x.program.center.core.entity.wrap.WrapServiceModule;
 import com.x.query.core.entity.wrap.WrapQuery;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -67,7 +68,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		String id = StringTools.uniqueToken();
 		File tempFile = new File(Config.base(), "local/temp/install/"+ id);
 		FileTools.forceMkdir(tempFile);
-		if(app != null){
+		if(StringUtils.isNotBlank(app.getId())){
 			id = app.getId();
 		}
 		File zipFile = new File(tempFile.getAbsolutePath(), id + ".zip");
@@ -75,7 +76,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		File dist = new File(tempFile.getAbsolutePath(), "data");
 		FileTools.forceMkdir(dist);
 		ZipTools.unZip(zipFile, new ArrayList<>(), dist, true, null);
-		if(app == null) {
+		if(StringUtils.isBlank(app.getId())) {
 			File[] setupFile = dist.listFiles(pathname -> pathname.getName().equals(APP_SETUP_NAME));
 			if(setupFile == null || setupFile.length == 0){
 				throw new ExceptionErrorInstallPackage();
@@ -91,14 +92,12 @@ abstract class BaseAction extends StandardJaxrsAction {
 					ActionResponse response = ConnectionAction.get(
 							Config.collect().url(COLLECT_MARKET_INSTALL_INFO + offlineApp.getId()),
 							ListTools.toList(new NameValuePair(Collect.COLLECT_TOKEN, token)));
-					app = response.getData(Application2.class);
+					offlineApp = response.getData(Application2.class);
 				} catch (Exception e) {
 					logger.warn("get market info form o2cloud error: {}.", e.getMessage());
 				}
 			}
-			if(app == null){
-				app = offlineApp;
-			}
+			BeanUtils.copyProperties(app, offlineApp);
 		}
 		File[] files = dist.listFiles(pathname -> !pathname.getName().toLowerCase().endsWith(".ds_store"));
 		if(files == null || files.length == 0){
