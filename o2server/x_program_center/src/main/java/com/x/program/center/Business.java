@@ -90,19 +90,21 @@ public class Business {
 	}
 
 	public static String loginCollect() throws Exception {
-		String date = DateTools.compactDate(new Date());
-		if(tokenMap.get(date)!=null){
-			return tokenMap.get(date);
-		}else if (BooleanUtils.isTrue(Config.collect().getEnable())) {
-			String url = Config.collect().url(Collect.ADDRESS_COLLECT_LOGIN);
-			Map<String, String> map = new HashMap<>();
-			map.put("credential", Config.collect().getName());
-			map.put("password", Config.collect().getPassword());
-			ActionResponse resp = ConnectionAction.post(url, null, map);
-			LoginWo loginWo = resp.getData(LoginWo.class);
-			if (loginWo != null) {
-				tokenMap.put(date, loginWo.getToken());
-				return loginWo.getToken();
+		if(BooleanUtils.isTrue(Config.collect().getEnable())) {
+			String key = Config.collect().getName()+DateTools.compactDate(new Date());
+			if (tokenMap.get(key) != null) {
+				return tokenMap.get(key);
+			} else {
+				String url = Config.collect().url(Collect.ADDRESS_COLLECT_LOGIN);
+				Map<String, String> map = new HashMap<>();
+				map.put("credential", Config.collect().getName());
+				map.put("password", Config.collect().getPassword());
+				ActionResponse resp = ConnectionAction.post(url, null, map);
+				LoginWo loginWo = resp.getData(LoginWo.class);
+				if (loginWo != null) {
+					tokenMap.put(key, loginWo.getToken());
+					return loginWo.getToken();
+				}
 			}
 		}
 		return null;
