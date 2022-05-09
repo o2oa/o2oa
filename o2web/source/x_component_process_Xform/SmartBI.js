@@ -15,7 +15,7 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 MWF.xApplication.process.Xform.SmartBI = MWF.APPSmartBI =  new Class({
     Extends: MWF.APP$Module,
 
-    _loadUserInterface: function(){ 
+    _loadUserInterface: function(){  
         if (!this.json.smartbiresource || this.json.smartbiresource==="none") this.node.destroy();
         else{
             var _iframe = this.node.getElement("iframe");
@@ -25,23 +25,46 @@ MWF.xApplication.process.Xform.SmartBI = MWF.APPSmartBI =  new Class({
             }else{
                 var value = this.json.smartbiresource;
                 var SmartBIAction = o2.Actions.load("x_custom_smartbi_assemble_control");
-                var address = SmartBIAction.ResourceAction.action.getAddress();
-                var uri = SmartBIAction.ResourceAction.action.actions.open.uri;
-                var url = uri.replace("{id}", encodeURIComponent(value));
 
-                if(this.json.smartbidisplaytoolbar){
-                    url = url +"?showtoolbar=true"
-                }else{
-                    url = url +"?showtoolbar=false"
-                }
-
-                if(this.json.smartbidisplaylefttree){
-                    url = url +"&showLeftTree=true"
-                }else{
-                    url = url +"&showLeftTree=false"
-                }
+                var addressUri = SmartBIAction.ResourceAction.address;
                 
-                url = o2.filterUrl(address+url);
+                if(addressUri){
+                    SmartBIAction.ResourceAction.address(value,function(json){ 
+                        if(json.data.value !==""){
+                            url = json.data.value;
+                            if(this.json.smartbidisplaytoolbar){
+                                url = url +"&showtoolbar=true"
+                            }else{
+                                url = url +"&showtoolbar=false"
+                            }
+            
+                            if(this.json.smartbidisplaylefttree){
+                                url = url +"&showLeftTree=true"
+                            }else{
+                                url = url +"&showLeftTree=false"
+                            }
+                        }
+                    }.bind(this),null,false)
+                }else{
+                    var address = SmartBIAction.ResourceAction.action.getAddress();
+                    var uri = SmartBIAction.ResourceAction.action.actions.open.uri;
+                    var url = uri.replace("{id}", encodeURIComponent(value));
+    
+                    if(this.json.smartbidisplaytoolbar){
+                        url = url +"?showtoolbar=true"
+                    }else{
+                        url = url +"?showtoolbar=false"
+                    }
+    
+                    if(this.json.smartbidisplaylefttree){
+                        url = url +"&showLeftTree=true"
+                    }else{
+                        url = url +"&showLeftTree=false"
+                    }
+                    
+                    url = o2.filterUrl(address+url);
+                }
+
             }
             
             this.iframe = new Element("iframe",{
