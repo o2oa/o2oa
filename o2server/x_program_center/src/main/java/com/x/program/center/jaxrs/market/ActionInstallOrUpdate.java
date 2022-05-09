@@ -53,6 +53,7 @@ class ActionInstallOrUpdate extends BaseAction {
             if(!BooleanUtils.isTrue(app.getHasInstallPermission())){
                 throw new ExceptionAccessDenied(Config.collect().getName());
             }
+            CacheManager.notify(InstallLog.class);
             logger.info("{}发起安装或更新应用：{}", effectivePerson.getDistinguishedName(), app.getName());
             Wo wo = new Wo();
             wo.setValue(false);
