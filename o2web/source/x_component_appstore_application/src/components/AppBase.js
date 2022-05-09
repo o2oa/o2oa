@@ -86,6 +86,22 @@ export default class AppBase extends React.Component {
             this.close();
         }, null, component.content);
     }
+    playVideo(){
+        const node = new Element("div", {
+            html: `<div class="appstore-video-dlg">
+                <video controls autoplay><source src="${this.props.data.video}" /></video>
+            </div>`
+        });
+        var dlg = o2.DL.open({
+            title: '',
+            height: 640,
+            width: 1200,
+            content: node,
+            container: component.content,
+            maskNode: component.content
+        });
+
+    }
     render() {
         const data = this.props.data;
         const indexPicStyle = {
@@ -97,9 +113,11 @@ export default class AppBase extends React.Component {
 
         const downloadAction = this.getInstalledStatus(data)!=='vip' ? <div className="application-actions-download mainColor_color" onClick={(e)=>{this.download(e)}}>{lp.download}</div> : '';
 
+        const play = (data.video) ? <div className="application-video-play" onClick={()=>{this.playVideo()}}/> : '';
         return (
             <div className="application-baseContent">
                 <div className="application-indexpic" style={indexPicStyle}>
+                    {play}
                 </div>
                 <div className="application-actions">
                     <div className="application-actions-price mainColor_color">{price}</div>
