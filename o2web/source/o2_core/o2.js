@@ -3321,44 +3321,58 @@ if (!window.o2) {
         }
 
         // 第三方扩展用的函数
-        o2.thridparty =  o2.thridparty || {};
+        o2.thirdparty =  o2.thirdparty || {};
         
         // 是否手机端
-        o2.thridparty.isMobile = function(){
+        o2.thirdparty.isMobile = function(){
             return /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i.test(navigator.userAgent.toLowerCase()); 
         }
-        // 手机端钉钉
-        o2.thridparty.isDingdingMobile = function() {
-            var isDingding = /dingtalk/i.test(navigator.userAgent.toLowerCase())
-            return isDingding && o2.thridparty.isMobile();
+        function alwaysFalse() {
+            return false;
         }
-        // pc端钉钉
-        o2.thridparty.isDingdingPC = function() {
-            var isDingding = /dingtalk/i.test(navigator.userAgent.toLowerCase())
-            return isDingding && !o2.thridparty.isMobile();
-        }
-        //手机端企业微信
-        o2.thridparty.isQywxMobile = function() {
-            var isComWx = /wxwork/i.test(navigator.userAgent); // 是否企业微信
-            return (isComWx && o2.thridparty.isMobile());
-        }
-        //PC端企业微信
-        o2.thridparty.isQywxPC = function() {
-            var isComWx = /wxwork/i.test(navigator.userAgent); // 是否企业微信
-            return (isComWx && !o2.thridparty.isMobile());
-        }
-        //手机端微信
-        o2.thridparty.isWeiXinMobile = function() {
-            var isWx = /micromessenger/i.test(navigator.userAgent); // 是否微信
-            return (isWx && o2.thridparty.isMobile());
-        }
-        //PC端微信
-        o2.thridparty.isWeiXinPC = function() {
-            var isWx = /micromessenger/i.test(navigator.userAgent); // 是否微信
-            return (isWx && !o2.thridparty.isMobile());
+        
+        if (o2.thirdparty.isMobile()) {
+            // 手机端钉钉
+            o2.thirdparty.isDingdingMobile = function() {
+                var isDingding = /dingtalk/i.test(navigator.userAgent.toLowerCase())
+                return isDingding && o2.thirdparty.isMobile();
+            }
+            //手机端企业微信
+            o2.thirdparty.isQywxMobile = function() {
+                var isComWx = /wxwork/i.test(navigator.userAgent); // 是否企业微信
+                return (isComWx && o2.thirdparty.isMobile());
+            }
+             //手机端微信
+            o2.thirdparty.isWeiXinMobile = function() {
+                var isWx = /micromessenger/i.test(navigator.userAgent); // 是否微信
+                return (isWx && o2.thirdparty.isMobile());
+            }
+            o2.thirdparty.isDingdingPC = alwaysFalse;
+            o2.thirdparty.isQywxPC = alwaysFalse;
+            o2.thirdparty.isWeiXinPC = alwaysFalse;
+        } else {
+            o2.thirdparty.isDingdingMobile = alwaysFalse;
+            o2.thirdparty.isQywxMobile = alwaysFalse;
+            o2.thirdparty.isWeiXinMobile = alwaysFalse;
+            // pc端钉钉
+            o2.thirdparty.isDingdingPC = function() {
+                var isDingding = /dingtalk/i.test(navigator.userAgent.toLowerCase())
+                return isDingding && !o2.thirdparty.isMobile();
+            }
+            //PC端企业微信
+            o2.thirdparty.isQywxPC = function() {
+                var isComWx = /wxwork/i.test(navigator.userAgent); // 是否企业微信
+                return (isComWx && !o2.thirdparty.isMobile());
+            }
+            //PC端微信
+            o2.thirdparty.isWeiXinPC = function() {
+                var isWx = /micromessenger/i.test(navigator.userAgent); // 是否微信
+                return (isWx && !o2.thirdparty.isMobile());
+            }
         }
 
-
+        
+    
         o2.common = o2.common || {};
 
         o2.common.encodeHtml = function (str) {

@@ -3432,7 +3432,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         url = o2.filterUrl(o2.Actions.getHost("x_processplatform_assemble_surface") + url);
 
         var downloadUrl = o2.filterUrl(url + "?fileName=&flag=" + htmlFormId);
-        if ((o2.thridparty.isDingdingPC() || o2.thridparty.isQywxPC())) {
+        if ((o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC())) {
             var xtoken = Cookie.read(o2.tokenName);
             downloadUrl += "&" + o2.tokenName + "=" + xtoken;
         }
@@ -4414,7 +4414,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         if (this.businessData.workCompleted) {
             var application = app || this.businessData.workCompleted.application;
             var url = o2.filterUrl("../x_desktop/printWork.html?workCompletedId=" + this.businessData.workCompleted.id + "&app=" + application + "&form=" + form);
-            if ((o2.thridparty.isDingdingPC() || o2.thridparty.isQywxPC())) {
+            if ((o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC())) {
                 var xtoken = Cookie.read(o2.tokenName);
                 url += "&" + o2.tokenName + "=" + xtoken;
             }
@@ -4422,7 +4422,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         } else {
             var application = app || this.businessData.work.application;
             var url = o2.filterUrl("../x_desktop/printWork.html?workid=" + this.businessData.work.id + "&app=" + application + "&form=" + form);
-            if ((o2.thridparty.isDingdingPC() || o2.thridparty.isQywxPC())) {
+            if ((o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC())) {
                 var xtoken = Cookie.read(o2.tokenName);
                 url += "&" + o2.tokenName + "=" + xtoken;
             }
@@ -4591,7 +4591,7 @@ debugger;
         if (this.businessData.workCompleted) {
             var application = app || this.businessData.workCompleted.application;
             var url = o2.filterUrl("../x_desktop/printWork.html?workCompletedId=" + this.businessData.workCompleted.id + "&app=" + application + "&form=" + form);
-            if ((o2.thridparty.isDingdingPC() || o2.thridparty.isQywxPC())) {
+            if ((o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC())) {
                 var xtoken = Cookie.read(o2.tokenName);
                 url += "&" + o2.tokenName + "=" + xtoken;
             }
@@ -4599,7 +4599,7 @@ debugger;
         } else {
             var application = app || this.businessData.work.application;
             var url = o2.filterUrl("../x_desktop/printWork.html?workid=" + this.businessData.work.id + "&app=" + application + "&form=" + form);
-            if ((o2.thridparty.isDingdingPC() || o2.thridparty.isQywxPC())) {
+            if ((o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC())) {
                 var xtoken = Cookie.read(o2.tokenName);
                 url += "&" + o2.tokenName + "=" + xtoken;
             }
@@ -4804,7 +4804,7 @@ debugger;
     },
     // 判断是否是钉钉pc上 
     dingTalkPcCloseOrAppClose: function () {
-        if ((o2.thridparty.isDingdingPC() || o2.thridparty.isQywxPC()) && layout.inBrowser) { // 如果是钉钉pc上 并且是浏览器模式
+        if ((o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC()) && layout.inBrowser) { // 如果是钉钉pc上 并且是浏览器模式
             var centerUrl = o2.filterUrl("../x_desktop/app.html?app=process.TaskCenter");
             history.replaceState(null, "work", centerUrl);
             centerUrl.toURI().go();
