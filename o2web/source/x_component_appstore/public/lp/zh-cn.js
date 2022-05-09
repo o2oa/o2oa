@@ -23,5 +23,10 @@ MWF.xApplication.appstore.LP = {
     "clickToConfig": "点击此处进行系统配置",
     "clickToDoc": "点击此处查看配置说明",
 
-    "notAdmin": "抱歉，只有管理员才能访问应用市场，您的权限不足！"
+    "notAdmin": "抱歉，只有管理员才能访问应用市场，您的权限不足！",
+
+    "offlineInstall": "离线安装",
+    "offlineInstallInfo": "您可以点击此处进行离线安装应用包",
+
+    "configDocUrl": "https://www.yuque.com/o2oa/course/vwgpbg"
 }
