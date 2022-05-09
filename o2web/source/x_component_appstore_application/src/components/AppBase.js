@@ -91,8 +91,11 @@ export default class AppBase extends React.Component {
         const indexPicStyle = {
             backgroundImage: 'url("'+data.indexPic+'")'
         };
-        const price = parseInt(data.price) ? '￥'+data.price : "Free";
-        //const installText = this.getActionText(data)
+
+        let price = '';
+        if (!data.vipApp) price = parseInt(data.price) ? '￥'+data.price : 'Free';
+
+        const downloadAction = this.getInstalledStatus(data)!=='vip' ? <div className="application-actions-download mainColor_color" onClick={(e)=>{this.download(e)}}>{lp.download}</div> : '';
 
         return (
             <div className="application-baseContent">
@@ -104,7 +107,7 @@ export default class AppBase extends React.Component {
                     <div className="application-actions-button grayColor_bg" onClick={this.openCommunity}>{lp.community}</div>
                     <div className="application-actions-infotitle mainColor_color">TIP</div>
                     <div className="application-actions-communityInfo">{lp.communityInfo}</div>
-                    <div className="application-actions-download mainColor_color" onClick={(e)=>{this.download(e)}}>{lp.download}</div>
+                    {downloadAction}
                 </div>
                 <div className="application-baseinfo">
                     <div className="application-baseinfo-name">{data.name}</div>
