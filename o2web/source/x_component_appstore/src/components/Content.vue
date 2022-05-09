@@ -8,7 +8,7 @@
         <Category/>
       </div>
       <div class="applications-content">
-        <Applications ref="applications"/>
+        <Applications ref="applications" isVip="isVip"/>
       </div>
     </div>
     <div v-else-if="isAdmin" class="appstore-content">

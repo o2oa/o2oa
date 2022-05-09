@@ -26,5 +26,6 @@ MWF.xApplication.appstore.application.LP = {
 
     "describe": "功能介绍",
     "installSteps": "安装及使用",
+    "video": "视频",
     "appPic": "应用图片"
 }
