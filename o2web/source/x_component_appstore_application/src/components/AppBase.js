@@ -14,16 +14,16 @@ export default class AppBase extends React.Component {
         this.action = o2.Actions.load('x_program_center').MarketAction;
     }
     getInstalledStatus(item){
-        if (item.installStatus) return item.installStatus;
+        //if (item.installStatus) return item.installStatus;
         let installStatus = '';
-        if (item.vipApp && !this.isVip){
+        if (item.vipApp && !this.props.isVip){
             installStatus = 'vip';
         }else if (!item.installedVersion){
             installStatus = 'notInstalled';
         }else{
             installStatus = (item.installedVersion===item.version) ? 'installed' : 'update';
         }
-        item.installStatus = installStatus;
+        //item.installStatus = installStatus;
         return installStatus;
     }
     getActionText(item){

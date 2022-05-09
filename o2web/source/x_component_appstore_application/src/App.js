@@ -10,21 +10,26 @@ export default class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            navi: 'describe'
+            navi: 'describe',
+            isVip: false
         };
         if (!component.options.appid) component.options.appid = 'e87b59f0-2c57-4e24-9cf4-60c9a05361f2';
     }
     componentDidMount() {
-        o2.Actions.load('x_program_center').MarketAction.get(component.options.appid).then((json)=>{
+        const action = o2.Actions.load('x_program_center').MarketAction;
+        action.get(component.options.appid).then((json)=>{
             component.setTitle(lp.title+'-'+json.data.name);
             this.setState({data:json.data});
+        });
+        action.cloudUnitIsVip().then((json)=>{
+            this.setState({isVip: json.data.value});
         });
     }
     changeNavi(navi){
         this.setState({navi});
     }
     render() {
-        const appBase = (this.state.data) ? <AppBase data={this.state.data}/> : '';
+        const appBase = (this.state.data) ? <AppBase data={this.state.data} isVip={this.state.isVip} /> : '';
 
         let content, describeClass, installStepsClass;
         if (this.state.navi==='describe'){
@@ -42,6 +47,7 @@ export default class App extends React.Component {
                 {appBase}
                 <div className="application-navi">
                     <div className={describeClass} onClick={()=>{this.changeNavi('describe')}}>{lp.describe}</div>
+                    <div className={installStepsClass} onClick={()=>{this.changeNavi('installSteps')}}>{lp.installSteps}</div>
                     <div className={installStepsClass} onClick={()=>{this.changeNavi('installSteps')}}>{lp.installSteps}</div>
                 </div>
                 {content}
