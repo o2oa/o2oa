@@ -29,8 +29,8 @@ class ActionInstallOffline extends BaseAction {
             if (StringUtils.isEmpty(fileName)) {
                 fileName = this.fileName(disposition);
             }
-            Application2 app = null;
-            logger.info("{}发起安装或更新应用：{}", effectivePerson.getDistinguishedName(), fileName);
+            Application2 app = new Application2();
+            logger.info("{}发起离线安装或更新应用：{}", effectivePerson.getDistinguishedName(), fileName);
             Wo wo = new Wo();
             wo.setValue(false);
             if ((null != bytes) && (bytes.length > 0)) {
