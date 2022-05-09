@@ -23,6 +23,7 @@
   background-size: cover;
   background-repeat: no-repeat;
   float: left;
+  display: flex;
 }
 .application-actions{
   float: right;
@@ -180,4 +181,26 @@
   background-size: cover;
   background-repeat: no-repeat;
   cursor: pointer;
+}
+.application-content-video video{
+  width: 100%;
+}
+.application-video-play{
+  border: 1px solid #FFFFFF;
+  border-radius: 100px;
+  width: 46px;
+  height: 46px;
+  background-image: url("./assets/play.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 24px 24px;
+  background-color: rgba(51,51,51,50%);
+  margin: auto;
+  cursor: pointer;
+}
+.appstore-video-dlg{
+  height: 100%
+}
+.appstore-video-dlg video{
+  width: 100%;
 }

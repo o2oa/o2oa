@@ -14,16 +14,16 @@ export default class AppBase extends React.Component {
         this.action = o2.Actions.load('x_program_center').MarketAction;
     }
     getInstalledStatus(item){
-        if (item.installStatus) return item.installStatus;
+        //if (item.installStatus) return item.installStatus;
         let installStatus = '';
-        if (item.vipApp && !this.isVip){
+        if (item.vipApp && !this.props.isVip){
             installStatus = 'vip';
         }else if (!item.installedVersion){
             installStatus = 'notInstalled';
         }else{
             installStatus = (item.installedVersion===item.version) ? 'installed' : 'update';
         }
-        item.installStatus = installStatus;
+        //item.installStatus = installStatus;
         return installStatus;
     }
     getActionText(item){
@@ -86,17 +86,38 @@ export default class AppBase extends React.Component {
             this.close();
         }, null, component.content);
     }
+    playVideo(){
+        const node = new Element("div", {
+            html: `<div class="appstore-video-dlg">
+                <video controls autoplay><source src="${this.props.data.video}" /></video>
+            </div>`
+        });
+        var dlg = o2.DL.open({
+            title: '',
+            height: 640,
+            width: 1200,
+            content: node,
+            container: component.content,
+            maskNode: component.content
+        });
+
+    }
     render() {
         const data = this.props.data;
         const indexPicStyle = {
             backgroundImage: 'url("'+data.indexPic+'")'
         };
-        const price = parseInt(data.price) ? '￥'+data.price : "Free";
-        //const installText = this.getActionText(data)
 
+        let price = '';
+        if (!data.vipApp) price = parseInt(data.price) ? '￥'+data.price : 'Free';
+
+        const downloadAction = this.getInstalledStatus(data)!=='vip' ? <div className="application-actions-download mainColor_color" onClick={(e)=>{this.download(e)}}>{lp.download}</div> : '';
+
+        const play = (data.video) ? <div className="application-video-play" onClick={()=>{this.playVideo()}}/> : '';
         return (
             <div className="application-baseContent">
                 <div className="application-indexpic" style={indexPicStyle}>
+                    {play}
                 </div>
                 <div className="application-actions">
                     <div className="application-actions-price mainColor_color">{price}</div>
@@ -104,7 +125,7 @@ export default class AppBase extends React.Component {
                     <div className="application-actions-button grayColor_bg" onClick={this.openCommunity}>{lp.community}</div>
                     <div className="application-actions-infotitle mainColor_color">TIP</div>
                     <div className="application-actions-communityInfo">{lp.communityInfo}</div>
-                    <div className="application-actions-download mainColor_color" onClick={(e)=>{this.download(e)}}>{lp.download}</div>
+                    {downloadAction}
                 </div>
                 <div className="application-baseinfo">
                     <div className="application-baseinfo-name">{data.name}</div>
