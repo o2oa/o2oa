@@ -52,8 +52,8 @@ export default {
   methods: {
     openApplication(item){
       o2.api.page.openApplication('appstore.application', {
-        appid: item.id,
-        appname: item.name
+        appId: item.id,
+        appName: item.name
       });
     }
   }
