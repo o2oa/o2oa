@@ -15,11 +15,10 @@ export default class App extends React.Component {
             isVip: false,
             playVideo: false
         };
-        if (!component.options.appid) component.options.appid = 'b11ead15-5243-4e93-bdf0-cb854671b9b2';
     }
     componentDidMount() {
         const action = o2.Actions.load('x_program_center').MarketAction;
-        action.get(component.options.appid).then((json)=>{
+        action.get(component.options.appId).then((json)=>{
             component.setTitle(lp.title+'-'+json.data.name);
             this.setState({data:json.data});
         });
