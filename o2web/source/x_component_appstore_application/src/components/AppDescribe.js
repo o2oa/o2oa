@@ -15,13 +15,10 @@ export default class AppDescribe extends React.Component {
             this.picAreaNode = element;
             this.loadImgView();
         };
+        this.setHtmlRef = element => {
+            this.props.setLinkTargetFun(element);
+        };
     }
-    // componentDidMount() {
-    //     window.setTimeout(()=>{
-    //         console.log(this.picAreaNode);
-    //         this.loadImgView();
-    //     }, 20);
-    // }
 
     loadImgView(){
         if(this.viewer) this.viewer.destroy();
@@ -43,7 +40,7 @@ export default class AppDescribe extends React.Component {
 
             return (
                 <div className="application-content-area">
-                    <div className="application-content-rtf" dangerouslySetInnerHTML={{__html: this.props.data.describe}}/>
+                    <div className="application-content-rtf" ref={this.setHtmlRef} dangerouslySetInnerHTML={{__html: this.props.data.describe}}/>
                     <div className="application-content-title">{lp.appPic}</div>
                     <div ref={this.setPicRef}>{piclist}</div>
                 </div>
