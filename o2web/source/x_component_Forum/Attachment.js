@@ -158,7 +158,12 @@ MWF.xApplication.Forum.AttachmentController.Attachment = new Class({
         }
         this.inforNode = new Element("div", {"styles": this.css.attachmentInforNode});
 
-        var person = MWFForum.isUseNickName()?this.data.nickName:( this.data.person || this.data.creatorUid );
+        var nickName = this.data.nickName;
+        if(MWFForum.isUseNickName() && nickName !== null && nickName !== undefined){
+            var person = nickName;
+        }else{
+            var person = this.data.person || this.data.creatorUid;
+        }
 
         var html = "<div style='overflow:hidden; font-weight: bold'>"+this.data.name+"</div>";
         html += "<div style='clear: both; overflow:hidden'><div style='width:40px; float:left; font-weight: bold'>"+o2.LP.widget.uploader+": </div><div style='width:120px; float:left; margin-left:10px'>"+ person +"</div></div>";
