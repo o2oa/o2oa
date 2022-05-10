@@ -1706,6 +1706,24 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             }.bind(this));
         }
     },
+    getClientType(){
+        if (window.o2android && window.o2android.downloadAttachment){
+            return "android";
+        }
+        if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment){
+            return "ios";
+        }
+        if (window.wx && window.__wxjs_environment === 'miniprogram' && this.checkMiniProgramFile(att.data.extension)){
+            return "wx";
+        }
+        if (layout.mobile){
+            return "mobile";
+        }
+        if (o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC()){
+            return "pcClient";
+        }
+        return "pc";
+    },
     openAttachment: function (e, node, attachments) {
         var data = this.form.businessData;
         var isWorkCompleted = data.work && data.work.completedTime;
@@ -1721,36 +1739,40 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             actionData = "getWorkcompletedAttachmentData";
             urlWorkKey = "workCompleted";
         }
+
+        var client = this.getClientType();
+
         attachments.each(function (att) {
             if( !this.queryOpen( att ) )return;
-            if (window.o2android && window.o2android.downloadAttachment) {
-                window.o2android.downloadAttachment(att.data.id);
-            } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment) {
-                window.webkit.messageHandlers.downloadAttachment.postMessage({ "id": att.data.id, "site": (this.json.site || this.json.id) });
-            } else if (window.wx && window.__wxjs_environment === 'miniprogram' && this.checkMiniProgramFile(att.data.extension)) { //微信小程序
-                wx.miniProgram.navigateTo({
-                    url: '../file/download?attId=' + att.data.id + '&type=work&'+urlWorkKey+'=' + this.form.businessData.work.id
-                });
-            } else {
-                if (layout.mobile) {
-                    //移动端 企业微信 钉钉 用本地打开 防止弹出自带浏览器 无权限问题
+
+            switch (client){
+                case "android":
+                    window.o2android.downloadAttachment(att.data.id);
+                    break;
+                case "ios":
+                    window.webkit.messageHandlers.downloadAttachment.postMessage({ "id": att.data.id, "site": (this.json.site || this.json.id) });
+                    break;
+                case "wx":
+                    wx.miniProgram.navigateTo({
+                        url: '../file/download?attId=' + att.data.id + '&type=work&'+urlWorkKey+'=' + this.form.businessData.work.id
+                    });
+                    break;
+                case "mobile":
                     this.form.workAction[actionUrl](att.data.id, workId, function (url) {
                         var xtoken = Cookie.read(o2.tokenName);
                         window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
                     });
-                } else {
-                    // 钉钉客户端
-                    if ((o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC())) {
-                        this.form.workAction[actionUrl](att.data.id, workId, function (url) {
-                            var xtoken = Cookie.read(o2.tokenName);
-                            window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
-                        });
-                    } else {
-                        this.form.workAction[actionData](att.data.id, workId);
-                    }
-                }
+                    break;
+                case "pcClient":
+                    this.form.workAction[actionUrl](att.data.id, workId, function (url) {
+                        var xtoken = Cookie.read(o2.tokenName);
+                        window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
+                    });
+                    break;
+                default:
+                    this.form.workAction[actionData](att.data.id, workId);
             }
-            this.fireEvent("open",[att])
+            this.fireEvent("open",[att]);
         }.bind(this));
 
     },
