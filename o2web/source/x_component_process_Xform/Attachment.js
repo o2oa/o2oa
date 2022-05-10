@@ -1707,74 +1707,52 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         }
     },
     openAttachment: function (e, node, attachments) {
-        if (this.form.businessData.work && !this.form.businessData.work.completedTime) {
-            attachments.each(function (att) {
-                if( !this.queryOpen( att ) )return;
-                if (window.o2android && window.o2android.downloadAttachment) {
-                    window.o2android.downloadAttachment(att.data.id);
-                } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment) {
-                    window.webkit.messageHandlers.downloadAttachment.postMessage({ "id": att.data.id, "site": (this.json.site || this.json.id) });
-                } else if (window.wx && window.__wxjs_environment === 'miniprogram' && this.checkMiniProgramFile(att.data.extension)) { //微信小程序
-                    wx.miniProgram.navigateTo({
-                        url: '../file/download?attId=' + att.data.id + '&type=work&work=' + this.form.businessData.work.id
-                    });
-                } else {
-                    if (layout.mobile) {
-                        //移动端 企业微信 钉钉 用本地打开 防止弹出自带浏览器 无权限问题
-                        this.form.workAction.getAttachmentUrl(att.data.id, this.form.businessData.work.id, function (url) {
-                            var xtoken = Cookie.read(o2.tokenName);
-                            window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
-                        });
-                    } else {
-                        // 钉钉客户端
-                        if ((o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC())) {
-                            this.form.workAction.getAttachmentUrl(att.data.id, this.form.businessData.work.id, function (url) {
-                                var xtoken = Cookie.read(o2.tokenName);
-                                window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
-                            });
-                        } else {
-                            this.form.workAction.getAttachmentData(att.data.id, this.form.businessData.work.id);
-                        }
-                    }
+        var data = this.form.businessData;
+        var isWorkCompleted = data.work && data.work.completedTime;
 
-                }
-                this.fireEvent("open",[att])
-            }.bind(this));
-        } else {
-            attachments.each(function (att) {
-                if( !this.queryOpen( att ) )return;
-                if (window.o2android && window.o2android.downloadAttachment) {
-                    window.o2android.downloadAttachment(att.data.id);
-                } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment) {
-                    window.webkit.messageHandlers.downloadAttachment.postMessage({ "id": att.data.id, "site": (this.json.site || this.json.id) });
-                } else if (window.wx && window.__wxjs_environment === 'miniprogram' && this.checkMiniProgramFile(att.data.extension)) { //微信小程序
-                    wx.miniProgram.navigateTo({
-                        url: '../file/download?attId=' + att.data.id + '&type=work&workCompleted=' + this.form.businessData.workCompleted.id
-                    });
-                } else {
+        var workId = data.work.id;
+        var actionUrl = "getAttachmentUrl";
+        var actionData = "getAttachmentData";
+        var urlWorkKey = "work";
 
-                    if (layout.mobile) {
-                        //移动端 企业微信 钉钉 用本地打开 防止弹出自带浏览器 无权限问题
-                        this.form.workAction.getAttachmentWorkcompletedUrl(att.data.id, ((this.form.businessData.workCompleted) ? this.form.businessData.workCompleted.id : this.form.businessData.work.id), function (url) {
-                            var xtoken = Cookie.read(o2.tokenName);
-                            window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
-                        });
-                    } else {
-                        // 钉钉客户端
-                        if ((o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC())) {
-                            this.form.workAction.getAttachmentWorkcompletedUrl(att.data.id, ((this.form.businessData.workCompleted) ? this.form.businessData.workCompleted.id : this.form.businessData.work.id), function (url) {
-                                var xtoken = Cookie.read(o2.tokenName);
-                                window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
-                            });
-                        }else {
-                            this.form.workAction.getWorkcompletedAttachmentData(att.data.id, ((this.form.businessData.workCompleted) ? this.form.businessData.workCompleted.id : this.form.businessData.work.id));
-                        }
-                    }
-                }
-                this.fireEvent("open",[att])
-            }.bind(this));
+        if (isWorkCompleted){
+            workId = (data.workCompleted) ? data.workCompleted.id : workId;
+            actionUrl = "getAttachmentWorkcompletedUrl";
+            actionData = "getWorkcompletedAttachmentData";
+            urlWorkKey = "workCompleted";
         }
-        //this.downloadAttachment(e, node, attachment);
+        attachments.each(function (att) {
+            if( !this.queryOpen( att ) )return;
+            if (window.o2android && window.o2android.downloadAttachment) {
+                window.o2android.downloadAttachment(att.data.id);
+            } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment) {
+                window.webkit.messageHandlers.downloadAttachment.postMessage({ "id": att.data.id, "site": (this.json.site || this.json.id) });
+            } else if (window.wx && window.__wxjs_environment === 'miniprogram' && this.checkMiniProgramFile(att.data.extension)) { //微信小程序
+                wx.miniProgram.navigateTo({
+                    url: '../file/download?attId=' + att.data.id + '&type=work&'+urlWorkKey+'=' + this.form.businessData.work.id
+                });
+            } else {
+                if (layout.mobile) {
+                    //移动端 企业微信 钉钉 用本地打开 防止弹出自带浏览器 无权限问题
+                    this.form.workAction[actionUrl](att.data.id, workId, function (url) {
+                        var xtoken = Cookie.read(o2.tokenName);
+                        window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
+                    });
+                } else {
+                    // 钉钉客户端
+                    if ((o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC())) {
+                        this.form.workAction[actionUrl](att.data.id, workId, function (url) {
+                            var xtoken = Cookie.read(o2.tokenName);
+                            window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
+                        });
+                    } else {
+                        this.form.workAction[actionData](att.data.id, workId);
+                    }
+                }
+            }
+            this.fireEvent("open",[att])
+        }.bind(this));
+
     },
     getAttachmentUrl: function (attachment, callback) {
         if (this.form.businessData.work && !this.form.businessData.work.completedTime) {
