@@ -18,55 +18,51 @@ MWF.xApplication.process.Xform.SmartBI = MWF.APPSmartBI =  new Class({
     _loadUserInterface: function(){  
         if (!this.json.smartbiresource || this.json.smartbiresource==="none") this.node.destroy();
         else{
-            var _iframe = this.node.getElement("iframe");
-            var url;
-            if(_iframe){
-                url = _iframe.get("src");
-            }else{
-                var value = this.json.smartbiresource;
-                var SmartBIAction = o2.Actions.load("x_custom_smartbi_assemble_control");
-
-                var addressUri = SmartBIAction.ResourceAction.address;
-                
-                if(addressUri){
-                    SmartBIAction.ResourceAction.address(value,function(json){ 
-                        if(json.data.value !==""){
-                            url = json.data.value;
-                            if(this.json.smartbidisplaytoolbar){
-                                url = url +"&showtoolbar=true"
-                            }else{
-                                url = url +"&showtoolbar=false"
-                            }
             
-                            if(this.json.smartbidisplaylefttree){
-                                url = url +"&showLeftTree=true"
-                            }else{
-                                url = url +"&showLeftTree=false"
-                            }
+            var url;
+            
+            var value = this.json.smartbiresource;
+            var SmartBIAction = o2.Actions.load("x_custom_smartbi_assemble_control");
+
+            var addressUri = SmartBIAction.ResourceAction.address;
+            
+            if(addressUri){
+                SmartBIAction.ResourceAction.address(value,function(json){ 
+                    if(json.data.value !==""){
+                        url = json.data.value;
+                        if(this.json.smartbidisplaytoolbar){
+                            url = url +"&showtoolbar=true"
+                        }else{
+                            url = url +"&showtoolbar=false"
                         }
-                    }.bind(this),null,false)
+        
+                        if(this.json.smartbidisplaylefttree){
+                            url = url +"&showLeftTree=true"
+                        }else{
+                            url = url +"&showLeftTree=false"
+                        }
+                    }
+                }.bind(this),null,false)
+            }else{
+                var address = SmartBIAction.ResourceAction.action.getAddress();
+                var uri = SmartBIAction.ResourceAction.action.actions.open.uri;
+                var url = uri.replace("{id}", encodeURIComponent(value));
+
+                if(this.json.smartbidisplaytoolbar){
+                    url = url +"?showtoolbar=true"
                 }else{
-                    var address = SmartBIAction.ResourceAction.action.getAddress();
-                    var uri = SmartBIAction.ResourceAction.action.actions.open.uri;
-                    var url = uri.replace("{id}", encodeURIComponent(value));
-    
-                    if(this.json.smartbidisplaytoolbar){
-                        url = url +"?showtoolbar=true"
-                    }else{
-                        url = url +"?showtoolbar=false"
-                    }
-    
-                    if(this.json.smartbidisplaylefttree){
-                        url = url +"&showLeftTree=true"
-                    }else{
-                        url = url +"&showLeftTree=false"
-                    }
-                    
-                    url = o2.filterUrl(address+url);
+                    url = url +"?showtoolbar=false"
                 }
 
+                if(this.json.smartbidisplaylefttree){
+                    url = url +"&showLeftTree=true"
+                }else{
+                    url = url +"&showLeftTree=false"
+                }
+                
+                url = o2.filterUrl(address+url);
             }
-            
+                        
             this.iframe = new Element("iframe",{
                 src:url,
                 frameborder:"0",
