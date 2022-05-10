@@ -7,48 +7,30 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         "allowPreviewExtension" : ["zip","pdf", "ofd", "png", "jpg", "bmp", "jpeg", "gif", "js", "css", "java", "json", "xml", "php", "html", "htm", "xhtml", "log", "md", "txt"],
         "checkTextEnable": true
     },
+
+    checkAttControl: function(att, currentUser){
+        var attUser = att.data.person || att.data.creatorUid;
+        switch (this.options.isDeleteOption){
+            case "o":
+                return attUser===currentUser;
+            case "a":
+                return att.data.activity===this.module.form.businessData.activity.id;
+            case "ao":
+                return (attUser===currentUser || att.data.activity===this.module.form.businessData.activity.id);
+            default:
+                return true;
+        }
+
+    },
     checkAttachmentDeleteAction: function () {
-        if (this.options.readonly) {
+        if (this.options.readonly || this.options.isDeleteOption==="n" || !this.attachments.length) {
             this.setAttachmentsAction("delete", false);
             return false;
         }
-        if (this.options.isDeleteOption !== "n") {
-            if (this.attachments.length) {
-                var user = layout.session.user.distinguishedName;
-
-                for (var i = 0; i < this.attachments.length; i++) {
-                    var flag = true;
-                    var att = this.attachments[i];
-                    if (!att.data.person && att.data.creatorUid) att.data.person = att.data.creatorUid;
-                    if (this.options.isDeleteOption === "o") {
-
-                        if (!att.data.control.allowEdit && att.data.person !== user) flag = false;
-                        if (att.data.person !== layout.desktop.session.user.distinguishedName) flag = false;
-
-                    } else if (this.options.isDeleteOption === "a") {
-
-                        if (!att.data.control.allowEdit && att.data.person !== user) flag = false;
-                        if (att.data.activity !== this.module.form.businessData.activity.id) flag = false;
-
-                    } else if (this.options.isDeleteOption === "ao") {
-
-                        if (!att.data.control.allowEdit && att.data.person !== user) flag = false;
-                        if ((att.data.activity !== this.module.form.businessData.activity.id) || (att.data.person !== layout.desktop.session.user.distinguishedName)) flag = false;
-
-                    } else {
-                        if (!att.data.control.allowEdit && att.data.person !== user) flag = false;
-                    }
-
-                    if (flag) {
-                        this.setAttachmentAction(att, "delete", true);
-                    } else {
-                        this.setAttachmentAction(att, "delete", false);
-                    }
-                }
-            }
-
-        } else {
-            this.setAttachmentsAction("delete", false);
+        var currentUser = layout.session.user.distinguishedName;
+        for (var i = 0; i < this.attachments.length; i++) {
+            var att = this.attachments[i];
+            this.setAttachmentAction(att, "delete", (att.data.control.allowEdit && this.checkAttControl(att, currentUser)));
         }
     },
     checkDeleteAction: function () {
@@ -460,27 +442,15 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
     },
 
     checkAttachmentConfigAction: function () {
-        if (this.options.readonly) {
+        if (this.options.readonly || !this.attachments.length) {
             this.setAttachmentsAction("config", false);
             return false;
         }
-        if (this.attachments.length) {
-            var user = layout.session.user.distinguishedName;
-            for (var i = 0; i < this.attachments.length; i++) {
-                var flag = true;
-
-                var att = this.attachments[i];
-                if (!att.data.person && att.data.creatorUid) att.data.person = att.data.creatorUid;
-
-                if ((!att.data.control.allowControl) && att.data.person !== user) { // || !att.data.control.allowEdit
-                    flag = false;
-                }
-                if (flag) {
-                    this.setAttachmentAction(att, "config", true);
-                } else {
-                    this.setAttachmentAction(att, "config", false);
-                }
-            }
+        var currentUser = layout.session.user.distinguishedName;
+        for (var i = 0; i < this.attachments.length; i++) {
+            var att = this.attachments[i];
+            var attUser = att.data.person || att.data.creatorUid;
+            this.setAttachmentAction(att, "config", att.data.control.allowControl && attUser===currentUser);
         }
     },
     checkConfigAction: function () {
