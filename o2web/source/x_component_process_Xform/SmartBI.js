@@ -18,12 +18,9 @@ MWF.xApplication.process.Xform.SmartBI = MWF.APPSmartBI =  new Class({
     _loadUserInterface: function(){  
         if (!this.json.smartbiresource || this.json.smartbiresource==="none") this.node.destroy();
         else{
-            
             var url;
-            
             var value = this.json.smartbiresource;
             var SmartBIAction = o2.Actions.load("x_custom_smartbi_assemble_control");
-
             var addressUri = SmartBIAction.ResourceAction.address;
             
             if(addressUri){
