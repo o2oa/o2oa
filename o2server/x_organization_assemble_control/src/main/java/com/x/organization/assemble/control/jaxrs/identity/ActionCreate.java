@@ -67,15 +67,23 @@ class ActionCreate extends BaseAction {
 				if(StringUtils.isBlank(wi.getUnique())){
 					identity.setUnique(unit.getUnique()+"_"+person.getUnique());
 				}
-				/** 如果唯一标识不为空,要检查唯一标识是否唯一 */
+				/* 如果唯一标识不为空,要检查唯一标识是否唯一 */
 				if (this.uniqueDuplicateWhenNotEmpty(business, identity)) {
 					throw new ExceptionDuplicateUnique(identity.getName(), identity.getUnique());
 				}
+				/*设置是否禁用，从个人中获取，不为true时，默认false*/
+				if (BooleanUtils.isTrue(person.getDisable())) {
+					identity.setDisable(person.getDisable());
+				}else{
+					identity.setDisable(false);
+				}
+
 				identity.setUnit(unit.getId());
 				identity.setUnitLevel(unit.getLevel());
 				identity.setUnitLevelName(unit.getLevelName());
 				identity.setUnitName(unit.getName());
 				identity.setPerson(person.getId());
+
 				/* 设置主身份 */
 				List<Identity> others = emc.listEqual(Identity.class, Identity.person_FIELDNAME, identity.getPerson());
 				if (others.isEmpty()) {
@@ -133,7 +141,7 @@ class ActionCreate extends BaseAction {
 		private static final long serialVersionUID = -6314932919066148113L;
 
 		static WrapCopier<Wi, Identity> copier = WrapCopierFactory.wi(Wi.class, Identity.class, null, ListTools
-				.toList(JpaObject.FieldsUnmodify, "pinyin", "pinyinInitial", "unitName", "unitLevel", "unitLevelName"));
+				.toList(JpaObject.FieldsUnmodify, "pinyin", "pinyinInitial", "unitName", "unitLevel", "unitLevelName", "disable"));
 	}
 
 	private boolean existedWithPersonWithUnit(Business business, Person person, Unit unit) throws Exception {
