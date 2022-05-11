@@ -255,8 +255,14 @@ public class HttpConnection {
 		Map<String, String> map = new HashMap<>();
 		map.put(ConnectionAction.ACCESS_CONTROL_ALLOW_CREDENTIALS,
 				ConnectionAction.ACCESS_CONTROL_ALLOW_CREDENTIALS_VALUE);
-		map.put(ConnectionAction.ACCESS_CONTROL_ALLOW_HEADERS,
-				ConnectionAction.ACCESS_CONTROL_ALLOW_HEADERS_VALUE + ", " + Config.person().getTokenName());
+		try {
+			map.put(ConnectionAction.ACCESS_CONTROL_ALLOW_HEADERS,
+					ConnectionAction.ACCESS_CONTROL_ALLOW_HEADERS_VALUE + ", " + Config.person().getTokenName());
+		} catch (Exception e) {
+			if(LOGGER.isDebugEnabled()) {
+				LOGGER.debug(e.getMessage());
+			}
+		}
 		map.put(ConnectionAction.ACCESS_CONTROL_ALLOW_METHODS, ConnectionAction.ACCESS_CONTROL_ALLOW_METHODS_VALUE);
 		map.put(ConnectionAction.CACHE_CONTROL, ConnectionAction.CACHE_CONTROL_VALUE);
 		map.put(ConnectionAction.CONTENT_TYPE, ConnectionAction.CONTENT_TYPE_VALUE);
