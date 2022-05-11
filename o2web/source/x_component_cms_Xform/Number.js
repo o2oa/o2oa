@@ -6,17 +6,21 @@ MWF.xApplication.cms.Xform.Number = MWF.CMSNumber =  new Class({
         var flag = (data.status=="all") ? true: (routeName == "publish");
         if (flag){
             var n = this.getInputData();
+            var originN = this.getInputData( true );
+
             if( n === "" && this.json.emptyValue === "string" )n = 0;
+
             var v = (data.valueType=="value") ? n : n.length;
+            var originV = (data.valueType=="value") ? originN : originN.length;
             switch (data.operateor){
                 case "isnull":
-                    if (!v && v.toString()!=='0'){
+                    if (!originV && originV.toString()!=='0'){
                         this.notValidationMode(data.prompt);
                         return false;
                     }
                     break;
                 case "notnull":
-                    if (v){
+                    if (originV){
                         this.notValidationMode(data.prompt);
                         return false;
                     }
@@ -46,13 +50,13 @@ MWF.xApplication.cms.Xform.Number = MWF.CMSNumber =  new Class({
                     }
                     break;
                 case "contain":
-                    if (v.toString().indexOf(data.value)!=-1){
+                    if (originV.toString().indexOf(data.value)!=-1){
                         this.notValidationMode(data.prompt);
                         return false;
                     }
                     break;
                 case "notcontain":
-                    if (v.toString().indexOf(data.value)==-1){
+                    if (originV.toString().indexOf(data.value)==-1){
                         this.notValidationMode(data.prompt);
                         return false;
                     }

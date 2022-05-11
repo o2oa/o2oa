@@ -19,9 +19,10 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
     isEmpty : function(){
         return !this.getData();
     },
-    getInputData: function(){
+    getInputData: function( flag ){
         if (this.node.getFirst()){
             var v = this.node.getElement("input").get("value");
+            if( flag )return v;  //不判断，直接返回原值
             var n = v.toFloat();
             return (isNaN(n)) ? (this.json.emptyValue === "string" ? "" : 0) : n;
             //return (isNaN(n)) ? 0 : n;
@@ -65,7 +66,6 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
     },
 
     validationFormat: function(){
-debugger;
         if( !this.node.getElement("input") )return true;
         var n = this.node.getElement("input").get("value");
         if (isNaN(n)) {
@@ -107,21 +107,26 @@ debugger;
         return true;
     },
     validationConfigItem: function(routeName, data){
-
+        debugger;
         var flag = (data.status=="all") ? true: (routeName == data.decision);
         if (flag){
             var n = this.getInputData();
+            var originN = this.getInputData( true );
+
             if( n === "" && this.json.emptyValue === "string" )n = 0;
+
             var v = (data.valueType=="value") ? n : n.length;
+            var originV = (data.valueType=="value") ? originN : originN.length;
+
             switch (data.operateor){
                 case "isnull":
-                    if (!v && v.toString()!=='0'){
+                    if (!originV && originV.toString()!=='0'){
                         this.notValidationMode(data.prompt);
                         return false;
                     }
                     break;
                 case "notnull":
-                    if (v){
+                    if (originV){
                         this.notValidationMode(data.prompt);
                         return false;
                     }
@@ -151,13 +156,13 @@ debugger;
                     }
                     break;
                 case "contain":
-                    if (v.toString().indexOf(data.value)!=-1){
+                    if (originV.toString().indexOf(data.value)!=-1){
                         this.notValidationMode(data.prompt);
                         return false;
                     }
                     break;
                 case "notcontain":
-                    if (v.toString().indexOf(data.value)==-1){
+                    if (originV.toString().indexOf(data.value)==-1){
                         this.notValidationMode(data.prompt);
                         return false;
                     }
