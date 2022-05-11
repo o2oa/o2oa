@@ -295,7 +295,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
         }
     },
     createContentNode: function(){
-        this.contentScrollNode = new Element("div.contentScrollNode", {"draggable": true, "styles": this.css.contentScrollNode}).inject(this.node);
+        this.contentScrollNode = new Element("div.contentScrollNode", {"styles": this.css.contentScrollNode}).inject(this.node);
         this.content = new Element("div.content", {"styles": this.css.contentNode}).inject(this.contentScrollNode);
 
         o2.require("o2.widget.ScrollBar", function(){
