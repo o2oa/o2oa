@@ -27,17 +27,7 @@ MWF.xApplication.process.Xform.SmartBI = MWF.APPSmartBI =  new Class({
                 SmartBIAction.ResourceAction.address(value,function(json){ 
                     if(json.data.value !==""){
                         url = json.data.value;
-                        if(this.json.smartbidisplaytoolbar){
-                            url = url +"&showtoolbar=true"
-                        }else{
-                            url = url +"&showtoolbar=false"
-                        }
-        
-                        if(this.json.smartbidisplaylefttree){
-                            url = url +"&showLeftTree=true"
-                        }else{
-                            url = url +"&showLeftTree=false"
-                        }
+                        url = url +"?showtoolbar="+this.json.smartbidisplaytoolbar+"&showLeftTree="+this.json.smartbidisplaylefttree;
                     }
                 }.bind(this),null,false)
             }else{
