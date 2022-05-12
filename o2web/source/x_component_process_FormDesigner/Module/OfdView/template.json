@@ -1,0 +1,21 @@
+{
+	"id": "",
+	"name": "",
+	"type": "OfdView",
+	"description": "",
+	"template": "",
+	"script": {
+		"code": "",
+		"html": ""
+	},
+	"events": {
+		"afterOpen": {
+			"code": "",
+			"html": ""
+		}
+	},
+	"properties": {},
+	"class": "",
+	"styles": {},
+	"container": ""
+}
