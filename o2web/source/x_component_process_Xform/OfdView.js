@@ -52,7 +52,7 @@ MWF.xApplication.process.Xform.OfdView = MWF.APPOfdView =  new Class({
 
         this.uploadNode = new Element("div",{"style":"margin:10px;"}).inject(this.node);
 
-        var uploadBtn = new Element("button",{"text":MWF.xApplication.process.Xform.LP.ofdview.nofile,"style":"margin-left: 15px; color: rgb(255, 255, 255); cursor: pointer; height: 26px; line-height: 26px; padding: 0px 10px; min-width: 40px; background-color: rgb(74, 144, 226); border: 1px solid rgb(82, 139, 204); border-radius: 15px;"}).inject(this.uploadNode);
+        var uploadBtn = new Element("button",{"text":MWF.xApplication.process.Xform.LP.ofdview.upload,"style":"margin-left: 15px; color: rgb(255, 255, 255); cursor: pointer; height: 26px; line-height: 26px; padding: 0px 10px; min-width: 40px; background-color: rgb(74, 144, 226); border: 1px solid rgb(82, 139, 204); border-radius: 15px;"}).inject(this.uploadNode);
         uploadBtn.addEvent("click",function (){
             o2.require("o2.widget.Upload", null, false);
 
