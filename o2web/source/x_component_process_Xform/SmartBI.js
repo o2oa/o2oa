@@ -15,7 +15,7 @@ MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 MWF.xApplication.process.Xform.SmartBI = MWF.APPSmartBI =  new Class({
     Extends: MWF.APP$Module,
 
-    _loadUserInterface: function(){  
+    _loadUserInterface: function(){  debugger
         if (!this.json.smartbiresource || this.json.smartbiresource==="none") this.node.destroy();
         else{
             var url;
@@ -27,7 +27,7 @@ MWF.xApplication.process.Xform.SmartBI = MWF.APPSmartBI =  new Class({
                 SmartBIAction.ResourceAction.address(value,function(json){ 
                     if(json.data.value !==""){
                         url = json.data.value;
-                        url = url +"?showtoolbar="+this.json.smartbidisplaytoolbar+"&showLeftTree="+this.json.smartbidisplaylefttree;
+                        url = url +"&showtoolbar="+this.json.smartbidisplaytoolbar+"&showLeftTree="+this.json.smartbidisplaylefttree;
                     }
                 }.bind(this),null,false)
             }else{
@@ -35,7 +35,7 @@ MWF.xApplication.process.Xform.SmartBI = MWF.APPSmartBI =  new Class({
                 var uri = SmartBIAction.ResourceAction.action.actions.open.uri;
                 var url = uri.replace("{id}", encodeURIComponent(value));
 
-                url = url +"&showtoolbar="+this.json.smartbidisplaytoolbar+"&showLeftTree="+this.json.smartbidisplaylefttree;
+                url = url +"?showtoolbar="+this.json.smartbidisplaytoolbar+"&showLeftTree="+this.json.smartbidisplaylefttree;
                 
                 url = o2.filterUrl(address+url);
             }
