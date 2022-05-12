@@ -45,17 +45,7 @@ MWF.xApplication.process.Xform.SmartBI = MWF.APPSmartBI =  new Class({
                 var uri = SmartBIAction.ResourceAction.action.actions.open.uri;
                 var url = uri.replace("{id}", encodeURIComponent(value));
 
-                if(this.json.smartbidisplaytoolbar){
-                    url = url +"?showtoolbar=true"
-                }else{
-                    url = url +"?showtoolbar=false"
-                }
-
-                if(this.json.smartbidisplaylefttree){
-                    url = url +"&showLeftTree=true"
-                }else{
-                    url = url +"&showLeftTree=false"
-                }
+                url = url +"?showtoolbar="+this.json.smartbidisplaytoolbar+"&showLeftTree="+this.json.smartbidisplaylefttree;
                 
                 url = o2.filterUrl(address+url);
             }
