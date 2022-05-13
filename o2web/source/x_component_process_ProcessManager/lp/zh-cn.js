@@ -198,6 +198,7 @@ MWF.xApplication.process.ProcessManager.LP = {
     "blueForm": "标准表单样式(蓝色)",
     "redForm": "标准表单样式(红色)",
     "publishForm": "发布类审批表单",
+    "elementForm": "Element组件模板",
     "fileForm": "公文表单模板",
     "submitPcForm": "自定义提交表单模板(PC)",
     "submitMobileForm": "自定义提交表单模板(Mobile)"
