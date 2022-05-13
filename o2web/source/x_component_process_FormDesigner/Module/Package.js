@@ -76,3 +76,5 @@ MWF.xDesktop.requireApp("process.FormDesigner", "Module.Eltree", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Eldropdown", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.Elcarousel", null, false);
 MWF.xDesktop.requireApp("process.FormDesigner", "Module.SmartBI", null, false);
+MWF.xDesktop.requireApp("process.FormDesigner", "Module.PdfView", null, false);
+MWF.xDesktop.requireApp("process.FormDesigner", "Module.OfdView", null, false);
