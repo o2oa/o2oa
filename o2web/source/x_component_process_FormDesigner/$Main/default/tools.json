@@ -233,7 +233,7 @@
     "className": "Importer"
   },
 
-  "SmartBI": { 
+  "SmartBI": {
     "icon": "smartbi.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.SmartBI,
     "className": "SmartBI"
@@ -242,5 +242,15 @@
     "icon": "writingBoard.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.writingBoard,
     "className": "WritingBoard"
+  },
+  "pdfView": {
+    "icon": "pdfview.png",
+    "text": "PDF View",
+    "className": "PdfView"
+  },
+  "ofdView": {
+    "icon": "ofdview.png",
+    "text": "OFD View",
+    "className": "OfdView"
   }
 }
