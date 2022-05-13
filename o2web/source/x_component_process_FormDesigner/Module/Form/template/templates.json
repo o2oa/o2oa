@@ -30,6 +30,11 @@
     "icon": "form_file.png"
   },
   {
+    "name": "form_element.json",
+    "title": MWF.xApplication.process.ProcessManager.LP.elementForm,
+    "icon": "form_element.png"
+  },
+  {
     "name": "form_custom_submit_pc.json",
     "title": MWF.xApplication.process.ProcessManager.LP.submitPcForm,
     "icon": "form_custom_submit_pc.png"
