@@ -33,6 +33,17 @@ public class ProcessProperties extends JsonProperties {
 	@FieldDescribe("同步到自建表.")
 	private List<String> updateTableList;
 
+	@FieldDescribe("流程维护身份,如果无法找到处理身份默认的流程处理身份.")
+	private String maintenanceIdentity;
+
+	public String getMaintenanceIdentity() {
+		return maintenanceIdentity;
+	}
+
+	public void setMaintenanceIdentity(String maintenanceIdentity) {
+		this.maintenanceIdentity = maintenanceIdentity;
+	}
+
 	public Boolean getUpdateTableEnable() {
 		return updateTableEnable;
 	}

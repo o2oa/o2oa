@@ -150,12 +150,20 @@ class ActionAppend extends BaseAction {
 				o.setProcessingType(TaskCompleted.PROCESSINGTYPE_BEAPPENDEDTASK);
 			}
 		}
+		Manual manual = (Manual) business.element().get(work.getActivity(), ActivityType.manual);
+
+		if (null == manual) {
+			throw new ExceptionEntityNotExist(work.getActivity(), Manual.class);
+		}
+
 		wo.getValueList().addAll(new ArrayList<>(identities));
 		identities = ListUtils.sum(
-				ListUtils.subtract(work.getManualTaskIdentityList(), ListTools.toList(task.getIdentity())), identities);
+				ListUtils.subtract(work.getManualTaskIdentityMatrix().flat(), ListTools.toList(task.getIdentity())),
+				identities);
 		identities = business.organization().identity().list(ListTools.trim(identities, true, true));
 		emc.beginTransaction(Work.class);
-		work.setManualTaskIdentityList(identities);
+		// work.setManualTaskIdentityList(identities);
+		work.setManualTaskIdentityMatrix(manual.identitiesToManualTaskIdentityMatrix(identities));
 		for (TaskIdentity taskIdentity : taskIdentities) {
 			if (BooleanUtils.isNotTrue(taskIdentity.getIgnoreEmpower())
 					&& StringUtils.isNotEmpty(taskIdentity.getFromIdentity())) {

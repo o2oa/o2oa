@@ -38,6 +38,7 @@ import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.organization.OrganizationDefinition;
+import com.x.base.core.project.processplatform.ManualTaskIdentityMatrix;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
@@ -51,6 +52,13 @@ import com.x.processplatform.core.entity.element.ActivityType;
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
 						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+
+/**
+ * 7.2.0版本 增加manualTaskIdentityMatrix
+ * 
+ * @author ray
+ *
+ */
 public class Work extends SliceJpaObject implements ProjectionInterface {
 
 	private static final long serialVersionUID = 7668822947307502058L;
@@ -84,10 +92,10 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 			this.title = StringTools.utf8SubString(this.getProperties().getTitle(), length_255B - 3) + "...";
 		}
 		// 填入处理人文本
-		if (ListTools.isEmpty(this.manualTaskIdentityList)) {
+		if (ListTools.isEmpty(this.getManualTaskIdentityMatrix().flat())) {
 			this.manualTaskIdentityText = "";
 		} else {
-			String text = StringUtils.join(OrganizationDefinition.name(manualTaskIdentityList), ",");
+			String text = StringUtils.join(OrganizationDefinition.name(this.getManualTaskIdentityMatrix().flat()), ",");
 			text = StringTools.utf8SubString(text, length_255B);
 			this.setManualTaskIdentityText(text);
 		}
@@ -101,6 +109,7 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 		this.splitValueList = this.getProperties().getSplitValueList();
 		this.embedTargetJob = this.getProperties().getEmbedTargetJob();
 		this.embedCompleted = this.getProperties().getEmbedCompleted();
+		this.manualTaskIdentityMatrix = this.getProperties().getManualTaskIdentityMatrix();
 	}
 
 	/* 更新运行方法 */
@@ -181,6 +190,18 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 		this.embedCompleted = embedCompleted;
 	}
 
+	public ManualTaskIdentityMatrix getManualTaskIdentityMatrix() {
+		if (null == this.manualTaskIdentityMatrix) {
+			this.setManualTaskIdentityMatrix(new ManualTaskIdentityMatrix());
+		}
+		return this.manualTaskIdentityMatrix;
+	}
+
+	public void setManualTaskIdentityMatrix(ManualTaskIdentityMatrix manualTaskIdentityMatrix) {
+		this.manualTaskIdentityMatrix = manualTaskIdentityMatrix;
+		this.getProperties().setManualTaskIdentityMatrix(manualTaskIdentityMatrix);
+	}
+
 	@Transient
 	@FieldDescribe("要拆分的值")
 	private List<String> splitValueList;
@@ -192,6 +213,11 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	@Transient
 	@FieldDescribe("子流程返回标识.")
 	private String embedCompleted;
+
+	public static final String MANUALTASKIDENTITYMATRIX_FIELDNAME = "manualTaskIdentityMatrix";
+	@FieldDescribe("待办身份矩阵.")
+	@Transient
+	private ManualTaskIdentityMatrix manualTaskIdentityMatrix;
 
 	public static final String job_FIELDNAME = "job";
 	@FieldDescribe("工作")
@@ -894,9 +920,7 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 		this.activityType = activityType;
 	}
 
-	public List<String> getManualTaskIdentityList() {
-		return manualTaskIdentityList;
-	}
+
 
 	public ActivityType getDestinationActivityType() {
 		return destinationActivityType;
@@ -1005,14 +1029,6 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	public void setManualTaskIdentityText(String manualTaskIdentityText) {
 		this.manualTaskIdentityText = manualTaskIdentityText;
 	}
-
-	// public String getTitleLob() {
-	// return titleLob;
-	// }
-
-	// public void setTitleLob(String titleLob) {
-	// this.titleLob = titleLob;
-	// }
 
 	public String getStringValue01() {
 		return stringValue01;
@@ -1276,6 +1292,10 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 
 	public void setManualTaskIdentityList(List<String> manualTaskIdentityList) {
 		this.manualTaskIdentityList = manualTaskIdentityList;
+	}
+	
+	public List<String> getManualTaskIdentityList() {
+		return manualTaskIdentityList;
 	}
 
 }

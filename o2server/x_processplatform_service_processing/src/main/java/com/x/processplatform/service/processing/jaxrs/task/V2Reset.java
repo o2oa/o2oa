@@ -21,6 +21,8 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.element.ActivityType;
+import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.V2ResetWi;
 import com.x.processplatform.service.processing.Business;
 
@@ -55,6 +57,13 @@ class V2Reset extends BaseAction {
 				if (null == work) {
 					throw new ExceptionEntityNotExist(task.getWork(), Work.class);
 				}
+
+				Manual manual = (Manual) business.element().get(work.getActivity(), ActivityType.manual);
+
+				if (null == manual) {
+					throw new ExceptionEntityNotExist(work.getActivity(), Manual.class);
+				}
+
 				/* 检查reset人员 */
 				List<String> identites = ListTools.trim(business.organization().identity().list(wi.getIdentityList()),
 						true, true);
@@ -64,7 +73,7 @@ class V2Reset extends BaseAction {
 				}
 
 				emc.beginTransaction(Work.class);
-				List<String> os = ListTools.trim(work.getManualTaskIdentityList(), true, true);
+				List<String> os = ListTools.trim(work.getManualTaskIdentityMatrix().flat(), true, true);
 
 				os = ListUtils.sum(os, identites);
 				/* 在新增待办人员中删除当前的处理人 */
@@ -75,8 +84,9 @@ class V2Reset extends BaseAction {
 				if (ListTools.isEmpty(os)) {
 					throw new ExceptionResetEmpty();
 				}
-
-				work.setManualTaskIdentityList(ListTools.trim(os, true, true));
+				work.setManualTaskIdentityMatrix(
+						manual.identitiesToManualTaskIdentityMatrix(ListTools.trim(os, true, true)));
+				// work.setManualTaskIdentityList(ListTools.trim(os, true, true));
 				emc.check(work, CheckPersistType.all);
 				emc.commit();
 

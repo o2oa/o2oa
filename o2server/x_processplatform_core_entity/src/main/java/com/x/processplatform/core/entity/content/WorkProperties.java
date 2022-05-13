@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.x.base.core.entity.JsonProperties;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.processplatform.ManualTaskIdentityMatrix;
 
 public class WorkProperties extends JsonProperties {
 
@@ -38,6 +39,17 @@ public class WorkProperties extends JsonProperties {
 
 	@FieldDescribe("拆分值列表")
 	private List<String> splitValueList = new ArrayList<>();
+
+	@FieldDescribe("待办身份矩阵")
+	private ManualTaskIdentityMatrix manualTaskIdentityMatrix = new ManualTaskIdentityMatrix();
+
+	public ManualTaskIdentityMatrix getManualTaskIdentityMatrix() {
+		return manualTaskIdentityMatrix;
+	}
+
+	public void setManualTaskIdentityMatrix(ManualTaskIdentityMatrix manualTaskIdentityMatrix) {
+		this.manualTaskIdentityMatrix = manualTaskIdentityMatrix;
+	}
 
 	public List<String> getManualForceTaskIdentityList() {
 		if (this.manualForceTaskIdentityList == null) {

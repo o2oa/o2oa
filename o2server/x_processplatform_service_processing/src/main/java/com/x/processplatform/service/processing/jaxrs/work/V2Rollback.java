@@ -114,13 +114,13 @@ class V2Rollback extends BaseAction {
 
 					for (TaskCompleted o : taskCompleteds) {
 						if (BooleanUtils.isTrue(o.getJoinInquire())) {
-							// o.setProcessingType(TaskCompleted.PROCESSINGTYPE_ROLLBACK);
 							emc.remove(o, CheckRemoveType.all);
 						}
 						manualTaskIdentityList.add(o.getIdentity());
 					}
-
-					work.setManualTaskIdentityList(ListTools.trim(manualTaskIdentityList, true, true));
+					work.getProperties()
+							.setManualForceTaskIdentityList(ListTools.trim(manualTaskIdentityList, true, true));
+//					work.setManualTaskIdentityList(ListTools.trim(manualTaskIdentityList, true, true));
 					emc.commit();
 				}
 

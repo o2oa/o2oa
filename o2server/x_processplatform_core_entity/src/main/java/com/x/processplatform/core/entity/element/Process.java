@@ -96,6 +96,20 @@ public class Process extends SliceJpaObject {
 		}
 	}
 
+	public static final String MAINTENANCEIDENTITY_FIELDNAME = "maintenanceIdentity";
+	@FieldDescribe("流程维护身份,如果无法找到处理身份默认的流程处理身份.")
+	@Transient
+	private String maintenanceIdentity;
+
+	public String getMaintenanceIdentity() {
+		return maintenanceIdentity;
+	}
+
+	public void setMaintenanceIdentity(String maintenanceIdentity) {
+		this.maintenanceIdentity = maintenanceIdentity;
+		this.getProperties().setMaintenanceIdentity(maintenanceIdentity);
+	}
+
 	public static final String UPDATETABLEENABLE_FIELDNAME = "updateTableEnable";
 	@FieldDescribe("启用同步到自建表.")
 	@Transient
@@ -202,6 +216,7 @@ public class Process extends SliceJpaObject {
 			this.manualStayScriptText = this.getProperties().getManualStayScriptText();
 			this.updateTableEnable = this.getProperties().getUpdateTableEnable();
 			this.updateTableList = this.getProperties().getUpdateTableList();
+			this.maintenanceIdentity = this.getProperties().getMaintenanceIdentity();
 		}
 	}
 

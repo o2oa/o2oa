@@ -34,6 +34,7 @@ import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.entity.annotation.Flag;
 import com.x.base.core.entity.annotation.IdReference;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.processplatform.ManualTaskIdentityMatrix;
 import com.x.processplatform.core.entity.PersistenceProperties;
 
 @Entity
@@ -107,6 +108,18 @@ public class Manual extends Activity {
 	public void setCustomData(JsonElement customData) {
 		this.customData = customData;
 		this.properties.setCustomData(customData);
+	}
+
+	public ManualTaskIdentityMatrix identitiesToManualTaskIdentityMatrix(List<String> identities) {
+		switch (this.getManualMode()) {
+		case parallel:
+		case queue:
+			return ManualTaskIdentityMatrix.concreteMultiRow(identities);
+		case single:
+		case grab:
+		default:
+			return ManualTaskIdentityMatrix.concreteSingleRow(identities);
+		}
 	}
 
 	@FieldDescribe("分组.")

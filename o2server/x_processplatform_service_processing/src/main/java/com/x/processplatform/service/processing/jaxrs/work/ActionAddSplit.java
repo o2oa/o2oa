@@ -115,7 +115,8 @@ class ActionAddSplit extends BaseAction {
 						workCopy.setSplitToken(arrived.getSplitToken());
 						workCopy.setSplitting(from.getSplitting());
 						workCopy.setSplitValue(splitValue);
-						workCopy.getManualTaskIdentityList().clear();
+						// workCopy.getManualTaskIdentityList().clear();
+						workCopy.getManualTaskIdentityMatrix().clear();
 						workCopy.setBeforeExecuted(false);
 						workCopy.setDestinationActivity(null);
 						workCopy.setDestinationActivityType(null);
