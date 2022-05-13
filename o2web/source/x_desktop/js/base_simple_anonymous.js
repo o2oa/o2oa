@@ -363,9 +363,15 @@ o2.addReady(function () {
                 _openTaskCenter(appNames, options, statusObj);
                 break;
             default:
-                var uri = new URI(window.location.href);
-                var optionsStr = uri.getData("option");
-                var statusStr = uri.getData("status");
+                var optionsStr, statusStr;
+                if( options || statusObj){
+                    optionsStr = encodeURIComponent((options) ? JSON.encode(options) : "")
+                    statusStr = encodeURIComponent((statusObj) ? JSON.encode(statusObj) : "")
+                }else{
+                    var uri = new URI(window.location.href);
+                    optionsStr = uri.getData("option");
+                    statusStr = uri.getData("status");
+                }
                 window.location = o2.filterUrl("../x_desktop/appMobile.html?app=" + appNames + "&option=" + (optionsStr || "") + "&status=" + (statusStr || "") + ((layout.debugger) ? "&debugger" : ""));
         }
     };
