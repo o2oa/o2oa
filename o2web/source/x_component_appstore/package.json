@@ -6,7 +6,8 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "deploy": "vue-cli-service build && vue-cli-service deploy",
-    "o2-deploy": "vue-cli-service build --dest ../../dest/x_component_appstore"
+    "o2-deploy": "vue-cli-service build --dest ../../dest/x_component_appstore",
+    "o2-build": "vue-cli-service build --dest ../../../target/o2server/servers/webServer/x_component_appstore"
   },
   "dependencies": {
     "@o2oa/component": "^1.1.0",
