@@ -3,6 +3,8 @@ package com.x.processplatform.core.express;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -24,8 +26,7 @@ public class ProcessingAttributes extends GsonPropertyObject {
 	public static final String TYPE_ROLLBACK = "rollback";
 	public static final String TYPE_SERVICE = "service";
 	public static final String TYPE_TASKEXTEND = "taskExtend";
-	public static final String TYPE_TASKADDBEFORE = "taskAddBefore";
-	public static final String TYPE_TASKADDAFTER = "taskAddAfter";
+	public static final String TYPE_TASKADD = "taskAdd";
 
 	private Integer loop = 1;
 
@@ -77,17 +78,11 @@ public class ProcessingAttributes extends GsonPropertyObject {
 	}
 
 	public Boolean ifForceJoinAtArrive() {
-		if (this.getForceJoinAtArrive() && loop == 1) {
-			return true;
-		}
-		return false;
+		return BooleanUtils.isTrue(this.getForceJoinAtArrive()) && (loop == 1);
 	}
 
 	public Boolean ifForceJoinAtInquire() {
-		if (this.getForceJoinAtInquire() && loop == 1) {
-			return true;
-		}
-		return false;
+		return BooleanUtils.isTrue(this.getForceJoinAtInquire()) && (loop == 1);
 	}
 
 	public Boolean getForceJoinAtArrive() {

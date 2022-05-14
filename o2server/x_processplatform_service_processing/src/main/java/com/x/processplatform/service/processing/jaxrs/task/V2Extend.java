@@ -86,7 +86,7 @@ class V2Extend extends BaseAction {
 				Work work = emc.find(this.id, Work.class);
 				ManualTaskIdentityMatrix matrix = work.getManualTaskIdentityMatrix();
 				matrix.extend(identity, replace, identities);
-				// work.setManualTaskIdentityMatrix(matrix);
+				work.setManualTaskIdentityMatrix(matrix);
 				emc.check(work, CheckPersistType.all);
 				emc.commit();
 			} catch (Exception e) {

@@ -3,10 +3,12 @@ package com.x.processplatform.core.express.service.processing.jaxrs.task;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 
-  public class V2ExtendWi extends GsonPropertyObject {
+public class V2ExtendWi extends GsonPropertyObject {
 
 	private static final long serialVersionUID = -3293122515327864483L;
 
@@ -16,7 +18,7 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 	@FieldDescribe("是否执行替换")
 	private Boolean replace;
 
-	@FieldDescribe("是否删除")
+	@FieldDescribe("待办标识")
 	private String task;
 
 	public List<String> getIdentityList() {
@@ -28,7 +30,7 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 	}
 
 	public Boolean getReplace() {
-		return replace;
+		return BooleanUtils.isTrue(replace);
 	}
 
 	public void setReplace(Boolean replace) {

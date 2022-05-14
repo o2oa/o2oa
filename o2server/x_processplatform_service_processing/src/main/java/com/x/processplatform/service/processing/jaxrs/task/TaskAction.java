@@ -284,35 +284,17 @@ public class TaskAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "V2_在指定待办位置前新增处理人.", action = V2AddBefore.class)
+	@JaxrsMethodDescribe(value = "V2_在指定待办位置新增处理人.", action = V2Add.class)
 	@POST
-	@Path("v2/add/before")
+	@Path("v2/add")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void v2AddBefore(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void v2Add(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			JsonElement jsonElement) {
-		ActionResult<V2AddBefore.Wo> result = new ActionResult<>();
+		ActionResult<V2Add.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new V2AddBefore().execute(effectivePerson, jsonElement);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
-
-	@JaxrsMethodDescribe(value = "V2_在指定待办位置后新增处理人.", action = V2AddAfter.class)
-	@POST
-	@Path("v2/add/after")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void v2AddAfter(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			JsonElement jsonElement) {
-		ActionResult<V2AddAfter.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new V2AddAfter().execute(effectivePerson, jsonElement);
+			result = new V2Add().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);

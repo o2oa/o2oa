@@ -19,11 +19,11 @@ import com.x.base.core.project.processplatform.ManualTaskIdentityMatrix;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.express.service.processing.jaxrs.task.V2AddBeforeWi;
+import com.x.processplatform.core.express.service.processing.jaxrs.task.V2AddWi;
 
-class V2AddBefore extends BaseAction {
+class V2Add extends BaseAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(V2AddBefore.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(V2Add.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 
@@ -43,9 +43,8 @@ class V2AddBefore extends BaseAction {
 			throw new ExceptionEntityNotExist(task.getWork(), Work.class);
 		}
 
-		return ProcessPlatformExecutorFactory.get(task.getJob())
-				.submit(new CallableImpl(task.getWork(), task.getIdentity(), wi.getReplace(), wi.getIdentityList()))
-				.get(300, TimeUnit.SECONDS);
+		return ProcessPlatformExecutorFactory.get(task.getJob()).submit(new CallableImpl(task.getWork(),
+				task.getIdentity(), wi.getAfter(), wi.getReplace(), wi.getIdentityList())).get(300, TimeUnit.SECONDS);
 
 	}
 
@@ -68,13 +67,16 @@ class V2AddBefore extends BaseAction {
 
 		private String identity;
 
+		private Boolean after;
+
 		private Boolean replace;
 
 		private List<String> identities;
 
-		CallableImpl(String id, String identity, Boolean replace, List<String> identities) {
+		CallableImpl(String id, String identity, Boolean after, Boolean replace, List<String> identities) {
 			this.id = id;
 			this.identity = identity;
+			this.after = after;
 			this.replace = replace;
 			this.identities = identities;
 		}
@@ -85,7 +87,7 @@ class V2AddBefore extends BaseAction {
 				emc.beginTransaction(Work.class);
 				Work work = emc.find(this.id, Work.class);
 				ManualTaskIdentityMatrix matrix = work.getManualTaskIdentityMatrix();
-				matrix.addBefore(identity, replace, identities);
+				matrix.add(identity, after, replace, identities);
 				work.setManualTaskIdentityMatrix(matrix);
 				emc.check(work, CheckPersistType.all);
 				emc.commit();
@@ -101,7 +103,7 @@ class V2AddBefore extends BaseAction {
 
 	}
 
-	public static class Wi extends V2AddBeforeWi {
+	public static class Wi extends V2AddWi {
 
 		private static final long serialVersionUID = -3542693358569393097L;
 

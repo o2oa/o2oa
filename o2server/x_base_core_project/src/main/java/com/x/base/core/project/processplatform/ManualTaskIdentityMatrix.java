@@ -49,7 +49,7 @@ public class ManualTaskIdentityMatrix extends GsonPropertyObject {
 	public ManualTaskIdentityMatrix extend(String identity, boolean replace, List<String> list) {
 		for (Row row : matrix) {
 			int idx = row.indexOf(identity);
-			if (idx > 0) {
+			if (idx > -1) {
 				row.addAll(idx + 1, list);
 				if (replace) {
 					row.remove(idx);
