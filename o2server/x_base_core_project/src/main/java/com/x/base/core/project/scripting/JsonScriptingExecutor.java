@@ -47,17 +47,21 @@ public class JsonScriptingExecutor {
 	public static JsonElement jsonElement(CompiledScript cs, ScriptContext scriptContext) {
 		Objects.requireNonNull(cs);
 		Objects.requireNonNull(scriptContext);
-		JsonElement jsonElement = JsonNull.INSTANCE;
 		try {
 			Object o = cs.eval(scriptContext);
-			JsonElement value = XGsonBuilder.instance().fromJson(gson.toJson(o), JsonElement.class);
-			if (null != value) {
-				jsonElement = value;
+			if (null != o) {
+				// 脚本 return "123" 返回 \"123\", 如果都使用gson.toJson
+				JsonElement value = (o.getClass().isAssignableFrom(String.class))
+						? XGsonBuilder.instance().fromJson(o.toString(), JsonElement.class)
+						: XGsonBuilder.instance().fromJson(gson.toJson(o), JsonElement.class);
+				if (null != value) {
+					return value;
+				}
 			}
 		} catch (ScriptException e) {
 			LOGGER.error(e);
 		}
-		return jsonElement;
+		return JsonNull.INSTANCE;
 	}
 
 	public static void jsonElement(CompiledScript cs, ScriptContext scriptContext, Consumer<JsonElement> consumer) {
