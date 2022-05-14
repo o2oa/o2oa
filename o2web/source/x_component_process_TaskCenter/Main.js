@@ -96,7 +96,7 @@ MWF.xApplication.process.TaskCenter.Main = new Class({
             }
         });
         this.close();
-        if (layout.inBrowser && (o2.thridparty.isDingdingPC() || o2.thridparty.isQywxPC())) {
+        if (layout.inBrowser && (o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC())) {
             var centerUrl = o2.filterUrl("../x_desktop/app.html?app=process.workcenter");
             history.replaceState(null, "work", centerUrl);
             centerUrl.toURI().go();
@@ -1151,7 +1151,7 @@ MWF.xApplication.process.TaskCenter.Process = new Class({
         }.bind(this));
 
         if (currentTask.length===1){
-            if (layout.inBrowser && (o2.thridparty.isDingdingPC() || o2.thridparty.isQywxPC())) {
+            if (layout.inBrowser && (o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC())) {
                 var url = "../x_desktop/work.html?workid=" + currentTask[0];
                 window.location = o2.filterUrl(url);
             } else {

@@ -1,11 +1,19 @@
 package com.x.cms.assemble.control.jaxrs.document;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.config.StorageMapping;
+import com.x.base.core.project.exception.ExceptionWhen;
+import com.x.processplatform.core.entity.content.Attachment;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -49,7 +57,7 @@ public class ActionPersistSaveDocument extends BaseAction {
 		try {
 			wi = this.convertToWrapIn( jsonElement, Wi.class );
 			document = Wi.copier.copy(wi);
-			document.setId( wi.getId() ); //继承传入的ID
+			document.setId( wi.getId() );
 			identity = wi.getIdentity();
 		} catch (Exception e ) {
 			check = false;
@@ -59,7 +67,7 @@ public class ActionPersistSaveDocument extends BaseAction {
 		}
 
 		if (check) {
-			if( !"xadmin".equals( effectivePerson.getDistinguishedName() )) {
+			if( StringUtils.isBlank(identity)) {
 				try {
 					identity = userManagerService.getPersonIdentity( effectivePerson.getDistinguishedName(), identity );
 				} catch (Exception e) {
@@ -298,6 +306,48 @@ public class ActionPersistSaveDocument extends BaseAction {
 			}
 		}
 
+		//从流程管理中复制所有的附件到CMS
+		if (check) {
+			if ( wi.getWf_attachmentIds() != null && wi.getWf_attachmentIds().length > 0 ) {
+				FileInfo fileInfo = null;
+				Attachment attachment = null;
+				StorageMapping mapping_attachment = null;
+				StorageMapping mapping_fileInfo = null;
+				InputStream input = null;
+				byte[] attachment_content = null;
+				for (String attachmentId : wi.getWf_attachmentIds()) {
+					try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+						document = emc.find(document.getId(), Document.class, ExceptionWhen.not_found);
+						attachment = emc.find(attachmentId, Attachment.class, ExceptionWhen.not_found);
+						if (attachment != null) {
+							emc.beginTransaction(FileInfo.class);
+							emc.beginTransaction(Document.class);
+
+							mapping_attachment = ThisApplication.context().storageMappings().get(Attachment.class, attachment.getStorage());
+							attachment_content = attachment.readContent(mapping_attachment);
+
+							mapping_fileInfo = ThisApplication.context().storageMappings().random(FileInfo.class);
+							fileInfo = concreteFileInfo(effectivePerson.getDistinguishedName(), document, mapping_fileInfo, attachment.getName(), attachment.getSite());
+							input = new ByteArrayInputStream(attachment_content);
+							fileInfo.saveContent(mapping_fileInfo, input, attachment.getName());
+							fileInfo.setName(attachment.getName());
+							emc.check(document, CheckPersistType.all);
+							emc.persist(fileInfo, CheckPersistType.all);
+
+							emc.commit();
+						}
+					} catch (Throwable th) {
+						th.printStackTrace();
+						result.error(th);
+					} finally {
+						if (input != null) {
+							input.close();
+						}
+					}
+				}
+			}
+		}
+
 		if (check) {
 			// 检查是否有需要新添加的云图片信息
 			if (wi.getCloudPictures() != null && !wi.getCloudPictures().isEmpty()) {
@@ -339,6 +389,39 @@ public class ActionPersistSaveDocument extends BaseAction {
 			}
 		}
 		return result;
+	}
+
+	private FileInfo concreteFileInfo(String person, Document document, StorageMapping storage, String name, String site) throws Exception {
+		String fileName = UUID.randomUUID().toString();
+		String extension = FilenameUtils.getExtension(name);
+		FileInfo attachment = new FileInfo();
+		if (StringUtils.isEmpty(extension)) {
+			throw new Exception("file extension is empty.");
+		} else {
+			fileName = fileName + "." + extension;
+		}
+		if (name.indexOf("\\") > 0) {
+			name = StringUtils.substringAfterLast(name, "\\");
+		}
+		if (name.indexOf("/") > 0) {
+			name = StringUtils.substringAfterLast(name, "/");
+		}
+		attachment.setCreateTime(new Date());
+		attachment.setLastUpdateTime(new Date());
+		attachment.setExtension(extension);
+		attachment.setName(name);
+		attachment.setFileName(fileName);
+		attachment.setStorage(storage.getName());
+		attachment.setAppId(document.getAppId());
+		attachment.setCategoryId(document.getCategoryId());
+		attachment.setDocumentId(document.getId());
+		attachment.setCreatorUid(person);
+		attachment.setSite(site);
+		attachment.setFileHost("");
+		attachment.setFilePath("");
+		attachment.setFileType("ATTACHMENT");
+
+		return attachment;
 	}
 
 	public static class Wi{

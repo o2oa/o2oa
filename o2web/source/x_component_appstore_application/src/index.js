@@ -13,11 +13,11 @@ loadComponent('appstore.application', (content, cb)=>{
     //     </React.StrictMode>
     // );
     component.recordStatus = function(){
-        return {"appid": this.options.appid,"appname":this.options.appname};
+        return {"appId": this.options.appId,"appName":this.options.appName};
     }
     if (component.status) {
-        component.options.appid = component.status.appid;
-        component.options.appname = component.status.appname;
+        component.options.appId = component.status.appId;
+        component.options.appName = component.status.appName;
     }
     ReactDOM.render(
         <React.StrictMode>

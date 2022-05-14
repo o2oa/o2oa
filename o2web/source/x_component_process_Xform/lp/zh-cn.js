@@ -375,6 +375,16 @@ MWF.xApplication.process.Xform.LP = {
     "inputSendReviewPeople": "请选择阅读人",
     "sendReviewPeopleCanNotEmpty": "阅读人不能为空",
 
-    "applicationNotFound": "未找到应用"
+    "applicationNotFound": "未找到应用",
+
+    "pdfview" : {
+        "nofile" : "暂无文件，请上传",
+        "upload" : "上传"
+    },
+    "ofdview" : {
+        "nofile" : "暂无文件，请上传",
+        "upload" : "上传"
+    }
+
 };
 MWF.xApplication.process.Xform["lp."+o2.language] = MWF.xApplication.process.Xform.LP;

@@ -7,48 +7,30 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         "allowPreviewExtension" : ["zip","pdf", "ofd", "png", "jpg", "bmp", "jpeg", "gif", "js", "css", "java", "json", "xml", "php", "html", "htm", "xhtml", "log", "md", "txt"],
         "checkTextEnable": true
     },
+
+    checkAttControl: function(att, currentUser){
+        var attUser = att.data.person || att.data.creatorUid;
+        switch (this.options.isDeleteOption){
+            case "o":
+                return attUser===currentUser;
+            case "a":
+                return att.data.activity===this.module.form.businessData.activity.id;
+            case "ao":
+                return (attUser===currentUser || att.data.activity===this.module.form.businessData.activity.id);
+            default:
+                return true;
+        }
+
+    },
     checkAttachmentDeleteAction: function () {
-        if (this.options.readonly) {
+        if (this.options.readonly || this.options.isDeleteOption==="n" || !this.attachments.length) {
             this.setAttachmentsAction("delete", false);
             return false;
         }
-        if (this.options.isDeleteOption !== "n") {
-            if (this.attachments.length) {
-                var user = layout.session.user.distinguishedName;
-
-                for (var i = 0; i < this.attachments.length; i++) {
-                    var flag = true;
-                    var att = this.attachments[i];
-                    if (!att.data.person && att.data.creatorUid) att.data.person = att.data.creatorUid;
-                    if (this.options.isDeleteOption === "o") {
-
-                        if (!att.data.control.allowEdit && att.data.person !== user) flag = false;
-                        if (att.data.person !== layout.desktop.session.user.distinguishedName) flag = false;
-
-                    } else if (this.options.isDeleteOption === "a") {
-
-                        if (!att.data.control.allowEdit && att.data.person !== user) flag = false;
-                        if (att.data.activity !== this.module.form.businessData.activity.id) flag = false;
-
-                    } else if (this.options.isDeleteOption === "ao") {
-
-                        if (!att.data.control.allowEdit && att.data.person !== user) flag = false;
-                        if ((att.data.activity !== this.module.form.businessData.activity.id) || (att.data.person !== layout.desktop.session.user.distinguishedName)) flag = false;
-
-                    } else {
-                        if (!att.data.control.allowEdit && att.data.person !== user) flag = false;
-                    }
-
-                    if (flag) {
-                        this.setAttachmentAction(att, "delete", true);
-                    } else {
-                        this.setAttachmentAction(att, "delete", false);
-                    }
-                }
-            }
-
-        } else {
-            this.setAttachmentsAction("delete", false);
+        var currentUser = layout.session.user.distinguishedName;
+        for (var i = 0; i < this.attachments.length; i++) {
+            var att = this.attachments[i];
+            this.setAttachmentAction(att, "delete", (att.data.control.allowEdit && this.checkAttControl(att, currentUser)));
         }
     },
     checkDeleteAction: function () {
@@ -460,27 +442,15 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
     },
 
     checkAttachmentConfigAction: function () {
-        if (this.options.readonly) {
+        if (this.options.readonly || !this.attachments.length) {
             this.setAttachmentsAction("config", false);
             return false;
         }
-        if (this.attachments.length) {
-            var user = layout.session.user.distinguishedName;
-            for (var i = 0; i < this.attachments.length; i++) {
-                var flag = true;
-
-                var att = this.attachments[i];
-                if (!att.data.person && att.data.creatorUid) att.data.person = att.data.creatorUid;
-
-                if ((!att.data.control.allowControl) && att.data.person !== user) { // || !att.data.control.allowEdit
-                    flag = false;
-                }
-                if (flag) {
-                    this.setAttachmentAction(att, "config", true);
-                } else {
-                    this.setAttachmentAction(att, "config", false);
-                }
-            }
+        var currentUser = layout.session.user.distinguishedName;
+        for (var i = 0; i < this.attachments.length; i++) {
+            var att = this.attachments[i];
+            var attUser = att.data.person || att.data.creatorUid;
+            this.setAttachmentAction(att, "config", att.data.control.allowControl && attUser===currentUser);
         }
     },
     checkConfigAction: function () {
@@ -1668,22 +1638,14 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                         url: '../file/download?attId=' + att.data.id + '&type=work&work=' + this.form.businessData.work.id
                     });
                 } else {
-                    if (layout.mobile) {
+                    if (layout.mobile || o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC()) {
                         //移动端 企业微信 钉钉 用本地打开 防止弹出自带浏览器 无权限问题
                         this.form.workAction.getAttachmentUrl(att.data.id, this.form.businessData.work.id, function (url) {
                             var xtoken = Cookie.read(o2.tokenName);
                             window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
                         });
                     } else {
-                        if ((o2.thridparty.isDingdingPC() || o2.thridparty.isQywxPC())) {
-                            this.form.workAction.getAttachmentUrl(att.data.id, this.form.businessData.work.id, function (url) {
-                                var xtoken = Cookie.read(o2.tokenName);
-                                window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
-                            });
-                        } else {
-                            this.form.workAction.getAttachmentStream(att.data.id, this.form.businessData.work.id);
-                        }
-                        
+                        this.form.workAction.getAttachmentStream(att.data.id, this.form.businessData.work.id);
                     }
                 }
                 this.fireEvent("download",[att])
@@ -1700,97 +1662,89 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                         url: '../file/download?attId=' + att.data.id + '&type=work&workCompleted=' + this.form.businessData.workCompleted.id
                     });
                 } else {
-                    if (layout.mobile) {
+                    if (layout.mobile || o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC()) {
                         //移动端 企业微信 钉钉 用本地打开 防止弹出自带浏览器 无权限问题
                         this.form.workAction.getAttachmentWorkcompletedUrl(att.data.id, this.form.businessData.workCompleted.id, function (url) {
                             var xtoken = Cookie.read(o2.tokenName);
                             window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
                         });
                     } else {
-                        if ((o2.thridparty.isDingdingPC() || o2.thridparty.isQywxPC())) {
-                            this.form.workAction.getAttachmentWorkcompletedUrl(att.data.id, this.form.businessData.workCompleted.id, function (url) {
-                                var xtoken = Cookie.read(o2.tokenName);
-                                window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
-                            });
-                        } else {
-                            this.form.workAction.getWorkcompletedAttachmentStream(att.data.id, this.form.businessData.workCompleted.id);
-                        }
-                        
+                        this.form.workAction.getWorkcompletedAttachmentStream(att.data.id, this.form.businessData.workCompleted.id);
                     }
                 }
                 this.fireEvent("download",[att])
             }.bind(this));
         }
     },
-    openAttachment: function (e, node, attachments) {
-        if (this.form.businessData.work && !this.form.businessData.work.completedTime) {
-            attachments.each(function (att) {
-                if( !this.queryOpen( att ) )return;
-                if (window.o2android && window.o2android.downloadAttachment) {
-                    window.o2android.downloadAttachment(att.data.id);
-                } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment) {
-                    window.webkit.messageHandlers.downloadAttachment.postMessage({ "id": att.data.id, "site": (this.json.site || this.json.id) });
-                } else if (window.wx && window.__wxjs_environment === 'miniprogram' && this.checkMiniProgramFile(att.data.extension)) { //微信小程序
-                    wx.miniProgram.navigateTo({
-                        url: '../file/download?attId=' + att.data.id + '&type=work&work=' + this.form.businessData.work.id
-                    });
-                } else {
-                    if (layout.mobile) {
-                        //移动端 企业微信 钉钉 用本地打开 防止弹出自带浏览器 无权限问题
-                        this.form.workAction.getAttachmentUrl(att.data.id, this.form.businessData.work.id, function (url) {
-                            var xtoken = Cookie.read(o2.tokenName);
-                            window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
-                        });
-                    } else {
-                        // 钉钉客户端
-                        if ((o2.thridparty.isDingdingPC() || o2.thridparty.isQywxPC())) {
-                            this.form.workAction.getAttachmentUrl(att.data.id, this.form.businessData.work.id, function (url) {
-                                var xtoken = Cookie.read(o2.tokenName);
-                                window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
-                            });
-                        } else {
-                            this.form.workAction.getAttachmentData(att.data.id, this.form.businessData.work.id);
-                        }
-                    }
-
-                }
-                this.fireEvent("open",[att])
-            }.bind(this));
-        } else {
-            attachments.each(function (att) {
-                if( !this.queryOpen( att ) )return;
-                if (window.o2android && window.o2android.downloadAttachment) {
-                    window.o2android.downloadAttachment(att.data.id);
-                } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment) {
-                    window.webkit.messageHandlers.downloadAttachment.postMessage({ "id": att.data.id, "site": (this.json.site || this.json.id) });
-                } else if (window.wx && window.__wxjs_environment === 'miniprogram' && this.checkMiniProgramFile(att.data.extension)) { //微信小程序
-                    wx.miniProgram.navigateTo({
-                        url: '../file/download?attId=' + att.data.id + '&type=work&workCompleted=' + this.form.businessData.workCompleted.id
-                    });
-                } else {
-
-                    if (layout.mobile) {
-                        //移动端 企业微信 钉钉 用本地打开 防止弹出自带浏览器 无权限问题
-                        this.form.workAction.getAttachmentWorkcompletedUrl(att.data.id, ((this.form.businessData.workCompleted) ? this.form.businessData.workCompleted.id : this.form.businessData.work.id), function (url) {
-                            var xtoken = Cookie.read(o2.tokenName);
-                            window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
-                        });
-                    } else {
-                        // 钉钉客户端
-                        if ((o2.thridparty.isDingdingPC() || o2.thridparty.isQywxPC())) {
-                            this.form.workAction.getAttachmentWorkcompletedUrl(att.data.id, ((this.form.businessData.workCompleted) ? this.form.businessData.workCompleted.id : this.form.businessData.work.id), function (url) {
-                                var xtoken = Cookie.read(o2.tokenName);
-                                window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
-                            });
-                        }else {
-                            this.form.workAction.getWorkcompletedAttachmentData(att.data.id, ((this.form.businessData.workCompleted) ? this.form.businessData.workCompleted.id : this.form.businessData.work.id));
-                        }
-                    }
-                }
-                this.fireEvent("open",[att])
-            }.bind(this));
+    getClientType(){
+        if (window.o2android && window.o2android.downloadAttachment){
+            return "android";
         }
-        //this.downloadAttachment(e, node, attachment);
+        if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment){
+            return "ios";
+        }
+        if (window.wx && window.__wxjs_environment === 'miniprogram' && this.checkMiniProgramFile(att.data.extension)){
+            return "wx";
+        }
+        if (layout.mobile){
+            return "mobile";
+        }
+        if (o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC()){
+            return "pcClient";
+        }
+        return "pc";
+    },
+    openAttachment: function (e, node, attachments) {
+        var data = this.form.businessData;
+        var isWorkCompleted = data.work && data.work.completedTime;
+
+        var workId = data.work.id;
+        var actionUrl = "getAttachmentUrl";
+        var actionData = "getAttachmentData";
+        var urlWorkKey = "work";
+
+        if (isWorkCompleted){
+            workId = (data.workCompleted) ? data.workCompleted.id : workId;
+            actionUrl = "getAttachmentWorkcompletedUrl";
+            actionData = "getWorkcompletedAttachmentData";
+            urlWorkKey = "workCompleted";
+        }
+
+        var client = this.getClientType();
+
+        attachments.each(function (att) {
+            if( !this.queryOpen( att ) )return;
+
+            switch (client){
+                case "android":
+                    window.o2android.downloadAttachment(att.data.id);
+                    break;
+                case "ios":
+                    window.webkit.messageHandlers.downloadAttachment.postMessage({ "id": att.data.id, "site": (this.json.site || this.json.id) });
+                    break;
+                case "wx":
+                    wx.miniProgram.navigateTo({
+                        url: '../file/download?attId=' + att.data.id + '&type=work&'+urlWorkKey+'=' + this.form.businessData.work.id
+                    });
+                    break;
+                case "mobile":
+                    this.form.workAction[actionUrl](att.data.id, workId, function (url) {
+                        var xtoken = Cookie.read(o2.tokenName);
+                        window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
+                    });
+                    break;
+                case "pcClient":
+                    this.form.workAction[actionUrl](att.data.id, workId, function (url) {
+                        var xtoken = Cookie.read(o2.tokenName);
+                        window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
+                    });
+                    break;
+                default:
+                    this.form.workAction[actionData](att.data.id, workId);
+            }
+            this.fireEvent("open",[att]);
+        }.bind(this));
+
     },
     getAttachmentUrl: function (attachment, callback) {
         if (this.form.businessData.work && !this.form.businessData.work.completedTime) {
