@@ -92,7 +92,7 @@ public class ScriptingFactory {
 		sb.append(Objects.toString(text, "")).append(System.lineSeparator());
 		sb.append("}.apply(this));").append(System.lineSeparator());
 		sb.append(
-				"(o && (o !== false) && o.getClass && (typeof o == 'object')) ? Java.type('com.x.base.core.project.gson.XGsonBuilder').toJson(o) : JSON.stringify(o);");
+				"(o && (o !== false) && o.getClass && (typeof o == 'object')) ? Java.type('com.x.base.core.project.gson.XGsonBuilder').toJson(o) : JSON.stringify(toJsJson(o));");
 		return sb.toString();
 	}
 
