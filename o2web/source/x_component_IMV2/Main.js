@@ -615,10 +615,11 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 							"click": function(e) {
 								var thisWork = e.target.retrieve("work");
 								if (thisWork) {
-									var opotions = {
-										"workId": thisWork.id,
-									}
-									layout.openApplication(null, "process.Work", opotions);
+									// var opotions = {
+									// 	"workId": thisWork.id,
+									// }
+									// layout.openApplication(null, "process.Work", opotions);
+									o2.api.form.openWork(thisWork.id, "", thisWork.title || "" );
 								}
 								this.closeProcessWorkDialog();
 								e.preventDefault();
@@ -643,10 +644,11 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 							"click": function(e) {
 								var thisWork = e.target.retrieve("work");
 								if (thisWork) {
-									var opotions = {
-										"workCompletedId": thisWork.id,
-									}
-									layout.openApplication(null, "process.Work", opotions);
+									// var opotions = {
+									// 	"workCompletedId": thisWork.id,
+									// }
+									// layout.openApplication(null, "process.Work", opotions);
+									o2.api.form.openWork(thisWork.id, "", thisWork.title || "" );
 								}
 								this.closeProcessWorkDialog();
 								e.preventDefault();
@@ -1050,7 +1052,8 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 			new Element("div", { "class": "chat-card-bottom-name", "text": msgBody.applicationName }).inject(cardFooter);
 			cardNode.addEvents({
 				"click": function() {
-					layout.openApplication(null, "process.Work", {"workId": msgBody.work});
+					// layout.openApplication(null, "process.Work", {"workId": msgBody.work});
+					o2.api.form.openWork(msgBody.work, "", title || "" );
 				}
 			});
 		} else if (msgBody.type == "cms") {
@@ -1153,7 +1156,8 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 			new Element("div", { "class": "chat-card-bottom-name", "text": msgBody.applicationName }).inject(cardFooter);
 			cardNode.addEvents({
 				"click": function() {
-					layout.openApplication(null, "process.Work", {"workId": msgBody.work});
+					// layout.openApplication(null, "process.Work", {"workId": msgBody.work});
+					o2.api.form.openWork(msgBody.work, "", title || "" );
 				}
 			});
 		} else if (msgBody.type == "cms") {
