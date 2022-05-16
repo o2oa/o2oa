@@ -1654,9 +1654,11 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                     window.webkit.messageHandlers.downloadAttachment.postMessage({ "id": att.data.id, "site": (this.json.site || this.json.id) });
                     break;
                 case "wx":
-                    wx.miniProgram.navigateTo({
-                        url: '../file/download?attId=' + att.data.id + '&type=work&'+urlWorkKey+'=' + workId
-                    });
+                    if(this.checkMiniProgramFile(att.data.extension)) {
+                        wx.miniProgram.navigateTo({
+                            url: '../file/download?attId=' + att.data.id + '&type=work&'+urlWorkKey+'=' + workId
+                        });
+                    }
                     break;
                 case "mobile":
                     this.form.workAction[actionUrl](att.data.id, workId, function (url) {
@@ -1684,7 +1686,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment){
             return "ios";
         }
-        if (window.wx && window.__wxjs_environment === 'miniprogram' && this.checkMiniProgramFile(att.data.extension)){
+        if (window.wx && window.__wxjs_environment === 'miniprogram'){
             return "wx";
         }
         if (layout.mobile){
@@ -1724,9 +1726,11 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                     window.webkit.messageHandlers.downloadAttachment.postMessage({ "id": att.data.id, "site": (this.json.site || this.json.id) });
                     break;
                 case "wx":
-                    wx.miniProgram.navigateTo({
-                        url: '../file/download?attId=' + att.data.id + '&type=work&'+urlWorkKey+'=' + workId
-                    });
+                    if(this.checkMiniProgramFile(att.data.extension)) {
+                        wx.miniProgram.navigateTo({
+                            url: '../file/download?attId=' + att.data.id + '&type=work&'+urlWorkKey+'=' + workId
+                        });
+                    }
                     break;
                 case "mobile":
                     this.form.workAction[actionUrl](att.data.id, workId, function (url) {
