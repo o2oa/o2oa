@@ -1358,8 +1358,11 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
                                 if( (/(^[1-9]\d*$)/.test(p)) )p = p.toInt();
                                 if( obj[ p ] ){
                                     obj = obj[ p ];
-                                }else{
+                                }else if(obj[p] === undefined || obj[p] === null) {
                                     obj = "";
+                                    break;
+                                } else {
+                                    obj = obj[p];
                                     break;
                                 }
                             }
