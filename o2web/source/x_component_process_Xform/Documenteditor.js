@@ -265,26 +265,11 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         control.meetingLeave = this._getShow("meetingLeave", "meetingLeaveShow", "meetingLeaveShowScript");
         control.meetingSit = this._getShow("meetingSit", "meetingSitShow", "meetingSitShowScript");
         control.meetingRecord = this._getShow("meetingRecord", "meetingRecordShow", "meetingRecordShowScript");
+
+        this.json.fileup =  !!(control.signer);
         return control;
     },
-    // _getEdit: function(name, typeItem, scriptItem){
-    //     switch (this.json[typeItem]) {
-    //         case "y":
-    //             return true;
-    //         case "n":
-    //             return false;
-    //         // case "a":
-    //         //     if (["copies", "secret", "priority", "attachment", "annotation", "copyto"].indexOf(name!=-1)){
-    //         //         return !!this.data[name] && (!!this.data[name].length);
-    //         //     }
-    //         //     return true;
-    //         case "s":
-    //             if (this.json[scriptItem] && this.json[scriptItem].code){
-    //                 return !!this.form.Macro.exec(this.json[scriptItem].code, this);
-    //             }
-    //             return true;
-    //     }
-    // },
+
     getEditControl: function(){
         var control = {};
         control.copies = this._getEdit("copies", "copiesEdit", "copiesEditScript");
@@ -764,6 +749,12 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
         if (this.layout_fileNoUpTable) this.layout_fileNoUpTable[m("signer")]();
         if (this.layout_filenoArea) this.layout_filenoArea[(!control.signer) ? "show" : "hide"]();
 
+        if (this.json.fileup){
+            this._loadFileNoUp();
+        }else{
+            this._loadFileNo();
+        }
+        if (this.layout_fileno) this.layout_fileno.set("text", this.data.fileno || " ");
 
         if (this.layout_signerTitle) this.layout_signerTitle[m("signer")]();
         if (this.layout_signer) this.layout_signer[m("signer")]();
@@ -2979,7 +2970,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                         case "editionDate":
                             var d = new Date(v);
 
-                            if (d.isValid() && d.getFullYear()!=1970){
+                            if (d && d.isValid() && d.getFullYear()!=1970){
                                 var y = d.getFullYear();
                                 var m = d.getMonth();
                                 var day = d.getDate();
@@ -3029,7 +3020,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                         case "editionDate":
                             var tmpStrs = strs.map(function(n, i){
                                 var d = Date.parse(n);
-                                if (d.isValid() && d.getFullYear()!=1970){
+                                if (d && d.isValid() && d.getFullYear()!=1970){
                                     var y = d.getFullYear();
                                     var m = d.getMonth();
                                     var day = d.getDate();
@@ -3124,7 +3115,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                     }
                     if (name=="issuanceDate" || name=="editionDate"){
                         var d = Date.parse(v);
-                        if (d.isValid() && d.getFullYear()!=1970){
+                        if (d && d.isValid() && d.getFullYear()!=1970){
                             var y = d.getFullYear();
                             var m = d.getMonth();
                             var day = d.getDate();
