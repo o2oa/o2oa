@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
@@ -20,6 +21,7 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.V2AddWi;
+import com.x.processplatform.service.processing.Business;
 
 class V2Add extends BaseAction {
 
@@ -33,14 +35,17 @@ class V2Add extends BaseAction {
 			LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 		}
 
-		Task task = getTask(wi.getTask());
+		Task task = null;
 
-		if (null == task) {
-			throw new ExceptionEntityNotExist(wi.getTask(), Task.class);
-		}
-
-		if (null == this.getWork(task.getWork())) {
-			throw new ExceptionEntityNotExist(task.getWork(), Work.class);
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Business business = new Business(emc);
+			task = getTask(business, wi.getTask());
+			if (null == task) {
+				throw new ExceptionEntityNotExist(wi.getTask(), Task.class);
+			}
+			if (!this.checkWorkExist(business, task.getWork())) {
+				throw new ExceptionEntityNotExist(task.getWork(), Work.class);
+			}
 		}
 
 		return ProcessPlatformExecutorFactory.get(task.getJob()).submit(new CallableImpl(task.getWork(),
@@ -48,17 +53,13 @@ class V2Add extends BaseAction {
 
 	}
 
-	private Task getTask(String id) throws Exception {
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			return emc.fetch(id, Task.class,
-					ListTools.toList(Task.job_FIELDNAME, Task.identity_FIELDNAME, Task.work_FIELDNAME));
-		}
+	private Task getTask(Business business, String id) throws Exception {
+		return business.entityManagerContainer().fetch(id, Task.class,
+				ListTools.toList(Task.job_FIELDNAME, Task.identity_FIELDNAME, Task.work_FIELDNAME));
 	}
 
-	private Work getWork(String id) throws Exception {
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			return emc.fetch(id, Work.class, ListTools.toList());
-		}
+	private boolean checkWorkExist(Business business, String id) throws Exception {
+		return business.entityManagerContainer().countEqual(Work.class, JpaObject.id_FIELDNAME, id) > 0;
 	}
 
 	private class CallableImpl implements Callable<ActionResult<Wo>> {
@@ -105,13 +106,13 @@ class V2Add extends BaseAction {
 
 	public static class Wi extends V2AddWi {
 
-		private static final long serialVersionUID = -3542693358569393097L;
+		private static final long serialVersionUID = 7870902860170655791L;
 
 	}
 
 	public static class Wo extends WrapBoolean {
 
-		private static final long serialVersionUID = 6457473592503074552L;
+		private static final long serialVersionUID = -8882214104176786739L;
 
 	}
 

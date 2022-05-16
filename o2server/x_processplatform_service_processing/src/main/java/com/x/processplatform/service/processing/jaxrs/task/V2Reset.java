@@ -4,9 +4,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.lang3.BooleanUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -18,11 +15,10 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.processplatform.ManualTaskIdentityMatrix;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.element.ActivityType;
-import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.V2ResetWi;
 import com.x.processplatform.service.processing.Business;
 
@@ -36,17 +32,40 @@ class V2Reset extends BaseAction {
 
 		final Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 
-		final String job;
+		Task task = null;
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Task task = emc.fetch(id, Task.class, ListTools.toList(Task.job_FIELDNAME));
+			task = emc.fetch(id, Task.class, ListTools.toList(Task.job_FIELDNAME));
 			if (null == task) {
 				throw new ExceptionEntityNotExist(id, Task.class);
 			}
-			job = task.getJob();
 		}
 
-		Callable<ActionResult<Wo>> callable = () -> {
+		return ProcessPlatformExecutorFactory.get(task.getJob()).submit(new CallableImpl(task.getId(),
+				wi.getAddBeforeList(), wi.getExtendList(), wi.getAddAfterList(), wi.getRemove()))
+				.get(300, TimeUnit.SECONDS);
+
+	}
+
+	private class CallableImpl implements Callable<ActionResult<Wo>> {
+
+		private String id;
+		private List<String> addBeforeIdentities;
+		private List<String> extendIdentities;
+		private List<String> addAfterIdentities;
+		private boolean remove;
+
+		private CallableImpl(String id, List<String> addBeforeIdentities, List<String> extendIdentities,
+				List<String> addAfterIdentities, boolean remove) {
+			this.id = id;
+			this.addBeforeIdentities = addBeforeIdentities;
+			this.extendIdentities = extendIdentities;
+			this.addAfterIdentities = addAfterIdentities;
+			this.remove = remove;
+		}
+
+		@Override
+		public ActionResult<Wo> call() throws Exception {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
 				Task task = emc.find(id, Task.class);
@@ -58,35 +77,17 @@ class V2Reset extends BaseAction {
 					throw new ExceptionEntityNotExist(task.getWork(), Work.class);
 				}
 
-				Manual manual = (Manual) business.element().get(work.getActivity(), ActivityType.manual);
-
-				if (null == manual) {
-					throw new ExceptionEntityNotExist(work.getActivity(), Manual.class);
-				}
-
-				/* 检查reset人员 */
-				List<String> identites = ListTools.trim(business.organization().identity().list(wi.getIdentityList()),
+				this.addBeforeIdentities = ListTools.trim(business.organization().identity().list(addBeforeIdentities),
+						true, true);
+				this.extendIdentities = ListTools.trim(business.organization().identity().list(extendIdentities), true,
+						true);
+				this.addAfterIdentities = ListTools.trim(business.organization().identity().list(addAfterIdentities),
 						true, true);
 
-				if (identites.isEmpty()) {
-					throw new ExceptionResetEmpty();
-				}
-
 				emc.beginTransaction(Work.class);
-				List<String> os = ListTools.trim(work.getManualTaskIdentityMatrix().flat(), true, true);
-
-				os = ListUtils.sum(os, identites);
-				/* 在新增待办人员中删除当前的处理人 */
-				if (BooleanUtils.isNotTrue(wi.getKeep())) {
-					os = ListUtils.subtract(os, ListTools.toList(task.getIdentity()));
-				}
-
-				if (ListTools.isEmpty(os)) {
-					throw new ExceptionResetEmpty();
-				}
-				work.setManualTaskIdentityMatrix(
-						manual.identitiesToManualTaskIdentityMatrix(ListTools.trim(os, true, true)));
-				// work.setManualTaskIdentityList(ListTools.trim(os, true, true));
+				ManualTaskIdentityMatrix matrix = work.getManualTaskIdentityMatrix();
+				matrix.reset(task.getIdentity(), addBeforeIdentities, extendIdentities, addAfterIdentities, remove);
+				work.setManualTaskIdentityMatrix(matrix);
 				emc.check(work, CheckPersistType.all);
 				emc.commit();
 
@@ -96,9 +97,7 @@ class V2Reset extends BaseAction {
 			ActionResult<Wo> result = new ActionResult<>();
 			result.setData(wo);
 			return result;
-		};
-
-		return ProcessPlatformExecutorFactory.get(job).submit(callable).get(300, TimeUnit.SECONDS);
+		}
 
 	}
 

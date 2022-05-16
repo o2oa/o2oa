@@ -94,6 +94,46 @@ public class ManualTaskIdentityMatrix extends GsonPropertyObject {
 		return this.add(identity, after, replace, Arrays.asList(arr));
 	}
 
+	public ManualTaskIdentityMatrix reset(String identity, List<String> addBeforeIdentities,
+			List<String> extendIdentities, List<String> addAfterIdentities, boolean remove) {
+		int rowpos = 0;
+		int colpos = -1;
+		for (Row row : matrix) {
+			colpos = row.indexOf(identity);
+			if (colpos > -1) {
+				break;
+			} else {
+				rowpos++;
+			}
+		}
+		if (colpos > -1) {
+			resetUpdate(rowpos, colpos, addBeforeIdentities, extendIdentities, addAfterIdentities);
+		}
+		return this;
+	}
+
+	private void resetUpdate(int rowpos, int colpos, List<String> addBeforeIdentities, List<String> extendIdentities,
+			List<String> addAfterIdentities) {
+		if ((null != addBeforeIdentities) && (!addBeforeIdentities.isEmpty())) {
+			for (String str : addBeforeIdentities) {
+				Row row = new Row();
+				row.add(str);
+				matrix.add(rowpos++, row);
+			}
+		}
+		if ((null != extendIdentities) && (!extendIdentities.isEmpty())) {
+			matrix.get(rowpos).addAll(colpos, extendIdentities);
+		}
+		if ((null != addAfterIdentities) && (!addAfterIdentities.isEmpty())) {
+			for (String str : addAfterIdentities) {
+				Row row = new Row();
+				row.add(str);
+				matrix.add(rowpos++, row);
+			}
+			compact();
+		}
+	}
+
 	public void clear() {
 		this.matrix.clear();
 	}

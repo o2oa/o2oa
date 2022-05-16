@@ -35,8 +35,8 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.express.ProcessingAttributes;
+import com.x.processplatform.core.express.service.processing.jaxrs.task.ProcessingWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.V2AddWi;
-import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapProcessing;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapUpdatePrevTaskIdentity;
 import com.x.processplatform.core.express.service.processing.jaxrs.taskcompleted.WrapUpdateNextTaskIdentity;
 
@@ -103,8 +103,8 @@ public class V2Add extends BaseAction {
 			if (BooleanUtils.isNotTrue(control.getAllowReset())) {
 				throw new ExceptionAccessDenied(effectivePerson, task);
 			}
-			this.existTaskIds = emc.idsEqualAndEqual(Task.class, Task.job_FIELDNAME, task.getJob(),
-					Task.activityToken_FIELDNAME, task.getActivityToken());
+			this.existTaskIds = emc.idsEqualAndEqual(Task.class, Task.job_FIELDNAME, task.getJob(), Task.work_FIELDNAME,
+					task.getWork());
 			this.identites = business.organization().identity().list(wi.getIdentityList());
 			// 在新扩充待办人员中去除已经有待办人员
 			identites.remove(task.getIdentity());
@@ -125,13 +125,13 @@ public class V2Add extends BaseAction {
 						req, task.getJob())
 				.getData(WrapBoolean.class);
 		if (BooleanUtils.isNotTrue(resp.getValue())) {
-			throw new ExceptionExtend(task.getId());
+			throw new ExceptionAdd(task.getId());
 		}
 	}
 
 	private String processingTask(Task task) throws Exception {
-		WrapProcessing req = new WrapProcessing();
-		req.setProcessingType(TaskCompleted.PROCESSINGTYPE_EXTEND);
+		ProcessingWi req = new ProcessingWi();
+		req.setProcessingType(TaskCompleted.PROCESSINGTYPE_ADD);
 		WoId resp = ThisApplication.context().applications()
 				.putQuery(x_processplatform_service_processing.class,
 						Applications.joinQueryUri("task", task.getId(), "processing"), req, task.getJob())
@@ -145,7 +145,7 @@ public class V2Add extends BaseAction {
 
 	private void processingWork(Task task) throws Exception {
 		ProcessingAttributes req = new ProcessingAttributes();
-		req.setType(ProcessingAttributes.TYPE_TASKEXTEND);
+		req.setType(ProcessingAttributes.TYPE_TASKADD);
 		req.setSeries(this.series);
 		WoId resp = ThisApplication.context().applications()
 				.putQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
@@ -168,8 +168,8 @@ public class V2Add extends BaseAction {
 				concreteRecord.setWorkCompleted(workCompleted.getId());
 			}
 			concreteRecord.setPerson(effectivePerson.getDistinguishedName());
-			concreteRecord.setType(Record.TYPE_TASKEXTEND);
-			recordAdjust(business, task, concreteRecord);
+			concreteRecord.setType(Record.TYPE_TASKADD);
+			createRecordAdjust(business, task, concreteRecord);
 		}
 		WoId resp = ThisApplication.context().applications()
 				.postQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
@@ -180,15 +180,15 @@ public class V2Add extends BaseAction {
 		}
 	}
 
-	private void recordAdjust(Business business, Task task, Record concreteRecord) throws Exception {
-		final List<String> nextTaskIdentities = new ArrayList<>();
+	private void createRecordAdjust(Business business, Task task, Record concreteRecord) throws Exception {
 		List<String> ids = business.entityManagerContainer().idsEqualAndEqual(Task.class, Task.job_FIELDNAME,
-				task.getJob(), Task.activity_FIELDNAME, task.getActivity());
+				task.getJob(), Task.work_FIELDNAME, task.getWork());
 		ids = ListUtils.subtract(ids, existTaskIds);
 		List<Task> list = business.entityManagerContainer().fetch(ids, Task.class,
 				ListTools.toList(Task.identity_FIELDNAME, Task.job_FIELDNAME, Task.work_FIELDNAME,
 						Task.activity_FIELDNAME, Task.activityAlias_FIELDNAME, Task.activityName_FIELDNAME,
 						Task.activityToken_FIELDNAME, Task.activityType_FIELDNAME, Task.identity_FIELDNAME));
+		final List<String> nextTaskIdentities = new ArrayList<>();
 		list.stream().collect(Collectors.groupingBy(Task::getActivity, Collectors.toList())).entrySet().stream()
 				.forEach(o -> {
 					Task next = o.getValue().get(0);
@@ -209,7 +209,7 @@ public class V2Add extends BaseAction {
 	}
 
 	private void updateTaskCompleted() throws Exception {
-		/* 记录下一处理人信息 */
+		// 记录下一处理人信息
 		WrapUpdateNextTaskIdentity req = new WrapUpdateNextTaskIdentity();
 		req.getTaskCompletedList().add(this.taskCompletedId);
 		req.setNextTaskIdentityList(concreteRecord.getProperties().getNextManualTaskIdentityList());
@@ -220,7 +220,7 @@ public class V2Add extends BaseAction {
 	}
 
 	private void updateTask() throws Exception {
-		/* 记录上一处理人信息 */
+		// 记录上一处理人信息
 		if (ListTools.isNotEmpty(newTasks)) {
 			WrapUpdatePrevTaskIdentity req = new WrapUpdatePrevTaskIdentity();
 			req.setTaskList(newTasks);
@@ -243,18 +243,19 @@ public class V2Add extends BaseAction {
 
 	public static class Wi extends V2AddWi {
 
-		private static final long serialVersionUID = -3241215869441470402L;
+		private static final long serialVersionUID = -6251874269093504136L;
 
 	}
 
 	public static class WoControl extends WorkControl {
 
-		private static final long serialVersionUID = -8781558581462660831L;
+		private static final long serialVersionUID = -8675239528577375846L;
+
 	}
 
 	public static class Wo extends WrapBoolean {
 
-		private static final long serialVersionUID = 4883624438858385234L;
+		private static final long serialVersionUID = 8155067200427920853L;
 
 	}
 

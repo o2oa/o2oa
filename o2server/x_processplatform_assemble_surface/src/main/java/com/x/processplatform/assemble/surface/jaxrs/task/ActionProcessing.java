@@ -44,9 +44,9 @@ import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.log.SignalStack;
 import com.x.processplatform.core.express.ProcessingAttributes;
-import com.x.processplatform.core.express.service.processing.jaxrs.task.ActionProcessingWo;
+import com.x.processplatform.core.express.service.processing.jaxrs.task.ProcessingWi;
+import com.x.processplatform.core.express.service.processing.jaxrs.task.ProcessingWo;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapAppend;
-import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapProcessing;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapUpdatePrevTaskIdentity;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapUpdatePrevTaskIdentity.PrevTask;
 import com.x.processplatform.core.express.service.processing.jaxrs.taskcompleted.WrapUpdateNextTaskIdentity;
@@ -275,7 +275,7 @@ class ActionProcessing extends BaseAction {
 	}
 
 	private String processingProcessingTask(String processType) throws Exception {
-		WrapProcessing req = new WrapProcessing();
+		ProcessingWi req = new ProcessingWi();
 		req.setProcessingType(processType);
 		WoId resp = ThisApplication.context().applications()
 				.putQuery(x_processplatform_service_processing.class,
@@ -491,7 +491,7 @@ class ActionProcessing extends BaseAction {
 		return o;
 	}
 
-	public static class Wo extends ActionProcessingWo {
+	public static class Wo extends ProcessingWo {
 
 		private static final long serialVersionUID = -1771383649634969945L;
 		static WrapCopier<Record, Wo> copier = WrapCopierFactory.wo(Record.class, Wo.class, null,
