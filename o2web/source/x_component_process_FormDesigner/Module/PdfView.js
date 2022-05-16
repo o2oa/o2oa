@@ -5,7 +5,7 @@ MWF.xApplication.process.FormDesigner.Module.PdfView = MWF.FCPdfView = new Class
 	Implements: [Options, Events],
 	options: {
 		"style": "default",
-		"propertyPath": "../x_component_process_FormDesigner/Module/PdfView/pdfView.html"
+		"propertyPath": "../x_component_process_FormDesigner/Module/PdfView/pdfview.html"
 	},
 
 	initialize: function(form, options){
