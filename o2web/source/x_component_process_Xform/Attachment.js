@@ -1626,55 +1626,56 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         }
     },
     downloadAttachment: function (e, node, attachments) {
-        if (this.form.businessData.work && !this.form.businessData.work.completedTime) {
-            attachments.each(function (att) {
-                if( !this.queryDownload( att ) )return;
-                if (window.o2android && window.o2android.downloadAttachment) {
-                    window.o2android.downloadAttachment(att.data.id);
-                } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment) {
-                    window.webkit.messageHandlers.downloadAttachment.postMessage({ "id": att.data.id, "site": (this.json.site || this.json.id) });
-                } else if (window.wx && window.__wxjs_environment === 'miniprogram' && this.checkMiniProgramFile(att.data.extension)) { //微信小程序
-                    wx.miniProgram.navigateTo({
-                        url: '../file/download?attId=' + att.data.id + '&type=work&work=' + this.form.businessData.work.id
-                    });
-                } else {
-                    if (layout.mobile || o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC()) {
-                        //移动端 企业微信 钉钉 用本地打开 防止弹出自带浏览器 无权限问题
-                        this.form.workAction.getAttachmentUrl(att.data.id, this.form.businessData.work.id, function (url) {
-                            var xtoken = Cookie.read(o2.tokenName);
-                            window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
-                        });
-                    } else {
-                        this.form.workAction.getAttachmentStream(att.data.id, this.form.businessData.work.id);
-                    }
-                }
-                this.fireEvent("download",[att])
-            }.bind(this));
-        } else {
-            attachments.each(function (att) {
-                if( !this.queryDownload( att ) )return;
-                if (window.o2android && window.o2android.downloadAttachment) {
-                    window.o2android.downloadAttachment(att.data.id);
-                } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment) {
-                    window.webkit.messageHandlers.downloadAttachment.postMessage({ "id": att.data.id, "site": (this.json.site || this.json.id) });
-                } else if (window.wx && window.__wxjs_environment === 'miniprogram' && this.checkMiniProgramFile(att.data.extension)) { //微信小程序
-                    wx.miniProgram.navigateTo({
-                        url: '../file/download?attId=' + att.data.id + '&type=work&workCompleted=' + this.form.businessData.workCompleted.id
-                    });
-                } else {
-                    if (layout.mobile || o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC()) {
-                        //移动端 企业微信 钉钉 用本地打开 防止弹出自带浏览器 无权限问题
-                        this.form.workAction.getAttachmentWorkcompletedUrl(att.data.id, this.form.businessData.workCompleted.id, function (url) {
-                            var xtoken = Cookie.read(o2.tokenName);
-                            window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
-                        });
-                    } else {
-                        this.form.workAction.getWorkcompletedAttachmentStream(att.data.id, this.form.businessData.workCompleted.id);
-                    }
-                }
-                this.fireEvent("download",[att])
-            }.bind(this));
+
+        var data = this.form.businessData;
+        var isWorkCompleted = data.work && data.work.completedTime;
+
+        var workId = data.work.id;
+        var actionUrl = "getAttachmentUrl";
+        var actionData = "getAttachmentStream";
+        var urlWorkKey = "work";
+
+        if (isWorkCompleted){
+            workId = (data.workCompleted) ? data.workCompleted.id : workId;
+            actionUrl = "getAttachmentWorkcompletedUrl";
+            actionData = "getWorkcompletedAttachmentStream";
+            urlWorkKey = "workCompleted";
         }
+
+        var client = this.getClientType();
+        attachments.each(function (att) {
+            if( !this.queryOpen( att ) )return;
+
+            switch (client){
+                case "android":
+                    window.o2android.downloadAttachment(att.data.id);
+                    break;
+                case "ios":
+                    window.webkit.messageHandlers.downloadAttachment.postMessage({ "id": att.data.id, "site": (this.json.site || this.json.id) });
+                    break;
+                case "wx":
+                    wx.miniProgram.navigateTo({
+                        url: '../file/download?attId=' + att.data.id + '&type=work&'+urlWorkKey+'=' + workId
+                    });
+                    break;
+                case "mobile":
+                    this.form.workAction[actionUrl](att.data.id, workId, function (url) {
+                        var xtoken = Cookie.read(o2.tokenName);
+                        window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
+                    });
+                    break;
+                case "pcClient":
+                    this.form.workAction[actionUrl](att.data.id, workId, function (url) {
+                        var xtoken = Cookie.read(o2.tokenName);
+                        window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
+                    });
+                    break;
+                default:
+                    this.form.workAction[actionData](att.data.id, workId);
+            }
+            this.fireEvent("download",[att]);
+        }.bind(this));
+
     },
     getClientType(){
         if (window.o2android && window.o2android.downloadAttachment){
@@ -1724,7 +1725,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                     break;
                 case "wx":
                     wx.miniProgram.navigateTo({
-                        url: '../file/download?attId=' + att.data.id + '&type=work&'+urlWorkKey+'=' + this.form.businessData.work.id
+                        url: '../file/download?attId=' + att.data.id + '&type=work&'+urlWorkKey+'=' + workId
                     });
                     break;
                 case "mobile":
