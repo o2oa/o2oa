@@ -1659,6 +1659,15 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         if (this.form.businessData.work && !this.form.businessData.work.completedTime) {
             attachments.each(function (att) {
                 if( !this.queryDownload( att ) )return;
+
+                // if (att.data && att.data.extension && att.data.extension === "pdf") {
+                //     this.form.workAction.getAttachmentUrl(att.data.id, this.form.businessData.work.id, function (url) {
+                //         console.log("打开pdf 附件 ：", url);
+                //         window.location = "./pdfviewerwithwatermask.html?file=" + url;
+                //     });
+                //     return
+                // }
+
                 if (window.o2android && window.o2android.downloadAttachment) {
                     window.o2android.downloadAttachment(att.data.id);
                 } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment) {
@@ -1710,6 +1719,15 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         if (this.form.businessData.work && !this.form.businessData.work.completedTime) {
             attachments.each(function (att) {
                 if( !this.queryOpen( att ) )return;
+
+                // if (att.data && att.data.extension && att.data.extension === "pdf") {
+                //     this.form.workAction.getAttachmentUrl(att.data.id, this.form.businessData.work.id, function (url) {
+                //         console.log("打开pdf 附件 ：", url);
+                //         window.location = "./pdfviewerwithwatermask.html?file=" + url;
+                //     });
+                //     return
+                // }
+
                 if (window.o2android && window.o2android.downloadAttachment) {
                     window.o2android.downloadAttachment(att.data.id);
                 } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment) {
