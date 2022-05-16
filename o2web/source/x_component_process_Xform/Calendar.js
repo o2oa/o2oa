@@ -147,6 +147,7 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
                         this.fireEvent("complete");
                     }.bind(this),
                     "onChange": function(){
+                        this._setBusinessData(this.getInputData("change"));
                         this.fireEvent("change");
                     }.bind(this),
                     "onClear": function(){
