@@ -867,9 +867,7 @@
   flex-direction: column;
 }
 .share-conversation-list {
-  border-top: 1px solid rgb(255, 255, 255);
   width: 257px;
-  height: 100%;
   display: flex;
   flex-direction: column;
 }
@@ -878,10 +876,10 @@
   overflow: hidden;
   height: 60px;
   margin: 0px;
-  background-color: rgb(253, 253, 253);
 }
 .share-conversation-list > .item > .base {
   height: 59px;
+  width: 100%;
   cursor: pointer;
   margin-left: 16px;
   border-bottom: 1px solid rgb(221, 221, 221);
@@ -907,4 +905,7 @@
   height: 30px;
   line-height: 30px;
   margin-left: 16px;
+  word-wrap: break-word;
+  white-space: pre-line;
+  overflow: hidden;
 }
