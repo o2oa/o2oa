@@ -2,7 +2,7 @@ MWF.require("MWF.widget.UUID", null, false);
 MWF.xDesktop.requireApp("Template", "MForm", null, false);
 MWF.xDesktop.requireApp("Template", "MPopupForm", null, false);
 MWF.xApplication.IMV2 = MWF.xApplication.IMV2 || {};
-MWF.xApplication.IMV2.options.multitask = true; //多窗口
+MWF.xApplication.IMV2.options.multitask = false; //多窗口
 MWF.xApplication.IMV2.Main = new Class({
 	Extends: MWF.xApplication.Common.Main,
 	Implements: [Options, Events],
