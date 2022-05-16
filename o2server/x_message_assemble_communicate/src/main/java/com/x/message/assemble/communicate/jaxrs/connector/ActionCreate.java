@@ -556,7 +556,13 @@ class ActionCreate extends BaseAction {
 		Message message = new Message();
 		EvalMessage evalMessage = this.v3Load(wi, consumer.getLoader());
 		if (null != evalMessage) {
-			message.setBody(gson.toJson(evalMessage.getBody()));
+			JsonElement jsonElement = evalMessage.getBody();
+			// 如果脚本直接返回HTML或者text那么直接输出
+			if (jsonElement.isJsonPrimitive()) {
+				message.setBody(jsonElement.getAsJsonPrimitive().getAsString());
+			} else {
+				message.setBody(gson.toJson(evalMessage.getBody()));
+			}
 			message.setTitle(evalMessage.getTitle());
 			message.setPerson(evalMessage.getPerson());
 		} else {
