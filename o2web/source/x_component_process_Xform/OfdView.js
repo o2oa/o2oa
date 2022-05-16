@@ -11,8 +11,6 @@ MWF.xApplication.process.Xform.OfdView = MWF.APPOfdView =  new Class({
         this.node.store("module", this);
         this.json = json;
         this.form = form;
-        this.field = true;
-
 
         if (this.json.isReadonly){
             this.mode  = "read";

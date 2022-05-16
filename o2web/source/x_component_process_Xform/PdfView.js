@@ -11,7 +11,6 @@ MWF.xApplication.process.Xform.PdfView = MWF.APPPdfView =  new Class({
         this.node.store("module", this);
         this.json = json;
         this.form = form;
-        this.field = true;
 
         if (this.json.isReadonly){
             this.mode  = "read";
