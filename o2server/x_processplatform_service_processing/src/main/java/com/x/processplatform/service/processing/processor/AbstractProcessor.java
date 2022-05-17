@@ -63,7 +63,7 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 			AeiObjects aeiObjects = new AeiObjects(this.business(), work, activity, processingConfigurator,
 					processingAttributes);
 			// 清空可能的Manual活动预期人员
-			this.arriveCleanManualTaskIdentityList(aeiObjects);
+			this.arriveCleanManualTaskIdentityMatrix(aeiObjects);
 			// 清空可能的Manual活动授权信息
 			this.arriveCleanManualEmpowerMap(aeiObjects);
 			// 计算是否经过人工节点
@@ -108,8 +108,12 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 		}
 	}
 
-	private void arriveCleanManualTaskIdentityList(AeiObjects aeiObjects) {
-		aeiObjects.getWork().setManualTaskIdentityList(new ArrayList<>());
+//	private void arriveCleanManualTaskIdentityList(AeiObjects aeiObjects) {
+//		aeiObjects.getWork().setManualTaskIdentityList(new ArrayList<>());
+//	}
+
+	private void arriveCleanManualTaskIdentityMatrix(AeiObjects aeiObjects) {
+		aeiObjects.getWork().getManualTaskIdentityMatrix().clear();
 	}
 
 	private void arriveCleanManualEmpowerMap(AeiObjects aeiObjects) {

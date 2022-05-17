@@ -26,6 +26,7 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.ActivityType;
+import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.service.processing.Business;
 
 class ActionManualAppendIdentity extends BaseAction {
@@ -167,12 +168,20 @@ class ActionManualAppendIdentity extends BaseAction {
 					throw new ExceptionNotManual(work.getActivity());
 				}
 
+				Manual manual = (Manual) business.element().get(work.getActivity(), ActivityType.manual);
+
+				if (null == manual) {
+					throw new ExceptionEntityNotExist(work.getActivity(), Manual.class);
+				}
+
 				List<String> taskIdentities = business.organization().identity().list(wi.getTaskIdentityList());
 
-				taskIdentities = ListUtils.subtract(taskIdentities, work.getManualTaskIdentityList());
+				taskIdentities = ListUtils.subtract(taskIdentities, work.getManualTaskIdentityMatrix().flat());
 
-				work.setManualTaskIdentityList(
-						ListUtils.sum(work.getManualTaskIdentityList(), wi.getTaskIdentityList()));
+				work.setManualTaskIdentityMatrix(manual.identitiesToManualTaskIdentityMatrix(taskIdentities));
+
+//				work.setManualTaskIdentityList(
+//						ListUtils.sum(work.getManualTaskIdentityList(), wi.getTaskIdentityList()));
 
 				List<Review> addReviews = new ArrayList<>();
 				for (String identity : taskIdentities) {

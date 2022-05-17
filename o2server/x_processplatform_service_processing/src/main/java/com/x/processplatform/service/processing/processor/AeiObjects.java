@@ -320,6 +320,13 @@ public class AeiObjects extends GsonPropertyObject {
 				.collect(Collectors.toList());
 	}
 
+	public List<TaskCompleted> getJoinInquireTaskCompletedsWithActivityToken(String activityToken) throws Exception {
+		return this.getTaskCompleteds().stream()
+				.filter(o -> StringUtils.equalsIgnoreCase(activityToken, o.getActivityToken())
+						&& BooleanUtils.isNotFalse(o.getJoinInquire()))
+				.collect(Collectors.toList());
+	}
+
 	public List<Read> getReads() throws Exception {
 		if (null == this.reads) {
 			this.reads = this.business.entityManagerContainer().listEqual(Read.class, Read.job_FIELDNAME,

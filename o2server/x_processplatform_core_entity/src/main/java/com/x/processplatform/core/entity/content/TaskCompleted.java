@@ -80,6 +80,10 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	public static final String PROCESSINGTYPE_BEAPPENDEDTASK = "beAppendedTask";
 	/* 授权,授权给他人处理 */
 	public static final String PROCESSINGTYPE_EMPOWER = "empower";
+	/* 扩充办理人 */
+	public static final String PROCESSINGTYPE_EXTEND = "extend";
+	/* 前添加处理人 */
+	public static final String PROCESSINGTYPE_ADD = "add";
 
 	public String getId() {
 		return id;
@@ -118,6 +122,8 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		case PROCESSINGTYPE_ROLLBACK:
 		case PROCESSINGTYPE_EMPOWER:
 		case PROCESSINGTYPE_RESET:
+		case PROCESSINGTYPE_EXTEND:
+		case PROCESSINGTYPE_ADD:
 			this.joinInquire = false;
 			break;
 		default:

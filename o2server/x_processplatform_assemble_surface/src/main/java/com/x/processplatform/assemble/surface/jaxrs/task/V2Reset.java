@@ -37,8 +37,8 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.express.ProcessingAttributes;
+import com.x.processplatform.core.express.service.processing.jaxrs.task.ProcessingWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.V2ResetWi;
-import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapProcessing;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapUpdatePrevTaskIdentity;
 import com.x.processplatform.core.express.service.processing.jaxrs.taskcompleted.WrapUpdateNextTaskIdentity;
 
@@ -137,7 +137,7 @@ public class V2Reset extends BaseAction {
 	}
 
 	private void processingTask() throws Exception {
-		WrapProcessing req = new WrapProcessing();
+			ProcessingWi req = new ProcessingWi();
 		req.setProcessingType(TaskCompleted.PROCESSINGTYPE_RESET);
 		WoId resp = ThisApplication.context().applications()
 				.putQuery(x_processplatform_service_processing.class,

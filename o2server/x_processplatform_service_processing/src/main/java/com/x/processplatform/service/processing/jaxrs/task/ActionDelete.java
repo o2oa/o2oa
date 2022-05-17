@@ -52,7 +52,8 @@ class ActionDelete extends BaseAction {
 				emc.beginTransaction(Task.class);
 				emc.beginTransaction(Work.class);
 				emc.remove(task, CheckRemoveType.all);
-				work.getManualTaskIdentityList().remove(task.getIdentity());
+//				work.getManualTaskIdentityList().remove(task.getIdentity());
+				work.getManualTaskIdentityMatrix().remove(task.getIdentity());
 				emc.commit();
 				MessageFactory.task_delete(task);
 				wo.setId(task.getId());

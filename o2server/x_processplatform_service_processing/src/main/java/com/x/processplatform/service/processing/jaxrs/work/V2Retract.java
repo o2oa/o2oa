@@ -20,6 +20,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.processplatform.ManualTaskIdentityMatrix;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
@@ -118,7 +119,8 @@ class V2Retract extends BaseAction {
 					taskCompleted.setProcessingType(TaskCompleted.PROCESSINGTYPE_RETRACT);
 					List<String> manualTaskIdentityList = new ArrayList<>();
 					manualTaskIdentityList.add(taskCompleted.getIdentity());
-					work.setManualTaskIdentityList(manualTaskIdentityList);
+					// work.setManualTaskIdentityList(manualTaskIdentityList);
+					work.setManualTaskIdentityMatrix(ManualTaskIdentityMatrix.concreteMultiRow(manualTaskIdentityList));
 					// 发送消息
 					sendRemoveMessages(removeTasks, removeTaskCompleteds, removeReads, removeReadCompleteds);
 					emc.commit();

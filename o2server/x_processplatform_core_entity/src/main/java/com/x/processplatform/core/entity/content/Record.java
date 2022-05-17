@@ -38,55 +38,61 @@ import com.x.processplatform.core.entity.element.ActivityType;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Record extends SliceJpaObject {
 
-	/* 正常流转 */
-	public final static String TYPE_CURRENTTASK = "currentTask";
+	private static final long serialVersionUID = 8673378766635237050L;
 
 	/* 正常流转 */
-	public final static String TYPE_TASK = "task";
+	public static final String TYPE_CURRENTTASK = "currentTask";
+
+	/* 正常流转 */
+	public static final String TYPE_TASK = "task";
 
 	/* 转交流转 */
-	public final static String TYPE_APPENDTASK = "appendTask";
+	public static final String TYPE_APPENDTASK = "appendTask";
 
 	/* 回退流转 */
-	public final static String TYPE_BACK = "back";
+	public static final String TYPE_BACK = "back";
 
 	/* 调度 */
-	public final static String TYPE_REROUTE = "reroute";
+	public static final String TYPE_REROUTE = "reroute";
 
 	/* 撤回 */
-	public final static String TYPE_RETRACT = "retract";
+	public static final String TYPE_RETRACT = "retract";
 
 	/* 回滚 */
-	public final static String TYPE_ROLLBACK = "rollback";
+	public static final String TYPE_ROLLBACK = "rollback";
 
 	/* 重置 */
-	public final static String TYPE_RESET = "reset";
+	public static final String TYPE_RESET = "reset";
 
 	/* 增加分支 */
-	public final static String TYPE_ADDSPLIT = "addSplit";
+	public static final String TYPE_ADDSPLIT = "addSplit";
 
 	/* 催办 */
-	public final static String TYPE_URGE = "urge";
+	public static final String TYPE_URGE = "urge";
 
 	/* 超时 */
-	public final static String TYPE_EXPIRE = "expire";
+	public static final String TYPE_EXPIRE = "expire";
 
 	/* 待阅 */
-	public final static String TYPE_READ = "read";
+	public static final String TYPE_READ = "read";
 
 	/* 授权 */
-	public final static String TYPE_EMPOWER = "empower";
+	public static final String TYPE_EMPOWER = "empower";
 
 	/* 超时自动流转 */
-	public final static String TYPE_PASSEXPIRED = "passExpired";
+	public static final String TYPE_PASSEXPIRED = "passExpired";
 
 	/* 外部调用流转 */
-	public final static String TYPE_SERVICE = "service";
+	public static final String TYPE_SERVICE = "service";
+
+	/* 扩充待办 */
+	public static final String TYPE_TASKEXTEND = "taskExtend";
+
+	/* 添加待办 */
+	public static final String TYPE_TASKADD = "taskAdd";
 
 	/* 定制意见 */
-	public final static String TYPE_CUSTOM = "custom";
-
-	private static final long serialVersionUID = 8673378766635237050L;
+	public static final String TYPE_CUSTOM = "custom";
 
 	private static final String TABLE = PersistenceProperties.Content.Record.table;
 

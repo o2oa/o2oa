@@ -79,6 +79,7 @@ public class Application extends SliceJpaObject {
 	public void postLoad() {
 		if (null != this.properties) {
 			this.defaultForm = this.getProperties().getDefaultForm();
+			this.maintenanceIdentity = this.getProperties().getMaintenanceIdentity();
 		}
 	}
 
@@ -115,6 +116,20 @@ public class Application extends SliceJpaObject {
 	public void setDefaultForm(String defaultForm) {
 		this.defaultForm = defaultForm;
 		this.getProperties().setDefaultForm(defaultForm);
+	}
+
+	public static final String MAINTENANCEIDENTITY_FIELDNAME = "maintenanceIdentity";
+	@FieldDescribe("流程维护身份,如果无法找到处理身份默认的流程处理身份.")
+	@Transient
+	private String maintenanceIdentity;
+
+	public String getMaintenanceIdentity() {
+		return maintenanceIdentity;
+	}
+
+	public void setMaintenanceIdentity(String maintenanceIdentity) {
+		this.maintenanceIdentity = maintenanceIdentity;
+		this.getProperties().setMaintenanceIdentity(maintenanceIdentity);
 	}
 
 	public static final String name_FIELDNAME = "name";
@@ -169,7 +184,7 @@ public class Application extends SliceJpaObject {
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ availableGroupList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
-			+ availableGroupList_FIELDNAME + JoinIndexNameSuffix))
+					+ availableGroupList_FIELDNAME + JoinIndexNameSuffix))
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + availableGroupList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + availableGroupList_FIELDNAME + ElementIndexNameSuffix)

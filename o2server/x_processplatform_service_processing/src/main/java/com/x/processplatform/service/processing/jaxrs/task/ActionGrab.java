@@ -71,7 +71,7 @@ class ActionGrab extends BaseAction {
 							MessageFactory.task_delete(o);
 						}
 					}
-					work.setManualTaskIdentityList(ListTools.toList(task.getIdentity()));
+					work.getManualTaskIdentityMatrix().reduce(task.getIdentity());
 					emc.commit();
 					wo.setId(task.getId());
 					result.setData(wo);

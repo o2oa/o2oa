@@ -33,7 +33,7 @@ import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.express.ProcessingAttributes;
-import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapProcessing;
+import com.x.processplatform.core.express.service.processing.jaxrs.task.ProcessingWi;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
 import com.x.processplatform.service.processing.WorkContext;
@@ -226,7 +226,7 @@ class ActionProcessing extends BaseAction {
 		private static final long serialVersionUID = 1L;
 	}
 
-	public static class Wi extends WrapProcessing {
+	public static class Wi extends ProcessingWi {
 
 		private static final long serialVersionUID = -6828623155146710691L;
 
