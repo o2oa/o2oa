@@ -388,6 +388,7 @@ public class TaskAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
+	@Deprecated(forRemoval = true)
 	@JaxrsMethodDescribe(value = "重置待办,将之前的待办转为已办,opinion:办理意见,routeName:选择路由,identityList:新的办理人.", action = ActionReset.class)
 	@PUT
 	@Path("{id}/reset")

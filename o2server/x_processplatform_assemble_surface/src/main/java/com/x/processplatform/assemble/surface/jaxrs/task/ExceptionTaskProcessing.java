@@ -4,10 +4,10 @@ import com.x.base.core.project.exception.LanguagePromptException;
 
 class ExceptionTaskProcessing extends LanguagePromptException {
 
-	private static final long serialVersionUID = -5515077418025884395L;
+	private static final long serialVersionUID = 3674258561301135294L;
 
-	ExceptionTaskProcessing(String id) {
-		super("任务 {} 处理失败.", id);
+	ExceptionTaskProcessing(String work) {
+		super("记录处理失败, work: {}.", work);
 	}
 
 }
