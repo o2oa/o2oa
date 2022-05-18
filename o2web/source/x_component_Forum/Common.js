@@ -54,6 +54,11 @@ MWFForum.BBS_LOGO_NAME = "BBS_LOGO_NAME";
 MWFForum.BBS_SUBJECT_TYPECATAGORY = "BBS_SUBJECT_TYPECATAGORY";
 MWFForum.BBS_TITLE_TAIL = "BBS_TITLE_TAIL";
 MWFForum.BBS_USE_NICKNAME = "BBS_USE_NICKNAME";
+MWFForum.BBS_ANONYMOUS_PERMISSION = "BBS_ANONYMOUS_PERMISSION";
+
+MWFForum.enableAnonymousSubject = function(){
+    return MWFForum.getSystemConfigValue( MWFForum.BBS_ANONYMOUS_PERMISSION ) === "YES";
+}
 
 MWFForum.isUseNickName = function(){
     return MWFForum.getSystemConfigValue( MWFForum.BBS_USE_NICKNAME ) === "YES";

@@ -328,7 +328,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 			"   <td item='voteContainer' colspan='3'></td>" +
 			"</tr><tr>" +
 			"   <td styles='formTableTitle' lable=''></td>" +
-			"   <td item='action' colspan='3'></td>" +
+			"   <td colspan='3'><div item='action' style='float:left;'></div><div item='anonymousSubject' style='float:left;margin-top:25px;margin-left:20px;'></div></td>" +
 			"</tr>"+
 			"</table>";
 		this.contentDiv.set("html", html);
@@ -397,6 +397,11 @@ MWF.xApplication.ForumDocument.Main = new Class({
 						aspectRatio : 1.5,
 						reference : this.advanceId || this.data.id,
 						referenceType: "forumDocument"
+					},
+					anonymousSubject: { type: "checkbox",
+						disable: !MWFForum.enableAnonymousSubject(),
+						selectValue: ['true'],
+						selectText: [this.lp.anonymousSubject]
 					},
 					content: {text: this.lp.content, type : "rtf", notEmpty : true, RTFConfig : {
 						isSetImageMaxWidth : true,
@@ -1677,8 +1682,13 @@ MWF.xApplication.ForumDocument.SubjectView = new Class({
 		data.index = index;
 		var document;
 		this.getUserData( data.creatorName, function(json ){
-			data.userIcon = json.data.icon;
-			data.signature = json.data.signature;
+			if( data.anonymousSubject ){
+				data.userIcon = '../x_component_ForumDocument/$Main/default/icon/noavatar_big.gif';
+				data.signature = "";
+			}else{
+				data.userIcon = json.data.icon;
+				data.signature = json.data.signature;
+			}
 			this.actions.getUserInfor( {"userName":data.creatorName}, function( json ){
 				data.subject = json.data.subjectCount;
 				data.reply = json.data.replyCount;

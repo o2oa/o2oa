@@ -182,6 +182,7 @@ MWF.xApplication.Forum.LP = {
 	"summary": "Summary",
 	"content": "Content",
 	"createSubject": "Post",
+	"anonymousSubject" : "Post anonymously",
 	"saveSubject": "Post",
 	"selectCurrentDocumentFile": "Select Post Picture",
 	"selectCloudFile": "Select Cloud File Picture",

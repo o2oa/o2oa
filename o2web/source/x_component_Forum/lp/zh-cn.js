@@ -185,6 +185,7 @@ MWF.xApplication.Forum.LP = {
 	"summary" : "摘要",
 	"content" : "内容",
 	"createSubject" : "发帖",
+	"anonymousSubject" : "匿名发帖",
 	"saveSubject" : "发表帖子",
 	"selectCurrentDocumentFile" : "选择帖子图片",
 	"selectCloudFile" : "选择云文件图片",
