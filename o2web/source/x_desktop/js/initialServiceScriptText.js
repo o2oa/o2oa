@@ -1133,7 +1133,10 @@ library.defineProperties(response, {
 });
 
 
-
+function _get(key, java_data){
+    if (!bind["o"+key]) bind["o"+key] = JSON.parse(java_data);
+    return bind["o"+key];
+}
 
 var o= {
     "entityManager": { "configurable": true, "get": function(){return null;} },
@@ -1187,7 +1190,7 @@ var o= {
      * var startTime = (new Date(this.parameters.startTime)).format("db");  //格式化为yyyy-mm-dd hh:mm:ss
      * return "SELECT o FROM Task o WHERE o.person='"+user+"' AND o.startTime>{ts '"+startTime+"'}"
      */
-    "parameters": { "configurable": true, "get": function(){return ((bind.java_parameters) ? JSON.parse(bind.java_parameters) : null)} },
+    "parameters": { "configurable": true, "get": function(){return ((bind.java_parameters) ? _get("parameters", bind.java_parameters) : null)} },
     /**
      * 调用接口时传入的请求消息体的文本内容。
      * @o2range 服务管理-接口
@@ -1205,7 +1208,7 @@ var o= {
     "request": { "configurable": true, "get": function(){return bind.java_request || null; } },
     "resources": { "configurable": true, "get": function(){return (bind.java_resources || null)} },
     "customResponse": { "configurable": true, "get": function(){return (bind.java_customResponse || null)} },
-    "message": { "configurable": true, "get": function(){return (bind.java_message) ? JSON.parse(bind.java_message) : null;} }
+    "message": { "configurable": true, "get": function(){return (bind.java_message) ? _get("message", bind.java_message) : null;} }
 
 }
 library.defineProperties(bind, o);
