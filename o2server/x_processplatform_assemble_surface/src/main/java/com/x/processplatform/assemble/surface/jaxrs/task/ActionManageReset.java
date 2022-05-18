@@ -124,6 +124,8 @@ class ActionManageReset extends BaseAction {
 
 	public static class Wo extends WrapBoolean {
 
+		private static final long serialVersionUID = -7490452448799400254L;
+
 	}
 
 }
