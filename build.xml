@@ -266,8 +266,10 @@
 				<include name="start_linux.sh"/>
 				<include name="start_linux_min.sh"/>
 				<include name="start_linux_debug.sh"/>
+				<include name="start_linux_min.sh"/>
 				<include name="console_linux.sh"/>
 				<include name="stop_linux.sh"/>
+				<include name="service_linux.sh"/>
 			</zipfileset>
 		</zip>
 	</target>
