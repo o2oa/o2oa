@@ -52,6 +52,7 @@ export default {
   text-align: center;
   display: flex;
   justify-content: center;
+  word-break: keep-all;
 }
 .category-item{
   height: 40px;
@@ -69,7 +70,7 @@ export default {
 }
 .search-area{
   height: 32px;
-  width: 268px;
+  min-width: 228px;
   border-radius: 20px;
   border: 1px solid #999999;
   margin: 5px 0 0 20px;
@@ -78,7 +79,7 @@ export default {
   height: 30px;
   border: 0;
   background: transparent;
-  width: 180px;
+  min-width: 100px;
 }
 .category-search-icon{
   height: 32px;
