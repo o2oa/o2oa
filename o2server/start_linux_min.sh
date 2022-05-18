@@ -32,7 +32,7 @@ then
 		done
 		for A in "start" "stop" "restart" "console" "service"
 		do
-			for B in "_windows.bat" "_linux.sh" "_linux_docker.sh" "_macos.sh" "_arm.sh" "_mips.sh" "_raspi.sh" "_aix.sh"
+			for B in "_windows.bat" "_linux.sh" "_linux_min.sh" "_macos.sh" "_arm.sh" "_mips.sh" "_raspi.sh" "_aix.sh"
 			do
 				if [ -f ${current_dir}/local/update/o2server/$A$B ]; then
 					echo "update ${current_dir}/$A$B."
