@@ -264,6 +264,7 @@
 				<include name="console.jar"/>
 				<include name="jvm/linux_java11/"/>
 				<include name="start_linux.sh"/>
+				<include name="start_linux_min.sh"/>
 				<include name="start_linux_debug.sh"/>
 				<include name="console_linux.sh"/>
 				<include name="stop_linux.sh"/>
