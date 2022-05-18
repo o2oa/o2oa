@@ -189,7 +189,7 @@ public class ReviewService {
 				}else {
 					logger.debug("栏目没有阅读权限限制，分类没有阅读权限限制，文档有阅读权限限制。文档可见范围以文档的权限为主");
 					//栏目没有权限限制，分类没有权限限制，文档有权限限制，以文档的权限为主
-					addDocumentAllPermission( permissionObjs, document );
+					addDocumentAllPermission( permissionObjs, document, appInfo, categoryInfo);
 				}
 			}else {
 				if( !documentHasPermissionControl ) {//如果文档没有权限控制，则添加分类的权限就可以了
@@ -199,7 +199,7 @@ public class ReviewService {
 				}else {
 					logger.debug("栏目没有阅读权限限制，分类有阅读权限限制，文档有阅读权限限制。文档可见范围以文档权限为主，交分类可见范围");
 					//栏目没有权限限制，分类有权限限制，文档有权限限制，以文档权限为主
-					addDocumentAllPermission( permissionObjs, document );
+					addDocumentAllPermission( permissionObjs, document, appInfo, categoryInfo);
 					//因为分类有权限限制，所以将分类所有权限与文档权限取交集
 					permissionObjs.retainAll( addCategoryAllPermission( new ArrayList<>(), categoryInfo ) );
 				}
@@ -213,7 +213,7 @@ public class ReviewService {
 				}else {
 					logger.debug("栏目有阅读权限限制，分类没有阅读权限限制，文档有阅读权限限制。文档可见范围以文档的权限为主，交栏目可见范围");
 					//栏目有权限限制，分类没有权限限制，文档有权限限制，以文档的权限为主
-					addDocumentAllPermission( permissionObjs, document );
+					addDocumentAllPermission( permissionObjs, document, appInfo, categoryInfo);
 					//因为栏目有权限限制，所以将栏目所有权限与文档权限取交集
 					permissionObjs.retainAll( addAppInfoAllPermission( new ArrayList<>(), appInfo ) );
 				}
@@ -227,7 +227,7 @@ public class ReviewService {
 				}else {
 					logger.debug("栏目有阅读权限限制，分类有阅读权限限制，文档有阅读权限限制。文档可见范围以文档权限为主，交分类和栏目可见范围");
 					//栏目有权限限制，分类有权限限制，文档有权限限制，以文档权限为主
-					addDocumentAllPermission( permissionObjs, document );
+					addDocumentAllPermission( permissionObjs, document, appInfo, categoryInfo);
 					//因为分类有权限限制，所以将分类所有权限与文档权限取交集
 					permissionObjs.retainAll( addCategoryAllPermission( new ArrayList<>(), categoryInfo ) );
 					//因为栏目有权限限制，所以将栏目所有权限与文档权限取交集
@@ -420,7 +420,7 @@ public class ReviewService {
 	 * @return
 	 * @throws Exception
 	 */
-	private List<String> addDocumentAllPermission(List<String> permissionObjs, Document document) throws Exception {
+	private List<String> addDocumentAllPermission(List<String> permissionObjs, Document document, AppInfo appInfo, CategoryInfo categoryInfo) throws Exception {
 		if( permissionObjs == null ) {
 			permissionObjs = new ArrayList<>();
 		}
@@ -450,6 +450,24 @@ public class ReviewService {
 		}
 		if( ListTools.isNotEmpty( document.getManagerList())) { //文档管理员
 			addPermissionObj( permissionObjs, document.getManagerList() );
+		}
+		if( ListTools.isNotEmpty( categoryInfo.getManageablePersonList())) {
+			addPermissionObj( permissionObjs, categoryInfo.getManageablePersonList() );
+		}
+		if( ListTools.isNotEmpty( categoryInfo.getManageableUnitList())) {
+			addPermissionObj( permissionObjs, categoryInfo.getManageableUnitList() );
+		}
+		if( ListTools.isNotEmpty( categoryInfo.getManageableGroupList())) {
+			addPermissionObj( permissionObjs, categoryInfo.getManageableGroupList() );
+		}
+		if( ListTools.isNotEmpty( appInfo.getManageablePersonList())) {
+			addPermissionObj( permissionObjs, appInfo.getManageablePersonList() );
+		}
+		if( ListTools.isNotEmpty( appInfo.getManageableUnitList())) {
+			addPermissionObj( permissionObjs, appInfo.getManageableUnitList() );
+		}
+		if( ListTools.isNotEmpty( appInfo.getManageableGroupList())) {
+			addPermissionObj( permissionObjs, appInfo.getManageableGroupList() );
 		}
 		return permissionObjs;
 	}
