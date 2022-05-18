@@ -21,7 +21,7 @@ if exist "%~dp0local\update" (
 			)	
 		)
 		for  %%A in (start,stop,restart,console,service) do (
-			for  %%B in (_windows.bat,_linux.sh,_linux_docker.sh,_macos.sh,_arm.sh,_mips.sh,_raspi.sh,_aix.sh) do (
+			for  %%B in (_windows.bat,_linux.sh,_linux_min.sh,_macos.sh,_arm.sh,_mips.sh,_raspi.sh,_aix.sh) do (
 				if exist "%~dp0local\update\o2server\%%A%%B" (
 					echo update %~dp0%%A%%B
 					copy "%~dp0local\update\o2server\%%A%%B" "%~dp0"
