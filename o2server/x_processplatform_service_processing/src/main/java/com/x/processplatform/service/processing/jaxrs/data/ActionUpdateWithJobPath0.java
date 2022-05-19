@@ -52,11 +52,6 @@ class ActionUpdateWithJobPath0 extends BaseAction {
 				Business business = new Business(emc);
 				List<Work> works = emc.listEqual(Work.class, Work.job_FIELDNAME, job);
 				if (!works.isEmpty()) {
-					for (Work work : works) {
-						/* 先更新title和serial,再更新DataItem,因为旧的DataItem中也有title和serial数据. */
-						updateTitleSerial(business, work, jsonElement);
-					}
-					/* updateTitleSerial 和 updateData 方法内进行了提交 */
 					updateData(business, works.get(0), jsonElement, path0);
 				}
 				wo.setId(job);
