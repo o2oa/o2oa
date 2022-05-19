@@ -475,25 +475,6 @@ public class DataAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "更新指定WorkCompleted的Data数据Path0基本字段特殊处理.", action = ActionUpdateWithWorkCompletedPrimitivePath0.class)
-	@PUT
-	@Path("workcompletedprimitive/{id}/{path0}")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void updateWithWorkCompletedPrimitivePath0(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request, @JaxrsParameterDescribe("完成工作标识") @PathParam("id") String id,
-			@JaxrsParameterDescribe("0级路径") @PathParam("path0") String path0, String val) {
-		ActionResult<ActionUpdateWithWorkCompletedPrimitivePath0.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionUpdateWithWorkCompletedPrimitivePath0().execute(effectivePerson, id, path0, val);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
-
 	@JaxrsMethodDescribe(value = "更新指定WorkCompleted的Data数据.", action = ActionUpdateWithWorkCompletedPath1.class)
 	@PUT
 	@Path("workcompleted/{id}/{path0}/{path1}")
