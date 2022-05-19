@@ -250,10 +250,10 @@ public class Route extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String decisionOpinion;
 
-	public static final String sole_FIELDNAME = "sole";
+	public static final String SOLE_FIELDNAME = "sole";
 	@FieldDescribe("唯一路由,当多人处理时,如果有人选择此路由将通过此路由,后续处理人还是需要处理的,不会一票否决.")
 	@CheckPersist(allowEmpty = true)
-	@Column(name = ColumnNamePrefix + sole_FIELDNAME)
+	@Column(name = ColumnNamePrefix + SOLE_FIELDNAME)
 	private Boolean sole;
 
 	public static final String opinionRequired_FIELDNAME = "opinionRequired";

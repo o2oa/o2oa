@@ -122,13 +122,13 @@ public class ManualTaskIdentityMatrix extends GsonPropertyObject {
 			}
 		}
 		if ((null != extendIdentities) && (!extendIdentities.isEmpty())) {
-			matrix.get(rowpos).addAll(colpos, extendIdentities);
+			matrix.get(rowpos).addAll(colpos + 1, extendIdentities);
 		}
 		if ((null != addAfterIdentities) && (!addAfterIdentities.isEmpty())) {
 			for (String str : addAfterIdentities) {
 				Row row = new Row();
 				row.add(str);
-				matrix.add(rowpos++, row);
+				matrix.add(++rowpos, row);
 			}
 			compact();
 		}
@@ -141,6 +141,15 @@ public class ManualTaskIdentityMatrix extends GsonPropertyObject {
 	public boolean isEmpty() {
 		compact();
 		return matrix.isEmpty();
+	}
+
+	public boolean contains(String identity) {
+		for (Row row : matrix) {
+			if (row.contains(identity)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public ManualTaskIdentityMatrix remove(String identity) {

@@ -32,7 +32,6 @@ public class RecordBuilder {
 			List<Task> newlyTasks) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			final List<String> nextTaskIdentities = new ArrayList<>();
 			Record rec = new Record(workLog, task);
 			rec.setType(recordType);
 			// 获取在record中需要记录的task中身份所有的组织职务.
@@ -56,6 +55,7 @@ public class RecordBuilder {
 			}
 			rec.getProperties().setElapsed(
 					Config.workTime().betweenMinutes(rec.getProperties().getStartTime(), rec.getRecordTime()));
+			final List<String> nextTaskIdentities = new ArrayList<>();
 			newlyTasks.stream().collect(Collectors.groupingBy(Task::getActivity, Collectors.toList())).entrySet()
 					.stream().forEach(o -> {
 						NextManual nextManual = new NextManual();

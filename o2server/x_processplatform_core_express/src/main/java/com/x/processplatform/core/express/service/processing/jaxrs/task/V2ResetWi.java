@@ -6,7 +6,6 @@ import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
-import com.x.base.core.project.tools.StringTools;
 
 public class V2ResetWi extends GsonPropertyObject {
 
@@ -26,16 +25,6 @@ public class V2ResetWi extends GsonPropertyObject {
 
 	@FieldDescribe("是否删除指定待办身份")
 	private Boolean remove;
-
-	@FieldDescribe("意见")
-	private String opinion;
-
-	@FieldDescribe("操作串号")
-	private String series;
-
-	public V2ResetWi() {
-		this.series = StringTools.uniqueToken();
-	}
 
 	public String getTask() {
 		return task;
@@ -75,22 +64,6 @@ public class V2ResetWi extends GsonPropertyObject {
 
 	public void setRemove(Boolean remove) {
 		this.remove = remove;
-	}
-
-	public String getOpinion() {
-		return opinion;
-	}
-
-	public void setOpinion(String opinion) {
-		this.opinion = opinion;
-	}
-
-	public String getSeries() {
-		return series;
-	}
-
-	public void setSeries(String series) {
-		this.series = series;
 	}
 
 }
