@@ -22,21 +22,12 @@ class ActionUpdateWithJob extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String job, JsonElement jsonElement) throws Exception {
 		LOGGER.debug("{} access.", effectivePerson::getDistinguishedName);
 		ActionResult<Wo> result = new ActionResult<>();
+		if (null == jsonElement || (!jsonElement.isJsonObject())) {
+			throw new ExceptionNotJsonObject();
+		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			// 防止提交空数据清空data
-			if (null == jsonElement || (!jsonElement.isJsonObject())) {
-				throw new ExceptionNotJsonObject();
-			}
 			Business business = new Business(emc);
-			// 通过job获取任意一个work用于判断权限
-			Work work = emc.firstEqual(Work.class, Work.job_FIELDNAME, job);
-			if (null == work) {
-				throw new ExceptionJobNotExist(job);
-			}
-			if (!business.editable(effectivePerson, work)) {
-				throw new ExceptionWorkAccessDenied(effectivePerson.getDistinguishedName(), work.getTitle(),
-						work.getId());
-			}
+			checkUpdateWithJobControl(effectivePerson, business, job);
 		}
 		Wo wo = ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
 				Applications.joinQueryUri("data", "job", job), jsonElement, job).getData(Wo.class);

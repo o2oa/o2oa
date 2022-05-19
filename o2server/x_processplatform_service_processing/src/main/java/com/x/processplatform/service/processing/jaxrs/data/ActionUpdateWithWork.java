@@ -55,7 +55,6 @@ class ActionUpdateWithWork extends BaseAction {
 					}
 
 					JsonElement source = getData(business, work.getJob());
-
 					JsonElement merge = XGsonBuilder.merge(jsonElement, source);
 
 					/* 先更新title和serial,再更新DataItem,因为旧的DataItem中也有title和serial数据. */

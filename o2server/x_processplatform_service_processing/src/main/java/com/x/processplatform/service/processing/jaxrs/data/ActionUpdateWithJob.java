@@ -9,6 +9,7 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -23,7 +24,6 @@ class ActionUpdateWithJob extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String job, JsonElement jsonElement) throws Exception {
 		LOGGER.debug("execute:{}, job:{}.", effectivePerson::getDistinguishedName, () -> job);
-		ActionResult<Wo> result = new ActionResult<>();
 
 		String executorSeed = null;
 
@@ -36,32 +36,10 @@ class ActionUpdateWithJob extends BaseAction {
 			}
 		}
 
-		Callable<Wo> callable = callable(job, jsonElement);
+		Callable<ActionResult<Wo>> callable = new CallableImpl(job, jsonElement);
 
-		Wo wo = ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get(300, TimeUnit.SECONDS);
+		return ProcessPlatformExecutorFactory.get(executorSeed).submit(callable).get(300, TimeUnit.SECONDS);
 
-		result.setData(wo);
-		return result;
-	}
-
-	private Callable<Wo> callable(String job, JsonElement jsonElement) {
-		return () -> {
-			Wo wo = new Wo();
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				Business business = new Business(emc);
-				List<Work> works = emc.listEqual(Work.class, Work.job_FIELDNAME, job);
-				if (!works.isEmpty()) {
-					for (Work work : works) {
-						/* 先更新title和serial,再更新DataItem,因为旧的DataItem中也有title和serial数据. */
-						updateTitleSerial(business, work, jsonElement);
-					}
-					/* updateTitleSerial 和 updateData 方法内进行了提交 */
-					updateData(business, works.get(0), jsonElement);
-				}
-				wo.setId(job);
-			}
-			return wo;
-		};
 	}
 
 	public static class Wo extends WoId {
@@ -70,4 +48,37 @@ class ActionUpdateWithJob extends BaseAction {
 
 	}
 
+	private class CallableImpl implements Callable<ActionResult<Wo>> {
+
+		private String job;
+		private JsonElement jsonElement;
+
+		private CallableImpl(String job, JsonElement jsonElement) {
+			this.job = job;
+			this.jsonElement = jsonElement;
+		}
+
+		@Override
+		public ActionResult<Wo> call() throws Exception {
+			ActionResult<Wo> result = new ActionResult<>();
+			Wo wo = new Wo();
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
+				List<Work> works = emc.listEqual(Work.class, Work.job_FIELDNAME, job);
+				JsonElement source = getData(business, job);
+				JsonElement merge = XGsonBuilder.merge(jsonElement, source);
+				if (!works.isEmpty()) {
+					for (Work work : works) {
+						/* 先更新title和serial,再更新DataItem,因为旧的DataItem中也有title和serial数据. */
+						updateTitleSerial(business, work, merge);
+					}
+					/* updateTitleSerial 和 updateData 方法内进行了提交 */
+					updateData(business, works.get(0), merge);
+				}
+				wo.setId(job);
+			}
+			result.setData(wo);
+			return result;
+		}
+	}
 }
