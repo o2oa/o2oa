@@ -60,6 +60,14 @@ MWFForum.enableAnonymousSubject = function(){
     return MWFForum.getSystemConfigValue( MWFForum.BBS_ANONYMOUS_PERMISSION ) === "YES";
 }
 
+MWFForum.isSubjectMuted = function(){
+    return false;
+}
+
+MWFForum.isReplyMuted = function(){
+    return false;
+}
+
 MWFForum.isUseNickName = function(){
     return MWFForum.getSystemConfigValue( MWFForum.BBS_USE_NICKNAME ) === "YES";
 };
@@ -94,6 +102,10 @@ MWFForum.getSubjectCreatorName = function(d){
 
 MWFForum.getLastReplyUserName = function(d){
     return o2.name.cn( MWFForum.isUseNickName() ?  (d.latestReplyUserNickName || d.latestReplyUser): d.latestReplyUser );
+};
+
+MWFForum.isSubjectEditor = function(d){
+    return d.creatorName === layout.desktop.session.user.distinguishedName;
 };
 
 MWFForum.getReplyCreatorName = function(d){

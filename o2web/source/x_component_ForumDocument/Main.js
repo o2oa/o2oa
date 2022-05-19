@@ -630,7 +630,13 @@ MWF.xApplication.ForumDocument.Main = new Class({
 			if( this.access.isAnonymous() ){
 				this.createReplyEditor_Anonymous()
 			}else{
-				this.createReplyEditor();
+				if( MWFForum.isReplyMuted() ){
+					new Element("div", {
+						text: "您被禁言了"
+					}).inject( this.middleNode )
+				}else{
+					this.createReplyEditor();
+				}
 			}
 		}
 		//this.createTurnSubjectNode();
@@ -647,7 +653,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 		}
 
 		//if( this.access.isSubjectPublisher( this.sectionData ) ){
-		if( this.sectionPermission.subjectPublishAble ){
+		if( this.sectionPermission.subjectPublishAble && !MWFForum.isSubjectMuted() ){
 			var createActionNode = new Element("div",{
 				styles : this.css.pagingActionNode,
 				text: this.lp.createSubject
@@ -890,6 +896,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 		form.create()
 	},
 	createActionBar : function( container ){
+		var action;
 		this.actionBar = new Element("div", { "styles" : this.css.actionBar, "html" : "&nbsp;"}).inject(container);
 
 		//var action = new Element("div", {
@@ -990,6 +997,17 @@ MWF.xApplication.ForumDocument.Main = new Class({
 			});
 			//}
 
+			action = new Element("div", {
+				"styles" : this.css.actionItem,
+				"text" : this.lp.editorSetting
+			}).inject( this.actionBar );
+			action.setStyle("background-image" , "url("+this.path+"icon/action_person.png)");
+			action.addEvents({
+				"mouseover" : function(){ this.itemNode.setStyles( this.obj.css.actionItem_over ) }.bind({ obj : this, itemNode : action }),
+				"mouseout" : function(){ this.itemNode.setStyles( this.obj.css.actionItem ) }.bind({ obj : this, itemNode : action }),
+				"click" : function(){ this.setEditPermission() }.bind(this)
+			});
+
 		}
 
 		if( MWF.AC.isHotPictureManager() ){
@@ -1034,7 +1052,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 		}
 
 
-		if( this.permission.manageAble || this.permission.editAble || this.data.creatorName == this.userName ){
+		if( this.permission.manageAble || this.permission.editAble || this.data.creatorName == this.userName || MWFForum.isSubjectEditor(this.data)){
 			action = new Element("div", {
 				"styles" : this.css.actionItem,
 				"text" : this.lp.delete
@@ -1048,7 +1066,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 		}
 
 		if( this.data.typeCategory != this.lp.vote && this.data.typeCategory!="投票"){
-			if( this.permission.manageAble || this.permission.editAble || this.data.creatorName == this.userName ){
+			if( this.permission.manageAble || this.permission.editAble || this.data.creatorName == this.userName || MWFForum.isSubjectEditor(this.data) ){
 				action = new Element("div", {
 					"styles" : this.css.actionItem,
 					"text" : this.lp.edit
@@ -1062,7 +1080,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 			}
 		}
 
-		if( !this.data.stopReply ){
+		if( !this.data.stopReply && !MWFForum.isReplyMuted()){
 			if( this.isReplyPublisher ){
 				action = new Element("div", {
 					"styles" : this.css.actionItem,
@@ -1121,6 +1139,16 @@ MWF.xApplication.ForumDocument.Main = new Class({
 			app : this, lp : this.lp, css : this.css, actions : this.restActions
 		});
 		form.create()
+	},
+	setEditPermission: function(){
+		var form = new MWF.xApplication.ForumDocument.EditorSettingForm(this, this.data, {
+			onPostOk : function( id ){
+				this.reload();
+			}.bind(this)
+		},{
+			app : this, lp : this.lp, css : this.css, actions : this.restActions
+		});
+		form.create();
 	},
 	setTop : function(){
 		var form = new MWF.xApplication.ForumDocument.TopSettingForm(this, this.data, {
@@ -1502,7 +1530,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 			}
 		);
 
-		if( this.sectionPermission.subjectPublishAble ){
+		if( this.sectionPermission.subjectPublishAble && !MWFForum.isSubjectMuted()){
 			count++;
 			var createActionNode = new Element("div",{
 				styles : this.css.sidebarCreate,
@@ -1529,7 +1557,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 			)
 		}
 
-		if( !this.data.stopReply ){
+		if( !this.data.stopReply && !MWFForum.isReplyMuted() ){
 			if( this.isReplyPublisher ){
 				count++;
 				var action = new Element("div", {
@@ -2484,6 +2512,67 @@ MWF.xApplication.ForumDocument.TopSettingForm = new Class({
 				this.fireEvent("postOk");
 			}else{
 				this.app.notice( this.app.lp.setToFail , "error");
+			}
+		}
+	}
+});
+
+
+MWF.xApplication.ForumDocument.EditorSettingForm = new Class({
+	Extends: MWF.xApplication.ForumDocument.TopSettingForm,
+	Implements: [Options, Events],
+	options: {
+		"style": "default",
+		"width": "420",
+		"height": "250",
+		"hasTop": true,
+		"hasIcon": false,
+		"hasTopIcon" : true,
+		"hasTopContent" : true,
+		"hasBottom": true,
+		"title": MWF.xApplication.Forum.LP.editPermissionFormTitle,
+		"draggable": true,
+		"closeAction": true
+	},
+	_createTableContent: function () {
+		var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>" +
+			"<tr>" +
+			"   <td styles='formTableValue' item='editor'></td>" +
+			"</tr>" +
+			"</table>";
+		this.formTableArea.set("html", html);
+
+		MWF.xDesktop.requireApp("Template", "MForm", function () {
+			this.form = new MForm(this.formTableArea, this.data, {
+				style: "forum",
+				isEdited: this.isEdited || this.isNew,
+				itemTemplate: {
+					editor: { type: "org", style: {height:"100px"}, count: 0 }
+				}
+			}, this.app, this.css);
+			this.form.load();
+		}.bind(this), true);
+	},
+	ok: function (e) {
+		this.fireEvent("queryOk");
+		var data = this.form.getResult(true, ",", true, false, true);
+		if (data) {
+			var flag = true;
+			this.actions.cancelTopToSection( this.app.data.id , function( json ){
+				if (json.type == "error") {
+					this.app.notice(json.message, "error");
+					flag = false;
+				}
+			}, function(){
+				flag = false;
+			}, false )
+			if( flag ){
+				if(this.formMaskNode)this.formMaskNode.destroy();
+				this.formAreaNode.destroy();
+				this.app.notice( this.app.lp.setEditorSuccess );
+				this.fireEvent("postOk");
+			}else{
+				this.app.notice( this.app.lp.setEditorFail , "error");
 			}
 		}
 	}

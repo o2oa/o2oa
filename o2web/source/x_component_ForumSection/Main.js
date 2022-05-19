@@ -588,7 +588,7 @@ MWF.xApplication.ForumSection.Explorer = new Class({
 		}
 
 		//if( this.parent.access.isSubjectPublisher( this.parent.sectionData ) ){
-		if( this.app.sectionPermission.subjectPublishAble ){
+		if( this.app.sectionPermission.subjectPublishAble && !MWFForum.isSubjectMuted()){
 			var createActionNode = new Element("div",{
 				styles : this.css.toolbarActionNode,
 				text: this.lp.createSubject
@@ -804,7 +804,7 @@ MWF.xApplication.ForumSection.Explorer = new Class({
 			"value" : selectNotice,
 			"text" : selectNotice
 		}).inject(select);
-		var subjectTypeList = this.app.sectionData.subjectTypeList;
+		var subjectTypeList = (this.app.sectionData.subjectType || "").split("|"); //this.app.sectionData.subjectTypeList;
 		subjectTypeList.each( function(subjectType, i){
 			if( !subjectType )return;
 			if(subjectTypeName!="" && subjectTypeName==subjectType){

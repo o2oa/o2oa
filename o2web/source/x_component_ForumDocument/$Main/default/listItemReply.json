@@ -104,7 +104,7 @@
           "replyAction": {
             "text" : "reply",
             "action": "createReply",
-            "condition": "function( d ){ return !d.stopReply && this.explorer.isReplyPublisher }",
+            "condition": "function( d ){ return !d.stopReply && this.explorer.isReplyPublisher && !MWFForum.isReplyMuted() }",
             "event" : "mouseover^^function( itemNode, ev ){ itemNode.setStyles( this.css.replyAction_over ) }##mouseout^^function( itemNode, ev ){ itemNode.setStyles( this.css.replyAction ) }"
           },
           "editAction": {

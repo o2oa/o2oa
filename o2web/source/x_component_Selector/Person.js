@@ -1910,6 +1910,8 @@ MWF.xApplication.Selector.Person.Item = new Class({
     load: function(){
         if( this.clazz === "Item" ){
             this.selector.fireEvent("queryLoadItem",[this]);
+        }else if( this.clazz === "ItemSelected" ){
+            this.selector.fireEvent("queryLoadItemSelected",[this]);
         }
 
         if( !this.node ){
@@ -1973,6 +1975,8 @@ MWF.xApplication.Selector.Person.Item = new Class({
 
         if( this.clazz === "Item" ) {
             this.selector.fireEvent("postLoadItem", [this]);
+        }else if( this.clazz === "ItemSelected" ){
+            this.selector.fireEvent("postLoadItemSelected",[this]);
         }
     },
     loadSubItem: function(){},

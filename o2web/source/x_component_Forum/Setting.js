@@ -97,6 +97,12 @@ MWF.xApplication.Forum.Setting = new Class({
                 "icon" :"squared.png",
                 "action" : "openSectionSetting",
                 "enable": this.app.access.isAdmin() || permission.bbsAdmin || permission.bbsForumAdmin || permission.bbsSectionAdmin
+            },
+            {
+                "title" : MWF.xApplication.Forum.LP.muteSettingFormTitle,
+                "icon" :"mute.png",
+                "action" : "openMuteSetting",
+                "enable": this.app.access.isAdmin() || permission.bbsAdmin
             }
         ].filter(function(data){
             return data.enable;
@@ -163,6 +169,15 @@ MWF.xApplication.Forum.Setting = new Class({
             delete this.explorer;
         }
         this.explorer = new MWF.xApplication.Forum.Setting.RoleSettingExplorer(this.contentDiv, this.app, this,{style:this.options.style});
+        this.explorer.load();
+    },
+    openMuteSetting: function(){
+        if( this.contentDiv )this.contentDiv.empty();
+        if( this.explorer ){
+            this.explorer.destroy();
+            delete this.explorer;
+        }
+        this.explorer = new MWF.xApplication.Forum.Setting.MuteSettingExplorer(this.contentDiv, this.app, this,{style:this.options.style});
         this.explorer.load();
     },
     openPermissionSetting: function(){
@@ -1736,6 +1751,212 @@ MWF.xApplication.Forum.Setting.SystemSettingForm = new Class({
 });
 
 
+
+MWF.xApplication.Forum.Setting.MuteSettingExplorer = new Class({
+    Extends: MWF.widget.Common,
+    Implements: [Options, Events],
+    options: {
+        "style": "default"
+    },
+    initialize: function (container, app, parent, options) {
+        this.container = container;
+        this.parent = parent;
+        this.app = app;
+        this.css = this.parent.css;
+        this.lp = this.app.lp;
+    },
+    load: function () {
+        this.container.empty();
+        if( this.app.access.isAdmin() ){
+            this.loadToolbar();
+        }
+        this.loadView();
+    },
+    destroy : function(){
+        if(this.resizeWindowFun)this.app.removeEvent("resize",this.resizeWindowFun);
+        this.view.destroy();
+    },
+    loadToolbar: function(){
+        this.toolbar = new Element("div",{
+            styles : this.css.toolbar
+        }).inject(this.container);
+
+        this.createActionNode = new Element("div",{
+            styles : this.css.toolbarActionNode,
+            text: this.lp.addMutePerson
+        }).inject(this.toolbar);
+        this.createActionNode.addEvent("click",function(){
+            var form = new MWF.xApplication.Forum.Setting.MuteSettingForm(this, {}, {
+                onPostOk : function(){
+                    // this.app.access.getUserPermission(function () {
+                        this.view.reload();
+                    // }.bind(this), true);
+                }.bind(this)});
+            form.create();
+        }.bind(this));
+
+        this.fileterNode = new Element("div",{
+            styles : this.css.fileterNode
+        }).inject(this.toolbar);
+    },
+    loadView : function(){
+        this.viewContainer = Element("div",{
+            "styles" : this.css.viewContainer
+        }).inject(this.container);
+
+        this.resizeWindow();
+        this.resizeWindowFun = this.resizeWindow.bind(this);
+        this.app.addEvent("resize", this.resizeWindowFun );
+
+        this.view = new MWF.xApplication.Forum.Setting.MuteSettingView( this.viewContainer, this.app, this, {
+            templateUrl : this.parent.path+"listItemMute.json",
+            scrollEnable : true
+        } );
+        this.view.load();
+    },
+    resizeWindow: function(){
+        var size = this.container.getSize();
+        if( this.toolbar ){
+            this.viewContainer.setStyles({"height":(size.y-65)+"px"});
+        }else{
+            this.viewContainer.setStyles({"height":(size.y)+"px"});
+        }
+    }
+});
+
+MWF.xApplication.Forum.Setting.MuteSettingView = new Class({
+    Extends: MWF.xApplication.Template.Explorer.ComplexView,
+    _createDocument: function(data){
+        return new MWF.xApplication.Forum.Setting.MuteSettingDocument(this.viewNode, data, this.explorer, this);
+    },
+
+    _getCurrentPageData: function(callback, count){
+        if (!count)count = 20;
+        //var id = (this.items.length) ? this.items[this.items.length - 1].data.id : "(0)";
+        //var filter = this.filterData || {};
+        this.actions.listSystemSettingAll(function (json) {
+            if (callback)callback(json);
+        }.bind(this))
+    },
+    _removeDocument: function(documentData, all){
+
+    },
+    _openDocument: function( documentData ){
+        var form = new MWF.xApplication.Forum.Setting.MuteSettingForm(this, documentData, {
+            onPostOk : function(){
+                this.reload();
+            }.bind(this)
+        });
+        if( MWF.AC.isBBSManager()  ){
+            form.edit();
+        }else{
+            form.open();
+        }
+    }
+
+});
+
+MWF.xApplication.Forum.Setting.MuteSettingDocument = new Class({
+    Extends: MWF.xApplication.Template.Explorer.ComplexDocument,
+    _queryCreateDocumentNode:function( itemData ){
+    },
+    _postCreateDocumentNode: function( itemNode, itemData ){
+
+    },
+    unmute: function (e) {
+        var lp = this.lp || this.view.lp || this.app.lp;
+        var text = lp.unmuteDocument.replace(/{person}/g, this.data.personName);
+        var _self = this;
+        this.node.setStyles(this.css.documentNode_remove);
+        this.readyRemove = true;
+        this.view.lockNodeStyle = true;
+
+        this.app.confirm("warn", e, lp.unmuteTitle, text, 350, 120, function () {
+            _self.view._removeDocument(_self.data, false);
+            _self.view.lockNodeStyle = false;
+            this.close();
+        }, function () {
+            _self.node.setStyles(_self.css.documentNode);
+            _self.readyRemove = false;
+            _self.view.lockNodeStyle = false;
+            this.close();
+        });
+    }
+});
+
+MWF.xApplication.Forum.Setting.MuteSettingForm = new Class({
+    Extends: MPopupForm,
+    Implements: [Options, Events],
+    options: {
+        "style": "default",
+        "width": "600",
+        "height": "320",
+        "hasTop": true,
+        "hasIcon": false,
+        "hasTopIcon" : true,
+        "hasTopContent" : true,
+        "hasBottom": true,
+        "title": MWF.xApplication.Forum.LP.mute1SettingFormTitle,
+        "draggable": true,
+        "closeAction": true
+    },
+    _createTableContent: function () {
+        var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>" +
+            "<tr><td styles='formTableTitle' lable='personName' width='20%'></td>" +
+            "    <td styles='formTableValue' item='personName' width='80%'></td></tr>" +
+            "<tr><td styles='formTableTitle' lable='dayCount'></td>" +
+            "    <td styles='formTableValue' item='dayCount'></td></tr>" +
+            "<tr><td styles='formTableTitle' lable='reason'></td>" +
+            "    <td styles='formTableValue' item='reason'></td></tr>" +
+            "<tr><td styles='formTableTitle'></td>" +
+            "    <td styles='formTableValue'>"+this.lp.dayCountNote+"</td></tr>" +
+            "</table>";
+        this.formTableArea.set("html", html);
+
+        MWF.xDesktop.requireApp("Template", "MForm", function () {
+            this.form = new MForm(this.formTableArea, this.data, {
+                style: "execution",
+                isEdited: this.isEdited || this.isNew,
+                itemTemplate: {
+                    personName: {text: this.lp.mutePerson, type : "org", notEmpty: true, orgOptions: {
+                            onPostLoadItem: function(item){
+                                if(item.data.nickName){
+                                    item.textNode.set("text", item.data.name + "("+ item.data.nickName +")")
+                                }else{
+                                    item.textNode.set("text", item.data.name)
+                                }
+                            },
+                            onPostLoadItemSelected: function(item){
+                                if(item.data.nickName){
+                                    item.textNode.set("text", item.data.name + "("+ item.data.nickName +")")
+                                }else{
+                                    item.textNode.set("text", item.data.name)
+                                }
+                            }
+                        }, orgWidgetOptions: {
+                            onPostLoad: function(){
+                                if(this.data.nickName){
+                                    this.node.set("text", this.data.name + "("+ this.data.nickName +")")
+                                }else{
+                                    this.node.set("text", this.data.name)
+                                }
+                            }
+                        }
+                     },
+                    dayCount: {text: this.lp.dayCount, notEmpty: true, tType : "number", defaultValue: 7 },
+                    reason: {text: this.lp.multReason, notEmpty: true, type : "textarea" }
+                }
+            }, this.app);
+            this.form.load();
+        }.bind(this), true);
+    },
+    _ok: function (data, callback) {
+        this.app.restActions.saveSystemSetting( data, function(json){
+            if( callback )callback(json);
+            this.fireEvent("postOk")
+        }.bind(this));
+    }
+});
 
 MWF.xApplication.Forum.Setting.SelectOrgForm = new Class({
     Extends: MPopupForm,

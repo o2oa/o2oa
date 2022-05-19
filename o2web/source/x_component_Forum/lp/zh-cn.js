@@ -54,6 +54,7 @@ MWF.xApplication.Forum.LP = {
 	"createSection" : "创建版块",
 	"categoryFormTitle" : "分区设置",
 	"sectionFormTitle" : "版块设置",
+	"muteSettingFormTitle": "禁言管理",
 
 	"baseSetting" : "基本设置",
 	"permissionSetting" : "权限设置",
@@ -344,6 +345,21 @@ MWF.xApplication.Forum.LP = {
 	"gradeNotice":"请评分后提交",
 
 	"selectTargetSection" : "选择移动到的版块",
-	"moveSuccess": "帖子已经移动到{section}"
+	"moveSuccess": "帖子已经移动到{section}",
+
+	"editPermissionFormTitle": "设置编辑权限",
+	"editorSetting": "编辑者",
+	"setEditorSuccess": "设置编辑权限成功！",
+	"setEditorFail": "设置编辑权限出错！",
+
+	"addMutePerson": "添加禁言人员",
+	"mute1SettingFormTitle": "禁言人员设置",
+	"mutePerson": "禁言人员",
+	"dayCount": "禁言天数",
+	"dayCountNote": "到期后自动解除禁言",
+	"unmute": "解除禁言",
+	"unmuteTitle": "解除禁言确认",
+	"unmuteDocument": "确定要解除禁言:{person}？",
+	"multReason": "禁言理由"
 
 };
