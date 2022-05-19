@@ -1,5 +1,6 @@
 package com.x.processplatform.assemble.surface.jaxrs.task;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -39,26 +40,28 @@ public class V2Reset extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(V2Reset.class);
 
+	// 当前的待办
 	private Task task;
-	private List<TaskCompleted> taskCompleteds;
+	// 当前的workLog,产生record必须
 	private WorkLog workLog;
+	// 当前的work
 	private Work work;
+	// 如果在待办身份矩阵中删除自己,那么先把自己的待办转为不参与流程的已办
+	private List<TaskCompleted> taskCompleteds;
 	private final String series = StringTools.uniqueToken();
 	private String taskCompletedId;
 	private Wi wi;
 	private EffectivePerson effectivePerson;
-	private List<Task> newlyTasks;
-	private Record rec;
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
-		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 		ActionResult<Wo> result = new ActionResult<>();
 		this.wi = this.convertToWrapIn(jsonElement, Wi.class);
 		this.effectivePerson = effectivePerson;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 
-			init(business, id);
+			init(business, wi.getTask());
 
 			WoControl control = business.getControl(effectivePerson, this.task, WoControl.class);
 
@@ -75,11 +78,12 @@ public class V2Reset extends BaseAction {
 
 		this.processingWork();
 
+		List<Task> newlyTasks = new ArrayList<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			this.newlyTasks = emc.listEqual(Task.class, Task.series_FIELDNAME, this.series);
+			newlyTasks.addAll(emc.listEqual(Task.class, Task.series_FIELDNAME, this.series));
 		}
 
-		rec = this.processingRecord(this.workLog, this.task, this.taskCompletedId, this.newlyTasks);
+		Record rec = this.processingRecord(this.workLog, this.task, this.taskCompletedId, newlyTasks);
 
 		if (StringUtils.isNotEmpty(this.taskCompletedId)) {
 			this.updateNextTaskIdentity(this.taskCompletedId, rec.getProperties().getNextManualTaskIdentityList(),
@@ -88,7 +92,7 @@ public class V2Reset extends BaseAction {
 
 		if (!taskCompleteds.isEmpty()) {
 			this.updatePrevTaskIdentity(
-					ListTools.extractField(this.newlyTasks, JpaObject.id_FIELDNAME, String.class, true, true),
+					ListTools.extractField(newlyTasks, JpaObject.id_FIELDNAME, String.class, true, true),
 					taskCompleteds, this.task);
 		}
 		Wo wo = Wo.copier.copy(rec);
@@ -97,22 +101,26 @@ public class V2Reset extends BaseAction {
 	}
 
 	private void init(Business business, String id) throws Exception {
+
 		this.task = business.entityManagerContainer().find(id, Task.class);
 		if (null == task) {
 			throw new ExceptionEntityNotExist(id, Task.class);
 		}
+
 		this.workLog = business.entityManagerContainer().firstEqualAndEqual(WorkLog.class, WorkLog.job_FIELDNAME,
 				task.getJob(), WorkLog.fromActivityToken_FIELDNAME, task.getActivityToken());
-
 		if (null == workLog) {
 			throw new ExceptionEntityNotExist(WorkLog.class);
 		}
 
 		this.work = business.entityManagerContainer().find(task.getWork(), Work.class);
-
 		if (null == work) {
 			throw new ExceptionEntityNotExist(id, Work.class);
 		}
+		if (!work.getManualTaskIdentityMatrix().contains(task.getIdentity())) {
+			throw new ExceptionIdentityNotInMatrix(task.getIdentity());
+		}
+		// 为办理的前的所有已办,用于在record中记录当前待办转为已办时的上一处理人
 		this.taskCompleteds = business.entityManagerContainer().listEqual(TaskCompleted.class,
 				TaskCompleted.activityToken_FIELDNAME, task.getActivityToken());
 
@@ -128,7 +136,7 @@ public class V2Reset extends BaseAction {
 		if (StringUtils.isEmpty(resp.getId())) {
 			throw new ExceptionTaskProcessing(task.getId());
 		} else {
-			/* 获得已办id */
+			// 获得已办id
 			this.taskCompletedId = resp.getId();
 		}
 	}
@@ -139,9 +147,10 @@ public class V2Reset extends BaseAction {
 		req.setExtendList(this.wi.getExtendList());
 		req.setAddAfterList(this.wi.getAddAfterList());
 		req.setRemove(this.wi.getRemove());
-		WrapBoolean resp = ThisApplication.context().applications()
-				.putQuery(x_processplatform_service_processing.class,
-						Applications.joinQueryUri("task", "v2", task.getId(), "reset"), req, task.getJob())
+		req.setTask(this.wi.getTask());
+		WrapBoolean resp = ThisApplication
+				.context().applications().putQuery(x_processplatform_service_processing.class,
+						Applications.joinQueryUri("task", "v2", "reset"), req, task.getJob())
 				.getData(WrapBoolean.class);
 		if (BooleanUtils.isNotTrue(resp.getValue())) {
 			throw new ExceptionReset(task.getId());
@@ -164,7 +173,7 @@ public class V2Reset extends BaseAction {
 	private Record processingRecord(WorkLog workLog, Task task, String taskCompletedId, List<Task> newlyTasks)
 			throws Exception {
 		Record r = RecordBuilder.ofTaskProcessing(Record.TYPE_RESET, workLog, task, taskCompletedId, newlyTasks);
-		RecordBuilder.processing(rec);
+		RecordBuilder.processing(r);
 		return r;
 	}
 

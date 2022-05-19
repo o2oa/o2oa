@@ -26,18 +26,18 @@ class V2Reset extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(V2Reset.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 
-		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 
 		final Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 
 		Task task = null;
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			task = emc.fetch(id, Task.class, ListTools.toList(Task.job_FIELDNAME));
+			task = emc.fetch(wi.getTask(), Task.class, ListTools.toList(Task.job_FIELDNAME));
 			if (null == task) {
-				throw new ExceptionEntityNotExist(id, Task.class);
+				throw new ExceptionEntityNotExist(wi.getTask(), Task.class);
 			}
 		}
 

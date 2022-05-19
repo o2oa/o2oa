@@ -194,24 +194,6 @@ public class TaskAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "V2_重置处理人.", action = V2Reset.class)
-	@PUT
-	@Path("v2/{id}/reset")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void v2Reset(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("标识") @PathParam("id") String id, JsonElement jsonElement) {
-		ActionResult<V2Reset.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new V2Reset().execute(effectivePerson, id, jsonElement);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
-
 	@JaxrsMethodDescribe(value = "提醒.", action = ActionPress.class)
 	@GET
 	@Path("{id}/press")
@@ -261,6 +243,24 @@ public class TaskAction extends StandardJaxrsAction {
 			result = new V2Resume().execute(effectivePerson, id);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "V2_重置处理人.", action = V2Reset.class)
+	@PUT
+	@Path("v2/reset")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void v2Reset(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
+		ActionResult<V2Reset.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2Reset().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));

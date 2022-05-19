@@ -6,7 +6,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
@@ -324,24 +323,13 @@ public class ManualProcessor extends AbstractManualProcessor {
 	@Override
 	protected List<Work> executing(AeiObjects aeiObjects, Manual manual) throws Exception {
 		List<Work> results = new ArrayList<>();
-		Object o;
 		ManualTaskIdentityMatrix matrix = executingManualTaskIdentityMatrix(aeiObjects, manual);
-		System.out.println("!!!!!!!!!!!!!!!!!@@@@@@@@@@@@@@@");
-		System.out.println(gson.toJson(matrix));
-		System.out.println(matrix.hashCode() + ":" + aeiObjects.getWork().getManualTaskIdentityMatrix().hashCode());
-		System.out.println(gson.toJson(aeiObjects.getWork().getManualTaskIdentityMatrix()));
-		System.out.println("!!!!!!!!!!!!!!!!!@@@@@@@@@@@@@@@");
 		List<TaskCompleted> taskCompleteds = aeiObjects
 				.getJoinInquireTaskCompletedsWithActivityToken(aeiObjects.getWork().getActivityToken());
 		executingCompletedIdentityInTaskCompleteds(aeiObjects, matrix, taskCompleteds);
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes().push(Signal.manualExecute(aeiObjects.getWork().getActivityToken(), manual,
 				Objects.toString(manual.getManualMode(), ""), matrix.flat()));
-		System.out.println("!!!!!!!!!!!!!!!!!before");
-		System.out.println(gson.toJson(matrix));
-		System.out.println(matrix.hashCode() + ":" + aeiObjects.getWork().getManualTaskIdentityMatrix().hashCode());
-		System.out.println(gson.toJson(aeiObjects.getWork().getManualTaskIdentityMatrix()));
-		System.out.println("!!!!!!!!!!!!!!!!!before");
 		if (matrix.isEmpty()) {
 			results.add(aeiObjects.getWork());
 		} else {
@@ -362,12 +350,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 				results.add(aeiObjects.getWork());
 			}
 		}
-		System.out.println("!!!!!!!!!!!!!!!!!after");
-		System.out.println(gson.toJson(matrix));
-		System.out.println(matrix.hashCode() + ":" + aeiObjects.getWork().getManualTaskIdentityMatrix().hashCode());
-		System.out.println(gson.toJson(aeiObjects.getWork().getManualTaskIdentityMatrix()));
-		System.out.println("!!!!!!!!!!!!!!!!!after");
-		// aeiObjects.getWork().setManualTaskIdentityMatrix(matrix);
+		aeiObjects.getWork().setManualTaskIdentityMatrix(matrix);
 		return results;
 	}
 
@@ -455,14 +438,17 @@ public class ManualProcessor extends AbstractManualProcessor {
 		} else if (aeiObjects.getRoutes().size() > 1) {
 			// 存在多条路由
 			List<TaskCompleted> taskCompleteds = aeiObjects
-					.getJoinInquireTaskCompletedsWithActivityToken(aeiObjects.getWork().getActivityToken());
-			String name = this.choiceRouteName(taskCompleteds, aeiObjects.getRoutes());
+					.getJoinInquireTaskCompletedsWithActivityToken(aeiObjects.getWork().getActivityToken()).stream()
+					.sorted(Comparator.comparing(TaskCompleted::getCreateTime)).collect(Collectors.toList());
+			String name = this.choiceRouteName(taskCompleteds, manual, aeiObjects.getRoutes());
 			for (Route o : aeiObjects.getRoutes()) {
 				if (o.getName().equalsIgnoreCase(name)) {
 					results.add(o);
 					break;
 				}
 			}
+		} else {
+			throw new ExceptionManualNotRoute(manual.getId());
 		}
 
 		if (!results.isEmpty()) {
@@ -473,49 +459,130 @@ public class ManualProcessor extends AbstractManualProcessor {
 		return results;
 	}
 
-	// 通过已办存根选择某条路由
-	private String choiceRouteName(List<TaskCompleted> list, List<Route> routes) throws Exception {
+	/**
+	 * 选择离开活动的路由
+	 * 
+	 * @param taskCompleteds 按创建时间正序排列好的已办
+	 * @param manual         人工活动节点
+	 * @param routes         离开活动节点的路由列表
+	 * @return 路由名称
+	 * @throws Exception
+	 */
+	private String choiceRouteName(List<TaskCompleted> taskCompleteds, Manual manual, List<Route> routes)
+			throws Exception {
 		String result = "";
-		List<String> names = new ArrayList<>();
-		ListTools.trim(list, false, false).stream().forEach(o -> names.add(o.getRouteName()));
+		// 将已办中的路由选择抽取出来
+		List<String> selectedRouteNames = ListTools.extractField(taskCompleteds, TaskCompleted.routeName_FIELDNAME,
+				String.class, false, false);
 		// 进行优先路由的判断
 		// 已经开始选择路由,如果选择了soleDirect那么就直接返回了,如果没有选择这个路由在进行sole的判断,顺序是 soleDirct -> sole
-		// -> max.
-		Route soleRoute = routes.stream().filter(o -> BooleanUtils.isTrue(o.getSoleDirect())).findFirst().orElse(null);
-		if ((null != soleRoute) && names.contains(soleRoute.getName())) {
-			result = soleRoute.getName();
-		} else {
-			soleRoute = routes.stream().filter(o -> BooleanUtils.isTrue(o.getSole())).findFirst().orElse(null);
-			if ((null != soleRoute) && names.contains(soleRoute.getName())) {
-				result = soleRoute.getName();
-			} else {
-				// 进行默认的策略,选择占比多的
-				result = maxCountOrLatest(list);
-			}
+		// -> max -> latest.
+		result = choiceSoleDirectIfExist(selectedRouteNames, routes);
+		if (StringUtils.isEmpty(result)) {
+			result = choiceSoleIfExist(selectedRouteNames, routes);
 		}
 		if (StringUtils.isEmpty(result)) {
+			switch (manual.getManualMode()) {
+			case parallel:
+				result = choiceMaxCountOrLatest(taskCompleteds, routes);
+				break;
+			case queue:
+			case grab:
+			case single:
+			default:
+				result = choiceLatest(selectedRouteNames, routes);
+			}
+		}
+
+		if (StringUtils.isEmpty(result)) {
 			throw new ExceptionChoiceRouteNameError(
-					ListTools.extractProperty(list, JpaObject.id_FIELDNAME, String.class, false, false));
+					ListTools.extractProperty(selectedRouteNames, JpaObject.id_FIELDNAME, String.class, false, false));
 		}
 		return result;
 	}
 
-	private String maxCountOrLatest(List<TaskCompleted> list) {
-		Map<String, List<TaskCompleted>> map = list.stream()
-				.collect(Collectors.groupingBy(TaskCompleted::getRouteName));
-		Optional<Entry<String, List<TaskCompleted>>> optional = map.entrySet().stream().min((o1, o2) -> {
-			int c = o2.getValue().size() - o1.getValue().size();
-			if (c == 0) {
-				Date d1 = o1.getValue().stream().sorted(Comparator.comparing(TaskCompleted::getCreateTime).reversed())
-						.findFirst().get().getCreateTime();
-				Date d2 = o2.getValue().stream().sorted(Comparator.comparing(TaskCompleted::getCreateTime).reversed())
-						.findFirst().get().getCreateTime();
-				return ObjectUtils.compare(d2, d1);
-			} else {
-				return c;
+	/**
+	 * 判断是否有选择了直接返回优先路由的路由决策被选择,如果有就直接返回该路由名称,这里的遍历顺序需要保持正序,先选择先执行.
+	 * 
+	 * @param list
+	 * @param routes
+	 * @return
+	 */
+	private String choiceSoleDirectIfExist(List<String> list, List<Route> routes) {
+		List<String> names = routes.stream().filter(r -> BooleanUtils.isTrue(r.getSoleDirect())).map(Route::getName)
+				.collect(Collectors.toList());
+		for (String str : list) {
+			if (names.contains(str)) {
+				return str;
 			}
-		});
-		return optional.isPresent() ? optional.get().getKey() : null;
+		}
+		return null;
+	}
+
+	/**
+	 * 判断是否有选择了优先路由的路由决策被选择,如果有就直接返回该路由名称,这里的遍历顺序需要保持正序,先选择先执行.
+	 * 
+	 * @param list
+	 * @param routes
+	 * @return
+	 */
+	private String choiceSoleIfExist(List<String> list, List<Route> routes) {
+		List<String> names = routes.stream().filter(r -> BooleanUtils.isTrue(r.getSole())).map(Route::getName)
+				.collect(Collectors.toList());
+		for (String str : list) {
+			if (names.contains(str)) {
+				return str;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 已办中获取数量最多的路由决策,如果有组路由决策数量一样多,那么选择时间上最后被选择的路由决策,获取后需要进行判断是否在routes列表中
+	 * 
+	 * @param list
+	 * @param routes
+	 * @return
+	 * @throws Exception
+	 */
+	private String choiceMaxCountOrLatest(List<TaskCompleted> list, List<Route> routes) throws Exception {
+		List<String> names = ListTools.extractField(routes, Route.name_FIELDNAME, String.class, false, false);
+		return list.stream().collect(Collectors.groupingBy(TaskCompleted::getRouteName)).entrySet().stream()
+				.sorted((o1, o2) -> {
+					int c = o2.getValue().size() - o1.getValue().size();
+					if (c == 0) {
+						Date d1 = o1.getValue().stream()
+								.sorted(Comparator.comparing(TaskCompleted::getCreateTime).reversed()).findFirst().get()
+								.getCreateTime();
+						Date d2 = o2.getValue().stream()
+								.sorted(Comparator.comparing(TaskCompleted::getCreateTime).reversed()).findFirst().get()
+								.getCreateTime();
+						return ObjectUtils.compare(d2, d1);
+					} else {
+						return c;
+					}
+				}).map(Entry::getKey).filter(names::contains).findFirst().orElse(null);
+	}
+
+	/**
+	 * 取得最后一个办理的路由决策,需要判断是否在路由列表中
+	 * 
+	 * @param list   通过已办取得的用户选择的路由列表,默认是正序
+	 * @param routes 活动可选择的路由
+	 * @return
+	 */
+	private String choiceLatest(List<String> list, List<Route> routes) {
+		if (ListTools.isEmpty(list)) {
+			return null;
+		} else {
+			List<String> names = routes.stream().map(Route::getName).collect(Collectors.toList());
+			for (int i = list.size() - 1; i >= 0; i--) {
+				if (names.contains(list.get(i))) {
+					return list.get(i);
+				}
+			}
+			return null;
+		}
 	}
 
 	// 是否有优先路由

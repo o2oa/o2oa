@@ -929,15 +929,15 @@ public class TaskAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "V2_重置待办,将之前的待办转为已办,opinion:办理意见,routeName:选择路由,identityList:新的办理人.", action = V2Reset.class)
 	@PUT
-	@Path("v2/{id}/reset")
+	@Path("v2/reset")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void V2Reset(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("标识") @PathParam("id") String id, JsonElement jsonElement) {
+			JsonElement jsonElement) {
 		ActionResult<V2Reset.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new V2Reset().execute(effectivePerson, id, jsonElement);
+			result = new V2Reset().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -947,15 +947,15 @@ public class TaskAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = V2Reset.class)
 	@POST
-	@Path("v2/{id}/reset/mockputtopost")
+	@Path("v2/reset/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void V2ResetMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("标识") @PathParam("id") String id, JsonElement jsonElement) {
+			JsonElement jsonElement) {
 		ActionResult<V2Reset.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new V2Reset().execute(effectivePerson, id, jsonElement);
+			result = new V2Reset().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
