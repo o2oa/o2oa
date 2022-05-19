@@ -340,33 +340,24 @@ abstract class BaseAction extends StandardJaxrsAction {
 	}
 
 	/**
-	 * ActionUpdateWithJob的校验方法
+	 * ActionUpdateWithJob的权限校验方法
 	 * 
 	 * @param effectivePerson
 	 * @param job
 	 * @param jsonElement
-	 * @throws ExceptionNotJsonObject
 	 * @throws Exception
 	 * @throws ExceptionJobNotExist
 	 * @throws ExceptionWorkAccessDenied
 	 */
-	protected void checkUpdateWithJob(EffectivePerson effectivePerson, String job, JsonElement jsonElement)
+	protected void checkUpdateWithJobControl(EffectivePerson effectivePerson, Business business, String job)
 			throws Exception {
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			// 防止提交空数据清空data
-			if (null == jsonElement || (!jsonElement.isJsonObject())) {
-				throw new ExceptionNotJsonObject();
-			}
-			Business business = new Business(emc);
-			// 通过job获取任意一个work用于判断权限
-			Work work = emc.firstEqual(Work.class, Work.job_FIELDNAME, job);
-			if (null == work) {
-				throw new ExceptionJobNotExist(job);
-			}
-			if (!business.editable(effectivePerson, work)) {
-				throw new ExceptionWorkAccessDenied(effectivePerson.getDistinguishedName(), work.getTitle(),
-						work.getId());
-			}
+		// 通过job获取任意一个work用于判断权限
+		Work work = business.entityManagerContainer().firstEqual(Work.class, Work.job_FIELDNAME, job);
+		if (null == work) {
+			throw new ExceptionJobNotExist(job);
+		}
+		if (!business.editable(effectivePerson, work)) {
+			throw new ExceptionWorkAccessDenied(effectivePerson.getDistinguishedName(), work.getTitle(), work.getId());
 		}
 	}
 

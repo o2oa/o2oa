@@ -46,11 +46,9 @@ class ActionUpdateWithWorkPath0 extends BaseAction {
 					if (null == work) {
 						throw new ExceptionEntityNotExist(id, Work.class);
 					}
-					wo.setId(work.getId());
-					/* 先更新title和serial,再更新DataItem,因为旧的DataItem中也有title和serial数据. */
-					updateTitleSerial(business, work, jsonElement);
 					updateData(business, work, jsonElement, path0);
 					/* updateTitleSerial 和 updateData 方法内进行了提交 */
+					wo.setId(work.getId());
 				}
 				return "";
 			}
