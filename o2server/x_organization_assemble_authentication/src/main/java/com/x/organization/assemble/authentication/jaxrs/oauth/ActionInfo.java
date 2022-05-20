@@ -95,6 +95,9 @@ class ActionInfo extends BaseAction {
 		if (optional.isPresent()) {
 			return (CompiledScript) optional.get();
 		} else {
+			System.out.println("!!!!!###");
+			System.out.println(ScriptingFactory.functionalization(text));
+			System.out.println("!!!!!###");
 			CompiledScript compiledScript = ScriptingFactory.functionalizationCompile(text);
 			CacheManager.put(cache, cacheKey, compiledScript);
 			return compiledScript;
@@ -125,7 +128,7 @@ class ActionInfo extends BaseAction {
 			}
 		} else {
 			Person person = business.entityManagerContainer().find(oauthCode.getPerson(), Person.class);
-			ScriptContext scriptContext = new SimpleScriptContext();
+			ScriptContext scriptContext = ScriptingFactory.scriptContextEvalInitialServiceScript();
 			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_SERVICE_PERSON,
 					person);
 			for (String str : StringUtils.split(oauthCode.getScope(), ",")) {
