@@ -3422,7 +3422,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     downloadAll: function () {
         var htmlFormId = "";
         o2.Actions.load("x_processplatform_assemble_surface").AttachmentAction.uploadWorkInfo(this.businessData.work.id, "pdf", {
-            "workHtml": this.app.content.get("html"),
+            "workHtml": encodeURIComponent(this.app.content.get("html")),
             "pageWidth": 1000
         }, function (json) {
             htmlFormId = json.data.id;
@@ -4562,7 +4562,7 @@ debugger;
                     if (_self.mask) { _self.mask.hide(); _self.mask = null; }
 
                     _self.fireEvent("afterReaded");
-                    
+
                     if (layout.mobile) {
                         _self.finishOnMobile();
                     } else {
@@ -4693,7 +4693,7 @@ debugger;
         }.bind(this))
     },
 
-    // 打开工作关联聊天 
+    // 打开工作关联聊天
     openIMChatStarter: function(jobId) {
         MWF.xDesktop.requireApp("IMV2", "Starter", function () {
             var starter = new MWF.xApplication.IMV2.Starter({}, this.app, {
@@ -4740,7 +4740,7 @@ debugger;
         }.bind(this));
     },
 
-    //移动端页面 工作处理完成后 
+    //移动端页面 工作处理完成后
     finishOnMobile: function () {
         var _self = this;
         //新建检查
@@ -4802,7 +4802,7 @@ debugger;
             }
         }
     },
-    // 判断是否是钉钉pc上 
+    // 判断是否是钉钉pc上
     dingTalkPcCloseOrAppClose: function () {
         if ((o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC()) && layout.inBrowser) { // 如果是钉钉pc上 并且是浏览器模式
             var centerUrl = o2.filterUrl("../x_desktop/app.html?app=process.TaskCenter");
