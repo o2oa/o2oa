@@ -1438,11 +1438,11 @@ MWF.xApplication.process.Xform.DatagridPC = new Class(
 				this._loadDatagridStyle();
 			}
 		},
-		/**
-		 * @summary 重置数据网格的值为默认值或置空。
-		 *  @example
-		 * this.form.get('fieldId').resetData();
-		 */
+		// /**
+		//  * @summary 重置数据网格的值为默认值或置空。
+		//  *  @example
+		//  * this.form.get('fieldId').resetData();
+		//  */
 		resetData: function(){
 			this.setData(this._getValue());
 		},

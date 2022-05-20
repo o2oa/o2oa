@@ -462,11 +462,11 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
     _loadValue: function(){
         var data = this._getBusinessData();
     },
-    /**
-     * @summary 重置组件的值为默认值或置空。
-     *  @example
-     * this.form.get('fieldId').resetData();
-     */
+    // /**
+    //  * @summary 重置组件的值为默认值或置空。
+    //  *  @example
+    //  * this.form.get('fieldId').resetData();
+    //  */
     resetData: function(){
         this.setData(this._getBusinessData());
     },
