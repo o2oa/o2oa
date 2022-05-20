@@ -1904,12 +1904,12 @@ MWF.xApplication.Forum.Setting.MuteSettingForm = new Class({
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>" +
             "<tr><td styles='formTableTitle' lable='personName' width='20%'></td>" +
             "    <td styles='formTableValue' item='personName' width='80%'></td></tr>" +
-            "<tr><td styles='formTableTitle' lable='dayCount'></td>" +
-            "    <td styles='formTableValue' item='dayCount'></td></tr>" +
+            "<tr><td styles='formTableTitle' lable='unmuteDate'></td>" +
+            "    <td styles='formTableValue' item='unmuteDate'></td></tr>" +
             "<tr><td styles='formTableTitle' lable='reason'></td>" +
             "    <td styles='formTableValue' item='reason'></td></tr>" +
             "<tr><td styles='formTableTitle'></td>" +
-            "    <td styles='formTableValue'>"+this.lp.dayCountNote+"</td></tr>" +
+            "    <td styles='formTableValue'>"+this.lp.unmuteDateNote+"</td></tr>" +
             "</table>";
         this.formTableArea.set("html", html);
 
@@ -1918,6 +1918,7 @@ MWF.xApplication.Forum.Setting.MuteSettingForm = new Class({
                 style: "execution",
                 isEdited: this.isEdited || this.isNew,
                 itemTemplate: {
+                    updateTime: {text: this.lp.multReason, notEmpty: true, type : "textarea" },
                     personName: {text: this.lp.mutePerson, type : "org", notEmpty: true, orgOptions: {
                             onPostLoadItem: function(item){
                                 if(item.data.nickName){
@@ -1943,7 +1944,9 @@ MWF.xApplication.Forum.Setting.MuteSettingForm = new Class({
                             }
                         }
                      },
-                    dayCount: {text: this.lp.dayCount, notEmpty: true, tType : "number", defaultValue: 7 },
+                    unmuteDate: {text: this.lp.unmuteDate, notEmpty: true, tType : "date", defaultValue: function(){
+                        return new Date().increment("day", 7).format("%Y-%m-%d");
+                    }},
                     reason: {text: this.lp.multReason, notEmpty: true, type : "textarea" }
                 }
             }, this.app);

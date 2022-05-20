@@ -67,6 +67,7 @@
           },
           "replyAction": {
             "text" : "reply",
+            "condition": "function( d ){ return !d.stopReply && !MWFForum.isReplyMuted() }",
             //"condition": "function( d ){ return this.explorer.isReplyPublisher }",
             "action": "createReply",
             "event" : "mouseover^^function( itemNode, ev ){ itemNode.setStyles( this.css.replyAction_over ) }##mouseout^^function( itemNode, ev ){ itemNode.setStyles( this.css.replyAction ) }"

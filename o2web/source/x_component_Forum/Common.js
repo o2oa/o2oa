@@ -105,7 +105,8 @@ MWFForum.getLastReplyUserName = function(d){
 };
 
 MWFForum.isSubjectEditor = function(d){
-    return d.creatorName === layout.desktop.session.user.distinguishedName;
+    var dn = layout.desktop.session.user.distinguishedName;
+    return d.creatorName === dn || (d.editorList || []).contains(dn);
 };
 
 MWFForum.getReplyCreatorName = function(d){

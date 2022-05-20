@@ -632,7 +632,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 			}else{
 				if( MWFForum.isReplyMuted() ){
 					new Element("div", {
-						text: "您被禁言了"
+						text: "您被禁言了，无法发帖和回复。"
 					}).inject( this.middleNode )
 				}else{
 					this.createReplyEditor();
@@ -2537,7 +2537,7 @@ MWF.xApplication.ForumDocument.EditorSettingForm = new Class({
 	_createTableContent: function () {
 		var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>" +
 			"<tr>" +
-			"   <td styles='formTableValue' item='editor'></td>" +
+			"   <td styles='formTableValue' item='editorList'></td>" +
 			"</tr>" +
 			"</table>";
 		this.formTableArea.set("html", html);
@@ -2547,7 +2547,7 @@ MWF.xApplication.ForumDocument.EditorSettingForm = new Class({
 				style: "forum",
 				isEdited: this.isEdited || this.isNew,
 				itemTemplate: {
-					editor: { type: "org", style: {height:"100px"}, count: 0 }
+					editorList: { type: "org", style: {height:"100px"}, count: 0 }
 				}
 			}, this.app, this.css);
 			this.form.load();
@@ -2555,10 +2555,12 @@ MWF.xApplication.ForumDocument.EditorSettingForm = new Class({
 	},
 	ok: function (e) {
 		this.fireEvent("queryOk");
+		debugger;
 		var data = this.form.getResult(true, ",", true, false, true);
 		if (data) {
 			var flag = true;
-			this.actions.cancelTopToSection( this.app.data.id , function( json ){
+			this.data.editorList = data.editorList.split(",");
+			o2.Actions.load("x_bbs_assemble_control").SubjectInfoManagerUserAction.save( this.data , function( json ){
 				if (json.type == "error") {
 					this.app.notice(json.message, "error");
 					flag = false;
