@@ -636,13 +636,14 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 
 		_afterLoaded: function(){
 		},
-		/**
-		 * @summary 重置数据模板的值为默认值或置空。
-		 *  @example
-		 * this.form.get('fieldId').resetData();
-		 */
+		// /**
+		//  * @summary 重置数据模板的值为默认值或置空。
+		//  *  @example
+		//  * this.form.get('fieldId').resetData();
+		//  */
 		resetData: function(){
-			var value = this.getDefaultValue() || [];
+			// var value = this.getDefaultValue() || [];
+			var value = this.getValue() || [];
 			this.setData(value);
 		},
 		/**当参数为Promise的时候，请查看文档: {@link  https://www.yuque.com/o2oa/ixsnyt/ws07m0|使用Promise处理表单异步}<br/>
