@@ -346,11 +346,11 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
             return this._getBusinessData();
         }
     },
-    /**
-     * @summary 重置组件的值为默认值或置空。
-     *  @example
-     * this.form.get('subject').resetData();
-     */
+    // /**
+    //  * @summary 重置组件的值为默认值或置空。
+    //  *  @example
+    //  * this.form.get('subject').resetData();
+    //  */
     resetData: function(){
         this.setData(this.getValue());
     },
