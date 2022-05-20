@@ -324,14 +324,16 @@ public class ManualProcessor extends AbstractManualProcessor {
 	protected List<Work> executing(AeiObjects aeiObjects, Manual manual) throws Exception {
 		List<Work> results = new ArrayList<>();
 		ManualTaskIdentityMatrix matrix = executingManualTaskIdentityMatrix(aeiObjects, manual);
-		List<TaskCompleted> taskCompleteds = aeiObjects
-				.getJoinInquireTaskCompletedsWithActivityToken(aeiObjects.getWork().getActivityToken());
+		List<TaskCompleted> taskCompleteds = executingJoinInquireCheckRouteNameTaskCompleteds(aeiObjects);
 		executingCompletedIdentityInTaskCompleteds(aeiObjects, matrix, taskCompleteds);
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes().push(Signal.manualExecute(aeiObjects.getWork().getActivityToken(), manual,
 				Objects.toString(manual.getManualMode(), ""), matrix.flat()));
 		if (matrix.isEmpty()) {
 			results.add(aeiObjects.getWork());
+			aeiObjects.getTasks().stream().filter(
+					t -> StringUtils.equalsIgnoreCase(t.getActivityToken(), aeiObjects.getWork().getActivityToken()))
+					.forEach(aeiObjects::deleteTask);
 		} else {
 			switch (manual.getManualMode()) {
 			case parallel:
@@ -352,6 +354,23 @@ public class ManualProcessor extends AbstractManualProcessor {
 		}
 		aeiObjects.getWork().setManualTaskIdentityMatrix(matrix);
 		return results;
+	}
+
+	/**
+	 * 获取当前参与流转的已办,同时过滤路由决策在路由中的已办.
+	 * 
+	 * @param aeiObjects
+	 * @return
+	 * @throws Exception
+	 */
+	private List<TaskCompleted> executingJoinInquireCheckRouteNameTaskCompleteds(AeiObjects aeiObjects)
+			throws Exception {
+		List<TaskCompleted> taskCompleteds = aeiObjects
+				.getJoinInquireTaskCompletedsWithActivityToken(aeiObjects.getWork().getActivityToken());
+		List<String> routeNames = aeiObjects.getRoutes().stream().map(Route::getName).collect(Collectors.toList());
+		taskCompleteds = taskCompleteds.stream().filter(t -> routeNames.contains(t.getRouteName()))
+				.collect(Collectors.toList());
+		return taskCompleteds;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -590,6 +609,9 @@ public class ManualProcessor extends AbstractManualProcessor {
 			List<TaskCompleted> taskCompleteds) throws Exception {
 		if (soleDirect(aeiObjects, taskCompleteds)) {
 			matrix.clear();
+			aeiObjects.getTasks().stream().filter(
+					t -> StringUtils.equalsIgnoreCase(t.getActivityToken(), aeiObjects.getWork().getActivityToken()))
+					.forEach(aeiObjects::deleteTask);
 		} else {
 			task(aeiObjects, manual, matrix.read());
 		}
@@ -600,6 +622,9 @@ public class ManualProcessor extends AbstractManualProcessor {
 		// 是否有优先路由
 		if (soleDirect(aeiObjects, taskCompleteds)) {
 			matrix.clear();
+			aeiObjects.getTasks().stream().filter(
+					t -> StringUtils.equalsIgnoreCase(t.getActivityToken(), aeiObjects.getWork().getActivityToken()))
+					.forEach(aeiObjects::deleteTask);
 		} else {
 			task(aeiObjects, manual, matrix.flat());
 		}
@@ -609,6 +634,9 @@ public class ManualProcessor extends AbstractManualProcessor {
 			List<TaskCompleted> taskCompleteds) throws Exception {
 		if (soleDirect(aeiObjects, taskCompleteds)) {
 			matrix.clear();
+			aeiObjects.getTasks().stream().filter(
+					t -> StringUtils.equalsIgnoreCase(t.getActivityToken(), aeiObjects.getWork().getActivityToken()))
+					.forEach(aeiObjects::deleteTask);
 		} else {
 			task(aeiObjects, manual, matrix.read());
 		}

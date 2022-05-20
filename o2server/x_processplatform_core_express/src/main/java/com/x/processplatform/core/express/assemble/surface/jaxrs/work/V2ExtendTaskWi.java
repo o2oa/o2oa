@@ -1,4 +1,4 @@
-package com.x.processplatform.core.express.service.processing.jaxrs.task;
+package com.x.processplatform.core.express.assemble.surface.jaxrs.work;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,21 +8,29 @@ import org.apache.commons.lang3.BooleanUtils;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 
-public class V2AddWi extends GsonPropertyObject {
+public class V2ExtendTaskWi extends GsonPropertyObject {
 
 	private static final long serialVersionUID = -3293122515327864483L;
 
 	@FieldDescribe("身份")
 	private List<String> identityList = new ArrayList<>();
 
-	@FieldDescribe("加入在指定位置之后,否则加入在指定位置之前.")
-	private Boolean after;
-
 	@FieldDescribe("是否执行替换")
 	private Boolean replace;
 
-	@FieldDescribe("待办标识")
-	private String task;
+	@FieldDescribe("工作标识")
+	private String work;
+	
+	@FieldDescribe("定位身份标识")
+	private String identity;
+
+	public String getIdentity() {
+		return identity;
+	}
+
+	public void setIdentity(String identity) {
+		this.identity = identity;
+	}
 
 	public List<String> getIdentityList() {
 		return identityList;
@@ -40,20 +48,12 @@ public class V2AddWi extends GsonPropertyObject {
 		this.replace = replace;
 	}
 
-	public String getTask() {
-		return task;
+	public String getWork() {
+		return work;
 	}
 
-	public void setTask(String task) {
-		this.task = task;
-	}
-
-	public Boolean getAfter() {
-		return BooleanUtils.isTrue(after);
-	}
-
-	public void setAfter(Boolean after) {
-		this.after = after;
+	public void setWork(String work) {
+		this.work = work;
 	}
 
 }

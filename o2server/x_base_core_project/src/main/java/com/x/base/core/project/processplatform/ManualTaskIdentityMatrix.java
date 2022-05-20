@@ -3,11 +3,12 @@ package com.x.base.core.project.processplatform;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
-import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.Gson;
@@ -107,13 +108,13 @@ public class ManualTaskIdentityMatrix extends GsonPropertyObject {
 			}
 		}
 		if (colpos > -1) {
-			resetUpdate(rowpos, colpos, addBeforeIdentities, extendIdentities, addAfterIdentities);
+			resetUpdate(rowpos, colpos, addBeforeIdentities, extendIdentities, addAfterIdentities, remove);
 		}
 		return this;
 	}
 
 	private void resetUpdate(int rowpos, int colpos, List<String> addBeforeIdentities, List<String> extendIdentities,
-			List<String> addAfterIdentities) {
+			List<String> addAfterIdentities, boolean remove) {
 		if ((null != addBeforeIdentities) && (!addBeforeIdentities.isEmpty())) {
 			for (String str : addBeforeIdentities) {
 				Row row = new Row();
@@ -123,6 +124,9 @@ public class ManualTaskIdentityMatrix extends GsonPropertyObject {
 		}
 		if ((null != extendIdentities) && (!extendIdentities.isEmpty())) {
 			matrix.get(rowpos).addAll(colpos + 1, extendIdentities);
+		}
+		if (remove) {
+			matrix.get(rowpos).remove();
 		}
 		if ((null != addAfterIdentities) && (!addAfterIdentities.isEmpty())) {
 			for (String str : addAfterIdentities) {
@@ -172,12 +176,13 @@ public class ManualTaskIdentityMatrix extends GsonPropertyObject {
 	 */
 	public List<String> completed(String identity) {
 		List<String> list = new ArrayList<>();
-		matrix.stream().forEach(row -> {
+		for (Row row : matrix) {
 			if (row.contains(identity)) {
 				list.addAll(row);
 				row.clear();
+				break;
 			}
-		});
+		}
 		compact();
 		return ListTools.trim(list, true, true);
 	}
@@ -189,13 +194,24 @@ public class ManualTaskIdentityMatrix extends GsonPropertyObject {
 	 * @return
 	 */
 	public List<String> completed(List<String> identities) {
-		List<String> list = new ArrayList<>();
-		matrix.stream().forEach(row -> {
-			if (!ListUtils.intersection(identities, row).isEmpty()) {
-				list.addAll(row);
-				row.clear();
+		Set<Row> rows = new HashSet<>();
+		for (String identity : identities) {
+			for (Row row : matrix) {
+				if (row.contains(identity)) {
+					rows.add(row);
+					break;
+				}
 			}
-		});
+		}
+		List<String> list = new ArrayList<>();
+		Iterator<Row> rowIterator = matrix.iterator();
+		while (rowIterator.hasNext()) {
+			Row row = rowIterator.next();
+			if (rows.contains(row)) {
+				rowIterator.remove();
+				list.addAll(row);
+			}
+		}
 		compact();
 		return ListTools.trim(list, true, true);
 	}
