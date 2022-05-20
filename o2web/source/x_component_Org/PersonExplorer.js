@@ -827,9 +827,13 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
                     "values": (this.data.superior) ? [this.data.superior] : [],
                     "count": 1,
                     "onComplete": function(items){
-                        this.data.superior = items[0].data.distinguishedName;
                         this.superiorInputNode.empty();
-                        new MWF.widget.O2Person(items[0].data, this.superiorInputNode, {"style": "xform"});
+                        if (items.length){
+                            this.data.superior = items[0].data.distinguishedName;
+                            new MWF.widget.O2Person(items[0].data, this.superiorInputNode, {"style": "xform"});
+                        }else{
+                            this.data.superior = "";
+                        }
                     }.bind(this)
                 };
                 var selector = new MWF.O2Selector(this.explorer.app.content, options);
