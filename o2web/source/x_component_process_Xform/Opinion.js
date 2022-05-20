@@ -14,7 +14,6 @@ MWF.xDesktop.requireApp("process.Work", "lp." + o2.language, null, false);
  * field.hide(); //隐藏字段
  * var id = field.json.id; //获取字段标识
  * var flag = field.isEmpty(); //字段是否为空
- * field.resetData();  //重置字段的值为默认值或置空
  * @extends MWF.xApplication.process.Xform.$Input
  * @o2category FormComponents
  * @o2range {Process}
