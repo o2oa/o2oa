@@ -14,12 +14,34 @@ public class ProcessingWi extends GsonPropertyObject {
 	@FieldDescribe("流转类型.")
 	private String processingType;
 
+	@FieldDescribe("路由决策.")
+	private String routeName;
+
+	@FieldDescribe("待办意见.")
+	private String opinion;
+
 	public String getProcessingType() {
 		return processingType;
 	}
 
 	public void setProcessingType(String processingType) {
 		this.processingType = processingType;
+	}
+
+	public String getRouteName() {
+		return routeName;
+	}
+
+	public void setRouteName(String routeName) {
+		this.routeName = routeName;
+	}
+
+	public String getOpinion() {
+		return opinion;
+	}
+
+	public void setOpinion(String opinion) {
+		this.opinion = opinion;
 	}
 
 }

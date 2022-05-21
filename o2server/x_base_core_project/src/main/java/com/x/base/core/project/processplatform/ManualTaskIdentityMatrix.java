@@ -21,6 +21,12 @@ public class ManualTaskIdentityMatrix extends GsonPropertyObject {
 
 	private Matrix matrix = new Matrix();
 
+	public static final String ADD_POSITION_BEFORE = "before";
+	public static final String ADD_POSITION_AFTER = "after";
+	public static final String ADD_POSITION_TOP = "top";
+	public static final String ADD_POSITION_BOTTOM = "bottom";
+	public static final String ADD_POSITION_EXTEND = "extend";
+
 	public static ManualTaskIdentityMatrix concreteSingleRow(List<String> list) {
 		ManualTaskIdentityMatrix manualTaskIdentityMatrix = new ManualTaskIdentityMatrix();
 		Row row = new Row();
@@ -47,52 +53,50 @@ public class ManualTaskIdentityMatrix extends GsonPropertyObject {
 		return manualTaskIdentityMatrix;
 	}
 
-	public ManualTaskIdentityMatrix extend(String identity, boolean replace, List<String> list) {
-		for (Row row : matrix) {
-			int idx = row.indexOf(identity);
-			if (idx > -1) {
-				row.addAll(idx + 1, list);
-				if (replace) {
-					row.remove(idx);
-				}
-				break;
-			}
+	public ManualTaskIdentityMatrix add(String identity, String position, List<String> list) {
+		List<String> identities = ListTools.trim(list, true, true);
+		if (ListTools.isEmpty(identities)) {
+			return this;
 		}
-		return this;
-	}
-
-	public ManualTaskIdentityMatrix extend(String identity, boolean replace, String... arr) {
-		return this.extend(identity, replace, Arrays.asList(arr));
-	}
-
-	public ManualTaskIdentityMatrix add(String identity, boolean after, boolean replace, List<String> list) {
-		int rowpos = 0;
-		int colpos = -1;
-		for (Row row : matrix) {
-			colpos = row.indexOf(identity);
-			if (colpos > -1) {
-				break;
-			} else {
-				rowpos++;
-			}
-		}
-		if (replace && (colpos > -1)) {
-			matrix.get(rowpos).remove(colpos);
-		}
-		if (after) {
-			rowpos++;
-		}
-		for (String str : list) {
+		if (StringUtils.equals(ADD_POSITION_TOP, position)) {
 			Row row = new Row();
-			row.add(str);
-			matrix.add(rowpos++, row);
+			row.addAll(ListTools.trim(list, true, true));
+			matrix.add(0, row);
+		} else if (StringUtils.equals(ADD_POSITION_BOTTOM, position)) {
+			Row row = new Row();
+			row.addAll(ListTools.trim(list, true, true));
+			matrix.add(row);
+		} else {
+			int rowpos = 0;
+			int colpos = -1;
+			for (Row row : matrix) {
+				colpos = row.indexOf(identity);
+				if (colpos > -1) {
+					break;
+				} else {
+					rowpos++;
+				}
+			}
+			if (colpos > -1) {
+				addBeforeAfterExtend(position, identities, rowpos, colpos);
+			}
 		}
 		compact();
 		return this;
 	}
 
-	public ManualTaskIdentityMatrix add(String identity, boolean after, boolean replace, String... arr) {
-		return this.add(identity, after, replace, Arrays.asList(arr));
+	private void addBeforeAfterExtend(String position, List<String> identities, int rowpos, int colpos) {
+		if (StringUtils.equals(ADD_POSITION_BEFORE, position)) {
+			Row row = new Row();
+			row.addAll(identities);
+			matrix.add(rowpos, row);
+		} else if (StringUtils.equals(ADD_POSITION_AFTER, position)) {
+			Row row = new Row();
+			row.addAll(identities);
+			matrix.add(rowpos + 1, row);
+		} else {
+			matrix.get(rowpos).addAll(colpos + 1, identities);
+		}
 	}
 
 	public ManualTaskIdentityMatrix reset(String identity, List<String> addBeforeIdentities,

@@ -33,7 +33,7 @@ import com.x.processplatform.core.entity.element.ActivityType;
 @JaxrsDescribe("工作操作")
 public class WorkAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(WorkAction.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(WorkAction.class);
 
 	@JaxrsMethodDescribe(value = "根据Work或workCompleted取得内容.", action = ActionGetWithWorkOrWorkCompleted.class)
 	@GET
@@ -48,7 +48,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionGetWithWorkOrWorkCompleted().execute(effectivePerson, workOrWorkCompleted);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -66,7 +66,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionCountWithPerson().execute(credential);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -84,7 +84,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionRefer().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -102,7 +102,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionProcessing().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -120,7 +120,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionProcessing().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -138,7 +138,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionCreate().execute(effectivePerson, processFlag, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -156,7 +156,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionCreateForce().execute(effectivePerson, processFlag, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -177,7 +177,7 @@ public class WorkAction extends StandardJaxrsAction {
 			result = new ActionCreateWithApplicationProcess().execute(effectivePerson, applicationFlag, processFlag,
 					jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -198,7 +198,7 @@ public class WorkAction extends StandardJaxrsAction {
 			result = new ActionCreateWithApplicationProcessForce().execute(effectivePerson, applicationFlag,
 					processFlag, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -216,7 +216,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionDelete().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -234,7 +234,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionDelete().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -252,7 +252,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionCloseCheck().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -272,7 +272,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionCloseCheck().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -292,7 +292,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListNextWithApplication().execute(effectivePerson, id, count, applicationFlag);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -312,7 +312,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListPrevWithApplication().execute(effectivePerson, id, count, applicationFlag);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -332,7 +332,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListNextWithProcess().execute(effectivePerson, id, count, processFlag);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -352,7 +352,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListPrevWithProcess().execute(effectivePerson, id, count, processFlag);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -370,7 +370,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListCountWithApplication().execute(effectivePerson);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -388,7 +388,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListCountWithProcess().execute(effectivePerson, applicationFlag);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -406,7 +406,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionFilterAttribute().execute(effectivePerson, applicationFlag);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -447,7 +447,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListPrevWithFilter().execute(effectivePerson, id, count, applicationFlag, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -466,7 +466,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListNextCreatorWithCurrent().execute(effectivePerson, id, count);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -485,7 +485,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListPrevCreatorWithCurrent().execute(effectivePerson, id, count);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -504,6 +504,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListNextCreatorWithCurrentFilter().execute(effectivePerson, id, count, jsonElement);
 		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -522,6 +523,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListPrevCreatorWithCurrentFilter().execute(effectivePerson, id, count, jsonElement);
 		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -539,7 +541,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionRetract().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -557,7 +559,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionRetract().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -578,7 +580,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionReroute().execute(effectivePerson, id, activityId, activityType, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -599,7 +601,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionReroute().execute(effectivePerson, id, activityId, activityType, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -617,7 +619,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionAddSplit().execute(effectivePerson, id, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -635,7 +637,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionAddSplit().execute(effectivePerson, id, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -653,7 +655,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionRollback().execute(effectivePerson, id, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -671,7 +673,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionRollback().execute(effectivePerson, id, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -690,7 +692,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListMyPaging().execute(effectivePerson, page, size, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -708,7 +710,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionProjection().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -728,7 +730,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionManageListNext().execute(effectivePerson, id, count, applicationFlag);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -748,7 +750,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionManageListPrev().execute(effectivePerson, id, count, applicationFlag);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -766,7 +768,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionManageGet().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -784,7 +786,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionManageGetAssignment().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -803,7 +805,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionManageListCountWithProcess().execute(effectivePerson, applicationFlag);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -821,7 +823,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionManageListRelative().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -839,7 +841,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionManageDeleteSingleWork().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -857,7 +859,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionManageDeleteSingleWork().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -875,7 +877,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionManageDeleteRelativeWork().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -893,7 +895,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionManageDeleteRelativeWork().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -911,7 +913,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionManageFilterAttribute().execute(effectivePerson, applicationFlag);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -933,7 +935,7 @@ public class WorkAction extends StandardJaxrsAction {
 			result = new ActionManageListNextWithFilter().execute(effectivePerson, id, count, applicationFlag,
 					jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -955,7 +957,7 @@ public class WorkAction extends StandardJaxrsAction {
 			result = new ActionManageListPrevWithFilter().execute(effectivePerson, id, count, applicationFlag,
 					jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -974,7 +976,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionManageListFilterPaging().execute(effectivePerson, page, size, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -992,7 +994,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new V2Reroute().execute(effectivePerson, id, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -1011,7 +1013,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new V2Reroute().execute(effectivePerson, id, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -1029,7 +1031,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new V2Retract().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -1048,7 +1050,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new V2Retract().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -1066,7 +1068,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new V2Rollback().execute(effectivePerson, id, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -1085,7 +1087,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new V2Rollback().execute(effectivePerson, id, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -1103,7 +1105,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new V2AddSplit().execute(effectivePerson, id, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -1122,7 +1124,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new V2AddSplit().execute(effectivePerson, id, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -1141,7 +1143,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new V2ManageRetract().execute(effectivePerson, id, person);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -1160,7 +1162,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new V2ManageRetract().execute(effectivePerson, id, person);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -1179,7 +1181,7 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new V2GetWorkOrWorkCompleted().execute(effectivePerson, workOrWorkCompleted);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -1197,7 +1199,26 @@ public class WorkAction extends StandardJaxrsAction {
 		try {
 			result = new ActionGet().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "对指定的工作添加待办身份.", action = V2AddManualTaskIdentityMatrix.class)
+	@POST
+	@Path("{id}/add/manual/task/identity/matrix")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void v2AddManualTaskIdentityMatrix(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+			JsonElement jsonElement) {
+		ActionResult<V2AddManualTaskIdentityMatrix.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2AddManualTaskIdentityMatrix().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));

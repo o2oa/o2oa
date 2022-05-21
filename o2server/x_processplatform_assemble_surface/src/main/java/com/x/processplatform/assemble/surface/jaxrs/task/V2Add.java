@@ -14,8 +14,10 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
+import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -35,8 +37,9 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.express.ProcessingAttributes;
+import com.x.processplatform.core.express.assemble.surface.jaxrs.work.V2AddManualTaskIdentityMatrixWi;
+import com.x.processplatform.core.express.assemble.surface.jaxrs.work.V2AddManualTaskIdentityMatrixWi.Option;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.ProcessingWi;
-import com.x.processplatform.core.express.service.processing.jaxrs.task.V2AddWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapUpdatePrevTaskIdentity;
 import com.x.processplatform.core.express.service.processing.jaxrs.taskcompleted.WrapUpdateNextTaskIdentity;
 
@@ -45,8 +48,6 @@ public class V2Add extends BaseAction {
 	private static final Logger LOGGER = LoggerFactory.getLogger(V2Add.class);
 	// 当前提交的串号
 	private final String series = StringTools.uniqueToken();
-	// 新加入的身份列表
-	private List<String> identites = new ArrayList<>();
 	// 新创建的待办标识列表
 	private List<String> newTasks = new ArrayList<>();
 	// 当前待办转成已办得到的已办id
@@ -64,13 +65,13 @@ public class V2Add extends BaseAction {
 	// 本环节创建的record
 	private Record concreteRecord = null;
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 		}
-		this.init(effectivePerson, jsonElement);
-		this.add(this.task, wi.getAfter(), wi.getReplace(), identites);
-		if (BooleanUtils.isTrue(wi.getReplace())) {
+		this.init(effectivePerson, id, jsonElement);
+		this.add(this.task, wi.getOptionList(), wi.getRemove());
+		if (BooleanUtils.isTrue(wi.getRemove())) {
 			taskCompletedId = this.processingTask(this.task);
 		}
 		this.processingWork(this.task);
@@ -82,14 +83,14 @@ public class V2Add extends BaseAction {
 		return result();
 	}
 
-	private void init(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
+	private void init(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			this.effectivePerson = effectivePerson;
 			this.wi = this.convertToWrapIn(jsonElement, Wi.class);
-			this.task = emc.find(wi.getTask(), Task.class);
+			this.task = emc.find(id, Task.class);
 			if (null == task) {
-				throw new ExceptionEntityNotExist(wi.getTask(), Task.class);
+				throw new ExceptionEntityNotExist(id, Task.class);
 			}
 			if (emc.countEqual(Work.class, JpaObject.id_FIELDNAME, task.getWork()) < 1) {
 				throw new ExceptionEntityNotExist(task.getWork(), Work.class);
@@ -105,24 +106,17 @@ public class V2Add extends BaseAction {
 			}
 			this.existTaskIds = emc.idsEqualAndEqual(Task.class, Task.job_FIELDNAME, task.getJob(), Task.work_FIELDNAME,
 					task.getWork());
-			this.identites = business.organization().identity().list(wi.getIdentityList());
-			// 在新扩充待办人员中去除已经有待办人员
-			identites.remove(task.getIdentity());
-			if (ListTools.isEmpty(identites)) {
-				throw new ExceptionIdentityEmpty();
-			}
 		}
 	}
 
-	private void add(Task task, Boolean after, Boolean replace, List<String> identites) throws Exception {
-		V2AddWi req = new V2AddWi();
-		req.setTask(task.getId());
-		req.setAfter(after);
-		req.setReplace(replace);
-		req.setIdentityList(identites);
+	private void add(Task task, List<V2AddManualTaskIdentityMatrixWi.Option> options, Boolean remove) throws Exception {
+		V2AddManualTaskIdentityMatrixWi req = new V2AddManualTaskIdentityMatrixWi();
+		req.setIdentity(task.getIdentity());
+		req.setOptionList(options);
+		req.setRemove(remove);
 		WrapBoolean resp = ThisApplication.context().applications()
-				.postQuery(x_processplatform_service_processing.class, Applications.joinQueryUri("task", "v2", "add"),
-						req, task.getJob())
+				.postQuery(x_processplatform_service_processing.class, Applications.joinQueryUri("work", "v2",
+						task.getWork(), "add", "manual", "task", "identity", "matrix"), req, task.getJob())
 				.getData(WrapBoolean.class);
 		if (BooleanUtils.isNotTrue(resp.getValue())) {
 			throw new ExceptionAdd(task.getId());
@@ -241,9 +235,31 @@ public class V2Add extends BaseAction {
 		return result;
 	}
 
-	public static class Wi extends V2AddWi {
+	public static class Wi extends GsonPropertyObject {
 
 		private static final long serialVersionUID = -6251874269093504136L;
+
+		@FieldDescribe("操作")
+		private List<Option> optionList;
+
+		@FieldDescribe("是否删除指定待办身份")
+		private Boolean remove;
+
+		public List<Option> getOptionList() {
+			return optionList;
+		}
+
+		public void setOptionList(List<Option> optionList) {
+			this.optionList = optionList;
+		}
+
+		public Boolean getRemove() {
+			return remove;
+		}
+
+		public void setRemove(Boolean remove) {
+			this.remove = remove;
+		}
 
 	}
 
