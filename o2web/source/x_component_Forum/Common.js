@@ -113,7 +113,10 @@ MWFForum.getReplyCreatorName = function(d){
     return o2.name.cn( MWFForum.isUseNickName() ?  (d.nickName || d.creatorName): d.creatorName );
 };
 
-MWFForum.openPersonCenter = function( userName ){
+MWFForum.openPersonCenter = function( userName, data ){
+    if( data && ( data.anonymousSubject || data.anonymousReply ) ){
+        return;
+    }
     if( MWFForum.isUseNickName() && userName!=="xadmin" ){
         o2.Actions.load("x_organization_assemble_express").PersonAction.listObject(
                 { personList : [userName]}

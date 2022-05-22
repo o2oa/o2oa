@@ -1617,8 +1617,8 @@ MWF.xApplication.ForumDocument.Main = new Class({
 		this.sideBar.setStyle( "height" , (count * 30 + 5 ) +"px" );
 
 	},
-	openPerson : function( userName ){
-		MWFForum.openPersonCenter( userName );
+	openPerson : function( userName, data ){
+		MWFForum.openPersonCenter( userName, data );
 	},
 	createPersonNode : function( container, personName ){
 		var persons = personName.split(",");

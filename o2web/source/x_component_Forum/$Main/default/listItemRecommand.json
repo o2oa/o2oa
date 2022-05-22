@@ -34,7 +34,7 @@
           },
           "creatorName" : {
             "value" : "function(d){ return MWFForum.getSubjectCreatorName(d) }",
-            "event" : "mouseover^^function( node, ev ){ node.setStyles( this.css.documentItemNode_rcm_person_over ) }##mouseout^^function( node, ev ){ node.setStyles( this.css.documentItemNode_rcm_person )}##click^^function(){this.app.openPerson( this.data.creatorName ) }"
+            "event" : "mouseover^^function( node, ev ){ node.setStyles( this.css.documentItemNode_rcm_person_over ) }##mouseout^^function( node, ev ){ node.setStyles( this.css.documentItemNode_rcm_person )}##click^^function(){this.app.openPerson( this.data.creatorName, this.data ) }"
           },
           "sectionName": {
             "value" : "function(d){ return d.sectionName.length > 8 ? d.sectionName.substr(0,8)+'...' : d.sectionName }",

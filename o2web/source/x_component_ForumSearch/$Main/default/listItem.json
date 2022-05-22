@@ -93,7 +93,7 @@
             "title" : "function(d){ return MWFForum.getSubjectCreatorName(d) }",
             "styles" : "person",
             "mouseoverStyles": "person_over",
-            "event" : "click^^function(node){ this.app.openPerson( this.data.creatorName ) }"},
+            "event" : "click^^function(node){ this.app.openPerson( this.data.creatorName, this.data ) }"},
           "createTime" : {
             "value" : "function(d){ return MWFForum.getDateDiff( d.createTime ) }"
           }
@@ -129,7 +129,7 @@
             "title" : "function(d){ return MWFForum.getLastReplyUserName(d) }",
             "styles" : "person",
             "mouseoverStyles": "person_over",
-            "event" : "click^^function(node){ this.app.openPerson( this.data.latestReplyUser ) }"
+            "event" : "click^^function(node){ this.app.openPerson( this.data.latestReplyUser, this.data ) }"
           },
           "latestReplyTime2" : {
             "show": "function( d ){ return !d.latestReplyUser ? false : true }",

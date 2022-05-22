@@ -80,7 +80,7 @@
             "title" : "function(d){ return MWFForum.getSubjectCreatorName(d) }",
             "styles" : "person",
             "mouseoverStyles": "person_over",
-            "event" : "click^^function(node){ this.app.openPerson( this.data.creatorName ) }"
+            "event" : "click^^function(node){ this.app.openPerson( this.data.creatorName, this.data ) }"
           },
 //          "subject": { "value" : "function(d){ return 8 }" },
 //          "reply" : { "value" : "function(d){ return 66 }"},

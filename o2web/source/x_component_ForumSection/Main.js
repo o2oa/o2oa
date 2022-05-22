@@ -482,10 +482,10 @@ MWF.xApplication.ForumSection.Main = new Class({
 			noteHidden : this.noteNodeHidden
 		};
 	},
-	openPerson : function( userName ){
+	openPerson : function( userName, data ){
 		if( !userName || userName == "" ){
 		}else{
-			MWFForum.openPersonCenter( userName );
+			MWFForum.openPersonCenter( userName, data );
 		}
 	},
 	createPersonNode : function( container, personName ){
