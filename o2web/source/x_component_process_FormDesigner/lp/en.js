@@ -1254,7 +1254,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "menuItem": "Menu Item",
         "dropdownDefaultText": "Dropdown Menu",
         "showButton": "Show Button",
-        "newline": "one line per option",
+        "countPerline": "Options per line",
+        "countPerlineNote": "0 means no limit",
 
         "wps" : {
             "config":"Config",

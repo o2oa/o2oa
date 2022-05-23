@@ -1260,7 +1260,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "menuItem": "菜单项",
         "dropdownDefaultText": "下拉菜单",
         "showButton": "显示按钮",
-        "newline": "每个选项一行",
+        "countPerline": "每行选项数",
+        "countPerlineNote": "0表示不限制",
 
         "wps" : {
             "config":"配置",

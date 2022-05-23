@@ -5,6 +5,7 @@
 	"description": "",
 	"itemType": "values",
 	"itemValues": [],
+	"countPerline": "0",
 	"itemScript": {
 		"code": "",
 		"html": ""
