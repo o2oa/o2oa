@@ -91,6 +91,19 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			/**
+			 * 数据表格改变时触发。通过this.event.lines可以获取修改的条目数组，this.event.type可以获得修改的类型。
+			 * this.event.type可能的值如下：
+			 * addline 添加行，this.event.lines为添加的行数组
+			 * deletelines 删除多行，this.event.lines为删除的行数组
+			 * deleteline 删除一行，this.event.lines为删除的行数组
+			 * editcomplete 某行完成编辑（点击当前编辑行前面的√执行。同时编辑多行不触发此事件）this.event.lines为编辑的行数组
+			 * editmodule 字段值改变时（同时编辑多行触发此事件，每次编辑单行忽略）this.event.lines为编辑的行数组，this.event.module指向修改的字段
+			 * move 通过向上箭头调整行顺序，此时this.event.lines为null
+			 * import 导入数据后，此时this.event.lines为null
+			 * @event MWF.xApplication.process.Xform.DatatablePC#change
+			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+			 */
+			/**
 			 * 添加条目时触发。通过this.event.line可以获取对应的条目对象，this.event.ev可以获得事件触发的Event。
 			 * @event MWF.xApplication.process.Xform.DatatablePC#addLine
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
@@ -171,7 +184,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			"moduleEvents": ["queryLoad","postLoad","load", "afterLoad",
-				"beforeLoadLine", "afterLoadLine", "addLine", "deleteLine", "afterDeleteLine", "editLine", "completeLineEdit", "cancelLineEdit", "export", "import", "validImport", "afterImport"]
+				"beforeLoadLine", "afterLoadLine", "change", "addLine", "deleteLine", "afterDeleteLine", "editLine", "completeLineEdit", "cancelLineEdit", "export", "import", "validImport", "afterImport"]
 		},
 
 		initialize: function(node, json, form, options){
@@ -633,7 +646,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.setData( data );
 		},
 		_addLine: function(ev, edited, d){
-			if( !this._completeLineEdit() )return;
+			if( !this._completeLineEdit(ev, true) )return;
 			if( this.isMax() ){
 				var text = MWF.xApplication.process.Xform.LP.maxItemCountNotice.replace("{n}",this.json.maxCount);
 				this.form.notice(text,"info");
@@ -641,7 +654,6 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			}
 			var index = this.lineList.length;
 			var data = this.getData();
-
 
 				data.data.push(d||{});
 				this.newLineIndex = index;
@@ -653,10 +665,13 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 			this.validationMode();
 			this.fireEvent("addLine", [{"line":line, "ev":ev}]);
+
+			this.fireEvent("change", [{"lines":[line], "type":"addline"}]);
+
 			return line;
 		},
 		_insertLine: function(ev, beforeLine){
-			if( !this._completeLineEdit() )return;
+			if( !this._completeLineEdit(ev, true) )return;
 			if( this.isMax() ){
 				var text = MWF.xApplication.process.Xform.LP.maxItemCountNotice.replace("{n}",this.json.maxCount);
 				this.form.notice(text,"info");
@@ -674,10 +689,11 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 			this.validationMode();
 			this.fireEvent("addLine",[{"line":line, "ev":ev}]);
+			this.fireEvent("change", [{"lines":[line], "type":"addline"}]);
 			return line;
 		},
 		_insertLineByIndex: function(ev, index, d){
-			if( !this._completeLineEdit() )return;
+			if( !this._completeLineEdit(ev, true) )return;
 			if( this.isMax() ){
 				var text = MWF.xApplication.process.Xform.LP.maxItemCountNotice.replace("{n}",this.json.maxCount);
 				this.form.notice(text,"info");
@@ -693,6 +709,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 			this.validationMode();
 			this.fireEvent("addLine",[{"line":line, "ev":ev}]);
+			this.fireEvent("change", [{"lines":[line], "type":"addline"}]);
 			return line;
 		},
 		_deleteSelectedLine: function(ev){
@@ -741,6 +758,9 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 			_self.setData( data );
 			this.validationMode();
+
+			_self.fireEvent("change", [{"lines":lines, "type":"deletelines"}]);
+
 			if(saveFlag)this.form.saveFormData();
 		},
 		_deleteLine: function(ev, line){
@@ -774,6 +794,8 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.validationMode();
 			this.fireEvent("afterDeleteLine");
 
+			this.fireEvent("change", [{"lines":[line], "type":"deleteline"}]);
+
 			if(saveFlag)this.form.saveFormData();
 		},
 		_cancelLineEdit: function(){
@@ -799,10 +821,19 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			}
 			return true;
 		},
-		_completeLineEdit: function(){
+		_completeLineEdit: function( ev, fireChange ){
 			var line = this.currentEditedLine;
 			if( !line )return true;
 			if( !line.validation() )return false;
+
+			var originalDataStr, dataStr;
+			if( fireChange ){
+				if( line.originalData && o2.typeOf(line.originalData) === "object"){
+					originalDataStr = JSON.stringify(line.originalData)
+				}
+				dataStr = JSON.stringify(line.data);
+			}
+
 			line.isNewAdd = false;
 			// line.data = line.getData();
 			line.originalData = Object.clone(line.data);
@@ -815,10 +846,13 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.currentEditedLine = null;
 			this.validationMode();
 			this.fireEvent("completeLineEdit", [line]);
+			if( fireChange && originalDataStr !== dataStr ){
+				this.fireEvent("change", [{"lines":[line], "type":"editcomplete"}]);
+			}
 			return true;
 		},
 		_moveUpLine: function(ev, line){
-			if( this.currentEditedLine && !this._completeLineEdit() )return false;
+			if( this.currentEditedLine && !this._completeLineEdit(null, true) )return false;
 			if( line.options.index === 0 )return;
 
 			var data = this.getData();
@@ -827,11 +861,12 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			data.data[line.options.index] = upData;
 			data.data[line.options.index-1] = curData;
 			this.setData( data );
+			this.fireEvent("change", [{"type":"move"}]);
 		},
 		_changeEditedLine: function(line){
 			if( this.currentEditedLine ){
 				if( line ===  this.currentEditedLine )return;
-				if( !this._completeLineEdit() )return;
+				if( !this._completeLineEdit( null,true ) )return;
 			}
 			line.changeEditMode(true);
 
@@ -881,6 +916,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		 * 当表单上没有对应组件的时候，可以使用this.data[fieldId] = data赋值。
 		 * @summary 为数据表格赋值。
 		 * @param data{DatatableData|Promise|Array} 必选，数组或Promise.
+		 * @param fireChange{boolean} 可选，是否触发change事件，默认false.
 		 * @example
 		 *  this.form.get("fieldId").setData([]); //赋空值
 		 * @example
@@ -906,19 +942,19 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		 * })
 		 *  field.setData( promise );
 		 */
-		setData: function(data){
+		setData: function(data, fireChange){
 			if (!data){
 				data = this._getValue();
 			}else{
 				//todo 计算total
 			}
-			this._setData(data);
+			this._setData(data, fireChange);
 		},
-		_setData: function(data){
+		_setData: function(data, fireChange){
 			var p = o2.promiseAll(this.data).then(function(v){
 				this.data = v;
 				// if (o2.typeOf(data)==="object") data = [data];
-				this.__setData(data);
+				this.__setData(data, fireChange);
 				this.moduleValueAG = null;
 				return v;
 			}.bind(this), function(){
@@ -931,8 +967,11 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				this.moduleValueAG = null;
 			}.bind(this));
 		},
-		__setData: function(data){
+		__setData: function(data, fireChange){
 			// if( typeOf( data ) === "object" && typeOf(data.data) === "array"  ){
+			var old;
+			if(fireChange)old = Object.clone(this._getBusinessData() || {});
+
 			this._setBusinessData(data);
 			this.data = data;
 
@@ -940,8 +979,10 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				this.clearSubModules();
 			}
 
+			if (fireChange && JSON.stringify(old) !== JSON.stringify(data)) this.fireEvent("change");
+
 			this.lineList = [];
-			this._loadDatatable()
+			this._loadDatatable();
 		},
 		clearSubModules: function(){
 			for (var i=0; i<this.lineList.length; i++){
@@ -1555,6 +1596,11 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 					this.allField_templateId[templateJsonId] = module;
 					this.fields.push( module );
 
+					if( this.datatable.multiEditMode ){
+						module.addEvent("change", function(){
+							this.datatable.fireEvent("change", [{lines: [this], type: "editmodule", module: module}]);
+						}.bind(this))
+					}
 					//该字段是合集数值字段
 					if(this.datatable.multiEditMode && this.datatable.totalNumberModuleIds.contains(templateJsonId)){
 						//module
@@ -1698,7 +1744,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 			"styles": this.form.css.completeLineAction,
 			"events": {
 				"click": function(ev){
-					this.datatable._completeLineEdit(ev);
+					this.datatable._completeLineEdit(ev, true);
 					ev.stopPropagation();
 				}.bind(this)
 			}
@@ -2449,6 +2495,8 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 		this.datatable.setData( { "data" : data } );
 
 		this.datatable.fireEvent("afterImport", [data] );
+
+		this.datatable.fireEvent("change", [{type : "import"}]);
 
 		this.form.notice( MWF.xApplication.process.Xform.LP.importSuccess );
 

@@ -150,7 +150,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			"moduleEvents": ["queryLoad","postLoad","load", "afterLoad",
-				"beforeLoadLine", "afterLoadLine","addLine", "deleteLine", "afterDeleteLine","export", "import", "validImport", "afterImport"]
+				"beforeLoadLine", "afterLoadLine", "change", "addLine", "deleteLine", "afterDeleteLine","export", "import", "validImport", "afterImport"]
 		},
 
 		initialize: function(node, json, form, options){
