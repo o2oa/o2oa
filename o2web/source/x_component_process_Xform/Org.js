@@ -130,7 +130,18 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
     },
 
     iconStyle: "orgIcon",
-
+    isReadonly : function(){
+        var readonly = !!(this.readonly || this.form.json.isReadonly);
+        if( readonly )return readonly;
+        if( this.json.isReadonly === "script" ){
+            if( this.json.readonlyScript && this.json.readonlyScript.code ){
+                readonly = this.form.Macro.exec(this.json.readonlyScript.code, this);
+                return !!readonly;
+            }
+        }else{
+            return !!this.json.isReadonly
+        }
+    },
     getTextData: function(){
         //var value = this.node.get("value");
         //var text = this.node.get("text");
@@ -637,7 +648,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
      * this.form.get('org').clickSelect();
      */
     clickSelect: function( ev ){
-        if (this.readonly)return;
+        if (this.isReadonly())return;
         if( layout.mobile ){
             setTimeout( function(){ //如果有输入法界面，这个时候页面的计算不对，所以等100毫秒
                 var options = this.getOptions();

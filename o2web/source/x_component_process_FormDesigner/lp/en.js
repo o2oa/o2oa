@@ -494,6 +494,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "selectCount": "Select Count",
         "returnValue": "Return Value",
 
+        "readonlyScript": "Readonly Script",
+
         "selectTypeInfo": "Please choose an identity to participate in the process!",
         "selectTypeInfo2": "Note: select Person cannot participate in the process!",
         "checkEmpower": "Check Empower",

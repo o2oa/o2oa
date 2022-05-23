@@ -493,6 +493,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "selectCount": "选择数量",
         "returnValue": "结果返回",
 
+        "readonlyScript": "只读脚本",
+
         "selectTypeInfo": "参与流程处理请选身份！",
         "selectTypeInfo2": "注意，个人无法参与流程处理！",
         "checkEmpower": "检查待办授权",
