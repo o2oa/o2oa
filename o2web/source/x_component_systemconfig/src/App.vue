@@ -21,12 +21,8 @@ function loadContent(type){
   contentType.value = type;
 }
 const contentComponent = computed(() => {
-  console.log(contentType.value)
   const compName = contentType.value;
   return defineAsyncComponent(() => import('./components/content/'+compName+'.vue') );
-  // console.log('./components/content/' + contentType.value + '.vue');
-  // return comp;
-  //return await import('./components/content/' + contentType.value + '.vue');
 });
 
 </script>

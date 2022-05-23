@@ -39,9 +39,9 @@
 </template>
 
 <script setup>
-import {getMenuJson} from '../util/menu.js';
+import {getMenuJson} from '@/util/menu';
 import {ref} from 'vue';
-import {o2, lp, component} from '@o2oa/component';
+import {lp} from '@o2oa/component';
 
 const menuJson = ref(getMenuJson());
 let currentItem = ref(menuJson.value[0].children[0]);

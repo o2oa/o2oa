@@ -54,6 +54,11 @@ MWF.xApplication.systemconfig.LP = {
         "systemSubTitleInfo": "您的系统副标题，它将会显示在您的登录页面下方",
         "systemVersion": "当前系统版本",
         "systemVersionInfo": "当前系统版本"
+    },
+    "operation": {
+        "edit": "编辑",
+        "ok": "确定",
+        "cancel": "取消"
     }
 
 }

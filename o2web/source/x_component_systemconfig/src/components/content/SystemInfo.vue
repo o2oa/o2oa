@@ -1,33 +1,39 @@
 <template>
   <div>
-    <div class="title">{{name+"###"}}
-    <button @click="test">{{name}}</button>
-    <button @click="test1">bbb</button>
-    </div>
-    <BaseInput name="systemName" />
-    <BaseInput name="systemSubTitle" />
-    <BaseInput name="systemVersion" />
+    <div class="title">{{lp.systemInfo}}</div>
+    <BaseItem name="systemName" :config="systemName" :allowEditor="true" @changeConfig="(value)=>{saveConfig('collect', 'systemName', value)}"/>
+    <BaseItem name="systemSubTitle" :config="systemSubTitle" :allowEditor="true"/>
+    <BaseItem name="systemVersion" :config="systemVersion" :allowEditor="false"/>
   </div>
 </template>
 
 <script setup>
 import {ref} from 'vue';
-import BaseInput from '../item/BaseInput.vue';
-import {o2, lp, component} from '@o2oa/component';
+import {lp} from '@o2oa/component';
+import BaseItem from '../item/BaseItem.vue';
+import {getConfig, saveConfig} from '@/util/acrions';
 
-let name = ref("111");
-function test(e){
-  e.currentTarget.textContent = "333333";
-}
-function test1(e){
-  name.value = '3333'
-}
+const systemVersion = layout.config.version;
+
+const systemName = ref('');
+const systemSubTitle = ref('');
+
+getConfig('collect').then((data)=>{
+  systemName.value = data.title;
+  systemSubTitle.value = data.footer;
+});
+
+
+// function saven(path, value){
+//   saveConfig
+// }
+
 </script>
 
 <style scoped>
 .title{
   height: 40px;
-  padding: 20px 30px 0px;
+  padding: 20px 30px 0;
   font-size: 24px;
   color: rgb(51, 51, 51);
 
