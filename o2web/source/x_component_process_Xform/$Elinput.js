@@ -9,7 +9,7 @@ Object.assign(o2.APP$Elinput.prototype, o2.APP$Input.prototype);
 
 Object.assign(o2.APP$Elinput.prototype, {
     isReadonly : function(){
-        return !!(this.readonly || this.json.isReadonly);
+        return !!(this.readonly || this.json.isReadonly || this.form.json.isReadonly);
     },
     __setValue: function(value){
         this.moduleValueAG = null;
@@ -29,7 +29,7 @@ Object.assign(o2.APP$Elinput.prototype, {
         this.validationMode();
     },
     __setReadonly: function(data){
-        if (this.readonly || this.json.isReadonly) this.node.set("text", data);
+        if (this.readonly || this.json.isReadonly || this.form.json.isReadonly) this.node.set("text", data);
     },
     getInputData: function(){
         return this.json[this.json.$id];

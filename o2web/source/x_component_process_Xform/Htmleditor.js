@@ -50,7 +50,7 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
 	_loadUserInterface: function(){
 	    debugger;
 		this.node.empty();
-        if (this.readonly || this.json.isReadonly){
+        if (this.isReadonly()){
             // this.node.set("html", this._getBusinessData());
             this.node.setStyles({
                 "-webkit-user-select": "text",

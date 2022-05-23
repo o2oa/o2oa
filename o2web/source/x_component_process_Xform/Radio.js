@@ -31,7 +31,7 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
      */
     loadDescription: function(){},
     _loadNode: function(){
-        if (this.readonly || this.json.isReadonly ){
+        if (this.isReadonly()){
             this._loadNodeRead();
         }else{
             this._loadNodeEdit();
@@ -338,7 +338,7 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
         this.moduleValueAG = null;
         this._setBusinessData(value);
 
-        if (this.readonly || this.json.isReadonly ){
+        if (this.isReadonly()){
             this._loadNodeRead();
         }else{
             var radios = this.node.getElements("input");
@@ -379,7 +379,7 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
 		return {"value": [value] || "", "text": [text || value || ""]};
 	},
     getInputData: function(){
-        if (this.readonly || this.json.isReadonly ){
+        if (this.isReadonly()){
             return this._getBusinessData();
         }else{
             var inputs = this.node.getElements("input");

@@ -50,7 +50,7 @@ MWF.xApplication.process.Xform.Eldate = MWF.APPEldate =  new Class(
         }
     },
     _appendVueData: function(){
-        if (!this.json.isReadonly) this.json.isReadonly = false;
+        if (!this.json.isReadonly && !this.form.json.isReadonly) this.json.isReadonly = false;
         if (!this.json.disabled) this.json.disabled = false;
         if (!this.json.clearable) this.json.clearable = false;
         if (!this.json.disabled) this.json.disabled = false;

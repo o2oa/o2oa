@@ -265,7 +265,7 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
     __setValue: function(value){
         this._setBusinessData(value);
         if (this.node.getFirst()) this.node.getFirst().set("value", value || (this.json.emptyValue === "string" ? "" : "0"));
-        if (this.readonly || this.json.isReadonly) this.node.set("text", value);
+        if (this.isReadonly()) this.node.set("text", value);
         this.moduleValueAG = null;
         this.fieldModuleLoaded = true;
         return value;

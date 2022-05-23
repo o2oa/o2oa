@@ -249,7 +249,7 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion = new Class(
             }.bind(this));
         },
         _afterLoaded: function(){
-            if (!this.readonly && !this.json.isReadonly ){
+            if (!this.readonly && !this.json.isReadonly && !this.form.json.isReadonly){
                 this.setNodeSize();
                 this.loadDescription();
             }
@@ -653,7 +653,7 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion = new Class(
         },
 
         loadDescription: function () {
-            if (this.readonly || this.json.isReadonly) return;
+            if (this.isReadonly()) return;
             var v = this._getBusinessData();
             if (!v) {
                 if (this.json.description) {

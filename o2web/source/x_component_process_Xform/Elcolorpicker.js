@@ -39,7 +39,7 @@ MWF.xApplication.process.Xform.Elcolorpicker = MWF.APPElcolorpicker =  new Class
         this._loadNodeEdit();
     },
     _appendVueData: function(){
-        if (!this.json.isReadonly) this.json.isReadonly = false;
+        if (!this.json.isReadonly && !this.form.json.isReadonly) this.json.isReadonly = false;
         if (!this.json.disabled) this.json.disabled = false;
         if (!this.json.showAlpha) this.json.showAlpha = false;
         if (!this.json.colorFormat) {

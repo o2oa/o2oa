@@ -20,7 +20,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
 	Extends: MWF.APP$Input,
     loadDescription: function(){},
     _loadNode: function(){
-        if (this.readonly || this.json.isReadonly ){
+        if (this.isReadonly()){
             this._loadNodeRead();
         }else{
             this._loadNodeEdit();
@@ -275,7 +275,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
     __setValue: function(value){
         this.moduleValueAG = null;
         this._setBusinessData(value);
-        if (this.readonly || this.json.isReadonly ){
+        if (this.isReadonly()){
             this._loadNodeRead();
         }else{
             var radios = this.node.getElements("input");
@@ -330,7 +330,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
         return false;
     },
     getInputData: function(){
-        if (this.readonly || this.json.isReadonly ){
+        if (this.isReadonly()){
             return this._getBusinessData();
         }else{
             var inputs = this.node.getElements("input");

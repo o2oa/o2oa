@@ -185,7 +185,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this.node.setStyle("overflow-x", "auto");
 			this.node.setStyle("overflow-y", "hidden");
 
-			this.editable = !(this.readonly || (this.json.isReadonly === true));
+			this.editable = !(this.readonly || (this.json.isReadonly === true) || (this.form.json.isReadonly === true));
 			if (this.editable && this.json.editableScript && this.json.editableScript.code){
 				this.editable = this.form.Macro.exec(((this.json.editableScript) ? this.json.editableScript.code : ""), this);
 			}

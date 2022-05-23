@@ -91,7 +91,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
      *  @return {Boolean} 是否通过校验
      */
     validation: function (routeName, opinion) {
-        if (!this.readonly && !this.json.isReadonly){
+        if (!this.readonly && !this.json.isReadonly && !this.form.json.isReadonly){
             if (this.getInputData){
                 this._setBusinessData(this.getInputData("change"));
             }
@@ -146,6 +146,9 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
             parent.get("MWFtype")!="subSourceItem"
         )) parent = parent.getParent();
         return (parent) ? parent.retrieve("module") : null;
+    },
+    isReadonly : function(){
+        return !!(this.readonly || this.json.isReadonly || this.form.json.isReadonly);
     },
     /**
      * @summary 隐藏组件.

@@ -205,7 +205,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.table = this.node.getElement("table");
 			this.tBody = this.table.getElement("tbody");
 
-			this.editable = !(this.readonly || (this.json.isReadonly === true));
+			this.editable = !(this.readonly || (this.json.isReadonly === true) || (this.form.json.isReadonly === true));
 			if (this.editable && this.json.editableScript && this.json.editableScript.code){
 				this.editable = this.form.Macro.exec(((this.json.editableScript) ? this.json.editableScript.code : ""), this);
 			}

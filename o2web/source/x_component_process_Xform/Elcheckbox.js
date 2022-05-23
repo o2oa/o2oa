@@ -65,7 +65,7 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
     },
     _loadNode: function(){
         this.node.empty();
-        if (this.readonly || this.json.isReadonly ){
+        if (this.readonly || this.json.isReadonly || this.form.json.isReadonly){
             this._loadNodeRead();
         }else{
             this._loadNodeEdit();
