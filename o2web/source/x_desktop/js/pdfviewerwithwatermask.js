@@ -15577,24 +15577,24 @@ function o2GetCanvasTextWidth(text, font) {
 
 // 添加水印
 async function addWatermask(url) {
-  // const existingPdfBytes = await fetch(url, {credentials: 'same-origin'}).then(res => res.arrayBuffer())
+  const existingPdfBytes = await fetch(url, {credentials:'include'}).then(res => res.arrayBuffer())
   // const fontBuffer = await fetch(fontUrl).then(res => res.arrayBuffer())
-  const fontUrl = '../o2_lib/pdfjs/pdf-lib/Alibaba-PuHuiTi-Medium.ttf'
-  const allPromise = [fetch(url, {credentials: 'same-origin'}).then(res => res.arrayBuffer()), fetch(fontUrl).then(res => res.arrayBuffer())] // 下载pdf文件 // 下载阿里普惠体
-  const [existingPdfBytes, fontBuffer] = await Promise.all(allPromise)
+  // const fontUrl = '../o2_lib/pdfjs/pdf-lib/Alibaba-PuHuiTi-Medium.ttf'
+  // const allPromise = [fetch(url, {credentials:'include'}).then(res => res.arrayBuffer()), fetch(fontUrl).then(res => res.arrayBuffer())] // 下载pdf文件 // 下载阿里普惠体
+  // const [existingPdfBytes, fontBuffer] = await Promise.all(allPromise)
 
   // pdf可操作对象
   const pdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes)
-  // 读取当前用户 生成水印文字
+  // 读取当前用户 生成水印文字 这里读取的是手机号码, 如果是中文需要添加字体才行，参考15596，15597行
   let mask = ""
   if (layout && layout.session && layout.session.user) {
-    mask = layout.session.user.distinguishedName || "O2OA"
+    mask = layout.session.user.mobile || "O2OA"
   }
   // 加载字体 官方的字体 均不支持中文水印 但可以注入中文字体
-  // const helveticaFont = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica)
+  const helveticaFont = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica)
   // 注入字体
-  pdfDoc.registerFontkit(fontkit) // 字体注册工具
-  const aliPuHuiTiFont = await pdfDoc.embedFont(fontBuffer) // 注入字体
+  // pdfDoc.registerFontkit(fontkit) // 字体注册工具
+  // const aliPuHuiTiFont = await pdfDoc.embedFont(fontBuffer) // 注入字体
   const maskWidth = o2GetCanvasTextWidth(mask, '30px Microsoft YaHei')
   // 获取每一页
   const pages = pdfDoc.getPages()
@@ -15607,9 +15607,9 @@ async function addWatermask(url) {
     let index = 0;
     let fromX;
     // 以对角线的长度来做高度，这样可以保证竖屏和横屏整个屏幕都能布满水印
-    for (let positionY = diagonal / 10; positionY <= diagonal; positionY += diagonal / 10) {
+    for (let positionY = diagonal / 5; positionY <= diagonal; positionY += diagonal / 5) {
         fromX = -width + (index++ % 2) * maskWidth; // 上下两行的X轴起始点不一样，错开显示
-        for (let positionX = fromX; positionX < width; positionX += maskWidth * 2) {
+        for (let positionX = fromX; positionX < width; positionX += maskWidth * 4) {
             item.drawText(mask, {
               // 出现的 x 轴坐标
               x: positionX,
@@ -15618,13 +15618,14 @@ async function addWatermask(url) {
               // 字体大小
               size: 30,
               // 字体
-              font: aliPuHuiTiFont,
+              // font: aliPuHuiTiFont,
+              font: helveticaFont,
               // 颜色
               color: PDFLib.rgb(0, 0, 0),
               // 倾斜角度
               rotate: PDFLib.degrees(-45),
               // 透明度
-              opacity: 0.3
+              opacity: 0.2
             })
         }
     }
