@@ -20,8 +20,8 @@
 			<tr>
 				<td class="editTableTitle">{{$.lp.record}}:</td>
 				<td class="editTableValue">
-					<input class="editTableRadio" name="logType" text{($.logType=='record')?'checked':''} type="radio" value="record"/>record
-					<input class="editTableRadio" name="logType" text{($.logType!=='record')?'checked':''} type="radio" value="worklog"/>worklog
+					<input class="editTableRadio" name="logType" text{($.logType!=='worklog')?'checked':''} type="radio" value="record"/>record
+					<input class="editTableRadio" name="logType" text{($.logType=='worklog')?'checked':''} type="radio" value="worklog"/>worklog
 				</td>
 			</tr>
 		</table>
