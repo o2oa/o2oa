@@ -91,15 +91,16 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			/**
-			 * 数据表格改变时触发。通过this.event.lines可以获取修改的条目数组，this.event.type可以获得修改的类型。
-			 * this.event.type可能的值如下：
-			 * addline 添加行，this.event.lines为添加的行数组
-			 * deletelines 删除多行，this.event.lines为删除的行数组
-			 * deleteline 删除一行，this.event.lines为删除的行数组
-			 * editcomplete 某行完成编辑（点击当前编辑行前面的√执行。同时编辑多行不触发此事件）this.event.lines为编辑的行数组
-			 * editmodule 字段值改变时（同时编辑多行触发此事件，每次编辑单行忽略）this.event.lines为编辑的行数组，this.event.module指向修改的字段
-			 * move 通过向上箭头调整行顺序，此时this.event.lines为null
-			 * import 导入数据后，此时this.event.lines为null
+			 * 数据表格改变时触发。通过this.event.lines可以获取修改的条目数组，this.event.type可以获得修改的类型。<br/>
+			 * <table>
+			 *     <tr><th><b>this.event.type</b></th><th><b>触发类型</b></th><th><b>this.event.lines</b></th></tr>
+			 *     <tr><td>addline</td><td>添加一行</td><td>添加的行数组</td></tr>
+			 *     <tr><td>deleteline</td><td>删除一行</td><td>删除的行数组</td></tr>
+			 *     <tr><td>editcomplete</td><td>某行完成编辑（点击当前编辑行前面的√执行。同时编辑多行忽略）</td><td>编辑的行数组</td></tr>
+			 *     <tr><td>editmodule</td><td>字段值改变时（同时编辑多行触发此事件，每次编辑单行忽略）</td><td>this.event.lines为编辑的行数组<br/>this.event.module为修改的字段</td></tr>
+			 *     <tr><td>move</td><td>通过向上箭头调整行顺序</td><td>数据表格所有行</td></tr>
+			 *     <tr><td>import</td><td>导入数据后</td><td>数据表格所有行</td></tr>
+			 * </table>
 			 * @event MWF.xApplication.process.Xform.DatatablePC#change
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
@@ -861,7 +862,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			data.data[line.options.index] = upData;
 			data.data[line.options.index-1] = curData;
 			this.setData( data );
-			this.fireEvent("change", [{"type":"move"}]);
+			this.fireEvent("change", [{lines: this.lineList, "type":"move"}]);
 		},
 		_changeEditedLine: function(line){
 			if( this.currentEditedLine ){
@@ -2496,7 +2497,7 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 
 		this.datatable.fireEvent("afterImport", [data] );
 
-		this.datatable.fireEvent("change", [{type : "import"}]);
+		this.datatable.fireEvent("change", [{lines: this.datatable.lineList, type : "import"}]);
 
 		this.form.notice( MWF.xApplication.process.Xform.LP.importSuccess );
 
