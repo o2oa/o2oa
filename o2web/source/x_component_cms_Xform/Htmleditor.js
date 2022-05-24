@@ -147,13 +147,12 @@ MWF.xApplication.cms.Xform.Htmleditor = MWF.CMSHtmleditor = new Class({
         return (this.editor && this.editor.document) ? this.editor.document.getBody().getText() : this.node.get("text");
     },
     getImages: function () {
-        debugger;
         var result = [];
         if( this.editor && this.editor.document ){
-            var imgaes = this.editor.document.find("img");
-            if (imgaes) {
-                for (var i = 0; i < imgaes.$.length; i++) {
-                    result.push(imgaes.getItem(i).$);
+            var images = this.editor.document.find("img");
+            if (images) {
+                for (var i = 0; i < images.$.length; i++) {
+                    result.push(images.getItem(i).$);
                 }
             }
             return result;
