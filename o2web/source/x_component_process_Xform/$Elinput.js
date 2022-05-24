@@ -29,7 +29,7 @@ Object.assign(o2.APP$Elinput.prototype, {
         this.validationMode();
     },
     __setReadonly: function(data){
-        if (this.readonly || this.json.isReadonly || this.form.json.isReadonly) this.node.set("text", data);
+        if (this.isReadonly()) this.node.set("text", data);
     },
     getInputData: function(){
         return this.json[this.json.$id];

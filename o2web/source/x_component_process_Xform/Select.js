@@ -39,7 +39,7 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 		this.fieldModuleLoaded = false;
     },
     _loadNode: function(){
-        if (this.readonly|| this.json.isReadonly || this.form.json.isReadonly){
+        if (this.isReadonly()){
             this._loadNodeRead();
         }else{
             this._loadNodeEdit();
@@ -341,7 +341,7 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 		// }
 	},
 	__setValue: function(value){
-		if (!this.readonly && !this.json.isReadonly && !this.form.json.isReadonly) {
+		if (!this.isReadonly()) {
 			this._setBusinessData(value);
 
 			var ops = this.node.getElements("option");
@@ -388,7 +388,7 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 	getTextData: function(){
 		var value = [];
 		var text = [];
-		if (this.readonly|| this.json.isReadonly || this.form.json.isReadonly){
+		if (this.isReadonly()){
 			var ops = this.getOptionsObj();
 			var data = this._getBusinessData();
 			var d = typeOf(data) === "array" ? data : [data];
@@ -457,7 +457,7 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 	__setData: function(data, fireChange){
 		var old = this.getInputData();
         this._setBusinessData(data);
-		if (this.readonly|| this.json.isReadonly || this.form.json.isReadonly){
+		if (this.isReadonly()){
 			var d = typeOf(data) === "array" ? data : [data];
 			var ops = this.getOptionsObj();
 			var result = [];

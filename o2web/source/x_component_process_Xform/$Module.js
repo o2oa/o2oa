@@ -91,7 +91,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
      *  @return {Boolean} 是否通过校验
      */
     validation: function (routeName, opinion) {
-        if (!this.readonly && !this.json.isReadonly && !this.form.json.isReadonly){
+        if (!this.isReadonly()){
             if (this.getInputData){
                 this._setBusinessData(this.getInputData("change"));
             }
