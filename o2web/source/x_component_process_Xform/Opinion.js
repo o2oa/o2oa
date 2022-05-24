@@ -249,7 +249,7 @@ MWF.xApplication.process.Xform.Opinion = MWF.APPOpinion = new Class(
             }.bind(this));
         },
         _afterLoaded: function(){
-            if (!this.readonly && !this.json.isReadonly && !this.form.json.isReadonly){
+            if (!this.isReadonly()){
                 this.setNodeSize();
                 this.loadDescription();
             }
