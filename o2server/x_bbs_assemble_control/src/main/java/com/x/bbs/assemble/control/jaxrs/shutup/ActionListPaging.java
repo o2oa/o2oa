@@ -81,8 +81,9 @@ class ActionListPaging extends BaseAction {
 
 		private static final long serialVersionUID = 4928128631701115688L;
 
-		static WrapCopier<BBSShutup, Wo> copier = WrapCopierFactory.wo(BBSShutup.class, Wo.class,null,
-				ListTools.toList(JpaObject.FieldsUnmodifyExcludeId, BBSShutup.unmuteDateTime_FIELDNAME, BBSShutup.operator_FIELDNAME));
+		static WrapCopier<BBSShutup, Wo> copier = WrapCopierFactory.wo(BBSShutup.class, Wo.class,
+				JpaObject.singularAttributeField(BBSShutup.class, true, true),
+				ListTools.toList(BBSShutup.unmuteDateTime_FIELDNAME));
 
 
 	}
