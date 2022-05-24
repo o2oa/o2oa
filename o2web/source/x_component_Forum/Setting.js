@@ -1832,7 +1832,7 @@ MWF.xApplication.Forum.Setting.MuteSettingView = new Class({
     },
 
     _getCurrentPageData: function(callback, count){
-        if (!count)count = 20;
+        if (!count)count = 50;
         if( !this.page ){
             this.page = 1;
         }else{
