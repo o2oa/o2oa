@@ -1789,6 +1789,7 @@ MWF.xApplication.Forum.Setting.MuteSettingExplorer = new Class({
             var form = new MWF.xApplication.Forum.Setting.MuteSettingForm(this, {}, {
                 onPostOk : function(){
                     // this.app.access.getUserPermission(function () {
+                    this.view.page = 0;
                         this.view.reload();
                     // }.bind(this), true);
                 }.bind(this)});
@@ -1832,18 +1833,27 @@ MWF.xApplication.Forum.Setting.MuteSettingView = new Class({
 
     _getCurrentPageData: function(callback, count){
         if (!count)count = 20;
-        //var id = (this.items.length) ? this.items[this.items.length - 1].data.id : "(0)";
-        //var filter = this.filterData || {};
-        this.actions.listSystemSettingAll(function (json) {
+        if( !this.page ){
+            this.page = 1;
+        }else{
+            this.page ++;
+        }
+        o2.Actions.load("x_bbs_assemble_control").ShutupAction.listPaging(this.page, count, {}, function (json) {
             if (callback)callback(json);
         }.bind(this))
     },
     _removeDocument: function(documentData, all){
-
+        o2.Actions.load("x_bbs_assemble_control").ShutupAction.delete(documentData.id, function(json){
+            this.page = 0;
+            this.reload();
+            this.app.notice(this.app.lp.unmuteSuccess, "success");
+        }.bind(this));
     },
     _openDocument: function( documentData ){
         var form = new MWF.xApplication.Forum.Setting.MuteSettingForm(this, documentData, {
             onPostOk : function(){
+                debugger;
+                this.page = 0;
                 this.reload();
             }.bind(this)
         });
@@ -1865,7 +1875,7 @@ MWF.xApplication.Forum.Setting.MuteSettingDocument = new Class({
     },
     unmute: function (e) {
         var lp = this.lp || this.view.lp || this.app.lp;
-        var text = lp.unmuteDocument.replace(/{person}/g, this.data.personName);
+        var text = lp.unmuteDocument.replace(/{person}/g, this.data.person.split("@")[0]);
         var _self = this;
         this.node.setStyles(this.css.documentNode_remove);
         this.readyRemove = true;
@@ -1902,12 +1912,14 @@ MWF.xApplication.Forum.Setting.MuteSettingForm = new Class({
     },
     _createTableContent: function () {
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>" +
-            "<tr><td styles='formTableTitle' lable='personName' width='20%'></td>" +
-            "    <td styles='formTableValue' item='personName' width='80%'></td></tr>" +
-            "<tr><td styles='formTableTitle' lable='unmuteDate'></td>" +
-            "    <td styles='formTableValue' item='unmuteDate'></td></tr>" +
+            "<tr><td styles='formTableTitle' lable='createTime' width='20%'></td>" +
+            "    <td styles='formTableValue' item='createTime' width='80%'></td></tr>" +
+            "<tr><td styles='formTableTitle' lable='person' width='20%'></td>" +
+            "    <td styles='formTableValue' item='person' width='80%'></td></tr>" +
             "<tr><td styles='formTableTitle' lable='reason'></td>" +
             "    <td styles='formTableValue' item='reason'></td></tr>" +
+            "<tr><td styles='formTableTitle' lable='unmuteDate'></td>" +
+            "    <td styles='formTableValue' item='unmuteDate'></td></tr>" +
             "<tr><td styles='formTableTitle'></td>" +
             "    <td styles='formTableValue'>"+this.lp.unmuteDateNote+"</td></tr>" +
             "</table>";
@@ -1918,8 +1930,8 @@ MWF.xApplication.Forum.Setting.MuteSettingForm = new Class({
                 style: "execution",
                 isEdited: this.isEdited || this.isNew,
                 itemTemplate: {
-                    updateTime: {text: this.lp.multReason, notEmpty: true, type : "textarea" },
-                    personName: {text: this.lp.mutePerson, type : "org", notEmpty: true, orgOptions: {
+                    createTime: {text: this.lp.muteTime, type : "innerText", defaultValue: new Date().format("db") },
+                    person: {text: this.lp.mutePerson, type : "org", notEmpty: true, orgOptions: {
                             onPostLoadItem: function(item){
                                 if(item.data.nickName){
                                     item.textNode.set("text", item.data.name + "("+ item.data.nickName +")")
@@ -1946,7 +1958,18 @@ MWF.xApplication.Forum.Setting.MuteSettingForm = new Class({
                      },
                     unmuteDate: {text: this.lp.unmuteDate, notEmpty: true, tType : "date", defaultValue: function(){
                         return new Date().increment("day", 7).format("%Y-%m-%d");
-                    }},
+                    }, validRule: {
+                        time: function(value, item){
+                            debugger;
+                            if( new Date(value + " 00:00:00") < new Date() ){
+                                return false;
+                            }else{
+                                return true;
+                            }
+                        }
+                    }, validMessage:{
+                        time: this.lp.unmuteTimeUnvalid
+                    } },
                     reason: {text: this.lp.multReason, notEmpty: true, type : "textarea" }
                 }
             }, this.app);
@@ -1954,7 +1977,7 @@ MWF.xApplication.Forum.Setting.MuteSettingForm = new Class({
         }.bind(this), true);
     },
     _ok: function (data, callback) {
-        this.app.restActions.saveSystemSetting( data, function(json){
+        o2.Actions.load("x_bbs_assemble_control").ShutupAction.save( data, function(json){
             if( callback )callback(json);
             this.fireEvent("postOk")
         }.bind(this));

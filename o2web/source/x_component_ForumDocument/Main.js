@@ -631,9 +631,18 @@ MWF.xApplication.ForumDocument.Main = new Class({
 				this.createReplyEditor_Anonymous()
 			}else{
 				if( MWFForum.isReplyMuted() ){
-					new Element("div", {
-						text: "您被禁言了，无法发帖和回复。"
-					}).inject( this.middleNode )
+					var d = MWFForum.muteData;
+					if( d ){
+						new Element("div", {
+							styles: this.css.muteInfor,
+							text: this.lp.muteNote + this.lp.muteInfor.replace("{unmuteDate}", d.unmuteDate).replace("{reason}", d.reason)
+						}).inject( this.middleNode )
+					}else{
+						new Element("div", {
+							styles: this.css.muteInfor,
+							text: this.lp.muteNote
+						}).inject( this.middleNode )
+					}
 				}else{
 					this.createReplyEditor();
 				}
@@ -1184,7 +1193,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 	},
 	createSubject : function(){
 		this.subjectView = new MWF.xApplication.ForumDocument.SubjectView( this.subjectConainer, this, this, {
-			templateUrl : this.path + "listItemSubject.json",
+			templateUrl : this.path +  (this.data.anonymousSubject ? "listItemAnonymousSubject.json" :  "listItemSubject.json"),
 			scrollEnable : false
 		} );
 		this.subjectView.data = this.data;

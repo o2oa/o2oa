@@ -12,15 +12,17 @@
   },
   "items": [
     {
-      "name": "personName",
+      "name": "person",
       "head": {
         "html": "<th styles='normalThNode' lable='mutePerson'></th>",
         "width": "15%"
       },
       "content": {
-        "html": "<td styles='normalTdCenterNode' item='personName'></td>",
+        "html": "<td styles='normalTdCenterNode' item='person'></td>",
         "items": {
-          "personName" : {}
+          "person" : {
+            "value": "function(d){ return d.person.split('@')[0] }"
+          }
         }
       }
     },
@@ -53,7 +55,7 @@
     {
       "name": "createTime",
       "head": {
-        "html": "<th styles='normalThNode' lable='createTime'></th>",
+        "html": "<th styles='normalThNode' lable='muteTime'></th>",
         "width": "15%"
       },
       "content": {

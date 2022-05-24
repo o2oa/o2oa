@@ -355,11 +355,17 @@ MWF.xApplication.Forum.LP = {
 	"addMutePerson": "添加禁言人员",
 	"mute1SettingFormTitle": "禁言人员设置",
 	"mutePerson": "禁言人员",
+	"muteTime": "禁言时间",
 	"unmuteDate": "解封日期",
 	"unmuteDateNote": "到期后自动解除禁言",
 	"unmute": "解除禁言",
 	"unmuteTitle": "解除禁言确认",
 	"unmuteDocument": "确定要解除禁言:{person}？",
-	"multReason": "禁言理由"
+	"multReason": "禁言理由",
+	"unmuteSuccess": "解除禁言成功!",
+	"unmuteTimeUnvalid": "解封日期需要晚于今天",
+	"muteNote": "您被禁言了，无法发帖和回复。",
+	"muteInfor": "解封日期：{unmuteDate}，禁言原因：{reason}。",
+	"poster": "发帖人"
 
 };

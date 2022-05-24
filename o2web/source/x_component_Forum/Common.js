@@ -60,12 +60,36 @@ MWFForum.enableAnonymousSubject = function(){
     return MWFForum.getSystemConfigValue( MWFForum.BBS_ANONYMOUS_PERMISSION ) === "YES";
 }
 
-MWFForum.isSubjectMuted = function(){
-    return false;
+MWFForum.isSubjectMuted = function( usecache ){
+    if( usecache && o2.typeOf( MWFForum.isMuted ) === "boolean" ){
+        return MWFForum.isMuted;
+    }
+    o2.Actions.load("x_bbs_assemble_control").ShutupAction.hasShutup(function(json){
+        // json.data = {
+        //     "id": "a13843ac-0700-4a94-b7d9-a85e6fca131b",
+        //     "operator": "蔡祥熠@cxy@P",
+        //     "person": "龚新民@91eed25b-8891-4ba6-b234-a70ed97c42ae@P",
+        //     "unmuteDate": "2022-05-25",
+        //     "reason": "888",
+        //     "createTime": "2022-05-24 16:09:48",
+        //     "updateTime": "2022-05-24 16:09:48"
+        // };
+        var d = json.data || {};
+        MWFForum.muteData = d;
+        if( d.unmuteDate && (new Date(d.unmuteDate + " 00:00:00") > new Date())){
+            MWFForum.isMuted = true;
+        }else{
+            MWFForum.isMuted = false;
+        }
+    }, null, false);
+    if( o2.typeOf( MWFForum.isMuted ) !== "boolean" ){
+        MWFForum.isMuted = false;
+    }
+    return MWFForum.isMuted;
 }
 
 MWFForum.isReplyMuted = function(){
-    return false;
+    return MWFForum.isSubjectMuted( true );
 }
 
 MWFForum.isUseNickName = function(){

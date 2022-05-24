@@ -342,7 +342,6 @@ MWF.xApplication.Forum.LP = {
 
 	"selectTargetSection": "Select the section to move to",
 	"moveSuccess": "The post has been moved to {section}",
-	"poster": "Poster",
 	"replyAbbr": "reply",
 
 	"editPermissionFormTitle": "Set edit permission",
@@ -354,11 +353,17 @@ MWF.xApplication.Forum.LP = {
     "addMutePerson": "Add Mute Person",
     "mute1SettingFormTitle": "Mute Person Settings",
     "mutePerson": "Mute Person",
+	"muteTime": "Mute Time",
     "unmuteDate": "Unmute Date",
     "unmuteDateNote": "Automatically unmute after expiration",
 	"unmute": "unmute",
 	"unmuteTitle": "Unmute Confirmation",
 	"unmuteDocument": "Are you sure you want to unmute:{person}?",
-	"multReason": "Mute Reason"
+	"multReason": "Mute Reason",
+	"unmuteSuccess": "Unmute Success!",
+	"unmuteTimeUnvalid": "Unblock date needs to be later than today",
+	"muteNote": "You have been muted to post and reply.",
+	"muteInfor": "Unblock Date: {unmuteDate}, Mute Reason: {reason}.",
+	"poster": "Poster"
 
 };

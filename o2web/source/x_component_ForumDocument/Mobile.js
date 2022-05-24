@@ -68,7 +68,7 @@ MWF.xApplication.ForumDocument.Mobile = new Class({
     },
     createSubject : function(){
         this.subjectView = new MWF.xApplication.ForumDocument.Mobile.SubjectView( this.subjectConainer, this.app, this, {
-            templateUrl : this.path + "listItemSubject.json",
+            templateUrl : this.path + (this.data.anonymousSubject ? "listItemAnonymousSubject.json" :  "listItemSubject.json"),
             scrollEnable : false
         } );
         this.subjectView.data = this.data;
@@ -130,14 +130,20 @@ MWF.xApplication.ForumDocument.Mobile = new Class({
         this.satisfiedReplyView.data = this.data;
         this.satisfiedReplyView.load();
     },
-    getUserIcon: function( name ){
+    getUserIcon: function( name, isSubject ){
         var icon = "";
-        var url = MWF.Actions.get("x_organization_assemble_personal").getIcon(name);
-        if( url ){
-            icon = url;
+        if( isSubject && this.data.anonymousSubject ){
+            icon = '../x_component_ForumDocument/$Main/default/icon/noavatar_big.gif';
         }else{
-            icon = "../x_component_ForumDocument/$Main/default/icon/noavatar_big.gif";
+            var url = MWF.Actions.get("x_organization_assemble_personal").getIcon(name);
+            if( url ){
+                icon = url;
+            }else{
+                icon = "../x_component_ForumDocument/$Main/default/icon/noavatar_big.gif";
+            }
         }
+
+
         //MWF.Actions.get("x_organization_assemble_control").getPersonIcon(name, function(url){
         //    icon = url;
         //}.bind(this), function(){
