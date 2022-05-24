@@ -35,6 +35,7 @@ import com.x.bbs.assemble.control.ThisApplication;
 		"/jaxrs/logout/*",
 		"/jaxrs/mobile/*",
 		"/jaxrs/picture/*",
+		"/jaxrs/shutup/*",
 		"/jaxrs/attachment/*"
 } , asyncSupported = true)
 public class BBSJaxrsFilter extends AnonymousCipherManagerUserJaxrsFilter {

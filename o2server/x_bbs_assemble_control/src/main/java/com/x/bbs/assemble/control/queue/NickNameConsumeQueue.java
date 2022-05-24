@@ -3,6 +3,7 @@ package com.x.bbs.assemble.control.queue;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -65,9 +66,11 @@ public class NickNameConsumeQueue extends AbstractQueue<String> {
 	private void updateSubjectNickName(String id, String nickName) throws Exception{
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			BBSSubjectInfo bbsSubjectInfo = emc.find(id, BBSSubjectInfo.class);
-			emc.beginTransaction(BBSSubjectInfo.class);
-			bbsSubjectInfo.setNickName(nickName);
-			emc.commit();
+			if(!BooleanUtils.isTrue(bbsSubjectInfo.getAnonymousSubject())) {
+				emc.beginTransaction(BBSSubjectInfo.class);
+				bbsSubjectInfo.setNickName(nickName);
+				emc.commit();
+			}
 		}
 	}
 

@@ -174,4 +174,27 @@ public class Business {
 		}
 		return operationRecordFactory;
 	}
+
+	/**
+	 * 判断用户是否管理员权限
+	 * 1、person.isManager()
+	 * 2、xadmin
+	 * 3、CMSManager
+	 *
+	 * @param person
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean isManager(EffectivePerson person) throws Exception {
+		// 如果用户的身份是平台的超级管理员，那么就是超级管理员权限
+		if ( person.isManager() ) {
+			return true;
+		} else {
+			if (organization().person().hasRole(person, OrganizationDefinition.Manager,
+					OrganizationDefinition.BBSManager)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
