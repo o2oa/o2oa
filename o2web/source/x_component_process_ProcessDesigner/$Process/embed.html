@@ -69,8 +69,8 @@
             <tr>
                 <td class="editTableTitle">{{$.lp.copyAttachment}}:</td>
                 <td class="editTableValue">
-                    <input class="editTableRadio" name="inheritAttachment" text{($.inheritData)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
-                    <input class="editTableRadio" name="inheritAttachment" text{(!$.inheritData)?'checked':''} type="radio" value="false"/>{{$.lp.no}}
+                    <input class="editTableRadio" name="inheritAttachment" text{($.inheritAttachment)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
+                    <input class="editTableRadio" name="inheritAttachment" text{(!$.inheritAttachment)?'checked':''} type="radio" value="false"/>{{$.lp.no}}
                 </td>
             </tr>
         </table>
