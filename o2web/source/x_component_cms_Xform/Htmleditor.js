@@ -144,17 +144,22 @@ MWF.xApplication.cms.Xform.Htmleditor = MWF.CMSHtmleditor = new Class({
         }.bind(this));
     },
     getText: function () {
-        return this.editor.document.getBody().getText();
+        return (this.editor && this.editor.document) ? this.editor.document.getBody().getText() : this.node.get("text");
     },
     getImages: function () {
+        debugger;
         var result = [];
-        var imgaes = this.editor.document.find("img");
-        if (imgaes) {
-            for (var i = 0; i < imgaes.$.length; i++) {
-                result.push(imgaes.getItem(i).$);
+        if( this.editor && this.editor.document ){
+            var imgaes = this.editor.document.find("img");
+            if (imgaes) {
+                for (var i = 0; i < imgaes.$.length; i++) {
+                    result.push(imgaes.getItem(i).$);
+                }
             }
+            return result;
+        }else{
+            return this.node.getElements("img");
         }
-        return result;
     },
     getImageIds: function () {
         var result = [];

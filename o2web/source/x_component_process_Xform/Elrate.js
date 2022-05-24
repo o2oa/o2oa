@@ -34,7 +34,7 @@ MWF.xApplication.process.Xform.Elrate = MWF.APPElrate =  new Class(
     // },
     _appendVueData: function(){
         if (!this.json.max) this.json.max = "";
-        if (!this.json.isReadonly) this.json.isReadonly = false;
+        if (!this.json.isReadonly && !this.form.json.isReadonly) this.json.isReadonly = false;
         if (!this.json.max) this.json.max = 5;
         if (!this.json.allowHalf) this.json.allowHalf = false;
         if (!this.json.lowThreshold) this.json.lowThreshold = 2;

@@ -47,7 +47,7 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
         "moduleEvents": ["queryLoad","postLoad","load","complete", "clear", "change","show","hide"]
     },
     _loadNode: function(){
-        if (this.readonly || this.json.isReadonly){
+        if (this.isReadonly()){
             this._loadNodeRead();
         }else{
             this._loadNodeEdit();
@@ -111,7 +111,7 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
         }
         this._setBusinessData(value);
         if (this.node.getFirst()) this.node.getFirst().set("value", v || "");
-        if (this.readonly || this.json.isReadonly) this.node.set("text", v);
+        if (this.isReadonly()) this.node.set("text", v);
         this.moduleValueAG = null;
         this.fieldModuleLoaded = true;
         return value;

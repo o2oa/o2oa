@@ -32,14 +32,14 @@ MWF.xApplication.process.Xform.Textfield = MWF.APPTextfield =  new Class({
         }
 	},
     _loadNode: function(){
-        if (this.readonly || this.json.isReadonly){
+        if (this.isReadonly()){
             this._loadNodeRead();
         }else{
             this._loadNodeEdit();
         }
     },
     loadDescription: function(){
-        if (this.readonly || this.json.isReadonly)return;
+        if (this.isReadonly())return;
         var v = this._getBusinessData();
         if (!v){
             if (this.json.description){

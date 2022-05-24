@@ -84,7 +84,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
         });
     },
     loadDescription: function(){
-        if (this.readonly || this.json.isReadonly)return;
+        if (this.isReadonly())return;
         var v = this._getBusinessData();
         if (!v){
             if (this.json.description){
@@ -249,7 +249,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
         this.moduleValueAG = null;
         this._setBusinessData(value);
         if (this.node.getFirst()) this.node.getFirst().set("value", value || "");
-        if (this.readonly || this.json.isReadonly) this.node.set("text", value);
+        if (this.isReadonly()) this.node.set("text", value);
         this.moduleValueAG = null;
         this.fieldModuleLoaded = true;
         return value;
@@ -273,7 +273,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
 //				"left": "-18px"
 //			});
 //		}
-        if (!this.readonly && !this.json.isReadonly ){
+        if (!this.readonly && !this.json.isReadonly || this.form.json.isReadonly){
             this.loadDescription();
         }
 	},
@@ -284,7 +284,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
      * @return {Boolean} 是否只读.
      */
 	isReadonly : function(){
-        return !!(this.readonly || this.json.isReadonly);
+        return !!(this.readonly || this.json.isReadonly || this.form.json.isReadonly);
     },
 	getTextData: function(){
 		//var value = this.node.get("value");

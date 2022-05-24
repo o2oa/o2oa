@@ -5,6 +5,7 @@
 	"description": "",
 	"itemType": "values",
 	"itemValues": [],
+	"countPerline": "0",
     "compute": "create", //create, show, save
     "section": "no",
     "sectionBy": "person",

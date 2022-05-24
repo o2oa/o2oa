@@ -41,7 +41,7 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
         this.fieldModuleLoaded = false;
     },
     _loadNode: function(){
-        if (this.readonly || this.json.isReadonly){
+        if (this.isReadonly()){
             this._loadNodeRead();
         }else{
             this._loadNodeEdit();

@@ -17,6 +17,13 @@
                 <td class="editTableTitle">{{$.lp.category}}:</td>
                 <td class="editTableValue"><input type="text" name="category" value="text{$.category}" class="editTableInput"/></td>
             </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.readonly}}:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="isReadonly" value="true" text{($.isReadonly)?'checked':''}/>{{$.lp.yes}}
+                    <input type="radio" name="isReadonly" value="false" text{(!$.isReadonly)?'checked':''}/>{{$.lp.no}}
+                </td>
+            </tr>
             <!--<tr>-->
                 <!--<td class="editTableTitle">标题字段</td>-->
                 <!--<td class="editTableValue">-->

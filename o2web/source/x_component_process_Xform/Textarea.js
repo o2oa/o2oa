@@ -31,7 +31,7 @@ MWF.xApplication.process.Xform.Textarea = MWF.APPTextarea =  new Class({
         }
 	},
     _loadNode: function(){
-        if (this.readonly || this.json.isReadonly){
+        if (this.isReadonly()){
             this._loadNodeRead();
         }else{
             this._loadNodeEdit();
@@ -46,7 +46,7 @@ MWF.xApplication.process.Xform.Textarea = MWF.APPTextarea =  new Class({
     },
 
     getInputData: function(){
-        if( this.readonly || this.json.isReadonly ) {
+        if( this.isReadonly()) {
             return this._getBusinessData();
         }else if (this.node.getFirst()){
             return this.node.getFirst().get("value");
@@ -65,7 +65,7 @@ MWF.xApplication.process.Xform.Textarea = MWF.APPTextarea =  new Class({
     __setData: function(data){
         var old = this.getInputData();
         this._setBusinessData(data);
-        if( this.readonly || this.json.isReadonly ){
+        if( this.isReadonly()){
             this.node.set("html", this.toHtml(data));
         }else if (this.node.getFirst()){
             this.node.getFirst().set("value", data);
@@ -85,7 +85,7 @@ MWF.xApplication.process.Xform.Textarea = MWF.APPTextarea =  new Class({
             if (o2.typeOf(v)=="array") v = v[0];
             this._setBusinessData(v);
             if (this.node.getFirst()) this.node.getFirst().set("value", v || "");
-            if (this.readonly || this.json.isReadonly){
+            if (this.isReadonly()){
                 this.node.set("html", this.toHtml(value));
             }
             this.fieldModuleLoaded = true;
@@ -140,7 +140,7 @@ MWF.xApplication.process.Xform.Textarea = MWF.APPTextarea =  new Class({
     getTextData: function(){
         //var value = this.node.get("value");
         //var text = this.node.get("text");
-        if (this.readonly || this.json.isReadonly){
+        if (this.isReadonly()){
             var value = this._getBusinessData();
             return {"value": [value || ""] , "text": [value || ""]};
         }else{
@@ -210,7 +210,7 @@ MWF.xApplication.process.Xform.Textarea = MWF.APPTextarea =  new Class({
         }
 	},
     loadDescription: function(){
-        if (this.readonly || this.json.isReadonly)return;
+        if (this.isReadonly())return;
         var v = this._getBusinessData();
         if (!v){
             if (this.json.description){

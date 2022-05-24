@@ -190,7 +190,7 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
 
         if (this.readonly){
             this.loadOfficeRead(file);
-        }else if (this.json.isReadonly){
+        }else if (this.json.isReadonly || this.form.json.isReadonly){
             this.readonly  = true;
             this.loadOfficeRead(file);
         }else{

@@ -5,7 +5,7 @@ MWF.xApplication.process.Xform.Orgfield = MWF.APPOrgfield =  new Class({
 	Extends: MWF.APPPersonfield,
 	iconStyle: "orgfieldIcon",
     loadDescription: function(){
-        if (this.readonly || this.json.isReadonly)return;
+        if (this.isReadonly())return;
         var v = this._getBusinessData();
         if (!v || !v.length){
             if (this.json.description){
@@ -48,7 +48,7 @@ MWF.xApplication.process.Xform.Orgfield = MWF.APPOrgfield =  new Class({
 
 	},
     _loadNode: function(){
-        if (this.readonly || this.json.isReadonly){
+        if (this.isReadonly()){
             this._loadNodeRead();
         }else{
             this._getOrgOptions();
@@ -599,7 +599,7 @@ MWF.xApplication.process.Xform.Orgfield = MWF.APPOrgfield =  new Class({
         }
 	},
     _loadStyles: function(){
-        if (this.readonly || this.json.isReadonly){
+        if (this.isReadonly()){
             if (this.json.styles) this.node.setStyles(this.json.styles);
         }else{
             if (this.json.styles) this.node.setStyles(this.json.styles);

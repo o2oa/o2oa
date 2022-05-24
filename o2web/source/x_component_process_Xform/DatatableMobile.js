@@ -431,7 +431,7 @@ MWF.xApplication.process.Xform.DatatableMobile.Line =  new Class({
 			"text": MWF.xApplication.process.Xform.LP.completedEdit,
 			"events": {
 				"click": function(ev){
-					this.datatable._completeLineEdit(ev);
+					this.datatable._completeLineEdit(ev, true);
 					ev.stopPropagation();
 				}.bind(this)
 			}

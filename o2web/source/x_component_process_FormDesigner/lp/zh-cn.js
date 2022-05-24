@@ -493,6 +493,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "selectCount": "选择数量",
         "returnValue": "结果返回",
 
+        "readonlyScript": "只读脚本",
+
         "selectTypeInfo": "参与流程处理请选身份！",
         "selectTypeInfo2": "注意，个人无法参与流程处理！",
         "checkEmpower": "检查待办授权",
@@ -1258,7 +1260,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "menuItem": "菜单项",
         "dropdownDefaultText": "下拉菜单",
         "showButton": "显示按钮",
-        "newline": "每个选项一行",
+        "countPerline": "每行选项数",
+        "countPerlineNote": "0表示不限制",
 
         "wps" : {
             "config":"配置",

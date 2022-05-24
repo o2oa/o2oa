@@ -20,7 +20,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
 	Extends: MWF.APP$Input,
     loadDescription: function(){},
     _loadNode: function(){
-        if (this.readonly || this.json.isReadonly ){
+        if (this.isReadonly()){
             this._loadNodeRead();
         }else{
             this._loadNodeEdit();
@@ -45,7 +45,34 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
                     texts.push(t);
                 }
             });
-            this.node.set("text", texts.join(", "));
+            if( !this.isNumber(this.json.countPerline) ) {
+                if( this.json.newline ){
+                    texts.each(function(t){
+                        new Element("div", { "text": t }).inject(this.node)
+                    }.bind(this))
+                }else{
+                    this.node.set("text", texts.join(", "));
+                }
+            }else{
+                var div;
+                var countPerLine = this.json.countPerline.toInt();
+                if( countPerLine === 0 ){
+                    div = new Element("div").inject( this.node );
+                    div.set("text", texts.join(", "));
+                }else{
+                    var textsPerLine = [];
+                    texts.each(function(t, i){
+                        if( i % countPerLine === 0){ //如果需要换行了
+                            if( div && textsPerLine.length )div.set("text", textsPerLine.join(",") +",");
+                            textsPerLine = [];
+                            div = new Element("div").inject( this.node );
+                        }
+                        textsPerLine.push( t );
+                    }.bind(this));
+                    if( div && textsPerLine.length )div.set("text", textsPerLine.join(","));
+                }
+            }
+
         }
     },
     _resetNodeEdit: function(){
@@ -154,23 +181,34 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
         var optionItems = this.getOptions();
         this._setOptions(optionItems);
     },
-
+    isNumber : function( d ){
+        return parseInt(d).toString() !== "NaN"
+    },
     _setOptions: function(optionItems){
         var p = o2.promiseAll(optionItems).then(function(radioValues){
             this.moduleSelectAG = null;
             if (!radioValues) radioValues = [];
+            var node;
             if (o2.typeOf(radioValues)==="array"){
                 var flag = (new MWF.widget.UUID).toString();
-                radioValues.each(function(item){
+                radioValues.each(function(item, i){
                     var tmps = item.split("|");
                     var text = tmps[0];
                     var value = tmps[1] || text;
 
-                    var node;
-                    if( this.json.newline ){
-                        node = new Element("div").inject(this.node);
+                    if( !this.isNumber(this.json.countPerline) ) {
+                        if( this.json.newline ){
+                            node = new Element("div").inject(this.node);
+                        }else{
+                            node = this.node;
+                        }
                     }else{
-                        node = this.node;
+                        var countPerLine = this.json.countPerline.toInt();
+                        if( countPerLine === 0 && i===0 ){
+                            node = new Element("div").inject(this.node);
+                        }else if( i % countPerLine === 0){
+                            node = new Element("div").inject(this.node);
+                        }
                     }
 
                     var radio = new Element("input", {
@@ -275,7 +313,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
     __setValue: function(value){
         this.moduleValueAG = null;
         this._setBusinessData(value);
-        if (this.readonly || this.json.isReadonly ){
+        if (this.isReadonly()){
             this._loadNodeRead();
         }else{
             var radios = this.node.getElements("input");
@@ -330,7 +368,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
         return false;
     },
     getInputData: function(){
-        if (this.readonly || this.json.isReadonly ){
+        if (this.isReadonly()){
             return this._getBusinessData();
         }else{
             var inputs = this.node.getElements("input");

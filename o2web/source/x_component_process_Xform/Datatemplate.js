@@ -84,6 +84,19 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			 * @event MWF.xApplication.process.Xform.Datatemplate#afterLoadLine
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
+            /**
+             * 数据模板改变时触发。通过this.event.lines可以获取修改的条目数组，this.event.type可以获得修改的类型。<br/>
+             * <table>
+             *     <tr><th><b>this.event.type</b></th><th><b>触发类型</b></th><th><b>this.event.lines</b></th></tr>
+             *     <tr><td>addline</td><td>添加一行</td><td>添加的行数组</td></tr>
+             *     <tr><td>deleteline</td><td>删除一行</td><td>删除的行数组</td></tr>
+			 *     <tr><td>deletelines</td><td>删除多行</td><td>删除的行数组</td></tr>
+             *     <tr><td>editmodule</td><td>字段值改变时</td><td>this.event.lines为编辑的行数组<br/>this.event.module为修改的字段</td></tr>
+             *     <tr><td>import</td><td>导入数据后</td><td>数据模板所有行</td></tr>
+             * </table>
+             * @event MWF.xApplication.process.Xform.Datatemplate#change
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
 			/**
 			 * 添加条目时触发。通过this.event.line可以获取对应的条目对象，this.event.ev可以获得事件触发的Event。
 			 * @event MWF.xApplication.process.Xform.Datatemplate#addLine
@@ -150,7 +163,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
 			"moduleEvents": ["queryLoad","postLoad","load", "afterLoad",
-				"beforeLoadLine", "afterLoadLine","addLine", "deleteLine", "afterDeleteLine","export", "import", "validImport", "afterImport"]
+				"beforeLoadLine", "afterLoadLine", "change", "addLine", "deleteLine", "afterDeleteLine","export", "import", "validImport", "afterImport"]
 		},
 
 		initialize: function(node, json, form, options){
@@ -185,7 +198,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this.node.setStyle("overflow-x", "auto");
 			this.node.setStyle("overflow-y", "hidden");
 
-			this.editable = !(this.readonly || (this.json.isReadonly === true));
+			this.editable = !(this.readonly || (this.json.isReadonly === true) || (this.form.json.isReadonly === true));
 			if (this.editable && this.json.editableScript && this.json.editableScript.code){
 				this.editable = this.form.Macro.exec(((this.json.editableScript) ? this.json.editableScript.code : ""), this);
 			}
@@ -464,6 +477,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 
 			this.validationMode();
 			this.fireEvent("addLine",[{"line":newLine, "ev":ev}]);
+			this.fireEvent("change", [{"lines":[newLine], "type":"addline"}]);
 			return newLine;
 		},
 		_insertLine: function(ev, beforeLine){
@@ -484,6 +498,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 
 			this.validationMode();
 			this.fireEvent("addLine",[{"line":newLine, "ev":ev}]);
+			this.fireEvent("change", [{"lines":[newLine], "type":"addline"}]);
 			return newLine;
 		},
 		_insertLineByIndex: function(ev, index, d){
@@ -502,6 +517,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 
 			this.validationMode();
 			this.fireEvent("addLine",[{"line":newLine, "ev":ev}]);
+			this.fireEvent("change", [{"lines":[newLine], "type":"addline"}]);
 			return newLine;
 		},
 		_deleteSelectedLine: function(ev){
@@ -548,6 +564,9 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 
 			_self.setData( data );
 			this.validationMode();
+
+			_self.fireEvent("change", [{"lines":lines, "type":"deletelines"}]);
+
 			if(saveFlag)this.form.saveFormData();
 		},
 		_deleteLine: function(ev, line){
@@ -576,6 +595,9 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this.setData( data );
 			this.validationMode();
 			this.fireEvent("afterDeleteLine");
+
+			this.fireEvent("change", [{"lines":[line], "type":"deleteline"}]);
+
 			if(saveFlag)this.form.saveFormData();
 		},
 		_checkSelectAll: function () {
@@ -1187,6 +1209,10 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 						this.allField[id] = module;
 						this.allField_templateId[templateJsonId] = module;
 						this.fields.push( module );
+
+						module.addEvent("change", function(){
+							this.template.fireEvent("change", [{lines: [this], type: "editmodule", module: module}]);
+						}.bind(this))
 					}
 
 					this.setEvents(module, templateJsonId);
@@ -1826,6 +1852,8 @@ MWF.xApplication.process.Xform.Datatemplate.Importer = new Class({
 		this.template.setData( data );
 
 		this.template.fireEvent("afterImport", [data] );
+
+		this.template.fireEvent("change", [{lines: this.template.lineList, type : "import"}]);
 
 		this.form.notice( MWF.xApplication.process.Xform.LP.importSuccess );
 

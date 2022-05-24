@@ -32,7 +32,7 @@ MWF.xApplication.process.Xform.WritingBoard = MWF.APPWritingBoard = new Class(
             this.field = true;
             this.node.empty();
 
-            if (!this.readonly && !this.json.isReadonly) {
+            if (!this.readonly && !this.json.isReadonly || this.form.json.isReadonly) {
 
                 var actionNode = new Element("div").inject(this.node);
                 actionNode.set({

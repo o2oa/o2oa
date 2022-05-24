@@ -31,7 +31,7 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
      */
     loadDescription: function(){},
     _loadNode: function(){
-        if (this.readonly || this.json.isReadonly ){
+        if (this.isReadonly()){
             this._loadNodeRead();
         }else{
             this._loadNodeEdit();
@@ -171,18 +171,36 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
         var optionItems = this.getOptions();
         this._setOptions(optionItems);
     },
-
+    isNumber : function( d ){
+        return parseInt(d).toString() !== "NaN"
+    },
 	_setOptions: function(optionItems){
         var p = o2.promiseAll(optionItems).then(function(radioValues){
             this.moduleSelectAG = null;
 
             if (!radioValues) radioValues = [];
+            var node;
             if (o2.typeOf(radioValues)==="array"){
                 var flag = (new MWF.widget.UUID).toString();
-                radioValues.each(function(item){
+                radioValues.each(function(item, i){
                     var tmps = item.split("|");
                     var text = tmps[0];
                     var value = tmps[1] || text;
+
+                    if( !this.isNumber(this.json.countPerline) ) {
+                        if( this.json.newline ){
+                            node = new Element("div").inject(this.node);
+                        }else{
+                            node = this.node;
+                        }
+                    }else{
+                        var countPerLine = this.json.countPerline.toInt();
+                        if( countPerLine === 0 && i===0 ){
+                            node = new Element("div").inject(this.node);
+                        }else if( i % countPerLine === 0){
+                            node = new Element("div").inject(this.node);
+                        }
+                    }
 
                     var radio = new Element("input", {
                         "type": "radio",
@@ -190,13 +208,15 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
                         "value": value,
                         "showText": text,
                         "styles": this.json.buttonStyles
-                    }).inject(this.node);
+                    }).inject(node);
                     //radio.appendText(text, "after");
+
+
 
                     var textNode = new Element( "span", {
                         "text" : text,
                         "styles" : { "cursor" : "default" }
-                    }).inject(this.node);
+                    }).inject(node);
                     textNode.addEvent("click", function( ev ){
                         if( this.radio.get("disabled") === true || this.radio.get("disabled") === "true" )return;
                         this.radio.checked = true;
@@ -338,7 +358,7 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
         this.moduleValueAG = null;
         this._setBusinessData(value);
 
-        if (this.readonly || this.json.isReadonly ){
+        if (this.isReadonly()){
             this._loadNodeRead();
         }else{
             var radios = this.node.getElements("input");
@@ -379,7 +399,7 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
 		return {"value": [value] || "", "text": [text || value || ""]};
 	},
     getInputData: function(){
-        if (this.readonly || this.json.isReadonly ){
+        if (this.isReadonly()){
             return this._getBusinessData();
         }else{
             var inputs = this.node.getElements("input");

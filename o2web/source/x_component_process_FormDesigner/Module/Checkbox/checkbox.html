@@ -20,11 +20,19 @@
                     <input type="radio" name="isReadonly" value="false" text{(!$.isReadonly)?'checked':''}/>{{$.lp.no}}
                 </td>
             </tr>
+<!--            <tr>-->
+<!--                <td class="editTableTitle">{{$.lp.newline}}:</td>-->
+<!--                <td class="editTableValue">-->
+<!--                    <input type="radio" name="newline" value="true" text{($.newline)?'checked':''}/>{{$.lp.yes}}-->
+<!--                    <input type="radio" name="newline" value="false" text{(!$.newline)?'checked':''}/>{{$.lp.no}}-->
+<!--                </td>-->
+<!--            </tr>-->
             <tr>
-                <td class="editTableTitle">{{$.lp.newline}}:</td>
+                <td class="editTableTitle">{{$.lp.countPerline}}:</td>
                 <td class="editTableValue">
-                    <input type="radio" name="newline" value="true" text{($.newline)?'checked':''}/>{{$.lp.yes}}
-                    <input type="radio" name="newline" value="false" text{(!$.newline)?'checked':''}/>{{$.lp.no}}
+                    <input type="text" name="countPerline" value="text{$.countPerline}" class="editTableInput" onkeyup="this.value=this.value.replace(/[^\d]/g,'')"/>
+                    <div style="color:#999999; padding:5px;">{{$.lp.countPerlineNote}}</div>
+                </td>
                 </td>
             </tr>
 		  <tr>

@@ -23,10 +23,20 @@
             <tr>
                 <td class="editTableTitle">{{$.lp.readonly}}:</td>
                 <td class="editTableValue">
-                    <input type="radio" name="isReadonly" value="true" text{($.isReadonly)?'checked':''}/>{{$.lp.yes}}
-                    <input type="radio" name="isReadonly" value="false" text{(!$.isReadonly)?'checked':''}/>{{$.lp.no}}
+                    <input type="radio" name="isReadonly" value="true" text{($.isReadonly === true)?'checked':''}  onchange="if (this.checked){
+                        $('text{$.pid}readonlyScript').setStyle('display', 'none');
+                    }"/>{{$.lp.yes}}
+                    <input type="radio" name="isReadonly" value="false" text{(!$.isReadonly)?'checked':''}  onchange="if (this.checked){
+                        $('text{$.pid}readonlyScript').setStyle('display', 'none');
+                    }"/>{{$.lp.no}}
+                    <input type="radio" name="isReadonly" value="script" text{($.isReadonly === 'script')?'checked':''} onchange="if (this.checked){
+                        $('text{$.pid}readonlyScript').setStyle('display', '');
+                    }"/>{{$.lp.script}}
                 </td>
             </tr>
+        </table>
+        <div style="display: text{($.isReadonly==='script')?'':'none'}" id="text{$.pid}readonlyScript" class="MWFFormulaArea" name="readonlyScript" title="{{$.lp.readonlyScript}} (S)"></div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
                 <td class="editTableTitle">{{$.lp.showCard}}:</td>
                 <td class="editTableValue">

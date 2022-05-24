@@ -12,7 +12,7 @@ MWF.xApplication.process.Xform.OfdView = MWF.APPOfdView =  new Class({
         this.json = json;
         this.form = form;
 
-        if (this.json.isReadonly){
+        if (this.json.isReadonly || this.form.json.isReadonly){
             this.mode  = "read";
         }else{
             if (this.json.readScript && this.json.readScript.code){
