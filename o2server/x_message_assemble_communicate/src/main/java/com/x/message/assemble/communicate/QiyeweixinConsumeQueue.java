@@ -41,7 +41,9 @@ public class QiyeweixinConsumeQueue extends AbstractQueue<Message> {
 					}
 				}
 				m.getText().setContent(content);
-				LOGGER.debug("微信消息：{}", m::toString);
+				if (LOGGER.isDebugEnabled()) {
+					LOGGER.debug("微信消息：{}", m::toString);
+				}
 				String address = Config.qiyeweixin().getApiAddress() + "/cgi-bin/message/send?access_token="
 						+ Config.qiyeweixin().corpAccessToken();
 				QiyeweixinMessageResp resp = HttpConnection.postAsObject(address, null, m.toString(),
@@ -90,8 +92,27 @@ public class QiyeweixinConsumeQueue extends AbstractQueue<Message> {
 	private String getQywxOpenCMSDocumentUrl(String messageBody) {
 		String o2oaUrl = null;
 		try {
+			String corpId = Config.qiyeweixin().getCorpId();
+			String agentId = Config.qiyeweixin().getAgentId();
 			o2oaUrl = Config.qiyeweixin().getWorkUrl() + "qiyeweixinsso.html?redirect=";
-			return DingdingConsumeQueue.OuterMessageHelper.getOpenCMSDocumentUrl(o2oaUrl, messageBody);
+			o2oaUrl = DingdingConsumeQueue.OuterMessageHelper.getOpenCMSDocumentUrl(o2oaUrl, messageBody);
+			if (StringUtils.isEmpty(o2oaUrl) || StringUtils.isEmpty(corpId) || StringUtils.isEmpty(agentId)) {
+				return null;
+			}
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug("o2oa 地址：{}" , o2oaUrl);
+			}
+			o2oaUrl = URLEncoder.encode(o2oaUrl, DefaultCharset.name);
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug("encode url : {}", o2oaUrl);
+			}
+			String url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + corpId
+					+ "&response_type=code&scope=snsapi_base" + "&agentid=" + agentId + "&redirect_uri=" + o2oaUrl
+					+ "&#wechat_redirect";
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug("final url : {}" , url);
+			}
+			return url;
 		} catch (Exception e) {
 			LOGGER.error(e);
 			return null;
@@ -128,13 +149,19 @@ public class QiyeweixinConsumeQueue extends AbstractQueue<Message> {
 				workUrl = URLEncoder.encode(workUrl, DefaultCharset.name);
 				o2oaUrl = o2oaUrl + "qiyeweixinsso.html?redirect=" + workUrl;
 			}
-			LOGGER.debug("o2oa 地址：" + o2oaUrl);
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug("o2oa 地址：{}", o2oaUrl);
+			}
 			o2oaUrl = URLEncoder.encode(o2oaUrl, DefaultCharset.name);
-			LOGGER.debug("encode url :" + o2oaUrl);
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug("encode url : {}" , o2oaUrl);
+			}
 			String url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + corpId
 					+ "&response_type=code&scope=snsapi_base" + "&agentid=" + agentId + "&redirect_uri=" + o2oaUrl
 					+ "&#wechat_redirect";
-			LOGGER.debug("final url : {}" ,()-> url);
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug("final url : {}" , url);
+			}
 			return url;
 		} catch (Exception e) {
 			LOGGER.error(e);
