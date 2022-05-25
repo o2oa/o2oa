@@ -146,5 +146,171 @@
     },
     "reset_mobile_disable": {
         "background":"#fff url(../o2_core/o2/widget/$Tablet/default/icon/reset_disable.png) no-repeat center center"
+    },
+
+    "imageMoveMaskNode": {
+        "width": "100%",
+        "height": "100%",
+        "opacity": 0.6,
+        "position": "absolute",
+        "background-color": "#CCC",
+        "top": "0px",
+        "left": "0px",
+        "z-index" : 1002,
+        "-webkit-user-select": "none",
+        "-moz-user-select": "none",
+        "user-select" : "none"
+    },
+    "imageMoveOkNode": {
+        "background" : "url(../o2_core/o2/widget/$Tablet/default/icon/ok.png) no-repeat",
+        "width" : "16px",
+        "height" : "16px",
+        "right" : "-20px",
+        "top" : "5px",
+        "position" : "absolute",
+        "cursor" : "pointer"
+    },
+    "imageMoveCancelNode": {
+        "background" : "url(../o2_core/o2/widget/$Tablet/default/icon/cancel.png) no-repeat",
+        "width" : "16px",
+        "height" : "16px",
+        "right" : "-20px",
+        "top" : "30px",
+        "position" : "absolute",
+        "cursor" : "pointer"
+    },
+    "imageMoveResizeNode": {
+        "cursor" : "nw-resize",
+        "position": "absolute",
+        "bottom": "0px",
+        "right": "0px",
+        "border" : "2px solid #52a3f5",
+        "width" : "8px",
+        "height" : "8px"
+    },
+
+    "inputEditareaWrap":{
+        "position": "absolute",
+        "border": "1px dashed red",
+        "top": "0px",
+        "left": "0px",
+        "width": "calc( 100% - 2px )",
+        "min-height": "calc( 100% - 2px )",
+        "background": "transparent",
+        // "z-index": 1003
+    },
+    "inputEditarea": {
+        "outline": "none",
+        "border": "0px",
+        "width": "calc( 100% - 10px )",
+        "min-height": "calc( 100% - 10px )",
+        "background": "transparent",
+        "user-select": "text",
+        "-webkit-user-select": "text",
+        "padding":"5px",
+        "line-height": "140%",
+        "letter-spacing":"0.8px",
+        "white-space": "pre-wrap"
+    },
+    "inputCancelNode": {
+        "background" : "url(../o2_core/o2/widget/$Tablet/default/icon/cancel2.png) no-repeat center center",
+        "background-color": "#52a3f5",
+        "width" : "16px",
+        "height" : "16px",
+        "border-radius": "100px",
+        "right" : "-8px",
+        "top" : "-8px",
+        "position" : "absolute",
+        "cursor" : "pointer"
+    },
+    "inputDragNode": {
+        "background" : "url(../o2_core/o2/widget/$Tablet/default/icon/move.png) no-repeat center center",
+        "background-color": "#52a3f5",
+        "cursor" : "move",
+        "position": "absolute",
+        "top": "-8px",
+        "left": "-8px",
+        "width" : "16px",
+        "height" : "16px",
+        "border-radius": "100px"
+    },
+    "inputResizeNode": {
+        "background" : "url(../o2_core/o2/widget/$Tablet/default/icon/resize.png) no-repeat center center",
+        "background-size" : "8px",
+        "background-color" : "#52a3f5",
+        "cursor" : "nw-resize",
+        "position": "absolute",
+        "bottom": "-8px",
+        "right": "-8px",
+        "width" : "16px",
+        "height" : "16px",
+        "border-radius": "100px"
+    },
+
+    "inputCancelNode_mobile": {
+        "background" : "url(../o2_core/o2/widget/$Tablet/default/icon/cancel2.png) no-repeat center center",
+        "width" : "16px",
+        "height" : "16px",
+        "border-radius": "100px",
+        "right" : "-8px",
+        "top" : "-8px",
+        "position" : "absolute",
+        "cursor" : "pointer"
+    },
+    "inputDragNode_mobile": {
+        "background" : "url(../o2_core/o2/widget/$Tablet/default/icon/move3.png) no-repeat center center",
+        "cursor" : "move",
+        "position": "absolute",
+        "top": "-8px",
+        "left": "-8px",
+        "width" : "16px",
+        "height" : "16px",
+        "border-radius": "100px"
+    },
+    "inputResizeNode_mobile": {
+        "background" : "url(../o2_core/o2/widget/$Tablet/default/icon/resize3.png) no-repeat center center",
+        "background-size" : "8px",
+        "cursor" : "nw-resize",
+        "position": "absolute",
+        "bottom": "-8px",
+        "right": "-8px",
+        "width" : "16px",
+        "height" : "16px",
+        "border-radius": "100px"
+    },
+
+    "scrollNode": {
+        "position": "absolute",
+        "top": "0",
+        "right": "0px",
+        "width": "16px",
+        "height": "100%",
+        "z-index": 10
+    },
+    "scrollupIcon":{
+        "cursor" : "pointer",
+        "background": "url(../o2_core/o2/widget/$Tablet/default/icon/up.png)",
+        "width": "16px",
+        "height": "16px",
+        "display": "block"
+    },
+    "scrolldownIcon": {
+        "cursor" : "pointer",
+        "background": "url(../o2_core/o2/widget/$Tablet/default/icon/down.png)",
+        "width": "16px",
+        "height": "16px",
+        "display": "block"
+    },
+    "scrollVAreaNode": {
+        "width": "16px",
+        "height": "calc( 100% - 32px )",
+        "position": "relative",
+        "overflow": "visible"
+    },
+    "scrollVNode" :{
+        "background": "url(../o2_core/o2/widget/$Tablet/default/icon/scroll.png)",
+        "position": "absolute",
+        "width":"16px",
+        "height": "24px"
     }
 }
