@@ -2428,7 +2428,7 @@ bind.Table = function(name){
      * var table = new this.Table("table1");
      *
      * //查询字段name等于zhangsan的数据，结果按updateTime倒序
-     * table.rowCountWhere( "o.name='zhangsan", function(data){
+     * table.rowCountWhere( "o.name='zhangsan'", function(data){
      *    //data 形如
      *    //{
      *    //   "type": "success",

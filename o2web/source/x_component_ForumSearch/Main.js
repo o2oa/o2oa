@@ -195,10 +195,10 @@ MWF.xApplication.ForumSearch.Main = new Class({
 			viewPageNum : this.explorer.view.getCurrentPageNum()
 		};
 	},
-	openPerson : function( userName ){
+	openPerson : function( userName, data ){
 		if( !userName || userName == "" ){
 		}else{
-			MWFForum.openPersonCenter( userName );
+			MWFForum.openPersonCenter( userName, data );
 		}
 	},
 	createPersonNode : function( container, personName ){
@@ -338,8 +338,8 @@ MWF.xApplication.ForumSearch.Explorer = new Class({
 			});
 		}
 	},
-	openPerson : function( userName ){
-		MWFForum.openPersonCenter( userName );
+	openPerson : function( userName, data ){
+		MWFForum.openPersonCenter( userName, data );
 	},
 	createPersonNode : function( container, personName ){
 		var persons = personName.split(",");

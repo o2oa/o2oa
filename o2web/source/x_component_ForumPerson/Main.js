@@ -56,7 +56,7 @@ MWF.xApplication.ForumPerson.Main = new Class({
 		if( !this.options.personName && this.status && this.status.personName ){
 			this.options.personName = this.status.personName;
 		}
-		if( !this.options.p && this.p && this.status.p ){
+		if( !this.options.p && this.status && this.status.p ){
 			this.options.p = this.status.p;
 		}
 		this.loadController(function(){
@@ -319,10 +319,10 @@ MWF.xApplication.ForumPerson.Main = new Class({
 		});
 		this.explorer.load();
 	},
-	openPerson : function( userName ){
+	openPerson : function( userName, data ){
 		if( !userName || userName == "" ){
 		}else{
-			MWFForum.openPersonCenter( userName );
+			MWFForum.openPersonCenter( userName, data );
 		}
 	},
 	setContentSize: function () {
@@ -336,18 +336,31 @@ MWF.xApplication.ForumPerson.Main = new Class({
 		this.contentContainerNode.setStyle("height", "" + height + "px");
 	},
 	recordStatus: function(){
+		debugger;
 		if( this.options.p ){
-			return {
-				type : this.explorer.options.type,
-				p : this.options.p,
-				viewPageNum : this.explorer.view.getCurrentPageNum()
-			};
+			if( this.explorer && this.explorer.options ){
+				return {
+					type : this.explorer.options.type,
+					p : this.options.p,
+					viewPageNum : this.explorer.view.getCurrentPageNum()
+				};
+			}else{
+				return {
+					p : this.options.p
+				}
+			}
 		}else{
-			return {
-				type : this.explorer.options.type,
-				personName : this.options.personName,
-				viewPageNum : this.explorer.view.getCurrentPageNum()
-			};
+			if( this.explorer && this.explorer.options ) {
+				return {
+					type: this.explorer.options.type,
+					personName: this.options.personName,
+					viewPageNum: this.explorer.view.getCurrentPageNum()
+				};
+			}else{
+				return {
+					personName: this.options.personName
+				};
+			}
 		}
 	}
 });
@@ -561,6 +574,9 @@ MWF.xApplication.ForumPerson.SubjectView = new Class({
 			this.actions.listUserSubjectPage( pageNum, count, filter, function(json){
 				if( !json.data )json.data = [];
 				if( !json.count )json.count=0;
+				json.data = json.data.filter(function(d){
+					return !d.anonymousSubject;
+				})
 				if( callback )callback(json);
 			}.bind(this))
 		}

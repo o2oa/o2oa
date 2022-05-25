@@ -54,6 +54,44 @@ MWFForum.BBS_LOGO_NAME = "BBS_LOGO_NAME";
 MWFForum.BBS_SUBJECT_TYPECATAGORY = "BBS_SUBJECT_TYPECATAGORY";
 MWFForum.BBS_TITLE_TAIL = "BBS_TITLE_TAIL";
 MWFForum.BBS_USE_NICKNAME = "BBS_USE_NICKNAME";
+MWFForum.BBS_ANONYMOUS_PERMISSION = "BBS_ANONYMOUS_PERMISSION";
+
+MWFForum.enableAnonymousSubject = function(){
+    return MWFForum.getSystemConfigValue( MWFForum.BBS_ANONYMOUS_PERMISSION ) === "YES";
+}
+
+MWFForum.isSubjectMuted = function( usecache ){
+    if( usecache && o2.typeOf( MWFForum.isMuted ) === "boolean" ){
+        return MWFForum.isMuted;
+    }
+    o2.Actions.load("x_bbs_assemble_control").ShutupAction.getShutup(function(json){
+        debugger;
+        // json.data = {
+        //     "id": "a13843ac-0700-4a94-b7d9-a85e6fca131b",
+        //     "operator": "蔡祥熠@cxy@P",
+        //     "person": "龚新民@91eed25b-8891-4ba6-b234-a70ed97c42ae@P",
+        //     "unmuteDate": "2022-05-25",
+        //     "reason": "888",
+        //     "createTime": "2022-05-24 16:09:48",
+        //     "updateTime": "2022-05-24 16:09:48"
+        // };
+        var d = json.data || {};
+        MWFForum.muteData = d;
+        if( d.unmuteDate && (new Date(d.unmuteDate + " 00:00:00") > new Date())){
+            MWFForum.isMuted = true;
+        }else{
+            MWFForum.isMuted = false;
+        }
+    }, null, false);
+    if( o2.typeOf( MWFForum.isMuted ) !== "boolean" ){
+        MWFForum.isMuted = false;
+    }
+    return MWFForum.isMuted;
+}
+
+MWFForum.isReplyMuted = function(){
+    return MWFForum.isSubjectMuted( true );
+}
 
 MWFForum.isUseNickName = function(){
     return MWFForum.getSystemConfigValue( MWFForum.BBS_USE_NICKNAME ) === "YES";
@@ -91,11 +129,19 @@ MWFForum.getLastReplyUserName = function(d){
     return o2.name.cn( MWFForum.isUseNickName() ?  (d.latestReplyUserNickName || d.latestReplyUser): d.latestReplyUser );
 };
 
+MWFForum.isSubjectEditor = function(d){
+    var dn = layout.desktop.session.user.distinguishedName;
+    return d.creatorName === dn || (d.editorList || []).contains(dn);
+};
+
 MWFForum.getReplyCreatorName = function(d){
     return o2.name.cn( MWFForum.isUseNickName() ?  (d.nickName || d.creatorName): d.creatorName );
 };
 
-MWFForum.openPersonCenter = function( userName ){
+MWFForum.openPersonCenter = function( userName, data ){
+    if( data && ( data.anonymousSubject || data.anonymousReply ) ){
+        return;
+    }
     if( MWFForum.isUseNickName() && userName!=="xadmin" ){
         o2.Actions.load("x_organization_assemble_express").PersonAction.listObject(
                 { personList : [userName]}

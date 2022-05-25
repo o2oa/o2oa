@@ -1,0 +1,103 @@
+{
+  "viewSetting": {
+    "html": "<table width='100%' border='0' cellpadding='5' cellspacing='0' styles='editTable'></table>"
+  },
+  "headSetting": {
+    "html": "<tr styles='viewHeadNode'></tr>"
+  },
+  "documentSetting": {
+    "html": "<tr styles='documentNode'></tr>",
+    "mouseoverStyles": "documentNode_over",
+    "action": "open"
+  },
+  "items": [
+    {
+      "name": "person",
+      "head": {
+        "html": "<th styles='normalThNode' lable='mutePerson'></th>",
+        "width": "15%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' item='person'></td>",
+        "items": {
+          "person" : {
+            "value": "function(d){ return d.person.split('@')[0] }"
+          }
+        }
+      }
+    },
+    {
+      "name": "unmuteDate",
+      "head": {
+        "html": "<th styles='normalThNode' lable='unmuteDate'></th>",
+        "width": "15%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' item='unmuteDate'></td>",
+        "items": {
+          "unmuteDate" : {}
+        }
+      }
+    },
+    {
+      "name": "reason",
+      "head": {
+        "html": "<th styles='normalThNode' lable='multReason'></th>",
+        "width": "40%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' item='reason'></td>",
+        "items": {
+          "reason" : {}
+        }
+      }
+    },
+    {
+      "name": "createTime",
+      "head": {
+        "html": "<th styles='normalThNode' lable='muteTime'></th>",
+        "width": "15%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode' item='createTime'></td>",
+        "items": {
+          "createTime" : {}
+        }
+      }
+    },
+    {
+      //"access": "admin",
+      "head": {
+        "html": "<th styles='normalThNode' lable='action'></th>",
+        "width": "15%"
+      },
+      "content": {
+        "html": "<td styles='normalTdCenterNode'>" +
+        " <span styles='documentActionNode' item='action_co'></span>" +
+        " <span styles='documentActionNode' item='remove'></span>" +
+        "</td>",
+        "items": {
+          "action_edit": {
+            //"access": "admin",
+            "title": "edit",
+            "text": "edit",
+            "action": "action_edit",
+            "condition": "function( d ){ return MWF.AC.isBBSManager() }",
+            "styles": "documentActionNode",
+            "mouseoverStyles": "documentActionNode_over",
+            "mousedownStyles": "documentActionNode_down"
+          },
+          "remove": {
+            "title": "unmute",
+            "text": "unmute",
+            "action": "unmute",
+            "condition": "function( d ){ return MWF.AC.isBBSManager() }",
+            "styles": "documentActionNode",
+            "mouseoverStyles": "documentActionNode_over",
+            "mousedownStyles": "documentActionNode_down"
+          }
+        }
+      }
+    }
+  ]
+}

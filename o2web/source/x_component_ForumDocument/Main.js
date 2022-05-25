@@ -328,7 +328,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 			"   <td item='voteContainer' colspan='3'></td>" +
 			"</tr><tr>" +
 			"   <td styles='formTableTitle' lable=''></td>" +
-			"   <td item='action' colspan='3'></td>" +
+			"   <td colspan='3'><div item='action' style='float:left;'></div><div item='anonymousSubject' style='float:left;margin-top:25px;margin-left:20px;'></div></td>" +
 			"</tr>"+
 			"</table>";
 		this.contentDiv.set("html", html);
@@ -397,6 +397,11 @@ MWF.xApplication.ForumDocument.Main = new Class({
 						aspectRatio : 1.5,
 						reference : this.advanceId || this.data.id,
 						referenceType: "forumDocument"
+					},
+					anonymousSubject: { type: "checkbox",
+						disable: !MWFForum.enableAnonymousSubject(),
+						selectValue: ['true'],
+						selectText: [this.lp.anonymousSubject]
 					},
 					content: {text: this.lp.content, type : "rtf", notEmpty : true, RTFConfig : {
 						isSetImageMaxWidth : true,
@@ -625,7 +630,22 @@ MWF.xApplication.ForumDocument.Main = new Class({
 			if( this.access.isAnonymous() ){
 				this.createReplyEditor_Anonymous()
 			}else{
-				this.createReplyEditor();
+				if( MWFForum.isReplyMuted() ){
+					var d = MWFForum.muteData;
+					if( d ){
+						new Element("div", {
+							styles: this.css.muteInfor,
+							text: this.lp.muteNote + this.lp.muteInfor.replace("{unmuteDate}", d.unmuteDate).replace("{reason}", d.reason)
+						}).inject( this.middleNode )
+					}else{
+						new Element("div", {
+							styles: this.css.muteInfor,
+							text: this.lp.muteNote
+						}).inject( this.middleNode )
+					}
+				}else{
+					this.createReplyEditor();
+				}
 			}
 		}
 		//this.createTurnSubjectNode();
@@ -642,7 +662,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 		}
 
 		//if( this.access.isSubjectPublisher( this.sectionData ) ){
-		if( this.sectionPermission.subjectPublishAble ){
+		if( this.sectionPermission.subjectPublishAble && !MWFForum.isSubjectMuted() ){
 			var createActionNode = new Element("div",{
 				styles : this.css.pagingActionNode,
 				text: this.lp.createSubject
@@ -885,6 +905,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 		form.create()
 	},
 	createActionBar : function( container ){
+		var action;
 		this.actionBar = new Element("div", { "styles" : this.css.actionBar, "html" : "&nbsp;"}).inject(container);
 
 		//var action = new Element("div", {
@@ -985,6 +1006,17 @@ MWF.xApplication.ForumDocument.Main = new Class({
 			});
 			//}
 
+			action = new Element("div", {
+				"styles" : this.css.actionItem,
+				"text" : this.lp.editorSetting
+			}).inject( this.actionBar );
+			action.setStyle("background-image" , "url("+this.path+"icon/action_person.png)");
+			action.addEvents({
+				"mouseover" : function(){ this.itemNode.setStyles( this.obj.css.actionItem_over ) }.bind({ obj : this, itemNode : action }),
+				"mouseout" : function(){ this.itemNode.setStyles( this.obj.css.actionItem ) }.bind({ obj : this, itemNode : action }),
+				"click" : function(){ this.setEditPermission() }.bind(this)
+			});
+
 		}
 
 		if( MWF.AC.isHotPictureManager() ){
@@ -1029,7 +1061,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 		}
 
 
-		if( this.permission.manageAble || this.permission.editAble || this.data.creatorName == this.userName ){
+		if( this.permission.manageAble || this.permission.editAble || this.data.creatorName == this.userName || MWFForum.isSubjectEditor(this.data)){
 			action = new Element("div", {
 				"styles" : this.css.actionItem,
 				"text" : this.lp.delete
@@ -1043,7 +1075,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 		}
 
 		if( this.data.typeCategory != this.lp.vote && this.data.typeCategory!="投票"){
-			if( this.permission.manageAble || this.permission.editAble || this.data.creatorName == this.userName ){
+			if( this.permission.manageAble || this.permission.editAble || this.data.creatorName == this.userName || MWFForum.isSubjectEditor(this.data) ){
 				action = new Element("div", {
 					"styles" : this.css.actionItem,
 					"text" : this.lp.edit
@@ -1057,7 +1089,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 			}
 		}
 
-		if( !this.data.stopReply ){
+		if( !this.data.stopReply && !MWFForum.isReplyMuted()){
 			if( this.isReplyPublisher ){
 				action = new Element("div", {
 					"styles" : this.css.actionItem,
@@ -1117,6 +1149,16 @@ MWF.xApplication.ForumDocument.Main = new Class({
 		});
 		form.create()
 	},
+	setEditPermission: function(){
+		var form = new MWF.xApplication.ForumDocument.EditorSettingForm(this, this.data, {
+			onPostOk : function( id ){
+				this.reload();
+			}.bind(this)
+		},{
+			app : this, lp : this.lp, css : this.css, actions : this.restActions
+		});
+		form.create();
+	},
 	setTop : function(){
 		var form = new MWF.xApplication.ForumDocument.TopSettingForm(this, this.data, {
 			onPostOk : function( id ){
@@ -1151,7 +1193,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 	},
 	createSubject : function(){
 		this.subjectView = new MWF.xApplication.ForumDocument.SubjectView( this.subjectConainer, this, this, {
-			templateUrl : this.path + "listItemSubject.json",
+			templateUrl : this.path +  (this.data.anonymousSubject ? "listItemAnonymousSubject.json" :  "listItemSubject.json"),
 			scrollEnable : false
 		} );
 		this.subjectView.data = this.data;
@@ -1497,7 +1539,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 			}
 		);
 
-		if( this.sectionPermission.subjectPublishAble ){
+		if( this.sectionPermission.subjectPublishAble && !MWFForum.isSubjectMuted()){
 			count++;
 			var createActionNode = new Element("div",{
 				styles : this.css.sidebarCreate,
@@ -1524,7 +1566,7 @@ MWF.xApplication.ForumDocument.Main = new Class({
 			)
 		}
 
-		if( !this.data.stopReply ){
+		if( !this.data.stopReply && !MWFForum.isReplyMuted() ){
 			if( this.isReplyPublisher ){
 				count++;
 				var action = new Element("div", {
@@ -1584,8 +1626,8 @@ MWF.xApplication.ForumDocument.Main = new Class({
 		this.sideBar.setStyle( "height" , (count * 30 + 5 ) +"px" );
 
 	},
-	openPerson : function( userName ){
-		MWFForum.openPersonCenter( userName );
+	openPerson : function( userName, data ){
+		MWFForum.openPersonCenter( userName, data );
 	},
 	createPersonNode : function( container, personName ){
 		var persons = personName.split(",");
@@ -1677,8 +1719,13 @@ MWF.xApplication.ForumDocument.SubjectView = new Class({
 		data.index = index;
 		var document;
 		this.getUserData( data.creatorName, function(json ){
-			data.userIcon = json.data.icon;
-			data.signature = json.data.signature;
+			if( data.anonymousSubject ){
+				data.userIcon = '../x_component_ForumDocument/$Main/default/icon/noavatar_big.gif';
+				data.signature = "";
+			}else{
+				data.userIcon = json.data.icon;
+				data.signature = json.data.signature;
+			}
 			this.actions.getUserInfor( {"userName":data.creatorName}, function( json ){
 				data.subject = json.data.subjectCount;
 				data.reply = json.data.replyCount;
@@ -2474,6 +2521,69 @@ MWF.xApplication.ForumDocument.TopSettingForm = new Class({
 				this.fireEvent("postOk");
 			}else{
 				this.app.notice( this.app.lp.setToFail , "error");
+			}
+		}
+	}
+});
+
+
+MWF.xApplication.ForumDocument.EditorSettingForm = new Class({
+	Extends: MWF.xApplication.ForumDocument.TopSettingForm,
+	Implements: [Options, Events],
+	options: {
+		"style": "default",
+		"width": "420",
+		"height": "250",
+		"hasTop": true,
+		"hasIcon": false,
+		"hasTopIcon" : true,
+		"hasTopContent" : true,
+		"hasBottom": true,
+		"title": MWF.xApplication.Forum.LP.editPermissionFormTitle,
+		"draggable": true,
+		"closeAction": true
+	},
+	_createTableContent: function () {
+		var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>" +
+			"<tr>" +
+			"   <td styles='formTableValue' item='editorList'></td>" +
+			"</tr>" +
+			"</table>";
+		this.formTableArea.set("html", html);
+
+		MWF.xDesktop.requireApp("Template", "MForm", function () {
+			this.form = new MForm(this.formTableArea, this.data, {
+				style: "forum",
+				isEdited: this.isEdited || this.isNew,
+				itemTemplate: {
+					editorList: { type: "org", style: {height:"100px"}, count: 0 }
+				}
+			}, this.app, this.css);
+			this.form.load();
+		}.bind(this), true);
+	},
+	ok: function (e) {
+		this.fireEvent("queryOk");
+		debugger;
+		var data = this.form.getResult(true, ",", true, false, true);
+		if (data) {
+			var flag = true;
+			this.data.editorList = data.editorList.split(",");
+			o2.Actions.load("x_bbs_assemble_control").SubjectInfoManagerUserAction.save( this.data , function( json ){
+				if (json.type == "error") {
+					this.app.notice(json.message, "error");
+					flag = false;
+				}
+			}, function(){
+				flag = false;
+			}, false )
+			if( flag ){
+				if(this.formMaskNode)this.formMaskNode.destroy();
+				this.formAreaNode.destroy();
+				this.app.notice( this.app.lp.setEditorSuccess );
+				this.fireEvent("postOk");
+			}else{
+				this.app.notice( this.app.lp.setEditorFail , "error");
 			}
 		}
 	}

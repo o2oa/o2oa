@@ -76,7 +76,7 @@
             "title" : "function( d ){ return MWFForum.getReplyCreatorName(d); }",
             "styles" : "person",
             "mouseoverStyles": "person_over",
-            "event" : "click^^function(node){ this.app.openPerson( this.data.creatorName ) }"
+            "event" : "click^^function(node){ this.app.openPerson( this.data.creatorName, this.data ) }"
           },
 //          "subject": { "value" : "function(d){ return 8 }" },
 //          "reply" : { "value" : "function(d){ return 66 }"},
@@ -104,7 +104,7 @@
           "replyAction": {
             "text" : "reply",
             "action": "createReply",
-            "condition": "function( d ){ return !d.stopReply && this.explorer.isReplyPublisher }",
+            "condition": "function( d ){ return !d.stopReply && this.explorer.isReplyPublisher && !MWFForum.isReplyMuted() }",
             "event" : "mouseover^^function( itemNode, ev ){ itemNode.setStyles( this.css.replyAction_over ) }##mouseout^^function( itemNode, ev ){ itemNode.setStyles( this.css.replyAction ) }"
           },
           "editAction": {
