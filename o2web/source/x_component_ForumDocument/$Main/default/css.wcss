@@ -960,7 +960,7 @@
   "formTopTextNodeTopSetting" : {
     "font-size": "16px",
     "float": "left",
-    "width" : "80px",
+    "width" : "100px",
     "overflow" : "hidden",
     "text-overflow" : "ellipsis",
     "white-space":"nowrap"
@@ -1279,5 +1279,10 @@
   },
   "sidebarPrev_over" : {
     "opacity" : "1"
+  },
+  "muteInfor": {
+    "padding": "15px 20px",
+    "font-size": "14px",
+    "color": "#999"
   }
 }

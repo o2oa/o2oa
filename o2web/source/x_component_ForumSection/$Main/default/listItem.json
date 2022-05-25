@@ -61,7 +61,7 @@
             "title" : "function(d){ return MWFForum.getSubjectCreatorName(d) }",
             "styles" : "person",
             "mouseoverStyles": "person_over",
-            "event" : "click^^function(node){ this.app.openPerson( this.data.creatorName ) }"
+            "event" : "click^^function(node){ this.app.openPerson( this.data.creatorName, this.data ) }"
           },
           "createTime" : {
             "value" : "function(d){ return MWFForum.getDateDiff( d.createTime ) }"
@@ -125,19 +125,19 @@
             "title": "edit",
             //"text": "edit",
             "action": "edit",
-            "condition": "function( d ){ return (d.typeCategory!='投票' && d.typeCategory!=this.app.lp.vote) && (this.app.isAdmin || (d.creatorName == this.app.userName)) }",
+            "condition": "function( d ){ return (d.typeCategory!='投票' && d.typeCategory!=this.app.lp.vote) && (this.app.isAdmin || MWFForum.isSubjectEditor(d) ) }",
             "styles": "actionEditNode",
             "mouseoverStyles": "actionEditNode_over",
             "mousedownStyles": "actionEditNode_over"
           },
           "placeholder" : {
-            "show": "function( d ){ return !((d.typeCategory!='投票' && d.typeCategory!=this.app.lp.vote) && (this.app.isAdmin || (d.creatorName == this.app.userName))) }"
+            "show": "function( d ){ return !((d.typeCategory!='投票' && d.typeCategory!=this.app.lp.vote) && (this.app.isAdmin || MWFForum.isSubjectEditor(d))) }"
           },
           "remove": {
             "title": "remove",
             //"text": "remove",
             "action": "remove",
-            "condition": "function( d ){ return this.app.isAdmin || (d.creatorName == this.app.userName) }",
+            "condition": "function( d ){ return this.app.isAdmin || MWFForum.isSubjectEditor(d) }",
             "styles": "actionDeleteNode",
             "mouseoverStyles": "actionDeleteNode_over",
             "mousedownStyles": "actionDeleteNode_down"

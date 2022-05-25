@@ -320,8 +320,8 @@ MWF.xApplication.Forum.TopNode = new Class({
             });
         }
     },
-    openPerson : function( userName ){
-        MWFForum.openPersonCenter( userName );
+    openPerson : function( userName, data ){
+        MWFForum.openPersonCenter( userName, data );
     },
     openLoginForm : function(){
         MWF.require("MWF.xDesktop.Authentication", null, false);
