@@ -39,6 +39,7 @@ import com.x.base.core.entity.tools.JpaObjectTools;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.NumberTools;
 import com.x.base.core.project.tools.StringTools;
@@ -1144,7 +1145,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		List<Tuple> list = em.createQuery(cq).setMaxResults(1).getResultList();
 		if (!list.isEmpty()) {
 			Tuple tuple = list.get(0);
-			t = clz.newInstance();
+			t = clz.getDeclaredConstructor().newInstance();
 			for (int i = 0; i < selections.size(); i++) {
 				PropertyUtils.setProperty(t, attributes.get(i), tuple.get(selections.get(i)));
 			}

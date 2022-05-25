@@ -1,13 +1,16 @@
 package com.x.processplatform.service.processing.jaxrs.work;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
@@ -51,7 +54,10 @@ class V2AddManualTaskIdentityMatrix extends BaseAction {
 	}
 
 	private Work getWork(Business business, String id) throws Exception {
-		return business.entityManagerContainer().fetch(id, Work.class, Arrays.asList(Work.job_FIELDNAME));
+		List<String> attributes = new ArrayList<>();
+		attributes.add(Work.job_FIELDNAME);
+		attributes.add(JpaObject.id_FIELDNAME);
+		return business.entityManagerContainer().fetch(id, Work.class, attributes);
 	}
 
 	private class CallableImpl implements Callable<ActionResult<Wo>> {
@@ -61,7 +67,8 @@ class V2AddManualTaskIdentityMatrix extends BaseAction {
 		private List<V2AddManualTaskIdentityMatrixWi.Option> optionList;
 		private Boolean remove;
 
-		CallableImpl(String id, String identity, List<V2AddManualTaskIdentityMatrixWi.Option> optionList, Boolean remove) {
+		CallableImpl(String id, String identity, List<V2AddManualTaskIdentityMatrixWi.Option> optionList,
+				Boolean remove) {
 			this.id = id;
 			this.identity = identity;
 			this.optionList = optionList;
@@ -81,10 +88,10 @@ class V2AddManualTaskIdentityMatrix extends BaseAction {
 				for (V2AddManualTaskIdentityMatrixWi.Option option : optionList) {
 					List<String> identities = business.organization().identity().list(option.getIdentityList());
 					if (!ListTools.isEmpty(identities)) {
-						matrix.add(id, option.getPosition(), identities);
+						matrix.add(identity, option.getPosition(), identities);
 					}
 				}
-				if (remove) {
+				if (BooleanUtils.isTrue(remove)) {
 					matrix.remove(identity);
 				}
 				work.setManualTaskIdentityMatrix(matrix);

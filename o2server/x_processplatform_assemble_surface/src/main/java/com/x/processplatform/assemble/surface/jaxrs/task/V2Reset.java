@@ -80,7 +80,7 @@ public class V2Reset extends BaseAction {
 			}
 		}
 
-		this.reset(!wi.getKeep(), identities, manual);
+		this.reset(this.task, (!wi.getKeep()), identities, manual);
 
 		if (BooleanUtils.isNotTrue(wi.getKeep())) {
 			this.processingTask();
@@ -130,7 +130,7 @@ public class V2Reset extends BaseAction {
 		}
 		this.manual = (Manual) business.getActivity(work.getActivity(), ActivityType.manual);
 
-		this.identities = business.organization().identity().list(wi.getIdentityList());
+		this.identities = ListTools.trim(business.organization().identity().list(wi.getIdentityList()), true, true);
 		// 为办理的前的所有已办,用于在record中记录当前待办转为已办时的上一处理人
 		this.taskCompleteds = business.entityManagerContainer().listEqual(TaskCompleted.class,
 				TaskCompleted.activityToken_FIELDNAME, task.getActivityToken());
@@ -152,8 +152,9 @@ public class V2Reset extends BaseAction {
 		}
 	}
 
-	private void reset(boolean remove, List<String> identities, Manual manual) throws Exception {
+	private void reset(Task task, boolean remove, List<String> identities, Manual manual) throws Exception {
 		V2AddManualTaskIdentityMatrixWi req = new V2AddManualTaskIdentityMatrixWi();
+		req.setIdentity(task.getIdentity());
 		req.setRemove(remove);
 		V2AddManualTaskIdentityMatrixWi.Option option = new V2AddManualTaskIdentityMatrixWi.Option();
 		option.setIdentityList(identities);
@@ -163,8 +164,11 @@ public class V2Reset extends BaseAction {
 		} else {
 			option.setPosition(ManualTaskIdentityMatrix.ADD_POSITION_AFTER);
 		}
+		List<V2AddManualTaskIdentityMatrixWi.Option> optionList = new ArrayList<>();
+		optionList.add(option);
+		req.setOptionList(optionList);
 		WrapBoolean resp = ThisApplication.context().applications()
-				.putQuery(x_processplatform_service_processing.class, Applications.joinQueryUri("work", "v2",
+				.postQuery(x_processplatform_service_processing.class, Applications.joinQueryUri("work", "v2",
 						task.getWork(), "add", "manual", "task", "identity", "matrix"), req, task.getJob())
 				.getData(WrapBoolean.class);
 		if (BooleanUtils.isNotTrue(resp.getValue())) {

@@ -1,10 +1,7 @@
 package com.x.processplatform.assemble.surface.jaxrs.work;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -21,23 +18,13 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControl;
-import com.x.processplatform.core.entity.content.Record;
-import com.x.processplatform.core.entity.content.RecordProperties.NextManual;
-import com.x.processplatform.core.entity.content.Task;
-import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.content.WorkCompleted;
-import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.core.express.assemble.surface.jaxrs.work.V2AddManualTaskIdentityMatrixWi;
-import com.x.processplatform.core.express.service.processing.jaxrs.task.ProcessingWi;
-import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapUpdatePrevTaskIdentity;
-import com.x.processplatform.core.express.service.processing.jaxrs.taskcompleted.WrapUpdateNextTaskIdentity;
 
 class V2AddManualTaskIdentityMatrix extends BaseAction {
 

@@ -932,7 +932,7 @@ public class TaskAction extends StandardJaxrsAction {
 	@Path("v2/{id}/reset")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void v2Reset(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void V2Reset(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("标识") @PathParam("id") String id, JsonElement jsonElement) {
 		ActionResult<V2Reset.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
