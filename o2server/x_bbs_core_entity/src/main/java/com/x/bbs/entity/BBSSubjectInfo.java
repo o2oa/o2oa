@@ -340,6 +340,12 @@ public class BBSSubjectInfo extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String nickName = "";
 
+	public static final String lastUpdateUser_FIELDNAME = "lastUpdateUser";
+	@FieldDescribe("最后修改人员")
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + lastUpdateUser_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String lastUpdateUser = "";
+
 	public static final String subjectAuditStatus_FIELDNAME = "subjectAuditStatus";
 	@FieldDescribe("主题审核状态：无审核|待审核|审核通过")
 	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + subjectAuditStatus_FIELDNAME)
@@ -881,5 +887,13 @@ public class BBSSubjectInfo extends SliceJpaObject {
 
 	public void setEditorList(List<String> editorList) {
 		this.editorList = editorList;
+	}
+
+	public String getLastUpdateUser() {
+		return lastUpdateUser;
+	}
+
+	public void setLastUpdateUser(String lastUpdateUser) {
+		this.lastUpdateUser = lastUpdateUser;
 	}
 }

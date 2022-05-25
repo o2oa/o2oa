@@ -29,16 +29,16 @@ public class ShutupAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ShutupAction.class);
 
-	@JaxrsMethodDescribe(value = "校验当前用户是否被禁言.", action = ActionHasShutup.class)
+	@JaxrsMethodDescribe(value = "查询当前用户是否被禁言，返回被禁言信息.", action = ActionGetShutup.class)
 	@GET
-	@Path("has/shutup")
+	@Path("get/shutup")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void hasShutup(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
-		ActionResult<ActionHasShutup.Wo> result = new ActionResult<>();
+	public void getShutup(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+		ActionResult<ActionGetShutup.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionHasShutup().execute(effectivePerson);
+			result = new ActionGetShutup().execute(effectivePerson);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

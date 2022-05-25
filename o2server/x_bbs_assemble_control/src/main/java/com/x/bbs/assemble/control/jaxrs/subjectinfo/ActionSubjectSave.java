@@ -81,6 +81,7 @@ public class ActionSubjectSave extends BaseAction {
 		subjectInfo.setSectionId(sectionInfo.getId());
 		subjectInfo.setSectionName(sectionInfo.getSectionName());
 		subjectInfo.setCreatorName(effectivePerson.getDistinguishedName());
+		subjectInfo.setLastUpdateUser(effectivePerson.getDistinguishedName());
 		subjectInfo.setLatestReplyTime(new Date());
 		subjectInfo.setTypeCategory(wrapIn.getTypeCategory());
 		subjectInfo.setType(wrapIn.getType());
