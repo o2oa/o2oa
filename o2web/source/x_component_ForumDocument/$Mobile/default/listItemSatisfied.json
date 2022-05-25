@@ -61,7 +61,7 @@
           "index" : { "value" : "function(d){ return d.orderNumber || (d.index + 2) }" },
           "replyAction": {
             "action": "createReply",
-            "condition": "function( d ){ return this.explorer.permission.replyPublishAble }"
+            "condition": "function( d ){ return this.explorer.permission.replyPublishAble && !MWFForum.isReplyMuted() }"
           }
         }
       }

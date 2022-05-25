@@ -19,32 +19,6 @@
         "     <div styles='itemUserIcon'>"+
         "       <img styles='itemUserIcon2' item='userIcon'/>"+
         "     </div>"+
-        "     <div styles='itemUserStat'>"+
-        "       <div styles='itemUserStatInfor'>"+
-        "         <div styles='itemUserStatCount' item='subject'></div>"+
-        "         <div styles='itemUserStatText' lable='subject'></div>"+
-        "       </div>"+
-        "       <div styles='itemUserStatInfor'>"+
-        "         <div styles='itemUserStatCount' item='reply'></div>"+
-        "         <div styles='itemUserStatText' lable='reply'></div>"+
-        "       </div>"+
-        "       <div styles='itemUserStatInforRight'>"+
-        "         <div styles='itemUserStatCount' item='prime'></div>"+
-        "         <div styles='itemUserStatText' lable='prime'></div>"+
-        "       </div>"+
-        "     </div>"+
-        "   </div>"+
-        "   <div styles='itemUserStat2'>"+
-        "     <div styles='itemUserStat2text' lable='todaySubject'></div>"+
-        "     <div styles='itemUserStat2count' item='todaySubject'></div>"+
-        "   </div>"+
-        "   <div styles='itemUserStat2'>"+
-        "      <div styles='itemUserStat2text' lable='todayReply'></div>"+
-        "      <div styles='itemUserStat2count' item='todayReply'></div>"+
-        "   </div>"+
-        "   <div styles='itemUserStat2'>"+
-        //"      <div styles='itemUserStat2text' lable='grade'></div>"+
-        "      <div styles='itemUserStat2count' item='grade'></div>"+
         "   </div>"+
         "   <div styles='itemToolsLeft'>"+
 //        "       <div styles='messageAction' item='messageAction'></div>"+

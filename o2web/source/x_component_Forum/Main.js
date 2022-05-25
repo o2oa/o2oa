@@ -318,8 +318,8 @@ MWF.xApplication.Forum.Main = new Class({
         }
         return status;
     },
-    openPerson : function( userName ){
-        MWFForum.openPersonCenter( userName );
+    openPerson : function( userName, data ){
+        MWFForum.openPersonCenter( userName, data );
     },
     createPersonNode : function( container, personName ){
         var persons = personName.split(",");

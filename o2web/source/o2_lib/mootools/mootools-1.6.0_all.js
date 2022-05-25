@@ -6443,15 +6443,15 @@ var Request = this.Request = new Class({
 		if ((/*<1.4compat>*/this.options.user || /*</1.4compat>*/this.options.withCredentials) && 'withCredentials' in xhr) xhr.withCredentials = true;
 
         //modify by Tommy--
-        if (Browser.name=="firefox"){
-            if (this.options.async){
-                if (isWithCredentials) xhr.withCredentials = true;
-            }else{
-                xhr.setRequestHeader(o2.tokenName, Cookie.read(o2.tokenName));
-            }
-        }else{
+        // if (Browser.name=="firefox"){
+        //     if (this.options.async){
+        //         if (isWithCredentials) xhr.withCredentials = true;
+        //     }else{
+        //         xhr.setRequestHeader(o2.tokenName, Cookie.read(o2.tokenName));
+        //     }
+        // }else{
             if (isWithCredentials) xhr.withCredentials = true;
-        }
+        // }
         //-----------------
 
 		xhr.onreadystatechange = this.onStateChange.bind(this);
