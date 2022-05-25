@@ -64,7 +64,8 @@ MWFForum.isSubjectMuted = function( usecache ){
     if( usecache && o2.typeOf( MWFForum.isMuted ) === "boolean" ){
         return MWFForum.isMuted;
     }
-    o2.Actions.load("x_bbs_assemble_control").ShutupAction.hasShutup(function(json){
+    o2.Actions.load("x_bbs_assemble_control").ShutupAction.getShutup(function(json){
+        debugger;
         // json.data = {
         //     "id": "a13843ac-0700-4a94-b7d9-a85e6fca131b",
         //     "operator": "蔡祥熠@cxy@P",
