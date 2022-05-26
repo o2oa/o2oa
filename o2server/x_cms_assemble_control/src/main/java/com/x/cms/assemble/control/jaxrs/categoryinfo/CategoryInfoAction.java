@@ -537,4 +537,22 @@ public class CategoryInfoAction extends StandardJaxrsAction{
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "获取当前用户可管理的列表.", action = ActionListManage.class)
+	@GET
+	@Path("list/manage/app/{appId}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listManage( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+							@JaxrsParameterDescribe("应用标识") @PathParam("appId") String appId) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<List<ActionListManage.Wo>> result = new ActionResult<>();
+		try {
+			result = new ActionListManage().execute(effectivePerson, appId);
+		} catch (Exception e) {
+			result.error(e);
+			logger.error(e, effectivePerson, request, null);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 }
