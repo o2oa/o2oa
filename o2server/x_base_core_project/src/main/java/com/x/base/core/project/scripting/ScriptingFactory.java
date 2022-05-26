@@ -44,7 +44,7 @@ public class ScriptingFactory {
 	public static final String BINDING_NAME_EXPIRE = "java_expire";
 	public static final String BINDING_NAME_EFFECTIVEPERSON = "java_effectivePerson";
 
-	public static final String BINDING_NAME_DATA = "data";
+	public static final String BINDING_NAME_DATA = "java_data";
 	// embedData
 	public static final String BINDING_NAME_EMBEDDATA = "embedData";
 	public static final String BINDING_NAME_SERIAL = "serial";
@@ -91,6 +91,7 @@ public class ScriptingFactory {
 		sb.append("var o = (function(){").append(System.lineSeparator());
 		sb.append(Objects.toString(text, "")).append(System.lineSeparator());
 		sb.append("}.apply(this));").append(System.lineSeparator());
+		sb.append("if (this.data && this.data.commit) this.data.commit();");
 		sb.append(
 				"(o && (o !== false) && o.getClass && (typeof o == 'object')) ? Java.type('com.x.base.core.project.gson.XGsonBuilder').toJson(o) : JSON.stringify(toJsJson(o));");
 		return sb.toString();
