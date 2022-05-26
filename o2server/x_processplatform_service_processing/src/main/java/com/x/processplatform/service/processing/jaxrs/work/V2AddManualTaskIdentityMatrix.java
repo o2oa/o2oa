@@ -22,7 +22,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.processplatform.ManualTaskIdentityMatrix;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.express.assemble.surface.jaxrs.work.V2AddManualTaskIdentityMatrixWi;
+import com.x.processplatform.core.express.service.processing.jaxrs.work.V2AddManualTaskIdentityMatrixWi;
 import com.x.processplatform.service.processing.Business;
 
 class V2AddManualTaskIdentityMatrix extends BaseAction {

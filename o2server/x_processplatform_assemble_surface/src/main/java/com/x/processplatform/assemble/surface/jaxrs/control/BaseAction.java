@@ -30,7 +30,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		private Boolean allowSave = false;
 		// 是否可以重置处理人
 		private Boolean allowReset = false;
-
+		// 是否可以加签
+		private Boolean allowAddTask = false;
 		// 是否可以调度
 		private Boolean allowReroute = false;
 		// 是否可以删除
@@ -150,6 +151,14 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 		public void setAllowResume(Boolean allowResume) {
 			this.allowResume = allowResume;
+		}
+
+		public Boolean getAllowAddTask() {
+			return allowAddTask;
+		}
+
+		public void setAllowAddTask(Boolean allowAddTask) {
+			this.allowAddTask = allowAddTask;
 		}
 
 	}

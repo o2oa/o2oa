@@ -24,7 +24,7 @@ import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.express.ProcessingAttributes;
-import com.x.processplatform.core.express.assemble.surface.jaxrs.work.V2AddManualTaskIdentityMatrixWi;
+import com.x.processplatform.core.express.service.processing.jaxrs.work.V2AddManualTaskIdentityMatrixWi;
 
 class V2AddManualTaskIdentityMatrix extends BaseAction {
 

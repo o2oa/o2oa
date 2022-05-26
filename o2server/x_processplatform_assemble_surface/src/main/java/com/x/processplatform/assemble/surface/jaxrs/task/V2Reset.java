@@ -38,9 +38,9 @@ import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.ManualMode;
 import com.x.processplatform.core.express.ProcessingAttributes;
-import com.x.processplatform.core.express.assemble.surface.jaxrs.work.V2AddManualTaskIdentityMatrixWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.ProcessingWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.V2ResetWi;
+import com.x.processplatform.core.express.service.processing.jaxrs.work.V2AddManualTaskIdentityMatrixWi;
 
 public class V2Reset extends BaseAction {
 

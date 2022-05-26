@@ -73,6 +73,7 @@ public class Manual extends Activity {
 	public void postLoad() {
 		if (null != this.properties) {
 			this.customData = this.getProperties().getCustomData();
+			this.allowAddTask = this.getProperties().getAllowAddTask();
 		}
 	}
 
@@ -108,6 +109,24 @@ public class Manual extends Activity {
 	public void setCustomData(JsonElement customData) {
 		this.customData = customData;
 		this.properties.setCustomData(customData);
+	}
+
+	public static final String ALLOWADDTASK_FIELDNAME = "allowAddTask";
+	@Transient
+	@FieldDescribe("是否允许加签")
+	private Boolean allowAddTask;
+
+	public Boolean getAllowAddTask() {
+		if (null != this.allowAddTask) {
+			return this.allowAddTask;
+		} else {
+			return this.getProperties().getAllowAddTask();
+		}
+	}
+
+	public void setAllowAddTask(Boolean allowAddTask) {
+		this.allowAddTask = allowAddTask;
+		this.properties.setAllowAddTask(allowAddTask);
 	}
 
 	public ManualTaskIdentityMatrix identitiesToManualTaskIdentityMatrix(List<String> identities) {
