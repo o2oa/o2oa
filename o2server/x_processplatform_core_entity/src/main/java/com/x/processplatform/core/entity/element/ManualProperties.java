@@ -10,12 +10,23 @@ public class ManualProperties extends JsonProperties {
 	@FieldDescribe("活动自定义数据")
 	private JsonElement customData;
 
+	@FieldDescribe("是否允许加签")
+	private Boolean allowAddTask;
+
 	public JsonElement getCustomData() {
 		return customData;
 	}
 
 	public void setCustomData(JsonElement customData) {
 		this.customData = customData;
+	}
+
+	public Boolean getAllowAddTask() {
+		return allowAddTask;
+	}
+
+	public void setAllowAddTask(Boolean allowAddTask) {
+		this.allowAddTask = allowAddTask;
 	}
 
 }

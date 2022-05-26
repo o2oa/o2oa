@@ -112,6 +112,9 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 		// 是否可以重置处理人
 		wo.setAllowReset(PropertyTools.getOrElse(activity, Manual.allowReset_FIELDNAME, Boolean.class, false)
 				&& wo.getAllowSave());
+		// 是否可以加签
+		wo.setAllowAddTask(PropertyTools.getOrElse(activity, Manual.ALLOWADDTASK_FIELDNAME, Boolean.class, false)
+				&& wo.getAllowAddTask());
 		// 是否可以调度
 		wo.setAllowReroute(PropertyTools.getOrElse(activity, Activity.allowReroute_FIELDNAME, Boolean.class, false)
 				&& this.canManageApplicationOrProcess(business, effectivePerson, work.getApplication(),
@@ -170,7 +173,6 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 				&& this.hasTaskCompletedWithJob(business, effectivePerson, work.getJob()));
 		// 是否可以看到
 		wo.setAllowVisit(true);
-
 		return wo;
 
 	}

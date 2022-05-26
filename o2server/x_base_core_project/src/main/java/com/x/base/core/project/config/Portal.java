@@ -23,6 +23,7 @@ public class Portal extends ConfigObject {
 	}
 
 	@FieldDescribe("url转换配置.")
+	@Deprecated(since = "7.2", forRemoval = true)
 	private LinkedHashMap<String, String> urlMapping;
 
 	@FieldDescribe("定制首页面设置.")

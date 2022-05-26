@@ -1,4 +1,4 @@
-package com.x.processplatform.core.express.assemble.surface.jaxrs.work;
+package com.x.processplatform.core.express.service.processing.jaxrs.work;
 
 import java.util.List;
 
@@ -46,7 +46,7 @@ public class V2AddManualTaskIdentityMatrixWi extends GsonPropertyObject {
 
 	public static class Option {
 
-		@FieldDescribe("位置,before,after,first,last,extend")
+		@FieldDescribe("位置,before,after,top,bottom,extend")
 		private String position;
 
 		@FieldDescribe("身份")
