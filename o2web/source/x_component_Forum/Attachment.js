@@ -124,12 +124,6 @@ MWF.xApplication.Forum.AttachmentController.Attachment = new Class({
     initialize: function(data, controller, messageId, isCheckPosition){
         this.data = data;
 
-        if(MWFForum.isUseNickName()){
-            this.data.person = this.data.nickName;
-        }else if(!this.data.person && this.data.creatorUid ){
-            this.data.person = this.data.creatorUid;
-        }
-
         this.controller = controller;
         this.css = this.controller.css;
         this.listStyle = this.controller.options.listStyle;
@@ -141,6 +135,14 @@ MWF.xApplication.Forum.AttachmentController.Attachment = new Class({
 
         if (messageId && this.controller.messageItemList) {
             this.message = this.controller.messageItemList[messageId];
+        }
+
+        if( this.controller.isAnonymous && this.data.creatorUid === this.controller.anonymousPerson ){
+            this.data.person = this.controller.anonymousName;
+        }else if(MWFForum.isUseNickName()){
+            this.data.person = this.data.nickName;
+        }else if(!this.data.person && this.data.creatorUid ){
+            this.data.person = this.data.creatorUid;
         }
 
         this.load();
@@ -158,7 +160,8 @@ MWF.xApplication.Forum.AttachmentController.Attachment = new Class({
         }
         this.inforNode = new Element("div", {"styles": this.css.attachmentInforNode});
 
-        var person = MWFForum.isUseNickName()?this.data.nickName:( this.data.person || this.data.creatorUid );
+        //var person = MWFForum.isUseNickName()?this.data.nickName:( this.data.person || this.data.creatorUid );
+        var person = this.data.person;
 
         var html = "<div style='overflow:hidden; font-weight: bold'>"+this.data.name+"</div>";
         html += "<div style='clear: both; overflow:hidden'><div style='width:40px; float:left; font-weight: bold'>"+o2.LP.widget.uploader+": </div><div style='width:120px; float:left; margin-left:10px'>"+ person +"</div></div>";
@@ -177,12 +180,6 @@ MWF.xApplication.Forum.AttachmentController.AttachmentMin = new Class({
     initialize: function(data, controller, messageId, isCheckPosition){
         this.data = data;
 
-        if(MWFForum.isUseNickName()){
-            this.data.person = this.data.nickName;
-        }else if(!this.data.person && this.data.creatorUid ){
-            this.data.person = this.data.creatorUid;
-        }
-
 //        if( !this.data.person && this.data.creatorUid )this.data.person = this.data.creatorUid;
 
         this.controller = controller;
@@ -194,6 +191,14 @@ MWF.xApplication.Forum.AttachmentController.AttachmentMin = new Class({
 
         if (messageId && this.controller.messageItemList) {
             this.message = this.controller.messageItemList[messageId];
+        }
+
+        if( this.controller.isAnonymous && this.data.creatorUid === this.controller.anonymousPerson ){
+            this.data.person = this.controller.anonymousName;
+        }else if(MWFForum.isUseNickName()){
+            this.data.person = this.data.nickName;
+        }else if(!this.data.person && this.data.creatorUid ){
+            this.data.person = this.data.creatorUid;
         }
 
         this.load();
@@ -423,6 +428,9 @@ MWF.xApplication.Forum.Attachment = new Class({
             "readonly": (!this.options.isNew && !this.options.isEdited )
         };
         this.attachmentController = new MWF.xApplication.Forum.AttachmentController(this.node, this, options);
+        this.attachmentController.isAnonymous = this.isAnonymous;
+        this.attachmentController.anonymousPerson = this.anonymousPerson;
+        this.attachmentController.anonymousName = this.anonymousName;
         this.attachmentController.load();
 
         //this.actions.listAttachmentInfo.each(function (att) {
