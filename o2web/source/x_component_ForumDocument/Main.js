@@ -738,6 +738,10 @@ MWF.xApplication.ForumDocument.Main = new Class({
 				//}
 			}.bind(this)
 		});
+
+		this.attachment.isAnonymous = this.data.anonymousSubject;
+		this.attachment.anonymousPerson = this.data.creatorName;
+		this.attachment.anonymousName = this.data.nickName;
 		this.attachment.load();
 	},
 	createToolbar_read : function(){
