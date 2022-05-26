@@ -469,6 +469,17 @@ MWF.xApplication.process.FormDesigner.LP = {
         "activityId": "活动ID",
         "splitValue": "拆分值",
 
+        "enableSectionMerge": "启用区段合并",
+        "sectionMergeWay": "区段合并方式",
+        "showBySectionKey": "按区段值分类展现",
+        "showByMergeToSingle": "合并到一个字段展现",
+        "editByMergeToSingle": "合并到一个字段编辑(删除区段值)",
+        "sectionMergeSortScript": "排序脚本",
+        "sectionKeystyles": "区段值样式",
+        "sectionContentStyles": "区段内容样式",
+        "mergeDisplay": "展现（只读）",
+        "mergeEdit": "编辑（删除区段值后合并）",
+
         "decimal": "小数点",
 
         "showCard": "显示卡片",

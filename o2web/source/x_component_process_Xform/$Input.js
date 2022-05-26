@@ -70,7 +70,12 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
 
     _loadNode: function(){
         debugger
-        if (this.isReadonly()){
+        var flag = this.isSectionData();
+        if ( this.json.sectionMerge === "show" && flag ) { //区段合并显示
+
+        }else if( this.json.sectionMerge === "edit" && flag ){
+
+        }else if (this.isReadonly()){
             this._loadNodeRead();
         }else{
             this._loadNodeEdit();

@@ -150,6 +150,13 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     isReadonly : function(){
         return !!(this.readonly || this.json.isReadonly || this.form.json.isReadonly);
     },
+    /*
+    数据是否经过区段处理
+     */
+    isSectionData: function(){
+        var data = this.getBusinessDataById();
+        return o2.typeOf( data ) === "object";
+    },
     /**
      * @summary 隐藏组件.
      * @example
