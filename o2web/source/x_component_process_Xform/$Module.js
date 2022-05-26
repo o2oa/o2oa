@@ -150,12 +150,40 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     isReadonly : function(){
         return !!(this.readonly || this.json.isReadonly || this.form.json.isReadonly);
     },
-    /*
-    数据是否经过区段处理
-     */
-    isSectionData: function(){
+    isSectionData: function(){ //数据是否经过区段处理
         var data = this.getBusinessDataById();
         return o2.typeOf( data ) === "object";
+    },
+    getSortedSectionData: function(){ //获取合并排序后的数据
+        var data = this.getBusinessDataById();
+        var array = [];
+        for( var key in data ){
+            array.push({
+                key: key,
+                data: data[key]
+            })
+        }
+        if( this.json.sectionMergeSortScript && this.json.sectionMergeSortScript.code){
+            array.sort( function(a, b){
+                return this.form.Macro.exec(this.json.sectionMergeSortScript.code, {
+                    "a": a,
+                    "b": b
+                });
+            }.bind(this))
+        }
+        return array;
+    },
+    getSectionKeyWithMerge: function(data){
+        switch (this.json.sectionKey) {
+            case "person":
+                break;
+            case "unit":
+                break;
+            case "textValue":
+                break;
+            case "script":
+                break;
+        }
     },
     /**
      * @summary 隐藏组件.
@@ -197,7 +225,37 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     },
 
     _loadStyles: function(){
-        if (this.json.styles) Object.each(this.json.styles, function(value, key){
+        if (this.json.styles){
+            this.node.setStyles( this._parseStyles(this.json.styles) );
+        }
+        // if (this.json.styles) Object.each(this.json.styles, function(value, key){
+        //     if ((value.indexOf("x_processplatform_assemble_surface")!=-1 || value.indexOf("x_portal_assemble_surface")!=-1 || value.indexOf("x_cms_assemble_control")!=-1)){
+        //         var host1 = MWF.Actions.getHost("x_processplatform_assemble_surface");
+        //         var host2 = MWF.Actions.getHost("x_portal_assemble_surface");
+        //         var host3 = MWF.Actions.getHost("x_cms_assemble_control");
+        //         if (value.indexOf("/x_processplatform_assemble_surface")!==-1){
+        //             value = value.replace("/x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
+        //         }else if (value.indexOf("x_processplatform_assemble_surface")!==-1){
+        //             value = value.replace("x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
+        //         }
+        //         if (value.indexOf("/x_portal_assemble_surface")!==-1){
+        //             value = value.replace("/x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
+        //         }else if (value.indexOf("x_portal_assemble_surface")!==-1){
+        //             value = value.replace("x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
+        //         }
+        //         if (value.indexOf("/x_cms_assemble_control")!==-1){
+        //             value = value.replace("/x_cms_assemble_control", host3+"/x_cms_assemble_control");
+        //         }else if (value.indexOf("x_cms_assemble_control")!==-1){
+        //             value = value.replace("x_cms_assemble_control", host3+"/x_cms_assemble_control");
+        //         }
+        //         value = o2.filterUrl(value);
+        //     }
+        //     this.node.setStyle(key, value);
+        // }.bind(this));
+    },
+    _parseStyles: function( styles ){
+        var s = {};
+        Object.each(styles || {}, function(value, key){
             if ((value.indexOf("x_processplatform_assemble_surface")!=-1 || value.indexOf("x_portal_assemble_surface")!=-1 || value.indexOf("x_cms_assemble_control")!=-1)){
                 var host1 = MWF.Actions.getHost("x_processplatform_assemble_surface");
                 var host2 = MWF.Actions.getHost("x_portal_assemble_surface");
@@ -219,14 +277,9 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 }
                 value = o2.filterUrl(value);
             }
-            this.node.setStyle(key, value);
+            s[key] = value;
         }.bind(this));
-
-        // if (["x_processplatform_assemble_surface", "x_portal_assemble_surface"].indexOf(root.toLowerCase())!==-1){
-        //     var host = MWF.Actions.getHost(root);
-        //     return (flag==="/") ? host+this.json.template : host+"/"+this.json.template
-        // }
-        //if (this.json.styles) this.node.setStyles(this.json.styles);
+        return s;
     },
     _loadModuleEvents : function(){
         Object.each(this.json.events, function(e, key){

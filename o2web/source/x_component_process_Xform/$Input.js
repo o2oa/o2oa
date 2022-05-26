@@ -71,10 +71,10 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
     _loadNode: function(){
         debugger
         var flag = this.isSectionData();
-        if ( this.json.sectionMerge === "show" && flag ) { //区段合并显示
-
+        if ( this.json.sectionMerge === "read" && flag ) { //区段合并显示
+            this._loadNodeMergeRead();
         }else if( this.json.sectionMerge === "edit" && flag ){
-
+            this._loadNodeMergeEdit();
         }else if (this.isReadonly()){
             this._loadNodeRead();
         }else{
@@ -87,6 +87,49 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
             "nodeId": this.json.id,
             "MWFType": this.json.type
         });
+    },
+    _loadNodeMergeRead: function(){
+        this.node.empty();
+        this.node.set({
+            "nodeId": this.json.id,
+            "MWFType": this.json.type
+        });
+        switch ( this.json.sectionMergeWayRead ) {
+            case 'readBySectionKey':
+                this.loadNodeCategoryBySectionkey();
+                break;
+            case 'readByMerge':
+                this.loadNodeByMergeAndDisplay();
+                break;
+        }
+    },
+    _loadNodeMergeEdit: function(){
+
+    },
+    loadNodeCategoryBySectionkey: function(){
+        var data = this.getSortedSectionData();
+        var sectionNodeStyles = this._parseStyles(this.json.sectionNodeStyles);
+        var sectionKeyStyles = this._parseStyles(this.json.sectionKeyStyles);
+        var sectionContentStyles = this._parseStyles(this.json.sectionContentStyles);
+        data.each(function(d){
+            var node = new Element("div.mwf_sectionnode", {
+                styles : sectionNodeStyles
+            }).inject(this.node);
+            new Element("div.mwf_sectionkey", {
+                styles : sectionKeyStyles,
+                text: this.getSectionKeyWithMerge( d )
+            }).inject(node);
+            new Element("div.mwf_sectioncontent", {
+                styles : sectionContentStyles,
+                text: d.data
+            }).inject(node);
+        }.bind(this))
+    },
+    loadNodeByMergeAndDisplay: function(){
+        var data = this.getSortedSectionData().map(function(d){
+            return d.data;
+        });
+        this.node.set("text", data.join())
     },
     loadDescription: function(){
         if (this.isReadonly())return;

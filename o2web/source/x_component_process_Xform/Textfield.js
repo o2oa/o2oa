@@ -32,7 +32,12 @@ MWF.xApplication.process.Xform.Textfield = MWF.APPTextfield =  new Class({
         }
 	},
     _loadNode: function(){
-        if (this.isReadonly()){
+        var flag = this.isSectionData();
+        if ( this.json.sectionMerge === "read" && flag ) { //区段合并显示
+            this._loadNodeMergeRead();
+        }else if( this.json.sectionMerge === "edit" && flag ){
+            this._loadNodeMergeEdit();
+        }else if (this.isReadonly()){
             this._loadNodeRead();
         }else{
             this._loadNodeEdit();
