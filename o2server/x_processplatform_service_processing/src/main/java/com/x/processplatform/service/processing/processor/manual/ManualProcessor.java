@@ -2,6 +2,7 @@ package com.x.processplatform.service.processing.processor.manual;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -9,7 +10,10 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.script.Bindings;
 import javax.script.CompiledScript;
@@ -21,9 +25,10 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 
 import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -42,6 +47,7 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
+import com.x.processplatform.core.entity.element.ManualMode;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.element.util.WorkLogTree;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
@@ -199,17 +205,31 @@ public class ManualProcessor extends AbstractManualProcessor {
 		return taskIdentities.identities();
 	}
 
+//	private void calculateRouteTypeBack(AeiObjects aeiObjects, Manual manual, TaskIdentities taskIdentities)
+//			throws Exception {
+//		List<String> identities = new ArrayList<>();
+//		List<WorkLog> workLogs = new ArrayList<>();
+//		workLogs.addAll(aeiObjects.getUpdateWorkLogs());
+//		workLogs.addAll(aeiObjects.getCreateWorkLogs());
+//		for (WorkLog o : aeiObjects.getWorkLogs()) {
+//			if (!workLogs.contains(o)) {
+//				workLogs.add(o);
+//			}
+//		}
+//		WorkLogTree tree = new WorkLogTree(workLogs);
+//		Node node = tree.location(aeiObjects.getWork());
+//		if (null != node) {
+//			calculateRouteTypeBackIdentityByTaskCompleted(aeiObjects, manual, taskIdentities, identities, tree, node);
+//		}
+//	}
+
 	private void calculateRouteTypeBack(AeiObjects aeiObjects, Manual manual, TaskIdentities taskIdentities)
 			throws Exception {
 		List<String> identities = new ArrayList<>();
-		List<WorkLog> workLogs = new ArrayList<>();
-		workLogs.addAll(aeiObjects.getUpdateWorkLogs());
-		workLogs.addAll(aeiObjects.getCreateWorkLogs());
-		for (WorkLog o : aeiObjects.getWorkLogs()) {
-			if (!workLogs.contains(o)) {
-				workLogs.add(o);
-			}
-		}
+		List<WorkLog> workLogs = Stream
+				.concat(Stream.concat(aeiObjects.getUpdateWorkLogs().stream(), aeiObjects.getCreateWorkLogs().stream()),
+						aeiObjects.getWorkLogs().stream())
+				.distinct().collect(Collectors.toList());
 		WorkLogTree tree = new WorkLogTree(workLogs);
 		Node node = tree.location(aeiObjects.getWork());
 		if (null != node) {
@@ -324,14 +344,16 @@ public class ManualProcessor extends AbstractManualProcessor {
 	protected List<Work> executing(AeiObjects aeiObjects, Manual manual) throws Exception {
 		List<Work> results = new ArrayList<>();
 		ManualTaskIdentityMatrix matrix = executingManualTaskIdentityMatrix(aeiObjects, manual);
-		List<TaskCompleted> taskCompleteds = aeiObjects
-				.getJoinInquireTaskCompletedsWithActivityToken(aeiObjects.getWork().getActivityToken());
+		List<TaskCompleted> taskCompleteds = executingJoinInquireCheckRouteNameTaskCompleteds(aeiObjects);
 		executingCompletedIdentityInTaskCompleteds(aeiObjects, matrix, taskCompleteds);
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes().push(Signal.manualExecute(aeiObjects.getWork().getActivityToken(), manual,
 				Objects.toString(manual.getManualMode(), ""), matrix.flat()));
 		if (matrix.isEmpty()) {
 			results.add(aeiObjects.getWork());
+			aeiObjects.getTasks().stream().filter(
+					t -> StringUtils.equalsIgnoreCase(t.getActivityToken(), aeiObjects.getWork().getActivityToken()))
+					.forEach(aeiObjects::deleteTask);
 		} else {
 			switch (manual.getManualMode()) {
 			case parallel:
@@ -352,6 +374,23 @@ public class ManualProcessor extends AbstractManualProcessor {
 		}
 		aeiObjects.getWork().setManualTaskIdentityMatrix(matrix);
 		return results;
+	}
+
+	/**
+	 * 获取当前参与流转的已办,同时过滤路由决策在路由中的已办.
+	 * 
+	 * @param aeiObjects
+	 * @return
+	 * @throws Exception
+	 */
+	private List<TaskCompleted> executingJoinInquireCheckRouteNameTaskCompleteds(AeiObjects aeiObjects)
+			throws Exception {
+		List<TaskCompleted> taskCompleteds = aeiObjects
+				.getJoinInquireTaskCompletedsWithActivityToken(aeiObjects.getWork().getActivityToken());
+		List<String> routeNames = aeiObjects.getRoutes().stream().map(Route::getName).collect(Collectors.toList());
+		taskCompleteds = taskCompleteds.stream().filter(t -> routeNames.contains(t.getRouteName()))
+				.collect(Collectors.toList());
+		return taskCompleteds;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -437,30 +476,32 @@ public class ManualProcessor extends AbstractManualProcessor {
 			results.add(aeiObjects.getRoutes().get(0));
 		} else if (aeiObjects.getRoutes().size() > 1) {
 			// 存在多条路由
+			Collection<String> routeNames = aeiObjects.getRoutes().stream().map(Route::getName)
+					.collect(Collectors.toSet());
 			List<TaskCompleted> taskCompleteds = aeiObjects
 					.getJoinInquireTaskCompletedsWithActivityToken(aeiObjects.getWork().getActivityToken()).stream()
-					.sorted(Comparator.comparing(TaskCompleted::getCreateTime)).collect(Collectors.toList());
-			String name = this.choiceRouteName(taskCompleteds, manual, aeiObjects.getRoutes());
-			for (Route o : aeiObjects.getRoutes()) {
-				if (o.getName().equalsIgnoreCase(name)) {
-					results.add(o);
-					break;
-				}
+					.filter(t -> routeNames.contains(t.getRouteName())).collect(Collectors.toList());
+			String name = this.choiceRouteName(taskCompleteds, aeiObjects.getRoutes(), manual);
+			Optional<Route> optional = aeiObjects.getRoutes().stream()
+					.filter(r -> StringUtils.equalsIgnoreCase(name, r.getName())).findFirst();
+			if (optional.isPresent()) {
+				results.add(optional.get());
 			}
 		} else {
 			throw new ExceptionManualNotRoute(manual.getId());
 		}
-
 		if (!results.isEmpty()) {
 			// 清理掉强制的指定的处理人
 			aeiObjects.getWork().getProperties().setManualForceTaskIdentityList(new ArrayList<>());
 		}
-
 		return results;
 	}
 
 	/**
-	 * 选择离开活动的路由
+	 * 判断的逻辑如下:
+	 * 1.是否有用户选择了"直接返回优先路由(soleDirect)",同时判断该值是否在路由列表中(可能修改路由名称),如果有就直接返回该值.
+	 * 2.是否有用户选择了"优先路由(sole)",同时判断该值是否在路由列表中(可能修改路由名称),如果有就直接返回该值.
+	 * 3.如果没有soleDirect或者sole被选择,那么根据活动类型进行判断,如果是并行活动(parallel)那么选择最多的路由决策,如果有多个路由决策同样数量,那么选择时间上最晚的那组,如果是single(单人),queue(串行),grab(抢办)那么最后的路由决策作为返回值(需要判断是否在路由列表中).
 	 * 
 	 * @param taskCompleteds 按创建时间正序排列好的已办
 	 * @param manual         人工活动节点
@@ -468,37 +509,19 @@ public class ManualProcessor extends AbstractManualProcessor {
 	 * @return 路由名称
 	 * @throws Exception
 	 */
-	private String choiceRouteName(List<TaskCompleted> taskCompleteds, Manual manual, List<Route> routes)
+	private String choiceRouteName(List<TaskCompleted> taskCompleteds, List<Route> routes, Manual manual)
 			throws Exception {
-		String result = "";
-		// 将已办中的路由选择抽取出来
-		List<String> selectedRouteNames = ListTools.extractField(taskCompleteds, TaskCompleted.routeName_FIELDNAME,
-				String.class, false, false);
-		// 进行优先路由的判断
-		// 已经开始选择路由,如果选择了soleDirect那么就直接返回了,如果没有选择这个路由在进行sole的判断,顺序是 soleDirct -> sole
-		// -> max -> latest.
-		result = choiceSoleDirectIfExist(selectedRouteNames, routes);
-		if (StringUtils.isEmpty(result)) {
-			result = choiceSoleIfExist(selectedRouteNames, routes);
+		final Triple<List<TaskCompleted>, List<Route>, Manual> triple = Triple.of(taskCompleteds, routes, manual);
+		Optional<String> optional = Stream
+				.<Function<Triple<List<TaskCompleted>, List<Route>, Manual>, Optional<String>>>of(
+						this::chooseSoleDirectIfExist, this::chooseSoleIfExist, this::chooseMaxCountOrLatest)
+				.map(f -> f.apply(triple)).filter(Optional::isPresent).findFirst().orElse(Optional.empty());
+		if (optional.isPresent()) {
+			return optional.get();
+		} else {
+			throw new ExceptionChoiceRouteNameError(ListTools.extractProperty(taskCompleteds,
+					TaskCompleted.routeName_FIELDNAME, String.class, false, false));
 		}
-		if (StringUtils.isEmpty(result)) {
-			switch (manual.getManualMode()) {
-			case parallel:
-				result = choiceMaxCountOrLatest(taskCompleteds, routes);
-				break;
-			case queue:
-			case grab:
-			case single:
-			default:
-				result = choiceLatest(selectedRouteNames, routes);
-			}
-		}
-
-		if (StringUtils.isEmpty(result)) {
-			throw new ExceptionChoiceRouteNameError(
-					ListTools.extractProperty(selectedRouteNames, JpaObject.id_FIELDNAME, String.class, false, false));
-		}
-		return result;
 	}
 
 	/**
@@ -508,15 +531,9 @@ public class ManualProcessor extends AbstractManualProcessor {
 	 * @param routes
 	 * @return
 	 */
-	private String choiceSoleDirectIfExist(List<String> list, List<Route> routes) {
-		List<String> names = routes.stream().filter(r -> BooleanUtils.isTrue(r.getSoleDirect())).map(Route::getName)
-				.collect(Collectors.toList());
-		for (String str : list) {
-			if (names.contains(str)) {
-				return str;
-			}
-		}
-		return null;
+
+	private Optional<String> chooseSoleDirectIfExist(final Triple<List<TaskCompleted>, List<Route>, Manual> triple) {
+		return chooseIfExist(triple, r -> BooleanUtils.isTrue(r.getSoleDirect()));
 	}
 
 	/**
@@ -526,15 +543,17 @@ public class ManualProcessor extends AbstractManualProcessor {
 	 * @param routes
 	 * @return
 	 */
-	private String choiceSoleIfExist(List<String> list, List<Route> routes) {
-		List<String> names = routes.stream().filter(r -> BooleanUtils.isTrue(r.getSole())).map(Route::getName)
-				.collect(Collectors.toList());
-		for (String str : list) {
-			if (names.contains(str)) {
-				return str;
-			}
-		}
-		return null;
+	private Optional<String> chooseSoleIfExist(final Triple<List<TaskCompleted>, List<Route>, Manual> triple) {
+		return chooseIfExist(triple, r -> BooleanUtils.isTrue(r.getSole()));
+	}
+
+	private Optional<String> chooseIfExist(final Triple<List<TaskCompleted>, List<Route>, Manual> triple,
+			final Predicate<Route> predicate) {
+		final List<TaskCompleted> taskCompleteds = triple.getLeft();
+		final List<Route> routes = triple.getMiddle();
+		final Collection<String> names = routes.stream().filter(predicate).map(Route::getName)
+				.collect(Collectors.toSet());
+		return taskCompleteds.stream().map(TaskCompleted::getRouteName).filter(names::contains).findFirst();
 	}
 
 	/**
@@ -545,44 +564,22 @@ public class ManualProcessor extends AbstractManualProcessor {
 	 * @return
 	 * @throws Exception
 	 */
-	private String choiceMaxCountOrLatest(List<TaskCompleted> list, List<Route> routes) throws Exception {
-		List<String> names = ListTools.extractField(routes, Route.name_FIELDNAME, String.class, false, false);
-		return list.stream().collect(Collectors.groupingBy(TaskCompleted::getRouteName)).entrySet().stream()
-				.sorted((o1, o2) -> {
-					int c = o2.getValue().size() - o1.getValue().size();
+	private Optional<String> chooseMaxCountOrLatest(Triple<List<TaskCompleted>, List<Route>, Manual> triple) {
+		if (!Objects.equals(ManualMode.parallel, triple.getRight().getManualMode())) {
+			return triple.getLeft().stream().sorted(Comparator.comparing(TaskCompleted::getCreateTime).reversed())
+					.findFirst().map(TaskCompleted::getRouteName);
+		}
+		return triple.getLeft().stream().collect(Collectors.groupingBy(TaskCompleted::getRouteName)).entrySet().stream()
+				.max((o1, o2) -> {
+					int c = o1.getValue().size() - o2.getValue().size();
 					if (c == 0) {
-						Date d1 = o1.getValue().stream()
-								.sorted(Comparator.comparing(TaskCompleted::getCreateTime).reversed()).findFirst().get()
-								.getCreateTime();
-						Date d2 = o2.getValue().stream()
-								.sorted(Comparator.comparing(TaskCompleted::getCreateTime).reversed()).findFirst().get()
-								.getCreateTime();
-						return ObjectUtils.compare(d2, d1);
+						return ObjectUtils.compare(
+								o1.getValue().stream().mapToLong(t -> t.getCreateTime().getTime()).max().getAsLong(),
+								o2.getValue().stream().mapToLong(t -> t.getCreateTime().getTime()).max().getAsLong());
 					} else {
 						return c;
 					}
-				}).map(Entry::getKey).filter(names::contains).findFirst().orElse(null);
-	}
-
-	/**
-	 * 取得最后一个办理的路由决策,需要判断是否在路由列表中
-	 * 
-	 * @param list   通过已办取得的用户选择的路由列表,默认是正序
-	 * @param routes 活动可选择的路由
-	 * @return
-	 */
-	private String choiceLatest(List<String> list, List<Route> routes) {
-		if (ListTools.isEmpty(list)) {
-			return null;
-		} else {
-			List<String> names = routes.stream().map(Route::getName).collect(Collectors.toList());
-			for (int i = list.size() - 1; i >= 0; i--) {
-				if (names.contains(list.get(i))) {
-					return list.get(i);
-				}
-			}
-			return null;
-		}
+				}).map(Entry::getKey);
 	}
 
 	// 是否有优先路由
@@ -590,6 +587,9 @@ public class ManualProcessor extends AbstractManualProcessor {
 			List<TaskCompleted> taskCompleteds) throws Exception {
 		if (soleDirect(aeiObjects, taskCompleteds)) {
 			matrix.clear();
+			aeiObjects.getTasks().stream().filter(
+					t -> StringUtils.equalsIgnoreCase(t.getActivityToken(), aeiObjects.getWork().getActivityToken()))
+					.forEach(aeiObjects::deleteTask);
 		} else {
 			task(aeiObjects, manual, matrix.read());
 		}
@@ -600,6 +600,9 @@ public class ManualProcessor extends AbstractManualProcessor {
 		// 是否有优先路由
 		if (soleDirect(aeiObjects, taskCompleteds)) {
 			matrix.clear();
+			aeiObjects.getTasks().stream().filter(
+					t -> StringUtils.equalsIgnoreCase(t.getActivityToken(), aeiObjects.getWork().getActivityToken()))
+					.forEach(aeiObjects::deleteTask);
 		} else {
 			task(aeiObjects, manual, matrix.flat());
 		}
@@ -609,6 +612,9 @@ public class ManualProcessor extends AbstractManualProcessor {
 			List<TaskCompleted> taskCompleteds) throws Exception {
 		if (soleDirect(aeiObjects, taskCompleteds)) {
 			matrix.clear();
+			aeiObjects.getTasks().stream().filter(
+					t -> StringUtils.equalsIgnoreCase(t.getActivityToken(), aeiObjects.getWork().getActivityToken()))
+					.forEach(aeiObjects::deleteTask);
 		} else {
 			task(aeiObjects, manual, matrix.read());
 		}

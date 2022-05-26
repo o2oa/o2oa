@@ -46,8 +46,10 @@ class ActionProcessing extends BaseAction {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionProcessing.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
-		
-		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+		}
 
 		final Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 
@@ -61,7 +63,7 @@ class ActionProcessing extends BaseAction {
 			job = task.getJob();
 		}
 
-		return ProcessPlatformExecutorFactory.get(job).submit(new CallableExecute(wi, id)).get(300, TimeUnit.SECONDS);
+		return ProcessPlatformExecutorFactory.get(job).submit(new CallableExecute(id, wi)).get(300, TimeUnit.SECONDS);
 
 	}
 
@@ -71,7 +73,7 @@ class ActionProcessing extends BaseAction {
 
 		private String id;
 
-		private CallableExecute(Wi wi, String id) {
+		private CallableExecute(String id, Wi wi) {
 			this.wi = wi;
 			this.id = id;
 		}
@@ -171,6 +173,7 @@ class ActionProcessing extends BaseAction {
 					|| StringUtils.isNotEmpty(process.getManualAfterTaskScriptText())));
 		}
 
+		@Override
 		public ActionResult<Wo> call() throws Exception {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wo wo = new Wo();
@@ -183,6 +186,12 @@ class ActionProcessing extends BaseAction {
 				Task task = emc.find(id, Task.class);
 				if (null == task) {
 					throw new ExceptionEntityNotExist(id, Task.class);
+				}
+				if (StringUtils.isNotEmpty(wi.getRouteName())) {
+					task.setRouteName(wi.getRouteName());
+				}
+				if (StringUtils.isNotEmpty(wi.getOpinion())) {
+					task.setOpinion(wi.getOpinion());
 				}
 				// 执行办前脚本
 				callManualBeforeTaskScript(business, task);

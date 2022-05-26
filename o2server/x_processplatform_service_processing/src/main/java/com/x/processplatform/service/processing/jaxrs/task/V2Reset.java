@@ -1,13 +1,17 @@
 package com.x.processplatform.service.processing.jaxrs.task;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
@@ -19,6 +23,9 @@ import com.x.base.core.project.processplatform.ManualTaskIdentityMatrix;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.element.ActivityType;
+import com.x.processplatform.core.entity.element.Manual;
+import com.x.processplatform.core.entity.element.ManualMode;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.V2ResetWi;
 import com.x.processplatform.service.processing.Business;
 
@@ -26,42 +33,36 @@ class V2Reset extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(V2Reset.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 
-		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
 		final Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 
 		Task task = null;
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			task = emc.fetch(wi.getTask(), Task.class, ListTools.toList(Task.job_FIELDNAME));
+			task = emc.fetch(id, Task.class, ListTools.toList(Task.job_FIELDNAME));
 			if (null == task) {
-				throw new ExceptionEntityNotExist(wi.getTask(), Task.class);
+				throw new ExceptionEntityNotExist(id, Task.class);
 			}
 		}
 
-		return ProcessPlatformExecutorFactory.get(task.getJob()).submit(new CallableImpl(task.getId(),
-				wi.getAddBeforeList(), wi.getExtendList(), wi.getAddAfterList(), wi.getRemove()))
-				.get(300, TimeUnit.SECONDS);
+		return ProcessPlatformExecutorFactory.get(task.getJob())
+				.submit(new CallableImpl(task.getId(), wi.getIdentityList(), wi.getKeep())).get(300, TimeUnit.SECONDS);
 
 	}
 
 	private class CallableImpl implements Callable<ActionResult<Wo>> {
 
 		private String id;
-		private List<String> addBeforeIdentities;
-		private List<String> extendIdentities;
-		private List<String> addAfterIdentities;
-		private boolean remove;
+		private List<String> identityList;
+		private boolean keep;
 
-		private CallableImpl(String id, List<String> addBeforeIdentities, List<String> extendIdentities,
-				List<String> addAfterIdentities, boolean remove) {
+		private CallableImpl(String id, List<String> identityList, boolean keep) {
 			this.id = id;
-			this.addBeforeIdentities = addBeforeIdentities;
-			this.extendIdentities = extendIdentities;
-			this.addAfterIdentities = addAfterIdentities;
-			this.remove = remove;
+			this.identityList = identityList;
+			this.keep = keep;
 		}
 
 		@Override
@@ -76,21 +77,24 @@ class V2Reset extends BaseAction {
 				if (null == work) {
 					throw new ExceptionEntityNotExist(task.getWork(), Work.class);
 				}
-
-				this.addBeforeIdentities = ListTools.trim(business.organization().identity().list(addBeforeIdentities),
-						true, true);
-				this.extendIdentities = ListTools.trim(business.organization().identity().list(extendIdentities), true,
-						true);
-				this.addAfterIdentities = ListTools.trim(business.organization().identity().list(addAfterIdentities),
-						true, true);
-
-				emc.beginTransaction(Work.class);
-				ManualTaskIdentityMatrix matrix = work.getManualTaskIdentityMatrix();
-				matrix.reset(task.getIdentity(), addBeforeIdentities, extendIdentities, addAfterIdentities, remove);
-				work.setManualTaskIdentityMatrix(matrix);
-				emc.check(work, CheckPersistType.all);
-				emc.commit();
-
+				Manual manual = (Manual) business.element().get(work.getActivity(), ActivityType.manual);
+				if (null == manual) {
+					throw new ExceptionEntityNotExist(work.getActivity(), Manual.class);
+				}
+				List<String> identities = business.organization().identity().list(identityList);
+				if (!ListTools.isEmpty(identities)) {
+					emc.beginTransaction(Work.class);
+					ManualTaskIdentityMatrix matrix = work.getManualTaskIdentityMatrix();
+					if (Objects.equals(manual.getManualMode(), ManualMode.single)
+							|| Objects.equals(manual.getManualMode(), ManualMode.grab)) {
+						matrix.add(task.getIdentity(), ManualTaskIdentityMatrix.ADD_POSITION_EXTEND, identities);
+					} else {
+						matrix.add(task.getIdentity(), ManualTaskIdentityMatrix.ADD_POSITION_AFTER, identities);
+					}
+					work.setManualTaskIdentityMatrix(matrix);
+					emc.check(work, CheckPersistType.all);
+					emc.commit();
+				}
 			}
 			Wo wo = new Wo();
 			wo.setValue(true);
