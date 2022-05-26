@@ -3351,7 +3351,126 @@ Object.defineProperties(bind.assignData, {"data": {
         "set": function(v){this._data = v;}
     }});
 //--------------------------------------------------------------
+//封装java对象data, 以兼容javascript对象
+(function (bind) {
+    var javaClass = {
+        map: java.util.Map,
+        array: java.util.ArrayList,
+        work: com.x.processplatform.core.entity.content.Data$DataWork
+    }
+    function proxyWork(data) {
+        return (data instanceof javaClass.work) && JSON.parse(data.toString());
+    }
+    function proxyJavaObject(data) {
+        return (data instanceof javaClass.map) && new ProxyData(data);
+    }
+    function proxyArray(data) {
+        return ((data instanceof javaClass.array) || typeOf(data) === "array") && createProxyArray(data);
+    }
+    function createProxyArray(data) {
+        var arr = [];
+        data.forEach(function (d, i) {
+            arr.push(createProxyData(d));
+        });
+        return arr;
+    }
+    function createProxyData(data) {
+        var proxyData;
+        [proxyJavaObject, proxyArray, proxyWork].some(function (fun) {
+            return proxyData = fun(data);
+        });
+        return proxyData || data;
+    }
 
+    function _getter(key, tData, proxy) {
+        return function () {
+            if (!proxy.proxyData.hasOwnProperty(key)) {
+                proxy.proxyData[key] = createProxyData(tData[key], proxy);
+            }
+            return proxy.proxyData[key];
+        }
+    }
+    function _setter(key, data, proxy) {
+        return function (value) {
+            proxy.proxyData[key] = createProxyData(value, proxy);
+            data[key] = value;
+        }
+    }
+    function _addData(data, proxy) {
+        return function (key, value) {
+            if (proxy.hasOwnProperty(key)) {
+                proxy[key] = value;
+            } else {
+                data[key] = value;
+                Object.defineProperty(proxy, key, {
+                    configurable: true,
+                    enumerable: true,
+                    get: _getter(key, data, proxy),
+                    set: _setter(key, data, proxy)
+                })
+            }
+        }
+    }
+    function _delData(data, proxy) {
+        return function (key) {
+            if (proxy.hasOwnProperty(key)) {
+                data.remove(key);
+                delete proxy[key];
+            }
+        }
+    }
+    function isProxyData(data){
+        return ProxyData.prototype.isPrototypeOf(data);
+    }
+    function commitData(data, proxy) {
+        Object.keys(proxy).forEach(function (key) {
+            var d = proxy[key];
+            if (isProxyData(d)){
+                d.commit();
+            }else{
+                if (Array.isArray(d) || !data.containsKey(key)) data[key] = d;
+            }
+        })
+    }
+    function ProxyData(tData) {
+        Object.defineProperty(this, "proxyData", {
+            value: {}
+        });
+        var _self = this;
+
+        var keys = tData.keySet();
+        var o = {};
+        keys.forEach(function (key) {
+            o[key] = {
+                configurable: true,
+                enumerable: true,
+                get: _getter(key, tData, _self),
+                set: _setter(key, tData, _self)
+            }
+        });
+        o.add = {
+            value: _addData(tData, _self)
+        };
+        o.del = {
+            value: _delData(tData, _self)
+        };
+        o.commit = {
+            value: function(){
+                commitData(tData, _self);
+            }
+        };
+        Object.defineProperties(this, o);
+    }
+
+    Object.defineProperty(bind, "data", {
+        configurable: true,
+        enumerable: true,
+        get: function(){
+            if (!this.__data__) this.__data__ = (bind.java_data) && new ProxyData(bind.java_data);
+            return this.__data__;
+        }
+    })
+})(this);
 //服务调用活动，相关脚本--------------------------------------------
 //调用活动中的参数 java_jaxwsParameters webservice调用;  java_jaxrsParameterss rest调用
 //后续计划通过return 返回json（jaxrs）或数组（jaxws）
