@@ -209,7 +209,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
         }
     },
     _loadMergeReadContentNode: function(contentNode, data){
-        this.loadOrgWidget(data, contentNode);
+        this.loadOrgWidget(data.data, contentNode);
     },
     _loadMergeEditNode: function(){
         var data = this.getSortedSectionData();

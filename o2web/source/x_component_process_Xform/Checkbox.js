@@ -32,10 +32,10 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
             var countPerLine = this.json.countPerline.toInt();
             if( countPerLine === 0 ){
                 div = new Element("div").inject( contentNode );
-                div.set("text", data.join(", "));
+                div.set("text", data.data.join(", "));
             }else{
                 var textsPerLine = [];
-                data.each(function(t, i){
+                data.data.each(function(t, i){
                     if( i % countPerLine === 0){ //如果需要换行了
                         if( div && textsPerLine.length )div.set("text", textsPerLine.join(",") +",");
                         textsPerLine = [];

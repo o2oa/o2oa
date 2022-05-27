@@ -226,11 +226,11 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
             var contentNode = new Element("div.mwf_sectioncontent", {
                 styles : sectionContentStyles
             }).inject(node);
-            this._loadMergeReadContentNode( contentNode, d.data )
+            this._loadMergeReadContentNode( contentNode, d )
         }.bind(this))
     },
     _loadMergeReadContentNode: function( contentNode, data ){
-        contentNode.set("text", data)
+        contentNode.set("text", data.data)
     },
     _loadMergeEditNode: function(){
         var data = this.getSortedSectionData();

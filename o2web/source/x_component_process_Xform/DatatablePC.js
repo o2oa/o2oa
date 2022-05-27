@@ -198,15 +198,17 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		},
 		load: function(){
 			var flag = this.isSectionData();
-			if ( this.json.sectionMerge === "read" && flag ) { //区段合并显示
+			if ( this.json.sectionMerge === "read" && this.json.showSectionKey && flag ) { //区段合并显示
 				this._loadMergeReadNode(true, "after");
 				this.node.hide();
 			}else{
 				this._loadModuleEvents();
 				if (this.fireEvent("queryLoad")){
 					this._queryLoaded();
-					if( this.json.sectionMerge === "edit" && flag ){
-						this._loadMergeEditNode();
+					if ( this.json.sectionMerge === "read" && !this.json.showSectionKey && flag ){
+						this._loadMergeNode( true );
+					}else if( this.json.sectionMerge === "edit" && flag ){
+						this._loadMergeNode( false );
 					}else{
 						this._loadUserInterface();
 					}
@@ -239,7 +241,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			json.id = id;
 
 			this._setBusinessData({
-				data: data.data
+				data: data.data.data
 			}, id);
 
 			var html = this.node.get("html");
@@ -253,12 +255,17 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			if (this.form.forms[id])this.form.forms[id] = null;
 
 			var module = this.form._loadModule(json, contentNode, function () {
+				this.field = false;
 				if( _self.widget )this.widget = _self.widget;
 				this.parentDatatable = _self;
 			});
 			this.form.modules.push(module);
+			this.form.addEvent("getData", function (data) {
+				if( data[id] )delete data[id];
+			})
 		},
-		_loadMergeEditNode: function(){
+		_loadMergeNode: function( readonly ){
+			if( readonly )this.json.isReadonly = true;
 			var data = this.getSortedSectionData();
 			var businessData = [];
 			data.each(function(d){
