@@ -3368,11 +3368,9 @@ Object.defineProperties(bind.assignData, {"data": {
         return ((data instanceof javaClass.array) || typeOf(data) === "array") && createProxyArray(data);
     }
     function createProxyArray(data) {
-        var arr = [];
-        data.forEach(function (d, i) {
-            arr.push(createProxyData(d));
+        return data.map(function (d) {
+            return createProxyData(d);
         });
-        return arr;
     }
     function createProxyData(data) {
         var proxyData;
