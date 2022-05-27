@@ -149,5 +149,10 @@
     "code": "",
     "html": ""
   },
-  "container": ""
+  "container": "",
+  "showSectionKey": true,
+  "sectionNodeStyles": {},
+  "sectionKeyStyles": {},
+  "sectionContentStyles": {},
+  "keyContentSeparator": "："
 }

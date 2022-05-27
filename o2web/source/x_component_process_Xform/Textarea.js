@@ -21,15 +21,6 @@ MWF.xDesktop.requireApp("process.Xform", "$Input", null, false);
 MWF.xApplication.process.Xform.Textarea = MWF.APPTextarea =  new Class({
 	Implements: [Events],
 	Extends: MWF.APP$Input,
-	
-	_loadUserInterface: function(){
-		this._loadNode();
-        if (this.json.compute == "show"){
-            this._setValue(this._computeValue());
-        }else{
-            this._loadValue();
-        }
-	},
     _loadNode: function(){
         if (this.isReadonly()){
             this._loadNodeRead();
@@ -43,6 +34,12 @@ MWF.xApplication.process.Xform.Textarea = MWF.APPTextarea =  new Class({
             "nodeId": this.json.id,
             "MWFType": this.json.type
         });
+    },
+    _loadMergeEditNode: function(){
+        var data = this.getSortedSectionData();
+        data = data.map(function(d){ return d.data; });
+        this._setBusinessData( data.join("\n") );
+        this._loadNode();
     },
 
     getInputData: function(){

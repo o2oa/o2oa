@@ -193,6 +193,51 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 }
         }
     },
+    _loadMergeReadNode: function(keepHtml, position){
+        if( !keepHtml ){
+            this.node.empty();
+            this.node.set({
+                "nodeId": this.json.id,
+                "MWFType": this.json.type
+            });
+        }
+        var data = this.getSortedSectionData();
+        var sectionNodeStyles = this._parseStyles(this.json.sectionNodeStyles);
+        var sectionKeyStyles = this._parseStyles(this.json.sectionKeyStyles);
+        var sectionContentStyles = this._parseStyles(this.json.sectionContentStyles);
+        data.each(function(d){
+            var node = new Element("div.mwf_sectionnode", {
+                styles : sectionNodeStyles
+            }).inject(this.node, position || "bottom");
+
+            if( this.json.showSectionKey ){
+                var keyNode = new Element("div.mwf_sectionkey", {
+                    styles : sectionKeyStyles
+                }).inject(node);
+                var key = this.getSectionKeyWithMerge( d );
+                if( o2.typeOf(key) === "string" ){
+                    keyNode.set("text", key + (this.json.keyContentSeparator || ""));
+                }else{
+                    Promise.resolve(key).then(function (k) {
+                        keyNode.set("text", k + (this.json.keyContentSeparator || ""));
+                    }.bind(this))
+                }
+            }
+            var contentNode = new Element("div.mwf_sectioncontent", {
+                styles : sectionContentStyles
+            }).inject(node);
+            this._loadMergeReadContentNode( contentNode, d.data )
+        }.bind(this))
+    },
+    _loadMergeReadContentNode: function( contentNode, data ){
+        contentNode.set("text", data)
+    },
+    _loadMergeEditNode: function(){
+        var data = this.getSortedSectionData();
+        data = data.map(function(d){ return d.data; });
+        this._setBusinessData( data.join("") );
+        this._loadNode();
+    },
     /**
      * @summary 隐藏组件.
      * @example

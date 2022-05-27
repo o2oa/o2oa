@@ -73,8 +73,14 @@
             <tr>
                 <td class="editTableTitle">{{$.lp.enableSection}}:</td>
                 <td class="editTableValue">
-                    <input onclick="if (this.checked){ $('text{$.pid}sectionByEditArea').setStyle('display', 'block')}" type="radio" name="section" value="yes" text{($.section=='yes')?'checked':''}/>{{$.lp.yes}}
-                    <input onclick="if (this.checked){ $('text{$.pid}sectionByEditArea').setStyle('display', 'none')}" type="radio" name="section" value="no" text{($.section!='yes')?'checked':''}/>{{$.lp.no}}
+                    <input onclick="if (this.checked){
+                        $('text{$.pid}sectionByEditArea').setStyle('display', 'block');
+                        $('text{$.pid}sectionMergeArea').setStyle('display', 'none')
+                    }" type="radio" name="section" value="yes" text{($.section=='yes')?'checked':''}/>{{$.lp.yes}}
+                    <input onclick="if (this.checked){
+                        $('text{$.pid}sectionByEditArea').setStyle('display', 'none');
+                        $('text{$.pid}sectionMergeArea').setStyle('display', 'block')
+                    }" type="radio" name="section" value="no" text{($.section!='yes')?'checked':''}/>{{$.lp.no}}
                 </td>
             </tr>
         </table>
@@ -95,6 +101,81 @@
             <div id="text{$.pid}sectionByScriptEditArea" style="display: text{($.sectionBy=='script')?'block':'none'};">
                 <div class="MWFScriptArea" name="sectionByScript" title="{{$.lp.sectionBy}} (S)"></div>
             </div>
+        </div>
+
+        <div id="text{$.pid}sectionMergeArea" style="display: text{($.section=='yes')?'none':''};">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">{{$.lp.enableSectionMerge}}:</td>
+                    <td class="editTableValue">
+                        <input onclick="if (this.checked){
+                            $('text{$.pid}sectionMergeReadArea').setStyle('display', 'none');
+                            $('text{$.pid}sectionMergeReadOrEditArea').setStyle('display', 'none')
+                        }" type="radio" name="sectionMerge" value="none" text{($.sectionMerge=='none' || !$.sectionMerge)?'checked':''}/>{{$.lp.none}}<br/>
+                        <input onclick="if (this.checked){
+                            $('text{$.pid}sectionMergeReadArea').setStyle('display', 'block');
+                            $('text{$.pid}sectionMergeReadOrEditArea').setStyle('display', 'block')
+                        }" type="radio" name="sectionMerge" value="read" text{($.sectionMerge=='read')?'checked':''}/>{{$.lp.mergeDisplay}} <br/>
+                        <input onclick="if (this.checked){
+                            $('text{$.pid}sectionMergeReadArea').setStyle('display', 'none');
+                            $('text{$.pid}sectionMergeReadOrEditArea').setStyle('display', 'block')
+                        }" type="radio" name="sectionMerge" value="edit" text{($.sectionMerge=='edit')?'checked':''}/>{{$.lp.mergeEdit}}
+                    </td>
+                </tr>
+            </table>
+            <div id="text{$.pid}sectionMergeReadArea" style="display: text{($.sectionMerge=='read')?'block':'none'};">
+                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                    <tr>
+                        <td class="editTableTitle">{{$.lp.showSectionKey}}:</td>
+                        <td class="editTableValue">
+                            <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}showBySectionKeyStyleArea').setStyle('display', 'block') }"
+                                   name="showSectionKey" text{$.showSectionKey?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
+                            <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}showBySectionKeyStyleArea').setStyle('display', 'none') }"
+                                   name="showSectionKey" text{!$.showSectionKey?'checked':''} type="radio" value="false"/>{{$.lp.no}}
+                        </td>
+                    </tr>
+                </table>
+                <div class="MWFMaplist" name="sectionNodeStyles" title="{{$.lp.sectionNodeStyles}}"></div>
+                <div class="MWFMaplist" name="sectionContentStyles" title="{{$.lp.sectionContentStyles}}"></div>
+                <div id="text{$.pid}showBySectionKeyStyleArea" style="display: text{$.showSectionKey?'block':'none'};">
+                    <div class="MWFMaplist" name="sectionKeyStyles" title="{{$.lp.sectionKeystyles}}"></div>
+
+                    <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                        <tr>
+                            <td class="editTableTitle">{{$.lp.separator}}:</td>
+                            <td class="editTableValue"><input type="text" name="keyContentSeparator" value="text{$.keyContentSeparator}" class="editTableInput"/></td>
+                        </tr>
+                        <tr>
+                            <td class="editTableTitle">{{$.lp.sectionKey}}:</td>
+                            <td class="editTableValue">
+                                <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionKeyScriptEditArea').setStyle('display', 'none');}"
+                                       name="sectionKey" text{(($.sectionKey=='person') || !$.sectionKey)?'checked':''} type="radio" value="person"/>{{$.lp.person}}<br/>
+                                <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionKeyScriptEditArea').setStyle('display', 'none');}"
+                                       name="sectionKey" text{($.sectionKey=='unit')?'checked':''} type="radio" value="unit"/>{{$.lp.unit}}<br/>
+                                <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionKeyScriptEditArea').setStyle('display', 'none');}"
+                                       name="sectionKey" text{($.sectionKey=='textValue')?'checked':''} type="radio" value="textValue"/>{{$.lp.textValue1}}<br/>
+                                <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}sectionKeyScriptEditArea').setStyle('display', 'block');}"
+                                       name="sectionKey" text{($.sectionKey=='script')?'checked':''} type="radio" value="script"/>{{$.lp.script}}<br/>
+                            </td>
+                        </tr>
+                    </table>
+                    <div id="text{$.pid}sectionKeyScriptEditArea" style="display: text{($.sectionKey=='script')?'block':'none'};">
+                        <div class="MWFScriptArea" name="sectionKeyScript" title="{{$.lp.sectionKeyScript}} (S)"></div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="text{$.pid}sectionMergeReadOrEditArea" style="display: text{($.sectionMerge=='read')?'block':'none'};">
+                <div class="MWFScriptArea" name="sectionMergeSortScript" title="{{$.lp.sectionMergeSortScript}} (S)"></div>
+                <div style="padding: 10px;color:#999">排序脚本通过this.envent.a和this.evnet.b获取数据，处理后返回正数表示升序，负数表示降序。this.envent.a和this.envent.b值如: <br/>
+                    { <br/>
+                    key: "张三@zhangsan@P", //区段值 <br/>
+                    data: "内容" //字段内容 <br/>
+                    }
+                </div>
+            </div>
+
         </div>
     </div>
 	<div title="{{$.lp.event}}"  class="MWFTab">

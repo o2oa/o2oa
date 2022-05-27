@@ -23,21 +23,16 @@ MWF.xApplication.process.Xform.Textfield = MWF.APPTextfield =  new Class({
 	Extends: MWF.APP$Input,
 	iconStyle: "textFieldIcon",
 	
-	_loadUserInterface: function(){
-		this._loadNode();
-        if (this.json.compute === "show"){
-            this._setValue(this._computeValue());
-        }else{
-            this._loadValue();
-        }
-	},
+	// _loadUserInterface: function(){
+	// 	this._loadNode();
+    //     if (this.json.compute === "show"){
+    //         this._setValue(this._computeValue());
+    //     }else{
+    //         this._loadValue();
+    //     }
+	// },
     _loadNode: function(){
-        var flag = this.isSectionData();
-        if ( this.json.sectionMerge === "read" && flag ) { //区段合并显示
-            this._loadNodeMergeRead();
-        }else if( this.json.sectionMerge === "edit" && flag ){
-            this._loadNodeMergeEdit();
-        }else if (this.isReadonly()){
+        if (this.isReadonly()){
             this._loadNodeRead();
         }else{
             this._loadNodeEdit();

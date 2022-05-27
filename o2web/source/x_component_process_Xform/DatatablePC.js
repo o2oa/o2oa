@@ -197,18 +197,78 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.fieldModuleLoaded = false;
 		},
 		load: function(){
-			this._loadModuleEvents();
-			if (this.fireEvent("queryLoad")){
-				this._queryLoaded();
-				this._loadUserInterface();
-				this._loadStyles();
-				this._loadDomEvents();
-				//this._loadEvents();
+			var flag = this.isSectionData();
+			if ( this.json.sectionMerge === "read" && flag ) { //区段合并显示
+				this._loadMergeReadNode(true, "after");
+				this.node.hide();
+			}else{
+				this._loadModuleEvents();
+				if (this.fireEvent("queryLoad")){
+					this._queryLoaded();
+					if( this.json.sectionMerge === "edit" && flag ){
+						this._loadMergeEditNode();
+					}else{
+						this._loadUserInterface();
+					}
+					this._loadStyles();
+					this._loadDomEvents();
+					//this._loadEvents();
 
-				this._afterLoaded();
-				this.fireEvent("afterLoad");
-				// this.fireEvent("load");
+					this._afterLoaded();
+					this.fireEvent("afterLoad");
+					// this.fireEvent("load");
+				}
 			}
+		},
+		isSectionData: function(){ //数据是否经过区段处理
+			var data = this.getBusinessDataById();
+			if( o2.typeOf( data ) === "object" ){
+				var keys = Object.keys(data);
+				if( o2.typeOf(data[keys[0]]) === "object" && o2.typeOf(data[keys[0]].data) === "array" ){
+					return true;
+				}
+			}
+			return false;
+		},
+		_loadMergeReadContentNode: function( contentNode, data ){
+			var _self = this;
+
+			var json = Object.clone(this.json);
+			json.isReadonly = true;
+			var id = this.json.id + "_" + data.key;
+			json.id = id;
+
+			this._setBusinessData({
+				data: data.data
+			}, id);
+
+			var html = this.node.get("html");
+			contentNode.set("html", html);
+			var style = this.node.get("style");
+			contentNode.set("style", style);
+			contentNode.set("mwftype", "datatable");
+			contentNode.set("id", id);
+
+			if (this.form.all[id]) this.form.all[id] = null;
+			if (this.form.forms[id])this.form.forms[id] = null;
+
+			var module = this.form._loadModule(json, contentNode, function () {
+				if( _self.widget )this.widget = _self.widget;
+				this.parentDatatable = _self;
+			});
+			this.form.modules.push(module);
+		},
+		_loadMergeEditNode: function(){
+			var data = this.getSortedSectionData();
+			var businessData = [];
+			data.each(function(d){
+				d.data = d.data || {};
+				businessData = businessData.concat( d.data.data || [] );
+			});
+			this._setBusinessData({
+				data: businessData
+			});
+			this._loadUserInterface();
 		},
 		_loadUserInterface: function(){
 			// this.fireEvent("queryLoad");

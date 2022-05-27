@@ -194,7 +194,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
             });
         }
     },
-    __loadNode: function(){
+    _loadNode: function(){
         this.field = true;
         if (this.isReadonly()){
             this._loadNodeRead();
@@ -208,46 +208,17 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
 
         }
     },
-    _loadNodeMergeRead: function(){
-        this.node.empty();
-        this.node.set({
-            "nodeId": this.json.id,
-            "MWFType": this.json.type
-        });
-        var data = this.getSortedSectionData();
-        var sectionNodeStyles = this._parseStyles(this.json.sectionNodeStyles);
-        var sectionKeyStyles = this._parseStyles(this.json.sectionKeyStyles);
-        var sectionContentStyles = this._parseStyles(this.json.sectionContentStyles);
-        data.each(function(d){
-            var node = new Element("div.mwf_sectionnode", {
-                styles : sectionNodeStyles
-            }).inject(this.node);
-
-            if( this.json.showSectionKey ){
-                var keyNode = new Element("div.mwf_sectionkey", {
-                    styles : sectionKeyStyles
-                }).inject(node);
-                var key = this.getSectionKeyWithMerge( d );
-                if( o2.typeOf(key) === "string" ){
-                    keyNode.set("text", key + (this.json.keyContentSeparator || ""));
-                }else{
-                    Promise.resolve(key).then(function (k) {
-                        debugger;
-                        keyNode.set("text", k + (this.json.keyContentSeparator || ""));
-                    }.bind(this))
-                }
-            }
-            var contentNode = new Element("div.mwf_sectioncontent", {
-                styles : sectionContentStyles
-            }).inject(node);
-            this.loadOrgWidget(d.data, contentNode);
-        }.bind(this))
+    _loadMergeReadContentNode: function(contentNode, data){
+        this.loadOrgWidget(data, contentNode);
     },
-    _loadNodeMergeEdit: function(){
+    _loadMergeEditNode: function(){
         var data = this.getSortedSectionData();
-        data = data.map(function(d){ return d.data; });
-        this._setBusinessData( data.join("") );
-        this.__loadNode();
+        var businessData = [];
+        data.each(function(d){
+            businessData = businessData.concat( d.data || [] );
+        });
+        this._setBusinessData( businessData );
+        this._loadNode();
     },
     _getOrgOptions: function(){
         this.selectTypeList = typeOf( this.json.selectType ) == "array" ? this.json.selectType : [this.json.selectType];

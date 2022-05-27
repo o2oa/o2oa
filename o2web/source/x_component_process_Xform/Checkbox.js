@@ -26,6 +26,36 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
             this._loadNodeEdit();
         }
     },
+    _loadMergeReadContentNode: function( contentNode, data ){
+        if( this.isNumber(this.json.countPerline) ){
+            var div;
+            var countPerLine = this.json.countPerline.toInt();
+            if( countPerLine === 0 ){
+                div = new Element("div").inject( contentNode );
+                div.set("text", data.join(", "));
+            }else{
+                var textsPerLine = [];
+                data.each(function(t, i){
+                    if( i % countPerLine === 0){ //如果需要换行了
+                        if( div && textsPerLine.length )div.set("text", textsPerLine.join(",") +",");
+                        textsPerLine = [];
+                        div = new Element("div").inject( contentNode );
+                    }
+                    textsPerLine.push( t );
+                }.bind(this));
+                if( div && textsPerLine.length )div.set("text", textsPerLine.join(","));
+            }
+        }
+    },
+    _loadMergeEditNode: function(){
+        var data = this.getSortedSectionData();
+        var businessData = [];
+        data.each(function(d){
+            businessData = businessData.concat( d.data || [] );
+        });
+        this._setBusinessData( businessData );
+        this._loadNode();
+    },
     _loadNodeRead: function(){
         this.node.empty();
         this.node.set({

@@ -46,7 +46,7 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
          */
         "moduleEvents": ["queryLoad","postLoad","load","complete", "clear", "change","show","hide"]
     },
-    __loadNode: function(){
+    _loadNode: function(){
         if (this.isReadonly()){
             this._loadNodeRead();
         }else{
