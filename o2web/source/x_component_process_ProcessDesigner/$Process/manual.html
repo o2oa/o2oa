@@ -335,7 +335,7 @@
         </table>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td class="editTableValue"  colspan="2"><b>{{$.lp.allowAddSplit}}allowAddSplit </b><input class="editTableRadio" name="allowAddSplit" text{($.allowAddSplit)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
+                <td class="editTableValue"  colspan="2"><b>{{$.lp.allowAddSplit}}：</b><input class="editTableRadio" name="allowAddSplit" text{($.allowAddSplit)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
                     <input class="editTableRadio" name="allowAddSplit" text{(!$.allowAddSplit)?'checked':''} type="radio" value="false"/>{{$.lp.no}}</td>
             </tr>
         </table>
@@ -357,6 +357,14 @@
                     <input class="editTableRadio" name="allowPause" text{(!$.allowPause)?'checked':''} type="radio" value="false"/>{{$.lp.no}}</td>
             </tr>
         </table>
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableValue"  colspan="2"><b>{{$.lp.allowAddTask}}:</b>
+					<input class="editTableRadio" name="allowAddTask" text{($.allowAddTask!==false)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
+					<input class="editTableRadio" name="allowAddTask" text{($.allowAddTask===false)?'checked':''} type="radio" value="false"/>{{$.lp.no}}
+				</td>
+			</tr>
+		</table>
 
     </div>
 

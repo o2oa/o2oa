@@ -404,6 +404,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"allowRollback": "允许流程回溯",
 		"allowPress": "允许发起办理提醒",
 		"allowPause": "允许挂起",
+        "allowAddTask": "允许加签",
 
 		"beforeBegin": "流程启动前",
 		"eventInfo1": "启动流程生成work实例",

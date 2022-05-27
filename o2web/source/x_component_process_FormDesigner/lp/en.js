@@ -1437,7 +1437,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "downloadAll": "Download",
         "downloadAllTitle": "Download the form and all attachments",
         "setReaded": "Mark as read",
-        "readed": "Readed"
+        "readed": "Readed",
+        "addTask": "Add Task",
+        "addTaskTitle": "Add task to current activity"
     },
     "filedConfigurator": {
         "sequence": "Sequence",

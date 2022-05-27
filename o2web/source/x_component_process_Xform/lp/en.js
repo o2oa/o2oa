@@ -337,6 +337,9 @@ MWF.xApplication.process.Xform.LP = {
         "downloadAll": "Download",
         "downloadAllTitle": "Download the form and all attachments",
 
+        "addTask": "Add Task",
+        "addTaskTitle": "Add task to current activity",
+
         "rerouteActivity": "Activity: ",
         "reroutePerson": "Person: ",
         "selectPerson": "Select",

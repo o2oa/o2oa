@@ -1444,7 +1444,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "downloadAll": "一键下载",
         "downloadAllTitle": "一键下载",
         "setReaded" : "标记为已阅",
-        "readed" : "已阅"
+        "readed" : "已阅",
+        "addTask": "加签",
+        "addTaskTitle": "在当前活动添加处理人"
     },
     "filedConfigurator": {
 		 "sequence": "序号",

@@ -167,7 +167,22 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
              * @event MWF.xApplication.process.Xform.Form#afterReaded
              * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
              */
-            "afterReaded"]
+            "afterReaded",
+
+            /**
+             * 加签前触发。
+             * @event MWF.xApplication.process.Xform.Form#beforeAddTask
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "beforeAddTask",
+
+            /**
+             * 加签后触发。
+             * @event MWF.xApplication.process.Xform.Form#afterAddTask
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "afterAddTask"
+        ]
     },
     initialize: function (node, data, options) {
         this.setOptions(options);
@@ -3548,7 +3563,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             "type": "identity",
             "count": count,
             "units": (unit) ? [unit] : [],
-            "title": this.app.lp.reset,
             "onComplete": function (items) {
                 areaNode.empty();
                 var identityList = [];
@@ -3578,7 +3592,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             "values": names,
             "type": "identity",
             "count": count,
-            "title": this.app.lp.reset,
             "onComplete": function (items) {
                 areaNode.empty();
                 var identityList = [];
@@ -5082,8 +5095,137 @@ debugger;
                 if (this.mask) { this.mask.hide(); this.mask = null; }
             }.bind(this));
         }.bind(this));
-    }
+    },
 
+    checkControl: function(key){
+        if (!this.businessData.control[key]) {
+            o2.xDesktop.notice("error", { x: "right", y: "top" }, "Permission Denied");
+            return false;
+        }
+        if( !this.businessData.task ){
+            o2.xDesktop.notice("error", { x: "right", y: "top" }, o2.xApplication.process.Xform.LP.form.noTaskToReset);
+            return false;
+        }
+        return true;
+    },
+    addTask: function(){
+        if (this.checkControl("allowReset")){
+            var _self = this;
+            var opt = {};
+            o2.DL.open({
+                "title": o2.xApplication.process.Xform.LP.form.addTask,
+                "style": this.json.dialogStyle || "user",
+                "width": 680,
+                "height": 380,
+                "url": this.app.path + "addTask.html",
+                "lp": o2.xApplication.process.Xform.LP.form,
+                "container": this.app.content,
+                "maskNode": this.app.content,
+                "offset": {y: -120},
+                "buttonList": [
+                    {
+                        "type": "ok",
+                        "text": o2.LP.process.button.ok,
+                        "action": function (d, e) {
+                            if( !this.identityList || !this.identityList.length ){
+                                _self.app.notice(o2.xApplication.process.Xform.LP.inputAddTaskPeople, "error", this.node);
+                            }else{
+                                _self.doAddTask(this);
+                            }
+                        }
+                    },
+                    {
+                        "type": "cancel",
+                        "text": MWF.LP.process.button.cancel,
+                        "action": function () {
+                            this.close();
+                        }
+                    }
+                ],
+                "onPostShow": function () {
+                    var selPeopleButton = this.content.getElement(".addTask_selPeopleButton");
+                    selPeopleButton.addEvent("click", function () {
+                        _self.selectPeople(this);
+                    }.bind(this));
+                }
+
+            });
+        }
+    },
+    getRadioValue: function(node, selector){
+        var nodes = node.getElements(selector);
+        for (var i=0; i<nodes.length; i++){
+            if (nodes[i].checked){
+                return nodes[i].value;
+            }
+        }
+        return "";
+    },
+    doAddTask: function(dlg){
+        MWF.require("MWF.widget.Mask", function () {
+            this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
+            this.mask.loadNode(this.app.content);
+
+            var position = this.getRadioValue(dlg.content, ".addTask_type") || "after";
+
+            var nameArr = [];
+            var optionList = dlg.identityList.map(function (n) {
+                nameArr.push(n.substring(0, n.indexOf("@")));
+                return {
+                    position: position,
+                    identityList: [n]
+                }
+            });
+            var opinion = dlg.content.getElement(".addTask_opinion").get("value");
+            var taskId = this.businessData.task.id;
+
+            var addTaskOptions = {
+                optionList: optionList,
+                remove: false,
+                opinion: opinion,
+                routeName: o2.xApplication.process.Xform.LP.form.addTask
+            }
+            this.fireEvent("beforeAddTask");
+            if (this.app && this.app.fireEvent) this.app.fireEvent("beforeAddTask");
+
+            this.saveFormData(function(){
+                o2.Actions.load("x_processplatform_assemble_surface").TaskAction.v2Add(taskId, addTaskOptions, function (json) {
+                    debugger;
+                    this.fireEvent("afterAddTask");
+                    if (this.app && this.app.fireEvent) this.app.fireEvent("afterAddTask");
+                    this.app.notice(MWF.xApplication.process.Xform.LP.addTaskOk + ": " + nameArr, "success");
+
+                    dlg.close();
+                    if (this.mask) { this.mask.hide(); this.mask = null; }
+
+                    this.addAddTaskMessage(json.data);
+                    if (!this.app.inBrowser) this.app.close();
+
+                }.bind(this), function (xhr, text, error) {
+                    var errorText = error + ":" + text;
+                    if (xhr) errorText = xhr.responseText;
+                    this.app.notice("request json error: " + errorText, "error", opt.dlg ? opt.dlg.node : null);
+
+                    if (this.mask) { this.mask.hide(); this.mask = null; }
+                }.bind(this))
+            }.bind(this));
+        }.bind(this));
+    },
+    addAddTaskMessage: function (data) {
+        var content = this.getMessageContent(data, 0, MWF.xApplication.process.Xform.LP.addTaskInfor);
+        if (layout.desktop.message) {
+            var msg = {
+                "subject": MWF.xApplication.process.Xform.LP.form.addTask,
+                "content": content
+            };
+            layout.desktop.message.addTooltip(msg);
+            return layout.desktop.message.addMessage(msg);
+        } else {
+            if (this.app.inBrowser) {
+                this.inBrowserDkg(content);
+            }
+        }
+    },
 });
 
 

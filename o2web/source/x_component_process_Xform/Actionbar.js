@@ -300,6 +300,9 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class(
         resetWork: function(){
             this.form.resetWork();
         },
+        addTask: function(){
+            this.form.addTask();
+        },
         retractWork: function(e, ev){
             this.form.retractWork(e, ev);
         },

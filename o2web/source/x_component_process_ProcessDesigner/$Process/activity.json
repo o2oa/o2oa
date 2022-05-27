@@ -65,6 +65,7 @@
     "allowReroute": true,
     "allowRerouteTo": true,
     "allowReset": true,
+    "allowAddTask": true,
     "allowRapid": false,
     "allowAddSplit": false,
     "allowRollback": false,
