@@ -282,7 +282,7 @@ class ActionProcessing extends BaseAction {
 						Applications.joinQueryUri("task", task.getId(), "processing"), req, task.getJob())
 				.getData(WoId.class);
 		if (StringUtils.isBlank(resp.getId())) {
-			throw new ExceptionTaskProcessing(task.getId());
+			throw new ExceptionProcessingTask(task.getId());
 		} else {
 			/* 获得已办id */
 			return resp.getId();
