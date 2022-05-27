@@ -85,8 +85,10 @@
 	"properties": {},
 	"class": "",
 	"styles": {},
+	"container": "",
+	"showSectionKey": true,
 	"sectionNodeStyles": {"overflow": "hidden"},
 	"sectionKeyStyles": {"float": "left"},
 	"sectionContentStyles": {"float": "left"},
-	"container": ""
+	"keyContentSeparator": "："
 }

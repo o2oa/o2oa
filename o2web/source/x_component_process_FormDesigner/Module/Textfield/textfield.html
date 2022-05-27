@@ -124,21 +124,25 @@
             <div id="text{$.pid}sectionMergeReadArea" style="display: text{($.sectionMerge=='read')?'block':'none'};">
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
-                        <td class="editTableTitle">{{$.lp.sectionMergeWay}}:</td>
+                        <td class="editTableTitle">{{$.lp.showSectionKey}}:</td>
                         <td class="editTableValue">
-                            <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}readBySectionKeyStyleArea').setStyle('display', 'block') }"
-                                   name="sectionMergeWayRead" text{($.sectionMergeWayRead=='readBySectionKey' || !$.sectionMergeWayRead)?'checked':''} type="radio" value="readBySectionKey"/>{{$.lp.showBySectionKey}}<br/>
-                            <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}readBySectionKeyStyleArea').setStyle('display', 'none') }"
-                                   name="sectionMergeWayRead" text{($.sectionMergeWayRead=='readByMerge')?'checked':''} type="radio" value="readByMerge"/>{{$.lp.showByMerge}}
+                            <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}showBySectionKeyStyleArea').setStyle('display', 'block') }"
+                                   name="showSectionKey" text{$.showSectionKey?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
+                            <input class="editTableRadio" onclick="if (this.checked){ $('text{$.pid}showBySectionKeyStyleArea').setStyle('display', 'none') }"
+                                   name="showSectionKey" text{!$.showSectionKey?'checked':''} type="radio" value="false"/>{{$.lp.no}}
                         </td>
                     </tr>
                 </table>
                 <div class="MWFMaplist" name="sectionNodeStyles" title="{{$.lp.sectionNodeStyles}}"></div>
-                <div id="text{$.pid}readBySectionKeyStyleArea" style="display: text{($.sectionMergeWayRead=='readBySectionKey' || !$.sectionMergeWay)?'block':'none'};">
+                <div class="MWFMaplist" name="sectionContentStyles" title="{{$.lp.sectionContentStyles}}"></div>
+                <div id="text{$.pid}showBySectionKeyStyleArea" style="display: text{$.showSectionKey?'block':'none'};">
                     <div class="MWFMaplist" name="sectionKeyStyles" title="{{$.lp.sectionKeystyles}}"></div>
-                    <div class="MWFMaplist" name="sectionContentStyles" title="{{$.lp.sectionContentStyles}}"></div>
 
                     <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                        <tr>
+                            <td class="editTableTitle">{{$.lp.separator}}:</td>
+                            <td class="editTableValue"><input type="text" name="keyContentSeparator" value="text{$.keyContentSeparator}" class="editTableInput"/></td>
+                        </tr>
                         <tr>
                             <td class="editTableTitle">{{$.lp.sectionKey}}:</td>
                             <td class="editTableValue">

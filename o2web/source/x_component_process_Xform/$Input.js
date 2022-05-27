@@ -69,13 +69,17 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
     },
 
     _loadNode: function(){
-        debugger
         var flag = this.isSectionData();
         if ( this.json.sectionMerge === "read" && flag ) { //区段合并显示
             this._loadNodeMergeRead();
         }else if( this.json.sectionMerge === "edit" && flag ){
             this._loadNodeMergeEdit();
-        }else if (this.isReadonly()){
+        }else{
+            this.__loadNode()
+        }
+    },
+    __loadNode: function(){
+        if (this.isReadonly()){
             this._loadNodeRead();
         }else{
             this._loadNodeEdit();
@@ -94,19 +98,6 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
             "nodeId": this.json.id,
             "MWFType": this.json.type
         });
-        switch ( this.json.sectionMergeWayRead ) {
-            case 'readBySectionKey':
-                this.loadNodeCategoryBySectionkey();
-                break;
-            case 'readByMerge':
-                this.loadNodeByMergeAndDisplay();
-                break;
-        }
-    },
-    _loadNodeMergeEdit: function(){
-
-    },
-    loadNodeCategoryBySectionkey: function(){
         var data = this.getSortedSectionData();
         var sectionNodeStyles = this._parseStyles(this.json.sectionNodeStyles);
         var sectionKeyStyles = this._parseStyles(this.json.sectionKeyStyles);
@@ -116,16 +107,18 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
                 styles : sectionNodeStyles
             }).inject(this.node);
 
-            var keyNode = new Element("div.mwf_sectionkey", {
-                styles : sectionKeyStyles
-            }).inject(node);
-            var key = this.getSectionKeyWithMerge( d );
-            if( o2.typeOf(key) === "string" ){
-                keyNode.set("text", key);
-            }else{
-                Promise.resolve(key).then(function (k) {
-                    keyNode.set("text", k);
-                })
+            if( this.json.showSectionKey ){
+                var keyNode = new Element("div.mwf_sectionkey", {
+                    styles : sectionKeyStyles
+                }).inject(node);
+                var key = this.getSectionKeyWithMerge( d );
+                if( o2.typeOf(key) === "string" ){
+                    keyNode.set("text", key + (this.json.keyContentSeparator || ""));
+                }else{
+                    Promise.resolve(key).then(function (k) {
+                        keyNode.set("text", k + (this.json.keyContentSeparator || ""));
+                    }.bind(this))
+                }
             }
             new Element("div.mwf_sectioncontent", {
                 styles : sectionContentStyles,
@@ -133,11 +126,11 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
             }).inject(node);
         }.bind(this))
     },
-    loadNodeByMergeAndDisplay: function(){
-        var data = this.getSortedSectionData().map(function(d){
-            return d.data;
-        });
-        this.node.set("text", data.join())
+    _loadNodeMergeEdit: function(){
+        var data = this.getSortedSectionData();
+        data = data.map(function(d){ return d.data; });
+        this._setBusinessData( data.join("") );
+        this.__loadNode();
     },
     loadDescription: function(){
         if (this.isReadonly())return;
