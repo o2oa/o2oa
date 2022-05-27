@@ -17,7 +17,6 @@ import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -38,10 +37,11 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.ProcessingWi;
+import com.x.processplatform.core.express.service.processing.jaxrs.task.V2AddWi;
+import com.x.processplatform.core.express.service.processing.jaxrs.task.V2EditWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapUpdatePrevTaskIdentity;
 import com.x.processplatform.core.express.service.processing.jaxrs.taskcompleted.WrapUpdateNextTaskIdentity;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2AddManualTaskIdentityMatrixWi;
-import com.x.processplatform.core.express.service.processing.jaxrs.work.V2AddManualTaskIdentityMatrixWi.Option;
 
 public class V2Add extends BaseAction {
 
@@ -74,6 +74,11 @@ public class V2Add extends BaseAction {
 		if (BooleanUtils.isTrue(wi.getRemove())) {
 			taskCompletedId = this.processingTask(this.task);
 		}
+
+		if (StringUtils.isNotEmpty(wi.getOpinion()) || StringUtils.isNotEmpty(wi.getRouteName())) {
+			updateTask(wi.getOpinion(), wi.getRouteName());
+		}
+
 		this.processingWork(this.task);
 		this.createRecord(task, workLog);
 		if (StringUtils.isNotEmpty(taskCompletedId)) {
@@ -81,6 +86,17 @@ public class V2Add extends BaseAction {
 		}
 		this.updateTask();
 		return result();
+	}
+
+	private void updateTask(String opinion, String routeName) throws Exception {
+		V2EditWi req = new V2EditWi();
+		req.setOpinion(opinion);
+		req.setRouteName(routeName);
+		WoId resp = ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
+				Applications.joinQueryUri("task", task.getId()), req, task.getJob()).getData(WoId.class);
+		if (StringUtils.isEmpty(resp.getId())) {
+			throw new ExceptionUpdateTask(task.getId());
+		}
 	}
 
 	private void init(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
@@ -131,7 +147,7 @@ public class V2Add extends BaseAction {
 						Applications.joinQueryUri("task", task.getId(), "processing"), req, task.getJob())
 				.getData(WoId.class);
 		if (StringUtils.isEmpty(resp.getId())) {
-			throw new ExceptionTaskProcessing(task.getId());
+			throw new ExceptionProcessingTask(task.getId());
 		} else {
 			return resp.getId();
 		}
@@ -235,30 +251,30 @@ public class V2Add extends BaseAction {
 		return result;
 	}
 
-	public static class Wi extends GsonPropertyObject {
+	public static class Wi extends V2AddWi {
 
 		private static final long serialVersionUID = -6251874269093504136L;
 
-		@FieldDescribe("操作")
-		private List<Option> optionList;
+		@FieldDescribe("路由名称")
+		private String routeName;
 
-		@FieldDescribe("是否删除指定待办身份")
-		private Boolean remove;
+		@FieldDescribe("意见")
+		private String opinion;
 
-		public List<Option> getOptionList() {
-			return optionList;
+		public String getRouteName() {
+			return routeName;
 		}
 
-		public void setOptionList(List<Option> optionList) {
-			this.optionList = optionList;
+		public void setRouteName(String routeName) {
+			this.routeName = routeName;
 		}
 
-		public Boolean getRemove() {
-			return remove;
+		public String getOpinion() {
+			return opinion;
 		}
 
-		public void setRemove(Boolean remove) {
-			this.remove = remove;
+		public void setOpinion(String opinion) {
+			this.opinion = opinion;
 		}
 
 	}

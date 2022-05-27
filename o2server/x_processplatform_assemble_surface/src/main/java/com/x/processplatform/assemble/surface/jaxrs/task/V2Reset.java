@@ -39,6 +39,7 @@ import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.ManualMode;
 import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.ProcessingWi;
+import com.x.processplatform.core.express.service.processing.jaxrs.task.V2EditWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.V2ResetWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2AddManualTaskIdentityMatrixWi;
 
@@ -78,9 +79,14 @@ public class V2Reset extends BaseAction {
 			if (BooleanUtils.isNotTrue(control.getAllowReset())) {
 				throw new ExceptionAccessDenied(effectivePerson, this.task);
 			}
+
 		}
 
 		this.reset(this.task, (!wi.getKeep()), identities, manual);
+
+		if (StringUtils.isNotEmpty(wi.getOpinion()) || StringUtils.isNotEmpty(wi.getRouteName())) {
+			updateTask(wi.getOpinion(), wi.getRouteName());
+		}
 
 		if (BooleanUtils.isNotTrue(wi.getKeep())) {
 			this.processingTask();
@@ -137,6 +143,17 @@ public class V2Reset extends BaseAction {
 
 	}
 
+	private void updateTask(String opinion, String routeName) throws Exception {
+		V2EditWi req = new V2EditWi();
+		req.setOpinion(opinion);
+		req.setRouteName(routeName);
+		WoId resp = ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
+				Applications.joinQueryUri("task", task.getId()), req, task.getJob()).getData(WoId.class);
+		if (StringUtils.isEmpty(resp.getId())) {
+			throw new ExceptionUpdateTask(task.getId());
+		}
+	}
+
 	private void processingTask() throws Exception {
 		ProcessingWi req = new ProcessingWi();
 		req.setProcessingType(TaskCompleted.PROCESSINGTYPE_RESET);
@@ -145,7 +162,7 @@ public class V2Reset extends BaseAction {
 						Applications.joinQueryUri("task", task.getId(), "processing"), req, task.getJob())
 				.getData(WoId.class);
 		if (StringUtils.isEmpty(resp.getId())) {
-			throw new ExceptionTaskProcessing(task.getId());
+			throw new ExceptionProcessingTask(task.getId());
 		} else {
 			// 获得已办id
 			this.taskCompletedId = resp.getId();
