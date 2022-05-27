@@ -115,10 +115,18 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
             var node = new Element("div.mwf_sectionnode", {
                 styles : sectionNodeStyles
             }).inject(this.node);
-            new Element("div.mwf_sectionkey", {
-                styles : sectionKeyStyles,
-                text: this.getSectionKeyWithMerge( d )
+
+            var keyNode = new Element("div.mwf_sectionkey", {
+                styles : sectionKeyStyles
             }).inject(node);
+            var key = this.getSectionKeyWithMerge( d );
+            if( o2.typeOf(key) === "string" ){
+                keyNode.set("text", key);
+            }else{
+                Promise.resolve(key).then(function (k) {
+                    keyNode.set("text", k);
+                })
+            }
             new Element("div.mwf_sectioncontent", {
                 styles : sectionContentStyles,
                 text: d.data

@@ -176,13 +176,21 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     getSectionKeyWithMerge: function(data){
         switch (this.json.sectionKey) {
             case "person":
-                break;
+                return Promise.resolve( o2.Actions.load("x_organization_assemble_express").PersonAction.listObject({
+                    "personList": [data.key]
+                })).then(function(json){
+                    return json.data.length ? json.data[0].name : data.key;
+                });
             case "unit":
-                break;
+                return data.key.split("@")[0];
             case "textValue":
-                break;
+                return data.key;
             case "script":
-                break;
+                if( this.json.sectionKeyScript && this.json.sectionKeyScript.code){
+                    return this.form.Macro.exec(this.json.sectionKeyScript.code, data)
+                }else{
+                    return "";
+                }
         }
     },
     /**
