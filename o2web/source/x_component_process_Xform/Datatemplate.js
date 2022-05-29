@@ -3,7 +3,7 @@
  * @typedef {Array} DatatemplateData
  * @example
  [ //数据模板数据条目
- 		{
+ {
            "org": [{
                 "distinguishedName": "张三@bf007525-99a3-4178-a474-32865bdddec8@I",
                 "id": "bf007525-99a3-4178-a474-32865bdddec8",
@@ -44,7 +44,7 @@
                 }
             ]
         },
- 	...
+ ...
  ]
  */
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
@@ -84,19 +84,19 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			 * @event MWF.xApplication.process.Xform.Datatemplate#afterLoadLine
 			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
 			 */
-            /**
-             * 数据模板改变时触发。通过this.event.lines可以获取修改的条目数组，this.event.type可以获得修改的类型。<br/>
-             * <table>
-             *     <tr><th><b>this.event.type</b></th><th><b>触发类型</b></th><th><b>this.event.lines</b></th></tr>
-             *     <tr><td>addline</td><td>添加一行</td><td>添加的行数组</td></tr>
-             *     <tr><td>deleteline</td><td>删除一行</td><td>删除的行数组</td></tr>
+			/**
+			 * 数据模板改变时触发。通过this.event.lines可以获取修改的条目数组，this.event.type可以获得修改的类型。<br/>
+			 * <table>
+			 *     <tr><th><b>this.event.type</b></th><th><b>触发类型</b></th><th><b>this.event.lines</b></th></tr>
+			 *     <tr><td>addline</td><td>添加一行</td><td>添加的行数组</td></tr>
+			 *     <tr><td>deleteline</td><td>删除一行</td><td>删除的行数组</td></tr>
 			 *     <tr><td>deletelines</td><td>删除多行</td><td>删除的行数组</td></tr>
-             *     <tr><td>editmodule</td><td>字段值改变时</td><td>this.event.lines为编辑的行数组<br/>this.event.module为修改的字段</td></tr>
-             *     <tr><td>import</td><td>导入数据后</td><td>数据模板所有行</td></tr>
-             * </table>
-             * @event MWF.xApplication.process.Xform.Datatemplate#change
-             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-             */
+			 *     <tr><td>editmodule</td><td>字段值改变时</td><td>this.event.lines为编辑的行数组<br/>this.event.module为修改的字段</td></tr>
+			 *     <tr><td>import</td><td>导入数据后</td><td>数据模板所有行</td></tr>
+			 * </table>
+			 * @event MWF.xApplication.process.Xform.Datatemplate#change
+			 * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+			 */
 			/**
 			 * 添加条目时触发。通过this.event.line可以获取对应的条目对象，this.event.ev可以获得事件触发的Event。
 			 * @event MWF.xApplication.process.Xform.Datatemplate#addLine
@@ -175,18 +175,81 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			this.fieldModuleLoaded = false;
 		},
 		load: function(){
-			this._loadModuleEvents();
-			if (this.fireEvent("queryLoad")){
-				this._queryLoaded();
-				this._loadUserInterface();
-				this._loadStyles();
-				this._loadDomEvents();
-				//this._loadEvents();
+			var flag = this.isSectionData();
+			if ( this.json.sectionMerge === "read" && this.json.showSectionKey && flag ) { //区段合并显示
+				this._loadMergeReadNode(true, "after");
+				this.node.hide();
+			}else{
+				this._loadModuleEvents();
+				if (this.fireEvent("queryLoad")){
+					this._queryLoaded();
+					if ( this.json.sectionMerge === "read" && !this.json.showSectionKey && flag ){
+						this._loadMergeNode( true );
+					}else if( this.json.sectionMerge === "edit" && flag ){
+						this._loadMergeNode( false );
+					}else{
+						this._loadUserInterface();
+					}
+					this._loadStyles();
+					this._loadDomEvents();
+					//this._loadEvents();
 
-				this._afterLoaded();
-				this.fireEvent("afterLoad");
-				// this.fireEvent("load");
+					this._afterLoaded();
+					this.fireEvent("afterLoad");
+					// this.fireEvent("load");
+				}
 			}
+		},
+		isSectionData: function(){ //数据是否经过区段处理
+			var data = this.getBusinessDataById();
+			if( o2.typeOf( data ) === "object" ){
+				var keys = Object.keys(data);
+				if( o2.typeOf(data[keys[0]]) === "array"  ){
+					return true;
+				}
+			}
+			return false;
+		},
+		_loadMergeReadContentNode: function( contentNode, data ){
+			var _self = this;
+
+			var json = Object.clone(this.json);
+			json.isReadonly = true;
+			var id = this.json.id + "_" + data.key;
+			json.id = id;
+
+			this._setBusinessData(data.data, id);
+
+			var html = this.node.get("html");
+			contentNode.set("html", html);
+			var style = this.node.get("style");
+			contentNode.set("style", style);
+			contentNode.set("MWFtype", "datatemplate");
+			contentNode.set("id", id);
+
+			if (this.form.all[id]) this.form.all[id] = null;
+			if (this.form.forms[id])this.form.forms[id] = null;
+
+			var module = this.form._loadModule(json, contentNode, function () {
+				this.field = false;
+				if( _self.widget )this.widget = _self.widget;
+				this.parentDatatemplate = _self;
+			});
+			this.form.modules.push(module);
+			this.form.addEvent("getData", function (data) {
+				if( data[id] )delete data[id];
+			})
+		},
+		_loadMergeNode: function( readonly ){
+			if( readonly )this.json.isReadonly = true;
+			var data = this.getSortedSectionData();
+			var businessData = [];
+			data.each(function(d){
+				d.data = d.data || [];
+				businessData = businessData.concat( d.data );
+			});
+			this._setBusinessData( businessData );
+			this._loadUserInterface();
 		},
 		_loadUserInterface: function(){
 			// this.fireEvent("queryLoad");
@@ -1165,7 +1228,7 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 					if( sectionKey ){
 						id = this.template.json.id + ".." + sectionKey + ".."+ index + ".." + json.id;
 					}else{
-					    id = this.template.json.id + ".." + index + ".." + json.id;
+						id = this.template.json.id + ".." + index + ".." + json.id;
 					}
 
 					json.id = id;
@@ -1251,7 +1314,7 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 		var baseSite;
 		baseSite =  "." + index + "."  + (json.site || templateJsonId);
 
-        var maxLength;
+		var maxLength;
 		var sectionId = "";
 		if( sectionKey ){
 			maxLength = Math.floor((63 - baseSite.length)/2 );

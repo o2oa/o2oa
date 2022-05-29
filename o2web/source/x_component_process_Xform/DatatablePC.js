@@ -248,7 +248,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			contentNode.set("html", html);
 			var style = this.node.get("style");
 			contentNode.set("style", style);
-			contentNode.set("mwftype", "datatable");
+			contentNode.set("MWFtype", "datatable");
 			contentNode.set("id", id);
 
 			if (this.form.all[id]) this.form.all[id] = null;
