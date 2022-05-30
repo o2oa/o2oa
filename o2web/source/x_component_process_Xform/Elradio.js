@@ -51,7 +51,7 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
     },
     _loadNode: function(){
         this.node.empty();
-        if (this.readonly || this.json.isReadonly || this.form.json.isReadonly){
+        if (this.isReadonly()){
             this._loadNodeRead();
         }else{
             this._loadNodeEdit();

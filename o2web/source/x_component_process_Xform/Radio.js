@@ -37,14 +37,20 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
             this._loadNodeEdit();
         }
     },
+    _loadMergeReadContentNode: function( contentNode, data ){
+        this._showValue(contentNode, data.data)
+    },
     _loadNodeRead: function(){
         this.node.empty();
         this.node.set({
             "nodeId": this.json.id,
             "MWFType": this.json.type
         });
-        var radioValues = this.getOptions();
         var value = this.getValue();
+        this._showValue(this.node, value);
+    },
+    _showValue: function(node, value){
+        var radioValues = this.getOptions();
         if (value){
             var texts = "";
             for (var i=0; i<radioValues.length; i++){
@@ -62,7 +68,7 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
                     break;
                 }
             }
-            this.node.set("text", texts);
+            node.set("text", texts);
         }
     },
     _resetNodeEdit: function(){

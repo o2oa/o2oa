@@ -27,6 +27,14 @@ MWF.xApplication.process.Xform.Elswitch = MWF.APPElswitch =  new Class(
          */
         "elEvents": ["change"]
     },
+    _loadMergeReadContentNode: function( contentNode, data ){
+        this._loadActiveJson();
+        if (data.data==="" || data.data){
+            contentNode.set("text", (this.json.activeText || "true"));
+        }else{
+            contentNode.set("text", (this.json.inactiveText || "false"));
+        }
+    },
     /**
      * @summary 组件的配置信息，同时也是Vue组件的data。
      * @member MWF.xApplication.process.Xform.Elinput#json {JsonObject}
@@ -61,6 +69,9 @@ MWF.xApplication.process.Xform.Elswitch = MWF.APPElswitch =  new Class(
         if (!this.json.description) this.json.description = "";
         if (!this.json.disabled) this.json.disabled = false;
 
+        this._loadActiveJson();
+    },
+    _loadActiveJson: function(){
         if (!this.json.valueType) this.json.activeValueType = "boolean";
         switch(this.json.valueType){
             case "boolean":
@@ -82,6 +93,7 @@ MWF.xApplication.process.Xform.Elswitch = MWF.APPElswitch =  new Class(
                 this.json.inactiveValue = false;
         }
     },
+
     // appendVueExtend: function(app){
     //     if (!app.methods) app.methods = {};
     //     app.methods.$loadElEvent = function(ev){
