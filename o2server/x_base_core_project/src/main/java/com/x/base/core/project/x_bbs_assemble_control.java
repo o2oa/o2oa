@@ -11,7 +11,7 @@ import com.x.base.core.project.annotation.ModuleType;
 		"com.x.bbs.entity.BBSOperationRecord", "com.x.bbs.entity.BBSUserInfo", "com.x.bbs.entity.BBSUserRole",
 		"com.x.bbs.entity.BBSRoleInfo", "com.x.bbs.entity.BBSPermissionRole", "com.x.bbs.entity.BBSPermissionInfo",
 		"com.x.bbs.entity.BBSConfigSetting", "com.x.bbs.entity.BBSVoteRecord", "com.x.bbs.entity.BBSVoteOption",
-		"com.x.bbs.entity.BBSVoteOptionGroup", "com.x.bbs.entity.BBSSubjectVoteResult" }, storeJars = {
+		"com.x.bbs.entity.BBSVoteOptionGroup", "com.x.bbs.entity.BBSSubjectVoteResult", "com.x.bbs.entity.BBSShutup" }, storeJars = {
 				"x_bbs_core_entity", "x_organization_core_express",
 				"x_organization_core_entity" }, storageTypes = { StorageType.bbs })
 public class x_bbs_assemble_control extends Deployable {

@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -52,14 +53,22 @@ public class ActionSave extends BaseAction {
 		String hostName = request.getRemoteAddr();
 		Wi wrapIn = null;
 
-		try {
-			wrapIn = this.convertToWrapIn(jsonElement, Wi.class);
-		} catch (Exception e) {
+		if(!effectivePerson.isAnonymous() && this.userManagerService.personHasShutup(effectivePerson.getDistinguishedName())){
 			check = false;
-			Exception exception = new ExceptionReplyInfoProcess(e,
-					"系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString());
+			Exception exception = new ExceptionAccessDenied(effectivePerson);
 			result.error(exception);
-			logger.error(e, effectivePerson, request, null);
+		}
+
+		if (check) {
+			try {
+				wrapIn = this.convertToWrapIn(jsonElement, Wi.class);
+			} catch (Exception e) {
+				check = false;
+				Exception exception = new ExceptionReplyInfoProcess(e,
+						"系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString());
+				result.error(exception);
+				logger.error(e, effectivePerson, request, null);
+			}
 		}
 
 		if (check) {

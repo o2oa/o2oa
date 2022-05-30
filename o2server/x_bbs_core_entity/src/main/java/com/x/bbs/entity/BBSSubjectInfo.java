@@ -340,6 +340,12 @@ public class BBSSubjectInfo extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String nickName = "";
 
+	public static final String lastUpdateUser_FIELDNAME = "lastUpdateUser";
+	@FieldDescribe("最后修改人员")
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + lastUpdateUser_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String lastUpdateUser = "";
+
 	public static final String subjectAuditStatus_FIELDNAME = "subjectAuditStatus";
 	@FieldDescribe("主题审核状态：无审核|待审核|审核通过")
 	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + subjectAuditStatus_FIELDNAME)
@@ -377,6 +383,12 @@ public class BBSSubjectInfo extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false)
 	private Boolean votePersonVisible = false;
 
+	public static final String anonymousSubject_FIELDNAME = "anonymousSubject";
+	@FieldDescribe("是否匿名发布")
+	@Column(name = ColumnNamePrefix + anonymousSubject_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Boolean anonymousSubject = false;
+
 	public static final String orderNumber_FIELDNAME = "orderNumber";
 	@FieldDescribe("排序号")
 	@Column(name = ColumnNamePrefix + orderNumber_FIELDNAME)
@@ -393,6 +405,17 @@ public class BBSSubjectInfo extends SliceJpaObject {
 	@ElementIndex(name = TABLE + IndexNameMiddle + attachmentList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> attachmentList;
+
+	public static final String editorList_FIELDNAME = "editorList";
+	@FieldDescribe("编辑者列表")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle + editorList_FIELDNAME, joinIndex = @Index(name = TABLE
+			+ IndexNameMiddle + editorList_FIELDNAME + JoinIndexNameSuffix))
+	@ElementColumn(length = JpaObject.length_id, name = ColumnNamePrefix + editorList_FIELDNAME)
+	@ElementIndex(name = TABLE + IndexNameMiddle + editorList_FIELDNAME + ElementIndexNameSuffix)
+	@CheckPersist(allowEmpty = true)
+	private List<String> editorList;
 
 	public static final String machineName_FIELDNAME = "machineName";
 	@FieldDescribe("设备类别：手机|平板电脑|个人电脑等")
@@ -848,5 +871,29 @@ public class BBSSubjectInfo extends SliceJpaObject {
 
 	public void setNickName(String nickName) {
 		this.nickName = nickName;
+	}
+
+	public Boolean getAnonymousSubject() {
+		return anonymousSubject;
+	}
+
+	public void setAnonymousSubject(Boolean anonymousSubject) {
+		this.anonymousSubject = anonymousSubject;
+	}
+
+	public List<String> getEditorList() {
+		return editorList;
+	}
+
+	public void setEditorList(List<String> editorList) {
+		this.editorList = editorList;
+	}
+
+	public String getLastUpdateUser() {
+		return lastUpdateUser;
+	}
+
+	public void setLastUpdateUser(String lastUpdateUser) {
+		this.lastUpdateUser = lastUpdateUser;
 	}
 }

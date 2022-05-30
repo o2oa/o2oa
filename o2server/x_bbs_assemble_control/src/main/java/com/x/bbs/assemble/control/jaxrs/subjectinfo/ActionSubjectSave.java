@@ -1,178 +1,115 @@
 package com.x.bbs.assemble.control.jaxrs.subjectinfo;
 
-import java.util.Date;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.Business;
-import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionSubjectInfoProcess;
-import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionSubjectOperation;
-import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionSubjectSave;
-import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionSubjectWrapIn;
 import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionVoteOptionEmpty;
-import com.x.bbs.assemble.control.jaxrs.subjectinfo.exception.ExceptionWrapInConvert;
 import com.x.bbs.entity.BBSForumInfo;
 import com.x.bbs.entity.BBSSectionInfo;
 import com.x.bbs.entity.BBSSubjectInfo;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
+import java.util.List;
 
 public class ActionSubjectSave extends BaseAction {
 
 	private static  Logger logger = LoggerFactory.getLogger(ActionSubjectSave.class);
 
+	private static final String ANONYMOUS_NAME = "匿名";
+	private static final String TYPE_CATEGORY = "投票";
+
+
 	protected ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson,
 			JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
-		BBSSectionInfo sectionInfo = null;
-		BBSSubjectInfo subjectInfo = null;
-		Wi wrapIn = null;
 		Wo wo = new Wo();
-		Boolean check = true;
 
-		try {
-			wrapIn = this.convertToWrapIn(jsonElement, Wi.class);
-		} catch (Exception e) {
-			check = false;
-			Exception exception = new ExceptionWrapInConvert(e, jsonElement);
-			result.error(exception);
-			logger.error(e, effectivePerson, request, null);
+		if(!effectivePerson.isAnonymous() && this.userManagerService.personHasShutup(effectivePerson.getDistinguishedName())){
+			throw new ExceptionAccessDenied(effectivePerson);
 		}
 
-		if (check) {
-			// 对需要保存的信息进行基础的信息验证，如果验证不通过，则抛出PromptException
-			try {
-				SubjectPropertyValidator.baseValidate(request, wrapIn);
-			} catch (Exception e) {
-				check = false;
-				result.error(e);
-			}
-		}
+		Wi wrapIn = this.convertToWrapIn(jsonElement, Wi.class);
+		SubjectPropertyValidator.baseValidate(request, wrapIn);
 
 		// 查询版块信息是否存在
-		if (check) {
-			try {
-				sectionInfo = sectionInfoServiceAdv.get(wrapIn.getSectionId());
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new ExceptionSubjectInfoProcess(e,
-						"根据指定ID查询版块信息时发生异常.ID:" + wrapIn.getSectionId());
-				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
-			}
+		BBSSectionInfo sectionInfo = sectionInfoServiceAdv.get(wrapIn.getSectionId());
+		if(sectionInfo == null){
+			throw new ExceptionEntityNotExist(wrapIn.getSectionId(), BBSSectionInfo.class);
 		}
-		if (check) {
-			if (wrapIn.getTypeCategory() == null || wrapIn.getTypeCategory().isEmpty()) {
-				wrapIn.setTypeCategory("信息");
-			} else {
-				try {
-					SubjectPropertyValidator.typeCategoryValidate(sectionInfo, wrapIn);
-				} catch (Exception e) {
-					check = false;
-					result.error(e);
-				}
-			}
+
+		if (StringUtils.isBlank(wrapIn.getTypeCategory())) {
+			wrapIn.setTypeCategory("信息");
+		} else {
+			SubjectPropertyValidator.typeCategoryValidate(sectionInfo, wrapIn);
 		}
-		if (check) {
-			if (wrapIn.getType() == null || wrapIn.getType().isEmpty()) {
-				wrapIn.setType("未知类别");
-			} else {
-				try {
-					SubjectPropertyValidator.subjectTypeValidate(sectionInfo, wrapIn);
-				} catch (Exception e) {
-					check = false;
-					result.error(e);
-				}
+
+		if (StringUtils.isBlank(wrapIn.getType())) {
+			wrapIn.setType("未知类别");
+		} else {
+			SubjectPropertyValidator.subjectTypeValidate(sectionInfo, wrapIn);
+		}
+
+		if (TYPE_CATEGORY.equals(wrapIn.getTypeCategory())) {
+			// 如果是投票贴，判断投票选项是否存在
+			if (ListTools.isEmpty(wrapIn.getOptionGroups())) {
+				throw  new ExceptionVoteOptionEmpty();
 			}
 		}
 
-		if (check) {
-			if ("投票".equals(wrapIn.getTypeCategory())) {
-				// 如果是投票贴，判断投票选项是否存在
-				if (wrapIn.getOptionGroups() == null || wrapIn.getOptionGroups().isEmpty()) {
-					check = false;
-					Exception exception = new ExceptionVoteOptionEmpty();
-					result.error(exception);
-				}
-			}
+		BBSSubjectInfo subjectInfo = Wi.copier.copy(wrapIn);
+		if ( StringUtils.isNotEmpty( wrapIn.getId() )) {
+			subjectInfo.setId(wrapIn.getId());
 		}
+		subjectInfo.setForumId(sectionInfo.getForumId());
+		subjectInfo.setForumName(sectionInfo.getForumName());
+		subjectInfo.setMainSectionId(sectionInfo.getMainSectionId());
+		subjectInfo.setMainSectionName(sectionInfo.getMainSectionName());
+		subjectInfo.setSectionId(sectionInfo.getId());
+		subjectInfo.setSectionName(sectionInfo.getSectionName());
+		subjectInfo.setCreatorName(effectivePerson.getDistinguishedName());
+		subjectInfo.setLastUpdateUser(effectivePerson.getDistinguishedName());
+		subjectInfo.setLatestReplyTime(new Date());
+		subjectInfo.setTypeCategory(wrapIn.getTypeCategory());
+		subjectInfo.setType(wrapIn.getType());
+		subjectInfo.setTitle(subjectInfo.getTitle().trim());
+		subjectInfo.setVoteLimitTime(wrapIn.getVoteLimitTime());
+		subjectInfo.setVotePersonVisible(wrapIn.getVotePersonVisible());
+		subjectInfo.setVoteResultVisible(wrapIn.getVoteResultVisible());
+		subjectInfo.setGrade(wrapIn.getGrade());
 
-		if (check) {
-			try {
-				subjectInfo = Wi.copier.copy(wrapIn);
-				if ( StringUtils.isNotEmpty( wrapIn.getId() )) {
-					subjectInfo.setId(wrapIn.getId());
-				}
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new ExceptionSubjectWrapIn(e);
-				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
-			}
-		}
-
-		if (check) {
-			subjectInfo.setForumId(sectionInfo.getForumId());
-			subjectInfo.setForumName(sectionInfo.getForumName());
-			subjectInfo.setMainSectionId(sectionInfo.getMainSectionId());
-			subjectInfo.setMainSectionName(sectionInfo.getMainSectionName());
-			subjectInfo.setSectionId(sectionInfo.getId());
-			subjectInfo.setSectionName(sectionInfo.getSectionName());
-			subjectInfo.setCreatorName(effectivePerson.getDistinguishedName());
-			subjectInfo.setLatestReplyTime(new Date());
-			subjectInfo.setTypeCategory(wrapIn.getTypeCategory());
-			subjectInfo.setType(wrapIn.getType());
-			subjectInfo.setTitle(subjectInfo.getTitle().trim());
-			subjectInfo.setVoteLimitTime(wrapIn.getVoteLimitTime());
-			subjectInfo.setVotePersonVisible(wrapIn.getVotePersonVisible());
-			subjectInfo.setVoteResultVisible(wrapIn.getVoteResultVisible());
-			subjectInfo.setGrade(wrapIn.getGrade());
-
+		if(BooleanUtils.isTrue(wrapIn.getAnonymousSubject())){
+			subjectInfo.setNickName(ANONYMOUS_NAME);
+		}else {
 			Business business = new Business(null);
 			subjectInfo.setNickName(business.organization().person().getNickName(effectivePerson.getDistinguishedName()));
+			subjectInfo.setAnonymousSubject(false);
 		}
 
-		if (check) {
-			subjectInfo.setMachineName(wrapIn.getSubjectMachineName());
-			subjectInfo.setSystemType(wrapIn.getSubjectSystemName());
-			try {
-				subjectInfo = subjectInfoServiceAdv.save(subjectInfo, wrapIn.getContent());
-				wo.setId(subjectInfo.getId());
+		subjectInfo.setMachineName(wrapIn.getSubjectMachineName());
+		subjectInfo.setSystemType(wrapIn.getSubjectSystemName());
+		subjectInfo = subjectInfoServiceAdv.save(subjectInfo, wrapIn.getContent());
+		wo.setId(subjectInfo.getId());
 
-				CacheManager.notify( BBSSubjectInfo.class );
-				CacheManager.notify( BBSSectionInfo.class );
-				CacheManager.notify( BBSForumInfo.class );
+		CacheManager.notify( BBSSubjectInfo.class );
+		CacheManager.notify( BBSSectionInfo.class );
+		CacheManager.notify( BBSForumInfo.class );
 
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new ExceptionSubjectSave(e);
-				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
-			}
-		}
-
-		if (check) {
-			if ("投票".equals(wrapIn.getTypeCategory())) {
-				try {
-					subjectVoteService.saveVoteOptions(subjectInfo, wrapIn.getOptionGroups());
-				} catch (Exception e) {
-					check = false;
-					Exception exception = new ExceptionSubjectOperation(e, "系统在保存投票选项信息时发生异常");
-					result.error(exception);
-					logger.error(e, effectivePerson, request, null);
-				}
-			}
+		if (TYPE_CATEGORY.equals(wrapIn.getTypeCategory())) {
+			subjectVoteService.saveVoteOptions(subjectInfo, wrapIn.getOptionGroups());
 		}
 		result.setData(wo);
 		return result;

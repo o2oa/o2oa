@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 
 import com.google.gson.Gson;
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.cache.Cache;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.gson.XGsonBuilder;
@@ -17,11 +19,12 @@ import com.x.bbs.assemble.control.ThisApplication;
 import com.x.bbs.assemble.control.jaxrs.MethodExcuteResult;
 import com.x.bbs.assemble.control.service.bean.RoleAndPermission;
 import com.x.bbs.entity.BBSPermissionInfo;
+import com.x.bbs.entity.BBSShutup;
 import com.x.bbs.entity.BBSUserInfo;
 
 /**
  * 用户组织顶层组织信息管理服务类
- * 
+ *
  * @author LIYI
  *
  */
@@ -79,7 +82,7 @@ public class UserPermissionService {
 
 	/**
 	 * 获取人员的权限信息，优先使用缓存的人员信息
-	 * 
+	 *
 	 * @param userName
 	 * @return
 	 * @throws Exception
@@ -108,7 +111,7 @@ public class UserPermissionService {
 
 	/**
 	 * 获取用户信息，优先使用缓存信息
-	 * 
+	 *
 	 * @param userName
 	 * @return
 	 * @throws Exception
@@ -279,7 +282,7 @@ public class UserPermissionService {
 					logger.error(e);
 				}
 			}
-			
+
 			if ( methodExcuteResult.getSuccess() ) {// 获取可访问的论坛ID列表
 				if ( ListTools.isNotEmpty( forumViewPermissionList )) {
 					for (BBSPermissionInfo permission : forumViewPermissionList) {
@@ -335,6 +338,18 @@ public class UserPermissionService {
 		}
 		methodExcuteResult.setBackObject(ids);
 		return methodExcuteResult;
+	}
+
+	/**
+	 * 判断指定用户是否被禁用
+	 * @param person
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean personHasShutup(String person) throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			return emc.countEqual(BBSShutup.class, BBSShutup.person_FIELDNAME, person) > 0;
+		}
 	}
 
 }

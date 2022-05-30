@@ -22,6 +22,7 @@ import com.x.bbs.assemble.control.jaxrs.replyinfo.ReplyInfoManagerUserAction;
 import com.x.bbs.assemble.control.jaxrs.roleinfo.RoleInfoAction;
 import com.x.bbs.assemble.control.jaxrs.sectioninfo.SectionInfoAction;
 import com.x.bbs.assemble.control.jaxrs.sectioninfo.SectionInfoManagerUserAction;
+import com.x.bbs.assemble.control.jaxrs.shutup.ShutupAction;
 import com.x.bbs.assemble.control.jaxrs.subjectinfo.SubjectAttachmentAction;
 import com.x.bbs.assemble.control.jaxrs.subjectinfo.SubjectInfoAction;
 import com.x.bbs.assemble.control.jaxrs.subjectinfo.SubjectInfoManagerUserAction;
@@ -54,6 +55,7 @@ public class ActionApplication extends AbstractActionApplication {
 		this.classes.add(BBSConfigSettingAnonymousAction.class);
 		this.classes.add(AttachmentAction.class);
 		this.classes.add(PictureAction.class);
+		this.classes.add(ShutupAction.class);
 		return this.classes;
 	}
 

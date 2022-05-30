@@ -7,18 +7,19 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.Business;
+import com.x.bbs.entity.BBSShutup;
 
 /**
  * 用户组织顶层组织信息管理服务类
- * 
+ *
  * @author LIYI
  *
  */
 public class UserManagerService {
-	
+
 	/**
 	 * 根据用户唯一标识来获取用户对象
-	 * 
+	 *
 	 * @param flag
 	 * @return
 	 * @throws Exception
@@ -37,10 +38,10 @@ public class UserManagerService {
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * 根据员工姓名获取组织名称，多个身份只取第一个组织
-	 * 
+	 *
 	 * @param employeeName
 	 * @return
 	 * @throws Exception
@@ -62,10 +63,10 @@ public class UserManagerService {
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * 根据员工身份获取组织名称
-	 * 
+	 *
 	 * @param employeeName
 	 * @return
 	 * @throws Exception
@@ -81,7 +82,7 @@ public class UserManagerService {
 			throw e;
 		}
 	}
-	
+
 	public String checkUnitExistsWithFlag(String unitName) throws Exception {
 		Business business = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -93,7 +94,7 @@ public class UserManagerService {
 			throw e;
 		}
 	}
-	
+
 	public List<String> listUnitNamesWithPerson(String personName ) throws Exception {
 		Business business = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -124,7 +125,7 @@ public class UserManagerService {
 	}
 	/**
 	 * 根据身份名称获取顶层组织名称
-	 * 
+	 *
 	 * @param identity
 	 * @return
 	 * @throws Exception
@@ -167,7 +168,7 @@ public class UserManagerService {
 
 	/**
 	 * 根据组织名称获取所有下级组织名称列表
-	 * 
+	 *
 	 * @param query_creatorUnitName
 	 * @return
 	 * @throws Exception
@@ -184,12 +185,12 @@ public class UserManagerService {
 		}
 	}
 
-	
+
 
 
 	/**
 	 * 判断用户是否有指定的平台角色，比如BBS系统管理员
-	 * 
+	 *
 	 * @param name
 	 * @param string
 	 * @return
@@ -276,6 +277,18 @@ public class UserManagerService {
 			return null;
 		} catch (Exception e) {
 			throw e;
+		}
+	}
+
+	/**
+	 * 判断指定用户是否被禁用
+	 * @param person
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean personHasShutup(String person) throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			return emc.countEqual(BBSShutup.class, BBSShutup.person_FIELDNAME, person) > 0;
 		}
 	}
 }

@@ -35,7 +35,7 @@ import com.x.bbs.entity.BBSVoteRecord;
  *
  */
 public class BBSSubjectInfoService {
-	
+
 	private static  Logger logger = LoggerFactory.getLogger( BBSSubjectInfoService.class );
 	private DateOperation dateOperation = new DateOperation();
 
@@ -57,7 +57,7 @@ public class BBSSubjectInfoService {
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * 根据传入的ID从数据库查询BBSSubjectInfo对象
 	 * @param id
@@ -74,7 +74,7 @@ public class BBSSubjectInfoService {
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * 根据传入的ID从数据库查询BBSSubjectInfo对象
 	 * @param id
@@ -96,7 +96,7 @@ public class BBSSubjectInfoService {
 		}
 		return subjectInfo;
 	}
-	
+
 	/**
 	 * 根据传入的ID从数据库查询BBSSubjectInfo对象
 	 * @param id
@@ -166,7 +166,7 @@ public class BBSSubjectInfoService {
 				if( StringUtils.isEmpty( _forumInfo_tmp.getReplyMessageNotifyType() )){
 					_forumInfo_tmp.setReplyMessageNotifyType("0,0,0");
 				}
-				emc.check( _forumInfo_tmp, CheckPersistType.all );	
+				emc.check( _forumInfo_tmp, CheckPersistType.all );
 			}
 			if( _sectionInfo_tmp != null ){
 				_sectionInfo_tmp.setSubjectTotalToday( _sectionInfo_tmp.getSubjectTotalToday() + 1 );
@@ -174,10 +174,11 @@ public class BBSSubjectInfoService {
 				if( StringUtils.isEmpty( _sectionInfo_tmp.getReplyMessageNotifyType() )){
 					_sectionInfo_tmp.setReplyMessageNotifyType("0,0,0");
 				}
-				emc.check( _sectionInfo_tmp, CheckPersistType.all );	
+				emc.check( _sectionInfo_tmp, CheckPersistType.all );
 			}
 		}else{
-			_bBSSubjectInfo.copyTo( _subjectInfo_tmp, JpaObject.FieldsUnmodify  );
+			_bBSSubjectInfo.copyTo( _subjectInfo_tmp, ListTools.toList(JpaObject.FieldsUnmodify,
+					BBSSubjectInfo.creatorName_FIELDNAME, BBSSubjectInfo.nickName_FIELDNAME));
 			emc.check( _subjectInfo_tmp, CheckPersistType.all );
 		}
 		//检查和绑定附件信息
@@ -212,7 +213,7 @@ public class BBSSubjectInfoService {
 					_subjectAttachment.setSectionName( _bBSSubjectInfo.getSectionName() );
 					_subjectAttachment.setSubjectId( _bBSSubjectInfo.getId() );
 					_subjectAttachment.setTitle( _bBSSubjectInfo.getTitle() );
-					emc.check( _subjectAttachment, CheckPersistType.all );	
+					emc.check( _subjectAttachment, CheckPersistType.all );
 				}
 			}
 		}
@@ -261,7 +262,7 @@ public class BBSSubjectInfoService {
 		emc.beginTransaction( BBSVoteRecord.class );
 		emc.beginTransaction( BBSSubjectAttachment.class );
 		emc.beginTransaction( BBSSubjectVoteResult.class );
-		
+
 		business = new Business( emc );
 		//先判断需要操作的应用信息是否存在，根据ID进行一次查询，如果不存在不允许继续操作
 		subjectInfo = emc.find( subjectId, BBSSubjectInfo.class );
@@ -306,7 +307,7 @@ public class BBSSubjectInfoService {
 				if( forumInfo != null ){
 					if( forumInfo.getReplyTotal() > 0 ){
 						forumInfo.setReplyTotal( forumInfo.getReplyTotalToday() - 1 );
-					}					
+					}
 					if( dateOperation.isTheSameDate( today, reply.getCreateTime() ) && forumInfo.getReplyTotalToday() > 0 ){
 						forumInfo.setReplyTotalToday( forumInfo.getReplyTotalToday() - 1 );
 					}
@@ -393,7 +394,7 @@ public class BBSSubjectInfoService {
 		Business business = new Business( emc );
 		return business.subjectInfoFactory().countByMainAndSubSectionId( sectionId, withTopSubject );
 	}
-	
+
 	public Long countByForumId( EntityManagerContainer emc, String forumId, Boolean withTopSubject ) throws Exception {
 		if( forumId == null || forumId.isEmpty() ){
 			throw new Exception( "sectionId is null." );
@@ -407,7 +408,7 @@ public class BBSSubjectInfoService {
 	 * 包括：全局置顶贴, 当前论坛置顶贴, 当前版块置顶贴和主版块的置顶贴
 	 * @param sectionInfo
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public List<BBSSubjectInfo> listAllTopSubject( EntityManagerContainer emc, BBSSectionInfo sectionInfo, String creatorName, List<String> viewSectionIds ,Date startTime , Date endTime  ) throws Exception {
 		String forumId = null;
@@ -471,8 +472,8 @@ public class BBSSubjectInfoService {
 			throw new Exception( "subjectId is null." );
 		}
 		BBSSubjectInfo subjectInfo = null;
-		subjectInfo = emc.find( subjectId, BBSSubjectInfo.class );			
-		emc.beginTransaction( BBSSubjectInfo.class );			
+		subjectInfo = emc.find( subjectId, BBSSubjectInfo.class );
+		emc.beginTransaction( BBSSubjectInfo.class );
 		subjectInfo.setAcceptReplyId( replyId );
 		emc.check( subjectInfo, CheckPersistType.all );
 		emc.commit();
@@ -484,14 +485,14 @@ public class BBSSubjectInfoService {
 			throw new Exception( "subjectId is null." );
 		}
 		BBSSubjectInfo subjectInfo = null;
-		subjectInfo = emc.find( subjectId, BBSSubjectInfo.class );			
-		emc.beginTransaction( BBSSubjectInfo.class );			
-		subjectInfo.setIsCompleted( complete );	
+		subjectInfo = emc.find( subjectId, BBSSubjectInfo.class );
+		emc.beginTransaction( BBSSubjectInfo.class );
+		subjectInfo.setIsCompleted( complete );
 		emc.check( subjectInfo, CheckPersistType.all );
 		emc.commit();
 		return subjectInfo;
-	}	
-	
+	}
+
 	/**
 	 * 精华贴设置
 	 * @param subjectId
@@ -505,11 +506,11 @@ public class BBSSubjectInfoService {
 			throw new Exception( "subjectId is null." );
 		}
 		BBSSubjectInfo subjectInfo = null;
-		subjectInfo = emc.find( subjectId, BBSSubjectInfo.class );			
-		emc.beginTransaction( BBSSubjectInfo.class );			
+		subjectInfo = emc.find( subjectId, BBSSubjectInfo.class );
+		emc.beginTransaction( BBSSubjectInfo.class );
 		subjectInfo.setIsCreamSubject( isCream );
 		subjectInfo.setScreamSetterName( setterName );
-		subjectInfo.setScreamSetterTime( new Date() );			
+		subjectInfo.setScreamSetterTime( new Date() );
 		emc.check( subjectInfo, CheckPersistType.all );
 		emc.commit();
 		return subjectInfo;
@@ -520,24 +521,24 @@ public class BBSSubjectInfoService {
 			throw new Exception( "subjectId is null." );
 		}
 		BBSSubjectInfo subjectInfo = null;
-		subjectInfo = emc.find( subjectId, BBSSubjectInfo.class );			
+		subjectInfo = emc.find( subjectId, BBSSubjectInfo.class );
 		emc.beginTransaction( BBSSubjectInfo.class );
 		if( lock ){
 			subjectInfo.setSubjectStatus( "已锁定" );
 			subjectInfo.setStopReply( lock );
 			subjectInfo.setScreamSetterName( setterName );
-			subjectInfo.setScreamSetterTime( new Date() );	
+			subjectInfo.setScreamSetterTime( new Date() );
 		}else{
 			subjectInfo.setSubjectStatus( "启用" );
 			subjectInfo.setStopReply( lock );
 			subjectInfo.setScreamSetterName( setterName );
-			subjectInfo.setScreamSetterTime( new Date() );	
-		}	
+			subjectInfo.setScreamSetterTime( new Date() );
+		}
 		emc.check( subjectInfo, CheckPersistType.all );
 		emc.commit();
 		return subjectInfo;
 	}
-	
+
 	/**
 	 * 全局置顶设置
 	 * @param subjectId
@@ -551,17 +552,17 @@ public class BBSSubjectInfoService {
 			throw new Exception( "subjectId is null." );
 		}
 		BBSSubjectInfo subjectInfo = null;
-		subjectInfo = emc.find( subjectId, BBSSubjectInfo.class );			
+		subjectInfo = emc.find( subjectId, BBSSubjectInfo.class );
 		emc.beginTransaction( BBSSubjectInfo.class );
-		
-		subjectInfo.setTopToBBS(topToBBS);		
-		
+
+		subjectInfo.setTopToBBS(topToBBS);
+
 		if( subjectInfo.getTopToBBS() || subjectInfo.getTopToForum() || subjectInfo.getTopToMainSection() || subjectInfo.getTopToSection() ){
 			subjectInfo.setIsTopSubject( true );
 		}else{
 			subjectInfo.setIsTopSubject( false );
 		}
-		
+
 		emc.check( subjectInfo, CheckPersistType.all );
 		emc.commit();
 		return subjectInfo;
@@ -580,7 +581,7 @@ public class BBSSubjectInfoService {
 			throw new Exception( "subjectId is null." );
 		}
 		BBSSubjectInfo subjectInfo = null;
-		subjectInfo = emc.find( subjectId, BBSSubjectInfo.class );			
+		subjectInfo = emc.find( subjectId, BBSSubjectInfo.class );
 		emc.beginTransaction( BBSSubjectInfo.class );
 		subjectInfo.setTopToForum( topToForum );
 		if( subjectInfo.getTopToBBS() || subjectInfo.getTopToForum() || subjectInfo.getTopToMainSection() || subjectInfo.getTopToSection() ){
@@ -607,17 +608,17 @@ public class BBSSubjectInfoService {
 			throw new Exception( "subjectId is null." );
 		}
 		BBSSubjectInfo subjectInfo = null;
-		subjectInfo = emc.find( subjectId, BBSSubjectInfo.class );			
+		subjectInfo = emc.find( subjectId, BBSSubjectInfo.class );
 		emc.beginTransaction( BBSSubjectInfo.class );
-		
+
 		subjectInfo.setTopToSection( topToSection );
-		
+
 		if( subjectInfo.getTopToBBS() || subjectInfo.getTopToForum() || subjectInfo.getTopToMainSection() || subjectInfo.getTopToSection() ){
 			subjectInfo.setIsTopSubject( true );
 		}else{
 			subjectInfo.setIsTopSubject( false );
 		}
-		
+
 		emc.check( subjectInfo, CheckPersistType.all );
 		emc.commit();
 		return subjectInfo;
@@ -636,17 +637,17 @@ public class BBSSubjectInfoService {
 			throw new Exception( "subjectId is null." );
 		}
 		BBSSubjectInfo subjectInfo = null;
-		subjectInfo = emc.find( subjectId, BBSSubjectInfo.class );			
+		subjectInfo = emc.find( subjectId, BBSSubjectInfo.class );
 		emc.beginTransaction( BBSSubjectInfo.class );
-		
+
 		subjectInfo.setTopToMainSection( topToMainSection );
-		
+
 		if( subjectInfo.getTopToBBS() || subjectInfo.getTopToForum() || subjectInfo.getTopToMainSection() || subjectInfo.getTopToSection() ){
 			subjectInfo.setIsTopSubject( true );
 		}else{
 			subjectInfo.setIsTopSubject( false );
 		}
-		
+
 		emc.check( subjectInfo, CheckPersistType.all );
 		emc.commit();
 		return subjectInfo;
@@ -665,11 +666,11 @@ public class BBSSubjectInfoService {
 			throw new Exception( "subjectId is null." );
 		}
 		BBSSubjectInfo subjectInfo = null;
-		subjectInfo = emc.find( subjectId, BBSSubjectInfo.class );			
-		emc.beginTransaction( BBSSubjectInfo.class );			
+		subjectInfo = emc.find( subjectId, BBSSubjectInfo.class );
+		emc.beginTransaction( BBSSubjectInfo.class );
 		subjectInfo.setIsOriginalSubject(isOriginalSubject);
 		subjectInfo.setOriginalSetterName( name );
-		subjectInfo.setOriginalSetterTime( new Date() );		
+		subjectInfo.setOriginalSetterTime( new Date() );
 		emc.check( subjectInfo, CheckPersistType.all );
 		emc.commit();
 		return subjectInfo;
@@ -698,7 +699,7 @@ public class BBSSubjectInfoService {
 			throw e;
 		}
 	}
-	
+
 	public Long countSubjectInSectionForPage( String searchTitle, String forumId, String mainSectionId, String sectionId, String creatorName, Boolean needPicture, Boolean isTopSubject, List<String> viewSectionIds ) throws Exception {
 		if( viewSectionIds == null || viewSectionIds.isEmpty() ){
 			return 0L;
@@ -740,7 +741,7 @@ public class BBSSubjectInfoService {
 	 * 根据指定的主题ID，查询上一个主题的信息
 	 * @param id
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public BBSSubjectInfo getLastSubject( String id ) throws Exception {
 		if( id  == null || id.isEmpty() ){
@@ -883,8 +884,8 @@ public class BBSSubjectInfoService {
 		}
 		BBSSubjectInfo subjectInfo = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
-			subjectInfo = emc.find( subjectId, BBSSubjectInfo.class );			
-			emc.beginTransaction( BBSSubjectInfo.class );			
+			subjectInfo = emc.find( subjectId, BBSSubjectInfo.class );
+			emc.beginTransaction( BBSSubjectInfo.class );
 			subjectInfo.setRecommendToBBSIndex( recommendToBBSIndex );
 			if( recommendToBBSIndex ){
 				subjectInfo.setIsRecommendSubject( true );
@@ -894,9 +895,9 @@ public class BBSSubjectInfoService {
 				subjectInfo.setIsRecommendSubject( false );
 				subjectInfo.setRecommendorName( null );
 				subjectInfo.setRecommendTime( null );
-			}			
+			}
 			emc.check( subjectInfo, CheckPersistType.all );
-			emc.commit();			
+			emc.commit();
 		}catch( Exception e ){
 			throw e;
 		}
@@ -1064,5 +1065,5 @@ public class BBSSubjectInfoService {
 		}
 	}
 
-	
+
 }
