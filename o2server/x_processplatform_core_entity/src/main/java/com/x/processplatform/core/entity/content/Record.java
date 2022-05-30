@@ -84,10 +84,7 @@ public class Record extends SliceJpaObject {
 
 	/* 外部调用流转 */
 	public static final String TYPE_SERVICE = "service";
-
-	/* 扩充待办 */
-	public static final String TYPE_TASKEXTEND = "taskExtend";
-
+	
 	/* 添加待办 */
 	public static final String TYPE_TASKADD = "taskAdd";
 

@@ -1,4 +1,4 @@
-package com.x.processplatform.assemble.surface.jaxrs.task;
+package com.x.processplatform.assemble.surface;
 
 import com.x.base.core.project.exception.LanguagePromptException;
 

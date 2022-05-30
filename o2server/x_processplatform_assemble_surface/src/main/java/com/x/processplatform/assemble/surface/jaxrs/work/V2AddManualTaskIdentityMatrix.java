@@ -1,5 +1,6 @@
 package com.x.processplatform.assemble.surface.jaxrs.work;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -8,8 +9,11 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
+import com.x.base.core.project.bean.WrapCopier;
+import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
@@ -20,9 +24,15 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.RecordBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControl;
+import com.x.processplatform.core.entity.content.Record;
+import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.content.WorkLog;
+import com.x.processplatform.core.entity.element.ActivityType;
+import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2AddManualTaskIdentityMatrixWi;
 
@@ -39,15 +49,35 @@ class V2AddManualTaskIdentityMatrix extends BaseAction {
 	private Work work = null;
 	// 指定的身份
 	private String identity = null;
+	// 工作记录
+	private WorkLog workLog;
+	// work活动
+	private Manual manual;
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 		}
 		this.init(effectivePerson, id, jsonElement);
+
 		this.add(wi.getOptionList(), wi.getRemove());
+
 		this.processingWork(work);
-		return result();
+
+		List<String> newTaskIds = new ArrayList<>();
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			newTaskIds.addAll(emc.idsEqualAndEqual(Task.class, Task.job_FIELDNAME, work.getJob(), Task.work_FIELDNAME,
+					work.getId()));
+		}
+
+		Record rec = RecordBuilder.ofWorkProcessing(Record.TYPE_RESET, workLog, effectivePerson, manual, newTaskIds);
+		RecordBuilder.processing(rec);
+
+		ActionResult<Wo> result = new ActionResult<>();
+		Wo wo = Wo.copier.copy(rec);
+		result.setData(wo);
+		return result;
+
 	}
 
 	private void init(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
@@ -59,10 +89,16 @@ class V2AddManualTaskIdentityMatrix extends BaseAction {
 			if (null == work) {
 				throw new ExceptionEntityNotExist(id, Work.class);
 			}
+			this.workLog = business.entityManagerContainer().firstEqualAndEqual(WorkLog.class, WorkLog.job_FIELDNAME,
+					work.getJob(), WorkLog.fromActivityToken_FIELDNAME, work.getActivityToken());
+			if (null == workLog) {
+				throw new ExceptionEntityNotExist(WorkLog.class);
+			}
 			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
 			if (BooleanUtils.isNotTrue(control.getAllowReset())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
+			this.manual = (Manual) business.getActivity(work.getActivity(), ActivityType.manual);
 			this.identity = business.organization().identity().get(wi.getIdentity());
 		}
 	}
@@ -94,14 +130,6 @@ class V2AddManualTaskIdentityMatrix extends BaseAction {
 		}
 	}
 
-	private ActionResult<Wo> result() {
-		ActionResult<Wo> result = new ActionResult<>();
-		Wo wo = new Wo();
-		wo.setValue(true);
-		result.setData(wo);
-		return result;
-	}
-
 	public static class Wi extends V2AddManualTaskIdentityMatrixWi {
 
 		private static final long serialVersionUID = -6251874269093504136L;
@@ -114,10 +142,12 @@ class V2AddManualTaskIdentityMatrix extends BaseAction {
 
 	}
 
-	public static class Wo extends WrapBoolean {
+	public static class Wo extends Record {
 
-		private static final long serialVersionUID = 8155067200427920853L;
+		private static final long serialVersionUID = 242446941132286179L;
 
+		static WrapCopier<Record, Wo> copier = WrapCopierFactory.wo(Record.class, Wo.class, null,
+				JpaObject.FieldsInvisible);
 	}
 
 }
