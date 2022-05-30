@@ -481,6 +481,10 @@ MWF.xApplication.process.FormDesigner.LP = {
         "sectionKey": "区段值",
         "sectionKeyScript": "区段值脚本",
         "textValue1": "文本值",
+        "mergeType": "合并方式",
+        "amountValue": "合计数值",
+        "averageValue": "平均值",
+        "separatelyDisplay": "分开显示",
 
         "decimal": "小数点",
 

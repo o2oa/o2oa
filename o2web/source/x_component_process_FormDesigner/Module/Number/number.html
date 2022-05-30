@@ -105,20 +105,60 @@
                     <td class="editTableValue">
                         <input onclick="if (this.checked){
                             $('text{$.pid}sectionMergeReadArea').setStyle('display', 'none');
-                            $('text{$.pid}sectionMergeReadOrEditArea').setStyle('display', 'none')
+                            $('text{$.pid}sectionMergeReadOrEditArea').setStyle('display', 'none');
+                            $('text{$.pid}mergeTypeReadArea').setStyle('display', 'none');
+                            $('text{$.pid}mergeTypeEditArea').setStyle('display', 'none')
                         }" type="radio" name="sectionMerge" value="none" text{($.sectionMerge=='none' || !$.sectionMerge)?'checked':''}/>{{$.lp.none}}<br/>
                         <input onclick="if (this.checked){
                             $('text{$.pid}sectionMergeReadArea').setStyle('display', 'block');
-                            $('text{$.pid}sectionMergeReadOrEditArea').setStyle('display', 'block')
+                            $('text{$.pid}sectionMergeReadOrEditArea').setStyle('display', 'block');
+                            $('text{$.pid}mergeTypeReadArea').setStyle('display', 'block');
+                            $('text{$.pid}mergeTypeEditArea').setStyle('display', 'none')
                         }" type="radio" name="sectionMerge" value="read" text{($.sectionMerge=='read')?'checked':''}/>{{$.lp.mergeDisplay}} <br/>
-                        <!--                        <input onclick="if (this.checked){-->
-                        <!--                            $('text{$.pid}sectionMergeReadArea').setStyle('display', 'none');-->
-                        <!--                            $('text{$.pid}sectionMergeReadOrEditArea').setStyle('display', 'block')-->
-                        <!--                        }" type="radio" name="sectionMerge" value="edit" text{($.sectionMerge=='edit')?'checked':''}/>{{$.lp.mergeEdit}}-->
+                        <input onclick="if (this.checked){
+                            $('text{$.pid}sectionMergeReadArea').setStyle('display', 'none');
+                            $('text{$.pid}sectionMergeReadOrEditArea').setStyle('display', 'none');
+                            $('text{$.pid}mergeTypeReadArea').setStyle('display', 'none');
+                            $('text{$.pid}mergeTypeEditArea').setStyle('display', 'block')
+                        }" type="radio" name="sectionMerge" value="edit" text{($.sectionMerge=='edit')?'checked':''}/>{{$.lp.mergeEdit}}
                     </td>
                 </tr>
             </table>
-            <div id="text{$.pid}sectionMergeReadArea" style="display: text{($.sectionMerge=='read')?'block':'none'};">
+            <div id="text{$.pid}mergeTypeReadArea" style="display: text{($.sectionMerge=='read')?'block':'none'};">
+                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                    <tr>
+                        <td class="editTableTitle">{{$.lp.mergeType}}:</td>
+                        <td class="editTableValue">
+                            <input class="editTableRadio" onclick="if (this.checked){
+                                $('text{$.pid}sectionMergeReadArea').setStyle('display', 'block');
+                                $('text{$.pid}sectionMergeReadOrEditArea').setStyle('display', 'block');
+                            }"  name="mergeTypeRead" text{($.mergeTypeRead=='separately' || !$.mergeTypeRead)?'checked':''} type="radio" value="separately"/>{{$.lp.separatelyDisplay}}
+                            <input class="editTableRadio" onclick="if (this.checked){
+                                $('text{$.pid}sectionMergeReadArea').setStyle('display', 'none');
+                                $('text{$.pid}sectionMergeReadOrEditArea').setStyle('display', 'none');
+                            }" name="mergeTypeRead" text{$.mergeTypeRead==='amount'?'checked':''} type="radio" value="amount"/>{{$.lp.amountValue}}
+                            <input class="editTableRadio" onclick="if (this.checked){
+                                $('text{$.pid}sectionMergeReadArea').setStyle('display', 'none');
+                                $('text{$.pid}sectionMergeReadOrEditArea').setStyle('display', 'none');
+                            }" name="mergeTypeRead" text{$.mergeTypeRead==='average'?'checked':''} type="radio" value="average"/>{{$.lp.averageValue}}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div id="text{$.pid}mergeTypeEditArea" style="display: text{($.sectionMerge=='edit')?'block':'none'};">
+                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                    <tr>
+                        <td class="editTableTitle">{{$.lp.mergeType}}:</td>
+                        <td class="editTableValue">
+                            <input class="editTableRadio"
+                                   name="mergeTypeEdit" text{$.mergeTypeEdit!=='average'?'checked':''} type="radio" value="amount"/>{{$.lp.amountValue}}
+                            <input class="editTableRadio"
+                                   name="mergeTypeEdit" text{$.mergeTypeEdit==='average'?'checked':''} type="radio" value="average"/>{{$.lp.averageValue}}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div id="text{$.pid}sectionMergeReadArea" style="display: text{($.sectionMerge=='read' && ($.mergeTypeRead=='separately' || !$.mergeTypeRead) )?'block':'none'};">
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
                         <td class="editTableTitle">{{$.lp.showSectionKey}}:</td>
@@ -154,14 +194,14 @@
                             </td>
                         </tr>
                     </table>
-                    <div id="text{$.pid}sectionKeyScriptEditArea" style="display: text{($.sectionKey=='script')?'block':'none'};">
+                    <div id="text{$.pid}sectionKeyScriptEditArea" style="display: text{($.sectionMerge=='read' && $.sectionKey=='script' && ($.mergeTypeRead=='separately' || !$.mergeTypeRead) )?'block':'none'};">
                         <div class="MWFScriptArea" name="sectionKeyScript" title="{{$.lp.sectionKeyScript}} (S)"></div>
                     </div>
 
                 </div>
             </div>
 
-            <div id="text{$.pid}sectionMergeReadOrEditArea" style="display: text{($.sectionMerge=='read')?'block':'none'};">
+            <div id="text{$.pid}sectionMergeReadOrEditArea" style="display: text{($.sectionMerge=='read' && ($.mergeTypeRead=='separately' || !$.mergeTypeRead))?'block':'none'};">
                 <div class="MWFScriptArea" name="sectionMergeSortScript" title="{{$.lp.sectionMergeSortScript}} (S)"></div>
                 <div style="padding: 10px;color:#999">排序脚本通过this.envent.a和this.evnet.b获取数据，处理后返回正数表示升序，负数表示降序。this.envent.a和this.envent.b值如: <br/>
                     { <br/>

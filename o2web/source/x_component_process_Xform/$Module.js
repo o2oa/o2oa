@@ -150,6 +150,12 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     isReadonly : function(){
         return !!(this.readonly || this.json.isReadonly || this.form.json.isReadonly);
     },
+    isSectionMergeRead: function(){
+        return this.json.sectionMerge === "read" && this.json.section !== "yes" && this.isSectionData()
+    },
+    isSectionMergeEdit: function(){
+        return this.json.sectionMerge === "edit" && this.json.section !== "yes" && this.isSectionData()
+    },
     isSectionData: function(){ //数据是否经过区段处理
         var data = this.getBusinessDataById();
         return o2.typeOf( data ) === "object";
@@ -165,10 +171,13 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         }
         if( this.json.sectionMergeSortScript && this.json.sectionMergeSortScript.code){
             array.sort( function(a, b){
-                return this.form.Macro.exec(this.json.sectionMergeSortScript.code, {
+                this.form.Macro.environment.event = {
                     "a": a,
                     "b": b
-                });
+                };
+                var flag = this.form.Macro.exec(this.json.sectionMergeSortScript.code, this);
+                this.form.Macro.environment.event = null;
+                return flag;
             }.bind(this))
         }
         return array;
@@ -186,11 +195,15 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
             case "textValue":
                 return data.key;
             case "script":
+                var d;
+                this.form.Macro.environment.event = data;
                 if( this.json.sectionKeyScript && this.json.sectionKeyScript.code){
-                    return this.form.Macro.exec(this.json.sectionKeyScript.code, data)
+                    d = this.form.Macro.exec(this.json.sectionKeyScript.code, this)
                 }else{
-                    return "";
+                    d = "";
                 }
+                this.form.Macro.environment.event = null;
+                return d;
         }
     },
     _loadMergeReadNode: function(keepHtml, position){

@@ -197,17 +197,16 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.fieldModuleLoaded = false;
 		},
 		load: function(){
-			var flag = this.isSectionData();
-			if ( this.json.sectionMerge === "read" && this.json.showSectionKey && flag ) { //区段合并显示
+			if ( this.isSectionMergeRead() && this.json.showSectionKey ) { //区段合并显示
 				this._loadMergeReadNode(true, "after");
 				this.node.hide();
 			}else{
 				this._loadModuleEvents();
 				if (this.fireEvent("queryLoad")){
 					this._queryLoaded();
-					if ( this.json.sectionMerge === "read" && !this.json.showSectionKey && flag ){
+					if ( this.isSectionMergeRead() && !this.json.showSectionKey ){
 						this._loadMergeNode( true );
-					}else if( this.json.sectionMerge === "edit" && flag ){
+					}else if( this.isSectionMergeEdit() ){
 						this._loadMergeNode( false );
 					}else{
 						this._loadUserInterface();

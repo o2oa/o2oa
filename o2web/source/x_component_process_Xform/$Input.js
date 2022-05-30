@@ -23,11 +23,10 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
         this.fieldModuleLoaded = false;
     },
 	_loadUserInterface: function(){
-        var flag = this.isSectionData();
-        if ( this.json.sectionMerge === "read" && flag ) { //区段合并显示
+        if ( this.isSectionMergeRead() ) { //区段合并显示
             this._loadMergeReadNode();
         }else{
-            if( this.json.sectionMerge === "edit" && flag ){
+            if( this.isSectionMergeEdit() ){
                 this._loadMergeEditNode();
             }else{
                 this._loadNode();

@@ -16,6 +16,80 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
     Implements: [Events],
     Extends: MWF.APPTextfield,
     iconStyle: "numberIcon",
+    _loadUserInterface: function(){
+        if ( this.isSectionMergeRead() ) { //区段合并显示
+            this.node.empty();
+            this.node.set({
+                "nodeId": this.json.id,
+                "MWFType": this.json.type
+            });
+            switch (this.json.mergeTypeRead) {
+                case "amount":
+                    this._loadMergeAmountReadNode();
+                    break;
+                case "average":
+                    this._loadMergeAverageReadNode();
+                    break;
+                default:
+                    this._loadMergeReadNode();
+                    break;
+            }
+        }else{
+            if( this.isSectionMergeEdit() ){
+                switch (this.json.mergeTypeEdit) {
+                    case "amount":
+                        this._loadMergeAmountEidtNode();
+                        break;
+                    case "average":
+                        this._loadMergeAverageEditNode();
+                        break;
+                }
+            }else{
+                this._loadNode();
+            }
+            if (this.json.compute === "show"){
+                this._setValue(this._computeValue());
+            }else{
+                this._loadValue();
+            }
+        }
+    },
+    _loadMergeAmountReadNode: function(){
+        var data = this.getBusinessDataById();
+        var total = new Decimal(0);
+        for( var key in data ){
+            total = total.plus(new Decimal(data[key] || 0));
+        }
+        this.node.set("text", this.formatNumber(total.toString()));
+    },
+    _loadMergeAverageReadNode: function(){
+        var data = this.getBusinessDataById();
+        var total = new Decimal(0);
+        for( var key in data ){
+            total = total.plus(new Decimal(data[key] || 0));
+        }
+        var average = total.div(  new Decimal(Object.keys(data).length) );
+        this.node.set("text", this.formatNumber(average.toString()));
+    },
+    _loadMergeAmountEidtNode: function(){
+        var data = this.getBusinessDataById();
+        var total = new Decimal(0);
+        for( var key in data ){
+            total = total.plus(new Decimal(data[key] || 0));
+        }
+        this._setBusinessData( total.toNumber() );
+        this._loadNode();
+    },
+    _loadMergeAverageEditNode: function(){
+        var data = this.getBusinessDataById();
+        var total = new Decimal(0);
+        for( var key in data ){
+            total = total.plus(new Decimal(data[key] || 0));
+        }
+        var average = total.div(  new Decimal(Object.keys(data).length) );
+        this._setBusinessData( average.toNumber() );
+        this._loadNode();
+    },
     isEmpty : function(){
         return !this.getData();
     },
