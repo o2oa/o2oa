@@ -27,6 +27,9 @@ import com.x.base.core.project.processplatform.ManualTaskIdentityMatrix;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.RecordBuilder;
+import com.x.processplatform.assemble.surface.TaskBuilder;
+import com.x.processplatform.assemble.surface.TaskCompletedBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Record;
@@ -94,22 +97,22 @@ public class V2Reset extends BaseAction {
 
 		this.processingWork();
 
-		List<Task> newlyTasks = new ArrayList<>();
+		List<String> newTaskIds = new ArrayList<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			newlyTasks.addAll(emc.listEqual(Task.class, Task.series_FIELDNAME, this.series));
+			newTaskIds.addAll(emc.idsEqualAndEqual(Task.class, Task.job_FIELDNAME, work.getJob(), Task.work_FIELDNAME,
+					work.getId()));
 		}
 
-		Record rec = this.processingRecord(this.workLog, this.task, this.taskCompletedId, newlyTasks);
+		Record rec = RecordBuilder.ofWorkProcessing(Record.TYPE_RESET, workLog, effectivePerson, manual, newTaskIds);
+		RecordBuilder.processing(rec);
 
 		if (StringUtils.isNotEmpty(this.taskCompletedId)) {
-			this.updateNextTaskIdentity(this.taskCompletedId, rec.getProperties().getNextManualTaskIdentityList(),
-					task.getJob());
+			TaskCompletedBuilder.updateNextTaskIdentity(this.taskCompletedId,
+					rec.getProperties().getNextManualTaskIdentityList(), task.getJob());
 		}
 
 		if (!taskCompleteds.isEmpty()) {
-			this.updatePrevTaskIdentity(
-					ListTools.extractField(newlyTasks, JpaObject.id_FIELDNAME, String.class, true, true),
-					taskCompleteds, this.task);
+			TaskBuilder.updatePrevTaskIdentity(newTaskIds, taskCompleteds, this.task);
 		}
 		Wo wo = Wo.copier.copy(rec);
 		result.setData(wo);
@@ -204,13 +207,6 @@ public class V2Reset extends BaseAction {
 		if (StringUtils.isEmpty(resp.getId())) {
 			throw new ExceptionWorkProcessing(work.getId());
 		}
-	}
-
-	private Record processingRecord(WorkLog workLog, Task task, String taskCompletedId, List<Task> newlyTasks)
-			throws Exception {
-		Record r = RecordBuilder.ofTaskProcessing(Record.TYPE_RESET, workLog, task, taskCompletedId, newlyTasks);
-		RecordBuilder.processing(r);
-		return r;
 	}
 
 	public static class Wi extends V2ResetWi {

@@ -1,7 +1,6 @@
 package com.x.processplatform.assemble.surface.jaxrs.task;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
@@ -25,13 +24,14 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
-import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.jaxrs.WrapStringList;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.TaskBuilder;
+import com.x.processplatform.assemble.surface.TaskCompletedBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.content.RecordProperties.NextManual;
@@ -47,9 +47,6 @@ import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.ProcessingWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.ProcessingWo;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapAppend;
-import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapUpdatePrevTaskIdentity;
-import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapUpdatePrevTaskIdentity.PrevTask;
-import com.x.processplatform.core.express.service.processing.jaxrs.taskcompleted.WrapUpdateNextTaskIdentity;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.ActionProcessingSignalWo;
 
 class ActionProcessing extends BaseAction {
@@ -70,7 +67,7 @@ class ActionProcessing extends BaseAction {
 	private List<Task> newTasks = new ArrayList<>();
 	private Exception exception = null;
 
-	private Record record;
+	private Record rec;
 	private String series = StringTools.uniqueToken();
 
 	private static final String TYPE_APPENDTASK = "appendTask";
@@ -95,13 +92,14 @@ class ActionProcessing extends BaseAction {
 				} else {
 					processingTask();
 				}
-				wo = Wo.copier.copy(record);
+				wo = Wo.copier.copy(rec);
 			} catch (Exception e) {
 				exception = e;
 			} finally {
 				try {
 					responeQueue.put(wo);
-				} catch (Exception e) {
+				} catch (InterruptedException e) {
+					Thread.currentThread().interrupt();
 					exception = e;
 				}
 			}
@@ -129,7 +127,8 @@ class ActionProcessing extends BaseAction {
 					}
 					try {
 						responeQueue.put(wo);
-					} catch (Exception e) {
+					} catch (InterruptedException e) {
+						Thread.currentThread().interrupt();
 						exception = e;
 					}
 				}
@@ -252,24 +251,24 @@ class ActionProcessing extends BaseAction {
 			this.processingUpdateTaskCompleted();
 			this.processingUpdateTask();
 		} else {
-			record = new Record(workLog, task);
+			rec = new Record(workLog, task);
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
 				// 后续需要记录unitDutyList所以在一个emc中进行计算.
-				record.getProperties()
+				rec.getProperties()
 						.setUnitDutyList(business.organization().unitDuty().listNameWithIdentity(task.getIdentity()));
 				// 记录处理身份的排序号
-				record.getProperties().setIdentityOrderNumber(
+				rec.getProperties().setIdentityOrderNumber(
 						business.organization().identity().getOrderNumber(task.getIdentity(), Integer.MAX_VALUE));
 				// 记录处理身份所在组织的排序号
-				record.getProperties().setUnitOrderNumber(
+				rec.getProperties().setUnitOrderNumber(
 						business.organization().unit().getOrderNumber(task.getUnit(), Integer.MAX_VALUE));
 				// 记录处理身份所在组织层级组织排序号
-				record.getProperties().setUnitLevelOrderNumber(
+				rec.getProperties().setUnitLevelOrderNumber(
 						business.organization().unit().getLevelOrderNumber(task.getUnit(), ""));
 				// 记录task中身份所有的组织职务.
-				record.setCompleted(true);
-				record.setType(Record.TYPE_TASK);
+				rec.setCompleted(true);
+				rec.setType(Record.TYPE_TASK);
 			}
 		}
 	}
@@ -309,29 +308,29 @@ class ActionProcessing extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			final List<String> nextTaskIdentities = new ArrayList<>();
-			record = new Record(workLog, task);
+			rec = new Record(workLog, task);
 			// 获取在record中需要记录的task中身份所有的组织职务.
-			record.getProperties()
+			rec.getProperties()
 					.setUnitDutyList(business.organization().unitDuty().listNameWithIdentity(task.getIdentity()));
 			// 记录处理身份的排序号
-			record.getProperties().setIdentityOrderNumber(
+			rec.getProperties().setIdentityOrderNumber(
 					business.organization().identity().getOrderNumber(task.getIdentity(), Integer.MAX_VALUE));
 			// 记录处理身份所在组织的排序号
-			record.getProperties().setUnitOrderNumber(
+			rec.getProperties().setUnitOrderNumber(
 					business.organization().unit().getOrderNumber(task.getUnit(), Integer.MAX_VALUE));
 			// 记录处理身份所在组织层级组织排序号
-			record.getProperties()
+			rec.getProperties()
 					.setUnitLevelOrderNumber(business.organization().unit().getLevelOrderNumber(task.getUnit(), ""));
 			// 校验workCompleted,如果存在,那么说明工作已经完成,标识状态为已经完成.
 			WorkCompleted workCompleted = emc.firstEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME,
 					task.getJob());
 			if (null != workCompleted) {
-				record.setCompleted(true);
-				record.setWorkCompleted(workCompleted.getId());
+				rec.setCompleted(true);
+				rec.setWorkCompleted(workCompleted.getId());
 			}
-			record.getProperties().setElapsed(
-					Config.workTime().betweenMinutes(record.getProperties().getStartTime(), record.getRecordTime()));
-			record.setType(type);
+			rec.getProperties().setElapsed(
+					Config.workTime().betweenMinutes(rec.getProperties().getStartTime(), rec.getRecordTime()));
+			rec.setType(type);
 			List<Task> list = emc.fetchEqualAndEqual(Task.class,
 					ListTools.toList(Task.person_FIELDNAME, Task.identity_FIELDNAME, Task.unit_FIELDNAME,
 							Task.job_FIELDNAME, Task.work_FIELDNAME, Task.activity_FIELDNAME,
@@ -351,24 +350,23 @@ class ActionProcessing extends BaseAction {
 							this.newTasks.add(t);
 							nextTaskIdentities.add(t.getIdentity());
 						}
-						record.getProperties().getNextManualList().add(nextManual);
+						rec.getProperties().getNextManualList().add(nextManual);
 					});
 			// 去重
-			record.getProperties().setNextManualTaskIdentityList(ListTools.trim(nextTaskIdentities, true, true));
+			rec.getProperties().setNextManualTaskIdentityList(ListTools.trim(nextTaskIdentities, true, true));
 			TaskCompleted taskCompleted = emc.find(taskCompletedId, TaskCompleted.class);
 			if (null != taskCompleted) {
 				// 处理完成后在重新写入待办信息
-				record.getProperties().setOpinion(taskCompleted.getOpinion());
-				record.getProperties().setRouteName(taskCompleted.getRouteName());
-				record.getProperties().setMediaOpinion(taskCompleted.getMediaOpinion());
+				rec.getProperties().setOpinion(taskCompleted.getOpinion());
+				rec.getProperties().setRouteName(taskCompleted.getRouteName());
+				rec.getProperties().setMediaOpinion(taskCompleted.getMediaOpinion());
 			}
 		}
 		new Thread(() -> {
 			try {
 				WoId resp = ThisApplication.context().applications()
 						.postQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
-								Applications.joinQueryUri("record", "job", this.work.getJob()), record,
-								this.task.getJob())
+								Applications.joinQueryUri("record", "job", this.work.getJob()), rec, this.task.getJob())
 						.getData(WoId.class);
 				if (StringUtils.isBlank(resp.getId())) {
 					throw new ExceptionWorkProcessing(this.work.getId());
@@ -380,52 +378,60 @@ class ActionProcessing extends BaseAction {
 	}
 
 	private void processingUpdateTaskCompleted() throws Exception {
+
+		TaskCompletedBuilder.updateNextTaskIdentity(taskCompletedId,
+				rec.getProperties().getNextManualTaskIdentityList(), task.getJob());
+
 		// 记录下一处理人信息
-		WrapUpdateNextTaskIdentity req = new WrapUpdateNextTaskIdentity();
-		req.getTaskCompletedList().add(taskCompletedId);
-		req.setNextTaskIdentityList(record.getProperties().getNextManualTaskIdentityList());
-		ThisApplication.context().applications()
-				.putQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
-						Applications.joinQueryUri("taskcompleted", "next", "task", "identity"), req, task.getJob())
-				.getData(WrapBoolean.class);
+//		WrapUpdateNextTaskIdentity req = new WrapUpdateNextTaskIdentity();
+//		req.getTaskCompletedList().add(taskCompletedId);
+//		req.setNextTaskIdentityList(rec.getProperties().getNextManualTaskIdentityList());
+//		ThisApplication.context().applications()
+//				.putQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
+//						Applications.joinQueryUri("taskcompleted", "next", "task", "identity"), req, task.getJob())
+//				.getData(WrapBoolean.class);
 	}
 
 	private void processingUpdateTask() throws Exception {
-		// 记录上一处理人信息
-		if (ListTools.isNotEmpty(newTasks)) {
-			WrapUpdatePrevTaskIdentity req = new WrapUpdatePrevTaskIdentity();
-			req.setTaskList(ListTools.extractProperty(newTasks, JpaObject.id_FIELDNAME, String.class, true, true));
-			this.taskCompleteds.stream().forEach(o -> {
-				PrevTask prevTask = new PrevTask();
-				prevTask.setCompletedTime(o.getCompletedTime());
-				prevTask.setStartTime(o.getStartTime());
-				prevTask.setOpinion(o.getOpinion());
-				prevTask.setPerson(o.getPerson());
-				prevTask.setIdentity(o.getIdentity());
-				prevTask.setUnit(o.getUnit());
-				prevTask.setRouteName(o.getRouteName());
-				req.getPrevTaskIdentityList().add(prevTask.getIdentity());
-				req.getPrevTaskList().add(prevTask);
-			});
-			PrevTask prevTask = new PrevTask();
-			prevTask.setCompletedTime(new Date());
-			prevTask.setStartTime(task.getStartTime());
-			prevTask.setOpinion(task.getOpinion());
-			prevTask.setPerson(task.getPerson());
-			prevTask.setIdentity(task.getIdentity());
-			prevTask.setUnit(task.getUnit());
-			prevTask.setRouteName(task.getRouteName());
-			req.getPrevTaskIdentityList().add(prevTask.getIdentity());
-			req.setPrevTaskIdentity(prevTask.getIdentity());
-			req.getPrevTaskList().add(prevTask);
-			req.setPrevTask(prevTask);
-			// 去重
-			req.setPrevTaskIdentityList(ListTools.trim(req.getPrevTaskIdentityList(), true, true));
-			ThisApplication.context().applications()
-					.putQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
-							Applications.joinQueryUri("task", "prev", "task", "identity"), req, task.getJob())
-					.getData(WrapBoolean.class);
-		}
+
+		TaskBuilder.updatePrevTaskIdentity(newTasks.stream().map(Task::getId).collect(Collectors.toList()),
+				taskCompleteds, task);
+
+//		// 记录上一处理人信息
+//		if (ListTools.isNotEmpty(newTasks)) {
+//			WrapUpdatePrevTaskIdentity req = new WrapUpdatePrevTaskIdentity();
+//			req.setTaskList(ListTools.extractProperty(newTasks, JpaObject.id_FIELDNAME, String.class, true, true));
+//			this.taskCompleteds.stream().forEach(o -> {
+//				PrevTask prevTask = new PrevTask();
+//				prevTask.setCompletedTime(o.getCompletedTime());
+//				prevTask.setStartTime(o.getStartTime());
+//				prevTask.setOpinion(o.getOpinion());
+//				prevTask.setPerson(o.getPerson());
+//				prevTask.setIdentity(o.getIdentity());
+//				prevTask.setUnit(o.getUnit());
+//				prevTask.setRouteName(o.getRouteName());
+//				req.getPrevTaskIdentityList().add(prevTask.getIdentity());
+//				req.getPrevTaskList().add(prevTask);
+//			});
+//			PrevTask prevTask = new PrevTask();
+//			prevTask.setCompletedTime(new Date());
+//			prevTask.setStartTime(task.getStartTime());
+//			prevTask.setOpinion(task.getOpinion());
+//			prevTask.setPerson(task.getPerson());
+//			prevTask.setIdentity(task.getIdentity());
+//			prevTask.setUnit(task.getUnit());
+//			prevTask.setRouteName(task.getRouteName());
+//			req.getPrevTaskIdentityList().add(prevTask.getIdentity());
+//			req.setPrevTaskIdentity(prevTask.getIdentity());
+//			req.getPrevTaskList().add(prevTask);
+//			req.setPrevTask(prevTask);
+//			// 去重
+//			req.setPrevTaskIdentityList(ListTools.trim(req.getPrevTaskIdentityList(), true, true));
+//			ThisApplication.context().applications()
+//					.putQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
+//							Applications.joinQueryUri("task", "prev", "task", "identity"), req, task.getJob())
+//					.getData(WrapBoolean.class);
+//		}
 
 		List<Task> empowerTasks = new ArrayList<>();
 		for (Task o : newTasks) {

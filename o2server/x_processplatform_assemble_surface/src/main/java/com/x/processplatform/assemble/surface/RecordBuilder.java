@@ -1,0 +1,149 @@
+package com.x.processplatform.assemble.surface;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.apache.commons.collections4.list.UnmodifiableList;
+import org.apache.commons.collections4.set.ListOrderedSet;
+import org.apache.commons.lang3.StringUtils;
+
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.Applications;
+import com.x.base.core.project.x_processplatform_service_processing;
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.jaxrs.WoId;
+import com.x.processplatform.core.entity.content.Record;
+import com.x.processplatform.core.entity.content.RecordProperties.NextManual;
+import com.x.processplatform.core.entity.content.Task;
+import com.x.processplatform.core.entity.content.TaskCompleted;
+import com.x.processplatform.core.entity.content.WorkCompleted;
+import com.x.processplatform.core.entity.content.WorkLog;
+import com.x.processplatform.core.entity.element.Activity;
+
+public class RecordBuilder {
+
+	private static final List<String> TASK_FETCH_FIELDS = UnmodifiableList
+			.unmodifiableList(Arrays.asList(Task.identity_FIELDNAME, Task.job_FIELDNAME, Task.work_FIELDNAME,
+					Task.activity_FIELDNAME, Task.activityAlias_FIELDNAME, Task.activityName_FIELDNAME,
+					Task.activityToken_FIELDNAME, Task.activityType_FIELDNAME, Task.identity_FIELDNAME));
+
+	private RecordBuilder() {
+		// nothing
+	}
+
+	public static Record ofTaskProcessing(String recordType, WorkLog workLog, Task task, String taskCompletedId,
+			List<String> newlyTaskIds) throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Business business = new Business(emc);
+			Record rec = new Record(workLog, task);
+			rec.setType(recordType);
+			// 获取在record中需要记录的task中身份所有的组织职务.
+			rec.getProperties()
+					.setUnitDutyList(business.organization().unitDuty().listNameWithIdentity(task.getIdentity()));
+			// 记录处理身份的排序号
+			rec.getProperties().setIdentityOrderNumber(
+					business.organization().identity().getOrderNumber(task.getIdentity(), Integer.MAX_VALUE));
+			// 记录处理身份所在组织的排序号
+			rec.getProperties().setUnitOrderNumber(
+					business.organization().unit().getOrderNumber(task.getUnit(), Integer.MAX_VALUE));
+			// 记录处理身份所在组织层级组织排序号
+			rec.getProperties()
+					.setUnitLevelOrderNumber(business.organization().unit().getLevelOrderNumber(task.getUnit(), ""));
+			// 校验workCompleted,如果存在,那么说明工作已经完成,标识状态为已经完成.
+			WorkCompleted workCompleted = emc.firstEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME,
+					task.getJob());
+			if (null != workCompleted) {
+				rec.setCompleted(true);
+				rec.setWorkCompleted(workCompleted.getId());
+			}
+			rec.getProperties().setElapsed(
+					Config.workTime().betweenMinutes(rec.getProperties().getStartTime(), rec.getRecordTime()));
+			TaskCompleted taskCompleted = emc.find(taskCompletedId, TaskCompleted.class);
+			if (null != taskCompleted) {
+				// 处理完成后在重新写入待办信息
+				rec.getProperties().setOpinion(taskCompleted.getOpinion());
+				rec.getProperties().setRouteName(taskCompleted.getRouteName());
+				rec.getProperties().setMediaOpinion(taskCompleted.getMediaOpinion());
+			}
+			setNextManualListAndNextManualTaskIdentityList(business, newlyTaskIds, rec);
+			return rec;
+		}
+	}
+
+	public static Record ofWorkProcessing(String recordType, WorkLog workLog, EffectivePerson effectivePerson,
+			Activity destinationActivity, List<String> newlyTaskIds) throws Exception {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Business business = new Business(emc);
+			Record rec = new Record(workLog);
+			// 校验workCompleted,如果存在,那么说明工作已经完成,标识状态为已经完成.
+			WorkCompleted workCompleted = emc.firstEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME,
+					workLog.getJob());
+			if (null != workCompleted) {
+				rec.setCompleted(true);
+				rec.setWorkCompleted(workCompleted.getId());
+			}
+			rec.setPerson(effectivePerson.getDistinguishedName());
+			rec.setType(recordType);
+			rec.setArrivedActivity(destinationActivity.getId());
+			rec.setArrivedActivityAlias(destinationActivity.getAlias());
+			rec.setArrivedActivityName(destinationActivity.getName());
+			rec.setArrivedActivityType(destinationActivity.getActivityType());
+			rec.getProperties().setElapsed(
+					Config.workTime().betweenMinutes(rec.getProperties().getStartTime(), rec.getRecordTime()));
+			/* 需要记录处理人,先查看当前用户有没有之前处理过的信息,如果没有,取默认身份 */
+			TaskCompleted existTaskCompleted = emc.firstEqualAndEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME,
+					workLog.getJob(), TaskCompleted.person_FIELDNAME, effectivePerson.getDistinguishedName());
+			rec.setPerson(effectivePerson.getDistinguishedName());
+			if (null != existTaskCompleted) {
+				rec.setIdentity(existTaskCompleted.getIdentity());
+				rec.setUnit(existTaskCompleted.getUnit());
+			} else {
+				rec.setIdentity(
+						business.organization().identity().getMajorWithPerson(effectivePerson.getDistinguishedName()));
+				rec.setUnit(business.organization().unit().getWithIdentity(rec.getIdentity()));
+			}
+			setNextManualListAndNextManualTaskIdentityList(business, newlyTaskIds, rec);
+			return rec;
+		}
+	}
+
+	private static void setNextManualListAndNextManualTaskIdentityList(Business business, List<String> newlyTaskIds,
+			Record rec) throws Exception {
+		Set<String> identities = new ListOrderedSet<>();
+		business.entityManagerContainer().fetch(newlyTaskIds, Task.class, TASK_FETCH_FIELDS).stream()
+				.collect(Collectors.groupingBy(Task::getActivity, Collectors.toList())).entrySet().stream()
+				.forEach(o -> {
+					Task task = o.getValue().get(0);
+					NextManual nextManual = new NextManual();
+					nextManual.setActivity(task.getActivity());
+					nextManual.setActivityAlias(task.getActivityAlias());
+					nextManual.setActivityName(task.getActivityName());
+					nextManual.setActivityToken(task.getActivityToken());
+					nextManual.setActivityType(task.getActivityType());
+					o.getValue().stream().forEach(t -> {
+						identities.add(t.getIdentity());
+						nextManual.getTaskIdentityList().add(t.getIdentity());
+					});
+					rec.getProperties().getNextManualList().add(nextManual);
+				});
+		rec.getProperties().setNextManualTaskIdentityList(new ArrayList<>(identities));
+	}
+
+	public static String processing(Record r) throws Exception {
+		WoId resp = ThisApplication.context().applications()
+				.postQuery(false, x_processplatform_service_processing.class,
+						Applications.joinQueryUri("record", "job", r.getJob()), r, r.getJob())
+				.getData(WoId.class);
+		if (StringUtils.isBlank(resp.getId())) {
+			throw new ExceptionRecordProcessing(r.getWork());
+		} else {
+			return resp.getId();
+		}
+	}
+
+}
