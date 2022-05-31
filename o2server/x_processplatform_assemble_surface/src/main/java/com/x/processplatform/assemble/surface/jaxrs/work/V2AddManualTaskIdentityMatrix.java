@@ -19,9 +19,9 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
-import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.processplatform.ManualTaskIdentityMatrix;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.RecordBuilder;
@@ -35,6 +35,7 @@ import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2AddManualTaskIdentityMatrixWi;
+import com.x.processplatform.core.express.service.processing.jaxrs.work.V2AddManualTaskIdentityMatrixWo;
 
 class V2AddManualTaskIdentityMatrix extends BaseAction {
 
@@ -53,6 +54,8 @@ class V2AddManualTaskIdentityMatrix extends BaseAction {
 	private WorkLog workLog;
 	// work活动
 	private Manual manual;
+	// 返回的ManualTaskIdentityMatrix
+	private ManualTaskIdentityMatrix manualTaskIdentityMatrix;
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 		if (LOGGER.isDebugEnabled()) {
@@ -60,7 +63,7 @@ class V2AddManualTaskIdentityMatrix extends BaseAction {
 		}
 		this.init(effectivePerson, id, jsonElement);
 
-		this.add(wi.getOptionList(), wi.getRemove());
+		this.manualTaskIdentityMatrix = add(wi.getOptionList(), wi.getRemove());
 
 		this.processingWork(work);
 
@@ -75,6 +78,7 @@ class V2AddManualTaskIdentityMatrix extends BaseAction {
 
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = Wo.copier.copy(rec);
+		wo.setManualTaskIdentityMatrix(this.manualTaskIdentityMatrix);
 		result.setData(wo);
 		return result;
 
@@ -103,18 +107,19 @@ class V2AddManualTaskIdentityMatrix extends BaseAction {
 		}
 	}
 
-	private void add(List<V2AddManualTaskIdentityMatrixWi.Option> options, Boolean remove) throws Exception {
+	private ManualTaskIdentityMatrix add(List<V2AddManualTaskIdentityMatrixWi.Option> options, Boolean remove)
+			throws Exception {
 		V2AddManualTaskIdentityMatrixWi req = new V2AddManualTaskIdentityMatrixWi();
 		req.setIdentity(identity);
 		req.setOptionList(options);
 		req.setRemove(remove);
-		WrapBoolean resp = ThisApplication.context().applications()
-				.postQuery(x_processplatform_service_processing.class, Applications.joinQueryUri("work", "v2",
-						work.getId(), "add", "manual", "task", "identity", "matrix"), req, work.getJob())
-				.getData(WrapBoolean.class);
-		if (BooleanUtils.isNotTrue(resp.getValue())) {
-			throw new ExceptionAddManualTaskIdentityMatrix(work.getId());
-		}
+		return ThisApplication.context().applications()
+				.postQuery(x_processplatform_service_processing.class,
+						Applications.joinQueryUri("work", "v2", work.getId(), "add", "manual", "task", "identity",
+								"matrix"),
+						req, work.getJob())
+				.getData(V2AddManualTaskIdentityMatrixWo.class).getManualTaskIdentityMatrix();
+
 	}
 
 	private void processingWork(Work work) throws Exception {
@@ -148,6 +153,16 @@ class V2AddManualTaskIdentityMatrix extends BaseAction {
 
 		static WrapCopier<Record, Wo> copier = WrapCopierFactory.wo(Record.class, Wo.class, null,
 				JpaObject.FieldsInvisible);
+
+		private ManualTaskIdentityMatrix manualTaskIdentityMatrix;
+
+		public ManualTaskIdentityMatrix getManualTaskIdentityMatrix() {
+			return manualTaskIdentityMatrix;
+		}
+
+		public void setManualTaskIdentityMatrix(ManualTaskIdentityMatrix manualTaskIdentityMatrix) {
+			this.manualTaskIdentityMatrix = manualTaskIdentityMatrix;
+		}
 	}
 
 }

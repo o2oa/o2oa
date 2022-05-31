@@ -30,6 +30,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.RecordBuilder;
 import com.x.processplatform.assemble.surface.TaskBuilder;
 import com.x.processplatform.assemble.surface.TaskCompletedBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
@@ -442,59 +443,16 @@ class ActionProcessing extends BaseAction {
 		}
 
 		if (!empowerTasks.isEmpty()) {
-			List<Record> empowerRecords = new ArrayList<>();
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
 				for (Task o : empowerTasks) {
-					empowerRecords.add(createEmpowerRecord(business, o));
-				}
-			}
-			for (Record r : empowerRecords) {
-				WoId resp = ThisApplication.context().applications()
-						.postQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
-								Applications.joinQueryUri("record", "job", this.work.getJob()), r, this.task.getJob())
-						.getData(WoId.class);
-				if (StringUtils.isBlank(resp.getId())) {
-					throw new ExceptionWorkProcessing(this.work.getId());
+					Record r = RecordBuilder.ofTaskEmpower(o, task.getEmpowerFromIdentity(),
+							business.organization().person().getWithIdentity(task.getEmpowerFromIdentity()),
+							business.organization().unit().getWithIdentity(task.getEmpowerFromIdentity()));
+					RecordBuilder.processing(r);
 				}
 			}
 		}
-	}
-
-	private Record createEmpowerRecord(Business business, Task task) throws Exception {
-		Record o = new Record();
-		o.setType(Record.TYPE_EMPOWER);
-		o.setApplication(task.getApplication());
-		o.setProcess(task.getProcess());
-		o.setJob(task.getJob());
-		o.setCompleted(false);
-		o.setWork(task.getWork());
-		o.setFromActivity(task.getActivity());
-		o.setFromActivityAlias(task.getActivityAlias());
-		o.setFromActivityName(task.getActivityName());
-		o.setFromActivityToken(task.getActivityToken());
-		o.setFromActivityType(task.getActivityType());
-		o.setArrivedActivity(task.getActivity());
-		o.setArrivedActivityAlias(task.getActivityAlias());
-		o.setArrivedActivityName(task.getActivityName());
-		o.setArrivedActivityToken(task.getActivityToken());
-		o.setArrivedActivityType(task.getActivityType());
-		o.getProperties().setEmpowerToPerson(task.getPerson());
-		o.getProperties().setEmpowerToIdentity(task.getIdentity());
-		o.getProperties().setEmpowerToUnit(task.getUnit());
-		o.setIdentity(task.getEmpowerFromIdentity());
-		o.setPerson(business.organization().person().getWithIdentity(o.getIdentity()));
-		o.setUnit(business.organization().unit().getWithIdentity(o.getIdentity()));
-		o.getProperties().setElapsed(0L);
-		NextManual nextManual = new NextManual();
-		nextManual.setActivity(task.getActivity());
-		nextManual.setActivityAlias(task.getActivityAlias());
-		nextManual.setActivityName(task.getActivityName());
-		nextManual.setActivityToken(task.getActivityToken());
-		nextManual.setActivityType(task.getActivityType());
-		o.getProperties().getNextManualList().add(nextManual);
-		o.getProperties().getNextManualTaskIdentityList().add(task.getIdentity());
-		return o;
 	}
 
 	public static class Wo extends ProcessingWo {

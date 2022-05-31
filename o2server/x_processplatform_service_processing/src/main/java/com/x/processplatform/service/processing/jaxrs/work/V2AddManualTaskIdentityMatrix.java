@@ -16,13 +16,13 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.executor.ProcessPlatformExecutorFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.processplatform.ManualTaskIdentityMatrix;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2AddManualTaskIdentityMatrixWi;
+import com.x.processplatform.core.express.service.processing.jaxrs.work.V2AddManualTaskIdentityMatrixWo;
 import com.x.processplatform.service.processing.Business;
 
 class V2AddManualTaskIdentityMatrix extends BaseAction {
@@ -77,6 +77,7 @@ class V2AddManualTaskIdentityMatrix extends BaseAction {
 
 		@Override
 		public ActionResult<Wo> call() throws Exception {
+			ManualTaskIdentityMatrix matrix = null;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
 				emc.beginTransaction(Work.class);
@@ -84,7 +85,7 @@ class V2AddManualTaskIdentityMatrix extends BaseAction {
 				if (null == work) {
 					throw new ExceptionEntityNotExist(id, Work.class);
 				}
-				ManualTaskIdentityMatrix matrix = work.getManualTaskIdentityMatrix();
+				matrix = work.getManualTaskIdentityMatrix();
 				for (V2AddManualTaskIdentityMatrixWi.Option option : optionList) {
 					List<String> identities = business.organization().identity().list(option.getIdentityList());
 					if (!ListTools.isEmpty(identities)) {
@@ -102,7 +103,7 @@ class V2AddManualTaskIdentityMatrix extends BaseAction {
 			}
 			ActionResult<Wo> result = new ActionResult<>();
 			Wo wo = new Wo();
-			wo.setValue(true);
+			wo.setManualTaskIdentityMatrix(matrix);
 			result.setData(wo);
 			return result;
 		}
@@ -115,9 +116,9 @@ class V2AddManualTaskIdentityMatrix extends BaseAction {
 
 	}
 
-	public static class Wo extends WrapBoolean {
+	public static class Wo extends V2AddManualTaskIdentityMatrixWo {
 
-		private static final long serialVersionUID = -8882214104176786739L;
+		private static final long serialVersionUID = -1377290527826280418L;
 
 	}
 
