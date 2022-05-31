@@ -73,6 +73,9 @@
 		"border-bottom": "1px solid #EEE",
 		"border-right": "1px solid #EEE"
 	},
+	"editTableRadio": {
+		"display": "inline-block"
+	},
 	"propertyRefreshFormNode": {
 	    "width": "24px",
 	    "height": "24px",

@@ -122,6 +122,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadElTDropDownData();
                     this.loadElCarouselContent();
 
+                    this.loadSectionMerger();
+
                     this.loadSmartBISelect();
 
                     this.loadHelp();
@@ -244,6 +246,26 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             node.addEvent("keydown", function(e){e.stopPropagation();});
 		}.bind(this));
 	},
+
+    loadSectionMerger: function(){
+        var arrays = this.propertyContent.getElements(".MWFSectionMergeArea");
+        arrays.each(function(node){
+            // var title = node.get("title");
+            // var name = node.get("name");
+            // var json = this.data[name];
+            // if (!json) json = {};
+            MWF.requireApp("process.FormDesigner", "widget.SectionMerger", function(){
+                var merger = new MWF.xApplication.process.FormDesigner.widget.SectionMerger(node, this, {
+                    // "title": title,
+                    "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
+                    "onChange": function(){
+                    }.bind(this)
+                });
+                merger.load(this.data);
+            }.bind(this));
+            node.addEvent("keydown", function(e){e.stopPropagation();});
+        }.bind(this));
+    },
 
 	loadJSONArea: function(){
 		var jsonNode = this.propertyContent.getElement(".MWFJSONArea");

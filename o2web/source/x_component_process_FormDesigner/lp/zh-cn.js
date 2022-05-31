@@ -485,6 +485,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "amountValue": "合计数值",
         "averageValue": "平均值",
         "separatelyDisplay": "分开显示",
+        "sectionMergeEditScript": "合并数据脚本",
+        "sectionMergeReadScript": "展现的html脚本",
 
         "decimal": "小数点",
 
