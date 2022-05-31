@@ -61,6 +61,15 @@ MWF.xApplication.process.Xform.Elcascader = MWF.APPElcascader =  new Class(
     //     if (this.isReadonly()) this.json.disabled = true;
     //     this._loadNodeEdit();
     // },
+    _loadMergeReadContentNode: function( contentNode, data ){
+        this._loadOptions();
+        Promise.resolve(this.json.options).then(function(options){
+            if (data.data){
+                var text = this.__getOptionsText(options, data.data);
+                contentNode.set("text", text);
+            }
+        }.bind(this));
+    },
     _appendVueData: function(){
         this.form.Macro.environment.data.check(this.json.id);
         this.json[this.json.id] = this._getBusinessData();

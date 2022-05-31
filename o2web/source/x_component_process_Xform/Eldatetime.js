@@ -37,6 +37,10 @@ MWF.xApplication.process.Xform.Eldatetime = MWF.APPEldatetime =  new Class(
          */
         "elEvents": ["focus", "blur", "change"]
     },
+    _loadMergeReadContentNode: function( contentNode, data ){
+        var d = o2.typeOf( data.data ) === "array" ? data.data : [data.data];
+        contentNode.set("text", d.join( this.json.rangeSeparator ? " "+this.json.rangeSeparator+" " : " 至 " ) );
+    },
     _queryLoaded: function(){
         var data = this._getBusinessData();
         if( ["datetimerange"].contains(this.json.selectType) ) {

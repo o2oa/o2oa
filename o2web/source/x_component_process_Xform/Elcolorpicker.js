@@ -34,6 +34,37 @@ MWF.xApplication.process.Xform.Elcolorpicker = MWF.APPElcolorpicker =  new Class
          */
         "elEvents": ["change","active-change"]
     },
+    _loadMergeReadContentNode: function( contentNode, data ){
+        // var d = o2.typeOf( data.data ) === "array" ? data.data : [data.data];
+        // contentNode.set("text", d.join( this.json.rangeSeparator ? " "+this.json.rangeSeparator+" " : " 至 " ) );
+
+        var _self = this;
+
+        var json = Object.clone(this.json);
+        json.isReadonly = true;
+        var id = this.json.id + "_" + data.key.replace(/-/g, "_");
+        json.id = id;
+
+        this._setBusinessData(data.data, id);
+
+        var html = this.node.get("html");
+        contentNode.set("html", html);
+        var style = this.node.get("style");
+        contentNode.set("style", style);
+        contentNode.set("id", id);
+
+        if (this.form.all[id]) this.form.all[id] = null;
+        if (this.form.forms[id])this.form.forms[id] = null;
+
+        var module = this.form._loadModule(json, contentNode, function () {
+            this.field = false;
+            if( _self.widget )this.widget = _self.widget;
+        });
+        this.form.modules.push(module);
+        this.form.addEvent("getData", function (data) {
+            if( data[id] )delete data[id];
+        })
+    },
     _loadNode: function(){
         if (this.isReadonly()) this.json.disabled = true;
         this._loadNodeEdit();
