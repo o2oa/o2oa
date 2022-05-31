@@ -17,6 +17,7 @@ import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.processplatform.assemble.surface.jaxrs.task.ExceptionWorkProcessing;
 import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.content.RecordProperties.NextManual;
 import com.x.processplatform.core.entity.content.Task;
@@ -132,6 +133,43 @@ public class RecordBuilder {
 					rec.getProperties().getNextManualList().add(nextManual);
 				});
 		rec.getProperties().setNextManualTaskIdentityList(new ArrayList<>(identities));
+	}
+
+	public static Record ofTaskEmpower(Task task, String empowerFromIdentity, String empowerFromPerson,
+			String empowerFromUnit) {
+		Record o = new Record();
+		o.setType(Record.TYPE_EMPOWER);
+		o.setApplication(task.getApplication());
+		o.setProcess(task.getProcess());
+		o.setJob(task.getJob());
+		o.setCompleted(false);
+		o.setWork(task.getWork());
+		o.setFromActivity(task.getActivity());
+		o.setFromActivityAlias(task.getActivityAlias());
+		o.setFromActivityName(task.getActivityName());
+		o.setFromActivityToken(task.getActivityToken());
+		o.setFromActivityType(task.getActivityType());
+		o.setArrivedActivity(task.getActivity());
+		o.setArrivedActivityAlias(task.getActivityAlias());
+		o.setArrivedActivityName(task.getActivityName());
+		o.setArrivedActivityToken(task.getActivityToken());
+		o.setArrivedActivityType(task.getActivityType());
+		o.getProperties().setEmpowerToPerson(task.getPerson());
+		o.getProperties().setEmpowerToIdentity(task.getIdentity());
+		o.getProperties().setEmpowerToUnit(task.getUnit());
+		o.setIdentity(task.getEmpowerFromIdentity());
+		o.setPerson(empowerFromPerson);
+		o.setUnit(empowerFromUnit);
+		o.getProperties().setElapsed(0L);
+		NextManual nextManual = new NextManual();
+		nextManual.setActivity(task.getActivity());
+		nextManual.setActivityAlias(task.getActivityAlias());
+		nextManual.setActivityName(task.getActivityName());
+		nextManual.setActivityToken(task.getActivityToken());
+		nextManual.setActivityType(task.getActivityType());
+		o.getProperties().getNextManualList().add(nextManual);
+		o.getProperties().getNextManualTaskIdentityList().add(task.getIdentity());
+		return o;
 	}
 
 	public static String processing(Record r) throws Exception {

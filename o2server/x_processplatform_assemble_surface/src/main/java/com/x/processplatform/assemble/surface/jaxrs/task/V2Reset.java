@@ -20,7 +20,6 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
-import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.processplatform.ManualTaskIdentityMatrix;
@@ -45,6 +44,7 @@ import com.x.processplatform.core.express.service.processing.jaxrs.task.Processi
 import com.x.processplatform.core.express.service.processing.jaxrs.task.V2EditWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.V2ResetWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2AddManualTaskIdentityMatrixWi;
+import com.x.processplatform.core.express.service.processing.jaxrs.work.V2AddManualTaskIdentityMatrixWo;
 
 public class V2Reset extends BaseAction {
 
@@ -66,10 +66,11 @@ public class V2Reset extends BaseAction {
 	private String taskCompletedId;
 	private Wi wi;
 	private EffectivePerson effectivePerson;
+	// 返回的ManualTaskIdentityMatrix
+	private ManualTaskIdentityMatrix manualTaskIdentityMatrix;
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
-		ActionResult<Wo> result = new ActionResult<>();
 		this.wi = this.convertToWrapIn(jsonElement, Wi.class);
 		this.effectivePerson = effectivePerson;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -85,7 +86,7 @@ public class V2Reset extends BaseAction {
 
 		}
 
-		this.reset(this.task, (!wi.getKeep()), identities, manual);
+		this.manualTaskIdentityMatrix = reset(this.task, (!wi.getKeep()), identities, manual);
 
 		if (StringUtils.isNotEmpty(wi.getOpinion()) || StringUtils.isNotEmpty(wi.getRouteName())) {
 			updateTask(wi.getOpinion(), wi.getRouteName());
@@ -114,7 +115,9 @@ public class V2Reset extends BaseAction {
 		if (!taskCompleteds.isEmpty()) {
 			TaskBuilder.updatePrevTaskIdentity(newTaskIds, taskCompleteds, this.task);
 		}
+		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = Wo.copier.copy(rec);
+		wo.setManualTaskIdentityMatrix(this.manualTaskIdentityMatrix);
 		result.setData(wo);
 		return result;
 	}
@@ -172,7 +175,8 @@ public class V2Reset extends BaseAction {
 		}
 	}
 
-	private void reset(Task task, boolean remove, List<String> identities, Manual manual) throws Exception {
+	private ManualTaskIdentityMatrix reset(Task task, boolean remove, List<String> identities, Manual manual)
+			throws Exception {
 		V2AddManualTaskIdentityMatrixWi req = new V2AddManualTaskIdentityMatrixWi();
 		req.setIdentity(task.getIdentity());
 		req.setRemove(remove);
@@ -187,13 +191,13 @@ public class V2Reset extends BaseAction {
 		List<V2AddManualTaskIdentityMatrixWi.Option> optionList = new ArrayList<>();
 		optionList.add(option);
 		req.setOptionList(optionList);
-		WrapBoolean resp = ThisApplication.context().applications()
-				.postQuery(x_processplatform_service_processing.class, Applications.joinQueryUri("work", "v2",
-						task.getWork(), "add", "manual", "task", "identity", "matrix"), req, task.getJob())
-				.getData(WrapBoolean.class);
-		if (BooleanUtils.isNotTrue(resp.getValue())) {
-			throw new ExceptionReset(task.getId());
-		}
+		return ThisApplication.context().applications()
+				.postQuery(x_processplatform_service_processing.class,
+						Applications.joinQueryUri("work", "v2", task.getWork(), "add", "manual", "task", "identity",
+								"matrix"),
+						req, task.getJob())
+				.getData(V2AddManualTaskIdentityMatrixWo.class).getManualTaskIdentityMatrix();
+
 	}
 
 	private void processingWork() throws Exception {
@@ -225,6 +229,17 @@ public class V2Reset extends BaseAction {
 
 		static WrapCopier<Record, Wo> copier = WrapCopierFactory.wo(Record.class, Wo.class, null,
 				JpaObject.FieldsInvisible);
+ 
+
+		private ManualTaskIdentityMatrix manualTaskIdentityMatrix;
+
+		public void setManualTaskIdentityMatrix(ManualTaskIdentityMatrix manualTaskIdentityMatrix) {
+			this.manualTaskIdentityMatrix = manualTaskIdentityMatrix;
+		}
+
+		public ManualTaskIdentityMatrix getManualTaskIdentityMatrix() {
+			return manualTaskIdentityMatrix;
+		}
 	}
 
 }

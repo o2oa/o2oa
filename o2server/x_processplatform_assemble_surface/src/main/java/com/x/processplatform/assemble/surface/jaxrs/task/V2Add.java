@@ -2,7 +2,9 @@ package com.x.processplatform.assemble.surface.jaxrs.task;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -22,13 +24,14 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
-import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.processplatform.ManualTaskIdentityMatrix;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.RecordBuilder;
+import com.x.processplatform.assemble.surface.TaskBuilder;
+import com.x.processplatform.assemble.surface.TaskCompletedBuilder;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Record;
@@ -40,9 +43,9 @@ import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.ProcessingWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.V2AddWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.V2EditWi;
-import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapUpdatePrevTaskIdentity;
-import com.x.processplatform.core.express.service.processing.jaxrs.taskcompleted.WrapUpdateNextTaskIdentity;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2AddManualTaskIdentityMatrixWi;
+import com.x.processplatform.core.express.service.processing.jaxrs.work.V2AddManualTaskIdentityMatrixWi.Option;
+import com.x.processplatform.core.express.service.processing.jaxrs.work.V2AddManualTaskIdentityMatrixWo;
 
 public class V2Add extends BaseAction {
 
@@ -65,13 +68,17 @@ public class V2Add extends BaseAction {
 	private WorkLog workLog = null;
 	// 本环节创建的record
 	private Record rec = null;
+	// 执行前已经存在的已办
+	private List<TaskCompleted> taskCompleteds;
+	// 返回的ManualTaskIdentityMatrix
+	private ManualTaskIdentityMatrix manualTaskIdentityMatrix;
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 		}
 		this.init(effectivePerson, id, jsonElement);
-		this.add(this.task, wi.getOptionList(), wi.getRemove());
+		this.manualTaskIdentityMatrix = this.add(this.task, wi.getOptionList(), wi.getRemove());
 		if (BooleanUtils.isTrue(wi.getRemove())) {
 			taskCompletedId = this.processingTask(this.task);
 		}
@@ -91,9 +98,10 @@ public class V2Add extends BaseAction {
 		RecordBuilder.processing(rec);
 
 		if (StringUtils.isNotEmpty(taskCompletedId)) {
-			this.updateTaskCompleted();
+			TaskCompletedBuilder.updateNextTaskIdentity(this.taskCompletedId,
+					rec.getProperties().getNextManualTaskIdentityList(), task.getJob());
 		}
-		this.updateTask();
+		TaskBuilder.updatePrevTaskIdentity(this.newTaskIds, this.taskCompleteds, this.task);
 		return result();
 	}
 
@@ -112,14 +120,13 @@ public class V2Add extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			this.effectivePerson = effectivePerson;
-			this.wi = this.convertToWrapIn(jsonElement, Wi.class);
 			this.task = emc.find(id, Task.class);
 			if (null == task) {
 				throw new ExceptionEntityNotExist(id, Task.class);
 			}
-			if (emc.countEqual(Work.class, JpaObject.id_FIELDNAME, task.getWork()) < 1) {
-				throw new ExceptionEntityNotExist(task.getWork(), Work.class);
-			}
+			this.wi = this.convertToWrapIn(jsonElement, Wi.class);
+			this.initFilterOptionIdentities(business, wi, task.getWork());
+			this.initCheckOptionIdentities(wi);
 			this.workLog = emc.firstEqualAndEqual(WorkLog.class, WorkLog.job_FIELDNAME, task.getJob(),
 					WorkLog.fromActivityToken_FIELDNAME, task.getActivityToken());
 			if (null == workLog) {
@@ -131,21 +138,47 @@ public class V2Add extends BaseAction {
 			}
 			this.existTaskIds = emc.idsEqualAndEqual(Task.class, Task.job_FIELDNAME, task.getJob(), Task.work_FIELDNAME,
 					task.getWork());
+			this.taskCompleteds = business.entityManagerContainer().listEqual(TaskCompleted.class,
+					TaskCompleted.activityToken_FIELDNAME, task.getActivityToken());
 		}
 	}
 
-	private void add(Task task, List<V2AddManualTaskIdentityMatrixWi.Option> options, Boolean remove) throws Exception {
+	private void initFilterOptionIdentities(Business business, Wi wi, String workId) throws Exception {
+		Work work = business.entityManagerContainer().find(workId, Work.class);
+		if (null == work) {
+			throw new ExceptionEntityNotExist(workId, Task.class);
+		}
+		List<String> identities = work.getManualTaskIdentityMatrix().flat();
+		for (Option option : wi.getOptionList()) {
+			Iterator<String> iterator = option.getIdentityList().iterator();
+			while (iterator.hasNext()) {
+				if (identities.contains(iterator.next())) {
+					iterator.remove();
+				}
+			}
+		}
+	}
+
+	private void initCheckOptionIdentities(Wi wi) throws Exception {
+		Optional<List<String>> optional = wi.getOptionList().stream().map(Option::getIdentityList)
+				.filter(o -> !o.isEmpty()).findAny();
+		if (optional.isEmpty()) {
+			throw new ExceptionEmptyOption();
+		}
+	}
+
+	private ManualTaskIdentityMatrix add(Task task, List<V2AddManualTaskIdentityMatrixWi.Option> options,
+			Boolean remove) throws Exception {
 		V2AddManualTaskIdentityMatrixWi req = new V2AddManualTaskIdentityMatrixWi();
 		req.setIdentity(task.getIdentity());
 		req.setOptionList(options);
 		req.setRemove(remove);
-		WrapBoolean resp = ThisApplication.context().applications()
-				.postQuery(x_processplatform_service_processing.class, Applications.joinQueryUri("work", "v2",
-						task.getWork(), "add", "manual", "task", "identity", "matrix"), req, task.getJob())
-				.getData(WrapBoolean.class);
-		if (BooleanUtils.isNotTrue(resp.getValue())) {
-			throw new ExceptionAdd(task.getId());
-		}
+		return ThisApplication.context().applications()
+				.postQuery(x_processplatform_service_processing.class,
+						Applications.joinQueryUri("work", "v2", task.getWork(), "add", "manual", "task", "identity",
+								"matrix"),
+						req, task.getJob())
+				.getData(V2AddManualTaskIdentityMatrixWo.class).getManualTaskIdentityMatrix();
 	}
 
 	private String processingTask(Task task) throws Exception {
@@ -175,35 +208,36 @@ public class V2Add extends BaseAction {
 		}
 	}
 
-	private void updateTaskCompleted() throws Exception {
-		// 记录下一处理人信息
-		WrapUpdateNextTaskIdentity req = new WrapUpdateNextTaskIdentity();
-		req.getTaskCompletedList().add(this.taskCompletedId);
-		req.setNextTaskIdentityList(rec.getProperties().getNextManualTaskIdentityList());
-		ThisApplication.context().applications()
-				.putQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
-						Applications.joinQueryUri("taskcompleted", "next", "task", "identity"), req, task.getJob())
-				.getData(WrapBoolean.class);
-	}
-
-	private void updateTask() throws Exception {
-		// 记录上一处理人信息
-		if (ListTools.isNotEmpty(this.newTaskIds)) {
-			WrapUpdatePrevTaskIdentity req = new WrapUpdatePrevTaskIdentity();
-			req.setTaskList(this.newTaskIds);
-			req.setPrevTaskIdentity(task.getIdentity());
-			req.getPrevTaskIdentityList().add(task.getIdentity());
-			ThisApplication.context().applications()
-					.putQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
-							Applications.joinQueryUri("task", "prev", "task", "identity"), req, task.getJob())
-					.getData(WrapBoolean.class);
-		}
-	}
+//	private void updateTaskCompleted() throws Exception {
+//		// 记录下一处理人信息
+//		WrapUpdateNextTaskIdentity req = new WrapUpdateNextTaskIdentity();
+//		req.getTaskCompletedList().add(this.taskCompletedId);
+//		req.setNextTaskIdentityList(rec.getProperties().getNextManualTaskIdentityList());
+//		ThisApplication.context().applications()
+//				.putQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
+//						Applications.joinQueryUri("taskcompleted", "next", "task", "identity"), req, task.getJob())
+//				.getData(WrapBoolean.class);
+//	}
+//
+//	private void updateTask() throws Exception {
+//		// 记录上一处理人信息
+//		if (ListTools.isNotEmpty(this.newTaskIds)) {
+//			WrapUpdatePrevTaskIdentity req = new WrapUpdatePrevTaskIdentity();
+//			req.setTaskList(this.newTaskIds);
+//			req.setPrevTaskIdentity(task.getIdentity());
+//			req.getPrevTaskIdentityList().add(task.getIdentity());
+//			ThisApplication.context().applications()
+//					.putQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
+//							Applications.joinQueryUri("task", "prev", "task", "identity"), req, task.getJob())
+//					.getData(WrapBoolean.class);
+//		}
+//	}
 
 	private ActionResult<Wo> result() throws InstantiationException, IllegalAccessException, IllegalArgumentException,
 			InvocationTargetException, NoSuchMethodException, SecurityException {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = Wo.copier.copy(this.rec);
+		wo.setManualTaskIdentityMatrix(this.manualTaskIdentityMatrix);
 		result.setData(wo);
 		return result;
 	}
@@ -248,6 +282,16 @@ public class V2Add extends BaseAction {
 
 		static WrapCopier<Record, Wo> copier = WrapCopierFactory.wo(Record.class, Wo.class, null,
 				JpaObject.FieldsInvisible);
+
+		private ManualTaskIdentityMatrix manualTaskIdentityMatrix;
+
+		public ManualTaskIdentityMatrix getManualTaskIdentityMatrix() {
+			return manualTaskIdentityMatrix;
+		}
+
+		public void setManualTaskIdentityMatrix(ManualTaskIdentityMatrix manualTaskIdentityMatrix) {
+			this.manualTaskIdentityMatrix = manualTaskIdentityMatrix;
+		}
 
 	}
 
