@@ -3944,112 +3944,32 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     }
                 ],
                 "onPostShow": function () {
-                    //$("rerouteWork_okButton").addEvent("click", function(){
-                    //    _self.doRerouteWork(this);
-                    //}.bind(this));
-                    //$("rerouteWork_cancelButton").addEvent("click", function(){
-                    //    this.close();
-                    //}.bind(this));
-
                     var select = $("rerouteWork_selectActivity");
-                    _self.workAction.getRerouteTo(_self.businessData.work.process, function (json) {
-                        json.data.agentList.each(function (activity) {
+                    var createActivityOption = function(list){
+                        list.each(function (activity) {
                             new Element("option", {
                                 "value": activity.id + "#agent",
                                 "text": activity.name
                             }).inject(select);
                         }.bind(_self));
-
-                        json.data.cancelList.each(function (activity) {
-                            new Element("option", {
-                                "value": activity.id + "#cancel",
-                                "text": activity.name
-                            }).inject(select);
-                        }.bind(_self));
-
-                        json.data.choiceList.each(function (activity) {
-                            new Element("option", {
-                                "value": activity.id + "#choice",
-                                "text": activity.name
-                            }).inject(select);
-                        }.bind(_self));
-
-                        // json.data.controllerList.each(function(activity){
-                        //     new Element("option", {
-                        //         "value": activity.id+"#condition",
-                        //         "text": activity.name
-                        //     }).inject(select);
-                        // }.bind(_self));
-
-                        json.data.delayList.each(function (activity) {
-                            new Element("option", {
-                                "value": activity.id + "#delay",
-                                "text": activity.name
-                            }).inject(select);
-                        }.bind(_self));
-
-                        json.data.embedList.each(function (activity) {
-                            new Element("option", {
-                                "value": activity.id + "#embed",
-                                "text": activity.name
-                            }).inject(select);
-                        }.bind(_self));
-
-                        json.data.endList.each(function (activity) {
-                            new Element("option", {
-                                "value": activity.id + "#end",
-                                "text": activity.name
-                            }).inject(select);
-                        }.bind(_self));
-
-                        json.data.invokeList.each(function (activity) {
-                            new Element("option", {
-                                "value": activity.id + "#invoke",
-                                "text": activity.name
-                            }).inject(select);
-                        }.bind(_self));
-
-                        json.data.manualList.each(function (activity) {
-                            new Element("option", {
-                                "value": activity.id + "#manual",
-                                "text": activity.name
-                            }).inject(select);
-                        }.bind(_self));
-
-                        json.data.mergeList.each(function (activity) {
-                            new Element("option", {
-                                "value": activity.id + "#merge",
-                                "text": activity.name
-                            }).inject(select);
-                        }.bind(_self));
-
-                        json.data.messageList.each(function (activity) {
-                            new Element("option", {
-                                "value": activity.id + "#message",
-                                "text": activity.name
-                            }).inject(select);
-                        }.bind(_self));
-
-                        json.data.parallelList.each(function (activity) {
-                            new Element("option", {
-                                "value": activity.id + "#parallel",
-                                "text": activity.name
-                            }).inject(select);
-                        }.bind(_self));
-
-                        json.data.serviceList.each(function (activity) {
-                            new Element("option", {
-                                "value": activity.id + "#service",
-                                "text": activity.name
-                            }).inject(select);
-                        }.bind(_self));
-
-                        json.data.splitList.each(function (activity) {
-                            new Element("option", {
-                                "value": activity.id + "#split",
-                                "text": activity.name
-                            }).inject(select);
-                        }.bind(_self));
+                    }
+                    _self.workAction.getRerouteTo(_self.businessData.work.process, function (json) {
+                        [
+                            "agentList",
+                            "cancelList",
+                            "choiceList",
+                            "delayList",
+                            "embedList",
+                            "endList",
+                            "invokeList",
+                            "manualList",
+                            "mergeList",
+                            "parallelList",
+                            "serviceList",
+                            "splitList"
+                        ].forEach(function(name){
+                            createActivityOption(json.data[name]);
+                        });
                     }.bind(_self));
 
                     var selPeopleButton = this.content.getElement(".rerouteWork_selPeopleButton");
@@ -5183,13 +5103,13 @@ debugger;
                 optionList: optionList,
                 remove: false,
                 opinion: opinion,
-                routeName: o2.xApplication.process.Xform.LP.form.addTask
+                routeName: o2.xApplication.process.Xform.LP.form.addTask+":"+nameArr.join(", ")
             }
             this.fireEvent("beforeAddTask");
             if (this.app && this.app.fireEvent) this.app.fireEvent("beforeAddTask");
 
             this.saveFormData(function(){
-                o2.Actions.load("x_processplatform_assemble_surface").TaskAction.v2Add(taskId, addTaskOptions, function (json) {
+                o2.Actions.load("x_processplatform_assemble_surface").TaskAction.V2Add(taskId, addTaskOptions, function (json) {
                     debugger;
                     this.fireEvent("afterAddTask");
                     if (this.app && this.app.fireEvent) this.app.fireEvent("afterAddTask");

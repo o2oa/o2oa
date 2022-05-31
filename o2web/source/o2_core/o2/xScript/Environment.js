@@ -2961,59 +2961,58 @@ MWF.xScript.Environment = function(ev){
          * @static
          * @param {Object} [option] - 添加待办人的相关参数，如果不提供option参数，则弹出加签对话框。<br/>
          * 格式如下：
-         <pre><code class="language-js">
-         {
-         optionList: optionList,
-                remove: false,
-                opinion: opinion,
-                routeName
-
-            "optionList" : [    //增加待办人的操作的列表
-                {
-                    "identityList;": [],    //要增加待办组的身份列表，这些身份中只需要一个人处理即可。
-                    "position": "after"     //增加待办的位置，可以选用以下值：
-                                            //after: 在当前待办（由identity参数指定）之后；
-                                            //before: 在当前待办（由identity参数指定）之前；
-                                            //top: 将要添加的待办人加入到所有待办列表最前面；
-                                            //bottom: 将要添加的待办人加入到所有待办列表的最后；
-                                            //extend: 在当前待办（由identity参数指定）组中，添加待办人；
-                                            //after、before、top、bottom四个参数值在并行处理活动时，没有本质区别，所有待办都会同时产生。
-                                            //而在串行活动或单人活动就会影响到待办产生的顺序。
-                                            //extend参数值，会在当前待办（由identity参数指定）组中添加一个待办人，在同一组中的待办人，只需要一人处理，就会标志整个待办组已经处理。
-                                            //当传入identity参数时，此处参数值都会会生效，默认为after；如果没有传入identity，只有top和bottom生效
-                }
-            ],
-            "opinion" : "", //增加待办意见.
-            "routeName" : "", //增加待办在流程记录中显示的路由.
-            "identity": "", //当前待办的用户身份，如果没有传入此参数，会查找当前用户对于此文档的待办，如果有，则并传入待办的身份。
-            "remove" : false, //是否删除当前用户的待办.默认false
-            "success": function(){}, //执行成功后的回调方法
-            "failure": function(){} //执行失败后的回调方法
-        }
+         * <pre><code class="language-js">
+         * {
+         *   "optionList" : [    //增加待办人的操作的列表
+         *       {
+         *           "identityList;": [],    //要增加待办组的身份列表，这些身份中只需要一个人处理即可。
+         *           "position": "after"     //增加待办的位置，可以选用以下值：
+         *                                   //after: 在当前待办（由identity参数指定）之后；
+         *                                   //before: 在当前待办（由identity参数指定）之前；
+         *                                   //top: 将要添加的待办人加入到所有待办列表最前面；
+         *                                   //bottom: 将要添加的待办人加入到所有待办列表的最后；
+         *                                   //extend: 在当前待办（由identity参数指定）组中，添加待办人；
+         *                                   //after、before、top、bottom四个参数值在并行处理活动时，没有本质区别，所有待办都会同时产生。
+         *                                   //而在串行活动或单人活动就会影响到待办产生的顺序。
+         *                                   //extend参数值，会在当前待办（由identity参数指定）组中添加一个待办人，在同一组中的待办人，只需要一人处理，就会标志整个待办组已经处理。
+         *                                   //当传入identity参数时，此处参数值都会会生效，默认为after；如果没有传入identity，只有top和bottom生效
+         *       }
+         *   ],
+         *   "opinion" : "", //增加待办意见.
+         *   "routeName" : "", //增加待办在流程记录中显示的路由.
+         *   "identity": "", //当前待办的用户身份，如果没有传入此参数，会查找当前用户对于此文档的待办，如果有，则并传入待办的身份。
+         *   "remove" : false, //是否删除当前用户的待办.默认false
+         *   "success": function(){}, //执行成功后的回调方法
+         *   "failure": function(){} //执行失败后的回调方法
+         * }
          </code></pre>
          * @example
-         //不带参数，则弹出加签对话框
-         this.form.addTask();
+         * //不带参数，则弹出加签对话框
+         * this.form.addTask();
          * @example
-         //带参数，根据参数执行添加待办操作
-         this.form.addTask({
-            "value" : ["开发部@kfb@U"],
-            "trimExist" : true,
-            "success": function(json){
-                this.form.notice("addSplit success", "success");
-            }.bind(this),
-            "failure": function(xhr, text, error){
-                //xhr--HttpRequest请求对象
-                //text--HttpResponse内容文本
-                //error--错误信息
-                this.form.notice("addSplit failure: "+error, "error");
-            }.bind(this)
-        });
+         * //带参数，根据参数执行添加待办操作
+         * this.form.addTask({
+         *   "optionList" : [
+         *       {
+         *           "identityList": ["张三@XXXX@I", "李四@XXXX@I"],
+         *           "position": "after"
+         *       }
+         *   ],
+         *   "opinion" : "请张三、李四审阅",
+         *   "routeName" : "添加审阅人",
+         *   "success": function(json){
+         *       this.form.notice("addTask success", "success");
+         *   }.bind(this),
+         *   "failure": function(xhr, text, error){
+         *       //xhr--HttpRequest请求对象
+         *       //text--HttpResponse内容文本
+         *       //error--错误信息
+         *       this.form.notice("addTask failure: "+error, "error");
+         *   }.bind(this)
+         * });
          */
         "addTask": function(option){
-            if (!option){
-                if (_form.businessData.control["allowAddTask"]) _form.addTask();
-            }else{
+            if (option){
                 (function(callback){
                     if (_form.businessData.control["allowSave"]){
                         _form.saveFormData(callback);
@@ -3021,9 +3020,14 @@ MWF.xScript.Environment = function(ev){
                         if (callback) callback();
                     }
                 })(function(){
+                    if (!option.identity){
+                        option.identity = (_form.businessData.task) && _form.businessData.task.identity;
+                    }
                     var workId = _form.businessData.work.id;
                     o2.Actions.load("x_processplatform_assemble_surface").WorkAction.v2AddManualTaskIdentityMatrix(workId, option, option.success, option.failure);
                 });
+            }else{
+                if (_form.businessData.control["allowAddTask"]) _form.addTask();
             }
         },
 

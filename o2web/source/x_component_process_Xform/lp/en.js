@@ -365,7 +365,15 @@ MWF.xApplication.process.Xform.LP = {
         "sendReadNotify": "Send a pending notification",
 
         "reviewIdentity": "Identity",
-        "noTaskToReset": "The current job does not have your task, and the operation cannot be performed"
+        "noTaskToReset": "The current job does not have your task, and the operation cannot be performed",
+
+        "addTaskPerson": "Add Task",
+        "addTaskOpinion": "Opinion",
+        "addTaskBefore": "Add Task Before",
+        "addTaskAfter": "Add Task After",
+        "addTaskBeforeTitle": "Add a task before you process",
+        "addTaskAfterTitle": "Add a task after you process",
+        "addTaskType": "Add Task Type"
     },
     "sendRead": "Send Read",
     "sendReadOk": "Sent Read:",
@@ -377,6 +385,10 @@ MWF.xApplication.process.Xform.LP = {
     "sendReviewOk": "Review has been added:",
     "inputSendReviewPeople": "Please select the person",
     "sendReviewPeopleCanNotEmpty": "Please select the person",
+
+    "inputAddTaskPeople": "Please select Person",
+    "addTaskOk": "Added Task",
+    "addTaskInfor": "You have added task to the file:",
 
     "applicationNotFound": "App Not Found",
 
