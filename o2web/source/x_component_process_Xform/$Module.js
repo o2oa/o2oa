@@ -183,18 +183,39 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         }
         return array;
     },
-    getSectionKeyWithMerge: function(data){
+    getSectionKeyWithMerge: function(data, callback){
         switch (this.json.sectionKey) {
             case "person":
-                return Promise.resolve( o2.Actions.load("x_organization_assemble_express").PersonAction.listObject({
-                    "personList": [data.key]
-                })).then(function(json){
-                    return json.data.length ? json.data[0].name : data.key;
-                });
+                if( !this.form.sectionKeyPersonMap )this.form.sectionKeyPersonMap = {};
+                if( this.form.sectionKeyPersonMap[data.key] ){
+                    callback(this.form.sectionKeyPersonMap[data.key]);
+                    return;
+                }
+
+                //只获取一次。把callback存起来，等异步调用完成后一次性执行callback
+                if( !this.form.sectionKeyCallbackMap )this.form.sectionKeyCallbackMap = {};
+                var map = this.form.sectionKeyCallbackMap;
+                if( !map[ data.key ] )map[ data.key ] = [];
+                if( !map[ data.key ].length ){
+                    Promise.resolve( o2.Actions.load("x_organization_assemble_express").PersonAction.listObject({
+                        "personList": [data.key]
+                    })).then(function(json){
+                        var key = json.data.length ? json.data[0].name : data.key;
+                        this.form.sectionKeyPersonMap[data.key] = key;
+                        while( map[ data.key ].length ){
+                            map[ data.key ].shift()( key );
+                        }
+                    }.bind(this));
+                }
+                map[ data.key ].push( callback );
+
+                break;
             case "unit":
-                return data.key.split("@")[0];
+                callback( data.key.split("@")[0] );
+                break;
             case "textValue":
-                return data.key;
+                callback( data.key );
+                break;
             case "script":
                 var d;
                 if( this.json.sectionKeyScript && this.json.sectionKeyScript.code){
@@ -204,7 +225,8 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 }else{
                     d = "";
                 }
-                return d;
+                callback( d );
+                break;
         }
     },
     _loadMergeReadNode: function(keepHtml, position) {
@@ -253,14 +275,15 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 var keyNode = new Element("div.mwf_sectionkey", {
                     styles : sectionKeyStyles
                 }).inject(node);
-                var key = this.getSectionKeyWithMerge( d );
-                if( o2.typeOf(key) === "string" ){
-                    keyNode.set("text", key + (this.json.keyContentSeparator || ""));
-                }else{
-                    Promise.resolve(key).then(function (k) {
-                        keyNode.set("text", k + (this.json.keyContentSeparator || ""));
-                    }.bind(this))
-                }
+                this.getSectionKeyWithMerge( d, function (key) {
+                    if( o2.typeOf(key) === "string" ){
+                        keyNode.set("text", key + (this.json.keyContentSeparator || ""));
+                    }else{
+                        Promise.resolve(key).then(function (k) {
+                            keyNode.set("text", k + (this.json.keyContentSeparator || ""));
+                        }.bind(this))
+                    }
+                }.bind(this));
             }
             var contentNode = new Element("div.mwf_sectioncontent", {
                 styles : sectionContentStyles

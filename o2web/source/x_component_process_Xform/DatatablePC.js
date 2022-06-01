@@ -1679,7 +1679,15 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 
 				var hasData = this.data.hasOwnProperty(templateJsonId);
 
+				debugger;
 				var module = this.form._loadModule(json, node, function () {
+					if( _self.options.isMergeRead ){
+						this.field = false; //不希望保存数据
+						this._getBusinessData = function(){
+							return _self.data[templateJsonId];
+						};
+						this._setBusinessData = function () {};
+					}
 					if( _self.widget )this.widget = _self.widget;
 					this.parentLine = _self;
 					this.parentDatatable = _self.datatable;
@@ -1718,7 +1726,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 					this.allField_templateId[templateJsonId] = module;
 					this.fields.push( module );
 
-					if( this.datatable.multiEditMode ){
+					if( this.options.isEdited && this.datatable.multiEditMode ){
 						module.addEvent("change", function(){
 							this.datatable.fireEvent("change", [{lines: [this], type: "editmodule", module: module}]);
 						}.bind(this))
