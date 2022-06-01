@@ -71,6 +71,7 @@ class ActionCreate extends BaseAction {
 			if (!business.application().allowRead(effectivePerson, roles, identities, units, application)) {
 				throw new ExceptionApplicationAccessDenied(effectivePerson.getDistinguishedName(), application.getId());
 			}
+			identities = List.of(identity);
 			List<String> groups = business.organization().group().listWithIdentity(identities);
 			if (!business.process().startable(effectivePerson, identities, units, groups, process)) {
 				throw new ExceptionAccessDenied(effectivePerson, process);
@@ -105,7 +106,7 @@ class ActionCreate extends BaseAction {
 
 	/**
 	 * 拼装返回结果
-	 * 
+	 *
 	 * @param effectivePerson
 	 * @param workId
 	 * @return
@@ -140,7 +141,7 @@ class ActionCreate extends BaseAction {
 
 	/**
 	 * 如果不是草稿那么需要进行设置
-	 * 
+	 *
 	 * @param wi
 	 * @param identity
 	 * @param workId
