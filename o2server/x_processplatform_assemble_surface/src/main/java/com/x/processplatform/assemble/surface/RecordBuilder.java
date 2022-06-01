@@ -42,27 +42,10 @@ public class RecordBuilder {
 			Business business = new Business(emc);
 			Record rec = new Record(workLog, task);
 			rec.setType(recordType);
-			// 获取在record中需要记录的task中身份所有的组织职务.
-			rec.getProperties()
-					.setUnitDutyList(business.organization().unitDuty().listNameWithIdentity(task.getIdentity()));
-			// 记录处理身份的排序号
-			rec.getProperties().setIdentityOrderNumber(
-					business.organization().identity().getOrderNumber(task.getIdentity(), Integer.MAX_VALUE));
-			// 记录处理身份所在组织的排序号
-			rec.getProperties().setUnitOrderNumber(
-					business.organization().unit().getOrderNumber(task.getUnit(), Integer.MAX_VALUE));
-			// 记录处理身份所在组织层级组织排序号
-			rec.getProperties()
-					.setUnitLevelOrderNumber(business.organization().unit().getLevelOrderNumber(task.getUnit(), ""));
 			// 校验workCompleted,如果存在,那么说明工作已经完成,标识状态为已经完成.
-			WorkCompleted workCompleted = emc.firstEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME,
-					task.getJob());
-			if (null != workCompleted) {
-				rec.setCompleted(true);
-				rec.setWorkCompleted(workCompleted.getId());
-			}
-			rec.getProperties().setElapsed(
-					Config.workTime().betweenMinutes(rec.getProperties().getStartTime(), rec.getRecordTime()));
+			checkIfWorkAlreadyCompleted(business, rec, workLog.getJob());
+			fillIdentityAndUnit(business, rec);
+			elapsed(rec);
 			TaskCompleted taskCompleted = emc.find(taskCompletedId, TaskCompleted.class);
 			if (null != taskCompleted) {
 				// 处理完成后在重新写入待办信息
@@ -80,25 +63,16 @@ public class RecordBuilder {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			Record rec = new Record(workLog);
-			// 校验workCompleted,如果存在,那么说明工作已经完成,标识状态为已经完成.
-			WorkCompleted workCompleted = emc.firstEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME,
-					workLog.getJob());
-			if (null != workCompleted) {
-				rec.setCompleted(true);
-				rec.setWorkCompleted(workCompleted.getId());
-			}
-			rec.setPerson(effectivePerson.getDistinguishedName());
 			rec.setType(recordType);
 			rec.setArrivedActivity(destinationActivity.getId());
 			rec.setArrivedActivityAlias(destinationActivity.getAlias());
 			rec.setArrivedActivityName(destinationActivity.getName());
 			rec.setArrivedActivityType(destinationActivity.getActivityType());
-			rec.getProperties().setElapsed(
-					Config.workTime().betweenMinutes(rec.getProperties().getStartTime(), rec.getRecordTime()));
-			/* 需要记录处理人,先查看当前用户有没有之前处理过的信息,如果没有,取默认身份 */
+			// 校验workCompleted,如果存在,那么说明工作已经完成,标识状态为已经完成.
+			checkIfWorkAlreadyCompleted(business, rec, workLog.getJob());
+			// 需要记录处理人,先查看当前用户有没有之前处理过的信息,如果没有,取默认身份
 			TaskCompleted existTaskCompleted = emc.firstEqualAndEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME,
 					workLog.getJob(), TaskCompleted.person_FIELDNAME, effectivePerson.getDistinguishedName());
-			rec.setPerson(effectivePerson.getDistinguishedName());
 			if (null != existTaskCompleted) {
 				rec.setIdentity(existTaskCompleted.getIdentity());
 				rec.setUnit(existTaskCompleted.getUnit());
@@ -107,9 +81,40 @@ public class RecordBuilder {
 						business.organization().identity().getMajorWithPerson(effectivePerson.getDistinguishedName()));
 				rec.setUnit(business.organization().unit().getWithIdentity(rec.getIdentity()));
 			}
+			rec.setPerson(effectivePerson.getDistinguishedName());
+			fillIdentityAndUnit(business, rec);
+			elapsed(rec);
 			setNextManualListAndNextManualTaskIdentityList(business, newlyTaskIds, rec);
 			return rec;
 		}
+	}
+
+	private static void elapsed(Record rec) throws Exception {
+		rec.getProperties()
+				.setElapsed(Config.workTime().betweenMinutes(rec.getProperties().getStartTime(), rec.getRecordTime()));
+	}
+
+	private static void checkIfWorkAlreadyCompleted(Business business, Record rec, String job) throws Exception {
+		WorkCompleted workCompleted = business.entityManagerContainer().firstEqual(WorkCompleted.class,
+				WorkCompleted.job_FIELDNAME, job);
+		if (null != workCompleted) {
+			rec.setCompleted(true);
+			rec.setWorkCompleted(workCompleted.getId());
+		}
+	}
+
+	private static void fillIdentityAndUnit(Business business, Record rec) throws Exception {
+		// 获取在record中需要记录的task中身份所有的组织职务.
+		rec.getProperties().setUnitDutyList(business.organization().unitDuty().listNameWithIdentity(rec.getIdentity()));
+		// 记录处理身份的排序号
+		rec.getProperties().setIdentityOrderNumber(
+				business.organization().identity().getOrderNumber(rec.getIdentity(), Integer.MAX_VALUE));
+		// 记录处理身份所在组织的排序号
+		rec.getProperties()
+				.setUnitOrderNumber(business.organization().unit().getOrderNumber(rec.getUnit(), Integer.MAX_VALUE));
+		// 记录处理身份所在组织层级组织排序号
+		rec.getProperties()
+				.setUnitLevelOrderNumber(business.organization().unit().getLevelOrderNumber(rec.getUnit(), ""));
 	}
 
 	private static void setNextManualListAndNextManualTaskIdentityList(Business business, List<String> newlyTaskIds,
