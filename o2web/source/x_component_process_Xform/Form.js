@@ -167,7 +167,22 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
              * @event MWF.xApplication.process.Xform.Form#afterReaded
              * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
              */
-            "afterReaded"]
+            "afterReaded",
+
+            /**
+             * 加签前触发。
+             * @event MWF.xApplication.process.Xform.Form#beforeAddTask
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "beforeAddTask",
+
+            /**
+             * 加签后触发。
+             * @event MWF.xApplication.process.Xform.Form#afterAddTask
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "afterAddTask"
+        ]
     },
     initialize: function (node, data, options) {
         this.setOptions(options);
@@ -1779,6 +1794,22 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         activityUsers.push(t);
                     });
                     content += activityUsers.join("<br>");
+
+                    if (data.manualTaskIdentityMatrix && data.manualTaskIdentityMatrix.matrix){
+                        var manualTaskIdentityMatrix = data.manualTaskIdentityMatrix.matrix;
+                        manualTaskIdentityMatrix = (manualTaskIdentityMatrix.flat) ? manualTaskIdentityMatrix.flat() :  manualTaskIdentityMatrix.reduce(function(acc, val){
+                            return acc.concat(val);
+                        }, []);
+                        manualTaskIdentityMatrix = manualTaskIdentityMatrix.filter(function(id){
+                            return !data.properties.nextManualTaskIdentityList.contains(id);
+                        });
+                        var len = manualTaskIdentityMatrix.length
+                        if (len){
+                            var idText = (len>8) ? o2.name.cns(manualTaskIdentityMatrix.slice(0.8)).join(", ")+" ..." : o2.name.cns(manualTaskIdentityMatrix).join(", ");
+                            content += "<br><b>"+MWF.xApplication.process.Xform.LP.nextTaskMatrix+"</b><span style='color: #ea621f'>"+idText+ "</span>";
+                        }
+                    }
+
                 } else {
                     if (data.arrivedActivityName) {
                         content += MWF.xApplication.process.Xform.LP.arrivedActivity + data.arrivedActivityName;
@@ -3204,7 +3235,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
     },
 
-    inBrowserDkg: function (content) {
+    inBrowserDkg: function (content, notCloseWindow) {
         if (this.mask) this.mask.hide();
 
         if (this.json.submitedDlgUseNotice) {
@@ -3273,10 +3304,21 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     var t = this.json.promptCloseTime || 2;
                     t = t.toInt() * 1000;
                     var _work = this;
-                    window.setTimeout(function () { dlg.close(); _work.app.close(); }, t);
+                    window.setTimeout(function () {
+                        dlg.close();
+                        if (notCloseWindow){
+                            window.location.reload();
+                        }else{
+                            _work.app.close();
+                        }
+                    }, t);
                 }
             } else {
-                this.app.close();
+                if (notCloseWindow){
+                    window.location.reload();
+                }else{
+                    this.app.close();
+                }
             }
         }
     },
@@ -3548,7 +3590,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             "type": "identity",
             "count": count,
             "units": (unit) ? [unit] : [],
-            "title": this.app.lp.reset,
             "onComplete": function (items) {
                 areaNode.empty();
                 var identityList = [];
@@ -3578,7 +3619,6 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             "values": names,
             "type": "identity",
             "count": count,
-            "title": this.app.lp.reset,
             "onComplete": function (items) {
                 areaNode.empty();
                 var identityList = [];
@@ -3931,112 +3971,33 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     }
                 ],
                 "onPostShow": function () {
-                    //$("rerouteWork_okButton").addEvent("click", function(){
-                    //    _self.doRerouteWork(this);
-                    //}.bind(this));
-                    //$("rerouteWork_cancelButton").addEvent("click", function(){
-                    //    this.close();
-                    //}.bind(this));
-
                     var select = $("rerouteWork_selectActivity");
+                    var createActivityOption = function(list, name){
+                        list.each(function (activity) {
+                            var activityType = name.replace("List", "");
+                            new Element("option", {
+                                "value": activity.id + "#"+activityType,
+                                "text": activity.name
+                            }).inject(select);
+                        }.bind(_self));
+                    }
                     _self.workAction.getRerouteTo(_self.businessData.work.process, function (json) {
-                        json.data.agentList.each(function (activity) {
-                            new Element("option", {
-                                "value": activity.id + "#agent",
-                                "text": activity.name
-                            }).inject(select);
-                        }.bind(_self));
-
-                        json.data.cancelList.each(function (activity) {
-                            new Element("option", {
-                                "value": activity.id + "#cancel",
-                                "text": activity.name
-                            }).inject(select);
-                        }.bind(_self));
-
-                        json.data.choiceList.each(function (activity) {
-                            new Element("option", {
-                                "value": activity.id + "#choice",
-                                "text": activity.name
-                            }).inject(select);
-                        }.bind(_self));
-
-                        // json.data.controllerList.each(function(activity){
-                        //     new Element("option", {
-                        //         "value": activity.id+"#condition",
-                        //         "text": activity.name
-                        //     }).inject(select);
-                        // }.bind(_self));
-
-                        json.data.delayList.each(function (activity) {
-                            new Element("option", {
-                                "value": activity.id + "#delay",
-                                "text": activity.name
-                            }).inject(select);
-                        }.bind(_self));
-
-                        json.data.embedList.each(function (activity) {
-                            new Element("option", {
-                                "value": activity.id + "#embed",
-                                "text": activity.name
-                            }).inject(select);
-                        }.bind(_self));
-
-                        json.data.endList.each(function (activity) {
-                            new Element("option", {
-                                "value": activity.id + "#end",
-                                "text": activity.name
-                            }).inject(select);
-                        }.bind(_self));
-
-                        json.data.invokeList.each(function (activity) {
-                            new Element("option", {
-                                "value": activity.id + "#invoke",
-                                "text": activity.name
-                            }).inject(select);
-                        }.bind(_self));
-
-                        json.data.manualList.each(function (activity) {
-                            new Element("option", {
-                                "value": activity.id + "#manual",
-                                "text": activity.name
-                            }).inject(select);
-                        }.bind(_self));
-
-                        json.data.mergeList.each(function (activity) {
-                            new Element("option", {
-                                "value": activity.id + "#merge",
-                                "text": activity.name
-                            }).inject(select);
-                        }.bind(_self));
-
-                        json.data.messageList.each(function (activity) {
-                            new Element("option", {
-                                "value": activity.id + "#message",
-                                "text": activity.name
-                            }).inject(select);
-                        }.bind(_self));
-
-                        json.data.parallelList.each(function (activity) {
-                            new Element("option", {
-                                "value": activity.id + "#parallel",
-                                "text": activity.name
-                            }).inject(select);
-                        }.bind(_self));
-
-                        json.data.serviceList.each(function (activity) {
-                            new Element("option", {
-                                "value": activity.id + "#service",
-                                "text": activity.name
-                            }).inject(select);
-                        }.bind(_self));
-
-                        json.data.splitList.each(function (activity) {
-                            new Element("option", {
-                                "value": activity.id + "#split",
-                                "text": activity.name
-                            }).inject(select);
-                        }.bind(_self));
+                        [
+                            "agentList",
+                            "cancelList",
+                            "choiceList",
+                            "delayList",
+                            "embedList",
+                            "endList",
+                            "invokeList",
+                            "manualList",
+                            "mergeList",
+                            "parallelList",
+                            "serviceList",
+                            "splitList"
+                        ].forEach(function(name){
+                            createActivityOption(json.data[name], name);
+                        });
                     }.bind(_self));
 
                     var selPeopleButton = this.content.getElement(".rerouteWork_selPeopleButton");
@@ -5082,8 +5043,184 @@ debugger;
                 if (this.mask) { this.mask.hide(); this.mask = null; }
             }.bind(this));
         }.bind(this));
-    }
+    },
 
+    checkControl: function(key){
+        if (!this.businessData.control[key]) {
+            o2.xDesktop.notice("error", { x: "right", y: "top" }, "Permission Denied");
+            return false;
+        }
+        if( !this.businessData.task ){
+            o2.xDesktop.notice("error", { x: "right", y: "top" }, o2.xApplication.process.Xform.LP.form.noTaskToReset);
+            return false;
+        }
+        return true;
+    },
+    addTask: function(){
+        if (this.checkControl("allowReset")){
+            var _self = this;
+            var opt = {};
+            o2.DL.open({
+                "title": o2.xApplication.process.Xform.LP.form.addTask,
+                "style": this.json.dialogStyle || "user",
+                "width": 680,
+                "height": 380,
+                "url": this.app.path + "addTask.html",
+                "lp": o2.xApplication.process.Xform.LP.form,
+                "container": this.app.content,
+                "maskNode": this.app.content,
+                "offset": {y: -120},
+                "buttonList": [
+                    {
+                        "type": "ok",
+                        "text": o2.LP.process.button.ok,
+                        "action": function (d, e) {
+                            if( !this.identityList || !this.identityList.length ){
+                                _self.app.notice(o2.xApplication.process.Xform.LP.inputAddTaskPeople, "error", this.node);
+                            }else{
+                                _self.doAddTask(this);
+                            }
+                        }
+                    },
+                    {
+                        "type": "cancel",
+                        "text": MWF.LP.process.button.cancel,
+                        "action": function () {
+                            this.close();
+                        }
+                    }
+                ],
+                "onPostShow": function () {
+                    var selPeopleButton = this.content.getElement(".addTask_selPeopleButton");
+                    selPeopleButton.addEvent("click", function () {
+                        _self.selectPeople(this);
+                    }.bind(this));
+                }
+
+            });
+        }
+    },
+    getRadioValue: function(node, selector){
+        var nodes = node.getElements(selector);
+        for (var i=0; i<nodes.length; i++){
+            if (nodes[i].checked){
+                return nodes[i].value;
+            }
+        }
+        return "";
+    },
+    checkAddTaskIdentity: function(identityList, position, node, callback){
+        var manualTaskIdentityMatrix = this.businessData.work.manualTaskIdentityMatrix.matrix;
+        manualTaskIdentityMatrix = (manualTaskIdentityMatrix.flat) ? manualTaskIdentityMatrix.flat() :  manualTaskIdentityMatrix.reduce(function(acc, val){
+            return acc.concat(val);
+        }, []);
+        var repeated = [];
+
+        var optionList = identityList.reduce(function(pv, cv){
+            if (manualTaskIdentityMatrix.indexOf(cv)===-1){
+                return pv.concat({
+                    position: position,
+                    identityList: [cv]
+                });
+            }else{
+                repeated.push(o2.name.cn(cv));
+                return pv;
+            }
+        }, []);
+
+        if (repeated.length){
+            var content = o2.xApplication.process.Xform.LP.form.addTaskRepeatedInfo;
+            content = content.replace("{repeated}", repeated.join(", "));
+            o2.DL.open({
+                isClose: false,
+                title: o2.xApplication.process.Xform.LP.form.addTaskRepeatedTitle,
+                html: content,
+                container: node,
+                buttonList: [{
+                    "text": MWF.xApplication.process.Xform.LP.ok,
+                    "action": function(){
+                        this.close();
+                        if (callback) callback(optionList);
+                    }
+                }]
+            })
+        }else{
+            if (callback) callback(optionList);
+        }
+    },
+    doAddTask: function(dlg){
+        MWF.require("MWF.widget.Mask", function () {
+
+            var position = this.getRadioValue(dlg.content, ".addTask_type") || "after";
+
+            this.checkAddTaskIdentity(dlg.identityList, position, dlg.node, function(optionList){
+                if (optionList && optionList.length){
+                    this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
+                    this.mask.loadNode(this.app.content);
+
+                    var nameArr = optionList.map(function(op){
+                        return o2.name.cn(op.identityList[0]);
+                    });
+
+                    var opinion = dlg.content.getElement(".addTask_opinion").get("value");
+                    if (!opinion) opinion = o2.xApplication.process.Xform.LP.form.addTask+":"+nameArr.join(", ");
+                    var taskId = this.businessData.task.id;
+
+                    var addTaskOptions = {
+                        optionList: optionList,
+                        remove: false,
+                        opinion: opinion,
+                        routeName: o2.xApplication.process.Xform.LP.form.addTask+":"+nameArr.join(", ")
+                    }
+                    this.fireEvent("beforeAddTask");
+                    if (this.app && this.app.fireEvent) this.app.fireEvent("beforeAddTask");
+
+                    this.saveFormData(function(){
+                        o2.Actions.load("x_processplatform_assemble_surface").TaskAction.V2Add(taskId, addTaskOptions, function (json) {
+                            this.fireEvent("afterAddTask");
+                            if (this.app && this.app.fireEvent) this.app.fireEvent("afterAddTask");
+                            this.app.notice(MWF.xApplication.process.Xform.LP.addTaskOk + ": " + nameArr, "success");
+
+                            dlg.close();
+                            if (this.mask) this.mask.hide();
+
+                            var notCloseWindow = position!=="before";
+                            this.addAddTaskMessage(json.data, notCloseWindow);
+                            if (!this.app.inBrowser){
+                                this.app[(notCloseWindow ? "refresh" : "close")]();
+                            }
+
+                        }.bind(this), function (xhr, text, error) {
+                            var errorText = error + ":" + text;
+                            if (xhr) errorText = xhr.responseText
+                            this.app.notice("request json error: " + errorText, "error", dlg ? dlg.node : null);
+
+                            if (this.mask) this.mask.hide();
+                        }.bind(this)).catch(function(){});
+                    }.bind(this));
+                }else{
+                    if (this.mask)  this.mask.hide();
+                }
+            }.bind(this));
+
+        }.bind(this));
+    },
+
+    addAddTaskMessage: function (data, notCloseWindow) {
+        var content = this.getMessageContent(data, 0, MWF.xApplication.process.Xform.LP.addTaskInfor);
+        if (layout.desktop.message) {
+            var msg = {
+                "subject": MWF.xApplication.process.Xform.LP.form.addTask,
+                "content": content
+            };
+            layout.desktop.message.addTooltip(msg);
+            return layout.desktop.message.addMessage(msg);
+        } else {
+            if (this.app.inBrowser) {
+                this.inBrowserDkg(content, notCloseWindow);
+            }
+        }
+    },
 });
 
 

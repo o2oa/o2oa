@@ -76,7 +76,6 @@ MWF.xScript.Macro = MWF.Macro = {
 //     debugger;
 //     throw e;
 // }
-MWF.Macro
 
 MWF.Macro.FormContext = new Class({
     macroFunction: null,

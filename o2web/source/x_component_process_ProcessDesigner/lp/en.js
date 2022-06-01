@@ -390,6 +390,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"allowRollback": "Allow Rollback",
 		"allowPress": "Allow Press",
 		"allowPause": "Allow Pause",
+        "allowAddTask": "Allow Add Task",
 
 		"beforeBegin": "beforeBegin",
 		"eventInfo1": "Start the process to generate a work instance",

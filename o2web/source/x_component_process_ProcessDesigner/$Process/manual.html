@@ -284,18 +284,30 @@
             </tr>
         </table>
         <hr />
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableValue"  colspan="2"><b>{{$.lp.allowAddTask}}:</b>
+					<input class="editTableRadio" name="allowAddTask" text{($.allowAddTask!==false)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
+					<input class="editTableRadio" name="allowAddTask" text{($.allowAddTask===false)?'checked':''} type="radio" value="false"/>{{$.lp.no}}
+				</td>
+			</tr>
+		</table>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
                 <td class="editTableValue"  colspan="2"><b>{{$.lp.allowReset}}：</b><input class="editTableRadio" name="allowReset" text{($.allowReset)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
                     <input class="editTableRadio" name="allowReset" text{(!$.allowReset)?'checked':''} type="radio" value="false"/>{{$.lp.no}}</td>
             </tr>
             <tr>
-                <td class="editTableTitle">{{$.lp.resetCount}}:</td>
-                <td class="editTableValue"><input type="text" name="resetCount" value="text{$.resetCount}" class="editTableInput"/></td>
+				<td class="editTableValue" colspan="2">
+					<table wdith="100%">
+						<tr>
+							<td><b>{{$.lp.resetCount}}：</b></td>
+							<td><input type="text" name="resetCount" value="text{$.resetCount}" style="width: 120px" class="editTableInput"/></td></td>
+						</tr>
+					</table>
             </tr>
             <tr>
-                <td class="editTableTitle">{{$.lp.resetRange}}:</td>
-                <td class="editTableValue">
+				<td class="editTableValue" colspan="2"><b>{{$.lp.resetRange}}:</b>
                     <input class="editTableRadio" name="resetRange" text{($.resetRange=='all')?'checked':''} type="radio" value="all"
                            onclick="if (this.checked){ $('text{$.id}resetRangeScriptTextTr').setStyle('display', 'none'); }"/>{{$.lp.everyOne}}
                     <input class="editTableRadio" name="resetRange" text{($.resetRange=='unit')?'checked':''} type="radio" value="unit"
@@ -335,7 +347,7 @@
         </table>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
-                <td class="editTableValue"  colspan="2"><b>{{$.lp.allowAddSplit}}allowAddSplit </b><input class="editTableRadio" name="allowAddSplit" text{($.allowAddSplit)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
+                <td class="editTableValue"  colspan="2"><b>{{$.lp.allowAddSplit}}：</b><input class="editTableRadio" name="allowAddSplit" text{($.allowAddSplit)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
                     <input class="editTableRadio" name="allowAddSplit" text{(!$.allowAddSplit)?'checked':''} type="radio" value="false"/>{{$.lp.no}}</td>
             </tr>
         </table>

@@ -37,6 +37,8 @@ MWF.xApplication.process.Xform.LP = {
     "replace": "代",
     "next_etc": "等{count}人",
 
+    "nextTaskMatrix": "可能的后续处理人: ",
+
     "processStarted": "文件已启动",
     "processStartedMessage": "您启动了一个新的工作：",
 
@@ -336,6 +338,9 @@ MWF.xApplication.process.Xform.LP = {
         "downloadAll": "一键下载",
         "downloadAllTitle": "一键下载",
 
+        "addTask": "加签",
+        "addTaskTitle": "在当前活动添加处理人",
+
         "rerouteActivity": "调度到：",
         "reroutePerson": "调度给：",
         "selectPerson": "选择人员",
@@ -361,7 +366,19 @@ MWF.xApplication.process.Xform.LP = {
         "sendReadNotify": "发送待阅通知",
 
         "reviewIdentity": "阅读人",
-        "noTaskToReset": "当前工作没有您的待办，不能执行该操作"
+        "noTaskToReset": "当前工作没有您的待办，不能执行该操作",
+
+        "addTaskPerson": "加签人",
+        "addTaskOpinion": "意　见",
+        "addTaskBefore": "前加签",
+        "addTaskAfter": "后加签",
+        "addTaskBeforeTitle": "在您处理之前添加处理人",
+        "addTaskAfterTitle": "在您处理之后添加处理人",
+        "addTaskType": "加签方式",
+
+        "addTaskRepeatedTitle": "重复加签提醒",
+        "addTaskRepeatedInfo": "<span class='mainColor_color'><b>{repeated}</b></span> 已经在处理人列表中，不会对其执行加签。"
+
     },
 
     "sendRead": "发送待阅",
@@ -374,6 +391,9 @@ MWF.xApplication.process.Xform.LP = {
     "sendReviewOk": "已添加阅读人",
     "inputSendReviewPeople": "请选择阅读人",
     "sendReviewPeopleCanNotEmpty": "阅读人不能为空",
+    "inputAddTaskPeople": "请选择加签人",
+    "addTaskOk": "已添加加签人",
+    "addTaskInfor": "您加签了文件：",
 
     "applicationNotFound": "未找到应用",
 

@@ -1,7 +1,6 @@
 {
     "identityNode": {
         "padding": "5px",
-        "float": "left",
         "margin-right": "5px",
         "margin-bottom": "2px",
         "background-color": "#DDD",
@@ -9,7 +8,8 @@
         "color": "#333",
         "line-height": "18px",
         "font-size": "12px",
-        "cursor": "pointer"
+        "cursor": "pointer",
+        "display": "inline-block"
     },
     "identityNode_over": {
         "padding": "5px",
