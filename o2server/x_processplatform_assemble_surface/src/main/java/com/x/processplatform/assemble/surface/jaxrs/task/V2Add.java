@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -53,11 +52,11 @@ public class V2Add extends BaseAction {
 	// 当前提交的串号
 	private final String series = StringTools.uniqueToken();
 	// 新创建的待办标识列表
-	private List<String> newTaskIds = new ArrayList<>();
+	// private List<String> newTaskIds = new ArrayList<>();
 	// 当前待办转成已办得到的已办id
 	private String taskCompletedId;
 	// 已经存在的待办标识列表
-	private List<String> existTaskIds = new ArrayList<>();
+	// private List<String> existTaskIds = new ArrayList<>();
 	// 输入
 	private Wi wi;
 	// 当前执行用户
@@ -89,19 +88,25 @@ public class V2Add extends BaseAction {
 
 		this.processingWork(this.task);
 
+		List<String> newTaskIds = new ArrayList<>();
+
+		// 加签计算所有处理人即可,不需要去重计算现在已有的task
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			this.newTaskIds = ListUtils.subtract(emc.idsEqualAndEqual(Task.class, Task.job_FIELDNAME, task.getJob(),
-					Task.work_FIELDNAME, task.getWork()), existTaskIds);
+			newTaskIds = emc.idsEqualAndEqual(Task.class, Task.job_FIELDNAME, task.getJob(), Task.work_FIELDNAME,
+					task.getWork());
 		}
 
 		this.rec = RecordBuilder.ofTaskProcessing(Record.TYPE_TASKADD, workLog, task, taskCompletedId, newTaskIds);
+		// 加签也记录流程意见和路由决策
+		this.rec.getProperties().setOpinion(wi.getOpinion());
+		this.rec.getProperties().setRouteName(wi.getRouteName());
 		RecordBuilder.processing(rec);
 
 		if (StringUtils.isNotEmpty(taskCompletedId)) {
 			TaskCompletedBuilder.updateNextTaskIdentity(this.taskCompletedId,
 					rec.getProperties().getNextManualTaskIdentityList(), task.getJob());
 		}
-		TaskBuilder.updatePrevTaskIdentity(this.newTaskIds, this.taskCompleteds, this.task);
+		TaskBuilder.updatePrevTaskIdentity(newTaskIds, this.taskCompleteds, this.task);
 		return result();
 	}
 
@@ -136,8 +141,8 @@ public class V2Add extends BaseAction {
 			if (BooleanUtils.isNotTrue(control.getAllowReset())) {
 				throw new ExceptionAccessDenied(effectivePerson, task);
 			}
-			this.existTaskIds = emc.idsEqualAndEqual(Task.class, Task.job_FIELDNAME, task.getJob(), Task.work_FIELDNAME,
-					task.getWork());
+//			this.existTaskIds = emc.idsEqualAndEqual(Task.class, Task.job_FIELDNAME, task.getJob(), Task.work_FIELDNAME,
+//					task.getWork());
 			this.taskCompleteds = business.entityManagerContainer().listEqual(TaskCompleted.class,
 					TaskCompleted.activityToken_FIELDNAME, task.getActivityToken());
 		}
