@@ -37,6 +37,8 @@ MWF.xApplication.process.Xform.LP = {
     "replace": "代",
     "next_etc": "等{count}人",
 
+    "nextTaskMatrix": "可能的后续处理人: ",
+
     "processStarted": "文件已启动",
     "processStartedMessage": "您启动了一个新的工作：",
 
@@ -372,7 +374,10 @@ MWF.xApplication.process.Xform.LP = {
         "addTaskAfter": "后加签",
         "addTaskBeforeTitle": "在您处理之前添加处理人",
         "addTaskAfterTitle": "在您处理之后添加处理人",
-        "addTaskType": "加签方式"
+        "addTaskType": "加签方式",
+
+        "addTaskRepeatedTitle": "重复加签提醒",
+        "addTaskRepeatedInfo": "<span class='mainColor_color'><b>{repeated}</b></span> 已经在处理人列表中，不会对其执行加签。"
 
     },
 

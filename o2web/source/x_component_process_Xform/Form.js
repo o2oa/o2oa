@@ -1794,6 +1794,22 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         activityUsers.push(t);
                     });
                     content += activityUsers.join("<br>");
+
+                    if (data.manualTaskIdentityMatrix && data.manualTaskIdentityMatrix.matrix){
+                        var manualTaskIdentityMatrix = data.manualTaskIdentityMatrix.matrix;
+                        manualTaskIdentityMatrix = (manualTaskIdentityMatrix.flat) ? manualTaskIdentityMatrix.flat() :  manualTaskIdentityMatrix.reduce(function(acc, val){
+                            return acc.concat(val);
+                        }, []);
+                        manualTaskIdentityMatrix = manualTaskIdentityMatrix.filter(function(id){
+                            return !data.properties.nextManualTaskIdentityList.contains(id);
+                        });
+                        var len = manualTaskIdentityMatrix.length
+                        if (len){
+                            var idText = (len>8) ? o2.name.cns(manualTaskIdentityMatrix.slice(0.8)).join(", ")+" ..." : o2.name.cns(manualTaskIdentityMatrix).join(", ");
+                            content += "<br><b>"+MWF.xApplication.process.Xform.LP.nextTaskMatrix+"</b><span style='color: #ea621f'>"+idText+ "</span>";
+                        }
+                    }
+
                 } else {
                     if (data.arrivedActivityName) {
                         content += MWF.xApplication.process.Xform.LP.arrivedActivity + data.arrivedActivityName;
@@ -3219,7 +3235,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
     },
 
-    inBrowserDkg: function (content) {
+    inBrowserDkg: function (content, notCloseWindow) {
         if (this.mask) this.mask.hide();
 
         if (this.json.submitedDlgUseNotice) {
@@ -3288,10 +3304,21 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                     var t = this.json.promptCloseTime || 2;
                     t = t.toInt() * 1000;
                     var _work = this;
-                    window.setTimeout(function () { dlg.close(); _work.app.close(); }, t);
+                    window.setTimeout(function () {
+                        dlg.close();
+                        if (notCloseWindow){
+                            window.location.reload();
+                        }else{
+                            _work.app.close();
+                        }
+                    }, t);
                 }
             } else {
-                this.app.close();
+                if (notCloseWindow){
+                    window.location.reload();
+                }else{
+                    this.app.close();
+                }
             }
         }
     },
@@ -3945,10 +3972,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 ],
                 "onPostShow": function () {
                     var select = $("rerouteWork_selectActivity");
-                    var createActivityOption = function(list){
+                    var createActivityOption = function(list, name){
                         list.each(function (activity) {
+                            var activityType = name.replace("List", "");
                             new Element("option", {
-                                "value": activity.id + "#agent",
+                                "value": activity.id + "#"+activityType,
                                 "text": activity.name
                             }).inject(select);
                         }.bind(_self));
@@ -3968,7 +3996,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                             "serviceList",
                             "splitList"
                         ].forEach(function(name){
-                            createActivityOption(json.data[name]);
+                            createActivityOption(json.data[name], name);
                         });
                     }.bind(_self));
 
@@ -5081,57 +5109,104 @@ debugger;
         }
         return "";
     },
+    checkAddTaskIdentity: function(identityList, position, node, callback){
+        var manualTaskIdentityMatrix = this.businessData.work.manualTaskIdentityMatrix.matrix;
+        manualTaskIdentityMatrix = (manualTaskIdentityMatrix.flat) ? manualTaskIdentityMatrix.flat() :  manualTaskIdentityMatrix.reduce(function(acc, val){
+            return acc.concat(val);
+        }, []);
+        var repeated = [];
+
+        var optionList = identityList.reduce(function(pv, cv){
+            if (manualTaskIdentityMatrix.indexOf(cv)===-1){
+                return pv.concat({
+                    position: position,
+                    identityList: [cv]
+                });
+            }else{
+                repeated.push(o2.name.cn(cv));
+                return pv;
+            }
+        }, []);
+
+        if (repeated.length){
+            var content = o2.xApplication.process.Xform.LP.form.addTaskRepeatedInfo;
+            content = content.replace("{repeated}", repeated.join(", "));
+            o2.DL.open({
+                isClose: false,
+                title: o2.xApplication.process.Xform.LP.form.addTaskRepeatedTitle,
+                html: content,
+                container: node,
+                buttonList: [{
+                    "text": MWF.xApplication.process.Xform.LP.ok,
+                    "action": function(){
+                        this.close();
+                        if (callback) callback(optionList);
+                    }
+                }]
+            })
+        }else{
+            if (callback) callback(optionList);
+        }
+    },
     doAddTask: function(dlg){
         MWF.require("MWF.widget.Mask", function () {
-            this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
-            this.mask.loadNode(this.app.content);
 
             var position = this.getRadioValue(dlg.content, ".addTask_type") || "after";
 
-            var nameArr = [];
-            var optionList = dlg.identityList.map(function (n) {
-                nameArr.push(n.substring(0, n.indexOf("@")));
-                return {
-                    position: position,
-                    identityList: [n]
+            this.checkAddTaskIdentity(dlg.identityList, position, dlg.node, function(optionList){
+                if (optionList && optionList.length){
+                    this.mask = new MWF.widget.Mask({ "style": "desktop", "zIndex": 50000 });
+                    this.mask.loadNode(this.app.content);
+
+                    var nameArr = optionList.map(function(op){
+                        return o2.name.cn(op.identityList[0]);
+                    });
+
+                    var opinion = dlg.content.getElement(".addTask_opinion").get("value");
+                    if (!opinion) opinion = o2.xApplication.process.Xform.LP.form.addTask+":"+nameArr.join(", ");
+                    var taskId = this.businessData.task.id;
+
+                    var addTaskOptions = {
+                        optionList: optionList,
+                        remove: false,
+                        opinion: opinion,
+                        routeName: o2.xApplication.process.Xform.LP.form.addTask+":"+nameArr.join(", ")
+                    }
+                    this.fireEvent("beforeAddTask");
+                    if (this.app && this.app.fireEvent) this.app.fireEvent("beforeAddTask");
+
+                    this.saveFormData(function(){
+                        o2.Actions.load("x_processplatform_assemble_surface").TaskAction.V2Add(taskId, addTaskOptions, function (json) {
+                            this.fireEvent("afterAddTask");
+                            if (this.app && this.app.fireEvent) this.app.fireEvent("afterAddTask");
+                            this.app.notice(MWF.xApplication.process.Xform.LP.addTaskOk + ": " + nameArr, "success");
+
+                            dlg.close();
+                            if (this.mask) this.mask.hide();
+
+                            var notCloseWindow = position!=="before";
+                            this.addAddTaskMessage(json.data, notCloseWindow);
+                            if (!this.app.inBrowser){
+                                this.app[(notCloseWindow ? "refresh" : "close")]();
+                            }
+
+                        }.bind(this), function (xhr, text, error) {
+                            var errorText = error + ":" + text;
+                            if (xhr) errorText = xhr.responseText
+                            this.app.notice("request json error: " + errorText, "error", dlg ? dlg.node : null);
+
+                            if (this.mask) this.mask.hide();
+                        }.bind(this)).catch(function(){});
+                    }.bind(this));
+                }else{
+                    if (this.mask)  this.mask.hide();
                 }
-            });
-            var opinion = dlg.content.getElement(".addTask_opinion").get("value");
-            var taskId = this.businessData.task.id;
-
-            var addTaskOptions = {
-                optionList: optionList,
-                remove: false,
-                opinion: opinion,
-                routeName: o2.xApplication.process.Xform.LP.form.addTask+":"+nameArr.join(", ")
-            }
-            this.fireEvent("beforeAddTask");
-            if (this.app && this.app.fireEvent) this.app.fireEvent("beforeAddTask");
-
-            this.saveFormData(function(){
-                o2.Actions.load("x_processplatform_assemble_surface").TaskAction.V2Add(taskId, addTaskOptions, function (json) {
-                    debugger;
-                    this.fireEvent("afterAddTask");
-                    if (this.app && this.app.fireEvent) this.app.fireEvent("afterAddTask");
-                    this.app.notice(MWF.xApplication.process.Xform.LP.addTaskOk + ": " + nameArr, "success");
-
-                    dlg.close();
-                    if (this.mask) { this.mask.hide(); this.mask = null; }
-
-                    this.addAddTaskMessage(json.data);
-                    if (!this.app.inBrowser) this.app.close();
-
-                }.bind(this), function (xhr, text, error) {
-                    var errorText = error + ":" + text;
-                    if (xhr) errorText = xhr.responseText;
-                    this.app.notice("request json error: " + errorText, "error", opt.dlg ? opt.dlg.node : null);
-
-                    if (this.mask) { this.mask.hide(); this.mask = null; }
-                }.bind(this))
             }.bind(this));
+
         }.bind(this));
     },
-    addAddTaskMessage: function (data) {
+
+    addAddTaskMessage: function (data, notCloseWindow) {
         var content = this.getMessageContent(data, 0, MWF.xApplication.process.Xform.LP.addTaskInfor);
         if (layout.desktop.message) {
             var msg = {
@@ -5142,7 +5217,7 @@ debugger;
             return layout.desktop.message.addMessage(msg);
         } else {
             if (this.app.inBrowser) {
-                this.inBrowserDkg(content);
+                this.inBrowserDkg(content, notCloseWindow);
             }
         }
     },

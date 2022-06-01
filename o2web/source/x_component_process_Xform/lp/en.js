@@ -37,6 +37,8 @@ MWF.xApplication.process.Xform.LP = {
     "replace": " instead ",
     "next_etc": " {count} people",
 
+    "nextTaskMatrix": "Possible next handlers: ",
+
     "processStarted": "Job has been started",
     "processStartedMessage": "You started a new job: ",
 
@@ -373,7 +375,10 @@ MWF.xApplication.process.Xform.LP = {
         "addTaskAfter": "Add Task After",
         "addTaskBeforeTitle": "Add a task before you process",
         "addTaskAfterTitle": "Add a task after you process",
-        "addTaskType": "Add Task Type"
+        "addTaskType": "Add Task Type",
+
+        "addTaskRepeatedTitle": "Repeat Reminder",
+        "addTaskRepeatedInfo": "<span class='mainColor_color'><b>{repeated}</b></span>  is already in the list of handlers and will not be processed。"
     },
     "sendRead": "Send Read",
     "sendReadOk": "Sent Read:",

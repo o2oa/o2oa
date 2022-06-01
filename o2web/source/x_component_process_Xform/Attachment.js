@@ -1679,7 +1679,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         }.bind(this));
 
     },
-    getClientType(){
+    getClientType: function(){
         if (window.o2android && window.o2android.downloadAttachment){
             return "android";
         }
