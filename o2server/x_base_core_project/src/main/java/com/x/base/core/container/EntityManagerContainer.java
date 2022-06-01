@@ -1017,8 +1017,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		Root<T> root = cq.from(cls);
 		cq.select(root.get(JpaObject.id_FIELDNAME)).where(cb.isMember(value, root.get(attribute)));
 		List<String> os = em.createQuery(cq).getResultList();
-		List<String> list = new ArrayList<>(os);
-		return list;
+		return new ArrayList<>(os);
 	}
 
 	public <T extends JpaObject> List<String> idsLessThan(Class<T> cls, String attribute, Object value)
@@ -1063,8 +1062,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		Predicate p = cb.equal(root.get(attribute), value);
 		p = cb.and(p, cb.isMember(root.get(otherAttribute), cb.literal(otherValues)));
 		List<String> os = em.createQuery(cq.select(root.get(JpaObject.id_FIELDNAME)).where(p)).getResultList();
-		List<String> list = new ArrayList<>(os);
-		return list;
+		return new ArrayList<>(os);
 	}
 
 	public void commit() throws Exception {
@@ -1112,7 +1110,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 			selections.add(root.get(str));
 		}
 		for (Tuple o : em.createQuery(cq.multiselect(selections)).getResultList()) {
-			T t = clz.newInstance();
+			T t = clz.getDeclaredConstructor().newInstance();
 			for (int i = 0; i < fields.size(); i++) {
 				PropertyUtils.setProperty(t, attributes.get(i), o.get(selections.get(i)));
 			}
@@ -1130,15 +1128,13 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		if (StringUtils.isEmpty(id)) {
 			return null;
 		}
-		if (!attributes.contains(JpaObject.id_FIELDNAME)) {
-			attributes.add(JpaObject.id_FIELDNAME);
-		}
+		List<String> fields = ListTools.trim(attributes, true, true, JpaObject.id_FIELDNAME);
 		EntityManager em = this.get(clz);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
 		Root<T> root = cq.from(clz);
 		List<Selection<?>> selections = new ArrayList<>();
-		for (String str : attributes) {
+		for (String str : fields) {
 			selections.add(root.get(str));
 		}
 		cq.multiselect(selections).where(cb.equal(root.get(JpaObject.id_FIELDNAME), id));
@@ -1147,7 +1143,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 			Tuple tuple = list.get(0);
 			t = clz.getDeclaredConstructor().newInstance();
 			for (int i = 0; i < selections.size(); i++) {
-				PropertyUtils.setProperty(t, attributes.get(i), tuple.get(selections.get(i)));
+				PropertyUtils.setProperty(t, fields.get(i), tuple.get(selections.get(i)));
 			}
 		}
 		return t;
@@ -1181,32 +1177,26 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		if (ids.isEmpty()) {
 			return list;
 		}
+		List<String> fields = ListTools.trim(attributes, true, true, JpaObject.id_FIELDNAME);
 		List<String> idList = new ArrayList<>(ids);
-		if (!attributes.contains(JpaObject.id_FIELDNAME)) {
-			attributes.add(JpaObject.id_FIELDNAME);
-		}
 		EntityManager em = this.get(clz);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
 		Root<T> root = cq.from(clz);
 		List<Selection<?>> selections = new ArrayList<>();
-		for (String str : attributes) {
+		for (String str : fields) {
 			selections.add(root.get(str));
 		}
 		cq.multiselect(selections).where(root.get(JpaObject.id_FIELDNAME).in(idList));
 		for (Tuple o : em.createQuery(cq).getResultList()) {
-			T t = clz.newInstance();
-			for (int i = 0; i < attributes.size(); i++) {
-				PropertyUtils.setProperty(t, attributes.get(i), o.get(selections.get(i)));
+			T t = clz.getDeclaredConstructor().newInstance();
+			for (int i = 0; i < fields.size(); i++) {
+				PropertyUtils.setProperty(t, fields.get(i), o.get(selections.get(i)));
 			}
 			list.add(t);
 		}
 		List<T> ordering = new ArrayList<>(list);
-		Collections.sort(ordering, new Comparator<T>() {
-			public int compare(T t1, T t2) {
-				return Integer.compare(idList.indexOf(t1.getId()), idList.indexOf(t2.getId()));
-			}
-		});
+		Collections.sort(ordering, (o1, o2) -> Integer.compare(idList.indexOf(o1.getId()), idList.indexOf(o2.getId())));
 		return ordering;
 	}
 
@@ -1242,10 +1232,10 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 	}
 
 	/* 仅在单一数据库可用 */
-	public <T extends JpaObject, W extends GsonPropertyObject> List<T> fetch(Class<T> clz, List<String> fetchAttributes,
+	public <T extends JpaObject, W extends GsonPropertyObject> List<T> fetch(Class<T> clz, List<String> attributes,
 			Predicate predicate) throws Exception {
 		List<T> list = new ArrayList<>();
-		List<String> fields = ListTools.trim(fetchAttributes, true, true, JpaObject.id_FIELDNAME);
+		List<String> fields = ListTools.trim(attributes, true, true, JpaObject.id_FIELDNAME);
 		EntityManager em = this.get(clz);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
@@ -1255,12 +1245,9 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 			selections.add(root.get(str));
 		}
 		cq.multiselect(selections).where(predicate);
-		// if (StringUtils.isNotEmpty(orderAttribute)) {
-		// cq.orderBy(cb.desc(root.get(orderAttribute)));
-		// }
 		T t = null;
 		for (Tuple o : em.createQuery(cq).getResultList()) {
-			t = clz.newInstance();
+			t = clz.getDeclaredConstructor().newInstance();
 			for (int i = 0; i < fields.size(); i++) {
 				PropertyUtils.setProperty(t, fields.get(i), o.get(selections.get(i)));
 			}
@@ -1270,8 +1257,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 	}
 
 	public <T extends JpaObject> List<T> fetchEqual(Class<T> clz, String attribute, Object value) throws Exception {
-		List<T> os = this.fetchEqual(clz, JpaObject.singularAttributeField(clz, true, true), attribute, value);
-		return os;
+		return this.fetchEqual(clz, JpaObject.singularAttributeField(clz, true, true), attribute, value);
 	}
 
 	public <T extends JpaObject, W extends GsonPropertyObject> List<W> fetchEqual(Class<T> clz, WrapCopier<T, W> copier,
@@ -1295,7 +1281,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		Predicate p = cb.equal(root.get(attribute), value);
 		cq.multiselect(selections).where(p);
 		for (Tuple o : em.createQuery(cq).getResultList()) {
-			T t = clz.newInstance();
+			T t = clz.getDeclaredConstructor().newInstance();
 			for (int i = 0; i < fields.size(); i++) {
 				PropertyUtils.setProperty(t, fields.get(i), o.get(selections.get(i)));
 			}
@@ -1306,9 +1292,8 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 
 	public <T extends JpaObject> List<T> fetchEqualAndEqual(Class<T> clz, String attribute, Object value,
 			String otherAttribute, Object otherValue) throws Exception {
-		List<T> os = this.fetchEqualAndEqual(clz, JpaObject.singularAttributeField(clz, true, true), attribute, value,
+		return this.fetchEqualAndEqual(clz, JpaObject.singularAttributeField(clz, true, true), attribute, value,
 				otherAttribute, otherValue);
-		return os;
 	}
 
 	public <T extends JpaObject, W extends GsonPropertyObject> List<W> fetchEqualAndEqual(Class<T> clz,
@@ -1333,7 +1318,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		Predicate p = cb.and(cb.equal(root.get(attribute), value), cb.equal(root.get(otherAttribute), otherValue));
 		cq.multiselect(selections).where(p);
 		for (Tuple o : em.createQuery(cq).getResultList()) {
-			T t = clz.newInstance();
+			T t = clz.getDeclaredConstructor().newInstance();
 			for (int i = 0; i < fields.size(); i++) {
 				PropertyUtils.setProperty(t, fields.get(i), o.get(selections.get(i)));
 			}
@@ -1368,7 +1353,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		Predicate p = cb.or(cb.isNull(root.get(attribute)), cb.notEqual(root.get(attribute), value));
 		cq.multiselect(selections).where(p);
 		for (Tuple o : em.createQuery(cq).getResultList()) {
-			T t = clz.newInstance();
+			T t = clz.getDeclaredConstructor().newInstance();
 			for (int i = 0; i < fields.size(); i++) {
 				PropertyUtils.setProperty(t, fields.get(i), o.get(selections.get(i)));
 			}
@@ -1379,8 +1364,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 
 	public <T extends JpaObject, V extends Object> List<T> fetchIn(Class<T> clz, String attribute, Collection<V> values)
 			throws Exception {
-		List<T> os = this.fetchIn(clz, JpaObject.singularAttributeField(clz, true, true), attribute, values);
-		return os;
+		return this.fetchIn(clz, JpaObject.singularAttributeField(clz, true, true), attribute, values);
 	}
 
 	public <T extends JpaObject, W extends GsonPropertyObject, V extends Object> List<W> fetchIn(Class<T> clz,
@@ -1404,7 +1388,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		Predicate p = cb.isMember(root.get(attribute), cb.literal(values));
 		cq.multiselect(selections).where(p);
 		for (Tuple o : em.createQuery(cq).getResultList()) {
-			T t = clz.newInstance();
+			T t = clz.getDeclaredConstructor().newInstance();
 			for (int i = 0; i < fields.size(); i++) {
 				PropertyUtils.setProperty(t, fields.get(i), o.get(selections.get(i)));
 			}
@@ -1415,9 +1399,8 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 
 	public <T extends JpaObject, V extends Object> List<T> fetchEqualAndIn(Class<T> clz, String attribute, Object value,
 			String otherAttribute, Collection<V> otherValues) throws Exception {
-		List<T> os = this.fetchEqualAndIn(clz, JpaObject.singularAttributeField(clz, true, true), attribute, value,
+		return this.fetchEqualAndIn(clz, JpaObject.singularAttributeField(clz, true, true), attribute, value,
 				otherAttribute, otherValues);
-		return os;
 	}
 
 	public <T extends JpaObject, W extends GsonPropertyObject, V extends Object> List<W> fetchEqualAndIn(Class<T> clz,
@@ -1443,7 +1426,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 				cb.isMember(root.get(otherAttribute), cb.literal(otherValues)));
 		cq.multiselect(selections).where(p);
 		for (Tuple o : em.createQuery(cq).getResultList()) {
-			T t = clz.newInstance();
+			T t = clz.getDeclaredConstructor().newInstance();
 			for (int i = 0; i < fields.size(); i++) {
 				PropertyUtils.setProperty(t, fields.get(i), o.get(selections.get(i)));
 			}
@@ -1478,7 +1461,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		Predicate p = cb.isMember(value, root.get(attribute));
 		cq.multiselect(selections).where(p);
 		for (Tuple o : em.createQuery(cq).getResultList()) {
-			T t = clz.newInstance();
+			T t = clz.getDeclaredConstructor().newInstance();
 			for (int i = 0; i < fields.size(); i++) {
 				PropertyUtils.setProperty(t, fields.get(i), o.get(selections.get(i)));
 			}
@@ -1489,9 +1472,8 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 
 	public <T extends JpaObject> List<T> fetchEuqalOrIsMember(Class<T> clz, String equalAttribute, Object equalValue,
 			String isMemberAttribute, Object isMemberValue) throws Exception {
-		List<T> os = this.fetchEuqalOrIsMember(clz, JpaObject.singularAttributeField(clz, true, true), equalAttribute,
+		return this.fetchEuqalOrIsMember(clz, JpaObject.singularAttributeField(clz, true, true), equalAttribute,
 				equalValue, isMemberAttribute, isMemberValue);
-		return os;
 	}
 
 	public <T extends JpaObject, W extends GsonPropertyObject> List<W> fetchEuqalOrIsMember(Class<T> clz,
@@ -1518,7 +1500,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		p = cb.or(p, cb.isMember(isMemberValue, root.get(isMemberAttribute)));
 		cq.multiselect(selections).where(p);
 		for (Tuple o : em.createQuery(cq).getResultList()) {
-			T t = clz.newInstance();
+			T t = clz.getDeclaredConstructor().newInstance();
 			for (int i = 0; i < fields.size(); i++) {
 				PropertyUtils.setProperty(t, fields.get(i), o.get(selections.get(i)));
 			}
@@ -1776,7 +1758,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		cq.multiselect(selections).where(predicate).orderBy(cb.desc(root.get(orderAttribute)));
 		T t = null;
 		for (Tuple o : em.createQuery(cq).setFirstResult(startPosition).setMaxResults(max).getResultList()) {
-			t = clz.newInstance();
+			t = clz.getDeclaredConstructor().newInstance();
 			for (int i = 0; i < fields.size(); i++) {
 				PropertyUtils.setProperty(t, fields.get(i), o.get(selections.get(i)));
 			}
@@ -1820,7 +1802,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		cq.multiselect(selections).where(predicate).orderBy(cb.asc(root.get(orderAttribute)));
 		T t = null;
 		for (Tuple o : em.createQuery(cq).setFirstResult(startPosition).setMaxResults(max).getResultList()) {
-			t = clz.newInstance();
+			t = clz.getDeclaredConstructor().newInstance();
 			for (int i = 0; i < fields.size(); i++) {
 				PropertyUtils.setProperty(t, fields.get(i), o.get(selections.get(i)));
 			}
@@ -1864,7 +1846,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		Predicate p = cb.equal(root.get(equalAttribute), equalValue);
 		cq.multiselect(selections).where(p).orderBy(cb.asc(root.get(orderAttribute)));
 		for (Tuple o : em.createQuery(cq).setFirstResult(startPosition).setMaxResults(max).getResultList()) {
-			T t = clz.newInstance();
+			T t = clz.getDeclaredConstructor().newInstance();
 			for (int i = 0; i < fields.size(); i++) {
 				PropertyUtils.setProperty(t, fields.get(i), o.get(selections.get(i)));
 			}
@@ -1908,7 +1890,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		Predicate p = cb.equal(root.get(equalAttribute), equalValue);
 		cq.multiselect(selections).where(p).orderBy(cb.desc(root.get(orderAttribute)));
 		for (Tuple o : em.createQuery(cq).setFirstResult(startPosition).setMaxResults(max).getResultList()) {
-			T t = clz.newInstance();
+			T t = clz.getDeclaredConstructor().newInstance();
 			for (int i = 0; i < fields.size(); i++) {
 				PropertyUtils.setProperty(t, fields.get(i), o.get(selections.get(i)));
 			}
@@ -1954,7 +1936,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		p = cb.and(p, cb.equal(root.get(otherEqualAttribute), otherEqualValue));
 		cq.multiselect(selections).where(p).orderBy(cb.desc(root.get(orderAttribute)));
 		for (Tuple o : em.createQuery(cq).setFirstResult(startPosition).setMaxResults(max).getResultList()) {
-			T t = clz.newInstance();
+			T t = clz.getDeclaredConstructor().newInstance();
 			for (int i = 0; i < fields.size(); i++) {
 				PropertyUtils.setProperty(t, fields.get(i), o.get(selections.get(i)));
 			}
@@ -2000,7 +1982,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		p = cb.and(p, cb.notEqual(root.get(otherNotEqualAttribute), otherNotEqualValue));
 		cq.multiselect(selections).where(p).orderBy(cb.desc(root.get(orderAttribute)));
 		for (Tuple o : em.createQuery(cq).setFirstResult(startPosition).setMaxResults(max).getResultList()) {
-			T t = clz.newInstance();
+			T t = clz.getDeclaredConstructor().newInstance();
 			for (int i = 0; i < fields.size(); i++) {
 				PropertyUtils.setProperty(t, fields.get(i), o.get(selections.get(i)));
 			}
