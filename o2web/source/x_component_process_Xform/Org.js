@@ -211,7 +211,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
     _loadMergeReadContentNode: function(contentNode, data){
         this.loadOrgWidget(data.data, contentNode);
     },
-    _loadMergeEditNode: function(){
+    _loadMergeEditNodeByDefault: function(){
         var data = this.getSortedSectionData();
         var businessData = [];
         data.each(function(d){

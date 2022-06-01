@@ -74,7 +74,7 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
     _loadMergeReadContentNode: function( contentNode, data ){
         this._showValue(contentNode, data.data)
     },
-    _loadMergeEditNode: function(){
+    _loadMergeEditNodeByDefault: function(){
         var data = this.getSortedSectionData();
         var businessData = [];
         data.each(function(d){

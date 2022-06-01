@@ -165,6 +165,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         var array = [];
         for( var key in data ){
             array.push({
+                sectionKey: key,
                 key: key,
                 data: data[key]
             })
@@ -196,24 +197,49 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 return data.key;
             case "script":
                 var d;
-                this.form.Macro.environment.event = data;
                 if( this.json.sectionKeyScript && this.json.sectionKeyScript.code){
-                    d = this.form.Macro.exec(this.json.sectionKeyScript.code, this)
+                    this.form.Macro.environment.event = data;
+                    d = this.form.Macro.exec(this.json.sectionKeyScript.code, this);
+                    this.form.Macro.environment.event = null;
                 }else{
                     d = "";
                 }
-                this.form.Macro.environment.event = null;
                 return d;
         }
     },
-    _loadMergeReadNode: function(keepHtml, position){
-        if( !keepHtml ){
+    _loadMergeReadNode: function(keepHtml, position) {
+        if (!keepHtml) {
             this.node.empty();
             this.node.set({
                 "nodeId": this.json.id,
                 "MWFType": this.json.type
             });
         }
+        switch (this.json.mergeTypeRead) {
+            case "htmlScript":
+                this._loadMergeReadNodeByHtml();
+                break;
+            case "dataScript":
+                this._loadMergeReadNodeByData();
+                break;
+            default:
+                this._loadMergeReadNodeByDefault(position);
+                break;
+        }
+    },
+    _loadMergeReadNodeByHtml: function(){
+        if (this.json.sectionMergeReadHtmlScript && this.json.sectionMergeReadHtmlScript.code) {
+            var html = this.form.Macro.exec(this.json.sectionMergeReadHtmlScript.code, this);
+            this.node.set("html", html);
+        }
+    },
+    _loadMergeReadNodeByData: function(){
+        if (this.json.sectionMergeReadDataScript && this.json.sectionMergeReadDataScript.code) {
+            var data = this.form.Macro.exec(this.json.sectionMergeReadDataScript.code, this);
+
+        }
+    },
+    _loadMergeReadNodeByDefault: function( position ){
         var data = this.getSortedSectionData();
         var sectionNodeStyles = this._parseStyles(this.json.sectionNodeStyles);
         var sectionKeyStyles = this._parseStyles(this.json.sectionKeyStyles);
@@ -246,6 +272,20 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         contentNode.set("text", data.data)
     },
     _loadMergeEditNode: function(){
+        if( this.json.mergeTypeEdit === "script" ){
+            this._loadMergeEditNodeByScript();
+        }else{
+            this._loadMergeEditNodeByDefault();
+        }
+    },
+    _loadMergeEditNodeByScript: function(){
+        if (this.json.sectionMergeEditScript && this.json.sectionMergeEditScript.code) {
+            var data = this.form.Macro.exec(this.json.sectionMergeEditScript.code, this);
+            this._setBusinessData( data );
+            this._loadNode();
+        }
+    },
+    _loadMergeEditNodeByDefault: function(){
         var data = this.getSortedSectionData();
         data = data.map(function(d){ return d.data; });
         this._setBusinessData( data.join("") );

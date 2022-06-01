@@ -197,28 +197,44 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.fieldModuleLoaded = false;
 		},
 		load: function(){
-			if ( this.isSectionMergeRead() && this.json.showSectionKey ) { //区段合并显示
-				this._loadMergeReadNode(true, "after");
-				this.node.hide();
-			}else{
-				this._loadModuleEvents();
-				if (this.fireEvent("queryLoad")){
-					this._queryLoaded();
-					if ( this.isSectionMergeRead() && !this.json.showSectionKey ){
-						this._loadMergeNode( true );
-					}else if( this.isSectionMergeEdit() ){
-						this._loadMergeNode( false );
-					}else{
-						this._loadUserInterface();
-					}
-					this._loadStyles();
-					this._loadDomEvents();
-					//this._loadEvents();
+			// var flag = false;
+			// if ( this.isSectionMergeRead() ) { //区段合并显示
+			// 	switch (this.json.mergeTypeRead) {
+			// 		case "dataScript": //根据数据显示
+			// 			this._loadMergeReadNodeByData();
+			// 			flag = true;
+			// 			break;
+			// 		default:
+			// 			if (this.json.showSectionKey) {
+			// 				this._loadMergeReadNodeByDefault();
+			// 				this.node.hide();
+			// 			} else { //?????
+			// 				this._loadMergeNode(true);
+			// 				flag = true;
+			// 			}
+			// 			break;
+			// 	}
+			// }
 
-					this._afterLoaded();
-					this.fireEvent("afterLoad");
-					// this.fireEvent("load");
-				}
+			this._loadModuleEvents();
+            if (this.fireEvent("queryLoad")){
+				this._queryLoaded();
+                if( this.isSectionMergeEdit() ){ //区段合并，删除区段值合并数据后编辑
+                    if( this.json.mergeTypeEdit === "script" ){
+                        this._loadMergeEditNodeByScript();
+                    }else{
+                        this._loadMergeEditNodeByDefault();
+                    }
+                }else{
+				    this._loadUserInterface();
+			    }
+                this._loadStyles();
+                this._loadDomEvents();
+                //this._loadEvents();
+
+                this._afterLoaded();
+                this.fireEvent("afterLoad");
+                // this.fireEvent("load");
 			}
 		},
 		isSectionData: function(){ //数据是否经过区段处理
@@ -231,40 +247,70 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			}
 			return false;
 		},
-		_loadMergeReadContentNode: function( contentNode, data ){
-			var _self = this;
-
-			var json = Object.clone(this.json);
-			json.isReadonly = true;
-			var id = this.json.id + "_" + data.key;
-			json.id = id;
-
-			this._setBusinessData({
-				data: data.data.data
-			}, id);
-
-			var html = this.node.get("html");
-			contentNode.set("html", html);
-			var style = this.node.get("style");
-			contentNode.set("style", style);
-			contentNode.set("MWFtype", "datatable");
-			contentNode.set("id", id);
-
-			if (this.form.all[id]) this.form.all[id] = null;
-			if (this.form.forms[id])this.form.forms[id] = null;
-
-			var module = this.form._loadModule(json, contentNode, function () {
-				this.field = false;
-				if( _self.widget )this.widget = _self.widget;
-				this.parentDatatable = _self;
-			});
-			this.form.modules.push(module);
-			this.form.addEvent("getData", function (data) {
-				if( data[id] )delete data[id];
-			})
+		// _loadMergeReadContentNode: function( contentNode, data ){
+		// 	var _self = this;
+		//
+		// 	var json = Object.clone(this.json);
+		// 	json.isReadonly = true;
+		// 	var id = this.json.id + "_" + data.key;
+		// 	json.id = id;
+		//
+		// 	this._setBusinessData({
+		// 		data: data.data.data
+		// 	}, id);
+		//
+		// 	var html = this.node.get("html");
+		// 	contentNode.set("html", html);
+		// 	var style = this.node.get("style");
+		// 	contentNode.set("style", style);
+		// 	contentNode.set("MWFtype", "datatable");
+		// 	contentNode.set("id", id);
+		//
+		// 	if (this.form.all[id]) this.form.all[id] = null;
+		// 	if (this.form.forms[id])this.form.forms[id] = null;
+		//
+		// 	var module = this.form._loadModule(json, contentNode, function () {
+		// 		this.field = false;
+		// 		if( _self.widget )this.widget = _self.widget;
+		// 		this.parentDatatable = _self;
+		// 	});
+		// 	this.form.modules.push(module);
+		// 	this.form.addEvent("getData", function (data) {
+		// 		if( data[id] )delete data[id];
+		// 	})
+		// },
+		getSectionMergeReadData: function(){
+			switch (this.json.mergeTypeRead) {
+				case "dataScript":
+					if (this.json.sectionMergeReadDataScript && this.json.sectionMergeReadDataScript.code) {
+						return this.form.Macro.exec(this.json.sectionMergeReadDataScript.code, this);
+					}else{
+						return {"data":[]};
+					}
+				default:
+					debugger;
+					var data = [];
+					//把区段值放在每行的数据里
+					this.getSortedSectionData().each(function(d){
+						d.data.data.each(function( obj ){
+							obj.sectionKey = d.sectionKey;
+						});
+						data = data.concat( d.data.data );
+					});
+					return { "data": data };
+			}
 		},
-		_loadMergeNode: function( readonly ){
-			if( readonly )this.json.isReadonly = true;
+		isShowSectionKey: function(){
+			return this.json.showSectionKey && this.isMergeRead;
+		},
+		_loadMergeEditNodeByScript: function(){
+			if (this.json.sectionMergeEditScript && this.json.sectionMergeEditScript.code) {
+				var data = this.form.Macro.exec(this.json.sectionMergeEditScript.code, this);
+				this._setBusinessData( data );
+				this._loadUserInterface();
+			}
+		},
+		_loadMergeEditNodeByDefault: function(){
 			var data = this.getSortedSectionData();
 			var businessData = [];
 			data.each(function(d){
@@ -279,6 +325,8 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		_loadUserInterface: function(){
 			// this.fireEvent("queryLoad");
 
+			this.isMergeRead = this.isSectionMergeRead();
+
 			this.editModules = [];
 			this.node.setStyle("overflow-x", "auto");
 			this.node.setStyle("overflow-y", "hidden");
@@ -286,6 +334,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.tBody = this.table.getElement("tbody");
 
 			this.editable = !(this.readonly || (this.json.isReadonly === true) || (this.form.json.isReadonly === true));
+			if( this.isMergeRead )this.editable = false;
 			if (this.editable && this.json.editableScript && this.json.editableScript.code){
 				this.editable = this.form.Macro.exec(((this.json.editableScript) ? this.json.editableScript.code : ""), this);
 			}
@@ -310,10 +359,14 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 			// this.hiddenColIndexList = [];
 
-			this.data = this.getValue();
-			if( !this._getBusinessData() ){
-				this.isNew = true;
-				this._setValue(this.data);
+			if( this.isMergeRead ){
+				this.data = this.getSectionMergeReadData()
+			}else{
+				this.data = this.getValue();
+				if( !this._getBusinessData() ){
+					this.isNew = true;
+					this._setValue(this.data);
+				}
 			}
 
 
@@ -699,7 +752,8 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				isEdited: typeOf(isEdited) === "boolean" ? isEdited : this.editable,
 				isEditable: this.editable,
 				isDeleteable: this.deleteable,
-				isAddable: this.addable
+				isAddable: this.addable,
+				isMergeRead: this.isMergeRead
 			});
 			this.fireEvent("beforeLoadLine", [line]);
 			line.load();
@@ -1532,6 +1586,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 		isEditable : true, //能否被编辑
 		isDeleteable: true, //能否被删除
 		isAddable: true, //能否添加
+		isMergeRead: false, //合并阅读
 		index : 0,
 		indexText : "0"
 	},

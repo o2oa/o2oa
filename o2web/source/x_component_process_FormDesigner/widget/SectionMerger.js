@@ -32,7 +32,10 @@ MWF.xApplication.process.FormDesigner.widget.SectionMerger = new Class({
 
         this.readArea = this.node.getElement(".sectionMergeReadArea");
         this.readDefaultArea = this.node.getElement(".sectionMergeReadDefaultArea");
-		this.readScriptArea = this.node.getElement(".sectionMergeReadScriptArea");
+		this.readHtmlScriptArea = this.node.getElement(".sectionMergeReadHtmlScriptArea");
+		this.readDataScriptArea = this.node.getElement(".sectionMergeReadDataScriptArea");
+
+		this.readStyleArea = this.node.getElement(".sectionMergeReadStyleArea");
 
 		this.readWithSectionKeyArea = this.node.getElement(".readWithSectionKeyArea");
 		this.sectionKeyScriptArea = this.node.getElement(".sectionKeyScriptArea");
@@ -70,18 +73,38 @@ MWF.xApplication.process.FormDesigner.widget.SectionMerger = new Class({
 				style : "",
 				hasColon : true,
 				itemTemplate: {
-					sectionMerge: { type : "radio", selectValue: ["none", "read", "edit"], selectText: [lp.none, lp.mergeDisplay, lp.mergeEdit], event: {
+					sectionMerge: { name: this.data.pid + "sectionMerge",
+						type : "radio", selectValue: ["none", "read", "edit"], selectText: [lp.none, lp.mergeDisplay, lp.mergeEdit], event: {
 							change: function (it, ev) {
 								_self.property.setRadioValue("sectionMerge", this);
 								_self.checkShow()
 							}
 						}},
-					mergeTypeRead: { type : "radio", className: "editTableRadio",
+					mergeTypeRead: { name: this.data.pid + "mergeTypeRead",
+						type : "radio", className: "editTableRadio",
 						selectValue: function(){
-							return  ["number", "elnumber"].contains(moduleName) ? ["default", "amount", "average", "script"] : ["default", "script"]
+							switch (moduleName) {
+								case "datatable":
+								case "datatemplate":
+									return ["default", "dataScript"];
+								case "number":
+								case "elnumber":
+									return ["default", "amount", "average", "htmlScript"];
+								default:
+									return ["default", "htmlScript"]
+							}
 						},
 						selectText: function () {
-							return ["number", "elnumber"].contains(moduleName) ? [lp.default, lp.amountValue, lp.averageValue, lp.script] : [lp.default, lp.script]
+							switch (moduleName) {
+								case "datatable":
+								case "datatemplate":
+									return [lp.default, lp.dataScript];
+								case "number":
+								case "elnumber":
+									return [lp.default, lp.amountValue, lp.averageValue, lp.htmlScript];
+								default:
+									return [lp.default, lp.htmlScript];
+							}
 						},
 						event: {
 							change: function (it) {
@@ -89,24 +112,28 @@ MWF.xApplication.process.FormDesigner.widget.SectionMerger = new Class({
 								_self.checkShow()
 							}
 						}},
-					showSectionKey: { type : "radio", className: "editTableRadio", selectValue: ["true", "false"], selectText: [lp.yes, lp.no], event: {
+					showSectionKey: { name: this.data.pid + "showSectionKey",
+						type : "radio", className: "editTableRadio", selectValue: ["true", "false"], selectText: [lp.yes, lp.no], event: {
 							change: function (it) {
 								_self.property.setRadioValue("showSectionKey", this);
 								_self.checkShow()
 							}
 						}},
-					keyContentSeparator: { tType : "text" , className: "editTableInput", event: {
+					keyContentSeparator: {  name: this.data.pid + "keyContentSeparator",
+						tType : "text" , className: "editTableInput", event: {
 							change: function (it) {
 								this.property.setValue("keyContentSeparator", it.getValue(), this);
 							}
 						}},
-					sectionKey: { type : "radio", selectValue: ["person", "unit", "textValue", "script"], selectText: [lp.person, lp.unit, lp.textValue1, lp.script], event: {
+					sectionKey: { name: this.data.pid + "sectionKey",
+						type : "radio", selectValue: ["person", "unit", "textValue", "script"], selectText: [lp.person, lp.unit, lp.textValue1, lp.script], event: {
 							change: function (it) {
 								_self.property.setRadioValue("sectionKey", this);
 								_self.checkShow()
 							}
 						}},
-					mergeTypeEdit: { type : "radio", className: "editTableRadio",
+					mergeTypeEdit: { name: this.data.pid + "mergeTypeEdit",
+						type : "radio", className: "editTableRadio",
 						selectValue: function(){
 							return ["number", "elnumber"].contains(moduleName) ? ["amount", "average", "script"] : ["default", "script"]
 						},
@@ -145,8 +172,14 @@ MWF.xApplication.process.FormDesigner.widget.SectionMerger = new Class({
 			"sectionKeyScriptArea": function () {
 				return d.sectionKey === "script";
 			},
-			"readScriptArea": function () {
-				return d.sectionMerge==='read' && d.mergeTypeRead==='script';
+			"readStyleArea": function () {
+				return !["datatable", "datatemplate"].contains( _self.module.moduleName );
+			},
+			"readHtmlScriptArea": function () {
+				return d.sectionMerge==='read' && d.mergeTypeRead==='htmlScript';
+			},
+			"readDataScriptArea": function () {
+				return d.sectionMerge==='read' && d.mergeTypeRead==='dataScript';
 			},
 			"editArea": function() {
 				return d.sectionMerge==='edit';
@@ -192,8 +225,10 @@ MWF.xApplication.process.FormDesigner.widget.SectionMerger = new Class({
 			'                <td class="editTableValue" item="showSectionKey"></td>' +
 			'            </tr>' +
 			'        </table>' +
-			'        <div class="MWFMaplist" name="sectionNodeStyles" title="'+this.lp.sectionNodeStyles+'"></div>' +
-			'        <div class="MWFMaplist" name="sectionContentStyles" title="'+this.lp.sectionContentStyles+'"></div>' +
+			'        <div class="sectionMergeReadStyleArea">' +
+			'        	<div class="MWFMaplist" name="sectionNodeStyles" title="'+this.lp.sectionNodeStyles+'"></div>' +
+			'        	<div class="MWFMaplist" name="sectionContentStyles" title="'+this.lp.sectionContentStyles+'"></div>' +
+			'        </div>' +
 			'        <div class="readWithSectionKeyArea">' +
 			'            <div class="MWFMaplist" name="sectionKeyStyles" title="'+this.lp.sectionKeystyles+'"></div>' +
 			'            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">' +
@@ -211,9 +246,13 @@ MWF.xApplication.process.FormDesigner.widget.SectionMerger = new Class({
 			'            </div>' +
 			'        </div>' +
 			'    </div>' +
-			'    <div class="sectionMergeReadScriptArea">' +
-			'        <div class="MWFScriptArea" name="sectionMergeReadScript" title="'+this.lp.sectionMergeReadScript+' (S)"></div>' +
+			'    <div class="sectionMergeReadHtmlScriptArea">' +
+			'        <div class="MWFScriptArea" name="sectionMergeReadHtmlScript" title="'+this.lp.sectionMergeReadHtmlScript+' (S)"></div>' +
 			'        <div style="padding: 10px;color:#999">返回需展现的html</div>' +
+			'    </div>    ' +
+			'    <div class="sectionMergeReadDataScriptArea">' +
+			'        <div class="MWFScriptArea" name="sectionMergeReadDataScript" title="'+this.lp.sectionMergeReadDataScript+' (S)"></div>' +
+			'        <div style="padding: 10px;color:#999">返回删除区段后合并的数据,不保存到后台</div>' +
 			'    </div>    ' +
 			'</div>' +
 			'<div class="sectionMergeEditArea">' +

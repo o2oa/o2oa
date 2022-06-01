@@ -35,7 +35,7 @@ MWF.xApplication.process.Xform.Textarea = MWF.APPTextarea =  new Class({
             "MWFType": this.json.type
         });
     },
-    _loadMergeEditNode: function(){
+    _loadMergeEditNodeByDefault: function(){
         var data = this.getSortedSectionData();
         data = data.map(function(d){ return d.data; });
         this._setBusinessData( data.join("\n") );
