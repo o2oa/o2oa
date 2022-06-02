@@ -31,6 +31,7 @@ MWF.xApplication.process.FormDesigner.widget.SectionMerger = new Class({
         this.node.set("html", this.getHtml());
 
         this.readArea = this.node.getElement(".sectionMergeReadArea");
+		this.readTypeArea = this.node.getElement(".sectionMergeReadTypeArea");
         this.readDefaultArea = this.node.getElement(".sectionMergeReadDefaultArea");
 		this.readHtmlScriptArea = this.node.getElement(".sectionMergeReadHtmlScriptArea");
 		this.readDataScriptArea = this.node.getElement(".sectionMergeReadDataScriptArea");
@@ -76,8 +77,26 @@ MWF.xApplication.process.FormDesigner.widget.SectionMerger = new Class({
 				style : "",
 				hasColon : true,
 				itemTemplate: {
-					sectionMerge: { name: this.data.pid + "sectionMerge",
-						type : "radio", selectValue: ["none", "read", "edit"], selectText: [lp.none, lp.mergeDisplay, lp.mergeEdit], event: {
+					sectionMerge: { name: this.data.pid + "sectionMerge", type : "radio",
+						selectValue: function(){
+							switch (moduleName) {
+								case "datatable":
+								case "datatemplate":
+									return ["none", "read", "editSection", "edit"];
+								default:
+									return ["none", "read", "edit"]
+							}
+						},
+						selectText: function () {
+							switch (moduleName) {
+								case "datatable":
+								case "datatemplate":
+									return [lp.none, lp.mergeDisplay, lp.editCurrentSection, lp.mergeEdit];
+								default:
+									return [lp.none, lp.mergeDisplay, lp.mergeEdit]
+							}
+						},
+						event: {
 							change: function (it, ev) {
 								_self.property.setRadioValue("sectionMerge", this);
 								_self.checkShow()
@@ -143,7 +162,7 @@ MWF.xApplication.process.FormDesigner.widget.SectionMerger = new Class({
 							}
 						}},
 					sectionKey: { name: this.data.pid + "sectionKey",
-						type : "radio", selectValue: ["person", "unit", "textValue", "script"], selectText: [lp.person, lp.unit, lp.textValue1, lp.script], event: {
+						type : "radio", selectValue: ["person", "unit", "activity", "splitValue", "script"], selectText: [lp.handler, lp.handlerUnit, lp.activityId, lp.splitValue, lp.script], event: {
 							change: function (it) {
 								_self.property.setRadioValue("sectionKey", this);
 								_self.checkShow()
@@ -178,13 +197,16 @@ MWF.xApplication.process.FormDesigner.widget.SectionMerger = new Class({
 		var _self = this;
 		var showCondition = {
 			"readArea": function() {
-				return d.sectionMerge==='read'
+				return d.sectionMerge==='read' || d.sectionMerge==='editSection';
+			},
+			"readTypeArea": function(){
+				return d.sectionMerge==='read';
 			},
 			"readDefaultArea": function () {
-				return d.mergeTypeRead==='default' || !d.mergeTypeRead;
+				return d.mergeTypeRead==='default' || !d.mergeTypeRead || d.sectionMerge==='editSection';
 			},
 			"readWithSectionKeyArea": function () {
-				return !!d.showSectionKey;
+				return !!d.showSectionKey || d.sectionMerge==='editSection';
 			},
 			"sectionKeyScriptArea": function () {
 				return d.sectionKey === "script";
@@ -212,7 +234,8 @@ MWF.xApplication.process.FormDesigner.widget.SectionMerger = new Class({
 			},
 			"sortScriptArea": function () {
 				return ( d.sectionMerge==='read' && d.mergeTypeRead === "default" ) ||
-					(d.sectionMerge==='edit' && d.mergeTypeEdit === "default")
+					(d.sectionMerge==='edit' && d.mergeTypeEdit === "default") ||
+					d.sectionMerge==='editSection'
 			},
 			"mergeTypeEditTable" : function () {
 				return _self.hasEditDefaultModuleList.contains( _self.module.moduleName ) ||
@@ -235,12 +258,14 @@ MWF.xApplication.process.FormDesigner.widget.SectionMerger = new Class({
 			'    </tr>' +
 			'</table>' +
 			'<div class="sectionMergeReadArea">' +
-			'    <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">' +
-			'        <tr>' +
-			'            <td class="editTableTitle">'+this.lp.mergeType+':</td>' +
-			'            <td class="editTableValue" item="mergeTypeRead"></td>' +
-			'        </tr>' +
-			'    </table>' +
+			'    <div class="sectionMergeReadTypeArea">' +
+			'    	<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">' +
+			'        	<tr>' +
+			'            	<td class="editTableTitle">'+this.lp.mergeType+':</td>' +
+			'            	<td class="editTableValue" item="mergeTypeRead"></td>' +
+			'        	</tr>' +
+			'    	</table>' +
+			'    </div>' +
 			'    <div class="sectionMergeReadDefaultArea">' +
 			'        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">' +
 			'            <tr>' +

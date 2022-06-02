@@ -542,6 +542,9 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		},
 		_loadTotalTr: function(){
 			if( !this.totalFlag )return;
+			if( this.isShowSectionKey() && !(this.json.totalRowBySection || [] ).contains("module")){
+				return;
+			}
 			this.totalTr = new Element("tr.mwf_totaltr", {"styles": this.form.css.datagridTotalTr}).inject(this.tBody||this.table);
 
 			var ths = this.titleTr.getElements("th");
@@ -1649,7 +1652,7 @@ MWF.xApplication.process.Xform.DatatablePC.SectionLine =  new Class({
 	},
 	load: function () {
 		this.loadSectionKeyNode();
-		if( ( this.datatable.totalFlag && this.datatable.json.totalRowBySection || [] ).contains("section") ){
+		if( this.datatable.totalFlag && ( this.datatable.json.totalRowBySection || [] ).contains("section") ){
 			this._loadTotalTr();
 		}
 		if( this.data.data &&  this.data.data.data ){
@@ -1660,6 +1663,9 @@ MWF.xApplication.process.Xform.DatatablePC.SectionLine =  new Class({
 				this.lineList.push(line);
 				this.datatable.lineList.push(line);
 			}.bind(this))
+			if( this.datatable.totalFlag && ( this.datatable.json.totalRowBySection || [] ).contains("section") ){
+				this._loadTotal();
+			}
 		}
 	},
 	_loadLine: function(container, data, index, isEdited, isNew){
@@ -1692,12 +1698,13 @@ MWF.xApplication.process.Xform.DatatablePC.SectionLine =  new Class({
 	},
 	loadSectionKeyNode: function () {
 		var sectionKeyStyles = this.datatable._parseStyles(this.datatable.json.sectionKeyStyles);
-		var td = new Element("td", {
-			colspan: this.datatable.columnCount
-		}).inject( this.sectionKeyNode );
-		var keyNode = new Element("div.mwf_sectionkey", {
+		var keyNode = new Element("td.mwf_sectionkey", {
+			colspan: this.datatable.columnCount,
 			styles : sectionKeyStyles
-		}).inject(td);
+		}).inject( this.sectionKeyNode );
+		// var keyNode = new Element("div.mwf_sectionkey", {
+		// 	styles : sectionKeyStyles
+		// }).inject(td);
 		debugger;
 		this.datatable.getSectionKeyWithMerge( this.data, function (key) {
 			if( o2.typeOf(key) === "string" ){
@@ -1710,13 +1717,13 @@ MWF.xApplication.process.Xform.DatatablePC.SectionLine =  new Class({
 		}.bind(this));
 	},
 	_loadTotalTr: function(){
-		this.totalTr = new Element("tr.mwf_totaltr", {"styles": this.form.css.datagridTotalTr}).inject(this.sectionKeyNode, "after");
+		this.totalTr = new Element("tr.mwf_totaltr", {"styles": this.form.css.datagridTotalTr_section}).inject(this.sectionKeyNode, "after");
 
 		var ths = this.datatable.titleTr.getElements("th");
 		//datatable$Title Module
 		ths.each(function(th, index){
 			var td = new Element("td", {"text": "", "styles": this.form.css.datagridTotalTd}).inject(this.totalTr);
-			if (this.datatable.json.amountStyles) td.setStyles(this.datatable.json.amountStyles);
+			if (this.datatable.json.sectionAmountStyles) td.setStyles(this.datatable.json.sectionAmountStyles);
 
 			var json = this.form._getDomjson(th);
 			if (json){
@@ -1754,10 +1761,11 @@ MWF.xApplication.process.Xform.DatatablePC.SectionLine =  new Class({
 		}.bind(this));
 	},
 	_loadTotal: function(){
+		debugger;
 		var totalData = {};
 		if (!this.datatable.totalFlag)return totalData;
 		if (!this.totalTr)this._loadTotalTr();
-		var data = this.data;
+		var data = this.data.data;
 		this.totalColumns.each(function(column, index){
 			var json = column.moduleJson;
 			if(!json)return;
@@ -1911,7 +1919,6 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 
 				var hasData = this.data.hasOwnProperty(templateJsonId);
 
-				debugger;
 				var module = this.form._loadModule(json, node, function () {
 					if( _self.options.isMergeRead ){
 						this.field = false; //不希望保存数据

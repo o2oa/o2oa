@@ -213,7 +213,8 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
             case "unit":
                 callback( data.key.split("@")[0] );
                 break;
-            case "textValue":
+            case "activity":
+            case "splitValue":
                 callback( data.key );
                 break;
             case "script":

@@ -381,6 +381,13 @@
         "overflow": "hidden",
         "background": "#e1e6f3"
     },
+    "datagridTotalTr_section": {
+      "height": "20px",
+      "cursor": "pointer",
+      "line-height": "20px",
+      "overflow": "hidden",
+      "background": "#fafafa"
+    },
     "datagridTotalTd": {
         "font-weight": "bold"
     },

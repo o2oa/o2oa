@@ -477,6 +477,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "sectionKeystyles": "区段值样式",
         "sectionContentStyles": "区段内容样式",
         "mergeDisplay": "只读",
+        "editCurrentSection": "编辑（允许编辑当前区段）",
         "mergeEdit": "编辑（删除区段值后合并数据）",
         "sectionKey": "区段值",
         "sectionKeyScript": "区段值脚本",
@@ -484,7 +485,6 @@ MWF.xApplication.process.FormDesigner.LP = {
         "mergeType": "合并方式",
         "amountValue": "合计数值",
         "averageValue": "平均值",
-        "separatelyDisplay": "分开显示",
         "sectionMergeEditScript": "合并数据脚本",
         "sectionMergeReadHtmlScript": "展现的html脚本",
         "sectionMergeReadDataScript": "数据脚本",
@@ -493,6 +493,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "bySection": "按区段",
         "byModule": "按组件",
         "totalRow": "总计行",
+        "sectionAmountCellStyle": "区段总计单元格样式",
 
         "decimal": "小数点",
 
