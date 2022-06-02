@@ -46,7 +46,7 @@ var supportedLanguage = ["zh-cn", "en"];
 
 var downloadHost = "git.o2oa.net";
 var protocol = "https";
-var commonUrl = "/o2oa/evn-o2server-commons/-/archive/7.2/evn-o2server-commons-7.0.tar.gz?path=commons";
+var commonUrl = "/o2oa/evn-o2server-commons/-/archive/7.2/evn-o2server-commons-7.2.tar.gz?path=commons";
 var jvmUrls = {
     "all": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm",
     "linux_java11": "/o2oa/evn-o2server-jvm/-/archive/master/evn-o2server-jvm-master.tar.gz?path=jvm/linux_java11",
