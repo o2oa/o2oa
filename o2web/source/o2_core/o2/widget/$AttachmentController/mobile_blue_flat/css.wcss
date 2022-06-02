@@ -290,7 +290,10 @@
     "attachmentPreviewIconNode": {
         "width": "180px",
         "height": "126px",
-        "text-align": "center"
+        "text-align": "center",
+        "background-size": "contain",
+        "background-repeat": "no-repeat",
+        "background-position": "center"
     },
     "attachmentPreviewIconImgAreaNode": {
         "width": "72px",

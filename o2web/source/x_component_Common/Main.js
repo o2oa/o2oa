@@ -644,8 +644,8 @@ MWF.xApplication.Common.Main = new Class({
 						x = parseFloat(e.event.clientX || e.event.x);
 						y = parseFloat(e.event.clientY || e.event.y);
 					} else {
-						x = parseFloat(e.event.x);
-						y = parseFloat(e.event.y);
+						x = parseFloat(e.x || e.event.x);
+						y = parseFloat(e.y || e.event.y);
 					}
 
 					if (e.target) {

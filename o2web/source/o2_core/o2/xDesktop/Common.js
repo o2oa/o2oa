@@ -188,8 +188,8 @@ MWF.xDesktop.confirm = function(type, e, title, text, width, height, ok, cancel,
                 x = parseFloat(e.event.clientX);
                 y = parseFloat(e.event.clientY);
             }else{
-                x = parseFloat(e.event.x);
-                y = parseFloat(e.event.y);
+                x = parseFloat(e.x || e.event.x);
+                y = parseFloat(e.y || e.event.y);
             }
 
             if (e.target){

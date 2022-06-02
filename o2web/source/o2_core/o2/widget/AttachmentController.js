@@ -1484,36 +1484,12 @@ o2.widget.AttachmentController.Attachment = new Class({
 
         var icon = this.getIcon();
         if (this.controller.options.images.indexOf(this.data.extension.toLowerCase())!==-1){
-            this.controller.module.getAttachmentUrl(this, function(url){
-                icon = url;
-                this.getPreviewImgSize(icon, function(size){
-                    this.iconImgNode.set({"src": icon, "border": 0});
-
-                    this.iconImgAreaNode.setStyles({
-                        "width": ""+size.x+"px",
-                        "height": ""+size.y+"px"
-                    });
-                    this.iconImgNode.setStyles({
-                        "width": ""+size.x+"px",
-                        "height": ""+size.y+"px",
-                        "margin-top": ""+size.top+"px"
-                    });
-
-                    window.setTimeout(function(){
-                        this.getPreviewImgSize(icon, function(size){
-                            if (this.iconImgAreaNode) this.iconImgAreaNode.setStyles({
-                                "width": ""+size.x+"px",
-                                "height": ""+size.y+"px"
-                            });
-                            if (this.iconImgNode) this.iconImgNode.setStyles({
-                                "width": ""+size.x+"px",
-                                "height": ""+size.y+"px",
-                                "margin-top": ""+size.top+"px"
-                            });
-                        }.bind(this))
-                    }.bind(this), 100);
-
-                }.bind(this));
+            if (this.type!=="message") this.controller.module.getAttachmentUrl(this, function(url){
+                this.iconImgAreaNode.hide();
+                this.iconImgNode.hide();
+                this.iconNode.setStyles({
+                    "background-image": "url("+url+")",
+                });
             }.bind(this));
             this.textNode = new Element("div", {"styles": this.css.attachmentPreviewTextNode}).inject(this.node);
             this.textNode.set("text", this.data.name);
@@ -2046,6 +2022,7 @@ o2.widget.AttachmentController.AttachmentMessage = new Class({
         var d = (new Date).format("db");
         var extension = file.name.substring(file.name.lastIndexOf(".")+1, file.name.length);
         this.file = file;
+        this.type = "message";
         this.data = {
             activity: "",
             activityName: "",
