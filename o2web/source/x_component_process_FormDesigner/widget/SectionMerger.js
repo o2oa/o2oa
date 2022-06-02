@@ -39,10 +39,13 @@ MWF.xApplication.process.FormDesigner.widget.SectionMerger = new Class({
 
 		this.readWithSectionKeyArea = this.node.getElement(".readWithSectionKeyArea");
 		this.sectionKeyScriptArea = this.node.getElement(".sectionKeyScriptArea");
+		this.sectionKeySequenceArea = this.node.getElement(".sectionKeySequenceArea");
+		this.sectionKeyTotalArea = this.node.getElement(".sectionKeyTotalArea");
 
 		this.editArea = this.node.getElement(".sectionMergeEditArea");
 		this.editScriptArea = this.node.getElement(".sectionMergeEditScriptArea");
 		this.mergeTypeEditTable = this.node.getElement("[item='mergeTypeEditTable']");
+
 
 		this.sortScriptArea = this.node.getElement(".sectionMergeSortScriptArea");
 
@@ -119,6 +122,20 @@ MWF.xApplication.process.FormDesigner.widget.SectionMerger = new Class({
 								_self.checkShow()
 							}
 						}},
+					sequenceBySection: { name: this.data.pid + "sequenceBySection",
+						type : "radio", className: "editTableRadio", selectValue: ["section","module"], selectText: [lp.bySection, lp.byModule], event: {
+							change: function (it) {
+								_self.property.setRadioValue("sequenceBySection", this);
+								_self.checkShow()
+							}
+						}},
+					totalRowBySection: { name: this.data.pid + "totalRowBySection",
+						type : "checkbox", className: "editTableRadio", selectValue: ["section","module"], selectText: [lp.bySection, lp.byModule], event: {
+							change: function (it) {
+								_self.property.setCheckboxValue("totalRowBySection", this);
+								_self.checkShow()
+							}
+						}},
 					keyContentSeparator: {  name: this.data.pid + "keyContentSeparator",
 						tType : "text" , className: "editTableInput", event: {
 							change: function (it) {
@@ -171,6 +188,12 @@ MWF.xApplication.process.FormDesigner.widget.SectionMerger = new Class({
 			},
 			"sectionKeyScriptArea": function () {
 				return d.sectionKey === "script";
+			},
+			"sectionKeyTotalArea": function () {
+				return d.showSectionKey && ["datatable"].contains( _self.module.moduleName );
+			},
+			"sectionKeySequenceArea": function () {
+				return d.showSectionKey && ["datatable", "datatemplate"].contains( _self.module.moduleName );
 			},
 			"readStyleArea": function () {
 				return !["datatable", "datatemplate"].contains( _self.module.moduleName );
@@ -231,6 +254,22 @@ MWF.xApplication.process.FormDesigner.widget.SectionMerger = new Class({
 			'        </div>' +
 			'        <div class="readWithSectionKeyArea">' +
 			'            <div class="MWFMaplist" name="sectionKeyStyles" title="'+this.lp.sectionKeystyles+'"></div>' +
+			'            <div class="sectionKeySequenceArea">' +
+			'            	<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">' +
+			'                	<tr>' +
+			'                    	<td class="editTableTitle">'+this.lp.serialNumber+':</td>' +
+			'                    	<td class="editTableValue" item="sequenceBySection"></td>' +
+			'                	</tr>' +
+			'            	</table>' +
+			'            </div>' +
+			'            <div class="sectionKeyTotalArea">' +
+			'            	<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">' +
+			'                	<tr>' +
+			'                    	<td class="editTableTitle">'+this.lp.totalRow+':</td>' +
+			'                    	<td class="editTableValue" item="totalRowBySection"></td>' +
+			'                	</tr>' +
+			'            	</table>' +
+			'            </div>' +
 			'            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">' +
 			'                <tr>' +
 			'                    <td class="editTableTitle">'+this.lp.separator+':</td>' +

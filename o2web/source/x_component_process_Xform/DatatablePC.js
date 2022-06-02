@@ -288,14 +288,20 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 						return {"data":[]};
 					}
 				default:
-					debugger;
+					var sortedData = this.getSortedSectionData();
+					if( this.json.showSectionKey ){
+						this.dataWithSectionKey = sortedData;
+					}
 					var data = [];
 					//把区段值放在每行的数据里
 					this.getSortedSectionData().each(function(d){
-						d.data.data.each(function( obj ){
-							obj.sectionKey = d.sectionKey;
+						( d.data.data || [] ).each(function( obj ){
+							if( o2.typeOf(obj) === "object" ){
+								obj.sectionKey = d.sectionKey;
+								data.push( obj )
+							}
 						});
-						data = data.concat( d.data.data );
+						// data = data.concat( d.data.data );
 					});
 					return { "data": data };
 			}
@@ -371,6 +377,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 
 			this.lineList = [];
+			this.sectionlineList = [];
 
 			this.loadDatatable();
 		},
@@ -476,6 +483,8 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 			var tds = this.templateNode.getElements("td");
 
+			this.columnCount = tds.length;
+
 			if (this.json.border) {
 				tds.setStyles({
 					"border-bottom": this.json.border,
@@ -518,6 +527,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 					eTd.setStyles(this.json.contentStyles);
 					mTd.setStyles(this.json.contentStyles);
 				}
+				this.columnCount = this.columnCount+2;
 			}
 
 			this.templateHtml = this.templateNode.get("html");
@@ -579,7 +589,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			var totalData = {};
 			if (!this.totalFlag)return totalData;
 			if (!this.totalTr)this._loadTotalTr();
-			var data = this.getValue();
+			var data = this.isMergeRead ? this.data : this.getValue();
 			this.totalColumns.each(function(column, index){
 				var json = column.moduleJson;
 				if(!json)return;
@@ -700,11 +710,19 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			var p = o2.promiseAll(this.data).then(function(v){
 				this.data = v;
 
-				this._loadLineList(function(){
-					this._checkAddAction();
-					this._loadTotal();
-					if(callback)callback();
-				}.bind(this));
+				if( this.isShowSectionKey() ){
+					this._loadSectionLineList(function(){
+						this._checkAddAction();
+						this._loadTotal();
+						if(callback)callback();
+					}.bind(this))
+				}else{
+					this._loadLineList(function(){
+						this._checkAddAction();
+						this._loadTotal();
+						if(callback)callback();
+					}.bind(this));
+				}
 
 				this.moduleValueAG = null;
 				return v;
@@ -718,8 +736,36 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				this.moduleValueAG = null;
 			}.bind(this));
 		},
+		_loadSectionLineList: function(callback){
+			this.dataWithSectionKey.each(function(data, idx){
+				var isEdited = false;
+				var isNew = false;
+				var node = this._createLineNode();
+				var sectionLine = this._loadSectionLine(node, data, idx, isEdited, isNew );
+				this.sectionlineList.push(sectionLine);
+			}.bind(this))
+			if (callback) callback();
+		},
+		_loadSectionLine: function(container, data, index, isEdited, isNew){
+			var sectionLine = new MWF.xApplication.process.Xform.DatatablePC.SectionLine(container, this, data, {
+				index : index,
+				indexText : (index+1).toString(),
+				isNew: isNew,
+				isEdited: typeOf(isEdited) === "boolean" ? isEdited : this.editable,
+				isEditable: this.editable,
+				isDeleteable: this.deleteable,
+				isAddable: this.addable,
+				isMergeRead: this.isMergeRead
+			});
+			// this.fireEvent("beforeLoadLine", [line]);
+			sectionLine.load();
+			// this.fireEvent("afterLoadLine", [line]);
+			return sectionLine;
+		},
+
 		_loadLineList: function(callback){
 			this.data.data.each(function(data, idx){
+				if( !data )return;
 				var isNew = this.isNew || (o2.typeOf(this.newLineIndex) === "number" ? idx === this.newLineIndex : false);
 				var isEdited = (!this.multiEditMode && o2.typeOf(this.newLineIndex) === "number") ? idx === this.newLineIndex : this.multiEditMode;
 				var node = this._createLineNode();
@@ -1103,6 +1149,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			if (fireChange && JSON.stringify(old) !== JSON.stringify(data)) this.fireEvent("change");
 
 			this.lineList = [];
+			this.sectionlineList = [];
 			this._loadDatatable();
 		},
 		clearSubModules: function(){
@@ -1578,6 +1625,188 @@ MWF.xApplication.process.Xform.DatatablePC$Data =  new Class({
 	}
 });
 
+MWF.xApplication.process.Xform.DatatablePC.SectionLine =  new Class({
+	Implements: [Options, Events],
+	options: {
+		isNew: false,
+		isEdited: true, //是否正在编辑
+		isEditable: true, //能否被编辑
+		isDeleteable: true, //能否被删除
+		isAddable: true, //能否添加
+		isMergeRead: false, //合并阅读
+		index: 0,
+		indexText: "0"
+	},
+	initialize: function (node, datatable, data, options) {
+		this.setOptions(options);
+		this.sectionKeyNode = node;
+		this.datatable = datatable;
+		this.data = data;
+		this.form = this.datatable.form;
+		this.lineList = [];
+		this.totalColumns = [];
+		this.totalNumberModuleIds = [];
+	},
+	load: function () {
+		this.loadSectionKeyNode();
+		if( ( this.datatable.totalFlag && this.datatable.json.totalRowBySection || [] ).contains("section") ){
+			this._loadTotalTr();
+		}
+		if( this.data.data &&  this.data.data.data ){
+			( this.data.data.data || [] ).each(function(d, i){
+				if( !d )return;
+				var node = this._createLineNode();
+				var line = this._loadLine( node, d, i, this.options.isEdited, this.options.isNew );
+				this.lineList.push(line);
+				this.datatable.lineList.push(line);
+			}.bind(this))
+		}
+	},
+	_loadLine: function(container, data, index, isEdited, isNew){
+		var line = new MWF.xApplication.process.Xform.DatatablePC.Line(container, this.datatable, data, {
+			indexInSectionLine : index,
+			indexInSectionLineText : (index+1).toString(),
+			index: this.datatable.lineList.length,
+			indexText : (this.datatable.lineList.length + 1).toString(),
+			isNew: isNew,
+			isEdited: typeOf(isEdited) === "boolean" ? isEdited : this.options.isEdited,
+			isEditable: this.options.isEditable,
+			isDeleteable: this.options.isDeleteable,
+			isAddable: this.options.isAddable,
+			isMergeRead: this.options.isMergeRead
+		}, this);
+		this.datatable.fireEvent("beforeLoadLine", [line]);
+		line.load();
+		this.datatable.fireEvent("afterLoadLine", [line]);
+		return line;
+	},
+	_createLineNode: function(){
+		var tr;
+		if( this.totalTr ){
+			tr = new Element("tr").inject(this.totalTr, "before");
+		}else{
+			tr = this.datatable._createLineNode();
+			// tr = new Element("tr").inject(this.tBody || this.table);
+		}
+		return tr;
+	},
+	loadSectionKeyNode: function () {
+		var sectionKeyStyles = this.datatable._parseStyles(this.datatable.json.sectionKeyStyles);
+		var td = new Element("td", {
+			colspan: this.datatable.columnCount
+		}).inject( this.sectionKeyNode );
+		var keyNode = new Element("div.mwf_sectionkey", {
+			styles : sectionKeyStyles
+		}).inject(td);
+		debugger;
+		this.datatable.getSectionKeyWithMerge( this.data, function (key) {
+			if( o2.typeOf(key) === "string" ){
+				keyNode.set("text", key + (this.datatable.json.keyContentSeparator || ""));
+			}else{
+				Promise.resolve(key).then(function (k) {
+					keyNode.set("text", k + (this.datatable.json.keyContentSeparator || ""));
+				}.bind(this))
+			}
+		}.bind(this));
+	},
+	_loadTotalTr: function(){
+		this.totalTr = new Element("tr.mwf_totaltr", {"styles": this.form.css.datagridTotalTr}).inject(this.sectionKeyNode, "after");
+
+		var ths = this.datatable.titleTr.getElements("th");
+		//datatable$Title Module
+		ths.each(function(th, index){
+			var td = new Element("td", {"text": "", "styles": this.form.css.datagridTotalTd}).inject(this.totalTr);
+			if (this.datatable.json.amountStyles) td.setStyles(this.datatable.json.amountStyles);
+
+			var json = this.form._getDomjson(th);
+			if (json){
+				if( json.isShow === false ){
+					td.hide(); //隐藏列
+				}else if( this.reloading && json.isShow === true){
+					td.setStyle("display", "");
+				}
+				if ((json.total === "number") || (json.total === "count")){
+					this.totalColumns.push({
+						"th" : th,
+						"td" : td,
+						"index": index,
+						"type": json.total
+					})
+				}
+			}
+		}.bind(this));
+
+		var tds = this.datatable.templateTr.getElements("td");
+		//datatable$Data Module
+		tds.each(function(td, index){
+			var json = this.form._getDomjson(td);
+			if (json){
+				//总计列
+				var tColumn = this.totalColumns.find(function(a){ return  a.index === index });
+				if(tColumn){
+					var moduleNodes = this.form._getModuleNodes(td); //获取总计列内的填写组件
+					if( moduleNodes.length > 0 ){
+						tColumn.moduleJson = this.form._getDomjson(moduleNodes[0]);
+						if(tColumn.type === "number")this.totalNumberModuleIds.push( tColumn.moduleJson.id );
+					}
+				}
+			}
+		}.bind(this));
+	},
+	_loadTotal: function(){
+		var totalData = {};
+		if (!this.datatable.totalFlag)return totalData;
+		if (!this.totalTr)this._loadTotalTr();
+		var data = this.data;
+		this.totalColumns.each(function(column, index){
+			var json = column.moduleJson;
+			if(!json)return;
+
+			var pointLength = 0; //小数点后的最大数位
+			var tmpV;
+			if (column.type === "count"){
+				tmpV = data.data.length;
+			}else if(column.type === "number"){
+				tmpV = new Decimal(0);
+				for (var i=0; i<data.data.length; i++){
+					var d = data.data[i];
+					if(d[json.id]){
+						tmpV = tmpV.plus(d[json.id].toFloat() || 0);
+						var v = d[json.id].toString();
+						if( v.indexOf(".") > -1 ){
+							pointLength = Math.max(pointLength, v.split(".")[1].length);
+						}
+					}
+				}
+			}
+
+			if( isNaN( tmpV ) ){
+				totalData[json.id] = "";
+				column.td.set("text", "" );
+			}else{
+				if( pointLength > 0 && tmpV.toString() !== "0" ){
+					var s = tmpV.toString();
+					if( s.indexOf(".") > -1 ){
+						var length = s.split(".")[1].length;
+						if( length < pointLength ){
+							totalData[json.id] = s + "0".repeat(pointLength-length);
+						}else{
+							totalData[json.id] = s;
+						}
+					}else{
+						totalData[json.id] = s +"."+ "0".repeat(pointLength)
+					}
+				}else{
+					totalData[json.id] = tmpV.toString();
+				}
+				column.td.set("text", totalData[json.id] );
+			}
+		}.bind(this));
+		data.total = totalData;
+		return totalData;
+	}
+});
+
 MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 	Implements: [Options, Events],
 	options: {
@@ -1588,9 +1817,11 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 		isAddable: true, //能否添加
 		isMergeRead: false, //合并阅读
 		index : 0,
-		indexText : "0"
+		indexText : "0",
+		indexInSectionLine: 0,
+		indexInSectionLineText : "0"
 	},
-	initialize: function (node, datatable, data, options) {
+	initialize: function (node, datatable, data, options, sectionLine) {
 
 		this.setOptions(options);
 
@@ -1598,6 +1829,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 		this.datatable = datatable;
 		this.data = data;
 		this.form = this.datatable.form;
+		this.sectionLine = sectionLine;
 
 		// if( !this.datatable.multiEditMode && !this.options.isNew){
 		// 	this.originalData = Object.clone(data);
@@ -1800,7 +2032,17 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 	},
 	loadSequence: function(){
 		var sequenceTd = this.node.getElements(".mwf_sequence");
-		if(sequenceTd)sequenceTd.set("text", this.options.indexText)
+		if(sequenceTd){
+			if( this.datatable.isShowSectionKey() ){
+				if( this.datatable.json.sequenceBySection === "section" ){
+					sequenceTd.set("text", this.options.indexInSectionLineText );
+				}else{
+					sequenceTd.set("text", this.options.indexText)
+				}
+			}else{
+				sequenceTd.set("text", this.options.indexText)
+			}
+		}
 	},
 	loadZebraStyle: function(){
 		if ((this.options.index%2)===0 && this.datatable.json.zebraColor){

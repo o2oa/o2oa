@@ -490,6 +490,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "sectionMergeReadDataScript": "数据脚本",
         "htmlScript": "html脚本",
         "dataScript": "数据脚本",
+        "bySection": "按区段",
+        "byModule": "按组件",
+        "totalRow": "总计行",
 
         "decimal": "小数点",
 
