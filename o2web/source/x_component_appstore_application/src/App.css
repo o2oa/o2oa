@@ -204,3 +204,22 @@
 .appstore-video-dlg video{
   width: 100%;
 }
+.appstore-contactus{
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    background-image: url("./assets/pic_qiyeweixin@2x.png");
+    width: 200px;
+    height: 200px;
+    margin: auto;
+}
+.appstore-contactus-text{
+    padding: 10px 20px;
+    text-align: center;
+}
+.appstore-contactus-phone{
+    padding: 10px 20px;
+    text-align: center;
+    color: #F24949;
+    font-size: 20px;
+}

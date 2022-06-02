@@ -3353,10 +3353,19 @@ Object.defineProperties(bind.assignData, {"data": {
 //--------------------------------------------------------------
 //封装java对象data, 以兼容javascript对象
 (function (bind) {
-    var javaClass = {
-        map: java.util.Map,
-        array: java.util.ArrayList,
-        work: com.x.processplatform.core.entity.content.Data$DataWork
+    var javaClass;
+    try {
+        javaClass = {
+            map: java.util.Map,
+            array: java.util.ArrayList,
+            work: com.x.processplatform.core.entity.content.Data$DataWork
+        }
+    }catch (e){
+        javaClass = {
+            map: Object,
+            array: Array,
+            work: new Function()
+        }
     }
     function proxyWork(data) {
         return (data instanceof javaClass.work) && JSON.parse(data.toString());

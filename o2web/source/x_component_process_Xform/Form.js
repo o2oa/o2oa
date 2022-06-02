@@ -5057,7 +5057,7 @@ debugger;
         return true;
     },
     addTask: function(){
-        if (this.checkControl("allowReset")){
+        if (this.checkControl("allowAddTask")){
             var _self = this;
             var opt = {};
             o2.DL.open({
