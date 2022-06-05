@@ -35,6 +35,8 @@ MWF.xApplication.process.FormDesigner.widget.SectionMerger = new Class({
         this.readDefaultArea = this.node.getElement(".sectionMergeReadDefaultArea");
 		this.readHtmlScriptArea = this.node.getElement(".sectionMergeReadHtmlScriptArea");
 		this.readDataScriptArea = this.node.getElement(".sectionMergeReadDataScriptArea");
+		this.keyContentSeparatorArea = this.node.getElement(".keyContentSeparatorArea");
+		this.sectionKeyStylesArea = this.node.getElement(".sectionKeyStylesArea");
 
 		this.readStyleArea = this.node.getElement(".sectionMergeReadStyleArea");
 
@@ -208,6 +210,12 @@ MWF.xApplication.process.FormDesigner.widget.SectionMerger = new Class({
 			"readWithSectionKeyArea": function () {
 				return !!d.showSectionKey || d.sectionMerge==='editSection';
 			},
+			"keyContentSeparatorArea": function () {
+				return !!d.showSectionKey;
+			},
+			"sectionKeyStylesArea": function () {
+				return !!d.showSectionKey;
+			},
 			"sectionKeyScriptArea": function () {
 				return d.sectionKey === "script";
 			},
@@ -278,7 +286,9 @@ MWF.xApplication.process.FormDesigner.widget.SectionMerger = new Class({
 			'        	<div class="MWFMaplist" name="sectionContentStyles" title="'+this.lp.sectionContentStyles+'"></div>' +
 			'        </div>' +
 			'        <div class="readWithSectionKeyArea">' +
-			'            <div class="MWFMaplist" name="sectionKeyStyles" title="'+this.lp.sectionKeystyles+'"></div>' +
+			'			 <div class="sectionKeyStylesArea">' +
+			'            	<div class="MWFMaplist" name="sectionKeyStyles" title="'+this.lp.sectionKeystyles+'"></div>' +
+			'			 </div>'+
 			'            <div class="sectionKeySequenceArea">' +
 			'            	<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">' +
 			'                	<tr>' +
@@ -295,11 +305,15 @@ MWF.xApplication.process.FormDesigner.widget.SectionMerger = new Class({
 			'                	</tr>' +
 			'            	</table>' +
 			'            </div>' +
-			'            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">' +
+			'            <div class="keyContentSeparatorArea">' +
+			'            	<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">' +
 			'                <tr>' +
 			'                    <td class="editTableTitle">'+this.lp.separator+':</td>' +
 			'                    <td class="editTableValue" item="keyContentSeparator"></td>' +
 			'                </tr>' +
+			'            	</table>' +
+			'            </div>' +
+			'            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">' +
 			'                <tr>' +
 			'                    <td class="editTableTitle">'+this.lp.sectionKey+':</td>' +
 			'                    <td class="editTableValue" item="sectionKey"></td>' +
