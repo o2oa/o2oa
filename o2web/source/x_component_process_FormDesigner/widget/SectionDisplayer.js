@@ -1,6 +1,6 @@
 MWF.xApplication.process.FormDesigner.widget = MWF.xApplication.process.FormDesigner.widget || {};
 MWF.require("MWF.widget.ScriptArea", null, false);
-MWF.xApplication.process.FormDesigner.widget.SectionDisplyer = new Class({
+MWF.xApplication.process.FormDesigner.widget.SectionDisplayer = new Class({
 	Implements: [Options, Events],
 	Extends: MWF.widget.Common,
 	options: {
@@ -17,8 +17,8 @@ MWF.xApplication.process.FormDesigner.widget.SectionDisplyer = new Class({
 		this.form = this.property.form;
 		this.module = this.property.module;
 		
-		// this.path = "../x_component_process_FormDesigner/widget/$SectionDisplyer/";
-		// this.cssPath = "../x_component_process_FormDesigner/widget/$SectionDisplyer/"+this.options.style+"/css.wcss";
+		// this.path = "../x_component_process_FormDesigner/widget/$SectionDisplayer/";
+		// this.cssPath = "../x_component_process_FormDesigner/widget/$SectionDisplayer/"+this.options.style+"/css.wcss";
 		this.lp = this.app.lp.propertyTemplate;
 		// this._loadCss();
 	},

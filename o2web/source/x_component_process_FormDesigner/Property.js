@@ -271,8 +271,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
     loadSectionDisplayer: function(){
         var arrays = this.propertyContent.getElements(".MWFSectionDisplayerArea");
         arrays.each(function(node){
-            MWF.requireApp("process.FormDesigner", "widget.SectionDisplyer", function(){
-                var merger = new MWF.xApplication.process.FormDesigner.widget.SectionDisplyer(node, this, {
+            MWF.requireApp("process.FormDesigner", "widget.SectionDisplayer", function(){
+                var merger = new MWF.xApplication.process.FormDesigner.widget.SectionDisplayer(node, this, {
                     // "title": title,
                     "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
                     "onChange": function(){
