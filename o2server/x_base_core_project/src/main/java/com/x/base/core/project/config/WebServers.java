@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -17,14 +16,12 @@ import java.util.concurrent.ConcurrentSkipListMap;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.DefaultCharset;
-import com.x.base.core.project.tools.ListTools;
 
 public class WebServers extends ConcurrentSkipListMap<String, WebServer> {
 
@@ -54,30 +51,33 @@ public class WebServers extends ConcurrentSkipListMap<String, WebServer> {
 				list.add(o);
 			}
 		}
-		if (ListTools.isEmpty(list)) {
-			return null;
+		if (!list.isEmpty()) {
+			return list.get(RANDOM.nextInt(list.size()));
 		}
-		this.sortWithWeight(list);
-		int total = 0;
-		for (Entry<String, WebServer> o : list) {
-			total += o.getValue().getWeight();
-		}
-
-		int rdm = RANDOM.nextInt(total);
-		int current = 0;
-		for (Entry<String, WebServer> o : list) {
-			current += o.getValue().getWeight();
-			if (rdm <= current) {
-				return o;
-			}
-		}
+//		if (ListTools.isEmpty(list)) {
+//			return null;
+//		}
+//		this.sortWithWeight(list);
+//		int total = 0;
+//		for (Entry<String, WebServer> o : list) {
+//			total += o.getValue().getWeight();
+//		}
+//
+//		int rdm = RANDOM.nextInt(total);
+//		int current = 0;
+//		for (Entry<String, WebServer> o : list) {
+//			current += o.getValue().getWeight();
+//			if (rdm <= current) {
+//				return o;
+//			}
+//		}
 		throw new IllegalStateException("randomWithWeight error.");
 	}
-
-	private void sortWithWeight(List<Entry<String, WebServer>> list) {
-		Collections.sort(list,
-				(o1, o2) -> ObjectUtils.compare(o1.getValue().getWeight(), o2.getValue().getWeight(), true));
-	}
+//
+//	private void sortWithWeight(List<Entry<String, WebServer>> list) {
+//		Collections.sort(list,
+//				(o1, o2) -> ObjectUtils.compare(o1.getValue().getWeight(), o2.getValue().getWeight(), true));
+//	}
 
 	public static void updateWebServerConfigJson() throws Exception {
 		File dir = new File(Config.base(), "servers/webServer/x_desktop/res/config");
@@ -125,7 +125,7 @@ public class WebServers extends ConcurrentSkipListMap<String, WebServer> {
 			center.put("port", centerServerConfig.getProxyPort().toString());
 			centers.add(center);
 		}
-		map.putAll(centerServerConfig.getConfig());
+//		map.putAll(centerServerConfig.getConfig());
 
 		/** 写入systemName */
 		map.put("footer", Config.collect().getFooter());
@@ -141,9 +141,9 @@ public class WebServers extends ConcurrentSkipListMap<String, WebServer> {
 		if ((null != Config.portal().getLoginPage())
 				&& (BooleanUtils.isTrue(Config.portal().getLoginPage().getEnable()))) {
 			map.put(MAP_LOGINPAGE, Config.portal().getLoginPage());
-		} else if ((null != Config.person().getLoginPage())
-				&& (BooleanUtils.isTrue(Config.person().getLoginPage().getEnable()))) {
-			map.put(MAP_LOGINPAGE, Config.person().getLoginPage());
+//		} else if ((null != Config.person().getLoginPage())
+//				&& (BooleanUtils.isTrue(Config.person().getLoginPage().getEnable()))) {
+//			map.put(MAP_LOGINPAGE, Config.person().getLoginPage());
 		} else {
 			map.put(MAP_LOGINPAGE, Config.portal().getLoginPage());
 		}

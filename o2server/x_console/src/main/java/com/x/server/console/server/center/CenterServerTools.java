@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Date;
 import java.util.EnumSet;
 import java.util.TimeZone;
 
@@ -16,7 +15,6 @@ import org.apache.commons.io.file.PathUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
 import org.eclipse.jetty.quickstart.QuickStartWebApp;
 import org.eclipse.jetty.server.AsyncRequestLogWriter;
 import org.eclipse.jetty.server.RequestLog;
@@ -46,9 +44,6 @@ import com.x.server.console.server.ServerRequestLogBody;
 public class CenterServerTools extends JettySeverTools {
 
 	private static Logger logger = LoggerFactory.getLogger(CenterServerTools.class);
-
-	private static final int CENTERSERVER_THREAD_POOL_SIZE_MIN = 20;
-	private static final int CENTERSERVER_THREAD_POOL_SIZE_MAX = 2000;
 
 	public static Server start(CenterServer centerServer) throws Exception {
 
@@ -94,15 +89,15 @@ public class CenterServerTools extends JettySeverTools {
 
 		QueuedThreadPool threadPool = new QueuedThreadPool();
 		threadPool.setName("CenterServerQueuedThreadPool");
-		threadPool.setMinThreads(CENTERSERVER_THREAD_POOL_SIZE_MIN);
-		threadPool.setMaxThreads(CENTERSERVER_THREAD_POOL_SIZE_MAX);
+		threadPool.setMinThreads(THREAD_POOL_SIZE_MIN);
+		threadPool.setMaxThreads(THREAD_POOL_SIZE_MAX);
 		Server server = new Server(threadPool);
-		server.setAttribute("maxFormContentSize", centerServer.getMaxFormContent() * 1024 * 1024);
+		server.setAttribute("org.eclipse.jetty.server.Request.maxFormContentSize", MAX_FORM_CONTENT_SIZE);
 
 		if (BooleanUtils.isTrue(centerServer.getSslEnable())) {
-			addHttpsConnector(server, centerServer.getPort(), centerServer.getPersistentConnectionsEnable());
+			addHttpsConnector(server, centerServer.getPort(), true);
 		} else {
-			addHttpConnector(server, centerServer.getPort(), centerServer.getPersistentConnectionsEnable());
+			addHttpConnector(server, centerServer.getPort(), true);
 		}
 
 		GzipHandler gzipHandler = new GzipHandler();
@@ -135,17 +130,11 @@ public class CenterServerTools extends JettySeverTools {
 		asyncRequestLogWriter.setFilename(
 				Config.dir_logs().toString() + File.separator + "center.request.yyyy_MM_dd." + Config.node() + ".log");
 		asyncRequestLogWriter.setFilenameDateFormat("yyyyMMdd");
-		String format = "%{client}a - %u %{yyyy-MM-dd HH:mm:ss.SSS ZZZ|" + DateFormatUtils.format(new Date(), "z")
-				+ "}t \"%r\" %s %O %{ms}T";
 		if (BooleanUtils.isTrue(centerServer.getRequestLogBodyEnable())
 				|| BooleanUtils.isTrue(Config.ternaryManagement().getEnable())) {
-			return new ServerRequestLog(asyncRequestLogWriter,
-					StringUtils.isEmpty(centerServer.getRequestLogFormat()) ? format
-							: centerServer.getRequestLogFormat());
+			return new ServerRequestLog(asyncRequestLogWriter, LOG_FORMAT);
 		} else {
-			return new ServerRequestLogBody(asyncRequestLogWriter,
-					StringUtils.isEmpty(centerServer.getRequestLogFormat()) ? format
-							: centerServer.getRequestLogFormat());
+			return new ServerRequestLogBody(asyncRequestLogWriter, LOG_FORMAT);
 		}
 	}
 

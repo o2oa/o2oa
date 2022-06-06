@@ -251,7 +251,7 @@ public class Main {
 		}
 		// 关闭定时器
 		scheduler.shutdown();
-		SystemOutErrorSideCopyBuilder.stop();
+		// SystemOutErrorSideCopyBuilder.stop();
 	}
 
 	private static boolean createEncryptKey() {
@@ -534,9 +534,7 @@ public class Main {
 			if ((null != applicationServer) && (BooleanUtils.isTrue(applicationServer.getEnable()))) {
 				stopApplicationServer();
 			}
-			if (BooleanUtils.isTrue(Config.currentNode().getIsPrimaryCenter())) {
-				stopCenterServer();
-			}
+			stopCenterServer();
 			StorageServer storageServer = Config.currentNode().getStorage();
 			if ((null != storageServer) && (BooleanUtils.isTrue(storageServer.getEnable()))) {
 				stopStorageServer();

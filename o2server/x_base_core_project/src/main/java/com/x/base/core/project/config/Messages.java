@@ -113,15 +113,15 @@ public class Messages extends ConcurrentSkipListMap<String, Message> {
 		return o;
 	}
 
-	public Map<String, String> getConsumersV2(String type) {
-		Message o = this.get(type);
-		Map<String, String> map = new HashMap<>();
-		// 这里必须复制内容,在消息处理中会对列表进行删除操作
-		if ((o != null) && (o.getConsumersV2() != null)) {
-			map.putAll(o.getConsumersV2());
-		}
-		return map;
-	}
+//	public Map<String, String> getConsumersV2(String type) {
+//		Message o = this.get(type);
+//		Map<String, String> map = new HashMap<>();
+//		// 这里必须复制内容,在消息处理中会对列表进行删除操作
+//		if ((o != null) && (o.getConsumersV2() != null)) {
+//			map.putAll(o.getConsumersV2());
+//		}
+//		return map;
+//	}
 
 	public List<Consumer> getConsumers(String type) {
 		Message o = this.get(type);

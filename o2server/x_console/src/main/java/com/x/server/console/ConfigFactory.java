@@ -3,23 +3,25 @@ package com.x.server.console;
 import java.io.File;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.Node;
 import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.jaxrs.WrapString;
 import com.x.base.core.project.tools.JarTools;
 
 public class ConfigFactory {
 
+	private ConfigFactory() {
+		// nothing
+	}
+
 	private static Logger logger = LoggerFactory.getLogger(ConfigFactory.class);
 
 	public static void sync() throws Exception {
-		Node node = Config.currentNode();
-		if (BooleanUtils.isNotTrue(node.getIsPrimaryCenter())) {
+		if (StringUtils.equalsIgnoreCase(Config.node(), Config.resource_node_centersPirmaryNode())) {
 			logger.info("{} is not primary center. sync config from primary center {}.", Config.node(),
 					Config.nodes().primaryCenterNode());
 			syncFromPrimaryCenter();

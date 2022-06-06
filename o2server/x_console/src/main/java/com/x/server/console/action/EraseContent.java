@@ -70,9 +70,11 @@ public abstract class EraseContent {
 			for (int i = 0; i < classNames.size(); i++) {
 				Class<? extends JpaObject> cls = (Class<? extends JpaObject>) Thread.currentThread()
 						.getContextClassLoader().loadClass(classNames.get(i));
+//				EntityManagerFactory emf = OpenJPAPersistence.createEntityManagerFactory(cls.getName(),
+//						persistence.getName(),
+//						PersistenceXmlHelper.properties(cls.getName(), Config.slice().getEnable()));
 				EntityManagerFactory emf = OpenJPAPersistence.createEntityManagerFactory(cls.getName(),
-						persistence.getName(),
-						PersistenceXmlHelper.properties(cls.getName(), Config.slice().getEnable()));
+						persistence.getName(), PersistenceXmlHelper.properties(cls.getName(), false));
 				EntityManager em = emf.createEntityManager();
 				if (DataItem.class.isAssignableFrom(cls)) {
 					Long total = this.estimateItemCount(em, cls);

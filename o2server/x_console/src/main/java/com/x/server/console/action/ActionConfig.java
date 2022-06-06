@@ -21,7 +21,7 @@ import com.x.base.core.project.tools.JarTools;
 public class ActionConfig extends ActionBase {
 
 	public boolean execute() throws Exception {
-		if (!Config.currentNode().getIsPrimaryCenter()) {
+		if (StringUtils.equalsIgnoreCase(Config.node(), Config.resource_node_centersPirmaryNode())) {
 			byte[] bytes = this.getZip();
 			this.unzip(bytes);
 			System.out.println("synchronize config success, should to restart server.");

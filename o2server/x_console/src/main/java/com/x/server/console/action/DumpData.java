@@ -106,8 +106,10 @@ public class DumpData {
 					try {
 						@SuppressWarnings("unchecked")
 						Class<JpaObject> cls = (Class<JpaObject>) classLoader.loadClass(className);
+//						emf = OpenJPAPersistence.createEntityManagerFactory(cls.getName(), xml.getFileName().toString(),
+//								PersistenceXmlHelper.properties(cls.getName(), Config.slice().getEnable()));
 						emf = OpenJPAPersistence.createEntityManagerFactory(cls.getName(), xml.getFileName().toString(),
-								PersistenceXmlHelper.properties(cls.getName(), Config.slice().getEnable()));
+								PersistenceXmlHelper.properties(cls.getName(), false));
 						em = emf.createEntityManager();
 						long estimateCount = estimateCount(em, cls);
 						logger.print("dump data({}/{}): {}, count: {}.", idx.getAndAdd(1), classNames.size(),

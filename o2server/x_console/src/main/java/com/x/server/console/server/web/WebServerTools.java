@@ -3,7 +3,6 @@ package com.x.server.console.server.web;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Date;
 import java.util.EnumSet;
 import java.util.Map.Entry;
 import java.util.TimeZone;
@@ -15,7 +14,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
 import org.eclipse.jetty.server.AsyncRequestLogWriter;
 import org.eclipse.jetty.server.RequestLog;
 import org.eclipse.jetty.server.Server;
@@ -64,21 +62,18 @@ public class WebServerTools extends JettySeverTools {
 		threadPool.setMaxThreads(WEBSERVER_THREAD_POOL_SIZE_MAX);
 		Server server = new Server(threadPool);
 		if (BooleanUtils.isTrue(webServer.getSslEnable())) {
-			addHttpsConnector(server, webServer.getPort(), webServer.getPersistentConnectionsEnable());
+			addHttpsConnector(server, webServer.getPort(), true);
 		} else {
-			addHttpConnector(server, webServer.getPort(), webServer.getPersistentConnectionsEnable());
+			addHttpConnector(server, webServer.getPort(), true);
 		}
 		WebAppContext context = new WebAppContext();
 		context.setContextPath("/");
 		context.setBaseResource(Resource.newResource(new File(Config.base(), "servers/webServer")));
 		context.setParentLoaderPriority(true);
 		context.setExtractWAR(false);
-		context.setInitParameter("org.eclipse.jetty.servlet.Default.dirAllowed", "" + webServer.getDirAllowed());
+		context.setInitParameter("org.eclipse.jetty.servlet.Default.dirAllowed", false + "");
 		context.setInitParameter("org.eclipse.jetty.servlet.Default.useFileMappedBuffer", "false");
-		if (webServer.getCacheControlMaxAge() > 0) {
-			context.setInitParameter("org.eclipse.jetty.servlet.Default.cacheControl",
-					"max-age=" + webServer.getCacheControlMaxAge());
-		}
+		context.setInitParameter("org.eclipse.jetty.servlet.Default.cacheControl", "max-age=86400");
 		context.setInitParameter("org.eclipse.jetty.servlet.Default.maxCacheSize", "256000000");
 		context.setInitParameter("org.eclipse.jetty.servlet.Default.maxCachedFileSize", "200000000");
 		context.setWelcomeFiles(new String[] { "default.html", "index.html" });
@@ -133,10 +128,7 @@ public class WebServerTools extends JettySeverTools {
 		asyncRequestLogWriter.setFilename(
 				Config.dir_logs().toString() + File.separator + "web.request.yyyy_MM_dd." + Config.node() + ".log");
 		asyncRequestLogWriter.setFilenameDateFormat("yyyyMMdd");
-		String format = "%{client}a - %u %{yyyy-MM-dd HH:mm:ss.SSS ZZZ|" + DateFormatUtils.format(new Date(), "z")
-				+ "}t \"%r\" %s %O %{ms}T";
-		return new ServerRequestLog(asyncRequestLogWriter,
-				StringUtils.isEmpty(webServer.getRequestLogFormat()) ? format : webServer.getRequestLogFormat());
+		return new ServerRequestLog(asyncRequestLogWriter, LOG_FORMAT);
 	}
 
 	private static void proxyCenter(WebAppContext context, final Integer timeout) throws Exception {

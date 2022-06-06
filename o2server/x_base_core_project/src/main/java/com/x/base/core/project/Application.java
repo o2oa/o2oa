@@ -13,6 +13,8 @@ import com.x.base.core.project.schedule.ScheduleRequest;
 
 public class Application extends GsonPropertyObject {
 
+	private static final long serialVersionUID = -2189468910305745776L;
+
 	private String className;
 	private String name;
 	private String node;
@@ -22,8 +24,8 @@ public class Application extends GsonPropertyObject {
 	private Boolean sslEnable;
 	private String proxyHost;
 	private Integer proxyPort;
-	private Integer weight;
-	private Integer scheduleWeight;
+//	private Integer weight;
+//	private Integer scheduleWeight;
 	private Date reportDate;
 
 	private List<ScheduleRequest> scheduleRequestList = new ArrayList<>();
@@ -91,13 +93,13 @@ public class Application extends GsonPropertyObject {
 		this.token = token;
 	}
 
-	public Integer getWeight() {
-		return weight;
-	}
-
-	public void setWeight(Integer weight) {
-		this.weight = weight;
-	}
+//	public Integer getWeight() {
+//		return weight;
+//	}
+//
+//	public void setWeight(Integer weight) {
+//		this.weight = weight;
+//	}
 
 	public Date getReportDate() {
 		return reportDate;
@@ -163,12 +165,12 @@ public class Application extends GsonPropertyObject {
 		this.className = className;
 	}
 
-	public Integer getScheduleWeight() {
-		return scheduleWeight;
-	}
-
-	public void setScheduleWeight(Integer scheduleWeight) {
-		this.scheduleWeight = scheduleWeight;
-	}
+//	public Integer getScheduleWeight() {
+//		return scheduleWeight;
+//	}
+//
+//	public void setScheduleWeight(Integer scheduleWeight) {
+//		this.scheduleWeight = scheduleWeight;
+//	}
 
 }

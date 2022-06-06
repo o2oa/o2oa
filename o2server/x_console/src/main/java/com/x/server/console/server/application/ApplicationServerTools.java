@@ -7,7 +7,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
@@ -29,7 +28,6 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
 import org.eclipse.jetty.quickstart.QuickStartWebApp;
 import org.eclipse.jetty.server.AsyncRequestLogWriter;
 import org.eclipse.jetty.server.RequestLog;
@@ -96,8 +94,6 @@ public class ApplicationServerTools extends JettySeverTools {
 
 	private static Logger logger = LoggerFactory.getLogger(ApplicationServerTools.class);
 
-	private static final int APPLICATIONSERVER_THREAD_POOL_SIZE_MIN = 20;
-
 	private static final List<String> OFFICIAL_MODULE_SORTED_TEMPLATE = ListTools.toList(
 			x_general_assemble_control.class.getName(), x_organization_assemble_authentication.class.getName(),
 			x_organization_assemble_express.class.getName(), x_organization_assemble_control.class.getName(),
@@ -131,15 +127,15 @@ public class ApplicationServerTools extends JettySeverTools {
 
 		QueuedThreadPool threadPool = new QueuedThreadPool();
 		threadPool.setName("ApplicationServerQueuedThreadPool");
-		threadPool.setMinThreads(APPLICATIONSERVER_THREAD_POOL_SIZE_MIN);
-		threadPool.setMaxThreads(applicationServer.getMaxThread());
+		threadPool.setMinThreads(THREAD_POOL_SIZE_MIN);
+		threadPool.setMaxThreads(THREAD_POOL_SIZE_MAX);
 		Server server = new Server(threadPool);
-		server.setAttribute("maxFormContentSize", applicationServer.getMaxFormContent() * 1024 * 1024);
+		server.setAttribute("org.eclipse.jetty.server.Request.maxFormContentSize", MAX_FORM_CONTENT_SIZE);
 
 		if (BooleanUtils.isTrue(applicationServer.getSslEnable())) {
-			addHttpsConnector(server, applicationServer.getPort(), applicationServer.getPersistentConnectionsEnable());
+			addHttpsConnector(server, applicationServer.getPort(), true);
 		} else {
-			addHttpConnector(server, applicationServer.getPort(), applicationServer.getPersistentConnectionsEnable());
+			addHttpConnector(server, applicationServer.getPort(), true);
 		}
 
 		GzipHandler gzipHandler = new GzipHandler();
@@ -177,17 +173,13 @@ public class ApplicationServerTools extends JettySeverTools {
 		asyncRequestLogWriter.setFilename(Config.dir_logs().toString() + File.separator
 				+ "application.request.yyyy_MM_dd." + Config.node() + ".log");
 		asyncRequestLogWriter.setFilenameDateFormat("yyyyMMdd");
-		String format = "%{client}a - %u %{yyyy-MM-dd HH:mm:ss.SSS ZZZ|" + DateFormatUtils.format(new Date(), "z")
-				+ "}t \"%r\" %s %O %{ms}T";
+//		String format = "%{client}a - %u %{yyyy-MM-dd HH:mm:ss.SSS ZZZ|" + DateFormatUtils.format(new Date(), "z")
+//				+ "}t \"%r\" %s %O %{ms}T";
 		if (BooleanUtils.isTrue(applicationServer.getRequestLogBodyEnable())
 				|| BooleanUtils.isTrue(Config.ternaryManagement().getEnable())) {
-			return new ServerRequestLogBody(asyncRequestLogWriter,
-					StringUtils.isEmpty(applicationServer.getRequestLogFormat()) ? format
-							: applicationServer.getRequestLogFormat());
+			return new ServerRequestLogBody(asyncRequestLogWriter, LOG_FORMAT);
 		} else {
-			return new ServerRequestLog(asyncRequestLogWriter,
-					StringUtils.isEmpty(applicationServer.getRequestLogFormat()) ? format
-							: applicationServer.getRequestLogFormat());
+			return new ServerRequestLog(asyncRequestLogWriter, LOG_FORMAT);
 		}
 	}
 

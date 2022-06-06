@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -650,40 +649,42 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 	public Application randomWithWeight(String className) throws IllegalStateException {
 		List<Application> list = this.get(className);
 		if (ListTools.isNotEmpty(list)) {
-			if (list.size() == 1) {
-				list.get(0);
-			}
-			int cursor = 0;
-			TreeMap<Integer, Application> tree = new TreeMap<>();
-			for (Application o : list) {
-				if (o.getWeight() > 0) {
-					cursor += o.getWeight();
-					tree.put(cursor, o);
-				}
-			}
-			return tree.tailMap(random.nextInt(++cursor), true).firstEntry().getValue();
+			return list.get(random.nextInt(list.size()));
+//			if (list.size() == 1) {
+//				list.get(0);
+//			}
+//			int cursor = 0;
+//			TreeMap<Integer, Application> tree = new TreeMap<>();
+//			for (Application o : list) {
+//				if (o.getWeight() > 0) {
+//					cursor += o.getWeight();
+//					tree.put(cursor, o);
+//				}
+//			}
+//			return tree.tailMap(random.nextInt(++cursor), true).firstEntry().getValue();
 		}
 		throw new IllegalStateException("randomWithWeight error: " + className + ".");
 	}
 
-	public Application randomWithScheduleWeight(String className) throws IllegalStateException {
-		List<Application> list = this.get(className);
-		if (ListTools.isNotEmpty(list)) {
-			if (list.size() == 1) {
-				list.get(0);
-			}
-			int cursor = 0;
-			TreeMap<Integer, Application> tree = new TreeMap<>();
-			for (Application o : list) {
-				if (o.getScheduleWeight() > 0) {
-					cursor += o.getScheduleWeight();
-					tree.put(cursor, o);
-				}
-			}
-			return tree.tailMap(random.nextInt(++cursor), true).firstEntry().getValue();
-		}
-		throw new IllegalStateException("randomWithScheduleWeight error: " + className + ".");
-	}
+//	public Application randomWithScheduleWeight(String className) throws IllegalStateException {
+//		List<Application> list = this.get(className);
+//		if (ListTools.isNotEmpty(list)) {
+//			return list.get(random.nextInt(list.size()));
+////			if (list.size() == 1) {
+////				list.get(0);
+////			}
+////			int cursor = 0;
+////			TreeMap<Integer, Application> tree = new TreeMap<>();
+////			for (Application o : list) {
+////				if (o.getScheduleWeight() > 0) {
+////					cursor += o.getScheduleWeight();
+////					tree.put(cursor, o);
+////				}
+////			}
+////			return tree.tailMap(random.nextInt(++cursor), true).firstEntry().getValue();
+//		}
+//		throw new IllegalStateException("randomWithScheduleWeight error: " + className + ".");
+//	}
 
 	public Application randomWithSeed(String className, String seed) {
 		List<Application> list = this.get(className);

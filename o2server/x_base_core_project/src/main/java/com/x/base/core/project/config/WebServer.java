@@ -19,29 +19,29 @@ public class WebServer extends ConfigObject {
 		this.sslEnable = false;
 		this.proxyHost = "";
 		this.proxyPort = null;
-		this.weight = DEFAULT_WEIGHT;
-		this.dirAllowed = DEFAULT_DIRALLOWED;
+//		this.weight = DEFAULT_WEIGHT;
+//		this.dirAllowed = DEFAULT_DIRALLOWED;
 		this.statEnable = DEFAULT_STATENABLE;
 		this.statExclusions = DEFAULT_STATEXCLUSIONS;
-		this.cacheControlMaxAge = DEFAULT_CACHECONTROLMAXAGE;
-		this.persistentConnectionsEnable = DEFAULT_PERSISTENTCONNECTIONSENABLE;
+//		this.cacheControlMaxAge = DEFAULT_CACHECONTROLMAXAGE;
+//		this.persistentConnectionsEnable = DEFAULT_PERSISTENTCONNECTIONSENABLE;
 		this.requestLogEnable = DEFAULT_REQUESTLOGENABLE;
-		this.requestLogFormat = DEFAULT_REQUESTLOGFORMAT;
+//		this.requestLogFormat = DEFAULT_REQUESTLOGFORMAT;
 		this.requestLogRetainDays = DEFAULT_REQUESTLOGRETAINDAYS;
 	}
 
 	private static final Integer DEFAULT_HTTP_PORT = 80;
 	private static final Integer DEFAULT_HTTPS_PORT = 443;
-	private static final Integer DEFAULT_WEIGHT = 100;
-	private static final Boolean DEFAULT_DIRALLOWED = false;
+//	private static final Integer DEFAULT_WEIGHT = 100;
+//	private static final Boolean DEFAULT_DIRALLOWED = false;
 	private static final Boolean DEFAULT_STATENABLE = false;
 	private static final String DEFAULT_STATEXCLUSIONS = "*.gif,*.jpg,*.png,*.ico";
-	private static final Integer DEFAULT_CACHECONTROLMAXAGE = 0;
+//	private static final Integer DEFAULT_CACHECONTROLMAXAGE = 0;
 	private static final Boolean DEFAULT_PROXYCENTERENABLE = true;
 	private static final Boolean DEFAULT_PROXYAPPLICATIONENABLE = true;
-	private static final Boolean DEFAULT_PERSISTENTCONNECTIONSENABLE = true;
+//	private static final Boolean DEFAULT_PERSISTENTCONNECTIONSENABLE = true;
 	private static final Boolean DEFAULT_REQUESTLOGENABLE = false;
-	private static final String DEFAULT_REQUESTLOGFORMAT = "";
+//	private static final String DEFAULT_REQUESTLOGFORMAT = "";
 	private static final Integer DEFAULT_PROXY_TIMEOUT = 300;
 	private static final Integer DEFAULT_REQUESTLOGRETAINDAYS = 7;
 
@@ -55,10 +55,10 @@ public class WebServer extends ConfigObject {
 	private String proxyHost;
 	@FieldDescribe("代理端口,当服务器是通过apache/nginx等代理服务器映射到公网或者通过路由器做端口映射,在这样的情况下需要设置此地址以标明公网访问端口.")
 	private Integer proxyPort;
-	@FieldDescribe("设置权重.当前没有作用,")
-	private Integer weight;
-	@FieldDescribe("允许浏览目录,")
-	private Boolean dirAllowed;
+//	@FieldDescribe("设置权重.当前没有作用,")
+//	private Integer weight;
+//	@FieldDescribe("允许浏览目录,")
+//	private Boolean dirAllowed;
 	@FieldDescribe("启用统计,默认启用统计.")
 	private Boolean statEnable;
 	@FieldDescribe("统计忽略路径,默认忽略*.gif,*.jpg,*.png,*.ico")
@@ -75,20 +75,20 @@ public class WebServer extends ConfigObject {
 	@FieldDescribe("代理连接超时时间，默认300(秒)")
 	private Integer proxyTimeOut;
 
-	@FieldDescribe("是否启用长连接,默认true.")
-	private Boolean persistentConnectionsEnable;
+//	@FieldDescribe("是否启用长连接,默认true.")
+//	private Boolean persistentConnectionsEnable;
 
 	@FieldDescribe("启用访问日志功能.")
 	private Boolean requestLogEnable;
-	@FieldDescribe("访问日志记录格式.")
-	private String requestLogFormat;
+//	@FieldDescribe("访问日志记录格式.")
+//	private String requestLogFormat;
 	@FieldDescribe("访问日志记录天数,默认7天.")
 	private Integer requestLogRetainDays;
 
-	public Boolean getPersistentConnectionsEnable() {
-		return persistentConnectionsEnable == null ? DEFAULT_PERSISTENTCONNECTIONSENABLE
-				: this.persistentConnectionsEnable;
-	}
+//	public Boolean getPersistentConnectionsEnable() {
+//		return persistentConnectionsEnable == null ? DEFAULT_PERSISTENTCONNECTIONSENABLE
+//				: this.persistentConnectionsEnable;
+//	}
 
 	public Boolean getProxyCenterEnable() {
 		return proxyCenterEnable == null ? DEFAULT_PROXYCENTERENABLE : this.proxyCenterEnable;
@@ -98,12 +98,12 @@ public class WebServer extends ConfigObject {
 		return proxyApplicationEnable == null ? DEFAULT_PROXYAPPLICATIONENABLE : this.proxyApplicationEnable;
 	}
 
-	public Integer getCacheControlMaxAge() {
-		if (cacheControlMaxAge == null || cacheControlMaxAge < 0) {
-			return DEFAULT_CACHECONTROLMAXAGE;
-		}
-		return cacheControlMaxAge;
-	}
+//	public Integer getCacheControlMaxAge() {
+//		if (cacheControlMaxAge == null || cacheControlMaxAge < 0) {
+//			return DEFAULT_CACHECONTROLMAXAGE;
+//		}
+//		return cacheControlMaxAge;
+//	}
 
 	public String getStatExclusions() {
 		return (StringUtils.isEmpty(statExclusions) ? DEFAULT_STATEXCLUSIONS : this.statExclusions) + ",/druid/*";
@@ -113,16 +113,16 @@ public class WebServer extends ConfigObject {
 		return BooleanUtils.isNotFalse(statEnable);
 	}
 
-	public Boolean getDirAllowed() {
-		return dirAllowed == null ? DEFAULT_DIRALLOWED : dirAllowed;
-	}
-
-	public Integer getWeight() {
-		if (weight == null || weight < 0) {
-			return DEFAULT_WEIGHT;
-		}
-		return weight;
-	}
+//	public Boolean getDirAllowed() {
+//		return dirAllowed == null ? DEFAULT_DIRALLOWED : dirAllowed;
+//	}
+//
+//	public Integer getWeight() {
+//		if (weight == null || weight < 0) {
+//			return DEFAULT_WEIGHT;
+//		}
+//		return weight;
+//	}
 
 	public Boolean getEnable() {
 		return BooleanUtils.isTrue(this.enable);
@@ -177,9 +177,9 @@ public class WebServer extends ConfigObject {
 		this.proxyPort = proxyPort;
 	}
 
-	public void setWeight(Integer weight) {
-		this.weight = weight;
-	}
+//	public void setWeight(Integer weight) {
+//		this.weight = weight;
+//	}
 
 	public void setProxyApplicationEnable(Boolean proxyApplicationEnable) {
 		this.proxyApplicationEnable = proxyApplicationEnable;
@@ -193,9 +193,9 @@ public class WebServer extends ConfigObject {
 		return BooleanUtils.isTrue(this.requestLogEnable);
 	}
 
-	public String getRequestLogFormat() {
-		return StringUtils.isEmpty(this.requestLogFormat) ? "" : this.requestLogFormat;
-	}
+//	public String getRequestLogFormat() {
+//		return StringUtils.isEmpty(this.requestLogFormat) ? "" : this.requestLogFormat;
+//	}
 
 
 	public Integer getProxyTimeOut() {
