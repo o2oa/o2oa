@@ -76,10 +76,7 @@ public class ThisApplication {
 			if (BooleanUtils.isTrue(Config.communicate().clean().getEnable())) {
 				context().schedule(Clean.class, Config.communicate().clean().getCron());
 			}
-			if (BooleanUtils.isTrue(Config.communicate().triggerMessageConsumeQueue().getEnable())) {
-				context().schedule(TriggerMessageConsumeQueue.class,
-						Config.communicate().triggerMessageConsumeQueue().getCron());
-			}
+			context().schedule(TriggerMessageConsumeQueue.class, "20 20 * * * ?");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -118,9 +115,7 @@ public class ThisApplication {
 		if (BooleanUtils.isTrue(Config.communicate().wsEnable())) {
 			context().startQueue(wsConsumeQueue);
 		}
-		if (BooleanUtils.isTrue(Config.communicate().calendarEnable())) {
-			context().startQueue(calendarConsumeQueue);
-		}
+		context().startQueue(calendarConsumeQueue);
 	}
 
 	public static void destroy() {

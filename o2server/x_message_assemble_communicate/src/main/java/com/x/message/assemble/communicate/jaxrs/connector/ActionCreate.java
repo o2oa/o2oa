@@ -665,9 +665,9 @@ class ActionCreate extends BaseAction {
 	private Message v3CalendarMessage(Wi wi, Consumer consumer) {
 		Message message = null;
 		try {
-			if (BooleanUtils.isTrue(Config.communicate().calendarEnable())) {
-				message = this.v3Message(wi, consumer);
-			}
+//			if (BooleanUtils.isTrue(Config.communicate().calendarEnable())) {
+			message = this.v3Message(wi, consumer);
+//			}
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}

@@ -34,7 +34,6 @@ public class CenterServer extends ConfigObject {
 	public CenterServer() {
 		this.enable = DEFAULT_ENABLE;
 		this.sslEnable = false;
-		this.redeploy = true;
 		this.order = DEFAULT_ORDER;
 		this.port = DEFAULT_PORT;
 		this.httpProtocol = "";
@@ -55,8 +54,6 @@ public class CenterServer extends ConfigObject {
 	private Integer order;
 	@FieldDescribe("是否启用ssl传输加密,如果启用将使用config/keystore文件作为密钥文件.使用config/token.json文件中的sslKeyStorePassword字段为密钥密码,sslKeyManagerPassword为管理密码.")
 	private Boolean sslEnable;
-	@FieldDescribe("每次启动是否重新部署所有应用.")
-	private Boolean redeploy;
 	@FieldDescribe("端口,center服务器端口,默认20030")
 	private Integer port;
 	@FieldDescribe("对外http访问协议,http/https")
@@ -84,9 +81,6 @@ public class CenterServer extends ConfigObject {
 		return BooleanUtils.isTrue(this.requestLogBodyEnable);
 	}
 
-	@FieldDescribe("是否启用长连接,默认false.")
-	private Boolean persistentConnectionsEnable;
-
 	public Boolean getExposeJest() {
 		return BooleanUtils.isNotFalse(this.exposeJest);
 	}
@@ -109,10 +103,6 @@ public class CenterServer extends ConfigObject {
 
 	public String getHttpProtocol() {
 		return StringUtils.equals("https", this.httpProtocol) ? "https" : "http";
-	}
-
-	public Boolean getRedeploy() {
-		return BooleanUtils.isTrue(this.redeploy);
 	}
 
 	public Boolean getSslEnable() {
@@ -160,10 +150,6 @@ public class CenterServer extends ConfigObject {
 
 	public void setProxyPort(Integer proxyPort) {
 		this.proxyPort = proxyPort;
-	}
-
-	public void setRedeploy(Boolean redeploy) {
-		this.redeploy = redeploy;
 	}
 
 	public void setHttpProtocol(String httpProtocol) {
