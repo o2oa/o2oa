@@ -168,11 +168,13 @@
                 <td class="editTableValue">
                     <input onclick="if (this.checked){
                         $('text{$.pid}sectionByEditArea').setStyle('display', 'block');
-                        $('text{$.pid}sectionMergeArea').setStyle('display', 'none')
+                        $('text{$.pid}sectionMergeArea').setStyle('display', 'none');
+                        $('text{$.pid}sectionDisplayerArea').setStyle('display', 'block')
                     }" type="radio" name="section" value="yes" text{($.section=='yes')?'checked':''}/>{{$.lp.yes}}
                     <input onclick="if (this.checked){
                         $('text{$.pid}sectionByEditArea').setStyle('display', 'none');
-                        $('text{$.pid}sectionMergeArea').setStyle('display', 'block')
+                        $('text{$.pid}sectionMergeArea').setStyle('display', 'block');
+                        $('text{$.pid}sectionDisplayerArea').setStyle('display', 'none')
                     }" type="radio" name="section" value="no" text{($.section!='yes')?'checked':''}/>{{$.lp.no}}
                 </td>
             </tr>
@@ -196,6 +198,7 @@
             </div>
         </div>
 
+        <div id="text{$.pid}sectionDisplyerArea" class="MWFSectionDisplayerArea" style="display: text{($.section=='yes')?'':'none'};"></div>
         <div id="text{$.pid}sectionMergeArea" class="MWFSectionMergeArea" style="display: text{($.section=='yes')?'none':''};"></div>
 
     </div>

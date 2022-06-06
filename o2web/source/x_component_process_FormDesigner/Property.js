@@ -123,6 +123,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadElCarouselContent();
 
                     this.loadSectionMerger();
+                    this.loadSectionDisplayer();
 
                     this.loadSmartBISelect();
 
@@ -256,6 +257,22 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             // if (!json) json = {};
             MWF.requireApp("process.FormDesigner", "widget.SectionMerger", function(){
                 var merger = new MWF.xApplication.process.FormDesigner.widget.SectionMerger(node, this, {
+                    // "title": title,
+                    "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
+                    "onChange": function(){
+                    }.bind(this)
+                });
+                merger.load(this.data);
+            }.bind(this));
+            node.addEvent("keydown", function(e){e.stopPropagation();});
+        }.bind(this));
+    },
+
+    loadSectionDisplayer: function(){
+        var arrays = this.propertyContent.getElements(".MWFSectionDisplayerArea");
+        arrays.each(function(node){
+            MWF.requireApp("process.FormDesigner", "widget.SectionDisplyer", function(){
+                var merger = new MWF.xApplication.process.FormDesigner.widget.SectionDisplyer(node, this, {
                     // "title": title,
                     "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
                     "onChange": function(){

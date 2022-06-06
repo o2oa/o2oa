@@ -81,22 +81,24 @@ MWF.xApplication.process.FormDesigner.widget.SectionMerger = new Class({
 				itemTemplate: {
 					sectionMerge: { name: this.data.pid + "sectionMerge", type : "radio",
 						selectValue: function(){
-							switch (moduleName) {
-								case "datatable":
-								case "datatemplate":
-									return ["none", "read", "editSection", "edit"];
-								default:
-									return ["none", "read", "edit"]
-							}
+							return ["none", "read", "edit"];
+							// switch (moduleName) {
+							// 	case "datatable":
+							// 	case "datatemplate":
+							// 		return ["none", "read", "editSection", "edit"];
+							// 	default:
+							// 		return ["none", "read", "edit"]
+							// }
 						},
 						selectText: function () {
-							switch (moduleName) {
-								case "datatable":
-								case "datatemplate":
-									return [lp.none, lp.mergeDisplay, lp.editCurrentSection, lp.mergeEdit];
-								default:
-									return [lp.none, lp.mergeDisplay, lp.mergeEdit]
-							}
+							// switch (moduleName) {
+							// 	case "datatable":
+							// 	case "datatemplate":
+							// 		return [lp.none, lp.mergeDisplay, lp.editCurrentSection, lp.mergeEdit];
+							// 	default:
+							// 		return [lp.none, lp.mergeDisplay, lp.mergeEdit]
+							// }
+							return [lp.none, lp.mergeDisplay, lp.mergeEdit];
 						},
 						event: {
 							change: function (it, ev) {
