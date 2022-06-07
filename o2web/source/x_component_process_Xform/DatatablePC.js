@@ -1000,6 +1000,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				return false;
 			}
 
+			var data, line;
 			if( this.isShowAllSection ){
 				data = this.getBusinessDataById();
 				var sdata = data[ this.sectionBy ];
@@ -1015,11 +1016,11 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				line.isNewAdd = true;
 			}else {
 				//使用数据驱动
-				var data = this.getData();
+				data = this.getData();
 				if (data.data.length < index) return null;
 				data.data.splice(index, 0, d || {});
 				this.setData(data);
-				var line = this.getLine(index);
+				line = this.getLine(index);
 				line.isNewAdd = true;
 			}
 
