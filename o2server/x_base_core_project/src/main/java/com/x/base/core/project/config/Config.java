@@ -786,6 +786,8 @@ public class Config {
 			MimeTypes mimeTypes = new MimeTypes();
 			/* 添加o2自定义格式 */
 			mimeTypes.addMimeMapping("wcss", "application/json");
+			mimeTypes.addMimeMapping("txt", "text/plain; charset=UTF-8");
+			mimeTypes.addMimeMapping("html", "text/html; charset=UTF-8");
 			/* 添加默认格式 */
 			mimeTypes.addMimeMapping("", "application/octet-stream");
 			/* 添加新版office格式 */
