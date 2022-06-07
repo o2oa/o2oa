@@ -783,6 +783,9 @@ public class Config {
 			MimeTypes mimeTypes = new MimeTypes();
 			/* 添加o2自定义格式 */
 			mimeTypes.addMimeMapping("wcss", "application/json");
+			/* TXT和HTML文件以utf-8输出，解决在线打开乱码问题 */
+			mimeTypes.addMimeMapping("txt", "text/plain; charset=UTF-8");
+			mimeTypes.addMimeMapping("html", "text/html; charset=UTF-8");
 			/* 添加默认格式 */
 			mimeTypes.addMimeMapping("", "application/octet-stream");
 			/* 添加新版office格式 */
@@ -1014,7 +1017,7 @@ public class Config {
 //		}
 //		return instance().messageTable;
 //	}
-//	
+//
 //	private MessageHadoop messageHadoop;
 //
 //	public static synchronized MessageHadoop messageHadoop() throws Exception {
