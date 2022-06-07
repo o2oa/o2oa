@@ -150,6 +150,9 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     isReadonly : function(){
         return !!(this.readonly || this.json.isReadonly || this.form.json.isReadonly);
     },
+    isAllSectionShow: function(){
+        return this.json.showAllSection && this.json.section === "yes" && this.isSectionData();
+    },
     isSectionMergeRead: function(){
         return this.json.sectionMerge === "read" && this.json.section !== "yes" && this.isSectionData()
     },
@@ -182,6 +185,31 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
             }.bind(this))
         }
         return array;
+    },
+    //区段合并的区段值
+    _getMergeSectionKey: function( data ){
+        switch (this.json.sectionKey){
+            case "person":
+                return layout.desktop.session.user.id;
+            case "unit":
+                return (this.form.businessData.task) ? this.form.businessData.task.unit : "";
+            case "activity":
+                return (this.form.businessData.work) ? this.form.businessData.work.activity : "";
+            case "splitValue":
+                return (this.form.businessData.work) ? this.form.businessData.work.splitValue : "";
+            case "script":
+                var d;
+                if( this.json.sectionKeyScript && this.json.sectionKeyScript.code){
+                    this.form.Macro.environment.event = data;
+                    d = this.form.Macro.exec(this.json.sectionKeyScript.code, this);
+                    this.form.Macro.environment.event = null;
+                }else{
+                    d = "";
+                }
+                return d;
+            default:
+                return "";
+        }
     },
     getSectionKeyWithMerge: function(data, callback){
         switch (this.json.sectionKey) {

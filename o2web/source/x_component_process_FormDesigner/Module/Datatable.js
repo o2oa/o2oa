@@ -40,6 +40,7 @@ MWF.xApplication.process.FormDesigner.Module.Datatable = MWF.FCDatatable = new C
 			if (styles.actionStyles) this.removeStyles(styles.actionStyles, "actionStyles");
 			if (styles.editStyles) this.removeStyles(styles.editStyles, "editStyles");
 			if (styles.amountStyles) this.removeStyles(styles.amountStyles, "amountStyles");
+			if (styles.sectionAmountStyles) this.removeStyles(styles.sectionAmountStyles, "sectionAmountStyles");
 			if (styles.itemTitleStyles) this.removeStyles(styles.itemTitleStyles, "itemTitleStyles");
 			if (styles.properties) this.removeStyles(styles.properties, "properties");
 		}
@@ -52,6 +53,7 @@ MWF.xApplication.process.FormDesigner.Module.Datatable = MWF.FCDatatable = new C
 		if (styles.actionStyles) this.copyStyles(styles.actionStyles, "actionStyles");
 		if (styles.editStyles) this.copyStyles(styles.editStyles, "editStyles");
 		if (styles.amountStyles) this.copyStyles(styles.amountStyles, "amountStyles");
+		if (styles.sectionAmountStyles) this.copyStyles(styles.sectionAmountStyles, "sectionAmountStyles");
 		if (styles.itemTitleStyles) this.copyStyles(styles.itemTitleStyles, "itemTitleStyles");
 		if (styles.properties) this.copyStyles(styles.properties, "properties");
 	},

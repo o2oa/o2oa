@@ -131,6 +131,7 @@ MWF.xApplication.process.Xform.LP = {
     "deleteWorkText": {"html": "<div style='color: red;'>注意：您正在删除此文档，删除后文档无法找回，请您确认要删除此文件吗？</div>", "text": "注意：您正在删除此文档，删除后文档无法找回，请您确认要删除此文件吗？"},
     "workDelete": "已经删除文件",
     "amount": "▌总计",
+    "sectionAmount": "▌小计",
     "delete": "删除",
     "add": "新增",
     "addLine": "添加新条目",

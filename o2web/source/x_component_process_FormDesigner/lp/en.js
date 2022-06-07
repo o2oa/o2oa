@@ -495,6 +495,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "byModule": "By Component",
         "totalRow": "Total Row",
         "sectionAmountCellStyle": "section total cell style",
+        "showAllSection": "Show All Sections",
 
         "decimal": "Decimal",
 

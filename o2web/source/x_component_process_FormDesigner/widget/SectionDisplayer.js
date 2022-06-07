@@ -41,6 +41,8 @@ MWF.xApplication.process.FormDesigner.widget.SectionDisplayer = new Class({
 
 		if( o2.typeOf( this.data.showAllSection ) === "null" )this.data.showAllSection = false;
 		if( o2.typeOf( this.data.showSectionBy ) === "null" )this.data.showSectionBy = true;
+		if( o2.typeOf( this.data.sequenceBy ) === "null" )this.data.sequenceBy = "section";
+		if( o2.typeOf( this.data.keyContentSeparatorSectionBy ) === "null" )this.data.keyContentSeparatorSectionBy = "：";
 
 		MWF.xDesktop.requireApp("Template", "MForm", function () {
 			this.form = new MForm(this.node, this.data, {
@@ -101,6 +103,9 @@ MWF.xApplication.process.FormDesigner.widget.SectionDisplayer = new Class({
 			},
 			"displayWithSectionKeyArea": function () {
 				return !!d.showSectionBy
+			},
+			"sortScriptArea": function () {
+				return !!d.showAllSection
 			}
 		};
 		for( var key in showCondition ){

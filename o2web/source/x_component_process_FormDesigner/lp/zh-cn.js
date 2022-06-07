@@ -494,6 +494,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "byModule": "按组件",
         "totalRow": "总计行",
         "sectionAmountCellStyle": "区段总计单元格样式",
+        "showAllSection": "显示所有区段",
 
         "decimal": "小数点",
 

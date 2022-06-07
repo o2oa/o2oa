@@ -130,6 +130,7 @@ MWF.xApplication.process.Xform.LP = {
     "deleteWorkText": {"html": "<div style='color: red;'>Note: You are deleting this work, and the work cannot be retrieved after deletion. Are you sure you want to delete this work?</div>" , "text": "Note: You are deleting this work. The work cannot be retrieved after deletion. Are you sure you want to delete this work?"},
     "workDelete": "Work has been deleted",
     "amount": "▌Total",
+    "sectionAmount": "▌Subtotal",
     "delete": "Delete",
     "add": "Add",
     "addLine": "AddLine",
