@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -17,6 +18,7 @@ import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
@@ -30,6 +32,13 @@ import com.x.base.core.project.annotation.Module;
 import com.x.base.core.project.config.Config;
 
 public abstract class JettySeverTools {
+
+	public static final int THREAD_POOL_SIZE_MIN = 20;
+	public static final int THREAD_POOL_SIZE_MAX = 2000;
+	public static final int MAX_FORM_CONTENT_SIZE = 1024 * 1024 * 1024 * 20;
+
+	public static final String LOG_FORMAT = "%{client}a - %u %{yyyy-MM-dd HH:mm:ss.SSS ZZZ|"
+			+ DateFormatUtils.format(new Date(), "z") + "}t \"%r\" %s %O %{ms}T";
 
 	/**
 	 * jetty-all-*.jar 如果不单独导入会导致java.lang.NoClassDefFoundError:

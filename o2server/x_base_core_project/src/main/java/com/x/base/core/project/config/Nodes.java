@@ -1,10 +1,10 @@
 package com.x.base.core.project.config;
 
 import java.io.File;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.DefaultCharset;
@@ -83,10 +83,9 @@ public class Nodes extends ConcurrentSkipListMap<String, Node> {
 	}
 
 	public String primaryCenterNode() {
-		for (Entry<String, Node> en : this.entrySet()) {
-			if (BooleanUtils.isTrue(en.getValue().getIsPrimaryCenter())) {
-				return en.getKey();
-			}
+		Optional<Entry<String, Node>> optional = this.entrySet().stream().findFirst();
+		if (optional.isPresent()) {
+			return optional.get().getKey();
 		}
 		return null;
 	}

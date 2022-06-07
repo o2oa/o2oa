@@ -1,12 +1,19 @@
 package com.x.message.assemble.communicate;
 
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.MPweixin;
-import com.x.base.core.project.config.MPweixinMessageTemp;
+import com.x.base.core.project.config.MPweixin.MPweixinMessageTemp;
 import com.x.base.core.project.connection.HttpConnection;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
@@ -17,12 +24,6 @@ import com.x.message.assemble.communicate.message.WeixinTempMessage;
 import com.x.message.assemble.communicate.message.WeixinTempMessage.WeixinTempMessageFieldObj;
 import com.x.message.core.entity.Message;
 import com.x.organization.core.entity.Person;
-import org.apache.commons.lang3.StringUtils;
-
-import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 发送微信公众号模版消息 Created by fancyLou on 3/11/21. Copyright © 2021 O2. All rights

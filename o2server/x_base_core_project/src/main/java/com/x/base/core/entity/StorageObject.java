@@ -16,7 +16,11 @@ import javax.persistence.Transient;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.vfs2.*;
+import org.apache.commons.vfs2.CacheStrategy;
+import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSystemException;
+import org.apache.commons.vfs2.FileSystemManager;
+import org.apache.commons.vfs2.FileSystemOptions;
 import org.apache.commons.vfs2.cache.NullFilesCache;
 import org.apache.commons.vfs2.impl.StandardFileSystemManager;
 import org.apache.commons.vfs2.provider.ftp.FtpFileSystemConfigBuilder;
@@ -24,7 +28,6 @@ import org.apache.commons.vfs2.provider.ftp.FtpFileType;
 import org.apache.commons.vfs2.provider.ftps.FtpsFileSystemConfigBuilder;
 import org.apache.commons.vfs2.provider.webdav4.Webdav4FileSystemConfigBuilder;
 
-import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.tools.DefaultCharset;
 
@@ -162,6 +165,7 @@ public abstract class StorageObject extends SliceJpaObject {
 
 	/**
 	 * 读出内容
+	 * 
 	 * @param mapping
 	 * @return
 	 * @throws Exception
@@ -175,6 +179,7 @@ public abstract class StorageObject extends SliceJpaObject {
 
 	/**
 	 * 将内容流出到output
+	 * 
 	 * @param mapping
 	 * @param output
 	 * @return
@@ -190,6 +195,7 @@ public abstract class StorageObject extends SliceJpaObject {
 
 	/**
 	 * 检查是否存在内容
+	 * 
 	 * @param mapping
 	 * @return
 	 * @throws Exception
@@ -212,6 +218,7 @@ public abstract class StorageObject extends SliceJpaObject {
 
 	/**
 	 * 取得完整访问路径的前半部分
+	 * 
 	 * @param mapping
 	 * @return
 	 * @throws IllegalStateException
@@ -263,14 +270,14 @@ public abstract class StorageObject extends SliceJpaObject {
 			break;
 		}
 		String mappingPrefix = "";
-		if(StringUtils.isNotBlank(mapping.getPrefix())){
-			if(mapping.getPrefix().startsWith("/")){
+		if (StringUtils.isNotBlank(mapping.getPrefix())) {
+			if (mapping.getPrefix().startsWith("/")) {
 				mappingPrefix = mapping.getPrefix();
-			}else{
+			} else {
 				mappingPrefix = "/" + mapping.getPrefix();
 			}
-			if(mappingPrefix.endsWith("/")) {
-				mappingPrefix = mappingPrefix.substring(0, mappingPrefix.length()-1);
+			if (mappingPrefix.endsWith("/")) {
+				mappingPrefix = mappingPrefix.substring(0, mappingPrefix.length() - 1);
 			}
 		}
 		return prefix + mappingPrefix;
@@ -284,7 +291,7 @@ public abstract class StorageObject extends SliceJpaObject {
 		switch (mapping.getProtocol()) {
 		case sftp:
 			FtpFileSystemConfigBuilder sftpBuilder = FtpFileSystemConfigBuilder.getInstance();
-			sftpBuilder.setPassiveMode(opts, Config.vfs().getSftp().getPassive());
+			sftpBuilder.setPassiveMode(opts, true);
 			// 强制不校验IP
 			sftpBuilder.setRemoteVerification(opts, false);
 			sftpBuilder.setFileType(opts, FtpFileType.BINARY);
@@ -308,7 +315,7 @@ public abstract class StorageObject extends SliceJpaObject {
 			 * java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392) at
 			 * java.net.Socket.connect(Socket.java:589)
 			 */
-			ftpBuilder.setPassiveMode(opts, Config.vfs().getFtp().getPassive());
+			ftpBuilder.setPassiveMode(opts, true);
 			// 强制不校验IP
 			ftpBuilder.setRemoteVerification(opts, false);
 			// FtpFileType.BINARY is the default
@@ -319,7 +326,7 @@ public abstract class StorageObject extends SliceJpaObject {
 			break;
 		case ftps:
 			FtpsFileSystemConfigBuilder ftpsBuilder = FtpsFileSystemConfigBuilder.getInstance();
-			ftpsBuilder.setPassiveMode(opts, Config.vfs().getFtp().getPassive());
+			ftpsBuilder.setPassiveMode(opts, true);
 			// 强制不校验IP
 			ftpsBuilder.setRemoteVerification(opts, false);
 			// FtpFileType.BINARY is the default
@@ -388,6 +395,7 @@ public abstract class StorageObject extends SliceJpaObject {
 
 	/**
 	 * vfs读取数据
+	 * 
 	 * @param mapping
 	 * @param output
 	 * @return
@@ -429,6 +437,7 @@ public abstract class StorageObject extends SliceJpaObject {
 
 	/**
 	 * 删除内容,同时判断上一级目录(只判断一级)是否为空,为空则删除上一级目录
+	 * 
 	 * @param mapping
 	 * @throws Exception
 	 */

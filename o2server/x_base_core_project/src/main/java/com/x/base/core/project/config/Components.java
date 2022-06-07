@@ -22,7 +22,6 @@ public class Components extends ConfigObject {
 	public static final String NAME_PORTALEXPLORER = "PortalExplorer";
 	public static final String NAME_DATAEXPLORER = "DataExplorer";
 	public static final String NAME_SERVICEMANAGER = "service.ServiceManager";
-	// public static final String NAME_APPMARKET = "AppMarketV2";
 	public static final String NAME_APPSTORE = "appstore";
 	public static final String NAME_APPCENTER = "AppCenter";
 	public static final String NAME_LOGVIEWER = "LogViewer";

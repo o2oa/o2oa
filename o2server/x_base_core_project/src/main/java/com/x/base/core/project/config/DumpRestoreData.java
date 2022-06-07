@@ -60,11 +60,16 @@ public class DumpRestoreData extends ConfigObject {
 	@FieldDescribe("无法获取storage是否升起错误.")
 	private Boolean exceptionInvalidStorage;
 
+	@FieldDescribe("无法获取storage是否升起错误.")
+	private Boolean storageXXXXXXXXXXXXXXXX;
+	
 	@FieldDescribe("数据导入方式,clean:清空重新导入,skipExisted:如果有相同id的数据跳过.默认方式为clean.")
 	private String restoreOverride;
 
 	@FieldDescribe("对于com.x.query.core.entity.Item的itemCategory进行单独过滤,可选值pp, cms, bbs, pp_dict.")
 	private String itemCategory;
+	
+	
 
 	public String getItemCategory() {
 		return this.itemCategory;

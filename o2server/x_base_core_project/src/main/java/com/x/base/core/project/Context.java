@@ -100,19 +100,21 @@ public class Context extends AbstractContext {
 		return this.initialized;
 	}
 
-	/* 应用的权重 */
-	private volatile Integer weight;
-
-	public Integer weight() {
-		return this.weight;
-	}
-
-	/* 应用的权重 */
-	private volatile Integer scheduleWeight;
-
-	public Integer scheduleWeight() {
-		return this.scheduleWeight;
-	}
+//	@Deprecated(since = "7.2", forRemoval = true)
+//	/* 应用的权重 */
+//	private volatile Integer weight;
+//
+//	public Integer weight() {
+//		return this.weight;
+//	}
+//	
+//	@Deprecated(since = "7.2", forRemoval = true)
+//	/* 应用的权重 */
+//	private volatile Integer scheduleWeight;
+//
+//	public Integer scheduleWeight() {
+//		return this.scheduleWeight;
+//	}
 
 	private Boolean sslEnable;
 
@@ -134,7 +136,7 @@ public class Context extends AbstractContext {
 	/* 队列 */
 	private List<AbstractQueue<?>> queues;
 
-	private Context() throws Exception {
+	private Context() {
 		this.token = UUID.randomUUID().toString();
 		this.applications = new Applications();
 		this.queues = new ArrayList<>();
@@ -158,8 +160,8 @@ public class Context extends AbstractContext {
 		context.path = servletContext.getRealPath("");
 		context.servletContext = servletContext;
 		context.servletContextName = servletContext.getServletContextName();
-		context.weight = Config.currentNode().getApplication().weight(context.clazz);
-		context.scheduleWeight = Config.currentNode().getApplication().scheduleWeight(context.clazz);
+//		context.weight = Config.currentNode().getApplication().weight(context.clazz);
+//		context.scheduleWeight = Config.currentNode().getApplication().scheduleWeight(context.clazz);
 		context.sslEnable = Config.currentNode().getApplication().getSslEnable();
 		context.initDatas(loadDynamicEntityClass, classLoader);
 		servletContext.setAttribute(AbstractContext.class.getName(), context);
@@ -183,8 +185,8 @@ public class Context extends AbstractContext {
 		application.setSslEnable(this.sslEnable());
 		application.setProxyHost(Config.currentNode().getApplication().getProxyHost());
 		application.setProxyPort(Config.currentNode().getApplication().getProxyPort());
-		application.setWeight(this.weight());
-		application.setScheduleWeight(this.scheduleWeight());
+//		application.setWeight(this.weight());
+//		application.setScheduleWeight(this.scheduleWeight());
 		application.setScheduleLocalRequestList(this.scheduleLocalRequestList);
 		application.setScheduleRequestList(this.scheduleRequestList);
 		JsonElement jsonElement = XGsonBuilder.instance().toJsonTree(application);

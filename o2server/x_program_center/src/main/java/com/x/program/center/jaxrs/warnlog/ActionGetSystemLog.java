@@ -39,10 +39,6 @@ class ActionGetSystemLog extends BaseAction {
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String tag) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 
-		if (BooleanUtils.isFalse(Config.logLevel().getWebLogEnable())) {
-			throw new Exception("web log console not enable!");
-		}
-
 		List<Wo> woList = new ArrayList<>();
 		String key = effectivePerson.getDistinguishedName();
 		if (key.indexOf("@") > -1) {
@@ -135,9 +131,6 @@ class ActionGetSystemLog extends BaseAction {
 				}
 			}
 		}
-		allLogs.stream().sorted((o1, o2) -> {
-			return o1.logTime.compareTo(o2.logTime);
-		});
 		return allLogs;
 	}
 

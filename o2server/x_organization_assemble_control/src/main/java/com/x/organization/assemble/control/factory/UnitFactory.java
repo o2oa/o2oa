@@ -230,7 +230,7 @@ public class UnitFactory extends AbstractFactory {
 			levelOrderNumbers.add(o.getOrderNumber());
 			o.setLevelName(StringUtils.join(names, PersistenceProperties.Unit.levelNameSplit));
 			List<String> levelOrderNumberStrings = new ArrayList<>();
-			final String format = "%0" + Config.organization().getUnitLevelOrderNumberDigits() + "d";
+			final String format = "%010d";
 			for (Integer i : levelOrderNumbers) {
 				// 不支持<0排序
 				levelOrderNumberStrings.add(String.format(format, (NumberTools.nullOrLessThan(i, 0) ? 0 : i)));

@@ -1,16 +1,17 @@
 package com.x.base.core.project.config;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListMap;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.quartz.CronExpression;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Message.ActivemqConsumer;
 import com.x.base.core.project.config.Message.ApiConsumer;
 import com.x.base.core.project.config.Message.CalendarConsumer;
@@ -113,16 +114,6 @@ public class Messages extends ConcurrentSkipListMap<String, Message> {
 		return o;
 	}
 
-	public Map<String, String> getConsumersV2(String type) {
-		Message o = this.get(type);
-		Map<String, String> map = new HashMap<>();
-		// 这里必须复制内容,在消息处理中会对列表进行删除操作
-		if ((o != null) && (o.getConsumersV2() != null)) {
-			map.putAll(o.getConsumersV2());
-		}
-		return map;
-	}
-
 	public List<Consumer> getConsumers(String type) {
 		Message o = this.get(type);
 		Gson gson = XGsonBuilder.instance();
@@ -196,4 +187,63 @@ public class Messages extends ConcurrentSkipListMap<String, Message> {
 			}
 		}
 	}
+
+	@FieldDescribe("清理设置.")
+	private Clean clean;
+
+	public Clean clean() {
+		return this.clean == null ? new Clean() : this.clean;
+	}
+
+	public static class Clean extends ConfigObject {
+		private static final long serialVersionUID = 1L;
+
+		public static Clean defaultInstance() {
+			return new Clean();
+		}
+
+		public static final Boolean DEFAULT_ENABLE = true;
+
+		public static final Integer DEFAULT_KEEP = 7;
+
+		public static final String DEFAULT_CRON = "30 30 6 * * ?";
+
+		@FieldDescribe("是否启用")
+		private Boolean enable = DEFAULT_ENABLE;
+
+		@FieldDescribe("定时cron表达式")
+		private String cron = DEFAULT_CRON;
+
+		@FieldDescribe("消息保留天数")
+		private Integer keep = DEFAULT_KEEP;
+
+		public Integer getKeep() {
+			if ((null == this.keep) || (this.keep < 1)) {
+				return DEFAULT_KEEP;
+			} else {
+				return this.keep;
+			}
+		}
+
+		public String getCron() {
+			if (StringUtils.isNotEmpty(this.cron) && CronExpression.isValidExpression(this.cron)) {
+				return this.cron;
+			} else {
+				return DEFAULT_CRON;
+			}
+		}
+
+		public Boolean getEnable() {
+			return BooleanUtils.isTrue(this.enable);
+		}
+
+		public void setCron(String cron) {
+			this.cron = cron;
+		}
+
+		public void setEnable(Boolean enable) {
+			this.enable = enable;
+		}
+	}
+
 }

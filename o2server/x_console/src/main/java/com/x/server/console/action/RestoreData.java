@@ -133,9 +133,11 @@ public class RestoreData {
 		}
 
 		private long restore(Class<?> cls, Path xml) throws Exception {
+//			EntityManagerFactory emf = OpenJPAPersistence.createEntityManagerFactory(cls.getName(),
+//					xml.getFileName().toString(),
+//					PersistenceXmlHelper.properties(cls.getName(), Config.slice().getEnable()));
 			EntityManagerFactory emf = OpenJPAPersistence.createEntityManagerFactory(cls.getName(),
-					xml.getFileName().toString(),
-					PersistenceXmlHelper.properties(cls.getName(), Config.slice().getEnable()));
+					xml.getFileName().toString(), PersistenceXmlHelper.properties(cls.getName(), false));
 			EntityManager em = emf.createEntityManager();
 			em.setFlushMode(FlushModeType.COMMIT);
 			AtomicLong count = new AtomicLong(0);

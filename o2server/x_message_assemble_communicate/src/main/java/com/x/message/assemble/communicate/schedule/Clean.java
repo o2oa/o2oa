@@ -67,7 +67,7 @@ public class Clean extends AbstractJob {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Instant> cq = cb.createQuery(Instant.class);
 		Root<Instant> root = cq.from(Instant.class);
-		Date limit = DateUtils.addDays(new Date(), -Config.communicate().clean().getKeep());
+		Date limit = DateUtils.addDays(new Date(), -Config.messages().clean().getKeep());
 		Predicate p = cb.lessThan(root.get(JpaObject_.createTime), limit);
 		return em.createQuery(cq.select(root).where(p)).setMaxResults(2000).getResultList();
 	}
@@ -95,7 +95,7 @@ public class Clean extends AbstractJob {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Message> cq = cb.createQuery(Message.class);
 		Root<Message> root = cq.from(Message.class);
-		Date limit = DateUtils.addDays(new Date(), -Config.communicate().clean().getKeep());
+		Date limit = DateUtils.addDays(new Date(), -Config.messages().clean().getKeep());
 		Predicate p = cb.lessThan(root.get(JpaObject_.createTime), limit);
 		return em.createQuery(cq.select(root).where(p)).setMaxResults(200).getResultList();
 	}

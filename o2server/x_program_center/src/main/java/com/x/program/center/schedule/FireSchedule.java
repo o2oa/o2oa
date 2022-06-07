@@ -49,7 +49,7 @@ public class FireSchedule extends BaseAction {
 		applications.entrySet().stream().forEach(entry -> {
 			try {
 				Date now = new Date();
-				Application application = applications.randomWithScheduleWeight(entry.getKey());
+				Application application = applications.randomWithWeight(entry.getKey());
 				for (ScheduleRequest request : application.getScheduleRequestList()) {
 					if (LOCK.contains(request.getClassName())) {
 						throw new ExceptionScheduleLastNotEnd(request, application.getClassName());

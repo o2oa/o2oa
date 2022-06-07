@@ -8,7 +8,7 @@ import com.x.base.core.project.tools.NumberTools;
 
 public class Cache extends ConfigObject {
 
-	public static final String TYPE_EHCACHE = "ehcache";
+	// public static final String TYPE_EHCACHE = "ehcache";
 	public static final String TYPE_REDIS = "redis";
 	public static final String TYPE_GUAVA = "guava";
 

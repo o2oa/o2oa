@@ -30,25 +30,25 @@ public class Message extends GsonPropertyObject {
 		Gson gson = XGsonBuilder.instance();
 		if (null != consumers) {
 			for (String arg : conusmers) {
-				this.consumersV2.put(arg, "");
+				// this.consumersV2.put(arg, "");
 				this.consumers.add(gson.toJsonTree(concreteConsumer(arg)));
 			}
 		}
 	}
 
-	public Message(Map<String, String> map) {
-		if (map != null) {
-			this.consumersV2.putAll(map);
-		}
-	}
+//	public Message(Map<String, String> map) {
+//		if (map != null) {
+//			this.consumersV2.putAll(map);
+//		}
+//	}
 
 	public static Message defaultInstance() {
 		return new Message();
 	}
 
-	@FieldDescribe("早期配置,已经废弃")
-	@Deprecated
-	private Map<String, String> consumersV2 = new HashMap<>();
+//	@FieldDescribe("早期配置,已经废弃")
+//	@Deprecated
+//	private Map<String, String> consumersV2 = new HashMap<>();
 
 	@FieldDescribe("消费通道配置")
 	private List<JsonElement> consumers = new ArrayList<>();
@@ -64,13 +64,13 @@ public class Message extends GsonPropertyObject {
 		return consumers;
 	}
 
-	public Map<String, String> getConsumersV2() {
-		return consumersV2;
-	}
-
-	public void setConsumersV2(Map<String, String> consumersV2) {
-		this.consumersV2 = consumersV2;
-	}
+//	public Map<String, String> getConsumersV2() {
+//		return consumersV2;
+//	}
+//
+//	public void setConsumersV2(Map<String, String> consumersV2) {
+//		this.consumersV2 = consumersV2;
+//	}
 
 	public static class Consumer implements Serializable {
 

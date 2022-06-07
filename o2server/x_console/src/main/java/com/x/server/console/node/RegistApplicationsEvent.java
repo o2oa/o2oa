@@ -10,6 +10,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.eclipse.jetty.quickstart.QuickStartWebApp;
 import org.eclipse.jetty.server.Handler;
@@ -77,10 +78,12 @@ public class RegistApplicationsEvent implements Event {
 		}
 	}
 
-	private void toCenter(Entry<String, CenterServer> entry, Req req){
+	private void toCenter(Entry<String, CenterServer> entry, Req req) {
 		try {
-			CipherConnectionAction.put(false, 2000, 4000,
-					Config.url_x_program_center_jaxrs(entry, "center", "regist", "applications"), req).getData(WrapBoolean.class);
+			CipherConnectionAction
+					.put(false, 2000, 4000,
+							Config.url_x_program_center_jaxrs(entry, "center", "regist", "applications"), req)
+					.getData(WrapBoolean.class);
 		} catch (Exception e) {
 			logger.warn("registerToCenter error:{}", e.getMessage());
 		}
@@ -93,7 +96,8 @@ public class RegistApplicationsEvent implements Event {
 		for (Handler handler : hanlderList.getHandlers()) {
 			if (QuickStartWebApp.class.isAssignableFrom(handler.getClass())) {
 				QuickStartWebApp app = (QuickStartWebApp) handler;
-				if (app.isStarted()) {
+				if (app.isStarted() && (!StringUtils.equalsIgnoreCase(app.getContextPath(), "/x_program_center"))
+						&& (!StringUtils.equalsIgnoreCase(app.getContextPath(), "/"))) {
 					try {
 						list.add(gson.fromJson(
 								app.getServletContext()

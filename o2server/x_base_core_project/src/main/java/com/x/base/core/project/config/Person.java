@@ -66,7 +66,6 @@ public class Person extends ConfigObject {
 		this.personUnitOrderByAsc = DEFAULT_PERSONUNITORDERBYASC;
 		this.tokenCookieHttpOnly = DEFAULT_TOKENCOOKIEHTTPONLY;
 		this.language = DEFAULT_LANGUAGE;
-		this.captchaFont = DEFAULT_CAPTCHAFONT;
 		this.tokenName = DEFAULT_TOKENNAME;
 		this.enableSafeLogout = DEFAULT_ENABLESAFELOGOUT;
 	}
@@ -110,9 +109,6 @@ public class Person extends ConfigObject {
 	@FieldDescribe("手机号码校验正则表达式,()表示脚本内容,默认值:(^(\\+)?0{0,2}852\\d{8}$)|(^(\\+)?0{0,2}853\\d{8}$)|(^(\\+)?0{0,2}886\\d{9}$)|(^1(3|4|5|7|8|9)\\d{9}$)")
 	private String mobileRegex;
 
-	@FieldDescribe("定制登录页面设置.")
-	private LoginPage loginPage;
-
 	@FieldDescribe("登录限制时间(分钟)")
 	private Integer failureInterval;
 
@@ -134,18 +130,9 @@ public class Person extends ConfigObject {
 	@FieldDescribe("平台语言：zh-CN(中文，默认)、en(英语)")
 	private String language;
 
-	@FieldDescribe("验证码字体,默认为空,代表使用系统自带字体.")
-	private String captchaFont;
-
 	@FieldDescribe("是否启用安全注销.")
 	private Boolean enableSafeLogout;
 
-	@FieldDescribe("维护人信息.")
-	private Maintainer maintainer;
-
-	public Maintainer getMaintainer() {
-		return (null == maintainer) ? Maintainer.defaultInstance() : this.maintainer;
-	}
 
 	public Boolean getEnableSafeLogout() {
 		return BooleanUtils.isTrue(this.enableSafeLogout);
@@ -170,52 +157,52 @@ public class Person extends ConfigObject {
 		}
 	}
 
-	public static class LoginPage extends ConfigObject {
-
-		private static final long serialVersionUID = -1960810257119355612L;
-
-		public static LoginPage defaultInstance() {
-			return new LoginPage();
-		}
-
-		public LoginPage() {
-			this.enable = false;
-			this.portal = "";
-			this.page = "";
-		}
-
-		@FieldDescribe("是否启用定制登录页面.")
-		private Boolean enable;
-		@FieldDescribe("指定登录页面所属的portal,可以用id,name,alias.")
-		private String portal;
-		@FieldDescribe("指定的登录页面,可以使用name,alias,id")
-		private String page;
-
-		public Boolean getEnable() {
-			return enable;
-		}
-
-		public void setEnable(Boolean enable) {
-			this.enable = enable;
-		}
-
-		public String getPortal() {
-			return portal;
-		}
-
-		public void setPortal(String portal) {
-			this.portal = portal;
-		}
-
-		public String getPage() {
-			return page;
-		}
-
-		public void setPage(String page) {
-			this.page = page;
-		}
-
-	}
+//	public static class LoginPage extends ConfigObject {
+//
+//		private static final long serialVersionUID = -1960810257119355612L;
+//
+//		public static LoginPage defaultInstance() {
+//			return new LoginPage();
+//		}
+//
+//		public LoginPage() {
+//			this.enable = false;
+//			this.portal = "";
+//			this.page = "";
+//		}
+//
+//		@FieldDescribe("是否启用定制登录页面.")
+//		private Boolean enable;
+//		@FieldDescribe("指定登录页面所属的portal,可以用id,name,alias.")
+//		private String portal;
+//		@FieldDescribe("指定的登录页面,可以使用name,alias,id")
+//		private String page;
+//
+//		public Boolean getEnable() {
+//			return enable;
+//		}
+//
+//		public void setEnable(Boolean enable) {
+//			this.enable = enable;
+//		}
+//
+//		public String getPortal() {
+//			return portal;
+//		}
+//
+//		public void setPortal(String portal) {
+//			this.portal = portal;
+//		}
+//
+//		public String getPage() {
+//			return page;
+//		}
+//
+//		public void setPage(String page) {
+//			this.page = page;
+//		}
+//
+//	}
 
 	public String getTokenName() {
 		return StringUtils.isBlank(this.tokenName) ? DEFAULT_TOKENNAME : this.tokenName;
@@ -229,9 +216,9 @@ public class Person extends ConfigObject {
 		return (NumberTools.nullOrLessThan(this.failureCount, 0) ? DEFAULT_FAILURECOUNT : this.failureCount);
 	}
 
-	public LoginPage getLoginPage() {
-		return (null == loginPage) ? LoginPage.defaultInstance() : this.loginPage;
-	}
+//	public LoginPage getLoginPage() {
+//		return (null == loginPage) ? LoginPage.defaultInstance() : this.loginPage;
+//	}
 
 	public String getPassword() {
 		return StringUtils.isEmpty(this.password) ? DEFAULT_PASSWORD : this.password;
@@ -279,9 +266,9 @@ public class Person extends ConfigObject {
 		return StringUtils.isEmpty(this.mobileRegex) ? StringTools.MOBILE_REGEX.toString() : this.mobileRegex;
 	}
 
-	public String getCaptchaFont() {
-		return StringUtils.isBlank(this.captchaFont) ? DEFAULT_CAPTCHAFONT : this.captchaFont;
-	}
+//	public String getCaptchaFont() {
+//		return StringUtils.isBlank(this.captchaFont) ? DEFAULT_CAPTCHAFONT : this.captchaFont;
+//	}
 
 	/*
 	 * 判断是否符合手机号码格式
@@ -332,9 +319,9 @@ public class Person extends ConfigObject {
 		this.mobileRegex = mobileRegex;
 	}
 
-	public void setLoginPage(LoginPage loginPage) {
-		this.loginPage = loginPage;
-	}
+//	public void setLoginPage(LoginPage loginPage) {
+//		this.loginPage = loginPage;
+//	}
 
 	public void setCaptchaLogin(Boolean captchaLogin) {
 		this.captchaLogin = captchaLogin;
@@ -384,9 +371,9 @@ public class Person extends ConfigObject {
 		this.tokenName = tokenName;
 	}
 
-	public void setCaptchaFont(String captchaFont) {
-		this.captchaFont = captchaFont;
-	}
+//	public void setCaptchaFont(String captchaFont) {
+//		this.captchaFont = captchaFont;
+//	}
 
 	public void setEnableSafeLogout(Boolean enableSafeLogout) {
 		this.enableSafeLogout = enableSafeLogout;

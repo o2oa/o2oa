@@ -11,7 +11,6 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -208,9 +207,6 @@ public class ActionControl extends ActionBase {
 	}
 
 	private void ec(CommandLine cmd) throws Exception {
-		if (BooleanUtils.isNotTrue(Config.currentNode().getEraseContentEnable())) {
-			logger.print("erase content is disabled.");
-		}
 		String type = Objects.toString(cmd.getOptionValue("ec"));
 		switch (type) {
 		case "processPlatform":

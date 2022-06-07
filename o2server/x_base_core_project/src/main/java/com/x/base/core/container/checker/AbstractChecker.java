@@ -2,9 +2,9 @@ package com.x.base.core.container.checker;
 
 import com.x.base.core.container.EntityManagerContainerBasic;
 
-public abstract class AbstractChecker {
+abstract class AbstractChecker {
 
-	protected AbstractChecker(EntityManagerContainerBasic emc) {
+	AbstractChecker(EntityManagerContainerBasic emc) {
 		this.emc = emc;
 	}
 

@@ -61,26 +61,22 @@ public class Config {
 	public static final String PATH_CONFIG_TOKEN = "config/token.json";
 	public static final String PATH_CONFIG_EXTERNALDATASOURCES = "config/externalDataSources.json";
 	public static final String PATH_CONFIG_EXTERNALSTORAGESOURCES = "config/externalStorageSources.json";
-	public static final String PATH_CONFIG_ADMINISTRATOR = "config/administrator.json";
 	public static final String PATH_CONFIG_PERSON = "config/person.json";
 	public static final String PATH_CONFIG_MEETING = "config/meeting.json";
 	public static final String PATH_CONFIG_APPSTYLE = "config/appStyle.json";
-	public static final String PATH_CONFIG_VFS = "config/vfs.json";
 	public static final String PATH_CONFIG_WORKTIME = "config/workTime.json";
 	public static final String PATH_CONFIG_CENTERSERVER = "config/centerServer.json";
 	public static final String PATH_CONFIG_COLLECT = "config/collect.json";
 	public static final String NAME_CONFIG_COLLECT = "collect.json";
 	public static final String PATH_CONFIG_DUMPRESTOREDATA = "config/dumpRestoreData.json";
-	public static final String PATH_CONFIG_DUMPRESTORESTORAGE = "config/dumpRestoreStorage.json";
 	public static final String PATH_CONFIG_MESSAGES = "config/messages.json";
-	public static final String PATH_CONFIG_MESSAGES_SEND_RULE = "config/messageSendRule.js";
-	public static final String PATH_CONFIG_MESSAGERESTFUL = "config/messageRestful.json";
-	public static final String PATH_CONFIG_MESSAGEMQ = "config/messageMq.json";
-	public static final String PATH_CONFIG_MESSAGEMAIL = "config/messageMail.json";
-	public static final String PATH_CONFIG_MESSAGEAPI = "config/messageApi.json";
-	public static final String PATH_CONFIG_MESSAGEJDBC = "config/messageJdbc.json";
-	public static final String PATH_CONFIG_MESSAGETABLE = "config/messageTable.json";
-	public static final String PATH_CONFIG_MESSAGEHADOOP = "config/messageHadoop.json";
+//	public static final String PATH_CONFIG_MESSAGERESTFUL = "config/messageRestful.json";
+//	public static final String PATH_CONFIG_MESSAGEMQ = "config/messageMq.json";
+//	public static final String PATH_CONFIG_MESSAGEMAIL = "config/messageMail.json";
+//	public static final String PATH_CONFIG_MESSAGEAPI = "config/messageApi.json";
+//	public static final String PATH_CONFIG_MESSAGEJDBC = "config/messageJdbc.json";
+//	public static final String PATH_CONFIG_MESSAGETABLE = "config/messageTable.json";
+//	public static final String PATH_CONFIG_MESSAGEHADOOP = "config/messageHadoop.json";
 	public static final String PATH_CONFIG_SSLKEYSTORE = "config/keystore";
 	public static final String PATH_CONFIG_SSLKEYSTORESAMPLE = "config/sample/keystore";
 	public static final String PATH_CONFIG_STARTIMAGE = "config/startImage.png";
@@ -93,22 +89,18 @@ public class Config {
 	public static final String PATH_CONFIG_ZHENGWUDINGDING = "config/zhengwuDingding.json";
 	public static final String PATH_CONFIG_QIYEWEIXIN = "config/qiyeweixin.json";
 	public static final String PATH_CONFIG_MPWEIXIN = "config/mpweixin.json";
-	public static final String PATH_CONFIG_LOGLEVEL = "config/logLevel.json";
 	public static final String PATH_CONFIG_BINDLOGO = "config/bindLogo.png";
-	public static final String PATH_CONFIG_SLICE = "config/slice.json";
-	public static final String PATH_CONFIG_CLIENTINIT = "config/clientInit.json";
 	public static final String PATH_COMMONS_INITIALSCRIPTTEXT = "commons/initialScriptText.js";
 	public static final String PATH_COMMONS_INITIALSERVICESCRIPTTEXT = "commons/initialServiceScriptText.js";
-	public static final String PATH_COMMONS_MOOTOOLSSCRIPTTEXT = "commons/mooToolsScriptText.js";
+//	public static final String PATH_COMMONS_MOOTOOLSSCRIPTTEXT = "commons/mooToolsScriptText.js";
 	public static final String PATH_CONFIG_JPUSH = "config/jpushConfig.json";
 	public static final String NAME_CONFIG_JPUSH = "jpushConfig.json";
-	public static final String PATH_CONFIG_COMMUNICATE = "config/communicate.json";
+//	public static final String PATH_CONFIG_COMMUNICATE = "config/communicate.json";
 	public static final String PATH_CONFIG_EXMAIL = "config/exmail.json";
 	public static final String PATH_CONFIG_PORTAL = "config/portal.json";
-	public static final String PATH_CONFIG_ORGANIZATION = "config/organization.json";
+//	public static final String PATH_CONFIG_ORGANIZATION = "config/organization.json";
 	public static final String PATH_CONFIG_CACHE = "config/cache.json";
 	public static final String PATH_CONFIG_COMPONENTS = "config/components.json";
-	public static final String PATH_CONFIG_EMAIL = "config/email.json";
 	public static final String PATH_CONFIG_WEB = "config/web.json";
 	public static final String PATH_CONFIG_MOCK = "config/mock.json";
 	public static final String PATH_CONFIG_TERNARY_MANAGEMENT = "config/ternaryManagement.json";
@@ -680,18 +672,18 @@ public class Config {
 		return instance().person;
 	}
 
-	private Communicate communicate = null;
-
-	public static synchronized Communicate communicate() throws Exception {
-		if (null == instance().communicate) {
-			Communicate obj = BaseTools.readConfigObject(PATH_CONFIG_COMMUNICATE, Communicate.class);
-			if (null == obj) {
-				obj = Communicate.defaultInstance();
-			}
-			instance().communicate = obj;
-		}
-		return instance().communicate;
-	}
+//	private Communicate communicate = null;
+//
+//	public static synchronized Communicate communicate() throws Exception {
+//		if (null == instance().communicate) {
+//			Communicate obj = BaseTools.readConfigObject(PATH_CONFIG_COMMUNICATE, Communicate.class);
+//			if (null == obj) {
+//				obj = Communicate.defaultInstance();
+//			}
+//			instance().communicate = obj;
+//		}
+//		return instance().communicate;
+//	}
 
 	private Meeting meeting;
 
@@ -765,16 +757,16 @@ public class Config {
 		return instance().initialServiceScriptText;
 	}
 
-	@Deprecated
-	public String mooToolsScriptText;
-
-	@Deprecated
-	public static synchronized String mooToolsScriptText() throws Exception {
-		if (null == instance().mooToolsScriptText) {
-			instance().mooToolsScriptText = BaseTools.readString(PATH_COMMONS_MOOTOOLSSCRIPTTEXT);
-		}
-		return instance().mooToolsScriptText;
-	}
+//	@Deprecated
+//	public String mooToolsScriptText;
+//
+//	@Deprecated
+//	public static synchronized String mooToolsScriptText() throws Exception {
+//		if (null == instance().mooToolsScriptText) {
+//			instance().mooToolsScriptText = BaseTools.readString(PATH_COMMONS_MOOTOOLSSCRIPTTEXT);
+//		}
+//		return instance().mooToolsScriptText;
+//	}
 
 	private MimeTypes mimeTypes;
 
@@ -1028,18 +1020,18 @@ public class Config {
 //		return instance().messageHadoop;
 //	}
 
-	private String messageSendRuleScript;
-
-	public static synchronized String messageSendRuleScript() throws Exception {
-		if (null == instance().messageSendRuleScript) {
-			String scriptStr = BaseTools.readString(PATH_CONFIG_MESSAGES_SEND_RULE);
-			if (scriptStr == null) {
-				scriptStr = "";
-			}
-			instance().messageSendRuleScript = scriptStr;
-		}
-		return instance().messageSendRuleScript;
-	}
+//	private String messageSendRuleScript;
+//
+//	public static synchronized String messageSendRuleScript() throws Exception {
+//		if (null == instance().messageSendRuleScript) {
+//			String scriptStr = BaseTools.readString(PATH_CONFIG_MESSAGES_SEND_RULE);
+//			if (scriptStr == null) {
+//				scriptStr = "";
+//			}
+//			instance().messageSendRuleScript = scriptStr;
+//		}
+//		return instance().messageSendRuleScript;
+//	}
 
 	private JpushConfig pushConfig;
 
@@ -1146,19 +1138,6 @@ public class Config {
 		return instance().zhengwuDingding;
 	}
 
-	private Vfs vfs;
-
-	public static synchronized Vfs vfs() throws Exception {
-		if (null == instance().vfs) {
-			Vfs obj = BaseTools.readConfigObject(PATH_CONFIG_VFS, Vfs.class);
-			if (null == obj) {
-				obj = Vfs.defaultInstance();
-			}
-			instance().vfs = obj;
-		}
-		return instance().vfs;
-	}
-
 	private AppStyle appStyle;
 
 	public static synchronized AppStyle appStyle() throws Exception {
@@ -1186,19 +1165,6 @@ public class Config {
 		return instance().startImage;
 	}
 
-	private LogLevel logLevel;
-
-	public static synchronized LogLevel logLevel() throws Exception {
-		if (null == instance().logLevel) {
-			LogLevel obj = BaseTools.readConfigObject(PATH_CONFIG_LOGLEVEL, LogLevel.class);
-			if (null == obj) {
-				obj = LogLevel.defaultInstance();
-			}
-			instance().logLevel = obj;
-		}
-		return instance().logLevel;
-	}
-
 	private byte[] bindLogo;
 
 	public static synchronized byte[] bindLogo() throws Exception {
@@ -1222,18 +1188,18 @@ public class Config {
 		return instance().initialContext;
 	}
 
-	public Slice slice;
-
-	public static synchronized Slice slice() throws Exception {
-		if (null == instance().slice) {
-			Slice obj = BaseTools.readConfigObject(PATH_CONFIG_SLICE, Slice.class);
-			if (null == obj) {
-				obj = Slice.defaultInstance();
-			}
-			instance().slice = obj;
-		}
-		return instance().slice;
-	}
+//	public Slice slice;
+//
+//	public static synchronized Slice slice() throws Exception {
+//		if (null == instance().slice) {
+//			Slice obj = BaseTools.readConfigObject(PATH_CONFIG_SLICE, Slice.class);
+//			if (null == obj) {
+//				obj = Slice.defaultInstance();
+//			}
+//			instance().slice = obj;
+//		}
+//		return instance().slice;
+//	}
 
 	public Exmail exmail;
 
@@ -1272,19 +1238,6 @@ public class Config {
 			instance().cache = obj;
 		}
 		return instance().cache;
-	}
-
-	public Email email;
-
-	public static synchronized Email email() throws Exception {
-		if (null == instance().email) {
-			Email obj = BaseTools.readConfigObject(PATH_CONFIG_EMAIL, Email.class);
-			if (null == obj) {
-				obj = Email.defaultInstance();
-			}
-			instance().email = obj;
-		}
-		return instance().email;
 	}
 
 	private Components components = null;
@@ -1342,18 +1295,18 @@ public class Config {
 		}
 	}
 
-	private Organization organization;
-
-	public static synchronized Organization organization() throws Exception {
-		if (null == instance().organization) {
-			Organization obj = BaseTools.readConfigObject(PATH_CONFIG_ORGANIZATION, Organization.class);
-			if (null == obj) {
-				obj = Organization.defaultInstance();
-			}
-			instance().organization = obj;
-		}
-		return instance().organization;
-	}
+//	private Organization organization;
+//
+//	public static synchronized Organization organization() throws Exception {
+//		if (null == instance().organization) {
+//			Organization obj = BaseTools.readConfigObject(PATH_CONFIG_ORGANIZATION, Organization.class);
+//			if (null == obj) {
+//				obj = Organization.defaultInstance();
+//			}
+//			instance().organization = obj;
+//		}
+//		return instance().organization;
+//	}
 
 	public static Object resource(String name) throws Exception {
 		return initialContext().lookup(name);
