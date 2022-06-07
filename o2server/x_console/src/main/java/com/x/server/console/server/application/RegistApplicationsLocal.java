@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.quickstart.QuickStartWebApp;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
@@ -44,7 +45,8 @@ public class RegistApplicationsLocal {
 		for (Handler handler : hanlderList.getHandlers()) {
 			if (QuickStartWebApp.class.isAssignableFrom(handler.getClass())) {
 				QuickStartWebApp app = (QuickStartWebApp) handler;
-				if (app.isStarted()) {
+				if (app.isStarted() && (!StringUtils.equalsIgnoreCase(app.getContextPath(), "/x_program_center"))
+						&& (!StringUtils.equalsIgnoreCase(app.getContextPath(), "/"))) {
 					try {
 						list.add(gson.fromJson(
 								app.getServletContext()

@@ -577,9 +577,7 @@ class ActionCreate extends BaseAction {
 	private Message v3WsMessage(Wi wi, Consumer consumer) {
 		Message message = null;
 		try {
-			if (BooleanUtils.isTrue(Config.communicate().wsEnable())) {
-				message = this.v3Message(wi, consumer);
-			}
+			message = this.v3Message(wi, consumer);
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}

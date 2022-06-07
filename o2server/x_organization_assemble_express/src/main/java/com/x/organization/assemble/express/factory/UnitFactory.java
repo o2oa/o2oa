@@ -60,45 +60,45 @@ public class UnitFactory extends AbstractFactory {
 		if (o != null) {
 			this.entityManagerContainer().get(Unit.class).detach(o);
 		} else {
-			String name = flag;
+			//String name = flag;
 			Matcher matcher = PersistenceProperties.Unit.distinguishedName_pattern.matcher(flag);
 			if (matcher.find()) {
-				name = matcher.group(1);
+				//name = matcher.group(1);
 				String unique = matcher.group(2);
 				o = this.entityManagerContainer().flag(unique, Unit.class);
 				if (null != o) {
 					this.entityManagerContainer().get(Unit.class).detach(o);
 				}
 			}
-			if (null == o) {
-				EntityManager em = this.entityManagerContainer().get(Unit.class);
-				CriteriaBuilder cb = em.getCriteriaBuilder();
-				CriteriaQuery<Unit> cq = cb.createQuery(Unit.class);
-				Root<Unit> root = cq.from(Unit.class);
-				Predicate p = cb.equal(root.get(Unit_.name), name);
-				List<Unit> os = em.createQuery(cq.select(root).where(p)).getResultList();
-				if (os.size() == 1) {
-					o = os.get(0);
-					em.detach(o);
-				}
-			}
-			if (null == o && StringUtils.contains(flag, PersistenceProperties.Unit.levelNameSplit)) {
-				List<String> list = Arrays.asList(StringUtils.split(flag, PersistenceProperties.Unit.levelNameSplit));
-				EntityManager em = this.entityManagerContainer().get(Unit.class);
-				CriteriaBuilder cb = em.getCriteriaBuilder();
-				CriteriaQuery<Unit> cq = cb.createQuery(Unit.class);
-				Root<Unit> root = cq.from(Unit.class);
-				Predicate p = cb.and(cb.equal(root.get(Unit_.name), Objects.toString(ListTools.last(list), "")),
-						cb.equal(root.get(Unit_.level), list.size()));
-				List<Unit> os = em.createQuery(cq.select(root).where(p)).getResultList();
-				for (Unit unit : os) {
-					if (StringUtils.equalsIgnoreCase(unit.getLevelName(), flag)) {
-						o = unit;
-						em.detach(o);
-						break;
-					}
-				}
-			}
+//			if (null == o) {
+//				EntityManager em = this.entityManagerContainer().get(Unit.class);
+//				CriteriaBuilder cb = em.getCriteriaBuilder();
+//				CriteriaQuery<Unit> cq = cb.createQuery(Unit.class);
+//				Root<Unit> root = cq.from(Unit.class);
+//				Predicate p = cb.equal(root.get(Unit_.name), name);
+//				List<Unit> os = em.createQuery(cq.select(root).where(p)).getResultList();
+//				if (os.size() == 1) {
+//					o = os.get(0);
+//					em.detach(o);
+//				}
+//			}
+//			if (null == o && StringUtils.contains(flag, PersistenceProperties.Unit.levelNameSplit)) {
+//				List<String> list = Arrays.asList(StringUtils.split(flag, PersistenceProperties.Unit.levelNameSplit));
+//				EntityManager em = this.entityManagerContainer().get(Unit.class);
+//				CriteriaBuilder cb = em.getCriteriaBuilder();
+//				CriteriaQuery<Unit> cq = cb.createQuery(Unit.class);
+//				Root<Unit> root = cq.from(Unit.class);
+//				Predicate p = cb.and(cb.equal(root.get(Unit_.name), Objects.toString(ListTools.last(list), "")),
+//						cb.equal(root.get(Unit_.level), list.size()));
+//				List<Unit> os = em.createQuery(cq.select(root).where(p)).getResultList();
+//				for (Unit unit : os) {
+//					if (StringUtils.equalsIgnoreCase(unit.getLevelName(), flag)) {
+//						o = unit;
+//						em.detach(o);
+//						break;
+//					}
+//				}
+//			}
 		}
 		return o;
 	}

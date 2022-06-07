@@ -56,13 +56,13 @@ public abstract class EntityManagerContainerBasic implements AutoCloseable {
 		return null;
 	}
 
-	public void rollback() {
-		for (EntityManager em : entityManagerMap.values()) {
-			if ((null != em) && em.getTransaction().isActive()) {
-				em.getTransaction().rollback();
-			}
-		}
-	}
+//	public void rollback() {
+//		for (EntityManager em : entityManagerMap.values()) {
+//			if ((null != em) && em.getTransaction().isActive()) {
+//				em.getTransaction().rollback();
+//			}
+//		}
+//	}
 
 	public void close() {
 		for (EntityManager em : entityManagerMap.values()) {

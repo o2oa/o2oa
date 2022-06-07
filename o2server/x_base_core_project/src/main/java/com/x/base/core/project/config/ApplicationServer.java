@@ -15,7 +15,7 @@ public class ApplicationServer extends ConfigObject {
 		return new ApplicationServer();
 	}
 
-	private static final Integer DEFAULT_PORT = 20020;
+	private static final Integer DEFAULT_PORT = 80;
 	private static final Boolean DEFAULT_STATENABLE = true;
 	private static final String DEFAULT_STATEXCLUSIONS = "*.js,*.gif,*.jpg,*.png,*.css,*.ico";
 	private static final Boolean DEFAULT_EXPOSEJEST = true;

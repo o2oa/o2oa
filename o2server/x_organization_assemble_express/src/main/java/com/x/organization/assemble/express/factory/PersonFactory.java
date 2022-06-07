@@ -61,28 +61,28 @@ public class PersonFactory extends AbstractFactory {
 		if (o != null) {
 			this.entityManagerContainer().get(Person.class).detach(o);
 		} else {
-			String name = flag;
+			// String name = flag;
 			Matcher matcher = person_distinguishedName_pattern.matcher(flag);
 			if (matcher.find()) {
-				name = matcher.group(1);
+				// name = matcher.group(1);
 				String unique = matcher.group(2);
 				o = this.entityManagerContainer().flag(unique, Person.class);
 				if (null != o) {
 					this.entityManagerContainer().get(Person.class).detach(o);
 				}
 			}
-			if ((null == o) && BooleanUtils.isTrue(Config.organization().getPickPersonWithName())) {
-				EntityManager em = this.entityManagerContainer().get(Person.class);
-				CriteriaBuilder cb = em.getCriteriaBuilder();
-				CriteriaQuery<Person> cq = cb.createQuery(Person.class);
-				Root<Person> root = cq.from(Person.class);
-				Predicate p = cb.equal(root.get(Person_.name), name);
-				List<Person> os = em.createQuery(cq.select(root).where(p)).getResultList();
-				if (os.size() == 1) {
-					o = os.get(0);
-					em.detach(o);
-				}
-			}
+//			if ((null == o) && BooleanUtils.isTrue(Config.organization().getPickPersonWithName())) {
+//				EntityManager em = this.entityManagerContainer().get(Person.class);
+//				CriteriaBuilder cb = em.getCriteriaBuilder();
+//				CriteriaQuery<Person> cq = cb.createQuery(Person.class);
+//				Root<Person> root = cq.from(Person.class);
+//				Predicate p = cb.equal(root.get(Person_.name), name);
+//				List<Person> os = em.createQuery(cq.select(root).where(p)).getResultList();
+//				if (os.size() == 1) {
+//					o = os.get(0);
+//					em.detach(o);
+//				}
+//			}
 		}
 		return o;
 	}

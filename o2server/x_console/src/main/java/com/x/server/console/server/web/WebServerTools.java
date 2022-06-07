@@ -1,10 +1,13 @@
 package com.x.server.console.server.web;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.EnumSet;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.TimeZone;
 import java.util.stream.Stream;
 
@@ -17,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.server.AsyncRequestLogWriter;
 import org.eclipse.jetty.server.RequestLog;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.gzip.GzipHandler;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -27,6 +31,7 @@ import org.eclipse.jetty.webapp.WebAppContext;
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
 import com.x.base.core.project.x_program_center;
+import com.x.base.core.project.config.ApplicationServer;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.WebServer;
 import com.x.base.core.project.config.WebServers;
@@ -35,13 +40,11 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.server.console.server.JettySeverTools;
 import com.x.server.console.server.ServerRequestLog;
+import com.x.server.console.server.Servers;
 
 public class WebServerTools extends JettySeverTools {
 
 	private static Logger logger = LoggerFactory.getLogger(WebServerTools.class);
-
-	private static final int WEBSERVER_THREAD_POOL_SIZE_MIN = 20;
-	private static final int WEBSERVER_THREAD_POOL_SIZE_MAX = 2000;
 
 	public static Server start(WebServer webServer) throws Exception {
 
@@ -56,16 +59,87 @@ public class WebServerTools extends JettySeverTools {
 		// 覆盖 webServer
 		coverToWebServer();
 
+		if (Objects.equals(Config.currentNode().getApplication().getPort(), webServer.getPort())) {
+			return startInApplication(webServer);
+		} else {
+			return startStandalone(webServer);
+		}
+
+	}
+
+	private static Server startInApplication(WebServer webServer) throws Exception {
+		WebAppContext webContext = webContext(webServer);
+		GzipHandler gzipHandler = (GzipHandler) Servers.applicationServer.getHandler();
+		HandlerList hanlderList = (HandlerList) gzipHandler.getHandler();
+		hanlderList.addHandler(webContext);
+		webContext.start();
+		System.out.println("****************************************");
+		System.out.println("* web server is started in the application server.");
+		System.out.println("* port: " + Config.currentNode().getApplication().getPort() + ".");
+		System.out.println("****************************************");
+		return Servers.applicationServer;
+	}
+
+	private static Server startStandalone(WebServer webServer) throws Exception {
+//		QueuedThreadPool threadPool = new QueuedThreadPool();
+//		threadPool.setName("WebServerQueuedThreadPool");
+//		threadPool.setMinThreads(THREAD_POOL_SIZE_MIN);
+//		threadPool.setMaxThreads(THREAD_POOL_SIZE_MAX);
+//		Server server = new Server(threadPool);
+//		if (BooleanUtils.isTrue(webServer.getSslEnable())) {
+//			addHttpsConnector(server, webServer.getPort(), true);
+//		} else {
+//			addHttpConnector(server, webServer.getPort(), true);
+//		}
+		HandlerList handlers = new HandlerList();
+		Server server = createServer(webServer, handlers);
+		WebAppContext context = webContext(webServer);
+		handlers.addHandler(context);
+		context.start();
+		if (BooleanUtils.isTrue(webServer.getProxyCenterEnable())) {
+			proxyCenter(context, webServer.getProxyTimeOut());
+		}
+		if (BooleanUtils.isTrue(webServer.getProxyApplicationEnable())) {
+			proxyApplication(context, Config.dir_store().toPath(), webServer.getProxyTimeOut());
+			proxyApplication(context, Config.dir_custom().toPath(), webServer.getProxyTimeOut());
+		}
+		server.setDumpAfterStart(false);
+		server.setDumpBeforeStop(false);
+		server.setStopAtShutdown(true);
+		if (BooleanUtils.isTrue(webServer.getRequestLogEnable())) {
+			server.setRequestLog(requestLog(webServer));
+		}
+		context.setMimeTypes(Config.mimeTypes());
+		server.start();
+		System.out.println("****************************************");
+		System.out.println("* web server start completed.");
+		System.out.println("* port: " + webServer.getPort() + ".");
+		System.out.println("****************************************");
+		return server;
+	}
+
+	private static Server createServer(WebServer webServer, HandlerList handlers) throws Exception {
 		QueuedThreadPool threadPool = new QueuedThreadPool();
 		threadPool.setName("WebServerQueuedThreadPool");
-		threadPool.setMinThreads(WEBSERVER_THREAD_POOL_SIZE_MIN);
-		threadPool.setMaxThreads(WEBSERVER_THREAD_POOL_SIZE_MAX);
+		threadPool.setMinThreads(THREAD_POOL_SIZE_MIN);
+		threadPool.setMaxThreads(THREAD_POOL_SIZE_MAX);
 		Server server = new Server(threadPool);
 		if (BooleanUtils.isTrue(webServer.getSslEnable())) {
 			addHttpsConnector(server, webServer.getPort(), true);
 		} else {
 			addHttpConnector(server, webServer.getPort(), true);
 		}
+		GzipHandler gzipHandler = new GzipHandler();
+		gzipHandler.setHandler(handlers);
+		server.setHandler(gzipHandler);
+		server.setDumpAfterStart(false);
+		server.setDumpBeforeStop(false);
+		server.setStopAtShutdown(true);
+		server.start();
+		return server;
+	}
+
+	private static WebAppContext webContext(WebServer webServer) throws IOException, URISyntaxException {
 		WebAppContext context = new WebAppContext();
 		context.setContextPath("/");
 		context.setBaseResource(Resource.newResource(new File(Config.base(), "servers/webServer")));
@@ -80,7 +154,6 @@ public class WebServerTools extends JettySeverTools {
 		context.setGzipHandler(new GzipHandler());
 		context.setParentLoaderPriority(true);
 		context.getMimeTypes().addMimeMapping("wcss", "application/json");
-		/* stat */
 		if (BooleanUtils.isTrue(webServer.getStatEnable())) {
 			FilterHolder statFilterHolder = new FilterHolder(new WebStatFilter());
 			statFilterHolder.setInitParameter("exclusions", webServer.getStatExclusions());
@@ -89,35 +162,7 @@ public class WebServerTools extends JettySeverTools {
 			statServletHolder.setInitParameter("sessionStatEnable", "false");
 			context.addServlet(statServletHolder, "/druid/*");
 		}
-		/* stat end */
-		server.setHandler(context);
-
-		if (BooleanUtils.isTrue(webServer.getProxyCenterEnable())) {
-			proxyCenter(context, webServer.getProxyTimeOut());
-		}
-
-		if (BooleanUtils.isTrue(webServer.getProxyApplicationEnable())) {
-			proxyApplication(context, Config.dir_store().toPath(), webServer.getProxyTimeOut());
-			proxyApplication(context, Config.dir_custom().toPath(), webServer.getProxyTimeOut());
-		}
-
-		server.setDumpAfterStart(false);
-		server.setDumpBeforeStop(false);
-		server.setStopAtShutdown(true);
-
-		if (BooleanUtils.isTrue(webServer.getRequestLogEnable())) {
-			server.setRequestLog(requestLog(webServer));
-		}
-
-		context.setMimeTypes(Config.mimeTypes());
-
-		server.start();
-
-		System.out.println("****************************************");
-		System.out.println("* web server start completed.");
-		System.out.println("* port: " + webServer.getPort() + ".");
-		System.out.println("****************************************");
-		return server;
+		return context;
 	}
 
 	private static RequestLog requestLog(WebServer webServer) throws Exception {

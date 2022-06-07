@@ -48,8 +48,8 @@ public class Token extends ConfigObject {
 		this.password = "";
 		this.sslKeyStorePassword = defaultSslKeyStorePassword;
 		this.sslKeyManagerPassword = defaultSslKeyManagerPassword;
-		this.initialManager = defaultInitialManager;
-		this.initialManagerDistinguishedName = defaultInitialManagerDistinguishedName;
+//		this.initialManager = defaultInitialManager;
+//		this.initialManagerDistinguishedName = defaultInitialManagerDistinguishedName;
 	}
 
 	// 加密用的key,用于加密口令
@@ -65,11 +65,11 @@ public class Token extends ConfigObject {
 	@FieldDescribe("ssl管理密码")
 	private String sslKeyManagerPassword;
 
-	@FieldDescribe("初始管理员名称,目前不可更改.")
-	private String initialManager;
+//	@FieldDescribe("初始管理员名称,目前不可更改.")
+//	private String initialManager;
 
-	@FieldDescribe("初始管理员DistinguishedName,不可更改.")
-	private String initialManagerDistinguishedName;
+//	@FieldDescribe("初始管理员DistinguishedName,不可更改.")
+//	private String initialManagerDistinguishedName;
 
 	@FieldDescribe("LDAP认证配置")
 	private LdapAuth ldapAuth;
@@ -121,29 +121,28 @@ public class Token extends ConfigObject {
 	}
 
 	public String getInitialManager() {
-		return StringUtils.isEmpty(this.initialManager) ? defaultInitialManager : this.initialManager;
+		return defaultInitialManager;
 	}
 
-	public void setInitialManager(String initialManager) {
-		if (StringUtils.equals(initialManager, defaultInitialManager)) {
-			this.initialManager = null;
-		} else {
-			this.initialManager = initialManager;
-		}
-	}
+//	public void setInitialManager(String initialManager) {
+//		if (StringUtils.equals(initialManager, defaultInitialManager)) {
+//			this.initialManager = null;
+//		} else {
+//			this.initialManager = initialManager;
+//		}
+//	}
 
 	public String getInitialManagerDistinguishedName() {
-		return StringUtils.isEmpty(this.initialManagerDistinguishedName) ? defaultInitialManagerDistinguishedName
-				: this.initialManagerDistinguishedName;
+		return   defaultInitialManagerDistinguishedName;
 	}
 
-	public void setInitialManagerDistinguishedName(String initialManagerDistinguishedName) {
-		if (StringUtils.equals(initialManagerDistinguishedName, defaultInitialManagerDistinguishedName)) {
-			this.initialManager = null;
-		} else {
-			this.initialManagerDistinguishedName = initialManagerDistinguishedName;
-		}
-	}
+//	public void setInitialManagerDistinguishedName(String initialManagerDistinguishedName) {
+//		if (StringUtils.equals(initialManagerDistinguishedName, defaultInitialManagerDistinguishedName)) {
+//			this.initialManager = null;
+//		} else {
+//			this.initialManagerDistinguishedName = initialManagerDistinguishedName;
+//		}
+//	}
 
 	public String getSslKeyStorePassword() {
 		return StringUtils.isEmpty(this.sslKeyStorePassword) ? defaultSslKeyStorePassword : this.sslKeyStorePassword;
@@ -207,18 +206,18 @@ public class Token extends ConfigObject {
 	}
 
 	public boolean isInitialManager(String name) throws Exception {
-		if(BooleanUtils.isTrue(Config.ternaryManagement().getEnable())){
+		if (BooleanUtils.isTrue(Config.ternaryManagement().getEnable())) {
 			return Config.ternaryManagement().isTernaryManagement(name);
-		}else {
+		} else {
 			return StringUtils.equals(this.getInitialManager(), name)
 					|| StringUtils.equals(this.getInitialManagerDistinguishedName(), name);
 		}
 	}
 
 	public boolean verifyPassword(String name, String password) throws Exception {
-		if(BooleanUtils.isTrue(Config.ternaryManagement().getEnable())){
+		if (BooleanUtils.isTrue(Config.ternaryManagement().getEnable())) {
 			return Config.ternaryManagement().verifyPassword(name, password);
-		}else{
+		} else {
 			return StringUtils.equals(this.getPassword(), password);
 		}
 	}

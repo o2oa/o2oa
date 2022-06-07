@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.List;
@@ -21,6 +22,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.commons.collections4.list.UnmodifiableList;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.file.PathUtils;
@@ -28,6 +30,7 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.commons.vfs2.util.DelegatingFileSystemOptionsBuilder;
 import org.eclipse.jetty.quickstart.QuickStartWebApp;
 import org.eclipse.jetty.server.AsyncRequestLogWriter;
 import org.eclipse.jetty.server.RequestLog;
@@ -37,6 +40,7 @@ import org.eclipse.jetty.server.handler.gzip.GzipHandler;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
+import org.eclipse.jetty.webapp.WebAppContext;
 import org.w3c.dom.Document;
 
 import com.alibaba.druid.support.http.StatViewServlet;
@@ -85,6 +89,8 @@ import com.x.server.console.node.UpdateApplicationsEvent;
 import com.x.server.console.server.JettySeverTools;
 import com.x.server.console.server.ServerRequestLog;
 import com.x.server.console.server.ServerRequestLogBody;
+import com.x.server.console.server.Servers;
+import com.x.server.console.server.center.CenterServerTools;
 
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
@@ -92,9 +98,9 @@ import io.github.classgraph.ScanResult;
 
 public class ApplicationServerTools extends JettySeverTools {
 
-	private static Logger logger = LoggerFactory.getLogger(ApplicationServerTools.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationServerTools.class);
 
-	private static final List<String> OFFICIAL_MODULE_SORTED_TEMPLATE = ListTools.toList(
+	private static final List<String> OFFICIAL_MODULE_SORTED = UnmodifiableList.unmodifiableList(Arrays.asList(
 			x_general_assemble_control.class.getName(), x_organization_assemble_authentication.class.getName(),
 			x_organization_assemble_express.class.getName(), x_organization_assemble_control.class.getName(),
 			x_organization_assemble_personal.class.getName(), x_component_assemble_control.class.getName(),
@@ -106,7 +112,7 @@ public class ApplicationServerTools extends JettySeverTools {
 			x_bbs_assemble_control.class.getName(), x_file_assemble_control.class.getName(),
 			x_meeting_assemble_control.class.getName(), x_mind_assemble_control.class.getName(),
 			x_hotpic_assemble_control.class.getName(), x_query_service_processing.class.getName(),
-			x_query_assemble_designer.class.getName(), x_query_assemble_surface.class.getName());
+			x_query_assemble_designer.class.getName(), x_query_assemble_surface.class.getName()));
 
 	public static Server start(ApplicationServer applicationServer) throws Exception {
 
@@ -118,40 +124,26 @@ public class ApplicationServerTools extends JettySeverTools {
 
 		HandlerList handlers = new HandlerList();
 
-		logger.info("start to deploy official module: {}, custom module: {}.", officialClassInfos.size(),
+		Server server = createServer(applicationServer, handlers);
+
+		if (Objects.equals(Config.currentNode().getCenter().getPort(), applicationServer.getPort())) {
+			WebAppContext webContext = CenterServerTools.webContext(Config.currentNode().getCenter());
+			handlers.addHandler(webContext);
+			webContext.start();
+			Servers.centerServer = server;
+			System.out.println("****************************************");
+			System.out.println("* center server is started in the application server.");
+			System.out.println("* port: " + Config.currentNode().getApplication().getPort() + ".");
+			System.out.println("****************************************");
+		}
+
+		LOGGER.info("start to deploy official module: {}, custom module: {}.", officialClassInfos.size(),
 				customNames.size());
 
 		deployOfficial(applicationServer, handlers, officialClassInfos);
 
 		deployCustom(applicationServer, handlers, customNames);
 
-		QueuedThreadPool threadPool = new QueuedThreadPool();
-		threadPool.setName("ApplicationServerQueuedThreadPool");
-		threadPool.setMinThreads(THREAD_POOL_SIZE_MIN);
-		threadPool.setMaxThreads(THREAD_POOL_SIZE_MAX);
-		Server server = new Server(threadPool);
-		server.setAttribute("org.eclipse.jetty.server.Request.maxFormContentSize", MAX_FORM_CONTENT_SIZE);
-
-		if (BooleanUtils.isTrue(applicationServer.getSslEnable())) {
-			addHttpsConnector(server, applicationServer.getPort(), true);
-		} else {
-			addHttpConnector(server, applicationServer.getPort(), true);
-		}
-
-		GzipHandler gzipHandler = new GzipHandler();
-		gzipHandler.setHandler(handlers);
-		server.setHandler(gzipHandler);
-
-		server.setDumpAfterStart(false);
-		server.setDumpBeforeStop(false);
-		server.setStopAtShutdown(true);
-
-		if (BooleanUtils.isTrue(applicationServer.getRequestLogEnable())
-				|| BooleanUtils.isTrue(Config.ternaryManagement().getEnable())) {
-			server.setRequestLog(requestLog(applicationServer));
-		}
-
-		server.start();
 		// 将应用首先注册到本地,开机可以直接运行
 		new RegistApplicationsLocal().execute(server);
 		// 注册本地应用并推送到服务器
@@ -165,6 +157,32 @@ public class ApplicationServerTools extends JettySeverTools {
 		return server;
 	}
 
+	private static Server createServer(ApplicationServer applicationServer, HandlerList handlers) throws Exception {
+		QueuedThreadPool threadPool = new QueuedThreadPool();
+		threadPool.setName("ApplicationServerQueuedThreadPool");
+		threadPool.setMinThreads(THREAD_POOL_SIZE_MIN);
+		threadPool.setMaxThreads(THREAD_POOL_SIZE_MAX);
+		Server server = new Server(threadPool);
+		server.setAttribute("org.eclipse.jetty.server.Request.maxFormContentSize", MAX_FORM_CONTENT_SIZE);
+		if (BooleanUtils.isTrue(applicationServer.getSslEnable())) {
+			addHttpsConnector(server, applicationServer.getPort(), true);
+		} else {
+			addHttpConnector(server, applicationServer.getPort(), true);
+		}
+		GzipHandler gzipHandler = new GzipHandler();
+		gzipHandler.setHandler(handlers);
+		server.setHandler(gzipHandler);
+		if (BooleanUtils.isTrue(applicationServer.getRequestLogEnable())
+				|| BooleanUtils.isTrue(Config.ternaryManagement().getEnable())) {
+			server.setRequestLog(requestLog(applicationServer));
+		}
+		server.setDumpAfterStart(false);
+		server.setDumpBeforeStop(false);
+		server.setStopAtShutdown(true);
+		server.start();
+		return server;
+	}
+
 	private static RequestLog requestLog(ApplicationServer applicationServer) throws Exception {
 		AsyncRequestLogWriter asyncRequestLogWriter = new AsyncRequestLogWriter();
 		asyncRequestLogWriter.setTimeZone(TimeZone.getDefault().getID());
@@ -173,8 +191,6 @@ public class ApplicationServerTools extends JettySeverTools {
 		asyncRequestLogWriter.setFilename(Config.dir_logs().toString() + File.separator
 				+ "application.request.yyyy_MM_dd." + Config.node() + ".log");
 		asyncRequestLogWriter.setFilenameDateFormat("yyyyMMdd");
-//		String format = "%{client}a - %u %{yyyy-MM-dd HH:mm:ss.SSS ZZZ|" + DateFormatUtils.format(new Date(), "z")
-//				+ "}t \"%r\" %s %O %{ms}T";
 		if (BooleanUtils.isTrue(applicationServer.getRequestLogBodyEnable())
 				|| BooleanUtils.isTrue(Config.ternaryManagement().getEnable())) {
 			return new ServerRequestLogBody(asyncRequestLogWriter, LOG_FORMAT);
@@ -185,7 +201,7 @@ public class ApplicationServerTools extends JettySeverTools {
 
 	private static void deployCustom(ApplicationServer applicationServer, HandlerList handlers,
 			List<String> customNames) {
-		customNames.parallelStream().forEach(name -> {
+		customNames.stream().forEach(name -> {
 			try {
 				Path war = Paths.get(Config.dir_custom().toString(), name + PathTools.DOT_WAR);
 				Path dir = Paths.get(Config.dir_servers_applicationServer_work().toString(), name);
@@ -206,35 +222,43 @@ public class ApplicationServerTools extends JettySeverTools {
 					} else {
 						webApp.setExtraClasspath(calculateExtraClassPath(cls));
 					}
-					logger.debug("{} extra class path:{}.", name, webApp.getExtraClasspath());
+					LOGGER.debug("{} extra class path:{}.", name, webApp.getExtraClasspath());
 					webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.useFileMappedBuffer",
 							BooleanUtils.toStringTrueFalse(false));
 					webApp.getInitParams().put("org.eclipse.jetty.jsp.precompiled",
 							BooleanUtils.toStringTrueFalse(true));
 					webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.dirAllowed",
 							BooleanUtils.toStringTrueFalse(false));
-					if (BooleanUtils.isTrue(applicationServer.getStatEnable())) {
-						FilterHolder statFilterHolder = new FilterHolder(new WebStatFilter());
-						statFilterHolder.setInitParameter("exclusions", applicationServer.getStatExclusions());
-						webApp.addFilter(statFilterHolder, "/*", EnumSet.of(DispatcherType.REQUEST));
-						ServletHolder statServletHolder = new ServletHolder(StatViewServlet.class);
-						statServletHolder.setInitParameter("sessionStatEnable", BooleanUtils.toStringTrueFalse(false));
-						webApp.addServlet(statServletHolder, "/druid/*");
-					}
-					if (BooleanUtils.isFalse(applicationServer.getExposeJest())) {
-						FilterHolder denialOfServiceFilterHolder = new FilterHolder(new DenialOfServiceFilter());
-						webApp.addFilter(denialOfServiceFilterHolder, "/jest/*", EnumSet.of(DispatcherType.REQUEST));
-						webApp.addFilter(denialOfServiceFilterHolder, "/describe/sources/*",
-								EnumSet.of(DispatcherType.REQUEST));
-					}
+					setStat(applicationServer, webApp);
+					setExposeJest(applicationServer, webApp);
 					handlers.addHandler(webApp);
+					webApp.start();
 				} else if (Files.exists(dir)) {
 					PathUtils.cleanDirectory(dir);
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		});
+	}
+
+	private static void setExposeJest(ApplicationServer applicationServer, QuickStartWebApp webApp) {
+		if (BooleanUtils.isFalse(applicationServer.getExposeJest())) {
+			FilterHolder denialOfServiceFilterHolder = new FilterHolder(new DenialOfServiceFilter());
+			webApp.addFilter(denialOfServiceFilterHolder, "/jest/*", EnumSet.of(DispatcherType.REQUEST));
+			webApp.addFilter(denialOfServiceFilterHolder, "/describe/sources/*", EnumSet.of(DispatcherType.REQUEST));
+		}
+	}
+
+	private static void setStat(ApplicationServer applicationServer, QuickStartWebApp webApp) {
+		if (BooleanUtils.isTrue(applicationServer.getStatEnable())) {
+			FilterHolder statFilterHolder = new FilterHolder(new WebStatFilter());
+			statFilterHolder.setInitParameter("exclusions", applicationServer.getStatExclusions());
+			webApp.addFilter(statFilterHolder, "/*", EnumSet.of(DispatcherType.REQUEST));
+			ServletHolder statServletHolder = new ServletHolder(StatViewServlet.class);
+			statServletHolder.setInitParameter("sessionStatEnable", BooleanUtils.toStringTrueFalse(false));
+			webApp.addServlet(statServletHolder, "/druid/*");
+		}
 	}
 
 	private static void deployOfficial(ApplicationServer applicationServer, HandlerList handlers,
@@ -258,31 +282,22 @@ public class ApplicationServerTools extends JettySeverTools {
 					} else {
 						webApp.setExtraClasspath(calculateExtraClassPath(clz));
 					}
-					logger.debug("{} extra class path:{}.", clz::getSimpleName, webApp::getExtraClasspath);
+					LOGGER.debug("{} extra class path:{}.", clz::getSimpleName, webApp::getExtraClasspath);
 					webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.useFileMappedBuffer",
 							BooleanUtils.toStringTrueFalse(false));
 					webApp.getInitParams().put("org.eclipse.jetty.jsp.precompiled",
 							BooleanUtils.toStringTrueFalse(true));
 					webApp.getInitParams().put("org.eclipse.jetty.servlet.Default.dirAllowed",
 							BooleanUtils.toStringTrueFalse(false));
-					if (BooleanUtils.isTrue(applicationServer.getStatEnable())) {
-						FilterHolder holder = new FilterHolder(new WebStatFilter());
-						holder.setInitParameter("exclusions", applicationServer.getStatExclusions());
-						webApp.addFilter(holder, "/*", EnumSet.of(DispatcherType.REQUEST));
-						webApp.addServlet(StatViewServlet.class, "/druid/*");
-					}
-					if (BooleanUtils.isFalse(applicationServer.getExposeJest())) {
-						FilterHolder denialOfServiceFilterHolder = new FilterHolder(new DenialOfServiceFilter());
-						webApp.addFilter(denialOfServiceFilterHolder, "/jest/*", EnumSet.of(DispatcherType.REQUEST));
-						webApp.addFilter(denialOfServiceFilterHolder, "/describe/sources/*",
-								EnumSet.of(DispatcherType.REQUEST));
-					}
+					setStat(applicationServer, webApp);
+					setExposeJest(applicationServer, webApp);
 					handlers.addHandler(webApp);
+					webApp.start();
 				} else if (Files.exists(dir)) {
 					PathUtils.cleanDirectory(dir);
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		});
 	}
@@ -292,49 +307,87 @@ public class ApplicationServerTools extends JettySeverTools {
 				.addClassLoader(
 						ClassLoaderTools.urlClassLoader(ClassLoader.getSystemClassLoader(), false, true, false, false))
 				.enableAnnotationInfo().scan()) {
-			List<ClassInfo> list = new ArrayList<>();
 			List<ClassInfo> classInfos = scanResult.getClassesWithAnnotation(Module.class.getName());
-			for (ClassInfo info : classInfos) {
-				Class<?> clz = Thread.currentThread().getContextClassLoader().loadClass(info.getName());
-				Module module = clz.getAnnotation(Module.class);
-				if (Objects.equals(module.type(), ModuleType.ASSEMBLE)
-						|| Objects.equals(module.type(), ModuleType.SERVICE)) {
-					list.add(info);
+			List<String> filters = classInfos.stream().filter(info -> {
+				try {
+					Module module = Thread.currentThread().getContextClassLoader().loadClass(info.getName())
+							.getAnnotation(Module.class);
+					return ((Objects.equals(ModuleCategory.OFFICIAL, module.category()))
+							&& (Objects.equals(module.type(), ModuleType.ASSEMBLE)
+									|| Objects.equals(module.type(), ModuleType.SERVICE)));
+				} catch (ClassNotFoundException e) {
+					LOGGER.error(e);
 				}
-			}
-			List<String> filters = new ArrayList<>();
-			for (ClassInfo info : list) {
-				Class<?> clz = Thread.currentThread().getContextClassLoader().loadClass(info.getName());
-				Module module = clz.getAnnotation(Module.class);
-				if (Objects.equals(ModuleCategory.OFFICIAL, module.category())) {
-					filters.add(info.getName());
-				}
-			}
-			filters = StringTools.includesExcludesWithWildcard(filters,
+				return false;
+			}).map(ClassInfo::getName).collect(Collectors.toList());
+			final List<String> names = StringTools.includesExcludesWithWildcard(filters,
 					Config.currentNode().getApplication().getIncludes(),
 					Config.currentNode().getApplication().getExcludes());
-			List<ClassInfo> os = new ArrayList<>();
-			for (ClassInfo info : list) {
-				if (filters.contains(info.getName())) {
-					os.add(info);
-				}
-			}
-			os = os.stream().sorted(Comparator.comparing(ClassInfo::getName, (x, y) -> {
-				int indx = OFFICIAL_MODULE_SORTED_TEMPLATE.indexOf(x);
-				int indy = OFFICIAL_MODULE_SORTED_TEMPLATE.indexOf(y);
-				if (indx == indy) {
-					return 0;
-				} else if (indx == -1) {
-					return 1;
-				} else if (indy == -1) {
-					return -1;
-				} else {
-					return indx - indy;
-				}
-			})).collect(Collectors.toList());
-			return os;
+			return classInfos.stream().filter(info -> names.contains(info.getName()))
+					.sorted(Comparator.comparing(ClassInfo::getName, (x, y) -> {
+						int indx = OFFICIAL_MODULE_SORTED.indexOf(x);
+						int indy = OFFICIAL_MODULE_SORTED.indexOf(y);
+						if (indx == indy) {
+							return 0;
+						} else if (indx == -1) {
+							return 1;
+						} else if (indy == -1) {
+							return -1;
+						} else {
+							return indx - indy;
+						}
+					})).collect(Collectors.toList());
 		}
 	}
+
+//	private static List<ClassInfo> listOfficial() throws Exception {
+//		try (ScanResult scanResult = new ClassGraph()
+//				.addClassLoader(
+//						ClassLoaderTools.urlClassLoader(ClassLoader.getSystemClassLoader(), false, true, false, false))
+//				.enableAnnotationInfo().scan()) {
+//			List<ClassInfo> list = new ArrayList<>();
+//			List<ClassInfo> classInfos = scanResult.getClassesWithAnnotation(Module.class.getName());
+//			for (ClassInfo info : classInfos) {
+//				Class<?> clz = Thread.currentThread().getContextClassLoader().loadClass(info.getName());
+//				Module module = clz.getAnnotation(Module.class);
+//				if (Objects.equals(module.type(), ModuleType.ASSEMBLE)
+//						|| Objects.equals(module.type(), ModuleType.SERVICE)) {
+//					list.add(info);
+//				}
+//			}
+//			List<String> filters = new ArrayList<>();
+//			for (ClassInfo info : list) {
+//				Class<?> clz = Thread.currentThread().getContextClassLoader().loadClass(info.getName());
+//				Module module = clz.getAnnotation(Module.class);
+//				if (Objects.equals(ModuleCategory.OFFICIAL, module.category())) {
+//					filters.add(info.getName());
+//				}
+//			}
+//			filters = StringTools.includesExcludesWithWildcard(filters,
+//					Config.currentNode().getApplication().getIncludes(),
+//					Config.currentNode().getApplication().getExcludes());
+//			List<ClassInfo> os = new ArrayList<>();
+//			for (ClassInfo info : list) {
+//				if (filters.contains(info.getName())) {
+//					os.add(info);
+//				}
+//			}
+//			os = os.stream().sorted(Comparator.comparing(ClassInfo::getName, (x, y) -> {
+//				int indx = OFFICIAL_MODULE_SORTED.indexOf(x);
+//				int indy = OFFICIAL_MODULE_SORTED.indexOf(y);
+//				if (indx == indy) {
+//					return 0;
+//				} else if (indx == -1) {
+//					return 1;
+//				} else if (indy == -1) {
+//					return -1;
+//				} else {
+//					return indx - indy;
+//				}
+//			})).collect(Collectors.toList());
+//			return os;
+//		}
+//	}
 
 	private static List<String> listCustom() throws Exception {
 		List<String> list = new ArrayList<>();
@@ -375,7 +428,7 @@ public class ApplicationServerTools extends JettySeverTools {
 		if ((!Files.exists(lastModified)) || Files.isDirectory(lastModified)
 				|| (Files.getLastModifiedTime(war).toMillis() != NumberUtils
 						.toLong(FileUtils.readFileToString(lastModified.toFile(), DefaultCharset.charset_utf_8), 0))) {
-			logger.print("deploy war:{}.", war.getFileName().toAbsolutePath());
+			LOGGER.print("deploy war:{}.", war.getFileName().toAbsolutePath());
 			if (Files.exists(dir)) {
 				PathUtils.cleanDirectory(dir);
 			}

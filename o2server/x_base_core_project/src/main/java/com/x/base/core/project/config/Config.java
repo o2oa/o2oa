@@ -95,10 +95,10 @@ public class Config {
 //	public static final String PATH_COMMONS_MOOTOOLSSCRIPTTEXT = "commons/mooToolsScriptText.js";
 	public static final String PATH_CONFIG_JPUSH = "config/jpushConfig.json";
 	public static final String NAME_CONFIG_JPUSH = "jpushConfig.json";
-	public static final String PATH_CONFIG_COMMUNICATE = "config/communicate.json";
+//	public static final String PATH_CONFIG_COMMUNICATE = "config/communicate.json";
 	public static final String PATH_CONFIG_EXMAIL = "config/exmail.json";
 	public static final String PATH_CONFIG_PORTAL = "config/portal.json";
-	public static final String PATH_CONFIG_ORGANIZATION = "config/organization.json";
+//	public static final String PATH_CONFIG_ORGANIZATION = "config/organization.json";
 	public static final String PATH_CONFIG_CACHE = "config/cache.json";
 	public static final String PATH_CONFIG_COMPONENTS = "config/components.json";
 	public static final String PATH_CONFIG_WEB = "config/web.json";
@@ -672,18 +672,18 @@ public class Config {
 		return instance().person;
 	}
 
-	private Communicate communicate = null;
-
-	public static synchronized Communicate communicate() throws Exception {
-		if (null == instance().communicate) {
-			Communicate obj = BaseTools.readConfigObject(PATH_CONFIG_COMMUNICATE, Communicate.class);
-			if (null == obj) {
-				obj = Communicate.defaultInstance();
-			}
-			instance().communicate = obj;
-		}
-		return instance().communicate;
-	}
+//	private Communicate communicate = null;
+//
+//	public static synchronized Communicate communicate() throws Exception {
+//		if (null == instance().communicate) {
+//			Communicate obj = BaseTools.readConfigObject(PATH_CONFIG_COMMUNICATE, Communicate.class);
+//			if (null == obj) {
+//				obj = Communicate.defaultInstance();
+//			}
+//			instance().communicate = obj;
+//		}
+//		return instance().communicate;
+//	}
 
 	private Meeting meeting;
 
@@ -1295,18 +1295,18 @@ public class Config {
 		}
 	}
 
-	private Organization organization;
-
-	public static synchronized Organization organization() throws Exception {
-		if (null == instance().organization) {
-			Organization obj = BaseTools.readConfigObject(PATH_CONFIG_ORGANIZATION, Organization.class);
-			if (null == obj) {
-				obj = Organization.defaultInstance();
-			}
-			instance().organization = obj;
-		}
-		return instance().organization;
-	}
+//	private Organization organization;
+//
+//	public static synchronized Organization organization() throws Exception {
+//		if (null == instance().organization) {
+//			Organization obj = BaseTools.readConfigObject(PATH_CONFIG_ORGANIZATION, Organization.class);
+//			if (null == obj) {
+//				obj = Organization.defaultInstance();
+//			}
+//			instance().organization = obj;
+//		}
+//		return instance().organization;
+//	}
 
 	public static Object resource(String name) throws Exception {
 		return initialContext().lookup(name);

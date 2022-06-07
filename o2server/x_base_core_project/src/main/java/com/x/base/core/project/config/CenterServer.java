@@ -17,7 +17,7 @@ public class CenterServer extends ConfigObject {
 	private static final long serialVersionUID = 8147826320846595611L;
 
 	private static final Boolean DEFAULT_ENABLE = true;
-	private static final Integer DEFAULT_PORT = 20030;
+	private static final Integer DEFAULT_PORT = 80;
 	private static final Boolean DEFAULT_CONFIGAPIENABLE = true;
 	private static final Integer DEFAULT_ORDER = 0;
 	private static final Boolean DEFAULT_STATENABLE = true;

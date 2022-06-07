@@ -60,28 +60,28 @@ public class IdentityFactory extends AbstractFactory {
 		if (o != null) {
 			this.entityManagerContainer().get(Identity.class).detach(o);
 		} else {
-			String name = flag;
+			//String name = flag;
 			Matcher matcher = identity_distinguishedName_pattern.matcher(flag);
 			if (matcher.find()) {
-				name = matcher.group(1);
+				//name = matcher.group(1);
 				String unique = matcher.group(2);
 				o = this.entityManagerContainer().flag(unique, Identity.class);
 				if (null != o) {
 					this.entityManagerContainer().get(Identity.class).detach(o);
 				}
 			}
-			if ((null == o) && BooleanUtils.isTrue(Config.organization().getPickIdentityWithName())) {
-				EntityManager em = this.entityManagerContainer().get(Identity.class);
-				CriteriaBuilder cb = em.getCriteriaBuilder();
-				CriteriaQuery<Identity> cq = cb.createQuery(Identity.class);
-				Root<Identity> root = cq.from(Identity.class);
-				Predicate p = cb.equal(root.get(Identity_.name), name);
-				List<Identity> os = em.createQuery(cq.select(root).where(p)).getResultList();
-				if (os.size() == 1) {
-					o = os.get(0);
-					em.detach(o);
-				}
-			}
+//			if ((null == o) && BooleanUtils.isTrue(Config.organization().getPickIdentityWithName())) {
+//				EntityManager em = this.entityManagerContainer().get(Identity.class);
+//				CriteriaBuilder cb = em.getCriteriaBuilder();
+//				CriteriaQuery<Identity> cq = cb.createQuery(Identity.class);
+//				Root<Identity> root = cq.from(Identity.class);
+//				Predicate p = cb.equal(root.get(Identity_.name), name);
+//				List<Identity> os = em.createQuery(cq.select(root).where(p)).getResultList();
+//				if (os.size() == 1) {
+//					o = os.get(0);
+//					em.detach(o);
+//				}
+//			}
 		}
 		return o;
 	}

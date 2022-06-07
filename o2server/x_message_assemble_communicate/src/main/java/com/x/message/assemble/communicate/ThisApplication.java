@@ -73,9 +73,7 @@ public class ThisApplication {
 			CacheManager.init(context.clazz().getSimpleName());
 			MessageConnector.start(context());
 			startQueue();
-			if (BooleanUtils.isTrue(Config.communicate().clean().getEnable())) {
-				context().schedule(Clean.class, Config.communicate().clean().getCron());
-			}
+			context().schedule(Clean.class, Config.messages().clean().getCron());
 			context().schedule(TriggerMessageConsumeQueue.class, "20 20 * * * ?");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -112,9 +110,7 @@ public class ThisApplication {
 				&& BooleanUtils.isTrue(Config.mPweixin().getMessageEnable())) {
 			context().startQueue(mpweixinConsumeQueue);
 		}
-		if (BooleanUtils.isTrue(Config.communicate().wsEnable())) {
-			context().startQueue(wsConsumeQueue);
-		}
+		context().startQueue(wsConsumeQueue);
 		context().startQueue(calendarConsumeQueue);
 	}
 
