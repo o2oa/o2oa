@@ -276,8 +276,6 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.totalColumns = [];
 			this.totalNumberModuleIds = [];
 
-			debugger;
-
 			// this.hiddenColIndexList = [];
 
 			if( this.isShowAllSection ){
