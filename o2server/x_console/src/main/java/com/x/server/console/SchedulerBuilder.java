@@ -7,6 +7,7 @@ import org.quartz.CronScheduleBuilder;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
+import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
@@ -32,7 +33,11 @@ public class SchedulerBuilder {
 			restoreDataTask(scheduleGroup, scheduler);
 		}
 
-		this.registApplicationsAndVoteCenterTask(scheduler, scheduleGroup);
+		if (BooleanUtils.isTrue(Config.currentNode().stackTrace().getEnable())) {
+			stackTraceTask(scheduleGroup, scheduler);
+		}
+
+		this.registApplicationsAndVoteCenterTask(scheduleGroup, scheduler);
 		return scheduler;
 
 	}
@@ -53,8 +58,18 @@ public class SchedulerBuilder {
 		scheduler.scheduleJob(jobDetail, trigger);
 	}
 
+	private void stackTraceTask(String scheduleGroup, Scheduler scheduler) throws Exception {
+		JobDetail jobDetail = JobBuilder.newJob(StackTraceTask.class)
+				.withIdentity(StackTraceTask.class.getName(), scheduleGroup).withDescription(Config.node()).build();
+		Trigger trigger = TriggerBuilder.newTrigger().withIdentity(StackTraceTask.class.getName(), scheduleGroup)
+				.withSchedule(SimpleScheduleBuilder.simpleSchedule()
+						.withIntervalInSeconds(Config.currentNode().stackTrace().getInterval()).repeatForever())
+				.build();
+		scheduler.scheduleJob(jobDetail, trigger);
+	}
+
 	/* 更新node节点applications 和 选择center主节点 */
-	private void registApplicationsAndVoteCenterTask(Scheduler scheduler, String scheduleGroup) throws Exception {
+	private void registApplicationsAndVoteCenterTask(String scheduleGroup, Scheduler scheduler) throws Exception {
 		JobDetail jobDetail = JobBuilder.newJob(RegistApplicationsAndVoteCenterTask.class)
 				.withIdentity(RegistApplicationsAndVoteCenterTask.class.getName(), scheduleGroup)
 				.withDescription(Config.node()).build();

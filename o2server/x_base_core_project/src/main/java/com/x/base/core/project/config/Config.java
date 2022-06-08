@@ -294,9 +294,14 @@ public class Config {
 		return new File(base(), DIR_JVM);
 	}
 
-	public static Path command_java_path() throws Exception {
+	public static Path command_java_path() {
 		Path dir = Paths.get(System.getProperty("java.home"));
 		return SystemUtils.IS_OS_WINDOWS ? dir.resolve("bin/java.exe") : dir.resolve("bin/java");
+	}
+
+	public static Path command_jstack_path() {
+		Path dir = Paths.get(System.getProperty("java.home"));
+		return SystemUtils.IS_OS_WINDOWS ? dir.resolve("bin/jstack.exe") : dir.resolve("bin/jstack");
 	}
 
 	public static File dir_local() throws Exception {
