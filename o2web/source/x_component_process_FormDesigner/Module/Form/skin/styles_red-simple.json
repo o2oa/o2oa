@@ -319,6 +319,14 @@
       "text-align": "center",
       "background-color": "#f0f0f0"
     },
+    "sectionAmountStyles": {
+      "border-top": "1px solid #ccc",
+      "font-weight": "bold",
+      "height": "30px",
+      "line-height": "30px",
+      "text-align": "center",
+      "background-color": "#fafafa"
+    },
     "itemTitleStyles": {
       "height": "40px",
       "background-color": "#ffffff",

@@ -150,6 +150,199 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     isReadonly : function(){
         return !!(this.readonly || this.json.isReadonly || this.form.json.isReadonly);
     },
+    isAllSectionShow: function(){
+        return this.json.showAllSection && this.json.section === "yes" && this.isSectionData();
+    },
+    isSectionMergeRead: function(){
+        return this.json.sectionMerge === "read" && this.json.section !== "yes" && this.isSectionData()
+    },
+    isSectionMergeEdit: function(){
+        return this.json.sectionMerge === "edit" && this.json.section !== "yes" && this.isSectionData()
+    },
+    isSectionData: function(){ //数据是否经过区段处理
+        var data = this.getBusinessDataById();
+        return o2.typeOf( data ) === "object";
+    },
+    getSortedSectionData: function(){ //获取合并排序后的数据
+        var data = this.getBusinessDataById();
+        var array = [];
+        for( var key in data ){
+            array.push({
+                sectionKey: key,
+                key: key,
+                data: data[key]
+            })
+        }
+        if( this.json.sectionMergeSortScript && this.json.sectionMergeSortScript.code){
+            array.sort( function(a, b){
+                this.form.Macro.environment.event = {
+                    "a": a,
+                    "b": b
+                };
+                var flag = this.form.Macro.exec(this.json.sectionMergeSortScript.code, this);
+                this.form.Macro.environment.event = null;
+                return flag;
+            }.bind(this))
+        }
+        return array;
+    },
+    //区段合并的区段值
+    _getMergeSectionKey: function( data ){
+        switch (this.json.sectionKey){
+            case "person":
+                return layout.desktop.session.user.id;
+            case "unit":
+                return (this.form.businessData.task) ? this.form.businessData.task.unit : "";
+            case "activity":
+                return (this.form.businessData.work) ? this.form.businessData.work.activity : "";
+            case "splitValue":
+                return (this.form.businessData.work) ? this.form.businessData.work.splitValue : "";
+            case "script":
+                var d;
+                if( this.json.sectionKeyScript && this.json.sectionKeyScript.code){
+                    this.form.Macro.environment.event = data;
+                    d = this.form.Macro.exec(this.json.sectionKeyScript.code, this);
+                    this.form.Macro.environment.event = null;
+                }else{
+                    d = "";
+                }
+                return d;
+            default:
+                return "";
+        }
+    },
+    getSectionKeyWithMerge: function(data, callback){
+        switch (this.json.sectionKey) {
+            case "person":
+                if( !this.form.sectionKeyPersonMap )this.form.sectionKeyPersonMap = {};
+                if( this.form.sectionKeyPersonMap[data.key] ){
+                    callback(this.form.sectionKeyPersonMap[data.key]);
+                    return;
+                }
+
+                //只获取一次。把callback存起来，等异步调用完成后一次性执行callback
+                if( !this.form.sectionKeyCallbackMap )this.form.sectionKeyCallbackMap = {};
+                var map = this.form.sectionKeyCallbackMap;
+                if( !map[ data.key ] )map[ data.key ] = [];
+                if( !map[ data.key ].length ){
+                    Promise.resolve( o2.Actions.load("x_organization_assemble_express").PersonAction.listObject({
+                        "personList": [data.key]
+                    })).then(function(json){
+                        var key = json.data.length ? json.data[0].name : data.key;
+                        this.form.sectionKeyPersonMap[data.key] = key;
+                        while( map[ data.key ].length ){
+                            map[ data.key ].shift()( key );
+                        }
+                    }.bind(this));
+                }
+                map[ data.key ].push( callback );
+
+                break;
+            case "unit":
+                callback( data.key.split("@")[0] );
+                break;
+            case "activity":
+            case "splitValue":
+                callback( data.key );
+                break;
+            case "script":
+                var d;
+                if( this.json.sectionKeyScript && this.json.sectionKeyScript.code){
+                    this.form.Macro.environment.event = data;
+                    d = this.form.Macro.exec(this.json.sectionKeyScript.code, this);
+                    this.form.Macro.environment.event = null;
+                }else{
+                    d = "";
+                }
+                callback( d );
+                break;
+        }
+    },
+    _loadMergeReadNode: function(keepHtml, position) {
+        if (!keepHtml) {
+            this.node.empty();
+            this.node.set({
+                "nodeId": this.json.id,
+                "MWFType": this.json.type
+            });
+        }
+        switch (this.json.mergeTypeRead) {
+            case "htmlScript":
+                this._loadMergeReadNodeByHtml();
+                break;
+            case "dataScript":
+                this._loadMergeReadNodeByData();
+                break;
+            default:
+                this._loadMergeReadNodeByDefault(position);
+                break;
+        }
+    },
+    _loadMergeReadNodeByHtml: function(){
+        if (this.json.sectionMergeReadHtmlScript && this.json.sectionMergeReadHtmlScript.code) {
+            var html = this.form.Macro.exec(this.json.sectionMergeReadHtmlScript.code, this);
+            this.node.set("html", html);
+        }
+    },
+    _loadMergeReadNodeByData: function(){
+        if (this.json.sectionMergeReadDataScript && this.json.sectionMergeReadDataScript.code) {
+            var data = this.form.Macro.exec(this.json.sectionMergeReadDataScript.code, this);
+
+        }
+    },
+    _loadMergeReadNodeByDefault: function( position ){
+        var data = this.getSortedSectionData();
+        var sectionNodeStyles = this._parseStyles(this.json.sectionNodeStyles);
+        var sectionKeyStyles = this._parseStyles(this.json.sectionKeyStyles);
+        var sectionContentStyles = this._parseStyles(this.json.sectionContentStyles);
+        data.each(function(d){
+            var node = new Element("div.mwf_sectionnode", {
+                styles : sectionNodeStyles
+            }).inject(this.node, position || "bottom");
+
+            if( this.json.showSectionKey ){
+                var keyNode = new Element("div.mwf_sectionkey", {
+                    styles : sectionKeyStyles
+                }).inject(node);
+                this.getSectionKeyWithMerge( d, function (key) {
+                    if( o2.typeOf(key) === "string" ){
+                        keyNode.set("text", key + (this.json.keyContentSeparator || ""));
+                    }else{
+                        Promise.resolve(key).then(function (k) {
+                            keyNode.set("text", k + (this.json.keyContentSeparator || ""));
+                        }.bind(this))
+                    }
+                }.bind(this));
+            }
+            var contentNode = new Element("div.mwf_sectioncontent", {
+                styles : sectionContentStyles
+            }).inject(node);
+            this._loadMergeReadContentNode( contentNode, d )
+        }.bind(this))
+    },
+    _loadMergeReadContentNode: function( contentNode, data ){
+        contentNode.set("text", data.data)
+    },
+    _loadMergeEditNode: function(){
+        if( this.json.mergeTypeEdit === "script" ){
+            this._loadMergeEditNodeByScript();
+        }else{
+            this._loadMergeEditNodeByDefault();
+        }
+    },
+    _loadMergeEditNodeByScript: function(){
+        if (this.json.sectionMergeEditScript && this.json.sectionMergeEditScript.code) {
+            var data = this.form.Macro.exec(this.json.sectionMergeEditScript.code, this);
+            this._setBusinessData( data );
+            this._loadNode();
+        }
+    },
+    _loadMergeEditNodeByDefault: function(){
+        var data = this.getSortedSectionData();
+        data = data.map(function(d){ return d.data; });
+        this._setBusinessData( data.join("") );
+        this._loadNode();
+    },
     /**
      * @summary 隐藏组件.
      * @example
@@ -190,7 +383,37 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
     },
 
     _loadStyles: function(){
-        if (this.json.styles) Object.each(this.json.styles, function(value, key){
+        if (this.json.styles){
+            this.node.setStyles( this._parseStyles(this.json.styles) );
+        }
+        // if (this.json.styles) Object.each(this.json.styles, function(value, key){
+        //     if ((value.indexOf("x_processplatform_assemble_surface")!=-1 || value.indexOf("x_portal_assemble_surface")!=-1 || value.indexOf("x_cms_assemble_control")!=-1)){
+        //         var host1 = MWF.Actions.getHost("x_processplatform_assemble_surface");
+        //         var host2 = MWF.Actions.getHost("x_portal_assemble_surface");
+        //         var host3 = MWF.Actions.getHost("x_cms_assemble_control");
+        //         if (value.indexOf("/x_processplatform_assemble_surface")!==-1){
+        //             value = value.replace("/x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
+        //         }else if (value.indexOf("x_processplatform_assemble_surface")!==-1){
+        //             value = value.replace("x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
+        //         }
+        //         if (value.indexOf("/x_portal_assemble_surface")!==-1){
+        //             value = value.replace("/x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
+        //         }else if (value.indexOf("x_portal_assemble_surface")!==-1){
+        //             value = value.replace("x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
+        //         }
+        //         if (value.indexOf("/x_cms_assemble_control")!==-1){
+        //             value = value.replace("/x_cms_assemble_control", host3+"/x_cms_assemble_control");
+        //         }else if (value.indexOf("x_cms_assemble_control")!==-1){
+        //             value = value.replace("x_cms_assemble_control", host3+"/x_cms_assemble_control");
+        //         }
+        //         value = o2.filterUrl(value);
+        //     }
+        //     this.node.setStyle(key, value);
+        // }.bind(this));
+    },
+    _parseStyles: function( styles ){
+        var s = {};
+        Object.each(styles || {}, function(value, key){
             if ((value.indexOf("x_processplatform_assemble_surface")!=-1 || value.indexOf("x_portal_assemble_surface")!=-1 || value.indexOf("x_cms_assemble_control")!=-1)){
                 var host1 = MWF.Actions.getHost("x_processplatform_assemble_surface");
                 var host2 = MWF.Actions.getHost("x_portal_assemble_surface");
@@ -212,14 +435,9 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
                 }
                 value = o2.filterUrl(value);
             }
-            this.node.setStyle(key, value);
+            s[key] = value;
         }.bind(this));
-
-        // if (["x_processplatform_assemble_surface", "x_portal_assemble_surface"].indexOf(root.toLowerCase())!==-1){
-        //     var host = MWF.Actions.getHost(root);
-        //     return (flag==="/") ? host+this.json.template : host+"/"+this.json.template
-        // }
-        //if (this.json.styles) this.node.setStyles(this.json.styles);
+        return s;
     },
     _loadModuleEvents : function(){
         Object.each(this.json.events, function(e, key){

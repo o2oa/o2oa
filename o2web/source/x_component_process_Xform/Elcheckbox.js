@@ -65,11 +65,23 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
     },
     _loadNode: function(){
         this.node.empty();
-        if (this.readonly || this.json.isReadonly || this.form.json.isReadonly){
+        if (this.isReadonly()){
             this._loadNodeRead();
         }else{
             this._loadNodeEdit();
         }
+    },
+    _loadMergeReadContentNode: function( contentNode, data ){
+        this._showValue(contentNode, data.data)
+    },
+    _loadMergeEditNodeByDefault: function(){
+        var data = this.getSortedSectionData();
+        var businessData = [];
+        data.each(function(d){
+            businessData = businessData.concat( d.data || [] );
+        });
+        this._setBusinessData( businessData );
+        this._loadNode();
     },
     _loadNodeRead: function(){
         this.node.empty();
@@ -77,8 +89,11 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
             "nodeId": this.json.id,
             "MWFType": this.json.type
         });
-        var radioValues = this.getOptions();
         var value = this.getValue();
+        this._showValue(this.node, value);
+    },
+    _showValue: function(node, value){
+        var radioValues = this.getOptions();
         if (value){
             var texts = [];
             radioValues.each(function(item){
@@ -90,7 +105,7 @@ MWF.xApplication.process.Xform.Elcheckbox = MWF.APPElcheckbox =  new Class(
                     texts.push(t);
                 }
             });
-            this.node.set("text", texts.join(", "));
+            node.set("text", texts.join(", "));
         }
     },
     _resetNodeEdit: function(){

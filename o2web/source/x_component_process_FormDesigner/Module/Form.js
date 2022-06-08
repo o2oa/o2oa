@@ -462,6 +462,9 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			var className = json.type.capitalize();
 			this.getTemplateData(className, function(data){
 				var moduleData = Object.clone(data);
+				["sectionNodeStyles","sectionContentStyles","sectionKeyStyles"].each(function(d){
+					if( json[d] )delete moduleData[d]
+				});
 				Object.merge(moduleData, json);
 				Object.merge(json, moduleData);
 				module = new MWF["FC"+json.type](this);
@@ -473,6 +476,9 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			var className = json.type.capitalize();
 			this.getTemplateData(className, function(data){
 				var moduleData = Object.clone(data);
+				["sectionNodeStyles","sectionContentStyles","sectionKeyStyles"].each(function(d){
+					if( json[d] )delete moduleData[d]
+				});
 				Object.merge(moduleData, json);
 				Object.merge(json, moduleData);
 				module = new MWF["FCDiv"](this);

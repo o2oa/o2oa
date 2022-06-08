@@ -198,20 +198,55 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		},
 		load: function(){
 			this._loadModuleEvents();
-			if (this.fireEvent("queryLoad")){
+            if (this.fireEvent("queryLoad")){
 				this._queryLoaded();
-				this._loadUserInterface();
-				this._loadStyles();
-				this._loadDomEvents();
-				//this._loadEvents();
+                if( this.isSectionMergeEdit() ){ //区段合并，删除区段值合并数据后编辑
+                    if( this.json.mergeTypeEdit === "script" ){
+                        this._loadMergeEditNodeByScript();
+                    }else{
+                        this._loadMergeEditNodeByDefault();
+                    }
+                }else{
+				    this._loadUserInterface();
+			    }
+                this._loadStyles();
+                this._loadDomEvents();
+                //this._loadEvents();
 
-				this._afterLoaded();
-				this.fireEvent("afterLoad");
-				// this.fireEvent("load");
+                this._afterLoaded();
+                this.fireEvent("afterLoad");
+                // this.fireEvent("load");
 			}
+		},
+		_loadMergeEditNodeByScript: function(){
+			if (this.json.sectionMergeEditScript && this.json.sectionMergeEditScript.code) {
+				var data = this.form.Macro.exec(this.json.sectionMergeEditScript.code, this);
+				this._setBusinessData( data );
+				this._loadUserInterface();
+			}
+		},
+		_loadMergeEditNodeByDefault: function(){
+			var data = this.getSortedSectionData();
+			var businessData = [];
+			data.each(function(d){
+				d.data = d.data || {};
+				businessData = businessData.concat( d.data.data || [] );
+			});
+			this._setBusinessData({
+				data: businessData
+			});
+			this._loadUserInterface();
 		},
 		_loadUserInterface: function(){
 			// this.fireEvent("queryLoad");
+			debugger;
+
+			//区段合并展现
+			this.isMergeRead = this.isSectionMergeRead();
+
+			//启用区段且显示所有区段
+			this.sectionBy = this._getSectionBy();
+			this.isShowAllSection = this.isAllSectionShow();
 
 			this.editModules = [];
 			this.node.setStyle("overflow-x", "auto");
@@ -220,6 +255,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.tBody = this.table.getElement("tbody");
 
 			this.editable = !(this.readonly || (this.json.isReadonly === true) || (this.form.json.isReadonly === true));
+			if( this.isMergeRead )this.editable = false;
 			if (this.editable && this.json.editableScript && this.json.editableScript.code){
 				this.editable = this.form.Macro.exec(((this.json.editableScript) ? this.json.editableScript.code : ""), this);
 			}
@@ -240,18 +276,23 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.totalColumns = [];
 			this.totalNumberModuleIds = [];
 
-			debugger;
-
 			// this.hiddenColIndexList = [];
 
-			this.data = this.getValue();
-			if( !this._getBusinessData() ){
-				this.isNew = true;
-				this._setValue(this.data);
+			if( this.isShowAllSection ){
+				this.data = this.getAllSectionData()
+			}else if( this.isMergeRead ){
+				this.data = this.getSectionMergeReadData()
+			}else{
+				this.data = this.getValue();
+				if( !this._getBusinessData() ){
+					this.isNew = true;
+					this._setValue(this.data);
+				}
 			}
 
 
 			this.lineList = [];
+			this.sectionlineList = [];
 
 			this.loadDatatable();
 		},
@@ -357,6 +398,8 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 			var tds = this.templateNode.getElements("td");
 
+			this.columnCount = tds.length;
+
 			if (this.json.border) {
 				tds.setStyles({
 					"border-bottom": this.json.border,
@@ -399,6 +442,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 					eTd.setStyles(this.json.contentStyles);
 					mTd.setStyles(this.json.contentStyles);
 				}
+				this.columnCount = this.columnCount+2;
 			}
 
 			this.templateHtml = this.templateNode.get("html");
@@ -414,6 +458,13 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		_loadTotalTr: function(){
 			if( !this.totalFlag )return;
 			this.totalTr = new Element("tr.mwf_totaltr", {"styles": this.form.css.datagridTotalTr}).inject(this.tBody||this.table);
+
+			if( this.isShowSectionKey() && !(this.json.totalRowBySection || [] ).contains("module")){
+				this.totalTr.hide()
+			}
+			if( this.isShowSectionBy() && !(this.json.totalRowBy || [] ).contains("module") ){
+				this.totalTr.hide()
+			}
 
 			var ths = this.titleTr.getElements("th");
 			//datatable$Title Module
@@ -460,7 +511,17 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			var totalData = {};
 			if (!this.totalFlag)return totalData;
 			if (!this.totalTr)this._loadTotalTr();
-			var data = this.getValue();
+			var data;
+			if( this.isShowAllSection ){
+				data = { data : [] };
+				Object.each( this.getBusinessDataById(), function (d) {
+					data.data = data.data.concat( d.data )
+				})
+			}else if( this.isMergeRead ){
+				data = this.data;
+			}else{
+				data = this.getValue();
+			}
 			this.totalColumns.each(function(column, index){
 				var json = column.moduleJson;
 				if(!json)return;
@@ -508,6 +569,108 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			data.total = totalData;
 			return totalData;
 		},
+
+		isShowSectionKey: function(){
+			return this.json.showSectionKey && this.isMergeRead ;
+		},
+		isShowSectionBy: function(){
+			return this.json.showSectionBy && this.isShowAllSection ;
+		},
+		isSectionData: function(){ //数据是否经过区段处理
+			var data = this.getBusinessDataById();
+			if( o2.typeOf( data ) === "object" ){
+				var keys = Object.keys(data);
+				if( o2.typeOf(data[keys[0]]) === "object" && o2.typeOf(data[keys[0]].data) === "array" ){
+					return true;
+				}
+			}
+			return false;
+		},
+		getAllSectionData: function(){
+			var bData = this.getBusinessDataById();
+			var flag = false;
+			if( !bData ){
+				flag = true;
+				bData = {};
+			}
+			if( !bData[this.sectionBy] ){
+				flag = true;
+				this.isNew = true;
+				bData[this.sectionBy] = this.getValue();
+			}
+			if( flag )this.setBusinessDataById( bData );
+			this.dataWithSectionBy = this.getAllSortedSectionData();
+			return flag ? this.getBusinessDataById() : bData;
+		},
+		getAllSortedSectionData: function(){ //获取合并排序后的数据
+			var data = this.getBusinessDataById();
+			var array = [];
+			for( var key in data ){
+				array.push({
+					sectionKey: key,
+					key: key,
+					data: data[key]
+				})
+			}
+			if( this.json.sectionDisplaySortScript && this.json.sectionDisplaySortScript.code){
+				array.sort( function(a, b){
+					this.form.Macro.environment.event = {
+						"a": a,
+						"b": b
+					};
+					var flag = this.form.Macro.exec(this.json.sectionDisplaySortScript.code, this);
+					this.form.Macro.environment.event = null;
+					return flag;
+				}.bind(this))
+			}
+			return array;
+		},
+		setAllSectionData: function(data, fireChange){
+			// if( typeOf( data ) === "object" && typeOf(data.data) === "array"  ){
+			var old;
+			if(fireChange)old = Object.clone(this.getBusinessDataById() || {});
+
+			this.setBusinessDataById(data);
+			this.data = data;
+
+			if (this.data){
+				this.clearSubModules();
+			}
+
+			if (fireChange && JSON.stringify(old) !== JSON.stringify(data)) this.fireEvent("change");
+
+			this.lineList = [];
+			this.sectionlineList = [];
+			this._loadDatatable();
+		},
+		getSectionMergeReadData: function(){
+			switch (this.json.mergeTypeRead) {
+				case "dataScript":
+					if (this.json.sectionMergeReadDataScript && this.json.sectionMergeReadDataScript.code) {
+						return this.form.Macro.exec(this.json.sectionMergeReadDataScript.code, this);
+					}else{
+						return {"data":[]};
+					}
+				default:
+					var sortedData = this.getSortedSectionData();
+					if( this.json.showSectionKey ){
+						this.dataWithSectionKey = sortedData;
+					}
+					var data = [];
+					//把区段值放在每行的数据里
+					sortedData.each(function(d){
+						( d.data.data || [] ).each(function( obj ){
+							if( o2.typeOf(obj) === "object" ){
+								// obj.sectionKey = d.sectionKey;
+								data.push( obj )
+							}
+						});
+						// data = data.concat( d.data.data );
+					});
+					return { "data": data };
+			}
+		},
+
 		_createLineNode: function(){
 			var tr;
 			if( this.totalTr ){
@@ -581,11 +744,25 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			var p = o2.promiseAll(this.data).then(function(v){
 				this.data = v;
 
-				this._loadLineList(function(){
-					this._checkAddAction();
-					this._loadTotal();
-					if(callback)callback();
-				}.bind(this));
+				if( this.isShowAllSection ){
+					this._loadSectionLineList_EditSection(function(){
+						this._checkAddAction();
+						this._loadTotal();
+						if(callback)callback();
+					}.bind(this))
+				}else if( this.isShowSectionKey() ){
+					this._loadSectionLineList(function(){
+						this._checkAddAction();
+						this._loadTotal();
+						if(callback)callback();
+					}.bind(this))
+				}else{
+					this._loadLineList(function(){
+						this._checkAddAction();
+						this._loadTotal();
+						if(callback)callback();
+					}.bind(this));
+				}
 
 				this.moduleValueAG = null;
 				return v;
@@ -599,8 +776,72 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				this.moduleValueAG = null;
 			}.bind(this));
 		},
+		_loadSectionLineList_EditSection: function(callback){
+			this.getAllSectionData();
+			this.dataWithSectionBy.each(function(data, idx){
+				var isEdited = false;
+				if( this.isSectionLineEditable( data ) && this.editable ){
+					isEdited = true;
+				}
+				var isNew = false;
+				var node = this._createLineNode();
+				var sectionLine = this._loadSectionLine_EditSection(node, data, idx, isEdited, isNew );
+				if( this.sectionBy && this.sectionBy === data.sectionKey ){
+					this.sectionLineEdited = sectionLine;
+				}
+				this.sectionlineList.push(sectionLine);
+			}.bind(this))
+			if (callback) callback();
+		},
+		_loadSectionLine_EditSection: function(container, data, index, isEdited, isNew){
+			var sectionLine = new MWF.xApplication.process.Xform.DatatablePC.SectionLine(container, this, data, {
+				index : index,
+				indexText : (index+1).toString(),
+				isNew: isNew,
+				isEdited: typeOf(isEdited) === "boolean" ? isEdited : this.editable,
+				isEditable: this.editable && this.isSectionLineEditable(data),
+				isDeleteable: this.deleteable && this.isSectionLineEditable(data),
+				isAddable: this.addable && this.isSectionLineEditable(data)
+			});
+			// this.fireEvent("beforeLoadLine", [line]);
+			sectionLine.load();
+			// this.fireEvent("afterLoadLine", [line]);
+			return sectionLine;
+		},
+		isSectionLineEditable: function(data){
+			return this.isShowAllSection && this.sectionBy && this.sectionBy === data.sectionKey;
+		},
+
+		_loadSectionLineList: function(callback){
+			this.dataWithSectionKey.each(function(data, idx){
+				var isEdited = false;
+				var isNew = false;
+				var node = this._createLineNode();
+				var sectionLine = this._loadSectionLine(node, data, idx, isEdited, isNew );
+				this.sectionlineList.push(sectionLine);
+			}.bind(this))
+			if (callback) callback();
+		},
+		_loadSectionLine: function(container, data, index, isEdited, isNew){
+			var sectionLine = new MWF.xApplication.process.Xform.DatatablePC.SectionLine(container, this, data, {
+				index : index,
+				indexText : (index+1).toString(),
+				isNew: isNew,
+				isEdited: typeOf(isEdited) === "boolean" ? isEdited : this.editable,
+				isEditable: this.editable,
+				isDeleteable: this.deleteable,
+				isAddable: this.addable,
+				isMergeRead: this.isMergeRead
+			});
+			// this.fireEvent("beforeLoadLine", [line]);
+			sectionLine.load();
+			// this.fireEvent("afterLoadLine", [line]);
+			return sectionLine;
+		},
+
 		_loadLineList: function(callback){
 			this.data.data.each(function(data, idx){
+				if( !data )return;
 				var isNew = this.isNew || (o2.typeOf(this.newLineIndex) === "number" ? idx === this.newLineIndex : false);
 				var isEdited = (!this.multiEditMode && o2.typeOf(this.newLineIndex) === "number") ? idx === this.newLineIndex : this.multiEditMode;
 				var node = this._createLineNode();
@@ -614,14 +855,22 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		isMax : function(){
 			var maxCount = this.json.maxCount ? this.json.maxCount.toInt() : 0;
 			if( this.editable && maxCount > 0 ) {
-				if( this.lineList.length >= maxCount )return true;
+				if( this.isShowAllSection ){
+					if( this.sectionLineEdited && this.sectionLineEdited.lineList.length >= maxCount )return true;
+				}else{
+					if( this.lineList.length >= maxCount )return true;
+				}
 			}
 			return false;
 		},
 		isMin : function(){
 			var minCount = this.json.minCount ? this.json.minCount.toInt() : 0;
 			if( this.editable && minCount > 0 ) {
-				if( this.lineList.length <= minCount )return true;
+				if( this.isShowAllSection ){
+					if( this.sectionLineEdited && this.sectionLineEdited.lineList.length <= minCount )return true;
+				}else {
+					if (this.lineList.length <= minCount) return true;
+				}
 			}
 			return false;
 		},
@@ -633,7 +882,8 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				isEdited: typeOf(isEdited) === "boolean" ? isEdited : this.editable,
 				isEditable: this.editable,
 				isDeleteable: this.deleteable,
-				isAddable: this.addable
+				isAddable: this.addable,
+				isMergeRead: this.isMergeRead
 			});
 			this.fireEvent("beforeLoadLine", [line]);
 			line.load();
@@ -641,10 +891,19 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			return line;
 		},
 		_setLineData: function(line, d){
-			var index = line.options.index;
-			var data = this.getData();
-			data.data[index] = d;
-			this.setData( data );
+			if( line.sectionLine ){
+				var data = this.getBusinessDataById();
+				var sdata = data[ line.sectionLine.sectionKey ];
+				if( sdata && sdata.data ){
+					sdata.data[line.options.indexInSectionLine] = d;
+					this.setAllSectionData( data );
+				}
+			}else{
+				var index = line.options.index;
+				var data = this.getData();
+				data.data[index] = d;
+				this.setData( data );
+			}
 		},
 		_addLine: function(ev, edited, d){
 			if( !this._completeLineEdit(ev, true) )return;
@@ -653,16 +912,36 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				this.form.notice(text,"info");
 				return false;
 			}
-			var index = this.lineList.length;
-			var data = this.getData();
+
+			var data, index, line;
+			if( this.isShowAllSection ){
+				data = this.getBusinessDataById();
+				var sdata = data[ this.sectionBy ];
+				if( !sdata ){
+					sdata = data[ this.sectionBy ] = { data: [] };
+				}
+				index = sdata.data.length;
+
+				// if( d && !d.sectionKey )d.sectionKey = this.sectionBy;
+				// sectionKey: this.sectionBy
+				sdata.data.push(d||{});
+				this.newLineIndex = index;
+
+				this.setAllSectionData( data );
+				line = this.sectionLineEdited.lineList[index];
+				line.isNewAdd = true;
+			}else{
+				index = this.lineList.length;
+				data = this.getData();
 
 				data.data.push(d||{});
 				this.newLineIndex = index;
 
+				this.setData( data );
+				line = this.getLine(index);
+				line.isNewAdd = true;
+			}
 
-			this.setData( data );
-			var line = this.getLine(index);
-			line.isNewAdd = true;
 
 			this.validationMode();
 			this.fireEvent("addLine", [{"line":line, "ev":ev}]);
@@ -678,15 +957,33 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				this.form.notice(text,"info");
 				return false;
 			}
-			//使用数据驱动
-			var index = beforeLine.options.index+1;
 
-			var data = this.getData();
-			data.data.splice(index, 0, {});
-			this.newLineIndex = index;
-			this.setData( data );
-			var line = this.getLine(index);
-			line.isNewAdd = true;
+			//使用数据驱动
+			var data, index, line;
+			if( this.isShowAllSection ){
+				index = beforeLine.options.indexInSectionLine + 1;
+
+				data = this.getBusinessDataById();
+				var sdata = data[ this.sectionBy ];
+				if( !sdata ){
+					sdata = data[ this.sectionBy ] = { data: [] };
+				}
+				sdata.data.splice(index, 0, {});
+				this.newLineIndex = index;
+
+				this.setAllSectionData( data );
+				line = this.sectionLineEdited.lineList[index];
+				line.isNewAdd = true;
+			}else {
+				index = beforeLine.options.index + 1;
+
+				data = this.getData();
+				data.data.splice(index, 0, {});
+				this.newLineIndex = index;
+				this.setData(data);
+				line = this.getLine(index);
+				line.isNewAdd = true;
+			}
 
 			this.validationMode();
 			this.fireEvent("addLine",[{"line":line, "ev":ev}]);
@@ -700,13 +997,30 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				this.form.notice(text,"info");
 				return false;
 			}
-			//使用数据驱动
-			var data = this.getData();
-			if(data.data.length < index )return null;
-			data.data.splice(index, 0, d||{});
-			this.setData( data );
-			var line = this.getLine(index);
-			line.isNewAdd = true;
+
+			var data, line;
+			if( this.isShowAllSection ){
+				data = this.getBusinessDataById();
+				var sdata = data[ this.sectionBy ];
+				if( !sdata ){
+					sdata = data[ this.sectionBy ] = { data: [] };
+				}
+				if (sdata.data.length < index) return null;
+				sdata.data.splice(index, 0, d || {});
+				this.newLineIndex = index;
+
+				this.setAllSectionData( data );
+				line = this.sectionLineEdited.lineList[index];
+				line.isNewAdd = true;
+			}else {
+				//使用数据驱动
+				data = this.getData();
+				if (data.data.length < index) return null;
+				data.data.splice(index, 0, d || {});
+				this.setData(data);
+				line = this.getLine(index);
+				line.isNewAdd = true;
+			}
 
 			this.validationMode();
 			this.fireEvent("addLine",[{"line":line, "ev":ev}]);
@@ -743,21 +1057,37 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			var _self = this;
 			var saveFlag = false;
 
-			var data = _self.getData();
+			var data;
+			if( this.isShowAllSection ){
+				data = this.getBusinessDataById();
+			}else{
+				data = _self.getData();
+			}
 
 			lines.reverse().each(function(line){
 				_self.fireEvent("deleteLine", [line]);
 
 				if(line.deleteAttachment())saveFlag = true;
 
-				data.data.splice(line.options.index, 1);
-
-				if(this.currentEditedLine === line)this.currentEditedLine = null;
+				if( line.sectionLine ){
+					var d = data[ line.sectionLine.sectionKey ];
+					if( d && d.data ){
+						d.data.splice(line.options.indexInSectionLine, 1);
+						if(this.currentEditedLine === line)this.currentEditedLine = null;
+					}
+				}else {
+					data.data.splice(line.options.index, 1);
+					if (this.currentEditedLine === line) this.currentEditedLine = null;
+				}
 
 				_self.fireEvent("afterDeleteLine");
 			});
 
-			_self.setData( data );
+			if( this.isShowAllSection ){
+				_self.setAllSectionData(data);
+			}else{
+				_self.setData( data );
+			}
 			this.validationMode();
 
 			_self.fireEvent("change", [{"lines":lines, "type":"deletelines"}]);
@@ -781,16 +1111,24 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		_delLine: function(line){
 			this.fireEvent("deleteLine", [line]);
 
-			debugger;
-
 			var saveFlag = line.deleteAttachment();
 			//使用数据驱动
-			var data = this.getData();
+			var data;
+			if( line.sectionLine ){
+				var data = this.getBusinessDataById();
+				var d = data[ line.sectionLine.sectionKey ];
+				if( d && d.data ){
+					d.data.splice(line.options.indexInSectionLine, 1);
+				}
+				if(this.currentEditedLine === line)this.currentEditedLine = null;
+				this.setAllSectionData( data );
+			}else{
+				data = this.getData();
+				data.data.splice(line.options.index, 1);
 
-			data.data.splice(line.options.index, 1);
-
-			if(this.currentEditedLine === line)this.currentEditedLine = null;
-			this.setData( data );
+				if(this.currentEditedLine === line)this.currentEditedLine = null;
+				this.setData( data );
+			}
 
 			this.validationMode();
 			this.fireEvent("afterDeleteLine");
@@ -813,6 +1151,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				line.resetDataWithOriginalData();
 				line.changeEditMode(false);
 				this._loadTotal();
+				if( line.sectionLine )line.sectionLine._loadTotal();
 				if(line.attachmentChangeFlag){
 					this.form.saveFormData();
 					line.attachmentChangeFlag = false;
@@ -840,6 +1179,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			line.originalData = Object.clone(line.data);
 			line.changeEditMode(false);
 			this._loadTotal();
+			if( line.sectionLine )line.sectionLine._loadTotal();
 			if(line.attachmentChangeFlag){
 				this.form.saveFormData();
 				line.attachmentChangeFlag = false;
@@ -854,14 +1194,31 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		},
 		_moveUpLine: function(ev, line){
 			if( this.currentEditedLine && !this._completeLineEdit(null, true) )return false;
-			if( line.options.index === 0 )return;
 
-			var data = this.getData();
-			var upData = data.data[line.options.index-1];
-			var curData = data.data[line.options.index];
-			data.data[line.options.index] = upData;
-			data.data[line.options.index-1] = curData;
-			this.setData( data );
+			var data, upData, curData;
+			if( this.isShowAllSection ){
+				if (line.options.indexInSectionLine === 0) return;
+
+				data = this.getBusinessDataById();
+				var sdata = data[ this.sectionBy ];
+				if( !sdata )return;
+
+				upData = sdata.data[line.options.indexInSectionLine - 1];
+				curData = sdata.data[line.options.indexInSectionLine];
+				sdata.data[line.options.indexInSectionLine] = upData;
+				sdata.data[line.options.indexInSectionLine - 1] = curData;
+
+				this.setAllSectionData( data );
+			}else {
+				if (line.options.index === 0) return;
+
+				data = this.getData();
+				upData = data.data[line.options.index - 1];
+				curData = data.data[line.options.index];
+				data.data[line.options.index] = upData;
+				data.data[line.options.index - 1] = curData;
+				this.setData(data);
+			}
 			this.fireEvent("change", [{lines: this.lineList, "type":"move"}]);
 		},
 		_changeEditedLine: function(line){
@@ -983,11 +1340,18 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			if (fireChange && JSON.stringify(old) !== JSON.stringify(data)) this.fireEvent("change");
 
 			this.lineList = [];
+			this.sectionlineList = [];
 			this._loadDatatable();
 		},
 		clearSubModules: function(){
-			for (var i=0; i<this.lineList.length; i++){
-				this.lineList[i].clearSubModules();
+			if( this.sectionlineList && this.sectionlineList.length ){
+				for( var i=0; i<this.sectionlineList.length; i++ ){
+					this.sectionlineList[i].clearSubModules();
+				}
+			}else{
+				for (var i=0; i<this.lineList.length; i++){
+					this.lineList[i].clearSubModules();
+				}
 			}
 		},
 		/**
@@ -1157,7 +1521,8 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				return this._getBusinessData();
 			}
 		},
-		_getSectionKey: function(){
+		//区段依据
+		_getSectionBy: function(){
 			if (this.json.section!=="yes"){
 				return "";
 			}else {
@@ -1458,6 +1823,233 @@ MWF.xApplication.process.Xform.DatatablePC$Data =  new Class({
 	}
 });
 
+MWF.xApplication.process.Xform.DatatablePC.SectionLine =  new Class({
+	Implements: [Options, Events],
+	options: {
+		isNew: false,
+		isEdited: true, //是否正在编辑
+		isEditable: true, //能否被编辑
+		isDeleteable: true, //能否被删除
+		isAddable: true, //能否添加
+		isMergeRead: false, //合并阅读
+		index: 0,
+		indexText: "0"
+	},
+	initialize: function (node, datatable, data, options) {
+		this.setOptions(options);
+		this.sectionKeyNode = node;
+		this.datatable = datatable;
+		this.data = data;
+		this.form = this.datatable.form;
+		this.lineList = [];
+		this.totalColumns = [];
+		this.totalNumberModuleIds = [];
+		this.sectionKey = this.data.sectionKey;
+	},
+	load: function () {
+		if( this.datatable.isShowSectionKey() || this.datatable.isShowSectionBy() ){
+			this.loadSectionKeyNode();
+		}else{
+			this.sectionKeyNode.hide();
+		}
+		this._loadTotalTr();
+
+		if( this.data.data &&  this.data.data.data ){
+			( this.data.data.data || [] ).each(function(d, idx){
+				if( !d )return;
+				var node = this._createLineNode();
+				var isEdited = false, isNew = false;
+				if( this.options.isEdited ){
+					var dt = this.datatable;
+					isNew = dt.isNew || (o2.typeOf(dt.newLineIndex) === "number" ? idx === dt.newLineIndex : false);
+					isEdited = (!dt.multiEditMode && o2.typeOf(dt.newLineIndex) === "number") ? idx === dt.newLineIndex : dt.multiEditMode;
+					dt.isNew = false;
+					dt.newLineIndex = null;
+				}
+				var line = this._loadLine( node, d, idx, isEdited, isNew );
+				this.lineList.push(line);
+				this.datatable.lineList.push(line);
+			}.bind(this));
+			this._loadTotal();
+		}
+	},
+	_loadLine: function(container, data, index, isEdited, isNew){
+		var line = new MWF.xApplication.process.Xform.DatatablePC.Line(container, this.datatable, data, {
+			indexInSectionLine : index,
+			indexInSectionLineText : (index+1).toString(),
+			index: this.datatable.lineList.length,
+			indexText : (this.datatable.lineList.length + 1).toString(),
+			isNew: isNew,
+			isEdited: typeOf(isEdited) === "boolean" ? isEdited : this.options.isEdited,
+			isEditable: this.options.isEditable,
+			isDeleteable: this.options.isDeleteable,
+			isAddable: this.options.isAddable,
+			isMergeRead: this.options.isMergeRead,
+			sectionKey: this.sectionKey
+		}, this);
+		this.datatable.fireEvent("beforeLoadLine", [line]);
+		line.load();
+		this.datatable.fireEvent("afterLoadLine", [line]);
+		return line;
+	},
+	_createLineNode: function(){
+		var tr;
+		if( this.totalTr ){
+			tr = new Element("tr").inject(this.totalTr, "before");
+		}else{
+			tr = this.datatable._createLineNode();
+			// tr = new Element("tr").inject(this.tBody || this.table);
+		}
+		return tr;
+	},
+	loadSectionKeyNode: function () {
+		var sectionKeyStyles = this.datatable._parseStyles(this.datatable.json.sectionKeyStyles);
+		var keyNode = new Element("td.mwf_sectionkey", {
+			colspan: this.datatable.columnCount,
+			styles : sectionKeyStyles
+		}).inject( this.sectionKeyNode );
+		this.keyNode = keyNode;
+		var separator;
+		if( this.datatable.isShowSectionKey() ){
+			separator = this.datatable.json.keyContentSeparator;
+		}else{
+			separator = this.datatable.json.keyContentSeparatorSectionBy;
+		}
+		this.datatable.getSectionKeyWithMerge( this.data, function (key) {
+			if( o2.typeOf(key) === "string" ){
+				keyNode.set("text", key + (separator || ""));
+			}else{
+				Promise.resolve(key).then(function (k) {
+					keyNode.set("text", k + (separator || ""));
+				}.bind(this))
+			}
+		}.bind(this));
+	},
+	clearSubModules: function(){
+		if( this.keyNode ){
+			this.keyNode.destroy();
+			this.keyNode = null;
+		}
+		for (var i=0; i<this.lineList.length; i++){
+			this.lineList[i].clearSubModules();
+		}
+		if( this.totalTr ){
+			this.totalTr.destroy();
+			this.totalTr = null;
+		}
+	},
+	isTotalTrShow: function(){
+		var dt = this.datatable;
+		if( dt.isShowSectionKey() && ( dt.json.totalRowBySection || [] ).contains("section") )return true;
+		if( dt.isShowSectionBy() && ( dt.json.totalRowBy || [] ).contains("section") )return true;
+		return false;
+	},
+	_loadTotalTr: function(){
+		if( !this.datatable.totalFlag )return false;
+		this.totalTr = new Element("tr.mwf_totaltr", {"styles": this.form.css.datagridTotalTr_section}).inject(this.sectionKeyNode, "after");
+		if( !this.isTotalTrShow() )this.totalTr.hide();
+		var ths = this.datatable.titleTr.getElements("th");
+		//datatable$Title Module
+		ths.each(function(th, index){
+			var td = new Element("td", {"text": "", "styles": this.form.css.datagridTotalTd}).inject(this.totalTr);
+			if (this.datatable.json.sectionAmountStyles) td.setStyles(this.datatable.json.sectionAmountStyles);
+
+			var json = this.form._getDomjson(th);
+			if (json){
+				if( json.isShow === false ){
+					td.hide(); //隐藏列
+				}else if( this.reloading && json.isShow === true){
+					td.setStyle("display", "");
+				}
+				if ((json.total === "number") || (json.total === "count")){
+					this.totalColumns.push({
+						"th" : th,
+						"td" : td,
+						"index": index,
+						"type": json.total
+					})
+				}
+			}
+		}.bind(this));
+
+		var tds = this.datatable.templateTr.getElements("td");
+		//datatable$Data Module
+		tds.each(function(td, index){
+			var json = this.form._getDomjson(td);
+			if (json){
+				//总计列
+				var tColumn = this.totalColumns.find(function(a){ return  a.index === index });
+				if(tColumn){
+					var moduleNodes = this.form._getModuleNodes(td); //获取总计列内的填写组件
+					if( moduleNodes.length > 0 ){
+						tColumn.moduleJson = this.form._getDomjson(moduleNodes[0]);
+						if(tColumn.type === "number")this.totalNumberModuleIds.push( tColumn.moduleJson.id );
+					}
+				}
+			}
+		}.bind(this));
+	},
+	_loadTotal: function(){
+		var totalData = {};
+		if( !this.datatable.totalFlag )return totalData;
+		if (!this.totalTr)this._loadTotalTr();
+		var data;
+		if( this.datatable.isShowAllSection ){
+			Object.each( this.datatable.getBusinessDataById(), function (d, k) {
+				if( this.sectionKey === k )data = d
+			}.bind(this))
+		}else{
+			data = this.data.data;
+		}
+		this.totalColumns.each(function(column, index){
+			var json = column.moduleJson;
+			if(!json)return;
+
+			var pointLength = 0; //小数点后的最大数位
+			var tmpV;
+			if (column.type === "count"){
+				tmpV = data.data.length;
+			}else if(column.type === "number"){
+				tmpV = new Decimal(0);
+				for (var i=0; i<data.data.length; i++){
+					var d = data.data[i];
+					if(d[json.id]){
+						tmpV = tmpV.plus(d[json.id].toFloat() || 0);
+						var v = d[json.id].toString();
+						if( v.indexOf(".") > -1 ){
+							pointLength = Math.max(pointLength, v.split(".")[1].length);
+						}
+					}
+				}
+			}
+
+			if( isNaN( tmpV ) ){
+				totalData[json.id] = "";
+				column.td.set("text", "" );
+			}else{
+				if( pointLength > 0 && tmpV.toString() !== "0" ){
+					var s = tmpV.toString();
+					if( s.indexOf(".") > -1 ){
+						var length = s.split(".")[1].length;
+						if( length < pointLength ){
+							totalData[json.id] = s + "0".repeat(pointLength-length);
+						}else{
+							totalData[json.id] = s;
+						}
+					}else{
+						totalData[json.id] = s +"."+ "0".repeat(pointLength)
+					}
+				}else{
+					totalData[json.id] = tmpV.toString();
+				}
+				column.td.set("text", totalData[json.id] );
+			}
+		}.bind(this));
+		data.total = totalData;
+		return totalData;
+	}
+});
+
 MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 	Implements: [Options, Events],
 	options: {
@@ -1466,10 +2058,14 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 		isEditable : true, //能否被编辑
 		isDeleteable: true, //能否被删除
 		isAddable: true, //能否添加
+		isMergeRead: false, //合并阅读
 		index : 0,
-		indexText : "0"
+		indexText : "0",
+		indexInSectionLine: 0,
+		indexInSectionLineText : "0",
+		sectionKey: ""
 	},
-	initialize: function (node, datatable, data, options) {
+	initialize: function (node, datatable, data, options, sectionLine) {
 
 		this.setOptions(options);
 
@@ -1477,6 +2073,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 		this.datatable = datatable;
 		this.data = data;
 		this.form = this.datatable.form;
+		this.sectionLine = sectionLine;
 
 		// if( !this.datatable.multiEditMode && !this.options.isNew){
 		// 	this.originalData = Object.clone(data);
@@ -1519,8 +2116,8 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 		this.node.set("html", this.datatable.templateHtml);
 		var moduleNodes = this.form._getModuleNodes(this.node, true);
 
-		//拆分状态
-		var sectionKey = this.datatable._getSectionKey();
+		//合并状态或拆分状态
+		var sectionKey = this.options.sectionKey || this.datatable._getSectionBy();
 		moduleNodes.each(function (node) {
 			var mwfType = node.get("MWFtype");
 			if (mwfType === "form")return;
@@ -1538,7 +2135,9 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 				var index = this.options.index;
 
 				var id;
-				if( sectionKey ){
+				if( this.datatable.isShowAllSection ){
+					id = this.datatable.json.id + ".." + sectionKey + "..data.." + this.options.indexInSectionLine + ".." + json.id;
+				}else if( sectionKey ){
 					id = this.datatable.json.id + ".." + sectionKey + "..data.." + index + ".." + json.id;
 				}else{
 				    id = this.datatable.json.id + "..data.." + index + ".." + json.id;
@@ -1559,6 +2158,13 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 				var hasData = this.data.hasOwnProperty(templateJsonId);
 
 				var module = this.form._loadModule(json, node, function () {
+					if( _self.options.isMergeRead ){
+						this.field = false; //不希望保存数据
+						this._getBusinessData = function(){
+							return _self.data[templateJsonId];
+						};
+						this._setBusinessData = function () {};
+					}
 					if( _self.widget )this.widget = _self.widget;
 					this.parentLine = _self;
 					this.parentDatatable = _self.datatable;
@@ -1597,7 +2203,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 					this.allField_templateId[templateJsonId] = module;
 					this.fields.push( module );
 
-					if( this.datatable.multiEditMode ){
+					if( this.options.isEdited && this.datatable.multiEditMode ){
 						module.addEvent("change", function(){
 							this.datatable.fireEvent("change", [{lines: [this], type: "editmodule", module: module}]);
 						}.bind(this))
@@ -1607,6 +2213,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 						//module
 						module.addEvent("change", function(){
 							this.datatable._loadTotal();
+							if( this.sectionLine )this.sectionLine._loadTotal();
 						}.bind(this))
 					}
 				}
@@ -1671,7 +2278,23 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 	},
 	loadSequence: function(){
 		var sequenceTd = this.node.getElements(".mwf_sequence");
-		if(sequenceTd)sequenceTd.set("text", this.options.indexText)
+		if(sequenceTd){
+			if( this.datatable.isShowSectionKey() ) {
+				if (this.datatable.json.sequenceBySection === "section") {
+					sequenceTd.set("text", this.options.indexInSectionLineText);
+				} else {
+					sequenceTd.set("text", this.options.indexText)
+				}
+			}else if( this.datatable.isShowSectionBy() ){
+				if( this.datatable.json.sequenceBy === "section" ){
+					sequenceTd.set("text", this.options.indexInSectionLineText );
+				}else {
+					sequenceTd.set("text", this.options.indexText)
+				}
+			}else{
+				sequenceTd.set("text", this.options.indexText)
+			}
+		}
 	},
 	loadZebraStyle: function(){
 		if ((this.options.index%2)===0 && this.datatable.json.zebraColor){
@@ -2670,7 +3293,7 @@ MWF.xApplication.process.Xform.DatatablePC.Importer = new Class({
 						}
 					}
 					if(!hasError){
-						module.setData(parsedD);
+						module.setData(parsedD); 
 						module.validationMode();
 						if (!module.validation() && module.errNode){
 							errorTextList.push(colInfor + module.errNode.get("text"));

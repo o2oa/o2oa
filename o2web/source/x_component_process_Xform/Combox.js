@@ -55,6 +55,23 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
         });
         //new Element("select").inject(this.node);
     },
+    _loadMergeReadContentNode: function( contentNode, data ){
+	    this.mergeRead = true;
+        contentNode.setStyles({ "overflow": "hidden"});
+        data.data.each(function(v, i){
+            var text = "";
+            if (typeOf(v)==="object"){
+                text = v.text || v.title || v.subject  || v.name;
+            }else{
+                text = v.toString();
+            }
+            if (i<data.data.length-1) text += this.json.splitShow;
+            new Element("div", {"styles": {
+                    "float": "left",
+                    "margin-right": "5px"
+                },"text": text}).inject( contentNode ); //.inject(this.node.getFirst() || this.node);
+        }.bind(this));
+    },
     _loadNodeEdit: function(){
         this.node.empty();
 
@@ -98,6 +115,23 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
             }
         }.bind(this));
 
+    },
+    _loadStyles: function(){
+        if (this.json.styles) this.node.setStyles(this.json.styles);
+        if (this.json.inputStyles && !this.mergeRead) if (this.node.getFirst()) this.node.getFirst().setStyles(this.json.inputStyles);
+        if (this.iconNode && this.iconNode.offsetParent !== null){
+            var size = this.node.getSize();
+            //if (!size.y){
+            //    var y1 = this.node.getStyle("height");
+            //    var y2 = this.node.getFirst().getStyle("height");
+            //    alert(y1+"," +y2);
+            //    var y = ((y1!="auto" && y1>y2) || y2=="auto") ? y1 : y2;
+            //    size.y = (y=="auto") ? "auto" : y.toInt();
+            //    //alert(size.y)
+            //}
+            this.iconNode.setStyle("height", ""+size.y+"px");
+            //alert(this.iconNode.getStyle("height"))
+        }
     },
     _searchOptions: function(){
         if (this.json.itemType === "dynamic"){

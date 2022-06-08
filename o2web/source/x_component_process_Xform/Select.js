@@ -45,33 +45,39 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
             this._loadNodeEdit();
         }
     },
+	_loadMergeReadContentNode: function( contentNode, data ){
+		this._showValue(contentNode, data.data);
+	},
     _loadNodeRead: function(){
         this.node.empty();
 		this.node.set({
 			"nodeId": this.json.id,
 			"MWFType": this.json.type
 		});
-        var optionItems = this.getOptions();
         var value = this.getValue();
-        if (value){
-            if (typeOf(value)!=="array") value = [value];
-            var texts = [];
-            optionItems.each(function(item){
-                var tmps = item.split("|");
-                var t = tmps[0];
-                var v = tmps[1] || t;
-
-                if (v){
-
-                    if (value.indexOf(v)!=-1){
-                        texts.push(t);
-                    }
-                }
-
-            });
-            this.node.set("text", texts.join(", "));
-        }
+        this._showValue( this.node, value );
     },
+	_showValue: function(node, value){
+		var optionItems = this.getOptions();
+		if (value){
+			if (typeOf(value)!=="array") value = [value];
+			var texts = [];
+			optionItems.each(function(item){
+				var tmps = item.split("|");
+				var t = tmps[0];
+				var v = tmps[1] || t;
+
+				if (v){
+
+					if (value.indexOf(v)!=-1){
+						texts.push(t);
+					}
+				}
+
+			});
+			node.set("text", texts.join(", "));
+		}
+	},
 	_loadDomEvents: function(){
 		Object.each(this.json.events, function(e, key){
 			if (e.code){

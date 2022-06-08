@@ -23,11 +23,19 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
         this.fieldModuleLoaded = false;
     },
 	_loadUserInterface: function(){
-		this._loadNode();
-        if (this.json.compute === "show"){
-            this._setValue(this._computeValue());
+        if ( this.isSectionMergeRead() ) { //区段合并显示
+            this._loadMergeReadNode();
         }else{
-            this._loadValue();
+            if( this.isSectionMergeEdit() ){
+                this._loadMergeEditNode();
+            }else{
+                this._loadNode();
+            }
+            if (this.json.compute === "show"){
+                this._setValue(this._computeValue());
+            }else{
+                this._loadValue();
+            }
         }
 	},
     _loadDomEvents: function(){
@@ -67,9 +75,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
             }.bind(this));
         }
     },
-
     _loadNode: function(){
-        debugger
         if (this.isReadonly()){
             this._loadNodeRead();
         }else{

@@ -1345,7 +1345,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 }
             }
         }.bind(this));
-
+        this.fireEvent("getData", [data]);
         this.businessData.data = data;
         this.Macro.environment.setData(this.businessData.data);
         return data;

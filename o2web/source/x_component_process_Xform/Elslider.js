@@ -47,6 +47,9 @@ MWF.xApplication.process.Xform.Elslider = MWF.APPElslider =  new Class(
     //     if (this.isReadonly()) this.json.disabled = true;
     //     this._loadNodeEdit();
     // },
+    _loadMergeReadContentNode: function( contentNode, data ){
+        contentNode.set("text", data.data);
+    },
     _appendVueData: function(){
         this.form.Macro.environment.data.check(this.json.id);
         this.json[this.json.id] = this._getBusinessData();

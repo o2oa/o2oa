@@ -237,8 +237,14 @@
 			<tr>
 				<td class="editTableTitle">{{$.lp.enableSection}}:</td>
 				<td class="editTableValue">
-					<input onclick="if (this.checked){ $('text{$.pid}sectionByEditArea').setStyle('display', 'block')}" type="radio" name="section" value="yes" text{($.section=='yes')?'checked':''}/>{{$.lp.yes}}
-					<input onclick="if (this.checked){ $('text{$.pid}sectionByEditArea').setStyle('display', 'none')}" type="radio" name="section" value="no" text{($.section!='yes')?'checked':''}/>{{$.lp.no}}
+					<input onclick="if (this.checked){
+						$('text{$.pid}sectionByEditArea').setStyle('display', 'block');
+                        $('text{$.pid}sectionMergeArea').setStyle('display', 'none')
+					}" type="radio" name="section" value="yes" text{($.section=='yes')?'checked':''}/>{{$.lp.yes}}
+					<input onclick="if (this.checked){
+						$('text{$.pid}sectionByEditArea').setStyle('display', 'none');
+                        $('text{$.pid}sectionMergeArea').setStyle('display', 'block')
+					}" type="radio" name="section" value="no" text{($.section!='yes')?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
 		</table>
@@ -260,6 +266,8 @@
 				<div class="MWFScriptArea" name="sectionByScript" title="{{$.lp.sectionBy}} (S)"></div>
 			</div>
 		</div>
+
+		<div id="text{$.pid}sectionMergeArea" class="MWFSectionMergeArea" style="display: text{($.section=='yes')?'none':''};"></div>
 	</div>
 	<div title="{{$.lp.event}}"  class="MWFTab">
 		<div class="MWFEventsArea" name="events"></div>

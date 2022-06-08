@@ -26,14 +26,29 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
             this._loadNodeEdit();
         }
     },
+    _loadMergeReadContentNode: function( contentNode, data ){
+        this._showValue(contentNode, data.data)
+    },
+    _loadMergeEditNodeByDefault: function(){
+        var data = this.getSortedSectionData();
+        var businessData = [];
+        data.each(function(d){
+            businessData = businessData.concat( d.data || [] );
+        });
+        this._setBusinessData( businessData );
+        this._loadNode();
+    },
     _loadNodeRead: function(){
         this.node.empty();
         this.node.set({
             "nodeId": this.json.id,
             "MWFType": this.json.type
         });
-        var radioValues = this.getOptions();
         var value = this.getValue();
+        this._showValue(this.node, value)
+    },
+    _showValue: function(node, value){
+        var radioValues = this.getOptions();
         if (value){
             var texts = [];
             radioValues.each(function(item){
@@ -48,16 +63,16 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
             if( !this.isNumber(this.json.countPerline) ) {
                 if( this.json.newline ){
                     texts.each(function(t){
-                        new Element("div", { "text": t }).inject(this.node)
+                        new Element("div", { "text": t }).inject(node)
                     }.bind(this))
                 }else{
-                    this.node.set("text", texts.join(", "));
+                    node.set("text", texts.join(", "));
                 }
             }else{
                 var div;
                 var countPerLine = this.json.countPerline.toInt();
                 if( countPerLine === 0 ){
-                    div = new Element("div").inject( this.node );
+                    div = new Element("div").inject( node );
                     div.set("text", texts.join(", "));
                 }else{
                     var textsPerLine = [];
@@ -65,7 +80,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
                         if( i % countPerLine === 0){ //如果需要换行了
                             if( div && textsPerLine.length )div.set("text", textsPerLine.join(",") +",");
                             textsPerLine = [];
-                            div = new Element("div").inject( this.node );
+                            div = new Element("div").inject( node );
                         }
                         textsPerLine.push( t );
                     }.bind(this));

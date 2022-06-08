@@ -351,6 +351,16 @@
       "border-right": "1px solid #fd1113",
       "border-bottom": "1px solid #fd1113"
     },
+    "sectionAmountStyles": {
+      "border-top": "1px solid #ccc",
+      "font-weight": "bold",
+      "height": "30px",
+      "line-height": "30px",
+      "text-align": "center",
+      "background-color": "#fafafa",
+      "border-right": "1px solid #fd1113",
+      "border-bottom": "1px solid #fd1113"
+    },
     "itemTitleStyles": {
       "height": "40px",
       "background-color": "#ffffff",

@@ -208,6 +208,18 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
 
         }
     },
+    _loadMergeReadContentNode: function(contentNode, data){
+        this.loadOrgWidget(data.data, contentNode);
+    },
+    _loadMergeEditNodeByDefault: function(){
+        var data = this.getSortedSectionData();
+        var businessData = [];
+        data.each(function(d){
+            businessData = businessData.concat( d.data || [] );
+        });
+        this._setBusinessData( businessData );
+        this._loadNode();
+    },
     _getOrgOptions: function(){
         this.selectTypeList = typeOf( this.json.selectType ) == "array" ? this.json.selectType : [this.json.selectType];
         if( this.selectTypeList.contains( "identity" ) ) {

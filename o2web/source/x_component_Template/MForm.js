@@ -41,8 +41,12 @@ var MForm = new Class({
         this.setOptions(options);
 
         this.path = "../x_component_Template/$MForm/";
-        this.cssPath = "../x_component_Template/$MForm/"+this.options.style+"/css.wcss";
-        this._loadCss();
+        if( this.options.style ) {
+            this.cssPath = "../x_component_Template/$MForm/" + this.options.style + "/css.wcss";
+            this._loadCss();
+        }else{
+            this.css = {};
+        }
         if( css ){
             this.css = Object.merge( this.css, css )
         }
