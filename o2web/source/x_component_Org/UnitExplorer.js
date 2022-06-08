@@ -36,7 +36,7 @@ MWF.xApplication.Org.UnitExplorer = new Class({
                         this.loadListContent(json.data);
                     }else{
                         if (!this.elements.length){
-                            this.setNoGroupNoticeArea();
+                            this.setNoElementNoticeArea();
                         }
                     }
                     this.loadElementQueue = 0;

@@ -2915,8 +2915,16 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * </code></pre>
          * @param {Function} callback - 访问成功后的回调函数
          * @param {Boolean} [async] - 同步或异步调用。true：异步；false：同步。默认为true。
+         * @return {Promise} 返回Promise
          * @o2syntax
+         * //通过回调方法获取数据
          * this.view.lookup(view, callback, async);
+         *
+         * //返回Promise对象后处理
+         * var promise = this.view.lookup( name );
+         * promise.then(function(data){
+         *     //data 为返回的数据。
+         * })
          * @example
          * //获取“财务管理”应用中“报销审批数据”视图中的数据
          * //过滤条件为标题（$work.title）包含包含（like））“7月”。
@@ -2937,6 +2945,26 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *   var groupGrid = data.groupGrid; //如果有分类，得到带分类的数据
          *   //......
          *});
+         * @example
+         * //同上，通过返回值获取数据
+         * var promise = this.view.lookup({
+         *   "view": "报销审批数据",
+         *   "application": "财务管理",
+         *   "filter": [
+         *       {
+         *           "logic":"and",
+         *           "path":"$work.title",
+         *           "comparison":"like",
+         *           "value":"7月",
+         *           "formatType":"textValue"
+         *       }
+         *   ]
+         *});
+         * promise.then(function(data){
+         *   var grid = data.grid; //得到过滤后的数据
+         *   var groupGrid = data.groupGrid; //如果有分类，得到带分类的数据
+         *   //......
+         *})
          * @example
          * //获取“财务管理”应用中“报销审批数据”视图中的数据
          * //过滤条件为标题（$work.title）包含包含（like））“7月”，并且总金额大于500小于5000
@@ -2968,12 +2996,13 @@ MWF.xScript.ViewEnvironment = function (ev) {
          */
         "lookup": function (view, callback, async) {
             var filterList = { "filterList": (view.filter || null) };
-            MWF.Actions.load("x_query_assemble_surface").ViewAction.executeWithQuery(view.view, view.application, filterList, function (json) {
+            return MWF.Actions.load("x_query_assemble_surface").ViewAction.executeWithQuery(view.view, view.application, filterList, function (json) {
                 var data = {
                     "grid": json.data.grid || json.data.groupGrid,
                     "groupGrid": json.data.groupGrid
                 };
                 if (callback) callback(data);
+                return data;
             }, null, async);
         },
 
@@ -3167,8 +3196,15 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * </code></pre>
          * @param {Function} callback - 访问成功后的回调函数
          * @param {Boolean} [async] - 同步或异步调用。true：异步；false：同步。默认为true。
+         * @return {Promise} 返回Promise
          * @o2syntax
          * this.statement.execute(statement, callback, async);
+         *
+         * //返回Promise对象后处理
+         * var promise = this.statement.execute( statement );
+         * promise.then(function(data){
+         *     //data 为返回的数据。
+         * })
          * @example
          * //获取“task”查询中的数据
          * //查询语句为 select o from Task o where (o.person = :person) and (o.startTime > :startTime) and (o.applicationName like :applicationName) and (o.processName = :processName)
@@ -3196,6 +3232,31 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *  var list = json.data; //查询语句后返回的数组
          *   //......
          * });
+         * @example
+         * //同上，使用返回值接收参数
+         * var promise = this.statement.execute({
+         *  "name": "task",
+         *  "mode" : "all",
+         *  "filter": [
+         *      {
+         *      "path":"o.title",
+         *      "comparison":"like",
+         *      "value":"7月",
+         *      "formatType":"textValue"
+         *      }
+         * ],
+         * "parameter" : {
+         *     "person" : "", //参数名称为下列值时，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组)
+         *     "startTime" : (new Date("2020-01-01")), //如果对比的是日期，需要传入 Date 类型
+         *     "applicationName" : "%test%", //如果运算符用的是 like, noLike，模糊查询
+         *     "processName" : "test流程" //其他写确定的值
+         *   }
+         * });
+         * promise.then(function(json){
+         *  var count = json.count; //总数语句执行后返回的数字
+         *  var list = json.data; //查询语句后返回的数组
+         *   //......
+         * })
          */
         "execute": function (statement, callback, async) {
             var parameter = this.parseParameter(statement.parameter);
@@ -3204,10 +3265,11 @@ MWF.xScript.ViewEnvironment = function (ev) {
                 "filterList": filterList,
                 "parameter" : parameter
             };
-            MWF.Actions.load("x_query_assemble_surface").StatementAction.executeV2(
+            return MWF.Actions.load("x_query_assemble_surface").StatementAction.executeV2(
                 statement.name, statement.mode || "data", statement.page || 1, statement.pageSize || 20, obj,
                 function (json) {
                     if (callback) callback(json);
+                    return json;
                 }, null, async);
         },
         parseFilter : function( filter, parameter ){
@@ -4936,8 +4998,14 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @param {Function} [success] 调用成功时的回调函数。
      * @param {Function} [failure] 调用错误时的回调函数。
      * @param {Boolean} [async] 是否异步调用，默认为true。
+     * @return {Promise} 返回Promise
      * @o2syntax
      * table.listRowNext( id, count, success, failure, async )
+     * //或
+     * var promise = table.listRowNext( id, count );
+     * promise.then(function(json){
+     *     //json为返回的数据
+     * })
      * @example
      * var table = new this.Table("table1");
      *
@@ -4972,12 +5040,18 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @param {Function} [success] 调用成功时的回调函数。
      * @param {Function} [failure] 调用错误时的回调函数。
      * @param {Boolean} [async] 是否异步调用，默认为true。
+     * @return {Promise} 返回Promise
      * @o2syntax
-     * table.listRowNext( id, count, success, failure, async )
+     * table.listRowPrev( id, count, success, failure, async )
+     * //或
+     * var promise = table.listRowPrev( id, count );
+     * promise.then(function(json){
+     *     //json为返回的数据
+     * })
      * @example
      * var table = new this.Table("table1");
      *
-     * table.listRowNext( "0", 20, function(data){
+     * table.listRowPrev( "0", 20, function(data){
      *    //data 形如
      *    //{
      *    //    "type": "success",
@@ -5009,8 +5083,14 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @param {Function} [success] 调用成功时的回调函数。
      * @param {Function} [failure] 调用错误时的回调函数。
      * @param {Boolean} [async] 是否异步调用，默认为true。
+     * @return {Promise} 返回Promise
      * @o2syntax
      * table.listRowSelect( where, orderBy, size, success, failure, async )
+     * //或
+     * var promise = table.listRowSelect( where, orderBy, size );
+     * promise.then(function(json){
+     *     //json为返回的数据
+     * })
      * @example
      * var table = new this.Table("table1");
      *
@@ -5045,8 +5125,14 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @param {Function} [success] 调用成功时的回调函数。
      * @param {Function} [failure] 调用错误时的回调函数。
      * @param {Boolean} [async] 是否异步调用，默认为true。
+     * @return {Promise} 返回Promise
      * @o2syntax
      * table.rowCountWhere( where, success, failure, async )
+     * //或
+     * var promise = table.rowCountWhere( where );
+     * promise.then(function(json){
+     *     //json为返回的数据
+     * })
      * @example
      * var table = new this.Table("table1");
      *
@@ -5071,12 +5157,18 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @method deleteRow
      * @methodOf module:Table
      * @instance
-     * @param {id} 需要删除记录的id。
+     * @param {String} id 需要删除记录的id。
      * @param {Function} [success] 调用成功时的回调函数。
      * @param {Function} [failure] 调用错误时的回调函数。
      * @param {Boolean} [async] 是否异步调用，默认为true。
+     * @return {Promise} 返回Promise
      * @o2syntax
      * table.deleteRow( id, success, failure, async )
+     * //或
+     * var promise = table.deleteRow( id );
+     * promise.then(function(json){
+     *     //json为返回的数据
+     * })
      * @example
      * var table = new this.Table("table1");
      *
@@ -5103,8 +5195,14 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @param {Function} [success] 调用成功时的回调函数。
      * @param {Function} [failure] 调用错误时的回调函数。
      * @param {Boolean} [async] 是否异步调用，默认为true。
+     * @return {Promise} 返回Promise
      * @o2syntax
      * table.deleteAllRow( success, failure, async )
+     * //或
+     * var promise = table.deleteAllRow();
+     * promise.then(function(json){
+     *     //json为返回的数据
+     * })
      * @example
      * var table = new this.Table("table1");
      *
@@ -5132,8 +5230,14 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @param {Function} [success] 调用成功时的回调函数。
      * @param {Function} [failure] 调用错误时的回调函数。
      * @param {Boolean} [async] 是否异步调用，默认为true。
+     * @return {Promise} 返回Promise
      * @o2syntax
      * table.getRow( id, success, failure, async )
+     * //或
+     * var promise = table.getRow( id );
+     * promise.then(function(json){
+     *     //json为返回的数据
+     * })
      * @example
      * var table = new this.Table("table1");
      *
@@ -5165,8 +5269,14 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @param {Function} [success] 调用成功时的回调函数。
      * @param {Function} [failure] 调用错误时的回调函数。
      * @param {Boolean} [async] 是否异步调用，默认为true。
+     * @return {Promise} 返回Promise
      * @o2syntax
      * table.insertRow( data, success, failure, async )
+     * //或
+     * var promise = table.insertRow( data );
+     * promise.then(function(json){
+     *     //json为返回的数据
+     * })
      * @example
      * var table = new this.Table("table1");
      * var data = [
@@ -5200,8 +5310,14 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @param {Function} [success] 调用成功时的回调函数。
      * @param {Function} [failure] 调用错误时的回调函数。
      * @param {Boolean} [async] 是否异步调用，默认为true。
+     * @return {Promise} 返回Promise
      * @o2syntax
      * table.addRow( data, success, failure, async )
+     * //或
+     * var promise = table.addRow( data );
+     * promise.then(function(json){
+     *     //json为返回的数据
+     * })
      * @example
      * var table = new this.Table("table1");
      * var data = {
@@ -5233,8 +5349,14 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @param {Function} [success] 调用成功时的回调函数。
      * @param {Function} [failure] 调用错误时的回调函数。
      * @param {Boolean} [async] 是否异步调用，默认为true。
+     * @return {Promise} 返回Promise
      * @o2syntax
      * table.updateRow( id, data, success, failure, async )
+     * //或
+     * var promise = table.updateRow( id, data );
+     * promise.then(function(json){
+     *     //json为返回的数据
+     * })
      * @example
      * var table = new this.Table("table1");
      * var data = {
@@ -5265,37 +5387,37 @@ MWF.xScript.createTable = function(){
         this.action = o2.Actions.load("x_query_assemble_surface").TableAction;
 
         this.listRowNext = function(id, count, success, error, async){
-            this.action.listRowNext(this.name, id, count, success, error, async);
+            return this.action.listRowNext(this.name, id, count, success, error, async);
         };
         this.listRowPrev = function(id, count, success, error, async){
-            this.action.listRowPrev(this.name, id, count, success, error, async);
+            return this.action.listRowPrev(this.name, id, count, success, error, async);
         };
         this.listRowSelect = function(where, orderBy, size, success, error, async){
-            this.action.listRowSelect(this.name, {"where": where, "orderBy": orderBy, "size": size || ""}, success, error, async);
+            return this.action.listRowSelect(this.name, {"where": where, "orderBy": orderBy, "size": size || ""}, success, error, async);
         };
         this.listRowSelectWhere = function(where, success, error, async){
-            this.action.listRowSelectWhere(this.name, where, success, error, async);
+            return this.action.listRowSelectWhere(this.name, where, success, error, async);
         };
         this.rowCountWhere = function(where, success, error, async){
-            this.action.rowCountWhere(this.name, where, success, error, async);
+            return this.action.rowCountWhere(this.name, where, success, error, async);
         };
         this.deleteRow = function(id, success, error, async){
-            this.action.rowDelete(this.name, id, success, error, async);
+            return this.action.rowDelete(this.name, id, success, error, async);
         };
         this.deleteAllRow = function(success, error, async){
-            this.action.rowDeleteAll(this.name, success, error, async);
+            return this.action.rowDeleteAll(this.name, success, error, async);
         };
         this.getRow = function(id, success, error, async){
-            this.action.rowGet(this.name, id, success, error, async);
+            return this.action.rowGet(this.name, id, success, error, async);
         };
         this.insertRow = function(data, success, error, async){
-            this.action.rowInsert(this.name, data, success, error, async);
+            return this.action.rowInsert(this.name, data, success, error, async);
         };
         this.addRow = function(data, success, error, async){
-            this.action.rowInsertOne(this.name, data, success, error, async);
+            return this.action.rowInsertOne(this.name, data, success, error, async);
         };
         this.updateRow = function(id, data, success, error, async){
-            this.action.rowUpdate(this.name, id, data, success, error, async);
+            return this.action.rowUpdate(this.name, id, data, success, error, async);
         };
     }
 };
