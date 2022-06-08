@@ -17,35 +17,31 @@ public class DumpRestoreData extends ConfigObject {
 		return new DumpRestoreData();
 	}
 
-	public static final String TYPE_FULL = "full";
-	public static final String TYPE_LITE = "lite";
+	public static final String MODE_FULL = "full";
+	public static final String MODE_LITE = "lite";
 	public static final String RESTOREOVERRIDE_CLEAN = "clean";
 	public static final String RESTOREOVERRIDE_SKIPEXISTED = "skipExisted";
 
-	public static final String DEFAULT_TYPE = TYPE_LITE;
 	public static final Boolean DEFAULT_PARALLEL = true;
 	public static final Boolean DEFAULT_REDISTRIBUTE = true;
 	public static final Boolean DEFAULT_EXCEPTIONINVALIDSTORAGE = true;
+	public static final Boolean DEFAULT_ATTACHSTORAGE = true;
 	public static final String DEFAULT_ITEMCATEGORY = "";
 
 	public DumpRestoreData() {
-		this.enable = false;
 		this.includes = new ArrayList<>();
 		this.excludes = new ArrayList<>();
-		this.mode = DEFAULT_TYPE;
+		this.mode = MODE_LITE;
 		this.parallel = DEFAULT_PARALLEL;
-		this.redistribute = DEFAULT_REDISTRIBUTE;
+		this.attachStorage = DEFAULT_ATTACHSTORAGE;
 		this.exceptionInvalidStorage = DEFAULT_EXCEPTIONINVALIDSTORAGE;
 		this.itemCategory = DEFAULT_ITEMCATEGORY;
 	}
 
-	@FieldDescribe("是否启用.")
-	private Boolean enable;
-
-	@FieldDescribe("导出导入包含对象,可以使用通配符*.")
+	@FieldDescribe("导出导入包含对象,可以使用通配符*,如仅导出待办数据:com.x.processplatform.core.entity.content.Task.")
 	private List<String> includes;
 
-	@FieldDescribe("导出导入排除对象,可以使用通配符*.")
+	@FieldDescribe("导出导入排除对象,可以使用通配符*,如不导出流程实例数据com.x.processplatform.core.entity.content.*")
 	private List<String> excludes;
 
 	@FieldDescribe("导出数据模式,lite|full,默认使用lite")
@@ -54,29 +50,39 @@ public class DumpRestoreData extends ConfigObject {
 	@FieldDescribe("使用并行导出,默认true")
 	private Boolean parallel;
 
-	@FieldDescribe("是否进行重新分布.")
-	private Boolean redistribute;
-
 	@FieldDescribe("无法获取storage是否升起错误.")
 	private Boolean exceptionInvalidStorage;
 
-	@FieldDescribe("无法获取storage是否升起错误.")
-	private Boolean storageXXXXXXXXXXXXXXXX;
-	
+	@FieldDescribe("是否同时导入导出storage中存储的文件.")
+	private Boolean attachStorage;
+
+	@FieldDescribe("是否进行重新分布.")
+	private Boolean redistributeStorage;
+
+	public Boolean getRedistributeStorage() {
+		return redistributeStorage;
+	}
+
+	public void setRedistributeStorage(Boolean redistributeStorage) {
+		this.redistributeStorage = redistributeStorage;
+	}
+
+	public Boolean getAttachStorage() {
+		return attachStorage;
+	}
+
+	public void setAttachStorage(Boolean attachStorage) {
+		this.attachStorage = attachStorage;
+	}
+
 	@FieldDescribe("数据导入方式,clean:清空重新导入,skipExisted:如果有相同id的数据跳过.默认方式为clean.")
 	private String restoreOverride;
 
 	@FieldDescribe("对于com.x.query.core.entity.Item的itemCategory进行单独过滤,可选值pp, cms, bbs, pp_dict.")
 	private String itemCategory;
-	
-	
 
 	public String getItemCategory() {
 		return this.itemCategory;
-	}
-
-	public Boolean getRedistribute() {
-		return BooleanUtils.isNotFalse(redistribute);
 	}
 
 	public Boolean getExceptionInvalidStorage() {
@@ -88,11 +94,7 @@ public class DumpRestoreData extends ConfigObject {
 	}
 
 	public String getMode() {
-		return StringUtils.equals(TYPE_FULL, mode) ? TYPE_FULL : TYPE_LITE;
-	}
-
-	public Boolean getEnable() {
-		return BooleanUtils.isTrue(this.enable);
+		return StringUtils.equals(MODE_FULL, mode) ? MODE_FULL : MODE_LITE;
 	}
 
 	public List<String> getIncludes() {
@@ -123,16 +125,8 @@ public class DumpRestoreData extends ConfigObject {
 		this.parallel = parallel;
 	}
 
-	public void setRedistribute(Boolean redistribute) {
-		this.redistribute = redistribute;
-	}
-
 	public void setExceptionInvalidStorage(Boolean exceptionInvalidStorage) {
 		this.exceptionInvalidStorage = exceptionInvalidStorage;
-	}
-
-	public void setEnable(Boolean enable) {
-		this.enable = enable;
 	}
 
 	public void setMode(String mode) {

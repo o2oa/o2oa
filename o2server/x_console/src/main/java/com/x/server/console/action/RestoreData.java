@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.persistence.EntityManager;
@@ -23,6 +24,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -56,26 +58,29 @@ public class RestoreData {
 
 	public boolean execute(String path) throws IOException, URISyntaxException {
 		Date start = new Date();
-		Path dir;
 		if (StringUtils.isEmpty(path)) {
 			LOGGER.warn("{}.", () -> "path is empty.");
 		}
 		ClassLoader classLoader = EntityClassLoaderTools.concreteClassLoader();
+		Path dir = dir(path);
+		Thread thread = new Thread(new RunnableImpl(dir, start, classLoader));
+		thread.start();
+		return true;
+	}
+
+	private Path dir(String path) throws IOException, URISyntaxException {
+		Path dir;
 		if (BooleanUtils.isTrue(DateTools.isCompactDateTime(path))) {
 			dir = Paths.get(Config.base(), "local", "dump", "dumpData_" + path);
 		} else {
 			dir = Paths.get(path);
 			if ((!Files.exists(dir)) || (!Files.isDirectory(dir))) {
-				LOGGER.warn("directory not exist: {}.", path);
-				return false;
+				throw new IllegalArgumentException("directory not exist: " + path + ".");
 			} else if (dir.startsWith(Paths.get(Config.base()))) {
-				LOGGER.warn("path can not in base directory.");
-				return false;
+				throw new IllegalArgumentException("path can not in base directory.");
 			}
 		}
-		Thread thread = new Thread(new RunnableImpl(dir, start, classLoader));
-		thread.start();
-		return true;
+		return dir;
 	}
 
 	public class RunnableImpl implements Runnable {
@@ -101,7 +106,7 @@ public class RestoreData {
 		@Override
 		public void run() {
 			try {
-				List<String> classNames = entities(catalog);
+				List<String> classNames = entities(catalog, classLoader);
 				LOGGER.print("find: {} data to restore, path: {}.", classNames.size(), this.dir.toString());
 				Path xml = Paths.get(Config.dir_local_temp_classes().getAbsolutePath(),
 						DateTools.compact(start) + "_restore.xml");
@@ -118,7 +123,7 @@ public class RestoreData {
 						Class<JpaObject> cls = (Class<JpaObject>) Thread.currentThread().getContextClassLoader()
 								.loadClass(className);
 						LOGGER.print("restore data({}/{}): {}.", idx.getAndAdd(1), classNames.size(), cls.getName());
-						long size = restore(cls, xml);
+						long size = restore(cls, Config.dumpRestoreData().getAttachStorage(), xml);
 						total.getAndAdd(size);
 					} catch (Exception e) {
 						LOGGER.error(new Exception(String.format("restore:%s error.", className), e));
@@ -132,10 +137,7 @@ public class RestoreData {
 			}
 		}
 
-		private long restore(Class<?> cls, Path xml) throws Exception {
-//			EntityManagerFactory emf = OpenJPAPersistence.createEntityManagerFactory(cls.getName(),
-//					xml.getFileName().toString(),
-//					PersistenceXmlHelper.properties(cls.getName(), Config.slice().getEnable()));
+		private long restore(Class<?> cls, boolean attachStorage, Path xml) throws Exception {
 			EntityManagerFactory emf = OpenJPAPersistence.createEntityManagerFactory(cls.getName(),
 					xml.getFileName().toString(), PersistenceXmlHelper.properties(cls.getName(), false));
 			EntityManager em = emf.createEntityManager();
@@ -157,24 +159,7 @@ public class RestoreData {
 				paths.stream().forEach(o -> {
 					LOGGER.print("restore {}/{} part of data:{}.", batch.getAndAdd(1), paths.size(), cls.getName());
 					try {
-						em.getTransaction().begin();
-						JsonArray raws = this.convert(o);
-						for (JsonElement json : raws) {
-							Object t = gson.fromJson(json, cls);
-							if (Objects.equals(Config.dumpRestoreData().getRestoreOverride(),
-									DumpRestoreData.RESTOREOVERRIDE_SKIPEXISTED)
-									&& (null != em.find(cls, BeanUtils.getBeanProperty(t, JpaObject.id_FIELDNAME)))) {
-								continue;
-							}
-							if (StorageObject.class.isAssignableFrom(cls)) {
-								Path sub = o.resolveSibling(FilenameUtils.getBaseName(o.getFileName().toString()));
-								this.binary(t, cls, sub, storageMappings);
-							}
-							em.persist(t);
-							count.getAndAdd(1);
-						}
-						em.getTransaction().commit();
-						em.clear();
+						restore(cls, o, em, attachStorage, storageMappings, count);
 					} catch (Exception e) {
 						LOGGER.error(new Exception(String.format("restore error with file:%s.", o.toString()), e));
 					}
@@ -187,6 +172,28 @@ public class RestoreData {
 				emf.close();
 			}
 			return count.longValue();
+		}
+
+		private void restore(Class<?> cls, Path o, EntityManager em, boolean attachStorage,
+				StorageMappings storageMappings, AtomicLong count) throws Exception {
+			em.getTransaction().begin();
+			JsonArray raws = this.convert(o);
+			for (JsonElement json : raws) {
+				Object t = gson.fromJson(json, cls);
+				if (Objects.equals(Config.dumpRestoreData().getRestoreOverride(),
+						DumpRestoreData.RESTOREOVERRIDE_SKIPEXISTED)
+						&& (null != em.find(cls, BeanUtils.getBeanProperty(t, JpaObject.id_FIELDNAME)))) {
+					continue;
+				}
+				if (StorageObject.class.isAssignableFrom(cls) && attachStorage) {
+					Path sub = o.resolveSibling(FilenameUtils.getBaseName(o.getFileName().toString()));
+					this.binary(t, cls, sub, storageMappings);
+				}
+				em.persist(t);
+				count.getAndAdd(1);
+			}
+			em.getTransaction().commit();
+			em.clear();
 		}
 
 		private List<Path> list(Path directory) throws IOException {
@@ -202,21 +209,30 @@ public class RestoreData {
 			return list;
 		}
 
-		private List<String> entities(DumpRestoreDataCatalog catalog) throws Exception {
-			List<String> containerEntityNames = new ArrayList<>();
-			containerEntityNames.addAll(JpaObjectTools.scanContainerEntityNames(classLoader));
-			List<String> classNames = new ArrayList<>();
-			classNames.addAll(catalog.keySet());
+		private List<String> entities(DumpRestoreDataCatalog catalog, ClassLoader classLoader) throws Exception {
+			List<String> containerEntityNames = new ArrayList<>(JpaObjectTools.scanContainerEntityNames(classLoader));
+			if (StringUtils.equalsIgnoreCase(DumpRestoreData.MODE_LITE, Config.dumpRestoreData().getMode())) {
+				containerEntityNames = containerEntityNames.stream().filter(o -> {
+					try {
+						ContainerEntity containerEntity = classLoader.loadClass(o).getAnnotation(ContainerEntity.class);
+						return Objects.equals(containerEntity.reference(), ContainerEntity.Reference.strong);
+					} catch (Exception e) {
+						LOGGER.error(e);
+					}
+					return false;
+				}).collect(Collectors.toList());
+			}
+			List<String> classNames = new ArrayList<>(catalog.keySet());
 			classNames = ListTools.includesExcludesWildcard(classNames, Config.dumpRestoreData().getIncludes(),
 					Config.dumpRestoreData().getExcludes());
-			return ListTools.includesExcludesWildcard(containerEntityNames, classNames, null);
+			return ListUtils.intersection(containerEntityNames, classNames);
 		}
 
 		@SuppressWarnings("unchecked")
 		private void binary(Object o, Class<?> cls, Path sub, StorageMappings storageMappings) throws Exception {
 			StorageObject so = (StorageObject) o;
 			StorageMapping mapping = null;
-			if (BooleanUtils.isTrue(Config.dumpRestoreData().getRedistribute())) {
+			if (BooleanUtils.isTrue(Config.dumpRestoreData().getRedistributeStorage())) {
 				mapping = storageMappings.random((Class<StorageObject>) cls);
 			} else {
 				mapping = storageMappings.get((Class<StorageObject>) cls, so.getStorage());
