@@ -210,9 +210,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				d.data = d.data || [];
 				businessData = businessData.concat( d.data );
 			});
-			this._setBusinessData({
-				data: businessData
-			});
+			this._setBusinessData(businessData);
 			this._loadUserInterface();
 		},
 		_loadUserInterface: function(){
@@ -589,9 +587,8 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				indexText : (index+1).toString(),
 				isNew: isNew,
 				isEdited: typeOf(isEdited) === "boolean" ? isEdited : this.editable,
-				isEditable: this.editable && this.isSectionLineEditable(data),
-				isDeleteable: this.deleteable && this.isSectionLineEditable(data),
-				isAddable: this.addable && this.isSectionLineEditable(data)
+				isDeleteable: this.editable && this.isSectionLineEditable(data),
+				isAddable: this.editable && this.isSectionLineEditable(data)
 			});
 			// this.fireEvent("beforeLoadLine", [line]);
 			sectionLine.load();
@@ -618,9 +615,8 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				indexText : (index+1).toString(),
 				isNew: isNew,
 				isEdited: typeOf(isEdited) === "boolean" ? isEdited : this.editable,
-				isEditable: this.editable,
-				isDeleteable: this.deleteable,
-				isAddable: this.addable,
+				isDeleteable: this.editable,
+				isAddable: this.editable,
 				isMergeRead: this.isMergeRead
 			});
 			// this.fireEvent("beforeLoadLine", [line]);
@@ -732,6 +728,9 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				this.form.notice(text,"info");
 				return false;
 			}
+
+			debugger;
+
 			//使用数据驱动
 			var data, index, newLine;
 			if( this.isShowAllSection ){
@@ -782,7 +781,7 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				this.setAllSectionData( data );
 				line = this.sectionLineEdited.lineList[index];
 			}else {
-                var data = this.getData();
+                data = this.getData();
                 if(data.length < index )return null;
                 data.splice(index, 0, d||{});
                 this.newLineIndex = index;
@@ -803,7 +802,13 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			}
 			var minCount = this.json.minCount ? this.json.minCount.toInt() : 0;
 			if( minCount > 0 ){
-				if( this.lineList.length - selectedLine.length < minCount ){
+				var length;
+				if( this.isShowAllSection && this.sectionLineEdited ){
+					length = this.sectionLineEdited.lineList.length;
+				}else{
+					length = this.lineList.length;
+				}
+				if( length - selectedLine.length < minCount ){
 					var text = MWF.xApplication.process.Xform.LP.minItemNotice.replace("{n}", minCount );
 					this.form.notice(text,"info");
 					return false;
@@ -909,9 +914,15 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 				selected = selectData === this.json.outerSelectAllSelectedValue;
 			}
 			this.selected = selected;
-			this.lineList.each(function (line) {
-				this.selected ? line.select() : line.unselect();
-			}.bind(this))
+			if( this.isShowAllSection && this.sectionLineEdited){
+				this.sectionLineEdited.lineList.each(function (line) {
+					this.selected ? line.select() : line.unselect();
+				}.bind(this))
+			}else{
+				this.lineList.each(function (line) {
+					this.selected ? line.select() : line.unselect();
+				}.bind(this))
+			}
 		},
 		selectAll: function(){
 			this.selected = true;
@@ -1419,7 +1430,6 @@ MWF.xApplication.process.Xform.Datatemplate.SectionLine =  new Class({
 	options: {
 		isNew: false,
 		isEdited: true, //是否正在编辑
-		isEditable: true, //能否被编辑
 		isDeleteable: true, //能否被删除
 		isAddable: true, //能否添加
 		isMergeRead: false, //合并阅读
@@ -1438,8 +1448,6 @@ MWF.xApplication.process.Xform.Datatemplate.SectionLine =  new Class({
 	load: function () {
 		if( this.template.isShowSectionKey() || this.template.isShowSectionBy() ){
 			this.loadSectionKeyNode();
-		}else{
-			this.sectionKeyNode.hide();
 		}
 
 		if( this.data.data ){
@@ -1450,7 +1458,7 @@ MWF.xApplication.process.Xform.Datatemplate.SectionLine =  new Class({
 				if( this.options.isEdited ){
 					var dt = this.template;
 					isNew = dt.isNew || (o2.typeOf(dt.newLineIndex) === "number" ? idx === dt.newLineIndex : false);
-					isEdited = (!dt.multiEditMode && o2.typeOf(dt.newLineIndex) === "number") ? idx === dt.newLineIndex : dt.multiEditMode;
+					isEdited = true;
 					dt.isNew = false;
 					dt.newLineIndex = null;
 				}
@@ -1468,7 +1476,6 @@ MWF.xApplication.process.Xform.Datatemplate.SectionLine =  new Class({
 			indexText : (this.template.lineList.length + 1).toString(),
 			isNew: isNew,
 			isEdited: typeOf(isEdited) === "boolean" ? isEdited : this.options.isEdited,
-			isEditable: this.options.isEditable,
 			isDeleteable: this.options.isDeleteable,
 			isAddable: this.options.isAddable,
 			isMergeRead: this.options.isMergeRead,
@@ -1519,6 +1526,8 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 	options: {
 		isNew: false,
 		isEdited : true,
+		isAddable: true,
+		isDeleteable: true,
 		index : 0,
 		indexText : "0",
 		indexInSectionLine: 0,
@@ -1695,6 +1704,7 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 				this.template._insertLine( ev, this )
 			}.bind(this))
 			if( !this.template.editable )module.node.hide();
+			if( !this.options.isAddable )module.node.hide();
 		}
 
 		if( this.template.deleteActionIdList.contains(id)){
@@ -1703,6 +1713,7 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 				this.template._deleteLine( ev, this )
 			}.bind(this))
 			if( !this.template.editable )module.node.hide();
+			if( !this.options.isDeleteable )module.node.hide();
 		}
 
 		if( this.template.selectorId === id){
@@ -1712,12 +1723,21 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 				this.checkSelect();
 			}.bind(this))
 			if( !this.template.editable )module.node.hide();
+			if( !this.options.isDeleteable )module.node.hide();
 			this.unselect();
 		}
 
 		if( this.template.sequenceIdList.contains(id)){
 			this.sequenceNodeList.push( module );
-			var indexText = this.options.indexText;
+			var indexText;
+			if(
+				( this.template.isShowSectionKey() && this.template.json.sequenceBySection === "section" ) ||
+				( this.template.isShowSectionBy() && this.template.json.sequenceBy === "section" )
+			){
+				indexText = this.options.indexInSectionLineText;
+			}else{
+				indexText = this.options.indexText;
+			}
 			if(this.form.getModuleType(module) === "label"){
 				module.node.set("text", indexText );
 			}else if(module.setData){
