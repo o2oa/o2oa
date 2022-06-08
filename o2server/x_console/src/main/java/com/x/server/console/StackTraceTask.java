@@ -11,7 +11,6 @@ import java.util.Date;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.commons.vfs2.util.DelegatingFileSystemOptionsBuilder;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
