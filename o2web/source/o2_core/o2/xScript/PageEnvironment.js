@@ -1170,12 +1170,13 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
         this.view = {
             "lookup": function (view, callback, async) {
                 var filterList = {"filterList": (view.filter || null)};
-                MWF.Actions.load("x_query_assemble_surface").ViewAction.executeWithQuery(view.view, view.application, filterList, function (json) {
+                return MWF.Actions.load("x_query_assemble_surface").ViewAction.executeWithQuery(view.view, view.application, filterList, function (json) {
                     var data = {
                         "grid": json.data.grid || json.data.groupGrid,
                         "groupGrid": json.data.groupGrid
                     };
                     if (callback) callback(data);
+                    return data;
                 }, null, async);
             },
 
@@ -1293,10 +1294,11 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                     "filterList": filterList,
                     "parameter": parameter
                 };
-                MWF.Actions.load("x_query_assemble_surface").StatementAction.executeV2(
+                return MWF.Actions.load("x_query_assemble_surface").StatementAction.executeV2(
                     statement.name, statement.mode || "data", statement.page || 1, statement.pageSize || 20, obj,
                     function (json) {
                         if (callback) callback(json);
+                        return json;
                     }, null, async);
             },
             parseFilter: function (filter, parameter) {
@@ -2235,37 +2237,37 @@ if (!MWF.xScript.createTable) MWF.xScript.createTable = function(){
         this.action = o2.Actions.load("x_query_assemble_surface").TableAction;
 
         this.listRowNext = function(id, count, success, error, async){
-            this.action.listRowNext(this.name, id, count, success, error, async);
+            return this.action.listRowNext(this.name, id, count, success, error, async);
         };
         this.listRowPrev = function(id, count, success, error, async){
-            this.action.listRowPrev(this.name, id, count, success, error, async);
+            return this.action.listRowPrev(this.name, id, count, success, error, async);
         };
         this.listRowSelect = function(where, orderBy, size, success, error, async){
-            this.action.listRowSelect(this.name, {"where": where, "orderBy": orderBy, "size": size || ""}, success, error, async);
+            return this.action.listRowSelect(this.name, {"where": where, "orderBy": orderBy, "size": size || ""}, success, error, async);
         };
         this.listRowSelectWhere = function(where, success, error, async){
-            this.action.listRowSelectWhere(this.name, where, success, error, async);
+            return this.action.listRowSelectWhere(this.name, where, success, error, async);
         };
         this.rowCountWhere = function(where, success, error, async){
-            this.action.rowCountWhere(this.name, where, success, error, async);
+            return this.action.rowCountWhere(this.name, where, success, error, async);
         };
         this.deleteRow = function(id, success, error, async){
-            this.action.rowDelete(this.name, id, success, error, async);
+            return this.action.rowDelete(this.name, id, success, error, async);
         };
         this.deleteAllRow = function(success, error, async){
-            this.action.rowDeleteAll(this.name, success, error, async);
+            return this.action.rowDeleteAll(this.name, success, error, async);
         };
         this.getRow = function(id, success, error, async){
-            this.action.rowGet(this.name, id, success, error, async);
+            return this.action.rowGet(this.name, id, success, error, async);
         };
         this.insertRow = function(data, success, error, async){
-            this.action.rowInsert(this.name, data, success, error, async);
+            return this.action.rowInsert(this.name, data, success, error, async);
         };
         this.addRow = function(data, success, error, async){
-            this.action.rowInsertOne(this.name, data, success, error, async);
+            return this.action.rowInsertOne(this.name, data, success, error, async);
         };
         this.updateRow = function(id, data, success, error, async){
-            this.action.rowUpdate(this.name, id, data, success, error, async);
+            return this.action.rowUpdate(this.name, id, data, success, error, async);
         };
     }
 };
