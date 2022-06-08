@@ -10,7 +10,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.persistence.EntityManager;
@@ -36,6 +38,7 @@ import com.x.base.core.entity.dataitem.DataItem;
 import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.entity.tools.JpaObjectTools;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.DumpRestoreData;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.config.StorageMappings;
 import com.x.base.core.project.gson.XGsonBuilder;
@@ -46,7 +49,7 @@ import com.x.base.core.project.tools.ListTools;
 
 public class DumpData {
 
-	private static Logger logger = LoggerFactory.getLogger(DumpData.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DumpData.class);
 
 	public boolean execute(String path) throws IOException, URISyntaxException {
 		Path dir = null;
@@ -56,7 +59,7 @@ public class DumpData {
 		} else {
 			dir = Paths.get(path);
 			if (dir.startsWith(Paths.get(Config.base()))) {
-				logger.warn("path can not in base directory.");
+				LOGGER.warn("path can not in base directory.");
 				return false;
 			}
 		}
@@ -87,8 +90,8 @@ public class DumpData {
 
 		public void run() {
 			try {
-				List<String> classNames = new ArrayList<>(JpaObjectTools.scanContainerEntityNames(classLoader));
-				logger.print("find {} data to dump, start at {}.", classNames.size(), DateTools.format(start));
+				List<String> classNames = this.entities(classLoader);
+				LOGGER.print("find {} data to dump, start at {}.", classNames.size(), DateTools.format(start));
 				Path xml = Paths.get(Config.dir_local_temp_classes().getAbsolutePath(),
 						DateTools.compact(start) + "_dump.xml");
 				PersistenceXmlHelper.write(xml.toString(), classNames, true, classLoader);
@@ -106,18 +109,16 @@ public class DumpData {
 					try {
 						@SuppressWarnings("unchecked")
 						Class<JpaObject> cls = (Class<JpaObject>) classLoader.loadClass(className);
-//						emf = OpenJPAPersistence.createEntityManagerFactory(cls.getName(), xml.getFileName().toString(),
-//								PersistenceXmlHelper.properties(cls.getName(), Config.slice().getEnable()));
 						emf = OpenJPAPersistence.createEntityManagerFactory(cls.getName(), xml.getFileName().toString(),
 								PersistenceXmlHelper.properties(cls.getName(), false));
 						em = emf.createEntityManager();
 						long estimateCount = estimateCount(em, cls);
-						logger.print("dump data({}/{}): {}, count: {}.", idx.getAndAdd(1), classNames.size(),
+						LOGGER.print("dump data({}/{}): {}, count: {}.", idx.getAndAdd(1), classNames.size(),
 								cls.getName(), estimateCount);
-						dump(cls, em, storageMappings, estimateCount);
+						dump(cls, em, storageMappings, Config.dumpRestoreData().getAttachStorage(), estimateCount);
 					} catch (Exception e) {
 						e.printStackTrace();
-						logger.error(new Exception(String.format("dump:%s error.", className), e));
+						LOGGER.error(new Exception(String.format("dump:%s error.", className), e));
 					} finally {
 						Thread.currentThread().setName(nameOfThread);
 						if (null != em) {
@@ -130,12 +131,30 @@ public class DumpData {
 				});
 				Files.write(dir.resolve("catalog.json"),
 						pureGsonDateFormated.toJson(catalog).getBytes(StandardCharsets.UTF_8));
-				logger.print("dump data completed, directory: {}, count: {}, elapsed: {} minutes.", dir.toString(),
+				LOGGER.print("dump data completed, directory: {}, count: {}, elapsed: {} minutes.", dir.toString(),
 
 						count(), (System.currentTimeMillis() - start.getTime()) / 1000 / 60);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		}
+
+		private List<String> entities(ClassLoader classLoader) throws Exception {
+			List<String> classNames = new ArrayList<>(JpaObjectTools.scanContainerEntityNames(classLoader));
+			classNames = ListTools.includesExcludesWildcard(classNames, Config.dumpRestoreData().getIncludes(),
+					Config.dumpRestoreData().getExcludes());
+			if (StringUtils.equalsIgnoreCase(DumpRestoreData.MODE_LITE, Config.dumpRestoreData().getMode())) {
+				return classNames.stream().filter(o -> {
+					try {
+						ContainerEntity containerEntity = classLoader.loadClass(o).getAnnotation(ContainerEntity.class);
+						return Objects.equals(containerEntity.reference(), ContainerEntity.Reference.strong);
+					} catch (Exception e) {
+						LOGGER.error(e);
+					}
+					return false;
+				}).collect(Collectors.toList());
+			}
+			return classNames;
 		}
 
 		private <T extends JpaObject> long estimateCount(EntityManager em, Class<T> cls) {
@@ -167,8 +186,8 @@ public class DumpData {
 			return em.createQuery(cq).setMaxResults(size).getResultList();
 		}
 
-		private <T> void dump(Class<T> cls, EntityManager em, StorageMappings storageMappings, long total)
-				throws Exception {
+		private <T> void dump(Class<T> cls, EntityManager em, StorageMappings storageMappings, boolean attachStorage,
+				long total) throws Exception {
 			// 创建最终存储文件的目录
 			Path directory = dir.resolve(cls.getName());
 			Files.createDirectories(directory);
@@ -184,14 +203,14 @@ public class DumpData {
 				if (ListTools.isNotEmpty(list)) {
 					count = count + list.size();
 					id = BeanUtils.getProperty(list.get(list.size() - 1), JpaObject.id_FIELDNAME);
-					if (StorageObject.class.isAssignableFrom(cls)) {
+					if (StorageObject.class.isAssignableFrom(cls) && attachStorage) {
 						Path sub = directory.resolve(count + "");
 						Files.createDirectories(sub);
 						binary(list, sub, storageMappings);
 					}
 					Files.write(directory.resolve(count + ".json"),
 							pureGsonDateFormated.toJson(list).getBytes(StandardCharsets.UTF_8));
-					logger.print("dump data {}/{} part of data:{}.", loop++, btach, cls.getName());
+					LOGGER.print("dump data {}/{} part of data:{}.", loop++, btach, cls.getName());
 				}
 				em.clear();
 			} while (ListTools.isNotEmpty(list));
