@@ -9,7 +9,7 @@ import com.x.processplatform.core.entity.element.Service;
 import com.x.processplatform.service.processing.processor.AbstractProcessor;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
-public abstract class AbstractServiceProcessor extends AbstractProcessor {
+abstract class AbstractServiceProcessor extends AbstractProcessor {
 
 	protected AbstractServiceProcessor(EntityManagerContainer entityManagerContainer) throws Exception {
 		super(entityManagerContainer);

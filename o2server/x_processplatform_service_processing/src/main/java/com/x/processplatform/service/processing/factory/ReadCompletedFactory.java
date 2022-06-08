@@ -29,24 +29,24 @@ public class ReadCompletedFactory extends AbstractFactory {
 		return em.createQuery(cq).getResultList();
 	}
 
-	public List<String> listWithJob(String job) throws Exception {
-		EntityManager em = this.entityManagerContainer().get(ReadCompleted.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<ReadCompleted> root = cq.from(ReadCompleted.class);
-		Predicate p = cb.equal(root.get(ReadCompleted_.job), job);
-		cq.select(root.get(ReadCompleted_.id)).where(p);
-		return em.createQuery(cq).getResultList();
-	}
+//	public List<String> listWithJob(String job) throws Exception {
+//		EntityManager em = this.entityManagerContainer().get(ReadCompleted.class);
+//		CriteriaBuilder cb = em.getCriteriaBuilder();
+//		CriteriaQuery<String> cq = cb.createQuery(String.class);
+//		Root<ReadCompleted> root = cq.from(ReadCompleted.class);
+//		Predicate p = cb.equal(root.get(ReadCompleted_.job), job);
+//		cq.select(root.get(ReadCompleted_.id)).where(p);
+//		return em.createQuery(cq).getResultList();
+//	}
 	
-	public List<String> listWithActivityToken(String activityToken) throws Exception {
-		EntityManager em = this.entityManagerContainer().get(ReadCompleted.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<ReadCompleted> root = cq.from(ReadCompleted.class);
-		Predicate p = cb.equal(root.get(ReadCompleted_.activityToken), activityToken);
-		cq.select(root.get(ReadCompleted_.id)).where(p);
-		return em.createQuery(cq).getResultList();
-	}
+//	public List<String> listWithActivityToken(String activityToken) throws Exception {
+//		EntityManager em = this.entityManagerContainer().get(ReadCompleted.class);
+//		CriteriaBuilder cb = em.getCriteriaBuilder();
+//		CriteriaQuery<String> cq = cb.createQuery(String.class);
+//		Root<ReadCompleted> root = cq.from(ReadCompleted.class);
+//		Predicate p = cb.equal(root.get(ReadCompleted_.activityToken), activityToken);
+//		cq.select(root.get(ReadCompleted_.id)).where(p);
+//		return em.createQuery(cq).getResultList();
+//	}
 
 }

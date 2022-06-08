@@ -29,26 +29,26 @@ public class ReviewFactory extends AbstractFactory {
 		return em.createQuery(cq).getResultList();
 	}
 
-	public List<String> listWithJob(String job) throws Exception {
-		EntityManager em = this.entityManagerContainer().get(Review.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<Review> root = cq.from(Review.class);
-		Predicate p = cb.equal(root.get(Review_.job), job);
-		cq.select(root.get(Review_.id)).where(p);
-		return em.createQuery(cq).getResultList();
-	}
+//	public List<String> listWithJob(String job) throws Exception {
+//		EntityManager em = this.entityManagerContainer().get(Review.class);
+//		CriteriaBuilder cb = em.getCriteriaBuilder();
+//		CriteriaQuery<String> cq = cb.createQuery(String.class);
+//		Root<Review> root = cq.from(Review.class);
+//		Predicate p = cb.equal(root.get(Review_.job), job);
+//		cq.select(root.get(Review_.id)).where(p);
+//		return em.createQuery(cq).getResultList();
+//	}
 
-	public String getWithPersonWithJob(String person, String job) throws Exception {
-		EntityManager em = this.entityManagerContainer().get(Review.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<Review> root = cq.from(Review.class);
-		Predicate p = cb.equal(root.get(Review_.person), person);
-		p = cb.and(p, cb.equal(root.get(Review_.job), job));
-		cq.select(root.get(Review_.id)).where(p);
-		List<String> list = em.createQuery(cq).setMaxResults(1).getResultList();
-		return list.isEmpty() ? null : list.get(0);
-	}
+//	public String getWithPersonWithJob(String person, String job) throws Exception {
+//		EntityManager em = this.entityManagerContainer().get(Review.class);
+//		CriteriaBuilder cb = em.getCriteriaBuilder();
+//		CriteriaQuery<String> cq = cb.createQuery(String.class);
+//		Root<Review> root = cq.from(Review.class);
+//		Predicate p = cb.equal(root.get(Review_.person), person);
+//		p = cb.and(p, cb.equal(root.get(Review_.job), job));
+//		cq.select(root.get(Review_.id)).where(p);
+//		List<String> list = em.createQuery(cq).setMaxResults(1).getResultList();
+//		return list.isEmpty() ? null : list.get(0);
+//	}
 
 }

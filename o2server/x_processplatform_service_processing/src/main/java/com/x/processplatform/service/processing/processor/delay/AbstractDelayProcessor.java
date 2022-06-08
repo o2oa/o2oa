@@ -9,7 +9,7 @@ import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.service.processing.processor.AbstractProcessor;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
-public abstract class AbstractDelayProcessor extends AbstractProcessor {
+abstract class AbstractDelayProcessor extends AbstractProcessor {
 
 	protected AbstractDelayProcessor(EntityManagerContainer entityManagerContainer) throws Exception {
 		super(entityManagerContainer);

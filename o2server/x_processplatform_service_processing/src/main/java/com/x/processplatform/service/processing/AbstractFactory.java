@@ -4,7 +4,7 @@ import com.x.base.core.container.EntityManagerContainer;
 
 public abstract class AbstractFactory {
 
-	protected Business business;
+	private Business business;
 
 	public AbstractFactory(Business business) throws Exception {
 		try {

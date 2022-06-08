@@ -9,7 +9,7 @@ import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.service.processing.processor.AbstractProcessor;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
-public abstract class AbstractMergeProcessor extends AbstractProcessor {
+abstract class AbstractMergeProcessor extends AbstractProcessor {
 
 	protected AbstractMergeProcessor(EntityManagerContainer entityManagerContainer) throws Exception {
 		super(entityManagerContainer);

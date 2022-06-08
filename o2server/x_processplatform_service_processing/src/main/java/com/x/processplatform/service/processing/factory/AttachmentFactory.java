@@ -29,13 +29,13 @@ public class AttachmentFactory extends AbstractFactory {
 		return em.createQuery(cq).getResultList();
 	}
 
-	public List<Attachment> listWithJobObject(String job) throws Exception {
-		EntityManager em = this.entityManagerContainer().get(Attachment.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Attachment> cq = cb.createQuery(Attachment.class);
-		Root<Attachment> root = cq.from(Attachment.class);
-		Predicate p = cb.equal(root.get(Attachment_.job), job);
-		cq.select(root).where(p);
-		return em.createQuery(cq).getResultList();
-	}
+//	public List<Attachment> listWithJobObject(String job) throws Exception {
+//		EntityManager em = this.entityManagerContainer().get(Attachment.class);
+//		CriteriaBuilder cb = em.getCriteriaBuilder();
+//		CriteriaQuery<Attachment> cq = cb.createQuery(Attachment.class);
+//		Root<Attachment> root = cq.from(Attachment.class);
+//		Predicate p = cb.equal(root.get(Attachment_.job), job);
+//		cq.select(root).where(p);
+//		return em.createQuery(cq).getResultList();
+//	}
 }

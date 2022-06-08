@@ -19,7 +19,7 @@ import com.x.processplatform.service.processing.processor.AeiObjects;
 /***
  * Manual活动基础功能
  */
-public abstract class AbstractManualProcessor extends AbstractProcessor {
+abstract class AbstractManualProcessor extends AbstractProcessor {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractManualProcessor.class);
 

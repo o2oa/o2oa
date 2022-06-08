@@ -29,15 +29,15 @@ public class WorkFactory extends AbstractFactory {
 		return em.createQuery(cq.where(p)).getResultList();
 	}
 
-	public List<String> listContainSplitToken(String splitToken) throws Exception {
-		EntityManager em = this.entityManagerContainer().get(Work.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<Work> root = cq.from(Work.class);
-		Predicate p = cb.isMember(splitToken, root.get(Work_.splitTokenList));
-		cq.select(root.get(Work_.id)).where(p);
-		return em.createQuery(cq.where(p)).getResultList();
-	}
+//	public List<String> listContainSplitToken(String splitToken) throws Exception {
+//		EntityManager em = this.entityManagerContainer().get(Work.class);
+//		CriteriaBuilder cb = em.getCriteriaBuilder();
+//		CriteriaQuery<String> cq = cb.createQuery(String.class);
+//		Root<Work> root = cq.from(Work.class);
+//		Predicate p = cb.isMember(splitToken, root.get(Work_.splitTokenList));
+//		cq.select(root.get(Work_.id)).where(p);
+//		return em.createQuery(cq.where(p)).getResultList();
+//	}
 
 	// public Long countWithAttachment(String attachment) throws Exception {
 	// EntityManager em = this.entityManagerContainer().get(Work.class);
@@ -52,25 +52,25 @@ public class WorkFactory extends AbstractFactory {
 	/*
 	 * 查找activityToken的Work，处于某一个ActivityToken的Work理论上只能有一个，但是在按值拆分的过程中可能临时产生多个
 	 */
-	public List<String> listWithActivityToken(String activityToken) throws Exception {
-		EntityManager em = this.entityManagerContainer().get(Work.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<Work> root = cq.from(Work.class);
-		Predicate p = cb.equal(root.get(Work_.activityToken), activityToken);
-		cq.select(root.get(Work_.id)).where(p);
-		return em.createQuery(cq).getResultList();
-	}
+//	public List<String> listWithActivityToken(String activityToken) throws Exception {
+//		EntityManager em = this.entityManagerContainer().get(Work.class);
+//		CriteriaBuilder cb = em.getCriteriaBuilder();
+//		CriteriaQuery<String> cq = cb.createQuery(String.class);
+//		Root<Work> root = cq.from(Work.class);
+//		Predicate p = cb.equal(root.get(Work_.activityToken), activityToken);
+//		cq.select(root.get(Work_.id)).where(p);
+//		return em.createQuery(cq).getResultList();
+//	}
 
-	public List<String> listWithActivityToken(List<String> activityTokens) throws Exception {
-		EntityManager em = this.entityManagerContainer().get(Work.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<Work> root = cq.from(Work.class);
-		Predicate p = root.get(Work_.activityToken).in(activityTokens);
-		cq.select(root.get(Work_.id)).where(p);
-		return em.createQuery(cq).getResultList();
-	}
+//	public List<String> listWithActivityToken(List<String> activityTokens) throws Exception {
+//		EntityManager em = this.entityManagerContainer().get(Work.class);
+//		CriteriaBuilder cb = em.getCriteriaBuilder();
+//		CriteriaQuery<String> cq = cb.createQuery(String.class);
+//		Root<Work> root = cq.from(Work.class);
+//		Predicate p = root.get(Work_.activityToken).in(activityTokens);
+//		cq.select(root.get(Work_.id)).where(p);
+//		return em.createQuery(cq).getResultList();
+//	}
 
 //	/* 添加一个hint */
 //	public void addHint(Work work, String hint) {
