@@ -9,7 +9,7 @@ import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.service.processing.processor.AbstractProcessor;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
-public abstract class AbstractEmbedProcessor extends AbstractProcessor {
+abstract class AbstractEmbedProcessor extends AbstractProcessor {
 
 	protected AbstractEmbedProcessor(EntityManagerContainer entityManagerContainer) throws Exception {
 		super(entityManagerContainer);

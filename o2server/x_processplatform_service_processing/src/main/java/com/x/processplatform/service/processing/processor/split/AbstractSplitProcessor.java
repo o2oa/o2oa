@@ -9,7 +9,7 @@ import com.x.processplatform.core.entity.element.Split;
 import com.x.processplatform.service.processing.processor.AbstractProcessor;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
-public abstract class AbstractSplitProcessor extends AbstractProcessor {
+abstract class AbstractSplitProcessor extends AbstractProcessor {
 
 	protected AbstractSplitProcessor(EntityManagerContainer entityManagerContainer) throws Exception {
 		super(entityManagerContainer);

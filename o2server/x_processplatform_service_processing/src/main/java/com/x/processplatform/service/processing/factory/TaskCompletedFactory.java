@@ -47,36 +47,36 @@ public class TaskCompletedFactory extends AbstractFactory {
 		return em.createQuery(cq).getResultList();
 	}
 
-	public List<String> listWithJob(String job) throws Exception {
-		EntityManager em = this.entityManagerContainer().get(TaskCompleted.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<TaskCompleted> root = cq.from(TaskCompleted.class);
-		Predicate p = cb.equal(root.get(TaskCompleted_.job), job);
-		cq.select(root.get(TaskCompleted_.id)).where(p);
-		return em.createQuery(cq).getResultList();
-	}
+//	public List<String> listWithJob(String job) throws Exception {
+//		EntityManager em = this.entityManagerContainer().get(TaskCompleted.class);
+//		CriteriaBuilder cb = em.getCriteriaBuilder();
+//		CriteriaQuery<String> cq = cb.createQuery(String.class);
+//		Root<TaskCompleted> root = cq.from(TaskCompleted.class);
+//		Predicate p = cb.equal(root.get(TaskCompleted_.job), job);
+//		cq.select(root.get(TaskCompleted_.id)).where(p);
+//		return em.createQuery(cq).getResultList();
+//	}
 
-	public List<String> listWithActivityTokenInIdentityList(String activityToken, List<String> identites)
-			throws Exception {
-		EntityManager em = this.entityManagerContainer().get(TaskCompleted.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<TaskCompleted> root = cq.from(TaskCompleted.class);
-		Predicate p = cb.equal(root.get(TaskCompleted_.activityToken), activityToken);
-		p = cb.and(p, root.get(TaskCompleted_.identity).in(identites));
-		cq.select(root.get(TaskCompleted_.id)).where(p);
-		return em.createQuery(cq).getResultList();
-	}
+//	public List<String> listWithActivityTokenInIdentityList(String activityToken, List<String> identites)
+//			throws Exception {
+//		EntityManager em = this.entityManagerContainer().get(TaskCompleted.class);
+//		CriteriaBuilder cb = em.getCriteriaBuilder();
+//		CriteriaQuery<String> cq = cb.createQuery(String.class);
+//		Root<TaskCompleted> root = cq.from(TaskCompleted.class);
+//		Predicate p = cb.equal(root.get(TaskCompleted_.activityToken), activityToken);
+//		p = cb.and(p, root.get(TaskCompleted_.identity).in(identites));
+//		cq.select(root.get(TaskCompleted_.id)).where(p);
+//		return em.createQuery(cq).getResultList();
+//	}
 
-	public List<String> listWithActivityToken(String activityToken) throws Exception {
-		EntityManager em = this.entityManagerContainer().get(TaskCompleted.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<TaskCompleted> root = cq.from(TaskCompleted.class);
-		Predicate p = cb.equal(root.get(TaskCompleted_.activityToken), activityToken);
-		cq.select(root.get(TaskCompleted_.id)).where(p);
-		return em.createQuery(cq).getResultList();
-	}
+//	public List<String> listWithActivityToken(String activityToken) throws Exception {
+//		EntityManager em = this.entityManagerContainer().get(TaskCompleted.class);
+//		CriteriaBuilder cb = em.getCriteriaBuilder();
+//		CriteriaQuery<String> cq = cb.createQuery(String.class);
+//		Root<TaskCompleted> root = cq.from(TaskCompleted.class);
+//		Predicate p = cb.equal(root.get(TaskCompleted_.activityToken), activityToken);
+//		cq.select(root.get(TaskCompleted_.id)).where(p);
+//		return em.createQuery(cq).getResultList();
+//	}
 
 }

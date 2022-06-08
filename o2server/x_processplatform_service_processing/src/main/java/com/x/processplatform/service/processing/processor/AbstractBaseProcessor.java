@@ -26,7 +26,7 @@ import com.x.processplatform.service.processing.Business;
 /***
  * 基础的Processor类,属性以及WorkLog处理
  */
-public abstract class AbstractBaseProcessor {
+abstract class AbstractBaseProcessor {
 
 	private EntityManagerContainer entityManagerContainer;
 

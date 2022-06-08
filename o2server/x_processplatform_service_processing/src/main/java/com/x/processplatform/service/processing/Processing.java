@@ -18,7 +18,7 @@ public class Processing extends BaseProcessing {
 
 	private EntityManagerContainer entityManagerContainer;
 
-	protected ProcessingAttributes processingAttributes;
+	private ProcessingAttributes processingAttributes;
 
 	public EntityManagerContainer entityManagerContainer() {
 		return this.entityManagerContainer;

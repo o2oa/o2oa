@@ -13,7 +13,7 @@ import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.service.processing.processor.AbstractProcessor;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
-public abstract class AbstractEndProcessor extends AbstractProcessor {
+abstract class AbstractEndProcessor extends AbstractProcessor {
 
 	private static Logger logger = LoggerFactory.getLogger(AbstractEndProcessor.class);
 

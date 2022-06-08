@@ -16,7 +16,7 @@ import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.processor.AbstractProcessor;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
-public abstract class AbstractAgentProcessor extends AbstractProcessor {
+abstract class AbstractAgentProcessor extends AbstractProcessor {
 
 	protected AbstractAgentProcessor(EntityManagerContainer entityManagerContainer) throws Exception {
 		super(entityManagerContainer);
