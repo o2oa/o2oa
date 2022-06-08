@@ -379,7 +379,7 @@ public class WorkAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "V2_添加待办身份矩阵.", action = V2AddManualTaskIdentityMatrix.class)
+	@JaxrsMethodDescribe(value = "V2_添加待办身份矩阵,before(在指定位置前添加),after(在指定位置后添加),top(添加在最前),bottom(添加到最后),extend(与指定位置同一行进行扩展)", action = V2AddManualTaskIdentityMatrix.class)
 	@POST
 	@Path("v2/{id}/add/manual/task/identity/matrix")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)

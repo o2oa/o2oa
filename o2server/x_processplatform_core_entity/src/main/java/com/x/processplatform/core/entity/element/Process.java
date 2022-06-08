@@ -575,6 +575,11 @@ public class Process extends SliceJpaObject {
 	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + defaultStartMode_FIELDNAME)
 	private String defaultStartMode;
 
+	public static final String CATEGORY_FIELDNAME = "category";
+	@FieldDescribe("流程分类")
+	@Column(length = length_255B, name = ColumnNamePrefix + CATEGORY_FIELDNAME)
+	private String category;
+
 	@FieldDescribe("属性对象存储字段.")
 	@Persistent
 	@Strategy(JsonPropertiesValueHandler)
@@ -978,5 +983,13 @@ public class Process extends SliceJpaObject {
 
 	public void setStartableGroupList(List<String> startableGroupList) {
 		this.startableGroupList = startableGroupList;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
 	}
 }
