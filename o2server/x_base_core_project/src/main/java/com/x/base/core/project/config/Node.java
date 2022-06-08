@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.DateTools;
+import com.x.base.core.project.tools.NumberTools;
 
 public class Node extends ConfigObject {
 
@@ -46,6 +47,8 @@ public class Node extends ConfigObject {
 	private ScheduleDumpData dumpData;
 	@FieldDescribe("定时数据导入配置")
 	private ScheduleRestoreData restoreData;
+	@FieldDescribe("定时执行java stack trace")
+	private ScheduleStackTrace stackTrace;
 	@FieldDescribe("是否启用节点代理")
 	private Boolean nodeAgentEnable;
 	@FieldDescribe("是否启用节点端口")
@@ -122,6 +125,10 @@ public class Node extends ConfigObject {
 		return (restoreData == null) ? new ScheduleRestoreData() : this.restoreData;
 	}
 
+	public ScheduleStackTrace stackTrace() {
+		return (stackTrace == null) ? new ScheduleStackTrace() : this.stackTrace;
+	}
+
 	public static class ScheduleDumpData extends ConfigObject {
 
 		private static final long serialVersionUID = -3841277189943216415L;
@@ -195,6 +202,38 @@ public class Node extends ConfigObject {
 
 		public String path() {
 			return StringUtils.trim(path);
+		}
+
+	}
+
+	public static class ScheduleStackTrace extends ConfigObject {
+
+		private static final long serialVersionUID = -7308289859339511471L;
+
+		private static final Boolean DEFAULT_ENABLE = false;
+		private static final Integer DEFAULT_INTERVAL = 20;
+
+		public ScheduleStackTrace() {
+			this.enable = DEFAULT_ENABLE;
+			this.interval = DEFAULT_INTERVAL;
+		}
+
+		public static ScheduleStackTrace defaultInstance() {
+			return new ScheduleStackTrace();
+		}
+
+		@FieldDescribe("是否启用.")
+		private Boolean enable = false;
+
+		@FieldDescribe("运行jstack 间隔,默认20秒.")
+		private Integer interval = DEFAULT_INTERVAL;
+
+		public Boolean getEnable() {
+			return (BooleanUtils.isTrue(this.enable));
+		}
+
+		public Integer getInterval() {
+			return NumberTools.nullOrLessThan(interval, 0) ? DEFAULT_INTERVAL : this.interval;
 		}
 
 	}

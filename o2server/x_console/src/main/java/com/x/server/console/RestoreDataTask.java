@@ -16,8 +16,7 @@ public class RestoreDataTask implements Job {
 	@Override
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		try {
-			logger.print("schedule restore data task start, restore from:{}.",
-					Config.currentNode().restoreData().path());
+			logger.print("schedule restore data from:{}.", Config.currentNode().restoreData().path());
 			RestoreData action = new RestoreData();
 			action.execute(Config.currentNode().restoreData().path());
 		} catch (Exception e) {

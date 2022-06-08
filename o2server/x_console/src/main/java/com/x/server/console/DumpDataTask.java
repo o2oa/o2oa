@@ -25,7 +25,7 @@ public class DumpDataTask implements Job {
 	@Override
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		try {
-			logger.print("schedule dump data task start.");
+			logger.print("schedule dump data to:{}.", Config.currentNode().dumpData().path());
 			DumpData action = new DumpData();
 			action.execute(Config.currentNode().dumpData().path());
 			if (Config.currentNode().dumpData().size() > 0) {
