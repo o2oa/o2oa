@@ -120,6 +120,7 @@ MWF.xApplication.process.ProcessManager.ProcessExplorer = new Class({
         process.id = someItem.id;
         process.name = someItem.name;
         process.alias = someItem.alias;
+        process.category = someItem.category || "";
         process.application = someItem.application;
         process.applicationName = someItem.applicationName;
         process.isNewProcess = false;
