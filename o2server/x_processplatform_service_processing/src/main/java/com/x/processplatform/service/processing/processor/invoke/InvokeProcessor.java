@@ -160,21 +160,18 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 
 	private boolean jaxrsInternal(AeiObjects aeiObjects, Invoke invoke) throws Exception {
 		ActionResponse resp = null;
-		Class<?> clz = Thread.currentThread().getContextClassLoader()
-				.loadClass("com.x.base.core.project." + invoke.getInternalProject());
-		String uri = this.jaxrsUrl(aeiObjects, invoke);
 		switch (StringUtils.upperCase(invoke.getJaxrsMethod())) {
 		case ConnectionAction.METHOD_POST:
-			resp = jaxrsInternalPost(aeiObjects, invoke, clz, uri);
+			resp = jaxrsInternalPost(aeiObjects, invoke);
 			break;
 		case ConnectionAction.METHOD_PUT:
-			resp = jaxrsInternalPut(aeiObjects, invoke, clz, uri);
+			resp = jaxrsInternalPut(aeiObjects, invoke);
 			break;
 		case ConnectionAction.METHOD_GET:
-			resp = jaxrsInternalGet(aeiObjects, invoke, clz, uri);
+			resp = jaxrsInternalGet(aeiObjects, invoke);
 			break;
 		case ConnectionAction.METHOD_DELETE:
-			resp = jaxrsInternalDelete(aeiObjects, invoke, clz, uri);
+			resp = jaxrsInternalDelete(aeiObjects, invoke);
 			break;
 		case "head":
 			break;
@@ -190,7 +187,7 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 		// 同步执行状态下进行调用判断
 		if ((!BooleanUtils.isTrue(invoke.getAsync()))
 				&& ((null == resp) || (!Objects.equals(Type.success, resp.getType())))) {
-			throw new RunningException("invoke url:{} not success, work:{}.", uri, aeiObjects.getWork().getId());
+			throw new RunningException("invoke not success, work:{}.", aeiObjects.getWork().getId());
 		}
 		boolean passThrough = false;
 		if (!BooleanUtils.isTrue(invoke.getAsync())) {
@@ -217,11 +214,12 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 		return passThrough;
 	}
 
-	private ActionResponse jaxrsInternalDelete(AeiObjects aeiObjects, Invoke invoke, Class<?> clz, String uri)
-			throws Exception {
+	private ActionResponse jaxrsInternalDelete(AeiObjects aeiObjects, Invoke invoke) throws Exception {
+		String uri = this.jaxrsUrl(aeiObjects, invoke);
 		if (BooleanUtils.isTrue(invoke.getAsync())) {
 			JaxrsObject jaxrsObject = new JaxrsObject();
-			Application application = ThisApplication.context().applications().randomWithWeight(clz.getName());
+			Application application = ThisApplication.context().applications()
+					.randomWithWeight(invoke.getInternalProject());
 			jaxrsObject
 					.setAddress(StringTools.JoinUrl(application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri)));
 			jaxrsObject.setInternal(invoke.getInternal());
@@ -229,16 +227,17 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 			jaxrsObject.setContentType(invoke.getJaxrsContentType());
 			ThisApplication.syncJaxrsInvokeQueue.send(jaxrsObject);
 		} else {
-			return ThisApplication.context().applications().deleteQuery(clz, uri);
+			return ThisApplication.context().applications().deleteQuery(invoke.getInternalProject(), uri);
 		}
 		return null;
 	}
 
-	private ActionResponse jaxrsInternalGet(AeiObjects aeiObjects, Invoke invoke, Class<?> clz, String uri)
-			throws Exception {
+	private ActionResponse jaxrsInternalGet(AeiObjects aeiObjects, Invoke invoke) throws Exception {
+		String uri = this.jaxrsUrl(aeiObjects, invoke);
 		if (BooleanUtils.isTrue(invoke.getAsync())) {
 			JaxrsObject jaxrsObject = new JaxrsObject();
-			Application application = ThisApplication.context().applications().randomWithWeight(clz.getName());
+			Application application = ThisApplication.context().applications()
+					.randomWithWeight(invoke.getInternalProject());
 			jaxrsObject
 					.setAddress(StringTools.JoinUrl(application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri)));
 			jaxrsObject.setInternal(invoke.getInternal());
@@ -247,16 +246,17 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 			ThisApplication.syncJaxrsInvokeQueue.send(jaxrsObject);
 			return null;
 		} else {
-			return ThisApplication.context().applications().getQuery(clz, uri);
+			return ThisApplication.context().applications().getQuery(invoke.getInternalProject(), uri);
 		}
 	}
 
-	private ActionResponse jaxrsInternalPut(AeiObjects aeiObjects, Invoke invoke, Class<?> clz, String uri)
-			throws Exception {
+	private ActionResponse jaxrsInternalPut(AeiObjects aeiObjects, Invoke invoke) throws Exception {
 		String body = this.jaxrsEvalBody(aeiObjects, invoke);
+		String uri = this.jaxrsUrl(aeiObjects, invoke);
 		if (BooleanUtils.isTrue(invoke.getAsync())) {
 			JaxrsObject jaxrsObject = new JaxrsObject();
-			Application application = ThisApplication.context().applications().randomWithWeight(clz.getName());
+			Application application = ThisApplication.context().applications()
+					.randomWithWeight(invoke.getInternalProject());
 			jaxrsObject
 					.setAddress(StringTools.JoinUrl(application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri)));
 			jaxrsObject.setBody(body);
@@ -266,16 +266,17 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 			ThisApplication.syncJaxrsInvokeQueue.send(jaxrsObject);
 			return null;
 		} else {
-			return ThisApplication.context().applications().putQuery(clz, uri, body);
+			return ThisApplication.context().applications().putQuery(invoke.getInternalProject(), uri, body);
 		}
 	}
 
-	private ActionResponse jaxrsInternalPost(AeiObjects aeiObjects, Invoke invoke, Class<?> clz, String uri)
-			throws Exception {
+	private ActionResponse jaxrsInternalPost(AeiObjects aeiObjects, Invoke invoke) throws Exception {
 		String body = this.jaxrsEvalBody(aeiObjects, invoke);
+		String uri = this.jaxrsUrl(aeiObjects, invoke);
 		if (BooleanUtils.isTrue(invoke.getAsync())) {
 			JaxrsObject jaxrsObject = new JaxrsObject();
-			Application application = ThisApplication.context().applications().randomWithWeight(clz.getName());
+			Application application = ThisApplication.context().applications()
+					.randomWithWeight(invoke.getInternalProject());
 			jaxrsObject
 					.setAddress(StringTools.JoinUrl(application.getUrlJaxrsRoot() + CipherConnectionAction.trim(uri)));
 			jaxrsObject.setBody(body);
@@ -285,7 +286,7 @@ public class InvokeProcessor extends AbstractInvokeProcessor {
 			ThisApplication.syncJaxrsInvokeQueue.send(jaxrsObject);
 			return null;
 		} else {
-			return ThisApplication.context().applications().postQuery(clz, uri, body);
+			return ThisApplication.context().applications().postQuery(invoke.getInternalProject(), uri, body);
 		}
 	}
 
