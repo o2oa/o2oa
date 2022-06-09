@@ -151,8 +151,7 @@ public class ActionControl extends ActionBase {
 	}
 
 	private static Option tdOption() {
-		return Option.builder(CMD_TD).longOpt("threadDump").argName("count").optionalArg(true).hasArg()
-				.desc("服务器线程状态,间隔2秒.合并多次执行线程信息到最后一份日志.").build();
+		return Option.builder(CMD_TD).longOpt("threadDump").hasArg(false).desc("生成线程转储文件.").build();
 	}
 
 	private static Option ecOption() {
@@ -243,9 +242,8 @@ public class ActionControl extends ActionBase {
 	}
 
 	private void td(CommandLine cmd) {
-		Integer count = this.getArgInteger(cmd, CMD_TD, 10);
 		ThreadDump threadDump = new ThreadDump();
-		threadDump.execute(count);
+		threadDump.execute();
 	}
 
 	private void clh2(CommandLine cmd) throws Exception {
