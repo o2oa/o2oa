@@ -304,6 +304,11 @@ public class Config {
 		return SystemUtils.IS_OS_WINDOWS ? dir.resolve("bin/jstack.exe") : dir.resolve("bin/jstack");
 	}
 
+	public static Path command_jmap_path() {
+		Path dir = Paths.get(System.getProperty("java.home"));
+		return SystemUtils.IS_OS_WINDOWS ? dir.resolve("bin/jmap.exe") : dir.resolve("bin/jmap");
+	}
+
 	public static File dir_local() throws Exception {
 		return new File(base(), DIR_LOCAL);
 	}
