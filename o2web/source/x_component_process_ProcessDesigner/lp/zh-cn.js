@@ -48,6 +48,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 			"service": "服务活动",
 			"agent": "脚本活动",
 			"delay": "定时活动",
+			"publish": "数据发布",
 			"message": "消息活动",
 			"choice": "选择活动",
 			"cancel": "取消活动",
@@ -514,6 +515,14 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"handlerUnit": "处理人所在组织",
 		"activityId": "活动ID",
 		"splitValue": "拆分值",
+
+		"publish": "发布",
+		"publishTarget": "发布目标",
+		"cms": "内容管理",
+		"table": "数据表",
+		"cmsCategory": "内容管理分类",
+		"categoryId": ""
+
 
 	}
 };

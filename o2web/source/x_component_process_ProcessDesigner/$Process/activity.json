@@ -676,6 +676,71 @@
 
     "type": "embed"
   },
+  "publish": {
+    "name":"数据发布",
+    "process": "",
+    "id": "",
+    "alias": "",
+    "description": "",
+    "position": "",
+    "createTime": "",
+    "updateTime": "",
+    "extension": "",
+    "edition": "",
+    "form": "",
+    "async": false,
+
+    "readIdentityList": [],
+    "readUnitList": [],
+    "readDataPathList": [],
+    "readDuty": "",
+    "readScript": "",
+    "readScriptText": "",
+
+    "reviewIdentityList": [],
+    "reviewUnitList": [],
+    "reviewDataPathList": [],
+    "reviewDuty": "",
+    "reviewScript": "",
+    "reviewScriptText": "",
+
+    "beforeArriveScript": "",
+    "afterArriveScript": "",
+    "beforeExecuteScript": "",
+    "afterExecuteScript": "",
+    "beforeInquireScript": "",
+    "afterInquireScript": "",
+    "beforeArriveScriptText": "",
+    "afterArriveScriptText": "",
+    "beforeExecuteScriptText": "",
+    "afterExecuteScriptText": "",
+    "beforeInquireScriptText": "",
+    "afterInquireScriptText": "",
+
+    "route": "",
+
+    "targetApplication": "",
+    "targetApplicationName": "",
+    "targetApplicationAlias": "",
+    "targetProcess": "",
+    "targetProcessName": "",
+    "targetProcessAlias": "",
+
+    "inheritData": true,
+
+    "embedCreatorType": "lastIdentity",
+    "targetIdentity": "",
+    "targetIdentityScript": "",
+    "targetIdentityScriptText": "",
+
+    "titleScript": "",
+    "titleScriptText": "",
+
+    "allowReroute": false,
+    "allowRerouteTo": false,
+
+    "type": "publish"
+  },
   "delay": {
     "name":"定时",
     "alias":"",

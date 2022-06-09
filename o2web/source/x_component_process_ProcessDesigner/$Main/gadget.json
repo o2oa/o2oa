@@ -49,6 +49,11 @@
     "text": MWF.APPPD.LP.menu.newActivityType.embed,
     "className": "Embed"
   },
+  "publish": {
+    "icon": "publish24.png",
+    "text": MWF.APPPD.LP.menu.newActivityType.publish,
+    "className": "Publish"
+  },
   "delay": {
     "icon": "delay24.png",
     "text": MWF.APPPD.LP.menu.newActivityType.delay,

@@ -781,6 +781,9 @@ MWF.xApplication.process.ProcessDesigner.Main = new Class({
     createEmbedActivity: function(){
         this.process.createEmbedActivity();
     },
+    createPublishActivity: function(){
+        this.process.createPublishActivity();
+    },
     createInvokesActivity: function(){
         this.process.createInvokesActivity();
     },

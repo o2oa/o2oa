@@ -288,6 +288,42 @@
 				"cursor": "pointer"
 			}
 		},
+		"publish":{
+			"shadow": {
+				"cursor": "pointer",
+				"fill": "120-#fff-#eee",
+				"stroke-width": "0",
+				"z-index": 100
+			},
+			"shap": {
+				"cursor": "pointer",
+				"fill": "120-#faf8ff-#eee6ff",
+				"stroke-width": "1",
+				"stroke": "#999999",
+				"z-index": 100
+			},
+			"text":{
+				"font-size": 14,
+				"cursor": "pointer",
+				"z-index": 100
+			},
+			"icon":{
+				"src": "../x_component_process_ProcessDesigner/$Process/default/icon/publish.png",
+				"attr": {
+					"cursor": "pointer",
+					"z-index": 100
+				}
+			},
+			"list": {
+				"width": "30px",
+				"height": "24px",
+				"background-image": "url(../x_component_process_ProcessDesigner/$Process/default/icon/publish.png)",
+				"background-position": "center center",
+				"background-repeat": "no-repeat",
+				"border-bottom": "1px dashed #CCC",
+				"cursor": "pointer"
+			}
+		},
 		"box": {
 			"stroke": "#ffa200",
 			"stroke-dasharray": "-",

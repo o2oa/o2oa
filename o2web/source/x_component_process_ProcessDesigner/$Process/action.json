@@ -47,6 +47,7 @@
   "parallel": [],
   "merge": [],
   "embed": [],
+  "publish": [],
   "delay": [],
   "invoke": [],
   "service": [],

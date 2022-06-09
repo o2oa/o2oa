@@ -523,6 +523,46 @@
 				"cursor": "pointer"
 			}
 		},
+		"publish":{
+			"shadow": {
+				"cursor": "pointer",
+				"fill": "120-#fff-#eee",
+				"stroke-width": "0",
+				"z-index": 100
+			},
+			"shap": {
+				"cursor": "pointer",
+				//"fill": "90-#FFF-#9a9a9a:5-#777777:50-#929292:53-#d1d1d1:97:#FFF",
+				"fill": "#C8F6C5",
+				"stroke-width": "1",
+				"stroke": "#58A653",
+				"radius": 0,
+				"z-index": 100
+			},
+			"text":{
+				"fill": "#000",
+				"stroke-width": 0,
+				"font-size": 14,
+				"cursor": "pointer",
+				"z-index": 100
+			},
+			"icon":{
+				"src": "../x_component_process_ProcessDesigner/$Process/flat/icon/publish.png",
+				"attr": {
+					"cursor": "pointer",
+					"z-index": 100
+				}
+			},
+			"listIcon": {
+				"width": "30px",
+				"height": "24px",
+				"background-image": "url("+"../x_component_process_ProcessDesigner/$Process/default/icon/publish.png"+")",
+				"background-position": "center center",
+				"background-repeat": "no-repeat",
+				"border-bottom": "1px dashed #CCC",
+				"cursor": "pointer"
+			}
+		},
 		"agent":{
 			"shadow": {
 				"cursor": "pointer",

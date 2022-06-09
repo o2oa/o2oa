@@ -709,6 +709,7 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
         this.listSericalActivitys("parallelList", name, select);
         this.listSericalActivitys("mergeList", name, select);
         this.listSericalActivitys("embedList", name, select);
+        this.listSericalActivitys("publishList", name, select);
         this.listSericalActivitys("delayList", name, select);
         this.listSericalActivitys("invokeList", name, select);
         this.listSericalActivitys("serviceList", name, select);
