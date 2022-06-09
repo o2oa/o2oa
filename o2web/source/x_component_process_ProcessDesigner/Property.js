@@ -460,6 +460,8 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
         // var personCompanyNodes = this.propertyContent.getElements(".MWFPersonCompany");
         var dutyNodes = this.propertyContent.getElements(".MWFDutySelector");
         var tableNodes = this.propertyContent.getElements(".MWFTableSelector");
+        var cmsCategoryNodes = this.propertyContent.getElements(".MWFCMSCategorySelector");
+        var formFieldString = this.propertyContent.getElements(".MWFFormFieldString");
         MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.PersonSelector", function(){
             personIdentityNodes.each(function(node){
                 count = node.get("count") || 0;
@@ -513,7 +515,22 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                     "onChange": function(ids){this.savePersonItem(node, ids);}.bind(this)
                 });
             }.bind(this));
-
+            cmsCategoryNodes.each(function(node){
+                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.process.designer, {
+                    "type": "CMSCategory",
+                    "names": this.data[node.get("name")],
+                    "onChange": function(ids){this.savePersonItem(node, ids);}.bind(this)
+                });
+            }.bind(this));
+            formFieldString.each(function(node){
+                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.process.designer, {
+                    "type": "formField",
+                    "application": this.process.process.application,
+                    "fieldType": "string",
+                    "names": this.data[node.get("name")],
+                    "onChange": function(ids){this.savePersonItem(node, ids);}.bind(this)
+                });
+            }.bind(this));
 
             // personDepartmentNodes.each(function(node){
             //     new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.process.designer, {

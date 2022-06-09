@@ -727,11 +727,13 @@
     "targetProcessAlias": "",
 
     "inheritData": true,
+    "inheritAttachment": true,
+    "reviewVisible": true,
+    "readerDataPathList": ["publishFor"],
+    "authorDataPathList": [],
+    "pictureDataPathList": ["imageclipper"],
+    "htmleditorDataPathList": ["htmleditor"],
 
-    "embedCreatorType": "lastIdentity",
-    "targetIdentity": "",
-    "targetIdentityScript": "",
-    "targetIdentityScriptText": "",
 
     "titleScript": "",
     "titleScriptText": "",

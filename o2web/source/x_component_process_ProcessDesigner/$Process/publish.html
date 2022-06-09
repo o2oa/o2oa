@@ -69,58 +69,104 @@
                     <td class="editTableTitle">{{$.lp.cmsCategory}}:</td>
                     <td class="editTableValue">
                         <input class="editTableRadio" onclick="if (this.checked){
-                        $('text{$.id}cmsArea').setStyle('display', 'none');
-                        $('text{$.id}cmsArea').setStyle('display', 'block');
-                    }" name="categorySelectType" text{($.publishTarget !== 'table')?'checked':''} type="radio" value="categoryId"/>{{$.lp.select}}
+                        $('text{$.id}dataPathTable').setStyle('display', '');
+                        $('text{$.id}categoryIdTable').setStyle('display', 'none');
+                    }" name="categorySelectType" text{($.categorySelectType !== 'categoryId')?'checked':''} type="radio" value="dataPath"/>{{$.lp.dataPath}}
                         <input class="editTableRadio" onclick="if (this.checked){
-                        $('text{$.id}cmsArea').setStyle('display', 'block');
-                        $('text{$.id}cmsArea').setStyle('display', 'none');
-                    }" name="categorySelectType" text{($.publishTarget === 'table')?'checked':''} type="radio" value="dataPath"/>{{$.lp.dataPath}}
+                        $('text{$.id}dataPathTable').setStyle('display', 'none');
+                        $('text{$.id}categoryIdTable').setStyle('display', '');
+                    }" name="categorySelectType" text{($.categorySelectType === 'categoryId')?'checked':''} type="radio" value="categoryId"/>{{$.lp.select}}
                     </td>
                 </tr>
             </table>
-            <table id="text{$.id}categoryIdTable" width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-                <tr>
-                    <td class="editTableTitle">{{$.lp.categoryId}}:</td>
-                    <td class="editTableValue">
-                        <div class="MWFPersonIdentity" count="1"  name="categoryId" type="cmscategory"></div>
-                    </td>
-                </tr>
-            </table>
-            <table  id="text{$.id}dataPathTable"  width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <table  id="text{$.id}dataPathTable"  width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" style="display: text{($.categorySelectType!=='categoryId')?'':'none'};">
                 <tr>
                     <td class="editTableTitle">{{$.lp.dataPath}}:</td>
                     <td class="editTableValue">
                     <td class="editTableValue"><input type="text" name="dataPath" jsondata="dataPath" value="text{$.dataPath}" class="editTableInput"/></td>
+                </tr>
+            </table>
+            <table id="text{$.id}categoryIdTable" width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" style="display: text{($.categorySelectType=='categoryId')?'':'none'};">
+                <tr>
+                    <td class="editTableTitle">{{$.lp.selectCmsCategory}}:</td>
+                    <td class="editTableValue">
+                        <div class="MWFCMSCategorySelector" count="1"  name="categoryId" type="cmscategory"></div>
                     </td>
                 </tr>
             </table>
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">{{$.lp.copyData}}:</td>
+                    <td class="editTableValue">
+                        <input class="editTableRadio" name="inheritData" text{($.inheritData)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
+                        <input class="editTableRadio" name="inheritData" text{(!$.inheritData)?'checked':''} type="radio" value="false"/>{{$.lp.no}}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">{{$.lp.copyAttachment}}:</td>
+                    <td class="editTableValue">
+                        <input class="editTableRadio" name="inheritAttachment" text{($.inheritAttachment)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
+                        <input class="editTableRadio" name="inheritAttachment" text{(!$.inheritAttachment)?'checked':''} type="radio" value="false"/>{{$.lp.no}}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">{{$.lp.reviewVisible}}:</td>
+                    <td class="editTableValue">
+                        <input class="editTableRadio" name="reviewVisible" text{($.reviewVisible)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
+                        <input class="editTableRadio" name="reviewVisible" text{(!$.reviewVisible)?'checked':''} type="radio" value="false"/>{{$.lp.no}}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">{{$.lp.readerFields}}:</td>
+                    <td class="editTableValue">
+                        <div class="MWFFormFieldPerson" name="readerDataPathList"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">{{$.lp.authorFields}}:</td>
+                    <td class="editTableValue">
+                        <div class="MWFFormFieldPerson" name="authorDataPathList"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">{{$.lp.pictureFields}}:</td>
+                    <td class="editTableValue">
+                        <div class="MWFFormFieldString" name="pictureDataPathList"></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="editTableTitle">{{$.lp.htmleditorFields}}:</td>
+                    <td class="editTableValue">
+                        <div class="MWFFormFieldString" name="htmleditorDataPathList"></div>
+                    </td>
+                </tr>
+            </table>
+            <hr/>
+            <div></div>
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">{{$.lp.titleScript}}:</td>
+                    <td class="editTableValue">
+                        <div class="MWFScript" name="targetTitleScript"></div>
+                    </td>
+                </tr>
+            </table>
+            <div class="MWFScriptText" name="targetTitleScriptText" data-o2-api="../api/server.module_assginData.html#server.module_assginData"></div>
+
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">{{$.lp.dataScript}}:</td>
+                    <td class="editTableValue">
+                        <div class="MWFScript" name="targetAssginDataScript"></div>
+                    </td>
+                </tr>
+            </table>
+            <div class="MWFScriptText" name="targetAssginDataScriptText" data-o2-api="../api/server.module_assginData.html#server.module_assginData"></div>
+            <div style="margin: 5px;">{{$.lp.getOldData}}: var data = this.assignData.get(); </div>
+            <div style="margin: 5px;">{{$.lp.setNewData}}: return data; </div>
+            <div style="padding: 5px"><a href="../api/server.module_assginData.html#server.module_assginData" target="_blank">{{$.lp.apiDoc}}</a></div>
+
         </div>
-
-        <hr/>
-        <div></div>
-        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-            <tr>
-                <td class="editTableTitle">{{$.lp.titleScript}}:</td>
-                <td class="editTableValue">
-                    <div class="MWFScript" name="targetTitleScript"></div>
-                </td>
-            </tr>
-        </table>
-        <div class="MWFScriptText" name="targetTitleScriptText" data-o2-api="../api/server.module_assginData.html#server.module_assginData"></div>
-
-        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-            <tr>
-                <td class="editTableTitle">{{$.lp.dataScript}}:</td>
-                <td class="editTableValue">
-                    <div class="MWFScript" name="targetAssginDataScript"></div>
-                </td>
-            </tr>
-        </table>
-        <div class="MWFScriptText" name="targetAssginDataScriptText" data-o2-api="../api/server.module_assginData.html#server.module_assginData"></div>
-        <div style="margin: 5px;">{{$.lp.getOldData}}: var data = this.assignData.get(); </div>
-        <div style="margin: 5px;">{{$.lp.setNewData}}: return data; </div>
-        <div style="padding: 5px"><a href="../api/server.module_assginData.html#server.module_assginData" target="_blank">{{$.lp.apiDoc}}</a></div>
 
     </div>
     <div title="{{$.lp.person}}"  class="MWFTab">

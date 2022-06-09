@@ -521,7 +521,13 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"cms": "内容管理",
 		"table": "数据表",
 		"cmsCategory": "内容管理分类",
-		"categoryId": ""
+		"selectCmsCategory": "选择分类",
+		"reviewVisible": "流程参与者可见",
+		"readerFields": "读者字段",
+		"authorFields": "作者字段",
+		"pictureFields": "首页图片字段",
+		"htmleditorFields": "html编辑器字段"
+
 
 
 	}
