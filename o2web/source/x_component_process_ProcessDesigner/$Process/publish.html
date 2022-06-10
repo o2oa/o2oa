@@ -52,12 +52,12 @@
                 <td class="editTableTitle">{{$.lp.publishTarget}}:</td>
                 <td class="editTableValue">
                     <input class="editTableRadio" onclick="if (this.checked){
-                        $('text{$.id}cmsArea').setStyle('display', 'none');
                         $('text{$.id}cmsArea').setStyle('display', 'block');
+                        $('text{$.id}queryTableArea').setStyle('display', 'none');
                     }" name="publishTarget" text{($.publishTarget !== 'table')?'checked':''} type="radio" value="cms"/>{{$.lp.cms}}
                     <input class="editTableRadio" onclick="if (this.checked){
-                        $('text{$.id}cmsArea').setStyle('display', 'block');
                         $('text{$.id}cmsArea').setStyle('display', 'none');
+                        $('text{$.id}queryTableArea').setStyle('display', 'block');
                     }" name="publishTarget" text{($.publishTarget === 'table')?'checked':''} type="radio" value="table"/>{{$.lp.table}}
                 </td>
             </tr>
@@ -166,6 +166,15 @@
             <div style="margin: 5px;">{{$.lp.setNewData}}: return data; </div>
             <div style="padding: 5px"><a href="../api/server.module_assginData.html#server.module_assginData" target="_blank">{{$.lp.apiDoc}}</a></div>
 
+        </div>
+
+        <div id="text{$.id}queryTableArea" style="display: text{($.publishTarget=='table')?'none':''};">
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">{{$.lp.queryTable}}:</td>
+                    <td class="editTableValue"><div class="MWFTableSelector" name="updateTableList"></div></td>
+                </tr>
+            </table>
         </div>
 
     </div>
