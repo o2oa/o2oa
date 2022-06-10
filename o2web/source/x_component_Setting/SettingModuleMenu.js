@@ -33,10 +33,10 @@ o2.xApplication.Setting.ModuleMenuDocument = new Class({
         }).inject(this.content);
         this.actionsArea = new Element("div", {
             styles: {
-                "height": "100%",
+                "height": "calc( 100% - 40px )",
                 "overflow": "hidden",
                 "margin-left": "420px",
-                "padding": "40px 20px"
+                "padding": "20px 20px"
             }
         }).inject(this.content);
 
@@ -197,6 +197,8 @@ o2.xApplication.Setting.ModuleMenuDocument.StartMenu = new Class({
             "   </div>" +
             "   <div class='layout_start_item_text'></div>" +
             "   <div class='layout_start_item_badge'></div>";
+
+        this.checkLayout();
     },
     loadMenuData: function(callback){
         debugger;
@@ -253,10 +255,45 @@ o2.xApplication.Setting.ModuleMenuDocument.StartMenu = new Class({
                 this.loadTitle();
                 this.loadLnks();
 
+                this.setSize();
+
                 this.isLoaded = true;
                 this.fireEvent("load");
             }.bind(this));
         }.bind(this));
+    },
+    setSize: function(){
+
+        if (this.appScrollBar && this.appScrollBar.scrollVNode) this.appScrollBar.scrollVNode.setStyle("margin-top", "0px");
+        var isLnk = false;
+        if (false && this.layout.lnks && this.layout.lnks.length){
+            this.lnkAreaNode.show();
+            this.lineNode.show();
+            var h = 100*3;
+            this.lnkScrollNode.setStyle("height", ""+h+"px");
+            isLnk = true;
+        }else{
+            this.lnkAreaNode.hide();
+            this.lineNode.hide();
+        }
+
+        debugger;
+        if( !this.node.offsetParent )this.node.show();
+
+        var size = this.node.getSize();
+        var lnkSizeY = (isLnk) ? this.lnkAreaNode.getSize().y : 0;
+        var lineSizeY = (isLnk) ? this.lineNode.getSize().y : 0;
+        var mt = (isLnk) ? (this.lineNode.getStyle("margin-top").toInt() || 0) : 0;
+        var mb = (isLnk) ? (this.lineNode.getStyle("margin-bottom").toInt() || 0) : 0;
+        var titleSize = this.appTitleNode.getSize();
+
+        var y = size.y-lnkSizeY-lineSizeY-mt-mb-titleSize.y - 40;
+        this.appScrollNode.setStyle("height", ""+y+"px");
+    },
+    checkLayout: function(){
+        if( !this.layout.path )this.layout.path = o2.session.path+"/xDesktop/$Default/";
+        if( !this.layout.options )this.layout.options = {};
+        if( !this.layout.options.style )this.layout.options.style = "blue";
     },
     reload: function(menuData){
         this.menuData = menuData || {
