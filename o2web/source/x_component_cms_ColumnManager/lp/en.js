@@ -102,7 +102,11 @@ MWF.xApplication.cms.ColumnManager.LP = {
         "none": "None",
         "noProcess": "There is no process in the system that you can manage",
         "documentType": "Document Type",
-        "excelImportView": "Data Import and Export View"
+        "excelImportView": "Data Import and Export View",
+
+        "useProcessForm": "Use Process Form",
+        "useProcessFormNote": "Note: If using a process form, then use the process form to open the published document, otherwise use the form set by category to open.",
+        "setSucess": "Set successfully"
     },
     "form": {
         "create": "New Form",

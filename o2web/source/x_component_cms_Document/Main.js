@@ -23,7 +23,8 @@ MWF.xApplication.cms.Document.Main = new Class({
         "forceFormId" : null, //不管编辑还是阅读都用此表单打开，优先使用
         "printFormId" : null, //打印表单，不管编辑还是阅读都用此表单打开，仅此于forceFormId
         "readFormId" : null, //强制的阅读表单，优先于表单的readFormId
-        "editFormId" : null //强制的编辑表单，优先于表单的formId
+        "editFormId" : null, //强制的编辑表单，优先于表单的formId
+        "useProcessForm": false //表单ID参数是流程的
 	},
 	onQueryLoad: function(){
         if (!this.options.title) this.setOptions({"title": MWF.xApplication.cms.Document.LP.title})
@@ -41,6 +42,7 @@ MWF.xApplication.cms.Document.Main = new Class({
             this.options.forceFormId = this.status.forceFormId;
             this.options.readFormId = this.status.readFormId;
             this.options.editFormId = this.status.editFormId;
+            this.options.useProcessForm = this.status.useProcessForm;
         }
 
         //兼容之前的 formEditId 和 formId
@@ -147,7 +149,8 @@ MWF.xApplication.cms.Document.Main = new Class({
         }
 
         if( formId ){
-            this.getFormV2(formId);
+            this.useProcessForm = this.options.useProcessForm;
+            this.getFormV2(formId, null, false);
             this.getDocumentV2();
         }else{
             if( readonly ){ //只读情况，不需要判断是否有阅读权限
@@ -234,7 +237,47 @@ MWF.xApplication.cms.Document.Main = new Class({
                 this.errorLoadingV2( error );
             }.bind(this)}, id, id);
     },
+    lookupFormV2 : function ( isReadonly ) {
+        var id = this.options.documentId || this.options.id;
+
+        var lookupMethod;
+        if( this.options.anonymousAccess || this.options.anonymous ){
+            lookupMethod =  layout.mobile ? "lookupFormWithDocMobileAnonymousV2" : "lookupFormWithDocAnonymousV2";
+        }else{
+            lookupMethod = layout.mobile ? "lookupFormWithDocMobileV2" : "lookupFormWithDocV2";
+        }
+
+        this.action[lookupMethod](id, function(json){
+            var formId;
+            if( json.data.processFormId ){
+                formId = json.data.processFormId;
+                this.useProcessForm = true;
+            }else if( isReadonly ){
+                formId = json.data.readFormId || json.data.formId;
+            }else{
+                formId = json.data.formId || json.data.readFormId;
+            }
+            if (json.data.form){
+                this.json_form = json;
+                this.loadFormFlag = true;
+                this.checkLoad();
+            }else{
+                var cacheTag = json.data.cacheTag || "";
+                this.getFormV2( formId, cacheTag, false )
+            }
+
+        }.bind(this), function(){
+            this.checkLoad( true );
+        }.bind(this));
+    },
     getFormV2 : function( formId, cacheTag, ignoreFromCategory ){
+        if( this.useProcessForm ){
+            this.getProcessForm( formId, cacheTag, ignoreFromCategory );
+        }else{
+            this.getCMSForm( formId, cacheTag, ignoreFromCategory );
+        }
+    },
+    getCMSForm: function(formId, cacheTag, ignoreFromCategory){
         var formMethod;
         if( this.options.anonymousAccess || this.options.anonymous ){
             formMethod =  layout.mobile ? "getFormMobileAnonymousV2" : "getFormAnonymousV2";
@@ -255,52 +298,53 @@ MWF.xApplication.cms.Document.Main = new Class({
             function(error){
                 //没有表单，重新获取分类表单
                 if( !ignoreFromCategory && this.document && this.document.categoryId ){
-                    this.action.getCategory( this.document.categoryId, function(json){
-                        var d = json.data;
-                        if( this.readonly === true && d.readFormId && d.readFormId != "" ){
-                            this.formId  = d.readFormId;
-                        }else{
-                            this.formId = d.formId || d.readFormId;
-                        }
-                        this.getFormV2( this.formId, null,true );
-                    }.bind(this));
+                    this.getFormByCategory();
                 }else{
                     this.errorLoadingV2( error , "form" );
                 }
             }.bind(this)
         )
     },
-    lookupFormV2 : function ( isReadonly ) {
-        var id = this.options.documentId || this.options.id;
+    getProcessForm: function(formId, cacheTag, ignoreFromCategory){
+        var formMethod;
+        // if( this.options.anonymousAccess || this.options.anonymous ){
+        //     formMethod =  layout.mobile ? "getFormAnonymousV2Mobile" : "getFormAnonymousV2";
+        // }else{
+            formMethod = layout.mobile ? "getFormV2Mobile": "getFormV2";
+        // }
+        MWF.Actions.get("x_processplatform_assemble_surface")[formMethod](
+            formId,
 
-        var lookupMethod;
-        if( this.options.anonymousAccess || this.options.anonymous ){
-            lookupMethod =  layout.mobile ? "lookupFormWithDocMobileAnonymousV2" : "lookupFormWithDocAnonymousV2";
-        }else{
-            lookupMethod = layout.mobile ? "lookupFormWithDocMobileV2" : "lookupFormWithDocV2";
-        }
+            cacheTag || "",
 
-        this.action[lookupMethod](id, function(json){
-            var formId;
-            if( isReadonly ){
-                formId = json.data.readFormId || json.data.formId;
-            }else{
-                formId = json.data.formId || json.data.readFormId;
-            }
-            if (json.data.form){
-                this.json_form = json;
+            function( jsonForm ){
+                this.json_form = jsonForm;
                 this.loadFormFlag = true;
                 this.checkLoad();
-            }else{
-                var cacheTag = json.data.cacheTag || "";
-                this.getFormV2( formId, cacheTag )
-            }
+            }.bind(this),
 
-        }.bind(this), function(){
-            this.checkLoad( true );
+            function(error){
+                //没有表单，重新获取分类表单
+                if( !ignoreFromCategory && this.document && this.document.categoryId ){
+                    this.getFormByCategory();
+                }else{
+                    this.errorLoadingV2( error , "form" );
+                }
+            }.bind(this)
+        )
+    },
+    getFormByCategory: function(){
+        this.action.getCategory( this.document.categoryId, function(json){
+            var d = json.data;
+            if( this.readonly === true && d.readFormId && d.readFormId != "" ){
+                this.formId  = d.readFormId;
+            }else{
+                this.formId = d.formId || d.readFormId;
+            }
+            this.useProcessForm = false;
+            this.getFormV2(this.formId, null, true);
         }.bind(this));
     },
-
     parseFormV2: function( json ){
         if (json.form){
             this.formDataText = (json.form.data) ? MWF.decodeJsonString(json.form.data): "";
@@ -376,9 +420,47 @@ MWF.xApplication.cms.Document.Main = new Class({
 
         var formId;
         if( this.readonly === true ){
-            formId = this.options.forceFormId || this.options.printFormId  || this.options.readFormId || this.document.readFormId || this.options.editFormId || this.document.form;
+            formId = this.options.forceFormId || this.options.printFormId  || this.options.readFormId;
+            if( formId ){
+                this.useProcessForm = this.options.useProcessForm;
+            }
+            if( !formId && this.document.wf_formId ){
+                formId = this.document.wf_formId;
+                this.useProcessForm = true;
+            }
+            if( !formId && this.document.readFormId ){
+                formId = this.document.readFormId;
+                this.useProcessForm = false;
+            }
+            if( !formId && this.options.editFormId ){
+                formId = this.options.editFormId;
+                this.useProcessForm = this.options.useProcessForm;
+            }
+            if( !formId && this.document.form ){
+                formId = this.document.form;
+                this.useProcessForm = false;
+            }
         }else{
-            formId = this.options.forceFormId || this.options.printFormId || this.options.editFormId || this.document.form || this.options.readFormId || this.document.readFormId;
+            formId = this.options.forceFormId || this.options.printFormId || this.options.editFormId;
+            if( formId ){
+                this.useProcessForm = this.options.useProcessForm;
+            }
+            if( !formId && this.document.wf_formId ){
+                formId = this.document.wf_formId;
+                this.useProcessForm = true;
+            }
+            if( !formId && this.document.form ){
+                formId = this.document.form;
+                this.useProcessForm = false;
+            }
+            if( !formId && this.options.readFormId ){
+                formId = this.options.readFormId;
+                this.useProcessForm = this.options.useProcessForm;
+            }
+            if( !formId && this.document.readFormId ){
+                formId = this.document.readFormId;
+                this.useProcessForm = false;
+            }
         }
         this.formId = formId;
 
@@ -686,6 +768,7 @@ MWF.xApplication.cms.Document.Main = new Class({
         if( this.options.printFormId )status.printFormId = this.options.printFormId;
         if( this.options.forceFormId )status.forceFormId = this.options.forceFormId;
         if(this.options.appId && this.options.appId!="")status.appId = this.options.appId;
+        if( this.options.useProcessForm )status.useProcessForm = true;
         return status;
     },
     onPostClose: function(){

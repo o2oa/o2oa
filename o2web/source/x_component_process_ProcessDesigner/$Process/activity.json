@@ -726,6 +726,9 @@
     "targetProcessName": "",
     "targetProcessAlias": "",
 
+    "dataPath": "cmsDocument.categoryId",
+    "useProcessForm": false,
+
     "inheritData": true,
     "inheritAttachment": true,
     "reviewVisible": true,
