@@ -1124,6 +1124,7 @@
         "log": {
           "id": "log",
           "type": "Log",
+          "logType": "record",
           "filterActivity": "拟稿,部门领导审核",
           "filterPerson": [],
           "filterRoute": [],

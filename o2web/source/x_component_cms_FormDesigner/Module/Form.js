@@ -171,14 +171,23 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
     //},
 	
 	loadModule: function(json, dom, parent){
-		//var classPre = "CMSFC";
-		//var module = new MWF[classPre+json.type](this);
-		//module.load(json, dom, parent);
-		//return module;
+		switch (json.type) {
+			case "Log":
+				debugger;
+				if( json.logType )json.type = "ProcessLog";
+				break;
+			case "Monitor":
+				debugger;
+				json.type = "ProcessMonitor";
+				break;
+			case "ReadLog":
+				json.type = "ProcessReadLog";
+				break;
+		}
 
+		var module, className;
 		if( !json ){
-			var module;
-			var className = ( dom.get("MWFType") || "div" ).capitalize();
+			className = ( dom.get("MWFType") || "div" ).capitalize();
 			this.getTemplateData(className, function(data){
 				var moduleData = Object.clone(data);
 				moduleData.id = dom.get("id");
@@ -188,8 +197,7 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 			}.bind(this), false);
 			return module;
 		}else if( MWF["CMSFC"+json.type] ){
-			var module;
-			var className = json.type.capitalize();
+			className = json.type.capitalize();
 			this.getTemplateData(className, function(data){
 			    var moduleData = Object.clone(data);
 				Object.merge(moduleData, json);
@@ -199,8 +207,7 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 			}.bind(this), false);
 			return module;
 		}else{
-		    var module;
-			var className = json.type.capitalize();
+			className = json.type.capitalize();
 			this.getTemplateData(className, function(data){
 				var moduleData = Object.clone(data);
 				Object.merge(moduleData, json);
@@ -226,8 +233,9 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
 		if (this.dataTemplate[className]){
 			if (callback) callback(this.dataTemplate[className]);
 		}else{
+			var _className = className.indexOf("Process") === 0 ? className.substr( 7, className.length - 1 ) : className;
 			var path = MWF.CMSFD.ResetTemplateModules.indexOf( className.toLowerCase() ) != -1 ? "x_component_cms_FormDesigner" : "x_component_process_FormDesigner";
-			var templateUrl = "../"+path+"/Module/"+className+"/template.json";
+			var templateUrl = "../"+path+"/Module/"+_className+"/template.json";
 			MWF.getJSON(templateUrl, function(responseJSON, responseText){
 				this.dataTemplate[className] = responseJSON;
 				if (callback) callback(responseJSON);

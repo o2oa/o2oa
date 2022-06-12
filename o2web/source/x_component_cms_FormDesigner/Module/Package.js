@@ -60,7 +60,6 @@ MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Elicon", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Elradio", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Elcheckbox", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Importer", null, false);
-MWF.xDesktop.requireApp("cms.FormDesigner", "Module.ReadLog", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Elinput", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Elcommon", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Elautocomplete", null, false);
@@ -77,3 +76,6 @@ MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Elcolorpicker", null, false)
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Eltree", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Eldropdown", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Elcarousel", null, false);
+MWF.xDesktop.requireApp("cms.FormDesigner", "Module.ProcessLog", null, false);
+MWF.xDesktop.requireApp("cms.FormDesigner", "Module.ProcessReadLog", null, false);
+MWF.xDesktop.requireApp("cms.FormDesigner", "Module.ProcessMonitor", null, false);
