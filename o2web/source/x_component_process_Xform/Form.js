@@ -4368,9 +4368,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     printWork: function (app, form) {
         var application = app || (this.businessData.work) ? this.businessData.work.application : this.businessData.workCompleted.application;
         var form = form;
-        if (!form) {
+        if (!form || form === "none") {
             form = this.json.id;
-            if (this.json.printForm) form = this.json.printForm;
+            if (this.json.printForm && this.json.printForm!=="none" ) form = this.json.printForm;
         }
         if (this.businessData.workCompleted) {
             var application = app || this.businessData.workCompleted.application;
