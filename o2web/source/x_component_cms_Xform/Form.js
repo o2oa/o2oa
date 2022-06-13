@@ -1524,7 +1524,51 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             // }
         }
     },
+    //列式流程log
+    listWorkLog: function ( callback ) {
+        if( !this.businessData.data.$work || !this.businessData.data.$work.job ){
+            callback([]);
+            return
+        }
 
+        if( this.workLogList ){
+            callback(this.workLogList);
+            return;
+        }
+
+        //只获取一次。把callback存起来，等异步调用完成后一次性执行callback
+        if( !this.worklogCallbackList )this.worklogCallbackList = [];
+        Promise.resolve( o2.Actions.load("x_processplatform_assemble_surface").WorkLogAction.listWithJob( this.businessData.data.$work.job )).then(function(json){
+            this.workLogList = json.data;
+            debugger;
+            while( this.worklogCallbackList.length ){
+                this.worklogCallbackList.shift()( this.workLogList );
+            }
+        }.bind(this));
+        this.worklogCallbackList.push( callback );
+    },
+    //列式流程record
+    listWorkRecord: function ( callback ) {
+        if( !this.businessData.data.$work || !this.businessData.data.$work.job ){
+            callback([]);
+            return
+        }
+
+        if( this.workRecordList ){
+            callback(this.workRecordList);
+            return;
+        }
+
+        //只获取一次。把callback存起来，等异步调用完成后一次性执行callback
+        if( !this.workRecordCallbackList )this.workRecordCallbackList = [];
+        Promise.resolve( o2.Actions.load("x_processplatform_assemble_surface").RecordAction.listWithJob( this.businessData.data.$work.job )).then(function(json){
+            this.workRecordList = json.data;
+            while( this.workRecordCallbackList.length ){
+                this.workRecordCallbackList.shift()( this.workRecordList );
+            }
+        }.bind(this));
+        this.workRecordCallbackList.push( callback );
+    }
 
 
 });
