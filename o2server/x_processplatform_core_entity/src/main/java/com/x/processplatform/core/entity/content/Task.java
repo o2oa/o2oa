@@ -42,6 +42,9 @@ import com.x.processplatform.core.entity.PersistenceProperties;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Route;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 @Entity
 @ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Content.Task.table, uniqueConstraints = {
@@ -183,6 +186,7 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 	}
 
 	public static final String job_FIELDNAME = "job";
+	@Schema(description = "任务标识.")
 	@FieldDescribe("任务.")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + job_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + job_FIELDNAME)
@@ -191,6 +195,7 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 
 	public static final String title_FIELDNAME = "title";
 	@FieldDescribe("标题.")
+	@Parameter(description = "工作标题.")
 	@Column(length = length_255B, name = ColumnNamePrefix + title_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + title_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
@@ -390,8 +395,9 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 	public static final String routeList_FIELDNAME = "routeList";
 	@FieldDescribe("当前活动可供选择的路由.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + routeList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + routeList_FIELDNAME + JoinIndexNameSuffix))
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ routeList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + routeList_FIELDNAME
+					+ JoinIndexNameSuffix))
 	@ElementColumn(length = JpaObject.length_id, name = ColumnNamePrefix + routeList_FIELDNAME)
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@CheckPersist(allowEmpty = true)
@@ -400,8 +406,9 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 	public static final String routeNameList_FIELDNAME = "routeNameList";
 	@FieldDescribe("当前活动可供选择的路由名称.")
 	@PersistentCollection(fetch = FetchType.EAGER)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle + routeNameList_FIELDNAME, joinIndex = @Index(name = TABLE
-			+ IndexNameMiddle + routeNameList_FIELDNAME + JoinIndexNameSuffix))
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ routeNameList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle + routeNameList_FIELDNAME
+					+ JoinIndexNameSuffix))
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + routeNameList_FIELDNAME)
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@CheckPersist(allowEmpty = true)

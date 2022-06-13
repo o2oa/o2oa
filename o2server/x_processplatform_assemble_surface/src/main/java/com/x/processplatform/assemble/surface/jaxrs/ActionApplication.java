@@ -35,6 +35,8 @@ import com.x.processplatform.assemble.surface.jaxrs.work.WorkAction;
 import com.x.processplatform.assemble.surface.jaxrs.workcompleted.WorkCompletedAction;
 import com.x.processplatform.assemble.surface.jaxrs.worklog.WorkLogAction;
 
+import io.swagger.v3.jaxrs2.integration.resources.AcceptHeaderOpenApiResource;
+
 @ApplicationPath("jaxrs")
 public class ActionApplication extends AbstractActionApplication {
 
@@ -69,6 +71,9 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(SnapAction.class);
 		classes.add(AnonymousAction.class);
 		classes.add(SignAction.class);
+
+		classes.add(OpenApiAction.class);
+		// classes.add(AcceptHeaderOpenApiResource.class);
 		return classes;
 	}
 }
