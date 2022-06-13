@@ -420,10 +420,14 @@ MWF.xApplication.process.Application.WorkExplorer = new Class({
             var valueId = this.retrieve("valueId");
 
             if (_self.filter[key]){
-                _self.filter[key] = _self.filter[key].filter(function(o){
-                    return o.value!==valueId;
-                });
-                if (!_self.filter[key].length) delete _self.filter[key];
+                if( o2.typeOf( _self.filter[key] ) === "string" ){
+                    delete _self.filter[key];
+                }else{
+                    _self.filter[key] = _self.filter[key].filter(function(o){
+                        return o.value!==valueId;
+                    });
+                    if (!_self.filter[key].length) delete _self.filter[key];
+                }
             }
 
             // if (_self.filter[key]) _self.filter[key] = null;
