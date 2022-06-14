@@ -19,7 +19,7 @@ public class Cache extends ConfigObject {
 	public Cache() {
 		this.type = TYPE_GUAVA;
 		this.redis = Redis.defaultInstance();
-		this.ehcache = Ehcache.defaultInstance();
+		// this.ehcache = Ehcache.defaultInstance();
 		this.guava = Guava.defaultInstance();
 	}
 
@@ -33,8 +33,8 @@ public class Cache extends ConfigObject {
 	@FieldDescribe("redis配置")
 	private Redis redis;
 
-	@FieldDescribe("ehcache配置")
-	private Ehcache ehcache;
+//	@FieldDescribe("ehcache配置")
+//	private Ehcache ehcache;
 
 	@FieldDescribe("guava配置")
 	private Guava guava;
@@ -43,9 +43,9 @@ public class Cache extends ConfigObject {
 		return this.redis == null ? new Redis() : this.redis;
 	}
 
-	public Ehcache getEhcache() {
-		return this.ehcache == null ? new Ehcache() : this.ehcache;
-	}
+//	public Ehcache getEhcache() {
+//		return this.ehcache == null ? new Ehcache() : this.ehcache;
+//	}
 
 	public Guava getGuava() {
 		return this.guava == null ? new Guava() : this.guava;

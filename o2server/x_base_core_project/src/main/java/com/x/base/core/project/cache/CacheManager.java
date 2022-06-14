@@ -35,10 +35,10 @@ public abstract class CacheManager {
 		if (null == cache) {
 			if (StringUtils.equals(Config.cache().getType(), Cache.TYPE_REDIS)) {
 				cache = new CacheRedisImpl(name);
-			} else if (StringUtils.equals(Config.cache().getType(), Cache.TYPE_EHCACHE)) {
-				cache = new CacheEhcacheImpl(name);
+//			} else if (StringUtils.equals(Config.cache().getType(), Cache.TYPE_EHCACHE)) {
+//				cache = new CacheEhcacheImpl(name);
 			} else {
-				cache = new CacheGuavaImpl(name);
+				cache = new CacheGuavaImpl(Cache.TYPE_GUAVA);
 			}
 		}
 		return cache;

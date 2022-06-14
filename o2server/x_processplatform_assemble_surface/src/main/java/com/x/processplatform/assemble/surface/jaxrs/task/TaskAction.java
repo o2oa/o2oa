@@ -29,13 +29,26 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "Task", description = "待办")
 @Path("task")
 @JaxrsDescribe("待办操作")
+
 public class TaskAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(TaskAction.class);
 
-	@JaxrsMethodDescribe(value = "根据job获取待办.", action = ActionListWithJob.class)
+	@Operation(summary = "根据指定的job列示待办.", tags = "Task(待办)", operationId = "", responses = {
+			@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = ActionListWithJob.Wo.class)))) })
+	@JaxrsMethodDescribe(value = "根据指定的job列示待办.", action = ActionListWithJob.class)
 	@GET
 	@Path("list/job/{job}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)

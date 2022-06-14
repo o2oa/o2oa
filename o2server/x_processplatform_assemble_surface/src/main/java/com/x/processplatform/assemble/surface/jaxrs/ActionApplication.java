@@ -35,6 +35,13 @@ import com.x.processplatform.assemble.surface.jaxrs.work.WorkAction;
 import com.x.processplatform.assemble.surface.jaxrs.workcompleted.WorkCompletedAction;
 import com.x.processplatform.assemble.surface.jaxrs.worklog.WorkLogAction;
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Contact;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.info.License;
+import io.swagger.v3.oas.annotations.servers.Server;
+
+@OpenAPIDefinition(servers = @Server(url = "../../x_processplatform_assemble_surface", description = "current server."), info = @Info(title = "Hello World", version = "0.0", description = "My API", license = @License(name = "AGPL-3.0", url = "https://www.o2oa.net"), contact = @Contact(url = "https://www.o2oa.net", name = "o2oa", email = "admin@o2oa.net")))
 @ApplicationPath("jaxrs")
 public class ActionApplication extends AbstractActionApplication {
 
@@ -69,6 +76,9 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(SnapAction.class);
 		classes.add(AnonymousAction.class);
 		classes.add(SignAction.class);
+
+		classes.add(OpenApiAction.class);
+		// classes.add(AcceptHeaderOpenApiResource.class);
 		return classes;
 	}
 }
