@@ -19,17 +19,11 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 
-import io.swagger.v3.core.filter.OpenAPISpecFilter;
-import io.swagger.v3.core.filter.SpecFilter;
 import io.swagger.v3.jaxrs2.integration.JaxrsOpenApiContextBuilder;
-import io.swagger.v3.jaxrs2.integration.resources.BaseOpenApiResource;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.integration.api.OpenAPIConfiguration;
 import io.swagger.v3.oas.integration.api.OpenApiContext;
@@ -37,7 +31,7 @@ import io.swagger.v3.oas.models.OpenAPI;
 
 @Path("/openapi")
 public class OpenApiAction {
-	private static Logger LOGGER = LoggerFactory.getLogger(BaseOpenApiResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(OpenApiAction.class);
 
 	@Context
 	ServletConfig servletConfig;
@@ -60,51 +54,37 @@ public class OpenApiAction {
 			String type) throws Exception {
 
 		String ctxId = getContextId(config);
-
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		System.out.println("ctxId" + ctxId);
-		System.out.println("resourcePackages" + resourcePackages);
-		System.out.println("configLocation" + configLocation);
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		OpenApiContext ctx = new JaxrsOpenApiContextBuilder().servletConfig(config).application(app)
 				.resourcePackages(resourcePackages).configLocation(configLocation)
 				.openApiConfiguration(openApiConfiguration).ctxId(ctxId).buildContext(true);
 		OpenAPI oas = ctx.read();
-		boolean pretty = false;
-		if (ctx.getOpenApiConfiguration() != null
-				&& Boolean.TRUE.equals(ctx.getOpenApiConfiguration().isPrettyPrint())) {
-			pretty = true;
-		}
+//		boolean pretty = false;
+//		if (ctx.getOpenApiConfiguration() != null
+//				&& Boolean.TRUE.equals(ctx.getOpenApiConfiguration().isPrettyPrint())) {
+//			pretty = true;
+//		}
+//
+//		if (oas != null) {
+//			if (ctx.getOpenApiConfiguration() != null && ctx.getOpenApiConfiguration().getFilterClass() != null) {
+//				try {
+//					OpenAPISpecFilter filterImpl = (OpenAPISpecFilter) Class
+//							.forName(ctx.getOpenApiConfiguration().getFilterClass()).getDeclaredConstructor()
+//							.newInstance();
+//					SpecFilter f = new SpecFilter();
+//					oas = f.filter(oas, filterImpl, getQueryParams(uriInfo.getQueryParameters()), getCookies(headers),
+//							getHeaders(headers));
+//				} catch (Exception e) {
+//					LOGGER.error("failed to load filter", e);
+//				}
+//			}
+//		}
 
-		if (oas != null) {
-			if (ctx.getOpenApiConfiguration() != null && ctx.getOpenApiConfiguration().getFilterClass() != null) {
-				try {
-					OpenAPISpecFilter filterImpl = (OpenAPISpecFilter) Class
-							.forName(ctx.getOpenApiConfiguration().getFilterClass()).newInstance();
-					SpecFilter f = new SpecFilter();
-					oas = f.filter(oas, filterImpl, getQueryParams(uriInfo.getQueryParameters()), getCookies(headers),
-							getHeaders(headers));
-				} catch (Exception e) {
-					LOGGER.error("failed to load filter", e);
-				}
-			}
-		}
+//		if (oas == null) {
+//			return Response.status(404).build();
+//		}
 
-		if (oas == null) {
-			return Response.status(404).build();
-		}
-
-		if (StringUtils.isNotBlank(type) && type.trim().equalsIgnoreCase("yaml")) {
-			return Response.status(Response.Status.OK)
-					.entity(pretty
-							? ctx.getOutputYamlMapper().writer(new DefaultPrettyPrinter()).writeValueAsString(oas)
-							: ctx.getOutputYamlMapper().writeValueAsString(oas))
-					.type("application/yaml").build();
-		} else {
-			return Response.status(Response.Status.OK).entity(XGsonBuilder.toJson(oas))
-					.type(MediaType.APPLICATION_JSON_TYPE).build();
-		}
+		return Response.status(Response.Status.OK).entity(XGsonBuilder.instance().toJson(oas))
+				.type(MediaType.APPLICATION_JSON_TYPE).build();
 	}
 
 	private static Map<String, List<String>> getQueryParams(MultivaluedMap<String, String> params) {

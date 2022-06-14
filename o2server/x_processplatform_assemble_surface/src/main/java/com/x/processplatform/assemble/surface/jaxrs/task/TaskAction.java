@@ -36,8 +36,9 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
-@OpenAPIDefinition(info = @Info(title = "待办xxx"))
+@Tag(name = "Task", description = "待办")
 @Path("task")
 @JaxrsDescribe("待办操作")
 

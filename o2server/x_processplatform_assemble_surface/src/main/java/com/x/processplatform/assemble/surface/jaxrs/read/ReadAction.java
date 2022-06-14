@@ -29,10 +29,9 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
-@OpenAPIDefinition(info = @Info(title = "待阅xxx"))
+@Tag(name = "Read", description = "待阅")
 @Path("read")
 @JaxrsDescribe("待阅操作")
 public class ReadAction extends StandardJaxrsAction {
