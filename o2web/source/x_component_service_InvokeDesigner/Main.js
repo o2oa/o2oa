@@ -653,18 +653,10 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
 
         this.propertyExecuteButton = new Element("input", { type : "button", styles : this.css.propertyButton, "value": this.lp.run }).inject(div);
         this.propertyExecuteButton.addEvent("click", function(){
-
-            debugger;
             var alias = this.propertyExecuteButton.retrieve("alias");
             var name = this.propertyExecuteButton.retrieve("name");
             var id = this.propertyExecuteButton.retrieve("id");
-
             var body = this.propertyRequireBodyNode.get("value");
-            var bodyJson;
-            try{
-                bodyJson = JSON.parse(body);
-            }catch(e) {
-            }
 
             if( id ){
                 var address = o2.Actions.getHost("x_program_center");
@@ -706,7 +698,7 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
                 res.setHeader("Content-Type", "application/json; charset=utf-8");
                 res.setHeader("Accept", "text/html,application/json,*/*");
                 res.setHeader("Accept-Language", o2.languageName);
-                res.send( bodyJson || body );
+                res.send( body );
             }
 
             // if( id )o2.Actions.load("x_program_center").InvokeAction.execute( alias || name || id, bodyJson || body, function (json) {
