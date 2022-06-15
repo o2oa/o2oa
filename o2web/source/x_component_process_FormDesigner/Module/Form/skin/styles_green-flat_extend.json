@@ -1,0 +1,173 @@
+{
+  "name": "蓝白扁平",
+  "form": {
+    "textareaDisableResize" : true,
+    "confirmStyle" : "blue_flat_confirm",
+    "dialogStyle" : "blue_flat",
+    "attachmentStyle" : {
+      "style" : "blue_flat",
+      "actionShowText" : true,
+      "isReplaceHidden" : true,
+      "iconConfigUrl" : "../x_component_File/$Main/blue_flat/icon.json",
+      "iconFolderUrl" : "../x_component_File/$Main/blue_flat/file/"
+    },
+    "hideModuleIcon" : true,
+    "nodeStyleWithhideModuleIcon" : {
+        "margin-right" : "0px"
+    },
+    "confirmIcon" : {
+      "success" : "../x_component_process_FormDesigner/Module/Form/notice/icon/ok.png",
+      "error" : "../x_component_process_FormDesigner/Module/Form/notice/icon/error.png",
+      "info" : "../x_component_process_FormDesigner/Module/Form/notice/icon/info.png",
+      "warn" : "../x_component_process_FormDesigner/Module/Form/notice/icon/notice.png"
+    },
+    "submitedDlgUseNotice" : true,
+    "submitedDlgStyle" : {
+      "style" : "blue_flat_notice",
+      "promptPosition" : "center",
+      "isTitle" : true,
+      "title" : "提交成功",
+      "width": 440,
+      "height": "auto",
+      "promptCloseTime" : 5,
+      "maxTitleLength" : 30,
+      "isCountDown" : true,
+      "contentStyle" : {
+        "width":"340px",
+        "margin-top" : "0px",
+        "margin-left" : "0px"
+      }
+    },
+    "selectorStyle" : {
+      "style" : "blue_flat",
+      "width" : "700",
+      "height" : "510",
+      "hasLetter" : false, //字母
+      "hasTop" : true, //可选、已选的标题
+      "level1Indent" : 0,
+      "indent" : 36,
+      "tabStyle" : "blue_flat",
+      "hasShuttle" : true, //穿梭按钮
+      "searchbarInTopNode" : false,
+      "hasSelectedSearchbar" : true,
+      "itemHeight" : 27
+    },
+    "errorStyle" : {
+      "node" : {
+        "border" : "1px solid #ffe1d3 ",
+        "background" : "url(../x_component_process_FormDesigner/Module/Form/notice/icon/error16.png) no-repeat 5px center",
+        "color" : "#3C4658",
+        "min-height" : "30px",
+        "padding-left" : "30px",
+        "padding-right" : "30px",
+        "line-height" : "30px",
+        "background-color": "#ffeee6",
+        "border" : "1px solid #ffddcc",
+        "border-radius" : "3px",
+        "position" : "relative"
+        //"box-shadow": "inset 0 1px 1px 0 rgba(255,255,255,0.35), inset 0 0 2px 0 #FFFFFF"
+      },
+      "close" : {
+        "position" : "absolute",
+        "background" : "url(../x_component_process_FormDesigner/Module/Form/notice/icon/close12.png) no-repeat center center",
+        "width" : "16px",
+        "height" : "16px",
+        "right" : "10px",
+        "top" : "6px",
+        "cursor" : "pointer"
+      }
+    },
+    "noticeStyle" : {
+      "title" : "温馨提示",
+      "footer" : " ",
+      "delayClose" : 3000,
+      "setStyles" : {
+        "wrapper": {
+          "padding-left" : "10px"
+        },
+        "container": {
+          "border":"1px solid #CEE6FF",
+          "background" : "#E7F2FF",
+          "border-radius" : "0px",
+          "position" : "relative",
+          "padding-left" : "20px",
+          "padding-right" : "50px",
+          "padding-top" : "10px",
+          "font-weight" : "normal",
+          "text-shadow" : "none"
+        },
+        "content": {
+          "color" : "#646974",
+          "font-size" : "14px",
+          "padding-left" : "40px",
+          "font-weight" : "normal"
+        },
+        "title": {
+          "background" : "url(../x_component_process_FormDesigner/Module/Form/notice/icon/info.png) no-repeat left center",
+          "height" : "40px",
+          "padding-top" : "10px",
+          "padding-left" : "40px",
+          "font-size" : "18px",
+          "color" : "#12171F",
+          "font-weight" : "normal"
+        },
+        "footer": {
+          "background" : "url(../x_component_process_FormDesigner/Module/Form/notice/icon/close2.png) no-repeat center center",
+          "position" : "absolute",
+          "top" : "5px",
+          "right" : "5px",
+          "width" : "26px",
+          "height" : "26px"
+        }
+      }
+    },
+    "noticeErrorStyle" : {
+      "title" : "出错啦",
+      "setStyles" :  {
+        "container": {
+          "border":"1px solid #FFDDCD",
+          "background" : "#FFEEE6"
+        },
+        "title": {
+          "background": "url(../x_component_process_FormDesigner/Module/Form/notice/icon/error.png) no-repeat left center"
+        }
+      }
+    },
+    "noticeSuccessStyle" : {
+      "title" : "成功",
+      "setStyles" :  {
+        "container": {
+          "border":"1px solid #7ACC29",
+          "background" : "#F7FFF0"
+        },
+        "title": {
+          "background": "url(../x_component_process_FormDesigner/Module/Form/notice/icon/ok.png) no-repeat left center"
+        }
+      }
+    },
+    "noticeOkStyle" : {
+      "title" : "成功",
+      "setStyles" :  {
+        "container": {
+          "border":"1px solid #7ACC29",
+          "background" : "#F7FFF0"
+        },
+        "title": {
+          "background": "url(../x_component_process_FormDesigner/Module/Form/notice/icon/ok.png) no-repeat left center"
+        }
+      }
+    },
+    "noticeNoticeStyle" : {
+      "title" : "提示",
+      "setStyles" :  {
+        "container": {
+          "border":"1px solid #CC9B29",
+          "background" : "#FFFAF0"
+        },
+        "title": {
+          "background": "url(../x_component_process_FormDesigner/Module/Form/notice/icon/notice.png) no-repeat left center"
+        }
+      }
+    }
+  }
+}
