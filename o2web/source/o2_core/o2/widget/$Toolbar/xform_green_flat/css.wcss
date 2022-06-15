@@ -1,7 +1,10 @@
 {
 	"container": {
 		"background-color": "#f4f7f6",
-		"padding": "15px",
+		"padding-top": "15px",
+		"padding-bottom": "15px",
+		"padding-left": "15px",
+		"padding-right": "15px",
 		"border-radius": "10px",
 		"word-wrap" : "normal",
 		"word-break" : "keep-all",
