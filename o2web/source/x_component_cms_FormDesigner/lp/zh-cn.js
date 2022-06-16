@@ -25,6 +25,7 @@ MWF.xApplication.cms.FormDesigner.LP = Object.merge( {}, MWF.xApplication.proces
         "defaultStyle": "传统样式",
         "redSimple": "红色简洁",
         "blueSimple": "蓝色简洁",
+        "greenFlat": "绿色扁平",
         "defaultMobileStyle": "手机样式",
         "banner": "横幅",
         "title": "标题",

@@ -12,7 +12,9 @@
 		"height": "36px",
 		"display":"block",
 		"font-size": "14px",
-	  	"padding-top" : "3px"
+	  	"padding-top" : "3px",
+		"padding-bottom": "0px",
+		"padding-right": "0px"
 	},
 	"toolbarSeparator": {
 //		"display":"block",
