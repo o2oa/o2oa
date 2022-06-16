@@ -57,6 +57,7 @@
         "background": "url(../o2_core/o2/widget/$Paging/default/icon/left.png) no-repeat center center"
     },
     "prePage_over" : {
+        "color" : "inherit",
         "background-color": "#f1f1f1"
     },
     "nextPage" : {
@@ -73,6 +74,7 @@
         "background": "url(../o2_core/o2/widget/$Paging/default/icon/right.png) no-repeat center center"
     },
     "nextPage_over" : {
+        "color" : "inherit",
         "background-color": "#f1f1f1"
     },
     "pageTurnContainer" : {
@@ -92,6 +94,7 @@
         "background-color": "#ffffff"
     },
     "pageItem_over" : {
+        "color" : "inherit",
         "background-color": "#f1f1f1"
     },
     "preBatchPage" : {
@@ -108,6 +111,7 @@
         "background-color": "#ffffff"
     },
     "preBatchPage_over" : {
+        "color" : "inherit",
         "background-color": "#f1f1f1"
     },
     "nextBatchPage" : {
@@ -124,6 +128,7 @@
         "background-color": "#ffffff"
     },
     "nextBatchPage_over" : {
+        "color" : "inherit",
         "background-color": "#f1f1f1"
     },
     "currentPage" : {

@@ -61,7 +61,7 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class(
         button.set({
 			//"id": this.json.id,
 			"text": this.json.name || this.json.id,
-			"styles": this.form.css.buttonStyles,
+			"styles": this.form.json.buttonStyle || this.form.css.buttonStyles,
 			"MWFType": this.json.type
         });
         button.addEvent("click", function(){

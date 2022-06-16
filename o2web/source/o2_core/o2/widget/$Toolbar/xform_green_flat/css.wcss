@@ -5,7 +5,7 @@
 		"padding-bottom": "15px",
 		"padding-left": "15px",
 		"padding-right": "15px",
-		"border-radius": "0px",
+		"border-radius": "15px",
 		"word-wrap" : "normal",
 		"word-break" : "keep-all",
 		"cursor": "pointer",
@@ -14,9 +14,9 @@
 		"display":"block",
 		"font-size": "inherit",
 		"border-top": "0px",
-	  	"margin" : "0px auto",
+	  	"margin" : "20px auto",
 		"border-bottom": "0px solid #e2e3e7",
-	  	"width" : "1300px"
+	  	"width" : "auto"
 	},
 	"toolbarSeparator": {
 		"display":"block",

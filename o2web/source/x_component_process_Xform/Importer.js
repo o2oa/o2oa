@@ -109,7 +109,7 @@ MWF.xApplication.process.Xform.Importer = MWF.APPImporter =  new Class(
         this.node.set({
             "id": this.json.id,
             "text": this.json.name || this.json.id,
-            "styles": this.form.css.buttonStyles,
+            "styles": this.form.json.buttonStyle || this.form.css.buttonStyles,
             "MWFType": this.json.type
         });
         this.node.addEvent("click", function(){
