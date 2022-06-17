@@ -23,7 +23,7 @@
         "float": "left"
     },
     "firstPage_over" : {
-        "color" : "#00bd67",
+        "color" : "#038d73",
         "background-color": "#ffffff"
     },
     "lastPage" : {
@@ -38,7 +38,7 @@
         "float": "left"
     },
     "lastPage_over" : {
-        "color" : "#00bd67",
+        "color" : "#038d73",
         "background-color": "#ffffff"
     },
     "prePage" : {
@@ -55,7 +55,7 @@
         "background": "url(../o2_core/o2/widget/$Paging/default/icon/left.png) no-repeat center center"
     },
     "prePage_over" : {
-        "color" : "#00bd67",
+        "color" : "#038d73",
         "background-color": "#ffffff"
     },
     "nextPage" : {
@@ -72,7 +72,7 @@
         "background": "url(../o2_core/o2/widget/$Paging/default/icon/right.png) no-repeat center center"
     },
     "nextPage_over" : {
-        "color" : "#00bd67",
+        "color" : "#038d73",
         "background-color": "#ffffff"
     },
     "pageTurnContainer" : {
@@ -89,10 +89,11 @@
         "cursor": "pointer",
         "float": "left",
         "margin-right": "10px",
+        "color" : "inherit",
         "background-color": "#ffffff"
     },
     "pageItem_over" : {
-        "color": "#00bd67",
+        "color": "#038d73",
         "background-color": "#ffffff"
     },
     "preBatchPage" : {
@@ -109,7 +110,7 @@
         "background-color": "#ffffff"
     },
     "preBatchPage_over" : {
-        "color": "#00bd67",
+        "color": "#038d73",
         "background-color": "#ffffff"
     },
     "nextBatchPage" : {
@@ -126,7 +127,7 @@
         "background-color": "#ffffff"
     },
     "nextBatchPage_over" : {
-        "color": "#00bd67",
+        "color": "#038d73",
         "background-color": "#ffffff"
     },
     "currentPage" : {
@@ -139,7 +140,7 @@
         "cursor": "pointer",
         "float": "left",
         "margin-right": "10px",
-        "background-color": "#00bd67",
+        "background-color": "#038d73",
         "color": "#ffffff"
     },
     "pageJumper" : {
@@ -153,7 +154,7 @@
         "border" : "1px solid #ddd"
     },
     "pageJumper_over" : {
-        "border" : "1px solid #00bd67"
+        "border" : "1px solid #038d73"
     },
     "pageJumperText" : {
         "float" : "left",

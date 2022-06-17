@@ -4,22 +4,23 @@
     "container" : {
       "height" : "100%",
       "overflow" : "auto",
-      "font-size": "14px"
+      "font-size": "14px",
+      "border-radius":"15px"
     },
     "table": {
       "margin-bottom": "20px",
       "width": "100%"
     },
     "titleTr":{  //viewTitleTrNode   viewTitleLineNode
-      "line-height": "40px",
-      "height": "40px",
+      "line-height": "24px",
+      "height": "24px",
       "color": "#666666",
       "background-color": "#fafafa"
     },
     "titleTd":{ //viewTitleColumnNode  viewTitleCellNode
-      "font-weight": "500",
-      "padding": "0px 10px",
-      "border-bottom": "1px solid #dcdfe6",
+      "font-weight": "600",
+      "padding": "16px 10px",
+      "border-bottom": "1px solid #ebeef5",
       "background" : "inherit"
     },
     "contentTr" : {
@@ -29,31 +30,31 @@
       "background": "#F5FBFA"
     },
     "contentTd": {
-      "color": "#141414",
-      "height": "30px",
-      "line-height": "30px",
-      "padding": "5px 5px",
-      "border-bottom": "1px solid #dcdfe6"
+      "color": "#333333",
+      "height": "24px",
+      "line-height": "24px",
+      "padding": "16px 5px",
+      "border-bottom": "1px solid #ebeef5"
     },
     "contentGroupTd": {
-      "padding": "5px 5px",
-      "border-bottom": "1px solid #dcdfe6",
+      "padding": "16px 5px",
+      "border-bottom": "1px solid #ebeef5",
       "color": "#666666",
       "font-weight": "500",
       "background-color": "#fafafa",
       "cursor": "pointer"
     },
     "groupCollapseNode": {
-      "height": "30px",
-      "line-height": "30px",
+      "height": "24px",
+      "line-height": "24px",
       "padding-left" : "20px",
       "background-image": "url(../x_component_query_ViewDesigner/$View/default/icon/right.png)",
       "background-repeat" : "no-repeat",
       "background-position": "left center"
     },
     "groupExpandNode": {
-      "height": "30px",
-      "line-height": "30px",
+      "height": "24px",
+      "line-height": "24px",
       "padding-left" : "20px",
       "background-image": "url(../x_component_query_ViewDesigner/$View/default/icon/down.png)",
       "background-repeat" : "no-repeat",
@@ -100,14 +101,14 @@
     "customIconOverStyle" : "green",
     "forceStyles" : {
       "container" : {
-        "width" : "100%",
+        "width" : "auto",
         "padding-left" : "10px",
         "padding-right" : "10px",
         "padding-top": "10px",
         "padding-bottom": "10px",
         "border-top" : "0px",
-        "margin" : "0px auto",
-        "border-radius": "0px",
+        "margin" : "0px auto 10px auto",
+        "border-radius": "15px",
         "border-bottom" : "1px solid #F1F4F9"
       }
     }
