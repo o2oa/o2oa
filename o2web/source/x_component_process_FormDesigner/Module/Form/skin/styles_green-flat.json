@@ -2,7 +2,7 @@
   "name": "绿色扁平",
   "form": {
     "styles":{
-      "background-color": "#d4ede7"
+      "background-color": "#e3f3f0"
     }
   },
   "label": {
@@ -182,7 +182,7 @@
       "background-color": "#FFFFFF",
       "color": "#000000",
       "font-weight": "400",
-      "font-size": "16px",
+      "font-size": "15px",
       "height": "30px",
       "line-height": "30px",
       "text-align": "right"
@@ -195,7 +195,7 @@
     "properties": {
       "width": "100%",
       "border": "0",
-      "cellpadding": "8",
+      "cellpadding": "5",
       "cellspacing": "5",
       "align": "center"
     }
@@ -306,7 +306,7 @@
   },
   "datagrid$Title": {
     "styles": {
-      "font-size": "16px",
+      "font-size": "15px",
       "font-weight": "normal",
       "background-color": "#f4f7f6" //"#ECF6F4"
     }
@@ -404,7 +404,7 @@
   },
   "datatable$Title": {
     "styles": {
-      "font-size": "16px",
+      "font-size": "15px",
       "font-weight": "normal",
       "background-color": "#f4f7f6" //"#ECF6F4"
     }
