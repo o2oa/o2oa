@@ -8,14 +8,12 @@ import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.HEAD;
 import javax.ws.rs.OPTIONS;
@@ -23,7 +21,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
 
 import org.apache.commons.collections4.list.SetUniqueList;
 import org.apache.commons.io.FileUtils;
@@ -31,8 +28,6 @@ import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.gson.XGsonBuilder;
@@ -46,96 +41,97 @@ import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
 import io.github.classgraph.ScanResult;
 
+//TODO 需要重写
+@Deprecated(forRemoval = true, since = "7.2")
 public class DescribeWoBuilder {
 
 	private static Logger logger = LoggerFactory.getLogger(DescribeWoBuilder.class);
-    private File  fileDir = null;
-    
+	private File fileDir = null;
+
 	public static void main(String[] args) throws IOException {
-		
+
 		String filePath = args[0];
 		String fileName = filePath.substring(filePath.lastIndexOf(File.separator), filePath.length());
 		filePath = filePath.substring(0, filePath.lastIndexOf(File.separator));
-		filePath = filePath + File.separator+"x_program_center";
-		
+		filePath = filePath + File.separator + "x_program_center";
+
 		File basedir = new File(args[0]);
-		File sourcedir = new File(args[1]);
-		File dir = new File(basedir ,"src/main/webapp/describe/jsdoc");
-		
+		File dir = new File(basedir, "src/main/webapp/describe/jsdoc");
+
 		FileUtils.forceMkdir(dir);
 
 		DescribeWoBuilder builder = new DescribeWoBuilder();
 
-		builder.scan(dir,fileName);
+		builder.scan(dir, fileName);
 	}
 
-	private void scan(File dir,String fileName) {
+	private void scan(File dir, String fileName) {
 		try {
 			this.fileDir = dir;
-			ArrayList List = new ArrayList(); 
-			//x_processplatform_assemble_surface
-			List.add("ApplicationDictAction");
-			List.add("AttachmentAction");
-			List.add("CacheAction");
-			List.add("DataAction");
-			List.add("JobAction");
-			List.add("ReadAction");
-			List.add("RecordAction");
-			List.add("ReviewAction");
-			List.add("TaskAction");
-			List.add("TaskCompletedAction");
-			List.add("WorkAction");
-			List.add("WorkCompletedAction");
-			List.add("ReadCompletedAction");
-			List.add("WorkLogAction");
-			
-            //x_cms_assemble_control
-			List.add("AppInfoAction");
-			List.add("CategoryInfoAction");
-			List.add("DocumentAction");
-			List.add("DocumentCommendAction");
-			List.add("DocumentCommentInfoAction");
-			List.add("DocumentViewRecordAction");
-			List.add("FileInfoAction");
-			
-			//x_organization_assemble_express
-			List.add("GroupAction");
-			List.add("IdentityAction");
-			List.add("PersonAction");
-			List.add("PersonAttributeAction");
-			List.add("RoleAction");
-			List.add("UnitAction");
-			List.add("UnitAttributeAction");
-			List.add("UnitDutyAction");
-			
+			ArrayList<String> list = new ArrayList<>();
+			// x_processplatform_assemble_surface
+			list.add("ApplicationDictAction");
+			list.add("AttachmentAction");
+			list.add("CacheAction");
+			list.add("DataAction");
+			list.add("JobAction");
+			list.add("ReadAction");
+			list.add("RecordAction");
+			list.add("ReviewAction");
+			list.add("TaskAction");
+			list.add("TaskCompletedAction");
+			list.add("WorkAction");
+			list.add("WorkCompletedAction");
+			list.add("ReadCompletedAction");
+			list.add("WorkLogAction");
+
+			// x_cms_assemble_control
+			list.add("AppInfoAction");
+			list.add("CategoryInfoAction");
+			list.add("DocumentAction");
+			list.add("DocumentCommendAction");
+			list.add("DocumentCommentInfoAction");
+			list.add("DocumentViewRecordAction");
+			list.add("FileInfoAction");
+
+			// x_organization_assemble_express
+			list.add("GroupAction");
+			list.add("IdentityAction");
+			list.add("PersonAction");
+			list.add("PersonAttributeAction");
+			list.add("RoleAction");
+			list.add("UnitAction");
+			list.add("UnitAttributeAction");
+			list.add("UnitDutyAction");
+
 			List<JaxrsClass> jaxrsClasses = new ArrayList<>();
 			List<Class<?>> classes = this.scanJaxrsClass();
 			for (Class<?> clz : classes) {
-				if(List.contains(clz.getSimpleName())){
+				if (list.contains(clz.getSimpleName())) {
 					if (StandardJaxrsAction.class.isAssignableFrom(clz)) {
-						  JaxrsClass jarsClass = this.jaxrsClass(clz);
-						  List<JaxrsMethod> methods = jarsClass.getMethods();
-						  if( methods.size()> 0) {
-						    jaxrsClasses.add(jarsClass);
-						  }
+						JaxrsClass jarsClass = this.jaxrsClass(clz);
+						List<JaxrsMethod> methods = jarsClass.getMethods();
+						if (methods.size() > 0) {
+							jaxrsClasses.add(jarsClass);
+						}
 					}
 				}
 			}
-			LinkedHashMap<String, List<?>> map = new LinkedHashMap<>();
-			
+
 			jaxrsClasses = jaxrsClasses.stream().sorted(Comparator.comparing(JaxrsClass::getName))
 					.collect(Collectors.toList());
-			
-			for(JaxrsClass jaxr:jaxrsClasses) {
+
+			for (JaxrsClass jaxr : jaxrsClasses) {
 				File file = new File(dir, jaxr.getName() + ".json");
 				FileUtils.writeStringToFile(file, XGsonBuilder.toJson(jaxr), DefaultCharset.charset);
 			}
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private List<Class<?>> scanJaxrsClass() throws Exception {
 		try (ScanResult scanResult = new ClassGraph().disableJarScanning().enableAnnotationInfo().scan()) {
 			SetUniqueList<Class<?>> classes = SetUniqueList.setUniqueList(new ArrayList<Class<?>>());
@@ -161,18 +157,16 @@ public class DescribeWoBuilder {
 		jaxrsClass.setClassName(clz.getName());
 		jaxrsClass.setName(clz.getSimpleName());
 		jaxrsClass.setDescription(jaxrsDescribe.value());
-		
+
 		for (Method method : clz.getMethods()) {
 			JaxrsMethodDescribe jaxrsMethodDescribe = method.getAnnotation(JaxrsMethodDescribe.class);
 			if (null != jaxrsMethodDescribe) {
-				//if (null != method.getAnnotation(GET.class)) {
-				   jaxrsClass.getMethods().add(this.jaxrsMethod(clz, method));
-				//}
+				jaxrsClass.getMethods().add(this.jaxrsMethod(clz, method));
 			}
 		}
 		jaxrsClass.setMethods(jaxrsClass.getMethods().stream().sorted(Comparator.comparing(JaxrsMethod::getName))
 				.collect(Collectors.toList()));
-		
+
 		return jaxrsClass;
 	}
 
@@ -196,82 +190,81 @@ public class DescribeWoBuilder {
 		} else if (null != method.getAnnotation(HEAD.class)) {
 			jaxrsMethod.setType("HEAD");
 		}
-		
+
 		Class<?> woClass = this.getWoClass(actionClass);
-			
-		  if (null != woClass) {
-				jaxrsMethod.setOuts(this.jaxrsOutField(woClass));
+
+		if (null != woClass) {
+			jaxrsMethod.setOuts(this.jaxrsOutField(woClass));
 		}
 
-	
 		return jaxrsMethod;
 	}
 
-	private JaxrsFormParameter jaxrsFormDataParameter(Class<?> clz, Method method, Parameter parameter) {
-		JaxrsParameterDescribe jaxrsParameterDescribe = parameter.getAnnotation(JaxrsParameterDescribe.class);
-		FormDataParam formDataParam = parameter.getAnnotation(FormDataParam.class);
-		if (StringUtils.equalsIgnoreCase("file", formDataParam.value())) {
-			if (parameter.getType() == FormDataContentDisposition.class) {
-				/** 单独处理附件 */
-				JaxrsFormParameter o = new JaxrsFormParameter();
-				o.setType("File");
-				o.setName(formDataParam.value());
-				if (null != jaxrsParameterDescribe) {
-					o.setDescription(jaxrsParameterDescribe.value());
-				} else {
-					logger.print("类: {}, 方法: {} ,未设置参数 {} 的JaxrsParameterDescribe.", clz.getName(), method.getName(),
-							formDataParam.value());
-					o.setDescription("");
-				}
-				return o;
-			}
-		} else {
-			JaxrsFormParameter o = new JaxrsFormParameter();
-			o.setType(this.simpleType(parameter.getType().toString()));
-			o.setName(formDataParam.value());
-			if (null != jaxrsParameterDescribe) {
-				o.setDescription(jaxrsParameterDescribe.value());
-			} else {
-				logger.print("类: {}, 方法: {} ,未设置参数 {} 的JaxrsParameterDescribe.", clz.getName(), method.getName(),
-						formDataParam.value());
-				o.setDescription("");
-			}
-			return o;
-		}
-		return null;
-	}
+//	private JaxrsFormParameter jaxrsFormDataParameter(Class<?> clz, Method method, Parameter parameter) {
+//		JaxrsParameterDescribe jaxrsParameterDescribe = parameter.getAnnotation(JaxrsParameterDescribe.class);
+//		FormDataParam formDataParam = parameter.getAnnotation(FormDataParam.class);
+//		if (StringUtils.equalsIgnoreCase("file", formDataParam.value())) {
+//			if (parameter.getType() == FormDataContentDisposition.class) {
+//				/** 单独处理附件 */
+//				JaxrsFormParameter o = new JaxrsFormParameter();
+//				o.setType("File");
+//				o.setName(formDataParam.value());
+//				if (null != jaxrsParameterDescribe) {
+//					o.setDescription(jaxrsParameterDescribe.value());
+//				} else {
+//					logger.print("类: {}, 方法: {} ,未设置参数 {} 的JaxrsParameterDescribe.", clz.getName(), method.getName(),
+//							formDataParam.value());
+//					o.setDescription("");
+//				}
+//				return o;
+//			}
+//		} else {
+//			JaxrsFormParameter o = new JaxrsFormParameter();
+//			o.setType(this.simpleType(parameter.getType().toString()));
+//			o.setName(formDataParam.value());
+//			if (null != jaxrsParameterDescribe) {
+//				o.setDescription(jaxrsParameterDescribe.value());
+//			} else {
+//				logger.print("类: {}, 方法: {} ,未设置参数 {} 的JaxrsParameterDescribe.", clz.getName(), method.getName(),
+//						formDataParam.value());
+//				o.setDescription("");
+//			}
+//			return o;
+//		}
+//		return null;
+//	}
 
-	private JaxrsFormParameter jaxrsFormParameter(Class<?> clz, Method method, Parameter parameter) {
-		JaxrsParameterDescribe jaxrsParameterDescribe = parameter.getAnnotation(JaxrsParameterDescribe.class);
-		FormParam formParam = parameter.getAnnotation(FormParam.class);
-		JaxrsFormParameter o = new JaxrsFormParameter();
-		o.setType(this.simpleType(parameter.getType().toString()));
-		o.setName(formParam.value());
-		if (null != jaxrsParameterDescribe) {
-			o.setDescription(jaxrsParameterDescribe.value());
-		} else {
-			logger.print("类: {}, 方法: {} ,未设置参数 {} 的JaxrsParameterDescribe.", clz.getName(), method.getName(),
-					formParam.value());
-			o.setDescription("");
-		}
-		return o;
-	}
-
-	private JaxrsQueryParameter jaxrsQueryParameter(Class<?> clz, Method method, Parameter parameter) {
-		JaxrsParameterDescribe jaxrsParameterDescribe = parameter.getAnnotation(JaxrsParameterDescribe.class);
-		QueryParam queryParam = parameter.getAnnotation(QueryParam.class);
-		JaxrsQueryParameter o = new JaxrsQueryParameter();
-		if (null != jaxrsParameterDescribe) {
-			o.setDescription(jaxrsParameterDescribe.value());
-		} else {
-			logger.print("类: {}, 方法: {} ,未设置参数 {} 的JaxrsParameterDescribe.", clz.getName(), method.getName(),
-					queryParam.value());
-			o.setDescription("");
-		}
-		o.setName(queryParam.value());
-		o.setType(this.simpleType(parameter.getType().getName()));
-		return o;
-	}
+//	private JaxrsFormParameter jaxrsFormParameter(Class<?> clz, Method method, Parameter parameter) {
+//		JaxrsParameterDescribe jaxrsParameterDescribe = parameter.getAnnotation(JaxrsParameterDescribe.class);
+//		FormParam formParam = parameter.getAnnotation(FormParam.class);
+//		JaxrsFormParameter o = new JaxrsFormParameter();
+//		o.setType(this.simpleType(parameter.getType().toString()));
+//		o.setName(formParam.value());
+//		if (null != jaxrsParameterDescribe) {
+//			o.setDescription(jaxrsParameterDescribe.value());
+//		} else {
+//			logger.print("类: {}, 方法: {} ,未设置参数 {} 的JaxrsParameterDescribe.", clz.getName(), method.getName(),
+//					formParam.value());
+//			o.setDescription("");
+//		}
+//		return o;
+//	}
+//
+//	private JaxrsQueryParameter jaxrsQueryParameter(Class<?> clz, Method method, Parameter parameter) {
+//		JaxrsParameterDescribe jaxrsParameterDescribe = parameter.getAnnotation(JaxrsParameterDescribe.class);
+//		QueryParam queryParam = parameter.getAnnotation(QueryParam.class);
+//		JaxrsQueryParameter o = new JaxrsQueryParameter();
+//		if (null != jaxrsParameterDescribe) {
+//			o.setDescription(jaxrsParameterDescribe.value());
+//		} else {
+//			logger.print("类: {}, 方法: {} ,未设置参数 {} 的JaxrsParameterDescribe.", clz.getName(), method.getName(),
+//					queryParam.value());
+//			o.setDescription("");
+//		}
+//		o.setName(queryParam.value());
+//		o.setType(this.simpleType(parameter.getType().getName()));
+//		return o;
+//	}
 
 	private JaxrsPathParameter jaxrsPathParameter(Class<?> clz, Method method, Parameter parameter) throws Exception {
 		JaxrsParameterDescribe jaxrsParameterDescribe = parameter.getAnnotation(JaxrsParameterDescribe.class);
@@ -289,92 +282,92 @@ public class DescribeWoBuilder {
 		return o;
 	}
 
-	private Class<?> getWiClass(Class<?> actionClass) {
-		for (Class<?> c : actionClass.getDeclaredClasses()) {
-			if (StringUtils.equals(c.getSimpleName(), "Wi")) {
-				return c;
-			}
-		}
-		return null;
-	}
+//	private Class<?> getWiClass(Class<?> actionClass) {
+//		for (Class<?> c : actionClass.getDeclaredClasses()) {
+//			if (StringUtils.equals(c.getSimpleName(), "Wi")) {
+//				return c;
+//			}
+//		}
+//		return null;
+//	}
 
 	private Class<?> getWoClass(Class<?> actionClass) {
 		for (Class<?> c : actionClass.getDeclaredClasses()) {
-			if (StringUtils.equals(c.getSimpleName(), "Wo")) {
+			if ((null != c.getAnnotation(WrapOut.class)) || StringUtils.equals(c.getSimpleName(), "Wo")) {
 				return c;
 			}
 		}
 		return null;
 	}
 
-	private List<JaxrsField> jaxrsInField(Class<?> clz) throws Exception {
-		List<JaxrsField> list = new ArrayList<>();
-		List<Field> fields = FieldUtils.getAllFieldsList(clz);
-		List<String> copierCopyFields = this.listCopierCopyFields(clz);
-		if (ListTools.isNotEmpty(copierCopyFields)) {
-			List<Field> os = new ArrayList<>();
-			for (Field o : fields) {
-				FieldDescribe fieldDescribe = o.getAnnotation(FieldDescribe.class);
-				if ((null != fieldDescribe)
-						&& (copierCopyFields.contains(o.getName()) || this.inWiNotInEntity(o.getName(), clz))) {
-					os.add(o);
-				}
-				fields = os;
-			}
-		}
-		for (Field o : fields) {
-			FieldDescribe fieldDescribe = o.getAnnotation(FieldDescribe.class);
-			if (null != fieldDescribe) {
-				JaxrsField jaxrsField = new JaxrsField();
-				jaxrsField.setName(o.getName());
-				jaxrsField.setDescription(fieldDescribe.value());
-				String className = getClassName(o);
-				jaxrsField.setType(this.getJaxrsFieldType(o,className));
-				jaxrsField.setIsBaseType(false);
-				if (Collection.class.isAssignableFrom(o.getType())) {
-					jaxrsField.setIsCollection(true);
-					if (StringUtils.containsAny(jaxrsField.getType(), "<String>", "<Boolean>", "<Date>", "<Integer>",
-							"<Double>", "<Long>", "<Float>")) {
-						jaxrsField.setIsBaseType(true);
-					}else {
-						//wwx add 获取类信息
-						FieldTypeDescribe fieldTypeDescribe = o.getAnnotation(FieldTypeDescribe.class);
-						if(null !=fieldTypeDescribe) {
-							jaxrsField.setFieldType(fieldTypeDescribe.fieldType());
-							jaxrsField.setFieldValue(fieldTypeDescribe.fieldValue());
-							jaxrsField.setFieldTypeName(fieldTypeDescribe.fieldTypeName());
-							jaxrsField.setFieldSample(fieldTypeDescribe.fieldSample());
-						}
-
-					}
-				} else {
-					// O2LEE，String[]未被判断为collection导致组织的JSON格式不符合wrapIn要求
-					if (StringUtils.equalsAnyIgnoreCase("String[]", jaxrsField.getType())) {
-						jaxrsField.setIsCollection(true);
-					} else {
-						jaxrsField.setIsCollection(false);
-					}
-					if (StringUtils.startsWithAny(jaxrsField.getType(), "String", "Boolean", "Date", "Integer",
-							"Double", "Long", "Float")) {
-						jaxrsField.setIsBaseType(true);
-					}else {
-						FieldTypeDescribe fieldTypeDescribe = o.getAnnotation(FieldTypeDescribe.class);
-						if(null !=fieldTypeDescribe) {
-							jaxrsField.setFieldType(fieldTypeDescribe.fieldType());
-							jaxrsField.setFieldValue(fieldTypeDescribe.fieldValue());
-							jaxrsField.setFieldTypeName(fieldTypeDescribe.fieldTypeName());
-						}
-						
-					}
-				}
-				list.add(jaxrsField);
-			}
-		}
-		return list;
-	}
+//	private List<JaxrsField> jaxrsInField(Class<?> clz) throws Exception {
+//		List<JaxrsField> list = new ArrayList<>();
+//		List<Field> fields = FieldUtils.getAllFieldsList(clz);
+//		List<String> copierCopyFields = this.listCopierCopyFields(clz);
+//		if (ListTools.isNotEmpty(copierCopyFields)) {
+//			List<Field> os = new ArrayList<>();
+//			for (Field o : fields) {
+//				FieldDescribe fieldDescribe = o.getAnnotation(FieldDescribe.class);
+//				if ((null != fieldDescribe)
+//						&& (copierCopyFields.contains(o.getName()) || this.inWiNotInEntity(o.getName(), clz))) {
+//					os.add(o);
+//				}
+//				fields = os;
+//			}
+//		}
+//		for (Field o : fields) {
+//			FieldDescribe fieldDescribe = o.getAnnotation(FieldDescribe.class);
+//			if (null != fieldDescribe) {
+//				JaxrsField jaxrsField = new JaxrsField();
+//				jaxrsField.setName(o.getName());
+//				jaxrsField.setDescription(fieldDescribe.value());
+//				String className = getClassName(o);
+//				jaxrsField.setType(this.getJaxrsFieldType(o, className));
+//				jaxrsField.setIsBaseType(false);
+//				if (Collection.class.isAssignableFrom(o.getType())) {
+//					jaxrsField.setIsCollection(true);
+//					if (StringUtils.containsAny(jaxrsField.getType(), "<String>", "<Boolean>", "<Date>", "<Integer>",
+//							"<Double>", "<Long>", "<Float>")) {
+//						jaxrsField.setIsBaseType(true);
+//					} else {
+//						// wwx add 获取类信息
+//						FieldTypeDescribe fieldTypeDescribe = o.getAnnotation(FieldTypeDescribe.class);
+//						if (null != fieldTypeDescribe) {
+//							jaxrsField.setFieldType(fieldTypeDescribe.fieldType());
+//							jaxrsField.setFieldValue(fieldTypeDescribe.fieldValue());
+//							jaxrsField.setFieldTypeName(fieldTypeDescribe.fieldTypeName());
+//							jaxrsField.setFieldSample(fieldTypeDescribe.fieldSample());
+//						}
+//
+//					}
+//				} else {
+//					// O2LEE，String[]未被判断为collection导致组织的JSON格式不符合wrapIn要求
+//					if (StringUtils.equalsAnyIgnoreCase("String[]", jaxrsField.getType())) {
+//						jaxrsField.setIsCollection(true);
+//					} else {
+//						jaxrsField.setIsCollection(false);
+//					}
+//					if (StringUtils.startsWithAny(jaxrsField.getType(), "String", "Boolean", "Date", "Integer",
+//							"Double", "Long", "Float")) {
+//						jaxrsField.setIsBaseType(true);
+//					} else {
+//						FieldTypeDescribe fieldTypeDescribe = o.getAnnotation(FieldTypeDescribe.class);
+//						if (null != fieldTypeDescribe) {
+//							jaxrsField.setFieldType(fieldTypeDescribe.fieldType());
+//							jaxrsField.setFieldValue(fieldTypeDescribe.fieldValue());
+//							jaxrsField.setFieldTypeName(fieldTypeDescribe.fieldTypeName());
+//						}
+//
+//					}
+//				}
+//				list.add(jaxrsField);
+//			}
+//		}
+//		return list;
+//	}
 
 	private List<JaxrsField> jaxrsOutField(Class<?> clz) throws Exception {
-		
+
 		List<JaxrsField> list = new ArrayList<>();
 		List<Field> fields = FieldUtils.getAllFieldsList(clz);
 		List<String> copierEraseFields = this.listCopierEraseFields(clz);
@@ -395,8 +388,8 @@ public class DescribeWoBuilder {
 				jaxrsField.setName(o.getName());
 				jaxrsField.setDescription(fieldDescribe.value());
 				String className = getClassName(o);
-				jaxrsField.setType(this.getJaxrsFieldType(o,className));
-				
+				jaxrsField.setType(this.getJaxrsFieldType(o, className));
+
 				if (Collection.class.isAssignableFrom(o.getType())) {
 					jaxrsField.setIsCollection(true);
 				} else {
@@ -408,190 +401,183 @@ public class DescribeWoBuilder {
 		return list;
 	}
 
-    private String getClassName(Field o) {
-    	String typeName = o.getGenericType().getTypeName();
-    	String value = this.simpleType(typeName);
-    	ArrayList List = new ArrayList(); 
-		List.add("Date");
-		List.add("String");
-		List.add("Boolean");
-		List.add("Long");
-		List.add("long");
-		List.add("int");
-		List.add("Integer");
-		List.add("Double");
-		List.add("List");
-		List.add("List<K>");
-		List.add("Map");
-		List.add("Map<String,String>");
-		List.add("Map<String,Object>");
-		List.add("Map<K,V>");
-		List.add("Map<?,?>");
-		List.add("byte[]");
-		List.add("Class");
-		List.add("Class[]");
-		List.add("Object");
-		List.add("String[]");
-		List.add("List<String>");
-		List.add("List<Date>");
-		List.add("List<Boolean>");
-		List.add("List<Long>");
-		List.add("List<Integer>");
-		List.add("List<Double>");
-		List.add("List<byte[]>");
-		if(!List.contains(value)) {
-				if(typeName.indexOf("java.util.List<")>-1) {
-					String[] ss = typeName.split("[,|<|>]");
-					typeName = ss[ss.length-1];
-					value = typeName;
-				}
-			}
-		return value;
-    }
-	private String getJaxrsFieldType(Field o,String classNameParent) {
+	private String getClassName(Field o) {
 		String typeName = o.getGenericType().getTypeName();
 		String value = this.simpleType(typeName);
-		ArrayList List = new ArrayList(); 
-		List.add("Date");
-		List.add("String");
-		List.add("Boolean");
-		List.add("Long");
-		List.add("long");
-		List.add("int");
-		List.add("Integer");
-		List.add("Double");
-		List.add("List");
-		List.add("List<K>");
-		List.add("Map");
-		List.add("Map<String,String>");
-		List.add("Map<String,Object>");
-		List.add("Map<K,V>");
-		List.add("Map<?,?>");
-		List.add("byte[]");
-		List.add("Class");
-		List.add("Class[]");
-		List.add("Object");
-		List.add("String[]");
-		List.add("List<String>");
-		List.add("List<Date>");
-		List.add("List<Boolean>");
-		List.add("List<Long>");
-		List.add("List<Integer>");
-		List.add("List<Double>");
-		List.add("List<byte[]>");
+		List<String> list = new ArrayList<>();
+		list.add("Date");
+		list.add("String");
+		list.add("Boolean");
+		list.add("Long");
+		list.add("long");
+		list.add("int");
+		list.add("Integer");
+		list.add("Double");
+		list.add("List");
+		list.add("List<K>");
+		list.add("Map");
+		list.add("Map<String,String>");
+		list.add("Map<String,Object>");
+		list.add("Map<K,V>");
+		list.add("Map<?,?>");
+		list.add("byte[]");
+		list.add("Class");
+		list.add("Class[]");
+		list.add("Object");
+		list.add("String[]");
+		list.add("List<String>");
+		list.add("List<Date>");
+		list.add("List<Boolean>");
+		list.add("List<Long>");
+		list.add("List<Integer>");
+		list.add("List<Double>");
+		list.add("List<byte[]>");
+		if (!list.contains(value)) {
+			if (typeName.indexOf("java.util.List<") > -1) {
+				String[] ss = typeName.split("[,|<|>]");
+				typeName = ss[ss.length - 1];
+				value = typeName;
+			}
+		}
+		return value;
+	}
 
+	private String getJaxrsFieldType(Field o, String classNameParent) {
+		String typeName = o.getGenericType().getTypeName();
+		String value = this.simpleType(typeName);
+		ArrayList<String> list = new ArrayList<>();
+		list.add("Date");
+		list.add("String");
+		list.add("Boolean");
+		list.add("Long");
+		list.add("long");
+		list.add("int");
+		list.add("Integer");
+		list.add("Double");
+		list.add("List");
+		list.add("List<K>");
+		list.add("Map");
+		list.add("Map<String,String>");
+		list.add("Map<String,Object>");
+		list.add("Map<K,V>");
+		list.add("Map<?,?>");
+		list.add("byte[]");
+		list.add("Class");
+		list.add("Class[]");
+		list.add("Object");
+		list.add("String[]");
+		list.add("List<String>");
+		list.add("List<Date>");
+		list.add("List<Boolean>");
+		list.add("List<Long>");
+		list.add("List<Integer>");
+		list.add("List<Double>");
+		list.add("List<byte[]>");
 		boolean listParam = false;
-		if(!List.contains(value)) {
+		if (!list.contains(value)) {
 			try {
-				if(typeName.indexOf("java.util.List<")>-1) {
+				if (typeName.indexOf("java.util.List<") > -1) {
 					String[] ss = typeName.split("[,|<|>]");
-					typeName = ss[ss.length-1];
+					typeName = ss[ss.length - 1];
 					listParam = true;
 				}
-				Class clz = Thread.currentThread().getContextClassLoader().loadClass(typeName);
-				if(!clz.isEnum()){
-					//不是枚举类型
-					List<Field> fields = FieldUtils.getAllFieldsList(clz);
-			    	List<JaxrsField> list = new ArrayList<>();
-					for(Field field : fields ) {
-						if(!listParam) {
-					            FieldDescribe fieldDescribe = field.getAnnotation(FieldDescribe.class);
+				Class<?> clz = null;
+				try {
+					clz = Thread.currentThread().getContextClassLoader().loadClass(typeName);
+				} catch (Exception e) {
+					// nothing
+				}
+				if (null != clz) {
+					if (!clz.isEnum()) {
+						// 不是枚举类型
+						List<Field> fields = FieldUtils.getAllFieldsList(clz);
+						List<JaxrsField> jaxrsFieldList = new ArrayList<>();
+						for (Field field : fields) {
+							if (!listParam) {
+								FieldDescribe fieldDescribe = field.getAnnotation(FieldDescribe.class);
 								if (null != fieldDescribe) {
-						            JaxrsField jaxrsField = new JaxrsField();
+									JaxrsField jaxrsField = new JaxrsField();
 									jaxrsField.setName(field.getName());
 									jaxrsField.setDescription(fieldDescribe.value());
-									
+
 									String className = getClassName(field);
-									if(classNameParent.equalsIgnoreCase(getClassName(field))) {
-									     jaxrsField.setType(className);  //防止死循环
-									}else {
-										 jaxrsField.setType(this.getJaxrsFieldType(field,className));
+									if (classNameParent.equalsIgnoreCase(getClassName(field))) {
+										jaxrsField.setType(className); // 防止死循环
+									} else {
+										jaxrsField.setType(this.getJaxrsFieldType(field, className));
 									}
-									
+
 									if (Collection.class.isAssignableFrom(field.getType())) {
 										jaxrsField.setIsCollection(true);
 									} else {
 										jaxrsField.setIsCollection(false);
 									}
-									list.add(jaxrsField);
-								}else {
-									    JaxrsField jaxrsField = new JaxrsField();
-										jaxrsField.setName(field.getName());
-										jaxrsField.setDescription("");
-										String className = getClassName(field);
-										jaxrsField.setType(this.getJaxrsFieldType(field,className));
-										if (Collection.class.isAssignableFrom(field.getType())) {
-											jaxrsField.setIsCollection(true);
-										} else {
-											jaxrsField.setIsCollection(false);
-										}
-										list.add(jaxrsField);
+									jaxrsFieldList.add(jaxrsField);
+								} else {
+									JaxrsField jaxrsField = new JaxrsField();
+									jaxrsField.setName(field.getName());
+									jaxrsField.setDescription("");
+									String className = getClassName(field);
+									jaxrsField.setType(this.getJaxrsFieldType(field, className));
+									if (Collection.class.isAssignableFrom(field.getType())) {
+										jaxrsField.setIsCollection(true);
+									} else {
+										jaxrsField.setIsCollection(false);
+									}
+									jaxrsFieldList.add(jaxrsField);
 								}
-						}else {	
-							   //创建List参数中的类型
+							} else {
+								// 创建List参数中的类型
 								FieldDescribe fieldDescribe = field.getAnnotation(FieldDescribe.class);
 								JaxrsField jaxrsField = new JaxrsField();
 								jaxrsField.setName(field.getName());
 								if (null != fieldDescribe) {
 									jaxrsField.setDescription(fieldDescribe.value());
-								}else {
+								} else {
 									jaxrsField.setDescription("");
 								}
 								String className = getClassName(o);
-								//jaxrsField.setType(this.getJaxrsFieldType(field,className));
-								if(classNameParent.equalsIgnoreCase(getClassName(field))) {
-								     jaxrsField.setType(className);  //防止死循环
-								}else {
-									 jaxrsField.setType(this.getJaxrsFieldType(field,className));
+								if (classNameParent.equalsIgnoreCase(getClassName(field))) {
+									jaxrsField.setType(className); // 防止死循环
+								} else {
+									jaxrsField.setType(this.getJaxrsFieldType(field, className));
 								}
 								if (Collection.class.isAssignableFrom(field.getType())) {
 									jaxrsField.setIsCollection(true);
 								} else {
 									jaxrsField.setIsCollection(false);
 								}
-								list.add(jaxrsField);
+								jaxrsFieldList.add(jaxrsField);
+							}
 						}
-					}
-					
-					try {
 						File file = new File(this.fileDir, this.simpleType(typeName) + ".json");
 						FileUtils.writeStringToFile(file, XGsonBuilder.toJson(list), DefaultCharset.charset);
-					} catch (IOException e) {
-						logger.error(e);
-					}
-					
-				}else {
-					List<JaxrsField> list = new ArrayList<>();
-			        Enum[] enumConstants = (Enum[]) clz.getEnumConstants();
-			        String enumName = "";
-			        if(enumConstants != null) {
-					  for (Enum enumConstant : enumConstants) {
-						  if(enumName.equalsIgnoreCase("")) {
-						      enumName = enumConstant.name();
-						  }else {
-							  enumName = enumName + "," + enumConstant.name();
-						  }
-					 }
-					  
-					    JaxrsField jaxrsField = new JaxrsField();
-						jaxrsField.setName(clz.getSimpleName());
-						jaxrsField.setDescription(enumName);
-						jaxrsField.setType("Enum");
-                        jaxrsField.setIsCollection(false);
-						list.add(jaxrsField);
-						
-					 try {
+					} else {
+						List<JaxrsField> jaxrsFieldList = new ArrayList<>();
+						Enum<?>[] enumConstants = (Enum[]) clz.getEnumConstants();
+						String enumName = "";
+						if (enumConstants != null) {
+							for (Enum<?> enumConstant : enumConstants) {
+								if (enumName.equalsIgnoreCase("")) {
+									enumName = enumConstant.name();
+								} else {
+									enumName = enumName + "," + enumConstant.name();
+								}
+							}
+							JaxrsField jaxrsField = new JaxrsField();
+							jaxrsField.setName(clz.getSimpleName());
+							jaxrsField.setDescription(enumName);
+							jaxrsField.setType("Enum");
+							jaxrsField.setIsCollection(false);
+							jaxrsFieldList.add(jaxrsField);
 							File file = new File(this.fileDir, value + ".json");
 							FileUtils.writeStringToFile(file, XGsonBuilder.toJson(list), DefaultCharset.charset);
-						} catch (IOException e) {
-							logger.info("getJaxrsFieldType enum........."+ e.getMessage());
 						}
-			       }
+					}
 				}
-				
-			 } catch (ClassNotFoundException e) {
-			 	logger.info("getJaxrsFieldType error...="+ e.getMessage());
-			 }
+			} catch (Exception e) {
+				logger.info("getJaxrsFieldType error:" + e.getMessage());
+			}
 		}
 		return value;
 	}
@@ -621,32 +607,7 @@ public class DescribeWoBuilder {
 		}
 	}
 
-	private List<String> listCopierCopyFields(Class<?> clz) {
-		try {
-			Object o = FieldUtils.readStaticField(clz, "copier", true);
-			WrapCopier copier = (WrapCopier) o;
-			return copier.getCopyFields();
-		} catch (Exception e) {
-			return null;
-		}
-	}
-
-	/** 判断字段是否在Wi中但是没有在Entity类中说明是Wi新增字段,需要进行描述 */
-	private Boolean inWiNotInEntity(String field, Class<?> clz) {
-		try {
-			Object o = FieldUtils.readStaticField(clz, "copier", true);
-			WrapCopier copier = (WrapCopier) o;
-			if ((null != FieldUtils.getField(copier.getOrigClass(), field, true))
-					&& (null == FieldUtils.getField(copier.getDestClass(), field, true))) {
-				return true;
-			}
-			return false;
-		} catch (Exception e) {
-			return null;
-		}
-	}
-
-	public class JaxrsClass {
+	private class JaxrsClass {
 
 		private String name;
 		private String className;
@@ -686,7 +647,7 @@ public class DescribeWoBuilder {
 		}
 	}
 
-	public class JaxrsMethod {
+	private class JaxrsMethod {
 		private String name;
 		private String className;
 		private String description;
@@ -719,7 +680,6 @@ public class DescribeWoBuilder {
 			this.name = name;
 		}
 
-
 		public List<JaxrsField> getOuts() {
 			return outs;
 		}
@@ -727,7 +687,6 @@ public class DescribeWoBuilder {
 		public void setOuts(List<JaxrsField> outs) {
 			this.outs = outs;
 		}
-
 
 		public String getDescription() {
 			return description;
@@ -745,24 +704,21 @@ public class DescribeWoBuilder {
 			this.className = className;
 		}
 
-
 	}
 
-	public class JaxrsField {
+	private class JaxrsField {
 
 		private String name;
 		private String type;
 		private Boolean isCollection;
 		private String description;
 		private Boolean isBaseType;
-		
-        //当参数不是基础类型时，记录类型信息
+
+		// 当参数不是基础类型时，记录类型信息
 		private String fieldType;
 		private String fieldValue;
 		private String fieldTypeName;
 		private String fieldSample;
-
-
 
 		public String getName() {
 			return name;
@@ -819,7 +775,7 @@ public class DescribeWoBuilder {
 		public void setFieldValue(String fieldValue) {
 			this.fieldValue = fieldValue;
 		}
-		
+
 		public String getFieldTypeName() {
 			return fieldTypeName;
 		}
@@ -827,7 +783,7 @@ public class DescribeWoBuilder {
 		public void setFieldTypeName(String fieldTypeName) {
 			this.fieldTypeName = fieldTypeName;
 		}
-		
+
 		public String getFieldSample() {
 			return fieldSample;
 		}
@@ -837,7 +793,7 @@ public class DescribeWoBuilder {
 		}
 	}
 
-	public class JaxrsPathParameter {
+	private class JaxrsPathParameter {
 
 		private String name;
 		private String type;
@@ -869,7 +825,7 @@ public class DescribeWoBuilder {
 
 	}
 
-	public class JaxrsFormParameter {
+	private class JaxrsFormParameter {
 
 		private String name;
 		private String type;
@@ -901,7 +857,7 @@ public class DescribeWoBuilder {
 
 	}
 
-	public class JaxrsQueryParameter {
+	private class JaxrsQueryParameter {
 
 		private String name;
 		private String type;

@@ -24,8 +24,11 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "FileAction", description = "文件接口.")
 @Path("file")
-@JaxrsDescribe("文件操作")
+@JaxrsDescribe("文件接口.")
 public class FileAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(FileAction.class);

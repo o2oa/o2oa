@@ -46,6 +46,8 @@ import com.x.processplatform.core.express.service.processing.jaxrs.task.V2ResetW
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2AddManualTaskIdentityMatrixWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2AddManualTaskIdentityMatrixWo;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public class V2Reset extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(V2Reset.class);
@@ -213,23 +215,27 @@ public class V2Reset extends BaseAction {
 		}
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.task.V2Reset$Wi")
 	public static class Wi extends V2ResetWi {
 
 		private static final long serialVersionUID = 5747688678118966913L;
+
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.task.V2Reset$WoControl")
 	public static class WoControl extends WorkControl {
 
 		private static final long serialVersionUID = -6227098496393005824L;
+
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.task.V2Reset$Wo")
 	public static class Wo extends Record {
 
 		private static final long serialVersionUID = -4700549313374917582L;
 
 		static WrapCopier<Record, Wo> copier = WrapCopierFactory.wo(Record.class, Wo.class, null,
 				JpaObject.FieldsInvisible);
- 
 
 		private ManualTaskIdentityMatrix manualTaskIdentityMatrix;
 

@@ -9,24 +9,25 @@ import com.x.base.core.project.jaxrs.WrapString;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionDetail extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDetail.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, ServletContext servletContext) throws Exception {
-		LOGGER.debug("{} access by {}.", ActionDetail.class::getName, effectivePerson::getDistinguishedName);
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 		ActionResult<Wo> result = new ActionResult<>();
-		result.setData(new Wo(CacheManager.detail()));
+		Wo wo = new Wo();
+		wo.setValue(CacheManager.detail());
+		result.setData(wo);
 		return result;
 	}
 
+	@Schema(name = "com.x.base.core.project.jaxrs.cache.ActionDetail$Wo")
 	public static class Wo extends WrapString {
 
 		private static final long serialVersionUID = 6523578259551600220L;
-
-		public Wo(String str) {
-			super(str);
-		}
 
 	}
 

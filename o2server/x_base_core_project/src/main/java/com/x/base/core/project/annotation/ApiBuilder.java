@@ -38,12 +38,13 @@ import io.github.classgraph.ScanResult;
 
 public class ApiBuilder {
 
-	private static Logger logger = LoggerFactory.getLogger(ApiBuilder.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ApiBuilder.class);
+
+	private static final String DESCRIBE_DIR = "src/main/webapp/describe";
 
 	public static void main(String[] args) throws IOException {
 		File basedir = new File(args[0]);
-
-		File dir = new File(basedir, "src/main/webapp/describe");
+		File dir = new File(basedir, DESCRIBE_DIR);
 		FileUtils.forceMkdir(dir);
 		ApiBuilder builder = new ApiBuilder();
 		builder.scan(dir);
@@ -92,7 +93,7 @@ public class ApiBuilder {
 	}
 
 	private JaxrsClass jaxrsClass(Class<?> clz) {
-		logger.print("describe class:{}.", clz.getName());
+		LOGGER.print("describe class:{}.", clz.getName());
 		JaxrsClass jaxrsClass = new JaxrsClass();
 		jaxrsClass.setName(clz.getSimpleName());
 		for (Method method : clz.getMethods()) {
@@ -150,7 +151,7 @@ public class ApiBuilder {
 		}
 	}
 
-	public class JaxrsClass {
+	private class JaxrsClass {
 
 		private String name;
 		private List<JaxrsApiMethod> methods = new ArrayList<>();
@@ -172,7 +173,8 @@ public class ApiBuilder {
 		}
 	}
 
-	public class JaxrsApiMethod {
+	private class JaxrsApiMethod {
+
 		private String name;
 		private String uri;
 		private String method;
@@ -208,313 +210,6 @@ public class ApiBuilder {
 
 		public void setEnctype(String enctype) {
 			this.enctype = enctype;
-		}
-
-	}
-
-	public class JaxsApiMethodProperty {
-		private String uri;
-		private String method;
-		private String enctype;
-
-		public String getUri() {
-			return uri;
-		}
-
-		public void setUri(String uri) {
-			this.uri = uri;
-		}
-
-		public String getMethod() {
-			return method;
-		}
-
-		public void setMethod(String method) {
-			this.method = method;
-		}
-
-		public String getEnctype() {
-			return enctype;
-		}
-
-		public void setEnctype(String enctype) {
-			this.enctype = enctype;
-		}
-
-	}
-
-	public class JaxrsMethod {
-		private String name;
-		private String className;
-		private String description;
-		private String type;
-		private String path;
-		private String contentType;
-		private String resultContentType;
-		private Boolean useJsonElementParameter = false;
-		private Boolean useStringParameter = false;
-		private List<JaxrsPathParameter> pathParameters = new ArrayList<>();
-		private List<JaxrsFormParameter> formParameters = new ArrayList<>();
-		private List<JaxrsQueryParameter> queryParameters = new ArrayList<>();
-		private List<JaxrsField> ins = new ArrayList<>();
-		private List<JaxrsField> outs = new ArrayList<>();
-
-		public String getType() {
-			return type;
-		}
-
-		public void setType(String type) {
-			this.type = type;
-		}
-
-		public String getPath() {
-			return path;
-		}
-
-		public void setPath(String path) {
-			this.path = path;
-		}
-
-		public String getName() {
-			return name;
-		}
-
-		public void setName(String name) {
-			this.name = name;
-		}
-
-		public List<JaxrsField> getIns() {
-			return ins;
-		}
-
-		public void setIns(List<JaxrsField> ins) {
-			this.ins = ins;
-		}
-
-		public List<JaxrsField> getOuts() {
-			return outs;
-		}
-
-		public void setOuts(List<JaxrsField> outs) {
-			this.outs = outs;
-		}
-
-		public String getContentType() {
-			return contentType;
-		}
-
-		public void setContentType(String contentType) {
-			this.contentType = contentType;
-		}
-
-		public String getDescription() {
-			return description;
-		}
-
-		public void setDescription(String description) {
-			this.description = description;
-		}
-
-		public String getClassName() {
-			return className;
-		}
-
-		public void setClassName(String className) {
-			this.className = className;
-		}
-
-		public List<JaxrsPathParameter> getPathParameters() {
-			return pathParameters;
-		}
-
-		public void setPathParameters(List<JaxrsPathParameter> pathParameters) {
-			this.pathParameters = pathParameters;
-		}
-
-		public List<JaxrsFormParameter> getFormParameters() {
-			return formParameters;
-		}
-
-		public void setFormParameters(List<JaxrsFormParameter> formParameters) {
-			this.formParameters = formParameters;
-		}
-
-		public List<JaxrsQueryParameter> getQueryParameters() {
-			return queryParameters;
-		}
-
-		public void setQueryParameters(List<JaxrsQueryParameter> queryParameters) {
-			this.queryParameters = queryParameters;
-		}
-
-		public Boolean getUseJsonElementParameter() {
-			return useJsonElementParameter;
-		}
-
-		public void setUseJsonElementParameter(Boolean useJsonElementParameter) {
-			this.useJsonElementParameter = useJsonElementParameter;
-		}
-
-		public String getResultContentType() {
-			return resultContentType;
-		}
-
-		public void setResultContentType(String resultContentType) {
-			this.resultContentType = resultContentType;
-		}
-
-		public Boolean getUseStringParameter() {
-			return useStringParameter;
-		}
-
-		public void setUseStringParameter(Boolean useStringParameter) {
-			this.useStringParameter = useStringParameter;
-		}
-
-	}
-
-	public class JaxrsField {
-
-		private String name;
-		private String type;
-		private Boolean isCollection;
-		private String description;
-		private Boolean isBaseType;
-
-		public String getName() {
-			return name;
-		}
-
-		public void setName(String name) {
-			this.name = name;
-		}
-
-		public String getDescription() {
-			return description;
-		}
-
-		public void setDescription(String description) {
-			this.description = description;
-		}
-
-		public String getType() {
-			return type;
-		}
-
-		public void setType(String type) {
-			this.type = type;
-		}
-
-		public Boolean getIsCollection() {
-			return isCollection;
-		}
-
-		public void setIsCollection(Boolean isCollection) {
-			this.isCollection = isCollection;
-		}
-
-		public Boolean getIsBaseType() {
-			return isBaseType;
-		}
-
-		public void setIsBaseType(Boolean isBaseType) {
-			this.isBaseType = isBaseType;
-		}
-
-	}
-
-	public class JaxrsPathParameter {
-
-		private String name;
-		private String type;
-		private String description;
-
-		public String getName() {
-			return name;
-		}
-
-		public void setName(String name) {
-			this.name = name;
-		}
-
-		public String getDescription() {
-			return description;
-		}
-
-		public void setDescription(String description) {
-			this.description = description;
-		}
-
-		public String getType() {
-			return type;
-		}
-
-		public void setType(String type) {
-			this.type = type;
-		}
-
-	}
-
-	public class JaxrsFormParameter {
-
-		private String name;
-		private String type;
-		private String description;
-
-		public String getName() {
-			return name;
-		}
-
-		public void setName(String name) {
-			this.name = name;
-		}
-
-		public String getDescription() {
-			return description;
-		}
-
-		public void setDescription(String description) {
-			this.description = description;
-		}
-
-		public String getType() {
-			return type;
-		}
-
-		public void setType(String type) {
-			this.type = type;
-		}
-
-	}
-
-	public class JaxrsQueryParameter {
-
-		private String name;
-		private String type;
-		private String description;
-
-		public String getName() {
-			return name;
-		}
-
-		public void setName(String name) {
-			this.name = name;
-		}
-
-		public String getDescription() {
-			return description;
-		}
-
-		public void setDescription(String description) {
-			this.description = description;
-		}
-
-		public String getType() {
-			return type;
-		}
-
-		public void setType(String type) {
-			this.type = type;
 		}
 
 	}

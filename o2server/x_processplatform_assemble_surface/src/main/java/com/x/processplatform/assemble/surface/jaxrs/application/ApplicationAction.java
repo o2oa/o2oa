@@ -24,7 +24,10 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
-@JaxrsDescribe("应用操作")
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "AnonymousAction", description = "应用接口.")
+@JaxrsDescribe("应用接口.")
 @Path("application")
 public class ApplicationAction extends StandardJaxrsAction {
 

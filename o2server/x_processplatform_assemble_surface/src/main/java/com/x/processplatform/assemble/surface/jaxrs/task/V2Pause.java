@@ -19,13 +19,16 @@ import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.V2PauseWo;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class V2Pause extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(V2Pause.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(V2Pause.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		String job = null;
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			Task task = emc.find(id, Task.class);
@@ -56,6 +59,7 @@ class V2Pause extends BaseAction {
 		return result;
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.task.V2Pause$Wo")
 	public static class Wo extends WrapBoolean {
 
 		private static final long serialVersionUID = 4257481488388740879L;

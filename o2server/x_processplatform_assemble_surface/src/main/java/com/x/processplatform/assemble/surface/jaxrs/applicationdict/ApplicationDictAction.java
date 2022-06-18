@@ -28,7 +28,10 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
-@JaxrsDescribe("数据字典操作")
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "ApplicationDictAction", description = "数据字典接口.")
+@JaxrsDescribe("数据字典接口.")
 @Path("applicationdict")
 public class ApplicationDictAction extends StandardJaxrsAction {
 

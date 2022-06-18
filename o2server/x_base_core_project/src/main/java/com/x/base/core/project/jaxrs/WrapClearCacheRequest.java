@@ -6,6 +6,8 @@ import java.util.List;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public abstract class WrapClearCacheRequest extends GsonPropertyObject {
 
 	public static final String TYPE_NOTIFY = "notify";
@@ -15,13 +17,16 @@ public abstract class WrapClearCacheRequest extends GsonPropertyObject {
 
 	private String type;
 
-	@FieldDescribe("节点名")
+	@FieldDescribe("节点名.")
+	@Schema(description = "节点名.")
 	private String nodeName;
 
-	@FieldDescribe("类名")
+	@FieldDescribe("类名.")
+	@Schema(description = "类名.")
 	private String className;
 
-	@FieldDescribe("关键字")
+	@FieldDescribe("关键字.")
+	@Schema(description = "关键字.")
 	private List<Object> keys;
 
 	public String getClassName() {

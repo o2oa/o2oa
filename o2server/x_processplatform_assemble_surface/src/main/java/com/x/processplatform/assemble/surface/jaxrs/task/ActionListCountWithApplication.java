@@ -1,12 +1,16 @@
 package com.x.processplatform.assemble.surface.jaxrs.task;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Tuple;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -15,57 +19,53 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.bean.NameValueCountPair;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.tools.SortTools;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.Task_;
 import com.x.processplatform.core.entity.element.Application;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionListCountWithApplication extends BaseAction {
 
-	ActionResult<List<NameValueCountPair>> execute(EffectivePerson effectivePerson) throws Exception {
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListCountWithApplication.class);
+
+	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson) throws Exception {
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<List<NameValueCountPair>> result = new ActionResult<>();
+			ActionResult<List<Wo>> result = new ActionResult<>();
 			Business business = new Business(emc);
-			List<NameValueCountPair> wraps = new ArrayList<>();
-			EntityManager em = emc.get(Task.class);
-			CriteriaBuilder cb = em.getCriteriaBuilder();
-			CriteriaQuery<String> cq = cb.createQuery(String.class);
-			Root<Task> root = cq.from(Task.class);
-			Predicate p = cb.equal(root.get(Task_.person), effectivePerson.getDistinguishedName());
-			cq.select(root.get(Task_.application)).where(p);
-			List<String> list = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
-			for (String str : list) {
-				this.addNameValueCountPair(business, effectivePerson, str, wraps);
-			}
-			SortTools.asc(wraps, false, "name");
-			result.setData(wraps);
+			List<Wo> list = list(business, effectivePerson);
+			result.setData(list);
 			return result;
 		}
 	}
 
-	private void addNameValueCountPair(Business business, EffectivePerson effectivePerson, String applicationId,
-			List<NameValueCountPair> wraps) throws Exception {
-		Application app = business.application().pick(applicationId);
-		if (null != app) {
-			NameValueCountPair pair = new NameValueCountPair();
-			pair.setName(app.getName());
-			pair.setValue(app.getId());
-			pair.setCount(this.count(business, effectivePerson, applicationId));
-			wraps.add(pair);
+	private List<Wo> list(Business business, EffectivePerson effectivePerson) throws Exception {
+		EntityManager em = business.entityManagerContainer().get(Task.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
+		Root<Task> from = cq.from(Task.class);
+		Path<String> app = from.get(Task_.application);
+		Predicate p = cb.equal(from.get(Task_.person), effectivePerson.getDistinguishedName());
+		List<Tuple> os = em.createQuery(cq.groupBy(app).multiselect(app, cb.count(app)).where(p)).getResultList();
+		List<Wo> list = new ArrayList<>();
+		for (Tuple o : os) {
+			Wo wo = new Wo();
+			Application application = business.application().pick(o.get(app));
+			wo.setName(application.getName());
+			wo.setValue(application.getId());
+			wo.setCount(o.get(1, Long.class));
+			list.add(wo);
 		}
+		return list.stream().sorted(Comparator.comparing(o -> Objects.toString(o.getName(), "")))
+				.collect(Collectors.toList());
 	}
 
-	private Long count(Business business, EffectivePerson effectivePerson, String applicationId) throws Exception {
-		EntityManagerContainer emc = business.entityManagerContainer();
-		EntityManager em = emc.get(Task.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-		Root<Task> root = cq.from(Task.class);
-		Predicate p = cb.equal(root.get(Task_.person), effectivePerson.getDistinguishedName());
-		p = cb.and(p, cb.equal(root.get(Task_.application), applicationId));
-		cq.select(cb.count(root)).where(p);
-		return em.createQuery(cq).getSingleResult();
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.task.ActionListCountWithApplication$Wo")
+	public static class Wo extends NameValueCountPair {
 	}
 
 }

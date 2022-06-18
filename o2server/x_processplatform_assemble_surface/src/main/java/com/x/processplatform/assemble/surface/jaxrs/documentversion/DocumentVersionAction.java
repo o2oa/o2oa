@@ -26,8 +26,11 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "DocumentVersionAction", description = "版式公文接口.")
 @Path("documentversion")
-@JaxrsDescribe("版式文件")
+@JaxrsDescribe("版式公文接口")
 public class DocumentVersionAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(DocumentVersionAction.class);

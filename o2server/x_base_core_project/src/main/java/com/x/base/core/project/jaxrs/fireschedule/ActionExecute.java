@@ -11,14 +11,16 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.schedule.AbstractJob;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionExecute extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionExecute.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionExecute.class);
 
 	@SuppressWarnings("unchecked")
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, @Context ServletContext servletContext, String className)
 			throws Exception {
-		logger.debug("execute:{}.", () -> className);
+		LOGGER.debug("execute:{}, className:{}.", effectivePerson::getDistinguishedName, () -> className);
 		ActionResult<Wo> result = new ActionResult<>();
 		AbstractContext ctx = AbstractContext.fromServletContext(servletContext);
 		Class<?> clz = Thread.currentThread().getContextClassLoader().loadClass(className);
@@ -29,7 +31,11 @@ class ActionExecute extends BaseAction {
 		return result;
 	}
 
+	@Schema(name = "com.x.base.core.project.jaxrs.fireschedule.ActionExecute.Wo")
 	public static class Wo extends WrapBoolean {
+
+		private static final long serialVersionUID = -6588426920664208798L;
+
 	}
 
 }

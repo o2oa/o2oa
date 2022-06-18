@@ -61,6 +61,7 @@ class ActionListWithPerson extends BaseAction {
 					}
 				}
 				wos = business.application().sort(wos);
+				
 				result.setData(wos);
 			}
 			return result;

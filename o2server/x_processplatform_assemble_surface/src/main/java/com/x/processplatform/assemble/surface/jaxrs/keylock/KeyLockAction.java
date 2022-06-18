@@ -21,8 +21,11 @@ import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "KeyLockAction", description = "工作锁接口.")
 @Path("keylock")
-@JaxrsDescribe("测试操作")
+@JaxrsDescribe("工作锁接口.")
 public class KeyLockAction extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(KeyLockAction.class);

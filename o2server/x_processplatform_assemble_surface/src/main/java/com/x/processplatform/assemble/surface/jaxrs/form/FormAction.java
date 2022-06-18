@@ -23,8 +23,11 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "FormAction", description = "表单接口.")
 @Path("form")
-@JaxrsDescribe("表单操作")
+@JaxrsDescribe("表单接口.")
 public class FormAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(FormAction.class);

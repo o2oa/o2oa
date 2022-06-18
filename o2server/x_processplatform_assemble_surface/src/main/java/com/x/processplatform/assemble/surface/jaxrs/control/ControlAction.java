@@ -22,8 +22,11 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "ControlAction", description = "权限接口.")
 @Path("control")
-@JaxrsDescribe("权限接口")
+@JaxrsDescribe("权限接口.")
 public class ControlAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ControlAction.class);

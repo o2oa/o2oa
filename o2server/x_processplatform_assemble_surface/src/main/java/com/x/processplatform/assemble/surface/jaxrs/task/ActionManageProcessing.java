@@ -18,6 +18,9 @@ import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
+import com.x.processplatform.core.express.assemble.surface.jaxrs.task.ActionManageProcessingWi;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionManageProcessing extends BaseAction {
 
@@ -41,11 +44,11 @@ class ActionManageProcessing extends BaseAction {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			emc.beginTransaction(Task.class);
-			/* 如果有输入新的路由决策覆盖原有决策 */
+			// 如果有输入新的路由决策覆盖原有决策
 			if (StringUtils.isNotEmpty(wi.getRouteName())) {
 				task.setRouteName(wi.getRouteName());
 			}
-			/* 如果有新的流程意见那么覆盖原有流程意见 */
+			// 如果有新的流程意见那么覆盖原有流程意见
 			if (StringUtils.isNotEmpty(wi.getOpinion())) {
 				task.setOpinion(wi.getOpinion());
 			}
@@ -59,12 +62,14 @@ class ActionManageProcessing extends BaseAction {
 		return result;
 	}
 
-	public static class Wi extends Task {
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.task.ActionManageProcessing.Wi")
+	public static class Wi extends ActionManageProcessingWi {
 
 		private static final long serialVersionUID = -4726539076530209219L;
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.task.ActionManageProcessing.Wo")
 	public static class Wo extends WoId {
 	}
 

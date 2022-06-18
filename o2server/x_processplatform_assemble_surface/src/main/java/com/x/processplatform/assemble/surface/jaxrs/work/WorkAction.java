@@ -29,8 +29,10 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.core.entity.element.ActivityType;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+@Tag(name = "WorkAction", description = "工作接口.")
 @Path("work")
-@JaxrsDescribe("工作操作")
+@JaxrsDescribe("工作接口.")
 public class WorkAction extends StandardJaxrsAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(WorkAction.class);

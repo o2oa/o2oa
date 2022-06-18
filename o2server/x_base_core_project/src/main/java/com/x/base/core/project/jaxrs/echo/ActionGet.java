@@ -11,12 +11,14 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionGet extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionGet.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionGet.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, ServletContext servletContext) throws Exception {
-		logger.debug(effectivePerson, "echo from:{}.", effectivePerson);
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, ServletContext servletContext) {
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		wo.setServletContextName(servletContext.getServletContextName());
@@ -25,14 +27,17 @@ class ActionGet extends BaseAction {
 		return result;
 	}
 
+	@Schema(name = "com.x.base.core.project.jaxrs.echo.ActionGet.Wo")
 	public static class Wo extends GsonPropertyObject {
 
 		private static final long serialVersionUID = 3728516737526214370L;
 
-		@FieldDescribe("上下文根")
+		@FieldDescribe("上下文根.")
+		@Schema(description = "上下文根.")
 		private String servletContextName;
 
-		@FieldDescribe("服务器时间")
+		@FieldDescribe("服务器时间.")
+		@Schema(description = "服务器时间.")
 		private Date serverTime;
 
 		public String getServletContextName() {
