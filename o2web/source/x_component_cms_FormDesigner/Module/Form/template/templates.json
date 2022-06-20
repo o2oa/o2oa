@@ -17,6 +17,16 @@
     "defaultReadForm": true
   },
   {
+    "name": "form_publish_edit_green.json",
+    "title": MWF.xApplication.cms.ColumnManager ? MWF.xApplication.cms.ColumnManager.LP.formType.publishEditGreen : MWF.xApplication.cms.FormDesigner.LP.formType.publishEditGreen,
+    "icon": "form_publish_edit_green.png"
+  },
+  {
+    "name": "form_publish_read_green.json",
+    "title":MWF.xApplication.cms.ColumnManager ? MWF.xApplication.cms.ColumnManager.LP.formType.publishReadGreen : MWF.xApplication.cms.FormDesigner.LP.formType.publishReadGreen,
+    "icon": "form_publish_read_green.png"
+  },
+  {
     "name": "form_input.json",
     "title":MWF.xApplication.cms.ColumnManager ? MWF.xApplication.cms.ColumnManager.LP.formType.dataInput : MWF.xApplication.cms.FormDesigner.LP.formType.dataInput,
     "icon": "form_input.png"

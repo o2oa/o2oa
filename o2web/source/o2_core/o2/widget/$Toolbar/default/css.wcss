@@ -5,6 +5,7 @@
 		"border-right": "1px solid #888888",
 		"border-bottom": "1px solid #888888",
 		"background-color": "#e7e7e7",
+		"border-radius": "0px",
 		"padding-top": "1px",
 		"padding-bottom": "1px",
 		"padding-left": "2px",
@@ -77,18 +78,22 @@
 	},
 
 	"buttonOver": {
+	  	"color" : "inherit",
 		"border": "1px solid #000000",
 		"background-color": "#b5bed6"
 	},
 	"buttonOut": {
+	  	"color" : "inherit",
 		"border": "1px solid #e7e7e7",
 		"background-color": "#e7e7e7"
 	},
 	"buttonDown": {
+	  	"color" : "inherit",
 		"border": "1px solid #000000",
 		"background-color": "#8492b5"
 	},
 	"buttonUp": {
+	  	"color" : "inherit",
 		"border": "1px solid #000000",
 		"background-color": "#b5bed6"
 	},

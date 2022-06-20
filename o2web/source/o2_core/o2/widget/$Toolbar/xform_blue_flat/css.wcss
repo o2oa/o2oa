@@ -5,6 +5,7 @@
 		"padding-bottom": "10px",
 		"padding-left": "0px",
 		"padding-right": "2px",
+		"border-radius": "0px",
 		"word-wrap" : "normal",
 		"word-break" : "keep-all",
 		"cursor": "pointer",
@@ -81,17 +82,23 @@
 
 	"buttonOver": {
 	  	"color" : "#fff",
-		"background-color": "#52a6fe"
+		"background-color": "#52a6fe",
+		"border": "0px solid transparent"
 	},
 	"buttonOut": {
 	  	"color" : "#12171f",
-		"background-color": "#f0f1f3"
+		"background-color": "#f0f1f3",
+		"border": "0px solid transparent"
 	},
 	"buttonDown": {
-		"background-color": "#43ccf6"
+		"color" : "inherit",
+		"background-color": "#43ccf6",
+		"border": "0px solid transparent"
 	},
 	"buttonUp": {
-		"background-color": "#0b82ff"
+		"color" : "inherit",
+		"background-color": "#0b82ff",
+		"border": "0px solid transparent"
 	},
 	"toolbarButtonDownNode": {
 		"display":"block",

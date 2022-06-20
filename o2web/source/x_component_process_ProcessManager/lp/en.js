@@ -193,6 +193,7 @@ MWF.xApplication.process.ProcessManager.LP = {
     "commonForm": "Common",
     "blueForm": "Blue Style",
     "redForm": "Red Style",
+    "greenForm": "Green Style",
     "publishForm": "Publish",
     "fileForm": "File Form",
     "submitPcForm": "SubmitForm (PC)",

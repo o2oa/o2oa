@@ -66,6 +66,14 @@
       "pc"
     ]
   },
+  "green-flat": {
+    "name": "绿色扁平",
+    "file": "styles_green-flat.json",
+    "extendFile": "styles_green-flat_extend.json",
+    "mode": [
+      "pc"
+    ]
+  },
   "blue-flat-mobile": {
     "name": "手机蓝白",
     "file": "styles_mobile-blue-flat.json",
