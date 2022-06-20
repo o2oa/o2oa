@@ -54,6 +54,7 @@ public class ProcessPlatformPlan extends Plan {
 
 	public WhereEntry where = new WhereEntry();
 
+	@Override
 	void adjust() throws Exception {
 		this.adjustRuntime();
 		this.adjustWhere();
@@ -88,6 +89,7 @@ public class ProcessPlatformPlan extends Plan {
 		this.selectList = list;
 	}
 
+	@Override
 	List<String> listBundle() throws Exception {
 		List<String> jobs;
 		switch (StringUtils.trim(this.where.scope)) {
@@ -381,44 +383,19 @@ public class ProcessPlatformPlan extends Plan {
 				throws Exception {
 			List<String> applicationIds = ListTools.extractField(this.applicationList, JpaObject.id_FIELDNAME,
 					String.class, true, true);
-			List<String> applicationNames = ListTools.extractField(this.applicationList, Application.name_FIELDNAME,
-					String.class, true, true);
-			List<String> applicationAlias = ListTools.extractField(this.applicationList, Application.alias_FIELDNAME,
-					String.class, true, true);
 			List<String> processIds = ListTools.extractField(this.processList, JpaObject.id_FIELDNAME, String.class,
 					true, true);
-			List<String> processNames = ListTools.extractField(this.processList, Process.name_FIELDNAME, String.class,
-					true, true);
-			List<String> processAlias = ListTools.extractField(this.processList, Process.alias_FIELDNAME, String.class,
-					true, true);
 			applicationIds = applicationIds.stream().filter(StringUtils::isNotEmpty).collect(Collectors.toList());
-			applicationNames = applicationNames.stream().filter(StringUtils::isNotEmpty).collect(Collectors.toList());
-			applicationAlias = applicationAlias.stream().filter(StringUtils::isNotEmpty).collect(Collectors.toList());
 			processIds = processIds.stream().filter(StringUtils::isNotEmpty).collect(Collectors.toList());
-			processNames = processNames.stream().filter(StringUtils::isNotEmpty).collect(Collectors.toList());
-			processAlias = processAlias.stream().filter(StringUtils::isNotEmpty).collect(Collectors.toList());
-			if (applicationIds.isEmpty() && applicationNames.isEmpty() && applicationAlias.isEmpty()
-					&& processIds.isEmpty() && processNames.isEmpty() && processAlias.isEmpty()) {
+			if (applicationIds.isEmpty() && processIds.isEmpty()) {
 				return null;
 			}
 			Predicate p = cb.disjunction();
 			if (!applicationIds.isEmpty()) {
 				p = cb.or(p, root.get(WorkCompleted_.application).in(applicationIds));
 			}
-			if (!applicationNames.isEmpty()) {
-				p = cb.or(p, root.get(WorkCompleted_.applicationName).in(applicationNames));
-			}
-			if (!applicationAlias.isEmpty()) {
-				p = cb.or(p, root.get(WorkCompleted_.applicationAlias).in(applicationAlias));
-			}
 			if (!processIds.isEmpty()) {
 				p = cb.or(p, root.get(WorkCompleted_.process).in(processIds));
-			}
-			if (!processNames.isEmpty()) {
-				p = cb.or(p, root.get(WorkCompleted_.processName).in(processNames));
-			}
-			if (!processAlias.isEmpty()) {
-				p = cb.or(p, root.get(WorkCompleted_.processAlias).in(processAlias));
 			}
 			return p;
 		}
