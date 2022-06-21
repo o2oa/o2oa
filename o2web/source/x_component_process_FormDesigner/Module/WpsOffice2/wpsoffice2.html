@@ -1,0 +1,291 @@
+<div style="background-color: #FFF; overflow: hidden">
+	<div title="{{$.lp.base}}" class="MWFTab">
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.id}}:</td>
+				<td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.name}}:</td>
+				<td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.description}}:</td>
+				<td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.readonly}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="isReadonly" value="true" text{($.isReadonly)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="isReadonly" value="false" text{(!$.isReadonly)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<!--			<tr>-->
+			<!--				<td class="editTableTitle">延时加载:</td>-->
+			<!--				<td class="editTableValue">-->
+			<!--					<input type="radio" name="isNotLoadNow" value="true" text{($.isNotLoadNow)?'checked':''}/>是-->
+			<!--					<input type="radio" name="isNotLoadNow" value="false" text{(!$.isNotLoadNow)?'checked':''}/>否-->
+			<!--				</td>-->
+			<!--			</tr>-->
+		</table>
+		<div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
+
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.type}}:</td>
+				<td class="editTableValue">
+					<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'none'); " name="officeType" text{($.officeType=='word')?'checked':''} type="radio" value="word"/>Word<br/>
+					<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'none'); " name="officeType" text{($.officeType=='excel')?'checked':''} type="radio" value="excel"/>Excel<br/>
+					<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'none'); " name="officeType" text{($.officeType=='ppt')?'checked':''} type="radio" value="ppt"/>PowerPoint<br/>
+					<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'block'); " name="officeType" text{($.officeType=='other')?'checked':''} type="radio" value="other"/>{{$.lp.byTemplate}}
+
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">fileName:</td>
+				<td class="editTableValue"><input type="text" name="fileName" value="text{$.fileName}" class="editTableInput"/></td>
+			</tr>
+		</table>
+		<div id="officeTemplateArea" title="src" style="display: text{($.officeType=='other')?'block':'none'}">
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">模板标识:</td>
+					<td class="editTableValue">
+						<input type="text" name="template" value="text{$.template}" class="editTableInput"/>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div class="MWFScriptArea" name="readScript" title="{{$.lp.readonlyCondition}} (S)"></div>
+	</div>
+	<div title="{{$.lp.wps.config}}" class="MWFTab">
+		<div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">{{$.lp.wps.options}}</div>
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.wps.topArea}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="isShowTopArea" value="true" text{($.isShowTopArea)?'checked':''}/>{{$.lp.wps.show}}
+					<input type="radio" name="isShowTopArea" value="false" text{(!$.isShowTopArea)?'checked':''}/>{{$.lp.wps.hide}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.wps.headArea}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="isShowHeader" value="true" text{($.isShowHeader)?'checked':''}/>{{$.lp.wps.show}}
+					<input type="radio" name="isShowHeader" value="false" text{(!$.isShowHeader)?'checked':''}/>{{$.lp.wps.hide}}
+				</td>
+			</tr>
+
+			<!--			<tr>-->
+			<!--				<td class="editTableTitle">头像:</td>-->
+			<!--				<td class="editTableValue">-->
+			<!--					<input type="radio" name="isCooperUsersAvatarVisible" value="true" text{($.isCooperUsersAvatarVisible)?'checked':''}/>显示-->
+			<!--					<input type="radio" name="isCooperUsersAvatarVisible" value="false" text{(!$.isCooperUsersAvatarVisible)?'checked':''}/>隐藏-->
+			<!--				</td>-->
+			<!--			</tr>-->
+			<tr>
+				<td class="editTableTitle">{{$.lp.wps.showMode}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="showMode" value="normal" text{($.showMode=='normal')||(!$.showMode)?'checked':''}/>{{$.lp.wps.showMode_normal}}
+					<br>
+					<input type="radio" name="showMode" value="simple" text{($.showMode=='simple')?'checked':''}/>{{$.lp.wps.showMode_simple}}
+				</td>
+			</tr>
+			<!--			<tr>-->
+			<!--				<td class="editTableTitle">浏览器区域全屏:</td>-->
+			<!--				<td class="editTableValue">-->
+			<!--					<input type="radio" name="isBrowserViewFullscreen" value="true" text{($.isBrowserViewFullscreen)?'checked':''}/>是-->
+			<!--					<input type="radio" name="isBrowserViewFullscreen" value="false" text{(!$.isBrowserViewFullscreen)?'checked':''}/>否-->
+			<!--				</td>-->
+			<!--			</tr>-->
+			<!--			<tr>-->
+			<!--				<td class="editTableTitle">在iframe区域内全屏:</td>-->
+			<!--				<td class="editTableValue">-->
+			<!--					<input type="radio" name="isIframeViewFullscreen" value="true" text{($.isIframeViewFullscreen)?'checked':''}/>是-->
+			<!--					<input type="radio" name="isIframeViewFullscreen" value="false" text{(!$.isIframeViewFullscreen)?'checked':''}/>否-->
+			<!--				</td>-->
+			<!--			</tr>-->
+		</table>
+		<div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">{{$.lp.wps.wordConfig}}</div>
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.wps.comment}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="isShowComment" value="true" text{($.isShowComment)?'checked':''}/>{{$.lp.wps.show}}
+					<input type="radio" name="isShowComment" value="false" text{(!$.isShowComment)?'checked':''}/>{{$.lp.wps.hide}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.wps.isShowDocMap}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="isShowDocMap" value="true" text{($.isShowDocMap)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="isShowDocMap" value="false" text{(!$.isShowDocMap)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.wps.isBestScale}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="isBestScale" value="true" text{($.isBestScale)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="isBestScale" value="false" text{(!$.isBestScale)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.wps.isShowBottomStatusBar}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="isShowBottomStatusBar" value="true" text{($.isShowBottomStatusBar)?'checked':''}/>{{$.lp.wps.show}}
+					<input type="radio" name="isShowBottomStatusBar" value="false" text{(!$.isShowBottomStatusBar)?'checked':''}/>{{$.lp.wps.hide}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.wps.isOpenIntoEdit}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="isOpenIntoEdit" value="true" text{($.isOpenIntoEdit)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="isOpenIntoEdit" value="false" text{(!$.isOpenIntoEdit)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div title="{{$.lp.wps.component}}" class="MWFTab">
+		<div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">{{$.lp.wps.isComponent}}</div>
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.wps.HeaderLeft}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="HeaderLeft" value="true" text{($.HeaderLeft)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="HeaderLeft" value="false" text{(!$.HeaderLeft)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.wps.HeaderRight}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="HeaderRight" value="true" text{($.HeaderRight)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="HeaderRight" value="false" text{(!$.HeaderRight)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.wps.FloatQuickHelp}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="FloatQuickHelp" value="true" text{($.FloatQuickHelp)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="FloatQuickHelp" value="false" text{(!$.FloatQuickHelp)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.wps.HistoryVersion}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="HistoryVersion" value="true" text{($.HistoryVersion)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="HistoryVersion" value="false" text{(!$.HistoryVersion)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.wps.HistoryRecord}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="HistoryRecord" value="true" text{($.HistoryRecord)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="HistoryRecord" value="false" text{(!$.HistoryRecord)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.wps.HistoryVersionDivider}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="HistoryVersionDivider" value="true" text{($.HistoryVersionDivider)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="HistoryVersionDivider" value="false" text{(!$.HistoryVersionDivider)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.wps.TabPrintPreview}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="TabPrintPreview" value="true" text{($.TabPrintPreview)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="TabPrintPreview" value="false" text{(!$.TabPrintPreview)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.wps.MenuPrintPreview}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="MenuPrintPreview" value="true" text{($.MenuPrintPreview)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="MenuPrintPreview" value="false" text{(!$.MenuPrintPreview)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.wps.ReviewTrackChanges}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="ReviewTrackChanges" value="true" text{($.ReviewTrackChanges)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="ReviewTrackChanges" value="false" text{(!$.ReviewTrackChanges)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.wps.TrackChanges}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="TrackChanges" value="true" text{($.TrackChanges)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="TrackChanges" value="false" text{(!$.TrackChanges)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.wps.ContextMenuConvene}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="ContextMenuConvene" value="true" text{($.ContextMenuConvene)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="ContextMenuConvene" value="false" text{(!$.ContextMenuConvene)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+		</table>
+		<div style="height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">{{$.lp.wps.isComponentMobile}}</div>
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.wps.Logo}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="Logo" value="true" text{($.Logo)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="Logo" value="false" text{(!$.Logo)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.wps.Cooperation}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="Cooperation" value="true" text{($.Cooperation)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="Cooperation" value="false" text{(!$.Cooperation)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.wps.More}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="More" value="true" text{($.More)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="More" value="false" text{(!$.More)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.wps.SendButton}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="SendButton" value="true" text{($.SendButton)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="SendButton" value="false" text{(!$.SendButton)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.wps.CooperHistoryMenuItem}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="CooperHistoryMenuItem" value="true" text{($.CooperHistoryMenuItem)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="CooperHistoryMenuItem" value="false" text{(!$.CooperHistoryMenuItem)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.wps.WriterHoverToolbars}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="WriterHoverToolbars" value="true" text{($.WriterHoverToolbars)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="WriterHoverToolbars" value="false" text{(!$.WriterHoverToolbars)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.wps.ReadSetting}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="ReadSetting" value="true" text{($.ReadSetting)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="ReadSetting" value="false" text{(!$.ReadSetting)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div title="{{$.lp.event}}"  class="MWFTab">
+		<div class="MWFEventsArea" name="events"></div>
+	</div>
+	<div title="HTML"  class="MWFTab">
+		<div class="MWFHTMLArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+	<div title="JSON"  class="MWFTab">
+		<div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+</div>
