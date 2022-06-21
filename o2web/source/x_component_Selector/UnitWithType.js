@@ -161,7 +161,7 @@ MWF.xApplication.Selector.UnitWithType.Item = new Class({
     loadSubItem: function(){
         if( !this.selector.options.expandSubEnable )return;
         this.isExpand = (this.selector.options.expand);
-        if (this.data.subDirectUnitCount){
+        if (this.data.woSubDirectUnitList && this.data.woSubDirectUnitList.length){
             if (this.selector.options.expand){
                 if (this.level===1){
                     this.levelNode.setStyles(this.selector.css.selectorItemLevelNode_expand);
