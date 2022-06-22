@@ -99,23 +99,24 @@ public class WrapCopier<T, W> {
 		});
 	}
 
-	public W copy(T orig) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
-			InvocationTargetException, NoSuchMethodException, SecurityException {
+	public W copy(T orig) {
 		if (null == orig) {
 			return null;
 		}
-		W w = this.destClass.getConstructor().newInstance();
+		W w = null;
+		try {
+			w = this.destClass.getConstructor().newInstance();
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+				| NoSuchMethodException | SecurityException e) {
+			e.printStackTrace();
+		}
 		return copy(orig, w);
 	}
 
 	public List<W> copy(List<T> origs, List<W> dests) {
 		if (null != origs) {
 			origs.stream().forEach(t -> {
-				try {
-					dests.add(this.copy(t));
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				dests.add(this.copy(t));
 			});
 		}
 		return dests;

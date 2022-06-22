@@ -15,17 +15,8 @@ import com.x.component.core.entity.Component_;
 
 public class ComponentFactory extends AbstractFactory {
 
-	public ComponentFactory(Business business) throws Exception {
+	public ComponentFactory(Business business) {
 		super(business);
-	}
-
-	public List<String> list() throws Exception {
-		EntityManager em = this.entityManagerContainer().get(Component.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<Component> root = cq.from(Component.class);
-		cq.select(root.get(Component_.id));
-		return em.createQuery(cq).getResultList();
 	}
 
 	public List<String> listVisiable() throws Exception {

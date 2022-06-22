@@ -13,8 +13,11 @@ import java.lang.annotation.Target;
 @Inherited
 public @interface FieldTypeDescribe {
 	String fieldType();
+
 	String fieldTypeName();
+
 	String fieldValue();
+
 	String fieldSample() default "";
-	
+
 }

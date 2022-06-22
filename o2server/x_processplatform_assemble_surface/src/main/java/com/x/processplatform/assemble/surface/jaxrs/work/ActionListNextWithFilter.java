@@ -19,6 +19,8 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.EqualsTerms;
 import com.x.base.core.project.jaxrs.InTerms;
 import com.x.base.core.project.jaxrs.LikeTerms;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.WorkControl;
@@ -27,6 +29,8 @@ import com.x.processplatform.core.entity.content.WorkStatus;
 import com.x.processplatform.core.entity.element.Application;
 
 class ActionListNextWithFilter extends BaseAction {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListNextWithFilter.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String id, Integer count, String applicationFlag,
 			JsonElement jsonElement) throws Exception {

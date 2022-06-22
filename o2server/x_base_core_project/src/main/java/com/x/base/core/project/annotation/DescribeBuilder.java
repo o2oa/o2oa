@@ -105,7 +105,7 @@ public class DescribeBuilder {
 						"getClasses")) {
 					Path path = o.getAnnotation(Path.class);
 					JaxrsDescribe jaxrsDescribe = o.getAnnotation(JaxrsDescribe.class);
-					if (null != path && null != jaxrsDescribe) {
+					if (null != path && (null != jaxrsDescribe) && (jaxrsDescribe.scope() == DescribeScope.commonly)) {
 						classes.add(o);
 					}
 				}
@@ -123,7 +123,7 @@ public class DescribeBuilder {
 		jaxrsClass.setDescription(jaxrsDescribe.value());
 		for (Method method : clz.getMethods()) {
 			JaxrsMethodDescribe jaxrsMethodDescribe = method.getAnnotation(JaxrsMethodDescribe.class);
-			if (null != jaxrsMethodDescribe) {
+			if ((null != jaxrsMethodDescribe) && (jaxrsMethodDescribe.scope() == DescribeScope.commonly)) {
 				jaxrsClass.getMethods().add(this.jaxrsMethod(clz, method));
 			}
 		}

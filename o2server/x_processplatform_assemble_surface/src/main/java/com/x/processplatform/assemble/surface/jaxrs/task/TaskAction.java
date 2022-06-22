@@ -1159,7 +1159,7 @@ public class TaskAction extends StandardJaxrsAction {
 							@Content(schema = @Schema(implementation = V2Reset.Wi.class)) }))
 	@JaxrsMethodDescribe(value = "重置待办,将之前的待办转为已办,opinion:办理意见,routeName:选择路由,identityList:新的办理人(MockPutToPost)", action = V2Reset.class)
 	@POST
-	@Path("v2/{id}/reset/mockputtopost")
+	@Path("V2/{id}/reset/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void V2ResetMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
@@ -1175,6 +1175,26 @@ public class TaskAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
+	@Operation(summary = "在指定待办位置新增处理人.", operationId = OPERATIONID_PREFIX + "V2Add", responses = {
+			@ApiResponse(content = @Content(schema = @Schema(implementation = V2Add.Wo.class))) })
+	@JaxrsMethodDescribe(value = "在指定待办位置新增处理人.", action = V2Add.class)
+	@POST
+	@Path("v2/{id}/add")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void V2Add(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("标识") @PathParam("id") String id, JsonElement jsonElement) {
+		ActionResult<V2Add.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2Add().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@Operation(summary = "挂起待办,暂停待办处理计时.", operationId = OPERATIONID_PREFIX + "V2Pause", responses = {
 			@ApiResponse(content = @Content(schema = @Schema(implementation = V2Pause.Wo.class))) })
 	@JaxrsMethodDescribe(value = "挂起待办,暂停待办处理计时.", action = V2Pause.class)
@@ -1182,7 +1202,7 @@ public class TaskAction extends StandardJaxrsAction {
 	@Path("v2/{id}/pause")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void V2Pause(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void v2Pause(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("标识") @PathParam("id") String id) {
 		ActionResult<V2Pause.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -1202,7 +1222,7 @@ public class TaskAction extends StandardJaxrsAction {
 	@Path("v2/{id}/resume")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void V2Resume(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	public void v2Resume(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("标识") @PathParam("id") String id) {
 		ActionResult<V2Resume.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
@@ -1210,26 +1230,6 @@ public class TaskAction extends StandardJaxrsAction {
 			result = new V2Resume().execute(effectivePerson, id);
 		} catch (Exception e) {
 			LOGGER.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
-
-	@Operation(summary = "在指定待办位置新增处理人.", operationId = OPERATIONID_PREFIX + "V2Add", responses = {
-			@ApiResponse(content = @Content(schema = @Schema(implementation = V2Add.Wo.class))) })
-	@JaxrsMethodDescribe(value = "在指定待办位置新增处理人.", action = V2Add.class)
-	@POST
-	@Path("v2/{id}/add")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void V2Add(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("标识") @PathParam("id") String id, JsonElement jsonElement) {
-		ActionResult<V2Add.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new V2Add().execute(effectivePerson, id, jsonElement);
-		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));

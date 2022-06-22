@@ -20,14 +20,14 @@ import com.x.component.core.entity.Component;
 
 public class InitComponents extends AbstractJob {
 
-	private static Logger logger = LoggerFactory.getLogger(InitComponents.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(InitComponents.class);
 
 	@Override
 	public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
 		try {
 			this.init();
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 			throw new JobExecutionException(e);
 		}
 	}
@@ -35,10 +35,10 @@ public class InitComponents extends AbstractJob {
 	private void init() throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 
-			List<Component> os = emc.listEqualOrIn(Component.class, Component.type_FIELDNAME, Component.TYPE_SYSTEM,
-					Component.name_FIELDNAME, Components.SYSTEM_NAME_NAMES);
+			List<Component> os = emc.listEqualOrIn(Component.class, Component.TYPE_FIELDNAME, Component.TYPE_SYSTEM,
+					Component.NAME_FIELDNAME, Components.SYSTEM_NAME_NAMES);
 
-			List<String> existNames = ListTools.extractProperty(os, Component.name_FIELDNAME, String.class, true, true);
+			List<String> existNames = ListTools.extractProperty(os, Component.NAME_FIELDNAME, String.class, true, true);
 
 			List<Component> removes = new ArrayList<>();
 			for (Component o : os) {

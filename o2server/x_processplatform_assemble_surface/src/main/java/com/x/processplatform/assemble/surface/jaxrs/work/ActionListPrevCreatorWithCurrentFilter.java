@@ -18,12 +18,16 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.EqualsTerms;
 import com.x.base.core.project.jaxrs.InTerms;
 import com.x.base.core.project.jaxrs.LikeTerms;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkStatus;
 
 class ActionListPrevCreatorWithCurrentFilter extends BaseAction {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListPrevCreatorWithCurrentFilter.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String id, Integer count, JsonElement jsonElement)
 			throws Exception {
