@@ -96,7 +96,7 @@ class ActionManageGetAssignment extends BaseAction {
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
-		});
+		}, ThisApplication.threadPool());
 		CompletableFuture<Void> futureRead = CompletableFuture.runAsync(() -> {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				emc.listEqual(Read.class, Read.work_FIELDNAME, id).stream()
