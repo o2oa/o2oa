@@ -26,8 +26,11 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "DataAction", description = "业务数据接口.")
 @Path("data")
-@JaxrsDescribe("数据操作")
+@JaxrsDescribe("业务数据接口.")
 public class DataAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(DataAction.class);

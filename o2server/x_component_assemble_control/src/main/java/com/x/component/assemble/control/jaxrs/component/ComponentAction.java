@@ -17,6 +17,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import com.google.gson.JsonElement;
+import com.x.base.core.project.annotation.DescribeScope;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
 import com.x.base.core.project.annotation.JaxrsParameterDescribe;
@@ -28,13 +29,26 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "ComponentAction", description = "组件接口.")
 @Path("component")
-@JaxrsDescribe("组件")
+@JaxrsDescribe(value = "组件接口.", scope = DescribeScope.system)
 public class ComponentAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ComponentAction.class);
 
-	@JaxrsMethodDescribe(value = "列示所有Component对象.", action = ActionListAll.class)
+	private static final String OPERATIONID_PREFIX = "ComponentAction::";
+
+	@Operation(summary = "列示所有Component对象.", operationId = OPERATIONID_PREFIX + "listAll", responses = {
+			@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = ActionListAll.Wo.class)))) })
+	@JaxrsMethodDescribe(value = "列示所有Component对象.", action = ActionListAll.class, scope = DescribeScope.system)
 	@GET
 	@Path("list/all")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -51,7 +65,9 @@ public class ComponentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "获取Component对象.", action = ActionGet.class)
+	@Operation(summary = "获取Component对象.", operationId = OPERATIONID_PREFIX + "get", responses = {
+			@ApiResponse(content = @Content(schema = @Schema(implementation = ActionGet.Wo.class))) })
+	@JaxrsMethodDescribe(value = "获取Component对象.", action = ActionGet.class, scope = DescribeScope.system)
 	@GET
 	@Path("{flag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -69,7 +85,11 @@ public class ComponentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "创建Component对象.", action = ActionCreate.class)
+	@Operation(summary = "创建Component对象.", operationId = OPERATIONID_PREFIX + "create", responses = {
+			@ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionCreate.Wo.class)) }) }, requestBody = @RequestBody(content = {
+							@Content(schema = @Schema(implementation = ActionCreate.Wi.class)) }))
+	@JaxrsMethodDescribe(value = "创建Component对象.", action = ActionCreate.class, scope = DescribeScope.system)
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -86,7 +106,11 @@ public class ComponentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "更新Component对象.", action = ActionEdit.class)
+	@Operation(summary = "更新Component对象.", operationId = OPERATIONID_PREFIX + "edit", responses = {
+			@ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionEdit.Wo.class)) }) }, requestBody = @RequestBody(content = {
+							@Content(schema = @Schema(implementation = ActionEdit.Wi.class)) }))
+	@JaxrsMethodDescribe(value = "更新Component对象.", action = ActionEdit.class, scope = DescribeScope.system)
 	@PUT
 	@Path("{flag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -104,7 +128,9 @@ public class ComponentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "删除Component对象.", action = ActionDelete.class)
+	@Operation(summary = "删除Component对象.", operationId = OPERATIONID_PREFIX + "delete", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionDelete.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "删除Component对象.", action = ActionDelete.class, scope = DescribeScope.system)
 	@DELETE
 	@Path("{flag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -122,7 +148,9 @@ public class ComponentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "删除所有Component,还原默认布局.", action = ActionDeleteAll.class)
+	@Operation(summary = "删除所有Component,还原默认布局.", operationId = OPERATIONID_PREFIX + "deleteAll", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionDeleteAll.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "删除所有Component,还原默认布局.", action = ActionDeleteAll.class, scope = DescribeScope.system)
 	@DELETE
 	@Path("delete/all")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)

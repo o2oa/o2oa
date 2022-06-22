@@ -2,6 +2,7 @@ package com.x.attendance.assemble.control.service;
 
 import java.util.List;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.attendance.assemble.control.Business;
@@ -395,7 +396,7 @@ public class UserManagerService {
 				} else {
 					for (String identity : identities) {
 						Identity obj = business.organization().identity().getObject(identity);
-						if (obj.getMajor()) {
+						if ((null != obj) && BooleanUtils.isTrue(obj.getMajor())) {
 							return identity;
 						}
 					}
@@ -442,20 +443,20 @@ public class UserManagerService {
 		}
 	}
 
-	public Boolean checkHasPerson(String personName,String unitName,Boolean recursive) throws Exception {
+	public Boolean checkHasPerson(String personName, String unitName, Boolean recursive) throws Exception {
 		if (personName == null || personName.isEmpty()) {
 			throw new Exception("personName is null!");
 		}
 		if (unitName == null || unitName.isEmpty()) {
 			throw new Exception("unitName is null!");
 		}
-		if (recursive ==null) {
+		if (recursive == null) {
 			throw new Exception("recursive is null!");
 		}
 		Business business = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
-			return business.organization().unit().checkHasPerson(personName,unitName,recursive);
+			return business.organization().unit().checkHasPerson(personName, unitName, recursive);
 		}
 	}
 

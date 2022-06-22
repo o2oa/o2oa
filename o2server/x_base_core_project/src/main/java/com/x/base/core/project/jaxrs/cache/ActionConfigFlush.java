@@ -9,12 +9,14 @@ import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionConfigFlush extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionConfigFlush.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionConfigFlush.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, ServletContext servletContext) throws Exception {
-		logger.debug(effectivePerson, "config flush.");
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, ServletContext servletContext) {
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 		ActionResult<Wo> result = new ActionResult<>();
 		Config.flush();
 		Wo wo = new Wo();
@@ -23,6 +25,7 @@ class ActionConfigFlush extends BaseAction {
 		return result;
 	}
 
+	@Schema(name = "com.x.base.core.project.jaxrs.cache.ActionConfigFlush$Wo")
 	public static class Wo extends WrapBoolean {
 
 	}

@@ -1,20 +1,20 @@
 package com.x.processplatform.core.express.service.processing.jaxrs.task;
 
-import java.util.List;
-
-import org.apache.commons.lang3.BooleanUtils;
-
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class V2EditWi extends GsonPropertyObject {
 
 	private static final long serialVersionUID = -8631082471633729236L;
 
-	@FieldDescribe("路由名称")
+	@FieldDescribe("选择的路由名称")
+	@Schema(description = "选择的路由名称")
 	private String routeName;
 
 	@FieldDescribe("意见")
+	@Schema(description = "意见")
 	private String opinion;
 
 	public String getRouteName() {

@@ -6,18 +6,18 @@ public abstract class AbstractFactory {
 
 	private Business business;
 
-	public AbstractFactory(Business business) throws Exception {
+	protected AbstractFactory(Business business) {
 		try {
 			if (null == business) {
 				throw new Exception("business can not be null.");
 			}
 			this.business = business;
 		} catch (Exception e) {
-			throw new Exception("can not instantiating factory.");
+			throw new IllegalStateException("can not instantiating factory.");
 		}
 	}
 
-	public EntityManagerContainer entityManagerContainer() throws Exception {
+	public EntityManagerContainer entityManagerContainer() {
 		return this.business.entityManagerContainer();
 	}
 

@@ -4,7 +4,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.container.AsyncResponse;
@@ -13,6 +13,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import com.google.gson.JsonElement;
+import com.x.base.core.project.annotation.DescribeScope;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
 import com.x.base.core.project.http.ActionResult;
@@ -23,16 +24,30 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "CacheAction", description = "缓存操作接口.")
 @Path("cache")
-@JaxrsDescribe("缓存操作")
+@JaxrsDescribe(value = "缓存操作接口", scope = DescribeScope.system)
 public class CacheAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(CacheAction.class);
+	private static final Logger logger = LoggerFactory.getLogger(CacheAction.class);
 
-	@PUT
+	private static final String OPERATIONID_PREFIX = "CacheAction::";
+
+	@Operation(summary = "接收缓存刷新指令.", operationId = OPERATIONID_PREFIX + "receive", responses = {
+			@ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionReceive.Wo.class)) }) }, requestBody = @RequestBody(content = {
+							@Content(schema = @Schema(implementation = ActionReceive.Wi.class)) }))
+	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@JaxrsMethodDescribe(value = "接收Cache刷新信息.", action = ActionReceive.class)
+	@JaxrsMethodDescribe(value = "接收缓存刷新指令.", action = ActionReceive.class)
 	public void receive(@Suspended final AsyncResponse asyncResponse, @Context ServletContext servletContext,
 			@Context HttpServletRequest request, JsonElement jsonElement) {
 		ActionResult<ActionReceive.Wo> result = new ActionResult<>();
@@ -46,11 +61,13 @@ public class CacheAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@Operation(summary = "接收刷新Config配置文件指令.", operationId = OPERATIONID_PREFIX + "configFlush", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionConfigFlush.Wo.class)) }) })
 	@GET
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("config/flush")
-	@JaxrsMethodDescribe(value = "接收config flush 信号.", action = ActionConfigFlush.class)
+	@JaxrsMethodDescribe(value = "接收刷新Config配置文件指令.", action = ActionConfigFlush.class)
 	public void configFlush(@Suspended final AsyncResponse asyncResponse, @Context ServletContext servletContext,
 			@Context HttpServletRequest request) {
 		ActionResult<ActionConfigFlush.Wo> result = new ActionResult<>();
@@ -64,6 +81,8 @@ public class CacheAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@Operation(summary = "显示缓存状态.", operationId = OPERATIONID_PREFIX + "detail", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionDetail.Wo.class)) }) })
 	@GET
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)

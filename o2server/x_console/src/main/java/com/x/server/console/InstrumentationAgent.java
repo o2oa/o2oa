@@ -150,7 +150,7 @@ public class InstrumentationAgent {
 							try {
 								INST.appendToSystemClassLoaderSearch(new JarFile(o.toString()));
 							} catch (IOException e) {
-								e.printStackTrace();
+								System.err.println("file: " + o.toString() + " load error!");
 							}
 						});
 			}

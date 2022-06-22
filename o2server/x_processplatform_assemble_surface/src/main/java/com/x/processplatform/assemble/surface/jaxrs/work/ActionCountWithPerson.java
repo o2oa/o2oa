@@ -17,6 +17,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
+import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
@@ -28,12 +29,14 @@ import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.TaskCompleted_;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionCountWithPerson extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionCountWithPerson.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCountWithPerson.class);
 
-	ActionResult<Wo> execute(String credential) throws Exception {
-
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String credential) throws Exception {
+		LOGGER.debug("execute:{}, credential:{}.", effectivePerson::getDistinguishedName, () -> credential);
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		String person = null;
@@ -66,10 +69,10 @@ class ActionCountWithPerson extends BaseAction {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				count = emc.countEqual(Task.class, Task.person_FIELDNAME, dn);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 			return count;
-		},ThisApplication.threadPool());
+		}, ThisApplication.threadPool());
 	}
 
 	private CompletableFuture<Long> taskCompletedFuture(String dn) {
@@ -87,10 +90,10 @@ class ActionCountWithPerson extends BaseAction {
 						cb.isNull(root.get(TaskCompleted_.latest))));
 				count = em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 			return count;
-		},ThisApplication.threadPool());
+		}, ThisApplication.threadPool());
 	}
 
 	private CompletableFuture<Long> readFuture(String dn) {
@@ -99,10 +102,10 @@ class ActionCountWithPerson extends BaseAction {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				count = emc.countEqual(Read.class, Read.person_FIELDNAME, dn);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 			return count;
-		},ThisApplication.threadPool());
+		}, ThisApplication.threadPool());
 	}
 
 	private CompletableFuture<Long> readCompletedFuture(String dn) {
@@ -111,10 +114,10 @@ class ActionCountWithPerson extends BaseAction {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				count = emc.countEqual(ReadCompleted.class, ReadCompleted.person_FIELDNAME, dn);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 			return count;
-		},ThisApplication.threadPool());
+		}, ThisApplication.threadPool());
 	}
 
 	private CompletableFuture<Long> reviewFuture(String dn) {
@@ -123,25 +126,30 @@ class ActionCountWithPerson extends BaseAction {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				count = emc.countEqual(Review.class, Review.person_FIELDNAME, dn);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 			return count;
-		},ThisApplication.threadPool());
+		}, ThisApplication.threadPool());
 	}
 
 	public static class Wo extends GsonPropertyObject {
 
 		private static final long serialVersionUID = -4391978436352777470L;
 
-		@FieldDescribe("待办数量")
+		@FieldDescribe("待办数量.")
+		@Schema(description = "待办数量.")
 		private Long task = 0L;
-		@FieldDescribe("已办数量")
+		@FieldDescribe("已办数量.")
+		@Schema(description = "已办数量.")
 		private Long taskCompleted = 0L;
-		@FieldDescribe("待阅数量")
+		@FieldDescribe("待阅数量.")
+		@Schema(description = "待阅数量.")
 		private Long read = 0L;
-		@FieldDescribe("已阅数量")
+		@FieldDescribe("已阅数量.")
+		@Schema(description = "已阅数量.")
 		private Long readCompleted = 0L;
-		@FieldDescribe("待阅数量")
+		@FieldDescribe("待阅数量.")
+		@Schema(description = "待阅数量.")
 		private Long review = 0L;
 
 		public Long getTask() {

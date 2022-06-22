@@ -11,7 +11,6 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.EqualsTerms;
@@ -20,6 +19,9 @@ import com.x.base.core.project.jaxrs.LikeTerms;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Task;
+import com.x.processplatform.core.express.assemble.surface.jaxrs.task.ActionManageListNextFilterWi;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionManageListNextFilter extends BaseAction {
 
@@ -62,93 +64,21 @@ class ActionManageListNextFilter extends BaseAction {
 				}
 			}
 			if (effectivePerson.isManager()) {
-				result = this.standardListNext(Wo.copier, id, count, Task.sequence_FIELDNAME, equals, null, likes, ins, null,
-						null, null, null, true, DESC);
+				result = this.standardListNext(Wo.copier, id, count, Task.sequence_FIELDNAME, equals, null, likes, ins,
+						null, null, null, null, true, DESC);
 			}
 			return result;
 		}
 	}
 
-	public class Wi extends GsonPropertyObject {
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.task.ActionManageListNextFilter.Wi")
+	public class Wi extends ActionManageListNextFilterWi {
 
-		@FieldDescribe("应用")
-		private List<String> applicationList;
+		private static final long serialVersionUID = 851950023034796966L;
 
-		@FieldDescribe("流程")
-		private List<String> processList;
-
-		@FieldDescribe("人员")
-		private List<String> credentialList;
-
-		@FieldDescribe("活动名称")
-		private List<String> activityNameList;
-
-		@FieldDescribe("创建组织")
-		private List<String> creatorUnitList;
-
-		@FieldDescribe("开始时期")
-		private List<String> startTimeMonthList;
-
-		@FieldDescribe("匹配关键字")
-		private String key;
-
-		public List<String> getApplicationList() {
-			return applicationList;
-		}
-
-		public void setApplicationList(List<String> applicationList) {
-			this.applicationList = applicationList;
-		}
-
-		public List<String> getProcessList() {
-			return processList;
-		}
-
-		public void setProcessList(List<String> processList) {
-			this.processList = processList;
-		}
-
-		public List<String> getStartTimeMonthList() {
-			return startTimeMonthList;
-		}
-
-		public void setStartTimeMonthList(List<String> startTimeMonthList) {
-			this.startTimeMonthList = startTimeMonthList;
-		}
-
-		public List<String> getActivityNameList() {
-			return activityNameList;
-		}
-
-		public void setActivityNameList(List<String> activityNameList) {
-			this.activityNameList = activityNameList;
-		}
-
-		public String getKey() {
-			return key;
-		}
-
-		public void setKey(String key) {
-			this.key = key;
-		}
-
-		public List<String> getCreatorUnitList() {
-			return creatorUnitList;
-		}
-
-		public void setCreatorUnitList(List<String> creatorUnitList) {
-			this.creatorUnitList = creatorUnitList;
-		}
-
-		public List<String> getCredentialList() {
-			return credentialList;
-		}
-
-		public void setCredentialList(List<String> credentialList) {
-			this.credentialList = credentialList;
-		}
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.task.ActionManageListNextFilter.Wo")
 	public static class Wo extends Task {
 
 		private static final long serialVersionUID = 2279846765261247910L;
@@ -157,6 +87,7 @@ class ActionManageListNextFilter extends BaseAction {
 				JpaObject.FieldsInvisible);
 
 		@FieldDescribe("排序号")
+		@Schema(description = "排序号")
 		private Long rank;
 
 		public Long getRank() {

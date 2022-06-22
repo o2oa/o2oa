@@ -28,8 +28,10 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+@Tag(name = "SerialNumberAction", description = "流水号接口.")
 @Path("serialnumber")
-@JaxrsDescribe("流水号操作")
+@JaxrsDescribe("流水号接口.")
 public class SerialNumberAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(SerialNumberAction.class);

@@ -22,8 +22,11 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "AnonymousAction", description = "匿名接口.")
 @Path("anonymous")
-@JaxrsDescribe("匿名访问")
+@JaxrsDescribe("匿名接口.")
 public class AnonymousAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(AnonymousAction.class);

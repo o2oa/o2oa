@@ -29,8 +29,10 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+@Tag(name = "TaskCompletedAction", description = "已办接口.")
 @Path("taskcompleted")
-@JaxrsDescribe("已办操作")
+@JaxrsDescribe("已办接口.")
 public class TaskCompletedAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(TaskCompletedAction.class);

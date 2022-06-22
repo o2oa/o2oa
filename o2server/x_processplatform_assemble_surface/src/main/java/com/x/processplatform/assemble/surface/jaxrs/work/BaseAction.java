@@ -20,6 +20,8 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.dataitem.DataItemConverter;
 import com.x.base.core.entity.dataitem.ItemCategory;
+import com.x.base.core.project.Applications;
+import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
@@ -27,6 +29,7 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
@@ -126,6 +129,13 @@ abstract class BaseAction extends StandardJaxrsAction {
 			}
 			return value;
 		}, ThisApplication.threadPool());
+	}
+
+	protected String createWorkProcessing(String processId, JsonElement jsonElement) throws Exception {
+		return ThisApplication.context().applications()
+				.postQuery(x_processplatform_service_processing.class,
+						Applications.joinQueryUri("work", "process", processId), jsonElement, null)
+				.getData(WoId.class).getId();
 	}
 
 	public static class AbstractWo extends GsonPropertyObject {

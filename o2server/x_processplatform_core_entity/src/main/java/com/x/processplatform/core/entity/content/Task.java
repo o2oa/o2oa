@@ -507,7 +507,6 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 	@FieldDescribe("最早查看时间.")
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = ColumnNamePrefix + VIEWTIME_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + VIEWTIME_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date viewTime;
 
@@ -1401,6 +1400,14 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 
 	public void setPause(Boolean pause) {
 		this.pause = pause;
+	}
+
+	public Date getViewTime() {
+		return viewTime;
+	}
+
+	public void setViewTime(Date viewTime) {
+		this.viewTime = viewTime;
 	}
 
 }

@@ -42,18 +42,24 @@ import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /*
  * 根据应用名称和流程名称进行创建,和直接用process创建基本相同
  * */
+
+@Deprecated(forRemoval = true)
 class ActionCreateWithApplicationProcessForce extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionCreateWithApplicationProcessForce.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCreateWithApplicationProcessForce.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String applicationFlag, String processFlag,
 			JsonElement jsonElement) throws Exception {
-		/* 新建工作id */
+		LOGGER.debug("execute:{}, applicationFlag:{}, processFlag:{}.", effectivePerson::getDistinguishedName,
+				() -> applicationFlag, () -> processFlag);
+		// 新建工作id
 		String workId = "";
-		/* 已存在草稿id */
+		// 已存在草稿id
 		String lastestWorkId = "";
 		String identity = null;
 		List<Wo> wos = new ArrayList<>();
@@ -148,19 +154,30 @@ class ActionCreateWithApplicationProcessForce extends BaseAction {
 		return result;
 	}
 
-	public static class Wi extends GsonPropertyObject {
+	@Schema(description = "com.x.processplatform.assemble.surface.jaxrs.work.ActionCreateWithApplicationProcessForce$Wi")
+	public class Wi extends GsonPropertyObject {
+
+		private static final long serialVersionUID = -2930419287174683732L;
 
 		@FieldDescribe("直接打开指定人员已经有的草稿,草稿判断:工作没有已办,只有一条此人的待办.")
+		@Schema(description = "直接打开指定人员已经有的草稿,草稿判断:工作没有已办,只有一条此人的待办.")
 		private Boolean latest;
 
 		@FieldDescribe("标题.")
+		@Schema(description = "标题.")
 		private String title;
 
 		@FieldDescribe("启动人员身份.")
+		@Schema(description = "启动人员身份.")
 		private String identity;
 
 		@FieldDescribe("工作数据.")
+		@Schema(description = "工作数据.")
 		private JsonElement data;
+
+		@FieldDescribe("父工作标识.")
+		@Schema(description = "父工作标识.")
+		private String parentWork;
 
 		public String getTitle() {
 			return title;
@@ -194,8 +211,17 @@ class ActionCreateWithApplicationProcessForce extends BaseAction {
 			this.latest = latest;
 		}
 
+		public String getParentWork() {
+			return parentWork;
+		}
+
+		public void setParentWork(String parentWork) {
+			this.parentWork = parentWork;
+		}
+
 	}
 
+	@Schema(description = "com.x.processplatform.assemble.surface.jaxrs.work.ActionCreateWithApplicationProcessForce$Wo")
 	public static class Wo extends WorkLog {
 
 		private static final long serialVersionUID = 1307569946729101786L;
@@ -203,16 +229,20 @@ class ActionCreateWithApplicationProcessForce extends BaseAction {
 		static WrapCopier<WorkLog, Wo> copier = WrapCopierFactory.wo(WorkLog.class, Wo.class, null,
 				JpaObject.FieldsInvisible);
 
-		@FieldDescribe("排序号")
+		@FieldDescribe("排序号.")
+		@Schema(description = "排序号.")
 		private Long rank;
 
-		@FieldDescribe("已办对象")
+		@FieldDescribe("已办对象.")
+		@Schema(description = "已办对象.")
 		private List<WoTaskCompleted> taskCompletedList;
 
-		@FieldDescribe("待办对象")
+		@FieldDescribe("待办对象.")
+		@Schema(description = "待办对象.")
 		private List<WoTask> taskList;
 
-		@FieldDescribe("当前待办序号")
+		@FieldDescribe("当前待办序号.")
+		@Schema(description = "当前待办序号.")
 		private Integer currentTaskIndex;
 
 		public Long getRank() {
@@ -249,6 +279,7 @@ class ActionCreateWithApplicationProcessForce extends BaseAction {
 
 	}
 
+	@Schema(description = "com.x.processplatform.assemble.surface.jaxrs.work.ActionCreateWithApplicationProcessForce$WoTask")
 	public static class WoTask extends Task {
 
 		private static final long serialVersionUID = 2279846765261247910L;
@@ -278,6 +309,7 @@ class ActionCreateWithApplicationProcessForce extends BaseAction {
 
 	}
 
+	@Schema(description = "com.x.processplatform.assemble.surface.jaxrs.work.ActionCreateWithApplicationProcessForce$WoTaskCompleted")
 	public static class WoTaskCompleted extends TaskCompleted {
 
 		private static final long serialVersionUID = -7253999118308715077L;
@@ -315,7 +347,7 @@ class ActionCreateWithApplicationProcessForce extends BaseAction {
 				this.referenceTask(business, wo);
 			} else {
 				/** 已经完成的不会有待办，返回一个空数组 */
-				wo.setTaskList(new ArrayList<WoTask>());
+				wo.setTaskList(new ArrayList<>());
 			}
 			this.referenceTaskCompleted(business, wo);
 			os.add(wo);
@@ -369,21 +401,6 @@ class ActionCreateWithApplicationProcessForce extends BaseAction {
 			}
 		});
 		wo.setTaskCompletedList(list);
-//		/* 补充召回 */
-//		List<WoTaskCompleted> results = new ArrayList<>();
-//		for (WoTaskCompleted o : list) {
-//			results.add(o);
-//			if (o.getProcessingType().equals(ProcessingType.retract)) {
-//				WoTaskCompleted retract = new WoTaskCompleted();
-//				o.copyTo(retract);
-//				retract.setRouteName("撤回");
-//				retract.setOpinion("撤回");
-//				retract.setStartTime(retract.getRetractTime());
-//				retract.setCompletedTime(retract.getRetractTime());
-//				results.add(retract);
-//			}
-//		}
-//		wo.setTaskCompletedList(results);
 	}
 
 }

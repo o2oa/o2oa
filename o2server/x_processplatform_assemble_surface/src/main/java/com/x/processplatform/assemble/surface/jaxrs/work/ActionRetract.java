@@ -23,6 +23,7 @@ import com.x.processplatform.core.entity.element.util.WorkLogTree;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Nodes;
 
+@Deprecated(forRemoval = true)
 class ActionRetract extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionRetract.class);

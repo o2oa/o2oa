@@ -12,7 +12,7 @@ public class ApplicationServletContextListener implements ServletContextListener
 	@Override
 	public void contextInitialized(ServletContextEvent servletContextEvent) {
 		try {
-			ThisApplication.context = Context.concrete(servletContextEvent);
+			ThisApplication.context(Context.concrete(servletContextEvent));
 			ThisApplication.init();
 			ThisApplication.context().regist();
 		} catch (Exception e) {
@@ -24,7 +24,7 @@ public class ApplicationServletContextListener implements ServletContextListener
 	public void contextDestroyed(ServletContextEvent servletContextEvent) {
 		try {
 			ThisApplication.destroy();
-			ThisApplication.context.destrory(servletContextEvent);
+			ThisApplication.context().destrory(servletContextEvent);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
