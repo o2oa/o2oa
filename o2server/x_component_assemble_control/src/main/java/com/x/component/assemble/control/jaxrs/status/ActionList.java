@@ -32,8 +32,9 @@ class ActionList extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			List<String> ids = business.component().listVisiable();
-			emc.list(Component.class, ids).stream()
-					.sorted(Comparator.nullsLast(Comparator.comparing(Component::getOrderNumber))).forEach(o -> {
+			emc.list(Component.class, ids).stream().sorted(
+					Comparator.comparing(Component::getOrderNumber, Comparator.nullsLast(Comparator.naturalOrder())))
+					.forEach(o -> {
 						if (this.allow(o, effectivePerson.getDistinguishedName())) {
 							wo.getAllowList().add(WoComponent.copier.copy(o));
 						} else {

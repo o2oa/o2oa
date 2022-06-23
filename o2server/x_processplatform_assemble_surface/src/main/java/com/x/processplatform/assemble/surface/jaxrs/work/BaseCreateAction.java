@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
+import com.mchange.lang.ObjectUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
@@ -22,8 +22,6 @@ import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.TokenType;
 import com.x.base.core.project.jaxrs.WoId;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.Unit;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.core.express.Organization;
@@ -34,7 +32,6 @@ import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
-import com.x.processplatform.core.express.assemble.surface.jaxrs.work.ActionCreateWi;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -249,7 +246,8 @@ class BaseCreateAction extends BaseAction {
 			this.referenceTaskCompleted(business, wo);
 			os.add(wo);
 		}
-		return os.stream().sorted(Comparator.nullsLast(Comparator.comparing(Wo::getArrivedTime)))
+		return os.stream()
+				.sorted(Comparator.comparing(Wo::getArrivedTime, Comparator.nullsLast(Comparator.naturalOrder())))
 				.collect(Collectors.toList());
 	}
 
@@ -274,7 +272,8 @@ class BaseCreateAction extends BaseAction {
 	private void referenceTask(Business business, Wo wo) throws Exception {
 		List<String> ids = business.task().listWithActivityToken(wo.getFromActivityToken());
 		List<WoTask> list = WoTask.copier.copy(business.entityManagerContainer().list(Task.class, ids));
-		wo.setTaskList(list.stream().sorted(Comparator.nullsLast(Comparator.comparing(WoTask::getStartTime)))
+		wo.setTaskList(list.stream()
+				.sorted(Comparator.comparing(WoTask::getStartTime, Comparator.nullsLast(Comparator.naturalOrder())))
 				.collect(Collectors.toList()));
 	}
 
@@ -282,10 +281,8 @@ class BaseCreateAction extends BaseAction {
 		List<String> ids = business.taskCompleted().listWithActivityToken(wo.getFromActivityToken());
 		List<WoTaskCompleted> list = WoTaskCompleted.copier
 				.copy(business.entityManagerContainer().list(TaskCompleted.class, ids));
-		Collections.sort(list, (o1, o2) -> ObjectUtils.compare(o1.getCompletedTime(), o2.getCompletedTime(), true));
-		wo.setTaskCompletedList(
-				list.stream().sorted(Comparator.nullsLast(Comparator.comparing(WoTaskCompleted::getCompletedTime)))
-						.collect(Collectors.toList()));
+		wo.setTaskCompletedList(list.stream().sorted(Comparator.comparing(WoTaskCompleted::getCompletedTime,
+				Comparator.nullsLast(Comparator.naturalOrder()))).collect(Collectors.toList()));
 	}
 
 }

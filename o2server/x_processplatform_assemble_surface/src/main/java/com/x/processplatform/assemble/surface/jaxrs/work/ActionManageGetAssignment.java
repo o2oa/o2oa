@@ -69,14 +69,7 @@ class ActionManageGetAssignment extends BaseAction {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				emc.listEqual(Task.class, Task.work_FIELDNAME, id).stream()
 						.sorted(Comparator.comparing(Task::getStartTime, Comparator.nullsLast(Date::compareTo)))
-						.forEach(o -> {
-							try {
-								WoTask w = WoTask.copier.copy(o);
-								wo.getTaskList().add(w);
-							} catch (Exception e) {
-								LOGGER.error(e);
-							}
-						});
+						.map(WoTask.copier::copy).forEach(wo.getTaskList()::add);
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
