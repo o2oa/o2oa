@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -39,15 +40,20 @@ class ActionListAll extends BaseAction {
 				result.setData((List<Wo>) optional.get());
 			} else {
 				List<Component> os = emc.listAll(Component.class);
-				final List<Wo> wos = os.stream()
-						.filter(o -> ListTools.contains(Components.SYSTEM_NAME_NAMES, o.getName()))
-						.sorted(Comparator.nullsLast(Comparator.comparing(Component::getOrderNumber))
-								.thenComparing(Comparator.nullsLast(Comparator.comparing(Component::getCreateTime))))
-						.map(o -> Wo.copier.copy(o)).collect(Collectors.toList());
-				os.stream().filter(o -> !ListTools.contains(Components.SYSTEM_NAME_NAMES, o.getName()))
-						.sorted(Comparator.nullsLast(Comparator.comparing(Component::getOrderNumber))
-								.thenComparing(Comparator.nullsLast(Comparator.comparing(Component::getCreateTime))))
-						.forEach(o -> wos.add(Wo.copier.copy(o)));
+				final List<Wo> wos = Stream
+						.concat(os.stream().filter(o -> ListTools.contains(Components.SYSTEM_NAME_NAMES, o.getName()))
+								.sorted(Comparator
+										.comparing(Component::getOrderNumber,
+												Comparator.nullsLast(Comparator.naturalOrder()))
+										.thenComparing(Comparator.comparing(Component::getCreateTime,
+												Comparator.nullsLast(Comparator.naturalOrder())))),
+								os.stream().filter(o -> !ListTools.contains(Components.SYSTEM_NAME_NAMES, o.getName()))
+										.sorted(Comparator
+												.comparing(Component::getOrderNumber,
+														Comparator.nullsLast(Comparator.naturalOrder()))
+												.thenComparing(Comparator.comparing(Component::getCreateTime,
+														Comparator.nullsLast(Comparator.naturalOrder())))))
+						.map(Wo.copier::copy).collect(Collectors.toList());
 				CacheManager.put(cacheCategory, cacheKey, wos);
 				result.setData(wos);
 			}
