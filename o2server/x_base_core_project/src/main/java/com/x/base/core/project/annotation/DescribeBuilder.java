@@ -96,6 +96,7 @@ public class DescribeBuilder {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private List<Class<?>> scanJaxrsClass() throws Exception {
 		try (ScanResult scanResult = new ClassGraph().disableJarScanning().enableAnnotationInfo().scan()) {
 			SetUniqueList<Class<?>> classes = SetUniqueList.setUniqueList(new ArrayList<Class<?>>());
