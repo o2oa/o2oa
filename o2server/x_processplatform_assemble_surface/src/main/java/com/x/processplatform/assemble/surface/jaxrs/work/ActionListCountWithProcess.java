@@ -50,7 +50,8 @@ class ActionListCountWithProcess extends BaseAction {
 			cq.multiselect(processPath, processNamePath, cb.count(root).as(Long.class)).where(p).groupBy(processPath,
 					processNamePath);
 			List<Wo> wos = em.createQuery(cq).getResultList().stream()
-					.sorted(Comparator.nullsLast(Comparator.comparing(Wo::getName))).collect(Collectors.toList());
+					.sorted(Comparator.comparing(Wo::getName, Comparator.nullsLast(Comparator.naturalOrder())))
+					.collect(Collectors.toList());
 			result.setData(wos);
 			return result;
 		}
