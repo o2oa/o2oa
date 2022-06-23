@@ -6,7 +6,7 @@
     <button class="mainColor_bg" v-if="allowEditor" @click="toggleEditor">{{lp.operation.edit+lp._systemInfo[name]}}</button>
   </div>
   <div class="item_info" v-else>
-    <input class="item_input" v-model="config"/>
+    <el-input class="item_input" v-model="config"/>
     <button class="mainColor_bg" @click="saveConfig(this)">{{lp.operation.ok}}</button>
     <button class="grayColor_bg" @click="toggleEditor">{{lp.operation.cancel}}</button>
   </div>
@@ -29,6 +29,7 @@ const editMode = ref(false);
 
 function saveConfig(vm){
   emit('changeConfig', vm.config);
+  toggleEditor();
 }
 
 function toggleEditor(){
@@ -64,14 +65,14 @@ function toggleEditor(){
   display: inline;
 }
 .item_input{
-  border-radius: 100px;
-  border: 1px solid #cccccc;
-  height: 24px;
-  line-height: 24px;
+  /*border-radius: 100px;*/
+  /*border: 1px solid #cccccc;*/
+  /*height: 24px;*/
+  /*line-height: 24px;*/
   width: 300px;
-  padding: 0 10px;
-  font-size: 14px;
-  margin-right: 20px;
+  /*padding: 0 10px;*/
+  /*font-size: 14px;*/
+  /*margin-right: 20px;*/
 }
 button {
   border-radius: 100px;

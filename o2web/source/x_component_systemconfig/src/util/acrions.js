@@ -1,8 +1,4 @@
 import {o2} from '@o2oa/component';
-const root = 'x_program_center';
-const actionName = 'ConfigAction';
-const action = o2.Actions.load(root)[actionName];
-
 const configs = {};
 
 function exec(text, bind, arg){
@@ -21,7 +17,7 @@ async function loadConfig(name) {
     const body = {
         fileName: name + '.json'
     }
-    const json = await action.open(body);
+    const json = await o2.Actions.load('x_program_center').ConfigAction.open(body);
     configs[name] = JSON.parse(json.data.fileContent);
     return configs[name];
 }
@@ -33,11 +29,65 @@ async function getConfig(name) {
 
 async function saveConfig(name, path, value) {
     const config = (configs[name]) ? configs[name] : (await loadConfig(name));
-    exec(`this.${path} = value`, config, {value});
-    console.log(config[path]);
+    config[path] = value;
+    o2.Actions.load('x_program_center').ConfigAction.save({
+        fileName: `${name}.json`,
+        fileContent: JSON.stringify(config, null, "\t")
+    });
+}
+
+async function loadComponents() {
+    const components = await o2.Actions.load("x_component_assemble_control").ComponentAction.listAll();
+    return components.data;
+}
+async function removeComponent(id) {
+    const components = await o2.Actions.load("x_component_assemble_control").ComponentAction.delete(id);
+    return components.data;
+}
+async function getComponent(id) {
+    const components = await o2.Actions.load("x_component_assemble_control").ComponentAction.get(id);
+    return components.data;
+}
+async function saveComponent(data) {
+    var action = o2.Actions.load("x_component_assemble_control").ComponentAction;
+    if (data.id){
+        const components = await action.edit(data.id, data);
+        return components.data;
+    }else{
+        const components = await action.create(data);
+        return components.data;
+    }
+}
+
+async function dispatchComponentFile(file) {
+    var action = o2.Actions.load("x_program_center").ModuleAction;
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('fileName', file.name);
+    formData.append('filePath', '');
+    const result = await action.dispatchResource(false, formData, file);
+    return result.data;
+}
+async function deployWebResource(data) {
+    var action = o2.Actions.load("x_program_center").ModuleAction;
+    const formData = new FormData();
+    const file = data.file[0];
+    formData.append('file', file);
+    formData.append('fileName', file.name);
+    formData.append('filePath', data.path);
+    const result = await action.dispatchResource(data.overwrite, formData, file);
+    return result.data;
 }
 
 
 
-
-export {getConfig, saveConfig};
+export {
+    getConfig,
+    saveConfig,
+    loadComponents,
+    removeComponent,
+    getComponent,
+    saveComponent,
+    dispatchComponentFile,
+    deployWebResource
+};

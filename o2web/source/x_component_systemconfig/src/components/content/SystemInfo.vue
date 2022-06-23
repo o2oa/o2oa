@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="title">{{lp.systemInfo}}</div>
-    <BaseItem name="systemName" :config="systemName" :allowEditor="true" @changeConfig="(value)=>{saveConfig('collect', 'systemName', value)}"/>
-    <BaseItem name="systemSubTitle" :config="systemSubTitle" :allowEditor="true"/>
+    <BaseItem name="systemName" :config="systemName" :allowEditor="true" @changeConfig="(value)=>{saveConfig('collect', 'title', value)}"/>
+    <BaseItem name="systemSubTitle" :config="systemSubTitle" :allowEditor="true" @changeConfig="(value)=>{saveConfig('collect', 'footer', value)}"/>
     <BaseItem name="systemVersion" :config="systemVersion" :allowEditor="false"/>
   </div>
 </template>
@@ -31,13 +31,5 @@ getConfig('collect').then((data)=>{
 </script>
 
 <style scoped>
-.title{
-  height: 40px;
-  padding: 20px 30px 0;
-  font-size: 24px;
-  color: rgb(51, 51, 51);
 
-  font-weight: bold;
-  line-height: 40px;
-}
 </style>

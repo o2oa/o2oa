@@ -59,3 +59,29 @@ const contentComponent = computed(() => {
   text-align: left;
 }
 </style>
+<style>
+.title{
+  height: 40px;
+  padding: 20px 30px 0;
+  font-size: 24px;
+  color: rgb(51, 51, 51);
+  font-weight: bold;
+  line-height: 40px;
+}
+.item_title{
+  height: 30px;
+  line-height: 30px;
+  padding: 20px 0 0 30px;
+  font-size: 18px;
+  font-weight: bold;
+  clear: both;
+  color: rgb(102, 102, 102);
+}
+.item_info{
+  overflow: hidden;
+  padding: 5px 30px;
+  font-size: 14px;
+  color: rgb(153, 153, 153);
+  clear: both;
+}
+</style>

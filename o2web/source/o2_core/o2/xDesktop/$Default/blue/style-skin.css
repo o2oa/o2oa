@@ -40,7 +40,15 @@
 /*    -webkit-animation-iteration-count: infinite;*/
 /*    -moz-animation-timing-function: linear;*/
 /*}*/
-
+:root {
+    --el-color-primary: #4A90E2 !important;
+    --el-color-primary-light-3: #337ACC !important;
+    --el-color-primary-light-5: #a0cfff !important;
+    --el-color-primary-light-7: #c6e2ff !important;
+    --el-color-primary-light-8: #d9ecff !important;
+    --el-color-primary-light-9: #F7FBFF !important;
+    --el-color-primary-dark-2: #092E59 !important;
+}
 .mainColor_bg {
     background-color: #4A90E2 !important;
     color: #ffffff !important;

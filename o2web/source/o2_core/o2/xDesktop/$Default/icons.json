@@ -166,5 +166,9 @@
   "queryDefault": {
     "icon": "queryDefault.png",
     "color": "#bbbbbb"
+  },
+  "IMV2": {
+    "icon": "chat.png",
+    "color": "#fdad0a"
   }
 }

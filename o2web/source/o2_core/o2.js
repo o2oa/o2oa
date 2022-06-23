@@ -837,7 +837,8 @@ if (!window.o2) {
                         // rex.lastIndex = rex.lastIndex + prefix.length;
 
                         var rulesStr = match[0];
-                        if (rulesStr.substr(0, 1) == "@" || rulesStr.indexOf("%") != -1) {
+                        var startWith = rulesStr.substring(0, 1);
+                        if (startWith === "@" || startWith === ":" || rulesStr.indexOf("%") !== -1) {
                             // var begin = 0;
                             // var end = 0;
                         }else if (rulesStr.trim()==='from' || rulesStr.trim()==='to'){

@@ -66,8 +66,37 @@
   "processPlatform": {
     "file": "processPlatform.json",
     "description": "流程平台相关功能配置"
+  },
+  "qiyeweixin": {
+    "file": "qiyeweixin.json",
+    "description": "企业微信相关配置"
+  },
+  "query": {
+    "file": "query.json",
+    "description": "全文搜索相关配置"
+  },
+  "ternaryManagement": {
+    "file": "ternaryManagement.json",
+    "description": "三元管理相关配置"
+  },
+  "token": {
+    "file": "token.json",
+    "description": "管理员密码、sso、oauth等单点配置"
+  },
+  "weLink": {
+    "file": "weLink.json",
+    "description": "weLink集成配置"
+  },
+  "workTime": {
+    "file": "workTime.json",
+    "description": "工作时间和节假日配置"
+  },
+  "zhengwuDingding": {
+    "file": "zhengwuDingding.json",
+    "description": "政务钉钉集成配置"
   }
 }
+
 
 
 

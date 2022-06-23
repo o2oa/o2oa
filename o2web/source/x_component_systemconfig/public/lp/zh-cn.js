@@ -1,4 +1,4 @@
-MWF.xApplication.systemconfig.LP = {
+o2.xApplication.systemconfig.LP = {
     "title": "系统配置",
     "searchKey": "搜索设置项",
 
@@ -35,15 +35,14 @@ MWF.xApplication.systemconfig.LP = {
     "mailConfig": "邮件配置",
     "smsConfig": "短信配置",
     "mqConfig": "消息队列",
-    //communicate.json
 
     "mobileConfig": "移动端配置",
     "connectConfig": "连接配置",
     "moduleConfig": "模块配置",
     "iconConfig": "图标配置",
-    "ddConfig": "钉钉集成", //钉钉 政务钉钉 专属钉
-    "wechatConfig": "微信集成",  //微信公众号 企业微信
-    // "welinkConfig": "welink集成",
+    "ddConfig": "钉钉集成",
+    "wechatConfig": "微信集成",
+    "welinkConfig": "welink集成",
     "appTools": "APP工具",
 
     "_systemInfo": {
@@ -59,6 +58,53 @@ MWF.xApplication.systemconfig.LP = {
         "edit": "编辑",
         "ok": "确定",
         "cancel": "取消"
+    },
+    "component": {
+        "open": "打开",
+        "edit": "编辑",
+        "uninstall": "卸载",
+
+        "deploy": "部署组件",
+
+        "removeComponentTitle": "卸载组件确认",
+        "removeComponent": "您确定要卸载组件：{name} 吗？",
+        "removeComponentOk": "组件已卸载",
+
+        "deploySuccess": "组件部署成功",
+
+        "selectIcon": "选择图标",
+        "clearIcon": "清除图标",
+
+        "name": "组件名称",
+        "title": "组件标题",
+        "path": "组件路径",
+        "urlPathInfo": "您可以通过“@url:”将路径添加为一个网页URL，如“@url:http://www.bing.com”",
+        "visible": "是否可见",
+        "allowList": "可访问列表",
+        "denyList": "拒绝访问列表",
+        "icon": "组件图标",
+
+        "upload": "上传资源",
+        "uploadWarn": "上传组件zip包，原有组件将被覆盖，请谨慎操作！"
+    },
+    "resource": {
+        "webResource": "部署Web资源",
+        "webResourceInfo": "您可以在此处部署Web资源，上传静态资源文件或zip文件，它将被部署到系统的Web服务器，可以通过Http协议访问到。",
+        "serviceResource": "部署服务",
+        "serviceResourceInfo": "您可以在此处部署您开发的自定义工程，上传编译后的jar包或者war包。部署后需要重启服务器。",
+
+        "upload": "上传资源",
+        "uploadWarn": "上传要部署的静态资源文件，zip文件会自动解压",
+
+        "overwrite": "部署方式",
+        "overwriteFalse": "删除后上传：删除同名文件和文件夹后上传。",
+        "overwriteTrue": "覆盖：直接覆盖同名文件和文件夹。",
+
+        "deployPath": "部署路径",
+        "deployPathInfo": "如果部署zip文件，路径可以为空；单个文件部署必须指定部署路径。如：/myWebResource/subPath",
+
+        "noDeployFile": "请先选择要部署的资源文件",
+        "deploySuccess": "部署资源成功"
     }
 
 }
