@@ -28,6 +28,7 @@ public class GroupSheetConfigurator extends GsonPropertyObject {
 	private Integer nameColumn;
 	private Integer uniqueColumn;
 	private Integer personCodeColumn;
+	private Integer identityCodeColumn;
 	private Integer unitCodeColumn;
 	private Integer groupCodeColumn;
 	private Integer descriptionColumn;
@@ -44,7 +45,6 @@ public class GroupSheetConfigurator extends GsonPropertyObject {
 			Cell cell = row.getCell(i);
 			if (null != cell) {
 				String str = this.getCellStringValue(cell);
-				//System.out.println("str="+str+"----i="+i);
 				if (StringUtils.isNotEmpty(str)) {
 					if (uniqueItems.contains(str)) {
 						this.uniqueColumn = i;
@@ -52,6 +52,8 @@ public class GroupSheetConfigurator extends GsonPropertyObject {
 						this.nameColumn = i;
 					}else if (personCodeItems.contains(str)) {
 						this.personCodeColumn = i;
+					}else if (identityCodeItems.contains(str)) {
+						this.identityCodeColumn = i;
 					}else if (unitCodeItems.contains(str)) {
 						this.unitCodeColumn = i;
 					}else if (groupCodeItems.contains(str)) {
@@ -62,7 +64,7 @@ public class GroupSheetConfigurator extends GsonPropertyObject {
 						Matcher matcher = attributePattern.matcher(str);
 						if (matcher.matches()) {
 							String attribute = matcher.group(1);
-							this.attributes.put(attribute, new Integer(i));
+							this.attributes.put(attribute, 1);
 						}
 					}
 				}
@@ -73,6 +75,7 @@ public class GroupSheetConfigurator extends GsonPropertyObject {
 	private static List<String> uniqueItems = Arrays.asList(new String[] { "群组编码 *",  "unique" });
 	private static List<String> nameItems = Arrays.asList(new String[] { "群组名称 *", "name" });
 	private static List<String> personCodeItems = Arrays.asList(new String[] { "人员编号", "人员唯一编码" });
+	private static List<String> identityCodeItems = Arrays.asList(new String[] { "身份编号", "身份唯一编码" });
 	private static List<String> unitCodeItems = Arrays.asList(new String[] { "组织编号", "组织唯一编码" });
 	private static List<String> groupCodeItems = Arrays.asList(new String[] { "子群组编码", "groupCode" });
 	private static List<String> descriptionItems = Arrays.asList(new String[] { "描述","群组描述", "description" });
@@ -114,19 +117,23 @@ public class GroupSheetConfigurator extends GsonPropertyObject {
 	public Integer getNameColumn() {
 		return nameColumn;
 	}
-	
+
 	public Integer getPersonCodeColumn() {
 		return personCodeColumn;
 	}
-	
+
+	public Integer getIdentityCodeColumn() {
+		return identityCodeColumn;
+	}
+
 	public Integer getUnitCodeColumn() {
 		return unitCodeColumn;
 	}
-	
+
 	public Integer getGroupCodeColumn() {
 		return groupCodeColumn;
 	}
-	
+
 	public Integer getDescriptionColumn() {
 		return descriptionColumn;
 	}
