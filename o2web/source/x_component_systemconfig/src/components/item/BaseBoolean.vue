@@ -6,7 +6,7 @@
           v-model="value"
           active-text="是"
           inactive-text="否"
-          @change="$emit('update:value', $event)">
+          @change="changeValue($event)">
       </el-switch>
     </div>
   </div>
@@ -15,7 +15,7 @@
 <script setup>
 import {defineProps, defineEmits} from 'vue';
 
-const emit = defineEmits(['update:value']);
+const emit = defineEmits(['update:value', 'change']);
 
 const props = defineProps({
   label: String,
@@ -30,17 +30,10 @@ const props = defineProps({
   }
 });
 
-// const editMode = ref(false);
-//
-// function saveConfig(vm){
-//   emit('changeConfig', vm.config);
-//   toggleEditor();
-// }
-//
-// function toggleEditor(){
-//   editMode.value = !editMode.value;
-// }
-
+function changeValue(e){
+  emit('change', e);
+  emit('update:value', e);
+}
 </script>
 
 <style scoped>
@@ -50,6 +43,9 @@ const props = defineProps({
   font-size: 14px;
   color: #666666;
   clear: both;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 .item_label{
   text-align: left;
@@ -67,7 +63,6 @@ const props = defineProps({
   padding: 0 10px;
   font-size: 14px;
   margin-right: 20px;
-  margin-left: 80px;
 }
 
 button {

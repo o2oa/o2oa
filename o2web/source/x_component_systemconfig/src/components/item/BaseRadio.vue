@@ -2,7 +2,7 @@
   <div class="item">
     <label class="item_label" v-if="label" :style="labelStyle">{{label}}</label>
     <div class="item_input">
-      <el-radio-group v-model="value" @change="changeValue($event)">
+      <el-radio-group v-model="value" @change="changeValue($event)" :style="groupStyle">
         <el-radio v-for="op in options" key="op.value" :label="op.label">{{op.text}}</el-radio>
       </el-radio-group>
     </div>
@@ -25,6 +25,10 @@ const props = defineProps({
     type: Object,
     default: {}
   },
+  groupStyle: {
+    type: Object,
+    default: {}
+  }
 });
 
 function changeValue(e){
@@ -41,6 +45,9 @@ function changeValue(e){
   font-size: 14px;
   color: #666666;
   clear: both;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 .item_label{
   text-align: left;
@@ -58,7 +65,6 @@ function changeValue(e){
   padding: 0 10px;
   font-size: 14px;
   margin-right: 20px;
-  margin-left: 80px;
 }
 
 button {

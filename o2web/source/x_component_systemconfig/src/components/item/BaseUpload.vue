@@ -8,18 +8,13 @@
       </div>
     </div>
     <div class="item_upload_warn">
-      <div class="item_file" v-for="file in uploadFiles" key="file.name">{{file.name}}</div>
+      <div class="item_file" v-for="file in uploadFiles" key="file.name">
+        <div>{{file.name}}</div><div class="o2icon-close" @click="removeFile(file)"></div>
+      </div>
       <div class="item_warn" v-if="warn">{{warn}}</div>
     </div>
 
   </div>
-
-<!--  <div class="item_file_area" v-if="uploadFiles && uploadFiles.length">-->
-<!--    <label class="item_label" v-if="label" :style="labelStyle"></label>-->
-<!--    <div class="item_input">-->
-<!--      <div class="item_file" v-for="file in uploadFiles" key="file.name">{{file.name}}</div>-->
-<!--    </div>-->
-<!--  </div>-->
   <input type="file" :accept="accept" ref="uploadNode" :multiple="multiple" @change="uploadChange" style="display: none">
 </template>
 
@@ -43,12 +38,15 @@ function upload(){
 function clearFile(){
   if (props.uploadFiles.length){
     props.uploadFiles.forEach((file)=>{
-      emit('remove', file);
+      removeFile(file);
     });
   }
 }
 function uploadChange(){
   uploadFile(uploadNode.value.files);
+}
+function removeFile(file){
+  emit('remove', file);
 }
 function uploadFile(files){
   debugger;
@@ -141,8 +139,14 @@ function drop(e){
   padding: 0 20px;
 }
 .item_file{
-  height: 20px;
-  line-height: 20px;
+  height: 24px;
+  line-height: 24px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+}
+.item_file:hover{
+  background-color: #f1f1f1;
 }
 .item_warn{
   width: 240px;
@@ -152,9 +156,17 @@ function drop(e){
   border: 1px solid rgba(204, 155, 41, 0.25);
   margin: 5px 0;
 }
+.o2icon-close{
+  height: 24px;
+  line-height: 24px;
+  color: #999999;
+  padding: 0 3px;
+}
+.o2icon-close:hover{
+  color: var(--el-color-primary);
+}
 i{
-  color: #cccccc;
+  color: #bbbbbb;
   font-size: 36px;
-  padding: 5px;
 }
 </style>

@@ -114,6 +114,11 @@ o2.xDesktop.Default = new Class({
         this.serviceAddressList = layout.serviceAddressList;
         this.centerServer = layout.centerServer;
         this.session.user = layout.session.user;
+        this.status = layout.userLayout;
+
+        if (layout.config.openStatus==="index"){
+            this.status.apps = {};
+        }
 
         var uri = new URI(window.location.href);
         var df = uri.getData("default") || "";
@@ -123,15 +128,12 @@ o2.xDesktop.Default = new Class({
         var options = (optionsStr) ? JSON.decode(optionsStr) : null;
 
         if (appNames){
-            this.status = layout.userLayout;
             this.status.apps = {};
             this.status.apps[appNames] = options || {};
             this.status.apps[appNames].name = appNames;
             this.status.apps[appNames].appId = appNames;
             this.status.apps[appNames].isIndex = true;
-            this.status.currentApp = appNames;
-        }else{
-            this.status = layout.userLayout;
+            this.status.forceCurrentApp = appNames;
         }
         if (this.status && this.status.flatStyle) this.options.style = this.status.flatStyle;
     },
@@ -436,7 +438,7 @@ debugger;
                     app.taskitem = taskitem;
 
                     this.apps[appStatus.appId] = app;
-                    if ((this.status.currentApp === appStatus.appId)) currentTaskitem=taskitem;
+                    if ((this.status.currentApp === appStatus.appId && layout.config.openStatus!=="indexWithApp") || this.status.forceCurrentApp === appStatus.appId ) currentTaskitem=taskitem;
                     if (appStatus.appId=="Note") app.setCurrent();
                 }.bind(this));
 
@@ -482,16 +484,20 @@ debugger;
     //******* begin page skin ****************************************************
     loadSkinMenu: function(){
         if (!this.styleMenu){
-            this.styleMenu = new o2.xDesktop.Menu(this.skinActionNode, {
-                "event": "click", "style": "flatStyle", "offsetX": -10, "offsetY": 26, "container": this.node,
-                "onQueryShow": this.showSkinMenu.bind(this),
-                "onQueryHide": function(){
-                    this.skinActionNode.removeClass("icon_skin_focus");
-                    this.skinActionNode.removeClass("mainColor_bg");
-                }.bind(this)
-            });
-            this.styleMenu.load();
-            this.loadSkinMenuItems();
+            if (layout.config.skinConfig===false){
+                if (this.skinActionNode) this.skinActionNode.destroy();
+            }else{
+                this.styleMenu = new o2.xDesktop.Menu(this.skinActionNode, {
+                    "event": "click", "style": "flatStyle", "offsetX": -10, "offsetY": 26, "container": this.node,
+                    "onQueryShow": this.showSkinMenu.bind(this),
+                    "onQueryHide": function(){
+                        this.skinActionNode.removeClass("icon_skin_focus");
+                        this.skinActionNode.removeClass("mainColor_bg");
+                    }.bind(this)
+                });
+                this.styleMenu.load();
+                this.loadSkinMenuItems();
+            }
         }
     },
     showSkinMenu: function(){

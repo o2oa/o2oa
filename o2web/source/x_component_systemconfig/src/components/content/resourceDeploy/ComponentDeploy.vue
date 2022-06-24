@@ -1,5 +1,6 @@
 <template>
-  <div class="systemconfig_title">{{lp.componentDeploy}}</div>
+<!--  <div class="systemconfig_item_title">{{lp._resource.componentResource}}</div>-->
+  <div class="systemconfig_item_info" v-html="lp._resource.componentResourceInfo"></div>
   <div class="componentsArea">
     <div class="componentItem" v-for="(componentItem, index) in components" :key="componentItem.id">
       <div class="componentItemTitle">{{componentItem.title}}</div>
@@ -50,11 +51,11 @@
 import {component, lp, o2} from '@o2oa/component';
 import {loadComponents, removeComponent, saveComponent, dispatchComponentFile} from '@/util/acrions';
 import {ref} from "vue";
-import BaseInput from '../item/BaseInput.vue';
-import BaseBoolean from '../item/BaseBoolean.vue';
-import BasePerson from '../item/BasePerson.vue';
-import BaseIcon from '../item/BaseIcon.vue';
-import BaseUpload from '../item/BaseUpload.vue';
+import BaseInput from '@/components/item/BaseInput.vue';
+import BaseBoolean from '@/components/item/BaseBoolean.vue';
+import BasePerson from '@/components/item/BasePerson.vue';
+import BaseIcon from '@/components/item/BaseIcon.vue';
+import BaseUpload from '@/components/item/BaseUpload.vue';
 
 const components = ref([]);
 const currentComponent = ref({});
@@ -210,13 +211,13 @@ button{
   background-color: #f3f3f3;
   border: 2px solid #cccccc;
   margin: auto;
-  background-image: url('../../assets/add.png');
+  background-image: url('../../../assets/add.png');
 }
 .deployOver{
   color: #347ddb;
 }
 .deployOver .componentItemIconDeploy{
-  background-image: url('../../assets/add_over.png');
+  background-image: url('../../../assets/add_over.png');
   border: 2px solid #347ddb;
 }
 .componentEditorArea{

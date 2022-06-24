@@ -52,14 +52,17 @@ o2.xApplication.systemconfig.LP = {
         "systemSubTitle": "系统副标题",
         "systemSubTitleInfo": "您的系统副标题，它将会显示在您的登录页面下方",
         "systemVersion": "当前系统版本",
-        "systemVersionInfo": "当前系统版本"
+        "systemVersionInfo": "当前系统版本",
+        "baseInfo": "基本信息",
+        "systemStatus": "系统状态"
+
     },
     "operation": {
         "edit": "编辑",
         "ok": "确定",
         "cancel": "取消"
     },
-    "component": {
+    "_component": {
         "open": "打开",
         "edit": "编辑",
         "uninstall": "卸载",
@@ -87,14 +90,18 @@ o2.xApplication.systemconfig.LP = {
         "upload": "上传资源",
         "uploadWarn": "上传组件zip包，原有组件将被覆盖，请谨慎操作！"
     },
-    "resource": {
+    "_resource": {
         "webResource": "部署Web资源",
         "webResourceInfo": "您可以在此处部署Web资源，上传静态资源文件或zip文件，它将被部署到系统的Web服务器，可以通过Http协议访问到。",
-        "serviceResource": "部署服务",
+        "serviceResource": "部署自定义服务",
         "serviceResourceInfo": "您可以在此处部署您开发的自定义工程，上传编译后的jar包或者war包。部署后需要重启服务器。",
 
+        "componentResource": "组件部署",
+        "componentResourceInfo": "您自定义开发的O2OA组件，或从官方获取组件，都可以在此处部署。O2OA组件是名为“x_component_{组件名称}”的文件夹或zip文件。更多详细信息请查阅：<a href='https://www.o2oa.net/develop.html' target='_blank'>O2OA官方社区。</a>",
+
         "upload": "上传资源",
-        "uploadWarn": "上传要部署的静态资源文件，zip文件会自动解压",
+        "webUploadWarn": "上传要部署的静态资源文件，zip文件会自动解压",
+        "serviceUploadWarn": "上传要部署的jar包或者war包",
 
         "overwrite": "部署方式",
         "overwriteFalse": "删除后上传：删除同名文件和文件夹后上传。",
@@ -105,6 +112,23 @@ o2.xApplication.systemconfig.LP = {
 
         "noDeployFile": "请先选择要部署的资源文件",
         "deploySuccess": "部署资源成功"
+    },
+    "_uiConfig": {
+        "baseConfig": "基本配置",
+        "menuConfig": "主菜单配置",
+        "userConfig": "用户界面配置",
+
+        "openStatus": "进入系统",
+        "openStatusInfo": "每次进入O2OA系统，默认会打开上一次退出系统时打开的应用，您可以在此处改变这一行为。",
+        "openStatusCurrent": "将打开的应用和当前应用都定位到上一次退出时的状态（默认）",
+        "openStatusApp": "打开上一次退出系统时的应用，并将首页作为当前应用",
+        "openStatusIndex": "只打开首页应用",
+
+        "skin": "系统皮肤",
+        "skinConfig": "允许修改系统皮肤",
+        "skinConfigInfo": "是否允许用户个性化修改修改系统皮肤",
+        "skinDefault": "系统默认皮肤",
+        "skinDefaultInfo": "设置系统默认皮肤色系",
     }
 
 }

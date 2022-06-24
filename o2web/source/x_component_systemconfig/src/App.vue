@@ -60,7 +60,7 @@ const contentComponent = computed(() => {
 }
 </style>
 <style>
-.title{
+.systemconfig_title{
   height: 40px;
   padding: 20px 30px 0;
   font-size: 24px;
@@ -68,7 +68,7 @@ const contentComponent = computed(() => {
   font-weight: bold;
   line-height: 40px;
 }
-.item_title{
+.systemconfig_item_title{
   height: 30px;
   line-height: 30px;
   padding: 20px 0 0 30px;
@@ -77,11 +77,19 @@ const contentComponent = computed(() => {
   clear: both;
   color: rgb(102, 102, 102);
 }
-.item_info{
+.systemconfig_item_info{
   overflow: hidden;
   padding: 5px 30px;
   font-size: 14px;
+  line-height: 24px;
   color: rgb(153, 153, 153);
   clear: both;
+}
+.systemconfig_tab_area{
+  padding: 20px 30px;
+  width: 80%;
+  min-width: 900px;
+  /*max-width: 2000px;*/
+  margin-right: 100px;
 }
 </style>
