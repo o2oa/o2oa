@@ -1021,7 +1021,28 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		if (this.initialStyles) this.node.setStyles(this.initialStyles);
 		this.node.setStyle("border", border);
 
-		if (this.json.styles) Object.each(this.json.styles, function(value, key){
+		this.parseStyles( this.node, this.json.styles );
+
+
+		// Object.each(this.json.styles, function(value, key){
+		// 	var reg = /^border\w*/ig;
+		// 	if (!key.test(reg)){
+		// 		if (key){
+		// 			if (key.toString().toLowerCase()==="display"){
+		// 				if (value.toString().toLowerCase()==="none"){
+		//                    this.node.setStyle("opacity", 0.3);
+		// 				}else{
+		//                    this.node.setStyle("opacity", 1);
+		// 				}
+		// 			}else{
+		//                this.node.setStyle(key, value);
+		// 			}
+		// 		}
+		// 	}
+		// }.bind(this));
+	},
+	parseStyles: function(node, styles){
+		if (styles) Object.each(styles, function(value, key){
 			if ((value.indexOf("x_processplatform_assemble_surface")!=-1 || value.indexOf("x_portal_assemble_surface")!=-1)){
 				var host1 = MWF.Actions.getHost("x_processplatform_assemble_surface");
 				var host2 = MWF.Actions.getHost("x_portal_assemble_surface");
@@ -1043,35 +1064,18 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 				if (key){
 					if (key.toString().toLowerCase()==="display"){
 						if (value.toString().toLowerCase()==="none"){
-							this.node.setStyle("opacity", 0.3);
+							node.setStyle("opacity", 0.3);
 						}else{
-							this.node.setStyle("opacity", 1);
-							this.node.setStyle(key, value);
+							node.setStyle("opacity", 1);
+							node.setStyle(key, value);
 						}
 					}else{
-						this.node.setStyle(key, value);
+						node.setStyle(key, value);
 					}
 				}
 			}
 			//this.node.setStyle(key, value);
 		}.bind(this));
-
-		// Object.each(this.json.styles, function(value, key){
-		// 	var reg = /^border\w*/ig;
-		// 	if (!key.test(reg)){
-		// 		if (key){
-		// 			if (key.toString().toLowerCase()==="display"){
-		// 				if (value.toString().toLowerCase()==="none"){
-		//                    this.node.setStyle("opacity", 0.3);
-		// 				}else{
-		//                    this.node.setStyle("opacity", 1);
-		// 				}
-		// 			}else{
-		//                this.node.setStyle(key, value);
-		// 			}
-		// 		}
-		// 	}
-		// }.bind(this));
 	},
 
 	_setEditStyle: function(name, obj, oldValue){
