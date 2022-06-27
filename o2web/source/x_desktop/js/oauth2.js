@@ -9,6 +9,9 @@ layout.addReady(function(){
             toUri.setData(uri.getData());
             toUri.go();
         };
-        _load();
+        var p = (layout.session && layout.session.user) || layout.sessionPromise;
+        Promise.resolve(p).then(function(){
+            _load();
+        },function(){});
     })(layout);
 });
