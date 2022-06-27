@@ -14,6 +14,14 @@
     <div class="systemconfig_item_title">{{lp._uiConfig.skinConfig}}</div>
     <div class="systemconfig_item_info">{{lp._uiConfig.skinConfigInfo}}</div>
     <BaseBoolean :value="config.skinConfig" @change="(value)=>{saveConfig('web', 'skinConfig', value)}" />
+
+    <div class="systemconfig_item_title">{{lp._uiConfig.skinDefault}}</div>
+    <div class="systemconfig_item_info">{{lp._uiConfig.skinDefaultInfo}}</div>
+    <div v-for="style in styles" key="style.style">
+      <div :style="{backgroundColor: style.color}"></div>
+      <div></div>
+    </div>
+
   </div>
 </template>
 
@@ -31,22 +39,14 @@ const config = ref({
 
 getConfig('web').then((data)=>{
   config.value.openStatus = data.openStatus || 'default';
-  onfig.value.skinConfig = data.skinConfig!==false;
+  config.value.skinConfig = data.skinConfig!==false;
 });
 
-// import {ref} from 'vue';
-// // import BaseItem from '@/components/item/BaseItem.vue';
-// import {getConfig, saveConfig} from '@/util/acrions';
-//
-// const systemVersion = layout.config.version;
-//
-// const systemName = ref('');
-// const systemSubTitle = ref('');
-//
-// getConfig('web').then((data)=>{
-//   systemName.value = data.title;
-//   systemSubTitle.value = data.footer;
-// });
+o2.JSON.get("../o2_core/o2/xDesktop/$Default/styles.json", (json)=>{
+  debugger;
+})
+
+
 </script>
 
 <style scoped>
