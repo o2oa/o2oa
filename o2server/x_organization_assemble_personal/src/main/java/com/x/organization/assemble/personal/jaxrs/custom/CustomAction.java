@@ -25,13 +25,25 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "CustomAction", description = "个性化数据接口.")
 @Path("custom")
-@JaxrsDescribe("个性化数据")
+@JaxrsDescribe("个性化数据接口.")
 public class CustomAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(CustomAction.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CustomAction.class);
 
-	@JaxrsMethodDescribe(value = "根据当前的访问用户获取Custom。", action = ActionGet.class)
+	private static final String OPERATIONID_PREFIX = "CustomAction::";
+
+	@Operation(summary = "根据当前的访问用户获取Custom数据.", operationId = OPERATIONID_PREFIX + "get", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = String.class)) }) })
+	@JaxrsMethodDescribe(value = "根据当前的访问用户获取Custom数据.", action = ActionGet.class)
 	@GET
 	@Path("{name}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -43,13 +55,15 @@ public class CustomAction extends StandardJaxrsAction {
 		try {
 			result = new ActionGet().execute(effectivePerson, name);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "获取指定用户的Custom。", action = ActionManagerGet.class)
+	@Operation(summary = "获取指定用户的Custom数据.", operationId = OPERATIONID_PREFIX + "managerGet", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = String.class)) }) })
+	@JaxrsMethodDescribe(value = "获取指定用户的Custom数据.", action = ActionManagerGet.class)
 	@GET
 	@Path("manager/person/{person}/name/{name}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -62,12 +76,16 @@ public class CustomAction extends StandardJaxrsAction {
 		try {
 			result = new ActionManagerGet().execute(effectivePerson, person, name);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@Operation(summary = "获取指定用户的Custom数据.", operationId = OPERATIONID_PREFIX + "update", responses = {
+			@ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionEdit.Wo.class)) }) }, requestBody = @RequestBody(content = {
+							@Content(schema = @Schema(implementation = String.class)) }))
 	@JaxrsMethodDescribe(value = "更新指定名称的Custom.", action = ActionEdit.class)
 	@PUT
 	@Path("{name}")
@@ -80,13 +98,17 @@ public class CustomAction extends StandardJaxrsAction {
 		try {
 			result = new ActionEdit().execute(effectivePerson, name, wi);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "更新指定名称的Custom MockPutToPost.", action = ActionEdit.class)
+	@Operation(summary = "更新指定名称的Custom数据(Mock put to post).", operationId = OPERATIONID_PREFIX
+			+ "updateMockPutToPost", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionEdit.Wo.class)) }) }, requestBody = @RequestBody(content = {
+							@Content(schema = @Schema(implementation = String.class)) }))
+	@JaxrsMethodDescribe(value = "更新指定名称的Custom数据(Mock put to post).", action = ActionEdit.class)
 	@POST
 	@Path("{name}/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -98,13 +120,17 @@ public class CustomAction extends StandardJaxrsAction {
 		try {
 			result = new ActionEdit().execute(effectivePerson, name, wi);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "管理员更新指定用户指定名称的Custom.", action = ActionManagerEdit.class)
+	@Operation(summary = "管理员更新指定用户指定名称的Custom数据.", operationId = OPERATIONID_PREFIX + "managerUpdate", responses = {
+			@ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionManagerEdit.Wo.class)) }) }, requestBody = @RequestBody(content = {
+							@Content(schema = @Schema(implementation = String.class)) }))
+	@JaxrsMethodDescribe(value = "管理员更新指定用户指定名称的Custom数据.", action = ActionManagerEdit.class)
 	@PUT
 	@Path("manager/person/{person}/name/{name}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -117,13 +143,17 @@ public class CustomAction extends StandardJaxrsAction {
 		try {
 			result = new ActionManagerEdit().execute(effectivePerson, person, name, wi);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "管理员更新指定用户指定名称的Custom MockPutToPost.", action = ActionManagerEdit.class)
+	@Operation(summary = "管理员更新指定用户指定名称的Custom数据(Mock put to post).", operationId = OPERATIONID_PREFIX
+			+ "managerUpdateMockPutToPost", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionManagerEdit.Wo.class)) }) }, requestBody = @RequestBody(content = {
+							@Content(schema = @Schema(implementation = String.class)) }))
+	@JaxrsMethodDescribe(value = "管理员更新指定用户指定名称的Custom数据(Mock put to post).", action = ActionManagerEdit.class)
 	@POST
 	@Path("manager/person/{person}/name/{name}/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -136,13 +166,15 @@ public class CustomAction extends StandardJaxrsAction {
 		try {
 			result = new ActionManagerEdit().execute(effectivePerson, person, name, wi);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "删除指定名称的Custom。", action = ActionDelete.class)
+	@Operation(summary = "删除指定名称的Custom数据.", operationId = OPERATIONID_PREFIX + "delete", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionDelete.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "删除指定名称的Custom数据.", action = ActionDelete.class)
 	@DELETE
 	@Path("{name}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -154,13 +186,16 @@ public class CustomAction extends StandardJaxrsAction {
 		try {
 			result = new ActionDelete().execute(effectivePerson, name);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "删除指定名称的Custom MockDeleteToGet。", action = ActionDelete.class)
+	@Operation(summary = "删除指定名称的Custom数据(Mock delete to get).", operationId = OPERATIONID_PREFIX
+			+ "deleteMockDeleteToGet", responses = {
+					@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionDelete.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "删除指定名称的Custom数据(Mock delete to get).", action = ActionDelete.class)
 	@GET
 	@Path("{name}/mockdeletetoget")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -172,7 +207,7 @@ public class CustomAction extends StandardJaxrsAction {
 		try {
 			result = new ActionDelete().execute(effectivePerson, name);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));

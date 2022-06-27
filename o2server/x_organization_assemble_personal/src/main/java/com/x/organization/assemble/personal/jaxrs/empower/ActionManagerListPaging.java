@@ -9,27 +9,38 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.entity.JpaObject_;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.organization.core.entity.accredit.Empower;
 import com.x.organization.core.entity.accredit.Empower_;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionManagerListPaging extends BaseAction {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionManagerListPaging.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, Integer page, Integer size, JsonElement jsonElement)
 			throws Exception {
+
+		LOGGER.debug("execute:{}, page:{}, size:{}.", effectivePerson::getDistinguishedName, () -> page, () -> size);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			ActionResult<List<Wo>> result = new ActionResult<>();
@@ -38,29 +49,29 @@ class ActionManagerListPaging extends BaseAction {
 			CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
 			Root<Empower> root = cq.from(Empower.class);
 			Predicate p = cb.conjunction();
-			if(effectivePerson.isManager()) {
+			if (effectivePerson.isManager()) {
 				if (StringUtils.isNotEmpty(wi.getFromPerson())) {
 					String key = "%" + StringTools.escapeSqlLikeKey(wi.getFromPerson()) + "%";
 					p = cb.and(p, cb.like(root.get(Empower_.fromPerson), key, StringTools.SQL_ESCAPE_CHAR));
 				}
-			}else{
+			} else {
 				p = cb.and(p, cb.equal(root.get(Empower_.fromPerson), effectivePerson.getDistinguishedName()));
 			}
-			if(DateTools.isDateTimeOrDate(wi.getStartTime())){
-				p = cb.and(p, cb.greaterThan(root.get(Empower_.createTime), DateTools.parse(wi.getStartTime())));
+			if (BooleanUtils.isTrue(DateTools.isDateTimeOrDate(wi.getStartTime()))) {
+				p = cb.and(p, cb.greaterThan(root.get(JpaObject_.createTime), DateTools.parse(wi.getStartTime())));
 			}
-			if(DateTools.isDateTimeOrDate(wi.getEndTime())){
-				p = cb.and(p, cb.lessThan(root.get(Empower_.createTime), DateTools.parse(wi.getEndTime())));
+			if (BooleanUtils.isTrue(DateTools.isDateTimeOrDate(wi.getEndTime()))) {
+				p = cb.and(p, cb.lessThan(root.get(JpaObject_.createTime), DateTools.parse(wi.getEndTime())));
 			}
 
-			List<Wo> wos = emc.fetchDescPaging(Empower.class, Wo.copier, p, page, size,
-					Empower.createTime_FIELDNAME);
+			List<Wo> wos = emc.fetchDescPaging(Empower.class, Wo.copier, p, page, size, JpaObject.createTime_FIELDNAME);
 			result.setData(wos);
 			result.setCount(emc.count(Empower.class, p));
 			return result;
 		}
 	}
 
+	@Schema(name = "com.x.organization.assemble.personal.jaxrs.empower.ActionManagerListPaging$Wo")
 	public static class Wo extends Empower {
 
 		private static final long serialVersionUID = 4279205128463146835L;
@@ -70,15 +81,21 @@ class ActionManagerListPaging extends BaseAction {
 
 	}
 
+	@Schema(name = "com.x.organization.assemble.personal.jaxrs.empower.ActionManagerListPaging$Wi")
 	public class Wi extends GsonPropertyObject {
 
-		@FieldDescribe("授权人")
+		private static final long serialVersionUID = 8080533324548774421L;
+
+		@FieldDescribe("授权人.")
+		@Schema(description = "授权人.")
 		private String fromPerson;
 
-		@FieldDescribe("(授权创建时间)开始时间yyyy-MM-dd HH:mm:ss")
+		@FieldDescribe("(授权创建时间)开始时间, 格式为: yyyy-MM-dd HH:mm:ss")
+		@Schema(description = "(授权创建时间)开始时间, 格式为: yyyy-MM-dd HH:mm:ss")
 		private String startTime;
 
-		@FieldDescribe("(授权创建时间)结束时间yyyy-MM-dd HH:mm:ss")
+		@FieldDescribe("(授权创建时间)结束时间, 格式为: yyyy-MM-dd HH:mm:ss")
+		@Schema(description = "(授权创建时间)结束时间, 格式为: yyyy-MM-dd HH:mm:ss")
 		private String endTime;
 
 		public String getFromPerson() {
