@@ -24,11 +24,11 @@ MWF.xApplication.process.Xform.WpsOffice2 = MWF.APPWpsOffice2 =  new Class({
         });
     },
     _afterLoaded: function(){
-        if(!layout.serviceAddressList["x_wpsfile_assemble_control"]){
+        if(!layout.serviceAddressList["x_wpsfile2_assemble_control"]){
             this.node.set("html","<h3><font color=red>请先安装wps私有化应用</font></h3>");
             return false;
         }
-        this.action = o2.Actions.load("x_wpsfile_assemble_control");
+        this.action = o2.Actions.load("x_wpsfile2_assemble_control");
         if (!this.json.isNotLoadNow){
             this.data = this.getData();
             if(this.data.documentId === ""){

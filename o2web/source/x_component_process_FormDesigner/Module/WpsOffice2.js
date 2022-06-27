@@ -111,7 +111,7 @@ MWF.xApplication.process.FormDesigner.Module.WpsOffice2 = MWF.FCWpsOffice2 = new
         }).inject(this.iconNode);
 
         this.setIcon();
-        if(!layout.serviceAddressList["x_wpsfile_assemble_control"]){
+        if(!layout.serviceAddressList["x_wpsfile2_assemble_control"]){
             this.tipNode = new Element("div",{"style":"text-align:center"}).inject(this.node);
             this.tipNode.set("html","<h3><font color=red>" + MWF.APPFD.LP.wpsoffice.nosetup + "</font></h3>");
         }
