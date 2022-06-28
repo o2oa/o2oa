@@ -217,6 +217,11 @@
     "text": "wpsOffice",
     "className": "WpsOffice"
   },
+  "wpsOffice2": {
+    "icon": "wpsOffice.png",
+    "text": "wpsOffice2",
+    "className": "WpsOffice2"
+  },
   "statementSelector": {
     "icon": "statementSelector.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.statementSelector,
