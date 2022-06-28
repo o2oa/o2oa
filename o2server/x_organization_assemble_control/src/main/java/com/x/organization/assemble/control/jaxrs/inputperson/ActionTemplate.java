@@ -24,14 +24,14 @@ public class ActionTemplate extends BaseAction {
 	protected ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
 		try (XSSFWorkbook workbook = new XSSFWorkbook(); ByteArrayOutputStream os = new ByteArrayOutputStream()) {
 			ActionResult<Wo> result = new ActionResult<>();
-			
+
 			this.templateRemark(workbook);
 			this.templateUnit(workbook);
 			this.templatePerson(workbook);
 			this.templateIdentity(workbook);
 			this.templateDuty(workbook);
 			this.templateGroup(workbook);
-			
+
 			workbook.write(os);
 			Wo wo = new Wo(os.toByteArray(), this.contentType(true, name), this.contentDisposition(true, name));
 			result.setData(wo);
@@ -48,26 +48,26 @@ public class ActionTemplate extends BaseAction {
 
 		row = sheet.createRow(4);
 		row.createCell(0).setCellValue("1. 表格内不要做合并(拆分)单元格操作，各列顺序不能变动，更不能删除，否则会造成数据混乱；");
-		
+
 		row = sheet.createRow(6);
 		row.createCell(0).setCellValue("2. * 为必填项");
-		
+
 		row = sheet.createRow(8);
 		row.createCell(0).setCellValue("3. 如有特殊要求的格式，详见列名批注；");
-		
+
 		row = sheet.createRow(10);
 		row.createCell(0).setCellValue("4. 表中示例数据用于示范，实际导入时需删除；");
-		
+
 		row = sheet.createRow(12);
 		row.createCell(0).setCellValue("5. 每个Sheet页顺序不能变动，本Sheet页不能删除。");
-		
+
 		CellStyle cellStyle = workbook.createCellStyle();
 		cellStyle.setWrapText(true);
 		IntStream.rangeClosed(0, 6).forEach(i -> {
 			sheet.setDefaultColumnStyle(i, cellStyle);
 		});
 	}
-	
+
 	private void templateUnit(XSSFWorkbook workbook) throws Exception {
 		XSSFSheet sheet = workbook.createSheet("组织信息");
 		sheet.setDefaultColumnWidth(25);
@@ -90,7 +90,7 @@ public class ActionTemplate extends BaseAction {
 			sheet.setDefaultColumnStyle(i, cellStyle);
 		});
 	}
-	
+
 	private void templatePerson(XSSFWorkbook workbook) throws Exception {
 		XSSFSheet sheet = workbook.createSheet("人员基本信息");
 		sheet.setDefaultColumnWidth(25);
@@ -115,7 +115,7 @@ public class ActionTemplate extends BaseAction {
 			sheet.setDefaultColumnStyle(i, cellStyle);
 		});
 	}
-	
+
 	private void templateIdentity(XSSFWorkbook workbook) throws Exception {
 		XSSFSheet sheet = workbook.createSheet("人员身份信息");
 		sheet.setDefaultColumnWidth(25);
@@ -134,7 +134,7 @@ public class ActionTemplate extends BaseAction {
 			sheet.setDefaultColumnStyle(i, cellStyle);
 		});
 	}
-	
+
 	private void templateDuty(XSSFWorkbook workbook) throws Exception {
 		XSSFSheet sheet = workbook.createSheet("职务信息");
 		sheet.setDefaultColumnWidth(45);
@@ -157,7 +157,7 @@ public class ActionTemplate extends BaseAction {
 			sheet.setDefaultColumnStyle(i, cellStyle);
 		});
 	}
-	
+
 	private void templateGroup(XSSFWorkbook workbook) throws Exception {
 		XSSFSheet sheet = workbook.createSheet("群组信息");
 		sheet.setDefaultColumnWidth(25);
@@ -169,14 +169,16 @@ public class ActionTemplate extends BaseAction {
 		cell = row.createCell(2);
 		cell.setCellValue("人员唯一编码");
 		cell = row.createCell(3);
-		cell.setCellValue("组织唯一编码");
+		cell.setCellValue("身份唯一编码");
 		cell = row.createCell(4);
-		cell.setCellValue("子群组编码");
+		cell.setCellValue("组织唯一编码");
 		cell = row.createCell(5);
+		cell.setCellValue("子群组编码");
+		cell = row.createCell(6);
 		cell.setCellValue("描述");
 		CellStyle cellStyle = workbook.createCellStyle();
 		cellStyle.setWrapText(true);
-		IntStream.rangeClosed(0, 6).forEach(i -> {
+		IntStream.rangeClosed(0, 7).forEach(i -> {
 			sheet.setDefaultColumnStyle(i, cellStyle);
 		});
 	}
