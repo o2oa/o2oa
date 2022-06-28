@@ -53,6 +53,12 @@ o2.widget.Tree = new Class({
         }.bind(this));
         this.node.empty();
     },
+    reload: function(json){
+		if (json) this.treeJson = json;
+		this.children = [];
+		this.node.empty();
+		this.loadTree();
+	},
 	reLoad: function(json){
 		if (json) this.treeJson = json;
 		this.children = [];

@@ -369,7 +369,21 @@ MWF.xApplication.process.ProcessManager.ProcessExplorer.Process = new Class({
 			if (callback) callback();
 		}.bind(this));
 	},
-
+    saveas: function(){
+        MWF.xDesktop.requireApp("Selector", "package", function(){
+            var selector = new MWF.O2Selector(this.explorer.app.content, {
+                "title": this.explorer.app.lp.copyto,
+                "count": 1,
+                "type": "Application",
+                "values": [this.explorer.app.options.application],
+                "onComplete": function(items){
+                    items.each(function(item){
+                        this.saveItemAs(item.data);
+                    }.bind(this));
+                }.bind(this)
+            });
+        }.bind(this));
+    },
     saveItemAs: function(item){
         var id = item.id;
         var name = item.name;

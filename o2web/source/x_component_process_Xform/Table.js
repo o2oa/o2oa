@@ -102,6 +102,11 @@ MWF.xApplication.process.Xform.Table = MWF.APPTable =  new Class(
         }.bind(this));
         //if (this.form.json["$version"]!=="5.2")
             this._loadBorderStyle();
+
+        if(this.json.tableStyles){
+            if( !this.table )this.table = this.node.getElement("table");
+            if(this.table)this.table.setStyles( this.json.tableStyles );
+        }
     }
 });
 /** @class Table$Td 单元格组件。
