@@ -140,7 +140,7 @@ public class WorkLogTree {
 			}
 		}
 
-		/* 查找最近的人工几点,过滤所有 */
+		// 查找最近的人工节点,过滤所有
 		public Nodes downNextManual() {
 			Nodes nodes = new Nodes();
 			for (Node o : this.children) {

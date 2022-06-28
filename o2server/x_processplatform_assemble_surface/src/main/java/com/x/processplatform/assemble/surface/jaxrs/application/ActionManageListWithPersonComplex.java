@@ -2,6 +2,7 @@ package com.x.processplatform.assemble.surface.jaxrs.application;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -18,8 +19,12 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.element.Application;
@@ -27,37 +32,53 @@ import com.x.processplatform.core.entity.element.Application_;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Process_;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionManageListWithPersonComplex extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionManageListWithPersonComplex.class);
+
+	@SuppressWarnings("unchecked")
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String person) throws Exception {
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<List<Wo>> result = new ActionResult<>();
-			List<Wo> wos = new ArrayList<>();
-			Business business = new Business(emc);
 
-			if (effectivePerson.isManager()) {
-				List<String> identities = business.organization().identity().listWithPerson(person);
-				/** 去除部门以及上级部门,如果设置了一级部门可用,那么一级部门下属的二级部门也可用 */
-				List<String> units = business.organization().unit().listWithPersonSupNested(person);
-				List<String> roles = business.organization().role().listWithPerson(person);
-				List<String> groups = business.organization().group().listWithIdentity(identities);
-				List<String> ids = this.list(business, effectivePerson, roles, identities, units, groups);
-				for (String id : ids) {
-					Application o = business.application().pick(id);
-					if (null != o) {
-						Wo wo = Wo.copier.copy(o);
-						wo.setProcessList(this.referenceProcess(business, effectivePerson, identities, units, groups, o));
-						wos.add(wo);
+		LOGGER.debug("execute:{}, person:{}.", effectivePerson::getDistinguishedName, () -> person);
+
+		ActionResult<List<Wo>> result = new ActionResult<>();
+		List<Wo> wos = new ArrayList<>();
+		CacheKey cacheKey = new CacheKey(this.getClass(), effectivePerson.getDistinguishedName());
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+
+		if (optional.isPresent()) {
+			wos = (List<Wo>) optional.get();
+		} else {
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
+				if (effectivePerson.isManager()) {
+					List<String> identities = business.organization().identity().listWithPerson(person);
+					// 去除部门以及上级部门,如果设置了一级部门可用,那么一级部门下属的二级部门也可用
+					List<String> units = business.organization().unit().listWithPersonSupNested(person);
+					List<String> roles = business.organization().role().listWithPerson(person);
+					List<String> groups = business.organization().group().listWithIdentity(identities);
+					List<String> ids = this.list(business, effectivePerson, roles, identities, units, groups);
+					for (String id : ids) {
+						Application o = business.application().pick(id);
+						if (null != o) {
+							Wo wo = Wo.copier.copy(o);
+							wo.setProcessList(
+									this.referenceProcess(business, effectivePerson, identities, units, groups, o));
+							wos.add(wo);
+						}
 					}
+					wos = business.application().sort(wos);
+					CacheManager.put(cacheCategory, cacheKey, wos);
 				}
-				wos = business.application().sort(wos);
-				result.setData(wos);
 			}
-
-			return result;
 		}
+		result.setData(wos);
+		return result;
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.application.ActionManageListWithPersonComplex$Wo")
 	public static class Wo extends Application {
 
 		private static final long serialVersionUID = 1176431364379021779L;
@@ -65,10 +86,12 @@ class ActionManageListWithPersonComplex extends BaseAction {
 		static WrapCopier<Application, Wo> copier = WrapCopierFactory.wo(Application.class, Wo.class, null,
 				JpaObject.FieldsInvisible);
 
-		@FieldDescribe("流程对象")
+		@FieldDescribe("流程对象.")
+		@Schema(description = "流程对象.")
 		private List<WoProcess> processList;
 
-		@FieldDescribe("是否可编辑")
+		@FieldDescribe("是否可编辑.")
+		@Schema(description = "是否可编辑.")
 		private Boolean allowControl;
 
 		public Boolean getAllowControl() {
@@ -89,11 +112,10 @@ class ActionManageListWithPersonComplex extends BaseAction {
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.application.ActionManageListWithPersonComplex$WoProcess")
 	public static class WoProcess extends Process {
 
 		private static final long serialVersionUID = 8239383153729965245L;
-		public static List<String> Excludes = new ArrayList<>(JpaObject.FieldsInvisible);
-
 		static WrapCopier<Process, WoProcess> copier = WrapCopierFactory.wo(Process.class, WoProcess.class, null,
 				JpaObject.FieldsInvisible);
 
@@ -113,7 +135,6 @@ class ActionManageListWithPersonComplex extends BaseAction {
 
 	private List<String> listFromApplication(Business business, EffectivePerson effectivePerson, List<String> roles,
 			List<String> identities, List<String> units) throws Exception {
-		List<String> list = new ArrayList<>();
 		EntityManager em = business.entityManagerContainer().get(Application.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
@@ -130,9 +151,8 @@ class ActionManageListWithPersonComplex extends BaseAction {
 		}
 		cq.where(p);
 
-		list = em.createQuery(cq.select(root.get(Application_.id))).getResultList().stream().distinct()
+		return em.createQuery(cq.select(root.get(Application_.id))).getResultList().stream().distinct()
 				.collect(Collectors.toList());
-		return list;
 	}
 
 	/**
@@ -145,11 +165,8 @@ class ActionManageListWithPersonComplex extends BaseAction {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Process> root = cq.from(Process.class);
-		Predicate p = cb.conjunction();
-
-		p = cb.and(cb.isEmpty(root.get(Process_.startableIdentityList)),
-				cb.isEmpty(root.get(Process_.startableUnitList)),
-				cb.isEmpty(root.get(Process_.startableGroupList)));
+		Predicate p = cb.and(cb.isEmpty(root.get(Process_.startableIdentityList)),
+				cb.isEmpty(root.get(Process_.startableUnitList)), cb.isEmpty(root.get(Process_.startableGroupList)));
 
 		if (ListTools.isNotEmpty(identities)) {
 			p = cb.or(p, root.get(Process_.startableIdentityList).in(identities));
@@ -166,9 +183,10 @@ class ActionManageListWithPersonComplex extends BaseAction {
 	}
 
 	private List<WoProcess> referenceProcess(Business business, EffectivePerson effectivePerson,
-			List<String> identities, List<String> units, List<String> groups, Application application) throws Exception {
-		List<String> ids = business.process().listStartableWithApplication(effectivePerson, identities, units,
-				groups, application);
+			List<String> identities, List<String> units, List<String> groups, Application application)
+			throws Exception {
+		List<String> ids = business.process().listStartableWithApplication(effectivePerson, identities, units, groups,
+				application);
 		List<WoProcess> wos = new ArrayList<>();
 		for (String id : ids) {
 			WoProcess o = WoProcess.copier.copy(business.process().pick(id));
