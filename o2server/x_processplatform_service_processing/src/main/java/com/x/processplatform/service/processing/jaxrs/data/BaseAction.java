@@ -42,8 +42,6 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BaseAction.class);
 
-	protected Gson gson = XGsonBuilder.instance();
-
 	JsonElement getData(Business business, String job, String... paths) throws Exception {
 		JsonElement jsonElement = null;
 		List<Item> list = business.item().listWithJobWithPath(job, paths);
@@ -93,6 +91,9 @@ abstract class BaseAction extends StandardJaxrsAction {
 	// 将data中的Title 和 serial 字段同步到work中
 	void updateTitleSerial(Business business, WorkCompleted workCompleted, JsonElement jsonElement) throws Exception {
 		String title = XGsonBuilder.extractString(jsonElement, WorkCompleted.title_FIELDNAME);
+		if (StringUtils.isBlank(title)) {
+			title = XGsonBuilder.extractString(jsonElement, WorkCompleted.TITLEALIAS_SUBJECT);
+		}
 		String serial = XGsonBuilder.extractString(jsonElement, WorkCompleted.serial_FIELDNAME);
 		// 如果有数据就将数据覆盖到work task taskCompleted read readCompleted review 中
 		if ((StringUtils.isNotBlank(title) && (!Objects.equals(title, workCompleted.getTitle())))

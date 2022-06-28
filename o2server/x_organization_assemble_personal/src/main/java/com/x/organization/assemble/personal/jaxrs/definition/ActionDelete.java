@@ -10,11 +10,16 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.organization.core.entity.Definition;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionDelete extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionDelete.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDelete.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String name) throws Exception {
+
+		LOGGER.debug("execute:{}, name:{}.", effectivePerson::getDistinguishedName, () -> name);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Definition o = emc.flag(name, Definition.class);
@@ -31,6 +36,9 @@ class ActionDelete extends BaseAction {
 		}
 	}
 
+	@Schema(name = "com.x.organization.assemble.personal.jaxrs.definition.ActionDelete$Wo")
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = -5192575890119223813L;
 	}
 }

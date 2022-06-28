@@ -15,11 +15,14 @@ import com.x.organization.core.entity.Definition;
 
 class ActionGet extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionGet.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionGet.class);
 
 	private static final String DEFINITION_MEETING_CONFIG = "meetingConfig";
 
 	ActionResult<String> execute(EffectivePerson effectivePerson, String name) throws Exception {
+
+		LOGGER.debug("execute:{}, name:{}.", effectivePerson::getDistinguishedName, () -> name);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<String> result = new ActionResult<>();
@@ -31,10 +34,10 @@ class ActionGet extends BaseAction {
 			} else {
 				Definition o = emc.flag(name, Definition.class);
 				if (null != o) {
-					 wo = o.getData();
+					wo = o.getData();
 					CacheManager.put(business.cache(), cacheKey, wo);
-				}else if(DEFINITION_MEETING_CONFIG.equalsIgnoreCase(name)){
-					 wo ="{\"process\":null,\"weekBegin\":\"0\",\"meetingViewer\":[],\"mobileCreateEnable\":\"true\",\"disableViewList\":[],\"toMyMeetingViewName\":\"\",\"toMonthViewName\":\"\",\"toWeekViewName\":\"\",\"toDayViewName\":\"\",\"toListViewName\":\"\",\"toRoomViewName\":\"\"}";
+				} else if (DEFINITION_MEETING_CONFIG.equalsIgnoreCase(name)) {
+					wo = "{\"process\":null,\"weekBegin\":\"0\",\"meetingViewer\":[],\"mobileCreateEnable\":\"true\",\"disableViewList\":[],\"toMyMeetingViewName\":\"\",\"toMonthViewName\":\"\",\"toWeekViewName\":\"\",\"toDayViewName\":\"\",\"toListViewName\":\"\",\"toRoomViewName\":\"\"}";
 				}
 			}
 			result.setData(wo);

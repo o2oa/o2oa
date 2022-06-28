@@ -28,6 +28,7 @@ class ActionCountWithPerson extends BaseAction {
 
 	public static class Wo extends GsonPropertyObject {
 
+		private static final long serialVersionUID = -4242925327577316593L;
 		@FieldDescribe("待阅数量")
 		private Long count = 0L;
 

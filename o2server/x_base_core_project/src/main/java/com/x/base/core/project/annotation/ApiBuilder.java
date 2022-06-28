@@ -10,6 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.Consumes;
@@ -52,17 +53,11 @@ public class ApiBuilder {
 
 	private void scan(File dir) {
 		try {
-			List<JaxrsClass> jaxrsClasses = new ArrayList<>();
-			List<Class<?>> classes = this.scanJaxrsClass();
-			for (Class<?> clz : classes) {
-				if (StandardJaxrsAction.class.isAssignableFrom(clz)) {
-					jaxrsClasses.add(this.jaxrsClass(clz));
-				}
-			}
-
+			new ArrayList<>();
+			List<JaxrsClass> jaxrsClasses = this.scanJaxrsClass().stream()
+					.filter(StandardJaxrsAction.class::isAssignableFrom).map(this::jaxrsClass)
+					.sorted(Comparator.comparing(JaxrsClass::getName)).collect(Collectors.toList());
 			LinkedHashMap<String, List<?>> map = new LinkedHashMap<>();
-			jaxrsClasses = jaxrsClasses.stream().sorted(Comparator.comparing(JaxrsClass::getName))
-					.collect(Collectors.toList());
 			map.put("jaxrs", jaxrsClasses);
 			File file = new File(dir, "api.json");
 			FileUtils.writeStringToFile(file, XGsonBuilder.toJson(map), DefaultCharset.charset);
@@ -96,14 +91,9 @@ public class ApiBuilder {
 		LOGGER.print("describe class:{}.", clz.getName());
 		JaxrsClass jaxrsClass = new JaxrsClass();
 		jaxrsClass.setName(clz.getSimpleName());
-		for (Method method : clz.getMethods()) {
-			JaxrsMethodDescribe jaxrsMethodDescribe = method.getAnnotation(JaxrsMethodDescribe.class);
-			if (null != jaxrsMethodDescribe) {
-				jaxrsClass.getMethods().add(this.jaxrsApiMethod(clz, method));
-			}
-		}
+		Stream.of(clz.getMethods()).filter(o -> null != o.getAnnotation(JaxrsMethodDescribe.class))
+				.map(o -> this.jaxrsApiMethod(clz, o)).forEach(jaxrsClass.getMethods()::add);
 		return jaxrsClass;
-
 	}
 
 	private JaxrsApiMethod jaxrsApiMethod(Class<?> clz, Method method) {

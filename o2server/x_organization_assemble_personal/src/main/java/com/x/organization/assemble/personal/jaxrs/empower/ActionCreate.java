@@ -20,7 +20,7 @@ import com.x.organization.core.entity.accredit.Empower;
 
 class ActionCreate extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionCreate.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCreate.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {

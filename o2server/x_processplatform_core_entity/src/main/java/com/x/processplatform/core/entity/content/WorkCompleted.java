@@ -43,6 +43,8 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 	private static final long serialVersionUID = 8340732901486828267L;
 	private static final String TABLE = PersistenceProperties.Content.WorkCompleted.table;
 
+	public static final String TITLEALIAS_SUBJECT = "subject";
+
 	public String getId() {
 		return id;
 	}

@@ -6,15 +6,15 @@ package com.x.organization.assemble.personal.jaxrs.exmail;
  *
  */
 public class AesException extends Exception {
-	public final static int OK = 0;
-	public final static int ValidateSignatureError = -40001;
-	public final static int ParseXmlError = -40002;
-	public final static int ComputeSignatureError = -40003;
-	public final static int IllegalAesKey = -40004;
-	public final static int ValidateCorpidError = -40005;
-	public final static int EncryptAESError = -40006;
-	public final static int DecryptAESError = -40007;
-	public final static int IllegalBuffer = -40008;
+	public static final int OK = 0;
+	public static final int ValidateSignatureError = -40001;
+	public static final int ParseXmlError = -40002;
+	public static final int ComputeSignatureError = -40003;
+	public static final int IllegalAesKey = -40004;
+	public static final int ValidateCorpidError = -40005;
+	public static final int EncryptAESError = -40006;
+	public static final int DecryptAESError = -40007;
+	public static final int IllegalBuffer = -40008;
 	private int code;
 
 	private static String getMessage(int code) {

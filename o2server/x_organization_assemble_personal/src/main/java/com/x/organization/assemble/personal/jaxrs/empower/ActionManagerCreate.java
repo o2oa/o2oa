@@ -18,57 +18,65 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.organization.assemble.personal.Business;
 import com.x.organization.core.entity.accredit.Empower;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionManagerCreate extends BaseAction {
 
-    private static Logger logger = LoggerFactory.getLogger(ActionManagerCreate.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionManagerCreate.class);
 
-    ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 
-        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-            ActionResult<Wo> result = new ActionResult<>();
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 
-            if (effectivePerson.isManager()) {
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			ActionResult<Wo> result = new ActionResult<>();
 
-                Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+			if (effectivePerson.isManager()) {
 
-                Business business = new Business(emc);
-                Empower empower = Wi.copier.copy(wi);
-                this.check(business, empower);
-                String fromPerson = this.getPersonDNWithIdentityDN(business, empower.getFromIdentity());
-                if (StringUtils.isEmpty(fromPerson)) {
-                    throw new ExceptionPersonNotExistWithIdentity(empower.getFromIdentity());
-                } else {
-                    empower.setFromPerson(fromPerson);
-                }
-                String toPerson = this.getPersonDNWithIdentityDN(business, empower.getToIdentity());
-                if (StringUtils.isEmpty(toPerson)) {
-                    throw new ExceptionPersonNotExistWithIdentity(empower.getToIdentity());
-                } else {
-                    empower.setToPerson(toPerson);
-                }
-                emc.beginTransaction(Empower.class);
-                emc.persist(empower, CheckPersistType.all);
-                emc.commit();
-                CacheManager.notify(Empower.class);
-                Wo wo = new Wo();
-                wo.setId(empower.getId());
-                result.setData(wo);
-            }
+				Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 
-            return result;
-        }
-    }
+				Business business = new Business(emc);
+				Empower empower = Wi.copier.copy(wi);
+				this.check(business, empower);
+				String fromPerson = this.getPersonDNWithIdentityDN(business, empower.getFromIdentity());
+				if (StringUtils.isEmpty(fromPerson)) {
+					throw new ExceptionPersonNotExistWithIdentity(empower.getFromIdentity());
+				} else {
+					empower.setFromPerson(fromPerson);
+				}
+				String toPerson = this.getPersonDNWithIdentityDN(business, empower.getToIdentity());
+				if (StringUtils.isEmpty(toPerson)) {
+					throw new ExceptionPersonNotExistWithIdentity(empower.getToIdentity());
+				} else {
+					empower.setToPerson(toPerson);
+				}
+				emc.beginTransaction(Empower.class);
+				emc.persist(empower, CheckPersistType.all);
+				emc.commit();
+				CacheManager.notify(Empower.class);
+				Wo wo = new Wo();
+				wo.setId(empower.getId());
+				result.setData(wo);
+			}
 
-    public static class Wi extends Empower {
+			return result;
+		}
+	}
 
-        private static final long serialVersionUID = -4315296543575928054L;
+	@Schema(name = "com.x.organization.assemble.personal.jaxrs.empower.ActionManagerCreate$Wi")
+	public static class Wi extends Empower {
 
-        static WrapCopier<Wi, Empower> copier = WrapCopierFactory.wi(Wi.class, Empower.class, null,
-                JpaObject.FieldsUnmodify);
-    }
+		private static final long serialVersionUID = -4315296543575928054L;
 
-    public static class Wo extends WoId {
+		static WrapCopier<Wi, Empower> copier = WrapCopierFactory.wi(Wi.class, Empower.class, null,
+				JpaObject.FieldsUnmodify);
+	}
 
-    }
+	@Schema(name = "com.x.organization.assemble.personal.jaxrs.empower.ActionManagerCreate$Wo")
+	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = 2732874726998205764L;
+
+	}
 
 }

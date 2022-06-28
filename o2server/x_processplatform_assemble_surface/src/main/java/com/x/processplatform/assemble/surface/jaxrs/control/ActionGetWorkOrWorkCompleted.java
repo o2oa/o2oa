@@ -139,6 +139,9 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 			if (null != node) {
 				Nodes ups = node.upTo(ActivityType.manual, ActivityType.agent, ActivityType.choice, ActivityType.delay,
 						ActivityType.embed, ActivityType.invoke, ActivityType.parallel, ActivityType.split);
+				System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!");
+				System.out.println(gson.toJson(ups));
+				System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!");
 				for (Node o : ups) {
 					if (this.hasTaskCompletedWithActivityToken(business, effectivePerson,
 							o.getWorkLog().getFromActivityToken())) {

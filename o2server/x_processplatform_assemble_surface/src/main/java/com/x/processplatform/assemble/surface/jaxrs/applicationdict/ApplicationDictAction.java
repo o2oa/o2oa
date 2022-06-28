@@ -67,7 +67,7 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<List<ActionListWithApplication.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionListWithApplication().execute(applicationFlag);
+			result = new ActionListWithApplication().execute(effectivePerson, applicationFlag);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -86,7 +86,7 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<JsonElement> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionGetData().execute(applicationDictFlag, applicationFlag);
+			result = new ActionGetData().execute(effectivePerson, applicationDictFlag, applicationFlag);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -106,7 +106,7 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<JsonElement> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionGetDataPath0().execute(applicationDictFlag, applicationFlag, path0);
+			result = new ActionGetDataPath0().execute(effectivePerson, applicationDictFlag, applicationFlag, path0);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -127,7 +127,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<JsonElement> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionGetDataPath1().execute(applicationDictFlag, applicationFlag, path0, path1);
+			result = new ActionGetDataPath1().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -149,7 +150,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<JsonElement> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionGetDataPath2().execute(applicationDictFlag, applicationFlag, path0, path1, path2);
+			result = new ActionGetDataPath2().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -172,7 +174,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<JsonElement> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionGetDataPath3().execute(applicationDictFlag, applicationFlag, path0, path1, path2, path3);
+			result = new ActionGetDataPath3().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -196,8 +199,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<JsonElement> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionGetDataPath4().execute(applicationDictFlag, applicationFlag, path0, path1, path2, path3,
-					path4);
+			result = new ActionGetDataPath4().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -222,8 +225,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<JsonElement> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionGetDataPath5().execute(applicationDictFlag, applicationFlag, path0, path1, path2, path3,
-					path4, path5);
+			result = new ActionGetDataPath5().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, path5);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -249,8 +252,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<JsonElement> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionGetDataPath6().execute(applicationDictFlag, applicationFlag, path0, path1, path2, path3,
-					path4, path5, path6);
+			result = new ActionGetDataPath6().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, path5, path6);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -277,8 +280,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<JsonElement> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionGetDataPath7().execute(applicationDictFlag, applicationFlag, path0, path1, path2, path3,
-					path4, path5, path6, path7);
+			result = new ActionGetDataPath7().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, path5, path6, path7);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -298,7 +301,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdateDataPath0.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateDataPath0().execute(applicationDictFlag, applicationFlag, path0, jsonElement);
+			result = new ActionUpdateDataPath0().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -319,7 +323,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdateDataPath0.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateDataPath0().execute(applicationDictFlag, applicationFlag, path0, jsonElement);
+			result = new ActionUpdateDataPath0().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -340,8 +345,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdateDataPath1.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateDataPath1().execute(applicationDictFlag, applicationFlag, path0, path1,
-					jsonElement);
+			result = new ActionUpdateDataPath1().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -363,8 +368,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdateDataPath1.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateDataPath1().execute(applicationDictFlag, applicationFlag, path0, path1,
-					jsonElement);
+			result = new ActionUpdateDataPath1().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -386,8 +391,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdateDataPath2.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateDataPath2().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					jsonElement);
+			result = new ActionUpdateDataPath2().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -410,8 +415,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdateDataPath2.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateDataPath2().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					jsonElement);
+			result = new ActionUpdateDataPath2().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -434,8 +439,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdateDataPath3.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateDataPath3().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, jsonElement);
+			result = new ActionUpdateDataPath3().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -459,8 +464,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdateDataPath3.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateDataPath3().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, jsonElement);
+			result = new ActionUpdateDataPath3().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -484,8 +489,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdateDataPath4.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateDataPath4().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4, jsonElement);
+			result = new ActionUpdateDataPath4().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -510,8 +515,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdateDataPath4.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateDataPath4().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4, jsonElement);
+			result = new ActionUpdateDataPath4().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -536,8 +541,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdateDataPath5.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateDataPath5().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4, path5, jsonElement);
+			result = new ActionUpdateDataPath5().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, path5, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -563,8 +568,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdateDataPath5.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateDataPath5().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4, path5, jsonElement);
+			result = new ActionUpdateDataPath5().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, path5, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -590,8 +595,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdateDataPath6.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateDataPath6().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4, path5, path6, jsonElement);
+			result = new ActionUpdateDataPath6().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, path5, path6, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -618,8 +623,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdateDataPath6.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateDataPath6().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4, path5, path6, jsonElement);
+			result = new ActionUpdateDataPath6().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, path5, path6, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -646,8 +651,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdateDataPath7.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateDataPath7().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4, path5, path6, path7, jsonElement);
+			result = new ActionUpdateDataPath7().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, path5, path6, path7, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -675,8 +680,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdateDataPath7.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateDataPath7().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4, path5, path6, path7, jsonElement);
+			result = new ActionUpdateDataPath7().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, path5, path6, path7, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -696,7 +701,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionCreateDataPath0.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCreateDataPath0().execute(applicationDictFlag, applicationFlag, path0, jsonElement);
+			result = new ActionCreateDataPath0().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -717,8 +723,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionCreateDataPath1.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCreateDataPath1().execute(applicationDictFlag, applicationFlag, path0, path1,
-					jsonElement);
+			result = new ActionCreateDataPath1().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -740,8 +746,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionCreateDataPath2.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCreateDataPath2().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					jsonElement);
+			result = new ActionCreateDataPath2().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -764,8 +770,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionCreateDataPath3.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCreateDataPath3().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, jsonElement);
+			result = new ActionCreateDataPath3().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -789,8 +795,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionCreateDataPath4.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCreateDataPath4().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4, jsonElement);
+			result = new ActionCreateDataPath4().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -815,8 +821,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionCreateDataPath5.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCreateDataPath5().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4, path5, jsonElement);
+			result = new ActionCreateDataPath5().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, path5, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -842,8 +848,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionCreateDataPath6.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCreateDataPath6().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4, path5, path6, jsonElement);
+			result = new ActionCreateDataPath6().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, path5, path6, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -870,8 +876,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionCreateDataPath7.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCreateDataPath7().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4, path5, path6, path7, jsonElement);
+			result = new ActionCreateDataPath7().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, path5, path6, path7, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
@@ -891,7 +897,7 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionDeleteDataPath0.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDeleteDataPath0().execute(applicationDictFlag, applicationFlag, path0);
+			result = new ActionDeleteDataPath0().execute(effectivePerson, applicationDictFlag, applicationFlag, path0);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -912,7 +918,7 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionDeleteDataPath0.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDeleteDataPath0().execute(applicationDictFlag, applicationFlag, path0);
+			result = new ActionDeleteDataPath0().execute(effectivePerson, applicationDictFlag, applicationFlag, path0);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -933,7 +939,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionDeleteDataPath1.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDeleteDataPath1().execute(applicationDictFlag, applicationFlag, path0, path1);
+			result = new ActionDeleteDataPath1().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -955,7 +962,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionDeleteDataPath1.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDeleteDataPath1().execute(applicationDictFlag, applicationFlag, path0, path1);
+			result = new ActionDeleteDataPath1().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -977,7 +985,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionDeleteDataPath2.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDeleteDataPath2().execute(applicationDictFlag, applicationFlag, path0, path1, path2);
+			result = new ActionDeleteDataPath2().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -1000,7 +1009,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionDeleteDataPath2.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDeleteDataPath2().execute(applicationDictFlag, applicationFlag, path0, path1, path2);
+			result = new ActionDeleteDataPath2().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -1023,8 +1033,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionDeleteDataPath3.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDeleteDataPath3().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3);
+			result = new ActionDeleteDataPath3().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -1048,8 +1058,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionDeleteDataPath3.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDeleteDataPath3().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3);
+			result = new ActionDeleteDataPath3().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -1073,8 +1083,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionDeleteDataPath4.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDeleteDataPath4().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4);
+			result = new ActionDeleteDataPath4().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -1099,8 +1109,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionDeleteDataPath4.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDeleteDataPath4().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4);
+			result = new ActionDeleteDataPath4().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -1125,8 +1135,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionDeleteDataPath5.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDeleteDataPath5().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4, path5);
+			result = new ActionDeleteDataPath5().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, path5);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -1152,8 +1162,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionDeleteDataPath5.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDeleteDataPath5().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4, path5);
+			result = new ActionDeleteDataPath5().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, path5);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -1179,8 +1189,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionDeleteDataPath6.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDeleteDataPath6().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4, path5, path6);
+			result = new ActionDeleteDataPath6().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, path5, path6);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -1207,8 +1217,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionDeleteDataPath6.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDeleteDataPath6().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4, path5, path6);
+			result = new ActionDeleteDataPath6().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, path5, path6);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -1235,8 +1245,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionDeleteDataPath7.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDeleteDataPath7().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4, path5, path6, path7);
+			result = new ActionDeleteDataPath7().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, path5, path6, path7);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -1264,8 +1274,8 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionDeleteDataPath7.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDeleteDataPath7().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4, path5, path6, path7);
+			result = new ActionDeleteDataPath7().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, path5, path6, path7);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

@@ -25,13 +25,23 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "DefinitionAction", description = "用户自定义数据接口.")
 @Path("definition")
-@JaxrsDescribe("定制")
+@JaxrsDescribe("用户自定义数据接口.")
 public class DefinitionAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(DefinitionAction.class);
+	private static final String OPERATIONID_PREFIX = "DefinitionAction::";
 
-	@JaxrsMethodDescribe(value = "获取Definition.", action = ActionGet.class)
+	@Operation(summary = "访问当前用户指定名称的自定义数据.", operationId = OPERATIONID_PREFIX + "get", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = String.class)) }) })
+	@JaxrsMethodDescribe(value = "访问当前用户指定名称的自定义数据.", action = ActionGet.class)
 	@GET
 	@Path("{name}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -49,6 +59,8 @@ public class DefinitionAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@Operation(summary = "访问当前用户获取自定义数据.", operationId = OPERATIONID_PREFIX + "get", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = String.class)) }) })
 	@JaxrsMethodDescribe(value = "更新指定名称的Definition.", action = ActionEdit.class)
 	@PUT
 	@Path("{name}")
@@ -73,7 +85,7 @@ public class DefinitionAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void updateMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-					   @JaxrsParameterDescribe("名称") @PathParam("name") String name, String wi) {
+			@JaxrsParameterDescribe("名称") @PathParam("name") String name, String wi) {
 		ActionResult<ActionEdit.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -109,7 +121,7 @@ public class DefinitionAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void deleteMockDeleteToGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-					   @JaxrsParameterDescribe("名称") @PathParam("name") String name) {
+			@JaxrsParameterDescribe("名称") @PathParam("name") String name) {
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {

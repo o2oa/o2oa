@@ -22,6 +22,11 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "AnonymousAction", description = "匿名接口.")
@@ -29,8 +34,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @JaxrsDescribe("匿名接口.")
 public class AnonymousAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(AnonymousAction.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(AnonymousAction.class);
+	private static final String OPERATIONID_PREFIX = "AnonymousAction::";
 
+	@Operation(summary = "获取指定人员的待办数量,没有权限限制.", operationId = OPERATIONID_PREFIX + "taskCountWithPerson", responses = {
+			@ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionTaskCountWithPerson.Wo.class)) }) })
 	@JaxrsMethodDescribe(value = "获取指定人员的待办数量,没有权限限制.", action = ActionTaskCountWithPerson.class)
 	@GET
 	@Path("task/count/{credential}")
@@ -43,12 +52,15 @@ public class AnonymousAction extends StandardJaxrsAction {
 		try {
 			result = new ActionTaskCountWithPerson().execute(effectivePerson, credential);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@Operation(summary = "获取指定人员的待阅数量,没有权限限制.", operationId = OPERATIONID_PREFIX + "readCountWithPerson", responses = {
+			@ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionReadCountWithPerson.Wo.class)) }) })
 	@JaxrsMethodDescribe(value = "获取指定人员的待阅数量,没有权限限制.", action = ActionReadCountWithPerson.class)
 	@GET
 	@Path("read/count/{credential}")
@@ -61,7 +73,7 @@ public class AnonymousAction extends StandardJaxrsAction {
 		try {
 			result = new ActionReadCountWithPerson().execute(effectivePerson, credential);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
