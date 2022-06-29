@@ -241,7 +241,7 @@ MWF.xApplication.Attendance.AppealExplorer = new Class({
             "onComplete": function(items){
                 var  arr = [];
                 items.each(function(item){
-                    arr.push(item.data.name);
+                    arr.push(item.data.distinguishedName);
                 }.bind(this));
                 el.set("value",arr.join(","));
             }.bind(this)

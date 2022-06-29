@@ -133,11 +133,17 @@ MWF.xApplication.Attendance.PeopleDetail.Explorer = new Class({
         this.fileterNode.set("html",html);
 
         MWF.xDesktop.requireApp("Template", "MForm", function(){
+            var empSelector = { text : lp.person, type : "org", orgType : "person", notEmpty : true, style : {"min-width": "100px" } };
+            if( !this.app.isAdmin() && this.app.manageUnits ){
+                empSelector =  { text : lp.person, type : "org", orgType : "identity", "units": this.app.manageUnits, orgOptions: {
+                    "resultType": "person",
+                } , notEmpty : true, style : {"min-width": "100px" } };
+            }
             this.form = new MForm( this.fileterNode, {}, {
                 style: "attendance",
                 isEdited : true,
                 itemTemplate : {
-                    q_empName : { text : lp.person, type : "org", orgType : "person", notEmpty : true, style : {"min-width": "100px" } },
+                    q_empName : empSelector,
                     cycleYear : {
                         text : lp.annuaal,
                         "type" : "select",
@@ -499,11 +505,17 @@ MWF.xApplication.Attendance.PeopleDetail.DetailStaticExplorer = new Class({
         this.fileterNode.set("html",html);
 
         MWF.xDesktop.requireApp("Template", "MForm", function(){
+            var empSelector = { text : lp.person, type : "org", orgType : "person", notEmpty : true, style : {"min-width": "100px" } };
+            if( !this.app.isAdmin() && this.app.manageUnits ){
+                empSelector =  { text : lp.person, type : "org", orgType : "identity", "units": this.app.manageUnits, orgOptions: {
+                    "resultType": "person",
+                } , notEmpty : true, style : {"min-width": "100px" } };
+            }
             this.form = new MForm( this.fileterNode, {}, {
                 style: "attendance",
                 isEdited : true,
                 itemTemplate : {
-                    q_empName : { text : lp.person, type : "org", orgType : "person", notEmpty : true, style : {"min-width": "100px" } },
+                    q_empName : empSelector,
                     cycleYear : {
                         text : lp.annuaal,
                         "type" : "select",
