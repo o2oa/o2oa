@@ -148,7 +148,7 @@ public class WorkLogFactory extends AbstractFactory {
 	// }
 
 	public List<String> listWithFromActivityTokenForward(String activityToken) throws Exception {
-		List<String> results = SetUniqueList.setUniqueList(new ArrayList<String>());
+		List<String> results = SetUniqueList.setUniqueList(new ArrayList<>());
 		this.listWithFromActivityTokenForward(activityToken, results);
 		return results;
 	}

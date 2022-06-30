@@ -33,6 +33,8 @@ import com.x.processplatform.core.entity.element.util.WorkLogTree;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Nodes;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionListWithWorkOrWorkCompleted.class);
@@ -66,8 +68,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 			Boolean value = false;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
-				value = business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
-						new ExceptionEntityNotExist(workOrWorkCompleted));
+				value = business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted);
 			} catch (Exception e) {
 				logger.error(e);
 			}
@@ -200,6 +201,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 		return os;
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.worklog.ActionListWithWorkOrWorkCompleted$Wo")
 	public static class Wo extends WorkLog {
 
 		private static final long serialVersionUID = -7666329770246726197L;
@@ -279,6 +281,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.worklog.ActionListWithWorkOrWorkCompleted$WoTask")
 	public static class WoTask extends Task {
 
 		private static final long serialVersionUID = 293599148568443301L;
@@ -291,6 +294,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 				null);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.worklog.ActionListWithWorkOrWorkCompleted$WoTaskCompleted")
 	public static class WoTaskCompleted extends TaskCompleted {
 
 		private static final long serialVersionUID = -4432508672641778924L;
@@ -309,6 +313,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 				null);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.worklog.ActionListWithWorkOrWorkCompleted$WoRead")
 	public static class WoRead extends Read {
 
 		private static final long serialVersionUID = -7243683008987722267L;
@@ -321,6 +326,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 				null);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.worklog.ActionListWithWorkOrWorkCompleted$WoReadCompleted")
 	public static class WoReadCompleted extends ReadCompleted {
 
 		private static final long serialVersionUID = -7086077858353505033L;

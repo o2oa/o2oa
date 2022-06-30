@@ -55,8 +55,7 @@ class ActionUploadWithUrl extends BaseAction {
 			if(StringUtils.isEmpty(wi.getSite())){
 				throw new ExceptionEntityFieldEmpty(Attachment.class, wi.getSite());
 			}
-			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, wi.getWorkId(),
-					new ExceptionEntityNotExist(wi.getWorkId()))) {
+			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, wi.getWorkId())) {
 				throw new ExceptionAccessDenied(effectivePerson, wi.getWorkId());
 			}
 			String person = effectivePerson.getDistinguishedName();

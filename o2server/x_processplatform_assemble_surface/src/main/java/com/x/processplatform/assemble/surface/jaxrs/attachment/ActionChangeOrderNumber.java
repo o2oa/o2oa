@@ -1,6 +1,5 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
-
 import java.util.List;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -30,14 +29,13 @@ class ActionChangeOrderNumber extends BaseAction {
 			if (null == attachment) {
 				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
-			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workId,
-					new ExceptionEntityNotExist(workId))) {
+			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workId)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
 			List<String> units = business.organization().unit().listWithPerson(effectivePerson);
 			boolean canEdit = this.edit(attachment, effectivePerson, identities, units, business);
-			if(!canEdit){
+			if (!canEdit) {
 				throw new ExceptionAccessDenied(effectivePerson, attachment);
 			}
 			emc.beginTransaction(Attachment.class);

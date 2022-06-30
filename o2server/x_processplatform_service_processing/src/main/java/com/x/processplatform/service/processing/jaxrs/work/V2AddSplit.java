@@ -1,5 +1,6 @@
 package com.x.processplatform.service.processing.jaxrs.work;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -19,6 +20,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapStringList;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.processplatform.ManualTaskIdentityMatrix;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.content.Work;
@@ -102,12 +104,15 @@ class V2AddSplit extends BaseAction {
 						workCopy.setActivityName(activity.getName());
 						workCopy.setActivityToken(StringTools.uniqueToken());
 						workCopy.setActivityType(activity.getActivityType());
-						workCopy.setSplitTokenList(arrived.getProperties().getSplitTokenList());
+						// workCopy.setSplitTokenList(arrived.getProperties().getSplitTokenList());
+						workCopy.setSplitValueList(
+								adjustSplitValueList(arrived.getProperties().getSplitValueList(), splitValue));
 						workCopy.setSplitToken(arrived.getSplitToken());
 						workCopy.setSplitting(from.getSplitting());
 						workCopy.setSplitValue(splitValue);
-//						workCopy.getManualTaskIdentityList().clear();
-						workCopy.getManualTaskIdentityMatrix().clear();
+						// workCopy.getManualTaskIdentityList().clear();
+						// workCopy.getManualTaskIdentityMatrix().clear();
+						workCopy.setManualTaskIdentityMatrix(new ManualTaskIdentityMatrix());
 						workCopy.setBeforeExecuted(false);
 						workCopy.setDestinationActivity(null);
 						workCopy.setDestinationActivityType(null);
@@ -133,7 +138,8 @@ class V2AddSplit extends BaseAction {
 						fromCopy.setFromActivityToken(workCopy.getActivityToken());
 						fromCopy.setFromTime(workCopy.getActivityArrivedTime());
 						fromCopy.setWork(workCopy.getId());
-						arrivedCopy.setSplitValue(workCopy.getSplitValue());
+						fromCopy.setSplitValue(workCopy.getSplitValue());
+						fromCopy.setSplitToken(workCopy.getSplitToken());
 						fromCopy.setArrivedActivity("");
 						fromCopy.setArrivedActivityAlias("");
 						fromCopy.setArrivedActivityName("");
@@ -144,6 +150,7 @@ class V2AddSplit extends BaseAction {
 						emc.persist(workCopy, CheckPersistType.all);
 						emc.persist(arrivedCopy, CheckPersistType.all);
 						emc.persist(fromCopy, CheckPersistType.all);
+
 						emc.commit();
 						wo.addValue(workCopy.getId(), true);
 					}
@@ -155,6 +162,15 @@ class V2AddSplit extends BaseAction {
 
 		return ProcessPlatformExecutorFactory.get(job).submit(callable).get(300, TimeUnit.SECONDS);
 
+	}
+
+	private List<String> adjustSplitValueList(List<String> list, String value) {
+		List<String> values = new ArrayList<>();
+		if (ListTools.isNotEmpty(list)) {
+			list.stream().limit(list.size() - 1L).forEach(values::add);
+		}
+		values.add(value);
+		return values;
 	}
 
 	public static class Wi extends V2AddSplitWi {

@@ -38,6 +38,10 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	protected static final String OFD_ATT_KEY = ".ofd";
 
+	protected static final String SITE_SEPARATOR = "~";
+
+	protected static final String FILE_SEPARATOR = ",";
+
 	public static class WiExtraParam {
 		private String site;
 
@@ -288,8 +292,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			Boolean value = false;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
-				value = business.readableWithWorkOrWorkCompleted(effectivePerson, flag,
-						new ExceptionEntityNotExist(flag));
+				value = business.readableWithWorkOrWorkCompleted(effectivePerson, flag);
 			} catch (Exception e) {
 				logger.error(e);
 			}

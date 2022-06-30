@@ -4,7 +4,6 @@ import java.util.concurrent.CompletableFuture;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
@@ -168,8 +167,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			Boolean value = false;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
-				value = business.readableWithWorkOrWorkCompleted(effectivePerson, flag,
-						new ExceptionEntityNotExist(flag));
+				value = business.readableWithWorkOrWorkCompleted(effectivePerson, flag);
 			} catch (Exception e) {
 				logger.error(e);
 			}
