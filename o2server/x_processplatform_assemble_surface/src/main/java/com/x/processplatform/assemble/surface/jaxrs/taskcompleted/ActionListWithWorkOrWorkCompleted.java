@@ -28,8 +28,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
 			Business business = new Business(emc);
 
-			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
-					new ExceptionEntityNotExist(workOrWorkCompleted))) {
+			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 

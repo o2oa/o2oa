@@ -19,9 +19,10 @@ public class WorkLogTree {
 
 	private Node root;
 
-	public static List<String> RELY_WORKLOG_ITEMS = ListTools.toList(WorkLog.fromActivityToken_FIELDNAME,
-			WorkLog.arrivedActivityToken_FIELDNAME, WorkLog.fromActivityType_FIELDNAME,
-			WorkLog.arrivedActivityType_FIELDNAME, WorkLog.connected_FIELDNAME);
+	public static final List<String> RELY_WORKLOG_ITEMS = ListUtils.unmodifiableList(ListTools.toList(
+			WorkLog.fromActivityToken_FIELDNAME, WorkLog.arrivedActivityToken_FIELDNAME,
+			WorkLog.fromActivityType_FIELDNAME, WorkLog.arrivedActivityType_FIELDNAME,
+			WorkLog.fromActivityName_FIELDNAME, WorkLog.arrivedActivityName_FIELDNAME, WorkLog.connected_FIELDNAME));
 
 	Nodes nodes = new Nodes();
 
@@ -43,9 +44,6 @@ public class WorkLogTree {
 			throw new ExceptionBeginNotFound();
 		}
 		root = this.find(begin);
-//		for (Node o : nodes) {
-//			this.associate();
-//		}
 		this.associate();
 	}
 
@@ -53,14 +51,10 @@ public class WorkLogTree {
 		for (Node node : nodes) {
 			this.nodes.stream().filter(
 					o -> StringUtils.equals(node.workLog.getFromActivityToken(), o.workLog.getArrivedActivityToken()))
-					.forEach(o -> {
-						node.parents.add(o);
-					});
+					.forEach(o -> node.parents.add(o));
 			this.nodes.stream().filter(
 					o -> StringUtils.equals(node.workLog.getArrivedActivityToken(), o.workLog.getFromActivityToken()))
-					.forEach(o -> {
-						node.children.add(o);
-					});
+					.forEach(o -> node.children.add(o));
 		}
 
 	}
@@ -93,14 +87,12 @@ public class WorkLogTree {
 
 		public Date latestArrivedTime() {
 			Date date = null;
-			if (!this.isEmpty()) {
-				for (Node n : this) {
-					if (null != n.getWorkLog().getArrivedTime()) {
-						if (null == date) {
-							date = n.getWorkLog().getArrivedTime();
-						} else {
-							date = n.getWorkLog().getArrivedTime().after(date) ? n.getWorkLog().getArrivedTime() : date;
-						}
+			for (Node n : this) {
+				if (null != n.getWorkLog().getArrivedTime()) {
+					if (null == date) {
+						date = n.getWorkLog().getArrivedTime();
+					} else {
+						date = n.getWorkLog().getArrivedTime().after(date) ? n.getWorkLog().getArrivedTime() : date;
 					}
 				}
 			}
@@ -133,7 +125,7 @@ public class WorkLogTree {
 				if (Objects.equals(o.workLog.getFromActivityType(), activityType)) {
 					result.add(o);
 				} else {
-					if (ListTools.contains(pass, o.workLog.getFromActivityType())) {
+					if (ListTools.contains(pass, o.workLog.getFromActivityType()) || pass.isEmpty()) {
 						o.upTo(activityType, pass, result);
 					}
 				}
@@ -206,14 +198,14 @@ public class WorkLogTree {
 	}
 
 	public Nodes down(Node node) {
-		Nodes nodes = new Nodes();
+		Nodes ns = new Nodes();
 		for (Node o : node.children) {
-			nodes.add(o);
+			ns.add(o);
 		}
 		for (Node o : node.children) {
-			nodes.addAll(down(o));
+			ns.addAll(down(o));
 		}
-		return nodes;
+		return ns;
 	}
 
 	public Nodes up(Node node) {

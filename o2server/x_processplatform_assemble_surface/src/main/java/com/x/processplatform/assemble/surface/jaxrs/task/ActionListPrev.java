@@ -23,7 +23,7 @@ class ActionListPrev extends BaseAction {
 		LOGGER.debug("execute:{}, id:{}, count:{}.", effectivePerson::getDistinguishedName, () -> id, () -> count);
 		EqualsTerms equals = new EqualsTerms();
 		equals.put(Task.person_FIELDNAME, effectivePerson.getDistinguishedName());
-		return this.standardListPrev(Wo.copier, id, count, Task.sequence_FIELDNAME, equals, null, null, null, null,
+		return this.standardListPrev(Wo.copier, id, count, JpaObject.sequence_FIELDNAME, equals, null, null, null, null,
 				null, null, null, true, DESC);
 	}
 

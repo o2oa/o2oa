@@ -24,8 +24,8 @@ class ActionListWithJobPaging extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionListWithJobPaging.class);
 
-	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String job, Integer page,
-			Integer size) throws Exception {
+	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String job, Integer page, Integer size)
+			throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 
@@ -33,19 +33,18 @@ class ActionListWithJobPaging extends BaseAction {
 
 			String workOrWorkCompleted = "";
 			List<String> works = business.work().listWithJob(job);
-			if(ListTools.isNotEmpty(works)){
+			if (ListTools.isNotEmpty(works)) {
 				workOrWorkCompleted = works.get(0);
-			}else{
+			} else {
 				works = business.workCompleted().listWithJob(job);
-				if(ListTools.isNotEmpty(works)){
+				if (ListTools.isNotEmpty(works)) {
 					workOrWorkCompleted = works.get(0);
-				}else{
+				} else {
 					throw new ExceptionEntityNotExist(job);
 				}
 			}
 
-			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
-					new ExceptionEntityNotExist(workOrWorkCompleted))) {
+			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 

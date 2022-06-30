@@ -31,8 +31,7 @@ class ActionGetWithWorkCompleted extends BaseAction {
 				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
 
-			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workCompleted.getId(),
-					new ExceptionEntityNotExist(workCompleted.getId()))) {
+			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workCompleted.getId())) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 

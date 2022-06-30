@@ -1,6 +1,9 @@
 package com.x.processplatform.assemble.surface.jaxrs.control;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -136,20 +139,54 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 		if (BooleanUtils.isTrue(PropertyTools.getOrElse(activity, Manual.allowAddSplit_FIELDNAME, Boolean.class, false))
 				&& BooleanUtils.isTrue(work.getSplitting())) {
 			Node node = this.workLogTree(business, work.getJob()).location(work);
-			if (null != node) {
-				Nodes ups = node.upTo(ActivityType.manual, ActivityType.agent, ActivityType.choice, ActivityType.delay,
-						ActivityType.embed, ActivityType.invoke, ActivityType.parallel, ActivityType.split);
-				System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!");
-				System.out.println(gson.toJson(ups));
-				System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!");
-				for (Node o : ups) {
-					if (this.hasTaskCompletedWithActivityToken(business, effectivePerson,
-							o.getWorkLog().getFromActivityToken())) {
-						wo.setAllowAddSplit(true);
-						break;
+			Nodes nodes = new Nodes();
+			nodes.add(node);
+			for (int i = 0; i < work.getSplitTokenList().size(); i++) {
+				List<Node> temps = new ArrayList<>();
+				for (Node n : nodes) {
+					Nodes ups = n.upTo(ActivityType.split);
+					temps.addAll(ups);
+					for (Node u : ups) {
+						Nodes manuals = u.upTo(ActivityType.manual);
+						for (Node m : manuals) {
+							if (this.hasTaskCompletedWithActivityToken(business, effectivePerson,
+									m.getWorkLog().getFromActivityToken())) {
+								wo.setAllowAddSplit(true);
+								break;
+							}
+						}
 					}
 				}
+				nodes.clear();
+				nodes.addAll(temps);
 			}
+
+//			if (null != node) {
+//				Nodes ups = node.upTo(ActivityType.split,
+//						Arrays.asList(ActivityType.manual, ActivityType.agent, ActivityType.choice, ActivityType.delay,
+//								ActivityType.embed, ActivityType.invoke, ActivityType.parallel));
+//				for (Node o : ups) {
+//					System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!111");
+//					System.out.println(o.getWorkLog().getFromActivityName());
+//					System.out.println(
+//							o.getWorkLog().getFromActivityToken() + "->" + o.getWorkLog().getArrivedActivityName());
+//					System.out.println(o.getWorkLog().getWork());
+//					System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!111");
+//				}
+//				for (Node o : ups) {
+//					System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!222");
+//					System.out.println(
+//							o.getWorkLog().getFromActivityToken() + "->" + o.getWorkLog().getArrivedActivityName());
+//					System.out.println(o.getWorkLog().getFromActivityToken());
+//					System.out.println(o.getWorkLog().getWork());
+//					System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!222");
+//					if (this.hasTaskCompletedWithActivityToken(business, effectivePerson,
+//							o.getWorkLog().getFromActivityToken())) {
+//						wo.setAllowAddSplit(true);
+//						break;
+//					}
+//				}
+//			}
 		}
 		// 是否可以召回
 		if (BooleanUtils

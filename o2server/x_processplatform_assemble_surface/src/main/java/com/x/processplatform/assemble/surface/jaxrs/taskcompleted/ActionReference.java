@@ -12,7 +12,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.apache.commons.collections4.list.SetUniqueList;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -27,13 +26,14 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.core.entity.content.ProcessingType;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkCompleted_;
 import com.x.processplatform.core.entity.content.WorkLog;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionReference extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
@@ -115,12 +115,14 @@ class ActionReference extends BaseAction {
 		wo.setTaskCompletedList(WoTaskCompleted.copier.copy(os));
 	}
 
+	// @TODO
 	private List<WoWork> listWork(Business business, TaskCompleted taskCompleted) throws Exception {
-		List<String> ids = business.workLog().listWithFromActivityTokenForward(taskCompleted.getActivityToken());
-		List<String> workIds = SetUniqueList.setUniqueList(new ArrayList<String>());
-		for (WorkLog o : business.entityManagerContainer().list(WorkLog.class, ids)) {
-			workIds.add(o.getWork());
-		}
+		List<String> workIds = business.work().listWithJob(taskCompleted.getJob());
+//		List<String> ids = business.workLog().listWithFromActivityTokenForward(taskCompleted.getActivityToken());
+//		List<String> workIds = SetUniqueList.setUniqueList(new ArrayList<String>());
+//		for (WorkLog o : business.entityManagerContainer().list(WorkLog.class, ids)) {
+//			workIds.add(o.getWork());
+//		}
 		return WoWork.copier.copy(business.entityManagerContainer().list(Work.class, workIds));
 	}
 
@@ -139,7 +141,10 @@ class ActionReference extends BaseAction {
 		return wos;
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.taskcompleted.ActionReference$Wo")
 	public static class Wo extends GsonPropertyObject {
+
+		private static final long serialVersionUID = 6314327570968988398L;
 
 		@FieldDescribe("已办对象")
 		private WoTaskCompleted taskCompleted;

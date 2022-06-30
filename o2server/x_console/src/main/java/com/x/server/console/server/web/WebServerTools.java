@@ -125,9 +125,9 @@ public class WebServerTools extends JettySeverTools {
 		threadPool.setMaxThreads(THREAD_POOL_SIZE_MAX);
 		Server server = new Server(threadPool);
 		if (BooleanUtils.isTrue(webServer.getSslEnable())) {
-			addHttpsConnector(server, webServer.getPort(), true);
+			addHttpsConnector(server, webServer.getPort(), false);
 		} else {
-			addHttpConnector(server, webServer.getPort(), true);
+			addHttpConnector(server, webServer.getPort(), false);
 		}
 		GzipHandler gzipHandler = new GzipHandler();
 		gzipHandler.setHandler(handlers);

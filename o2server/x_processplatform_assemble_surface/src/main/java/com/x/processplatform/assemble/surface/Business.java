@@ -1028,8 +1028,8 @@ public class Business {
 		return true;
 	}
 
-	public boolean readableWithWorkOrWorkCompleted(EffectivePerson effectivePerson, String workOrWorkCompleted,
-			PromptException entityException) throws Exception {
+	public boolean readableWithWorkOrWorkCompleted(EffectivePerson effectivePerson, String workOrWorkCompleted)
+			throws Exception {
 		if (effectivePerson.isManager()) {
 			return true;
 		}
@@ -1065,11 +1065,7 @@ public class Business {
 			processId = work.getProcess();
 		}
 		if (StringUtils.isEmpty(job)) {
-			if (null != entityException) {
-				throw entityException;
-			} else {
-				return false;
-			}
+			return false;
 		}
 		if (effectivePerson.isPerson(creatorPerson)) {
 			return true;
@@ -1084,9 +1080,9 @@ public class Business {
 							effectivePerson.getDistinguishedName(), TaskCompleted.job_FIELDNAME, job) == 0) {
 						if (emc.countEqualAndEqual(ReadCompleted.class, ReadCompleted.person_FIELDNAME,
 								effectivePerson.getDistinguishedName(), ReadCompleted.job_FIELDNAME, job) == 0) {
-							Application application = application().pick(applicationId);
-							Process process = process().pick(processId);
-							if (!canManageApplicationOrProcess(effectivePerson, application, process)) {
+							Application a = application().pick(applicationId);
+							Process p = process().pick(processId);
+							if (BooleanUtils.isFalse(canManageApplicationOrProcess(effectivePerson, a, p))) {
 								return false;
 							}
 						}
