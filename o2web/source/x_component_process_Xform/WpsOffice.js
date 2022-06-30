@@ -295,10 +295,11 @@ MWF.xApplication.process.Xform.WpsOffice = MWF.APPWpsOffice =  new Class({
         };
         this._setBusinessData(data);
     },
-    save: function(){
+    save: function(callback){
         var promise =  this.wpsOffice.save();
         promise.then(function(){
             console.log("save success");
+            if(callback) callback();
         });
     },
     getTotalPage :  function (callback){
