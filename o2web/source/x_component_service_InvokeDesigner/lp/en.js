@@ -33,7 +33,9 @@ MWF.xApplication.service.InvokeDesigner.LP = {
     "run": "Run",
     "runSuccess": "Run successfully",
     "requireArguments": "Request Arguments",
+    "tokenSetting": "Authentication Setting",
     "runResult": "Execution Result",
+    "noSSOSetting": "Please configure authentication first",
 
     "notice": {
         "save_success": "The interface was saved successfully!",
