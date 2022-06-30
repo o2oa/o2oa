@@ -1322,8 +1322,8 @@
           "valueType": "script",
           "text": "",
           "script": {
-            "code": "return this.workContext.getWork().createTime\n",
-            "html": "return this.workContext.getWork().createTime\n"
+            "code": "return this.workContext.getWork().startTime\n",
+            "html": "return this.workContext.getWork().startTime\n"
           },
           "events": {
             "click": {
@@ -5029,8 +5029,8 @@
           "valueType": "script",
           "text": "",
           "script": {
-            "code": "return this.workContext.getWork().createTime\n",
-            "html": "return this.workContext.getWork().createTime\n"
+            "code": "return this.workContext.getWork().startTime\n",
+            "html": "return this.workContext.getWork().startTime\n"
           },
           "events": {
             "click": {
