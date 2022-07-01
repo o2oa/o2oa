@@ -27,9 +27,11 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Attachment;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionListWithJob extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionListWithJob.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWithJob.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String job) throws Exception {
 
@@ -72,12 +74,13 @@ class ActionListWithJob extends BaseAction {
 										Comparator.comparing(Wo::getCreateTime, Comparator.nullsLast(Date::compareTo))))
 						.collect(Collectors.toList());
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 			return wos;
 		}, ThisApplication.threadPool());
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionListWithJob$Wo")
 	public static class Wo extends Attachment {
 
 		private static final long serialVersionUID = -7666329770246726197L;
@@ -97,6 +100,7 @@ class ActionListWithJob extends BaseAction {
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionListWithJob$WoControl")
 	public static class WoControl extends GsonPropertyObject {
 		private static final long serialVersionUID = -7283783148043076205L;
 		@FieldDescribe("可读")

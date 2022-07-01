@@ -18,6 +18,8 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoFile;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
@@ -27,8 +29,10 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 
 class ActionDownload extends BaseAction {
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String fileName)
-			throws Exception {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDownload.class);
+
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String fileName) throws Exception {
 
 		ActionResult<Wo> result = new ActionResult<>();
 		Work work = null;
@@ -41,13 +45,12 @@ class ActionDownload extends BaseAction {
 			if (null == attachment) {
 				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
-			if(!business.readableWithJob(effectivePerson, attachment.getJob())){
+			if (!business.readableWithJob(effectivePerson, attachment.getJob())) {
 				throw new ExceptionAccessDenied(effectivePerson, id);
 			}
 
-			if(Config.processPlatform().getExtensionEvents()
-					.getWorkAttachmentDownloadEvents().size()>0 || Config.processPlatform().getExtensionEvents()
-					.getWorkCompletedAttachmentDownloadEvents().size() > 0) {
+			if (Config.processPlatform().getExtensionEvents().getWorkAttachmentDownloadEvents().size() > 0 || Config
+					.processPlatform().getExtensionEvents().getWorkCompletedAttachmentDownloadEvents().size() > 0) {
 				List<Work> workList = business.work().listWithJobObject(attachment.getJob());
 				if (ListTools.isEmpty(workList)) {
 					List<WorkCompleted> list = business.workCompleted().listWithJobObject(attachment.getJob());
@@ -70,13 +73,14 @@ class ActionDownload extends BaseAction {
 			}
 		}
 		byte[] bytes = null;
-		if(work!=null){
+		if (work != null) {
 			Optional<WorkExtensionEvent> event = Config.processPlatform().getExtensionEvents()
-					.getWorkAttachmentDownloadEvents().bind(work.getApplication(), work.getProcess(), work.getActivity());
+					.getWorkAttachmentDownloadEvents()
+					.bind(work.getApplication(), work.getProcess(), work.getActivity());
 			if (event.isPresent()) {
 				bytes = this.extensionService(effectivePerson, attachment.getId(), event.get());
 			}
-		}else if(workCompleted!=null){
+		} else if (workCompleted != null) {
 			Optional<ProcessPlatform.WorkCompletedExtensionEvent> event = Config.processPlatform().getExtensionEvents()
 					.getWorkCompletedAttachmentDownloadEvents()
 					.bind(workCompleted.getApplication(), workCompleted.getProcess());
@@ -84,7 +88,7 @@ class ActionDownload extends BaseAction {
 				bytes = this.extensionService(effectivePerson, attachment.getId(), event.get());
 			}
 		}
-		if(bytes==null){
+		if (bytes == null) {
 			bytes = attachment.readContent(mapping);
 		}
 		Wo wo = new Wo(bytes, this.contentType(false, fileName), this.contentDisposition(false, fileName));
@@ -106,8 +110,8 @@ class ActionDownload extends BaseAction {
 		return bytes;
 	}
 
-	private byte[] extensionService(EffectivePerson effectivePerson, String id, ProcessPlatform.WorkCompletedExtensionEvent event)
-			throws Exception {
+	private byte[] extensionService(EffectivePerson effectivePerson, String id,
+			ProcessPlatform.WorkCompletedExtensionEvent event) throws Exception {
 		byte[] bytes = null;
 		Req req = new Req();
 		req.setPerson(effectivePerson.getDistinguishedName());

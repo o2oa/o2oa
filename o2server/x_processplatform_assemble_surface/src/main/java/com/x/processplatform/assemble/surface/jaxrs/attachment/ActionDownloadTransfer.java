@@ -13,7 +13,7 @@ import com.x.processplatform.assemble.surface.ThisApplication;
 
 class ActionDownloadTransfer extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionDownloadTransfer.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDownloadTransfer.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, boolean stream) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -21,7 +21,7 @@ class ActionDownloadTransfer extends BaseAction {
 			Wo wo = null;
 
 			GeneralFile generalFile = emc.find(flag, GeneralFile.class);
-			if(generalFile!=null){
+			if (generalFile != null) {
 				StorageMapping gfMapping = ThisApplication.context().storageMappings().get(GeneralFile.class,
 						generalFile.getStorage());
 				wo = new Wo(generalFile.readContent(gfMapping), this.contentType(stream, generalFile.getName()),

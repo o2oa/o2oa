@@ -26,6 +26,8 @@ import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionCopyToWorkCompleted extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCopyToWorkCompleted.class);
@@ -84,10 +86,11 @@ class ActionCopyToWorkCompleted extends BaseAction {
 		return result;
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionCopyToWorkCompleted$Wi")
 	public static class Wi extends GsonPropertyObject {
 
 		private static final long serialVersionUID = -455300115594765428L;
-		
+
 		@FieldDescribe("附件对象")
 		private List<WiAttachment> attachmentList = new ArrayList<>();
 
@@ -101,26 +104,11 @@ class ActionCopyToWorkCompleted extends BaseAction {
 
 	}
 
-	public static class Req extends GsonPropertyObject {
-
-		private static final long serialVersionUID = -3546487034950391385L;
-		
-		List<ReqAttachment> attachmentList = new ArrayList<>();
-
-		public List<ReqAttachment> getAttachmentList() {
-			return attachmentList;
-		}
-
-		public void setAttachmentList(List<ReqAttachment> attachmentList) {
-			this.attachmentList = attachmentList;
-		}
-
-	}
-
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionCopyToWorkCompleted$WiAttachment")
 	public static class WiAttachment extends GsonPropertyObject {
 
 		private static final long serialVersionUID = -308348301935328134L;
-		
+
 		private String id;
 		private String name;
 		private String site;
@@ -151,14 +139,32 @@ class ActionCopyToWorkCompleted extends BaseAction {
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionCopyToWorkCompleted$Wo")
 	public static class Wo extends WoId {
 
 		private static final long serialVersionUID = 6235554869680662821L;
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionCopyToWorkCompleted$WoWorkControl")
 	public static class WoWorkControl extends WorkControl {
 
 		private static final long serialVersionUID = -6269570358898022654L;
+	}
+
+	public static class Req extends GsonPropertyObject {
+
+		private static final long serialVersionUID = -3546487034950391385L;
+
+		List<ReqAttachment> attachmentList = new ArrayList<>();
+
+		public List<ReqAttachment> getAttachmentList() {
+			return attachmentList;
+		}
+
+		public void setAttachmentList(List<ReqAttachment> attachmentList) {
+			this.attachmentList = attachmentList;
+		}
+
 	}
 }

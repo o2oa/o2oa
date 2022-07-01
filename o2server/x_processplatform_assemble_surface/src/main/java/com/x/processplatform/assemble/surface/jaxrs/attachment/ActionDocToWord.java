@@ -36,7 +36,7 @@ import com.x.processplatform.core.entity.content.Work;
 
 class ActionDocToWord extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionDocToWord.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDocToWord.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workId, JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
@@ -46,7 +46,7 @@ class ActionDocToWord extends BaseAction {
 				String decodedContent = URLDecoder.decode(wi.getContent(), StandardCharsets.UTF_8.name());
 				wi.setContent(decodedContent);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}
 		Work work = null;

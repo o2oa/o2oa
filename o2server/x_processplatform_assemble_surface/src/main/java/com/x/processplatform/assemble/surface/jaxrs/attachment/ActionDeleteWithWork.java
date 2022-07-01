@@ -21,7 +21,7 @@ import com.x.processplatform.core.entity.content.Work;
 
 class ActionDeleteWithWork extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionDeleteWithWork.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDeleteWithWork.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String workId) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();

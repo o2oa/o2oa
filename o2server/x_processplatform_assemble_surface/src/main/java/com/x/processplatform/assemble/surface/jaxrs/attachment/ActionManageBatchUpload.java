@@ -30,18 +30,20 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.element.End;
 import com.x.processplatform.core.entity.element.Process;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionManageBatchUpload extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionManageBatchUpload.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionManageBatchUpload.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workIds, String site, String fileName, byte[] bytes,
-			FormDataContentDisposition disposition, String extraParam, String person, Integer order,
-							 Boolean isSoftUpload, String mainWork) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workIds, String site, String fileName,
+			byte[] bytes, FormDataContentDisposition disposition, String extraParam, String person, Integer order,
+			Boolean isSoftUpload, String mainWork) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
 			// 需要对这个应用的管理权限
-			if (!business.canManageApplication(effectivePerson, null)) {
+			if (BooleanUtils.isFalse(business.canManageApplication(effectivePerson, null))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 
@@ -61,18 +63,18 @@ class ActionManageBatchUpload extends BaseAction {
 			}
 
 			person = business.organization().person().get(person);
-			if(StringUtils.isEmpty(person)){
+			if (StringUtils.isEmpty(person)) {
 				person = effectivePerson.getDistinguishedName();
 			}
-			if(StringUtils.isNotEmpty(workIds) && bytes!=null && bytes.length>0) {
+			if (StringUtils.isNotEmpty(workIds) && bytes != null && bytes.length > 0) {
 				Attachment mainAtt = null;
-				if(BooleanUtils.isTrue(isSoftUpload) && StringUtils.isNotEmpty(mainWork)){
-					logger.print("file {} soft upload from mainWork:{}", fileName, mainWork);
+				if (BooleanUtils.isTrue(isSoftUpload) && StringUtils.isNotEmpty(mainWork)) {
+					LOGGER.print("file {} soft upload from mainWork:{}", fileName, mainWork);
 					mainWork = mainWork.trim();
 					Work work = emc.find(mainWork, Work.class);
-					if(work!=null) {
+					if (work != null) {
 						mainAtt = this.concreteAttachment(work, person, site, order);
-					}else{
+					} else {
 						WorkCompleted workCompleted = emc.find(mainWork, WorkCompleted.class);
 						if (null != workCompleted) {
 							Process process = business.process().pick(workCompleted.getProcess());
@@ -86,11 +88,12 @@ class ActionManageBatchUpload extends BaseAction {
 							mainAtt = this.concreteAttachment(workCompleted, person, site, order, ends.get(0));
 						}
 					}
-					if(mainAtt!=null){
+					if (mainAtt != null) {
 						StorageMapping mapping = ThisApplication.context().storageMappings().random(Attachment.class);
 						mainAtt.saveContent(mapping, bytes, fileName);
 						mainAtt.setType((new Tika()).detect(bytes, fileName));
-						if (Config.query().getExtractImage() && ExtractTextTools.supportImage(mainAtt.getName())
+						if (BooleanUtils.isTrue(
+								Config.query().getExtractImage() && ExtractTextTools.supportImage(mainAtt.getName()))
 								&& ExtractTextTools.available(bytes)) {
 							mainAtt.setText(ExtractTextTools.image(bytes));
 						}
@@ -101,17 +104,17 @@ class ActionManageBatchUpload extends BaseAction {
 				}
 				String[] idArray = workIds.split(",");
 				for (String workId : idArray) {
-                    Attachment attachment = null;
+					Attachment attachment = null;
 					workId = workId.trim();
-					if(mainAtt!=null && workId.equals(mainWork)){
+					if (mainAtt != null && workId.equals(mainWork)) {
 						continue;
 					}
 					Work work = emc.find(workId, Work.class);
-                    if(work!=null) {
+					if (work != null) {
 						attachment = this.concreteAttachment(work, person, site, order);
-                    }else{
-                        WorkCompleted workCompleted = emc.find(workId, WorkCompleted.class);
-                        if (null != workCompleted) {
+					} else {
+						WorkCompleted workCompleted = emc.find(workId, WorkCompleted.class);
+						if (null != workCompleted) {
 							Process process = business.process().pick(workCompleted.getProcess());
 							if (null == process) {
 								throw new ExceptionEntityNotExist(workCompleted.getProcess(), Process.class);
@@ -121,14 +124,15 @@ class ActionManageBatchUpload extends BaseAction {
 								throw new ExceptionEndNotExist(process.getId());
 							}
 							attachment = this.concreteAttachment(workCompleted, person, site, order, ends.get(0));
-                        }
-                    }
-                    if(attachment!=null){
-                        StorageMapping mapping = ThisApplication.context().storageMappings().random(Attachment.class);
-                        if(mainAtt!=null){
+						}
+					}
+					if (attachment != null) {
+						StorageMapping mapping = ThisApplication.context().storageMappings().random(Attachment.class);
+						if (mainAtt != null) {
 							attachment.setName(mainAtt.getName());
 							attachment.setDeepPath(mapping.getDeepPath());
-							attachment.setExtension(StringUtils.lowerCase(StringUtils.substringAfterLast(mainAtt.getName(), ".")));
+							attachment.setExtension(
+									StringUtils.lowerCase(StringUtils.substringAfterLast(mainAtt.getName(), ".")));
 							attachment.setLength(mainAtt.getLength());
 							attachment.setStorage(mapping.getName());
 							attachment.setType(mainAtt.getType());
@@ -137,18 +141,19 @@ class ActionManageBatchUpload extends BaseAction {
 							attachment.setFromJob(mainAtt.getJob());
 							attachment.setFromId(mainAtt.getId());
 							attachment.setFromPath(mainAtt.path());
-						}else {
+						} else {
 							attachment.saveContent(mapping, bytes, fileName);
 							attachment.setType((new Tika()).detect(bytes, fileName));
-							if (Config.query().getExtractImage() && ExtractTextTools.supportImage(attachment.getName())
+							if (BooleanUtils.isTrue(Config.query().getExtractImage())
+									&& ExtractTextTools.supportImage(attachment.getName())
 									&& ExtractTextTools.available(bytes)) {
 								attachment.setText(ExtractTextTools.image(bytes));
 							}
 						}
-                        emc.beginTransaction(Attachment.class);
-                        emc.persist(attachment, CheckPersistType.all);
-                        emc.commit();
-                    }
+						emc.beginTransaction(Attachment.class);
+						emc.persist(attachment, CheckPersistType.all);
+						emc.commit();
+					}
 				}
 			}
 
@@ -165,7 +170,7 @@ class ActionManageBatchUpload extends BaseAction {
 		attachment.setPerson(person);
 		attachment.setLastUpdatePerson(person);
 		attachment.setSite(site);
-		/** 用于判断目录的值 */
+		// 用于判断目录的值
 		attachment.setWorkCreateTime(work.getCreateTime());
 		attachment.setApplication(work.getApplication());
 		attachment.setProcess(work.getProcess());
@@ -174,37 +179,45 @@ class ActionManageBatchUpload extends BaseAction {
 		attachment.setActivityName(work.getActivityName());
 		attachment.setActivityToken(work.getActivityToken());
 		attachment.setActivityType(work.getActivityType());
-		if(order!=null){
+		if (order != null) {
 			attachment.setOrderNumber(order);
 		}
 		return attachment;
 	}
 
-    private Attachment concreteAttachment(WorkCompleted workCompleted, String person, String site, Integer order, End end) throws Exception {
-        Attachment attachment = new Attachment();
-        attachment.setCompleted(true);
-        attachment.setPerson(person);
-        attachment.setLastUpdatePerson(person);
-        attachment.setSite(site);
-        /** 用于判断目录的值 */
-        attachment.setWorkCreateTime(workCompleted.getStartTime());
-        attachment.setApplication(workCompleted.getApplication());
-        attachment.setProcess(workCompleted.getProcess());
-        attachment.setJob(workCompleted.getJob());
+	private Attachment concreteAttachment(WorkCompleted workCompleted, String person, String site, Integer order,
+			End end) throws Exception {
+		Attachment attachment = new Attachment();
+		attachment.setCompleted(true);
+		attachment.setPerson(person);
+		attachment.setLastUpdatePerson(person);
+		attachment.setSite(site);
+		// 用于判断目录的值
+		attachment.setWorkCreateTime(workCompleted.getStartTime());
+		attachment.setApplication(workCompleted.getApplication());
+		attachment.setProcess(workCompleted.getProcess());
+		attachment.setJob(workCompleted.getJob());
 		attachment.setActivity(end.getId());
 		attachment.setActivityName(end.getName());
 		attachment.setActivityToken(end.getId());
 		attachment.setActivityType(end.getActivityType());
-		if(order!=null){
+		if (order != null) {
 			attachment.setOrderNumber(order);
 		}
-        return attachment;
-    }
+		return attachment;
+	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionManageBatchUpload$Wo")
 	public static class Wo extends WrapBoolean {
+
+		private static final long serialVersionUID = 5608898238425800133L;
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionManageBatchUpload$WoControl")
 	public static class WoControl extends WorkControl {
+
+		private static final long serialVersionUID = 3610556328798966861L;
+
 	}
 }

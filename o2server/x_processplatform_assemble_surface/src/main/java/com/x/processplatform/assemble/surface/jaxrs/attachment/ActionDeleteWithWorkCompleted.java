@@ -19,7 +19,7 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 
 class ActionDeleteWithWorkCompleted extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionDeleteWithWorkCompleted.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDeleteWithWorkCompleted.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String workCompletedId) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();

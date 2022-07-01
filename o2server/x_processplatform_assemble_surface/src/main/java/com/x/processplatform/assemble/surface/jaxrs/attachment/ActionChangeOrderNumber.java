@@ -16,12 +16,18 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionChangeOrderNumber extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionChangeOrderNumber.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionChangeOrderNumber.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String workId, Integer order)
 			throws Exception {
+		
+		LOGGER.debug("execute:{}, id:{}, workId:{}, order:{}.", effectivePerson::getDistinguishedName, () -> id,
+				() -> workId, () -> order);
+		
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -34,8 +40,7 @@ class ActionChangeOrderNumber extends BaseAction {
 			}
 			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
 			List<String> units = business.organization().unit().listWithPerson(effectivePerson);
-			boolean canEdit = this.edit(attachment, effectivePerson, identities, units, business);
-			if (!canEdit) {
+			if (!this.edit(attachment, effectivePerson, identities, units, business)) {
 				throw new ExceptionAccessDenied(effectivePerson, attachment);
 			}
 			emc.beginTransaction(Attachment.class);
@@ -49,11 +54,17 @@ class ActionChangeOrderNumber extends BaseAction {
 		}
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionChangeOrderNumber$Wo")
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = 7781650524928249364L;
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionChangeOrderNumber$WoControl")
 	public static class WoControl extends WorkControl {
+
+		private static final long serialVersionUID = 3944420696392981012L;
 
 	}
 

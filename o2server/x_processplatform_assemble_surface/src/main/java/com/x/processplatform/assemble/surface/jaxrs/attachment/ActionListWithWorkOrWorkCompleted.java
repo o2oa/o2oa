@@ -27,11 +27,16 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Attachment;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionListWithWorkOrWorkCompleted.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWithWorkOrWorkCompleted.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String workOrWorkCompleted) throws Exception {
+
+		LOGGER.debug("execute:{}, workOrWorkCompleted:{}.", effectivePerson::getDistinguishedName,
+				() -> workOrWorkCompleted);
 
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		CompletableFuture<List<Wo>> listFuture = listFuture(effectivePerson, workOrWorkCompleted);
@@ -72,7 +77,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 										Comparator.comparing(Wo::getCreateTime, Comparator.nullsLast(Date::compareTo))))
 						.collect(Collectors.toList());
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 			return wos;
 		}, ThisApplication.threadPool());
@@ -99,12 +104,19 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 	}
 
 	public static class WoControl extends GsonPropertyObject {
+
 		private static final long serialVersionUID = -7283783148043076205L;
-		@FieldDescribe("可读")
+
+		@FieldDescribe("可读.")
+		@Schema(description = "可读.")
 		private Boolean allowRead = false;
-		@FieldDescribe("可写")
+
+		@FieldDescribe("可写.")
+		@Schema(description = "可写.")
 		private Boolean allowEdit = false;
-		@FieldDescribe("可控制")
+
+		@FieldDescribe("可控制.")
+		@Schema(description = "可控制.")
 		private Boolean allowControl = false;
 
 		public Boolean getAllowRead() {

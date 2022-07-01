@@ -17,7 +17,7 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 
 class ActionDownloadWorkInfo extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionDownloadWorkInfo.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDownloadWorkInfo.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workId, String flag, boolean stream) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {

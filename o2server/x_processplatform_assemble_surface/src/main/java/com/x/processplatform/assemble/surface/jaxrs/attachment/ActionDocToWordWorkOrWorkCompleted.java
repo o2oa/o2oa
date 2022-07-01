@@ -42,18 +42,18 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 
 class ActionDocToWordWorkOrWorkCompleted extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionDocToWordWorkOrWorkCompleted.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDocToWordWorkOrWorkCompleted.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workOrWorkCompleted, JsonElement jsonElement)
 			throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		if(StringUtils.isNotBlank(wi.getContent())){
+		if (StringUtils.isNotBlank(wi.getContent())) {
 			try {
 				String decodedContent = URLDecoder.decode(wi.getContent(), StandardCharsets.UTF_8.name());
 				wi.setContent(decodedContent);
 			} catch (Exception e) {
-				logger.warn("docContent URLDecoder error:"+e.getMessage());
+				LOGGER.warn("docContent URLDecoder error:" + e.getMessage());
 			}
 		}
 		Work work = null;
@@ -88,12 +88,12 @@ class ActionDocToWordWorkOrWorkCompleted extends BaseAction {
 			String activity, String job) throws Exception {
 		byte[] bytes = null;
 		Optional<WorkExtensionEvent> event;
-		if(wi.getFileName().toLowerCase().endsWith(OFD_ATT_KEY)){
-			event = Config.processPlatform().getExtensionEvents().getWorkDocToOfdEvents()
-					.bind(application, process, activity);
-		}else{
-			event = Config.processPlatform().getExtensionEvents().getWorkDocToWordEvents()
-					.bind(application, process, activity);
+		if (wi.getFileName().toLowerCase().endsWith(OFD_ATT_KEY)) {
+			event = Config.processPlatform().getExtensionEvents().getWorkDocToOfdEvents().bind(application, process,
+					activity);
+		} else {
+			event = Config.processPlatform().getExtensionEvents().getWorkDocToWordEvents().bind(application, process,
+					activity);
 		}
 		if (event.isPresent()) {
 			bytes = this.workExtensionService(effectivePerson, wi.getContent(), event.get(), job);
@@ -107,8 +107,8 @@ class ActionDocToWordWorkOrWorkCompleted extends BaseAction {
 		return bytes;
 	}
 
-	private byte[] workExtensionService(EffectivePerson effectivePerson, String content, WorkExtensionEvent event, String job)
-			throws Exception {
+	private byte[] workExtensionService(EffectivePerson effectivePerson, String content, WorkExtensionEvent event,
+			String job) throws Exception {
 		byte[] bytes = null;
 		Req req = new Req();
 		req.setContent(content);
@@ -122,16 +122,16 @@ class ActionDocToWordWorkOrWorkCompleted extends BaseAction {
 		return bytes;
 	}
 
-	private byte[] workCompletedConvert(EffectivePerson effectivePerson, Wi wi, String application, String process, String job)
-			throws Exception {
+	private byte[] workCompletedConvert(EffectivePerson effectivePerson, Wi wi, String application, String process,
+			String job) throws Exception {
 		byte[] bytes = null;
 		Optional<WorkCompletedExtensionEvent> event;
-		if(wi.getFileName().toLowerCase().endsWith(OFD_ATT_KEY)){
-			event = Config.processPlatform().getExtensionEvents()
-					.getWorkCompletedDocToOfdEvents().bind(application, process);
-		}else{
-			event = Config.processPlatform().getExtensionEvents()
-					.getWorkCompletedDocToWordEvents().bind(application, process);
+		if (wi.getFileName().toLowerCase().endsWith(OFD_ATT_KEY)) {
+			event = Config.processPlatform().getExtensionEvents().getWorkCompletedDocToOfdEvents().bind(application,
+					process);
+		} else {
+			event = Config.processPlatform().getExtensionEvents().getWorkCompletedDocToWordEvents().bind(application,
+					process);
 		}
 		if (event.isPresent()) {
 			bytes = this.workCompletedExtensionService(effectivePerson, wi.getContent(), event.get(), job);
