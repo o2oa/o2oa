@@ -280,8 +280,7 @@ public class WorkCompletedAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void manageGetAssignment(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("标识") @PathParam("id") String id,
-			@JaxrsParameterDescribe("数量") @PathParam("count") Integer count) {
+			@JaxrsParameterDescribe("标识") @PathParam("id") String id) {
 		ActionResult<ActionManageGetAssignment.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
