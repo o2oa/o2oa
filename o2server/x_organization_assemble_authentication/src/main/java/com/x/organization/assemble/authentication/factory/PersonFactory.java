@@ -43,7 +43,9 @@ public class PersonFactory extends AbstractFactory {
 			o = (Person) optional.get();
 		} else {
 			o = this.pickObject(flag);
-			CacheManager.put(cache, cacheKey, o);
+			if (null != o) {
+				CacheManager.put(cache, cacheKey, o);
+			}
 		}
 		return o;
 	}
@@ -88,8 +90,8 @@ public class PersonFactory extends AbstractFactory {
 				list.add((Person) optional.get());
 			} else {
 				Person o = this.pickObject(str);
-				CacheManager.put(cache, cacheKey, o);
 				if (null != o) {
+					CacheManager.put(cache, cacheKey, o);
 					list.add(o);
 				}
 			}
@@ -121,21 +123,21 @@ public class PersonFactory extends AbstractFactory {
 		List<String> list = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		if (list.size() == 1) {
 			return list.get(0);
-		}else if(list.size() > 1){
-			String temp = "";
-			for (int i = 0; i < list.size(); i++) {
-				if(temp.equalsIgnoreCase("")) {
-					temp = list.get(i);
-				}else{
-					temp = temp + "," + list.get(i);
-				}
-			}
-		    return temp;
-		}else {
+		} else if (list.size() > 1) {
+			return StringUtils.join(list, ",");
+//			String temp = "";
+//			for (int i = 0; i < list.size(); i++) {
+//				if (temp.equalsIgnoreCase("")) {
+//					temp = list.get(i);
+//				} else {
+//					temp = temp + "," + list.get(i);
+//				}
+//			}
+//			return temp;
+		} else {
 			return null;
 		}
 	}
-
 
 	public String getPersonIdWithQywxid(String credential) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(Person.class);
@@ -147,17 +149,18 @@ public class PersonFactory extends AbstractFactory {
 		List<String> list = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		if (list.size() == 1) {
 			return list.get(0);
-		}else if(list.size() > 1){
-			String temp = "";
-			for (int i = 0; i < list.size(); i++) {
-				if(temp.equalsIgnoreCase("")) {
-					temp = list.get(i);
-				}else{
-					temp = temp + "," + list.get(i);
-				}
-			}
-			return temp;
-		}else {
+		} else if (list.size() > 1) {
+			return StringUtils.join(list, ",");
+//			String temp = "";
+//			for (int i = 0; i < list.size(); i++) {
+//				if (temp.equalsIgnoreCase("")) {
+//					temp = list.get(i);
+//				} else {
+//					temp = temp + "," + list.get(i);
+//				}
+//			}
+//			return temp;
+		} else {
 			return null;
 		}
 	}

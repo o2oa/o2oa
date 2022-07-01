@@ -196,6 +196,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		if( this.json.confirmIcon )delete this.json.confirmIcon;
 		if( this.json.submitedDlgUseNotice )delete this.json.submitedDlgUseNotice;
 		if( this.json.submitedDlgStyle )delete this.json.submitedDlgStyle;
+		if( this.json.buttonStyle )delete this.json.buttonStyle;
 		if( this.json.selectorStyle )delete this.json.selectorStyle;
 		if( this.json.errorStyle )delete this.json.errorStyle;
 		if( this.json.noticeStyle )delete this.json.noticeStyle;

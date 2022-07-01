@@ -7,6 +7,8 @@ import com.x.base.core.project.connection.HttpConnection;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.organization.assemble.personal.Business;
 import com.x.organization.core.entity.Person;
 
@@ -17,7 +19,11 @@ import com.x.organization.core.entity.Person;
  */
 class ActionSso extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionSso.class);
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
+
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 
 		checkEnable();
 
@@ -60,6 +66,8 @@ class ActionSso extends BaseAction {
 
 	public static class Wo extends GsonPropertyObject {
 
+		private static final long serialVersionUID = -5433981326231458301L;
+		
 		private String url;
 
 		public String getUrl() {

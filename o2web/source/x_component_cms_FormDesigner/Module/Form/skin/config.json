@@ -27,6 +27,13 @@
       "pc"
     ]
   },
+  "green-flat": {
+    "name": MWF.xApplication.cms.FormDesigner.LP.formStyle.greenFlat,
+    "file": "styles_green-flat.json",
+    "mode": [
+      "pc"
+    ]
+  },
   "defaultMobile": {
     "name": MWF.xApplication.cms.FormDesigner.LP.formStyle.defaultMobileStyle,
     "file": "styles_defaultMobile.json",

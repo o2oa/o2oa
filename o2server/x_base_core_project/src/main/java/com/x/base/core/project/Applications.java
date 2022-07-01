@@ -32,7 +32,7 @@ import com.x.base.core.project.tools.StringTools;
 
 public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList<Application>> {
 
-	private static Logger logger = LoggerFactory.getLogger(Applications.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Applications.class);
 
 	private static final long serialVersionUID = -2416559829493154858L;
 
@@ -646,48 +646,16 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 		return null;
 	}
 
-	public Application randomWithWeight(String className) throws IllegalStateException {
-		List<Application> list = this.get(className);
+	public Application randomWithWeight(String applicationName) throws IllegalStateException {
+		List<Application> list = this.get(this.findApplicationName(applicationName));
 		if (ListTools.isNotEmpty(list)) {
 			return list.get(random.nextInt(list.size()));
-//			if (list.size() == 1) {
-//				list.get(0);
-//			}
-//			int cursor = 0;
-//			TreeMap<Integer, Application> tree = new TreeMap<>();
-//			for (Application o : list) {
-//				if (o.getWeight() > 0) {
-//					cursor += o.getWeight();
-//					tree.put(cursor, o);
-//				}
-//			}
-//			return tree.tailMap(random.nextInt(++cursor), true).firstEntry().getValue();
 		}
-		throw new IllegalStateException("randomWithWeight error: " + className + ".");
+		throw new IllegalStateException("randomWithWeight error: " + applicationName + ".");
 	}
 
-//	public Application randomWithScheduleWeight(String className) throws IllegalStateException {
-//		List<Application> list = this.get(className);
-//		if (ListTools.isNotEmpty(list)) {
-//			return list.get(random.nextInt(list.size()));
-////			if (list.size() == 1) {
-////				list.get(0);
-////			}
-////			int cursor = 0;
-////			TreeMap<Integer, Application> tree = new TreeMap<>();
-////			for (Application o : list) {
-////				if (o.getScheduleWeight() > 0) {
-////					cursor += o.getScheduleWeight();
-////					tree.put(cursor, o);
-////				}
-////			}
-////			return tree.tailMap(random.nextInt(++cursor), true).firstEntry().getValue();
-//		}
-//		throw new IllegalStateException("randomWithScheduleWeight error: " + className + ".");
-//	}
-
-	public Application randomWithSeed(String className, String seed) {
-		List<Application> list = this.get(className);
+	public Application randomWithSeed(String applicationName, String seed) {
+		List<Application> list = this.get(this.findApplicationName(applicationName));
 		CRC32 crc32 = new CRC32();
 		crc32.update(seed.getBytes(DefaultCharset.charset));
 		int idx = (int) crc32.getValue() % list.size();

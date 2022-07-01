@@ -637,6 +637,20 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
             }
         }).inject(this.propertyContentArea);
 
+
+        node = new Element("div", {"styles": this.css.propertyTextNode, "text": this.lp.tokenSetting+":"}).inject(this.propertyContentArea);
+        this.propertyTokenNode = new Element("select", {"styles": this.css.propertySelectNode }).inject(this.propertyContentArea);
+        o2.Actions.load("x_program_center").ConfigAction.getToken(function(json){
+            debugger;
+            json.data.ssos.each(function(sso){
+                if( sso.enable ){
+                    new Element("option" , {  "value" : sso.key, "text" : sso.client  }).inject(this.propertyTokenNode);
+                }
+            }.bind(this));
+        }.bind(this), function(){
+            return true;
+        });
+
         new Element("div", {"styles": this.css.propertyTextNode, "text": this.lp.runResult}).setStyles({
             "word-break":"break-all",
             "height" : "auto",
@@ -653,24 +667,44 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
 
         this.propertyExecuteButton = new Element("input", { type : "button", styles : this.css.propertyButton, "value": this.lp.run }).inject(div);
         this.propertyExecuteButton.addEvent("click", function(){
-
-            debugger;
             var alias = this.propertyExecuteButton.retrieve("alias");
             var name = this.propertyExecuteButton.retrieve("name");
             var id = this.propertyExecuteButton.retrieve("id");
-
             var body = this.propertyRequireBodyNode.get("value");
-            var bodyJson;
-            try{
-                bodyJson = JSON.parse(body);
-            }catch(e) {
-            }
+
+            debugger;
+
+            var enableToken = false;
+            this.propertyEnableTokenNode.getElements("option").each(function(el){
+                if( el.selected )enableToken = el.get("value") === "true";
+            });
 
             if( id ){
                 var address = o2.Actions.getHost("x_program_center");
                 var serviceName = o2.Actions.load("x_program_center").InvokeAction.action.serviceName;
-                var uri = o2.Actions.load("x_program_center").InvokeAction.action.actions.execute.uri;
-                var url = uri.replace("{flag}", alias || name || id);
+                var uri, url;
+                if( enableToken ){
+                    uri = o2.Actions.load("x_program_center").InvokeAction.action.actions.executeToken.uri;
+                    var client, key, token;
+                    this.propertyTokenNode.getElements("option").each(function(el){
+                        if( el.selected ){
+                            client = el.get("text");
+                            key = el.get("value");
+                        }
+                    });
+                    if( client && key ){
+                        o2.Actions.load("x_program_center").InvokeAction.token({ client :  client }, function(json){
+                            token = json.data.value;
+                        }, null, false);
+                        url = uri.replace("{flag}", alias || name || id).replace("{client}", client).replace("{token}", token);
+                    }else{
+                        this.notice( this.lp.noSSOSetting, "error");
+                        return;
+                    }
+                }else{
+                    uri = o2.Actions.load("x_program_center").InvokeAction.action.actions.execute.uri;
+                    url = uri.replace("{flag}", alias || name || id);
+                }
                 var res = new Request({
                     url: address + "/" + serviceName +  url,
                     async: false,
@@ -706,7 +740,7 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
                 res.setHeader("Content-Type", "application/json; charset=utf-8");
                 res.setHeader("Accept", "text/html,application/json,*/*");
                 res.setHeader("Accept-Language", o2.languageName);
-                res.send( bodyJson || body );
+                res.send( body );
             }
 
             // if( id )o2.Actions.load("x_program_center").InvokeAction.execute( alias || name || id, bodyJson || body, function (json) {

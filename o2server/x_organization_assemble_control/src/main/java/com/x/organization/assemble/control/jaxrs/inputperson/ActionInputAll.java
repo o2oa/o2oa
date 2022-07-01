@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -426,6 +427,7 @@ class ActionInputAll extends BaseAction {
 				String name = configurator.getCellStringValue(row.getCell(configurator.getNameColumn()));
 				String unique = configurator.getCellStringValue(row.getCell(configurator.getUniqueColumn()));
 				String personCode = configurator.getCellStringValue(row.getCell(configurator.getPersonCodeColumn()));
+				String identityCode = configurator.getCellStringValue(row.getCell(configurator.getIdentityCodeColumn()));
 				String unitCode = configurator.getCellStringValue(row.getCell(configurator.getUnitCodeColumn()));
 				String groupCode = configurator.getCellStringValue(row.getCell(configurator.getGroupCodeColumn()));
 				String description = configurator.getCellStringValue(row.getCell(configurator.getDescriptionColumn()));
@@ -434,26 +436,38 @@ class ActionInputAll extends BaseAction {
 				GroupItem groupItem = new GroupItem();
 				groupItem.setRow(i);
 				groupItem.setPersonCode(personCode);
+				groupItem.setIdentityCode(identityCode);
 				groupItem.setUnitCode(unitCode);
 				groupItem.setName(name);
 				groupItem.setUnique(unique);
 
-				Person personobj = null;
-				personobj = emc.flag(personCode, Person.class);
-				if (personobj != null) {
-					List<String> personList = new ArrayList<>();
-					personList.add(personobj.getId());
-					groupItem.setPersonList(personList);
+				if(StringUtils.isNotBlank(personCode)) {
+					Person personObj = emc.flag(personCode, Person.class);
+					if (personObj != null) {
+						List<String> personList = new ArrayList<>();
+						personList.add(personObj.getId());
+						groupItem.setPersonList(personList);
+					}
 				}
 
-				Unit u = null;
-				u = emc.flag(unitCode, Unit.class);
-
-				if (u != null) {
-					List<String> unitList = new ArrayList<>();
-					unitList.add(u.getId());
-					groupItem.setUnitList(unitList);
+				if(StringUtils.isNotBlank(identityCode)) {
+					Identity identity = emc.flag(identityCode, Identity.class);
+					if (identity != null) {
+						List<String> identityList = new ArrayList<>();
+						identityList.add(identity.getId());
+						groupItem.setIdentityList(identityList);
+					}
 				}
+
+				if(StringUtils.isNotBlank(unitCode)) {
+					Unit u = emc.flag(unitCode, Unit.class);
+					if (u != null) {
+						List<String> unitList = new ArrayList<>();
+						unitList.add(u.getId());
+						groupItem.setUnitList(unitList);
+					}
+				}
+
 				if (StringUtils.isNotEmpty(groupCode)) {
 					groupItem.setGroupCode(groupCode);
 					Group groupobj = emc.flag(groupCode, Group.class);
@@ -461,8 +475,6 @@ class ActionInputAll extends BaseAction {
 						List<String> groupList = new ArrayList<>();
 						groupList.add(groupobj.getId());
 						groupItem.setGroupList(groupList);
-					} else {
-
 					}
 				}
 				if (StringUtils.isNotEmpty(description)) {
@@ -811,6 +823,7 @@ class ActionInputAll extends BaseAction {
 				String name = configurator.getCellStringValue(row.getCell(configurator.getNameColumn()));
 				String unique = configurator.getCellStringValue(row.getCell(configurator.getUniqueColumn()));
 				String personCode = configurator.getCellStringValue(row.getCell(configurator.getPersonCodeColumn()));
+				String identityCode = configurator.getCellStringValue(row.getCell(configurator.getIdentityCodeColumn()));
 				String unitCode = configurator.getCellStringValue(row.getCell(configurator.getUnitCodeColumn()));
 
 				boolean personcheck = false;
@@ -829,16 +842,17 @@ class ActionInputAll extends BaseAction {
 					continue;
 				}
 
-				Person person = null;
-				person = emc.flag(personCode, Person.class);
-				if (person != null) {
-					personcheck = true;
-				} else {
-					for (PersonItem personItem : persons) {
-						if (StringUtils.isNotEmpty(personItem.getUnique())
-								&& StringUtils.equals(personItem.getUnique(), personCode)) {
-							personcheck = true;
-						}
+				if(StringUtils.isNotBlank(personCode)) {
+					Person person = emc.flag(personCode, Person.class);
+					if (person != null) {
+						personcheck = true;
+					}
+				}
+
+				if(StringUtils.isNotBlank(identityCode)) {
+					Identity identity = emc.flag(identityCode, Identity.class);
+					if (identity != null) {
+						personcheck = true;
 					}
 				}
 
@@ -849,13 +863,6 @@ class ActionInputAll extends BaseAction {
 					unit = emc.flag(unitCode, Unit.class);
 					if (unit != null) {
 						unitcheck = true;
-					} else {
-						for (UnitItem unitItem : units) {
-							if (StringUtils.isNotEmpty(unitItem.getUnique())
-									&& StringUtils.equals(unitItem.getUnique(), unitCode)) {
-								unitcheck = true;
-							}
-						}
 					}
 				}
 
@@ -1011,7 +1018,6 @@ class ActionInputAll extends BaseAction {
 
 			}
 		}
-
 	}
 
 	private void persistGroup(Business business, XSSFWorkbook workbook, GroupSheetConfigurator configurator,
@@ -1022,13 +1028,20 @@ class ActionInputAll extends BaseAction {
 				Group g = emc.flag(o.getUnique(), Group.class);
 				if (g != null) {
 					List<String> personList = g.getPersonList();
+					List<String> identityList = g.getIdentityList();
 					List<String> unitList = g.getUnitList();
 					List<String> groupList = g.getGroupList();
 					if (ListTools.isNotEmpty(o.getPersonList())) {
 						personList.addAll(o.getPersonList());
+						personList = personList.stream().distinct().collect(Collectors.toList());
+					}
+					if (ListTools.isNotEmpty(o.getIdentityList())) {
+						identityList.addAll(o.getIdentityList());
+						identityList = identityList.stream().distinct().collect(Collectors.toList());
 					}
 					if (ListTools.isNotEmpty(o.getUnitList())) {
 						unitList.addAll(o.getUnitList());
+						unitList = unitList.stream().distinct().collect(Collectors.toList());
 					}
 					if (ListTools.isNotEmpty(o.getGroupList())) {
 						groupList.addAll(o.getGroupList());
@@ -1039,6 +1052,7 @@ class ActionInputAll extends BaseAction {
 					}
 
 					g.setPersonList(personList);
+					g.setIdentityList(identityList);
 					g.setUnitList(unitList);
 					g.setGroupList(groupList);
 

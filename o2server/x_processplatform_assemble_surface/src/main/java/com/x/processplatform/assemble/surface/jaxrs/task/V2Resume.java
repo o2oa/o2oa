@@ -18,11 +18,14 @@ import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.V2ResumeWo;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class V2Resume extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(V2Resume.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(V2Resume.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 		ActionResult<Wo> result = new ActionResult<>();
 		String job = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -48,6 +51,7 @@ class V2Resume extends BaseAction {
 		return result;
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.task.V2Resume$Wo")
 	public static class Wo extends WrapBoolean {
 
 		private static final long serialVersionUID = 4257481488388740879L;

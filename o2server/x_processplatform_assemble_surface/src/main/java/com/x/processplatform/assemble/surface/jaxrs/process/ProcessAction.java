@@ -26,8 +26,11 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "ProcessAction", description = "流程接口.")
 @Path("process")
-@JaxrsDescribe("流程操作")
+@JaxrsDescribe("流程接口.")
 public class ProcessAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ProcessAction.class);
@@ -187,8 +190,8 @@ public class ProcessAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void getActivity(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-					@JaxrsParameterDescribe("流程节点标志") @PathParam("activity") String activity,
-					@JaxrsParameterDescribe("流程节点类型") @PathParam("activityType") String activityType) {
+			@JaxrsParameterDescribe("流程节点标志") @PathParam("activity") String activity,
+			@JaxrsParameterDescribe("流程节点类型") @PathParam("activityType") String activityType) {
 		ActionResult<ActionGetActivity.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {

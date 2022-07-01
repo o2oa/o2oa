@@ -639,18 +639,21 @@ MWF.xApplication.Setting.DisposeExplorer = new Class({
     },
     loadUIModuleSetting: function(item){
         if (MWF.AC.isAdministrator()) {
+            this.contentAreaNode.empty();
             this.uiModuleSetting = new MWF.xApplication.Setting.UIModuleDocument(this, this.contentAreaNode);
             item.store("content", this.uiModuleSetting);
         }
     },
     loadServiceModuleSetting: function(item){
         if (MWF.AC.isAdministrator()) {
+            this.contentAreaNode.empty();
             this.serviceModuleSetting = new MWF.xApplication.Setting.ServiceModuleDocument(this, this.contentAreaNode);
             item.store("content", this.serviceModuleSetting);
         }
     },
     loadResourceModuleSetting: function(item){
         if (MWF.AC.isAdministrator()) {
+            this.contentAreaNode.empty();
             this.resourceModuleSetting = new MWF.xApplication.Setting.ResourceModuleDocument(this, this.contentAreaNode);
             item.store("content", this.resourceModuleSetting);
         }

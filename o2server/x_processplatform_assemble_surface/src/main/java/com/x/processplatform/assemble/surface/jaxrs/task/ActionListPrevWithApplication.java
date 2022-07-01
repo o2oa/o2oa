@@ -16,6 +16,8 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.element.Application;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionListPrevWithApplication extends BaseAction {
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String id, Integer count, String applicationFlag)
@@ -29,12 +31,12 @@ class ActionListPrevWithApplication extends BaseAction {
 			EqualsTerms equals = new EqualsTerms();
 			equals.put(Task.person_FIELDNAME, effectivePerson.getDistinguishedName());
 			equals.put(Task.application_FIELDNAME, application.getId());
-			ActionResult<List<Wo>> result = this.standardListPrev(Wo.copier, id, count, Task.sequence_FIELDNAME, equals,
-					null, null, null, null, null, null, null, true, DESC);
-			return result;
+			return this.standardListPrev(Wo.copier, id, count, Task.sequence_FIELDNAME, equals, null, null, null, null,
+					null, null, null, true, DESC);
 		}
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.task.ActionListPrevWithApplication.Wo")
 	public static class Wo extends Task {
 
 		private static final long serialVersionUID = 2279846765261247910L;
@@ -43,6 +45,7 @@ class ActionListPrevWithApplication extends BaseAction {
 				JpaObject.FieldsInvisible);
 
 		@FieldDescribe("排序号")
+		@Schema(description = "排序号")
 		private Long rank;
 
 		public Long getRank() {

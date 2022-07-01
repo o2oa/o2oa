@@ -23,6 +23,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.processplatform.ManualTaskIdentityMatrix;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.content.Task;
@@ -116,7 +117,7 @@ class ActionAddSplit extends BaseAction {
 						workCopy.setSplitting(from.getSplitting());
 						workCopy.setSplitValue(splitValue);
 						// workCopy.getManualTaskIdentityList().clear();
-						workCopy.getManualTaskIdentityMatrix().clear();
+						workCopy.setManualTaskIdentityMatrix(new ManualTaskIdentityMatrix());
 						workCopy.setBeforeExecuted(false);
 						workCopy.setDestinationActivity(null);
 						workCopy.setDestinationActivityType(null);

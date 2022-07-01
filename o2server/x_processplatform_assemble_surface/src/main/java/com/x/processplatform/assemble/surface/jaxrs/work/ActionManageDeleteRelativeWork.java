@@ -10,6 +10,8 @@ import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
@@ -18,6 +20,8 @@ import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 
 class ActionManageDeleteRelativeWork extends BaseAction {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionManageDeleteRelativeWork.class);
 
 	/* 为了和后面的全部删除对应,所以返回的是数组 */
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String id) throws Exception {

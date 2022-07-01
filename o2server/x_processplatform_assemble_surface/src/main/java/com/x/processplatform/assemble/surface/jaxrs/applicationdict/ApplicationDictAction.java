@@ -28,12 +28,23 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
-@JaxrsDescribe("数据字典操作")
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "ApplicationDictAction", description = "数据字典接口.")
+@JaxrsDescribe("数据字典接口.")
 @Path("applicationdict")
 public class ApplicationDictAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ApplicationDictAction.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationDictAction.class);
+	private static final String OPERATIONID_PREFIX = "ApplicationDictAction::";
 
+	@Operation(summary = "获取单个数据字典以及数据字典数据.", operationId = OPERATIONID_PREFIX + "get", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionGet.Wo.class)) }) })
 	@JaxrsMethodDescribe(value = "获取单个数据字典以及数据字典数据.", action = ActionGet.class)
 	@GET
 	@Path("{applicationDictFlag}/application/{applicationFlag}")
@@ -43,18 +54,21 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("数据字典标识") @PathParam("applicationDictFlag") String applicationDictFlag,
 			@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag) {
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
-		logger.debug("run get applicationDictFlag:{}, applicationFlag:{}.", applicationDictFlag, applicationFlag);
+		LOGGER.debug("run get applicationDictFlag:{}, applicationFlag:{}.", applicationDictFlag, applicationFlag);
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionGet().execute(effectivePerson, applicationDictFlag, applicationFlag);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "获取Application的数据字典列表.", action = ActionListWithApplication.class)
+	@Operation(summary = "获取指定应用的数据字典列表.", operationId = OPERATIONID_PREFIX + "listWithApplication", responses = {
+			@ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListWithApplication.Wo.class))) }) })
+	@JaxrsMethodDescribe(value = "获取指定应用的数据字典列表.", action = ActionListWithApplication.class)
 	@GET
 	@Path("list/application/{applicationFlag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -64,15 +78,17 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<List<ActionListWithApplication.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionListWithApplication().execute(applicationFlag);
+			result = new ActionListWithApplication().execute(effectivePerson, applicationFlag);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据路径获取Application下的数据字典数据.", action = ActionGetData.class)
+	@Operation(summary = "指定应用获取数据字典数据.", operationId = OPERATIONID_PREFIX + "getData", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = JsonElement.class)) }) })
+	@JaxrsMethodDescribe(value = "指定应用获取数据字典数据.", action = ActionGetData.class)
 	@GET
 	@Path("{applicationDictFlag}/application/{applicationFlag}/data")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -83,15 +99,17 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<JsonElement> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionGetData().execute(applicationDictFlag, applicationFlag);
+			result = new ActionGetData().execute(effectivePerson, applicationDictFlag, applicationFlag);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据路径获取Application下的数据字典数据.", action = ActionGetDataPath0.class)
+	@Operation(summary = "指定应用根据一级路径获取数据字典数据.", operationId = OPERATIONID_PREFIX + "getDataPath0", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = JsonElement.class)) }) })
+	@JaxrsMethodDescribe(value = "指定应用根据一级路径获取数据字典数据.", action = ActionGetDataPath0.class)
 	@GET
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/data")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -103,15 +121,17 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<JsonElement> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionGetDataPath0().execute(applicationDictFlag, applicationFlag, path0);
+			result = new ActionGetDataPath0().execute(effectivePerson, applicationDictFlag, applicationFlag, path0);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据路径获取Application下的数据字典数据.", action = ActionGetDataPath1.class)
+	@Operation(summary = "指定应用根据二级路径获取数据字典数据.", operationId = OPERATIONID_PREFIX + "getDataPath1", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = JsonElement.class)) }) })
+	@JaxrsMethodDescribe(value = "指定应用根据二级路径获取数据字典数据.", action = ActionGetDataPath1.class)
 	@GET
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/data")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -124,15 +144,18 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<JsonElement> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionGetDataPath1().execute(applicationDictFlag, applicationFlag, path0, path1);
+			result = new ActionGetDataPath1().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据路径获取Application下的数据字典数据.", action = ActionGetDataPath2.class)
+	@Operation(summary = "指定应用根据三级路径获取数据字典数据.", operationId = OPERATIONID_PREFIX + "getDataPath2", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = JsonElement.class)) }) })
+	@JaxrsMethodDescribe(value = "指定应用根据三级路径获取数据字典数据.", action = ActionGetDataPath2.class)
 	@GET
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/data")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -146,15 +169,18 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<JsonElement> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionGetDataPath2().execute(applicationDictFlag, applicationFlag, path0, path1, path2);
+			result = new ActionGetDataPath2().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据路径获取Application下的数据字典数据.", action = ActionGetDataPath3.class)
+	@Operation(summary = "指定应用根据四级路径获取数据字典数据.", operationId = OPERATIONID_PREFIX + "getDataPath3", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = JsonElement.class)) }) })
+	@JaxrsMethodDescribe(value = "指定应用根据四级路径获取数据字典数据.", action = ActionGetDataPath3.class)
 	@GET
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/data")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -169,15 +195,18 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<JsonElement> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionGetDataPath3().execute(applicationDictFlag, applicationFlag, path0, path1, path2, path3);
+			result = new ActionGetDataPath3().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据路径获取Application下的数据字典数据.", action = ActionGetDataPath4.class)
+	@Operation(summary = "指定应用根据五级路径获取数据字典数据.", operationId = OPERATIONID_PREFIX + "getDataPath4", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = JsonElement.class)) }) })
+	@JaxrsMethodDescribe(value = "指定应用根据五级路径获取数据字典数据.", action = ActionGetDataPath4.class)
 	@GET
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/data")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -193,16 +222,18 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<JsonElement> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionGetDataPath4().execute(applicationDictFlag, applicationFlag, path0, path1, path2, path3,
-					path4);
+			result = new ActionGetDataPath4().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据路径获取Application下的数据字典数据.", action = ActionGetDataPath5.class)
+	@Operation(summary = "指定应用根据六级路径获取数据字典数据.", operationId = OPERATIONID_PREFIX + "getDataPath5", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = JsonElement.class)) }) })
+	@JaxrsMethodDescribe(value = "指定应用根据六级路径获取数据字典数据.", action = ActionGetDataPath5.class)
 	@GET
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/data")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -219,16 +250,18 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<JsonElement> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionGetDataPath5().execute(applicationDictFlag, applicationFlag, path0, path1, path2, path3,
-					path4, path5);
+			result = new ActionGetDataPath5().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, path5);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据路径获取Application下的数据字典数据.", action = ActionGetDataPath6.class)
+	@Operation(summary = "指定应用根据七级路径获取数据字典数据.", operationId = OPERATIONID_PREFIX + "getDataPath6", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = JsonElement.class)) }) })
+	@JaxrsMethodDescribe(value = "指定应用根据七级路径获取数据字典数据.", action = ActionGetDataPath6.class)
 	@GET
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/data")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -246,16 +279,18 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<JsonElement> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionGetDataPath6().execute(applicationDictFlag, applicationFlag, path0, path1, path2, path3,
-					path4, path5, path6);
+			result = new ActionGetDataPath6().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, path5, path6);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据路径获取Application下的数据字典数据.", action = ActionGetDataPath7.class)
+	@Operation(summary = "指定应用根据八级路径获取数据字典数据.", operationId = OPERATIONID_PREFIX + "getDataPath7", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = JsonElement.class)) }) })
+	@JaxrsMethodDescribe(value = "指定应用根据八级路径获取数据字典数据.", action = ActionGetDataPath7.class)
 	@GET
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}/data")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -274,16 +309,18 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<JsonElement> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionGetDataPath7().execute(applicationDictFlag, applicationFlag, path0, path1, path2, path3,
-					path4, path5, path6, path7);
+			result = new ActionGetDataPath7().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, path5, path6, path7);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据字典和路径更新Application下的数据字典局部数据.", action = ActionUpdateDataPath0.class)
+	@Operation(summary = "指定应用根据一级路径更新数据字典数据.", operationId = OPERATIONID_PREFIX + "updateDataPath0", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionUpdateDataPath0.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "指定应用根据一级路径更新数据字典数据.", action = ActionUpdateDataPath0.class)
 	@PUT
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/data")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -295,15 +332,19 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdateDataPath0.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateDataPath0().execute(applicationDictFlag, applicationFlag, path0, jsonElement);
+			result = new ActionUpdateDataPath0().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "Mock PUT to POST.", action = ActionUpdateDataPath0.class)
+	@Operation(summary = "指定应用根据一级路径更新数据字典数据(mock put to post).", operationId = OPERATIONID_PREFIX
+			+ "updateDataPath0MockPutToPost", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionUpdateDataPath0.Wo.class)) }) }, deprecated = true)
+	@JaxrsMethodDescribe(value = "指定应用根据一级路径更新数据字典数据(mock put to post).", action = ActionUpdateDataPath0.class)
 	@POST
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/data/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -316,15 +357,18 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdateDataPath0.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateDataPath0().execute(applicationDictFlag, applicationFlag, path0, jsonElement);
+			result = new ActionUpdateDataPath0().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据字典和路径更新Application下的数据字典局部数据.", action = ActionUpdateDataPath1.class)
+	@Operation(summary = "指定应用根据二级路径更新数据字典数据.", operationId = OPERATIONID_PREFIX + "updateDataPath1", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionUpdateDataPath1.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "指定应用根据二级路径更新数据字典数据.", action = ActionUpdateDataPath1.class)
 	@PUT
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/data")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -337,16 +381,19 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdateDataPath1.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateDataPath1().execute(applicationDictFlag, applicationFlag, path0, path1,
-					jsonElement);
+			result = new ActionUpdateDataPath1().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "Mock PUT to POST.", action = ActionUpdateDataPath1.class)
+	@Operation(summary = "指定应用根据二级路径更新数据字典数据(mock put to post).", operationId = OPERATIONID_PREFIX
+			+ "updateDataPath1MockPutToPost", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionUpdateDataPath1.Wo.class)) }) }, deprecated = true)
+	@JaxrsMethodDescribe(value = "指定应用根据二级路径更新数据字典数据(mock put to post).", action = ActionUpdateDataPath1.class)
 	@POST
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/data/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -360,16 +407,18 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdateDataPath1.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateDataPath1().execute(applicationDictFlag, applicationFlag, path0, path1,
-					jsonElement);
+			result = new ActionUpdateDataPath1().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据字典和路径更新Application下的数据字典局部数据.", action = ActionUpdateDataPath2.class)
+	@Operation(summary = "指定应用根据三级路径更新数据字典数据.", operationId = OPERATIONID_PREFIX + "updateDataPath2", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionUpdateDataPath2.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "指定应用根据三级路径更新数据字典数据.", action = ActionUpdateDataPath2.class)
 	@PUT
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/data")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -383,16 +432,19 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdateDataPath2.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateDataPath2().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					jsonElement);
+			result = new ActionUpdateDataPath2().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "Mock PUT to POST.", action = ActionUpdateDataPath2.class)
+	@Operation(summary = "指定应用根据三级路径更新数据字典数据(mock put to post).", operationId = OPERATIONID_PREFIX
+			+ "updateDataPath2MockPutToPost", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionUpdateDataPath2.Wo.class)) }) }, deprecated = true)
+	@JaxrsMethodDescribe(value = "指定应用根据三级路径更新数据字典数据(mock put to post).", action = ActionUpdateDataPath2.class)
 	@POST
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/data/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -407,16 +459,18 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdateDataPath2.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateDataPath2().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					jsonElement);
+			result = new ActionUpdateDataPath2().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据字典和路径更新Application下的数据字典局部数据.", action = ActionUpdateDataPath3.class)
+	@Operation(summary = "指定应用根据四级路径更新数据字典数据.", operationId = OPERATIONID_PREFIX + "updateDataPath3", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionUpdateDataPath3.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "指定应用根据四级路径更新数据字典数据.", action = ActionUpdateDataPath3.class)
 	@PUT
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/data")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -431,16 +485,19 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdateDataPath3.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateDataPath3().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, jsonElement);
+			result = new ActionUpdateDataPath3().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "Mock PUT to POST.", action = ActionUpdateDataPath3.class)
+	@Operation(summary = "指定应用根据四级路径更新数据字典数据(mock put to post).", operationId = OPERATIONID_PREFIX
+			+ "updateDataPath3MockPutToPost", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionUpdateDataPath3.Wo.class)) }) }, deprecated = true)
+	@JaxrsMethodDescribe(value = "指定应用根据四级路径更新数据字典数据(mock put to post).", action = ActionUpdateDataPath3.class)
 	@POST
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/data/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -456,16 +513,18 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdateDataPath3.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateDataPath3().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, jsonElement);
+			result = new ActionUpdateDataPath3().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据字典和路径更新Application下的数据字典局部数据.", action = ActionUpdateDataPath4.class)
+	@Operation(summary = "指定应用根据五级路径更新数据字典数据.", operationId = OPERATIONID_PREFIX + "updateDataPath4", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionUpdateDataPath4.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "指定应用根据五级路径更新数据字典数据.", action = ActionUpdateDataPath4.class)
 	@PUT
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/data")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -481,16 +540,19 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdateDataPath4.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateDataPath4().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4, jsonElement);
+			result = new ActionUpdateDataPath4().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "Mock POST to PUT.", action = ActionUpdateDataPath4.class)
+	@Operation(summary = "指定应用根据五级路径更新数据字典数据(mock put to post).", operationId = OPERATIONID_PREFIX
+			+ "updateDataPath4MockPutToPost", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionUpdateDataPath4.Wo.class)) }) }, deprecated = true)
+	@JaxrsMethodDescribe(value = "指定应用根据五级路径更新数据字典数据(mock put to post).", action = ActionUpdateDataPath4.class)
 	@POST
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/data/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -507,16 +569,18 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdateDataPath4.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateDataPath4().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4, jsonElement);
+			result = new ActionUpdateDataPath4().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据字典和路径更新Application下的数据字典局部数据.", action = ActionUpdateDataPath5.class)
+	@Operation(summary = "指定应用根据六级路径更新数据字典数据.", operationId = OPERATIONID_PREFIX + "updateDataPath5", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionUpdateDataPath5.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "指定应用根据六级路径更新数据字典数据.", action = ActionUpdateDataPath5.class)
 	@PUT
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/data")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -533,16 +597,19 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdateDataPath5.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateDataPath5().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4, path5, jsonElement);
+			result = new ActionUpdateDataPath5().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, path5, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "Mock POST to PUT.", action = ActionUpdateDataPath5.class)
+	@Operation(summary = "指定应用根据六级路径更新数据字典数据(mock put to post).", operationId = OPERATIONID_PREFIX
+			+ "updateDataPath5MockPutToPost", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionUpdateDataPath5.Wo.class)) }) }, deprecated = true)
+	@JaxrsMethodDescribe(value = "指定应用根据六级路径更新数据字典数据(mock put to post).", action = ActionUpdateDataPath5.class)
 	@POST
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/data/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -560,16 +627,18 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdateDataPath5.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateDataPath5().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4, path5, jsonElement);
+			result = new ActionUpdateDataPath5().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, path5, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据字典和路径更新Application下的数据字典局部数据.", action = ActionUpdateDataPath6.class)
+	@Operation(summary = "指定应用根据七级路径更新数据字典数据.", operationId = OPERATIONID_PREFIX + "updateDataPath6", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionUpdateDataPath6.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "指定应用根据七级路径更新数据字典数据.", action = ActionUpdateDataPath6.class)
 	@PUT
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/data")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -587,16 +656,19 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdateDataPath6.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateDataPath6().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4, path5, path6, jsonElement);
+			result = new ActionUpdateDataPath6().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, path5, path6, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "Mock POST to PUT.", action = ActionUpdateDataPath6.class)
+	@Operation(summary = "指定应用根据七级路径更新数据字典数据(mock put to post).", operationId = OPERATIONID_PREFIX
+			+ "updateDataPath6MockPutToPost", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionUpdateDataPath6.Wo.class)) }) }, deprecated = true)
+	@JaxrsMethodDescribe(value = "指定应用根据七级路径更新数据字典数据(mock put to post).", action = ActionUpdateDataPath6.class)
 	@POST
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/data/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -615,16 +687,19 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdateDataPath6.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateDataPath6().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4, path5, path6, jsonElement);
+			result = new ActionUpdateDataPath6().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, path5, path6, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据字典和路径更新Application下的数据字典局部数据.", action = ActionUpdateDataPath7.class)
+	@Operation(summary = "指定应用根据八级路径更新数据字典数据.", operationId = OPERATIONID_PREFIX + "updateDataPath7", responses = {
+			@ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionUpdateDataPath7.Wo.class))) }) })
+	@JaxrsMethodDescribe(value = "指定应用根据八级路径更新数据字典数据.", action = ActionUpdateDataPath7.class)
 	@PUT
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}/data")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -643,16 +718,19 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdateDataPath7.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateDataPath7().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4, path5, path6, path7, jsonElement);
+			result = new ActionUpdateDataPath7().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, path5, path6, path7, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "Mock POST to PUT.", action = ActionUpdateDataPath7.class)
+	@Operation(summary = "指定应用根据八级路径更新数据字典数据(mock put to post).", operationId = OPERATIONID_PREFIX
+			+ "updateDataPath7MockPutToPost", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionUpdateDataPath7.Wo.class)) }) }, deprecated = true)
+	@JaxrsMethodDescribe(value = "指定应用根据八级路径更新数据字典数据(mock put to post).", action = ActionUpdateDataPath7.class)
 	@POST
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}/data/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -672,16 +750,18 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionUpdateDataPath7.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUpdateDataPath7().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4, path5, path6, path7, jsonElement);
+			result = new ActionUpdateDataPath7().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, path5, path6, path7, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据字典ID和路径添加Application下的新的局部数据.", action = ActionCreateDataPath0.class)
+	@Operation(summary = "指定应用根据一级路径添加数据字典数据.", operationId = OPERATIONID_PREFIX + "createDataPath0", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionCreateDataPath0.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "指定应用根据一级路径添加数据字典数据.", action = ActionCreateDataPath0.class)
 	@POST
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/data")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -693,15 +773,18 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionCreateDataPath0.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCreateDataPath0().execute(applicationDictFlag, applicationFlag, path0, jsonElement);
+			result = new ActionCreateDataPath0().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据字典ID和路径添加Application下的新的局部数据.", action = ActionCreateDataPath1.class)
+	@Operation(summary = "指定应用根据二级路径添加数据字典数据.", operationId = OPERATIONID_PREFIX + "createDataPath1", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionCreateDataPath1.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "指定应用根据二级路径添加数据字典数据.", action = ActionCreateDataPath1.class)
 	@POST
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/data")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -714,16 +797,18 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionCreateDataPath1.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCreateDataPath1().execute(applicationDictFlag, applicationFlag, path0, path1,
-					jsonElement);
+			result = new ActionCreateDataPath1().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据字典ID和路径添加Application下的新的局部数据.", action = ActionCreateDataPath2.class)
+	@Operation(summary = "指定应用根据三级路径添加数据字典数据.", operationId = OPERATIONID_PREFIX + "createDataPath2", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionCreateDataPath2.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "指定应用根据三级路径添加数据字典数据.", action = ActionCreateDataPath2.class)
 	@POST
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/data")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -737,16 +822,18 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionCreateDataPath2.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCreateDataPath2().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					jsonElement);
+			result = new ActionCreateDataPath2().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据字典ID和路径添加Application下的新的局部数据.", action = ActionCreateDataPath3.class)
+	@Operation(summary = "指定应用根据四级路径添加数据字典数据.", operationId = OPERATIONID_PREFIX + "createDataPath3", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionCreateDataPath3.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "指定应用根据四级路径添加数据字典数据.", action = ActionCreateDataPath3.class)
 	@POST
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/data")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -761,15 +848,17 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionCreateDataPath3.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCreateDataPath3().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, jsonElement);
+			result = new ActionCreateDataPath3().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@Operation(summary = "指定应用根据五级路径添加数据字典数据.", operationId = OPERATIONID_PREFIX + "createDataPath4", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionCreateDataPath4.Wo.class)) }) })
 	@JaxrsMethodDescribe(value = "根据字典ID和路径添加Application下的新的局部数据.", action = ActionCreateDataPath4.class)
 	@POST
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/data")
@@ -786,16 +875,18 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionCreateDataPath4.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCreateDataPath4().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4, jsonElement);
+			result = new ActionCreateDataPath4().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据字典ID和路径添加Application下的新的局部数据.", action = ActionCreateDataPath5.class)
+	@Operation(summary = "指定应用根据六级路径添加数据字典数据.", operationId = OPERATIONID_PREFIX + "createDataPath5", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionCreateDataPath5.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "指定应用根据六级路径添加数据字典数据.", action = ActionCreateDataPath5.class)
 	@POST
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/data")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -812,16 +903,18 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionCreateDataPath5.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCreateDataPath5().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4, path5, jsonElement);
+			result = new ActionCreateDataPath5().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, path5, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据字典ID和路径添加Application下的新的局部数据.", action = ActionCreateDataPath6.class)
+	@Operation(summary = "指定应用根据七级路径添加数据字典数据.", operationId = OPERATIONID_PREFIX + "createDataPath6", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionCreateDataPath6.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "指定应用根据七级路径添加数据字典数据.", action = ActionCreateDataPath6.class)
 	@POST
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/data")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -839,16 +932,18 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionCreateDataPath6.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCreateDataPath6().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4, path5, path6, jsonElement);
+			result = new ActionCreateDataPath6().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, path5, path6, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据字典ID和路径添加Application下的新的局部数据.", action = ActionCreateDataPath7.class)
+	@Operation(summary = "指定应用根据八级路径添加数据字典数据.", operationId = OPERATIONID_PREFIX + "createDataPath7", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionCreateDataPath7.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "指定应用根据八级路径添加数据字典数据.", action = ActionCreateDataPath7.class)
 	@POST
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}/data")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -867,16 +962,18 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionCreateDataPath7.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCreateDataPath7().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4, path5, path6, path7, jsonElement);
+			result = new ActionCreateDataPath7().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, path5, path6, path7, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据字典ID和路径删除Application下的数据字典局部数据.", action = ActionDeleteDataPath0.class)
+	@Operation(summary = "指定应用根据一级路径删除数据字典数据.", operationId = OPERATIONID_PREFIX + "deleteDataPath0", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionDeleteDataPath0.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "指定应用根据一级路径删除数据字典数据.", action = ActionDeleteDataPath0.class)
 	@DELETE
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/data")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -888,15 +985,18 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionDeleteDataPath0.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDeleteDataPath0().execute(applicationDictFlag, applicationFlag, path0);
+			result = new ActionDeleteDataPath0().execute(effectivePerson, applicationDictFlag, applicationFlag, path0);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "Mock Get 2 Delete.", action = ActionDeleteDataPath0.class)
+	@Operation(summary = "指定应用根据一级路径删除数据字典数据(mock delete to get).", operationId = OPERATIONID_PREFIX
+			+ "deleteDataPath0MockDeleteToGet", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionDeleteDataPath0.Wo.class)) }) }, deprecated = true)
+	@JaxrsMethodDescribe(value = "指定应用根据一级路径删除数据字典数据(mock delete to get).", action = ActionDeleteDataPath0.class)
 	@GET
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/data/mockdeletetoget")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -909,15 +1009,17 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionDeleteDataPath0.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDeleteDataPath0().execute(applicationDictFlag, applicationFlag, path0);
+			result = new ActionDeleteDataPath0().execute(effectivePerson, applicationDictFlag, applicationFlag, path0);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据字典ID和路径删除Application下的数据字典局部数据.", action = ActionDeleteDataPath1.class)
+	@Operation(summary = "指定应用根据二级路径删除数据字典数据.", operationId = OPERATIONID_PREFIX + "deleteDataPath1", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionDeleteDataPath1.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "指定应用根据一级路径删除数据字典数据.", action = ActionDeleteDataPath1.class)
 	@DELETE
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/data")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -930,15 +1032,19 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionDeleteDataPath1.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDeleteDataPath1().execute(applicationDictFlag, applicationFlag, path0, path1);
+			result = new ActionDeleteDataPath1().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "Mock Get 2 Delete.", action = ActionDeleteDataPath1.class)
+	@Operation(summary = "指定应用根据二级路径删除数据字典数据(mock delete to get).", operationId = OPERATIONID_PREFIX
+			+ "deleteDataPath1MockDeleteToGet", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionDeleteDataPath1.Wo.class)) }) }, deprecated = true)
+	@JaxrsMethodDescribe(value = "指定应用根据二级路径删除数据字典数据(mock delete to get).", action = ActionDeleteDataPath1.class)
 	@GET
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/data/mockdeletetoget")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -952,15 +1058,18 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionDeleteDataPath1.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDeleteDataPath1().execute(applicationDictFlag, applicationFlag, path0, path1);
+			result = new ActionDeleteDataPath1().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据字典ID和路径删除Application下的数据字典局部数据.", action = ActionDeleteDataPath2.class)
+	@Operation(summary = "指定应用根据三级路径删除数据字典数据.", operationId = OPERATIONID_PREFIX + "deleteDataPath2", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionDeleteDataPath2.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "指定应用根据三级路径删除数据字典数据.", action = ActionDeleteDataPath2.class)
 	@DELETE
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/data")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -974,15 +1083,19 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionDeleteDataPath2.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDeleteDataPath2().execute(applicationDictFlag, applicationFlag, path0, path1, path2);
+			result = new ActionDeleteDataPath2().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "Mock Get 2 Delete.", action = ActionDeleteDataPath2.class)
+	@Operation(summary = "指定应用根据三级路径删除数据字典数据(mock delete to get).", operationId = OPERATIONID_PREFIX
+			+ "deleteDataPath2MockDeleteToGet", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionDeleteDataPath2.Wo.class)) }) }, deprecated = true)
+	@JaxrsMethodDescribe(value = "指定应用根据三级路径删除数据字典数据(mock delete to get).", action = ActionDeleteDataPath2.class)
 	@GET
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/data/mockdeletetoget")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -997,15 +1110,18 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionDeleteDataPath2.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDeleteDataPath2().execute(applicationDictFlag, applicationFlag, path0, path1, path2);
+			result = new ActionDeleteDataPath2().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据字典ID和路径删除Application下的数据字典局部数据.", action = ActionDeleteDataPath3.class)
+	@Operation(summary = "指定应用根据四级路径删除数据字典数据.", operationId = OPERATIONID_PREFIX + "deleteDataPath3", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionDeleteDataPath3.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "指定应用根据四级路径删除数据字典数据.", action = ActionDeleteDataPath3.class)
 	@DELETE
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/data")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -1020,16 +1136,19 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionDeleteDataPath3.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDeleteDataPath3().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3);
+			result = new ActionDeleteDataPath3().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "Mock Get 2 Delete.", action = ActionDeleteDataPath3.class)
+	@Operation(summary = "指定应用根据四级路径删除数据字典数据(mock delete to get).", operationId = OPERATIONID_PREFIX
+			+ "deleteDataPath3MockDeleteToGet", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionDeleteDataPath3.Wo.class)) }) }, deprecated = true)
+	@JaxrsMethodDescribe(value = "指定应用根据四级路径删除数据字典数据(mock delete to get).", action = ActionDeleteDataPath3.class)
 	@DELETE
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/data/mockdeletetoget")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -1045,16 +1164,18 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionDeleteDataPath3.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDeleteDataPath3().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3);
+			result = new ActionDeleteDataPath3().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据字典ID和路径删除Application下的数据字典局部数据.", action = ActionDeleteDataPath4.class)
+	@Operation(summary = "指定应用根据五级路径删除数据字典数据.", operationId = OPERATIONID_PREFIX + "deleteDataPath4", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionDeleteDataPath4.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "指定应用根据五级路径删除数据字典数据.", action = ActionDeleteDataPath4.class)
 	@DELETE
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/data")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -1070,16 +1191,19 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionDeleteDataPath4.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDeleteDataPath4().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4);
+			result = new ActionDeleteDataPath4().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "Mock Get 2 Delete.", action = ActionDeleteDataPath4.class)
+	@Operation(summary = "指定应用根据五级路径删除数据字典数据(mock delete to get).", operationId = OPERATIONID_PREFIX
+			+ "deleteDataPath4MockDeleteToGet", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionDeleteDataPath4.Wo.class)) }) }, deprecated = true)
+	@JaxrsMethodDescribe(value = "指定应用根据五级路径删除数据字典数据(mock delete to get).", action = ActionDeleteDataPath4.class)
 	@GET
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/data/mockdeletetoget")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -1096,16 +1220,18 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionDeleteDataPath4.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDeleteDataPath4().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4);
+			result = new ActionDeleteDataPath4().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据字典ID和路径删除Application下的数据字典局部数据.", action = ActionDeleteDataPath5.class)
+	@Operation(summary = "指定应用根据六级路径删除数据字典数据.", operationId = OPERATIONID_PREFIX + "deleteDataPath5", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionDeleteDataPath5.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "指定应用根据六级路径删除数据字典数据.", action = ActionDeleteDataPath5.class)
 	@DELETE
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/data")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -1122,16 +1248,19 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionDeleteDataPath5.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDeleteDataPath5().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4, path5);
+			result = new ActionDeleteDataPath5().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, path5);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "Mock Get 2 Delete.", action = ActionDeleteDataPath5.class)
+	@Operation(summary = "指定应用根据六级路径删除数据字典数据(mock delete to get).", operationId = OPERATIONID_PREFIX
+			+ "deleteDataPath5MockDeleteToGet", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionDeleteDataPath5.Wo.class)) }) }, deprecated = true)
+	@JaxrsMethodDescribe(value = "指定应用根据六级路径删除数据字典数据(mock delete to get).", action = ActionDeleteDataPath5.class)
 	@GET
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/data/mockdeletetoget")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -1149,16 +1278,18 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionDeleteDataPath5.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDeleteDataPath5().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4, path5);
+			result = new ActionDeleteDataPath5().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, path5);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据字典ID和路径删除Application下的数据字典局部数据.", action = ActionDeleteDataPath6.class)
+	@Operation(summary = "指定应用根据七级路径删除数据字典数据.", operationId = OPERATIONID_PREFIX + "deleteDataPath6", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionDeleteDataPath6.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "指定应用根据七级路径删除数据字典数据.", action = ActionDeleteDataPath6.class)
 	@DELETE
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/data")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -1176,16 +1307,19 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionDeleteDataPath6.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDeleteDataPath6().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4, path5, path6);
+			result = new ActionDeleteDataPath6().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, path5, path6);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "Mock Get 2 Delete.", action = ActionDeleteDataPath6.class)
+	@Operation(summary = "指定应用根据七级路径删除数据字典数据(mock delete to get).", operationId = OPERATIONID_PREFIX
+			+ "deleteDataPath6MockDeleteToGet", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionDeleteDataPath6.Wo.class)) }) }, deprecated = true)
+	@JaxrsMethodDescribe(value = "指定应用根据七级路径删除数据字典数据(mock delete to get).", action = ActionDeleteDataPath6.class)
 	@GET
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/data/mockdeletetoget")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -1204,16 +1338,18 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionDeleteDataPath6.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDeleteDataPath6().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4, path5, path6);
+			result = new ActionDeleteDataPath6().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, path5, path6);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据字典ID和路径删除Application下的数据字典局部数据.", action = ActionDeleteDataPath7.class)
+	@Operation(summary = "指定应用根据八级路径删除数据字典数据.", operationId = OPERATIONID_PREFIX + "deleteDataPath7", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionDeleteDataPath7.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "指定应用根据八级路径删除数据字典数据.", action = ActionDeleteDataPath7.class)
 	@DELETE
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}/data")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -1232,16 +1368,19 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionDeleteDataPath7.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDeleteDataPath7().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4, path5, path6, path7);
+			result = new ActionDeleteDataPath7().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, path5, path6, path7);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "Mock Get 2 Delete.", action = ActionDeleteDataPath7.class)
+	@Operation(summary = "指定应用根据八级路径删除数据字典数据(mock delete to get).", operationId = OPERATIONID_PREFIX
+			+ "deleteDataPath7MockDeleteToGet", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionDeleteDataPath7.Wo.class)) }) }, deprecated = true)
+	@JaxrsMethodDescribe(value = "指定应用根据八级路径删除数据字典数据(mock delete to get).", action = ActionDeleteDataPath7.class)
 	@GET
 	@Path("{applicationDictFlag}/application/{applicationFlag}/{path0}/{path1}/{path2}/{path3}/{path4}/{path5}/{path6}/{path7}/data/mockdeletetoget")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -1261,10 +1400,10 @@ public class ApplicationDictAction extends StandardJaxrsAction {
 		ActionResult<ActionDeleteDataPath7.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionDeleteDataPath7().execute(applicationDictFlag, applicationFlag, path0, path1, path2,
-					path3, path4, path5, path6, path7);
+			result = new ActionDeleteDataPath7().execute(effectivePerson, applicationDictFlag, applicationFlag, path0,
+					path1, path2, path3, path4, path5, path6, path7);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));

@@ -17,19 +17,25 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Attachment;
-import com.x.processplatform.core.entity.content.ProcessingType;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionReference extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionReference.class);
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<Wo> result = new ActionResult<>();
@@ -58,13 +64,17 @@ class ActionReference extends BaseAction {
 		}
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.task.ActionReference.Wo")
 	public static class Wo extends GsonPropertyObject {
 
-		@FieldDescribe("待办对象")
+		@FieldDescribe("待办对象.")
+		@Schema(description = "待办对象.")
 		private WoTask task;
-		@FieldDescribe("工作对象")
+		@FieldDescribe("工作对象.")
+		@Schema(description = "工作对象.")
 		private WoWork work;
 		@FieldDescribe("附件对象")
+		@Schema(description = "工作对象.")
 		private List<WoAttachment> attachmentList = new ArrayList<>();
 		@FieldDescribe("已完成工作对象")
 		private List<WoWorkCompleted> workCompletedList = new ArrayList<>();
@@ -113,6 +123,7 @@ class ActionReference extends BaseAction {
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.task.ActionReference.WoWorkCompleted")
 	public static class WoWorkCompleted extends WorkCompleted {
 
 		private static final long serialVersionUID = 2395048971976018595L;
@@ -122,6 +133,7 @@ class ActionReference extends BaseAction {
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.task.ActionReference.WoWork")
 	public static class WoWork extends Work {
 
 		private static final long serialVersionUID = -5668264661685818057L;
@@ -131,6 +143,7 @@ class ActionReference extends BaseAction {
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.task.ActionReference.WoTask")
 	public static class WoTask extends Task {
 
 		private static final long serialVersionUID = 2702712453822143654L;
@@ -140,6 +153,7 @@ class ActionReference extends BaseAction {
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.task.ActionReference.WoAttachment")
 	public static class WoAttachment extends Attachment {
 
 		private static final long serialVersionUID = -116515826662248117L;
@@ -148,6 +162,7 @@ class ActionReference extends BaseAction {
 				null, JpaObject.FieldsInvisible);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.task.ActionReference.WoTaskCompleted")
 	public static class WoTaskCompleted extends TaskCompleted {
 
 		private static final long serialVersionUID = -7253999118308715077L;
@@ -156,6 +171,7 @@ class ActionReference extends BaseAction {
 				WoTaskCompleted.class, null, JpaObject.FieldsInvisible);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.task.ActionReference.WoWorkLog")
 	public static class WoWorkLog extends WorkLog {
 
 		private static final long serialVersionUID = 1307569946729101786L;
@@ -234,8 +250,8 @@ class ActionReference extends BaseAction {
 		if (!workLog.getConnected()) {
 			referenceWorkLogTask(business, wo);
 		} else {
-			/* 已经完成的不会有待办，返回一个空数组 */
-			wo.setTaskList(new ArrayList<WoTask>());
+			// 已经完成的不会有待办，返回一个空数组
+			wo.setTaskList(new ArrayList<>());
 		}
 		referenceWorkLogTaskCompleted(business, wo);
 		return wo;
@@ -255,22 +271,22 @@ class ActionReference extends BaseAction {
 		os = os.stream()
 				.sorted(Comparator.comparing(TaskCompleted::getCompletedTime, Comparator.nullsLast(Date::compareTo)))
 				.collect(Collectors.toList());
-		/** 补充召回 */
-		List<WoTaskCompleted> wos = WoTaskCompleted.copier.copy(os);
-		List<WoTaskCompleted> list = new ArrayList<>();
-		for (WoTaskCompleted o : wos) {
-			list.add(o);
-			if (o.getProcessingType().equals(ProcessingType.retract)) {
-				WoTaskCompleted retract = new WoTaskCompleted();
-				o.copyTo(retract);
-				retract.setRouteName("撤回");
-				retract.setOpinion("撤回");
-				retract.setStartTime(retract.getRetractTime());
-				retract.setCompletedTime(retract.getRetractTime());
-				list.add(retract);
-			}
-		}
-		wo.setTaskCompletedList(list);
+//		/** 补充召回 */
+//		List<WoTaskCompleted> wos = WoTaskCompleted.copier.copy(os);
+//		List<WoTaskCompleted> list = new ArrayList<>();
+//		for (WoTaskCompleted o : wos) {
+//			list.add(o);
+//			if (Objects.equal(o.getProcessingType(), ProcessingType.retract)) {
+//				WoTaskCompleted retract = new WoTaskCompleted();
+//				o.copyTo(retract);
+//				retract.setRouteName("撤回");
+//				retract.setOpinion("撤回");
+//				retract.setStartTime(retract.getRetractTime());
+//				retract.setCompletedTime(retract.getRetractTime());
+//				list.add(retract);
+//			}
+//		}
+		wo.setTaskCompletedList(WoTaskCompleted.copier.copy(os));
 	}
 
 	private List<WoWorkCompleted> listWorkCompleted(Business business, Task task) throws Exception {

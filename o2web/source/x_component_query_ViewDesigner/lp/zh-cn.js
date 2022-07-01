@@ -325,6 +325,7 @@ MWF.xApplication.query.ViewDesigner.LP = {
         "blueSimple":"蓝色简洁",
         "official":"公文样式",
         "deepBlue":"集团样式",
-        "blueFlat":"蓝白扁平"
+        "blueFlat":"蓝白扁平",
+        "greenFlat": "绿色扁平"
     }
 };

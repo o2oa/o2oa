@@ -43,6 +43,8 @@ MWF.xApplication.cms.ColumnManager.LP = {
         "empty": "Empty form",
         "publishEdit": "Publish Edit Form",
         "publishRead": "Publish Reading Form",
+        "publishEditGreen": "Publish Edit form (Green)",
+        "publishReadGreen": "Publish Read Form (Green)",
         "dataInput": "Data Input Form"
     },
 

@@ -17,6 +17,8 @@ import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionManageDelete extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
@@ -43,6 +45,7 @@ class ActionManageDelete extends BaseAction {
 		return result;
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.task.ActionManageDelete.Wo")
 	public static class Wo extends WoId {
 	}
 }

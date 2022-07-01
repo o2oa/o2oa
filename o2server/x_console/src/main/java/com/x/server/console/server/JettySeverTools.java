@@ -46,7 +46,8 @@ public abstract class JettySeverTools {
 	 * 需要在WebAppClassLoader加载 jakarta.xml.bind-api-*.jar
 	 */
 	private static final Collection<String> FILTER_STRINGS = Arrays.asList("openjpa-*.jar", "ehcache-*.jar",
-			"jetty-all-*.jar", "jetty-proxy-*.jar", "quartz-*.jar", "filters-*.jar", "jakarta.xml.bind-api-*.jar");
+			"jetty-all-*.jar", "jetty-proxy-*.jar", "quartz-*.jar", "filters-*.jar", "jakarta.xml.bind-api-*.jar",
+			"swagger-*.jar");
 
 	private static final Optional<IOFileFilter> JARS_FILTER = FILTER_STRINGS.stream().map(WildcardFileFilter::new)
 			.map(FileFilterUtils::or).reduce(FileFilterUtils::or);

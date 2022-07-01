@@ -69,8 +69,7 @@ class ActionDocToWordWorkOrWorkCompleted extends BaseAction {
 			if ((null == work) && (null == workCompleted)) {
 				throw new ExceptionEntityNotExist(workOrWorkCompleted, Work.class);
 			}
-			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
-					new ExceptionEntityNotExist(workOrWorkCompleted))) {
+			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 		}

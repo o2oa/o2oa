@@ -14,6 +14,7 @@ import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import com.x.base.core.project.annotation.DescribeScope;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
 import com.x.base.core.project.annotation.JaxrsParameterDescribe;
@@ -25,18 +26,25 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
-/**
- * 
- * @author ray
- *
- */
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "ExmailAction", description = "腾讯企业邮接口.")
 @Path("exmail")
-@JaxrsDescribe("腾讯企业邮")
+@JaxrsDescribe("腾讯企业邮接口.")
 public class ExmailAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ExmailAction.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ExmailAction.class);
+	private static final String OPERATIONID_PREFIX = "ExmailAction::";
 
-	@JaxrsMethodDescribe(value = "获取当前用户的exmail邮件数量.", action = ActionNewCount.class)
+	@Operation(summary = "获取当前用户的exmail邮件数量,即时访问腾讯企业邮获取.", operationId = OPERATIONID_PREFIX + "newCount", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionNewCount.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "获取当前用户的exmail邮件数量,即时访问腾讯企业邮获取.", action = ActionNewCount.class, scope = DescribeScope.commonly)
 	@GET
 	@Path("new/count")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -47,13 +55,16 @@ public class ExmailAction extends StandardJaxrsAction {
 		try {
 			result = new ActionNewCount().execute(effectivePerson);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "获取当前用户的exmail邮件数量,通过回调写入PersonAttribute", action = ActionNewCountPassive.class)
+	@Operation(summary = "获取当前用户的exmail邮件数量,读取通过回调写入PersonAttribute的值.", operationId = OPERATIONID_PREFIX
+			+ "newCountPassive", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionNewCountPassive.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "获取当前用户的exmail邮件数量,读取通过回调写入PersonAttribute的值.", action = ActionNewCountPassive.class, scope = DescribeScope.commonly)
 	@GET
 	@Path("new/count/passive")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -64,13 +75,16 @@ public class ExmailAction extends StandardJaxrsAction {
 		try {
 			result = new ActionNewCountPassive().execute(effectivePerson);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "列示当前用户腾讯企业邮标题,通过回调写入PersonAttribute", action = ActionListTitlePassive.class)
+	@Operation(summary = "列示当前用户腾讯企业邮标题,读取通过回调写入PersonAttribute的值.", operationId = OPERATIONID_PREFIX
+			+ "listTitlePassive", responses = { @ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListTitlePassive.Wo.class))) }) })
+	@JaxrsMethodDescribe(value = "列示当前用户腾讯企业邮标题,读取通过回调写入PersonAttribute的值.", action = ActionListTitlePassive.class, scope = DescribeScope.commonly)
 	@GET
 	@Path("list/title/passive")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -81,13 +95,15 @@ public class ExmailAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListTitlePassive().execute(effectivePerson);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "获取当前用户邮件单点登录地址.", action = ActionSso.class)
+	@Operation(summary = "获取当前用户邮件单点登录地址.", operationId = OPERATIONID_PREFIX + "sso", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionSso.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "获取当前用户邮件单点登录地址.", action = ActionSso.class, scope = DescribeScope.commonly)
 	@GET
 	@Path("sso")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -98,13 +114,15 @@ public class ExmailAction extends StandardJaxrsAction {
 		try {
 			result = new ActionSso().execute(effectivePerson);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "接收腾讯企业邮回调Get方法.", action = ActionGet.class)
+	@Operation(summary = "接收腾讯企业邮回调GET方法.", operationId = OPERATIONID_PREFIX + "get", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionGet.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "接收腾讯企业邮回调GET方法.", action = ActionGet.class, scope = DescribeScope.system)
 	@GET
 	public void get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("msg_signature") @QueryParam("msg_signature") String msg_signature,
@@ -116,23 +134,17 @@ public class ExmailAction extends StandardJaxrsAction {
 		try {
 			result = new ActionGet().execute(effectivePerson, msg_signature, timestamp, nonce, echostr);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	/**
-	 * 接收腾讯企业邮回调Post方法 单独申明了fitler避免权限过滤
-	 * 
-	 * @param asyncResponse
-	 * @param request
-	 * @param msg_signature
-	 * @param timestamp
-	 * @param nonce
-	 * @param body
-	 */
-	@JaxrsMethodDescribe(value = "接收腾讯企业邮回调Post方法.", action = ActionCallback.class)
+	@Operation(summary = "接收腾讯企业邮回调POST方法.", operationId = OPERATIONID_PREFIX + "callback", responses = {
+			@ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionCallback.Wo.class)) }) }, requestBody = @RequestBody(content = {
+							@Content(schema = @Schema(implementation = String.class)) }))
+	@JaxrsMethodDescribe(value = "接收腾讯企业邮回调POST方法.", action = ActionCallback.class, scope = DescribeScope.system)
 	@POST
 	public void callback(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("msg_signature") @QueryParam("msg_signature") String msg_signature,
@@ -143,7 +155,7 @@ public class ExmailAction extends StandardJaxrsAction {
 		try {
 			result = new ActionCallback().execute(effectivePerson, msg_signature, timestamp, nonce, body);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));

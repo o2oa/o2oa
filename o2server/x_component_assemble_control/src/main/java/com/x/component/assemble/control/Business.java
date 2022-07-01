@@ -10,7 +10,7 @@ public class Business {
 
 	private EntityManagerContainer emc;
 
-	public Business(EntityManagerContainer emc) throws Exception {
+	public Business(EntityManagerContainer emc) {
 		this.emc = emc;
 	}
 
@@ -29,7 +29,7 @@ public class Business {
 
 	private Organization organization;
 
-	public Organization organization() throws Exception {
+	public Organization organization() {
 		if (null == this.organization) {
 			this.organization = new Organization(ThisApplication.context());
 		}
@@ -37,15 +37,9 @@ public class Business {
 	}
 
 	public boolean editable(EffectivePerson effectivePerson) throws Exception {
-		boolean result = false;
 		if (effectivePerson.isManager()) {
-			result = true;
+			return true;
 		}
-		if (!result) {
-			if (this.organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager)) {
-				result = true;
-			}
-		}
-		return result;
+		return this.organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager);
 	}
 }

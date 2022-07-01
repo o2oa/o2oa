@@ -40,5 +40,12 @@
     "mode": [
       "pc"
     ]
+  },
+  "green-flat": {
+    "name": MWF.xApplication.query.ViewDesigner.LP.viewStyle.greenFlat,
+    "file": "styles_green-flat.json",
+    "mode": [
+      "pc"
+    ]
   }
 }

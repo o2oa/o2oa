@@ -28,13 +28,25 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "EmpowerAction", description = "授权操作接口.")
 @Path("empower")
-@JaxrsDescribe("授权操作")
+@JaxrsDescribe("授权操作接口.")
 public class EmpowerAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(EmpowerAction.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EmpowerAction.class);
+	private static final String OPERATIONID_PREFIX = "EmpowerAction::";
 
-	@JaxrsMethodDescribe(value = "获取授权对象.", action = ActionGet.class)
+	@Operation(summary = "获取用户授权对象.", operationId = OPERATIONID_PREFIX + "get", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionGet.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "获取用户授权对象.", action = ActionGet.class)
 	@GET
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -46,12 +58,15 @@ public class EmpowerAction extends StandardJaxrsAction {
 		try {
 			result = new ActionGet().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@Operation(summary = "管理员列示授权对象,下一页.", operationId = OPERATIONID_PREFIX + "listNext", responses = {
+			@ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListNext.Wo.class))) }) })
 	@JaxrsMethodDescribe(value = "管理员列示授权对象,下一页.", action = ActionListNext.class)
 	@GET
 	@Path("list/{id}/next/{count}")
@@ -65,12 +80,15 @@ public class EmpowerAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListNext().execute(effectivePerson, id, count);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@Operation(summary = "管理员列示授权对象,上一页.", operationId = OPERATIONID_PREFIX + "listPrev", responses = {
+			@ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListPrev.Wo.class))) }) })
 	@JaxrsMethodDescribe(value = "管理员列示授权对象,上一页.", action = ActionListPrev.class)
 	@GET
 	@Path("list/{id}/prev/{count}")
@@ -84,12 +102,15 @@ public class EmpowerAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListPrev().execute(effectivePerson, id, count);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@Operation(summary = "获取当前人员的授权.", operationId = OPERATIONID_PREFIX + "listWithCurrentPerson", responses = {
+			@ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListWithCurrentPerson.Wo.class))) }) })
 	@JaxrsMethodDescribe(value = "获取当前人员的授权.", action = ActionListWithCurrentPerson.class)
 	@GET
 	@Path("list/currentperson")
@@ -102,12 +123,15 @@ public class EmpowerAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListWithCurrentPerson().execute(effectivePerson);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@Operation(summary = "获取当前人员生效的授权.", operationId = OPERATIONID_PREFIX + "listWithCurrentPersonEnable", responses = {
+			@ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListWithCurrentPersonEnable.Wo.class))) }) })
 	@JaxrsMethodDescribe(value = "获取当前人员生效的授权.", action = ActionListWithCurrentPersonEnable.class)
 	@GET
 	@Path("list/currentperson/enable")
@@ -120,13 +144,16 @@ public class EmpowerAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListWithCurrentPersonEnable().execute(effectivePerson);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "查询指定人员的授权授权.", action = ActionListWithPerson.class)
+	@Operation(summary = "查询指定人员的授权.", operationId = OPERATIONID_PREFIX + "listWithPerson", responses = {
+			@ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListWithPerson.Wo.class))) }) })
+	@JaxrsMethodDescribe(value = "查询指定人员的授权.", action = ActionListWithPerson.class)
 	@GET
 	@Path("list/person/{flag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -138,12 +165,15 @@ public class EmpowerAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListWithPerson().execute(effectivePerson, flag);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@Operation(summary = "获取当前人员的被授权.", operationId = OPERATIONID_PREFIX + "listTo", responses = {
+			@ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListTo.Wo.class))) }) })
 	@JaxrsMethodDescribe(value = "获取当前人员的被授权.", action = ActionListTo.class)
 	@GET
 	@Path("list/to")
@@ -155,12 +185,15 @@ public class EmpowerAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListTo().execute(effectivePerson);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@Operation(summary = "获取当前人员的生效的被授权.", operationId = OPERATIONID_PREFIX + "listToEnable", responses = {
+			@ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListToEnable.Wo.class))) }) })
 	@JaxrsMethodDescribe(value = "获取当前人员的生效的被授权.", action = ActionListToEnable.class)
 	@GET
 	@Path("list/to/enable")
@@ -172,13 +205,16 @@ public class EmpowerAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListToEnable().execute(effectivePerson);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "创建授权", action = ActionCreate.class)
+	@Operation(summary = "创建授权.", operationId = OPERATIONID_PREFIX + "create", responses = { @ApiResponse(content = {
+			@Content(array = @ArraySchema(schema = @Schema(implementation = ActionCreate.Wo.class))) }) }, requestBody = @RequestBody(content = {
+					@Content(schema = @Schema(implementation = ActionCreate.Wi.class)) }))
+	@JaxrsMethodDescribe(value = "创建授权.", action = ActionCreate.class)
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -189,13 +225,17 @@ public class EmpowerAction extends StandardJaxrsAction {
 		try {
 			result = new ActionCreate().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
-	@JaxrsMethodDescribe(value = "管理员创建授权", action = ActionManagerCreate.class)
+	@Operation(summary = "管理员创建授权.", operationId = OPERATIONID_PREFIX + "managerCreate", responses = {
+			@ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionManagerCreate.Wo.class))) }) }, requestBody = @RequestBody(content = {
+							@Content(schema = @Schema(implementation = ActionManagerCreate.Wi.class)) }))
+	@JaxrsMethodDescribe(value = "管理员创建授权.", action = ActionManagerCreate.class)
 	@Path("manager")
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -207,13 +247,17 @@ public class EmpowerAction extends StandardJaxrsAction {
 		try {
 			result = new ActionManagerCreate().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
-	@JaxrsMethodDescribe(value = "管理员更新授权", action = ActionManagerEdit.class)
+	@Operation(summary = "管理员更新授权.", operationId = OPERATIONID_PREFIX + "managerEdit", responses = {
+			@ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionManagerEdit.Wo.class))) }) }, requestBody = @RequestBody(content = {
+							@Content(schema = @Schema(implementation = ActionManagerEdit.Wi.class)) }))
+	@JaxrsMethodDescribe(value = "管理员更新授权.", action = ActionManagerEdit.class)
 	@PUT
 	@Path("manager/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -225,13 +269,17 @@ public class EmpowerAction extends StandardJaxrsAction {
 		try {
 			result = new ActionManagerEdit().execute(effectivePerson, id, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
-	@JaxrsMethodDescribe(value = "管理员更新授权 MockPutToPost", action = ActionManagerEdit.class)
+	@Operation(summary = "管理员更新授权(Mock put to post).", operationId = OPERATIONID_PREFIX
+			+ "managerEditMockPutToPost", responses = { @ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionManagerEdit.Wo.class))) }) }, requestBody = @RequestBody(content = {
+							@Content(schema = @Schema(implementation = ActionManagerEdit.Wi.class)) }))
+	@JaxrsMethodDescribe(value = "管理员更新授权(Mock put to post).", action = ActionManagerEdit.class)
 	@POST
 	@Path("manager/{id}/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -244,13 +292,16 @@ public class EmpowerAction extends StandardJaxrsAction {
 		try {
 			result = new ActionManagerEdit().execute(effectivePerson, id, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
-	@JaxrsMethodDescribe(value = "更新授权", action = ActionEdit.class)
+	@Operation(summary = "更新授权.", operationId = OPERATIONID_PREFIX + "edit", responses = { @ApiResponse(content = {
+			@Content(array = @ArraySchema(schema = @Schema(implementation = ActionEdit.Wo.class))) }) }, requestBody = @RequestBody(content = {
+					@Content(schema = @Schema(implementation = ActionEdit.Wi.class)) }))
+	@JaxrsMethodDescribe(value = "更新授权.", action = ActionEdit.class)
 	@PUT
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -262,13 +313,17 @@ public class EmpowerAction extends StandardJaxrsAction {
 		try {
 			result = new ActionEdit().execute(effectivePerson, id, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
-	@JaxrsMethodDescribe(value = "更新授权 MockPutToPost", action = ActionEdit.class)
+	@Operation(summary = "更新授权(Mock put to post).", operationId = OPERATIONID_PREFIX
+			+ "editMockPutToPost", responses = { @ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionEdit.Wo.class))) }) }, requestBody = @RequestBody(content = {
+							@Content(schema = @Schema(implementation = ActionEdit.Wi.class)) }))
+	@JaxrsMethodDescribe(value = "更新授权(Mock put to post).", action = ActionEdit.class)
 	@POST
 	@Path("{id}/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -280,12 +335,16 @@ public class EmpowerAction extends StandardJaxrsAction {
 		try {
 			result = new ActionEdit().execute(effectivePerson, id, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
+	@Operation(summary = "更新授权(Mock put to post).", operationId = OPERATIONID_PREFIX + "delete", responses = {
+			@ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionEdit.Wo.class))) }) }, requestBody = @RequestBody(content = {
+							@Content(schema = @Schema(implementation = ActionEdit.Wi.class)) }))
 	@JaxrsMethodDescribe(value = "删除授权", action = ActionDelete.class)
 	@DELETE
 	@Path("{id}")
@@ -298,7 +357,7 @@ public class EmpowerAction extends StandardJaxrsAction {
 		try {
 			result = new ActionDelete().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -316,7 +375,7 @@ public class EmpowerAction extends StandardJaxrsAction {
 		try {
 			result = new ActionDelete().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -334,7 +393,7 @@ public class EmpowerAction extends StandardJaxrsAction {
 		try {
 			result = new ActionManagerDelete().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -352,7 +411,7 @@ public class EmpowerAction extends StandardJaxrsAction {
 		try {
 			result = new ActionManagerDelete().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -370,7 +429,7 @@ public class EmpowerAction extends StandardJaxrsAction {
 		try {
 			result = new ActionEnable().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -388,7 +447,7 @@ public class EmpowerAction extends StandardJaxrsAction {
 		try {
 			result = new ActionDisable().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -407,7 +466,7 @@ public class EmpowerAction extends StandardJaxrsAction {
 		try {
 			result = new ActionManagerListPaging().execute(effectivePerson, page, size, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));

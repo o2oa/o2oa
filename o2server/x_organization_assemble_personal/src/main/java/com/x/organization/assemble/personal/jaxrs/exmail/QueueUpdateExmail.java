@@ -43,7 +43,7 @@ public class QueueUpdateExmail extends AbstractQueue<String> {
 
 	private static final String MSGTYPE_MAIL = "Mail";
 
-	private static Logger logger = LoggerFactory.getLogger(QueueUpdateExmail.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(QueueUpdateExmail.class);
 
 	protected void execute(String xmlBody) throws Exception {
 		Element element = this.xml(xmlBody);
@@ -53,7 +53,7 @@ public class QueueUpdateExmail extends AbstractQueue<String> {
 		} else if (StringUtils.equalsIgnoreCase(msgType, MSGTYPE_MAIL)) {
 			mail(element);
 		} else {
-			logger.warn("unknown msgType:{}, body:{}.", msgType, element.toString());
+			LOGGER.warn("unknown msgType:{}, body:{}.", msgType, element.toString());
 		}
 	}
 

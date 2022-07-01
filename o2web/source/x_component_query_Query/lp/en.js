@@ -151,7 +151,7 @@ MWF.xApplication.query.Query.LP = {
     "exportRange": "Export Range",
         "to": "To",
         "item": "item",
-        "description": "Note: A maximum of 2000 items are allowed to be exported at a time. There are {count} items of data that meet the conditions.",
+        "description": "Note: There are {count} items of data that meet the conditions.",
         "inputIntegerNotice": "Please enter a positive integer for both the opening and closing entries",
         "startLargetThanEndNotice": "The start entry cannot be greater than the end entry"
 },

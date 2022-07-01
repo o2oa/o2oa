@@ -11,26 +11,23 @@ import com.x.base.core.project.jaxrs.WrapString;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionReceive extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionReceive.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionReceive.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, ServletContext servletContext, JsonElement jsonElement)
 			throws Exception {
-		logger.debug(effectivePerson, "receive:{}.", jsonElement);
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-
-//		AbstractContext ctx = AbstractContext.fromServletContext(servletContext);
-//		if (null != ctx.clearCa cheRequestQueue()) {
-//			ctx.clearCacheRequestQueue().send(wi);
-//		} else {
 		CacheManager.receive(wi);
-//		}
 		result.setData(new Wo(wi.getClassName()));
 		return result;
 	}
 
+	@Schema(name = "com.x.base.core.project.jaxrs.cache.ActionReceive$Wo")
 	public static class Wo extends WrapString {
 
 		public Wo(String str) {
@@ -39,6 +36,7 @@ class ActionReceive extends BaseAction {
 
 	}
 
+	@Schema(name = "com.x.base.core.project.jaxrs.cache.ActionReceive$Wi")
 	public static class Wi extends WrapClearCacheRequest {
 
 	}

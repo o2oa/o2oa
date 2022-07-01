@@ -35,7 +35,9 @@ MWF.xApplication.process.Xform.Button = MWF.APPButton =  new Class({
             "MWFType": this.json.type
         });
         if (!this.json.preprocessing) this.node.setStyles(this.form.css.buttonStyles);
-
+        if( this.json.properties ){
+            this.node.set(this.json.properties )
+        }
     }
 
 }); 

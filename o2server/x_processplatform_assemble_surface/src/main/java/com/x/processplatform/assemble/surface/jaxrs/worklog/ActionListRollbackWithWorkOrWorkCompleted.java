@@ -44,8 +44,7 @@ class ActionListRollbackWithWorkOrWorkCompleted extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 
-			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
-					new ExceptionEntityNotExist(workOrWorkCompleted))) {
+			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 
@@ -156,9 +155,9 @@ class ActionListRollbackWithWorkOrWorkCompleted extends BaseAction {
 		private static final long serialVersionUID = -7243683008987722267L;
 
 		static WrapCopier<Read, WoRead> copier = WrapCopierFactory.wo(Read.class, WoRead.class,
-				ListTools.toList(JpaObject.id_FIELDNAME, Read.person_FIELDNAME, Read.identity_FIELDNAME, Read.unit_FIELDNAME,
-						Read.opinion_FIELDNAME, Read.opinionLob_FIELDNAME, Read.startTime_FIELDNAME,
-						Read.activityName_FIELDNAME, Read.activityToken_FIELDNAME),
+				ListTools.toList(JpaObject.id_FIELDNAME, Read.person_FIELDNAME, Read.identity_FIELDNAME,
+						Read.unit_FIELDNAME, Read.opinion_FIELDNAME, Read.opinionLob_FIELDNAME,
+						Read.startTime_FIELDNAME, Read.activityName_FIELDNAME, Read.activityToken_FIELDNAME),
 				null);
 	}
 
@@ -181,9 +180,10 @@ class ActionListRollbackWithWorkOrWorkCompleted extends BaseAction {
 		private static final long serialVersionUID = 293599148568443301L;
 
 		static WrapCopier<Task, WoTask> copier = WrapCopierFactory.wo(Task.class, WoTask.class,
-				ListTools.toList(JpaObject.id_FIELDNAME, Task.person_FIELDNAME, Task.identity_FIELDNAME, Task.unit_FIELDNAME,
-						Task.routeName_FIELDNAME, Task.opinion_FIELDNAME, Task.opinionLob_FIELDNAME,
-						Task.startTime_FIELDNAME, Task.activityName_FIELDNAME, Task.activityToken_FIELDNAME),
+				ListTools.toList(JpaObject.id_FIELDNAME, Task.person_FIELDNAME, Task.identity_FIELDNAME,
+						Task.unit_FIELDNAME, Task.routeName_FIELDNAME, Task.opinion_FIELDNAME,
+						Task.opinionLob_FIELDNAME, Task.startTime_FIELDNAME, Task.activityName_FIELDNAME,
+						Task.activityToken_FIELDNAME),
 				null);
 	}
 

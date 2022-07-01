@@ -1310,11 +1310,11 @@ o2.xDesktop.Default.StartMenu = new Class({
                         }.bind(this), "failure": function(){}}
                 );
 
-            }.bind(this));
+            }.bind(this), iconsPath);
         }.bind(this));
 
     },
-    getIconsJson: function(callback){
+    getIconsJson: function(callback, iconsPath){
         if (this.layout.iconsJson){
             if (callback) callback();
         }else{

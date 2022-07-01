@@ -5,6 +5,7 @@
 		"padding-bottom": "1px",
 		"padding-left": "10px",
 		"padding-right": "2px",
+		"border-radius": "0px",
 		"word-wrap" : "normal",
 		"word-break" : "keep-all",
 		"cursor": "pointer",
@@ -78,16 +79,22 @@
 
 	"buttonOver": {
 	  	"color" : "inherit",
+		"border": "1px solid #fff",
 		"background-color": "#e7e7e7"
 	},
 	"buttonOut": {
 	  "color" : "inherit",
+		"border": "1px solid #fff",
 		"background-color": "#fff"
 	},
 	"buttonDown": {
+		"color" : "inherit",
+		"border": "1px solid #fff",
 		"background-color": "#f0f0f0"
 	},
 	"buttonUp": {
+		"color" : "inherit",
+		"border": "1px solid #fff",
 		"background-color": "#e7e7e7"
 	},
 	"toolbarButtonDownNode": {

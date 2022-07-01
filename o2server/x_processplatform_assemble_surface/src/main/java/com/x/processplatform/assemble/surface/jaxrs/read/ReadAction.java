@@ -29,8 +29,11 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "ReadAction", description = "待阅接口.")
 @Path("read")
-@JaxrsDescribe("待阅操作")
+@JaxrsDescribe("待阅接口")
 public class ReadAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ReadAction.class);

@@ -15,6 +15,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.base.core.project.exception.ExceptionEntityExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoFile;
@@ -30,10 +31,6 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 
 class ActionBatchDownloadWithWorkOrWorkCompletedStream extends BaseAction {
 
-	private static final String SITE_SEPARATOR = "~";
-
-	private static final String FILE_SEPARATOR = ",";
-
 	private static Logger logger = LoggerFactory.getLogger(ActionBatchDownloadWithWorkOrWorkCompletedStream.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workId, String site, String fileName, String flag)
@@ -47,7 +44,7 @@ class ActionBatchDownloadWithWorkOrWorkCompletedStream extends BaseAction {
 			if (work == null) {
 				WorkCompleted workCompleted = emc.find(workId, WorkCompleted.class);
 				if (null == workCompleted) {
-					throw new Exception("workId: " + workId + " not exist in work or workCompleted");
+					throw new ExceptionEntityExist(workId);
 				}
 				if (!business.readable(effectivePerson, workCompleted)) {
 					throw new ExceptionWorkCompletedAccessDenied(effectivePerson.getDistinguishedName(),
@@ -82,7 +79,7 @@ class ActionBatchDownloadWithWorkOrWorkCompletedStream extends BaseAction {
 				}
 			}
 			if (StringUtils.isBlank(fileName)) {
-				if(title.length()>60){
+				if (title.length() > 60) {
 					title = title.substring(0, 60);
 				}
 				fileName = title + DateTools.format(new Date(), DateTools.formatCompact_yyyyMMddHHmmss) + ".zip";
@@ -97,7 +94,8 @@ class ActionBatchDownloadWithWorkOrWorkCompletedStream extends BaseAction {
 			this.assembleFile(business, map, flag);
 
 			fileName = StringUtils.replaceEach(fileName,
-					new String[] { "/",":","*","?","<<",">>","|","<",">","\\" }, new String[] { "","","","","","","","","","" });
+					new String[] { "/", ":", "*", "?", "<<", ">>", "|", "<", ">", "\\" },
+					new String[] { "", "", "", "", "", "", "", "", "", "" });
 			logger.info("batchDown to {}，att size {}, from work {}, has form {}", fileName, attachmentList.size(),
 					workId, map.size());
 			try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
@@ -116,7 +114,7 @@ class ActionBatchDownloadWithWorkOrWorkCompletedStream extends BaseAction {
 		if (StringUtils.isNotEmpty(files)) {
 			String[] flagList = files.split(FILE_SEPARATOR);
 			for (String flag : flagList) {
-				if(StringUtils.isNotBlank(flag)) {
+				if (StringUtils.isNotBlank(flag)) {
 					GeneralFile generalFile = emc.find(flag.trim(), GeneralFile.class);
 					if (generalFile != null) {
 						StorageMapping gfMapping = ThisApplication.context().storageMappings().get(GeneralFile.class,

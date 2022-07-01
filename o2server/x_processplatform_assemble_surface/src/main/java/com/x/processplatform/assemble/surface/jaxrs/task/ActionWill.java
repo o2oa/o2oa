@@ -15,11 +15,14 @@ import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.WillWo;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionWill extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionWill.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionWill.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -41,6 +44,7 @@ class ActionWill extends BaseAction {
 				Applications.joinQueryUri("task", task.getId(), "will"), task.getJob()).getData(Wo.class);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.task.ActionWill.Wo")
 	public static class Wo extends WillWo {
 
 		private static final long serialVersionUID = 2279846765261247910L;

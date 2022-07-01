@@ -6,16 +6,28 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
+import com.x.base.core.project.exception.ExceptionEntityExist;
 import com.x.base.core.project.http.ActionResult;
+import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.element.Application;
+import com.x.processplatform.core.entity.element.ApplicationDict;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionDeleteDataPath3 extends BaseAction {
 
-	ActionResult<Wo> execute(String applicationDictFlag, String applicationFlag, String path0, String path1,
-			String path2, String path3) throws Exception {
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDeleteDataPath3.class);
+
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String applicationDictFlag, String applicationFlag,
+			String path0, String path1, String path2, String path3) throws Exception {
+
+		LOGGER.debug("execute:{}, applicationDictFlag:{}, applicationFlag:{}.", effectivePerson::getDistinguishedName,
+				() -> applicationDictFlag, () -> applicationFlag);
 
 		ActionResult<Wo> result = new ActionResult<>();
 		String id = null;
@@ -28,7 +40,7 @@ class ActionDeleteDataPath3 extends BaseAction {
 			}
 			id = business.applicationDict().getWithApplicationWithUniqueName(application.getId(), applicationDictFlag);
 			if (StringUtils.isEmpty(id)) {
-				throw new ExceptionApplicationDictNotExist(applicationFlag);
+				throw new ExceptionEntityExist(applicationFlag, ApplicationDict.class);
 			}
 		}
 		Wo wo = ThisApplication.context().applications()
@@ -39,7 +51,10 @@ class ActionDeleteDataPath3 extends BaseAction {
 		return result;
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.applicationdict.ActionDeleteDataPath3$Wo")
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = 1358652319910506460L;
 
 	}
 

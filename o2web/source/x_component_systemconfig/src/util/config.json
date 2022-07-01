@@ -1,0 +1,74 @@
+{
+  "appStyle": {
+    "file": "appStyle.json",
+    "description": "移动端基础配置"
+  },
+  "cache": {
+    "file": "cache.json",
+    "description": "缓存配置，默认guava, redis支持目前还不成熟，暂时不做配置"
+  },
+  "collect": {
+    "file": "collect.json",
+    "description": "o2云服务器连接，系统名称"
+  },
+  "components": {
+    "file": "components.json",
+    "description": "初始化前端component模块"
+  },
+  "dingding": {
+    "file": "dingding.json",
+    "description": "钉钉连接配置"
+  },
+  "dumpRestoreData": {
+    "file": "dumpRestoreData.json",
+    "description": "系统数据备份配置"
+  },
+  "exmail": {
+    "file": "exmail.json",
+    "description": "腾讯邮箱集成配置"
+  },
+  "externalDataSources": {
+    "file": "externalDataSources.json",
+    "description": "数据库连接配置"
+  },
+  "externalStorageSources": {
+    "file": "externalStorageSources.json",
+    "description": "文件存储配置"
+  },
+  "huaweiPushConfig": {
+    "file": "huaweiPushConfig.json",
+    "description": "华为推送配置"
+  },
+  "jpushConfig": {
+    "file": "jpushConfig.json",
+    "description": "极光推送配置"
+  },
+  "messages": {
+    "file": "messages.json",
+    "description": "系统消息配置"
+  },
+  "mpweixin": {
+    "file": "mpweixin.json",
+    "description": "微信公众号集成配置"
+  },
+  "node_127.0.0.1": {
+    "file": "node_127.0.0.1.json",
+    "description": "服务器配置"
+  },
+  "person": {
+    "file": "person.json",
+    "description": "人员注册、初始化口令等相关配置"
+  },
+  "portal": {
+    "file": "person.json",
+    "description": "门户主页和登录页配置、urlmapping等（迁移到web.json中）"
+  },
+  "processPlatform": {
+    "file": "processPlatform.json",
+    "description": "流程平台相关功能配置"
+  }
+}
+
+
+
+

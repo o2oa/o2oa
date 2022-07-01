@@ -1,0 +1,26 @@
+{
+  "name": "x_component_systemconfig",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "deploy": "vue-cli-service build && vue-cli-service deploy",
+    "o2-build": "vue-cli-service build --dest ../../../target/o2server/servers/webServer/x_component_systemconfig",
+    "o2-deploy": "vue-cli-service build --dest ../../dest/x_component_systemconfig"
+  },
+  "dependencies": {
+    "@o2oa/component": "^1.1.0",
+    "vue": "^3.0.0"
+  },
+  "devDependencies": {
+    "@o2oa/vue-cli-plugin-o2component": "latest",
+    "@vue/cli-service": "~4.5.15",
+    "@vue/compiler-sfc": "^3.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}

@@ -9,6 +9,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.entity.tools.JpaObjectTools;
 import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.cache.CacheManager;
 
 public class AttendanceSelfHolidayService {
@@ -48,8 +49,10 @@ public class AttendanceSelfHolidayService {
 			List<String> ids = getByPersonName(emc, person);
 			List<AttendanceSelfHoliday> list = list(emc, ids);
 			// detach
-			JpaObjectTools.detach(emc.get(AttendanceSelfHoliday.class), list);
-			CacheManager.put(cache_AttendanceSelfHoliday, cacheKey, list);
+			if (ListTools.isNotEmpty(list)) {
+				JpaObjectTools.detach(emc.get(AttendanceSelfHoliday.class), list);
+				CacheManager.put(cache_AttendanceSelfHoliday, cacheKey, list);
+			}
 			return list;
 		}
 	}

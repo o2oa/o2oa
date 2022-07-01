@@ -49,7 +49,7 @@ MWF.xApplication.process.Xform.ViewSelector = MWF.APPViewSelector =  new Class({
 		this.node.set({
 			"id": this.json.id,
 			"text": this.json.name || this.json.id,
-			"styles": this.form.css.buttonStyles,
+			"styles": this.form.json.buttonStyle || this.form.css.buttonStyles,
 			"MWFType": this.json.type
 		});
         if(this.json.recoveryStyles){

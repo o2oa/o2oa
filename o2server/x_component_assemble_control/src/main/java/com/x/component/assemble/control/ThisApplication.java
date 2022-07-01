@@ -12,9 +12,13 @@ public class ThisApplication {
 		// nothing
 	}
 
-	protected static Context context;
+	private static Context context;
 
-	private static Logger logger = LoggerFactory.getLogger(ThisApplication.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ThisApplication.class);
+
+	public static void context(Context context) {
+		ThisApplication.context = context;
+	}
 
 	public static Context context() {
 		return context;
@@ -25,7 +29,7 @@ public class ThisApplication {
 			CacheManager.init(context.clazz().getSimpleName());
 			context.scheduleLocal(InitComponents.class, 1);
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 	}
 
@@ -33,7 +37,7 @@ public class ThisApplication {
 		try {
 			CacheManager.shutdown();
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 	}
 

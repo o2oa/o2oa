@@ -40,15 +40,13 @@ public class CacheGuavaImpl implements Cache {
 		if ((null != category) && (null != key) && (null != o)) {
 			cache.put(concrete(category, key), o);
 		} else {
-			if ((null != category)) {
+			if (null == category) {
 				throw new IllegalStateException("cache category is null.");
 			}
-			if ((null != key)) {
+			if (null == key) {
 				throw new IllegalStateException("cache key is null.");
 			}
-			if ((null != o)) {
-				throw new IllegalStateException("cache value is null.");
-			}
+			throw new IllegalStateException("cache value is null.");
 		}
 	}
 

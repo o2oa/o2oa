@@ -19,4 +19,6 @@ public @interface JaxrsMethodDescribe {
 
 	Class<? extends StandardJaxrsAction> action();
 
+	DescribeScope scope() default DescribeScope.commonly;
+
 }

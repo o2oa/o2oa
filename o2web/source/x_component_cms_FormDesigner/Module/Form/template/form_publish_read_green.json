@@ -1,0 +1,1841 @@
+{
+  "pcData": {
+    "json": {
+      "id": "",
+      "name": "发布类阅读表单（绿色）",
+      "type": "Form",
+      "mode": "PC",
+      "application": "",
+      "styles": {
+        "background-color": "#e3f3f0"
+      },
+      "cssLinks": [],
+      "scriptSrc": [],
+      "moduleList": {
+        "div": {
+          "id": "div",
+          "type": "Div",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "moduleName": "div",
+          "recoveryStyles": {
+            "width": "1000px",
+            "margin": "auto",
+            "border": "0px",
+            "border-radius": "15px",
+            "background-color": "#fff",
+            "padding": "20px"
+          },
+          "isSaved": true,
+          "preprocessing": "y",
+          "pid": "PC5b74203a-b71b-4bc5-b5c6-889be8601a1adiv"
+        },
+        "actionbar": {
+          "id": "actionbar",
+          "type": "Actionbar",
+          "tools": [],
+          "style": "xform_green_simple",
+          "moduleName": "actionbar",
+          "customIconStyle": "green",
+          "customIconOverStyle": "green",
+          "hideSetPopularDocumentTool": false,
+          "hideSystemTools": false,
+          "actionStyles": {
+            "container": {
+              "padding-left": "15px",
+              "border-top": "0px solid #e8e8e8",
+              "border-bottom": "0px solid #e8e8e8",
+              "border-radius": "15px",
+              "background-color": "#f4f7f6",
+              "border": "0px",
+              "word-wrap": "normal",
+              "word-break": "keep-all",
+              "overflow": "hidden",
+              "height": "36px",
+              "display": "block",
+              "font-size": "14px",
+              "padding-top": "15px",
+              "padding-bottom": "15px",
+              "padding-right": "15px"
+            },
+            "button": {
+              "color": "#00bd67",
+              "display": "block",
+              "position": "static",
+              "float": "left",
+              "border": "1px solid transparent",
+              "background-color": "transparent",
+              "border-radius": "4px",
+              "height": "14px",
+              "font-size": "14px",
+              "line-height": "14px",
+              "margin-right": "0px",
+              "padding-top": "10px",
+              "padding-bottom": "10px",
+              "cursor": "pointer"
+            },
+            "buttonImgDiv": {
+              "float": "left",
+              "line-height": "14px",
+              "margin-right": "2px",
+              "margin-left": "15px",
+              "text-align": "center",
+              "vertical-align": "text-top",
+              "cursor": "pointer"
+            },
+            "buttonImg": {
+              "height": "14px",
+              "width": "14px",
+              "cursor": "pointer",
+              "margin-top": "0px"
+            },
+            "buttonTextDiv": {
+              "display": "block",
+              "float": "left",
+              "height": "14px",
+              "padding-left": "2px",
+              "padding-right": "15px",
+              "cursor": "pointer"
+            },
+            "buttonDisable": {
+              "color": "#999"
+            },
+            "buttonImgDivDisable": {
+              "color": "#999"
+            },
+            "buttonTextDivDisable": {
+              "color": "#999"
+            },
+            "buttonOver": {
+              "color": "#00bd67",
+              "border": "1px solid #00bd67",
+              "background-color": "#e3f2ee"
+            },
+            "buttonOut": {
+              "color": "#00bd67",
+              "border": "1px solid transparent",
+              "background-color": "transparent"
+            },
+            "buttonDown": {
+              "color": "#00bd67",
+              "border": "1px solid #00bd67",
+              "background-color": "#e3f2ee"
+            },
+            "buttonUp": {
+              "color": "#00bd67",
+              "border": "1px solid transparent",
+              "background-color": "transparent"
+            }
+          },
+          "multiTools": [
+            {
+              "type": "MWFToolBarButton",
+              "img": "close.png",
+              "img_over": "close_over.png",
+              "title": "关闭文档",
+              "action": "closeDocument",
+              "text": "关闭",
+              "id": "action_close",
+              "read": true,
+              "edit": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "edit.png",
+              "img_over": "edit_over.png",
+              "title": "编辑文档",
+              "action": "editDocument",
+              "id": "action_edit",
+              "text": "编辑",
+              "control": "allowEditDocument",
+              "read": true,
+              "edit": false,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "save.png",
+              "img_over": "save_over.png",
+              "title": "保存文档",
+              "action": "saveDocument",
+              "text": "保存",
+              "id": "action_saveData",
+              "control": "allowSave",
+              "read": false,
+              "edit": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "submit.png",
+              "img_over": "submit_over.png",
+              "title": "发布文档",
+              "action": "publishDocument",
+              "text": "发布",
+              "id": "action_publishDocument",
+              "control": "allowPublishDocument",
+              "read": false,
+              "edit": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "save.png",
+              "img_over": "save_over.png",
+              "title": "保存草稿",
+              "action": "saveDraftDocument",
+              "text": "保存草稿",
+              "id": "action_saveDraftDocument",
+              "control": "allowPublishDocument",
+              "read": false,
+              "edit": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "popular.png",
+              "img_over": "popular_over.png",
+              "title": "设置热点",
+              "action": "setPopularDocument",
+              "id": "action_popular",
+              "text": "设置热点",
+              "control": "allowPopularDocument",
+              "read": true,
+              "edit": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "del.png",
+              "img_over": "del_over.png",
+              "title": "删除文档",
+              "action": "deleteDocument",
+              "text": "删除",
+              "id": "action_delete",
+              "control": "allowDeleteDocument",
+              "read": true,
+              "edit": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "print.png",
+              "img_over": "print_over.png",
+              "title": "打印文档",
+              "action": "printDocument",
+              "text": "打印",
+              "id": "action_print",
+              "read": true,
+              "edit": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "top.png",
+              "img_over": "top_over.png",
+              "title": "对文档置顶",
+              "action": "setTop",
+              "text": "置顶",
+              "id": "action_setTop",
+              "read": true,
+              "edit": true,
+              "control": "allowSetTop",
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "topcancel.png",
+              "img_over": "topcancel_over.png",
+              "title": "取消对文档的置顶",
+              "action": "cancelTop",
+              "text": "取消置顶",
+              "id": "action_cancelTop",
+              "read": true,
+              "edit": true,
+              "control": "allowCancelTop",
+              "system": true
+            }
+          ],
+          "preprocessing": "y",
+          "pid": "PC5b74203a-b71b-4bc5-b5c6-889be8601a1aactionbar"
+        },
+        "label": {
+          "id": "label",
+          "type": "Label",
+          "valueType": "script",
+          "moduleName": "label",
+          "templateType": "title",
+          "script": {
+            "code": "return this.data.subject || this.documentContext.getDocument().title;",
+            "html": "return this.data.subject || this.documentContext.getDocument().title;"
+          },
+          "recoveryStyles": {
+            "line-height": "100px",
+            "text-shadow": "0px 0px 3px #fff",
+            "text-align": "left",
+            "font-size": "24px",
+            "font-weight": "600",
+            "color": "#025344",
+            "height": "100px"
+          },
+          "isSaved": true,
+          "preprocessing": "y"
+        },
+        "label_1": {
+          "id": "label_1",
+          "type": "Label",
+          "valueType": "script",
+          "hiddenCondition": "none",
+          "script": {
+            "code": "return this.documentContext.getDocument().creatorPersonShort",
+            "html": "return this.documentContext.getDocument().creatorPersonShort"
+          },
+          "moduleName": "label",
+          "recoveryStyles": {
+            "display": "inline",
+            "margin-right": "15px"
+          },
+          "isSaved": true,
+          "preprocessing": "y"
+        },
+        "label_2": {
+          "id": "label_2",
+          "type": "Label",
+          "valueType": "text",
+          "text": "创建人：",
+          "script": {
+            "code": "return this.documentContext.getDocument().creatorPersonShort",
+            "html": "return this.documentContext.getDocument().creatorPersonShort"
+          },
+          "moduleName": "label",
+          "recoveryStyles": {
+            "display": "inline"
+          },
+          "isSaved": true,
+          "preprocessing": "y"
+        },
+        "label_2_1": {
+          "id": "label_2_1",
+          "type": "Label",
+          "valueType": "script",
+          "script": {
+            "code": "return this.documentContext.getDocument().creatorUnitNameShort",
+            "html": "return this.documentContext.getDocument().creatorUnitNameShort"
+          },
+          "moduleName": "label",
+          "recoveryStyles": {
+            "display": "inline",
+            "margin-right": "15px"
+          },
+          "isSaved": true,
+          "preprocessing": "y"
+        },
+        "table": {
+          "id": "table",
+          "type": "Table",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "properties": {
+            "width": "100%",
+            "border": "0",
+            "cellpadding": "5",
+            "cellspacing": "5",
+            "align": "center"
+          },
+          "styles": {
+            "border": "0px"
+          },
+          "titleTdStyles": {
+            "border-collapse": "collapse",
+            "width": "20%",
+            "background-color": "#FFFFFF",
+            "color": "#000000",
+            "font-weight": "400",
+            "font-size": "15px",
+            "height": "30px",
+            "line-height": "30px",
+            "text-align": "right"
+          },
+          "contentTdStyles": {
+            "border-collapse": "collapse",
+            "min-width": "140px",
+            "background-color": "#FFFFFF",
+            "color": "#606266"
+          },
+          "moduleName": "table",
+          "recoveryStyles": {
+            "color": "#555",
+            "min-height": "32px",
+            "line-height": "32px",
+            "margin-bottom": "30px",
+            "background-color": "#FFF",
+            "margin": "10px 10px",
+            "border": "0px"
+          },
+          "initialized": "yes",
+          "preprocessing": "y"
+        },
+        "label_3": {
+          "id": "label_3",
+          "type": "Label",
+          "valueType": "script",
+          "hiddenCondition": "none",
+          "script": {
+            "code": "return this.documentContext.getDocument().createTime",
+            "html": "return this.documentContext.getDocument().createTime"
+          },
+          "moduleName": "label",
+          "recoveryStyles": {
+            "display": "inline",
+            "margin-right": "10px"
+          },
+          "isSaved": true,
+          "preprocessing": "y"
+        },
+        "table_table$Td_2": {
+          "id": "table_table$Td_2",
+          "type": "Table$Td",
+          "events": {
+            "load": {
+              "code": "if( !this.data.explain || this.data.explain === '' ){ this.target.node.setStyle('display','none') }"
+            }
+          },
+          "properties": {
+            "colspan": 3
+          },
+          "cellType": "layout",
+          "moduleName": "table$Td",
+          "recoveryStyles": {
+            "background-color": "#fffef3",
+            "border": "1px solid #ddd",
+            "font-size": "14px",
+            "padding-left": "10px",
+            "padding-right": "10px"
+          },
+          "isSaved": true,
+          "preprocessing": "y"
+        },
+        "htmleditor": {
+          "id": "htmleditor",
+          "type": "Htmleditor",
+          "editorProperties": {
+            "autoGrow_maxHeight": 400,
+            "autoGrow_minHeight": 300,
+            "resize_enabled": true,
+            "resize_maxHeight": "3000",
+            "resize_minHeight": "200",
+            "autoParagraph": true,
+            "autoUpdateElement": true,
+            "enterMode": 1,
+            "height": "200",
+            "readOnly": false
+          },
+          "moduleName": "htmleditor",
+          "recoveryStyles": {
+            "line-height": "200%"
+          },
+          "preprocessing": "y"
+        },
+        "attachment": {
+          "id": "attachment",
+          "type": "Attachment",
+          "size": "max",
+          "isSizeChange": "true",
+          "attachmentCount": "0",
+          "resize": "false",
+          "listStyle": "icon",
+          "readonly": "false",
+          "isUpload": "y",
+          "isDelete": "y",
+          "isReplace": "y",
+          "isDownload": "y",
+          "toolbarGroupHidden": [],
+          "moduleName": "attachment",
+          "availableListStyles": [
+            "list",
+            "seq",
+            "icon",
+            "preview"
+          ],
+          "preprocessing": "y"
+        },
+        "actionbar_1": {
+          "id": "actionbar_1",
+          "type": "Actionbar",
+          "tools": [],
+          "style": "xform_green_simple",
+          "moduleName": "actionbar",
+          "customIconStyle": "green",
+          "customIconOverStyle": "green",
+          "hideSetPopularDocumentTool": false,
+          "hideSystemTools": false,
+          "actionStyles": {
+            "container": {
+              "padding-left": "15px",
+              "border-top": "0px solid #e8e8e8",
+              "border-bottom": "0px solid #e8e8e8",
+              "border-radius": "15px",
+              "background-color": "#f4f7f6",
+              "border": "0px",
+              "word-wrap": "normal",
+              "word-break": "keep-all",
+              "overflow": "hidden",
+              "height": "36px",
+              "display": "block",
+              "font-size": "14px",
+              "padding-top": "15px",
+              "padding-bottom": "15px",
+              "padding-right": "15px",
+              "margin-top": "15px"
+            },
+            "button": {
+              "color": "#00bd67",
+              "display": "block",
+              "position": "static",
+              "float": "left",
+              "border": "1px solid transparent",
+              "background-color": "transparent",
+              "border-radius": "4px",
+              "height": "14px",
+              "font-size": "14px",
+              "line-height": "14px",
+              "margin-right": "0px",
+              "padding-top": "10px",
+              "padding-bottom": "10px",
+              "cursor": "pointer"
+            },
+            "buttonImgDiv": {
+              "float": "left",
+              "line-height": "14px",
+              "margin-right": "2px",
+              "margin-left": "15px",
+              "text-align": "center",
+              "vertical-align": "text-top",
+              "cursor": "pointer"
+            },
+            "buttonImg": {
+              "height": "14px",
+              "width": "14px",
+              "cursor": "pointer",
+              "margin-top": "0px"
+            },
+            "buttonTextDiv": {
+              "display": "block",
+              "float": "left",
+              "height": "14px",
+              "padding-left": "2px",
+              "padding-right": "15px",
+              "cursor": "pointer"
+            },
+            "buttonDisable": {
+              "color": "#999"
+            },
+            "buttonImgDivDisable": {
+              "color": "#999"
+            },
+            "buttonTextDivDisable": {
+              "color": "#999"
+            },
+            "buttonOver": {
+              "color": "#00bd67",
+              "border": "1px solid #00bd67",
+              "background-color": "#e3f2ee"
+            },
+            "buttonOut": {
+              "color": "#00bd67",
+              "border": "1px solid transparent",
+              "background-color": "transparent"
+            },
+            "buttonDown": {
+              "color": "#00bd67",
+              "border": "1px solid #00bd67",
+              "background-color": "#e3f2ee"
+            },
+            "buttonUp": {
+              "color": "#00bd67",
+              "border": "1px solid transparent",
+              "background-color": "transparent"
+            }
+          },
+          "multiTools": [
+            {
+              "type": "MWFToolBarButton",
+              "img": "close.png",
+              "img_over": "close_over.png",
+              "title": "关闭文档",
+              "action": "closeDocument",
+              "text": "关闭",
+              "id": "action_close",
+              "read": true,
+              "edit": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "edit.png",
+              "img_over": "edit_over.png",
+              "title": "编辑文档",
+              "action": "editDocument",
+              "id": "action_edit",
+              "text": "编辑",
+              "control": "allowEditDocument",
+              "read": true,
+              "edit": false,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "save.png",
+              "img_over": "save_over.png",
+              "title": "保存文档",
+              "action": "saveDocument",
+              "text": "保存",
+              "id": "action_saveData",
+              "control": "allowSave",
+              "read": false,
+              "edit": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "submit.png",
+              "img_over": "submit_over.png",
+              "title": "发布文档",
+              "action": "publishDocument",
+              "text": "发布",
+              "id": "action_publishDocument",
+              "control": "allowPublishDocument",
+              "read": false,
+              "edit": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "save.png",
+              "img_over": "save_over.png",
+              "title": "保存草稿",
+              "action": "saveDraftDocument",
+              "text": "保存草稿",
+              "id": "action_saveDraftDocument",
+              "control": "allowPublishDocument",
+              "read": false,
+              "edit": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "popular.png",
+              "img_over": "popular_over.png",
+              "title": "设置热点",
+              "action": "setPopularDocument",
+              "id": "action_popular",
+              "text": "设置热点",
+              "control": "allowPopularDocument",
+              "read": true,
+              "edit": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "del.png",
+              "img_over": "del_over.png",
+              "title": "删除文档",
+              "action": "deleteDocument",
+              "text": "删除",
+              "id": "action_delete",
+              "control": "allowDeleteDocument",
+              "read": true,
+              "edit": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "print.png",
+              "img_over": "print_over.png",
+              "title": "打印文档",
+              "action": "printDocument",
+              "text": "打印",
+              "id": "action_print",
+              "read": true,
+              "edit": true,
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "top.png",
+              "img_over": "top_over.png",
+              "title": "对文档置顶",
+              "action": "setTop",
+              "text": "置顶",
+              "id": "action_setTop",
+              "read": true,
+              "edit": true,
+              "control": "allowSetTop",
+              "system": true
+            },
+            {
+              "type": "MWFToolBarButton",
+              "img": "topcancel.png",
+              "img_over": "topcancel_over.png",
+              "title": "取消对文档的置顶",
+              "action": "cancelTop",
+              "text": "取消置顶",
+              "id": "action_cancelTop",
+              "read": true,
+              "edit": true,
+              "control": "allowCancelTop",
+              "system": true
+            }
+          ],
+          "preprocessing": "y",
+          "pid": "PC5b74203a-b71b-4bc5-b5c6-889be8601a1aactionbar_1"
+        },
+        "table_table$Td_1": {
+          "id": "table_table$Td_1",
+          "type": "Table$Td",
+          "cellType": "layout",
+          "moduleName": "table$Td",
+          "recoveryStyles": {
+            "display": "block",
+            "text-align": "right",
+            "font-size": "14px",
+            "padding-top": "10px",
+            "padding-bottom": "10px"
+          },
+          "isSaved": true,
+          "preprocessing": "y"
+        },
+        "label_4": {
+          "id": "label_4",
+          "type": "Label",
+          "valueType": "text",
+          "hiddenCondition": "none",
+          "text": "创建部门：",
+          "moduleName": "label",
+          "recoveryStyles": {
+            "display": "inline"
+          },
+          "isSaved": true,
+          "preprocessing": "y"
+        },
+        "label_5": {
+          "id": "label_5",
+          "type": "Label",
+          "valueType": "text",
+          "hiddenCondition": "none",
+          "text": "创建时间：",
+          "moduleName": "label",
+          "recoveryStyles": {
+            "display": "inline"
+          },
+          "isSaved": true,
+          "preprocessing": "y"
+        },
+        "label_6": {
+          "id": "label_6",
+          "type": "Label",
+          "valueType": "script",
+          "hiddenCondition": "none",
+          "script": {
+            "code": "return this.data.explain",
+            "html": "return this.data.explain"
+          },
+          "moduleName": "label",
+          "isSaved": true,
+          "preprocessing": "y"
+        },
+        "log": {
+          "id": "log",
+          "type": "Log",
+          "filterActivity": [],
+          "filterPerson": [],
+          "filterRoute": [],
+          "mode": "table",
+          "textStyle": "<font style='color:#00F;'>{person}</font>（{unitName}） 阅于<font style='color:#00F'>{date}</font>，首次于<font style='color:#00F'>{firstDate}</font>，共<font style='color:#00F'>{count}</font>次",
+          "isTask": "true",
+          "moduleName": "log",
+          "recoveryStyles": {
+            "margin-top": "10px"
+          },
+          "isSaved": true,
+          "preprocessing": "y"
+        },
+        "div_1": {
+          "id": "div_1",
+          "type": "Div",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "recoveryStyles": {
+            "margin": "0px auto 20px auto",
+            "width": "1040px"
+          },
+          "isSaved": true,
+          "pid": "PC5b74203a-b71b-4bc5-b5c6-889be8601a1adiv_1",
+          "preprocessing": "y"
+        }
+      },
+      "formStyleType": "green-flat",
+      "applicationName": "test_cxy",
+      "pid": "PC5b74203a-b71b-4bc5-b5c6-889be8601a1a5b74203a-b71b-4bc5-b5c6-889be8601a1a",
+      "isReadonly": false,
+      "languageType": "none",
+      "noticeType": "reader",
+      "blankToAllNotify": "yes",
+      "notifyCreatePerson": "yes",
+      "styleConfig": {
+        "name": "绿色扁平",
+        "file": "styles_green-flat.json",
+        "mode": [
+          "pc"
+        ]
+      },
+      "subformList": [],
+      "$version": "5.2"
+    },
+    "html": "<div id=\"5b74203a-b71b-4bc5-b5c6-889be8601a1a\" mwftype=\"form\" class=\"css5b74203ab71b4bc5b5c6889be8601a1a\" style=\"\"><div mwftype=\"div\" id=\"div_1\" style=\"margin: 0px auto 20px; width: 1040px;\"><div id=\"actionbar\" mwftype=\"actionbar\" style=\"\"><div style=\"padding: 15px; border: 0px; border-radius: 15px; background-color: rgb(244, 247, 246); overflow-wrap: normal; word-break: keep-all; overflow: hidden; height: 36px; display: block; font-size: 14px;\"><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/close.png\" mwfbuttonimageover=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/close_over.png\" title=\"关闭文档\" mwfbuttonaction=\"closeDocument\" mwfbuttontext=\"关闭\" style=\"color: rgb(0, 189, 103); display: block; position: static; float: left; border: 1px solid transparent; background-color: transparent; border-radius: 4px; height: 14px; font-size: 14px; line-height: 14px; margin-right: 0px; padding-top: 10px; padding-bottom: 10px; cursor: pointer;\"><span style=\"float: left; line-height: 14px; margin-right: 2px; margin-left: 15px; text-align: center; vertical-align: text-top; cursor: pointer;\"><img src=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/close.png\" style=\"height: 14px; width: 14px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 14px; padding-left: 2px; padding-right: 15px; cursor: pointer;\">关闭</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/edit.png\" mwfbuttonimageover=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/edit_over.png\" title=\"编辑文档\" mwfbuttonaction=\"editDocument\" mwfbuttontext=\"编辑\" style=\"color: rgb(0, 189, 103); display: block; position: static; float: left; border: 1px solid transparent; background-color: transparent; border-radius: 4px; height: 14px; font-size: 14px; line-height: 14px; margin-right: 0px; padding-top: 10px; padding-bottom: 10px; cursor: pointer;\"><span style=\"float: left; line-height: 14px; margin-right: 2px; margin-left: 15px; text-align: center; vertical-align: text-top; cursor: pointer;\"><img src=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/edit.png\" style=\"height: 14px; width: 14px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 14px; padding-left: 2px; padding-right: 15px; cursor: pointer;\">编辑</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/save.png\" mwfbuttonimageover=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/save_over.png\" title=\"保存文档\" mwfbuttonaction=\"saveDocument\" mwfbuttontext=\"保存\" style=\"color: rgb(0, 189, 103); display: block; position: static; float: left; border: 1px solid transparent; background-color: transparent; border-radius: 4px; height: 14px; font-size: 14px; line-height: 14px; margin-right: 0px; padding-top: 10px; padding-bottom: 10px; cursor: pointer;\"><span style=\"float: left; line-height: 14px; margin-right: 2px; margin-left: 15px; text-align: center; vertical-align: text-top; cursor: pointer;\"><img src=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/save.png\" style=\"height: 14px; width: 14px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 14px; padding-left: 2px; padding-right: 15px; cursor: pointer;\">保存</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/submit.png\" mwfbuttonimageover=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/submit_over.png\" title=\"发布文档\" mwfbuttonaction=\"publishDocument\" mwfbuttontext=\"发布\" style=\"color: rgb(0, 189, 103); display: block; position: static; float: left; border: 1px solid transparent; background-color: transparent; border-radius: 4px; height: 14px; font-size: 14px; line-height: 14px; margin-right: 0px; padding-top: 10px; padding-bottom: 10px; cursor: pointer;\"><span style=\"float: left; line-height: 14px; margin-right: 2px; margin-left: 15px; text-align: center; vertical-align: text-top; cursor: pointer;\"><img src=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/submit.png\" style=\"height: 14px; width: 14px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 14px; padding-left: 2px; padding-right: 15px; cursor: pointer;\">发布</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/save.png\" mwfbuttonimageover=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/save_over.png\" title=\"保存草稿\" mwfbuttonaction=\"saveDraftDocument\" mwfbuttontext=\"保存草稿\" style=\"color: rgb(0, 189, 103); display: block; position: static; float: left; border: 1px solid transparent; background-color: transparent; border-radius: 4px; height: 14px; font-size: 14px; line-height: 14px; margin-right: 0px; padding-top: 10px; padding-bottom: 10px; cursor: pointer;\"><span style=\"float: left; line-height: 14px; margin-right: 2px; margin-left: 15px; text-align: center; vertical-align: text-top; cursor: pointer;\"><img src=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/save.png\" style=\"height: 14px; width: 14px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 14px; padding-left: 2px; padding-right: 15px; cursor: pointer;\">保存草稿</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/popular.png\" mwfbuttonimageover=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/popular_over.png\" title=\"设置热点\" mwfbuttonaction=\"setPopularDocument\" mwfbuttontext=\"设置热点\" style=\"color: rgb(0, 189, 103); display: block; position: static; float: left; border: 1px solid transparent; background-color: transparent; border-radius: 4px; height: 14px; font-size: 14px; line-height: 14px; margin-right: 0px; padding-top: 10px; padding-bottom: 10px; cursor: pointer;\"><span style=\"float: left; line-height: 14px; margin-right: 2px; margin-left: 15px; text-align: center; vertical-align: text-top; cursor: pointer;\"><img src=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/popular.png\" style=\"height: 14px; width: 14px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 14px; padding-left: 2px; padding-right: 15px; cursor: pointer;\">设置热点</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/del.png\" mwfbuttonimageover=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/del_over.png\" title=\"删除文档\" mwfbuttonaction=\"deleteDocument\" mwfbuttontext=\"删除\" style=\"color: rgb(0, 189, 103); display: block; position: static; float: left; border: 1px solid transparent; background-color: transparent; border-radius: 4px; height: 14px; font-size: 14px; line-height: 14px; margin-right: 0px; padding-top: 10px; padding-bottom: 10px; cursor: pointer;\"><span style=\"float: left; line-height: 14px; margin-right: 2px; margin-left: 15px; text-align: center; vertical-align: text-top; cursor: pointer;\"><img src=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/del.png\" style=\"height: 14px; width: 14px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 14px; padding-left: 2px; padding-right: 15px; cursor: pointer;\">删除</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/print.png\" mwfbuttonimageover=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/print_over.png\" title=\"打印文档\" mwfbuttonaction=\"printDocument\" mwfbuttontext=\"打印\" style=\"color: rgb(0, 189, 103); display: block; position: static; float: left; border: 1px solid transparent; background-color: transparent; border-radius: 4px; height: 14px; font-size: 14px; line-height: 14px; margin-right: 0px; padding-top: 10px; padding-bottom: 10px; cursor: pointer;\"><span style=\"float: left; line-height: 14px; margin-right: 2px; margin-left: 15px; text-align: center; vertical-align: text-top; cursor: pointer;\"><img src=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/print.png\" style=\"height: 14px; width: 14px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 14px; padding-left: 2px; padding-right: 15px; cursor: pointer;\">打印</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/top.png\" mwfbuttonimageover=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/top_over.png\" title=\"对文档置顶\" mwfbuttonaction=\"setTop\" mwfbuttontext=\"置顶\" style=\"color: rgb(0, 189, 103); display: block; position: static; float: left; border: 1px solid transparent; background-color: transparent; border-radius: 4px; height: 14px; font-size: 14px; line-height: 14px; margin-right: 0px; padding-top: 10px; padding-bottom: 10px; cursor: pointer;\"><span style=\"float: left; line-height: 14px; margin-right: 2px; margin-left: 15px; text-align: center; vertical-align: text-top; cursor: pointer;\"><img src=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/top.png\" style=\"height: 14px; width: 14px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 14px; padding-left: 2px; padding-right: 15px; cursor: pointer;\">置顶</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/topcancel.png\" mwfbuttonimageover=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/topcancel_over.png\" title=\"取消对文档的置顶\" mwfbuttonaction=\"cancelTop\" mwfbuttontext=\"取消置顶\" style=\"color: rgb(0, 189, 103); display: block; position: static; float: left; border: 1px solid transparent; background-color: transparent; border-radius: 4px; height: 14px; font-size: 14px; line-height: 14px; margin-right: 0px; padding-top: 10px; padding-bottom: 10px; cursor: pointer;\"><span style=\"float: left; line-height: 14px; margin-right: 2px; margin-left: 15px; text-align: center; vertical-align: text-top; cursor: pointer;\"><img src=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/topcancel.png\" style=\"height: 14px; width: 14px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 14px; padding-left: 2px; padding-right: 15px; cursor: pointer;\">取消置顶</span></div></div></div></div><div id=\"div\" mwftype=\"div\" style=\"width: 1000px; margin: auto; border: 0px; border-radius: 15px; background-color: rgb(255, 255, 255); padding: 20px;\"><div id=\"label\" mwftype=\"label\" style=\"line-height: 100px; text-shadow: rgb(255, 255, 255) 0px 0px 3px; text-align: left; font-size: 24px; font-weight: 600; color: rgb(2, 83, 68); height: 100px;\"></div><div id=\"table\" mwftype=\"table\" style=\"color: rgb(85, 85, 85); min-height: 32px; line-height: 32px; margin: 10px; background-color: rgb(255, 255, 255);\"><table width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"5\" cellpadding=\"5\" style=\"border-collapse: separate;\"><tbody><tr><td id=\"table_table$Td_1\" mwftype=\"table$Td\" style=\"display: block; text-align: right; font-size: 14px; padding-top: 10px; padding-bottom: 10px;\"><div id=\"label_2\" mwftype=\"label\" style=\"display: inline;\">创建人：</div><div id=\"label_1\" mwftype=\"label\" style=\"display: inline; margin-right: 15px;\"></div><div id=\"label_4\" mwftype=\"label\" style=\"display: inline;\">创建部门：</div><div id=\"label_2_1\" mwftype=\"label\" style=\"display: inline; margin-right: 15px;\"></div><div id=\"label_5\" mwftype=\"label\" style=\"display: inline;\">创建时间：</div><div id=\"label_3\" mwftype=\"label\" style=\"display: inline; margin-right: 10px;\"></div></td></tr><tr><td id=\"table_table$Td_2\" rowspan=\"1\" colspan=\"3\" mwftype=\"table$Td\" style=\"background-color: rgb(255, 254, 243); border: 1px solid rgb(221, 221, 221); font-size: 14px; padding-left: 10px; padding-right: 10px;\"><div id=\"label_6\" mwftype=\"label\" style=\"\"></div></td></tr></tbody></table></div><div id=\"htmleditor\" mwftype=\"itmleditor\" style=\"line-height: 200%;\"><div style=\"visibility: hidden; display: none;\"></div><div id=\"cke_editor7\" class=\"cke_713 cke cke_reset cke_chrome cke_editor_editor7 cke_ltr cke_browser_webkit\" dir=\"ltr\" lang=\"zh-cn\" role=\"application\"><div class=\"cke_inner cke_reset\" role=\"presentation\"><span id=\"cke_713_top\" class=\"cke_top cke_reset_all\" role=\"presentation\" style=\"height: auto; user-select: none;\"><span id=\"cke_727\" class=\"cke_voice_label\">工具栏</span><span id=\"cke_713_toolbox\" class=\"cke_toolbox\" role=\"group\" aria-labelledby=\"cke_727\" onmousedown=\"return false;\"><span id=\"cke_732\" class=\"cke_toolbar\" aria-labelledby=\"cke_732_label\" role=\"toolbar\"><span id=\"cke_732_label\" class=\"cke_voice_label\">文档</span><span class=\"cke_toolbar_start\"></span><span class=\"cke_toolgroup\" role=\"presentation\"><a id=\"cke_733\" class=\"cke_button cke_button__source cke_button_off\" href=\"javascript:void('源码')\" title=\"源码\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_733_label\" aria-describedby=\"cke_733_description\" aria-haspopup=\"false\" aria-disabled=\"false\" onkeydown=\"return CKEDITOR.tools.callFunction(1255,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1256,event);\" onclick=\"CKEDITOR.tools.callFunction(1257,this);return false;\"><span class=\"cke_button_icon cke_button__source_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -1872px;background-size:auto;\">&nbsp;</span><span id=\"cke_733_label\" class=\"cke_button_label cke_button__source_label\" aria-hidden=\"false\">源码</span><span id=\"cke_733_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><span class=\"cke_toolbar_separator\" role=\"separator\"></span><a id=\"cke_734\" class=\"cke_button cke_button__save cke_button_disabled \" href=\"javascript:void('保存')\" title=\"保存\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_734_label\" aria-describedby=\"cke_734_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1258,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1259,event);\" onclick=\"CKEDITOR.tools.callFunction(1260,this);return false;\"><span class=\"cke_button_icon cke_button__save_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -1752px;background-size:auto;\">&nbsp;</span><span id=\"cke_734_label\" class=\"cke_button_label cke_button__save_label\" aria-hidden=\"false\">保存</span><span id=\"cke_734_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_735\" class=\"cke_button cke_button__newpage cke_button_disabled \" href=\"javascript:void('新建')\" title=\"新建\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_735_label\" aria-describedby=\"cke_735_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1261,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1262,event);\" onclick=\"CKEDITOR.tools.callFunction(1263,this);return false;\"><span class=\"cke_button_icon cke_button__newpage_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -1488px;background-size:auto;\">&nbsp;</span><span id=\"cke_735_label\" class=\"cke_button_label cke_button__newpage_label\" aria-hidden=\"false\">新建</span><span id=\"cke_735_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_736\" class=\"cke_button cke_button__exportpdf cke_button_off\" href=\"javascript:void('Export to PDF')\" title=\"Export to PDF\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_736_label\" aria-describedby=\"cke_736_description\" aria-haspopup=\"false\" aria-disabled=\"false\" onkeydown=\"return CKEDITOR.tools.callFunction(1264,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1265,event);\" onclick=\"CKEDITOR.tools.callFunction(1266,this);return false;\"><span class=\"cke_button_icon cke_button__exportpdf_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -528px;background-size:auto;\">&nbsp;</span><span id=\"cke_736_label\" class=\"cke_button_label cke_button__exportpdf_label\" aria-hidden=\"false\">Export to PDF</span><span id=\"cke_736_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_737\" class=\"cke_button cke_button__preview cke_button_off\" href=\"javascript:void('预览')\" title=\"预览\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_737_label\" aria-describedby=\"cke_737_description\" aria-haspopup=\"false\" aria-disabled=\"false\" onkeydown=\"return CKEDITOR.tools.callFunction(1267,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1268,event);\" onclick=\"CKEDITOR.tools.callFunction(1269,this);return false;\"><span class=\"cke_button_icon cke_button__preview_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -1680px;background-size:auto;\">&nbsp;</span><span id=\"cke_737_label\" class=\"cke_button_label cke_button__preview_label\" aria-hidden=\"false\">预览</span><span id=\"cke_737_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_738\" class=\"cke_button cke_button__print cke_button_off\" href=\"javascript:void('打印')\" title=\"打印\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_738_label\" aria-describedby=\"cke_738_description\" aria-haspopup=\"false\" aria-disabled=\"false\" onkeydown=\"return CKEDITOR.tools.callFunction(1270,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1271,event);\" onclick=\"CKEDITOR.tools.callFunction(1272,this);return false;\"><span class=\"cke_button_icon cke_button__print_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -1704px;background-size:auto;\">&nbsp;</span><span id=\"cke_738_label\" class=\"cke_button_label cke_button__print_label\" aria-hidden=\"false\">打印</span><span id=\"cke_738_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><span class=\"cke_toolbar_separator\" role=\"separator\"></span><a id=\"cke_739\" class=\"cke_button cke_button__templates cke_button_disabled \" href=\"javascript:void('模板')\" title=\"模板\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_739_label\" aria-describedby=\"cke_739_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1273,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1274,event);\" onclick=\"CKEDITOR.tools.callFunction(1275,this);return false;\"><span class=\"cke_button_icon cke_button__templates_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -456px;background-size:auto;\">&nbsp;</span><span id=\"cke_739_label\" class=\"cke_button_label cke_button__templates_label\" aria-hidden=\"false\">模板</span><span id=\"cke_739_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a></span><span class=\"cke_toolbar_end\"></span></span><span id=\"cke_740\" class=\"cke_toolbar\" aria-labelledby=\"cke_740_label\" role=\"toolbar\"><span id=\"cke_740_label\" class=\"cke_voice_label\">剪贴板/撤销</span><span class=\"cke_toolbar_start\"></span><span class=\"cke_toolgroup\" role=\"presentation\"><a id=\"cke_741\" class=\"cke_button cke_button__cut cke_button_disabled \" href=\"javascript:void('剪切')\" title=\"剪切 (Ctrl+X)\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_741_label\" aria-describedby=\"cke_741_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1276,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1277,event);\" onclick=\"CKEDITOR.tools.callFunction(1278,this);return false;\"><span class=\"cke_button_icon cke_button__cut_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -312px;background-size:auto;\">&nbsp;</span><span id=\"cke_741_label\" class=\"cke_button_label cke_button__cut_label\" aria-hidden=\"false\">剪切</span><span id=\"cke_741_description\" class=\"cke_button_label\" aria-hidden=\"false\">&nbsp;快捷键 Ctrl+X</span></a><a id=\"cke_742\" class=\"cke_button cke_button__copy cke_button_disabled \" href=\"javascript:void('复制')\" title=\"复制 (Ctrl+C)\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_742_label\" aria-describedby=\"cke_742_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1279,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1280,event);\" onclick=\"CKEDITOR.tools.callFunction(1281,this);return false;\"><span class=\"cke_button_icon cke_button__copy_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -264px;background-size:auto;\">&nbsp;</span><span id=\"cke_742_label\" class=\"cke_button_label cke_button__copy_label\" aria-hidden=\"false\">复制</span><span id=\"cke_742_description\" class=\"cke_button_label\" aria-hidden=\"false\">&nbsp;快捷键 Ctrl+C</span></a><a id=\"cke_743\" class=\"cke_button cke_button__paste cke_button_disabled \" href=\"javascript:void('粘贴')\" title=\"粘贴 (Ctrl+V)\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_743_label\" aria-describedby=\"cke_743_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1282,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1283,event);\" onclick=\"CKEDITOR.tools.callFunction(1284,this);return false;\"><span class=\"cke_button_icon cke_button__paste_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -360px;background-size:auto;\">&nbsp;</span><span id=\"cke_743_label\" class=\"cke_button_label cke_button__paste_label\" aria-hidden=\"false\">粘贴</span><span id=\"cke_743_description\" class=\"cke_button_label\" aria-hidden=\"false\">&nbsp;快捷键 Ctrl+V</span></a><a id=\"cke_744\" class=\"cke_button cke_button__pastetext cke_button_disabled \" href=\"javascript:void('粘贴为无格式文本')\" title=\"粘贴为无格式文本 (Ctrl+Shift+V)\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_744_label\" aria-describedby=\"cke_744_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1285,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1286,event);\" onclick=\"CKEDITOR.tools.callFunction(1287,this);return false;\"><span class=\"cke_button_icon cke_button__pastetext_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -1584px;background-size:auto;\">&nbsp;</span><span id=\"cke_744_label\" class=\"cke_button_label cke_button__pastetext_label\" aria-hidden=\"false\">粘贴为无格式文本</span><span id=\"cke_744_description\" class=\"cke_button_label\" aria-hidden=\"false\">&nbsp;快捷键 Ctrl+Shift+V</span></a><a id=\"cke_745\" class=\"cke_button cke_button__pastefromword cke_button_disabled \" href=\"javascript:void('从 MS Word 粘贴')\" title=\"从 MS Word 粘贴\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_745_label\" aria-describedby=\"cke_745_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1288,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1289,event);\" onclick=\"CKEDITOR.tools.callFunction(1290,this);return false;\"><span class=\"cke_button_icon cke_button__pastefromword_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -1632px;background-size:auto;\">&nbsp;</span><span id=\"cke_745_label\" class=\"cke_button_label cke_button__pastefromword_label\" aria-hidden=\"false\">从 MS Word 粘贴</span><span id=\"cke_745_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><span class=\"cke_toolbar_separator\" role=\"separator\"></span><a id=\"cke_746\" class=\"cke_button cke_button__undo cke_button_disabled \" href=\"javascript:void('撤消')\" title=\"撤消 (Ctrl+Z)\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_746_label\" aria-describedby=\"cke_746_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1291,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1292,event);\" onclick=\"CKEDITOR.tools.callFunction(1293,this);return false;\"><span class=\"cke_button_icon cke_button__undo_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -2040px;background-size:auto;\">&nbsp;</span><span id=\"cke_746_label\" class=\"cke_button_label cke_button__undo_label\" aria-hidden=\"false\">撤消</span><span id=\"cke_746_description\" class=\"cke_button_label\" aria-hidden=\"false\">&nbsp;快捷键 Ctrl+Z</span></a><a id=\"cke_747\" class=\"cke_button cke_button__redo cke_button_disabled \" href=\"javascript:void('重做')\" title=\"重做 (Ctrl+Y)\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_747_label\" aria-describedby=\"cke_747_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1294,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1295,event);\" onclick=\"CKEDITOR.tools.callFunction(1296,this);return false;\"><span class=\"cke_button_icon cke_button__redo_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -1992px;background-size:auto;\">&nbsp;</span><span id=\"cke_747_label\" class=\"cke_button_label cke_button__redo_label\" aria-hidden=\"false\">重做</span><span id=\"cke_747_description\" class=\"cke_button_label\" aria-hidden=\"false\">&nbsp;快捷键 Ctrl+Y</span></a></span><span class=\"cke_toolbar_end\"></span></span><span id=\"cke_748\" class=\"cke_toolbar\" aria-labelledby=\"cke_748_label\" role=\"toolbar\"><span id=\"cke_748_label\" class=\"cke_voice_label\">编辑</span><span class=\"cke_toolbar_start\"></span><span class=\"cke_toolgroup\" role=\"presentation\"><a id=\"cke_749\" class=\"cke_button cke_button__find cke_button_off\" href=\"javascript:void('查找')\" title=\"查找\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_749_label\" aria-describedby=\"cke_749_description\" aria-haspopup=\"false\" aria-disabled=\"false\" onkeydown=\"return CKEDITOR.tools.callFunction(1297,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1298,event);\" onclick=\"CKEDITOR.tools.callFunction(1299,this);return false;\"><span class=\"cke_button_icon cke_button__find_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -576px;background-size:auto;\">&nbsp;</span><span id=\"cke_749_label\" class=\"cke_button_label cke_button__find_label\" aria-hidden=\"false\">查找</span><span id=\"cke_749_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_750\" class=\"cke_button cke_button__replace cke_button_disabled \" href=\"javascript:void('替换')\" title=\"替换\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_750_label\" aria-describedby=\"cke_750_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1300,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1301,event);\" onclick=\"CKEDITOR.tools.callFunction(1302,this);return false;\"><span class=\"cke_button_icon cke_button__replace_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -600px;background-size:auto;\">&nbsp;</span><span id=\"cke_750_label\" class=\"cke_button_label cke_button__replace_label\" aria-hidden=\"false\">替换</span><span id=\"cke_750_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><span class=\"cke_toolbar_separator\" role=\"separator\"></span><a id=\"cke_751\" class=\"cke_button cke_button__selectall cke_button_disabled \" href=\"javascript:void('全选')\" title=\"全选\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_751_label\" aria-describedby=\"cke_751_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1303,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1304,event);\" onclick=\"CKEDITOR.tools.callFunction(1305,this);return false;\"><span class=\"cke_button_icon cke_button__selectall_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -1776px;background-size:auto;\">&nbsp;</span><span id=\"cke_751_label\" class=\"cke_button_label cke_button__selectall_label\" aria-hidden=\"false\">全选</span><span id=\"cke_751_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><span class=\"cke_toolbar_separator\" role=\"separator\"></span><a id=\"cke_752\" class=\"cke_button cke_button__scayt cke_button_expandable cke_button_disabled\" href=\"javascript:void('即时拼写检查')\" title=\"即时拼写检查\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_752_label\" aria-describedby=\"cke_752_description\" aria-haspopup=\"menu\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1306,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1307,event);\" onclick=\"CKEDITOR.tools.callFunction(1308,this);return false;\" aria-expanded=\"false\"><span class=\"cke_button_icon cke_button__scayt_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -1920px;background-size:auto;\">&nbsp;</span><span id=\"cke_752_label\" class=\"cke_button_label cke_button__scayt_label\" aria-hidden=\"false\">即时拼写检查</span><span id=\"cke_752_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span><span class=\"cke_button_arrow\"></span></a></span><span class=\"cke_toolbar_end\"></span></span><span id=\"cke_753\" class=\"cke_toolbar cke_toolbar_last\" aria-labelledby=\"cke_753_label\" role=\"toolbar\"><span id=\"cke_753_label\" class=\"cke_voice_label\">表单</span><span class=\"cke_toolbar_start\"></span><span class=\"cke_toolgroup\" role=\"presentation\"><a id=\"cke_754\" class=\"cke_button cke_button__form cke_button_disabled \" href=\"javascript:void('表单')\" title=\"表单\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_754_label\" aria-describedby=\"cke_754_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1309,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1310,event);\" onclick=\"CKEDITOR.tools.callFunction(1311,this);return false;\"><span class=\"cke_button_icon cke_button__form_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -696px;background-size:auto;\">&nbsp;</span><span id=\"cke_754_label\" class=\"cke_button_label cke_button__form_label\" aria-hidden=\"false\">表单</span><span id=\"cke_754_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_755\" class=\"cke_button cke_button__checkbox cke_button_disabled \" href=\"javascript:void('复选框')\" title=\"复选框\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_755_label\" aria-describedby=\"cke_755_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1312,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1313,event);\" onclick=\"CKEDITOR.tools.callFunction(1314,this);return false;\"><span class=\"cke_button_icon cke_button__checkbox_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -672px;background-size:auto;\">&nbsp;</span><span id=\"cke_755_label\" class=\"cke_button_label cke_button__checkbox_label\" aria-hidden=\"false\">复选框</span><span id=\"cke_755_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_756\" class=\"cke_button cke_button__radio cke_button_disabled \" href=\"javascript:void('单选按钮')\" title=\"单选按钮\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_756_label\" aria-describedby=\"cke_756_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1315,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1316,event);\" onclick=\"CKEDITOR.tools.callFunction(1317,this);return false;\"><span class=\"cke_button_icon cke_button__radio_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -768px;background-size:auto;\">&nbsp;</span><span id=\"cke_756_label\" class=\"cke_button_label cke_button__radio_label\" aria-hidden=\"false\">单选按钮</span><span id=\"cke_756_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_757\" class=\"cke_button cke_button__textfield cke_button_disabled \" href=\"javascript:void('单行文本')\" title=\"单行文本\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_757_label\" aria-describedby=\"cke_757_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1318,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1319,event);\" onclick=\"CKEDITOR.tools.callFunction(1320,this);return false;\"><span class=\"cke_button_icon cke_button__textfield_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -912px;background-size:auto;\">&nbsp;</span><span id=\"cke_757_label\" class=\"cke_button_label cke_button__textfield_label\" aria-hidden=\"false\">单行文本</span><span id=\"cke_757_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_758\" class=\"cke_button cke_button__textarea cke_button_disabled \" href=\"javascript:void('多行文本')\" title=\"多行文本\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_758_label\" aria-describedby=\"cke_758_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1321,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1322,event);\" onclick=\"CKEDITOR.tools.callFunction(1323,this);return false;\"><span class=\"cke_button_icon cke_button__textarea_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -864px;background-size:auto;\">&nbsp;</span><span id=\"cke_758_label\" class=\"cke_button_label cke_button__textarea_label\" aria-hidden=\"false\">多行文本</span><span id=\"cke_758_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_759\" class=\"cke_button cke_button__select cke_button_disabled \" href=\"javascript:void('列表/菜单')\" title=\"列表/菜单\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_759_label\" aria-describedby=\"cke_759_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1324,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1325,event);\" onclick=\"CKEDITOR.tools.callFunction(1326,this);return false;\"><span class=\"cke_button_icon cke_button__select_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -816px;background-size:auto;\">&nbsp;</span><span id=\"cke_759_label\" class=\"cke_button_label cke_button__select_label\" aria-hidden=\"false\">列表/菜单</span><span id=\"cke_759_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_760\" class=\"cke_button cke_button__button cke_button_disabled \" href=\"javascript:void('按钮')\" title=\"按钮\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_760_label\" aria-describedby=\"cke_760_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1327,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1328,event);\" onclick=\"CKEDITOR.tools.callFunction(1329,this);return false;\"><span class=\"cke_button_icon cke_button__button_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -648px;background-size:auto;\">&nbsp;</span><span id=\"cke_760_label\" class=\"cke_button_label cke_button__button_label\" aria-hidden=\"false\">按钮</span><span id=\"cke_760_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_761\" class=\"cke_button cke_button__imagebutton cke_button_disabled \" href=\"javascript:void('图像按钮')\" title=\"图像按钮\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_761_label\" aria-describedby=\"cke_761_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1330,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1331,event);\" onclick=\"CKEDITOR.tools.callFunction(1332,this);return false;\"><span class=\"cke_button_icon cke_button__imagebutton_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -744px;background-size:auto;\">&nbsp;</span><span id=\"cke_761_label\" class=\"cke_button_label cke_button__imagebutton_label\" aria-hidden=\"false\">图像按钮</span><span id=\"cke_761_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_762\" class=\"cke_button cke_button__hiddenfield cke_button_disabled \" href=\"javascript:void('隐藏域')\" title=\"隐藏域\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_762_label\" aria-describedby=\"cke_762_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1333,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1334,event);\" onclick=\"CKEDITOR.tools.callFunction(1335,this);return false;\"><span class=\"cke_button_icon cke_button__hiddenfield_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -720px;background-size:auto;\">&nbsp;</span><span id=\"cke_762_label\" class=\"cke_button_label cke_button__hiddenfield_label\" aria-hidden=\"false\">隐藏域</span><span id=\"cke_762_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a></span><span class=\"cke_toolbar_end\"></span></span><span class=\"cke_toolbar_break\"></span><span id=\"cke_763\" class=\"cke_toolbar\" aria-labelledby=\"cke_763_label\" role=\"toolbar\"><span id=\"cke_763_label\" class=\"cke_voice_label\">基本格式</span><span class=\"cke_toolbar_start\"></span><span class=\"cke_toolgroup\" role=\"presentation\"><a id=\"cke_764\" class=\"cke_button cke_button__bold cke_button_disabled \" href=\"javascript:void('加粗')\" title=\"加粗 (Ctrl+B)\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_764_label\" aria-describedby=\"cke_764_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1336,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1337,event);\" onclick=\"CKEDITOR.tools.callFunction(1338,this);return false;\"><span class=\"cke_button_icon cke_button__bold_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -24px;background-size:auto;\">&nbsp;</span><span id=\"cke_764_label\" class=\"cke_button_label cke_button__bold_label\" aria-hidden=\"false\">加粗</span><span id=\"cke_764_description\" class=\"cke_button_label\" aria-hidden=\"false\">&nbsp;快捷键 Ctrl+B</span></a><a id=\"cke_765\" class=\"cke_button cke_button__italic cke_button_disabled \" href=\"javascript:void('倾斜')\" title=\"倾斜 (Ctrl+I)\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_765_label\" aria-describedby=\"cke_765_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1339,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1340,event);\" onclick=\"CKEDITOR.tools.callFunction(1341,this);return false;\"><span class=\"cke_button_icon cke_button__italic_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -48px;background-size:auto;\">&nbsp;</span><span id=\"cke_765_label\" class=\"cke_button_label cke_button__italic_label\" aria-hidden=\"false\">倾斜</span><span id=\"cke_765_description\" class=\"cke_button_label\" aria-hidden=\"false\">&nbsp;快捷键 Ctrl+I</span></a><a id=\"cke_766\" class=\"cke_button cke_button__underline cke_button_disabled \" href=\"javascript:void('下划线')\" title=\"下划线 (Ctrl+U)\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_766_label\" aria-describedby=\"cke_766_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1342,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1343,event);\" onclick=\"CKEDITOR.tools.callFunction(1344,this);return false;\"><span class=\"cke_button_icon cke_button__underline_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -144px;background-size:auto;\">&nbsp;</span><span id=\"cke_766_label\" class=\"cke_button_label cke_button__underline_label\" aria-hidden=\"false\">下划线</span><span id=\"cke_766_description\" class=\"cke_button_label\" aria-hidden=\"false\">&nbsp;快捷键 Ctrl+U</span></a><a id=\"cke_767\" class=\"cke_button cke_button__strike cke_button_disabled \" href=\"javascript:void('删除线')\" title=\"删除线\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_767_label\" aria-describedby=\"cke_767_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1345,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1346,event);\" onclick=\"CKEDITOR.tools.callFunction(1347,this);return false;\"><span class=\"cke_button_icon cke_button__strike_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -72px;background-size:auto;\">&nbsp;</span><span id=\"cke_767_label\" class=\"cke_button_label cke_button__strike_label\" aria-hidden=\"false\">删除线</span><span id=\"cke_767_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_768\" class=\"cke_button cke_button__subscript cke_button_disabled \" href=\"javascript:void('下标')\" title=\"下标\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_768_label\" aria-describedby=\"cke_768_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1348,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1349,event);\" onclick=\"CKEDITOR.tools.callFunction(1350,this);return false;\"><span class=\"cke_button_icon cke_button__subscript_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -96px;background-size:auto;\">&nbsp;</span><span id=\"cke_768_label\" class=\"cke_button_label cke_button__subscript_label\" aria-hidden=\"false\">下标</span><span id=\"cke_768_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_769\" class=\"cke_button cke_button__superscript cke_button_disabled \" href=\"javascript:void('上标')\" title=\"上标\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_769_label\" aria-describedby=\"cke_769_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1351,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1352,event);\" onclick=\"CKEDITOR.tools.callFunction(1353,this);return false;\"><span class=\"cke_button_icon cke_button__superscript_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -120px;background-size:auto;\">&nbsp;</span><span id=\"cke_769_label\" class=\"cke_button_label cke_button__superscript_label\" aria-hidden=\"false\">上标</span><span id=\"cke_769_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><span class=\"cke_toolbar_separator\" role=\"separator\"></span><a id=\"cke_770\" class=\"cke_button cke_button__copyformatting cke_button_disabled \" href=\"javascript:void('格式刷')\" title=\"格式刷 (Ctrl+Shift+C)\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_770_label\" aria-describedby=\"cke_770_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1354,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1355,event);\" onclick=\"CKEDITOR.tools.callFunction(1356,this);return false;\"><span class=\"cke_button_icon cke_button__copyformatting_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -480px;background-size:auto;\">&nbsp;</span><span id=\"cke_770_label\" class=\"cke_button_label cke_button__copyformatting_label\" aria-hidden=\"false\">格式刷</span><span id=\"cke_770_description\" class=\"cke_button_label\" aria-hidden=\"false\">&nbsp;快捷键 Ctrl+Shift+C</span></a><a id=\"cke_771\" class=\"cke_button cke_button__removeformat cke_button_disabled \" href=\"javascript:void('清除格式')\" title=\"清除格式\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_771_label\" aria-describedby=\"cke_771_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1357,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1358,event);\" onclick=\"CKEDITOR.tools.callFunction(1359,this);return false;\"><span class=\"cke_button_icon cke_button__removeformat_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -1728px;background-size:auto;\">&nbsp;</span><span id=\"cke_771_label\" class=\"cke_button_label cke_button__removeformat_label\" aria-hidden=\"false\">清除格式</span><span id=\"cke_771_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a></span><span class=\"cke_toolbar_end\"></span></span><span id=\"cke_772\" class=\"cke_toolbar\" aria-labelledby=\"cke_772_label\" role=\"toolbar\"><span id=\"cke_772_label\" class=\"cke_voice_label\">段落</span><span class=\"cke_toolbar_start\"></span><span class=\"cke_toolgroup\" role=\"presentation\"><a id=\"cke_773\" class=\"cke_button cke_button__numberedlist cke_button_disabled \" href=\"javascript:void('编号列表')\" title=\"编号列表\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_773_label\" aria-describedby=\"cke_773_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1360,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1361,event);\" onclick=\"CKEDITOR.tools.callFunction(1362,this);return false;\"><span class=\"cke_button_icon cke_button__numberedlist_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -1416px;background-size:auto;\">&nbsp;</span><span id=\"cke_773_label\" class=\"cke_button_label cke_button__numberedlist_label\" aria-hidden=\"false\">编号列表</span><span id=\"cke_773_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_774\" class=\"cke_button cke_button__bulletedlist cke_button_disabled \" href=\"javascript:void('项目列表')\" title=\"项目列表\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_774_label\" aria-describedby=\"cke_774_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1363,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1364,event);\" onclick=\"CKEDITOR.tools.callFunction(1365,this);return false;\"><span class=\"cke_button_icon cke_button__bulletedlist_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -1368px;background-size:auto;\">&nbsp;</span><span id=\"cke_774_label\" class=\"cke_button_label cke_button__bulletedlist_label\" aria-hidden=\"false\">项目列表</span><span id=\"cke_774_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><span class=\"cke_toolbar_separator\" role=\"separator\"></span><a id=\"cke_775\" class=\"cke_button cke_button__outdent cke_button_disabled \" href=\"javascript:void('减少缩进量')\" title=\"减少缩进量\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_775_label\" aria-describedby=\"cke_775_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1366,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1367,event);\" onclick=\"CKEDITOR.tools.callFunction(1368,this);return false;\"><span class=\"cke_button_icon cke_button__outdent_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -1080px;background-size:auto;\">&nbsp;</span><span id=\"cke_775_label\" class=\"cke_button_label cke_button__outdent_label\" aria-hidden=\"false\">减少缩进量</span><span id=\"cke_775_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_776\" class=\"cke_button cke_button__indent cke_button_disabled \" href=\"javascript:void('增加缩进量')\" title=\"增加缩进量\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_776_label\" aria-describedby=\"cke_776_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1369,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1370,event);\" onclick=\"CKEDITOR.tools.callFunction(1371,this);return false;\"><span class=\"cke_button_icon cke_button__indent_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -1032px;background-size:auto;\">&nbsp;</span><span id=\"cke_776_label\" class=\"cke_button_label cke_button__indent_label\" aria-hidden=\"false\">增加缩进量</span><span id=\"cke_776_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><span class=\"cke_toolbar_separator\" role=\"separator\"></span><a id=\"cke_777\" class=\"cke_button cke_button__blockquote cke_button_disabled \" href=\"javascript:void('块引用')\" title=\"块引用\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_777_label\" aria-describedby=\"cke_777_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1372,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1373,event);\" onclick=\"CKEDITOR.tools.callFunction(1374,this);return false;\"><span class=\"cke_button_icon cke_button__blockquote_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -216px;background-size:auto;\">&nbsp;</span><span id=\"cke_777_label\" class=\"cke_button_label cke_button__blockquote_label\" aria-hidden=\"false\">块引用</span><span id=\"cke_777_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_778\" class=\"cke_button cke_button__creatediv cke_button_disabled \" href=\"javascript:void('创建 DIV 容器')\" title=\"创建 DIV 容器\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_778_label\" aria-describedby=\"cke_778_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1375,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1376,event);\" onclick=\"CKEDITOR.tools.callFunction(1377,this);return false;\"><span class=\"cke_button_icon cke_button__creatediv_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -504px;background-size:auto;\">&nbsp;</span><span id=\"cke_778_label\" class=\"cke_button_label cke_button__creatediv_label\" aria-hidden=\"false\">创建 DIV 容器</span><span id=\"cke_778_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><span class=\"cke_toolbar_separator\" role=\"separator\"></span><a id=\"cke_779\" class=\"cke_button cke_button__justifyleft cke_button_disabled \" href=\"javascript:void('左对齐')\" title=\"左对齐\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_779_label\" aria-describedby=\"cke_779_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1378,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1379,event);\" onclick=\"CKEDITOR.tools.callFunction(1380,this);return false;\"><span class=\"cke_button_icon cke_button__justifyleft_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -1176px;background-size:auto;\">&nbsp;</span><span id=\"cke_779_label\" class=\"cke_button_label cke_button__justifyleft_label\" aria-hidden=\"false\">左对齐</span><span id=\"cke_779_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_780\" class=\"cke_button cke_button__justifycenter cke_button_disabled \" href=\"javascript:void('居中')\" title=\"居中\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_780_label\" aria-describedby=\"cke_780_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1381,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1382,event);\" onclick=\"CKEDITOR.tools.callFunction(1383,this);return false;\"><span class=\"cke_button_icon cke_button__justifycenter_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -1152px;background-size:auto;\">&nbsp;</span><span id=\"cke_780_label\" class=\"cke_button_label cke_button__justifycenter_label\" aria-hidden=\"false\">居中</span><span id=\"cke_780_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_781\" class=\"cke_button cke_button__justifyright cke_button_disabled \" href=\"javascript:void('右对齐')\" title=\"右对齐\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_781_label\" aria-describedby=\"cke_781_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1384,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1385,event);\" onclick=\"CKEDITOR.tools.callFunction(1386,this);return false;\"><span class=\"cke_button_icon cke_button__justifyright_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -1200px;background-size:auto;\">&nbsp;</span><span id=\"cke_781_label\" class=\"cke_button_label cke_button__justifyright_label\" aria-hidden=\"false\">右对齐</span><span id=\"cke_781_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_782\" class=\"cke_button cke_button__justifyblock cke_button_disabled \" href=\"javascript:void('两端对齐')\" title=\"两端对齐\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_782_label\" aria-describedby=\"cke_782_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1387,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1388,event);\" onclick=\"CKEDITOR.tools.callFunction(1389,this);return false;\"><span class=\"cke_button_icon cke_button__justifyblock_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -1128px;background-size:auto;\">&nbsp;</span><span id=\"cke_782_label\" class=\"cke_button_label cke_button__justifyblock_label\" aria-hidden=\"false\">两端对齐</span><span id=\"cke_782_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><span class=\"cke_toolbar_separator\" role=\"separator\"></span><a id=\"cke_783\" class=\"cke_button cke_button__bidiltr cke_button_disabled \" href=\"javascript:void('文字方向为从左至右')\" title=\"文字方向为从左至右\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_783_label\" aria-describedby=\"cke_783_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1390,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1391,event);\" onclick=\"CKEDITOR.tools.callFunction(1392,this);return false;\"><span class=\"cke_button_icon cke_button__bidiltr_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -168px;background-size:auto;\">&nbsp;</span><span id=\"cke_783_label\" class=\"cke_button_label cke_button__bidiltr_label\" aria-hidden=\"false\">文字方向为从左至右</span><span id=\"cke_783_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_784\" class=\"cke_button cke_button__bidirtl cke_button_disabled \" href=\"javascript:void('文字方向为从右至左')\" title=\"文字方向为从右至左\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_784_label\" aria-describedby=\"cke_784_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1393,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1394,event);\" onclick=\"CKEDITOR.tools.callFunction(1395,this);return false;\"><span class=\"cke_button_icon cke_button__bidirtl_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -192px;background-size:auto;\">&nbsp;</span><span id=\"cke_784_label\" class=\"cke_button_label cke_button__bidirtl_label\" aria-hidden=\"false\">文字方向为从右至左</span><span id=\"cke_784_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_785\" class=\"cke_button cke_button__language cke_button_disabled cke_button_expandable \" href=\"javascript:void('设置语言')\" title=\"设置语言\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_785_label\" aria-describedby=\"cke_785_description\" aria-haspopup=\"menu\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1396,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1397,event);\" onclick=\"CKEDITOR.tools.callFunction(1398,this);return false;\"><span class=\"cke_button_icon cke_button__language_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -1224px;background-size:auto;\">&nbsp;</span><span id=\"cke_785_label\" class=\"cke_button_label cke_button__language_label\" aria-hidden=\"false\">设置语言</span><span id=\"cke_785_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span><span class=\"cke_button_arrow\"></span></a></span><span class=\"cke_toolbar_end\"></span></span><span id=\"cke_786\" class=\"cke_toolbar\" aria-labelledby=\"cke_786_label\" role=\"toolbar\"><span id=\"cke_786_label\" class=\"cke_voice_label\">链接</span><span class=\"cke_toolbar_start\"></span><span class=\"cke_toolgroup\" role=\"presentation\"><a id=\"cke_787\" class=\"cke_button cke_button__link cke_button_disabled \" href=\"javascript:void('插入/编辑超链接')\" title=\"插入/编辑超链接 (Ctrl+K)\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_787_label\" aria-describedby=\"cke_787_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1399,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1400,event);\" onclick=\"CKEDITOR.tools.callFunction(1401,this);return false;\"><span class=\"cke_button_icon cke_button__link_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -1296px;background-size:auto;\">&nbsp;</span><span id=\"cke_787_label\" class=\"cke_button_label cke_button__link_label\" aria-hidden=\"false\">插入/编辑超链接</span><span id=\"cke_787_description\" class=\"cke_button_label\" aria-hidden=\"false\">&nbsp;快捷键 Ctrl+K</span></a><a id=\"cke_788\" class=\"cke_button cke_button__unlink cke_button_disabled \" href=\"javascript:void('取消超链接')\" title=\"取消超链接\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_788_label\" aria-describedby=\"cke_788_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1402,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1403,event);\" onclick=\"CKEDITOR.tools.callFunction(1404,this);return false;\"><span class=\"cke_button_icon cke_button__unlink_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -1320px;background-size:auto;\">&nbsp;</span><span id=\"cke_788_label\" class=\"cke_button_label cke_button__unlink_label\" aria-hidden=\"false\">取消超链接</span><span id=\"cke_788_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_789\" class=\"cke_button cke_button__anchor cke_button_disabled \" href=\"javascript:void('插入/编辑锚点链接')\" title=\"插入/编辑锚点链接\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_789_label\" aria-describedby=\"cke_789_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1405,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1406,event);\" onclick=\"CKEDITOR.tools.callFunction(1407,this);return false;\"><span class=\"cke_button_icon cke_button__anchor_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -1272px;background-size:auto;\">&nbsp;</span><span id=\"cke_789_label\" class=\"cke_button_label cke_button__anchor_label\" aria-hidden=\"false\">插入/编辑锚点链接</span><span id=\"cke_789_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a></span><span class=\"cke_toolbar_end\"></span></span><span id=\"cke_790\" class=\"cke_toolbar cke_toolbar_last\" aria-labelledby=\"cke_790_label\" role=\"toolbar\"><span id=\"cke_790_label\" class=\"cke_voice_label\">插入</span><span class=\"cke_toolbar_start\"></span><span class=\"cke_toolgroup\" role=\"presentation\"><a id=\"cke_791\" class=\"cke_button cke_button__easyimageupload cke_button_disabled \" href=\"javascript:void('上传图片')\" title=\"上传图片\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_791_label\" aria-describedby=\"cke_791_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1408,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1409,event);\" onclick=\"CKEDITOR.tools.callFunction(1410,this);return false;\"><span class=\"cke_button_icon cke_button__easyimageupload_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -2208px;background-size:auto;\">&nbsp;</span><span id=\"cke_791_label\" class=\"cke_button_label cke_button__easyimageupload_label\" aria-hidden=\"false\">上传图片</span><span id=\"cke_791_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_792\" class=\"cke_button cke_button__flash cke_button_disabled \" href=\"javascript:void('Flash')\" title=\"Flash\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_792_label\" aria-describedby=\"cke_792_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1411,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1412,event);\" onclick=\"CKEDITOR.tools.callFunction(1413,this);return false;\"><span class=\"cke_button_icon cke_button__flash_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -624px;background-size:auto;\">&nbsp;</span><span id=\"cke_792_label\" class=\"cke_button_label cke_button__flash_label\" aria-hidden=\"false\">Flash</span><span id=\"cke_792_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_793\" class=\"cke_button cke_button__table cke_button_disabled \" href=\"javascript:void('表格')\" title=\"表格\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_793_label\" aria-describedby=\"cke_793_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1414,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1415,event);\" onclick=\"CKEDITOR.tools.callFunction(1416,this);return false;\"><span class=\"cke_button_icon cke_button__table_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -1944px;background-size:auto;\">&nbsp;</span><span id=\"cke_793_label\" class=\"cke_button_label cke_button__table_label\" aria-hidden=\"false\">表格</span><span id=\"cke_793_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_794\" class=\"cke_button cke_button__horizontalrule cke_button_disabled \" href=\"javascript:void('插入水平线')\" title=\"插入水平线\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_794_label\" aria-describedby=\"cke_794_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1417,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1418,event);\" onclick=\"CKEDITOR.tools.callFunction(1419,this);return false;\"><span class=\"cke_button_icon cke_button__horizontalrule_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -936px;background-size:auto;\">&nbsp;</span><span id=\"cke_794_label\" class=\"cke_button_label cke_button__horizontalrule_label\" aria-hidden=\"false\">插入水平线</span><span id=\"cke_794_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_795\" class=\"cke_button cke_button__smiley cke_button_disabled \" href=\"javascript:void('表情符')\" title=\"表情符\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_795_label\" aria-describedby=\"cke_795_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1420,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1421,event);\" onclick=\"CKEDITOR.tools.callFunction(1422,this);return false;\"><span class=\"cke_button_icon cke_button__smiley_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -1104px;background-size:auto;\">&nbsp;</span><span id=\"cke_795_label\" class=\"cke_button_label cke_button__smiley_label\" aria-hidden=\"false\">表情符</span><span id=\"cke_795_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_796\" class=\"cke_button cke_button__specialchar cke_button_disabled \" href=\"javascript:void('插入特殊符号')\" title=\"插入特殊符号\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_796_label\" aria-describedby=\"cke_796_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1423,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1424,event);\" onclick=\"CKEDITOR.tools.callFunction(1425,this);return false;\"><span class=\"cke_button_icon cke_button__specialchar_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -1896px;background-size:auto;\">&nbsp;</span><span id=\"cke_796_label\" class=\"cke_button_label cke_button__specialchar_label\" aria-hidden=\"false\">插入特殊符号</span><span id=\"cke_796_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_797\" class=\"cke_button cke_button__pagebreak cke_button_disabled \" href=\"javascript:void('插入打印分页符')\" title=\"插入打印分页符\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_797_label\" aria-describedby=\"cke_797_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1426,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1427,event);\" onclick=\"CKEDITOR.tools.callFunction(1428,this);return false;\"><span class=\"cke_button_icon cke_button__pagebreak_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -1536px;background-size:auto;\">&nbsp;</span><span id=\"cke_797_label\" class=\"cke_button_label cke_button__pagebreak_label\" aria-hidden=\"false\">插入打印分页符</span><span id=\"cke_797_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_798\" class=\"cke_button cke_button__iframe cke_button_disabled \" href=\"javascript:void('IFrame')\" title=\"IFrame\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_798_label\" aria-describedby=\"cke_798_description\" aria-haspopup=\"false\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1429,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1430,event);\" onclick=\"CKEDITOR.tools.callFunction(1431,this);return false;\"><span class=\"cke_button_icon cke_button__iframe_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -960px;background-size:auto;\">&nbsp;</span><span id=\"cke_798_label\" class=\"cke_button_label cke_button__iframe_label\" aria-hidden=\"false\">IFrame</span><span id=\"cke_798_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a></span><span class=\"cke_toolbar_end\"></span></span><span class=\"cke_toolbar_break\"></span><span id=\"cke_799\" class=\"cke_toolbar\" aria-labelledby=\"cke_799_label\" role=\"toolbar\"><span id=\"cke_799_label\" class=\"cke_voice_label\">样式</span><span class=\"cke_toolbar_start\"></span><span id=\"cke_728\" class=\"cke_combo cke_combo__styles cke_combo_disabled\" role=\"presentation\" aria-disabled=\"true\"><span id=\"cke_728_label\" class=\"cke_combo_label\">样式</span><a class=\"cke_combo_button\" title=\"样式\" tabindex=\"-1\" href=\"javascript:void('样式')\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_728_label\" aria-haspopup=\"listbox\" onkeydown=\"return CKEDITOR.tools.callFunction(1433,event,this);\" onfocus=\"return CKEDITOR.tools.callFunction(1434,event);\" onclick=\"CKEDITOR.tools.callFunction(1432,this);return false;\" aria-expanded=\"false\"><span id=\"cke_728_text\" class=\"cke_combo_text cke_combo_inlinelabel\">样式</span><span class=\"cke_combo_open\"><span class=\"cke_combo_arrow\"></span></span></a></span><span id=\"cke_729\" class=\"cke_combo cke_combo__format cke_combo_disabled\" role=\"presentation\" aria-disabled=\"true\"><span id=\"cke_729_label\" class=\"cke_combo_label\">格式</span><a class=\"cke_combo_button\" title=\"格式\" tabindex=\"-1\" href=\"javascript:void('格式')\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_729_label\" aria-haspopup=\"listbox\" onkeydown=\"return CKEDITOR.tools.callFunction(1436,event,this);\" onfocus=\"return CKEDITOR.tools.callFunction(1437,event);\" onclick=\"CKEDITOR.tools.callFunction(1435,this);return false;\" aria-expanded=\"false\"><span id=\"cke_729_text\" class=\"cke_combo_text cke_combo_inlinelabel\">格式</span><span class=\"cke_combo_open\"><span class=\"cke_combo_arrow\"></span></span></a></span><span id=\"cke_730\" class=\"cke_combo cke_combo__font cke_combo_disabled\" role=\"presentation\" aria-disabled=\"true\"><span id=\"cke_730_label\" class=\"cke_combo_label\">字体</span><a class=\"cke_combo_button\" title=\"字体\" tabindex=\"-1\" href=\"javascript:void('字体')\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_730_label\" aria-haspopup=\"listbox\" onkeydown=\"return CKEDITOR.tools.callFunction(1439,event,this);\" onfocus=\"return CKEDITOR.tools.callFunction(1440,event);\" onclick=\"CKEDITOR.tools.callFunction(1438,this);return false;\" aria-expanded=\"false\"><span id=\"cke_730_text\" class=\"cke_combo_text cke_combo_inlinelabel\">字体</span><span class=\"cke_combo_open\"><span class=\"cke_combo_arrow\"></span></span></a></span><span id=\"cke_731\" class=\"cke_combo cke_combo__fontsize cke_combo_disabled\" role=\"presentation\" aria-disabled=\"true\"><span id=\"cke_731_label\" class=\"cke_combo_label\">大小</span><a class=\"cke_combo_button\" title=\"大小\" tabindex=\"-1\" href=\"javascript:void('大小')\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_731_label\" aria-haspopup=\"listbox\" onkeydown=\"return CKEDITOR.tools.callFunction(1442,event,this);\" onfocus=\"return CKEDITOR.tools.callFunction(1443,event);\" onclick=\"CKEDITOR.tools.callFunction(1441,this);return false;\" aria-expanded=\"false\"><span id=\"cke_731_text\" class=\"cke_combo_text cke_combo_inlinelabel\">大小</span><span class=\"cke_combo_open\"><span class=\"cke_combo_arrow\"></span></span></a></span><span class=\"cke_toolbar_end\"></span></span><span id=\"cke_800\" class=\"cke_toolbar\" aria-labelledby=\"cke_800_label\" role=\"toolbar\"><span id=\"cke_800_label\" class=\"cke_voice_label\">颜色</span><span class=\"cke_toolbar_start\"></span><span class=\"cke_toolgroup\" role=\"presentation\"><a id=\"cke_801\" class=\"cke_button cke_button__textcolor cke_button_disabled cke_button_expandable \" href=\"javascript:void('文本颜色')\" title=\"文本颜色\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_801_label\" aria-describedby=\"cke_801_description\" aria-haspopup=\"listbox\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1444,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1445,event);\" onclick=\"CKEDITOR.tools.callFunction(1446,this);return false;\"><span class=\"cke_button_icon cke_button__textcolor_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -408px;background-size:auto;\">&nbsp;</span><span id=\"cke_801_label\" class=\"cke_button_label cke_button__textcolor_label\" aria-hidden=\"false\">文本颜色</span><span id=\"cke_801_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span><span class=\"cke_button_arrow\"></span></a><a id=\"cke_802\" class=\"cke_button cke_button__bgcolor cke_button_disabled cke_button_expandable \" href=\"javascript:void('背景颜色')\" title=\"背景颜色\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_802_label\" aria-describedby=\"cke_802_description\" aria-haspopup=\"listbox\" aria-disabled=\"true\" onkeydown=\"return CKEDITOR.tools.callFunction(1447,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1448,event);\" onclick=\"CKEDITOR.tools.callFunction(1449,this);return false;\"><span class=\"cke_button_icon cke_button__bgcolor_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -384px;background-size:auto;\">&nbsp;</span><span id=\"cke_802_label\" class=\"cke_button_label cke_button__bgcolor_label\" aria-hidden=\"false\">背景颜色</span><span id=\"cke_802_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span><span class=\"cke_button_arrow\"></span></a></span><span class=\"cke_toolbar_end\"></span></span><span id=\"cke_803\" class=\"cke_toolbar\" aria-labelledby=\"cke_803_label\" role=\"toolbar\"><span id=\"cke_803_label\" class=\"cke_voice_label\">工具</span><span class=\"cke_toolbar_start\"></span><span class=\"cke_toolgroup\" role=\"presentation\"><a id=\"cke_804\" class=\"cke_button cke_button__maximize cke_button_off\" href=\"javascript:void('全屏')\" title=\"全屏\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_804_label\" aria-describedby=\"cke_804_description\" aria-haspopup=\"false\" aria-disabled=\"false\" onkeydown=\"return CKEDITOR.tools.callFunction(1450,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1451,event);\" onclick=\"CKEDITOR.tools.callFunction(1452,this);return false;\"><span class=\"cke_button_icon cke_button__maximize_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -1440px;background-size:auto;\">&nbsp;</span><span id=\"cke_804_label\" class=\"cke_button_label cke_button__maximize_label\" aria-hidden=\"false\">全屏</span><span id=\"cke_804_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a><a id=\"cke_805\" class=\"cke_button cke_button__showblocks cke_button_off\" href=\"javascript:void('显示区块')\" title=\"显示区块\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_805_label\" aria-describedby=\"cke_805_description\" aria-haspopup=\"false\" aria-disabled=\"false\" onkeydown=\"return CKEDITOR.tools.callFunction(1453,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1454,event);\" onclick=\"CKEDITOR.tools.callFunction(1455,this);return false;\"><span class=\"cke_button_icon cke_button__showblocks_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 -1824px;background-size:auto;\">&nbsp;</span><span id=\"cke_805_label\" class=\"cke_button_label cke_button__showblocks_label\" aria-hidden=\"false\">显示区块</span><span id=\"cke_805_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a></span><span class=\"cke_toolbar_end\"></span></span><span id=\"cke_806\" class=\"cke_toolbar cke_toolbar_last\" aria-labelledby=\"cke_806_label\" role=\"toolbar\"><span id=\"cke_806_label\" class=\"cke_voice_label\">about</span><span class=\"cke_toolbar_start\"></span><span class=\"cke_toolgroup\" role=\"presentation\"><a id=\"cke_807\" class=\"cke_button cke_button__about cke_button_off\" href=\"javascript:void('关于 CKEditor 4')\" title=\"关于 CKEditor 4\" tabindex=\"-1\" hidefocus=\"true\" role=\"button\" aria-labelledby=\"cke_807_label\" aria-describedby=\"cke_807_description\" aria-haspopup=\"false\" aria-disabled=\"false\" onkeydown=\"return CKEDITOR.tools.callFunction(1456,event);\" onfocus=\"return CKEDITOR.tools.callFunction(1457,event);\" onclick=\"CKEDITOR.tools.callFunction(1458,this);return false;\"><span class=\"cke_button_icon cke_button__about_icon\" style=\"background-image:url('http://dev.o2oa.net/o2_lib/htmleditor/ckeditor4161/plugins/icons.png?t=L4KA');background-position:0 0px;background-size:auto;\">&nbsp;</span><span id=\"cke_807_label\" class=\"cke_button_label cke_button__about_label\" aria-hidden=\"false\">关于 CKEditor 4</span><span id=\"cke_807_description\" class=\"cke_button_label\" aria-hidden=\"false\"></span></a></span><span class=\"cke_toolbar_end\"></span></span></span></span><div id=\"cke_713_contents\" class=\"cke_contents cke_reset\" role=\"presentation\" style=\"height: 200px;\"><span id=\"cke_811\" class=\"cke_voice_label\">按 ALT+0 获得帮助</span><iframe src=\"\" frameborder=\"0\" class=\"cke_wysiwyg_frame cke_reset\" style=\"width: 100%; height: 100%;\" aria-describedby=\"cke_811\" tabindex=\"0\" allowtransparency=\"true\"></iframe></div><span id=\"cke_713_bottom\" class=\"cke_bottom cke_reset_all\" role=\"presentation\" style=\"user-select: none;\"><span id=\"cke_713_resizer\" class=\"cke_resizer cke_resizer_vertical cke_resizer_ltr\" title=\"拖拽以改变大小\" onmousedown=\"CKEDITOR.tools.callFunction(1253, event)\">◢</span><span id=\"cke_713_path_label\" class=\"cke_voice_label\">元素路径</span><span id=\"cke_713_path\" class=\"cke_path\" role=\"group\" aria-labelledby=\"cke_713_path_label\"><span class=\"cke_path_empty\">&nbsp;</span></span></span></div></div></div><div id=\"attachment\" mwftype=\"itmleditor\" style=\"\"><div style=\"border: 1px solid rgb(182, 182, 182); min-height: 180px; background: rgb(255, 255, 255); margin-top: 10px; overflow: hidden;\"><div style=\"height: 40px; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/bg.png&quot;); border-top: 1px solid rgb(255, 255, 255); border-bottom: 1px solid rgb(182, 182, 182);\"><div style=\"overflow: hidden; border-bottom: 1px solid rgb(234, 235, 234); float: left; margin-left: 10px; margin-top: 5px; border-radius: 3px; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/buttonbg.png&quot;);\"><div style=\"height: 26px; border: 1px solid rgb(151, 151, 151); border-radius: 3px; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/buttonbg.png&quot;);\"><div title=\"上传\" style=\"float: left; width: 26px; height: 26px; cursor: default;\"><div style=\"width: 26px; height: 26px; background-repeat: no-repeat; background-position: center center; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/icon/upload_gray.png&quot;);\"></div></div><div title=\"删除\" style=\"float: left; width: 26px; height: 26px; cursor: default;\"><div style=\"width: 26px; height: 26px; background-repeat: no-repeat; background-position: center center; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/icon/delete_gray.png&quot;);\"></div></div><div title=\"替换\" style=\"float: left; width: 26px; height: 26px; cursor: default;\"><div style=\"width: 26px; height: 26px; background-repeat: no-repeat; background-position: center center; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/icon/replace_gray.png&quot;);\"></div></div><div class=\"separateNode\" style=\"width: 1px; height: 16px; margin-top: 5px; margin-left: 5px; margin-right: 5px; border-left: 1px solid rgb(188, 188, 188); background-color: rgb(241, 241, 241); float: left;\"></div><div title=\"下载\" style=\"float: left; width: 26px; height: 26px; cursor: default;\"><div style=\"width: 26px; height: 26px; background-repeat: no-repeat; background-position: center center; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/icon/download_gray.png&quot;);\"></div></div></div></div><div style=\"overflow: hidden; border-bottom: 1px solid rgb(234, 235, 234); float: left; margin-left: 10px; margin-top: 5px; border-radius: 3px; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/buttonbg.png&quot;);\"><div style=\"height: 26px; border: 1px solid rgb(151, 151, 151); border-radius: 3px; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/buttonbg.png&quot;);\"><div title=\"列表\" style=\"float: left; width: 26px; height: 26px; cursor: default;\"><div style=\"width: 26px; height: 26px; background-repeat: no-repeat; background-position: center center; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/icon/list.png&quot;);\"></div></div><div title=\"序列\" style=\"float: left; width: 26px; height: 26px; cursor: default;\"><div style=\"width: 26px; height: 26px; background-repeat: no-repeat; background-position: center center; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/icon/seq.png&quot;);\"></div></div><div title=\"图标\" style=\"float: left; width: 26px; height: 26px; cursor: default; background: url(&quot;../o2_core/o2/widget/$AttachmentController/default/selectedbg.png&quot;);\"><div style=\"width: 26px; height: 26px; background-repeat: no-repeat; background-position: center center; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/icon/icon.png&quot;);\"></div></div><div title=\"预览\" style=\"float: left; width: 26px; height: 26px; cursor: default;\"><div style=\"width: 26px; height: 26px; background-repeat: no-repeat; background-position: center center; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/icon/preview.png&quot;);\"></div></div></div></div><div style=\"overflow: hidden; border-bottom: 1px solid rgb(234, 235, 234); float: right; margin-left: 10px; margin-top: 5px; border-radius: 3px; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/buttonbg.png&quot;); margin-right: 7px;\"><div style=\"height: 26px; border: 1px solid rgb(151, 151, 151); border-radius: 3px; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/buttonbg.png&quot;);\"><div title=\"简洁模式\" style=\"float: left; width: 26px; height: 26px; cursor: default; background: transparent;\"><div style=\"width: 26px; height: 26px; background-repeat: no-repeat; background-position: center center; background-image: url(&quot;../o2_core/o2/widget/$AttachmentController/default/icon/min.png&quot;);\"></div></div></div></div></div><div class=\"contentScrollNode\" style=\"background-color: rgb(255, 255, 255); overflow: hidden; min-height: 130px;\"><div class=\"content\" style=\"background-color: rgb(255, 255, 255); overflow: hidden; margin-right: 6px;\"></div></div><div style=\"height: 7px; border-top: 1px solid rgb(182, 182, 182); background-color: rgb(232, 232, 232);\"><div style=\"height: 7px; cursor: row-resize;\"></div></div></div></div><div id=\"log\" mwftype=\"log\" style=\"margin-top: 10px;\"><div style=\"width: 70px; height: 24px; color: rgb(153, 153, 153); font-size: 12px; position: static; margin: auto;\"><div style=\"width: 24px; height: 24px; background: url(&quot;../x_component_process_FormDesigner/Module/Log/default/icon/log.png&quot;) 5px center no-repeat; float: left;\"></div><div style=\"line-height: 24px; height: 24px; width: 44px; float: right;\">LOG</div></div></div><div id=\"actionbar_1\" mwftype=\"actionbar\" style=\"\"><div style=\"padding: 15px; border: 0px; border-radius: 15px; background-color: rgb(244, 247, 246); overflow-wrap: normal; word-break: keep-all; overflow: hidden; height: 36px; display: block; font-size: 14px; margin-top: 15px;\"><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/close.png\" mwfbuttonimageover=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/close_over.png\" title=\"关闭文档\" mwfbuttonaction=\"closeDocument\" mwfbuttontext=\"关闭\" style=\"color: rgb(0, 189, 103); display: block; position: static; float: left; border: 1px solid transparent; background-color: transparent; border-radius: 4px; height: 14px; font-size: 14px; line-height: 14px; margin-right: 0px; padding-top: 10px; padding-bottom: 10px; cursor: pointer;\"><span style=\"float: left; line-height: 14px; margin-right: 2px; margin-left: 15px; text-align: center; vertical-align: text-top; cursor: pointer;\"><img src=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/close.png\" style=\"height: 14px; width: 14px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 14px; padding-left: 2px; padding-right: 15px; cursor: pointer;\">关闭</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/edit.png\" mwfbuttonimageover=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/edit_over.png\" title=\"编辑文档\" mwfbuttonaction=\"editDocument\" mwfbuttontext=\"编辑\" style=\"color: rgb(0, 189, 103); display: block; position: static; float: left; border: 1px solid transparent; background-color: transparent; border-radius: 4px; height: 14px; font-size: 14px; line-height: 14px; margin-right: 0px; padding-top: 10px; padding-bottom: 10px; cursor: pointer;\"><span style=\"float: left; line-height: 14px; margin-right: 2px; margin-left: 15px; text-align: center; vertical-align: text-top; cursor: pointer;\"><img src=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/edit.png\" style=\"height: 14px; width: 14px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 14px; padding-left: 2px; padding-right: 15px; cursor: pointer;\">编辑</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/save.png\" mwfbuttonimageover=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/save_over.png\" title=\"保存文档\" mwfbuttonaction=\"saveDocument\" mwfbuttontext=\"保存\" style=\"color: rgb(0, 189, 103); display: block; position: static; float: left; border: 1px solid transparent; background-color: transparent; border-radius: 4px; height: 14px; font-size: 14px; line-height: 14px; margin-right: 0px; padding-top: 10px; padding-bottom: 10px; cursor: pointer;\"><span style=\"float: left; line-height: 14px; margin-right: 2px; margin-left: 15px; text-align: center; vertical-align: text-top; cursor: pointer;\"><img src=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/save.png\" style=\"height: 14px; width: 14px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 14px; padding-left: 2px; padding-right: 15px; cursor: pointer;\">保存</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/submit.png\" mwfbuttonimageover=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/submit_over.png\" title=\"发布文档\" mwfbuttonaction=\"publishDocument\" mwfbuttontext=\"发布\" style=\"color: rgb(0, 189, 103); display: block; position: static; float: left; border: 1px solid transparent; background-color: transparent; border-radius: 4px; height: 14px; font-size: 14px; line-height: 14px; margin-right: 0px; padding-top: 10px; padding-bottom: 10px; cursor: pointer;\"><span style=\"float: left; line-height: 14px; margin-right: 2px; margin-left: 15px; text-align: center; vertical-align: text-top; cursor: pointer;\"><img src=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/submit.png\" style=\"height: 14px; width: 14px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 14px; padding-left: 2px; padding-right: 15px; cursor: pointer;\">发布</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/save.png\" mwfbuttonimageover=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/save_over.png\" title=\"保存草稿\" mwfbuttonaction=\"saveDraftDocument\" mwfbuttontext=\"保存草稿\" style=\"color: rgb(0, 189, 103); display: block; position: static; float: left; border: 1px solid transparent; background-color: transparent; border-radius: 4px; height: 14px; font-size: 14px; line-height: 14px; margin-right: 0px; padding-top: 10px; padding-bottom: 10px; cursor: pointer;\"><span style=\"float: left; line-height: 14px; margin-right: 2px; margin-left: 15px; text-align: center; vertical-align: text-top; cursor: pointer;\"><img src=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/save.png\" style=\"height: 14px; width: 14px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 14px; padding-left: 2px; padding-right: 15px; cursor: pointer;\">保存草稿</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/popular.png\" mwfbuttonimageover=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/popular_over.png\" title=\"设置热点\" mwfbuttonaction=\"setPopularDocument\" mwfbuttontext=\"设置热点\" style=\"color: rgb(0, 189, 103); display: block; position: static; float: left; border: 1px solid transparent; background-color: transparent; border-radius: 4px; height: 14px; font-size: 14px; line-height: 14px; margin-right: 0px; padding-top: 10px; padding-bottom: 10px; cursor: pointer;\"><span style=\"float: left; line-height: 14px; margin-right: 2px; margin-left: 15px; text-align: center; vertical-align: text-top; cursor: pointer;\"><img src=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/popular.png\" style=\"height: 14px; width: 14px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 14px; padding-left: 2px; padding-right: 15px; cursor: pointer;\">设置热点</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/del.png\" mwfbuttonimageover=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/del_over.png\" title=\"删除文档\" mwfbuttonaction=\"deleteDocument\" mwfbuttontext=\"删除\" style=\"color: rgb(0, 189, 103); display: block; position: static; float: left; border: 1px solid transparent; background-color: transparent; border-radius: 4px; height: 14px; font-size: 14px; line-height: 14px; margin-right: 0px; padding-top: 10px; padding-bottom: 10px; cursor: pointer;\"><span style=\"float: left; line-height: 14px; margin-right: 2px; margin-left: 15px; text-align: center; vertical-align: text-top; cursor: pointer;\"><img src=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/del.png\" style=\"height: 14px; width: 14px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 14px; padding-left: 2px; padding-right: 15px; cursor: pointer;\">删除</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/print.png\" mwfbuttonimageover=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/print_over.png\" title=\"打印文档\" mwfbuttonaction=\"printDocument\" mwfbuttontext=\"打印\" style=\"color: rgb(0, 189, 103); display: block; position: static; float: left; border: 1px solid transparent; background-color: transparent; border-radius: 4px; height: 14px; font-size: 14px; line-height: 14px; margin-right: 0px; padding-top: 10px; padding-bottom: 10px; cursor: pointer;\"><span style=\"float: left; line-height: 14px; margin-right: 2px; margin-left: 15px; text-align: center; vertical-align: text-top; cursor: pointer;\"><img src=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/print.png\" style=\"height: 14px; width: 14px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 14px; padding-left: 2px; padding-right: 15px; cursor: pointer;\">打印</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/top.png\" mwfbuttonimageover=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/top_over.png\" title=\"对文档置顶\" mwfbuttonaction=\"setTop\" mwfbuttontext=\"置顶\" style=\"color: rgb(0, 189, 103); display: block; position: static; float: left; border: 1px solid transparent; background-color: transparent; border-radius: 4px; height: 14px; font-size: 14px; line-height: 14px; margin-right: 0px; padding-top: 10px; padding-bottom: 10px; cursor: pointer;\"><span style=\"float: left; line-height: 14px; margin-right: 2px; margin-left: 15px; text-align: center; vertical-align: text-top; cursor: pointer;\"><img src=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/top.png\" style=\"height: 14px; width: 14px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 14px; padding-left: 2px; padding-right: 15px; cursor: pointer;\">置顶</span></div><div mwfnodetype=\"MWFToolBarButton\" mwfbuttonimage=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/topcancel.png\" mwfbuttonimageover=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/topcancel_over.png\" title=\"取消对文档的置顶\" mwfbuttonaction=\"cancelTop\" mwfbuttontext=\"取消置顶\" style=\"color: rgb(0, 189, 103); display: block; position: static; float: left; border: 1px solid transparent; background-color: transparent; border-radius: 4px; height: 14px; font-size: 14px; line-height: 14px; margin-right: 0px; padding-top: 10px; padding-bottom: 10px; cursor: pointer;\"><span style=\"float: left; line-height: 14px; margin-right: 2px; margin-left: 15px; text-align: center; vertical-align: text-top; cursor: pointer;\"><img src=\"../x_component_cms_FormDesigner/Module/Actionbar/default/tools/xform_green_simple/topcancel.png\" style=\"height: 14px; width: 14px; cursor: pointer; margin-top: 0px;\"></span><span style=\"display: block; float: left; height: 14px; padding-left: 2px; padding-right: 15px; cursor: pointer;\">取消置顶</span></div></div></div></div></div>",
+    "isNewForm": true
+  },
+  "mobileData": {
+    "json": {
+      "id": "",
+      "name": "发布类阅读表单(绿色)",
+      "type": "Form",
+      "mode": "Mobile",
+      "description": "",
+      "application": "",
+      "styles": {
+        "background-color": "#f0f0f0"
+      },
+      "properties": {},
+      "cssLinks": [],
+      "scriptSrc": [],
+      "jsheader": {
+        "code": "",
+        "html": ""
+      },
+      "events": {
+        "postLoad": {
+          "code": "",
+          "html": ""
+        },
+        "afterLoad": {
+          "code": "if( !this.data.explain || this.data.explain === '' ){ this.form.get('table_table$Td_2').node.setStyle('display','none') }",
+          "html": ""
+        },
+        "beforeSave": {
+          "code": "",
+          "html": ""
+        },
+        "postSave": {
+          "code": "",
+          "html": ""
+        },
+        "afterSave": {
+          "code": "",
+          "html": ""
+        },
+        "beforeClose": {
+          "code": "",
+          "html": ""
+        },
+        "beforePublish": {
+          "code": "",
+          "html": ""
+        },
+        "postPublish": {
+          "code": "",
+          "html": ""
+        },
+        "afterPublish": {
+          "code": "",
+          "html": ""
+        },
+        "help": {
+          "code": "",
+          "html": ""
+        },
+        "load": {
+          "code": "",
+          "html": ""
+        },
+        "unload": {
+          "code": "",
+          "html": ""
+        },
+        "click": {
+          "code": "",
+          "html": ""
+        },
+        "dblclick": {
+          "code": "",
+          "html": ""
+        },
+        "keydown": {
+          "code": "",
+          "html": ""
+        },
+        "keypress": {
+          "code": "",
+          "html": ""
+        },
+        "keyup": {
+          "code": "",
+          "html": ""
+        },
+        "mousedown": {
+          "code": "",
+          "html": ""
+        },
+        "mousemove": {
+          "code": "",
+          "html": ""
+        },
+        "mouseout": {
+          "code": "",
+          "html": ""
+        },
+        "mouseover": {
+          "code": "",
+          "html": ""
+        },
+        "mouseup": {
+          "code": "",
+          "html": ""
+        },
+        "focus": {
+          "code": "",
+          "html": ""
+        },
+        "blur": {
+          "code": "",
+          "html": ""
+        },
+        "submit": {
+          "code": "",
+          "html": ""
+        },
+        "reset": {
+          "code": "",
+          "html": ""
+        }
+      },
+      "moduleList": {
+        "div": {
+          "id": "div",
+          "name": "",
+          "type": "Div",
+          "description": "",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {
+            "margin": "auto",
+            "border-radius": "2px",
+            "background-color": "#fff",
+            "padding-top": "1px",
+            "padding-bottom": "1px",
+            "padding-left": "5px",
+            "padding-right": "5px"
+          },
+          "container": "",
+          "moduleName": "div"
+        },
+        "actionbar": {
+          "id": "actionbar",
+          "name": "",
+          "type": "Actionbar",
+          "description": "",
+          "tools": [],
+          "style": "xform_blue_simple",
+          "container": "",
+          "moduleName": "actionbar",
+          "hideSystemTools": false
+        },
+        "label": {
+          "id": "label",
+          "name": "",
+          "type": "Label",
+          "description": "",
+          "valueType": "script",
+          "moduleName": "label",
+          "templateType": "title",
+          "text": "",
+          "script": {
+            "code": "return this.data.subject",
+            "html": "return this.data.subject"
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {
+            "text-align": "center",
+            "font-weight": "bold",
+            "color": "#fb4747",
+            "font-size": "24px",
+            "text-shadow": "0px 0px 3px #fff",
+            "padding-top": "20px",
+            "min-height": "50px",
+            "margin-bottom": "20px"
+          },
+          "container": ""
+        },
+        "label_1": {
+          "id": "label_1",
+          "name": "",
+          "type": "Label",
+          "description": "",
+          "valueType": "script",
+          "hiddenCondition": "none",
+          "text": "",
+          "script": {
+            "code": "return this.documentContext.getDocument().creatorPersonShort",
+            "html": "return this.documentContext.getDocument().creatorPersonShort"
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {
+            "display": "inline",
+            "margin-right": "15px"
+          },
+          "container": "",
+          "moduleName": "label"
+        },
+        "label_2_1": {
+          "id": "label_2_1",
+          "name": "",
+          "type": "Label",
+          "description": "",
+          "valueType": "script",
+          "text": "",
+          "script": {
+            "code": "return this.documentContext.getDocument().creatorUnitNameShort",
+            "html": "return this.documentContext.getDocument().creatorUnitNameShort"
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {
+            "display": "inline"
+          },
+          "container": "",
+          "moduleName": "label"
+        },
+        "table": {
+          "id": "table",
+          "name": "",
+          "type": "Table",
+          "description": "",
+          "defaultValue": {
+            "code": "",
+            "html": ""
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {
+            "border": "0",
+            "cellpadding": "5",
+            "cellspacing": "0",
+            "align": "center"
+          },
+          "class": "",
+          "styles": {
+            "color": "#555",
+            "min-height": "32px",
+            "line-height": "32px",
+            "margin-bottom": "10px",
+            "margin-top": "10px"
+          },
+          "titleTdStyles": {
+            "border-collapse": "collapse",
+            "background-color": "#ffffff",
+            "color": "#333",
+            "text-align": "left",
+            "font-weight": "bold",
+            "height": "36px",
+            "line-height": "36px",
+            "border-bottom": "1px solid #cccccc",
+            "font-size": "16px",
+            "width": "30%"
+          },
+          "contentTdStyles": {
+            "border-collapse": "collapse",
+            "background-color": "#FFFFFF",
+            "color": "#666",
+            "min-width": "140px",
+            "font-size": "18px",
+            "border-bottom": "1px solid #cccccc",
+            "text-align": "right"
+          },
+          "layoutTdStyles": {},
+          "container": "",
+          "moduleName": "table"
+        },
+        "label_3": {
+          "id": "label_3",
+          "name": "",
+          "type": "Label",
+          "description": "",
+          "valueType": "script",
+          "hiddenCondition": "none",
+          "text": "",
+          "script": {
+            "code": "return this.documentContext.getDocument().createTime",
+            "html": "return this.documentContext.getDocument().createTime"
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {
+            "display": "inline"
+          },
+          "container": "",
+          "moduleName": "label"
+        },
+        "table_table$Td_2": {
+          "id": "table_table$Td_2",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {
+            "background-color": "#fffef3",
+            "border": "1px solid #ddd",
+            "font-size": "14px",
+            "padding-left": "10px",
+            "padding-right": "10px"
+          },
+          "container": "",
+          "cellType": "other",
+          "moduleName": "table$Td"
+        },
+        "htmleditor": {
+          "id": "htmleditor",
+          "name": "",
+          "type": "Htmleditor",
+          "description": "",
+          "events": {
+            "beforeCommandExec": {
+              "code": "",
+              "html": ""
+            },
+            "afterCommandExec": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            },
+            "change": {
+              "code": "",
+              "html": ""
+            },
+            "destroy": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "getData": {
+              "code": "",
+              "html": ""
+            },
+            "insertElement": {
+              "code": "",
+              "html": ""
+            },
+            "insertHtml": {
+              "code": "",
+              "html": ""
+            },
+            "insertText": {
+              "code": "",
+              "html": ""
+            },
+            "key": {
+              "code": "",
+              "html": ""
+            },
+            "loaded": {
+              "code": "",
+              "html": ""
+            },
+            "maximize": {
+              "code": "",
+              "html": ""
+            },
+            "paste": {
+              "code": "",
+              "html": ""
+            },
+            "resize": {
+              "code": "",
+              "html": ""
+            },
+            "save": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "editorProperties": {
+            "autoGrow_maxHeight": 400,
+            "autoGrow_minHeight": 300,
+            "resize_enabled": true,
+            "resize_maxHeight": "3000",
+            "resize_minHeight": "200",
+            "autoParagraph": true,
+            "autoUpdateElement": true,
+            "enterMode": 1,
+            "height": "200",
+            "width": "",
+            "readOnly": false,
+            "title": ""//,
+            //"skin": "bootstrapck"
+          },
+          "config": {
+            "code": "",
+            "html": ""
+          },
+          "class": "",
+          "styles": {
+            "line-height": "200%"
+          },
+          "container": "",
+          "moduleName": "htmleditor"
+        },
+        "attachment": {
+          "id": "attachment",
+          "name": "",
+          "type": "Attachment",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "upload": {
+              "code": "",
+              "html": ""
+            },
+            "delete": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "size": "max",
+          "isSizeChange": "true",
+          "attachmentCount": "0",
+          "resize": "false",
+          "listStyle": "icon",
+          "readonly": "false",
+          "isUpload": "y",
+          "isDelete": "y",
+          "isReplace": "y",
+          "isDownload": "y",
+          "class": "",
+          "styles": {},
+          "container": "",
+          "toolbarGroupHidden" : [],
+          "downloadEvent" : "",
+          "moduleName": "attachment"
+        },
+        "actionbar_1": {
+          "id": "actionbar_1",
+          "name": "",
+          "type": "Actionbar",
+          "description": "",
+          "tools": [],
+          "style": "xform_blue_simple",
+          "container": "",
+          "moduleName": "actionbar"
+        },
+        "table_table$Td_1": {
+          "id": "table_table$Td_1",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {
+            "display": "block",
+            "text-align": "center",
+            "font-size": "14px"
+          },
+          "container": "",
+          "cellType": "other",
+          "moduleName": "table$Td"
+        },
+        "label_6": {
+          "id": "label_6",
+          "name": "",
+          "type": "Label",
+          "description": "",
+          "valueType": "script",
+          "hiddenCondition": "none",
+          "text": "",
+          "script": {
+            "code": "return this.data.explain",
+            "html": "return this.data.explain"
+          },
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {},
+          "container": "",
+          "moduleName": "label"
+        },
+        "table_table$Td": {
+          "id": "table_table$Td",
+          "name": "",
+          "type": "Table$Td",
+          "description": "",
+          "events": {
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "dblclick": {
+              "code": "",
+              "html": ""
+            },
+            "keydown": {
+              "code": "",
+              "html": ""
+            },
+            "keypress": {
+              "code": "",
+              "html": ""
+            },
+            "keyup": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mousemove": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "focus": {
+              "code": "",
+              "html": ""
+            },
+            "blur": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "properties": {},
+          "class": "",
+          "styles": {
+            "text-align": "center",
+            "font-size": "14px"
+          },
+          "container": "",
+          "moduleName": "table$Td",
+          "cellType": "other"
+        }
+      },
+      "fieldList": {},
+      "formStyleType": "defaultMobile"
+    },
+    "html": "<div id=\"7b089126-5ffd-40ad-8786-c40383611e4f_undefined\" mwftype=\"form\"><div id=\"div\" mwftype=\"div\"><div id=\"actionbar\" mwftype=\"actionbar\">移动端不支持此组件(actionbar)</div><div id=\"label\" mwftype=\"label\">(C)Text</div><div id=\"table\" mwftype=\"table\"><table width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"0\" cellpadding=\"5\"><tbody><tr><td id=\"table_table$Td\" mwftype=\"table$Td\"><div id=\"label_2_1\" mwftype=\"label\">(C)Text</div></td></tr><tr><td id=\"table_table$Td_1\" mwftype=\"table$Td\"><div id=\"label_1\" mwftype=\"label\">(C)Text</div><div id=\"label_3\" mwftype=\"label\">(C)Text</div></td></tr><tr><td id=\"table_table$Td_2\" rowspan=\"1\" colspan=\"3\" mwftype=\"table$Td\"><div id=\"label_6\" mwftype=\"label\">(C)Text</div></td></tr></tbody></table></div><div id=\"htmleditor\" mwftype=\"itmleditor\"><div></div><span class=\"cke_1567 cke cke_reset cke_chrome cke_editor_editor22 cke_ltr cke_browser_ie cke_browser_ie11 cke_hidpi\" id=\"cke_editor22\" role=\"application\" lang=\"zh-cn\" dir=\"ltr\"><span class=\"cke_inner cke_reset\" role=\"presentation\"><span class=\"cke_top cke_reset_all\" id=\"cke_1567_top\" role=\"presentation\" unselectable=\"on\"><span class=\"cke_voice_label\" id=\"cke_1575\" unselectable=\"on\">工具栏</span><span class=\"cke_toolbox\" id=\"cke_1567_toolbox\" role=\"group\" aria-labelledby=\"cke_1575\" onmousedown=\"return false;\"><span class=\"cke_toolbar\" id=\"cke_1578\" role=\"toolbar\" aria-labelledby=\"cke_1578_label\" unselectable=\"on\"><span class=\"cke_voice_label\" id=\"cke_1578_label\" unselectable=\"on\">段落</span><span class=\"cke_toolbar_start\" unselectable=\"on\"></span><span class=\"cke_toolgroup\" role=\"presentation\" unselectable=\"on\"><a tabindex=\"-1\" title=\"加粗\" class=\"cke_button cke_button__bold cke_button_disabled \" id=\"cke_1579\" role=\"button\" aria-disabled=\"true\" aria-haspopup=\"false\" aria-labelledby=\"cke_1579_label\" hidefocus=\"true\" onmouseup=\"CKEDITOR.tools.callFunction(2809,this);return false;\" onclick=\"return false;\" href=\"javascript:void('加粗')\" unselectable=\"on\"><span class=\"cke_button_icon cke_button__bold_icon\" unselectable=\"on\">&nbsp;</span><span class=\"cke_button_label cke_button__bold_label\" id=\"cke_1579_label\" aria-hidden=\"false\" unselectable=\"on\">加粗</span></a><a tabindex=\"-1\" title=\"倾斜\" class=\"cke_button cke_button__italic cke_button_disabled \" id=\"cke_1580\" role=\"button\" aria-disabled=\"true\" aria-haspopup=\"false\" aria-labelledby=\"cke_1580_label\" hidefocus=\"true\" onmouseup=\"CKEDITOR.tools.callFunction(2812,this);return false;\" onclick=\"return false;\" href=\"javascript:void('倾斜')\" unselectable=\"on\"><span class=\"cke_button_icon cke_button__italic_icon\" unselectable=\"on\">&nbsp;</span><span class=\"cke_button_label cke_button__italic_label\" id=\"cke_1580_label\" aria-hidden=\"false\" unselectable=\"on\">倾斜</span></a><span class=\"cke_toolbar_separator\" role=\"separator\" unselectable=\"on\"></span><a tabindex=\"-1\" title=\"文本颜色\" class=\"cke_button cke_button__textcolor  cke_button_disabled\" id=\"cke_1581\" role=\"button\" aria-disabled=\"true\" aria-haspopup=\"true\" aria-labelledby=\"cke_1581_label\" hidefocus=\"true\" onmouseup=\"CKEDITOR.tools.callFunction(2815,this);return false;\" onclick=\"return false;\" href=\"javascript:void('文本颜色')\" unselectable=\"on\"><span class=\"cke_button_icon cke_button__textcolor_icon\" unselectable=\"on\">&nbsp;</span><span class=\"cke_button_label cke_button__textcolor_label\" id=\"cke_1581_label\" aria-hidden=\"false\" unselectable=\"on\">文本颜色</span><span class=\"cke_button_arrow\" unselectable=\"on\"></span></a><a tabindex=\"-1\" title=\"背景颜色\" class=\"cke_button cke_button__bgcolor  cke_button_disabled\" id=\"cke_1582\" role=\"button\" aria-disabled=\"true\" aria-haspopup=\"true\" aria-labelledby=\"cke_1582_label\" hidefocus=\"true\" onmouseup=\"CKEDITOR.tools.callFunction(2818,this);return false;\" onclick=\"return false;\" href=\"javascript:void('背景颜色')\" unselectable=\"on\"><span class=\"cke_button_icon cke_button__bgcolor_icon\" unselectable=\"on\">&nbsp;</span><span class=\"cke_button_label cke_button__bgcolor_label\" id=\"cke_1582_label\" aria-hidden=\"false\" unselectable=\"on\">背景颜色</span><span class=\"cke_button_arrow\" unselectable=\"on\"></span></a><a tabindex=\"-1\" title=\"左对齐\" class=\"cke_button cke_button__justifyleft cke_button_disabled \" id=\"cke_1583\" role=\"button\" aria-disabled=\"true\" aria-haspopup=\"false\" aria-labelledby=\"cke_1583_label\" hidefocus=\"true\" onmouseup=\"CKEDITOR.tools.callFunction(2821,this);return false;\" onclick=\"return false;\" href=\"javascript:void('左对齐')\" unselectable=\"on\"><span class=\"cke_button_icon cke_button__justifyleft_icon\" unselectable=\"on\">&nbsp;</span><span class=\"cke_button_label cke_button__justifyleft_label\" id=\"cke_1583_label\" aria-hidden=\"false\" unselectable=\"on\">左对齐</span></a><a tabindex=\"-1\" title=\"居中\" class=\"cke_button cke_button__justifycenter cke_button_disabled \" id=\"cke_1584\" role=\"button\" aria-disabled=\"true\" aria-haspopup=\"false\" aria-labelledby=\"cke_1584_label\" hidefocus=\"true\" onmouseup=\"CKEDITOR.tools.callFunction(2824,this);return false;\" onclick=\"return false;\" href=\"javascript:void('居中')\" unselectable=\"on\"><span class=\"cke_button_icon cke_button__justifycenter_icon\" unselectable=\"on\">&nbsp;</span><span class=\"cke_button_label cke_button__justifycenter_label\" id=\"cke_1584_label\" aria-hidden=\"false\" unselectable=\"on\">居中</span></a><a tabindex=\"-1\" title=\"右对齐\" class=\"cke_button cke_button__justifyright cke_button_disabled \" id=\"cke_1585\" role=\"button\" aria-disabled=\"true\" aria-haspopup=\"false\" aria-labelledby=\"cke_1585_label\" hidefocus=\"true\" onmouseup=\"CKEDITOR.tools.callFunction(2827,this);return false;\" onclick=\"return false;\" href=\"javascript:void('右对齐')\" unselectable=\"on\"><span class=\"cke_button_icon cke_button__justifyright_icon\" unselectable=\"on\">&nbsp;</span><span class=\"cke_button_label cke_button__justifyright_label\" id=\"cke_1585_label\" aria-hidden=\"false\" unselectable=\"on\">右对齐</span></a><a tabindex=\"-1\" title=\"两端对齐\" class=\"cke_button cke_button__justifyblock cke_button_disabled \" id=\"cke_1586\" role=\"button\" aria-disabled=\"true\" aria-haspopup=\"false\" aria-labelledby=\"cke_1586_label\" hidefocus=\"true\" onmouseup=\"CKEDITOR.tools.callFunction(2830,this);return false;\" onclick=\"return false;\" href=\"javascript:void('两端对齐')\" unselectable=\"on\"><span class=\"cke_button_icon cke_button__justifyblock_icon\" unselectable=\"on\">&nbsp;</span><span class=\"cke_button_label cke_button__justifyblock_label\" id=\"cke_1586_label\" aria-hidden=\"false\" unselectable=\"on\">两端对齐</span></a><span class=\"cke_toolbar_separator\" role=\"separator\" unselectable=\"on\"></span><a tabindex=\"-1\" title=\"撤消\" class=\"cke_button cke_button__undo cke_button_disabled \" id=\"cke_1587\" role=\"button\" aria-disabled=\"true\" aria-haspopup=\"false\" aria-labelledby=\"cke_1587_label\" hidefocus=\"true\" onmouseup=\"CKEDITOR.tools.callFunction(2833,this);return false;\" onclick=\"return false;\" href=\"javascript:void('撤消')\" unselectable=\"on\"><span class=\"cke_button_icon cke_button__undo_icon\" unselectable=\"on\">&nbsp;</span><span class=\"cke_button_label cke_button__undo_label\" id=\"cke_1587_label\" aria-hidden=\"false\" unselectable=\"on\">撤消</span></a><a tabindex=\"-1\" title=\"重做\" class=\"cke_button cke_button__redo cke_button_disabled \" id=\"cke_1588\" role=\"button\" aria-disabled=\"true\" aria-haspopup=\"false\" aria-labelledby=\"cke_1588_label\" hidefocus=\"true\" onmouseup=\"CKEDITOR.tools.callFunction(2836,this);return false;\" onclick=\"return false;\" href=\"javascript:void('重做')\" unselectable=\"on\"><span class=\"cke_button_icon cke_button__redo_icon\" unselectable=\"on\">&nbsp;</span><span class=\"cke_button_label cke_button__redo_label\" id=\"cke_1588_label\" aria-hidden=\"false\" unselectable=\"on\">重做</span></a></span><span class=\"cke_toolbar_end\" unselectable=\"on\"></span></span><span class=\"cke_toolbar\" id=\"cke_1589\" role=\"toolbar\" aria-labelledby=\"cke_1589_label\" unselectable=\"on\"><span class=\"cke_voice_label\" id=\"cke_1589_label\" unselectable=\"on\">基本格式</span><span class=\"cke_toolbar_start\" unselectable=\"on\"></span><span class=\"cke_combo cke_combo__styles  cke_combo_disabled\" id=\"cke_1576\" role=\"presentation\" aria-disabled=\"true\" unselectable=\"on\"><span class=\"cke_combo_label\" id=\"cke_1576_label\" unselectable=\"on\">样式</span><a tabindex=\"-1\" title=\"样式\" class=\"cke_combo_button\" role=\"button\" aria-haspopup=\"true\" aria-labelledby=\"cke_1576_label\" hidefocus=\"true\" onmouseup=\"CKEDITOR.tools.callFunction(2837,this);return false;\" onclick=\"return false;\" href=\"javascript:void('样式')\" unselectable=\"on\"><span class=\"cke_combo_text cke_combo_inlinelabel\" id=\"cke_1576_text\" unselectable=\"on\">样式</span><span class=\"cke_combo_open\" unselectable=\"on\"><span class=\"cke_combo_arrow\" unselectable=\"on\"></span></span></a></span><span class=\"cke_combo cke_combo__fontsize  cke_combo_disabled\" id=\"cke_1577\" role=\"presentation\" aria-disabled=\"true\" unselectable=\"on\"><span class=\"cke_combo_label\" id=\"cke_1577_label\" unselectable=\"on\">大小</span><a tabindex=\"-1\" title=\"大小\" class=\"cke_combo_button\" role=\"button\" aria-haspopup=\"true\" aria-labelledby=\"cke_1577_label\" hidefocus=\"true\" onmouseup=\"CKEDITOR.tools.callFunction(2840,this);return false;\" onclick=\"return false;\" href=\"javascript:void('大小')\" unselectable=\"on\"><span class=\"cke_combo_text cke_combo_inlinelabel\" id=\"cke_1577_text\" unselectable=\"on\">大小</span><span class=\"cke_combo_open\" unselectable=\"on\"><span class=\"cke_combo_arrow\" unselectable=\"on\"></span></span></a></span><span class=\"cke_toolbar_end\" unselectable=\"on\"></span></span></span></span><span class=\"cke_contents cke_reset\" id=\"cke_1567_contents\" role=\"presentation\"><span class=\"cke_voice_label\" id=\"cke_1594\">按 ALT+0 获得帮助</span><iframe tabindex=\"0\" class=\"cke_wysiwyg_frame cke_reset\" aria-describedby=\"cke_1594\" src=\"javascript:void(function(){document.open()%3B(function()%7Bfor(var%20a%3B%3B)try%7Ba%3Dwindow.parent.document.domain%3Bbreak%7Dcatch(e)%7Ba%3Da%3Fa.replace(%2F.%2B%3F(%3F%3A%5C.%7C%24)%2F%2C%22%22)%3Adocument.domain%3Bif(!a)break%3Bdocument.domain%3Da%7Dreturn!!a%7D)()%3Bdocument.close()%3B}())\" frameborder=\"0\" allowtransparency=\"true\"></iframe></span><span class=\"cke_bottom cke_reset_all\" id=\"cke_1567_bottom\" role=\"presentation\" unselectable=\"on\"><span title=\"拖拽以改变大小\" class=\"cke_resizer cke_resizer_vertical cke_resizer_ltr\" id=\"cke_1567_resizer\" onmousedown=\"CKEDITOR.tools.callFunction(2805, event)\">◢</span><span class=\"cke_voice_label\" id=\"cke_1567_path_label\" unselectable=\"on\">元素路径</span><span class=\"cke_path\" id=\"cke_1567_path\" role=\"group\" aria-labelledby=\"cke_1567_path_label\" unselectable=\"on\"><span class=\"cke_path_empty\" unselectable=\"on\">&nbsp;</span></span></span></span></span></div><div id=\"attachment\" mwftype=\"itmleditor\"><div><div><div><div><div title=\"上传\"><div></div></div><div title=\"删除\"><div></div></div><div title=\"替换\"><div></div></div><div></div><div title=\"下载\"><div></div></div></div></div><div><div><div title=\"列表\"><div></div></div><div title=\"图标\"><div></div></div><div title=\"预览\"><div></div></div></div></div><div><div><div title=\"简洁模式\"><div></div></div></div></div></div><div class=\"contentScrollNode\"><div class=\"content\"></div></div><div><div></div></div></div></div><div id=\"actionbar_1\" mwftype=\"actionbar\">移动端不支持此组件(actionbar)</div></div></div>",
+    "id": "",
+    "isNewForm": false
+  }
+}

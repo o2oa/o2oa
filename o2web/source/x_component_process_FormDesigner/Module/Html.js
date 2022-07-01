@@ -65,6 +65,10 @@ MWF.xApplication.process.FormDesigner.Module.Html = MWF.FCHtml = new Class({
         this.textarea.set("value", this.json.text);
 	},
 	_setNodeProperty: function(){
+		if (this.form.moduleList.indexOf(this)==-1) this.form.moduleList.push(this);
+		if (this.form.moduleNodeList.indexOf(this.node)==-1) this.form.moduleNodeList.push(this.node);
+		if (this.form.moduleElementNodeList.indexOf(this.node)==-1) this.form.moduleElementNodeList.push(this.node);
+
 		this.textarea.set("value", this.json.text);
 		if (this.property){
 			var editNode = this.property.propertyNode.getElement(".MWF_editHtmlText");

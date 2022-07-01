@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.processplatform.ManualTaskIdentityMatrix;
 import com.x.base.core.project.scripting.JsonScriptingExecutor;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Read;
@@ -113,7 +114,7 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 //	}
 
 	private void arriveCleanManualTaskIdentityMatrix(AeiObjects aeiObjects) {
-		aeiObjects.getWork().getManualTaskIdentityMatrix().clear();
+		aeiObjects.getWork().setManualTaskIdentityMatrix(new ManualTaskIdentityMatrix());
 	}
 
 	private void arriveCleanManualEmpowerMap(AeiObjects aeiObjects) {

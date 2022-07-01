@@ -229,6 +229,8 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
         this.designer.propertyEnableTokenNode.getElement("option[value='"+ this.data.enableToken +"']").set("selected", true );
         this.designer.propertyEnableNode.getElement("option[value='"+ this.data.enable +"']").set("selected", true );
 
+
+
         this.designer.propertyRemoteAddrRegexNode.set("value", this.data.remoteAddrRegex || "");
 
         this.designer.propertyLastStartTimeNode.set("text", this.data.lastStartTime || "");
@@ -236,8 +238,15 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
 
         this.designer.propertyDescriptionNode.set("value", this.data.description || "");
 
-        this.setInvokeUrlText();
-        this.designer.propertyEnableTokenNode.addEvent("change", this.setInvokeUrlText.bind(this));
+        if( this.designer.propertyEnableTokenChangeEvent ){
+            this.designer.propertyEnableTokenNode.removeEvent("change", this.designer.propertyEnableTokenChangeEvent);
+        }
+        this.designer.propertyEnableTokenChangeEvent = function(){
+            this.setInvokeUrlText();
+            this.checkPropertyTokenNode();
+        }.bind(this);
+        this.designer.propertyEnableTokenNode.addEvent("change", this.designer.propertyEnableTokenChangeEvent);
+        this.designer.propertyEnableTokenChangeEvent();
 
         if(this.page){
             this.designer.propertyRequireBodyNode.set("value", this.page.requireBody || "");
@@ -250,6 +259,16 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
         this.designer.propertyExecuteButton.store("id", this.data.id);
         this.designer.propertyExecuteButton.store("alias", this.data.alias);
         this.designer.propertyExecuteButton.store("name", this.data.name);
+    },
+    checkPropertyTokenNode: function(){
+        var enableToken = true;
+        this.designer.propertyEnableTokenNode.getElements("option").each( function(option){
+            if( option.selected ){
+                enableToken =  (option.value == "true");
+            }
+        });
+        this.designer.propertyTokenNode.getPrevious().setStyle("display", enableToken ? "" : "none" );
+        this.designer.propertyTokenNode.setStyle("display", enableToken ? "" : "none" );
     },
     setInvokeUrlText: function(){
         debugger

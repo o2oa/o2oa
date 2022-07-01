@@ -27,11 +27,11 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
-/**
- * @author sword
- */
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "SignAction", description = "文档签批接口.")
 @Path("sign")
-@JaxrsDescribe("文档签批")
+@JaxrsDescribe("文档签批接口.")
 public class SignAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(SignAction.class);
