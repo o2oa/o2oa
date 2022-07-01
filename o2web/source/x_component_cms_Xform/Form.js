@@ -757,6 +757,11 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
     },
     _loadModule: function (json, node, beforeLoad) {
         if (!json) return;
+        //流程组件返回
+        if( ( json.type === "Log" && json.logType ) || ["Monitor","ReadLog"].contains(json.type) ){
+            node.empty();
+            return;
+        }
         if (!MWF["CMS" + json.type]) {
             var moduleType = json.type;
             if(moduleType === "AttachmentDg")moduleType = "Attachment";

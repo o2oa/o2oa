@@ -171,20 +171,6 @@ MWF.xApplication.cms.FormDesigner.Module.Form = MWF.CMSFCForm = new Class({
     //},
 	
 	loadModule: function(json, dom, parent){
-		switch (json.type) {
-			case "Log":
-				debugger;
-				if( json.logType )json.type = "ProcessLog";
-				break;
-			case "Monitor":
-				debugger;
-				json.type = "ProcessMonitor";
-				break;
-			case "ReadLog":
-				json.type = "ProcessReadLog";
-				break;
-		}
-
 		var module, className;
 		if( !json ){
 			className = ( dom.get("MWFType") || "div" ).capitalize();

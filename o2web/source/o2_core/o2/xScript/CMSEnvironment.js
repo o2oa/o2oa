@@ -2733,3 +2733,66 @@ MWF.xScript.createCMSDict = function(application){
         this.destory = this["delete"];
     }
 };
+
+
+//兼容流程拷贝过来的表单
+var _fitWorkContextList = function(callback, error){
+    var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
+    var list = [];
+    if (cb) cb(list);
+    return [];
+};
+this.workContext = {
+    "getWork": function(){
+        debugger;
+        alert(1)
+        return ev.work || ev.workCompleted;
+     },
+
+    "getActivity": function(){return {}},
+    "getTask": function(){return {}},
+    "getTaskList": function(callback, error){
+        return _fitWorkContextList(callback, error)
+    },
+    "getTaskListByJob": function(callback, error){
+        return _fitWorkContextList(callback, error)
+    },
+    "getTaskCompletedList": function(callback, error){
+        return _fitWorkContextList(callback, error)
+    },
+    "getTaskCompletedListByJob": function(callback, error){
+        return _fitWorkContextList(callback, error)
+    },
+    "getReadList": function(callback, error){
+        return _fitWorkContextList(callback, error)
+    },
+    "getReadListByJob": function(callback, error){
+        return _fitWorkContextList(callback, error)
+    },
+    "getReadCompletedList": function(callback, error){
+        return _fitWorkContextList(callback, error)
+    },
+    "getReadCompletedListByJob": function(callback, error){
+        return _fitWorkContextList(callback, error)
+    },
+    "getReviewList": function(callback, error){
+        return _fitWorkContextList(callback, error)
+    },
+    "getReviewListByJob": this.getReviewList,
+    "getJobTaskList": this.getTaskListByJob,
+    "getJobReadList": this.getReadListByJob,
+    "getJobTaskCompletedList": this.getTaskCompletedListByJob,
+    "getJobReadCompletedList": this.getReadCompletedListByJob,
+    "getJobReviewList": this.getReviewList,
+    "getControl": function(){return ev.control;},
+    "getWorkLogList": function(){return [];},
+    "getRecordList": function(){return [];},
+    "getAttachmentList": function(callback, error){
+        var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
+        if(cb)cb( ev.attachmentList );
+        return ev.attachmentList;
+    },
+    "getRouteList": function(){return [];},
+    "getInquiredRouteList": function(){return null;}
+};
+this.workContent = this.workContext;

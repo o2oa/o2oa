@@ -76,6 +76,3 @@ MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Elcolorpicker", null, false)
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Eltree", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Eldropdown", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Elcarousel", null, false);
-MWF.xDesktop.requireApp("cms.FormDesigner", "Module.ProcessLog", null, false);
-MWF.xDesktop.requireApp("cms.FormDesigner", "Module.ProcessReadLog", null, false);
-MWF.xDesktop.requireApp("cms.FormDesigner", "Module.ProcessMonitor", null, false);
