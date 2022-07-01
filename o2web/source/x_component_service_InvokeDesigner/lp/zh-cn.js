@@ -29,7 +29,9 @@ MWF.xApplication.service.InvokeDesigner.LP = {
     "run": "立即运行",
     "runSuccess": "运行成功",
     "requireArguments": "请求参数",
+    "tokenSetting": "鉴权配置",
     "runResult": "执行结果",
+    "noSSOSetting": "请先配置鉴权",
 
     "notice": {
         "save_success": "接口保存成功！",
