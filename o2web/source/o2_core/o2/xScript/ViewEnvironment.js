@@ -195,6 +195,45 @@ MWF.xScript = MWF.xScript || {};
 MWF.xScript.ViewEnvironment = function (ev) {
     var _form = ev.view;
 
+    /**
+     * 字符串，当前应用类型。<br/><br/>
+     * <table>
+     *   <tr>
+     *      <th>值</th>
+     *      <th>应用类型</th>
+     *   </tr>
+     *   <tr>
+     *      <td>cms</td>
+     *      <td>内容管理</td>
+     *   </tr>
+     *   <tr>
+     *      <td>process</td>
+     *      <td>流程管理</td>
+     *   </tr>
+     *   <tr>
+     *      <td>portal</td>
+     *      <td>门户管理</td>
+     *   </tr>
+     *   <tr>
+     *      <td>query</td>
+     *      <td>数据中心</td>
+     *   </tr>
+     * </table>
+     * @module appType
+     * @o2cn 应用类型
+     * @o2category web
+     * @o2ordernumber 170
+     * @instance
+     * @example
+     * var title;
+     * if( this.appType === "cms"  ){
+     *     title = this.documentContext.getDocument().title
+     * }else if( this.appType === "process"  ){
+     *     title = this.workContext.getWork().title
+     * }
+     **/
+    this.appType = "query";
+
     this.library = COMMON;
     //this.library.version = "4.0";
 

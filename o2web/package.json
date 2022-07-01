@@ -27,6 +27,7 @@
   },
   "homepage": "https://github.com/huqi1980/o2oa_client_web#readme",
   "devDependencies": {
+    "@o2oa/tidy-jsdoc-o2": "^0.0.24",
     "gulp": "^4.0.0",
     "gulp-changed": "^3.2.0",
     "gulp-cli": "^2.3.0",
@@ -50,7 +51,6 @@
     "karma-jasmine": "^4.0.1",
     "merge-stream": "^1.0.1",
     "minimist": "^1.2.0",
-    "readline-sync": "^1.4.10",
-    "@o2oa/tidy-jsdoc-o2": "latest"
+    "readline-sync": "^1.4.10"
   }
 }
