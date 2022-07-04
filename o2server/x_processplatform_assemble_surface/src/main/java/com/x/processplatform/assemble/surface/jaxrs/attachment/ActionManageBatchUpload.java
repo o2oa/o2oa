@@ -39,6 +39,9 @@ class ActionManageBatchUpload extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workIds, String site, String fileName,
 			byte[] bytes, FormDataContentDisposition disposition, String extraParam, String person, Integer order,
 			Boolean isSoftUpload, String mainWork) throws Exception {
+
+		LOGGER.debug("execute:{}, workIds:{}, site:{}.", effectivePerson::getDistinguishedName, () -> workIds);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);

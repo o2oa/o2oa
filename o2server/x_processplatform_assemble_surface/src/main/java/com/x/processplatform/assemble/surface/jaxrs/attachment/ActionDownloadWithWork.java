@@ -25,12 +25,16 @@ import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionDownloadWithWork extends BaseAction {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDownloadWithWork.class);
-	
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String workId, String fileName)
 			throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}, workId:{}.", effectivePerson::getDistinguishedName, () -> id, () -> workId);
 
 		ActionResult<Wo> result = new ActionResult<>();
 		Work work = null;
@@ -46,8 +50,8 @@ class ActionDownloadWithWork extends BaseAction {
 			if (null == attachment) {
 				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
-			/** 生成当前用户针对work的权限控制,并判断是否可以访问 */
-			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
+			// 生成当前用户针对work的权限控制,并判断是否可以访问
+			Control control = business.getControl(effectivePerson, work, Control.class);
 			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
@@ -112,14 +116,20 @@ class ActionDownloadWithWork extends BaseAction {
 
 	}
 
+	public static class Control extends WorkControl {
+
+		private static final long serialVersionUID = 6118074443552607130L;
+
+	}
+
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionDownloadWithWork$Wo")
 	public static class Wo extends WoFile {
+
+		private static final long serialVersionUID = 5363332576422381035L;
 
 		public Wo(byte[] bytes, String contentType, String contentDisposition) {
 			super(bytes, contentType, contentDisposition);
 		}
 
-	}
-
-	public static class WoControl extends WorkControl {
 	}
 }

@@ -12,7 +12,6 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -60,9 +59,4 @@ class ActionChangeSite extends BaseAction {
 
 	}
 
-	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionChangeSite$WoControl")
-	public static class WoControl extends WorkControl {
-
-		private static final long serialVersionUID = -5809705124632651361L;
-	}
 }

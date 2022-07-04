@@ -169,7 +169,7 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 		this.routeName = "";
 		this.opinion = "";
 		this.modified = false;
-		this.viewed = false;
+		// this.viewed = false;
 		this.allowRapid = allowRapid;
 		this.copyProjectionFields(work);
 	}
@@ -495,12 +495,12 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 	@CheckPersist(allowEmpty = true)
 	private Boolean modified;
 
-	public static final String viewed_FIELDNAME = "viewed";
-	@Schema(description = "是否查看过标志.")
-	@FieldDescribe("是否查看过.")
-	@Column(name = ColumnNamePrefix + viewed_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private Boolean viewed;
+//	public static final String viewed_FIELDNAME = "viewed";
+//	@Schema(description = "是否查看过标志.")
+//	@FieldDescribe("是否查看过.")
+//	@Column(name = ColumnNamePrefix + viewed_FIELDNAME)
+//	@CheckPersist(allowEmpty = true)
+//	private Boolean viewed;
 
 	public static final String VIEWTIME_FIELDNAME = "viewTime";
 	@Schema(description = "最早查看时间.")
@@ -970,13 +970,13 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 		this.modified = modified;
 	}
 
-	public Boolean getViewed() {
-		return viewed;
-	}
-
-	public void setViewed(Boolean viewed) {
-		this.viewed = viewed;
-	}
+//	public Boolean getViewed() {
+//		return viewed;
+//	}
+//
+//	public void setViewed(Boolean viewed) {
+//		this.viewed = viewed;
+//	}
 
 	public Boolean getAllowRapid() {
 		return allowRapid;

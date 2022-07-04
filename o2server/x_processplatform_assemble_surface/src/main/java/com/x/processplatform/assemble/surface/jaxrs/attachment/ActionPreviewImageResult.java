@@ -14,16 +14,21 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.general.core.entity.GeneralFile;
 import com.x.processplatform.assemble.surface.ThisApplication;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionPreviewImageResult extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionPreviewImageResult.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionPreviewImageResult.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag) throws Exception {
+
+		LOGGER.debug("execute:{}. flag:{}.", effectivePerson::getDistinguishedName, () -> flag);
+
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			GeneralFile generalFile = emc.find(flag, GeneralFile.class);
-			if(generalFile!=null){
+			if (generalFile != null) {
 				if (!StringUtils.equals(effectivePerson.getDistinguishedName(), generalFile.getPerson())) {
 					throw new ExceptionAccessDenied(effectivePerson);
 				}
@@ -41,7 +46,10 @@ class ActionPreviewImageResult extends BaseAction {
 		return result;
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionPreviewImageResult$Wo")
 	public static class Wo extends WoFile {
+
+		private static final long serialVersionUID = 863645073714444828L;
 
 		public Wo(byte[] bytes, String contentType, String contentDisposition) {
 			super(bytes, contentType, contentDisposition);

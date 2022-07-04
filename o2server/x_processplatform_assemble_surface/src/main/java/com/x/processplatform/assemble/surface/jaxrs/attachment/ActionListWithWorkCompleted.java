@@ -20,6 +20,8 @@ import com.x.processplatform.assemble.surface.WorkCompletedControl;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 @Deprecated
 class ActionListWithWorkCompleted extends BaseAction {
 
@@ -36,7 +38,7 @@ class ActionListWithWorkCompleted extends BaseAction {
 			if (null == workCompleted) {
 				throw new ExceptionEntityNotExist(workCompletedId, WorkCompleted.class);
 			}
-			WoControl control = business.getControl(effectivePerson, workCompleted, WoControl.class);
+			Control control = business.getControl(effectivePerson, workCompleted, Control.class);
 			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
 				throw new ExceptionWorkCompletedAccessDenied(effectivePerson.getDistinguishedName(),
 						workCompleted.getTitle(), workCompleted.getId());
@@ -50,6 +52,14 @@ class ActionListWithWorkCompleted extends BaseAction {
 		}
 	}
 
+	public static class Control extends WorkCompletedControl {
+
+		private static final long serialVersionUID = -6595034048563092613L;
+		
+	}
+
+	
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionListWithWorkCompleted$Wo")
 	public static class Wo extends Attachment {
 
 		private static final long serialVersionUID = 1954637399762611493L;
@@ -68,6 +78,4 @@ class ActionListWithWorkCompleted extends BaseAction {
 
 	}
 
-	public static class WoControl extends WorkCompletedControl {
-	}
 }

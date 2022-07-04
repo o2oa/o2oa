@@ -26,6 +26,8 @@ import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionCopyToWorkCompletedSoft extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCopyToWorkCompletedSoft.class);
@@ -85,6 +87,22 @@ class ActionCopyToWorkCompletedSoft extends BaseAction {
 		return result;
 	}
 
+	public static class Req extends GsonPropertyObject {
+
+		private static final long serialVersionUID = 1921672558827401969L;
+		List<ReqAttachment> attachmentList = new ArrayList<>();
+
+		public List<ReqAttachment> getAttachmentList() {
+			return attachmentList;
+		}
+
+		public void setAttachmentList(List<ReqAttachment> attachmentList) {
+			this.attachmentList = attachmentList;
+		}
+
+	}
+
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionCopyToWorkCompletedSoft$Wi")
 	public static class Wi extends GsonPropertyObject {
 
 		private static final long serialVersionUID = 5985047915141241981L;
@@ -102,21 +120,7 @@ class ActionCopyToWorkCompletedSoft extends BaseAction {
 
 	}
 
-	public static class Req extends GsonPropertyObject {
-
-		private static final long serialVersionUID = 1921672558827401969L;
-		List<ReqAttachment> attachmentList = new ArrayList<>();
-
-		public List<ReqAttachment> getAttachmentList() {
-			return attachmentList;
-		}
-
-		public void setAttachmentList(List<ReqAttachment> attachmentList) {
-			this.attachmentList = attachmentList;
-		}
-
-	}
-
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionCopyToWorkCompletedSoft$WiAttachment")
 	public static class WiAttachment extends GsonPropertyObject {
 
 		private static final long serialVersionUID = -3403542752129489723L;
@@ -150,14 +154,11 @@ class ActionCopyToWorkCompletedSoft extends BaseAction {
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionCopyToWorkCompletedSoft$Wo")
 	public static class Wo extends WoId {
 
 		private static final long serialVersionUID = 8508643992679779378L;
 
 	}
 
-	public static class WoWorkControl extends WorkControl {
-
-		private static final long serialVersionUID = -8524598299951678738L;
-	}
 }

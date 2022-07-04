@@ -52,8 +52,8 @@ class ActionCopyToWork extends BaseAction {
 				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
 			if (effectivePerson.isNotManager()) {
-				WoWorkControl workControl = business.getControl(effectivePerson, work, WoWorkControl.class);
-				if (BooleanUtils.isNotTrue(workControl.getAllowProcessing())) {
+				Control control = business.getControl(effectivePerson, work, Control.class);
+				if (BooleanUtils.isNotTrue(control.getAllowProcessing())) {
 					throw new ExceptionAccessDenied(effectivePerson, work);
 				}
 			}
@@ -85,6 +85,11 @@ class ActionCopyToWork extends BaseAction {
 
 		result.setData(wos);
 		return result;
+	}
+
+	public static class Control extends WorkControl {
+
+		private static final long serialVersionUID = -7984236444647769198L;
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionCopyToWork$Wi")
@@ -154,12 +159,6 @@ class ActionCopyToWork extends BaseAction {
 
 		private static final long serialVersionUID = -5986602289699981815L;
 
-	}
-
-	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionCopyToWork$WoWorkControl")
-	public static class WoWorkControl extends WorkControl {
-
-		private static final long serialVersionUID = -7984236444647769198L;
 	}
 
 	public static class Req extends GsonPropertyObject {

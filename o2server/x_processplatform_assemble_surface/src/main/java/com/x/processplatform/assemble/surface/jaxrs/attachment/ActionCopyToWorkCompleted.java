@@ -69,6 +69,7 @@ class ActionCopyToWorkCompleted extends BaseAction {
 					q.setId(o.getId());
 					q.setName(w.getName());
 					q.setSite(w.getSite());
+					q.setSoftCopy(false);
 					req.getAttachmentList().add(q);
 				}
 			}
@@ -84,6 +85,22 @@ class ActionCopyToWorkCompleted extends BaseAction {
 
 		result.setData(wos);
 		return result;
+	}
+
+	public static class Req extends GsonPropertyObject {
+
+		private static final long serialVersionUID = -3546487034950391385L;
+
+		List<ReqAttachment> attachmentList = new ArrayList<>();
+
+		public List<ReqAttachment> getAttachmentList() {
+			return attachmentList;
+		}
+
+		public void setAttachmentList(List<ReqAttachment> attachmentList) {
+			this.attachmentList = attachmentList;
+		}
+
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionCopyToWorkCompleted$Wi")
@@ -146,25 +163,4 @@ class ActionCopyToWorkCompleted extends BaseAction {
 
 	}
 
-	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionCopyToWorkCompleted$WoWorkControl")
-	public static class WoWorkControl extends WorkControl {
-
-		private static final long serialVersionUID = -6269570358898022654L;
-	}
-
-	public static class Req extends GsonPropertyObject {
-
-		private static final long serialVersionUID = -3546487034950391385L;
-
-		List<ReqAttachment> attachmentList = new ArrayList<>();
-
-		public List<ReqAttachment> getAttachmentList() {
-			return attachmentList;
-		}
-
-		public void setAttachmentList(List<ReqAttachment> attachmentList) {
-			this.attachmentList = attachmentList;
-		}
-
-	}
 }

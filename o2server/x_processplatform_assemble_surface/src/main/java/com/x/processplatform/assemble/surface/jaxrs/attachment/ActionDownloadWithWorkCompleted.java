@@ -25,12 +25,17 @@ import com.x.processplatform.assemble.surface.WorkCompletedControl;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionDownloadWithWorkCompleted extends BaseAction {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDownloadWithWorkCompleted.class);
-	
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String workCompletedId, String fileName)
 			throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}, workCompletedId:{}.", effectivePerson::getDistinguishedName, () -> id,
+				() -> workCompletedId);
 
 		ActionResult<Wo> result = new ActionResult<>();
 		WorkCompleted workCompleted = null;
@@ -46,7 +51,7 @@ class ActionDownloadWithWorkCompleted extends BaseAction {
 			if (null == attachment) {
 				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
-			WoControl control = business.getControl(effectivePerson, workCompleted, WoControl.class);
+			Control control = business.getControl(effectivePerson, workCompleted, Control.class);
 			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
 				throw new ExceptionWorkCompletedAccessDenied(effectivePerson.getDistinguishedName(),
 						workCompleted.getTitle(), workCompleted.getId());
@@ -118,15 +123,21 @@ class ActionDownloadWithWorkCompleted extends BaseAction {
 
 	}
 
+	public static class Control extends WorkCompletedControl {
+
+		private static final long serialVersionUID = 1723086282400850454L;
+
+	}
+
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionDownloadWithWorkCompleted$Wo")
 	public static class Wo extends WoFile {
+
+		private static final long serialVersionUID = -970291756858221628L;
 
 		public Wo(byte[] bytes, String contentType, String contentDisposition) {
 			super(bytes, contentType, contentDisposition);
 		}
 
-	}
-
-	public static class WoControl extends WorkCompletedControl {
 	}
 
 }

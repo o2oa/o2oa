@@ -24,10 +24,10 @@ class ActionChangeOrderNumber extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String workId, Integer order)
 			throws Exception {
-		
+
 		LOGGER.debug("execute:{}, id:{}, workId:{}, order:{}.", effectivePerson::getDistinguishedName, () -> id,
 				() -> workId, () -> order);
-		
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -58,13 +58,6 @@ class ActionChangeOrderNumber extends BaseAction {
 	public static class Wo extends WoId {
 
 		private static final long serialVersionUID = 7781650524928249364L;
-
-	}
-
-	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionChangeOrderNumber$WoControl")
-	public static class WoControl extends WorkControl {
-
-		private static final long serialVersionUID = 3944420696392981012L;
 
 	}
 

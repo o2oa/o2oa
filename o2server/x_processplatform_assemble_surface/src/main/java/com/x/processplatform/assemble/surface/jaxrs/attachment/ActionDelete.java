@@ -15,14 +15,18 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionDelete extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDelete.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+
 		ActionResult<Wo> result = new ActionResult<>();
 		Attachment attachment;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -47,11 +51,11 @@ class ActionDelete extends BaseAction {
 		return result;
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionDelete$Wo")
 	public static class Wo extends WoId {
 
-	}
+		private static final long serialVersionUID = 5279214884633037713L;
 
-	public static class WoControl extends WorkControl {
 	}
 
 }

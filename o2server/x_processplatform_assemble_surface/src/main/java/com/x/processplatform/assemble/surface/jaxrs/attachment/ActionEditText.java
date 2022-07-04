@@ -26,6 +26,8 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionEditText extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionEditText.class);
@@ -47,7 +49,7 @@ class ActionEditText extends BaseAction {
 			if (null == attachment) {
 				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
-			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
+			Control control = business.getControl(effectivePerson, work, Control.class);
 			if (BooleanUtils.isNotTrue(control.getAllowSave())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
@@ -66,6 +68,13 @@ class ActionEditText extends BaseAction {
 		return result;
 	}
 
+	public static class Control extends WorkControl {
+
+		private static final long serialVersionUID = 6785812363805038434L;
+
+	}
+
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionEditText$Wi")
 	public static class Wi extends Attachment {
 
 		private static final long serialVersionUID = 4243967432624425952L;
@@ -75,15 +84,10 @@ class ActionEditText extends BaseAction {
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionEditText$Wo")
 	public static class Wo extends WoId {
 
 		private static final long serialVersionUID = 7972682306243403794L;
-
-	}
-
-	public static class WoControl extends WorkControl {
-
-		private static final long serialVersionUID = 6785812363805038434L;
 
 	}
 

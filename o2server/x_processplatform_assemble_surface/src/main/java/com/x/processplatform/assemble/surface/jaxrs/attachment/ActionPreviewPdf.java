@@ -19,11 +19,15 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Attachment;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionPreviewPdf extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionPreviewPdf.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionPreviewPdf.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
 		ActionResult<Wo> result = new ActionResult<>();
 		Attachment attachment = null;
@@ -45,7 +49,8 @@ class ActionPreviewPdf extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			String name = FilenameUtils.getBaseName(attachment.getName()) + ".pdf";
 			StorageMapping gfMapping = ThisApplication.context().storageMappings().random(GeneralFile.class);
-			GeneralFile generalFile = new GeneralFile(gfMapping.getName(), name, effectivePerson.getDistinguishedName());
+			GeneralFile generalFile = new GeneralFile(gfMapping.getName(), name,
+					effectivePerson.getDistinguishedName());
 			generalFile.saveContent(gfMapping, bytes, name);
 			emc.beginTransaction(GeneralFile.class);
 			emc.persist(generalFile, CheckPersistType.all);
@@ -59,7 +64,10 @@ class ActionPreviewPdf extends BaseAction {
 		return result;
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionPreviewPdf$Wo")
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = 6525023144482535008L;
 
 	}
 

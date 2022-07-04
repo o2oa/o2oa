@@ -19,6 +19,8 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.dataitem.DataItem;
 import com.x.base.core.entity.dataitem.ItemCategory;
+import com.x.base.core.project.Applications;
+import com.x.base.core.project.x_processplatform_service_processing;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.config.Config;
@@ -50,7 +52,7 @@ import com.x.query.core.entity.Item;
 
 class V2GetWorkOrWorkCompleted extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(V2GetWorkOrWorkCompleted.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(V2GetWorkOrWorkCompleted.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workOrWorkCompleted) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
@@ -91,6 +93,10 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 			for (WoTask woTask : wo.getTaskList()) {
 				wo.getRecordList().add(taskToRecord(woTask));
 			}
+			// 标记待办已读
+			ThisApplication.context().applications().getQuery(x_processplatform_service_processing.class,
+					Applications.joinQueryUri("task", "v2", "work", work.getId(), "person",
+							effectivePerson.getDistinguishedName(), "view"));
 		} else if (null != workCompleted) {
 			CompletableFuture<Void> workCompletedJsonFuture = this.workCompletedJsonFuture(workCompleted, wo);
 			CompletableFuture<Void> workCompletedDataFuture = this.workCompletedDataFuture(workCompleted, wo);
@@ -156,7 +162,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 					}
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -168,7 +174,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 				wo.setCurrentTaskIndex(ListUtils.indexOf(wo.getTaskList(),
 						e -> effectivePerson.isPerson(e.getPerson()) && (StringUtils.equals(e.getWork(), workId))));
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -201,7 +207,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 						.collect(Collectors.toList());
 				wo.setAttachmentList(wos);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -213,7 +219,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 				wo.setCurrentReadIndex(
 						ListUtils.indexOf(wo.getReadList(), e -> effectivePerson.isPerson(e.getPerson())));
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -223,7 +229,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 			try {
 				wo.setWork(gson.toJsonTree(WoWork.copier.copy(work)));
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -242,7 +248,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 					}
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -253,7 +259,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 				Business business = new Business(emc);
 				wo.setCreatorIdentity(business.organization().identity().getObject(creatorIdentity));
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -264,7 +270,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 				Business business = new Business(emc);
 				wo.setCreatorPerson(business.organization().person().getObject(creatorPerson));
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -275,7 +281,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 				Business business = new Business(emc);
 				wo.setCreatorUnit(business.organization().unit().getObject(creatorUnit));
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -285,7 +291,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 			try {
 				wo.setWork(gson.toJsonTree(WoWorkCompleted.copier.copy(workCompleted)));
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -296,7 +302,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 				wo.setRecordList(emc.fetchEqual(Record.class, WoRecord.copier, Record.job_FIELDNAME, job).stream()
 						.sorted(Comparator.comparing(WoRecord::getOrder)).collect(Collectors.toList()));
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -314,7 +320,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 							.stream().sorted(Comparator.comparing(WoRecord::getOrder)).collect(Collectors.toList()));
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}, ThisApplication.threadPool());
 	}
@@ -335,7 +341,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 						}
 					}
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
 			}
 		}, ThisApplication.threadPool());

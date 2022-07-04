@@ -84,6 +84,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionListWithWorkOrWorkCompleted$Wo")
 	public static class Wo extends Attachment {
 
 		private static final long serialVersionUID = -7666329770246726197L;
@@ -103,6 +104,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionListWithWorkOrWorkCompleted$WoControl")
 	public static class WoControl extends GsonPropertyObject {
 
 		private static final long serialVersionUID = -7283783148043076205L;

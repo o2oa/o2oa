@@ -63,7 +63,6 @@ class ActionHtmlToPdf extends BaseAction {
 			try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
 				ConverterProperties props = new ConverterProperties();
 				DefaultFontProvider dfp = new DefaultFontProvider(false, false, false);
-				// dfp.addFont(Config.base()+"/commons/fonts/NotoSansCJKsc-Regular.otf");
 				dfp.addDirectory(Config.base() + "/commons/fonts");
 				props.setFontProvider(dfp);
 				PdfWriter writer = new PdfWriter(out);
@@ -86,7 +85,7 @@ class ActionHtmlToPdf extends BaseAction {
 
 			return generalFile.getId();
 		} catch (Exception e) {
-			LOGGER.warn("写work信息异常" + e.getMessage());
+			LOGGER.warn("写work信息异常:" + e.getMessage());
 		}
 		return "";
 	}

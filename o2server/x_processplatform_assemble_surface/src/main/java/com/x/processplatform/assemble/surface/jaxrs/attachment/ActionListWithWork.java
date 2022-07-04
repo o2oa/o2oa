@@ -39,7 +39,7 @@ class ActionListWithWork extends BaseAction {
 			if (null == work) {
 				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
-			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
+			Control control = business.getControl(effectivePerson, work, Control.class);
 			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
@@ -49,6 +49,12 @@ class ActionListWithWork extends BaseAction {
 			result.setData(wos);
 			return result;
 		}
+	}
+
+	public static class Control extends WorkControl {
+
+		private static final long serialVersionUID = -4507421460623028200L;
+
 	}
 
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionListWithWork$Wo")
@@ -69,13 +75,6 @@ class ActionListWithWork extends BaseAction {
 		public void setRank(Long rank) {
 			this.rank = rank;
 		}
-
-	}
-
-	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionListWithWork$WoControl")
-	public static class WoControl extends WorkControl {
-
-		private static final long serialVersionUID = -4507421460623028200L;
 
 	}
 

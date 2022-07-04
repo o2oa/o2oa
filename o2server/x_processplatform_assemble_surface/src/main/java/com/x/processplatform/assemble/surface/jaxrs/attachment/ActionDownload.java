@@ -23,16 +23,19 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionDownload extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDownload.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String fileName) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
 		ActionResult<Wo> result = new ActionResult<>();
 		Work work = null;
@@ -49,8 +52,8 @@ class ActionDownload extends BaseAction {
 				throw new ExceptionAccessDenied(effectivePerson, id);
 			}
 
-			if (Config.processPlatform().getExtensionEvents().getWorkAttachmentDownloadEvents().size() > 0 || Config
-					.processPlatform().getExtensionEvents().getWorkCompletedAttachmentDownloadEvents().size() > 0) {
+			if ((!Config.processPlatform().getExtensionEvents().getWorkAttachmentDownloadEvents().isEmpty()) || (Config
+					.processPlatform().getExtensionEvents().getWorkCompletedAttachmentDownloadEvents().isEmpty())) {
 				List<Work> workList = business.work().listWithJobObject(attachment.getJob());
 				if (ListTools.isEmpty(workList)) {
 					List<WorkCompleted> list = business.workCompleted().listWithJobObject(attachment.getJob());
@@ -72,6 +75,14 @@ class ActionDownload extends BaseAction {
 				fileName = fileName + "." + attachment.getExtension();
 			}
 		}
+		byte[] bytes = read(effectivePerson, mapping, work, workCompleted, attachment);
+		Wo wo = new Wo(bytes, this.contentType(false, fileName), this.contentDisposition(false, fileName));
+		result.setData(wo);
+		return result;
+	}
+
+	private byte[] read(EffectivePerson effectivePerson, StorageMapping mapping, Work work, WorkCompleted workCompleted,
+			Attachment attachment) throws Exception {
 		byte[] bytes = null;
 		if (work != null) {
 			Optional<WorkExtensionEvent> event = Config.processPlatform().getExtensionEvents()
@@ -91,9 +102,7 @@ class ActionDownload extends BaseAction {
 		if (bytes == null) {
 			bytes = attachment.readContent(mapping);
 		}
-		Wo wo = new Wo(bytes, this.contentType(false, fileName), this.contentDisposition(false, fileName));
-		result.setData(wo);
-		return result;
+		return bytes;
 	}
 
 	private byte[] extensionService(EffectivePerson effectivePerson, String id, WorkExtensionEvent event)
@@ -147,7 +156,10 @@ class ActionDownload extends BaseAction {
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionDownload$Wo")
 	public static class Wo extends WoFile {
+
+		private static final long serialVersionUID = 8958654624399659293L;
 
 		public Wo(byte[] bytes, String contentType, String contentDisposition) {
 			super(bytes, contentType, contentDisposition);
@@ -155,6 +167,5 @@ class ActionDownload extends BaseAction {
 
 	}
 
-	public static class WoControl extends WorkControl {
-	}
+ 
 }

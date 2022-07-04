@@ -60,13 +60,6 @@ class ActionHtmlToImage extends BaseAction {
 		}
 	}
 
-	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionHtmlToImage$Wo")
-	public static class Wo extends WoId {
-
-		private static final long serialVersionUID = -7747581377738836294L;
-
-	}
-
 	private String saveImage(Wi wi, EffectivePerson effectivePerson, Business business) throws Exception {
 		Work work = null;
 		EntityManagerContainer emc = business.entityManagerContainer();
@@ -98,7 +91,7 @@ class ActionHtmlToImage extends BaseAction {
 		}
 		byte[] bytes = playWright(wi, workHtml, name);
 		if (bytes == null) {
-			LOGGER.warn("Playwright screenshot fail!!!");
+			LOGGER.warn("Playwright screenshot fail.");
 			return "";
 		}
 		String key = "";
@@ -192,6 +185,13 @@ class ActionHtmlToImage extends BaseAction {
 	public static class Control extends WorkControl {
 
 		private static final long serialVersionUID = -2434594947861029787L;
+
+	}
+
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionHtmlToImage$Wo")
+	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = -7747581377738836294L;
 
 	}
 

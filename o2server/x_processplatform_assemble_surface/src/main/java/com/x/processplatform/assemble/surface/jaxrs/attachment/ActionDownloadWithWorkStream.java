@@ -25,12 +25,17 @@ import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionDownloadWithWorkStream extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDownloadWithWorkStream.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String workId, String fileName)
 			throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}, workId:{}.", effectivePerson::getDistinguishedName, () -> id, () -> workId);
+
 		ActionResult<Wo> result = new ActionResult<>();
 		Work work = null;
 		Attachment attachment = null;
@@ -38,17 +43,17 @@ class ActionDownloadWithWorkStream extends BaseAction {
 
 			Business business = new Business(emc);
 			work = emc.find(workId, Work.class);
-			/** 判断work是否存在 */
+			// 判断work是否存在
 			if (null == work) {
 				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
-			/** 判断attachment是否存在 */
+			// 判断attachment是否存在
 			attachment = emc.find(id, Attachment.class);
 			if (null == attachment) {
 				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
-			/** 生成当前用户针对work的权限控制,并判断是否可以访问 */
-			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
+			// 生成当前用户针对work的权限控制,并判断是否可以访问
+			Control control = business.getControl(effectivePerson, work, Control.class);
 			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
@@ -115,7 +120,16 @@ class ActionDownloadWithWorkStream extends BaseAction {
 
 	}
 
+	public static class Control extends WorkControl {
+
+		private static final long serialVersionUID = -754320243488525906L;
+
+	}
+
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionDownloadWithWorkStream$Wo")
 	public static class Wo extends WoFile {
+
+		private static final long serialVersionUID = 1843284869726488698L;
 
 		public Wo(byte[] bytes, String contentType, String contentDisposition) {
 			super(bytes, contentType, contentDisposition);
@@ -123,6 +137,4 @@ class ActionDownloadWithWorkStream extends BaseAction {
 
 	}
 
-	public static class WoControl extends WorkControl {
-	}
 }
