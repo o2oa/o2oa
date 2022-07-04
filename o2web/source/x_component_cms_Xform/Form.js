@@ -762,12 +762,23 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             node.empty();
             return;
         }
-        if (!MWF["CMS" + json.type]) {
-            var moduleType = json.type;
-            if(moduleType === "AttachmentDg")moduleType = "Attachment";
-            MWF.xDesktop.requireApp("cms.Xform", moduleType, null, false);
+        var moduleType, module;
+        if( this.options.useProcessForm && json.type === "Actionbar"){
+            //使用流程表单，组件是操作条
+            if (!MWF["APP"+ json.type]) {
+                moduleType = json.type;
+                MWF.xDesktop.requireApp("process.Xform", moduleType, null, false);
+            }
+            debugger;
+            module = new MWF["APP" + json.type](node, json, this);
+        }else{
+            if (!MWF["CMS" + json.type]) {
+                moduleType = json.type;
+                if(moduleType === "AttachmentDg")moduleType = "Attachment";
+                MWF.xDesktop.requireApp("cms.Xform", moduleType, null, false);
+            }
+            module = new MWF["CMS" + json.type](node, json, this);
         }
-        var module = new MWF["CMS" + json.type](node, json, this);
         if (beforeLoad) beforeLoad.apply(module);
         if (!this.all[json.id]) this.all[json.id] = module;
         if (module.field) {
@@ -1321,15 +1332,15 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
         this.app.setPopularDocument();
     },
 
-    printWork: function (app, form) {
-        var application = app || this.businessData.work.application;
-        var form = form;
-        if (!form) {
-            form = this.json.id;
-            if (this.json.printForm) form = this.json.printForm;
-        }
-        window.open(o2.filterUrl("../x_desktop/printWork.html?workid=" + this.businessData.work.id + "&app=" + this.businessData.work.application + "&form=" + form));
-    },
+    // printWork: function (app, form) {
+    //     var application = app || this.businessData.work.application;
+    //     var form = form;
+    //     if (!form) {
+    //         form = this.json.id;
+    //         if (this.json.printForm) form = this.json.printForm;
+    //     }
+    //     window.open(o2.filterUrl("../x_desktop/printWork.html?workid=" + this.businessData.work.id + "&app=" + this.businessData.work.application + "&form=" + form));
+    // },
     openWindow: function (form, app) {
         var form = form;
         if (!form) {

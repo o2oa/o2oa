@@ -731,11 +731,14 @@ MWF.xApplication.cms.Document.Main = new Class({
                     "saveOnClose" : this.options.saveOnClose,
                     "onPostPublish" : this.options.postPublish,
                     "onAfterPublish" : this.options.afterPublish,
-                    "onPostDelete" : this.options.postDelete
+                    "onPostDelete" : this.options.postDelete,
+                    "useProcessForm": this.useProcessForm
                 });
+
                 this.appForm.businessData = {
                     "data": this.data,
                     "document": this.document,
+                    "work": this.data.$work || {}, //兼用流程发布到内容管理
                     "control": this.control,
                     "attachmentList": this.attachmentList,
                     "formInfor": this.formInfor,
@@ -744,6 +747,11 @@ MWF.xApplication.cms.Document.Main = new Class({
                         "readonly": this.readonly
                     }
                 };
+                if( this.useProcessForm &&  this.data.$work ){
+                    this.appForm.businessData.work = {
+                        id : this.data.$work.workId
+                    }
+                }
                 this.appForm.formDataText = this.formDataText;
                 this.appForm.documentAction = this.action;
                 this.appForm.app = this;
