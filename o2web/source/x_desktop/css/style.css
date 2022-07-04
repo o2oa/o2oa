@@ -40,6 +40,28 @@ body {
 .o2_vue *{
 	box-sizing: border-box!important;
 }
+*::-webkit-scrollbar {
+    width:8px;
+    height: 8px;
+    border-radius: 8px;
+    background-color: #dddddd;
+}
+*::-webkit-scrollbar-thumb{
+    width: 8px;
+    border-radius: 8px;
+    background-color: #bbbbbb;
+    cursor: pointer;
+}
+*::-webkit-scrollbar-thumb:hover{
+    width: 8px;
+    border-radius: 8px;
+    background-color: #666666;
+    cursor: pointer;
+}
+* {
+    scrollbar-color: #bbbbbb #dddddd;
+    scrollbar-width: thin;
+}
 /*
 .table-tr-selected {
 	background-color: #FFFFDD;

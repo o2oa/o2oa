@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="systemconfig_area">
     <div class="systemconfig_title">{{lp.systemInfo}}</div>
 
     <div class="systemconfig_tab_area">

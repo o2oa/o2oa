@@ -1,9 +1,14 @@
 <template>
   <div class="item" :style="getItemStyle()">
     <label class="item_label" v-if="label" :style="Object.assign(labelStyle, {lineHeight: iconHeight, height: iconHeight})">{{label}}</label>
-    <div class="item_input" v-if="value.path">
-      <div :class="getClass(value)" :style="Object.assign(getIcon(value), iconStyle)"></div>
-    </div>
+
+    <BaseIconComponent v-if="itemType==='component'" :value="value" :icon-style="iconStyle" :icon-height="iconHeight" :icon-width="iconWidth"></BaseIconComponent>
+    <BaseIconGroup v-if="itemType==='group'" :value="value" :icon-style="iconStyle" :icon-height="iconHeight" :icon-width="iconWidth"></BaseIconGroup>
+    <BaseIconPortal v-if="itemType==='portal'" :value="value" :icon-style="iconStyle" :icon-height="iconHeight" :icon-width="iconWidth"></BaseIconPortal>
+    <BaseIconProcess v-if="itemType==='process'" :value="value" :icon-style="iconStyle" :icon-height="iconHeight" :icon-width="iconWidth"></BaseIconProcess>
+    <BaseIconInfor v-if="itemType==='infor'" :value="value" :icon-style="iconStyle" :icon-height="iconHeight" :icon-width="iconWidth"></BaseIconInfor>
+    <BaseIconQuery v-if="itemType==='query'" :value="value" :icon-style="iconStyle" :icon-height="iconHeight" :icon-width="iconWidth"></BaseIconQuery>
+
     <button class="mainColor_bg" @click="changeIcon" v-if="canChange">{{uploadText}}</button>
     <button class="" @click="clearIcon" v-if="canChange">{{clearText}}</button>
     <input type="file" accept=".png,.jpg,.bmp,.gif,.jpeg,.jpe" ref="uploadNode" @change="uploadIcon" style="display: none" v-if="canChange">
@@ -11,8 +16,15 @@
 </template>
 
 <script setup>
-import {layout, o2} from '@o2oa/component';
+import {o2} from '@o2oa/component';
 import {defineProps, defineEmits, ref} from 'vue';
+import BaseIconComponent from './BaseIconComponent.vue';
+import BaseIconGroup from './BaseIconGroup.vue';
+import BaseIconPortal from './BaseIconPortal.vue';
+import BaseIconProcess from './BaseIconProcess.vue';
+import BaseIconInfor from './BaseIconInfor.vue';
+import BaseIconQuery from './BaseIconQuery.vue';
+
 
 const uploadNode = ref();
 
@@ -21,52 +33,35 @@ const emit = defineEmits(['update:value']);
 const props = defineProps({
   label: String,
   value: Object,
+  // itemType: { type: String, default: 'component' },
   canChange: { type: Boolean, default: false },
   iconWidth: { type: String, default: '50px' },
   iconHeight: { type: String, default: '50px' },
+  itemStyle: { type: Object, default: {} },
   labelStyle: { type: Object, default: {} },
   iconStyle: { type: Object, default: {} },
   uploadText: { type: String, default: 'upload' },
   clearText: { type: String, default: 'clear' }
 });
 
-if (!layout.iconJson){
-  layout.iconJson = fetch('../o2_core/o2/xDesktop/$Default/icons.json').then((res)=>{
-    return res.json();
-  });
+function getItemNameType(){
+  if (props.value.type==='group') return 'group';
+  if (props.value.hasOwnProperty('portalCategory')) return 'portal';
+  if (props.value.type==='system' || props.value.type==='custom') return 'component';
+  if (props.value.hasOwnProperty('documentType')) return 'infor';
+  if (props.value.hasOwnProperty('queryCategory')) return 'query';
+  if (props.value.hasOwnProperty('applicationCategory')) return 'process';
 }
-const iconJson = ref({});
-layout.iconJson.then((data)=>{
-  iconJson.value = data;
-});
+const itemType = ref(getItemNameType());
+
 
 function getItemStyle(){
-  return (props.label) ? {
+  const style = (props.label) ? {
     display: 'flex',
     alignItems: 'center'
-  } : {}
-}
+  } : {};
 
-function getClass(cmpt){
-  const startWidthUrl = cmpt.path.startsWith('@url')
-  const path = (startWidthUrl) ? (cmpt.iconPath || 'Url') : cmpt.path;
-  return (iconJson.value[path]) ? 'componentItemIconSystem' : 'componentItemIconCustom';
-}
-
-function getIcon(cmpt){
-  const isUrl = cmpt.path.startsWith('@url');
-  const iconObj = iconJson.value[cmpt.path] || ((isUrl && cmpt.iconPath==='appicon.png') ? iconJson.value['Url'] : null);
-
-  return (iconObj) ? {
-    backgroundColor: iconObj.color,
-    backgroundImage: `url('../o2_core/o2/xDesktop/$Default/appicons/${iconObj.icon}')`,
-    height: props.iconHeight,
-    width: props.iconWidth
-  } : {
-    backgroundImage: (isUrl) ? `url('${cmpt.iconPath}')` : `url('../x_component_${cmpt.path.replace(/\./g, '_')}/$Main/${cmpt.iconPath}')`,
-    height: props.iconHeight,
-    width: props.iconWidth
-  };
+  return Object.assign(style, props.itemStyle);
 }
 
 function changeIcon(){
@@ -116,22 +111,6 @@ function clearIcon(){
   width: 80px;
   height: 32px;
   line-height: 32px;
-}
-.item_input{
-
-}
-.componentItemIconSystem{
-  background-size: 26px 26px;
-  background-position: center;
-  background-repeat: no-repeat;
-  border-radius: 40%;
-  margin: auto;
-}
-.componentItemIconCustom{
-  background-size: 50px 50px;
-  background-position: center;
-  background-repeat: no-repeat;
-  margin: auto;
 }
 button {
   border-radius: 100px;

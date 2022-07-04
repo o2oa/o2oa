@@ -78,7 +78,34 @@ async function deployWebResource(data) {
     const result = await action.dispatchResource(data.overwrite, formData, file);
     return result.data;
 }
+function getDefaultMenuData(){
+    return new Promise((resolve, reject)=>{
+        o2.UD.getPublicData("defaultMainMenuData", dData=>resolve(dData));
+    });
+}
+function getForceMenuData(){
+    return new Promise((resolve, reject)=>{
+        o2.UD.getPublicData("forceMainMenuData", dData=>resolve(dData));
+    });
+}
+async function loadProcessApplication() {
+    const json = await o2.Actions.load("x_processplatform_assemble_surface").ApplicationAction.listWithPerson();
+    return json.data;
+}
+async function loadPortalApplication() {
+    const json = await o2.Actions.load("x_portal_assemble_surface").PortalAction.list();
+    return json.data;
+}
+async function loadInforApplication() {
+    const json = await o2.Actions.load("x_cms_assemble_control").AppInfoAction.listWhatICanView_AllType();
+    return json.data;
+}
+async function loadQueryApplication() {
+    const json = await o2.Actions.load("x_query_assemble_surface").QueryAction.listWithPerson();
+    return json.data;
+}
 
+//function to load application
 
 
 export {
@@ -89,5 +116,11 @@ export {
     getComponent,
     saveComponent,
     dispatchComponentFile,
-    deployWebResource
+    deployWebResource,
+    getDefaultMenuData,
+    getForceMenuData,
+    loadProcessApplication,
+    loadPortalApplication,
+    loadInforApplication,
+    loadQueryApplication
 };

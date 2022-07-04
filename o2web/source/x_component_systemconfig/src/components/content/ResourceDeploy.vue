@@ -1,5 +1,5 @@
 <template xmlns="">
-  <div>
+  <div class="systemconfig_area">
     <div class="systemconfig_title">{{lp.resourceDeploy}}</div>
 
     <div class="systemconfig_tab_area">

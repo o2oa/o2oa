@@ -196,6 +196,7 @@ button{
   border: 1px solid #cccccc;
   font-size: 12px;
   cursor: pointer;
+  padding: 2px 5px;
 }
 .componentItemDeploy{
   height: 90px;

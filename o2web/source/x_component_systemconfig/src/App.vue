@@ -55,7 +55,6 @@ const contentComponent = computed(() => {
   border-radius: 4px;
   overflow: auto;
   display: flex;
-  flex-direction: column;
   text-align: left;
 }
 </style>
@@ -63,7 +62,7 @@ const contentComponent = computed(() => {
 .systemconfig_title{
   height: 40px;
   padding: 20px 30px 0;
-  font-size: 24px;
+  font-size: 20px;
   color: rgb(51, 51, 51);
   font-weight: bold;
   line-height: 40px;
@@ -72,9 +71,8 @@ const contentComponent = computed(() => {
   height: 30px;
   line-height: 30px;
   padding: 20px 0 0 30px;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
-  clear: both;
   color: rgb(102, 102, 102);
 }
 .systemconfig_item_info{
@@ -83,13 +81,46 @@ const contentComponent = computed(() => {
   font-size: 14px;
   line-height: 24px;
   color: rgb(153, 153, 153);
-  clear: both;
 }
 .systemconfig_tab_area{
   padding: 20px 30px;
   width: 80%;
-  min-width: 900px;
-  /*max-width: 2000px;*/
+  min-width: 960px;
+  max-width: 2000px;
   margin-right: 100px;
+}
+.systemconfig_area{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+button{
+  border-radius: 100px;
+  border: 0;
+  padding: 6px 20px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+*::-webkit-scrollbar {
+  width:8px;
+  height: 8px;
+  border-radius: 8px;
+  background-color: #dddddd;
+}
+*::-webkit-scrollbar-thumb{
+  width: 8px;
+  border-radius: 8px;
+  background-color: #bbbbbb;
+  cursor: pointer;
+}
+*::-webkit-scrollbar-thumb:hover{
+  width: 8px;
+  border-radius: 8px;
+  background-color: #666666;
+  cursor: pointer;
+}
+* {
+  scrollbar-color: #bbbbbb #dddddd;
+  scrollbar-width: thin;
 }
 </style>

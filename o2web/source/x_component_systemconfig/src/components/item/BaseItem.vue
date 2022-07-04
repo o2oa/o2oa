@@ -44,7 +44,7 @@ function toggleEditor(){
   height: 30px;
   line-height: 30px;
   padding: 20px 0 0 30px;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
   clear: both;
   color: rgb(102, 102, 102);

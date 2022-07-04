@@ -116,6 +116,7 @@ o2.xApplication.systemconfig.LP = {
     "_uiConfig": {
         "baseConfig": "基本配置",
         "menuConfig": "主菜单配置",
+        "lnkConfig": "侧边栏配置",
         "userConfig": "用户界面配置",
 
         "openStatus": "进入系统",
@@ -129,6 +130,32 @@ o2.xApplication.systemconfig.LP = {
         "skinConfigInfo": "是否允许用户个性化修改修改系统皮肤",
         "skinDefault": "系统默认皮肤",
         "skinDefaultInfo": "设置系统默认皮肤色系",
+        "scaleConfig": "是否允许缩放",
+        "scaleConfigInfo": "是否允许用户个性化设置系统显示的缩放比例",
+
+        "defaultMenuInfo": "保存为默认菜单设置后，未进行个性化菜单设置的用户，会按此设置展现菜单。",
+        "forceMenuInfo": "保存为强制菜单设置后，所有的用户都会按此设置展现菜单，个性化设置将会失效。",
+        "userMenuInfo": "所有用户的个性化菜单设置将被清除，以默认方式展现菜单。",
+
+
+        "defaultMenu": "默认菜单配置",
+        "forceMenu": "强制菜单配置",
+        "userMenu": "用户个性化菜单配置",
+
+        "saveMenu": "保存配置",
+        "clearMenu": "清除配置",
+        "loadMenu": "载入配置",
+        "clearUserMenu": "清除配置",
+
+        "menu": {
+            "application": "应用",
+            "process": "流程",
+            "cms": "信息",
+            "query": "数据",
+
+            "defaultMenu": "恢复默认菜单状态"
+        }
+
     }
 
 }

@@ -100,9 +100,9 @@ o2.xDesktop.Default = new Class({
         this.path = o2.session.path+"/xDesktop/$Default/";
         this.node = $(node);
         this.node.empty();
+        this.options.style = layout.config.defaultSkin || "blue";
         this.initData();
-        this.zoom();
-        //this.load();
+        this.zoom(layout.config.scaleConfig===false ? 1 : 0);
     },
     initData: function(){
         this.apps = {};
@@ -135,7 +135,7 @@ o2.xDesktop.Default = new Class({
             this.status.apps[appNames].isIndex = true;
             this.status.forceCurrentApp = appNames;
         }
-        if (this.status && this.status.flatStyle) this.options.style = this.status.flatStyle;
+        if (layout.config.skinConfig!==false && this.status && this.status.flatStyle) this.options.style = this.status.flatStyle;
     },
 
     load: function(cb){
@@ -278,24 +278,14 @@ o2.xDesktop.Default = new Class({
             oReq.withCredentials = true;
             oReq.send();
 
-            // var res = new Request({
-            //     "url": this.session.user.iconUrl,
-            //     method: "get",
-            //     withCredentials: true,
-            //     onSuccess: function(response,a,s,d){
-            //
-            //     }.bind(this)
-            // });
-            // res.setHeader("authorization", layout.session.user.token);
-            // res.send();
-debugger;
+            if (layout.config.scaleConfig===false && this.zoomValueNode){
+                this.zoomValueNode.hide()
+            }
+
             this.sliderNode.getLast().set("title", o2.LP.desktop.returnZoom);
 
             this.node.loadCss(skinCss);
             if (callback) callback();
-            // this.node.load(html, {
-            //     "bind": {"user": this.session.user}
-            // }, function(){});
         }.bind(this));
     },
 
