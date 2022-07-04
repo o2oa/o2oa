@@ -5227,7 +5227,6 @@ debugger;
 /**
  * @class PortalPage 门户页面。
  * @o2cn 门户页面
- * @alias PortalPage
  * @o2category FormComponents
  * @o2range {Portal}
  * @extends MWF.xApplication.process.Xform.Form
@@ -5294,6 +5293,18 @@ var PortalPage="";
  * @ignore
  */
 /**
+ * @event PortalPage#afterLoadProcessor
+ * @ignore
+ */
+/**
+ * @event PortalPage#beforeAddTask
+ * @ignore
+ */
+/**
+ * @event PortalPage#afterAddTask
+ * @ignore
+ */
+/**
  * @method PortalPage#getRouteDataList
  * @ignore
  */
@@ -5321,4 +5332,3 @@ var PortalPage="";
  * @method PortalPage#resumeTask
  * @ignore
  */
-
