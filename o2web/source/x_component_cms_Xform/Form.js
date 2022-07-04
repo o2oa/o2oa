@@ -762,18 +762,13 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             node.empty();
             return;
         }
-        var moduleType, module;
-        if( this.options.useProcessForm && json.type === "Actionbar"){
-            //使用流程表单，组件是操作条
-            if (!MWF["APP"+ json.type]) {
-                moduleType = json.type;
-                MWF.xDesktop.requireApp("process.Xform", moduleType, null, false);
-            }
-            debugger;
-            module = new MWF["APP" + json.type](node, json, this);
+        var module;
+        if( this.options.useProcessForm && json.type === "Actionbar"){  //使用流程表单，组件是操作条
+            if (!MWF["Actionbar"])MWF.xDesktop.requireApp("process.Xform", "Actionbar", null, false);
+            module = new MWF["APPActionbar"](node, json, this);
         }else{
             if (!MWF["CMS" + json.type]) {
-                moduleType = json.type;
+                var moduleType = json.type;
                 if(moduleType === "AttachmentDg")moduleType = "Attachment";
                 MWF.xDesktop.requireApp("cms.Xform", moduleType, null, false);
             }
