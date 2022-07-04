@@ -1,13 +1,7 @@
 package com.x.query.core.express.plan;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -25,6 +19,7 @@ import javax.script.CompiledScript;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.list.TreeList;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -207,6 +202,22 @@ public abstract class Plan extends GsonPropertyObject {
 			} else if (null == o2) {
 				return 1;
 			} else {
+				if(o1 instanceof List){
+					String o = StringUtils.join((List)o1);
+					if(StringUtils.isBlank(o)){
+						return -1;
+					}else{
+						o1 = o;
+					}
+				}
+				if(o2 instanceof List){
+					String o = StringUtils.join((List)o2);
+					if(StringUtils.isBlank(o)){
+						return 1;
+					}else{
+						o2 = o;
+					}
+				}
 				Comparable c1 = (Comparable) o1;
 				Comparable c2 = (Comparable) o2;
 				if (StringUtils.equals(SelectEntry.ORDER_ASC, orderType)) {
@@ -530,7 +541,9 @@ public abstract class Plan extends GsonPropertyObject {
 			}
 			List<Tuple> list = em.createQuery(cq).getResultList();
 			Row row = null;
+			Set<String> set = new HashSet<>();
 			for (Tuple o : list) {
+				set.add(Objects.toString(o.get(0)));
 				row = table.get(Objects.toString(o.get(0)));
 				switch (ItemPrimitiveType.valueOf(Objects.toString(o.get(1)))) {
 				case s:
