@@ -25,19 +25,21 @@ import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionUpdate extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionUpdate.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionUpdate.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String workId, String fileName, byte[] bytes,
 			FormDataContentDisposition disposition, String extraParam) throws Exception {
+		LOGGER.debug("receive id:{}, workId:{}, fileName:{}, extraParam:{}.", id, workId, fileName, extraParam);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			logger.debug("receive id:{}, workId:{}, fileName:{}, extraParam:{}.", id, workId, fileName, extraParam);
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
-			/* 后面要重新保存 */
+			// 后面要重新保存
 			Work work = emc.find(workId, Work.class);
-			/** 判断work是否存在 */
+			// 判断work是否存在
 			if (null == work) {
 				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
@@ -45,8 +47,7 @@ class ActionUpdate extends BaseAction {
 			if (null == attachment) {
 				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
-
-			/* 天谷印章扩展 */
+			// 天谷印章扩展
 			if (StringUtils.isNotEmpty(extraParam)) {
 				WiExtraParam wiExtraParam = gson.fromJson(extraParam, WiExtraParam.class);
 				if (StringUtils.isNotEmpty(wiExtraParam.getFileName())) {
@@ -57,11 +58,11 @@ class ActionUpdate extends BaseAction {
 			if (StringUtils.isEmpty(fileName)) {
 				fileName = this.fileName(disposition);
 			}
-			if(!fileName.equalsIgnoreCase(attachment.getName())){
+			if (!fileName.equalsIgnoreCase(attachment.getName())) {
 				fileName = this.adjustFileName(business, work.getJob(), fileName);
 			}
-			/* 统计待办数量判断用户是否可以上传附件 */
-			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
+			// 统计待办数量判断用户是否可以上传附件
+			Control control = business.getControl(effectivePerson, work, Control.class);
 			if (BooleanUtils.isNotTrue(control.getAllowSave())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
@@ -69,7 +70,7 @@ class ActionUpdate extends BaseAction {
 			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
 			List<String> units = business.organization().unit().listWithPerson(effectivePerson);
 			boolean canEdit = this.edit(attachment, effectivePerson, identities, units, business);
-			if(!canEdit){
+			if (!canEdit) {
 				throw new ExceptionAccessDenied(effectivePerson, attachment);
 			}
 
@@ -80,11 +81,11 @@ class ActionUpdate extends BaseAction {
 			emc.beginTransaction(Attachment.class);
 			attachment.updateContent(mapping, bytes, fileName);
 			attachment.setType((new Tika()).detect(bytes, fileName));
-			logger.debug("filename:{}, file type:{}.", attachment.getName(), attachment.getType());
-			if (Config.query().getExtractImage() && ExtractTextTools.supportImage(attachment.getName())
-					&& ExtractTextTools.available(bytes)) {
+			LOGGER.debug("filename:{}, file type:{}.", attachment.getName(), attachment.getType());
+			if (BooleanUtils.isTrue(Config.query().getExtractImage())
+					&& ExtractTextTools.supportImage(attachment.getName()) && ExtractTextTools.available(bytes)) {
 				attachment.setText(ExtractTextTools.image(bytes));
-				logger.debug("filename:{}, file type:{}, text:{}.", attachment.getName(), attachment.getType(),
+				LOGGER.debug("filename:{}, file type:{}, text:{}.", attachment.getName(), attachment.getType(),
 						attachment.getText());
 			}
 			emc.commit();
@@ -95,11 +96,17 @@ class ActionUpdate extends BaseAction {
 		}
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionUpdate$Wo")
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = 7301158712641170039L;
 
 	}
 
-	public static class WoControl extends WorkControl {
+	public static class Control extends WorkControl {
+
+		private static final long serialVersionUID = 8979609721676077161L;
+		
 	}
 
 }

@@ -18,6 +18,8 @@ import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionGetText extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionGetText.class);
@@ -36,7 +38,7 @@ class ActionGetText extends BaseAction {
 			if (null == attachment) {
 				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
-			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
+			Control control = business.getControl(effectivePerson, work, Control.class);
 			if (BooleanUtils.isNotTrue(control.getAllowSave())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
@@ -46,17 +48,19 @@ class ActionGetText extends BaseAction {
 		}
 	}
 
-	public static class Wo extends Attachment {
+	public static class Control extends WorkControl {
 
-		private static final long serialVersionUID = 8721106091399412376L;
-		static WrapCopier<Attachment, Wo> copier = WrapCopierFactory.wo(Attachment.class, Wo.class,
-				ListTools.toList(Attachment.text_FIELDNAME), null);
+		private static final long serialVersionUID = 8385522952859528010L;
 
 	}
 
-	public static class WoControl extends WorkControl {
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionGetText$Wo")
+	public static class Wo extends Attachment {
 
-		private static final long serialVersionUID = 8385522952859528010L;
+		private static final long serialVersionUID = 8721106091399412376L;
+
+		static WrapCopier<Attachment, Wo> copier = WrapCopierFactory.wo(Attachment.class, Wo.class,
+				ListTools.toList(Attachment.text_FIELDNAME), null);
 
 	}
 

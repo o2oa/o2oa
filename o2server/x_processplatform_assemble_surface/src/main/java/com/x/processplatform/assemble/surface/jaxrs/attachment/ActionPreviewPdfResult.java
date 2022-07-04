@@ -14,14 +14,16 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.general.core.entity.GeneralFile;
 import com.x.processplatform.assemble.surface.ThisApplication;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionPreviewPdfResult extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionPreviewPdfResult.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag) throws Exception {
-		
+
 		LOGGER.debug("execute:{}, flag:{}.", effectivePerson::getDistinguishedName, () -> flag);
-		
+
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -44,6 +46,7 @@ class ActionPreviewPdfResult extends BaseAction {
 		return result;
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionPreviewPdfResult$Wo")
 	public static class Wo extends WoFile {
 
 		private static final long serialVersionUID = -5900820047071346020L;

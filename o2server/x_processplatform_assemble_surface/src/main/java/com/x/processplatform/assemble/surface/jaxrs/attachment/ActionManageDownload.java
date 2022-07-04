@@ -11,9 +11,13 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoFile;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Attachment;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * 管理员下载
@@ -22,7 +26,12 @@ import com.x.processplatform.core.entity.content.Attachment;
  *
  */
 class ActionManageDownload extends BaseAction {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionManageDownload.class);
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
 		ActionResult<Wo> result = new ActionResult<>();
 		Attachment attachment = null;
@@ -48,7 +57,10 @@ class ActionManageDownload extends BaseAction {
 		return result;
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionManageDownload$Wo")
 	public static class Wo extends WoFile {
+
+		private static final long serialVersionUID = -9027522115198147488L;
 
 		public Wo(byte[] bytes, String contentType, String contentDisposition) {
 			super(bytes, contentType, contentDisposition);
