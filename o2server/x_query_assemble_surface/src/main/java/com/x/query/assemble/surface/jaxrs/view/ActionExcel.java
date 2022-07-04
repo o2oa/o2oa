@@ -63,7 +63,7 @@ class ActionExcel extends BaseAction {
 				throw new ExceptionAccessDenied(effectivePerson, view);
 			}
 			runtime = this.runtime(effectivePerson, business, view, wi.getFilterList(), wi.getParameter(),
-					wi.getCount(), false);
+					wi.getCount(), true);
 			runtime.bundleList = wi.getBundleList();
 		}
 		Plan plan = this.accessPlan(business, view, runtime, ThisApplication.threadPool());
