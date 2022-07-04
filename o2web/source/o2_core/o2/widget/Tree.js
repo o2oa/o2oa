@@ -313,7 +313,20 @@ o2.widget.Tree.Node = new Class({
                     this.iconNode.setStyles(this.tree.css[this.options.style].iconNode);
                 }
             }
-            this.iconNode.setStyle("background", "url("+this.tree.path+this.tree.options.style+"/"+this.options.icon+") center center no-repeat");
+            if( this.options.icon.indexOf("/") !==-1 ){
+            	var value = this.options.icon;
+				["x_processplatform_assemble_surface","x_portal_assemble_surface","x_cms_assemble_control"].each(function( serviceRoot ){
+					if (value.indexOf("/"+serviceRoot)!==-1){
+						value = value.replace("/"+serviceRoot, MWF.Actions.getHost(serviceRoot)+"/"+serviceRoot);
+					}else if (value.indexOf(serviceRoot)!==-1){
+						value = value.replace(serviceRoot, MWF.Actions.getHost(serviceRoot)+"/"+serviceRoot);
+					}
+				})
+				value = o2.filterUrl(value);
+				this.iconNode.setStyle("background", "url("+value+") center center no-repeat");
+			}else{
+				this.iconNode.setStyle("background", "url("+this.tree.path+this.tree.options.style+"/"+this.options.icon+") center center no-repeat");
+			}
 		}
 	},
 	createTextNode: function(){
