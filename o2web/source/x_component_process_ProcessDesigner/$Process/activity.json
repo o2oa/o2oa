@@ -730,7 +730,7 @@
     "useProcessForm": false,
 
     "inheritAttachment": true,
-    "titleDataPath": ["subject"],
+    "titleDataPath": "subject",
     "readerDataPathList": ["publishFor"],
     "authorDataPathList": [],
     "pictureDataPathList": ["imageclipper"],
