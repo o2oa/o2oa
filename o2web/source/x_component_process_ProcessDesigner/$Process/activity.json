@@ -729,13 +729,12 @@
     "dataPath": "cmsDocument.categoryId",
     "useProcessForm": false,
 
-    "inheritData": true,
     "inheritAttachment": true,
-    "reviewVisible": true,
+    "titleDataPath": ["subject"],
     "readerDataPathList": ["publishFor"],
     "authorDataPathList": [],
     "pictureDataPathList": ["imageclipper"],
-    "htmleditorDataPathList": ["htmleditor"],
+    "notifyDataPathList": ["publishFor"],
 
 
     "titleScript": "",

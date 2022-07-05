@@ -522,15 +522,13 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"table": "数据表",
 		"cmsCategory": "内容管理分类",
 		"selectCmsCategory": "选择分类",
-		"reviewVisible": "流程参与者可见",
+		"categoryDataPath": "内容管理分类数据路径",
+		"sendNotify": "消息推送范围字段",
 		"readerFields": "读者字段",
 		"authorFields": "作者字段",
 		"pictureFields": "首页图片字段",
-		"htmleditorFields": "html编辑器字段",
 		"useProcessForm": "使用流程表单",
+		"titleField": "标题字段",
 		"useProcessFormNote": "注：如果选是，则发布到内容管理文档使用流程表单打开，否则使用内容管理分类设置的表单打开。"
-
-
-
 	}
 };

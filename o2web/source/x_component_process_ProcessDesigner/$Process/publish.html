@@ -81,7 +81,7 @@
             </table>
             <table  id="text{$.id}dataPathTable"  width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" style="display: text{($.categorySelectType!=='categoryId')?'':'none'};">
                 <tr>
-                    <td class="editTableTitle">{{$.lp.dataPath}}:</td>
+                    <td class="editTableTitle">{{$.lp.categoryDataPath}}:</td>
                     <td class="editTableValue">
                     <td class="editTableValue"><input type="text" name="dataPath" jsondata="dataPath" value="text{$.dataPath}" class="editTableInput"/></td>
                 </tr>
@@ -104,13 +104,6 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="editTableTitle">{{$.lp.copyData}}:</td>
-                    <td class="editTableValue">
-                        <input class="editTableRadio" name="inheritData" text{($.inheritData)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
-                        <input class="editTableRadio" name="inheritData" text{(!$.inheritData)?'checked':''} type="radio" value="false"/>{{$.lp.no}}
-                    </td>
-                </tr>
-                <tr>
                     <td class="editTableTitle">{{$.lp.copyAttachment}}:</td>
                     <td class="editTableValue">
                         <input class="editTableRadio" name="inheritAttachment" text{($.inheritAttachment)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
@@ -118,10 +111,9 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="editTableTitle">{{$.lp.reviewVisible}}:</td>
+                    <td class="editTableTitle">{{$.lp.titleField}}:</td>
                     <td class="editTableValue">
-                        <input class="editTableRadio" name="reviewVisible" text{($.reviewVisible)?'checked':''} type="radio" value="true"/>{{$.lp.yes}}
-                        <input class="editTableRadio" name="reviewVisible" text{(!$.reviewVisible)?'checked':''} type="radio" value="false"/>{{$.lp.no}}
+                        <div class="MWFFormFieldString" name="titleDataPath" count=1></div>
                     </td>
                 </tr>
                 <tr>
@@ -143,40 +135,15 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="editTableTitle">{{$.lp.htmleditorFields}}:</td>
+                    <td class="editTableTitle">{{$.lp.sendNotify}}:</td>
                     <td class="editTableValue">
-                        <div class="MWFFormFieldString" name="htmleditorDataPathList"></div>
+                        <div class="MWFFormFieldPerson" name="notifyDataPathList"></div>
                     </td>
                 </tr>
             </table>
-            <hr/>
-            <div></div>
-            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-                <tr>
-                    <td class="editTableTitle">{{$.lp.titleScript}}:</td>
-                    <td class="editTableValue">
-                        <div class="MWFScript" name="targetTitleScript"></div>
-                    </td>
-                </tr>
-            </table>
-            <div class="MWFScriptText" name="targetTitleScriptText" data-o2-api="../api/server.module_assginData.html#server.module_assginData"></div>
-
-            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-                <tr>
-                    <td class="editTableTitle">{{$.lp.dataScript}}:</td>
-                    <td class="editTableValue">
-                        <div class="MWFScript" name="targetAssginDataScript"></div>
-                    </td>
-                </tr>
-            </table>
-            <div class="MWFScriptText" name="targetAssginDataScriptText" data-o2-api="../api/server.module_assginData.html#server.module_assginData"></div>
-            <div style="margin: 5px;">{{$.lp.getOldData}}: var data = this.assignData.get(); </div>
-            <div style="margin: 5px;">{{$.lp.setNewData}}: return data; </div>
-            <div style="padding: 5px"><a href="../api/server.module_assginData.html#server.module_assginData" target="_blank">{{$.lp.apiDoc}}</a></div>
-
         </div>
 
-        <div id="text{$.id}queryTableArea" style="display: text{($.publishTarget=='table')?'none':''};">
+        <div id="text{$.id}queryTableArea" style="display: text{($.publishTarget=='table')?'':'none'};">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
                     <td class="editTableTitle">{{$.lp.queryTable}}:</td>
@@ -184,6 +151,21 @@
                 </tr>
             </table>
         </div>
+
+        <hr/>
+        <div></div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">{{$.lp.dataScript}}:</td>
+                <td class="editTableValue">
+                    <div class="MWFScript" name="targetAssginDataScript"></div>
+                </td>
+            </tr>
+        </table>
+        <div class="MWFScriptText" name="targetAssginDataScriptText" data-o2-api="../api/server.module_assginData.html#server.module_assginData"></div>
+        <div style="margin: 5px;">{{$.lp.getOldData}}: var data = this.assignData.get(); </div>
+        <div style="margin: 5px;">{{$.lp.setNewData}}: return data; </div>
+        <div style="padding: 5px"><a href="../api/server.module_assginData.html#server.module_assginData" target="_blank">{{$.lp.apiDoc}}</a></div>
 
     </div>
     <div title="{{$.lp.person}}"  class="MWFTab">

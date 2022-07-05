@@ -729,21 +729,14 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
 
 
 
-    _loadModules: function (dom) {
-        //var subDom = this.node.getFirst();
-        //while (subDom){
-        //    if (subDom.get("MWFtype")){
-        //        var json = this._getDomjson(subDom);
-        //        var module = this._loadModule(json, subDom);
-        //        this.modules.push(module);
-        //    }
-        //    subDom = subDom.getNext();
-        //}
-
+    _loadModules: function (dom, beforeLoadModule, replace, callback) {
         var moduleNodes = this._getModuleNodes(dom);
+        var modules = [], jsons = [];
 
         moduleNodes.each(function (node) {
             var json = this._getDomjson(node);
+            jsons.push( json );
+
             if (!this.options.showAttachment && json.type == "Attachment") {
                 return;
             }
@@ -751,9 +744,11 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             if (layout.mobile && json.type === "Actionbar") {
                 return;
             }
-            var module = this._loadModule(json, node);
+            var module = this._loadModule(json, node, beforeLoadModule, replace);
             this.modules.push(module);
+            modules.push( module );
         }.bind(this));
+        if( callback )callback( moduleNodes, jsons, modules )
     },
     _loadModule: function (json, node, beforeLoad) {
         if (!json) return;
@@ -774,7 +769,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             }
             module = new MWF["CMS" + json.type](node, json, this);
         }
-        if (beforeLoad) beforeLoad.apply(module);
+        if (beforeLoad) beforeLoad.apply(module); 
         if (!this.all[json.id]) this.all[json.id] = module;
         if (module.field) {
             if (!this.forms[json.id]) this.forms[json.id] = module;

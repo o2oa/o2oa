@@ -523,8 +523,10 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                 });
             }.bind(this));
             formFieldString.each(function(node){
+                count = node.get("count") || 0;
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.process.designer, {
                     "type": "formField",
+                    "count": count,
                     "application": this.process.process.application,
                     "fieldType": "string",
                     "names": this.data[node.get("name")],

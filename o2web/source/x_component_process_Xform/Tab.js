@@ -107,6 +107,7 @@ MWF.xApplication.process.Xform.Tab = MWF.APPTab =  new Class(
         }.bind(this));
     },
     showContentModule: function(_self){
+	    var page = this;
         var node = this.contentNode;
         node.isLoadModule = true;
         var json = _self.form._getDomjson(node);
@@ -114,6 +115,7 @@ MWF.xApplication.process.Xform.Tab = MWF.APPTab =  new Class(
         var module = _self.form._loadModule(json, node, function(){
             if( _self.widget )this.widget = _self.widget;
             this.tab = tab;
+            this.page = page;
         });
         _self.containers.push(module);
         _self.form.modules.push(module);
