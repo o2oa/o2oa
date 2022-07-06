@@ -225,11 +225,14 @@ MWF.xApplication.cms.Document.Main = new Class({
 
                     this.parseDocumentV2(this.json_document.data);
 
-                    //编辑状态要先获取document再判断有没有权限编辑
-
-                    var toLoadForm = !(this.options.readonly !== false || this.options.anonymousAccess || this.options.anonymous );
-                    // var toLoadForm = this.options.readonly !== true && !this.options.anonymousAccess;
-                    this.checkLoad( toLoadForm )
+                    if( this.categoryFormWaitingDocument ){
+                        this.getFormByCategory();
+                    }else{
+                        //编辑状态要先获取document再判断有没有权限编辑
+                        var toLoadForm = !(this.options.readonly !== false || this.options.anonymousAccess || this.options.anonymous );
+                        // var toLoadForm = this.options.readonly !== true && !this.options.anonymousAccess;
+                        this.checkLoad( toLoadForm )
+                    }
                 }else{
                     this.errorLoadingV2();
                 }
@@ -297,11 +300,14 @@ MWF.xApplication.cms.Document.Main = new Class({
 
             function(error){
                 //没有表单，重新获取分类表单
-                if( !ignoreFromCategory && this.document && this.document.categoryId ){
+                if( ignoreFromCategory ){
+                    this.errorLoadingV2( error , "form" );
+                }else if( this.document && this.document.categoryId ){
                     this.getFormByCategory();
                 }else{
-                    this.errorLoadingV2( error , "form" );
+                    this.categoryFormWaitingDocument = true;
                 }
+                return true;
             }.bind(this)
         )
     },
@@ -325,10 +331,12 @@ MWF.xApplication.cms.Document.Main = new Class({
 
             function(error){
                 //没有表单，重新获取分类表单
-                if( !ignoreFromCategory && this.document && this.document.categoryId ){
+                if( ignoreFromCategory ){
+                    this.errorLoadingV2( error , "form" );
+                }else if( this.document && this.document.categoryId ){
                     this.getFormByCategory();
                 }else{
-                    this.errorLoadingV2( error , "form" );
+                    this.categoryFormWaitingDocument = true;
                 }
             }.bind(this)
         )
