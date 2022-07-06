@@ -8,15 +8,22 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.WorkCompletedControl;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 
 class ActionGetWithWorkCompletedPath6 extends BaseAction {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionGetWithWorkCompletedPath6.class);
 
 	ActionResult<JsonElement> execute(EffectivePerson effectivePerson, String id, String path0, String path1,
 			String path2, String path3, String path4, String path5, String path6) throws Exception {
+		
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+		
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<JsonElement> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -42,5 +49,8 @@ class ActionGetWithWorkCompletedPath6 extends BaseAction {
 	}
 
 	public static class WoControl extends WorkCompletedControl {
+
+		private static final long serialVersionUID = 3824161553020378130L;
+		
 	}
 }

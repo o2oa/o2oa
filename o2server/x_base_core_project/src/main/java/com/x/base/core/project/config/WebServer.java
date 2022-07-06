@@ -15,7 +15,7 @@ public class WebServer extends ConfigObject {
 
 	public WebServer() {
 		this.enable = true;
-		this.port = null;
+		this.port = DEFAULT_HTTP_PORT;
 		this.sslEnable = false;
 		this.proxyHost = "";
 		this.proxyPort = null;

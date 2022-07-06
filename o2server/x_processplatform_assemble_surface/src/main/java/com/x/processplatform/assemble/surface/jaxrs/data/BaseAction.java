@@ -16,8 +16,6 @@ import org.apache.commons.lang3.math.NumberUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.dataitem.DataItemConverter;
 import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.entity.dataitem.ItemType;
@@ -27,6 +25,7 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.Data.DataWork;
@@ -359,6 +358,11 @@ abstract class BaseAction extends StandardJaxrsAction {
 		if (!business.editable(effectivePerson, work)) {
 			throw new ExceptionWorkAccessDenied(effectivePerson.getDistinguishedName(), work.getTitle(), work.getId());
 		}
+	}
+
+	public static class Control extends WorkControl {
+
+		private static final long serialVersionUID = 7690414994902239024L;
 	}
 
 }

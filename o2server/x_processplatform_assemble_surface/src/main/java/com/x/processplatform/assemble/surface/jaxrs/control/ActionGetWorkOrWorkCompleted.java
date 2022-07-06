@@ -1,7 +1,6 @@
 package com.x.processplatform.assemble.surface.jaxrs.control;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,9 +33,11 @@ import com.x.processplatform.core.entity.element.util.WorkLogTree;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Nodes;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionGetWorkOrWorkCompleted extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionGetWorkOrWorkCompleted.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionGetWorkOrWorkCompleted.class);
 
 	private Boolean canManageApplicationOrProcess = null;
 
@@ -79,7 +80,7 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 					}
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 			return wo;
 		}, ThisApplication.threadPool());
@@ -160,33 +161,6 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 				nodes.clear();
 				nodes.addAll(temps);
 			}
-
-//			if (null != node) {
-//				Nodes ups = node.upTo(ActivityType.split,
-//						Arrays.asList(ActivityType.manual, ActivityType.agent, ActivityType.choice, ActivityType.delay,
-//								ActivityType.embed, ActivityType.invoke, ActivityType.parallel));
-//				for (Node o : ups) {
-//					System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!111");
-//					System.out.println(o.getWorkLog().getFromActivityName());
-//					System.out.println(
-//							o.getWorkLog().getFromActivityToken() + "->" + o.getWorkLog().getArrivedActivityName());
-//					System.out.println(o.getWorkLog().getWork());
-//					System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!111");
-//				}
-//				for (Node o : ups) {
-//					System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!222");
-//					System.out.println(
-//							o.getWorkLog().getFromActivityToken() + "->" + o.getWorkLog().getArrivedActivityName());
-//					System.out.println(o.getWorkLog().getFromActivityToken());
-//					System.out.println(o.getWorkLog().getWork());
-//					System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!222");
-//					if (this.hasTaskCompletedWithActivityToken(business, effectivePerson,
-//							o.getWorkLog().getFromActivityToken())) {
-//						wo.setAllowAddSplit(true);
-//						break;
-//					}
-//				}
-//			}
 		}
 		// 是否可以召回
 		if (BooleanUtils
@@ -225,7 +199,7 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 						TaskCompleted.person_FIELDNAME, effectivePerson.getDistinguishedName(),
 						TaskCompleted.activityToken_FIELDNAME, activityToken) > 0;
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 			return false;
 		});
@@ -284,6 +258,7 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 		return this.canManageApplicationOrProcess;
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.control.ActionGetWorkOrWorkCompleted$Wo")
 	public static class Wo extends AbstractControl {
 
 		private static final long serialVersionUID = -4677744478291468477L;

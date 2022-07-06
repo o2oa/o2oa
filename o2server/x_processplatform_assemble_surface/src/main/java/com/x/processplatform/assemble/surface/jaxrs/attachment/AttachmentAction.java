@@ -38,6 +38,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -71,6 +72,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@Deprecated
 	@Operation(summary = "根据工作标识和附件标识获取附件信息.", operationId = OPERATIONID_PREFIX + "getWithWork", responses = {
 			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionGetWithWork.Wo.class)) }) })
 	@JaxrsMethodDescribe(value = "根据工作标识和附件标识获取附件信息.", action = ActionGetWithWork.class)
@@ -92,6 +94,9 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@Deprecated
+	@Operation(summary = "根据工作标识和附件标识获取附件信息.", operationId = OPERATIONID_PREFIX + "getWithWorkCompleted", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionGetWithWork.Wo.class)) }) })
 	@JaxrsMethodDescribe(value = "根据WorkCompleted和附件Id获取单个附件信息", action = ActionGetWithWorkCompleted.class)
 	@GET
 	@Path("{id}/workcompleted/{workCompletedId}")
@@ -111,7 +116,10 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据WorkCompleted和附件Id获取单个附件信息", action = ActionGetWithWorkOrWorkCompleted.class)
+	@Operation(summary = "根据工作标识或者已完成工作标识和附件标识获取附件信息.", operationId = OPERATIONID_PREFIX
+			+ "getWithWorkOrWorkCompleted", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionGetWithWorkOrWorkCompleted.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "根据工作标识或者已完成工作标识和附件标识获取附件信息.", action = ActionGetWithWorkOrWorkCompleted.class)
 	@GET
 	@Path("{id}/workorworkcompleted/{workOrWorkCompleted}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -131,7 +139,11 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据Work获取Attachment列表.", action = ActionListWithWork.class)
+	@Deprecated
+	@Operation(summary = "根据工作标识列示附件.", operationId = OPERATIONID_PREFIX + "listWithWork", responses = {
+			@ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListWithWork.Wo.class))) }) })
+	@JaxrsMethodDescribe(value = "根据工作标识列示附件.", action = ActionListWithWork.class)
 	@GET
 	@Path("list/work/{workId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -149,7 +161,11 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据WorkCompleted获取Attachment列表.", action = ActionListWithWorkCompleted.class)
+	@Deprecated
+	@Operation(summary = "根据已完成工作标识列示附件.", operationId = OPERATIONID_PREFIX + "listWithWorkCompleted", responses = {
+			@ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListWithWorkCompleted.Wo.class))) }) })
+	@JaxrsMethodDescribe(value = "根据已完成工作标识列示附件.", action = ActionListWithWorkCompleted.class)
 	@GET
 	@Path("list/workcompleted/{workCompletedId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -167,7 +183,10 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据工作或已完成工作获取Attachment列表.", action = ActionListWithWorkOrWorkCompleted.class)
+	@Operation(summary = "根据工作或已完成工作标识获取附件列表.", operationId = OPERATIONID_PREFIX
+			+ "listWithWorkOrWorkCompleted", responses = { @ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListWithWorkOrWorkCompleted.Wo.class))) }) })
+	@JaxrsMethodDescribe(value = "根据工作或已完成工作标识获取附件列表.", action = ActionListWithWorkOrWorkCompleted.class)
 	@GET
 	@Path("list/workorworkcompleted/{workOrWorkCompleted}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -186,7 +205,10 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据工作的job获取Attachment列表.", action = ActionListWithJob.class)
+	@Operation(summary = "根据任务标识获取附件列表.", operationId = OPERATIONID_PREFIX + "listWithJob", responses = {
+			@ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListWithJob.Wo.class))) }) })
+	@JaxrsMethodDescribe(value = "根据任务标识获取附件列表.", action = ActionListWithJob.class)
 	@GET
 	@Path("list/job/{job}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -204,7 +226,9 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "删除指定附件.", action = ActionDelete.class)
+	@Operation(summary = "删除指定标识的附件.", operationId = OPERATIONID_PREFIX + "delete", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionDelete.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "删除指定标识的附件.", action = ActionDelete.class)
 	@DELETE
 	@Path("{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -222,7 +246,10 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "删除指定附件Mock Get To Delete.", action = ActionDelete.class)
+	@Operation(summary = "删除指定标识的附件(mock delete to get).", operationId = OPERATIONID_PREFIX
+			+ "deleteMockDeleteToGet", responses = {
+					@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionDelete.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "删除指定标识的附件(mock delete to get).", action = ActionDelete.class)
 	@GET
 	@Path("{id}/mockdeletetoget")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -240,7 +267,10 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "删除指定work下的附件.", action = ActionDeleteWithWork.class)
+	@Deprecated
+	@Operation(summary = "根据工作标识和附件标识删除附件..", operationId = OPERATIONID_PREFIX + "deleteWithWork", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionDeleteWithWork.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "根据工作标识和附件标识删除附件.", action = ActionDeleteWithWork.class)
 	@DELETE
 	@Path("{id}/work/{workId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -259,7 +289,11 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "Mock Get To Delete.", action = ActionDeleteWithWork.class)
+	@Deprecated
+	@Operation(summary = "根据工作标识和附件标识删除附件(mock delete to get).", operationId = OPERATIONID_PREFIX
+			+ "deleteWithWorkMockDeleteToGet", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionDeleteWithWork.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "根据工作标识和附件标识删除附件(mock delete to get).", action = ActionDeleteWithWork.class)
 	@GET
 	@Path("{id}/work/{workId}/mockdeletetoget")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -278,7 +312,11 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "删除指定workCompleted下的附件. ", action = ActionDeleteWithWorkCompleted.class)
+	@Deprecated
+	@Operation(summary = "根据已完成工作标识和附件标识删除附件.", operationId = OPERATIONID_PREFIX
+			+ "deleteWithWorkMockDeleteToGet", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionDeleteWithWorkCompleted.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "根据已完成工作标识和附件标识删除附件. ", action = ActionDeleteWithWorkCompleted.class)
 	@DELETE
 	@Path("{id}/workcompleted/{workCompletedId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -297,7 +335,11 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "Mock Get To Delete.", action = ActionDeleteWithWorkCompleted.class)
+	@Deprecated
+	@Operation(summary = "根据已完成工作标识和附件标识删除附件(mock delete to get).", operationId = OPERATIONID_PREFIX
+			+ "deleteWithWorkCompletedMockDeleteToGet", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionDeleteWithWorkCompleted.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "根据已完成工作标识和附件标识删除附件(mock delete to get).", action = ActionDeleteWithWorkCompleted.class)
 	@GET
 	@Path("{id}/workcompleted/{workCompletedId}/mockdeletetoget")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -316,7 +358,9 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "下载指定附件", action = ActionDownload.class)
+	@Operation(summary = "下载指定标识的附件.", operationId = OPERATIONID_PREFIX + "download", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionDownload.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "下载指定标识的附件.", action = ActionDownload.class)
 	@GET
 	@Path("download/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -334,7 +378,9 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "下载指定附件,设定用stream输出", action = ActionDownloadStream.class)
+	@Operation(summary = "下载指定标识的附件,设定使用流输出.", operationId = OPERATIONID_PREFIX + "downloadStream", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionDownloadStream.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "下载指定标识的附件,设定使用流输出.", action = ActionDownloadStream.class)
 	@GET
 	@Path("download/{id}/stream")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -352,7 +398,10 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据Work下载附件", action = ActionDownloadWithWork.class)
+	@Deprecated
+	@Operation(summary = "根据工作标识和附件标识下载附件.", operationId = OPERATIONID_PREFIX + "downloadWithWork", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionDownloadWithWork.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "根据工作标识和附件标识下载附件.", action = ActionDownloadWithWork.class)
 	@GET
 	@Path("download/{id}/work/{workId}")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -371,26 +420,11 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据Work下载附件,匹配文件有个扩展名", action = ActionDownloadWithWork.class)
-	@GET
-	@Path("download/{id}/work/{workId}/{fileName}.{extension}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void downloadWithWorkWithExtension(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request, @JaxrsParameterDescribe("附件标识") @PathParam("id") String id,
-			@JaxrsParameterDescribe("工作标识") @PathParam("workId") String workId,
-			@JaxrsParameterDescribe("下载附件名称") @QueryParam("fileName") String fileName) {
-		ActionResult<ActionDownloadWithWork.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionDownloadWithWork().execute(effectivePerson, id, workId, fileName);
-		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
-
-	@JaxrsMethodDescribe(value = "根据Work下载附件,设定是否使用stream输出", action = ActionDownloadWithWorkStream.class)
+	@Deprecated
+	@Operation(summary = "根据工作标识和附件标识以指定的名称下载附件,设定使用流输出.", operationId = OPERATIONID_PREFIX
+			+ "downloadWithWorkStream", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionDownloadWithWorkStream.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "根据工作标识和附件标识以指定的名称下载附件,设定使用流输出.", action = ActionDownloadWithWorkStream.class)
 	@GET
 	@Path("download/{id}/work/{workId}/stream")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -409,7 +443,34 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据Work下载附件,设定是否使用stream输出.匹配文件有个扩展名", action = ActionDownloadWithWorkStream.class)
+	@Deprecated
+	@Operation(summary = "根据工作标识和附件标识以指定的名称下载附件.", operationId = OPERATIONID_PREFIX
+			+ "downloadWithWorkWithExtension", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionDownloadWithWork.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "根据工作标识和附件标识以指定的名称下载附件.", action = ActionDownloadWithWork.class)
+	@GET
+	@Path("download/{id}/work/{workId}/{fileName}.{extension}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void downloadWithWorkWithExtension(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request, @JaxrsParameterDescribe("附件标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("工作标识") @PathParam("workId") String workId,
+			@JaxrsParameterDescribe("下载附件名称") @QueryParam("fileName") String fileName) {
+		ActionResult<ActionDownloadWithWork.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionDownloadWithWork().execute(effectivePerson, id, workId, fileName);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@Deprecated
+	@Operation(summary = "根据工作标识和附件标识以指定的名称下载附件,设定使用流输出.", operationId = OPERATIONID_PREFIX
+			+ "downloadWithWorkStreamWithExtension", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionDownloadWithWorkStream.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "根据工作标识和附件标识以指定的名称下载附件,设定使用流输出.", action = ActionDownloadWithWorkStream.class)
 	@GET
 	@Path("download/{id}/work/{workId}/stream/{fileName}.{extension}")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -428,7 +489,11 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据WorkCompleted下载附件", action = ActionDownloadWithWorkCompleted.class)
+	@Deprecated
+	@Operation(summary = "根据已完成工作标识和附件标识下载附件.", operationId = OPERATIONID_PREFIX
+			+ "downloadWithWorkCompleted", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionDownloadWithWorkCompleted.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "根据已完成工作标识和附件标识下载附件.", action = ActionDownloadWithWorkCompleted.class)
 	@GET
 	@Path("download/{id}/workcompleted/{workCompletedId}")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -447,7 +512,11 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据WorkCompleted下载附件,匹配文件有个扩展名.", action = ActionDownloadWithWorkCompleted.class)
+	@Deprecated
+	@Operation(summary = "根据已完成工作标识和附件标识以指定的名称下载附件.", operationId = OPERATIONID_PREFIX
+			+ "downloadWithWorkCompletedWithExtension", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionDownloadWithWorkCompleted.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "根据已完成工作标识和附件标识以指定的名称下载附件.", action = ActionDownloadWithWorkCompleted.class)
 	@GET
 	@Path("download/{id}/workcompleted/{workCompletedId}/{fileName}.{extension}")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -466,7 +535,11 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据WorkCompleted下载附件", action = ActionDownloadWithWorkCompletedStream.class)
+	@Deprecated
+	@Operation(summary = "根据已完成工作标识和附件标识下载附件,设定使用流输出.", operationId = OPERATIONID_PREFIX
+			+ "downloadWithWorkCompletedStream", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionDownloadWithWorkCompletedStream.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "根据已完成工作标识和附件标识下载附件,设定使用流输出.", action = ActionDownloadWithWorkCompletedStream.class)
 	@GET
 	@Path("download/{id}/workcompleted/{workCompletedId}/stream")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -486,7 +559,11 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据WorkCompleted下载附件,匹配文件有个扩展名.", action = ActionDownloadWithWorkCompletedStream.class)
+	@Deprecated
+	@Operation(summary = "根据已完成工作标识和附件标识以指定的名称下载附件,设定使用流输出.", operationId = OPERATIONID_PREFIX
+			+ "downloadWithWorkCompletedStreamWithExtension", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionDownloadWithWorkCompletedStream.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "根据已完成工作标识和附件标识以指定的名称下载附件,设定使用流输出.", action = ActionDownloadWithWorkCompletedStream.class)
 	@GET
 	@Path("download/{id}/workcompleted/{workCompletedId}/stream/{fileName}.{extension}")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -506,6 +583,8 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@Operation(summary = "根据工作标识上传附件.", operationId = OPERATIONID_PREFIX + "upload", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionUploadWithWork.Wo.class)) }) })
 	@JaxrsMethodDescribe(value = "上传附件.", action = ActionUploadWithWork.class)
 	@POST
 	@Path("upload/work/{workId}")
@@ -543,6 +622,9 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@Operation(summary = "根据已完成工作标识上传附件.", operationId = OPERATIONID_PREFIX + "uploadWithWorkCompleted", responses = {
+			@ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionUploadWithWorkCompleted.Wo.class)) }) })
 	@JaxrsMethodDescribe(value = "上传附件.", action = ActionUploadWithWorkCompleted.class)
 	@POST
 	@Path("upload/workcompleted/{workCompletedId}")
@@ -582,7 +664,11 @@ public class AttachmentAction extends StandardJaxrsAction {
 
 	}
 
-	@JaxrsMethodDescribe(value = "上传附件.", action = ActionUploadCallback.class)
+	@Deprecated
+	@Operation(summary = "根据工作标识上传附件,回调jsonp.", operationId = OPERATIONID_PREFIX
+			+ "uploadWithWorkCompleted", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionUploadWithWorkCompleted.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "根据工作标识上传附件,回调jsonp.", action = ActionUploadCallback.class)
 	@POST
 	@Path("upload/work/{workId}/callback/{callback}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -606,7 +692,9 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "更新附件.", action = ActionUpdate.class)
+	@Operation(summary = "根据工作标识更新附件.", operationId = OPERATIONID_PREFIX + "update", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionUpdate.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "根据工作标识更新附件内容.", action = ActionUpdate.class)
 	@PUT
 	@Path("update/{id}/work/{workId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -642,7 +730,10 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "Mock Get To Delete.", action = ActionUpdate.class)
+	@Operation(summary = "根据工作标识更新附件(mock put to post).", operationId = OPERATIONID_PREFIX
+			+ "updateMockPutToPost", responses = {
+					@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionUpdate.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "根据工作标识更新附件内容(mock put to post).", action = ActionUpdate.class)
 	@POST
 	@Path("update/{id}/work/{workId}/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -678,7 +769,9 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "更新Attachment信息", action = ActionUpdateContent.class)
+	@Operation(summary = "根据附件标识和工作标识更新附件信息.", operationId = OPERATIONID_PREFIX + "updateContent", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionUpdateContent.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "根据附件标识和工作标识更新附件信息.", action = ActionUpdateContent.class)
 	@PUT
 	@Path("update/content/{id}/work/{workId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -697,7 +790,10 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "Mock Get To Delete.", action = ActionUpdateContent.class)
+	@Operation(summary = "根据附件标识和工作标识更新附件信息(mock put to post).", operationId = OPERATIONID_PREFIX
+			+ "updateContentMockPutToPost", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionUpdateContent.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "根据附件标识和工作标识更新附件信息(mock put to post).", action = ActionUpdateContent.class)
 	@POST
 	@Path("update/content/{id}/work/{workId}/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -716,7 +812,9 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "更新附件,使用callback方式,为了与前台兼容使用POST方法.", action = ActionUpdateCallback.class)
+	@Operation(summary = "根据附件标识和工作标识更新附件,回调jsonp.", operationId = OPERATIONID_PREFIX + "updateCallback", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionUpdateContent.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "根据附件标识和工作标识更新附件,回调jsonp.", action = ActionUpdateCallback.class)
 	@POST
 	@Path("update/{id}/work/{workId}/callback/{callback}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -740,8 +838,10 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	/** 与update方法同,为了兼容ntko对于附件上传只能设置post方法 */
-	@JaxrsMethodDescribe(value = "更新附件.", action = ActionUpdate.class)
+	@Operation(summary = "根据附件标识和工作标识更新附件,与update方法同,为了兼容ntko对于附件上传只能设置post方法.", operationId = OPERATIONID_PREFIX
+			+ "updateCallback", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionUpdateContent.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "根据附件标识和工作标识更新附件,与update方法同,为了兼容ntko对于附件上传只能设置post方法.", action = ActionUpdate.class)
 	@POST
 	@Path("update/{id}/work/{workId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -777,7 +877,10 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "由指定的工作拷贝附件.", action = ActionCopyToWork.class)
+	@Operation(summary = "由工作标识指定的工作拷贝附件.", operationId = OPERATIONID_PREFIX + "copyToWork", responses = {
+			@ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionCopyToWork.Wo.class))) }) })
+	@JaxrsMethodDescribe(value = "由工作标识指定的工作拷贝附件.", action = ActionCopyToWork.class)
 	@POST
 	@Path("copy/work/{workId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -795,7 +898,10 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "由指定的工作拷贝附件.", action = ActionCopyToWorkCompleted.class)
+	@Operation(summary = "由已完成工作标识指定的工作拷贝附件.", operationId = OPERATIONID_PREFIX + "copyToWorkCompleted", responses = {
+			@ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionCopyToWorkCompleted.Wo.class))) }) })
+	@JaxrsMethodDescribe(value = "由已完成工作标识指定的工作拷贝附件.", action = ActionCopyToWorkCompleted.class)
 	@POST
 	@Path("copy/workcompleted/{workCompletedId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -814,7 +920,10 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "拷贝附件到指定的工作(不拷贝真实存储附件，共用附件，此接口拷贝的附件删除时只删除记录不删附件).", action = ActionCopyToWorkSoft.class)
+	@Operation(summary = "由工作标识指定的工作软拷贝附件(不拷贝真实存储附件，共用附件，此接口拷贝的附件删除时只删除记录不删附件).", operationId = OPERATIONID_PREFIX
+			+ "copyToWorkSoft", responses = { @ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionCopyToWorkSoft.Wo.class))) }) })
+	@JaxrsMethodDescribe(value = "由工作标识指定的工作软拷贝附件(不拷贝真实存储附件，共用附件，此接口拷贝的附件删除时只删除记录不删附件).", action = ActionCopyToWorkSoft.class)
 	@POST
 	@Path("copy/work/{workId}/soft")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -832,7 +941,10 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "拷贝附件到指定的工作(不拷贝真实存储附件，共用附件，此接口拷贝的附件删除时只删除记录不删附件).", action = ActionCopyToWorkCompletedSoft.class)
+	@Operation(summary = "由已完成工作标识指定的工作软拷贝附件(不拷贝真实存储附件，共用附件，此接口拷贝的附件删除时只删除记录不删附件).", operationId = OPERATIONID_PREFIX
+			+ "copyToWorkCompletedSoft", responses = { @ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionCopyToWorkCompletedSoft.Wo.class))) }) })
+	@JaxrsMethodDescribe(value = "由已完成工作标识指定的工作软拷贝附件(不拷贝真实存储附件，共用附件，此接口拷贝的附件删除时只删除记录不删附件).", action = ActionCopyToWorkCompletedSoft.class)
 	@POST
 	@Path("copy/workcompleted/{workCompletedId}/soft")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -852,7 +964,9 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "更新附件.", action = ActionChangeSite.class)
+	@Operation(summary = "更新指定附件标识的附件位置信息.", operationId = OPERATIONID_PREFIX + "changeSite", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionChangeSite.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "更新指定附件标识的附件位置信息.", action = ActionChangeSite.class)
 	@GET
 	@Path("{id}/work/{workId}/change/site/{site}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -872,7 +986,10 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "更新附件.", action = ActionEdit.class)
+	@Deprecated
+	@Operation(summary = "更新指定附件标识的附件信息.", operationId = OPERATIONID_PREFIX + "edit", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionEdit.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "更新指定附件标识的附件信息.", action = ActionEdit.class)
 	@PUT
 	@Path("edit/{id}/work/{workId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -891,7 +1008,10 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "Mock Get To Delete.", action = ActionEdit.class)
+	@Deprecated
+	@Operation(summary = "更新指定附件标识的附件信息(mock put to post).", operationId = OPERATIONID_PREFIX + "edit", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionEdit.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "M更新指定附件标识的附件信息(mock put to post).", action = ActionEdit.class)
 	@POST
 	@Path("edit/{id}/work/{workId}/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -910,7 +1030,9 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "设置附件排序号.", action = ActionEdit.class)
+	@Operation(summary = "更新指定附件标识的附件排序号.", operationId = OPERATIONID_PREFIX + "changeOrderNumber", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionChangeOrderNumber.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "更新指定附件标识的附件排序号.", action = ActionChangeOrderNumber.class)
 	@GET
 	@Path("{id}/work/{workId}/change/ordernumber/{orderNumber}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -930,7 +1052,9 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "更新附件文本.", action = ActionEditText.class)
+	@Operation(summary = "更新指定附件标识的附件的文本识别内容.", operationId = OPERATIONID_PREFIX + "exitText", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionEditText.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "更新指定附件标识的附件的文本识别内容.", action = ActionEditText.class)
 	@PUT
 	@Path("edit/{id}/work/{workId}/text")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -949,7 +1073,10 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "Mock Get To Delete.", action = ActionEditText.class)
+	@Operation(summary = "更新指定附件标识的附件的文本识别内容(mock put to post).", operationId = OPERATIONID_PREFIX
+			+ "exitTextMockPutToPost", responses = {
+					@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionEditText.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "更新指定附件标识的附件的文本识别内容(mock put to post).", action = ActionEditText.class)
 	@POST
 	@Path("edit/{id}/work/{workId}/text/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -968,7 +1095,9 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "获取附件文本.", action = ActionGetText.class)
+	@Operation(summary = "获取指定附件标识的附件的文本识别内容.", operationId = OPERATIONID_PREFIX + "getText", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionGetText.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "获取指定附件标识的附件的文本识别内容.", action = ActionGetText.class)
 	@GET
 	@Path("{id}/work/{workId}/text")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -987,7 +1116,10 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "将HTML版式公文转换成Word文件并添加在附件中.", action = ActionDocToWord.class)
+	@Operation(summary = "获取指定工作标识的工作,将html版式公文转换成成Word文件并添加在附件中.", operationId = OPERATIONID_PREFIX
+			+ "docToWord", responses = {
+					@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionDocToWord.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "获取指定工作标识的工作,将html版式公文转换成成Word文件并添加在附件中.", action = ActionDocToWord.class)
 	@POST
 	@Path("doc/to/word/work/{workId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -1005,7 +1137,10 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "将HTML版式公文转换成Word文件并添加在附件中,可以输入WorkId或者WorkCompletedId.", action = ActionDocToWordWorkOrWorkCompleted.class)
+	@Operation(summary = "获取指定工作标识或已完成工作标识,将html版式公文转换成成Word文件并添加在附件中.", operationId = OPERATIONID_PREFIX
+			+ "docToWordWorkOrWorkCompleted", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionDocToWordWorkOrWorkCompleted.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "获取指定工作标识或已完成工作标识,将html版式公文转换成成Word文件并添加在附件中.", action = ActionDocToWordWorkOrWorkCompleted.class)
 	@POST
 	@Path("doc/to/word/workorworkcompleted/{workOrWorkCompleted}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -1026,7 +1161,10 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "pdf格式预览文件,支持doc,docx.", action = ActionPreviewPdf.class)
+	@Operation(summary = "获取指定附件标识返回pdf格式预览文件信息,支持doc,docx.", operationId = OPERATIONID_PREFIX
+			+ "docToWordWorkOrWorkCompleted", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionPreviewPdf.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "获取指定附件标识返回pdf格式预览文件信息,支持doc,docx.", action = ActionPreviewPdf.class)
 	@GET
 	@Path("{id}/preview/pdf")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -1044,7 +1182,10 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "pdf格式预览文件获取接口.", action = ActionPreviewPdfResult.class)
+	@Operation(summary = "获取指定附件标识返回pdf格式预览文件,支持doc,docx.", operationId = OPERATIONID_PREFIX
+			+ "docToWordWorkOrWorkCompleted", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionPreviewPdfResult.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "获取指定附件标识返回pdf格式预览文件,支持doc,docx.", action = ActionPreviewPdfResult.class)
 	@GET
 	@Path("preview/pdf/{flag}/result")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -1062,7 +1203,10 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "image格式预览文件,支持doc,docx", action = ActionPreviewImage.class)
+	@Operation(summary = "获取指定附件标识返回图片格式预览文件信息,支持doc,docx.", operationId = OPERATIONID_PREFIX
+			+ "docToWordWorkOrWorkCompleted", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionPreviewImage.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "获取指定附件标识返回图片格式预览文件信息,支持doc,docx.", action = ActionPreviewImage.class)
 	@GET
 	@Path("{id}/preview/image/page/{page}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -1081,7 +1225,10 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "image格式预览文件获取接口.", action = ActionPreviewImageResult.class)
+	@Operation(summary = "获取指定附件标识返回图片格式预览文件,支持doc,docx.", operationId = OPERATIONID_PREFIX
+			+ "docToWordWorkOrWorkCompleted", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionPreviewImageResult.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "获取指定附件标识返回图片格式预览文件,支持doc,docx.", action = ActionPreviewImageResult.class)
 	@GET
 	@Path("preview/image/{flag}/result")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -1099,7 +1246,10 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据Work或WorkCompleted批量下载附件并压缩,设定是否使用stream输出", action = ActionBatchDownloadWithWorkOrWorkCompletedStream.class)
+	@Operation(summary = "根据工作标识或已完成工作标识批量下载附件并压缩,设定使用stream输出.", operationId = OPERATIONID_PREFIX
+			+ "batchDownloadWithWorkOrWorkCompletedStream", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionBatchDownloadWithWorkOrWorkCompletedStream.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "根据工作标识或已完成工作标识批量下载附件并压缩,设定使用stream输出.", action = ActionBatchDownloadWithWorkOrWorkCompletedStream.class)
 	@GET
 	@Path("batch/download/work/{workId}/site/{site}/stream")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -1121,7 +1271,10 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据Work或WorkCompleted批量下载附件并压缩", action = ActionBatchDownloadWithWorkOrWorkCompleted.class)
+	@Operation(summary = "根据工作标识或已完成工作标识批量下载附件并压缩.", operationId = OPERATIONID_PREFIX
+			+ "batchDownloadWithWorkOrWorkCompleted", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionBatchDownloadWithWorkOrWorkCompleted.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "根据工作标识或已完成工作标识批量下载附件并压缩.", action = ActionBatchDownloadWithWorkOrWorkCompleted.class)
 	@GET
 	@Path("batch/download/work/{workId}/site/{site}")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -1143,6 +1296,9 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@Operation(summary = "上传工单的表单,审批记录等html信息到打包下载附件.", operationId = OPERATIONID_PREFIX
+			+ "uploadWorkInfo", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionUploadWorkInfo.Wo.class)) }) })
 	@JaxrsMethodDescribe(value = "上传工单的表单、审批记录等html信息到缓存.", action = ActionUploadWorkInfo.class)
 	@PUT
 	@Path("upload/work/{workId}/save/as/{flag}")
@@ -1163,7 +1319,10 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "Mock put To post.", action = ActionUploadWorkInfo.class)
+	@Operation(summary = "上传工单的表单,审批记录等html信息到打包下载附件(mock put to post).", operationId = OPERATIONID_PREFIX
+			+ "uploadWorkInfoMockPutToPost", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionUploadWorkInfo.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "上传工单的表单,审批记录等html信息到打包下载附件(mock put to post).", action = ActionUploadWorkInfo.class)
 	@POST
 	@Path("upload/work/{workId}/save/as/{flag}/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -1184,7 +1343,9 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "下载工单的表单、审批记录等html信息", action = ActionDownloadWorkInfo.class)
+	@Operation(summary = "下载工单的表单,审批记录等html信息.", operationId = OPERATIONID_PREFIX + "downloadWorkInfo", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionDownloadWorkInfo.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "下载工单的表单,审批记录等html信息.", action = ActionDownloadWorkInfo.class)
 	@GET
 	@Path("download/work/{workId}/att/{flag}")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -1203,6 +1364,8 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@Operation(summary = "管理员批量上传附件.", operationId = OPERATIONID_PREFIX + "manageBatchUpload", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionManageBatchUpload.Wo.class)) }) })
 	@JaxrsMethodDescribe(value = "管理员批量上传附件.", action = ActionManageBatchUpload.class)
 	@POST
 	@Path("batch/upload/manage")
@@ -1231,7 +1394,9 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "管理员角色下载附件", action = ActionManageDownload.class)
+	@Operation(summary = "指定附件标识,管理员下载附件.", operationId = OPERATIONID_PREFIX + "manageDownload", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionManageDownload.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "指定附件标识,管理员下载附件.", action = ActionManageDownload.class)
 	@GET
 	@Path("download/{id}/manage")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -1248,7 +1413,10 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "管理员角色下载附件,stream", action = ActionManageDownloadStream.class)
+	@Operation(summary = "指定附件标识,管理员下载附件,设定使用stream输出.", operationId = OPERATIONID_PREFIX
+			+ "manageDownloadStream", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionManageDownloadStream.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "指定附件标识,管理员下载附件,设定使用stream输出.", action = ActionManageDownloadStream.class)
 	@GET
 	@Path("download/{id}/manage/stream")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -1265,7 +1433,10 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "html转pdf工具类,转换后通过downloadTransfer接口下载", action = ActionHtmlToPdf.class)
+	@Operation(summary = "html转pdf工具类,转换后通过downloadTransfer接口下载.", operationId = OPERATIONID_PREFIX
+			+ "htmlToPdf", responses = {
+					@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionHtmlToPdf.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "html转pdf工具类,转换后通过downloadTransfer接口下载.", action = ActionHtmlToPdf.class)
 	@POST
 	@Path("html/to/pdf")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -1283,7 +1454,9 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "下载转换后的附件", action = ActionDownloadTransfer.class)
+	@Operation(summary = "html转pdf工具类,下载转换后的附件.", operationId = OPERATIONID_PREFIX + "downloadTransfer", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionDownloadTransfer.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "html转pdf工具类,下载转换后的附件.", action = ActionDownloadTransfer.class)
 	@GET
 	@Path("download/transfer/flag/{flag}")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -1301,6 +1474,8 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@Operation(summary = "管理员批量替换附件.", operationId = OPERATIONID_PREFIX + "manageBatchUpdate", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionManageBatchUpdate.Wo.class)) }) })
 	@JaxrsMethodDescribe(value = "管理员批量替换附件.", action = ActionManageBatchUpdate.class)
 	@POST
 	@Path("batch/update/manage")
@@ -1324,7 +1499,9 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "批量删除附件.", action = ActionManageBatchDelete.class)
+	@Operation(summary = "管理员批量删除附件.", operationId = OPERATIONID_PREFIX + "manageBatchDelete", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionManageBatchDelete.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "管理员批量删除附件.", action = ActionManageBatchDelete.class)
 	@POST
 	@Path("batch/delete/manage")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -1342,6 +1519,8 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@Operation(summary = "管理员批量删除附件.", operationId = OPERATIONID_PREFIX + "manageBatchDelete", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionManageBatchDelete.Wo.class)) }) })
 	@JaxrsMethodDescribe(value = "上传附件", action = ActionUploadWithUrl.class)
 	@POST
 	@Path("upload/with/url")
@@ -1360,6 +1539,10 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@Operation(summary = "html转图片工具类，通过微软playwright工具以截图方式生成图片，"
+			+ "转换后如果工作不为空通过downloadWithWork接口下载，为空downloadTransfer接口下载.", operationId = OPERATIONID_PREFIX
+					+ "htmlToImage", responses = { @ApiResponse(content = {
+							@Content(schema = @Schema(implementation = ActionHtmlToImage.Wo.class)) }) })
 	@JaxrsMethodDescribe(value = "html转图片工具类，通过微软playwright工具以截图方式生成图片，"
 			+ "转换后如果工作不为空通过downloadWithWork接口下载，为空downloadTransfer接口下载.", action = ActionHtmlToImage.class)
 	@POST
@@ -1379,7 +1562,10 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "V2_根据work或workCompleted上传附件,如果同名附件存在则替换.", action = V2UploadWorkOrWorkCompleted.class)
+	@Operation(summary = "V2根据工作标识或已完成工作标识上传附件,如果同名附件存在则替换.", operationId = OPERATIONID_PREFIX
+					+ "v2UploadWorkOrWorkCompleted", responses = { @ApiResponse(content = {
+							@Content(schema = @Schema(implementation = V2UploadWorkOrWorkCompleted.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "V2根据工作标识或已完成工作标识上传附件,如果同名附件存在则替换.", action = V2UploadWorkOrWorkCompleted.class)
 	@POST
 	@Path("v2/upload/workorworkcompleted/{workOrWorkCompleted}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)

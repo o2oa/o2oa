@@ -94,9 +94,11 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
 				wo.getRecordList().add(taskToRecord(woTask));
 			}
 			// 标记待办已读
-			ThisApplication.context().applications().getQuery(x_processplatform_service_processing.class,
-					Applications.joinQueryUri("task", "v2", "work", work.getId(), "person",
-							effectivePerson.getDistinguishedName(), "view"));
+			ThisApplication.context().applications()
+					.getQuery(
+							x_processplatform_service_processing.class, Applications.joinQueryUri("task", "v2", "work",
+									work.getId(), "person", effectivePerson.getDistinguishedName(), "view"),
+							work.getJob());
 		} else if (null != workCompleted) {
 			CompletableFuture<Void> workCompletedJsonFuture = this.workCompletedJsonFuture(workCompleted, wo);
 			CompletableFuture<Void> workCompletedDataFuture = this.workCompletedDataFuture(workCompleted, wo);
