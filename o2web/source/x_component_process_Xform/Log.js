@@ -717,7 +717,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
     checkWorkLogEndActivity: function(){
         //判断流程已经结束，但是taskCompletedList为空，则补上系统自动流转
 	    var workLogList = this.form.businessData.workLogList;
-	    for( var i=workLogList.length-1; i>-1; i++ ){
+	    for( var i=workLogList.length-1; i>-1; i-- ){
 	        var log = workLogList[i];
             if( log.arrivedActivityType === "end" ){
                 if( !log.taskCompletedList )log.taskCompletedList = [];
