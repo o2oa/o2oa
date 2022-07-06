@@ -11,16 +11,24 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Work;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionCreateWithWorkPath7 extends BaseAction {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCreateWithWorkPath7.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String path0, String path1, String path2,
 			String path3, String path4, String path5, String path6, String path7, JsonElement jsonElement)
 			throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+
 		ActionResult<Wo> result = new ActionResult<>();
 		Work work = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -29,7 +37,7 @@ class ActionCreateWithWorkPath7 extends BaseAction {
 			if (null == work) {
 				throw new ExceptionEntityNotExist(id, Work.class);
 			}
-			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
+			Control control = business.getControl(effectivePerson, work, Control.class);
 			if (BooleanUtils.isNotTrue(control.getAllowSave())) {
 				throw new ExceptionWorkAccessDenied(effectivePerson.getDistinguishedName(), work.getTitle(),
 						work.getId());
@@ -45,10 +53,11 @@ class ActionCreateWithWorkPath7 extends BaseAction {
 		return result;
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.data.ActionCreateWithWorkPath7$Wo")
 	public static class Wo extends WoId {
 
-	}
+		private static final long serialVersionUID = 4864322017410702030L;
 
-	public static class WoControl extends WorkControl {
 	}
+ 
 }
