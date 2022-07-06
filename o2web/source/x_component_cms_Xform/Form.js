@@ -756,19 +756,20 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
         if( ( json.type === "Log" && json.logType ) || ["Monitor","ReadLog"].contains(json.type) ){
             node.empty();
             return;
+        }else if( this.options.useProcessForm && json.type === "Actionbar" ){
+            json.type = "ProcessActionbar"
         }
-        var module;
-        if( this.options.useProcessForm && json.type === "Actionbar"){  //使用流程表单，组件是操作条
-            if (!MWF["Actionbar"])MWF.xDesktop.requireApp("process.Xform", "Actionbar", null, false);
-            module = new MWF["APPActionbar"](node, json, this);
-        }else{
+        // if( this.options.useProcessForm && json.type === "Actionbar"){  //使用流程表单，组件是操作条
+        //     if (!MWF["Actionbar"])MWF.xDesktop.requireApp("process.Xform", "Actionbar", null, false);
+        //     module = new MWF["APPActionbar"](node, json, this);
+        // }else{
             if (!MWF["CMS" + json.type]) {
                 var moduleType = json.type;
                 if(moduleType === "AttachmentDg")moduleType = "Attachment";
                 MWF.xDesktop.requireApp("cms.Xform", moduleType, null, false);
             }
-            module = new MWF["CMS" + json.type](node, json, this);
-        }
+            var module = new MWF["CMS" + json.type](node, json, this);
+        // }
         if (beforeLoad) beforeLoad.apply(module); 
         if (!this.all[json.id]) this.all[json.id] = module;
         if (module.field) {
