@@ -18,11 +18,16 @@ import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.DocumentVersion;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionListWithJob extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionListWithJob.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWithJob.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String job) throws Exception {
+
+		LOGGER.debug("execute:{}, job:{}.", effectivePerson::getDistinguishedName, () -> job);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 
@@ -47,10 +52,10 @@ class ActionListWithJob extends BaseAction {
 	private List<Wo> list(Business business, String job) throws Exception {
 		List<DocumentVersion> os = business.entityManagerContainer().fetchEqual(DocumentVersion.class,
 				DocumentVersion.job_FIELDNAME, job);
-		List<Wo> wos = Wo.copier.copy(os);
-		return wos;
+		return Wo.copier.copy(os);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.documentversion.ActionListWithJob$Wo")
 	public static class Wo extends DocumentVersion {
 
 		static final long serialVersionUID = 5610132069178497370L;

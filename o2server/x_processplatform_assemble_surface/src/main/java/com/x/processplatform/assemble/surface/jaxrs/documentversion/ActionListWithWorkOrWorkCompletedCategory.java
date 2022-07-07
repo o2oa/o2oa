@@ -17,12 +17,18 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.DocumentVersion;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionListWithWorkOrWorkCompletedCategory extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionListWithWorkOrWorkCompletedCategory.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWithWorkOrWorkCompletedCategory.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String workOrWorkCompleted, String category)
 			throws Exception {
+
+		LOGGER.debug("execute:{}, workOrWorkCompleted:{}, category:{}.", effectivePerson::getDistinguishedName,
+				() -> workOrWorkCompleted, () -> category);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 
@@ -47,10 +53,10 @@ class ActionListWithWorkOrWorkCompletedCategory extends BaseAction {
 	private List<Wo> list(Business business, String job, String category) throws Exception {
 		List<DocumentVersion> os = business.entityManagerContainer().fetchEqualAndEqual(DocumentVersion.class,
 				DocumentVersion.job_FIELDNAME, job, DocumentVersion.category_FIELDNAME, category);
-		List<Wo> wos = Wo.copier.copy(os);
-		return wos;
+		return Wo.copier.copy(os);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.documentversion.ActionListWithWorkOrWorkCompletedCategory$Wo")
 	public static class Wo extends DocumentVersion {
 
 		static final long serialVersionUID = 5610132069178497370L;

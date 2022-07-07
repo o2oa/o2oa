@@ -55,14 +55,14 @@ abstract class BaseAction extends StandardJaxrsAction {
 		// return XGsonBuilder.convert(jsonElement, Data.class);
 	}
 
-	/** 将data中的Title 和 serial 字段同步到work中 */
+	// 将data中的Title 和 serial 字段同步到work中
 	void updateTitleSerial(Business business, Work work, JsonElement jsonElement) throws Exception {
 		String title = XGsonBuilder.extractString(jsonElement, Work.title_FIELDNAME);
 		if (null == title) {
 			title = XGsonBuilder.extractString(jsonElement, subject_path);
 		}
 		String serial = XGsonBuilder.extractString(jsonElement, Work.serial_FIELDNAME);
-		/* 如果有数据就将数据覆盖到work task taskCompleted read readCompleted review 中 */
+		// 如果有数据就将数据覆盖到work task taskCompleted read readCompleted review 中
 		if (((null != title) && (!Objects.equals(title, work.getTitle())))
 				|| ((null != serial) && (!Objects.equals(serial, work.getSerial())))) {
 			business.entityManagerContainer().beginTransaction(Work.class);
@@ -155,10 +155,10 @@ abstract class BaseAction extends StandardJaxrsAction {
 				this.fill(_o, work);
 				business.entityManagerContainer().persist(_o);
 			}
-			/* 标记数据已经被修改 */
+			// 标记数据已经被修改
 			business.entityManagerContainer().beginTransaction(Work.class);
 			work.setDataChanged(true);
-			/* 基于前面的原因,这里进行单独提交 */
+			// 基于前面的原因,这里进行单独提交
 			business.entityManagerContainer().commit();
 		}
 	}

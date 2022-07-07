@@ -9,23 +9,29 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.Draft;
-import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
+import com.x.processplatform.core.express.assemble.surface.jaxrs.draft.ActionSaveWi;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionSave extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionSave.class);
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+
 		ActionResult<Wo> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
@@ -100,43 +106,17 @@ class ActionSave extends BaseAction {
 		draft.getProperties().setData(wi.getData());
 	}
 
-	public static class Wi extends GsonPropertyObject {
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.draft.ActionSave$Wi")
+	public static class Wi extends ActionSaveWi {
 
-		@FieldDescribe("数据")
-		private Data data = new Data();
+		private static final long serialVersionUID = -8146304190261571771L;
 
-		@FieldDescribe("工作")
-		private Work work;
-
-		@FieldDescribe("身份")
-		private String identity;
-
-		public Data getData() {
-			return data;
-		}
-
-		public void setData(Data data) {
-			this.data = data;
-		}
-
-		public Work getWork() {
-			return work;
-		}
-
-		public void setWork(Work work) {
-			this.work = work;
-		}
-
-		public String getIdentity() {
-			return identity;
-		}
-
-		public void setIdentity(String identity) {
-			this.identity = identity;
-		}
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.draft.ActionSave$Wo")
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = -7797598703971806334L;
 
 	}
 
