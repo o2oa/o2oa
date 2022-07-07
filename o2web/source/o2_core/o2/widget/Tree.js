@@ -96,7 +96,7 @@ o2.widget.Tree = new Class({
 			if (item[this.jsonMapping.icon]) options.icon = item[this.jsonMapping.icon];
 			if (item[this.jsonMapping.default]) options.default = item[this.jsonMapping.default];
 			
-			var treeNode = node.appendChild(options);
+			var treeNode = node.appendChild(options, item);
 
 			if (item[this.jsonMapping.sub]){
 				this.loadJsonTree(item[this.jsonMapping.sub], this, treeNode);
@@ -104,8 +104,10 @@ o2.widget.Tree = new Class({
 		}.bind(tree));
 	},
 	
-	appendChild: function(obj){
+	appendChild: function(obj, json){
 		var treeNode = new this.$constructor.Node(this, obj);
+
+		treeNode.json = json;
 		
 		if (this.children.length){
 			treeNode.previousSibling = this.children[this.children.length-1];
@@ -450,8 +452,10 @@ o2.widget.Tree.Node = new Class({
 		
 		return treeNode;
 	},
-	appendChild: function(obj){
+	appendChild: function(obj, json){
 		var treeNode = new this.tree.$constructor.Node(this.tree, obj);
+
+		treeNode.json = json;
 		if (this.children.length){
 			treeNode.previousSibling = this.children[this.children.length-1];
 			treeNode.previousSibling.nextSibling = treeNode;
