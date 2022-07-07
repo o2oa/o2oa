@@ -1,45 +1,27 @@
 package com.x.processplatform.assemble.surface.jaxrs.data;
 
-import org.apache.commons.lang3.BooleanUtils;
-
-import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
-import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Work;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-class ActionDeleteWithWorkPath0 extends BaseAction {
-	
+class ActionDeleteWithWorkPath0 extends BaseDeleteWithWorkPath {
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDeleteWithWorkPath0.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String path0) throws Exception {
-		
+
 		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
-		
+
 		ActionResult<Wo> result = new ActionResult<>();
-		Work work = null;
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
-			work = emc.find(id, Work.class);
-			if (null == work) {
-				throw new ExceptionEntityNotExist(id, Work.class);
-			}
-			Control control = business.getControl(effectivePerson, work, Control.class);
-			if (BooleanUtils.isNotTrue(control.getAllowSave())) {
-				throw new ExceptionWorkAccessDenied(effectivePerson.getDistinguishedName(), work.getTitle(),
-						work.getId());
-			}
-		}
+		Work work = checkWork(effectivePerson, id);
 		Wo wo = ThisApplication.context().applications()
 				.deleteQuery(x_processplatform_service_processing.class,
 						Applications.joinQueryUri("data", "work", work.getId(), path0), work.getJob())
@@ -54,6 +36,5 @@ class ActionDeleteWithWorkPath0 extends BaseAction {
 		private static final long serialVersionUID = 5062573310389420089L;
 
 	}
- 
 
 }
