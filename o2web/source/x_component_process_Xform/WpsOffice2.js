@@ -421,6 +421,22 @@ MWF.xApplication.process.Xform.WpsOffice2 = MWF.APPWpsOffice2 =  new Class({
             app.ActiveDocument.TrackRevisions = false;
         }.bind(this));
     },
+    acceptAllRevisions : function (callback){
+        var promise =  this.wpsOffice.ready();
+        promise.then(function(){
+            const app = this.wpsOffice.WordApplication();
+            // 获取修订对象
+            const p1 =  app.ActiveDocument.Revisions;
+            // 接受对指定文档的所有修订
+            p1.then(function (revisions){
+                const p2 = revisions.AcceptAll();
+                p2.then(function(){
+                    if(callback) callback();
+                });
+
+            });
+        }.bind(this));
+    },
     exportPDF : function (){
         var p1 =  this.wpsOffice.ready();
         p1.then(function(){
