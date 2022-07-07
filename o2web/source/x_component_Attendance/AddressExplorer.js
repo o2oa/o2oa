@@ -468,7 +468,6 @@ MWF.xApplication.Attendance.AddressExplorer.BaiduAccountForm = new Class({
         "title": MWF.xApplication.Attendance.LP.BaiduDeveloperCertification
     },
     _createTableContent: function(){
-        debugger;
         var lp = MWF.xApplication.Attendance.LP;
         var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>"+
             "<tr>" +
@@ -486,7 +485,6 @@ MWF.xApplication.Attendance.AddressExplorer.BaiduAccountForm = new Class({
         this.formTableArea.set("html",html);
 
         MWF.UD.getPublicData("baiduAccountKey", function (json) {
-            debugger;
             MWF.xDesktop.requireApp("Template", "MForm", function(){
                 this.form = new MForm( this.formTableArea, {ak : json || "" }, {
                     style: "attendance",
