@@ -347,7 +347,8 @@
     "display": "inline-block",
     "margin-right": "5px",
     "background-repeat": "no-repeat",
-    "background-position": "center center"
+    "background-position": "center center",
+    "font-size": "16px"
   },
   "documentActionNode_over":{
   },

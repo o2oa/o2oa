@@ -559,21 +559,29 @@ MWF.xApplication.Attendance.Explorer.Document = new Class({
             if( typeOf(d.downStyles) == "object" ) downStyles = d.downStyles;
 
             if( styles  )node.setStyles( styles );
-            if(d.icon){
+
+            var fonticonNode;
+            if( d.fonticon ){
+                fonticonNode = new Element("i."+d.fonticon).inject(node, "top");
+            }else if(d.icon){
                 // node.setStyle("background-image", "url("+_self.explorer.path+_self.explorer.options.style+"/icon/"+d.icon+")");
                 node.setStyle("background-image", "url(../x_component_Attendance/$Main/"+_self.app.options.style+"/icon/action/"+d.icon+")");
             }
             if( overStyles && styles ){
                 node.addEvent( "mouseover", function(ev){
                     ev.target.setStyles( this.styles );
-                    if(d.icon){
+                    if( d.fonticon ){
+                        fonticonNode.addClass("mainColor_color");
+                    }else if(d.icon){
                         // ev.target.setStyle("background-image", "url("+_self.explorer.path+_self.explorer.options.style+"/icon/"+d.icon.split(".")[0]+"_blue.png)");
                         ev.target.setStyle("background-image", "url(../x_component_Attendance/$Main/"+_self.app.options.style+"/icon/action/"+d.icon.split(".")[0]+"_blue.png)");
                     }
                 }.bind({"styles" : overStyles }) );
                 node.addEvent( "mouseout", function(ev){
                     ev.target.setStyles( this.styles );
-                    if(d.icon){
+                    if( d.fonticon ){
+                        fonticonNode.removeClass("mainColor_color");
+                    }else if(d.icon){
                         // ev.target.setStyle("background-image", "url("+_self.explorer.path+_self.explorer.options.style+"/icon/"+d.icon+")");
                         ev.target.setStyle("background-image", "url(../x_component_Attendance/$Main/"+_self.app.options.style+"/icon/action/"+d.icon+")");
                     }
@@ -646,6 +654,7 @@ MWF.xApplication.Attendance.Explorer.PopupForm = new Class({
     Extends: MPopupForm,
     options: {
         "style": "attendanceV2",
+        "isUseMainColor": true,
         "hideBottomWhenReading": true,
         "closeByClickMaskWhenReading": true,
         "width": "500",
