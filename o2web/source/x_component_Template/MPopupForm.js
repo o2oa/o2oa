@@ -30,6 +30,7 @@ MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
         "resizeable" : false,
         "maxAction" : false,
         "closeAction": true,
+        "isUseMainColor": false,
 
         "relativeToApp" : true,
         "sizeRelateTo" : "app", //desktop
@@ -501,6 +502,10 @@ MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
                 "styles": this.css.formOkActionNode,
                 "text": text || this.lp.ok
             }).inject(this.formBottomNode);
+
+            if( this.options.isUseMainColor ){
+                this.okActionNode.addClass("mainColor_bg");
+            }
 
             this.okActionNode.addEvent("click", function (e) {
                 this.ok(e);

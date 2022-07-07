@@ -1338,6 +1338,10 @@ MWF.xApplication.Attendance.MyIndex.Calendar.Day = new Class({
         }
         this.titleDayNode = new Element("div", {"styles": this.css["dayTitleDay_"+this.type], "text": this.day}).inject(this.titleNode);
 
+        if(this.type === "today"){
+            this.titleDayNode.addClass("mainColor_bg");
+        }
+
         if ((new Date()).diff(this.date)>=0){
             this.titleNode.set("title", this.app.lp.titleNode);
             // this.titleNode.addEvent("click", function(){

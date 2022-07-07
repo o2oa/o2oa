@@ -42,7 +42,8 @@
     "sub" : [{
       "title" : MWF.xApplication.Attendance.LP.deleteFile,
       "action" : "remove",
-      "icon": "delete.png",
+      "fonticon": "el-icon-delete",
+      //     "icon": "delete.png",
       "styles" : "documentActionNode",
       "overStyles" : "documentActionNode_over",
       "downStyles" : "documentActionNode_down"
@@ -50,7 +51,8 @@
       {
         "title": MWF.xApplication.Attendance.LP.download,
         "action": "openDocument",
-        "icon": "download.png",
+//        "icon": "download.png",
+        "fonticon": "el-icon-download",
         "styles": "documentActionNode",
         "overStyles": "documentActionNode_over",
         "downStyles": "documentActionNode_down"
@@ -58,7 +60,8 @@
       {
         "title": MWF.xApplication.Attendance.LP.viewImportResult,
         "action": "openResult",
-        "icon": "open.png",
+        //       "icon": "open.png",
+        "fonticon": "el-icon-view",
         "styles": "documentActionNode",
         "overStyles": "documentActionNode_over",
         "downStyles": "documentActionNode_down"

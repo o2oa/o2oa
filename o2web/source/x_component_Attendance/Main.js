@@ -44,6 +44,8 @@ MWF.xApplication.Attendance.Main = new Class({
 		this.personActions = MWF.Actions.get("x_organization_assemble_personal");
 		this.orgActions = MWF.Actions.get("x_organization_assemble_express");
 
+		this.content.loadCss("../x_desktop/css/element-icons.css");
+
 		this.createNode();
 		this.loadApplicationContent();
 	},
@@ -488,8 +490,14 @@ MWF.xApplication.Attendance.Navi = new Class({
 		this.elements.push(menuNode);
 
 		menuNode.addEvents({
-			"mouseover": function () { if (_self.currentMenu != this) this.setStyles(_self.app.css.naviMenuNode_over); },
-			"mouseout": function () { if (_self.currentMenu != this) this.setStyles(_self.app.css.naviMenuNode_normal); },
+			"mouseover": function () { if (_self.currentMenu != this){
+				this.setStyles(_self.app.css.naviMenuNode_over);
+				this.addClass("mainColor_bg_opacity");
+            }},
+			"mouseout": function () { if (_self.currentMenu != this){
+				this.setStyles(_self.app.css.naviMenuNode_normal);
+				this.removeClass("mainColor_bg_opacity");
+			}},
 			// "mousedown": function () { if (_self.currentMenu != this) this.setStyles(_self.app.css.naviMenuNode_down); },
 			// "mouseup": function () { if (_self.currentMenu != this) this.setStyles(_self.app.css.naviMenuNode_over); },
 			"click": function () {
@@ -567,10 +575,24 @@ MWF.xApplication.Attendance.Navi = new Class({
 		this.items[data.id] = itemNode;
 
 		itemNode.addEvents({
-			"mouseover": function () { if (_self.currentItem != this) this.setStyles(_self.app.css.naviItemNode_over); },
-			"mouseout": function () { if (_self.currentItem != this) this.setStyles(_self.app.css.naviItemNode); },
-			"mousedown": function () { if (_self.currentItem != this) this.setStyles(_self.app.css.naviItemNode_down); },
-			"mouseup": function () { if (_self.currentItem != this) this.setStyles(_self.app.css.naviItemNode_over); },
+			"mouseover": function () { if (_self.currentItem != this) {
+				this.setStyles(_self.app.css.naviItemNode_over);
+				this.addClass("mainColor_bg_opacity");
+			} },
+			"mouseout": function () { if (_self.currentItem != this) {
+				this.setStyles(_self.app.css.naviItemNode);
+				this.removeClass("mainColor_bg_opacity");
+			} },
+			"mousedown": function () { if (_self.currentItem != this) {
+				this.setStyles(_self.app.css.naviItemNode_down);
+				this.addClass("mainColor_color");
+				this.addClass("mainColor_bg_opacity");
+			} },
+			"mouseup": function () { if (_self.currentItem != this) {
+				this.setStyles(_self.app.css.naviItemNode_over);
+				this.removeClass("mainColor_color");
+				this.removeClass("mainColor_bg_opacity");
+			} },
 			"click": function () {
 				_self.clickItem.apply(_self, [this]);
 			}
@@ -586,8 +608,14 @@ MWF.xApplication.Attendance.Navi = new Class({
 
 		var type = naviNode.retrieve("type");
 		if (!navi.target || navi.target != "_blank") {
-			if (this.currentItem) this.currentItem.setStyles(this.css.naviItemNode);
+			if (this.currentItem) {
+				this.currentItem.setStyles(this.css.naviItemNode);
+				this.currentItem.removeClass("mainColor_color");
+				this.currentItem.removeClass("mainColor_bg_opacity");
+			}
 			naviNode.setStyles(this.css.naviItemNode_current);
+			naviNode.addClass("mainColor_color");
+			naviNode.addClass("mainColor_bg_opacity");
 			this.currentItem = naviNode;
 		}
 

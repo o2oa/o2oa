@@ -81,9 +81,11 @@ MWF.xApplication.Attendance.AddressExplorer = new Class({
             placeItem.addEvents( {
                 "mouseover": function () {
                     this.setStyles( _self.app.css.toolbarItemNode_over );
+                    this.addClass("mainColor_bg");
                 },
                 "mouseout": function () {
                     this.setStyles( _self.app.css.toolbarItemNode_normal );
+                    this.removeClass("mainColor_bg");
                 },
                 "click": function(e){
                     this.obj.baiduMap.gotoMarker( this.data );
@@ -92,36 +94,36 @@ MWF.xApplication.Attendance.AddressExplorer = new Class({
             })
         }.bind(this) );
 
-        this.arrow = "up";
-        if( this.wdList.getScrollSize().y > this.wpContent.getSize().y ){
-
-            this.wdList.addEvent("click",function(e){
-                if( this.arrow != "down" ){
-                    this.openList( e );
-                }else{
-                    this.closeList( e )
-                }
-            }.bind(this));
-
-            this.arrowNode = new Element("div.arrowNode",{
-                "styles" : this.css.arrowNode
-            }).inject( this.wpContent, "top" );
-            this.arrowNode.addEvents({
-                "mouseover" : function(){
-                    this.arrowNode.setStyles( this.categoryArrow != "down" ? this.css.arrowNode_over : this.css.arrowNode_down_over);
-                }.bind(this),
-                "mouseout" : function(){
-                    this.arrowNode.setStyles( this.categoryArrow != "down" ? this.css.arrowNode : this.css.arrowNode_down);
-                }.bind(this),
-                "click" : function( e ){
-                    if( this.arrow != "down" ){
-                        this.openList( e );
-                    }else{
-                        this.closeList( e )
-                    }
-                }.bind(this)
-            });
-        }
+        // this.arrow = "up";
+        // if( this.wdList.getScrollSize().y > this.wpContent.getSize().y + 10){
+        //
+        //     this.wdList.addEvent("click",function(e){
+        //         if( this.arrow != "down" ){
+        //             this.openList( e );
+        //         }else{
+        //             this.closeList( e )
+        //         }
+        //     }.bind(this));
+        //
+        //     this.arrowNode = new Element("div.arrowNode",{
+        //         "styles" : this.css.arrowNode
+        //     }).inject( this.wpContent, "top" );
+        //     this.arrowNode.addEvents({
+        //         "mouseover" : function(){
+        //             this.arrowNode.setStyles( this.categoryArrow != "down" ? this.css.arrowNode_over : this.css.arrowNode_down_over);
+        //         }.bind(this),
+        //         "mouseout" : function(){
+        //             this.arrowNode.setStyles( this.categoryArrow != "down" ? this.css.arrowNode : this.css.arrowNode_down);
+        //         }.bind(this),
+        //         "click" : function( e ){
+        //             if( this.arrow != "down" ){
+        //                 this.openList( e );
+        //             }else{
+        //                 this.closeList( e )
+        //             }
+        //         }.bind(this)
+        //     });
+        // }
     },
     _setContentSize: function(){
         this.wdList.setStyle( "width" , this.toolbarNode.getSize().x - 370 + "px" );
@@ -483,10 +485,10 @@ MWF.xApplication.Attendance.AddressExplorer.BaiduAccountForm = new Class({
         this.formTableArea.set("html",html);
 
         MWF.UD.getPublicData("baiduAccountKey", function (json) {
-            debugger;
             MWF.xDesktop.requireApp("Template", "MForm", function(){
                 this.form = new MForm( this.formTableArea, {ak : json || "" }, {
                     style: "attendance",
+                    isUseMainColor: true,
                     isEdited : true,
                     itemTemplate : {
                         ak : {  "text" : lp.secretKey }
