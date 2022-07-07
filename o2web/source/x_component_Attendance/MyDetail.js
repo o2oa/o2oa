@@ -41,10 +41,15 @@ MWF.xApplication.Attendance.MyDetail = new Class({
             this.detailPage = this.tabs.addTab(this.detailArea, this.app.lp.myDetail, false);
             this.detailPage.contentNodeArea.set("class","detailPage");
             this.detailPage.addEvent("show",function(){
+                this.detailPage.tabNode.addClass( "mainColor_border" );
+                this.detailPage.textNode.addClass( "mainColor_color" );
                 if( !this.detailExplorer ){
                     this.detailExplorer = new MWF.xApplication.Attendance.MyDetail.Explorer( this.detailArea, this );
                     this.detailExplorer.load();
                 }
+            }.bind(this)).addEvent("hide", function(){
+                this.detailPage.tabNode.removeClass( "mainColor_border" );
+                this.detailPage.textNode.removeClass( "mainColor_color" );
             }.bind(this));
 
             //this.selfHolidayPage = this.tabs.addTab(this.selfHolidayArea, "我的休假明细", false);
@@ -60,10 +65,15 @@ MWF.xApplication.Attendance.MyDetail = new Class({
             this.detailStaticPage = this.tabs.addTab(this.detailStaticArea, this.app.lp.myDetailStatic, false);
             this.detailStaticPage.contentNodeArea.set("class","detailStaticPage");
             this.detailStaticPage.addEvent("show",function(){
+                this.detailStaticPage.tabNode.addClass( "mainColor_border" );
+                this.detailStaticPage.textNode.addClass( "mainColor_color" );
                 if( !this.detailStaticExplorer ){
                     this.detailStaticExplorer = new MWF.xApplication.Attendance.MyDetail.DetailStaticExplorer( this.detailStaticArea, this );
                     this.detailStaticExplorer.load();
                 }
+            }.bind(this)).addEvent("hide", function(){
+                this.detailStaticPage.tabNode.removeClass( "mainColor_border" );
+                this.detailStaticPage.textNode.removeClass( "mainColor_color" );
             }.bind(this));
 
             //this.selfHolidayStaticPage = this.tabs.addTab(this.selfHolidayStaticArea, "我的休假统计", false);
@@ -227,7 +237,7 @@ MWF.xApplication.Attendance.MyDetail.Explorer = new Class({
                     isAbsent : { text: lp.absent,  "type" : "select", "selectValue" : ["","true","false"], "selectText" : lp.absendSelectText },
                     isLate : { text: lp.late,  "type" : "select", "selectValue" : ["","true","false"], "selectText" : lp.lateSelectText },
                     isLackOfTime : { text: lp.lackOfTime, "type" : "select", "selectValue" : ["","true","false"], "selectText" : lp.truefalseSelectText },
-                    action : { "value" : lp.query, type : "button", className : "filterButton", event : {
+                    action : { "value" : lp.query, type : "button", className : "filterButton", clazz:"mainColor_bg", event : {
                             click : function(){
                                 var result = this.form.getResult(false,null,false,true,false);
 
@@ -584,6 +594,7 @@ MWF.xApplication.Attendance.MyDetail.DetailStaticExplorer = new Class({
             "text" : MWF.xApplication.Attendance.LP.query,
             "styles" : this.app.css.filterButton
         }).inject(td);
+        input.addClass("mainColor_bg");
         debugger;
         input.addEvent("click", function(){
             var year = this.yearString.getValue("year");

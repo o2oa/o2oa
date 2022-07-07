@@ -42,6 +42,7 @@
     "sub" : [{
       "title" : MWF.xApplication.Attendance.LP.deleteFile,
       "action" : "remove",
+      "fonticon": "el-icon-delete-solid",
       "icon": "delete.png",
       "styles" : "documentActionNode",
       "overStyles" : "documentActionNode_over",
@@ -51,6 +52,7 @@
         "title": MWF.xApplication.Attendance.LP.download,
         "action": "openDocument",
         "icon": "download.png",
+        "fonticon": "el-icon-download",
         "styles": "documentActionNode",
         "overStyles": "documentActionNode_over",
         "downStyles": "documentActionNode_down"
@@ -59,6 +61,7 @@
         "title": MWF.xApplication.Attendance.LP.viewImportResult,
         "action": "openResult",
         "icon": "open.png",
+        "fonticon": "el-icon-folder-opened",
         "styles": "documentActionNode",
         "overStyles": "documentActionNode_over",
         "downStyles": "documentActionNode_down"

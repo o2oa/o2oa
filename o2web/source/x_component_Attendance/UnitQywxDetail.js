@@ -36,20 +36,30 @@ MWF.xApplication.Attendance.UnitQywxDetail = new Class({
             this.detailPage = this.tabs.addTab(this.detailArea, this.app.lp.unitSigninDetail, false);
             this.detailPage.contentNodeArea.set("class", "detailPage");
             this.detailPage.addEvent("show", function () {
+                this.detailPage.tabNode.addClass( "mainColor_border" );
+                this.detailPage.textNode.addClass( "mainColor_color" );
                 if (!this.detailExplorer) {
                     this.detailExplorer = new MWF.xApplication.Attendance.UnitQywxDetail.Explorer(this.detailArea, this);
                     this.detailExplorer.load();
                 }
+            }.bind(this)).addEvent("hide", function(){
+                this.detailPage.tabNode.removeClass( "mainColor_border" );
+                this.detailPage.textNode.removeClass( "mainColor_color" );
             }.bind(this));
 
 
             this.detailStaticPage = this.tabs.addTab(this.detailStaticArea, this.app.lp.unitSigninStatic, false);
             this.detailStaticPage.contentNodeArea.set("class", "detailStaticPage");
             this.detailStaticPage.addEvent("show", function () {
+                this.detailStaticPage.tabNode.addClass( "mainColor_border" );
+                this.detailStaticPage.textNode.addClass( "mainColor_color" );
                 if (!this.detailStaticExplorer) {
                     this.detailStaticExplorer = new MWF.xApplication.Attendance.UnitQywxDetail.DetailStaticExplorer(this.detailStaticArea, this);
                     this.detailStaticExplorer.load();
                 }
+            }.bind(this)).addEvent("hide", function(){
+                this.detailStaticPage.tabNode.removeClass( "mainColor_border" );
+                this.detailStaticPage.textNode.removeClass( "mainColor_color" );
             }.bind(this));
 
             this.tabs.pages[0].showTab();
@@ -152,7 +162,7 @@ MWF.xApplication.Attendance.UnitQywxDetail.Explorer = new Class({
                 checkType: { text: lp.signinType, "type": "select", "selectValue": lp.signinQywxTypeSelectText, "selectText": lp.signinQywxTypeSelectText },
                 exceptionType: { text: lp.signinResult, "type": "select", "selectValue": lp.signinQywxResultSelectText, "selectText": lp.signinQywxResultSelectText },
                 action: {
-                    "value": lp.query, type: "button", className: "filterButton", event: {
+                    "value": lp.query, type: "button", className: "filterButton",  clazz:"mainColor_bg", event: {
                         click: function () {
                             var result = this.form.getResult(true, ",", true, true, false);
                             if (!result) return;
@@ -292,7 +302,7 @@ MWF.xApplication.Attendance.UnitQywxDetail.DetailStaticExplorer = new Class({
                     "selectValue": ["", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
                 },
                 action: {
-                    "value": lp.query, type: "button", className: "filterButton", event: {
+                    "value": lp.query, type: "button", className: "filterButton", clazz:"mainColor_bg",  event: {
                         click: function () {
                             var result = this.form.getResult(true, ",", true, true, false);
                             if (!result) return;

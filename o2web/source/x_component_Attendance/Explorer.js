@@ -103,6 +103,8 @@ MWF.xApplication.Attendance.Explorer = new Class({
             toolItemNode.addEvents({
                 "mouseover": function () {
                     toolItemNode.setStyles( _self.app.css.toolbarItemNode_over );
+                    toolItemNode.addClass( "mainColor_bg" );
+                    toolItemNode.addClass( "mainColor_border" );
                     if( tool.icon && iconNode ){
                         // iconNode.setStyle("background-image", "url("+_self.path+_self.options.style+"/icon/"+tool.icon.split(".")[0]+"_over.png)");
                         iconNode.setStyle("background-image", "url(../x_component_Attendance/$Main/"+_self.app.options.style+"/icon/toolbar/"+tool.icon.split(".")[0]+"_over.png)");
@@ -110,6 +112,8 @@ MWF.xApplication.Attendance.Explorer = new Class({
                 },
                 "mouseout": function () {
                     toolItemNode.setStyles( _self.app.css.toolbarItemNode_normal );
+                    toolItemNode.removeClass( "mainColor_bg" );
+                    toolItemNode.removeClass( "mainColor_border" );
                     if( tool.icon && iconNode ){
                         // iconNode.setStyle("background-image", "url("+_self.path+_self.options.style+"/icon/"+tool.icon+")");
                         iconNode.setStyle("background-image", "url(../x_component_Attendance/$Main/"+_self.app.options.style+"/icon/toolbar/"+tool.icon+")");
