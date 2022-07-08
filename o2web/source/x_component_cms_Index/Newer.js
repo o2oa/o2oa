@@ -195,6 +195,8 @@ MWF.xApplication.cms.Index.Newer = new Class({
     },
     _createTableContent: function () {
 
+        if( this.formTopNode )this.formTopNode.addClass("mainColor_bg");
+
         var categoryName = this.categoryData ? ( this.categoryData.name || this.categoryData.categoryName ) : this.lp.selectCategory;
         var html = "";
         if( this.options.selectColumnEnable ){
@@ -311,6 +313,7 @@ MWF.xApplication.cms.Index.Newer = new Class({
     setCurrentColumn: function( column ){
         if( this.currentColumn  && this.currentColumn != column ){
             this.currentColumn.node.setStyles( this.css.columnItemNode );
+            this.currentColumn.node.removeClass("mainColor_color");
             this.currentColumn.options.isCurrent = false;
         }
         this.currentColumn = column;
@@ -320,6 +323,8 @@ MWF.xApplication.cms.Index.Newer = new Class({
 
         if( this.currentCategory && this.currentCategory != category ){
             this.currentCategory.node.setStyles( this.css.categoryItemNode );
+            this.currentCategory.node.removeClass("mainColor_color");
+            this.currentCategory.node.removeClass("mainColor_border");
             this.currentCategory.options.isCurrent = false;
         }
         this.currentCategory = category;
@@ -924,6 +929,7 @@ MWF.xApplication.cms.Index.Newer.CategorySel.Column = new Class({
     setCurrent: function(){
         this.options.isCurrent = true;
         this.node.setStyles( this.css.columnItemNode_current );
+        this.node.addClass("mainColor_color");
         this.newer.setCurrentColumn( this );
         this.loadCategory();
     },
@@ -998,6 +1004,8 @@ MWF.xApplication.cms.Index.Newer.CategorySel.Category = new Class({
     setCurrent: function(){
         this.options.isCurrent = true;
         this.node.setStyles( this.css.categoryItemNode_current );
+        this.node.addClass("mainColor_color");
+        this.node.addClass("mainColor_border");
         this.newer.setCurrentCategory( this );
     }
 });

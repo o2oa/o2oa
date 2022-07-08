@@ -54,6 +54,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 		this.leftTitleNode = new Element("div.leftTitleNode", {
 			"styles": this.css.leftTitleNode
 		}).inject(this.naviContainerNode);
+		this.leftTitleNode.addClass("mainColor_border");
 
 		this.rightContentNode = new Element("div", {
 			"styles":this.css.rightContentNode
@@ -170,6 +171,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 					if( this.view.selectEnable ){
 						this.selectEnable = false;
 						this.batchAction.setStyles( this.css.batchAction );
+						this.batchAction.removeClass("mainColor_color");
 						this.batchAction.set("text",this.lp.select);
 						this.view.disableSelectMode();
 
@@ -179,6 +181,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 					}else{
 						this.selectEnable = true;
 						this.batchAction.setStyles( this.css.batchAction_over );
+						this.batchAction.addClass("mainColor_color");
 						this.batchAction.set("text", this.lp.cancelSelect);
 						this.view.selectMode();
 
@@ -190,11 +193,13 @@ MWF.xApplication.cms.Module.Main = new Class({
 			}.bind(this),
 			"mouseover" : function(e){
 				if( this.view.selectEnable )return;
-				this.batchAction.setStyles( this.css.batchAction_over )
+				this.batchAction.setStyles( this.css.batchAction_over );
+				this.batchAction.addClass("mainColor_color");
 			}.bind(this),
 			"mouseout" : function(e){
 				if( this.view.selectEnable )return;
-				this.batchAction.setStyles( this.css.batchAction )
+				this.batchAction.setStyles( this.css.batchAction );
+				this.batchAction.removeClass("mainColor_color");
 			}.bind(this)
 		});
 	},
@@ -245,10 +250,12 @@ MWF.xApplication.cms.Module.Main = new Class({
 						this.creater.load();
 					}.bind(this),
 					"mouseover" : function(e){
-						this.createDocumentAction.setStyles( this.css.createDocumentAction_over )
+						this.createDocumentAction.setStyles( this.css.createDocumentAction_over );
+						this.createDocumentAction.addClass("mainColor_color");
 					}.bind(this),
 					"mouseout" : function(e){
-						this.createDocumentAction.setStyles( this.css.createDocumentAction )
+						this.createDocumentAction.setStyles( this.css.createDocumentAction );
+						this.createDocumentAction.removeClass("mainColor_color");
 					}.bind(this)
 				});
 			}
@@ -296,10 +303,12 @@ MWF.xApplication.cms.Module.Main = new Class({
 				}
 			}.bind(this),
 			"mouseover" : function(e){
-				this.moveAction.setStyles( this.css.moveDocumentAction_over )
+				this.moveAction.setStyles( this.css.moveDocumentAction_over );
+				this.moveAction.addClass("mainColor_color");
 			}.bind(this),
 			"mouseout" : function(e){
-				this.moveAction.setStyles( this.css.moveDocumentAction )
+				this.moveAction.setStyles( this.css.moveDocumentAction );
+				this.moveAction.removeClass("mainColor_color");
 			}.bind(this)
 		});
 	},
@@ -342,9 +351,11 @@ MWF.xApplication.cms.Module.Main = new Class({
 			}.bind(this),
 			"mouseover" : function(e){
 				this.batchRemoveAction.setStyles( this.css.batchRemoveDocumentAction_over )
+				this.batchRemoveAction.addClass("mainColor_color");
 			}.bind(this),
 			"mouseout" : function(e){
 				this.batchRemoveAction.setStyles( this.css.batchRemoveDocumentAction )
+				this.batchRemoveAction.removeClass("mainColor_color");
 			}.bind(this)
 		});
 	},
@@ -453,10 +464,12 @@ MWF.xApplication.cms.Module.Main = new Class({
 				}
 			}.bind(this),
 			"mouseover" : function(e){
-				this.copyAction.setStyles( this.css.copyDocumentAction_over )
+				this.copyAction.setStyles( this.css.copyDocumentAction_over );
+				this.copyAction.addClass("mainColor_color");
 			}.bind(this),
 			"mouseout" : function(e){
-				this.copyAction.setStyles( this.css.copyDocumentAction )
+				this.copyAction.setStyles( this.css.copyDocumentAction );
+				this.copyAction.removeClass("mainColor_color");
 			}.bind(this)
 		});
 	},
@@ -1279,6 +1292,7 @@ MWF.xApplication.cms.Module.NaviCategory = new Class({
 		}
 
 		this.node.setStyles( this.css.categoryNaviNode_selected );
+		this.node.addClass( "mainColor_bg" );
 
 		if( this.hasSub ){
 			if( this.isExpended ){
@@ -1305,6 +1319,7 @@ MWF.xApplication.cms.Module.NaviCategory = new Class({
 	cancelCurrent : function(){
 		this.isCurrent = false;
 		this.node.setStyles( this.css.categoryNaviNode );
+		this.node.removeClass( "mainColor_bg" );
 		if( this.hasSub ){
 			if( this.isExpended ){
 				this.expendNode.setStyles( this.css.categoryExpendNode );
@@ -1390,6 +1405,7 @@ MWF.xApplication.cms.Module.NaviView = new Class({
 		}
 
 		this.node.setStyles( this.css.viewNaviNode_selected );
+		this.node.addClass( "mainColor_bg" );
 
 		this.isCurrent = true;
 		this.navi.currentObject = this;
@@ -1408,6 +1424,7 @@ MWF.xApplication.cms.Module.NaviView = new Class({
 	cancelCurrent : function(){
 		this.isCurrent = false;
 		this.node.setStyles( this.css.viewNaviNode );
+		this.node.removeClass( "mainColor_bg" );
 	},
 	getCategoryId : function(){
 		return this.category.data.id;
@@ -1476,6 +1493,7 @@ MWF.xApplication.cms.Module.NaviAllView = new Class({
 			this.navi.currentObject.cancelCurrent();
 		}
 
+		this.node.addClass( "mainColor_bg" );
 		this.node.setStyles( this.css.viewNaviNode_all_selected );
 
 		this.isCurrent = true;
@@ -1494,6 +1512,7 @@ MWF.xApplication.cms.Module.NaviAllView = new Class({
 	},
 	cancelCurrent : function(){
 		this.isCurrent = false;
+		this.node.removeClass( "mainColor_bg" );
 		this.node.setStyles( this.css.viewNaviNode_all );
 	},
 	getCategoryId : function(){
@@ -1559,6 +1578,7 @@ MWF.xApplication.cms.Module.NaviDraftView = new Class({
 			this.navi.currentObject.cancelCurrent();
 		}
 
+		this.node.addClass( "mainColor_bg" );
 		this.node.setStyles( this.css.viewNaviNode_all_selected );
 
 		this.isCurrent = true;
@@ -1577,6 +1597,7 @@ MWF.xApplication.cms.Module.NaviDraftView = new Class({
 	},
 	cancelCurrent : function(){
 		this.isCurrent = false;
+		this.node.removeClass( "mainColor_bg" );
 		this.node.setStyles( this.css.viewNaviNode_all );
 	},
 	getCategoryId : function(){

@@ -138,9 +138,11 @@ MWF.xApplication.Meeting.RoomView = new Class({
         this.roomDateNode.addEvents({
             "mouseover": function(){
                 this.roomDateNode.setStyles(this.css.roomDateNode_over);
+                this.roomDateNode.addClass("mainColor_color");
             }.bind(this),
             "mouseout": function(){
                 this.roomDateNode.setStyles(this.css.roomDateNode);
+                this.roomDateNode.removeClass("mainColor_color");
             }.bind(this),
             "mousedown": function(){
                 this.roomDateNode.setStyles(this.css.roomDateNode_down);
@@ -201,17 +203,29 @@ MWF.xApplication.Meeting.RoomView = new Class({
             events : {
                 mouseover : function( ev ){
                     var node = ev.target;
-                    if( _self.currentBuliding != node )node.setStyles( _self.css.roomTopItemNode_over );
+                    if( _self.currentBuliding != node ){
+                        node.setStyles( _self.css.roomTopItemNode_over );
+                        node.addClass("mainColor_color");
+                    }
                 },
                 mouseout : function( ev ){
                     var node = ev.target;
-                    if( _self.currentBuliding != node )node.setStyles( _self.css.roomTopItemNode )
+                    if( _self.currentBuliding != node ){
+                        node.setStyles( _self.css.roomTopItemNode );
+                        node.removeClass("mainColor_color");
+                    }
                 },
                 click : function(ev){
                     var node = ev.target;
-                    if(_self.currentBuliding)_self.currentBuliding.setStyles( _self.css.roomTopItemNode );
+                    if(_self.currentBuliding){
+                        _self.currentBuliding.setStyles( _self.css.roomTopItemNode );
+                        _self.currentBuliding.removeClass("mainColor_color");
+                        _self.currentBuliding.removeClass("mainColor_border");
+                    }
                     _self.currentBuliding = node;
                     node.setStyles( _self.css.roomTopItemNode_current );
+                    node.addClass("mainColor_color");
+                    node.addClass("mainColor_border");
                     _self.emptyRooms();
                     _self.loadAllRooms();
                 }
@@ -231,18 +245,30 @@ MWF.xApplication.Meeting.RoomView = new Class({
                     events : {
                         mouseover : function( ev ){
                             var node = ev.target;
-                            if( _self.currentBuliding != node )node.setStyles( _self.css.roomTopItemNode_over );
+                            if( _self.currentBuliding != node ){
+                                node.setStyles( _self.css.roomTopItemNode_over );
+                                node.addClass("mainColor_color");
+                            }
                             _self.showBulidingTooltip( ev.target );
                         },
                         mouseout : function( ev ){
                             var node = ev.target;
-                            if( _self.currentBuliding != node )node.setStyles( _self.css.roomTopItemNode )
+                            if( _self.currentBuliding != node ){
+                                node.setStyles( _self.css.roomTopItemNode );
+                                node.removeClass("mainColor_color");
+                            }
                         },
                         click : function(ev){
                             var node = ev.target;
-                            if(_self.currentBuliding)_self.currentBuliding.setStyles( _self.css.roomTopItemNode );
+                            if(_self.currentBuliding){
+                                _self.currentBuliding.setStyles( _self.css.roomTopItemNode );
+                                _self.currentBuliding.removeClass("mainColor_color");
+                                _self.currentBuliding.removeClass("mainColor_border");
+                            }
                             _self.currentBuliding = node;
                             node.setStyles( _self.css.roomTopItemNode_current );
+                            node.addClass("mainColor_color");
+                            node.addClass("mainColor_border");
                             _self.emptyRooms();
                             _self.loadRooms( node );
                         }
@@ -448,9 +474,11 @@ MWF.xApplication.Meeting.RoomView.Room = new Class({
             this.titleNode.addEvents({
                 mouseenter : function(){
                     this.titleTextNode.setStyles( this.css.roomItemTitleTextNode_over );
+                    this.titleTextNode.addClass( "overColor_color"  );
                 }.bind(this),
                 mouseleave : function(){
                     this.titleTextNode.setStyles( this.css.roomItemTitleTextNode );
+                    this.titleTextNode.removeClass( "overColor_color"  );
                 }.bind(this)
             });
         }

@@ -270,8 +270,14 @@ MWF.xApplication.Meeting.WeekView.Calendar = new Class({
             "click": function(){this.changeWeekNext();}.bind(this)
         });
         this.titleTextNode.addEvents({
-            "mouseover": function(){this.titleTextNode.setStyles(this.css.calendarTitleTextNode_over);}.bind(this),
-            "mouseout": function(){this.titleTextNode.setStyles(this.css.calendarTitleTextNode);}.bind(this),
+            "mouseover": function(){
+                this.titleTextNode.setStyles(this.css.calendarTitleTextNode_over);
+                this.titleTextNode.addClass("mainColor_color");
+            }.bind(this),
+            "mouseout": function(){
+                this.titleTextNode.setStyles(this.css.calendarTitleTextNode);
+                this.titleTextNode.removeClass("mainColor_color");
+            }.bind(this),
             "mousedown": function(){this.titleTextNode.setStyles(this.css.calendarTitleTextNode_down);}.bind(this),
             "mouseup": function(){this.titleTextNode.setStyles(this.css.calendarTitleTextNode_over);}.bind(this)
             //"click": function(){this.changeWeekSelect();}.bind(this)
@@ -831,6 +837,8 @@ MWF.xApplication.Meeting.WeekView.Calendar.Day = new Class({
                 "text": this.day
             }).inject(titleNode);
 
+            if( this.type === "today" )titleDayNode.addClass("mainColor_bg");
+
             if ((new Date()).diff(this.date) >= 0) {
                 titleNode.set("title", this.app.lp.titleNode);
                 titleNode.addEvent("click", function () {
@@ -1334,6 +1342,7 @@ MWF.xApplication.Meeting.WeekView.WeekCalendar = new Class({
                 //tds[i].addClass("today_"+this.options.style);
                 tds[i].setStyles(this.css["today_"+this.options.style]);
                 tds[i].setStyle("border", "0px solid #AAA");
+                tds[i].addClass("mainColor_bg");
             }
             tds[i].store("dateValue", firstDate.toString());
             firstDate.increment("day", 1);

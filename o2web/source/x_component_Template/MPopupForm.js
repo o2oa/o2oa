@@ -30,7 +30,8 @@ MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
         "resizeable" : false,
         "maxAction" : false,
         "closeAction": true,
-        "isUseMainColor": false,
+        "okClass": "",
+        "topClass": "",
 
         "relativeToApp" : true,
         "sizeRelateTo" : "app", //desktop
@@ -327,6 +328,9 @@ MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
             this.formTopNode = new Element("div.formTopNode", {
                 "styles": this.css.formTopNode
             }).inject(this.formNode);
+            if( this.options.topClass ){
+                this.formTopNode.addClass( this.options.topClass );
+            }
 
             if(this.options.hasTopIcon){
                 this.formTopIconNode = new Element("div", {
@@ -503,8 +507,8 @@ MWF.xApplication.Template.MPopupForm = MPopupForm = new Class({
                 "text": text || this.lp.ok
             }).inject(this.formBottomNode);
 
-            if( this.options.isUseMainColor ){
-                this.okActionNode.addClass("mainColor_bg");
+            if( this.options.okClass ){
+                this.okActionNode.addClass( this.options.okClass );
             }
 
             this.okActionNode.addEvent("click", function (e) {

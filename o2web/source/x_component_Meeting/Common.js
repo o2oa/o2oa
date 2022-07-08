@@ -10,6 +10,7 @@ MWF.xApplication.Meeting.BuildingForm = new Class({
     Extends: MPopupForm,
     Implements: [Options, Events],
     options: {
+        "topClass": "overColor_bg",
         "style": "meeting",
         "width": "800",
         "height": "300",
@@ -44,7 +45,7 @@ MWF.xApplication.Meeting.BuildingForm = new Class({
                 itemTemplate: {
                     name: { text : this.lp.name, notEmpty : true },
                     address: { text : this.lp.address },
-                    saveAction : { type : "button", className : "inputOkButton", value : this.lp.save, event : {
+                    saveAction : { type : "button", className : "inputOkButton", clazz: "mainColor_bg", value : this.lp.save, event : {
                         click : function(){ this.save();}.bind(this)
                     } },
                     removeAction : { type : "button", className : "inputCancelButton", value : this.lp.delete , event : {
@@ -184,6 +185,7 @@ MWF.xApplication.Meeting.RoomForm = new Class({
     Implements: [Options, Events],
     options: {
         "style": "meeting",
+        "topClass": "overColor_bg",
         "width": "900",
         "height": "500",
         "hasTop": true,
@@ -326,13 +328,13 @@ MWF.xApplication.Meeting.RoomForm = new Class({
                         selectValue : [ "true", "false" ],
                         selectText : [ this.lp.enable, this.lp.disable ]
                     },
-                    saveAction : { type : "button", className : "inputOkButton", value : this.lp.save, event : {
+                    saveAction : { type : "button", className : "inputOkButton", clazz: "mainColor_bg", value : this.lp.save, event : {
                         click : function(){ this.save();}.bind(this)
                     } },
                     removeAction : { type : "button", className : "inputCancelButton", value : this.lp.delete , event : {
                         click : function( item, ev ){ this.removeRoom(ev); }.bind(this)
                     } },
-                    editAction : { type : "button", className : "inputOkButton", value : this.lp.editRoom , event : {
+                    editAction : { type : "button", className : "inputOkButton", clazz: "mainColor_bg", value : this.lp.editRoom , event : {
                         click : function(){ this.editRoom(); }.bind(this)
                     } },
                     cancelAction : { type : "button", className : "inputCancelButton", value : this.lp.close , event : {
@@ -614,6 +616,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
     Implements: [Options, Events],
     options: {
         "style": "meeting",
+        "topClass": "overColor_bg",
         "width": "900",
         "height": "780",
         "hasTop": true,
@@ -935,7 +938,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                         selectText : this.app.meetingConfig.typeList || [],
                         notEmpty: true
                     },
-                    acceptAction : { type : "button", value : this.lp.accept,  className : "inputAcceptButton",
+                    acceptAction : { type : "button", value : this.lp.accept,  className : "inputAcceptButton", clazz: "mainColor_bg",
                         event : {  click : function( it, ev ){ this.accept(ev); }.bind(this) }
                     },
                     rejectAction : { type : "button", value : this.lp.reject, style : {"margin-left": "20px"}, className : "inputDenyButton",
@@ -997,7 +1000,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                 style: "meeting",
                 itemTemplate: {
                     saveAction: {
-                        type: "button", className: "inputOkButton", value: this.lp.save, event: {
+                        type: "button", className: "inputOkButton", clazz: "mainColor_bg", value: this.lp.save, event: {
                             click: function () {
                                 this.save();
                             }.bind(this)
@@ -1011,7 +1014,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                         }
                     },
                     editAction: {
-                        type: "button", className: "inputOkButton", value: this.lp.editMeeting, event: {
+                        type: "button", className: "inputOkButton", clazz: "mainColor_bg", value: this.lp.editMeeting, event: {
                             click: function () {
                                 this.editMeeting();
                             }.bind(this)

@@ -149,10 +149,12 @@ MWF.xApplication.Meeting.Main = new Class({
         actionNode.addEvents({
             "mouseover": function(){
                 this.node.setStyles(_self.css.topMenuNode_over);
+                this.node.addClass("mainColor_color");
                 this.node.retrieve("iconNode").setStyle( "background","url(../x_component_Meeting/$Main/default/icon/"+this.node.retrieve("icon")+"_click.png) no-repeat center center" );
             }.bind( { node : actionNode } ),
             "mouseout": function(){
                 this.node.setStyles(_self.css.topMenuNode_right);
+                this.node.removeClass("mainColor_color");
                 this.node.retrieve("iconNode").setStyle( "background","url(../x_component_Meeting/$Main/default/icon/"+this.node.retrieve("icon")+".png) no-repeat center center" );
             }.bind({ node:actionNode }),
             "click": function(){
@@ -194,12 +196,14 @@ MWF.xApplication.Meeting.Main = new Class({
         actionNode.addEvents({
             "mouseover": function(){
                 if( this.node != _self.currentTopMenuNode ){
+                    this.node.addClass("mainColor_color");
                     this.node.setStyles(_self.css.topMenuNode_over);
                     this.node.retrieve("iconNode").setStyle( "background","url(../x_component_Meeting/$Main/default/icon/"+this.node.retrieve("icon")+"_click.png) no-repeat center center" );
                 }
             }.bind( { node : actionNode } ),
             "mouseout": function(){
                 if(this.node != _self.currentTopMenuNode){
+                    this.node.removeClass("mainColor_color");
                     this.node.setStyles(_self.css.topMenuNode);
                     this.node.retrieve("iconNode").setStyle( "background","url(../x_component_Meeting/$Main/default/icon/"+this.node.retrieve("icon")+".png) no-repeat center center" );
                 }
@@ -208,10 +212,12 @@ MWF.xApplication.Meeting.Main = new Class({
             //"mouseup": function(){this.setStyles(_self.css.topMenuNode_over);},
             "click": function(){
                 if( this.node != _self.currentTopMenuNode ){
+                    this.node.addClass("mainColor_color");
                     this.node.setStyles( _self.css.topMenuNode_down );
                     this.node.retrieve("iconNode").setStyle( "background","url(../x_component_Meeting/$Main/default/icon/"+this.node.retrieve("icon")+"_click.png) no-repeat center center" );
                 }
                 if( _self.currentTopMenuNode && this.node != _self.currentTopMenuNode){
+                    _self.currentTopMenuNode.removeClass("mainColor_color");
                     _self.currentTopMenuNode.setStyles( _self.css.topMenuNode );
                     _self.currentTopMenuNode.retrieve("iconNode").setStyle( "background","url(../x_component_Meeting/$Main/default/icon/"+_self.currentTopMenuNode.retrieve("icon")+".png) no-repeat center center" );
                 }
@@ -888,6 +894,7 @@ MWF.xApplication.Meeting.Config = new Class({
         this.actionNode = new Element("div", {"styles": this.css.configActionNode}).inject(this.node);
         this.cancelNode = new Element("div", {"styles": this.css.configActionCancelNode, "text": this.app.lp.cancel}).inject(this.actionNode);
         this.saveNode = new Element("div", {"styles": this.css.configActionSaveNode, "text": this.app.lp.save}).inject(this.actionNode);
+        this.saveNode.addClass("mainColor_bg");
 
         this.cancelNode.addEvent("click", this.hide.bind(this));
         this.saveNode.addEvent("click", this.save.bind(this));

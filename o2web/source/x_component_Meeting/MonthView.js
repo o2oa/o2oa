@@ -210,10 +210,20 @@ MWF.xApplication.Meeting.MonthView.Calendar = new Class({
             "click": function(){this.changeMonthNext();}.bind(this)
         });
         this.titleTextNode.addEvents({
-            "mouseover": function(){this.titleTextNode.setStyles(this.css.calendarTitleTextNode_over);}.bind(this),
-            "mouseout": function(){this.titleTextNode.setStyles(this.css.calendarTitleTextNode);}.bind(this),
-            "mousedown": function(){this.titleTextNode.setStyles(this.css.calendarTitleTextNode_down);}.bind(this),
-            "mouseup": function(){this.titleTextNode.setStyles(this.css.calendarTitleTextNode_over);}.bind(this),
+            "mouseover": function(){
+                this.titleTextNode.setStyles(this.css.calendarTitleTextNode_over);
+                this.titleTextNode.addClass("mainColor_color");
+            }.bind(this),
+            "mouseout": function(){
+                this.titleTextNode.setStyles(this.css.calendarTitleTextNode);
+                this.titleTextNode.removeClass("mainColor_color");
+            }.bind(this),
+            "mousedown": function(){
+                this.titleTextNode.setStyles(this.css.calendarTitleTextNode_down);
+            }.bind(this),
+            "mouseup": function(){this.titleTextNode.setStyles(
+                this.css.calendarTitleTextNode_over);
+            }.bind(this),
             "click": function(){this.changeMonthSelect();}.bind(this)
         });
     },
@@ -365,6 +375,8 @@ MWF.xApplication.Meeting.MonthView.Calendar.Day = new Class({
 
         this.titleNode = new Element("div", {"styles": this.css["dayTitle_"+this.type]}).inject(this.node);
         this.titleDayNode = new Element("div", {"styles": this.css["dayTitleDay_"+this.type], "text": this.day}).inject(this.titleNode);
+
+        if( this.type === "today" )this.titleDayNode.addClass("mainColor_bg");
 
         if ((new Date()).diff(this.date)>=0){
             this.titleNode.set("title", this.app.lp.titleNode);
@@ -708,6 +720,8 @@ MWF.xApplication.Meeting.MonthView.Calendar.MonthSelector = new Class({
         this.monthSelectNode.addEvent("mousedown", function(e){e.stopPropagation();});
 
         this.monthSelectTitleNode = new Element("div", {"styles": this.css.calendarMonthSelectTitleNode}).inject(this.monthSelectNode);
+        this.monthSelectTitleNode.addClass("overColor_bg");
+
         this.monthSelectPrevYearNode = new Element("div", {"styles": this.css.calendarMonthSelectTitlePrevYearNode}).inject(this.monthSelectTitleNode);
         this.monthSelectNextYearNode = new Element("div", {"styles": this.css.calendarMonthSelectTitleNextYearNode}).inject(this.monthSelectTitleNode);
         this.monthSelectTextNode = new Element("div", {"styles": this.css.calendarMonthSelectTitleTextNode}).inject(this.monthSelectTitleNode);
@@ -760,12 +774,14 @@ MWF.xApplication.Meeting.MonthView.Calendar.MonthSelector = new Class({
             td.setStyle("background-color", "#FFF");
             if ((this.year == todayY) && (idx == todayM)){
                 new Element("div", {
+                    class: "mainColor_bg",
                     styles : _self.css.calendarMonthSelectTodayNode,
                     text : ""+m+ (MWF.language.substr(0,2) === "zh" ? this.app.lp.month : "")
                 }).inject( td );
             }else if ((this.year == thisY) && (idx == thisM)){
                 //td.setStyle("background-color", "#EEE");
                 new Element("div", {
+                    class: "mainColor_border mainColor_color",
                     styles : _self.css.calendarMonthSelectCurrentNode,
                     text : ""+m+ (MWF.language.substr(0,2) === "zh" ? this.app.lp.month : "")
                 }).inject( td );

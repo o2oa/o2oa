@@ -488,7 +488,6 @@ MWF.xApplication.Attendance.AddressExplorer.BaiduAccountForm = new Class({
             MWF.xDesktop.requireApp("Template", "MForm", function(){
                 this.form = new MForm( this.formTableArea, {ak : json || "" }, {
                     style: "attendance",
-                    isUseMainColor: true,
                     isEdited : true,
                     itemTemplate : {
                         ak : {  "text" : lp.secretKey }
