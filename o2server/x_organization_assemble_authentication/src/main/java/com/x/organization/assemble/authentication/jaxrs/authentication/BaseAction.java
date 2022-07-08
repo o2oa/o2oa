@@ -277,6 +277,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		String parameter = fillParameter(oauthClient.getInfoParameter(), param);
 		logger.debug("info post address:{}.", address);
 		logger.debug("info post parameter:{}.", parameter);
+		List<NameValuePair> heads = new ArrayList<>();
+		heads.add(new NameValuePair("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8"));
 		return HttpConnection.postAsString(address, null, parameter);
 	}
 
