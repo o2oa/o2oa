@@ -260,7 +260,7 @@ public class AeiObjects extends GsonPropertyObject {
 
 	public List<WorkLog> getWorkLogs() throws Exception {
 		if (null == this.workLogs) {
-			List<WorkLog> os = this.business.entityManagerContainer().listEqual(WorkLog.class, WorkLog.job_FIELDNAME,
+			List<WorkLog> os = this.business.entityManagerContainer().listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME,
 					this.work.getJob());
 			// 保持和前端得到的相同排序
 			this.workLogs = os.stream()

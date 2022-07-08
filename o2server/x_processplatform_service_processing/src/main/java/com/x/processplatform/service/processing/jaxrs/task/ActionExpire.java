@@ -50,8 +50,8 @@ class ActionExpire extends BaseAction {
 					try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 						Task task = emc.find(id, Task.class);
 						if (null != task) {
-							WorkLog workLog = emc.firstEqualAndEqual(WorkLog.class, WorkLog.job_FIELDNAME,
-									task.getJob(), WorkLog.fromActivityToken_FIELDNAME, task.getActivityToken());
+							WorkLog workLog = emc.firstEqualAndEqual(WorkLog.class, WorkLog.JOB_FIELDNAME,
+									task.getJob(), WorkLog.FROMACTIVITYTOKEN_FIELDNAME, task.getActivityToken());
 							if (null == workLog) {
 								throw new ExceptionEntityNotExist(WorkLog.class);
 							}

@@ -133,7 +133,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 	}
 
 	private void deleteWorkLog(Business business, String job) throws Exception {
-		List<String> ids = business.entityManagerContainer().idsEqual(WorkLog.class, WorkLog.job_FIELDNAME, job);
+		List<String> ids = business.entityManagerContainer().idsEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, job);
 		if (ListTools.isNotEmpty(ids)) {
 			business.entityManagerContainer().beginTransaction(WorkLog.class);
 			business.entityManagerContainer().delete(WorkLog.class, ids);

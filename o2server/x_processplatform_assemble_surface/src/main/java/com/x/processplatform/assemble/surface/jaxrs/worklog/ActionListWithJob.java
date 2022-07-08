@@ -61,13 +61,13 @@ class ActionListWithJob extends BaseAction {
 		List<WoRead> reads = futureReads.get();
 		List<WoReadCompleted> readCompleteds = futureReadCompleteds.get();
 		List<Wo> wos = futureWorkLogs.get();
-		ListTools.groupStick(wos, tasks, WorkLog.fromActivityToken_FIELDNAME, Task.activityToken_FIELDNAME,
+		ListTools.groupStick(wos, tasks, WorkLog.FROMACTIVITYTOKEN_FIELDNAME, Task.activityToken_FIELDNAME,
 				taskList_FIELDNAME);
-		ListTools.groupStick(wos, taskCompleteds, WorkLog.fromActivityToken_FIELDNAME,
+		ListTools.groupStick(wos, taskCompleteds, WorkLog.FROMACTIVITYTOKEN_FIELDNAME,
 				TaskCompleted.activityToken_FIELDNAME, taskCompletedList_FIELDNAME);
-		ListTools.groupStick(wos, reads, WorkLog.fromActivityToken_FIELDNAME, Read.activityToken_FIELDNAME,
+		ListTools.groupStick(wos, reads, WorkLog.FROMACTIVITYTOKEN_FIELDNAME, Read.activityToken_FIELDNAME,
 				readList_FIELDNAME);
-		ListTools.groupStick(wos, readCompleteds, WorkLog.fromActivityToken_FIELDNAME,
+		ListTools.groupStick(wos, readCompleteds, WorkLog.FROMACTIVITYTOKEN_FIELDNAME,
 				ReadCompleted.activityToken_FIELDNAME, readCompletedList_FIELDNAME);
 		result.setData(wos);
 		return result;
@@ -124,7 +124,7 @@ class ActionListWithJob extends BaseAction {
 	private List<Wo> workLogs(String job) {
 		List<Wo> os = new ArrayList<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			os = emc.fetchEqual(WorkLog.class, Wo.copier, WorkLog.job_FIELDNAME, job);
+			os = emc.fetchEqual(WorkLog.class, Wo.copier, WorkLog.JOB_FIELDNAME, job);
 			return os.stream()
 					.sorted(Comparator.comparing(Wo::getFromTime, Comparator.nullsLast(Date::compareTo))
 							.thenComparing(Wo::getArrivedTime, Comparator.nullsLast(Date::compareTo)))
@@ -140,15 +140,15 @@ class ActionListWithJob extends BaseAction {
 		private static final long serialVersionUID = -7666329770246726197L;
 
 		static WrapCopier<WorkLog, Wo> copier = WrapCopierFactory.wo(WorkLog.class, Wo.class,
-				ListTools.toList(WorkLog.id_FIELDNAME, WorkLog.fromActivity_FIELDNAME,
-						WorkLog.fromActivityType_FIELDNAME, WorkLog.fromActivityName_FIELDNAME,
-						WorkLog.fromActivityAlias_FIELDNAME, WorkLog.fromActivityToken_FIELDNAME,
-						WorkLog.fromTime_FIELDNAME, WorkLog.arrivedActivity_FIELDNAME,
-						WorkLog.arrivedActivityType_FIELDNAME, WorkLog.arrivedActivityName_FIELDNAME,
-						WorkLog.arrivedActivityAlias_FIELDNAME, WorkLog.arrivedActivityToken_FIELDNAME,
-						WorkLog.arrivedTime_FIELDNAME, WorkLog.routeName_FIELDNAME, WorkLog.connected_FIELDNAME,
-						WorkLog.splitting_FIELDNAME, WorkLog.fromGroup_FIELDNAME, WorkLog.arrivedGroup_FIELDNAME,
-						WorkLog.fromOpinionGroup_FIELDNAME, WorkLog.arrivedOpinionGroup_FIELDNAME),
+				ListTools.toList(WorkLog.id_FIELDNAME, WorkLog.FROMACTIVITY_FIELDNAME,
+						WorkLog.FROMACTIVITYTYPE_FIELDNAME, WorkLog.FROMACTIVITYNAME_FIELDNAME,
+						WorkLog.FROMACTIVITYALIAS_FIELDNAME, WorkLog.FROMACTIVITYTOKEN_FIELDNAME,
+						WorkLog.FROMTIME_FIELDNAME, WorkLog.ARRIVEDACTIVITY_FIELDNAME,
+						WorkLog.ARRIVEDACTIVITYTYPE_FIELDNAME, WorkLog.ARRIVEDACTIVITYNAME_FIELDNAME,
+						WorkLog.ARRIVEDACTIVITYALIAS_FIELDNAME, WorkLog.ARRIVEDACTIVITYTOKEN_FIELDNAME,
+						WorkLog.ARRIVEDTIME_FIELDNAME, WorkLog.ROUTENAME_FIELDNAME, WorkLog.CONNECTED_FIELDNAME,
+						WorkLog.SPLITTING_FIELDNAME, WorkLog.FROMGROUP_FIELDNAME, WorkLog.ARRIVEDGROUP_FIELDNAME,
+						WorkLog.FROMOPINIONGROUP_FIELDNAME, WorkLog.ARRIVEDOPINIONGROUP_FIELDNAME),
 				JpaObject.FieldsInvisible);
 
 		private List<WoTask> taskList = new ArrayList<>();

@@ -244,7 +244,7 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 	private WorkLogTree workLogTree(Business business, String job) throws Exception {
 		if (null == this.workLogTree) {
 			this.workLogTree = new WorkLogTree(business.entityManagerContainer().fetchEqual(WorkLog.class,
-					WorkLogTree.RELY_WORKLOG_ITEMS, WorkLog.job_FIELDNAME, job));
+					WorkLogTree.RELY_WORKLOG_ITEMS, WorkLog.JOB_FIELDNAME, job));
 		}
 		return this.workLogTree;
 	}
