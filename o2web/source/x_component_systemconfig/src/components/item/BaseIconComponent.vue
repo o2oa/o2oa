@@ -1,12 +1,12 @@
 <template>
   <div class="item_input" v-if="value.path && iconJson">
-    <div :class="getClass" :style="getIcon">{{value.name}}</div>
+    <div :class="getClass" :style="getIcon"></div>
   </div>
 </template>
 
 <script setup>
 import {layout} from '@o2oa/component';
-import {defineProps, ref, onUpdated, computed} from 'vue';
+import {defineProps, ref, computed} from 'vue';
 
 const props = defineProps({
   value: Object,
@@ -14,11 +14,6 @@ const props = defineProps({
   iconWidth: { type: String, default: '50px' },
   iconHeight: { type: String, default: '50px' }
 });
-
-// onUpdated(()=>{
-//   console.log('BaseIconComponent');
-//   console.log(props.value);
-// })
 
 if (!layout.iconJson){
   layout.iconJson = fetch('../o2_core/o2/xDesktop/$Default/icons.json').then((res)=>{
@@ -36,7 +31,7 @@ const getClass = computed(()=>{
   return (iconJson.value[path]) ? 'componentItemIconSystem' : 'componentItemIconCustom';
 });
 
-const getIcon = computed(()=>{
+function computeIconStyle(){
   const cmpt = props.value;
   const isUrl = cmpt.path.startsWith('@url');
   const iconObj = iconJson.value[cmpt.path] || ((isUrl && cmpt.iconPath==='appicon.png') ? iconJson.value['Url'] : null);
@@ -52,12 +47,9 @@ const getIcon = computed(()=>{
     width: props.iconWidth,
     backgroundSize: `${props.iconWidth} ${props.iconHeight}`
   };
-
-  console.log('BaseIconComponent-getIcon');
-  console.log(style);
-
   return style;
-});
+}
+const getIcon = computed(computeIconStyle);
 </script>
 
 <style scoped>

@@ -137,6 +137,19 @@ o2.xApplication.systemconfig.LP = {
         "forceMenuInfo": "保存为强制菜单设置后，所有的用户都会按此设置展现菜单，个性化设置将会失效。",
         "userMenuInfo": "所有用户的个性化菜单设置将被清除，以默认方式展现菜单。",
 
+        "clearDefaultMenuDataTitle": "清除默认菜单设置",
+        "clearDefaultMenuData": "您是否确认清除默认菜单设置？",
+        "clearDefaultMenuDataSuccess": "默认菜单设置已清除",
+        "clearForceMenuDataTitle": "清除强制菜单设置",
+        "clearForceMenuData": "您是否确认清除强制菜单设置？",
+        "clearForceMenuDataSuccess": "强制菜单设置已清除",
+
+        "clearUserMenuData": "清除用户个性化菜单设置",
+        "clearUserMenuDataSuccess": "用户个性化菜单设置已清除",
+        "clearUserMenuDataConfirm": "您确定要清除所有用户的个性化菜单设置",
+
+        "saveDefaultMenuDataSuccess": "默认菜单设置保存成功",
+        "saveForceMenuDataSuccess": "强制菜单设置保存成功",
 
         "defaultMenu": "默认菜单配置",
         "forceMenu": "强制菜单配置",

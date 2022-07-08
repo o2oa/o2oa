@@ -15,59 +15,57 @@
         <li :class="(currentList==='query') ? 'mainColor_bg' : ''"
             @click="loadMenuList('query')">{{lp._uiConfig.menu.query}}</li>
 
-        <li class="item_menu_refresh_icon" :title="lp._uiConfig.menu.defaultMenu" @click="test"></li>
+        <li class="item_menu_refresh_icon" :title="lp._uiConfig.menu.defaultMenu"></li>
       </ul>
 
       <div class="item_menu_content" v-if="currentList==='app'" @dragover="dragover" @drop="drop">
         <div class="item_menu_content_loading" v-if="!menuList_app.length"></div>
         <ul class="item_menu_ul" v-else>
-          <MenuItem v-for="item in menuList_app" :data="item" @dragItem="dragItem" @loaded="recordAppItems"></MenuItem>
+          <MenuItem v-for="item in menuList_app" :key="item.id" :data="item" @dragItem="dragItem" @dragItemEnd="dragItemEnd" @loaded="recordAppItems" @ungroup="ungroup"></MenuItem>
         </ul>
       </div>
-      <div class="item_menu_content" v-if="currentList==='process'">
+      <div class="item_menu_content" v-if="currentList==='process'" @dragover="dragover" @drop="drop">
         <div class="item_menu_content_loading" v-if="!menuList_process.length"></div>
         <ul class="item_menu_ul" v-else>
-          <MenuItem v-for="item in menuList_process" key="item.id" :data="item"></MenuItem>
+          <MenuItem v-for="item in menuList_process" :key="item.id" :data="item" @dragItem="dragItem" @dragItemEnd="dragItemEnd" @loaded="recordAppItems"></MenuItem>
         </ul>
       </div>
-      <div class="item_menu_content" v-if="currentList==='infor'">
+      <div class="item_menu_content" v-if="currentList==='infor'" @dragover="dragover" @drop="drop">
         <div class="item_menu_content_loading" v-if="!menuList_infor.length"></div>
         <ul class="item_menu_ul" v-else>
-          <MenuItem v-for="item in menuList_infor" key="item.id" :data="item"></MenuItem>
+          <MenuItem v-for="item in menuList_infor" :key="item.id" :data="item" @dragItem="dragItem" @dragItemEnd="dragItemEnd" @loaded="recordAppItems"></MenuItem>
         </ul>
       </div>
-      <div class="item_menu_content" v-if="currentList==='query'">
+      <div class="item_menu_content" v-if="currentList==='query'" @dragover="dragover" @drop="drop">
         <div class="item_menu_content_loading" v-if="!menuList_query.length"></div>
         <ul class="item_menu_ul" v-else>
-          <MenuItem v-for="item in menuList_query" key="item.id" :data="item"></MenuItem>
+          <MenuItem v-for="item in menuList_query" :key="item.id" :data="item" @dragItem="dragItem" @dragItemEnd="dragItemEnd" @loaded="recordAppItems"></MenuItem>
         </ul>
       </div>
-
 
     </div>
 
     <div class="item_action_area">
-      <div class="systemconfig_item_title">{{lp._uiConfig.defaultMenu}}</div>
+      <div class="systemconfig_item_title" :class="currentTitleDefalut">{{lp._uiConfig.defaultMenu}}</div>
       <div class="systemconfig_item_info">{{lp._uiConfig.defaultMenuInfo}}</div>
       <div class="item_button_area">
-        <button class="mainColor_bg">{{lp._uiConfig.saveMenu}}</button>
-        <button>{{lp._uiConfig.clearMenu}}</button>
-        <button>{{lp._uiConfig.loadMenu}}</button>
+        <button class="mainColor_bg" @click="saveMenuData('defaultMainMenuData')">{{lp._uiConfig.saveMenu}}</button>
+        <button v-if="!!defaultMenuData" @click="clearDefaultMenu">{{lp._uiConfig.clearMenu}}</button>
+        <button v-if="!!defaultMenuData && currentMenuType!='default'" @click="loadDefaultMenuData">{{lp._uiConfig.loadMenu}}</button>
       </div>
 
-      <div class="systemconfig_item_title">{{lp._uiConfig.forceMenu}}</div>
+      <div class="systemconfig_item_title" :class="currentTitleForce">{{lp._uiConfig.forceMenu}}</div>
       <div class="systemconfig_item_info">{{lp._uiConfig.forceMenuInfo}}</div>
       <div class="item_button_area">
-        <button class="mainColor_bg">{{lp._uiConfig.saveMenu}}</button>
-        <button>{{lp._uiConfig.clearMenu}}</button>
-        <button>{{lp._uiConfig.loadMenu}}</button>
+        <button class="mainColor_bg" @click="saveMenuData('forceMainMenuData')">{{lp._uiConfig.saveMenu}}</button>
+        <button v-if="!!forceMenuData" @click="clearForceMenu">{{lp._uiConfig.clearMenu}}</button>
+        <button v-if="!!forceMenuData && currentMenuType!='force'" @click="loadForceMenuData">{{lp._uiConfig.loadMenu}}</button>
       </div>
-
 
       <div class="systemconfig_item_title">{{lp._uiConfig.userMenu}}</div>
       <div class="systemconfig_item_info">{{lp._uiConfig.userMenuInfo}}</div>
       <div class="item_button_area">
-        <button>{{lp._uiConfig.clearUserMenu}}</button>
+        <button @click="clearUserMenu">{{lp._uiConfig.clearUserMenu}}</button>
       </div>
     </div>
   </div>
@@ -76,38 +74,33 @@
 
 <script setup>
 import {ref, computed, unref} from 'vue';
-import {lp, layout} from '@o2oa/component';
-import {getForceMenuData,
+import {o2, lp, layout, component} from '@o2oa/component';
+import {
+  getForceMenuData,
   getDefaultMenuData,
+  clearDefaultMenuData,
+  clearForceMenuData,
   loadComponents,
   loadProcessApplication,
   loadPortalApplication,
   loadInforApplication,
-  loadQueryApplication} from '@/util/acrions';
+  loadQueryApplication } from '@/util/acrions';
 import MenuItem from './MenuItem.vue'
 import {isOverlap} from '@/util/common';
 
 const menuConfigNode = ref();
 const defaultMenuData = ref();
 const forceMenuData = ref();
-const menuData = ref( layout.userLayout.menuData || {
-  "appList": [],
-  "processList": [],
-  "inforList": [],
-  "queryList": []
-});
+// const defaultLinkData = ref();
+// const forceLinkData = ref();
 
-let menuList_app = ref([]);
+const menuList_app = ref([]);
 const menuList_process = ref([]);
 const menuList_infor = ref([]);
 const menuList_query = ref([]);
 
-// const menuList_app = markRaw({value: []});
-// const menuList_process = {value: []};
-// const menuList_infor = {value: []};
-// const menuList_query = {value: []};
-
 const currentList = ref('app');
+const currentMenuType = ref('force');
 
 const computeHeight = computed(() => {
   if (menuConfigNode.value){
@@ -121,22 +114,123 @@ const computeHeight = computed(() => {
     }
   }
 });
+const currentTitleDefalut = computed(()=>{
+  return currentMenuType.value==='default' ? 'mainColor_color' : '';
+});
+const currentTitleForce = computed(()=>{
+  return currentMenuType.value==='force' ? 'mainColor_color' : '';
+});
 
-function test(){
-  let list = [];
-  list.push(menuList_app.value[0]);
-  list.push(menuList_app.value[2]);
-  list.push(menuList_app.value[1]);
-  list = list.concat(menuList_app.value.slice(3));
-
-  console.log(list);
-  menuList_app.value = list;
+let menuDataPromise = null;
+const getMenuData = ()=>{
+  if (menuDataPromise) return menuDataPromise;
+  menuDataPromise = Promise.all([getDefaultMenuData(), getForceMenuData()]).then((dataArr)=>{
+    defaultMenuData.value = dataArr[0];
+    forceMenuData.value = dataArr[1];
+    currentMenuType.value = (dataArr[1]) ? 'force' : 'default';
+    return dataArr[1] || dataArr[0];
+  });
+  return menuDataPromise;
 }
 
-async function loadMenuList(listType, menuType) {
-  currentList.value = listType;
+const reloadDefaultMenuData = ()=>{
+  menuDataPromise = null;
+  getMenuData().then(()=>{
+    loadMenuList('app', defaultMenuData.value);
+    currentMenuType.value = 'default';
+  });
+}
+const reloadForceMenuData = ()=>{
+  menuDataPromise = null;
+  getMenuData().then(()=> {
+    loadMenuList('app', forceMenuData.value);
+    currentMenuType.value = 'force';
+  });
+}
 
-  const getMenuData = (menuType === 'force') ? [getForceMenuData()] : [getDefaultMenuData()];
+const loadDefaultMenuData = ()=>{
+  loadMenuList('app', defaultMenuData.value);
+  currentMenuType.value = 'default';
+}
+const loadForceMenuData = ()=>{
+  loadMenuList('app', forceMenuData.value);
+  currentMenuType.value = 'force';
+}
+const clearDefaultMenu = (e)=>{
+  component.confirm("warn", e, lp._uiConfig.clearDefaultMenuDataTitle, lp._uiConfig.clearDefaultMenuData, 350, 170, (dlg)=>{
+    clearDefaultMenuData().then(()=>{
+      defaultMenuData.value = null;
+      component.notice(lp._uiConfig.clearDefaultMenuDataSuccess, "success");
+      if (currentMenuType.value==='force'){
+        reloadForceMenuData();
+      }else{
+        reloadDefaultMenuData();
+      }
+    });
+    dlg.close();
+  }, (dlg)=>{
+    dlg.close();
+  }, null, component.content);
+}
+const clearForceMenu = (e)=>{
+  component.confirm("warn", e, lp._uiConfig.clearForceMenuDataTitle, lp._uiConfig.clearForceMenuData, 350, 170, (dlg)=>{
+    clearForceMenuData().then(()=>{
+      forceMenuData.value = null;
+      component.notice(lp._uiConfig.clearForceMenuDataSuccess, "success");
+      if (currentMenuType.value==='force'){
+        reloadForceMenuData();
+      }else{
+        reloadDefaultMenuData();
+      }
+    });
+    dlg.close();
+  }, (dlg)=>{
+    dlg.close();
+  }, null, component.content);
+}
+
+const clearUserMenu = (e)=>{
+  component.confirm("warn", e, lp._uiConfig.clearUserMenuData, lp._uiConfig.clearUserMenuDataConfirm, 380, 120, (dlg)=>{
+    const id = o2.uuid();
+
+    o2.UD.putPublicData("clearCustomMenuDataFlag", {"id": id.toString()}, (dlg)=>{
+      component.notice(lp._uiConfig.clearForceMenuDataSuccess, "success");
+    });
+
+    dlg.close();
+  }, dlg=>dlg.close());
+}
+
+const retrieveMenuData = (type)=>{
+  const list = getCurrentMenuList(type);
+  return list.value.map((item)=>{
+    return (item.type==='group') ? item : {
+      id: item.id,
+      name: item.name,
+      type: item.type
+    }
+  });
+}
+const saveMenuData = (name)=>{
+  const menuData = {
+    "appList": retrieveMenuData('app'),
+    "processList": retrieveMenuData('process'),
+    "inforList": retrieveMenuData('infor'),
+    "queryList": retrieveMenuData('query'),
+  };
+  const info = (name === 'forceMainMenuData') ? lp._uiConfig.saveForceMenuDataSuccess : lp._uiConfig.saveDefaultMenuDataSuccess
+  o2.UD.putPublicData(name, menuData, ()=>{
+    component.notice(info, "success");
+    if (name === 'forceMainMenuData'){
+      reloadForceMenuData();
+    }else{
+      reloadDefaultMenuData();
+    }
+  });
+}
+
+const loadMenuList = async (listType, menuData)=>{
+  currentList.value = listType;
   const dataPromise = {
     appList: [loadComponents, loadPortalApplication],
     processList: [loadProcessApplication],
@@ -145,13 +239,17 @@ async function loadMenuList(listType, menuType) {
   }[listType+'List'].reduce((p, v)=>{
     p.push(v());
     return p;
-  }, getMenuData);
+  }, [menuData || getMenuData()]);
 
   const dataArr = await Promise.all(dataPromise);
-  const mData = dataArr.shift();
-  if (mData) menuData.value = mData;
+  const mData = dataArr.shift() || {
+    "appList": [],
+    "processList": [],
+    "inforList": [],
+    "queryList": []
+  };
   const olist = dataArr.flat();
-  const orderMenu = menuData.value[listType+'List'];
+  const orderMenu = mData[listType+'List'];
 
   const list = [];
   orderMenu.forEach((item)=>{
@@ -186,9 +284,8 @@ async function loadMenuList(listType, menuType) {
       menuList_query.value = list.concat(olist);
       break;
   }
-  console.log(menuList_app)
-  // menuList_app = unref(menuList_app);
 }
+
 
 loadMenuList('app');
 
@@ -202,9 +299,9 @@ const recordAppItems = (node)=>{
 
 
 let dragging;
-
+let overItem = null;
 function checkDargOverItem(rect){
-  var overItem = null;
+  overItem = null;
   menuItems.forEach(function(item){
     if (!item.node.isDragging){
       if (isOverlap(rect, item.rect)){
@@ -217,13 +314,27 @@ function checkDargOverItem(rect){
   });
   return overItem;
 }
-function checkDargPosition(rect){
+
+const getCurrentMenuList = (type)=>{
+  switch (type || currentList.value){
+    case 'app':
+      return menuList_app;
+    case 'process':
+      return menuList_process;
+    case 'infor':
+      return menuList_infor;
+    case 'query':
+      return menuList_query;
+  }
+}
+
+const checkDargPosition = (rect)=>{
   const p = {
     x: rect.x+rect.width/2,
     y: rect.y+rect.height/2
   }
-  for (let i = 0; i<menuItems.length; i++){
-    const item = menuItems[i];
+  for (const item of menuItems){
+    //const item = menuItems[i];
     if (!item.node.isDragging){
       if (p.y>=item.rect.y && p.y<=item.rect.y+item.rect.height){
         if (p.x<item.rect.x && p.x>item.rect.x-20){
@@ -239,28 +350,67 @@ function checkDargPosition(rect){
 
 function dragover(e){
   e.preventDefault();
-  const rect = {
-    x: e.clientX+dragging.offset.x+18,
-    y: e.clientY+dragging.offset.y+18,
-    width: dragging.size.x-36,
-    height: dragging.size.y-36,
-  }
-  const overItem = checkDargOverItem(rect);
-  if (!overItem){
-    checkDargPosition(rect)
+  e.stopPropagation();
+  if (dragging){
+    const rect = {
+      x: e.clientX+dragging.offset.x+18,
+      y: e.clientY+dragging.offset.y+18,
+      width: dragging.size.x-36,
+      height: dragging.size.y-36,
+    }
+    const overItem = checkDargOverItem(rect);
+    if (!overItem){
+      checkDargPosition(rect)
+    }
   }
 }
 function drop(e){
-  const nodeList = e.currentTarget.querySelectorAll('li');
-  const list = [];
-  nodeList.forEach((node)=>{
-    list.push(node.retrieve('data'));
-  });
-  console.log(list);
-  menuList_app.value = list;
+  e.preventDefault();
+  e.stopPropagation();
+  if (dragging){
+    const draggingData = dragging.node.retrieve('data');
+    const overItemData = (overItem) ? overItem.node.retrieve('data') : null;
+
+    const nodeList = e.currentTarget.querySelectorAll('li');
+    const list = [];
+    nodeList.forEach((node, i)=>{
+      const d = node.retrieve('data');
+      if (d===overItemData){
+        if (d.type==='group'){
+          d.itemDataList.push(draggingData);
+          list.push(d);
+        }else{
+          list.push({
+            id: o2.uuid(),
+            name: 'Group',
+            type: 'group',
+            visible: true,
+            isNew: true,
+            itemDataList: [d, draggingData]
+          });
+        }
+      }else{
+        if (!overItemData  || d!==draggingData) list.push(d);
+      }
+    });
+    if (overItem) overItem.maskNode.style.display='none';
+    getCurrentMenuList().value = list;
+  }
 }
-function dragItem(e){
+const dragItem = (e)=>{
   dragging = e;
+}
+const dragItemEnd = (e)=>{
+  dragging = null;
+}
+const ungroup = (e)=>{
+  const menuList = getCurrentMenuList();
+  menuList.value.push(e.item);
+  if (!e.group.itemDataList.length){
+    e.closeGroup().then(()=>{
+      menuList.value.splice(menuList.value.indexOf(e.group), 1);
+    });
+  }
 }
 
 </script>

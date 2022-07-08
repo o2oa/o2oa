@@ -79,15 +79,26 @@ async function deployWebResource(data) {
     return result.data;
 }
 function getDefaultMenuData(){
-    return new Promise((resolve, reject)=>{
+    return new Promise((resolve)=>{
         o2.UD.getPublicData("defaultMainMenuData", dData=>resolve(dData));
     });
 }
 function getForceMenuData(){
-    return new Promise((resolve, reject)=>{
+    return new Promise((resolve)=>{
         o2.UD.getPublicData("forceMainMenuData", dData=>resolve(dData));
     });
 }
+function clearDefaultMenuData(){
+    return new Promise((resolve)=>{
+        o2.UD.deletePublicData("defaultMainMenuData", dData=>resolve(dData));
+    });
+}
+function clearForceMenuData(){
+    return new Promise((resolve)=>{
+        o2.UD.deletePublicData("forceMainMenuData", dData=>resolve(dData));
+    });
+}
+
 async function loadProcessApplication() {
     const json = await o2.Actions.load("x_processplatform_assemble_surface").ApplicationAction.listWithPerson();
     return json.data;
@@ -119,6 +130,8 @@ export {
     deployWebResource,
     getDefaultMenuData,
     getForceMenuData,
+    clearDefaultMenuData,
+    clearForceMenuData,
     loadProcessApplication,
     loadPortalApplication,
     loadInforApplication,
