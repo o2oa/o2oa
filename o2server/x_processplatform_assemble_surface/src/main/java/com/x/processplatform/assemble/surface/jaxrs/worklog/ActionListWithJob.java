@@ -28,12 +28,12 @@ import com.x.processplatform.core.entity.content.WorkLog;
 
 class ActionListWithJob extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionListWithJob.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWithJob.class);
 
-	private final static String taskList_FIELDNAME = "taskList";
-	private final static String taskCompletedList_FIELDNAME = "taskCompletedList";
-	private final static String readList_FIELDNAME = "readList";
-	private final static String readCompletedList_FIELDNAME = "readCompletedList";
+	private static final String TASKLIST_FIELDNAME = "taskList";
+	private static final String TASKCOMPLETEDLIST_FIELDNAME = "taskCompletedList";
+	private static final String READLIST_FIELDNAME = "readList";
+	private static final String READCOMPLETEDLIST_FIELDNAME = "readCompletedList";
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String job) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
@@ -62,13 +62,13 @@ class ActionListWithJob extends BaseAction {
 		List<WoReadCompleted> readCompleteds = futureReadCompleteds.get();
 		List<Wo> wos = futureWorkLogs.get();
 		ListTools.groupStick(wos, tasks, WorkLog.FROMACTIVITYTOKEN_FIELDNAME, Task.activityToken_FIELDNAME,
-				taskList_FIELDNAME);
+				TASKLIST_FIELDNAME);
 		ListTools.groupStick(wos, taskCompleteds, WorkLog.FROMACTIVITYTOKEN_FIELDNAME,
-				TaskCompleted.activityToken_FIELDNAME, taskCompletedList_FIELDNAME);
+				TaskCompleted.activityToken_FIELDNAME, TASKCOMPLETEDLIST_FIELDNAME);
 		ListTools.groupStick(wos, reads, WorkLog.FROMACTIVITYTOKEN_FIELDNAME, Read.activityToken_FIELDNAME,
-				readList_FIELDNAME);
+				READLIST_FIELDNAME);
 		ListTools.groupStick(wos, readCompleteds, WorkLog.FROMACTIVITYTOKEN_FIELDNAME,
-				ReadCompleted.activityToken_FIELDNAME, readCompletedList_FIELDNAME);
+				ReadCompleted.activityToken_FIELDNAME, READCOMPLETEDLIST_FIELDNAME);
 		result.setData(wos);
 		return result;
 	}
@@ -80,7 +80,7 @@ class ActionListWithJob extends BaseAction {
 					.sorted(Comparator.comparing(Task::getStartTime, Comparator.nullsLast(Date::compareTo)))
 					.collect(Collectors.toList());
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 		return os;
 	}
@@ -92,7 +92,7 @@ class ActionListWithJob extends BaseAction {
 					.sorted(Comparator.comparing(TaskCompleted::getStartTime, Comparator.nullsLast(Date::compareTo)))
 					.collect(Collectors.toList());
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 		return os;
 	}
@@ -104,7 +104,7 @@ class ActionListWithJob extends BaseAction {
 					.sorted(Comparator.comparing(Read::getStartTime, Comparator.nullsLast(Date::compareTo)))
 					.collect(Collectors.toList());
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 		return os;
 	}
@@ -116,39 +116,50 @@ class ActionListWithJob extends BaseAction {
 					.sorted(Comparator.comparing(ReadCompleted::getStartTime, Comparator.nullsLast(Date::compareTo)))
 					.collect(Collectors.toList());
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 		return os;
 	}
 
 	private List<Wo> workLogs(String job) {
-		List<Wo> os = new ArrayList<>();
+		List<Wo> list = new ArrayList<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			os = emc.fetchEqual(WorkLog.class, Wo.copier, WorkLog.JOB_FIELDNAME, job);
-			return os.stream()
-					.sorted(Comparator.comparing(Wo::getFromTime, Comparator.nullsLast(Date::compareTo))
-							.thenComparing(Wo::getArrivedTime, Comparator.nullsLast(Date::compareTo)))
-					.collect(Collectors.toList());
+			List<WorkLog> os = emc.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, job);
+			list = os.stream().map(Wo.copier::copy).collect(Collectors.toList());
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
-		return os;
+		return list;
+
+//		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+//		os = emc.fetchEqual(WorkLog.class, Wo.copier, WorkLog.JOB_FIELDNAME, job);
+//			return os.stream()
+//					.sorted(Comparator.comparing(Wo::getFromTime, Comparator.nullsLast(Date::compareTo))
+//							.thenComparing(Wo::getArrivedTime, Comparator.nullsLast(Date::compareTo)))
+//					.collect(Collectors.toList());
+//		} catch (Exception e) {
+//			logger.error(e);
+//		}
+//		return os;
 	}
 
 	public static class Wo extends WorkLog {
 
 		private static final long serialVersionUID = -7666329770246726197L;
 
-		static WrapCopier<WorkLog, Wo> copier = WrapCopierFactory.wo(WorkLog.class, Wo.class,
-				ListTools.toList(WorkLog.id_FIELDNAME, WorkLog.FROMACTIVITY_FIELDNAME,
-						WorkLog.FROMACTIVITYTYPE_FIELDNAME, WorkLog.FROMACTIVITYNAME_FIELDNAME,
-						WorkLog.FROMACTIVITYALIAS_FIELDNAME, WorkLog.FROMACTIVITYTOKEN_FIELDNAME,
-						WorkLog.FROMTIME_FIELDNAME, WorkLog.ARRIVEDACTIVITY_FIELDNAME,
-						WorkLog.ARRIVEDACTIVITYTYPE_FIELDNAME, WorkLog.ARRIVEDACTIVITYNAME_FIELDNAME,
-						WorkLog.ARRIVEDACTIVITYALIAS_FIELDNAME, WorkLog.ARRIVEDACTIVITYTOKEN_FIELDNAME,
-						WorkLog.ARRIVEDTIME_FIELDNAME, WorkLog.ROUTENAME_FIELDNAME, WorkLog.CONNECTED_FIELDNAME,
-						WorkLog.SPLITTING_FIELDNAME, WorkLog.FROMGROUP_FIELDNAME, WorkLog.ARRIVEDGROUP_FIELDNAME,
-						WorkLog.FROMOPINIONGROUP_FIELDNAME, WorkLog.ARRIVEDOPINIONGROUP_FIELDNAME),
+//		static WrapCopier<WorkLog, Wo> copier = WrapCopierFactory.wo(WorkLog.class, Wo.class,
+//				ListTools.toList(WorkLog.id_FIELDNAME, WorkLog.FROMACTIVITY_FIELDNAME,
+//						WorkLog.FROMACTIVITYTYPE_FIELDNAME, WorkLog.FROMACTIVITYNAME_FIELDNAME,
+//						WorkLog.FROMACTIVITYALIAS_FIELDNAME, WorkLog.FROMACTIVITYTOKEN_FIELDNAME,
+//						WorkLog.FROMTIME_FIELDNAME, WorkLog.ARRIVEDACTIVITY_FIELDNAME,
+//						WorkLog.ARRIVEDACTIVITYTYPE_FIELDNAME, WorkLog.ARRIVEDACTIVITYNAME_FIELDNAME,
+//						WorkLog.ARRIVEDACTIVITYALIAS_FIELDNAME, WorkLog.ARRIVEDACTIVITYTOKEN_FIELDNAME,
+//						WorkLog.ARRIVEDTIME_FIELDNAME, WorkLog.ROUTENAME_FIELDNAME, WorkLog.CONNECTED_FIELDNAME,
+//						WorkLog.SPLITTING_FIELDNAME, WorkLog.FROMGROUP_FIELDNAME, WorkLog.ARRIVEDGROUP_FIELDNAME,
+//						WorkLog.FROMOPINIONGROUP_FIELDNAME, WorkLog.ARRIVEDOPINIONGROUP_FIELDNAME),
+//				JpaObject.FieldsInvisible);
+
+		static WrapCopier<WorkLog, Wo> copier = WrapCopierFactory.wo(WorkLog.class, Wo.class, null,
 				JpaObject.FieldsInvisible);
 
 		private List<WoTask> taskList = new ArrayList<>();
