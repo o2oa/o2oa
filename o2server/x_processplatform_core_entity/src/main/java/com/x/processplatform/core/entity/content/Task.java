@@ -65,7 +65,8 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 		this.id = id;
 	}
 
-	@FieldDescribe("数据库主键,自动生成.")
+	@FieldDescribe("待办标识.")
+	@Schema(description = "待办标识.")
 	@Id
 	@Column(length = length_id, name = ColumnNamePrefix + id_FIELDNAME)
 	private String id = createId();
@@ -122,7 +123,7 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 		}
 	}
 
-	/* 更新运行方法 */
+	// 更新运行方法
 
 	public Task() {
 		this.properties = new TaskProperties();
@@ -169,7 +170,6 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 		this.routeName = "";
 		this.opinion = "";
 		this.modified = false;
-		// this.viewed = false;
 		this.allowRapid = allowRapid;
 		this.copyProjectionFields(work);
 	}
@@ -494,13 +494,6 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 	@Column(name = ColumnNamePrefix + modified_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean modified;
-
-//	public static final String viewed_FIELDNAME = "viewed";
-//	@Schema(description = "是否查看过标志.")
-//	@FieldDescribe("是否查看过.")
-//	@Column(name = ColumnNamePrefix + viewed_FIELDNAME)
-//	@CheckPersist(allowEmpty = true)
-//	private Boolean viewed;
 
 	public static final String VIEWTIME_FIELDNAME = "viewTime";
 	@Schema(description = "最早查看时间.")

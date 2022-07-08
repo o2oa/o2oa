@@ -95,7 +95,7 @@ class ActionListPrevManual extends BaseAction {
 	}
 
 	private List<WorkLog> workLogs(Business business, String job) throws Exception {
-		return business.entityManagerContainer().listEqual(WorkLog.class, WorkLog.job_FIELDNAME, job);
+		return business.entityManagerContainer().listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, job);
 	}
 
 	public static class Wo extends TaskCompleted {

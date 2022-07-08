@@ -1,15 +1,5 @@
 package com.x.processplatform.service.processing.factory;
 
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import com.x.processplatform.core.entity.content.WorkCompleted;
-import com.x.processplatform.core.entity.content.WorkCompleted_;
 import com.x.processplatform.service.processing.AbstractFactory;
 import com.x.processplatform.service.processing.Business;
 

@@ -239,7 +239,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		return CompletableFuture.runAsync(() -> {
 			try {
 				List<WorkLog> os = business.entityManagerContainer()
-						.listEqual(WorkLog.class, WorkLog.job_FIELDNAME, job).stream()
+						.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, job).stream()
 						.sorted(Comparator.comparing(WorkLog::getCreateTime, Comparator.nullsLast(Date::compareTo)))
 						.collect(Collectors.toList());
 				snapProperties.setWorkLogList(os);
@@ -667,7 +667,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		return CompletableFuture.runAsync(() -> {
 			try {
 				business.entityManagerContainer().beginTransaction(WorkLog.class);
-				for (WorkLog o : business.entityManagerContainer().listEqual(WorkLog.class, WorkLog.job_FIELDNAME,
+				for (WorkLog o : business.entityManagerContainer().listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME,
 						job)) {
 					business.entityManagerContainer().remove(o);
 				}

@@ -98,7 +98,7 @@ class ActionRollback extends BaseAction {
 						throw new ExceptionSplittingNotRollback(workCompleted.getId(), workLog.getId());
 					}
 
-					List<WorkLog> workLogs = emc.listEqual(WorkLog.class, WorkLog.job_FIELDNAME, workLog.getJob());
+					List<WorkLog> workLogs = emc.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, workLog.getJob());
 
 					WorkLogTree workLogTree = new WorkLogTree(workLogs);
 

@@ -65,7 +65,7 @@ class ActionCreateWithWorkCompleted extends BaseAction {
 						throw new ExceptionEntityNotExist(workCompletedId, WorkCompleted.class);
 					}
 					/* 取workLog补充WorkCompleted不足字段 */
-					List<WorkLog> workLogs = emc.listEqual(WorkLog.class, WorkLog.job_FIELDNAME,
+					List<WorkLog> workLogs = emc.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME,
 							workCompleted.getJob());
 					workLogs = workLogs.stream()
 							.sorted(Comparator.comparing(WorkLog::getFromTime, Comparator.nullsLast(Date::compareTo))

@@ -1,6 +1,8 @@
 package com.x.processplatform.core.entity.content;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,7 +12,9 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.PostLoad;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.apache.openjpa.persistence.Persistent;
@@ -27,6 +31,8 @@ import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.processplatform.core.entity.PersistenceProperties;
 import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.ActivityType;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @Entity
 @ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
@@ -49,17 +55,23 @@ public class WorkLog extends SliceJpaObject {
 		this.id = id;
 	}
 
-	@FieldDescribe("数据库主键,自动生成.")
+	@FieldDescribe("工作日志标识.")
+	@Schema(description = "工作日志标识.")
 	@Id
 	@Column(length = length_id, name = ColumnNamePrefix + id_FIELDNAME)
 	private String id = createId();
 
-	/* 以上为 JpaObject 默认字段 */
+	// 以上为 JpaObject 默认字段
 
 	public void onPersist() throws Exception {
+		// nothing
 	}
 
-	/* 更新运行方法 */
+	@PostLoad
+	public void postLoad() {
+		this.splitValueList = this.getProperties().getSplitValueList();
+		this.splitTokenList = this.getProperties().getSplitTokenList();
+	}
 
 	public static WorkLog createFromWork(Work work, Activity activity, String token, Date date) throws Exception {
 		WorkLog o = new WorkLog();
@@ -80,6 +92,7 @@ public class WorkLog extends SliceJpaObject {
 		o.setSplitToken(work.getSplitToken());
 		o.setSplitValue(work.getSplitValue());
 		o.getProperties().setSplitTokenList(work.getSplitTokenList());
+		o.getProperties().setSplitValueList(work.getSplitValueList());
 		o.setFromTime(date);
 		o.setCompleted(false);
 		o.setConnected(false);
@@ -90,10 +103,38 @@ public class WorkLog extends SliceJpaObject {
 		this.properties = new WorkLogProperties();
 	}
 
-	public WorkLog(WorkLog workLog) throws Exception {
+	public WorkLog(WorkLog workLog) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		this();
 		WorkLog copy = XGsonBuilder.convert(workLog, WorkLog.class);
 		copy.copyTo(this, JpaObject.id_FIELDNAME);
+	}
+
+	@Transient
+	@FieldDescribe("拆分值列表.")
+	@Schema(description = "拆分值列表.")
+	private List<String> splitValueList;
+
+	public List<String> getSplitValueList() {
+		return this.splitValueList;
+	}
+
+	public void setSplitValueList(List<String> splitValueList) {
+		this.splitValueList = splitValueList;
+		this.getProperties().setSplitValueList(splitValueList);
+	}
+
+	@Transient
+	@FieldDescribe("拆分标识列表.")
+	@Schema(description = "拆分标识列表.")
+	private List<String> splitTokenList;
+
+	public List<String> getSplitTokenList() {
+		return this.splitTokenList;
+	}
+
+	public void setSplitTokenList(List<String> splitTokenList) {
+		this.splitTokenList = splitTokenList;
+		this.getProperties().setSplitTokenList(splitTokenList);
 	}
 
 	public WorkLogProperties getProperties() {
@@ -107,262 +148,249 @@ public class WorkLog extends SliceJpaObject {
 		this.properties = properties;
 	}
 
-	public static final String job_FIELDNAME = "job";
-	@FieldDescribe("任务标识")
-	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + job_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + job_FIELDNAME)
+	public static final String JOB_FIELDNAME = "job";
+	@FieldDescribe("任务标识.")
+	@Schema(description = "任务标识.")
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + JOB_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + JOB_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String job;
 
-	public static final String work_FIELDNAME = "work";
-	@FieldDescribe("工作")
-	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + work_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + work_FIELDNAME)
+	public static final String WORK_FIELDNAME = "work";
+	@FieldDescribe("工作标识.")
+	@Schema(description = "工作标识.")
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + WORK_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + WORK_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String work;
 
-	public static final String workCompleted_FIELDNAME = "workCompleted";
-	@FieldDescribe("已完成工作")
-	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + workCompleted_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + workCompleted_FIELDNAME)
+	public static final String WORKCOMPLETED_FIELDNAME = "workCompleted";
+	@FieldDescribe("已完成工作标识.")
+	@Schema(description = "已完成工作标识.")
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + WORKCOMPLETED_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + WORKCOMPLETED_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String workCompleted;
 
-	public static final String completed_FIELDNAME = "completed";
+	public static final String COMPLETED_FIELDNAME = "completed";
+	// 必填
 	@FieldDescribe("工作是否已经完成.")
-	/* 必填值 */
-	@Column(name = ColumnNamePrefix + completed_FIELDNAME)
+	@Schema(description = "工作是否已经完成.")
+	@Column(name = ColumnNamePrefix + COMPLETED_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Boolean completed;
 
-	public static final String fromActivity_FIELDNAME = "fromActivity";
-	@FieldDescribe("开始活动Id")
-	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + fromActivity_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + fromActivity_FIELDNAME)
+	public static final String FROMACTIVITY_FIELDNAME = "fromActivity";
+	@FieldDescribe("开始活动标识.")
+	@Schema(description = "开始活动标识.")
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + FROMACTIVITY_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + FROMACTIVITY_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String fromActivity;
 
-	public static final String fromActivityType_FIELDNAME = "fromActivityType";
+	public static final String FROMACTIVITYTYPE_FIELDNAME = "fromActivityType";
 	@FieldDescribe("开始活动类型.")
-	@Index(name = TABLE + IndexNameMiddle + fromActivityType_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + FROMACTIVITYTYPE_FIELDNAME)
 	@Enumerated(EnumType.STRING)
-	@Column(length = ActivityType.length, name = ColumnNamePrefix + fromActivityType_FIELDNAME)
+	@Column(length = ActivityType.length, name = ColumnNamePrefix + FROMACTIVITYTYPE_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private ActivityType fromActivityType;
 
-	public static final String fromActivityName_FIELDNAME = "fromActivityName";
+	public static final String FROMACTIVITYNAME_FIELDNAME = "fromActivityName";
 	@FieldDescribe("开始活动名称")
 	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
-			+ fromActivityName_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + fromActivityName_FIELDNAME)
+			+ FROMACTIVITYNAME_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + FROMACTIVITYNAME_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String fromActivityName;
 
-	public static final String fromActivityAlias_FIELDNAME = "fromActivityAlias";
+	public static final String FROMACTIVITYALIAS_FIELDNAME = "fromActivityAlias";
 	@FieldDescribe("开始活动别名")
-	@Column(length = length_255B, name = ColumnNamePrefix + fromActivityAlias_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + fromActivityAlias_FIELDNAME)
+	@Column(length = length_255B, name = ColumnNamePrefix + FROMACTIVITYALIAS_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + FROMACTIVITYALIAS_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String fromActivityAlias;
 
-	public static final String fromActivityToken_FIELDNAME = "fromActivityToken";
+	public static final String FROMACTIVITYTOKEN_FIELDNAME = "fromActivityToken";
 	@FieldDescribe("开始节点Token")
-	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + fromActivityToken_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + fromActivityToken_FIELDNAME)
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + FROMACTIVITYTOKEN_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + FROMACTIVITYTOKEN_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String fromActivityToken;
 
-	public static final String fromGroup_FIELDNAME = "fromGroup";
+	public static final String FROMGROUP_FIELDNAME = "fromGroup";
 	@FieldDescribe("开始分组")
 	@CheckPersist(allowEmpty = true)
-	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + fromGroup_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + FROMGROUP_FIELDNAME)
 	private String fromGroup;
 
-	public static final String fromOpinionGroup_FIELDNAME = "fromOpinionGroup";
+	public static final String FROMOPINIONGROUP_FIELDNAME = "fromOpinionGroup";
 	@FieldDescribe("开始意见分组")
 	@CheckPersist(allowEmpty = true)
-	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + fromOpinionGroup_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + FROMOPINIONGROUP_FIELDNAME)
 	private String fromOpinionGroup;
 
-	public static final String fromTime_FIELDNAME = "fromTime";
+	public static final String FROMTIME_FIELDNAME = "fromTime";
 	@FieldDescribe("开始时间.")
-	@Column(name = ColumnNamePrefix + fromTime_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + fromTime_FIELDNAME)
+	@Column(name = ColumnNamePrefix + FROMTIME_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + FROMTIME_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Date fromTime;
 
-	public static final String arrivedActivity_FIELDNAME = "arrivedActivity";
+	public static final String ARRIVEDACTIVITY_FIELDNAME = "arrivedActivity";
 	@FieldDescribe("结束活动Id，可能为空，如果是未Connected的流程记录")
-	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + arrivedActivity_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + arrivedActivity_FIELDNAME)
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + ARRIVEDACTIVITY_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + ARRIVEDACTIVITY_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String arrivedActivity;
 
-	public static final String arrivedActivityType_FIELDNAME = "arrivedActivityType";
+	public static final String ARRIVEDACTIVITYTYPE_FIELDNAME = "arrivedActivityType";
 	@FieldDescribe("结束活动类型.")
-	@Column(length = ActivityType.length, name = ColumnNamePrefix + arrivedActivityType_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + arrivedActivityType_FIELDNAME)
+	@Column(length = ActivityType.length, name = ColumnNamePrefix + ARRIVEDACTIVITYTYPE_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + ARRIVEDACTIVITYTYPE_FIELDNAME)
 	@Enumerated(EnumType.STRING)
 	@CheckPersist(allowEmpty = true)
 	private ActivityType arrivedActivityType;
 
-	public static final String arrivedActivityName_FIELDNAME = "arrivedActivityName";
+	public static final String ARRIVEDACTIVITYNAME_FIELDNAME = "arrivedActivityName";
 	@FieldDescribe("结束活动名称.")
 	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
-			+ arrivedActivityName_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + arrivedActivityName_FIELDNAME)
+			+ ARRIVEDACTIVITYNAME_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + ARRIVEDACTIVITYNAME_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String arrivedActivityName;
 
-	public static final String arrivedActivityAlias_FIELDNAME = "arrivedActivityAlias";
+	public static final String ARRIVEDACTIVITYALIAS_FIELDNAME = "arrivedActivityAlias";
 	@FieldDescribe("结束活动名称.")
-	@Column(length = length_255B, name = ColumnNamePrefix + arrivedActivityAlias_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + arrivedActivityAlias_FIELDNAME)
+	@Column(length = length_255B, name = ColumnNamePrefix + ARRIVEDACTIVITYALIAS_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + ARRIVEDACTIVITYALIAS_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String arrivedActivityAlias;
 
-	public static final String arrivedActivityToken_FIELDNAME = "arrivedActivityToken";
+	public static final String ARRIVEDACTIVITYTOKEN_FIELDNAME = "arrivedActivityToken";
 	@FieldDescribe("结束活动Token.")
-	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + arrivedActivityToken_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + arrivedActivityToken_FIELDNAME)
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + ARRIVEDACTIVITYTOKEN_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + ARRIVEDACTIVITYTOKEN_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String arrivedActivityToken;
 
-	public static final String arrivedGroup_FIELDNAME = "arrivedGroup";
+	public static final String ARRIVEDGROUP_FIELDNAME = "arrivedGroup";
 	@FieldDescribe("到达分组")
 	@CheckPersist(allowEmpty = true)
-	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + arrivedGroup_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + ARRIVEDGROUP_FIELDNAME)
 	private String arrivedGroup;
 
-	public static final String arrivedOpinionGroup_FIELDNAME = "arrivedOpinionGroup";
+	public static final String ARRIVEDOPINIONGROUP_FIELDNAME = "arrivedOpinionGroup";
 	@FieldDescribe("到达意见分组")
 	@CheckPersist(allowEmpty = true)
-	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + arrivedOpinionGroup_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + ARRIVEDOPINIONGROUP_FIELDNAME)
 	private String arrivedOpinionGroup;
 
-	public static final String arrivedTime_FIELDNAME = "arrivedTime";
+	public static final String ARRIVEDTIME_FIELDNAME = "arrivedTime";
 	@FieldDescribe("完成时间.")
-	@Index(name = TABLE + IndexNameMiddle + arrivedTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	@Column(name = ColumnNamePrefix + arrivedTime_FIELDNAME)
+	@Column(name = ColumnNamePrefix + ARRIVEDTIME_FIELDNAME)
 	private Date arrivedTime;
 
-	public static final String application_FIELDNAME = "application";
+	public static final String APPLICATION_FIELDNAME = "application";
 	@FieldDescribe("应用.")
-	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + application_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + application_FIELDNAME)
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + APPLICATION_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String application;
 
-	public static final String applicationName_FIELDNAME = "applicationName";
+	public static final String APPLICATIONNAME_FIELDNAME = "applicationName";
 	@FieldDescribe("应用名称.")
 	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
-			+ applicationName_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + applicationName_FIELDNAME)
+			+ APPLICATIONNAME_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String applicationName;
 
-	public static final String applicationAlias_FIELDNAME = "applicationAlias";
+	public static final String APPLICATIONALIAS_FIELDNAME = "applicationAlias";
 	@FieldDescribe("应用别名.")
 	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
-			+ applicationAlias_FIELDNAME)
+			+ APPLICATIONALIAS_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String applicationAlias;
 
-	public static final String process_FIELDNAME = "process";
+	public static final String PROCESS_FIELDNAME = "process";
 	@FieldDescribe("流程ID.")
-	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + process_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + process_FIELDNAME)
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + PROCESS_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String process;
 
-	public static final String processName_FIELDNAME = "processName";
+	public static final String PROCESSNAME_FIELDNAME = "processName";
 	@FieldDescribe("流程名称.")
 	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
-			+ processName_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + processName_FIELDNAME)
+			+ PROCESSNAME_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String processName;
 
-	public static final String processAlias_FIELDNAME = "processAlias";
+	public static final String PROCESSALIAS_FIELDNAME = "processAlias";
 	@FieldDescribe("流程别名.")
 	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
-			+ processAlias_FIELDNAME)
+			+ PROCESSALIAS_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String processAlias;
 
-	public static final String route_FIELDNAME = "route";
+	public static final String ROUTE_FIELDNAME = "route";
 	@FieldDescribe("到达节点使用的route ID.")
-	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + route_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + route_FIELDNAME)
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + ROUTE_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String route;
 
-	public static final String routeName_FIELDNAME = "routeName";
+	public static final String ROUTENAME_FIELDNAME = "routeName";
 	@FieldDescribe("到达节点使用Route Name.")
 	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
-			+ routeName_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + routeName_FIELDNAME)
+			+ ROUTENAME_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + ROUTENAME_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String routeName;
 
-	public static final String connected_FIELDNAME = "connected";
+	public static final String CONNECTED_FIELDNAME = "connected";
 	@FieldDescribe("是否已经完整填写了From和Arrived.")
-	@Column(name = ColumnNamePrefix + connected_FIELDNAME)
+	@Column(name = ColumnNamePrefix + CONNECTED_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Boolean connected;
 
-	public static final String duration_FIELDNAME = "duration";
+	public static final String DURATION_FIELDNAME = "duration";
 	@FieldDescribe("工作时长(分钟数).")
 	@CheckPersist(allowEmpty = true)
-	@Index(name = TABLE + IndexNameMiddle + duration_FIELDNAME)
-	@Column(name = ColumnNamePrefix + duration_FIELDNAME)
+	@Column(name = ColumnNamePrefix + DURATION_FIELDNAME)
 	private Long duration;
 
-	/** 不需要索引 */
-	public static final String splitting_FIELDNAME = "splitting";
+	// 不需要索引
+	public static final String SPLITTING_FIELDNAME = "splitting";
 	@FieldDescribe("是否是拆分中的工作,用于回溯时候将值改回去。")
-	@Column(name = ColumnNamePrefix + splitting_FIELDNAME)
+	@Column(name = ColumnNamePrefix + SPLITTING_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Boolean splitting;
 
-	/** 不需要索引 */
-	public static final String splitToken_FIELDNAME = "splitToken";
+	// 不需要索引
+	public static final String SPLITTOKEN_FIELDNAME = "splitToken";
 	@FieldDescribe("拆分工作令牌,用于回溯时候将值改回去。")
-	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + splitToken_FIELDNAME)
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + SPLITTOKEN_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String splitToken;
 
-	/** 不需要索引 */
-	public static final String splitValue_FIELDNAME = "splitValue";
+	// 不需要索引
+	public static final String SPLITVALUE_FIELDNAME = "splitValue";
 	@FieldDescribe("拆分值,用于回溯时候将值改回去。")
-	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + splitValue_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + SPLITVALUE_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String splitValue;
 
-	public static final String splitWork_FIELDNAME = "splitWork";
+	public static final String SPLITWORK_FIELDNAME = "splitWork";
 	@FieldDescribe("拆分自工作")
-	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + splitWork_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + splitWork_FIELDNAME)
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + SPLITWORK_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + SPLITWORK_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String splitWork;
 
-//	/** 不需要索引 */
-//	public static final String splitTokenList_FIELDNAME = "splitTokenList";
-//	@FieldDescribe("拆分工作产生的Token")
-//	@PersistentCollection(fetch = FetchType.EAGER)
-//	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-//	@ContainerTable(name = TABLE + ContainerTableNameMiddle + splitTokenList_FIELDNAME, joinIndex = @Index(name = TABLE
-//			+ IndexNameMiddle + splitTokenList_FIELDNAME + JoinIndexNameSuffix))
-//	@ElementColumn(length = JpaObject.length_id, name = ColumnNamePrefix + splitTokenList_FIELDNAME)
-//	@CheckPersist(allowEmpty = true)
-//	private List<String> splitTokenList;
-
-	public static final String properties_FIELDNAME = "properties";
+	public static final String PROPERTIES_FIELDNAME = "properties";
 	@FieldDescribe("属性对象存储字段.")
 	@Persistent(fetch = FetchType.EAGER)
 	@Strategy(JsonPropertiesValueHandler)
-	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + properties_FIELDNAME)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + PROPERTIES_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private WorkLogProperties properties;
 
@@ -566,14 +594,6 @@ public class WorkLog extends SliceJpaObject {
 		this.splitValue = splitValue;
 	}
 
-//	public List<String> getSplitTokenList() {
-//		return splitTokenList;
-//	}
-//
-//	public void setSplitTokenList(List<String> splitTokenList) {
-//		this.splitTokenList = splitTokenList;
-//	}
-
 	public String getApplicationAlias() {
 		return applicationAlias;
 	}
@@ -647,7 +667,7 @@ public class WorkLog extends SliceJpaObject {
 	}
 
 	public static String getArrivedopiniongroupFieldname() {
-		return arrivedOpinionGroup_FIELDNAME;
+		return ARRIVEDOPINIONGROUP_FIELDNAME;
 	}
 
 }

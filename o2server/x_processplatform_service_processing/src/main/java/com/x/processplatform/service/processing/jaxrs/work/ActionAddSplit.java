@@ -80,7 +80,7 @@ class ActionAddSplit extends BaseAction {
 
 					result.setData(wos);
 
-					List<WorkLog> workLogs = emc.listEqual(WorkLog.class, WorkLog.job_FIELDNAME, work.getJob());
+					List<WorkLog> workLogs = emc.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, work.getJob());
 
 					WorkLogTree tree = new WorkLogTree(workLogs);
 

@@ -165,8 +165,8 @@ class ActionProcessing extends BaseAction {
 		// 获取当前环节已经完成的待办
 		this.taskCompleteds = emc.listEqual(TaskCompleted.class, TaskCompleted.activityToken_FIELDNAME,
 				task.getActivityToken());
-		this.workLog = emc.firstEqualAndEqual(WorkLog.class, WorkLog.job_FIELDNAME, task.getJob(),
-				WorkLog.fromActivityToken_FIELDNAME, task.getActivityToken());
+		this.workLog = emc.firstEqualAndEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, task.getJob(),
+				WorkLog.FROMACTIVITYTOKEN_FIELDNAME, task.getActivityToken());
 
 		if (null == workLog) {
 			throw new ExceptionEntityNotExist(WorkLog.class);

@@ -69,8 +69,8 @@ class V2Retract extends BaseAction {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					Business business = new Business(emc);
 					work = getWork(business, id);
-					List<WorkLog> workLogs = emc.listEqual(WorkLog.class, WorkLog.job_FIELDNAME, work.getJob());
-					tree = new WorkLogTree(emc.listEqual(WorkLog.class, WorkLog.job_FIELDNAME, work.getJob()));
+					List<WorkLog> workLogs = emc.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, work.getJob());
+					tree = new WorkLogTree(emc.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, work.getJob()));
 					workLog = getTargetWorkLog(workLogs, wi.getWorkLog());
 					taskCompleted = getTaskCompleted(business, wi.getTaskCompleted());
 					Node workLogNode = tree.find(workLog);
@@ -261,8 +261,8 @@ class V2Retract extends BaseAction {
 	}
 
 	private void deleteWorkLogs(Business business, String job, List<String> activityTokens) throws Exception {
-		List<WorkLog> os = business.entityManagerContainer().listEqualAndIn(WorkLog.class, WorkLog.job_FIELDNAME, job,
-				WorkLog.fromActivityToken_FIELDNAME, activityTokens);
+		List<WorkLog> os = business.entityManagerContainer().listEqualAndIn(WorkLog.class, WorkLog.JOB_FIELDNAME, job,
+				WorkLog.FROMACTIVITYTOKEN_FIELDNAME, activityTokens);
 		for (WorkLog o : os) {
 			business.entityManagerContainer().remove(o, CheckRemoveType.all);
 		}

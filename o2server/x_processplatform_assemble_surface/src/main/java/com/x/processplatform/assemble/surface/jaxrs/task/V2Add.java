@@ -131,8 +131,8 @@ public class V2Add extends BaseAction {
 			this.wi = this.convertToWrapIn(jsonElement, Wi.class);
 			this.initFilterOptionIdentities(business, wi, task.getWork());
 			this.initCheckOptionIdentities(wi);
-			this.workLog = emc.firstEqualAndEqual(WorkLog.class, WorkLog.job_FIELDNAME, task.getJob(),
-					WorkLog.fromActivityToken_FIELDNAME, task.getActivityToken());
+			this.workLog = emc.firstEqualAndEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, task.getJob(),
+					WorkLog.FROMACTIVITYTOKEN_FIELDNAME, task.getActivityToken());
 			if (null == workLog) {
 				throw new ExceptionEntityNotExist(WorkLog.class);
 			}

@@ -11,14 +11,24 @@ import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.File;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionListWithApplication extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWithApplication.class);
+
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String applicationFlag) throws Exception {
+
+		LOGGER.debug("execute:{}, flag:{}, applicationFlag:{}.", effectivePerson::getDistinguishedName,
+				() -> applicationFlag);
+
 		List<Wo> wos = new ArrayList<>();
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -34,6 +44,7 @@ class ActionListWithApplication extends BaseAction {
 		return result;
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.file.ActionListWithApplication$Wo")
 	public static class Wo extends File {
 
 		private static final long serialVersionUID = 3121411589636528551L;

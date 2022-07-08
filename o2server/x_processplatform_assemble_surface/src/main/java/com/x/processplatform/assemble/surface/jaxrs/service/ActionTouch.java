@@ -50,8 +50,8 @@ class ActionTouch extends BaseAction {
 			if (!Objects.equals(ActivityType.service, work.getActivityType())) {
 				throw new ExceptionActivityNotService(work.getId());
 			}
-			workLog = emc.firstEqualAndEqual(WorkLog.class, WorkLog.job_FIELDNAME, work.getJob(),
-					WorkLog.fromActivityToken_FIELDNAME, work.getActivityToken());
+			workLog = emc.firstEqualAndEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, work.getJob(),
+					WorkLog.FROMACTIVITYTOKEN_FIELDNAME, work.getActivityToken());
 			if (null == workLog) {
 				throw new ExceptionWorkLogWithActivityTokenNotExist(work.getActivityToken());
 			}

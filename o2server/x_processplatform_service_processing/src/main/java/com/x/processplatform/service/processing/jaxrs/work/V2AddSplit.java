@@ -71,7 +71,7 @@ class V2AddSplit extends BaseAction {
 						throw new ExceptionEmptySplitValue(work.getId());
 					}
 
-					List<WorkLog> workLogs = emc.listEqual(WorkLog.class, WorkLog.job_FIELDNAME, work.getJob());
+					List<WorkLog> workLogs = emc.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, work.getJob());
 
 					WorkLogTree tree = new WorkLogTree(workLogs);
 
