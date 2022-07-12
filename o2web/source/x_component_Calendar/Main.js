@@ -172,8 +172,14 @@ MWF.xApplication.Calendar.Main = new Class({
             styles : this.css.newCalendarNode,
             text : this.lp.createNewCalendar,
             events : {
-                mouseover : function( ev ){ ev.target.setStyles( this.css.newCalendarNode_over ); }.bind(this),
-                mouseout : function( ev ){ ev.target.setStyles( this.css.newCalendarNode ); }.bind(this),
+                mouseover : function( ev ){
+                    ev.target.setStyles( this.css.newCalendarNode_over );
+                    ev.target.addClass("mainColor_color")
+                }.bind(this),
+                mouseout : function( ev ){
+                    ev.target.setStyles( this.css.newCalendarNode );
+                    ev.target.removeClass("mainColor_color");
+                }.bind(this),
                 click : function(){ this.addCalendar() }.bind(this)
             }
         }).inject( this.titleContentNode );
@@ -886,10 +892,12 @@ MWF.xApplication.Calendar.NaviItem = new Class({
         this.node.addEvents({
             "mouseover": function(){
                 this.setStyles(_self.css.naviItemNode_over);
+                this.addClass("mainColor_color");
                 _self.actionNode.fade("in");
             },
             "mouseout": function(){
                 this.setStyles( _self.css.naviItemNode );
+                this.addClass("mainColor_color");
                 _self.actionNode.fade("out");
             },
             "click": function (el) {
