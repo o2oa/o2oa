@@ -188,8 +188,14 @@ MWFCalendarDayView.Calendar = new Class({
             "click": function(){this.changeDayNext();}.bind(this)
         });
         this.titleTextNode.addEvents({
-            "mouseover": function(){this.titleTextNode.setStyles(this.css.calendarTitleTextNode_over);}.bind(this),
-            "mouseout": function(){this.titleTextNode.setStyles(this.css.calendarTitleTextNode);}.bind(this),
+            "mouseover": function(){
+                this.titleTextNode.setStyles(this.css.calendarTitleTextNode_over);
+                this.titleTextNode.addClass("mainColor_color");
+            }.bind(this),
+            "mouseout": function(){
+                this.titleTextNode.setStyles(this.css.calendarTitleTextNode);
+                this.titleTextNode.removeClass("mainColor_color");
+            }.bind(this),
             "mousedown": function(){this.titleTextNode.setStyles(this.css.calendarTitleTextNode_down);}.bind(this),
             "mouseup": function(){this.titleTextNode.setStyles(this.css.calendarTitleTextNode_over);}.bind(this)
             //"click": function(){this.changeDaySelect();}.bind(this)
@@ -218,6 +224,7 @@ MWFCalendarDayView.Calendar = new Class({
                 "style":"meeting_blue",
                 "target": this.node,
                 "baseDate" : this.date,
+                "todayClass": "mainColor_bg",
                 "onQueryComplate": function(e, dv, date){
                     var selectedDate = new Date.parse(dv);
                     this.changeDayTo(selectedDate);

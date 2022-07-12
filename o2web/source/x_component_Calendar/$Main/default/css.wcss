@@ -109,11 +109,12 @@
     "naviItemActionNode" : {
         "height" : "16px",
         "width" : "16px",
+        "border-radius": "16px",
         "margin-top" : "7px",
         "margin-right" : "6px",
         "float" : "right",
         "opacity" : "0",
-        "background": "url(../x_component_Calendar/$Main/default/icon/more_over.png) no-repeat 0px 0px"
+        "background": "url(../x_component_Calendar/$Main/default/icon/more_over2.png) no-repeat 0px 0px #3C76B7"
     },
     "naviItemTextNode" : {
         "word-break":"break-all",

@@ -312,6 +312,7 @@ MWF.xApplication.Meeting.DayView.Day = new Class({
             MWF.require("MWF.widget.Calendar", function(){
                 this.calendar = new MWF.widget.Calendar(this.titleTextNode, {
                     "style":"meeting_blue",
+                    "todayClass": "mainColor_bg",
                     "target": this.node,
                     "baseDate" : this.date,
                     "onQueryComplate": function(e, dv, date){

@@ -149,8 +149,14 @@ MWF.xApplication.Calendar.ListView = new Class({
             "click": function(){this.changeMonthNext();}.bind(this)
         });
         this.titleTextNode.addEvents({
-            "mouseover": function(){this.titleTextNode.setStyles(this.css.calendarTitleTextNode_over);}.bind(this),
-            "mouseout": function(){this.titleTextNode.setStyles(this.css.calendarTitleTextNode);}.bind(this),
+            "mouseover": function(){
+                this.titleTextNode.setStyles(this.css.calendarTitleTextNode_over);
+                this.titleTextNode.addClass("mainColor_color");
+            }.bind(this),
+            "mouseout": function(){
+                this.titleTextNode.setStyles(this.css.calendarTitleTextNode);
+                this.titleTextNode.removeClass("mainColor_color");
+            }.bind(this),
             "mousedown": function(){this.titleTextNode.setStyles(this.css.calendarTitleTextNode_down);}.bind(this),
             "mouseup": function(){this.titleTextNode.setStyles(this.css.calendarTitleTextNode_over);}.bind(this),
             "click": function(){this.changeMonthSelect();}.bind(this)

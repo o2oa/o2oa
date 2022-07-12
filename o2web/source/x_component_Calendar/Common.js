@@ -24,6 +24,8 @@ MWFCalendar.EventForm = new Class({
     Implements: [Options, Events],
     options: {
         "style": "meeting",
+        "topClass": "mainColor_bg",
+        "okClass": "mainColor_bg",
         "width": "800",
         "height": "475",
         "hasTop": true,
@@ -731,17 +733,17 @@ MWFCalendar.EventForm = new Class({
                 hasColon : true,
                 itemTemplate: {
                     moreInfor : {
-                        type : "a", value : this.lp.editMore, event : {
+                        type : "a", value : this.lp.editMore, clazz : "mainColor_color", event : {
                             click : function(){ this.openMoreInfor() }.bind(this)
                         }, disable : this.options.isFull
                     },
-                    saveAction : { type : "button", className : "inputOkButton", value : this.lp.save, event : {
+                    saveAction : { type : "button", className : "inputOkButton", clazz : "mainColor_bg", value : this.lp.save, event : {
                         click : function(){ this.save();}.bind(this)
                     } },
                     removeAction : { type : "button", className : "inputCancelButton", value : this.lp.cancelEvent , event : {
                         click : function( item, ev ){ this.cancelEvent(ev); }.bind(this)
                     } },
-                    editAction : { type : "button", className : "inputOkButton", value : this.lp.editEvent , event : {
+                    editAction : { type : "button", className : "inputOkButton", clazz : "mainColor_bg", value : this.lp.editEvent , event : {
                         click : function(){ this.editEvent(); }.bind(this)
                     } },
                     cancelAction : { type : "button", className : "inputCancelButton", value : this.lp.close , event : {
@@ -1070,6 +1072,8 @@ MWFCalendar.CalendarForm = new Class({
     Implements: [Options, Events],
     options: {
         "style": "meeting",
+        "topClass": "mainColor_bg",
+        "okClass": "mainColor_bg",
         "width": "800",
         "height": "500",
         "hasTop": true,
@@ -1240,13 +1244,13 @@ MWFCalendar.CalendarForm = new Class({
                 style : "meeting",
                 hasColon : true,
                 itemTemplate: {
-                    saveAction : { type : "button", className : "inputOkButton", value : this.lp.save, event : {
+                    saveAction : { type : "button", className : "inputOkButton", clazz : "mainColor_bg", value : this.lp.save, event : {
                         click : function(){ this.ok();}.bind(this)
                     } },
                     removeAction : { type : "button", className : "inputCancelButton", value : this.lp.deleteCalendar , event : {
                         click : function( item, ev ){ this.deleteCalendar(ev); }.bind(this)
                     } },
-                    editAction : { type : "button", className : "inputOkButton", value : this.lp.editCalendar , event : {
+                    editAction : { type : "button", className : "inputOkButton", clazz : "mainColor_bg", value : this.lp.editCalendar , event : {
                         click : function(){ this.editCalendar(); }.bind(this)
                     } },
                     cancelAction : { type : "button", className : "inputCancelButton", value : this.lp.close , event : {
@@ -1341,6 +1345,8 @@ MWFCalendar.SaveOptionDialog = new Class({
     Implements: [Options, Events],
     options: {
         "style": "meeting",
+        "topClass": "mainColor_bg",
+        "okClass": "mainColor_bg",
         "width": "470",
         "height": "325",
         "hasTop": true,
@@ -1402,6 +1408,8 @@ MWFCalendar.DeleteOptionDialog = new Class({
     Implements: [Options, Events],
     options: {
         "style": "meeting",
+        "topClass": "mainColor_bg",
+        "okClass": "mainColor_bg",
         "width": "470",
         "height": "325",
         "hasTop": true,
@@ -1523,6 +1531,7 @@ MWFCalendar.EventTooltip = new Class({
                 "cursor" : "pointer",
                 "color" : "#fff"
             },
+            class: "mainColor_bg",
             events : { click : function() {
                 debugger;
                 var form = new MWFCalendar.EventForm(this, this.data, {

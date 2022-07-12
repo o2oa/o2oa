@@ -236,10 +236,12 @@ MWF.xApplication.Calendar.Main = new Class({
         actionNode.addEvents({
             "mouseover": function(){
                 this.node.setStyles(_self.css.topMenuNode_over);
+                this.node.addClass("mainColor_color");
                 this.node.retrieve("iconNode").setStyle( "background","url(../x_component_Calendar/$Main/default/icon/"+this.node.retrieve("icon")+"_click.png) no-repeat center center" );
             }.bind( { node : actionNode } ),
             "mouseout": function(){
                 this.node.setStyles(_self.css.topMenuNode_right);
+                this.node.removeClass("mainColor_color");
                 this.node.retrieve("iconNode").setStyle( "background","url(../x_component_Calendar/$Main/default/icon/"+this.node.retrieve("icon")+".png) no-repeat center center" );
             }.bind({ node:actionNode }),
             "click": function(){
@@ -283,12 +285,14 @@ MWF.xApplication.Calendar.Main = new Class({
             "mouseover": function(){
                 if( this.node != _self.currentTopMenuNode ){
                     this.node.setStyles(_self.css.topMenuNode_over);
+                    this.node.addClass("mainColor_color");
                     this.node.retrieve("iconNode").setStyle( "background","url(../x_component_Calendar/$Main/default/icon/"+this.node.retrieve("icon")+"_click.png) no-repeat center center" );
                 }
             }.bind( { node : actionNode } ),
             "mouseout": function(){
                 if(this.node != _self.currentTopMenuNode){
                     this.node.setStyles(_self.css.topMenuNode);
+                    this.node.removeClass("mainColor_color");
                     this.node.retrieve("iconNode").setStyle( "background","url(../x_component_Calendar/$Main/default/icon/"+this.node.retrieve("icon")+".png) no-repeat center center" );
                 }
             }.bind({ node:actionNode }),
@@ -297,10 +301,12 @@ MWF.xApplication.Calendar.Main = new Class({
             "click": function(){
                 if( this.node != _self.currentTopMenuNode ){
                     this.node.setStyles( _self.css.topMenuNode_down );
+                    this.node.addClass("mainColor_color");
                     this.node.retrieve("iconNode").setStyle( "background","url(../x_component_Calendar/$Main/default/icon/"+this.node.retrieve("icon")+"_click.png) no-repeat center center" );
                 }
                 if( _self.currentTopMenuNode && this.node != _self.currentTopMenuNode){
                     _self.currentTopMenuNode.setStyles( _self.css.topMenuNode );
+                    _self.currentTopMenuNode.removeClass("mainColor_color");
                     _self.currentTopMenuNode.retrieve("iconNode").setStyle( "background","url(../x_component_Calendar/$Main/default/icon/"+_self.currentTopMenuNode.retrieve("icon")+".png) no-repeat center center" );
                 }
                 _self.currentTopMenuNode = this.node;
@@ -720,8 +726,14 @@ MWF.xApplication.Calendar.Navi = new Class({
             styles : this.css.seeMoreNode,
             "text" : this.lp.calendarMarket,
             "events" : {
-                mouseover : function(ev){ ev.target.setStyles( this.css.seeMoreNode_over ) }.bind(this),
-                mouseout : function(ev){ ev.target.setStyles( this.css.seeMoreNode ) }.bind(this),
+                mouseover : function(ev){
+                    ev.target.setStyles( this.css.seeMoreNode_over );
+                    ev.target.addClass("mainColor_color");
+                }.bind(this),
+                mouseout : function(ev){
+                    ev.target.setStyles( this.css.seeMoreNode );
+                    ev.target.removeClass("mainColor_color");
+                }.bind(this),
                 click : function(ev){
                     var form = new MWF.xApplication.Calendar.CalendarMarket(this.app,{}, {
                     }, {app:this.app});
@@ -897,7 +909,7 @@ MWF.xApplication.Calendar.NaviItem = new Class({
             },
             "mouseout": function(){
                 this.setStyles( _self.css.naviItemNode );
-                this.addClass("mainColor_color");
+                this.removeClass("mainColor_color");
                 _self.actionNode.fade("out");
             },
             "click": function (el) {
@@ -917,6 +929,7 @@ MWF.xApplication.Calendar.NaviItem = new Class({
                 }.bind(this)
             }
         }).inject( this.node );
+        this.actionNode.addClass("mainColor_bg");
 
         this.colorNode = new Element("div", {
             styles : this.css.naviColorNode
@@ -971,6 +984,7 @@ MWF.xApplication.Calendar.CalendarMenu = new Class({
         "style": "arrow",
         "width": "150px",
         "height": "36px",
+        "mainColor_bg": "mainColor_bg",
         "defaultOptionLp" : MWF.xApplication.Calendar.LP.font,
         "textField" : "name",
         "valueField" : "val",
@@ -1073,6 +1087,7 @@ MWF.xApplication.Calendar.CalendarMarket = new Class({
         "draggable": true,
         "maxAction" : true,
         "closeAction": true,
+        "topClass": "mainColor_bg",
         "title" : MWF.xApplication.Calendar.LP.calendarMarket
     },
     _createTableContent : function(){
@@ -1403,6 +1418,7 @@ MWF.xApplication.Calendar.Config = new Class({
         this.actionNode = new Element("div", {"styles": this.css.configActionNode}).inject(this.node);
         this.cancelNode = new Element("div", {"styles": this.css.configActionCancelNode, "text": this.app.lp.cancel}).inject(this.actionNode);
         this.saveNode = new Element("div", {"styles": this.css.configActionSaveNode, "text": this.app.lp.save}).inject(this.actionNode);
+        this.saveNode.addClass("mainColor_bg");
 
         this.cancelNode.addEvent("click", this.hide.bind(this));
         this.saveNode.addEvent("click", this.save.bind(this));

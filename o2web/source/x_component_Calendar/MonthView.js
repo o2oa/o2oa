@@ -257,8 +257,14 @@ MWFCalendarMonthView.Calendar = new Class({
             "click": function(){this.changeMonthNext();}.bind(this)
         });
         this.titleTextNode.addEvents({
-            "mouseover": function(){this.titleTextNode.setStyles(this.css.calendarTitleTextNode_over);}.bind(this),
-            "mouseout": function(){this.titleTextNode.setStyles(this.css.calendarTitleTextNode);}.bind(this),
+            "mouseover": function(){
+                this.titleTextNode.setStyles(this.css.calendarTitleTextNode_over);
+                this.titleTextNode.addClass("mainColor_color");
+            }.bind(this),
+            "mouseout": function(){
+                this.titleTextNode.setStyles(this.css.calendarTitleTextNode);
+                this.titleTextNode.removeClass("mainColor_color");
+            }.bind(this),
             "mousedown": function(){this.titleTextNode.setStyles(this.css.calendarTitleTextNode_down);}.bind(this),
             "mouseup": function(){this.titleTextNode.setStyles(this.css.calendarTitleTextNode_over);}.bind(this),
             "click": function(){this.changeMonthSelect();}.bind(this)
@@ -677,6 +683,10 @@ MWFCalendarMonthView.Calendar = new Class({
         titleDayNode.addEvent("click", function(){
             _self.app.toDay( this.date  );
         }.bind({ date : date.format("%Y-%m-%d") }));
+
+        if( type === "today" ){
+            titleDayNode.addClass("mainColor_bg");
+        }
 
         //var contentNode = new Element("div", {"styles": this.css.dayContentNode}).inject(node);
 
@@ -1293,6 +1303,8 @@ MWFCalendarMonthView.MonthSelector = new Class({
         this.monthSelectNode.addEvent("mousedown", function(e){e.stopPropagation();});
 
         this.monthSelectTitleNode = new Element("div", {"styles": this.css.calendarMonthSelectTitleNode}).inject(this.monthSelectNode);
+        this.monthSelectTitleNode.addClass("overColor_bg");
+
         this.monthSelectPrevYearNode = new Element("div", {"styles": this.css.calendarMonthSelectTitlePrevYearNode}).inject(this.monthSelectTitleNode);
         this.monthSelectNextYearNode = new Element("div", {"styles": this.css.calendarMonthSelectTitleNextYearNode}).inject(this.monthSelectTitleNode);
         this.monthSelectTextNode = new Element("div", {"styles": this.css.calendarMonthSelectTitleTextNode}).inject(this.monthSelectTitleNode);
@@ -1345,12 +1357,14 @@ MWFCalendarMonthView.MonthSelector = new Class({
             td.setStyle("background-color", "#FFF");
             if ((this.year == todayY) && (idx == todayM)){
                 new Element("div", {
+                    class: "mainColor_bg",
                     styles : _self.css.calendarMonthSelectTodayNode,
                     text : ""+m+ (MWF.language.substr(0,2) === "zh" ? this.app.lp.month : "")
                 }).inject( td );
             }else if ((this.year == thisY) && (idx == thisM)){
                 //td.setStyle("background-color", "#EEE");
                 new Element("div", {
+                    class: "mainColor_border mainColor_color",
                     styles : _self.css.calendarMonthSelectCurrentNode,
                     text : ""+m+ (MWF.language.substr(0,2) === "zh" ? this.app.lp.month : "")
                 }).inject( td );
