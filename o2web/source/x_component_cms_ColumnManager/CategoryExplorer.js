@@ -2511,6 +2511,11 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
         var d = this.category.data;
         d.workflowAppId = appId;
         d.workflowAppName = appName;
+        if( !appId ){
+            d.workflowFlag = "";
+            d.workflowName = "";
+            d.workflowType = "";
+        }
         this.app.restActions.saveCategory(  d, function( json ){
             this.app.notice(this.lp.setProcessAppSucess);
         }.bind(this))
