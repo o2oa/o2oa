@@ -367,7 +367,7 @@ public class ReadAction extends StandardJaxrsAction {
 		ActionResult<ActionCountWithPerson.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCountWithPerson().execute(credential);
+			result = new ActionCountWithPerson().execute(effectivePerson, credential);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

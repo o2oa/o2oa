@@ -963,14 +963,6 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 		this.modified = modified;
 	}
 
-//	public Boolean getViewed() {
-//		return viewed;
-//	}
-//
-//	public void setViewed(Boolean viewed) {
-//		this.viewed = viewed;
-//	}
-
 	public Boolean getAllowRapid() {
 		return allowRapid;
 	}

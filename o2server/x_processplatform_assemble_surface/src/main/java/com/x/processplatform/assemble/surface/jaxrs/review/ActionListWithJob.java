@@ -13,10 +13,14 @@ import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Review;
 
 class ActionListWithJob extends BaseAction {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWithJob.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String job) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {

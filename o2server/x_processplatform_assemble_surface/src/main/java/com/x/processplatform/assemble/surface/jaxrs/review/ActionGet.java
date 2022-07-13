@@ -9,6 +9,8 @@ import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Review;
 
@@ -19,6 +21,8 @@ import com.x.processplatform.core.entity.content.Review;
  *
  */
 class ActionGet extends BaseAction {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionGet.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();

@@ -315,7 +315,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 		LOGGER.debug("pass same target rollback parents:{}.", parents::toString);
 		WorkLog workLog = null;
 		for (WorkLog o : parents) {
-			// choice, agent, invoke, service, delay, embed 继续向上查找manual
+			// choice, agent, invoke, service, delay, embed, split, parallel 继续向上查找manual
 			ActivityType arrivedActivityType = o.getArrivedActivityType();
 			if (Objects.equals(ActivityType.manual, arrivedActivityType)
 					|| Objects.equals(ActivityType.begin, arrivedActivityType)
@@ -323,8 +323,9 @@ public class ManualProcessor extends AbstractManualProcessor {
 					// || Objects.equals(ActivityType.embed, arrivedActivityType)
 					|| Objects.equals(ActivityType.end, arrivedActivityType)
 					|| Objects.equals(ActivityType.merge, arrivedActivityType)
-					|| Objects.equals(ActivityType.parallel, arrivedActivityType)
-					|| Objects.equals(ActivityType.split, arrivedActivityType)) {
+			// || Objects.equals(ActivityType.parallel, arrivedActivityType)
+			// || Objects.equals(ActivityType.split, arrivedActivityType)
+			) {
 				if (Objects.equals(ActivityType.manual, arrivedActivityType)) {
 					workLog = o;
 				}

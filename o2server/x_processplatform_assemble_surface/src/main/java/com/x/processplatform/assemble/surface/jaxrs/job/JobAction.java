@@ -19,18 +19,28 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.base.core.project.jaxrs.openapi.ActionGet;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
 @Tag(name = "JobAction", description = "任务接口.")
 @Path("job")
 @JaxrsDescribe("任务接口.")
 public class JobAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(JobAction.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(JobAction.class);
+	private static final String OPERATIONID_PREFIX = "JobAction::";
 
-	@JaxrsMethodDescribe(value = "根据job查找属于这个job的work和workCompleted.", action = ActionFindWorkWorkCompleted.class)
+	@Operation(summary = "根据任务标识查找属于这个工作和已完成工作.", operationId = OPERATIONID_PREFIX
+			+ "findWorkWorkCompleted", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionFindWorkWorkCompleted.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "根据任务标识查找属于这个工作和已完成工作.", action = ActionFindWorkWorkCompleted.class)
 	@GET
 	@Path("{job}/find/work/workcompleted")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -42,13 +52,16 @@ public class JobAction extends StandardJaxrsAction {
 		try {
 			result = new ActionFindWorkWorkCompleted().execute(effectivePerson, job);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据serial查找work,并返回最新创建的一个.", action = ActionLatestWorkWorkCompletedWithSerial.class)
+	@Operation(summary = "根据问号查找工作或已完成工作,并返回最新创建的一个工作或已完成工作.", operationId = OPERATIONID_PREFIX
+			+ "latestWorkWorkCompletedWithSerial", responses = {
+					@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionGet.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "根据问号查找工作或已完成工作,并返回最新创建的一个工作或已完成工作.", action = ActionLatestWorkWorkCompletedWithSerial.class)
 	@GET
 	@Path("latest/work/workcompleted/serial/{serial}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -60,25 +73,7 @@ public class JobAction extends StandardJaxrsAction {
 		try {
 			result = new ActionLatestWorkWorkCompletedWithSerial().execute(effectivePerson, serial);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
-
-	@JaxrsMethodDescribe(value = "查询ProcessPlatformExecutorFactory的队列状态.", action = ActionExecutorStatus.class)
-	@GET
-	@Path("{job}/executor/status")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void executorStatus(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("标识") @PathParam("job") String job) {
-		ActionResult<ActionExecutorStatus.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionExecutorStatus().execute(effectivePerson, job);
-		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));

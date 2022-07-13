@@ -22,6 +22,8 @@ import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionListWithJob extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWithJob.class);
@@ -86,7 +88,10 @@ class ActionListWithJob extends BaseAction {
 		}, ThisApplication.threadPool());
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.readrecord.ActionListWithJob$Wo")
 	public static class Wo extends ReadRecord {
+
+		private static final long serialVersionUID = 6825855035865296913L;
 
 	}
 

@@ -23,36 +23,42 @@ import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionManageEdit extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionManageEdit.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionManageEdit.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
-		Record record = null;
+		
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+		
+		Record rec = null;
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
-			record = emc.find(id, Record.class);
-			if (null == record) {
+			rec = emc.find(id, Record.class);
+			if (null == rec) {
 				throw new ExceptionEntityNotExist(id, Record.class);
 			}
-			Application application = business.application().pick(record.getApplication());
-			Process process = business.process().pick(record.getProcess());
+			Application application = business.application().pick(rec.getApplication());
+			Process process = business.process().pick(rec.getProcess());
 			// 需要对这个应用的管理权限
 			if (BooleanUtils.isFalse(business.canManageApplicationOrProcess(effectivePerson, application, process))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 		}
 		WoId resp = ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-				Applications.joinQueryUri("record", record.getId()), wi, record.getJob()).getData(WoId.class);
+				Applications.joinQueryUri("record", rec.getId()), wi, rec.getJob()).getData(WoId.class);
 		Wo wo = new Wo();
 		wo.setId(resp.getId());
 		result.setData(wo);
 		return result;
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.record.ActionManageEdit$Wi")
 	public static class Wi extends Record {
 
 		private static final long serialVersionUID = 4179509440650818001L;
@@ -62,7 +68,10 @@ class ActionManageEdit extends BaseAction {
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.record.ActionManageEdit$Wo")
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = -3506278526439574670L;
 
 	}
 

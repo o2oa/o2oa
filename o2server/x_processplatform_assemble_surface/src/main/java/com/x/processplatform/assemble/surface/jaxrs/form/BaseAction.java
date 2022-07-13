@@ -9,8 +9,6 @@ import java.util.Map.Entry;
 import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.jaxrs.WoMaxAgeFastETag;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.WorkCompletedProperties;
 import com.x.processplatform.core.entity.content.WorkCompletedProperties.RelatedForm;
@@ -19,8 +17,6 @@ import com.x.processplatform.core.entity.element.Form;
 import com.x.processplatform.core.entity.element.Script;
 
 abstract class BaseAction extends StandardJaxrsAction {
-
-	private static Logger logger = LoggerFactory.getLogger(BaseAction.class);
 
 	CacheCategory cacheCategory = new CacheCategory(Form.class, Script.class, com.x.portal.core.entity.Script.class,
 			com.x.cms.core.entity.element.Script.class);

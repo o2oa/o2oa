@@ -12,20 +12,29 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.EqualsTerms;
 import com.x.base.core.project.jaxrs.InTerms;
 import com.x.base.core.project.jaxrs.LikeTerms;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.ReadCompleted;
+import com.x.processplatform.core.express.service.processing.jaxrs.readcompleted.ActionListPrevFilterWi;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionListPrevFilter extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListPrevFilter.class);
+
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String id, Integer count, JsonElement jsonElement)
 			throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}, count:{}.", effectivePerson::getDistinguishedName, () -> id, () -> count);
+
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		Business business = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -40,9 +49,9 @@ class ActionListPrevFilter extends BaseAction {
 			ins.put(ReadCompleted.application_FIELDNAME, wi.getApplicationList());
 		}
 		if (ListTools.isNotEmpty(wi.getProcessList())) {
-			if(BooleanUtils.isFalse(wi.getRelateEditionProcess())) {
+			if (BooleanUtils.isFalse(wi.getRelateEditionProcess())) {
 				ins.put(ReadCompleted.process_FIELDNAME, wi.getProcessList());
-			}else{
+			} else {
 				ins.put(ReadCompleted.process_FIELDNAME, business.process().listEditionProcess(wi.getProcessList()));
 			}
 		}
@@ -73,98 +82,14 @@ class ActionListPrevFilter extends BaseAction {
 		return result;
 	}
 
-	public class Wi extends GsonPropertyObject {
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.readcompleted.ActionListPrevFilter$Wi")
+	public class Wi extends ActionListPrevFilterWi {
 
-		@FieldDescribe("应用")
-		private List<String> applicationList;
-
-		@FieldDescribe("流程")
-		private List<String> processList;
-
-		@FieldDescribe("是否查找同版本流程数据：true(默认查找)|false")
-		private Boolean relateEditionProcess = true;
-
-		@FieldDescribe("创建人所在组织")
-		private List<String> creatorUnitList;
-
-		@FieldDescribe("开始时间月份")
-		private List<String> startTimeMonthList;
-
-		@FieldDescribe("结束时间月份")
-		private List<String> completedTimeMonthList;
-
-		@FieldDescribe("活动")
-		private List<String> activityNameList;
-
-		@FieldDescribe("关键字")
-		private String key;
-
-		public List<String> getApplicationList() {
-			return applicationList;
-		}
-
-		public void setApplicationList(List<String> applicationList) {
-			this.applicationList = applicationList;
-		}
-
-		public List<String> getProcessList() {
-			return processList;
-		}
-
-		public void setProcessList(List<String> processList) {
-			this.processList = processList;
-		}
-
-		public Boolean getRelateEditionProcess() {
-			return relateEditionProcess;
-		}
-
-		public void setRelateEditionProcess(Boolean relateEditionProcess) {
-			this.relateEditionProcess = relateEditionProcess;
-		}
-
-		public List<String> getActivityNameList() {
-			return activityNameList;
-		}
-
-		public void setActivityNameList(List<String> activityNameList) {
-			this.activityNameList = activityNameList;
-		}
-
-		public String getKey() {
-			return key;
-		}
-
-		public void setKey(String key) {
-			this.key = key;
-		}
-
-		public List<String> getCreatorUnitList() {
-			return creatorUnitList;
-		}
-
-		public void setCreatorUnitList(List<String> creatorUnitList) {
-			this.creatorUnitList = creatorUnitList;
-		}
-
-		public List<String> getCompletedTimeMonthList() {
-			return completedTimeMonthList;
-		}
-
-		public void setCompletedTimeMonthList(List<String> completedTimeMonthList) {
-			this.completedTimeMonthList = completedTimeMonthList;
-		}
-
-		public List<String> getStartTimeMonthList() {
-			return startTimeMonthList;
-		}
-
-		public void setStartTimeMonthList(List<String> startTimeMonthList) {
-			this.startTimeMonthList = startTimeMonthList;
-		}
+		private static final long serialVersionUID = -7457352870146880984L;
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.readcompleted.ActionListPrevFilter$Wo")
 	public static class Wo extends ReadCompleted {
 
 		private static final long serialVersionUID = 2279846765261247910L;
@@ -172,7 +97,8 @@ class ActionListPrevFilter extends BaseAction {
 		static WrapCopier<ReadCompleted, Wo> copier = WrapCopierFactory.wo(ReadCompleted.class, Wo.class, null,
 				JpaObject.FieldsInvisible);
 
-		@FieldDescribe("排序号")
+		@FieldDescribe("排序号.")
+		@Schema(description = "排序号.")
 		private Long rank;
 
 		public Long getRank() {
