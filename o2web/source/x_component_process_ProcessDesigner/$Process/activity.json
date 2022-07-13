@@ -731,10 +731,10 @@
 
     "inheritAttachment": true,
     "titleDataPath": "subject",
-    "readerDataPathList": ["publishFor"],
-    "authorDataPathList": [],
-    "pictureDataPathList": ["imageclipper"],
-    "notifyDataPathList": ["publishFor"],
+    "readerDataPathList": "publishFor",
+    "authorDataPathList": "",
+    "pictureDataPathList": "imageclipper",
+    "notifyDataPathList": "publishFor",
 
 
     "titleScript": "",

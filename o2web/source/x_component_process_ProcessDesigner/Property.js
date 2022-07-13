@@ -383,12 +383,15 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
         var fieldNodes = this.propertyContent.getElements(".MWFFormFieldPerson");
         MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.PersonSelector", function(){
             fieldNodes.each(function(node){
+                var dataType = node.get("data-o2-type");
+                var data = this.data[node.get("name")];
+                if( dataType && dataType === "string" && o2.typeOf(data) === "string")data = data.split(",");
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.process.designer, {
                     "type": "formField",
                     "application": this.process.process.application,
                     "fieldType": "person",
-                    "names": this.data[node.get("name")] || [],
-                    "onChange": function(ids){this.savePersonItem(node, ids);}.bind(this)
+                    "names": data || [],
+                    "onChange": function(ids){this.savePersonItem(node, ids, dataType);}.bind(this)
                 });
             }.bind(this));
         }.bind(this));
@@ -464,7 +467,7 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
         var formFieldString = this.propertyContent.getElements(".MWFFormFieldString");
         MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.PersonSelector", function(){
             personIdentityNodes.each(function(node){
-                count = node.get("count") || 0;
+                var count = node.get("count") || 0;
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.process.designer, {
                     "type": "identity",
                     "names": this.data[node.get("name")],
@@ -523,14 +526,17 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                 });
             }.bind(this));
             formFieldString.each(function(node){
-                count = node.get("count") || 0;
+                var count = node.get("count") || 0;
+                var dataType = node.get("data-o2-type");
+                var data = this.data[node.get("name")];
+                if( dataType && dataType === "string" && o2.typeOf(data) === "string")data = data.split(",");
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.process.designer, {
                     "type": "formField",
                     "count": count,
                     "application": this.process.process.application,
                     "fieldType": "string",
-                    "names": this.data[node.get("name")],
-                    "onChange": function(ids){this.savePersonItem(node, ids);}.bind(this)
+                    "names": data || [],
+                    "onChange": function(ids){this.savePersonItem(node, ids, dataType);}.bind(this)
                 });
             }.bind(this));
 
@@ -593,15 +599,24 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
         }.bind(this));
         this.data[node.get("name")] = JSON.encode(values);
     },
-    savePersonItem: function(node, ids){
+    savePersonItem: function(node, ids, dataType){
         debugger;
-        count = node.get("count") || 0;
+        var count = node.get("count") || 0;
         var values = [];
         ids.each(function(id){
             values.push(id.data.distinguishedName || id.data.id);
         }.bind(this));
 
-        this.data[node.get("name")] = (count && count.toInt()==1) ? values[0] : values;
+        var data;
+        if( count && count.toInt()==1  ){
+            data = values[0]
+        }else if( dataType === "string" ){
+            data = values.join(",");
+        }else{
+            data = values;
+        }
+
+        this.data[node.get("name")] = data;
     },
     savePersonObjectItem: function(node, ids){
         var values = [];
