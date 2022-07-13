@@ -84,7 +84,7 @@
     "sub" : [{
       "title": MWF.xApplication.Attendance.LP.delete,
       "action" : "remove",
-      "fonticon": "el-icon-delete",
+      "fonticon": "o2icon-icon_delete",
 //      "icon": "delete.png",
       "styles" : "documentActionNode",
       "overStyles" : "documentActionNode_over",
