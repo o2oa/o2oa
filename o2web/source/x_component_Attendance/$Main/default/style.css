@@ -1,0 +1,45 @@
+@font-face {
+  font-family: 'attendance';
+  src:
+
+    url('../x_component_Attendance/$Main/default/fonts/attendance.ttf?i9cgui') format('truetype'),
+    url('../x_component_Attendance/$Main/default/fonts/attendance.woff?i9cgui') format('woff'),
+    url('../x_component_Attendance/$Main/default/fonts/attendance.svg?i9cgui#attendance') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="o2icon-"], [class*=" o2icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'attendance' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.o2icon-icon_read2:before {
+  content: "\e93a";
+}
+.o2icon-icon_tishi:before {
+  content: "\e965";
+}
+.o2icon-icon_ok:before {
+  content: "\e966";
+}
+.o2icon-icon__leading_in:before {
+  content: "\e988";
+}
+.o2icon-icon_jinzhi:before {
+  content: "\e9a7";
+}
+.o2icon-icon_delete:before {
+  content: "\e9b0";
+}

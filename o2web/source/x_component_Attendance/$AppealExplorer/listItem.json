@@ -102,7 +102,7 @@
     "sub" : [{
       "title" : MWF.xApplication.Attendance.LP.agree,
       "action" : "agree",
-      "fonticon": "el-icon-circle-check",
+      "fonticon": "o2icon-icon_ok",
 //      "icon": "agree.png",
       "condition" : "function(d){ return d.APPEALABLE && d.appealAuditInfo && d.appealAuditInfo.auditFlowType=='BUILTIN';  }",
       "styles" : "documentActionNode",
@@ -111,7 +111,7 @@
     }, {
       "title" : MWF.xApplication.Attendance.LP.disagree,
       "action" : "deny",
-      "fonticon": "el-icon-remove-outline",
+      "fonticon": "o2icon-icon_jinzhi",
 //      "icon": "deny.png",
       "condition" : "function(d){ return d.APPEALABLE && d.appealAuditInfo && d.appealAuditInfo.auditFlowType=='BUILTIN'; }",
       "styles" : "documentActionNode",

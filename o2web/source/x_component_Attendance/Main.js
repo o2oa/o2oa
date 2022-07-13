@@ -44,7 +44,7 @@ MWF.xApplication.Attendance.Main = new Class({
 		this.personActions = MWF.Actions.get("x_organization_assemble_personal");
 		this.orgActions = MWF.Actions.get("x_organization_assemble_express");
 
-		this.content.loadCss("../x_desktop/css/element-icons.css");
+		this.content.loadCss("../x_component_Attendance/$Main/default/style.css");
 
 		this.createNode();
 		this.loadApplicationContent();
