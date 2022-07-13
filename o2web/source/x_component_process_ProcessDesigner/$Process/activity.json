@@ -726,7 +726,7 @@
     "targetProcessName": "",
     "targetProcessAlias": "",
 
-    "dataPath": "cmsDocument.categoryId",
+    "categoryIdDataPath": "cmsDocument.categoryId",
     "useProcessForm": false,
 
     "inheritAttachment": true,
