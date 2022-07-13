@@ -41,7 +41,7 @@ MWF.xApplication.query.TableDesigner.LP = {
         "delete": "Delete",
         "add": "Add"
     },
-    "errorName": "Column names only allow the use of alphanumeric and underscore combinations, and cannot start with a number.",
+    "errorName": "Column names only allow alphanumeric and underscore combinations, and cannot start with numbers or capital letters.",
     "nameUseKeywork": "{key} is not allowed for column names",
     "errorFieldList": "Please create a data column first.",
     "duplicateName": "A column with the same name already exists",
