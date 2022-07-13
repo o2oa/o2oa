@@ -7,20 +7,27 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
-import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Read;
+import com.x.processplatform.core.express.service.processing.jaxrs.read.ActionProcessingWi;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionProcessing extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionProcessing.class);
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
@@ -51,21 +58,16 @@ class ActionProcessing extends BaseAction {
 		return result;
 	}
 
-	public static class Wi extends GsonPropertyObject {
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.read.ActionProcessing$Wi")
+	public static class Wi extends ActionProcessingWi {
 
-		@FieldDescribe("意见")
-		private String opinion;
-
-		public String getOpinion() {
-			return opinion;
-		}
-
-		public void setOpinion(String opinion) {
-			this.opinion = opinion;
-		}
+		private static final long serialVersionUID = -344390659094430761L;
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.read.ActionProcessing$Wo")
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = 5308349035543235143L;
 	}
 }

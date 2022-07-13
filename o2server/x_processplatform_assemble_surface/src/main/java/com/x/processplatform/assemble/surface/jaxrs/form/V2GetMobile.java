@@ -32,6 +32,8 @@ import com.x.processplatform.core.entity.element.Form;
 import com.x.processplatform.core.entity.element.FormProperties;
 import com.x.processplatform.core.entity.element.Script;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class V2GetMobile extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(V2GetMobile.class);
@@ -154,6 +156,7 @@ class V2GetMobile extends BaseAction {
 		return map;
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.form.V2GetMobile$Wo")
 	public static class Wo extends AbstractWo {
 
 		private static final long serialVersionUID = 6413992232196084934L;

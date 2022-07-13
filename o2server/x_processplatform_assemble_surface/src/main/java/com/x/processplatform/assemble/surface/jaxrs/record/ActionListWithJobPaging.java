@@ -20,12 +20,18 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.content.Task;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionListWithJobPaging extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionListWithJobPaging.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWithJobPaging.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String job, Integer page, Integer size)
 			throws Exception {
+
+		LOGGER.debug("execute:{}, job:{}, page:{}, size:{}.", effectivePerson::getDistinguishedName, () -> job,
+				() -> page, () -> size);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 
@@ -53,8 +59,8 @@ class ActionListWithJobPaging extends BaseAction {
 
 			for (Task task : emc.listEqual(Task.class, Task.job_FIELDNAME, job).stream()
 					.sorted(Comparator.comparing(Task::getStartTime)).collect(Collectors.toList())) {
-				Record record = this.taskToRecord(task);
-				wos.add(Wo.copier.copy(record));
+				Record rec = this.taskToRecord(task);
+				wos.add(Wo.copier.copy(rec));
 			}
 
 			result.setData(wos);
@@ -63,22 +69,7 @@ class ActionListWithJobPaging extends BaseAction {
 
 	}
 
-	private Record taskToRecord(Task task) {
-		Record o = new Record();
-		o.setType(Record.TYPE_CURRENTTASK);
-		o.setFromActivity(task.getActivity());
-		o.setFromActivityAlias(task.getActivityAlias());
-		o.setFromActivityName(task.getActivityName());
-		o.setFromActivityToken(task.getActivityToken());
-		o.setFromActivityType(task.getActivityType());
-		o.setPerson(task.getPerson());
-		o.setIdentity(o.getIdentity());
-		o.setUnit(task.getUnit());
-		o.getProperties().setStartTime(task.getStartTime());
-		o.getProperties().setEmpowerFromIdentity(task.getEmpowerFromIdentity());
-		return o;
-	}
-
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.record.ActionListWithJobPaging$Wo")
 	public static class Wo extends Record {
 
 		private static final long serialVersionUID = -7666329770246726197L;

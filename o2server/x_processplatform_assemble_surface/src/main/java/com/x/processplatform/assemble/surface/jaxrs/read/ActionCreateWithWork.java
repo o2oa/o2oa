@@ -1,30 +1,39 @@
 package com.x.processplatform.assemble.surface.jaxrs.read;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.lang3.BooleanUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_processplatform_service_processing;
-import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.express.service.processing.jaxrs.read.ActionCreateWithWorkWi;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionCreateWithWork extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCreateWithWork.class);
+
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String workId, JsonElement jsonElement)
 			throws Exception {
+
+		LOGGER.debug("execute:{}, workId:{}.", effectivePerson::getDistinguishedName, () -> workId);
+
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		Work work = null;
@@ -39,8 +48,8 @@ class ActionCreateWithWork extends BaseAction {
 				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
 			if (effectivePerson.isNotManager()) {
-				WoWorkControl workControl = business.getControl(effectivePerson, work, WoWorkControl.class);
-				if (!workControl.getAllowVisit()) {
+				Control control = business.getControl(effectivePerson, work, Control.class);
+				if (BooleanUtils.isFalse(control.getAllowVisit())) {
 					throw new ExceptionAccessDenied(effectivePerson, work);
 				}
 			}
@@ -54,37 +63,24 @@ class ActionCreateWithWork extends BaseAction {
 		return result;
 	}
 
-	public static class Wi extends GsonPropertyObject {
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.read.ActionCreateWithWork$Wi")
+	public static class Wi extends ActionCreateWithWorkWi {
 
-		@FieldDescribe("待阅标识")
-		private List<String> identityList = new ArrayList<>();
-
-		@FieldDescribe("发送待阅通知")
-		private Boolean notify = false;
-
-		public List<String> getIdentityList() {
-			return identityList;
-		}
-
-		public void setIdentityList(List<String> identityList) {
-			this.identityList = identityList;
-		}
-
-		public Boolean getNotify() {
-			return notify;
-		}
-
-		public void setNotify(Boolean notify) {
-			this.notify = notify;
-		}
+		private static final long serialVersionUID = -2119863985965620324L;
 
 	}
 
-	public static class WoWorkControl extends WorkControl {
+	public static class Control extends WorkControl {
+
+		private static final long serialVersionUID = 1697269385547270643L;
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.read.ActionCreateWithWork$Wo")
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = -3580488160517248659L;
+
 	}
 
 }

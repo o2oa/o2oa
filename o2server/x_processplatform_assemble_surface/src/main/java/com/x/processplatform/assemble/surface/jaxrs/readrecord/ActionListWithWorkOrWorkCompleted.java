@@ -25,9 +25,11 @@ import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionListWithWorkOrWorkCompleted.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWithWorkOrWorkCompleted.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String workOrWorkCompleted) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
@@ -81,7 +83,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 					wos.add(wo);
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 			return wos;
 		},ThisApplication.threadPool());
@@ -94,12 +96,13 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 				Business business = new Business(emc);
 				value = business.readableWithWorkOrWorkCompleted(effectivePerson, flag);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 			return value;
 		},ThisApplication.threadPool());
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.readrecord.ActionListWithWorkOrWorkCompleted$Wo")
 	public static class Wo extends ReadRecord {
 
 		private static final long serialVersionUID = 5265413899966270497L;

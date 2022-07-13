@@ -19,14 +19,23 @@ import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.Read_;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class V2List extends V2Base {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(V2List.class);
+
 	public ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wos = new ArrayList<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
@@ -52,7 +61,10 @@ class V2List extends V2Base {
 		return result;
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.read.V2List$Wi")
 	public static class Wi extends RelateFilterWi {
+
+		private static final long serialVersionUID = -5931296443875372172L;
 
 		@FieldDescribe("job标识")
 		private List<String> jobList = new ArrayList<>();
@@ -78,6 +90,7 @@ class V2List extends V2Base {
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.read.V2List$Wo")
 	public static class Wo extends AbstractWo {
 		private static final long serialVersionUID = -4773789253221941109L;
 		static WrapCopier<Read, Wo> copier = WrapCopierFactory.wo(Read.class, Wo.class,

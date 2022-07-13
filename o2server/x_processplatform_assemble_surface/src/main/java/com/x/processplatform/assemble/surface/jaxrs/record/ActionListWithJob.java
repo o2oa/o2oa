@@ -20,11 +20,16 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.content.Task;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionListWithJob extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionListWithJob.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWithJob.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String job) throws Exception {
+
+		LOGGER.debug("execute:{}, job:{}.", effectivePerson::getDistinguishedName, () -> job);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 
@@ -32,13 +37,13 @@ class ActionListWithJob extends BaseAction {
 
 			String workOrWorkCompleted = "";
 			List<String> works = business.work().listWithJob(job);
-			if(ListTools.isNotEmpty(works)){
+			if (ListTools.isNotEmpty(works)) {
 				workOrWorkCompleted = works.get(0);
-			}else{
+			} else {
 				works = business.workCompleted().listWithJob(job);
-				if(ListTools.isNotEmpty(works)){
+				if (ListTools.isNotEmpty(works)) {
 					workOrWorkCompleted = works.get(0);
-				}else{
+				} else {
 					throw new ExceptionEntityNotExist(job);
 				}
 			}
@@ -63,22 +68,7 @@ class ActionListWithJob extends BaseAction {
 
 	}
 
-	private Record taskToRecord(Task task) {
-		Record o = new Record();
-		o.setType(Record.TYPE_CURRENTTASK);
-		o.setFromActivity(task.getActivity());
-		o.setFromActivityAlias(task.getActivityAlias());
-		o.setFromActivityName(task.getActivityName());
-		o.setFromActivityToken(task.getActivityToken());
-		o.setFromActivityType(task.getActivityType());
-		o.setPerson(task.getPerson());
-		o.setIdentity(o.getIdentity());
-		o.setUnit(task.getUnit());
-		o.getProperties().setStartTime(task.getStartTime());
-		o.getProperties().setEmpowerFromIdentity(task.getEmpowerFromIdentity());
-		return o;
-	}
-
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.record.ActionListWithJob$Wo")
 	public static class Wo extends Record {
 
 		private static final long serialVersionUID = -7666329770246726197L;

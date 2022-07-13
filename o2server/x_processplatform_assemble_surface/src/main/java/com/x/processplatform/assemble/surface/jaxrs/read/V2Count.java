@@ -24,13 +24,22 @@ import com.x.base.core.project.bean.NameValueCountPair;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.Read_;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class V2Count extends V2Base {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(V2Count.class);
+
 	public ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		Wo wo = new Wo();
@@ -170,7 +179,10 @@ class V2Count extends V2Base {
 				.collect(Collectors.toList());
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.read.V2Count$Wi")
 	public static class Wi extends FilterWi {
+
+		private static final long serialVersionUID = 3708279488655146477L;
 
 		@FieldDescribe("按应用分类")
 		private Boolean groupByApplication;
@@ -229,7 +241,10 @@ class V2Count extends V2Base {
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.read.V2Count$Wo")
 	public static class Wo extends GsonPropertyObject {
+
+		private static final long serialVersionUID = 3912279420145004102L;
 
 		@FieldDescribe("总数量")
 		private Long count;
