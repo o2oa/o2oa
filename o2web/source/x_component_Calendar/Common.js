@@ -24,7 +24,6 @@ MWFCalendar.EventForm = new Class({
     Implements: [Options, Events],
     options: {
         "style": "meeting",
-        "topClass": "mainColor_bg",
         "okClass": "mainColor_bg",
         "width": "800",
         "height": "475",
@@ -1072,7 +1071,6 @@ MWFCalendar.CalendarForm = new Class({
     Implements: [Options, Events],
     options: {
         "style": "meeting",
-        "topClass": "mainColor_bg",
         "okClass": "mainColor_bg",
         "width": "800",
         "height": "500",
@@ -1345,7 +1343,6 @@ MWFCalendar.SaveOptionDialog = new Class({
     Implements: [Options, Events],
     options: {
         "style": "meeting",
-        "topClass": "mainColor_bg",
         "okClass": "mainColor_bg",
         "width": "470",
         "height": "325",
@@ -1408,7 +1405,6 @@ MWFCalendar.DeleteOptionDialog = new Class({
     Implements: [Options, Events],
     options: {
         "style": "meeting",
-        "topClass": "mainColor_bg",
         "okClass": "mainColor_bg",
         "width": "470",
         "height": "325",

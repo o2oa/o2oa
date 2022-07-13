@@ -10,7 +10,6 @@ MWF.xApplication.Meeting.BuildingForm = new Class({
     Extends: MPopupForm,
     Implements: [Options, Events],
     options: {
-        "topClass": "mainColor_bg",
         "style": "meeting",
         "width": "800",
         "height": "300",
@@ -185,7 +184,6 @@ MWF.xApplication.Meeting.RoomForm = new Class({
     Implements: [Options, Events],
     options: {
         "style": "meeting",
-        "topClass": "mainColor_bg",
         "width": "900",
         "height": "500",
         "hasTop": true,
@@ -616,7 +614,6 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
     Implements: [Options, Events],
     options: {
         "style": "meeting",
-        "topClass": "mainColor_bg",
         "width": "900",
         "height": "780",
         "hasTop": true,

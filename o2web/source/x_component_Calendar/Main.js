@@ -1087,7 +1087,6 @@ MWF.xApplication.Calendar.CalendarMarket = new Class({
         "draggable": true,
         "maxAction" : true,
         "closeAction": true,
-        "topClass": "mainColor_bg",
         "title" : MWF.xApplication.Calendar.LP.calendarMarket
     },
     _createTableContent : function(){
