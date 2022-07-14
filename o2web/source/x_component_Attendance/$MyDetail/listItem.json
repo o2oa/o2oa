@@ -124,7 +124,7 @@
     },{
       "title" : MWF.xApplication.Attendance.LP.viewAppealDetail,
       "action" : "seeAppeal",
-      "fonticon": "o2icon-icon_read2",
+      "fonticon": "o2icon-icon_shitu",
 //      "icon": "open.png",
       "condition" : "function( d ){ if( d.appealStatus ){ return true }else{ return false } }",
       "styles" : "documentActionNode",

@@ -43,3 +43,9 @@
 .o2icon-icon_delete:before {
   content: "\e9b0";
 }
+.o2icon-icon_shitu:before {
+  content: "\e97f";
+}
+.o2icon-icon_download:before {
+  content: "\e9bc";
+}

@@ -52,7 +52,7 @@
         "title": MWF.xApplication.Attendance.LP.download,
         "action": "openDocument",
 //        "icon": "download.png",
-        "fonticon": "o2icon-icon__leading_in",
+        "fonticon": "o2icon-icon_download",
         "styles": "documentActionNode",
         "overStyles": "documentActionNode_over",
         "downStyles": "documentActionNode_down"
@@ -61,7 +61,7 @@
         "title": MWF.xApplication.Attendance.LP.viewImportResult,
         "action": "openResult",
         //       "icon": "open.png",
-        "fonticon": "o2icon-icon_read2",
+        "fonticon": "o2icon-icon_shitu",
         "styles": "documentActionNode",
         "overStyles": "documentActionNode_over",
         "downStyles": "documentActionNode_down"
