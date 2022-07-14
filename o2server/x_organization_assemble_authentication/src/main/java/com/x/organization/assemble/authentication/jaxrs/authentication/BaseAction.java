@@ -73,7 +73,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		if (BooleanUtils.isTrue(Config.ternaryManagement().getEnable())) {
 			tokenType = Config.ternaryManagement().getTokenType(credential);
 		}
-		EffectivePerson effectivePerson = new EffectivePerson(credential, tokenType, Config.token().getCipher());
+		EffectivePerson effectivePerson = new EffectivePerson(credential, tokenType, Config.token().getCipher(),
+				Config.token().getEncryptType());
 		if ((null != request) && (null != response)) {
 			httpToken.setToken(request, response, effectivePerson);
 		}
@@ -106,7 +107,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			tokenType = TokenType.auditManager;
 		}
 		EffectivePerson effectivePerson = new EffectivePerson(person.getDistinguishedName(), tokenType,
-				Config.token().getCipher());
+				Config.token().getCipher(), Config.token().getEncryptType());
 		if ((null != request) && (null != response)) {
 			if (!isMoaTerminal(request)) {
 				String clientIp = HttpToken.remoteAddress(request);
@@ -196,14 +197,14 @@ abstract class BaseAction extends StandardJaxrsAction {
 	private void passwordExpired(AbstractWoAuthentication wo) throws Exception {
 		wo.setPasswordExpired(false);
 		Integer passwordPeriod = Config.person().getPasswordPeriod();
-		if(passwordPeriod.intValue() == 0){
+		if (passwordPeriod.intValue() == 0) {
 			return;
 		}
 		if (null != wo.getPasswordExpiredTime()) {
 			if (wo.getPasswordExpiredTime().getTime() < (new Date()).getTime()) {
 				wo.setPasswordExpired(true);
 			}
-		} else if(wo.getChangePasswordTime()!=null){
+		} else if (wo.getChangePasswordTime() != null) {
 			Date date = DateTools.addDay(wo.getChangePasswordTime(), passwordPeriod);
 			if (date.getTime() < (new Date()).getTime()) {
 				wo.setPasswordExpired(true);

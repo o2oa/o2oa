@@ -87,7 +87,7 @@ class ActionExecuteToken extends BaseAction {
 	private String decrypt(String client, String token, Sso sso) throws ExceptionReadToken {
 		String value = "";
 		try {
-			value = Crypto.decrypt(token, sso.getKey());
+			value = Crypto.decrypt(token, sso.getKey(), Config.token().getEncryptType());
 			LOGGER.debug("decrypt sso client:{}, token:{}, key:{}, content:{}.", client::toString, token::toString,
 					sso::getKey, value::toString);
 		} catch (Exception e) {
