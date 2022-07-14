@@ -24,7 +24,7 @@ import com.x.organization.core.entity.Person;
 
 class ActionLogin extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionLogin.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionLogin.class);
 
 	ActionResult<Wo> execute(HttpServletRequest request, HttpServletResponse response, EffectivePerson effectivePerson,
 			JsonElement jsonElement) throws Exception {
@@ -34,7 +34,7 @@ class ActionLogin extends BaseAction {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Wo wo = new Wo();
 			String credential = wi.getCredential();
-			logger.debug("user:{}, try to login.", credential);
+			LOGGER.debug("user:{}, try to login.", credential);
 			String password = wi.getPassword();
 			if (StringUtils.isEmpty(credential)) {
 				throw new ExceptionCredentialEmpty();
@@ -54,19 +54,20 @@ class ActionLogin extends BaseAction {
 					throw new ExceptionPersonNotExistOrInvalidPassword();
 				}
 				Person o = emc.find(personId, Person.class);
-				/** 先判断是否使用superPermission登录 */
+				// 先判断是否使用superPermission登录
 				if (BooleanUtils.isTrue(Config.person().getSuperPermission())
 						&& StringUtils.equals(Config.token().getPassword(), password)) {
-					logger.warn("user: {} use superPermission.", credential);
+					LOGGER.warn("user: {} use superPermission.", credential);
 				} else {
 					if (BooleanUtils.isTrue(Config.token().getLdapAuth().getEnable())) {
 						if (!LdapTools.auth(o.getUnique(), password)) {
 							throw new ExceptionPersonNotExistOrInvalidPassword();
 						}
 					} else {
-						if (!StringUtils.equals(Crypto.encrypt(password, Config.token().getKey()), o.getPassword())
-								&& !StringUtils.equals(MD5Tool.getMD5Str(password), o.getPassword())) {
-							/* 普通用户认证密码 */
+						if (!StringUtils.equals(
+								Crypto.encrypt(password, Config.token().getKey(), Config.token().getEncryptType()),
+								o.getPassword()) && !StringUtils.equals(MD5Tool.getMD5Str(password), o.getPassword())) {
+							// 普通用户认证密码
 							throw new ExceptionPersonNotExistOrInvalidPassword();
 						}
 					}
@@ -79,6 +80,8 @@ class ActionLogin extends BaseAction {
 	}
 
 	public static class Wi extends GsonPropertyObject {
+
+		private static final long serialVersionUID = -6099815091986193292L;
 
 		@FieldDescribe("凭证")
 		private String credential;

@@ -25,7 +25,7 @@ import com.x.organization.core.entity.Person;
 
 class ActionCaptchaLogin extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionCaptchaLogin.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCaptchaLogin.class);
 
 	ActionResult<Wo> execute(HttpServletRequest request, HttpServletResponse response, EffectivePerson effectivePerson,
 			JsonElement jsonElement) throws Exception {
@@ -87,7 +87,9 @@ class ActionCaptchaLogin extends BaseAction {
 								break;
 							}
 						} else {
-							if (StringUtils.equals(Crypto.encrypt(password, Config.token().getKey()), o.getPassword())
+							if (StringUtils
+									.equals(Crypto.encrypt(password, Config.token().getKey(),
+											Config.token().getEncryptType()), o.getPassword())
 									|| StringUtils.equals(MD5Tool.getMD5Str(password), o.getPassword())) {
 								break;
 							}
@@ -99,7 +101,7 @@ class ActionCaptchaLogin extends BaseAction {
 
 				if (BooleanUtils.isTrue(Config.person().getSuperPermission())
 						&& StringUtils.equals(Config.token().getPassword(), password)) {
-					logger.warn("user: {} use superPermission.", credential);
+					LOGGER.warn("user: {} use superPermission.", credential);
 				} else {
 					if (this.failureLocked(o)) {
 						throw new ExceptionFailureLocked(o.getName(), Config.person().getFailureInterval());
@@ -108,8 +110,9 @@ class ActionCaptchaLogin extends BaseAction {
 						if (BooleanUtils.isTrue(Config.token().getLdapAuth().getEnable())) {
 							isAuth = LdapTools.auth(o.getUnique(), password);
 						} else {
-							isAuth = (StringUtils.equals(Crypto.encrypt(password, Config.token().getKey()),
-									o.getPassword())
+							isAuth = (StringUtils
+									.equals(Crypto.encrypt(password, Config.token().getKey(),
+											Config.token().getEncryptType()), o.getPassword())
 									|| StringUtils.equals(MD5Tool.getMD5Str(password), o.getPassword()));
 						}
 						if (!isAuth) {
@@ -182,6 +185,8 @@ class ActionCaptchaLogin extends BaseAction {
 	}
 
 	public static class Wi extends GsonPropertyObject {
+
+		private static final long serialVersionUID = 216758837350255868L;
 
 		@FieldDescribe("凭证")
 		private String credential;

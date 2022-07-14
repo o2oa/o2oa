@@ -60,7 +60,7 @@ public class HttpToken {
 		try {
 			String plain = "";
 			try {
-				plain = Crypto.decrypt(token, key);
+				plain = Crypto.decrypt(token, key, Config.token().getEncryptType());
 			} catch (Exception e) {
 				logger.warn("can not decrypt token:{}, {}, remote address:{}.", token, e.getMessage(), address);
 				return EffectivePerson.anonymous();
@@ -102,7 +102,7 @@ public class HttpToken {
 				return EffectivePerson.anonymous();
 			}
 			return new EffectivePerson(URLDecoder.decode(matcher.group(3), StandardCharsets.UTF_8.name()), tokenType,
-					key);
+					key, Config.token().getEncryptType());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -33,6 +33,8 @@ public class Token extends ConfigObject {
 	public static final String defaultSslKeyStorePassword = "123456";
 	public static final String defaultSslKeyManagerPassword = "123456";
 
+	public static final String DEFAULT_ENCRYPTTYPE = "";
+
 	// 此对象临时计算无需存储
 	private transient String _cipher = "";
 	// 此对象临时计算无需存储
@@ -48,6 +50,7 @@ public class Token extends ConfigObject {
 		this.password = "";
 		this.sslKeyStorePassword = defaultSslKeyStorePassword;
 		this.sslKeyManagerPassword = defaultSslKeyManagerPassword;
+		this.encryptType = DEFAULT_ENCRYPTTYPE;
 //		this.initialManager = defaultInitialManager;
 //		this.initialManagerDistinguishedName = defaultInitialManagerDistinguishedName;
 	}
@@ -65,11 +68,8 @@ public class Token extends ConfigObject {
 	@FieldDescribe("ssl管理密码")
 	private String sslKeyManagerPassword;
 
-//	@FieldDescribe("初始管理员名称,目前不可更改.")
-//	private String initialManager;
-
-//	@FieldDescribe("初始管理员DistinguishedName,不可更改.")
-//	private String initialManagerDistinguishedName;
+	@FieldDescribe("加密方式,支持国密sm4")
+	private String encryptType;
 
 	@FieldDescribe("LDAP认证配置")
 	private LdapAuth ldapAuth;
@@ -82,6 +82,14 @@ public class Token extends ConfigObject {
 
 	@FieldDescribe("作为客户端单点登录配置")
 	private List<OauthClient> oauthClients = new ArrayList<>();
+
+	public String getEncryptType() {
+		return StringUtils.isEmpty(this.encryptType) ? DEFAULT_ENCRYPTTYPE : this.encryptType;
+	}
+
+	public void setEncryptType(String encryptType) {
+		this.encryptType = encryptType;
+	}
 
 	// 前面的代码是 key+surfix 结果是nullo2platform
 	public String getKey() {
@@ -102,7 +110,6 @@ public class Token extends ConfigObject {
 			this._cipher = DigestUtils.md5Hex(this.getPassword());
 		}
 		return this._cipher;
-		// return this.getPassword() + surfix;
 	}
 
 	public String getPassword() {
@@ -124,25 +131,9 @@ public class Token extends ConfigObject {
 		return defaultInitialManager;
 	}
 
-//	public void setInitialManager(String initialManager) {
-//		if (StringUtils.equals(initialManager, defaultInitialManager)) {
-//			this.initialManager = null;
-//		} else {
-//			this.initialManager = initialManager;
-//		}
-//	}
-
 	public String getInitialManagerDistinguishedName() {
-		return   defaultInitialManagerDistinguishedName;
+		return defaultInitialManagerDistinguishedName;
 	}
-
-//	public void setInitialManagerDistinguishedName(String initialManagerDistinguishedName) {
-//		if (StringUtils.equals(initialManagerDistinguishedName, defaultInitialManagerDistinguishedName)) {
-//			this.initialManager = null;
-//		} else {
-//			this.initialManagerDistinguishedName = initialManagerDistinguishedName;
-//		}
-//	}
 
 	public String getSslKeyStorePassword() {
 		return StringUtils.isEmpty(this.sslKeyStorePassword) ? defaultSslKeyStorePassword : this.sslKeyStorePassword;
@@ -235,20 +226,18 @@ public class Token extends ConfigObject {
 		o.qq = "";
 		o.weibo = "";
 		o.mobile = "";
-		// o.icon = icon_initialManager;
 		o.roleList = new ArrayList<String>();
-		// o.roleList.add(RoleDefinition.UnitManager);
-		// o.roleList.add(RoleDefinition.GroupCreator);
 		o.roleList.add(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.Manager));
 		o.roleList.add(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.OrganizationManager));
 		o.roleList.add(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.MeetingManager));
-		// o.roleList.add(RoleDefinition.PersonManager);
-		// o.roleList.add(RoleDefinition.ProcessPlatformCreator);
 		o.roleList.add(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.ProcessPlatformManager));
 		return o;
 	}
 
 	public class InitialManager extends GsonPropertyObject {
+
+		private static final long serialVersionUID = 6295964037824026773L;
+
 		private String name;
 		private String unique;
 		private String id;
@@ -262,7 +251,6 @@ public class Token extends ConfigObject {
 		private String mobile;
 		private String pinyin;
 		private String pinyinInitial;
-		// private String icon;
 		private List<String> roleList;
 
 		public String getName() {

@@ -57,7 +57,7 @@ class ActionPostLogin extends BaseAction {
 			String content = null;
 			logger.debug("decrypt sso client:{}, token:{}, key:{}.", wi.getClient(), wi.getToken(), sso.getKey());
 			try {
-				content = Crypto.decrypt(wi.getToken(), sso.getKey());
+				content = Crypto.decrypt(wi.getToken(), sso.getKey(), Config.token().getEncryptType());
 			} catch (Exception e) {
 				throw new ExceptionReadToken(wi.getClient(), wi.getToken());
 			}
@@ -88,15 +88,18 @@ class ActionPostLogin extends BaseAction {
 			TokenType tokenType = TokenType.user;
 			if (roles.contains(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.Manager))) {
 				tokenType = TokenType.manager;
-			} else if (roles.contains(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.SystemManager))) {
+			} else if (roles
+					.contains(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.SystemManager))) {
 				tokenType = TokenType.systemManager;
-			} else if (roles.contains(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.SecurityManager))) {
+			} else if (roles
+					.contains(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.SecurityManager))) {
 				tokenType = TokenType.securityManager;
-			} else if (roles.contains(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.AuditManager))) {
+			} else if (roles
+					.contains(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.AuditManager))) {
 				tokenType = TokenType.auditManager;
 			}
 			EffectivePerson effective = new EffectivePerson(wo.getDistinguishedName(), tokenType,
-					Config.token().getCipher());
+					Config.token().getCipher(), Config.token().getEncryptType());
 			wo.setToken(effective.getToken());
 			HttpToken httpToken = new HttpToken();
 			httpToken.setToken(request, response, effective);

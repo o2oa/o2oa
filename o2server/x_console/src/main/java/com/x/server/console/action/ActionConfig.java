@@ -39,7 +39,8 @@ public class ActionConfig extends ActionBase {
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setUseCaches(false);
 		connection.setRequestProperty("Content-Type", HttpMediaType.APPLICATION_JSON_UTF_8);
-		EffectivePerson effectivePerson = EffectivePerson.cipher(Config.token().getCipher());
+		EffectivePerson effectivePerson = EffectivePerson.cipher(Config.token().getCipher(),
+				Config.token().getEncryptType());
 		connection.setRequestProperty(Config.person().getTokenName(), effectivePerson.getToken());
 		connection.setRequestMethod("GET");
 		connection.setDoOutput(false);
