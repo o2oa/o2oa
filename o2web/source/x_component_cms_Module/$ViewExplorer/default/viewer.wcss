@@ -480,7 +480,7 @@
     "line-height": "20px",
     "margin-top": "5px",
     "color": "#999",
-    "font-size": "15px",
+    "font-size": "16px",
     "cursor": "pointer",
     "display": "inline-block",
     "margin-right": "5px"
@@ -501,7 +501,7 @@
     "line-height": "20px",
     "margin-top": "5px",
     "color": "#999",
-    "font-size": "15px",
+    "font-size": "16px",
     "cursor": "pointer",
     "display": "inline-block",
     "margin-right": "5px"
