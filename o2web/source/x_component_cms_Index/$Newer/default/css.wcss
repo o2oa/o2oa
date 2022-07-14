@@ -27,7 +27,6 @@
 	"color" : "#333",
 	"height" : "50px",
 	"background-color": "#fff",
-	  "border-bottom": "1px solid #ccc",
 //	 "background-color": "#3c75b7",
 	"line-height": "40px",
 	"font-size": "14px",

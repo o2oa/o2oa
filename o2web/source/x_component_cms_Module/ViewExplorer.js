@@ -658,24 +658,36 @@ MWF.xApplication.cms.Module.QueryViewer.Item = new Class({
         }.bind(this));
     },
     loadActions : function( container ){
-        this.deleteNode = new Element("div", {"styles": this.css.actionDeleteNode, "title": this.view.lp.delete }).inject(container);
+        this.deleteNode = new Element("div.o2icon-delete", {"styles": this.css.actionDeleteNode, "title": this.view.lp.delete }).inject(container);
         this.deleteNode.addEvents({
-            "mouseover": function(){this.deleteNode.setStyles(this.css.actionDeleteNode_over);}.bind(this),
-            "mouseout": function(){this.deleteNode.setStyles(this.css.actionDeleteNode);}.bind(this),
-            "mousedown": function(){this.deleteNode.setStyles(this.css.actionDeleteNode_down);}.bind(this),
-            "mouseup": function(){this.deleteNode.setStyles(this.css.actionDeleteNode_over);}.bind(this),
+            "mouseover": function(){
+                this.deleteNode.setStyles(this.css.actionDeleteNode_over);
+                this.deleteNode.addClass("mainColor_color");
+            }.bind(this),
+            "mouseout": function(){
+                this.deleteNode.setStyles(this.css.actionDeleteNode);
+                this.deleteNode.removeClass("mainColor_color");
+            }.bind(this),
+            //"mousedown": function(){this.deleteNode.setStyles(this.css.actionDeleteNode_down);}.bind(this),
+            //"mouseup": function(){this.deleteNode.setStyles(this.css.actionDeleteNode_over);}.bind(this),
             "click": function(e){
                 this.remove(e);
                 e.stopPropagation();
             }.bind(this)
         });
 
-        this.editNode = new Element("div", {"styles": this.css.actionEditNode, "title": this.view.lp.edit }).inject(container);
+        this.editNode = new Element("div.o2icon-edit2", {"styles": this.css.actionEditNode, "title": this.view.lp.edit }).inject(container);
         this.editNode.addEvents({
-            "mouseover": function(){this.editNode.setStyles(this.css.actionEditNode_over);}.bind(this),
-            "mouseout": function(){this.editNode.setStyles(this.css.actionEditNode);}.bind(this),
-            "mousedown": function(){this.editNode.setStyles(this.css.actionEditNode_down);}.bind(this),
-            "mouseup": function(){this.editNode.setStyles(this.css.actionEditNode_over);}.bind(this),
+           "mouseover": function(){
+                this.editNode.setStyles(this.css.actionEditNode_over);
+                this.editNode.addClass("mainColor_color");
+            }.bind(this),
+            "mouseout": function(){
+                this.editNode.setStyles(this.css.actionEditNode);
+                this.editNode.removeClass("mainColor_color");
+            }.bind(this),
+            //"mousedown": function(){this.editNode.setStyles(this.css.actionEditNode_down);}.bind(this),
+            //"mouseup": function(){this.editNode.setStyles(this.css.actionEditNode_over);}.bind(this),
             "click": function(e){
                 this.editCMSDocument();
                 e.stopPropagation();

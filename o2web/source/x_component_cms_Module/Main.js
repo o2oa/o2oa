@@ -164,9 +164,15 @@ MWF.xApplication.cms.Module.Main = new Class({
 	loadBatchAction: function(){
 		if( !this.isAdmin )return;
 		this.batchAction = new Element("div", {
-			"styles": this.css.batchAction,
-			"text" : this.lp.select
+			"styles": this.css.batchAction
 		}).inject(this.titleActionBar);
+		this.batchIcon = new Element("i.o2icon-folder-select", {
+			"styles": this.css.actionIcon
+		}).inject(this.batchAction, "top");
+		this.batchText = new Element("div", {
+			"styles": this.css.batchText,
+			"text" : this.lp.select
+		}).inject(this.batchAction);
 		this.batchAction.addEvents({
 			"click": function(e){
 				if( this.view ){
@@ -174,7 +180,11 @@ MWF.xApplication.cms.Module.Main = new Class({
 						this.selectEnable = false;
 						this.batchAction.setStyles( this.css.batchAction );
 						this.batchAction.removeClass("mainColor_color");
-						this.batchAction.set("text",this.lp.select);
+						this.batchText.set("text",this.lp.select);
+
+						this.batchIcon.setStyles( this.css.actionIcon );
+						this.batchIcon.removeClass("mainColor_color");
+
 						this.view.disableSelectMode();
 
 						this.cancelBatchRemoveAction();
@@ -184,7 +194,11 @@ MWF.xApplication.cms.Module.Main = new Class({
 						this.selectEnable = true;
 						this.batchAction.setStyles( this.css.batchAction_over );
 						this.batchAction.addClass("mainColor_color");
-						this.batchAction.set("text", this.lp.cancelSelect);
+						this.batchText.set("text", this.lp.cancelSelect);
+
+						this.batchIcon.setStyles( this.css.actionIcon_over );
+						this.batchIcon.addClass("mainColor_color");
+
 						this.view.selectMode();
 
 						this.loadCopyActionNode();
@@ -197,11 +211,17 @@ MWF.xApplication.cms.Module.Main = new Class({
 				if( this.view.selectEnable )return;
 				this.batchAction.setStyles( this.css.batchAction_over );
 				this.batchAction.addClass("mainColor_color");
+
+				this.batchIcon.setStyles( this.css.actionIcon_over );
+				this.batchIcon.addClass("mainColor_color");
 			}.bind(this),
 			"mouseout" : function(e){
 				if( this.view.selectEnable )return;
 				this.batchAction.setStyles( this.css.batchAction );
 				this.batchAction.removeClass("mainColor_color");
+
+				this.batchIcon.setStyles( this.css.actionIcon );
+				this.batchIcon.removeClass("mainColor_color");
 			}.bind(this)
 		});
 	},
@@ -229,6 +249,9 @@ MWF.xApplication.cms.Module.Main = new Class({
 					"styles": this.css.createDocumentAction,
 					"text" : this.lp.start
 				}).inject(this.titleActionBar);
+				this.createDocumentIcon = new Element("i.o2icon-newfiles", {
+					"styles": this.css.actionIcon
+				}).inject(this.createDocumentAction, "top");
 				this.createDocumentAction.addEvents({
 					"click": function(e){
 						MWF.xDesktop.requireApp("cms.Index", "Newer", null, false);
@@ -254,10 +277,16 @@ MWF.xApplication.cms.Module.Main = new Class({
 					"mouseover" : function(e){
 						this.createDocumentAction.setStyles( this.css.createDocumentAction_over );
 						this.createDocumentAction.addClass("mainColor_color");
+
+						this.createDocumentIcon.setStyles( this.css.actionIcon_over );
+						this.createDocumentIcon.addClass("mainColor_color");
 					}.bind(this),
 					"mouseout" : function(e){
 						this.createDocumentAction.setStyles( this.css.createDocumentAction );
 						this.createDocumentAction.removeClass("mainColor_color");
+
+						this.createDocumentIcon.setStyles( this.css.actionIcon );
+						this.createDocumentIcon.removeClass("mainColor_color");
 					}.bind(this)
 				});
 			}
@@ -275,6 +304,9 @@ MWF.xApplication.cms.Module.Main = new Class({
 			"styles": this.css.moveDocumentAction,
 			"text" : this.lp.move //"移动"
 		}).inject(this.titleActionBar);
+		this.moveIcon = new Element("i.o2icon-folder-move", {
+			"styles": this.css.actionIcon
+		}).inject(this.moveAction, "top");
 		this.moveAction.addEvents({
 			"click": function(e){
 				var _self = this;
@@ -287,7 +319,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 					this.loadSelectColumnDialog( function( data ){
 						if( data && data.id ){
 							var text = _self.lp.moveDocConfirmContent.replace("{count}", itemIds.length ).replace("{category}", data.categoryName);
-								//"移动后将在本分类删除，确定要移动选中的"+itemIds.length+"个文档到"+data.categoryName+"？";
+							//"移动后将在本分类删除，确定要移动选中的"+itemIds.length+"个文档到"+data.categoryName+"？";
 							this.confirm("warn", e, _self.lp.moveDocConfirmTitle, text, 350, 120, function(){
 								_self.restActions.moveDocumentToCategory({
 									ids : itemIds,
@@ -307,10 +339,14 @@ MWF.xApplication.cms.Module.Main = new Class({
 			"mouseover" : function(e){
 				this.moveAction.setStyles( this.css.moveDocumentAction_over );
 				this.moveAction.addClass("mainColor_color");
+				this.moveIcon.setStyles( this.css.actionIcon_over );
+				this.moveIcon.addClass("mainColor_color");
 			}.bind(this),
 			"mouseout" : function(e){
 				this.moveAction.setStyles( this.css.moveDocumentAction );
 				this.moveAction.removeClass("mainColor_color");
+				this.moveIcon.setStyles( this.css.actionIcon );
+				this.moveIcon.removeClass("mainColor_color");
 			}.bind(this)
 		});
 	},
@@ -327,6 +363,9 @@ MWF.xApplication.cms.Module.Main = new Class({
 			"styles": this.css.batchRemoveDocumentAction,
 			"text" : this.lp.batchRemove
 		}).inject(this.titleActionBar);
+		this.batchRemoveIcon = new Element("i.o2icon-delete", {
+			"styles": this.css.actionIcon
+		}).inject(this.batchRemoveAction, "top");
 		this.batchRemoveAction.addEvents({
 			"click": function(e){
 				var _self = this;
@@ -354,10 +393,14 @@ MWF.xApplication.cms.Module.Main = new Class({
 			"mouseover" : function(e){
 				this.batchRemoveAction.setStyles( this.css.batchRemoveDocumentAction_over )
 				this.batchRemoveAction.addClass("mainColor_color");
+				this.batchRemoveIcon.setStyles( this.css.actionIcon_over );
+				this.batchRemoveIcon.addClass("mainColor_color");
 			}.bind(this),
 			"mouseout" : function(e){
-				this.batchRemoveAction.setStyles( this.css.batchRemoveDocumentAction )
+				this.batchRemoveAction.setStyles( this.css.batchRemoveDocumentAction );
 				this.batchRemoveAction.removeClass("mainColor_color");
+				this.batchRemoveIcon.setStyles( this.css.actionIcon );
+				this.batchRemoveIcon.removeClass("mainColor_color");
 			}.bind(this)
 		});
 	},
@@ -449,6 +492,9 @@ MWF.xApplication.cms.Module.Main = new Class({
 			"styles": this.css.copyDocumentAction,
 			"text" : this.lp.enableCopy
 		}).inject(this.titleActionBar);
+		this.copyIcon = new Element("i.o2icon-document-copy", {
+			"styles": this.css.actionIcon
+		}).inject(this.copyAction, "top");
 		this.copyAction.addEvents({
 			"click": function(e){
 				if( this.view ){
@@ -468,10 +514,16 @@ MWF.xApplication.cms.Module.Main = new Class({
 			"mouseover" : function(e){
 				this.copyAction.setStyles( this.css.copyDocumentAction_over );
 				this.copyAction.addClass("mainColor_color");
+
+				this.copyIcon.setStyles( this.css.actionIcon_over );
+				this.copyIcon.addClass("mainColor_color");
 			}.bind(this),
 			"mouseout" : function(e){
 				this.copyAction.setStyles( this.css.copyDocumentAction );
 				this.copyAction.removeClass("mainColor_color");
+
+				this.copyIcon.setStyles( this.css.actionIcon );
+				this.copyIcon.removeClass("mainColor_color");
 			}.bind(this)
 		});
 	},
@@ -705,7 +757,7 @@ MWF.xApplication.cms.Module.Main = new Class({
 					html += "<div style='font-size:12px; color: #666666; float: left;'>"+data.document.publishTime+"</div>" +
 						"<div style='font-size:12px; color: #666666; float: left; margin-left: 20px;'>"+MWF.name.cn(data.document.creatorPersonShort)+"</div>" +
 						"<div style='color: red; float: right;'>"+((d1<=d2) ? "": lp.copynew)+"</div></div>";
-	//                html += "<>"
+					//                html += "<>"
 					this.dlg("inofr", null, lp.copyConfirmTitle, {"html": html}, 500, 290, [
 						{
 							"text": lp.copyConfirm_overwrite,
@@ -1175,7 +1227,11 @@ MWF.xApplication.cms.Module.NaviCategory = new Class({
 			"styles": this.css.categoryNaviNode
 		}).inject(this.container);
 
-		this.expendNode = new Element("div.expendNode").inject(this.node);
+		this.iconNode = new Element("i.o2icon-files", {
+			"styles": this.css.categoryNaviIcon
+		}).inject(this.node);
+
+		this.expendNode = new Element("div").inject(this.node);
 		this.setExpendNodeStyle();
 		if( this.hasSub ){
 			this.expendNode.addEvent( "click" , function(ev){
@@ -1267,15 +1323,21 @@ MWF.xApplication.cms.Module.NaviCategory = new Class({
 			if( this.isExpended ){
 				if( this.isCurrent ){
 					style = this.css.categoryExpendNode_selected;
+					this.expendNode.addClass("mainColor_color");
 				}else{
 					style = this.css.categoryExpendNode;
+					this.expendNode.removeClass("mainColor_color");
 				}
+				this.expendNode.removeClass("o2icon-triangle_right").addClass("o2icon-triangle_down");
 			}else{
 				if( this.isCurrent ){
 					style = this.css.categoryCollapseNode_selected;
+					this.expendNode.addClass("mainColor_color");
 				}else{
 					style = this.css.categoryCollapseNode;
+					this.expendNode.removeClass("mainColor_color");
 				}
+				this.expendNode.removeClass("o2icon-triangle_down").addClass("o2icon-triangle_right");
 			}
 		}else{
 			style = this.css.emptyExpendNode;
@@ -1303,12 +1365,16 @@ MWF.xApplication.cms.Module.NaviCategory = new Class({
 		this.node.addClass( "mainColor_color" );
 		this.node.addClass( "mainColor_bg_opacity" );
 
+		this.iconNode.setStyles( this.css.categoryNaviIcon_selected );
+		this.iconNode.addClass( "mainColor_color" );
+
 		if( this.hasSub ){
 			if( this.isExpended ){
 				this.expendNode.setStyles( this.css.categoryExpendNode_selected );
 			}else{
 				this.expendNode.setStyles( this.css.categoryCollapseNode_selected );
 			}
+			this.expendNode.addClass("mainColor_color");
 		}
 
 		this.isCurrent = true;
@@ -1330,12 +1396,17 @@ MWF.xApplication.cms.Module.NaviCategory = new Class({
 		this.node.setStyles( this.css.categoryNaviNode );
 		this.node.removeClass( "mainColor_color" );
 		this.node.removeClass( "mainColor_bg_opacity" );
+
+		this.iconNode.setStyles( this.css.categoryNaviIcon );
+		this.iconNode.removeClass( "mainColor_color" );
+
 		if( this.hasSub ){
 			if( this.isExpended ){
 				this.expendNode.setStyles( this.css.categoryExpendNode );
 			}else{
 				this.expendNode.setStyles( this.css.categoryCollapseNode );
 			}
+			this.expendNode.removeClass("mainColor_color");
 		}
 	},
 	loadView: function( searchkey ){
@@ -1489,6 +1560,10 @@ MWF.xApplication.cms.Module.NaviAllView = new Class({
 			"text" : this.app.lp.allDocument
 		}).inject(this.listNode);
 
+		this.iconNode = new Element("i.o2icon-list4", {
+			"styles": this.css.viewNaviIcon_all
+		}).inject(this.node, "top");
+
 		this.node.addEvents({
 			"mouseover": function(){ if ( !_self.isCurrent ){
 				this.setStyles(_self.css.viewNaviNode_all_over);
@@ -1521,6 +1596,9 @@ MWF.xApplication.cms.Module.NaviAllView = new Class({
 		this.node.addClass( "mainColor_color" );
 		this.node.addClass( "mainColor_bg_opacity" );
 
+		this.iconNode.setStyles( this.css.viewNaviIcon_all_selected );
+		this.iconNode.addClass( "mainColor_color" );
+
 		this.isCurrent = true;
 		this.navi.currentObject = this;
 
@@ -1540,6 +1618,9 @@ MWF.xApplication.cms.Module.NaviAllView = new Class({
 		this.node.setStyles( this.css.viewNaviNode_all );
 		this.node.removeClass( "mainColor_color" );
 		this.node.removeClass( "mainColor_bg_opacity" );
+
+		this.iconNode.setStyles( this.css.viewNaviIcon_all );
+		this.iconNode.removeClass( "mainColor_color" );
 	},
 	getCategoryId : function(){
 		return null;
@@ -1582,6 +1663,10 @@ MWF.xApplication.cms.Module.NaviDraftView = new Class({
 			"text" : this.app.lp.draftStatus
 		}).inject(this.listNode);
 
+		this.iconNode = new Element("i.o2icon-list3", {
+			"styles": this.css.viewNaviIcon_all
+		}).inject(this.node, "top");
+
 		this.node.addEvents({
 			"mouseover": function(){ if ( !_self.isCurrent ){
 				this.setStyles(_self.css.viewNaviNode_all_over);
@@ -1614,6 +1699,9 @@ MWF.xApplication.cms.Module.NaviDraftView = new Class({
 		this.node.addClass( "mainColor_color" );
 		this.node.addClass( "mainColor_bg_opacity" );
 
+		this.iconNode.setStyles( this.css.viewNaviIcon_all_selected );
+		this.iconNode.addClass( "mainColor_color" );
+
 		this.isCurrent = true;
 		this.navi.currentObject = this;
 
@@ -1633,6 +1721,9 @@ MWF.xApplication.cms.Module.NaviDraftView = new Class({
 		this.node.setStyles( this.css.viewNaviNode_all );
 		this.node.removeClass( "mainColor_color" );
 		this.node.removeClass( "mainColor_bg_opacity" );
+
+		this.iconNode.setStyles( this.css.viewNaviIcon_all );
+		this.iconNode.removeClass( "mainColor_color" );
 	},
 	getCategoryId : function(){
 		return null;
