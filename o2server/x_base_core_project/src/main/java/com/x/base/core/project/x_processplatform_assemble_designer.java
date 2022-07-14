@@ -55,7 +55,7 @@ import com.x.base.core.project.annotation.ModuleType;
 		"com.x.processplatform.core.entity.element.Embed", "com.x.processplatform.core.entity.element.Service",
 		"com.x.processplatform.core.entity.element.Manual", "com.x.processplatform.core.entity.element.Route",
 		"com.x.processplatform.core.entity.element.End", "com.x.processplatform.core.entity.element.ApplicationDict",
-		"com.x.processplatform.core.entity.element.ApplicationDictItem",
+		"com.x.processplatform.core.entity.element.ApplicationDictItem", "com.x.processplatform.core.entity.element.Publish",
 		"com.x.processplatform.core.entity.element.QueryView", "com.x.processplatform.core.entity.element.QueryStat",
 		"com.x.processplatform.core.entity.element.Mapping", "com.x.query.core.entity.Item",
 		"com.x.cms.core.entity.element.Script", "com.x.portal.core.entity.Script" }, storeJars = {
