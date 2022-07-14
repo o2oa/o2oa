@@ -37,6 +37,8 @@ MWF.xApplication.cms.Module.Main = new Class({
 	},
 	loadApplication: function(callback){
 		//this.controllers = [];
+		this.content.loadCss("../x_component_cms_Module/$Main/default/style.css");
+
 		this.isAdmin = false;
 		this.restActions = MWF.Actions.get("x_cms_assemble_control"); //new MWF.xApplication.cms.Module.Actions.RestActions();
 		this.createNode();
@@ -1188,8 +1190,14 @@ MWF.xApplication.cms.Module.NaviCategory = new Class({
 		}).inject(this.node);
 
 		this.node.addEvents({
-			"mouseover": function(){ if ( !_self.isCurrent )this.setStyles(_self.app.css.categoryNaviNode_over) },
-			"mouseout": function(){ if ( !_self.isCurrent )this.setStyles( _self.app.css.categoryNaviNode ) },
+			"mouseover": function(){ if ( !_self.isCurrent ){
+				this.setStyles(_self.app.css.categoryNaviNode_over);
+				this.addClass("mainColor_bg_opacity");
+			} },
+			"mouseout": function(){ if ( !_self.isCurrent ){
+				this.setStyles( _self.app.css.categoryNaviNode );
+				this.removeClass("mainColor_bg_opacity");
+			} },
 			click : function(){ _self.setCurrent(this);}
 		});
 
@@ -1292,7 +1300,8 @@ MWF.xApplication.cms.Module.NaviCategory = new Class({
 		}
 
 		this.node.setStyles( this.css.categoryNaviNode_selected );
-		this.node.addClass( "mainColor_bg" );
+		this.node.addClass( "mainColor_color" );
+		this.node.addClass( "mainColor_bg_opacity" );
 
 		if( this.hasSub ){
 			if( this.isExpended ){
@@ -1319,7 +1328,8 @@ MWF.xApplication.cms.Module.NaviCategory = new Class({
 	cancelCurrent : function(){
 		this.isCurrent = false;
 		this.node.setStyles( this.css.categoryNaviNode );
-		this.node.removeClass( "mainColor_bg" );
+		this.node.removeClass( "mainColor_color" );
+		this.node.removeClass( "mainColor_bg_opacity" );
 		if( this.hasSub ){
 			if( this.isExpended ){
 				this.expendNode.setStyles( this.css.categoryExpendNode );
@@ -1388,8 +1398,14 @@ MWF.xApplication.cms.Module.NaviView = new Class({
 		}).inject(this.container);
 
 		this.node.addEvents({
-			"mouseover": function(){ if (!_self.isCurrent)this.setStyles(_self.css.viewNaviNode_over) },
-			"mouseout": function(){ if (!_self.isCurrent)this.setStyles( _self.css.viewNaviNode ) },
+			"mouseover": function(){ if (!_self.isCurrent){
+				this.setStyles(_self.css.viewNaviNode_over);
+				this.addClass("mainColor_bg_opacity");
+			} },
+			"mouseout": function(){ if (!_self.isCurrent){
+				this.setStyles( _self.css.viewNaviNode )
+				this.removeClass("mainColor_bg_opacity");
+			} },
 			"click": function (el) {
 				_self.setCurrent();
 			}
@@ -1405,7 +1421,8 @@ MWF.xApplication.cms.Module.NaviView = new Class({
 		}
 
 		this.node.setStyles( this.css.viewNaviNode_selected );
-		this.node.addClass( "mainColor_bg" );
+		this.node.addClass( "mainColor_color" );
+		this.node.addClass( "mainColor_bg_opacity" );
 
 		this.isCurrent = true;
 		this.navi.currentObject = this;
@@ -1424,7 +1441,8 @@ MWF.xApplication.cms.Module.NaviView = new Class({
 	cancelCurrent : function(){
 		this.isCurrent = false;
 		this.node.setStyles( this.css.viewNaviNode );
-		this.node.removeClass( "mainColor_bg" );
+		this.node.removeClass( "mainColor_color" );
+		this.node.removeClass( "mainColor_bg_opacity" );
 	},
 	getCategoryId : function(){
 		return this.category.data.id;
@@ -1472,8 +1490,14 @@ MWF.xApplication.cms.Module.NaviAllView = new Class({
 		}).inject(this.listNode);
 
 		this.node.addEvents({
-			"mouseover": function(){ if ( !_self.isCurrent )this.setStyles(_self.css.viewNaviNode_all_over) },
-			"mouseout": function(){ if ( !_self.isCurrent )this.setStyles( _self.css.viewNaviNode_all ) },
+			"mouseover": function(){ if ( !_self.isCurrent ){
+				this.setStyles(_self.css.viewNaviNode_all_over);
+				this.addClass( "mainColor_bg_opacity" );
+			}},
+			"mouseout": function(){ if ( !_self.isCurrent ){
+				this.setStyles( _self.css.viewNaviNode_all );
+				this.removeClass( "mainColor_bg_opacity" );
+			}},
 			"click": function (el) {
 				_self.setCurrent();
 			}
@@ -1493,8 +1517,9 @@ MWF.xApplication.cms.Module.NaviAllView = new Class({
 			this.navi.currentObject.cancelCurrent();
 		}
 
-		this.node.addClass( "mainColor_bg" );
 		this.node.setStyles( this.css.viewNaviNode_all_selected );
+		this.node.addClass( "mainColor_color" );
+		this.node.addClass( "mainColor_bg_opacity" );
 
 		this.isCurrent = true;
 		this.navi.currentObject = this;
@@ -1512,8 +1537,9 @@ MWF.xApplication.cms.Module.NaviAllView = new Class({
 	},
 	cancelCurrent : function(){
 		this.isCurrent = false;
-		this.node.removeClass( "mainColor_bg" );
 		this.node.setStyles( this.css.viewNaviNode_all );
+		this.node.removeClass( "mainColor_color" );
+		this.node.removeClass( "mainColor_bg_opacity" );
 	},
 	getCategoryId : function(){
 		return null;
@@ -1557,8 +1583,14 @@ MWF.xApplication.cms.Module.NaviDraftView = new Class({
 		}).inject(this.listNode);
 
 		this.node.addEvents({
-			"mouseover": function(){ if ( !_self.isCurrent )this.setStyles(_self.css.viewNaviNode_all_over) },
-			"mouseout": function(){ if ( !_self.isCurrent )this.setStyles( _self.css.viewNaviNode_all ) },
+			"mouseover": function(){ if ( !_self.isCurrent ){
+				this.setStyles(_self.css.viewNaviNode_all_over);
+				this.addClass( "mainColor_bg_opacity" );
+			} },
+			"mouseout": function(){ if ( !_self.isCurrent ){
+				this.setStyles( _self.css.viewNaviNode_all );
+				this.removeClass( "mainColor_bg_opacity" );
+			} },
 			"click": function (el) {
 				_self.setCurrent();
 			}
@@ -1578,8 +1610,9 @@ MWF.xApplication.cms.Module.NaviDraftView = new Class({
 			this.navi.currentObject.cancelCurrent();
 		}
 
-		this.node.addClass( "mainColor_bg" );
 		this.node.setStyles( this.css.viewNaviNode_all_selected );
+		this.node.addClass( "mainColor_color" );
+		this.node.addClass( "mainColor_bg_opacity" );
 
 		this.isCurrent = true;
 		this.navi.currentObject = this;
@@ -1597,8 +1630,9 @@ MWF.xApplication.cms.Module.NaviDraftView = new Class({
 	},
 	cancelCurrent : function(){
 		this.isCurrent = false;
-		this.node.removeClass( "mainColor_bg" );
 		this.node.setStyles( this.css.viewNaviNode_all );
+		this.node.removeClass( "mainColor_color" );
+		this.node.removeClass( "mainColor_bg_opacity" );
 	},
 	getCategoryId : function(){
 		return null;

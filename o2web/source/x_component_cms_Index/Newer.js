@@ -195,8 +195,6 @@ MWF.xApplication.cms.Index.Newer = new Class({
     },
     _createTableContent: function () {
 
-        if( this.formTopNode )this.formTopNode.addClass("mainColor_bg");
-
         var categoryName = this.categoryData ? ( this.categoryData.name || this.categoryData.categoryName ) : this.lp.selectCategory;
         var html = "";
         if( this.options.selectColumnEnable ){
@@ -243,6 +241,8 @@ MWF.xApplication.cms.Index.Newer = new Class({
             "styles": this.css.startOkActionNode,
             "text": this.lp.ok
         }).inject(this.startActionContainer);
+        this.startOkActionNode.addClass("mainColor_bg");
+        this.startOkActionNode.addClass("mainColor_border");
 
         this.cancelActionNode = new Element("div", {
             "styles": this.css.cancelActionNode,
