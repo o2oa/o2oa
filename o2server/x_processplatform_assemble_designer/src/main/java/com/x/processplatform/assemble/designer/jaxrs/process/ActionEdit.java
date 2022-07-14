@@ -2,6 +2,8 @@ package com.x.processplatform.assemble.designer.jaxrs.process;
 
 import java.util.Date;
 
+import com.x.processplatform.core.entity.element.*;
+import com.x.processplatform.core.entity.element.Process;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -15,23 +17,6 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.processplatform.assemble.designer.Business;
 import com.x.processplatform.assemble.designer.MessageFactory;
 import com.x.processplatform.assemble.designer.ThisApplication;
-import com.x.processplatform.core.entity.element.Agent;
-import com.x.processplatform.core.entity.element.Application;
-import com.x.processplatform.core.entity.element.Begin;
-import com.x.processplatform.core.entity.element.Cancel;
-import com.x.processplatform.core.entity.element.Choice;
-import com.x.processplatform.core.entity.element.Delay;
-import com.x.processplatform.core.entity.element.Embed;
-import com.x.processplatform.core.entity.element.End;
-import com.x.processplatform.core.entity.element.Invoke;
-import com.x.processplatform.core.entity.element.Manual;
-import com.x.processplatform.core.entity.element.Merge;
-import com.x.processplatform.core.entity.element.Parallel;
-import com.x.processplatform.core.entity.element.Process;
-import com.x.processplatform.core.entity.element.ProcessVersion;
-import com.x.processplatform.core.entity.element.Route;
-import com.x.processplatform.core.entity.element.Service;
-import com.x.processplatform.core.entity.element.Split;
 import com.x.processplatform.core.entity.element.wrap.WrapProcess;
 
 class ActionEdit extends BaseAction {
@@ -66,6 +51,7 @@ class ActionEdit extends BaseAction {
 			emc.beginTransaction(Manual.class);
 			emc.beginTransaction(Merge.class);
 			emc.beginTransaction(Parallel.class);
+			emc.beginTransaction(Publish.class);
 			emc.beginTransaction(Route.class);
 			emc.beginTransaction(Service.class);
 			emc.beginTransaction(Split.class);
@@ -85,6 +71,7 @@ class ActionEdit extends BaseAction {
 			updateManual(business, wrap.getManualList(), process);
 			updateMerge(business, wrap.getMergeList(), process);
 			updateParallel(business, wrap.getParallelList(), process);
+			updatePublish(business, wrap.getPublishList(), process);
 			updateRoute(business, wrap.getRouteList(), process);
 			updateService(business, wrap.getServiceList(), process);
 			updateSplit(business, wrap.getSplitList(), process);
