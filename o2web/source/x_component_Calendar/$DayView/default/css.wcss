@@ -1,6 +1,4 @@
 {
-
-
   "node": {
     "margin": "10px 0px",
     "overflow": "hidden",
@@ -48,31 +46,37 @@
 
   "calendarPrevDayNode": {
     "height": "30px",
-    "width": "40px",
-    "margin": "10px 0px 10px 40px",
-    "background": "url(../x_component_Calendar/$WeekView/default/icon/left24_gray.png) no-repeat center center",
+    "width": "24px",
+    "margin": "12px 0px 10px 40px",
+    "color": "#999",
+    "font-size": "24px",
+//        "background": "url(../x_component_Calendar/$MonthView/default/icon/left24_gray.png) no-repeat center center",
     "cursor": "pointer",
     "float": "left"
   },
   "calendarPrevDayNode_over": {
-    "background": "url(../x_component_Calendar/$WeekView/default/icon/left24_blue.png) no-repeat center center"
+        "color": "#4990e2"
+    //"background": "url(../x_component_Calendar/$WeekView/default/icon/left24_blue.png) no-repeat center center"
   },
   "calendarPrevDayNode_down": {
-    "background": "url(../x_component_Calendar/$WeekView/default/icon/left24_blue.png) no-repeat center center"
+    //"background": "url(../x_component_Calendar/$WeekView/default/icon/left24_blue.png) no-repeat center center"
   },
   "calendarNextDayNode": {
-    "height": "30px",
-    "width": "40px",
-    "margin": "10px 0px",
-    "background": "url(../x_component_Calendar/$WeekView/default/icon/right24_gray.png) no-repeat center center",
-    "cursor": "pointer",
-    "float": "left"
+        "height": "30px",
+        "width": "24px",
+        "margin": "12px 0px 10px 0px",
+        "color": "#999",
+        "font-size": "24px",
+//        "background": "url(../x_component_Calendar/$MonthView/default/icon/right24_gray.png) no-repeat center center",
+        "cursor": "pointer",
+        "float": "left"
   },
   "calendarNextDayNode_over": {
-    "background": "url(../x_component_Calendar/$WeekView/default/icon/right24_blue.png) no-repeat center center"
+        "color": "#4990e2"
+        //"background": "url(../x_component_Calendar/$WeekView/default/icon/right24_blue.png) no-repeat center center"
   },
   "calendarNextDayNode_down": {
-    "background": "url(../x_component_Calendar/$WeekView/default/icon/right24_blue.png) no-repeat center center"
+    //"background": "url(../x_component_Calendar/$WeekView/default/icon/right24_blue.png) no-repeat center center"
   },
   "calendarTitleTextNode": {
     "line-height": "48px",

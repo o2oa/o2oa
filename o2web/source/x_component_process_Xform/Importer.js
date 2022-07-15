@@ -142,7 +142,7 @@ MWF.xApplication.process.Xform.Importer = MWF.APPImporter =  new Class(
                     this.fireEvent("loadImporter")
                 }.bind(this),
                 "onBeforeImport": function (importedData) {
-                    this.fireEvent("beforeImport", importedData)
+                    this.fireEvent("beforeImport", [importedData])
                 }.bind(this),
                 "onValidImport": function (arg) {
                     this.fireEvent("validImport", [arg])

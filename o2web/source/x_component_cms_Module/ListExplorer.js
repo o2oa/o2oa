@@ -239,12 +239,15 @@ MWF.xApplication.cms.Module.ListExplorer = new Class({
             "styles": this.css.searchBarNode
         }).inject(this.searchBarAreaNode);
 
-        this.searchBarActionNode = new Element("div", {
+        this.searchBarActionNode = new Element("div.o2icon-search2", {
             "styles": this.css.searchBarActionNode
         }).inject(this.searchBarNode);
-        this.searchBarResetActionNode = new Element("div", {
+        this.searchBarActionNode.addClass("mainColor_color");
+
+        this.searchBarResetActionNode = new Element("div.o2icon-back", {
             "styles": this.css.searchBarResetActionNode
         }).inject(this.searchBarNode);
+        this.searchBarResetActionNode.addClass("mainColor_color");
         this.searchBarResetActionNode.setStyle("display","none");
 
         this.searchBarInputBoxNode = new Element("div", {
@@ -1353,10 +1356,16 @@ MWF.xApplication.cms.Module.ListExplorer.DefaultDocument = new Class({
 
         if (this.deleteNode){
             this.deleteNode.addEvents({
-                "mouseover": function(){this.deleteNode.setStyles(this.css.actionDeleteNode_over);}.bind(this),
-                "mouseout": function(){this.deleteNode.setStyles(this.css.actionDeleteNode);}.bind(this),
-                "mousedown": function(){this.deleteNode.setStyles(this.css.actionDeleteNode_down);}.bind(this),
-                "mouseup": function(){this.deleteNode.setStyles(this.css.actionDeleteNode_over);}.bind(this),
+                "mouseover": function(){
+                    this.deleteNode.setStyles(this.css.actionDeleteNode_over);
+                    this.deleteNode.addClass("mainColor_color");
+                }.bind(this),
+                "mouseout": function(){
+                    this.deleteNode.setStyles(this.css.actionDeleteNode);
+                    this.deleteNode.removeClass("mainColor_color");
+                }.bind(this),
+                // "mousedown": function(){this.deleteNode.setStyles(this.css.actionDeleteNode_down);}.bind(this),
+                // "mouseup": function(){this.deleteNode.setStyles(this.css.actionDeleteNode_over);}.bind(this),
                 "click": function(e){
                     this.remove(e);
                     e.stopPropagation();
@@ -1366,10 +1375,16 @@ MWF.xApplication.cms.Module.ListExplorer.DefaultDocument = new Class({
 
         if (this.editNode){
             this.editNode.addEvents({
-                "mouseover": function(){this.editNode.setStyles(this.css.actionEditNode_over);}.bind(this),
-                "mouseout": function(){this.editNode.setStyles(this.css.actionEditNode);}.bind(this),
-                "mousedown": function(){this.editNode.setStyles(this.css.actionEditNode_down);}.bind(this),
-                "mouseup": function(){this.editNode.setStyles(this.css.actionEditNode_over);}.bind(this),
+                "mouseover": function(){
+                    this.editNode.setStyles(this.css.actionEditNode_over);
+                    this.editNode.addClass("mainColor_color");
+                }.bind(this),
+                "mouseout": function(){
+                    this.editNode.setStyles(this.css.actionEditNode);
+                    this.editNode.removeClass("mainColor_color");
+                }.bind(this),
+                // "mousedown": function(){this.editNode.setStyles(this.css.actionEditNode_down);}.bind(this),
+                // "mouseup": function(){this.editNode.setStyles(this.css.actionEditNode_over);}.bind(this),
                 "click": function(e){
                     this.openDocument( e, true );
                     e.stopPropagation();
@@ -1381,9 +1396,9 @@ MWF.xApplication.cms.Module.ListExplorer.DefaultDocument = new Class({
     setActions: function(){
         if( this.actionAreaNode ){
             if( this.explorer.options.isAdmin ){
-                this.deleteNode = new Element("div", {"styles": this.css.actionDeleteNode, "title": this.explorer.app.lp["delete"]}).inject(this.actionAreaNode);
+                this.deleteNode = new Element("div.o2icon-delete", {"styles": this.css.actionDeleteNode, "title": this.explorer.app.lp["delete"]}).inject(this.actionAreaNode);
 
-                this.editNode = new Element("div", {"styles": this.css.actionEditNode, "title": this.explorer.app.lp.edit}).inject(this.actionAreaNode);
+                this.editNode = new Element("div.o2icon-edit2", {"styles": this.css.actionEditNode, "title": this.explorer.app.lp.edit}).inject(this.actionAreaNode);
             }
         }
     },

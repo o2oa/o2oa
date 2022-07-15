@@ -77,6 +77,7 @@ MWF.xApplication.HotArticle.Main = new Class({
         this.topNode = new Element("div.topNode", {
             "styles": this.css.topNode
         }).inject(this.topContainerNode);
+        this.topNode.addClass("mainColor_bg")
 
         this.topIconNode = new Element("div", {
             "styles": this.css.topIconNode
