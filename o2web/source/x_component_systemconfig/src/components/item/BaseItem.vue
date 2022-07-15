@@ -13,7 +13,7 @@
 </template>
 
 <script setup>
-import {defineProps, ref} from 'vue';
+import {ref} from 'vue';
 import {lp} from '@o2oa/component';
 
 const emit = defineEmits(['changeConfig']);
@@ -39,46 +39,7 @@ function toggleEditor(){
 </script>
 
 <style scoped>
-
-.item_title{
-  height: 30px;
-  line-height: 30px;
-  padding: 20px 0 0 30px;
-  font-size: 16px;
-  font-weight: bold;
-  clear: both;
-  color: rgb(102, 102, 102);
-}
-.item_info{
-  overflow: hidden;
-  padding: 5px 30px;
-  font-size: 14px;
-  color: rgb(153, 153, 153);
-  clear: both;
-}
-.item_value{
-  overflow: hidden;
-  padding-right: 30px;
-  font-size: 14px;
-  color: rgb(153, 153, 153);
-  clear: both;
-  display: inline;
-}
 .item_input{
-  /*border-radius: 100px;*/
-  /*border: 1px solid #cccccc;*/
-  /*height: 24px;*/
-  /*line-height: 24px;*/
   width: 300px;
-  /*padding: 0 10px;*/
-  /*font-size: 14px;*/
-  /*margin-right: 20px;*/
-}
-button {
-  border-radius: 100px;
-  border: 0;
-  padding: 6px 20px;
-  cursor: pointer;
-  margin-left: 10px;
 }
 </style>

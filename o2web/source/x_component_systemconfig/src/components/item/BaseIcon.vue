@@ -17,7 +17,7 @@
 
 <script setup>
 import {o2} from '@o2oa/component';
-import {defineProps, defineEmits, ref} from 'vue';
+import {ref} from 'vue';
 import BaseIconComponent from './BaseIconComponent.vue';
 import BaseIconGroup from './BaseIconGroup.vue';
 import BaseIconPortal from './BaseIconPortal.vue';
@@ -44,13 +44,19 @@ const props = defineProps({
   clearText: { type: String, default: 'clear' }
 });
 
+const itemTypeObj = {
+  group: ()=>props.value.type==='group',
+  portal: ()=>props.value.hasOwnProperty('portalCategory'),
+  component: ()=>props.value.type==='system' || props.value.type==='custom',
+  infor: ()=>props.value.hasOwnProperty('documentType'),
+  query: ()=>props.value.hasOwnProperty('queryCategory'),
+  process: ()=>props.value.hasOwnProperty('applicationCategory')
+}
+
 function getItemNameType(){
-  if (props.value.type==='group') return 'group';
-  if (props.value.hasOwnProperty('portalCategory')) return 'portal';
-  if (props.value.type==='system' || props.value.type==='custom') return 'component';
-  if (props.value.hasOwnProperty('documentType')) return 'infor';
-  if (props.value.hasOwnProperty('queryCategory')) return 'query';
-  if (props.value.hasOwnProperty('applicationCategory')) return 'process';
+  for (const f of Object.keys(itemTypeObj)){
+    if (itemTypeObj[f]()) return f;
+  }
 }
 const itemType = ref(getItemNameType());
 

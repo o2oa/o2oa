@@ -94,6 +94,31 @@ const contentComponent = computed(() => {
   flex-direction: column;
   width: 100%;
 }
+.item_title{
+  height: 30px;
+  line-height: 30px;
+  padding: 20px 0 0 30px;
+  font-size: 16px;
+  font-weight: bold;
+  clear: both;
+  color: rgb(102, 102, 102);
+}
+.item_info{
+  overflow: hidden;
+  padding: 5px 30px;
+  font-size: 14px;
+  color: rgb(153, 153, 153);
+  clear: both;
+}
+.item_value{
+  overflow: hidden;
+  padding-right: 30px;
+  font-size: 14px;
+  color: rgb(153, 153, 153);
+  clear: both;
+  display: inline;
+}
+
 button{
   border-radius: 100px;
   border: 0;

@@ -6,10 +6,10 @@ function getMenuJson(){
             "icon": "config",
             "expand": true,
             'children': [
-                {'title': lp.systemInfo, 'component': 'SystemInfo', 'icon': 'config', "expand": true},
-                {'title': lp.uiConfig, 'component': 'UIConfig', 'icon': 'ui'},
+                {'title': lp.systemInfo, 'component': 'BaseSystemInfo', 'icon': 'config', "expand": true},
+                {'title': lp.uiConfig, 'component': 'BaseUIConfig', 'icon': 'ui'},
                 // {'title': lp.componentDeploy, 'component': 'ComponentDeploy', 'icon': 'component'},
-                {'title': lp.resourceDeploy, 'component': 'ResourceDeploy', 'icon': 'upload' },
+                {'title': lp.resourceDeploy, 'component': 'BaseResourceDeploy', 'icon': 'upload' },
                 // {'title': lp.resourceDeploy, 'component': 'WebDeploy', 'icon': 'upload' },
                 // {'title': lp.serviceDeploy, 'component': 'ServiceDeploy', 'icon': 'deploy' }
             ]
@@ -18,7 +18,7 @@ function getMenuJson(){
             'title': lp.securityConfig,
             "icon": "security",
             'children': [
-                {'title': lp.passwordConfig, 'component': '', 'icon': 'password' },
+                {'title': lp.passwordConfig, 'component': 'SecurityPasswordConfig', 'icon': 'password' },
                 {'title': lp.loginConfig, 'component': '', 'icon': 'signin' },
                 {'title': lp.ssoConfig, 'component': '', 'icon': 'sso' },
                 {'title': lp.logConfig, 'component': '', 'icon': 'log' }

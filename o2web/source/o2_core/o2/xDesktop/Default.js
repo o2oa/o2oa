@@ -146,8 +146,6 @@ o2.xDesktop.Default = new Class({
                 var iconsPath = this.path+"icons.json";
                 o2.JSON.get(iconsPath, function(json) {
                     this.iconsJson = json;
-                    this.loadDefaultLnk();
-
                     this.loadStatus();
 
                     if (cb) cb();
@@ -366,7 +364,10 @@ o2.xDesktop.Default = new Class({
     },
     loadDefaultLnk: function(){
         if (this.status && this.status.flatLnks && this.status.flatLnks.length){
-
+            this.status.flatLnks.each(function(lnkJson){
+                console.log(lnkJson.name)
+                this.addLnk(lnkJson);
+            }.bind(this));
         }else{
             o2.JSON.get(this.path+"defaultLnk.json", function(defaultLnk){
                 defaultLnk.each(function(lnkJson){
@@ -375,8 +376,7 @@ o2.xDesktop.Default = new Class({
             }.bind(this));
         }
     },
-    loadMenuData: function(){
-        debugger;
+    loadMenuData: function(callback){
         this.menuData = this.status.menuData;
         o2.UD.getPublicData("clearCustomMenuDataFlag", function(data){
             if (data && !!data.id && data.id != this.status.clearCustomMenuDataFlag){
@@ -388,6 +388,8 @@ o2.xDesktop.Default = new Class({
                 if (fData){
                     this.status.menuData=fData;
                     this.menuData = this.status.menuData;
+                    if (this.menuData.linkList) this.status.flatLnks = this.menuData.linkList;
+                    if (callback) callback();
                 }else{
                     if (!this.status.menuData){
                         o2.UD.getPublicData("defaultMainMenuData", function(dData){
@@ -395,7 +397,11 @@ o2.xDesktop.Default = new Class({
                                 this.status.menuData=dData;
                                 this.menuData = this.status.menuData;
                             }
+                            if (this.status.menuData && this.status.menuData.linkList) this.status.flatLnks = this.status.menuData.linkList;
+                            if (callback) callback();
                         }.bind(this));
+                    }else{
+                        if (callback) callback();
                     }
                 }
             }.bind(this));
@@ -403,7 +409,9 @@ o2.xDesktop.Default = new Class({
     },
     loadStatus: function(){
         if (this.status){
-            this.loadMenuData();
+            this.loadMenuData(function(){
+                this.loadDefaultLnk();
+            }.bind(this));
             //this.menuData = this.status.menuData;
             var keys = Object.keys(this.status.apps);
             if (this.status.apps && keys.length){
@@ -440,11 +448,11 @@ o2.xDesktop.Default = new Class({
 
             if (this.status.widgets){/* nothing to do */}
 
-            if (this.status.flatLnks && this.status.flatLnks.length){
-                this.status.flatLnks.each(function(lnkJson){
-                    this.addLnk(lnkJson);
-                }.bind(this));
-            }
+            // if (this.status.flatLnks && this.status.flatLnks.length){
+            //     this.status.flatLnks.each(function(lnkJson){
+            //         this.addLnk(lnkJson);
+            //     }.bind(this));
+            // }
         }
     },
     addLnk: function(lnkData, targetLnk, position){

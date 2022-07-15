@@ -12,8 +12,6 @@
 </template>
 
 <script setup>
-import {layout} from '@o2oa/component';
-import {defineProps, ref} from 'vue';
 import BaseIcon from './BaseIcon.vue'
 
 const props = defineProps({

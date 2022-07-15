@@ -19,7 +19,7 @@
 </template>
 
 <script setup>
-import {defineProps, defineEmits, ref} from 'vue';
+import {ref} from 'vue';
 
 const uploadNode = ref();
 const emit = defineEmits(['upload', 'remove']);

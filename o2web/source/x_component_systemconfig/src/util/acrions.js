@@ -35,6 +35,15 @@ async function saveConfig(name, path, value) {
         fileContent: JSON.stringify(config, null, "\t")
     });
 }
+async function saveConfigData(name, data) {
+    const config = (configs[name]) ? configs[name] : (await loadConfig(name));
+    Object.assign(config, data);
+    console.log(config);
+    o2.Actions.load('x_program_center').ConfigAction.save({
+        fileName: `${name}.json`,
+        fileContent: JSON.stringify(config, null, "\t")
+    });
+}
 
 async function loadComponents() {
     const components = await o2.Actions.load("x_component_assemble_control").ComponentAction.listAll();
@@ -78,24 +87,15 @@ async function deployWebResource(data) {
     const result = await action.dispatchResource(data.overwrite, formData, file);
     return result.data;
 }
-function getDefaultMenuData(){
+
+function getPublicData(name){
     return new Promise((resolve)=>{
-        o2.UD.getPublicData("defaultMainMenuData", dData=>resolve(dData));
+        o2.UD.getPublicData(name, dData=>resolve(dData));
     });
 }
-function getForceMenuData(){
+function clearPublicData(name){
     return new Promise((resolve)=>{
-        o2.UD.getPublicData("forceMainMenuData", dData=>resolve(dData));
-    });
-}
-function clearDefaultMenuData(){
-    return new Promise((resolve)=>{
-        o2.UD.deletePublicData("defaultMainMenuData", dData=>resolve(dData));
-    });
-}
-function clearForceMenuData(){
-    return new Promise((resolve)=>{
-        o2.UD.deletePublicData("forceMainMenuData", dData=>resolve(dData));
+        o2.UD.deletePublicData(name, dData=>resolve(dData));
     });
 }
 
@@ -122,16 +122,15 @@ async function loadQueryApplication() {
 export {
     getConfig,
     saveConfig,
+    saveConfigData,
     loadComponents,
     removeComponent,
     getComponent,
     saveComponent,
     dispatchComponentFile,
     deployWebResource,
-    getDefaultMenuData,
-    getForceMenuData,
-    clearDefaultMenuData,
-    clearForceMenuData,
+    getPublicData,
+    clearPublicData,
     loadProcessApplication,
     loadPortalApplication,
     loadInforApplication,

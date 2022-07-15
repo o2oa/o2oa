@@ -167,8 +167,46 @@ o2.xApplication.systemconfig.LP = {
             "query": "数据",
 
             "defaultMenu": "恢复默认菜单状态"
+        },
+        "deleteLink": "删除常用应用快捷方式"
+    },
+    "_passwordConfig": {
+        "personPassword": "用户密码设置",
+        "adminPassword": "管理员密码设置",
+        "saveSuccess": "配置保存成功",
+        "passwordScript": "密码脚本",
+
+        "newPersonPassword": "新建用户的初始密码",
+        "newPersonPasswordInfo": "创建新建用户时，会按以下设定生成用户初始密码，用户可登录系统后自行修改",
+        "initialPassword": "用户初始密码",
+        "initialPasswordText": "输入初始密码",
+        "initialPasswordTypeOptions":{
+            "mobile": "手机号码后六位",
+            "unique": "唯一编码后六位",
+            "employee": "人员工号",
+            "pinyin": "人员名称全拼",
+            "text": "固定口令",
+            'script': "通过脚本自定义初始密码",
+        },
+        "initialPasswordType": {
+            "mobileScript": "return person.getMobile().slice(-6)",
+            "uniqueScript": "return person.getunique().slice(-6)",
+            "employeesScript":"return person.getEmployee()",
+            "pinyinScript":"return person.getPinyin()",
+            "textInfo": "在下面的输入框中输入的密码，将作为新创建用户的初始密码。",
+            'scriptInfo': "在下面的编辑器中输入脚本，返回一个字符串值，作为新创建用户的初始密码。您可以使用person对象获取人员相关信息。如将人员姓名全拼作为初始密码，可使用脚本：return person.getPinyin()"
         }
 
+
+        //
+        // "initialPasswordType": [
+        //     {"label": "mobile", "value": "mobile", "text": "手机号码后六位"},
+        //     {"label": "unique", "value": "unique", "text": "唯一编码后六位"},
+        //     {"label": "employee", "value": "employee", "text": "人员工号后六位"},
+        //     {"label": "pinyin", "value": "pinyin", "text": "人员名称全拼"},
+        //     {"label": "text", "value": "text", "text": "固定口令"},
+        //     {"label": "script", "value": "script", "text": "通过脚本自定义初始密码"}
+        // ]
     }
 
 }

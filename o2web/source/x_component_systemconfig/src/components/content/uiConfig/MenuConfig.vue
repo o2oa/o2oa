@@ -1,6 +1,11 @@
 <template>
   <div class="item_menu_config" ref="menuConfigNode" :style="computeHeight">
-    <div class="item_lnk_area deepColor_bg"></div>
+    <div class="item_lnk_area deepColor_bg" @dragover="dragoverLink" @dragenter="dragenterLink" @dragleave="dragleaveLink"  @drop="dropLink">
+      <ul class="item_link_ul" v-if="linkList.length">
+        <MenuLink v-for="item in linkList" :key="item.uuid" :data="item" @dragItem="dragItem" @dragItemEnd="dragItemEnd" @loaded="recordLinkItems" @ungroup="ungroup" @removeItem="removeLink"></MenuLink>
+      </ul>
+      <div ref="linkPositionNode" class="item_link_position"></div>
+    </div>
     <div class="item_menu_area">
       <ul class="item_menu_title">
         <li :class="(currentList==='app') ? 'mainColor_bg' : ''"
@@ -73,31 +78,29 @@
 </template>
 
 <script setup>
-import {ref, computed, unref} from 'vue';
-import {o2, lp, layout, component} from '@o2oa/component';
+import {ref, computed, onUpdated} from 'vue';
+import {o2, lp, component} from '@o2oa/component';
 import {
-  getForceMenuData,
-  getDefaultMenuData,
-  clearDefaultMenuData,
-  clearForceMenuData,
+  getPublicData,
+  clearPublicData,
   loadComponents,
   loadProcessApplication,
   loadPortalApplication,
   loadInforApplication,
   loadQueryApplication } from '@/util/acrions';
-import MenuItem from './MenuItem.vue'
+import MenuItem from './MenuItem.vue';
+import MenuLink from './MenuLink.vue';
 import {isOverlap} from '@/util/common';
 
 const menuConfigNode = ref();
 const defaultMenuData = ref();
 const forceMenuData = ref();
-// const defaultLinkData = ref();
-// const forceLinkData = ref();
 
 const menuList_app = ref([]);
 const menuList_process = ref([]);
 const menuList_infor = ref([]);
 const menuList_query = ref([]);
+const linkList = ref([]);
 
 const currentList = ref('app');
 const currentMenuType = ref('force');
@@ -124,7 +127,7 @@ const currentTitleForce = computed(()=>{
 let menuDataPromise = null;
 const getMenuData = ()=>{
   if (menuDataPromise) return menuDataPromise;
-  menuDataPromise = Promise.all([getDefaultMenuData(), getForceMenuData()]).then((dataArr)=>{
+  menuDataPromise = Promise.all([getPublicData('defaultMainMenuData'), getPublicData('forceMainMenuData')]).then((dataArr)=>{
     defaultMenuData.value = dataArr[0];
     forceMenuData.value = dataArr[1];
     currentMenuType.value = (dataArr[1]) ? 'force' : 'default';
@@ -158,7 +161,7 @@ const loadForceMenuData = ()=>{
 }
 const clearDefaultMenu = (e)=>{
   component.confirm("warn", e, lp._uiConfig.clearDefaultMenuDataTitle, lp._uiConfig.clearDefaultMenuData, 350, 170, (dlg)=>{
-    clearDefaultMenuData().then(()=>{
+    clearPublicData('defaultMainMenuData').then(()=>{
       defaultMenuData.value = null;
       component.notice(lp._uiConfig.clearDefaultMenuDataSuccess, "success");
       if (currentMenuType.value==='force'){
@@ -174,7 +177,7 @@ const clearDefaultMenu = (e)=>{
 }
 const clearForceMenu = (e)=>{
   component.confirm("warn", e, lp._uiConfig.clearForceMenuDataTitle, lp._uiConfig.clearForceMenuData, 350, 170, (dlg)=>{
-    clearForceMenuData().then(()=>{
+    clearPublicData('forceMainMenuData').then(()=>{
       forceMenuData.value = null;
       component.notice(lp._uiConfig.clearForceMenuDataSuccess, "success");
       if (currentMenuType.value==='force'){
@@ -188,7 +191,6 @@ const clearForceMenu = (e)=>{
     dlg.close();
   }, null, component.content);
 }
-
 const clearUserMenu = (e)=>{
   component.confirm("warn", e, lp._uiConfig.clearUserMenuData, lp._uiConfig.clearUserMenuDataConfirm, 380, 120, (dlg)=>{
     const id = o2.uuid();
@@ -211,12 +213,14 @@ const retrieveMenuData = (type)=>{
     }
   });
 }
+
 const saveMenuData = (name)=>{
   const menuData = {
     "appList": retrieveMenuData('app'),
     "processList": retrieveMenuData('process'),
     "inforList": retrieveMenuData('infor'),
     "queryList": retrieveMenuData('query'),
+    "linkList": linkList.value,
   };
   const info = (name === 'forceMainMenuData') ? lp._uiConfig.saveForceMenuDataSuccess : lp._uiConfig.saveDefaultMenuDataSuccess
   o2.UD.putPublicData(name, menuData, ()=>{
@@ -284,8 +288,15 @@ const loadMenuList = async (listType, menuData)=>{
       menuList_query.value = list.concat(olist);
       break;
   }
+  if (!mData.linkList){
+    o2.JSON.get('../o2_core/o2/xDesktop/$Default/defaultLnk.json', (data)=>{
+      linkList.value = data;
+      mData.linkList = linkList.value;
+    });
+  }else{
+    linkList.value = mData.linkList
+  }
 }
-
 
 loadMenuList('app');
 
@@ -352,15 +363,20 @@ function dragover(e){
   e.preventDefault();
   e.stopPropagation();
   if (dragging){
-    const rect = {
-      x: e.clientX+dragging.offset.x+18,
-      y: e.clientY+dragging.offset.y+18,
-      width: dragging.size.x-36,
-      height: dragging.size.y-36,
-    }
-    const overItem = checkDargOverItem(rect);
-    if (!overItem){
-      checkDargPosition(rect)
+    const draggingData = dragging.node.retrieve('data');
+    if (draggingData.id){
+      const rect = {
+        x: e.clientX+dragging.offset.x+18,
+        y: e.clientY+dragging.offset.y+18,
+        width: dragging.size.x-36,
+        height: dragging.size.y-36,
+      }
+      const overItem = checkDargOverItem(rect);
+      if (!overItem){
+        checkDargPosition(rect)
+      }
+    }else{
+      e.dataTransfer.dropEffect = "none";
     }
   }
 }
@@ -412,6 +428,182 @@ const ungroup = (e)=>{
     });
   }
 }
+
+//link
+const linkPositionNode = ref();
+const linkItems = [];
+const recordLinkItems = (node)=>{
+  const iconNode = node.querySelector('.item_lnk_icon');
+  const rect = iconNode.getBoundingClientRect();
+  linkItems.push({node, rect, iconNode});
+};
+
+const checkDargLinkPosition = (rect)=>{
+  const p = {
+    x: rect.x+rect.width/2,
+    y: rect.y+rect.height/2
+  }
+  linkPositionNode.value.show();
+  for (const item of linkItems){
+    if (p.y<item.rect.y && p.y>item.rect.y-20){
+      linkPositionNode.value.inject(item.node, "before");
+      break;
+    }else if(p.y>item.rect.y+item.rect.width && p.y<item.rect.y+item.rect.width+20){
+      linkPositionNode.value.inject(item.node, "after");
+      break;
+    }
+  }
+}
+
+const dragenterLink = ()=>{
+  // linkPositionNode.value.show();
+  // linkPositionNode.value.inject(menuConfigNode.value.querySelector('.item_link_ul'));
+}
+
+const dragleaveLink = (e)=>{
+  // if (!e.currentTarget.contains(e.target)){
+  //   linkPositionNode.value.hide();
+  // }
+}
+
+const dragoverLink = (e)=>{
+  e.preventDefault();
+  e.stopPropagation();
+  if (dragging){
+    const draggingData = dragging.node.retrieve('data');
+    if (draggingData.type==='group' ){
+      e.dataTransfer.dropEffect = "none";
+    }else{
+      e.dataTransfer.dropEffect = "move";
+
+      const rect = {
+        x: e.clientX+dragging.offset.x+18,
+        y: e.clientY+dragging.offset.y+18,
+        width: dragging.size.x-36,
+        height: dragging.size.y-36,
+      }
+      checkDargLinkPosition(rect)
+    }
+  }
+}
+
+const itemTypeObj = {
+  group: data=>data.type==='group',
+  portal: data=>data.hasOwnProperty('portalCategory'),
+  component: data=>data.type==='system' || data.type==='custom',
+  infor: data=>data.hasOwnProperty('documentType'),
+  query: data=>data.hasOwnProperty('queryCategory'),
+  process: data=>data.hasOwnProperty('applicationCategory')
+}
+
+const getItemType = (data)=>{
+  for (const f of Object.keys(itemTypeObj)){
+    if (itemTypeObj[f](data)) return f;
+  }
+}
+const createLinkData = (data)=>{
+  const type = getItemType(data);
+  switch (type){
+    case 'component':
+      return {
+        name: data.path,
+        title: data.title,
+        uuid: o2.uuid()
+      };
+    case 'portal':
+      return {
+        name: 'portal.Portal',
+        title: data.name,
+        iconData: data.icon,
+        appType: 'portal',
+        options: {
+          portalId: data.id,
+          appId: 'portal.Portal'+data.id
+        },
+        uuid: o2.uuid()
+      };
+    case 'infor':
+      return {
+        name: 'cms.Module',
+        title: data.appName,
+        iconData: data.appIcon,
+        appType: 'cms',
+        options: {
+          columnData: {
+            id: data.id
+          },
+          id: data.id,
+          appId: 'cms.Modulebe'+data.id
+        },
+        uuid: o2.uuid()
+      };
+    case 'query':
+      return {
+        name: 'query.Query',
+        title: data.name,
+        iconData: data.icon,
+        appType: 'query',
+        options: {
+          id: data.id,
+          appId: 'query.Query'+data.id
+        },
+        uuid: o2.uuid()
+      };
+    case 'process':
+      return {
+        name: 'process.Application',
+        title: data.name,
+        iconData: data.icon,
+        appType: 'process',
+        options: {
+          id: data.id,
+          appId: 'process.Application'+data.id
+        },
+        uuid: o2.uuid()
+      }
+  }
+}
+
+const checkLinkList = ()=>{
+  linkItems.splice(0, linkItems.length);
+  const ul = menuConfigNode.value.querySelector('.item_link_ul');
+  if (ul){
+    const nodeList = menuConfigNode.value.querySelector('.item_link_ul').querySelectorAll('li');
+    nodeList.forEach((node)=>{
+      const iconNode = node.querySelector('.item_lnk_icon');
+      const rect = iconNode.getBoundingClientRect();
+      linkItems.push({node, rect, iconNode});
+    });
+    linkPositionNode.value.inject(ul);
+  }
+}
+
+const dropLink = (e)=>{
+  e.preventDefault();
+  e.stopPropagation();
+  if (dragging){
+    const draggingData = dragging.node.retrieve('data');
+    const linkData = (draggingData.id) ? createLinkData(draggingData) : draggingData;
+
+    const idx = linkList.value.indexOf(linkData);
+    if (idx!==-1) linkList.value.splice(idx, 1);
+
+    const positionNode = linkPositionNode.value.getPrevious();
+    if (positionNode){
+      const postionData = positionNode.retrieve('data');
+      linkList.value.splice(linkList.value.indexOf(postionData)+1, 0, linkData);
+    }else{
+      linkList.value.unshift(linkData);
+    }
+    linkPositionNode.value.hide();
+  }
+}
+
+const removeLink = (linkItem)=>{
+  linkList.value.erase(linkItem);
+}
+
+onUpdated(checkLinkList);
 
 </script>
 
@@ -503,6 +695,19 @@ li.item_menu_refresh_icon{
   text-align: center;
   cursor: pointer;
 }
+.item_link_ul{
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.item_link_ul li{
+  height: 60px;
+  cursor: pointer;
+  padding: 5px 0;
+  text-align: center;
+  user-select: none;
+  overflow: hidden;
+}
 .item_menu_div{
 
 }
@@ -511,5 +716,15 @@ li.item_menu_refresh_icon{
   height: 32px;
   font-size: 12px;
   color: #333333;
+}
+.item_link_position{
+  height: 2px;
+  background-color: #ffffff;
+  border-radius: 2px;
+  width: 70px;
+  margin: auto;
+  display: none;
+  position: absolute;
+  margin-left: 5px;
 }
 </style>

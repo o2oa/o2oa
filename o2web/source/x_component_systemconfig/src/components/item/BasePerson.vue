@@ -10,7 +10,6 @@
 
 <script setup>
 import {o2, component} from '@o2oa/component';
-import {defineProps, defineEmits} from 'vue';
 
 const emit = defineEmits(['update:value']);
 

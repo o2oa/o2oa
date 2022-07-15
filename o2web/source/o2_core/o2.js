@@ -2110,7 +2110,7 @@ if (!window.o2) {
                                     if (!layout.session) layout.session = {};
                                     layout.session.token = xToken;
                                 }
-                                if (layout.config && layout.config.sessionStorageEnable) sessionStorage.setItem("o2LayoutSessionToken", xToken);
+                                if (layout.config && layout.config.sessionStorageEnable && window.sessionStorage) window.sessionStorage.setItem("o2LayoutSessionToken", xToken);
                             }
                             if (!loadAsync){
                                 var r = o2.runCallback(callback, "success", [responseJSON], null);
@@ -2160,7 +2160,7 @@ if (!window.o2) {
                         if (layout["debugger"]) {
                             res.setHeader("x-debugger", "true");
                         }
-                        var token = (layout.config && layout.config.sessionStorageEnable) ? sessionStorage.getItem("o2LayoutSessionToken") : "";
+                        var token = (layout.config && layout.config.sessionStorageEnable && window.sessionStorage) ? window.sessionStorage.getItem("o2LayoutSessionToken") : "";
                         if (!token) {
                             if (layout.session && (layout.session.user || layout.session.token)) {
                                 token = layout.session.token;

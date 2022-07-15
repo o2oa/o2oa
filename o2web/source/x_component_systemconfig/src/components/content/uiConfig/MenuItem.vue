@@ -20,7 +20,7 @@
 </template>
 
 <script setup>
-import {defineProps, onMounted, ref, defineEmits, nextTick, computed, onUpdated} from 'vue';
+import {onMounted, ref, nextTick, onUpdated} from 'vue';
 import {o2} from "@o2oa/component";
 import BaseIcon from '@/components/item/BaseIcon.vue';
 import {isOverlap} from "@/util/common";
@@ -95,7 +95,6 @@ function getAppName(){
 }
 
 onUpdated(()=>{
-  console.log(111111111111111111111)
   getAppName();
 });
 
