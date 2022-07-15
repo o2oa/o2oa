@@ -30,6 +30,7 @@ o2.widget.Paging = new Class({
         hasInfor: false,
         inforPosition: "bottom",
         inforTextStyle: "",
+        useMainColor: false
     },
     initialize: function (node, options, css) {
 
@@ -118,6 +119,7 @@ o2.widget.Paging = new Class({
                         "styles": this.css.currentPage,
                         "text" : i
                     }).inject(this.pageTurnContainer);
+                    if(this.options.useMainColor)this.currentPage.addClass("mainColor_bg");
                 } else {
                     this.pageTurnNodes.push( this.createPageTurnNode(i) );
                 }
@@ -151,10 +153,12 @@ o2.widget.Paging = new Class({
         if (this.options.text.firstPage) firstPage.set("text", this.options.text.firstPage);
         firstPage.addEvents({
             "mouseover": function (ev) {
-                ev.target.setStyles(this.css.firstPage_over)
+                ev.target.setStyles(this.css.firstPage_over);
+                if( this.options.useMainColor )ev.target.addClass("mainColor_bg");
             }.bind(this),
             "mouseout": function (ev) {
-                ev.target.setStyles(this.css.firstPage)
+                ev.target.setStyles(this.css.firstPage);
+                if( this.options.useMainColor )ev.target.removeClass("mainColor_bg");
             }.bind(this),
             "click": function () {
                 this.gotoPage(1)
@@ -168,10 +172,12 @@ o2.widget.Paging = new Class({
         if (this.options.text.lastPage) lastPage.set("text", this.options.text.lastPage);
         lastPage.addEvents({
             "mouseover": function (ev) {
-                ev.target.setStyles(this.css.lastPage_over)
+                ev.target.setStyles(this.css.lastPage_over);
+                if( this.options.useMainColor )ev.target.addClass("mainColor_bg");
             }.bind(this),
             "mouseout": function (ev) {
-                ev.target.setStyles(this.css.lastPage)
+                ev.target.setStyles(this.css.lastPage);
+                if( this.options.useMainColor )ev.target.removeClass("mainColor_bg");
             }.bind(this),
             "click": function () {
                 this.gotoPage( this.options.pageSize )
@@ -185,10 +191,12 @@ o2.widget.Paging = new Class({
         if (this.options.text.prePage) prePage.set("text", this.options.text.prePage);
         prePage.addEvents({
             "mouseover": function (ev) {
-                ev.target.setStyles(this.css.prePage_over)
+                ev.target.setStyles(this.css.prePage_over);
+                if( this.options.useMainColor )ev.target.addClass("mainColor_bg_opacity");
             }.bind(this),
             "mouseout": function (ev) {
-                ev.target.setStyles(this.css.prePage)
+                ev.target.setStyles(this.css.prePage);
+                if( this.options.useMainColor )ev.target.removeClass("mainColor_bg_opacity");
             }.bind(this),
             "click": function () {
                 this.gotoPage(this.options.currentPage - 1)
@@ -202,10 +210,12 @@ o2.widget.Paging = new Class({
         if (this.options.text.nextPage) nextPage.set("text", this.options.text.nextPage);
         nextPage.addEvents({
             "mouseover": function (ev) {
-                ev.target.setStyles(this.css.nextPage_over)
+                ev.target.setStyles(this.css.nextPage_over);
+                if( this.options.useMainColor )ev.target.addClass("mainColor_bg_opacity");
             }.bind(this),
             "mouseout": function (ev) {
-                ev.target.setStyles(this.css.nextPage)
+                ev.target.setStyles(this.css.nextPage);
+                if( this.options.useMainColor )ev.target.removeClass("mainColor_bg_opacity");
             }.bind(this),
             "click": function () {
                 this.gotoPage(this.options.currentPage + 1)
@@ -219,10 +229,12 @@ o2.widget.Paging = new Class({
         }).inject(this.pageTurnContainer);
         pageTurnNode.addEvents({
             "mouseover": function (ev) {
-                ev.target.setStyles(this.css.pageItem_over)
+                ev.target.setStyles(this.css.pageItem_over);
+                if( this.options.useMainColor )ev.target.addClass("mainColor_bg_opacity");
             }.bind(this),
             "mouseout": function (ev) {
-                ev.target.setStyles(this.css.pageItem)
+                ev.target.setStyles(this.css.pageItem);
+                if( this.options.useMainColor )ev.target.removeClass("mainColor_bg_opacity");
             }.bind(this),
             "click": function () {
                 this.obj.gotoPage(this.num)
@@ -237,10 +249,12 @@ o2.widget.Paging = new Class({
         if (this.options.text.preBatchTuring ) this.preBatchPage.set("text", this.options.text.preBatchTuring);
         this.preBatchPage.addEvents({
             "mouseover": function (ev) {
-                ev.target.setStyles(this.css.preBatchPage_over)
+                ev.target.setStyles(this.css.preBatchPage_over);
+                if( this.options.useMainColor )ev.target.addClass("mainColor_bg_opacity");
             }.bind(this),
             "mouseout": function (ev) {
-                ev.target.setStyles(this.css.preBatchPage )
+                ev.target.setStyles(this.css.preBatchPage );
+                if( this.options.useMainColor )ev.target.removeClass("mainColor_bg_opacity");
             }.bind(this),
             "click": function () {
                 var page;
@@ -262,9 +276,11 @@ o2.widget.Paging = new Class({
         this.nextBatchPage.addEvents({
             "mouseover": function (ev) {
                 ev.target.setStyles(this.css.nextBatchPage_over);
+                if( this.options.useMainColor )ev.target.addClass("mainColor_bg_opacity");
             }.bind(this),
             "mouseout": function (ev) {
                 ev.target.setStyles(this.css.nextBatchPage );
+                if( this.options.useMainColor )ev.target.removeClass("mainColor_bg_opacity");
             }.bind(this),
             "click": function () {
                 var page;
@@ -290,13 +306,15 @@ o2.widget.Paging = new Class({
         }).inject(this.node);
         pageJumper.addEvents({
             "focus": function (ev) {
-                ev.target.setStyles(this.css.pageJumper_over)
+                ev.target.setStyles(this.css.pageJumper_over);
+                if( _self.options.useMainColor )ev.target.addClass("mainColor_border");
             }.bind(this),
             "blur": function (ev) {
                 var value = this.value;
                 _self.pageJumper.set("value","");
                 if( value )_self.gotoPage(value);
                 ev.target.setStyles(_self.css.pageJumper);
+                if( _self.options.useMainColor )ev.target.removeClass("mainColor_border");
             },
             "keyup": function (e) {
                 this.value = this.value.replace(/[^0-9_]/g, '');

@@ -521,6 +521,27 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
             }.bind(this)
         });
     },
+    _loadPageNode : function(){
+        this.viewPageAreaNode.empty();
+        if( this.viewJson.pagingbarHidden === true ){
+            return;
+        }
+        if( !this.paging ){
+            var json;
+            if( !this.viewJson.pagingList || !this.viewJson.pagingList.length ){
+                json = {
+                    "firstPageText": this.lp.firstPage,
+                    "lastPageText": this.lp.lastPage
+                };
+            }else{
+                json = this.viewJson.pagingList[0];
+            }
+            this.paging = new MWF.xApplication.query.Query.Viewer.Paging(this.viewPageAreaNode, json, this, {useMainColor: true});
+            this.paging.load();
+        }else{
+            this.paging.reload();
+        }
+    },
     setContentHeight: function(){
         if( this.viewSearchCustomCloseActionNode && !this.setCustomSearchCloseEvent ){
             this.viewSearchCustomCloseActionNode.addEvent("click", function(){
@@ -600,6 +621,18 @@ MWF.xApplication.cms.Module.QueryViewer.Item = new Class({
         //        if (this.view.json.itemStyles) td.setStyles(this.view.json.itemStyles);
         //    }
         //}.bind(this));
+
+        //序号
+        var sequence = 1+this.view.json.pageSize*(this.view.currentPage-1)+this.idx;
+        this.data["$sequence"] = sequence;
+        if (this.view.viewJson.isSequence==="yes"){
+            this.sequenceTd = new Element("td", {"styles": viewContentTdNode}).inject(this.node);
+            this.sequenceTd.setStyles({
+                "width": "30px",
+                "text-align": "center"
+            });
+            this.sequenceTd.set("text", sequence);
+        }
 
 
         this.view.viewJson.selectList.each(function(column){

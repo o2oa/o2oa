@@ -24,6 +24,15 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.o2icon-folder-select:before {
+  content: "\e900";
+}
+.o2icon-folder-move:before {
+  content: "\e902";
+}
+.o2icon-back:before {
+  content: "\e918";
+}
 .o2icon-layout:before {
   content: "\e958";
 }
@@ -60,18 +69,9 @@
 .o2icon-order:before {
   content: "\e9bd";
 }
-.o2icon-folder-select:before {
-  content: "\e9be";
-}
-.o2icon-folder-move:before {
-  content: "\e9bf";
-}
 .o2icon-list3:before {
   content: "\e9c0";
 }
 .o2icon-list4:before {
   content: "\e9c1";
-}
-.o2icon-back:before {
-  content: "\e918";
 }
