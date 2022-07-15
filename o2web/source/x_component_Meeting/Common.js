@@ -109,15 +109,17 @@ MWF.xApplication.Meeting.BuildingTooltip = new Class({
             //}).inject(this.node);
             var container = this.node.getElement("[item='containr']");
 
-            this.editAction = new Element("div", {
+            this.editAction = new Element("div.o2icon-edit2", {
                 styles: this.css.action_edit,
                 title : this.lp.editAddress,
                 events : {
                     mouseover : function(){
                         this.editAction.setStyles( this.css.action_edit_over );
+                        this.editAction.addClass("mainColor_color");
                     }.bind(this),
                     mouseout : function(){
                         this.editAction.setStyles( this.css.action_edit );
+                        this.editAction.removeClass("mainColor_color");
                     }.bind(this),
                     click : function(){
                         this.editBuilding( function(data){
@@ -127,15 +129,17 @@ MWF.xApplication.Meeting.BuildingTooltip = new Class({
                 }
             }).inject(container);
 
-            this.removeAction = new Element("div", {
+            this.removeAction = new Element("div.o2icon-delete", {
                 styles: this.css.action_remove,
                 title: this.lp.removeBuilding,
                 events : {
                     mouseover : function(){
                         this.removeAction.setStyles( this.css.action_remove_over );
+                        this.removeAction.addClass("mainColor_color");
                     }.bind(this),
                     mouseout : function(){
                         this.removeAction.setStyles( this.css.action_remove );
+                        this.removeAction.removeClass("mainColor_color");
                     }.bind(this),
                     click : function( e ){
                         this.removeBuilding(e);
@@ -2046,10 +2050,12 @@ MWF.xApplication.Meeting.MeetingArea = new Class({
             mouseenter : function(){
                 this.node.setStyles( this.css.meetingNode_over );
                 this.subjectNode.setStyles( this.css.meetingSubjectNode_over );
+                this.subjectNode.addClass("mainColor_color");
             }.bind(this),
             mouseleave : function(){
                 this.node.setStyles( this.css.meetingNode );
                 this.subjectNode.setStyles( this.css.meetingSubjectNode );
+                this.subjectNode.removeClass("mainColor_color");
             }.bind(this),
             click : function(){
                 this.openMeeting()
@@ -2153,14 +2159,16 @@ MWF.xApplication.Meeting.MeetingArea = new Class({
         if( this.userName == this.data.applicant || this.userId == this.data.applicant || MWF.AC.isMeetingAdministrator() ){
 
             if( this.data.status=="wait"  ){
-                this.editAction = new Element("div", {
+                this.editAction = new Element("div.o2icon-edit2", {
                     styles: this.css.action_edit,
                     events : {
                         mouseover : function(){
                             this.editAction.setStyles( this.css.action_edit_over );
+                            this.editAction.addClass("mainColor_color");
                         }.bind(this),
                         mouseout : function(){
                             this.editAction.setStyles( this.css.action_edit );
+                            this.editAction.removeClass("mainColor_color");
                         }.bind(this),
                         click : function(e){
                             this.editMeeting();
@@ -2173,14 +2181,16 @@ MWF.xApplication.Meeting.MeetingArea = new Class({
                 //if (this.data.myWaitAccept) this.createAcceptActions();
                 //if (this.data.status=="wait" && this.isEdit) this.createCancelActions();
 
-                this.removeAction = new Element("div", {
+                this.removeAction = new Element("div.o2icon-delete", {
                     styles: this.css.action_remove,
                     events : {
                         mouseover : function(){
                             this.removeAction.setStyles( this.css.action_remove_over );
+                            this.removeAction.addClass("mainColor_color");
                         }.bind(this),
                         mouseout : function(){
                             this.removeAction.setStyles( this.css.action_remove );
+                            this.removeAction.removeClass("mainColor_color");
                         }.bind(this),
                         click : function( e ){
                             this.cancel(e);
@@ -2193,15 +2203,17 @@ MWF.xApplication.Meeting.MeetingArea = new Class({
 
 
         if (this.data.myWaitAccept){
-            this.acceptAction = new Element("div", {
+            this.acceptAction = new Element("div.o2icon-checkbox", {
                 styles: this.css.action_accept,
                 title : this.app.lp.accept,
                 events : {
                     mouseover : function(){
                         this.acceptAction.setStyles( this.css.action_accept_over );
+                        this.acceptAction.addClass("mainColor_color");
                     }.bind(this),
                     mouseout : function(){
                         this.acceptAction.setStyles( this.css.action_accept );
+                        this.acceptAction.removeClass("mainColor_color");
                     }.bind(this),
                     click : function( e ){
                         this.accept(e);
@@ -2210,15 +2222,17 @@ MWF.xApplication.Meeting.MeetingArea = new Class({
                 }
             }).inject(this.actionBar);
 
-            this.rejectAction = new Element("div", {
+            this.rejectAction = new Element("div.o2icon-off", {
                 styles: this.css.action_reject,
                 title : this.app.lp.reject,
                 events : {
                     mouseover : function(){
                         this.rejectAction.setStyles( this.css.action_reject_over );
+                        this.rejectAction.addClass("mainColor_color");
                     }.bind(this),
                     mouseout : function(){
                         this.rejectAction.setStyles( this.css.action_reject );
+                        this.rejectAction.removeClass("mainColor_color");
                     }.bind(this),
                     click : function( e ){
                         this.reject(e);
