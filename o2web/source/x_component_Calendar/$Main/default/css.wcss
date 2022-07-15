@@ -55,12 +55,19 @@
         "margin" : "15px 20px 0px 20px",
         "font-size" : "14px",
         "padding-left" : "50px",
-        "background" : "url(../x_component_Calendar/$Main/default/icon/createCalendar.png) no-repeat 25px 12px",
+//        "background" : "url(../x_component_Calendar/$Main/default/icon/createCalendar.png) no-repeat 25px 12px",
         "cursor" : "pointer"
     },
     "newCalendarNode_over" : {
-        "background" : "url(../x_component_Calendar/$Main/default/icon/createCalendar_over.png) no-repeat 25px 12px",
+//        "background" : "url(../x_component_Calendar/$Main/default/icon/createCalendar_over.png) no-repeat 25px 12px",
         "background-color" : "#fff",
+        "color" : "#3c76b7"
+    },
+    "newCalendarIcon": {
+        "color" : "#999",
+        "padding-right": "5px"
+    },
+    "newCalendarIcon_over": {
         "color" : "#3c76b7"
     },
     "categoryNaviNode": {
@@ -190,18 +197,25 @@
         "width" : "170px",
         "font-size" : "14px",
         "padding-left" : "70px",
-        "background" : "url(../x_component_Calendar/$Main/default/icon/plazz.png) no-repeat 45px 12px",
+//        "background" : "url(../x_component_Calendar/$Main/default/icon/plazz.png) no-repeat 45px 12px",
         "background-color" : "#f7f7f7",
         "cursor" : "pointer"
     },
     "seeMoreNode_over" : {
-        "background" : "url(../x_component_Calendar/$Main/default/icon/plazz_over.png) no-repeat 45px 12px",
+//        "background" : "url(../x_component_Calendar/$Main/default/icon/plazz_over.png) no-repeat 45px 12px",
         "background-color" : "#f7f7f7",
         "color" : "#3c76b7"
     },
-
+    "seeMoreIcon": {
+        "color" : "#999",
+        "padding-right": "5px"
+    },
+    "seeMoreIcon_over": {
+        "color" : "#3c76b7"
+    },
 
 	"topMenu": {
+        "margin-left": "10px",
 	    "height": "50px",
 //	    "position": "absolute",
 //	    "top": "0px",
@@ -258,9 +272,14 @@
         "color" : "#3C76B7"
     },
     "topMenuIconNode": {
+        "line-height": "50px",
         "height": "50px",
-        "width": "30px",
+        "width": "20px",
+        "color": "#999",
         "float": "left"
+    },
+    "topMenuIconNode_over": {
+        "color": "#3C76B7"
     },
     "topMenuTextNode": {
         "line-height": "50px",

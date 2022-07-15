@@ -238,7 +238,7 @@ MWFCalendarWeekView.Calendar = new Class({
         return date.decrement("day", decrementDay);
     },
     setTitleNode: function(){
-        this.prevWeekNode =  new Element("div", {"styles": this.css.calendarPrevWeekNode}).inject(this.titleNode);
+        this.prevWeekNode =  new Element("div.o2icon-triangle_left", {"styles": this.css.calendarPrevWeekNode}).inject(this.titleNode);
 
         // var text = this.baseDate.format(this.app.lp.dateFormatMonth)
         //     + "，第" + this.view.getWeekNumber( this.baseDate  ) + "周";
@@ -250,18 +250,30 @@ MWFCalendarWeekView.Calendar = new Class({
 
         this.titleTextNode = new Element("div", {"styles": this.css.calendarTitleTextNode, "text": text}).inject(this.titleNode);
 
-        this.nextWeekNode =  new Element("div", {"styles": this.css.calendarNextWeekNode}).inject(this.titleNode);
+        this.nextWeekNode =  new Element("div.o2icon-triangle_right", {"styles": this.css.calendarNextWeekNode}).inject(this.titleNode);
 
         this.prevWeekNode.addEvents({
-            "mouseover": function(){this.prevWeekNode.setStyles(this.css.calendarPrevWeekNode_over);}.bind(this),
-            "mouseout": function(){this.prevWeekNode.setStyles(this.css.calendarPrevWeekNode);}.bind(this),
+            "mouseover": function(){
+                this.prevWeekNode.setStyles(this.css.calendarPrevWeekNode_over);
+                this.prevWeekNode.addClass("mainColor_color");
+            }.bind(this),
+            "mouseout": function(){
+                this.prevWeekNode.setStyles(this.css.calendarPrevWeekNode);
+                this.prevWeekNode.removeClass("mainColor_color");
+            }.bind(this),
             "mousedown": function(){this.prevWeekNode.setStyles(this.css.calendarPrevWeekNode_down);}.bind(this),
             "mouseup": function(){this.prevWeekNode.setStyles(this.css.calendarPrevWeekNode_over);}.bind(this),
             "click": function(){this.changeWeekPrev();}.bind(this)
         });
         this.nextWeekNode.addEvents({
-            "mouseover": function(){this.nextWeekNode.setStyles(this.css.calendarNextWeekNode_over);}.bind(this),
-            "mouseout": function(){this.nextWeekNode.setStyles(this.css.calendarNextWeekNode);}.bind(this),
+            "mouseover": function(){
+                this.nextWeekNode.setStyles(this.css.calendarNextWeekNode_over);
+                this.nextWeekNode.addClass("mainColor_color");
+             }.bind(this),
+            "mouseout": function(){
+                this.nextWeekNode.setStyles(this.css.calendarNextWeekNode);
+                this.nextWeekNode.removeClass("mainColor_color");
+            }.bind(this),
             "mousedown": function(){this.nextWeekNode.setStyles(this.css.calendarNextWeekNode_down);}.bind(this),
             "mouseup": function(){this.nextWeekNode.setStyles(this.css.calendarNextWeekNode_over);}.bind(this),
             "click": function(){this.changeWeekNext();}.bind(this)

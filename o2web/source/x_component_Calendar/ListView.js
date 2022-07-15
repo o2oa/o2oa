@@ -127,23 +127,35 @@ MWF.xApplication.Calendar.ListView = new Class({
         //    this.titleNode.setStyle("display","")
         //}
         //this.titleNode = new Element("div").inject(this.view.titleContainer);
-        this.prevMonthNode =  new Element("div", {"styles": this.css.calendarPrevMonthNode}).inject(this.titleNode);
+        this.prevMonthNode =  new Element("div.o2icon-triangle_left", {"styles": this.css.calendarPrevMonthNode}).inject(this.titleNode);
 
         var text = this.date.format(this.app.lp.dateFormatMonth);
         this.titleTextNode = new Element("div", {"styles": this.css.calendarTitleTextNode, "text": text}).inject(this.titleNode);
 
-        this.nextMonthNode =  new Element("div", {"styles": this.css.calendarNextMonthNode}).inject(this.titleNode);
+        this.nextMonthNode =  new Element("div.o2icon-triangle_right", {"styles": this.css.calendarNextMonthNode}).inject(this.titleNode);
 
         this.prevMonthNode.addEvents({
-            "mouseover": function(){this.prevMonthNode.setStyles(this.css.calendarPrevMonthNode_over);}.bind(this),
-            "mouseout": function(){this.prevMonthNode.setStyles(this.css.calendarPrevMonthNode);}.bind(this),
+            "mouseover": function(){
+                this.prevMonthNode.setStyles(this.css.calendarPrevMonthNode_over);
+                this.prevMonthNode.addClass("mainColor_color");
+            }.bind(this),
+            "mouseout": function(){
+                this.prevMonthNode.setStyles(this.css.calendarPrevMonthNode);
+                this.prevMonthNode.removeClass("mainColor_color");
+            }.bind(this),
             "mousedown": function(){this.prevMonthNode.setStyles(this.css.calendarPrevMonthNode_down);}.bind(this),
             "mouseup": function(){this.prevMonthNode.setStyles(this.css.calendarPrevMonthNode_over);}.bind(this),
             "click": function(){this.changeMonthPrev();}.bind(this)
         });
         this.nextMonthNode.addEvents({
-            "mouseover": function(){this.nextMonthNode.setStyles(this.css.calendarNextMonthNode_over);}.bind(this),
-            "mouseout": function(){this.nextMonthNode.setStyles(this.css.calendarNextMonthNode);}.bind(this),
+            "mouseover": function(){
+                this.nextMonthNode.setStyles(this.css.calendarNextMonthNode_over);
+                this.nextMonthNode.addClass("mainColor_color");
+            }.bind(this),
+            "mouseout": function(){
+                this.nextMonthNode.setStyles(this.css.calendarNextMonthNode);
+                this.nextMonthNode.removeClass("mainColor_color");
+            }.bind(this),
             "mousedown": function(){this.nextMonthNode.setStyles(this.css.calendarNextMonthNode_down);}.bind(this),
             "mouseup": function(){this.nextMonthNode.setStyles(this.css.calendarNextMonthNode_over);}.bind(this),
             "click": function(){this.changeMonthNext();}.bind(this)
