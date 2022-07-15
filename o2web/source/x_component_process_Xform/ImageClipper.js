@@ -79,16 +79,22 @@ MWF.xApplication.process.Xform.ImageClipper = MWF.APPImageClipper =  new Class(
                 if(this.form.businessData.work && this.form.businessData.work.referencetype) {
                     referencetype = this.form.businessData.work.referencetype
                 }
-                var jsonString = JSON.stringify({
+                var imageBody = {
                     "mwfId" : this.json.id,
                     "callback" : "o2.imageClipperCallback",
                     "referencetype": referencetype,
                     "reference": this.form.businessData.work.job
-                });
-                if( window.o2android && window.o2android.uploadImage2FileStorage ){
-                    window.o2android.uploadImage2FileStorage(jsonString)
+                };
+                if (window.o2android && window.o2android.postMessage) {
+                    var body = {
+                        type: "uploadImage2FileStorage",
+                        data: imageBody
+                    };
+                    window.o2android.postMessage(JSON.stringify(body));
+                } else if( window.o2android && window.o2android.uploadImage2FileStorage ){
+                    window.o2android.uploadImage2FileStorage(JSON.stringify(imageBody));
                 }else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.uploadImage2FileStorage){
-                    window.webkit.messageHandlers.uploadImage2FileStorage.postMessage(jsonString);
+                    window.webkit.messageHandlers.uploadImage2FileStorage.postMessage(JSON.stringify(imageBody));
                 }else {
                     this.selectImage( d, function(data){
                         this.setData( data ? data.id : "", true );
