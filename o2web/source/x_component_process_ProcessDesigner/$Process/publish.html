@@ -160,22 +160,22 @@
         <div id="text{$.id}queryTableArea" style="display: text{($.publishTarget=='table')?'':'none'};">
             <div style="margin: 0px; height: 20px; padding: 5px; background-color: #F6F6F6; line-height: 20px; text-align: center">{{$.lp.publishTableConfig}}</div>
             <div class="MWFQueryTablePublisher" name="queryTableDataConfigList">
-                <div style="border:1px solid #ccc;min-height: 20px;"></div>
+                <div></div>
                 <div></div>
                 <div style="border-bottom: 1px solid #ccc;"></div>
                 <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                     <tr>
                         <td class="editTableTitle">{{$.lp.queryTable}}:</td>
-                        <td class="editTableValue"><div class="MWFTableSelector" name="updateQueryTable" count="1"></div></td>
+                        <td class="editTableValue"><div class="MWFTableSelector" name="tableName" count="1" data-result-key="name"></div></td>
                     </tr>
                     <tr>
                         <td class="editTableTitle">{{$.lp.queryTableDataBy}}:</td>
                         <td class="editTableValue">
-                            <input class="editTableRadio"  onclick="if (this.checked){
+                            <input class="editTableRadio queryTableDataBy"  onclick="if (this.checked){
                                 $('text{$.id}queryTableDataByPathArea').setStyle('display', '');
                                 $('text{$.id}queryTableDataByScriptArea').setStyle('display', 'none');
                             }" name="queryTableDataBy" text{($.queryTableDataBy!=='script')?'checked':''} type="radio" value="dataPath"/>{{$.lp.byDataPath}}
-                            <input class="editTableRadio"  onclick="if (this.checked){
+                            <input class="editTableRadio queryTableDataBy"  onclick="if (this.checked){
                                 $('text{$.id}queryTableDataByScriptArea').setStyle('display', '');
                                 $('text{$.id}queryTableDataByPathArea').setStyle('display', 'none');
                             }" name="queryTableDataBy" text{($.queryTableDataBy==='script')?'checked':''} type="radio" value="script"/>{{$.lp.byDataScript}}
@@ -186,7 +186,10 @@
                     <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                         <tr>
                             <td class="editTableTitle">{{$.lp.dataPath}}:</td>
-                            <td class="editTableValue"><input class="" type="text" value="" name="queryTableDataPath" class="editTableInput"/></td>
+                            <td class="editTableValue">
+                                <input type="text" value="" name="queryTableDataPath" class="editTableInput"/>
+                                <div style="color: #999;">{{$.lp.queryTableDataPathNote}}</div>
+                            </td>
                         </tr>
                     </table>
                 </div>

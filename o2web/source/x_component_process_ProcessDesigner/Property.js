@@ -265,6 +265,7 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                 });
                 this.scriptTexts.push(script);
                 //this.setScriptItems(script, node);
+                node.store("editor", script);
             }.bind(this));
         }.bind(this));
     },
@@ -290,6 +291,8 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                     //}.bind(this)
                 });
                 //this.setScriptItems(script, node);
+
+                node.store("selector", script);
             }.bind(this));
         }.bind(this));
 	},
@@ -514,12 +517,14 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
             }.bind(this));
             tableNodes.each(function(node){
                 var count = node.get("count") || 0;
-                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.process.designer, {
+                var resultKey = node.get("data-result-key");
+                var selector = new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.process.designer, {
                     "type": "queryTable",
                     "count": count,
                     "names": this.data[node.get("name")],
-                    "onChange": function(ids){this.savePersonItem(node, ids);}.bind(this)
+                    "onChange": function(ids){this.savePersonItem(node, ids, null, resultKey);}.bind(this)
                 });
+                node.store("selector", selector);
             }.bind(this));
             cmsCategoryNodes.each(function(node){
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.process.designer, {
@@ -602,12 +607,16 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
         }.bind(this));
         this.data[node.get("name")] = JSON.encode(values);
     },
-    savePersonItem: function(node, ids, dataType){
+    savePersonItem: function(node, ids, dataType, resultKey){
         debugger;
         var count = node.get("count") || 0;
         var values = [];
         ids.each(function(id){
-            values.push(id.data.distinguishedName || id.data.id);
+            if( resultKey ){
+                values.push( id.data[resultKey] );
+            }else{
+                values.push(id.data.distinguishedName || id.data.id);
+            }
         }.bind(this));
 
         var data;
@@ -1105,13 +1114,13 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                 var name = node.get("name");
                 var value = this.data[name];
                 MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.QueryTablePublisher", function(){
-                    var publisher = new MWF.xApplication.process.ProcessDesigner.widget.QueryTablePublisher(node, this.route, this.data.selectConfig, {
+                    var publisher = new MWF.xApplication.process.ProcessDesigner.widget.QueryTablePublisher(node, value, {
                         "onPostSave": function(){
                             this.setValue(node.get("name"), JSON.encode(publisher.getData()));
                         }.bind(this),
                         "onQueryDelete": function(script){
                         }.bind(this)
-                    });
+                    }, this);
                     publisher.load();
                 }.bind(this));
             }.bind(this));

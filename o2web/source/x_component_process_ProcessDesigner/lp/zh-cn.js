@@ -535,12 +535,13 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"querytableActionNode_add": "↑ 添加数据表配置条目 ↑",
 		"querytableActionNode_modify": "↑ 修改数据表配置条目 ↑",
 		"querytableInputError": "请选择数据表",
-		"querytableSameNameError": "相同的数据表已存在",
+		"queryTableAssignDataScriptError": "数据脚本不能为空",
 		"querytableDeleteItemTitle": "删除数据表配置条目确认",
 		"querytableDeleteItem": "您确定要删除当前数据表配置条目吗？",
 		"queryTableDataBy": "取值",
 		"byDataPath": "通过数据路径",
 		"byDataScript": "通过数据脚本",
-		"publishTableConfig": "数据表发布配置"
+		"publishTableConfig": "数据表发布配置",
+		"queryTableDataPathNote": "注：根路径为空，数据表格填数据表格标识.data（如datatable1.data），数据模板填数据模板标识（如datatemplate1）。"
 	}
 };
