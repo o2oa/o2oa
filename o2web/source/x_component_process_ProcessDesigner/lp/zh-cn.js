@@ -529,6 +529,18 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"pictureFields": "首页图片字段",
 		"useProcessForm": "使用流程表单",
 		"titleField": "标题字段",
-		"useProcessFormNote": "注：如果选是，则发布到内容管理文档使用流程表单打开，否则使用内容管理分类设置的表单打开。"
+		"useProcessFormNote": "注：如果选是，则发布到内容管理文档使用流程表单打开，否则使用内容管理分类设置的表单打开。",
+
+		"querytable": "数据表",
+		"querytableActionNode_add": "↑ 添加数据表配置条目 ↑",
+		"querytableActionNode_modify": "↑ 修改数据表配置条目 ↑",
+		"querytableInputError": "请选择数据表",
+		"querytableSameNameError": "相同的数据表已存在",
+		"querytableDeleteItemTitle": "删除数据表配置条目确认",
+		"querytableDeleteItem": "您确定要删除当前数据表配置条目吗？",
+		"queryTableDataBy": "取值",
+		"byDataPath": "通过数据路径",
+		"byDataScript": "通过数据脚本",
+		"publishTableConfig": "数据表发布配置"
 	}
 };

@@ -68,6 +68,7 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                     this.loadContextRoot();
                     this.loadProjection();
                     this.loadMaplist();
+                    this.loadQueryTablePublisher();
 
                     this.hideAdvanced();
                 }.bind(this));
@@ -512,8 +513,10 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                 });
             }.bind(this));
             tableNodes.each(function(node){
+                var count = node.get("count") || 0;
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.process.designer, {
                     "type": "queryTable",
+                    "count": count,
                     "names": this.data[node.get("name")],
                     "onChange": function(ids){this.savePersonItem(node, ids);}.bind(this)
                 });
@@ -1094,5 +1097,24 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                 }.bind(this));
             }.bind(this));
         }
+	},
+    loadQueryTablePublisher: function(){
+        var tableNodes = this.propertyContent.getElements(".MWFQueryTablePublisher");
+        if(tableNodes.length){
+            tableNodes.each(function(node){
+                var name = node.get("name");
+                var value = this.data[name];
+                MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.QueryTablePublisher", function(){
+                    var publisher = new MWF.xApplication.process.ProcessDesigner.widget.QueryTablePublisher(node, this.route, this.data.selectConfig, {
+                        "onPostSave": function(){
+                            this.setValue(node.get("name"), JSON.encode(publisher.getData()));
+                        }.bind(this),
+                        "onQueryDelete": function(script){
+                        }.bind(this)
+                    });
+                    publisher.load();
+                }.bind(this));
+            }.bind(this));
         }
+    }
 });

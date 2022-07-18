@@ -141,31 +141,73 @@
                     </td>
                 </tr>
             </table>
+            <hr/>
+            <div></div>
+            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                <tr>
+                    <td class="editTableTitle">{{$.lp.dataScript}}:</td>
+                    <td class="editTableValue">
+                        <div class="MWFScript" name="targetAssignDataScript"></div>
+                    </td>
+                </tr>
+            </table>
+            <div class="MWFScriptText" name="targetAssignDataScriptText" data-o2-api="../api/server.module_assignData.html#server.module_assignData"></div>
+            <div style="margin: 5px;">{{$.lp.getOldData}}: var data = this.assignData.get(); </div>
+            <div style="margin: 5px;">{{$.lp.setNewData}}: return data; </div>
+            <div style="padding: 5px"><a href="../api/server.module_assignData.html#server.module_assignData" target="_blank">{{$.lp.apiDoc}}</a></div>
         </div>
 
         <div id="text{$.id}queryTableArea" style="display: text{($.publishTarget=='table')?'':'none'};">
-            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-                <tr>
-                    <td class="editTableTitle">{{$.lp.queryTable}}:</td>
-                    <td class="editTableValue"><div class="MWFTableSelector" name="updateTableList"></div></td>
-                </tr>
-            </table>
+            <div style="margin: 0px; height: 20px; padding: 5px; background-color: #F6F6F6; line-height: 20px; text-align: center">{{$.lp.publishTableConfig}}</div>
+            <div class="MWFQueryTablePublisher" name="queryTableDataConfigList">
+                <div style="border:1px solid #ccc;min-height: 20px;"></div>
+                <div></div>
+                <div style="border-bottom: 1px solid #ccc;"></div>
+                <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                    <tr>
+                        <td class="editTableTitle">{{$.lp.queryTable}}:</td>
+                        <td class="editTableValue"><div class="MWFTableSelector" name="updateQueryTable" count="1"></div></td>
+                    </tr>
+                    <tr>
+                        <td class="editTableTitle">{{$.lp.queryTableDataBy}}:</td>
+                        <td class="editTableValue">
+                            <input class="editTableRadio"  onclick="if (this.checked){
+                                $('text{$.id}queryTableDataByPathArea').setStyle('display', '');
+                                $('text{$.id}queryTableDataByScriptArea').setStyle('display', 'none');
+                            }" name="queryTableDataBy" text{($.queryTableDataBy!=='script')?'checked':''} type="radio" value="dataPath"/>{{$.lp.byDataPath}}
+                            <input class="editTableRadio"  onclick="if (this.checked){
+                                $('text{$.id}queryTableDataByScriptArea').setStyle('display', '');
+                                $('text{$.id}queryTableDataByPathArea').setStyle('display', 'none');
+                            }" name="queryTableDataBy" text{($.queryTableDataBy==='script')?'checked':''} type="radio" value="script"/>{{$.lp.byDataScript}}
+                        </td>
+                    </tr>
+                </table>
+                <div id="text{$.id}queryTableDataByPathArea" style="display: text{($.queryTableDataBy!=='script')?'':'none'};">
+                    <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                        <tr>
+                            <td class="editTableTitle">{{$.lp.dataPath}}:</td>
+                            <td class="editTableValue"><input class="" type="text" value="" name="queryTableDataPath" class="editTableInput"/></td>
+                        </tr>
+                    </table>
+                </div>
+                <div id="text{$.id}queryTableDataByScriptArea" style="display: text{($.queryTableDataBy==='script')?'':'none'};">
+                    <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+                        <tr>
+                            <td class="editTableTitle">{{$.lp.dataScript}}:</td>
+                            <td class="editTableValue">
+                                <div class="MWFScript" name="queryTableAssignDataScript"></div>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="MWFScriptText" name="queryTableAssignDataScriptText" data-o2-api="../api/server.module_assignData.html#server.module_assignData"></div>
+                    <div style="margin: 5px;">{{$.lp.getOldData}}: var data = this.assignData.get(); </div>
+                    <div style="margin: 5px;">{{$.lp.setNewData}}: return data; </div>
+                    <div style="padding: 5px"><a href="../api/server.module_assignData.html#server.module_assignData" target="_blank">{{$.lp.apiDoc}}</a></div>
+                </div>
+            </div>
         </div>
 
-        <hr/>
-        <div></div>
-        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-            <tr>
-                <td class="editTableTitle">{{$.lp.dataScript}}:</td>
-                <td class="editTableValue">
-                    <div class="MWFScript" name="targetAssignDataScript"></div>
-                </td>
-            </tr>
-        </table>
-        <div class="MWFScriptText" name="targetAssignDataScriptText" data-o2-api="../api/server.module_assignData.html#server.module_assignData"></div>
-        <div style="margin: 5px;">{{$.lp.getOldData}}: var data = this.assignData.get(); </div>
-        <div style="margin: 5px;">{{$.lp.setNewData}}: return data; </div>
-        <div style="padding: 5px"><a href="../api/server.module_assignData.html#server.module_assignData" target="_blank">{{$.lp.apiDoc}}</a></div>
+
 
     </div>
     <div title="{{$.lp.person}}"  class="MWFTab">
