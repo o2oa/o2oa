@@ -97,26 +97,37 @@ MWF.xApplication.Calendar.Main = new Class({
         }
 
     },
-    createDefaultCalendar : function( callback ){
-      // this.actions.saveCalendar({
-      //     name : "我的日历",
-      //     type : "person",
-      //     color : "",
-      //     description : "",
-      //     source : "PERSON",
-      //     isPublic : false//,
-      //     //manageablePersonList : [this.userName]
-      // }, function(){
+    createDefaultCalendar : function( callback, notCreate ){
           this.actions.listMyCalendar( function( json ){
-              if( ( json.data.myCalendars || [] ).length == 0 ){
-              }else{
+              if( json.data.myCalendars && json.data.myCalendars.length ){
                   this.canlendarData = json.data;
                   this.calendarDataList = json.data.myCalendars;
                   this.currentCalendarData = json.data.myCalendars[0];
-                  if(callback)callback()
+                  if(callback)callback();
+              }else if( json.data.unitCalendars && json.data.unitCalendars.length ){
+                  this.canlendarData = json.data;
+                  this.calendarDataList = json.data.unitCalendars;
+                  this.currentCalendarData = json.data.unitCalendars[0];
+                  if(callback)callback();
+              }else if( json.data.followCalendars && json.data.followCalendars.length ){
+                  this.canlendarData = json.data;
+                  this.calendarDataList = json.data.followCalendars;
+                  this.currentCalendarData = json.data.followCalendars[0];
+                  if(callback)callback();
+              }else if( !notCreate ){
+                  this.actions.saveCalendar({
+                      name : "我的日历",
+                      type : "PERSON",
+                      color : "",
+                      description : "",
+                      source : "PERSON",
+                      isPublic : false,
+                      manageablePersonList : [this.userName]
+                  }, function(){
+                      this.createDefaultCalendar( callback, true );
+                  }.bind(this));
               }
           }.bind(this))
-      // }.bind(this))
     },
     createNode: function(){
         this.content.setStyle("overflow", "hidden");
