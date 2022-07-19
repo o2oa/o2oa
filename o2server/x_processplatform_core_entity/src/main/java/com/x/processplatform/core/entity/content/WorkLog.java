@@ -91,8 +91,8 @@ public class WorkLog extends SliceJpaObject {
 		o.setSplitting(work.getSplitting());
 		o.setSplitToken(work.getSplitToken());
 		o.setSplitValue(work.getSplitValue());
-		o.getProperties().setSplitTokenList(work.getSplitTokenList());
-		o.getProperties().setSplitValueList(work.getSplitValueList());
+		o.setSplitTokenList(work.getSplitTokenList());
+		o.setSplitValueList(work.getSplitValueList());
 		o.setFromTime(date);
 		o.setCompleted(false);
 		o.setConnected(false);

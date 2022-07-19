@@ -112,8 +112,6 @@ class V2AddSplit extends BaseAction {
 						workCopy.setSplitTokenList(arrived.getSplitTokenList());
 						workCopy.setSplitValue(splitValue);
 						workCopy.setSplitting(arrived.getSplitting());
-						// workCopy.getManualTaskIdentityList().clear();
-						// workCopy.getManualTaskIdentityMatrix().clear();
 						workCopy.setManualTaskIdentityMatrix(new ManualTaskIdentityMatrix());
 						workCopy.setBeforeExecuted(false);
 						workCopy.setDestinationActivity(null);

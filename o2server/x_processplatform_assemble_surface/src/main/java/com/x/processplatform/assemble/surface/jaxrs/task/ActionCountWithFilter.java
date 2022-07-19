@@ -42,8 +42,8 @@ class ActionCountWithFilter extends BaseAction {
 			if (ListTools.isNotEmpty(wi.getCredentialList())) {
 				personIds = business.organization().person().list(wi.getCredentialList());
 			}
-			if (ListTools.isNotEmpty(wi.getAppliationList())) {
-				applicationIds = business.organization().person().list(wi.getAppliationList());
+			if (ListTools.isNotEmpty(wi.getApplicationList())) {
+				applicationIds = business.organization().person().list(wi.getApplicationList());
 			}
 			if (ListTools.isNotEmpty(wi.getProcessList())) {
 				processIds = business.organization().person().list(wi.getProcessList());
