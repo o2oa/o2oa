@@ -894,6 +894,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "filterScript": "Filter By Script",
         "activity": "Activity",
         "opinionGroup": "Opinion Group",
+        "unitLevelName":"Unit level name",
+        "unitLevel": "Unit Level",
         "sortInCategory": "Sort In Category",
         "sortByActivity": "Sort By Activity",
         "sortByTimeAsc": "Sort By Time Asc",
