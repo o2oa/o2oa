@@ -24,6 +24,15 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.o2icon-editperson:before {
+  content: "\e900";
+}
+.o2icon-role:before {
+  content: "\e901";
+}
+.o2icon-add:before {
+  content: "\e902";
+}
 .o2icon-company:before {
   content: "\e98f";
 }

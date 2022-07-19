@@ -27,6 +27,7 @@ MWF.xApplication.Org.Main = new Class({
 		}).inject(this.content);
 	},
 	loadApplicationContent: function(){
+		this.content.loadCss("../x_component_Org/$Main/"+this.options.style+"/style.css");
 		this.loadStartMenu();
 //		this.loadApplicationLayout();
 	},

@@ -740,12 +740,14 @@ MWF.xApplication.Org.$Explorer.Item = new Class({
             "mouseover": function(e){
                 if (this.explorer.currentItem!==this && !this.deleteSelected){
                     this.contentNode.setStyles(this.style.nodeOver);
+                    // this.contentNode.addClass("mainColor_bg_opacity");
                     if (!this.deleteSelected) if (this.data.id) this.actionNode.fade("in");
                 }
             }.bind(this),
             "mouseout": function(e){
                 if (this.explorer.currentItem!==this && !this.deleteSelected){
                     this.contentNode.setStyles(this.style.contentNode);
+                    // this.contentNode.removeClass("mainColor_bg_opacity");
                     if (!this.deleteSelected) if (this.data.id) this.actionNode.fade("out");
                 }
             }.bind(this),
@@ -773,6 +775,7 @@ MWF.xApplication.Org.$Explorer.Item = new Class({
             this.textNode.setStyles(this.style.textNode);
             this.actionNode.setStyles(this.style.actionNode);
             if (this.deleteNode) this.deleteNode.setStyles(this.style.actionDeleteNode);
+            this.contentNode.removeClass("mainColor_bg");
         }
 
         this.clearItemProperty();
@@ -789,6 +792,7 @@ MWF.xApplication.Org.$Explorer.Item = new Class({
         this.textNode.setStyles(this.style.textNode_selected);
         this.actionNode.setStyles(this.style.actionNode_selected);
         if (this.deleteNode) this.deleteNode.setStyles(this.style.actionDeleteNode_selected);
+        this.contentNode.addClass("mainColor_bg");
         this.showItemProperty();
     },
 

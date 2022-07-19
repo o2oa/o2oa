@@ -403,6 +403,7 @@ MWF.xApplication.Org.UnitExplorer.Unit = new Class({
         if (this.deleteNode) this.deleteNode.setStyles(this.style.actionDeleteNode);
         if (this.addNode) this.addNode.setStyles(this.style.actionAddNode);
         this.iconNode.setStyle("background-image", "url("+this._getIcon()+")");
+        this.contentNode.removeClass("mainColor_bg");
         this.setToggleIconNode();
         this.clearItemProperty();
         return true;
@@ -416,6 +417,7 @@ MWF.xApplication.Org.UnitExplorer.Unit = new Class({
         if (this.addNode) this.addNode.setStyles(this.style.actionAddNode_selected);
 
         this.iconNode.setStyle("background-image", "url("+this._getIcon()+")");
+        this.contentNode.addClass("mainColor_bg");
         this.setToggleIconNode();
         this.showItemProperty();
     },
