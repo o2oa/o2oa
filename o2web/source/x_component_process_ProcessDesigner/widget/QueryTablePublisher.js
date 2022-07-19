@@ -6,10 +6,10 @@ MWF.xApplication.process.ProcessDesigner.widget.QueryTablePublisher = new Class(
 	options: {
 		"style": "default"
 	},
-	initialize: function(node, text, options, designer){
+	initialize: function(node, data, options, designer){
 		this.setOptions(options);
 		this.node = $(node);
-        this.data = (text) ? JSON.decode(text) : [];
+        this.data = data || [];
         this.name = node.get("name");
         this.designer = designer;
 		this.path = "../x_component_process_ProcessDesigner/widget/$QueryTablePublisher/";

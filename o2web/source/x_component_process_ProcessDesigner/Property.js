@@ -1115,10 +1115,8 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                 var value = this.data[name];
                 MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.QueryTablePublisher", function(){
                     var publisher = new MWF.xApplication.process.ProcessDesigner.widget.QueryTablePublisher(node, value, {
-                        "onPostSave": function(){
-                            this.setValue(node.get("name"), JSON.encode(publisher.getData()));
-                        }.bind(this),
-                        "onQueryDelete": function(script){
+                        "onChange": function(){
+                            this.setValue(node.get("name"), publisher.getData());
                         }.bind(this)
                     }, this);
                     publisher.load();
