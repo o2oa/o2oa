@@ -59,6 +59,7 @@ public class Publish extends Activity {
 	public void postLoad() {
 		if (null != this.properties) {
 			this.customData = this.getProperties().getCustomData();
+			this.publishTableList = this.getProperties().getPublishTableList();
 		}
 	}
 
@@ -467,17 +468,9 @@ public class Publish extends Activity {
 	@CheckPersist(allowEmpty = true)
 	private String targetAssignDataScriptText;
 
-	public static final String updateTableList_FIELDNAME = "updateTableList";
-	@FieldDescribe("发布目标数据表.")
-	@PersistentCollection(fetch = FetchType.EAGER)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle
-			+ updateTableList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
-			+ updateTableList_FIELDNAME + JoinIndexNameSuffix))
-	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ElementColumn(length = JpaObject.length_255B, name = ColumnNamePrefix + updateTableList_FIELDNAME)
-	@ElementIndex(name = TABLE + IndexNameMiddle + updateTableList_FIELDNAME + ElementIndexNameSuffix)
-	@CheckPersist(allowEmpty = true)
-	private List<String> updateTableList;
+	@FieldDescribe("发布的数据表")
+	@Transient
+	private List<PublishTable> publishTableList;
 
 	@IdReference(Script.class)
 	@FieldDescribe("生成displayLog脚本.")
@@ -998,11 +991,13 @@ public class Publish extends Activity {
 		this.targetAssignDataScriptText = targetAssignDataScriptText;
 	}
 
-	public List<String> getUpdateTableList() {
-		return updateTableList;
+	public List<PublishTable> getPublishTableList() {
+		return publishTableList;
 	}
 
-	public void setUpdateTableList(List<String> updateTableList) {
-		this.updateTableList = updateTableList;
+	public void setPublishTableList(List<PublishTable> publishTableList) {
+		this.publishTableList = publishTableList;
+		this.getProperties().setPublishTableList(publishTableList);
 	}
+
 }

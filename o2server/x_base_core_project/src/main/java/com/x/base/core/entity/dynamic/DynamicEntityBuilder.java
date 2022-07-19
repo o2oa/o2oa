@@ -90,6 +90,7 @@ public class DynamicEntityBuilder {
 				.addAnnotation(annotationSpec_table).addField(fieldSpec_serialVersionUID).addField(fieldSpec_TABLE);
 
 		this.createIdField(builder);
+		this.createBundleField(builder);
 		this.createOnPersistMethod(builder);
 		this.createStringFields(builder);
 		this.createIntegerFields(builder);
@@ -144,6 +145,18 @@ public class DynamicEntityBuilder {
 		FieldSpec fieldSpec = FieldSpec.builder(String.class, JpaObject.id_FIELDNAME, Modifier.PRIVATE)
 				.initializer("createId()").addAnnotation(fieldDescribe).addAnnotation(id).addAnnotation(column).build();
 		builder.addField(fieldSpec).addMethod(set).addMethod(get);
+	}
+
+	/**
+	 * 自建表默认创建bundle属性用于存储流程实例的job
+	 * @param builder
+	 */
+	private void createBundleField(Builder builder) {
+		Field bundleField = new Field();
+		bundleField.setName("bundle");
+		bundleField.setDescription("流程实例的JOB");
+		bundleField.setType("string");
+		this.createField(builder, bundleField, String.class);
 	}
 
 	private void createStringFields(Builder builder) {

@@ -2,6 +2,8 @@ package com.x.processplatform.assemble.designer.jaxrs.process;
 
 import java.util.Date;
 
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.core.entity.element.*;
 import com.x.processplatform.core.entity.element.Process;
 import org.apache.commons.beanutils.BeanUtils;
@@ -20,6 +22,8 @@ import com.x.processplatform.assemble.designer.ThisApplication;
 import com.x.processplatform.core.entity.element.wrap.WrapProcess;
 
 class ActionEdit extends BaseAction {
+
+	private static final Logger logger = LoggerFactory.getLogger(ActionEdit.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();

@@ -3,6 +3,8 @@ package com.x.processplatform.assemble.surface.jaxrs.process;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.x.processplatform.core.entity.element.*;
+import com.x.processplatform.core.entity.element.Process;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -15,20 +17,6 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.core.entity.element.Agent;
-import com.x.processplatform.core.entity.element.Begin;
-import com.x.processplatform.core.entity.element.Cancel;
-import com.x.processplatform.core.entity.element.Choice;
-import com.x.processplatform.core.entity.element.Delay;
-import com.x.processplatform.core.entity.element.Embed;
-import com.x.processplatform.core.entity.element.End;
-import com.x.processplatform.core.entity.element.Invoke;
-import com.x.processplatform.core.entity.element.Manual;
-import com.x.processplatform.core.entity.element.Merge;
-import com.x.processplatform.core.entity.element.Parallel;
-import com.x.processplatform.core.entity.element.Process;
-import com.x.processplatform.core.entity.element.Service;
-import com.x.processplatform.core.entity.element.Split;
 
 class ActionGetAllowRerouteTo extends BaseAction {
 
@@ -52,6 +40,7 @@ class ActionGetAllowRerouteTo extends BaseAction {
 			wo.setManualList(this.filterManuals(business, process));
 			wo.setMergeList(this.filterMerges(business, process));
 			wo.setParallelList(this.filterParallels(business, process));
+			wo.setPublishList(this.filterPublishes(business, process));
 			wo.setServiceList(this.filterServices(business, process));
 			wo.setSplitList(this.filterSplits(business, process));
 			result.setData(wo);
@@ -77,6 +66,7 @@ class ActionGetAllowRerouteTo extends BaseAction {
 		private List<WoManual> manualList;
 		private List<WoMerge> mergeList;
 		private List<WoParallel> parallelList;
+		private List<WoPublish> publishList;
 		private List<WoService> serviceList;
 		private List<WoSplit> splitList;
 
@@ -184,6 +174,13 @@ class ActionGetAllowRerouteTo extends BaseAction {
 			this.splitList = splitList;
 		}
 
+		public List<WoPublish> getPublishList() {
+			return publishList;
+		}
+
+		public void setPublishList(List<WoPublish> publishList) {
+			this.publishList = publishList;
+		}
 	}
 
 	public static class WoAgent extends Agent {
@@ -261,6 +258,13 @@ class ActionGetAllowRerouteTo extends BaseAction {
 		private static final long serialVersionUID = 6466513124630937459L;
 		static WrapCopier<Parallel, WoParallel> copier = WrapCopierFactory.wo(Parallel.class, WoParallel.class,
 				ListTools.toList(Parallel.name_FIELDNAME, Parallel.id_FIELDNAME), JpaObject.FieldsInvisible);
+	}
+
+	public static class WoPublish extends Publish {
+
+		private static final long serialVersionUID = 7325540706018402262L;
+		static WrapCopier<Publish, WoPublish> copier = WrapCopierFactory.wo(Publish.class, WoPublish.class,
+				ListTools.toList(Publish.name_FIELDNAME, Publish.id_FIELDNAME), JpaObject.FieldsInvisible);
 	}
 
 	public static class WoService extends Service {
@@ -393,6 +397,17 @@ class ActionGetAllowRerouteTo extends BaseAction {
 			}
 		}
 		return WoParallel.copier.copy(list);
+	}
+
+	private List<WoPublish> filterPublishes(Business business, Process process) throws Exception {
+		List<Publish> os = business.publish().listWithProcess(process);
+		List<Publish> list = new ArrayList<>();
+		for (Publish o : os) {
+			if (BooleanUtils.isTrue(o.getAllowRerouteTo())) {
+				list.add(o);
+			}
+		}
+		return WoPublish.copier.copy(list);
 	}
 
 	private List<WoService> filterServices(Business business, Process process) throws Exception {

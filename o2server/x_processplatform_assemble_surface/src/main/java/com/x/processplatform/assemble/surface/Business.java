@@ -10,6 +10,7 @@ import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import com.x.processplatform.assemble.surface.factory.element.*;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -33,27 +34,6 @@ import com.x.processplatform.assemble.surface.factory.content.TaskFactory;
 import com.x.processplatform.assemble.surface.factory.content.WorkCompletedFactory;
 import com.x.processplatform.assemble.surface.factory.content.WorkFactory;
 import com.x.processplatform.assemble.surface.factory.content.WorkLogFactory;
-import com.x.processplatform.assemble.surface.factory.element.AgentFactory;
-import com.x.processplatform.assemble.surface.factory.element.ApplicationDictFactory;
-import com.x.processplatform.assemble.surface.factory.element.ApplicationDictItemFactory;
-import com.x.processplatform.assemble.surface.factory.element.ApplicationFactory;
-import com.x.processplatform.assemble.surface.factory.element.BeginFactory;
-import com.x.processplatform.assemble.surface.factory.element.CancelFactory;
-import com.x.processplatform.assemble.surface.factory.element.ChoiceFactory;
-import com.x.processplatform.assemble.surface.factory.element.DelayFactory;
-import com.x.processplatform.assemble.surface.factory.element.EmbedFactory;
-import com.x.processplatform.assemble.surface.factory.element.EndFactory;
-import com.x.processplatform.assemble.surface.factory.element.FileFactory;
-import com.x.processplatform.assemble.surface.factory.element.FormFactory;
-import com.x.processplatform.assemble.surface.factory.element.InvokeFactory;
-import com.x.processplatform.assemble.surface.factory.element.ManualFactory;
-import com.x.processplatform.assemble.surface.factory.element.MergeFactory;
-import com.x.processplatform.assemble.surface.factory.element.ParallelFactory;
-import com.x.processplatform.assemble.surface.factory.element.ProcessFactory;
-import com.x.processplatform.assemble.surface.factory.element.RouteFactory;
-import com.x.processplatform.assemble.surface.factory.element.ScriptFactory;
-import com.x.processplatform.assemble.surface.factory.element.ServiceFactory;
-import com.x.processplatform.assemble.surface.factory.element.SplitFactory;
 import com.x.processplatform.assemble.surface.factory.portal.PortalFactory;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Read;
@@ -334,6 +314,15 @@ public class Business {
 			this.parallel = new ParallelFactory(this);
 		}
 		return parallel;
+	}
+
+	private PublishFactory publish;
+
+	public PublishFactory publish() throws Exception {
+		if (null == this.publish) {
+			this.publish = new PublishFactory(this);
+		}
+		return publish;
 	}
 
 	private ServiceFactory service;
