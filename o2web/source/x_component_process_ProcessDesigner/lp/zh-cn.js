@@ -530,6 +530,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"useProcessForm": "使用流程表单",
 		"titleField": "标题字段",
 		"useProcessFormNote": "注：如果选是，则发布到内容管理文档使用流程表单打开，否则使用内容管理分类设置的表单打开。",
+		"setNewPublishData": "返回一个json对象来设置数据，请查看API文档。如",
 
 		"querytable": "数据表",
 		"querytableActionNode_add": "↑ 添加数据表配置条目 ↑",

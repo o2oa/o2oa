@@ -515,7 +515,21 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"pictureFields": "Homepage picture fields",
 		"useProcessForm": "Use Process Form",
 		"titleField": "Title Field",
-		"useProcessFormNote": "Note: If yes, the document published to the content management will be opened using the process form, otherwise it will be opened using the form set by the content management classification."
+		"useProcessFormNote": "Note: If yes, the document published to the content management will be opened using the process form, otherwise it will be opened using the form set by the content management classification.",
+		"setNewPublishData": "Returns a json object to set the data, please check the API documentation. Such as",
+
+		"querytable": "Data Table",
+		"querytableActionNode_add": "↑ Add data table configuration entry ↑",
+		"querytableActionNode_modify": "↑ Modify data table configuration entry ↑",
+		"querytableInputError": "Please select a data table",
+		"queryTableAssignDataScriptError": "Data script cannot be empty",
+		"querytableDeleteItemTitle": "Delete data table configuration item confirmation",
+		"querytableDeleteItem": "Are you sure you want to delete the current data table configuration item?",
+		"queryTableDataBy": "value",
+		"byDataPath": "By DataPath",
+		"byDataScript": "By DataScript",
+		"publishTableConfig": "Data table publishing configuration",
+		"queryTableDataPathNote": "Note: the root path is empty, the data table is filled with the data table identifier .data (eg datatable1.data), and the data template is filled with the data template identifier (eg datatemplate1)."
 	}
 
 };
