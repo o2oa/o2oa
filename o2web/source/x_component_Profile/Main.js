@@ -694,7 +694,13 @@ MWF.xApplication.Profile.Main = new Class({
 
 
     loadPasswordConfigActions: function(){
+
         var i = (this.inBrowser||layout.viewMode=="Default")? 3 : 4;
+
+        var passwordRemindNode =  this.tab.pages[i].contentNode.getElement(".o2_profile_passwordRemindNode");
+        var paswordRule = layout.config.passwordRegexHint || this.lp.paswordRule;
+        passwordRemindNode.set("text",paswordRule);
+
         var inputs = this.tab.pages[i].contentNode.setStyle("min-height","300px").getElements("input");
         this.oldPasswordInputNode = inputs[0];
         this.passwordInputNode = inputs[1];
