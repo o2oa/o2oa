@@ -21,6 +21,7 @@ import javax.crypto.NoSuchPaddingException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.tools.Crypto;
 import com.x.base.core.project.tools.DateTools;
@@ -71,6 +72,10 @@ public class EffectivePerson extends GsonPropertyObject {
 			this.name = distinguishedName;
 			this.unique = distinguishedName;
 		}
+	}
+
+	public EffectivePerson(String distinguishedName, TokenType tokenType, String key) throws Exception {
+		this(distinguishedName, tokenType, key, Config.token().getEncryptType());
 	}
 
 	public EffectivePerson(String distinguishedName, TokenType tokenType, String key, String encryptType)
@@ -203,14 +208,6 @@ public class EffectivePerson extends GsonPropertyObject {
 				return matcher.find() && StringUtils.equalsIgnoreCase(matcher.group(2), this.unique);
 			}).findFirst();
 			return optional.isPresent();
-//			for (String str : names) {
-//				if (StringUtils.isNotEmpty(str)) {
-//					Matcher matcher = PERSON_DISTINGUISHEDNAME_PATTERN.matcher(str);
-//					if (matcher.find() && StringUtils.equalsIgnoreCase(matcher.group(2), this.unique)) {
-//						return true;
-//					}
-//				}
-//			}
 		}
 		return false;
 	}
