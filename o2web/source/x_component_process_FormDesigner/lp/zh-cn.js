@@ -899,6 +899,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "filterScript": "通过脚本过滤",
         "activity": "活动",
         "opinionGroup": "意见组",
+        "unitLevelName":"组织层次名",
+        "unitLevel": "组织层次",
         "sortInCategory": "分类内排序",
         "sortByActivity": "按活动排序",
         "sortByTimeAsc": "按时间顺序",
