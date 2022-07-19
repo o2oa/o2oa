@@ -256,9 +256,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		try {
 			business.entityManagerContainer().beginTransaction(TaskCompleted.class);
 			business.entityManagerContainer().listEqual(TaskCompleted.class, TaskCompleted.work_FIELDNAME, work.getId())
-					.forEach(o -> {
-						o.setWork(mergeTo.getId());
-					});
+					.forEach(o -> o.setWork(mergeTo.getId()));
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}

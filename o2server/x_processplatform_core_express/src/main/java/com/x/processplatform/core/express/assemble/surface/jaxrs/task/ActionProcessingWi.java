@@ -5,6 +5,7 @@ import java.util.List;
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.tools.ListTools;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -37,7 +38,11 @@ public class ActionProcessingWi extends GsonPropertyObject {
 	private List<String> ignoreEmpowerIdentityList;
 
 	public List<String> getAppendTaskIdentityList() {
-		return appendTaskIdentityList;
+		return ListTools.trim(appendTaskIdentityList, true, true);
+	}
+
+	public List<String> getIgnoreEmpowerIdentityList() {
+		return ListTools.trim(ignoreEmpowerIdentityList, true, true);
 	}
 
 	public void setAppendTaskIdentityList(List<String> appendTaskIdentityList) {
@@ -74,10 +79,6 @@ public class ActionProcessingWi extends GsonPropertyObject {
 
 	public void setRouteData(JsonElement routeData) {
 		this.routeData = routeData;
-	}
-
-	public List<String> getIgnoreEmpowerIdentityList() {
-		return ignoreEmpowerIdentityList;
 	}
 
 	public void setIgnoreEmpowerIdentityList(List<String> ignoreEmpowerIdentityList) {

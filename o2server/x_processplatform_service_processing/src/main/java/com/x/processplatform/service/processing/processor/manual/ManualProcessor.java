@@ -204,24 +204,6 @@ public class ManualProcessor extends AbstractManualProcessor {
 		return taskIdentities.identities();
 	}
 
-//	private void calculateRouteTypeBack(AeiObjects aeiObjects, Manual manual, TaskIdentities taskIdentities)
-//			throws Exception {
-//		List<String> identities = new ArrayList<>();
-//		List<WorkLog> workLogs = new ArrayList<>();
-//		workLogs.addAll(aeiObjects.getUpdateWorkLogs());
-//		workLogs.addAll(aeiObjects.getCreateWorkLogs());
-//		for (WorkLog o : aeiObjects.getWorkLogs()) {
-//			if (!workLogs.contains(o)) {
-//				workLogs.add(o);
-//			}
-//		}
-//		WorkLogTree tree = new WorkLogTree(workLogs);
-//		Node node = tree.location(aeiObjects.getWork());
-//		if (null != node) {
-//			calculateRouteTypeBackIdentityByTaskCompleted(aeiObjects, manual, taskIdentities, identities, tree, node);
-//		}
-//	}
-
 	private void calculateRouteTypeBack(AeiObjects aeiObjects, Manual manual, TaskIdentities taskIdentities)
 			throws Exception {
 		List<String> identities = new ArrayList<>();
