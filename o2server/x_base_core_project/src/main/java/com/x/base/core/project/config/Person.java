@@ -78,16 +78,16 @@ public class Person extends ConfigObject {
 
 	public static final Integer MAX_PASSWORDPERIOD = 365 * 10;
 
-	@FieldDescribe("是否启用验证码登录,默认值:false")
+	@FieldDescribe("是否启用图片验证码登录,默认值:false.")
 	private Boolean captchaLogin;
 
-	@FieldDescribe("是否启用验证码登录,默认值:true")
+	@FieldDescribe("是否启用短信验证码登录,默认值:true.")
 	private Boolean codeLogin;
 
-	@FieldDescribe("是否启用扫描二维码登录,默认值:false")
+	@FieldDescribe("是否启用扫描二维码登录,默认值:false.")
 	private Boolean bindLogin;
 
-	@FieldDescribe("是否启用刷脸登录,默认值:false")
+	@FieldDescribe("是否启用刷脸登录,默认值:false.")
 	private Boolean faceLogin;
 
 	@FieldDescribe("注册初始密码,使用()调用脚本生成初始密码,默认为:" + DEFAULT_PASSWORD)

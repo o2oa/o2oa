@@ -35,14 +35,15 @@ public class Token extends ConfigObject {
 
 	public static final String DEFAULT_ENCRYPTTYPE = "";
 
+	public static final Boolean DEFAULT_RSAENABLE = false;
+
 	// 此对象临时计算无需存储
 	private transient String _cipher = "";
 	// 此对象临时计算无需存储
 	private transient String _password = "";
 
 	public static Token defaultInstance() {
-		Token o = new Token();
-		return o;
+		return new Token();
 	}
 
 	public Token() {
@@ -51,8 +52,7 @@ public class Token extends ConfigObject {
 		this.sslKeyStorePassword = defaultSslKeyStorePassword;
 		this.sslKeyManagerPassword = defaultSslKeyManagerPassword;
 		this.encryptType = DEFAULT_ENCRYPTTYPE;
-//		this.initialManager = defaultInitialManager;
-//		this.initialManagerDistinguishedName = defaultInitialManagerDistinguishedName;
+		this.rsaEnable = DEFAULT_RSAENABLE;
 	}
 
 	// 加密用的key,用于加密口令
@@ -82,6 +82,13 @@ public class Token extends ConfigObject {
 
 	@FieldDescribe("作为客户端单点登录配置")
 	private List<OauthClient> oauthClients = new ArrayList<>();
+
+	@FieldDescribe("启用rsa加密.")
+	private Boolean rsaEnable = DEFAULT_RSAENABLE;
+
+	public Boolean getRsaEnable() {
+		return null == this.rsaEnable ? DEFAULT_RSAENABLE : this.rsaEnable;
+	}
 
 	public String getEncryptType() {
 		return StringUtils.isEmpty(this.encryptType) ? DEFAULT_ENCRYPTTYPE : this.encryptType;
@@ -388,14 +395,13 @@ public class Token extends ConfigObject {
 	public static class Oauth extends ConfigObject {
 
 		public static Oauth defaultInstance() {
-			Oauth o = new Oauth();
-			return o;
+			return new Oauth();
 		}
 
 		public Oauth() {
 			this.enable = false;
 			this.clientId = "";
-			this.mapping = new LinkedHashMap<String, String>();
+			this.mapping = new LinkedHashMap<>();
 
 		}
 
@@ -424,7 +430,7 @@ public class Token extends ConfigObject {
 
 		public Map<String, String> getMapping() {
 			if (null == mapping) {
-				return new LinkedHashMap<String, String>();
+				return new LinkedHashMap<>();
 			}
 			return mapping;
 		}
@@ -462,8 +468,7 @@ public class Token extends ConfigObject {
 	public static class OauthClient extends ConfigObject {
 
 		public static OauthClient defaultInstance() {
-			OauthClient o = new OauthClient();
-			return o;
+			return new OauthClient();
 		}
 
 		public static final String default_authParameter = "client_id={$client_id}&redirect_uri={$redirect_uri}";
@@ -710,8 +715,7 @@ public class Token extends ConfigObject {
 	public static class Sso extends ConfigObject {
 
 		public static Sso defaultInstance() {
-			Sso o = new Sso();
-			return o;
+			return new Sso();
 		}
 
 		public Sso() {
@@ -750,8 +754,7 @@ public class Token extends ConfigObject {
 	public static class LdapAuth extends ConfigObject {
 
 		public static LdapAuth defaultInstance() {
-			LdapAuth o = new LdapAuth();
-			return o;
+			return new LdapAuth();
 		}
 
 		public LdapAuth() {

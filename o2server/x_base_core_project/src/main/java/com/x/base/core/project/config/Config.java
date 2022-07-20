@@ -5,6 +5,7 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -643,11 +644,11 @@ public class Config {
 
 	private String publicKey;
 
-	public static synchronized String publicKey() throws Exception {
+	public static synchronized String publicKey() throws IOException, URISyntaxException {
 		if (null == instance().publicKey) {
 			File file = new File(Config.base(), PATH_CONFIG_PUBLICKEY);
 			if (file.exists() && file.isFile()) {
-				instance().publicKey = FileUtils.readFileToString(file, "utf-8");
+				instance().publicKey = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
 			} else {
 				instance().publicKey = DEFAULT_PUBLIC_KEY;
 			}
@@ -657,11 +658,11 @@ public class Config {
 
 	private String privateKey;
 
-	public static synchronized String privateKey() throws Exception {
+	public static synchronized String privateKey() throws IOException, URISyntaxException {
 		if (null == instance().privateKey) {
 			File file = new File(Config.base(), PATH_CONFIG_PRIVATEKEY);
 			if (file.exists() && file.isFile()) {
-				instance().privateKey = FileUtils.readFileToString(file, "utf-8");
+				instance().privateKey = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
 			} else {
 				instance().privateKey = DEFAULT_PRIVATE_KEY;
 			}

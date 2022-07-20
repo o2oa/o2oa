@@ -12,6 +12,8 @@ import com.x.base.core.project.tools.DefaultCharset;
 
 public class Portal extends ConfigObject {
 
+	private static final Boolean DEFAULT_WEBSOCKETENABLE = true;
+
 	public static Portal defaultInstance() {
 		return new Portal();
 	}
@@ -20,11 +22,19 @@ public class Portal extends ConfigObject {
 		this.indexPage = new IndexPage();
 		this.loginPage = new LoginPage();
 		this.urlMapping = null;
+
 	}
 
 	@FieldDescribe("url转换配置.")
 	@Deprecated(since = "7.2", forRemoval = true)
 	private LinkedHashMap<String, String> urlMapping;
+
+	@FieldDescribe("是否启用webSocket链接.")
+	private Boolean webSocketEnable;
+
+	public Boolean getWebSocketEnable() {
+		return null == this.webSocketEnable ? DEFAULT_WEBSOCKETENABLE : this.webSocketEnable;
+	}
 
 	@FieldDescribe("定制首页面设置.")
 	private IndexPage indexPage;

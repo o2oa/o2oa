@@ -13,6 +13,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.script.Bindings;
 import javax.script.CompiledScript;
 import javax.script.ScriptContext;
@@ -48,6 +53,7 @@ import com.x.organization.assemble.authentication.Business;
 import com.x.organization.assemble.authentication.wrapout.WrapOutAuthentication;
 import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Person;
+import com.x.organization.core.entity.Person_;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
@@ -127,6 +133,30 @@ abstract class BaseAction extends StandardJaxrsAction {
 		/** 判断密码是否过期需要修改密码 */
 		this.passwordExpired(t);
 		return t;
+	}
+
+	protected List<String> listWithCredential(Business business, String credential) throws Exception {
+		EntityManager em = business.entityManagerContainer().get(Person.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Person> root = cq.from(Person.class);
+		Predicate p = cb.equal(root.get(Person_.name), credential);
+		p = cb.or(p, cb.equal(root.get(Person_.distinguishedName), credential));
+		p = cb.or(p, cb.equal(root.get(Person_.unique), credential));
+		p = cb.or(p, cb.equal(root.get(Person_.id), credential));
+		p = cb.or(p, cb.equal(root.get(Person_.mail), credential));
+		p = cb.or(p, cb.equal(root.get(Person_.qq), credential));
+		p = cb.or(p, cb.equal(root.get(Person_.weixin), credential));
+		p = cb.or(p, cb.equal(root.get(Person_.mobile), credential));
+		p = cb.or(p, cb.equal(root.get(Person_.employee), credential));
+		p = cb.or(p, cb.equal(root.get(Person_.mpwxopenId), credential));
+		p = cb.or(p, cb.equal(root.get(Person_.open1Id), credential));
+		p = cb.or(p, cb.equal(root.get(Person_.open2Id), credential));
+		p = cb.or(p, cb.equal(root.get(Person_.open3Id), credential));
+		p = cb.or(p, cb.equal(root.get(Person_.open4Id), credential));
+		p = cb.or(p, cb.equal(root.get(Person_.open5Id), credential));
+		cq.select(root.get(Person_.id)).where(p);
+		return em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	public abstract static class AbstractWoAuthentication extends Person {
