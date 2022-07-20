@@ -32,6 +32,8 @@ public class Publish extends Activity {
 
 	private static final long serialVersionUID = 588240173459487399L;
 	private static final String TABLE = PersistenceProperties.Element.Publish.table;
+	public static final String PUBLISH_TARGET_CMS = "cms";
+	public static final String PUBLISH_TARGET_TABLE = "table";
 
 	@Override
 	public String getId() {
@@ -452,19 +454,19 @@ public class Publish extends Activity {
 	@CheckPersist(allowEmpty = true)
 	private String notifyDataPathList;
 
-	public static final String jaxwsParameterScript_FIELDNAME = "jaxwsParameterScript";
+	public static final String targetAssignDataScript_FIELDNAME = "targetAssignDataScript";
 	@IdReference(Script.class)
-	@FieldDescribe("数据脚本.")
+	@FieldDescribe("内容管理数据脚本.")
 	@Column(length = AbstractPersistenceProperties.processPlatform_name_length, name = ColumnNamePrefix
-			+ jaxwsParameterScript_FIELDNAME)
+			+ targetAssignDataScript_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String targetAssignDataScript;
 
-	public static final String jaxwsParameterScriptText_FIELDNAME = "jaxwsParameterScriptText";
-	@FieldDescribe("数据脚本文本.")
+	public static final String targetAssignDataScriptText_FIELDNAME = "targetAssignDataScriptText";
+	@FieldDescribe("内容管理数据脚本文本.")
 	@Lob
 	@Basic(fetch = FetchType.EAGER)
-	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + jaxwsParameterScriptText_FIELDNAME)
+	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + targetAssignDataScriptText_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String targetAssignDataScriptText;
 

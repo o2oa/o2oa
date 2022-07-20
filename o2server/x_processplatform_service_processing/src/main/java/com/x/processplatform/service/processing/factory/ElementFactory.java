@@ -14,6 +14,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.script.CompiledScript;
 
+import com.x.processplatform.core.entity.element.*;
+import com.x.processplatform.core.entity.element.Process;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -26,30 +28,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.processplatform.core.entity.element.Activity;
-import com.x.processplatform.core.entity.element.ActivityType;
-import com.x.processplatform.core.entity.element.Agent;
-import com.x.processplatform.core.entity.element.Application;
-import com.x.processplatform.core.entity.element.Begin;
-import com.x.processplatform.core.entity.element.Cancel;
-import com.x.processplatform.core.entity.element.Choice;
-import com.x.processplatform.core.entity.element.Delay;
-import com.x.processplatform.core.entity.element.Embed;
-import com.x.processplatform.core.entity.element.End;
-import com.x.processplatform.core.entity.element.Form;
-import com.x.processplatform.core.entity.element.Invoke;
-import com.x.processplatform.core.entity.element.Manual;
-import com.x.processplatform.core.entity.element.Mapping;
-import com.x.processplatform.core.entity.element.Mapping_;
-import com.x.processplatform.core.entity.element.Merge;
-import com.x.processplatform.core.entity.element.Parallel;
-import com.x.processplatform.core.entity.element.Process;
-import com.x.processplatform.core.entity.element.Route;
-import com.x.processplatform.core.entity.element.Route_;
-import com.x.processplatform.core.entity.element.Script;
-import com.x.processplatform.core.entity.element.Script_;
-import com.x.processplatform.core.entity.element.Service;
-import com.x.processplatform.core.entity.element.Split;
 import com.x.processplatform.service.processing.AbstractFactory;
 import com.x.processplatform.service.processing.Business;
 
@@ -526,6 +504,10 @@ public class ElementFactory extends AbstractFactory {
 				scriptName = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxrsBodyScript_FIELDNAME));
 				scriptText = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxrsBodyScriptText_FIELDNAME));
 				break;
+			case Business.EVENT_PUBLISHCMSBODY:
+				scriptName = Objects.toString(PropertyUtils.getProperty(o, Publish.targetAssignDataScript_FIELDNAME));
+				scriptText = Objects.toString(PropertyUtils.getProperty(o, Publish.targetAssignDataScriptText_FIELDNAME));
+				break;
 			case Business.EVENT_INVOKEJAXRSHEAD:
 				scriptName = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxrsHeadScript_FIELDNAME));
 				scriptText = Objects.toString(PropertyUtils.getProperty(o, Invoke.jaxrsHeadScriptText_FIELDNAME));
@@ -610,6 +592,26 @@ public class ElementFactory extends AbstractFactory {
 			} catch (Exception e) {
 				logger.error(e);
 			}
+		}
+		return compiledScript;
+	}
+
+	public CompiledScript getCompiledScript(String applicationId, String scriptName, String scriptText) {
+		StringBuilder sb = new StringBuilder();
+		CompiledScript compiledScript = null;
+		try {
+			if (StringUtils.isNotEmpty(scriptName)) {
+				List<Script> list = listScriptNestedWithApplicationWithUniqueName(applicationId, scriptName);
+				for (Script script : list) {
+					sb.append(script.getText()).append(System.lineSeparator());
+				}
+			}
+			if (StringUtils.isNotEmpty(scriptText)) {
+				sb.append(scriptText).append(System.lineSeparator());
+			}
+			compiledScript = ScriptingFactory.functionalizationCompile(sb.toString());
+		} catch (Exception e) {
+			logger.error(e);
 		}
 		return compiledScript;
 	}
@@ -757,7 +759,7 @@ public class ElementFactory extends AbstractFactory {
 
 	/**
 	 * 根据活动节点查找合适的显示表单.
-	 * 
+	 *
 	 * @param actvityId
 	 * @return
 	 * @throws Exception

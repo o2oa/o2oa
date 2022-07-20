@@ -1,18 +1,26 @@
 package com.x.processplatform.service.processing.processor.publish;
 
+import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.scripting.JsonScriptingExecutor;
+import com.x.base.core.project.scripting.ScriptingFactory;
+import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.element.Embed;
-import com.x.processplatform.core.entity.element.Publish;
-import com.x.processplatform.core.entity.element.Route;
+import com.x.processplatform.core.entity.element.*;
 import com.x.processplatform.core.entity.log.Signal;
+import com.x.processplatform.service.processing.Business;
+import com.x.processplatform.service.processing.WrapScriptObject;
 import com.x.processplatform.service.processing.processor.AeiObjects;
+import com.x.processplatform.service.processing.processor.invoke.InvokeProcessor;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.script.CompiledScript;
+import javax.script.ScriptContext;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 数据发布节点处理器
@@ -46,11 +54,110 @@ public class PublishProcessor extends AbstractPublishProcessor {
 				.push(Signal.publishExecute(aeiObjects.getWork().getActivityToken(), publish));
 		List<Work> results = new ArrayList<>();
 		boolean passThrough = false;
-
+		switch (publish.getPublishTarget()) {
+			case Publish.PUBLISH_TARGET_CMS:
+				// 可以根据返回脚本判断时候流转
+				passThrough = true;
+				break;
+			case Publish.PUBLISH_TARGET_TABLE:
+				// 可以根据返回脚本判断时候流转
+				passThrough = true;
+				break;
+			default:
+				break;
+		}
+		if (passThrough) {
+			results.add(aeiObjects.getWork());
+		} else {
+			LOGGER.info("work title:{}, id:{} public return false, stay in the current activity.",
+					() -> aeiObjects.getWork().getTitle(), () -> aeiObjects.getWork().getId());
+		}
 		if (passThrough) {
 			results.add(aeiObjects.getWork());
 		}
 		return results;
+	}
+
+	private boolean publishToTable(AeiObjects aeiObjects, Publish publish) throws Exception {
+
+
+		return true;
+	}
+
+	private List<AssignTable> evalTableBody(AeiObjects aeiObjects, Publish publish) throws Exception {
+		List<AssignTable> list = new ArrayList<>();
+		if(ListTools.isNotEmpty(publish.getPublishTableList())){
+			for (PublishTable publishTable : publish.getPublishTableList()){
+				AssignTable assignTable = new AssignTable();
+				assignTable.setTableName(publishTable.getTableName());
+				if(PublishTable.TABLE_DATA_BY_PATH.equals(publishTable.getQueryTableDataBy())){
+					if(StringUtils.isNotBlank(publishTable.getQueryTableDataPath())){
+						Object o = aeiObjects.getData().find(publishTable.getQueryTableDataPath());
+						if(o!=null){
+							assignTable.setData(gson.toJsonTree(o));
+						}
+					}
+				}else {
+					WrapScriptObject assignBody = new WrapScriptObject();
+					if (hasTableAssignDataScript(publishTable)) {
+						ScriptContext scriptContext = aeiObjects.scriptContext();
+						CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
+								aeiObjects.getActivity(), Business.EVENT_PUBLISHCMSBODY);
+						scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_JAXRSBODY,
+								assignBody);
+						JsonScriptingExecutor.jsonElement(cs, scriptContext, o -> {
+							if (!o.isJsonNull()) {
+								assignTable.setData(o);
+							}
+						});
+					}
+				}
+				if(assignTable.getData() == null){
+					assignTable.setData(gson.toJsonTree(aeiObjects.getData()));
+				}
+			}
+		}
+		return list;
+	}
+
+	private String evalCmsBody(AeiObjects aeiObjects, Publish publish) throws Exception {
+		WrapScriptObject assignBody = new WrapScriptObject();
+		if (hasCmsAssignDataScript(publish)) {
+			ScriptContext scriptContext = aeiObjects.scriptContext();
+			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
+					aeiObjects.getActivity(), Business.EVENT_PUBLISHCMSBODY);
+			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_JAXRSBODY,
+					assignBody);
+			JsonScriptingExecutor.jsonElement(cs, scriptContext, o -> {
+				if (!o.isJsonNull()) {
+					assignBody.set(gson.toJson(o));
+				}
+			});
+		}
+		return assignBody.get();
+	}
+
+	public class AssignTable {
+
+		private String tableName;
+
+		private JsonElement data;
+
+		public String getTableName() {
+			return tableName;
+		}
+
+		public void setTableName(String tableName) {
+			this.tableName = tableName;
+		}
+
+		public JsonElement getData() {
+			return data;
+		}
+
+		public void setData(JsonElement data) {
+			this.data = data;
+		}
 	}
 
 	@Override
@@ -76,5 +183,10 @@ public class PublishProcessor extends AbstractPublishProcessor {
 	private boolean hasCmsAssignDataScript(Publish publish) {
 		return StringUtils.isNotEmpty(publish.getTargetAssignDataScript())
 				|| StringUtils.isNotEmpty(publish.getTargetAssignDataScriptText());
+	}
+
+	private boolean hasTableAssignDataScript(PublishTable publishTable) {
+		return StringUtils.isNotEmpty(publishTable.getTargetAssignDataScript())
+				|| StringUtils.isNotEmpty(publishTable.getTargetAssignDataScriptText());
 	}
 }

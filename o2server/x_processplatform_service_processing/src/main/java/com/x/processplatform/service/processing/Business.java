@@ -34,6 +34,7 @@ public class Business {
 	public static final String EVENT_INVOKEJAXRSRESPONSE = "invokeJaxrsResponse";
 	public static final String EVENT_INVOKEJAXRSBODY = "invokeJaxrsBody";
 	public static final String EVENT_INVOKEJAXRSHEAD = "invokeJaxrsHead";
+	public static final String EVENT_PUBLISHCMSBODY = "publishCmsBody";
 	public static final String EVENT_SERVICE = "service";
 	public static final String EVENT_ROUTE = "route";
 	public static final String EVENT_ROUTEAPPENDTASKIDENTITY = "routeAppendTaskIdentity";

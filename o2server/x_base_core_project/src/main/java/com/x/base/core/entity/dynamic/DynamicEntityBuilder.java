@@ -153,7 +153,7 @@ public class DynamicEntityBuilder {
 	 */
 	private void createBundleField(Builder builder) {
 		Field bundleField = new Field();
-		bundleField.setName("bundle");
+		bundleField.setName(DynamicEntity.BUNDLE_FIELD);
 		bundleField.setDescription("流程实例的JOB");
 		bundleField.setType("string");
 		this.createField(builder, bundleField, String.class);
