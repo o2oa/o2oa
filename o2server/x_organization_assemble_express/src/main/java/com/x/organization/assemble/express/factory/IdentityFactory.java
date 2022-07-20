@@ -1,23 +1,5 @@
 package com.x.organization.assemble.express.factory;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.cache.Cache.CacheKey;
@@ -28,6 +10,17 @@ import com.x.organization.assemble.express.AbstractFactory;
 import com.x.organization.assemble.express.Business;
 import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Identity_;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.stream.Collectors;
 
 public class IdentityFactory extends AbstractFactory {
 
@@ -42,7 +35,7 @@ public class IdentityFactory extends AbstractFactory {
 			return null;
 		}
 		Identity o = null;
-		CacheKey cacheKey = new CacheKey(flag);
+		CacheKey cacheKey = new CacheKey(Identity.class.getName(), flag);
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 		if (optional.isPresent()) {
 			o = (Identity) optional.get();
@@ -89,7 +82,7 @@ public class IdentityFactory extends AbstractFactory {
 	public List<Identity> pick(List<String> flags) throws Exception {
 		List<Identity> list = new ArrayList<>();
 		for (String str : flags) {
-			CacheKey cacheKey = new CacheKey(str);
+			CacheKey cacheKey = new CacheKey(Identity.class.getName(), str);
 			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 			if (optional.isPresent()) {
 				list.add((Identity) optional.get());
@@ -167,6 +160,12 @@ public class IdentityFactory extends AbstractFactory {
 		Predicate p = cb.equal(root.get(Identity_.unit), unitId);
 		Long count = em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
 		return count;
+	}
+
+	public List<String> listPerson(List<String> identityIds) throws Exception {
+		List<Identity> list = this.entityManagerContainer().fetch(identityIds, Identity.class, ListTools.toList(Identity.id_FIELDNAME, Identity.person_FIELDNAME));
+		List<String> values = ListTools.extractProperty(list, Identity.person_FIELDNAME, String.class, true, true);
+		return values;
 	}
 
 }

@@ -1,28 +1,26 @@
 package com.x.organization.assemble.control.factory;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.stream.Collectors;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
+import com.x.organization.assemble.control.AbstractFactory;
+import com.x.organization.assemble.control.Business;
+import com.x.organization.core.entity.PersistenceProperties;
+import com.x.organization.core.entity.UnitDuty;
+import com.x.organization.core.entity.UnitDuty_;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-
-import org.apache.commons.lang3.StringUtils;
-
-import com.x.organization.assemble.control.AbstractFactory;
-import com.x.organization.assemble.control.Business;
-import com.x.organization.core.entity.PersistenceProperties;
-import com.x.organization.core.entity.UnitDuty;
-import com.x.organization.core.entity.UnitDuty_;
-import com.x.base.core.project.cache.Cache.CacheCategory;
-import com.x.base.core.project.cache.Cache.CacheKey;
-import com.x.base.core.project.cache.CacheManager;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.stream.Collectors;
 
 public class UnitDutyFactory extends AbstractFactory {
 
@@ -36,13 +34,15 @@ public class UnitDutyFactory extends AbstractFactory {
 			return null;
 		}
 		UnitDuty o = null;
-		CacheKey cacheKey = new CacheKey(flag);
+		CacheKey cacheKey = new CacheKey(UnitDuty.class.getName(), flag);
 		Optional<?> optional = CacheManager.get(cache, cacheKey);
 		if (optional.isPresent()) {
 			o = (UnitDuty) optional.get();
 		} else {
 			o = this.pickObject(flag);
-			CacheManager.put(cache, cacheKey, o);
+			if (null != o) {
+				CacheManager.put(cache, cacheKey, o);
+			}
 		}
 		return o;
 	}
@@ -81,14 +81,14 @@ public class UnitDutyFactory extends AbstractFactory {
 	public List<UnitDuty> pick(List<String> flags) throws Exception {
 		List<UnitDuty> list = new ArrayList<>();
 		for (String str : flags) {
-			CacheKey cacheKey = new CacheKey(str);
+			CacheKey cacheKey = new CacheKey(UnitDuty.class.getName(), str);
 			Optional<?> optional = CacheManager.get(cache, cacheKey);
 			if (optional.isPresent()) {
 				list.add((UnitDuty) optional.get());
 			} else {
 				UnitDuty o = this.pickObject(str);
-				CacheManager.put(cache, cacheKey, o);
 				if (null != o) {
+					CacheManager.put(cache, cacheKey, o);
 					list.add(o);
 				}
 			}

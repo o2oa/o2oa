@@ -1,18 +1,9 @@
 package com.x.organization.assemble.control.factory;
 
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.entity.tools.JpaObjectTools;
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.tools.Crypto;
 import com.x.organization.assemble.control.AbstractFactory;
@@ -20,9 +11,16 @@ import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.PersistenceProperties;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Person_;
-import com.x.base.core.project.cache.Cache.CacheCategory;
-import com.x.base.core.project.cache.Cache.CacheKey;
-import com.x.base.core.project.cache.CacheManager;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.stream.Collectors;
 
 public class PersonFactory extends AbstractFactory {
 
@@ -36,13 +34,15 @@ public class PersonFactory extends AbstractFactory {
 			return null;
 		}
 		Person o = null;
-		CacheKey cacheKey = new CacheKey(flag);
+		CacheKey cacheKey = new CacheKey(Person.class.getName(), flag);
 		Optional<?> optional = CacheManager.get(cache, cacheKey);
 		if (optional.isPresent()) {
 			o = (Person) optional.get();
 		} else {
 			o = this.pickObject(flag);
-			CacheManager.put(cache, cacheKey, o);
+			if (null != o) {
+				CacheManager.put(cache, cacheKey, o);
+			}
 		}
 		return o;
 	}
@@ -81,14 +81,14 @@ public class PersonFactory extends AbstractFactory {
 	public List<Person> pick(List<String> flags) throws Exception {
 		List<Person> list = new ArrayList<>();
 		for (String str : flags) {
-			CacheKey cacheKey = new CacheKey(str);
+			CacheKey cacheKey = new CacheKey(Person.class.getName(), str);
 			Optional<?> optional = CacheManager.get(cache, cacheKey);
 			if (optional.isPresent()) {
 				list.add((Person) optional.get());
 			} else {
 				Person o = this.pickObject(str);
-				CacheManager.put(cache, cacheKey, o);
 				if (null != o) {
+					CacheManager.put(cache, cacheKey, o);
 					list.add(o);
 				}
 			}
@@ -199,31 +199,13 @@ public class PersonFactory extends AbstractFactory {
 		}
 	}
 
-//	public Person getWi1thDingdingIdObject(String dingdingId) throws Exception {
-//		EntityManager em = this.entityManagerContainer().get(Person.class);
-//		CriteriaBuilder cb = em.getCriteriaBuilder();
-//		CriteriaQuery<Person> cq = cb.createQuery(Person.class);
-//		Root<Person> root = cq.from(Person.class);
-//		Predicate p = cb.equal(root.get(Person_.dingdingId), dingdingId);
-//		List<Person> os = em.createQuery(cq.select(root).where(p)).setMaxResults(1).getResultList();
-//		if (os.isEmpty()) {
-//			return null;
-//		} else {
-//			return os.get(0);
-//		}
-//	}
-//
-//	public Person getWithQiyeweixinIdObject(String dingdingId) throws Exception {
-//		EntityManager em = this.entityManagerContainer().get(Person.class);
-//		CriteriaBuilder cb = em.getCriteriaBuilder();
-//		CriteriaQuery<Person> cq = cb.createQuery(Person.class);
-//		Root<Person> root = cq.from(Person.class);
-//		Predicate p = cb.equal(root.get(Person_.qiyeweixinId), dingdingId);
-//		List<Person> os = em.createQuery(cq.select(root).where(p)).setMaxResults(1).getResultList();
-//		if (os.isEmpty()) {
-//			return null;
-//		} else {
-//			return os.get(0);
-//		}
-//	}
+	public Long countWithNameOrMobile(String name, String mobile) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Person.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<Person> root = cq.from(Person.class);
+		cq.select(cb.count(root)).where(cb.or(cb.equal(root.get(Person.name_FIELDNAME), name),
+				cb.equal(root.get(Person.mobile_FIELDNAME), mobile)));
+		return em.createQuery(cq).getSingleResult();
+	}
 }

@@ -1,32 +1,30 @@
 package com.x.organization.assemble.control.factory;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import com.x.base.core.project.tools.ListTools;
-import org.apache.commons.collections4.set.ListOrderedSet;
-import org.apache.commons.lang3.StringUtils;
-
+import com.x.base.core.project.cache.Cache.CacheCategory;
+import com.x.base.core.project.cache.Cache.CacheKey;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.exception.ExceptionWhen;
+import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.control.AbstractFactory;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Group;
 import com.x.organization.core.entity.Group_;
 import com.x.organization.core.entity.PersistenceProperties;
 import com.x.organization.core.entity.Person;
-import com.x.base.core.project.cache.Cache.CacheCategory;
-import com.x.base.core.project.cache.Cache.CacheKey;
-import com.x.base.core.project.cache.CacheManager;
+import org.apache.commons.collections4.set.ListOrderedSet;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.stream.Collectors;
 
 public class GroupFactory extends AbstractFactory {
 
@@ -41,13 +39,15 @@ public class GroupFactory extends AbstractFactory {
 		}
 		Group o = null;
 
-		CacheKey cacheKey = new CacheKey(flag);
+		CacheKey cacheKey = new CacheKey(Group.class.getName(), flag);
 		Optional<?> optional = CacheManager.get(cache, cacheKey);
 		if (optional.isPresent()) {
 			o = (Group) optional.get();
 		} else {
 			o = this.pickObject(flag);
-			CacheManager.put(cache, cacheKey, o);
+			if (null != o) {
+				CacheManager.put(cache, cacheKey, o);
+			}
 		}
 		return o;
 	}
@@ -55,7 +55,7 @@ public class GroupFactory extends AbstractFactory {
 	public List<Group> pick(List<String> flags) throws Exception {
 		List<Group> list = new ArrayList<>();
 		for (String str : flags) {
-			CacheKey cacheKey = new CacheKey(str);
+			CacheKey cacheKey = new CacheKey(Group.class.getName(), str);
 			Optional<?> optional = CacheManager.get(cache, cacheKey);
 			if (optional.isPresent()) {
 				list.add((Group) optional.get());

@@ -1,23 +1,5 @@
 package com.x.organization.assemble.control.factory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.stream.Collectors;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.project.cache.CacheManager;
@@ -29,6 +11,17 @@ import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.PersistenceProperties;
 import com.x.organization.core.entity.Unit;
 import com.x.organization.core.entity.Unit_;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.stream.Collectors;
 
 public class UnitFactory extends AbstractFactory {
 
@@ -42,13 +35,15 @@ public class UnitFactory extends AbstractFactory {
 			return null;
 		}
 		Unit o = null;
-		CacheKey cacheKey = new CacheKey(flag);
+		CacheKey cacheKey = new CacheKey(Unit.class.getName(), flag);
 		Optional<?> optional = CacheManager.get(cache, cacheKey);
 		if (optional.isPresent()) {
 			o = (Unit) optional.get();
 		} else {
 			o = this.pickObject(flag);
-			CacheManager.put(cache, cacheKey, o);
+			if (null != o) {
+				CacheManager.put(cache, cacheKey, o);
+			}
 		}
 		return o;
 	}
@@ -104,14 +99,14 @@ public class UnitFactory extends AbstractFactory {
 	public List<Unit> pick(List<String> flags) throws Exception {
 		List<Unit> list = new ArrayList<>();
 		for (String str : flags) {
-			CacheKey cacheKey = new CacheKey(str);
+			CacheKey cacheKey = new CacheKey(Unit.class.getName(), str);
 			Optional<?> optional = CacheManager.get(cache, cacheKey);
 			if (optional.isPresent()) {
 				list.add((Unit) optional.get());
 			} else {
 				Unit o = this.pickObject(str);
-				CacheManager.put(cache, cacheKey, o);
 				if (null != o) {
+					CacheManager.put(cache, cacheKey, o);
 					list.add(o);
 				}
 			}
