@@ -60,6 +60,7 @@ MWF.xApplication.process.Xform.WpsOffice2 = MWF.APPWpsOffice2 =  new Class({
         }.bind(this),null, false);
     },
     loadDocument: function () {
+
         this.getEditor(function () {
             this.loadApi(function (){
                 this.loadEditor();
@@ -82,6 +83,9 @@ MWF.xApplication.process.Xform.WpsOffice2 = MWF.APPWpsOffice2 =  new Class({
                 }
             }
         }
+
+        this.fireEvent("beforeOpen");
+
         this.action.CustomAction.getFileUrl(this.documentId,{"permission":this.mode} ,function( json ){
             this.wpsUrl = json.data.wpsUrl;
             this.wpsToken = json.data.token;
@@ -102,7 +106,7 @@ MWF.xApplication.process.Xform.WpsOffice2 = MWF.APPWpsOffice2 =  new Class({
     },
     loadEditor : function (){
 
-        this.fireEvent("beforeOpen");
+
 
         this.wpsOffice = WebOfficeSDK.config({
             url : this.wpsUrl,
