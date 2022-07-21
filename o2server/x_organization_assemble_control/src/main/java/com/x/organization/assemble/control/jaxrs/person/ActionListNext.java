@@ -16,6 +16,8 @@ import com.x.base.core.project.exception.ExceptionPersonNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.control.Business;
@@ -23,12 +25,13 @@ import com.x.organization.core.entity.Person;
 
 class ActionListNext extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListNext.class);
+
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String flag, Integer count) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Business business = new Business(emc);
-			CacheKey cacheKey = new CacheKey(this.getClass(), effectivePerson.getDistinguishedName(),
-					flag, count);
+			CacheKey cacheKey = new CacheKey(this.getClass(), effectivePerson.getDistinguishedName(), flag, count);
 			Optional<?> optional = CacheManager.get(business.cache(), cacheKey);
 			if (optional.isPresent()) {
 				Co co = (Co) optional.get();
@@ -45,17 +48,19 @@ class ActionListNext extends BaseAction {
 					id = o.getId();
 				}
 
-				if (effectivePerson.isSecurityManager() || business.hasAnyRole(effectivePerson, OrganizationDefinition.Manager,
-						OrganizationDefinition.OrganizationManager)) {
+				if (effectivePerson.isSecurityManager()
+						|| business.hasAnyRole(effectivePerson, OrganizationDefinition.Manager,
+								OrganizationDefinition.OrganizationManager, OrganizationDefinition.PersonManager)) {
 					result = this.standardListNext(Wo.copier, id, count, JpaObject.sequence_FIELDNAME, DESC,
 							business.personPredicateWithTopUnit(effectivePerson));
-				}else{
+				} else {
 					result = this.standardListNext(Wo.copier2, id, count, JpaObject.sequence_FIELDNAME, DESC,
 							business.personPredicateWithTopUnit(effectivePerson));
-					List<String> list = ListTools.extractField(result.getData(), Person.id_FIELDNAME, String.class, true, true);
+					List<String> list = ListTools.extractField(result.getData(), JpaObject.id_FIELDNAME, String.class,
+							true, true);
 					List<Wo> wos = Wo.copier.copy(business.person().pick(list));
 					result.setData(wos);
-					result.setCount((long)wos.size());
+					result.setCount((long) wos.size());
 				}
 
 				Co co = new Co(result.getData(), result.getCount());
@@ -102,7 +107,7 @@ class ActionListNext extends BaseAction {
 				JpaObject.singularAttributeField(Person.class, true, true), null);
 
 		static WrapCopier<Person, Wo> copier2 = WrapCopierFactory.wo(Person.class, Wo.class,
-				ListTools.toList(Person.id_FIELDNAME), null);
+				ListTools.toList(JpaObject.id_FIELDNAME), null);
 
 		private Long rank;
 

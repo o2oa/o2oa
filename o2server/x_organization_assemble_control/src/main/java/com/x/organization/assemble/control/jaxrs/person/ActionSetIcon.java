@@ -17,10 +17,14 @@ import com.x.base.core.project.exception.ExceptionPersonNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Person;
 
 class ActionSetIcon extends BaseAction {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionSetIcon.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, byte[] bytes,
 			FormDataContentDisposition disposition) throws Exception {
@@ -34,7 +38,7 @@ class ActionSetIcon extends BaseAction {
 			if (!business.editable(effectivePerson, person)) {
 				throw new ExceptionDenyEditPerson(effectivePerson, person.getName());
 			}
-			/** 从内存中pick出来的无法作为实体保存 */
+			// 从内存中pick出来的无法作为实体保存
 			person = emc.find(person.getId(), Person.class);
 			try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
 					ByteArrayOutputStream baos = new ByteArrayOutputStream();

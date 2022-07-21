@@ -14,9 +14,9 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Person;
 
-
 class ActionUnlock extends BaseAction {
-	private static Logger logger = LoggerFactory.getLogger(ActionUnlock.class);
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionUnlock.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
