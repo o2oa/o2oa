@@ -111,6 +111,7 @@ public class Messages extends ConcurrentSkipListMap<String, Message> {
 		o.put(MessageConnector.TYPE_BBS_REPLYCREATE, MESSAGE_ALL.cloneThenSetDescription("论坛创建回复"));
 		o.put(MessageConnector.TYPE_MIND_FILESEND, MESSAGE_ALL.cloneThenSetDescription("脑图发送"));
 		o.put(MessageConnector.TYPE_MIND_FILESHARE, MESSAGE_ALL.cloneThenSetDescription("脑图分享"));
+		o.put(MessageConnector.TYPE_IM_CREATE, new Message(MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS_INNER).cloneThenSetDescription("聊聊消息"));
 		return o;
 	}
 

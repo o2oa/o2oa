@@ -24,6 +24,67 @@ public   class DingdingMessage extends GsonPropertyObject {
 
 	}
 
+	/**
+	 * 设置成 text 消息
+	 * @param text
+	 */
+	public void setTextMsg(String text) {
+		getMsg().setMsgtype("text");
+		getMsg().getText().setContent(text);
+	}
+
+	/**
+	 * 设置成markdown消息
+	 * @param title
+	 * @param markdown
+	 */
+	public void setMarkdownMsg(String title, String markdown) {
+		getMsg().setMsgtype("markdown");
+		getMsg().getMarkdown().setTitle(title);
+		getMsg().getMarkdown().setText(markdown);
+	}
+
+	/**
+	 * 设置成卡片消息
+	 * @param title
+	 * @param markdown
+	 * @param url
+	 */
+	public void setActionCardMsg(String title, String markdown, String url) {
+		getMsg().setMsgtype("action_card");
+		getMsg().getAction_card().setTitle(title);
+		getMsg().getAction_card().setMarkdown(markdown);
+		getMsg().getAction_card().setSingle_url(url);
+	}
+
+
+	public Long getAgent_id() {
+		return agent_id;
+	}
+
+	public void setAgent_id(Long agent_id) {
+		this.agent_id = agent_id;
+	}
+
+	public String getUserid_list() {
+		return userid_list;
+	}
+
+	public void setUserid_list(String userid_list) {
+		this.userid_list = userid_list;
+	}
+
+	public Msg getMsg() {
+		return msg;
+	}
+
+	public void setMsg(Msg msg) {
+		this.msg = msg;
+	}
+
+
+
+
 	public static class Msg {
 		// {
 		// "msgtype": "text",
@@ -31,9 +92,12 @@ public   class DingdingMessage extends GsonPropertyObject {
 		// "content": "张三的请假申请"
 		// }
 		// }
-		private String msgtype = "text";
+		private String msgtype = "text"; // text markdown action_card
+
+
 		private Text text = new Text();
 		private Markdown markdown = new Markdown();
+		private ActionCard action_card = new ActionCard();
 
 		public String getMsgtype() {
 			return msgtype;
@@ -58,7 +122,16 @@ public   class DingdingMessage extends GsonPropertyObject {
 		public void setMarkdown(Markdown markdown) {
 			this.markdown = markdown;
 		}
+
+		public ActionCard getAction_card() {
+			return action_card;
+		}
+
+		public void setAction_card(ActionCard action_card) {
+			this.action_card = action_card;
+		}
 	}
+
 
 	public static class Text {
 
@@ -95,28 +168,43 @@ public   class DingdingMessage extends GsonPropertyObject {
 		}
 	}
 
-	public Long getAgent_id() {
-		return agent_id;
-	}
+	public static class ActionCard {
+		private String title = "";// 消息标题
+		private String markdown = "";// 消息内容
+		private String single_title = "查看详情";// 按钮文字
+		private String single_url = "";// 卡片点击打开的url
 
-	public void setAgent_id(Long agent_id) {
-		this.agent_id = agent_id;
-	}
+		public String getTitle() {
+			return title;
+		}
 
-	public String getUserid_list() {
-		return userid_list;
-	}
+		public void setTitle(String title) {
+			this.title = title;
+		}
 
-	public void setUserid_list(String userid_list) {
-		this.userid_list = userid_list;
-	}
+		public String getMarkdown() {
+			return markdown;
+		}
 
-	public Msg getMsg() {
-		return msg;
-	}
+		public void setMarkdown(String markdown) {
+			this.markdown = markdown;
+		}
 
-	public void setMsg(Msg msg) {
-		this.msg = msg;
+		public String getSingle_title() {
+			return single_title;
+		}
+
+		public void setSingle_title(String single_title) {
+			this.single_title = single_title;
+		}
+
+		public String getSingle_url() {
+			return single_url;
+		}
+
+		public void setSingle_url(String single_url) {
+			this.single_url = single_url;
+		}
 	}
 
 }
