@@ -96,7 +96,7 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
         var dateColIndexArray = [];
         this.json.data.columnList.each(function(columnJson, index){
             var dataType = this.json.type === "dynamicTable" ? columnJson.dataType_Querytable : columnJson.dataType_CMSProcess;
-            if( dataType === "date" )dateColIndexArray.push( index );
+            if( ["date","dateTime"].contains(dataType) )dateColIndexArray.push( index );
         }.bind(this));
         return dateColIndexArray;
     },
