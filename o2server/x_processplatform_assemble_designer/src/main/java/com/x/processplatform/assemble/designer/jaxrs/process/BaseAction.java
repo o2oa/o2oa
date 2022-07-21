@@ -876,6 +876,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		CacheManager.notify(Manual.class);
 		CacheManager.notify(Merge.class);
 		CacheManager.notify(Parallel.class);
+		CacheManager.notify(Publish.class);
 		CacheManager.notify(Route.class);
 		CacheManager.notify(Service.class);
 		CacheManager.notify(Split.class);

@@ -126,6 +126,10 @@ public class ElementFactory extends AbstractFactory {
 		if (null != activity) {
 			return activity;
 		}
+		activity = this.get(id, ActivityType.publish);
+		if (null != activity) {
+			return activity;
+		}
 		activity = this.get(id, ActivityType.service);
 		if (null != activity) {
 			return activity;
@@ -157,6 +161,8 @@ public class ElementFactory extends AbstractFactory {
 			return this.get(id, Merge.class);
 		case parallel:
 			return this.get(id, Parallel.class);
+		case publish:
+			return this.get(id, Publish.class);
 		case service:
 			return this.get(id, Service.class);
 		case split:
@@ -364,6 +370,12 @@ public class ElementFactory extends AbstractFactory {
 				list.add(this.get(str, Route.class));
 			}
 			break;
+		case publish:
+			Publish publish = this.get(id, Publish.class);
+			for (String str : publish.getRouteList()) {
+				list.add(this.get(str, Route.class));
+			}
+			break;
 		case service:
 			Service service = this.get(id, Service.class);
 			list.add(this.get(service.getRoute(), Route.class));
@@ -391,6 +403,7 @@ public class ElementFactory extends AbstractFactory {
 		this.listWithProcess(Manual.class, process).forEach(o -> ids.add(o.getForm()));
 		this.listWithProcess(Merge.class, process).forEach(o -> ids.add(o.getForm()));
 		this.listWithProcess(Parallel.class, process).forEach(o -> ids.add(o.getForm()));
+		this.listWithProcess(Publish.class, process).forEach(o -> ids.add(o.getForm()));
 		this.listWithProcess(Service.class, process).forEach(o -> ids.add(o.getForm()));
 		this.listWithProcess(Split.class, process).forEach(o -> ids.add(o.getForm()));
 		return ListTools.trim(ids, true, true);
@@ -851,6 +864,9 @@ public class ElementFactory extends AbstractFactory {
 
 		list.addAll(this.entityManagerContainer().idsEqualAndIsMember(Parallel.class, Activity.process_FIELDNAME,
 				processId, Parallel.routeList_FIELDNAME, routeId));
+
+		list.addAll(this.entityManagerContainer().idsEqualAndEqual(Publish.class, Activity.process_FIELDNAME, processId,
+				Publish.route_FIELDNAME, routeId));
 
 		list.addAll(this.entityManagerContainer().idsEqualAndEqual(Service.class, Activity.process_FIELDNAME, processId,
 				Service.route_FIELDNAME, routeId));

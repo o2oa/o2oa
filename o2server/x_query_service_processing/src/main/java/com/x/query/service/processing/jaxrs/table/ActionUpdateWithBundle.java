@@ -27,15 +27,14 @@ class ActionUpdateWithBundle extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, String bundle, JsonElement jsonElement)
 			throws Exception {
 
-		LOGGER.debug("execute:{}, flag:{}, bundle:{}.", effectivePerson::getDistinguishedName, () -> flag,
-				() -> bundle);
+		LOGGER.info("execute :{}, table flag:{}, bundle:{}， data:{}.", effectivePerson::getDistinguishedName, () -> flag,
+				() -> bundle, jsonElement::toString);
 
 		ClassLoader classLoader = Business.getDynamicEntityClassLoader();
 		Thread.currentThread().setContextClassLoader(classLoader);
 		ActionResult<Wo> result = new ActionResult<>();
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			LOGGER.debug("execute:{}, flag:{}.", effectivePerson::getDistinguishedName, () -> flag);
 			Table table = emc.flag(flag, Table.class);
 			if (null == table) {
 				throw new ExceptionEntityNotExist(flag, Table.class);
@@ -45,7 +44,6 @@ class ActionUpdateWithBundle extends BaseAction {
 			Class<? extends JpaObject> cls = (Class<? extends JpaObject>) classLoader
 					.loadClass(dynamicEntity.className());
 			List<? extends JpaObject> list = update(jsonElement, cls, bundle);
-
 			List<? extends JpaObject> bundleList = null;
 			if (PropertyTools.hasField(cls, DynamicEntity.BUNDLE_FIELD)) {
 				bundleList = emc.listEqual(cls, DynamicEntity.BUNDLE_FIELD, bundle);
@@ -55,10 +53,10 @@ class ActionUpdateWithBundle extends BaseAction {
 				for(JpaObject o : bundleList){
 					emc.remove(o);
 				}
-				for(JpaObject o : list){
-					o.setId(StringTools.uniqueToken());
-					emc.persist(o, CheckPersistType.all);
-				}
+			}
+			for(JpaObject o : list){
+				o.setId(StringTools.uniqueToken());
+				emc.persist(o, CheckPersistType.all);
 			}
 			emc.commit();
 			Wo wo = new Wo();

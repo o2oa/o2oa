@@ -168,7 +168,7 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 			Node node = this.workLogTree(business, work.getJob()).location(work);
 			if (null != node) {
 				Nodes ups = node.upTo(ActivityType.manual, ActivityType.agent, ActivityType.choice, ActivityType.delay,
-						ActivityType.embed, ActivityType.invoke);
+						ActivityType.embed, ActivityType.invoke, ActivityType.publish);
 				for (Node o : ups) {
 					if (this.hasTaskCompletedWithActivityToken(business, effectivePerson,
 							o.getWorkLog().getFromActivityToken())) {

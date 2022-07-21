@@ -2,25 +2,30 @@ package com.x.processplatform.service.processing.processor.publish;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.project.Applications;
+import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.scripting.JsonScriptingExecutor;
 import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.x_query_service_processing;
 import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.element.*;
+import com.x.processplatform.core.entity.element.Publish;
+import com.x.processplatform.core.entity.element.PublishTable;
+import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.log.Signal;
 import com.x.processplatform.service.processing.Business;
+import com.x.processplatform.service.processing.ThisApplication;
 import com.x.processplatform.service.processing.WrapScriptObject;
 import com.x.processplatform.service.processing.processor.AeiObjects;
-import com.x.processplatform.service.processing.processor.invoke.InvokeProcessor;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.script.CompiledScript;
 import javax.script.ScriptContext;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * 数据发布节点处理器
@@ -28,7 +33,7 @@ import java.util.Objects;
  */
 public class PublishProcessor extends AbstractPublishProcessor {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(PublishProcessor.class);
+	public static final Logger LOGGER = LoggerFactory.getLogger(PublishProcessor.class);
 
 	public PublishProcessor(EntityManagerContainer entityManagerContainer) throws Exception {
 		super(entityManagerContainer);
@@ -61,7 +66,7 @@ public class PublishProcessor extends AbstractPublishProcessor {
 				break;
 			case Publish.PUBLISH_TARGET_TABLE:
 				// 可以根据返回脚本判断时候流转
-				passThrough = true;
+				passThrough = this.publishToTable(aeiObjects, publish);
 				break;
 			default:
 				break;
@@ -79,9 +84,18 @@ public class PublishProcessor extends AbstractPublishProcessor {
 	}
 
 	private boolean publishToTable(AeiObjects aeiObjects, Publish publish) throws Exception {
-
-
-		return true;
+		List<AssignTable> list = this.evalTableBody(aeiObjects, publish);
+		boolean flag = true;
+		for (AssignTable assignTable : list){
+			WrapBoolean resp = ThisApplication.context().applications().postQuery(x_query_service_processing.class,
+					Applications.joinQueryUri("table", assignTable.getTableName(), "update", aeiObjects.getWork().getJob()), assignTable.getData())
+					.getData(WrapBoolean.class);
+			LOGGER.debug("publish to table：{}, result：{}",assignTable.getTableName(),resp.getValue());
+			if(BooleanUtils.isFalse(resp.getValue())){
+				flag = false;
+			}
+		}
+		return flag;
 	}
 
 	private List<AssignTable> evalTableBody(AeiObjects aeiObjects, Publish publish) throws Exception {
@@ -102,7 +116,7 @@ public class PublishProcessor extends AbstractPublishProcessor {
 					if (hasTableAssignDataScript(publishTable)) {
 						ScriptContext scriptContext = aeiObjects.scriptContext();
 						CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
-								aeiObjects.getActivity(), Business.EVENT_PUBLISHCMSBODY);
+								publishTable.getTargetAssignDataScript(), publishTable.getTargetAssignDataScriptText());
 						scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_JAXRSBODY,
 								assignBody);
 						JsonScriptingExecutor.jsonElement(cs, scriptContext, o -> {
@@ -115,6 +129,7 @@ public class PublishProcessor extends AbstractPublishProcessor {
 				if(assignTable.getData() == null){
 					assignTable.setData(gson.toJsonTree(aeiObjects.getData()));
 				}
+				list.add(assignTable);
 			}
 		}
 		return list;

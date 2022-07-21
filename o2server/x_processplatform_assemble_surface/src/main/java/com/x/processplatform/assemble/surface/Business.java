@@ -438,6 +438,9 @@ public class Business {
 			case parallel:
 				o = parallel().pick(id);
 				break;
+			case publish:
+				o = publish().pick(id);
+				break;
 			case service:
 				o = service().pick(id);
 				break;
