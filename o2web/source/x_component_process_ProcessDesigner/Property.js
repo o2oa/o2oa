@@ -253,9 +253,13 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
         MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.ScriptText", function(){
             var _self = this;
             scriptNodes.each(function(node){
+                debugger;
                 var api = node.dataset["o2Api"];
+                var editorType = node.dataset["editorType"];
+                var loadImmediately = node.dataset["loadImmediately"];
                 var script = new MWF.xApplication.process.ProcessDesigner.widget.ScriptText(node, this.data[node.get("name")], this.process.designer, {
                     "api": api,
+                    "forceType": editorType || null,
                     "maskNode": this.process.designer.content,
                     "maxObj": this.process.designer.paperNode,
                     "onChange": function(code){
@@ -263,6 +267,7 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                     },
                     "type": node.dataset["type"]
                 });
+                if( loadImmediately )script.loadEditor();
                 this.scriptTexts.push(script);
                 //this.setScriptItems(script, node);
                 node.store("editor", script);

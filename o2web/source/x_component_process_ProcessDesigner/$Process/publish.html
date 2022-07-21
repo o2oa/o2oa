@@ -152,7 +152,7 @@
                 </tr>
             </table>
             <div class="MWFScriptText" name="targetAssignDataScriptText" data-o2-api="../api/server.module_assignData.html#server.module_body"></div>
-            <div style="margin: 5px;">{{$.lp.getOldData}}: var data = this.data; </div>
+            <div style="margin: 5px;">{{$.lp.getOldData}}: var data = Object.clone(this.data); </div>
             <div style="margin: 5px;">{{$.lp.setNewPublishData}}: return data;</div>
             <div style="padding: 5px"><a href="../api/server.module_body.html#server.module_body" target="_blank">{{$.lp.apiDoc}}</a></div>
         </div>
@@ -202,8 +202,8 @@
                             </td>
                         </tr>
                     </table>
-                    <div class="MWFScriptText" name="queryTableAssignDataScriptText" data-o2-api="../api/server.module_assignData.html#server.module_body"></div>
-                    <div style="margin: 5px;">{{$.lp.getOldData}}: var data = this.data; </div>
+                    <div class="MWFScriptText" name="queryTableAssignDataScriptText" data-load-immediately=true data-editor-type="ace" data-o2-api="../api/server.module_assignData.html#server.module_body"></div>
+                    <div style="margin: 5px;">{{$.lp.getOldData}}: var data = Object.clone(this.data); </div>
                     <div style="margin: 5px;">{{$.lp.setNewPublishData}}: return data;</div>
                     <div style="padding: 5px"><a href="../api/server.module_body.html#server.module_body" target="_blank">{{$.lp.apiDoc}}</a></div>
                 </div>
