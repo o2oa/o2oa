@@ -106,6 +106,8 @@ public class Config {
 	public static final String PATH_CONFIG_MOCK = "config/mock.json";
 	public static final String PATH_CONFIG_TERNARY_MANAGEMENT = "config/ternaryManagement.json";
 
+	public static final String PATH_CONFIG_MISCELLANEOUS = "config/miscellaneous.json";
+
 	public static final String DIR_COMMONS = "commons";
 	public static final String DIR_COMMONS_TESS4J_TESSDATA = "commons/tess4j/tessdata";
 	public static final String DIR_COMMONS_EXT = "commons/ext";
@@ -1278,6 +1280,19 @@ public class Config {
 			instance().web = obj;
 		}
 		return instance().web;
+	}
+
+	public Miscellaneous miscellaneous;
+
+	public static synchronized Miscellaneous miscellaneous() throws Exception {
+		if (null == instance().miscellaneous) {
+			Miscellaneous obj = BaseTools.readConfigObject(PATH_CONFIG_MISCELLANEOUS, Miscellaneous.class);
+			if (null == obj) {
+				obj = Miscellaneous.defaultInstance();
+			}
+			instance().miscellaneous = obj;
+		}
+		return instance().miscellaneous;
 	}
 
 	public JsonObject mock;

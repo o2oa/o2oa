@@ -18,6 +18,8 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.organization.assemble.authentication.Business;
 import com.x.organization.core.entity.Person;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * 
  * @author ray
@@ -25,7 +27,7 @@ import com.x.organization.core.entity.Person;
  */
 class ActionOauthLogin extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionOauthLogin.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionOauthLogin.class);
 
 	ActionResult<Wo> execute(HttpServletRequest request, HttpServletResponse response, String name, String code,
 			String redirectUri) throws Exception {
@@ -38,7 +40,7 @@ class ActionOauthLogin extends BaseAction {
 		oauthInfo(oauthClient, param);
 		String credential = Objects.toString(param.get(oauthClient.getInfoCredentialField()), "");
 		oauthCheckCredential(credential);
-		logger.debug("credential:{}", credential);
+		LOGGER.debug("credential:{}", credential);
 		Wo wo = null;
 		if (Config.token().isInitialManager(credential)) {
 			wo = this.manager(request, response, credential, Wo.class);
@@ -58,6 +60,7 @@ class ActionOauthLogin extends BaseAction {
 		return result;
 	}
 
+	@Schema(name = "com.x.organization.assemble.authentication.jaxrs.authentication.ActionOauthLogin$Wo")
 	public static class Wo extends AbstractWoAuthentication {
 
 		private static final long serialVersionUID = 5188552190927904546L;

@@ -15,13 +15,17 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.organization.assemble.authentication.Business;
 import com.x.organization.core.entity.Person;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionCode extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionCode.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCode.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String credential) throws Exception {
+
+		LOGGER.debug("execute:{}, credential:{}.", effectivePerson::getDistinguishedName, () -> credential);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			//Audit audit = logger.audit(effectivePerson);
 			ActionResult<Wo> result = new ActionResult<>();
 			if (BooleanUtils.isNotTrue(Config.collect().getEnable())) {
 				throw new ExceptionDisableCollect();
@@ -43,7 +47,10 @@ class ActionCode extends BaseAction {
 		}
 	}
 
+	@Schema(name = "com.x.organization.assemble.authentication.jaxrs.authentication.ActionCode$Wo")
 	public static class Wo extends WrapBoolean {
+
+		private static final long serialVersionUID = 6434150148383433714L;
 
 	}
 }

@@ -84,55 +84,6 @@ class ActionCaptchaLogin extends BaseAction {
 		}
 	}
 
-	private String password(Wi wi) throws Exception {
-		return BooleanUtils.isTrue(Config.token().getRsaEnable())
-				? Crypto.rsaDecrypt(wi.getPassword(), Config.privateKey())
-				: wi.getPassword();
-	}
-
-	private Person personLogin(Business business, String id, String password) throws Exception {
-		Person person = business.entityManagerContainer().find(id, Person.class);
-		if (null == person) {
-			return null;
-		}
-		if (BooleanUtils.isTrue(Config.person().getSuperPermission())
-				&& StringUtils.equals(Config.token().getPassword(), password)) {
-			LOGGER.warn("user: {} use superPermission.", person.getName());
-			return person;
-		}
-		if (this.failureLocked(person)) {
-			throw new ExceptionFailureLocked(person.getName(), Config.person().getFailureInterval());
-		}
-
-		if (validatePassword(person, password)) {
-			return person;
-		} else {
-			business.entityManagerContainer().beginTransaction(Person.class);
-			this.failure(person);
-			business.entityManagerContainer().commit();
-			return null;
-		}
-	}
-
-	private Person peopleLogin(Business business, List<String> people, String password) throws Exception {
-		for (String id : people) {
-			Person person = business.entityManagerContainer().find(id, Person.class);
-			if (validatePassword(person, password)) {
-				return person;
-			}
-		}
-		return null;
-	}
-
-	private boolean validatePassword(Person person, String password) throws Exception {
-		if (BooleanUtils.isTrue(Config.token().getLdapAuth().getEnable())
-				&& LdapTools.auth(person.getUnique(), password)) {
-			return true;
-		}
-		return (StringUtils.equals(Crypto.encrypt(password, Config.token().getKey(), Config.token().getEncryptType()),
-				person.getPassword()) || StringUtils.equals(MD5Tool.getMD5Str(password), person.getPassword()));
-	}
-
 	@Schema(name = "com.x.organization.assemble.authentication.jaxrs.authentication.ActionCaptchaLogin$Wi")
 	public static class Wi extends ActionCaptchaLoginWi {
 

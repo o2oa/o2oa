@@ -188,7 +188,7 @@ public class WebServers extends ConcurrentSkipListMap<String, WebServer> {
 	 * @throws Exception
 	 */
 	private static void writeWebServerConfigWebSocketEnable(LinkedHashMap<String, Object> map) throws Exception {
-		map.put("webSocketEnable", Config.portal().getWebSocketEnable());
+		map.put("webSocketEnable", Config.miscellaneous().getWebSocketEnable());
 	}
 
 	/**
