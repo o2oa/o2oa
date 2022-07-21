@@ -29,13 +29,6 @@ public class Portal extends ConfigObject {
 	@Deprecated(since = "7.2", forRemoval = true)
 	private LinkedHashMap<String, String> urlMapping;
 
-	@FieldDescribe("是否启用webSocket链接.")
-	private Boolean webSocketEnable;
-
-	public Boolean getWebSocketEnable() {
-		return null == this.webSocketEnable ? DEFAULT_WEBSOCKETENABLE : this.webSocketEnable;
-	}
-
 	@FieldDescribe("定制首页面设置.")
 	private IndexPage indexPage;
 

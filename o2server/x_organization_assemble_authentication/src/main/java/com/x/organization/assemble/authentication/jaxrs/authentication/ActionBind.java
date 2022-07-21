@@ -5,7 +5,8 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.ws.rs.core.UriBuilder;
@@ -26,27 +27,28 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.StringTools;
 import com.x.organization.core.entity.Bind;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionBind extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionBind.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionBind.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
-		//Audit audit = logger.audit(effectivePerson);
+
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		String meta = StringTools.uniqueToken();
-		/** 二维码内容 */
+		// 二维码内容
 		String url = UriBuilder.fromUri(Config.collect().getAppUrl()).queryParam("meta", meta).build().toASCIIString();
 		int width = 200; // 二维码图片宽度
 		int height = 200; // 二维码图片高度
 		String format = "png";// 二维码的图片格式
 
-		Hashtable<EncodeHintType, String> hints = new Hashtable<EncodeHintType, String>();
-		// hints.put(EncodeHintType.CHARACTER_SET, DefaultCharset.name); //
+		Map<EncodeHintType, String> hints = new HashMap<>();
 		// 内容所使用字符集编码
 		hints.put(EncodeHintType.MARGIN, "1");
 		hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.Q.toString());
-		// hints.put(EncodeHintType.QR_VERSION, "7");
 
 		BitMatrix bitMatrix = new MultiFormatWriter().encode(url, BarcodeFormat.QR_CODE, width, height, hints);
 		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
@@ -73,11 +75,13 @@ class ActionBind extends BaseAction {
 	private static final int BLACK = 0xFF000000;
 	private static final int WHITE = 0xFFFFFFFF;
 
+	@Schema(name = "com.x.organization.assemble.authentication.jaxrs.authentication.ActionBind$Wo")
 	public class Wo extends Bind {
 
 		private static final long serialVersionUID = -3574645735233129236L;
 
 		@FieldDescribe("Base64编码图像.")
+		@Schema(description = "Base64编码图像.")
 		private String image;
 
 		public String getImage() {

@@ -17,12 +17,17 @@ import com.x.organization.assemble.authentication.Business;
 import com.x.organization.core.entity.Bind;
 import com.x.organization.core.entity.Person;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionBindLogin extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionBindLogin.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionBindLogin.class);
 
 	ActionResult<Wo> execute(HttpServletRequest request, HttpServletResponse response, EffectivePerson effectivePerson,
 			String meta) throws Exception {
+
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -50,6 +55,7 @@ class ActionBindLogin extends BaseAction {
 		}
 	}
 
+	@Schema(name = "com.x.organization.assemble.authentication.jaxrs.authentication.ActionBindLogin$Wo")
 	public static class Wo extends AbstractWoAuthentication {
 
 		private static final long serialVersionUID = -5992706204803405898L;
