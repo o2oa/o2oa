@@ -35,7 +35,7 @@ public class ActionSetToken extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionSetToken.class);
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
-		if (!Config.nodes().centerServers().first().getValue().getConfigApiEnable()) {
+		if (BooleanUtils.isNotTrue(Config.miscellaneous().getConfigApiEnable())) {
 			throw new ExceptionModifyConfig();
 		}
 		Map<String,Object> map = XGsonBuilder.instance().fromJson(jsonElement, Map.class);

@@ -182,7 +182,7 @@ public class BaseTools {
 		boolean Syncflag = false;
 		Nodes nodes = Config.nodes();
 		// 同步config文件
-		if (Config.nodes().centerServers().first().getValue().getConfigApiEnable()) {
+		if (Config.miscellaneous().getConfigApiEnable()) {
 			for (String node : nodes.keySet()) {
 				if (nodes.get(node).getApplication().getEnable() || nodes.get(node).getCenter().getEnable()) {
 					Syncflag = executeSyncFile(syncFilePath, node, nodes.get(node).nodeAgentPort());

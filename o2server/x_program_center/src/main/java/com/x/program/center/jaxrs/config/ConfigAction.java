@@ -27,7 +27,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 @Path("config")
 public class ConfigAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ConfigAction.class);
+	private static final  Logger LOGGER = LoggerFactory.getLogger(ConfigAction.class);
 
 	@JaxrsMethodDescribe(value = "获取设置.", action = ActionGet.class)
 	@GET
@@ -39,7 +39,7 @@ public class ConfigAction extends StandardJaxrsAction {
 		try {
 			result = new ActionGet().execute(effectivePerson);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -56,7 +56,7 @@ public class ConfigAction extends StandardJaxrsAction {
 		try {
 			result = new ActionGetPerson().execute(effectivePerson);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -74,7 +74,7 @@ public class ConfigAction extends StandardJaxrsAction {
 		try {
 			result = new ActionSetPerson().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -91,7 +91,7 @@ public class ConfigAction extends StandardJaxrsAction {
 		try {
 			result = new ActionGetToken().execute(effectivePerson);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -109,7 +109,7 @@ public class ConfigAction extends StandardJaxrsAction {
 		try {
 			result = new ActionSetToken().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -126,7 +126,7 @@ public class ConfigAction extends StandardJaxrsAction {
 		try {
 			result = new ActionGetCollect().execute(effectivePerson);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -144,7 +144,7 @@ public class ConfigAction extends StandardJaxrsAction {
 		try {
 			result = new ActionSetCollect().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -161,7 +161,7 @@ public class ConfigAction extends StandardJaxrsAction {
 		try {
 			result = new ActionGetCenterServer().execute(effectivePerson);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -179,7 +179,7 @@ public class ConfigAction extends StandardJaxrsAction {
 		try {
 			result = new ActionSetCenterServer().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -196,7 +196,7 @@ public class ConfigAction extends StandardJaxrsAction {
 		try {
 			result = new ActionGetProxy().execute(effectivePerson);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -214,7 +214,7 @@ public class ConfigAction extends StandardJaxrsAction {
 		try {
 			result = new ActionSetProxy().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -231,7 +231,7 @@ public class ConfigAction extends StandardJaxrsAction {
 		try {
 			result = new ActionGetPortal().execute(effectivePerson);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -249,7 +249,7 @@ public class ConfigAction extends StandardJaxrsAction {
 		try {
 			result = new ActionSetPortal().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -300,7 +300,7 @@ public class ConfigAction extends StandardJaxrsAction {
 		try {
 			result = new ActionSave().execute(request , effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -317,7 +317,7 @@ public class ConfigAction extends StandardJaxrsAction {
 		try {
 			result = new ActionGetTernaryManagement().execute(effectivePerson);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -335,7 +335,7 @@ public class ConfigAction extends StandardJaxrsAction {
 		try {
 			result = new ActionSetTernaryManagement().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));

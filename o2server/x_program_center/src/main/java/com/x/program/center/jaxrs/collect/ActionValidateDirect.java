@@ -14,7 +14,7 @@ class ActionValidateDirect extends BaseAction {
 
 	ActionResult<Wo> execute(JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
-		if (BooleanUtils.isNotTrue(Config.nodes().centerServers().first().getValue().getConfigApiEnable())) {
+		if (BooleanUtils.isNotTrue(Config.miscellaneous().getConfigApiEnable())) {
 			throw new ExceptionModifyConfig();
 		}
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);

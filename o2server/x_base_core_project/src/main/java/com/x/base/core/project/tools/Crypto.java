@@ -35,6 +35,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.commons.text.StringEscapeUtils;
 
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.scripting.JsonScriptingExecutor;
 import com.x.base.core.project.scripting.ScriptingFactory;
 
@@ -52,6 +53,10 @@ public class Crypto {
 	private static Class<?> classSm4 = null;
 
 	private static final String TYPE_SM4 = "sm4";
+
+	public static String encrypt(String data, String key) throws Exception {
+		return encrypt(data, key, Config.token().getEncryptType());
+	}
 
 	public static String encrypt(String data, String key, String type)
 			throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException,
@@ -93,6 +98,11 @@ public class Crypto {
 			classSm4 = Class.forName("cfca.sadk.util.EncryptUtil");
 		}
 		return classSm4;
+	}
+
+	public static String decrypt(String data, String key)
+			throws Exception {
+		return decrypt(data, key, Config.token().getEncryptType());
 	}
 
 	public static String decrypt(String data, String key, String type)

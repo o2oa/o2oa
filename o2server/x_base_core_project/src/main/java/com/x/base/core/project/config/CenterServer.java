@@ -18,7 +18,6 @@ public class CenterServer extends ConfigObject {
 
 	private static final Boolean DEFAULT_ENABLE = true;
 	private static final Integer DEFAULT_PORT = 80;
-	private static final Boolean DEFAULT_CONFIGAPIENABLE = true;
 	private static final Integer DEFAULT_ORDER = 0;
 	private static final Boolean DEFAULT_STATENABLE = true;
 	private static final String DEFAULT_STATEXCLUSIONS = "*.js,*.gif,*.jpg,*.png,*.css,*.ico";
@@ -39,7 +38,6 @@ public class CenterServer extends ConfigObject {
 		this.httpProtocol = "";
 		this.proxyHost = "";
 		this.proxyPort = DEFAULT_PORT;
-		this.configApiEnable = DEFAULT_CONFIGAPIENABLE;
 		this.statEnable = DEFAULT_STATENABLE;
 		this.statExclusions = DEFAULT_STATEXCLUSIONS;
 		this.exposeJest = DEFAULT_EXPOSEJEST;
@@ -62,8 +60,6 @@ public class CenterServer extends ConfigObject {
 	private String proxyHost;
 	@FieldDescribe("代理端口,当服务器是通过apache/nginx等代理服务器映射到公网或者通过路由器做端口映射,在这样的情况下需要设置此地址以标明公网访问端口.")
 	private Integer proxyPort;
-	@FieldDescribe("允许通过Api修改config")
-	private Boolean configApiEnable;
 	@FieldDescribe("启用统计,默认启用统计.")
 	private Boolean statEnable;
 	@FieldDescribe("统计忽略路径,默认忽略*.js,*.gif,*.jpg,*.png,*.css,*.ico")
@@ -91,10 +87,6 @@ public class CenterServer extends ConfigObject {
 
 	public Boolean getStatEnable() {
 		return BooleanUtils.isNotFalse(statEnable);
-	}
-
-	public Boolean getConfigApiEnable() {
-		return configApiEnable == null ? DEFAULT_CONFIGAPIENABLE : this.configApiEnable;
 	}
 
 	public Boolean getEnable() {
