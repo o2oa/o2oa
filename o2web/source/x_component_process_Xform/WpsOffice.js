@@ -295,10 +295,11 @@ MWF.xApplication.process.Xform.WpsOffice = MWF.APPWpsOffice =  new Class({
         };
         this._setBusinessData(data);
     },
-    save: function(){
+    save: function(callback){
         var promise =  this.wpsOffice.save();
         promise.then(function(){
             console.log("save success");
+            if(callback) callback();
         });
     },
     getTotalPage :  function (callback){
@@ -407,6 +408,23 @@ MWF.xApplication.process.Xform.WpsOffice = MWF.APPWpsOffice =  new Class({
         promise.then(function(){
             const app = this.wpsOffice.WordApplication();
             app.ActiveDocument.TrackRevisions = false;
+        }.bind(this));
+    },
+    acceptAllRevisions : function (callback){
+        //关闭修订模式
+        var promise =  this.wpsOffice.ready();
+        promise.then(function(){
+            const app = this.wpsOffice.WordApplication();
+            // 获取修订对象
+            const p1 =  app.ActiveDocument.Revisions;
+            // 接受对指定文档的所有修订
+            p1.then(function (revisions){
+                const p2 = revisions.AcceptAll();
+                p2.then(function(){
+                    if(callback) callback();
+                });
+
+            });
         }.bind(this));
     },
     exportPDF : function (){
