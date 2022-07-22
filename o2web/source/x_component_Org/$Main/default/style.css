@@ -84,3 +84,6 @@
 .o2icon-triangle_up:before {
   content: "\e9b4";
 }
+.o2icon-off:before {
+  content: "\e9bb";
+}

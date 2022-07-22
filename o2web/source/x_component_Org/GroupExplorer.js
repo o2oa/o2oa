@@ -72,7 +72,7 @@ MWF.xApplication.Org.GroupExplorer.Group = new Class({
             if (this.data.id){
                 if (this.data.control.allowDelete || MWF.AC.isSecurityManager()){
                     if (!this.deleteNode){
-                        this.deleteNode = new Element("div", {"styles": this.style.actionDeleteNode}).inject(this.actionNode);
+                        this.deleteNode = new Element("div.o2icon-delete", {"styles": this.style.actionDeleteNode}).inject(this.actionNode);
                         this.deleteNode.addEvent("click", function(e){
                             if (!this.notDelete){
                                 if (!this.deleteSelected){

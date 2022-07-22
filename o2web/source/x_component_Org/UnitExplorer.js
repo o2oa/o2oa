@@ -234,7 +234,7 @@ MWF.xApplication.Org.UnitExplorer.Unit = new Class({
             if (this.data.id){
                 if (this.data.control.allowDelete){
                     if (!this.deleteNode){
-                        this.deleteNode = new Element("div", {"styles": this.style.actionDeleteNode}).inject(this.actionNode);
+                        this.deleteNode = new Element("div.o2icon-delete", {"styles": this.style.actionDeleteNode}).inject(this.actionNode);
                         this.deleteNode.addEvent("click", function(e){
                             if (!this.notDelete){
                                 if (!this.deleteSelected){
@@ -249,7 +249,7 @@ MWF.xApplication.Org.UnitExplorer.Unit = new Class({
                 }
                 if (this.data.control.allowEdit){
                     if (!this.addNode){
-                        this.addNode = new Element("div", {"styles": this.style.actionAddNode}).inject(this.actionNode);
+                        this.addNode = new Element("div.o2icon-add", {"styles": this.style.actionAddNode}).inject(this.actionNode);
                         this.addNode.addEvent("click", function(e){
                             if (!this.notDelete){
                                 this.addSubUnit();
@@ -305,9 +305,12 @@ MWF.xApplication.Org.UnitExplorer.Unit = new Class({
         this.deleteNode.setStyles(this.style.actionDeleteNode_delete);
         if (this.addNode) this.addNode.setStyles(this.style.actionAddNode_delete);
         this.contentNode.setStyles(this.style.contentNode_delete);
+        // this.contentNode.removeClass("mainColor_bg")
         this.textNode.setStyles(this.style.unitTextNode);
         this.explorer.deleteElements.push(this);
         this.deleteSelected = true;
+
+        this.deleteNode.removeClass("o2icon-delete").addClass("o2icon-off");
 
         this.explorer.checkDeleteElements(this);
     },
@@ -330,6 +333,7 @@ MWF.xApplication.Org.UnitExplorer.Unit = new Class({
             if (this.addNode)  this.addNode.setStyles(this.style.actionAddNode_selected);
             if (this.addNode) this.addNode.setStyles(this.style.actionAddNode_selected);
         }
+        this.deleteNode.removeClass("o2icon-off").addClass("o2icon-delete");
 
         this.explorer.deleteElements.erase(this);
         this.deleteSelected = false;
@@ -402,8 +406,11 @@ MWF.xApplication.Org.UnitExplorer.Unit = new Class({
         this.actionNode.setStyles(this.style.actionNode);
         if (this.deleteNode) this.deleteNode.setStyles(this.style.actionDeleteNode);
         if (this.addNode) this.addNode.setStyles(this.style.actionAddNode);
+        if (this.deleteNode)this.deleteNode.removeClass("mainColor_color");
+        if (this.addNode)this.addNode.removeClass("mainColor_color");
         this.iconNode.setStyle("background-image", "url("+this._getIcon()+")");
         this.contentNode.removeClass("mainColor_bg");
+        this.contentNode.removeClass("mainColor_bg_opacity");
         this.setToggleIconNode();
         this.clearItemProperty();
         return true;
@@ -415,9 +422,12 @@ MWF.xApplication.Org.UnitExplorer.Unit = new Class({
         this.actionNode.setStyles(this.style.actionNode_selected);
         if (this.deleteNode) this.deleteNode.setStyles(this.style.actionDeleteNode_selected);
         if (this.addNode) this.addNode.setStyles(this.style.actionAddNode_selected);
+        if (this.deleteNode)this.deleteNode.removeClass("mainColor_color");
+        if (this.addNode)this.addNode.removeClass("mainColor_color");
 
         this.iconNode.setStyle("background-image", "url("+this._getIcon()+")");
         this.contentNode.addClass("mainColor_bg");
+        this.contentNode.removeClass("mainColor_bg_opacity");
         this.setToggleIconNode();
         this.showItemProperty();
     },

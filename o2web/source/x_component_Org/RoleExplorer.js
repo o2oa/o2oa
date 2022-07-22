@@ -85,7 +85,7 @@ MWF.xApplication.Org.RoleExplorer.Role = new Class({
             if (this.data.id && !this.data.isSystemRole){
                 if (this.data.control.allowDelete){
                     if (!this.deleteNode){
-                        this.deleteNode = new Element("div", {"styles": this.style.actionDeleteNode}).inject(this.actionNode);
+                        this.deleteNode = new Element("div.o2icon-delete", {"styles": this.style.actionDeleteNode}).inject(this.actionNode);
                         this.deleteNode.addEvent("click", function(e){
                             if (!this.notDelete){
                                 if (!this.deleteSelected){
