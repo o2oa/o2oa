@@ -27,7 +27,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 @Path("config")
 public class ConfigAction extends StandardJaxrsAction {
 
-	private static final  Logger LOGGER = LoggerFactory.getLogger(ConfigAction.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigAction.class);
 
 	@JaxrsMethodDescribe(value = "获取设置.", action = ActionGet.class)
 	@GET
@@ -264,7 +264,7 @@ public class ConfigAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionList.Wo> result = new ActionResult<>();
 		try {
-			result = new ActionList().execute(request,effectivePerson);
+			result = new ActionList().execute(request, effectivePerson);
 		} catch (Exception e) {
 			e.printStackTrace();
 			result.error(e);
@@ -277,11 +277,12 @@ public class ConfigAction extends StandardJaxrsAction {
 	@Path("open")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void open(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, JsonElement jsonElement) {
+	public void open(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionOpen.Wo> result = new ActionResult<>();
 		try {
-			result = new ActionOpen().execute(request,effectivePerson, jsonElement);
+			result = new ActionOpen().execute(request, effectivePerson, jsonElement);
 		} catch (Exception e) {
 			e.printStackTrace();
 			result.error(e);
@@ -294,11 +295,12 @@ public class ConfigAction extends StandardJaxrsAction {
 	@Path("save")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	public void save(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, JsonElement jsonElement) {
+	public void save(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
 		ActionResult<ActionSave.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionSave().execute(request , effectivePerson, jsonElement);
+			result = new ActionSave().execute(request, effectivePerson, jsonElement);
 		} catch (Exception e) {
 			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -311,7 +313,8 @@ public class ConfigAction extends StandardJaxrsAction {
 	@Path("ternary/management")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void getTernaryManagement(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+	public void getTernaryManagement(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request) {
 		ActionResult<ActionGetTernaryManagement.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -329,11 +332,29 @@ public class ConfigAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void setTernaryManagement(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-						  JsonElement jsonElement) {
+			JsonElement jsonElement) {
 		ActionResult<ActionSetTernaryManagement.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionSetTernaryManagement().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+	}
+
+	@JaxrsMethodDescribe(value = "更改管理员密码.", action = ActionChangePassword.class)
+	@POST
+	@Path("change/password")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void changePassword(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
+		ActionResult<ActionChangePassword.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionChangePassword().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
 			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
