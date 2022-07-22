@@ -1,11 +1,18 @@
 package com.x.program.center.jaxrs.config;
 
+import java.io.StringReader;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.util.Map.Entry;
+
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.h2.tools.RunScript;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.DataServer;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -90,9 +97,26 @@ class ActionChangePassword extends BaseAction {
 		if (BooleanUtils.isNotTrue(StringUtils.equals(Config.token().getPassword(), oldPassword))) {
 			throw new ExceptionInvalidOldPassword();
 		}
+		this.changeInternalDataServerPassword(oldPassword, newPassword);
 		Config.token().setPassword(newPassword);
 		Config.token().save();
 		this.configFlush(effectivePerson);
+	}
+
+	private void changeInternalDataServerPassword(String oldPassword, String newPassword) throws Exception {
+		org.h2.Driver.load();
+		for (Entry<String, DataServer> en : Config.nodes().dataServers().entrySet()) {
+			DataServer o = en.getValue();
+			if (BooleanUtils.isTrue(o.getEnable())) {
+				try (Connection conn = DriverManager.getConnection(
+						"jdbc:h2:tcp://" + en.getKey() + ":" + o.getTcpPort() + "/X", "sa", oldPassword)) {
+					RunScript.execute(conn, new StringReader("ALTER USER SA SET PASSWORD '" + newPassword + "'"));
+				} catch (Exception e) {
+					throw new IllegalStateException("Verify that the dataServer:" + en.getKey()
+							+ " is started and that the dataServer password is updated synchronously.", e);
+				}
+			}
+		}
 	}
 
 	private void check(Wi wi) throws ExceptionEmptyCredential, ExceptionEmptyOldPassword, ExceptionEmptyNewPassword {
