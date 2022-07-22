@@ -32,10 +32,20 @@ MWF.xDesktop.Access = MWF.AC = {
         this.getRoleList();
         return this.isAdministrator() || (this.roleList.indexOf("portalmanager")!==-1);
     },
+    isPortalCreator: function(){
+        if (!layout.desktop.session.user.roleList) return false;
+        this.getRoleList();
+        return this.isAdministrator() || (this.roleList.indexOf("portalmanager")!==-1) || (this.roleList.indexOf("portalcreator")!==-1);
+    },
     isQueryManager: function(){
         if (!layout.desktop.session.user.roleList) return false;
         this.getRoleList();
         return this.isAdministrator() || (this.roleList.indexOf("querymanager")!==-1);
+    },
+    isQueryCreator: function(){
+        if (!layout.desktop.session.user.roleList) return false;
+        this.getRoleList();
+        return this.isAdministrator() || (this.roleList.indexOf("querymanager")!==-1) || (this.roleList.indexOf("querycreator")!==-1);
     },
     isOrganizationManager: function(){
         if (!layout.desktop.session.user.roleList) return false;
@@ -103,7 +113,7 @@ MWF.xDesktop.Access = MWF.AC = {
     },
     isPortalPlatformCreator: function(){
         if (this.isAdministrator()) return true;
-        if (this.isPortalManager()) return true;
+        if (this.isPortalCreator()) return true;
         if (!layout.desktop.session.user.roleList) return false;
         this.getRoleList();
         return (this.roleList.indexOf("portalcreator")!==-1);
@@ -111,7 +121,7 @@ MWF.xDesktop.Access = MWF.AC = {
 
     isQueryPlatformCreator: function(){
         if (this.isAdministrator()) return true;
-        if (this.isQueryManager()) return true;
+        if (this.isQueryCreator()) return true;
         if (!layout.desktop.session.user.roleList) return false;
         this.getRoleList();
         return (this.roleList.indexOf("querycreator")!==-1);
@@ -126,6 +136,10 @@ MWF.xDesktop.Access = MWF.AC = {
     isCMSManager: function(){
         this.getRoleList();
         return this.isAdministrator() || (this.roleList.indexOf("cmsmanager")!==-1);
+    },
+    isCMSCreator: function(){
+        this.getRoleList();
+        return this.isAdministrator() || (this.roleList.indexOf("cmsmanager")!==-1) || (this.roleList.indexOf("cmscreator")!==-1);
     },
     isBBSManager: function(){
         this.getRoleList();
