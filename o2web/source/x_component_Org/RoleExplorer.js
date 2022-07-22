@@ -85,7 +85,7 @@ MWF.xApplication.Org.RoleExplorer.Role = new Class({
             if (this.data.id && !this.data.isSystemRole){
                 if (this.data.control.allowDelete){
                     if (!this.deleteNode){
-                        this.deleteNode = new Element("div", {"styles": this.style.actionDeleteNode}).inject(this.actionNode);
+                        this.deleteNode = new Element("div.o2icon-delete", {"styles": this.style.actionDeleteNode}).inject(this.actionNode);
                         this.deleteNode.addEvent("click", function(e){
                             if (!this.notDelete){
                                 if (!this.deleteSelected){
@@ -461,6 +461,7 @@ MWF.xApplication.Org.RoleExplorer.RoleContent.BaseInfor = new Class({
             }else{
                 this.editNode = new Element("div", {"styles": this.style.actionEditNode, "text": this.explorer.app.lp.editRole}).inject(this.baseInforEditActionAreaNode);
                 this.saveNode = new Element("div", {"styles": this.style.actionSaveNode, "text": this.explorer.app.lp.saveRole}).inject(this.baseInforEditActionAreaNode);
+                this.saveNode.addClass("mainColor_bg");
                 this.cancelNode = new Element("div", {"styles": this.style.actionCancelNode, "text": this.explorer.app.lp.cancel}).inject(this.baseInforEditActionAreaNode);
 
                 this.editNode.setStyle("display", "block");
