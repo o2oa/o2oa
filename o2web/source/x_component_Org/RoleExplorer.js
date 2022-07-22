@@ -461,6 +461,7 @@ MWF.xApplication.Org.RoleExplorer.RoleContent.BaseInfor = new Class({
             }else{
                 this.editNode = new Element("div", {"styles": this.style.actionEditNode, "text": this.explorer.app.lp.editRole}).inject(this.baseInforEditActionAreaNode);
                 this.saveNode = new Element("div", {"styles": this.style.actionSaveNode, "text": this.explorer.app.lp.saveRole}).inject(this.baseInforEditActionAreaNode);
+                this.saveNode.addClass("mainColor_bg");
                 this.cancelNode = new Element("div", {"styles": this.style.actionCancelNode, "text": this.explorer.app.lp.cancel}).inject(this.baseInforEditActionAreaNode);
 
                 this.editNode.setStyle("display", "block");

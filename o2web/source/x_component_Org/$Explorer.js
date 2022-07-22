@@ -713,6 +713,7 @@ MWF.xApplication.Org.$Explorer.Item = new Class({
         this.deleteNode.setStyles(this.style.actionDeleteNode_delete);
         this.deleteNode.removeClass("o2icon-delete").addClass("o2icon-off");
         this.contentNode.setStyles(this.style.contentNode_delete);
+        this.contentNode.removeClass("mainColor_bg");
         this.textNode.setStyles(this.style.textNode);
         this.explorer.deleteElements.push(this);
         this.deleteSelected = true;
@@ -727,9 +728,11 @@ MWF.xApplication.Org.$Explorer.Item = new Class({
         if (this.explorer.currentItem!==this){
             this.deleteNode.setStyles(this.style.actionDeleteNode);
             this.contentNode.setStyles(this.style.contentNode);
+            this.contentNode.removeClass("mainColor_bg");
             this.textNode.setStyles(this.style.textNode);
         }else{
             this.contentNode.setStyles(this.style.contentNode_selected);
+            this.contentNode.addClass("mainColor_bg");
             this.textNode.setStyles(this.style.textNode_selected);
             this.actionNode.setStyles(this.style.actionNode_selected);
             if (this.deleteNode) this.deleteNode.setStyles(this.style.actionDeleteNode_selected);
@@ -913,7 +916,7 @@ MWF.xApplication.Org.$Explorer.ItemContent = new Class({
     loadItemPropertyTab: function(callback){
         this.propertyTabContainerNode = new Element("div", {"styles": this.item.style.tabTitleNode}).inject(this.propertyContentNode, "top");
         MWF.require("MWF.widget.Tab", function(){
-            this.propertyTab = new MWF.widget.Tab(this.propertyContentNode, {"style": "org"});
+            this.propertyTab = new MWF.widget.Tab(this.propertyContentNode, {"style": "org", "useMainColor":true});
             this.propertyTab.load();
 
             this.propertyTab.tabNodeContainer.inject(this.propertyTabContainerNode);

@@ -197,6 +197,10 @@ o2.widget.TabPage = new Class({
 		this.fireEvent("queryShow");
 		this.tabNode.setStyle("display","");
 		this.tabNode.set("styles", this.tab.css.tabNodeCurrent);
+		if( this.tab.options.useMainColor ){
+			this.tabNode.addClass("mainColor_color");
+			this.tabNode.addClass("mainColor_border");
+		}
 		this.textNode.set("styles", this.tab.css.tabTextNodeCurrent);
 		if (this.closeNode) this.closeNode.set("styles", this.tab.css.tabCloseNodeCurrent);
 		
@@ -213,6 +217,10 @@ o2.widget.TabPage = new Class({
 		this.fireEvent("queryShow");
 		this.tabNode.setStyle("display","");
 		this.tabNode.set("styles", this.tab.css.tabNodeCurrent);
+		if( this.tab.options.useMainColor ){
+			this.tabNode.addClass("mainColor_color");
+			this.tabNode.addClass("mainColor_border");
+		}
 		this.textNode.set("styles", this.tab.css.tabTextNodeCurrent);
 		if (this.closeNode) this.closeNode.set("styles", this.tab.css.tabCloseNodeCurrent);
 		
@@ -235,6 +243,10 @@ o2.widget.TabPage = new Class({
 		if (this.isShow){
 			this.fireEvent("queryHide");
 			this.tabNode.set("styles", this.tab.css.tabNode);
+			if( this.tab.options.useMainColor ){
+				this.tabNode.removeClass("mainColor_color");
+				this.tabNode.removeClass("mainColor_border");
+			}
 			this.textNode.set("styles", this.tab.css.tabTextNode);
 			if (this.closeNode) this.closeNode.set("styles", this.tab.css.tabCloseNode);
 		
@@ -250,6 +262,10 @@ o2.widget.TabPage = new Class({
 		if (this.isShow){
 			this.fireEvent("queryHide");
 			this.tabNode.set("styles", this.tab.css.tabNode);
+			if( this.tab.options.useMainColor ){
+				this.tabNode.removeClass("mainColor_color");
+				this.tabNode.removeClass("mainColor_border");
+			}
 			this.textNode.set("styles", this.tab.css.tabTextNode);
 			if (this.closeNode) this.closeNode.set("styles", this.tab.css.tabCloseNode);
 		
