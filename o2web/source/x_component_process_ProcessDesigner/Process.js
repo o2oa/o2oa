@@ -765,7 +765,6 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 //		};
 //	},
 	loadProcessRoutes: function(){
-
 		this.process.routeList.each(function(item){
 			this.routes[item.id] = new MWF.APPPD.Route(item, this);
 			this.routeDatas[item.id] = item;
@@ -781,7 +780,9 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 	},
 	
 	loadedActivitys: function(callback){
-		if (this.loadedBegin && this.loadedEnds && this.loadedCancels && this.loadedConditions && this.loadedChoices && this.loadedSplits && this.loadedParallels && this.loadedMerges && this.loadedManuals && this.loadedEmbeds && this.loadedDelays && this.loadedInvokes && this.loadedServices && this.loadedAgents && this.loadedMessages){
+		if (this.loadedBegin && this.loadedEnds && this.loadedCancels && this.loadedConditions && this.loadedChoices
+			&& this.loadedSplits && this.loadedParallels && this.loadedMerges && this.loadedManuals && this.loadedEmbeds
+			&& this.loadedDelays && this.loadedInvokes && this.loadedServices && this.loadedAgents && this.loadedMessages && this.loadedPublishs){
 			if (callback) callback();
 		}
 	},
