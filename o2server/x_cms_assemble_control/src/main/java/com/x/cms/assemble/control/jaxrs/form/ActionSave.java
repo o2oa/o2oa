@@ -23,6 +23,7 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.cms.assemble.control.Business;
+import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.element.Form;
 import com.x.cms.core.entity.element.View;
 import com.x.cms.core.entity.element.ViewCategory;
@@ -48,7 +49,11 @@ public class ActionSave extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 
-			if (!business.isManager( effectivePerson)) {
+			AppInfo appInfo = emc.find(wi.getAppId(), AppInfo.class);
+			if(appInfo == null){
+				throw new ExceptionAppInfoNotExist(wi.getAppId());
+			}
+			if (!business.isAppInfoManager( effectivePerson, appInfo)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			Form form = emc.find(wi.getId(), Form.class);

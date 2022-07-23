@@ -1,5 +1,6 @@
 package com.x.query.service.processing.jaxrs.table;
 
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.StringTools;
 import org.apache.commons.beanutils.PropertyUtilsBean;
 

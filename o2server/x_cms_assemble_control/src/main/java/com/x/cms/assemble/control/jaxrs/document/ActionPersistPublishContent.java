@@ -482,6 +482,9 @@ public class ActionPersistPublishContent extends BaseAction {
 		@FieldDescribe( "启动流程的WorkId." )
 		private String wf_workId = null;
 
+		@FieldDescribe( "流程的表单Id." )
+		private String wf_formId = null;
+
 		@FieldDescribe( "启动流程的附件列表." )
 		private String[] wf_attachmentIds = null;
 
@@ -1055,6 +1058,14 @@ public class ActionPersistPublishContent extends BaseAction {
 
 		public void setStringValue03(String stringValue03) {
 			this.stringValue03 = stringValue03;
+		}
+
+		public String getWf_formId() {
+			return wf_formId;
+		}
+
+		public void setWf_formId(String wf_formId) {
+			this.wf_formId = wf_formId;
 		}
 	}
 

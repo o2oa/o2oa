@@ -2,13 +2,12 @@ package com.x.query.service.processing.jaxrs.table;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import javax.persistence.Column;
 
 import com.x.base.core.entity.dynamic.DynamicEntity;
+import com.x.base.core.project.jaxrs.WrapString;
 import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -37,6 +36,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 			IllegalArgumentException, SecurityException {
 		List<T> list = new ArrayList<>();
 		List<Field> fields = FieldUtils.getFieldsListWithAnnotation(cls, Column.class);
+		List<Field> fields2 = FieldUtils.getFieldsListWithAnnotation(cls, ElementColumn.class);
+		fields.addAll(fields2);
 		final List<JsonObject> jsonObjectList = new ArrayList<>();
 		if (jsonElement.isJsonObject()) {
 			jsonObjectList.add(jsonElement.getAsJsonObject());
@@ -51,62 +52,74 @@ abstract class BaseAction extends StandardJaxrsAction {
 		for(JsonObject jsonObject : jsonObjectList) {
 			T t = cls.getConstructor().newInstance();
 			for (Field field : fields) {
-				switch (JpaObjectTools.type(field)) {
-					case JpaObject.TYPE_STRING:
-						propertyUtilsBean.setProperty(t, field.getName(), extractStringOrDistinguishedName(
-								getJsonElement(jsonObject, field), getColumnDefinedStringLength(field)));
-						break;
-					case JpaObject.TYPE_INTEGER:
-						propertyUtilsBean.setProperty(t, field.getName(), extractInteger(getJsonElement(jsonObject, field)));
-						break;
-					case JpaObject.TYPE_LONG:
-						propertyUtilsBean.setProperty(t, field.getName(), extractLong(getJsonElement(jsonObject, field)));
-						break;
-					case JpaObject.TYPE_FLOAT:
-						propertyUtilsBean.setProperty(t, field.getName(), extractFloat(getJsonElement(jsonObject, field)));
-						break;
-					case JpaObject.TYPE_DOUBLE:
-						propertyUtilsBean.setProperty(t, field.getName(), extractDouble(getJsonElement(jsonObject, field)));
-						break;
-					case JpaObject.TYPE_DATETIME:
-						propertyUtilsBean.setProperty(t, field.getName(), extractDateTime(getJsonElement(jsonObject, field)));
-						break;
-					case JpaObject.TYPE_DATE:
-						propertyUtilsBean.setProperty(t, field.getName(), extractDate(getJsonElement(jsonObject, field)));
-						break;
-					case JpaObject.TYPE_BOOLEAN:
-						propertyUtilsBean.setProperty(t, field.getName(), extractBoolean(getJsonElement(jsonObject, field)));
-						break;
-					case JpaObject.TYPE_STRINGLIST:
-						propertyUtilsBean.setProperty(t, field.getName(), extractStringOrDistinguishedNameList(
-								getJsonElement(jsonObject, field), getElementColumnDefinedStringLength(field)));
-						break;
-					case JpaObject.TYPE_INTEGERLIST:
-						propertyUtilsBean.setProperty(t, field.getName(),
-								extractIntegerList(getJsonElement(jsonObject, field)));
-						break;
-					case JpaObject.TYPE_LONGLIST:
-						propertyUtilsBean.setProperty(t, field.getName(), extractLongList(getJsonElement(jsonObject, field)));
-						break;
-					case JpaObject.TYPE_FLOATLIST:
-						propertyUtilsBean.setProperty(t, field.getName(), extractFloatList(getJsonElement(jsonObject, field)));
-						break;
-					case JpaObject.TYPE_DOUBLELIST:
-						propertyUtilsBean.setProperty(t, field.getName(), extractDoubleList(getJsonElement(jsonObject, field)));
-						break;
-					case JpaObject.TYPE_DATETIMELIST:
-						propertyUtilsBean.setProperty(t, field.getName(),
-								extractDateTimeList(getJsonElement(jsonObject, field)));
-						break;
-					case JpaObject.TYPE_BOOLEANLIST:
-						propertyUtilsBean.setProperty(t, field.getName(),
-								extractBooleanList(getJsonElement(jsonObject, field)));
-						break;
-					default:
-						break;
-				}
-				if(StringUtils.isNotBlank(bundle) && field.getName().equals(DynamicEntity.BUNDLE_FIELD)){
-					propertyUtilsBean.setProperty(t, field.getName(), bundle);
+				try {
+					switch (JpaObjectTools.type(field)) {
+						case JpaObject.TYPE_STRING:
+							propertyUtilsBean.setProperty(t, field.getName(), extractStringOrDistinguishedName(
+									getJsonElement(jsonObject, field), getColumnDefinedStringLength(field)));
+							break;
+						case JpaObject.TYPE_STRINGLOB:
+							propertyUtilsBean.setProperty(t, field.getName(), extractString(getJsonElement(jsonObject, field)));
+							break;
+						case JpaObject.TYPE_INTEGER:
+							propertyUtilsBean.setProperty(t, field.getName(), extractInteger(getJsonElement(jsonObject, field)));
+							break;
+						case JpaObject.TYPE_LONG:
+							propertyUtilsBean.setProperty(t, field.getName(), extractLong(getJsonElement(jsonObject, field)));
+							break;
+						case JpaObject.TYPE_FLOAT:
+							propertyUtilsBean.setProperty(t, field.getName(), extractFloat(getJsonElement(jsonObject, field)));
+							break;
+						case JpaObject.TYPE_DOUBLE:
+							propertyUtilsBean.setProperty(t, field.getName(), extractDouble(getJsonElement(jsonObject, field)));
+							break;
+						case JpaObject.TYPE_DATETIME:
+							propertyUtilsBean.setProperty(t, field.getName(), extractDateTime(getJsonElement(jsonObject, field)));
+							break;
+						case JpaObject.TYPE_DATE:
+							propertyUtilsBean.setProperty(t, field.getName(), extractDate(getJsonElement(jsonObject, field)));
+							break;
+						case JpaObject.TYPE_BOOLEAN:
+							propertyUtilsBean.setProperty(t, field.getName(), extractBoolean(getJsonElement(jsonObject, field)));
+							break;
+						case JpaObject.TYPE_STRINGLIST:
+							propertyUtilsBean.setProperty(t, field.getName(), extractStringOrDistinguishedNameList(
+									getJsonElement(jsonObject, field), getElementColumnDefinedStringLength(field)));
+							break;
+						case JpaObject.TYPE_INTEGERLIST:
+							propertyUtilsBean.setProperty(t, field.getName(),
+									extractIntegerList(getJsonElement(jsonObject, field)));
+							break;
+						case JpaObject.TYPE_LONGLIST:
+							propertyUtilsBean.setProperty(t, field.getName(), extractLongList(getJsonElement(jsonObject, field)));
+							break;
+						case JpaObject.TYPE_FLOATLIST:
+							propertyUtilsBean.setProperty(t, field.getName(), extractFloatList(getJsonElement(jsonObject, field)));
+							break;
+						case JpaObject.TYPE_DOUBLELIST:
+							propertyUtilsBean.setProperty(t, field.getName(), extractDoubleList(getJsonElement(jsonObject, field)));
+							break;
+						case JpaObject.TYPE_DATETIMELIST:
+							propertyUtilsBean.setProperty(t, field.getName(),
+									extractDateTimeList(getJsonElement(jsonObject, field)));
+							break;
+						case JpaObject.TYPE_BOOLEANLIST:
+							propertyUtilsBean.setProperty(t, field.getName(),
+									extractBooleanList(getJsonElement(jsonObject, field)));
+							break;
+						case JpaObject.TYPE_STRINGMAP:
+							propertyUtilsBean.setProperty(t, field.getName(),
+									extractMap(getJsonElement(jsonObject, field), getElementColumnDefinedStringLength(field)));
+							break;
+						default:
+							break;
+					}
+					if(StringUtils.isNotBlank(bundle) && field.getName().equals(DynamicEntity.BUNDLE_FIELD)){
+						propertyUtilsBean.setProperty(t, field.getName(), bundle);
+					}
+				} catch (Exception e) {
+					LOGGER.warn("设置对象:{} 的属性:{} 值异常：{}", cls.getSimpleName(), field.getName(), e.getMessage());
+					e.printStackTrace();
 				}
 			}
 			list.add(t);
@@ -130,6 +143,18 @@ abstract class BaseAction extends StandardJaxrsAction {
 	private int getElementColumnDefinedStringLength(Field field) {
 		ElementColumn elementColumn = field.getAnnotation(ElementColumn.class);
 		return (null != elementColumn) ? elementColumn.length() : JpaObject.length_255B;
+	}
+
+	private String extractString(JsonElement jsonElement) {
+		String value = null;
+		if (null != jsonElement) {
+			if (jsonElement.isJsonPrimitive()) {
+				value = jsonElement.getAsString();
+			}else{
+				value = jsonElement.toString();
+			}
+		}
+		return value;
 	}
 
 	private String extractStringOrDistinguishedName(JsonElement jsonElement, int maxLength) {
@@ -169,6 +194,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				}
 			}
 		}
+		LOGGER.info(gson.toJson(values)+jsonElement.toString());
 		return values;
 	}
 
@@ -416,6 +442,20 @@ abstract class BaseAction extends StandardJaxrsAction {
 			}
 		}
 		return values;
+	}
+
+	private Map<String, String> extractMap(JsonElement jsonElement, int maxLength) {
+		Map<String, Object> dataTable = new LinkedHashMap<>();
+		Map<String, String> map = new LinkedHashMap<>();
+		if (null != jsonElement) {
+			if (jsonElement.isJsonObject()) {
+				dataTable = gson.fromJson(jsonElement, LinkedHashMap.class);
+			}
+		}
+		for(String key : dataTable.keySet()){
+			map.put(key, StringTools.utf8SubString(Objects.toString(dataTable.get(key), ""), maxLength));
+		}
+		return map;
 	}
 
 }

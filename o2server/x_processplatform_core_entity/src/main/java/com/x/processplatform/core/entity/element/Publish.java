@@ -34,6 +34,7 @@ public class Publish extends Activity {
 	private static final String TABLE = PersistenceProperties.Element.Publish.table;
 	public static final String PUBLISH_TARGET_CMS = "cms";
 	public static final String PUBLISH_TARGET_TABLE = "table";
+	public static final String CMS_CATEGORY_FROM_DATA = "dataPath";
 
 	@Override
 	public String getId() {
