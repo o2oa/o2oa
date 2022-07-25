@@ -29,7 +29,7 @@ import com.x.program.center.Business;
 
 public class CollectPerson extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(CollectPerson.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CollectPerson.class);
 
 	private static ReentrantLock lock = new ReentrantLock();
 
@@ -74,17 +74,17 @@ public class CollectPerson extends BaseAction {
 									.put(Config.collect().url(ADDRESS_COLLECT_TRANSMIT_RECEIVE), null, req);
 							response.getData(WrapOutBoolean.class);
 						} catch (Exception e) {
-							logger.warn("与云服务器连接错误:{}." + e.getMessage());
+							LOGGER.warn("与云服务器连接错误:{}." + e.getMessage());
 						}
 					} else {
-						logger.debug("无法登录到云服务器.");
+						LOGGER.debug("无法登录到云服务器.");
 					}
 				}
 			} else {
-				logger.debug("系统没有启用O2云服务器连接.");
+				LOGGER.debug("系统没有启用O2云服务器连接.");
 			}
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 			throw new JobExecutionException(e);
 		} finally {
 			lock.unlock();

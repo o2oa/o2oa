@@ -21,7 +21,7 @@ import com.x.program.center.core.entity.Code_;
 
 public class CleanupCode extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(CleanupCode.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CleanupCode.class);
 
 	@Override
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -30,7 +30,7 @@ public class CleanupCode extends BaseAction {
 				cleanupCode();
 			}
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 			throw new JobExecutionException(e);
 		}
 	}

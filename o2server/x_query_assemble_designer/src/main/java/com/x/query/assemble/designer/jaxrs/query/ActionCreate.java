@@ -17,21 +17,25 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.query.assemble.designer.Business;
 import com.x.query.core.entity.Query;
 
 class ActionCreate extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionCreate.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCreate.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
-		logger.debug(effectivePerson, "jsonElement:{}.", jsonElement);
+
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
-			if (!business.controllable(effectivePerson)) {
+			if ((!effectivePerson.isManager()) && (!business.organization().person().hasRole(effectivePerson,
+					OrganizationDefinition.QueryManager, OrganizationDefinition.QueryCreator))) {
 				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 			}
 			emc.beginTransaction(Query.class);
@@ -60,6 +64,8 @@ class ActionCreate extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = -4122753056759317023L;
 	}
 
 	public static class Wi extends Query {

@@ -21,6 +21,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.StringTools;
 import com.x.query.assemble.designer.Business;
 import com.x.query.core.entity.Query;
@@ -28,15 +29,20 @@ import com.x.query.core.entity.Query_;
 
 class ActionListQueryCategory extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionListQueryCategory.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListQueryCategory.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson) throws Exception {
+
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			logger.debug(effectivePerson, effectivePerson.getDistinguishedName());
 			Business business = new Business(emc);
-			if (!business.controllable(effectivePerson)) {
+
+			if ((!effectivePerson.isManager()) && (!business.organization().person().hasRole(effectivePerson,
+					OrganizationDefinition.QueryManager, OrganizationDefinition.QueryCreator))) {
 				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 			}
+
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			List<Wo> wos = new ArrayList<>();
 			List<String> os = this.list(business);
@@ -67,6 +73,8 @@ class ActionListQueryCategory extends BaseAction {
 	}
 
 	public static class Wo extends GsonPropertyObject {
+
+		private static final long serialVersionUID = -4755476029209732172L;
 
 		private String name;
 		private Long count;
