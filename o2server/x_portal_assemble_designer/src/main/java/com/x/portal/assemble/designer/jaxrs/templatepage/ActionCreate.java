@@ -13,16 +13,25 @@ import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.portal.assemble.designer.Business;
 import com.x.portal.core.entity.TemplatePage;
 
 class ActionCreate extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCreate.class);
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<Wo> result = new ActionResult<>();
-			if (!business.isPortalManager(effectivePerson)) {
+			if ((!effectivePerson.isManager()) && (!business.organization().person().hasRole(effectivePerson,
+					OrganizationDefinition.PortalManager))) {
 				throw new InsufficientPermissionException(effectivePerson.getDistinguishedName());
 			}
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
@@ -36,7 +45,7 @@ class ActionCreate extends BaseAction {
 			emc.persist(o, CheckPersistType.all);
 			emc.commit();
 			CacheManager.notify(TemplatePage.class);
-			Wo wo  = new Wo();
+			Wo wo = new Wo();
 			wo.setId(o.getId());
 			result.setData(wo);
 			return result;
@@ -53,6 +62,8 @@ class ActionCreate extends BaseAction {
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = -6897451837979913782L;
 
 	}
 

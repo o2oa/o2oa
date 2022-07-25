@@ -34,7 +34,7 @@ import com.x.program.center.core.entity.Attachment;
  */
 public class CollectMarket extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(CollectMarket.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CollectMarket.class);
 
 	private static ReentrantLock lock = new ReentrantLock();
 
@@ -46,7 +46,7 @@ public class CollectMarket extends BaseAction {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					String token = Business.loginCollect();
 					if (StringUtils.isNotEmpty(token)) {
-						logger.info("start sync market data.");
+						LOGGER.info("start sync market data.");
 						List<Wi> wiList = null;
 						try {
 							ActionResponse response = ConnectionAction.get(
@@ -54,10 +54,10 @@ public class CollectMarket extends BaseAction {
 									ListTools.toList(new NameValuePair(Collect.COLLECT_TOKEN, token)));
 							wiList = response.getDataAsList(Wi.class);
 						} catch (Exception e) {
-							logger.warn("connect o2cloud {}.", e.getMessage());
+							LOGGER.warn("connect o2cloud {}.", e.getMessage());
 						}
 						if (wiList != null && !wiList.isEmpty()) {
-							logger.info("wait sync market app size：{}", wiList.size());
+							LOGGER.info("wait sync market app size：{}", wiList.size());
 							emc.beginTransaction(Application.class);
 							emc.beginTransaction(Attachment.class);
 							List<Application> appList = emc.listAll(Application.class);
@@ -114,12 +114,12 @@ public class CollectMarket extends BaseAction {
 							}
 							emc.commit();
 						}
-						logger.info("end sync market data.");
+						LOGGER.info("end sync market data.");
 					}
 				}
 			}
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 			throw new JobExecutionException(e);
 		} finally {
 			lock.unlock();

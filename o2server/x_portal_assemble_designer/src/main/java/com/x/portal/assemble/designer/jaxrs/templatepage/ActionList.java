@@ -18,19 +18,29 @@ import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.portal.assemble.designer.Business;
 import com.x.portal.core.entity.TemplatePage;
 
 class ActionList extends BaseAction {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionList.class);
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
+
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<Wo> result = new ActionResult<>();
 			List<String> ids = new ArrayList<>();
-			if (business.isPortalManager(effectivePerson)) {
-				ids = business.templatePage().list();
-			} else {
+			if ((!effectivePerson.isManager()) && (!business.organization().person().hasRole(effectivePerson,
+					OrganizationDefinition.PortalManager))) {
 				ids = business.templatePage().listEditable(effectivePerson);
+			} else {
+				ids = business.templatePage().list();
 			}
 			List<WoTemplatePage> list = WoTemplatePage.copier.copy(emc.list(TemplatePage.class, ids));
 			Map<String, List<WoTemplatePage>> group = list.stream()

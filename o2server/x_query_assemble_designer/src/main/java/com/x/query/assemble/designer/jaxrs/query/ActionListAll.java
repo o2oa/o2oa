@@ -21,11 +21,13 @@ import com.x.query.core.entity.View;
 
 class ActionListAll extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionListAll.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListAll.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson) throws Exception {
+
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			logger.debug(effectivePerson.getDistinguishedName());
 			Business business = new Business(emc);
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			List<Wo> wos = this.list(business, effectivePerson);
@@ -41,14 +43,16 @@ class ActionListAll extends BaseAction {
 	}
 
 	private List<Wo> list(Business business, EffectivePerson effectivePerson) throws Exception {
-		List<Wo> wos = new ArrayList<>();
-		if (effectivePerson.isSecurityManager() || business.organization().person().hasRole(effectivePerson,
-				OrganizationDefinition.Manager, OrganizationDefinition.QueryManager)) {
-			wos = business.entityManagerContainer().fetchAll(Query.class, Wo.copier);
-		} else {
+		List<Wo> wos = null;
+		if ((!effectivePerson.isSecurityManager()) && (!effectivePerson.isManager())
+				&& (!business.organization().person().hasRole(effectivePerson, OrganizationDefinition.QueryManager,
+						OrganizationDefinition.QueryCreator))) {
 			wos = business.entityManagerContainer().fetchEuqalOrIsMember(Query.class, Wo.copier,
 					Query.creatorPerson_FIELDNAME, effectivePerson.getDistinguishedName(),
 					Query.controllerList_FIELDNAME, effectivePerson.getDistinguishedName());
+		} else {
+			wos = business.entityManagerContainer().fetchAll(Query.class, Wo.copier);
+
 		}
 		return wos;
 	}
@@ -58,8 +62,7 @@ class ActionListAll extends BaseAction {
 		private static final long serialVersionUID = 2886873983211744188L;
 
 		static WrapCopier<Query, Wo> copier = WrapCopierFactory.wo(Query.class, Wo.class,
-				JpaObject.singularAttributeField(View.class, true, false),
-				null);
+				JpaObject.singularAttributeField(View.class, true, false), null);
 
 		private List<WoView> viewList = new ArrayList<>();
 
