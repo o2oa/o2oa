@@ -19,7 +19,6 @@ import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.element.Activity;
 import com.x.processplatform.core.entity.element.Publish;
 import com.x.processplatform.core.entity.element.PublishTable;
 import com.x.processplatform.core.entity.element.Route;
@@ -112,26 +111,9 @@ public class PublishProcessor extends AbstractPublishProcessor {
 				AssignPublish assignPublish = new AssignPublish();
 				assignPublish.setTableName(publishTable.getTableName());
 				if(PublishTable.TABLE_DATA_BY_PATH.equals(publishTable.getQueryTableDataBy())){
-					if(StringUtils.isNotBlank(publishTable.getQueryTableDataPath())){
-						Object o = aeiObjects.getData().find(publishTable.getQueryTableDataPath());
-						if(o!=null){
-							assignPublish.setData(gson.toJsonTree(o));
-						}
-					}
+					this.evalTableBodyFromData(aeiObjects, publishTable, assignPublish);
 				}else {
-					WrapScriptObject assignBody = new WrapScriptObject();
-					if (hasTableAssignDataScript(publishTable)) {
-						ScriptContext scriptContext = aeiObjects.scriptContext();
-						CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
-								publishTable.getTargetAssignDataScript(), publishTable.getTargetAssignDataScriptText());
-						scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_JAXRSBODY,
-								assignBody);
-						JsonScriptingExecutor.jsonElement(cs, scriptContext, o -> {
-							if (!o.isJsonNull()) {
-								assignPublish.setData(o);
-							}
-						});
-					}
+					this.evalTableBodyFromScript(aeiObjects, publishTable, assignPublish);
 				}
 				if(assignPublish.getData() == null){
 					assignPublish.setData(gson.toJsonTree(aeiObjects.getData()));
@@ -142,20 +124,40 @@ public class PublishProcessor extends AbstractPublishProcessor {
 		return list;
 	}
 
+	private void evalTableBodyFromData(AeiObjects aeiObjects, PublishTable publishTable, AssignPublish assignPublish) throws Exception {
+		if(StringUtils.isNotBlank(publishTable.getQueryTableDataPath())){
+			Object o = aeiObjects.getData().find(publishTable.getQueryTableDataPath());
+			if(o!=null){
+				assignPublish.setData(gson.toJsonTree(o));
+			}
+		}
+	}
+
+	private void evalTableBodyFromScript(AeiObjects aeiObjects, PublishTable publishTable,final AssignPublish assignPublish) throws Exception {
+		WrapScriptObject assignBody = new WrapScriptObject();
+		if (hasTableAssignDataScript(publishTable)) {
+			ScriptContext scriptContext = aeiObjects.scriptContext();
+			CompiledScript cs = aeiObjects.business().element().getCompiledScript(aeiObjects.getApplication().getId(),
+					publishTable.getTargetAssignDataScript(), publishTable.getTargetAssignDataScriptText());
+			scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_JAXRSBODY,
+					assignBody);
+			JsonScriptingExecutor.jsonElement(cs, scriptContext, o -> {
+				if (!o.isJsonNull()) {
+					assignPublish.setData(o);
+				}
+			});
+		}
+	}
+
 	private boolean publishToCms(AeiObjects aeiObjects, Publish publish) throws Exception {
 		CmsDocument cmsDocument = this.evalCmsBody(aeiObjects, publish);
+		Data data = aeiObjects.getData();
 		cmsDocument.setWf_workId(aeiObjects.getWork().getId());
 		cmsDocument.setWf_jobId(aeiObjects.getWork().getJob());
-		String categoryId = "";
-		if(Publish.CMS_CATEGORY_FROM_DATA.equals(publish.getCategorySelectType())){
-			if(StringUtils.isNotBlank(publish.getCategoryIdDataPath())) {
-				categoryId = (String) aeiObjects.getData().find(publish.getCategoryIdDataPath());
-			}
-		}else{
-			categoryId = publish.getCategoryId();
-		}
+		cmsDocument.setIdentity(aeiObjects.getWork().getCreatorIdentity());
+		String categoryId = this.getCmsCategoryId(data, publish);
 		if(StringUtils.isBlank(categoryId)){
-			LOGGER.warn("流程数据发布到内容管理失败：分类ID为空！");
+			LOGGER.warn("{}工作数据发布到内容管理失败：分类ID为空！", () -> aeiObjects.getWork().getId());
 			return false;
 		}
 		cmsDocument.setCategoryId(categoryId);
@@ -168,26 +170,18 @@ public class PublishProcessor extends AbstractPublishProcessor {
 				cmsDocument.setWf_attachmentIds(ListTools.extractField(attachments, JpaObject.id_FIELDNAME, String.class, true, true));
 			}
 		}
-		String title = "";
-		if(StringUtils.isNotBlank(publish.getTitleDataPath())){
-			title = (String)aeiObjects.getData().find(publish.getTitleDataPath());
-		}
+		String title = (String)data.find(publish.getTitleDataPath());
 		if(StringUtils.isBlank(title)){
 			title = aeiObjects.getWork().getTitle();
 		}
-		if(StringUtils.isBlank(title)){
-			title = "未命名";
-		}
 		cmsDocument.setTitle(StringTools.utf8SubString(title, 255));
 		List<CmsPermission> readerList = new ArrayList<>();
-		List<String> list = this.findPathData(aeiObjects.getData(), publish.getReaderDataPathList());
+
+		List<String> list = this.findPathData(data, publish.getReaderDataPathList(), true);
 		if(ListTools.isNotEmpty(list)) {
 			List<Review> reviewList = aeiObjects.getReviews();
-			if(ListTools.isNotEmpty(reviewList)){
-				list.addAll(ListTools.extractField(reviewList, Review.person_FIELDNAME, String.class, true, true));
-			}
+			list.addAll(ListTools.extractField(reviewList, Review.person_FIELDNAME, String.class, true, true));
 		}
-
 		list.stream().forEach(s -> {
 			CmsPermission cmsPermission = new CmsPermission();
 			cmsPermission.setPermissionObjectName(s);
@@ -195,7 +189,7 @@ public class PublishProcessor extends AbstractPublishProcessor {
 		});
 		cmsDocument.setReaderList(readerList);
 		List<CmsPermission> authorList = new ArrayList<>();
-		list = this.findPathData(aeiObjects.getData(), publish.getAuthorDataPathList());
+		list = this.findPathData(data, publish.getAuthorDataPathList(), true);
 		list.add(aeiObjects.getWork().getCreatorPerson());
 		list.stream().forEach(s -> {
 			CmsPermission cmsPermission = new CmsPermission();
@@ -203,21 +197,35 @@ public class PublishProcessor extends AbstractPublishProcessor {
 			authorList.add(cmsPermission);
 		});
 		cmsDocument.setAuthorList(authorList);
-		cmsDocument.setPictureList(this.findPathData(aeiObjects.getData(), publish.getPictureDataPathList()));
+		cmsDocument.setPictureList(this.findPathData(data, publish.getPictureDataPathList(), false));
 		WoId woId = ThisApplication.context().applications().putQuery(x_cms_assemble_control.class, CMS_PUBLISH_URI, cmsDocument).getData(WoId.class);
-		if(woId==null || StringUtils.isBlank(woId.getId())){
-			return false;
-		}
+		LOGGER.info("流程数据发布-发布文档【{}】到内容管理返回：{}",aeiObjects.getWork().getTitle(), woId.getId());
 		//发送消息通知
-		if(StringUtils.isNotBlank(publish.getNotifyDataPathList())) {
-			list = this.findPathData(aeiObjects.getData(), publish.getNotifyDataPathList());
-			if (ListTools.isNotEmpty(list)) {
-				CmsNotify cmsNotify = new CmsNotify(list);
-				ThisApplication.context().applications().postQuery(x_cms_assemble_control.class,
-						Applications.joinQueryUri("document", woId.getId(), "update", aeiObjects.getWork().getJob()), cmsNotify);
-			}
-		}
+		this.cmsDocumentNotify(aeiObjects, publish, woId);
 		return true;
+	}
+
+	private String getCmsCategoryId(Data data, Publish publish) throws Exception{
+		if(Publish.CMS_CATEGORY_FROM_DATA.equals(publish.getCategorySelectType())){
+			return StringUtils.isNotBlank(publish.getCategoryIdDataPath()) ? (String) data.find(publish.getCategoryIdDataPath()) : "";
+		}else{
+			return publish.getCategoryId();
+		}
+	}
+
+	private void cmsDocumentNotify(AeiObjects aeiObjects, Publish publish, WoId woId){
+		try {
+			if(StringUtils.isNotBlank(publish.getNotifyDataPathList())) {
+				List<String> list = this.findPathData(aeiObjects.getData(), publish.getNotifyDataPathList(), true);
+				if (ListTools.isNotEmpty(list)) {
+					CmsNotify cmsNotify = new CmsNotify(list);
+					ThisApplication.context().applications().postQuery(x_cms_assemble_control.class,
+							Applications.joinQueryUri("document", woId.getId(), "update", aeiObjects.getWork().getJob()), cmsNotify);
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
 	}
 
 	private CmsDocument evalCmsBody(AeiObjects aeiObjects, Publish publish) throws Exception {
@@ -231,24 +239,32 @@ public class PublishProcessor extends AbstractPublishProcessor {
 					assignBody);
 			JsonScriptingExecutor.jsonElement(cs, scriptContext, o -> {
 				if (!o.isJsonNull()) {
-					cmsDocument.setData(o);
+					cmsDocument.setDocData(o);
 				}
 			});
 		}
-		if(cmsDocument.getData() == null){
-			cmsDocument.setData(gson.toJsonTree(aeiObjects.getData()));
+		if(cmsDocument.getDocData() == null){
+			cmsDocument.setDocData(gson.toJsonTree(aeiObjects.getData()));
 		}
 
 		return cmsDocument;
 	}
 
 	/** 取得通过路径指定的人员组织 */
-	private List<String> findPathData(Data data, String paths) throws Exception {
+	private List<String> findPathData(Data data, String path, boolean isUser) throws Exception {
 		List<String> list = new ArrayList<>();
-		if (StringUtils.isNotBlank(paths)) {
-			for (String str : paths.split(",")) {
-				if (StringUtils.isNotBlank(str)) {
-					list.addAll(data.extractDistinguishedName(str.trim()));
+		String[] paths = StringUtils.isNotBlank(path) ? path.split(",") : new String[0];
+		for (String str : paths) {
+			if(isUser) {
+				list.addAll(data.extractDistinguishedName(str.trim()));
+			}else{
+				Object o = data.find(str.trim());
+				if(o != null){
+					if(o instanceof List){
+						list.addAll((List)o);
+					}else {
+						list.add(o.toString());
+					}
 				}
 			}
 		}
@@ -279,6 +295,7 @@ public class PublishProcessor extends AbstractPublishProcessor {
 	}
 
 	public class CmsDocument extends GsonPropertyObject{
+		private String identity;
 		private String title;
 		private String wf_workId;
 		private String wf_jobId;
@@ -287,9 +304,17 @@ public class PublishProcessor extends AbstractPublishProcessor {
 		private String categoryId;
 		private List<String> pictureList;
 		private List<String> wf_attachmentIds;
-		private JsonElement data;
+		private JsonElement docData;
 		private List<CmsPermission> readerList;
 		private List<CmsPermission> authorList;
+
+		public String getIdentity() {
+			return identity;
+		}
+
+		public void setIdentity(String identity) {
+			this.identity = identity;
+		}
 
 		public String getTitle() {
 			return title;
@@ -347,12 +372,12 @@ public class PublishProcessor extends AbstractPublishProcessor {
 			this.wf_attachmentIds = wf_attachmentIds;
 		}
 
-		public JsonElement getData() {
-			return data;
+		public JsonElement getDocData() {
+			return docData;
 		}
 
-		public void setData(JsonElement data) {
-			this.data = data;
+		public void setDocData(JsonElement docData) {
+			this.docData = docData;
 		}
 
 		public List<CmsPermission> getReaderList() {
@@ -380,7 +405,7 @@ public class PublishProcessor extends AbstractPublishProcessor {
 		}
 	}
 
-	public class CmsPermission {
+	public class CmsPermission extends GsonPropertyObject{
 		private String permissionObjectName;
 
 		public String getPermissionObjectName() {

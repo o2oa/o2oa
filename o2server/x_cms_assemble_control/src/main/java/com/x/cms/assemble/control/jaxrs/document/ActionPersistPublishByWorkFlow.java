@@ -38,11 +38,14 @@ import com.x.cms.core.entity.FileInfo;
 import com.x.cms.core.entity.element.Form;
 import com.x.processplatform.core.entity.content.Attachment;
 
+/**
+ * 从流程发布一个文档（流程）
+ * @author sword
+ */
 public class ActionPersistPublishByWorkFlow extends BaseAction {
 
 	private static  Logger logger = LoggerFactory.getLogger(ActionPersistPublishByWorkFlow.class);
 
-	@AuditLog(operation = "发布一个文档（流程）")
 	protected ActionResult<Wo> execute(HttpServletRequest request, JsonElement jsonElement, EffectivePerson effectivePerson) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		List<FileInfo> cloudPictures = null;
@@ -172,18 +175,21 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 
 		if (check) {
 			try {
+				if ( StringUtils.isNotEmpty( wi.getIdentity())) {
+					wi.setCreatorIdentity( wi.getIdentity() );
+					wi.setCreatorPerson( userManagerService.getPersonNameWithIdentity(wi.getIdentity()));
+				}
+				if ( StringUtils.isEmpty( wi.getCreatorPerson())) {
+					wi.setCreatorPerson( effectivePerson.getDistinguishedName() );
+				}
 				if (StringUtils.isEmpty( wi.getCreatorIdentity() )) {
-					if( "cipher".equalsIgnoreCase( effectivePerson.getDistinguishedName() )) {
-						wi.setCreatorIdentity("cipher");
-						wi.setCreatorPerson("cipher");
-						wi.setCreatorUnitName("cipher");
-						wi.setCreatorTopUnitName("cipher");
-					}else if ("xadmin".equalsIgnoreCase(effectivePerson.getDistinguishedName())) {
-						wi.setCreatorIdentity("xadmin");
-						wi.setCreatorPerson("xadmin");
-						wi.setCreatorUnitName("xadmin");
-						wi.setCreatorTopUnitName("xadmin");
-					}else {
+					if( "cipher".equalsIgnoreCase(effectivePerson.getDistinguishedName()) ||
+							"xadmin".equalsIgnoreCase(effectivePerson.getDistinguishedName())) {
+						wi.setCreatorIdentity(effectivePerson.getDistinguishedName());
+						wi.setCreatorPerson(effectivePerson.getDistinguishedName());
+						wi.setCreatorUnitName(effectivePerson.getDistinguishedName());
+						wi.setCreatorTopUnitName(effectivePerson.getDistinguishedName());
+					} else {
 						//尝试一下根据当前用户获取用户的第一个身份
 						wi.setCreatorIdentity( userManagerService.getMajorIdentityWithPerson( effectivePerson.getDistinguishedName()) );
 					}
@@ -379,31 +385,6 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 			}
 		}
 
-		//判断是否需要发送通知消息 后端业务接口不需要发送消息
-		/*if (check) {
-			try {
-				Boolean notify = false;
-				if( categoryInfo.getSendNotify() == null ) {
-					if( StringUtils.equals("信息", categoryInfo.getDocumentType()) ) {
-						notify = true;
-					}
-				}else {
-					if( categoryInfo.getSendNotify() ) {
-						notify = true;
-					}
-				}
-				if( notify ){
-					logger.info("try to add notify object to queue for document:" + document.getTitle() );
-					ThisApplication.queueSendDocumentNotify.send( document.getId() );
-				}
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new ExceptionDocumentInfoProcess( e, "根据ID查询分类信息对象时发生异常。Flag:" + document.getCategoryId()  );
-				result.error( exception );
-				logger.error( e, effectivePerson, request, null);
-			}
-		}*/
-
 		CacheManager.notify(Document.class);
 		return result;
 	}
@@ -461,6 +442,9 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 
 		@FieldDescribe( "启动流程的WorkId." )
 		private String wf_workId = null;
+
+		@FieldDescribe( "流程的表单Id." )
+		private String wf_formId = null;
 
 		@FieldDescribe( "启动流程的附件列表." )
 		private String[] wf_attachmentIds = null;
@@ -563,6 +547,13 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 			this.cloudPictures = cloudPictures;
 		}
 
+		public String getWf_formId() {
+			return wf_formId;
+		}
+
+		public void setWf_formId(String wf_formId) {
+			this.wf_formId = wf_formId;
+		}
 	}
 
 	public static class Wo extends WoId {
