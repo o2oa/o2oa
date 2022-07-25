@@ -204,24 +204,6 @@ public class ManualProcessor extends AbstractManualProcessor {
 		return taskIdentities.identities();
 	}
 
-//	private void calculateRouteTypeBack(AeiObjects aeiObjects, Manual manual, TaskIdentities taskIdentities)
-//			throws Exception {
-//		List<String> identities = new ArrayList<>();
-//		List<WorkLog> workLogs = new ArrayList<>();
-//		workLogs.addAll(aeiObjects.getUpdateWorkLogs());
-//		workLogs.addAll(aeiObjects.getCreateWorkLogs());
-//		for (WorkLog o : aeiObjects.getWorkLogs()) {
-//			if (!workLogs.contains(o)) {
-//				workLogs.add(o);
-//			}
-//		}
-//		WorkLogTree tree = new WorkLogTree(workLogs);
-//		Node node = tree.location(aeiObjects.getWork());
-//		if (null != node) {
-//			calculateRouteTypeBackIdentityByTaskCompleted(aeiObjects, manual, taskIdentities, identities, tree, node);
-//		}
-//	}
-
 	private void calculateRouteTypeBack(AeiObjects aeiObjects, Manual manual, TaskIdentities taskIdentities)
 			throws Exception {
 		List<String> identities = new ArrayList<>();
@@ -315,7 +297,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 		LOGGER.debug("pass same target rollback parents:{}.", parents::toString);
 		WorkLog workLog = null;
 		for (WorkLog o : parents) {
-			// choice, agent, invoke, service, delay, embed 继续向上查找manual
+			// choice, agent, invoke, service, delay, embed, split, parallel 继续向上查找manual
 			ActivityType arrivedActivityType = o.getArrivedActivityType();
 			if (Objects.equals(ActivityType.manual, arrivedActivityType)
 					|| Objects.equals(ActivityType.begin, arrivedActivityType)
@@ -323,8 +305,9 @@ public class ManualProcessor extends AbstractManualProcessor {
 					// || Objects.equals(ActivityType.embed, arrivedActivityType)
 					|| Objects.equals(ActivityType.end, arrivedActivityType)
 					|| Objects.equals(ActivityType.merge, arrivedActivityType)
-					|| Objects.equals(ActivityType.parallel, arrivedActivityType)
-					|| Objects.equals(ActivityType.split, arrivedActivityType)) {
+			// || Objects.equals(ActivityType.parallel, arrivedActivityType)
+			// || Objects.equals(ActivityType.split, arrivedActivityType)
+			) {
 				if (Objects.equals(ActivityType.manual, arrivedActivityType)) {
 					workLog = o;
 				}

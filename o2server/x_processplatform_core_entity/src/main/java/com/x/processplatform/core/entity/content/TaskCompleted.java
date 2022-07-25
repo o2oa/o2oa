@@ -38,6 +38,8 @@ import com.x.processplatform.core.entity.content.TaskCompletedProperties.PrevTas
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Route;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * 没有多值字段
  * 
@@ -343,6 +345,7 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 		this.setOpinion(task.getOpinion());
 		this.copyProjectionFields(task);
 		this.empowerFromIdentity = task.getEmpowerFromIdentity();
+		this.viewTime = task.getViewTime();
 	}
 
 	public TaskCompletedProperties getProperties() {
@@ -665,6 +668,14 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 	@Column(name = ColumnNamePrefix + joinInquire_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean joinInquire;
+
+	public static final String VIEWTIME_FIELDNAME = "viewTime";
+	@Schema(description = "待办最早查看时间.")
+	@FieldDescribe("待办最早查看时间.")
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = ColumnNamePrefix + VIEWTIME_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Date viewTime;
 
 	public static final String properties_FIELDNAME = "properties";
 	@FieldDescribe("属性对象存储字段.")
@@ -1488,6 +1499,14 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 
 	public void setProcessingType(String processingType) {
 		this.processingType = processingType;
+	}
+
+	public Date getViewTime() {
+		return viewTime;
+	}
+
+	public void setViewTime(Date viewTime) {
+		this.viewTime = viewTime;
 	}
 
 }

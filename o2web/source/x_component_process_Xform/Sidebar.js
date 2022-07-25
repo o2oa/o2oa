@@ -17,7 +17,29 @@ MWF.xApplication.process.Xform.Sidebar = MWF.APPSidebar =  new Class(
     /** @lends MWF.xApplication.process.Xform.Sidebar# */
 {
 	Extends: MWF.APP$Module,
-
+        options: {
+            /**
+             * 组件加载前触发。当前组件的queryLoad事件还没有在form里注册，通过this.form.get("fieldId")不能获取到当前组件，需要用this.target获取当前组件。
+             * @event MWF.xApplication.process.Xform.Sidebar#queryLoad
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            /**
+             * 组件加载时触发。
+             * @event MWF.xApplication.process.Xform.Sidebar#load
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            /**
+             * 组件加载后事件.由于加载过程中有异步处理，这个时候操作条有可能还未生成。
+             * @event MWF.xApplication.process.Xform.Sidebar#postLoad
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            /**
+             * 组件加载后事件。这个时候操作条已生成
+             * @event MWF.xApplication.process.Xform.Sidebar#afterLoad
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "moduleEvents": ["load", "queryLoad", "postLoad", "afterLoad"]
+        },
     _loadUserInterface: function(){
         this.node.setStyles(this.form.css.sidebar);
         this.toolbarNode = this.node.getFirst("div");
@@ -66,7 +88,12 @@ MWF.xApplication.process.Xform.Sidebar = MWF.APPSidebar =  new Class(
                  *  //可以在脚本中获取该组件
                  * var toolbarWidget = this.form.get("fieldId").toolbarWidget; //获取组件对象
                  */
-                this.toolbarWidget = new MWF.widget.Toolbar(this.toolbarNode, {"style": this.json.style}, this);
+                this.toolbarWidget = new MWF.widget.Toolbar(this.toolbarNode, {
+                    "style": this.json.style,
+                    "onPostLoad" : function(){
+                        this.fireEvent("afterLoad");
+                    }.bind(this)
+                }, this);
                 //alert(this.readonly)
 
                 if (this.json.hideSystemTools){

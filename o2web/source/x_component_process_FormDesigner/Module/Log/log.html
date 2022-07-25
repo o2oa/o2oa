@@ -20,8 +20,12 @@
 			<tr>
 				<td class="editTableTitle">{{$.lp.record}}:</td>
 				<td class="editTableValue">
-					<input class="editTableRadio" name="logType" text{($.logType!=='worklog')?'checked':''} type="radio" value="record"/>record
-					<input class="editTableRadio" name="logType" text{($.logType=='worklog')?'checked':''} type="radio" value="worklog"/>worklog
+					<input class="editTableRadio" name="logType" text{($.logType!=='worklog')?'checked':''} type="radio" value="record" onclick="if (this.checked){
+							$('text{$.pid}unitLevelNameArea').setStyle('display', '');
+						}"/>record
+					<input class="editTableRadio" name="logType" text{($.logType=='worklog')?'checked':''} type="radio" value="worklog" onclick="if (this.checked){
+							$('text{$.pid}unitLevelNameArea').setStyle('display', 'none');
+						}"/>worklog
 				</td>
 			</tr>
 		</table>
@@ -161,25 +165,59 @@
 						$('text{$.pid}tableStyleArea').setStyle('display', 'none');
 						$('text{$.pid}expandArea').setStyle('display', 'none');
 						$('text{$.pid}sortInCategory').setStyle('display', 'none');
+						$('text{$.pid}categoryByUnitLevelName').setStyle('display', 'none');
 					}" />{{$.lp.none}}
 					<input class="editTableRadio" name="category" text{( $.category=='activity')?'checked':''} type="radio" value="activity" onclick="if (this.checked){
 						$('text{$.pid}tableStyleArea').setStyle('display', 'block');
 						$('text{$.pid}expandArea').setStyle('display', 'block');
 						$('text{$.pid}sortInCategory').setStyle('display', 'block');
+						$('text{$.pid}categoryByUnitLevelName').setStyle('display', 'none');
 					}"/>{{$.lp.activity}}
 					<input class="editTableRadio" name="category" text{( $.category=='activityGroup')?'checked':''} type="radio" value="activityGroup" onclick="if (this.checked){
 						$('text{$.pid}tableStyleArea').setStyle('display', 'block');
 						$('text{$.pid}expandArea').setStyle('display', 'block');
 						$('text{$.pid}sortInCategory').setStyle('display', 'block');
+						$('text{$.pid}categoryByUnitLevelName').setStyle('display', 'none');
 					}"/>{{$.lp.opinionGroup}}
 					<input class="editTableRadio" name="category" text{( $.category=='unit')?'checked':''} type="radio" value="unit" onclick="if (this.checked){
 						$('text{$.pid}tableStyleArea').setStyle('display', 'block');
 						$('text{$.pid}expandArea').setStyle('display', 'block');
 						$('text{$.pid}sortInCategory').setStyle('display', 'block');
+						$('text{$.pid}categoryByUnitLevelName').setStyle('display', 'none');
 					}"/>{{$.lp.unit}}
+					<span id="text{$.pid}unitLevelNameArea" style="display: text{($.logType!=='worklog') ?'':'none'}">
+						<input class="editTableRadio" name="category" text{( $.category=='unitLevelName')?'checked':''} type="radio" value="unitLevelName" onclick="if (this.checked){
+							$('text{$.pid}tableStyleArea').setStyle('display', 'block');
+							$('text{$.pid}expandArea').setStyle('display', 'block');
+							$('text{$.pid}sortInCategory').setStyle('display', 'block');
+							$('text{$.pid}categoryByUnitLevelName').setStyle('display', 'block');
+						}"/>{{$.lp.unitLevelName}}
+					</span>
 				</td>
 			</tr>
 		</table>
+
+		<div id="text{$.pid}categoryByUnitLevelName" style="display: text{($.logType!=='worklog' && $.category=='unitLevelName') ?'block':'none'}">
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">{{$.lp.unitLevel}}:</td>
+					<td class="editTableValue">
+						<select name="unitLevel">
+							<option text{($.unitLevel=='1' || !$.unitLevel )?'selected':''} value="1">1</option>
+							<option text{($.unitLevel=='2')?'selected':''} value="2">2</option>
+							<option text{($.unitLevel=='3')?'selected':''} value="3">3</option>
+							<option text{($.unitLevel=='4')?'selected':''} value="4">4</option>
+							<option text{($.unitLevel=='5')?'selected':''} value="5">5</option>
+							<option text{($.unitLevel=='6')?'selected':''} value="6">6</option>
+							<option text{($.unitLevel=='7')?'selected':''} value="7">7</option>
+							<option text{($.unitLevel=='8')?'selected':''} value="8">8</option>
+							<option text{($.unitLevel=='9')?'selected':''} value="9">9</option>
+							<option text{($.unitLevel=='10')?'selected':''} value="10">10</option>
+						</select>
+					</td>
+				</tr>
+			</table>
+		</div>
 
 		<div id="text{$.pid}sortInCategory" title="分类内排序" style="display: text{($.category && $.category!='none') ?'block':'none'}">
 			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">

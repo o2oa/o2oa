@@ -26,14 +26,18 @@
   "searchBarActionNode": {
     "width": "20px",
     "height": "30px",
-    "background": "url("+"../x_component_cms_Index/$Main/default/icon/search.png) center center no-repeat",
+    "font-size": "16px",
+    "padding-top": "7px",
+//    "background": "url("+"../x_component_cms_Index/$Main/default/icon/search.png) center center no-repeat",
     "float": "right",
     "cursor": "pointer"
   },
   "searchBarResetActionNode": {
     "width": "20px",
     "height": "30px",
-    "background": "url("+"../x_component_cms_Index/$Main/default/icon/reset.png) center center no-repeat",
+    "font-size": "16px",
+    "padding-top": "7px",
+//    "background": "url("+"../x_component_cms_Index/$Main/default/icon/reset.png) center center no-repeat",
     "float": "right",
     "cursor": "pointer"
   },
@@ -724,17 +728,20 @@
     "width": "20px",
     "line-height": "20px",
     "margin-top": "5px",
-    "color": "#888",
+    "color": "#999",
+    "font-size": "16px",
     "cursor": "pointer",
     "display": "inline-block",
-    "margin-right": "5px",
-    "background": "url("+"../x_component_cms_Module/$ListExplorer/default/icon/delete.png) no-repeat center center"
+    "margin-right": "5px"
+//    "background": "url("+"../x_component_cms_Module/$ListExplorer/default/icon/delete.png) no-repeat center center"
   },
   "actionDeleteNode_over":{
-    "background": "url("+"../x_component_cms_Module/$ListExplorer/default/icon/delete_over.png) no-repeat center center"
+    "color": "#3C76B7"
+//    "background": "url("+"../x_component_cms_Module/$ListExplorer/default/icon/delete_over.png) no-repeat center center"
   },
   "actionDeleteNode_down":{
-    "background": "url("+"../x_component_cms_Module/$ListExplorer/default/icon/delete_over.png) no-repeat center center"
+    "color": "#3C76B7"
+//    "background": "url("+"../x_component_cms_Module/$ListExplorer/default/icon/delete_over.png) no-repeat center center"
   },
 
   "actionEditNode": {
@@ -742,17 +749,20 @@
     "width": "20px",
     "line-height": "20px",
     "margin-top": "5px",
-    "color": "#888",
+    "color": "#999",
+    "font-size": "16px",
     "cursor": "pointer",
     "display": "inline-block",
-    "margin-right": "5px",
-    "background": "url("+"../x_component_cms_Module/$ListExplorer/default/icon/editing.png) no-repeat center center"
+    "margin-right": "5px"
+//    "background": "url("+"../x_component_cms_Module/$ListExplorer/default/icon/editing.png) no-repeat center center"
   },
   "actionEditNode_over":{
-    "background": "url("+"../x_component_cms_Module/$ListExplorer/default/icon/editing_over.png) no-repeat center center"
+    "color": "#3C76B7"
+//    "background": "url("+"../x_component_cms_Module/$ListExplorer/default/icon/editing_over.png) no-repeat center center"
   },
   "actionEditNode_down":{
-    "background": "url("+"../x_component_cms_Module/$ListExplorer/default/icon/editing_over.png) no-repeat center center"
+    "color": "#3C76B7"
+//    "background": "url("+"../x_component_cms_Module/$ListExplorer/default/icon/editing_over.png) no-repeat center center"
   },
 
   "actionSetTopNode": {

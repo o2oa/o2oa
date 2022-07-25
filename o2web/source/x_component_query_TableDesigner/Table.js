@@ -284,6 +284,10 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
             this.designer.notice(this.designer.lp.errorName, "error");
             return false;
         }
+        if((/^[A-Z]/).test(name.substr(0, 1))){
+            this.designer.notice(this.designer.lp.errorName, "error");
+            return false;
+        }
         var keywords = ["string","int","integer","long","float","double","boolean"];
         if( keywords.contains((name||"").toLowerCase()) ){
             this.designer.notice(this.designer.lp.nameUseKeywork.replace("{key}", keywords.join(",")), "error");

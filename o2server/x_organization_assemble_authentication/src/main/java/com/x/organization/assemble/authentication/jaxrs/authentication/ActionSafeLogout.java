@@ -27,17 +27,19 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.organization.core.entity.log.TokenThreshold;
 import com.x.organization.core.entity.log.TokenThreshold_;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionSafeLogout extends BaseAction {
 
-	private static final Logger logger = LoggerFactory.getLogger(ActionSafeLogout.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionSafeLogout.class);
 
 	ActionResult<Wo> execute(HttpServletRequest request, HttpServletResponse response, EffectivePerson effectivePerson)
 			throws Exception {
 
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+
 		TokenThreshold tokenThreshold = new TokenThreshold(effectivePerson.getDistinguishedName(), new Date());
 
-		// Config.resource_node_tokenThresholds().put(tokenThreshold.getPerson(),
-		// tokenThreshold.getThreshold());
 		update(tokenThreshold);
 		broadcast(tokenThreshold);
 
@@ -81,6 +83,7 @@ class ActionSafeLogout extends BaseAction {
 		}
 	}
 
+	@Schema(name = "com.x.organization.assemble.authentication.jaxrs.authentication.ActionSafeLogout$Wo")
 	public static class Wo extends AbstractWoAuthentication {
 
 		private static final long serialVersionUID = 4883354487268278719L;

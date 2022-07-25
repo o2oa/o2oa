@@ -654,7 +654,7 @@ MWF.xApplication.Attendance.Explorer.PopupForm = new Class({
     Extends: MPopupForm,
     options: {
         "style": "attendanceV2",
-        "isUseMainColor": true,
+        "okClass": "mainColor_bg",
         "hideBottomWhenReading": true,
         "closeByClickMaskWhenReading": true,
         "width": "500",

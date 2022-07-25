@@ -1,12 +1,18 @@
 package com.x.processplatform.service.processing.jaxrs.work;
 
+import java.util.Comparator;
 import java.util.List;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckRemoveType;
+import com.x.base.core.entity.dataitem.DataItem;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.DocSign;
@@ -27,6 +33,8 @@ import com.x.query.core.entity.Item;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(BaseAction.class);
+
 	protected boolean cascadeDeleteWorkBeginButNotCommit(Business business, Work work) throws Exception {
 		if (business.work().listWithJob(work.getJob()).size() > 1) {
 			List<String> taskIds = business.entityManagerContainer().idsEqual(Task.class, Task.work_FIELDNAME,
@@ -38,6 +46,13 @@ abstract class BaseAction extends StandardJaxrsAction {
 					MessageFactory.task_delete(o);
 				}
 			}
+			Work mergeTo = this.findWorkMergeTo(business, work);
+			this.mergeTaskCompleted(business, work, mergeTo);
+			this.mergeRead(business, work, mergeTo);
+			this.mergeReadCompleted(business, work, mergeTo);
+			this.mergeReview(business, work, mergeTo);
+			this.mergeAttachment(business, work, mergeTo);
+			this.mergeWorkLog(business, work, mergeTo);
 			business.entityManagerContainer().beginTransaction(Work.class);
 			business.entityManagerContainer().remove(work, CheckRemoveType.all);
 			return false;
@@ -141,7 +156,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 	}
 
 	private void deleteItem(Business business, String job) throws Exception {
-		List<String> ids = business.entityManagerContainer().idsEqual(Item.class, Item.bundle_FIELDNAME, job);
+		List<String> ids = business.entityManagerContainer().idsEqual(Item.class, DataItem.bundle_FIELDNAME, job);
 		if (ListTools.isNotEmpty(ids)) {
 			business.entityManagerContainer().beginTransaction(Item.class);
 			business.entityManagerContainer().delete(Item.class, ids);
@@ -151,7 +166,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 	private void deleteWork(Business business, Work work) throws Exception {
 		business.entityManagerContainer().beginTransaction(Work.class);
 		List<String> ids = business.entityManagerContainer().idsEqualAndNotEqual(Work.class, Work.job_FIELDNAME,
-				work.getJob(), Work.id_FIELDNAME, work.getId());
+				work.getJob(), JpaObject.id_FIELDNAME, work.getId());
 		if (ListTools.isNotEmpty(ids)) {
 			for (Work o : business.entityManagerContainer().list(Work.class, ids)) {
 				business.entityManagerContainer().remove(o);
@@ -179,7 +194,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}
 	}
 
-	protected void deleteSign(Business business, String job) throws Exception {
+	private void deleteSign(Business business, String job) throws Exception {
 		List<String> ids = business.entityManagerContainer().idsEqual(DocSign.class, DocSign.job_FIELDNAME, job);
 		if (ListTools.isNotEmpty(ids)) {
 			business.entityManagerContainer().beginTransaction(DocSign.class);
@@ -187,15 +202,16 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}
 	}
 
-	protected void deleteSignScrawl(Business business, String job) throws Exception {
-		List<String> ids = business.entityManagerContainer().idsEqual(DocSignScrawl.class, DocSignScrawl.job_FIELDNAME, job);
+	private void deleteSignScrawl(Business business, String job) throws Exception {
+		List<String> ids = business.entityManagerContainer().idsEqual(DocSignScrawl.class, DocSignScrawl.job_FIELDNAME,
+				job);
 		if (ListTools.isNotEmpty(ids)) {
 			business.entityManagerContainer().beginTransaction(DocSignScrawl.class);
 			DocSignScrawl obj;
 			for (String id : ids) {
 				obj = business.entityManagerContainer().find(id, DocSignScrawl.class);
 				if (null != obj) {
-					if(StringUtils.isNotBlank(obj.getStorage())) {
+					if (StringUtils.isNotBlank(obj.getStorage())) {
 						StorageMapping mapping = ThisApplication.context().storageMappings().get(DocSignScrawl.class,
 								obj.getStorage());
 						if (null != mapping) {
@@ -205,6 +221,95 @@ abstract class BaseAction extends StandardJaxrsAction {
 					business.entityManagerContainer().remove(obj, CheckRemoveType.all);
 				}
 			}
+		}
+	}
+
+	private Work findWorkMergeTo(Business business, Work work) throws Exception {
+		List<Work> works = business.entityManagerContainer().listEqual(Work.class, Work.job_FIELDNAME, work.getJob());
+		// 查找同级
+		Work merge = works.stream()
+				.filter(o -> (o != work) && StringUtils.equalsIgnoreCase(work.getSplitToken(), o.getSplitToken()))
+				.sorted(Comparator.comparing(Work::getCreateTime, Comparator.nullsLast(Comparator.reverseOrder())))
+				.findFirst().orElse(null);
+		// 找不到同级那么开始早更深层次的文档
+		if (null == merge) {
+			merge = works.stream().filter(o -> ((o != work) && BooleanUtils.isTrue(o.getSplitting())
+					&& o.getSplitTokenList().contains(work.getSplitToken()))).sorted((o1, o2) -> {
+						int compare = o2.getSplitTokenList().size() - o1.getSplitTokenList().size();
+						if (compare == 0) {
+							return o2.getCreateTime().compareTo(o1.getCreateTime());
+						}
+						return compare;
+					}).findFirst().orElse(null);
+		}
+		// 最后找除去本身之外最新的工作
+		if (null == merge) {
+			merge = works.stream().filter(o -> o != work)
+					.sorted(Comparator.comparing(Work::getCreateTime, Comparator.nullsLast(Comparator.reverseOrder())))
+					.findFirst().orElse(null);
+
+		}
+		return merge;
+	}
+
+	private void mergeTaskCompleted(Business business, Work work, Work mergeTo) {
+		try {
+			business.entityManagerContainer().beginTransaction(TaskCompleted.class);
+			business.entityManagerContainer().listEqual(TaskCompleted.class, TaskCompleted.work_FIELDNAME, work.getId())
+					.forEach(o -> o.setWork(mergeTo.getId()));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
+
+	private void mergeRead(Business business, Work work, Work mergeTo) {
+		try {
+			business.entityManagerContainer().beginTransaction(Read.class);
+			business.entityManagerContainer().listEqual(Read.class, Read.work_FIELDNAME, work.getId())
+					.forEach(o -> o.setWork(mergeTo.getId()));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
+
+	private void mergeReadCompleted(Business business, Work work, Work mergeTo) {
+		try {
+			business.entityManagerContainer().beginTransaction(ReadCompleted.class);
+			business.entityManagerContainer().listEqual(ReadCompleted.class, ReadCompleted.work_FIELDNAME, work.getId())
+					.forEach(o -> o.setWork(mergeTo.getId()));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
+
+	private void mergeReview(Business business, Work work, Work mergeTo) {
+		try {
+			business.entityManagerContainer().beginTransaction(Review.class);
+			business.entityManagerContainer().listEqual(Review.class, Review.work_FIELDNAME, work.getId())
+					.forEach(o -> o.setWork(mergeTo.getId()));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
+
+	private void mergeAttachment(Business business, Work work, Work mergeTo) {
+		try {
+			business.entityManagerContainer().beginTransaction(Attachment.class);
+			business.entityManagerContainer().listEqual(Attachment.class, Attachment.work_FIELDNAME, work.getId())
+					.forEach(o -> o.setWork(mergeTo.getId()));
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+	}
+
+	private void mergeWorkLog(Business business, Work work, Work mergeTo) {
+		try {
+			business.entityManagerContainer().beginTransaction(WorkLog.class);
+			business.entityManagerContainer()
+					.listEqual(WorkLog.class, WorkLog.ARRIVEDACTIVITYTOKEN_FIELDNAME, work.getActivityToken())
+					.forEach(o -> o.setWork(mergeTo.getId()));
+		} catch (Exception e) {
+			LOGGER.error(e);
 		}
 	}
 

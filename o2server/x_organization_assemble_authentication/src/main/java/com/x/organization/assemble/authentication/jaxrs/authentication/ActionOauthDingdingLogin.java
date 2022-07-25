@@ -2,6 +2,7 @@ package com.x.organization.assemble.authentication.jaxrs.authentication;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 import javax.crypto.Mac;
@@ -25,11 +26,16 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.organization.assemble.authentication.Business;
 import com.x.organization.core.entity.Person;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public class ActionOauthDingdingLogin extends BaseAction {
-	private static Logger logger = LoggerFactory.getLogger(ActionOauthDingdingLogin.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionOauthDingdingLogin.class);
 
 	ActionResult<ActionOauthDingdingLogin.Wo> execute(HttpServletRequest request, HttpServletResponse response,
 			EffectivePerson effectivePerson, String code) throws Exception {
+
+		LOGGER.debug("execute:{}, code:{}.", effectivePerson::getDistinguishedName, () -> code);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<ActionOauthDingdingLogin.Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -41,8 +47,8 @@ public class ActionOauthDingdingLogin extends BaseAction {
 			String timestamp = new Date().getTime() + "";
 			Mac mac = Mac.getInstance("HmacSHA256");
 			String appSecret = Config.dingding().getScanLoginAppSecret();
-			mac.init(new SecretKeySpec(appSecret.getBytes("UTF-8"), "HmacSHA256"));
-			byte[] signatureBytes = mac.doFinal(timestamp.getBytes("UTF-8"));
+			mac.init(new SecretKeySpec(appSecret.getBytes(StandardCharsets.UTF_8), "HmacSHA256"));
+			byte[] signatureBytes = mac.doFinal(timestamp.getBytes(StandardCharsets.UTF_8));
 			String signature = new String(Base64.encodeBase64(signatureBytes));
 			String urlEncodeSignature = urlEncode(signature, "utf-8");
 			url += "?accessKey=" + Config.dingding().getScanLoginAppId() + "&timestamp=" + timestamp + "&signature="
@@ -58,7 +64,7 @@ public class ActionOauthDingdingLogin extends BaseAction {
 			String dingUserBackString = HttpConnection.getAsString(getDingUserIdUrl, null);
 			JsonElement dingBackJsonElement = getDingJsonData(dingUserBackString);
 			String userid = dingBackJsonElement.getAsJsonObject().get("userid").getAsString();
-			logger.info("credential:{}", userid);
+			LOGGER.info("credential:{}", userid);
 			if (StringUtils.isEmpty(userid)) {
 				throw new ExceptionOauthEmptyCredential();
 			}
@@ -81,7 +87,7 @@ public class ActionOauthDingdingLogin extends BaseAction {
 	}
 
 	private JsonElement getDingJsonData(String dingUserBackString) throws ExceptionOauthDingdingErrorInfo {
-		logger.info("钉钉获取用户 return:{}", dingUserBackString);
+		LOGGER.info("钉钉获取用户 return:{}", dingUserBackString);
 		JsonElement dingBackJsonElement = gson.fromJson(dingUserBackString, JsonElement.class);
 		int errCode2 = dingBackJsonElement.getAsJsonObject().get("errcode").getAsInt();
 		String errMsg2 = dingBackJsonElement.getAsJsonObject().get("errmsg").getAsString();
@@ -104,6 +110,7 @@ public class ActionOauthDingdingLogin extends BaseAction {
 		}
 	}
 
+	@Schema(name = "com.x.organization.assemble.authentication.jaxrs.authentication.ActionOauthDingdingLogin$Wo")
 	public static class Wo extends AbstractWoAuthentication {
 
 		private static final long serialVersionUID = -1473824515272368422L;

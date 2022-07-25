@@ -1647,9 +1647,17 @@ MWF.xApplication.process.Xform.Office = MWF.APPOffice =  new Class(
             icon.addEvent("click", function(){
                 var url = this.getOfficeFileUrl();
                 if (url){
-                    if (window.o2android){
+                    if (window.o2android && window.o2android.postMessage) {
+                        var body = {
+                            type: "openDocument",
+                            data: {
+                                url: url
+                            }
+                        };
+                        window.o2android.postMessage(JSON.stringify(body));
+                    } else if (window.o2android && window.o2android.openDocument) {
                         window.o2android.openDocument(url);
-                    }else if(window.webkit){
+                    }else if (window.webkit){
                         window.webkit.messageHandlers.openDocument.postMessage(url);
                     }else{
                         window.open(o2.filterUrl(url));

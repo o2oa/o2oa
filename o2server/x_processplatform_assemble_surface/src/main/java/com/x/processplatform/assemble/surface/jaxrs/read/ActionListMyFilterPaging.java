@@ -15,22 +15,30 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
-import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.Read_;
+import com.x.processplatform.core.express.service.processing.jaxrs.read.ActionListMyFilterPagingWi;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionListMyFilterPaging extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListMyFilterPaging.class);
+
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, Integer page, Integer size, JsonElement jsonElement)
 			throws Exception {
+
+		LOGGER.debug("execute:{}, page:{}, size:{}.", effectivePerson::getDistinguishedName, () -> page, () -> size);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<List<Wo>> result = new ActionResult<>();
@@ -59,16 +67,16 @@ class ActionListMyFilterPaging extends BaseAction {
 			p = cb.and(p, root.get(Read_.application).in(wi.getApplicationList()));
 		}
 		if (ListTools.isNotEmpty(wi.getProcessList())) {
-			if(BooleanUtils.isFalse(wi.getRelateEditionProcess())) {
+			if (BooleanUtils.isFalse(wi.getRelateEditionProcess())) {
 				p = cb.and(p, root.get(Read_.process).in(wi.getProcessList()));
-			}else{
+			} else {
 				p = cb.and(p, root.get(Read_.process).in(business.process().listEditionProcess(wi.getProcessList())));
 			}
 		}
-		if(DateTools.isDateTimeOrDate(wi.getStartTime())){
+		if (DateTools.isDateTimeOrDate(wi.getStartTime())) {
 			p = cb.and(p, cb.greaterThan(root.get(Read_.startTime), DateTools.parse(wi.getStartTime())));
 		}
-		if(DateTools.isDateTimeOrDate(wi.getEndTime())){
+		if (DateTools.isDateTimeOrDate(wi.getEndTime())) {
 			p = cb.and(p, cb.lessThan(root.get(Read_.startTime), DateTools.parse(wi.getEndTime())));
 		}
 		if (ListTools.isNotEmpty(wi.getCreatorUnitList())) {
@@ -107,16 +115,16 @@ class ActionListMyFilterPaging extends BaseAction {
 			p = cb.and(p, root.get(Read_.application).in(wi.getApplicationList()));
 		}
 		if (ListTools.isNotEmpty(wi.getProcessList())) {
-			if(BooleanUtils.isFalse(wi.getRelateEditionProcess())) {
+			if (BooleanUtils.isFalse(wi.getRelateEditionProcess())) {
 				p = cb.and(p, root.get(Read_.process).in(wi.getProcessList()));
-			}else{
+			} else {
 				p = cb.and(p, root.get(Read_.process).in(business.process().listEditionProcess(wi.getProcessList())));
 			}
 		}
-		if(DateTools.isDateTimeOrDate(wi.getStartTime())){
+		if (DateTools.isDateTimeOrDate(wi.getStartTime())) {
 			p = cb.and(p, cb.greaterThan(root.get(Read_.startTime), DateTools.parse(wi.getStartTime())));
 		}
-		if(DateTools.isDateTimeOrDate(wi.getEndTime())){
+		if (DateTools.isDateTimeOrDate(wi.getEndTime())) {
 			p = cb.and(p, cb.lessThan(root.get(Read_.startTime), DateTools.parse(wi.getEndTime())));
 		}
 		if (ListTools.isNotEmpty(wi.getCreatorUnitList())) {
@@ -143,109 +151,14 @@ class ActionListMyFilterPaging extends BaseAction {
 		return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
 	}
 
-	public class Wi extends GsonPropertyObject {
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.read.ActionListMyFilterPaging$Wi")
+	public class Wi extends ActionListMyFilterPagingWi {
 
-		@FieldDescribe("应用")
-		private List<String> applicationList;
-
-		@FieldDescribe("流程")
-		private List<String> processList;
-
-		@FieldDescribe("是否查找同版本流程数据：true(默认查找)|false")
-		private Boolean relateEditionProcess = true;
-
-		@FieldDescribe("开始时间yyyy-MM-dd HH:mm:ss")
-		private String startTime;
-
-		@FieldDescribe("结束时间yyyy-MM-dd HH:mm:ss")
-		private String endTime;
-
-		@FieldDescribe("创建组织")
-		private List<String> creatorUnitList;
-
-		@FieldDescribe("到达时间")
-		private List<String> startTimeMonthList;
-
-		@FieldDescribe("活动名称")
-		private List<String> activityNameList;
-
-		@FieldDescribe("关键字")
-		private String key;
-
-		public List<String> getApplicationList() {
-			return applicationList;
-		}
-
-		public void setApplicationList(List<String> applicationList) {
-			this.applicationList = applicationList;
-		}
-
-		public List<String> getProcessList() {
-			return processList;
-		}
-
-		public void setProcessList(List<String> processList) {
-			this.processList = processList;
-		}
-
-		public Boolean getRelateEditionProcess() {
-			return relateEditionProcess;
-		}
-
-		public void setRelateEditionProcess(Boolean relateEditionProcess) {
-			this.relateEditionProcess = relateEditionProcess;
-		}
-
-		public List<String> getStartTimeMonthList() {
-			return startTimeMonthList;
-		}
-
-		public void setStartTimeMonthList(List<String> startTimeMonthList) {
-			this.startTimeMonthList = startTimeMonthList;
-		}
-
-		public List<String> getActivityNameList() {
-			return activityNameList;
-		}
-
-		public void setActivityNameList(List<String> activityNameList) {
-			this.activityNameList = activityNameList;
-		}
-
-		public String getKey() {
-			return key;
-		}
-
-		public void setKey(String key) {
-			this.key = key;
-		}
-
-		public List<String> getCreatorUnitList() {
-			return creatorUnitList;
-		}
-
-		public void setCreatorUnitList(List<String> creatorUnitList) {
-			this.creatorUnitList = creatorUnitList;
-		}
-
-		public String getStartTime() {
-			return startTime;
-		}
-
-		public void setStartTime(String startTime) {
-			this.startTime = startTime;
-		}
-
-		public String getEndTime() {
-			return endTime;
-		}
-
-		public void setEndTime(String endTime) {
-			this.endTime = endTime;
-		}
+		private static final long serialVersionUID = -792875356370416526L;
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.read.ActionListMyFilterPaging$Wo")
 	public static class Wo extends Read {
 
 		private static final long serialVersionUID = 2279846765261247910L;

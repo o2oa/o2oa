@@ -38,6 +38,7 @@ MWF.xApplication.Org.BaseInfor = new Class({
             this.baseInforEditActionAreaNode = new Element("div", {"styles": this.style.baseInforEditActionAreaNode}).inject(actionArea);
 
             this.saveNode = new Element("div", {"styles": this.style.actionSaveNode, "text": this.explorer.app.lp.save}).inject(this.baseInforEditActionAreaNode);
+            this.saveNode.addClass("mainColor_bg");
             this.cancelNode = new Element("div", {"styles": this.style.actionCancelNode, "text": this.explorer.app.lp.cancel}).inject(this.baseInforEditActionAreaNode);
 
             this.editNode.setStyle("display", "block");

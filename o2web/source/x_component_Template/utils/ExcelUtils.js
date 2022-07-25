@@ -230,30 +230,30 @@ MWF.xApplication.Template.utils.ExcelUtils = new Class({
                 if (workbook.Sheets.hasOwnProperty(sheet)) {
                     var worksheet = workbook.Sheets[sheet];
 
-                    // if( dateColArray && typeOf(dateColArray) == "array" && dateColArray.length ){
-                    //     var rowCount;
-                    //     if( worksheet['!range'] ){
-                    //         rowCount = worksheet['!range'].e.r;
-                    //     }else{
-                    //         var ref = worksheet['!ref'];
-                    //         var arr = ref.split(":");
-                    //         if(arr.length === 2){
-                    //             rowCount = parseInt( arr[1].replace(/[^0-9]/ig,"") );
-                    //         }
-                    //     }
-                    //     if( rowCount ){
-                    //         for( var i=0; i<dateColArray.length; i++ ){
-                    //             for( var j=1; j<=rowCount; j++ ){
-                    //                 var cell = worksheet[ dateColArray[i]+j ];
-                    //                 if( cell ){
-                    //                     delete cell.w; // remove old formatted text
-                    //                     cell.z = 'yyyy-mm-dd'; // set cell format
-                    //                     window.XLSX.utils.format_cell(cell); // this refreshes the formatted text.
-                    //                 }
-                    //             }
-                    //         }
-                    //     }
-                    // }
+                    if( dateColArray && typeOf(dateColArray) == "array" && dateColArray.length ){
+                        var rowCount;
+                        if( worksheet['!range'] ){
+                            rowCount = worksheet['!range'].e.r;
+                        }else{
+                            var ref = worksheet['!ref'];
+                            var arr = ref.split(":");
+                            if(arr.length === 2){
+                                rowCount = parseInt( arr[1].replace(/[^0-9]/ig,"") );
+                            }
+                        }
+                        if( rowCount ){
+                            for( var i=0; i<dateColArray.length; i++ ){
+                                for( var j=1; j<=rowCount; j++ ){
+                                    var cell = worksheet[ dateColArray[i]+j ];
+                                    if( cell ){
+                                        delete cell.w; // remove old formatted text
+                                        cell.z = 'yyyy-mm-dd HH:mm:ss'; // set cell format
+                                        window.XLSX.utils.format_cell(cell); // this refreshes the formatted text.
+                                    }
+                                }
+                            }
+                        }
+                    }
 
                     var opt = _self.sheet2JsonOptions;
                     opt.raw = false;

@@ -241,7 +241,7 @@ MWF.xApplication.Meeting.WeekView.Calendar = new Class({
 
     },
     setTitleNode: function(){
-        this.prevWeekNode =  new Element("div", {"styles": this.css.calendarPrevWeekNode}).inject(this.titleNode);
+        this.prevWeekNode =  new Element("div.o2icon-triangle_left", {"styles": this.css.calendarPrevWeekNode}).inject(this.titleNode);
 
         // var text = this.baseDate.format(this.app.lp.dateFormatMonth)
         //     + "，第" + this.view.getWeekNumber( this.baseDate  ) + "周";
@@ -253,25 +253,43 @@ MWF.xApplication.Meeting.WeekView.Calendar = new Class({
 
         this.titleTextNode = new Element("div", {"styles": this.css.calendarTitleTextNode, "text": text}).inject(this.titleNode);
 
-        this.nextWeekNode =  new Element("div", {"styles": this.css.calendarNextWeekNode}).inject(this.titleNode);
+        this.nextWeekNode =  new Element("div.o2icon-triangle_right", {"styles": this.css.calendarNextWeekNode}).inject(this.titleNode);
 
         this.prevWeekNode.addEvents({
-            "mouseover": function(){this.prevWeekNode.setStyles(this.css.calendarPrevWeekNode_over);}.bind(this),
-            "mouseout": function(){this.prevWeekNode.setStyles(this.css.calendarPrevWeekNode);}.bind(this),
+            "mouseover": function(){
+                this.prevWeekNode.setStyles(this.css.calendarPrevWeekNode_over);
+                this.prevWeekNode.addClass("mainColor_color");
+            }.bind(this),
+            "mouseout": function(){
+                this.prevWeekNode.setStyles(this.css.calendarPrevWeekNode);
+                this.prevWeekNode.removeClass("mainColor_color");
+            }.bind(this),
             "mousedown": function(){this.prevWeekNode.setStyles(this.css.calendarPrevWeekNode_down);}.bind(this),
             "mouseup": function(){this.prevWeekNode.setStyles(this.css.calendarPrevWeekNode_over);}.bind(this),
             "click": function(){this.changeWeekPrev();}.bind(this)
         });
         this.nextWeekNode.addEvents({
-            "mouseover": function(){this.nextWeekNode.setStyles(this.css.calendarNextWeekNode_over);}.bind(this),
-            "mouseout": function(){this.nextWeekNode.setStyles(this.css.calendarNextWeekNode);}.bind(this),
+            "mouseover": function(){
+                this.nextWeekNode.setStyles(this.css.calendarNextWeekNode_over);
+                this.nextWeekNode.addClass("mainColor_color");
+             }.bind(this),
+            "mouseout": function(){
+                this.nextWeekNode.setStyles(this.css.calendarNextWeekNode);
+                this.nextWeekNode.removeClass("mainColor_color");
+            }.bind(this),
             "mousedown": function(){this.nextWeekNode.setStyles(this.css.calendarNextWeekNode_down);}.bind(this),
             "mouseup": function(){this.nextWeekNode.setStyles(this.css.calendarNextWeekNode_over);}.bind(this),
             "click": function(){this.changeWeekNext();}.bind(this)
         });
         this.titleTextNode.addEvents({
-            "mouseover": function(){this.titleTextNode.setStyles(this.css.calendarTitleTextNode_over);}.bind(this),
-            "mouseout": function(){this.titleTextNode.setStyles(this.css.calendarTitleTextNode);}.bind(this),
+            "mouseover": function(){
+                this.titleTextNode.setStyles(this.css.calendarTitleTextNode_over);
+                this.titleTextNode.addClass("mainColor_color");
+            }.bind(this),
+            "mouseout": function(){
+                this.titleTextNode.setStyles(this.css.calendarTitleTextNode);
+                this.titleTextNode.removeClass("mainColor_color");
+            }.bind(this),
             "mousedown": function(){this.titleTextNode.setStyles(this.css.calendarTitleTextNode_down);}.bind(this),
             "mouseup": function(){this.titleTextNode.setStyles(this.css.calendarTitleTextNode_over);}.bind(this)
             //"click": function(){this.changeWeekSelect();}.bind(this)
@@ -619,14 +637,16 @@ MWF.xApplication.Meeting.WeekView.Room = new Class({
     loadActions: function(){
 
         if( MWF.AC.isMeetingAdministrator() ){
-            this.editAction = new Element("div", {
+            this.editAction = new Element("div.o2icon-edit2", {
                 styles: this.css.roomAction_edit,
                 events : {
                     mouseover : function(){
                         this.editAction.setStyles( this.css.roomAction_edit_over );
+                        this.editAction.addClass("mainColor_color");
                     }.bind(this),
                     mouseout : function(){
                         this.editAction.setStyles( this.css.roomAction_edit );
+                        this.editAction.removeClass("mainColor_color");
                     }.bind(this),
                     click : function(e){
                         this.editRoom();
@@ -635,14 +655,16 @@ MWF.xApplication.Meeting.WeekView.Room = new Class({
                 }
             }).inject(this.actionsNode);
 
-            this.removeAction = new Element("div", {
+            this.removeAction = new Element("div.o2icon-delete", {
                 styles: this.css.roomAction_remove,
                 events : {
                     mouseover : function(){
                         this.removeAction.setStyles( this.css.roomAction_remove_over );
+                        this.removeAction.addClass("mainColor_color");
                     }.bind(this),
                     mouseout : function(){
                         this.removeAction.setStyles( this.css.roomAction_remove );
+                        this.removeAction.removeClass("mainColor_color");
                     }.bind(this),
                     click : function( e ){
                         this.removeRoom(e);
@@ -653,15 +675,17 @@ MWF.xApplication.Meeting.WeekView.Room = new Class({
         }
 
         if( this.enable ){
-            this.createMeetingAction = new Element("div", {
+            this.createMeetingAction = new Element("div.o2icon-create", {
                 tltile : this.app.lp.addMeeting,
                 styles: this.css.createMeetingAction,
                 events : {
                     mouseover : function(){
                         this.createMeetingAction.setStyles( this.css.createMeetingAction_over );
+                        this.createMeetingAction.addClass("mainColor_color");
                     }.bind(this),
                     mouseout : function(){
                         this.createMeetingAction.setStyles( this.css.createMeetingAction );
+                        this.removeAction.addClass("mainColor_color");
                     }.bind(this),
                     click : function(e){
                         this.app.addMeeting( this.view.date, this.view.hours, this.view.minutes, this.data.id);
@@ -830,6 +854,8 @@ MWF.xApplication.Meeting.WeekView.Calendar.Day = new Class({
                 "styles": this.css["dayTitleDay_" + this.type],
                 "text": this.day
             }).inject(titleNode);
+
+            if( this.type === "today" )titleDayNode.addClass("mainColor_bg");
 
             if ((new Date()).diff(this.date) >= 0) {
                 titleNode.set("title", this.app.lp.titleNode);
@@ -1077,10 +1103,12 @@ MWF.xApplication.Meeting.WeekView.Calendar.Day.Meeting = new Class({
             mouseenter : function(){
                 this.day.collapseReady = false;
                 this.node.setStyles( this.css.meetingNode_over );
+                this.textNode.addClass("mainColor_color");
                 //this.showTooltip();
             }.bind(this),
             mouseleave : function(){
                 this.node.setStyles( this.nodeStyles );
+                this.textNode.removeClass("mainColor_color");
             }.bind(this),
             "click": function(){this.openMeeting();}.bind(this)
         });
@@ -1334,6 +1362,7 @@ MWF.xApplication.Meeting.WeekView.WeekCalendar = new Class({
                 //tds[i].addClass("today_"+this.options.style);
                 tds[i].setStyles(this.css["today_"+this.options.style]);
                 tds[i].setStyle("border", "0px solid #AAA");
+                tds[i].addClass("mainColor_bg");
             }
             tds[i].store("dateValue", firstDate.toString());
             firstDate.increment("day", 1);

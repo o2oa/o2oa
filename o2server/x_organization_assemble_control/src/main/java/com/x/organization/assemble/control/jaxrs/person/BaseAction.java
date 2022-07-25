@@ -66,7 +66,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			List<String> ids = ListTools.extractProperty(
 					business.listTopUnitWithPerson(effectivePerson.getDistinguishedName()), Unit.id_FIELDNAME,
 					String.class, true, true);
-			return ListTools.containsAny(ids, person.getTopUnitList());
+			return ids.isEmpty() || ListTools.containsAny(ids, person.getTopUnitList());
 		}
 		return false;
 	}
@@ -78,7 +78,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			throws Exception {
 		if (!effectivePerson.isManager() && (!effectivePerson.isCipher())) {
 			if (!business.hasAnyRole(effectivePerson, OrganizationDefinition.OrganizationManager,
-					OrganizationDefinition.Manager)) {
+					OrganizationDefinition.PersonManager)) {
 				for (WoPersonAbstract o : list) {
 					if (BooleanUtils.isTrue(o.getHiddenMobile()) && (!StringUtils
 							.equals(effectivePerson.getDistinguishedName(), o.getDistinguishedName()))) {
@@ -93,7 +93,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			throws Exception {
 		if (!effectivePerson.isManager() && (!effectivePerson.isCipher())) {
 			if (!business.hasAnyRole(effectivePerson, OrganizationDefinition.OrganizationManager,
-					OrganizationDefinition.Manager)) {
+					OrganizationDefinition.PersonManager)) {
 				if (BooleanUtils.isTrue(t.getHiddenMobile())
 						&& (!StringUtils.equals(effectivePerson.getDistinguishedName(), t.getDistinguishedName()))) {
 					t.setMobile(Person.HIDDENMOBILESYMBOL);
@@ -142,8 +142,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	protected <T extends WoPersonAbstract> void updateControl(EffectivePerson effectivePerson, Business business,
 			List<T> list) throws Exception {
-		if (effectivePerson.isManager()
-				|| business.hasAnyRole(effectivePerson, OrganizationDefinition.OrganizationManager)) {
+		if (effectivePerson.isManager() || business.hasAnyRole(effectivePerson,
+				OrganizationDefinition.OrganizationManager, OrganizationDefinition.PersonManager)) {
 			for (T t : list) {
 				t.getControl().setAllowDelete(true);
 				t.getControl().setAllowEdit(true);
@@ -153,8 +153,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	protected <T extends WoPersonAbstract> void updateControl(EffectivePerson effectivePerson, Business business, T t)
 			throws Exception {
-		if (effectivePerson.isManager()
-				|| business.hasAnyRole(effectivePerson, OrganizationDefinition.OrganizationManager)) {
+		if (effectivePerson.isManager() || business.hasAnyRole(effectivePerson,
+				OrganizationDefinition.OrganizationManager, OrganizationDefinition.PersonManager)) {
 			t.getControl().setAllowDelete(true);
 			t.getControl().setAllowEdit(true);
 		} else {

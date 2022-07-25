@@ -1,5 +1,7 @@
 package com.x.program.center.jaxrs.config;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
@@ -14,7 +16,7 @@ public class ActionSetCenterServer extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		if (!Config.nodes().centerServers().first().getValue().getConfigApiEnable()) {
+		if (BooleanUtils.isNotTrue(Config.miscellaneous().getConfigApiEnable())) {
 			throw new ExceptionModifyConfig();
 		}
 		Wi.copier.copy(wi, Config.nodes().centerServers().first().getValue());

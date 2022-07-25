@@ -12,18 +12,27 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
-import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.Read_;
+import com.x.processplatform.core.express.service.processing.jaxrs.read.ActionCountWithFilterWi;
+import com.x.processplatform.core.express.service.processing.jaxrs.read.ActionCountWithFilterWo;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionCountWithFilter extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCountWithFilter.class);
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -45,55 +54,17 @@ class ActionCountWithFilter extends BaseAction {
 		}
 	}
 
-	public static class Wi extends GsonPropertyObject {
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.read.ActionCountWithFilter$Wi")
+	public static class Wi extends ActionCountWithFilterWi {
 
-		@FieldDescribe("人员")
-		private List<String> credentialList;
-
-		@FieldDescribe("应用")
-		private List<String> appliationList;
-
-		@FieldDescribe("流程")
-		private List<String> processList;
-
-		public List<String> getCredentialList() {
-			return credentialList;
-		}
-
-		public void setCredentialList(List<String> credentialList) {
-			this.credentialList = credentialList;
-		}
-
-		public List<String> getAppliationList() {
-			return appliationList;
-		}
-
-		public void setAppliationList(List<String> appliationList) {
-			this.appliationList = appliationList;
-		}
-
-		public List<String> getProcessList() {
-			return processList;
-		}
-
-		public void setProcessList(List<String> processList) {
-			this.processList = processList;
-		}
+		private static final long serialVersionUID = 7738430126109288421L;
 
 	}
 
-	public static class Wo extends GsonPropertyObject {
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.read.ActionCountWithFilter$Wo")
+	public static class Wo extends ActionCountWithFilterWo {
 
-		@FieldDescribe("待办数量")
-		private Long count = 0L;
-
-		public Long getCount() {
-			return count;
-		}
-
-		public void setCount(Long count) {
-			this.count = count;
-		}
+		private static final long serialVersionUID = 2846120437833623927L;
 
 	}
 

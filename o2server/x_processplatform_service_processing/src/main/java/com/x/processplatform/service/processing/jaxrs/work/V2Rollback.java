@@ -36,6 +36,7 @@ import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Nodes;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2RollbackWi;
 import com.x.processplatform.service.processing.Business;
+import com.x.processplatform.service.processing.MessageFactory;
 
 class V2Rollback extends BaseAction {
 
@@ -202,6 +203,7 @@ class V2Rollback extends BaseAction {
 				Task.activityToken_FIELDNAME, activityTokens);
 		for (Task o : os) {
 			business.entityManagerContainer().remove(o, CheckRemoveType.all);
+			MessageFactory.task_delete(o);
 		}
 	}
 
@@ -210,6 +212,7 @@ class V2Rollback extends BaseAction {
 				TaskCompleted.job_FIELDNAME, job, TaskCompleted.activityToken_FIELDNAME, activityTokens);
 		for (TaskCompleted o : os) {
 			business.entityManagerContainer().remove(o, CheckRemoveType.all);
+			MessageFactory.taskCompleted_delete(o);
 		}
 	}
 
@@ -218,6 +221,7 @@ class V2Rollback extends BaseAction {
 				Read.activityToken_FIELDNAME, activityTokens);
 		for (Read o : os) {
 			business.entityManagerContainer().remove(o, CheckRemoveType.all);
+			MessageFactory.read_delete(o);
 		}
 	}
 
@@ -226,6 +230,7 @@ class V2Rollback extends BaseAction {
 				ReadCompleted.job_FIELDNAME, job, ReadCompleted.activityToken_FIELDNAME, activityTokens);
 		for (ReadCompleted o : os) {
 			business.entityManagerContainer().remove(o, CheckRemoveType.all);
+			MessageFactory.readCompleted_delete(o);
 		}
 	}
 

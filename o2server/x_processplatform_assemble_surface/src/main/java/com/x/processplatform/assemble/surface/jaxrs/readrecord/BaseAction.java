@@ -9,40 +9,38 @@ import com.x.processplatform.core.entity.element.ActivityType;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
-	public static abstract class FilterWi extends GsonPropertyObject {
-	}
-
 	public static class ReadRecord extends GsonPropertyObject {
+
 		private static final long serialVersionUID = -7967027122452291358L;
 
 		public static final String TYPE_READ = "read";
 		public static final String TYPE_READ_COMPLETED = "readCompleted";
 
-		@FieldDescribe("read或者readCompleted的id.")
+		@FieldDescribe("待阅或者已阅标识.")
 		private String id;
 
 		@FieldDescribe("类型:read|readCompleted.")
 		private String type;
 
-		@FieldDescribe("任务.")
+		@FieldDescribe("任务标识.")
 		private String job;
 
-		@FieldDescribe("工作ID.")
+		@FieldDescribe("工作标识.")
 		private String work;
 
-		@FieldDescribe("工作ID.")
+		@FieldDescribe("已完成工作标识.")
 		private String workCompleted;
 
-		@FieldDescribe("整个job是否已经完成.")
+		@FieldDescribe("工作是否已完成.")
 		private Boolean completed;
 
-		@FieldDescribe("待阅Id.")
+		@FieldDescribe("待阅标识.")
 		private String read;
 
 		@FieldDescribe("标题.")
 		private String title;
 
-		@FieldDescribe("应用.")
+		@FieldDescribe("应用标识.")
 		private String application;
 
 		@FieldDescribe("应用名称.")
@@ -51,7 +49,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		@FieldDescribe("应用别名.")
 		private String applicationAlias;
 
-		@FieldDescribe("流程ID.")
+		@FieldDescribe("流程标识.")
 		private String process;
 
 		@FieldDescribe("流程名称.")
@@ -60,13 +58,13 @@ abstract class BaseAction extends StandardJaxrsAction {
 		@FieldDescribe("流程别名.")
 		private String processAlias;
 
-		@FieldDescribe("编号")
+		@FieldDescribe("编号.")
 		private String serial;
 
-		@FieldDescribe("当前处理人")
+		@FieldDescribe("当前处理人.")
 		private String person;
 
-		@FieldDescribe("当前处理人Identity")
+		@FieldDescribe("当前处理人身份.")
 		private String identity;
 
 		@FieldDescribe("当前处理人所在组织.")
@@ -75,7 +73,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		@FieldDescribe("处理意见.")
 		protected String opinion;
 
-		@FieldDescribe("活动ID.")
+		@FieldDescribe("活动标识.")
 		private String activity;
 
 		@FieldDescribe("活动名称.")
@@ -266,7 +264,6 @@ abstract class BaseAction extends StandardJaxrsAction {
 			return process;
 		}
 
-
 		public void setProcess(String process) {
 			this.process = process;
 		}
@@ -335,7 +332,6 @@ abstract class BaseAction extends StandardJaxrsAction {
 			this.activity = activity;
 		}
 
-
 		public String getActivityName() {
 			return activityName;
 		}
@@ -355,7 +351,6 @@ abstract class BaseAction extends StandardJaxrsAction {
 		public String getActivityDescription() {
 			return activityDescription;
 		}
-
 
 		public void setActivityDescription(String activityDescription) {
 			this.activityDescription = activityDescription;

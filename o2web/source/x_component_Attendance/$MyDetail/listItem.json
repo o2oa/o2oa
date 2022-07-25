@@ -115,7 +115,7 @@
     "sub" : [{
       "title" :  MWF.xApplication.Attendance.LP.createAppeal,
       "action" : "appeal",
-      "fonticon": "el-icon-question",
+      "fonticon": "o2icon-icon_tishi",
 //      "icon": "appeal.png",
       "condition" : "function( d ){ if(!d.APPEALABLE)return false; if( d.appealStatus || d.isGetSelfHolidays ){ return false }else if(  d.isAbsent || d.isLate || d.isLeaveEarlier || d.isAbnormalDuty || d.isLackOfTime ){ return true }else{ return false } }",
       "styles" : "documentActionNode",
@@ -124,7 +124,7 @@
     },{
       "title" : MWF.xApplication.Attendance.LP.viewAppealDetail,
       "action" : "seeAppeal",
-      "fonticon": "el-icon-view",
+      "fonticon": "o2icon-icon_shitu",
 //      "icon": "open.png",
       "condition" : "function( d ){ if( d.appealStatus ){ return true }else{ return false } }",
       "styles" : "documentActionNode",

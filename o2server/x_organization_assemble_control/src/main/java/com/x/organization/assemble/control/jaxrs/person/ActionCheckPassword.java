@@ -8,7 +8,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 
 class ActionCheckPassword extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionCheckPassword.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCheckPassword.class);
 
 	ActionResult<Wo> execute(String password) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();

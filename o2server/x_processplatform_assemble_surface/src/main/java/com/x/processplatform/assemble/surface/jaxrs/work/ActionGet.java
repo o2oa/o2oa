@@ -44,7 +44,7 @@ class ActionGet extends BaseAction {
 		private static final long serialVersionUID = 3069420284807497002L;
 
 		static WrapCopier<Work, Wo> copier = WrapCopierFactory.wo(Work.class, Wo.class, null,
-				JpaObject.FieldsInvisibleIncludeProperites);
+				JpaObject.FieldsInvisible);
 
 	}
 

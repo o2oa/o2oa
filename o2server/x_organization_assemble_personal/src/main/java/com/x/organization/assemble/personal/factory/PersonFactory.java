@@ -27,7 +27,6 @@ import com.x.organization.core.entity.PersistenceProperties;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Person_;
 
-
 public class PersonFactory extends AbstractFactory {
 
 	public PersonFactory(Business business) throws Exception {
@@ -246,26 +245,6 @@ public class PersonFactory extends AbstractFactory {
 		return this.returnNotDuplicateId(list);
 	}
 
-	// public String getWithDisplay(String display, String excludeId) throws
-	// Exception {
-	// if (StringUtils.isEmpty(display) ||
-	// (!JpaObjectTools.withinDefinedLength(display, Person.class, "display")))
-	// {
-	// return null;
-	// }
-	// EntityManager em = this.entityManagerContainer().get(Person.class);
-	// CriteriaBuilder cb = em.getCriteriaBuilder();
-	// CriteriaQuery<String> cq = cb.createQuery(String.class);
-	// Root<Person> root = cq.from(Person.class);
-	// Predicate p = cb.equal(root.get(Person_.display), display);
-	// if (StringUtils.isNotEmpty(excludeId)) {
-	// p = cb.and(p, cb.notEqual(root.get(Person_.id), excludeId));
-	// }
-	// cq.select(root.get(Person_.id)).where(p);
-	// List<String> list = em.createQuery(cq).getResultList();
-	// return this.returnNotDuplicateId(list);
-	// }
-
 	private String returnNotDuplicateId(List<String> list) throws Exception {
 		if (list.isEmpty()) {
 			return null;
@@ -278,7 +257,7 @@ public class PersonFactory extends AbstractFactory {
 	public void setPassword(Person person, String password) throws Exception {
 		Calendar cal = Calendar.getInstance();
 		person.setChangePasswordTime(cal.getTime());
-		person.setPassword(Crypto.encrypt(password, Config.token().getKey()));
+		person.setPassword(Crypto.encrypt(password, Config.token().getKey(), Config.token().getEncryptType()));
 		Integer passwordPeriod = Config.person().getPasswordPeriod();
 		if (passwordPeriod == null || passwordPeriod <= 0) {
 			person.setPasswordExpiredTime(null);

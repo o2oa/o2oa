@@ -10,13 +10,22 @@ import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.element.*;
 import com.x.processplatform.core.entity.element.Process;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionGetComplex extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionGetComplex.class);
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag) throws Exception {
+
+		LOGGER.debug("execute:{}, flag:{}.", effectivePerson::getDistinguishedName, () -> flag);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -30,6 +39,7 @@ class ActionGetComplex extends BaseAction {
 		}
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetComplex$Wo")
 	public static class Wo extends Process {
 
 		private static final long serialVersionUID = 1521228691441978462L;
@@ -176,6 +186,7 @@ class ActionGetComplex extends BaseAction {
 		}
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetComplex$WoAgent")
 	public static class WoAgent extends Agent {
 
 		private static final long serialVersionUID = 6466513124630937459L;
@@ -183,6 +194,7 @@ class ActionGetComplex extends BaseAction {
 				JpaObject.FieldsInvisible);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetComplex$WoBegin")
 	public static class WoBegin extends Begin {
 
 		private static final long serialVersionUID = 6466513124630937459L;
@@ -190,6 +202,7 @@ class ActionGetComplex extends BaseAction {
 				JpaObject.FieldsInvisible);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetComplex$WoCancel")
 	public static class WoCancel extends Cancel {
 
 		private static final long serialVersionUID = 6466513124630937459L;
@@ -197,6 +210,7 @@ class ActionGetComplex extends BaseAction {
 				JpaObject.FieldsInvisible);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetComplex$WoChoice")
 	public static class WoChoice extends Choice {
 
 		private static final long serialVersionUID = 6466513124630937459L;
@@ -204,6 +218,7 @@ class ActionGetComplex extends BaseAction {
 				JpaObject.FieldsInvisible);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetComplex$WoDelay")
 	public static class WoDelay extends Delay {
 
 		private static final long serialVersionUID = 6466513124630937459L;
@@ -211,6 +226,7 @@ class ActionGetComplex extends BaseAction {
 				JpaObject.FieldsInvisible);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetComplex$WoEmbed")
 	public static class WoEmbed extends Embed {
 
 		private static final long serialVersionUID = 6466513124630937459L;
@@ -218,6 +234,7 @@ class ActionGetComplex extends BaseAction {
 				JpaObject.FieldsInvisible);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetComplex$WoEnd")
 	public static class WoEnd extends End {
 
 		private static final long serialVersionUID = 6466513124630937459L;
@@ -225,6 +242,7 @@ class ActionGetComplex extends BaseAction {
 				JpaObject.FieldsInvisible);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetComplex$WoInvoke")
 	public static class WoInvoke extends Invoke {
 
 		private static final long serialVersionUID = 6466513124630937459L;
@@ -232,6 +250,7 @@ class ActionGetComplex extends BaseAction {
 				JpaObject.FieldsInvisible);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetComplex$WoManual")
 	public static class WoManual extends Manual {
 
 		private static final long serialVersionUID = 6466513124630937459L;
@@ -239,6 +258,7 @@ class ActionGetComplex extends BaseAction {
 				JpaObject.FieldsInvisible);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetComplex$WoMerge")
 	public static class WoMerge extends Merge {
 
 		private static final long serialVersionUID = 6466513124630937459L;
@@ -246,8 +266,7 @@ class ActionGetComplex extends BaseAction {
 				JpaObject.FieldsInvisible);
 	}
 
-
-
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetComplex$WoParallel")
 	public static class WoParallel extends Parallel {
 
 		private static final long serialVersionUID = 6466513124630937459L;
@@ -269,6 +288,7 @@ class ActionGetComplex extends BaseAction {
 				JpaObject.FieldsInvisible);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetComplex$WoSplit")
 	public static class WoSplit extends Split {
 
 		private static final long serialVersionUID = 6466513124630937459L;
@@ -276,6 +296,7 @@ class ActionGetComplex extends BaseAction {
 				JpaObject.FieldsInvisible);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetComplex$WoRoute")
 	public static class WoRoute extends Route {
 
 		private static final long serialVersionUID = 6466513124630937459L;

@@ -33,10 +33,13 @@ import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 
 abstract class V2Base extends StandardJaxrsAction {
 
 	public static abstract class FilterWi extends GsonPropertyObject {
+
+		private static final long serialVersionUID = 1047226859436517086L;
 
 		public boolean isEmptyFilter() {
 			if (ListTools.isNotEmpty(this.applicationList)) {
@@ -69,44 +72,53 @@ abstract class V2Base extends StandardJaxrsAction {
 			return true;
 		}
 
-		@FieldDescribe("应用")
+		@FieldDescribe("应用标识.")
+		@Schema(description = "应用标识.")
 		private List<String> applicationList;
 
-		@FieldDescribe("流程")
+		@FieldDescribe("流程标识.")
+		@Schema(description = "流程标识.")
 		private List<String> processList;
 
-		@FieldDescribe("是否查找同版本流程数据：true(默认查找)|false")
+		@FieldDescribe("是否查找同版本流程数据：true(默认查找)|false.")
+		@Schema(description = "是否查找同版本流程数据：true(默认查找)|false.")
 		private Boolean relateEditionProcess = true;
 
-		@FieldDescribe("开始时间yyyy-MM-dd HH:mm:ss")
+		@FieldDescribe("开始时间yyyy-MM-dd HH:mm:ss.")
+		@Schema(description = "开始时间yyyy-MM-dd HH:mm:ss.")
 		private String startTime;
 
-		@FieldDescribe("结束时间yyyy-MM-dd HH:mm:ss")
+		@FieldDescribe("结束时间yyyy-MM-dd HH:mm:ss.")
+		@Schema(description = "结束时间yyyy-MM-dd HH:mm:ss.")
 		private String endTime;
 
-		@FieldDescribe("创建用户")
+		@FieldDescribe("创建用户.")
+		@Schema(description = "创建用户.")
 		private List<String> creatorPersonList;
 
-		@FieldDescribe("创建组织")
+		@FieldDescribe("创建组织.")
+		@Schema(description = "创建组织.")
 		private List<String> creatorUnitList;
 
-		@FieldDescribe("开始时间")
+		@FieldDescribe("开始时间.")
+		@Schema(description = "开始时间.")
 		private List<String> startTimeMonthList;
 
-		@FieldDescribe("结束时间")
+		@FieldDescribe("结束时间.")
+		@Schema(description = "结束时间.")
 		private List<String> completedTimeMonthList;
 
 		@FieldDescribe("已经结束的.")
+		@Schema(description = "已经结束的.")
 		private Boolean completed;
 
-		@FieldDescribe("尚未结束的")
+		@FieldDescribe("尚未结束的.")
+		@Schema(description = "尚未结束的.")
 		private Boolean notCompleted;
 
-		@FieldDescribe("关键字")
+		@FieldDescribe("匹配关键字.")
+		@Schema(description = "匹配关键字.")
 		private String key;
-
-		@FieldDescribe("标题")
-		private String title;
 
 		public Boolean getNotCompleted() {
 			return notCompleted;
@@ -204,16 +216,11 @@ abstract class V2Base extends StandardJaxrsAction {
 			this.completedTimeMonthList = completedTimeMonthList;
 		}
 
-		public String getTitle() {
-			return title;
-		}
-
-		public void setTitle(String title) {
-			this.title = title;
-		}
 	}
 
 	public static abstract class RelateFilterWi extends FilterWi {
+
+		private static final long serialVersionUID = -7831981467643757316L;
 
 		public boolean isEmptyRelate() {
 			if (BooleanUtils.isTrue(this.relateWork)) {
@@ -422,10 +429,11 @@ abstract class V2Base extends StandardJaxrsAction {
 			p = cb.and(p, root.get(ReadCompleted_.application).in(wi.getApplicationList()));
 		}
 		if (ListTools.isNotEmpty(wi.getProcessList())) {
-			if(BooleanUtils.isFalse(wi.getRelateEditionProcess())) {
+			if (BooleanUtils.isFalse(wi.getRelateEditionProcess())) {
 				p = cb.and(p, root.get(ReadCompleted_.process).in(wi.getProcessList()));
-			}else{
-				p = cb.and(p, root.get(ReadCompleted_.process).in(business.process().listEditionProcess(wi.getProcessList())));
+			} else {
+				p = cb.and(p, root.get(ReadCompleted_.process)
+						.in(business.process().listEditionProcess(wi.getProcessList())));
 			}
 		}
 		if (DateTools.isDateTimeOrDate(wi.getStartTime())) {
@@ -465,12 +473,6 @@ abstract class V2Base extends StandardJaxrsAction {
 					cb.or(cb.like(root.get(ReadCompleted_.title), key), cb.like(root.get(ReadCompleted_.serial), key),
 							cb.like(root.get(ReadCompleted_.creatorPerson), key),
 							cb.like(root.get(ReadCompleted_.creatorUnit), key)));
-		}
-		if (StringUtils.isNotEmpty(wi.getTitle())) {
-			String title = StringTools.escapeSqlLikeKey(wi.getTitle());
-			if (StringUtils.isNotEmpty(title)) {
-				p = cb.and(p, cb.like(root.get(ReadCompleted_.title), "%" + title + "%"));
-			}
 		}
 		return p;
 	}

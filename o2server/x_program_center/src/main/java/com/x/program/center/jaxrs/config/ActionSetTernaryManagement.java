@@ -22,7 +22,7 @@ public class ActionSetTernaryManagement extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		if (BooleanUtils.isNotTrue(Config.nodes().centerServers().first().getValue().getConfigApiEnable())) {
+		if (BooleanUtils.isNotTrue(Config.miscellaneous().getConfigApiEnable())) {
 			throw new ExceptionModifyConfig();
 		}
 		if (StringUtils.isNotBlank(wi.getSystemManagerPassword())) {

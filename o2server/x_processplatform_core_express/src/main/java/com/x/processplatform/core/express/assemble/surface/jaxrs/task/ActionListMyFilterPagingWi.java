@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.tools.ListTools;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -60,15 +61,27 @@ public class ActionListMyFilterPagingWi extends GsonPropertyObject {
 	private String key;
 
 	public List<String> getApplicationList() {
-		return applicationList;
+		return ListTools.trim(applicationList, true, true);
+	}
+
+	public List<String> getProcessList() {
+		return ListTools.trim(processList, true, true);
+	}
+
+	public List<String> getStartTimeMonthList() {
+		return ListTools.trim(startTimeMonthList, true, true);
+	}
+
+	public List<String> getActivityNameList() {
+		return ListTools.trim(activityNameList, true, true);
+	}
+
+	public List<String> getCreatorUnitList() {
+		return ListTools.trim(creatorUnitList, true, true);
 	}
 
 	public void setApplicationList(List<String> applicationList) {
 		this.applicationList = applicationList;
-	}
-
-	public List<String> getProcessList() {
-		return processList;
 	}
 
 	public void setProcessList(List<String> processList) {
@@ -83,16 +96,8 @@ public class ActionListMyFilterPagingWi extends GsonPropertyObject {
 		this.relateEditionProcess = relateEditionProcess;
 	}
 
-	public List<String> getStartTimeMonthList() {
-		return startTimeMonthList;
-	}
-
 	public void setStartTimeMonthList(List<String> startTimeMonthList) {
 		this.startTimeMonthList = startTimeMonthList;
-	}
-
-	public List<String> getActivityNameList() {
-		return activityNameList;
 	}
 
 	public void setActivityNameList(List<String> activityNameList) {
@@ -105,10 +110,6 @@ public class ActionListMyFilterPagingWi extends GsonPropertyObject {
 
 	public void setKey(String key) {
 		this.key = key;
-	}
-
-	public List<String> getCreatorUnitList() {
-		return creatorUnitList;
 	}
 
 	public void setCreatorUnitList(List<String> creatorUnitList) {

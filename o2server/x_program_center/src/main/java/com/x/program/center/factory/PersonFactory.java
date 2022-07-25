@@ -83,7 +83,7 @@ public class PersonFactory extends AbstractFactory {
 	public void setPassword(Person person, String password) throws Exception {
 		Calendar cal = Calendar.getInstance();
 		person.setChangePasswordTime(cal.getTime());
-		person.setPassword(Crypto.encrypt(password, Config.token().getKey()));
+		person.setPassword(Crypto.encrypt(password, Config.token().getKey(), Config.token().getEncryptType()));
 		Integer passwordPeriod = Config.person().getPasswordPeriod();
 		if (passwordPeriod == null || passwordPeriod <= 0) {
 			person.setPasswordExpiredTime(null);
@@ -99,7 +99,7 @@ public class PersonFactory extends AbstractFactory {
 		CriteriaQuery<Person> cq = cb.createQuery(Person.class);
 		Root<Person> root = cq.from(Person.class);
 		Predicate p = cb.equal(root.get(Person_.employee), employee);
-		if(StringUtils.isNotEmpty(excludeUnique)){
+		if (StringUtils.isNotEmpty(excludeUnique)) {
 			p = cb.and(p, cb.notEqual(root.get(Person_.unique), excludeUnique));
 		}
 		List<Person> os = em.createQuery(cq.select(root).where(p)).setMaxResults(1).getResultList();

@@ -11,38 +11,51 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionManageDelete extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionManageDelete.class);
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
-		Record record = null;
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+
+		Record rec = null;
 		ActionResult<Wo> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			record = emc.find(id, Record.class);
-			if (null == record) {
+			rec = emc.find(id, Record.class);
+			if (null == rec) {
 				throw new ExceptionEntityNotExist(id, Record.class);
 			}
-			Application application = business.application().pick(record.getApplication());
-			Process process = business.process().pick(record.getProcess());
+			Application application = business.application().pick(rec.getApplication());
+			Process process = business.process().pick(rec.getProcess());
 			// 需要对这个应用的管理权限
 			if (BooleanUtils.isFalse(business.canManageApplicationOrProcess(effectivePerson, application, process))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 		}
 		WoId resp = ThisApplication.context().applications().deleteQuery(x_processplatform_service_processing.class,
-				Applications.joinQueryUri("record", record.getId()), record.getJob()).getData(WoId.class);
+				Applications.joinQueryUri("record", rec.getId()), rec.getJob()).getData(WoId.class);
 		Wo wo = new Wo();
 		wo.setId(resp.getId());
 		result.setData(wo);
 		return result;
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.record.ActionManageDelete$Wo")
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = -6482712324713975409L;
+
 	}
 }

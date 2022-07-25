@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.portal.assemble.designer.Business;
 import com.x.portal.core.entity.Portal;
 import com.x.portal.core.entity.Portal_;
@@ -57,13 +58,15 @@ abstract class BaseAction extends StandardJaxrsAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Portal> root = cq.from(Portal.class);
 		Predicate p = cb.conjunction();
-		if (!effectivePerson.isSecurityManager() && !business.isPortalManager(effectivePerson)) {
+
+		if ((!effectivePerson.isSecurityManager()) && (!effectivePerson.isManager())
+				&& (!business.organization().person().hasRole(effectivePerson, OrganizationDefinition.PortalManager))) {
+//		if (!effectivePerson.isSecurityManager() && !business.isPortalManager(effectivePerson)) {
 			p = cb.isMember(effectivePerson.getDistinguishedName(), root.get(Portal_.controllerList));
 			p = cb.or(p, cb.equal(root.get(Portal_.creatorPerson), effectivePerson.getDistinguishedName()));
 		}
 		cq.select(root.get(Portal_.id)).where(p);
-		List<String> list = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
-		return list;
+		return em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	List<String> listEditableWithPortalCategory(Business business, EffectivePerson effectivePerson,
@@ -73,14 +76,14 @@ abstract class BaseAction extends StandardJaxrsAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Portal> root = cq.from(Portal.class);
 		Predicate p = cb.conjunction();
-		if (!business.isPortalManager(effectivePerson)) {
+		if ((!effectivePerson.isManager())
+				&& (!business.organization().person().hasRole(effectivePerson, OrganizationDefinition.PortalManager))) {
 			p = cb.isMember(effectivePerson.getDistinguishedName(), root.get(Portal_.controllerList));
 			p = cb.or(p, cb.equal(root.get(Portal_.creatorPerson), effectivePerson.getDistinguishedName()));
 		}
 		p = cb.and(p, cb.equal(root.get(Portal_.portalCategory), Objects.toString(portalCategory, "")));
 		cq.select(root.get(Portal_.id)).where(p);
-		List<String> list = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
-		return list;
+		return em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 }

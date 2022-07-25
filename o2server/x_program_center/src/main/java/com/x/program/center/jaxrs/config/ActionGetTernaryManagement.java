@@ -19,6 +19,8 @@ class ActionGetTernaryManagement extends BaseAction {
 
 	public static class Wo extends TernaryManagement {
 
+		private static final long serialVersionUID = -2727709861590469212L;
+		
 		static WrapCopier<TernaryManagement, Wo> copier = WrapCopierFactory.wo(TernaryManagement.class, Wo.class, null,
 				ListTools.toList("auditManagerPassword", "securityManagerPassword", "systemManagerPassword"));
 

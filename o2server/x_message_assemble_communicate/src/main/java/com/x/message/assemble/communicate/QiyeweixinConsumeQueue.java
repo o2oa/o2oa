@@ -3,47 +3,31 @@ package com.x.message.assemble.communicate;
 import java.net.URLEncoder;
 
 import com.x.base.core.project.message.MessageConnector;
+import com.x.message.assemble.communicate.message.QiyeweixinBaseMessage;
+import com.x.message.assemble.communicate.message.QiyeweixinTextCardMessage;
+import com.x.message.assemble.communicate.message.QiyeweixinTextMessage;
 import org.apache.commons.lang3.StringUtils;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.connection.HttpConnection;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.queue.AbstractQueue;
 import com.x.base.core.project.tools.DefaultCharset;
-import com.x.message.assemble.communicate.message.QiyeweixinMessage;
 import com.x.message.core.entity.Message;
 
 public class QiyeweixinConsumeQueue extends AbstractQueue<Message> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(QiyeweixinConsumeQueue.class);
 
-	private static final Gson gson = XGsonBuilder.instance();
-
 	protected void execute(Message message) throws Exception {
 
 		if (Config.qiyeweixin().getEnable() && Config.qiyeweixin().getMessageEnable()) {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
-				QiyeweixinMessage m = new QiyeweixinMessage();
-				m.setAgentid(Long.parseLong(Config.qiyeweixin().getAgentId(), 10));
-				m.setTouser(business.organization().person().getObject(message.getPerson()).getQiyeweixinId());
-				String content = message.getTitle();
-				if (needTransferLink(message.getType())) {
-					String workUrl = getOpenUrl(message);
-					if (StringUtils.isNotEmpty(workUrl)) {
-						content = "<a href=\"" + workUrl + "\">" + message.getTitle() + "</a>";
-					}
-				}
-				m.getText().setContent(content);
-				if (LOGGER.isDebugEnabled()) {
-					LOGGER.debug("微信消息：{}", m::toString);
-				}
+				QiyeweixinBaseMessage m = generateMessage(message, business);
 				String address = Config.qiyeweixin().getApiAddress() + "/cgi-bin/message/send?access_token="
 						+ Config.qiyeweixin().corpAccessToken();
 				QiyeweixinMessageResp resp = HttpConnection.postAsObject(address, null, m.toString(),
@@ -61,6 +45,49 @@ public class QiyeweixinConsumeQueue extends AbstractQueue<Message> {
 				}
 			}
 		}
+	}
+
+	private QiyeweixinBaseMessage generateMessage(Message message, Business business) throws Exception {
+		String content = message.getTitle();
+		String workUrl = getOpenUrl(message);
+		// 有超链接的发送卡片消息 目前支持 内容管理和流程
+		if (needTransferLink(message.getType()) && StringUtils.isNotEmpty(workUrl)) {
+			QiyeweixinTextCardMessage cardMessage = new QiyeweixinTextCardMessage();
+			cardMessage.setAgentid(Long.parseLong(Config.qiyeweixin().getAgentId(), 10));
+			cardMessage.setTouser(business.organization().person().getObject(message.getPerson()).getQiyeweixinId());
+			// 内容管理
+			if (MessageConnector.TYPE_CMS_PUBLISH.equals(message.getType())
+					|| MessageConnector.TYPE_CMS_PUBLISH_TO_CREATOR.equals(message.getType())) {
+				String categoryName = DingdingConsumeQueue.OuterMessageHelper.getPropertiesFromBody("categoryName", message.getBody());
+				if (StringUtils.isEmpty(categoryName)) {
+					categoryName = "信息通知";
+				}
+				cardMessage.getTextcard().setTitle("【"+categoryName+"】");
+			} else {
+				String processName = DingdingConsumeQueue.OuterMessageHelper.getPropertiesFromBody("processName", message.getBody());
+				if (StringUtils.isEmpty(processName)) {
+					processName = "工作通知";
+				}
+				cardMessage.getTextcard().setTitle("【"+processName+"】");
+			}
+			cardMessage.getTextcard().setDescription(message.getTitle());
+			cardMessage.getTextcard().setUrl(workUrl);
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug("微信卡片消息：{}", cardMessage::toString);
+			}
+			return cardMessage;
+
+		} else { // 其他是普通文本消息
+			QiyeweixinTextMessage textMessage = new QiyeweixinTextMessage();
+			textMessage.setAgentid(Long.parseLong(Config.qiyeweixin().getAgentId(), 10));
+			textMessage.setTouser(business.organization().person().getObject(message.getPerson()).getQiyeweixinId());
+			textMessage.getText().setContent(content);
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug("微信文本消息：{}", textMessage::toString);
+			}
+			return textMessage;
+		}
+
 	}
 
 
