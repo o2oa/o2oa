@@ -1,7 +1,5 @@
 package com.x.query.service.processing.jaxrs.table;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -14,8 +12,13 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.tools.PropertyTools;
+import com.x.base.core.project.tools.StringTools;
 import com.x.query.core.entity.schema.Table;
 import com.x.query.service.processing.Business;
+
+import java.util.List;
 
 class ActionUpdateWithBundle extends BaseAction {
 
@@ -24,19 +27,14 @@ class ActionUpdateWithBundle extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, String bundle, JsonElement jsonElement)
 			throws Exception {
 
-		LOGGER.debug("execute:{}, flag:{}, bundle:{}.", effectivePerson::getDistinguishedName, () -> flag,
-				() -> bundle);
+		LOGGER.info("execute :{}, table flag:{}, bundle:{}， data:{}.", effectivePerson::getDistinguishedName, () -> flag,
+				() -> bundle, jsonElement::toString);
 
 		ClassLoader classLoader = Business.getDynamicEntityClassLoader();
 		Thread.currentThread().setContextClassLoader(classLoader);
 		ActionResult<Wo> result = new ActionResult<>();
 
-		if (StringUtils.isEmpty(bundle)) {
-			throw new ExceptionBundleEmpty();
-		}
-
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			LOGGER.debug("execute:{}, flag:{}.", effectivePerson::getDistinguishedName, () -> flag);
 			Table table = emc.flag(flag, Table.class);
 			if (null == table) {
 				throw new ExceptionEntityNotExist(flag, Table.class);
@@ -45,15 +43,20 @@ class ActionUpdateWithBundle extends BaseAction {
 			@SuppressWarnings("unchecked")
 			Class<? extends JpaObject> cls = (Class<? extends JpaObject>) classLoader
 					.loadClass(dynamicEntity.className());
-			JpaObject o = update(jsonElement, cls);
-			JpaObject obj = emc.find(bundle, cls);
+			List<? extends JpaObject> list = update(jsonElement, cls, bundle);
+			List<? extends JpaObject> bundleList = null;
+			if (PropertyTools.hasField(cls, DynamicEntity.BUNDLE_FIELD)) {
+				bundleList = emc.listEqual(cls, DynamicEntity.BUNDLE_FIELD, bundle);
+			}
 			emc.beginTransaction(cls);
-			if (null != obj) {
-				o.copyTo(obj, JpaObject.FieldsUnmodify);
-				emc.check(obj, CheckPersistType.all);
-			} else {
-				emc.persist(o);
-				emc.check(o, CheckPersistType.all);
+			if(ListTools.isNotEmpty(bundleList)){
+				for(JpaObject o : bundleList){
+					emc.remove(o);
+				}
+			}
+			for(JpaObject o : list){
+				o.setId(StringTools.uniqueToken());
+				emc.persist(o, CheckPersistType.all);
 			}
 			emc.commit();
 			Wo wo = new Wo();

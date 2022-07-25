@@ -159,10 +159,9 @@ abstract class BaseAction extends StandardJaxrsAction {
 		return em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
-	protected String password(Wi wi) throws Exception {
-		return BooleanUtils.isTrue(Config.token().getRsaEnable())
-				? Crypto.rsaDecrypt(wi.getPassword(), Config.privateKey())
-				: wi.getPassword();
+	protected String password(String password) throws Exception {
+		return BooleanUtils.isTrue(Config.token().getRsaEnable()) ? Crypto.rsaDecrypt(password, Config.privateKey())
+				: password;
 	}
 
 	protected Person personLogin(Business business, String id, String password) throws Exception {

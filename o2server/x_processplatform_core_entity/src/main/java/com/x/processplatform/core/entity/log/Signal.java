@@ -729,6 +729,55 @@ public class Signal extends GsonPropertyObject {
 		return p;
 	}
 
+	private PublishArrive publishArrive;
+	private PublishExecute publishExecute;
+	private PublishInquire publishInquire;
+
+	public PublishArrive getPublishArrive() {
+		return publishArrive;
+	}
+
+	public PublishExecute getPublishExecute() {
+		return publishExecute;
+	}
+
+	public PublishInquire getPublishInquire() {
+		return publishInquire;
+	}
+
+	public static class PublishArrive extends Base {
+
+	}
+
+	public static Signal publishArrive(String activityToken, Activity activity) {
+		Signal p = new Signal(activityToken, activity);
+		PublishArrive s = new PublishArrive();
+		p.publishArrive = s;
+		return p;
+	}
+
+	public static class PublishExecute extends Base {
+
+	}
+
+	public static Signal publishExecute(String activityToken, Activity activity) {
+		Signal p = new Signal(activityToken, activity);
+		PublishExecute s = new PublishExecute();
+		p.publishExecute = s;
+		return p;
+	}
+
+	public static class PublishInquire extends Base {
+
+	}
+
+	public static Signal publishInquire(String activityToken, Activity activity) {
+		Signal p = new Signal(activityToken, activity);
+		PublishInquire s = new PublishInquire();
+		p.publishInquire = s;
+		return p;
+	}
+
 	private String name;
 
 	private String alias;

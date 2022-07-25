@@ -215,23 +215,29 @@
       "color": "#ffffff"
     },
     "actionDeleteNode": {
-      "background": "url("+"../x_component_Org/$Explorer/default/icon/delete.png) center center no-repeat",
+//      "background": "url("+"../x_component_Org/$Explorer/default/icon/delete.png) center center no-repeat",
+      "color": "#3C76B7",
       "height": "50px",
       "width": "20px",
+      "line-height": "50px",
       "float": "right",
       "margin-right": "5px"
     },
     "actionDeleteNode_delete": {
-      "background": "url("+"../x_component_Org/$Explorer/default/icon/delete_delete.png) center center no-repeat",
+//      "background": "url("+"../x_component_Org/$Explorer/default/icon/delete_delete.png) center center no-repeat",
+      "color": "#ff0200",
       "height": "50px",
       "width": "20px",
+      "line-height": "50px",
       "float": "right",
       "margin-right": "5px"
     },
     "actionDeleteNode_selected": {
-      "background": "url("+"../x_component_Org/$Explorer/default/icon/delete_selected.png) center center no-repeat",
+//      "background": "url("+"../x_component_Org/$Explorer/default/icon/delete_selected.png) center center no-repeat",
+      "color": "#fff",
       "height": "50px",
       "width": "20px",
+      "line-height": "50px",
       "float": "right",
       "margin-right": "5px"
     },
@@ -665,34 +671,43 @@
       "margin": "0px 50px 0px 52px"
     },
     "actionDeleteNode": {
-      "height": "40px"
+      "height": "40px",
+      "line-height": "40px"
     },
     "actionDeleteNode_delete": {
-      "height": "40px"
+      "height": "40px",
+      "line-height": "40px"
     },
     "actionDeleteNode_selected": {
-      "height": "40px"
+      "height": "40px",
+      "line-height": "40px"
     },
     "actionAddNode": {
-      "background": "url("+"../x_component_Org/$Explorer/default/icon/addUnit.png) center center no-repeat",
+      //"background": "url("+"../x_component_Org/$Explorer/default/icon/addUnit.png) center center no-repeat",
+      "color": "#3C76B7",
       "height": "40px",
       "width": "20px",
       "float": "left",
+      "line-height": "40px",
       "display": "block",
       "margin-right": "5px"
     },
     "actionAddNode_delete": {
-      "background": "url("+"../x_component_Org/$Explorer/default/icon/delete_delete.png) center center no-repeat",
+      //"background": "url("+"../x_component_Org/$Explorer/default/icon/delete_delete.png) center center no-repeat",
+      "color": "#ff0200",
       "height": "40px",
       "width": "20px",
+      "line-height": "40px",
       "float": "right",
       "display": "none",
       "margin-right": "5px"
     },
     "actionAddNode_selected": {
-      "background": "url("+"../x_component_Org/$Explorer/default/icon/addUnit_selected.png) center center no-repeat",
+      //"background": "url("+"../x_component_Org/$Explorer/default/icon/addUnit_selected.png) center center no-repeat",
+      "color": "#fff",
       "height": "40px",
       "width": "20px",
+      "line-height": "40px",
       "float": "right",
       "display": "block",
       "margin-right": "5px"

@@ -2,6 +2,8 @@ package com.x.processplatform.assemble.designer.jaxrs.process;
 
 import java.util.List;
 
+import com.x.processplatform.core.entity.element.*;
+import com.x.processplatform.core.entity.element.Process;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -13,22 +15,6 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.processplatform.assemble.designer.Business;
 import com.x.processplatform.assemble.designer.MessageFactory;
 import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.element.Agent;
-import com.x.processplatform.core.entity.element.Application;
-import com.x.processplatform.core.entity.element.Begin;
-import com.x.processplatform.core.entity.element.Cancel;
-import com.x.processplatform.core.entity.element.Choice;
-import com.x.processplatform.core.entity.element.Delay;
-import com.x.processplatform.core.entity.element.Embed;
-import com.x.processplatform.core.entity.element.End;
-import com.x.processplatform.core.entity.element.Invoke;
-import com.x.processplatform.core.entity.element.Manual;
-import com.x.processplatform.core.entity.element.Merge;
-import com.x.processplatform.core.entity.element.Parallel;
-import com.x.processplatform.core.entity.element.Process;
-import com.x.processplatform.core.entity.element.Route;
-import com.x.processplatform.core.entity.element.Service;
-import com.x.processplatform.core.entity.element.Split;
 
 class ActionDelete extends BaseAction {
 
@@ -90,6 +76,7 @@ class ActionDelete extends BaseAction {
 			emc.beginTransaction(Manual.class);
 			emc.beginTransaction(Merge.class);
 			emc.beginTransaction(Parallel.class);
+			emc.beginTransaction(Publish.class);
 			emc.beginTransaction(Service.class);
 			emc.beginTransaction(Split.class);
 			emc.beginTransaction(Route.class);
@@ -105,6 +92,7 @@ class ActionDelete extends BaseAction {
 			this.deleteManual(business, process);
 			this.deleteMerge(business, process);
 			this.deleteParallel(business, process);
+			this.deletePublish(business, process);
 			this.deleteRoute(business, process);
 			this.deleteService(business, process);
 			this.deleteSplit(business, process);

@@ -96,7 +96,7 @@ class V2ManageRetract extends BaseAction {
 				if (null != node) {
 					Nodes ups = node.upTo(ActivityType.manual, ActivityType.agent, ActivityType.choice,
 							ActivityType.delay, ActivityType.embed, ActivityType.invoke, ActivityType.parallel,
-							ActivityType.split);
+							ActivityType.split, ActivityType.publish);
 					for (Node o : ups) {
 						if (business.entityManagerContainer().countEqualAndEqual(TaskCompleted.class,
 								TaskCompleted.person_FIELDNAME, distinguishedName,

@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import com.x.processplatform.core.entity.element.*;
+import com.x.processplatform.core.entity.element.Process;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -32,30 +34,6 @@ import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
-import com.x.processplatform.core.entity.element.Agent;
-import com.x.processplatform.core.entity.element.Application;
-import com.x.processplatform.core.entity.element.ApplicationDict;
-import com.x.processplatform.core.entity.element.ApplicationDictItem;
-import com.x.processplatform.core.entity.element.Begin;
-import com.x.processplatform.core.entity.element.Cancel;
-import com.x.processplatform.core.entity.element.Choice;
-import com.x.processplatform.core.entity.element.Delay;
-import com.x.processplatform.core.entity.element.Embed;
-import com.x.processplatform.core.entity.element.End;
-import com.x.processplatform.core.entity.element.File;
-import com.x.processplatform.core.entity.element.Form;
-import com.x.processplatform.core.entity.element.FormField;
-import com.x.processplatform.core.entity.element.Invoke;
-import com.x.processplatform.core.entity.element.Manual;
-import com.x.processplatform.core.entity.element.Merge;
-import com.x.processplatform.core.entity.element.Parallel;
-import com.x.processplatform.core.entity.element.Process;
-import com.x.processplatform.core.entity.element.QueryStat;
-import com.x.processplatform.core.entity.element.QueryView;
-import com.x.processplatform.core.entity.element.Route;
-import com.x.processplatform.core.entity.element.Script;
-import com.x.processplatform.core.entity.element.Service;
-import com.x.processplatform.core.entity.element.Split;
 import com.x.query.core.entity.Item;
 
 class ActionDelete extends BaseAction {
@@ -110,6 +88,7 @@ class ActionDelete extends BaseAction {
 			emc.beginTransaction(Manual.class);
 			emc.beginTransaction(Merge.class);
 			emc.beginTransaction(Parallel.class);
+			emc.beginTransaction(Publish.class);
 			emc.beginTransaction(Service.class);
 			emc.beginTransaction(Split.class);
 			emc.beginTransaction(Route.class);
@@ -135,6 +114,7 @@ class ActionDelete extends BaseAction {
 				this.deleteManual(business, process);
 				this.deleteMerge(business, process);
 				this.deleteParallel(business, process);
+				this.deletePublish(business, process);
 				this.deleteService(business, process);
 				this.deleteSplit(business, process);
 				/** 路由 1种 */
@@ -165,6 +145,7 @@ class ActionDelete extends BaseAction {
 			CacheManager.notify(Manual.class);
 			CacheManager.notify(Merge.class);
 			CacheManager.notify(Parallel.class);
+			CacheManager.notify(Publish.class);
 			CacheManager.notify(Service.class);
 			CacheManager.notify(Split.class);
 			CacheManager.notify(Route.class);
@@ -263,6 +244,13 @@ class ActionDelete extends BaseAction {
 	private void deleteParallel(Business business, Process process) throws Exception {
 		for (String str : business.parallel().listWithProcess(process.getId())) {
 			Parallel o = business.entityManagerContainer().find(str, Parallel.class);
+			business.entityManagerContainer().remove(o);
+		}
+	}
+
+	private void deletePublish(Business business, Process process) throws Exception {
+		for (String str : business.publish().listWithProcess(process.getId())) {
+			Publish o = business.entityManagerContainer().find(str, Publish.class);
 			business.entityManagerContainer().remove(o);
 		}
 	}

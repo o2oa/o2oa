@@ -20,6 +20,7 @@ public class Processing extends BaseProcessing {
 
 	private ProcessingAttributes processingAttributes;
 
+	@Override
 	public EntityManagerContainer entityManagerContainer() {
 		return this.entityManagerContainer;
 	}
@@ -146,6 +147,9 @@ public class Processing extends BaseProcessing {
 			case parallel:
 				id = this.parallel().arrive(workId, processingConfigurator, processingAttributes);
 				break;
+			case publish:
+				id = this.publish().arrive(workId, processingConfigurator, processingAttributes);
+				break;
 			case service:
 				id = this.service().arrive(workId, processingConfigurator, processingAttributes);
 				break;
@@ -206,6 +210,9 @@ public class Processing extends BaseProcessing {
 			case parallel:
 				executed.addAll(this.parallel().execute(workId, processingConfigurator, processingAttributes));
 				break;
+			case publish:
+				executed.addAll(this.publish().execute(workId, processingConfigurator, processingAttributes));
+				break;
 			case service:
 				executed.addAll(this.service().execute(workId, processingConfigurator, processingAttributes));
 				break;
@@ -263,6 +270,9 @@ public class Processing extends BaseProcessing {
 				break;
 			case parallel:
 				inquired.addAll(this.parallel().inquire(workId, processingConfigurator, processingAttributes));
+				break;
+			case publish:
+				inquired.addAll(this.publish().inquire(workId, processingConfigurator, processingAttributes));
 				break;
 			case service:
 				inquired.addAll(this.service().inquire(workId, processingConfigurator, processingAttributes));

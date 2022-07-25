@@ -22,6 +22,8 @@ import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.query.assemble.designer.Business;
@@ -30,6 +32,8 @@ import com.x.query.core.entity.Stat;
 import com.x.query.core.entity.View;
 
 class ActionListSummaryWithQueryCategory extends BaseAction {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListSummaryWithQueryCategory.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String queryCategory) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -58,9 +62,8 @@ class ActionListSummaryWithQueryCategory extends BaseAction {
 			selections.add(root.get(str));
 		}
 		Predicate p = cb.equal(root.get(Query.queryCategory_FIELDNAME), Objects.toString(queryCategory, ""));
-		if (effectivePerson.isManager() || business.organization().person().hasRole(effectivePerson,
-				OrganizationDefinition.Manager, OrganizationDefinition.QueryManager)) {
-		} else {
+		if ((!effectivePerson.isManager()) && (!business.organization().person().hasRole(effectivePerson,
+				OrganizationDefinition.QueryManager, OrganizationDefinition.QueryCreator))) {
 			p = cb.and(p, cb.or(
 					cb.equal(root.get(Query.creatorPerson_FIELDNAME), effectivePerson.getDistinguishedName()),
 					cb.isMember(effectivePerson.getDistinguishedName(), root.get(Query.controllerList_FIELDNAME))));

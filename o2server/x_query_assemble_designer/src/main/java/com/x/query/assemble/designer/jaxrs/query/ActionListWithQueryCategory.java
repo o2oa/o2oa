@@ -20,6 +20,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.query.assemble.designer.Business;
 import com.x.query.core.entity.Query;
@@ -33,13 +34,17 @@ import com.x.query.core.entity.View_;
 
 class ActionListWithQueryCategory extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionListWithQueryCategory.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWithQueryCategory.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String queryCategory) throws Exception {
+
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			logger.debug(effectivePerson, effectivePerson.getDistinguishedName());
+
 			Business business = new Business(emc);
-			if (!business.controllable(effectivePerson)) {
+			if ((!effectivePerson.isManager()) && (!business.organization().person().hasRole(effectivePerson,
+					OrganizationDefinition.QueryManager, OrganizationDefinition.QueryCreator))) {
 				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 			}
 			ActionResult<List<Wo>> result = new ActionResult<>();
@@ -48,9 +53,9 @@ class ActionListWithQueryCategory extends BaseAction {
 			List<WoView> views = WoView.copier.copy(this.listView(business, ids));
 			List<WoStat> stats = WoStat.copier.copy(this.listStat(business, ids));
 			List<WoReveal> reveals = WoReveal.copier.copy(this.listReveal(business, ids));
-			ListTools.groupStick(wos, views, Query.id_FIELDNAME, View.query_FIELDNAME, "viewList");
-			ListTools.groupStick(wos, stats, Query.id_FIELDNAME, Stat.query_FIELDNAME, "statList");
-			ListTools.groupStick(wos, reveals, Query.id_FIELDNAME, Reveal.query_FIELDNAME, "revealList");
+			ListTools.groupStick(wos, views, JpaObject.id_FIELDNAME, View.query_FIELDNAME, "viewList");
+			ListTools.groupStick(wos, stats, JpaObject.id_FIELDNAME, Stat.query_FIELDNAME, "statList");
+			ListTools.groupStick(wos, reveals, JpaObject.id_FIELDNAME, Reveal.query_FIELDNAME, "revealList");
 			wos.stream().forEach(o -> {
 				try {
 					o.setViewList(business.view().sort(o.getViewList()));

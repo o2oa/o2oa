@@ -688,7 +688,7 @@ MWF.xApplication.Org.$Explorer.Item = new Class({
             if (this.data.id){
                 if (this.data.control.allowDelete){
                     if (!this.deleteNode){
-                        this.deleteNode = new Element("div", {"styles": this.style.actionDeleteNode}).inject(this.actionNode);
+                        this.deleteNode = new Element("div.o2icon-delete", {"styles": this.style.actionDeleteNode}).inject(this.actionNode);
                         this.deleteNode.addEvent("click", function(e){
                             if (!this.notDelete){
                                 if (!this.deleteSelected){
@@ -711,10 +711,15 @@ MWF.xApplication.Org.$Explorer.Item = new Class({
     setDelete: function(){
         this.actionNode.fade("in");
         this.deleteNode.setStyles(this.style.actionDeleteNode_delete);
+        this.deleteNode.removeClass("o2icon-delete").addClass("o2icon-off");
         this.contentNode.setStyles(this.style.contentNode_delete);
+        this.contentNode.removeClass("mainColor_bg");
         this.textNode.setStyles(this.style.textNode);
         this.explorer.deleteElements.push(this);
         this.deleteSelected = true;
+
+        this.contentNode.removeClass("mainColor_bg");
+        this.contentNode.removeClass("mainColor_bg_opacity");
 
         this.explorer.checkDeleteElements(this);
     },
@@ -723,13 +728,16 @@ MWF.xApplication.Org.$Explorer.Item = new Class({
         if (this.explorer.currentItem!==this){
             this.deleteNode.setStyles(this.style.actionDeleteNode);
             this.contentNode.setStyles(this.style.contentNode);
+            this.contentNode.removeClass("mainColor_bg");
             this.textNode.setStyles(this.style.textNode);
         }else{
             this.contentNode.setStyles(this.style.contentNode_selected);
+            this.contentNode.addClass("mainColor_bg");
             this.textNode.setStyles(this.style.textNode_selected);
             this.actionNode.setStyles(this.style.actionNode_selected);
             if (this.deleteNode) this.deleteNode.setStyles(this.style.actionDeleteNode_selected);
         }
+        this.deleteNode.removeClass("o2icon-off" ).addClass("o2icon-delete");
 
         this.explorer.deleteElements.erase(this);
         this.deleteSelected = false;
@@ -740,13 +748,19 @@ MWF.xApplication.Org.$Explorer.Item = new Class({
             "mouseover": function(e){
                 if (this.explorer.currentItem!==this && !this.deleteSelected){
                     this.contentNode.setStyles(this.style.nodeOver);
+                    this.contentNode.addClass("mainColor_bg_opacity");
                     if (!this.deleteSelected) if (this.data.id) this.actionNode.fade("in");
+                    if (this.deleteNode)this.deleteNode.addClass("mainColor_color");
+                    if (this.addNode)this.addNode.addClass("mainColor_color");
                 }
             }.bind(this),
             "mouseout": function(e){
                 if (this.explorer.currentItem!==this && !this.deleteSelected){
                     this.contentNode.setStyles(this.style.contentNode);
+                    this.contentNode.removeClass("mainColor_bg_opacity");
                     if (!this.deleteSelected) if (this.data.id) this.actionNode.fade("out");
+                    // if (this.deleteNode)this.deleteNode.removeClass("mainColor_color");
+                    // if (this.addNode)this.addNode.removeClass("mainColor_color");
                 }
             }.bind(this),
             "click": function(e){
@@ -773,6 +787,10 @@ MWF.xApplication.Org.$Explorer.Item = new Class({
             this.textNode.setStyles(this.style.textNode);
             this.actionNode.setStyles(this.style.actionNode);
             if (this.deleteNode) this.deleteNode.setStyles(this.style.actionDeleteNode);
+            this.contentNode.removeClass("mainColor_bg_opacity");
+            this.contentNode.removeClass("mainColor_bg");
+            if (this.deleteNode)this.deleteNode.removeClass("mainColor_color");
+            if (this.addNode)this.addNode.removeClass("mainColor_color");
         }
 
         this.clearItemProperty();
@@ -784,11 +802,16 @@ MWF.xApplication.Org.$Explorer.Item = new Class({
         this.explorer.propertyContentNode.empty();
     },
     selected: function(){
+        debugger;
         this.explorer.currentItem = this;
         this.contentNode.setStyles(this.style.contentNode_selected);
         this.textNode.setStyles(this.style.textNode_selected);
         this.actionNode.setStyles(this.style.actionNode_selected);
         if (this.deleteNode) this.deleteNode.setStyles(this.style.actionDeleteNode_selected);
+        this.contentNode.removeClass("mainColor_bg_opacity");
+        this.contentNode.addClass("mainColor_bg");
+        if (this.deleteNode)this.deleteNode.removeClass("mainColor_color");
+        if (this.addNode)this.addNode.removeClass("mainColor_color");
         this.showItemProperty();
     },
 
@@ -893,7 +916,7 @@ MWF.xApplication.Org.$Explorer.ItemContent = new Class({
     loadItemPropertyTab: function(callback){
         this.propertyTabContainerNode = new Element("div", {"styles": this.item.style.tabTitleNode}).inject(this.propertyContentNode, "top");
         MWF.require("MWF.widget.Tab", function(){
-            this.propertyTab = new MWF.widget.Tab(this.propertyContentNode, {"style": "org"});
+            this.propertyTab = new MWF.widget.Tab(this.propertyContentNode, {"style": "org", "useMainColor":true});
             this.propertyTab.load();
 
             this.propertyTab.tabNodeContainer.inject(this.propertyTabContainerNode);
