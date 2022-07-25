@@ -281,6 +281,7 @@ class ActionGetAllowRerouteTo extends BaseAction {
 				ListTools.toList(Activity.name_FIELDNAME, JpaObject.id_FIELDNAME), JpaObject.FieldsInvisible);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetAllowRerouteTo$WoPublish")
 	public static class WoPublish extends Publish {
 
 		private static final long serialVersionUID = 7325540706018402262L;
@@ -288,6 +289,7 @@ class ActionGetAllowRerouteTo extends BaseAction {
 				ListTools.toList(Publish.name_FIELDNAME, Publish.id_FIELDNAME), JpaObject.FieldsInvisible);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetAllowRerouteTo$WoService")
 	public static class WoService extends Service {
 
 		private static final long serialVersionUID = 6466513124630937459L;

@@ -274,6 +274,7 @@ class ActionGetComplex extends BaseAction {
 				JpaObject.FieldsInvisible);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetComplex$WoPublish")
 	public static class WoPublish extends Publish {
 
 		private static final long serialVersionUID = -4503137257516929365L;
@@ -281,6 +282,7 @@ class ActionGetComplex extends BaseAction {
 				JpaObject.FieldsInvisible);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetComplex$WoService")
 	public static class WoService extends Service {
 
 		private static final long serialVersionUID = 6466513124630937459L;
