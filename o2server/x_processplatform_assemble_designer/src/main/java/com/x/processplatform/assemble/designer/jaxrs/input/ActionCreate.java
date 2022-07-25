@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.x.processplatform.core.entity.element.*;
+import com.x.processplatform.core.entity.element.Process;
+import com.x.processplatform.core.entity.element.wrap.*;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -18,49 +21,6 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.designer.Business;
-import com.x.processplatform.core.entity.element.Agent;
-import com.x.processplatform.core.entity.element.Application;
-import com.x.processplatform.core.entity.element.ApplicationDict;
-import com.x.processplatform.core.entity.element.ApplicationDictItem;
-import com.x.processplatform.core.entity.element.Begin;
-import com.x.processplatform.core.entity.element.Cancel;
-import com.x.processplatform.core.entity.element.Choice;
-import com.x.processplatform.core.entity.element.Delay;
-import com.x.processplatform.core.entity.element.Embed;
-import com.x.processplatform.core.entity.element.End;
-import com.x.processplatform.core.entity.element.File;
-import com.x.processplatform.core.entity.element.Form;
-import com.x.processplatform.core.entity.element.FormField;
-import com.x.processplatform.core.entity.element.Invoke;
-import com.x.processplatform.core.entity.element.Manual;
-import com.x.processplatform.core.entity.element.Merge;
-import com.x.processplatform.core.entity.element.Parallel;
-import com.x.processplatform.core.entity.element.Process;
-import com.x.processplatform.core.entity.element.Route;
-import com.x.processplatform.core.entity.element.Script;
-import com.x.processplatform.core.entity.element.Service;
-import com.x.processplatform.core.entity.element.Split;
-import com.x.processplatform.core.entity.element.wrap.WrapAgent;
-import com.x.processplatform.core.entity.element.wrap.WrapApplicationDict;
-import com.x.processplatform.core.entity.element.wrap.WrapBegin;
-import com.x.processplatform.core.entity.element.wrap.WrapCancel;
-import com.x.processplatform.core.entity.element.wrap.WrapChoice;
-import com.x.processplatform.core.entity.element.wrap.WrapDelay;
-import com.x.processplatform.core.entity.element.wrap.WrapEmbed;
-import com.x.processplatform.core.entity.element.wrap.WrapEnd;
-import com.x.processplatform.core.entity.element.wrap.WrapFile;
-import com.x.processplatform.core.entity.element.wrap.WrapForm;
-import com.x.processplatform.core.entity.element.wrap.WrapFormField;
-import com.x.processplatform.core.entity.element.wrap.WrapInvoke;
-import com.x.processplatform.core.entity.element.wrap.WrapManual;
-import com.x.processplatform.core.entity.element.wrap.WrapMerge;
-import com.x.processplatform.core.entity.element.wrap.WrapParallel;
-import com.x.processplatform.core.entity.element.wrap.WrapProcess;
-import com.x.processplatform.core.entity.element.wrap.WrapProcessPlatform;
-import com.x.processplatform.core.entity.element.wrap.WrapRoute;
-import com.x.processplatform.core.entity.element.wrap.WrapScript;
-import com.x.processplatform.core.entity.element.wrap.WrapService;
-import com.x.processplatform.core.entity.element.wrap.WrapSplit;
 
 class ActionCreate extends BaseAction {
 
@@ -271,6 +231,15 @@ class ActionCreate extends BaseAction {
 				obj.setProcess(process.getId());
 				persistObjects.add(obj);
 			}
+			for (WrapPublish _o : wrapProcess.getPublishList()) {
+				Publish obj = business.entityManagerContainer().find(_o.getId(), Publish.class);
+				if (null != obj) {
+					throw new ExceptionEntityExistForCreate(_o.getId(), Publish.class);
+				}
+				obj = WrapPublish.inCopier.copy(_o);
+				obj.setProcess(process.getId());
+				persistObjects.add(obj);
+			}
 			for (WrapService _o : wrapProcess.getServiceList()) {
 				Service obj = business.entityManagerContainer().find(_o.getId(), Service.class);
 				if (null != obj) {
@@ -322,6 +291,7 @@ class ActionCreate extends BaseAction {
 		business.entityManagerContainer().beginTransaction(Manual.class);
 		business.entityManagerContainer().beginTransaction(Merge.class);
 		business.entityManagerContainer().beginTransaction(Parallel.class);
+		business.entityManagerContainer().beginTransaction(Publish.class);
 		business.entityManagerContainer().beginTransaction(Service.class);
 		business.entityManagerContainer().beginTransaction(Split.class);
 		business.entityManagerContainer().beginTransaction(Route.class);

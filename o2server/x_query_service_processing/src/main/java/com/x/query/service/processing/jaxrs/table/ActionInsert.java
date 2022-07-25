@@ -1,5 +1,7 @@
 package com.x.query.service.processing.jaxrs.table;
 
+import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.tools.StringTools;
 import org.apache.commons.beanutils.PropertyUtilsBean;
 
 import com.google.gson.JsonElement;
@@ -16,6 +18,8 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.query.core.entity.schema.Table;
 import com.x.query.service.processing.Business;
+
+import java.util.List;
 
 class ActionInsert extends BaseAction {
 
@@ -39,10 +43,11 @@ class ActionInsert extends BaseAction {
 			@SuppressWarnings("unchecked")
 			Class<? extends JpaObject> cls = (Class<? extends JpaObject>) classLoader
 					.loadClass(dynamicEntity.className());
-			JpaObject o = update(jsonElement, cls);
+			List<? extends JpaObject> list = update(jsonElement, cls, null);
 			emc.beginTransaction(cls);
-			emc.persist(o);
-			emc.check(o, CheckPersistType.all);
+			for(JpaObject o : list){
+				emc.persist(o, CheckPersistType.all);
+			}
 			emc.commit();
 			Wo wo = new Wo();
 			wo.setValue(true);

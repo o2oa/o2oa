@@ -132,6 +132,10 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 			public static final String table = "PP_E_INVOKE";
 		}
 
+		public static class Publish {
+			public static final String table = "PP_E_PUBLISH";
+		}
+
 		public static class Manual {
 			public static final String table = "PP_E_MANUAL";
 		}

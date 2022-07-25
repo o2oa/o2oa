@@ -394,9 +394,6 @@ public class UserManagerService {
 		if (effectivePerson.isManager()) {
 			return true;
 		}
-		if (effectivePerson.isManager() || effectivePerson.isCipher()) {
-			return true;
-		}
 		if (this.isHasPlatformRole(effectivePerson.getDistinguishedName(), ThisApplication.ROLE_CMSManager)) {
 			return true;
 		}

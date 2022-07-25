@@ -7,7 +7,7 @@ import com.x.processplatform.core.entity.element.ActivityType;
 
 /**
  * 指示器用于指示各个Activity之间的差异,这样运行时可以统一用同样的代码进行运行
- * 
+ *
  * @author Rui
  *
  */
@@ -47,6 +47,8 @@ public class ProcessingConfigurator extends GsonPropertyObject {
 			return this.getMerge();
 		case parallel:
 			return this.getParallel();
+		case publish:
+			return this.getPublish();
 		case service:
 			return this.getService();
 		case split:
@@ -131,6 +133,7 @@ public class ProcessingConfigurator extends GsonPropertyObject {
 	private ManualProcessingConfigurator manual = new ManualProcessingConfigurator();
 	private MergeProcessingConfigurator merge = new MergeProcessingConfigurator();
 	private ParallelProcessingConfigurator parallel = new ParallelProcessingConfigurator();
+	private ParallelProcessingConfigurator publish = new ParallelProcessingConfigurator();
 	private ServiceProcessingConfigurator service = new ServiceProcessingConfigurator();
 	private SplitProcessingConfigurator split = new SplitProcessingConfigurator();
 
@@ -220,6 +223,14 @@ public class ProcessingConfigurator extends GsonPropertyObject {
 
 	public void setParallel(ParallelProcessingConfigurator parallel) {
 		this.parallel = parallel;
+	}
+
+	public ParallelProcessingConfigurator getPublish() {
+		return publish;
+	}
+
+	public void setPublish(ParallelProcessingConfigurator publish) {
+		this.publish = publish;
 	}
 
 	public ServiceProcessingConfigurator getService() {

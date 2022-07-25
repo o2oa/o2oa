@@ -52,7 +52,7 @@ class ActionEdit extends BaseAction {
 			}
 
 			for (Field field : dynamicEntity.getFieldList()) {
-				if (JpaObject.FieldsDefault.stream().filter(o -> StringUtils.equalsIgnoreCase(o, field.getName()))
+				if (ListTools.toList(JpaObject.FieldsDefault, DynamicEntity.BUNDLE_FIELD).stream().filter(o -> StringUtils.equalsIgnoreCase(o, field.getName()))
 						.count() > 0) {
 					throw new ExceptionFieldName(field.getName());
 				}

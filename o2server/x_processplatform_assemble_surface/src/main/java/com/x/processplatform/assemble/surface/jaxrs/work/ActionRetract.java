@@ -60,7 +60,7 @@ class ActionRetract extends BaseAction {
 				Node node = workLogTree.location(work);
 				if (null != node) {
 					Nodes ups = node.upTo(ActivityType.manual, ActivityType.agent, ActivityType.choice,
-							ActivityType.delay, ActivityType.embed, ActivityType.invoke);
+							ActivityType.delay, ActivityType.embed, ActivityType.invoke, ActivityType.publish);
 					for (Node o : ups) {
 						if (business.entityManagerContainer().countEqualAndEqual(TaskCompleted.class,
 								TaskCompleted.person_FIELDNAME, effectivePerson.getDistinguishedName(),

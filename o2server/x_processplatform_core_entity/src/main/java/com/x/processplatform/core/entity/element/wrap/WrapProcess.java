@@ -35,6 +35,7 @@ public class WrapProcess extends Process {
 	private List<WrapParallel> parallelList = new ArrayList<>();
 	private List<WrapService> serviceList = new ArrayList<>();
 	private List<WrapSplit> splitList = new ArrayList<>();
+	private List<WrapPublish> publishList = new ArrayList<>();
 
 	public List<WrapAgent> getAgentList() {
 		return agentList;
@@ -148,4 +149,11 @@ public class WrapProcess extends Process {
 		this.begin = begin;
 	}
 
+	public List<WrapPublish> getPublishList() {
+		return publishList;
+	}
+
+	public void setPublishList(List<WrapPublish> publishList) {
+		this.publishList = publishList;
+	}
 }

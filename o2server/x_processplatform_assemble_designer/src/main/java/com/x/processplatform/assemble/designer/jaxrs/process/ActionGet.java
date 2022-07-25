@@ -5,37 +5,9 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.processplatform.assemble.designer.Business;
-import com.x.processplatform.core.entity.element.Agent;
-import com.x.processplatform.core.entity.element.Application;
-import com.x.processplatform.core.entity.element.Begin;
-import com.x.processplatform.core.entity.element.Cancel;
-import com.x.processplatform.core.entity.element.Choice;
-import com.x.processplatform.core.entity.element.Delay;
-import com.x.processplatform.core.entity.element.Embed;
-import com.x.processplatform.core.entity.element.End;
-import com.x.processplatform.core.entity.element.Invoke;
-import com.x.processplatform.core.entity.element.Manual;
-import com.x.processplatform.core.entity.element.Merge;
-import com.x.processplatform.core.entity.element.Parallel;
+import com.x.processplatform.core.entity.element.*;
 import com.x.processplatform.core.entity.element.Process;
-import com.x.processplatform.core.entity.element.Route;
-import com.x.processplatform.core.entity.element.Service;
-import com.x.processplatform.core.entity.element.Split;
-import com.x.processplatform.core.entity.element.wrap.WrapAgent;
-import com.x.processplatform.core.entity.element.wrap.WrapBegin;
-import com.x.processplatform.core.entity.element.wrap.WrapCancel;
-import com.x.processplatform.core.entity.element.wrap.WrapChoice;
-import com.x.processplatform.core.entity.element.wrap.WrapDelay;
-import com.x.processplatform.core.entity.element.wrap.WrapEmbed;
-import com.x.processplatform.core.entity.element.wrap.WrapEnd;
-import com.x.processplatform.core.entity.element.wrap.WrapInvoke;
-import com.x.processplatform.core.entity.element.wrap.WrapManual;
-import com.x.processplatform.core.entity.element.wrap.WrapMerge;
-import com.x.processplatform.core.entity.element.wrap.WrapParallel;
-import com.x.processplatform.core.entity.element.wrap.WrapProcess;
-import com.x.processplatform.core.entity.element.wrap.WrapRoute;
-import com.x.processplatform.core.entity.element.wrap.WrapService;
-import com.x.processplatform.core.entity.element.wrap.WrapSplit;
+import com.x.processplatform.core.entity.element.wrap.*;
 
 class ActionGet extends BaseAction {
 
@@ -89,6 +61,8 @@ class ActionGet extends BaseAction {
 				business.merge().listWithProcess(process.getId()))));
 		wrap.setParallelList(WrapParallel.outCopier.copy(business.entityManagerContainer().list(Parallel.class,
 				business.parallel().listWithProcess(process.getId()))));
+		wrap.setPublishList(WrapPublish.outCopier.copy(business.entityManagerContainer().list(Publish.class,
+				business.publish().listWithProcess(process.getId()))));
 		wrap.setServiceList(WrapService.outCopier.copy(business.entityManagerContainer().list(Service.class,
 				business.service().listWithProcess(process.getId()))));
 		wrap.setSplitList(WrapSplit.outCopier.copy(business.entityManagerContainer().list(Split.class,
