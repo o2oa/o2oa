@@ -16,6 +16,8 @@ import com.x.query.core.entity.wrap.WrapQuery;
 
 public class WrapModule extends GsonPropertyObject {
 
+	private static final long serialVersionUID = -9154145057201937680L;
+
 	@FieldDescribe("模块名称")
 	private String name;
 
