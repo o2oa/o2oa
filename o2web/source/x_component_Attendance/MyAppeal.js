@@ -120,7 +120,7 @@ MWF.xApplication.Attendance.MyAppeal = new Class({
                         "type" : "select",
                         "selectText" : lp.appealReasonSelectText
                     },
-                    action : { "value" : lp.search, type : "button", className : "filterButton", event : {
+                    action : { "value" : lp.search, type : "button", className : "filterButton", clazz:"mainColor_bg", event : {
                             click : function(){
                                 var result = this.form.getResult(true,",",true,true,false);
                                 if( !result )return;

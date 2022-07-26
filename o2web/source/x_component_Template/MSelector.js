@@ -668,11 +668,13 @@ MSelector.Tootips = new Class({
             "mouseover":function(){
                 if( this.obj.selector.currentItemNode != this.itemNode || !this.obj.selector.options.isChangeOptionStyle ){
                     this.itemNode.setStyles( this.obj.selector.css.listItemNode_over );
+                    if( this.obj.selector.options.mainColor_bg )this.itemNode.addClass(this.obj.selector.options.mainColor_bg)
                 }
             }.bind( {obj : this, itemNode : listItemNode }),
             "mouseout":function(){
                 if( this.obj.selector.currentItemNode != this.itemNode || !this.obj.selector.options.isChangeOptionStyle ){
                     this.itemNode.setStyles( this.obj.selector.css.listItemNode );
+                    if( this.obj.selector.options.mainColor_bg )this.itemNode.removeClass(this.obj.selector.options.mainColor_bg)
                 }
             }.bind( {obj : this, itemNode : listItemNode })
         });

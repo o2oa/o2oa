@@ -119,7 +119,7 @@ class ActionAddSplit extends BaseAction {
 	}
 
 	private List<WorkLog> listWorkLog(Business business, Work work) throws Exception {
-		return business.entityManagerContainer().listEqual(WorkLog.class, WorkLog.job_FIELDNAME, work.getJob());
+		return business.entityManagerContainer().listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, work.getJob());
 	}
 
 	public static class Req extends GsonPropertyObject {

@@ -32,6 +32,8 @@ import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Form;
 import com.x.processplatform.core.entity.element.FormProperties;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class V2LookupWorkOrWorkCompletedMobile extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(V2LookupWorkOrWorkCompletedMobile.class);
@@ -43,7 +45,7 @@ class V2LookupWorkOrWorkCompletedMobile extends BaseAction {
 
 		LOGGER.debug("execute:{}, workOrWorkCompleted:{}.", effectivePerson::getDistinguishedName,
 				() -> workOrWorkCompleted);
-		
+
 		ActionResult<Wo> result = new ActionResult<>();
 
 		this.getWorkWorkCompletedForm(workOrWorkCompleted);
@@ -129,7 +131,7 @@ class V2LookupWorkOrWorkCompletedMobile extends BaseAction {
 				}
 			}
 			return list;
-		},ThisApplication.threadPool());
+		}, ThisApplication.threadPool());
 	}
 
 	private CompletableFuture<List<String>> relatedScriptFuture(FormProperties properties) {
@@ -145,9 +147,10 @@ class V2LookupWorkOrWorkCompletedMobile extends BaseAction {
 				}
 			}
 			return list;
-		},ThisApplication.threadPool());
+		}, ThisApplication.threadPool());
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.form.V2LookupWorkOrWorkCompletedMobile$Wo")
 	public static class Wo extends AbstractWo {
 
 		private static final long serialVersionUID = 4034113778768000046L;

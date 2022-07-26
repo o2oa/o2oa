@@ -16,6 +16,7 @@ MWF.xApplication.Org.Main = new Class({
 		this.restActions = MWF.Actions.get("x_organization_assemble_control");
 	},
 	loadApplication: function(callback){
+		this.content.loadCss("../x_component_Org/$Main/"+this.options.style+"/style.css");
 		this.createNode();
 		this.loadApplicationContent();
 		if (callback) callback();

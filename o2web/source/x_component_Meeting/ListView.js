@@ -77,9 +77,15 @@ MWF.xApplication.Meeting.ListView = new Class({
             "mouseover": function(){if (_self.currentNavi != this) this.setStyles(_self.css.menuItemNode_over);},
             "mouseout": function(){if (_self.currentNavi != this) this.setStyles(_self.css.menuItemNode);},
             "click": function(){
-                if (_self.currentNavi) _self.currentNavi.setStyles(_self.css.menuItemNode);
+                if (_self.currentNavi){
+                    _self.currentNavi.setStyles(_self.css.menuItemNode);
+                    _self.currentNavi.removeClass("mainColor_bg_opacity");
+                    _self.currentNavi.removeClass("mainColor_color");
+                }
                 _self.currentNavi = this;
                 this.setStyles(_self.css.menuItemNode_current);
+                _self.currentNavi.addClass("mainColor_bg_opacity");
+                _self.currentNavi.addClass("mainColor_color");
                 if (_self[action]) _self[action]();
             }
         });

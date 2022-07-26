@@ -1,5 +1,6 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
@@ -18,20 +19,23 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Attachment;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionManageBatchUpdate extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionManageBatchUpdate.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionManageBatchUpdate.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String ids, String fileName, byte[] bytes,
 			FormDataContentDisposition disposition, String extraParam) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			logger.print("manageBatchUpdate receive id:{}, fileName:{}, effectivePerson:{}.", ids, fileName, effectivePerson.getDistinguishedName());
+			LOGGER.print("manageBatchUpdate receive id:{}, fileName:{}, effectivePerson:{}.", ids, fileName,
+					effectivePerson.getDistinguishedName());
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
-			if(!business.canManageApplication(effectivePerson, null)){
+			if (BooleanUtils.isFalse(business.canManageApplication(effectivePerson, null))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
-			/* 天谷印章扩展 */
+			// 天谷印章扩展
 			if (StringUtils.isNotEmpty(extraParam)) {
 				WiExtraParam wiExtraParam = gson.fromJson(extraParam, WiExtraParam.class);
 				if (StringUtils.isNotEmpty(wiExtraParam.getFileName())) {
@@ -42,20 +46,21 @@ class ActionManageBatchUpdate extends BaseAction {
 			if (StringUtils.isEmpty(fileName)) {
 				fileName = this.fileName(disposition);
 			}
-			if(StringUtils.isNotEmpty(ids) && bytes!=null && bytes.length>0){
+			if (StringUtils.isNotEmpty(ids) && bytes != null && bytes.length > 0) {
 				String[] idArray = ids.split(",");
-				for (String id : idArray){
+				for (String id : idArray) {
 					Attachment attachment = emc.find(id.trim(), Attachment.class);
-					if(attachment!=null){
+					if (attachment != null) {
 						StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
 								attachment.getStorage());
 						emc.beginTransaction(Attachment.class);
 						attachment.updateContent(mapping, bytes, fileName);
-						if (Config.query().getExtractImage() && ExtractTextTools.supportImage(attachment.getName())
+						if (BooleanUtils.isTrue(Config.query().getExtractImage())
+								&& ExtractTextTools.supportImage(attachment.getName())
 								&& ExtractTextTools.available(bytes)) {
 							attachment.setText(ExtractTextTools.image(bytes));
-							logger.debug("filename:{}, file type:{}, text:{}.", attachment.getName(), attachment.getType(),
-									attachment.getText());
+							LOGGER.debug("filename:{}, file type:{}, text:{}.", attachment.getName(),
+									attachment.getType(), attachment.getText());
 						}
 						emc.commit();
 
@@ -70,7 +75,10 @@ class ActionManageBatchUpdate extends BaseAction {
 		}
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionManageBatchUpdate$Wo")
 	public static class Wo extends WrapBoolean {
+
+		private static final long serialVersionUID = -7244253863926345214L;
 
 	}
 

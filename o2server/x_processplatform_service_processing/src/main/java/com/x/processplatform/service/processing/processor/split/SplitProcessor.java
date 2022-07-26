@@ -1,5 +1,6 @@
 package com.x.processplatform.service.processing.processor.split;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -56,7 +57,9 @@ public class SplitProcessor extends AbstractSplitProcessor {
 				.push(Signal.splitExecute(aeiObjects.getWork().getActivityToken(), split, splitValues));
 		// 先将当前文档标志拆分值
 		aeiObjects.getWork().setSplitValue(splitValues.get(0));
-		aeiObjects.getWork().getSplitValueList().add(splitValues.get(0));
+		List<String> values = new ArrayList<>(aeiObjects.getWork().getSplitValueList());
+		values.add(splitValues.get(0));
+		aeiObjects.getWork().setSplitValueList(values);
 		results.add(aeiObjects.getWork());
 		Optional<WorkLog> optionalWorkLog = aeiObjects.getWorkLogs().stream()
 				.filter(o -> StringUtils.equals(aeiObjects.getWork().getActivityToken(), o.getFromActivityToken()))
@@ -65,29 +68,42 @@ public class SplitProcessor extends AbstractSplitProcessor {
 			WorkLog mainWorkLog = optionalWorkLog.get();
 			mainWorkLog.setSplitting(true);
 			mainWorkLog.setSplitToken(aeiObjects.getWork().getSplitToken());
-			mainWorkLog.getProperties().getSplitTokenList().add(aeiObjects.getWork().getSplitToken());
+			mainWorkLog.setSplitTokenList(aeiObjects.getWork().getSplitTokenList());
 			mainWorkLog.setSplitValue(splitValues.get(0));
-			mainWorkLog.getProperties().getSplitValueList().add(aeiObjects.getWork().getSplitValue());
+			mainWorkLog.setSplitValueList(aeiObjects.getWork().getSplitValueList());
 			aeiObjects.getUpdateWorkLogs().add(mainWorkLog);
 			// 产生后续的拆分文档并标记拆分值
 			for (int i = 1; i < splitValues.size(); i++) {
-				// 将文档存放在一起
-				Work splitWork = new Work(aeiObjects.getWork());
-				// 替work换拆分值
-				splitWork.setSplitValue(splitValues.get(i));
-				ListTools.set(splitWork.getSplitValueList(), -1, splitValues.get(i));
+				Work splitWork = splitWork(aeiObjects, splitValues.get(i));
 				aeiObjects.getCreateWorks().add(splitWork);
-				WorkLog splitWorkLog = new WorkLog(mainWorkLog);
-				splitWorkLog.setSplitWork(aeiObjects.getWork().getId());
-				splitWorkLog.setWork(splitWork.getId());
-				// 替workLog换拆分值
-				splitWorkLog.setSplitValue(splitValues.get(i));
-				ListTools.set(splitWorkLog.getProperties().getSplitValueList(), -1, splitValues.get(i));
+				WorkLog splitWorkLog = splitWorkLog(aeiObjects, mainWorkLog, splitValues.get(i), splitWork);
 				aeiObjects.getCreateWorkLogs().add(splitWorkLog);
 				results.add(splitWork);
 			}
 		}
 		return results;
+	}
+
+	private WorkLog splitWorkLog(AeiObjects aeiObjects, WorkLog mainWorkLog, String value, Work splitWork)
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		WorkLog splitWorkLog = new WorkLog(mainWorkLog);
+		splitWorkLog.setSplitWork(aeiObjects.getWork().getId());
+		splitWorkLog.setWork(splitWork.getId());
+		splitWorkLog.setSplitValue(value);
+		List<String> values = new ArrayList<>(splitWorkLog.getSplitValueList());
+		ListTools.set(values, -1, value);
+		splitWorkLog.setSplitValueList(values);
+		return splitWorkLog;
+	}
+
+	private Work splitWork(AeiObjects aeiObjects, String value) throws Exception {
+		Work splitWork = new Work(aeiObjects.getWork());
+		// 替work换拆分值
+		splitWork.setSplitValue(value);
+		List<String> values = new ArrayList<>(splitWork.getSplitValueList());
+		ListTools.set(values, -1, value);
+		splitWork.setSplitValueList(values);
+		return splitWork;
 	}
 
 	@Override

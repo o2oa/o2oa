@@ -22,6 +22,10 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Tag(name = "ControlAction", description = "权限接口.")
@@ -29,9 +33,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @JaxrsDescribe("权限接口.")
 public class ControlAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ControlAction.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ControlAction.class);
+	private static final String OPERATIONID_PREFIX = "ControlAction::";
 
-	@JaxrsMethodDescribe(value = "根据工作或完成工作获取权限.", action = ActionGetWorkOrWorkCompleted.class)
+	@Operation(summary = "根据工作标识或完成工作标识获取权限.", operationId = OPERATIONID_PREFIX
+			+ "getWorkOrWorkCompleted", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionGetWorkOrWorkCompleted.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "根据工作标识或完成工作标识获取权限.", action = ActionGetWorkOrWorkCompleted.class)
 	@GET
 	@Path("workorworkcompleted/{workOrWorkCompleted}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -44,7 +52,7 @@ public class ControlAction extends StandardJaxrsAction {
 		try {
 			result = new ActionGetWorkOrWorkCompleted().execute(effectivePerson, workOrWorkCompleted);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));

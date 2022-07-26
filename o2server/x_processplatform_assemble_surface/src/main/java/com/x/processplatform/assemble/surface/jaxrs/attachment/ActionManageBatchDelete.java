@@ -1,14 +1,12 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
-import java.util.List;
+import org.apache.commons.lang3.BooleanUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
@@ -18,25 +16,28 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Attachment;
+import com.x.processplatform.core.express.assemble.surface.jaxrs.attachment.ActionManageBatchDeleteWi;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionManageBatchDelete extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionManageBatchDelete.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionManageBatchDelete.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-			logger.print("manageBatchDelete receive id:{}, effectivePerson:{}.", wi.getIdList(), effectivePerson.getDistinguishedName());
+			LOGGER.print("execute:{},.", effectivePerson::getDistinguishedName);
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
-			if(!business.canManageApplication(effectivePerson, null)){
+			if (BooleanUtils.isFalse(business.canManageApplication(effectivePerson, null))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
-			if(ListTools.isNotEmpty(wi.getIdList())){
-				for (String id : wi.getIdList()){
+			if (ListTools.isNotEmpty(wi.getIdList())) {
+				for (String id : wi.getIdList()) {
 					Attachment attachment = emc.find(id.trim(), Attachment.class);
-					if(attachment!=null){
-						logger.print("manageBatchDelete attachment:{}——{}", attachment.getId(), attachment.getName());
+					if (attachment != null) {
+						LOGGER.print("manageBatchDelete attachment:{}—{}", attachment.getId(), attachment.getName());
 						StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
 								attachment.getStorage());
 						attachment.deleteContent(mapping);
@@ -54,21 +55,18 @@ class ActionManageBatchDelete extends BaseAction {
 		}
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionManageBatchDelete$Wo")
 	public static class Wo extends WrapBoolean {
+
+		private static final long serialVersionUID = -6186591656948482426L;
 
 	}
 
-	public static class Wi extends GsonPropertyObject{
-		@FieldDescribe("待删除附件ID列表")
-		private List<String> idList;
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionManageBatchDelete$Wi")
+	public static class Wi extends ActionManageBatchDeleteWi {
 
-		public List<String> getIdList() {
-			return idList;
-		}
+		private static final long serialVersionUID = 3267682362954096818L;
 
-		public void setIdList(List<String> idList) {
-			this.idList = idList;
-		}
 	}
 
 }

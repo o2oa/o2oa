@@ -64,7 +64,7 @@ class ActionGetLogin extends BaseAction {
 			List<String> roles = business.organization().role().listWithPerson(person.getDistinguishedName());
 			wo.setRoleList(roles);
 			EffectivePerson effective = new EffectivePerson(wo.getDistinguishedName(), TokenType.user,
-					Config.token().getCipher());
+					Config.token().getCipher(), Config.token().getEncryptType());
 			wo.setToken(effective.getToken());
 			HttpToken httpToken = new HttpToken();
 			httpToken.setToken(request, response, effective);

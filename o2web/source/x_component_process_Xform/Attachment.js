@@ -1370,7 +1370,15 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         }.bind(this), files);
     },
     uploadAttachment: function (e, node, files) {
-        if (window.o2android && window.o2android.uploadAttachment) {
+        if (window.o2android && window.o2android.postMessage) {
+            var body = {
+                type: "uploadAttachment",
+                data: {
+                    site: this.json.site || this.json.id
+                }
+            };
+            window.o2android.postMessage(JSON.stringify(body));
+        } else if (window.o2android && window.o2android.uploadAttachment) {
             window.o2android.uploadAttachment((this.json.site || this.json.id));
         } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.uploadAttachment) {
             window.webkit.messageHandlers.uploadAttachment.postMessage({ "site": (this.json.site || this.json.id) });
@@ -1462,7 +1470,16 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
     },
 
     replaceAttachment: function (e, node, attachment) {
-        if (window.o2android && window.o2android.replaceAttachment) {
+        if (window.o2android && window.o2android.postMessage) {
+            var body = {
+                type: "replaceAttachment",
+                data: {
+                    attachmentId: attachment.data.id,
+                    site: this.json.site || this.json.id
+                }
+            };
+            window.o2android.postMessage(JSON.stringify(body));
+        } else if (window.o2android && window.o2android.replaceAttachment) {
             window.o2android.replaceAttachment(attachment.data.id, (this.json.site || this.json.id));
         } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.replaceAttachment) {
             window.webkit.messageHandlers.replaceAttachment.postMessage({ "id": attachment.data.id, "site": (this.json.site || this.json.id) });
@@ -1642,11 +1659,21 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             urlWorkKey = "workCompleted";
         }
 
-        var client = this.getClientType();
+        var client = this.getDownloadAttachmentClientType();
+        console.log(client+" 客户端");
         attachments.each(function (att) {
             if( !this.queryOpen( att ) )return;
 
             switch (client){
+                case "flutter":
+                    var body = {
+                        type: "downloadAttachment",
+                        data: {
+                            attachmentId: att.data.id
+                        }
+                    };
+                    window.o2android.postMessage(JSON.stringify(body));
+                    break
                 case "android":
                     window.o2android.downloadAttachment(att.data.id);
                     break;
@@ -1679,7 +1706,10 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         }.bind(this));
 
     },
-    getClientType: function(){
+    getDownloadAttachmentClientType: function(){
+        if (window.o2android && window.o2android.postMessage) {
+            return "flutter";
+        }
         if (window.o2android && window.o2android.downloadAttachment){
             return "android";
         }
@@ -1713,12 +1743,22 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             urlWorkKey = "workCompleted";
         }
 
-        var client = this.getClientType();
+        var client = this.getDownloadAttachmentClientType();
+        console.log(client+" 客户端");
 
         attachments.each(function (att) {
             if( !this.queryOpen( att ) )return;
 
             switch (client){
+                case "flutter":
+                    var body = {
+                        type: "downloadAttachment",
+                        data: {
+                            attachmentId: att.data.id
+                        }
+                    };
+                    window.o2android.postMessage(JSON.stringify(body));
+                    break
                 case "android":
                     window.o2android.downloadAttachment(att.data.id);
                     break;
@@ -2305,7 +2345,16 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
     },
     uploadAttachment: function (e, node, files) {
         debugger;
-        if (window.o2android && window.o2android.uploadAttachmentForDatagrid) {
+        if (window.o2android && window.o2android.postMessage) {
+            var body = {
+                type: "uploadAttachmentForDatagrid",
+                data: {
+                    param: this.json.id,
+                    site: this.json.site || this.json.id
+                }
+            };
+            window.o2android.postMessage(JSON.stringify(body));
+        } else if (window.o2android && window.o2android.uploadAttachmentForDatagrid) {
             window.o2android.uploadAttachmentForDatagrid((this.json.site || this.json.id), this.json.id);
         } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.uploadAttachmentForDatagrid) {
             window.webkit.messageHandlers.uploadAttachmentForDatagrid.postMessage({ "site": (this.json.site || this.json.id) , "param":this.json.id});
@@ -2317,7 +2366,17 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
         }
     },
     replaceAttachment: function (e, node, attachment) {
-        if (window.o2android && window.o2android.replaceAttachmentForDatagrid) {
+        if (window.o2android && window.o2android.postMessage) {
+            var body = {
+                type: "replaceAttachmentForDatagrid",
+                data: {
+                    attachmentId: attachment.data.id,
+                    param: this.json.id,
+                    site: this.json.site || this.json.id
+                }
+            };
+            window.o2android.postMessage(JSON.stringify(body));
+        } else if (window.o2android && window.o2android.replaceAttachmentForDatagrid) {
             window.o2android.replaceAttachmentForDatagrid(attachment.data.id, (this.json.site || this.json.id), this.json.id);
         } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.replaceAttachmentForDatagrid) {
             window.webkit.messageHandlers.replaceAttachmentForDatagrid.postMessage({ "id": attachment.data.id, "site": (this.json.site || this.json.id) , "param":this.json.id});

@@ -163,6 +163,12 @@ public class TranslateTaskIdentityTools {
 				list.add(Objects.toString(o));
 			} else if (o instanceof Iterable) {
 				asIterable(o, list);
+			} else {
+				Object obj = PropertyUtils.getProperty(o, JpaObject.DISTINGUISHEDNAME);
+				String str = Objects.toString(obj, "");
+				if (StringUtils.isNotEmpty(str)) {
+					list.add(str);
+				}
 			}
 		}
 		return list;

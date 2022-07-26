@@ -42,7 +42,7 @@
     "border-left" : "1px solid #eee",
     "border-right" : "1px solid #eee",
     "border-bottom" : "1px solid #eee",
-    "background-color" : "#476783",
+//    "background-color" : "#fff",
     "z-index" : "10000"
   },
 

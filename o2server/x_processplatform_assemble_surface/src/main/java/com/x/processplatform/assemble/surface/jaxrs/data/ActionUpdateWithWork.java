@@ -13,14 +13,18 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Work;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionUpdateWithWork extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionUpdateWithWork.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionUpdateWithWork.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+
 		ActionResult<Wo> result = new ActionResult<>();
 		Work work = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -46,10 +50,11 @@ class ActionUpdateWithWork extends BaseAction {
 		return result;
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.data.ActionUpdateWithWork$Wo")
 	public static class Wo extends WoId {
 
+		private static final long serialVersionUID = 5683542008202266727L;
+
 	}
 
-	public static class WoControl extends WorkControl {
-	}
 }

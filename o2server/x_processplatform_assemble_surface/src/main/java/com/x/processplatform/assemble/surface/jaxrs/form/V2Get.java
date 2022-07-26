@@ -32,11 +32,16 @@ import com.x.processplatform.core.entity.element.Form;
 import com.x.processplatform.core.entity.element.FormProperties;
 import com.x.processplatform.core.entity.element.Script;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class V2Get extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(V2Get.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(V2Get.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String tag) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}, tag:{}.", effectivePerson::getDistinguishedName, () -> id, () -> tag);
+
 		ActionResult<Wo> result = new ActionResult<>();
 		CacheKey cacheKey = new CacheKey(this.getClass(), id, tag);
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
@@ -55,14 +60,15 @@ class V2Get extends BaseAction {
 			final FormProperties properties = form.getProperties();
 			final List<String> list = new CopyOnWriteArrayList<>();
 			wo.setForm(new RelatedForm(form, form.getDataOrMobileData()));
-			CompletableFuture<Map<String, RelatedForm>> getRelatedFormFuture = this.getRelatedFormFuture(properties, list);
+			CompletableFuture<Map<String, RelatedForm>> getRelatedFormFuture = this.getRelatedFormFuture(properties,
+					list);
 			CompletableFuture<Map<String, RelatedScript>> getRelatedScriptFuture = this
 					.getRelatedScriptFuture(properties, list);
 			wo.setRelatedFormMap(
 					getRelatedFormFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS));
 			wo.setRelatedScriptMap(
 					getRelatedScriptFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS));
-			if(StringUtils.isNotBlank(tag)) {
+			if (StringUtils.isNotBlank(tag)) {
 				wo.setMaxAge(3600 * 24);
 			}
 			list.add(form.getId() + form.getUpdateTime().getTime());
@@ -74,7 +80,8 @@ class V2Get extends BaseAction {
 		return result;
 	}
 
-	private CompletableFuture<Map<String, RelatedForm>> getRelatedFormFuture(FormProperties properties, final List<String> list) {
+	private CompletableFuture<Map<String, RelatedForm>> getRelatedFormFuture(FormProperties properties,
+			final List<String> list) {
 		return CompletableFuture.supplyAsync(() -> {
 			Map<String, RelatedForm> map = new TreeMap<>();
 			if (ListTools.isNotEmpty(properties.getRelatedFormList())) {
@@ -89,14 +96,15 @@ class V2Get extends BaseAction {
 						}
 					}
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
 			}
 			return map;
-		},ThisApplication.threadPool());
+		}, ThisApplication.threadPool());
 	}
 
-	private CompletableFuture<Map<String, RelatedScript>> getRelatedScriptFuture(FormProperties properties, final List<String> list) {
+	private CompletableFuture<Map<String, RelatedScript>> getRelatedScriptFuture(FormProperties properties,
+			final List<String> list) {
 		return CompletableFuture.supplyAsync(() -> {
 			Map<String, RelatedScript> map = new TreeMap<>();
 			if ((null != properties.getRelatedScriptMap()) && (properties.getRelatedScriptMap().size() > 0)) {
@@ -104,14 +112,15 @@ class V2Get extends BaseAction {
 					Business business = new Business(emc);
 					map = convertScript(business, properties, list);
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				}
 			}
 			return map;
-		},ThisApplication.threadPool());
+		}, ThisApplication.threadPool());
 	}
 
-	private Map<String, RelatedScript> convertScript(Business bus, FormProperties properties, final List<String> list) throws Exception {
+	private Map<String, RelatedScript> convertScript(Business bus, FormProperties properties, final List<String> list)
+			throws Exception {
 		Map<String, RelatedScript> map = new TreeMap<>();
 		for (Entry<String, String> entry : properties.getRelatedScriptMap().entrySet()) {
 			switch (entry.getValue()) {
@@ -146,6 +155,7 @@ class V2Get extends BaseAction {
 		return map;
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.form.V2Get$Wo")
 	public static class Wo extends AbstractWo {
 
 		private static final long serialVersionUID = 2776033956637839042L;

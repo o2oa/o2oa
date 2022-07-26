@@ -30,6 +30,8 @@ import com.x.processplatform.core.entity.element.util.WorkLogTree;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2AddSplitWi;
 import com.x.processplatform.service.processing.Business;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class V2AddSplit extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(V2AddSplit.class);
@@ -71,13 +73,12 @@ class V2AddSplit extends BaseAction {
 						throw new ExceptionEmptySplitValue(work.getId());
 					}
 
-					List<WorkLog> workLogs = emc.listEqual(WorkLog.class, WorkLog.job_FIELDNAME, work.getJob());
+					List<WorkLog> workLogs = emc.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, work.getJob());
 
 					WorkLogTree tree = new WorkLogTree(workLogs);
 
-					WorkLog arrived = workLogs.stream().filter(o -> {
-						return StringUtils.equals(o.getId(), wi.getWorkLog());
-					}).findFirst().orElse(null);
+					WorkLog arrived = workLogs.stream().filter(o -> StringUtils.equals(o.getId(), wi.getWorkLog()))
+							.findFirst().orElse(null);
 
 					WorkLog from = tree.children(arrived).stream().findFirst().orElse(null);
 
@@ -104,14 +105,13 @@ class V2AddSplit extends BaseAction {
 						workCopy.setActivityName(activity.getName());
 						workCopy.setActivityToken(StringTools.uniqueToken());
 						workCopy.setActivityType(activity.getActivityType());
-						// workCopy.setSplitTokenList(arrived.getProperties().getSplitTokenList());
+
 						workCopy.setSplitValueList(
 								adjustSplitValueList(arrived.getProperties().getSplitValueList(), splitValue));
 						workCopy.setSplitToken(arrived.getSplitToken());
-						workCopy.setSplitting(from.getSplitting());
+						workCopy.setSplitTokenList(arrived.getSplitTokenList());
 						workCopy.setSplitValue(splitValue);
-						// workCopy.getManualTaskIdentityList().clear();
-						// workCopy.getManualTaskIdentityMatrix().clear();
+						workCopy.setSplitting(arrived.getSplitting());
 						workCopy.setManualTaskIdentityMatrix(new ManualTaskIdentityMatrix());
 						workCopy.setBeforeExecuted(false);
 						workCopy.setDestinationActivity(null);
@@ -127,7 +127,11 @@ class V2AddSplit extends BaseAction {
 						arrivedCopy.setArrivedActivityType(activity.getActivityType());
 						arrivedCopy.setWork(workCopy.getId());
 						arrivedCopy.setArrivedTime(workCopy.getActivityArrivedTime());
+						arrivedCopy.setSplitValueList(workCopy.getSplitValueList());
+						arrivedCopy.setSplitTokenList(workCopy.getSplitTokenList());
+						arrivedCopy.setSplitToken(workCopy.getSplitToken());
 						arrivedCopy.setSplitValue(workCopy.getSplitValue());
+						arrivedCopy.setSplitting(workCopy.getSplitting());
 
 						WorkLog fromCopy = new WorkLog(from);
 						fromCopy.setConnected(false);
@@ -138,8 +142,11 @@ class V2AddSplit extends BaseAction {
 						fromCopy.setFromActivityToken(workCopy.getActivityToken());
 						fromCopy.setFromTime(workCopy.getActivityArrivedTime());
 						fromCopy.setWork(workCopy.getId());
-						fromCopy.setSplitValue(workCopy.getSplitValue());
+						fromCopy.setSplitValueList(workCopy.getSplitValueList());
+						fromCopy.setSplitTokenList(workCopy.getSplitTokenList());
 						fromCopy.setSplitToken(workCopy.getSplitToken());
+						fromCopy.setSplitValue(workCopy.getSplitValue());
+						fromCopy.setSplitting(workCopy.getSplitting());
 						fromCopy.setArrivedActivity("");
 						fromCopy.setArrivedActivityAlias("");
 						fromCopy.setArrivedActivityName("");
@@ -173,12 +180,14 @@ class V2AddSplit extends BaseAction {
 		return values;
 	}
 
+	@Schema(name = "com.x.processplatform.service.processing.jaxrs.work.V2AddSplit$Wi")
 	public static class Wi extends V2AddSplitWi {
 
 		private static final long serialVersionUID = 6460190818209523936L;
 
 	}
 
+	@Schema(name = "com.x.processplatform.service.processing.jaxrs.work.V2AddSplit$Wo")
 	public static class Wo extends WrapStringList {
 
 		private static final long serialVersionUID = -5717489826043523199L;

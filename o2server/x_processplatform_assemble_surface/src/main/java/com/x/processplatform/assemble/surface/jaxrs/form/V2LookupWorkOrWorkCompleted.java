@@ -32,6 +32,8 @@ import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Form;
 import com.x.processplatform.core.entity.element.FormProperties;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class V2LookupWorkOrWorkCompleted extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(V2LookupWorkOrWorkCompleted.class);
@@ -147,6 +149,8 @@ class V2LookupWorkOrWorkCompleted extends BaseAction {
 		}, ThisApplication.threadPool());
 	}
 
+	
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.form.V2LookupWorkOrWorkCompleted$Wo")
 	public static class Wo extends AbstractWo {
 
 		private static final long serialVersionUID = -6321756621818503364L;

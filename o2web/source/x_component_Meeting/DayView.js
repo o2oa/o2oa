@@ -282,6 +282,10 @@ MWF.xApplication.Meeting.DayView.Day = new Class({
 
         this.titleNode = new Element("div.titleNode", { "styles": this.css[ !this.isToday ? "dayTitleNode" : "dayTitleNode_today"] }).inject(this.node);
 
+        if( this.isToday ){
+            this.titleNode.addClass("mainColor_bg");
+        }
+
         if( this.today.diff(this.date) >= 0  ){
             var className;
             className = !this.isToday ? "dayCreateIconNode" : "dayCreateIconNode_today";
@@ -308,6 +312,7 @@ MWF.xApplication.Meeting.DayView.Day = new Class({
             MWF.require("MWF.widget.Calendar", function(){
                 this.calendar = new MWF.widget.Calendar(this.titleTextNode, {
                     "style":"meeting_blue",
+                    "todayClass": "mainColor_bg",
                     "target": this.node,
                     "baseDate" : this.date,
                     "onQueryComplate": function(e, dv, date){
@@ -322,6 +327,12 @@ MWF.xApplication.Meeting.DayView.Day = new Class({
             "styles": this.css[ !this.isToday ? "dayWeekNode" : "dayWeekNode_today"],
             "text" : this.getWeek()
         }).inject(this.titleNode);
+
+        if( this.isToday ){
+            this.dayWeekNode.addClass("overColor_bg");
+        }else{
+            this.dayWeekNode.addClass("mainColor_bg");
+        }
 
         this.dayContentNode = new Element("div.dayContentNode", {"styles": this.css.dayContentNode}).inject(this.node);
 

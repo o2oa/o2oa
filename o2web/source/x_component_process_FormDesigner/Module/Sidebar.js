@@ -63,6 +63,7 @@ MWF.xApplication.process.FormDesigner.Module.Sidebar = MWF.FCSidebar = new Class
             }
 
         }).inject(this.form.node);
+
         if (this.form.options.mode == "Mobile"){
             this.node.set("text", MWF.APPFD.LP.notice.notUseModuleInMobile+"("+this.moduleName+")");
             this.node.setStyles({"height": "24px", "line-height": "24px", "background-color": "#999"});
@@ -78,11 +79,16 @@ MWF.xApplication.process.FormDesigner.Module.Sidebar = MWF.FCSidebar = new Class
             }.bind(this), false);
         }
     },
+    _preprocessingModuleData: function(){
+    },
+    _recoveryModuleData: function(){
+    },
     _initModule: function(){
         this.setStyleTemplate();
         this._setNodeProperty();
         if (!this.form.isSubform) this._createIconAction();
         this._setNodeEvent();
+        if(this.json.styles)this.node.setStyles( this.json.styles );
         this._refreshActionbar();
         this.loadPosition();
 
@@ -177,7 +183,8 @@ MWF.xApplication.process.FormDesigner.Module.Sidebar = MWF.FCSidebar = new Class
         // this.json.styles.top = top;
         // if (top) this.node.setStyle("top", top);
 
-        this.json.styles = this.node.getStyles(["top", "left", "bottom", "right", "position"]);
+        var styles = this.node.getStyles(["top", "left", "bottom", "right", "position"]);
+        this.json.styles = Object.merge(this.json.styles, styles);
         this.json.styles.bottom = "auto";
         this.json.styles.right = "auto";
 
@@ -203,6 +210,7 @@ MWF.xApplication.process.FormDesigner.Module.Sidebar = MWF.FCSidebar = new Class
         }else{
             this.toolbarNode = this.node.getFirst("div");
             this.toolbarNode.empty();
+            debugger;
             this.toolbarWidget = new MWF.widget.Toolbar(this.toolbarNode, {"style": this.json.style}, this);
 
             if (this.json.defaultTools){

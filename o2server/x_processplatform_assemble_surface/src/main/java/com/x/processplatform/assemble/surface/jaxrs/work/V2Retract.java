@@ -75,7 +75,7 @@ class V2Retract extends BaseAction {
 			}
 
 			WorkLogTree workLogTree = new WorkLogTree(
-					emc.listEqual(WorkLog.class, WorkLog.job_FIELDNAME, work.getJob()));
+					emc.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, work.getJob()));
 			/* 是否可以召回 */
 			if (PropertyTools.getOrElse(activity, Manual.allowRetract_FIELDNAME, Boolean.class, false)) {
 				Node node = workLogTree.location(work);

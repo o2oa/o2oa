@@ -65,8 +65,8 @@ class V2Reroute extends BaseAction {
 			if (null == work) {
 				throw new ExceptionWorkNotExist(id);
 			}
-			workLog = emc.firstEqualAndEqual(WorkLog.class, WorkLog.job_FIELDNAME, work.getJob(),
-					WorkLog.fromActivityToken_FIELDNAME, work.getActivityToken());
+			workLog = emc.firstEqualAndEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, work.getJob(),
+					WorkLog.FROMACTIVITYTOKEN_FIELDNAME, work.getActivityToken());
 			if (null == workLog) {
 				throw new ExceptionEntityNotExist(WorkLog.class);
 			}

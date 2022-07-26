@@ -2863,12 +2863,14 @@ MWF.xApplication.query.Query.Viewer.Actionbar = new Class({
 });
 
 MWF.xApplication.query.Query.Viewer.Paging = new Class({
-    Implements: [Events],
+    Implements: [Options, Events],
     options: {
         "style" : "default",
+        "useMainColor": false,
         "moduleEvents": ["load", "queryLoad", "postLoad", "afterLoad","jump"]
     },
     initialize: function(node, json, form, options){
+        this.setOptions(options);
         this.node = $(node);
         this.node.store("module", this);
         this.json = json;
@@ -3016,6 +3018,7 @@ MWF.xApplication.query.Query.Viewer.Paging = new Class({
             hasInfor: this.json.showPagingInfor,
             inforPosition: this.json.pagingPosition,
             inforTextStyle: this.json.textStyle,
+            useMainColor: this.options.useMainColor,
             text: {
                 prePage: this.json.prePageText,
                 nextPage: this.json.nextPageText,

@@ -137,8 +137,8 @@ class ActionReroute extends BaseAction {
 
 	private void removeOtherWorkLog(Business business, Work work) throws Exception {
 		List<WorkLog> os = business.entityManagerContainer().listEqualAndEqualAndNotEqual(WorkLog.class,
-				WorkLog.job_FIELDNAME, work.getJob(), WorkLog.connected_FIELDNAME, false,
-				WorkLog.fromActivity_FIELDNAME, work.getActivity());
+				WorkLog.JOB_FIELDNAME, work.getJob(), WorkLog.CONNECTED_FIELDNAME, false,
+				WorkLog.FROMACTIVITY_FIELDNAME, work.getActivity());
 		os.stream().forEach(o -> {
 			try {
 				business.entityManagerContainer().remove(o, CheckRemoveType.all);

@@ -100,22 +100,6 @@ class ActionListWithWorkOrWorkCompletedPaging extends BaseAction {
 		}, ThisApplication.threadPool());
 	}
 
-	private Record taskToRecord(Task task) {
-		Record o = new Record();
-		o.setType(Record.TYPE_CURRENTTASK);
-		o.setFromActivity(task.getActivity());
-		o.setFromActivityAlias(task.getActivityAlias());
-		o.setFromActivityName(task.getActivityName());
-		o.setFromActivityToken(task.getActivityToken());
-		o.setFromActivityType(task.getActivityType());
-		o.setPerson(task.getPerson());
-		o.setIdentity(o.getIdentity());
-		o.setUnit(task.getUnit());
-		o.getProperties().setStartTime(task.getStartTime());
-		o.getProperties().setEmpowerFromIdentity(task.getEmpowerFromIdentity());
-		return o;
-	}
-
 	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.record.ActionListWithWorkOrWorkCompletedPaging$Wo")
 	public static class Wo extends Record {
 

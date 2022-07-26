@@ -8,14 +8,20 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Work;
 
 class ActionGetWithWorkPath5 extends BaseAction {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionGetWithWorkPath5.class);
 
 	ActionResult<JsonElement> execute(EffectivePerson effectivePerson, String id, String path0, String path1,
 			String path2, String path3, String path4, String path5) throws Exception {
+		
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+		
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<JsonElement> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -23,7 +29,7 @@ class ActionGetWithWorkPath5 extends BaseAction {
 			if (null == work) {
 				throw new ExceptionEntityNotExist(id, Work.class);
 			}
-			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
+			Control control = business.getControl(effectivePerson, work, Control.class);
 			if (BooleanUtils.isNotTrue(control.getAllowVisit())) {
 				throw new ExceptionWorkAccessDenied(effectivePerson.getDistinguishedName(), work.getTitle(), work.getId());
 			}
@@ -32,7 +38,4 @@ class ActionGetWithWorkPath5 extends BaseAction {
 		}
 	}
 	
-	public static class WoControl extends WorkControl {
-	}
-
 }

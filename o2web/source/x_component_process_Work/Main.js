@@ -763,11 +763,16 @@ MWF.xApplication.process.Work.Main = new Class({
 
                 this.appForm.load(function(){
                     if (this.mask) this.mask.hide();
-                    if (window.o2android && window.o2android.appFormLoaded){
+                    if (window.o2android && window.o2android.postMessage) {
+                        var body = {
+                            type: "appFormLoaded",
+                            data: this.appForm.mobileTools
+                        }
+                        window.o2android.postMessage(JSON.stringify(body));
+                    } else if (window.o2android && window.o2android.appFormLoaded){
                         layout.appForm = this.appForm;
                         window.o2android.appFormLoaded(JSON.stringify(this.appForm.mobileTools));
-                    }
-                    if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.appFormLoaded){
+                    } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.appFormLoaded){
                         layout.appForm = this.appForm;
                         window.webkit.messageHandlers.appFormLoaded.postMessage(JSON.stringify(this.appForm.mobileTools));
                     }

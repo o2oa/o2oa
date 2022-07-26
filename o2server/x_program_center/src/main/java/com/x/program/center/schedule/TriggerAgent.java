@@ -58,7 +58,7 @@ import com.x.program.center.core.entity.Agent_;
  */
 public class TriggerAgent extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(TriggerAgent.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(TriggerAgent.class);
 
 	private static final CopyOnWriteArrayList<String> LOCK = new CopyOnWriteArrayList<>();
 
@@ -80,7 +80,7 @@ public class TriggerAgent extends BaseAction {
 				}
 			}
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 			throw new JobExecutionException(e);
 		}
 	}
@@ -105,7 +105,7 @@ public class TriggerAgent extends BaseAction {
 					}
 				}
 				if (null != agent && agent.getEnable()) {
-					logger.info("trigger agent : {}, name :{}, cron: {}, last start time: {}.", pair.getId(),
+					LOGGER.info("trigger agent : {}, name :{}, cron: {}, last start time: {}.", pair.getId(),
 							pair.getName(), pair.getCron(),
 							(pair.getLastStartTime() == null ? "" : DateTools.format(pair.getLastStartTime())));
 					ExecuteThread thread = new ExecuteThread(agent);
@@ -114,7 +114,7 @@ public class TriggerAgent extends BaseAction {
 
 			}
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(new ExceptionAgentTrigger(e, pair.getId(), pair.getName(), pair.getCron()));
 		}
 	}
 
@@ -208,7 +208,7 @@ public class TriggerAgent extends BaseAction {
 						evalRemote(centerServer);
 					}
 				} catch (Exception e) {
-					logger.error(e);
+					LOGGER.error(e);
 				} finally {
 					LOCK.remove(agent.getId());
 				}
@@ -221,7 +221,7 @@ public class TriggerAgent extends BaseAction {
 						Config.url_x_program_center_jaxrs(centerServer, "agent", agent.getId(), "execute") + "?tt="
 								+ System.currentTimeMillis());
 			} catch (Exception e) {
-				logger.warn("trigger agent {} on center {} error:{}", agent.getName(), centerServer.getKey(),
+				LOGGER.warn("trigger agent {} on center {} error:{}", agent.getName(), centerServer.getKey(),
 						e.getMessage());
 			}
 		}
@@ -258,7 +258,7 @@ public class TriggerAgent extends BaseAction {
 					emc.commit();
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}
 
@@ -287,7 +287,7 @@ public class TriggerAgent extends BaseAction {
 					}
 				}
 			} catch (Exception e) {
-				logger.debug(e.getMessage());
+				LOGGER.debug(e.getMessage());
 			}
 			return centerServer;
 		}

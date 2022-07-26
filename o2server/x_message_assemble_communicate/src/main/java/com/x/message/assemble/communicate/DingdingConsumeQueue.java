@@ -46,18 +46,35 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 							+ Config.dingding().getAgentId() + "&redirect_type=jump&redirect_url="
 							+ URLEncoder.encode(openUrl, DefaultCharset.name);
 					LOGGER.info("钉钉pc 打开消息 url：{}", ()-> dingtalkUrl);
-					m.getMsg().setMsgtype("markdown");
-					m.getMsg().getMarkdown().setTitle(message.getTitle());
-					m.getMsg().getMarkdown().setText("[" + message.getTitle() + "](" + dingtalkUrl + ")");
+					// 内容管理
+					if (MessageConnector.TYPE_CMS_PUBLISH.equals(message.getType())
+							|| MessageConnector.TYPE_CMS_PUBLISH_TO_CREATOR.equals(message.getType())) {
+						String categoryName = DingdingConsumeQueue.OuterMessageHelper.getPropertiesFromBody("categoryName", message.getBody());
+						if (StringUtils.isEmpty(categoryName)) {
+							categoryName = "信息通知";
+						}
+						m.setActionCardMsg("【"+categoryName+"】", message.getTitle(), dingtalkUrl);
+					} else {
+						String processName = DingdingConsumeQueue.OuterMessageHelper.getPropertiesFromBody("processName", message.getBody());
+						if (StringUtils.isEmpty(processName)) {
+							processName = "工作通知";
+						}
+						m.setActionCardMsg("【"+processName+"】", "# 【"+processName+"】 \n " + message.getTitle(), dingtalkUrl);
+					}
+//
+//					m.getMsg().setMsgtype("markdown");
+//					m.getMsg().getMarkdown().setTitle(message.getTitle());
+//					m.getMsg().getMarkdown().setText("[" + message.getTitle() + "](" + dingtalkUrl + ")");
 				}
 			} else {
-				m.getMsg().getText().setContent(message.getTitle());
+				m.setTextMsg(message.getTitle());
 			}
 			String address = Config.dingding().getOapiAddress()
 					+ "/topapi/message/corpconversation/asyncsend_v2?access_token="
 					+ Config.dingding().corpAccessToken();
-			LOGGER.debug("钉钉发送消息url：{}" , () -> address);
-			LOGGER.debug("钉钉消息体：{}" , m::toString);
+			if(LOGGER.isDebugEnabled()) {
+				LOGGER.debug("钉钉消息体：{}", m::toString);
+			}
 			DingdingMessageResp resp = HttpConnection.postAsObject(address, null, m.toString(),
 					DingdingMessageResp.class);
 			if (resp.getErrcode() != 0) {
@@ -278,6 +295,24 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 				}
 				if (object.get("workCompleted") != null) {
 					return object.get("workCompleted").getAsString();
+				}
+			} catch (Exception e) {
+				LOGGER.error(e);
+			}
+			return "";
+		}
+
+		/**
+		 * 获取消息体内的某个字段值
+		 * @param propertiesName  如：processName
+		 * @param messageBody
+		 * @return
+		 */
+		public static String getPropertiesFromBody(String propertiesName, String messageBody) {
+			try {
+				JsonObject object = gson.fromJson(messageBody, JsonObject.class);
+				if (object.get(propertiesName) != null) {
+					return object.get(propertiesName).getAsString();
 				}
 			} catch (Exception e) {
 				LOGGER.error(e);

@@ -14,6 +14,8 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Draft;
@@ -23,7 +25,12 @@ import com.x.processplatform.core.express.assemble.surface.jaxrs.work.ActionCrea
 
 class ActionStart extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionStart.class);
+
 	ActionResult<JsonElement> execute(EffectivePerson effectivePerson, String id) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+
 		ActionResult<JsonElement> result = new ActionResult<>();
 		Process process = null;
 		Draft draft = null;
@@ -45,7 +52,7 @@ class ActionStart extends BaseAction {
 			if (null == process) {
 				throw new ExceptionEntityNotExist(draft.getProcess(), Process.class);
 			}
-			if(StringUtils.isNotEmpty(process.getEdition()) && BooleanUtils.isFalse(process.getEditionEnable())){
+			if (StringUtils.isNotEmpty(process.getEdition()) && BooleanUtils.isFalse(process.getEditionEnable())) {
 				process = business.process().pickEnabled(process.getApplication(), process.getEdition());
 			}
 

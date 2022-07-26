@@ -128,7 +128,7 @@ class V2AddSplit extends BaseAction {
 	}
 
 	private List<WorkLog> listWorkLog(Business business, Work work) throws Exception {
-		return business.entityManagerContainer().listEqual(WorkLog.class, WorkLog.job_FIELDNAME, work.getJob());
+		return business.entityManagerContainer().listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, work.getJob());
 	}
 
 	/**
@@ -156,9 +156,6 @@ class V2AddSplit extends BaseAction {
 	}
 
 	private void processing(List<String> ids) throws Exception {
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!2222");
-		System.out.println(gson.toJson(ids));
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!2222");
 		for (String id : ids) {
 			ProcessingAttributes processingAttributes = new ProcessingAttributes();
 			processingAttributes.setType(ProcessingAttributes.TYPE_ADDSPLIT);

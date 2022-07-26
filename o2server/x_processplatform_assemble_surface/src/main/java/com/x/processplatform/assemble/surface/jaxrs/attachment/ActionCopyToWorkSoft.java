@@ -26,6 +26,8 @@ import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionCopyToWorkSoft extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCopyToWorkSoft.class);
@@ -50,8 +52,8 @@ class ActionCopyToWorkSoft extends BaseAction {
 				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
 			if (effectivePerson.isNotManager()) {
-				WoWorkControl workControl = business.getControl(effectivePerson, work, WoWorkControl.class);
-				if (BooleanUtils.isNotTrue(workControl.getAllowProcessing())) {
+				Control control = business.getControl(effectivePerson, work, Control.class);
+				if (BooleanUtils.isNotTrue(control.getAllowProcessing())) {
 					throw new ExceptionAccessDenied(effectivePerson, work);
 				}
 			}
@@ -86,21 +88,9 @@ class ActionCopyToWorkSoft extends BaseAction {
 		return result;
 	}
 
-	public static class Wi extends GsonPropertyObject {
+	public static class Control extends WorkControl {
 
-		private static final long serialVersionUID = -6412354165514602742L;
-
-		@FieldDescribe("附件对象")
-		private List<WiAttachment> attachmentList = new ArrayList<>();
-
-		public List<WiAttachment> getAttachmentList() {
-			return attachmentList;
-		}
-
-		public void setAttachmentList(List<WiAttachment> attachmentList) {
-			this.attachmentList = attachmentList;
-		}
-
+		private static final long serialVersionUID = 2685810262366338193L;
 	}
 
 	public static class Req extends GsonPropertyObject {
@@ -119,6 +109,25 @@ class ActionCopyToWorkSoft extends BaseAction {
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionCopyToWorkSoft$Wi")
+	public static class Wi extends GsonPropertyObject {
+
+		private static final long serialVersionUID = -6412354165514602742L;
+
+		@FieldDescribe("附件对象")
+		private List<WiAttachment> attachmentList = new ArrayList<>();
+
+		public List<WiAttachment> getAttachmentList() {
+			return attachmentList;
+		}
+
+		public void setAttachmentList(List<WiAttachment> attachmentList) {
+			this.attachmentList = attachmentList;
+		}
+
+	}
+
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionCopyToWorkSoft$WiAttachment")
 	public static class WiAttachment extends GsonPropertyObject {
 
 		private static final long serialVersionUID = -4069950002054692120L;
@@ -153,14 +162,11 @@ class ActionCopyToWorkSoft extends BaseAction {
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionCopyToWorkSoft$Wo")
 	public static class Wo extends WoId {
 
 		private static final long serialVersionUID = -5204038819582876943L;
 
 	}
 
-	public static class WoWorkControl extends WorkControl {
-
-		private static final long serialVersionUID = 2685810262366338193L;
-	}
 }

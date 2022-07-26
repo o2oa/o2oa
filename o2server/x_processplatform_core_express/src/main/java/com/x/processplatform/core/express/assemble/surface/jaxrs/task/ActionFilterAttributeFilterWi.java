@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.tools.ListTools;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -33,43 +34,43 @@ public class ActionFilterAttributeFilterWi extends GsonPropertyObject {
 	private List<String> activityNameList = new ArrayList<>();
 
 	public List<String> getApplicationList() {
-		return applicationList;
-	}
-
-	public void setApplicationList(List<String> applicationList) {
-		this.applicationList = applicationList;
+		return ListTools.trim(applicationList, true, true);
 	}
 
 	public List<String> getProcessList() {
-		return processList;
+		return ListTools.trim(processList, true, true);
+	}
+
+	public List<String> getStartTimeMonthList() {
+		return ListTools.trim(startTimeMonthList, true, true);
+	}
+
+	public List<String> getActivityNameList() {
+		return ListTools.trim(activityNameList, true, true);
+	}
+
+	public List<String> getCreatorUnitList() {
+		return ListTools.trim(creatorUnitList, true, true);
 	}
 
 	public void setProcessList(List<String> processList) {
 		this.processList = processList;
 	}
 
-	public List<String> getStartTimeMonthList() {
-		return startTimeMonthList;
-	}
-
 	public void setStartTimeMonthList(List<String> startTimeMonthList) {
 		this.startTimeMonthList = startTimeMonthList;
-	}
-
-	public List<String> getActivityNameList() {
-		return activityNameList;
 	}
 
 	public void setActivityNameList(List<String> activityNameList) {
 		this.activityNameList = activityNameList;
 	}
 
-	public List<String> getCreatorUnitList() {
-		return creatorUnitList;
-	}
-
 	public void setCreatorUnitList(List<String> creatorUnitList) {
 		this.creatorUnitList = creatorUnitList;
+	}
+
+	public void setApplicationList(List<String> applicationList) {
+		this.applicationList = applicationList;
 	}
 
 }

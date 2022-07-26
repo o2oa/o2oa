@@ -13,12 +13,21 @@ import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Read;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionListWithJob extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWithJob.class);
+
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String job) throws Exception {
+
+		LOGGER.debug("execute:{}, job:{}.", effectivePerson::getDistinguishedName, () -> job);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 
 			ActionResult<List<Wo>> result = new ActionResult<>();
@@ -40,6 +49,7 @@ class ActionListWithJob extends BaseAction {
 		}
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.read.ActionListWithJob$Wo")
 	public static class Wo extends Read {
 
 		private static final long serialVersionUID = 2279846765261247910L;

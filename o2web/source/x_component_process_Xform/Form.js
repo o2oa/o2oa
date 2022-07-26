@@ -1733,7 +1733,15 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         // if (!this.options.readonly)
         //     if (this.businessData.work) this.workAction.checkDraft(this.businessData.work.id);
 
-        this.app.close();
+        // this.app.close();
+
+        if (layout.mobile) {
+            //移动端页面关闭
+            this.finishOnMobileReal();
+        } else {
+            this.app.close();
+        }
+
     },
     getMessageContent: function (data, maxLength, titlelp) {
         var content = "";
@@ -4659,39 +4667,47 @@ debugger;
     },
     // 分享到IM聊天
     shareToIMChat: function() {
-        var imJson = {}
-        if (this.businessData.workCompleted) {
-            imJson = {
-                type: "process",
-                title: this.businessData.workCompleted.title,
-                work: this.businessData.workCompleted.id,
-                process: this.businessData.workCompleted.process,
-                processName: this.businessData.workCompleted.processName,
-                application: this.businessData.workCompleted.application,
-                applicationName: this.businessData.workCompleted.applicationName,
-                job: this.businessData.workCompleted.job,
+        // app端 分享到聊天
+        if (window.o2android && window.o2android.postMessage) {
+            var body = {
+                type: "shareToIMChat",
             }
-        } else if (this.businessData.work) {
-            imJson = {
-                type: "process",
-                title: this.businessData.work.title,
-                work: this.businessData.work.id,
-                process: this.businessData.work.process,
-                processName: this.businessData.work.processName,
-                application: this.businessData.work.application,
-                applicationName: this.businessData.work.applicationName,
-                job: this.businessData.work.job,
-            }
+            window.o2android.postMessage(JSON.stringify(body));
         } else {
-            this.app.notice(MWF.xApplication.process.Xform.LP.noPermissionOrWorkNotExisted, "error")
-            return
+            var imJson = {}
+            if (this.businessData.workCompleted) {
+                imJson = {
+                    type: "process",
+                    title: this.businessData.workCompleted.title,
+                    work: this.businessData.workCompleted.id,
+                    process: this.businessData.workCompleted.process,
+                    processName: this.businessData.workCompleted.processName,
+                    application: this.businessData.workCompleted.application,
+                    applicationName: this.businessData.workCompleted.applicationName,
+                    job: this.businessData.workCompleted.job,
+                }
+            } else if (this.businessData.work) {
+                imJson = {
+                    type: "process",
+                    title: this.businessData.work.title,
+                    work: this.businessData.work.id,
+                    process: this.businessData.work.process,
+                    processName: this.businessData.work.processName,
+                    application: this.businessData.work.application,
+                    applicationName: this.businessData.work.applicationName,
+                    job: this.businessData.work.job,
+                }
+            } else {
+                this.app.notice(MWF.xApplication.process.Xform.LP.noPermissionOrWorkNotExisted, "error")
+                return
+            }
+            MWF.xDesktop.requireApp("IMV2", "Starter", function () {
+                var share = new MWF.xApplication.IMV2.ShareToConversation({
+                    msgBody: imJson
+                }, this.app);
+                share.load();
+            }.bind(this));
         }
-        MWF.xDesktop.requireApp("IMV2", "Starter", function () {
-            var share = new MWF.xApplication.IMV2.ShareToConversation({
-                msgBody: imJson
-            }, this.app);
-            share.load();
-        }.bind(this));
     },
 
     //移动端页面 工作处理完成后
@@ -4717,7 +4733,12 @@ debugger;
     },
 
     finishOnMobileReal: function () {
-        if (window.o2android && window.o2android.closeWork) {
+        if (window.o2android && window.o2android.postMessage) {
+            var body = {
+                type: "closeWork",
+            }
+            window.o2android.postMessage(JSON.stringify(body));
+        } else if (window.o2android && window.o2android.closeWork) {
             window.o2android.closeWork("");
         } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.closeWork) {
             window.webkit.messageHandlers.closeWork.postMessage("");
@@ -5220,7 +5241,6 @@ debugger;
 /**
  * @class PortalPage 门户页面。
  * @o2cn 门户页面
- * @alias PortalPage
  * @o2category FormComponents
  * @o2range {Portal}
  * @extends MWF.xApplication.process.Xform.Form
@@ -5287,6 +5307,18 @@ var PortalPage="";
  * @ignore
  */
 /**
+ * @event PortalPage#afterLoadProcessor
+ * @ignore
+ */
+/**
+ * @event PortalPage#beforeAddTask
+ * @ignore
+ */
+/**
+ * @event PortalPage#afterAddTask
+ * @ignore
+ */
+/**
  * @method PortalPage#getRouteDataList
  * @ignore
  */
@@ -5314,4 +5346,3 @@ var PortalPage="";
  * @method PortalPage#resumeTask
  * @ignore
  */
-

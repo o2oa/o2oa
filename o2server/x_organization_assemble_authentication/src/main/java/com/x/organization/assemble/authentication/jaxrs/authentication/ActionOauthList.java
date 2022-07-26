@@ -10,18 +10,23 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.Dingding;
 import com.x.base.core.project.config.Qiyeweixin;
 import com.x.base.core.project.config.Token.OauthClient;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.organization.core.express.assemble.authentication.jaxrs.authentication.ActionOauthListWo;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionOauthList extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionOauthList.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionOauthList.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson) throws Exception {
+
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wos = new ArrayList<>();
 		if (ListTools.isNotEmpty(Config.token().getOauthClients())) {
@@ -36,14 +41,14 @@ class ActionOauthList extends BaseAction {
 					wo.setBindingEnable(o.getBindingEnable());
 					Map<String, Object> param = oauthCreateParam(o, "", "");
 					String authParameter = this.fillParameter(o.getAuthParameter(), param);
-					logger.debug("auth parameter:{}.", authParameter);
+					LOGGER.debug("auth parameter:{}.", authParameter);
 					wo.setAuthParameter(authParameter);
 					wos.add(wo);
 				}
 			}
 		}
 		// 企业微信扫码登录
-		if (Config.qiyeweixin().getScanLoginEnable()) {
+		if (BooleanUtils.isTrue(Config.qiyeweixin().getScanLoginEnable())) {
 			Wo wo = new Wo();
 			wo.setName("企业微信");
 			wo.setDisplayName("@O2企业微信");
@@ -51,7 +56,7 @@ class ActionOauthList extends BaseAction {
 			wos.add(wo);
 		}
 		// 钉钉扫码登录
-		if (Config.dingding().getScanLoginEnable()) {
+		if (BooleanUtils.isTrue(Config.dingding().getScanLoginEnable())) {
 			Wo wo = new Wo();
 			wo.setName("钉钉");
 			wo.setIcon(Dingding.dingdingLogo);
@@ -62,71 +67,10 @@ class ActionOauthList extends BaseAction {
 		return result;
 	}
 
-	public static class Wo extends GsonPropertyObject {
+	@Schema(name = "com.x.organization.assemble.authentication.jaxrs.authentication.ActionOauthList$Wo")
+	public static class Wo extends ActionOauthListWo {
 
-		private String name;
-		private String displayName;
-		private String authAddress;
-		private String authMethod;
-		private String authParameter;
-		private String icon;
-		private Boolean bindingEnable;
-
-		public String getIcon() {
-			return icon;
-		}
-
-		public void setIcon(String icon) {
-			this.icon = icon;
-		}
-
-		public String getName() {
-			return name;
-		}
-
-		public void setName(String name) {
-			this.name = name;
-		}
-
-		public String getAuthMethod() {
-			return authMethod;
-		}
-
-		public void setAuthMethod(String authMethod) {
-			this.authMethod = authMethod;
-		}
-
-		public String getAuthParameter() {
-			return authParameter;
-		}
-
-		public void setAuthParameter(String authParameter) {
-			this.authParameter = authParameter;
-		}
-
-		public String getAuthAddress() {
-			return authAddress;
-		}
-
-		public void setAuthAddress(String authAddress) {
-			this.authAddress = authAddress;
-		}
-
-		public Boolean getBindingEnable() {
-			return bindingEnable;
-		}
-
-		public void setBindingEnable(Boolean bindingEnable) {
-			this.bindingEnable = bindingEnable;
-		}
-
-		public String getDisplayName() {
-			return displayName;
-		}
-
-		public void setDisplayName(String displayName) {
-			this.displayName = displayName;
-		}
+		private static final long serialVersionUID = 1488365958451799857L;
 
 	}
 

@@ -210,7 +210,7 @@ class ActionMerge extends BaseAction {
 			return CompletableFuture.runAsync(() -> {
 				try {
 					List<WorkLog> os = business.entityManagerContainer()
-							.listEqual(WorkLog.class, WorkLog.job_FIELDNAME, workCompleted.getJob()).stream()
+							.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, workCompleted.getJob()).stream()
 							.sorted(Comparator.comparing(WorkLog::getCreateTime, Comparator.nullsLast(Date::compareTo)))
 							.collect(Collectors.toList());
 					workCompleted.getProperties().setWorkLogList(os);

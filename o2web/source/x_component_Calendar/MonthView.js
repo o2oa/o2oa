@@ -235,30 +235,48 @@ MWFCalendarMonthView.Calendar = new Class({
         //    this.titleNode.setStyle("display","")
         //}
         //this.titleNode = new Element("div").inject(this.view.titleContainer);
-        this.prevMonthNode =  new Element("div", {"styles": this.css.calendarPrevMonthNode}).inject(this.titleNode);
+        this.prevMonthNode =  new Element("div.o2icon-triangle_left", {"styles": this.css.calendarPrevMonthNode}).inject(this.titleNode);
 
         var text = this.date.format(this.app.lp.dateFormatMonth);
         this.titleTextNode = new Element("div", {"styles": this.css.calendarTitleTextNode, "text": text}).inject(this.titleNode);
 
-        this.nextMonthNode =  new Element("div", {"styles": this.css.calendarNextMonthNode}).inject(this.titleNode);
+        this.nextMonthNode =  new Element("div.o2icon-triangle_right", {"styles": this.css.calendarNextMonthNode}).inject(this.titleNode);
 
         this.prevMonthNode.addEvents({
-            "mouseover": function(){this.prevMonthNode.setStyles(this.css.calendarPrevMonthNode_over);}.bind(this),
-            "mouseout": function(){this.prevMonthNode.setStyles(this.css.calendarPrevMonthNode);}.bind(this),
+            "mouseover": function(){
+                this.prevMonthNode.setStyles(this.css.calendarPrevMonthNode_over);
+                this.prevMonthNode.addClass("mainColor_color");
+            }.bind(this),
+            "mouseout": function(){
+                this.prevMonthNode.setStyles(this.css.calendarPrevMonthNode);
+                this.prevMonthNode.removeClass("mainColor_color");
+            }.bind(this),
             "mousedown": function(){this.prevMonthNode.setStyles(this.css.calendarPrevMonthNode_down);}.bind(this),
             "mouseup": function(){this.prevMonthNode.setStyles(this.css.calendarPrevMonthNode_over);}.bind(this),
             "click": function(){this.changeMonthPrev();}.bind(this)
         });
         this.nextMonthNode.addEvents({
-            "mouseover": function(){this.nextMonthNode.setStyles(this.css.calendarNextMonthNode_over);}.bind(this),
-            "mouseout": function(){this.nextMonthNode.setStyles(this.css.calendarNextMonthNode);}.bind(this),
+            "mouseover": function(){
+                this.nextMonthNode.setStyles(this.css.calendarNextMonthNode_over);
+                this.nextMonthNode.addClass("mainColor_color");
+            }.bind(this),
+            "mouseout": function(){
+                this.nextMonthNode.setStyles(this.css.calendarNextMonthNode);
+                this.nextMonthNode.removeClass("mainColor_color");
+            }.bind(this),
             "mousedown": function(){this.nextMonthNode.setStyles(this.css.calendarNextMonthNode_down);}.bind(this),
             "mouseup": function(){this.nextMonthNode.setStyles(this.css.calendarNextMonthNode_over);}.bind(this),
             "click": function(){this.changeMonthNext();}.bind(this)
         });
         this.titleTextNode.addEvents({
-            "mouseover": function(){this.titleTextNode.setStyles(this.css.calendarTitleTextNode_over);}.bind(this),
-            "mouseout": function(){this.titleTextNode.setStyles(this.css.calendarTitleTextNode);}.bind(this),
+            "mouseover": function(){
+                this.titleTextNode.setStyles(this.css.calendarTitleTextNode_over);
+                this.titleTextNode.addClass("mainColor_color");
+            }.bind(this),
+            "mouseout": function(){
+                this.titleTextNode.setStyles(this.css.calendarTitleTextNode);
+                this.titleTextNode.removeClass("mainColor_color");
+            }.bind(this),
             "mousedown": function(){this.titleTextNode.setStyles(this.css.calendarTitleTextNode_down);}.bind(this),
             "mouseup": function(){this.titleTextNode.setStyles(this.css.calendarTitleTextNode_over);}.bind(this),
             "click": function(){this.changeMonthSelect();}.bind(this)
@@ -677,6 +695,10 @@ MWFCalendarMonthView.Calendar = new Class({
         titleDayNode.addEvent("click", function(){
             _self.app.toDay( this.date  );
         }.bind({ date : date.format("%Y-%m-%d") }));
+
+        if( type === "today" ){
+            titleDayNode.addClass("mainColor_bg");
+        }
 
         //var contentNode = new Element("div", {"styles": this.css.dayContentNode}).inject(node);
 
@@ -1293,9 +1315,11 @@ MWFCalendarMonthView.MonthSelector = new Class({
         this.monthSelectNode.addEvent("mousedown", function(e){e.stopPropagation();});
 
         this.monthSelectTitleNode = new Element("div", {"styles": this.css.calendarMonthSelectTitleNode}).inject(this.monthSelectNode);
-        this.monthSelectPrevYearNode = new Element("div", {"styles": this.css.calendarMonthSelectTitlePrevYearNode}).inject(this.monthSelectTitleNode);
-        this.monthSelectNextYearNode = new Element("div", {"styles": this.css.calendarMonthSelectTitleNextYearNode}).inject(this.monthSelectTitleNode);
-        this.monthSelectTextNode = new Element("div", {"styles": this.css.calendarMonthSelectTitleTextNode}).inject(this.monthSelectTitleNode);
+        // this.monthSelectTitleNode.addClass("overColor_bg");
+
+        this.monthSelectPrevYearNode = new Element("div.o2icon-triangle_left", {"styles": this.css.calendarMonthSelectTitlePrevYearNode}).inject(this.monthSelectTitleNode);
+        this.monthSelectNextYearNode = new Element("div.o2icon-triangle_right", {"styles": this.css.calendarMonthSelectTitleNextYearNode}).inject(this.monthSelectTitleNode);
+        this.monthSelectTextNode = new Element("div.MWF_calendar_current", {"styles": this.css.calendarMonthSelectTitleTextNode}).inject(this.monthSelectTitleNode);
         this.monthSelectTextNode.set("text", this.year);
 
         var html = "<tr><td></td><td></td><td></td></tr>";
@@ -1345,12 +1369,14 @@ MWFCalendarMonthView.MonthSelector = new Class({
             td.setStyle("background-color", "#FFF");
             if ((this.year == todayY) && (idx == todayM)){
                 new Element("div", {
+                    class: "mainColor_bg",
                     styles : _self.css.calendarMonthSelectTodayNode,
                     text : ""+m+ (MWF.language.substr(0,2) === "zh" ? this.app.lp.month : "")
                 }).inject( td );
             }else if ((this.year == thisY) && (idx == thisM)){
                 //td.setStyle("background-color", "#EEE");
                 new Element("div", {
+                    class: "mainColor_border mainColor_color",
                     styles : _self.css.calendarMonthSelectCurrentNode,
                     text : ""+m+ (MWF.language.substr(0,2) === "zh" ? this.app.lp.month : "")
                 }).inject( td );

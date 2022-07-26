@@ -10,7 +10,6 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
-import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
@@ -18,11 +17,17 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.DocumentVersion;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionListWithWorkOrWorkCompleted.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWithWorkOrWorkCompleted.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String workOrWorkCompleted) throws Exception {
+
+		LOGGER.debug("execute:{}, workOrWorkCompleted:{}.", effectivePerson::getDistinguishedName,
+				() -> workOrWorkCompleted);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 
@@ -39,7 +44,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 			wos = wos.stream().sorted(Comparator.comparing(Wo::getCreateTime).reversed()).collect(Collectors.toList());
 
 			result.setData(wos);
-			
+
 			return result;
 		}
 	}
@@ -47,10 +52,10 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 	private List<Wo> list(Business business, String job) throws Exception {
 		List<DocumentVersion> os = business.entityManagerContainer().fetchEqual(DocumentVersion.class,
 				DocumentVersion.job_FIELDNAME, job);
-		List<Wo> wos = Wo.copier.copy(os);
-		return wos;
+		return Wo.copier.copy(os);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.documentversion.ActionListWithWorkOrWorkCompleted$Wo")
 	public static class Wo extends DocumentVersion {
 
 		static final long serialVersionUID = 5610132069178497370L;

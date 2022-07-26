@@ -133,7 +133,7 @@ MWF.xApplication.Org.PersonExplorer.PersonContent = new Class({
         this.propertyTabContainerNode = new Element("div", {"styles": this.item.style.tabTitleNode}).inject(this.propertyContentNode, "top");
 
         MWF.require("MWF.widget.Tab", function(){
-            this.propertyTab = new MWF.widget.Tab(this.propertyContentNode, {"style": "unit"});
+            this.propertyTab = new MWF.widget.Tab(this.propertyContentNode, {"style": "unit", "useMainColor":true});
             this.propertyTab.load();
 
             this.propertyTab.tabNodeContainer.inject(this.propertyTabContainerNode);
@@ -772,6 +772,7 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
             this.editNode = new Element("div", {"styles": this.style.actionEditNode, "text": this.explorer.app.lp.editPerson}).inject(this.baseInforEditActionAreaNode);
 
             this.saveNode = new Element("div", {"styles": this.style.actionSaveNode, "text": this.explorer.app.lp.savePerson}).inject(this.baseInforEditActionAreaNode);
+            this.saveNode.addClass("mainColor_bg");
             this.cancelNode = new Element("div", {"styles": this.style.actionCancelNode, "text": this.explorer.app.lp.cancel}).inject(this.baseInforEditActionAreaNode);
 
             this.editNode.setStyle("display", "block");

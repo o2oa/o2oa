@@ -13,6 +13,8 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Data;
@@ -21,9 +23,16 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionGet extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionGet.class);
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+
 		ActionResult<Wo> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
@@ -48,7 +57,7 @@ class ActionGet extends BaseAction {
 			wo.setData(draft.getProperties().getData());
 			Work work = this.mockWork(application, process, draft.getPerson(), draft.getIdentity(), draft.getUnit(),
 					draft.getTitle());
-//设置id值与workid相同.save可以判断
+			// 设置id值与workid相同.save可以判断
 			work.setId(draft.getId());
 			String form = this.findForm(business, process);
 			if (StringUtils.isEmpty(form)) {
@@ -62,12 +71,17 @@ class ActionGet extends BaseAction {
 		}
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.draft.ActionGet$Wo")
 	public static class Wo extends GsonPropertyObject {
 
-		@FieldDescribe("数据")
+		private static final long serialVersionUID = -3079311013584307428L;
+
+		@FieldDescribe("业务数据.")
+		@Schema(description = "业务数据.")
 		private Data data;
 
-		@FieldDescribe("工作")
+		@FieldDescribe("工作.")
+		@Schema(description = "工作.")
 		private WoWork work;
 
 		public Data getData() {
@@ -88,10 +102,14 @@ class ActionGet extends BaseAction {
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.draft.ActionGet$WoWork")
 	public static class WoWork extends Work {
+		
 		private static final long serialVersionUID = 1573047112378070272L;
+		
 		static WrapCopier<Work, WoWork> copier = WrapCopierFactory.wo(Work.class, WoWork.class, null,
 				ListTools.toList(JpaObject.FieldsInvisible));
+	
 	}
 
 }

@@ -20,9 +20,9 @@ public class WorkLogTree {
 	private Node root;
 
 	public static final List<String> RELY_WORKLOG_ITEMS = ListUtils.unmodifiableList(ListTools.toList(
-			WorkLog.fromActivityToken_FIELDNAME, WorkLog.arrivedActivityToken_FIELDNAME,
-			WorkLog.fromActivityType_FIELDNAME, WorkLog.arrivedActivityType_FIELDNAME,
-			WorkLog.fromActivityName_FIELDNAME, WorkLog.arrivedActivityName_FIELDNAME, WorkLog.connected_FIELDNAME));
+			WorkLog.FROMACTIVITYTOKEN_FIELDNAME, WorkLog.ARRIVEDACTIVITYTOKEN_FIELDNAME,
+			WorkLog.FROMACTIVITYTYPE_FIELDNAME, WorkLog.ARRIVEDACTIVITYTYPE_FIELDNAME,
+			WorkLog.FROMACTIVITYNAME_FIELDNAME, WorkLog.ARRIVEDACTIVITYNAME_FIELDNAME, WorkLog.CONNECTED_FIELDNAME));
 
 	Nodes nodes = new Nodes();
 
@@ -32,9 +32,9 @@ public class WorkLogTree {
 			this.nodes().add(new Node(o));
 		}
 
-		List<String> froms = ListTools.extractProperty(list, WorkLog.fromActivityToken_FIELDNAME, String.class, true,
+		List<String> froms = ListTools.extractProperty(list, WorkLog.FROMACTIVITYTOKEN_FIELDNAME, String.class, true,
 				true);
-		List<String> arriveds = ListTools.extractProperty(list, WorkLog.arrivedActivityToken_FIELDNAME, String.class,
+		List<String> arriveds = ListTools.extractProperty(list, WorkLog.ARRIVEDACTIVITYTOKEN_FIELDNAME, String.class,
 				true, true);
 		List<String> values = ListUtils.subtract(froms, arriveds);
 		WorkLog begin = list.stream()

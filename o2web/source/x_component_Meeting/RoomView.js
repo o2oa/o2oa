@@ -70,6 +70,9 @@ MWF.xApplication.Meeting.RoomView = new Class({
             "styles": this.css.roomDateNode,
             "text" : dateText
         }).inject(this.roomDateArea);
+        this.roomIconNode = new Element("i.o2icon-triangle_down", {
+            "styles": this.css.roomIconNode
+        }).inject(this.roomDateNode);
 
         this.roomHourRangeNode = new Element("div", {"styles": this.css.roomHourRangeNode}).inject(this.roomDateArea);
         var html = this.app.lp.persist+" <select data-id='hour'>" +
@@ -138,9 +141,17 @@ MWF.xApplication.Meeting.RoomView = new Class({
         this.roomDateNode.addEvents({
             "mouseover": function(){
                 this.roomDateNode.setStyles(this.css.roomDateNode_over);
+                this.roomDateNode.addClass("mainColor_color");
+
+                this.roomIconNode.setStyles(this.css.roomIconNode_over);
+                this.roomIconNode.addClass("mainColor_color");
             }.bind(this),
             "mouseout": function(){
                 this.roomDateNode.setStyles(this.css.roomDateNode);
+                this.roomDateNode.removeClass("mainColor_color");
+
+                this.roomIconNode.setStyles(this.css.roomIconNode);
+                this.roomIconNode.removeClass("mainColor_color");
             }.bind(this),
             "mousedown": function(){
                 this.roomDateNode.setStyles(this.css.roomDateNode_down);
@@ -201,17 +212,29 @@ MWF.xApplication.Meeting.RoomView = new Class({
             events : {
                 mouseover : function( ev ){
                     var node = ev.target;
-                    if( _self.currentBuliding != node )node.setStyles( _self.css.roomTopItemNode_over );
+                    if( _self.currentBuliding != node ){
+                        node.setStyles( _self.css.roomTopItemNode_over );
+                        node.addClass("mainColor_color");
+                    }
                 },
                 mouseout : function( ev ){
                     var node = ev.target;
-                    if( _self.currentBuliding != node )node.setStyles( _self.css.roomTopItemNode )
+                    if( _self.currentBuliding != node ){
+                        node.setStyles( _self.css.roomTopItemNode );
+                        node.removeClass("mainColor_color");
+                    }
                 },
                 click : function(ev){
                     var node = ev.target;
-                    if(_self.currentBuliding)_self.currentBuliding.setStyles( _self.css.roomTopItemNode );
+                    if(_self.currentBuliding){
+                        _self.currentBuliding.setStyles( _self.css.roomTopItemNode );
+                        _self.currentBuliding.removeClass("mainColor_color");
+                        _self.currentBuliding.removeClass("mainColor_border");
+                    }
                     _self.currentBuliding = node;
                     node.setStyles( _self.css.roomTopItemNode_current );
+                    node.addClass("mainColor_color");
+                    node.addClass("mainColor_border");
                     _self.emptyRooms();
                     _self.loadAllRooms();
                 }
@@ -231,18 +254,30 @@ MWF.xApplication.Meeting.RoomView = new Class({
                     events : {
                         mouseover : function( ev ){
                             var node = ev.target;
-                            if( _self.currentBuliding != node )node.setStyles( _self.css.roomTopItemNode_over );
+                            if( _self.currentBuliding != node ){
+                                node.setStyles( _self.css.roomTopItemNode_over );
+                                node.addClass("mainColor_color");
+                            }
                             _self.showBulidingTooltip( ev.target );
                         },
                         mouseout : function( ev ){
                             var node = ev.target;
-                            if( _self.currentBuliding != node )node.setStyles( _self.css.roomTopItemNode )
+                            if( _self.currentBuliding != node ){
+                                node.setStyles( _self.css.roomTopItemNode );
+                                node.removeClass("mainColor_color");
+                            }
                         },
                         click : function(ev){
                             var node = ev.target;
-                            if(_self.currentBuliding)_self.currentBuliding.setStyles( _self.css.roomTopItemNode );
+                            if(_self.currentBuliding){
+                                _self.currentBuliding.setStyles( _self.css.roomTopItemNode );
+                                _self.currentBuliding.removeClass("mainColor_color");
+                                _self.currentBuliding.removeClass("mainColor_border");
+                            }
                             _self.currentBuliding = node;
                             node.setStyles( _self.css.roomTopItemNode_current );
+                            node.addClass("mainColor_color");
+                            node.addClass("mainColor_border");
                             _self.emptyRooms();
                             _self.loadRooms( node );
                         }
@@ -448,9 +483,11 @@ MWF.xApplication.Meeting.RoomView.Room = new Class({
             this.titleNode.addEvents({
                 mouseenter : function(){
                     this.titleTextNode.setStyles( this.css.roomItemTitleTextNode_over );
+                    this.titleTextNode.addClass( "overColor_color"  );
                 }.bind(this),
                 mouseleave : function(){
                     this.titleTextNode.setStyles( this.css.roomItemTitleTextNode );
+                    this.titleTextNode.removeClass( "overColor_color"  );
                 }.bind(this)
             });
         }
@@ -512,14 +549,16 @@ MWF.xApplication.Meeting.RoomView.Room = new Class({
     loadActions: function(){
 
         if( MWF.AC.isMeetingAdministrator() ){
-            this.editAction = new Element("div", {
+            this.editAction = new Element("div.o2icon-edit2", {
                 styles: this.css.roomAction_edit,
                 events : {
                     mouseover : function(){
                         this.editAction.setStyles( this.css.roomAction_edit_over );
+                        this.editAction.addClass("mainColor_color");
                     }.bind(this),
                     mouseout : function(){
                         this.editAction.setStyles( this.css.roomAction_edit );
+                        this.editAction.removeClass("mainColor_color");
                     }.bind(this),
                     click : function(e){
                         this.editRoom();
@@ -528,14 +567,16 @@ MWF.xApplication.Meeting.RoomView.Room = new Class({
                 }
             }).inject(this.actionsNode);
 
-            this.removeAction = new Element("div", {
+            this.removeAction = new Element("div.o2icon-delete", {
                 styles: this.css.roomAction_remove,
                 events : {
                     mouseover : function(){
                         this.removeAction.setStyles( this.css.roomAction_remove_over );
+                        this.removeAction.addClass("mainColor_color");
                     }.bind(this),
                     mouseout : function(){
                         this.removeAction.setStyles( this.css.roomAction_remove );
+                        this.removeAction.removeClass("mainColor_color");
                     }.bind(this),
                     click : function( e ){
                         this.removeRoom(e);
@@ -546,15 +587,17 @@ MWF.xApplication.Meeting.RoomView.Room = new Class({
         }
 
         if( this.enable ){
-            this.createMeetingAction = new Element("div", {
+            this.createMeetingAction = new Element("div.o2icon-create", {
                 tltile : this.app.lp.addMeeting,
                 styles: this.css.createMeetingAction,
                 events : {
                     mouseover : function(){
                         this.createMeetingAction.setStyles( this.css.createMeetingAction_over );
+                        this.createMeetingAction.addClass("mainColor_color");
                     }.bind(this),
                     mouseout : function(){
                         this.createMeetingAction.setStyles( this.css.createMeetingAction );
+                        this.createMeetingAction.removeClass("mainColor_color");
                     }.bind(this),
                     click : function(e){
                         this.app.addMeeting( this.view.date, this.view.hours, this.view.minutes, this.data.id);
@@ -674,10 +717,12 @@ MWF.xApplication.Meeting.RoomView.Meeting = new Class({
                     mouseenter : function(){
                         this.node.setStyles( this.css.meetingNode_over );
                         this.subjectNode.setStyles( this.css.meetingSubjectNode_over );
+                        this.subjectNode.addClass("mainColor_color");
                     }.bind(this),
                     mouseleave : function(){
                         this.node.setStyles( this.css.meetingNode );
                         this.subjectNode.setStyles( this.css.meetingSubjectNode );
+                        this.subjectNode.removeClass("mainColor_color");
                     }.bind(this)
                 })
             }

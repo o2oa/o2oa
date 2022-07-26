@@ -11,17 +11,25 @@ import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.DocumentVersion;
 import com.x.processplatform.core.entity.content.Work;
 
-class ActionCreate extends StandardJaxrsAction {
+import io.swagger.v3.oas.annotations.media.Schema;
+
+class ActionCreate extends BaseAction {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCreate.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workId, JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}, workId:{}.", effectivePerson::getDistinguishedName, () -> workId);
+
 		Work work = null;
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
@@ -44,6 +52,7 @@ class ActionCreate extends StandardJaxrsAction {
 		return result;
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.documentversion.ActionCreate$Wi")
 	public static class Wi extends DocumentVersion {
 
 		private static final long serialVersionUID = 6403329784150966767L;
@@ -51,7 +60,10 @@ class ActionCreate extends StandardJaxrsAction {
 				ListTools.toList(DocumentVersion.data_FIELDNAME, DocumentVersion.category_FIELDNAME), null);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.documentversion.ActionCreate$Wo")
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = 4106916914071485847L;
 
 	}
 

@@ -9,16 +9,20 @@ import com.x.base.core.project.exception.ExceptionPersonNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Person;
 
 class ActionResetPassword extends BaseAction {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionResetPassword.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
-			/** 排除xadmin */
+			// 排除xadmin
 			if (Config.token().isInitialManager(flag)) {
 				throw new ExceptionDenyResetInitialManagerPassword();
 			} else {
@@ -30,7 +34,7 @@ class ActionResetPassword extends BaseAction {
 				if (!effectivePerson.isSecurityManager() && !business.editable(effectivePerson, o)) {
 					throw new ExceptionDenyEditPerson(effectivePerson, flag);
 				}
-				business.person().setPassword(o, this.initPassword(business, o),true);
+				business.person().setPassword(o, this.initPassword(business, o), true);
 				emc.beginTransaction(Person.class);
 				emc.check(o, CheckPersistType.all);
 				emc.commit();

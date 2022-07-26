@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapString;
@@ -17,12 +18,16 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionLatestWorkWorkCompletedWithSerial extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionLatestWorkWorkCompletedWithSerial.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionLatestWorkWorkCompletedWithSerial.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String serial) throws Exception {
-		logger.debug(effectivePerson, "serial:{}.", serial);
+
+		LOGGER.debug("execute:{}, serial:{}.", effectivePerson::getDistinguishedName, () -> serial);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<Wo> result = new ActionResult<>();
@@ -78,17 +83,22 @@ class ActionLatestWorkWorkCompletedWithSerial extends BaseAction {
 
 	private List<Work> listWork(Business business, String serial) throws Exception {
 		return business.entityManagerContainer().fetchEqual(Work.class,
-				ListTools.toList(Work.createTime_FIELDNAME, Work.serial_FIELDNAME, Work.job_FIELDNAME),
+				ListTools.toList(JpaObject.createTime_FIELDNAME, Work.serial_FIELDNAME, Work.job_FIELDNAME),
 				Work.serial_FIELDNAME, serial);
 	}
 
 	private List<WorkCompleted> listWorkCompleted(Business business, String serial) throws Exception {
-		return business.entityManagerContainer().fetchEqual(
-				WorkCompleted.class, ListTools.toList(WorkCompleted.createTime_FIELDNAME,
-						WorkCompleted.serial_FIELDNAME, WorkCompleted.job_FIELDNAME),
-				WorkCompleted.serial_FIELDNAME, serial);
+		return business.entityManagerContainer()
+				.fetchEqual(
+						WorkCompleted.class, ListTools.toList(JpaObject.createTime_FIELDNAME,
+								WorkCompleted.serial_FIELDNAME, WorkCompleted.job_FIELDNAME),
+						WorkCompleted.serial_FIELDNAME, serial);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.form.ActionLatestWorkWorkCompletedWithSerial$Wo")
 	public class Wo extends WrapString {
+
+		private static final long serialVersionUID = -8665525410401933889L;
+
 	}
 }

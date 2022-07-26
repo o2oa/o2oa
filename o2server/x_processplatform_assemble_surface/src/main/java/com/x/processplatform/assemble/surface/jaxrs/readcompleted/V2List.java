@@ -19,14 +19,23 @@ import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.ReadCompleted_;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class V2List extends V2Base {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(V2List.class);
+
 	public ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wos = new ArrayList<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
@@ -52,12 +61,17 @@ class V2List extends V2Base {
 		return result;
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.readcompleted.V2List$Wi")
 	public static class Wi extends RelateFilterWi {
 
-		@FieldDescribe("job标识")
+		private static final long serialVersionUID = 6156652409095161653L;
+
+		@FieldDescribe("任务标识.")
+		@Schema(description = "任务标识.")
 		private List<String> jobList = new ArrayList<>();
 
-		@FieldDescribe("标识")
+		@FieldDescribe("已阅标识.")
+		@Schema(description = "已阅标识.")
 		private List<String> idList = new ArrayList<>();
 
 		public List<String> getJobList() {
@@ -78,9 +92,13 @@ class V2List extends V2Base {
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.readcompleted.V2List$Wo")
 	public static class Wo extends AbstractWo {
+
 		private static final long serialVersionUID = -4773789253221941109L;
+
 		static WrapCopier<ReadCompleted, Wo> copier = WrapCopierFactory.wo(ReadCompleted.class, Wo.class,
 				JpaObject.singularAttributeField(ReadCompleted.class, true, false), JpaObject.FieldsInvisible);
+
 	}
 }

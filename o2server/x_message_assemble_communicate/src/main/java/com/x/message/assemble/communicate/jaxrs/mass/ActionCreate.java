@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.x.message.assemble.communicate.message.QiyeweixinTextMessage;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -27,7 +28,6 @@ import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.message.assemble.communicate.Business;
 import com.x.message.assemble.communicate.message.DingdingMessage;
-import com.x.message.assemble.communicate.message.QiyeweixinMessage;
 import com.x.message.assemble.communicate.message.WeLinkMessage;
 import com.x.message.assemble.communicate.message.ZhengwuDingdingMessage;
 import com.x.message.core.entity.Mass;
@@ -97,7 +97,7 @@ class ActionCreate extends BaseAction {
 		for (List<String> os : list) {
 			List<String> ids = ListTools.extractProperty(business.organization().person().listObject(os),
 					Person.qiyeweixinId_FIELDNAME, String.class, true, true);
-			QiyeweixinMessage m = new QiyeweixinMessage();
+			QiyeweixinTextMessage m = new QiyeweixinTextMessage();
 			m.setAgentid(Long.parseLong(Config.qiyeweixin().getAgentId(), 10));
 			m.setTouser(StringUtils.join(ids, "|"));
 			m.getText().setContent(body);

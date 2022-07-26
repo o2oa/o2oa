@@ -12,15 +12,17 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.assemble.surface.WorkControl;
-import com.x.processplatform.core.entity.content.Work;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionUpdateWithJob extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionUpdateWithJob.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String job, JsonElement jsonElement) throws Exception {
-		LOGGER.debug("{} access.", effectivePerson::getDistinguishedName);
+
+		LOGGER.debug("execute:{}, job:{}.", effectivePerson::getDistinguishedName, () -> job);
+
 		ActionResult<Wo> result = new ActionResult<>();
 		if (null == jsonElement || (!jsonElement.isJsonObject())) {
 			throw new ExceptionNotJsonObject();
@@ -35,14 +37,11 @@ class ActionUpdateWithJob extends BaseAction {
 		return result;
 	}
 
+	@Schema(name= "com.x.processplatform.assemble.surface.jaxrs.data.ActionUpdateWithJob$Wo")
 	public static class Wo extends WoId {
 
 		private static final long serialVersionUID = -2942168134266650614L;
 
 	}
 
-	public static class WoControl extends WorkControl {
-
-		private static final long serialVersionUID = -4623079643959758023L;
-	}
 }
