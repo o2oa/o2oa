@@ -50,7 +50,6 @@ o2.widget.O2Identity = new Class({
     },
     load: function(){
         this.fireEvent("queryLoad");
-        debugger;
         var style = ( layout.mobile && this.style.identityNode_mobile ) ?
             this.style.identityNode_mobile : this.style.identityNode;
 
