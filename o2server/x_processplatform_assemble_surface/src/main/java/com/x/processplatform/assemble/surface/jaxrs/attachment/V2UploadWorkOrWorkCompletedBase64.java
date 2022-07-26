@@ -5,10 +5,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.Tika;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
+import com.google.gson.JsonElement;
+import com.itextpdf.io.codec.Base64;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
@@ -30,20 +30,25 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.element.End;
 import com.x.processplatform.core.entity.element.Process;
+import com.x.processplatform.core.express.assemble.surface.jaxrs.attachment.V2UploadWorkOrWorkCompletedBase64Wi;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-class V2UploadWorkOrWorkCompleted extends BaseAction {
+class V2UploadWorkOrWorkCompletedBase64 extends BaseAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(V2UploadWorkOrWorkCompleted.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(V2UploadWorkOrWorkCompletedBase64.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workOrWorkCompleted, String site, String fileName,
-			byte[] bytes, FormDataContentDisposition disposition) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workOrWorkCompleted, JsonElement jsonElement)
+			throws Exception {
 
 		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
+
+		byte[] bytes = Base64.decode(wi.getContent());
 
 		CompletableFuture<Boolean> checkControlFuture = this.readableWithWorkOrWorkCompletedFuture(effectivePerson,
 				workOrWorkCompleted);
@@ -61,10 +66,10 @@ class V2UploadWorkOrWorkCompleted extends BaseAction {
 				workCompleted = emc.flag(workOrWorkCompleted, WorkCompleted.class);
 			}
 			if (null != work) {
-				wo.setId(uploadWork(business, effectivePerson, work, site, fileName, bytes, disposition));
+				wo.setId(uploadWork(business, effectivePerson, work, wi.getSite(), wi.getFileName(), bytes));
 			} else if (null != workCompleted) {
-				wo.setId(uploadWorkCompleted(business, effectivePerson, workCompleted, site, fileName, bytes,
-						disposition));
+				wo.setId(uploadWorkCompleted(business, effectivePerson, workCompleted, wi.getSite(), wi.getFileName(),
+						bytes));
 			}
 		}
 		result.setData(wo);
@@ -72,13 +77,10 @@ class V2UploadWorkOrWorkCompleted extends BaseAction {
 	}
 
 	private String uploadWork(Business business, EffectivePerson effectivePerson, Work work, String site,
-			String fileName, byte[] bytes, FormDataContentDisposition disposition) throws Exception {
+			String fileName, byte[] bytes) throws Exception {
 		Control control = business.getControl(effectivePerson, work, Control.class);
 		if (BooleanUtils.isNotTrue(control.getAllowSave())) {
 			throw new ExceptionAccessDenied(effectivePerson, work);
-		}
-		if (StringUtils.isEmpty(fileName)) {
-			fileName = this.fileName(disposition);
 		}
 		this.verifyConstraint(bytes.length, fileName, null);
 		Attachment attachment = business.entityManagerContainer().firstEqualAndEqualAndEqual(Attachment.class,
@@ -107,13 +109,10 @@ class V2UploadWorkOrWorkCompleted extends BaseAction {
 	}
 
 	private String uploadWorkCompleted(Business business, EffectivePerson effectivePerson, WorkCompleted workCompleted,
-			String site, String fileName, byte[] bytes, FormDataContentDisposition disposition) throws Exception {
+			String site, String fileName, byte[] bytes) throws Exception {
 		if (BooleanUtils.isNotTrue(business.canManageApplicationOrProcess(effectivePerson,
 				workCompleted.getApplication(), workCompleted.getProcess()))) {
 			throw new ExceptionAccessDenied(effectivePerson);
-		}
-		if (StringUtils.isEmpty(fileName)) {
-			fileName = this.fileName(disposition);
 		}
 		this.verifyConstraint(bytes.length, fileName, null);
 		Attachment attachment = business.entityManagerContainer().firstEqualAndEqualAndEqual(Attachment.class,
@@ -207,16 +206,24 @@ class V2UploadWorkOrWorkCompleted extends BaseAction {
 		}, ThisApplication.threadPool());
 	}
 
-	@Schema(name="com.x.processplatform.assemble.surface.jaxrs.attachment.V2UploadWorkOrWorkCompleted$Wo")
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.V2UploadWorkOrWorkCompletedBase64$Wi")
+	public static class Wi extends V2UploadWorkOrWorkCompletedBase64Wi {
+
+		private static final long serialVersionUID = -5389058540986817794L;
+
+	}
+
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.V2UploadWorkOrWorkCompletedBase64$Wo")
 	public static class Wo extends WoId {
 
-		private static final long serialVersionUID = -1370726528985836188L;
+		private static final long serialVersionUID = 5006428868911776455L;
 
 	}
 
 	public static class Control extends WorkControl {
 
-		private static final long serialVersionUID = 547408977744326609L;
+		private static final long serialVersionUID = -658513470457661262L;
+
 	}
 
 }
