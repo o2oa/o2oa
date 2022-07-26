@@ -11,6 +11,8 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 
 public class DynamicEntity extends GsonPropertyObject {
 
+	private static final long serialVersionUID = -533163575298575696L;
+
 	public static final String TABLE_PREFIX = "QRY_DYN_";
 	public static final String CLASS_PACKAGE = "com.x.query.dynamic.entity";
 	public static final String FIELDNAME_SUFFIX = "_FIELDNAME";
@@ -18,45 +20,27 @@ public class DynamicEntity extends GsonPropertyObject {
 	public static final String JAR_PREFIX = "dynamic_";
 	public static final String BUNDLE_FIELD = "bundle";
 
-//	public static final String TYPE_string = "string";
-//	public static final String TYPE_integer = "integer";
-//	public static final String TYPE_long = "long";
-//	public static final String TYPE_double = "double";
-//	public static final String TYPE_boolean = "boolean";
-//	public static final String TYPE_date = "date";
-//	public static final String TYPE_time = "time";
-//	public static final String TYPE_dateTime = "dateTime";
-//
-//	public static final String TYPE_stringList = "stringList";
-//	public static final String TYPE_integerList = "integerList";
-//	public static final String TYPE_longList = "longList";
-//	public static final String TYPE_doubleList = "doubleList";
-//	public static final String TYPE_booleanList = "booleanList";
-//
-//	public static final String TYPE_stringLob = "stringLob";
-//	public static final String TYPE_stringMap = "stringMap";
-
 	private String name;
 
 	private List<Field> fieldList = new ArrayList<>();
 
-	public String tableName() throws Exception {
+	public String tableName() {
 		if (StringUtils.isEmpty(name)) {
-			throw new Exception("name is empty.");
+			throw new IllegalStateException("table name is empty.");
 		}
 		return TABLE_PREFIX + StringUtils.upperCase(name);
 	}
 
-	public String classSimpleName() throws Exception {
+	public String classSimpleName() {
 		if (StringUtils.isEmpty(name)) {
-			throw new Exception("name is empty.");
+			throw new IllegalStateException("class simple name is empty.");
 		}
 		return name;
 	}
 
-	public String className() throws Exception {
+	public String className() {
 		if (StringUtils.isEmpty(name)) {
-			throw new Exception("name is empty.");
+			throw new IllegalStateException("class name is empty.");
 		}
 		return CLASS_PACKAGE + "." + name;
 	}

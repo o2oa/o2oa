@@ -22,6 +22,8 @@ import com.x.base.core.project.tools.DefaultCharset;
 
 public class Token extends ConfigObject {
 
+	private static final long serialVersionUID = 397619753053929409L;
+
 	private static final String surfix = "o2platform";
 
 	public static final String defaultInitialManager = "xadmin";

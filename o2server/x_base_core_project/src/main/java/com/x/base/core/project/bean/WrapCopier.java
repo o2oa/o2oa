@@ -16,7 +16,7 @@ import com.x.base.core.project.tools.ListTools;
 
 public class WrapCopier<T, W> {
 
-	private static final Logger logger = LoggerFactory.getLogger(WrapCopier.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(WrapCopier.class);
 
 	private List<String> copyFields = new ArrayList<>();
 
@@ -81,7 +81,7 @@ public class WrapCopier<T, W> {
 					setDestProperty(dest, f, o);
 				}
 			} catch (Exception e) {
-				logger.warn("copyFields:{} to {} error: {}",f, dest.getClass().getSimpleName(), e.getMessage());
+				LOGGER.warn("copyFields:{} to {} error: {}.", f, dest.getClass().getSimpleName(), e.getMessage());
 				e.printStackTrace();
 			}
 		});
