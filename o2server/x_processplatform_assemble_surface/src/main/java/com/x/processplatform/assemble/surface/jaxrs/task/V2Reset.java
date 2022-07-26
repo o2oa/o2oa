@@ -129,8 +129,8 @@ public class V2Reset extends BaseAction {
 		if (null == task) {
 			throw new ExceptionEntityNotExist(id, Task.class);
 		}
-		this.workLog = business.entityManagerContainer().firstEqualAndEqual(WorkLog.class, WorkLog.job_FIELDNAME,
-				task.getJob(), WorkLog.fromActivityToken_FIELDNAME, task.getActivityToken());
+		this.workLog = business.entityManagerContainer().firstEqualAndEqual(WorkLog.class, WorkLog.JOB_FIELDNAME,
+				task.getJob(), WorkLog.FROMACTIVITYTOKEN_FIELDNAME, task.getActivityToken());
 		if (null == workLog) {
 			throw new ExceptionEntityNotExist(WorkLog.class);
 		}

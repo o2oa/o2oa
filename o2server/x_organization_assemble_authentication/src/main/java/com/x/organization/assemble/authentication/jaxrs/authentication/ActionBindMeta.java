@@ -18,11 +18,13 @@ import com.x.organization.core.entity.Person;
 
 class ActionBindMeta extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionBindMeta.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionBindMeta.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String meta) throws Exception {
+		
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+		
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			//Audit audit = logger.audit(effectivePerson);
 			ActionResult<Wo> result = new ActionResult<>();
 			if (Objects.equals(TokenType.anonymous, effectivePerson.getTokenType())
 					|| Objects.equals(TokenType.cipher, effectivePerson.getTokenType())) {
@@ -47,6 +49,8 @@ class ActionBindMeta extends BaseAction {
 	}
 
 	public static class Wo extends WrapBoolean {
+
+		private static final long serialVersionUID = -4369297050851092084L;
 
 	}
 

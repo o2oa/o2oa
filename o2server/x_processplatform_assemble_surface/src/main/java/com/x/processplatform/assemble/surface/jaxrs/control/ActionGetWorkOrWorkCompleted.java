@@ -1,7 +1,6 @@
 package com.x.processplatform.assemble.surface.jaxrs.control;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,9 +33,11 @@ import com.x.processplatform.core.entity.element.util.WorkLogTree;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Nodes;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionGetWorkOrWorkCompleted extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionGetWorkOrWorkCompleted.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionGetWorkOrWorkCompleted.class);
 
 	private Boolean canManageApplicationOrProcess = null;
 
@@ -79,7 +80,7 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 					}
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 			return wo;
 		}, ThisApplication.threadPool());
@@ -136,6 +137,43 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 		}
 
 		// 是否可以增加会签分支
+		setAllowAddSplit(effectivePerson, business, activity, work, wo);
+		// 是否可以召回
+		setAllowRetract(business, effectivePerson, work, wo, activity);
+		// 是否可以回滚
+		wo.setAllowRollback(PropertyTools.getOrElse(activity, Manual.allowRollback_FIELDNAME, Boolean.class, false)
+				&& this.canManageApplicationOrProcess(business, effectivePerson, work.getApplication(),
+						work.getProcess()));
+		// 是否可以提醒
+		wo.setAllowPress(PropertyTools.getOrElse(activity, Manual.allowPress_FIELDNAME, Boolean.class, false)
+				&& this.hasTaskCompletedWithJob(business, effectivePerson, work.getJob()));
+		// 是否可以看到
+		wo.setAllowVisit(true);
+		return wo;
+
+	}
+
+	private void setAllowRetract(Business business, EffectivePerson effectivePerson, Work work, Wo wo,
+			Activity activity) throws Exception {
+		if (BooleanUtils
+				.isTrue(PropertyTools.getOrElse(activity, Manual.allowRetract_FIELDNAME, Boolean.class, false))) {
+			Node node = this.workLogTree(business, work.getJob()).location(work);
+			if (null != node) {
+				Nodes ups = node.upTo(ActivityType.manual, ActivityType.agent, ActivityType.choice, ActivityType.delay,
+						ActivityType.embed, ActivityType.invoke);
+				for (Node o : ups) {
+					if (this.hasTaskCompletedWithActivityToken(business, effectivePerson,
+							o.getWorkLog().getFromActivityToken())) {
+						wo.setAllowRetract(true);
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	private void setAllowAddSplit(EffectivePerson effectivePerson, Business business, Activity activity, Work work,
+			Wo wo) throws Exception {
 		if (BooleanUtils.isTrue(PropertyTools.getOrElse(activity, Manual.allowAddSplit_FIELDNAME, Boolean.class, false))
 				&& BooleanUtils.isTrue(work.getSplitting())) {
 			Node node = this.workLogTree(business, work.getJob()).location(work);
@@ -160,61 +198,7 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 				nodes.clear();
 				nodes.addAll(temps);
 			}
-
-//			if (null != node) {
-//				Nodes ups = node.upTo(ActivityType.split,
-//						Arrays.asList(ActivityType.manual, ActivityType.agent, ActivityType.choice, ActivityType.delay,
-//								ActivityType.embed, ActivityType.invoke, ActivityType.parallel));
-//				for (Node o : ups) {
-//					System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!111");
-//					System.out.println(o.getWorkLog().getFromActivityName());
-//					System.out.println(
-//							o.getWorkLog().getFromActivityToken() + "->" + o.getWorkLog().getArrivedActivityName());
-//					System.out.println(o.getWorkLog().getWork());
-//					System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!111");
-//				}
-//				for (Node o : ups) {
-//					System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!222");
-//					System.out.println(
-//							o.getWorkLog().getFromActivityToken() + "->" + o.getWorkLog().getArrivedActivityName());
-//					System.out.println(o.getWorkLog().getFromActivityToken());
-//					System.out.println(o.getWorkLog().getWork());
-//					System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!222");
-//					if (this.hasTaskCompletedWithActivityToken(business, effectivePerson,
-//							o.getWorkLog().getFromActivityToken())) {
-//						wo.setAllowAddSplit(true);
-//						break;
-//					}
-//				}
-//			}
 		}
-		// 是否可以召回
-		if (BooleanUtils
-				.isTrue(PropertyTools.getOrElse(activity, Manual.allowRetract_FIELDNAME, Boolean.class, false))) {
-			Node node = this.workLogTree(business, work.getJob()).location(work);
-			if (null != node) {
-				Nodes ups = node.upTo(ActivityType.manual, ActivityType.agent, ActivityType.choice, ActivityType.delay,
-						ActivityType.embed, ActivityType.invoke);
-				for (Node o : ups) {
-					if (this.hasTaskCompletedWithActivityToken(business, effectivePerson,
-							o.getWorkLog().getFromActivityToken())) {
-						wo.setAllowRetract(true);
-						break;
-					}
-				}
-			}
-		}
-		// 是否可以回滚
-		wo.setAllowRollback(PropertyTools.getOrElse(activity, Manual.allowRollback_FIELDNAME, Boolean.class, false)
-				&& this.canManageApplicationOrProcess(business, effectivePerson, work.getApplication(),
-						work.getProcess()));
-		// 是否可以提醒
-		wo.setAllowPress(PropertyTools.getOrElse(activity, Manual.allowPress_FIELDNAME, Boolean.class, false)
-				&& this.hasTaskCompletedWithJob(business, effectivePerson, work.getJob()));
-		// 是否可以看到
-		wo.setAllowVisit(true);
-		return wo;
-
 	}
 
 	private boolean hasTaskCompletedWithActivityToken(Business business, EffectivePerson effectivePerson,
@@ -225,7 +209,7 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 						TaskCompleted.person_FIELDNAME, effectivePerson.getDistinguishedName(),
 						TaskCompleted.activityToken_FIELDNAME, activityToken) > 0;
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 			return false;
 		});
@@ -270,7 +254,7 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 	private WorkLogTree workLogTree(Business business, String job) throws Exception {
 		if (null == this.workLogTree) {
 			this.workLogTree = new WorkLogTree(business.entityManagerContainer().fetchEqual(WorkLog.class,
-					WorkLogTree.RELY_WORKLOG_ITEMS, WorkLog.job_FIELDNAME, job));
+					WorkLogTree.RELY_WORKLOG_ITEMS, WorkLog.JOB_FIELDNAME, job));
 		}
 		return this.workLogTree;
 	}
@@ -284,6 +268,7 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 		return this.canManageApplicationOrProcess;
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.control.ActionGetWorkOrWorkCompleted$Wo")
 	public static class Wo extends AbstractControl {
 
 		private static final long serialVersionUID = -4677744478291468477L;

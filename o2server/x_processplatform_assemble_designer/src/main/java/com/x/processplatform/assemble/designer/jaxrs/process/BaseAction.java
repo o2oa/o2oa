@@ -6,6 +6,9 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import com.x.processplatform.core.entity.element.*;
+import com.x.processplatform.core.entity.element.Process;
+import com.x.processplatform.core.entity.element.wrap.*;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -32,36 +35,6 @@ import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
-import com.x.processplatform.core.entity.element.Agent;
-import com.x.processplatform.core.entity.element.Application;
-import com.x.processplatform.core.entity.element.Begin;
-import com.x.processplatform.core.entity.element.Cancel;
-import com.x.processplatform.core.entity.element.Choice;
-import com.x.processplatform.core.entity.element.Delay;
-import com.x.processplatform.core.entity.element.Embed;
-import com.x.processplatform.core.entity.element.End;
-import com.x.processplatform.core.entity.element.Invoke;
-import com.x.processplatform.core.entity.element.Manual;
-import com.x.processplatform.core.entity.element.Merge;
-import com.x.processplatform.core.entity.element.Parallel;
-import com.x.processplatform.core.entity.element.Process;
-import com.x.processplatform.core.entity.element.Route;
-import com.x.processplatform.core.entity.element.Service;
-import com.x.processplatform.core.entity.element.Split;
-import com.x.processplatform.core.entity.element.wrap.WrapAgent;
-import com.x.processplatform.core.entity.element.wrap.WrapBegin;
-import com.x.processplatform.core.entity.element.wrap.WrapCancel;
-import com.x.processplatform.core.entity.element.wrap.WrapChoice;
-import com.x.processplatform.core.entity.element.wrap.WrapDelay;
-import com.x.processplatform.core.entity.element.wrap.WrapEmbed;
-import com.x.processplatform.core.entity.element.wrap.WrapEnd;
-import com.x.processplatform.core.entity.element.wrap.WrapInvoke;
-import com.x.processplatform.core.entity.element.wrap.WrapManual;
-import com.x.processplatform.core.entity.element.wrap.WrapMerge;
-import com.x.processplatform.core.entity.element.wrap.WrapParallel;
-import com.x.processplatform.core.entity.element.wrap.WrapRoute;
-import com.x.processplatform.core.entity.element.wrap.WrapService;
-import com.x.processplatform.core.entity.element.wrap.WrapSplit;
 import com.x.query.core.entity.Item;
 
 abstract class BaseAction extends StandardJaxrsAction {
@@ -350,6 +323,20 @@ abstract class BaseAction extends StandardJaxrsAction {
 			for (WrapParallel w : wraps) {
 				Parallel o = new Parallel();
 				WrapParallel.inCopier.copy(w, o);
+				o.setProcess(process.getId());
+				o.setDistributeFactor(process.getDistributeFactor());
+				list.add(o);
+			}
+		}
+		return list;
+	}
+
+	List<Publish> createPublish(List<WrapPublish> wraps, Process process) {
+		List<Publish> list = new ArrayList<>();
+		if (null != wraps) {
+			for (WrapPublish w : wraps) {
+				Publish o = new Publish();
+				WrapPublish.inCopier.copy(w, o);
 				o.setProcess(process.getId());
 				o.setDistributeFactor(process.getDistributeFactor());
 				list.add(o);
@@ -669,6 +656,31 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}
 	}
 
+	void updatePublish(Business business, List<WrapPublish> wraps, Process process) throws Exception {
+		List<String> ids = business.publish().listWithProcess(process.getId());
+		List<Publish> os = business.entityManagerContainer().list(Publish.class, ids);
+		for (Publish o : os) {
+			if (null == jpaInWrapList(o, wraps)) {
+				business.entityManagerContainer().remove(o);
+			}
+		}
+		if (null != wraps) {
+			for (WrapPublish w : wraps) {
+				Publish o = wrapInJpaList(w, os);
+				if (null == o) {
+					o = new Publish();
+					o.setProcess(process.getId());
+					WrapPublish.inCopier.copy(w, o);
+					o.setDistributeFactor(process.getDistributeFactor());
+					business.entityManagerContainer().persist(o, CheckPersistType.all);
+				} else {
+					WrapPublish.inCopier.copy(w, o);
+					business.entityManagerContainer().check(o, CheckPersistType.all);
+				}
+			}
+		}
+	}
+
 	void updateRoute(Business business, List<WrapRoute> wraps, Process process) throws Exception {
 		List<String> ids = business.route().listWithProcess(process.getId());
 		List<Route> os = business.entityManagerContainer().list(Route.class, ids);
@@ -822,6 +834,13 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}
 	}
 
+	void deletePublish(Business business, Process process) throws Exception {
+		for (String str : business.publish().listWithProcess(process.getId())) {
+			Publish o = business.entityManagerContainer().find(str, Publish.class);
+			business.entityManagerContainer().remove(o);
+		}
+	}
+
 	void deleteRoute(Business business, Process process) throws Exception {
 		for (String str : business.route().listWithProcess(process.getId())) {
 			Route o = business.entityManagerContainer().find(str, Route.class);
@@ -857,6 +876,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		CacheManager.notify(Manual.class);
 		CacheManager.notify(Merge.class);
 		CacheManager.notify(Parallel.class);
+		CacheManager.notify(Publish.class);
 		CacheManager.notify(Route.class);
 		CacheManager.notify(Service.class);
 		CacheManager.notify(Split.class);

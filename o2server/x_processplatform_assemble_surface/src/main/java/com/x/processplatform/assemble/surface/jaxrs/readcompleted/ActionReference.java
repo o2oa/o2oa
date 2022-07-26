@@ -19,6 +19,8 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.ProcessingType;
 import com.x.processplatform.core.entity.content.Read;
@@ -29,9 +31,16 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionReference extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionReference.class);
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -49,18 +58,25 @@ class ActionReference extends BaseAction {
 		}
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.readcompleted.ActionReference$Wo")
 	public static class Wo extends GsonPropertyObject {
 
-		@FieldDescribe("待阅")
+		private static final long serialVersionUID = -345942746779607416L;
+
+		@FieldDescribe("已阅.")
+		@Schema(description = "已阅.")
 		private WoReadCompleted readCompleted;
 
-		@FieldDescribe("工作日志")
+		@FieldDescribe("工作日志.")
+		@Schema(description = "工作日志.")
 		private List<WoWorkLog> workLogList;
 
-		@FieldDescribe("工作")
+		@FieldDescribe("工作.")
+		@Schema(description = "工作.")
 		private List<WoWork> workList;
 
-		@FieldDescribe("已完成工作")
+		@FieldDescribe("已完成工作.")
+		@Schema(description = "已完成工作.")
 		private List<WoWorkCompleted> workCompletedList;
 
 		public List<WoWorkLog> getWorkLogList() {

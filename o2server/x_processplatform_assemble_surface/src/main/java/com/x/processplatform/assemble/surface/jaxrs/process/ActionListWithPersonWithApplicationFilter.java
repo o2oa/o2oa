@@ -17,14 +17,14 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
-import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.SortTools;
@@ -32,11 +32,19 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Process_;
+import com.x.processplatform.core.express.service.processing.jaxrs.process.ActionListWithPersonWithApplicationFilterWi;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionListWithPersonWithApplicationFilter extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWithPersonWithApplicationFilter.class);
+
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String applicationFlag, JsonElement jsonElement)
 			throws Exception {
+
+		LOGGER.debug("execute:{}, applicationFlag:{}.", effectivePerson::getDistinguishedName, () -> applicationFlag);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			ActionResult<List<Wo>> result = new ActionResult<>();
@@ -107,6 +115,7 @@ class ActionListWithPersonWithApplicationFilter extends BaseAction {
 		return em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionListWithPersonWithApplicationFilter$Wo")
 	public static class Wo extends Process {
 
 		private static final long serialVersionUID = 1521228691441978462L;
@@ -115,17 +124,10 @@ class ActionListWithPersonWithApplicationFilter extends BaseAction {
 				JpaObject.FieldsInvisible);
 	}
 
-	public static class Wi extends GsonPropertyObject {
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionListWithPersonWithApplicationFilter$Wi")
+	public static class Wi extends ActionListWithPersonWithApplicationFilterWi {
 
-		@FieldDescribe("可启动流程终端类型,可选值 client,mobile,all")
-		private String startableTerminal;
+		private static final long serialVersionUID = -4479972681926734549L;
 
-		public String getStartableTerminal() {
-			return startableTerminal;
-		}
-
-		public void setStartableTerminal(String startableTerminal) {
-			this.startableTerminal = startableTerminal;
-		}
 	}
 }

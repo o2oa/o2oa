@@ -80,7 +80,7 @@ class ActionAddSplit extends BaseAction {
 
 					result.setData(wos);
 
-					List<WorkLog> workLogs = emc.listEqual(WorkLog.class, WorkLog.job_FIELDNAME, work.getJob());
+					List<WorkLog> workLogs = emc.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, work.getJob());
 
 					WorkLogTree tree = new WorkLogTree(workLogs);
 
@@ -110,13 +110,13 @@ class ActionAddSplit extends BaseAction {
 						workCopy.setActivityArrivedTime(new Date());
 						workCopy.setActivityDescription(activity.getDescription());
 						workCopy.setActivityName(activity.getName());
-						workCopy.setActivityToken(StringTools.uniqueToken());
+						workCopy.setActivityToken(from.getFromActivityToken());
 						workCopy.setActivityType(activity.getActivityType());
-						workCopy.setSplitTokenList(arrived.getProperties().getSplitTokenList());
+						workCopy.setSplitTokenList(arrived.getSplitTokenList());
 						workCopy.setSplitToken(arrived.getSplitToken());
 						workCopy.setSplitting(from.getSplitting());
 						workCopy.setSplitValue(splitValue);
-						// workCopy.getManualTaskIdentityList().clear();
+						workCopy.setSplitValueList(arrived.getSplitValueList());
 						workCopy.setManualTaskIdentityMatrix(new ManualTaskIdentityMatrix());
 						workCopy.setBeforeExecuted(false);
 						workCopy.setDestinationActivity(null);

@@ -19,6 +19,8 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionGetWithWork extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionGetWithWork.class);
@@ -63,6 +65,7 @@ class ActionGetWithWork extends BaseAction {
 		}
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionGetWithWork$Wo")
 	public static class Wo extends Attachment {
 
 		private static final long serialVersionUID = 1954637399762611493L;
@@ -82,7 +85,10 @@ class ActionGetWithWork extends BaseAction {
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionGetWithWork$WoControl")
 	public static class WoControl extends GsonPropertyObject {
+
+		private static final long serialVersionUID = -2289010323449796825L;
 
 		private Boolean allowRead = false;
 		private Boolean allowEdit = false;
@@ -114,52 +120,4 @@ class ActionGetWithWork extends BaseAction {
 
 	}
 
-	private boolean read(Wo wo, EffectivePerson effectivePerson, List<String> identities, List<String> units)
-			throws Exception {
-		boolean value = false;
-		if (effectivePerson.isPerson(wo.getPerson())) {
-			value = true;
-		} else if (ListTools.isEmpty(wo.getReadIdentityList()) && ListTools.isEmpty(wo.getReadUnitList())) {
-			value = true;
-		} else {
-			if (ListTools.containsAny(identities, wo.getReadIdentityList())
-					|| ListTools.containsAny(identities, wo.getReadUnitList())) {
-				value = true;
-			}
-		}
-		wo.getControl().setAllowRead(value);
-		return value;
-	}
-
-	private boolean edit(Wo wo, EffectivePerson effectivePerson, List<String> identities, List<String> units)
-			throws Exception {
-		boolean value = false;
-		if (effectivePerson.isPerson(wo.getPerson())) {
-			value = true;
-		} else if (ListTools.isEmpty(wo.getEditIdentityList()) && ListTools.isEmpty(wo.getEditUnitList())) {
-			value = true;
-		} else {
-			if (ListTools.containsAny(identities, wo.getEditIdentityList())
-					|| ListTools.containsAny(identities, wo.getEditUnitList())) {
-				value = true;
-			}
-		}
-		return value;
-	}
-
-	private boolean control(Wo wo, EffectivePerson effectivePerson, List<String> identities, List<String> units)
-			throws Exception {
-		boolean value = false;
-		if (effectivePerson.isPerson(wo.getPerson())) {
-			value = true;
-		} else if (ListTools.isEmpty(wo.getControllerUnitList()) && ListTools.isEmpty(wo.getControllerIdentityList())) {
-			value = true;
-		} else {
-			if (ListTools.containsAny(identities, wo.getControllerIdentityList())
-					|| ListTools.containsAny(identities, wo.getControllerUnitList())) {
-				value = true;
-			}
-		}
-		return value;
-	}
 }

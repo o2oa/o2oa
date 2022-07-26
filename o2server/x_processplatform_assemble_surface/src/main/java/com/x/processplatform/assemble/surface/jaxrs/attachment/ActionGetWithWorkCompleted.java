@@ -12,13 +12,23 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionGetWithWorkCompleted extends BaseAction {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionEdit.class);
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String workCompletedId) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}, workCompletedId:{}.", effectivePerson::getDistinguishedName, () -> id,
+				() -> workCompletedId);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -55,6 +65,7 @@ class ActionGetWithWorkCompleted extends BaseAction {
 		}
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionGetWithWorkCompleted$Wo")
 	public static class Wo extends Attachment {
 
 		private static final long serialVersionUID = 1954637399762611493L;
@@ -74,7 +85,10 @@ class ActionGetWithWorkCompleted extends BaseAction {
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionGetWithWorkCompleted$WoControl")
 	public static class WoControl extends GsonPropertyObject {
+
+		private static final long serialVersionUID = 2735228567394130202L;
 
 		private Boolean allowRead = false;
 		private Boolean allowEdit = false;
@@ -106,52 +120,4 @@ class ActionGetWithWorkCompleted extends BaseAction {
 
 	}
 
-	private boolean read(Wo wo, EffectivePerson effectivePerson, List<String> identities, List<String> units)
-			throws Exception {
-		boolean value = false;
-		if (effectivePerson.isPerson(wo.getPerson())) {
-			value = true;
-		} else if (ListTools.isEmpty(wo.getReadIdentityList()) && ListTools.isEmpty(wo.getReadUnitList())) {
-			value = true;
-		} else {
-			if (ListTools.containsAny(identities, wo.getReadIdentityList())
-					|| ListTools.containsAny(identities, wo.getReadUnitList())) {
-				value = true;
-			}
-		}
-		wo.getControl().setAllowRead(value);
-		return value;
-	}
-
-	private boolean edit(Wo wo, EffectivePerson effectivePerson, List<String> identities, List<String> units)
-			throws Exception {
-		boolean value = false;
-		if (effectivePerson.isPerson(wo.getPerson())) {
-			value = true;
-		} else if (ListTools.isEmpty(wo.getEditIdentityList()) && ListTools.isEmpty(wo.getEditUnitList())) {
-			value = true;
-		} else {
-			if (ListTools.containsAny(identities, wo.getEditIdentityList())
-					|| ListTools.containsAny(identities, wo.getEditUnitList())) {
-				value = true;
-			}
-		}
-		return value;
-	}
-
-	private boolean control(Wo wo, EffectivePerson effectivePerson, List<String> identities, List<String> units)
-			throws Exception {
-		boolean value = false;
-		if (effectivePerson.isPerson(wo.getPerson())) {
-			value = true;
-		} else if (ListTools.isEmpty(wo.getControllerUnitList()) && ListTools.isEmpty(wo.getControllerIdentityList())) {
-			value = true;
-		} else {
-			if (ListTools.containsAny(identities, wo.getControllerIdentityList())
-					|| ListTools.containsAny(identities, wo.getControllerUnitList())) {
-				value = true;
-			}
-		}
-		return value;
-	}
 }

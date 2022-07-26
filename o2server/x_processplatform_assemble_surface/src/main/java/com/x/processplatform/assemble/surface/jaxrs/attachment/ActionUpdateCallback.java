@@ -19,15 +19,16 @@ import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 
+@Deprecated
 class ActionUpdateCallback extends BaseAction {
 	ActionResult<Wo<WoObject>> execute(EffectivePerson effectivePerson, String id, String workId, String callback,
 			String fileName, byte[] bytes, FormDataContentDisposition disposition) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo<WoObject>> result = new ActionResult<>();
 			Business business = new Business(emc);
-			/* 后面要重新保存 */
+			// 后面要重新保存
 			Work work = emc.find(workId, Work.class);
-			/** 判断work是否存在 */
+			// 判断work是否存在
 			if (null == work) {
 				throw new ExceptionWorkNotExistCallback(callback, workId);
 			}
@@ -38,30 +39,16 @@ class ActionUpdateCallback extends BaseAction {
 			if (StringUtils.isEmpty(fileName)) {
 				fileName = this.fileName(disposition);
 			}
-			if(!fileName.equalsIgnoreCase(attachment.getName())){
+			if (!fileName.equalsIgnoreCase(attachment.getName())) {
 				fileName = this.adjustFileName(business, work.getJob(), fileName);
 			}
-			/** 禁止不带扩展名的文件上传 */
-			// if (StringUtils.isEmpty(FilenameUtils.getExtension(fileName))) {
-			// throw new ExceptionEmptyExtension(fileName);
-			// }
-			/** 禁止不同的扩展名上传 */
-			// if
-			// (!Objects.equals(StringUtils.lowerCase(FilenameUtils.getExtension(fileName)),
-			// attachment.getExtension())) {
-			// throw new ExceptionExtensionNotMatch(fileName, attachment.getExtension());
-			// }
 			this.verifyConstraint(bytes.length, fileName, null);
 
-			/** 统计待办数量判断用户是否可以上传附件 */
-			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
+			// 统计待办数量判断用户是否可以上传附件
+			Control control = business.getControl(effectivePerson, work, Control.class);
 			if (BooleanUtils.isNotTrue(control.getAllowProcessing())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
-			// if (business.attachment().multiReferenced(attachment)) {
-			// throw new ExceptionMultiReferenced(attachment.getName(),
-			// attachment.getId());
-			// }
 			StorageMapping mapping = ThisApplication.context().storageMappings().get(Attachment.class,
 					attachment.getStorage());
 			emc.beginTransaction(Attachment.class);
@@ -83,9 +70,14 @@ class ActionUpdateCallback extends BaseAction {
 	}
 
 	public static class WoObject extends WoId {
+
+		private static final long serialVersionUID = 6522273856576987533L;
 	}
 
-	public static class WoControl extends WorkControl {
+	public static class Control extends WorkControl {
+
+		private static final long serialVersionUID = 6252872887587834820L;
+
 	}
 
 }

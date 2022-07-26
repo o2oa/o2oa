@@ -54,30 +54,8 @@ public class WebServers extends ConcurrentSkipListMap<String, WebServer> {
 		if (!list.isEmpty()) {
 			return list.get(RANDOM.nextInt(list.size()));
 		}
-//		if (ListTools.isEmpty(list)) {
-//			return null;
-//		}
-//		this.sortWithWeight(list);
-//		int total = 0;
-//		for (Entry<String, WebServer> o : list) {
-//			total += o.getValue().getWeight();
-//		}
-//
-//		int rdm = RANDOM.nextInt(total);
-//		int current = 0;
-//		for (Entry<String, WebServer> o : list) {
-//			current += o.getValue().getWeight();
-//			if (rdm <= current) {
-//				return o;
-//			}
-//		}
 		throw new IllegalStateException("randomWithWeight error.");
 	}
-//
-//	private void sortWithWeight(List<Entry<String, WebServer>> list) {
-//		Collections.sort(list,
-//				(o1, o2) -> ObjectUtils.compare(o1.getValue().getWeight(), o2.getValue().getWeight(), true));
-//	}
 
 	public static void updateWebServerConfigJson() throws Exception {
 		File dir = new File(Config.base(), "servers/webServer/x_desktop/res/config");
@@ -126,7 +104,6 @@ public class WebServers extends ConcurrentSkipListMap<String, WebServer> {
 			centers.add(center);
 		}
 //		map.putAll(centerServerConfig.getConfig());
-
 		/** 写入systemName */
 		map.put("footer", Config.collect().getFooter());
 		map.put("title", Config.collect().getTitle());
@@ -141,21 +118,17 @@ public class WebServers extends ConcurrentSkipListMap<String, WebServer> {
 		if ((null != Config.portal().getLoginPage())
 				&& (BooleanUtils.isTrue(Config.portal().getLoginPage().getEnable()))) {
 			map.put(MAP_LOGINPAGE, Config.portal().getLoginPage());
-//		} else if ((null != Config.person().getLoginPage())
-//				&& (BooleanUtils.isTrue(Config.person().getLoginPage().getEnable()))) {
-//			map.put(MAP_LOGINPAGE, Config.person().getLoginPage());
 		} else {
 			map.put(MAP_LOGINPAGE, Config.portal().getLoginPage());
 		}
 		map.put("indexPage", Config.portal().getIndexPage());
-//		map.put("webSocketEnable", Config.web().);
-//		map.put("urlMapping", Config.portal().getUrlMapping());
 
 		writeWebServerConfigPasswordPolicy(map);
 		writeWebServerConfigLanguage(map);
 		writeWebServerConfigTokenName(map);
 		writeWebServerConfigRsa(map);
 		writeWebServerConfigSafeLogout(map);
+		writeWebServerConfigWebSocketEnable(map);
 
 		for (Entry<String, JsonElement> en : Config.web().entrySet()) {
 			map.put(en.getKey(), en.getValue());
@@ -185,13 +158,7 @@ public class WebServers extends ConcurrentSkipListMap<String, WebServer> {
 	 * @throws IOException
 	 */
 	private static void writeWebServerConfigRsa(LinkedHashMap<String, Object> map) throws Exception {
-		File publicKeyFile = new File(Config.base(), "config/public.key");
-		if (publicKeyFile.exists() && publicKeyFile.isFile()) {
-			String publicKey = FileUtils.readFileToString(publicKeyFile, StandardCharsets.UTF_8.name());
-			byte[] publicKeyB = org.apache.commons.codec.binary.Base64.decodeBase64(publicKey);
-			publicKey = new String(Base64.encodeBase64(publicKeyB));
-			map.put("publicKey", publicKey);
-		}
+		map.put("publicKey", BooleanUtils.isTrue(Config.token().getRsaEnable()) ? Config.publicKey() : "");
 	}
 
 	/**
@@ -212,6 +179,16 @@ public class WebServers extends ConcurrentSkipListMap<String, WebServer> {
 	 */
 	private static void writeWebServerConfigLanguage(LinkedHashMap<String, Object> map) throws Exception {
 		map.put("language", Config.person().getLanguage());
+	}
+
+	/**
+	 * 是否启用webSocket链接
+	 * 
+	 * @param map
+	 * @throws Exception
+	 */
+	private static void writeWebServerConfigWebSocketEnable(LinkedHashMap<String, Object> map) throws Exception {
+		map.put("webSocketEnable", Config.miscellaneous().getWebSocketEnable());
 	}
 
 	/**

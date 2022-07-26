@@ -27,78 +27,79 @@ import com.x.organization.assemble.authentication.Business;
 import com.x.organization.core.entity.Person;
 
 /**
- * Created by fancyLou on 3/8/21.
- * Copyright © 2021 O2. All rights reserved.
+ * Created by fancyLou on 3/8/21. Copyright © 2021 O2. All rights reserved.
  */
-public class ActionLoginWithCode extends BaseAction  {
+public class ActionLoginWithCode extends BaseAction {
 
-    private static Logger logger = LoggerFactory.getLogger(ActionLoginWithCode.class);
+	private static Logger logger = LoggerFactory.getLogger(ActionLoginWithCode.class);
 
+	ActionResult<Wo> execute(HttpServletRequest request, HttpServletResponse response, EffectivePerson effectivePerson,
+			String code) throws Exception {
+		ActionResult<Wo> result = new ActionResult<>();
+		if (StringUtils.isEmpty(code)) {
+			throw new ExceptionNoCode();
+		}
+		if (Config.mPweixin() == null || BooleanUtils.isFalse(Config.mPweixin().getEnable())) {
+			throw new ExceptionConfigError();
+		}
 
-    ActionResult<Wo> execute(HttpServletRequest request, HttpServletResponse response, EffectivePerson effectivePerson, String code) throws Exception {
-        ActionResult<Wo> result = new ActionResult<>();
-        if (StringUtils.isEmpty(code)) {
-            throw new ExceptionNoCode();
-        }
-        if (Config.mPweixin() == null || BooleanUtils.isFalse(Config.mPweixin().getEnable())) {
-            throw new ExceptionConfigError();
-        }
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			MPweixin.WeixinAuth2AccessResp resp = Config.mPweixin().mpAuth2(code);
+			if (resp == null) {
+				throw new ExceptionGetAccessTokenFail();
+			}
+			logger.info("获取到用户openid accessToken ，" + resp.toString());
 
-        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-            MPweixin.WeixinAuth2AccessResp resp = Config.mPweixin().mpAuth2(code);
-            if (resp == null) {
-                throw new ExceptionGetAccessTokenFail();
-            }
-            logger.info("获取到用户openid accessToken ，" + resp.toString());
+			Business business = new Business(emc);
+			// openid 查询用户
+			String personId = business.person().getWithCredential(resp.getOpenid());
+			if (StringUtils.isEmpty(personId)) {
+				throw new ExceptionPersonNotExist();
+			}
+			Person person = emc.find(personId, Person.class);
+			Wo wo = Wo.copier.copy(person);
+			List<String> roles = business.organization().role().listWithPerson(person.getDistinguishedName());
+			wo.setRoleList(roles);
+			EffectivePerson effective = new EffectivePerson(wo.getDistinguishedName(), TokenType.user,
+					Config.token().getCipher(), Config.token().getEncryptType());
+			wo.setToken(effective.getToken());
+			HttpToken httpToken = new HttpToken();
+			httpToken.setToken(request, response, effective);
+			result.setData(wo);
+		}
+		return result;
 
-            Business business = new Business(emc);
-            // openid 查询用户
-            String personId = business.person().getWithCredential(resp.getOpenid());
-            if (StringUtils.isEmpty(personId)) {
-                throw new ExceptionPersonNotExist();
-            }
-            Person person = emc.find(personId, Person.class);
-            Wo wo = Wo.copier.copy(person);
-            List<String> roles = business.organization().role().listWithPerson(person.getDistinguishedName());
-            wo.setRoleList(roles);
-            EffectivePerson effective = new EffectivePerson(wo.getDistinguishedName(), TokenType.user,
-                    Config.token().getCipher());
-            wo.setToken(effective.getToken());
-            HttpToken httpToken = new HttpToken();
-            httpToken.setToken(request, response, effective);
-            result.setData(wo);
-        }
-        return result;
+	}
 
-    }
+	public static class Wo extends Person {
+		private static final long serialVersionUID = -5779845017679699316L;
 
-    public static class Wo extends Person {
-        public static List<String> Excludes = new ArrayList<>(JpaObject.FieldsInvisible);
+		public static List<String> Excludes = new ArrayList<>(JpaObject.FieldsInvisible);
 
-        static {
-            Excludes.add("password");
-        }
-        static WrapCopier<Person, Wo> copier = WrapCopierFactory.wo(Person.class, Wo.class, null, Excludes);
+		static {
+			Excludes.add("password");
+		}
+		static WrapCopier<Person, Wo> copier = WrapCopierFactory.wo(Person.class, Wo.class, null, Excludes);
 
-        @FieldDescribe("登录token")
-        private String token;
+		@FieldDescribe("登录token")
+		private String token;
 
-        private List<String> roleList;
+		private List<String> roleList;
 
-        public List<String> getRoleList() {
-            return roleList;
-        }
+		public List<String> getRoleList() {
+			return roleList;
+		}
 
-        public void setRoleList(List<String> roleList) {
-            this.roleList = roleList;
-        }
+		public void setRoleList(List<String> roleList) {
+			this.roleList = roleList;
+		}
 
-        public String getToken() {
-            return token;
-        }
+		public String getToken() {
+			return token;
+		}
 
-        public void setToken(String token) {
-            this.token = token;
-        }
-    }
+		public void setToken(String token) {
+			this.token = token;
+		}
+	}
 }

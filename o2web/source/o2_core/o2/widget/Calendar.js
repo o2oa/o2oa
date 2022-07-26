@@ -756,6 +756,9 @@ o2.widget.Calendar = o2.Calendar = new Class({
 				tds[i].removeClass("past_"+this.options.style);
 				tds[i].setStyles(this.css["today_"+this.options.style]);
 				tds[i].setStyle("border", "0px solid #AAA");
+				if( this.options.todayClass ){
+					tds[i].addClass( this.options.todayClass );
+				}
 			}
 			if (tmp.diff(this.today)>0){
 				if (this.css["past_"+this.options.style]) tds[i].setStyles(this.css["past_"+this.options.style]);

@@ -36,6 +36,12 @@ public class ProcessProperties extends JsonProperties {
 	@FieldDescribe("流程维护身份,如果无法找到处理身份默认的流程处理身份.")
 	private String maintenanceIdentity;
 
+	@FieldDescribe("数据脚本.")
+	private String targetAssignDataScript;
+
+	@FieldDescribe("数据脚本文本.")
+	private String targetAssignDataScriptText;
+
 	public String getMaintenanceIdentity() {
 		return maintenanceIdentity;
 	}
@@ -108,4 +114,19 @@ public class ProcessProperties extends JsonProperties {
 		this.manualStayScriptText = manualStayScriptText;
 	}
 
+	public String getTargetAssignDataScript() {
+		return targetAssignDataScript;
+	}
+
+	public void setTargetAssignDataScript(String targetAssignDataScript) {
+		this.targetAssignDataScript = targetAssignDataScript;
+	}
+
+	public String getTargetAssignDataScriptText() {
+		return targetAssignDataScriptText;
+	}
+
+	public void setTargetAssignDataScriptText(String targetAssignDataScriptText) {
+		this.targetAssignDataScriptText = targetAssignDataScriptText;
+	}
 }

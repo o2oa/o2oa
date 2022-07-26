@@ -10,12 +10,17 @@ import com.x.base.core.project.http.TokenType;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionLogout extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionLogout.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionLogout.class);
 
 	ActionResult<Wo> execute(HttpServletRequest request, HttpServletResponse response, EffectivePerson effectivePerson)
 			throws Exception {
+
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+
 		ActionResult<Wo> result = new ActionResult<>();
 		HttpToken httpToken = new HttpToken();
 		httpToken.deleteToken(request, response);
@@ -26,6 +31,7 @@ class ActionLogout extends BaseAction {
 		return result;
 	}
 
+	@Schema(name = "com.x.organization.assemble.authentication.jaxrs.authentication.ActionLogout$Wo")
 	public static class Wo extends AbstractWoAuthentication {
 
 		private static final long serialVersionUID = 4883354487268278719L;

@@ -217,6 +217,8 @@ public class Process extends SliceJpaObject {
 			this.updateTableEnable = this.getProperties().getUpdateTableEnable();
 			this.updateTableList = this.getProperties().getUpdateTableList();
 			this.maintenanceIdentity = this.getProperties().getMaintenanceIdentity();
+			this.targetAssignDataScript = this.getProperties().getTargetAssignDataScript();
+			this.targetAssignDataScriptText = this.getProperties().getTargetAssignDataScriptText();
 		}
 	}
 
@@ -621,6 +623,24 @@ public class Process extends SliceJpaObject {
 		this.manualStayScriptText = manualStayScriptText;
 	}
 
+	public String getTargetAssignDataScript() {
+		return targetAssignDataScript;
+	}
+
+	public void setTargetAssignDataScript(String targetAssignDataScript) {
+		this.getProperties().setTargetAssignDataScript(targetAssignDataScript);
+		this.targetAssignDataScript = targetAssignDataScript;
+	}
+
+	public String getTargetAssignDataScriptText() {
+		return targetAssignDataScriptText;
+	}
+
+	public void setTargetAssignDataScriptText(String targetAssignDataScriptText) {
+		this.getProperties().setTargetAssignDataScriptText(targetAssignDataScriptText);
+		this.targetAssignDataScriptText = targetAssignDataScriptText;
+	}
+
 	public String getManualBeforeTaskScriptText() {
 		return manualBeforeTaskScriptText;
 	}
@@ -670,6 +690,16 @@ public class Process extends SliceJpaObject {
 	@FieldDescribe("人工活动有停留脚本文本.")
 	@Transient
 	private String manualStayScriptText;
+
+	public static final String TARGETASSIGNDATASCRIPT_FIELDNAME = "targetAssignDataScript";
+	@FieldDescribe("数据执行前脚本.")
+	@Transient
+	private String targetAssignDataScript;
+
+	public static final String TARGETASSIGNDATASCRIPTTEXT_FIELDNAME = "targetAssignDataScriptText";
+	@FieldDescribe("数据执行前脚本文本.")
+	@Transient
+	private String targetAssignDataScriptText;
 
 	/* flag标志位 */
 

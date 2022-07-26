@@ -86,6 +86,7 @@ MWF.xApplication.Attendance.AbnormalExport = new Class({
             "text" : this.app.lp.export,
             "styles" : this.app.css.filterButton
         }).inject(td);
+        input.addClass("mainColor_bg");
         input.addEvent("click", function(){
             this.export(this.yearString.getValue(), this.monthString.getValue() );
             //this.loadView( filterData );

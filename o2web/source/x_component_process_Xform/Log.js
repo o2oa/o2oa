@@ -79,7 +79,8 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
                 this.loadRecordLogDefault();
             }
         }else{
-            this.loadCategoryList("_loadRecordCategoryList", "_loadRecordCategoryList");
+            // this.loadCategoryList("_loadRecordCategoryList", "_loadRecordCategoryList");
+            this.loadRecordCategoryList();
             if( !this.categoryList.length )return;
             this.expandCount = 0;
             if( this.json.expand && this.json.expand === "enable" ){
@@ -178,6 +179,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
     _loadRecordCategoryList : function( category ){
         this.categoryList = [];
         this.categoryJson = {};
+        this.unitIndex = (this.json.unitLevel || "1").toInt() - 1;
         if( category === "fromOpinionGroup" ){
             this.workLog.sort( function( a, b ){
                 if( a.properties.fromOpinionGroup && b.properties.fromOpinionGroup ) {
@@ -220,12 +222,21 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
         }
         this.workLog.each( function(log, idx){
             var key;
-            if( this.json.category === "activityGroup" ){
-                if( log.properties.fromOpinionGroup ){
+            if( this.json.category === "activityGroup" ) {
+                if (log.properties.fromOpinionGroup) {
                     var arr = log.properties.fromOpinionGroup.split("#");
-                    key = arr[arr.length-1]
-                }else{
+                    key = arr[arr.length - 1];
+                } else {
                     key = log.fromActivityName;
+                }
+            }else if( this.json.category === "unitLevelName" ){
+                if( log.properties.unitLevelName ){
+                    var nameArray = log.properties.unitLevelName.split("/");
+                    if( nameArray.length > this.unitIndex ){
+                        key = nameArray[this.unitIndex];
+                    }else{
+                        key = nameArray.getLast();
+                    }
                 }
             }else{
                 key = log[category];
@@ -717,7 +728,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
     checkWorkLogEndActivity: function(){
         //判断流程已经结束，但是taskCompletedList为空，则补上系统自动流转
 	    var workLogList = this.form.businessData.workLogList;
-	    for( var i=workLogList.length-1; i>-1; i++ ){
+	    for( var i=workLogList.length-1; i>-1; i-- ){
 	        var log = workLogList[i];
             if( log.arrivedActivityType === "end" ){
                 if( !log.taskCompletedList )log.taskCompletedList = [];
@@ -846,25 +857,71 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
             }
         }
     },
-    loadCategoryList : function(m1, m2){
+    // loadCategoryList : function(m1, m2){
+    //     var category;
+    //     if( this.json.category === "activity" ){
+    //         category = "fromActivityName";
+    //         this[m1 || "_loadCategoryList"]( category );
+    //     }else if( this.json.category === "unit" ){
+    //         category = "unit";
+    //         this[m2 || "_loadCategoryLitBySubData"]( category );
+    //     }else if( this.json.category === "activityGroup" ){
+    //         category = "fromOpinionGroup";
+    //         this[m1 || "_loadCategoryList"]( category );
+    //     }else{
+    //         category = this.json.category;
+    //         this[m1 || "_loadCategoryList"]( category );
+    //     }
+    // },
+    loadCategoryList : function(){
         var category;
-        if( this.json.category === "activity" ){
-            category = "fromActivityName";
-            this[m1 || "_loadCategoryList"]( category );
-        }else if( this.json.category === "unit" ){
-            category = "unit";
-            this[m2 || "_loadCategoryLitBySubData"]( category );
-        }else if( this.json.category === "activityGroup" ){
-            category = "fromOpinionGroup";
-            this[m1 || "_loadCategoryList"]( category );
-        }else{
-            category = this.json.category;
-            this[m1 || "_loadCategoryList"]( category );
+        switch(this.json.category) {
+            case "activity":
+                category = "fromActivityName";
+                this._loadCategoryList(category);
+                break;
+            case "unit":
+                category = "unit";
+                this._loadCategoryLitBySubData(category);
+                break;
+            case "activityGroup":
+                category = "fromOpinionGroup";
+                this._loadCategoryList(category);
+                break;
+            default:
+                category = this.json.category;
+                this._loadCategoryList(category);
+                break;
         }
     },
-    // isNumber : function( d ){
-    //     return parseFloat(d).toString() !== "NaN"
-    // },
+    loadRecordCategoryList: function(){
+	    var category;
+        switch(this.json.category) {
+            case "activity":
+                category = "fromActivityName";
+                this._loadRecordCategoryList(category);
+                break;
+            case "unit":
+                category = "unit";
+                this._loadRecordCategoryList(category);
+                break;
+            case "activityGroup":
+                category = "fromOpinionGroup";
+                this._loadRecordCategoryList(category);
+                break;
+            case "unitLevelName":
+                category = "unitLevelName";
+                this._loadRecordCategoryList(category);
+                break;
+            default:
+                category = this.json.category;
+                this._loadRecordCategoryList(category);
+                break;
+        }
+    },
+        // isNumber : function( d ){
+        //     return parseFloat(d).toString() !== "NaN"
+        // },
     _loadCategoryList : function( category ){
         this.categoryList = [];
         this.categoryJson = {};

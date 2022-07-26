@@ -46,7 +46,6 @@ import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.StringTools;
 import com.x.server.console.action.ActionConfig;
 import com.x.server.console.action.ActionControl;
-import com.x.server.console.action.ActionCreateEncryptKey;
 import com.x.server.console.action.ActionSetPassword;
 import com.x.server.console.action.ActionVersion;
 import com.x.server.console.log.Log4j2Configuration;
@@ -225,12 +224,6 @@ public class Main {
 				}
 			}
 
-			matcher = CommandFactory.create_encrypt_key_pattern.matcher(cmd);
-			if (matcher.find()) {
-				createEncryptKey();
-				continue;
-			}
-
 			matcher = CommandFactory.control_pattern.matcher(cmd);
 			if (matcher.find()) {
 				control(cmd);
@@ -252,15 +245,6 @@ public class Main {
 		// 关闭定时器
 		scheduler.shutdown();
 		// SystemOutErrorSideCopyBuilder.stop();
-	}
-
-	private static boolean createEncryptKey() {
-		try {
-			return new ActionCreateEncryptKey().execute();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return true;
 	}
 
 	private static void version() {

@@ -36,13 +36,14 @@ class ActionManageListFilterPaging extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<List<Wo>> result = new ActionResult<>();
-			if (business.canManageApplication(effectivePerson, null)) {
+			if (BooleanUtils.isTrue(business.canManageApplication(effectivePerson, null))) {
 				Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 				Predicate p = this.toFilterPredicate(effectivePerson, business, wi);
-				List<Wo> wos = emc.fetchDescPaging(TaskCompleted.class, Wo.copier, p, page, size, TaskCompleted.startTime_FIELDNAME);
+				List<Wo> wos = emc.fetchDescPaging(TaskCompleted.class, Wo.copier, p, page, size,
+						TaskCompleted.startTime_FIELDNAME);
 				result.setData(wos);
 				result.setCount(emc.count(TaskCompleted.class, p));
-			}else{
+			} else {
 				result.setData(new ArrayList<Wo>());
 				result.setCount(0L);
 			}
@@ -50,7 +51,7 @@ class ActionManageListFilterPaging extends BaseAction {
 		}
 	}
 
-	private Predicate toFilterPredicate(EffectivePerson effectivePerson, Business business,  Wi wi) throws Exception {
+	private Predicate toFilterPredicate(EffectivePerson effectivePerson, Business business, Wi wi) throws Exception {
 		EntityManager em = business.entityManagerContainer().get(TaskCompleted.class);
 		List<String> person_ids = business.organization().person().list(wi.getCredentialList());
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -60,50 +61,51 @@ class ActionManageListFilterPaging extends BaseAction {
 		if (ListTools.isNotEmpty(wi.getApplicationList())) {
 			p = cb.and(p, root.get(TaskCompleted_.application).in(wi.getApplicationList()));
 		}
-		if (StringUtils.isNotBlank(wi.getPerson())){
-			p = cb.and(p,cb.equal(root.get(TaskCompleted_.person), wi.getPerson()));
+		if (StringUtils.isNotBlank(wi.getPerson())) {
+			p = cb.and(p, cb.equal(root.get(TaskCompleted_.person), wi.getPerson()));
 		}
-		if (StringUtils.isNotBlank(wi.getStringValue01())){
-			p = cb.and(p,cb.equal(root.get(TaskCompleted_.stringValue01), wi.getStringValue01()));
+		if (StringUtils.isNotBlank(wi.getStringValue01())) {
+			p = cb.and(p, cb.equal(root.get(TaskCompleted_.stringValue01), wi.getStringValue01()));
 		}
-		if (StringUtils.isNotBlank(wi.getStringValue02())){
-			p = cb.and(p,cb.equal(root.get(TaskCompleted_.stringValue02), wi.getStringValue02()));
+		if (StringUtils.isNotBlank(wi.getStringValue02())) {
+			p = cb.and(p, cb.equal(root.get(TaskCompleted_.stringValue02), wi.getStringValue02()));
 		}
-		if (StringUtils.isNotBlank(wi.getStringValue03())){
-			p = cb.and(p,cb.equal(root.get(TaskCompleted_.stringValue03), wi.getStringValue03()));
+		if (StringUtils.isNotBlank(wi.getStringValue03())) {
+			p = cb.and(p, cb.equal(root.get(TaskCompleted_.stringValue03), wi.getStringValue03()));
 		}
-		if (StringUtils.isNotBlank(wi.getStringValue04())){
-			p = cb.and(p,cb.equal(root.get(TaskCompleted_.stringValue04), wi.getStringValue04()));
+		if (StringUtils.isNotBlank(wi.getStringValue04())) {
+			p = cb.and(p, cb.equal(root.get(TaskCompleted_.stringValue04), wi.getStringValue04()));
 		}
-		if (StringUtils.isNotBlank(wi.getStringValue05())){
-			p = cb.and(p,cb.equal(root.get(TaskCompleted_.stringValue05), wi.getStringValue05()));
+		if (StringUtils.isNotBlank(wi.getStringValue05())) {
+			p = cb.and(p, cb.equal(root.get(TaskCompleted_.stringValue05), wi.getStringValue05()));
 		}
-		if (StringUtils.isNotBlank(wi.getStringValue06())){
-			p = cb.and(p,cb.equal(root.get(TaskCompleted_.stringValue06), wi.getStringValue06()));
+		if (StringUtils.isNotBlank(wi.getStringValue06())) {
+			p = cb.and(p, cb.equal(root.get(TaskCompleted_.stringValue06), wi.getStringValue06()));
 		}
-		if (StringUtils.isNotBlank(wi.getStringValue07())){
-			p = cb.and(p,cb.equal(root.get(TaskCompleted_.stringValue07), wi.getStringValue07()));
+		if (StringUtils.isNotBlank(wi.getStringValue07())) {
+			p = cb.and(p, cb.equal(root.get(TaskCompleted_.stringValue07), wi.getStringValue07()));
 		}
-		if (StringUtils.isNotBlank(wi.getStringValue08())){
-			p = cb.and(p,cb.equal(root.get(TaskCompleted_.stringValue08), wi.getStringValue08()));
+		if (StringUtils.isNotBlank(wi.getStringValue08())) {
+			p = cb.and(p, cb.equal(root.get(TaskCompleted_.stringValue08), wi.getStringValue08()));
 		}
-		if (StringUtils.isNotBlank(wi.getStringValue09())){
-			p = cb.and(p,cb.equal(root.get(TaskCompleted_.stringValue09), wi.getStringValue09()));
+		if (StringUtils.isNotBlank(wi.getStringValue09())) {
+			p = cb.and(p, cb.equal(root.get(TaskCompleted_.stringValue09), wi.getStringValue09()));
 		}
-		if (StringUtils.isNotBlank(wi.getStringValue10())){
-			p = cb.and(p,cb.equal(root.get(TaskCompleted_.stringValue10), wi.getStringValue10()));
+		if (StringUtils.isNotBlank(wi.getStringValue10())) {
+			p = cb.and(p, cb.equal(root.get(TaskCompleted_.stringValue10), wi.getStringValue10()));
 		}
 		if (ListTools.isNotEmpty(wi.getProcessList())) {
-			if(BooleanUtils.isFalse(wi.getRelateEditionProcess())) {
+			if (BooleanUtils.isFalse(wi.getRelateEditionProcess())) {
 				p = cb.and(p, root.get(TaskCompleted_.process).in(wi.getProcessList()));
-			}else{
-				p = cb.and(p, root.get(TaskCompleted_.process).in(business.process().listEditionProcess(wi.getProcessList())));
+			} else {
+				p = cb.and(p, root.get(TaskCompleted_.process)
+						.in(business.process().listEditionProcess(wi.getProcessList())));
 			}
 		}
-		if(DateTools.isDateTimeOrDate(wi.getStartTime())){
+		if (DateTools.isDateTimeOrDate(wi.getStartTime())) {
 			p = cb.and(p, cb.greaterThan(root.get(TaskCompleted_.startTime), DateTools.parse(wi.getStartTime())));
 		}
-		if(DateTools.isDateTimeOrDate(wi.getEndTime())){
+		if (DateTools.isDateTimeOrDate(wi.getEndTime())) {
 			p = cb.and(p, cb.lessThan(root.get(TaskCompleted_.startTime), DateTools.parse(wi.getEndTime())));
 		}
 		if (ListTools.isNotEmpty(person_ids)) {
@@ -126,13 +128,15 @@ class ActionManageListFilterPaging extends BaseAction {
 		}
 		if (StringUtils.isNoneBlank(wi.getKey())) {
 			String key = StringTools.escapeSqlLikeKey(wi.getKey());
-			p = cb.and(p,cb.like(root.get(TaskCompleted_.title), "%" + key + "%", StringTools.SQL_ESCAPE_CHAR));
+			p = cb.and(p, cb.like(root.get(TaskCompleted_.title), "%" + key + "%", StringTools.SQL_ESCAPE_CHAR));
 		}
 
 		return p;
 	}
 
 	public class Wi extends GsonPropertyObject {
+
+		private static final long serialVersionUID = -959852129833296223L;
 
 		@FieldDescribe("应用")
 		private List<String> applicationList;
@@ -193,41 +197,128 @@ class ActionManageListFilterPaging extends BaseAction {
 		@FieldDescribe("业务数据String值10")
 		private String stringValue10;
 
+		public List<String> getActivityNameList() {
+			return ListTools.trim(activityNameList, true, true);
+		}
+
 		public List<String> getApplicationList() {
-			return applicationList;
-		}
-
-
-		public String getPerson() { return person; }
-		public String getStringValue01() { return stringValue01; }
-		public String getStringValue02() { return stringValue02; }
-		public String getStringValue03() { return stringValue03; }
-		public String getStringValue04() { return stringValue04; }
-		public String getStringValue05() { return stringValue05; }
-		public String getStringValue06() { return stringValue06; }
-		public String getStringValue07() { return stringValue07; }
-		public String getStringValue08() { return stringValue08; }
-		public String getStringValue09() { return stringValue09; }
-		public String getStringValue10() { return stringValue10; }
-		public void setStringValue01(String stringValue01) { this.stringValue01 = stringValue01; }
-		public void setStringValue02(String stringValue02) { this.stringValue02 = stringValue02; }
-		public void setStringValue03(String stringValue03) { this.stringValue03 = stringValue03; }
-		public void setStringValue04(String stringValue04) { this.stringValue04 = stringValue04; }
-		public void setStringValue05(String stringValue05) { this.stringValue05 = stringValue05; }
-		public void setStringValue06(String stringValue06) { this.stringValue06 = stringValue06; }
-		public void setStringValue07(String stringValue07) { this.stringValue07 = stringValue07; }
-		public void setStringValue08(String stringValue08) { this.stringValue08 = stringValue08; }
-		public void setStringValue09(String stringValue09) { this.stringValue09 = stringValue09; }
-		public void setStringValue10(String stringValue10) { this.stringValue10 = stringValue10; }
-		public void setPerson(String person) {
-			this.person = person;
-		}
-		public void setApplicationList(List<String> applicationList) {
-			this.applicationList = applicationList;
+			return ListTools.trim(applicationList, true, true);
 		}
 
 		public List<String> getProcessList() {
-			return processList;
+			return ListTools.trim(processList, true, true);
+		}
+
+		public List<String> getStartTimeMonthList() {
+			return ListTools.trim(startTimeMonthList, true, true);
+		}
+
+		public List<String> getCreatorUnitList() {
+			return ListTools.trim(creatorUnitList, true, true);
+		}
+
+		public List<String> getJobList() {
+			return ListTools.trim(jobList, true, true);
+		}
+
+		public List<String> getWorkList() {
+			return ListTools.trim(workList, true, true);
+		}
+
+		public List<String> getCredentialList() {
+			return ListTools.trim(credentialList, true, true);
+		}
+
+		public String getPerson() {
+			return person;
+		}
+
+		public String getStringValue01() {
+			return stringValue01;
+		}
+
+		public String getStringValue02() {
+			return stringValue02;
+		}
+
+		public String getStringValue03() {
+			return stringValue03;
+		}
+
+		public String getStringValue04() {
+			return stringValue04;
+		}
+
+		public String getStringValue05() {
+			return stringValue05;
+		}
+
+		public String getStringValue06() {
+			return stringValue06;
+		}
+
+		public String getStringValue07() {
+			return stringValue07;
+		}
+
+		public String getStringValue08() {
+			return stringValue08;
+		}
+
+		public String getStringValue09() {
+			return stringValue09;
+		}
+
+		public String getStringValue10() {
+			return stringValue10;
+		}
+
+		public void setStringValue01(String stringValue01) {
+			this.stringValue01 = stringValue01;
+		}
+
+		public void setStringValue02(String stringValue02) {
+			this.stringValue02 = stringValue02;
+		}
+
+		public void setStringValue03(String stringValue03) {
+			this.stringValue03 = stringValue03;
+		}
+
+		public void setStringValue04(String stringValue04) {
+			this.stringValue04 = stringValue04;
+		}
+
+		public void setStringValue05(String stringValue05) {
+			this.stringValue05 = stringValue05;
+		}
+
+		public void setStringValue06(String stringValue06) {
+			this.stringValue06 = stringValue06;
+		}
+
+		public void setStringValue07(String stringValue07) {
+			this.stringValue07 = stringValue07;
+		}
+
+		public void setStringValue08(String stringValue08) {
+			this.stringValue08 = stringValue08;
+		}
+
+		public void setStringValue09(String stringValue09) {
+			this.stringValue09 = stringValue09;
+		}
+
+		public void setStringValue10(String stringValue10) {
+			this.stringValue10 = stringValue10;
+		}
+
+		public void setPerson(String person) {
+			this.person = person;
+		}
+
+		public void setApplicationList(List<String> applicationList) {
+			this.applicationList = applicationList;
 		}
 
 		public void setProcessList(List<String> processList) {
@@ -242,16 +333,8 @@ class ActionManageListFilterPaging extends BaseAction {
 			this.relateEditionProcess = relateEditionProcess;
 		}
 
-		public List<String> getStartTimeMonthList() {
-			return startTimeMonthList;
-		}
-
 		public void setStartTimeMonthList(List<String> startTimeMonthList) {
 			this.startTimeMonthList = startTimeMonthList;
-		}
-
-		public List<String> getActivityNameList() {
-			return activityNameList;
 		}
 
 		public void setActivityNameList(List<String> activityNameList) {
@@ -266,16 +349,8 @@ class ActionManageListFilterPaging extends BaseAction {
 			this.key = key;
 		}
 
-		public List<String> getCreatorUnitList() {
-			return creatorUnitList;
-		}
-
 		public void setCreatorUnitList(List<String> creatorUnitList) {
 			this.creatorUnitList = creatorUnitList;
-		}
-
-		public List<String> getCredentialList() {
-			return credentialList;
 		}
 
 		public void setCredentialList(List<String> credentialList) {
@@ -298,16 +373,8 @@ class ActionManageListFilterPaging extends BaseAction {
 			this.endTime = endTime;
 		}
 
-		public List<String> getWorkList() {
-			return workList;
-		}
-
 		public void setWorkList(List<String> workList) {
 			this.workList = workList;
-		}
-
-		public List<String> getJobList() {
-			return jobList;
 		}
 
 		public void setJobList(List<String> jobList) {

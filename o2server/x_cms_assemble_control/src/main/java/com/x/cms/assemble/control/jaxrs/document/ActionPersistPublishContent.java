@@ -188,16 +188,12 @@ public class ActionPersistPublishContent extends BaseAction {
 				}
 
 				if (StringUtils.isEmpty( wi.getCreatorIdentity() )) {
-					if( "cipher".equalsIgnoreCase( effectivePerson.getDistinguishedName() )) {
-						wi.setCreatorIdentity("cipher");
-						wi.setCreatorPerson("cipher");
-						wi.setCreatorUnitName("cipher");
-						wi.setCreatorTopUnitName("cipher");
-					}else if ("xadmin".equalsIgnoreCase(effectivePerson.getDistinguishedName())) {
-						wi.setCreatorIdentity("xadmin");
-						wi.setCreatorPerson("xadmin");
-						wi.setCreatorUnitName("xadmin");
-						wi.setCreatorTopUnitName("xadmin");
+					if( "cipher".equalsIgnoreCase(effectivePerson.getDistinguishedName()) ||
+							"xadmin".equalsIgnoreCase(effectivePerson.getDistinguishedName())) {
+						wi.setCreatorIdentity(effectivePerson.getDistinguishedName());
+						wi.setCreatorPerson(effectivePerson.getDistinguishedName());
+						wi.setCreatorUnitName(effectivePerson.getDistinguishedName());
+						wi.setCreatorTopUnitName(effectivePerson.getDistinguishedName());
 					}else {
 						//尝试一下根据传入的用户或者当前用户获取用户的第一个身份
 						wi.setCreatorIdentity( userManagerService.getMajorIdentityWithPerson( wi.getCreatorPerson() ) );
@@ -481,6 +477,9 @@ public class ActionPersistPublishContent extends BaseAction {
 
 		@FieldDescribe( "启动流程的WorkId." )
 		private String wf_workId = null;
+
+		@FieldDescribe( "流程的表单Id." )
+		private String wf_formId = null;
 
 		@FieldDescribe( "启动流程的附件列表." )
 		private String[] wf_attachmentIds = null;
@@ -1055,6 +1054,14 @@ public class ActionPersistPublishContent extends BaseAction {
 
 		public void setStringValue03(String stringValue03) {
 			this.stringValue03 = stringValue03;
+		}
+
+		public String getWf_formId() {
+			return wf_formId;
+		}
+
+		public void setWf_formId(String wf_formId) {
+			this.wf_formId = wf_formId;
 		}
 	}
 

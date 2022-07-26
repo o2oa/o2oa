@@ -20,16 +20,20 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.organization.assemble.authentication.Business;
 import com.x.organization.assemble.authentication.ThisApplication;
-import com.x.organization.assemble.authentication.wrapin.WrapInLoginRecord;
+import com.x.organization.assemble.authentication.jaxrs.authentication.QueueLoginRecord.LoginRecord;
 import com.x.organization.core.entity.Person;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionWho extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionWho.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionWho.class);
 
 	ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson) throws Exception {
+
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			logger.debug("who request:{}.", request);
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
 			Wo wo = new Wo();
@@ -91,7 +95,7 @@ class ActionWho extends BaseAction {
 	}
 
 	private void recordLogin(String name, String address, String client) throws Exception {
-		WrapInLoginRecord o = new WrapInLoginRecord();
+		LoginRecord o = new LoginRecord();
 		o.setAddress(Objects.toString(address, ""));
 		o.setClient(Objects.toString(client, ""));
 		o.setName(Objects.toString(name, ""));
@@ -99,6 +103,7 @@ class ActionWho extends BaseAction {
 		ThisApplication.queueLoginRecord.send(o);
 	}
 
+	@Schema(name = "com.x.organization.assemble.authentication.jaxrs.authentication.ActionWho$Wo")
 	public static class Wo extends AbstractWoAuthentication {
 
 		private static final long serialVersionUID = -9155665786740746356L;

@@ -24,13 +24,13 @@ public class Business {
 		return this.emc;
 	}
 
-	public boolean isPortalManager(EffectivePerson effectivePerson) throws Exception {
-		if (effectivePerson.isManager()
-				|| (this.organization().person().hasRole(effectivePerson, OrganizationDefinition.PortalManager))) {
-			return true;
-		}
-		return false;
-	}
+//	public boolean isPortalManager(EffectivePerson effectivePerson) throws Exception {
+//		if (effectivePerson.isManager()
+//				|| (this.organization().person().hasRole(effectivePerson, OrganizationDefinition.PortalManager))) {
+//			return true;
+//		}
+//		return false;
+//	}
 
 	private Organization organization;
 

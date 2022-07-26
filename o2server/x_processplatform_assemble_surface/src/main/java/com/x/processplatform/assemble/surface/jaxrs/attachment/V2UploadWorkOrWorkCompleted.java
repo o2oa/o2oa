@@ -31,12 +31,17 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.element.End;
 import com.x.processplatform.core.entity.element.Process;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class V2UploadWorkOrWorkCompleted extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(V2UploadWorkOrWorkCompleted.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(V2UploadWorkOrWorkCompleted.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workOrWorkCompleted, String site, String fileName,
 			byte[] bytes, FormDataContentDisposition disposition) throws Exception {
+
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 
@@ -68,7 +73,7 @@ class V2UploadWorkOrWorkCompleted extends BaseAction {
 
 	private String uploadWork(Business business, EffectivePerson effectivePerson, Work work, String site,
 			String fileName, byte[] bytes, FormDataContentDisposition disposition) throws Exception {
-		WoControl control = business.getControl(effectivePerson, work, WoControl.class);
+		Control control = business.getControl(effectivePerson, work, Control.class);
 		if (BooleanUtils.isNotTrue(control.getAllowSave())) {
 			throw new ExceptionAccessDenied(effectivePerson, work);
 		}
@@ -196,19 +201,20 @@ class V2UploadWorkOrWorkCompleted extends BaseAction {
 				Business business = new Business(emc);
 				value = business.readableWithWorkOrWorkCompleted(effectivePerson, flag);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 			return value;
 		}, ThisApplication.threadPool());
 	}
 
+	@Schema(name="com.x.processplatform.assemble.surface.jaxrs.attachment.V2UploadWorkOrWorkCompleted$Wo")
 	public static class Wo extends WoId {
 
 		private static final long serialVersionUID = -1370726528985836188L;
 
 	}
 
-	public static class WoControl extends WorkControl {
+	public static class Control extends WorkControl {
 
 		private static final long serialVersionUID = 547408977744326609L;
 	}

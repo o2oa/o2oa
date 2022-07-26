@@ -18,7 +18,7 @@ import com.x.program.center.core.entity.WarnLog;
 
 public class Cleanup extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(Cleanup.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Cleanup.class);
 
 	private static List<Class<? extends JpaObject>> list = Arrays.asList(ScheduleLog.class, PromptErrorLog.class,
 			UnexpectedErrorLog.class, WarnLog.class);
@@ -37,7 +37,7 @@ public class Cleanup extends BaseAction {
 				updateTag();
 			}
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 			throw new JobExecutionException(e);
 		}
 	}

@@ -9,15 +9,23 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionManageDelete extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionManageDelete.class);
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
@@ -44,7 +52,11 @@ class ActionManageDelete extends BaseAction {
 		return result;
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.read.ActionManageDelete$Wo")
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = 5580942662510831850L;
+
 	}
 
 }

@@ -1020,6 +1020,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
     },
     getDataText: function(data){
         if (typeOf(data)=="string") return data;
+        if( !data || !data.distinguishedName )return "";
         var text = "";
         var flag = data.distinguishedName.substr(data.distinguishedName.length-2, 2);
         switch (flag.toLowerCase()){
@@ -1185,7 +1186,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
             "text": nodeText
         });
         var text = "";
-        if (data.value){
+        if (data.value && data.value.distinguishedName){
             var flag = data.value.distinguishedName.substr(data.value.distinguishedName.length-2, 2);
             switch (flag.toLowerCase()){
                 case "@i":
@@ -1432,6 +1433,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
         if (node.getStyle("overflow")==="visible" && !height) node.setStyle("overflow", "hidden");
         if (value && value.length){
             value.each(function(data){
+                if( !data || !data.distinguishedName )return;
                 var flag = data.distinguishedName.substr(data.distinguishedName.length-2, 2);
                 var copyData = Object.clone(data);
                 if( this.json.displayTextScript && this.json.displayTextScript.code ){

@@ -14,14 +14,23 @@ import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.Work;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionListWithWork extends BaseAction {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWithWork.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String workId) throws Exception {
+		
+		LOGGER.debug("execute:{}, workId:{}.", effectivePerson::getDistinguishedName, () -> workId);
+		
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 
 			ActionResult<List<Wo>> result = new ActionResult<>();
@@ -49,6 +58,7 @@ class ActionListWithWork extends BaseAction {
 		}
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.read.ActionListWithWork$Wo")
 	public static class Wo extends Read {
 
 		private static final long serialVersionUID = 2279846765261247910L;

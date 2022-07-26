@@ -76,6 +76,7 @@ MWF.xApplication.Attendance.SelfHoliday = new Class({
                     action : {
                         "type" : "button",
                         "className" : "filterButton",
+                        "clazz":"mainColor_bg",
                         "value" : lp.query,
                         "event" : { "click" : function(){
                             var filterData =  _self.filter.getResult( true,",",true,true,true);

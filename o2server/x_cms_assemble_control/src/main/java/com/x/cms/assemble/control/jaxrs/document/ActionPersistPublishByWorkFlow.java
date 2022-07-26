@@ -17,12 +17,13 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.annotation.AuditLog;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
+import com.x.base.core.project.config.Token;
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -38,12 +39,18 @@ import com.x.cms.core.entity.FileInfo;
 import com.x.cms.core.entity.element.Form;
 import com.x.processplatform.core.entity.content.Attachment;
 
+/**
+ * 从流程发布一个文档（流程）
+ * 
+ * @author sword
+ */
 public class ActionPersistPublishByWorkFlow extends BaseAction {
 
-	private static  Logger logger = LoggerFactory.getLogger(ActionPersistPublishByWorkFlow.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionPersistPublishByWorkFlow.class);
 
-	@AuditLog(operation = "发布一个文档（流程）")
-	protected ActionResult<Wo> execute(HttpServletRequest request, JsonElement jsonElement, EffectivePerson effectivePerson) throws Exception {
+	protected ActionResult<Wo> execute(HttpServletRequest request, JsonElement jsonElement,
+			EffectivePerson effectivePerson) throws Exception {
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 		ActionResult<Wo> result = new ActionResult<>();
 		List<FileInfo> cloudPictures = null;
 		AppInfo appInfo = null;
@@ -54,16 +61,17 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 		Boolean check = true;
 
 		try {
-			wi = this.convertToWrapIn( jsonElement, Wi.class );
-		} catch (Exception e ) {
+			wi = this.convertToWrapIn(jsonElement, Wi.class);
+		} catch (Exception e) {
 			check = false;
-			Exception exception = new ExceptionDocumentInfoProcess( e, "系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString() );
-			result.error( exception );
-			logger.error( e, effectivePerson, request, null);
+			Exception exception = new ExceptionDocumentInfoProcess(e,
+					"系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString());
+			result.error(exception);
+			LOGGER.error(e, effectivePerson, request, null);
 		}
 
 		if (check) {
-			if ( StringUtils.isEmpty(wi.getCategoryId())) {
+			if (StringUtils.isEmpty(wi.getCategoryId())) {
 				check = false;
 				Exception exception = new ExceptionDocumentCategoryIdEmpty();
 				result.error(exception);
@@ -72,7 +80,7 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 
 		if (check) {
 			try {
-				categoryInfo = categoryInfoServiceAdv.get( wi.getCategoryId() );
+				categoryInfo = categoryInfoServiceAdv.get(wi.getCategoryId());
 				if (categoryInfo == null) {
 					check = false;
 					Exception exception = new ExceptionCategoryInfoNotExists(wi.getCategoryId());
@@ -80,15 +88,16 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 				}
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new ExceptionDocumentInfoProcess(e,"系统在根据ID查询分类信息时发生异常！ID：" + wi.getCategoryId());
+				Exception exception = new ExceptionDocumentInfoProcess(e,
+						"系统在根据ID查询分类信息时发生异常！ID：" + wi.getCategoryId());
 				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
+				LOGGER.error(e, effectivePerson, request, null);
 			}
 		}
 
 		if (check) {
 			try {
-				appInfo = appInfoServiceAdv.get( categoryInfo.getAppId() );
+				appInfo = appInfoServiceAdv.get(categoryInfo.getAppId());
 				if (appInfo == null) {
 					check = false;
 					Exception exception = new ExceptionAppInfoNotExists(categoryInfo.getAppId());
@@ -96,15 +105,16 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 				}
 			} catch (Exception e) {
 				check = false;
-				Exception exception = new ExceptionDocumentInfoProcess(e, "系统在根据ID查询应用栏目信息时发生异常！ID：" + categoryInfo.getAppId());
+				Exception exception = new ExceptionDocumentInfoProcess(e,
+						"系统在根据ID查询应用栏目信息时发生异常！ID：" + categoryInfo.getAppId());
 				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
+				LOGGER.error(e, effectivePerson, request, null);
 			}
 		}
 
 		// 查询分类设置的编辑表单
 		if (check) {
-			if ( StringUtils.isEmpty(categoryInfo.getFormId())) {
+			if (StringUtils.isEmpty(categoryInfo.getFormId())) {
 				check = false;
 				Exception exception = new ExceptionCategoryFormIdEmpty();
 				result.error(exception);
@@ -127,7 +137,7 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 				Exception exception = new ExceptionDocumentInfoProcess(e,
 						"系统在根据ID查询编辑表单时发生异常！ID：" + categoryInfo.getFormId());
 				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
+				LOGGER.error(e, effectivePerson, request, null);
 			}
 		}
 
@@ -148,7 +158,7 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 					Exception exception = new ExceptionDocumentInfoProcess(e,
 							"系统在根据ID查询阅读表单时发生异常！ID：" + categoryInfo.getReadFormId());
 					result.error(exception);
-					logger.error(e, effectivePerson, request, null);
+					LOGGER.error(e, effectivePerson, request, null);
 				}
 			}
 		}
@@ -159,11 +169,11 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 			wi.setCategoryName(categoryInfo.getCategoryName());
 			wi.setCategoryId(categoryInfo.getId());
 			wi.setCategoryAlias(categoryInfo.getCategoryAlias());
-			if( StringUtils.isEmpty( wi.getDocumentType() ) ) {
-				wi.setDocumentType( categoryInfo.getDocumentType() );
+			if (StringUtils.isEmpty(wi.getDocumentType())) {
+				wi.setDocumentType(categoryInfo.getDocumentType());
 			}
-			if( !"信息".equals(wi.getDocumentType()) && !"数据".equals( wi.getDocumentType() )) {
-				wi.setDocumentType( "信息" );
+			if (!"信息".equals(wi.getDocumentType()) && !"数据".equals(wi.getDocumentType())) {
+				wi.setDocumentType("信息");
 			}
 			if (wi.getPictureList() != null && !wi.getPictureList().isEmpty()) {
 				wi.setHasIndexPic(true);
@@ -171,51 +181,51 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 		}
 
 		if (check) {
-			try {
-				if (StringUtils.isEmpty( wi.getCreatorIdentity() )) {
-					if( "cipher".equalsIgnoreCase( effectivePerson.getDistinguishedName() )) {
-						wi.setCreatorIdentity("cipher");
-						wi.setCreatorPerson("cipher");
-						wi.setCreatorUnitName("cipher");
-						wi.setCreatorTopUnitName("cipher");
-					}else if ("xadmin".equalsIgnoreCase(effectivePerson.getDistinguishedName())) {
-						wi.setCreatorIdentity("xadmin");
-						wi.setCreatorPerson("xadmin");
-						wi.setCreatorUnitName("xadmin");
-						wi.setCreatorTopUnitName("xadmin");
-					}else {
-						//尝试一下根据当前用户获取用户的第一个身份
-						wi.setCreatorIdentity( userManagerService.getMajorIdentityWithPerson( effectivePerson.getDistinguishedName()) );
-					}
+			if (StringUtils.isNotEmpty(wi.getIdentity())) {
+				wi.setCreatorIdentity(wi.getIdentity());
+				wi.setCreatorPerson(userManagerService.getPersonNameWithIdentity(wi.getIdentity()));
+			}
+			if (StringUtils.isEmpty(wi.getCreatorPerson())) {
+				wi.setCreatorPerson(effectivePerson.getDistinguishedName());
+			}
+			if (StringUtils.isEmpty(wi.getCreatorIdentity())) {
+				if (effectivePerson.isCipher() || effectivePerson.isManager()) {
+					wi.setCreatorIdentity(effectivePerson.getDistinguishedName());
+					wi.setCreatorPerson(effectivePerson.getDistinguishedName());
+					wi.setCreatorUnitName(effectivePerson.getDistinguishedName());
+					wi.setCreatorTopUnitName(effectivePerson.getDistinguishedName());
+				} else {
+					// 尝试一下根据当前用户获取用户的第一个身份
+					wi.setCreatorIdentity(
+							userManagerService.getMajorIdentityWithPerson(effectivePerson.getDistinguishedName()));
 				}
+			}
+			if (!Config.token().isInitialManager(wi.getCreatorIdentity()))
 
-				if ( !StringUtils.equals(  "cipher", wi.getCreatorIdentity() ) && !StringUtils.equals(  "xadmin", wi.getCreatorIdentity() )) {
-					//说明是指定的发布者，并不使用cipher和xadmin代替
-					if (StringUtils.isNotEmpty( wi.getCreatorIdentity() )) {
-						wi.setCreatorPerson( userManagerService.getPersonNameWithIdentity( wi.getCreatorIdentity() ) );
-						wi.setCreatorUnitName( userManagerService.getUnitNameByIdentity( wi.getCreatorIdentity() ) );
-						wi.setCreatorTopUnitName( userManagerService.getTopUnitNameByIdentity( wi.getCreatorIdentity() ) );
-					}else {
+				if (!StringUtils.equals(EffectivePerson.CIPHER, wi.getCreatorIdentity())
+						&& !StringUtils.equals(Token.defaultInitialManager, wi.getCreatorIdentity())) {
+					// 说明是指定的发布者，并不使用cipher和xadmin代替
+					if (StringUtils.isNotEmpty(wi.getCreatorIdentity())) {
+						wi.setCreatorPerson(userManagerService.getPersonNameWithIdentity(wi.getCreatorIdentity()));
+						wi.setCreatorUnitName(userManagerService.getUnitNameByIdentity(wi.getCreatorIdentity()));
+						wi.setCreatorTopUnitName(userManagerService.getTopUnitNameByIdentity(wi.getCreatorIdentity()));
+					} else {
 						Exception exception = new ExceptionPersonHasNoIdentity(wi.getCreatorIdentity());
 						result.error(exception);
 					}
 				}
-			} catch (Throwable th) {
-				th.printStackTrace();
-				result.error(th);
-			}
 		}
 
 		if (check) {
-			if ( StringUtils.isEmpty(wi.getTitle())) {
-				wi.setTitle( appInfo.getAppName() + " - " + categoryInfo.getCategoryName() + " - 无标题文档" );
+			if (StringUtils.isEmpty(wi.getTitle())) {
+				wi.setTitle(appInfo.getAppName() + " - " + categoryInfo.getCategoryName() + " - 无标题文档");
 			}
 		}
 
 		if (check) {
 			try {
 				wi.setDocStatus("published");
-				if(wi.getPublishTime()==null) {
+				if (wi.getPublishTime() == null) {
 					wi.setPublishTime(new Date());
 				}
 				document = documentPersistService.save(wi, wi.getDocData(), categoryInfo.getProjection());
@@ -223,13 +233,13 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 				check = false;
 				Exception exception = new ExceptionDocumentInfoProcess(e, "系统在创建文档信息时发生异常！");
 				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
+				LOGGER.error(e, effectivePerson, request, null);
 			}
 		}
 
-		//从流程管理中复制所有的附件到CMS
+		// 从流程管理中复制所有的附件到CMS
 		if (check) {
-			if ( wi.getWf_attachmentIds() != null && wi.getWf_attachmentIds().length > 0 ) {
+			if (wi.getWf_attachmentIds() != null && wi.getWf_attachmentIds().length > 0) {
 				FileInfo fileInfo = null;
 				Attachment attachment = null;
 				StorageMapping mapping_attachment = null;
@@ -244,11 +254,13 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 							emc.beginTransaction(FileInfo.class);
 							emc.beginTransaction(Document.class);
 
-							mapping_attachment = ThisApplication.context().storageMappings().get(Attachment.class, attachment.getStorage());
+							mapping_attachment = ThisApplication.context().storageMappings().get(Attachment.class,
+									attachment.getStorage());
 							attachment_content = attachment.readContent(mapping_attachment);
 
 							mapping_fileInfo = ThisApplication.context().storageMappings().random(FileInfo.class);
-							fileInfo = concreteFileInfo(effectivePerson.getDistinguishedName(), document, mapping_fileInfo, attachment.getName(), attachment.getSite());
+							fileInfo = concreteFileInfo(effectivePerson.getDistinguishedName(), document,
+									mapping_fileInfo, attachment.getName(), attachment.getSite());
 							input = new ByteArrayInputStream(attachment_content);
 							fileInfo.saveContent(mapping_fileInfo, input, attachment.getName());
 							fileInfo.setName(attachment.getName());
@@ -274,21 +286,20 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 		if (check) {
 			try {
 				Wo wo = new Wo();
-				wo.setId( document.getId() );
-				result.setData( wo );
+				wo.setId(document.getId());
+				result.setData(wo);
 			} catch (Exception e) {
 				Exception exception = new ExceptionDocumentInfoProcess(e, "系统将文档状态修改为发布状态时发生异常。Id:" + document.getId());
 				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
+				LOGGER.error(e, effectivePerson, request, null);
 				throw exception;
 			}
 		}
 
 		if (check) {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				logService.log(emc, wi.getCreatorIdentity(),
-						document.getCategoryAlias() + ":" + document.getTitle(), document.getAppId(),
-						document.getCategoryId(), document.getId(), "", "DOCUMENT", "发布" );
+				logService.log(emc, wi.getCreatorIdentity(), document.getCategoryAlias() + ":" + document.getTitle(),
+						document.getAppId(), document.getCategoryId(), document.getId(), "", "DOCUMENT", "发布");
 			} catch (Throwable th) {
 				th.printStackTrace();
 				result.error(th);
@@ -306,7 +317,7 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 				check = false;
 				Exception exception = new ExceptionDocumentInfoProcess(e, "系统在查询文档云图片信息时发生异常！ID:" + document.getId());
 				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
+				LOGGER.error(e, effectivePerson, request, null);
 			}
 		}
 
@@ -316,7 +327,7 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 				boolean isExists = false;
 				for (FileInfo picture : cloudPictures) {
 					isExists = false;
-					if ( wi.getCloudPictures() != null && !wi.getCloudPictures().isEmpty() ) {
+					if (wi.getCloudPictures() != null && !wi.getCloudPictures().isEmpty()) {
 						for (String cloudPictureId : wi.getCloudPictures()) {
 							if (picture.getCloudId() != null && picture.getCloudId().equalsIgnoreCase(cloudPictureId)) {
 								isExists = true;
@@ -328,9 +339,10 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 							fileInfoServiceAdv.deleteFileInfo(picture.getId());
 						} catch (Exception e) {
 							check = false;
-							Exception exception = new ExceptionDocumentInfoProcess(e, "系统在删除文档云图片信息时发生异常！ID:" + picture.getId());
+							Exception exception = new ExceptionDocumentInfoProcess(e,
+									"系统在删除文档云图片信息时发生异常！ID:" + picture.getId());
 							result.error(exception);
-							logger.error(e, effectivePerson, request, null);
+							LOGGER.error(e, effectivePerson, request, null);
 						}
 					}
 				}
@@ -360,49 +372,25 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 							Exception exception = new ExceptionDocumentInfoProcess(e,
 									"系统在新增文档云图片信息时发生异常！CLOUD_ID:" + cloudPictureId);
 							result.error(exception);
-							logger.error(e, effectivePerson, request, null);
+							LOGGER.error(e, effectivePerson, request, null);
 						}
 					}
 				}
 			}
 		}
 
-		if ( check && !wi.getSkipPermission() ) {
-			//将读者以及作者信息持久化到数据库中
+		if (check && !wi.getSkipPermission()) {
+			// 将读者以及作者信息持久化到数据库中
 			try {
-				document = documentPersistService.refreshDocumentPermission( document.getId(), wi.getReaderList(), wi.getAuthorList() );
+				document = documentPersistService.refreshDocumentPermission(document.getId(), wi.getReaderList(),
+						wi.getAuthorList());
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionDocumentInfoProcess(e, "系统在核对文档访问管理权限信息时发生异常！");
 				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
+				LOGGER.error(e, effectivePerson, request, null);
 			}
 		}
-
-		//判断是否需要发送通知消息 后端业务接口不需要发送消息
-		/*if (check) {
-			try {
-				Boolean notify = false;
-				if( categoryInfo.getSendNotify() == null ) {
-					if( StringUtils.equals("信息", categoryInfo.getDocumentType()) ) {
-						notify = true;
-					}
-				}else {
-					if( categoryInfo.getSendNotify() ) {
-						notify = true;
-					}
-				}
-				if( notify ){
-					logger.info("try to add notify object to queue for document:" + document.getTitle() );
-					ThisApplication.queueSendDocumentNotify.send( document.getId() );
-				}
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new ExceptionDocumentInfoProcess( e, "根据ID查询分类信息对象时发生异常。Flag:" + document.getCategoryId()  );
-				result.error( exception );
-				logger.error( e, effectivePerson, request, null);
-			}
-		}*/
 
 		CacheManager.notify(Document.class);
 		return result;
@@ -418,10 +406,10 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 		} else {
 			fileName = fileName + "." + extension;
 		}
-		if (name.indexOf("\\") > 0) {
+		if (name.indexOf("\\") > -1) {
 			name = StringUtils.substringAfterLast(name, "\\");
 		}
-		if (name.indexOf("/") > 0) {
+		if (name.indexOf("/") > -1) {
 			name = StringUtils.substringAfterLast(name, "/");
 		}
 		attachment.setCreateTime(new Date());
@@ -446,39 +434,41 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 
 		private static final long serialVersionUID = -5076990764713538973L;
 
-		public static List<String> Excludes = new ArrayList<String>(JpaObject.FieldsUnmodify);
+		public static final WrapCopier<Wi, Document> copier = WrapCopierFactory.wi(Wi.class, Document.class, null,
+				JpaObject.FieldsUnmodify);
 
-		public static WrapCopier<Wi, Document> copier = WrapCopierFactory.wi( Wi.class, Document.class, null, JpaObject.FieldsUnmodify);
-
-		@FieldDescribe( "文档操作者身份." )
+		@FieldDescribe("文档操作者身份.")
 		private String identity = null;
 
-		@FieldDescribe( "数据的路径列表." )
+		@FieldDescribe("数据的路径列表.")
 		private String[] dataPaths = null;
 
-		@FieldDescribe( "启动流程的JobId." )
+		@FieldDescribe("启动流程的JobId.")
 		private String wf_jobId = null;
 
-		@FieldDescribe( "启动流程的WorkId." )
+		@FieldDescribe("启动流程的WorkId.")
 		private String wf_workId = null;
 
-		@FieldDescribe( "启动流程的附件列表." )
+		@FieldDescribe("流程的表单Id.")
+		private String wf_formId = null;
+
+		@FieldDescribe("启动流程的附件列表.")
 		private String[] wf_attachmentIds = null;
 
-		@FieldDescribe( "文档数据." )
+		@FieldDescribe("文档数据.")
 		private JsonElement docData = null;
 
-		@FieldDescribe( "文档读者." )
+		@FieldDescribe("文档读者.")
 		private List<PermissionInfo> readerList = null;
 
-		@FieldDescribe( "文档编辑者." )
+		@FieldDescribe("文档编辑者.")
 		private List<PermissionInfo> authorList = null;
 
-		@FieldDescribe( "图片列表." )
+		@FieldDescribe("图片列表.")
 		private List<String> cloudPictures = null;
 
-		@FieldDescribe( "不修改权限（跳过权限设置，保留原来的设置）." )
-		private Boolean skipPermission  = false;
+		@FieldDescribe("不修改权限（跳过权限设置，保留原来的设置）.")
+		private Boolean skipPermission = false;
 
 		public Boolean getSkipPermission() {
 			return skipPermission;
@@ -513,7 +503,7 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 		}
 
 		public String[] getDataPaths() {
-			if( dataPaths != null && dataPaths.length == 1 && dataPaths[0].equals("null")){
+			if (dataPaths != null && dataPaths.length == 1 && dataPaths[0].equals("null")) {
 				return null;
 			}
 			return dataPaths;
@@ -563,9 +553,18 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 			this.cloudPictures = cloudPictures;
 		}
 
+		public String getWf_formId() {
+			return wf_formId;
+		}
+
+		public void setWf_formId(String wf_formId) {
+			this.wf_formId = wf_formId;
+		}
 	}
 
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = -3298158240217197985L;
 
 	}
 }

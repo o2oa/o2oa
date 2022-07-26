@@ -89,14 +89,14 @@ class V2ManageRetract extends BaseAction {
 			}
 
 			WorkLogTree workLogTree = new WorkLogTree(
-					emc.listEqual(WorkLog.class, WorkLog.job_FIELDNAME, work.getJob()));
+					emc.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, work.getJob()));
 			/* 是否可以召回 */
 			if (PropertyTools.getOrElse(activity, Manual.allowRetract_FIELDNAME, Boolean.class, false)) {
 				Node node = workLogTree.location(work);
 				if (null != node) {
 					Nodes ups = node.upTo(ActivityType.manual, ActivityType.agent, ActivityType.choice,
 							ActivityType.delay, ActivityType.embed, ActivityType.invoke, ActivityType.parallel,
-							ActivityType.split);
+							ActivityType.split, ActivityType.publish);
 					for (Node o : ups) {
 						if (business.entityManagerContainer().countEqualAndEqual(TaskCompleted.class,
 								TaskCompleted.person_FIELDNAME, distinguishedName,
@@ -224,6 +224,8 @@ class V2ManageRetract extends BaseAction {
 	}
 
 	public static class Req extends V2RetractWi {
+
+		private static final long serialVersionUID = 5007158527128459266L;
 
 	}
 

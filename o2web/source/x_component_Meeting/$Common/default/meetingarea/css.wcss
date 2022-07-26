@@ -73,39 +73,51 @@
     "padding" : "0px 5px",
     "width" : "16px",
     "height" : "16px",
-    "background" : "url(../x_component_Meeting/$Main/default/icon/icon_bianji.png) no-repeat center center"
+    "font-size": "16px",
+    "color": "#999"
+//    "background" : "url(../x_component_Meeting/$Main/default/icon/icon_bianji.png) no-repeat center center"
   },
   "action_edit_over" : {
-    "background" : "url(../x_component_Meeting/$Main/default/icon/icon_bianji_click.png) no-repeat center center"
+    "color": "#3C76B7"
+//    "background" : "url(../x_component_Meeting/$Main/default/icon/icon_bianji_click.png) no-repeat center center"
   },
   "action_remove" : {
     "float" : "left",
     "padding" : "0px 5px",
     "width" : "16px",
     "height" : "16px",
-    "background" : "url(../x_component_Meeting/$Main/default/icon/icon_delete_grey.png) no-repeat center center"
+    "font-size": "16px",
+    "color": "#999"
+//    "background" : "url(../x_component_Meeting/$Main/default/icon/icon_delete_grey.png) no-repeat center center"
   },
   "action_remove_over" : {
-    "background" : "url(../x_component_Meeting/$Main/default/icon/icon_delete_blue_click.png) no-repeat center center"
+    "color": "#3C76B7"
+    //"background" : "url(../x_component_Meeting/$Main/default/icon/icon_delete_blue_click.png) no-repeat center center"
   },
   "action_accept" : {
     "float" : "left",
     "padding" : "0px 5px",
     "width" : "16px",
     "height" : "16px",
-    "background" : "url(../x_component_Meeting/$Main/default/icon/icon_ok2.png) no-repeat center center"
+    "font-size": "16px",
+    "color": "#999"
+    //"background" : "url(../x_component_Meeting/$Main/default/icon/icon_ok2.png) no-repeat center center"
   },
   "action_accept_over" : {
-    "background" : "url(../x_component_Meeting/$Main/default/icon/icon_ok2_click.png) no-repeat center center"
+    "color": "#3C76B7"
+    //"background" : "url(../x_component_Meeting/$Main/default/icon/icon_ok2_click.png) no-repeat center center"
   },
   "action_reject" : {
     "float" : "left",
     "padding" : "0px 5px",
     "width" : "16px",
     "height" : "16px",
-    "background" : "url(../x_component_Meeting/$Main/default/icon/icon_off_round.png) no-repeat center center"
+    "font-size": "16px",
+    "color": "#999"
+    //"background" : "url(../x_component_Meeting/$Main/default/icon/icon_off_round.png) no-repeat center center"
   },
   "action_reject_over" : {
-    "background" : "url(../x_component_Meeting/$Main/default/icon/icon_off_round_click.png) no-repeat center center"
+    "color": "#3C76B7"
+    //"background" : "url(../x_component_Meeting/$Main/default/icon/icon_off_round_click.png) no-repeat center center"
   }
 }

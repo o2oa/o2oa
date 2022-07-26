@@ -158,7 +158,7 @@ public class WorkLogFactory extends AbstractFactory {
 		List<String> ids = this.listWithFromActivityToken(activityToken);
 		if (!ids.isEmpty()) {
 			for (WorkLog o : this.entityManagerContainer().fetch(ids, WorkLog.class,
-					ListTools.toList(WorkLog.arrivedActivityToken_FIELDNAME, WorkLog.connected_FIELDNAME))) {
+					ListTools.toList(WorkLog.ARRIVEDACTIVITYTOKEN_FIELDNAME, WorkLog.CONNECTED_FIELDNAME))) {
 				if (!results.contains(o.getId())) {
 					results.add(o.getId());
 					if ((o.getConnected()) && (StringUtils.isNotEmpty(o.getArrivedActivityToken()))) {
@@ -187,7 +187,7 @@ public class WorkLogFactory extends AbstractFactory {
 		List<String> ids = this.listWithArrivedActivityToken(activityToken);
 		if (!ids.isEmpty()) {
 			for (WorkLog o : this.entityManagerContainer().fetch(ids, WorkLog.class,
-					ListTools.toList(WorkLog.fromActivityToken_FIELDNAME, WorkLog.connected_FIELDNAME))) {
+					ListTools.toList(WorkLog.FROMACTIVITYTOKEN_FIELDNAME, WorkLog.CONNECTED_FIELDNAME))) {
 				if (!results.contains(o.getId())) {
 					results.add(o.getId());
 					if ((o.getConnected()) && (StringUtils.isNotEmpty(o.getFromActivityToken()))) {
@@ -214,7 +214,7 @@ public class WorkLogFactory extends AbstractFactory {
 		List<String> ids = this.listWithArrivedActivityToken(activityToken);
 		if (!ids.isEmpty()) {
 			for (WorkLog o : this.entityManagerContainer().fetch(ids, WorkLog.class,
-					ListTools.toList(WorkLog.fromActivityToken_FIELDNAME, WorkLog.connected_FIELDNAME))) {
+					ListTools.toList(WorkLog.FROMACTIVITYTOKEN_FIELDNAME, WorkLog.CONNECTED_FIELDNAME))) {
 				if (!results.contains(o.getId())) {
 					results.add(o.getId());
 					if ((o.getConnected()) && (StringUtils.isNotEmpty(o.getFromActivityToken()))) {
@@ -242,7 +242,7 @@ public class WorkLogFactory extends AbstractFactory {
 		List<String> ids = this.listWithFromActivityToken(activityToken);
 		if (!ids.isEmpty()) {
 			for (WorkLog o : this.entityManagerContainer().fetch(ids, WorkLog.class,
-					ListTools.toList(WorkLog.arrivedActivityToken_FIELDNAME, WorkLog.connected_FIELDNAME))) {
+					ListTools.toList(WorkLog.ARRIVEDACTIVITYTOKEN_FIELDNAME, WorkLog.CONNECTED_FIELDNAME))) {
 				if (!results.contains(o.getId())) {
 					if (o.getConnected()) {
 						if (StringUtils.isNotEmpty(o.getArrivedActivityToken())) {

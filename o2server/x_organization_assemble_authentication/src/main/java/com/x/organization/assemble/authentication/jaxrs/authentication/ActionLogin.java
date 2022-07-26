@@ -1,106 +1,82 @@
 package com.x.organization.assemble.authentication.jaxrs.authentication;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.Crypto;
-import com.x.base.core.project.tools.LdapTools;
-import com.x.base.core.project.tools.MD5Tool;
 import com.x.organization.assemble.authentication.Business;
 import com.x.organization.core.entity.Person;
+import com.x.organization.core.express.assemble.authentication.jaxrs.authentication.ActionLoginWi;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionLogin extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionLogin.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionLogin.class);
 
 	ActionResult<Wo> execute(HttpServletRequest request, HttpServletResponse response, EffectivePerson effectivePerson,
 			JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Wo wo = new Wo();
-			String credential = wi.getCredential();
-			logger.debug("user:{}, try to login.", credential);
-			String password = wi.getPassword();
-			if (StringUtils.isEmpty(credential)) {
-				throw new ExceptionCredentialEmpty();
-			}
-			if (StringUtils.isEmpty(password)) {
-				throw new ExceptionPasswordEmpty();
-			}
-			if (Config.token().isInitialManager(credential)) {
-				if (!Config.token().verifyPassword(credential, password)) {
+			check(wi);
+			String password = this.password(wi.getPassword());
+			if (Config.token().isInitialManager(wi.getCredential())) {
+				if (!Config.token().verifyPassword(wi.getCredential(), password)) {
 					throw new ExceptionPersonNotExistOrInvalidPassword();
 				}
-				wo = this.manager(request, response, credential, Wo.class);
+				wo = this.manager(request, response, wi.getCredential(), Wo.class);
 			} else {
-				/** 普通用户登录,也有可能拥有管理员角色 */
-				String personId = business.person().getWithCredential(credential);
-				if (StringUtils.isEmpty(personId)) {
+				// 普通用户登录,也有可能拥有管理员角色.增加相同标识(name允许重复)的认证
+				List<String> people = this.listWithCredential(business, wi.getCredential());
+				Person person = null;
+				if (people.isEmpty()) {
 					throw new ExceptionPersonNotExistOrInvalidPassword();
-				}
-				Person o = emc.find(personId, Person.class);
-				/** 先判断是否使用superPermission登录 */
-				if (BooleanUtils.isTrue(Config.person().getSuperPermission())
-						&& StringUtils.equals(Config.token().getPassword(), password)) {
-					logger.warn("user: {} use superPermission.", credential);
+				} else if (people.size() == 1) {
+					person = this.personLogin(business, people.get(0), password);
 				} else {
-					if (BooleanUtils.isTrue(Config.token().getLdapAuth().getEnable())) {
-						if (!LdapTools.auth(o.getUnique(), password)) {
-							throw new ExceptionPersonNotExistOrInvalidPassword();
-						}
-					} else {
-						if (!StringUtils.equals(Crypto.encrypt(password, Config.token().getKey()), o.getPassword())
-								&& !StringUtils.equals(MD5Tool.getMD5Str(password), o.getPassword())) {
-							/* 普通用户认证密码 */
-							throw new ExceptionPersonNotExistOrInvalidPassword();
-						}
-					}
+					person = this.peopleLogin(business, people, password);
 				}
-				wo = this.user(request, response, business, o, Wo.class);
+				if (null == person) {
+					throw new ExceptionPersonNotExistOrInvalidPassword();
+				} else {
+					wo = this.user(request, response, business, person, Wo.class);
+				}
 			}
 			result.setData(wo);
 			return result;
 		}
 	}
 
-	public static class Wi extends GsonPropertyObject {
-
-		@FieldDescribe("凭证")
-		private String credential;
-
-		@FieldDescribe("密码")
-		private String password;
-
-		public String getPassword() {
-			return password;
+	private void check(Wi wi) throws ExceptionCredentialEmpty, ExceptionPasswordEmpty {
+		if (StringUtils.isEmpty(wi.getCredential())) {
+			throw new ExceptionCredentialEmpty();
 		}
-
-		public void setPassword(String password) {
-			this.password = password;
+		if (StringUtils.isEmpty(wi.getPassword())) {
+			throw new ExceptionPasswordEmpty();
 		}
+	}
 
-		public String getCredential() {
-			return credential;
-		}
+	@Schema(name = "com.x.organization.assemble.authentication.jaxrs.authentication.ActionLogin$Wi")
+	public static class Wi extends ActionLoginWi {
 
-		public void setCredential(String credential) {
-			this.credential = credential;
-		}
+		private static final long serialVersionUID = -3566349910283010822L;
 
 	}
 

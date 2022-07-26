@@ -61,7 +61,7 @@ class ActionReset extends BaseAction {
 				}
 			}
 			emc.beginTransaction(Person.class);
-			person.setPassword(Crypto.encrypt(password, Config.token().getKey()));
+			person.setPassword(Crypto.encrypt(password, Config.token().getKey(), Config.token().getEncryptType()));
 			person.setChangePasswordTime(new Date());
 			emc.check(person, CheckPersistType.all);
 			emc.commit();

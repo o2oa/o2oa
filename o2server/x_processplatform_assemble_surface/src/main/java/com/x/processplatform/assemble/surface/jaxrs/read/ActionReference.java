@@ -18,6 +18,8 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.Task;
@@ -26,9 +28,16 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionReference extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionReference.class);
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+
 		ActionResult<Wo> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
@@ -49,7 +58,10 @@ class ActionReference extends BaseAction {
 		return result;
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.read.ActionReference$Wo")
 	public static class Wo extends GsonPropertyObject {
+
+		private static final long serialVersionUID = -6025765113539684358L;
 
 		@FieldDescribe("待阅")
 		private WoRead read;
@@ -97,6 +109,7 @@ class ActionReference extends BaseAction {
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.read.ActionReference$WoRead")
 	public static class WoRead extends Read {
 
 		private static final long serialVersionUID = 2187102986432672650L;
@@ -105,6 +118,7 @@ class ActionReference extends BaseAction {
 				JpaObject.FieldsInvisible);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.read.ActionReference$WoWorkCompleted")
 	public static class WoWorkCompleted extends WorkCompleted {
 
 		private static final long serialVersionUID = 2187102986432672650L;
@@ -113,6 +127,7 @@ class ActionReference extends BaseAction {
 				WoWorkCompleted.class, null, JpaObject.FieldsInvisible);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.read.ActionReference$WoWork")
 	public static class WoWork extends Work {
 
 		private static final long serialVersionUID = 2187102986432672650L;
@@ -121,6 +136,7 @@ class ActionReference extends BaseAction {
 				JpaObject.FieldsInvisible);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.read.ActionReference$WoTaskCompleted")
 	public static class WoTaskCompleted extends TaskCompleted {
 
 		private static final long serialVersionUID = -7253999118308715077L;
@@ -129,6 +145,7 @@ class ActionReference extends BaseAction {
 				WoTaskCompleted.class, null, JpaObject.FieldsInvisible);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.read.ActionReference$WoTask")
 	public static class WoTask extends Task {
 
 		private static final long serialVersionUID = 2702712453822143654L;
@@ -138,6 +155,7 @@ class ActionReference extends BaseAction {
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.read.ActionReference$WoWorkLog")
 	public static class WoWorkLog extends WorkLog {
 
 		private static final long serialVersionUID = 1307569946729101786L;

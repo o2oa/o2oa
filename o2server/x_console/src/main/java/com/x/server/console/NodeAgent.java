@@ -47,7 +47,6 @@ import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.FileTools;
 import com.x.base.core.project.tools.ZipTools;
-import com.x.server.console.action.ActionCreateEncryptKey;
 import com.x.server.console.server.Servers;
 
 public class NodeAgent extends Thread {
@@ -237,28 +236,27 @@ public class NodeAgent extends Thread {
 							strCommand = strCommand.trim();
 							strCommand = strCommand.substring(strCommand.indexOf(":") + 1, strCommand.length());
 							logger.info("收接到命令:" + strCommand);
-
 							// 为了同步文件
-							if (strCommand.indexOf("create encrypt") > -1) {
-								matcher = CommandFactory.create_encrypt_key_pattern.matcher(strCommand);
-								if (matcher.find()) {
-									try {
-										boolean CreateEncryptKey = new ActionCreateEncryptKey().execute();
-										if (CreateEncryptKey) {
-											dos.writeUTF("Create Encrypt Key true");
-											dos.flush();
-										} else {
-											dos.writeUTF("Create Encryp tKey false");
-											dos.flush();
-										}
-									} catch (Exception e) {
-										e.printStackTrace();
-									}
-								}
-							} else {
-								commandQueue.add(strCommand);
-							}
-
+//							if (strCommand.indexOf("create encrypt") > -1) {
+//								matcher = CommandFactory.create_encrypt_key_pattern.matcher(strCommand);
+//								if (matcher.find()) {
+//									try {
+//										boolean CreateEncryptKey = new ActionCreateEncryptKey().execute();
+//										if (CreateEncryptKey) {
+//											dos.writeUTF("Create Encrypt Key true");
+//											dos.flush();
+//										} else {
+//											dos.writeUTF("Create Encryp tKey false");
+//											dos.flush();
+//										}
+//									} catch (Exception e) {
+//										e.printStackTrace();
+//									}
+//								}
+//							} else {
+//								commandQueue.add(strCommand);
+//							}
+							commandQueue.add(strCommand);
 							continue;
 						}
 

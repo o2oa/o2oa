@@ -9,6 +9,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.processplatform.core.entity.element.*;
+import com.x.processplatform.core.entity.element.Process;
+import com.x.processplatform.core.entity.element.wrap.*;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -23,48 +26,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.designer.Business;
-import com.x.processplatform.core.entity.element.Agent;
-import com.x.processplatform.core.entity.element.Application;
-import com.x.processplatform.core.entity.element.ApplicationDict;
-import com.x.processplatform.core.entity.element.Begin;
-import com.x.processplatform.core.entity.element.Cancel;
-import com.x.processplatform.core.entity.element.Choice;
-import com.x.processplatform.core.entity.element.Delay;
-import com.x.processplatform.core.entity.element.Embed;
-import com.x.processplatform.core.entity.element.End;
-import com.x.processplatform.core.entity.element.File;
-import com.x.processplatform.core.entity.element.Form;
-import com.x.processplatform.core.entity.element.FormField;
-import com.x.processplatform.core.entity.element.Invoke;
-import com.x.processplatform.core.entity.element.Manual;
-import com.x.processplatform.core.entity.element.Merge;
-import com.x.processplatform.core.entity.element.Parallel;
-import com.x.processplatform.core.entity.element.Process;
-import com.x.processplatform.core.entity.element.Route;
-import com.x.processplatform.core.entity.element.Script;
-import com.x.processplatform.core.entity.element.Service;
-import com.x.processplatform.core.entity.element.Split;
-import com.x.processplatform.core.entity.element.wrap.WrapAgent;
-import com.x.processplatform.core.entity.element.wrap.WrapApplicationDict;
-import com.x.processplatform.core.entity.element.wrap.WrapBegin;
-import com.x.processplatform.core.entity.element.wrap.WrapCancel;
-import com.x.processplatform.core.entity.element.wrap.WrapChoice;
-import com.x.processplatform.core.entity.element.wrap.WrapDelay;
-import com.x.processplatform.core.entity.element.wrap.WrapEmbed;
-import com.x.processplatform.core.entity.element.wrap.WrapEnd;
-import com.x.processplatform.core.entity.element.wrap.WrapFile;
-import com.x.processplatform.core.entity.element.wrap.WrapForm;
-import com.x.processplatform.core.entity.element.wrap.WrapFormField;
-import com.x.processplatform.core.entity.element.wrap.WrapInvoke;
-import com.x.processplatform.core.entity.element.wrap.WrapManual;
-import com.x.processplatform.core.entity.element.wrap.WrapMerge;
-import com.x.processplatform.core.entity.element.wrap.WrapParallel;
-import com.x.processplatform.core.entity.element.wrap.WrapProcess;
-import com.x.processplatform.core.entity.element.wrap.WrapProcessPlatform;
-import com.x.processplatform.core.entity.element.wrap.WrapRoute;
-import com.x.processplatform.core.entity.element.wrap.WrapScript;
-import com.x.processplatform.core.entity.element.wrap.WrapService;
-import com.x.processplatform.core.entity.element.wrap.WrapSplit;
 
 class ActionPrepareCover extends BaseAction {
 
@@ -281,6 +242,17 @@ class ActionPrepareCover extends BaseAction {
 				for (MatchElement<WrapParallel, Parallel> _me : this.match(business, m.getW().getParallelList(),
 						ListUtils.union(this.listWithIds(business, m.getW().getParallelList(), Parallel.class),
 								business.parallel().listWithProcessObject(m.getT().getId())))) {
+					if ((null != _me.getW()) && (null != _me.getT())) {
+						if (StringUtils.equals(_me.getW().getProcess(), _me.getT().getProcess())) {
+							wos.add(new Wo(_me.getW().getId(), _me.getT().getId()));
+						} else {
+							wos.add(new Wo(_me.getW().getId(), JpaObject.createId()));
+						}
+					}
+				}
+				for (MatchElement<WrapPublish, Publish> _me : this.match(business, m.getW().getPublishList(),
+						ListUtils.union(this.listWithIds(business, m.getW().getPublishList(), Publish.class),
+								business.publish().listWithProcessObject(m.getT().getId())))) {
 					if ((null != _me.getW()) && (null != _me.getT())) {
 						if (StringUtils.equals(_me.getW().getProcess(), _me.getT().getProcess())) {
 							wos.add(new Wo(_me.getW().getId(), _me.getT().getId()));

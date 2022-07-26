@@ -13,6 +13,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.script.Bindings;
 import javax.script.CompiledScript;
 import javax.script.ScriptContext;
@@ -42,16 +47,20 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.scripting.JsonScriptingExecutor;
 import com.x.base.core.project.scripting.ScriptingFactory;
+import com.x.base.core.project.tools.Crypto;
 import com.x.base.core.project.tools.DateTools;
+import com.x.base.core.project.tools.LdapTools;
 import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.tools.MD5Tool;
 import com.x.organization.assemble.authentication.Business;
-import com.x.organization.assemble.authentication.wrapout.WrapOutAuthentication;
+import com.x.organization.assemble.authentication.jaxrs.authentication.ActionCaptchaLogin.Wi;
 import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Person;
+import com.x.organization.core.entity.Person_;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(BaseAction.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(BaseAction.class);
 
 	protected static final String OAUTH_ACCESSTOKEN = "access_token";
 	protected static final String OAUTH_CLIENTID = "clientId";
@@ -62,9 +71,6 @@ abstract class BaseAction extends StandardJaxrsAction {
 	private static final Type OAUTH_PARAMTYPE = new TypeToken<Map<String, Object>>() {
 	}.getType();
 
-	static WrapCopier<Person, WrapOutAuthentication> authenticationOutCopier = WrapCopierFactory.wo(Person.class,
-			WrapOutAuthentication.class, null, JpaObject.FieldsInvisible);
-
 	/** 管理员通过密码登录 */
 	<T extends AbstractWoAuthentication> T manager(HttpServletRequest request, HttpServletResponse response,
 			String credential, Class<T> cls) throws Exception {
@@ -73,7 +79,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 		if (BooleanUtils.isTrue(Config.ternaryManagement().getEnable())) {
 			tokenType = Config.ternaryManagement().getTokenType(credential);
 		}
-		EffectivePerson effectivePerson = new EffectivePerson(credential, tokenType, Config.token().getCipher());
+		EffectivePerson effectivePerson = new EffectivePerson(credential, tokenType, Config.token().getCipher(),
+				Config.token().getEncryptType());
 		if ((null != request) && (null != response)) {
 			httpToken.setToken(request, response, effectivePerson);
 		}
@@ -106,11 +113,11 @@ abstract class BaseAction extends StandardJaxrsAction {
 			tokenType = TokenType.auditManager;
 		}
 		EffectivePerson effectivePerson = new EffectivePerson(person.getDistinguishedName(), tokenType,
-				Config.token().getCipher());
+				Config.token().getCipher(), Config.token().getEncryptType());
 		if ((null != request) && (null != response)) {
 			if (!isMoaTerminal(request)) {
 				String clientIp = HttpToken.remoteAddress(request);
-				logger.debug("{} client ip is : {}", person.getDistinguishedName(), clientIp);
+				LOGGER.debug("{} client ip is : {}", person.getDistinguishedName(), clientIp);
 				if (!this.checkIp(clientIp, person.getIpAddress())) {
 					throw new ExceptionInvalidIpAddress(clientIp);
 				}
@@ -126,6 +133,78 @@ abstract class BaseAction extends StandardJaxrsAction {
 		/** 判断密码是否过期需要修改密码 */
 		this.passwordExpired(t);
 		return t;
+	}
+
+	protected List<String> listWithCredential(Business business, String credential) throws Exception {
+		EntityManager em = business.entityManagerContainer().get(Person.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<Person> root = cq.from(Person.class);
+		Predicate p = cb.equal(root.get(Person_.name), credential);
+		p = cb.or(p, cb.equal(root.get(Person_.distinguishedName), credential));
+		p = cb.or(p, cb.equal(root.get(Person_.unique), credential));
+		p = cb.or(p, cb.equal(root.get(Person_.id), credential));
+		p = cb.or(p, cb.equal(root.get(Person_.mail), credential));
+		p = cb.or(p, cb.equal(root.get(Person_.qq), credential));
+		p = cb.or(p, cb.equal(root.get(Person_.weixin), credential));
+		p = cb.or(p, cb.equal(root.get(Person_.mobile), credential));
+		p = cb.or(p, cb.equal(root.get(Person_.employee), credential));
+		p = cb.or(p, cb.equal(root.get(Person_.mpwxopenId), credential));
+		p = cb.or(p, cb.equal(root.get(Person_.open1Id), credential));
+		p = cb.or(p, cb.equal(root.get(Person_.open2Id), credential));
+		p = cb.or(p, cb.equal(root.get(Person_.open3Id), credential));
+		p = cb.or(p, cb.equal(root.get(Person_.open4Id), credential));
+		p = cb.or(p, cb.equal(root.get(Person_.open5Id), credential));
+		cq.select(root.get(Person_.id)).where(p);
+		return em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
+	}
+
+	protected String password(String password) throws Exception {
+		return BooleanUtils.isTrue(Config.token().getRsaEnable()) ? Crypto.rsaDecrypt(password, Config.privateKey())
+				: password;
+	}
+
+	protected Person personLogin(Business business, String id, String password) throws Exception {
+		Person person = business.entityManagerContainer().find(id, Person.class);
+		if (null == person) {
+			return null;
+		}
+		if (BooleanUtils.isTrue(Config.person().getSuperPermission())
+				&& StringUtils.equals(Config.token().getPassword(), password)) {
+			LOGGER.warn("user: {} use superPermission.", person.getName());
+			return person;
+		}
+		if (this.failureLocked(person)) {
+			throw new ExceptionFailureLocked(person.getName(), Config.person().getFailureInterval());
+		}
+
+		if (validatePassword(person, password)) {
+			return person;
+		} else {
+			business.entityManagerContainer().beginTransaction(Person.class);
+			this.failure(person);
+			business.entityManagerContainer().commit();
+			return null;
+		}
+	}
+
+	Person peopleLogin(Business business, List<String> people, String password) throws Exception {
+		for (String id : people) {
+			Person person = business.entityManagerContainer().find(id, Person.class);
+			if (validatePassword(person, password)) {
+				return person;
+			}
+		}
+		return null;
+	}
+
+	protected boolean validatePassword(Person person, String password) throws Exception {
+		if (BooleanUtils.isTrue(Config.token().getLdapAuth().getEnable())
+				&& LdapTools.auth(person.getUnique(), password)) {
+			return true;
+		}
+		return (StringUtils.equals(Crypto.encrypt(password, Config.token().getKey(), Config.token().getEncryptType()),
+				person.getPassword()) || StringUtils.equals(MD5Tool.getMD5Str(password), person.getPassword()));
 	}
 
 	public abstract static class AbstractWoAuthentication extends Person {
@@ -196,14 +275,14 @@ abstract class BaseAction extends StandardJaxrsAction {
 	private void passwordExpired(AbstractWoAuthentication wo) throws Exception {
 		wo.setPasswordExpired(false);
 		Integer passwordPeriod = Config.person().getPasswordPeriod();
-		if(passwordPeriod.intValue() == 0){
+		if (passwordPeriod.intValue() == 0) {
 			return;
 		}
 		if (null != wo.getPasswordExpiredTime()) {
 			if (wo.getPasswordExpiredTime().getTime() < (new Date()).getTime()) {
 				wo.setPasswordExpired(true);
 			}
-		} else if(wo.getChangePasswordTime()!=null){
+		} else if (wo.getChangePasswordTime() != null) {
 			Date date = DateTools.addDay(wo.getChangePasswordTime(), passwordPeriod);
 			if (date.getTime() < (new Date()).getTime()) {
 				wo.setPasswordExpired(true);
@@ -247,15 +326,15 @@ abstract class BaseAction extends StandardJaxrsAction {
 		} else {
 			address = address + "?" + parameter;
 		}
-		logger.debug("token get address:{}.", address);
+		LOGGER.debug("token get address:{}.", address);
 		return HttpConnection.getAsString(address, null);
 	}
 
 	protected String oauthClientTokenPost(OauthClient oauthClient, Map<String, Object> param) throws Exception {
 		String address = oauthClient.getTokenAddress();
 		String parameter = fillParameter(oauthClient.getTokenParameter(), param);
-		logger.debug("token post address:{}.", address);
-		logger.debug("token post parameter:{}.", parameter);
+		LOGGER.debug("token post address:{}.", address);
+		LOGGER.debug("token post parameter:{}.", parameter);
 		List<NameValuePair> heads = new ArrayList<>();
 		heads.add(new NameValuePair("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8"));
 		return HttpConnection.postAsString(address, heads, parameter);
@@ -275,8 +354,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 	protected String oauthClientInfoPost(OauthClient oauthClient, Map<String, Object> param) throws Exception {
 		String address = oauthClient.getInfoAddress();
 		String parameter = fillParameter(oauthClient.getInfoParameter(), param);
-		logger.debug("info post address:{}.", address);
-		logger.debug("info post parameter:{}.", parameter);
+		LOGGER.debug("info post address:{}.", address);
+		LOGGER.debug("info post parameter:{}.", parameter);
 		return HttpConnection.postAsString(address, null, parameter);
 	}
 
@@ -287,7 +366,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		} else {
 			body = this.oauthClientTokenGet(oauthClient, param);
 		}
-		logger.debug("body:{}", body);
+		LOGGER.debug("body:{}", body);
 		if (StringUtils.equalsIgnoreCase(oauthClient.getTokenType(), "json")) {
 			param.putAll(gson.fromJson(body, OAUTH_PARAMTYPE));
 		} else {
@@ -320,7 +399,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		} else {
 			body = this.oauthClientInfoGet(oauthClient, param);
 		}
-		logger.debug("infoBody:{}", body);
+		LOGGER.debug("infoBody:{}", body);
 		if (StringUtils.isEmpty(body)) {
 			throw new ExceptionOauthEmptyInfo();
 		}
@@ -332,7 +411,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				param.put(values[0], values[1]);
 			});
 		} else {
-			logger.debug("info script:{}.", oauthClient.getInfoScriptText());
+			LOGGER.debug("info script:{}.", oauthClient.getInfoScriptText());
 			CompiledScript sc = ScriptingFactory.functionalizationCompile(oauthClient.getInfoScriptText());
 			ScriptContext scriptContext = new SimpleScriptContext();
 			Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
@@ -387,7 +466,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 					}
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}
 		return returnValue;

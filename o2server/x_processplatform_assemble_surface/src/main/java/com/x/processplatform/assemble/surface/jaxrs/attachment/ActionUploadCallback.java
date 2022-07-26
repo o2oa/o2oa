@@ -19,6 +19,7 @@ import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 
+@Deprecated
 class ActionUploadCallback extends BaseAction {
 	ActionResult<Wo<WoObject>> execute(EffectivePerson effectivePerson, String workId, String callback, String site,
 			String fileName, byte[] bytes, FormDataContentDisposition disposition) throws Exception {

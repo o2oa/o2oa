@@ -312,7 +312,8 @@ public class CipherConnectionAction {
 	}
 
 	public static List<NameValuePair> cipher() throws Exception {
-		EffectivePerson effectivePerson = EffectivePerson.cipher(Config.token().getCipher());
+		EffectivePerson effectivePerson = EffectivePerson.cipher(Config.token().getCipher(),
+				Config.token().getEncryptType());
 		return ListTools.toList(new NameValuePair(Config.person().getTokenName(), effectivePerson.getToken()));
 	}
 

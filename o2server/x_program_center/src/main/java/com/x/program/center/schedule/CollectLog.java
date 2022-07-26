@@ -34,7 +34,7 @@ import com.x.program.center.core.entity.WarnLog_;
 
 public class CollectLog extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(CollectLog.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CollectLog.class);
 
 	@Override
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -43,7 +43,7 @@ public class CollectLog extends BaseAction {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					Business business = new Business(emc);
 					if (BooleanUtils.isNotTrue(business.validateCollect())) {
-						logger.warn("login cloud server failure.");
+						LOGGER.warn("login cloud server failure.");
 					}
 				}
 				this.collectPromptErrorLog();
@@ -51,7 +51,7 @@ public class CollectLog extends BaseAction {
 				this.collectWarnLog();
 			}
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 			throw new JobExecutionException(e);
 		}
 	}

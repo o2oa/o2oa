@@ -34,7 +34,8 @@ import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Person;
 
 class ActionEdit extends BaseAction {
-	private static Logger logger = LoggerFactory.getLogger(ActionEdit.class);
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionEdit.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -176,7 +177,7 @@ class ActionEdit extends BaseAction {
 			String data = resp.getData().toString();
 			return true;
 		} catch (Exception e) {
-			logger.print(e.toString());
+			LOGGER.error(e);
 			return false;
 		}
 	}

@@ -123,17 +123,6 @@ public class PersonFactory extends AbstractFactory {
 		List<String> list = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		if (list.size() == 1) {
 			return list.get(0);
-		} else if (list.size() > 1) {
-			return StringUtils.join(list, ",");
-//			String temp = "";
-//			for (int i = 0; i < list.size(); i++) {
-//				if (temp.equalsIgnoreCase("")) {
-//					temp = list.get(i);
-//				} else {
-//					temp = temp + "," + list.get(i);
-//				}
-//			}
-//			return temp;
 		} else {
 			return null;
 		}
@@ -149,17 +138,6 @@ public class PersonFactory extends AbstractFactory {
 		List<String> list = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		if (list.size() == 1) {
 			return list.get(0);
-		} else if (list.size() > 1) {
-			return StringUtils.join(list, ",");
-//			String temp = "";
-//			for (int i = 0; i < list.size(); i++) {
-//				if (temp.equalsIgnoreCase("")) {
-//					temp = list.get(i);
-//				} else {
-//					temp = temp + "," + list.get(i);
-//				}
-//			}
-//			return temp;
 		} else {
 			return null;
 		}

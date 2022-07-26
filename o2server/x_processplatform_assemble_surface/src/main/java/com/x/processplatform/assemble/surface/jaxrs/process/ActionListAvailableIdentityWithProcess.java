@@ -11,15 +11,24 @@ import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.Identity;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.element.Process;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public class ActionListAvailableIdentityWithProcess extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListAvailableIdentityWithProcess.class);
+
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String flag) throws Exception {
+
+		LOGGER.debug("execute:{}, flag:{}.", effectivePerson::getDistinguishedName, () -> flag);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -40,17 +49,18 @@ public class ActionListAvailableIdentityWithProcess extends BaseAction {
 					dns.addAll(identities);
 				} else {
 					for (String str : identities) {
-						if(ListTools.isNotEmpty(process.getStartableIdentityList()) && process.getStartableIdentityList().contains(str)){
+						if (ListTools.isNotEmpty(process.getStartableIdentityList())
+								&& process.getStartableIdentityList().contains(str)) {
 							dns.add(str);
-						}else {
-							if(ListTools.isNotEmpty(process.getStartableUnitList())) {
+						} else {
+							if (ListTools.isNotEmpty(process.getStartableUnitList())) {
 								List<String> units = business.organization().unit().listWithIdentitySupNested(str);
 								if (ListTools.containsAny(units, process.getStartableUnitList())) {
 									dns.add(str);
 									continue;
 								}
 							}
-							if(ListTools.isNotEmpty(process.getStartableGroupList())) {
+							if (ListTools.isNotEmpty(process.getStartableGroupList())) {
 								List<String> groups = business.organization().group().listWithIdentity(str);
 								if (ListTools.containsAny(groups, process.getStartableGroupList())) {
 									dns.add(str);
@@ -69,7 +79,10 @@ public class ActionListAvailableIdentityWithProcess extends BaseAction {
 		}
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionListAvailableIdentityWithProcess$Wo")
 	public static class Wo extends Identity {
+
+		private static final long serialVersionUID = -3700611118921654394L;
 
 		static WrapCopier<Identity, Wo> copier = WrapCopierFactory.wo(Identity.class, Wo.class, null,
 				JpaObject.FieldsInvisible);

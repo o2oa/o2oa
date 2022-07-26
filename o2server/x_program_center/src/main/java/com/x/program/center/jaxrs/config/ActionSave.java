@@ -30,6 +30,7 @@ import com.x.base.core.project.tools.Crypto;
 
 /**
  * 系统配置文件保存
+ * 
  * @author sword
  */
 public class ActionSave extends BaseAction {
@@ -60,7 +61,7 @@ public class ActionSave extends BaseAction {
 			throw new ExceptionJsonError();
 		}
 
-		if (BooleanUtils.isNotTrue(Config.nodes().centerServers().first().getValue().getConfigApiEnable())) {
+		if (BooleanUtils.isNotTrue(Config.miscellaneous().getConfigApiEnable())) {
 			throw new ExceptionModifyConfig();
 		}
 
@@ -88,6 +89,7 @@ public class ActionSave extends BaseAction {
 
 	/**
 	 * 文件同步
+	 * 
 	 * @param syncFilePath
 	 * @param nodeName
 	 * @param nodePort
@@ -102,7 +104,7 @@ public class ActionSave extends BaseAction {
 			socket.setSoTimeout(5000);
 			try (DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 					DataInputStream dis = new DataInputStream(socket.getInputStream());
-				 InputStream fileInputStream = new ByteArrayInputStream(byteArray)) {
+					InputStream fileInputStream = new ByteArrayInputStream(byteArray)) {
 				Map<String, Object> commandObject = new HashMap<>();
 				commandObject.put("command", "syncFile:" + syncFilePath);
 				commandObject.put("credential", Crypto.rsaEncrypt("o2@", Config.publicKey()));

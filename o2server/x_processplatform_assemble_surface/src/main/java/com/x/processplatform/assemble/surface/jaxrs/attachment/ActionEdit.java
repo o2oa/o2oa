@@ -23,12 +23,16 @@ import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionEdit extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionEdit.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionEdit.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String workId, JsonElement jsonElement)
 			throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}, workId:{}.", effectivePerson::getDistinguishedName, () -> id, () -> workId);
 
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
@@ -37,7 +41,7 @@ class ActionEdit extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			Work work = emc.find(workId, Work.class);
-			/** 判断work是否存在 */
+			// 判断work是否存在
 			if (null == work) {
 				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
@@ -45,7 +49,7 @@ class ActionEdit extends BaseAction {
 			if (null == attachment) {
 				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
-			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
+			Control control = business.getControl(effectivePerson, work, Control.class);
 			if (BooleanUtils.isNotTrue(control.getAllowSave())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
@@ -53,7 +57,7 @@ class ActionEdit extends BaseAction {
 			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
 			List<String> units = business.organization().unit().listWithPerson(effectivePerson);
 			boolean canControl = this.control(attachment, effectivePerson, identities, units, business);
-			if(!canControl){
+			if (!canControl) {
 				throw new ExceptionAccessDenied(effectivePerson, attachment);
 			}
 
@@ -69,6 +73,11 @@ class ActionEdit extends BaseAction {
 		return result;
 	}
 
+	public static class Control extends WorkControl {
+
+	}
+
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionEdit$Wi")
 	public static class Wi extends Attachment {
 
 		private static final long serialVersionUID = 4243967432624425952L;
@@ -83,11 +92,10 @@ class ActionEdit extends BaseAction {
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionEdit$Wo")
 	public static class Wo extends WoId {
 
-	}
-
-	public static class WoControl extends WorkControl {
+		private static final long serialVersionUID = 566443882004256284L;
 
 	}
 

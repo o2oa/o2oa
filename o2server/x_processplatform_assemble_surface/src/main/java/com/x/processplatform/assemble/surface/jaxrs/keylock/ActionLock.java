@@ -11,21 +11,27 @@ import javax.persistence.criteria.Root;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.JpaObject_;
 import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.core.entity.content.KeyLock;
 import com.x.processplatform.core.entity.content.KeyLock_;
+import com.x.processplatform.core.express.service.processing.jaxrs.keylock.ActionLockWi;
+import com.x.processplatform.core.express.service.processing.jaxrs.keylock.ActionLockWo;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionLock extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionLock.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionLock.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wo wo = new Wo();
@@ -36,7 +42,7 @@ class ActionLock extends BaseAction {
 			Root<KeyLock> root = cq.from(KeyLock.class);
 			Predicate p = cb.equal(root.get(KeyLock_.key), wi.getKey());
 			p = cb.and(p, cb.notEqual(root.get(KeyLock_.person), effectivePerson.getDistinguishedName()));
-			List<KeyLock> os = em.createQuery(cq.where(p).orderBy(cb.desc(root.get(KeyLock_.createTime))))
+			List<KeyLock> os = em.createQuery(cq.where(p).orderBy(cb.desc(root.get(JpaObject_.createTime))))
 					.setMaxResults(1).getResultList();
 			if (os.isEmpty()) {
 				emc.beginTransaction(KeyLock.class);
@@ -54,44 +60,17 @@ class ActionLock extends BaseAction {
 		}
 	}
 
-	public static class Wo extends GsonPropertyObject {
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.keylock.ActionLock$Wo")
+	public static class Wo extends ActionLockWo {
 
-		@FieldDescribe("是否成功")
-		private Boolean success;
-
-		@FieldDescribe("人员")
-		private String person;
-
-		public Boolean getSuccess() {
-			return success;
-		}
-
-		public void setSuccess(Boolean success) {
-			this.success = success;
-		}
-
-		public String getPerson() {
-			return person;
-		}
-
-		public void setPerson(String person) {
-			this.person = person;
-		}
+		private static final long serialVersionUID = -1295412555217995247L;
 
 	}
 
-	public static class Wi extends GsonPropertyObject {
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.keylock.ActionLock$Wi")
+	public static class Wi extends ActionLockWi {
 
-		@FieldDescribe("所定值")
-		private String key;
-
-		public String getKey() {
-			return key;
-		}
-
-		public void setKey(String key) {
-			this.key = key;
-		}
+		private static final long serialVersionUID = -326401129410594142L;
 
 	}
 }

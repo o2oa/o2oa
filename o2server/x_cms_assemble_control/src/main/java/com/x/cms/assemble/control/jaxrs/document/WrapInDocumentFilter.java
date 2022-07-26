@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.x.base.core.project.tools.DateTools;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.annotation.FieldDescribe;
@@ -58,19 +59,19 @@ public class WrapInDocumentFilter {
 	@FieldDescribe( "作为过滤条件的创建者姓名列表, 可多个, String数组." )
 	private List<String> creatorList;
 
-	@FieldDescribe( "作为过滤条件的文档状态列表, 可多个, String数组，值：published | draft | archived" )
+	@FieldDescribe( "作为过滤条件的文档状态列表, 可多个, String数组，值：published(默认值) | draft | archived" )
 	private List<String> statusList;
 
-	@FieldDescribe( "创建日期列表，可以传入1个(开始时间)或者2个(开始和结束时间), String, yyyy-mm-dd." )
-	private List<String> createDateList;	//
+	@FieldDescribe( "创建日期列表，可以传入1个(开始时间)或者2个(开始和结束时间), 格式：yyyy-MM-dd HH:mm:ss或者yyyy-mm-dd." )
+	private List<String> createDateList;
 
-	@FieldDescribe( "发布日期列表，可以传入1个(开始时间)或者2个(开始和结束时间), String, yyyy-mm-dd." )
-	private List<String> publishDateList;	//
+	@FieldDescribe( "发布日期列表，可以传入1个(开始时间)或者2个(开始和结束时间), 格式：yyyy-MM-dd HH:mm:ss或者yyyy-mm-dd." )
+	private List<String> publishDateList;
 
 	@FieldDescribe( "作为过滤条件的发布者所属组织, 可多个, String数组." )
 	private List<String> creatorUnitNameList;
 
-	@FieldDescribe( "文档类型：全部 | 信息 | 数据" )
+	@FieldDescribe( "文档类型：全部 | 信息(默认值) | 数据" )
 	private String documentType = "信息";
 
 	@FieldDescribe( "作为过滤条件的CMS文档关键字, 通常是标题, String, 模糊查询." )
@@ -102,6 +103,12 @@ public class WrapInDocumentFilter {
 
 	@FieldDescribe("业务数据Double值02.")
 	private Double doubleValue02;
+
+	@FieldDescribe( "业务数据DateTime值01，可以传入1个(开始时间)或者2个(开始和结束时间), 格式：yyyy-MM-dd HH:mm:ss或者yyyy-mm-dd." )
+	private List<String> dataTimeValue01List;
+
+	@FieldDescribe( "业务数据DateTime值01，可以传入1个(开始时间)或者2个(开始和结束时间), 格式：yyyy-MM-dd HH:mm:ss或者yyyy-mm-dd." )
+	private List<String> dataTimeValue02List;
 
 	public String getTopFlag() {
 		return topFlag;
@@ -327,6 +334,22 @@ public class WrapInDocumentFilter {
 		this.doubleValue02 = doubleValue02;
 	}
 
+	public List<String> getDataTimeValue01List() {
+		return dataTimeValue01List;
+	}
+
+	public void setDataTimeValue01List(List<String> dataTimeValue01List) {
+		this.dataTimeValue01List = dataTimeValue01List;
+	}
+
+	public List<String> getDataTimeValue02List() {
+		return dataTimeValue02List;
+	}
+
+	public void setDataTimeValue02List(List<String> dataTimeValue02List) {
+		this.dataTimeValue02List = dataTimeValue02List;
+	}
+
 	/**
 	 * 根据传入的查询参数，组织一个完整的QueryFilter对象
 	 * @return
@@ -428,7 +451,7 @@ public class WrapInDocumentFilter {
 		}
 
 		if( ListTools.isNotEmpty( this.getStatusList())) {
-			if( this.getStatusList().size() == 1 ) { //如果只有一个值，就不要用IN，直接使用equals
+			if( this.getStatusList().size() == 1 ) {
 				queryFilter.addEqualsTerm( new EqualsTerm( "docStatus", this.getStatusList().get(0) ) );
 			}else {
 				queryFilter.addInTerm( new InTerm( "docStatus", new ArrayList<>( this.getStatusList())) );
@@ -438,52 +461,25 @@ public class WrapInDocumentFilter {
 		}
 
 		if( ListTools.isNotEmpty( this.getCreateDateList())) {
-			Date startDate = null;
-			Date endDate = null;
-
-			if ( this.getCreateDateList().size() == 1 ) { // 从开始时间（yyyy-MM-DD），到现在
-				try {
-					startDate = DateOperation.getDateFromString( this.getCreateDateList().get(0).toString() );
-					endDate = new Date();
-					queryFilter.addDateBetweenTerm( "createTime", startDate, endDate );
-				}catch( Exception e) {
-					throw new Exception( "Timestamp ‘createDate’ can not format to date, style with: yyyy-MM-DD, data:" + this.getCreateDateList().get(0).toString() );
-				}
-			}else if( this.getCreateDateList().size() == 2 ){// 从开始时间到结束时间（yyyy-MM-DD）
-				try {
-					startDate = DateOperation.getDateFromString( this.getCreateDateList().get(0).toString());
-					endDate = DateOperation.getDateFromString( this.getCreateDateList().get(1).toString());
-					queryFilter.addDateBetweenTerm( "createTime", startDate, endDate );
-				}catch( Exception e) {
-					throw new Exception( "Timestamp ‘createDate’ can not format to date, style with: yyyy-MM-DD, data:" + this.getCreateDateList().get(0).toString() + " and " + this.getCreateDateList().get(1).toString()  );
-				}
+			Date startDate = DateTools.parse(this.getCreateDateList().get(0));
+			Date endDate = new Date();
+			if(this.getCreateDateList().size() > 1){
+				endDate = DateTools.parse(this.getCreateDateList().get(1));
 			}
+			queryFilter.addDateBetweenTerm( Document.createTime_FIELDNAME, startDate, endDate );
 		}
 
 		if( ListTools.isNotEmpty( this.getPublishDateList())) {
-			Date startDate = null;
-			Date endDate = null;
-			if ( this.getPublishDateList().size() == 1 ) { // 从开始时间（yyyy-MM-DD），到现在
-				try {
-					startDate = DateOperation.getDateFromString( this.getPublishDateList().get(0).toString() );
-					endDate = new Date();
-					queryFilter.addDateBetweenTerm( "publishTime", startDate, endDate );
-				}catch( Exception e) {
-					throw new Exception( "Timestamp 'publishDate' can not format to date, style with: yyyy-MM-DD, data:" + this.getCreateDateList().get(0).toString() );
-				}
-			}else if( this.getPublishDateList().size() == 2 ){// 从开始时间到结束时间（yyyy-MM-DD）
-				try {
-					startDate = DateOperation.getDateFromString( this.getPublishDateList().get(0).toString());
-					endDate = DateOperation.getDateFromString( this.getPublishDateList().get(1).toString());
-					queryFilter.addDateBetweenTerm( "publishTime", startDate, endDate );
-				}catch( Exception e) {
-					throw new Exception( "Timestamp ‘publishDate’ can not format to date, style with: yyyy-MM-DD, data:" + this.getCreateDateList().get(0).toString() + " and " + this.getCreateDateList().get(1).toString()  );
-				}
+			Date startDate = DateTools.parse(this.getPublishDateList().get(0));
+			Date endDate = new Date();
+			if(this.getPublishDateList().size() > 1){
+				endDate = DateTools.parse(this.getPublishDateList().get(1));
 			}
+			queryFilter.addDateBetweenTerm( Document.publishTime_FIELDNAME, startDate, endDate );
 		}
 
 		if( this.getMinutes() != null && this.getMinutes() > 0 ) {
-			queryFilter.addDateBetweenTerm( "publishTime", new Date ( new Date().getTime() - minutes*60*1000L ), new Date() );
+			queryFilter.addDateBetweenTerm( "publishTime", new Date ( System.currentTimeMillis() - minutes*60*1000L ), new Date() );
 		}
 
 		if( StringUtils.isNotEmpty( this.getStringValue01())) {
@@ -516,6 +512,24 @@ public class WrapInDocumentFilter {
 
 		if( this.getDoubleValue02() != null) {
 			queryFilter.addEqualsTerm( new EqualsTerm(Document.doubleValue02_FIELDNAME, this.getDoubleValue02() ) );
+		}
+
+		if( ListTools.isNotEmpty( this.getDataTimeValue01List())) {
+			Date startDate = DateTools.parse(this.getDataTimeValue01List().get(0));
+			Date endDate = new Date();
+			if(this.getDataTimeValue01List().size() > 1){
+				endDate = DateTools.parse(this.getDataTimeValue01List().get(1));
+			}
+			queryFilter.addDateBetweenTerm( Document.dateTimeValue01_FIELDNAME, startDate, endDate );
+		}
+
+		if( ListTools.isNotEmpty( this.getDataTimeValue02List())) {
+			Date startDate = DateTools.parse(this.getDataTimeValue02List().get(0));
+			Date endDate = new Date();
+			if(this.getDataTimeValue02List().size() > 1){
+				endDate = DateTools.parse(this.getDataTimeValue02List().get(1));
+			}
+			queryFilter.addDateBetweenTerm( Document.dateTimeValue02_FIELDNAME, startDate, endDate );
 		}
 
 		return queryFilter;

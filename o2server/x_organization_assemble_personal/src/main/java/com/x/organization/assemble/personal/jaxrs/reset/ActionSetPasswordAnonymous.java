@@ -22,7 +22,7 @@ import com.x.organization.assemble.personal.Business;
 import com.x.organization.core.entity.Person;
 
 public class ActionSetPasswordAnonymous extends BaseAction {
-	private static Logger logger = LoggerFactory.getLogger(ActionSetPasswordAnonymous.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionSetPasswordAnonymous.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -72,9 +72,9 @@ public class ActionSetPasswordAnonymous extends BaseAction {
 				String confirmPassword = wi.getConfirmPassword();
 				String isEncrypted = wi.getIsEncrypted();
 
-				//RSA解秘
+				// RSA解秘
 				if (!StringUtils.isEmpty(isEncrypted)) {
-					if(isEncrypted.trim().equalsIgnoreCase("y")) {
+					if (isEncrypted.trim().equalsIgnoreCase("y")) {
 						oldPassword = this.decryptRSA(oldPassword);
 						newPassword = this.decryptRSA(newPassword);
 						confirmPassword = this.decryptRSA(confirmPassword);
@@ -83,9 +83,10 @@ public class ActionSetPasswordAnonymous extends BaseAction {
 
 				if (BooleanUtils.isTrue(Config.person().getSuperPermission())
 						&& StringUtils.equals(Config.token().getPassword(), oldPassword)) {
-					logger.info("user{name:" + person.getName() + "} use superPermission.");
+					LOGGER.info("user{name:" + person.getName() + "} use superPermission.");
 				} else {
-					if (!StringUtils.equals(Crypto.encrypt(oldPassword, Config.token().getKey()),
+					if (!StringUtils.equals(
+							Crypto.encrypt(oldPassword, Config.token().getKey(), Config.token().getEncryptType()),
 							person.getPassword())) {
 						throw new ExceptionOldPasswordNotMatch();
 					}
@@ -95,7 +96,6 @@ public class ActionSetPasswordAnonymous extends BaseAction {
 				}
 
 				emc.beginTransaction(Person.class);
-				//business.person().setPassword(person, wi.getNewPassword());
 				business.person().setPassword(person, newPassword);
 				emc.commit();
 				CacheManager.notify(Person.class);
@@ -108,30 +108,29 @@ public class ActionSetPasswordAnonymous extends BaseAction {
 		}
 	}
 
-
-		public  String decryptRSA(String strDecrypt) {
-			String privateKey;
-			String decrypt = null;
-			try {
-				privateKey = getPrivateKey();
-			    decrypt = Crypto.rsaDecrypt(strDecrypt, privateKey);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			return decrypt;
+	public String decryptRSA(String strDecrypt) {
+		String privateKey;
+		String decrypt = null;
+		try {
+			privateKey = getPrivateKey();
+			decrypt = Crypto.rsaDecrypt(strDecrypt, privateKey);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		return decrypt;
+	}
 
-		public  String  getPrivateKey() {
-			 String privateKey = "";
-			 try {
-				 privateKey = Config.privateKey();
-				 byte[] privateKeyB = Base64.decodeBase64(privateKey);
-				 privateKey = new String(Base64.encodeBase64(privateKeyB));
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			return privateKey;
+	public String getPrivateKey() {
+		String privateKey = "";
+		try {
+			privateKey = Config.privateKey();
+			byte[] privateKeyB = Base64.decodeBase64(privateKey);
+			privateKey = new String(Base64.encodeBase64(privateKeyB));
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		return privateKey;
+	}
 
 	public static class Wi extends GsonPropertyObject {
 
@@ -149,7 +148,6 @@ public class ActionSetPasswordAnonymous extends BaseAction {
 
 		@FieldDescribe("是否启用加密,默认不加密,启用(y)。注意:使用加密先要在服务器运行 create encrypt key")
 		private String isEncrypted;
-
 
 		public String getUserName() {
 			return userName;

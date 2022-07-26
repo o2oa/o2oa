@@ -15,23 +15,31 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
-import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Draft;
 import com.x.processplatform.core.entity.content.Draft_;
+import com.x.processplatform.core.express.assemble.surface.jaxrs.draft.ActionListMyPagingWi;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionListMyPaging extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListMyPaging.class);
+
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, Integer page, Integer size, JsonElement jsonElement)
 			throws Exception {
+
+		LOGGER.debug("execute:{}, page:{}, size:{}.", effectivePerson::getDistinguishedName, () -> page, () -> size);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<List<Wo>> result = new ActionResult<>();
@@ -63,10 +71,10 @@ class ActionListMyPaging extends BaseAction {
 				p = cb.and(p, root.get(Draft_.process).in(business.process().listEditionProcess(wi.getProcessList())));
 			}
 		}
-		if (DateTools.isDateTimeOrDate(wi.getStartTime())) {
+		if (BooleanUtils.isTrue(DateTools.isDateTimeOrDate(wi.getStartTime()))) {
 			p = cb.and(p, cb.greaterThan(root.get(Draft_.createTime), DateTools.parse(wi.getStartTime())));
 		}
-		if (DateTools.isDateTimeOrDate(wi.getEndTime())) {
+		if (BooleanUtils.isTrue(DateTools.isDateTimeOrDate(wi.getEndTime()))) {
 			p = cb.and(p, cb.lessThan(root.get(Draft_.createTime), DateTools.parse(wi.getEndTime())));
 		}
 		if (ListTools.isNotEmpty(wi.getCreatorUnitList())) {
@@ -80,6 +88,7 @@ class ActionListMyPaging extends BaseAction {
 		return p;
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.draft.ActionListMyPaging$Wo")
 	public static class Wo extends Draft {
 
 		private static final long serialVersionUID = 2279846765261247910L;
@@ -89,84 +98,11 @@ class ActionListMyPaging extends BaseAction {
 
 	}
 
-	public class Wi extends GsonPropertyObject {
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.draft.ActionListMyPaging$Wi")
+	public class Wi extends ActionListMyPagingWi {
 
-		@FieldDescribe("应用id")
-		private List<String> applicationList;
+		private static final long serialVersionUID = 884991136522875211L;
 
-		@FieldDescribe("流程id")
-		private List<String> processList;
-
-		@FieldDescribe("是否查找同版本流程数据：true(默认查找)|false")
-		private Boolean relateEditionProcess = true;
-
-		@FieldDescribe("开始时间yyyy-MM-dd HH:mm:ss")
-		private String startTime;
-
-		@FieldDescribe("结束时间yyyy-MM-dd HH:mm:ss")
-		private String endTime;
-
-		@FieldDescribe("创建组织")
-		private List<String> creatorUnitList;
-
-		@FieldDescribe("标题")
-		private String title;
-
-		public List<String> getApplicationList() {
-			return applicationList;
-		}
-
-		public void setApplicationList(List<String> applicationList) {
-			this.applicationList = applicationList;
-		}
-
-		public List<String> getProcessList() {
-			return processList;
-		}
-
-		public void setProcessList(List<String> processList) {
-			this.processList = processList;
-		}
-
-		public Boolean getRelateEditionProcess() {
-			return relateEditionProcess;
-		}
-
-		public void setRelateEditionProcess(Boolean relateEditionProcess) {
-			this.relateEditionProcess = relateEditionProcess;
-		}
-
-		public List<String> getCreatorUnitList() {
-			return creatorUnitList;
-		}
-
-		public void setCreatorUnitList(List<String> creatorUnitList) {
-			this.creatorUnitList = creatorUnitList;
-		}
-
-		public String getStartTime() {
-			return startTime;
-		}
-
-		public void setStartTime(String startTime) {
-			this.startTime = startTime;
-		}
-
-		public String getEndTime() {
-			return endTime;
-		}
-
-		public void setEndTime(String endTime) {
-			this.endTime = endTime;
-		}
-
-		public String getTitle() {
-			return title;
-		}
-
-		public void setTitle(String title) {
-			this.title = title;
-		}
 	}
 
 }
