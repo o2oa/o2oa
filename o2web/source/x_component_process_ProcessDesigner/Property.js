@@ -521,21 +521,33 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                 });
             }.bind(this));
             tableNodes.each(function(node){
-                var count = node.get("count") || 0;
                 var resultKey = node.get("data-result-key");
                 var selector = new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.process.designer, {
                     "type": "queryTable",
-                    "count": count,
+                    "count": node.get("count") || 0,
                     "names": this.data[node.get("name")],
                     "onChange": function(ids){this.savePersonItem(node, ids, null, resultKey);}.bind(this)
                 });
                 node.store("selector", selector);
             }.bind(this));
             cmsCategoryNodes.each(function(node){
+                var resultKey = node.get("data-result-key");
+                var data;
+                if( resultKey ){
+                    var d = this.data[node.get("name")];
+                    data = ( o2.typeOf( d ) === "array" ? d : [d] ).map(function(i){
+                        var obj = {};
+                        obj[ resultKey ] = i;
+                        return obj;
+                    });
+                }else{
+                    data = this.data[node.get("name")];
+                }
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.process.designer, {
                     "type": "CMSCategory",
-                    "names": this.data[node.get("name")],
-                    "onChange": function(ids){this.savePersonItem(node, ids);}.bind(this)
+                    "count": node.get("count") || 0,
+                    "names": data,
+                    "onChange": function(ids){this.savePersonItem(node, ids, null, resultKey);}.bind(this)
                 });
             }.bind(this));
             formFieldString.each(function(node){
