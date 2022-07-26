@@ -48,6 +48,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 			"service": "Service",
 			"agent": "Agent",
 			"delay": "Delay",
+			"publish": "Publish",
 			"message": "Message",
 			"choice": "Choice",
 			"cancel": "Cancel",
@@ -159,7 +160,6 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"modifyActivity_modifyRouteField": "[Route] modified the route of <b>\"{name}\"</b> activity <b>\"{rname}\"</b>, attribute <b>\"{field}\"< /b> From: <span style='color: #ff0000'>\"{old}\"</span>, modify to: <span style='color: #0000ff'>\"{new}\"< /span>",
 		"deleteActivity": "[Activity] deleted the activity <b style='color: #ff0000'>\"{name}\"</b>",
 		"addActivity": "[Activity] Added activity <b style='color: #0000ff'>\"{name}\"</b>",
-
 		"noDiffs": "No difference with the previous version",
 		"hasDiffs": "Differences from the previous version:",
 
@@ -369,6 +369,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"activityGroup": "Activity Group",
 		"opinionGroup": "Opinion Group",
 		"taskPerson": "Task",
+		"customData": "Custom Properties",
 		"identity": "Identity",
 		"group": "Group",
 		"readGroup": "Group",
@@ -390,7 +391,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"allowRollback": "Allow Rollback",
 		"allowPress": "Allow Press",
 		"allowPause": "Allow Pause",
-        "allowAddTask": "Allow Add Task",
+		"allowAddTask": "Allow Add Task",
 
 		"beforeBegin": "beforeBegin",
 		"eventInfo1": "Start the process to generate a work instance",
@@ -499,7 +500,36 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"handler": "Handler",
 		"handlerUnit": "Handler Unit",
 		"activityId": "Activity Id",
-		"splitValue": "Split Value"
+		"splitValue": "Split Value",
+
+		"publish": "Publish",
+		"publishTarget": "Publish Target",
+		"cms": "Content Management",
+		"table": "Data Table",
+		"cmsCategory": "Content Management Category",
+		"selectCmsCategory": "Select Category",
+		"categoryDataPath": "Category DataPath",
+		"sendNotify": "Message push range field",
+		"readerFields": "Reader Fields",
+		"authorFields": "Author Fields",
+		"pictureFields": "Homepage picture fields",
+		"useProcessForm": "Use Process Form",
+		"titleField": "Title Field",
+		"useProcessFormNote": "Note: If yes, the document published to the content management will be opened using the process form, otherwise it will be opened using the form set by the content management classification.",
+		"setNewPublishData": "Returns a json object to set the data, please check the API documentation. Such as",
+
+		"querytable": "Data Table",
+		"querytableActionNode_add": "↑ Add data table configuration entry ↑",
+		"querytableActionNode_modify": "↑ Modify data table configuration entry ↑",
+		"querytableInputError": "Please select a data table",
+		"queryTableAssignDataScriptError": "Data script cannot be empty",
+		"querytableDeleteItemTitle": "Delete data table configuration item confirmation",
+		"querytableDeleteItem": "Are you sure you want to delete the current data table configuration item?",
+		"queryTableDataBy": "value",
+		"byDataPath": "By DataPath",
+		"byDataScript": "By DataScript",
+		"publishTableConfig": "Data table publishing configuration",
+		"queryTableDataPathNote": "Note: the root path is empty, the data table is filled with the data table identifier .data (eg datatable1.data), and the data template is filled with the data template identifier (eg datatemplate1)."
 	}
 
 };

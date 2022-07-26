@@ -3486,6 +3486,7 @@
           "id": "log",
           "name": "",
           "type": "Log",
+          "logType": "record",
           "description": "",
           "filterActivity": [],
           "filterPerson": [],

@@ -1221,26 +1221,19 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         return moduleNodes;
     },
 
-    _loadModules: function (dom, beforeLoadModule, replace) {
-        //var subDom = this.node.getFirst();
-        //while (subDom){
-        //    if (subDom.get("MWFtype")){
-        //        var json = this._getDomjson(subDom);
-        //        var module = this._loadModule(json, subDom);
-        //        this.modules.push(module);
-        //    }
-        //    subDom = subDom.getNext();
-        //}
+    _loadModules: function (dom, beforeLoadModule, replace, callback) {
         var moduleNodes = this._getModuleNodes(dom);
-        //alert(moduleNodes.length);
+        var modules = [], jsons = [];
 
         moduleNodes.each(function (node) {
             var json = this._getDomjson(node);
-            //if( json.type === "Subform" || json.moduleName === "subform" )this.subformCount++;
-            //if( json.type === "Subpage" || json.moduleName === "subpage" )this.subpageCount++;
+            jsons.push( json );
+
             var module = this._loadModule(json, node, beforeLoadModule, replace);
             this.modules.push(module);
+            modules.push( module );
         }.bind(this));
+        if( callback )callback( moduleNodes, jsons, modules )
     },
     _loadModule: function (json, node, beforeLoad, replace) {
         //console.log( json.id );

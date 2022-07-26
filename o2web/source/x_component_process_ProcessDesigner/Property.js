@@ -68,6 +68,7 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                     this.loadContextRoot();
                     this.loadProjection();
                     this.loadMaplist();
+                    this.loadQueryTablePublisher();
 
                     this.hideAdvanced();
                 }.bind(this));
@@ -252,9 +253,13 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
         MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.ScriptText", function(){
             var _self = this;
             scriptNodes.each(function(node){
+                debugger;
                 var api = node.dataset["o2Api"];
+                var editorType = node.dataset["editorType"];
+                var loadImmediately = node.dataset["loadImmediately"];
                 var script = new MWF.xApplication.process.ProcessDesigner.widget.ScriptText(node, this.data[node.get("name")], this.process.designer, {
                     "api": api,
+                    "forceType": editorType || null,
                     "maskNode": this.process.designer.content,
                     "maxObj": this.process.designer.paperNode,
                     "onChange": function(code){
@@ -262,8 +267,10 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                     },
                     "type": node.dataset["type"]
                 });
+                if( loadImmediately )script.loadEditor();
                 this.scriptTexts.push(script);
                 //this.setScriptItems(script, node);
+                node.store("editor", script);
             }.bind(this));
         }.bind(this));
     },
@@ -289,6 +296,8 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                     //}.bind(this)
                 });
                 //this.setScriptItems(script, node);
+
+                node.store("selector", script);
             }.bind(this));
         }.bind(this));
 	},
@@ -383,12 +392,15 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
         var fieldNodes = this.propertyContent.getElements(".MWFFormFieldPerson");
         MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.PersonSelector", function(){
             fieldNodes.each(function(node){
+                var dataType = node.get("data-o2-type");
+                var data = this.data[node.get("name")];
+                if( dataType && dataType === "string" && o2.typeOf(data) === "string")data = data.split(",");
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.process.designer, {
                     "type": "formField",
                     "application": this.process.process.application,
                     "fieldType": "person",
-                    "names": this.data[node.get("name")] || [],
-                    "onChange": function(ids){this.savePersonItem(node, ids);}.bind(this)
+                    "names": data || [],
+                    "onChange": function(ids){this.savePersonItem(node, ids, dataType);}.bind(this)
                 });
             }.bind(this));
         }.bind(this));
@@ -460,9 +472,11 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
         // var personCompanyNodes = this.propertyContent.getElements(".MWFPersonCompany");
         var dutyNodes = this.propertyContent.getElements(".MWFDutySelector");
         var tableNodes = this.propertyContent.getElements(".MWFTableSelector");
+        var cmsCategoryNodes = this.propertyContent.getElements(".MWFCMSCategorySelector");
+        var formFieldString = this.propertyContent.getElements(".MWFFormFieldString");
         MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.PersonSelector", function(){
             personIdentityNodes.each(function(node){
-                count = node.get("count") || 0;
+                var count = node.get("count") || 0;
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.process.designer, {
                     "type": "identity",
                     "names": this.data[node.get("name")],
@@ -507,13 +521,37 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                 });
             }.bind(this));
             tableNodes.each(function(node){
-                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.process.designer, {
+                var count = node.get("count") || 0;
+                var resultKey = node.get("data-result-key");
+                var selector = new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.process.designer, {
                     "type": "queryTable",
+                    "count": count,
+                    "names": this.data[node.get("name")],
+                    "onChange": function(ids){this.savePersonItem(node, ids, null, resultKey);}.bind(this)
+                });
+                node.store("selector", selector);
+            }.bind(this));
+            cmsCategoryNodes.each(function(node){
+                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.process.designer, {
+                    "type": "CMSCategory",
                     "names": this.data[node.get("name")],
                     "onChange": function(ids){this.savePersonItem(node, ids);}.bind(this)
                 });
             }.bind(this));
-
+            formFieldString.each(function(node){
+                var count = node.get("count") || 0;
+                var dataType = node.get("data-o2-type");
+                var data = this.data[node.get("name")];
+                if( dataType && dataType === "string" && o2.typeOf(data) === "string")data = data.split(",");
+                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.process.designer, {
+                    "type": "formField",
+                    "count": count,
+                    "application": this.process.process.application,
+                    "fieldType": "string",
+                    "names": data || [],
+                    "onChange": function(ids){this.savePersonItem(node, ids, dataType);}.bind(this)
+                });
+            }.bind(this));
 
             // personDepartmentNodes.each(function(node){
             //     new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.process.designer, {
@@ -574,15 +612,28 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
         }.bind(this));
         this.data[node.get("name")] = JSON.encode(values);
     },
-    savePersonItem: function(node, ids){
+    savePersonItem: function(node, ids, dataType, resultKey){
         debugger;
-        count = node.get("count") || 0;
+        var count = node.get("count") || 0;
         var values = [];
         ids.each(function(id){
-            values.push(id.data.distinguishedName || id.data.id);
+            if( resultKey ){
+                values.push( id.data[resultKey] );
+            }else{
+                values.push(id.data.distinguishedName || id.data.id);
+            }
         }.bind(this));
 
-        this.data[node.get("name")] = (count && count.toInt()==1) ? values[0] : values;
+        var data;
+        if( count && count.toInt()==1  ){
+            data = values[0]
+        }else if( dataType === "string" ){
+            data = values.join(",");
+        }else{
+            data = values;
+        }
+
+        this.data[node.get("name")] = data;
     },
     savePersonObjectItem: function(node, ids){
         var values = [];
@@ -709,6 +760,7 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
         this.listSericalActivitys("parallelList", name, select);
         this.listSericalActivitys("mergeList", name, select);
         this.listSericalActivitys("embedList", name, select);
+        this.listSericalActivitys("publishList", name, select);
         this.listSericalActivitys("delayList", name, select);
         this.listSericalActivitys("invokeList", name, select);
         this.listSericalActivitys("serviceList", name, select);
@@ -1059,5 +1111,22 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                 }.bind(this));
             }.bind(this));
         }
+	},
+    loadQueryTablePublisher: function(){
+        var tableNodes = this.propertyContent.getElements(".MWFQueryTablePublisher");
+        if(tableNodes.length){
+            tableNodes.each(function(node){
+                var name = node.get("name");
+                var value = this.data[name];
+                MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.QueryTablePublisher", function(){
+                    var publisher = new MWF.xApplication.process.ProcessDesigner.widget.QueryTablePublisher(node, value, {
+                        "onChange": function(){
+                            this.setValue(node.get("name"), publisher.getData());
+                        }.bind(this)
+                    }, this);
+                    publisher.load();
+                }.bind(this));
+            }.bind(this));
         }
+    }
 });

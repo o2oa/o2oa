@@ -331,6 +331,7 @@ MWF.xApplication.process.ProcessDesigner.widget.EditionList.Item = new Class({
         this.concatDiffActivitys(diffActivitys, this.getDiffActivitys(process.parallelList, this.edition.fullProcess.parallelList));
         this.concatDiffActivitys(diffActivitys, this.getDiffActivitys(process.mergeList, this.edition.fullProcess.mergeList));
         this.concatDiffActivitys(diffActivitys, this.getDiffActivitys(process.embedList, this.edition.fullProcess.embedList));
+        this.concatDiffActivitys(diffActivitys, this.getDiffActivitys(process.publishList, this.edition.fullProcess.publishList));
         this.concatDiffActivitys(diffActivitys, this.getDiffActivitys(process.delayList, this.edition.fullProcess.delayList));
         this.concatDiffActivitys(diffActivitys, this.getDiffActivitys(process.invokeList, this.edition.fullProcess.invokeList));
         this.concatDiffActivitys(diffActivitys, this.getDiffActivitys(process.serviceList, this.edition.fullProcess.serviceList));
@@ -555,6 +556,7 @@ MWF.xApplication.process.ProcessDesigner.widget.EditionList.Item = new Class({
             if (process.splitList && process.splitList.length) activityInfor += ", "+process.splitList.length + " "+an +this.lp.menu.newActivityType.split;
             if (process.mergeList && process.mergeList.length) activityInfor += ", "+process.mergeList.length + " "+an +this.lp.menu.newActivityType.merge;
             if (process.embedList && process.embedList.length) activityInfor += ", "+process.embedList.length + " "+an +this.lp.menu.newActivityType.embed;
+            if (process.publishList && process.publishList.length) activityInfor += ", "+process.publishList.length + " "+an +this.lp.menu.newActivityType.publish;
             if (process.invokeList && process.invokeList.length) activityInfor += ", "+process.invokeList.length + " "+an +this.lp.menu.newActivityType.invoke;
             if (process.cancelList && process.cancelList.length) activityInfor += ", "+process.cancelList.length + " "+an +this.lp.menu.newActivityType.cancel;
             if (process.delayList && process.delayList.length) activityInfor += ", "+process.delayList.length + " "+an +this.lp.menu.newActivityType.delay;

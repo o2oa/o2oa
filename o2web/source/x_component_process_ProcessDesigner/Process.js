@@ -49,6 +49,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
         this.parallels = {};
 		this.merges = {};
 		this.embeds = {};
+		this.publishs = {};
         this.delays = {};
 		this.invokes = {};
         this.services = {};
@@ -77,6 +78,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
         this.loadedParallels = false;
         this.loadedMerges = false;
 		this.loadedEmbeds = false;
+		this.loadedPublishs = false;
         this.loadedDelays = false;
 		this.loadedInvokes = false;
         this.loadedServices = false;
@@ -145,6 +147,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 		idCount += (this.process.splitList) ? this.process.splitList.length : 0;
 		idCount += (this.process.mergeList) ? this.process.mergeList.length : 0;
 		idCount += (this.process.embedList) ? this.process.embedList.length : 0;
+		idCount += (this.process.publishList) ? this.process.publishList.length : 0;
 		idCount += (this.process.invokeList) ? this.process.invokeList.length : 0;
 		idCount += (this.process.cancelList) ? this.process.cancelList.length : 0;
         idCount += (this.process.delayList) ? this.process.delayList.length : 0;
@@ -469,6 +472,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 			this.newActivityMenu.addMenuItem(MWF.APPPD.LP.menu.newActivityType.split, "click", this.createSplitActivity.bind(this), this.designer.path+""+this.designer.options.style+"/toolbarIcon/"+"split.gif");
 			this.newActivityMenu.addMenuItem(MWF.APPPD.LP.menu.newActivityType.merge, "click", this.createMergeActivity.bind(this), this.designer.path+""+this.designer.options.style+"/toolbarIcon/"+"merge.gif");
 			this.newActivityMenu.addMenuItem(MWF.APPPD.LP.menu.newActivityType.embed, "click", this.createEmbedActivity.bind(this), this.designer.path+""+this.designer.options.style+"/toolbarIcon/"+"embed.gif");
+			this.newActivityMenu.addMenuItem(MWF.APPPD.LP.menu.newActivityType.publish, "click", this.createPublishActivity.bind(this), this.designer.path+""+this.designer.options.style+"/toolbarIcon/"+"publish.png");
 			this.newActivityMenu.addMenuItem(MWF.APPPD.LP.menu.newActivityType.invoke, "click", this.createInvokesActivity.bind(this), this.designer.path+""+this.designer.options.style+"/toolbarIcon/"+"invoke.gif");
 			this.newActivityMenu.addMenuItem(MWF.APPPD.LP.menu.newActivityType.begin, "click", this.createBeginActivity.bind(this), this.designer.path+""+this.designer.options.style+"/toolbarIcon/"+"begin.gif");
 			this.newActivityMenu.addMenuItem(MWF.APPPD.LP.menu.newActivityType.end, "click", this.createEndActivity.bind(this), this.designer.path+""+this.designer.options.style+"/toolbarIcon/"+"end.gif");
@@ -605,6 +609,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 		if (process.splitList) process.splitList.each(function(a){oldIds.push(a.id);});
 		if (process.mergeList) process.mergeList.each(function(a){oldIds.push(a.id);});
 		if (process.embedList) process.embedList.each(function(a){oldIds.push(a.id);});
+		if (process.publishList) process.publishList.each(function(a){oldIds.push(a.id);});
 		if (process.invokeList) process.invokeList.each(function(a){oldIds.push(a.id);});
 		if (process.cancelList) process.cancelList.each(function(a){oldIds.push(a.id);});
 		if (process.delayList) process.delayList.each(function(a){oldIds.push(a.id);});
@@ -760,7 +765,6 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 //		};
 //	},
 	loadProcessRoutes: function(){
-
 		this.process.routeList.each(function(item){
 			this.routes[item.id] = new MWF.APPPD.Route(item, this);
 			this.routeDatas[item.id] = item;
@@ -776,7 +780,9 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 	},
 	
 	loadedActivitys: function(callback){
-		if (this.loadedBegin && this.loadedEnds && this.loadedCancels && this.loadedConditions && this.loadedChoices && this.loadedSplits && this.loadedParallels && this.loadedMerges && this.loadedManuals && this.loadedEmbeds && this.loadedDelays && this.loadedInvokes && this.loadedServices && this.loadedAgents && this.loadedMessages){
+		if (this.loadedBegin && this.loadedEnds && this.loadedCancels && this.loadedConditions && this.loadedChoices
+			&& this.loadedSplits && this.loadedParallels && this.loadedMerges && this.loadedManuals && this.loadedEmbeds
+			&& this.loadedDelays && this.loadedInvokes && this.loadedServices && this.loadedAgents && this.loadedMessages && this.loadedPublishs){
 			if (callback) callback();
 		}
 	},
@@ -794,6 +800,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
         this.loadMergeList(function(){this.loadedMerges = true; this.loadedActivitys(callback);}.bind(this));
 
         this.loadEmbedList(function(){this.loadedEmbeds = true; this.loadedActivitys(callback);}.bind(this));
+		this.loadPublishList(function(){this.loadedPublishs = true; this.loadedActivitys(callback);}.bind(this));
 
 		this.loadDelayList(function(){this.loadedDelays = true; this.loadedActivitys(callback);}.bind(this));
 		this.loadInvokeList(function(){this.loadedInvokes = true; this.loadedActivitys(callback);}.bind(this));
@@ -838,6 +845,9 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 
 	loadEmbedList: function(callback){
 		this.loadActivitys("Embed", "embedList", this.embeds, callback);
+	},
+	loadPublishList: function(callback){
+		this.loadActivitys("Publish", "publishList", this.publishs, callback);
 	},
 
     loadDelayList: function(callback){
@@ -907,6 +917,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 		this.checkActivityEmptyRouteList(this.process.parallelList);
 		this.checkActivityEmptyRouteList(this.process.mergeList);
 		this.checkActivityEmptyRouteList(this.process.embedList);
+		this.checkActivityEmptyRouteList(this.process.publishList);
 		this.checkActivityEmptyRouteList(this.process.delayList);
 		this.checkActivityEmptyRouteList(this.process.invokeList);
 		this.checkActivityEmptyRouteList(this.process.serviceList);
@@ -1049,6 +1060,9 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 	},
 	createEmbedActivity: function(){
 		this.createActivity("embed", "Embed");
+	},
+	createPublishActivity: function(){
+		this.createActivity("publish", "Publish");
 	},
 	createInvokesActivity: function(){
 		this.createActivity("invoke", "Invoke");
@@ -1197,6 +1211,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 		for (a in this.autos) this.autos[a].unSelected();
 		for (a in this.manuals) this.manuals[a].unSelected();
 		for (a in this.embeds) this.embeds[a].unSelected();
+		for (a in this.publishs) this.publishs[a].unSelected();
 		for (a in this.invokes) this.invokes[a].unSelected();
 	},
 	

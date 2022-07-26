@@ -729,21 +729,14 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
 
 
 
-    _loadModules: function (dom) {
-        //var subDom = this.node.getFirst();
-        //while (subDom){
-        //    if (subDom.get("MWFtype")){
-        //        var json = this._getDomjson(subDom);
-        //        var module = this._loadModule(json, subDom);
-        //        this.modules.push(module);
-        //    }
-        //    subDom = subDom.getNext();
-        //}
-
+    _loadModules: function (dom, beforeLoadModule, replace, callback) {
         var moduleNodes = this._getModuleNodes(dom);
+        var modules = [], jsons = [];
 
         moduleNodes.each(function (node) {
             var json = this._getDomjson(node);
+            jsons.push( json );
+
             if (!this.options.showAttachment && json.type == "Attachment") {
                 return;
             }
@@ -751,19 +744,30 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             if (layout.mobile && json.type === "Actionbar") {
                 return;
             }
-            var module = this._loadModule(json, node);
+            var module = this._loadModule(json, node, beforeLoadModule, replace);
             this.modules.push(module);
+            modules.push( module );
         }.bind(this));
+        if( callback )callback( moduleNodes, jsons, modules )
     },
     _loadModule: function (json, node, beforeLoad) {
         if (!json) return;
+
+        //流程组件返回
+        if( ( json.type === "Log" && json.logType ) || ["Monitor","ReadLog"].contains(json.type) ){
+            node.empty();
+            return;
+        }else if( this.options.useProcessForm && json.type === "Actionbar" ){ //使用流程表单，组件是操作条
+            json.type = "ProcessActionbar"
+        }
+
         if (!MWF["CMS" + json.type]) {
             var moduleType = json.type;
             if(moduleType === "AttachmentDg")moduleType = "Attachment";
             MWF.xDesktop.requireApp("cms.Xform", moduleType, null, false);
         }
         var module = new MWF["CMS" + json.type](node, json, this);
-        if (beforeLoad) beforeLoad.apply(module);
+        if (beforeLoad) beforeLoad.apply(module); 
         if (!this.all[json.id]) this.all[json.id] = module;
         if (module.field) {
             if (!this.forms[json.id]) this.forms[json.id] = module;
@@ -1316,15 +1320,15 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
         this.app.setPopularDocument();
     },
 
-    printWork: function (app, form) {
-        var application = app || this.businessData.work.application;
-        var form = form;
-        if (!form) {
-            form = this.json.id;
-            if (this.json.printForm) form = this.json.printForm;
-        }
-        window.open(o2.filterUrl("../x_desktop/printWork.html?workid=" + this.businessData.work.id + "&app=" + this.businessData.work.application + "&form=" + form));
-    },
+    // printWork: function (app, form) {
+    //     var application = app || this.businessData.work.application;
+    //     var form = form;
+    //     if (!form) {
+    //         form = this.json.id;
+    //         if (this.json.printForm) form = this.json.printForm;
+    //     }
+    //     window.open(o2.filterUrl("../x_desktop/printWork.html?workid=" + this.businessData.work.id + "&app=" + this.businessData.work.application + "&form=" + form));
+    // },
     openWindow: function (form, app) {
         var form = form;
         if (!form) {
@@ -1524,7 +1528,51 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             // }
         }
     },
-
+    // //列式流程log
+    // listWorkLog: function ( callback ) {
+    //     if( !this.businessData.data.$work || !this.businessData.data.$work.job ){
+    //         callback([]);
+    //         return
+    //     }
+    //
+    //     if( this.workLogList ){
+    //         callback(this.workLogList);
+    //         return;
+    //     }
+    //
+    //     //只获取一次。把callback存起来，等异步调用完成后一次性执行callback
+    //     if( !this.worklogCallbackList )this.worklogCallbackList = [];
+    //     Promise.resolve( o2.Actions.load("x_processplatform_assemble_surface").WorkLogAction.listWithJob( this.businessData.data.$work.job )).then(function(json){
+    //         this.workLogList = json.data;
+    //         debugger;
+    //         while( this.worklogCallbackList.length ){
+    //             this.worklogCallbackList.shift()( this.workLogList );
+    //         }
+    //     }.bind(this));
+    //     this.worklogCallbackList.push( callback );
+    // },
+    // //列式流程record
+    // listWorkRecord: function ( callback ) {
+    //     if( !this.businessData.data.$work || !this.businessData.data.$work.job ){
+    //         callback([]);
+    //         return
+    //     }
+    //
+    //     if( this.workRecordList ){
+    //         callback(this.workRecordList);
+    //         return;
+    //     }
+    //
+    //     //只获取一次。把callback存起来，等异步调用完成后一次性执行callback
+    //     if( !this.workRecordCallbackList )this.workRecordCallbackList = [];
+    //     Promise.resolve( o2.Actions.load("x_processplatform_assemble_surface").RecordAction.listWithJob( this.businessData.data.$work.job )).then(function(json){
+    //         this.workRecordList = json.data;
+    //         while( this.workRecordCallbackList.length ){
+    //             this.workRecordCallbackList.shift()( this.workRecordList );
+    //         }
+    //     }.bind(this));
+    //     this.workRecordCallbackList.push( callback );
+    // }
 
 
 });

@@ -1106,6 +1106,7 @@ MWF.APPPD.Activity.Diamond = new Class({
     MWF.APPPD.Activity.Parallel = new Activity(MWF.APPPD.Activity.Circle, "parallel");
     MWF.APPPD.Activity.Merge = new Activity(MWF.APPPD.Activity.Circle.SingleRouter, "merge");
     MWF.APPPD.Activity.Embed = new Activity(MWF.APPPD.Activity.SingleRouter, "embed");
+    MWF.APPPD.Activity.Publish = new Activity(MWF.APPPD.Activity.SingleRouter, "publish");
 
     MWF.APPPD.Activity.Delay = new Activity(MWF.APPPD.Activity.Circle.SingleRouter, "delay");
     MWF.APPPD.Activity.Invoke = new Activity(MWF.APPPD.Activity.SingleRouter, "invoke");

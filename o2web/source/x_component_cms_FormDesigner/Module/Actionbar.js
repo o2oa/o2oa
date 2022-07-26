@@ -26,6 +26,46 @@ MWF.xApplication.cms.FormDesigner.Module.Actionbar = MWF.CMSFCActionbar = new Cl
 		this.customTools = [];
         this.multiTools = [];
 	},
+	_initModule: function(){
+		this._checkProcessTool();
+		this.setStyleTemplate();
+		this._setNodeProperty();
+		if (!this.form.isSubform) this._createIconAction();
+		this._setNodeEvent();
+		this._refreshActionbar();
+		if( !this.json.events ){
+			MWF.getJSON(this.path+"template.json", function(json){
+				this.json.events = json.events;
+			}.bind(this), false);
+		}
+	},
+	_checkProcessTool: function(){
+		//删除从流程拷贝过来的系统按钮
+		debugger;
+		var processTools = this.json.multiTools.filter( function (tool) {
+			return ["closeWork","saveWork","processWork","rerouteWork","resetWork","addTask","addSplit","retractWork","rollback",
+				"deleteWork","printWork","pressWork","pauseTask","resumeTask","downloadAll"].contains( tool.action )
+		});
+		processTools.each(function (tool) {
+			var actionNode = this.node.getElement("[mwfbuttonaction='"+tool.action+"']");
+			if(actionNode)actionNode.destroy();
+			this.json.multiTools.erase(tool);
+		}.bind(this));
+
+		var toolList = this.json.multiTools;
+		if( processTools.length > 0 && this.form.options.mode !== "Mobile"){
+			this.json.style =  this.form.json.formStyleType.contains("red") ? "xform_blue_simple" : "xform_red_simple";
+			this.json.customIconStyle = this.form.json.formStyleType.contains("red") ? "red" : "blue";
+			this.json.customIconOverStyle = "white";
+			this.json.actionStyles = null;
+
+			o2.xhr_get(this.path+"toolbars.json", function(xhr){
+				var multiTools = JSON.parse(xhr.responseText).map( function (d) { d.system = true; return d; });
+				this.json.multiTools = multiTools.concat( toolList );
+				debugger;
+			}.bind(this), null,null,true);
+		}
+	},
 	setTemplateStyles: function(styles){
 		this.json.style = styles.style;
 		this.json.customIconStyle = styles.customIconStyle;
@@ -60,11 +100,11 @@ MWF.xApplication.cms.FormDesigner.Module.Actionbar = MWF.CMSFCActionbar = new Cl
 			this.toolbarWidget = new MWF.widget.SimpleToolbar(this.toolbarNode, {"style": this.json.style}, this);
 
 			o2.xhr_get(this.path+"toolbars.json", function(xhr){
-			    var jsonStr = xhr.responseText;
-			    this.json.multiTools = JSON.parse(jsonStr).map( function (d) { d.system = true; return d; });
+				var jsonStr = xhr.responseText;
+				this.json.multiTools = JSON.parse(jsonStr).map( function (d) { d.system = true; return d; });
 
-			    jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.cms.FormDesigner.LP.actionBar});
-                this.multiToolsJson = JSON.parse(jsonStr).map( function (d) { d.system = true; return d; });
+				jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.cms.FormDesigner.LP.actionBar});
+				this.multiToolsJson = JSON.parse(jsonStr).map( function (d) { d.system = true; return d; });
 
 				this.setToolbars(this.multiToolsJson, this.toolbarNode);
 				this.toolbarWidget.load();
@@ -73,7 +113,7 @@ MWF.xApplication.cms.FormDesigner.Module.Actionbar = MWF.CMSFCActionbar = new Cl
 			}.bind(this), null,null,true);
 
 			//MWF.getJSON(this.path+"toolbars.json", function(json){
-			    //this.json.defaultTools = json;
+			//this.json.defaultTools = json;
 			//    this.json.multiTools = json.map( function (d) { d.system = true; return d; });
 			//	this.setToolbars(json, this.toolbarNode);
 			//	this.toolbarWidget.load();
