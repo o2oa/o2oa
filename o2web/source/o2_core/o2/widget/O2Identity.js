@@ -50,6 +50,7 @@ o2.widget.O2Identity = new Class({
     },
     load: function(){
         this.fireEvent("queryLoad");
+        debugger;
         var style = ( layout.mobile && this.style.identityNode_mobile ) ?
             this.style.identityNode_mobile : this.style.identityNode;
 
@@ -443,6 +444,7 @@ o2.widget.O2CMSCategory = new Class({
         if (!this.data.name){
             o2.Actions.get("x_cms_assemble_control").getCategory((this.data.id || this.data.name), function(json){
                 this.data = json.data;
+                this.data.name = this.data.categoryName;
             }.bind(this), null, false);
         }
     },

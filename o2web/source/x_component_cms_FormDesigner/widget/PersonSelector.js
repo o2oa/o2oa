@@ -5,33 +5,33 @@ MWF.xDesktop.requireApp("Selector", "package", null, false);
 MWF.xDesktop.requireApp("process.ProcessDesigner", "widget.PersonSelector", null, false);
 MWF.require("MWF.widget.O2Identity", null, false);
 
-MWF.widget.O2CMSApplication = new Class({
-    Extends: MWF.widget.O2Application,
-    getPersonData: function(){
-        if (!this.data.distinguishedName){
-            this.action = new MWF.xDesktop.Actions.RestActions("", "x_cms_assemble_control", "");
-            this.action.actions = {"getCMSApplication": {"uri": "/jaxrs/appinfo/{id}"}};
-            this.action.invoke({"name": "getCMSApplication", "async": false, "parameter": {"id": (this.data.id || this.data.name)}, "success": function(json){
-                this.data = json.data;
-                this.data.name = this.data.appName;
-            }.bind(this)});
-        }
-    }
-});
-
-MWF.widget.O2CMSCategory = new Class({
-    Extends: MWF.widget.O2CMSApplication,
-    getPersonData: function(){
-        if (!this.data.distinguishedName){
-            this.action = new MWF.xDesktop.Actions.RestActions("", "x_cms_assemble_control", "");
-            this.action.actions = {"getCMSCategory": {"uri": "/jaxrs/categoryinfo/{id}"}};
-            this.action.invoke({"name": "getCMSCategory", "async": false, "parameter": {"id": (this.data.id || this.data.name)}, "success": function(json){
-                this.data = json.data;
-                this.data.name = this.data.categoryName;
-            }.bind(this)});
-        }
-    }
-});
+// MWF.widget.O2CMSApplication = new Class({
+//     Extends: MWF.widget.O2Application,
+//     getPersonData: function(){
+//         if (!this.data.distinguishedName){
+//             this.action = new MWF.xDesktop.Actions.RestActions("", "x_cms_assemble_control", "");
+//             this.action.actions = {"getCMSApplication": {"uri": "/jaxrs/appinfo/{id}"}};
+//             this.action.invoke({"name": "getCMSApplication", "async": false, "parameter": {"id": (this.data.id || this.data.name)}, "success": function(json){
+//                 this.data = json.data;
+//                 this.data.name = this.data.appName;
+//             }.bind(this)});
+//         }
+//     }
+// });
+//
+// MWF.widget.O2CMSCategory = new Class({
+//     Extends: MWF.widget.O2CMSApplication,
+//     getPersonData: function(){
+//         if (!this.data.distinguishedName){
+//             this.action = new MWF.xDesktop.Actions.RestActions("", "x_cms_assemble_control", "");
+//             this.action.actions = {"getCMSCategory": {"uri": "/jaxrs/categoryinfo/{id}"}};
+//             this.action.invoke({"name": "getCMSCategory", "async": false, "parameter": {"id": (this.data.id || this.data.name)}, "success": function(json){
+//                 this.data = json.data;
+//                 this.data.name = this.data.categoryName;
+//             }.bind(this)});
+//         }
+//     }
+// });
 
 MWF.xApplication.cms.FormDesigner.widget.PersonSelector = new Class({
     Implements: [Options, Events],
