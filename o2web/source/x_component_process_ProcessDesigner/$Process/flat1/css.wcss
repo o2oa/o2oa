@@ -371,9 +371,9 @@
 			"shap": {
 				"cursor": "pointer",
 				//"fill": "90-#FFF-#9a9a9a:5-#777777:50-#929292:53-#d1d1d1:97:#FFF",
-				"fill": "#ded2ff",
+				"fill": "#ffdfb3",
 				"stroke-width": "1",
-				"stroke": "#8974c5",
+				"stroke": "#ee8d02",
 				"radius": 0,
 				"z-index": 100
 			},
