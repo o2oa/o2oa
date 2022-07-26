@@ -38,7 +38,7 @@ class ActionCaptchaLogin extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			Wo wo = null;
-			String password = password(wi);
+			String password = password(wi.getPassword());
 			if (BooleanUtils.isTrue(Config.person().getCaptchaLogin()) && (BooleanUtils
 					.isFalse(business.instrument().captcha().validate(wi.getCaptcha(), wi.getCaptchaAnswer())))) {
 				throw new ExceptionInvalidCaptcha();

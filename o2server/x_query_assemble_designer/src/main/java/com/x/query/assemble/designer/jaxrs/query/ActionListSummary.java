@@ -5,11 +5,14 @@ import java.util.List;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.query.assemble.designer.Business;
@@ -19,7 +22,12 @@ import com.x.query.core.entity.View;
 
 class ActionListSummary extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListSummary.class);
+
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson) throws Exception {
+
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -35,14 +43,14 @@ class ActionListSummary extends BaseAction {
 	}
 
 	private List<Wo> list(Business business, EffectivePerson effectivePerson) throws Exception {
-		List<Wo> wos = new ArrayList<>();
-		if (effectivePerson.isManager() || business.organization().person().hasRole(effectivePerson,
-				OrganizationDefinition.Manager, OrganizationDefinition.QueryManager)) {
-			wos = business.entityManagerContainer().fetchAll(Query.class, Wo.copier);
-		} else {
+		List<Wo> wos = null;
+		if ((!effectivePerson.isManager()) && (!business.organization().person().hasRole(effectivePerson,
+				OrganizationDefinition.QueryManager, OrganizationDefinition.QueryCreator))) {
 			wos = business.entityManagerContainer().fetchEuqalOrIsMember(Query.class, Wo.copier,
 					Query.creatorPerson_FIELDNAME, effectivePerson.getDistinguishedName(),
 					Query.controllerList_FIELDNAME, effectivePerson.getDistinguishedName());
+		} else {
+			wos = business.entityManagerContainer().fetchAll(Query.class, Wo.copier);
 		}
 		return wos;
 	}
@@ -51,9 +59,9 @@ class ActionListSummary extends BaseAction {
 
 		private static final long serialVersionUID = -7648824521711153693L;
 
-		static WrapCopier<Query, Wo> copier = WrapCopierFactory.wo(Query.class, Wo.class,
-				ListTools.toList(Query.id_FIELDNAME, Query.name_FIELDNAME, Query.description_FIELDNAME,
-						Query.queryCategory_FIELDNAME, Query.updateTime_FIELDNAME),
+		static WrapCopier<Query, Wo> copier = WrapCopierFactory.wo(
+				Query.class, Wo.class, ListTools.toList(JpaObject.id_FIELDNAME, Query.name_FIELDNAME,
+						Query.description_FIELDNAME, Query.queryCategory_FIELDNAME, JpaObject.updateTime_FIELDNAME),
 				null);
 
 		@FieldDescribe("视图对象")
@@ -84,8 +92,10 @@ class ActionListSummary extends BaseAction {
 
 		private static final long serialVersionUID = 1439909268641168987L;
 
-		static WrapCopier<View, WoView> copier = WrapCopierFactory.wo(View.class, WoView.class, ListTools
-				.toList(View.id_FIELDNAME, View.name_FIELDNAME, View.query_FIELDNAME, View.updateTime_FIELDNAME), null);
+		static WrapCopier<View, WoView> copier = WrapCopierFactory.wo(View.class, WoView.class,
+				ListTools.toList(JpaObject.id_FIELDNAME, View.name_FIELDNAME, View.query_FIELDNAME,
+						JpaObject.updateTime_FIELDNAME),
+				null);
 
 	}
 
@@ -93,8 +103,10 @@ class ActionListSummary extends BaseAction {
 
 		private static final long serialVersionUID = 1513668573527819003L;
 
-		static WrapCopier<Stat, WoStat> copier = WrapCopierFactory.wo(Stat.class, WoStat.class, ListTools
-				.toList(Stat.id_FIELDNAME, Stat.name_FIELDNAME, Stat.query_FIELDNAME, Stat.updateTime_FIELDNAME), null);
+		static WrapCopier<Stat, WoStat> copier = WrapCopierFactory.wo(Stat.class, WoStat.class,
+				ListTools.toList(JpaObject.id_FIELDNAME, Stat.name_FIELDNAME, Stat.query_FIELDNAME,
+						JpaObject.updateTime_FIELDNAME),
+				null);
 	}
 
 }

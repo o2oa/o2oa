@@ -5,6 +5,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -13,6 +15,8 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.tools.ListTools;
 
 public class WrapCopier<T, W> {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(WrapCopier.class);
 
 	private List<String> copyFields = new ArrayList<>();
 
@@ -77,6 +81,7 @@ public class WrapCopier<T, W> {
 					setDestProperty(dest, f, o);
 				}
 			} catch (Exception e) {
+				LOGGER.warn("copyFields:{} to {} error: {}.", f, dest.getClass().getSimpleName(), e.getMessage());
 				e.printStackTrace();
 			}
 		});

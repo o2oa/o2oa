@@ -265,8 +265,8 @@ public class EndProcessor extends AbstractEndProcessor {
 
 	/**
 	 * 触发在等待状态的父文档
-	 * 
-	 * @param parentWorkId
+	 *
+	 * @param workId
 	 */
 	private void touchWork(String workId) {
 		new Thread(EndProcessor.class.getName() + "_touchWork") {

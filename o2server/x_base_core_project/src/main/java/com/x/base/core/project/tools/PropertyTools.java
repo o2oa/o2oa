@@ -1,10 +1,7 @@
 package com.x.base.core.project.tools;
 
 import java.lang.reflect.Field;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -58,6 +55,18 @@ public class PropertyTools {
 			}
 		}
 		return map;
+	}
+
+	public static boolean hasField(Class<?> cls, String fieldName) {
+		if(StringUtils.isBlank(fieldName)){
+			return false;
+		}
+		for (Field field : FieldUtils.getAllFields(cls)) {
+			if(field.getName().equals(fieldName)){
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

@@ -15,6 +15,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.WrapOutId;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.cms.assemble.control.Business;
+import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.element.Form;
 import com.x.cms.core.entity.element.View;
 import com.x.cms.core.entity.element.ViewCategory;
@@ -28,11 +29,18 @@ public class ActionDelete extends BaseAction {
 		WrapOutId wrap = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business( emc );
-			if (!business.isManager( effectivePerson)) {
+			Form form = business.getFormFactory().get( id );
+			if(form == null){
+				throw new ExceptionFormNotExist(id);
+			}
+			AppInfo appInfo = emc.find(form.getAppId(), AppInfo.class);
+			if(appInfo == null){
+				throw new ExceptionAppInfoNotExist(form.getAppId());
+			}
+			if (!business.isAppInfoManager( effectivePerson, appInfo)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			// 先判断需要操作的应用信息是否存在，根据ID进行一次查询，如果不存在不允许继续操作
-			Form form = business.getFormFactory().get( id );
 			List<String> viewIds = business.getViewFactory().listByFormId(id);
 			List<String> fieldConfigIds = null;
 			List<ViewFieldConfig> fieldConfigs = null;

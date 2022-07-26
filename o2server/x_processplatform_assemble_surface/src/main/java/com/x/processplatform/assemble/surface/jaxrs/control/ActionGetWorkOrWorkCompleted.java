@@ -135,6 +135,7 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 				wo.setAllowPause(true);
 			}
 		}
+
 		// 是否可以增加会签分支
 		setAllowAddSplit(effectivePerson, business, activity, work, wo);
 		// 是否可以召回
