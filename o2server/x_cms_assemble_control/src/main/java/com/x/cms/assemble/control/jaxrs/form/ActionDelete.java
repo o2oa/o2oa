@@ -21,9 +21,12 @@ import com.x.cms.core.entity.element.View;
 import com.x.cms.core.entity.element.ViewCategory;
 import com.x.cms.core.entity.element.ViewFieldConfig;
 
+/**
+ * 删除表单
+ * @author sword
+ */
 public class ActionDelete extends BaseAction {
 
-	@AuditLog(operation = "删除表单")
 	protected ActionResult<WrapOutId> execute( HttpServletRequest request, EffectivePerson effectivePerson, String id ) throws Exception {
 		ActionResult<WrapOutId> result = new ActionResult<>();
 		WrapOutId wrap = null;
@@ -34,9 +37,6 @@ public class ActionDelete extends BaseAction {
 				throw new ExceptionFormNotExist(id);
 			}
 			AppInfo appInfo = emc.find(form.getAppId(), AppInfo.class);
-			if(appInfo == null){
-				throw new ExceptionAppInfoNotExist(form.getAppId());
-			}
 			if (!business.isAppInfoManager( effectivePerson, appInfo)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}

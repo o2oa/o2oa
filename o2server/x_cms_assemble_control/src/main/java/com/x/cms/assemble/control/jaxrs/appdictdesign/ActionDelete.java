@@ -6,6 +6,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -25,12 +26,8 @@ class ActionDelete extends BaseAction {
 				throw new ExceptionAppDictNotExisted(id);
 			}
 			AppInfo appInfo = emc.find(dict.getAppId(), AppInfo.class);
-			if (null == appInfo) {
-				throw new ExceptionAppInfoNotExist(dict.getAppId());
-			}
-			if (!business.editable(effectivePerson, appInfo)) {
-				throw new ExceptionAppInfoAccessDenied(effectivePerson.getDistinguishedName(),
-						appInfo.getAppName(), appInfo.getId());
+			if (!business.isAppInfoManager(effectivePerson, appInfo)) {
+				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			List<String> ids = business.getAppDictItemFactory().listWithAppDict(id);
 			this.delete_batch(emc, ids);

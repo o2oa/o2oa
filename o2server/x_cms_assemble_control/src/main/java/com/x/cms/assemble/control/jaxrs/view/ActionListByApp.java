@@ -45,11 +45,11 @@ public class ActionListByApp extends BaseAction {
 				}
 				//如果有权限，继续操作
 				ViewFactory viewFactory  = business.getViewFactory();
-				List<String> ids = viewFactory.listByAppId( appId );//获取指定应用的所有视图列表
-				List<View> viewList = emc.list( View.class, ids );//查询ID IN ids 的所有视图信息列表
+				List<String> ids = viewFactory.listByAppId( appId );
+				List<View> viewList = emc.list( View.class, ids );
 
 				if( viewList != null && !viewList.isEmpty() ){
-					wraps = Wo.copier.copy( viewList );//将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
+					wraps = Wo.copier.copy( viewList );
 					SortTools.desc( wraps, "sequence" );
 
 					for( Wo wo :  wraps ){
@@ -58,9 +58,9 @@ public class ActionListByApp extends BaseAction {
 							wo.setFormName( formServiceAdv.getNameWithId( wo.getFormId() ) );
 						}
 					}
+					CacheManager.put(cacheCategory, cacheKey, wraps );
 				}
 
-				CacheManager.put(cacheCategory, cacheKey, wraps );
 				result.setData(wraps);
 			} catch (Throwable th) {
 				th.printStackTrace();

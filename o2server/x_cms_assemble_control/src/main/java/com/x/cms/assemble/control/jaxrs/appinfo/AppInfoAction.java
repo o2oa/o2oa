@@ -604,7 +604,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 		ActionResult<ActionAppIconUpload.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionAppIconUpload().execute(request, effectivePerson, appId, size, bytes, disposition );
+			result = new ActionAppIconUpload().execute(effectivePerson, appId, size, bytes);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

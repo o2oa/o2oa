@@ -13,9 +13,11 @@ import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.element.AppDict;
 import com.x.cms.core.entity.element.AppDictItem;
@@ -30,6 +32,11 @@ class ActionCreate extends BaseAction {
 			if (null == appInfo) {
 				throw new ExceptionAppDictNotExisted(wi.getAppId());
 			}
+			Business business = new Business(emc);
+			if (!business.isAppInfoManager(effectivePerson, appInfo)) {
+				throw new ExceptionAccessDenied(effectivePerson);
+			}
+
 			emc.beginTransaction(AppDict.class);
 			emc.beginTransaction(AppDictItem.class);
 			//emc.beginTransaction(AppDictLobItem.class);

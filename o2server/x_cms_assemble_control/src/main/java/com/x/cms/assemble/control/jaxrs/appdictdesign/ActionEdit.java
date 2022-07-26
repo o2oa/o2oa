@@ -13,6 +13,7 @@ import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -36,13 +37,12 @@ class ActionEdit extends BaseAction {
 			if (null == appInfo) {
 				throw new ExceptionAppInfoNotExist(wi.getAppId());
 			}
-			if (!business.editable(effectivePerson, appInfo)) {
-				throw new ExceptionAppInfoAccessDenied(effectivePerson.getDistinguishedName(),
-						appInfo.getAppName(), appInfo.getId());
+			if (!business.isAppInfoManager(effectivePerson, appInfo)) {
+				throw new ExceptionAccessDenied(effectivePerson);
 			}
+
 			emc.beginTransaction(AppDict.class);
 			emc.beginTransaction(AppDictItem.class);
-			// emc.beginTransaction(AppDictLobItem.class);
 			Wi.copier.copy(wi, dict);
 			dict.setAppId(appInfo.getId());
 			emc.check(dict, CheckPersistType.all);

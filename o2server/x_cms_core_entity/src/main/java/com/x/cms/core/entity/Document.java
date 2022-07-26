@@ -167,6 +167,12 @@ public class Document extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String readFormName;
 
+	public static final String ppFormId_FIELDNAME = "ppFormId";
+	@FieldDescribe("流程平台表单ID")
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + ppFormId_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String ppFormId;
+
 	public static final String creatorPerson_FIELDNAME = "creatorPerson";
 	@FieldDescribe("创建人，可能为空，如果由系统创建。")
 	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
@@ -546,6 +552,14 @@ public class Document extends SliceJpaObject {
 
 	public void setFormName(String formName) {
 		this.formName = formName;
+	}
+
+	public String getPpFormId() {
+		return ppFormId;
+	}
+
+	public void setPpFormId(String ppFormId) {
+		this.ppFormId = ppFormId;
 	}
 
 	public String getReadFormId() {
