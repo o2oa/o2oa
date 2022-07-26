@@ -27,6 +27,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.Crypto;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * 系统配置文件保存
@@ -43,8 +44,11 @@ public class ActionSave extends BaseAction {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String fileName = wi.getFileName();
 
-		if (fileName == null) {
+		if (StringUtils.isBlank(fileName)) {
 			throw new ExceptionNameEmpty();
+		}
+		if(fileName.indexOf("/") > -1){
+			throw new Exception("名称不能包含'/'!");
 		}
 
 		String data = wi.getFileContent();
