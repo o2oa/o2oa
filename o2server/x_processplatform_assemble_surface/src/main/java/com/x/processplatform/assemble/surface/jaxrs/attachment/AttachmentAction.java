@@ -198,7 +198,7 @@ public class AttachmentAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void delete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-							   @JaxrsParameterDescribe("附件标识") @PathParam("id") String id) {
+			@JaxrsParameterDescribe("附件标识") @PathParam("id") String id) {
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -215,8 +215,8 @@ public class AttachmentAction extends StandardJaxrsAction {
 	@Path("{id}/mockdeletetoget")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void deleteMockDeleteToGet(@Suspended final AsyncResponse asyncResponse,
-											  @Context HttpServletRequest request, @JaxrsParameterDescribe("附件标识") @PathParam("id") String id) {
+	public void deleteMockDeleteToGet(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("附件标识") @PathParam("id") String id) {
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -1348,8 +1348,8 @@ public class AttachmentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "html转图片工具类，通过微软playwright工具以截图方式生成图片，" +
-			"转换后如果工作不为空通过downloadWithWork接口下载，为空downloadTransfer接口下载.", action = ActionHtmlToImage.class)
+	@JaxrsMethodDescribe(value = "html转图片工具类，通过微软playwright工具以截图方式生成图片，"
+			+ "转换后如果工作不为空通过downloadWithWork接口下载，为空downloadTransfer接口下载.", action = ActionHtmlToImage.class)
 	@POST
 	@Path("html/to/image")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -1390,4 +1390,25 @@ public class AttachmentAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+
+	@JaxrsMethodDescribe(value = "V2根据工作标识或已完成工作标识上传附件,上传文件内容经过base64编码后的文本,如果同名附件存在则替换.", action = V2UploadWorkOrWorkCompletedBase64.class)
+	@POST
+	@Path("v2/upload/workorworkcompleted/{workOrWorkCompleted}/base64")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void v2UploadWorkOrWorkCompletedBase64(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作或已完成工作标识") @PathParam("workOrWorkCompleted") String workOrWorkCompleted,
+			JsonElement jsonElement) {
+		ActionResult<V2UploadWorkOrWorkCompletedBase64.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2UploadWorkOrWorkCompletedBase64().execute(effectivePerson, workOrWorkCompleted, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 }
