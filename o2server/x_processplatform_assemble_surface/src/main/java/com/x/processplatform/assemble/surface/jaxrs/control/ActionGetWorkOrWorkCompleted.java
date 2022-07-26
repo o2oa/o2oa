@@ -135,6 +135,7 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 				wo.setAllowPause(true);
 			}
 		}
+
 		// 是否可以增加会签分支
 		setAllowAddSplit(effectivePerson, business, activity, work, wo);
 		// 是否可以召回
@@ -198,33 +199,6 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
 				nodes.addAll(temps);
 			}
 		}
-		// 是否可以召回
-		if (BooleanUtils
-				.isTrue(PropertyTools.getOrElse(activity, Manual.allowRetract_FIELDNAME, Boolean.class, false))) {
-			Node node = this.workLogTree(business, work.getJob()).location(work);
-			if (null != node) {
-				Nodes ups = node.upTo(ActivityType.manual, ActivityType.agent, ActivityType.choice, ActivityType.delay,
-						ActivityType.embed, ActivityType.invoke, ActivityType.publish);
-				for (Node o : ups) {
-					if (this.hasTaskCompletedWithActivityToken(business, effectivePerson,
-							o.getWorkLog().getFromActivityToken())) {
-						wo.setAllowRetract(true);
-						break;
-					}
-				}
-			}
-		}
-		// 是否可以回滚
-		wo.setAllowRollback(PropertyTools.getOrElse(activity, Manual.allowRollback_FIELDNAME, Boolean.class, false)
-				&& this.canManageApplicationOrProcess(business, effectivePerson, work.getApplication(),
-						work.getProcess()));
-		// 是否可以提醒
-		wo.setAllowPress(PropertyTools.getOrElse(activity, Manual.allowPress_FIELDNAME, Boolean.class, false)
-				&& this.hasTaskCompletedWithJob(business, effectivePerson, work.getJob()));
-		// 是否可以看到
-		wo.setAllowVisit(true);
-		return wo;
-
 	}
 
 	private boolean hasTaskCompletedWithActivityToken(Business business, EffectivePerson effectivePerson,
