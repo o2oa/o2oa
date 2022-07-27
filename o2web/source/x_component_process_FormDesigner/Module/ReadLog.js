@@ -91,7 +91,7 @@ MWF.xApplication.process.FormDesigner.Module.ReadLog = MWF.FCReadLog = new Class
 		}).inject(this.iconNode);
 		new Element("div", {
 			"styles": this.css.iconNodeText,
-			"text": "LOG"
+			"text": "READLOG"
 		}).inject(this.iconNode);
 	},
 	_loadNodeStyles: function(){

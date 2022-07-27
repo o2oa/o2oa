@@ -1159,7 +1159,7 @@ public class TaskAction extends StandardJaxrsAction {
 							@Content(schema = @Schema(implementation = V2Reset.Wi.class)) }))
 	@JaxrsMethodDescribe(value = "重置待办,将之前的待办转为已办,opinion:办理意见,routeName:选择路由,identityList:新的办理人(MockPutToPost)", action = V2Reset.class)
 	@POST
-	@Path("V2/{id}/reset/mockputtopost")
+	@Path("v2/{id}/reset/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void V2ResetMockPutToPost(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,

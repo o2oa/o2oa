@@ -2,6 +2,7 @@
 	"id": "",
 	"name": "",
 	"type": "Log",
+	"logType": "record",
 	"description": "",
     "filterActivity": [],
 	"filterActivityAlias":[],

@@ -946,6 +946,7 @@
         "log": {
           "id": "log",
           "type": "Log",
+          "logType": "record",
           "filterActivity": [],
           "filterPerson": [],
           "filterRoute": [],

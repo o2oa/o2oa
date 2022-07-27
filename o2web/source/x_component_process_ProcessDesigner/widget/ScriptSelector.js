@@ -44,6 +44,9 @@ MWF.xApplication.process.ProcessDesigner.widget.ScriptSelector = new Class({
                 this.scriptData = json.data;
                 this.createScriptNode(script);
             }.bind(this));
+        }else{
+            this.node.empty();
+            this.scriptData = null;
         }
     },
 

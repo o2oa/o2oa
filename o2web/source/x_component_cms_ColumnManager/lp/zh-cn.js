@@ -104,7 +104,11 @@ MWF.xApplication.cms.ColumnManager.LP = {
         "none" : "无",
         "noProcess" : "系统中没有您可以管理的流程",
         "documentType" : "文档类型",
-        "excelImportView" : "数据导入导出视图"
+        "excelImportView" : "数据导入导出视图",
+
+        "useProcessForm": "使用流程表单",
+        "useProcessFormNote": "注：如果使用流程表单，那么使用流程表单打开发布后的文档，否则使用分类设置的表单打开。",
+        "setSucess": "设置成功"
 	},
 	"form": {
         "create": "新建表单",

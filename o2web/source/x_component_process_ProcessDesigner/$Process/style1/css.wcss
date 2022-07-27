@@ -361,6 +361,46 @@
 				"cursor": "pointer"
 			}
 		},
+		"publish":{
+			"shadow": {
+				"cursor": "pointer",
+				"fill": "120-#fff-#eee",
+				"stroke-width": "0",
+				"z-index": 100
+			},
+			"shap": {
+				"cursor": "pointer",
+				//"fill": "90-#FFF-#9a9a9a:5-#777777:50-#929292:53-#d1d1d1:97:#FFF",
+				"fill": "90-#FFF-#7ebcb0:5-#70aea1:50-#8dbeb4:53-#d5e5e2:97:#FFF",
+				"stroke-width": "1",
+				"stroke": "#72afa3",
+				"radius": 3,
+				"z-index": 100
+			},
+			"text":{
+				"fill": "#FFF",
+				"stroke-width": 0,
+				"font-size": 14,
+				"cursor": "pointer",
+				"z-index": 100
+			},
+			"icon":{
+				"src": MWF.defaultPath+"/process/ProcessChart/$Process/style1/icon/publish.png",
+				"attr": {
+					"cursor": "pointer",
+					"z-index": 100
+				}
+			},
+			"listIcon": {
+				"width": "30px",
+				"height": "24px",
+				"background-image": "url("+MWF.defaultPath+"/process/ProcessChart/$Process/default/icon/publish.png"+")",
+				"background-position": "center center",
+				"background-repeat": "no-repeat",
+				"border-bottom": "1px dashed #CCC",
+				"cursor": "pointer"
+			}
+		},
 		"box": {
 			"stroke": "#ffa200",
 			"stroke-dasharray": "-",

@@ -5,6 +5,8 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
         var _form = ev.form;
         var _forms = ev.forms;
 
+        this.appType = "portal";
+
         this.library = COMMON;
         //this.library.version = "4.0";
 
