@@ -2,12 +2,15 @@ package com.x.base.core.project.scripting;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 import javax.script.Compilable;
 import javax.script.CompiledScript;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
+import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.script.SimpleScriptContext;
@@ -24,8 +27,44 @@ public class ScriptingFactory {
 
 	}
 
-	public static final ScriptEngine scriptEngine = (new ScriptEngineManager())
-			.getEngineByName(Config.SCRIPTING_ENGINE_NAME);
+	private static List<String> filterClass = Arrays.asList("java.lang.Runtime", "java.io.File", "java.nio.file.Path");
+
+	private static final ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
+
+	private static ScriptEngine engine;
+
+	public static synchronized ScriptEngine scriptEngine() {
+		if (null == engine) {
+			for (ScriptEngineFactory o : scriptEngineManager.getEngineFactories()) {
+				if (o instanceof jdk.nashorn.api.scripting.NashornScriptEngineFactory) {
+					jdk.nashorn.api.scripting.NashornScriptEngineFactory factory = (jdk.nashorn.api.scripting.NashornScriptEngineFactory) o;
+					engine = factory.getScriptEngine(new jdk.nashorn.api.scripting.ClassFilter() {
+						@Override
+						public boolean exposeToScripts(String className) {
+							return !filterClass.contains(className);
+						}
+					});
+				}
+			}
+		}
+		return engine;
+	}
+
+	@Deprecated(forRemoval = true)
+	public static ScriptEngine newScriptEngine() {
+		for (ScriptEngineFactory o : scriptEngineManager.getEngineFactories()) {
+			if (o instanceof jdk.nashorn.api.scripting.NashornScriptEngineFactory) {
+				jdk.nashorn.api.scripting.NashornScriptEngineFactory factory = (jdk.nashorn.api.scripting.NashornScriptEngineFactory) o;
+				return factory.getScriptEngine(new jdk.nashorn.api.scripting.ClassFilter() {
+					@Override
+					public boolean exposeToScripts(String className) {
+						return !filterClass.contains(className);
+					}
+				});
+			}
+		}
+		return null;
+	}
 
 	private static CompiledScript compiledScriptInitialServiceScriptText;
 	private static CompiledScript compiledScriptInitialScriptText;
@@ -61,15 +100,11 @@ public class ScriptingFactory {
 	public static final String BINDING_NAME_SERVICE_PERSON = "person";
 	public static final String BINDING_NAME_SERVICE_BODY = "body";
 
-	public static ScriptEngine newScriptEngine() {
-		return (new ScriptEngineManager()).getEngineByName(Config.SCRIPTING_ENGINE_NAME);
-	}
-
 	public static synchronized CompiledScript initialServiceScript()
 			throws IOException, ScriptException, URISyntaxException {
 		if (compiledScriptInitialServiceScriptText == null) {
 			String text = Config.initialServiceScriptText();
-			compiledScriptInitialServiceScriptText = ((Compilable) scriptEngine).compile(text);
+			compiledScriptInitialServiceScriptText = ((Compilable) scriptEngine()).compile(text);
 		}
 		return compiledScriptInitialServiceScriptText;
 	}
@@ -77,13 +112,13 @@ public class ScriptingFactory {
 	public static synchronized CompiledScript initialScript() throws IOException, ScriptException, URISyntaxException {
 		if (compiledScriptInitialScriptText == null) {
 			String text = Config.initialScriptText();
-			compiledScriptInitialScriptText = ((Compilable) scriptEngine).compile(text);
+			compiledScriptInitialScriptText = ((Compilable) scriptEngine()).compile(text);
 		}
 		return compiledScriptInitialScriptText;
 	}
 
 	public static CompiledScript compile(String text) throws ScriptException {
-		return ((Compilable) scriptEngine).compile(text);
+		return ((Compilable) scriptEngine()).compile(text);
 	}
 
 	public static String functionalization(String text) {
@@ -97,7 +132,7 @@ public class ScriptingFactory {
 	}
 
 	public static CompiledScript functionalizationCompile(String text) throws ScriptException {
-		return ((Compilable) scriptEngine).compile(functionalization(text));
+		return ((Compilable) scriptEngine()).compile(functionalization(text));
 	}
 
 	public static ScriptContext scriptContextEvalInitialServiceScript() {
