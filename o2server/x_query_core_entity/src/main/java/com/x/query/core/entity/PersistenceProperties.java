@@ -16,9 +16,11 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 		public static class ImportModel {
 			public static final String table = "QRY_IMPORT_MODEL";
 		}
+
 		public static class ImportRecord {
 			public static final String table = "QRY_IMPORT_RECORD";
 		}
+
 		public static class ImportRecordItem {
 			public static final String table = "QRY_IMPORT_RECORD_ITEM";
 		}
@@ -97,6 +99,15 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 		public static class OutText {
 
 			public static final String table = "QRY_NRL_OUTTEXT";
+		}
+
+	}
+
+	public static class Index {
+
+		public static class State {
+
+			public static final String table = "QRY_IDX_STATE";
 		}
 
 	}
