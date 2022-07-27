@@ -22,6 +22,21 @@ MWF.xApplication.cms.ColumnManager.ViewExplorer = new Class({
     //    };
     //    this.app.desktop.openApplication(e, "cms.ViewDesigner", options);
     //},
+    createCreateElementNode: function(){
+        // this.createElementNode = new Element("div", {
+        //     "styles": this.css.createElementNode,
+        //     "title": this.options.tooltip.create
+        // }).inject(this.toolbarNode);
+        // this.createElementNode.addEvents({
+        //     "click": function(e){ this._createElement(e); }.bind(this),
+        //     "mouseover" : function(e){
+        //         this.createElementNode.setStyles(this.css.createElementNode_over);
+        //     }.bind(this),
+        //     "mouseout" : function(ev){
+        //         this.createElementNode.setStyles(this.css.createElementNode);
+        //     }.bind(this)
+        // });
+    },
     _createElement: function(e){
         var _self = this;
         var createView = function(e, form){
