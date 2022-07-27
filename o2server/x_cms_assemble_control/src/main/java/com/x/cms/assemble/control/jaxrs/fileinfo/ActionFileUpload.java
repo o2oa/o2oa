@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.tools.FileTools;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.Tika;
@@ -25,12 +26,12 @@ import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.FileInfo;
 
 public class ActionFileUpload extends BaseAction {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(ActionFileUpload.class);
 
 	@AuditLog(operation = "上传附件")
-	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson, 
-			String docId, String site, String fileName, byte[] bytes, FormDataContentDisposition disposition) {
+	protected ActionResult<Wo> execute( HttpServletRequest request, EffectivePerson effectivePerson,
+			String docId, String site, String fileName, byte[] bytes, FormDataContentDisposition disposition) throws Exception{
 		ActionResult<Wo> result = new ActionResult<>();
 		FileInfo attachment = null;
 		Document document = null;
@@ -38,8 +39,9 @@ public class ActionFileUpload extends BaseAction {
 		if (StringUtils.isEmpty(fileName)) {
 			fileName = this.fileName(disposition);
 		}
-		Boolean check = true;		
-		
+		FileTools.verifyConstraint(fileName);
+		Boolean check = true;
+
 		if( check ){
 			if( StringUtils.isEmpty(docId) ){
 				check = false;
@@ -47,7 +49,7 @@ public class ActionFileUpload extends BaseAction {
 				result.error( exception );
 			}
 		}
-		
+
 //		Boolean isAnonymous = effectivePerson.isAnonymous();
 //		Boolean isManager = false;
 //		if (check) {
@@ -62,7 +64,7 @@ public class ActionFileUpload extends BaseAction {
 //				logger.error(e, effectivePerson, request, null);
 //			}
 //		}
-		
+
 		if( check ){//判断文档信息是否已经存在
 			try {
 				document = documentQueryService.get( docId );
@@ -77,7 +79,7 @@ public class ActionFileUpload extends BaseAction {
 				logger.error( e, effectivePerson, request, null );
 			}
 		}
-		
+
 		if( check ){
 			try {
 				/** 禁止不带扩展名的文件上传 */
@@ -85,13 +87,13 @@ public class ActionFileUpload extends BaseAction {
 					check = false;
 					Exception exception = new ExceptionEmptyExtension( fileName );
 					result.error( exception );
-				} 
+				}
 			} catch (Exception e) {
 				check = false;
 				result.error( e );
 			}
 		}
-		
+
 		if( check ){
 			try {
 				mapping = ThisApplication.context().storageMappings().random( FileInfo.class );
@@ -102,11 +104,11 @@ public class ActionFileUpload extends BaseAction {
 				logger.error( e, effectivePerson, request, null );
 			}
 		}
-		
+
 		if( check ){
 			try {
 				attachment = this.concreteAttachment( mapping, document, fileName, effectivePerson, site );
-				
+
 				attachment.setType((new Tika()).detect(bytes, fileName));
 				logger.info("filename:{}, file type:{}.", attachment.getName(), attachment.getType());
 				if (Config.query().getExtractImage() && ExtractTextTools.supportImage(attachment.getName()) && ExtractTextTools.available(bytes)) {
@@ -114,15 +116,15 @@ public class ActionFileUpload extends BaseAction {
 					logger.info("filename:{}, file type:{}, text:{}.", attachment.getName(), attachment.getType(),
 							attachment.getText());
 				}
-				
+
 				attachment.saveContent(mapping, bytes, fileName);
 				attachment = fileInfoServiceAdv.saveAttachment( docId, attachment );
-				
+
 //				List<String> keys = new ArrayList<>();
 //				keys.add( "file.all" ); //清除文档的附件列表缓存
 //				keys.add( ApplicationCache.concreteCacheKey( "document", document.getId(), isAnonymous, isManager ) ); //清除文档的附件列表缓存
 //				ApplicationCache.notify( FileInfo.class, keys );
-//				
+//
 //				keys.clear();
 //				keys.add(  ApplicationCache.concreteCacheKey( document.getId(), "view", isAnonymous, isManager ) ); //清除文档阅读缓存
 //				keys.add( ApplicationCache.concreteCacheKey( document.getId(), "get", isManager )  ); //清除文档信息获取缓存
@@ -130,7 +132,7 @@ public class ActionFileUpload extends BaseAction {
 
 				CacheManager.notify( FileInfo.class );
 				CacheManager.notify( Document.class );
-				
+
 				Wo wo = new Wo();
 				wo.setId( attachment.getId() );
 				result.setData(wo);
@@ -187,18 +189,18 @@ public class ActionFileUpload extends BaseAction {
 		} else if("gif".equalsIgnoreCase( ext ) ){ type = "PICTURE";
 		} else if("xls".equalsIgnoreCase( ext ) ){ type = "EXCEL";
 		} else if("xlsx".equalsIgnoreCase( ext ) ){ type = "EXCEL";
-		} else if("doc".equalsIgnoreCase( ext ) ){ type = "WORD";			
-		} else if("docx".equalsIgnoreCase( ext ) ){ type = "WORD";			
-		} else if("ppt".equalsIgnoreCase( ext ) ){ type = "PPT";			
-		} else if("pptx".equalsIgnoreCase( ext ) ){ type = "PPT";			
-		} else if("zip".equalsIgnoreCase( ext ) ){ type = "ZIP";			
-		} else if("rar".equalsIgnoreCase( ext ) ){ type = "ZIP";			
-		} else if("txt".equalsIgnoreCase( ext ) ){ type = "TXT";			
-		} else if("pdf".equalsIgnoreCase( ext ) ){ type = "PDF";			
+		} else if("doc".equalsIgnoreCase( ext ) ){ type = "WORD";
+		} else if("docx".equalsIgnoreCase( ext ) ){ type = "WORD";
+		} else if("ppt".equalsIgnoreCase( ext ) ){ type = "PPT";
+		} else if("pptx".equalsIgnoreCase( ext ) ){ type = "PPT";
+		} else if("zip".equalsIgnoreCase( ext ) ){ type = "ZIP";
+		} else if("rar".equalsIgnoreCase( ext ) ){ type = "ZIP";
+		} else if("txt".equalsIgnoreCase( ext ) ){ type = "TXT";
+		} else if("pdf".equalsIgnoreCase( ext ) ){ type = "PDF";
 		}
 		return type;
 	}
-	
+
 	public static class Wo extends WoId {
 
 	}

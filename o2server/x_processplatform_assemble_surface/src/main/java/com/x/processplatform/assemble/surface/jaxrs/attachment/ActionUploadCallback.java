@@ -1,5 +1,6 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
+import com.x.base.core.project.tools.FileTools;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.Tika;
@@ -40,6 +41,7 @@ class ActionUploadCallback extends BaseAction {
 			if (StringUtils.isEmpty(fileName)) {
 				fileName = this.fileName(disposition);
 			}
+			FileTools.verifyConstraint(fileName);
 			/* 调整可能的附件名称 */
 			fileName = this.adjustFileName(business, work.getJob(), fileName);
 			/** 禁止不带扩展名的文件上传 */

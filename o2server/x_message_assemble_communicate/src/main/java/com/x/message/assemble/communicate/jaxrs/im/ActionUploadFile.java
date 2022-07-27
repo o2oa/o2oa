@@ -3,6 +3,7 @@ package com.x.message.assemble.communicate.jaxrs.im;
 import java.util.Date;
 import java.util.Objects;
 
+import com.x.base.core.project.tools.FileTools;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -62,6 +63,7 @@ public class ActionUploadFile extends BaseAction {
 			if (bytes == null) {
 				throw new ExceptionAttachmentNone(name);
 			}
+			FileTools.verifyConstraint(fileName);
 			IMMsgFile file = new IMMsgFile();
 			file.setName(name);
 			file.setStorage(mapping.getName());

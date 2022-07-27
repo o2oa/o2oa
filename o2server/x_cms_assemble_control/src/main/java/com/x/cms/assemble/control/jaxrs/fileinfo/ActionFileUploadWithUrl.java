@@ -3,6 +3,7 @@ package com.x.cms.assemble.control.jaxrs.fileinfo;
 import java.util.Date;
 import java.util.UUID;
 
+import com.x.base.core.project.tools.FileTools;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.Tika;
@@ -48,6 +49,7 @@ public class ActionFileUploadWithUrl extends BaseAction {
 		if(StringUtils.isEmpty(wi.getFileName())){
 			throw new ExceptionEntityFieldEmpty(Attachment.class, wi.getFileName());
 		}
+		FileTools.verifyConstraint(wi.getFileName());
 		if(StringUtils.isEmpty(wi.getFileUrl())){
 			throw new ExceptionEntityFieldEmpty(Attachment.class, wi.getFileUrl());
 		}

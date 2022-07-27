@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import com.x.base.core.project.tools.FileTools;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -61,6 +62,7 @@ class ActionUpdateContentCallback extends BaseAction {
 					attachment.getExtension())) {
 				throw new ExceptionExtensionNotMatchCallback(callback, fileName, attachment.getExtension());
 			}
+			FileTools.verifyConstraint(fileName);
 			emc.beginTransaction(Attachment.class);
 			attachment.updateContent(mapping, bytes);
 			emc.check(attachment, CheckPersistType.all);

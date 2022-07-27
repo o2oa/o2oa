@@ -649,7 +649,7 @@ public class ProcessPlatform extends ConfigObject {
 		private Integer fileSize = DEFAULT_FILE_SIZE;
 
 		@FieldDescribe("只允许上传的文件后缀")
-		private List<String> fileTypeIncludes = new ArrayList<>();
+		private List<String> fileTypeIncludes = List.of("jpg","jpeg","png", "bmp", "gif", "xls", "xlsx", "doc", "docx", "ppt", "pptx", "pdf", "txt", "html", "mp3", "mp4");
 
 		@FieldDescribe("不允许上传的文件后缀")
 		private List<String> fileTypeExcludes = new ArrayList<>();

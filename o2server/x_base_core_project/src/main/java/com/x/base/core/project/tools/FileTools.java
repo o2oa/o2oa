@@ -7,12 +7,46 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.ProcessPlatform;
+import com.x.base.core.project.exception.ExceptionFileTypeError;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.gson.GsonPropertyObject;
 
+/**
+ * @author sword
+ */
 public class FileTools {
+
+	/**
+	 * 判断文件类型是否满足约束
+	 * @param fileName
+	 * @throws Exception
+	 */
+	public static void verifyConstraint(String fileName) throws Exception {
+		if(StringUtils.isBlank(fileName)){
+			throw new ExceptionFileTypeError();
+		}
+		String fileType = FilenameUtils.getExtension(fileName);
+		if(StringUtils.isBlank(fileType)){
+			throw new ExceptionFileTypeError();
+		}
+		fileType = fileType.toLowerCase();
+		ProcessPlatform.AttachmentConfig attConfig = Config.processPlatform().getAttachmentConfig();
+		boolean flag = (attConfig.getFileTypeIncludes() != null && !attConfig.getFileTypeIncludes().isEmpty())
+				&& (!ListTools.contains(attConfig.getFileTypeIncludes(), fileType));
+		if (flag) {
+			throw new ExceptionFileTypeError();
+		}
+		flag = (attConfig.getFileTypeExcludes() != null && !attConfig.getFileTypeExcludes().isEmpty())
+				&& (ListTools.contains(attConfig.getFileTypeExcludes(), fileType));
+		if (flag) {
+			throw new ExceptionFileTypeError();
+		}
+	}
 
 	public static String parent(String path) {
 		int idx = StringUtils.lastIndexOfAny(path, new String[] { "\\", "/" });
@@ -25,7 +59,7 @@ public class FileTools {
 
 	/**
 	 * 创建目录-递归父级
-	 * 
+	 *
 	 * @param dist
 	 * @throws Exception
 	 */
@@ -39,7 +73,7 @@ public class FileTools {
 
 	/**
 	 * 获取文件夹下所有的文件 + 模糊查询（当不需要模糊查询时，queryStr传空或null即可）
-	 * 
+	 *
 	 * @param folderPath 路径
 	 * @param queryStr   模糊查询字符串
 	 * @return

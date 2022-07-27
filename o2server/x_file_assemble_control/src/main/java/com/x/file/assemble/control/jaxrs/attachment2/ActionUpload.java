@@ -3,6 +3,7 @@ package com.x.file.assemble.control.jaxrs.attachment2;
 import java.io.File;
 import java.io.FileInputStream;
 
+import com.x.base.core.project.tools.FileTools;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.media.multipart.FormDataBodyPart;
@@ -63,6 +64,7 @@ class ActionUpload extends BaseAction {
 			if (StringUtils.isEmpty(FilenameUtils.getExtension(fileName))) {
 				throw new ExceptionEmptyExtension(fileName);
 			}
+			FileTools.verifyConstraint(fileName);
 			if (this.exist(business, fileName, folderId, effectivePerson.getDistinguishedName())) {
 				fileName = this.adjustFileName(business, folderId, fileName);
 			}
