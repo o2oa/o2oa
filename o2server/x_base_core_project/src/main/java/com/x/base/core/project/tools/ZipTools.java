@@ -38,6 +38,9 @@ public class ZipTools {
                 if (name.length() < 2) {
                     continue;
                 }
+                if (name.indexOf("..") > -1){
+                    continue;
+                }
                 if (subs != null) {
                     boolean flag = false;
                     for (String sub : subs) {

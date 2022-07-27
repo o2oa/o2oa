@@ -47,8 +47,8 @@ public class ActionSave extends BaseAction {
 		if (StringUtils.isBlank(fileName)) {
 			throw new ExceptionNameEmpty();
 		}
-		if(fileName.indexOf("/") > -1){
-			throw new IllegalAccessException("名称不能包含'/'!");
+		if(fileName.indexOf("/") > -1 || !fileName.endsWith("json")){
+			throw new IllegalAccessException("非法文件!");
 		}
 
 		String data = wi.getFileContent();
