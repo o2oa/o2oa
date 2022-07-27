@@ -2,6 +2,7 @@ package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
 import java.util.List;
 
+import com.x.base.core.project.tools.FileTools;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.Tika;
 
@@ -49,6 +50,7 @@ class ActionUploadWithUrl extends BaseAction {
 			if(StringUtils.isEmpty(wi.getFileName())){
 				throw new ExceptionEntityFieldEmpty(Attachment.class, wi.getFileName());
 			}
+			FileTools.verifyConstraint(wi.getFileName());
 			if(StringUtils.isEmpty(wi.getFileUrl())){
 				throw new ExceptionEntityFieldEmpty(Attachment.class, wi.getFileUrl());
 			}

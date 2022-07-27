@@ -42,6 +42,9 @@ public class JarTools {
 				if (StringUtils.replace(entry.getName(), sub, "").length() < 2) {
 					continue;
 				}
+				if (entry.getName().indexOf("..") > -1){
+					continue;
+				}
 				if (entry.isDirectory()) {
 					FileUtils.forceMkdir(new File(dist, entry.getName()));
 				} else {
@@ -85,6 +88,9 @@ public class JarTools {
 				if (!StringUtils.startsWith(name, sub)) {
 					continue;
 				}
+				if (entry.getName().indexOf("..") > -1){
+					continue;
+				}
 				name = name.replace(sub, "").trim();
 				if (name.length() < 2) {
 					continue;
@@ -95,50 +101,6 @@ public class JarTools {
 				} else {
 					File file = new File(dist, name);
 					if (file.exists() && force) {
-						file.delete();
-					}
-					if (!file.exists()) {
-						try (InputStream in = jarFile.getInputStream(entry)) {
-							FileUtils.copyInputStreamToFile(in, file);
-						}
-					}
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static void unjar(File source, List<String> subs, File dist, boolean asNew) {
-		try (JarFile jarFile = new JarFile(source)) {
-			Enumeration<? extends JarEntry> entrys = jarFile.entries();
-			while (entrys.hasMoreElements()) {
-				JarEntry entry = entrys.nextElement();
-				String name = entry.getName();
-				if (name.length() < 2) {
-					continue;
-				}
-				if (subs != null) {
-					boolean flag = false;
-					for (String sub : subs) {
-						if (StringUtils.startsWith(name, sub)) {
-							flag = true;
-							break;
-						}
-					}
-					if (flag) {
-						continue;
-					}
-				}
-				if (entry.isDirectory()) {
-					File dir = new File(dist, name);
-					if (dir.exists() && name.indexOf("/") == name.lastIndexOf("/") && asNew) {
-						FileUtils.cleanDirectory(dir);
-					}
-					FileUtils.forceMkdir(dir);
-				} else {
-					File file = new File(dist, name);
-					if (file.exists()) {
 						file.delete();
 					}
 					if (!file.exists()) {

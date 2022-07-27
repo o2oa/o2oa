@@ -6,6 +6,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.base.core.project.tools.FileTools;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -64,6 +65,7 @@ class ActionUploadCallback extends StandardJaxrsAction {
 			if (StringUtils.isEmpty(FilenameUtils.getExtension(fileName))) {
 				throw new ExceptionEmptyExtensionCallback(callback, fileName);
 			}
+			FileTools.verifyConstraint(fileName);
 			/** 同一目录下文件名唯一 */
 			if (this.exist(business, fileName, folderId)) {
 				throw new ExceptionSameNameFileExistCallback(callback, fileName);

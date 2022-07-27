@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 
 import javax.imageio.ImageIO;
 
+import com.x.base.core.project.tools.FileTools;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang3.ArrayUtils;
@@ -48,6 +49,7 @@ public class ActionUploadWithUrl extends BaseAction {
 		if(StringUtils.isEmpty(wi.getFileName())){
 			throw new ExceptionEntityFieldEmpty(File.class, "fileName");
 		}
+		FileTools.verifyConstraint(wi.getFileName());
 		if(StringUtils.isEmpty(wi.getFileUrl())){
 			throw new ExceptionEntityFieldEmpty(File.class, "fileUrl");
 		}
