@@ -49,7 +49,7 @@ public class ActionSave extends BaseAction {
 			throw new ExceptionNameEmpty();
 		}
 		if(fileName.indexOf("/") > -1){
-			throw new Exception("名称不能包含'/'!");
+			throw new IllegalAccessException("名称不能包含'/'!");
 		}
 
 		String data = wi.getFileContent();

@@ -24,6 +24,9 @@ class ActionDispatchResource extends BaseAction {
 		if (StringUtils.isEmpty(fileName)) {
 			fileName = this.fileName(disposition);
 		}
+		if (fileName.indexOf("/") > -1) {
+			throw new IllegalAccessException("名称不能包含'/'!");
+		}
 		if(!fileName.toLowerCase().endsWith(".zip") && StringUtils.isEmpty(filePath)){
 			throw new Exception("非zip文件的filePath属性不能为空");
 		}
