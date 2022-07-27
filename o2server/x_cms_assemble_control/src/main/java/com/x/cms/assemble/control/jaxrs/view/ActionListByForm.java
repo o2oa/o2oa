@@ -60,9 +60,9 @@ public class ActionListByForm extends BaseAction {
 							wo.setFormName( formName );
 						}
 					}
+					CacheManager.put(cacheCategory, cacheKey, wraps );
 				}
 
-				CacheManager.put(cacheCategory, cacheKey, wraps );
 				result.setData(wraps);
 			} catch (Throwable th) {
 				th.printStackTrace();

@@ -36,9 +36,7 @@ public class ActionFileUpload extends BaseAction {
 		FileInfo attachment = null;
 		Document document = null;
 		StorageMapping mapping = null;
-		if (StringUtils.isEmpty(fileName)) {
-			fileName = this.fileName(disposition);
-		}
+		fileName = this.fileName(disposition);
 		FileTools.verifyConstraint(fileName);
 		Boolean check = true;
 

@@ -58,8 +58,8 @@ public class ActionListAll extends BaseAction {
 							wo.setFormName( formServiceAdv.getNameWithId( wo.getFormId() ) );
 						}
 					}
+					CacheManager.put(cacheCategory, cacheKey, wraps );
 				}
-				CacheManager.put(cacheCategory, cacheKey, wraps );
 				result.setData(wraps);
 			} catch (Throwable th) {
 				th.printStackTrace();
