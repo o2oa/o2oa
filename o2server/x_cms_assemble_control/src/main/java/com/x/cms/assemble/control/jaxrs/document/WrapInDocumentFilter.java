@@ -92,6 +92,12 @@ public class WrapInDocumentFilter {
 	@FieldDescribe("业务数据String值04.")
 	private String stringValue04;
 
+	@FieldDescribe("业务数据String值05.")
+	private String stringValue05;
+
+	@FieldDescribe("业务数据String值06.")
+	private String stringValue06;
+
 	@FieldDescribe("业务数据Long值01.")
 	private Long longValue01;
 
@@ -107,8 +113,11 @@ public class WrapInDocumentFilter {
 	@FieldDescribe( "业务数据DateTime值01，可以传入1个(开始时间)或者2个(开始和结束时间), 格式：yyyy-MM-dd HH:mm:ss或者yyyy-mm-dd." )
 	private List<String> dataTimeValue01List;
 
-	@FieldDescribe( "业务数据DateTime值01，可以传入1个(开始时间)或者2个(开始和结束时间), 格式：yyyy-MM-dd HH:mm:ss或者yyyy-mm-dd." )
+	@FieldDescribe( "业务数据DateTime值02，可以传入1个(开始时间)或者2个(开始和结束时间), 格式：yyyy-MM-dd HH:mm:ss或者yyyy-mm-dd." )
 	private List<String> dataTimeValue02List;
+
+	@FieldDescribe( "业务数据DateTime值03，可以传入1个(开始时间)或者2个(开始和结束时间), 格式：yyyy-MM-dd HH:mm:ss或者yyyy-mm-dd." )
+	private List<String> dataTimeValue03List;
 
 	public String getTopFlag() {
 		return topFlag;
@@ -350,6 +359,30 @@ public class WrapInDocumentFilter {
 		this.dataTimeValue02List = dataTimeValue02List;
 	}
 
+	public String getStringValue05() {
+		return stringValue05;
+	}
+
+	public void setStringValue05(String stringValue05) {
+		this.stringValue05 = stringValue05;
+	}
+
+	public String getStringValue06() {
+		return stringValue06;
+	}
+
+	public void setStringValue06(String stringValue06) {
+		this.stringValue06 = stringValue06;
+	}
+
+	public List<String> getDataTimeValue03List() {
+		return dataTimeValue03List;
+	}
+
+	public void setDataTimeValue03List(List<String> dataTimeValue03List) {
+		this.dataTimeValue03List = dataTimeValue03List;
+	}
+
 	/**
 	 * 根据传入的查询参数，组织一个完整的QueryFilter对象
 	 * @return
@@ -498,6 +531,14 @@ public class WrapInDocumentFilter {
 			queryFilter.addEqualsTerm( new EqualsTerm(Document.stringValue04_FIELDNAME, this.getStringValue04() ) );
 		}
 
+		if( StringUtils.isNotEmpty( this.getStringValue05())) {
+			queryFilter.addEqualsTerm( new EqualsTerm(Document.stringValue05_FIELDNAME, this.getStringValue05() ) );
+		}
+
+		if( StringUtils.isNotEmpty( this.getStringValue06())) {
+			queryFilter.addEqualsTerm( new EqualsTerm(Document.stringValue06_FIELDNAME, this.getStringValue06() ) );
+		}
+
 		if( this.getLongValue01() != null) {
 			queryFilter.addEqualsTerm( new EqualsTerm(Document.longValue01_FIELDNAME, this.getLongValue01() ) );
 		}
@@ -530,6 +571,15 @@ public class WrapInDocumentFilter {
 				endDate = DateTools.parse(this.getDataTimeValue02List().get(1));
 			}
 			queryFilter.addDateBetweenTerm( Document.dateTimeValue02_FIELDNAME, startDate, endDate );
+		}
+
+		if( ListTools.isNotEmpty( this.getDataTimeValue03List())) {
+			Date startDate = DateTools.parse(this.getDataTimeValue03List().get(0));
+			Date endDate = new Date();
+			if(this.getDataTimeValue03List().size() > 1){
+				endDate = DateTools.parse(this.getDataTimeValue03List().get(1));
+			}
+			queryFilter.addDateBetweenTerm( Document.dateTimeValue03_FIELDNAME, startDate, endDate );
 		}
 
 		return queryFilter;

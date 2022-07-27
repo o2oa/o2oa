@@ -98,7 +98,7 @@ class V2LookupDocMobile extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			Document document = emc.fetch(docId, Document.class, ListTools.toList(JpaObject.id_FIELDNAME, Document.form_FIELDNAME,
-					Document.readFormId_FIELDNAME, Document.categoryId_FIELDNAME));
+					Document.readFormId_FIELDNAME, Document.categoryId_FIELDNAME, Document.ppFormId_FIELDNAME));
 			if (null != document) {
 				String formId = document.getForm();
 				String readFormId = document.getReadFormId();

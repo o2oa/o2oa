@@ -100,8 +100,8 @@ class V2LookupDoc extends BaseAction {
 	private void getDocForm(String docId) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			Document document = emc.fetch(docId, Document.class, ListTools.toList(JpaObject.id_FIELDNAME,
-					Document.form_FIELDNAME, Document.readFormId_FIELDNAME, Document.categoryId_FIELDNAME));
+			Document document = emc.fetch(docId, Document.class, ListTools.toList(JpaObject.id_FIELDNAME, Document.form_FIELDNAME,
+					Document.readFormId_FIELDNAME, Document.categoryId_FIELDNAME, Document.ppFormId_FIELDNAME));
 			if (null != document) {
 				String formId = document.getForm();
 				String readFormId = document.getReadFormId();
@@ -131,6 +131,7 @@ class V2LookupDoc extends BaseAction {
 				}
 				if(StringUtils.isNotBlank(document.getPpFormId())){
 					this.ppForm = business.process().form().pick(document.getPpFormId());
+					LOGGER.info("通过流程ID：{}获取表单：{}", this.ppForm == null? "" : this.ppForm.getName());
 				}
 			}
 		}
