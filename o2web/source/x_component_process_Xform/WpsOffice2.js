@@ -84,8 +84,9 @@ MWF.xApplication.process.Xform.WpsOffice2 = MWF.APPWpsOffice2 =  new Class({
             }
         }
 
+debugger
         this.fireEvent("beforeOpen");
-
+console.log("wps:" + this.mode);
         this.action.CustomAction.getFileUrl(this.documentId,{"permission":this.mode} ,function( json ){
             this.wpsUrl = json.data.wpsUrl;
             this.wpsToken = json.data.token;
@@ -486,6 +487,16 @@ MWF.xApplication.process.Xform.WpsOffice2 = MWF.APPWpsOffice2 =  new Class({
 
         // 设置修订状态为 显示标记的最终状态
         View.ShowRevisionsAndComments = false;
+    },
+    addControlButton : async function(text,callback){
+        await this.wpsOffice.ready();
+        const app = this.wpsOffice.Application;
+        controls = await app.CommandBars('StartTab').Controls;
+        const controlButton = await controls.Add(1);
+        controlButton.Caption = text;
+
+        controlButton.OnAction = callback
+
     },
     print : async function (){
 
