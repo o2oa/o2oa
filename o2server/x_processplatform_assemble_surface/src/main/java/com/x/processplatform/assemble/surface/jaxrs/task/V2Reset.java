@@ -156,7 +156,7 @@ public class V2Reset extends BaseAction {
 		req.setOpinion(opinion);
 		req.setRouteName(routeName);
 		WoId resp = ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-				Applications.joinQueryUri("task", task.getId()), req, task.getJob()).getData(WoId.class);
+				Applications.joinQueryUri("task", "v2", task.getId()), req, task.getJob()).getData(WoId.class);
 		if (StringUtils.isEmpty(resp.getId())) {
 			throw new ExceptionUpdateTask(task.getId());
 		}
