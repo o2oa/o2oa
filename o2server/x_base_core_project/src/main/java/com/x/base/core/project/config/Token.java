@@ -28,7 +28,7 @@ public class Token extends ConfigObject {
 
 	public static final String defaultInitialManagerDistinguishedName = "xadmin@o2oa@P";
 
-	public static final String initPassword = "o2";
+	public static final String initPassword = "o2oa@2022";
 
 	public static final String defaultSslKeyStorePassword = "123456";
 	public static final String defaultSslKeyManagerPassword = "123456";
