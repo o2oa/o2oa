@@ -252,8 +252,8 @@ MWF.xApplication.cms.Document.Main = new Class({
 
         this.action[lookupMethod](id, function(json){
             var formId;
-            if( json.data.processFormId ){
-                formId = json.data.processFormId;
+            if( json.data.ppFormId ){
+                formId = json.data.ppFormId;
                 this.useProcessForm = true;
             }else if( isReadonly ){
                 formId = json.data.readFormId || json.data.formId;

@@ -6,10 +6,10 @@ MWF.xApplication.cms.ColumnManager.widget.ProjectionEditor = new Class({
 	options: {
 		"style": "default",
         "maxTypeCount": {
-            "string": 4,
+            "string": 6,
             "long": 2,
             "double": 2,
-            "dateTime": 2
+            "dateTime": 3
         }
 	},
 	initialize: function(node, text, options){
