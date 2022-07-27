@@ -22,7 +22,8 @@ import org.apache.commons.lang3.StringUtils;
 public class ActionOpen extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionOpen.class);
 
-	ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson,JsonElement jsonElement) throws Exception {
+	ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, JsonElement jsonElement)
+			throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		Wo wo = new Wo();
@@ -30,20 +31,20 @@ public class ActionOpen extends BaseAction {
 		if (StringUtils.isBlank(fileName)) {
 			throw new ExceptionNameEmpty();
 		}
-		if(fileName.indexOf("/") > -1){
-			throw new Exception("名称不能包含'/'!");
+		if (fileName.indexOf("/") > -1) {
+			throw new IllegalAccessException("名称不能包含'/'!");
 		}
 
-		File file = new File(Config.base(),"config/"+fileName);
+		File file = new File(Config.base(), "config/" + fileName);
 		wo.setSample(false);
 
-		if(!file.exists()) {
-		   file = new File(Config.base(),"configSample/"+fileName);
-		   wo.setSample(true);
+		if (!file.exists()) {
+			file = new File(Config.base(), "configSample/" + fileName);
+			wo.setSample(true);
 		}
 
-		if(file.exists()) {
-			if(file.isFile()) {
+		if (file.exists()) {
+			if (file.isFile()) {
 				String json = FileUtils.readFileToString(file, DefaultCharset.charset);
 				wo.setFileContent(json);
 			}
@@ -56,7 +57,7 @@ public class ActionOpen extends BaseAction {
 		return result;
 	}
 
-	public static class Wi  extends GsonPropertyObject{
+	public static class Wi extends GsonPropertyObject {
 
 		@FieldDescribe("文件名")
 		private String fileName;
@@ -64,6 +65,7 @@ public class ActionOpen extends BaseAction {
 		public String getFileName() {
 			return fileName;
 		}
+
 		public void setFileName(String fileName) {
 			this.fileName = fileName;
 		}
