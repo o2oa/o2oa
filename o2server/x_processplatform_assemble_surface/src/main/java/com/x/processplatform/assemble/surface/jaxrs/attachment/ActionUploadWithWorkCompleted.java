@@ -2,6 +2,7 @@ package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
 import java.util.List;
 
+import com.x.base.core.project.tools.FileTools;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.Tika;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -57,6 +58,7 @@ class ActionUploadWithWorkCompleted extends BaseAction {
 					&& effectivePerson.isNotPerson(application.getControllerList())) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
+			FileTools.verifyConstraint(this.fileName(disposition));
 			if (StringUtils.isEmpty(fileName)) {
 				fileName = this.fileName(disposition);
 			}

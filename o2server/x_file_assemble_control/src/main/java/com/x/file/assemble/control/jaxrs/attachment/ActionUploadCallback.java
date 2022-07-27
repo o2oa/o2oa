@@ -55,12 +55,7 @@ class ActionUploadCallback extends StandardJaxrsAction {
 			}
 			/** 由于需要校验要把所有的必要字段进行填写 */
 
-			/** 文件名编码转换 */
-			if (StringUtils.isEmpty(fileName)) {
-				fileName = new String(disposition.getFileName().getBytes(DefaultCharset.charset_iso_8859_1),
-						DefaultCharset.charset);
-			}
-			fileName = FilenameUtils.getName(fileName);
+			fileName = this.fileName(disposition);
 			/** 禁止不带扩展名的文件上传 */
 			if (StringUtils.isEmpty(FilenameUtils.getExtension(fileName))) {
 				throw new ExceptionEmptyExtensionCallback(callback, fileName);

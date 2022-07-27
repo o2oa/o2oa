@@ -54,12 +54,8 @@ class ActionUpload extends BaseAction {
 			if (null == mapping) {
 				throw new ExceptionAllocateStorageMaaping();
 			}
-
-			if (StringUtils.isEmpty(fileName)) {
-				fileName = new String(filePart.getFormDataContentDisposition().getFileName().getBytes(DefaultCharset.charset_iso_8859_1),
-						DefaultCharset.charset);
-			}
-			fileName = FilenameUtils.getName(fileName);
+			fileName = this.fileName(filePart.getFormDataContentDisposition());
+			FileTools.verifyConstraint(fileName);
 			/** 禁止不带扩展名的文件上传 */
 			if (StringUtils.isEmpty(FilenameUtils.getExtension(fileName))) {
 				throw new ExceptionEmptyExtension(fileName);

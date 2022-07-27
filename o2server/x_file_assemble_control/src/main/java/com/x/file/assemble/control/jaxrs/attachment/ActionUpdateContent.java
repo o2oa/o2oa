@@ -43,11 +43,11 @@ class ActionUpdateContent extends BaseAction {
 				throw new ExceptionStorageNotExist(attachment.getStorage());
 			}
 			attachment.setLastUpdatePerson(effectivePerson.getDistinguishedName());
+
+			FileTools.verifyConstraint(this.fileName(disposition));
 			/** 禁止不带扩展名的文件上传 */
 			/** 文件名编码转换 */
-			String fileName = new String(disposition.getFileName().getBytes(DefaultCharset.charset_iso_8859_1),
-					DefaultCharset.charset);
-			fileName = FilenameUtils.getName(fileName);
+			String fileName = this.fileName(disposition);
 
 			if (StringUtils.isEmpty(FilenameUtils.getExtension(fileName))) {
 				throw new ExceptionEmptyExtension(fileName);

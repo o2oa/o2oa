@@ -1,5 +1,6 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
+import com.x.base.core.project.tools.FileTools;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tika.Tika;
@@ -55,6 +56,7 @@ class ActionUploadWithWork extends BaseAction {
 				}
 			}
 
+			FileTools.verifyConstraint(this.fileName(disposition));
 			if (StringUtils.isEmpty(fileName)) {
 				fileName = this.fileName(disposition);
 			}
