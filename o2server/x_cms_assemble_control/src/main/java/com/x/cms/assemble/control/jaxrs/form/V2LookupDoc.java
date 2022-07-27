@@ -33,6 +33,7 @@ class V2LookupDoc extends BaseAction {
 
 	private Form form = null;
 	private Form readForm = null;
+	private com.x.processplatform.core.entity.element.Form ppForm;
 	private Wo wo = new Wo();
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String docId) throws Exception {
@@ -44,6 +45,7 @@ class V2LookupDoc extends BaseAction {
 		this.getDocForm(docId);
 		String formId = "";
 		String readFormId = "";
+		String ppFormId = "";
 		if (null != this.form) {
 			formId = form.getId();
 			this.wo.setFormId(formId);
@@ -52,8 +54,12 @@ class V2LookupDoc extends BaseAction {
 			readFormId = readForm.getId();
 			this.wo.setReadFormId(readFormId);
 		}
-		if (StringUtils.isNotEmpty(formId) || StringUtils.isNotEmpty(readFormId)) {
-			CacheKey cacheKey = new CacheKey(this.getClass(), formId, readFormId);
+		if (null != this.ppForm){
+			ppFormId = this.ppForm.getId();
+			this.wo.setPpFormId(ppFormId);
+		}
+		if(StringUtils.isNotEmpty(formId) || StringUtils.isNotEmpty(readFormId) || StringUtils.isNotEmpty(ppFormId)){
+			CacheKey cacheKey = new CacheKey(this.getClass(), formId, readFormId, ppFormId);
 			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 			if (optional.isPresent()) {
 				this.wo = (Wo) optional.get();
@@ -76,6 +82,9 @@ class V2LookupDoc extends BaseAction {
 					list.add(this.readForm.getId() + this.readForm.getUpdateTime().getTime());
 					list.addAll(relatedFormFuture.get(10, TimeUnit.SECONDS));
 					list.addAll(relatedScriptFuture.get(10, TimeUnit.SECONDS));
+				}
+				if(this.ppForm != null){
+					list.add(this.ppForm.getId() + this.ppForm.getUpdateTime().getTime());
 				}
 				list = list.stream().sorted().collect(Collectors.toList());
 				CRC32 crc = new CRC32();
@@ -119,6 +128,9 @@ class V2LookupDoc extends BaseAction {
 						readFormId = categoryInfo.getReadFormId();
 						this.readForm = business.getFormFactory().pick(readFormId);
 					}
+				}
+				if(StringUtils.isNotBlank(document.getPpFormId())){
+					this.ppForm = business.process().form().pick(document.getPpFormId());
 				}
 			}
 		}
@@ -168,6 +180,8 @@ class V2LookupDoc extends BaseAction {
 
 		private String readFormId;
 
+		private String ppFormId;
+
 		private String cacheTag;
 
 		public String getFormId() {
@@ -194,6 +208,13 @@ class V2LookupDoc extends BaseAction {
 			this.cacheTag = cacheTag;
 		}
 
+		public String getPpFormId() {
+			return ppFormId;
+		}
+
+		public void setPpFormId(String ppFormId) {
+			this.ppFormId = ppFormId;
+		}
 	}
 
 }
