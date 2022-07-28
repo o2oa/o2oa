@@ -103,12 +103,4 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 
 	}
 
-	public static class Index {
-
-		public static class State {
-
-			public static final String table = "QRY_IDX_STATE";
-		}
-
-	}
 }
