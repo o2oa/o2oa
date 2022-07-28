@@ -542,11 +542,11 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
             this.configAttachment(e, node);
         }.bind(this));
 
-        if (this.options.checkTextEnable) {
-            this.checkTextAction = this.createAction(this.configActionsGroupNode, "check", MWF.LP.widget.checkOcrText, function (e, node) {
-                this.checkImageTex(e, node);
-            }.bind(this));
-        }
+        // if (this.options.checkTextEnable) {
+        //     this.checkTextAction = this.createAction(this.configActionsGroupNode, "check", MWF.LP.widget.checkOcrText, function (e, node) {
+        //         this.checkImageTex(e, node);
+        //     }.bind(this));
+        // }
         this.createSeparate(this.configActionsGroupNode);
 
         this.orderAction = this.createAction(this.configActionsGroupNode, "order", MWF.LP.widget.order, function (e, node) {
