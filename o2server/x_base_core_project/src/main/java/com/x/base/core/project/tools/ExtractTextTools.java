@@ -63,7 +63,7 @@ public class ExtractTextTools {
 	public static final List<String> SUPPORT_IMAGE_TYPES = UnmodifiableList
 			.unmodifiableList(ListTools.toList(".bmp", ".jpg", ".png", ".gif", ".jpeg", "jpe"));
 
-	public static String extract(byte[] bytes, String name, Boolean office, Boolean pdf, Boolean txt, Boolean image)
+	public static String extract(byte[] bytes, String name, boolean office, boolean pdf, boolean txt, boolean image)
 			throws Exception {
 		if ((null != bytes) && bytes.length > 0 && bytes.length < 1024 * 1024 * 10) {
 			if (office) {
@@ -74,26 +74,21 @@ public class ExtractTextTools {
 					return excel(bytes);
 				}
 			}
-			if (pdf) {
-				if (StringUtils.endsWithIgnoreCase(name, ".pdf")) {
-					return pdf(bytes);
-				}
+			if (pdf && StringUtils.endsWithIgnoreCase(name, ".pdf")) {
+				return pdf(bytes);
+
 			}
-			if (txt) {
-				if (StringUtils.endsWithIgnoreCase(name, ".txt")) {
-					return text(bytes);
-				}
+			if (txt && StringUtils.endsWithIgnoreCase(name, ".txt")) {
+				return text(bytes);
 			}
-			if (image) {
-				if (StringUtils.endsWithIgnoreCase(name, ".jpg") || StringUtils.endsWithIgnoreCase(name, ".png")
-						|| StringUtils.endsWithIgnoreCase(name, ".gif") || StringUtils.endsWithIgnoreCase(name, ".bmp")
-						|| StringUtils.endsWithIgnoreCase(name, ".jpeg")
-						|| StringUtils.endsWithIgnoreCase(name, ".jpe")) {
-					return image(bytes);
-				}
+			if (image && (StringUtils.endsWithIgnoreCase(name, ".jpg") || StringUtils.endsWithIgnoreCase(name, ".png")
+					|| StringUtils.endsWithIgnoreCase(name, ".gif") || StringUtils.endsWithIgnoreCase(name, ".bmp")
+					|| StringUtils.endsWithIgnoreCase(name, ".jpeg") || StringUtils.endsWithIgnoreCase(name, ".jpe"))) {
+				return image(bytes);
 			}
 		}
 		return null;
+
 	}
 
 	public static String pdf(byte[] bytes) {
