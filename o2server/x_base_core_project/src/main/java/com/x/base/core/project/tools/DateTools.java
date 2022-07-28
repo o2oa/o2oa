@@ -505,46 +505,48 @@ public class DateTools {
 		return cron(expression, new Date());
 	}
 
+	// move to CronTools.java
+	@Deprecated(forRemoval = true)
 	public static boolean cronAvailable(String str) {
 		if (StringUtils.isEmpty(str)) {
 			return false;
 		}
-		if (CronExpression.isValidExpression(str)) {
-			return true;
-		}
-		return false;
+		return CronExpression.isValidExpression(str);
 	}
 
 	public static Date fromNowMinutes(Integer minutes) {
 		Date date = new Date();
 		return DateUtils.addMinutes(date, minutes);
 	}
-	
+
 	/**
 	 * 根据需求调整年份
+	 * 
 	 * @param startTime
 	 * @param yearAdjust
 	 * @param monthAdjust
 	 * @param dayAdjust
 	 * @return
 	 */
-	public static  Date getDateAfterYearAdjust( Date startTime, Integer yearAdjust, Integer monthAdjust, Integer dayAdjust) {
+	public static Date getDateAfterYearAdjust(Date startTime, Integer yearAdjust, Integer monthAdjust,
+			Integer dayAdjust) {
 		Calendar calendar = Calendar.getInstance();
-		calendar.setTime( startTime );
+		calendar.setTime(startTime);
 		if ((null != yearAdjust) && (yearAdjust != 0)) {
-			calendar.add(Calendar.YEAR, yearAdjust );
+			calendar.add(Calendar.YEAR, yearAdjust);
 		}
 		if ((null != monthAdjust) && (monthAdjust != 0)) {
-			calendar.add(Calendar.MONTH, monthAdjust );
+			calendar.add(Calendar.MONTH, monthAdjust);
 		}
 		if ((null != dayAdjust) && (dayAdjust != 0)) {
-			calendar.add(Calendar.DATE, dayAdjust );
+			calendar.add(Calendar.DATE, dayAdjust);
 		}
 		return calendar.getTime();
 	}
 
 	/**
 	 * 根据需要调整时间
+	 * 
 	 * @param dateTime
 	 * @param dayAdjust
 	 * @param hourAdjust
@@ -552,63 +554,65 @@ public class DateTools {
 	 * @param secondAdjust
 	 * @return
 	 */
-	public static  Date getAdjustTimeDay( Date dateTime, Integer dayAdjust, Integer hourAdjust, Integer minuteAdjust, Integer secondAdjust) {
+	public static Date getAdjustTimeDay(Date dateTime, Integer dayAdjust, Integer hourAdjust, Integer minuteAdjust,
+			Integer secondAdjust) {
 		Calendar calendar = Calendar.getInstance();
-		if(dateTime==null){
+		if (dateTime == null) {
 			dateTime = new Date();
 		}
-		calendar.setTime( dateTime );
+		calendar.setTime(dateTime);
 		if ((null != dayAdjust) && (dayAdjust != 0)) {
-			calendar.add(Calendar.DAY_OF_MONTH, dayAdjust );
+			calendar.add(Calendar.DAY_OF_MONTH, dayAdjust);
 		}
 		if ((null != hourAdjust) && (hourAdjust != 0)) {
-			calendar.add(Calendar.HOUR_OF_DAY, hourAdjust );
+			calendar.add(Calendar.HOUR_OF_DAY, hourAdjust);
 		}
 		if ((null != minuteAdjust) && (minuteAdjust != 0)) {
-			calendar.add(Calendar.MINUTE, minuteAdjust );
+			calendar.add(Calendar.MINUTE, minuteAdjust);
 		}
 		if ((null != secondAdjust) && (secondAdjust != 0)) {
-			calendar.add(Calendar.SECOND, secondAdjust );
+			calendar.add(Calendar.SECOND, secondAdjust);
 		}
 		return calendar.getTime();
 	}
-	
-	  /** 
-	  * 判断当前日期是星期几
-	  * @param dateTime 修要判断的时间 
-	  * @return dayForWeek 判断结果
-	  * @Exception 发生异常
-	  */  
-	public static int dayForWeek(String dateTime ) throws Exception {
+
+	/**
+	 * 判断当前日期是星期几
+	 * 
+	 * @param dateTime 修要判断的时间
+	 * @return dayForWeek 判断结果
+	 * @Exception 发生异常
+	 */
+	public static int dayForWeek(String dateTime) throws Exception {
 		Calendar c = Calendar.getInstance();
-		c.setTime( DateUtils.parseDate( dateTime, format_yyyyMMdd) ); 
-		int dayForWeek = 0 ;
-		if (c.get(Calendar.DAY_OF_WEEK) == 1 ){ 
+		c.setTime(DateUtils.parseDate(dateTime, format_yyyyMMdd));
+		int dayForWeek = 0;
+		if (c.get(Calendar.DAY_OF_WEEK) == 1) {
 			dayForWeek = 7;
-		}else {
+		} else {
 			dayForWeek = c.get(Calendar.DAY_OF_WEEK) - 1;
 		}
-		return dayForWeek; 
-	}
-	
-	 /** 
-	  * 判断当前日期是星期几
-	  * @param dateTime 修要判断的时间 
-	  * @return dayForWeek 判断结果
-	  * @Exception 发生异常
-	  */  
-	public static int dayForWeek( Date dateTime ) throws Exception {
-		Calendar c = Calendar.getInstance();
-		c.setTime( dateTime ); 
-		int dayForWeek = 0 ;
-		if (c.get(Calendar.DAY_OF_WEEK) == 1 ){ 
-			dayForWeek = 7;
-		}else {
-			dayForWeek = c.get(Calendar.DAY_OF_WEEK) - 1;
-		}
-		return dayForWeek; 
+		return dayForWeek;
 	}
 
+	/**
+	 * 判断当前日期是星期几
+	 * 
+	 * @param dateTime 修要判断的时间
+	 * @return dayForWeek 判断结果
+	 * @Exception 发生异常
+	 */
+	public static int dayForWeek(Date dateTime) throws Exception {
+		Calendar c = Calendar.getInstance();
+		c.setTime(dateTime);
+		int dayForWeek = 0;
+		if (c.get(Calendar.DAY_OF_WEEK) == 1) {
+			dayForWeek = 7;
+		} else {
+			dayForWeek = c.get(Calendar.DAY_OF_WEEK) - 1;
+		}
+		return dayForWeek;
+	}
 
 	/**
 	 * 指定的日期，添加指定的天数
@@ -625,25 +629,25 @@ public class DateTools {
 		return date;
 	}
 
-
 	/**
 	 * 时间戳转Unix时间戳
+	 * 
 	 * @param timestamp
 	 * @return
 	 */
-	public static long toUnixTimeStamp(long timestamp){
-		return timestamp/1000;
+	public static long toUnixTimeStamp(long timestamp) {
+		return timestamp / 1000;
 	}
 
 	/**
 	 * Unix时间戳转时间戳
+	 * 
 	 * @param unixTimeStamp
 	 * @return
 	 */
-	public static long toTimestamp(long unixTimeStamp){
-		return unixTimeStamp*1000;
+	public static long toTimestamp(long unixTimeStamp) {
+		return unixTimeStamp * 1000;
 	}
-
 
 	public static void main(String[] args) {
 		try {
@@ -657,5 +661,5 @@ public class DateTools {
 		}
 
 	}
-	
+
 }
