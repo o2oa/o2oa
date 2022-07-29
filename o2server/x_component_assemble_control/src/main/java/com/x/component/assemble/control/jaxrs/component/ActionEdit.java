@@ -27,6 +27,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 class ActionEdit extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionEdit.class);
+	private static final String SYSTEM_SETTING_NAME = "Setting";
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, JsonElement jsonElement) throws Exception {
 
@@ -50,6 +51,9 @@ class ActionEdit extends BaseAction {
 				component.setType(Component.TYPE_SYSTEM);
 			} else {
 				component.setType(Component.TYPE_CUSTOM);
+			}
+			if(SYSTEM_SETTING_NAME.equals(component.getName())){
+				component.setVisible(true);
 			}
 			emc.beginTransaction(Component.class);
 			emc.persist(component, CheckPersistType.all);
