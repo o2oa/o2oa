@@ -82,7 +82,16 @@ public class ActionRefreshDocumentPermission extends BaseAction {
 					}
 				} else {
 					documentPersistService.refreshDocumentPermission(document.getId(), wi.getPermissionList());
+					ReviewService reviewService = new ReviewService();
+					try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+						boolean fullRead = reviewService.refreshDocumentReview(emc, wi.getDocId());
+						Document doc = emc.find( wi.getDocId(), Document.class );
+						emc.beginTransaction( Document.class );
+						doc.setIsAllRead(fullRead);
+						emc.commit();
+					}
 				}
+				CacheManager.notify(Document.class);
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionServiceLogic(e, "系统在为文档设置用户访问权限过程中发生异常。ID：" + wi.getDocId());

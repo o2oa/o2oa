@@ -53,7 +53,7 @@ public class ActionSave extends BaseAction {
 		}
 		AppInfo old_appInfo = appInfoServiceAdv.get( wi.getId() );
 
-		if (!business.isAppInfoManager( effectivePerson, old_appInfo)) {
+		if (!business.isAppCreatorManager( effectivePerson, old_appInfo)) {
 			throw new ExceptionAccessDenied(effectivePerson);
 		}
 

@@ -314,10 +314,6 @@ public class Business {
 
 	/**
 	 * 判断用户是否管理员权限
-	 * 1、person.isManager()
-	 * 2、xadmin
-	 * 3、CMSManager
-	 *
 	 * @param person
 	 * @return
 	 * @throws Exception
@@ -329,6 +325,25 @@ public class Business {
 		} else {
 			if (organization().person().hasRole(person, OrganizationDefinition.Manager,
 					OrganizationDefinition.CMSManager)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * 判断用户是否管理员权限
+	 * @param person
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean isCreatorManager(EffectivePerson person) throws Exception {
+		// 如果用户的身份是平台的超级管理员，那么就是超级管理员权限
+		if ( person.isManager() ) {
+			return true;
+		} else {
+			if (organization().person().hasRole(person, OrganizationDefinition.Manager,
+					OrganizationDefinition.CMSManager, OrganizationDefinition.CMSCreator)) {
 				return true;
 			}
 		}
@@ -364,6 +379,41 @@ public class Business {
 					return true;
 				}
 			}
+		}
+		return false;
+	}
+
+	/**
+	 * 是否是栏目创建管理员
+	 * @param person
+	 * @param appInfo
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean isAppCreatorManager(EffectivePerson person, AppInfo appInfo) throws Exception {
+		if(appInfo != null){
+			if (isManager(person)) {
+				return true;
+			}
+			if (ListTools.isNotEmpty(appInfo.getManageablePersonList())) {
+				if (appInfo.getManageablePersonList().contains(person.getDistinguishedName())) {
+					return true;
+				}
+			}
+			if (ListTools.isNotEmpty(appInfo.getManageableUnitList())) {
+				List<String> unitNames = this.organization().unit().listWithPersonSupNested(person.getDistinguishedName());
+				if (ListTools.containsAny(unitNames, appInfo.getManageableUnitList())) {
+					return true;
+				}
+			}
+			if (ListTools.isNotEmpty(appInfo.getManageableGroupList())) {
+				List<String> groupNames = this.organization().group().listWithPerson(person.getDistinguishedName());
+				if (ListTools.containsAny(groupNames, appInfo.getManageableGroupList())) {
+					return true;
+				}
+			}
+		}else if (isCreatorManager(person)) {
+			return true;
 		}
 		return false;
 	}

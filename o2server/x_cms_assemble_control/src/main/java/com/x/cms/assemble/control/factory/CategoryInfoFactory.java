@@ -1,6 +1,13 @@
 package com.x.cms.assemble.control.factory;
 
-import java.util.List;
+import com.x.base.core.project.exception.ExceptionWhen;
+import com.x.base.core.project.tools.ListTools;
+import com.x.cms.assemble.control.Business;
+import com.x.cms.core.entity.CategoryInfo;
+import com.x.cms.core.entity.CategoryInfo_;
+import com.x.cms.core.express.tools.CriteriaBuilderTools;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -8,15 +15,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-
-import org.apache.commons.lang3.StringUtils;
-
-import com.x.base.core.project.exception.ExceptionWhen;
-import com.x.base.core.project.tools.ListTools;
-import com.x.cms.assemble.control.Business;
-import com.x.cms.core.entity.CategoryInfo;
-import com.x.cms.core.entity.CategoryInfo_;
-import com.x.cms.core.express.tools.CriteriaBuilderTools;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 分类信息基础功能服务类
@@ -63,17 +63,6 @@ public class CategoryInfoFactory extends ElementFactory {
 		return em.createQuery(cq).getResultList();
 	}
 
-	//@MethodDescribe("列示指定Id的CategoryInfo分类信息列表")
-//	public List<CategoryInfo> list(List<String> ids) throws Exception {
-//		EntityManager em = this.entityManagerContainer().get( CategoryInfo.class );
-//		CriteriaBuilder cb = em.getCriteriaBuilder();
-//		CriteriaQuery<CategoryInfo> cq = cb.createQuery( CategoryInfo.class );
-//		Root<CategoryInfo> root = cq.from( CategoryInfo.class );
-//		Predicate p = root.get( CategoryInfo_.id).in(ids);
-//		return em.createQuery(cq.where(p)).getResultList();
-//	}
-
-	//@MethodDescribe("根据应用ID列示所有的CategoryInfo分类信息列表")
 	public List<String> listByAppId( String appId ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( CategoryInfo.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -82,6 +71,23 @@ public class CategoryInfoFactory extends ElementFactory {
 		Predicate p = cb.equal(root.get( CategoryInfo_.appId ), appId );
 		cq.select(root.get( CategoryInfo_.id));
 		return em.createQuery( cq.where(p) ).setMaxResults(1000).getResultList();
+	}
+
+	public List<String> listByAppIds( List<String> appIds, Boolean hasProcess) throws Exception {
+		EntityManager em = this.entityManagerContainer().get( CategoryInfo.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery( String.class );
+		Root<CategoryInfo> root = cq.from( CategoryInfo.class );
+		Predicate p = cb.conjunction();
+		if(ListTools.isNotEmpty(appIds)) {
+			p = root.get(CategoryInfo_.appId).in(appIds);
+		}
+		if(BooleanUtils.isTrue(hasProcess)){
+			p = cb.and(p, cb.isNotNull(root.get(CategoryInfo_.workflowFlag)));
+			p = cb.and(p, cb.notEqual(root.get(CategoryInfo_.workflowFlag), ""));
+		}
+		cq.select(root.get( CategoryInfo_.id));
+		return em.createQuery( cq.where(p) ).getResultList();
 	}
 
 	/**
@@ -211,6 +217,53 @@ public class CategoryInfoFactory extends ElementFactory {
 		Root<CategoryInfo> root = cq.from(CategoryInfo.class);
 		Predicate p = root.get( CategoryInfo_.categoryAlias ).in( categoryAlias );
 		return em.createQuery(cq.where( p )).getResultList();
+	}
+
+	/**
+	 * 查询用户在限定应用内有权限发布的分类
+	 * @param inAppInfoIds
+	 * @param personName
+	 * @param unitNames
+	 * @param groupNames
+	 * @param isManager
+	 * @param hasProcess
+	 * @return
+	 * @throws Exception
+	 */
+	public List<String> listPeoplePublishCategoryInfoIds(List<String> inAppInfoIds, String personName, List<String> unitNames, List<String> groupNames, Boolean isManager, Boolean hasProcess) throws Exception {
+		if(BooleanUtils.isTrue(isManager)){
+			return this.listByAppIds(inAppInfoIds, hasProcess);
+		}
+		EntityManager em = this.entityManagerContainer().get(CategoryInfo.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<CategoryInfo> root = cq.from(CategoryInfo.class);
+
+		Predicate p = cb.conjunction();
+		if( ListTools.isNotEmpty( inAppInfoIds )) {
+			p = root.get( CategoryInfo_.appId ).in( p );
+		}
+		if(BooleanUtils.isTrue(hasProcess)){
+			p = cb.and(p, cb.isNotNull(root.get(CategoryInfo_.workflowFlag)));
+			p = cb.and(p, cb.notEqual(root.get(CategoryInfo_.workflowFlag), ""));
+		}
+		Predicate p_permission = cb.isTrue(root.get(CategoryInfo_.allPeoplePublish));
+		if( StringUtils.isNotEmpty( personName )) {
+			p_permission = cb.or( p_permission, cb.isMember( personName, root.get( CategoryInfo_.manageablePersonList )));
+			p_permission = cb.or( p_permission, cb.isMember( personName, root.get( CategoryInfo_.publishablePersonList )));
+		}
+		if( ListTools.isNotEmpty( unitNames )) {
+			p_permission = cb.or( p_permission,  root.get( CategoryInfo_.publishableUnitList).in(unitNames));
+			p_permission = cb.or( p_permission,  root.get( CategoryInfo_.manageableUnitList).in(unitNames));
+		}
+		if( ListTools.isNotEmpty( groupNames )) {
+			p_permission = cb.or( p_permission,  root.get( CategoryInfo_.publishableGroupList).in(groupNames));
+			p_permission = cb.or( p_permission,  root.get( CategoryInfo_.manageableGroupList).in(groupNames));
+		}
+
+		p = cb.and(p, p_permission);
+		cq.select(root.get( CategoryInfo_.id ));
+		return em.createQuery( cq.where( p ) ).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	/**

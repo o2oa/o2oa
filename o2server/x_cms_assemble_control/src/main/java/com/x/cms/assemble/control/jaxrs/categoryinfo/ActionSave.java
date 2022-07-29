@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.cms.assemble.control.Business;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -28,39 +30,36 @@ import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.element.ViewCategory;
 
 
+/**
+ * 保存分类信息
+ * @author sword
+ */
 public class ActionSave extends BaseAction {
 
 	private static  Logger logger = LoggerFactory.getLogger(ActionSave.class);
 
-	@AuditLog(operation = "保存分类信息")
 	protected ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
-		String identityName = null;
 		String unitName = null;
 		String topUnitName = null;
-		Wi wi = null;
-		AppInfo appInfo = null;
 		CategoryInfo old_categoryInfo = null;
 		CategoryInfo categoryInfo = null;
 		Boolean check = true;
 
-		try {
-			wi = this.convertToWrapIn( jsonElement, Wi.class );
-			identityName = wi.getIdentity();
-		} catch (Exception e) {
-			check = false;
-			Exception exception = new ExceptionCategoryInfoProcess(e, "系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString());
-			result.error(exception);
-			logger.error(e, effectivePerson, request, null);
+		Wi wi = this.convertToWrapIn( jsonElement, Wi.class );
+		String identityName = wi.getIdentity();
+		if(StringUtils.isBlank(wi.getAppId())){
+			throw new ExceptionAppIdEmpty();
 		}
 
-		//判断用户是否有权限来进行分类的管理
-		if (check) {
-			if( !userManagerService.hasCategoryManagerPermission( effectivePerson, wi.getAppId() ) ){
-				check = false;
-				Exception exception = new ExceptionCategoryInfoProcess("用户操作权限不足，无法在此栏目中管理分类信息。" );
-				result.error(exception);
-			}
+		AppInfo appInfo = appInfoServiceAdv.get(wi.getAppId());
+		if(appInfo == null){
+			throw new ExceptionAppInfoNotExists(wi.getAppId());
+		}
+
+		Business business = new Business(null);
+		if (!business.isAppInfoManager(effectivePerson, appInfo)) {
+			throw new ExceptionAccessDenied(effectivePerson);
 		}
 
 		if (check) {
@@ -113,21 +112,6 @@ public class ActionSave extends BaseAction {
 				Exception exception = new ExceptionCategoryInfoProcess(e, "系统在根据用户身份信息查询所属顶层组织名称时发生异常。Identity:" + identityName);
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);
-			}
-		}
-		if( check ){
-			try {
-				appInfo = appInfoServiceAdv.getWithFlag( wi.getAppId() );
-				if( appInfo == null ){
-					check = false;
-					Exception exception = new ExceptionAppInfoNotExists( wi.getAppId() );
-					result.error( exception );
-				}
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new ExceptionCategoryInfoProcess( e, "根据指定flag查询应用栏目信息对象时发生异常。flag:" + wi.getAppId() );
-				result.error( exception );
-				logger.error( e, effectivePerson, request, null);
 			}
 		}
 		if (check) {

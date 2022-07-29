@@ -164,6 +164,7 @@ public class ActionPersistPublishContent extends BaseAction {
 			wi.setCategoryName(categoryInfo.getCategoryName());
 			wi.setCategoryId(categoryInfo.getId());
 			wi.setCategoryAlias(categoryInfo.getCategoryAlias());
+
 			if( StringUtils.isEmpty( wi.getDocumentType() ) ) {
 				wi.setDocumentType( categoryInfo.getDocumentType() );
 			}
@@ -229,6 +230,7 @@ public class ActionPersistPublishContent extends BaseAction {
 				if( wi.getPublishTime() == null ) { wi.setPublishTime(new Date()); }
 				document =  Wi.copier.copy(wi);
 				document.setId( wi.getId() );
+				document.setPpFormId(wi.getWf_formId());
 				document = documentPersistService.save( document, wi.getDocData(), categoryInfo.getProjection());
 			} catch (Exception e) {
 				check = false;

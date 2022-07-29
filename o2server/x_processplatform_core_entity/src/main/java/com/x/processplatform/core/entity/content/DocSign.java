@@ -171,12 +171,11 @@ public class DocSign extends SliceJpaObject {
 
 	public static final String status_FIELDNAME = "status";
 	@FieldDescribe("状态：1(暂存)|2(签批正文不可以修改)|3(签批正文可以修改).")
-	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + status_FIELDNAME)
+	@Column(name = ColumnNamePrefix + status_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Integer status;
 
 	public static final String commitTime_FIELDNAME = "commitTime";
-	@Temporal(TemporalType.TIME)
 	@FieldDescribe("提交时间.")
 	@Column(name = ColumnNamePrefix + commitTime_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + commitTime_FIELDNAME)

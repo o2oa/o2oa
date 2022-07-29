@@ -167,6 +167,12 @@ public class Document extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String readFormName;
 
+	public static final String ppFormId_FIELDNAME = "ppFormId";
+	@FieldDescribe("流程平台表单ID")
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + ppFormId_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String ppFormId;
+
 	public static final String creatorPerson_FIELDNAME = "creatorPerson";
 	@FieldDescribe("创建人，可能为空，如果由系统创建。")
 	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
@@ -432,6 +438,20 @@ public class Document extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String stringValue04;
 
+	public static final String stringValue05_FIELDNAME = "stringValue05";
+	@FieldDescribe("业务数据String值05.")
+	@Column(length = length_255B, name = ColumnNamePrefix + stringValue05_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + stringValue05_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String stringValue05;
+
+	public static final String stringValue06_FIELDNAME = "stringValue06";
+	@FieldDescribe("业务数据String值06.")
+	@Column(length = length_255B, name = ColumnNamePrefix + stringValue06_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + stringValue06_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String stringValue06;
+
 	public static final String longValue01_FIELDNAME = "longValue01";
 	@FieldDescribe("业务数据Long值01.")
 	@Column(name = ColumnNamePrefix + longValue01_FIELDNAME)
@@ -475,6 +495,14 @@ public class Document extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + dateTimeValue02_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date dateTimeValue02;
+
+	public static final String dateTimeValue03_FIELDNAME = "dateTimeValue03";
+	@Temporal(TemporalType.TIMESTAMP)
+	@FieldDescribe("业务数据DateTime值03.")
+	@Column(name = ColumnNamePrefix + dateTimeValue03_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + dateTimeValue03_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Date dateTimeValue03;
 
 	public Date getModifyTime() {
 		return modifyTime;
@@ -546,6 +574,14 @@ public class Document extends SliceJpaObject {
 
 	public void setFormName(String formName) {
 		this.formName = formName;
+	}
+
+	public String getPpFormId() {
+		return ppFormId;
+	}
+
+	public void setPpFormId(String ppFormId) {
+		this.ppFormId = ppFormId;
 	}
 
 	public String getReadFormId() {
@@ -960,6 +996,34 @@ public class Document extends SliceJpaObject {
 
 	public void setDateTimeValue02(Date dateTimeValue02) {
 		this.dateTimeValue02 = dateTimeValue02;
+	}
+
+	public static long getSerialVersionUID() {
+		return serialVersionUID;
+	}
+
+	public String getStringValue05() {
+		return stringValue05;
+	}
+
+	public void setStringValue05(String stringValue05) {
+		this.stringValue05 = stringValue05;
+	}
+
+	public String getStringValue06() {
+		return stringValue06;
+	}
+
+	public void setStringValue06(String stringValue06) {
+		this.stringValue06 = stringValue06;
+	}
+
+	public Date getDateTimeValue03() {
+		return dateTimeValue03;
+	}
+
+	public void setDateTimeValue03(Date dateTimeValue03) {
+		this.dateTimeValue03 = dateTimeValue03;
 	}
 
 	// -------------------Reader-------------------------

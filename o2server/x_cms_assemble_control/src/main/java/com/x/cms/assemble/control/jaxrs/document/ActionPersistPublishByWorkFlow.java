@@ -41,7 +41,7 @@ import com.x.processplatform.core.entity.content.Attachment;
 
 /**
  * 从流程发布一个文档（流程）
- * 
+ *
  * @author sword
  */
 public class ActionPersistPublishByWorkFlow extends BaseAction {
@@ -228,6 +228,7 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 				if (wi.getPublishTime() == null) {
 					wi.setPublishTime(new Date());
 				}
+				wi.setPpFormId(wi.getWf_formId());
 				document = documentPersistService.save(wi, wi.getDocData(), categoryInfo.getProjection());
 			} catch (Exception e) {
 				check = false;
@@ -382,7 +383,7 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 		if (check && !wi.getSkipPermission()) {
 			// 将读者以及作者信息持久化到数据库中
 			try {
-				document = documentPersistService.refreshDocumentPermission(document.getId(), wi.getReaderList(),
+				documentPersistService.refreshDocumentPermission(document.getId(), wi.getReaderList(),
 						wi.getAuthorList());
 			} catch (Exception e) {
 				check = false;

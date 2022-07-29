@@ -252,6 +252,9 @@ public class BaseAction extends StandardJaxrsAction {
 
 		static WrapCopier<AppInfo, Wo> copier = WrapCopierFactory.wo( AppInfo.class, Wo.class, null, ListTools.toList(JpaObject.FieldsInvisible));
 
+		static WrapCopier<AppInfo, Wo> copier2 = WrapCopierFactory.wo( AppInfo.class, Wo.class,
+				JpaObject.singularAttributeField(AppInfo.class, true, false), null);
+
 	}
 
 	public static class WoCategory extends CategoryInfo {
@@ -260,7 +263,10 @@ public class BaseAction extends StandardJaxrsAction {
 
 		public static List<String> Excludes = new ArrayList<String>();
 
-		static WrapCopier<CategoryInfo, WoCategory> copier = WrapCopierFactory.wo( CategoryInfo.class, WoCategory.class, null, ListTools.toList(JpaObject.FieldsInvisible));
+		static WrapCopier<CategoryInfo, WoCategory> copier = WrapCopierFactory.wo( CategoryInfo.class, WoCategory.class,null, ListTools.toList(JpaObject.FieldsInvisible));
+
+		static WrapCopier<CategoryInfo, WoCategory> copier2 = WrapCopierFactory.wo( CategoryInfo.class, WoCategory.class,
+				JpaObject.singularAttributeField(CategoryInfo.class, true, false), null);
 
 	}
 

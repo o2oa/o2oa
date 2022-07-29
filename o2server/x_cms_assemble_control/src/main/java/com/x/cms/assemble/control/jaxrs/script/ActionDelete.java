@@ -4,9 +4,12 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.cms.assemble.control.Business;
+import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.Log;
 import com.x.cms.core.entity.element.Script;
 
@@ -19,6 +22,11 @@ class ActionDelete extends BaseAction {
 			if (null == script) {
 				throw new Exception("script{id:" + id + "} not existed.");
 			}
+			AppInfo appInfo = emc.find(script.getAppId(), AppInfo.class);
+			Business business = new Business(emc);
+			if (!business.isAppInfoManager(effectivePerson, appInfo)) {
+				throw new ExceptionAccessDenied(effectivePerson);
+			}
 			emc.beginTransaction(Script.class);
 			emc.remove(script, CheckRemoveType.all);
 			emc.commit();
@@ -29,7 +37,7 @@ class ActionDelete extends BaseAction {
 			emc.beginTransaction(Log.class);
 			logService.log(emc, effectivePerson.getDistinguishedName(), script.getName(), script.getAppId(), "", "", script.getId(), "SCRIPT", "删除");
 			emc.commit();
-			
+
 			Wo wo = new Wo();
 			wo.setId( script.getId() );
 			result.setData(wo);
@@ -40,7 +48,7 @@ class ActionDelete extends BaseAction {
 		}
 		return result;
 	}
-	
+
 	public static class Wo extends WoId {
 
 	}

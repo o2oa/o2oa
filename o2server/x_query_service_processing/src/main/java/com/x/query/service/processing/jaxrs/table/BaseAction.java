@@ -205,6 +205,12 @@ abstract class BaseAction extends StandardJaxrsAction {
 				JsonPrimitive jsonPrimitive = jsonElement.getAsJsonPrimitive();
 				if (jsonPrimitive.isNumber()) {
 					value = jsonPrimitive.getAsInt();
+				}else{
+					try {
+						value = Integer.valueOf(jsonPrimitive.getAsString());
+					} catch (NumberFormatException e) {
+						LOGGER.debug(e.getMessage());
+					}
 				}
 			} else if (jsonElement.isJsonArray()) {
 				JsonArray os = jsonElement.getAsJsonArray();
@@ -223,6 +229,12 @@ abstract class BaseAction extends StandardJaxrsAction {
 				JsonPrimitive jsonPrimitive = jsonElement.getAsJsonPrimitive();
 				if (jsonPrimitive.isNumber()) {
 					values.add(jsonPrimitive.getAsInt());
+				}else {
+					try {
+						values.add(Integer.valueOf(jsonPrimitive.getAsString()));
+					} catch (NumberFormatException e) {
+						LOGGER.debug(e.getMessage());
+					}
 				}
 			} else if (jsonElement.isJsonArray()) {
 				JsonArray os = jsonElement.getAsJsonArray();
@@ -241,6 +253,12 @@ abstract class BaseAction extends StandardJaxrsAction {
 				JsonPrimitive jsonPrimitive = jsonElement.getAsJsonPrimitive();
 				if (jsonPrimitive.isNumber()) {
 					value = jsonPrimitive.getAsLong();
+				}else{
+					try {
+						value = Long.valueOf(jsonPrimitive.getAsString());
+					} catch (NumberFormatException e) {
+						LOGGER.debug(e.getMessage());
+					}
 				}
 			} else if (jsonElement.isJsonArray()) {
 				JsonArray os = jsonElement.getAsJsonArray();
@@ -259,6 +277,12 @@ abstract class BaseAction extends StandardJaxrsAction {
 				JsonPrimitive jsonPrimitive = jsonElement.getAsJsonPrimitive();
 				if (jsonPrimitive.isNumber()) {
 					values.add(jsonPrimitive.getAsLong());
+				}else{
+					try {
+						values.add(Long.valueOf(jsonPrimitive.getAsString()));
+					} catch (NumberFormatException e) {
+						LOGGER.debug(e.getMessage());
+					}
 				}
 			} else if (jsonElement.isJsonArray()) {
 				JsonArray os = jsonElement.getAsJsonArray();
@@ -277,6 +301,12 @@ abstract class BaseAction extends StandardJaxrsAction {
 				JsonPrimitive jsonPrimitive = jsonElement.getAsJsonPrimitive();
 				if (jsonPrimitive.isNumber()) {
 					value = jsonPrimitive.getAsFloat();
+				}else{
+					try {
+						value = Float.valueOf(jsonPrimitive.getAsString());
+					} catch (NumberFormatException e) {
+						LOGGER.debug(e.getMessage());
+					}
 				}
 			} else if (jsonElement.isJsonArray()) {
 				JsonArray os = jsonElement.getAsJsonArray();
@@ -295,6 +325,12 @@ abstract class BaseAction extends StandardJaxrsAction {
 				JsonPrimitive jsonPrimitive = jsonElement.getAsJsonPrimitive();
 				if (jsonPrimitive.isNumber()) {
 					values.add(jsonPrimitive.getAsFloat());
+				}else{
+					try {
+						values.add(Float.valueOf(jsonPrimitive.getAsString()));
+					} catch (NumberFormatException e) {
+						LOGGER.debug(e.getMessage());
+					}
 				}
 			} else if (jsonElement.isJsonArray()) {
 				JsonArray os = jsonElement.getAsJsonArray();
@@ -313,6 +349,12 @@ abstract class BaseAction extends StandardJaxrsAction {
 				JsonPrimitive jsonPrimitive = jsonElement.getAsJsonPrimitive();
 				if (jsonPrimitive.isNumber()) {
 					value = jsonPrimitive.getAsDouble();
+				}else{
+					try {
+						value = Double.valueOf(jsonPrimitive.getAsString());
+					} catch (NumberFormatException e) {
+						LOGGER.debug(e.getMessage());
+					}
 				}
 			} else if (jsonElement.isJsonArray()) {
 				JsonArray os = jsonElement.getAsJsonArray();
@@ -331,6 +373,12 @@ abstract class BaseAction extends StandardJaxrsAction {
 				JsonPrimitive jsonPrimitive = jsonElement.getAsJsonPrimitive();
 				if (jsonPrimitive.isNumber()) {
 					values.add(jsonPrimitive.getAsDouble());
+				}else{
+					try {
+						values.add(Double.valueOf(jsonPrimitive.getAsString()));
+					} catch (NumberFormatException e) {
+						LOGGER.debug(e.getMessage());
+					}
 				}
 			} else if (jsonElement.isJsonArray()) {
 				JsonArray os = jsonElement.getAsJsonArray();

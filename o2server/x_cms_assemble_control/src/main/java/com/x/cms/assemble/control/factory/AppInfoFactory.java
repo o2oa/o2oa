@@ -10,6 +10,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.exception.ExceptionWhen;
@@ -23,7 +24,7 @@ import com.x.cms.core.express.tools.CriteriaBuilderTools;
 
 /**
  * 应用信息表基础功能服务类
- * 
+ *
  * @author O2LEE
  */
 public class AppInfoFactory extends AbstractFactory {
@@ -31,11 +32,11 @@ public class AppInfoFactory extends AbstractFactory {
 	public AppInfoFactory(Business business) throws Exception {
 		super(business);
 	}
-	
+
 	public AppInfo get(String id) throws Exception {
 		return this.entityManagerContainer().find(id, AppInfo.class, ExceptionWhen.none);
 	}
-	
+
 	public AppInfo flag(String flag) throws Exception {
 		return this.entityManagerContainer().flag(flag, AppInfo.class );
 	}
@@ -52,7 +53,7 @@ public class AppInfoFactory extends AbstractFactory {
 		}
 		return em.createQuery(cq).getResultList();
 	}
-	
+
 	public List<AppInfo> listAll( String appType, String documentType) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(AppInfo.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -66,11 +67,11 @@ public class AppInfoFactory extends AbstractFactory {
 			p = CriteriaBuilderTools.predicate_and(cb, p, cb.equal(root.get(AppInfo_.appType), appType) );
 		}
 		if (StringUtils.isNotEmpty(appType) &&StringUtils.equals( "未分类",appType )) {
-			p = CriteriaBuilderTools.predicate_and(cb, p, 
+			p = CriteriaBuilderTools.predicate_and(cb, p,
 					CriteriaBuilderTools.predicate_or(
-							cb, cb.isNull(root.get(AppInfo_.appType)), 
+							cb, cb.isNull(root.get(AppInfo_.appType)),
 							CriteriaBuilderTools.predicate_or(
-									cb, cb.equal(root.get(AppInfo_.appType), ""), 
+									cb, cb.equal(root.get(AppInfo_.appType), ""),
 									cb.equal(root.get(AppInfo_.appType), "未分类")
 							)
 					)
@@ -106,10 +107,35 @@ public class AppInfoFactory extends AbstractFactory {
 		return em.createQuery(cq.where(p)).getResultList();
 	}
 
+	public List<String> listPeoplePublishAppInfoIds(String personName, List<String> unitNames, List<String> groupNames, Boolean isManager) throws Exception {
+		if(BooleanUtils.isTrue(isManager)){
+			return listAllIds("全部");
+		}
+		EntityManager em = this.entityManagerContainer().get(AppInfo.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<AppInfo> root = cq.from(AppInfo.class);
+		cq.select(root.get(AppInfo_.id));
+		Predicate p = cb.isTrue(root.get(AppInfo_.allPeoplePublish));
+		if (StringUtils.isNotEmpty(personName)) {
+			p = cb.or(p, cb.isMember(personName, root.get(AppInfo_.publishablePersonList)));
+			p = cb.or(p, cb.isMember(personName, root.get(AppInfo_.manageablePersonList)));
+		}
+		if(ListTools.isNotEmpty(unitNames)){
+			p = cb.or(p, root.get(AppInfo_.publishableUnitList).in(unitNames));
+			p = cb.or(p, root.get(AppInfo_.manageableUnitList).in(unitNames));
+		}
+		if(ListTools.isNotEmpty(groupNames)){
+			p = cb.or(p, root.get(AppInfo_.publishableGroupList).in(groupNames));
+			p = cb.or(p, root.get(AppInfo_.manageableGroupList).in(groupNames));
+		}
+		return em.createQuery(cq.where(p)).getResultList().stream().distinct().collect(Collectors.toList());
+	}
+
 	/**
 	 * 查询所有未设置可见权限的AppInfo的ID列表( with List copy ) 全员可发布的栏目也包含在内：判断allPeopleView or
 	 * allPeoplePublish
-	 * 
+	 *
 	 * @return
 	 * @throws Exception
 	 */
@@ -167,7 +193,7 @@ public class AppInfoFactory extends AbstractFactory {
 
 	/**
 	 * 查询指定用户可以管理的所有栏目ID列表
-	 * 
+	 *
 	 * @param personName
 	 * @param groupNames
 	 * @param unitNames
@@ -200,7 +226,7 @@ public class AppInfoFactory extends AbstractFactory {
 
 	/**
 	 * 根据权限查询用户可以发布文档的栏目ID列表（检测allPeoplePublish ）
-	 * 
+	 *
 	 * @param personName
 	 * @param unitNames
 	 * @param groupNames
@@ -271,7 +297,7 @@ public class AppInfoFactory extends AbstractFactory {
 
 	/**
 	 * 根据权限查询用户可以发布文档的栏目ID列表（不检测allPeopleView 和 allPeoplePublish ）
-	 * 
+	 *
 	 * @param personName
 	 * @param unitNames
 	 * @param groupNames
@@ -340,7 +366,7 @@ public class AppInfoFactory extends AbstractFactory {
 
 	/**
 	 * 查询用户有权限访问的所有栏目ID列表（检测allPeopleView 和 allPeoplePublish ）
-	 * 
+	 *
 	 * @param personName
 	 * @param unitNames
 	 * @param groupNames
@@ -412,7 +438,7 @@ public class AppInfoFactory extends AbstractFactory {
 
 	/**
 	 * 查询用户有权限访问的所有栏目ID列表（不检测allPeopleView）
-	 * 
+	 *
 	 * @param personName
 	 * @param unitNames
 	 * @param groupNames

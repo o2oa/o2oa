@@ -33,6 +33,7 @@ class V2LookupDoc extends BaseAction {
 
 	private Form form = null;
 	private Form readForm = null;
+	private com.x.processplatform.core.entity.element.Form ppForm;
 	private Wo wo = new Wo();
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String docId) throws Exception {
@@ -44,6 +45,7 @@ class V2LookupDoc extends BaseAction {
 		this.getDocForm(docId);
 		String formId = "";
 		String readFormId = "";
+		String ppFormId = "";
 		if (null != this.form) {
 			formId = form.getId();
 			this.wo.setFormId(formId);
@@ -52,8 +54,12 @@ class V2LookupDoc extends BaseAction {
 			readFormId = readForm.getId();
 			this.wo.setReadFormId(readFormId);
 		}
-		if (StringUtils.isNotEmpty(formId) || StringUtils.isNotEmpty(readFormId)) {
-			CacheKey cacheKey = new CacheKey(this.getClass(), formId, readFormId);
+		if (null != this.ppForm){
+			ppFormId = this.ppForm.getId();
+			this.wo.setPpFormId(ppFormId);
+		}
+		if(StringUtils.isNotEmpty(formId) || StringUtils.isNotEmpty(readFormId) || StringUtils.isNotEmpty(ppFormId)){
+			CacheKey cacheKey = new CacheKey(this.getClass(), formId, readFormId, ppFormId);
 			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 			if (optional.isPresent()) {
 				this.wo = (Wo) optional.get();
@@ -77,6 +83,9 @@ class V2LookupDoc extends BaseAction {
 					list.addAll(relatedFormFuture.get(10, TimeUnit.SECONDS));
 					list.addAll(relatedScriptFuture.get(10, TimeUnit.SECONDS));
 				}
+				if(this.ppForm != null){
+					list.add(this.ppForm.getId() + this.ppForm.getUpdateTime().getTime());
+				}
 				list = list.stream().sorted().collect(Collectors.toList());
 				CRC32 crc = new CRC32();
 				crc.update(StringUtils.join(list, "#").getBytes());
@@ -91,8 +100,8 @@ class V2LookupDoc extends BaseAction {
 	private void getDocForm(String docId) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			Document document = emc.fetch(docId, Document.class, ListTools.toList(JpaObject.id_FIELDNAME,
-					Document.form_FIELDNAME, Document.readFormId_FIELDNAME, Document.categoryId_FIELDNAME));
+			Document document = emc.fetch(docId, Document.class, ListTools.toList(JpaObject.id_FIELDNAME, Document.form_FIELDNAME,
+					Document.readFormId_FIELDNAME, Document.categoryId_FIELDNAME, Document.ppFormId_FIELDNAME));
 			if (null != document) {
 				String formId = document.getForm();
 				String readFormId = document.getReadFormId();
@@ -119,6 +128,10 @@ class V2LookupDoc extends BaseAction {
 						readFormId = categoryInfo.getReadFormId();
 						this.readForm = business.getFormFactory().pick(readFormId);
 					}
+				}
+				if(StringUtils.isNotBlank(document.getPpFormId())){
+					this.ppForm = business.process().form().pick(document.getPpFormId());
+					LOGGER.info("通过流程ID：{}获取表单：{}", this.ppForm == null? "" : this.ppForm.getName());
 				}
 			}
 		}
@@ -168,6 +181,8 @@ class V2LookupDoc extends BaseAction {
 
 		private String readFormId;
 
+		private String ppFormId;
+
 		private String cacheTag;
 
 		public String getFormId() {
@@ -194,6 +209,13 @@ class V2LookupDoc extends BaseAction {
 			this.cacheTag = cacheTag;
 		}
 
+		public String getPpFormId() {
+			return ppFormId;
+		}
+
+		public void setPpFormId(String ppFormId) {
+			this.ppFormId = ppFormId;
+		}
 	}
 
 }

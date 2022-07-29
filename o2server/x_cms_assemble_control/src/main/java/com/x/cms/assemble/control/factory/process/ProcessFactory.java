@@ -18,4 +18,13 @@ public class ProcessFactory extends AbstractFactory {
 		return script;
 	}
 
+	private FormFactory form;
+
+	public FormFactory form() throws Exception {
+		if (null == this.form) {
+			this.form = new FormFactory(this.business());
+		}
+		return form;
+	}
+
 }

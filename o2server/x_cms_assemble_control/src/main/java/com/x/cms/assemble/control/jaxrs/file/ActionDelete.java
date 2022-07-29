@@ -26,7 +26,7 @@ class ActionDelete extends BaseAction {
 			if (null == application) {
 				throw new ExceptionEntityNotExist(file.getAppId(), AppInfo.class);
 			}
-			if (!business.editable(effectivePerson, application)) {
+			if (!business.isAppInfoManager(effectivePerson, application)) {
 				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 			}
 			emc.beginTransaction(File.class);

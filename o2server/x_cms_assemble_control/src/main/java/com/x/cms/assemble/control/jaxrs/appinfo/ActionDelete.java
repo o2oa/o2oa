@@ -35,13 +35,14 @@ public class ActionDelete extends BaseAction {
 		Boolean check = true;
 
 		Business business = new Business(null);
-		if (!business.isManager( effectivePerson)) {
-			throw new ExceptionAccessDenied(effectivePerson);
-		}
 
 		AppInfo appInfo = appInfoServiceAdv.get( id );
 		if( appInfo == null ){
 			throw new ExceptionAppInfoNotExists( id );
+		}
+
+		if (!business.isAppInfoManager(effectivePerson, appInfo)) {
+			throw new ExceptionAccessDenied(effectivePerson);
 		}
 
 		Long count = 0L;
