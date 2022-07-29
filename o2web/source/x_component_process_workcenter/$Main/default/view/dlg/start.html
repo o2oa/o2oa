@@ -11,6 +11,9 @@
                     $.data.app.forEach(function(app){
                         count+=app.processList.length;
                     });
+                    $.data.column.forEach(function(column){
+                        count+=column.wrapOutCategoryList.length;
+                    });
                     return count;
                 })() }})</div>
             <div clasS="st_search">
@@ -24,6 +27,14 @@
                         <div class="st_appItemText" title="{{$.name}}">{{$.name}}</div>
                         <div class="st_appItemCount">{{$.processList.length}}</div>
                     </div>
+                {{end each}}
+
+                {{each $.data.column}}
+                <div class="st_appListItem" data-o2-events="mouseover:startAppItemOver;mouseout:startAppItemOut;click:startAppItemClick;">
+                    <div class="st_appItemIcon" data-o2-events="o2load:loadColumnItemIcon:{{$.id}};click:clickitem"></div>
+                    <div class="st_appItemText" title="{{$.name}}">{{$.appName}}</div>
+                    <div class="st_appItemCount">{{$.wrapOutCategoryList.length}}</div>
+                </div>
                 {{end each}}
             </div>
 

@@ -49,4 +49,25 @@
             </div>
         </div>
     {{end each}}
+
+    {{each $.data.column}}
+    <div class="st_processListApp">
+        {{if ($.id)}}
+        <div class="st_processListAppTitle">
+            <div class="st_processListAppIcon" data-o2-events="o2load:loadColumnItemIcon:{{$.id}}"></div>
+            <div class="st_processListAppText" title="{{$.appName}}">{{$.appName}}</div>
+        </div>
+        {{end if}}
+        <div class="st_processListAppContent">
+            {{each $.wrapOutCategoryList}}
+            <div class="st_processItemArea">
+                <div class="st_processItem"
+                     data-o2-events="mouseover:startProcessItemOver;mouseout:startProcessItemOut; mousedown:startProcessItemDown;mouseup:startProcessItemUp;click:startCategoryItemClick;">
+                    {{$.categoryName}}
+                </div>
+            </div>
+            {{end each}}
+        </div>
+    </div>
+    {{end each}}
 </div>
