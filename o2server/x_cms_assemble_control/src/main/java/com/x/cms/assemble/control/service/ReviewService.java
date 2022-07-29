@@ -195,13 +195,13 @@ public class ReviewService {
 				if( !documentHasPermissionControl ) {//如果文档没有权限控制，则添加分类的权限就可以了
 					logger.debug("栏目没有阅读权限限制，分类有阅读权限限制，文档没有阅读权限限制。文档可见范围以分类权限为主");
 					//栏目没有权限限制，分类有权限限制，文档没有权限限制，以分析权限为主
-					addCategoryAllPermission( permissionObjs, categoryInfo );
+					addCategoryAllPermission( permissionObjs, document, categoryInfo, appInfo );
 				}else {
 					logger.debug("栏目没有阅读权限限制，分类有阅读权限限制，文档有阅读权限限制。文档可见范围以文档权限为主，交分类可见范围");
 					//栏目没有权限限制，分类有权限限制，文档有权限限制，以文档权限为主
 					addDocumentAllPermission( permissionObjs, document, appInfo, categoryInfo);
 					//因为分类有权限限制，所以将分类所有权限与文档权限取交集
-					permissionObjs.retainAll( addCategoryAllPermission( new ArrayList<>(), categoryInfo ) );
+					permissionObjs.retainAll( addCategoryAllPermission( new ArrayList<>(), document, categoryInfo, appInfo) );
 				}
 			}
 		}else {//栏目有权限
@@ -209,30 +209,29 @@ public class ReviewService {
 				if( !documentHasPermissionControl ) {//文档没有权限
 					logger.debug("栏目有阅读权限限制，分类没有阅读权限限制，文档没有阅读权限限制。文档可见范围以栏目的权限为主");
 					//栏目有权限限制，分类没有权限限制，文档没有权限限制，以栏目的权限为主
-					addAppInfoAllPermission( permissionObjs, appInfo );
+					addAppInfoAllPermission( permissionObjs, document, categoryInfo, appInfo );
 				}else {
 					logger.debug("栏目有阅读权限限制，分类没有阅读权限限制，文档有阅读权限限制。文档可见范围以文档的权限为主，交栏目可见范围");
 					//栏目有权限限制，分类没有权限限制，文档有权限限制，以文档的权限为主
 					addDocumentAllPermission( permissionObjs, document, appInfo, categoryInfo);
 					//因为栏目有权限限制，所以将栏目所有权限与文档权限取交集
-					permissionObjs.retainAll( addAppInfoAllPermission( new ArrayList<>(), appInfo ) );
+					permissionObjs.retainAll( addAppInfoAllPermission( new ArrayList<>(), document, categoryInfo, appInfo ) );
 				}
 			}else {
 				if( !documentHasPermissionControl ) {//如果文档没有权限控制，则添加分类的权限就可以了
 					logger.debug("栏目有阅读权限限制，分类有阅读权限限制，文档没有阅读权限限制。文档可见范围以分类权限为主，交栏目可见范围");
 					//栏目有权限限制，分类有权限限制，文档没有权限限制，以分类权限为主
-					addCategoryAllPermission( permissionObjs, categoryInfo );
+					addCategoryAllPermission( permissionObjs, document, categoryInfo, appInfo);
 					//因为栏目有权限限制，所以将栏目所有权限与文档权限取交集
-					permissionObjs.retainAll( addAppInfoAllPermission( new ArrayList<>(), appInfo ) );
 				}else {
 					logger.debug("栏目有阅读权限限制，分类有阅读权限限制，文档有阅读权限限制。文档可见范围以文档权限为主，交分类和栏目可见范围");
 					//栏目有权限限制，分类有权限限制，文档有权限限制，以文档权限为主
 					addDocumentAllPermission( permissionObjs, document, appInfo, categoryInfo);
 					//因为分类有权限限制，所以将分类所有权限与文档权限取交集
-					permissionObjs.retainAll( addCategoryAllPermission( new ArrayList<>(), categoryInfo ) );
+					permissionObjs.retainAll( addCategoryAllPermission( new ArrayList<>(), document, categoryInfo, appInfo) );
 					//因为栏目有权限限制，所以将栏目所有权限与文档权限取交集
-					permissionObjs.retainAll( addAppInfoAllPermission( new ArrayList<>(), appInfo ) );
 				}
+				permissionObjs.retainAll( addAppInfoAllPermission( new ArrayList<>(), document, categoryInfo, appInfo ) );
 			}
 		}
 		if( permissionObjs.contains("*")) {
@@ -326,15 +325,24 @@ public class ReviewService {
 	 * @return
 	 * @throws Exception
 	 */
-	private List<String> addAppInfoAllPermission(List<String> permissionObjs, AppInfo appInfo ) throws Exception {
+	private List<String> addAppInfoAllPermission(List<String> permissionObjs, Document document, CategoryInfo categoryInfo, AppInfo appInfo ) throws Exception {
 		if( permissionObjs == null ) {
 			permissionObjs = new ArrayList<>();
 		}
 		if( appInfo == null ) {
 			return permissionObjs;
 		}
-		if( permissionObjs.contains( appInfo.getCreatorPerson() )) {
-			permissionObjs.add( appInfo.getCreatorPerson() );
+		if( ListTools.isNotEmpty( document.getAuthorPersonList() ) ) {
+			addPermissionObj( permissionObjs, document.getAuthorPersonList() );
+		}
+		if( ListTools.isNotEmpty( document.getAuthorUnitList() ) ) {
+			addPermissionObj( permissionObjs, document.getAuthorUnitList() );
+		}
+		if( ListTools.isNotEmpty( document.getAuthorGroupList() ) ) {
+			addPermissionObj( permissionObjs, document.getAuthorUnitList() );
+		}
+		if( ListTools.isNotEmpty( document.getManagerList())) {
+			addPermissionObj( permissionObjs, document.getManagerList() );
 		}
 		if( ListTools.isNotEmpty( appInfo.getViewablePersonList())) {
 			permissionObjs = addPermissionObj( permissionObjs, appInfo.getViewablePersonList() );
@@ -345,14 +353,14 @@ public class ReviewService {
 		if( ListTools.isNotEmpty( appInfo.getViewableGroupList())) {
 			permissionObjs = addPermissionObj( permissionObjs, appInfo.getViewableGroupList() );
 		}
-		if( ListTools.isNotEmpty( appInfo.getPublishablePersonList())) {
-			permissionObjs = addPermissionObj( permissionObjs, appInfo.getPublishablePersonList() );
+		if( ListTools.isNotEmpty( categoryInfo.getManageablePersonList())) {
+			permissionObjs = addPermissionObj( permissionObjs, categoryInfo.getManageablePersonList() );
 		}
-		if( ListTools.isNotEmpty( appInfo.getPublishableUnitList())) {
-			permissionObjs = addPermissionObj( permissionObjs, appInfo.getPublishableUnitList() );
+		if( ListTools.isNotEmpty( categoryInfo.getManageableUnitList())) {
+			permissionObjs = addPermissionObj( permissionObjs, categoryInfo.getManageableUnitList() );
 		}
-		if( ListTools.isNotEmpty( appInfo.getPublishableGroupList())) {
-			permissionObjs = addPermissionObj( permissionObjs, appInfo.getPublishableGroupList() );
+		if( ListTools.isNotEmpty( categoryInfo.getManageableGroupList())) {
+			permissionObjs = addPermissionObj( permissionObjs, categoryInfo.getManageableGroupList() );
 		}
 		if( ListTools.isNotEmpty( appInfo.getManageablePersonList())) {
 			permissionObjs = addPermissionObj( permissionObjs, appInfo.getManageablePersonList() );
@@ -373,15 +381,24 @@ public class ReviewService {
 	 * @return
 	 * @throws Exception
 	 */
-	private List<String> addCategoryAllPermission(List<String> permissionObjs, CategoryInfo categoryInfo) throws Exception {
+	private List<String> addCategoryAllPermission(List<String> permissionObjs, Document document, CategoryInfo categoryInfo, AppInfo appInfo) throws Exception {
 		if( permissionObjs == null ) {
 			permissionObjs = new ArrayList<>();
 		}
 		if( categoryInfo == null ) {
 			return permissionObjs;
 		}
-		if( permissionObjs.contains( categoryInfo.getCreatorPerson() )) {
-			permissionObjs.add( categoryInfo.getCreatorPerson() );
+		if( ListTools.isNotEmpty( document.getAuthorPersonList() ) ) {
+			addPermissionObj( permissionObjs, document.getAuthorPersonList() );
+		}
+		if( ListTools.isNotEmpty( document.getAuthorUnitList() ) ) {
+			addPermissionObj( permissionObjs, document.getAuthorUnitList() );
+		}
+		if( ListTools.isNotEmpty( document.getAuthorGroupList() ) ) {
+			addPermissionObj( permissionObjs, document.getAuthorUnitList() );
+		}
+		if( ListTools.isNotEmpty( document.getManagerList())) {
+			addPermissionObj( permissionObjs, document.getManagerList() );
 		}
 		if( ListTools.isNotEmpty( categoryInfo.getViewablePersonList())) {
 			permissionObjs = addPermissionObj( permissionObjs, categoryInfo.getViewablePersonList() );
@@ -392,15 +409,6 @@ public class ReviewService {
 		if( ListTools.isNotEmpty( categoryInfo.getViewableGroupList())) {
 			permissionObjs = addPermissionObj( permissionObjs, categoryInfo.getViewableGroupList() );
 		}
-		if( ListTools.isNotEmpty( categoryInfo.getPublishablePersonList())) {
-			permissionObjs = addPermissionObj( permissionObjs, categoryInfo.getPublishablePersonList() );
-		}
-		if( ListTools.isNotEmpty( categoryInfo.getPublishableUnitList())) {
-			permissionObjs = addPermissionObj( permissionObjs, categoryInfo.getPublishableUnitList() );
-		}
-		if( ListTools.isNotEmpty( categoryInfo.getPublishableGroupList())) {
-			permissionObjs = addPermissionObj( permissionObjs, categoryInfo.getPublishableGroupList() );
-		}
 		if( ListTools.isNotEmpty( categoryInfo.getManageablePersonList())) {
 			permissionObjs = addPermissionObj( permissionObjs, categoryInfo.getManageablePersonList() );
 		}
@@ -409,6 +417,15 @@ public class ReviewService {
 		}
 		if( ListTools.isNotEmpty( categoryInfo.getManageableGroupList())) {
 			permissionObjs = addPermissionObj( permissionObjs, categoryInfo.getManageableGroupList() );
+		}
+		if( ListTools.isNotEmpty( appInfo.getManageablePersonList())) {
+			permissionObjs = addPermissionObj( permissionObjs, appInfo.getManageablePersonList() );
+		}
+		if( ListTools.isNotEmpty( appInfo.getManageableUnitList())) {
+			permissionObjs = addPermissionObj( permissionObjs, appInfo.getManageableUnitList() );
+		}
+		if( ListTools.isNotEmpty( appInfo.getManageableGroupList())) {
+			permissionObjs = addPermissionObj( permissionObjs, appInfo.getManageableGroupList() );
 		}
 		return permissionObjs;
 	}
