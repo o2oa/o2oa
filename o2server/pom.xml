@@ -1106,7 +1106,7 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	<repositories>
+	<!--repositories>
 		<repository>
 			<id>nexus-o2oa</id>
 			<name>nexus-o2oa</name>
@@ -1124,5 +1124,5 @@
 			<id>o2oa-release</id>
 			<url>http://maven.o2oa.net/repository/o2oa-release/</url>
 		</repository>
-	</distributionManagement>
+	</distributionManagement-->
 </project>

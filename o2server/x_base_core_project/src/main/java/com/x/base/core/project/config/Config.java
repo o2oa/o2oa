@@ -131,6 +131,7 @@ public class Config {
 	public static final String DIR_JVM = "jvm";
 	public static final String DIR_LOCAL = "local";
 	public static final String DIR_LOCAL_BACKUP = "local/backup";
+	public static final String DIR_LOCAL_REPOSITORY = "local/repository";
 	public static final String DIR_LOCAL_UPDATE = "local/update";
 	public static final String DIR_LOCAL_TEMP = "local/temp";
 	public static final String DIR_LOCAL_TEMP_CLASSES = "local/temp/classes";
@@ -312,7 +313,7 @@ public class Config {
 		return SystemUtils.IS_OS_WINDOWS ? dir.resolve("bin/jmap.exe") : dir.resolve("bin/jmap");
 	}
 
-	public static File dir_local() throws Exception {
+	public static File dir_local() throws IOException, URISyntaxException {
 		return new File(base(), DIR_LOCAL);
 	}
 
@@ -508,6 +509,14 @@ public class Config {
 
 	public static Path path_servers_webServer(boolean force) throws Exception {
 		Path path = Paths.get(base(), DIR_SERVERS_WEBSERVER);
+		if (!Files.exists(path) && force) {
+			Files.createDirectories(path);
+		}
+		return path;
+	}
+
+	public static Path pathLocalRepository(boolean force) throws IOException, URISyntaxException {
+		Path path = Paths.get(base(), DIR_LOCAL_REPOSITORY);
 		if (!Files.exists(path) && force) {
 			Files.createDirectories(path);
 		}
