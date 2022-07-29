@@ -119,24 +119,23 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		if (!icon) {
 			return this.action.ApplicationAction.getIcon(application).then(function(json){
 				if (json.data){
-					debugger;
 					if (!this.appIcons) this.appIcons = {};
 					this.appIcons[application] = json.data;
 					return json.data;
 				}
-				return {
-					"icon": "iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAEgElEQVR4Xu1aPXMTSRB9vUaGQqs6iCgi4Bfgq7I2lqWrSwgQMQHyPzAJIeguvOT4BxbBxYjgkquTrFiiCvkXYCKKCFMSFEjs9tWsrEKWvTtfuyvXrTbd6ZnuN69fz842IecP5Tx+rAFYMyDnCKxTYBUE4MrWta9UuLu49hWeHlJveJy1P6kzQAT7eWPzPgN1MFeI6FpckMx8DKIeAe2iP3mVNiipADALuvAIQAOgLbtd5SGAVtGfvkgDjMQB+Fz1ngXgPdlO64IimOGAnhe7/d90bePGJwbAuOY9AqMJwu0kHTwzF+MIhKbb6b9IYh1rAATdxxub+yRyPMOHgbbrT3Zt08IKgHGlvIUN7NvnuSlyPISPXbc3EDph9BgDMPplu4KAXiad67pRhFXD4Qelf1/3dG3FeCMARPDEzoHJgmnZMAU7JiBoAyBozw4OVr3zy0AKJlCAHd100ALgpL4frC7nZfzhYdGf7ugIoxYAo5r3Mmu1l4V8hglAu9TpP1C1UwZgXC03QLSvOvFKxzHvut1BS8UHDQC8t6kfclQ8VhnDOHK7/TsqQ5UAGFW9JhGeqUy4PIZu3AR/eG9iChtbcPDY7b5+LltYCkB40nMKb01U/9Kv93D5yVN8++N3fP/nb5kvp97b2IqJRFVwg+kdmSBKARhXt/dAzp9a3gOYBzC30wHBxvaUnwoskANQK7/RLXvLAeiAYGN7dpN46HYGP8dtXiwAJ5cZH3V2X+Tt1b/akSZxTIgKfj7Zl4d1bT0p+pPrcWkQC4Bp6ZMFch4IJjZKGyMpibEAjGpem4D7SgstDdIJSGesri8MvCp1+pGf6vEAVMsfTdR/7qRKYGKsqBRRj454njeHqAal7uB61PzxKVDzWBfx5fEyEOLmtw1+Prfb6UfGGfnCRACjgjEBIanghU9GACT9za8DQpLBh4eimLuCSAYkDYBwRAWEpINfA3BRGKCy+zonRh1xNkqB3IugQHic5zIoABjVyscE+kmHbotjZbQXgpf6QQj8qdQZRP6QXR+F43Y39x9DJkL4v/ocDoWw6g1BONXNIdMEm0sNG9szfjEO3W4/tj9BfiOU9yux2e/vwpFJNbC52LSxDY+/4E+uP71tfSkalsM8X4vP82pc9URnxi1Z/l+I94x3brev1Kki1YAfAOT819jsZGh+R5gVM2R3gMt+KDMgFBbR/uZs9nTLYlbBg3FYDCYVmfAt+qMFQHguEA0SG+iZVIU0gRCqTz4qqTZIzANI47bIFpzMWmQWQQBTe9VMEDsP4rpJf5CIRTsFFncqbJNzqLUyTWAcIuCGLu2tNGCZqieNki3TP0im1Bdq7/qTho7gnbeWFQNOsUG00IBEq2y6hyXGO4Cbqi0wMoATA+DHgWl7j4maSWtDqPIsApd3fciCTjQFzltsdl641ACchrU+iDxH0CoG31u2dE81BaJQn4FRqDNRXRylZMwIVR3UI+Z2MZi20wg6dQaoUDDsNV54TMuYylpxYxLXAFuHsrZfA5A14hdtvTUDLtqOZO1P7hnwH8CljF98DV13AAAAAElFTkSuQmCC",
-					"iconHue": "#4e82bd"
-				};
+				return this.getDefaultIcon();
 			}.bind(this), function(){
-				return {
-					"icon": "iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAEgElEQVR4Xu1aPXMTSRB9vUaGQqs6iCgi4Bfgq7I2lqWrSwgQMQHyPzAJIeguvOT4BxbBxYjgkquTrFiiCvkXYCKKCFMSFEjs9tWsrEKWvTtfuyvXrTbd6ZnuN69fz842IecP5Tx+rAFYMyDnCKxTYBUE4MrWta9UuLu49hWeHlJveJy1P6kzQAT7eWPzPgN1MFeI6FpckMx8DKIeAe2iP3mVNiipADALuvAIQAOgLbtd5SGAVtGfvkgDjMQB+Fz1ngXgPdlO64IimOGAnhe7/d90bePGJwbAuOY9AqMJwu0kHTwzF+MIhKbb6b9IYh1rAATdxxub+yRyPMOHgbbrT3Zt08IKgHGlvIUN7NvnuSlyPISPXbc3EDph9BgDMPplu4KAXiad67pRhFXD4Qelf1/3dG3FeCMARPDEzoHJgmnZMAU7JiBoAyBozw4OVr3zy0AKJlCAHd100ALgpL4frC7nZfzhYdGf7ugIoxYAo5r3Mmu1l4V8hglAu9TpP1C1UwZgXC03QLSvOvFKxzHvut1BS8UHDQC8t6kfclQ8VhnDOHK7/TsqQ5UAGFW9JhGeqUy4PIZu3AR/eG9iChtbcPDY7b5+LltYCkB40nMKb01U/9Kv93D5yVN8++N3fP/nb5kvp97b2IqJRFVwg+kdmSBKARhXt/dAzp9a3gOYBzC30wHBxvaUnwoskANQK7/RLXvLAeiAYGN7dpN46HYGP8dtXiwAJ5cZH3V2X+Tt1b/akSZxTIgKfj7Zl4d1bT0p+pPrcWkQC4Bp6ZMFch4IJjZKGyMpibEAjGpem4D7SgstDdIJSGesri8MvCp1+pGf6vEAVMsfTdR/7qRKYGKsqBRRj454njeHqAal7uB61PzxKVDzWBfx5fEyEOLmtw1+Prfb6UfGGfnCRACjgjEBIanghU9GACT9za8DQpLBh4eimLuCSAYkDYBwRAWEpINfA3BRGKCy+zonRh1xNkqB3IugQHic5zIoABjVyscE+kmHbotjZbQXgpf6QQj8qdQZRP6QXR+F43Y39x9DJkL4v/ocDoWw6g1BONXNIdMEm0sNG9szfjEO3W4/tj9BfiOU9yux2e/vwpFJNbC52LSxDY+/4E+uP71tfSkalsM8X4vP82pc9URnxi1Z/l+I94x3brev1Kki1YAfAOT819jsZGh+R5gVM2R3gMt+KDMgFBbR/uZs9nTLYlbBg3FYDCYVmfAt+qMFQHguEA0SG+iZVIU0gRCqTz4qqTZIzANI47bIFpzMWmQWQQBTe9VMEDsP4rpJf5CIRTsFFncqbJNzqLUyTWAcIuCGLu2tNGCZqieNki3TP0im1Bdq7/qTho7gnbeWFQNOsUG00IBEq2y6hyXGO4Cbqi0wMoATA+DHgWl7j4maSWtDqPIsApd3fciCTjQFzltsdl641ACchrU+iDxH0CoG31u2dE81BaJQn4FRqDNRXRylZMwIVR3UI+Z2MZi20wg6dQaoUDDsNV54TMuYylpxYxLXAFuHsrZfA5A14hdtvTUDLtqOZO1P7hnwH8CljF98DV13AAAAAElFTkSuQmCC",
-					"iconHue": "#4e82bd"
-				};
+				return this.getDefaultIcon();
 			});
 		}else{
 			return icon;
 		}
+	},
+	getDefaultIcon: function(){
+		return {
+			"icon": "iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAEgElEQVR4Xu1aPXMTSRB9vUaGQqs6iCgi4Bfgq7I2lqWrSwgQMQHyPzAJIeguvOT4BxbBxYjgkquTrFiiCvkXYCKKCFMSFEjs9tWsrEKWvTtfuyvXrTbd6ZnuN69fz842IecP5Tx+rAFYMyDnCKxTYBUE4MrWta9UuLu49hWeHlJveJy1P6kzQAT7eWPzPgN1MFeI6FpckMx8DKIeAe2iP3mVNiipADALuvAIQAOgLbtd5SGAVtGfvkgDjMQB+Fz1ngXgPdlO64IimOGAnhe7/d90bePGJwbAuOY9AqMJwu0kHTwzF+MIhKbb6b9IYh1rAATdxxub+yRyPMOHgbbrT3Zt08IKgHGlvIUN7NvnuSlyPISPXbc3EDph9BgDMPplu4KAXiad67pRhFXD4Qelf1/3dG3FeCMARPDEzoHJgmnZMAU7JiBoAyBozw4OVr3zy0AKJlCAHd100ALgpL4frC7nZfzhYdGf7ugIoxYAo5r3Mmu1l4V8hglAu9TpP1C1UwZgXC03QLSvOvFKxzHvut1BS8UHDQC8t6kfclQ8VhnDOHK7/TsqQ5UAGFW9JhGeqUy4PIZu3AR/eG9iChtbcPDY7b5+LltYCkB40nMKb01U/9Kv93D5yVN8++N3fP/nb5kvp97b2IqJRFVwg+kdmSBKARhXt/dAzp9a3gOYBzC30wHBxvaUnwoskANQK7/RLXvLAeiAYGN7dpN46HYGP8dtXiwAJ5cZH3V2X+Tt1b/akSZxTIgKfj7Zl4d1bT0p+pPrcWkQC4Bp6ZMFch4IJjZKGyMpibEAjGpem4D7SgstDdIJSGesri8MvCp1+pGf6vEAVMsfTdR/7qRKYGKsqBRRj454njeHqAal7uB61PzxKVDzWBfx5fEyEOLmtw1+Prfb6UfGGfnCRACjgjEBIanghU9GACT9za8DQpLBh4eimLuCSAYkDYBwRAWEpINfA3BRGKCy+zonRh1xNkqB3IugQHic5zIoABjVyscE+kmHbotjZbQXgpf6QQj8qdQZRP6QXR+F43Y39x9DJkL4v/ocDoWw6g1BONXNIdMEm0sNG9szfjEO3W4/tj9BfiOU9yux2e/vwpFJNbC52LSxDY+/4E+uP71tfSkalsM8X4vP82pc9URnxi1Z/l+I94x3brev1Kki1YAfAOT819jsZGh+R5gVM2R3gMt+KDMgFBbR/uZs9nTLYlbBg3FYDCYVmfAt+qMFQHguEA0SG+iZVIU0gRCqTz4qqTZIzANI47bIFpzMWmQWQQBTe9VMEDsP4rpJf5CIRTsFFncqbJNzqLUyTWAcIuCGLu2tNGCZqieNki3TP0im1Bdq7/qTho7gnbeWFQNOsUG00IBEq2y6hyXGO4Cbqi0wMoATA+DHgWl7j4maSWtDqPIsApd3fciCTjQFzltsdl641ACchrU+iDxH0CoG31u2dE81BaJQn4FRqDNRXRylZMwIVR3UI+Z2MZi20wg6dQaoUDDsNV54TMuYylpxYxLXAFuHsrZfA5A14hdtvTUDLtqOZO1P7hnwH8CljF98DV13AAAAAElFTkSuQmCC",
+			"iconHue": "#4e82bd"
+		};
 	},
 	firstPage: function(){
 		if (this.currentList) this.currentList.firstPage();
@@ -275,7 +274,8 @@ MWF.xApplication.process.workcenter.Main = new Class({
 				resolve(data);
 			});
 		});
-		return Promise.all([p1, p2]);
+		var p3 = o2.Actions.load("x_cms_assemble_control").AppInfoAction.listPublishWithProcess().then(function(json){return json.data});
+		return Promise.all([p1, p2, p3]);
 	},
 	closeStartProcess: function(e){
 		e.target.getParent(".st_area").destroy();
@@ -285,7 +285,7 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		var startContent = new Element("div.st_area");
 		var url = this.path+this.options.style+"/view/dlg/start.html";
 		this.getStartData().then(function(data){
-			startContent.loadHtml(url, {"bind": {"lp": this.lp, "data": {"app": data[0], "topApp": data[1]}}, "module": this});
+			startContent.loadHtml(url, {"bind": {"lp": this.lp, "data": {"app": data[0], "topApp": data[1], "column": data[2]}}, "module": this});
 		}.bind(this));
 
 		this.appNode.hide();
@@ -314,7 +314,14 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		while (node && !node.hasClass("st_appListItem")){ node = node.getParent();}
 		node.addClass("mainColor_bg_opacity");
 
-		var appData = (data.app) ? data : {"app": [data]};
+		var appData;
+		if(data.app){
+			appData = data;
+		}else if( data.appName ) {
+			appData = {"column": [data]}
+		}else{
+			appData = {"app": [data]}
+		}
 		this.reloadStartProcessList(node, appData);
 	},
 	clearStartAppSelected: function(e){
@@ -339,14 +346,73 @@ MWF.xApplication.process.workcenter.Main = new Class({
 						}
 					});
 				});
+
+				var categoryList = [];
+				data.column.forEach(function(column){
+					column.wrapOutCategoryList.forEach(function(category){
+						if (category.categoryName.indexOf(key)!==-1){
+							categoryList.push(category);
+						}
+					});
+				});
+
 				this.clearStartAppSelected(e);
 				e.target.getParent(".st_search").addClass("mainColor_bg_opacity");
-				this.reloadStartProcessList(e.target, {"app": [{"name": name, processList: processList}]});
+				this.reloadStartProcessList(e.target, {
+					app: [{ name: name, processList: processList }],
+					column: [{ wrapOutCategoryList: categoryList }]
+				});
 			}else{
 				this.clearStartProcessSearch(e);
 			}
 		}
 	},
+
+	loadColumnItemIcon: function(columnId, e, data){
+		debugger;
+		var node = e.currentTarget;
+		if (data.appIcon){
+			node.setStyle("background-image", "url(data:image/png;base64,"+data.appIcon+")");
+		}else{
+			node.setStyle("background-image", "url("+"../x_component_process_ApplicationExplorer/$Main/default/icon/application.png)");
+		}
+	},
+	startCategoryItemClick: function(e, data){
+		if( !data.categoryId ){
+			data.categoryId = data.id;
+			data.id = data.workflowFlag;
+			if( !data.name )data.name = data.categoryName;
+		}
+		MWF.xDesktop.requireApp("process.TaskCenter", "ProcessStarter", function(){
+			var starter = new MWF.xApplication.process.TaskCenter.ProcessStarter(data, this, {
+				"workData": {
+					"cmsDocument" : {
+						"isNewDocument" : true,
+						"title": this.lp.unnamed,
+						// "creatorIdentity": data.identity,
+						// "identity": data.identity,
+						"appId" : data.appId,
+						"categoryId" : data.categoryId,
+						"docStatus" : "draft",
+						"categoryName" : data.categoryName,
+						"categoryAlias" : data.categoryAlias,
+						"createTime": new Date().format("db"),
+						"attachmentList" : []
+					}
+				},
+				"onBeforeStarted": function(data){
+					data.data.cmsDocument.creatorIdentity = data.identity;
+					data.data.cmsDocument.identity = data.identity;
+				},
+				"onStarted": function(workdata, title, processName){
+					this.afterStartProcess(workdata, title, processName, data, true);
+					this.closeStartProcess(e);
+				}.bind(this)
+			});
+			starter.load();
+		}.bind(this));
+	},
+
 	clearStartProcessSearch: function(e){
 		var pnode = e.target.getParent(".st_processContent");
 		pnode.getElement(".st_all").click();
@@ -446,8 +512,8 @@ MWF.xApplication.process.workcenter.Main = new Class({
 			MWF.UD.putData("taskCenter_startTop", json);
 		}.bind(this));
 	},
-	afterStartProcess: function(data, title, processName, processdata){
-		this.recordProcessData(processdata);
+	afterStartProcess: function(data, title, processName, processdata, notRecorded){
+		if( !notRecorded )this.recordProcessData(processdata);
 		if (data.work){
 			this.startProcessDraft(data, title, processName);
 		}else{

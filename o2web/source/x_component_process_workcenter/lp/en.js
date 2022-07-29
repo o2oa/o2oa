@@ -91,5 +91,6 @@ MWF.xApplication.process.workcenter.LP = {
 
 	"batch": "Batch processing",
 	"selectBatch": "Select multiple to-dos of the same link for batch processing",
-	"cannotSelectBatch": "To-dos in different links cannot be batch processed"
+	"cannotSelectBatch": "To-dos in different links cannot be batch processed",
+	"unnamed": "unnamed"
 };

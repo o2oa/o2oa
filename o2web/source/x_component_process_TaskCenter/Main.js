@@ -928,11 +928,44 @@ MWF.xApplication.process.TaskCenter.Application = new Class({
     }
 });
 
+MWF.xApplication.process.TaskCenter.Column = new Class({
+    Extends: MWF.xApplication.process.TaskCenter.Application,
+    load: function(){
+        this.node = new Element("div", {"styles": this.css.applicationNode}).inject(this.container);
+        this.iconAreaNode = new Element("div", {"styles": this.css.applicationIconAreaNode}).inject(this.node);
+        this.iconNode = new Element("img", {"styles": this.css.applicationIconNode}).inject(this.iconAreaNode);
+        if (this.data.appIcon){
+            this.iconNode.set("src", "data:image/png;base64,"+this.data.appIcon+"");
+        }else{
+            this.iconNode.set("src", "../x_component_process_ApplicationExplorer/$Main/default/icon/application.png");
+        }
+
+        this.textNode = new Element("div", {"styles": this.css.applicationTextNode}).inject(this.node);
+        this.textNode.set("text", this.data.appName);
+        this.textNode.set("title", this.data.appName);
+
+        this.childNode = new Element("div", {"styles": this.css.applicationChildNode}).inject(this.processContainer);
+        //this.loadChild();
+        this.node.addEvent("click", function(){
+            this.selected();
+        }.bind(this));
+        this.starter.startApplications.push(this);
+    },
+    loadChild: function(){
+        new Element("div", {"styles": this.css.applicationChildTitleNode, "text": this.app.lp.startProcess}).inject(this.childNode);
+        var childNode = new Element("div", {"styles": this.css.applicationChildChildNode}).inject(this.childNode);
+        this.data.wrapOutCategoryList.each(function(category){
+            new MWF.xApplication.process.TaskCenter.Category(category, this, this.data, childNode);
+        }.bind(this));
+    }
+});
+
 MWF.xApplication.process.TaskCenter.AllApplication = new Class({
     Extends: MWF.xApplication.process.TaskCenter.Application,
-    initialize: function(data, starter){
+    initialize: function(data, starter, columnData){
         this.bgColors = ["#30afdc", "#e9573e", "#8dc153", "#9d4a9c", "#ab8465", "#959801", "#434343", "#ffb400", "#9e7698", "#00a489"];
         this.data = data;
+        this.columnData = columnData;
         this.starter = starter;
         this.app = this.starter.app;
         this.container = this.starter.startProcessApplicationAreaNode;
@@ -986,6 +1019,15 @@ MWF.xApplication.process.TaskCenter.AllApplication = new Class({
                 app.processList.each(function(process){
                     allowProcessIds.push(process.id);
                     new MWF.xApplication.process.TaskCenter.Process(process, this, app, appChildNode);
+                }.bind(this));
+            }.bind(this));
+
+            this.columnData.each(function (column) {
+                new Element("div", {"styles": this.css.applicationChildTitleNode, "text": column.appName}).inject(this.childNode);
+                var appChildNode = new Element("div", {"styles": this.css.applicationChildChildNode}).inject(this.childNode);
+                column.wrapOutCategoryList.each(function(category){
+                    // allowProcessIds.push(process.id);
+                    new MWF.xApplication.process.TaskCenter.Category(category, this, column, appChildNode);
                 }.bind(this));
             }.bind(this));
 
@@ -1211,6 +1253,91 @@ MWF.xApplication.process.TaskCenter.Process = new Class({
     }
 
 });
+
+MWF.xApplication.process.TaskCenter.Category = new Class({
+    Extends: MWF.xApplication.process.TaskCenter.Process,
+    load: function(){
+        this.node = new Element("div.processItem", {"styles": this.css.startProcessNode}).inject(this.container);
+        this.iconNode = new Element("div", {"styles": this.css.processIconNode}).inject(this.node);
+
+        this.iconNode.setStyle("background-image", "url(../x_component_process_ProcessManager/$Explorer/default/processIcon/process.png)");
+
+        this.actionNode = new Element("div", {"styles": this.css.processActionNode, "text": this.app.lp.start}).inject(this.node);
+        this.textNode = new Element("div", {"styles": this.css.processTextNode}).inject(this.node);
+
+        var appName = this.data.appName;
+        this.textNode.set({
+            "text": this.data.categoryName+(appName ? " -- ("+appName+")" : ""),
+            "title": this.data.categoryName+ (appName ? ("-"+ appName) : "")
+        });
+        //var _self = this;
+
+        this.actionNode.addEvents({
+            "mouseover": function(){this.actionNode.setStyles(this.css.processActionNode_over);}.bind(this),
+            "mouseout": function(){this.actionNode.setStyles(this.css.processActionNode);}.bind(this),
+            "click": function(e){
+                this.startProcess(e);
+            }.bind(this)
+        });
+        this.node.addEvents({
+            "mouseover": function(){
+                this.node.setStyles(this.css.startProcessNode_over);
+                this.actionNode.setStyle("display", "block");
+            }.bind(this),
+            "mouseout": function(){
+                this.node.setStyles(this.css.startProcessNode_out);
+                //this.actionNode.setStyle("display", "none");
+            }.bind(this)
+        });
+    },
+    startProcess: function(){
+        this.starter.closeStartProcessArea();
+        var data = this.data;
+		if( !data.categoryId ){
+			data.categoryId = data.id;
+			data.id = data.workflowFlag;
+			if( !data.name )data.name = data.categoryName;
+		}
+        MWF.xDesktop.requireApp("process.TaskCenter", "ProcessStarter", function(){
+            var starter = new MWF.xApplication.process.TaskCenter.ProcessStarter(this.data, this.app, {
+				"workData": {
+					"cmsDocument" : {
+						"isNewDocument" : true,
+						"title": this.app.lp.unnamed,
+						// "creatorIdentity": data.identity,
+						// "identity": data.identity,
+						"appId" : data.appId,
+						"categoryId" : data.categoryId,
+						"docStatus" : "draft",
+						"categoryName" : data.categoryName,
+						"categoryAlias" : data.categoryAlias,
+						"createTime": new Date().format("db"),
+						"attachmentList" : []
+					}
+				},
+				"onBeforeStarted": function(data){
+					data.data.cmsDocument.creatorIdentity = data.identity;
+					data.data.cmsDocument.identity = data.identity;
+				},
+                "onStarted": function(data, title, processName){
+                    this.afterStartProcess(data, title, processName);
+                }.bind(this)
+            });
+            starter.load();
+        }.bind(this));
+    },
+    afterStartProcess: function(data, title, processName){
+        // this.recordProcessData();
+
+        if (data.work){
+            this.startProcessDraft(data, title, processName);
+        }else{
+            this.startProcessInstance(data, title, processName);
+        }
+        this.starter.fireEvent("startProcess");
+    }
+});
+
 MWF.xApplication.process.TaskCenter.Starter = new Class({
     Implements: [Options, Events],
     initialize: function(app, options){
@@ -1341,15 +1468,28 @@ MWF.xApplication.process.TaskCenter.Starter = new Class({
     },
     listApplications: function () {
         this.app.getAction(function () {
-            this.app.action.listApplicationStartable(function (json) {
-                this.appStartableData = json.data;
+            var p1 = this.app.action.listApplicationStartable();
+            var p2 = o2.Actions.load("x_cms_assemble_control").AppInfoAction.listPublishWithProcess();
+
+            Promise.all([p1, p2]).then(function(data){
+                var json_process = data[0],  json_column = data[1];
+
+                this.appStartableData = json_process.data;
+                this.columnStartableData = json_column.data;
+
                 this.startProcessSearchNode.setStyle("display", "block");
-                this.allApplicationStarter = new MWF.xApplication.process.TaskCenter.AllApplication(json.data, this);
+                this.allApplicationStarter = new MWF.xApplication.process.TaskCenter.AllApplication(json_process.data, this, json_column.data);
                 this.allApplicationStarter.selected();
-                json.data.each(function (app) {
+
+                json_process.data.each(function (app) {
                     new MWF.xApplication.process.TaskCenter.Application(app, this);
                 }.bind(this));
+
+                json_column.data.each(function (column) {
+                    new MWF.xApplication.process.TaskCenter.Column(column, this);
+                }.bind(this));
             }.bind(this));
+
         }.bind(this));
     },
     setResizeStartProcessAreaHeight: function () {
