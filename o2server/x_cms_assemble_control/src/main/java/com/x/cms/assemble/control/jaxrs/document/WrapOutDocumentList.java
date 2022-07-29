@@ -97,6 +97,12 @@ public class WrapOutDocumentList extends GsonPropertyObject {
 	@FieldDescribe("业务数据String值04.")
 	private String stringValue04;
 
+	@FieldDescribe("业务数据String值05.")
+	private String stringValue05;
+
+	@FieldDescribe("业务数据String值06.")
+	private String stringValue06;
+
 	@FieldDescribe("业务数据Long值01.")
 	private Long longValue01;
 
@@ -114,6 +120,9 @@ public class WrapOutDocumentList extends GsonPropertyObject {
 
 	@FieldDescribe("业务数据DateTime值02.")
 	private Date dateTimeValue02;
+
+	@FieldDescribe("业务数据DateTime值03.")
+	private Date dateTimeValue03;
 
 	/**
 	 * 只作显示用
@@ -427,5 +436,29 @@ public class WrapOutDocumentList extends GsonPropertyObject {
 
 	public void setDateTimeValue02(Date dateTimeValue02) {
 		this.dateTimeValue02 = dateTimeValue02;
+	}
+
+	public String getStringValue05() {
+		return stringValue05;
+	}
+
+	public void setStringValue05(String stringValue05) {
+		this.stringValue05 = stringValue05;
+	}
+
+	public String getStringValue06() {
+		return stringValue06;
+	}
+
+	public void setStringValue06(String stringValue06) {
+		this.stringValue06 = stringValue06;
+	}
+
+	public Date getDateTimeValue03() {
+		return dateTimeValue03;
+	}
+
+	public void setDateTimeValue03(Date dateTimeValue03) {
+		this.dateTimeValue03 = dateTimeValue03;
 	}
 }

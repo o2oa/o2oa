@@ -186,7 +186,7 @@ public class ProjectionFactory {
 
 	private static void dateTimeValue(Data data, String path, JpaObject jpaObject, String property) throws Exception {
 		Object obj = data.find(path);
-		if ((null != obj) && DateTools.isDateTime(obj.toString())) {
+		if ((null != obj) && DateTools.isDateTimeOrDate(obj.toString())) {
 			PropertyUtils.setProperty(jpaObject, property, DateTools.parse(obj.toString()));
 		} else {
 			PropertyUtils.setProperty(jpaObject, property, null);
