@@ -426,14 +426,15 @@ MWF.xApplication.cms.Document.Main = new Class({
             }
         }
 
+        debugger;
         var formId;
         if( this.readonly === true ){
             formId = this.options.forceFormId || this.options.printFormId  || this.options.readFormId;
             if( formId ){
                 this.useProcessForm = this.options.useProcessForm;
             }
-            if( !formId && this.document.wf_formId ){
-                formId = this.document.wf_formId;
+            if( !formId && this.document.ppFormId ){
+                formId = this.document.ppFormId;
                 this.useProcessForm = true;
             }
             if( !formId && this.document.readFormId ){
@@ -453,8 +454,8 @@ MWF.xApplication.cms.Document.Main = new Class({
             if( formId ){
                 this.useProcessForm = this.options.useProcessForm;
             }
-            if( !formId && this.document.wf_formId ){
-                formId = this.document.wf_formId;
+            if( !formId && this.document.ppFormId ){
+                formId = this.document.ppFormId;
                 this.useProcessForm = true;
             }
             if( !formId && this.document.form ){

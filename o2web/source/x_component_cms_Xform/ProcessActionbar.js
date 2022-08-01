@@ -31,30 +31,30 @@ MWF.xApplication.cms.Xform.ProcessActionbar = MWF.CMSProcessActionbar =  new Cla
                     "id": "action_close",
                     "read": true,
                     "edit" : true
-                },
-                {
-                    "type": "MWFToolBarButton",
-                    "img": "edit.png",
-                    "title": MWF.xApplication.cms.Xform.LP.editTitle,
-                    "action": "editDocument",
-                    "id": "action_edit",
-                    "text": MWF.xApplication.cms.Xform.LP.edit,
-                    "control": "allowEditDocument",
-                    "read": true,
-                    "edit" : false
-                },
-                {
-                    "type": "MWFToolBarButton",
-                    "img": "save.png",
-                    "title": MWF.xApplication.cms.Xform.LP.saveTitle,
-                    "action": "saveDocument",
-                    "text": MWF.xApplication.cms.Xform.LP.save,
-                    "id": "action_saveData",
-                    "control": "allowSave",
-                    "condition": "",
-                    "read": false,
-                    "edit" : true
                 }
+                // {
+                //     "type": "MWFToolBarButton",
+                //     "img": "edit.png",
+                //     "title": MWF.xApplication.cms.Xform.LP.editTitle,
+                //     "action": "editDocument",
+                //     "id": "action_edit",
+                //     "text": MWF.xApplication.cms.Xform.LP.edit,
+                //     "control": "allowEditDocument",
+                //     "read": true,
+                //     "edit" : false
+                // },
+                // {
+                //     "type": "MWFToolBarButton",
+                //     "img": "save.png",
+                //     "title": MWF.xApplication.cms.Xform.LP.saveTitle,
+                //     "action": "saveDocument",
+                //     "text": MWF.xApplication.cms.Xform.LP.save,
+                //     "id": "action_saveData",
+                //     "control": "allowSave",
+                //     "condition": "",
+                //     "read": false,
+                //     "edit" : true
+                // }
             ];
 
             if (!this.json.hideSystemTools){
