@@ -344,7 +344,7 @@ MWF.xApplication.process.FormDesigner.widget.SectionMerger = new Class({
 			'    </table>' +
 			'    <div class="sectionMergeEditScriptArea">' +
 			'        <div class="MWFScriptArea" name="sectionMergeEditScript" title="'+this.lp.sectionMergeEditScript+' (S)"></div>' +
-			'        <div style="padding: 10px;color:#999">返回删除区段后合并的数据</div>' +
+			'        <div style="padding: 10px;color:#999">通过this.data[fieldId]获取字段数据，返回删除区段后合并的数据。</div>' +
 			'    </div>' +
 			'</div>' +
 			'<div class="sectionMergeSortScriptArea">' +
