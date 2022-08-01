@@ -1155,6 +1155,33 @@ public class Business {
 		return false;
 	}
 
+	public boolean editable(EffectivePerson effectivePerson, String job) throws Exception {
+		if (effectivePerson.isManager()) {
+			return true;
+		}
+		if (this.task().countWithPersonWithJob(effectivePerson.getDistinguishedName(), job) > 0) {
+			return true;
+		}
+		String application = null, process = null;
+
+		Work work = this.entityManagerContainer().firstEqual(Work.class, Work.job_FIELDNAME, job);
+		if(work==null){
+			WorkCompleted workCompleted = this.entityManagerContainer().firstEqual(WorkCompleted.class, Work.job_FIELDNAME, job);
+			if(workCompleted!=null){
+				application = work.getApplication();
+				process = work.getProcess();
+			}
+		}else{
+			application = work.getApplication();
+			process = work.getProcess();
+		}
+		if (StringUtils.isNotBlank(application) && BooleanUtils.isTrue(
+				this.canManageApplicationOrProcess(effectivePerson, application, process))) {
+			return true;
+		}
+		return false;
+	}
+
 	public boolean controllerable(EffectivePerson effectivePerson, Application application, Process process,
 			Attachment attachment) throws Exception {
 		if (ListTools.isEmpty(attachment.getControllerIdentityList(), attachment.getControllerUnitList())) {

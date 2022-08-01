@@ -64,6 +64,18 @@ public class ReviewFactory extends AbstractFactory {
 		return em.createQuery(cq).getResultList();
 	}
 
+	public Review getWithPersonAndJob(String person, String job) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(Review.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Review> cq = cb.createQuery(Review.class);
+		Root<Review> root = cq.from(Review.class);
+		Predicate p = cb.equal(root.get(Review_.job), job);
+		p = cb.and(p, cb.equal(root.get(Review_.person), person));
+		cq.select(root).where(p);
+		List<Review> list = em.createQuery(cq).setMaxResults(1).getResultList();
+		return ListTools.isEmpty(list) ? null : list.get(0);
+	}
+
 	public Long countWithPersonWithWork(String person, Work work) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(Review.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
