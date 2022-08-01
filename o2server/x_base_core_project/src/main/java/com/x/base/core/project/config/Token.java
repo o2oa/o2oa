@@ -35,8 +35,6 @@ public class Token extends ConfigObject {
 	public static final String defaultSslKeyStorePassword = "123456";
 	public static final String defaultSslKeyManagerPassword = "123456";
 
-	public static final String DEFAULT_ENCRYPTTYPE = "";
-
 	public static final Boolean DEFAULT_RSAENABLE = false;
 
 	// 此对象临时计算无需存储
@@ -53,7 +51,7 @@ public class Token extends ConfigObject {
 		this.password = "";
 		this.sslKeyStorePassword = defaultSslKeyStorePassword;
 		this.sslKeyManagerPassword = defaultSslKeyManagerPassword;
-		this.encryptType = DEFAULT_ENCRYPTTYPE;
+
 		this.rsaEnable = DEFAULT_RSAENABLE;
 	}
 
@@ -69,9 +67,6 @@ public class Token extends ConfigObject {
 
 	@FieldDescribe("ssl管理密码")
 	private String sslKeyManagerPassword;
-
-	@FieldDescribe("加密方式,支持国密sm4")
-	private String encryptType;
 
 	@FieldDescribe("LDAP认证配置")
 	private LdapAuth ldapAuth;
@@ -90,14 +85,6 @@ public class Token extends ConfigObject {
 
 	public Boolean getRsaEnable() {
 		return null == this.rsaEnable ? DEFAULT_RSAENABLE : this.rsaEnable;
-	}
-
-	public String getEncryptType() {
-		return StringUtils.isEmpty(this.encryptType) ? DEFAULT_ENCRYPTTYPE : this.encryptType;
-	}
-
-	public void setEncryptType(String encryptType) {
-		this.encryptType = encryptType;
 	}
 
 	// 前面的代码是 key+surfix 结果是nullo2platform

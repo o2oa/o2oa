@@ -32,7 +32,7 @@ class ActionLogin extends BaseAction {
 		}
 		HttpToken httpToken = new HttpToken();
 		EffectivePerson ep = new EffectivePerson(Config.token().initialManagerInstance().getName(), TokenType.manager,
-				Config.token().getCipher(), Config.token().getEncryptType());
+				Config.token().getCipher(), Config.person().getEncryptType());
 		httpToken.setToken(request, response, ep);
 		Wo wo = new Wo();
 		Config.token().initialManagerInstance().copyTo(wo, JpaObject.FieldsInvisible);

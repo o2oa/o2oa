@@ -75,7 +75,7 @@ public class EffectivePerson extends GsonPropertyObject {
 	}
 
 	public EffectivePerson(String distinguishedName, TokenType tokenType, String key) throws Exception {
-		this(distinguishedName, tokenType, key, Config.token().getEncryptType());
+		this(distinguishedName, tokenType, key, Config.person().getEncryptType());
 	}
 
 	public EffectivePerson(String distinguishedName, TokenType tokenType, String key, String encryptType)

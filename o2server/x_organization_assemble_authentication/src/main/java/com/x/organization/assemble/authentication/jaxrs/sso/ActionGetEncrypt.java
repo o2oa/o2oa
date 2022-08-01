@@ -38,7 +38,7 @@ class ActionGetEncrypt extends BaseAction {
 			throw new ExceptionClientNotExist(client);
 		}
 		String str = credential + TOKEN_SPLIT + new Date().getTime();
-		String token = Crypto.encrypt(str, key, Config.token().getEncryptType());
+		String token = Crypto.encrypt(str, key, Config.person().getEncryptType());
 		Wo wo = new Wo();
 		wo.setToken(token);
 		result.setData(wo);

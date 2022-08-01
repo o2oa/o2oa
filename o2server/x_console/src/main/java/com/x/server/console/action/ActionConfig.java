@@ -40,7 +40,7 @@ public class ActionConfig extends ActionBase {
 		connection.setUseCaches(false);
 		connection.setRequestProperty("Content-Type", HttpMediaType.APPLICATION_JSON_UTF_8);
 		EffectivePerson effectivePerson = EffectivePerson.cipher(Config.token().getCipher(),
-				Config.token().getEncryptType());
+				Config.person().getEncryptType());
 		connection.setRequestProperty(Config.person().getTokenName(), effectivePerson.getToken());
 		connection.setRequestMethod("GET");
 		connection.setDoOutput(false);

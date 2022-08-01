@@ -29,7 +29,7 @@ class ActionToken extends BaseAction {
 		}
 
 		wo.setValue(Crypto.encrypt(effectivePerson.getDistinguishedName() + SPLIT + (new Date().getTime()),
-				sso.getKey(), Config.token().getEncryptType()));
+				sso.getKey(), Config.person().getEncryptType()));
 		result.setData(wo);
 		return result;
 
