@@ -1,10 +1,5 @@
 package com.x.processplatform.service.processing.jaxrs.data;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -16,7 +11,12 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.service.processing.Business;
+
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 class ActionUpdateWithJob extends BaseAction {
 
@@ -25,16 +25,7 @@ class ActionUpdateWithJob extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String job, JsonElement jsonElement) throws Exception {
 		LOGGER.debug("execute:{}, job:{}.", effectivePerson::getDistinguishedName, () -> job);
 
-		String executorSeed = null;
-
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			List<Work> works = emc.fetchEqual(Work.class, Arrays.asList(Work.job_FIELDNAME), Work.job_FIELDNAME, job);
-			if (!works.isEmpty()) {
-				executorSeed = job;
-			} else {
-				throw new ExceptionJobNotExist(job);
-			}
-		}
+		String executorSeed = job;
 
 		Callable<ActionResult<Wo>> callable = new CallableImpl(job, jsonElement);
 
@@ -64,9 +55,9 @@ class ActionUpdateWithJob extends BaseAction {
 			Wo wo = new Wo();
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
-				List<Work> works = emc.listEqual(Work.class, Work.job_FIELDNAME, job);
 				JsonElement source = getData(business, job);
 				JsonElement merge = XGsonBuilder.merge(jsonElement, source);
+				List<Work> works = emc.listEqual(Work.class, Work.job_FIELDNAME, job);
 				if (!works.isEmpty()) {
 					for (Work work : works) {
 						/* 先更新title和serial,再更新DataItem,因为旧的DataItem中也有title和serial数据. */
@@ -74,6 +65,16 @@ class ActionUpdateWithJob extends BaseAction {
 					}
 					/* updateTitleSerial 和 updateData 方法内进行了提交 */
 					updateData(business, works.get(0), merge);
+				}else {
+					List<WorkCompleted> workCompletedList = emc.listEqual(WorkCompleted.class, Work.job_FIELDNAME, job);
+					if (!workCompletedList.isEmpty()) {
+						for (WorkCompleted work : workCompletedList) {
+							/* 先更新title和serial,再更新DataItem,因为旧的DataItem中也有title和serial数据. */
+							updateTitleSerial(business, work, merge);
+						}
+						/* updateTitleSerial 和 updateData 方法内进行了提交 */
+						updateData(business, workCompletedList.get(0), merge);
+					}
 				}
 				wo.setId(job);
 			}
