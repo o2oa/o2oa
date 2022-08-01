@@ -74,8 +74,8 @@ public class RestfulConsumeQueue extends AbstractQueue<Message> {
 			RestfulConsumer consumer = gson.fromJson(message.getProperties().getConsumerJsonElement(),
 					RestfulConsumer.class);
 			String url = url(message, consumer);
-			HttpConnectionResponse response = client.restful(consumer.getMethod(), url, null, message.getBody(), 5000,
-					5000);
+			HttpConnectionResponse response = client.restful(consumer.getMethod(), url, null, gson.toJson(message),
+					5000, 5000);
 			if (null == response) {
 				throw new ExceptionRestful(message.getTitle(), message.getPerson(), url);
 			}
