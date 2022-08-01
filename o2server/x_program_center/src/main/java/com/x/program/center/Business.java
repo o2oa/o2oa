@@ -7,6 +7,7 @@ import java.net.Socket;
 import java.util.*;
 
 import com.x.base.core.project.tools.DateTools;
+import com.x.program.center.factory.GroupFactory;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -162,6 +163,15 @@ public class Business {
 			this.unit = new UnitFactory(this);
 		}
 		return unit;
+	}
+
+	private GroupFactory group;
+
+	public GroupFactory group() throws Exception {
+		if (null == this.group) {
+			this.group = new GroupFactory(this);
+		}
+		return group;
 	}
 
 	public static class WoValidateCollect extends WrapBoolean {
