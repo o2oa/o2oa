@@ -68,7 +68,7 @@ public class GroupFactory extends AbstractFactory {
 	 * @throws Exception
 	 */
 	public List<Group> listSupDirectWithPersonObject(String personId) throws Exception {
-		List<String> ids = this.listSupDirectWithIdentity(personId);
+		List<String> ids = this.listSupDirectWithPerson(personId);
 		return this.entityManagerContainer().list(Group.class, ids);
 	}
 
