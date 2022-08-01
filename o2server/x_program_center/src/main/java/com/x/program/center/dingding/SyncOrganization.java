@@ -21,6 +21,7 @@ import javax.script.Bindings;
 import javax.script.CompiledScript;
 import javax.script.ScriptContext;
 
+import com.x.organization.core.entity.*;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -39,16 +40,6 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.scripting.JsonScriptingExecutor;
 import com.x.base.core.project.scripting.ScriptingFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.organization.core.entity.Identity;
-import com.x.organization.core.entity.Identity_;
-import com.x.organization.core.entity.Person;
-import com.x.organization.core.entity.PersonAttribute;
-import com.x.organization.core.entity.PersonAttribute_;
-import com.x.organization.core.entity.Person_;
-import com.x.organization.core.entity.Unit;
-import com.x.organization.core.entity.UnitAttribute;
-import com.x.organization.core.entity.UnitDuty;
-import com.x.organization.core.entity.Unit_;
 import com.x.program.center.Business;
 
 public class SyncOrganization {
@@ -220,6 +211,7 @@ public class SyncOrganization {
 		emc.beginTransaction(UnitAttribute.class);
 		emc.beginTransaction(UnitDuty.class);
 		emc.beginTransaction(Identity.class);
+		emc.beginTransaction(Group.class);
 		for (UnitAttribute o : emc.listEqual(UnitAttribute.class, UnitAttribute.unit_FIELDNAME, unit.getId())) {
 			emc.remove(o, CheckRemoveType.all);
 			result.getRemoveUnitAttributeList().add(o.getDistinguishedName());
@@ -231,6 +223,11 @@ public class SyncOrganization {
 		for (Identity o : emc.listEqual(Identity.class, Identity.unit_FIELDNAME, unit.getId())) {
 			emc.remove(o, CheckRemoveType.all);
 			result.getRemoveIdentityList().add(o.getDistinguishedName());
+
+			for(Group group : business.group().listSupDirectWithIdentityObject(o.getId())){
+				group.getIdentityList().remove(o.getId());
+				group.setIdentityList(group.getIdentityList());
+			}
 		}
 		emc.commit();
 
@@ -390,6 +387,13 @@ public class SyncOrganization {
 				person.getId())) {
 			result.getRemovePersonAttributeList().add(o.getDistinguishedName());
 			emc.remove(o, CheckRemoveType.all);
+		}
+		emc.commit();
+
+		emc.beginTransaction(Group.class);
+		for(Group group : business.group().listSupDirectWithPersonObject(person.getId())){
+			group.getPersonList().remove(person.getId());
+			group.setPersonList(group.getPersonList());
 		}
 		emc.commit();
 
