@@ -784,6 +784,9 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 			// if( module.parentContainer && module.parentContainer.moduleName == "datagrid$Data" )available = false;
 			if( module && ["datagrid$Data"].contains(module.moduleName) )available = false;
 			if( module.parentContainer && ["datagrid$Data"].contains(module.parentContainer.moduleName) )available = false;
+			if( module.moduleName === "datatable$Data" && !module.options.allowModules.contains( this.moduleName ) )available = false;
+			if( module.parentContainer && module.parentContainer.moduleName === "datatable$Data" &&
+				!module.parentContainer.options.allowModules.contains( this.moduleName ) )available = false;
 			var e = new Event(event);
 			if( available && e.control ){
 				if( this.copyNode )this.copyNode.setStyle("display","none");
