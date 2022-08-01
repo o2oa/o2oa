@@ -95,9 +95,6 @@ class ActionInfo extends BaseAction {
 		if (optional.isPresent()) {
 			return (CompiledScript) optional.get();
 		} else {
-			System.out.println("!!!!!###");
-			System.out.println(ScriptingFactory.functionalization(text));
-			System.out.println("!!!!!###");
 			CompiledScript compiledScript = ScriptingFactory.functionalizationCompile(text);
 			CacheManager.put(cache, cacheKey, compiledScript);
 			return compiledScript;
