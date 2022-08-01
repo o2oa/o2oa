@@ -54,6 +54,8 @@ public class Person extends ConfigObject {
 
 	public static final Boolean DEFAULT_ENABLESAFELOGOUT = false;
 
+	public static final String DEFAULT_ENCRYPTTYPE = "";
+
 	public Person() {
 		this.captchaLogin = DEFAULT_CAPTCHALOGIN;
 		this.codeLogin = DEFAULT_CODELOGIN;
@@ -70,6 +72,7 @@ public class Person extends ConfigObject {
 		this.language = DEFAULT_LANGUAGE;
 		this.tokenName = DEFAULT_TOKENNAME;
 		this.enableSafeLogout = DEFAULT_ENABLESAFELOGOUT;
+		this.encryptType = DEFAULT_ENCRYPTTYPE;
 	}
 
 	public static Person defaultInstance() {
@@ -134,6 +137,13 @@ public class Person extends ConfigObject {
 
 	@FieldDescribe("是否启用安全注销.")
 	private Boolean enableSafeLogout;
+
+	@FieldDescribe("加密方式,支持国密sm4")
+	private String encryptType;
+
+	public String getEncryptType() {
+		return StringUtils.isEmpty(this.encryptType) ? DEFAULT_ENCRYPTTYPE : this.encryptType;
+	}
 
 	@FieldDescribe("扩展设置.")
 	private Map<String, Object> extension;

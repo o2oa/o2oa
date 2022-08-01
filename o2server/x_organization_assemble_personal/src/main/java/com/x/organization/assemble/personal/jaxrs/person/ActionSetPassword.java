@@ -79,7 +79,7 @@ class ActionSetPassword extends BaseAction {
 					logger.info("user{name:" + person.getName() + "} use superPermission.");
 				} else {
 					if (!StringUtils.equals(
-							Crypto.encrypt(oldPassword, Config.token().getKey(), Config.token().getEncryptType()),
+							Crypto.encrypt(oldPassword, Config.token().getKey(), Config.person().getEncryptType()),
 							person.getPassword())) {
 						throw new ExceptionOldPasswordNotMatch();
 					}

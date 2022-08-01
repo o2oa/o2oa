@@ -57,7 +57,7 @@ class ActionPostLogin extends BaseAction {
 			String content = null;
 			logger.debug("decrypt sso client:{}, token:{}, key:{}.", wi.getClient(), wi.getToken(), sso.getKey());
 			try {
-				content = Crypto.decrypt(wi.getToken(), sso.getKey(), Config.token().getEncryptType());
+				content = Crypto.decrypt(wi.getToken(), sso.getKey(), Config.person().getEncryptType());
 			} catch (Exception e) {
 				throw new ExceptionReadToken(wi.getClient(), wi.getToken());
 			}
@@ -99,7 +99,7 @@ class ActionPostLogin extends BaseAction {
 				tokenType = TokenType.auditManager;
 			}
 			EffectivePerson effective = new EffectivePerson(wo.getDistinguishedName(), tokenType,
-					Config.token().getCipher(), Config.token().getEncryptType());
+					Config.token().getCipher(), Config.person().getEncryptType());
 			wo.setToken(effective.getToken());
 			HttpToken httpToken = new HttpToken();
 			httpToken.setToken(request, response, effective);

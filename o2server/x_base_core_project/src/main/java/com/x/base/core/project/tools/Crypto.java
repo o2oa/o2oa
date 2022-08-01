@@ -55,7 +55,7 @@ public class Crypto {
 	private static final String TYPE_SM4 = "sm4";
 
 	public static String encrypt(String data, String key) throws Exception {
-		return encrypt(data, key, Config.token().getEncryptType());
+		return encrypt(data, key, Config.person().getEncryptType());
 	}
 
 	public static String encrypt(String data, String key, String type)
@@ -100,9 +100,8 @@ public class Crypto {
 		return classSm4;
 	}
 
-	public static String decrypt(String data, String key)
-			throws Exception {
-		return decrypt(data, key, Config.token().getEncryptType());
+	public static String decrypt(String data, String key) throws Exception {
+		return decrypt(data, key, Config.person().getEncryptType());
 	}
 
 	public static String decrypt(String data, String key, String type)

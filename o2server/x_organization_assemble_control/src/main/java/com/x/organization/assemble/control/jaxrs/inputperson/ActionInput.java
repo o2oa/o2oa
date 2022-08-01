@@ -109,7 +109,7 @@ class ActionInput extends BaseAction {
 			}
 		}
 		for (PersonItem o : people) {
-			o.setPassword(Crypto.encrypt(o.getPassword(), Config.token().getKey(), Config.token().getEncryptType()));
+			o.setPassword(Crypto.encrypt(o.getPassword(), Config.token().getKey(), Config.person().getEncryptType()));
 		}
 	}
 

@@ -80,7 +80,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			tokenType = Config.ternaryManagement().getTokenType(credential);
 		}
 		EffectivePerson effectivePerson = new EffectivePerson(credential, tokenType, Config.token().getCipher(),
-				Config.token().getEncryptType());
+				Config.person().getEncryptType());
 		if ((null != request) && (null != response)) {
 			httpToken.setToken(request, response, effectivePerson);
 		}
@@ -113,7 +113,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			tokenType = TokenType.auditManager;
 		}
 		EffectivePerson effectivePerson = new EffectivePerson(person.getDistinguishedName(), tokenType,
-				Config.token().getCipher(), Config.token().getEncryptType());
+				Config.token().getCipher(), Config.person().getEncryptType());
 		if ((null != request) && (null != response)) {
 			if (!isMoaTerminal(request)) {
 				String clientIp = HttpToken.remoteAddress(request);
@@ -203,7 +203,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				&& LdapTools.auth(person.getUnique(), password)) {
 			return true;
 		}
-		return (StringUtils.equals(Crypto.encrypt(password, Config.token().getKey(), Config.token().getEncryptType()),
+		return (StringUtils.equals(Crypto.encrypt(password, Config.token().getKey(), Config.person().getEncryptType()),
 				person.getPassword()) || StringUtils.equals(MD5Tool.getMD5Str(password), person.getPassword()));
 	}
 
