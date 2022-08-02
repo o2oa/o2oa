@@ -2,9 +2,7 @@ package com.x.base.core.project.config;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
@@ -449,11 +447,14 @@ public class Message extends GsonPropertyObject {
 
 		private static final String DEFAULT_URL = "";
 		private static final String DEFAULT_METHOD = "get";
+		private static final Boolean DEFAULT_INTERNAL = true;
 
 		public RestfulConsumer() {
 			super(MessageConnector.CONSUME_RESTFUL, false);
 			this.url = DEFAULT_URL;
 			this.method = DEFAULT_METHOD;
+			this.internal = DEFAULT_INTERNAL;
+
 		}
 
 		@FieldDescribe("地址")
@@ -461,6 +462,13 @@ public class Message extends GsonPropertyObject {
 
 		@FieldDescribe("方法")
 		private String method;
+
+		@FieldDescribe("是否是系统内部请求.")
+		private Boolean internal;
+
+		public Boolean getInternal() {
+			return null == this.internal ? DEFAULT_INTERNAL : this.internal;
+		}
 
 		public String getUrl() {
 			return StringUtils.isBlank(this.url) ? DEFAULT_URL : this.url;

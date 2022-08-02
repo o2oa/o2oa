@@ -2,7 +2,9 @@ package com.x.message.assemble.communicate;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,6 +15,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 
@@ -23,6 +26,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject_;
 import com.x.base.core.project.config.Message.RestfulConsumer;
+import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.connection.HttpConnectionResponse;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
@@ -74,7 +78,11 @@ public class RestfulConsumeQueue extends AbstractQueue<Message> {
 			RestfulConsumer consumer = gson.fromJson(message.getProperties().getConsumerJsonElement(),
 					RestfulConsumer.class);
 			String url = url(message, consumer);
-			HttpConnectionResponse response = client.restful(consumer.getMethod(), url, null, gson.toJson(message),
+			Map<String, String> heads = new HashMap<>();
+			if (BooleanUtils.isTrue(consumer.getInternal())) {
+				CipherConnectionAction.cipher().forEach(o -> heads.put(o.getName(), o.getValue().toString()));
+			}
+			HttpConnectionResponse response = client.restful(consumer.getMethod(), url, heads, gson.toJson(message),
 					5000, 5000);
 			if (null == response) {
 				throw new ExceptionRestful(message.getTitle(), message.getPerson(), url);

@@ -99,7 +99,7 @@ public class Messages extends ConcurrentSkipListMap<String, Message> {
 		o.put(MessageConnector.TYPE_ATTACHMENT_EDITORCANCEL, MESSAGE_OUTER.cloneThenSetDescription("附件可编辑取消"));
 		o.put(MessageConnector.TYPE_ATTACHMENT_EDITORMODIFY, MESSAGE_OUTER.cloneThenSetDescription("附件可编辑修改"));
 		o.put(MessageConnector.TYPE_CALENDAR_ALARM, MESSAGE_ALL.cloneThenSetDescription("日历通知"));
-		o.put(MessageConnector.TYPE_CUSTOM_CREATE, MESSAGE_OUTER.cloneThenSetDescription("自定义消息创建"));
+		o.put(MessageConnector.TYPE_CUSTOM_CREATE, MESSAGE_ALL.cloneThenSetDescription("自定义消息创建"));
 		o.put(MessageConnector.TYPE_TEAMWORK_TASKCREATE, MESSAGE_ALL.cloneThenSetDescription("工作管理任务创建"));
 		o.put(MessageConnector.TYPE_TEAMWORK_TASKUPDATE, MESSAGE_ALL.cloneThenSetDescription("工作管理任务更新"));
 		o.put(MessageConnector.TYPE_TEAMWORK_TASKDELETE, MESSAGE_ALL.cloneThenSetDescription("工作管理任务删除"));
@@ -111,7 +111,9 @@ public class Messages extends ConcurrentSkipListMap<String, Message> {
 		o.put(MessageConnector.TYPE_BBS_REPLYCREATE, MESSAGE_ALL.cloneThenSetDescription("论坛创建回复"));
 		o.put(MessageConnector.TYPE_MIND_FILESEND, MESSAGE_ALL.cloneThenSetDescription("脑图发送"));
 		o.put(MessageConnector.TYPE_MIND_FILESHARE, MESSAGE_ALL.cloneThenSetDescription("脑图分享"));
-		o.put(MessageConnector.TYPE_IM_CREATE, new Message(MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS_INNER).cloneThenSetDescription("聊聊消息"));
+		o.put(MessageConnector.TYPE_IM_CREATE,
+				new Message(MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS_INNER)
+						.cloneThenSetDescription("聊聊消息"));
 		return o;
 	}
 
