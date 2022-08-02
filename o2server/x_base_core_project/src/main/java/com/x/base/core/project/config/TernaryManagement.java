@@ -1,8 +1,16 @@
 package com.x.base.core.project.config;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -326,8 +334,8 @@ public class TernaryManagement extends ConfigObject {
 		return this._systemManagerPassword;
 	}
 
-	public void setSystemManagerPassword(String systemManagerPassword) {
-		this.systemManagerPassword = systemManagerPassword;
+	public void setSystemManagerPassword(String systemManagerPassword) throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
+		this.systemManagerPassword = Crypto.formattedDefaultEncrypt(systemManagerPassword);
 	}
 
 	public String getSecurityManagerPassword() {
@@ -339,8 +347,8 @@ public class TernaryManagement extends ConfigObject {
 		return this._securityManagerPassword;
 	}
 
-	public void setSecurityManagerPassword(String securityManagerPassword) {
-		this.securityManagerPassword = securityManagerPassword;
+	public void setSecurityManagerPassword(String securityManagerPassword) throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
+		this.securityManagerPassword = Crypto.formattedDefaultEncrypt(securityManagerPassword);
 	}
 
 	public String getAuditManagerPassword() {
@@ -351,7 +359,7 @@ public class TernaryManagement extends ConfigObject {
 		return this._auditManagerPassword;
 	}
 
-	public void setAuditManagerPassword(String auditManagerPassword) {
-		this.auditManagerPassword = auditManagerPassword;
+	public void setAuditManagerPassword(String auditManagerPassword) throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
+		this.auditManagerPassword = Crypto.formattedDefaultEncrypt(auditManagerPassword);
 	}
 }

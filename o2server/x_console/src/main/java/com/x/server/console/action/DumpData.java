@@ -96,11 +96,8 @@ public class DumpData {
 						DateTools.compact(start) + "_dump.xml");
 				PersistenceXmlHelper.write(xml.toString(), classNames, true, classLoader);
 				StorageMappings storageMappings = Config.storageMappings();
-				Stream<String> stream = BooleanUtils.isTrue(Config.dumpRestoreData().getParallel())
-						? classNames.parallelStream()
-						: classNames.stream();
 				AtomicInteger idx = new AtomicInteger(1);
-				stream.forEach(className -> {
+				classNames.stream().forEach(className -> {
 					Thread.currentThread().setContextClassLoader(classLoader);
 					String nameOfThread = Thread.currentThread().getName();
 					Thread.currentThread().setName(DumpData.class.getName() + ":" + className);

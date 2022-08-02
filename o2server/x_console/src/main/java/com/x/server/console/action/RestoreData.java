@@ -111,12 +111,9 @@ public class RestoreData {
 				Path xml = Paths.get(Config.dir_local_temp_classes().getAbsolutePath(),
 						DateTools.compact(start) + "_restore.xml");
 				PersistenceXmlHelper.write(xml.toString(), classNames, true, classLoader);
-				Stream<String> stream = BooleanUtils.isTrue(Config.dumpRestoreData().getParallel())
-						? classNames.parallelStream()
-						: classNames.stream();
 				AtomicInteger idx = new AtomicInteger(1);
 				AtomicLong total = new AtomicLong(0);
-				stream.forEach(className -> {
+				classNames.stream().forEach(className -> {
 					Thread.currentThread().setContextClassLoader(classLoader);
 					try {
 						@SuppressWarnings("unchecked")

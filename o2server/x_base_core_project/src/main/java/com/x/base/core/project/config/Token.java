@@ -1,11 +1,19 @@
 package com.x.base.core.project.config;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
@@ -115,11 +123,13 @@ public class Token extends ConfigObject {
 		return this._password;
 	}
 
-	public void setPassword(String password) {
+	public void setPassword(String password)
+			throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException,
+			IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
 		if (StringUtils.equals(password, initPassword)) {
 			this.password = null;
 		} else {
-			this.password = password;
+			this.password = Crypto.formattedDefaultEncrypt(password);
 		}
 	}
 

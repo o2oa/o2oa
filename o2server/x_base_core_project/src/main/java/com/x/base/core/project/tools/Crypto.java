@@ -17,6 +17,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -53,6 +54,11 @@ public class Crypto {
 	private static Class<?> classSm4 = null;
 
 	private static final String TYPE_SM4 = "sm4";
+
+	private static final Pattern PLAINTEXT_TRANSFORM_REGEX = Pattern.compile("^\\((ENCRYPT:|SCRIPT:)(.+?)\\)$");
+
+	private static final String ENCRYPT_PREFIX = "ENCRYPT:";
+	private static final String SCRIPT_PREFIX = "SCRIPT:";
 
 	public static String encrypt(String data, String key) throws Exception {
 		return encrypt(data, key, Config.person().getEncryptType());
@@ -193,24 +199,24 @@ public class Crypto {
 		if (StringUtils.isEmpty(text)) {
 			return text;
 		}
-		try {
-			Matcher matcher = StringTools.SCRIPTTEXT_REGEX.matcher(text);
-			if (matcher.matches()) {
-				String value = StringEscapeUtils.unescapeJson(matcher.group(1));
-				if (StringUtils.startsWithIgnoreCase(value, "ENCRYPT:")) {
-					String de = StringUtils.substringAfter(value, ":");
-					return decrypt(de, NEVERCHANGEKEY, null);
-				} else {
-					CompiledScript cs = ScriptingFactory.functionalizationCompile(text);
+		Matcher matcher = PLAINTEXT_TRANSFORM_REGEX.matcher(text);
+		if (matcher.matches()) {
+			try {
+				if (StringUtils.startsWithIgnoreCase(matcher.group(1), ENCRYPT_PREFIX)) {
+					return decrypt(matcher.group(2), NEVERCHANGEKEY, null);
+				} else if (StringUtils.startsWithIgnoreCase(matcher.group(1), SCRIPT_PREFIX)) {
+					CompiledScript cs = ScriptingFactory
+							.functionalizationCompile(StringEscapeUtils.unescapeJson(matcher.group(2)));
 					ScriptContext scriptContext = new SimpleScriptContext();
 					return JsonScriptingExecutor.evalString(cs, scriptContext);
 				}
-			} else {
-				return text;
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		} else {
+			return text;
 		}
+
 		return null;
 	}
 
@@ -220,5 +226,11 @@ public class Crypto {
 		byte[] bt = encrypt(data.getBytes(), NEVERCHANGEKEY.getBytes());
 		String str = Base64.encodeBase64URLSafeString(bt);
 		return URLEncoder.encode(str, StandardCharsets.UTF_8.name());
+	}
+
+	public static String formattedDefaultEncrypt(String data)
+			throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException,
+			IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
+		return "(" + ENCRYPT_PREFIX + defaultEncrypt(data) + ")";
 	}
 }
