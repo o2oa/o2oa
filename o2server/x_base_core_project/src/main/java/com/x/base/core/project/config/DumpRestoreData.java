@@ -22,7 +22,6 @@ public class DumpRestoreData extends ConfigObject {
 	public static final String RESTOREOVERRIDE_CLEAN = "clean";
 	public static final String RESTOREOVERRIDE_SKIPEXISTED = "skipExisted";
 
-	public static final Boolean DEFAULT_PARALLEL = true;
 	public static final Boolean DEFAULT_REDISTRIBUTE = true;
 	public static final Boolean DEFAULT_EXCEPTIONINVALIDSTORAGE = true;
 	public static final Boolean DEFAULT_ATTACHSTORAGE = true;
@@ -32,7 +31,6 @@ public class DumpRestoreData extends ConfigObject {
 		this.includes = new ArrayList<>();
 		this.excludes = new ArrayList<>();
 		this.mode = MODE_LITE;
-		this.parallel = DEFAULT_PARALLEL;
 		this.attachStorage = DEFAULT_ATTACHSTORAGE;
 		this.exceptionInvalidStorage = DEFAULT_EXCEPTIONINVALIDSTORAGE;
 		this.itemCategory = DEFAULT_ITEMCATEGORY;
@@ -46,9 +44,6 @@ public class DumpRestoreData extends ConfigObject {
 
 	@FieldDescribe("导出数据模式,lite|full,默认使用lite")
 	private String mode;
-
-	@FieldDescribe("使用并行导出,默认true")
-	private Boolean parallel;
 
 	@FieldDescribe("无法获取storage是否升起错误.")
 	private Boolean exceptionInvalidStorage;
@@ -89,10 +84,6 @@ public class DumpRestoreData extends ConfigObject {
 		return BooleanUtils.isNotFalse(exceptionInvalidStorage);
 	}
 
-	public Boolean getParallel() {
-		return BooleanUtils.isNotFalse(parallel);
-	}
-
 	public String getMode() {
 		return StringUtils.equals(MODE_FULL, mode) ? MODE_FULL : MODE_LITE;
 	}
@@ -119,10 +110,6 @@ public class DumpRestoreData extends ConfigObject {
 
 	public void setExcludes(List<String> excludes) {
 		this.excludes = excludes;
-	}
-
-	public void setParallel(Boolean parallel) {
-		this.parallel = parallel;
 	}
 
 	public void setExceptionInvalidStorage(Boolean exceptionInvalidStorage) {
