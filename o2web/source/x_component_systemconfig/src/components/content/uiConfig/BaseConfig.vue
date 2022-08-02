@@ -37,7 +37,7 @@
 <script setup>
 import {o2, lp} from '@o2oa/component';
 import BaseRadio from '@/components/item/BaseRadio.vue';
-import {getConfig, saveConfig} from "@/util/acrions";
+import {getConfigData, saveConfig} from "@/util/acrions";
 import {ref} from 'vue';
 import BaseBoolean from "@/components/item/BaseBoolean";
 
@@ -49,7 +49,7 @@ const config = ref({
 });
 const skins = ref([]);
 
-getConfig('web').then((data)=>{
+getConfigData('web').then((data)=>{
   config.value.openStatus = data.openStatus || 'default';
   config.value.skinConfig = data.skinConfig!==false;
   config.value.defaultSkin = data.defaultSkin || 'blue';

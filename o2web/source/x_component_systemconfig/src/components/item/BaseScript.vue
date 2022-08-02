@@ -1,14 +1,14 @@
 <template>
   <div class="item" ref="itemNode">
     <div class="item_input_area">
-      <div class="item_script_area" ref="scriptNode"></div>
+      <div class="" ref="scriptNode"></div>
     </div>
   </div>
 </template>
 
 <script setup>
 import {o2} from '@o2oa/component';
-import {ref} from "vue";
+import {ref, onMounted, onUpdated} from "vue";
 
 const emit = defineEmits(['update:value', 'change']);
 
@@ -28,7 +28,9 @@ const changeValue = (e)=>{
 }
 
 let scriptArea = null;
+let loaddintScript = false;
 const createEditor = ()=>{
+  loaddintScript = true;
   const content = scriptNode.value.getParent('.content')
   o2.require('o2.widget.ScriptArea', ()=>{
     scriptArea = new o2.widget.ScriptArea(scriptNode.value, {
@@ -42,10 +44,26 @@ const createEditor = ()=>{
       }
     });
     scriptArea.load({code: props.value});
+    loaddintScript = false;
   });
 }
 
-defineExpose({createEditor});
+const destroyEditor = ()=>{
+  if (scriptArea){
+    scriptArea.destroy();
+    scriptArea = null;
+  }
+}
+
+defineExpose({createEditor, destroyEditor});
+
+onUpdated(()=>{
+  if (scriptArea && !loaddintScript) destroyEditor();
+  if (!scriptArea && !loaddintScript) createEditor();
+});
+onMounted(()=>{
+  if (!scriptArea && !loaddintScript) createEditor();
+});
 // const setEditorValue = (value)=>{
 //   if (scriptArea){
 //     scriptArea.editor.
@@ -84,9 +102,8 @@ defineExpose({createEditor});
   line-height: 32px;
 }
 .item_input_area{
-  padding: 0 10px;
+  padding: 0;
   font-size: 14px;
-  margin-right: 20px;
 }
 button {
   border-radius: 100px;

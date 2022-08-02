@@ -22,19 +22,30 @@ async function loadConfig(name) {
     return configs[name];
 }
 
-async function getConfig(name) {
+async function getConfig(name, path) {
+    const data = configs[name] || (await loadConfig(name));
+    return data[path];
+}
+async function getConfigData(name) {
     if (configs[name]) return configs[name];
     return await loadConfig(name);
 }
-
 async function saveConfig(name, path, value) {
     const config = (configs[name]) ? configs[name] : (await loadConfig(name));
-    config[path] = value;
+    let configData = config;
+    const paths = path.split('.');
+    const key = paths.pop();
+    paths.forEach((p)=>{
+        // if (!config[p]) config[p] = {};
+        configData = configData[p] || (configData[p] = {});
+    });
+    configData[key] = value;
     o2.Actions.load('x_program_center').ConfigAction.save({
         fileName: `${name}.json`,
         fileContent: JSON.stringify(config, null, "\t")
     });
 }
+
 async function saveConfigData(name, data) {
     const config = (configs[name]) ? configs[name] : (await loadConfig(name));
     Object.assign(config, data);
@@ -116,11 +127,20 @@ async function loadQueryApplication() {
     return json.data;
 }
 
-//function to load application
+async function changePassword(credential, oldPassword, newPassword) {
+    const json = await o2.Actions.load("x_program_center").ConfigAction.changePassword({credential, oldPassword, newPassword});
+    return json.data;
+}
+
+async function loadPortals() {
+    const json = await o2.Actions.load("x_portal_assemble_surface").PortalAction.list();
+    return json.data;
+}
 
 
 export {
     getConfig,
+    getConfigData,
     saveConfig,
     saveConfigData,
     loadComponents,
@@ -134,5 +154,7 @@ export {
     loadProcessApplication,
     loadPortalApplication,
     loadInforApplication,
-    loadQueryApplication
+    loadQueryApplication,
+    changePassword,
+    loadPortals
 };

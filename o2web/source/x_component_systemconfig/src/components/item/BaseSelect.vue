@@ -2,7 +2,7 @@
   <div class="item">
     <label class="item_label" v-if="label" :style="labelStyle">{{label}}</label>
     <div class="item_input">
-      <el-select v-model="value" @change="changeValue" size="medium">
+      <el-select v-model="value" @change="changeValue" size="default">
         <el-option v-for="k in Object.keys(options)" :key="k" :value="k" :label="options[k]"></el-option>
       </el-select>
     </div>
@@ -10,7 +10,6 @@
 </template>
 
 <script setup>
-import {lp} from '@o2oa/component'
 const emit = defineEmits(['update:value', 'change']);
 
 const props = defineProps({
@@ -64,6 +63,7 @@ function changeValue(e){
   padding: 0 10px;
   font-size: 14px;
   margin-right: 20px;
+  width: calc(100% - 80px);
 }
 
 button {

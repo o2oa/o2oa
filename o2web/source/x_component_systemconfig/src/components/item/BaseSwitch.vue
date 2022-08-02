@@ -2,20 +2,17 @@
   <div class="item">
     <label class="item_label" v-if="label" :style="labelStyle">{{label}}</label>
     <div class="item_input_area">
-      <el-input class="item_input" :style="inputStyle"
-                v-model="value" :type="inputType" :show-password="showPassword"
-                @change="changeValue($event)"/>
+      <el-switch :style="inputStyle" v-model="value" @change="changeValue($event)"></el-switch>
     </div>
   </div>
 </template>
 
 <script setup>
-import {lp} from '@o2oa/component';
 const emit = defineEmits(['update:value', 'change']);
 
 const props = defineProps({
   label: String,
-  value: String,
+  value: Boolean,
   inputType: {
     type: String,
     default: 'text'
@@ -48,8 +45,6 @@ function changeValue(e){
   font-size: 14px;
   color: #666666;
   clear: both;
-  display: flex;
-  justify-content: flex-start;
 }
 .item_label{
   text-align: left;
@@ -67,11 +62,10 @@ function changeValue(e){
   padding: 0 10px;
   font-size: 14px;
   margin-right: 20px;
-  width: calc(100% - 80px);
   /*margin-left: 80px;*/
 }
 .item_input{
-  /*width: 300px;*/
+  width: 300px;
 }
 button {
   border-radius: 100px;

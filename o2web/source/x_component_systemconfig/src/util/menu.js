@@ -19,8 +19,8 @@ function getMenuJson(){
             "icon": "security",
             'children': [
                 {'title': lp.passwordConfig, 'component': 'SecurityPasswordConfig', 'icon': 'password' },
-                {'title': lp.loginConfig, 'component': '', 'icon': 'signin' },
-                {'title': lp.ssoConfig, 'component': '', 'icon': 'sso' },
+                {'title': lp.loginConfig, 'component': 'SecurityLoginConfig', 'icon': 'signin' },
+                {'title': lp.ssoConfig, 'component': 'SecuritySSOConfig', 'icon': 'sso' },
                 {'title': lp.logConfig, 'component': '', 'icon': 'log' }
             ]
         },

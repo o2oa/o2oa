@@ -8,7 +8,7 @@
           <PersonPassword></PersonPassword>
         </el-tab-pane>
         <el-tab-pane :label="lp._passwordConfig.adminPassword" name="second" lazy>
-<!--          <ServiceDeploy></ServiceDeploy>-->
+          <AdminPassword></AdminPassword>
         </el-tab-pane>
 
       </el-tabs>
@@ -19,6 +19,7 @@
 <script setup>
 import {lp} from '@o2oa/component';
 import PersonPassword from './SecurityPasswordConfig/PersonPassword.vue';
+import AdminPassword from './SecurityPasswordConfig/AdminPassword.vue';
 </script>
 
 <style scoped>

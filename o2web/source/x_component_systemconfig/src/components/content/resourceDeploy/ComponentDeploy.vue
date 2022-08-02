@@ -69,7 +69,7 @@ function openApplication(cmpt){
   if (cmpt.visible) o2.api.page.openApplication(cmpt.path);
 }
 function uninstallApplication(e, cmpt){
-  var text = lp._component.removeComponent.replace(/{name}/, cmpt.title);
+  const text = lp._component.removeComponent.replace(/{name}/, cmpt.title);
   component.confirm("warn", e, lp._component.removeComponentTitle, text, 500, 170, function(){
     uninstallComponent(cmpt);
     this.close();
@@ -108,18 +108,22 @@ async function editComponent(cmpt, index) {
       text: lp.operation.ok,
       type: 'ok',
       action: async (dlg) => {
-        if (currentComponent.value.componentFile && currentComponent.value.componentFile.length){
-          await dispatchComponentFile(currentComponent.value.componentFile[0]);
-          currentComponent.value.componentFile = null;
-        }
-        await saveComponent(currentComponent.value);
-        component.notice( lp._component.deploySuccess, "success");
-        if (index){
-          components.value[index] = currentComponent.value;
+        if (currentComponent.value.name && currentComponent.value.title && currentComponent.value.path){
+          if (currentComponent.value.componentFile && currentComponent.value.componentFile.length){
+            await dispatchComponentFile(currentComponent.value.componentFile[0]);
+            currentComponent.value.componentFile = null;
+          }
+          await saveComponent(currentComponent.value);
+          component.notice( lp._component.deploySuccess, "success");
+          if (index || index===0){
+            components.value[index] = currentComponent.value;
+          }else{
+            components.value.push(currentComponent.value);
+          }
+          dlg.close();
         }else{
-          components.value.push(currentComponent.value);
+          component.notice( lp._component.componentDataError, 'error',  dlg.node, {x: 'left', y: 'top'}, {x: 10, y: 10});
         }
-        dlg.close();
       }
     }, {
       text: lp.operation.cancel,

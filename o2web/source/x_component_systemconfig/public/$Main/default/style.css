@@ -32,6 +32,21 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
+.o2icon-disable:before {
+    content: "\e926";
+}
+.o2icon-enable:before {
+    content: "\e927";
+}
+.o2icon-key:before {
+    content: "\e928";
+}
+.o2icon-plus:before {
+    content: "\e92a";
+}
+.o2icon-del:before {
+    content: "\e929";
+}
 .o2icon-close:before {
     content: "\e925";
 }

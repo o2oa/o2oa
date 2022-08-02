@@ -1,3 +1,12 @@
+:root{
+    --el-border-radius-base: 100px;
+}
 .el-input__wrapper{
     border-radius: 100px;
+}
+.el-slider__button{
+    font-size: 12px;
+    line-height: 20px;
+    background-color: var(--el-color-primary);
+    color: #ffffff;
 }

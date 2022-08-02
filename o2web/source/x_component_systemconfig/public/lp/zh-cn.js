@@ -1,7 +1,7 @@
 o2.xApplication.systemconfig.LP = {
     "title": "系统配置",
     "searchKey": "搜索设置项",
-
+    "default": "默认",
 
     "baseConfig": "基础配置",
     "systemInfo": "系统信息",
@@ -54,13 +54,21 @@ o2.xApplication.systemconfig.LP = {
         "systemVersion": "当前系统版本",
         "systemVersionInfo": "当前系统版本",
         "baseInfo": "基本信息",
-        "systemStatus": "系统状态"
+        "systemStatus": "系统状态",
+        "language": "语言环境",
+        "languageInfo": "设置服务端语言环境",
+        "languageValues":{
+            "zh-CN": "简体中文",
+            "en": "英文"
+        }
 
     },
     "operation": {
         "edit": "编辑",
         "ok": "确定",
-        "cancel": "取消"
+        "cancel": "取消",
+        "enable": "启用",
+        "disable": "禁用"
     },
     "_component": {
         "open": "打开",
@@ -88,7 +96,9 @@ o2.xApplication.systemconfig.LP = {
         "icon": "组件图标",
 
         "upload": "上传资源",
-        "uploadWarn": "上传组件zip包，原有组件将被覆盖，请谨慎操作！"
+        "uploadWarn": "上传组件zip包，原有组件将被覆盖，请谨慎操作！",
+
+        "componentDataError": "组件名称、组件路径和组件标题不能为空"
     },
     "_resource": {
         "webResource": "部署Web资源",
@@ -195,18 +205,188 @@ o2.xApplication.systemconfig.LP = {
             "pinyinScript":"return person.getPinyin()",
             "textInfo": "在下面的输入框中输入的密码，将作为新创建用户的初始密码。",
             'scriptInfo': "在下面的编辑器中输入脚本，返回一个字符串值，作为新创建用户的初始密码。您可以使用person对象获取人员相关信息。如将人员姓名全拼作为初始密码，可使用脚本：return person.getPinyin()"
-        }
+        },
 
+        "passwordPeriod": "密码过期天数",
+        "passwordPeriodInfo": "超过此设定天数未修改密码的用户，登录后会强制要求修改密码，否则无法进入系统。设置为 0 表示密码永不过期",
 
-        //
-        // "initialPasswordType": [
-        //     {"label": "mobile", "value": "mobile", "text": "手机号码后六位"},
-        //     {"label": "unique", "value": "unique", "text": "唯一编码后六位"},
-        //     {"label": "employee", "value": "employee", "text": "人员工号后六位"},
-        //     {"label": "pinyin", "value": "pinyin", "text": "人员名称全拼"},
-        //     {"label": "text", "value": "text", "text": "固定口令"},
-        //     {"label": "script", "value": "script", "text": "通过脚本自定义初始密码"}
-        // ]
+        "passwordRegex": "密码复杂度",
+        "passwordRegexInfo": "设置用户密码复杂度要求",
+
+        "passwordRegexMin": "最小长度",
+        "passwordRegexMax": "最大长度",
+        "passwordRegexLength": "密码长度",
+        "passwordRule": "密码规则",
+        "passwordRuleValue": {
+            "useLowercase": "必须包含小写字母",
+            "useNumber": "必须包含数字",
+            "useUppercase": "必须包含大写字母",
+            "useSpecial": "必须包含特殊字符(#?!@$%^&*-)"
+        },
+        "passwordRuleRegex": {
+            "useLowercase": "(?=.*[a-z])",
+            "useNumber": "(?=.*\\d)",
+            "useUppercase": "(?=.*[A-Z])",
+            "useSpecial": "(?=.*?[#?!@$%^&*-])"
+        },
+        "savePasswordRule": "保存密码规则设置",
+        "passwordLengthText": "{n}位，{text}",
+
+        "passwordRsa": "密码加密传输",
+        "passwordRsaInfo": "系统默认使用明文传输，您可以启用此选项，以启用密码的加密传输。(修改后需要重启服务器)",
+
+        "adminPassword": "管理员密码",
+        "adminPasswordInfo": "您可以在此处修改超级管理员xadmin的密码。(修改后需要重启服务器)",
+        "modifyAdminPassword": "修改管理员密码",
+
+        "oldPassword": "原密码",
+        "newPassword": "新密码",
+        "confirmPassword": "确认密码",
+
+        "ternaryPassword": "三元管理员密码",
+        "ternaryPasswordInfo": "如果您启用了三元管理，系统管理员可以在此处修改系统管理员（systemManager）、安全管理员（securityManager）和安全审计员（auditManager）的密码。",
+        "modifySystemManagerPassword": "修改系统管理员密码",
+        "modifySecurityManagerPassword": "修改安全管理员密码",
+        "modifyAuditManagerPassword": "修改安全审计员密码",
+
+        "passwordDisaccord": "您输入的新密码与确认密码不一致",
+        "passwordEmpty": "请输入原密码、新密码和确认密码",
+
+        "tokenEncryptType": "Token传输加密方式",
+        "tokenEncryptTypeInfo": ""
+    },
+    "_loginConfig": {
+        "baseConfig": "基本配置",
+        "moreConfig": "更多配置",
+        "ldapConfig": "Ldap认证配置",
+        "captchaLogin":"启用图片验证码登录",
+        "codeLogin": "启用短信验证码登录",
+        "bindLogin": "启用扫描二维码登录",
+        "faceLogin": "启用人脸识别登录",
+        "captchaLoginInfo":"启用后登陆时必须正确输入图片验证码",
+        "codeLoginInfo": "启用后允许通过短信验证码登录",
+        "bindLoginInfo": "启用后允许扫描二维码登录",
+        "faceLoginInfo": "启用后允许人脸识别登录，用户可到个人设置中设置人脸特征。启用后您必须创建一个SSO配置，名称为face，密钥为xplatform（这是一个试验性功能，您必须启用https）",
+
+        "loginError": "登录错误处理",
+        "loginErrorInfo": "用户登录时，如果连续多次输入错误密码，账号将被锁定。您可以在此处设置连续登录错误次数上限，及账号锁定的时长。",
+
+        "loginErrorCount": "登录错误次数上限",
+        "lockTime": "锁定时长（分钟）",
+
+        "tokenExpired": "登录有效时长",
+        "tokenExpiredInfo": "用户登录系统后，如果长时间不和服务器发生交互，系统就会注销次此登录。您可以在此处设置登录有效时长，单位为分钟。",
+
+        "tokenName": "token名称",
+        "tokenNameInfo": "系统默认的token名称为x-token，您可以在此处修改token名称，以防止在相同Domain下的Cookie冲突，这在相同Domain下部署多套O2OA时尤其有用。(需要重启服务器)",
+
+        "enableSafeLogout": "启用安全注销",
+        "enableSafeLogoutInfo": "启用安全注销后，您在任意终端执行注销操作，将会同时注销所有终端的登录状态。",
+
+        "register": "启用自助注册",
+        "registerInfo": "此处配置是否允许自助注册成为系统用户，以及自助注册方式",
+        "registerValues": {
+            "disable": "不允许",
+            "captcha": "通过验证码注册",
+            "code": "通过短信注册"
+        },
+
+        "loginPage": "使用门户页面登录",
+        "loginPageInfo": "系统支持使用定制的门户页面作为登录页，我们在应用市场上提供了登录页应用模板，您可以免费获取。",
+        "loginPagePortal": "登录门户",
+
+        "selectPortal": "请选择门户",
+
+        "indexPage": "使用门户页面作为系统首页",
+        "indexPageInfo": "可使用定制的门户页面作为系统首页，登录后打开此页面。",
+        "indexPagePortal": "首页门户",
+
+        "ldapAuthEnable": "启用Ldap认证",
+        "ldapAuthEnableInfo": "启用后，用户登录认证使用Ldap认证，不再使用本系统的密码登录。请正确配置下面的Ldap参数。（需要重启服务器）",
+        "ldapAuthUrl": "Ldap地址",
+        "ldapAuthUrlInfo": "Ldap服务地址，ldap://域名或IP:端口",
+        "baseDn": "LDAP查询根(BaseDN)",
+        "baseDnInfo": "LDAP查询的根名称,如：dc=zone,DC=COM",
+        "userDn": "认证用户的DN(UserDN)",
+        "userDnInfo": "认证用户的DN(UserDN), 如：uid=*,ou=users,dc=zone,DC=COM，其中uid=*中的*表示用户的唯一编码，此唯一编码与O2用户的唯一编码对应"
+    },
+    "_ssoConfig": {
+        "ssoConfig": "鉴权密钥配置",
+        "ssoConfigInfo": "您可以为多个系统创建鉴权，用于SSO登录和服务调用。",
+        "ssoConfigInfo2": "每个鉴权需要提供鉴权名称和密钥，此密钥即是用于生成访问票据的加解密公钥。",
+        "addSSOConfig": "添加鉴权配置",
+        "editSSOConfig": "编辑鉴权配置",
+        "isEnable": "是否启用",
+        "ssoConfigName": "鉴权名称",
+        "ssoConfigKey": "密钥",
+        "removeSSOConfigTitle": "删除鉴权配置确认",
+        "removeSSOConfig": "您确定要删除鉴权配置：“{name}” 吗？",
+
+        "ssoDataError": "鉴权名称和鉴权密钥不能为空",
+        "ssoSameNameError": "鉴权名称 “{name}” 已存在，请使用其他名称",
+
+        "useSSOConfig": "如何使用鉴权密钥",
+        "useSSOConfigInfo": "在两种场景下需要使用鉴权密钥：",
+        "useSSOConfigInfo1": "1、外部系统需要与O2OA实现单点登录;",
+        "useSSOConfigInfo2": "2、外部系统需要调用O2OA平台的接口服务;",
+        "useSSOConfigInfo3": "需要将鉴权的名称，密钥告知外部系统，外部系统采取3DES算法使用密钥对<span style='color: blue'>\"person#timestamp\"</span>文本进行加密，获取到访问O2OA的临时票据（token）。<br/>" +
+            "<span style='color: blue'>person</span>：表示指定用户的用户名、唯一编码或员工号。（具体使用哪个要根据外部系统与O2OA的用户关联的字段）<br/>" +
+            "<span style='color: blue'>timestamp</span>：表示为1970年1月1日0时0秒到当前时间的毫秒数。（为了确保token的时效性,有效时间为15分钟）<br/>",
+
+        "useSSOConfigInfo4": "更多有关鉴权配置的说明，<a target='_blank' href='https://www.o2oa.net/search.html?q=%E9%89%B4%E6%9D%83'>请点击此处查看</a>。",
+
+        "ssoTokenTools": "相关工具",
+        "ssoTokenCode": "查看加密样例代码",
+        "ssoTokenCheck": "验证token有效性",
+
+        "oauthConfig": "OAuth配置",
+        "oauthClientConfig": "OAuth客户端配置",
+        "oauthServerConfig": "OAuth服务端配置",
+
+        "oauthClientConfigInfo": "如果将O2OA平台作为OAuth2认证服务器，您可以在此可以配置多个OAuth客户端，为其他系统实现登录授权",
+        "oauthServerConfigInfo": "如果您已有OAuth2认证服务端，您可以在此配置多个OAuth服务端，为本系统实现登录授权",
+
+        "addOauthClientConfig": "添加OAuth客户端配置",
+        "addOauthServerConfig": "添加OAuth服务端配置",
+        "editOauthClientConfig": "编辑OAuth客户端",
+        "editOauthServerConfig": "编辑OAuth服务端",
+
+        "removeOauthConfigTitle": "删除OAuth配置确认",
+        "removeOauthConfig": "您确定要删除OAuth配置：“{name}” 吗？",
+
+        "oauthClientDataError": "客户号(ClientId)和客户密钥(ClientSecret)不能为空",
+        "oauthClientSameNameError": "客户号(ClientId) “{name}” 已存在，请使用其他客户号",
+
+        "oauthServerDataError": "名称和客户号不能为空",
+        "oauthClientSameNameError": "名称为 “{name}” 的OAuth服务端配置已存在，请使用其他名称",
+
+        "oauth_clientId": "客户号",
+        "oauth_clientSecret": "客户密钥",
+        "oauth_mapping": "返回映射",
+        "oauth_name": "名称",
+        "oauth_displayName": "显示名称",
+        "oauth_icon": "图标URL",
+        "oauth_authAddress": "请求密钥地址",
+        "oauth_authParameter": "请求密钥参数",
+        "oauth_authMethod": "请求密钥方法",
+
+        "oauth_tokenAddress": "请求令牌地址",
+        "oauth_tokenParameter": "请求令牌参数",
+        "oauth_tokenMethod": "请求令牌方法",
+        "oauth_tokenType": "令牌格式",
+
+        "oauth_infoAddress": "请求信息地址",
+        "oauth_infoParameter": "请求信息参数",
+        "oauth_infoMethod": "请求信息方法",
+        "oauth_infoType": "信息格式",
+
+        "oauth_infoCredentialField": "个人信息字段",
+        "oauth_bindingField": "绑定用户字段",
+
+        "oauth_infoScriptText": "信息处理脚本",
+
+        "infoScriptTextInfo": "当信息格式不是JSON，也不是FORM时，您可以使用脚本，将信息格式化为JSON对象，以便系统可以正确处理。在下面的脚本编辑器中编写脚本，返回一个JSON对象，您可以使用 <span style='color: blue'>this.text</span> 获取到响应信息的原始文本。"
+
     }
 
 }
