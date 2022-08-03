@@ -9,9 +9,12 @@ import com.x.base.core.project.tools.NumberTools;
 
 public class Node extends ConfigObject {
 
+	private static final long serialVersionUID = -6598734923326779693L;
+
 	private static final Integer DEFAULT_NODEAGENTPORT = 20010;
 	private static final String DEFAULT_BANNER = "O2OA";
 	private static final Boolean DEFAULT_SELFHEALTHCHECKENABLE = false;
+	//private static final Integer DEFAULT_ORDER = 0;
 
 	public static Node defaultInstance() {
 		Node o = new Node();
@@ -28,11 +31,14 @@ public class Node extends ConfigObject {
 		o.nodeAgentPort = DEFAULT_NODEAGENTPORT;
 		o.autoStart = true;
 		o.selfHealthCheckEnable = DEFAULT_SELFHEALTHCHECKENABLE;
+		//o.order = DEFAULT_ORDER;
 		return o;
 	}
 
 	@FieldDescribe("是否启用")
 	private Boolean enable;
+	@FieldDescribe("节点顺序,节点选举顺序0,1,2...")
+	private Integer order;
 	@FieldDescribe("Center服务器配置")
 	private CenterServer center;
 	@FieldDescribe("Application服务器配置")
@@ -61,6 +67,10 @@ public class Node extends ConfigObject {
 	private Boolean autoStart;
 	@FieldDescribe("是否启用节点上模块健康自检查,如果启用在提交到center之前将进行模块的健康检查.默认false")
 	private Boolean selfHealthCheckEnable;
+
+//	public Integer getOrder() {
+//		return order == null ? DEFAULT_ORDER : this.order;
+//	}
 
 	public Boolean getSelfHealthCheckEnable() {
 		return BooleanUtils.isTrue(selfHealthCheckEnable);
