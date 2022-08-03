@@ -396,7 +396,7 @@
 
   var REGEXP_SPACES = /\s\s*/; // Misc
 
-  var BUTTONS = ['zoom-in', 'zoom-out', 'one-to-one', 'reset', 'prev', 'play', 'next', 'rotate-left', 'rotate-right', 'flip-horizontal', 'flip-vertical'];
+  var BUTTONS = ['zoom-in', 'zoom-out', 'one-to-one', 'reset', 'prev', 'play', 'next', 'rotate-left', 'rotate-right', 'flip-horizontal', 'flip-vertical', 'download'];
 
   /**
    * Check if the given value is a string.
@@ -1428,12 +1428,32 @@
         case 'flip-vertical':
           this.scaleY(-imageData.scaleY || -1);
           break;
+        case 'download':
+          this.download();
 
+          break;
         default:
           if (this.played) {
             this.stop();
           }
 
+      }
+    },
+    download : function (){
+      if(o2.thirdparty.isDingdingPC()){
+
+        var xtoken = Cookie.read(o2.tokenName);
+        var url =  o2.filterUrl(this.image.src + "?"+o2.tokenName+"=" + xtoken);
+
+        dd.biz.util.openLink({
+          url:url,
+          onSuccess : function(result) {
+            /**/
+          },
+          onFail : function(err) {}
+        })
+      }else {
+        window.open(this.image.src);
       }
     },
     dblclick: function dblclick(event) {
