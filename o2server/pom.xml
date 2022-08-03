@@ -391,6 +391,10 @@
 			<groupId>io.swagger.core.v3</groupId>
 			<artifactId>swagger-jaxrs2</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jgit</groupId>
+			<artifactId>org.eclipse.jgit</artifactId>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>${project.artifactId}</finalName>
@@ -812,7 +816,7 @@
 			<dependency>
 				<groupId>com.hankcs</groupId>
 				<artifactId>hanlp</artifactId>
-				<version>portable-1.7.4</version>
+				<version>portable-1.8.3</version>
 			</dependency>
 			<dependency>
 				<groupId>de.vandermeer</groupId>
@@ -1103,6 +1107,11 @@
 				<groupId>io.swagger.core.v3</groupId>
 				<artifactId>swagger-jaxrs2</artifactId>
 				<version>2.2.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jgit</groupId>
+				<artifactId>org.eclipse.jgit</artifactId>
+				<version>6.2.0.202206071550-r</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
