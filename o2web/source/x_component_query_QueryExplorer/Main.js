@@ -171,7 +171,7 @@ MWF.xApplication.query.QueryExplorer.Query = new Class({
             this.app.desktop.apps[appId].setCurrent();
         }else {
             this.app.desktop.openApplication(e, "query.QueryManager", {
-                "application": this.data,
+                "application": {"id": this.data.id, "name": this.data.name},
                 "appId": appId,
                 "onQueryLoad": function(){
                     this.status = {"navi": navi || null};

@@ -1,3 +1,12 @@
+:root {
+    --el-color-primary: #60bf78 !important;
+    --el-color-primary-light-3: #205C2F !important;
+    --el-color-primary-light-5: #a0cfff !important;
+    --el-color-primary-light-7: #c6e2ff !important;
+    --el-color-primary-light-8: #d9ecff !important;
+    --el-color-primary-light-9: #F7FFF9 !important;
+    --el-color-primary-dark-2: #053311 !important;
+}
 .mainColor_bg {
     background-color: #60bf78 !important;
     color: #ffffff !important;

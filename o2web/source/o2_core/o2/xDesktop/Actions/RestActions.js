@@ -33,7 +33,7 @@ MWF.xDesktop.Actions.RestActions = new Class({
             var port = layout.desktop.centerServer.port;
 
             //var mapping = layout.getCenterUrlMapping(layout.config.app_protocol+"//"+host+(port=="80" ? "" : ":"+port)+"/x_program_center");
-            this.address = layout.config.app_protocol+"//"+host+((!port || port=="80") ? "" : ":"+port)+"/x_program_center";
+            this.address = layout.config.app_protocol+"//"+host+((!port || port=="80") ? "" : ":"+port)+"/"+this.serviceName;
         }
 
         //this.address = "http://hbxa01.bf.ctc.com/"+this.serviceName;
@@ -165,6 +165,14 @@ MWF.xDesktop.Actions.RestActions = new Class({
 
         xhr.open(method, uri, async!==false);
         xhr.withCredentials = true;
+
+        var token = (layout.config && layout.config.sessionStorageEnable) ? sessionStorage.getItem("o2LayoutSessionToken") : "";
+        if (!token) {
+            token = (layout.session && layout.session.user) ? (layout.session.token || layout.session.user.token) : "";
+        }
+        if (token) {
+            xhr.setRequestHeader("Authorization", token);
+        }
 
         if (file && File.prototype.isPrototypeOf(file)) messageItem = this.addFormDataMessage(file, false, xhr, progress);
         xhr.send(data);
@@ -399,6 +407,13 @@ MWF.xDesktop.Actions.RestActions = new Class({
 
         xhr.open(method, uri, true);
         xhr.withCredentials = true;
+        var token = (layout.config && layout.config.sessionStorageEnable) ? sessionStorage.getItem("o2LayoutSessionToken") : "";
+        if (!token) {
+            token = (layout.session && layout.session.user) ? (layout.session.token || layout.session.user.token) : "";
+        }
+        if (token) {
+            xhr.setRequestHeader("Authorization", token);
+        }
 
         messageItem = this.addFormDataMessage(file, true, xhr, progress);
         xhr.send(data);

@@ -111,11 +111,22 @@ layout.addReady(function(){
                 if (options.draft) options.draft = JSON.parse(options.draft);
                 layout.openApplication(null, appName, option||{}, m_status);
             }
+
+            o2.xDesktop.getUserLayout(function(){
+                var style = layout.userLayout.flatStyle;
+                o2.loadCss("../o2_core/o2/xDesktop/$Default/"+style+"/style-skin.css");
+            });
         };
-        _load();
-        o2.xDesktop.getUserLayout(function(){
-            var style = layout.userLayout.flatStyle;
-            o2.loadCss("../o2_core/o2/xDesktop/$Default/"+style+"/style-skin.css");
-        });
+        if (layout.session && layout.session.user){
+            _load();
+        }else{
+            if (layout.sessionPromise){
+                layout.sessionPromise.then(function(){
+                    _load();
+                },function(){});
+            }
+        }
+        // _load();
+
     })(layout);
 });

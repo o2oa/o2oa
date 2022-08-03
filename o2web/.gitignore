@@ -18,3 +18,4 @@ ftpconfig.js
 gulpconfig.js
 jsdoc.dev.json
 !/source/o2_lib/**/*.min.js
+/source/x_test/

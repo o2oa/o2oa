@@ -1,4 +1,3 @@
-// jshint esversion: 6
 import {lp} from '@o2oa/component';
 function getMenuJson(){
     return [
@@ -7,20 +6,21 @@ function getMenuJson(){
             "icon": "config",
             "expand": true,
             'children': [
-                {'title': lp.systemInfo, 'component': 'SystemInfo', 'icon': 'config', "expand": true},
-                {'title': lp.uiConfig, 'component': 'UIConfig', 'icon': 'ui'},
-                {'title': lp.componentDeploy, 'component': '', 'icon': 'component'},
-                {'title': lp.resourceDeploy, 'component': '', 'icon': 'upload' },
-                {'title': lp.serviceDeploy, 'component': '', 'icon': 'deploy' }
+                {'title': lp.systemInfo, 'component': 'BaseSystemInfo', 'icon': 'config', "expand": true},
+                {'title': lp.uiConfig, 'component': 'BaseUIConfig', 'icon': 'ui'},
+                // {'title': lp.componentDeploy, 'component': 'ComponentDeploy', 'icon': 'component'},
+                {'title': lp.resourceDeploy, 'component': 'BaseResourceDeploy', 'icon': 'upload' },
+                // {'title': lp.resourceDeploy, 'component': 'WebDeploy', 'icon': 'upload' },
+                // {'title': lp.serviceDeploy, 'component': 'ServiceDeploy', 'icon': 'deploy' }
             ]
         },
         {
             'title': lp.securityConfig,
             "icon": "security",
             'children': [
-                {'title': lp.passwordConfig, 'component': '', 'icon': 'password' },
-                {'title': lp.loginConfig, 'component': '', 'icon': 'signin' },
-                {'title': lp.ssoConfig, 'component': '', 'icon': 'sso' },
+                {'title': lp.passwordConfig, 'component': 'SecurityPasswordConfig', 'icon': 'password' },
+                {'title': lp.loginConfig, 'component': 'SecurityLoginConfig', 'icon': 'signin' },
+                {'title': lp.ssoConfig, 'component': 'SecuritySSOConfig', 'icon': 'sso' },
                 {'title': lp.logConfig, 'component': '', 'icon': 'log' }
             ]
         },
@@ -61,6 +61,7 @@ function getMenuJson(){
                 {'title': lp.iconConfig, 'component': '', 'icon': 'icon' },
                 {'title': lp.ddConfig, 'component': '', 'icon': 'dingding' },
                 {'title': lp.wechatConfig, 'component': '', 'icon': 'wechat' },
+                {'title': lp.welinkConfig, 'component': '', 'icon': 'welink' },
                 {'title': lp.appTools, 'component': '', 'icon': 'tools' }
             ]
         }

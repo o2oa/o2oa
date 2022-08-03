@@ -100,9 +100,9 @@ o2.xDesktop.Default = new Class({
         this.path = o2.session.path+"/xDesktop/$Default/";
         this.node = $(node);
         this.node.empty();
+        this.options.style = layout.config.defaultSkin || "blue";
         this.initData();
-        this.zoom();
-        //this.load();
+        this.zoom(layout.config.scaleConfig===false ? 1 : 0);
     },
     initData: function(){
         this.apps = {};
@@ -114,6 +114,11 @@ o2.xDesktop.Default = new Class({
         this.serviceAddressList = layout.serviceAddressList;
         this.centerServer = layout.centerServer;
         this.session.user = layout.session.user;
+        this.status = layout.userLayout;
+
+        if (layout.config.openStatus==="index"){
+            this.status.apps = {};
+        }
 
         var uri = new URI(window.location.href);
         var df = uri.getData("default") || "";
@@ -123,17 +128,14 @@ o2.xDesktop.Default = new Class({
         var options = (optionsStr) ? JSON.decode(optionsStr) : null;
 
         if (appNames){
-            this.status = layout.userLayout;
             this.status.apps = {};
             this.status.apps[appNames] = options || {};
             this.status.apps[appNames].name = appNames;
             this.status.apps[appNames].appId = appNames;
             this.status.apps[appNames].isIndex = true;
-            this.status.currentApp = appNames;
-        }else{
-            this.status = layout.userLayout;
+            this.status.forceCurrentApp = appNames;
         }
-        if (this.status && this.status.flatStyle) this.options.style = this.status.flatStyle;
+        if (layout.config.skinConfig!==false && this.status && this.status.flatStyle) this.options.style = this.status.flatStyle;
     },
 
     load: function(cb){
@@ -144,8 +146,6 @@ o2.xDesktop.Default = new Class({
                 var iconsPath = this.path+"icons.json";
                 o2.JSON.get(iconsPath, function(json) {
                     this.iconsJson = json;
-                    this.loadDefaultLnk();
-
                     this.loadStatus();
 
                     if (cb) cb();
@@ -276,24 +276,14 @@ o2.xDesktop.Default = new Class({
             oReq.withCredentials = true;
             oReq.send();
 
-            // var res = new Request({
-            //     "url": this.session.user.iconUrl,
-            //     method: "get",
-            //     withCredentials: true,
-            //     onSuccess: function(response,a,s,d){
-            //
-            //     }.bind(this)
-            // });
-            // res.setHeader("authorization", layout.session.user.token);
-            // res.send();
-debugger;
+            if (layout.config.scaleConfig===false && this.zoomValueNode){
+                this.zoomValueNode.hide()
+            }
+
             this.sliderNode.getLast().set("title", o2.LP.desktop.returnZoom);
 
             this.node.loadCss(skinCss);
             if (callback) callback();
-            // this.node.load(html, {
-            //     "bind": {"user": this.session.user}
-            // }, function(){});
         }.bind(this));
     },
 
@@ -374,7 +364,10 @@ debugger;
     },
     loadDefaultLnk: function(){
         if (this.status && this.status.flatLnks && this.status.flatLnks.length){
-
+            this.status.flatLnks.each(function(lnkJson){
+                console.log(lnkJson.name)
+                this.addLnk(lnkJson);
+            }.bind(this));
         }else{
             o2.JSON.get(this.path+"defaultLnk.json", function(defaultLnk){
                 defaultLnk.each(function(lnkJson){
@@ -383,8 +376,7 @@ debugger;
             }.bind(this));
         }
     },
-    loadMenuData: function(){
-        debugger;
+    loadMenuData: function(callback){
         this.menuData = this.status.menuData;
         o2.UD.getPublicData("clearCustomMenuDataFlag", function(data){
             if (data && !!data.id && data.id != this.status.clearCustomMenuDataFlag){
@@ -396,6 +388,8 @@ debugger;
                 if (fData){
                     this.status.menuData=fData;
                     this.menuData = this.status.menuData;
+                    if (this.menuData.linkList) this.status.flatLnks = this.menuData.linkList;
+                    if (callback) callback();
                 }else{
                     if (!this.status.menuData){
                         o2.UD.getPublicData("defaultMainMenuData", function(dData){
@@ -403,7 +397,11 @@ debugger;
                                 this.status.menuData=dData;
                                 this.menuData = this.status.menuData;
                             }
+                            if (this.status.menuData && this.status.menuData.linkList) this.status.flatLnks = this.status.menuData.linkList;
+                            if (callback) callback();
                         }.bind(this));
+                    }else{
+                        if (callback) callback();
                     }
                 }
             }.bind(this));
@@ -411,7 +409,9 @@ debugger;
     },
     loadStatus: function(){
         if (this.status){
-            this.loadMenuData();
+            this.loadMenuData(function(){
+                this.loadDefaultLnk();
+            }.bind(this));
             //this.menuData = this.status.menuData;
             var keys = Object.keys(this.status.apps);
             if (this.status.apps && keys.length){
@@ -436,7 +436,7 @@ debugger;
                     app.taskitem = taskitem;
 
                     this.apps[appStatus.appId] = app;
-                    if ((this.status.currentApp === appStatus.appId)) currentTaskitem=taskitem;
+                    if ((this.status.currentApp === appStatus.appId && layout.config.openStatus!=="indexWithApp") || this.status.forceCurrentApp === appStatus.appId ) currentTaskitem=taskitem;
                     if (appStatus.appId=="Note") app.setCurrent();
                 }.bind(this));
 
@@ -448,11 +448,11 @@ debugger;
 
             if (this.status.widgets){/* nothing to do */}
 
-            if (this.status.flatLnks && this.status.flatLnks.length){
-                this.status.flatLnks.each(function(lnkJson){
-                    this.addLnk(lnkJson);
-                }.bind(this));
-            }
+            // if (this.status.flatLnks && this.status.flatLnks.length){
+            //     this.status.flatLnks.each(function(lnkJson){
+            //         this.addLnk(lnkJson);
+            //     }.bind(this));
+            // }
         }
     },
     addLnk: function(lnkData, targetLnk, position){
@@ -482,16 +482,20 @@ debugger;
     //******* begin page skin ****************************************************
     loadSkinMenu: function(){
         if (!this.styleMenu){
-            this.styleMenu = new o2.xDesktop.Menu(this.skinActionNode, {
-                "event": "click", "style": "flatStyle", "offsetX": -10, "offsetY": 26, "container": this.node,
-                "onQueryShow": this.showSkinMenu.bind(this),
-                "onQueryHide": function(){
-                    this.skinActionNode.removeClass("icon_skin_focus");
-                    this.skinActionNode.removeClass("mainColor_bg");
-                }.bind(this)
-            });
-            this.styleMenu.load();
-            this.loadSkinMenuItems();
+            if (layout.config.skinConfig===false){
+                if (this.skinActionNode) this.skinActionNode.destroy();
+            }else{
+                this.styleMenu = new o2.xDesktop.Menu(this.skinActionNode, {
+                    "event": "click", "style": "flatStyle", "offsetX": -10, "offsetY": 26, "container": this.node,
+                    "onQueryShow": this.showSkinMenu.bind(this),
+                    "onQueryHide": function(){
+                        this.skinActionNode.removeClass("icon_skin_focus");
+                        this.skinActionNode.removeClass("mainColor_bg");
+                    }.bind(this)
+                });
+                this.styleMenu.load();
+                this.loadSkinMenuItems();
+            }
         }
     },
     showSkinMenu: function(){

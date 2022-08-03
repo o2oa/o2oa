@@ -3377,9 +3377,14 @@ Object.defineProperties(bind.assignData, {"data": {
         return ((data instanceof javaClass.array) || typeOf(data) === "array") && createProxyArray(data);
     }
     function createProxyArray(data) {
-        return data.map(function (d) {
-            return createProxyData(d);
+        var arr = [];
+        data.forEach(function (d) {
+            arr.push(createProxyData(d));
         });
+        return arr;
+        // return data.map(function (d) {
+        //     return createProxyData(d);
+        // });
     }
     function createProxyData(data) {
         var proxyData;
@@ -3429,16 +3434,56 @@ Object.defineProperties(bind.assignData, {"data": {
     function isProxyData(data){
         return ProxyData.prototype.isPrototypeOf(data);
     }
+    function commitArray(arrList, proxy){
+        proxy.forEach(function(d, i){
+            if (Array.isArray(d)){
+                if (arrList.length<=i) arrList.add(new java.util.ArrayList());
+                commitArray(arrList[i], d)
+            }else if (isProxyData(d)){
+                d.commit();
+            }else if (d instanceof Object) {
+                if (arrList.length<=i) arrList.add(new java.util.LinkedHashMap());
+                commitObject(arrList[i], d)
+            }else{
+                if (arrList.length<=i){
+                    arrList.add(d);
+                }else if (arrList[i]!==d){
+                    arrList[i]=d;
+                }
+            }
+        });
+    }
+    function commitObject(map, proxy){
+        Object.keys(proxy).forEach(function(key){
+            var d = proxy[key];
+            if (Array.isArray(d)){
+                if (!map.containsKey(key)) map.put(key, new java.util.ArrayList());
+                commitArray(map[key], d)
+            }else if (isProxyData(d)){
+                d.commit();
+            }else if (d instanceof Object) {
+                if (!map.containsKey(key)) map.put(key, new java.util.LinkedHashMap());
+                commitObject(map[key], d)
+            }else{
+                if (!map.containsKey(key) || map[key] !== d) map.put(key, d);
+            }
+
+        });
+    }
     function commitData(data, proxy) {
         Object.keys(proxy).forEach(function (key) {
             var d = proxy[key];
             if (isProxyData(d)){
                 d.commit();
-            }else{
-                if (Array.isArray(d) || !data.containsKey(key)) data[key] = d;
+            }else if (Array.isArray(d)) {
+                if (!data.containsKey(key)) data[key] = new java.util.ArrayList();
+                commitArray(data[key], d)
+            }else if (!data.containsKey(key)){
+                data[key] = d;
             }
         })
     }
+
     function ProxyData(tData) {
         Object.defineProperty(this, "proxyData", {
             value: {}

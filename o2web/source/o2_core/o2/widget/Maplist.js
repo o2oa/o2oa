@@ -93,28 +93,40 @@ o2.widget.Maplist = new Class({
 			this.codeContentNode = new Element("div", {
 				"styles": this.css.contentNode
 			}).inject(this.container);
-			this.codeTextNode = new Element("textarea", {
-				"styles": this.css.codeTextNode,
-				"events": {
-					"blur": function(){
-						this.showCode();
-
-						this.isShowingCode = true;
-						window.setTimeout( function () {
-							this.isShowingCode = false;
-						}.bind(this), 1000 );
-
-						this.fireEvent("change");
-					}.bind(this)
-				}
-			}).inject(this.codeContentNode);
+			// this.codeTextNode = new Element("textarea", {
+			// 	"styles": this.css.codeTextNode,
+			// 	"events": {
+			// 		"blur": function(){
+			// 			this.showCode();
+            //
+			// 			this.isShowingCode = true;
+			// 			window.setTimeout( function () {
+			// 				this.isShowingCode = false;
+			// 			}.bind(this), 1000 );
+            //
+			// 			this.fireEvent("change");
+			// 		}.bind(this)
+			// 	}
+			// }).inject(this.codeContentNode);
 			var size = this.contentNode.getSize();
-			this.codeTextNode.setStyle("height", ""+size.y+"px");
+            var height = Math.max(size.y, 140);
+			this.codeContentNode.setStyle("height", ""+height+"px");
+            o2.require("o2.widget.JavascriptEditor", function(){
+                this.editor = new o2.widget.JavascriptEditor(this.codeContentNode, {
+                    "option": {
+                        "value": JSON.stringify(this.toJson(), null, '\t'),
+                        "mode": "json",
+                        "lineNumbers": false
+                    }
+                });
+                this.editor.load();
+            }.bind(this));
+
 			
-			o2.require("o2.widget.JsonParse", function(){
-				this.json = new o2.widget.JsonParse(this.toJson(), null, this.codeTextNode);
-				this.json.load();
-			}.bind(this));
+			// o2.require("o2.widget.JsonParse", function(){
+			// 	this.json = new o2.widget.JsonParse(this.toJson(), null, this.codeTextNode);
+			// 	this.json.load();
+			// }.bind(this));
 			
 			this.contentNode.setStyle("display", "none");
 			this.titleActionNode.setStyles({
@@ -129,7 +141,9 @@ o2.widget.Maplist = new Class({
 
 			this.contentNode.setStyle("display", "block");
 
-			this.loadContent(JSON.decode(this.codeTextNode.get("value")));
+
+            this.loadContent(JSON.decode(this.editor.getValue()));
+			// this.loadContent(JSON.decode(this.codeTextNode.get("value")));
 			this.fireEvent("change");
 			
 			this.codeContentNode.destroy();

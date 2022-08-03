@@ -1,13 +1,17 @@
 .appContent {
-    text-align: center
+    /*text-align: center*/
+}
+.systemconfig_tab_area .el-tabs__item{
+    font-size: 16px;
+    font-weight: bold;
 }
 
 @font-face {
     font-family: 'o2SystemConfig';
     src:
-            url('../x_component_systemconfig/$Main/default/fonts/o2SystemConfig.ttf?ma9ebp') format('truetype'),
-            url('../x_component_systemconfig/$Main/default/fonts/o2SystemConfig.woff?ma9ebp') format('woff'),
-            url('../x_component_systemconfig/$Main/default/fonts/o2SystemConfig.svg?ma9ebp#o2SystemConfig') format('svg');
+            url('../x_component_systemconfig/$Main/default/fonts/o2SystemConfig.ttf?tjx91t') format('truetype'),
+            url('../x_component_systemconfig/$Main/default/fonts/o2SystemConfig.woff?tjx91t') format('woff'),
+            url('../x_component_systemconfig/$Main/default/fonts/o2SystemConfig.svg?tjx91t#o2SystemConfig') format('svg');
     font-weight: normal;
     font-style: normal;
     font-display: block;
@@ -28,8 +32,23 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
-.o2icon-search:before {
-    content: "\e921";
+.o2icon-disable:before {
+    content: "\e926";
+}
+.o2icon-enable:before {
+    content: "\e927";
+}
+.o2icon-key:before {
+    content: "\e928";
+}
+.o2icon-plus:before {
+    content: "\e92a";
+}
+.o2icon-del:before {
+    content: "\e929";
+}
+.o2icon-close:before {
+    content: "\e925";
 }
 .o2icon-wechat:before {
     content: "\e900";
@@ -129,6 +148,9 @@
 }
 .o2icon-icon:before {
     content: "\e920";
+}
+.o2icon-search:before {
+    content: "\e921";
 }
 .o2icon-log:before {
     content: "\e922";

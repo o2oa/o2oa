@@ -1375,7 +1375,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         }else{
             var host = layout.desktop.centerServer.host || window.location.hostname;
             var port = layout.desktop.centerServer.port;
-            address = layout.config.app_protocol+"//"+host+(!port || port=="80" ? "" : ":"+port)+"/x_program_center";
+            address = layout.config.app_protocol+"//"+host+(!port || port=="80" ? "" : ":"+port)+"/"+contextRoot;
         }
         return address;
     },

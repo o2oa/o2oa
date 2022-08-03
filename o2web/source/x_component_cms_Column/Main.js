@@ -694,7 +694,7 @@ MWF.xApplication.cms.Column.Column = new Class({
         } else {
             this.app.desktop.openApplication(e, "cms.ColumnManager", {
                 "currentCategoryId" : currentCategoryId,
-                "column": this.data,
+                "column": {"id": this.data.id, "appName": this.data.appName, "appIcon": this.data.appIcon},
                 "appId": appId,
                 "onQueryLoad": function () {
                     this.status = {"navi": 0};

@@ -276,6 +276,11 @@ o2.widget.ScriptArea = new Class({
     },
     focus: function(){
         if (this.jsEditor) this.jsEditor.focus();
+    },
+    destroy: function(){
+        this.fireEvent("destroy");
+        this.container.destroy();
+        o2.release(this);
     }
 });
 
