@@ -29,7 +29,7 @@
 
 官方网站 : http://www.o2oa.net
 
-官方论坛 : https://forum.o2oa.net
+官方论坛 : https://www.o2oa.net/forum/
 
 
 # 关于正式环境数据安全相关的建议:
@@ -103,13 +103,13 @@ O2OA通过openjpa默认支持以下数据库:
 
 # 平台使用手册：
 
-https://www.o2oa.net/course/
+https://www.o2oa.net/handbook.html
 
 
 
 # 源码编译教程:
 
-http://www.o2oa.net/course/ng5iqb.html
+https://www.o2oa.net/cms/source/335.html
 
 
 
