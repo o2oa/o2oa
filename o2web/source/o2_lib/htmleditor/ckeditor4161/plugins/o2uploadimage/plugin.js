@@ -63,9 +63,9 @@
 			if (addressObj){
 				var address = layout.config.app_protocol+"//"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context;
 			}else{
-				var host = layout.config.center.host || window.location.hostname;
-				var port = layout.config.center.port;
-				var address = layout.config.app_protocol+"//"+host+(port=="80" ? "" : ":"+port)+"/x_program_center";
+				var host = layout.desktop.centerServer.host || window.location.hostname;
+				var port = layout.desktop.centerServer.port;
+				var address = layout.config.app_protocol+"//"+host+(port=="80" ? "" : ":"+port)+"/x_file_assemble_control";
 			}
 			var url = "/jaxrs/file/upload/referencetype/"+editor.config.referenceType+"/reference/"+editor.config.reference+"/scale/"+ getImageMaxWidth(editor);
 			return o2.filterUrl(address+url);

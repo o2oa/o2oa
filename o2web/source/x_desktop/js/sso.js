@@ -1,4 +1,6 @@
 window.layout = window.layout || {};
+layout.desktop = layout;
+layout.session = layout.session || {};
 function getServiceAddress(config, callback){
     window.layout.config = config;
     if (config.configMapping && (config.configMapping[window.location.host] || config.configMapping[window.location.hostname])) {
@@ -13,31 +15,22 @@ function getServiceAddress(config, callback){
             getServiceAddressConfigArray(layout.config, callback);
         }
     }else{
-        if (typeOf(config.center)=="object"){
-            getServiceAddressConfigObject(callback);
-        }else if (typeOf(config.center)=="array"){
-            // var center = chooseCenter(config);
-            // if (center){
-            //     getServiceAddressConfigObject(callback, center);
-            // }else{
-            getServiceAddressConfigArray(config, callback);
-            // }
+        if (config.center){
+            if (typeOf(config.center)==="object"){
+                getServiceAddressConfigObject(callback, config.center);
+            }else if (typeOf(config.center)==="array"){
+                getServiceAddressConfigArray(config, callback);
+            }
+        }else{
+            MWF.xDesktop.getServiceAddressConfigObject(callback, {
+                "host": window.location.hostname,
+                "port": window.location.port || 80
+            });
         }
+
     }
 
 
-}
-function chooseCenter(config){
-    var host = window.location.host;
-    var center = null;
-    for (var i=0; i<config.center.length; i++){
-        var ct = config.center[i];
-        if (ct.webHost==host){
-            center = ct;
-            break;
-        }
-    }
-    return center;
 }
 function getServiceAddressConfigArray(config, callback) {
     var requests = [];

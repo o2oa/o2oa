@@ -275,7 +275,7 @@ MWF.xDesktop.getImageSrc = function( id ){
     }else{
         var host = layout.config.center.host || window.location.hostname;
         var port = layout.config.center.port;
-        var address = layout.config.app_protocol+"//"+host+((port || port=="80") ? "" : ":"+port)+"/x_program_center";
+        var address = layout.config.app_protocol+"//"+host+((port || port=="80") ? "" : ":"+port)+"/x_file_assemble_control";
     }
     var url = "/jaxrs/file/"+id+"/download/stream";
     return o2.filterUrl(address+url);
@@ -373,54 +373,47 @@ MWF.xDesktop.getServiceAddress = function(config, callback){
         }
     };
 
-    if (typeOf(config.center)==="object"){
-        MWF.xDesktop.getServiceAddressConfigObject(config.center, callback, error);
-    }else if (typeOf(config.center)==="array"){
-        var center = null;
-        //var center = MWF.xDesktop.chooseCenter(config);
-        if (center){
-            MWF.xDesktop.getServiceAddressConfigObject(center, callback, function(){
-                MWF.xDesktop.getServiceAddressConfigArray(config, callback, error);
-            }.bind(this));
-        }else{
+    if (config.center){
+        if (typeOf(config.center)==="object"){
+            MWF.xDesktop.getServiceAddressConfigObject(config.center, callback, error);
+        }else if (typeOf(config.center)==="array"){
             MWF.xDesktop.getServiceAddressConfigArray(config, callback, error);
         }
+    }else{
+        MWF.xDesktop.getServiceAddressConfigObject( {
+            "host": window.location.hostname,
+            "port": window.location.port || 80
+        }, callback, error);
     }
 };
-MWF.xDesktop.chooseCenter = function(config){
-    var host = window.location.host;
-    var center = null;
-    for (var i=0; i<config.center.length; i++){
-        var ct = config.center[i];
-        if (!ct.host || (ct.host.toString().toLowerCase()===host.toString().toLowerCase())){
-            center = ct;
-            break;
-        }
-    }
-    return center;
-};
+
 MWF.xDesktop.getServiceAddressConfigArray = function(config, callback, error) {
     var requests = [];
+    var centers = {};
     config.center.each(function(center){
-        requests.push(
-            MWF.xDesktop.getServiceAddressConfigObject(center, function(serviceAddressList, center){
+        if (!centers[center.host+center.port]) {
+            centers[center.host + center.port] = true;
 
-                requests.each(function(res){
-                    if (res && res.res) if (res.res.isRunning()){res.res.cancel();}
-                    if (res && res.actionWorker) res.actionWorker.terminate();
-                });
-                if (callback) callback(serviceAddressList, center);
-            }.bind(this), function(){
+            requests.push(
+                MWF.xDesktop.getServiceAddressConfigObject(center, function(serviceAddressList, center){
 
-                if (requests.length){
-                    for (var i=0; i<requests.length; i++){
-                        if (requests[i].res) if (requests[i].res.isRunning()) return "";
-                        if (requests[i].actionWorker && requests[i].actionWorker.terminate) return "";
+                    requests.each(function(res){
+                        if (res && res.res) if (res.res.isRunning()){res.res.cancel();}
+                        if (res && res.actionWorker) res.actionWorker.terminate();
+                    });
+                    if (callback) callback(serviceAddressList, center);
+                }.bind(this), function(){
+
+                    if (requests.length){
+                        for (var i=0; i<requests.length; i++){
+                            if (requests[i].res) if (requests[i].res.isRunning()) return "";
+                            if (requests[i].actionWorker && requests[i].actionWorker.terminate) return "";
+                        }
                     }
-                }
-                if (error) error();
-            }.bind(this))
-        );
+                    if (error) error();
+                }.bind(this))
+            );
+        }
     }.bind(this));
 };
 MWF.xDesktop.getServiceAddressConfigObject = function(center, callback, error){

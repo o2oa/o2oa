@@ -29,6 +29,11 @@ layout.addReady(function(){
             }
 
             layout.openApplication(null, appName, option||{}, m_status);
+
+            o2.xDesktop.getUserLayout(function(){
+                var style = layout.userLayout.flatStyle;
+                o2.loadCss("../o2_core/o2/xDesktop/$Default/"+style+"/style-skin.css");
+            });
         };
 
         // if (layout.session && layout.session.user){
@@ -40,7 +45,15 @@ layout.addReady(function(){
         //         });
         //     }
         // }
-        _load();
+        if (layout.session && layout.session.user){
+            _load();
+        }else{
+            if (layout.sessionPromise){
+                layout.sessionPromise.then(function(){
+                    _load();
+                },function(){});
+            }
+        }
 
         window.addEventListener('popstate', function (event) {
             uri = new URI(document.location.href);

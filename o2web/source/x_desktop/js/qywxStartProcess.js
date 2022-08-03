@@ -307,8 +307,6 @@ o2.addReady(function () {
         o2.xDesktop.getServiceAddress(layout.config, function (service, center) {
             layout.serviceAddressList = service;
             layout.centerServer = center;
-            layout.desktop.serviceAddressList = service;
-            layout.desktop.centerServer = center;
             _loadProgressBar();
             if (callback) callback();
         }.bind(this));
