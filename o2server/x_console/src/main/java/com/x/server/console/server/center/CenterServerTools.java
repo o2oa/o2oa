@@ -59,7 +59,6 @@ public class CenterServerTools extends JettySeverTools {
 		modified(war, dir);
 
 		if (Objects.equals(Config.currentNode().getApplication().getPort(), centerServer.getPort())) {
-			// return startInApplication(centerServer);
 			return null;
 		} else {
 			return startStandalone(centerServer);
