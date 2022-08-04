@@ -85,6 +85,7 @@ public class WebServers extends ConcurrentSkipListMap<String, WebServer> {
 
 		map.put("loginPage", Config.portal().getLoginPage());
 		map.put("indexPage", Config.portal().getIndexPage());
+		map.put("urlMapping", Config.portal().getUrlMapping());
 
 		writeWebServerConfigPasswordPolicy(map);
 		writeWebServerConfigLanguage(map);
