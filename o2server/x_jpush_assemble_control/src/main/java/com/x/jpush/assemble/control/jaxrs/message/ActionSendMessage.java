@@ -237,7 +237,9 @@ public class ActionSendMessage  extends StandardJaxrsAction {
     private void send2Jpush(List<PushDevice> pushDeviceList, String message, JPushClient client) throws Exception {
         List<String> jiguangDeviceList = pushDeviceList.stream().map(PushDevice::getDeviceId).collect(Collectors.toList());
         Notification n = Notification.newBuilder()
-                .addPlatformNotification(IosNotification.alert(message))
+                // ios 消息
+                .addPlatformNotification(IosNotification.newBuilder().setSound("default").setAlert(message).build())
+                // android 消息
                 .addPlatformNotification(AndroidNotification.newBuilder().setPriority(2).setAlert(message).build())
                 .build();
         PushPayload pushPayload = PushPayload.newBuilder()
@@ -246,6 +248,7 @@ public class ActionSendMessage  extends StandardJaxrsAction {
 //                .setNotification(Notification.alert(message))
                 .setNotification(n)
                 .setOptions(Options.newBuilder().setApnsProduction(true).build()).build();
+        logger.info("极光推送 body: {}", pushPayload.toString());
         PushResult pushResult = client.sendPush(pushPayload);
         logger.info("极光推送 发送结果:{}.", pushResult);
     }
