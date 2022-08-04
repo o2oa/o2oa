@@ -41,7 +41,7 @@
                     var r = protocol + "//" + location.host + location.pathname;
                     r = r + "?oauth=" + oauth;
                     if (redirect) r = r + "&redirect=" + redirect;
-
+                    r = o2.filterUrl(r);
                     var action = MWF.Actions.get("x_organization_assemble_authentication");
                     //企业微信单点登录
                     if (layout.isQywx()) {
@@ -113,6 +113,7 @@
                             }
                             var r = protocol + "//" + location.host + location.pathname;
                             r = r + "?oauth=" + oauth + "&dingding=true";
+                            r = o2.filterUrl(r);
                             url += "&redirect_uri=" + encodeURIComponent(r);
                             window.location = url;
                         }.bind(this));
@@ -124,6 +125,7 @@
                             r = r + "?oauth=" + oauth;
                             if (method) r = r + "&method=" + method;
                             if (redirect) r = r + "&redirect=" + redirect;
+                            r = o2.filterUrl(r);
                             if (p.indexOf("{$redirect_uri}")!==-1){
                                 p = p.replace("{$redirect_uri}", encodeURIComponent(r));
                             }else{
