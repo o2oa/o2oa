@@ -141,6 +141,10 @@ public class ActionQueryListWithFilterPaging extends BaseAction {
 							//需要组装数据
 							wo.setData( documentQueryService.getDocumentData( document ) );
 						}
+						Long count = documentViewRecordServiceAdv.countWithDocIdAndPerson(wo.getId(), effectivePerson.getDistinguishedName());
+						if(count!=null && count > 0){
+							wo.setHasRead(true);
+						}
 					} catch (Exception e) {
 						check = false;
 						Exception exception = new ExceptionDocumentInfoProcess(e, "系统获取文档数据内容信息时发生异常。Id:" + document.getCategoryId());

@@ -22,7 +22,7 @@ public class DocumentViewRecordService {
 		Business business = new Business( emc );
 		return business.documentViewRecordFactory().list( ids );
 	}
-	
+
 	public List<String> listByDocument( EntityManagerContainer emc, String docId ) throws Exception {
 		if( StringUtils.isEmpty( docId ) ){
 			return null;
@@ -30,7 +30,7 @@ public class DocumentViewRecordService {
 		Business business = new Business( emc );
 		return business.documentViewRecordFactory().listByDocument(docId);
 	}
-	
+
 	public List<String> listByPerson( EntityManagerContainer emc, String personId, Integer maxCount ) throws Exception {
 		if( StringUtils.isEmpty( personId ) ){
 			return null;
@@ -41,7 +41,7 @@ public class DocumentViewRecordService {
 		Business business = new Business( emc );
 		return business.documentViewRecordFactory().listByPerson( personId, maxCount );
 	}
-	
+
 	public List<String> listDocIdsByPerson( EntityManagerContainer emc, String personId, Integer maxCount ) throws Exception {
 		if( StringUtils.isEmpty( personId ) ){
 			return null;
@@ -88,13 +88,18 @@ public class DocumentViewRecordService {
 					sequenceFieldValue = PropertyUtils.getProperty( documentViewRecord, "lastViewTime" );
 				}
 			}
-		}		
+		}
 		return business.documentViewRecordFactory().listNextWithDocIds( docId, count, sequenceFieldValue, order );
 	}
 
 	public Long countWithDocIds(EntityManagerContainer emc, String docId) throws Exception {
-		Business business = new Business(emc);	
+		Business business = new Business(emc);
 		return business.documentViewRecordFactory().countWithDocIds( docId );
 	}
-	
+
+	public Long countWithDocIdAndPerson(EntityManagerContainer emc, String docId, String person) throws Exception {
+		Business business = new Business(emc);
+		return business.documentViewRecordFactory().countWithDocIdAndPerson( docId, person);
+	}
+
 }

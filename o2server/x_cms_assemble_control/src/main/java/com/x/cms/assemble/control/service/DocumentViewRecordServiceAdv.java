@@ -241,6 +241,17 @@ public class DocumentViewRecordServiceAdv {
 		}
 	}
 
+	public Long countWithDocIdAndPerson( String docId, String person ) throws Exception {
+		if( docId == null ){
+			throw new Exception("docId is null!");
+		}
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
+			return documentViewRecordService.countWithDocIdAndPerson( emc, docId, person);
+		} catch ( Exception e ) {
+			throw e;
+		}
+	}
+
 	/**
 	 * 对文档访问日志信息进行清理
 	 * @param stay_yeanumr_viewRecord 日志保留年份
