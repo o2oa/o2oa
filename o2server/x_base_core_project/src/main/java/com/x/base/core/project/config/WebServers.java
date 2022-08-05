@@ -66,13 +66,13 @@ public class WebServers extends ConcurrentSkipListMap<String, WebServer> {
 			map.put("center", centers);
 			Map<String, String> center = new HashMap<>();
 			center.put("host", "");
-			center.put("port", Config.currentNode().getWeb().getPort().toString());
+			center.put("port", Config.currentNode().getCenter().getPort().toString());
 			centers.add(center);
-			if (!Objects.equals(Config.currentNode().getWeb().getProxyPort(),
-					Config.currentNode().getWeb().getPort())) {
+			if (!Objects.equals(Config.currentNode().getCenter().getProxyPort(),
+					Config.currentNode().getCenter().getPort())) {
 				center = new HashMap<>();
 				center.put("host", "");
-				center.put("port", Config.currentNode().getWeb().getProxyPort().toString());
+				center.put("port", Config.currentNode().getCenter().getProxyPort().toString());
 				centers.add(center);
 			}
 		}
