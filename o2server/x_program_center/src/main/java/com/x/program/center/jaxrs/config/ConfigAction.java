@@ -290,6 +290,24 @@ public class ConfigAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
+	@JaxrsMethodDescribe(value = "打开运行环境的config文件", action = ActionOpenRuntimeConfig.class)
+	@POST
+	@Path("open/run/time/config")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void openRuntimeConfig(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					 JsonElement jsonElement) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<ActionOpenRuntimeConfig.Wo> result = new ActionResult<>();
+		try {
+			result = new ActionOpenRuntimeConfig().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+	}
+
 	@JaxrsMethodDescribe(value = "保存config文件", action = ActionSave.class)
 	@POST
 	@Path("save")

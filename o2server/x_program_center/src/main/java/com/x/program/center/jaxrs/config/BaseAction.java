@@ -13,7 +13,9 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.program.center.ThisApplication;
 
 class BaseAction extends StandardJaxrsAction {
-	
+
+	protected static final String SLASH = "/";
+
 	public static class AbstractWoProxy extends GsonPropertyObject {
 
 		private static final long serialVersionUID = -4901521017475819615L;

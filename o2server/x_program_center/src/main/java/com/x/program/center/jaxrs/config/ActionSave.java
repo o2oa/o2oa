@@ -31,7 +31,7 @@ import org.apache.commons.lang3.StringUtils;
 
 /**
  * 系统配置文件保存
- * 
+ *
  * @author sword
  */
 public class ActionSave extends BaseAction {
@@ -48,7 +48,7 @@ public class ActionSave extends BaseAction {
 		if (StringUtils.isBlank(fileName)) {
 			throw new ExceptionNameEmpty();
 		}
-		if(fileName.indexOf("/") > -1){
+		if(fileName.indexOf(SLASH) > -1){
 			throw new IllegalAccessException("名称不能包含'/'!");
 		}
 
@@ -93,7 +93,7 @@ public class ActionSave extends BaseAction {
 
 	/**
 	 * 文件同步
-	 * 
+	 *
 	 * @param syncFilePath
 	 * @param nodeName
 	 * @param nodePort
@@ -136,33 +136,11 @@ public class ActionSave extends BaseAction {
 
 	public static class Wi extends GsonPropertyObject {
 
-		@FieldDescribe("服务器地址(*代表多台应用服务器)")
-		private String nodeName;
-
-		@FieldDescribe("服务端口")
-		private String nodePort;
-
 		@FieldDescribe("文件名")
 		private String fileName;
 
 		@FieldDescribe("config文件内容")
 		private String fileContent;
-
-		public String getNodeName() {
-			return nodeName;
-		}
-
-		public void setNodeName(String nodeName) {
-			this.nodeName = nodeName;
-		}
-
-		public String getNodePort() {
-			return nodePort;
-		}
-
-		public void setNodePort(String nodePort) {
-			this.nodePort = nodePort;
-		}
 
 		public String getFileName() {
 			return fileName;
@@ -190,15 +168,6 @@ public class ActionSave extends BaseAction {
 		@FieldDescribe("执行结果")
 		private String status;
 
-		@FieldDescribe("执行消息")
-		private String message;
-
-		@FieldDescribe("config文件内容")
-		private String fileContent;
-
-		@FieldDescribe("是否Sample")
-		private boolean isSample;
-
 		public String getTime() {
 			return time;
 		}
@@ -213,30 +182,6 @@ public class ActionSave extends BaseAction {
 
 		public void setStatus(String status) {
 			this.status = status;
-		}
-
-		public String getFileContent() {
-			return fileContent;
-		}
-
-		public void setFileContent(String fileContent) {
-			this.fileContent = fileContent;
-		}
-
-		public boolean isSample() {
-			return isSample;
-		}
-
-		public void setSample(boolean isSample) {
-			this.isSample = isSample;
-		}
-
-		public String getMessage() {
-			return message;
-		}
-
-		public void setMessage(String message) {
-			this.message = message;
 		}
 
 	}
