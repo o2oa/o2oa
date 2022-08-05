@@ -228,7 +228,7 @@ public class ActionPersistSaveDocument extends BaseAction {
 		}
 
 		if (check) {
-			if( StringUtils.equals( wi.getDocStatus(), "published")) {
+			if( StringUtils.equals( wi.getDocStatus(), Document.DOC_STATUS_PUBLISH)) {
 				if( document.getPublishTime() == null ) {
 					document.setPublishTime( new Date() );
 				}

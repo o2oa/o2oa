@@ -130,120 +130,12 @@ public class QueueSendDocumentNotify extends AbstractQueue<DocumentNotify> {
 		return persons;
 	}
 
-	public static class MessageWo{
+	public static class MessageWo extends Document{
 
 		public static List<String> excludes = new ArrayList<String>();
 
-		public static final WrapCopier<Document, MessageWo> copier = WrapCopierFactory.wo(Document.class, MessageWo.class, null, JpaObject.FieldsInvisible);
+		public static final WrapCopier<Document, MessageWo> copier = WrapCopierFactory.wo(Document.class, MessageWo.class,
+				JpaObject.singularAttributeField(Document.class, true, true), null);
 
-		@FieldDescribe("数据库主键,自动生成.")
-		private String id;
-
-		@FieldDescribe("文档摘要")
-		private String summary;
-
-		@FieldDescribe("文档标题")
-		private String title;
-
-		@FieldDescribe("文档类型，跟随分类类型，信息 | 数据")
-		private String documentType = "信息";
-
-		@FieldDescribe("栏目ID")
-		private String appId;
-
-		@FieldDescribe("栏目名称")
-		private String appName;
-
-		@FieldDescribe("分类ID")
-		private String categoryId;
-
-		@FieldDescribe("分类名称")
-		private String categoryName;
-
-		@FieldDescribe("创建人，可能为空，如果由系统创建。")
-		private String creatorPerson;
-
-		@FieldDescribe("文档发布时间")
-		private Date publishTime;
-
-		public String getId() {
-			return id;
-		}
-
-		public void setId(String id) {
-			this.id = id;
-		}
-
-		public String getSummary() {
-			return summary;
-		}
-
-		public void setSummary(String summary) {
-			this.summary = summary;
-		}
-
-		public String getTitle() {
-			return title;
-		}
-
-		public void setTitle(String title) {
-			this.title = title;
-		}
-
-		public String getDocumentType() {
-			return documentType;
-		}
-
-		public void setDocumentType(String documentType) {
-			this.documentType = documentType;
-		}
-
-		public String getAppId() {
-			return appId;
-		}
-
-		public void setAppId(String appId) {
-			this.appId = appId;
-		}
-
-		public String getAppName() {
-			return appName;
-		}
-
-		public void setAppName(String appName) {
-			this.appName = appName;
-		}
-
-		public String getCategoryId() {
-			return categoryId;
-		}
-
-		public void setCategoryId(String categoryId) {
-			this.categoryId = categoryId;
-		}
-
-		public String getCategoryName() {
-			return categoryName;
-		}
-
-		public void setCategoryName(String categoryName) {
-			this.categoryName = categoryName;
-		}
-
-		public String getCreatorPerson() {
-			return creatorPerson;
-		}
-
-		public void setCreatorPerson(String creatorPerson) {
-			this.creatorPerson = creatorPerson;
-		}
-
-		public Date getPublishTime() {
-			return publishTime;
-		}
-
-		public void setPublishTime(Date publishTime) {
-			this.publishTime = publishTime;
-		}
 	}
 }

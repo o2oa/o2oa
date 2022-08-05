@@ -59,7 +59,7 @@ public class WrapInDocumentFilter {
 	@FieldDescribe( "作为过滤条件的创建者姓名列表, 可多个, String数组." )
 	private List<String> creatorList;
 
-	@FieldDescribe( "作为过滤条件的文档状态列表, 可多个, String数组，值：published(默认值) | draft | archived" )
+	@FieldDescribe( "作为过滤条件的文档状态列表, 可多个, String数组，值：published(默认值) | waitPublish(待发布) | draft(草稿) | archived(归档)" )
 	private List<String> statusList;
 
 	@FieldDescribe( "创建日期列表，可以传入1个(开始时间)或者2个(开始和结束时间), 格式：yyyy-MM-dd HH:mm:ss或者yyyy-mm-dd." )

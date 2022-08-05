@@ -226,7 +226,7 @@ public class ActionPersistPublishContent extends BaseAction {
 
 		if (check) {
 			try {
-				wi.setDocStatus("published");
+				wi.setDocStatus(Document.DOC_STATUS_PUBLISH);
 				if( wi.getPublishTime() == null ) { wi.setPublishTime(new Date()); }
 				document =  Wi.copier.copy(wi);
 				document.setId( wi.getId() );

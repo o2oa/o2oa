@@ -6,6 +6,10 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.MessageConnector;
 import com.x.cms.assemble.control.queue.QueueSendDocumentNotify.MessageWo;
 
+/**
+ * 消息发送
+ * @author sword
+ */
 public class MessageFactory {
 
 	private static Logger logger = LoggerFactory.getLogger( MessageFactory.class );

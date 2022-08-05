@@ -202,7 +202,7 @@ public class Document extends SliceJpaObject {
 	private String creatorTopUnitName;
 
 	public static final String docStatus_FIELDNAME = "docStatus";
-	@FieldDescribe("文档状态: published | draft | checking | error")
+	@FieldDescribe("文档状态: published | waitPublish | draft | archived")
 	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + docStatus_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + docStatus_FIELDNAME)
 	@CheckPersist(allowEmpty = true)

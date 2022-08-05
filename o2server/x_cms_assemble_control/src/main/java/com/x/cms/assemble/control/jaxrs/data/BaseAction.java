@@ -3,6 +3,11 @@ package com.x.cms.assemble.control.jaxrs.data;
 import java.util.List;
 import java.util.Objects;
 
+import com.google.gson.reflect.TypeToken;
+import com.x.cms.assemble.control.factory.ProjectionFactory;
+import com.x.cms.core.entity.CategoryInfo;
+import com.x.cms.core.entity.Projection;
+import com.x.cms.core.entity.content.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -20,14 +25,14 @@ import com.x.cms.core.entity.Document;
 import com.x.query.core.entity.Item;
 
 public class BaseAction extends StandardJaxrsAction {
-	
+
 	private static final String title_path = "title";
 	private static final String subject_path = "subject";
 //	protected Cache.CacheCategory cacheCategory = new Cache.CacheCategory(Item.class, Document.class);
 	protected UserManagerService userManagerService = new UserManagerService();
 	protected CategoryInfoServiceAdv categoryInfoServiceAdv = new CategoryInfoServiceAdv();
 	protected DocumentQueryService documentServiceAdv = new DocumentQueryService();
-	
+
 	JsonElement getData(Business business, String job, String... paths) throws Exception {
 		JsonElement jsonElement = null;
 		List<Item> list = business.itemFactory().listWithDocmentWithPath(job, paths);
@@ -58,7 +63,7 @@ public class BaseAction extends StandardJaxrsAction {
 		List<Item> currents = converter.disassemble(jsonElement, paths);
 		List<Item> removes = converter.subtract(exists, currents);
 		List<Item> adds = converter.subtract(currents, exists);
-		
+
 		if ((!removes.isEmpty()) || (!adds.isEmpty())) {
 			business.entityManagerContainer().beginTransaction(Item.class);
 			for (Item _o : removes) {
@@ -68,8 +73,20 @@ public class BaseAction extends StandardJaxrsAction {
 				this.fill(_o, document);
 				business.entityManagerContainer().persist(_o);
 			}
+			this.projection(business, document, XGsonBuilder.convert(jsonElement, Data.class));
 			/* 基于前面的原因,这里进行单独提交 */
 			business.entityManagerContainer().commit();
+		}
+	}
+
+	private void projection(Business business, Document document, Data data) throws Exception {
+		CategoryInfo categoryInfo = business.entityManagerContainer().find(document.getCategoryId(), CategoryInfo.class);
+		if(categoryInfo!=null && StringUtils.isNotBlank(categoryInfo.getProjection())
+				&& XGsonBuilder.isJsonArray(categoryInfo.getProjection())){
+			business.entityManagerContainer().beginTransaction(Document.class);
+			List<Projection> projections = XGsonBuilder.instance().fromJson(categoryInfo.getProjection(),
+					new TypeToken<List<Projection>>(){}.getType());
+			ProjectionFactory.projectionDocument(projections, data, document);
 		}
 	}
 
@@ -144,5 +161,5 @@ public class BaseAction extends StandardJaxrsAction {
 		o.setBundle(document.getId());
 		o.setItemCategory(ItemCategory.cms);
 	}
-	
+
 }

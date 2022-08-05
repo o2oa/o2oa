@@ -45,100 +45,39 @@ public class ActionQueryGetControl extends BaseAction {
 		Wo wo = new Wo();
 		WoControl woControl = new WoControl();
 		Long reviewCount = null;
-		Document document = null;
 		Boolean isAppAdmin = false;
 		Boolean isCategoryAdmin = false;
-		Boolean isManager = false;
+		Boolean isManager = effectivePerson.isManager();
 		Boolean isCreator = false;
 		Boolean check = true;
-		List<String> unitNames = null;
-		List<String> groupNames = null;
 		String personName = effectivePerson.getDistinguishedName();
-
-		if ( StringUtils.isEmpty(id)) {
-			check = false;
-			Exception exception = new ExceptionDocumentIdEmpty();
-			result.error(exception);
-		}
-
-		if (check) {
-			try {
-				if (effectivePerson.isManager()) {
-					isManager = true;
-				}
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new ExceptionDocumentInfoProcess(e, "判断用户是否是系统管理员时发生异常！user:" + personName);
-				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
-			}
-		}
-
-		if (check) {
-			try {
-				document = documentQueryService.get(id);
-				if (document == null) {
-					check = false;
-					Exception exception = new ExceptionDocumentNotExists(id);
-					result.error(exception);
-				}
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new ExceptionDocumentInfoProcess(e, "文档信息获取操作时发生异常。Id:" + id + ", Name:" + personName);
-				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
-			}
+		Document document = documentQueryService.get(id);
+		if(document == null){
+			throw new ExceptionDocumentNotExists(id);
 		}
 
 		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), effectivePerson.getDistinguishedName(), id, isManager );
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey );
 
 		if (optional.isPresent()) {
-			result.setData((Wo) optional.get());
+			wo = (Wo) optional.get();
 			woControl = wo.getControl();
 		} else {
-			if (check) {
-				try {
-					reviewCount = documentQueryService.getViewableReview(id, personName);
-					if (reviewCount > 0 ) {
-						woControl.setAllowVisit(true);
-					}
-				} catch (Exception e) {
-					check = false;
-					Exception exception = new ExceptionDocumentInfoProcess(e, "文档信息获取操作时发生异常。Id:" + id + ", Name:" + personName);
-					result.error(exception);
-					logger.error(e, effectivePerson, request, null);
-				}
+			reviewCount = documentQueryService.getViewableReview(id, personName);
+			if (reviewCount > 0 ) {
+				woControl.setAllowVisit(true);
 			}
-
-			//判断用户是否是文档的创建者，创建者是有权限编辑文档的
-			if (check) {
-				if (wo != null && StringUtils.equals( personName, document.getCreatorPerson())) {
-					isCreator = true;
-					woControl.setAllowVisit(true);
-				}
+			if (StringUtils.equals( personName, document.getCreatorPerson())) {
+				isCreator = true;
+				woControl.setAllowVisit(true);
 			}
-
-			if (check) {
-				wo.setControl(woControl);
-				CacheManager.put(cacheCategory, cacheKey, wo );
-			}
+			wo.setControl(woControl);
+			CacheManager.put(cacheCategory, cacheKey, wo );
 		}
 
-		/////////////////////////////////////////////////////////////
 		//不管是从缓存还是数据库查出来，都要重新进行处理权限判断
-		/////////////////////////////////////////////////////////////
-		if (check) {
-			try {
-				unitNames = userManagerService.listUnitNamesWithPerson( personName );
-				groupNames = userManagerService.listGroupNamesByPerson( personName );
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new ExceptionDocumentInfoProcess(e, "查询用户所有的组织和群组信息时发生异常！user:" + personName);
-				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
-			}
-		}
+		List<String> unitNames = userManagerService.listUnitNamesWithPerson( personName );
+		List<String> groupNames = userManagerService.listGroupNamesByPerson( personName );
 
 		AppInfo appInfo = null;
 		CategoryInfo categoryInfo = null;

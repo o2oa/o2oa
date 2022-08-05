@@ -124,6 +124,9 @@ public class WrapOutDocumentList extends GsonPropertyObject {
 	@FieldDescribe("业务数据DateTime值03.")
 	private Date dateTimeValue03;
 
+	@FieldDescribe( "是否已读." )
+	private Boolean hasRead = false;
+
 	/**
 	 * 只作显示用
 	 */
@@ -460,5 +463,13 @@ public class WrapOutDocumentList extends GsonPropertyObject {
 
 	public void setDateTimeValue03(Date dateTimeValue03) {
 		this.dateTimeValue03 = dateTimeValue03;
+	}
+
+	public Boolean getHasRead() {
+		return hasRead;
+	}
+
+	public void setHasRead(Boolean hasRead) {
+		this.hasRead = hasRead;
 	}
 }

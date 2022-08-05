@@ -92,6 +92,10 @@ public class ActionQueryListWithFilterPagingAdmin extends BaseAction {
 					//需要组装数据
 					wo.setData( documentQueryService.getDocumentData( document ) );
 				}
+				Long count = documentViewRecordServiceAdv.countWithDocIdAndPerson(wo.getId(), personName);
+				if(count!=null && count > 0){
+					wo.setHasRead(true);
+				}
 			} catch (Exception e) {
 				logger.error(e, effectivePerson, request, null);
 			}
