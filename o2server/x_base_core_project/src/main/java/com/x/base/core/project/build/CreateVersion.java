@@ -25,7 +25,6 @@ public class CreateVersion {
 			map = fromMaven(base);
 		}
 		FileUtils.write(file, XGsonBuilder.toJson(map), StandardCharsets.UTF_8);
-		System.exit(0);
 	}
 
 	private static Map<String, String> fromGit(File base) {
