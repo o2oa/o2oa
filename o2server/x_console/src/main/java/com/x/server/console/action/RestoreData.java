@@ -113,7 +113,10 @@ public class RestoreData {
 				PersistenceXmlHelper.write(xml.toString(), classNames, true, classLoader);
 				AtomicInteger idx = new AtomicInteger(1);
 				AtomicLong total = new AtomicLong(0);
-				classNames.stream().forEach(className -> {
+				Stream<String> stream = BooleanUtils.isTrue(Config.dumpRestoreData().getParallel())
+						? classNames.parallelStream()
+						: classNames.stream();
+				stream.stream().forEach(className -> {
 					Thread.currentThread().setContextClassLoader(classLoader);
 					try {
 						@SuppressWarnings("unchecked")
@@ -258,6 +261,7 @@ public class RestoreData {
 				ContainerEntity containerEntity) throws Exception {
 			List<T> list = null;
 			do {
+				list = list(cls, em, containerEntity);
 				if (ListTools.isNotEmpty(list)) {
 					em.getTransaction().begin();
 					for (T t : list) {
@@ -272,8 +276,8 @@ public class RestoreData {
 						em.remove(t);
 					}
 					em.getTransaction().commit();
+					em.clear();
 				}
-				list = list(cls, em, containerEntity);
 			} while (ListTools.isNotEmpty(list));
 		}
 

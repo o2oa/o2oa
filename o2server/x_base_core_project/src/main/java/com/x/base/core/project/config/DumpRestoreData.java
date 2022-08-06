@@ -26,6 +26,7 @@ public class DumpRestoreData extends ConfigObject {
 	public static final Boolean DEFAULT_EXCEPTIONINVALIDSTORAGE = true;
 	public static final Boolean DEFAULT_ATTACHSTORAGE = true;
 	public static final String DEFAULT_ITEMCATEGORY = "";
+	public static final Boolean DEFAULT_PARALLEL = true;
 
 	public DumpRestoreData() {
 		this.includes = new ArrayList<>();
@@ -34,6 +35,7 @@ public class DumpRestoreData extends ConfigObject {
 		this.attachStorage = DEFAULT_ATTACHSTORAGE;
 		this.exceptionInvalidStorage = DEFAULT_EXCEPTIONINVALIDSTORAGE;
 		this.itemCategory = DEFAULT_ITEMCATEGORY;
+		this.parallel = DEFAULT_PARALLEL;
 	}
 
 	@FieldDescribe("导出导入包含对象,可以使用通配符*,如仅导出待办数据:com.x.processplatform.core.entity.content.Task.")
@@ -53,6 +55,13 @@ public class DumpRestoreData extends ConfigObject {
 
 	@FieldDescribe("是否进行重新分布.")
 	private Boolean redistributeStorage;
+
+	@FieldDescribe("使用并行导出,默认true")
+	private Boolean parallel;
+
+	public Boolean getParallel() {
+		return BooleanUtils.isNotFalse(parallel);
+	}
 
 	public Boolean getRedistributeStorage() {
 		return redistributeStorage;
