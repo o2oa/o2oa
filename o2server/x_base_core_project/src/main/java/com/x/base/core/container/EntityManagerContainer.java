@@ -39,7 +39,6 @@ import com.x.base.core.entity.tools.JpaObjectTools;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.gson.GsonPropertyObject;
-import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.NumberTools;
 import com.x.base.core.project.tools.StringTools;
@@ -79,12 +78,12 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 	@SuppressWarnings("unchecked")
 	public void check(JpaObject jpa, CheckPersistType checkPersistType) throws Exception {
 		jpa.onPersist();
+		checkId(jpa);
 		for (Entry<Field, CheckPersist> entry : entityManagerContainerFactory.getCheckPersistFields(jpa.getClass())
 				.entrySet()) {
 			Field field = entry.getKey();
 			CheckPersist checkPersist = entry.getValue();
 			FieldType fieldType = this.getFieldType(entry.getKey());
-			// Object object = jpa.get(field.getName());
 			Object object = FieldUtils.readField(field, jpa, true);
 			switch (fieldType) {
 			case stringValue:
@@ -155,6 +154,14 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		}
 	}
 
+	private void checkId(JpaObject jpa) throws Exception {
+		String value = jpa.getId();
+		if (null == value || (!StringTools.UUID_REGEX.matcher(value).matches())) {
+			throw new Exception("check id error, class:" + jpa.getClass().getName() + ", field:id, value:" + value
+					+ ", invalid format.");
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	public void check(JpaObject jpa, CheckRemoveType checkRemoveType) throws Exception {
 		for (Entry<Field, CheckRemove> entry : entityManagerContainerFactory.getCheckRemoveFields(jpa.getClass())
@@ -162,7 +169,6 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 			Field field = entry.getKey();
 			CheckRemove checkRemove = entry.getValue();
 			FieldType fieldType = this.getFieldType(entry.getKey());
-			// Object object = jpa.get(field.getName());
 			Object object = FieldUtils.readField(field, jpa, true);
 			switch (fieldType) {
 			case stringValue:
@@ -188,11 +194,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 	 * @throws Exception
 	 */
 	public <T extends JpaObject> boolean idle(String id, Class<T> cls) throws Exception {
-		T t = this.fetch(id, cls, new ArrayList<String>());
-		if (t == null) {
-			return true;
-		}
-		return false;
+		return null == this.fetch(id, cls, new ArrayList<String>());
 	}
 
 	public <T extends JpaObject> T find(String id, Class<T> cls) throws Exception {
