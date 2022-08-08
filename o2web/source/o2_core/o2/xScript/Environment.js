@@ -211,19 +211,19 @@ MWF.xScript.Environment = function(ev){
      * var context = this.workContext;
      */
     this.workContext = {
-    //  * <div><br/>
-    //  * 下面的Work对象和WorkCompleted对象为后台返回的数据，在前端脚本中我们对这两个对象进行了修改和补充，如下：
-    // * </div>
-    // * <pre><code class='language-js'>{
-    //     *      "creatorPersonDn": "张三@zhangsan@P",		//创建人，可能为空，如果由系统创建.
-    //     *      "creatorPerson": "张三",  //创建人姓名
-    //     *      "creatorIdentityDn": "张三@481c9edc-5fb5-41f1-b5c2-6ea609082cdb@I",		//创建人Identity,可能为空,如果由系统创建.
-    //     *      "creatorIdentity": "张三" //创建人姓名
-    //     *      "creatorUnitDn": "开发部@c448d8bb-98b8-4305-9d3f-12537723cfcc@U", //创建人组织全称,如果由系统创建。
-    //     *      "creatorUnit": "开发部",  //创建人组织名称
-    //     *      "creatorDepartment": "开发部",  //创建人组织名称，同creatorUnit
-    //     *      "creatorCompany": "xx公司"  //创建人顶层组织名称，creatorUnitLevelName的第一段
-    //     * }</code></pre>
+        //  * <div><br/>
+        //  * 下面的Work对象和WorkCompleted对象为后台返回的数据，在前端脚本中我们对这两个对象进行了修改和补充，如下：
+        // * </div>
+        // * <pre><code class='language-js'>{
+        //     *      "creatorPersonDn": "张三@zhangsan@P",		//创建人，可能为空，如果由系统创建.
+        //     *      "creatorPerson": "张三",  //创建人姓名
+        //     *      "creatorIdentityDn": "张三@481c9edc-5fb5-41f1-b5c2-6ea609082cdb@I",		//创建人Identity,可能为空,如果由系统创建.
+        //     *      "creatorIdentity": "张三" //创建人姓名
+        //     *      "creatorUnitDn": "开发部@c448d8bb-98b8-4305-9d3f-12537723cfcc@U", //创建人组织全称,如果由系统创建。
+        //     *      "creatorUnit": "开发部",  //创建人组织名称
+        //     *      "creatorDepartment": "开发部",  //创建人组织名称，同creatorUnit
+        //     *      "creatorCompany": "xx公司"  //创建人顶层组织名称，creatorUnitLevelName的第一段
+        //     * }</code></pre>
 
         /**
          * 获取当前流程实例对象：work对象或workCompleted对象。
@@ -1925,9 +1925,19 @@ MWF.xScript.Environment = function(ev){
         },
         parseFilter : function( filter, parameter ){
             if( typeOf(filter) !== "array" )return [];
+            if( !parameter )parameter = {};
             var filterList = [];
             ( filter || [] ).each( function (d) {
-                var parameterName = d.path.replace(/\./g, "_");
+                //var parameterName = d.path.replace(/\./g, "_");
+                var pName = d.path.replace(/\./g, "_");
+
+                var parameterName = pName;
+                var suffix = 1;
+                while( parameter[parameterName] ){
+                    parameterName = pName + "_" + suffix;
+                    suffix++;
+                }
+
                 var value = d.value;
                 if( d.comparison === "like" || d.comparison === "notLike" ){
                     if( value.substr(0, 1) !== "%" )value = "%"+value;
@@ -1940,6 +1950,8 @@ MWF.xScript.Environment = function(ev){
                         value = "{d '"+value+"'}"
                     }else if( d.formatType === "timeValue" ){
                         value = "{t '"+value+"'}"
+                    } else if (d.formatType === "numberValue"){
+                        value = parseFloat(value);
                     }
                     parameter[ parameterName ] = value;
                 }
@@ -2939,7 +2951,7 @@ MWF.xScript.Environment = function(ev){
          * @method startIM
          * @static
          * @param {String} [jobId] - 当前工作的jobId<br/>
-         *  
+         *
          * @example
          //带参数，启动创建界面
          this.form.startIM("jobId");
@@ -2947,10 +2959,10 @@ MWF.xScript.Environment = function(ev){
         "startIM": function(jobId){
             _form.openIMChatStarter(jobId);
         },
-         /**分享当前工作到IM聊天会话中。<b>（仅流程表单中可用）</b><br/>
+        /**分享当前工作到IM聊天会话中。<b>（仅流程表单中可用）</b><br/>
          * @method shareToIMChat
          * @static
-         *  
+         *
          * @example
          //不带参数
          this.form.shareToIMChat();
