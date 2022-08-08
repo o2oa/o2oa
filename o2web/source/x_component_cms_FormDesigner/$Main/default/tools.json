@@ -226,6 +226,11 @@
     "text": "wpsOffice",
     "className": "WpsOffice"
   },
+  "wpsOffice2": {
+    "icon": "wpsOffice.png",
+    "text": "wpsOffice2",
+    "className": "WpsOffice2"
+  },
   "log": {
     "icon": "log.png",
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.log,
@@ -251,7 +256,7 @@
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.importer,
     "className": "Importer"
   },
-  "SmartBI": { 
+  "SmartBI": {
     "icon": "smartbi.png",
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.SmartBI,
     "className": "SmartBI"
