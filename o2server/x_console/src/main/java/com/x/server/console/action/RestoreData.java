@@ -116,7 +116,7 @@ public class RestoreData {
 				Stream<String> stream = BooleanUtils.isTrue(Config.dumpRestoreData().getParallel())
 						? classNames.parallelStream()
 						: classNames.stream();
-				stream.stream().forEach(className -> {
+				stream.forEach(className -> {
 					Thread.currentThread().setContextClassLoader(classLoader);
 					try {
 						@SuppressWarnings("unchecked")
