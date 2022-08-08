@@ -534,14 +534,14 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                 var resultKey = node.get("data-result-key");
                 var data;
                 if( resultKey ){
-                    var d = this.data[node.get("name")];
+                    var d = this.data[node.get("name")] || [];
                     data = ( o2.typeOf( d ) === "array" ? d : [d] ).map(function(i){
                         var obj = {};
                         obj[ resultKey ] = i;
                         return obj;
                     });
                 }else{
-                    data = this.data[node.get("name")];
+                    data = this.data[node.get("name")] || [];
                 }
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.process.designer, {
                     "type": "CMSCategory",
