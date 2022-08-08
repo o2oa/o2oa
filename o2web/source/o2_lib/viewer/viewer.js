@@ -1440,17 +1440,26 @@
       }
     },
     download : function (){
-      if(o2.thirdparty.isDingdingPC()){
+
+      var isDingding = /dingtalk/i.test(navigator.userAgent.toLowerCase())
+
+
+      if(isDingding){
 
         var xtoken = Cookie.read(o2.tokenName);
         var url =  o2.filterUrl(this.image.src + "?"+o2.tokenName+"=" + xtoken);
-
-        dd.biz.util.openLink({
-          url:url,
-          onSuccess : function(result) {
-            /**/
-          },
-          onFail : function(err) {}
+        var fileName = this.image.alt;
+        o2.load("/o2_lib/dingding/dingtalk.open-2.10.3.js",function(){
+          dd.biz.util.downloadFile({
+            url: url,
+            name: fileName,
+            onProgress: function(msg){
+            },
+            onSuccess : function(result) {
+            },
+            onFail : function() {
+            }
+          });
         })
       }else {
         window.open(this.image.src);
