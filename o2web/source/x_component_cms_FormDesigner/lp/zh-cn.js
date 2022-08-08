@@ -73,6 +73,8 @@ MWF.xApplication.cms.FormDesigner.LP = Object.merge( {}, MWF.xApplication.proces
         "saveTitle": "保存文档",
         "publish": "发布",
         "publishTitle": "发布文档",
+        "publishDelayed": "定时发布",
+        "publishDelayedTitle": "定时发布文档",
         "saveDraft": "保存草稿",
         "saveDraftTitle": "保存草稿",
         "popular": "设置热点",
