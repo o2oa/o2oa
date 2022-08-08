@@ -145,13 +145,6 @@ public class Person extends ConfigObject {
 		return StringUtils.isEmpty(this.encryptType) ? DEFAULT_ENCRYPTTYPE : this.encryptType;
 	}
 
-	@FieldDescribe("扩展设置.")
-	private Map<String, Object> extension;
-
-	public Map<String, Object> getExtension() {
-		return null == this.extension ? new LinkedHashMap<>() : this.extension;
-	}
-
 	public Boolean getEnableSafeLogout() {
 		return BooleanUtils.isTrue(this.enableSafeLogout);
 	}
