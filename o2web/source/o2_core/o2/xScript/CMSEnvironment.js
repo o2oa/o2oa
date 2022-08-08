@@ -1204,9 +1204,19 @@ MWF.xScript.CMSEnvironment = function(ev){
         },
         parseFilter : function( filter, parameter ){
             if( typeOf(filter) !== "array" )return [];
+            if( !parameter )parameter = {};
             var filterList = [];
             ( filter || [] ).each( function (d) {
-                var parameterName = d.path.replace(/\./g, "_");
+                //var parameterName = d.path.replace(/\./g, "_");
+                var pName = d.path.replace(/\./g, "_");
+
+                var parameterName = pName;
+                var suffix = 1;
+                while( parameter[parameterName] ){
+                    parameterName = pName + "_" + suffix;
+                    suffix++;
+                }
+
                 var value = d.value;
                 if( d.comparison === "like" || d.comparison === "notLike" ){
                     if( value.substr(0, 1) !== "%" )value = "%"+value;
@@ -1219,6 +1229,8 @@ MWF.xScript.CMSEnvironment = function(ev){
                         value = "{d '"+value+"'}"
                     }else if( d.formatType === "timeValue" ){
                         value = "{t '"+value+"'}"
+                    } else if (d.formatType === "numberValue"){
+                        value = parseFloat(value);
                     }
                     parameter[ parameterName ] = value;
                 }
