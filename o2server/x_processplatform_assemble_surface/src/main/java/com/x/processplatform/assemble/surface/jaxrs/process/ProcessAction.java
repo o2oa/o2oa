@@ -235,4 +235,26 @@ public class ProcessAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@Operation(summary = "根据指定应用标识获取可管理的流程.", operationId = OPERATIONID_PREFIX
+			+ "listControllableWithApplication", responses = { @ApiResponse(content = {
+			@Content(schema = @Schema(implementation = ActionListControllableWithApplication.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "根据指定应用标识获取可管理的流程.", action = ActionListControllableWithApplication.class)
+	@GET
+	@Path("list/controllable/application/{applicationFlag}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listControllableWithApplication(@Suspended final AsyncResponse asyncResponse,
+											  @Context HttpServletRequest request,
+											  @JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag) {
+		ActionResult<ActionListControllableWithApplication.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListControllableWithApplication().execute(effectivePerson, applicationFlag);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 }

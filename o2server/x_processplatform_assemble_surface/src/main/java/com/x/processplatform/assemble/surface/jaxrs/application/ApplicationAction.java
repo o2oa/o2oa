@@ -162,4 +162,25 @@ public class ApplicationAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+
+	@Operation(summary = "校验当前用户是否是指定应用的管理员.", operationId = OPERATIONID_PREFIX + "isManager", responses = {
+			@ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionIsManager.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "校验当前用户是否是指定应用的管理员.", action = ActionIsManager.class)
+	@GET
+	@Path("{flag}/is/manager")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void isManager(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+						@JaxrsParameterDescribe("应用标识") @PathParam("flag") String flag) {
+		ActionResult<ActionIsManager.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionIsManager().execute(effectivePerson, flag);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 }

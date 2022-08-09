@@ -85,8 +85,7 @@ public class ProcessFactory extends ElementFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Process> root = cq.from(Process.class);
 		Predicate p = cb.conjunction();
-		if (effectivePerson.isNotManager() && (!this.business().organization().person().hasRole(effectivePerson,
-				OrganizationDefinition.Manager, OrganizationDefinition.ProcessPlatformManager))) {
+		if (!this.business().canManageApplication(effectivePerson, application)) {
 			p = cb.and(cb.isEmpty(root.get(Process_.startableIdentityList)),
 					cb.isEmpty(root.get(Process_.startableUnitList)),
 					cb.isEmpty(root.get(Process_.startableGroupList)));
@@ -110,9 +109,7 @@ public class ProcessFactory extends ElementFactory {
 	/* 获取用户可启动的流程，如果applicationId 为空则取到所有可启动流程 */
 	public boolean startable(EffectivePerson effectivePerson, List<String> identities, List<String> units,
 							 List<String> groups, Process process) throws Exception {
-		if (effectivePerson.isManager()
-				|| (BooleanUtils.isTrue(this.business().organization().person().hasRole(effectivePerson,
-						OrganizationDefinition.Manager, OrganizationDefinition.ProcessPlatformManager)))) {
+		if (this.business().canManageApplication(effectivePerson, null)) {
 			return true;
 		}
 		if (ListTools.isEmpty(process.getStartableIdentityList())
@@ -137,13 +134,15 @@ public class ProcessFactory extends ElementFactory {
 		return false;
 	}
 
-	public List<String> listControlableProcess(EffectivePerson effectivePerson, Application application)
+	public List<String> listControllableProcess(EffectivePerson effectivePerson, Application application)
 			throws Exception {
 		List<String> ids = this.listWithApplication(application);
+		boolean isManager = this.business().canManageApplication(effectivePerson, application);
 		List<String> list = new ArrayList<>();
 		for (String str : ids) {
 			Process o = this.pick(str);
-			if ((null != o) && (effectivePerson.isPerson(o.getControllerList()))) {
+			boolean flag = (!BooleanUtils.isFalse(o.getEditionEnable())) && (isManager || effectivePerson.isPerson(o.getControllerList()));
+			if (flag) {
 				list.add(str);
 			}
 		}
