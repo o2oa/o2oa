@@ -11,8 +11,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.config.StorageMapping;
+import com.x.base.core.project.config.Token;
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.cms.core.entity.enums.DocumentStatus;
+import com.x.cms.core.entity.query.DocumentNotify;
 import com.x.processplatform.core.entity.content.Attachment;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -40,14 +42,17 @@ import com.x.cms.core.entity.FileInfo;
 import com.x.cms.core.entity.element.Form;
 import org.w3c.dom.DocumentType;
 
+/**
+ * 保存文档
+ * @author O2LEE
+ *
+ */
 public class ActionPersistSaveDocument extends BaseAction {
 
 	private static  Logger logger = LoggerFactory.getLogger(ActionPersistSaveDocument.class);
 
-	@AuditLog(operation = "保存文档")
 	protected ActionResult<Wo> execute( HttpServletRequest request, JsonElement jsonElement, EffectivePerson effectivePerson) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
-		List<FileInfo> cloudPictures = null;
 		String identity = null;
 		AppInfo appInfo = null;
 		CategoryInfo categoryInfo = null;
@@ -174,8 +179,6 @@ public class ActionPersistSaveDocument extends BaseAction {
 		}
 
 		if (check) {
-			//补充部分信息
-//			document.setCategoryId(categoryInfo.getId());
 			document.setAppId(appInfo.getId());
 			document.setAppAlias( appInfo.getAppAlias());
 			document.setAppName(appInfo.getAppName());
@@ -195,24 +198,20 @@ public class ActionPersistSaveDocument extends BaseAction {
 				}
 
 				if (StringUtils.isEmpty( document.getCreatorIdentity() )) {
-					if( "cipher".equalsIgnoreCase( effectivePerson.getDistinguishedName() )) {
-						document.setCreatorIdentity("cipher");
-						document.setCreatorPerson("cipher");
-						document.setCreatorUnitName("cipher");
-						document.setCreatorTopUnitName("cipher");
-					}else if ("xadmin".equalsIgnoreCase(effectivePerson.getDistinguishedName())) {
-						document.setCreatorIdentity("xadmin");
-						document.setCreatorPerson("xadmin");
-						document.setCreatorUnitName("xadmin");
-						document.setCreatorTopUnitName("xadmin");
+					if (StringUtils.equals(EffectivePerson.CIPHER, effectivePerson.getDistinguishedName())
+							|| StringUtils.equals(Token.defaultInitialManager, effectivePerson.getDistinguishedName())) {
+						document.setCreatorIdentity(effectivePerson.getDistinguishedName());
+						document.setCreatorPerson(effectivePerson.getDistinguishedName());
+						document.setCreatorUnitName(effectivePerson.getDistinguishedName());
+						document.setCreatorTopUnitName(effectivePerson.getDistinguishedName());
 					}else {
 						//尝试一下根据当前用户获取用户的第一个身份
 						document.setCreatorIdentity(userManagerService.getMajorIdentityWithPerson( effectivePerson.getDistinguishedName()) );
 					}
 				}
 
-				if ( !StringUtils.equals(  "cipher", document.getCreatorIdentity() ) && !StringUtils.equals(  "xadmin", document.getCreatorIdentity() )) {
-					//说明是指定的发布者，并不使用cipher和xadmin代替
+				if (!StringUtils.equals(EffectivePerson.CIPHER, document.getCreatorIdentity())
+						&& !StringUtils.equals(Token.defaultInitialManager, document.getCreatorIdentity())) {
 					if (StringUtils.isNotEmpty( document.getCreatorIdentity() )) {
 						document.setCreatorPerson( userManagerService.getPersonNameWithIdentity( document.getCreatorIdentity() ) );
 						document.setCreatorUnitName( userManagerService.getUnitNameByIdentity( document.getCreatorIdentity() ) );
@@ -245,6 +244,8 @@ public class ActionPersistSaveDocument extends BaseAction {
 
 		if (check) {
 			try {
+				document.getProperties().setCloudPictures(wi.getCloudPictures());
+				document.getProperties().setDocumentNotify(wi.documentNotify);
 				document = documentPersistService.save(document, wi.getDocData(), categoryInfo.getProjection());
 				CacheManager.notify(Document.class);
 
@@ -263,48 +264,6 @@ public class ActionPersistSaveDocument extends BaseAction {
 				Exception exception = new ExceptionDocumentInfoProcess(e, "系统在创建文档信息时发生异常！");
 				result.error(exception);
 				logger.error(e, effectivePerson, request, null);
-			}
-		}
-
-		// 处理文档的云文档图片信息
-		if (check) {
-			try {
-				cloudPictures = fileInfoServiceAdv.getCloudPictureList(document.getId());
-				if (cloudPictures == null) {
-					cloudPictures = new ArrayList<>();
-				}
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new ExceptionDocumentInfoProcess(e, "系统在查询文档云图片信息时发生异常！ID:" + document.getId());
-				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
-			}
-		}
-
-		if (check) {
-			// 检查是否有需要删除的图片
-			if (cloudPictures != null && !cloudPictures.isEmpty()) {
-				boolean isExists = false;
-				for (FileInfo picture : cloudPictures) {
-					isExists = false;
-					if (wi.getCloudPictures() != null && !wi.getCloudPictures().isEmpty()) {
-						for (String cloudPictureId : wi.getCloudPictures()) {
-							if (picture.getCloudId() != null && picture.getCloudId().equalsIgnoreCase(cloudPictureId)) {
-								isExists = true;
-							}
-						}
-					}
-					if (!isExists) {
-						try {
-							fileInfoServiceAdv.deleteFileInfo(picture.getId());
-						} catch (Exception e) {
-							check = false;
-							Exception exception = new ExceptionDocumentInfoProcess(e, "系统在删除文档云图片信息时发生异常！ID:" + picture.getId());
-							result.error(exception);
-							logger.error(e, effectivePerson, request, null);
-						}
-					}
-				}
 			}
 		}
 
@@ -351,38 +310,8 @@ public class ActionPersistSaveDocument extends BaseAction {
 		}
 
 		if (check) {
-			// 检查是否有需要新添加的云图片信息
-			if (wi.getCloudPictures() != null && !wi.getCloudPictures().isEmpty()) {
-				boolean isExists = false;
-				int index = 0;
-				for (String cloudPictureId : wi.getCloudPictures()) {
-					index++;
-					isExists = false;
-					for (FileInfo picture : cloudPictures) {
-						if (picture.getCloudId() != null && picture.getCloudId().equalsIgnoreCase(cloudPictureId)) {
-							isExists = true;
-							fileInfoServiceAdv.updatePictureIndex(picture.getId(), index);
-						}
-					}
-					if (!isExists) {
-						try {
-							// 说明原来的文件中不存在，需要添加一个新的云图片
-							fileInfoServiceAdv.saveCloudPicture(cloudPictureId, document, index);
-						} catch (Exception e) {
-							check = false;
-							Exception exception = new ExceptionDocumentInfoProcess(e,
-									"系统在新增文档云图片信息时发生异常！CLOUD_ID:" + cloudPictureId);
-							result.error(exception);
-							logger.error(e, effectivePerson, request, null);
-						}
-					}
-				}
-			}
-		}
-
-		if (check) {
 			try {//将读者以及作者信息持久化到数据库中
-				document = documentPersistService.refreshDocumentPermission( document.getId(), wi.getReaderList(), wi.getAuthorList() );
+				documentPersistService.refreshDocumentPermission( document.getId(), wi.getReaderList(), wi.getAuthorList() );
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionDocumentInfoProcess(e, "系统在核对文档访问管理权限信息时发生异常！");
@@ -443,7 +372,7 @@ public class ActionPersistSaveDocument extends BaseAction {
 		@FieldDescribe("文档摘要，非必填")
 		private String summary;
 
-		@FieldDescribe("文档状态: published | draft | checking | error，非必填，默认为draft")
+		@FieldDescribe("文档状态: published | draft | waitPublish，非必填，默认为draft")
 		private String docStatus = "draft";
 
 		@FieldDescribe("文档发布时间")
@@ -472,6 +401,9 @@ public class ActionPersistSaveDocument extends BaseAction {
 
 		@FieldDescribe( "文档编辑者，非必填：{'permission':'读者', 'permissionObjectType':'组织', 'permissionObjectCode':'组织全称', 'permissionObjectName':'组织全称'}" )
 		private List<PermissionInfo> authorList = null;
+
+		@FieldDescribe("定时发布文档消息提醒对象(参数同消息发布接口对象).")
+		private DocumentNotify documentNotify;
 
 		@FieldDescribe( "图片列表，非必填" )
 		private List<String> cloudPictures = null;
@@ -651,6 +583,14 @@ public class ActionPersistSaveDocument extends BaseAction {
 
 		public void setStringValue03(String stringValue03) {
 			this.stringValue03 = stringValue03;
+		}
+
+		public DocumentNotify getDocumentNotify() {
+			return documentNotify;
+		}
+
+		public void setDocumentNotify(DocumentNotify documentNotify) {
+			this.documentNotify = documentNotify;
 		}
 	}
 

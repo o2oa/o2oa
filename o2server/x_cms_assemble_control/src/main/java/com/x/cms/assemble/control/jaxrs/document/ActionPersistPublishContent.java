@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.config.Token;
 import com.x.base.core.project.tools.DateTools;
 import com.x.cms.core.entity.enums.DocumentStatus;
 import com.x.cms.core.entity.query.DocumentNotify;
@@ -49,7 +50,6 @@ public class ActionPersistPublishContent extends BaseAction {
 
 	private static  Logger logger = LoggerFactory.getLogger(ActionPersistPublishContent.class);
 
-	@AuditLog(operation = "发布文档")
 	protected ActionResult<Wo> execute( HttpServletRequest request, JsonElement jsonElement, EffectivePerson effectivePerson) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		List<FileInfo> cloudPictures = null;
@@ -192,8 +192,8 @@ public class ActionPersistPublishContent extends BaseAction {
 				}
 
 				if (StringUtils.isEmpty( wi.getCreatorIdentity() )) {
-					if( "cipher".equalsIgnoreCase(effectivePerson.getDistinguishedName()) ||
-							"xadmin".equalsIgnoreCase(effectivePerson.getDistinguishedName())) {
+					if (StringUtils.equals(EffectivePerson.CIPHER, effectivePerson.getDistinguishedName())
+							|| StringUtils.equals(Token.defaultInitialManager, effectivePerson.getDistinguishedName())) {
 						wi.setCreatorIdentity(effectivePerson.getDistinguishedName());
 						wi.setCreatorPerson(effectivePerson.getDistinguishedName());
 						wi.setCreatorUnitName(effectivePerson.getDistinguishedName());
@@ -204,7 +204,8 @@ public class ActionPersistPublishContent extends BaseAction {
 					}
 				}
 
-				if ( !StringUtils.equals(  "cipher", wi.getCreatorIdentity() ) && !StringUtils.equals(  "xadmin", wi.getCreatorIdentity() )) {
+				if (!StringUtils.equals(EffectivePerson.CIPHER, wi.getCreatorIdentity())
+						&& !StringUtils.equals(Token.defaultInitialManager, wi.getCreatorIdentity())) {
 					//说明是实际的用户，并不使用cipher和xadmin代替
 					if (StringUtils.isNotEmpty( wi.getCreatorIdentity() )) {
 						wi.setCreatorPerson( userManagerService.getPersonNameWithIdentity( wi.getCreatorIdentity() ) );
@@ -237,6 +238,7 @@ public class ActionPersistPublishContent extends BaseAction {
 				}
 				document =  Wi.copier.copy(wi);
 				document.getProperties().setDocumentNotify(wi.getDocumentNotify());
+				document.getProperties().setCloudPictures(wi.getCloudPictures());
 				document.setId( wi.getId() );
 				document.setPpFormId(wi.getWf_formId());
 				document = documentPersistService.save( document, wi.getDocData(), categoryInfo.getProjection());
@@ -326,98 +328,17 @@ public class ActionPersistPublishContent extends BaseAction {
 			}
 		}
 
-		if (check) {
-			try {
-				Wo wo = new Wo();
-				wo.setId( document.getId() );
-				result.setData( wo );
-			} catch (Exception e) {
-				Exception exception = new ExceptionDocumentInfoProcess(e, "系统将文档状态修改为发布状态时发生异常。Id:" + document.getId());
-				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
-				throw exception;
-			}
-		}
+		Wo wo = new Wo();
+		wo.setId( document.getId() );
+		result.setData( wo );
 
 		if (check) {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				logService.log(emc, wi.getCreatorIdentity(),
 						document.getCategoryAlias() + ":" + document.getTitle(), document.getAppId(),
 						document.getCategoryId(), document.getId(), "", "DOCUMENT", "发布");
-			} catch (Throwable th) {
-				th.printStackTrace();
-				result.error(th);
-			}
-		}
-
-		// 处理文档的云文档图片信息
-		if (check) {
-			try {
-				cloudPictures = fileInfoServiceAdv.getCloudPictureList(document.getId());
-				if (cloudPictures == null) {
-					cloudPictures = new ArrayList<>();
-				}
 			} catch (Exception e) {
-				check = false;
-				Exception exception = new ExceptionDocumentInfoProcess(e, "系统在查询文档云图片信息时发生异常！ID:" + document.getId());
-				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
-			}
-		}
-
-		if (check) {
-			// 检查是否有需要删除的图片
-			if (cloudPictures != null && !cloudPictures.isEmpty()) {
-				boolean isExists = false;
-				for (FileInfo picture : cloudPictures) {
-					isExists = false;
-					if (wi.getCloudPictures() != null && !wi.getCloudPictures().isEmpty()) {
-						for (String cloudPictureId : wi.getCloudPictures()) {
-							if( picture.getCloudId() != null && picture.getCloudId().equalsIgnoreCase(cloudPictureId)) {
-								isExists = true;
-							}
-						}
-					}
-					if (!isExists) {
-						try {
-							fileInfoServiceAdv.deleteFileInfo(picture.getId());
-						} catch (Exception e) {
-							check = false;
-							Exception exception = new ExceptionDocumentInfoProcess(e, "系统在删除文档云图片信息时发生异常！ID:" + picture.getId());
-							result.error(exception);
-							logger.error(e, effectivePerson, request, null);
-						}
-					}
-				}
-			}
-		}
-
-		if (check) {
-			// 检查是否有需要新添加的云图片信息
-			if (wi.getCloudPictures() != null && !wi.getCloudPictures().isEmpty()) {
-				boolean isExists = false;
-				int index = 0;
-				for (String cloudPictureId : wi.getCloudPictures()) {
-					index++;
-					isExists = false;
-					for (FileInfo picture : cloudPictures) {
-						if (picture.getCloudId() != null && picture.getCloudId().equalsIgnoreCase(cloudPictureId)) {
-							isExists = true;
-							fileInfoServiceAdv.updatePictureIndex(picture.getId(), index);
-						}
-					}
-					if (!isExists) {
-						try {
-							// 说明原来的文件中不存在，需要添加一个新的云图片
-							fileInfoServiceAdv.saveCloudPicture(cloudPictureId, document, index);
-						} catch (Exception e) {
-							check = false;
-							Exception exception = new ExceptionDocumentInfoProcess(e, "系统在新增文档云图片信息时发生异常！CLOUD_ID:" + cloudPictureId);
-							result.error(exception);
-							logger.error(e, effectivePerson, request, null);
-						}
-					}
-				}
+				e.printStackTrace();
 			}
 		}
 
@@ -517,8 +438,8 @@ public class ActionPersistPublishContent extends BaseAction {
 		@FieldDescribe("文档类型，跟随分类类型，信息（默认） | 数据")
 		private String documentType = "信息";
 
-		@FieldDescribe("文档状态: published | draft | waitPublish")
-		private String docStatus = "draft";
+		@FieldDescribe("文档状态: published | waitPublish")
+		private String docStatus = "published";
 
 		@FieldDescribe("分类ID")
 		private String categoryId;
@@ -559,6 +480,7 @@ public class ActionPersistPublishContent extends BaseAction {
 
 		private Long commentCount = 0L;
 
+		@FieldDescribe("发布时间，当状态为waitPublish时需指定发布时间")
 		private Date publishTime;
 
 		private Date modifyTime;
