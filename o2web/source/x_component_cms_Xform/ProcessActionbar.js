@@ -126,6 +126,9 @@ MWF.xApplication.cms.Xform.ProcessActionbar = MWF.CMSProcessActionbar =  new Cla
     publishDocument: function(){
         this.form.publishDocument();
     },
+    publishDocumentDelayed: function(){
+        this.form.publishDocumentDelayed();
+    },
     archiveDocument: function(){
         this.form.archiveDocument();
     },

@@ -48,8 +48,8 @@
   },
   {
     "type": "MWFToolBarButton",
-    "img": "submit.png",
-    "img_over": "submit_over.png",
+    "img": "submitDelayed.png",
+    "img_over": "submitDelayed_over.png",
     "title": "{{$.lp.publishDelayedTitle}}",
     "action": "publishDocumentDelayed",
     "text": "{{$.lp.publishDelayed}}",

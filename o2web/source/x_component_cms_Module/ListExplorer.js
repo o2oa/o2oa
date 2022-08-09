@@ -140,7 +140,8 @@ MWF.xApplication.cms.Module.ListExplorer = new Class({
             this.view = new MWF.xApplication.cms.Module.ListExplorer.ListForALL(this.elementContentNode, this.app,this, this.viewData, this.options.searchKey );
         }else if( this.revealData.isDraft ){
             this.view = new MWF.xApplication.cms.Module.ListExplorer.ListForDraft(this.elementContentNode, this.app,this, this.viewData, this.options.searchKey );
-
+        }else if( this.revealData.isDelay ){
+            this.view = new MWF.xApplication.cms.Module.ListExplorer.ListForDelay(this.elementContentNode, this.app,this, this.viewData, this.options.searchKey );
         }else if( (this.revealData.id == "defaultList") || (this.options.searchKey && this.options.searchKey!="") ){
             this.view = new MWF.xApplication.cms.Module.ListExplorer.DefaultList(this.elementContentNode, this.app,this, this.viewData, this.options.searchKey );
         }else{
@@ -737,6 +738,95 @@ MWF.xApplication.cms.Module.ListExplorer.ListForDraft = new Class({
         var data = {
             "appIdList": [ this.explorer.columnData.id ],
             "statusList": [ "draft" ],
+            "orderField" : this.orderField || null,
+            "orderType" : this.orderType || null,
+            "documentType": "全部"
+        };
+        if( this.searchKey && this.searchKey!="" ){
+            data.title = this.searchKey
+        }
+        if (this.filter && this.filter.filter ){
+            var filterResult = this.filter.getFilterResult();
+            for(var f in filterResult ){
+                data[f] = filterResult[f];
+            }
+            o2.Actions.load("x_cms_assemble_control").DocumentAction.query_listWithFilterPaging(page, count || this.pageCount, data, function(json){
+                if (callback) callback(json);
+            });
+            // this.actions.listDocumentFilterNext(id, count || this.pageCount, data, function(json){
+            //     if (callback) callback(json);
+            // });
+        }else{
+            o2.Actions.load("x_cms_assemble_control").DocumentAction.query_listWithFilterPaging(page, count || this.pageCount, data, function(json){
+                if (callback) callback(json);
+            });
+            // this.actions.listDocumentFilterNext(id, count || this.pageCount, data, function(json){
+            //     if (callback) callback(json);
+            // });
+        }
+    }
+
+});
+
+MWF.xApplication.cms.Module.ListExplorer.ListForDelay = new Class({
+    Extends: MWF.xApplication.cms.Module.ListExplorer.DefaultList,
+
+    createListHead : function(){
+        var _self = this;
+        var headNode = this.headNode = new Element("tr", {"styles": this.css.listHeadNode}).inject(this.table);
+
+        if( this.selectEnable ){
+            this.createSelectTh();
+        }
+
+        var listItemUrl = this.explorer.path+"listItemForDelay.json";
+        MWF.getJSON(listItemUrl, function(json){
+            this.listItemTemplate = json;
+            json.each(function(cell){
+                var isShow = true;
+                if( cell.access ){
+                    if( cell.access == "admin" && !this.explorer.options.isAdmin ){
+                        isShow = false;
+                    }
+                }
+                if(isShow) {
+                    var th = new Element("th", {
+                        "styles": this.css[cell.headStyles],
+                        "width": cell.width,
+                        "text": cell.title
+                    }).inject(headNode)
+                }
+                //var thText = new Element("div",{
+                //    "styles" : this.css.thTextNode,
+                //    "text": cell.title
+                //}).inject(th);
+                if( cell.sortByClickTitle == "yes" ){
+                    th.store("field",cell.item);
+                    if( this.orderField  == cell.item && this.orderType!="" ){
+                        th.store("orderType",this.orderType);
+                        this.sortIconNode = new Element("div",{
+                            "styles": this.orderType == "asc" ? this.css.sortIconNode_asc : this.css.sortIconNode_desc
+                        }).inject( th, "bottom" );
+                    }else{
+                        th.store("orderType","");
+                        this.sortIconNode = new Element("div",{"styles":this.css.sortIconNode}).inject( th, "bottom" );
+                    }
+                    th.setStyle("cursor","pointer");
+                    th.addEvent("click",function(){
+                        _self.resort( this );
+                    })
+                }
+            }.bind(this));
+        }.bind(this),false);
+    },
+    _getCurrentPageData: function(callback, count){
+        if(!count)count=this.explorer.countPerPage;
+        // var id = (this.items.length) ? this.items[this.items.length-1].data.id : "(0)";
+        var page = this.currentPage || 1;
+        this.currentPage = page + 1;
+        var data = {
+            "appIdList": [ this.explorer.columnData.id ],
+            "statusList": [ "waitPublish" ],
             "orderField" : this.orderField || null,
             "orderType" : this.orderType || null,
             "documentType": "全部"

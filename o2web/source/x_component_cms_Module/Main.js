@@ -1174,6 +1174,10 @@ MWF.xApplication.cms.Module.Navi = new Class({
 		if( this.columnData.config.latest === false ){
 			this.draftView = new MWF.xApplication.cms.Module.NaviDraftView( this, this.node, {}  );
 		}
+		var allowWaitPublish = (typeOf(this.columnData.allowWaitPublish) === "boolean" ? this.columnData.allowWaitPublish : false).toString();
+		if( allowWaitPublish !== "false" ){
+			this.delayView = new MWF.xApplication.cms.Module.NaviDelayView( this, this.node, {}  );
+		}
 
 
 		new Element("div",{
@@ -1664,6 +1668,109 @@ MWF.xApplication.cms.Module.NaviDraftView = new Class({
 		}).inject(this.listNode);
 
 		this.iconNode = new Element("i.o2icon-list3", {
+			"styles": this.css.viewNaviIcon_all
+		}).inject(this.node, "top");
+
+		this.node.addEvents({
+			"mouseover": function(){ if ( !_self.isCurrent ){
+				this.setStyles(_self.css.viewNaviNode_all_over);
+				this.addClass( "mainColor_bg_opacity" );
+			} },
+			"mouseout": function(){ if ( !_self.isCurrent ){
+				this.setStyles( _self.css.viewNaviNode_all );
+				this.removeClass( "mainColor_bg_opacity" );
+			} },
+			"click": function (el) {
+				_self.setCurrent();
+			}
+		});
+
+		new Element("div", {
+			"styles": this.css.viewNaviSepartorNode
+		}).inject(this.listNode);
+
+		if( this.isCurrent ){
+			this.setCurrent()
+		}
+	},
+	setCurrent : function(){
+
+		if( this.navi.currentObject ){
+			this.navi.currentObject.cancelCurrent();
+		}
+
+		this.node.setStyles( this.css.viewNaviNode_all_selected );
+		this.node.addClass( "mainColor_color" );
+		this.node.addClass( "mainColor_bg_opacity" );
+
+		this.iconNode.setStyles( this.css.viewNaviIcon_all_selected );
+		this.iconNode.addClass( "mainColor_color" );
+
+		this.isCurrent = true;
+		this.navi.currentObject = this;
+
+		var action = this.app.importAction;
+		if( action ){
+			action.setStyle("display","none");
+		}
+		var action = this.app.exportAction;
+		if( action ){
+			action.setStyle("display","none");
+		}
+
+		this.loadView();
+	},
+	cancelCurrent : function(){
+		this.isCurrent = false;
+		this.node.setStyles( this.css.viewNaviNode_all );
+		this.node.removeClass( "mainColor_color" );
+		this.node.removeClass( "mainColor_bg_opacity" );
+
+		this.iconNode.setStyles( this.css.viewNaviIcon_all );
+		this.iconNode.removeClass( "mainColor_color" );
+	},
+	getCategoryId : function(){
+		return null;
+	},
+	loadView : function( searchKey ){
+		this.app.openView( this, null, this.data, searchKey || "", this );
+	}
+});
+
+MWF.xApplication.cms.Module.NaviDelayView = new Class({
+	Implements: [Options, Events],
+	options: {
+		"style": "default"
+	},
+	initialize: function ( navi, container, options) {
+		this.setOptions(options);
+		this.navi = navi;
+		this.app = navi.app;
+		this.container = $(container);
+		this.css = this.app.css;
+		this.data = {
+			"isDelay" : true,
+			"id" : "defaultList"
+		};
+		this.load();
+	},
+	load: function(){
+		var _self = this;
+		this.isDefault = true;
+		this.isAll = true;
+		this.isCurrent = false;
+		this.isCategory = false;
+
+		this.listNode  = new Element("div.viewNaviListNode_all",{
+			"styles" : this.css.viewNaviListNode_all
+		}).inject(this.container);
+
+		this.node = new Element("div.viewNaviNode_all", {
+			"styles": this.css.viewNaviNode_all,
+			"text" : this.app.lp.delayStatus
+		}).inject(this.listNode);
+
+		this.iconNode = new Element("i.o2icon-clock2", {
 			"styles": this.css.viewNaviIcon_all
 		}).inject(this.node, "top");
 

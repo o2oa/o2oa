@@ -114,6 +114,24 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
              */
             "afterPublish",
             /**
+             * 定时发布前触发。
+             * @event CMSForm#beforeWaitPublish
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "beforeWaitPublish",
+            /**
+             * 数据已经整理完成，但还未调用定时发布服务前触发。this.event指向整理完成的数据
+             * @event CMSForm#postWaitPublish
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "postWaitPublish",
+            /**
+             * 执行后台定时发布服务后触发。
+             * @event CMSForm#afterPublish
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "afterWaitPublish",
+            /**
              * 删除前触发。
              * @event CMSForm#beforeDelete
              * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
@@ -574,7 +592,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             var buttonWidth = (size.x - splitSize.x * (count + 1) - (count * 2)) / count;
             tools.each(function (tool) {
                 var actionStyle = this.css.html5ActionButtonDingdingNormal;
-                if (tool.id === "action_edit" || tool.id === "action_saveData" || tool.id === "action_saveDraftDocument" || tool.id === "action_publishDocument") {
+                if (tool.id === "action_edit" || tool.id === "action_saveData" || tool.id === "action_saveDraftDocument" || tool.id === "action_publishDocument" || tool.id === "action_publishDocumentDelayed") {
                     actionStyle = this.css.html5ActionButtonDingdingPrimary;
                 } else if (tool.id === "action_delete") {
                     actionStyle = this.css.html5ActionButtonDingdingDanger;
@@ -610,7 +628,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             for (var i = 0; i < 3; i++) {
                 tool = tools[i];
                 var actionStyle = this.css.html5ActionButtonDingdingNormal;
-                if (tool.id === "action_edit" || tool.id === "action_saveData" || tool.id === "action_saveDraftDocument" || tool.id === "action_publishDocument") {
+                if (tool.id === "action_edit" || tool.id === "action_saveData" || tool.id === "action_saveDraftDocument" || tool.id === "action_publishDocument" || tool.id === "action_publishDocumentDelayed") {
                     actionStyle = this.css.html5ActionButtonDingdingPrimary;
                 } else if (tool.id === "action_delete") {
                     actionStyle = this.css.html5ActionButtonDingdingDanger;
@@ -666,7 +684,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             for (var i = n; i < tools.length; i++) {
                 tool = tools[i];
                 var actionStyle = this.css.html5ActionButtonDingdingNormal;
-                if (tool.id === "action_edit" || tool.id === "action_saveData" || tool.id === "action_saveDraftDocument" || tool.id === "action_publishDocument") {
+                if (tool.id === "action_edit" || tool.id === "action_saveData" || tool.id === "action_saveDraftDocument" || tool.id === "action_publishDocument" || tool.id === "action_publishDocumentDelayed") {
                     actionStyle = this.css.html5ActionButtonDingdingPrimary;
                 } else if (tool.id === "action_delete") {
                     actionStyle = this.css.html5ActionButtonDingdingDanger;
@@ -1027,8 +1045,100 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
         }
         return true;
     },
+    publishDocumentDelayed: function( callback ){
+        this.fireEvent("beforeWaitPublish");
+        // this.app.content.mask({
+        //     "destroyOnHide": true,
+        //     "style": this.app.css.maskNode
+        // });
+        if (!this.formValidation("publish")) {
+            // this.app.content.unmask();
+            //if (callback) callback();
+            return false;
+        }
+        if (!this.formPublishValidation()) {
+            // this.app.content.unmask();
+            if (callback) callback();
+            return false;
+        }
+
+        MWF.xDesktop.requireApp("cms.Document", "DelayPublishForm", null, false);
+
+        debugger;
+        var form = new MWF.xApplication.cms.Document.DelayPublishForm(this, {}, {
+            publishTime :  this.businessData.document.publishTime || "",
+            onPostOk : function( publishTime ){
+
+                this._publishDocumentDelayed( publishTime );
+
+            }.bind(this)
+        },{
+            app : this.app, lp : this.app.lp, css : this.app.css, actions : this.app.action
+        });
+        form.create();
+
+    },
+    _publishDocumentDelayed: function(){
+        var data = this.getData();
+        var specialData = this.getSpecialData();
+        //this.documentAction.saveData(function(json){
+        var documentData = this.getDocumentData(data);
+        documentData.readerList = specialData.readers;
+        documentData.authorList = specialData.authors;
+        documentData.pictureList = specialData.pictures;
+        documentData.summary = specialData.summary;
+        documentData.cloudPictures = specialData.cloudPictures;
+        documentData.docData = data;
+        delete documentData.attachmentList;
+        //this.documentAction.saveDocument(documentData, function(){
+        this.fireEvent("postWaitPublish", [documentData]);
+        if (this.app) if (this.app.fireEvent) this.app.fireEvent("postWaitPublish",[documentData]);
+        if (this.officeList) {
+            this.officeList.each(function (module) {
+                module.save();
+            });
+        }
+
+        this.documentAction.publishDocumentComplex(documentData, function (json) {
+
+            this.sendNotice(function () {
+
+                this.businessData.data.isNew = false;
+                this.fireEvent("afterWaitPublish", [this, json.data]);
+                if (this.app) if (this.app.fireEvent) this.app.fireEvent("afterWaitPublish",[this, json.data]);
+                // if (callback) callback(); // 传进来不是function
+                if (layout.mobile) {
+                    // this.app.content.unmask();
+                    this.closeWindowOnMobile();
+                } else {
+                    if (this.businessData.document.title) {
+                        this.app.notice(MWF.xApplication.cms.Xform.LP.documentDelayedPublished + ": “" + this.businessData.document.title + "”", "success");
+                    } else {
+                        this.app.notice(MWF.xApplication.cms.Xform.LP.documentDelayedPublished, "success");
+                    }
+                    this.options.saveOnClose = false;
+
+                    debugger;
+                    if( layout.inBrowser ){
+                        try{
+                            if( window.opener && window.opener.o2RefreshCMSView ){
+                                window.opener.o2RefreshCMSView();
+                            }
+                        }catch (e) {}
+                        window.setTimeout(function () {
+                            this.app.close();
+                        }.bind(this), 1500)
+                    }else{
+                        this.app.close();
+                    }
+                }
+
+            }.bind(this));
+
+        }.bind(this));
+    },
     publishDocument: function (callback) {
-        this.fireEvent("beforePublish");
+        this.fireEvent("beforeWaitPublish");
         this.app.content.mask({
             "destroyOnHide": true,
             "style": this.app.css.maskNode

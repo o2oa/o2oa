@@ -191,6 +191,9 @@ MWF.xApplication.cms.Xform.Actionbar = MWF.CMSActionbar =  new Class({
     publishDocument: function(){
         this.form.publishDocument();
     },
+    publishDocumentDelayed: function(){
+        this.form.publishDocumentDelayed();
+    },
     archiveDocument: function(){
         this.form.archiveDocument();
     },

@@ -481,13 +481,14 @@ MWF.xApplication.cms.Document.Main = new Class({
         var isControl = this.options.isControl;
         this.control = data.control ||  {
             "allowRead": true,
-            "allowPublishDocument": isControl && this.document.docStatus == "draft",
+            "allowPublishDocument": isControl && ["draft","waitPublish"].contains( this.document.docStatus ),
+            "allowPublishDocumentDelayed": isControl && ["draft","waitPublish"].contains( this.document.docStatus ),
             "allowSave": isControl && this.document.docStatus == "published",
             "allowPopularDocument": MWF.AC.isHotPictureManager() && this.document.docStatus == "published",
             "allowEditDocument":  isControl && !this.document.wf_workId,
             "allowDeleteDocument":  isControl && !this.document.wf_workId,
             "allowSetTop": this.isAdmin && this.document.docStatus == "published" && !this.document.isTop,
-            "allowCancelTop": this.isAdmin && this.document.docStatus == "published" && this.document.isTop,
+            "allowCancelTop": this.isAdmin && this.document.docStatus == "published" && this.document.isTop
         };
     },
     errorLoadingV2 : function( error, type ){
