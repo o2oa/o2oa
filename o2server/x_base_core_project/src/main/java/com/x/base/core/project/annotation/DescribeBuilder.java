@@ -59,9 +59,7 @@ public class DescribeBuilder {
 	public static void main(String[] args) throws IOException {
 
 		File basedir = new File(args[0]);
-		System.out.println(args[0]);
 		File sourcesdir = new File(args[1]);
-		System.out.println(args[1]);
 		File dir = new File(basedir, "src/main/webapp/describe");
 
 		FileUtils.forceMkdir(dir);
@@ -70,7 +68,13 @@ public class DescribeBuilder {
 
 		builder.scan(dir);
 
-		FileUtils.copyDirectory(sourcesdir, new File(dir, "sources"));
+		File copyToDir = new File(dir, "sources");
+
+		if (copyToDir.exists()) {
+			FileUtils.cleanDirectory(copyToDir);
+		}
+
+		FileUtils.copyDirectory(sourcesdir, copyToDir);
 
 	}
 
