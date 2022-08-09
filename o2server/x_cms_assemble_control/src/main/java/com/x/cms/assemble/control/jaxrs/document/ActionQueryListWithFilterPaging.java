@@ -21,6 +21,9 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.express.tools.filter.QueryFilter;
 
+/**
+ * @author sword
+ */
 public class ActionQueryListWithFilterPaging extends BaseAction {
 
 	private static  Logger logger = LoggerFactory.getLogger(ActionQueryListWithFilterPaging.class);

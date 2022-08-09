@@ -9,6 +9,9 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.tools.DateTools;
+import com.x.cms.core.entity.enums.DocumentStatus;
+import com.x.cms.core.entity.query.DocumentNotify;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -226,9 +229,14 @@ public class ActionPersistPublishContent extends BaseAction {
 
 		if (check) {
 			try {
-				wi.setDocStatus(Document.DOC_STATUS_PUBLISH);
-				if( wi.getPublishTime() == null ) { wi.setPublishTime(new Date()); }
+				if(!DocumentStatus.WAIT_PUBLISH.getValue().equals(wi.getDocStatus())){
+					wi.setDocStatus(DocumentStatus.PUBLISHED.getValue());
+				}
+				if (wi.getPublishTime() == null) {
+					wi.setPublishTime(new Date());
+				}
 				document =  Wi.copier.copy(wi);
+				document.getProperties().setDocumentNotify(wi.getDocumentNotify());
 				document.setId( wi.getId() );
 				document.setPpFormId(wi.getWf_formId());
 				document = documentPersistService.save( document, wi.getDocData(), categoryInfo.getProjection());
@@ -471,9 +479,6 @@ public class ActionPersistPublishContent extends BaseAction {
 		@FieldDescribe( "文档操作者身份" )
 		private String identity = null;
 
-//		@FieldDescribe( "数据的路径列表." )
-//		private String[] dataPaths = null;
-
 		@FieldDescribe( "启动流程的JobId." )
 		private String wf_jobId = null;
 
@@ -512,7 +517,7 @@ public class ActionPersistPublishContent extends BaseAction {
 		@FieldDescribe("文档类型，跟随分类类型，信息（默认） | 数据")
 		private String documentType = "信息";
 
-		@FieldDescribe("文档状态: published | draft | checking | error")
+		@FieldDescribe("文档状态: published | draft | waitPublish")
 		private String docStatus = "draft";
 
 		@FieldDescribe("分类ID")
@@ -592,6 +597,9 @@ public class ActionPersistPublishContent extends BaseAction {
 		private List<String> managerList;
 
 		private List<String> pictureList;
+
+		@FieldDescribe("定时发布文档消息提醒对象(参数同消息发布接口对象).")
+		private DocumentNotify documentNotify;
 
 		@FieldDescribe("业务数据String值01.")
 		private String stringValue01;
@@ -1064,6 +1072,14 @@ public class ActionPersistPublishContent extends BaseAction {
 
 		public void setWf_formId(String wf_formId) {
 			this.wf_formId = wf_formId;
+		}
+
+		public DocumentNotify getDocumentNotify() {
+			return documentNotify;
+		}
+
+		public void setDocumentNotify(DocumentNotify documentNotify) {
+			this.documentNotify = documentNotify;
 		}
 	}
 

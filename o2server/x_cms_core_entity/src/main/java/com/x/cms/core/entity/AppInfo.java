@@ -187,6 +187,12 @@ public class AppInfo extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private Boolean showAllDocuments = true;
 
+	public static final String allowWaitPublish_FIELDNAME = "allowWaitPublish";
+	@FieldDescribe("栏目是否允许定时发布：true | false(默认)")
+	@Column(name = ColumnNamePrefix + showAllDocuments_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Boolean allowWaitPublish = false;
+
 	public static final String defaultEditForm_FIELDNAME = "defaultEditForm";
 	@FieldDescribe("默认编辑表单")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + defaultEditForm_FIELDNAME)
@@ -792,5 +798,13 @@ public class AppInfo extends SliceJpaObject {
 
 	public void setDefaultReadForm(String defaultReadForm) {
 		this.defaultReadForm = defaultReadForm;
+	}
+
+	public Boolean getAllowWaitPublish() {
+		return allowWaitPublish;
+	}
+
+	public void setAllowWaitPublish(Boolean allowWaitPublish) {
+		this.allowWaitPublish = allowWaitPublish;
 	}
 }

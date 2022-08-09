@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.exception.ExceptionWhen;
+import com.x.cms.core.entity.enums.DocumentStatus;
 import com.x.processplatform.core.entity.content.Attachment;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -37,6 +38,7 @@ import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.FileInfo;
 import com.x.cms.core.entity.element.Form;
+import org.w3c.dom.DocumentType;
 
 public class ActionPersistSaveDocument extends BaseAction {
 
@@ -175,7 +177,6 @@ public class ActionPersistSaveDocument extends BaseAction {
 			//补充部分信息
 //			document.setCategoryId(categoryInfo.getId());
 			document.setAppId(appInfo.getId());
-			document.setDocumentType( categoryInfo.getDocumentType() );
 			document.setAppAlias( appInfo.getAppAlias());
 			document.setAppName(appInfo.getAppName());
 			document.setCategoryName(categoryInfo.getCategoryName());
@@ -228,7 +229,8 @@ public class ActionPersistSaveDocument extends BaseAction {
 		}
 
 		if (check) {
-			if( StringUtils.equals( wi.getDocStatus(), Document.DOC_STATUS_PUBLISH)) {
+			if( DocumentStatus.PUBLISHED.getValue().equals(wi.getDocStatus()) ||
+					DocumentStatus.WAIT_PUBLISH.getValue().equals(wi.getDocStatus())) {
 				if( document.getPublishTime() == null ) {
 					document.setPublishTime( new Date() );
 				}

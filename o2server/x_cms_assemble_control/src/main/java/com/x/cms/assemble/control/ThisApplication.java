@@ -20,10 +20,7 @@ import com.x.cms.assemble.control.queue.QueueDocumentDelete;
 import com.x.cms.assemble.control.queue.QueueDocumentUpdate;
 import com.x.cms.assemble.control.queue.QueueDocumentViewCountUpdate;
 import com.x.cms.assemble.control.queue.QueueSendDocumentNotify;
-import com.x.cms.assemble.control.timertask.Timertask_BatchOperationTask;
-import com.x.cms.assemble.control.timertask.Timertask_InitOperationRunning;
-import com.x.cms.assemble.control.timertask.Timertask_LogRecordCheckTask;
-import com.x.cms.assemble.control.timertask.Timertask_RefreshAllDocumentReviews;
+import com.x.cms.assemble.control.timertask.*;
 
 public class ThisApplication {
 
@@ -83,7 +80,13 @@ public class ThisApplication {
 		context().startQueue(projectionExecuteQueue);
 		// 每天凌晨2点执行一次
 		context.schedule(Timertask_LogRecordCheckTask.class, "0 0 2 * * ?");
+
 		context.schedule(Timertask_BatchOperationTask.class, "0 */5 * * * ?");
+
+		/**
+		 * 每5分钟执行对待发布文档进行发布
+		 */
+		context.schedule(PublishWaitDocumentTask.class, "0 */5 * * * ?");
 
 		// 每天凌晨1点，计算所有的文档的权限信息
 		context.schedule(Timertask_RefreshAllDocumentReviews.class, "0 0 1 * * ?");

@@ -12,7 +12,7 @@ import com.x.base.core.project.gson.GsonPropertyObject;
  * @date 2022/03/10 16:45
  **/
 public class DocumentNotify extends GsonPropertyObject {
-    @FieldDescribe("文档ID")
+
     private String documentId;
 
     @FieldDescribe("消息通知对象：人员、组织或者群组")

@@ -8,6 +8,9 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.cms.core.entity.Document;
 
+/**
+ * @author sword
+ */
 public class WrapOutDocumentList extends GsonPropertyObject {
 
 	@FieldDescribe( "sequence." )
@@ -58,7 +61,7 @@ public class WrapOutDocumentList extends GsonPropertyObject {
 	@FieldDescribe("创建人顶层组织名称，可能为空，如果由系统创建。")
 	private String creatorTopUnitName;
 
-	@FieldDescribe("文档状态: published | draft")
+	@FieldDescribe("文档状态: published | draft | waitPublish")
 	private String docStatus = "draft";
 
 	@FieldDescribe("文档被查看次数")
