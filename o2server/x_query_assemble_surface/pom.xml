@@ -5,7 +5,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>o2oa</groupId>
+		<groupId>net.o2oa</groupId>
 		<artifactId>o2server</artifactId>
 		<version>7.2</version>
 	</parent>
@@ -13,38 +13,38 @@
 	<packaging>war</packaging>
 	<dependencies>
 		<dependency>
-			<groupId>o2oa</groupId>
+			<groupId>net.o2oa</groupId>
 			<artifactId>x_base_core_project</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>o2oa</groupId>
+			<groupId>net.o2oa</groupId>
 			<artifactId>x_organization_core_entity</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>o2oa</groupId>
+			<groupId>net.o2oa</groupId>
 			<artifactId>x_organization_core_express</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>o2oa</groupId>
+			<groupId>net.o2oa</groupId>
 			<artifactId>x_query_core_entity</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>o2oa</groupId>
+			<groupId>net.o2oa</groupId>
 			<artifactId>x_query_core_express</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>o2oa</groupId>
+			<groupId>net.o2oa</groupId>
 			<artifactId>x_processplatform_core_entity</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>o2oa</groupId>
+			<groupId>net.o2oa</groupId>
 			<artifactId>x_cms_core_entity</artifactId>
 		</dependency><dependency>
-			<groupId>o2oa</groupId>
+			<groupId>net.o2oa</groupId>
 			<artifactId>x_cms_core_express</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>o2oa</groupId>
+			<groupId>net.o2oa</groupId>
 			<artifactId>x_general_core_entity</artifactId>
 		</dependency>
 	</dependencies>

@@ -1,9 +1,34 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>o2oa</groupId>
+	<groupId>net.o2oa</groupId>
 	<artifactId>o2server</artifactId>
 	<version>7.2</version>
 	<packaging>pom</packaging>
+	<description>O2OA企业应用开发平台 OpenSource OA Platform</description>
+	<url>https://github.com/o2oa/o2oa</url>
+	<licenses>
+		<license>
+			<name>GNU Affero General Public License v3.0</name>
+			<url>https://www.gnu.org/licenses/agpl-3.0.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<name>o2oa</name>
+			<email>admin@o2oa.net</email>
+			<organization>o2oa.net</organization>
+		</developer>
+	</developers>
+
+	<scm>
+		<tag>o2oa</tag>
+		<url>https://github.com/o2oa/o2oa</url>
+		<connection>scm:git:https://github.com/o2oa/o2oa.git</connection>
+		<developerConnection>scm:git:https://github.com/o2oa/o2oa.git</developerConnection>
+	</scm>
+
 	<properties>
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
@@ -468,6 +493,68 @@
 						</lifecycleMappingMetadata>
 					</configuration>
 				</plugin>
+<!--				源码插件-->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>3.1.0</version>
+					<executions>
+						<execution>
+							<phase>package</phase>
+							<goals>
+								<goal>jar-no-fork</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+<!--				文档插件-->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>3.2.0</version>
+					<configuration>
+						<show>private</show>
+						<nohelp>true</nohelp>
+						<charset>UTF-8</charset>
+						<encoding>UTF-8</encoding>
+						<docencoding>UTF-8</docencoding>
+						<additionalOptions>
+							<!-- 解决jdk1.8以后编译出错问题-->
+<!--							<additionalOption>-Xdoclint:none</additionalOption>-->
+							<additionalparam>-Xdoclint:none</additionalparam>
+						</additionalOptions>
+					</configuration>
+					<executions>
+						<execution>
+							<phase>compile</phase>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+<!--				gpg插件 -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-gpg-plugin</artifactId>
+					<version>1.6</version>
+					<executions>
+						<execution>
+							<id>sign-artifacts</id>
+							<phase>verify</phase>
+							<goals>
+								<goal>sign</goal>
+							</goals>
+<!--							<configuration>-->
+<!--								<gpgArguments>-->
+<!--									<arg>&#45;&#45;pinentry-mode</arg>-->
+<!--									<arg>loopback</arg>-->
+<!--								</gpgArguments>-->
+<!--							</configuration>-->
+						</execution>
+					</executions>
+				</plugin>
+
 			</plugins>
 		</pluginManagement>
 		<plugins>
@@ -929,132 +1016,132 @@
 				<version>2.18.0</version>
 			</dependency>
 			<dependency>
-				<groupId>o2oa</groupId>
+				<groupId>net.o2oa</groupId>
 				<artifactId>x_base_core_project</artifactId>
 				<version>7.2</version>
 			</dependency>
 			<dependency>
-				<groupId>o2oa</groupId>
+				<groupId>net.o2oa</groupId>
 				<artifactId>x_attendance_core_entity</artifactId>
 				<version>7.2</version>
 			</dependency>
 			<dependency>
-				<groupId>o2oa</groupId>
+				<groupId>net.o2oa</groupId>
 				<artifactId>x_bbs_core_entity</artifactId>
 				<version>7.2</version>
 			</dependency>
 			<dependency>
-				<groupId>o2oa</groupId>
+				<groupId>net.o2oa</groupId>
 				<artifactId>x_calendar_core_entity</artifactId>
 				<version>7.2</version>
 			</dependency>
 			<dependency>
-				<groupId>o2oa</groupId>
+				<groupId>net.o2oa</groupId>
 				<artifactId>x_cms_core_entity</artifactId>
 				<version>7.2</version>
 			</dependency>
 			<dependency>
-				<groupId>o2oa</groupId>
+				<groupId>net.o2oa</groupId>
 				<artifactId>x_cms_core_express</artifactId>
 				<version>7.2</version>
 			</dependency>
 			<dependency>
-				<groupId>o2oa</groupId>
+				<groupId>net.o2oa</groupId>
 				<artifactId>x_component_core_entity</artifactId>
 				<version>7.2</version>
 			</dependency>
 			<dependency>
-				<groupId>o2oa</groupId>
+				<groupId>net.o2oa</groupId>
 				<artifactId>x_file_core_entity</artifactId>
 				<version>7.2</version>
 			</dependency>
 			<dependency>
-				<groupId>o2oa</groupId>
+				<groupId>net.o2oa</groupId>
 				<artifactId>x_general_core_entity</artifactId>
 				<version>7.2</version>
 			</dependency>
 			<dependency>
-				<groupId>o2oa</groupId>
+				<groupId>net.o2oa</groupId>
 				<artifactId>x_hotpic_core_entity</artifactId>
 				<version>7.2</version>
 			</dependency>
 			<dependency>
-				<groupId>o2oa</groupId>
+				<groupId>net.o2oa</groupId>
 				<artifactId>x_meeting_core_entity</artifactId>
 				<version>7.2</version>
 			</dependency>
 			<dependency>
-				<groupId>o2oa</groupId>
+				<groupId>net.o2oa</groupId>
 				<artifactId>x_message_core_entity</artifactId>
 				<version>7.2</version>
 			</dependency>
 			<dependency>
-				<groupId>o2oa</groupId>
+				<groupId>net.o2oa</groupId>
 				<artifactId>x_mind_core_entity</artifactId>
 				<version>7.2</version>
 			</dependency>
 			<dependency>
-				<groupId>o2oa</groupId>
+				<groupId>net.o2oa</groupId>
 				<artifactId>x_organization_core_entity</artifactId>
 				<version>7.2</version>
 			</dependency>
 			<dependency>
-				<groupId>o2oa</groupId>
+				<groupId>net.o2oa</groupId>
 				<artifactId>x_jpush_core_entity</artifactId>
 				<version>7.2</version>
 			</dependency>
 			<dependency>
-				<groupId>o2oa</groupId>
+				<groupId>net.o2oa</groupId>
 				<artifactId>x_organization_core_express</artifactId>
 				<version>7.2</version>
 			</dependency>
 			<dependency>
-				<groupId>o2oa</groupId>
+				<groupId>net.o2oa</groupId>
 				<artifactId>x_portal_core_entity</artifactId>
 				<version>7.2</version>
 			</dependency>
 			<dependency>
-				<groupId>o2oa</groupId>
+				<groupId>net.o2oa</groupId>
 				<artifactId>x_processplatform_core_entity</artifactId>
 				<version>7.2</version>
 			</dependency>
 			<dependency>
-				<groupId>o2oa</groupId>
+				<groupId>net.o2oa</groupId>
 				<artifactId>x_processplatform_core_express</artifactId>
 				<version>7.2</version>
 			</dependency>
 			<dependency>
-				<groupId>o2oa</groupId>
+				<groupId>net.o2oa</groupId>
 				<artifactId>x_query_core_entity</artifactId>
 				<version>7.2</version>
 			</dependency>
 			<dependency>
-				<groupId>o2oa</groupId>
+				<groupId>net.o2oa</groupId>
 				<artifactId>x_query_core_express</artifactId>
 				<version>7.2</version>
 			</dependency>
 			<dependency>
-				<groupId>o2oa</groupId>
+				<groupId>net.o2oa</groupId>
 				<artifactId>x_report_core_entity</artifactId>
 				<version>7.2</version>
 			</dependency>
 			<dependency>
-				<groupId>o2oa</groupId>
+				<groupId>net.o2oa</groupId>
 				<artifactId>x_strategydeploy_core_entity</artifactId>
 				<version>7.2</version>
 			</dependency>
 			<dependency>
-				<groupId>o2oa</groupId>
+				<groupId>net.o2oa</groupId>
 				<artifactId>x_strategydeploy_assemble_control</artifactId>
 				<version>7.2</version>
 			</dependency>
 			<dependency>
-				<groupId>o2oa</groupId>
+				<groupId>net.o2oa</groupId>
 				<artifactId>x_program_center</artifactId>
 				<version>7.2</version>
 			</dependency>
 			<dependency>
-				<groupId>o2oa</groupId>
+				<groupId>net.o2oa</groupId>
 				<artifactId>x_program_center_core_entity</artifactId>
 				<version>7.2</version>
 			</dependency>
@@ -1115,6 +1202,19 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+
+<!--	中心仓库发布地址-->
+	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>ossrh</id>
+			<url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
+
 	<!--repositories>
 		<repository>
 			<id>nexus-o2oa</id>
