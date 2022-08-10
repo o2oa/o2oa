@@ -16,7 +16,7 @@ public class ActionSetCollect extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		if (BooleanUtils.isNotTrue(Config.miscellaneous().getConfigApiEnable())) {
+		if (BooleanUtils.isNotTrue(Config.general().getConfigApiEnable())) {
 			throw new ExceptionModifyConfig();
 		}
 		Wi.copier.copy(wi, Config.collect());
@@ -30,11 +30,15 @@ public class ActionSetCollect extends BaseAction {
 
 	public static class Wi extends Collect {
 
+		private static final long serialVersionUID = 1229849363127377274L;
+		
 		static WrapCopier<Wi, Collect> copier = WrapCopierFactory.wi(Wi.class, Collect.class, null, null);
 
 	}
 
 	public static class Wo extends WrapBoolean {
+
+		private static final long serialVersionUID = -6644344074330606539L;
 
 	}
 }

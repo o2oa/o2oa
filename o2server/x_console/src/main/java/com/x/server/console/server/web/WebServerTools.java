@@ -95,7 +95,7 @@ public class WebServerTools extends JettySeverTools {
 		server.setDumpAfterStart(false);
 		server.setDumpBeforeStop(false);
 		server.setStopAtShutdown(true);
-		if (BooleanUtils.isTrue(webServer.getRequestLogEnable())) {
+		if (BooleanUtils.isTrue(Config.general().getRequestLogEnable())) {
 			server.setRequestLog(requestLog(webServer));
 		}
 		context.setMimeTypes(Config.mimeTypes());
@@ -158,7 +158,7 @@ public class WebServerTools extends JettySeverTools {
 		AsyncRequestLogWriter asyncRequestLogWriter = new AsyncRequestLogWriter();
 		asyncRequestLogWriter.setTimeZone(TimeZone.getDefault().getID());
 		asyncRequestLogWriter.setAppend(true);
-		asyncRequestLogWriter.setRetainDays(webServer.getRequestLogRetainDays());
+		asyncRequestLogWriter.setRetainDays(Config.general().getRequestLogRetainDays());
 		asyncRequestLogWriter.setFilename(
 				Config.dir_logs().toString() + File.separator + "web.request.yyyy_MM_dd." + Config.node() + ".log");
 		asyncRequestLogWriter.setFilenameDateFormat("yyyyMMdd");

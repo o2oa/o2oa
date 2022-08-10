@@ -25,7 +25,7 @@ public class ActionSetPerson extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		Map<String,Object> map = XGsonBuilder.instance().fromJson(jsonElement, Map.class);
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		if (BooleanUtils.isNotTrue(Config.miscellaneous().getConfigApiEnable())) {
+		if (BooleanUtils.isNotTrue(Config.general().getConfigApiEnable())) {
 			throw new ExceptionModifyConfig();
 		}
 		Wi.copier = WrapCopierFactory.wi(Wi.class, Person.class, new ArrayList<>(map.keySet()), null);
@@ -40,11 +40,15 @@ public class ActionSetPerson extends BaseAction {
 
 	public static class Wi extends Person {
 
+		private static final long serialVersionUID = -3952165817309591579L;
+		
 		static WrapCopier<Wi, Person> copier = WrapCopierFactory.wi(Wi.class, Person.class, null, null);
 
 	}
 
 	public static class Wo extends WrapBoolean {
+
+		private static final long serialVersionUID = -2994397580585456722L;
 
 	}
 }

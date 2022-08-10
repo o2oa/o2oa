@@ -55,7 +55,7 @@ public class ScriptingFactory {
 
 	private static ClassFilter classFilter() {
 		try {
-			return new ClassFilter(Config.miscellaneous().getScriptingBlockedClasses());
+			return new ClassFilter(Config.general().getScriptingBlockedClasses());
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}

@@ -65,7 +65,7 @@ public class ActionSave extends BaseAction {
 			throw new ExceptionJsonError();
 		}
 
-		if (BooleanUtils.isNotTrue(Config.miscellaneous().getConfigApiEnable())) {
+		if (BooleanUtils.isNotTrue(Config.general().getConfigApiEnable())) {
 			throw new ExceptionModifyConfig();
 		}
 
@@ -161,6 +161,8 @@ public class ActionSave extends BaseAction {
 	}
 
 	public static class Wo extends GsonPropertyObject {
+
+		private static final long serialVersionUID = 8468331052732208961L;
 
 		@FieldDescribe("执行时间")
 		private String time;

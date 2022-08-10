@@ -33,7 +33,7 @@ class ActionChangePassword extends BaseAction {
 
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		if (BooleanUtils.isNotTrue(Config.miscellaneous().getConfigApiEnable())) {
+		if (BooleanUtils.isNotTrue(Config.general().getConfigApiEnable())) {
 			throw new ExceptionModifyConfig();
 		}
 

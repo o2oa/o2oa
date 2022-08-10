@@ -39,6 +39,7 @@ import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Nodes;
 import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.service.processing.Business;
+import com.x.processplatform.service.processing.MessageFactory;
 import com.x.processplatform.service.processing.ThisApplication;
 
 class ActionRollback extends BaseAction {
@@ -192,6 +193,7 @@ class ActionRollback extends BaseAction {
 			if (!nodes.containsWorkLogWithActivityToken(o.getActivityToken())
 					|| StringUtils.equals(o.getActivityToken(), workLog.getFromActivityToken())) {
 				business.entityManagerContainer().remove(o);
+				MessageFactory.taskCompleted_delete(o);
 			} else {
 				o.setCompleted(false);
 				o.setWorkCompleted("");
@@ -206,6 +208,7 @@ class ActionRollback extends BaseAction {
 			if (!nodes.containsWorkLogWithActivityToken(o.getActivityToken())
 					|| StringUtils.equals(o.getActivityToken(), workLog.getFromActivityToken())) {
 				business.entityManagerContainer().remove(o);
+				MessageFactory.read_delete(o);
 			} else {
 				o.setCompleted(false);
 				o.setWorkCompleted("");
@@ -220,6 +223,7 @@ class ActionRollback extends BaseAction {
 			if (!nodes.containsWorkLogWithActivityToken(o.getActivityToken())
 					|| StringUtils.equals(o.getActivityToken(), workLog.getFromActivityToken())) {
 				business.entityManagerContainer().remove(o);
+				MessageFactory.readCompleted_delete(o);
 			} else {
 				o.setCompleted(false);
 				o.setWorkCompleted("");
@@ -234,6 +238,7 @@ class ActionRollback extends BaseAction {
 			for (Review o : list) {
 				if (null != o.getStartTime() && o.getStartTime().after(date)) {
 					business.entityManagerContainer().remove(o);
+					MessageFactory.review_delete(o);
 				} else {
 					o.setCompleted(false);
 					o.setWorkCompleted("");
