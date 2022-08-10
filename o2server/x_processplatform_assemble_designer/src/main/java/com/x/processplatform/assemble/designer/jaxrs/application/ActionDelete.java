@@ -99,7 +99,7 @@ class ActionDelete extends BaseAction {
 			emc.beginTransaction(QueryView.class);
 			emc.beginTransaction(QueryStat.class);
 			emc.beginTransaction(File.class);
-			for (String str : business.process().listWithApplication(id)) {
+			for (String str : business.process().listWithApplication(id, false)) {
 				/** 流程 1种 */
 				Process process = emc.find(str, Process.class);
 				/** 流程Activity 14种 */
