@@ -75,3 +75,12 @@
 .o2icon-list4:before {
   content: "\e9c1";
 }
+.o2icon-publishdelay:before {
+  content: "\e901";
+}
+.o2icon-clock2:before {
+  content: "\e9ab";
+}
+.o2icon-spinner:before {
+  content: "\e97d";
+}

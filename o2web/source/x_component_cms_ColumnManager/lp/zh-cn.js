@@ -176,6 +176,7 @@ MWF.xApplication.cms.ColumnManager.LP = {
         "appType" : "栏目类型",
         "ignoreTitle" : "忽略标题",
         "latest" : "检查草稿",
+        "delayView": "定时视图",
         "defaultEditForm": "默认编辑表单",
         "defaultReadForm": "默认阅读表单",
         "editformNote": "注：创建分类时的默认编辑表单",
@@ -225,6 +226,8 @@ MWF.xApplication.cms.ColumnManager.LP = {
         "loadFiles": "批量上传附件"
     },
 
+    "enable": "启用",
+    "disable": "禁用",
     "name": "名称",
     "alias": "别名",
     "attachment": "附件",
@@ -297,6 +300,7 @@ MWF.xApplication.cms.ColumnManager.LP = {
     "ignoreTitleSelectText": ["新建界面不填写标题","新建界面需要填写标题"],
     "checkDraftSelectText": ["新建界面检查草稿","新建界面不检查草稿"],
     "showAllDocumentSelectText": ["显示所有文档视图","隐藏所有文档视图"],
+    "showDelayDocumentSelectText": ["显示定时发布文档视图","隐藏定时发布文档视图"],
 
     "selectRelateFormNotice": "请选择需粘贴视图的关联表单",
 

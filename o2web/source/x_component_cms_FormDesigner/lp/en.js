@@ -70,6 +70,8 @@ MWF.xApplication.cms.FormDesigner.LP = Object.merge( {}, MWF.xApplication.proces
         "saveTitle": "Save Document",
         "publish": "Publish",
         "publishTitle": "Publish Document",
+        "publishDelayed": "Timely publish",
+        "publishDelayedTitle": "Publish documents regularly",
         "saveDraft": "Save Draft",
         "saveDraftTitle": "Save Draft",
         "popular": "Set Popular",

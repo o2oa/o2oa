@@ -2,6 +2,7 @@ MWF.xApplication.cms.Module.LP = {
 	"title": "内容管理",
 
 	"draftStatus" : "草稿",
+	"delayStatus" : "定时发布",
 	"publishedStatus" : "已发布",
 	"archivedStatus" : "已归档",
 
@@ -27,6 +28,7 @@ MWF.xApplication.cms.Module.LP = {
 	"person": "拟稿人",
 	"completedTime": "完成时间",
 	"process": "流程",
+
 
 	"batchRemove" : "清除",
 	"batchRemoveConfirm" : "确定清除",
@@ -102,8 +104,8 @@ MWF.xApplication.cms.Module.LP = {
 	"creatorCompany": "创建公司",
 	"creatorDepartment": "创建部门",
 	"creatorPerson": "创建人",
-	"publishTime": "发布时间"
-
+	"publishTime": "发布时间",
+	"publishTimeDelay": "定时发布时间"
 
 
 };

@@ -1,0 +1,56 @@
+[
+  {
+    "title" : MWF.xApplication.cms.Module.LP.subject,
+    "headStyles" : "titleAreaHeadNode",
+    "contentStyles" : "titleAreaContentNode",
+    "item" : "title",
+    "name" : "titleAreaNode",
+    "sortByClickTitle" : "yes",
+    "width" : "38%"
+  },
+  {
+    "title" : MWF.xApplication.cms.Module.LP.creatorPerson,
+    "headStyles" : "personAreaHeadNode",
+    "contentStyles" : "personAreaContentNode",
+    "item" : "creatorPersonShort",
+    "name" : "personAreaNode",
+    "sortByClickTitle" : "yes",
+    "width" : "11%"
+  },
+  {
+    "title" : MWF.xApplication.cms.Module.LP.creatorDepartment,
+    "headStyles" : "departmentAreaHeadNode",
+    "contentStyles" : "departmentAreaContentNode",
+    "item" : "creatorUnitNameShort",
+    "name" : "departmentAreaNode",
+    "sortByClickTitle" : "yes",
+    "width" : "11%"
+  },
+  {
+    "title" : MWF.xApplication.cms.Module.LP.category,
+    "headStyles" : "categoryAreaHeadNode",
+    "contentStyles" : "categoryAreaContentNode",
+    "item" : "categoryName",
+    "name" : "categoryAreaNode",
+    "sortByClickTitle" : "yes",
+    "width" : "11%"
+  },
+  {
+    "title" : MWF.xApplication.cms.Module.LP.publishTimeDelay,
+    "headStyles" : "timeAreaHeadNode",
+    "contentStyles" : "timeAreaContentNode",
+    "item" : "publishTime",
+    "name" : "timeAreaNode",
+    "sortByClickTitle" : "yes",
+    "width" : "15%"
+  },
+  {
+    "access" : "admin",
+    "title" : MWF.xApplication.cms.Module.LP.action,
+    "headStyles" : "actionAreaHeadNode",
+    "contentStyles" : "actionAreaContentNode",
+    "item" : "action",
+    "name" : "actionAreaNode",
+    "width" : "13%"
+  }
+]
