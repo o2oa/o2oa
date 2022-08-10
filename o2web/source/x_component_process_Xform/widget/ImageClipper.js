@@ -25,7 +25,7 @@ MWF.xApplication.process.Xform.widget.ImageClipper = new Class({
 		this.data = data;
 
         var options = {};
-        var width = "688";
+        var width = "678";
         var height = "520";
         width = width.toInt();
         height = height.toInt();
