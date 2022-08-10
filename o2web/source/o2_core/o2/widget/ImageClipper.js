@@ -28,7 +28,8 @@ o2.widget.ImageClipper = o2.ImageClipper = new Class({
 		"fromLocalEnable" : true,  //H5有效，本地图片
 		"fromFileEnable" : true, //H5有效，云文件图片
 		"resetEnable" : false, //H5有效
-		"uploadSourceEnable" : true //H5有效
+		"uploadSourceEnable" : true, //H5有效
+		"downloadSourceEnable": true //H5有效
 	},
 	initialize: function(node, options){
 		this.node = node;
@@ -65,6 +66,44 @@ o2.widget.ImageClipper = o2.ImageClipper = new Class({
 	_loadWithH5 : function( imageBase64 ){
 		this.clipper = new o2.widget.HTML5ImageClipper( this.container, this.options, this );
 		this.clipper.load( imageBase64 )
+	},
+	_openDownloadDialog: function(url, saveName){
+		/**
+		 * 通用的打开下载对话框方法，没有测试过具体兼容性
+		 * @param url 下载地址，也可以是一个blob对象，必选
+		 * @param saveName 保存文件名，可选
+		 */
+		if( Browser.name !== 'ie' ){
+			if(typeof url == 'object' && url instanceof Blob){
+				url = URL.createObjectURL(url); // 创建blob地址
+			}
+			var aLink = document.createElement('a');
+			aLink.href = url;
+			aLink.download = saveName || ''; // HTML5新增的属性，指定保存文件名，可以不要后缀，注意，file:///模式下不会生效
+			var event;
+			if(window.MouseEvent && typeOf( window.MouseEvent ) == "function" ) event = new MouseEvent('click');
+			else
+			{
+				event = document.createEvent('MouseEvents');
+				event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+			}
+			aLink.dispatchEvent(event);
+		}else{
+			window.navigator.msSaveBlob( url, saveName);
+		}
+	},
+	download: function(){
+		// var image = this.getBase64Image();
+		// if( image ){
+		// 	this._openDownloadDialog( this.getBase64Image(), this.clipper.fileName || new Date().format("db") );
+		// }
+
+	},
+	downloadSourceImage: function(){
+		this.clipper.downloadSourceImage();
+	},
+	downloadResizedImage: function(){
+		this.clipper.downloadResizedImage();
 	},
 	uploadImage: function(  success, failure  ){
 		this.clipper.uploadImage( success, failure )
@@ -306,6 +345,7 @@ o2.widget.HTML5ImageClipper = new Class({
 		"referenceType" : "", //使用公共图片服务上传时的参数, 目前支持 processPlatformJob, processPlatformForm, portalPage, cmsDocument, forumDocument
 
 		"uploadSourceEnable" : true, //是否允许上传原图
+		"downloadSourceEnable": true,
 
 		"showPreviewer" : true,
 		"fromLocalEnable" : true,  //本地图片
@@ -379,6 +419,16 @@ o2.widget.HTML5ImageClipper = new Class({
 				);
 			}
 		}else{
+		}
+	},
+	downloadSourceImage: function(){
+		if( this.imageNode && this.imageNode.get("src") ) {
+			this.parent._openDownloadDialog( this.imageNode.get("src"), this.fileName || new Date().format("db"));
+		}
+	},
+	downloadResizedImage: function(){
+		if( this.resizedImage ){
+			this.parent._openDownloadDialog( this.resizedImage, this.fileName || new Date().format("db"));
 		}
 	},
 	getFormData : function(){
@@ -478,16 +528,6 @@ o2.widget.HTML5ImageClipper = new Class({
 			}.bind(this));
 		}
 
-		if( this.options.resetEnable ){
-			this.resetAction = new Element("button.resetAction",{
-				"styles" : this.css.resetActionNode,
-				"text" : o2.LP.widget.reset
-			}).inject(this.uploadToolbar);
-			this.resetAction.addEvents({
-				"click": function(){ this.reset(); }.bind(this)
-			});
-		}
-
 		if( this.options.uploadSourceEnable ){
 			this.uploadSourceInput = new Element( "input", {
 				type : "checkbox",
@@ -501,6 +541,28 @@ o2.widget.HTML5ImageClipper = new Class({
 				text : o2.LP.widget.uploadOriginalImage
 			}).inject( this.uploadToolbar );
 		}
+
+		if( this.options.resetEnable ){
+			this.resetAction = new Element("button.resetAction",{
+				"styles" : this.css.resetActionNode,
+				"text" : o2.LP.widget.empty
+			}).inject(this.uploadToolbar);
+			this.resetAction.addEvents({
+				"click": function(){ this.reset(); }.bind(this)
+			});
+		}
+
+		if( this.options.downloadSourceEnable ){
+			this.downloadSourceAction = new Element("button.downloadSourceAction",{
+				"styles" : this.css.resetActionNode,
+				"text" : o2.LP.widget.download
+			}).inject(this.uploadToolbar);
+			this.downloadSourceAction.addEvents({
+				"click": function(){ this.downloadSourceImage(); }.bind(this)
+			});
+		}
+
+
 	},
 	_createUploadButtom : function(){
 

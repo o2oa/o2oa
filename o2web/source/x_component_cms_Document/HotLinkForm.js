@@ -7,7 +7,7 @@ MWF.xApplication.cms.Document.HotLinkForm = new Class({
     Implements: [Options, Events],
     options: {
         "style": "default",
-        "width": "660",
+        "width": "670",
         "height": "520",
         "hasTop": true,
         "hasIcon": false,

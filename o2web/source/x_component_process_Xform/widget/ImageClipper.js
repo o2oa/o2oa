@@ -25,8 +25,8 @@ MWF.xApplication.process.Xform.widget.ImageClipper = new Class({
 		this.data = data;
 
         var options = {};
-        var width = "668";
-        var height = "510";
+        var width = "678";
+        var height = "520";
         width = width.toInt();
         height = height.toInt();
         
@@ -75,6 +75,18 @@ MWF.xApplication.process.Xform.widget.ImageClipper = new Class({
                     "maskNode": outBody,
                     "container": outBody,
                     "buttonList": [
+                        // {
+                        //     "text": MWF.LP.process.button.download || "下载",
+                        //     "action": function () {
+                        //         _self.download();
+                        //     }
+                        // },
+                        // {
+                        //     "text": MWF.LP.process.button.remove || "删除",
+                        //     "action": function () {
+                        //         _self.remove();
+                        //     }
+                        // },
                         {
                             "text": MWF.LP.process.button.ok,
                             "action": function () {
@@ -146,6 +158,14 @@ MWF.xApplication.process.Xform.widget.ImageClipper = new Class({
             }.bind(this)
         );
     }
+    // download: function () {
+	//     if( this.image ){
+	//         this.image.downloadSourceImage();
+    //     }else{
+    //         var src = this.imageSrc || this.options.imageUrl;
+    //         if(src)window.open( src, "_blank" );
+    //     }
+    // }
 	
 });
 
