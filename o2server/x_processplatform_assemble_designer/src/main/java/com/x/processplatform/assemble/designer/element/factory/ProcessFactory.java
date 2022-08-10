@@ -25,13 +25,15 @@ public class ProcessFactory extends AbstractFactory {
 		super(business);
 	}
 
-	public List<String> listWithApplication(String application) throws Exception {
+	public List<String> listWithApplication(String application, boolean justEditionEnable) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(Process.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Process> root = cq.from(Process.class);
 		Predicate p = cb.equal(root.get(Process_.application), application);
-		p = cb.and(p, cb.or(cb.isTrue(root.get(Process_.editionEnable)), cb.isNull(root.get(Process_.editionEnable))));
+		if(justEditionEnable) {
+			p = cb.and(p, cb.or(cb.isTrue(root.get(Process_.editionEnable)), cb.isNull(root.get(Process_.editionEnable))));
+		}
 		cq.select(root.get(Process_.id)).where(p);
 		return em.createQuery(cq).getResultList();
 	}
