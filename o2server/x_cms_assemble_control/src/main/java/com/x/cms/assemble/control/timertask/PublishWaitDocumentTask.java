@@ -63,7 +63,8 @@ public class PublishWaitDocumentTask extends AbstractJob {
 			documentDataHelper.update(data);
 			emc.commit();
 			if(documentNotify!=null){
-				ThisApplication.queueSendDocumentNotify.send(document.getProperties().getDocumentNotify());
+				documentNotify.setDocumentId(id);
+				ThisApplication.queueSendDocumentNotify.send(documentNotify);
 			}
 			LOGGER.info("完成发布文档：{}",document.getTitle());
 		}catch (Exception e){
