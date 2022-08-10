@@ -19,9 +19,6 @@ public class ApplicationServer extends ConfigObject {
 	private static final Boolean DEFAULT_STATENABLE = true;
 	private static final String DEFAULT_STATEXCLUSIONS = "*.js,*.gif,*.jpg,*.png,*.css,*.ico";
 	private static final Boolean DEFAULT_EXPOSEJEST = true;
-	private static final Boolean DEFAULT_REQUESTLOGENABLE = false;
-	private static final Integer DEFAULT_REQUESTLOGRETAINDAYS = 7;
-	private static final Boolean DEFAULT_REQUESTLOGBODYENABLE = false;
 
 	public ApplicationServer() {
 		this.enable = true;
@@ -34,9 +31,6 @@ public class ApplicationServer extends ConfigObject {
 		this.statEnable = DEFAULT_STATENABLE;
 		this.statExclusions = DEFAULT_STATEXCLUSIONS;
 		this.exposeJest = DEFAULT_EXPOSEJEST;
-		this.requestLogEnable = DEFAULT_REQUESTLOGENABLE;
-		this.requestLogRetainDays = DEFAULT_REQUESTLOGRETAINDAYS;
-		this.requestLogBodyEnable = DEFAULT_REQUESTLOGBODYENABLE;
 	}
 
 	@FieldDescribe("是否启用")
@@ -59,16 +53,6 @@ public class ApplicationServer extends ConfigObject {
 	private String statExclusions;
 	@FieldDescribe("暴露jest接口.")
 	private Boolean exposeJest;
-	@FieldDescribe("启用访问日志功能.")
-	private Boolean requestLogEnable;
-	@FieldDescribe("访问日志记录天数,默认7天.")
-	private Integer requestLogRetainDays;
-	@FieldDescribe("访问日志是否记录post或者put的body内容,只对content-type为application/json的请求有效.")
-	private Boolean requestLogBodyEnable;
-
-	public Boolean getRequestLogBodyEnable() {
-		return BooleanUtils.isTrue(this.requestLogBodyEnable);
-	}
 
 	public Boolean getExposeJest() {
 		return BooleanUtils.isNotFalse(this.exposeJest);
@@ -142,15 +126,6 @@ public class ApplicationServer extends ConfigObject {
 
 	public void setExcludes(CopyOnWriteArrayList<String> excludes) {
 		this.excludes = excludes;
-	}
-
-	public Boolean getRequestLogEnable() {
-		return BooleanUtils.isTrue(this.requestLogEnable);
-	}
-
-	public Integer getRequestLogRetainDays() {
-		return (null == this.requestLogRetainDays || this.requestLogRetainDays < 1) ? DEFAULT_REQUESTLOGRETAINDAYS
-				: this.requestLogRetainDays;
 	}
 
 }

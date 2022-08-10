@@ -31,7 +31,7 @@ import com.x.base.core.project.config.HuaweiPushConfig;
 import com.x.base.core.project.config.JpushConfig;
 import com.x.base.core.project.config.MPweixin;
 import com.x.base.core.project.config.Messages;
-import com.x.base.core.project.config.Miscellaneous;
+import com.x.base.core.project.config.General;
 import com.x.base.core.project.config.Node;
 import com.x.base.core.project.config.Person;
 import com.x.base.core.project.config.Portal;
@@ -89,7 +89,7 @@ public class CreateConfigSample {
 		classes.add(WeLink.class);
 		classes.add(WorkTime.class);
 		classes.add(ZhengwuDingding.class);
-		classes.add(Miscellaneous.class);
+		classes.add(General.class);
 
 		Collections.sort(classes, (c1, c2) -> c1.getCanonicalName().compareTo(c2.getCanonicalName()));
 		for (Class<?> cls : classes) {

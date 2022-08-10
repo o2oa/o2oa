@@ -35,7 +35,7 @@ public class ActionSetToken extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionSetToken.class);
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
-		if (BooleanUtils.isNotTrue(Config.miscellaneous().getConfigApiEnable())) {
+		if (BooleanUtils.isNotTrue(Config.general().getConfigApiEnable())) {
 			throw new ExceptionModifyConfig();
 		}
 		Map<String,Object> map = XGsonBuilder.instance().fromJson(jsonElement, Map.class);
@@ -106,6 +106,8 @@ public class ActionSetToken extends BaseAction {
 
 	public static class WiDingding extends Dingding {
 
+		private static final long serialVersionUID = -4605289359327123402L;
+		
 		static WrapCopier<WiDingding, Dingding> copier = WrapCopierFactory.wi(WiDingding.class, Dingding.class, null,
 				null);
 
@@ -113,12 +115,16 @@ public class ActionSetToken extends BaseAction {
 
 	public static class WiQiyeweixin extends Qiyeweixin {
 
+		private static final long serialVersionUID = 3841050331957747237L;
+		
 		static WrapCopier<WiQiyeweixin, Qiyeweixin> copier = WrapCopierFactory.wi(WiQiyeweixin.class, Qiyeweixin.class,
 				null, null);
 
 	}
 
 	public static class Wo extends WrapBoolean {
+
+		private static final long serialVersionUID = 4848892775663119464L;
 
 	}
 }

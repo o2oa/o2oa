@@ -247,6 +247,7 @@ class V2Rollback extends BaseAction {
 				WorkLog.FROMACTIVITYTOKEN_FIELDNAME, activityTokens);
 		for (WorkLog o : os) {
 			business.entityManagerContainer().remove(o, CheckRemoveType.all);
+		
 		}
 	}
 
@@ -255,6 +256,7 @@ class V2Rollback extends BaseAction {
 				JpaObject.id_FIELDNAME, workIds);
 		for (Work o : os) {
 			business.entityManagerContainer().remove(o, CheckRemoveType.all);
+			MessageFactory.work_delete(o);
 		}
 	}
 

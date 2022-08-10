@@ -21,8 +21,6 @@ public class WebServer extends ConfigObject {
 		this.proxyPort = null;
 		this.statEnable = DEFAULT_STATENABLE;
 		this.statExclusions = DEFAULT_STATEXCLUSIONS;
-		this.requestLogEnable = DEFAULT_REQUESTLOGENABLE;
-		this.requestLogRetainDays = DEFAULT_REQUESTLOGRETAINDAYS;
 	}
 
 	private static final Integer DEFAULT_HTTP_PORT = 80;
@@ -31,9 +29,7 @@ public class WebServer extends ConfigObject {
 	private static final String DEFAULT_STATEXCLUSIONS = "*.gif,*.jpg,*.png,*.ico";
 	private static final Boolean DEFAULT_PROXYCENTERENABLE = true;
 	private static final Boolean DEFAULT_PROXYAPPLICATIONENABLE = true;
-	private static final Boolean DEFAULT_REQUESTLOGENABLE = false;
 	private static final Integer DEFAULT_PROXY_TIMEOUT = 300;
-	private static final Integer DEFAULT_REQUESTLOGRETAINDAYS = 7;
 
 	@FieldDescribe("是否启用")
 	private Boolean enable;
@@ -58,11 +54,6 @@ public class WebServer extends ConfigObject {
 
 	@FieldDescribe("代理连接超时时间，默认300(秒)")
 	private Integer proxyTimeOut;
-
-	@FieldDescribe("启用访问日志功能.")
-	private Boolean requestLogEnable;
-	@FieldDescribe("访问日志记录天数,默认7天.")
-	private Integer requestLogRetainDays;
 
 	public Boolean getProxyCenterEnable() {
 		return proxyCenterEnable == null ? DEFAULT_PROXYCENTERENABLE : this.proxyCenterEnable;
@@ -141,21 +132,12 @@ public class WebServer extends ConfigObject {
 		this.proxyCenterEnable = proxyCenterEnable;
 	}
 
-	public Boolean getRequestLogEnable() {
-		return BooleanUtils.isTrue(this.requestLogEnable);
-	}
-
 	public Integer getProxyTimeOut() {
 		return proxyTimeOut == null ? DEFAULT_PROXY_TIMEOUT : this.proxyTimeOut;
 	}
 
 	public void setProxyTimeOut(Integer proxyTimeOut) {
 		this.proxyTimeOut = proxyTimeOut;
-	}
-
-	public Integer getRequestLogRetainDays() {
-		return (null == this.requestLogRetainDays || this.requestLogRetainDays < 1) ? DEFAULT_REQUESTLOGRETAINDAYS
-				: this.requestLogRetainDays;
 	}
 
 }

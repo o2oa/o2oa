@@ -172,7 +172,7 @@ public class ApplicationServerTools extends JettySeverTools {
 		GzipHandler gzipHandler = new GzipHandler();
 		gzipHandler.setHandler(handlers);
 		server.setHandler(gzipHandler);
-		if (BooleanUtils.isTrue(applicationServer.getRequestLogEnable())
+		if (BooleanUtils.isTrue(Config.general().getRequestLogEnable())
 				|| BooleanUtils.isTrue(Config.ternaryManagement().getEnable())) {
 			server.setRequestLog(requestLog(applicationServer));
 		}
@@ -187,11 +187,11 @@ public class ApplicationServerTools extends JettySeverTools {
 		AsyncRequestLogWriter asyncRequestLogWriter = new AsyncRequestLogWriter();
 		asyncRequestLogWriter.setTimeZone(TimeZone.getDefault().getID());
 		asyncRequestLogWriter.setAppend(true);
-		asyncRequestLogWriter.setRetainDays(applicationServer.getRequestLogRetainDays());
+		asyncRequestLogWriter.setRetainDays(Config.general().getRequestLogRetainDays());
 		asyncRequestLogWriter.setFilename(Config.dir_logs().toString() + File.separator
 				+ "application.request.yyyy_MM_dd." + Config.node() + ".log");
 		asyncRequestLogWriter.setFilenameDateFormat("yyyyMMdd");
-		if (BooleanUtils.isTrue(applicationServer.getRequestLogBodyEnable())
+		if (BooleanUtils.isTrue(Config.general().getRequestLogBodyEnable())
 				|| BooleanUtils.isTrue(Config.ternaryManagement().getEnable())) {
 			return new ServerRequestLogBody(asyncRequestLogWriter, LOG_FORMAT);
 		} else {

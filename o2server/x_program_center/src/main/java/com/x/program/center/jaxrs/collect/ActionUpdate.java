@@ -12,7 +12,7 @@ class ActionUpdate extends BaseAction {
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, WrapInCollect wrapIn) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
-		if (BooleanUtils.isNotTrue(Config.miscellaneous().getConfigApiEnable())) {
+		if (BooleanUtils.isNotTrue(Config.general().getConfigApiEnable())) {
 			throw new ExceptionModifyConfig();
 		}
 		if (BooleanUtils.isTrue(wrapIn.getEnable())) {
@@ -40,5 +40,8 @@ class ActionUpdate extends BaseAction {
 	}
 
 	public static class Wo extends WrapBoolean {
+
+		private static final long serialVersionUID = -7267759850393300554L;
+		
 	}
 }

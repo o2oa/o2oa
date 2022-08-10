@@ -14,7 +14,7 @@ class ActionValidateDirect extends BaseAction {
 
 	ActionResult<Wo> execute(JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
-		if (BooleanUtils.isNotTrue(Config.miscellaneous().getConfigApiEnable())) {
+		if (BooleanUtils.isNotTrue(Config.general().getConfigApiEnable())) {
 			throw new ExceptionModifyConfig();
 		}
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
@@ -49,9 +49,14 @@ class ActionValidateDirect extends BaseAction {
 
 	public static class Wi extends Collect {
 
+		private static final long serialVersionUID = 5257427374219295830L;
+
 	}
 
 	public static class Wo extends WrapBoolean {
+
+		private static final long serialVersionUID = -1060687212629295952L;
+		
 	}
 
 }

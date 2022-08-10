@@ -19,7 +19,7 @@ class ActionSetProxy extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		if (BooleanUtils.isNotTrue(Config.miscellaneous().getConfigApiEnable())) {
+		if (BooleanUtils.isNotTrue(Config.general().getConfigApiEnable())) {
 			throw new ExceptionModifyConfig();
 		}
 		for (Entry<String, Node> en : Config.nodes().entrySet()) {
@@ -62,9 +62,15 @@ class ActionSetProxy extends BaseAction {
 	}
 
 	public static class Wo extends WrapBoolean {
+
+		private static final long serialVersionUID = 5816751709805230343L;
+		
 	}
 
 	public static class Wi extends AbstractWoProxy {
+
+		private static final long serialVersionUID = 183540115031413069L;
+		
 	}
 
 }
