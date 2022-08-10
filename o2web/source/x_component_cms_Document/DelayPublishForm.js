@@ -41,6 +41,7 @@ MWF.xApplication.cms.Document.DelayPublishForm = new Class({
                         text: this.lp.publishTime,
                         tType: "datetime",
                         notEmpty: true,
+                        value: this.options.publishTime || "",
                         attr: {
                             "readonly":true
                         },
@@ -85,6 +86,9 @@ MWF.xApplication.cms.Document.DelayPublishForm = new Class({
         var result = this.form.getResult(true, null);
         if( !result ){
             this.app.notice(this.lp.inputPublishTime, "error");
+            return;
+        }else if( new Date( result.publishTime ) <= new Date() ){
+            this.app.notice(this.lp.inputPublishTime2, "error");
             return;
         }
         (this.formMaskNode || this.formMarkNode).destroy();

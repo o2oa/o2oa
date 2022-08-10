@@ -39,6 +39,7 @@ MWF.xApplication.cms.Document.LP = {
     "publishTime": "发布时间",
     "publish": "发布",
     "inputPublishTime": "发布时间不能为空",
+    "inputPublishTime2": "发布时间不能早于当前时间",
     "setHotLinkSuccess" : "设置热点图片成功",
     "cancelHotLinkSuccess" : "取消热点图片成功",
     "selectDocPicture" : "选择文档图片",

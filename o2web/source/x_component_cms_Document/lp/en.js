@@ -39,6 +39,7 @@ MWF.xApplication.cms.Document.LP = {
     "publishTime": "Publish Time",
     "publish": "Publish",
     "inputPublishTime": "Publish time cannot be empty",
+    "inputPublishTime2": "Publish time cannot be earlier than current time",
     "setHotLinkSuccess": "Set hotspot picture successfully",
     "cancelHotLinkSuccess": "Cancel hotspot picture success",
     "selectDocPicture": "Select Document Picture",
