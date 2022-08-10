@@ -493,7 +493,7 @@
 						</lifecycleMappingMetadata>
 					</configuration>
 				</plugin>
-<!--				源码插件-->
+				<!--				源码插件-->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-source-plugin</artifactId>
@@ -507,7 +507,7 @@
 						</execution>
 					</executions>
 				</plugin>
-<!--				文档插件-->
+				<!--				文档插件-->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
@@ -520,7 +520,7 @@
 						<docencoding>UTF-8</docencoding>
 						<additionalOptions>
 							<!-- 解决jdk1.8以后编译出错问题-->
-<!--							<additionalOption>-Xdoclint:none</additionalOption>-->
+							<!--							<additionalOption>-Xdoclint:none</additionalOption>-->
 							<additionalparam>-Xdoclint:none</additionalparam>
 						</additionalOptions>
 					</configuration>
@@ -533,7 +533,7 @@
 						</execution>
 					</executions>
 				</plugin>
-<!--				gpg插件 -->
+				<!--				gpg插件 -->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-gpg-plugin</artifactId>
@@ -545,12 +545,12 @@
 							<goals>
 								<goal>sign</goal>
 							</goals>
-<!--							<configuration>-->
-<!--								<gpgArguments>-->
-<!--									<arg>&#45;&#45;pinentry-mode</arg>-->
-<!--									<arg>loopback</arg>-->
-<!--								</gpgArguments>-->
-<!--							</configuration>-->
+							<!--							<configuration>-->
+							<!--								<gpgArguments>-->
+							<!--									<arg>&#45;&#45;pinentry-mode</arg>-->
+							<!--									<arg>loopback</arg>-->
+							<!--								</gpgArguments>-->
+							<!--							</configuration>-->
 						</execution>
 					</executions>
 				</plugin>
@@ -1173,7 +1173,7 @@
 			<dependency>
 				<groupId>org.apache.hadoop</groupId>
 				<artifactId>hadoop-client</artifactId>
-				<version>3.3.2</version>
+				<version>3.3.4</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sun.mail</groupId>
@@ -1203,7 +1203,7 @@
 		</dependencies>
 	</dependencyManagement>
 
-<!--	中心仓库发布地址-->
+	<!--	中心仓库发布地址-->
 	<distributionManagement>
 		<snapshotRepository>
 			<id>ossrh</id>
