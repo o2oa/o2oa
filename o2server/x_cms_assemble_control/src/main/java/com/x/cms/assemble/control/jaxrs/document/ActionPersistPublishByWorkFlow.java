@@ -189,31 +189,28 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 				wi.setCreatorPerson(effectivePerson.getDistinguishedName());
 			}
 			if (StringUtils.isEmpty(wi.getCreatorIdentity())) {
-				if (effectivePerson.isCipher() || effectivePerson.isManager()) {
+				if (StringUtils.equals(EffectivePerson.CIPHER, effectivePerson.getDistinguishedName())
+						|| StringUtils.equals(Token.defaultInitialManager, effectivePerson.getDistinguishedName())) {
 					wi.setCreatorIdentity(effectivePerson.getDistinguishedName());
 					wi.setCreatorPerson(effectivePerson.getDistinguishedName());
 					wi.setCreatorUnitName(effectivePerson.getDistinguishedName());
 					wi.setCreatorTopUnitName(effectivePerson.getDistinguishedName());
 				} else {
 					// 尝试一下根据当前用户获取用户的第一个身份
-					wi.setCreatorIdentity(
-							userManagerService.getMajorIdentityWithPerson(effectivePerson.getDistinguishedName()));
+					wi.setCreatorIdentity(userManagerService.getMajorIdentityWithPerson(effectivePerson.getDistinguishedName()));
 				}
 			}
-			if (!Config.token().isInitialManager(wi.getCreatorIdentity()))
-
-				if (!StringUtils.equals(EffectivePerson.CIPHER, wi.getCreatorIdentity())
-						&& !StringUtils.equals(Token.defaultInitialManager, wi.getCreatorIdentity())) {
-					// 说明是指定的发布者，并不使用cipher和xadmin代替
-					if (StringUtils.isNotEmpty(wi.getCreatorIdentity())) {
-						wi.setCreatorPerson(userManagerService.getPersonNameWithIdentity(wi.getCreatorIdentity()));
-						wi.setCreatorUnitName(userManagerService.getUnitNameByIdentity(wi.getCreatorIdentity()));
-						wi.setCreatorTopUnitName(userManagerService.getTopUnitNameByIdentity(wi.getCreatorIdentity()));
-					} else {
-						Exception exception = new ExceptionPersonHasNoIdentity(wi.getCreatorIdentity());
-						result.error(exception);
-					}
+			if (!StringUtils.equals(EffectivePerson.CIPHER, wi.getCreatorIdentity())
+					&& !StringUtils.equals(Token.defaultInitialManager, wi.getCreatorIdentity())) {
+				if (StringUtils.isNotEmpty(wi.getCreatorIdentity())) {
+					wi.setCreatorPerson(userManagerService.getPersonNameWithIdentity(wi.getCreatorIdentity()));
+					wi.setCreatorUnitName(userManagerService.getUnitNameByIdentity(wi.getCreatorIdentity()));
+					wi.setCreatorTopUnitName(userManagerService.getTopUnitNameByIdentity(wi.getCreatorIdentity()));
+				} else {
+					Exception exception = new ExceptionPersonHasNoIdentity(wi.getCreatorIdentity());
+					result.error(exception);
 				}
+			}
 		}
 
 		if (check) {
@@ -304,79 +301,6 @@ public class ActionPersistPublishByWorkFlow extends BaseAction {
 			} catch (Throwable th) {
 				th.printStackTrace();
 				result.error(th);
-			}
-		}
-
-		// 处理文档的云文档图片信息
-		if (check) {
-			try {
-				cloudPictures = fileInfoServiceAdv.getCloudPictureList(document.getId());
-				if (cloudPictures == null) {
-					cloudPictures = new ArrayList<>();
-				}
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new ExceptionDocumentInfoProcess(e, "系统在查询文档云图片信息时发生异常！ID:" + document.getId());
-				result.error(exception);
-				LOGGER.error(e, effectivePerson, request, null);
-			}
-		}
-
-		if (check) {
-			// 检查是否有需要删除的图片
-			if (cloudPictures != null && !cloudPictures.isEmpty()) {
-				boolean isExists = false;
-				for (FileInfo picture : cloudPictures) {
-					isExists = false;
-					if (wi.getCloudPictures() != null && !wi.getCloudPictures().isEmpty()) {
-						for (String cloudPictureId : wi.getCloudPictures()) {
-							if (picture.getCloudId() != null && picture.getCloudId().equalsIgnoreCase(cloudPictureId)) {
-								isExists = true;
-							}
-						}
-					}
-					if (!isExists) {
-						try {
-							fileInfoServiceAdv.deleteFileInfo(picture.getId());
-						} catch (Exception e) {
-							check = false;
-							Exception exception = new ExceptionDocumentInfoProcess(e,
-									"系统在删除文档云图片信息时发生异常！ID:" + picture.getId());
-							result.error(exception);
-							LOGGER.error(e, effectivePerson, request, null);
-						}
-					}
-				}
-			}
-		}
-
-		if (check) {
-			// 检查是否有需要新添加的云图片信息
-			if (wi.getCloudPictures() != null && !wi.getCloudPictures().isEmpty()) {
-				boolean isExists = false;
-				int index = 0;
-				for (String cloudPictureId : wi.getCloudPictures()) {
-					index++;
-					isExists = false;
-					for (FileInfo picture : cloudPictures) {
-						if (picture.getCloudId() != null && picture.getCloudId().equalsIgnoreCase(cloudPictureId)) {
-							isExists = true;
-							fileInfoServiceAdv.updatePictureIndex(picture.getId(), index);
-						}
-					}
-					if (!isExists) {
-						try {
-							// 说明原来的文件中不存在，需要添加一个新的云图片
-							fileInfoServiceAdv.saveCloudPicture(cloudPictureId, document, index);
-						} catch (Exception e) {
-							check = false;
-							Exception exception = new ExceptionDocumentInfoProcess(e,
-									"系统在新增文档云图片信息时发生异常！CLOUD_ID:" + cloudPictureId);
-							result.error(exception);
-							LOGGER.error(e, effectivePerson, request, null);
-						}
-					}
-				}
 			}
 		}
 

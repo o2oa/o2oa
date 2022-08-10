@@ -8,7 +8,8 @@ public enum DocumentStatus {
 
 	DRAFT("draft", "草稿"),
 	PUBLISHED("published", "已发布"),
-	WAIT_PUBLISH("waitPublish", "待发布");
+	WAIT_PUBLISH("waitPublish", "待发布"),
+	ARCHIVED("archived", "归档");
 	private String value;
 	private String name;
 

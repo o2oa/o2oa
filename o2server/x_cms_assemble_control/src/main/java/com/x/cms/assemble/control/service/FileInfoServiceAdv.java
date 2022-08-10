@@ -19,7 +19,7 @@ import com.x.cms.core.entity.FileInfo;
 /**
  * 对文档附件文件信息进行管理的服务类（高级）
  * 高级服务器可以利用Service完成事务控制
- * 
+ *
  * @author O2LEE
  */
 public class FileInfoServiceAdv {
@@ -37,60 +37,10 @@ public class FileInfoServiceAdv {
 			}
 		}
 
-		public List<FileInfo> getAttachmentList( String documentId ) throws Exception {
-			if( documentId == null ){
-				throw new Exception("documentId is null!");
-			}
-
-			try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
-				Business business = new Business(emc);		
-				List<String> ids = business.getFileInfoFactory().listAttachmentByDocument( documentId );
-				if( ListTools.isEmpty( ids ) ){
-					return null;
-				}
-				return emc.list( FileInfo.class, ids );
-			} catch ( Exception e ) {
-				throw e;
-			}
-		}
-		
-		public List<FileInfo> getAllPictureList( String documentId ) throws Exception {
-			if( StringUtils.isEmpty( documentId ) ){
-				throw new Exception("documentId is null!");
-			}
-			try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
-				Business business = new Business(emc);		
-				List<String> ids = business.getFileInfoFactory().listPictureByDocument( documentId );
-				if( ListTools.isEmpty( ids ) ){
-					return null;
-				}
-				return emc.list( FileInfo.class, ids );
-			} catch ( Exception e ) {
-				throw e;
-			}
-		}
-		
-		public List<FileInfo> getCloudPictureList( String documentId ) throws Exception {
-			if( StringUtils.isEmpty( documentId ) ){
-				throw new Exception("documentId is null!");
-			}
-
-			try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
-				Business business = new Business(emc);		
-				List<String> ids = business.getFileInfoFactory().listCloudPictureByDocument( documentId );
-				if( ListTools.isEmpty( ids ) ){
-					return null;
-				}
-				return emc.list( FileInfo.class, ids );
-			} catch ( Exception e ) {
-				throw e;
-			}
-		}
-		
 		/**
 		 * 只是删除一条文件附件信息
 		 * @param id
-		 * @throws Exception 
+		 * @throws Exception
 		 */
 		public void deleteFileInfo( String id ) throws Exception {
 			if( StringUtils.isEmpty( id ) ){
@@ -99,7 +49,7 @@ public class FileInfoServiceAdv {
 			FileInfo file = null;
 			try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 				emc.beginTransaction( FileInfo.class );
-				file = emc.find( id, FileInfo.class ); 
+				file = emc.find( id, FileInfo.class );
 				if( file !=null ){
 					emc.remove( file, CheckRemoveType.all );
 					emc.commit();
@@ -107,63 +57,6 @@ public class FileInfoServiceAdv {
 			} catch ( Exception e ) {
 				throw e;
 			}
-		}
-
-		/**
-		 * 保存一个新的云图片信息
-		 * @param cloudPicture
-		 * @param document
-		 * @param index 
-		 * @throws Exception
-		 */
-		public void saveCloudPicture( String cloudPictureId, Document document, int index ) throws Exception {
-			if( StringUtils.isEmpty( cloudPictureId ) ){
-				throw new Exception("cloudPicture is null!");
-			}
-			FileInfo file = new FileInfo();
-			file.setSeqNumber( index );
-			file.setId( FileInfo.createId() );
-			file.setAppId( document.getAppId() );
-			file.setCategoryId( document.getCategoryId() );			
-			file.setCreatorUid( document.getCreatorPerson() );
-			file.setDocumentId( document.getId() );
-			file.setCloudId( cloudPictureId );
-			file.setCreateTime( new Date() );
-			file.setFileHost( "" );
-			file.setFileName( cloudPictureId );
-			file.setFilePath( "x_file_assemble_control/servlet/file/download/" + cloudPictureId );
-			file.setFileExtType( "PICTURE" );
-			file.setFileType( "CLOUD" ); //文件类别：云文件（CLOUD） | 附件(ATTACHMENT)			
-			file.setName( cloudPictureId );
-			file.setSite( "content" );
-			file.setUpdateTime( new Date() );
-			file.setLastUpdateTime( new Date() );
-			file.setStorage("cms");
-			try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
-				emc.beginTransaction( FileInfo.class );
-				emc.persist( file, CheckPersistType.all );
-				emc.commit();
-			} catch ( Exception e ) {
-				throw e;
-			}
-		}
-
-		public void updatePictureIndex(String id, int index) throws Exception {
-			if( StringUtils.isEmpty( id ) ){
-				throw new Exception("cloudPicture is null!");
-			}
-			try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
-				FileInfo file = emc.find( id, FileInfo.class );
-				if( file != null ){
-					emc.beginTransaction( FileInfo.class );
-					file.setSeqNumber( index );
-					emc.check( file, CheckPersistType.all );
-					emc.commit();
-				}
-			} catch ( Exception e ) {
-				throw e;
-			}
-			
 		}
 
 		public FileInfo saveAttachment(String docId, FileInfo attachment) throws Exception {
@@ -185,12 +78,12 @@ public class FileInfoServiceAdv {
 
 		public FileInfo updateAttachmentInfo( String id, FileInfo fileInfo ) throws Exception {
 			FileInfo fileInfo_old = null;
-			
+
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				fileInfo_old = emc.find( id, FileInfo.class);
 				if (null == fileInfo_old) {
 					throw new Exception("file info not exists.ID=" + id );
-				}				
+				}
 				if( fileInfo == null ) {
 					return fileInfo_old;
 				}else {
@@ -228,10 +121,10 @@ public class FileInfoServiceAdv {
 					emc.check( fileInfo_old, CheckPersistType.all);
 					emc.commit();
 				}
-			}			
+			}
 			return fileInfo_old;
 		}
-		
+
 		public FileInfo updateAttachment(String docId, String old_attId, FileInfo attachment, StorageMapping mapping) throws Exception {
 			if( StringUtils.isEmpty( docId ) ){
 				throw new Exception("docId is null!");
@@ -275,12 +168,12 @@ public class FileInfoServiceAdv {
 				throw new Exception("documentId is null!");
 			}
 			try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
-				Business business = new Business(emc);		
+				Business business = new Business(emc);
 				return business.getFileInfoFactory().listAttachmentByDocument( documentId );
 			} catch ( Exception e ) {
 				throw e;
 			}
 		}
 
-		
+
 }

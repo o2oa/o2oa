@@ -1,34 +1,22 @@
 package com.x.cms.core.entity;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.OrderColumn;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.openjpa.persistence.PersistentCollection;
-import org.apache.openjpa.persistence.jdbc.ContainerTable;
-import org.apache.openjpa.persistence.jdbc.ElementColumn;
-import org.apache.openjpa.persistence.jdbc.ElementIndex;
-import org.apache.openjpa.persistence.jdbc.Index;
-
 import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.Persistent;
+import org.apache.openjpa.persistence.PersistentCollection;
+import org.apache.openjpa.persistence.jdbc.Index;
+import org.apache.openjpa.persistence.jdbc.*;
+
+import javax.persistence.OrderColumn;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 文档基础信息类
@@ -53,7 +41,10 @@ public class Document extends SliceJpaObject {
 	/* 以上为 JpaObject 默认字段 */
 	@Override
 	public void onPersist() throws Exception {
+	}
 
+	public Document() {
+		this.properties = new DocumentProperties();
 	}
 
 	@Override
@@ -409,6 +400,14 @@ public class Document extends SliceJpaObject {
 	@ElementIndex(name = TABLE + IndexNameMiddle + pictureList_FIELDNAME + ElementIndexNameSuffix)
 	@CheckPersist(allowEmpty = true)
 	private List<String> pictureList;
+
+	public static final String properties_FIELDNAME = "properties";
+	@FieldDescribe("属性对象存储字段.")
+	@Persistent
+	@Strategy(JsonPropertiesValueHandler)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + properties_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private DocumentProperties properties;
 
 	public static final String stringValue01_FIELDNAME = "stringValue01";
 	@FieldDescribe("业务数据String值01.")
@@ -916,6 +915,17 @@ public class Document extends SliceJpaObject {
 
 	public void setSequenceCreatorUnitName(String sequenceCreatorUnitName) {
 		this.sequenceCreatorUnitName = getSequenceString(sequenceCreatorUnitName);
+	}
+
+	public DocumentProperties getProperties() {
+		if (null == this.properties) {
+			this.properties = new DocumentProperties();
+		}
+		return this.properties;
+	}
+
+	public void setProperties(DocumentProperties properties) {
+		this.properties = properties;
 	}
 
 	public String getStringValue01() {
