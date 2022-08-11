@@ -237,6 +237,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"startTerminal": "Start Terminal",
 		"pcAndMobile": "PC and mobile",
 		"onlyPc": "PC only",
+		"none": "none",
 		"startMode": "StartMode",
 		"instanceMode": "instance",
 		"draftMode": "draft",

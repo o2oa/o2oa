@@ -78,8 +78,9 @@
                 <tr>
                     <td class="editTableTitle">{{$.lp.startTerminal}}:</td>
                     <td class="editTableValue">
-                        <input class="editTableRadio" name="startableTerminal" text{($.startableTerminal!=='client' && $.startableTerminal!=='mobile')?'checked':''} type="radio" value="all"/>{{$.lp.pcAndMobile}}
+                        <input class="editTableRadio" name="startableTerminal" text{($.startableTerminal!=='client' && $.startableTerminal!=='mobile' && $.startableTerminal!=='none')?'checked':''} type="radio" value="all"/>{{$.lp.pcAndMobile}}
                         <input class="editTableRadio" name="startableTerminal" text{($.startableTerminal==='client')?'checked':''} type="radio" value="client"/>{{$.lp.onlyPc}}
+                        <input class="editTableRadio" name="startableTerminal" text{($.startableTerminal==='none')?'checked':''} type="radio" value="none"/>{{$.lp.none}}
     <!--                    <input class="editTableRadio" name="startableTerminal" text{($.startableTerminal==='mobile')?'checked':''} type="radio" value="mobile"/>移动端-->
                     </td>
                 </tr>
