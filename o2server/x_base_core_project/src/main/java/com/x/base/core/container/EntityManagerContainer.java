@@ -78,7 +78,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 	@SuppressWarnings("unchecked")
 	public void check(JpaObject jpa, CheckPersistType checkPersistType) throws Exception {
 		jpa.onPersist();
-		checkId(jpa);
+		checkIdFormat(jpa);
 		for (Entry<Field, CheckPersist> entry : entityManagerContainerFactory.getCheckPersistFields(jpa.getClass())
 				.entrySet()) {
 			Field field = entry.getKey();
@@ -154,7 +154,7 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		}
 	}
 
-	private void checkId(JpaObject jpa) throws Exception {
+	private void checkIdFormat(JpaObject jpa) throws Exception {
 		String value = jpa.getId();
 		if (null == value || (!StringTools.UUID_REGEX.matcher(value).matches())) {
 			throw new Exception("check id error, class:" + jpa.getClass().getName() + ", field:id, value:" + value
