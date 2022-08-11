@@ -1468,7 +1468,8 @@ MWF.xApplication.process.TaskCenter.Starter = new Class({
     },
     listApplications: function () {
         this.app.getAction(function () {
-            var p1 = this.app.action.listApplicationStartable();
+            // var p1 = this.app.action.listApplicationStartable();
+            var p1 = o2.Actions.load("x_processplatform_assemble_surface").ApplicationAction.listWithPersonAndTerminal("client");
             var p2 = o2.Actions.load("x_cms_assemble_control").AppInfoAction.listPublishWithProcess();
 
             Promise.all([p1, p2]).then(function(data){

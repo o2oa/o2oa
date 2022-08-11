@@ -268,13 +268,14 @@ MWF.xApplication.process.workcenter.Main = new Class({
 	},
 
 	getStartData: function(){
-		var p1 = this.action.ApplicationAction.listWithPersonComplex().then(function(json){return json.data});
+		// var p1 = this.action.ApplicationAction.listWithPersonComplex().then(function(json){return json.data});
+		var p1 = o2.Actions.load("x_processplatform_assemble_surface").ApplicationAction.listWithPersonAndTerminal("client").then(function(json){return json.data;});
 		var p2 = new Promise(function(resolve){
 			o2.UD.getDataJson("taskCenter_startTop", function(data){
 				resolve(data);
 			});
 		});
-		var p3 = o2.Actions.load("x_cms_assemble_control").AppInfoAction.listPublishWithProcess().then(function(json){return json.data});
+		var p3 = o2.Actions.load("x_cms_assemble_control").AppInfoAction.listPublishWithProcess().then(function(json){return json.data;});
 		return Promise.all([p1, p2, p3]);
 	},
 	closeStartProcess: function(e){
