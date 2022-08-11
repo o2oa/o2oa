@@ -241,7 +241,7 @@ public class CategoryInfoFactory extends ElementFactory {
 
 		Predicate p = cb.conjunction();
 		if( ListTools.isNotEmpty( inAppInfoIds )) {
-			p = root.get( CategoryInfo_.appId ).in( p );
+			p = root.get( CategoryInfo_.appId ).in( inAppInfoIds );
 		}
 		if(BooleanUtils.isTrue(hasProcess)){
 			p = cb.and(p, cb.isNotNull(root.get(CategoryInfo_.workflowFlag)));
@@ -262,8 +262,8 @@ public class CategoryInfoFactory extends ElementFactory {
 		}
 
 		p = cb.and(p, p_permission);
-		cq.select(root.get( CategoryInfo_.id ));
-		return em.createQuery( cq.where( p ) ).getResultList().stream().distinct().collect(Collectors.toList());
+		cq.select(root.get( CategoryInfo_.id )).where(p);
+		return em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	/**

@@ -34,7 +34,7 @@ import com.x.cms.core.entity.element.ViewFieldConfig;
 
 public class BaseAction extends StandardJaxrsAction {
 
-	protected Cache.CacheCategory cacheCategory = new Cache.CacheCategory(AppInfo.class, AppDict.class, AppDictItem.class, View.class,
+	protected Cache.CacheCategory cacheCategory = new Cache.CacheCategory(AppInfo.class, CategoryInfo.class, AppDict.class, AppDictItem.class, View.class,
 			ViewCategory.class, ViewFieldConfig.class);
 
 	protected AppInfoServiceAdv appInfoServiceAdv = new AppInfoServiceAdv();
