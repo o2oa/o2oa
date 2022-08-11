@@ -64,6 +64,7 @@ public class Process extends SliceJpaObject {
 	public static final String STARTABLETERMINAL_CLIENT = "client";
 	public static final String STARTABLETERMINAL_MOBILE = "mobile";
 	public static final String STARTABLETERMINAL_ALL = "all";
+	public static final String STARTABLETERMINAL_NONE = "none";
 
 	@Override
 	public String getId() {
@@ -408,22 +409,6 @@ public class Process extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private Boolean expireWorkTime;
 
-//	public static final String expireScript_FIELDNAME = "expireScript";
-//	@IdReference(Script.class)
-//	/** 脚本可能使用名称,所以长度为255 */
-//	@FieldDescribe("过期时间设定脚本.")
-//	@Column(length = length_255B, name = ColumnNamePrefix + expireScript_FIELDNAME)
-//	@CheckPersist(allowEmpty = true)
-//	private String expireScript;
-
-//	public static final String expireScriptText_FIELDNAME = "expireScriptText";
-//	@FieldDescribe("过期时间设定脚本文本.")
-//	@Lob
-//	@Basic(fetch = FetchType.EAGER)
-//	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + expireScriptText_FIELDNAME)
-//	@CheckPersist(allowEmpty = true)
-//	private String expireScriptText;
-
 	public static final String checkDraft_FIELDNAME = "checkDraft";
 	@FieldDescribe("是否进行无内容的草稿删除校验.")
 	@Column(name = ColumnNamePrefix + checkDraft_FIELDNAME)
@@ -431,7 +416,7 @@ public class Process extends SliceJpaObject {
 	private Boolean checkDraft;
 
 	public static final String startableTerminal_FIELDNAME = "startableTerminal";
-	@FieldDescribe("可启动流程终端类型,可选值 client,mobile,all")
+	@FieldDescribe("可启动流程终端类型,可选值 client,mobile,all,none")
 	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + startableTerminal_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String startableTerminal;

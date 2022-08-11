@@ -141,6 +141,21 @@ public class ProcessFactory extends ElementFactory {
 		List<String> list = new ArrayList<>();
 		for (String str : ids) {
 			Process o = this.pick(str);
+			boolean flag = isManager || effectivePerson.isPerson(o.getControllerList());
+			if (flag) {
+				list.add(str);
+			}
+		}
+		return list;
+	}
+
+	public List<String> listControllableAndEnabledProcess(EffectivePerson effectivePerson, Application application)
+			throws Exception {
+		List<String> ids = this.listWithApplication(application);
+		boolean isManager = this.business().canManageApplication(effectivePerson, application);
+		List<String> list = new ArrayList<>();
+		for (String str : ids) {
+			Process o = this.pick(str);
 			boolean flag = (!BooleanUtils.isFalse(o.getEditionEnable())) && (isManager || effectivePerson.isPerson(o.getControllerList()));
 			if (flag) {
 				list.add(str);
