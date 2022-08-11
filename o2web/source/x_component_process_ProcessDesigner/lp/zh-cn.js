@@ -237,6 +237,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"startTerminal": "启动终端",
 		"pcAndMobile": "PC端和移动端",
 		"onlyPc": "仅PC端",
+		"none": "无",
 		"startMode": "启动模式",
 		"instanceMode": "实例模式",
 		"draftMode": "草稿模式",
