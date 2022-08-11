@@ -1,6 +1,8 @@
 package com.x.base.core.project.config;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -14,13 +16,16 @@ import com.x.base.core.project.tools.DefaultCharset;
 public class General extends ConfigObject {
 
 	private static final long serialVersionUID = 4393280516414081348L;
-
 	private static final Boolean DEFAULT_WEBSOCKETENABLE = true;
 	private static final Boolean DEFAULT_CONFIGAPIENABLE = true;
-	private static final List<String> DEFAULT_SCRIPTINGBLOCKEDCLASSES = null;
+	private static final List<String> DEFAULT_SCRIPTINGBLOCKEDCLASSES = Arrays.asList(Runtime.class.getName(),
+			File.class.getName(), Path.class.getName());
 	private static final Boolean DEFAULT_REQUESTLOGENABLE = false;
 	private static final Integer DEFAULT_REQUESTLOGRETAINDAYS = 7;
 	private static final Boolean DEFAULT_REQUESTLOGBODYENABLE = false;
+
+	private static final Boolean DEFAULT_DEPLOYRESOURCEENABLE = false;
+	private static final Boolean DEFAULT_DEPLOYWARENABLE = false;
 
 	public static General defaultInstance() {
 		General o = new General();
@@ -30,13 +35,17 @@ public class General extends ConfigObject {
 		o.requestLogEnable = DEFAULT_REQUESTLOGENABLE;
 		o.requestLogRetainDays = DEFAULT_REQUESTLOGRETAINDAYS;
 		o.requestLogBodyEnable = DEFAULT_REQUESTLOGBODYENABLE;
+		o.deployResourceEnable = DEFAULT_DEPLOYRESOURCEENABLE;
+		o.deployWarEnable = DEFAULT_DEPLOYWARENABLE;
 		return o;
 	}
 
 	@FieldDescribe("启用访问日志功能.")
 	private Boolean requestLogEnable;
+
 	@FieldDescribe("访问日志记录天数,默认7天.")
 	private Integer requestLogRetainDays;
+
 	@FieldDescribe("访问日志是否记录post或者put的body内容,只对content-type为application/json的请求有效.")
 	private Boolean requestLogBodyEnable;
 
@@ -45,6 +54,12 @@ public class General extends ConfigObject {
 
 	@FieldDescribe("允许通过接口修改系统配置.")
 	private Boolean configApiEnable;
+
+	@FieldDescribe("是否允许部署war包.")
+	private Boolean deployWarEnable;
+
+	@FieldDescribe("是否允许部署静态资源.")
+	private Boolean deployResourceEnable;
 
 	@FieldDescribe("脚本中禁止用的类名,保持为空则默认禁用Runtime,File,Path.")
 	private List<String> scriptingBlockedClasses;
@@ -63,7 +78,7 @@ public class General extends ConfigObject {
 	}
 
 	public List<String> getScriptingBlockedClasses() {
-		return this.scriptingBlockedClasses;
+		return (null == this.scriptingBlockedClasses) ? DEFAULT_SCRIPTINGBLOCKEDCLASSES : this.scriptingBlockedClasses;
 	}
 
 	public Boolean getWebSocketEnable() {
@@ -72,6 +87,16 @@ public class General extends ConfigObject {
 
 	public Boolean getConfigApiEnable() {
 		return null == this.configApiEnable ? DEFAULT_CONFIGAPIENABLE : this.configApiEnable;
+	}
+
+	public Boolean getDeployWarEnable() {
+
+		return null == this.deployWarEnable ? DEFAULT_DEPLOYWARENABLE : this.deployWarEnable;
+	}
+
+	public Boolean getDeployResourceEnable() {
+
+		return null == this.deployResourceEnable ? DEFAULT_DEPLOYRESOURCEENABLE : this.deployResourceEnable;
 	}
 
 	public void save() throws Exception {

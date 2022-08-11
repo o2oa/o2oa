@@ -2,6 +2,7 @@ package com.x.program.center.jaxrs.module;
 
 import java.io.File;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
@@ -13,45 +14,49 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.program.center.Business;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionDispatchResource extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionDispatchResource.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDispatchResource.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, boolean asNew, String fileName, String filePath, byte[] bytes,
-			FormDataContentDisposition disposition) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, boolean asNew, String fileName, String filePath,
+			byte[] bytes, FormDataContentDisposition disposition) throws Exception {
+
+		LOGGER.debug("execute:{}, asNew:{}, fileName:{}, filePath:{}.", effectivePerson::getDistinguishedName,
+				() -> asNew, () -> fileName, () -> filePath);
+		if (BooleanUtils.isNotTrue(Config.general().getDeployResourceEnable())) {
+			throw new ExceptionDeployDisable();
+		}
+
+		String file = fileName;
 		ActionResult<Wo> result = new ActionResult<>();
-		if (StringUtils.isEmpty(fileName)) {
-			fileName = this.fileName(disposition);
+		if (StringUtils.isEmpty(file)) {
+			file = this.fileName(disposition);
 		}
-		if (fileName.indexOf("/") > -1) {
-			throw new IllegalAccessException("名称不能包含'/'!");
+		if ((file.indexOf("/") > -1) || (!file.toLowerCase().endsWith(".zip") && StringUtils.isEmpty(filePath))
+				|| (bytes == null || bytes.length == 0)) {
+			throw new ExceptionIllegalFile(file);
 		}
-		if(!fileName.toLowerCase().endsWith(".zip") && StringUtils.isEmpty(filePath)){
-			throw new Exception("非zip文件的filePath属性不能为空");
-		}
-		if(StringUtils.isNotEmpty(filePath)){
+		if (StringUtils.isNotEmpty(filePath)) {
 			File webServerDir = Config.dir_servers_webServer();
 			File tempDie = new File(webServerDir, filePath);
-			if(!tempDie.getCanonicalPath().startsWith(webServerDir.getCanonicalPath())){
-				throw new Exception("非法附件存放路径!");
+			if ((!tempDie.getCanonicalPath().startsWith(webServerDir.getCanonicalPath()))
+					|| (filePath.indexOf("../") > -1)) {
+				throw new ExceptionIllegalFile(file);
 			}
-			if(filePath.indexOf("../") > -1){
-				throw new Exception("附件存放路径不能包含'../'!");
-			}
-		}
-
-		if(bytes==null || bytes.length==0){
-			throw new Exception("file must be not empty!");
 		}
 
 		Wo wo = new Wo();
-		wo.setValueList(Business.dispatch(asNew, fileName, filePath, bytes));
+		wo.setValueList(Business.dispatch(asNew, file, filePath, bytes));
 		result.setData(wo);
 		return result;
 	}
 
+	@Schema(name = "com.x.program.center.jaxrs.module.ActionDispatchResource$Wo")
 	public static class Wo extends WrapStringList {
+
+		private static final long serialVersionUID = -344514217885570765L;
 
 	}
 }
