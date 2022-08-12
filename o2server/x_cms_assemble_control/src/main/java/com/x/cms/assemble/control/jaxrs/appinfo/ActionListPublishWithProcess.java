@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  */
 public class ActionListPublishWithProcess extends BaseAction {
 
-	private static  Logger logger = LoggerFactory.getLogger(ActionListPublishWithProcess.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListPublishWithProcess.class);
 
 	protected ActionResult<List<Wo>> execute(EffectivePerson effectivePerson ) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
@@ -64,7 +64,7 @@ public class ActionListPublishWithProcess extends BaseAction {
 						try {
 							wo.setConfig( appInfoServiceAdv.getConfigJson( wo.getId() ) );
 						} catch (Exception e) {
-							logger.debug(e.getMessage());
+							LOGGER.debug(e.getMessage());
 						}
 						wo.setWrapOutCategoryList(map.get(wo.getId()));
 					});

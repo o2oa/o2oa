@@ -100,10 +100,10 @@ public class ApplicationAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@Operation(summary = "根据当前用户所有可见的Application,并绑定其启动的Porcess.", operationId = OPERATIONID_PREFIX
+	@Operation(summary = "根据当前用户所有可见的Application,并绑定其启动的Process.", operationId = OPERATIONID_PREFIX
 			+ "listWithPersonComplex", responses = { @ApiResponse(content = {
 					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListWithPersonComplex.Wo.class))) }) })
-	@JaxrsMethodDescribe(value = "根据当前用户所有可见的Application,并绑定其启动的Porcess.", action = ActionListWithPersonComplex.class)
+	@JaxrsMethodDescribe(value = "根据当前用户所有可见的Application,并绑定其启动的Process.", action = ActionListWithPersonComplex.class)
 	@GET
 	@Path("list/complex")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -121,10 +121,31 @@ public class ApplicationAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@Operation(summary = "根据传入用户，获取可见的Application,并绑定其启动的Porcess.", operationId = OPERATIONID_PREFIX
+	@Operation(summary = "根据当前用户所有可见的Application,并绑定其可启动终端的Process.", operationId = OPERATIONID_PREFIX
+			+ "listWithPersonAndTerminal", responses = { @ApiResponse(content = {
+			@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListWithPersonAndTerminal.Wo.class))) }) })
+	@JaxrsMethodDescribe(value = "根据当前用户所有可见的Application,并绑定其可启动终端的Process.", action = ActionListWithPersonAndTerminal.class)
+	@GET
+	@Path("list/terminal/{terminal}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listWithPersonAndTerminal(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+								  @JaxrsParameterDescribe("流程启动终端：client(pc端可启动)、mobile(手机端可启动)") @PathParam("terminal") String terminal) {
+		ActionResult<List<ActionListWithPersonAndTerminal.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListWithPersonAndTerminal().execute(effectivePerson, terminal);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@Operation(summary = "根据传入用户，获取可见的Application,并绑定其启动的Process.", operationId = OPERATIONID_PREFIX
 			+ "manageListWithPersonComplex", responses = { @ApiResponse(content = {
 					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionManageListWithPersonComplex.Wo.class))) }) })
-	@JaxrsMethodDescribe(value = "根据传入用户，获取可见的Application,并绑定其启动的Porcess.", action = ActionManageListWithPersonComplex.class)
+	@JaxrsMethodDescribe(value = "根据传入用户，获取可见的Application,并绑定其启动的Process.", action = ActionManageListWithPersonComplex.class)
 	@GET
 	@Path("list/complex/manage/{person}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -156,6 +177,27 @@ public class ApplicationAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionGetIcon().execute(effectivePerson, flag);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@Operation(summary = "校验当前用户是否是指定应用的管理员.", operationId = OPERATIONID_PREFIX + "isManager", responses = {
+			@ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionIsManager.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "校验当前用户是否是指定应用的管理员.", action = ActionIsManager.class)
+	@GET
+	@Path("{flag}/is/manager")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void isManager(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+						@JaxrsParameterDescribe("应用标识") @PathParam("flag") String flag) {
+		ActionResult<ActionIsManager.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionIsManager().execute(effectivePerson, flag);
 		} catch (Exception e) {
 			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
