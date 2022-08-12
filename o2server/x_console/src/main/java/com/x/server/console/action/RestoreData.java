@@ -265,7 +265,8 @@ public class RestoreData {
 				if (ListTools.isNotEmpty(list)) {
 					em.getTransaction().begin();
 					for (T t : list) {
-						if (StorageObject.class.isAssignableFrom(cls)) {
+						if (BooleanUtils.isTrue(Config.dumpRestoreData().getAttachStorage())
+								&& StorageObject.class.isAssignableFrom(cls)) {
 							StorageObject so = (StorageObject) t;
 							@SuppressWarnings("unchecked")
 							StorageMapping mapping = storageMappings.get((Class<StorageObject>) cls, so.getStorage());
