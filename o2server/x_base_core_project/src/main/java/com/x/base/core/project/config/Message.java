@@ -28,25 +28,14 @@ public class Message extends GsonPropertyObject {
 		Gson gson = XGsonBuilder.instance();
 		if (null != consumers) {
 			for (String arg : conusmers) {
-				// this.consumersV2.put(arg, "");
 				this.consumers.add(gson.toJsonTree(concreteConsumer(arg)));
 			}
 		}
 	}
 
-//	public Message(Map<String, String> map) {
-//		if (map != null) {
-//			this.consumersV2.putAll(map);
-//		}
-//	}
-
 	public static Message defaultInstance() {
 		return new Message();
 	}
-
-//	@FieldDescribe("早期配置,已经废弃")
-//	@Deprecated
-//	private Map<String, String> consumersV2 = new HashMap<>();
 
 	@FieldDescribe("消费通道配置")
 	private List<JsonElement> consumers = new ArrayList<>();
@@ -62,14 +51,6 @@ public class Message extends GsonPropertyObject {
 		return consumers;
 	}
 
-//	public Map<String, String> getConsumersV2() {
-//		return consumersV2;
-//	}
-//
-//	public void setConsumersV2(Map<String, String> consumersV2) {
-//		this.consumersV2 = consumersV2;
-//	}
-
 	public static class Consumer implements Serializable {
 
 		private static final long serialVersionUID = 392932139617988800L;
@@ -81,11 +62,14 @@ public class Message extends GsonPropertyObject {
 		private static final String DEFAULT_LOADER = "";
 		private static final String DEFAULT_FILTER = "";
 
+		private static final String DEFAULT_CONSUMER = "";
+
 		public Consumer() {
 			this.type = DEFAULT_TYPE;
 			this.enable = DEFAULT_ENABLE;
 			this.loader = DEFAULT_LOADER;
 			this.filter = DEFAULT_FILTER;
+			this.consumer = DEFAULT_CONSUMER;
 		}
 
 		public Consumer(String type, boolean enable) {
@@ -93,6 +77,7 @@ public class Message extends GsonPropertyObject {
 			this.enable = enable;
 			this.loader = DEFAULT_LOADER;
 			this.filter = DEFAULT_FILTER;
+			this.consumer = DEFAULT_CONSUMER;
 		}
 
 		public Consumer(String type) {
@@ -109,6 +94,8 @@ public class Message extends GsonPropertyObject {
 		private String loader;
 		@FieldDescribe("过滤脚本")
 		private String filter;
+		@FieldDescribe("配置项")
+		private String consumer;
 
 		public Boolean getEnable() {
 			return (null == this.enable) ? DEFAULT_ENABLE : this.enable;
@@ -124,6 +111,10 @@ public class Message extends GsonPropertyObject {
 
 		public String getLoader() {
 			return StringUtils.isBlank(this.loader) ? DEFAULT_LOADER : this.loader;
+		}
+		
+		public String getConsumer() {
+			return StringUtils.isBlank(this.consumer) ? DEFAULT_CONSUMER: this.consumer;
 		}
 
 	}
