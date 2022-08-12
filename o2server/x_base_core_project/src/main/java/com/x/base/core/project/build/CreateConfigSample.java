@@ -27,11 +27,11 @@ import com.x.base.core.project.config.ConfigObject;
 import com.x.base.core.project.config.Dingding;
 import com.x.base.core.project.config.DumpRestoreData;
 import com.x.base.core.project.config.Exmail;
+import com.x.base.core.project.config.General;
 import com.x.base.core.project.config.HuaweiPushConfig;
 import com.x.base.core.project.config.JpushConfig;
 import com.x.base.core.project.config.MPweixin;
 import com.x.base.core.project.config.Messages;
-import com.x.base.core.project.config.General;
 import com.x.base.core.project.config.Node;
 import com.x.base.core.project.config.Person;
 import com.x.base.core.project.config.Portal;
@@ -54,8 +54,6 @@ import com.x.base.core.project.tools.DefaultCharset;
  *
  */
 public class CreateConfigSample {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(CreateConfigSample.class);
 
 	private static final String DEFAULTINSTANCE = "defaultInstance";
 

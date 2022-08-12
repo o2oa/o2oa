@@ -103,6 +103,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 	}
 
 	public static class WoPersonAbstract extends Person {
+		
 		private static final long serialVersionUID = -8698017750369215370L;
 
 		@FieldDescribe("对个人的操作权限")
@@ -119,6 +120,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	public static class Control extends GsonPropertyObject {
 
+		private static final long serialVersionUID = -7663080651519557860L;
+		
 		private Boolean allowEdit = false;
 		private Boolean allowDelete = false;
 

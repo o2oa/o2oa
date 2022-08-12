@@ -181,17 +181,17 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "获取公钥publicKey", action = ActionCaptchaLoginRSAPublicKey.class)
+	@JaxrsMethodDescribe(value = "获取公钥publicKey", action = ActionCaptchaRSAPublicKey.class)
 	@GET
 	@Path("captchaRSAPublicKey")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void captchaRSAPublicKey(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@Context HttpServletResponse response) {
-		ActionResult<ActionCaptchaLoginRSAPublicKey.Wo> result = new ActionResult<>();
+		ActionResult<ActionCaptchaRSAPublicKey.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCaptchaLoginRSAPublicKey().execute(request, response, effectivePerson);
+			result = new ActionCaptchaRSAPublicKey().execute(effectivePerson);
 		} catch (Exception e) {
 			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
