@@ -52,7 +52,7 @@ layout.addReady(function(){
                                 }).inject(node);
                                 var html = "<div style='height: 40px; width: 40px; float: left; background: url(../x_component_process_Xform/$Form/default/icon/work.png) no-repeat center center'></div>" +
                                     "<div style='height: 40px; width: 40px; float: right'><div class='MWFAction' style='height: 20px; width: 40px; margin-top: 10px; border: 1px solid #999999; border-radius: 5px;text-align: center; cursor: pointer'>"+o2.LP.widget.open+"</div></div>"+
-                                    "<div style='height: 20px; line-height: 20px; margin: 0px 40px'>"+work.title+"</div>" +
+                                    "<div style='height: 20px; line-height: 20px; margin: 0px 40px; overflow: hidden'>"+work.title+"</div>" +
                                     "<div style='margin: 0px 40px'><div style='color:#999999; float: left; margin-right: 10px'>"+work.activityName+"</div>" +
                                     "<div style='color:#999999; float: left; margin-right: 10px'>"+work.activityArrivedTime+"</div>" +
                                     "<div style='color:#999999; float: left; margin-right: 10px'>"+(work.manualTaskIdentityText || "")+"</div></div>";

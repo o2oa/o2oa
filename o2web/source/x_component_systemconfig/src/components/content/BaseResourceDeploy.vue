@@ -22,9 +22,9 @@
 <script setup>
 import {lp} from '@o2oa/component';
 
-import WebDeploy from './resourceDeploy/WebDeploy.vue';
-import ServiceDeploy from './resourceDeploy/ServiceDeploy.vue';
-import ComponentDeploy from './resourceDeploy/ComponentDeploy.vue';
+import WebDeploy from './BaseResourceDeploy/WebDeploy.vue';
+import ServiceDeploy from './BaseResourceDeploy/ServiceDeploy.vue';
+import ComponentDeploy from './BaseResourceDeploy/ComponentDeploy.vue';
 
 </script>
 

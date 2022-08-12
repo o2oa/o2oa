@@ -7,8 +7,11 @@
         <el-tab-pane :label="lp._systemInfo.baseInfo" lazy>
           <BaseInfo></BaseInfo>
         </el-tab-pane>
-        <el-tab-pane :label="lp._systemInfo.systemStatus" name="second" lazy>
-<!--          <ServiceDeploy></ServiceDeploy>-->
+        <el-tab-pane :label="lp._systemInfo.systemStatus" lazy>
+          <BaseServerInfo></BaseServerInfo>
+        </el-tab-pane>
+        <el-tab-pane :label="lp._systemInfo.moduleStatus" lazy>
+          <BaseModuleInfo></BaseModuleInfo>
         </el-tab-pane>
 
       </el-tabs>
@@ -18,7 +21,10 @@
 
 <script setup>
 import {lp} from '@o2oa/component';
-import BaseInfo from './systemInfo/BaseInfo.vue';
+import BaseInfo from './BaseSystemInfo/BaseInfo.vue';
+import BaseServerInfo from './BaseSystemInfo/BaseServerInfo.vue';
+import BaseModuleInfo from './BaseSystemInfo/BaseModuleInfo.vue';
+
 </script>
 
 <style scoped>

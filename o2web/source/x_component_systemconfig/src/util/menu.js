@@ -21,7 +21,7 @@ function getMenuJson(){
                 {'title': lp.passwordConfig, 'component': 'SecurityPasswordConfig', 'icon': 'password' },
                 {'title': lp.loginConfig, 'component': 'SecurityLoginConfig', 'icon': 'signin' },
                 {'title': lp.ssoConfig, 'component': 'SecuritySSOConfig', 'icon': 'sso' },
-                {'title': lp.logConfig, 'component': '', 'icon': 'log' }
+                {'title': lp.ternaryManagement, 'component': 'SecurityTernaryConfig', 'icon': 'log' }
             ]
         },
         {
@@ -31,13 +31,13 @@ function getMenuJson(){
                 {'title': lp.centerServer, 'component': '', 'icon': 'center' },
                 {'title': lp.appServer, 'component': '', 'icon': 'service' },
                 {'title': lp.webServer, 'component': '', 'icon': 'web' },
-                {'title': lp.databaseServer, 'component': '', 'icon': 'database' },
+                {'title': lp.databaseServer, 'component': 'ServerDatabaseConfig', 'icon': 'database' },
                 {'title': lp.storageServer, 'component': '', 'icon': 'download' },
                 {'title': lp.cacheConfig, 'component': '', 'icon': 'cache' },
                 {'title': lp.clusterConfig, 'component': '', 'icon': 'servers' },
                 {'title': lp.orgConfig, 'component': '', 'icon': 'org' },
                 {'title': lp.processConfig, 'component': '', 'icon': 'flow' },
-                {'title': lp.cloudConfig, 'component': '', 'icon': 'cloud' },
+                {'title': lp.cloudConfig, 'component': 'ServerCloudConfig', 'icon': 'cloud' },
                 {'title': lp.dumpConfig, 'component': '', 'icon': 'dump' }
             ]
         },

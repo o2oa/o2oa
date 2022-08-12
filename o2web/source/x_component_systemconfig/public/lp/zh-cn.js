@@ -14,7 +14,7 @@ o2.xApplication.systemconfig.LP = {
     "passwordConfig": "密码配置",
     "loginConfig": "登录配置",
     "ssoConfig": "单点登录",
-    "logConfig": "日志配置",
+    "ternaryManagement": "三员管理",
 
     "serverConfig": "服务配置",
     "centerServer": "中心服务",
@@ -55,13 +55,91 @@ o2.xApplication.systemconfig.LP = {
         "systemVersionInfo": "当前系统版本",
         "baseInfo": "基本信息",
         "systemStatus": "系统状态",
+        "moduleStatus": "模块运行状态",
         "language": "语言环境",
         "languageInfo": "设置服务端语言环境",
         "languageValues":{
             "zh-CN": "简体中文",
             "en": "英文"
-        }
+        },
 
+        "running": "运行中",
+        "stop": "已停用",
+        "enable": "已启用",
+
+        "server": "服务器",
+        "node": "节点",
+        "serverInfo":"服务器信息",
+        "webServer": "WEB服务器",
+        "appServer": "应用服务器",
+        "centerServer": "中心服务器",
+        "dataServer": "数据库服务",
+        "storageServer": "文件存储服务",
+        "dataNode": "数据库",
+        "databaseUrl": "数据库连接",
+
+        "byModule": "按应用模块",
+        "byServer": "按服务节点",
+
+        "storageNode": "文件存储",
+
+        "serverData": {
+            "exposeJest": "接口文档(exposeJest)",
+            "httpProtocol": "http协议(httpProtocol)",
+            "host": "主机(host)",
+            "port": "端口(port)",
+            "proxyHost": "proxy主机(proxyHost)",
+            "proxyPort": "proxy端口(proxyPort)",
+            "requestLogEnable": "启用http日志",
+            "requestLogBodyEnable": "日志记录Body内容",
+            "requestLogRetainDays": "日志保留天数",
+            "sslEnable": "启用SSL(sslEnable)",
+            "statEnable": "启用Druid",
+
+            "cacheSize": "缓存大小(cacheSize)",
+            "includes": "包含类(includes)",
+            "excludes": "排除类(excludes)",
+            "jmxEnable": "启用JMX(jmxEnable)",
+            "lockTimeout": "表锁超时(lockTimeout)",
+            "logLevel": "日志级别(logLevel)",
+            "maxIdle": "最大空闲连接数(maxIdle)",
+            "maxTotal": "最大连接数(maxTotal)",
+            "slowSqlMillis": "慢SQL阈值(slowSqlMillis)",
+            "statFilter": "启用Druid语句合并(statFilter)",
+            "tcpPort": "TCP端口(tcpPort)",
+            "webPort": "WEB端口(webPort)"
+        },
+        "storageData": {
+            "port": "ftp端口(port)",
+            "sslEnable": "启用SSL(sslEnable)",
+            "name": "名称(name)",
+            "passivePorts": "被动模式端口(passivePorts)",
+            "prefix": "路径前缀(prefix)",
+            "deepPath": "使用深路径(deepPath)"
+        },
+        "storageAccounts": {
+            "protocol": "协议",
+            "username": "模块",
+            "weight": "权重",
+            "name": "名称",
+            "prefix": "路径前缀",
+            "deepPath": "使用深路径",
+            "host": "主机",
+            "port": "端口",
+
+        },
+        "moduleData": {
+            "node": "服务节点",
+            "contextPath": "上下文",
+            "port": "服务端口",
+            "sslEnable": "启用SSL",
+            "proxyHost": "proxy主机",
+            "proxyPort": "proxy端口",
+            "reportDate": "上次报告时间",
+            "moduleName": "模块名称",
+            "className": "类"
+
+        }
     },
     "operation": {
         "edit": "编辑",
@@ -182,7 +260,7 @@ o2.xApplication.systemconfig.LP = {
     },
     "_passwordConfig": {
         "personPassword": "用户密码设置",
-        "adminPassword": "管理员密码设置",
+        "adminPassword": "管理员密码",
         "saveSuccess": "配置保存成功",
         "passwordScript": "密码脚本",
 
@@ -196,7 +274,7 @@ o2.xApplication.systemconfig.LP = {
             "employee": "人员工号",
             "pinyin": "人员名称全拼",
             "text": "固定口令",
-            'script': "通过脚本自定义初始密码",
+            'script': "通过脚本自定义初始密码"
         },
         "initialPasswordType": {
             "mobileScript": "return person.getMobile().slice(-6)",
@@ -235,7 +313,7 @@ o2.xApplication.systemconfig.LP = {
         "passwordRsa": "密码加密传输",
         "passwordRsaInfo": "系统默认使用明文传输，您可以启用此选项，以启用密码的加密传输。(修改后需要重启服务器)",
 
-        "adminPassword": "管理员密码",
+
         "adminPasswordInfo": "您可以在此处修改超级管理员xadmin的密码。(修改后需要重启服务器)",
         "modifyAdminPassword": "修改管理员密码",
 
@@ -357,9 +435,6 @@ o2.xApplication.systemconfig.LP = {
         "oauthClientDataError": "客户号(ClientId)和客户密钥(ClientSecret)不能为空",
         "oauthClientSameNameError": "客户号(ClientId) “{name}” 已存在，请使用其他客户号",
 
-        "oauthServerDataError": "名称和客户号不能为空",
-        "oauthClientSameNameError": "名称为 “{name}” 的OAuth服务端配置已存在，请使用其他名称",
-
         "oauth_clientId": "客户号",
         "oauth_clientSecret": "客户密钥",
         "oauth_mapping": "返回映射",
@@ -387,6 +462,83 @@ o2.xApplication.systemconfig.LP = {
 
         "infoScriptTextInfo": "当信息格式不是JSON，也不是FORM时，您可以使用脚本，将信息格式化为JSON对象，以便系统可以正确处理。在下面的脚本编辑器中编写脚本，返回一个JSON对象，您可以使用 <span style='color: blue'>this.text</span> 获取到响应信息的原始文本。"
 
+    },
+    "_ternaryManagement": {
+        "enable": "启用三员管理",
+        "enableInfo": "系统支持以系统管理员，安全管理员，安全审计员三员分责分权的方式进行系统安全管理，启动三员管理后会解除xadmin用户及权限同时启用系统的审计日志记录（需重启o2）<br>" +
+            "三员各自角色分工分别是： " +
+            "<ul><li>系统管理员(系统内置用户：systemManager)：负责为系统用户、组织管理和系统运行维护工作； </li>" +
+            "<li>安全管理员(系统内置用户：securityManager)：负责权限设定，负责系统审计日志、用户和系统管理员操作行为的审查分析； </li>" +
+            "<li>安全审计员(系统内置用户：auditManager)：负责对系统管理员、安全管理员的操作行为进行审计、跟踪。</li></ul>" +
+            "应用定时每天1点分析前一天的操作日志供三个管理员审计查询。",
+        "logRetainDays": "日志保留天数",
+        "logRetainDaysInfo": "设置日志最多保留的天数",
+
+        "logBodyEnable": "记录Body内容",
+        "logBodyEnableInfo": "记录Body内容会得到更详细的日志信息，但也会大大增加磁盘空间占用和服务器开销"
+    },
+    "_databaseServer": {
+        "info": ""
+    },
+    "_cloudConfig": {
+
+        "info": "O2云服务提供了应用市场、移动办公定位、短信服务、文档转换等众多增值服务器，您只需登录到O2云服务器，即可使用。",
+        "recheck": "重新检查连接",
+
+        "notValidatedInfo": "登录到O2云，您即可访问应用市场，连接移动办公APP，以及短信服务、文档转换等众多功能！",
+        "disconnectInfo": "您的服务器无法连接到O2云，请检查您的服务器网络环境。",
+        "validatedInfo": "<span style='color: #ff0000'>您好：</span>{name}，您已经登录到O2云，可使用包括移动办公在内的所有O2平台功能！",
+
+        "connected": "您已经可以连接到O2云了！",
+        "disconnect": "您的服务器无法连接到O2云！",
+        "notValidated": "您还未登录到O2云！",
+        "validated": "您已经登陆到O2云了！",
+
+        "loginInfo": "如果您已有O2云账号，请点击此处登录：",
+        "loginButtonText": "登录到O2云",
+        "registerInfo": "如果您没有O2云账号，请点击此处注册：",
+        "registerButtonText": "注册O2云账号",
+        "forgotPasswordInfo": "如果您忘记了O2云账号的密码，请点击此处重置：",
+        "forgotPasswordButtonText": "重置O2云密码",
+
+        "collectUsername": "O2云账号",
+        "collectPassword": "O2云密码",
+        "collectMobile": "手机号码",
+        "collectMail": "邮箱地址",
+        "collectCode": "验证码",
+        "collectConfirm": "确认密码",
+        "getCode": "获取验证码",
+        "regetCode": "重新获取",
+
+        "inputCollectUsername": "请输入O2云账号",
+        "inputCollectPassword": "请输入O2云账号密码",
+        "inputCollectMobile": "请输入手机号码",
+        "inputCollectMail": "请输入邮箱地址",
+        "inputCollectCode": "请输入短信验证码",
+        "inputCollectConfirm": "请输入确认密码",
+        "collectUsernameExist": "O2云账户名称已存在",
+        "collectUsernameNotExist": "O2云账户名称不存在",
+        "passwordDisagree": "密码确认不一致",
+        "mobileError": "手机号码输入不正确",
+        "mailError": "邮箱地址输入不正确",
+
+        "registerCollect": "注册O2云账号",
+        "forgotPassword": "忘记密码",
+        "loginError": "登录O2云失败，请检查账户名称和密码",
+        "registerError": "注册O2云账号出错，请联系技术支持",
+        "deleteError": "删除O2云账号出错，请联系技术支持",
+        "resetPasswordError": "修改O2云账号密码出错，请联系技术支持",
+
+        "deleteCollectUnit": "删除O2云账号",
+        "deleteCollectUnitInfo": "即将删除O2云账号：{name}，请输入手机号码，并获取验证码以确认",
+
+        "resetPasswordCollect": "修改O2云账号密码",
+
+        "modifyCollect": "修改账号",
+        "logoutCollect": "断开连接",
+        "modifyCollectPassword": "修改密码",
+        "deleteCollect": "删除账号",
+        "reloginCollect": "重新登录"
     }
 
 }

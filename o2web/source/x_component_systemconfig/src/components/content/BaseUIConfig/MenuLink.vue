@@ -159,8 +159,6 @@ onMounted(()=>{
 
     itemNode.value.store('data', (props.data));
     emit('loaded', itemNode.value);
-
-    debugger;
   })
 });
 

@@ -148,4 +148,38 @@ button{
   scrollbar-color: #bbbbbb #dddddd;
   scrollbar-width: thin;
 }
+.el-table_head {
+  font-weight: 700;
+  color: var(--el-text-color-regular);
+  background-color: var(--el-fill-color-light)!important;
+}
+.item_descriptions_label{
+  font-weight: normal!important;
+}
+.item_descriptions_content{
+  font-weight: 300!important;
+}
+.item_div_button{
+  margin: 0;
+  height: var(--el-input-height, 40px);
+  border-radius: 100px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  cursor: pointer;
+}
+.item_validate_info{
+  color: red;
+  height: 10px;
+  padding: 5px 15px;
+  display: none;
+}
+.el-form-item__error{
+  margin-left: 15px;
+  font-size: 14px!important;
+}
+.el-form-item--large{
+  margin-bottom: 32px!important;
+}
 </style>

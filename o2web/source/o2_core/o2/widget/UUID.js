@@ -7,7 +7,7 @@ o2.widget.UUID = new Class({
 		return this.id;  
 	},
 	toString: function() {  
-		return this.id;  
+		return this.id;
 	},
 	createUUID: function(){
 		//

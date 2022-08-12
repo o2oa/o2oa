@@ -22,8 +22,8 @@
 
 <script setup>
 import {lp} from '@o2oa/component';
-import BaseConfig from './uiConfig/BaseConfig.vue';
-import MenuConfig from './uiConfig/MenuConfig.vue';
+import BaseConfig from './BaseUIConfig/BaseConfig.vue';
+import MenuConfig from './BaseUIConfig/MenuConfig.vue';
 </script>
 
 <style scoped>

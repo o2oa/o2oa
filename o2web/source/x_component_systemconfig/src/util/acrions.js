@@ -18,16 +18,26 @@ async function loadConfig(name) {
         fileName: name + '.json'
     }
     const json = await o2.Actions.load('x_program_center').ConfigAction.open(body);
-    configs[name] = JSON.parse(json.data.fileContent);
-    return configs[name];
+    if (json.data.fileContent) {
+        configs[name] = JSON.parse(json.data.fileContent);
+        return configs[name];
+    }
+    return null;
+}
+async function loadRuntimeConfig(name) {
+    const body = {
+        fileName: name + '.json'
+    }
+    const json = await o2.Actions.load('x_program_center').ConfigAction.openRuntimeConfig(body);
+    return (json.data.fileContent) ? JSON.parse(json.data.fileContent) : null;
 }
 
 async function getConfig(name, path) {
     const data = configs[name] || (await loadConfig(name));
-    return data[path];
+    return data ? data[path] : null;
 }
-async function getConfigData(name) {
-    if (configs[name]) return configs[name];
+async function getConfigData(name, reload) {
+    if (configs[name] && !reload) return configs[name];
     return await loadConfig(name);
 }
 async function saveConfig(name, path, value) {
@@ -109,6 +119,11 @@ function clearPublicData(name){
         o2.UD.deletePublicData(name, dData=>resolve(dData));
     });
 }
+async function doAction(content, action, method, ...args) {
+    const m = o2.Actions.load(content)[action][method];
+    const json = await m.apply(m, args);
+    return json.data;
+}
 
 async function loadProcessApplication() {
     const json = await o2.Actions.load("x_processplatform_assemble_surface").ApplicationAction.listWithPerson();
@@ -137,6 +152,43 @@ async function loadPortals() {
     return json.data;
 }
 
+async function getServers() {
+    return doAction('x_program_center', 'CommandAction', 'getNodeInfoList');
+}
+
+async function getModules() {
+    return doAction('x_program_center', 'ApplicationsAction', 'get');
+}
+async function connectCollect() {
+    return doAction('x_program_center', 'CollectAction', 'connect');
+}
+async function validateCollect() {
+    return doAction('x_program_center', 'CollectAction', 'validate');
+}
+async function loginToCollect(data) {
+    return doAction('x_program_center', 'CollectAction', 'validateDirect', data);
+}
+async function checkCollectName(name) {
+    return doAction('x_program_center', 'CollectAction', 'exist', name);
+}
+async function checkCollectPass(password) {
+    return doAction('x_program_center', 'CollectAction', 'validatePassword', {password});
+}
+async function sendCode(mobile) {
+    return doAction('x_program_center', 'CollectAction', 'code', mobile);
+}
+async function registCollect(data) {
+    return doAction('x_program_center', 'CollectAction', 'regist', data);
+}
+async function disconnectCollect() {
+    return doAction('x_program_center', 'CollectAction', 'disconnect');
+}
+async function deleteCollect(name, mobile, code) {
+    return doAction('x_program_center', 'CollectAction', 'delete', name, mobile, code);
+}
+async function resetPasswordCollect(data) {
+    return doAction('x_program_center', 'CollectAction', 'resetPassword', data);
+}
 
 export {
     getConfig,
@@ -156,5 +208,18 @@ export {
     loadInforApplication,
     loadQueryApplication,
     changePassword,
-    loadPortals
+    loadPortals,
+    getServers,
+    loadRuntimeConfig,
+    getModules,
+    connectCollect,
+    validateCollect,
+    loginToCollect,
+    checkCollectName,
+    checkCollectPass,
+    sendCode,
+    registCollect,
+    disconnectCollect,
+    deleteCollect,
+    resetPasswordCollect
 };

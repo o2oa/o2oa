@@ -17,6 +17,7 @@
     font-display: block;
 }
 
+
 [class^="o2icon-"], [class*=" o2icon-"] {
     /* use !important to prevent issues with browser extensions that change fonts */
     font-family: 'o2SystemConfig' !important;
@@ -41,11 +42,17 @@
 .o2icon-key:before {
     content: "\e928";
 }
+.o2icon-lock:before {
+    content: "\e92b";
+}
 .o2icon-plus:before {
     content: "\e92a";
 }
 .o2icon-del:before {
     content: "\e929";
+}
+.o2icon-user:before {
+    content: "\e92c";
 }
 .o2icon-close:before {
     content: "\e925";
@@ -169,4 +176,10 @@
 }
 .o2icon-sso:before {
     content: "\f2ba";
+}
+.o2icon-play:before {
+    content: "\ea15";
+}
+.o2icon-stop:before {
+    content: "\ea17";
 }
