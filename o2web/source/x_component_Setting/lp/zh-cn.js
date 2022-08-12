@@ -188,6 +188,7 @@ MWF.xApplication.Setting.LP = {
     "mobile_style_imgs": {
         "launch_logo": "启动Logo",
         "login_avatar": "登录界面默认头像",
+        "application_top": "应用页面顶部",
         "index_bottom_menu_logo_blur": "主页导航图标（未选中）",
         "index_bottom_menu_logo_focus": "主页导航图标（选中）",
         "people_avatar_default": "用户默认头像",

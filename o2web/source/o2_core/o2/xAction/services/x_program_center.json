@@ -70,6 +70,9 @@
   "imageSetupAboutLogo": {"uri": "/jaxrs/appstyle/image/setup/about/logo", "method": "PUT", "enctype": "formData"},
   "imageSetupAboutLogoErase": {"uri": "/jaxrs/appstyle/image/setup/about/logo/erase"},
 
+  "imageApplicationTop": {"uri": "/jaxrs/appstyle/image/application/top", "method": "PUT", "enctype": "formData"},
+  "imageApplicationTopErase": {"uri": "/jaxrs/appstyle/image/application/top/erase"},
+
   "setAppStyle": {"uri": "/jaxrs/appstyle", "method": "PUT"},
 
   "listAgent": {"uri": "/jaxrs/agent"},
