@@ -38,7 +38,7 @@ MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class(
          * @event MWF.xApplication.process.Xform.Statement#openDocument
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
-        "moduleEvents": ["load", "beforeLoadView", "loadView", "queryLoad", "postLoad", "select", "openDocument"]
+        "moduleEvents": ["load", "beforeLoadView", "loadViewLayout", "loadView", "queryLoad", "postLoad", "select", "openDocument"]
     },
 
     _loadUserInterface: function(){
@@ -128,6 +128,9 @@ MWF.xApplication.process.Xform.Statement = MWF.APPStatement =  new Class(
             this.view = new MWF.xApplication.query.Query.Statement(this.node, viewJson, {
                 "isload": (this.json.loadView!=="no"),
                 "resizeNode": (this.node.getStyle("height").toString().toLowerCase()!=="auto" && this.node.getStyle("height").toInt()>0),
+                "onLoadLayout": function () {
+                    this.fireEvent("loadViewLayout");
+                }.bind(this),
                 "onLoadView": function(){
                     this.fireEvent("loadView");
                 }.bind(this),

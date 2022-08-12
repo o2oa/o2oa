@@ -16,7 +16,8 @@ MWF.xApplication.process.Work.Processor = new Class({
         "tabletHeight": 0,
         "orgHeight": 276,
         "maxOrgCountPerline": 2,
-        "isManagerProcess": false //是否为管理员提交
+        "isManagerProcess": false, //是否为管理员提交
+        "useDefaultOpinion": true
     },
 
     initialize: function (node, task, options, form) {
@@ -478,13 +479,26 @@ MWF.xApplication.process.Work.Processor = new Class({
         }
         this.routeSelectorArea.setStyle("background-color", "#FFF");
     },
+    getDefaultOpinion: function( node ){
+        var routeId = node.retrieve("route");
+        var routeDate = this.getRouteData( routeId );
+        return routeDate.opinion || "";
+    },
     selectRoute: function (node) {
         if (this.selectedRoute) {
-            if (this.selectedRoute.get("text") != node.get("text")) {
+            if (this.selectedRoute.get("text") != node.get("text")) { //选中其他路由
                 this.selectedRoute.setStyles(this.css.routeNode);
                 this.selectedRoute.removeClass("mainColor_bg");
                 //this.selectedRoute.getFirst().setStyles(this.css.routeIconNode);
                 //this.selectedRoute.getLast().setStyles(this.css.routeTextNode);
+
+                if( this.options.useDefaultOpinion ){
+                    if( this.inputTextarea.get("value") === this.getDefaultOpinion( this.selectedRoute ) ||
+                        this.inputTextarea.get("value") === (MWF.xApplication.process.Work.LP.inputText || "")
+                    ){
+                        this.inputTextarea.set("value", this.getDefaultOpinion(node) || (MWF.xApplication.process.Work.LP.inputText || "") );
+                    }
+                }
 
                 this.selectedRoute = node;
                 node.setStyles(this.css.routeNode_selected);
@@ -494,7 +508,12 @@ MWF.xApplication.process.Work.Processor = new Class({
                 //node.getFirst().setStyle("background-image", "url("+"../x_component_process_Work/$Processor/default/checked.png)");
                 //node.getLast().setStyle("color", "#FFF");
 
-            } else {
+            } else { //取消选中当前路由
+                if( this.options.useDefaultOpinion ) {
+                    if (this.inputTextarea.get("value") === this.getDefaultOpinion(this.selectedRoute)) {
+                        this.inputTextarea.set("value", MWF.xApplication.process.Work.LP.inputText || "");
+                    }
+                }
                 this.selectedRoute.setStyles(this.css.routeNode);
                 this.selectedRoute.addClass("lightColor_bg");
                 this.selectedRoute.removeClass("mainColor_bg");
@@ -504,6 +523,13 @@ MWF.xApplication.process.Work.Processor = new Class({
                 this.selectedRoute = null;
             }
         } else {
+            if( this.options.useDefaultOpinion ) {
+                if (this.inputTextarea.get("value") === (MWF.xApplication.process.Work.LP.inputText || "")) {
+                    var defaultOpinion1 = this.getDefaultOpinion(node);
+                    if (defaultOpinion1) this.inputTextarea.set("value", defaultOpinion1);
+                }
+            }
+
             this.selectedRoute = node;
             node.setStyles(this.css.routeNode_selected);
             node.addClass("mainColor_bg");
