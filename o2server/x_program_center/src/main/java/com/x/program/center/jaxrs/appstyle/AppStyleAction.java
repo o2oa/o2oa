@@ -196,6 +196,25 @@ public class AppStyleAction extends BaseAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "设置图片:应用页面顶部图片,730x390.", action = ActionImageApplicationTop.class)
+	@PUT
+	@Path("image/application/top")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	public void imageApplicationTop(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+									@FormDataParam(FILE_FIELD) final byte[] bytes,
+									@JaxrsParameterDescribe("图片文件") @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
+		ActionResult<ActionImageApplicationTop.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionImageApplicationTop().execute(effectivePerson, bytes, disposition);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "删除图片:首页底部菜单中间主页的按钮(不选中).", action = ActionImageMenuLogoBlurErase.class)
 	@GET
 	@Path("image/menu/logo/blur/erase")
@@ -297,6 +316,24 @@ public class AppStyleAction extends BaseAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionImageSetupAboutLogoErase().execute(effectivePerson);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "设置图片:应用页面顶部图片,730x390", action = ActionImageApplicationTopErase.class)
+	@GET
+	@Path("image/application/top/erase")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void imageApplicationTopErase(@Suspended final AsyncResponse asyncResponse,
+										 @Context HttpServletRequest request) {
+		ActionResult<ActionImageApplicationTopErase.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionImageApplicationTopErase().execute(effectivePerson);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
