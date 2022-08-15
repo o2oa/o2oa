@@ -78,7 +78,7 @@ import com.x.base.core.project.http.HttpToken;
  * <br>
  * <br>
  * Percent codes are specified in the format %MODIFIERS{PARAM}CODE
- * 
+ *
  * <pre>
 * MODIFIERS:
 *     Optional list of comma separated HTTP status codes which may be preceded by a single "!" to indicate
@@ -232,7 +232,7 @@ import com.x.base.core.project.http.HttpToken;
 *     Default locale {@link Locale#getDefault()}
 *     Must be in a format supported by {@link Locale#forLanguageTag(String)}
  * </pre>
- * 
+ *
  * </td>
  * </tr>
  *
@@ -264,13 +264,13 @@ import com.x.base.core.project.http.HttpToken;
  * <tr>
  * <td valign="top">%X</td>
  * <td>Connection status when response is completed:
- * 
+ *
  * <pre>
 * X = Connection aborted before the response completed.
 * + = Connection may be kept alive after the response is sent.
 * - = Connection will be closed after the response is sent.
  * </pre>
- * 
+ *
  * </td>
  * </tr>
  *
@@ -341,8 +341,9 @@ public class ServerRequestLog extends ContainerLifeCycle implements RequestLog {
 	@Override
 	public void log(Request request, Response response) {
 		try {
-			if (_ignorePathMap != null && _ignorePathMap.getMatch(request.getRequestURI()) != null)
+			if (_ignorePathMap != null && _ignorePathMap.getMatch(request.getRequestURI()) != null) {
 				return;
+			}
 
 			StringBuilder sb = _buffers.get();
 			sb.setLength(0);
@@ -384,8 +385,9 @@ public class ServerRequestLog extends ContainerLifeCycle implements RequestLog {
 			deferred = true;
 		}
 
-		if (authentication instanceof Authentication.User)
+		if (authentication instanceof Authentication.User) {
 			name = ((Authentication.User) authentication).getUserIdentity().getUserPrincipal().getName();
+		}
 
 		return (name == null) ? null : (deferred ? ("?" + name) : name);
 	}
@@ -430,17 +432,19 @@ public class ServerRequestLog extends ContainerLifeCycle implements RequestLog {
 			for (int i = 0; i < _ignorePaths.length; i++) {
 				_ignorePathMap.put(_ignorePaths[i], _ignorePaths[i]);
 			}
-		} else
+		} else {
 			_ignorePathMap = null;
+		}
 
 		super.doStart();
 	}
 
 	private static void append(StringBuilder buf, String s) {
-		if (s == null || s.length() == 0)
+		if (s == null || s.length() == 0) {
 			buf.append('-');
-		else
+		} else {
 			buf.append(s);
+		}
 	}
 
 	@SuppressWarnings("unused")
@@ -459,10 +463,11 @@ public class ServerRequestLog extends ContainerLifeCycle implements RequestLog {
 		Collections.reverse(tokens);
 
 		for (Token t : tokens) {
-			if (t.isLiteralString())
+			if (t.isLiteralString()) {
 				logHandle = updateLogHandle(logHandle, append, t.literal);
-			else
+			} else {
 				logHandle = updateLogHandle(logHandle, append, lookup, t.code, t.arg, t.modifiers, t.negated);
+			}
 		}
 
 		return logHandle;
@@ -473,7 +478,7 @@ public class ServerRequestLog extends ContainerLifeCycle implements RequestLog {
 		 * Extracts literal strings and percent codes out of the format string. We will
 		 * either match a percent code of the format %MODIFIERS{PARAM}CODE, or a literal
 		 * string until the next percent code or the end of the formatString is reached.
-		 * 
+		 *
 		 * where MODIFIERS is an optional comma separated list of numbers. {PARAM} is an
 		 * optional string parameter to the percent code. CODE is a 1 to 2 character
 		 * string corresponding to a format code.
@@ -587,8 +592,9 @@ public class ServerRequestLog extends ContainerLifeCycle implements RequestLog {
 		}
 
 		case "a": {
-			if (arg == null || arg.isEmpty())
+			if (arg == null || arg.isEmpty()) {
 				arg = "server";
+			}
 
 			String method;
 			switch (arg) {
@@ -617,8 +623,9 @@ public class ServerRequestLog extends ContainerLifeCycle implements RequestLog {
 		}
 
 		case "p": {
-			if (arg == null || arg.isEmpty())
+			if (arg == null || arg.isEmpty()) {
 				arg = "server";
+			}
 
 			String method;
 			switch (arg) {
@@ -649,12 +656,13 @@ public class ServerRequestLog extends ContainerLifeCycle implements RequestLog {
 
 		case "I": {
 			String method;
-			if (arg == null || arg.isEmpty())
+			if (arg == null || arg.isEmpty()) {
 				method = "logBytesReceived";
-			else if (arg.equalsIgnoreCase("clf"))
+			} else if (arg.equalsIgnoreCase("clf")) {
 				method = "logBytesReceivedCLF";
-			else
+			} else {
 				throw new IllegalArgumentException("Invalid argument for %I");
+			}
 
 			specificHandle = lookup.findStatic(ServerRequestLog.class, method, logType);
 			break;
@@ -662,12 +670,13 @@ public class ServerRequestLog extends ContainerLifeCycle implements RequestLog {
 
 		case "O": {
 			String method;
-			if (arg == null || arg.isEmpty())
+			if (arg == null || arg.isEmpty()) {
 				method = "logBytesSent";
-			else if (arg.equalsIgnoreCase("clf"))
+			} else if (arg.equalsIgnoreCase("clf")) {
 				method = "logBytesSentCLF";
-			else
+			} else {
 				throw new IllegalArgumentException("Invalid argument for %O");
+			}
 
 			specificHandle = lookup.findStatic(ServerRequestLog.class, method, logType);
 			break;
@@ -675,12 +684,13 @@ public class ServerRequestLog extends ContainerLifeCycle implements RequestLog {
 
 		case "S": {
 			String method;
-			if (arg == null || arg.isEmpty())
+			if (arg == null || arg.isEmpty()) {
 				method = "logBytesTransferred";
-			else if (arg.equalsIgnoreCase("clf"))
+			} else if (arg.equalsIgnoreCase("clf")) {
 				method = "logBytesTransferredCLF";
-			else
+			} else {
 				throw new IllegalArgumentException("Invalid argument for %S");
+			}
 
 			specificHandle = lookup.findStatic(ServerRequestLog.class, method, logType);
 			break;
@@ -702,8 +712,9 @@ public class ServerRequestLog extends ContainerLifeCycle implements RequestLog {
 		}
 
 		case "e": {
-			if (arg == null || arg.isEmpty())
+			if (arg == null || arg.isEmpty()) {
 				throw new IllegalArgumentException("No arg for %e");
+			}
 
 			specificHandle = lookup.findStatic(ServerRequestLog.class, "logEnvironmentVar", logTypeArg);
 			specificHandle = specificHandle.bindTo(arg);
@@ -721,8 +732,9 @@ public class ServerRequestLog extends ContainerLifeCycle implements RequestLog {
 		}
 
 		case "i": {
-			if (arg == null || arg.isEmpty())
+			if (arg == null || arg.isEmpty()) {
 				throw new IllegalArgumentException("No arg for %i");
+			}
 
 			specificHandle = lookup.findStatic(ServerRequestLog.class, "logRequestHeader", logTypeArg);
 			specificHandle = specificHandle.bindTo(arg);
@@ -740,8 +752,9 @@ public class ServerRequestLog extends ContainerLifeCycle implements RequestLog {
 		}
 
 		case "o": {
-			if (arg == null || arg.isEmpty())
+			if (arg == null || arg.isEmpty()) {
 				throw new IllegalArgumentException("No arg for %o");
+			}
 
 			specificHandle = lookup.findStatic(ServerRequestLog.class, "logResponseHeader", logTypeArg);
 			specificHandle = specificHandle.bindTo(arg);
@@ -806,8 +819,9 @@ public class ServerRequestLog extends ContainerLifeCycle implements RequestLog {
 		}
 
 		case "T": {
-			if (arg == null)
+			if (arg == null) {
 				arg = "s";
+			}
 
 			String method;
 			switch (arg) {
@@ -830,10 +844,11 @@ public class ServerRequestLog extends ContainerLifeCycle implements RequestLog {
 
 		case "u": {
 			String method;
-			if (arg == null || arg.isEmpty())
+			if (arg == null || arg.isEmpty()) {
 				method = "logRequestAuthenticationWithDeferred";
-			else
+			} else {
 				method = "logRequestAuthentication";
+			}
 
 			specificHandle = lookup.findStatic(ServerRequestLog.class, method, logType);
 			break;
@@ -850,8 +865,9 @@ public class ServerRequestLog extends ContainerLifeCycle implements RequestLog {
 		}
 
 		case "ti": {
-			if (arg == null || arg.isEmpty())
+			if (arg == null || arg.isEmpty()) {
 				throw new IllegalArgumentException("No arg for %ti");
+			}
 
 			specificHandle = lookup.findStatic(ServerRequestLog.class, "logRequestTrailer", logTypeArg);
 			specificHandle = specificHandle.bindTo(arg);
@@ -859,8 +875,9 @@ public class ServerRequestLog extends ContainerLifeCycle implements RequestLog {
 		}
 
 		case "to": {
-			if (arg == null || arg.isEmpty())
+			if (arg == null || arg.isEmpty()) {
 				throw new IllegalArgumentException("No arg for %to");
+			}
 
 			specificHandle = lookup.findStatic(ServerRequestLog.class, "logResponseTrailer", logTypeArg);
 			specificHandle = specificHandle.bindTo(arg);
@@ -898,7 +915,7 @@ public class ServerRequestLog extends ContainerLifeCycle implements RequestLog {
 
 	@SuppressWarnings("unused")
 	private static void logClientHost(StringBuilder b, Request request, Response response) {
-		append(b, request.getRemoteHost());
+		append(b, HttpToken.remoteAddress(request));
 	}
 
 	@SuppressWarnings("unused")
@@ -940,10 +957,11 @@ public class ServerRequestLog extends ContainerLifeCycle implements RequestLog {
 	@SuppressWarnings("unused")
 	private static void logResponseSizeCLF(StringBuilder b, Request request, Response response) {
 		long written = response.getHttpChannel().getBytesWritten();
-		if (written == 0)
+		if (written == 0) {
 			b.append('-');
-		else
+		} else {
 			b.append(written);
+		}
 	}
 
 	@SuppressWarnings("unused")
@@ -954,10 +972,11 @@ public class ServerRequestLog extends ContainerLifeCycle implements RequestLog {
 	@SuppressWarnings("unused")
 	private static void logBytesSentCLF(StringBuilder b, Request request, Response response) {
 		long sent = response.getHttpChannel().getBytesWritten();
-		if (sent == 0)
+		if (sent == 0) {
 			b.append('-');
-		else
+		} else {
 			b.append(sent);
+		}
 	}
 
 	@SuppressWarnings("unused")
@@ -970,10 +989,11 @@ public class ServerRequestLog extends ContainerLifeCycle implements RequestLog {
 	private static void logBytesReceivedCLF(StringBuilder b, Request request, Response response) {
 		// todo this be content received rather than consumed
 		long received = request.getHttpInput().getContentConsumed();
-		if (received == 0)
+		if (received == 0) {
 			b.append('-');
-		else
+		} else {
 			b.append(received);
+		}
 	}
 
 	@SuppressWarnings("unused")
@@ -986,10 +1006,11 @@ public class ServerRequestLog extends ContainerLifeCycle implements RequestLog {
 	private static void logBytesTransferredCLF(StringBuilder b, Request request, Response response) {
 		// todo this be content received rather than consumed
 		long transferred = request.getHttpInput().getContentConsumed() + response.getHttpOutput().getWritten();
-		if (transferred == 0)
+		if (transferred == 0) {
 			b.append('-');
-		else
+		} else {
 			b.append(transferred);
+		}
 	}
 
 	@SuppressWarnings("unused")
@@ -1007,12 +1028,13 @@ public class ServerRequestLog extends ContainerLifeCycle implements RequestLog {
 	@SuppressWarnings("unused")
 	private static void logRequestCookies(StringBuilder b, Request request, Response response) {
 		Cookie[] cookies = request.getCookies();
-		if (cookies == null || cookies.length == 0)
+		if (cookies == null || cookies.length == 0) {
 			b.append("-");
-		else {
+		} else {
 			for (int i = 0; i < cookies.length; i++) {
-				if (i != 0)
+				if (i != 0) {
 					b.append(';');
+				}
 				b.append(cookies[i].getName());
 				b.append('=');
 				b.append(cookies[i].getValue());
@@ -1028,9 +1050,9 @@ public class ServerRequestLog extends ContainerLifeCycle implements RequestLog {
 	@SuppressWarnings("unused")
 	private static void logFilename(StringBuilder b, Request request, Response response) {
 		UserIdentity.Scope scope = request.getUserIdentityScope();
-		if (scope == null || scope.getContextHandler() == null)
+		if (scope == null || scope.getContextHandler() == null) {
 			b.append('-');
-		else {
+		} else {
 			ContextHandler context = scope.getContextHandler();
 			int lengthToStrip = scope.getContextPath().length() > 1 ? scope.getContextPath().length() : 0;
 			String filename = context.getServletContext().getRealPath(request.getPathInfo().substring(lengthToStrip));
@@ -1051,10 +1073,11 @@ public class ServerRequestLog extends ContainerLifeCycle implements RequestLog {
 	@SuppressWarnings("unused")
 	private static void logKeepAliveRequests(StringBuilder b, Request request, Response response) {
 		long requests = request.getHttpChannel().getConnection().getMessagesIn();
-		if (requests >= 0)
+		if (requests >= 0) {
 			b.append(requests);
-		else
+		} else {
 			b.append('-');
+		}
 	}
 
 	@SuppressWarnings("unused")
@@ -1146,10 +1169,11 @@ public class ServerRequestLog extends ContainerLifeCycle implements RequestLog {
 	@SuppressWarnings("unused")
 	private static void logRequestTrailer(String arg, StringBuilder b, Request request, Response response) {
 		HttpFields trailers = request.getTrailers();
-		if (trailers != null)
+		if (trailers != null) {
 			append(b, trailers.get(arg));
-		else
+		} else {
 			b.append('-');
+		}
 	}
 
 	@SuppressWarnings("unused")
@@ -1158,11 +1182,13 @@ public class ServerRequestLog extends ContainerLifeCycle implements RequestLog {
 		if (supplier != null) {
 			HttpFields trailers = supplier.get();
 
-			if (trailers != null)
+			if (trailers != null) {
 				append(b, trailers.get(arg));
-			else
+			} else {
 				b.append('-');
-		} else
+			}
+		} else {
 			b.append("-");
+		}
 	}
 }
