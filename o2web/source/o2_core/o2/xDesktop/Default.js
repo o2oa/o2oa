@@ -843,8 +843,7 @@ o2.xDesktop.Default = new Class({
                 if (i && this.apps[keys[i-1]] && this.apps[keys[i-1]].setCurrent){
                     this.apps[keys[i-1]].setCurrent();
                 }else{
-                    //if (app.appId!=="Homepage") layout.openApplication(null, "Homepage");
-                    layout.openApplication(null, "Homepage");
+                    this.loadDefaultPage()
                 }
             }
             this.checkTaskBarSize();
