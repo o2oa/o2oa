@@ -99,8 +99,14 @@ MWF.xApplication.Meeting.BuildingTooltip = new Class({
         var data = this.data;
 
         var html =
-            "<div item='containr' style='height:16px;line-height:16px;'><div style='font-size: 14px;color:#666;float:left; '>"+ (data.address ? data.address : this.lp.noAddress) +"</div></div>";
+            "<div item='containr' style='height:16px;line-height:16px;'><div style='font-size: 14px;color:#666;float:left; ' item='address'></div></div>";
         return html;
+    },
+    _customNode : function( node, contentNode ){
+        var data = this.data;
+        contentNode.getElement("[item='address']").set("text", (data.address ? data.address : this.lp.noAddress) );
+
+        this.fireEvent("customContent", [contentNode, node])
     },
     loadActionBar : function(){
         if( MWF.AC.isMeetingAdministrator() ){
@@ -571,10 +577,6 @@ MWF.xApplication.Meeting.RoomTooltip = new Class({
 
         var titleStyle = "font-size:14px;color:#333";
         var valueStyle = "font-size:14px;color:#666;padding-right:20px";
-        var device = [];
-        ( data.device || "" ).split("#").each( function( d ){
-            device.push( lp[d] );
-        }.bind(this));
 
         lp = this.lp.roomForm;
 
@@ -582,25 +584,45 @@ MWF.xApplication.Meeting.RoomTooltip = new Class({
             "<div style='overflow: hidden;padding:15px 20px 20px 10px;height:16px;line-height:16px;'>" +
             "   <div style='font-size: 16px;color:#333;float: left'>"+ this.lp.room +"</div>"+
             "</div>"+
-            "<div style='font-size: 18px;color:#333;padding:0px 10px 15px 20px;'>"+ data.name +"</div>"+
+            "<div style='font-size: 18px;color:#333;padding:0px 10px 15px 20px;' item='name'></div>"+
             "<div style='height:1px;margin:0px 20px;border-bottom:1px solid #ccc;'></div>"+
             "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' style='margin:13px 13px 13px 13px;'>" +
             "<tr><td style='"+titleStyle+"' width='100'>"+ lp.building+":</td>" +
             "    <td style='"+valueStyle+"' item='building'></td></tr>" +
             "<tr><td style='"+titleStyle+"'>" + lp.floor+":</td>" +
-            "    <td style='"+valueStyle+"'>" + data.floor + "</td></tr>" +
+            "    <td style='"+valueStyle+"' item='floor'></td></tr>" +
             "<tr><td style='"+titleStyle+"'>"+ lp.capacity +":</td>" +
-            "    <td style='"+valueStyle+"'>"+ data.capacity+"</td></tr>" +
+            "    <td style='"+valueStyle+"' item='capacity'></td></tr>" +
             "<tr><td style='"+titleStyle+"'>"+ lp.roomNumber +":</td>" +
-            "    <td style='"+valueStyle+"'>"+ data.roomNumber+"</td></tr>" +
+            "    <td style='"+valueStyle+"' item='roomNumber'></td></tr>" +
             "<tr><td style='"+titleStyle+"'>"+ lp.phone+":</td>" +
-            "    <td style='"+valueStyle+"'>"+ data.phoneNumber +"</td></tr>" +
+            "    <td style='"+valueStyle+"' item='phoneNumber'></td></tr>" +
             "<tr><td style='"+titleStyle+"'>"+ lp.device +":</td>" +
-            "    <td style='"+valueStyle+"'>"+ device.join( "," ) +"</td></tr>"+
+            "    <td style='"+valueStyle+"' item='device'></td></tr>"+
             "<tr><td style='"+titleStyle+"'>"+ lp.available +":</td>" +
-            "    <td style='"+valueStyle+"'>" + ( !data.available ? this.lp.disable : this.lp.enable ) + "</td></tr>"+
+            "    <td style='"+valueStyle+"' item='available'></td></tr>"+
             "</table>";
         return html;
+    },
+    _customNode : function( node, contentNode ){
+        var data = this.data;
+        var lp = this.lp.roomForm;
+
+        var device = [];
+        ( data.device || "" ).split("#").each( function( d ){
+            device.push( lp[d] );
+        }.bind(this));
+
+        contentNode.getElement("[item='name']").set("text", data.name );
+        // contentNode.getElement("[item='building']").set("text", end );
+        contentNode.getElement("[item='floor']").set("text", data.floor );
+        contentNode.getElement("[item='capacity']").set("text", data.capacity );
+        contentNode.getElement("[item='roomNumber']").set("text", data.roomNumber );
+        contentNode.getElement("[item='phoneNumber']").set("text", data.phoneNumber );
+        contentNode.getElement("[item='device']").set("text", device.join( "," ) );
+        contentNode.getElement("[item='available']").set("text", ( !data.available ? this.lp.disable : this.lp.enable ) );
+
+        this.fireEvent("customContent", [contentNode, node]);
     },
     loadBuilding: function( callback ){
         var area = this.node.getElement("[item='building']");
@@ -1710,10 +1732,6 @@ MWF.xApplication.Meeting.MeetingTooltip = new Class({
         var data = this.data;
         var titleStyle = "font-size:14px;color:#333";
         var valueStyle = "font-size:14px;color:#666;padding-right:20px";
-        var persons = [];
-        data.invitePersonList.each( function( p ){
-            persons.push(p.split("@")[0] )
-        }.bind(this));
 
         var color = "#ccc";
         switch (data.status){
@@ -1734,15 +1752,6 @@ MWF.xApplication.Meeting.MeetingTooltip = new Class({
             color = "#FF7F7F";
         }
 
-
-        var beginDate = Date.parse(data.startTime);
-        var endDate = Date.parse(data.completedTime);
-        var dateStr = beginDate.format(this.app.lp.dateFormatDay);
-        var beginTime = this.getString( beginDate.getHours() ) + ":" + this.getString( beginDate.getMinutes() );
-        var endTime = this.getString( endDate.getHours() ) + ":" + this.getString( endDate.getMinutes() );
-        var meetingTime = dateStr + " " +  beginTime + "-" + endTime;
-        var description = (data.description || "")+(data.summary || "");
-
         debugger;
         var deletedInfor = "";
         this.userName = layout.desktop.session.user.distinguishedName;
@@ -1751,33 +1760,29 @@ MWF.xApplication.Meeting.MeetingTooltip = new Class({
         }
         var html = deletedInfor +
             "<div style='overflow: hidden;padding:15px 20px 20px 10px;height:16px;line-height:16px;'>" +
-            "   <div style='font-size: 12px;color:#666; float: right'>"+ this.lp.applyPerson  +":" + data.applicant.split("@")[0] +"</div>" +
-            "   <div style='font-size: 16px;color:#333;float: left'>"+ (this.data.type || this.lp.meetingDetail) +"</div>"+
+            "   <div style='font-size: 12px;color:#666; float: right' item='applicant'></div>" +
+            "   <div style='font-size: 16px;color:#333;float: left' item='type'></div>"+
             "</div>"+
-            "<div style='font-size: 18px;color:#333;padding:0px 10px 15px 20px;overflow:hidden;'>"+ data.subject +"</div>"+
+            "<div style='font-size: 18px;color:#333;padding:0px 10px 15px 20px;overflow:hidden;' item='subject'></div>"+
             "<div style='height:1px;margin:0px 20px;border-bottom:1px solid #ccc;'></div>"+
             "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' style='margin:13px 13px 13px 13px;'>" +
             "<tr><td style='"+titleStyle+";' width='70'>"+this.lp.meetingTime+":</td>" +
-            "    <td style='"+valueStyle+";color:"+ color +"'>" + meetingTime + "</td></tr>" +
-            //"<tr><td style='"+titleStyle+"' width='70'>"+this.lp.beginTime+":</td>" +
-            //"    <td style='"+valueStyle+"'>" + data.startTime + "</td></tr>" +
-            //"<tr><td style='"+titleStyle+"'>"+this.lp.endTime+":</td>" +
-            //"    <td style='"+valueStyle+"'>" + data.completedTime + "</td></tr>" +
+            "    <td style='"+valueStyle+";color:"+ color +"' item='meetingTime'></td></tr>" +
             "<tr><td style='"+titleStyle+"'>"+this.lp.selectRoom +":</td>" +
             "    <td style='"+valueStyle+"' item='meetingRoom'></td></tr>" +
             "<tr><td style='"+titleStyle+"'>"+this.lp.invitePerson2+":</td>" +
-            "    <td style='"+valueStyle+"' item='invitePerson'>"+persons.join(",")+"</td></tr>" +
+            "    <td style='"+valueStyle+"' item='invitePerson'></td></tr>" +
             "<tr><td style='"+titleStyle+"'>"+this.lp.meetingDescription+":</td>" +
-            "    <td style='"+valueStyle+"'>"+ description +"</td></tr>";
+            "    <td style='"+valueStyle+"' item='description'></td></tr>";
 
         if( this.data.hostPerson ){
             html += "<tr><td style='"+titleStyle+"'>"+this.lp.hostPerson+":</td>" +
-                "    <td style='"+valueStyle+"'>"+ this.data.hostPerson.split("@")[0] +"</td></tr>";
+                "    <td style='"+valueStyle+"' item='hostPerson'></td></tr>";
         }
 
         if( this.data.hostUnit ){
             html += "<tr><td style='"+titleStyle+"'>"+this.lp.hostUnit+":</td>" +
-                "    <td style='"+valueStyle+"'>"+ this.data.hostUnit.split("@")[0] +"</td></tr>";
+                "    <td style='"+valueStyle+"' item='hostUnit'></td></tr>";
         }
 
         if( !this.options.isHideAttachment ){
@@ -1787,6 +1792,38 @@ MWF.xApplication.Meeting.MeetingTooltip = new Class({
 
         html += "</table>";
         return html;
+    },
+    setItemValue: function( contentNode, name, value ){
+        var itemNode = contentNode.getElement("[item='"+name+"']");
+        if(itemNode)itemNode.set("text", value );
+    },
+    _customNode : function( node, contentNode ){
+        var data = this.data;
+
+        var persons = [];
+        data.invitePersonList.each( function( p ){
+            persons.push(p.split("@")[0] )
+        }.bind(this));
+
+        var beginDate = Date.parse(data.startTime);
+        var endDate = Date.parse(data.completedTime);
+        var dateStr = beginDate.format(this.app.lp.dateFormatDay);
+        var beginTime = this.getString( beginDate.getHours() ) + ":" + this.getString( beginDate.getMinutes() );
+        var endTime = this.getString( endDate.getHours() ) + ":" + this.getString( endDate.getMinutes() );
+        var meetingTime = dateStr + " " +  beginTime + "-" + endTime;
+        var description = (data.description || "")+(data.summary || "");
+
+        this.setItemValue(contentNode, "type", (this.data.type || this.lp.meetingDetail));
+        this.setItemValue(contentNode, "applicant",  this.lp.applyPerson  +":" + data.applicant.split("@")[0] );
+        this.setItemValue(contentNode, "subject",  data.subject );
+        this.setItemValue(contentNode, "meetingTime",  meetingTime );
+        this.setItemValue(contentNode, "subject",  data.subject );
+        this.setItemValue(contentNode, "invitePerson", persons.join(",") );
+        this.setItemValue(contentNode, "description",  description );
+        this.setItemValue(contentNode, "hostPerson",  this.data.hostPerson.split("@")[0] );
+        this.setItemValue(contentNode, "hostUnit",  this.data.hostUnit.split("@")[0] );
+
+        this.fireEvent("customContent", [contentNode, node]);
     },
     getString : function( str ){
         var s = "00" + str;

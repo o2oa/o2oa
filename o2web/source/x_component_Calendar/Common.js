@@ -1473,25 +1473,22 @@ MWFCalendar.EventTooltip = new Class({
         if(callback)callback();
     },
     _getHtml : function(){
-        var data = this.data;
         var titleStyle = "font-size:14px;color:#333";
         var valueStyle = "font-size:14px;color:#666;padding-right:10px";
 
-        var beginD = Date.parse(this.data.startTime);
-        var endD = Date.parse(this.data.endTime);
-        var begin = beginD.format(this.lp.dateFormatAll) + "（" + this.lp.weeks.arr[beginD.get("day")] + "）";
-        var end = endD.format(this.lp.dateFormatAll) + "（" + this.lp.weeks.arr[endD.get("day")] + "）";
+
+        var data = this.data;
 
         var html =
             "<div style='font-size: 16px;color:#333;padding:10px 10px 10px 20px;'>"+ o2.common.encodeHtml(data.title) +"</div>"+
             "<div style='height:1px;margin:0px 20px;border-bottom:1px solid #ccc;'></div>"+
             "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' style='margin:13px 13px 13px 13px;'>" +
             "<tr><td style='"+titleStyle+";' width='40'>"+this.lp.begin+":</td>" +
-            "    <td style='"+valueStyle+"'>" + begin + "</td></tr>" +
+            "    <td style='"+valueStyle+"' item='begin'></td></tr>" +
             "<tr><td style='"+titleStyle+"'>"+this.lp.end+":</td>" +
-            "    <td style='"+valueStyle+ "'>"+ end +"</td></tr>" +
+            "    <td style='"+valueStyle+ "' item='end'></td></tr>" +
             "<tr><td style='"+titleStyle+"'>"+this.lp.locationName+":</td>" +
-            "    <td style='"+valueStyle+ "'>"+ (this.data.locationName||"") +"</td></tr>" +
+            "    <td style='"+valueStyle+ "' item='locationName'></td></tr>" +
             //( this.options.isHideAttachment ? "" :
             //"<tr><td style='"+titleStyle+"'>"+this.lp.eventAttachment+":</td>" +
             //"    <td style='"+valueStyle+"' item='attachment'></td></tr>"+
@@ -1500,6 +1497,19 @@ MWFCalendar.EventTooltip = new Class({
             "    <td style='"+valueStyle+ "' item='seeMore'></td></tr>"+
         "</table>";
         return html;
+    },
+    _customNode : function( node, contentNode ){
+        var data = this.data;
+        var beginD = Date.parse(this.data.startTime);
+        var endD = Date.parse(this.data.endTime);
+        var begin = beginD.format(this.lp.dateFormatAll) + "（" + this.lp.weeks.arr[beginD.get("day")] + "）";
+        var end = endD.format(this.lp.dateFormatAll) + "（" + this.lp.weeks.arr[endD.get("day")] + "）";
+
+        contentNode.getElement("[item='begin']").set("text", begin );
+        contentNode.getElement("[item='end']").set("text", end );
+        contentNode.getElement("[item='locationName']").set("text", (this.data.locationName||"") );
+
+        this.fireEvent("customContent", [contentNode, node])
     },
     destroy: function(){
         if( this.node ){

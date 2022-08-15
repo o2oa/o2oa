@@ -2868,11 +2868,11 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.ViewTooltip = new Class({
                "<tr><td style='"+titleStyle+";' width='70'>"+lp.type+":</td>" +
                "    <td style='"+valueStyle+";'>" + lp.list + "</td></tr>" +
                "<tr><td style='"+titleStyle+";' width='70'>"+lp.listName+":</td>" +
-               "    <td style='"+valueStyle+";'>" + data.name + "</td></tr>" +
+               "    <td style='"+valueStyle+";' item='name'></td></tr>" +
                "<tr><td style='"+titleStyle+"'>"+ lp.relativeForm +":</td>" +
-               "    <td style='"+valueStyle+"'>"+ (data.formName || "") +"</td></tr>" +
+               "    <td style='"+valueStyle+"' item='formName'></td></tr>" +
                "<tr><td style='"+titleStyle+"'>"+ lp.alias +":</td>" +
-               "    <td style='"+valueStyle+"'>"+(data.alias||"") +"</td></tr>" +
+               "    <td style='"+valueStyle+"' item='alias'></td></tr>" +
                "</table>";
        }else{
            var html =
@@ -2880,14 +2880,28 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.ViewTooltip = new Class({
                "<tr><td style='"+titleStyle+";' width='70'>"+ lp.type +":</td>" +
                "    <td style='"+valueStyle+";'>" + lp.dataView + "</td></tr>" +
                "<tr><td style='"+titleStyle+";' width='70'>"+ lp.viewName +":</td>" +
-               "    <td style='"+valueStyle+";'>" + data.name + "</td></tr>" +
+               "    <td style='"+valueStyle+";' item='name'></td></tr>" +
                "<tr><td style='"+titleStyle+"'>"+ lp.column +":</td>" +
-               "    <td style='"+valueStyle+"'>"+ (data.appName || "") +"</td></tr>" +
+               "    <td style='"+valueStyle+"' item='appName'></td></tr>" +
                "<tr><td style='"+titleStyle+"'>"+ lp.alias +":</td>" +
-               "    <td style='"+valueStyle+"'>"+(data.alias||"")+"</td></tr>" +
+               "    <td style='"+valueStyle+"' item='alias'></td></tr>" +
                "</table>";
        }
         return html;
+    },
+    _customNode : function( node, contentNode ){
+        var data = this.data;
+        if( data.type == "list" ){
+            contentNode.getElement("[item='name']").set("text", data.name );
+            contentNode.getElement("[item='formName']").set("text", (data.formName || "") );
+            contentNode.getElement("[item='alias']").set("text", (data.alias||"") );
+        }else{
+            contentNode.getElement("[item='name']").set("text", data.name );
+            contentNode.getElement("[item='appName']").set("text", (data.appName || "") );
+            contentNode.getElement("[item='alias']").set("text", (data.alias||"") );
+        }
+
+        this.fireEvent("customContent", [contentNode, node])
     }
 });
 
