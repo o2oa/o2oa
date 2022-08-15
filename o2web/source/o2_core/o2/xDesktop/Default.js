@@ -841,7 +841,7 @@ o2.xDesktop.Default = new Class({
                 var keys = Object.keys(this.apps);
                 i = keys.length;
                 if (i && this.apps[keys[i-1]] && this.apps[keys[i-1]].setCurrent){
-                    this.appCurrentList[i-1].setCurrent();
+                    this.apps[keys[i-1]].setCurrent();
                 }else{
                     this.loadDefaultPage()
                 }
