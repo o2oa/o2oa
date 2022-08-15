@@ -3125,6 +3125,81 @@ MWF.xScript.Environment = function(ev){
             _form.notice(content, type, target, where, offset, option);
         },
 
+        /**弹出一个对话框文档。
+         * @method dialog
+         * @static
+         * @param {(Object)} options
+         * 弹出框选项:<br/>
+         * 如果有buttonList参数，则ok，cancel参数无效。<br/>
+         * 对话框内容的优先级为moduleName、content、url、html、text，从有前面的参数则后面的参数无效。<br/>
+         * 调用弹出框对象后各事件执行先手顺序 onQueryLoad-->onPostLoad-->onQueryShow-->onPostShow。<br/>
+         * 其他说明如下：
+         * <pre><code class="language-js">{
+         *   "style" : "o2", //（string）可选，弹出框使用的样式，默认是o2，系统内置一些样式，比如：default,blue_flat,o2,flat等，对应样式文件位置：webserver\o2_core\o2\widget\$Dialog，用户也可以自己增加自定义样式风格，对应文件及结构参考已有样式风格。
+         *   "title" : "", //（string）可选，弹出框头部标题，在isTitle参数为true时有效。
+         *   "width" : 300, //（number）可选，弹出框宽度。 默认值：300
+         *   "height" : 150, //（number）可选，弹出框高度。 默认值：150
+         *   "isMax" : false, //（boolean）可选，标题栏是否有最大化按钮，相对应有还原按钮，默认值：false。
+         *   "isClose" : false, //（boolean）可选，标题栏是否有关闭按钮。默认值：false。
+         *   "isResize" : true, //（boolean）可选，弹出框大小是否可调整。默认值：true。
+         *   "isMove" : true, //（boolean）可选，弹出框是否可移动。默认值：true。
+         *   "offset" : {"x":-200, "y": -100} //（object）可选，弹出框相对容器(container)的x轴y轴位置偏移量，空则居中。
+         *   "mask" : true, //（boolean）可选，是否需要遮罩层。默认值：true。
+         *   "duration" : true, //（number）可选，动画显示弹出框效果时间。默认值：200。
+         *   "zindex": 100, //（number）可选，弹出框的z轴优先级，默认为100（日期控件的zindex为300，选人控件为1000，最好不要高于300）。
+         *   "buttonList" : [
+         *       {
+         *           "text": "确定", //（string）text：按钮显示名称
+         *           "action": function(){ //(function) 按钮对应的点击事件
+         *               //do something，this指向本对话框对象
+         *               this.close();
+         *           }
+         *       },
+         *       {
+         *           "text": "取消",
+         *           "action": function(){
+         *               //do something
+         *               this.close();
+         *           }
+         *       }
+         *   ], //（Array）可选，定义底部按钮，比如“确认”，“关闭”按钮等，数组列表。无该参数则默认有确定和取消两个按钮，这个时候options可以传入ok或者cancel方法作为回调。如果传入空数组“[]”则底部无按钮。
+         *   "ok": function(){}, //(function) 可选，options.buttonList为空的时候，该方法作为“确定”按钮的回调方法，options.buttonList不为空则忽略该方法。
+         *   "close": function(){}, //(function) 可选，options.buttonList为空的时候，该方法作为“取消”按钮的回调方法，options.buttonList不为空则忽略该方法。
+         *   "container" : this.form.getApp().content, //（Element/Dom）可选，弹出框层dom对象需要插入页面html内元素的位置，移动端默认插入到body中，PC端默认插入到表单节点所在容器（this.form.getApp().content）。
+         *   "moduleName": "div1", //内容参数，优先级为1，（String）可选，表示表单组件名称，系统会获取该组件的node节点作为对话框内容，关闭对话框节点会插回到原来的位置。
+         *   "content": this.form.get("div1").node, //内容参数，优先级为2，（Element/Dom）可选，对话框内容，关闭对话框节点会插回到原来的位置。
+         *   "url": "http://xxx/xxx.html", //内容参数，优先级为3，(String）可选，该参数所指向的内容作为对话框的内容。
+         *   "html": "<div>html内容</div>", //内容参数，优先级为4，(String）可选，对话框的html内容。
+         *   "text": "文本内容", //内容参数，优先级为5，(String）可选，对话框的文本内容。
+         *   "onQueryClose": function(){}, //(function) 可选，关闭弹出框前事件，this指向对话框对象。
+         *   "onPostClose": function(){}, //(function) 可选，关闭弹出框后事件，this指向对话框对象。
+         *   "onQueryLoad": function(){}, //(function) 可选，弹出框载入前事件，this指向对话框对象。
+         *   "onPostLoad": function(){}, //(function) 可选，弹出框载入后事件，this指向对话框对象。
+         *   "onQueryShow": function(){}, //(function) 可选，弹出框显示前事件，this指向对话框对象。
+         *   "onPostShow": function(){}, //(function) 可选，弹出框显示后事件，this指向对话框对象。
+         * }</code></pre>
+         * @example
+         //启动一个通知公告
+         this.form.createDocument("", "通知公告");
+         * @example
+         //启动一个通知公告，标题为：关于XX的通知，启动后提示
+         this.form.createDocument("", "通知公告", {"subject": "关于XX的通知"}, function(json){
+            this.form.notice("创建成功!", "success");
+        }.bind(this));
+         * @example
+         //启动一个通知公告，标题为：关于XX的通知，启动后提示
+         this.form.createDocument({
+            category : "通知公告",
+            data : {"subject": "关于XX的通知"},
+            callback : function(json){
+                this.form.notice("创建成功!", "success");
+            }.bind(this)
+         });
+         */
+        "dialog": function ( options ) {
+            _form.dialog( options );
+        },
+
         /**给表单添加事件。
          * @method addEvent
          * @static
