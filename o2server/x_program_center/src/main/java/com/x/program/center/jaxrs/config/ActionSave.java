@@ -13,6 +13,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.tools.StringTools;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.google.gson.Gson;
@@ -35,9 +36,9 @@ import org.apache.commons.lang3.StringUtils;
  * @author sword
  */
 public class ActionSave extends BaseAction {
-	private static Logger logger = LoggerFactory.getLogger(ActionSave.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionSave.class);
 
-	ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, JsonElement jsonElement)
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement)
 			throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
@@ -48,8 +49,8 @@ public class ActionSave extends BaseAction {
 		if (StringUtils.isBlank(fileName)) {
 			throw new ExceptionNameEmpty();
 		}
-		if(fileName.indexOf(SLASH) > -1){
-			throw new IllegalAccessException("名称不能包含'/'!");
+		if(!StringTools.isFileName(fileName)){
+			throw new ExceptionIllegalFileName(fileName);
 		}
 
 		String data = wi.getFileContent();
@@ -80,7 +81,7 @@ public class ActionSave extends BaseAction {
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 		this.configFlush(effectivePerson);
 
@@ -124,11 +125,11 @@ public class ActionSave extends BaseAction {
 					dos.write(bytes, 0, length);
 					dos.flush();
 				}
-				logger.info("同步文件{}到节点{}完成.......", syncFilePath, nodeName);
+				LOGGER.info("同步文件{}到节点{}完成.......", syncFilePath, nodeName);
 			}
 			syncFileFlag = true;
 		} catch (Exception ex) {
-			logger.warn("同步文件{}到节点{}异常：{}", syncFilePath, nodeName, ex.getMessage());
+			LOGGER.warn("同步文件{}到节点{}异常：{}", syncFilePath, nodeName, ex.getMessage());
 			syncFileFlag = false;
 		}
 		return syncFileFlag;

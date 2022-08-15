@@ -318,7 +318,7 @@ public class ConfigAction extends StandardJaxrsAction {
 		ActionResult<ActionSave.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionSave().execute(request, effectivePerson, jsonElement);
+			result = new ActionSave().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
 			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);

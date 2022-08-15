@@ -6,6 +6,7 @@ import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.tools.StringTools;
 import org.apache.commons.io.FileUtils;
 
 import com.google.gson.JsonElement;
@@ -19,8 +20,12 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * 获取配置文件
+ * @author sword
+ */
 public class ActionOpen extends BaseAction {
-	private static Logger logger = LoggerFactory.getLogger(ActionOpen.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionOpen.class);
 
 	ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson,JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
@@ -30,8 +35,8 @@ public class ActionOpen extends BaseAction {
 		if (StringUtils.isBlank(fileName)) {
 			throw new ExceptionNameEmpty();
 		}
-		if(fileName.indexOf(SLASH) > -1){
-			throw new Exception("名称不能包含'/'!");
+		if(!StringTools.isFileName(fileName)){
+			throw new ExceptionIllegalFileName(fileName);
 		}
 
 		File file = new File(Config.base(),"config/"+fileName);

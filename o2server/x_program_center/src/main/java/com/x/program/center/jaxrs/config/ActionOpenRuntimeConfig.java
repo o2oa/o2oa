@@ -9,10 +9,10 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
+import com.x.base.core.project.tools.StringTools;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 
 /**
@@ -20,7 +20,7 @@ import java.io.File;
  * @author sword
  */
 public class ActionOpenRuntimeConfig extends BaseAction {
-	private static Logger logger = LoggerFactory.getLogger(ActionOpenRuntimeConfig.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionOpenRuntimeConfig.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson,JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
@@ -30,8 +30,8 @@ public class ActionOpenRuntimeConfig extends BaseAction {
 		if (StringUtils.isBlank(fileName)) {
 			throw new ExceptionNameEmpty();
 		}
-		if(fileName.indexOf(SLASH) > -1){
-			throw new Exception("名称不能包含'/'!");
+		if(!StringTools.isFileName(fileName)){
+			throw new ExceptionIllegalFileName(fileName);
 		}
 
 		File file = new File(Config.base(),"config/"+fileName);
