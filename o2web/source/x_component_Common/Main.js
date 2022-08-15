@@ -405,33 +405,28 @@ MWF.xApplication.Common.Main = new Class({
 		//		});
 	},
 	setCurrent: function () {
-		if (this.desktop.currentApp == this) return true;
-		if (this.desktop.currentApp) {
-			this.desktop.currentApp.setUncurrent();
-		}
+        if (this.desktop.currentApp == this) return true;
+        if (this.desktop.currentApp) {
+            this.desktop.currentApp.setUncurrent();
+        }
 
-		// if (layout.viewMode=="Default" && !this.isLoadApplication){
-		// 	this.isLoadApplication = true;
-		// 	this.load(true);
-		// } else {
-			this.window.setCurrent();
+        this.window.setCurrent();
 
-			if (this.window.isHide) {
-				if (this.window.isMax) {
-					this.window.maxSize(function () { this.fireAppEvent("current"); }.bind(this));
-				} else {
-					this.window.restore(function () { this.fireAppEvent("current"); }.bind(this));
-				}
-			} else {
-				this.fireAppEvent("current");
-			}
+        if (this.taskitem) this.taskitem.selected();
+        this.desktop.currentApp = this;
 
-			if (this.taskitem) this.taskitem.selected();
-			this.desktop.currentApp = this;
+        this.desktop.appCurrentList.erase(this);
+        this.desktop.appCurrentList.push(this);
 
-			this.desktop.appCurrentList.erase(this);
-			this.desktop.appCurrentList.push(this);
-		//}
+        if (this.window.isHide) {
+            if (this.window.isMax) {
+                this.window.maxSize(function () { this.fireAppEvent("current"); }.bind(this));
+            } else {
+                this.window.restore(function () { this.fireAppEvent("current"); }.bind(this));
+            }
+        } else {
+            this.fireAppEvent("current");
+        }
 	},
 	setUncurrent: function () {
 		if (this.desktop.currentApp == this) {
