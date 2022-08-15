@@ -2,6 +2,7 @@ package com.x.program.center.jaxrs.module;
 
 import java.io.File;
 
+import com.x.base.core.project.tools.StringTools;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -34,8 +35,9 @@ class ActionDispatchResource extends BaseAction {
 		if (StringUtils.isEmpty(file)) {
 			file = this.fileName(disposition);
 		}
-		if ((file.indexOf("/") > -1) || (!file.toLowerCase().endsWith(".zip") && StringUtils.isEmpty(filePath))
-				|| (bytes == null || bytes.length == 0)) {
+		boolean flag = (!StringTools.isFileName(file)) || (!file.toLowerCase().endsWith(".zip") && StringUtils.isEmpty(filePath))
+				|| (bytes == null || bytes.length == 0);
+		if (flag) {
 			throw new ExceptionIllegalFile(file);
 		}
 		if (StringUtils.isNotEmpty(filePath)) {

@@ -120,7 +120,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	protected void checkEmployee(Business business, String employee, String excludeId) throws Exception {
 		if (StringUtils.isNotEmpty(employee)) {
-			if (StringUtils.isEmpty(employee) || (!StringTools.isSimply(employee))) {
+			if (!StringTools.isSimply(employee)) {
 				throw new ExceptionInvalidEmployee(employee);
 			}
 			if (StringUtils.isNotEmpty(business.person().getWithEmployee(employee, excludeId))) {
