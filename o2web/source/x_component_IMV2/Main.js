@@ -341,9 +341,9 @@ MWF.xApplication.IMV2.Main = new Class({
 							//刷新
 							cv.refreshLastMsg(nCv.lastMessage);
 							cv.refreshData(nCv);
-							if (this.conversationId === nCv.id) {
-								this.tapConv(nCv);
-							}
+							// if (this.conversationId === nCv.id) {
+							// 	this.tapConv(nCv);
+							// }
 						}
 					}
 					//新会话 创建
