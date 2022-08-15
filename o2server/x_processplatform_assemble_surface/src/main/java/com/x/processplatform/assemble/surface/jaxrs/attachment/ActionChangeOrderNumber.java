@@ -35,7 +35,7 @@ class ActionChangeOrderNumber extends BaseAction {
 			if (null == attachment) {
 				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
-			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workId)) {
+			if (!business.editable(effectivePerson, attachment.getJob())) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
