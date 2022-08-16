@@ -51,10 +51,7 @@ class ActionUploadWithWorkCompleted extends BaseAction {
 			if (ends.isEmpty()) {
 				throw new ExceptionEndNotExist(process.getId());
 			}
-			if ((effectivePerson.isNotManager())
-					&& (!business.organization().person().hasRole(effectivePerson,
-							OrganizationDefinition.ProcessPlatformManager, OrganizationDefinition.Manager))
-					&& effectivePerson.isNotPerson(application.getControllerList())) {
+			if (!business.canManageApplicationOrProcess(effectivePerson, application, process)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			if (StringUtils.isEmpty(fileName)) {
