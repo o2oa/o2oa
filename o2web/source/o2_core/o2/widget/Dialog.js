@@ -460,7 +460,7 @@ o2.widget.Dialog = o2.DL = new Class({
             // //	this.content.setStyle("display", "block");
             // //this.fireEvent("postShow");
 
-			var pn = this.node.getOffsetParent();
+			var pn = this.node.getOffsetParent() || this.node.getParent();
 			var p = pn.getPosition();
 
 			var h = this.css.to.height.toInt();

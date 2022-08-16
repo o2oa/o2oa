@@ -2838,34 +2838,45 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     dialog: function( options ){
         if( !options )options = {};
         var opts = {
-            "style" : options.stype || "o2",
+            "style" : options.style || "user",
             "title": options.title || "",
             "width": options.width || 300,
             "height" : options.height || 150,
-            "isMax": o2.typeOf( options.isMax ) ? options.isMax : false,
-            "isClose": o2.typeOf( options.isClose ) ? options.isClose : true,
-            "isResize": o2.typeOf( options.isResize ) ? options.isResize : true,
-            "isMove": o2.typeOf( options.isMove ) ? options.isMove : true,
-            "isTitle": o2.typeOf( options.isTitle ) ? options.isTitle : true,
+            "isMax": o2.typeOf( options.isMax ) === "boolean" ? options.isMax : false,
+            "isClose": o2.typeOf( options.isClose ) === "boolean"  ? options.isClose : true,
+            "isResize": o2.typeOf( options.isResize ) === "boolean"  ? options.isResize : true,
+            "isMove": o2.typeOf( options.isMove ) === "boolean"  ? options.isMove : true,
+            "isTitle": o2.typeOf( options.isTitle ) === "boolean"  ? options.isTitle : true,
             "offset": options.offset || null,
-            "mask": o2.typeOf( options.mask ) ? options.mask : true,
+            "mask": o2.typeOf( options.mask ) === "boolean"  ? options.mask : true,
             "container": options.container ||  ( layout.mobile ? $(documtn.body) : this.app.content ),
             "duration": options.duration || 200,
             "lp": options.lp || null,
             "zindex": ( options.zindex || 100 ).toInt(),
             "buttonList": options.buttonList || [
                 {
-                    "text": this.app.lp.button.ok,
+                    "type": "ok",
+                    "text": MWF.LP.process.button.ok,
                     "action": function(){
-                        if(options.ok)options.ok( this );
-                        this.close();
+                        if(options.ok){
+                            var flag = options.ok.call( this );
+                            if( flag === true || o2.typeOf(flag) === "null" )this.close();
+                        }else{
+                            this.close();
+                        }
+
                     }
                 },
                 {
-                    "text": this.app.lp.button.cancel,
+                    "type": "cancel",
+                    "text": MWF.LP.process.button.cancel,
                     "action": function(){
-                        if(options.close)options.close(this);
-                        this.close();
+                        if(options.close){
+                            var flag = options.close.call(this);
+                            if( flag === true || o2.typeOf(flag) === "null" )this.close();
+                        }else{
+                            this.close();
+                        }
                     }
                 }
             ]
@@ -2873,14 +2884,16 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
         var positionNode;
         if( options.moduleName ){
-            var module, _form = this.form, name = options.moduleName, subformName = options.subformName;
-            if( subformName && _form.all[subformName +"_"+ name] ){
-                module = _form.all[subformName +"_"+ name];
+            var module, name = options.moduleName, subformName = options.subformName;
+            if( subformName && this.all[subformName +"_"+ name] ){
+                module = this.all[subformName +"_"+ name];
             }else{
-                module = _form.all[name];
+                module = this.all[name];
             }
-            if( module )opts.content = module.node;
-            positionNode = new Element("div", {style:"display:none;"}).inject( opts.content, "before" );
+            if( module ){
+                opts.content = module.node;
+                positionNode = new Element("div", {style:"display:none;"}).inject( opts.content, "before" );
+            }
         }else if( options.content ) {
             opts.content = options.content;
             var parent = opts.content.getParent();
