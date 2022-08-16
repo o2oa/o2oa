@@ -4315,7 +4315,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @see module:form.dialog
          */
         "dialog": function ( options ) {
-            _form.dialog( options );
+            return  _form.dialog( options );
         },
 
         /**　给视图添加事件。

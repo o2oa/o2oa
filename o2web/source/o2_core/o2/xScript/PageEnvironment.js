@@ -1815,7 +1815,7 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
              * @see module:form.dialog
              */
             "dialog": function ( options ) {
-                _form.dialog( options );
+                return _form.dialog( options );
             },
 
             /**给页面添加事件。
