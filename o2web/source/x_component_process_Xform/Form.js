@@ -2921,9 +2921,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 opts[key] = options[key];
             }
         }
+        var dialog;
         MWF.require("MWF.xDesktop.Dialog", function(){
-            var dialog = o2.DL.open(opts)
-        })
+            dialog = o2.DL.open(opts)
+        }, null, false);
+        return dialog;
     },
     addSplit: function () {
         if (!this.businessData.control["allowAddSplit"]) {

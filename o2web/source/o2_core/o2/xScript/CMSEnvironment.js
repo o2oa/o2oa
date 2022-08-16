@@ -1719,7 +1719,7 @@ MWF.xScript.CMSEnvironment = function(ev){
             _form.notice(content, type, target, where, offset, option);
         },
         "dialog": function ( options ) {
-            _form.dialog( options );
+            return _form.dialog( options );
         },
         "addEvent": function(e, f){_form.addEvent(e, f);},
         "openWork": function(id, completedId, title, options){

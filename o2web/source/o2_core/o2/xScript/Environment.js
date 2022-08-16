@@ -3128,6 +3128,7 @@ MWF.xScript.Environment = function(ev){
         /**弹出一个对话框层。
          * @method dialog
          * @static
+         * @return {Object} 对话框对象。
          * @param {(Object)} options
          * 弹出框选项:<br/>
          * 如果有buttonList参数，则ok，cancel参数无效。<br/>
@@ -3184,7 +3185,7 @@ MWF.xScript.Environment = function(ev){
          * @example
          * //打开一个对话框，使用html作为内容
          * var _self = this;
-         * this.form.dialog({
+         * var dlg = this.form.dialog({
          *   "title": "填写内容",
          *   "width": "500",
          *   "height": "300",
@@ -3292,7 +3293,7 @@ MWF.xScript.Environment = function(ev){
          *   });
          */
         "dialog": function ( options ) {
-            _form.dialog( options );
+            return _form.dialog( options );
         },
 
         /**给表单添加事件。
