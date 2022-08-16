@@ -2835,6 +2835,96 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
         new mBox.Notice(options);
     },
+    dialog: function( options ){
+        if( !options )options = {};
+        var opts = {
+            "style" : options.style || "user",
+            "title": options.title || "",
+            "width": options.width || 300,
+            "height" : options.height || 150,
+            "isMax": o2.typeOf( options.isMax ) === "boolean" ? options.isMax : false,
+            "isClose": o2.typeOf( options.isClose ) === "boolean"  ? options.isClose : true,
+            "isResize": o2.typeOf( options.isResize ) === "boolean"  ? options.isResize : true,
+            "isMove": o2.typeOf( options.isMove ) === "boolean"  ? options.isMove : true,
+            "isTitle": o2.typeOf( options.isTitle ) === "boolean"  ? options.isTitle : true,
+            "offset": options.offset || null,
+            "mask": o2.typeOf( options.mask ) === "boolean"  ? options.mask : true,
+            "container": options.container ||  ( layout.mobile ? $(documtn.body) : this.app.content ),
+            "duration": options.duration || 200,
+            "lp": options.lp || null,
+            "zindex": ( options.zindex || 100 ).toInt(),
+            "buttonList": options.buttonList || [
+                {
+                    "type": "ok",
+                    "text": MWF.LP.process.button.ok,
+                    "action": function(){
+                        if(options.ok){
+                            var flag = options.ok.call( this );
+                            if( flag === true || o2.typeOf(flag) === "null" )this.close();
+                        }else{
+                            this.close();
+                        }
+
+                    }
+                },
+                {
+                    "type": "cancel",
+                    "text": MWF.LP.process.button.cancel,
+                    "action": function(){
+                        if(options.close){
+                            var flag = options.close.call(this);
+                            if( flag === true || o2.typeOf(flag) === "null" )this.close();
+                        }else{
+                            this.close();
+                        }
+                    }
+                }
+            ]
+        };
+
+        var positionNode;
+        if( options.moduleName ){
+            var module, name = options.moduleName, subformName = options.subformName;
+            if( subformName && this.all[subformName +"_"+ name] ){
+                module = this.all[subformName +"_"+ name];
+            }else{
+                module = this.all[name];
+            }
+            if( module ){
+                opts.content = module.node;
+                positionNode = new Element("div", {style:"display:none;"}).inject( opts.content, "before" );
+            }
+        }else if( options.content ) {
+            opts.content = options.content;
+            var parent = opts.content.getParent();
+            if(parent)positionNode = new Element("div", {style:"display:none;"}).inject( opts.content, "before" );
+        }
+        if( options.url )opts.url = options.url;
+        if( options.html )opts.html = options.html;
+        if( options.text )opts.text = options.text;
+
+        opts.onQueryClose = function(){
+            if( positionNode && opts.content ){
+                opts.content.inject( positionNode, "after" );
+                positionNode.destroy();
+            }
+            if( o2.typeOf(options.onQueryClose) === "function" )options.onQueryClose.call( this );
+        }
+        if(opts.onPostClose)opts.onPostClose = options.onPostClose;
+        if(opts.onQueryLoad)opts.onQueryLoad = options.onQueryLoad;
+        if(opts.onPostLoad)opts.onPostLoad = options.onPostLoad;
+        if(opts.onQueryShow)opts.onQueryShow = options.onQueryShow;
+        if(opts.onPostShow)opts.onPostShow = options.onPostShow;
+
+        for( var key in options ){
+            if( !opts.hasOwnProperty( key ) ){
+                opts[key] = options[key];
+            }
+        }
+        MWF.require("MWF.xDesktop.Dialog", function(){
+            var dialog = o2.DL.open(opts)
+        })
+    },
     addSplit: function () {
         if (!this.businessData.control["allowAddSplit"]) {
             MWF.xDesktop.notice("error", { x: "right", y: "top" }, "Permission Denied");

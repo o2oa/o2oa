@@ -1808,6 +1808,16 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
             "notice": function (content, type, target, where, offset, option) {
                 _form.notice(content, type, target, where, offset, option);
             },
+
+            /**打开一个对话框
+             * @method dialog
+             * @static
+             * @see module:form.dialog
+             */
+            "dialog": function ( options ) {
+                _form.dialog( options );
+            },
+
             /**给页面添加事件。
              * @method addEvent
              * @static
