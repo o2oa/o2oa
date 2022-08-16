@@ -3132,7 +3132,7 @@ MWF.xScript.Environment = function(ev){
          * 弹出框选项:<br/>
          * 如果有buttonList参数，则ok，cancel参数无效。<br/>
          * 对话框内容的优先级为moduleName、content、url、html、text，有前面的参数则后面的参数无效。<br/>
-         * 调用弹出框对象后各事件执行先手顺序 onQueryLoad-->onPostLoad-->onQueryShow-->onPostShow。<br/>
+         * 调用弹出框对象后各事件执行先后顺序 onQueryLoad-->onPostLoad-->onQueryShow-->onPostShow。<br/>
          * 其他说明如下：
          * <pre><code class="language-js">{
          *   "style" : "default", //（string）可选，弹出框使用的样式，默认是user，系统内置一些样式，比如：user,blue_flat,o2,flat等，对应样式文件位置：webserver\o2_core\o2\widget\$Dialog，用户也可以自己增加自定义样式风格，对应文件及结构参考已有样式风格。
