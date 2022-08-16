@@ -65,6 +65,7 @@ class ActionRollback extends BaseAction {
 		}
 
 		Callable<String> callable = new Callable<String>() {
+			@Override
 			public String call() throws Exception {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 
@@ -115,7 +116,7 @@ class ActionRollback extends BaseAction {
 					emc.beginTransaction(ReadCompleted.class);
 					emc.beginTransaction(Review.class);
 
-					Work work = createWork(workCompleted, workLog);
+					Work work = createWork(business, workCompleted, workLog);
 					emc.persist(work, CheckPersistType.all);
 
 					disconnectWorkLog(work, workLog);
@@ -156,7 +157,7 @@ class ActionRollback extends BaseAction {
 		return result;
 	}
 
-	private Work createWork(WorkCompleted workCompleted, WorkLog workLog) throws Exception {
+	private Work createWork(Business business, WorkCompleted workCompleted, WorkLog workLog) throws Exception {
 		Work work = new Work(workCompleted);
 		work.setSplitting(false);
 		work.setActivityName(workLog.getFromActivityName());
@@ -166,6 +167,7 @@ class ActionRollback extends BaseAction {
 		work.setActivityDescription("");
 		work.setActivityToken(workLog.getFromActivityToken());
 		work.setActivityType(workLog.getFromActivityType());
+		work.setForm(business.element().lookupSuitableForm(work.getProcess(), work.getActivity()));
 //		work.setErrorRetry(0);
 		work.setWorkStatus(WorkStatus.processing);
 		// 因为workCompleted没有workCreateType属性，回溯到任何环节都必须要有待办，默认置为assign
