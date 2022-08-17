@@ -18,6 +18,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+
 /**
  * 论坛权限角色绑定关系表
  * 

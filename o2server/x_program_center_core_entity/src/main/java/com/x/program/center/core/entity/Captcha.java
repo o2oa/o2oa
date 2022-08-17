@@ -16,7 +16,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(name = "Attachment", description = "服务管理图片验证码.")
+@Schema(name = "Captcha", description = "服务管理图片验证码.")
 @Entity
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Captcha.table, uniqueConstraints = {

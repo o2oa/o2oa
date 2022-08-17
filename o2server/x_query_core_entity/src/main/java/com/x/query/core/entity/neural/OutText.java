@@ -17,6 +17,8 @@ import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.query.core.entity.PersistenceProperties;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+@Schema(name = "OutText", description = "数据中心神经网络结果.")
 @Entity
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Neural.OutText.table, uniqueConstraints = {

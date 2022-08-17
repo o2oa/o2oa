@@ -36,6 +36,8 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+@Schema(name = "Agent", description = "流程平台脚本活动.")
 @Entity
 @ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.element, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Element.Agent.table, uniqueConstraints = {
