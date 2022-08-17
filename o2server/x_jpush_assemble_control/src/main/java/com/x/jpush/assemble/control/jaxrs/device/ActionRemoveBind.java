@@ -13,54 +13,49 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.jpush.assemble.control.Business;
-import com.x.jpush.assemble.control.jaxrs.sample.BaseAction;
-import com.x.jpush.assemble.control.jaxrs.sample.ExceptionSampleEntityClassFind;
 
 public class ActionRemoveBind extends BaseAction {
 
-    private Logger logger = LoggerFactory.getLogger( ActionRemoveBind.class );
+	private Logger logger = LoggerFactory.getLogger(ActionRemoveBind.class);
 
-    protected ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, String deviceName, String deviceType) throws Exception {
-        logger.info("execute action 'ActionRemoveBind'......");
-        ActionResult<Wo> result = new ActionResult<>();
-        Wo wraps  = new Wo();
-        if (deviceName == null || deviceType == null || deviceName.equals("") || deviceType.equals("")) {
-            throw new ExceptionDeviceParameterEmpty();
-        }
-        deviceType = deviceType.toLowerCase();
-        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-            Business business = new Business(emc);
-            List<String> deviceList = business.organization().personAttribute()
-                    .listAttributeWithPersonWithName(effectivePerson.getDistinguishedName(), ActionListAll.DEVICE_PERSON_ATTR_KEY);
-            String device = deviceName+"_"+deviceType.toLowerCase();
-            if(ListTools.isNotEmpty( deviceList ) ){
-                if (deviceList.contains(device)) {
-                    deviceList.remove(device);
-                    wraps.setValue(business.organization().personAttribute()
-                            .setWithPersonWithName(effectivePerson.getDistinguishedName(), ActionListAll.DEVICE_PERSON_ATTR_KEY, deviceList));
-                }else {
-                    wraps.setValue(true);
-                    result.setMessage("当前设备不存在，无需解绑！");
-                }
-            }else {
-                wraps.setValue(true);
-                result.setMessage("当前设备不存在，无需解绑！");
-            }
-            result.setData(wraps);
-            logger.info("action 'ActionRemoveBind' execute completed!");
-            return result;
-        } catch (Exception e) {
-            logger.error(e);
-            throw new ExceptionSampleEntityClassFind( e, "系统在设备解除绑定时发生异常!" );
-        }
+	protected ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, String deviceName,
+			String deviceType) throws Exception {
+		logger.info("execute action 'ActionRemoveBind'......");
+		ActionResult<Wo> result = new ActionResult<>();
+		Wo wraps = new Wo();
+		if (deviceName == null || deviceType == null || deviceName.equals("") || deviceType.equals("")) {
+			throw new ExceptionDeviceParameterEmpty();
+		}
+		deviceType = deviceType.toLowerCase();
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Business business = new Business(emc);
+			List<String> deviceList = business.organization().personAttribute().listAttributeWithPersonWithName(
+					effectivePerson.getDistinguishedName(), ActionListAll.DEVICE_PERSON_ATTR_KEY);
+			String device = deviceName + "_" + deviceType.toLowerCase();
+			if (ListTools.isNotEmpty(deviceList)) {
+				if (deviceList.contains(device)) {
+					deviceList.remove(device);
+					wraps.setValue(business.organization().personAttribute().setWithPersonWithName(
+							effectivePerson.getDistinguishedName(), ActionListAll.DEVICE_PERSON_ATTR_KEY, deviceList));
+				} else {
+					wraps.setValue(true);
+					result.setMessage("当前设备不存在，无需解绑！");
+				}
+			} else {
+				wraps.setValue(true);
+				result.setMessage("当前设备不存在，无需解绑！");
+			}
+			result.setData(wraps);
+			logger.info("action 'ActionRemoveBind' execute completed!");
+			return result;
+		} catch (Exception e) {
+			logger.error(e);
+			throw new IllegalArgumentException("系统在设备解除绑定时发生异常!", e);
+		}
 
+	}
 
-    }
+	public static class Wo extends WrapBoolean {
 
-
-
-
-    public static class Wo extends WrapBoolean {
-
-    }
+	}
 }

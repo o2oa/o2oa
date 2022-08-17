@@ -38,6 +38,9 @@ import com.x.base.core.project.tools.DateTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
 import com.x.processplatform.core.entity.element.ActivityType;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "Attachment", description = "流程平台附件.")
 @ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.Content.Attachment.table, uniqueConstraints = {

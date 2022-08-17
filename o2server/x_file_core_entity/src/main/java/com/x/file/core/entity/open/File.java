@@ -29,6 +29,8 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.DateTools;
 import com.x.file.core.entity.PersistenceProperties;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  *
  * 有两个可能性创建File:<br/>
@@ -36,6 +38,7 @@ import com.x.file.core.entity.PersistenceProperties;
  * 2.通过Attachment转储<br/>
  *
  */
+@Schema(name = "File", description = "云文件存储文件.")
 @Entity
 @ContainerEntity(dumpSize = 10, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Open.File.table, uniqueConstraints = {

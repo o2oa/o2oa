@@ -1,14 +1,12 @@
 package com.x.jpush.assemble.control;
 
 import com.x.base.core.container.EntityManagerContainer;
-import com.x.jpush.assemble.control.factory.SampleEntityClassNameFactory;
+import com.x.jpush.assemble.control.factory.PushDeviceFactory;
 import com.x.organization.core.express.Organization;
 
 public class Business {
 
 	private EntityManagerContainer emc;
-
-
 
 	public Business(EntityManagerContainer emc) throws Exception {
 		this.emc = emc;
@@ -18,18 +16,17 @@ public class Business {
 		return this.emc;
 	}
 
-	//组织架构管理相关的工厂服务类
+	// 组织架构管理相关的工厂服务类
 	private Organization organization;
-	
-	//示例数据表工厂服务类
-	private SampleEntityClassNameFactory sampleEntityClassNameFactory;
-	
-	
-	public SampleEntityClassNameFactory sampleEntityClassNameFactory() throws Exception {
-		if (null == this.sampleEntityClassNameFactory) {
-			this.sampleEntityClassNameFactory = new SampleEntityClassNameFactory( this );
+
+	// 示例数据表工厂服务类
+	private PushDeviceFactory pushDeviceFactory;
+
+	public PushDeviceFactory pushDeviceFactory() throws Exception {
+		if (null == this.pushDeviceFactory) {
+			this.pushDeviceFactory = new PushDeviceFactory(this);
 		}
-		return sampleEntityClassNameFactory;
+		return pushDeviceFactory;
 	}
 
 	public Organization organization() throws Exception {
@@ -38,8 +35,5 @@ public class Business {
 		}
 		return organization;
 	}
-
-
-
 
 }

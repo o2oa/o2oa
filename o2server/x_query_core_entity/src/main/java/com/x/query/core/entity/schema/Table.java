@@ -33,6 +33,8 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.query.core.entity.PersistenceProperties;
 import com.x.query.core.entity.Query;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+@Schema(name = "Table", description = "数据中心自建表.")
 @Entity
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @javax.persistence.Table(name = PersistenceProperties.Schema.Table.table, uniqueConstraints = {

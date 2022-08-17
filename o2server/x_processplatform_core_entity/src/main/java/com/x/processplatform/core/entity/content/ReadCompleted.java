@@ -33,12 +33,16 @@ import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
 import com.x.processplatform.core.entity.element.ActivityType;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * 没有多值字段
  * 
  * @author zhour
  *
  */
+
+@Schema(name = "ReadCompleted", description = "流程平台已阅.")
 @Entity
 @ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Content.ReadCompleted.table, uniqueConstraints = {

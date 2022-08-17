@@ -22,6 +22,9 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.StringTools;
 import com.x.organization.core.entity.PersistenceProperties;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "EmpowerLog", description = "组织授权日志.")
 @Entity
 @ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Accredit.EmpowerLog.table, uniqueConstraints = {

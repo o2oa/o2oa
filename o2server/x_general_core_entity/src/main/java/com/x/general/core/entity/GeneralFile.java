@@ -24,6 +24,9 @@ import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.DateTools;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "GeneralFile", description = "通用文件.")
 @ContainerEntity(dumpSize = 10, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.GeneralFile.table, uniqueConstraints = {

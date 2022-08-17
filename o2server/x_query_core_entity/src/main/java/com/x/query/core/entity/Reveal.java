@@ -28,6 +28,10 @@ import com.x.base.core.entity.annotation.Equal;
 import com.x.base.core.entity.annotation.Flag;
 import com.x.base.core.project.annotation.FieldDescribe;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Deprecated(forRemoval = true)
+@Schema(name = "Reveal", description = "数据中心展现.")
 @Entity
 @ContainerEntity(dumpSize = 10, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Reveal.table, uniqueConstraints = {

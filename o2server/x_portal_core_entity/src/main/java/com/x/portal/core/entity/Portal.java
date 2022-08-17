@@ -30,10 +30,13 @@ import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.entity.annotation.Flag;
 import com.x.base.core.project.annotation.FieldDescribe;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * 门户平台应用
  * @author sword
  */
+@Schema(name = "Portal", description = "门户门户.")
 @Entity
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Portal.table, uniqueConstraints = {
