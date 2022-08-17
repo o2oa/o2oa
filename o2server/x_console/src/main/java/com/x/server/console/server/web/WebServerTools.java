@@ -128,7 +128,7 @@ public class WebServerTools extends JettySeverTools {
 		return server;
 	}
 
-	private static WebAppContext webContext(WebServer webServer) throws IOException, URISyntaxException {
+	private static WebAppContext webContext(WebServer webServer) throws Exception {
 		WebAppContext context = new WebAppContext();
 		context.setContextPath("/");
 		context.setBaseResource(Resource.newResource(new File(Config.base(), "servers/webServer")));
@@ -143,9 +143,9 @@ public class WebServerTools extends JettySeverTools {
 		context.setGzipHandler(new GzipHandler());
 		context.setParentLoaderPriority(true);
 		context.getMimeTypes().addMimeMapping("wcss", "application/json");
-		if (BooleanUtils.isTrue(webServer.getStatEnable())) {
+		if (BooleanUtils.isTrue(Config.general().getStatEnable())) {
 			FilterHolder statFilterHolder = new FilterHolder(new WebStatFilter());
-			statFilterHolder.setInitParameter("exclusions", webServer.getStatExclusions());
+			statFilterHolder.setInitParameter("exclusions", Config.general().getStatExclusions());
 			context.addFilter(statFilterHolder, "/*", EnumSet.of(DispatcherType.REQUEST));
 			ServletHolder statServletHolder = new ServletHolder(StatViewServlet.class);
 			statServletHolder.setInitParameter("sessionStatEnable", "false");

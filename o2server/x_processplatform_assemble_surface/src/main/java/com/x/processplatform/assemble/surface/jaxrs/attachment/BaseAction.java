@@ -10,6 +10,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.processplatform.core.entity.element.Application;
+import com.x.processplatform.core.entity.element.Process;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -258,18 +260,16 @@ abstract class BaseAction extends StandardJaxrsAction {
 	public boolean control(Attachment attachment, EffectivePerson effectivePerson, List<String> identities,
 			List<String> units, Business business) throws Exception {
 		boolean value = false;
-		if (BooleanUtils.isTrue(business.canManageApplication(effectivePerson, null))) {
-			value = true;
-		} else if (effectivePerson.isPerson(attachment.getPerson())) {
+		if (effectivePerson.isPerson(attachment.getPerson())) {
 			value = true;
 		} else if (ListTools.isEmpty(attachment.getControllerUnitList())
 				&& ListTools.isEmpty(attachment.getControllerIdentityList())) {
 			value = true;
-		} else {
-			if (ListTools.containsAny(identities, attachment.getControllerIdentityList())
+		} else if (ListTools.containsAny(identities, attachment.getControllerIdentityList())
 					|| ListTools.containsAny(units, attachment.getControllerUnitList())) {
 				value = true;
-			}
+		} else if (BooleanUtils.isTrue(business.canManageApplicationOrProcess(effectivePerson, attachment.getApplication(), attachment.getProcess()))) {
+			value = true;
 		}
 		return value;
 	}
@@ -302,7 +302,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	/**
 	 * 判断附件是否符合大小、文件类型的约束
-	 * 
+	 *
 	 * @param size
 	 * @param fileName
 	 * @param callback

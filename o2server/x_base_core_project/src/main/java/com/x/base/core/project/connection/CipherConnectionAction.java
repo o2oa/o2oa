@@ -22,7 +22,7 @@ public class CipherConnectionAction {
 	public static ActionResponse get(Boolean xdebugger, String address) throws Exception {
 		List<NameValuePair> headers = cipher();
 		if (BooleanUtils.isTrue(xdebugger)) {
-			headers.add(new NameValuePair(HttpToken.X_Debugger, true));
+			headers.add(new NameValuePair(HttpToken.X_DEBUGGER, true));
 		}
 		return ConnectionAction.get(address, headers);
 	}
@@ -31,7 +31,7 @@ public class CipherConnectionAction {
 			throws Exception {
 		List<NameValuePair> headers = cipher();
 		if (BooleanUtils.isTrue(xdebugger)) {
-			headers.add(new NameValuePair(HttpToken.X_Debugger, true));
+			headers.add(new NameValuePair(HttpToken.X_DEBUGGER, true));
 		}
 		return ConnectionAction.get(connectTimeout, readTimeout, address, headers);
 	}
@@ -50,7 +50,7 @@ public class CipherConnectionAction {
 	public static byte[] getBinary(Boolean xdebugger, String address) throws Exception {
 		List<NameValuePair> headers = cipher();
 		if (BooleanUtils.isTrue(xdebugger)) {
-			headers.add(new NameValuePair(HttpToken.X_Debugger, true));
+			headers.add(new NameValuePair(HttpToken.X_DEBUGGER, true));
 		}
 		return ConnectionAction.getBinary(address, headers);
 	}
@@ -59,7 +59,7 @@ public class CipherConnectionAction {
 			throws Exception {
 		List<NameValuePair> headers = cipher();
 		if (BooleanUtils.isTrue(xdebugger)) {
-			headers.add(new NameValuePair(HttpToken.X_Debugger, true));
+			headers.add(new NameValuePair(HttpToken.X_DEBUGGER, true));
 		}
 		return ConnectionAction.getBinary(connectTimeout, readTimeout, address, headers);
 	}
@@ -78,7 +78,7 @@ public class CipherConnectionAction {
 	public static ActionResponse delete(Boolean xdebugger, String address) throws Exception {
 		List<NameValuePair> headers = cipher();
 		if (BooleanUtils.isTrue(xdebugger)) {
-			headers.add(new NameValuePair(HttpToken.X_Debugger, true));
+			headers.add(new NameValuePair(HttpToken.X_DEBUGGER, true));
 		}
 		return ConnectionAction.delete(address, headers);
 	}
@@ -87,7 +87,7 @@ public class CipherConnectionAction {
 			throws Exception {
 		List<NameValuePair> headers = cipher();
 		if (BooleanUtils.isTrue(xdebugger)) {
-			headers.add(new NameValuePair(HttpToken.X_Debugger, true));
+			headers.add(new NameValuePair(HttpToken.X_DEBUGGER, true));
 		}
 		return ConnectionAction.delete(connectTimeout, readTimeout, address, headers);
 	}
@@ -106,7 +106,7 @@ public class CipherConnectionAction {
 	public static byte[] deleteBinary(Boolean xdebugger, String address) throws Exception {
 		List<NameValuePair> headers = cipher();
 		if (BooleanUtils.isTrue(xdebugger)) {
-			headers.add(new NameValuePair(HttpToken.X_Debugger, true));
+			headers.add(new NameValuePair(HttpToken.X_DEBUGGER, true));
 		}
 		return ConnectionAction.deleteBinary(address, headers);
 	}
@@ -115,7 +115,7 @@ public class CipherConnectionAction {
 			throws Exception {
 		List<NameValuePair> headers = cipher();
 		if (BooleanUtils.isTrue(xdebugger)) {
-			headers.add(new NameValuePair(HttpToken.X_Debugger, true));
+			headers.add(new NameValuePair(HttpToken.X_DEBUGGER, true));
 		}
 		return ConnectionAction.deleteBinary(connectTimeout, readTimeout, address, headers);
 	}
@@ -134,7 +134,7 @@ public class CipherConnectionAction {
 	public static ActionResponse post(Boolean xdebugger, String address, Object body) throws Exception {
 		List<NameValuePair> headers = cipher();
 		if (BooleanUtils.isTrue(xdebugger)) {
-			headers.add(new NameValuePair(HttpToken.X_Debugger, true));
+			headers.add(new NameValuePair(HttpToken.X_DEBUGGER, true));
 		}
 		return ConnectionAction.post(address, headers, body);
 	}
@@ -143,7 +143,7 @@ public class CipherConnectionAction {
 			Object body) throws Exception {
 		List<NameValuePair> headers = cipher();
 		if (BooleanUtils.isTrue(xdebugger)) {
-			headers.add(new NameValuePair(HttpToken.X_Debugger, true));
+			headers.add(new NameValuePair(HttpToken.X_DEBUGGER, true));
 		}
 		return ConnectionAction.post(connectTimeout, readTimeout, address, headers, body);
 	}
@@ -163,7 +163,7 @@ public class CipherConnectionAction {
 	public static byte[] postBinary(Boolean xdebugger, String address, Object body) throws Exception {
 		List<NameValuePair> headers = cipher();
 		if (BooleanUtils.isTrue(xdebugger)) {
-			headers.add(new NameValuePair(HttpToken.X_Debugger, true));
+			headers.add(new NameValuePair(HttpToken.X_DEBUGGER, true));
 		}
 		return ConnectionAction.postBinary(address, headers, body);
 	}
@@ -172,7 +172,7 @@ public class CipherConnectionAction {
 			throws Exception {
 		List<NameValuePair> headers = cipher();
 		if (BooleanUtils.isTrue(xdebugger)) {
-			headers.add(new NameValuePair(HttpToken.X_Debugger, true));
+			headers.add(new NameValuePair(HttpToken.X_DEBUGGER, true));
 		}
 		return ConnectionAction.postBinary(connectTimeout, readTimeout, address, headers, body);
 	}
@@ -193,7 +193,7 @@ public class CipherConnectionAction {
 			Collection<FilePart> fileParts) throws Exception {
 		List<NameValuePair> headers = cipher();
 		if (BooleanUtils.isTrue(xdebugger)) {
-			headers.add(new NameValuePair(HttpToken.X_Debugger, true));
+			headers.add(new NameValuePair(HttpToken.X_DEBUGGER, true));
 		}
 		return ConnectionAction.postMultiPartBinary(address, headers, formFields, fileParts);
 	}
@@ -202,7 +202,7 @@ public class CipherConnectionAction {
 			Collection<FormField> formFields, Collection<FilePart> fileParts) throws Exception {
 		List<NameValuePair> headers = cipher();
 		if (BooleanUtils.isTrue(xdebugger)) {
-			headers.add(new NameValuePair(HttpToken.X_Debugger, true));
+			headers.add(new NameValuePair(HttpToken.X_DEBUGGER, true));
 		}
 		return ConnectionAction.postMultiPartBinary(connectTimeout, readTimeout, address, headers, formFields,
 				fileParts);
@@ -224,7 +224,7 @@ public class CipherConnectionAction {
 	public static ActionResponse put(Boolean xdebugger, String address, Object body) throws Exception {
 		List<NameValuePair> headers = cipher();
 		if (BooleanUtils.isTrue(xdebugger)) {
-			headers.add(new NameValuePair(HttpToken.X_Debugger, true));
+			headers.add(new NameValuePair(HttpToken.X_DEBUGGER, true));
 		}
 		return ConnectionAction.put(address, headers, body);
 	}
@@ -233,7 +233,7 @@ public class CipherConnectionAction {
 			Object body) throws Exception {
 		List<NameValuePair> headers = cipher();
 		if (BooleanUtils.isTrue(xdebugger)) {
-			headers.add(new NameValuePair(HttpToken.X_Debugger, true));
+			headers.add(new NameValuePair(HttpToken.X_DEBUGGER, true));
 		}
 		return ConnectionAction.put(connectTimeout, readTimeout, address, headers, body);
 	}
@@ -253,7 +253,7 @@ public class CipherConnectionAction {
 	public static byte[] putBinary(Boolean xdebugger, String address, Object body) throws Exception {
 		List<NameValuePair> headers = cipher();
 		if (BooleanUtils.isTrue(xdebugger)) {
-			headers.add(new NameValuePair(HttpToken.X_Debugger, true));
+			headers.add(new NameValuePair(HttpToken.X_DEBUGGER, true));
 		}
 		return ConnectionAction.putBinary(address, headers, body);
 	}
@@ -262,7 +262,7 @@ public class CipherConnectionAction {
 			throws Exception {
 		List<NameValuePair> headers = cipher();
 		if (BooleanUtils.isTrue(xdebugger)) {
-			headers.add(new NameValuePair(HttpToken.X_Debugger, true));
+			headers.add(new NameValuePair(HttpToken.X_DEBUGGER, true));
 		}
 		return ConnectionAction.putBinary(connectTimeout, readTimeout, address, headers, body);
 	}
@@ -283,7 +283,7 @@ public class CipherConnectionAction {
 			Collection<FilePart> fileParts) throws Exception {
 		List<NameValuePair> headers = cipher();
 		if (BooleanUtils.isTrue(xdebugger)) {
-			headers.add(new NameValuePair(HttpToken.X_Debugger, true));
+			headers.add(new NameValuePair(HttpToken.X_DEBUGGER, true));
 		}
 		return ConnectionAction.putMultiPartBinary(address, headers, formFields, fileParts);
 	}
@@ -292,7 +292,7 @@ public class CipherConnectionAction {
 			Collection<FormField> formFields, Collection<FilePart> fileParts) throws Exception {
 		List<NameValuePair> headers = cipher();
 		if (BooleanUtils.isTrue(xdebugger)) {
-			headers.add(new NameValuePair(HttpToken.X_Debugger, true));
+			headers.add(new NameValuePair(HttpToken.X_DEBUGGER, true));
 		}
 		return ConnectionAction.putMultiPartBinary(connectTimeout, readTimeout, address, headers, formFields,
 				fileParts);

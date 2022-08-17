@@ -140,10 +140,10 @@ public class CenterServerTools extends JettySeverTools {
 		return webApp;
 	}
 
-	private static void setStat(CenterServer centerServer, QuickStartWebApp webApp) {
-		if (BooleanUtils.isTrue(centerServer.getStatEnable())) {
+	private static void setStat(CenterServer centerServer, QuickStartWebApp webApp) throws Exception {
+		if (BooleanUtils.isTrue(Config.general().getStatEnable())) {
 			FilterHolder statFilterHolder = new FilterHolder(new WebStatFilter());
-			statFilterHolder.setInitParameter("exclusions", centerServer.getStatExclusions());
+			statFilterHolder.setInitParameter("exclusions", Config.general().getStatExclusions());
 			webApp.addFilter(statFilterHolder, "/*", EnumSet.of(DispatcherType.REQUEST));
 			ServletHolder statServletHolder = new ServletHolder(StatViewServlet.class);
 			statServletHolder.setInitParameter("sessionStatEnable", "false");
@@ -151,8 +151,8 @@ public class CenterServerTools extends JettySeverTools {
 		}
 	}
 
-	private static void setExposeJest(CenterServer centerServer, QuickStartWebApp webApp) {
-		if (BooleanUtils.isFalse(centerServer.getExposeJest())) {
+	private static void setExposeJest(CenterServer centerServer, QuickStartWebApp webApp) throws Exception {
+		if (BooleanUtils.isFalse(Config.general().getExposeJest())) {
 			FilterHolder denialOfServiceFilterHolder = new FilterHolder(new DenialOfServiceFilter());
 			webApp.addFilter(denialOfServiceFilterHolder, "/jest/*", EnumSet.of(DispatcherType.REQUEST));
 			webApp.addFilter(denialOfServiceFilterHolder, "/describe/sources/*", EnumSet.of(DispatcherType.REQUEST));

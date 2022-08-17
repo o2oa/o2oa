@@ -56,9 +56,6 @@ class ActionUploadWithUrl extends BaseAction {
 			if (StringUtils.isEmpty(wi.getSite())) {
 				throw new ExceptionEntityFieldEmpty(Attachment.class, wi.getSite());
 			}
-			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, wi.getWorkId())) {
-				throw new ExceptionAccessDenied(effectivePerson, wi.getWorkId());
-			}
 			String person = effectivePerson.getDistinguishedName();
 			if (StringUtils.isNotEmpty(wi.getPerson()) && business.canManageApplication(effectivePerson, null)) {
 				Person p = business.organization().person().getObject(wi.getPerson());
@@ -88,6 +85,9 @@ class ActionUploadWithUrl extends BaseAction {
 			}
 			if (attachment == null) {
 				throw new ExceptionEntityNotExist(wi.getWorkId());
+			}
+			if (!business.editable(effectivePerson, attachment.getJob())) {
+				throw new ExceptionAccessDenied(effectivePerson, wi.getWorkId());
 			}
 			byte[] bytes = CipherConnectionAction.getBinary(false, wi.getFileUrl());
 			if (bytes == null || bytes.length == 0) {

@@ -4,7 +4,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.tools.DateTools;
+import com.x.base.core.project.tools.CronTools;
 import com.x.base.core.project.tools.NumberTools;
 
 public class Node extends ConfigObject {
@@ -14,7 +14,7 @@ public class Node extends ConfigObject {
 	private static final Integer DEFAULT_NODEAGENTPORT = 20010;
 	private static final String DEFAULT_BANNER = "O2OA";
 	private static final Boolean DEFAULT_SELFHEALTHCHECKENABLE = false;
-	//private static final Integer DEFAULT_ORDER = 0;
+	// private static final Integer DEFAULT_ORDER = 0;
 
 	public static Node defaultInstance() {
 		Node o = new Node();
@@ -31,7 +31,7 @@ public class Node extends ConfigObject {
 		o.nodeAgentPort = DEFAULT_NODEAGENTPORT;
 		o.autoStart = true;
 		o.selfHealthCheckEnable = DEFAULT_SELFHEALTHCHECKENABLE;
-		//o.order = DEFAULT_ORDER;
+		// o.order = DEFAULT_ORDER;
 		return o;
 	}
 
@@ -148,7 +148,7 @@ public class Node extends ConfigObject {
 		}
 
 		public boolean available() {
-			return DateTools.cronAvailable(this.cron());
+			return CronTools.available(this.cron());
 		}
 
 		@FieldDescribe("是否启用,默认禁用.")
@@ -190,7 +190,7 @@ public class Node extends ConfigObject {
 		}
 
 		public boolean available() {
-			return DateTools.cronAvailable(this.cron) && StringUtils.isNotEmpty(this.path);
+			return CronTools.available(this.cron) && StringUtils.isNotEmpty(this.path);
 		}
 
 		@FieldDescribe("是否启用.")
