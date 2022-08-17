@@ -12,26 +12,18 @@ public class ApplicationServer extends ConfigObject {
 	private static final long serialVersionUID = 4182216855396608843L;
 
 	public static ApplicationServer defaultInstance() {
-		return new ApplicationServer();
+		ApplicationServer o = new ApplicationServer();
+		o.enable = true;
+		o.port = DEFAULT_PORT;
+		o.sslEnable = false;
+		o.proxyHost = "";
+		o.proxyPort = DEFAULT_PORT;
+		o.includes = new CopyOnWriteArrayList<>();
+		o.excludes = new CopyOnWriteArrayList<>();
+		return o;
 	}
 
 	private static final Integer DEFAULT_PORT = 80;
-	private static final Boolean DEFAULT_STATENABLE = true;
-	private static final String DEFAULT_STATEXCLUSIONS = "*.js,*.gif,*.jpg,*.png,*.css,*.ico";
-	private static final Boolean DEFAULT_EXPOSEJEST = true;
-
-	public ApplicationServer() {
-		this.enable = true;
-		this.port = DEFAULT_PORT;
-		this.sslEnable = false;
-		this.proxyHost = "";
-		this.proxyPort = DEFAULT_PORT;
-		this.includes = new CopyOnWriteArrayList<>();
-		this.excludes = new CopyOnWriteArrayList<>();
-		this.statEnable = DEFAULT_STATENABLE;
-		this.statExclusions = DEFAULT_STATEXCLUSIONS;
-		this.exposeJest = DEFAULT_EXPOSEJEST;
-	}
 
 	@FieldDescribe("是否启用")
 	private Boolean enable;
@@ -47,24 +39,6 @@ public class ApplicationServer extends ConfigObject {
 	private CopyOnWriteArrayList<String> includes;
 	@FieldDescribe("选择不承载的应用,和includes的值配合使用可以选择或者排除承载的应用,可以使用*作为通配符.")
 	private CopyOnWriteArrayList<String> excludes;
-	@FieldDescribe("启用统计,默认启用统计.")
-	private Boolean statEnable;
-	@FieldDescribe("统计忽略路径,默认忽略*.js,*.gif,*.jpg,*.png,*.css,*.ico")
-	private String statExclusions;
-	@FieldDescribe("暴露jest接口.")
-	private Boolean exposeJest;
-
-	public Boolean getExposeJest() {
-		return BooleanUtils.isNotFalse(this.exposeJest);
-	}
-
-	public String getStatExclusions() {
-		return (StringUtils.isEmpty(statExclusions) ? DEFAULT_STATEXCLUSIONS : this.statExclusions) + ",/druid/*";
-	}
-
-	public Boolean getStatEnable() {
-		return BooleanUtils.isNotFalse(statEnable);
-	}
 
 	public Boolean getEnable() {
 		return BooleanUtils.isTrue(this.enable);
