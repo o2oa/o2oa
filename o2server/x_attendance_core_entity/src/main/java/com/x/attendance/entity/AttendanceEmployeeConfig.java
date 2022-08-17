@@ -15,6 +15,9 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "AttendanceEmployeeConfig", description = "考勤雇员配置.")
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.AttendanceEmployeeConfig.table, uniqueConstraints = @UniqueConstraint(name = PersistenceProperties.AttendanceEmployeeConfig.table

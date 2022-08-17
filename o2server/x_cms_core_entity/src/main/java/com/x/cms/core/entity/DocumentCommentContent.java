@@ -17,9 +17,12 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * 信息评论内容表
  */
+@Schema(name = "DocumentCommentCommend", description = "内容管理文档评论内容.")
 @ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.DocumentCommentContent.table, uniqueConstraints = {

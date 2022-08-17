@@ -35,6 +35,7 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.calendar.core.tools.DateOperation;
 import com.x.calendar.core.tools.LogUtil;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import net.fortuna.ical4j.model.DateList;
 import net.fortuna.ical4j.model.DateTime;
 import net.fortuna.ical4j.model.Recur;
@@ -49,6 +50,7 @@ import net.fortuna.ical4j.model.property.ExDate;
  * @author O2LEE
  *
  */
+@Schema(name = "Calendar_EventRepeatMaster", description = "日程重复日程宿主信息.")
 @SuppressWarnings("rawtypes")
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity

@@ -1,5 +1,7 @@
 package com.x.program.center.jaxrs.config;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -296,7 +298,7 @@ public class ConfigAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void openRuntimeConfig(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-					 JsonElement jsonElement) {
+			JsonElement jsonElement) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionOpenRuntimeConfig.Wo> result = new ActionResult<>();
 		try {
@@ -378,6 +380,23 @@ public class ConfigAction extends StandardJaxrsAction {
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+	}
+
+	@JaxrsMethodDescribe(value = "获取所有配置文件信息", action = ActionListEntity.class)
+	@GET
+	@Path("list/entity")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listEntity(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<List<ActionListEntity.Wo>> result = new ActionResult<>();
+		try {
+			result = new ActionListEntity().execute(effectivePerson);
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
 }

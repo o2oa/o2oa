@@ -31,6 +31,7 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import net.fortuna.ical4j.model.DateList;
 import net.fortuna.ical4j.model.Recur;
 import net.fortuna.ical4j.model.parameter.Value;
@@ -42,6 +43,7 @@ import net.fortuna.ical4j.model.property.ExDate;
  * @author O2LEE
  *
  */
+@Schema(name = "Calendar_Event", description = "日程事件信息.")
 @SuppressWarnings("rawtypes")
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity

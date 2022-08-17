@@ -22,6 +22,9 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.PersistenceProperties;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "AppDict", description = "内容管理字典.")
 @ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.Element.AppDict.table, uniqueConstraints = {
