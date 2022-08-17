@@ -72,6 +72,23 @@ public class SerialNumberAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "创建SerialNumber内容.", action = ActionCreate.class)
+	@POST
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void create(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					   JsonElement jsonElement) {
+		ActionResult<ActionCreate.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionCreate().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+	}
+
 	@JaxrsMethodDescribe(value = "更新SerialNumber内容.", action = ActionUpdate.class)
 	@PUT
 	@Path("{id}")
