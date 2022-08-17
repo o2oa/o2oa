@@ -17,6 +17,8 @@ import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+@Schema(name = "AttendanceDetail", description = "考勤钉钉信息.")
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.AttendanceDingtalkDetail.table, uniqueConstraints = @UniqueConstraint(name = PersistenceProperties.AttendanceDingtalkDetail.table

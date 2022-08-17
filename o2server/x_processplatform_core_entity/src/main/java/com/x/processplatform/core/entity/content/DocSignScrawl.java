@@ -36,7 +36,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * 
  * @author sword
  */
-@Schema(name = "DocSign", description = "流程平台签名信息.")
+@Schema(name = "DocSignScrawl", description = "流程平台批注.")
 @Entity
 @ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Content.DocSignScrawl.table, uniqueConstraints = {

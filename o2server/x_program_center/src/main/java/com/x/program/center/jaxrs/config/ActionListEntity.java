@@ -14,6 +14,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ClassLoaderTools;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -21,9 +22,14 @@ public class ActionListEntity extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListEntity.class);
 
+	private ClassLoader classLoader;
+
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson) throws Exception {
 
 		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+
+		classLoader = ClassLoaderTools.urlClassLoader(Thread.currentThread().getContextClassLoader(), true, true, true,
+				true);
 
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		@SuppressWarnings("unchecked")
@@ -41,7 +47,7 @@ public class ActionListEntity extends BaseAction {
 		Wo wo = new Wo();
 		wo.setValue(s);
 		try {
-			Class<?> clz = Class.forName(s);
+			Class<?> clz = classLoader.loadClass(s);
 			Schema schema = clz.getAnnotation(Schema.class);
 			if (null != schema) {
 				wo.setName(schema.description());
