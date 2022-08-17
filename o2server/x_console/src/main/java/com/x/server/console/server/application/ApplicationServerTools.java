@@ -30,7 +30,6 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.commons.vfs2.util.DelegatingFileSystemOptionsBuilder;
 import org.eclipse.jetty.quickstart.QuickStartWebApp;
 import org.eclipse.jetty.server.AsyncRequestLogWriter;
 import org.eclipse.jetty.server.RequestLog;
@@ -242,18 +241,18 @@ public class ApplicationServerTools extends JettySeverTools {
 		});
 	}
 
-	private static void setExposeJest(ApplicationServer applicationServer, QuickStartWebApp webApp) {
-		if (BooleanUtils.isFalse(applicationServer.getExposeJest())) {
+	private static void setExposeJest(ApplicationServer applicationServer, QuickStartWebApp webApp) throws Exception {
+		if (BooleanUtils.isFalse(Config.general().getExposeJest())) {
 			FilterHolder denialOfServiceFilterHolder = new FilterHolder(new DenialOfServiceFilter());
 			webApp.addFilter(denialOfServiceFilterHolder, "/jest/*", EnumSet.of(DispatcherType.REQUEST));
 			webApp.addFilter(denialOfServiceFilterHolder, "/describe/sources/*", EnumSet.of(DispatcherType.REQUEST));
 		}
 	}
 
-	private static void setStat(ApplicationServer applicationServer, QuickStartWebApp webApp) {
-		if (BooleanUtils.isTrue(applicationServer.getStatEnable())) {
+	private static void setStat(ApplicationServer applicationServer, QuickStartWebApp webApp) throws Exception {
+		if (BooleanUtils.isTrue(Config.general().getStatEnable())) {
 			FilterHolder statFilterHolder = new FilterHolder(new WebStatFilter());
-			statFilterHolder.setInitParameter("exclusions", applicationServer.getStatExclusions());
+			statFilterHolder.setInitParameter("exclusions", Config.general().getStatExclusions());
 			webApp.addFilter(statFilterHolder, "/*", EnumSet.of(DispatcherType.REQUEST));
 			ServletHolder statServletHolder = new ServletHolder(StatViewServlet.class);
 			statServletHolder.setInitParameter("sessionStatEnable", BooleanUtils.toStringTrueFalse(false));

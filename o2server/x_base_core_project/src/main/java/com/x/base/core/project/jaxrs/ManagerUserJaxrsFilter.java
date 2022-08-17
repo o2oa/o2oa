@@ -30,6 +30,7 @@ public abstract class ManagerUserJaxrsFilter extends TokenFilter {
 		try {
 			HttpServletRequest request = (HttpServletRequest) req;
 			HttpServletResponse response = (HttpServletResponse) res;
+			httpRequestCheck(request);
 			FilterTools.allow(request, response);
 			if (!request.getMethod().equalsIgnoreCase("options")) {
 				HttpToken httpToken = new HttpToken();

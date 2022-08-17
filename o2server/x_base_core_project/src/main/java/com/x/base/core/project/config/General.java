@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.XGsonBuilder;
@@ -27,6 +28,12 @@ public class General extends ConfigObject {
 	private static final Boolean DEFAULT_DEPLOYRESOURCEENABLE = false;
 	private static final Boolean DEFAULT_DEPLOYWARENABLE = false;
 
+	private static final Boolean DEFAULT_STATENABLE = true;
+	private static final String DEFAULT_STATEXCLUSIONS = "*.js,*.gif,*.jpg,*.png,*.css,*.ico";
+	private static final Boolean DEFAULT_EXPOSEJEST = true;
+	private static final String DEFAULT_REFERERHEADCHECKREGULAR = "";
+	private static final String DEFAULT_ACCESSCONTROLALLOWORIGIN = "";
+
 	public static General defaultInstance() {
 		General o = new General();
 		o.webSocketEnable = DEFAULT_WEBSOCKETENABLE;
@@ -37,6 +44,11 @@ public class General extends ConfigObject {
 		o.requestLogBodyEnable = DEFAULT_REQUESTLOGBODYENABLE;
 		o.deployResourceEnable = DEFAULT_DEPLOYRESOURCEENABLE;
 		o.deployWarEnable = DEFAULT_DEPLOYWARENABLE;
+		o.statEnable = DEFAULT_STATENABLE;
+		o.statExclusions = DEFAULT_STATEXCLUSIONS;
+		o.exposeJest = DEFAULT_EXPOSEJEST;
+		o.refererHeadCheckRegular = DEFAULT_REFERERHEADCHECKREGULAR;
+		o.accessControlAllowOrigin = DEFAULT_ACCESSCONTROLALLOWORIGIN;
 		return o;
 	}
 
@@ -61,8 +73,45 @@ public class General extends ConfigObject {
 	@FieldDescribe("是否允许部署静态资源.")
 	private Boolean deployResourceEnable;
 
+	@FieldDescribe("启用统计,默认启用统计.")
+	private Boolean statEnable;
+
+	@FieldDescribe("统计忽略路径,默认忽略*.js,*.gif,*.jpg,*.png,*.css,*.ico")
+	private String statExclusions;
+
+	@FieldDescribe("暴露jest接口.")
+	private Boolean exposeJest;
+
 	@FieldDescribe("脚本中禁止用的类名,保持为空则默认禁用Runtime,File,Path.")
 	private List<String> scriptingBlockedClasses;
+
+	@FieldDescribe("http referer 校验正则表达式,可以对CSRF攻击进行防护校验,样例:(.+?)o2oa.net(.+?)")
+	private String refererHeadCheckRegular = "";
+
+	@FieldDescribe("跨源资源共享许可,设置http返回的Access-Control-Allow-Origin标识,可以用于CORS攻击防护,样例:https://www.o2oa.net")
+	private String accessControlAllowOrigin = "";
+
+	public String getRefererHeadCheckRegular() {
+		return (StringUtils.isBlank(refererHeadCheckRegular) ? DEFAULT_REFERERHEADCHECKREGULAR
+				: this.refererHeadCheckRegular);
+	}
+
+	public String getAccessControlAllowOrigin() {
+		return (StringUtils.isBlank(accessControlAllowOrigin) ? DEFAULT_ACCESSCONTROLALLOWORIGIN
+				: this.accessControlAllowOrigin);
+	}
+
+	public Boolean getExposeJest() {
+		return BooleanUtils.isNotFalse(this.exposeJest);
+	}
+
+	public String getStatExclusions() {
+		return (StringUtils.isEmpty(statExclusions) ? DEFAULT_STATEXCLUSIONS : this.statExclusions) + ",/druid/*";
+	}
+
+	public Boolean getStatEnable() {
+		return BooleanUtils.isNotFalse(statEnable);
+	}
 
 	public Boolean getRequestLogEnable() {
 		return BooleanUtils.isTrue(this.requestLogEnable);

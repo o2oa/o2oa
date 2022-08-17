@@ -334,7 +334,9 @@ public class TernaryManagement extends ConfigObject {
 		return this._systemManagerPassword;
 	}
 
-	public void setSystemManagerPassword(String systemManagerPassword) throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
+	public void setSystemManagerPassword(String systemManagerPassword)
+			throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException,
+			IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
 		this.systemManagerPassword = Crypto.formattedDefaultEncrypt(systemManagerPassword);
 	}
 
@@ -347,7 +349,9 @@ public class TernaryManagement extends ConfigObject {
 		return this._securityManagerPassword;
 	}
 
-	public void setSecurityManagerPassword(String securityManagerPassword) throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
+	public void setSecurityManagerPassword(String securityManagerPassword)
+			throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException,
+			IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
 		this.securityManagerPassword = Crypto.formattedDefaultEncrypt(securityManagerPassword);
 	}
 
@@ -359,7 +363,9 @@ public class TernaryManagement extends ConfigObject {
 		return this._auditManagerPassword;
 	}
 
-	public void setAuditManagerPassword(String auditManagerPassword) throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
+	public void setAuditManagerPassword(String auditManagerPassword)
+			throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException,
+			IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
 		this.auditManagerPassword = Crypto.formattedDefaultEncrypt(auditManagerPassword);
 	}
 }

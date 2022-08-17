@@ -5,30 +5,32 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.common.net.HttpHeaders;
 import com.x.base.core.project.config.Config;
 
 public class FilterTools {
 
-	public static final String Access_Control_Allow_Origin = "Access-Control-Allow-Origin";
 	public static final String ORIGIN = "Origin";
-	public static final String Access_Control_Allow_Methods = "Access-Control-Allow-Methods";
-	public static final String Access_Control_Allow_Methods_Value = "GET, POST, OPTIONS, PUT, DELETE, HEAD, TRACE";
-	public static final String Access_Control_Allow_Headers = "Access-Control-Allow-Headers";
-	public static final String Access_Control_Allow_Headers_Value = "x-requested-with, x-request, c-token, Content-Type, Content-Length, x-cipher, x-client, x-debugger, Authorization, P-User-Id, P-Request-Id, P-Page-Id";
-	public static final String Access_Control_Allow_Credentials = "Access-Control-Allow-Credentials";
-	public static final String Access_Control_Expose_Headers = "Access-Control-Expose-Headers";
-	public static final String Access_Control_Max_Age = "Access-Control-Max-Age";
-	public static final String Access_Control_Max_Age_Value = "86400";
+	public static final String ACCESS_CONTROL_ALLOW_METHODS_VALUE = "GET, POST, OPTIONS, PUT, DELETE, HEAD, TRACE";
+	public static final String ACCESS_CONTROL_ALLOW_HEADERS_VALUE = "x-requested-with, x-request, c-token, Content-Type, Content-Length, x-cipher, x-client, x-debugger, Authorization, P-User-Id, P-Request-Id, P-Page-Id";
+	public static final String ACCESS_CONTROL_MAX_AGE_VALUE = "86400";
 
 	public static void allow(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		String origin = request.getHeader(ORIGIN);
-		response.addHeader(Access_Control_Allow_Origin, StringUtils.isBlank(origin) ? "*" : origin);
-		response.addHeader(Access_Control_Allow_Methods, Access_Control_Allow_Methods_Value);
-		response.addHeader(Access_Control_Allow_Headers,
-				Access_Control_Allow_Headers_Value + ", " + Config.person().getTokenName());
-		response.addHeader(Access_Control_Allow_Credentials, "true");
-		response.setHeader(Access_Control_Expose_Headers, "c-token" + ", " + Config.person().getTokenName());
-		response.setHeader(Access_Control_Max_Age, Access_Control_Max_Age_Value);
+		if (StringUtils.isNotBlank(Config.general().getAccessControlAllowOrigin())) {
+			response.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, Config.general().getAccessControlAllowOrigin());
+		} else {
+			String origin = request.getHeader(HttpHeaders.ORIGIN);
+			if (StringUtils.isNotBlank(origin)) {
+				response.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
+			}
+		}
+		response.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, ACCESS_CONTROL_ALLOW_METHODS_VALUE);
+		response.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS,
+				ACCESS_CONTROL_ALLOW_HEADERS_VALUE + ", " + Config.person().getTokenName());
+		response.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+		response.setHeader(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS,
+				"c-token" + ", " + Config.person().getTokenName());
+		response.setHeader(HttpHeaders.ACCESS_CONTROL_MAX_AGE, ACCESS_CONTROL_MAX_AGE_VALUE);
 	}
 
 	public static final String Application_Not_Initialized_Json = "{\"type\": \"error\", \"message\": \"application not initialized.\"}";

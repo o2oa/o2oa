@@ -882,8 +882,8 @@ public class Config {
 		String n = resource_node_centersPirmaryNode();
 		Integer p = resource_node_centersPirmaryPort();
 		Boolean s = resource_node_centersPirmarySslEnable();
-		StringBuffer buffer = new StringBuffer();
-		if (s) {
+		StringBuilder buffer = new StringBuilder();
+		if (BooleanUtils.isTrue(s)) {
 			buffer.append("https://").append(n);
 			if (!NumberTools.valueEuqals(p, 443)) {
 				buffer.append(":").append(p);
@@ -904,12 +904,11 @@ public class Config {
 		return buffer.toString();
 	}
 
-	public static String url_x_program_center_jaxrs(Entry<String, CenterServer> entry, String... paths)
-			throws Exception {
+	public static String url_x_program_center_jaxrs(Entry<String, CenterServer> entry, String... paths) {
 		String n = entry.getKey();
 		Integer p = entry.getValue().getPort();
-		Boolean s = entry.getValue().getSslEnable();
-		StringBuffer buffer = new StringBuffer();
+		boolean s = entry.getValue().getSslEnable();
+		StringBuilder buffer = new StringBuilder();
 		if (s) {
 			buffer.append("https://").append(n);
 			if (!NumberTools.valueEuqals(p, 443)) {
@@ -925,7 +924,7 @@ public class Config {
 		buffer.append("/jaxrs/");
 		List<String> os = new ArrayList<>();
 		for (String path : paths) {
-			os.add(URLEncoder.encode(StringUtils.strip(path, "/"), DefaultCharset.name));
+			os.add(URLEncoder.encode(StringUtils.strip(path, "/"), StandardCharsets.UTF_8));
 		}
 		buffer.append(StringUtils.join(os, "/"));
 		return buffer.toString();
@@ -941,122 +940,8 @@ public class Config {
 			}
 			instance().messages = obj;
 		}
-//		if (null == instance().messages) {
-//			Messages obj = Messages.defaultInstance();
-//			Messages custom = BaseTools.readConfigObject(PATH_CONFIG_MESSAGES, Messages.class);
-//			if (null != custom) {
-//				custom.entrySet().stream().forEach(o -> {
-//					obj.put(o.getKey(), new Message(o.getValue().getConsumers(), o.getValue().getConsumersV2()));
-//				});
-//			}
-//			instance().messages = obj;
-//		}
 		return instance().messages;
 	}
-
-//	private MessageRestful messageRestful;
-//
-//	public static synchronized MessageRestful messageRestful() throws Exception {
-//		if (null == instance().messageRestful) {
-//			MessageRestful obj = BaseTools.readConfigObject(PATH_CONFIG_MESSAGERESTFUL, MessageRestful.class);
-//			if (null == obj) {
-//				obj = MessageRestful.defaultInstance();
-//			}
-//			instance().messageRestful = obj;
-//		}
-//		return instance().messageRestful;
-//	}
-//
-//	private MessageMq messageMq;
-//
-//	public static synchronized MessageMq messageMq() throws Exception {
-//		if (null == instance().messageMq) {
-//			MessageMq obj = BaseTools.readConfigObject(PATH_CONFIG_MESSAGEMQ, MessageMq.class);
-//			if (null == obj) {
-//				obj = MessageMq.defaultInstance();
-//			}
-//			instance().messageMq = obj;
-//		}
-//		return instance().messageMq;
-//	}
-//
-//	private MessageMail messageMail;
-//
-//	public static synchronized MessageMail messageMail() throws Exception {
-//		if (null == instance().messageMail) {
-//			MessageMail obj = BaseTools.readConfigObject(PATH_CONFIG_MESSAGEMAIL, MessageMail.class);
-//			if (null == obj) {
-//				obj = MessageMail.defaultInstance();
-//			}
-//			instance().messageMail = obj;
-//		}
-//		return instance().messageMail;
-//	}
-//
-//	private MessageApi messageApi;
-//
-//	public static synchronized MessageApi messageApi() throws Exception {
-//		if (null == instance().messageApi) {
-//			MessageApi obj = BaseTools.readConfigObject(PATH_CONFIG_MESSAGEAPI, MessageApi.class);
-//			if (null == obj) {
-//				obj = MessageApi.defaultInstance();
-//			}
-//			instance().messageApi = obj;
-//		}
-//		return instance().messageApi;
-//	}
-//
-//	private MessageJdbc messageJdbc;
-//
-//	public static synchronized MessageJdbc messageJdbc() throws Exception {
-//		if (null == instance().messageJdbc) {
-//			MessageJdbc obj = BaseTools.readConfigObject(PATH_CONFIG_MESSAGEJDBC, MessageJdbc.class);
-//			if (null == obj) {
-//				obj = MessageJdbc.defaultInstance();
-//			}
-//			instance().messageJdbc = obj;
-//		}
-//		return instance().messageJdbc;
-//	}
-//
-//	private MessageTable messageTable;
-//
-//	public static synchronized MessageTable messageTable() throws Exception {
-//		if (null == instance().messageTable) {
-//			MessageTable obj = BaseTools.readConfigObject(PATH_CONFIG_MESSAGETABLE, MessageTable.class);
-//			if (null == obj) {
-//				obj = MessageTable.defaultInstance();
-//			}
-//			instance().messageTable = obj;
-//		}
-//		return instance().messageTable;
-//	}
-//
-//	private MessageHadoop messageHadoop;
-//
-//	public static synchronized MessageHadoop messageHadoop() throws Exception {
-//		if (null == instance().messageHadoop) {
-//			MessageHadoop obj = BaseTools.readConfigObject(PATH_CONFIG_MESSAGEHADOOP, MessageHadoop.class);
-//			if (null == obj) {
-//				obj = MessageHadoop.defaultInstance();
-//			}
-//			instance().messageHadoop = obj;
-//		}
-//		return instance().messageHadoop;
-//	}
-
-//	private String messageSendRuleScript;
-//
-//	public static synchronized String messageSendRuleScript() throws Exception {
-//		if (null == instance().messageSendRuleScript) {
-//			String scriptStr = BaseTools.readString(PATH_CONFIG_MESSAGES_SEND_RULE);
-//			if (scriptStr == null) {
-//				scriptStr = "";
-//			}
-//			instance().messageSendRuleScript = scriptStr;
-//		}
-//		return instance().messageSendRuleScript;
-//	}
 
 	private JpushConfig pushConfig;
 
