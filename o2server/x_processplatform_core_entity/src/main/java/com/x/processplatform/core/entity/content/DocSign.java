@@ -26,10 +26,14 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * 签批信息
  * @author sword
  */
+
+@Schema(name = "DocSign", description = "流程平台签名信息.")
 @Entity
 @ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Content.DocSign.table, uniqueConstraints = {

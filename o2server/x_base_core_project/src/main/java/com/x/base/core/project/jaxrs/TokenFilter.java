@@ -26,7 +26,7 @@ public abstract class TokenFilter implements Filter {
 			if (Objects.isNull(refererPattern)) {
 				synchronized (TokenFilter.class) {
 					if (StringUtils.isNotBlank(Config.general().getRefererHeadCheckRegular())) {
-						refererPattern = Optional.of(Pattern.compile(Config.general().getRefererHeadCheckRegular()));
+						refererPattern = Optional.of(Pattern.compile(Config.general().getRefererHeadCheckRegular(),Pattern.CASE_INSENSITIVE));
 					} else {
 						refererPattern = Optional.empty();
 					}

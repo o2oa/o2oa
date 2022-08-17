@@ -37,6 +37,9 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.annotation.FieldTypeDescribe;
 import com.x.base.core.project.tools.ListTools;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "Meeting", description = "会议管理会议.")
 @Entity
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Meeting.table, uniqueConstraints = {

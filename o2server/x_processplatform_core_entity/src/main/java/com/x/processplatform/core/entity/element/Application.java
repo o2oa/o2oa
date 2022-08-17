@@ -36,11 +36,14 @@ import com.x.base.core.entity.annotation.Flag;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.processplatform.core.entity.PersistenceProperties;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * 流程平台应用
  *
  * @author sword
  */
+@Schema(name = "Application", description = "流程平台应用.")
 @Entity
 @ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.element, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Element.Application.table, uniqueConstraints = {

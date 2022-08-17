@@ -1,4 +1,4 @@
-package com.x.jpush.assemble.control.jaxrs.sample;
+package com.x.jpush.assemble.control.jaxrs.device;
 
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.tools.MD5Tool;

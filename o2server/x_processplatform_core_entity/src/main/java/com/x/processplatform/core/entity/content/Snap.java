@@ -27,6 +27,9 @@ import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
 import com.x.processplatform.core.entity.element.ActivityType;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "Snap", description = "流程平台快照.")
 @Entity
 @ContainerEntity(dumpSize = 2, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Content.Snap.table, uniqueConstraints = {

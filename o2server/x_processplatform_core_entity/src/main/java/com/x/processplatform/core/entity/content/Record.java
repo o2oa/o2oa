@@ -29,6 +29,9 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.processplatform.core.entity.PersistenceProperties;
 import com.x.processplatform.core.entity.element.ActivityType;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "Record", description = "流程平台记录.")
 @Entity
 @ContainerEntity(dumpSize = 100, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Content.Record.table, uniqueConstraints = {

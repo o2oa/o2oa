@@ -32,12 +32,15 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.PersistenceProperties;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * 资源文件
  * 
  * @author O2LEE
  *
  */
+@Schema(name = "File", description = "内容管理文件.")
 @Entity
 @ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Element.File.table, uniqueConstraints = {

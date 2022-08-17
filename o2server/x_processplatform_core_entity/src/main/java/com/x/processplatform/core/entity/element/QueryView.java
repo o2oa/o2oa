@@ -32,6 +32,9 @@ import com.x.base.core.entity.annotation.Equal;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.processplatform.core.entity.PersistenceProperties;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+@Deprecated(forRemoval = true)
+@Schema(name = "QueryView", description = "流程平台视图.")
 @Entity
 @ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.element, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Element.QueryView.table, uniqueConstraints = {

@@ -25,6 +25,8 @@ import com.x.base.core.entity.type.GenderType;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.DateTools;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+@Schema(name = "PersonCard", description = "组织人员名片.")
 @Entity
 @ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.PersonCard.table, uniqueConstraints = {

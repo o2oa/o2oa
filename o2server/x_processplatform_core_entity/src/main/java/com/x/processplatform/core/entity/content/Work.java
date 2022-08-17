@@ -45,6 +45,8 @@ import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
 import com.x.processplatform.core.entity.element.ActivityType;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+@Schema(name = "Work", description = "流程平台工作.")
 @Entity
 @ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Content.Work.table, uniqueConstraints = {

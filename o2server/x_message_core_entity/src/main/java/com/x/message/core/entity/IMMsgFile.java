@@ -22,12 +22,14 @@ import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.DateTools;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * Created by fancyLou on 2020-06-15.
  * Copyright © 2020 O2. All rights reserved.
  */
 
-
+@Schema(name = "IMMsgFile", description = "消息会话文件.")
 @ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.IMMsgFile.table, uniqueConstraints = {

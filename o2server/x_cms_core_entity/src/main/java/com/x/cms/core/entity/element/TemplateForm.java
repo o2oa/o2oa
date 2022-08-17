@@ -23,6 +23,9 @@ import com.x.base.core.entity.annotation.Flag;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.cms.core.entity.PersistenceProperties;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "TemplateForm", description = "内容管理表单模板.")
 @Entity
 @ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Element.TemplateForm.table, uniqueConstraints = {

@@ -21,6 +21,9 @@ import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.processplatform.core.entity.PersistenceProperties;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+@Deprecated(forRemoval = true)
+@Schema(name = "QueryStatTimed", description = "流程平台定时查询统计.")
 @Entity
 @ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.element, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Element.QueryStatTimed.table, uniqueConstraints = {

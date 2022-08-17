@@ -22,6 +22,8 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.processplatform.core.entity.PersistenceProperties;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+@Schema(name = "FormVersion", description = "流程平台表单历史版本.")
 @Entity
 @ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.log, reference = ContainerEntity.Reference.soft)
 @Table(name = PersistenceProperties.Element.FormVersion.table, uniqueConstraints = {

@@ -6,6 +6,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.list.TreeList;
+import org.codehaus.plexus.util.StringUtils;
 
 import com.x.base.core.project.bean.NameValuePair;
 import com.x.base.core.project.config.Config;
@@ -30,7 +31,8 @@ public class ActionListEntity extends BaseAction {
 				.stream().reduce(new TreeList<>(), (o, v) -> {
 					o.addAll(v);
 					return o;
-				}).stream().distinct().sorted().map(mapper).collect(Collectors.toList());
+				}).stream().distinct().filter(o -> StringUtils.isNotBlank(o) && (!StringUtils.contains(o, "*")))
+				.sorted().map(mapper).collect(Collectors.toList());
 		result.setData(wos);
 		return result;
 	}
