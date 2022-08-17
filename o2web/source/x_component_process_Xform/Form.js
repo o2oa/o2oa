@@ -729,7 +729,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
     },
     _loadMobileDefaultTools: function (callback) {
-        if (this.json.defaultTools) {
+        if (this.json.multiTools) {
+            if (callback) callback();
+        }else if (this.json.defaultTools) {
             if (callback) callback();
         } else {
             this.json.defaultTools = o2.JSON.get("../x_component_process_FormDesigner/Module/Form/toolbars.json", function (json) {
@@ -742,23 +744,36 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     _loadMobileActions: function (node, callback) {
         var tools = [];
         this._loadMobileDefaultTools(function () {
-            if (this.json.defaultTools) {
-                var jsonStr = JSON.stringify(this.json.defaultTools);
+
+            var jsonStr;
+            if( this.json.multiTools ){
+                jsonStr = JSON.stringify(this.json.multiTools);
                 jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.process.Xform.LP.form});
-                this.json.defaultTools = JSON.parse(jsonStr);
-                this.json.defaultTools.each(function (tool) {
+                this.multiToolsJson = JSON.parse(jsonStr);
+                var json = Array.clone(this.multiToolsJson);
+                json.each(function (tool) {
                     var flag = this._checkDefaultMobileActionItem(tool, this.options.readonly);
                     if (flag) tools.push(tool);
                 }.bind(this));
-            }
-            if (this.json.tools) {
-                var jsonStr = JSON.stringify(this.json.tools);
-                jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.process.Xform.LP.form});
-                this.json.tools = JSON.parse(jsonStr);
-                this.json.tools.each(function (tool) {
-                    var flag = this._checkCustomMobileActionItem(tool, this.options.readonly);
-                    if (flag) tools.push(tool);
-                }.bind(this));
+            }else{
+                if (this.json.defaultTools) {
+                    jsonStr = JSON.stringify(this.json.defaultTools);
+                    jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.process.Xform.LP.form});
+                    this.json.defaultTools = JSON.parse(jsonStr);
+                    this.json.defaultTools.each(function (tool) {
+                        var flag = this._checkDefaultMobileActionItem(tool, this.options.readonly);
+                        if (flag) tools.push(tool);
+                    }.bind(this));
+                }
+                if (this.json.tools) {
+                    jsonStr = JSON.stringify(this.json.tools);
+                    jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.process.Xform.LP.form});
+                    this.json.tools = JSON.parse(jsonStr);
+                    this.json.tools.each(function (tool) {
+                        var flag = this._checkCustomMobileActionItem(tool, this.options.readonly);
+                        if (flag) tools.push(tool);
+                    }.bind(this));
+                }
             }
             this.mobileTools = tools;
             //app上用原来的按钮样式

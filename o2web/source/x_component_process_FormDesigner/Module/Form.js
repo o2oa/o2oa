@@ -137,10 +137,23 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 	// 移动端表单加载工具栏
 	loadMobileActionToos: function() {
 		if (this.options.mode==="Mobile"){
-			if (!this.json.defaultTools){
-				this.json.defaultTools = o2.JSON.get(this.path+"toolbars.json", null,false);
+			if (!this.json.multiTools){
+				var tools = [];
+				if( this.json.defaultTools ){
+					tools = this.json.defaultTools;
+				}else{
+					tools = o2.JSON.get(this.path+"toolbars.json", null,false);
+				}
+				tools.map( function (d) { d.system = true; return d; });
+				if (this.json.tools){
+					tools = tools.concat( this.json.tools );
+				}
+				this.json.multiTools = tools;
 			}
-			if (!this.json.tools) this.json.tools=[];
+			// if (!this.json.defaultTools){
+			// 	this.json.defaultTools = o2.JSON.get(this.path+"toolbars.json", null,false);
+			// }
+			// if (!this.json.tools) this.json.tools=[];
 		}
 	},
 	_load : function( templateStyles, oldStyleValue ){
