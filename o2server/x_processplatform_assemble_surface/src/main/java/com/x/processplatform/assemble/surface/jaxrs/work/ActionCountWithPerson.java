@@ -35,7 +35,7 @@ class ActionCountWithPerson extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCountWithPerson.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String credential) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String credential, String appId) throws Exception {
 		LOGGER.debug("execute:{}, credential:{}.", effectivePerson::getDistinguishedName, () -> credential);
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
@@ -46,11 +46,11 @@ class ActionCountWithPerson extends BaseAction {
 		}
 		if (StringUtils.isNotEmpty(person)) {
 			final String dn = person;
-			CompletableFuture<Long> taskFuture = this.taskFuture(dn);
-			CompletableFuture<Long> taskCompletedFuture = this.taskCompletedFuture(dn);
-			CompletableFuture<Long> readFuture = this.readFuture(dn);
-			CompletableFuture<Long> readCompletedFuture = this.readCompletedFuture(dn);
-			CompletableFuture<Long> reviewFuture = this.reviewFuture(dn);
+			CompletableFuture<Long> taskFuture = this.taskFuture(dn, appId);
+			CompletableFuture<Long> taskCompletedFuture = this.taskCompletedFuture(dn, appId);
+			CompletableFuture<Long> readFuture = this.readFuture(dn, appId);
+			CompletableFuture<Long> readCompletedFuture = this.readCompletedFuture(dn, appId);
+			CompletableFuture<Long> reviewFuture = this.reviewFuture(dn, appId);
 			wo.setTask(taskFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS));
 			wo.setTaskCompleted(
 					taskCompletedFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS));
@@ -63,11 +63,15 @@ class ActionCountWithPerson extends BaseAction {
 		return result;
 	}
 
-	private CompletableFuture<Long> taskFuture(String dn) {
+	private CompletableFuture<Long> taskFuture(String dn, String appId) {
 		return CompletableFuture.supplyAsync(() -> {
 			Long count = 0L;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				count = emc.countEqual(Task.class, Task.person_FIELDNAME, dn);
+				if(StringUtils.isBlank(appId)) {
+					count = emc.countEqual(Task.class, Task.person_FIELDNAME, dn);
+				}else{
+					count = emc.countEqualAndEqual(Task.class, Task.person_FIELDNAME, dn, Task.application_FIELDNAME, appId);
+				}
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
@@ -75,7 +79,7 @@ class ActionCountWithPerson extends BaseAction {
 		}, ThisApplication.threadPool());
 	}
 
-	private CompletableFuture<Long> taskCompletedFuture(String dn) {
+	private CompletableFuture<Long> taskCompletedFuture(String dn, String appId) {
 		return CompletableFuture.supplyAsync(() -> {
 			Long count = 0L;
 			// 已办仅取latest
@@ -86,6 +90,9 @@ class ActionCountWithPerson extends BaseAction {
 				CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 				Root<TaskCompleted> root = cq.from(TaskCompleted.class);
 				Predicate p = cb.equal(root.get(TaskCompleted_.person), dn);
+				if(StringUtils.isNotBlank(appId)){
+					p = cb.and(p, cb.equal(root.get(TaskCompleted_.application), appId));
+				}
 				p = cb.and(p, cb.or(cb.equal(root.get(TaskCompleted_.latest), true),
 						cb.isNull(root.get(TaskCompleted_.latest))));
 				count = em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
@@ -96,11 +103,15 @@ class ActionCountWithPerson extends BaseAction {
 		}, ThisApplication.threadPool());
 	}
 
-	private CompletableFuture<Long> readFuture(String dn) {
+	private CompletableFuture<Long> readFuture(String dn, String appId) {
 		return CompletableFuture.supplyAsync(() -> {
 			Long count = 0L;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				count = emc.countEqual(Read.class, Read.person_FIELDNAME, dn);
+				if(StringUtils.isBlank(appId)) {
+					count = emc.countEqual(Read.class, Read.person_FIELDNAME, dn);
+				}else{
+					count = emc.countEqualAndEqual(Read.class, Read.person_FIELDNAME, dn, Read.application_FIELDNAME, appId);
+				}
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
@@ -108,11 +119,15 @@ class ActionCountWithPerson extends BaseAction {
 		}, ThisApplication.threadPool());
 	}
 
-	private CompletableFuture<Long> readCompletedFuture(String dn) {
+	private CompletableFuture<Long> readCompletedFuture(String dn, String appId) {
 		return CompletableFuture.supplyAsync(() -> {
 			Long count = 0L;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				count = emc.countEqual(ReadCompleted.class, ReadCompleted.person_FIELDNAME, dn);
+				if(StringUtils.isBlank(appId)) {
+					count = emc.countEqual(ReadCompleted.class, ReadCompleted.person_FIELDNAME, dn);
+				}else{
+					count = emc.countEqualAndEqual(ReadCompleted.class, ReadCompleted.person_FIELDNAME, dn, ReadCompleted.application_FIELDNAME, appId);
+				}
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
@@ -120,11 +135,15 @@ class ActionCountWithPerson extends BaseAction {
 		}, ThisApplication.threadPool());
 	}
 
-	private CompletableFuture<Long> reviewFuture(String dn) {
+	private CompletableFuture<Long> reviewFuture(String dn, String appId) {
 		return CompletableFuture.supplyAsync(() -> {
 			Long count = 0L;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				count = emc.countEqual(Review.class, Review.person_FIELDNAME, dn);
+				if(StringUtils.isBlank(appId)) {
+					count = emc.countEqual(Review.class, Review.person_FIELDNAME, dn);
+				}else{
+					count = emc.countEqualAndEqual(Review.class, Review.person_FIELDNAME, dn, Review.application_FIELDNAME, appId);
+				}
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
