@@ -112,7 +112,7 @@ class ActionRollback extends BaseAction {
 					emc.beginTransaction(ReadCompleted.class);
 					emc.beginTransaction(Review.class);
 
-					rollbackWork(work, workLog);
+					rollbackWork(business, work, workLog);
 
 					rollbackForm(business, work, node, application);
 
@@ -154,7 +154,7 @@ class ActionRollback extends BaseAction {
 
 	}
 
-	private void rollbackWork(Work work, WorkLog workLog) {
+	private void rollbackWork(Business business, Work work, WorkLog workLog) throws Exception {
 		work.setSplitting(false);
 		work.setActivityName(workLog.getFromActivityName());
 		work.setActivity(workLog.getFromActivity());
@@ -163,6 +163,7 @@ class ActionRollback extends BaseAction {
 		work.setActivityDescription("");
 		work.setActivityToken(workLog.getFromActivityToken());
 		work.setActivityType(workLog.getFromActivityType());
+		work.setForm(business.element().lookupSuitableForm(work.getProcess(), work.getActivity()));
 		// 清除掉当前的待办人准备重新生成
 		work.getManualTaskIdentityList().clear();
 		work.setWorkStatus(WorkStatus.processing);
