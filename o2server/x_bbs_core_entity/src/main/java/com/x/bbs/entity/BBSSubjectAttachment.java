@@ -26,9 +26,12 @@ import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.DateTools;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * 附件信息管理表
  */
+@Schema(name = "BBSSubjectAttachment", description = "论坛附件信息.")
 @ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.BBSSubjectAttachment.table, uniqueConstraints = {

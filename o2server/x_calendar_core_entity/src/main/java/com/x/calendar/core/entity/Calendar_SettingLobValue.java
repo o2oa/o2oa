@@ -16,12 +16,15 @@ import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * 日程管理设置（文本数据）
  * 
  * @author O2LEE
  *
  */
+@Schema(name = "Calendar_SettingLobValue", description = "日程管理设置文本数据.")
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.Calendar_SettingLobValue.table, uniqueConstraints = {

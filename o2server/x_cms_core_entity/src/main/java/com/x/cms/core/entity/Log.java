@@ -16,10 +16,13 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * 内容管理日志信息表
  *
  */
+@Schema(name = "Log", description = "内容管理日志信息.")
 @ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.Log.table, uniqueConstraints = {

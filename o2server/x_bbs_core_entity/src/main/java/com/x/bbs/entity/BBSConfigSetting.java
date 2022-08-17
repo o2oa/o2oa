@@ -16,11 +16,9 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 
-/**
- * 系统配置信息管理实体类
- *
- * @author LIYI
- */
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "BBSConfigSetting", description = "论坛配置.")
 @ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.BBSConfigSetting.table, uniqueConstraints = {

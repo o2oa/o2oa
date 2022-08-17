@@ -19,6 +19,9 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "AttendanceAppealAuditInfo", description = "考勤申诉审批配置.")
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.AttendanceAppealAuditInfo.table, uniqueConstraints = @UniqueConstraint(name = PersistenceProperties.AttendanceAppealAuditInfo.table
@@ -63,96 +66,116 @@ public class AttendanceAppealAuditInfo extends SliceJpaObject {
 	 */
 	public static final String detailId_FIELDNAME = "detailId";
 	@FieldDescribe("申诉的打卡记录ID.")
-	@Column( length = JpaObject.length_id, name = ColumnNamePrefix + detailId_FIELDNAME)
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + detailId_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String detailId;
 
 	public static final String auditFlowType_FIELDNAME = "auditFlowType";
 	@FieldDescribe("审批方式:WORKFLOW|BUILTIN，使用自定义流程或者使用内置流程")
-	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + auditFlowType_FIELDNAME)
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + auditFlowType_FIELDNAME)
 	private String auditFlowType = AppealConfig.APPEAL_AUDIFLOWTYPE_BUILTIN;
 
 	public static final String workId_FIELDNAME = "workId";
 	@FieldDescribe("自定义审批流程WorkID")
-	@Column( length = JpaObject.length_id, name = ColumnNamePrefix + workId_FIELDNAME)
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + workId_FIELDNAME)
 	private String workId;
 
 	public static final String lastFlowSyncTime_FIELDNAME = "lastFlowSyncTime";
 	@FieldDescribe("上次进行状态同步时间")
-	@Column( name = ColumnNamePrefix + lastFlowSyncTime_FIELDNAME)
+	@Column(name = ColumnNamePrefix + lastFlowSyncTime_FIELDNAME)
 	private Date lastFlowSyncTime;
 
 	public static final String currentProcessor_FIELDNAME = "currentProcessor";
 	@FieldDescribe("当前审核人")
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + currentProcessor_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ currentProcessor_FIELDNAME)
 	private String currentProcessor;
 
 	public static final String processPerson1_FIELDNAME = "processPerson1";
 	@FieldDescribe("审批人一")
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + processPerson1_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ processPerson1_FIELDNAME)
 	private String processPerson1;
 
 	public static final String processPersonUnit1_FIELDNAME = "processPersonUnit1";
 	@FieldDescribe("审批人组织一")
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + processPersonUnit1_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ processPersonUnit1_FIELDNAME)
 	private String processPersonUnit1;
 
 	public static final String processPersonTopUnit1_FIELDNAME = "processPersonTopUnit1";
 	@FieldDescribe("审批人顶层组织一")
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + processPersonTopUnit1_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ processPersonTopUnit1_FIELDNAME)
 	private String processPersonTopUnit1;
 
 	public static final String opinion1_FIELDNAME = "opinion1";
 	@FieldDescribe("审批意见一")
-	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + opinion1_FIELDNAME )
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + opinion1_FIELDNAME)
 	private String opinion1;
 
 	public static final String processTime1_FIELDNAME = "processTime1";
 	@FieldDescribe("审批日期一")
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column( name = ColumnNamePrefix + processTime1_FIELDNAME)
+	@Column(name = ColumnNamePrefix + processTime1_FIELDNAME)
 	private Date processTime1;
 
 	public static final String processPerson2_FIELDNAME = "processPerson2";
 	@FieldDescribe("审批人二")
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + processPerson2_FIELDNAME)
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ processPerson2_FIELDNAME)
 	private String processPerson2;
 
 	public static final String processPersonUnit2_FIELDNAME = "processPersonUnit2";
 	@FieldDescribe("审批人组织二")
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + processPersonUnit2_FIELDNAME )
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ processPersonUnit2_FIELDNAME)
 	private String processPersonUnit2;
 
 	public static final String processPersonTopUnit2_FIELDNAME = "processPersonTopUnit2";
 	@FieldDescribe("审批人顶层组织二")
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + processPersonTopUnit2_FIELDNAME )
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ processPersonTopUnit2_FIELDNAME)
 	private String processPersonTopUnit2;
 
 	public static final String opinion2_FIELDNAME = "opinion2";
 	@FieldDescribe("审批意见二")
-	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + opinion2_FIELDNAME )
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + opinion2_FIELDNAME)
 	private String opinion2;
 
 	public static final String processTime2_FIELDNAME = "processTime2";
 	@FieldDescribe("审批日期二")
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column( name = ColumnNamePrefix + processTime2_FIELDNAME )
+	@Column(name = ColumnNamePrefix + processTime2_FIELDNAME)
 	private Date processTime2;
 
+	public void setCurrentProcessor(String currentProcessor) {
+		this.currentProcessor = currentProcessor;
+	}
 
-	public void setCurrentProcessor(String currentProcessor) { this.currentProcessor = currentProcessor; }
+	public String getAuditFlowType() {
+		return auditFlowType;
+	}
 
-	public String getAuditFlowType() { return auditFlowType; }
+	public void setAuditFlowType(String auditFlowType) {
+		this.auditFlowType = auditFlowType;
+	}
 
-	public void setAuditFlowType(String auditFlowType) { this.auditFlowType = auditFlowType; }
+	public String getWorkId() {
+		return workId;
+	}
 
-	public String getWorkId() { return workId; }
+	public void setWorkId(String workId) {
+		this.workId = workId;
+	}
 
-	public void setWorkId(String workId) { this.workId = workId; }
+	public Date getLastFlowSyncTime() {
+		return lastFlowSyncTime;
+	}
 
-	public Date getLastFlowSyncTime() { return lastFlowSyncTime; }
-
-	public void setLastFlowSyncTime(Date lastFlowSyncTime) { this.lastFlowSyncTime = lastFlowSyncTime; }
+	public void setLastFlowSyncTime(Date lastFlowSyncTime) {
+		this.lastFlowSyncTime = lastFlowSyncTime;
+	}
 
 	public String getDetailId() {
 		return detailId;
@@ -182,7 +205,9 @@ public class AttendanceAppealAuditInfo extends SliceJpaObject {
 		return processPersonTopUnit1;
 	}
 
-	public void setProcessPersonTopUnit1(String processPersonTopUnit1) { this.processPersonTopUnit1 = processPersonTopUnit1; }
+	public void setProcessPersonTopUnit1(String processPersonTopUnit1) {
+		this.processPersonTopUnit1 = processPersonTopUnit1;
+	}
 
 	public String getOpinion1() {
 		return opinion1;
@@ -220,7 +245,9 @@ public class AttendanceAppealAuditInfo extends SliceJpaObject {
 		return processPersonTopUnit2;
 	}
 
-	public void setProcessPersonTopUnit2(String processPersonTopUnit2) { this.processPersonTopUnit2 = processPersonTopUnit2; }
+	public void setProcessPersonTopUnit2(String processPersonTopUnit2) {
+		this.processPersonTopUnit2 = processPersonTopUnit2;
+	}
 
 	public String getOpinion2() {
 		return opinion2;

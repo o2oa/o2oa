@@ -19,6 +19,9 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "AttendanceStatisticalCycle", description = "考勤统计回收.")
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.AttendanceStatisticalCycle.table, uniqueConstraints = {
@@ -64,57 +67,59 @@ public class AttendanceStatisticalCycle extends SliceJpaObject {
 	 */
 	public static final String topUnitName_FIELDNAME = "topUnitName";
 	@FieldDescribe("顶层组织名称")
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + topUnitName_FIELDNAME )
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ topUnitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String topUnitName;
 
 	public static final String unitName_FIELDNAME = "unitName";
 	@FieldDescribe("组织名称")
-	@Column( length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix + unitName_FIELDNAME )
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ unitName_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String unitName;
 
 	public static final String cycleYear_FIELDNAME = "cycleYear";
 	@FieldDescribe("统计周期年份")
-	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + cycleYear_FIELDNAME )
+	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + cycleYear_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String cycleYear;
 
 	public static final String cycleMonth_FIELDNAME = "cycleMonth";
 	@FieldDescribe("统计周期月份")
-	@Column( length = JpaObject.length_16B, name = ColumnNamePrefix + cycleMonth_FIELDNAME )
+	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + cycleMonth_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String cycleMonth;
 
 	public static final String cycleStartDateString_FIELDNAME = "cycleStartDateString";
 	@FieldDescribe("月周期开始日期")
-	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + cycleStartDateString_FIELDNAME )
+	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + cycleStartDateString_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String cycleStartDateString;
 
 	public static final String cycleEndDateString_FIELDNAME = "cycleEndDateString";
 	@FieldDescribe("月周期结束日期")
-	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + cycleEndDateString_FIELDNAME )
+	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + cycleEndDateString_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String cycleEndDateString;
 
 	public static final String cycleStartDate_FIELDNAME = "cycleStartDate";
 	@FieldDescribe("月周期开始日期")
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column( name = ColumnNamePrefix + cycleStartDate_FIELDNAME )
+	@Column(name = ColumnNamePrefix + cycleStartDate_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date cycleStartDate;
 
 	public static final String cycleEndDate_FIELDNAME = "cycleEndDate";
 	@FieldDescribe("月周期结束日期")
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column( name = ColumnNamePrefix + cycleEndDate_FIELDNAME )
+	@Column(name = ColumnNamePrefix + cycleEndDate_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date cycleEndDate;
 
 	public static final String description_FIELDNAME = "description";
 	@FieldDescribe("说明备注")
-	@Column( length = JpaObject.length_255B, name = ColumnNamePrefix + description_FIELDNAME )
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + description_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String description;
 

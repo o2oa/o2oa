@@ -5,6 +5,9 @@ import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import org.apache.openjpa.persistence.jdbc.Index;
 
 import javax.persistence.*;
@@ -16,6 +19,7 @@ import java.util.Date;
  * @author sword
  * @date 2022/05/20 10:53
  **/
+@Schema(name = "BBSShutup", description = "论坛禁言人员.")
 @ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.BBSShutup.table, uniqueConstraints = {

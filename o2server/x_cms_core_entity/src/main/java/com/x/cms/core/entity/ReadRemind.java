@@ -21,12 +21,15 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * 文档发布消息提醒信息表
  * 
  * @author O2LEE
  *
  */
+@Schema(name = "ReadRemind", description = "内容管理文档发布消息提醒信息.")
 @Entity
 @ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.ReadRemind.table, uniqueConstraints = {

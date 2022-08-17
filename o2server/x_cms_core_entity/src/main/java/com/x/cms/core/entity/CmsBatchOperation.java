@@ -14,9 +14,12 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * 数据指处理，比如修改栏目名称引起的所有分类 和文档别名需要修改
  */
+@Schema(name = "CmsBatchOperation", description = "内容管理数据指处理.")
 @Entity
 @ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.CmsBatchOperation.table, uniqueConstraints = {
