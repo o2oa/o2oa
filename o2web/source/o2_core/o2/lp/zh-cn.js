@@ -124,7 +124,9 @@ o2.LP.process = {
         "copy": "复制",
         "delete": "删除",
         "add": "添加",
-        "script": "脚本"
+        "script": "脚本",
+        "clickScript": "点击事件脚本",
+        "defaultNode": "默认节点"
     }
 };
 o2.LP.desktop = {
