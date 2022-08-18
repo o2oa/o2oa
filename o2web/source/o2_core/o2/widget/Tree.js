@@ -374,18 +374,28 @@ o2.widget.Tree.Node = new Class({
 		this.selectNode(e);
 		this.doAction(e);
 	},
-	
+	unselectNode: function(){
+		this.fireEvent("unselect");
+		var textDivNode = this.textNode.getElement("div");
+		textDivNode.setStyles(this.tree.css.textDivNode);
+		if (this.options.style){
+			if (this.tree.css[this.options.style]){
+				textDivNode.setStyles(this.tree.css[this.options.style].textDivNode);
+			}
+		}
+	},
 	selectNode: function(){
 		this.tree.fireEvent("beforeSelect", [this]);
 		if (this.tree.currentNode){
-			this.tree.currentNode.fireEvent("unselect");
-			var textDivNode = this.tree.currentNode.textNode.getElement("div");
-			textDivNode.setStyles(this.tree.css.textDivNode);
-            if (this.tree.currentNode.options.style){
-                if (this.tree.css[this.tree.currentNode.options.style]){
-                    textDivNode.setStyles(this.tree.css[this.tree.currentNode.options.style].textDivNode);
-                }
-            }
+			this.tree.currentNode.unselectNode();
+			// this.tree.currentNode.fireEvent("unselect");
+			// var textDivNode = this.tree.currentNode.textNode.getElement("div");
+			// textDivNode.setStyles(this.tree.css.textDivNode);
+            // if (this.tree.currentNode.options.style){
+            //     if (this.tree.css[this.tree.currentNode.options.style]){
+            //         textDivNode.setStyles(this.tree.css[this.tree.currentNode.options.style].textDivNode);
+            //     }
+            // }
 		}
 		var textDivNode = this.textNode.getElement("div");
 		textDivNode.setStyles(this.tree.css.textDivNodeSelected);
