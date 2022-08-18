@@ -2,6 +2,7 @@ package com.x.base.core.project;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.CRC32;
 
+import org.apache.commons.collections4.list.UnmodifiableList;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -32,7 +34,19 @@ import com.x.base.core.project.tools.StringTools;
 
 public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList<Application>> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(Applications.class);
+	public static final List<String> OFFICIAL_APPLICATIONS = UnmodifiableList.unmodifiableList(Arrays.asList(
+			x_general_assemble_control.class.getName(), x_organization_assemble_authentication.class.getName(),
+			x_organization_assemble_express.class.getName(), x_organization_assemble_control.class.getName(),
+			x_organization_assemble_personal.class.getName(), x_component_assemble_control.class.getName(),
+			x_message_assemble_communicate.class.getName(), x_calendar_assemble_control.class.getName(),
+			x_processplatform_service_processing.class.getName(), x_processplatform_assemble_designer.class.getName(),
+			x_processplatform_assemble_surface.class.getName(), x_processplatform_assemble_bam.class.getName(),
+			x_cms_assemble_control.class.getName(), x_portal_assemble_designer.class.getName(),
+			x_portal_assemble_surface.class.getName(), x_attendance_assemble_control.class.getName(),
+			x_bbs_assemble_control.class.getName(), x_file_assemble_control.class.getName(),
+			x_meeting_assemble_control.class.getName(), x_mind_assemble_control.class.getName(),
+			x_hotpic_assemble_control.class.getName(), x_query_service_processing.class.getName(),
+			x_query_assemble_designer.class.getName(), x_query_assemble_surface.class.getName()));
 
 	private static final long serialVersionUID = -2416559829493154858L;
 
@@ -50,7 +64,7 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 		this.token = token;
 	}
 
-	public Application get(String className, String tokenOrNode) throws Exception {
+	public Application get(String className, String tokenOrNode) {
 		List<Application> list = this.get(className);
 		if (null != list) {
 			for (Application application : list) {

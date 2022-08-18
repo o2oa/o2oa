@@ -23,8 +23,8 @@ public class CenterServer extends ConfigObject {
 	public static CenterServer defaultInstance() {
 		CenterServer o = new CenterServer();
 		o.enable = DEFAULT_ENABLE;
-		o.sslEnable = false;
 		o.order = DEFAULT_ORDER;
+		o.sslEnable = false;
 		o.port = DEFAULT_PORT;
 		o.httpProtocol = "";
 		o.proxyHost = "";
