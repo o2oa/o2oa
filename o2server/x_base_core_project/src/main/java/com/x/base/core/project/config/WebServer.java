@@ -16,6 +16,8 @@ public class WebServer extends ConfigObject {
 		o.sslEnable = false;
 		o.proxyHost = "";
 		o.proxyPort = null;
+		o.proxyCenterEnable = DEFAULT_PROXYCENTERENABLE;
+		o.proxyApplicationEnable = DEFAULT_PROXYAPPLICATIONENABLE;
 		return o;
 	}
 
@@ -35,10 +37,8 @@ public class WebServer extends ConfigObject {
 	private String proxyHost;
 	@FieldDescribe("代理端口,当服务器是通过apache/nginx等代理服务器映射到公网或者通过路由器做端口映射,在这样的情况下需要设置此地址以标明公网访问端口.")
 	private Integer proxyPort;
-
 	@FieldDescribe("是否启用center服务器代理.")
 	private Boolean proxyCenterEnable;
-
 	@FieldDescribe("是否启用application服务器代理")
 	private Boolean proxyApplicationEnable;
 
