@@ -33,8 +33,6 @@ import com.x.cms.assemble.control.jaxrs.output.OutputAction;
 import com.x.cms.assemble.control.jaxrs.permission.PermissionAction;
 import com.x.cms.assemble.control.jaxrs.permission.PermissionForDocumentAction;
 import com.x.cms.assemble.control.jaxrs.permission.PermissionManagerAction;
-import com.x.cms.assemble.control.jaxrs.queryview.QueryViewAction;
-import com.x.cms.assemble.control.jaxrs.queryviewdesign.QueryViewDesignAction;
 import com.x.cms.assemble.control.jaxrs.script.ScriptAction;
 import com.x.cms.assemble.control.jaxrs.script.ScriptAnonymousAction;
 import com.x.cms.assemble.control.jaxrs.search.SearchFilterAction;
@@ -67,8 +65,6 @@ public class ActionApplication extends AbstractActionApplication {
 		this.classes.add(FileAction.class);
 		this.classes.add(FormAction.class);
 		this.classes.add(ViewAction.class);
-		this.classes.add(QueryViewDesignAction.class);
-		this.classes.add(QueryViewAction.class);
 		this.classes.add(ViewCategoryAction.class);
 		this.classes.add(ViewFieldConfigAction.class);
 		this.classes.add(ImageBase64Action.class);

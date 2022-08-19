@@ -5,8 +5,6 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import com.x.processplatform.core.entity.element.*;
-import com.x.processplatform.core.entity.element.Process;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -34,6 +32,29 @@ import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkLog;
+import com.x.processplatform.core.entity.element.Agent;
+import com.x.processplatform.core.entity.element.Application;
+import com.x.processplatform.core.entity.element.ApplicationDict;
+import com.x.processplatform.core.entity.element.ApplicationDictItem;
+import com.x.processplatform.core.entity.element.Begin;
+import com.x.processplatform.core.entity.element.Cancel;
+import com.x.processplatform.core.entity.element.Choice;
+import com.x.processplatform.core.entity.element.Delay;
+import com.x.processplatform.core.entity.element.Embed;
+import com.x.processplatform.core.entity.element.End;
+import com.x.processplatform.core.entity.element.File;
+import com.x.processplatform.core.entity.element.Form;
+import com.x.processplatform.core.entity.element.FormField;
+import com.x.processplatform.core.entity.element.Invoke;
+import com.x.processplatform.core.entity.element.Manual;
+import com.x.processplatform.core.entity.element.Merge;
+import com.x.processplatform.core.entity.element.Parallel;
+import com.x.processplatform.core.entity.element.Process;
+import com.x.processplatform.core.entity.element.Publish;
+import com.x.processplatform.core.entity.element.Route;
+import com.x.processplatform.core.entity.element.Script;
+import com.x.processplatform.core.entity.element.Service;
+import com.x.processplatform.core.entity.element.Split;
 import com.x.query.core.entity.Item;
 
 class ActionDelete extends BaseAction {
@@ -96,8 +117,6 @@ class ActionDelete extends BaseAction {
 			emc.beginTransaction(Form.class);
 			emc.beginTransaction(Script.class);
 			emc.beginTransaction(SerialNumber.class);
-			emc.beginTransaction(QueryView.class);
-			emc.beginTransaction(QueryStat.class);
 			emc.beginTransaction(File.class);
 			for (String str : business.process().listWithApplication(id, false)) {
 				/** 流程 1种 */
@@ -127,8 +146,6 @@ class ActionDelete extends BaseAction {
 			this.deleteScript(business, application);
 			this.deleteFile(business, application);
 			this.deleteSerialNumber(business, application);
-			this.deleteQueryView(business, application);
-			this.deleteQueryStat(business, application);
 			/** 应用本体 1种 */
 			emc.remove(application);
 			emc.commit();
@@ -154,8 +171,6 @@ class ActionDelete extends BaseAction {
 			CacheManager.notify(File.class);
 			CacheManager.notify(Script.class);
 			CacheManager.notify(SerialNumber.class);
-			CacheManager.notify(QueryView.class);
-			CacheManager.notify(QueryStat.class);
 			Wo wo = new Wo();
 			wo.setId(application.getId());
 			result.setData(wo);
@@ -377,16 +392,6 @@ class ActionDelete extends BaseAction {
 	private void deleteSerialNumber(Business business, Application application) throws Exception {
 		List<String> ids = business.serialNumber().listWithApplication(application.getId());
 		this.deleteBatch(business.entityManagerContainer(), SerialNumber.class, ids);
-	}
-
-	private void deleteQueryView(Business business, Application application) throws Exception {
-		List<String> ids = business.queryView().listWithApplication(application.getId());
-		this.deleteBatch(business.entityManagerContainer(), QueryView.class, ids);
-	}
-
-	private void deleteQueryStat(Business business, Application application) throws Exception {
-		List<String> ids = business.queryStat().listWithApplication(application.getId());
-		this.deleteBatch(business.entityManagerContainer(), QueryStat.class, ids);
 	}
 
 	private void deleteTask(Business business, Application application) throws Exception {

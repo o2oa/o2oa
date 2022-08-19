@@ -208,14 +208,6 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 			public static final String table = "PP_E_APPLICATIONDICTLOBITEM";
 		}
 
-		public static class QueryView {
-			public static final String table = "PP_E_QUERYVIEW";
-		}
-
-		public static class QueryStat {
-			public static final String table = "PP_E_QUERYSTAT";
-		}
-
 		public static class QueryStatTimed {
 			public static final String table = "PP_E_QUERYSTATTIMED";
 		}
@@ -256,10 +248,6 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 	}
 
 	public static class Temporary {
-		public static class TriggerWorkRecord {
-			public static final String table = "PP_T_TRIGGERWORKRECORD";
-		}
-
 		public static class ServiceValue {
 			public static final String table = "PP_T_SERVICEVALUE";
 		}
