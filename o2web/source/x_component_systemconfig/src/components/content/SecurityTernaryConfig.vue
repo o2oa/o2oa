@@ -19,16 +19,17 @@
           <BaseItem
               :config="logRetainDays"
               :allowEditor="true"
-              type="number"></BaseItem>
+              type="number"
+              @changeConfig="(value)=>{logRetainDays=value.toInt(); saveConfig('general', 'requestLogRetainDays', value.toInt())}"
+          ></BaseItem>
 
         </div>
       </div>
     </div>
 
-
-
     <div class="systemconfig_item_title">{{lp._ternaryManagement.logBodyEnable}}</div>
     <div class="systemconfig_item_info" v-html="lp._ternaryManagement.logBodyEnableInfo"></div>
+    <BaseBoolean :value="logBodyEnable" @change="(value)=>{saveConfig('general', 'requestLogBodyEnable', value)}" />
 
   </div>
 </template>
@@ -42,13 +43,21 @@ import BaseItem from '@/components/item/BaseItem.vue';
 
 
 const ternaryManagementEnable = ref(false);
-
+const logEnable = ref(false);
 const logRetainDays = ref(7);
+const logBodyEnable = ref(false);
+
 
 
 getConfigData('ternaryManagement').then((data)=>{
-  ternaryManagementEnable.value = data.enable
-});
+  ternaryManagementEnable.value = data.enable;
+})
+getConfigData('general').then((data)=>{
+  logEnable.value = data.requestLogEnable;
+  logRetainDays.value = data.requestLogRetainDays;
+  logBodyEnable.value = data.requestLogBodyEnable;
+})
+
 
 </script>
 

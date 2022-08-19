@@ -10,9 +10,9 @@
         <el-tab-pane :label="lp._uiConfig.menuConfig" lazy>
           <MenuConfig/>
         </el-tab-pane>
-        <el-tab-pane :label="lp._uiConfig.userConfig" lazy>
-        <!--          <ServiceDeploy></ServiceDeploy>-->
-        </el-tab-pane>
+<!--        <el-tab-pane :label="lp._uiConfig.userConfig" lazy>-->
+<!--        &lt;!&ndash;          <ServiceDeploy></ServiceDeploy>&ndash;&gt;-->
+<!--        </el-tab-pane>-->
 
       </el-tabs>
     </div>

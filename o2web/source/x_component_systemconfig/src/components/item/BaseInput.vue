@@ -35,8 +35,9 @@ const props = defineProps({
 });
 
 function changeValue(e){
-  emit('change', e);
-  emit('update:value', e);
+  const v = (props.inputType==='number') ? e.toFloat() : e;
+  emit('update:value', v);
+  emit('change', v);
 }
 
 </script>
@@ -80,4 +81,5 @@ button {
   cursor: pointer;
   margin-left: 10px;
 }
+
 </style>

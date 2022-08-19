@@ -116,7 +116,8 @@ const contentComponent = computed(() => {
   font-size: 14px;
   color: rgb(153, 153, 153);
   clear: both;
-  display: inline;
+  display: inline-flex;
+  height: 30px;
 }
 
 button{
@@ -181,5 +182,8 @@ button{
 }
 .el-form-item--large{
   margin-bottom: 32px!important;
+}
+.el-textarea__inner{
+  border-radius: 15px!important;
 }
 </style>

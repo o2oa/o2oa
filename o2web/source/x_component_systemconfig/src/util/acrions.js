@@ -190,6 +190,13 @@ async function resetPasswordCollect(data) {
     return doAction('x_program_center', 'CollectAction', 'resetPassword', data);
 }
 
+async function getApplicationModules() {
+    return doAction('x_program_center', 'ConfigAction', 'listApplication');
+}
+async function getDataEntrys() {
+    return doAction('x_program_center', 'ConfigAction', 'listEntity');
+}
+
 export {
     getConfig,
     getConfigData,
@@ -221,5 +228,7 @@ export {
     registCollect,
     disconnectCollect,
     deleteCollect,
-    resetPasswordCollect
+    resetPasswordCollect,
+    getApplicationModules,
+    getDataEntrys
 };

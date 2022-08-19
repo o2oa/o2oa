@@ -42,6 +42,9 @@
 .o2icon-key:before {
     content: "\e928";
 }
+.o2icon-timer:before {
+    content: "\e92d";
+}
 .o2icon-lock:before {
     content: "\e92b";
 }

@@ -74,6 +74,17 @@
       </div>
     </div>
 
+<!--    <div>-->
+<!--      <div class="item_title">{{lp._passwordConfig.tokenEncryptType}}</div>-->
+<!--      <div class="item_info" v-html="lp._passwordConfig.tokenEncryptTypeInfo"></div>-->
+
+<!--      <BaseSelect :label="lp._passwordConfig.tokenEncryptTypeLabel"-->
+<!--                  v-model:value="encryptType"-->
+<!--                  :options="lp._passwordConfig.encryptTypeOptions"></BaseSelect>-->
+<!--      <button class="mainColor_bg" @click="changeEncryptType" style="margin-left: 120px; margin-top: 10px">{{lp._passwordConfig.tokenEncryptTypeButton}}</button>-->
+<!--      <div class="item_info" v-html="lp._passwordConfig.tokenEncryptTypeInfo3"></div>-->
+<!--    </div>-->
+
   </div>
 </template>
 
@@ -105,6 +116,7 @@ const passwordRuleValues = ref({
   useSpecial: false
 });
 const rsaEnable = ref(false);
+const encryptType = ref('');
 
 
 const recordPasswordLength = (e)=>{
@@ -210,6 +222,12 @@ const getPasswordText = (data)=>{
   }
 }
 
+// const changeEncryptType = (e)=>{
+//   const html = lp._passwordConfig.tokenEncryptTypeInfo3+'<br>'+lp._passwordConfig.changeTokenEncryptTypeInfo
+//   component.confirm('warn', e, lp._passwordConfig.tokenEncryptTypeButton, {html}, 750, 300, ()=>{
+//     saveConfig('person', 'encryptType', encryptType.value);
+//   }, (dlg)=>{dlg.close();})
+// }
 
 getConfigData('person').then((data)=>{
   if (!data.extension) data.extension = {};
@@ -237,9 +255,9 @@ getConfigData('person').then((data)=>{
 
   passwordLength.value = personData.value.extension.passwordLength;
   passwordRuleValues.value = personData.value.extension.passwordRuleValues;
+  encryptType.value = data.encryptType || 'default';
 });
 getConfig('token', 'rsaEnable').then((data)=>{
-  debugger;
   rsaEnable.value = !!data;
 });
 

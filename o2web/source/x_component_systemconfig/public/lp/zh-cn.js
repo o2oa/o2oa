@@ -17,6 +17,7 @@ o2.xApplication.systemconfig.LP = {
     "ternaryManagement": "三员管理",
 
     "serverConfig": "服务配置",
+    "serversConfig": "服务器配置",
     "centerServer": "中心服务",
     "appServer": "应用服务",
     "webServer": "Web服务",
@@ -28,6 +29,7 @@ o2.xApplication.systemconfig.LP = {
     "processConfig": "流程配置",
     "cloudConfig": "云服务配置",
     "dumpConfig": "备份配置",
+    "worktimeConfig": "工作时间",
 
     "messageConfig": "消息配置",
     "msgTypeConfig": "类型配置",
@@ -84,7 +86,7 @@ o2.xApplication.systemconfig.LP = {
         "storageNode": "文件存储",
 
         "serverData": {
-            "exposeJest": "接口文档(exposeJest)",
+            // "exposeJest": "接口文档(exposeJest)",
             "httpProtocol": "http协议(httpProtocol)",
             "host": "主机(host)",
             "port": "端口(port)",
@@ -94,7 +96,7 @@ o2.xApplication.systemconfig.LP = {
             "requestLogBodyEnable": "日志记录Body内容",
             "requestLogRetainDays": "日志保留天数",
             "sslEnable": "启用SSL(sslEnable)",
-            "statEnable": "启用Druid",
+            // "statEnable": "启用Druid",
 
             "cacheSize": "缓存大小(cacheSize)",
             "includes": "包含类(includes)",
@@ -330,8 +332,18 @@ o2.xApplication.systemconfig.LP = {
         "passwordDisaccord": "您输入的新密码与确认密码不一致",
         "passwordEmpty": "请输入原密码、新密码和确认密码",
 
-        "tokenEncryptType": "Token传输加密方式",
-        "tokenEncryptTypeInfo": ""
+        "tokenEncryptType": "密码加密方式",
+        "tokenEncryptTypeInfo": "O2OA支持以下几种密码和Token加密方式，可以根据需要选择。更多信息请查看：<a href='https://www.o2oa.net/search.html?q=%E5%9B%BD%E5%AF%86' target='_blank'>国密</a>",
+        "tokenEncryptTypeLabel": "加密方式",
+        "encryptTypeOptions": {
+            "default": "默认",
+            "sm4": "国家商用密码算法"
+        },
+        "tokenEncryptTypeInfo3": "<div style='color: red'>注意：点击“确定修改密码加密方式”后，此设置立即生效。<ul style='line-height: 30px'><li>这会导致：1、所有用户的登录状态失效；2、由于加密方式改变，所有已有用户将无法登录系统</li>" +
+            "<li>您必须执行以下步骤，才能正常使用系统：<br>使用xadmin账号重新登录系统，并通过任何方式重置所有用户密码</li></ul></div>",
+        "tokenEncryptTypeButton": "确定修改密码加密方式",
+        "changeTokenEncryptTypeInfo": "您确定要修改密码加密方式码？"
+
     },
     "_loginConfig": {
         "baseConfig": "基本配置",
@@ -380,13 +392,16 @@ o2.xApplication.systemconfig.LP = {
         "indexPagePortal": "首页门户",
 
         "ldapAuthEnable": "启用Ldap认证",
-        "ldapAuthEnableInfo": "启用后，用户登录认证使用Ldap认证，不再使用本系统的密码登录。请正确配置下面的Ldap参数。（需要重启服务器）",
+        "ldapAuthEnableInfo": "启用后，用户登录认证使用Ldap认证，不再使用本系统的密码登录。请正确配置下面的Ldap参数。",
         "ldapAuthUrl": "Ldap地址",
         "ldapAuthUrlInfo": "Ldap服务地址，ldap://域名或IP:端口",
         "baseDn": "LDAP查询根(BaseDN)",
         "baseDnInfo": "LDAP查询的根名称,如：dc=zone,DC=COM",
         "userDn": "认证用户的DN(UserDN)",
-        "userDnInfo": "认证用户的DN(UserDN), 如：uid=*,ou=users,dc=zone,DC=COM，其中uid=*中的*表示用户的唯一编码，此唯一编码与O2用户的唯一编码对应"
+        "userDnInfo": "认证用户的DN(UserDN), 如：uid=*,ou=users,dc=zone,DC=COM，其中uid=*中的*表示用户的唯一编码，此唯一编码与O2用户的唯一编码对应",
+
+        "superPermission": "启用超级管理员口令",
+        "superPermissionInfo": "开启此项允许用超级管理员（xadmin）的口令登录其他用户账户，以方便管理员用普通用户的身份进行数据维护和故障排除。"
     },
     "_ssoConfig": {
         "ssoConfig": "鉴权密钥配置",
@@ -465,12 +480,14 @@ o2.xApplication.systemconfig.LP = {
     },
     "_ternaryManagement": {
         "enable": "启用三员管理",
-        "enableInfo": "系统支持以系统管理员，安全管理员，安全审计员三员分责分权的方式进行系统安全管理，启动三员管理后会解除xadmin用户及权限同时启用系统的审计日志记录（需重启o2）<br>" +
+        "enableInfo": "系统支持以系统管理员，安全管理员，安全审计员三员分责分权的方式进行系统安全管理，启动三员管理后会解除xadmin用户及权限同时启用系统的审计日志记录（需重启服务器）<br>" +
             "三员各自角色分工分别是： " +
             "<ul><li>系统管理员(系统内置用户：systemManager)：负责为系统用户、组织管理和系统运行维护工作； </li>" +
             "<li>安全管理员(系统内置用户：securityManager)：负责权限设定，负责系统审计日志、用户和系统管理员操作行为的审查分析； </li>" +
             "<li>安全审计员(系统内置用户：auditManager)：负责对系统管理员、安全管理员的操作行为进行审计、跟踪。</li></ul>" +
-            "应用定时每天1点分析前一天的操作日志供三个管理员审计查询。",
+            "应用定时每天1点分析前一天的操作日志供三个管理员审计查询。<br>" +
+            "要完整使用三员管理功能，您还需要从应用市场安装“三员管理”应用。" +
+            "更多关于三员管理的内容可查看以下文档和视频：<a href='https://www.o2oa.net/search.html?q=%E4%B8%89%E5%91%98%E7%AE%A1%E7%90%86' target='_blank'>三员管理</a>",
         "logRetainDays": "日志保留天数",
         "logRetainDaysInfo": "设置日志最多保留的天数",
 
@@ -478,10 +495,13 @@ o2.xApplication.systemconfig.LP = {
         "logBodyEnableInfo": "记录Body内容会得到更详细的日志信息，但也会大大增加磁盘空间占用和服务器开销"
     },
     "_databaseServer": {
-        "info": ""
+        "infoInner": "您正在使用O2OA内置数据库，O2OA自带的数据库是一个内嵌式的内存数据库，适给用于开发环境、功能演示环境，并不适合用作正式环境。 " +
+            "如果作为正式环境使用，建议您使用拥有更高性能并且更加稳定的商用级别数据库。",
+        "infoExternal": "您已经使用了扩展数据库",
+
+        "info": "修改数据库配置在大部分情况下都会影响到系统现有数据，请慎重修改此处配置！"
     },
     "_cloudConfig": {
-
         "info": "O2云服务提供了应用市场、移动办公定位、短信服务、文档转换等众多增值服务器，您只需登录到O2云服务器，即可使用。",
         "recheck": "重新检查连接",
 
@@ -539,6 +559,133 @@ o2.xApplication.systemconfig.LP = {
         "modifyCollectPassword": "修改密码",
         "deleteCollect": "删除账号",
         "reloginCollect": "重新登录"
+    },
+    "_serversConfig": {
+        "serverInfo": "服务器信息",
+        "baseConfig": "基本配置",
+        "environmentConfig": "环境变量配置",
+        "sameConfig": "使用相同的服务器配置",
+        "sameConfigInfo": "O2OA有三个逻辑服务器：中心服务、应用服务和WEB服务，默认情况下它们使用同一个端口和同一套配置，您也可以为三个服务分开配置不同的端口、主机等信息。",
+
+        "serverConfig": "服务器配置",
+        "serverConfigInfo": "在此配置服务器相关参数（需要重启服务器）",
+
+        "serverPort": "服务端口",
+        "serverPortInfo": "服务器监听端口",
+
+        "serverProxyHost": "访问主机名",
+        "serverProxyPort": "访问主机端口",
+        "sslEnable": "是否启用SSL",
+        "httpProtocol": "WEB访问协议",
+        "sslKeyStorePassword": "SSL密码",
+        "sslKeyManagerPassword": "SSL管理密码",
+        "sslInfo": "<span>启用SSL，您需要将已申请的证书文件复制到O2OA服务端的config目录下，并改名成`keystore`，集群环境需要在每台服务器存放证书文件。（需要重启服务器）</span>",
+
+        "saveServerConfig": "保存服务器配置",
+        "saveServerConfigSuccess": "服务器配置保存成功",
+        "saveServerConfigPortError": "中心服务器、应用服务器和WEB服务器的端口必须全部相同或全部不同",
+
+        "saveServerSSLConfig": "保存SSL配置",
+        "saveServerSSLConfigSuccess": "SSL配置保存成功",
+
+        "sslConfig": "是否启用SSL",
+
+        "serverTaskConfig": "服务器任务",
+
+        "proxyCenterEnable": "代理中心服务",
+        "proxyApplicationEnable": "代理应用服务",
+        "proxyTimeOut": "代理超时（秒）",
+
+        "includes": "启用的应用模块",
+        "includesInfo": "您可以在此选择服务器允许运行的应用模块，只有在此处配置的应用模块才会启动，这可以使得集群环境中更加灵活的分配服务器性能。" +
+            "但请慎重修改此配置，如果配置不当，可能会导致服务异常。(需要重启服务器)",
+        "includesInfo2": "<b style='color: #666666'>选择要启用的内置应用：</b>如果您没有选择任何模块，则表示所有模块都会启用",
+        "includesInfo3": "<b style='color: #666666'>要启用的自定义应用：</b>在下面的输入框中输入自定义应用名称，用半角逗号分隔",
+
+        "saveIncludes": "保存启用应用模块配置",
+        "saveExcludes": "保存禁用应用模块配置",
+
+        "excludes": "禁用的应用模块",
+        "excludesInfo": "您可以在此选择服务器禁止运行的应用模块，在此配置的应用模块不会启动，这可以使得集群环境中更加灵活的分配服务器性能。" +
+            "但请慎重修改此配置，如果配置不当，可能会导致服务异常。(需要重启服务器)",
+        "excludesInfo2": "<b style='color: #666666'>选择要禁用的内置应用：</b>如果您没有选择任何模块，则表示所有不禁用任何模块",
+        "excludesInfo3": "<b style='color: #666666'>要禁用的自定义应用：</b>在下面的输入框中输入自定义应用名称，用半角逗号分隔",
+
+        "includesAll": "启用全部模块",
+        "includesSelect": "选择要启用的模块",
+        "includesModules": "已启用模块",
+        "selectModules": "可选择模块",
+
+        "excludesNone": "不禁用任何模块",
+        "excludesSelect": "选择要禁用的模块",
+
+        "saveServerIncludesSuccess": "保存启用应用模块成功",
+        "saveServerExcludesSuccess": "保存禁用应用模块成功",
+
+
+
+
+        "requestLogEnable": "启用HTTP日志",
+        "requestLogBodyEnable": "记录Body内容",
+        "requestLogRetainDays": "日志保留天数",
+        "requestLogInfo": "在此处配置服务器HTTP日志相关内容（需要重启服务器）：" +
+            "<ul><li>启用HTTP日志后，日志文件保存在服务器logs目录下。(启用三员管理的情况下，HTTP日志始终会启用)</li>" +
+            "<li>记录Body内容会得到更详细的日志信息，但也会大大增加磁盘空间占用和服务器开销。</li>" +
+            "<li>设置日志最多保留的天数，超过此天数的日志文件会被删除</li></ul>",
+
+        "webSocketEnable": "是否启用WebSocket",
+        "webSocketEnableInfo": "WebSocket用于服务器给WEB用户的消息提醒和聊天等功能，如果启用了WebSocket，请正确配置nginx、WAF等网络系统，以确保允许WebSocket协议通讯。（需要重启服务器）",
+
+        "deployWarEnable": "是否允许前端部署自定义应用",
+        "deployWarEnableInfo": "此配置控制自定义应用（war）是否允许在WEB端上传部署（需要重启服务器）",
+
+        "deployResourceEnable": "是否允许前端部署资源",
+        "deployResourceEnableInfo": "此配置控制前端组件和静态资源，是否允许在WEB端上传部署（需要重启服务器）",
+
+        "statEnable": "启用Druid统计",
+        "statExclusions": "统计忽略路径",
+        "statEnableInfo": "是否启用Druid统计数据库连接、SQL执行，http请求等相关信息，您可以通过URL：<a href='{url}' target='_blank'>Druid Monitor</a> 访问统计结果页面。",
+
+        "exposeJest": "是否输出Restful API文档页面",
+        "exposeJestInfo": "输出Restful API文档可以通过URL：<a href='{url}' target='_blank'>Restful API</a> 访问。",
+
+        "scriptingBlockedClasses": "服务端脚本禁用的Java类",
+        "scriptingBlockedClassesInfo": "在此设置不允许在服务端脚本中使用的Java类，用逗号分隔。",
+
+        "refererHeadCheckRegular": "请求Referer校验",
+        "refererHeadCheckRegularInfo": "在此处可配置服务器对于请求的Referer头的校验规则，配置一个正则表达式，通过正则表达式校验Referer值的请求才被允许。" +
+            "合理配置此项可有效防止CSRF攻击。如配置 (.+?)o2oa.net(.+?) 仅允许referer包含“o2oa.net”的请求",
+
+        "accessControlAllowOrigin": "跨域来源许可",
+        "accessControlAllowOriginInfo": "跨源资源共享许可，设置http返回的Access-Control-Allow-Origin标识，可以用于CORS攻击防护，如:https://www.o2oa.net"
+
+    },
+    "_worktimeConfig": {
+        "amWorktime": "上午工作时间",
+        "pmWorktime": "下午工作时间",
+        "holidays": "节假日",
+        "workdays": "工作日",
+        "weekends": "周末",
+
+        "amWorktimeInfo": "在此处设置工作日的上午工作时间范围",
+        "pmWorktimeInfo": "在此处设置工作日的下午工作时间范围",
+        "holidaysInfo": "设置节假日，将原本为工作日的日期添加到此处，作为节假日",
+        "workdaysInfo": "设置工作日，将原本为非工作日的日期添加到此处，作为工作日",
+        "weekendsInfo": "设置周末，选择下面的周几作为周末非工作日",
+
+        "timeRangeTo": "到",
+        "startTime": "开始时间",
+        "endTime": "结束时间",
+
+        "weekData": {
+            "周一": 2,
+            "周二": 3,
+            "周三": 4,
+            "周四": 5,
+            "周五": 6,
+            "周六": 7,
+            "周日": 1
+        }
     }
 
 }
