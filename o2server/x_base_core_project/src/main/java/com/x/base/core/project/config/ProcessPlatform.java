@@ -84,7 +84,6 @@ public class ProcessPlatform extends ConfigObject {
 		this.updateTable = new UpdateTable();
 		this.processingSignalPersistEnable = DEFAULT_PROCESSINGSIGNALPERSISTENABLE;
 		this.asynchronousTimeout = DEFAULT_ASYNCHRONOUSTIMEOUT;
-		this.attachmentConfig = new AttachmentConfig();
 	}
 
 	public Integer getExecutorCount() {
@@ -195,9 +194,6 @@ public class ProcessPlatform extends ConfigObject {
 	@FieldDescribe("是否保存工作处理信号内容,默认false.")
 	private Boolean processingSignalPersistEnable;
 
-	@FieldDescribe("流程附件上传限制大小或者类型.")
-	private AttachmentConfig attachmentConfig;
-
 	@FieldDescribe("异步超时.")
 	private Integer asynchronousTimeout;
 
@@ -220,10 +216,6 @@ public class ProcessPlatform extends ConfigObject {
 			this.extensionEvents = new ExtensionEvents();
 		}
 		return extensionEvents;
-	}
-
-	public AttachmentConfig getAttachmentConfig() {
-		return this.attachmentConfig == null ? new AttachmentConfig() : attachmentConfig;
 	}
 
 	public ArchiveHadoop getArchiveHadoop() {
@@ -631,39 +623,6 @@ public class ProcessPlatform extends ConfigObject {
 
 		public Integer getCount() {
 			return (count == null || count < 0) ? DEFAULT_COUNT : this.count;
-		}
-
-	}
-
-	public static class AttachmentConfig extends ConfigObject {
-
-		private static final long serialVersionUID = -5672631798073576284L;
-
-		public static AttachmentConfig defaultInstance() {
-			return new AttachmentConfig();
-		}
-
-		public static final Integer DEFAULT_FILE_SIZE = 0;
-
-		@FieldDescribe("附件大小限制（单位M，默认不限制）.")
-		private Integer fileSize = DEFAULT_FILE_SIZE;
-
-		@FieldDescribe("只允许上传的文件后缀")
-		private List<String> fileTypeIncludes = new ArrayList<>();
-
-		@FieldDescribe("不允许上传的文件后缀")
-		private List<String> fileTypeExcludes = new ArrayList<>();
-
-		public Integer getFileSize() {
-			return fileSize;
-		}
-
-		public List<String> getFileTypeIncludes() {
-			return fileTypeIncludes;
-		}
-
-		public List<String> getFileTypeExcludes() {
-			return fileTypeExcludes;
 		}
 
 	}

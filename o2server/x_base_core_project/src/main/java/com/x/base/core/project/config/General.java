@@ -2,6 +2,7 @@ package com.x.base.core.project.config;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -49,6 +50,7 @@ public class General extends ConfigObject {
 		o.exposeJest = DEFAULT_EXPOSEJEST;
 		o.refererHeadCheckRegular = DEFAULT_REFERERHEADCHECKREGULAR;
 		o.accessControlAllowOrigin = DEFAULT_ACCESSCONTROLALLOWORIGIN;
+		o.attachmentConfig = new AttachmentConfig();
 		return o;
 	}
 
@@ -90,6 +92,9 @@ public class General extends ConfigObject {
 
 	@FieldDescribe("跨源资源共享许可,设置http返回的Access-Control-Allow-Origin标识,可以用于CORS攻击防护,样例:https://www.o2oa.net")
 	private String accessControlAllowOrigin = "";
+
+	@FieldDescribe("附件上传限制大小或者类型.")
+	private AttachmentConfig attachmentConfig;
 
 	public String getRefererHeadCheckRegular() {
 		return (StringUtils.isBlank(refererHeadCheckRegular) ? DEFAULT_REFERERHEADCHECKREGULAR
@@ -146,6 +151,43 @@ public class General extends ConfigObject {
 	public Boolean getDeployResourceEnable() {
 
 		return null == this.deployResourceEnable ? DEFAULT_DEPLOYRESOURCEENABLE : this.deployResourceEnable;
+	}
+
+	public AttachmentConfig getAttachmentConfig() {
+		return this.attachmentConfig == null ? new AttachmentConfig() : attachmentConfig;
+	}
+
+	public static class AttachmentConfig extends ConfigObject {
+
+		private static final long serialVersionUID = -5672631798073576284L;
+
+		public static AttachmentConfig defaultInstance() {
+			return new AttachmentConfig();
+		}
+
+		public static final Integer DEFAULT_FILE_SIZE = 0;
+
+		@FieldDescribe("附件大小限制（单位M，默认不限制）.")
+		private Integer fileSize = DEFAULT_FILE_SIZE;
+
+		@FieldDescribe("只允许上传的文件后缀")
+		private List<String> fileTypeIncludes = new ArrayList<>();
+
+		@FieldDescribe("不允许上传的文件后缀")
+		private List<String> fileTypeExcludes = Arrays.asList("jsp", "exe", "sh", "tmp");
+
+		public Integer getFileSize() {
+			return fileSize;
+		}
+
+		public List<String> getFileTypeIncludes() {
+			return fileTypeIncludes;
+		}
+
+		public List<String> getFileTypeExcludes() {
+			return fileTypeExcludes;
+		}
+
 	}
 
 	public void save() throws Exception {

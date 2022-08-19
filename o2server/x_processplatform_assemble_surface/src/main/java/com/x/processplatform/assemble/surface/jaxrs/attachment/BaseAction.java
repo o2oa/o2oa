@@ -10,8 +10,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import com.x.processplatform.core.entity.element.Application;
-import com.x.processplatform.core.entity.element.Process;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -20,8 +18,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.ProcessPlatform;
-import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
@@ -309,28 +305,27 @@ abstract class BaseAction extends StandardJaxrsAction {
 	 * @throws Exception
 	 */
 	protected void verifyConstraint(long size, String fileName, String callback) throws Exception {
-		ProcessPlatform.AttachmentConfig attConfig = Config.processPlatform().getAttachmentConfig();
-		if (attConfig.getFileSize() != null && attConfig.getFileSize() > 0) {
+		if (Config.general().getAttachmentConfig().getFileSize() != null && Config.general().getAttachmentConfig().getFileSize() > 0) {
 			size = size / (1024 * 1024);
-			if (size > attConfig.getFileSize()) {
+			if (size > Config.general().getAttachmentConfig().getFileSize()) {
 				if (StringUtils.isNotEmpty(callback)) {
-					throw new ExceptionAttachmentInvalidCallback(callback, fileName, attConfig.getFileSize());
+					throw new ExceptionAttachmentInvalidCallback(callback, fileName, Config.general().getAttachmentConfig().getFileSize());
 				} else {
-					throw new ExceptionAttachmentInvalid(fileName, attConfig.getFileSize());
+					throw new ExceptionAttachmentInvalid(fileName, Config.general().getAttachmentConfig().getFileSize());
 				}
 			}
 		}
 		String fileType = FilenameUtils.getExtension(fileName).toLowerCase();
-		if ((attConfig.getFileTypeIncludes() != null && !attConfig.getFileTypeIncludes().isEmpty())
-				&& (!ListTools.contains(attConfig.getFileTypeIncludes(), fileType))) {
+		if ((Config.general().getAttachmentConfig().getFileTypeIncludes() != null && !Config.general().getAttachmentConfig().getFileTypeIncludes().isEmpty())
+				&& (!ListTools.contains(Config.general().getAttachmentConfig().getFileTypeIncludes(), fileType))) {
 			if (StringUtils.isNotEmpty(callback)) {
 				throw new ExceptionAttachmentInvalidCallback(callback, fileName);
 			} else {
 				throw new ExceptionAttachmentInvalid(fileName);
 			}
 		}
-		if ((attConfig.getFileTypeExcludes() != null && !attConfig.getFileTypeExcludes().isEmpty())
-				&& (ListTools.contains(attConfig.getFileTypeExcludes(), fileType))) {
+		if ((Config.general().getAttachmentConfig().getFileTypeExcludes() != null && !Config.general().getAttachmentConfig().getFileTypeExcludes().isEmpty())
+				&& (ListTools.contains(Config.general().getAttachmentConfig().getFileTypeExcludes(), fileType))) {
 			if (StringUtils.isNotEmpty(callback)) {
 				throw new ExceptionAttachmentInvalidCallback(callback, fileName);
 			} else {

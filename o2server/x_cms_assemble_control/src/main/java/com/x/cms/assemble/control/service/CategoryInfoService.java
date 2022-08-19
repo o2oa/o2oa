@@ -147,9 +147,9 @@ public class CategoryInfoService {
 
 		//补全默认列表名称
 		if ( StringUtils.isNotEmpty( object.getDefaultViewId() ) ) {
-			View queryView = emc.find( object.getDefaultViewId(), View.class );
-			if (queryView != null) {
-				object.setDefaultViewName( queryView.getName() );
+			View view = emc.find( object.getDefaultViewId(), View.class );
+			if (view != null) {
+				object.setDefaultViewName( view.getName() );
 			} else {
 				throw new Exception("category default view not exits. view id:" + object.getDefaultViewId() );
 			}

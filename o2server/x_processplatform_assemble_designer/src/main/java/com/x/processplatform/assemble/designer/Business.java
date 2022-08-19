@@ -87,24 +87,6 @@ public class Business {
 		return templateForm;
 	}
 
-	private QueryViewFactory queryView;
-
-	public QueryViewFactory queryView() throws Exception {
-		if (null == this.queryView) {
-			this.queryView = new QueryViewFactory(this);
-		}
-		return queryView;
-	}
-
-	private QueryStatFactory queryStat;
-
-	public QueryStatFactory queryStat() throws Exception {
-		if (null == this.queryStat) {
-			this.queryStat = new QueryStatFactory(this);
-		}
-		return queryStat;
-	}
-
 	private ApplicationFactory application;
 
 	public ApplicationFactory application() throws Exception {
