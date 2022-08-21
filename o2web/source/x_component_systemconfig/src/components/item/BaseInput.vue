@@ -4,7 +4,7 @@
     <div class="item_input_area">
       <el-input class="item_input" :style="inputStyle"
                 v-model="value" :type="inputType" :show-password="showPassword"
-                @change="changeValue($event)"/>
+                @change="changeValue($event)" v-bind="options"/>
     </div>
   </div>
 </template>
@@ -31,7 +31,11 @@ const props = defineProps({
   inputStyle: {
     type: Object,
     default: {}
-  }
+  },
+  options: {
+    type: Object,
+    default: null
+  },
 });
 
 function changeValue(e){

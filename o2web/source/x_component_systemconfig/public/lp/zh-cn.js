@@ -495,11 +495,65 @@ o2.xApplication.systemconfig.LP = {
         "logBodyEnableInfo": "记录Body内容会得到更详细的日志信息，但也会大大增加磁盘空间占用和服务器开销"
     },
     "_databaseServer": {
-        "infoInner": "您正在使用O2OA内置数据库，O2OA自带的数据库是一个内嵌式的内存数据库，适给用于开发环境、功能演示环境，并不适合用作正式环境。 " +
+        "databaseSource": "数据源配置",
+        "entity": "实体类配置",
+        "tools": "备份工具",
+        "infoInner": "您正在使用O2OA内置数据库，O2OA自带的数据库是一个内嵌式的内存数据库，适合用于开发环境、功能演示环境，并不适合用作正式环境。 " +
             "如果作为正式环境使用，建议您使用拥有更高性能并且更加稳定的商用级别数据库。",
-        "infoExternal": "您已经使用了扩展数据库",
+        "infoExternal": "您已经使用了扩展数据库，O2OA内置数据库已停用。",
 
-        "info": "修改数据库配置在大部分情况下都会影响到系统现有数据，请慎重修改此处配置！"
+        "info": "<span style='color: red'>修改数据库配置在大部分情况下都会影响到系统现有数据，请慎重修改此处配置！</span>",
+        "info2": "在修改数据库配置之前，建议您先使用O2OA的备份功能（ctl -dd）将系统数据进行备份，在修改完数据库配置后重启服务器，然后将备份的数据恢复到数据库（ctl -rd）。所有数据库相关配置的修改，都需要重启服务器",
+
+        "innerDataSources":"内置数据库",
+        "externalDataSources":"扩展数据库",
+        "innerDataSourcesInfo": "O2OA自带的数据库是一个内嵌式的内存数据库，适合用于开发环境、功能演示环境。",
+        "externalDataSourcesInfo":"O2OA支持外部数据库扩展，建议生产环境使用商用级别数据库以保证数据安全和性能。",
+
+        "addDatabaseConfig": "添加数据库配置",
+
+        "databaseUrl": "数据库连接",
+        "enable": "是否启用",
+        "username": "用户名",
+        "password": "密码",
+
+        "tcpPort": "连接端口",
+        "tcpPortInfo": "数据库jdbc连接端口，登录的用户名:sa，密码为xadmin的密码.数据库创建在/o2server/local/repository/data/X.mv.db，一旦数据库文件被创建,那么该数据库的密码被创建",
+        "webPort": "WEB端口",
+        "webPortInfo": "H2提供一个web端的client，此端口为web端client的访问端口，用户名sa，密码为xadmin数据库初始创建的密码",
+        "jmxEnable": "启动jmx",
+        "jmxEnableInfo": "如果启用，可以通过本地的jmx客户端进行访问，不支持远程jmx客户端",
+        "cacheSize": "缓存大小",
+        "cacheSizeInfo": "H2数据库缓存大小，设置H2用于作为缓存的内存大小，以M作为单位，默认为512M",
+        "logLevel": "日志级别",
+        "maxTotal": "最大使用连接数",
+        "maxIdle": "最大空闲连接数",
+        "statEnable": "启用统计",
+        "statFilter": "统计方式",
+        "slowSqlMillis": "慢sql毫秒数",
+        "slowSqlMillisInfo": "执行缓慢sql毫秒数，默认2000毫秒，执行缓慢的sql将被单独记录",
+        "lockTimeout": "锁超时时间(毫秒)",
+
+        "inputDatabaseUrl": "请填写数据库连接",
+
+        "entityConfig": "实体类存储分配",
+        "entityConfigInfo": "如果您启用多数据库，您课已在此分配系统中实体类存储的数据库",
+
+        "includeEntity": "允许的实体类",
+        "includeEntityInfo": "此数据库允许存储的实体类，为空表示全部，多个用半角逗号分割。请慎重配置此选项，您必须确保您已启用应用的所有实体类都有对应的存储数据库。",
+        "excludeEntity": "排除的实体类",
+        "excludeEntityInfo": "此数据库不会存储的实体类，为空表示不禁止任何实体类，多个用半角逗号分割。请慎重配置此选项，您必须确保您已启用应用的所有实体类都有对应的存储数据库。",
+
+
+        "editDatabase": "编辑数据库配置",
+
+        "saveDatabaseConfig": "保存所有数据库配置",
+        "saveDatabaseConfirm": "您即将保存数据库配置<br><span style='color:red'>这有可能会影响到系统现有数据（包括业务数据和设计数据）</span><br><br>您是否确定要保存数据库配置？",
+
+        "reloadDatabaseConfig": "恢复所有数据库配置",
+        "reloadDatabaseConfirm": "此操作将重新载入数据库配置，未保存的修改将会丢失，您是否确定恢复数据库配置？",
+
+        "saveDatabaseConfigSuccess": "数据库配置保存成功，请重启服务器"
     },
     "_cloudConfig": {
         "info": "O2云服务提供了应用市场、移动办公定位、短信服务、文档转换等众多增值服务器，您只需登录到O2云服务器，即可使用。",

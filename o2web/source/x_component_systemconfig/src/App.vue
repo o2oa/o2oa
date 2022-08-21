@@ -110,6 +110,13 @@ const contentComponent = computed(() => {
   color: rgb(153, 153, 153);
   clear: both;
 }
+.item_dlg_info{
+  overflow: hidden;
+  padding: 0 30px 10px 30px;
+  font-size: 14px;
+  color: rgb(153, 153, 153);
+  clear: both;
+}
 .item_value{
   overflow: hidden;
   padding-right: 30px;
