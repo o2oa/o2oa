@@ -422,96 +422,99 @@ console.log("wps:" + this.mode);
             });
         }.bind(this));
     },
-    startRevisions : async function (){
+    startRevisions : function (){
         //开启修订模式
-        await this.wpsOffice.ready();
-        const app = this.wpsOffice.Application;
-
-        // 将当前文档的编辑状态切换成修订模式
-        app.ActiveDocument.TrackRevisions = true;
+        this.wpsOffice.ready().then(function(){
+            const app = this.wpsOffice.Application;
+            // 将当前文档的编辑状态切换成修订模式
+            app.ActiveDocument.TrackRevisions = true;
+        }.bind(this));
     },
-    stopRevisions : async function (){
+    stopRevisions : function (){
         //关闭修订模式
-        await this.wpsOffice.ready();
-        const app = this.wpsOffice.Application;
+        this.wpsOffice.ready().then(function(){
+            const app = this.wpsOffice.Application;
 
-        // 将当前文档的编辑状态切换成修订模式
-        app.ActiveDocument.TrackRevisions = false;
+            // 将当前文档的编辑状态切换成修订模式
+            app.ActiveDocument.TrackRevisions = false;
+        }.bind(this));
+
     },
-    acceptAllRevisions : async function (callback){
+    acceptAllRevisions : function (callback){
         //接受所有修订
-        await this.wpsOffice.ready();
-        const app = this.wpsOffice.Application;
-        // 获取修订对象
-        const revisions = await app.ActiveDocument.Revisions;
-        // 接受对指定文档的所有修订
-        await revisions.AcceptAll();
-        if(callback) callback();
+        this.wpsOffice.ready().then(function(){
+            const app = this.wpsOffice.Application;
+            // 获取修订对象
+            app.ActiveDocument.Revisions.then(function(revisions){
+                // 接受对指定文档的所有修订
+                revisions.AcceptAll().then(function(){
+                    if(callback) callback();
+                });
+            }.bind(this));
+
+        }.bind(this));
     },
-    rejectAllRevisions : async function (callback){
+    rejectAllRevisions : function (callback){
         //拒绝所有修订
-        await this.wpsOffice.ready();
-        const app = this.wpsOffice.Application;
-        // 获取修订对象
-        const revisions = await app.ActiveDocument.Revisions;
-        // 拒绝所有修订
-        await revisions.RejectAll();
-        if(callback) callback();
+        this.wpsOffice.ready().then(function(){
+            const app = this.wpsOffice.Application;
+            // 获取修订对象
+            app.ActiveDocument.Revisions.then(function(revisions){
+                // 拒绝所有修订
+                revisions.RejectAll().then(function(){
+                    if(callback) callback();
+                });
+            }.bind(this));
+        }.bind(this));
     },
-    showRevisions : async function (){
-        debugger
+    showRevisions : function (){
         //显示痕迹
-        await this.wpsOffice.ready();
+        this.wpsOffice.ready().then(function(){
+            const app = this.wpsOffice.Application;
+            // 获取节对象
+            app.ActiveDocument.ActiveWindow.View.then(function(View){
+                // 设置修订状态为最终状态
+                View.RevisionsView = 0;
 
-        const app = this.wpsOffice.Application;
-        // 获取节对象
-        const View = await app.ActiveDocument.ActiveWindow.View;
-        // 设置修订状态为最终状态
-        View.RevisionsView = 0;
-
-        // 设置修订状态为 显示标记的最终状态
-        View.ShowRevisionsAndComments = true;
+                // 设置修订状态为 显示标记的最终状态
+                View.ShowRevisionsAndComments = true;
+            });
+        }.bind(this));
     },
-    hideRevisions : async function (){
-
-        debugger
-
+    hideRevisions : function (){
         //隐藏
-        await this.wpsOffice.ready();
+        this.wpsOffice.ready().then(function(){
+            const app = this.wpsOffice.Application;
+            // 获取节对象
+            app.ActiveDocument.ActiveWindow.View.then(function(View){
+                // 设置修订状态为最终状态
+                View.RevisionsView = 0;
 
-        const app = this.wpsOffice.Application;
-        // 获取节对象
-        const View = await app.ActiveDocument.ActiveWindow.View;
-        // 设置修订状态为最终状态
-        View.RevisionsView = 0;
-
-        // 设置修订状态为 显示标记的最终状态
-        View.ShowRevisionsAndComments = false;
+                // 设置修订状态为 显示标记的最终状态
+                View.ShowRevisionsAndComments = false;
+            });
+        }.bind(this));
     },
-    addControlButton : async function(text,callback){
-        await this.wpsOffice.ready();
-        const app = this.wpsOffice.Application;
-        controls = await app.CommandBars('StartTab').Controls;
-        const controlButton = await controls.Add(1);
-        controlButton.Caption = text;
-
-        controlButton.OnAction = callback
-
+    addControlButton : function(text,callback){
+        this.wpsOffice.ready().then(function(){
+            const app = this.wpsOffice.Application;
+            app.CommandBars('StartTab').Controls.then(function(controls){
+                controls.Add(1).then(function(controlButton){
+                    controlButton.Caption = text;
+                    controlButton.OnAction = callback
+                });
+            });
+        }.bind(this));
     },
-    print : async function (){
-
-        debugger
-
+    print : function (){
         //隐藏
-        await this.wpsOffice.ready();
-
-        const app = this.wpsOffice.Application;
-
-        // 页面定制对象：更多菜单
-        const printMenu = await app.CommandBars('TabPrintPreview');
-
-        await printMenu.Execute();
-
+        this.wpsOffice.ready().then(function(){
+            const app = this.wpsOffice.Application;
+            // 页面定制对象：更多菜单
+            app.CommandBars('TabPrintPreview').then(function(printMenu){
+                printMenu.Execute();
+            });
+        }.bind(this));
     },
     exportPDF : function (){
         var p1 =  this.wpsOffice.ready();
@@ -649,35 +652,42 @@ console.log("wps:" + this.mode);
         this.destroy();
         this.loadDocument();
     },
-    hasComments : async function (callback){
+    hasComments : function (callback){
         //是否有评论
-        await this.wpsOffice.ready();
-        const app = this.wpsOffice.Application;
-        var hasComments;
-        switch (this.json.officeType){
-            case "word":
-                hasComments = await app.ActiveDocument.HasComments();
-                break;
-            case "excel":
-                hasCommentsconst  = await app.ActiveWorkbook.HasComments();
-                break;
-            case "ppt":
-                hasComments = await app.ActivePresentation.HasComments();
-        }
-        if(callback) callback(hasComments);
-    },
-    showComments : async function (){
-        await this.wpsOffice.ready();
-        const app = this.wpsOffice.Application;
-        // 控制评论显示与否
-        app.ActiveDocument.ActiveWindow.View.ShowComments = true;
+        this.wpsOffice.ready().then(function(){
+            const app = this.wpsOffice.Application;
+            var hasComments;
+            switch (this.json.officeType){
+                case "word":
+                    hasComments = app.ActiveDocument.HasComments();
+                    break;
+                case "excel":
+                    hasComments  = app.ActiveWorkbook.HasComments();
+                    break;
+                case "ppt":
+                    hasComments = app.ActivePresentation.HasComments();
+            }
+            Promise.resolve(hasComments).then(function(comments){
+                if(callback) callback(comments);
+            });
+
+        }.bind(this));
 
     },
-    hideComments : async function (callback){
-        await this.wpsOffice.ready();
-        const app = this.wpsOffice.Application;
-        // 控制评论显示与否
-        app.ActiveDocument.ActiveWindow.View.ShowComments = false;
+    showComments : function (){
+        this.wpsOffice.ready().then(function(){
+            const app = this.wpsOffice.Application;
+            // 控制评论显示与否
+            app.ActiveDocument.ActiveWindow.View.ShowComments = true;
+        }.bind(this));
+    },
+    hideComments : function (callback){
+        this.wpsOffice.ready().then(function(){
+            const app = this.wpsOffice.Application;
+            // 控制评论显示与否
+            app.ActiveDocument.ActiveWindow.View.ShowComments = false;
+        }.bind(this));
+
     },
     getComments : function (callback){
         var p1 = this.wpsOffice.ready();

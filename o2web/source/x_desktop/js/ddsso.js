@@ -52,7 +52,7 @@ o2.addReady(function () {
                                             action.invoke({
                                                 "name": "auth", "async": true, "parameter": { "code": info.code },
                                                 "success": function (json) {
-                                                    console.debug(json);
+                                                    //console.debug(json);
                                                     layout.session.user = json.data;
                                                     // var ua = navigator.userAgent.toLowerCase();
                                                     // console.log(ua);
@@ -61,18 +61,18 @@ o2.addReady(function () {
                                                     // console.log(dd.ios);
                                                     // 如果有参数 开始启动流程
                                                     if (processId && applicationId) {
-                                                        console.debug('获取到了流程信息 processId:'+processId+', applicationId:'+applicationId);
+                                                        //console.debug('获取到了流程信息 processId:'+processId+', applicationId:'+applicationId);
                                                         o2.Actions.load("x_processplatform_assemble_surface").ProcessAction.getWithProcessWithApplication(processId, applicationId, function (json) {
-                                                            console.debug(json);
+                                                            //console.debug(json);
                                                             if (json.data) {
                                                                 MWF.xDesktop.requireApp("process.TaskCenter", "ProcessStarter", function () {
-                                                                    console.debug('启动流程');
+                                                                    //console.debug('启动流程');
                                                                     var starter = new MWF.xApplication.process.TaskCenter.ProcessStarter(json.data, layout.app, {
                                                                         "workData": {},
                                                                         "identity": null,
                                                                         "latest": false,
                                                                         "onStarted": function (data, title, processName) {
-                                                                            console.debug('启动流程成功。。。。');
+                                                                            //console.debug('启动流程成功。。。。');
                                                                             var currentTask = [];
                                                                             data.each(function (work) {
                                                                                 if (work.currentTaskIndex != -1) currentTask.push(work.taskList[work.currentTaskIndex].work);
@@ -84,11 +84,11 @@ o2.addReady(function () {
                                                                             history.replaceState(null, "startProcess", uri);
                                                                             if (currentTask.length == 1) {
                                                                                 var options = {"workId": currentTask[0], "appId": "process.Work"+currentTask[0]};
-                                                                                console.debug(options);
+                                                                                //console.debug(options);
                                                                                 layout.mobile = true;
                                                                                 layout.openApplication(null, "process.Work", options);
                                                                             } else {
-                                                                                console.error('没有task');
+                                                                                //console.error('没有task');
                                                                                 uri.toURI().go();
                                                                             }
                                                                         }.bind(this)

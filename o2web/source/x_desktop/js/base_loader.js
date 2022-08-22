@@ -188,10 +188,10 @@ if (!layout.isReady) {
             };
 
             layout.openLoginQywx = function () {
-                console.log("开始login。。。。。。。。。。。。。");
+                //console.log("开始login。。。。。。。。。。。。。");
                 var uri = locate.href.toURI();
 
-                console.log("执行单点。。。。。。。。。。");
+                //console.log("执行单点。。。。。。。。。。");
                 var action = new MWF.xDesktop.Actions.RestActions("", "x_organization_assemble_authentication", "");
                 action.getActions = function (actionCallback) {
                     this.actions = {"sso": {"uri": "/jaxrs/qiyeweixin/code/{code}", "method": "GET"}};
@@ -202,8 +202,8 @@ if (!layout.isReady) {
                     "async": true,
                     "parameter": {"code": uri.getData("code")},
                     "success": function (json) {
-                        console.log("单点成功。");
-                        console.log(json);
+                        //console.log("单点成功。");
+                        //console.log(json);
                         //基础数据。。。。
                         layout.session.user = json.data;
                         //
