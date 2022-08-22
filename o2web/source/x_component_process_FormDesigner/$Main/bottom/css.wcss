@@ -1,6 +1,6 @@
 {
 	"toolbarNode": {
-		"width": "150px",
+		"width": "160px",
 		"overflow": "hidden",
 		"float": "left",
 		"-webkit-user-select": "none",
@@ -17,7 +17,7 @@
 		"-moz-user-select": "text" 
 	},
 	"formNode": {
-		"margin-left": "141px",
+		"margin-left": "160px",
 		"margin-right": "auto",
 		"border-right": "1px solid #505050",
 		"border-left": "1px solid #505050",
