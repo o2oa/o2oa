@@ -3,7 +3,6 @@ package com.x.jpush.assemble.control.jaxrs.device;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sis.coverage.grid.IllegalGridGeometryException;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
@@ -80,9 +79,6 @@ public class ActionBind extends BaseAction {
 //                        .setWithPersonWithName(effectivePerson.getDistinguishedName(), ActionListAll.DEVICE_PERSON_ATTR_KEY, deviceList));
 //            }
 			result.setData(wraps);
-		} catch (Exception e) {
-			logger.error(e);
-			throw new IllegalGridGeometryException("系统在绑定设备时发生异常!", e);
 		}
 		logger.info("action 'ActionBind' execute completed!");
 		return result;
