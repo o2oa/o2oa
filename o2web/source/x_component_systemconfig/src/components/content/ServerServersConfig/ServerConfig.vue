@@ -422,7 +422,13 @@ const checkSameConfig = (data)=>{
   return (appPort===cenPort && appPort===webPort);
 }
 const load = ()=>{
-  const nodePromise = getConfigData(props.nodeName).then((data)=>{
+  const nodePromise = getConfigData(props.nodeName).then((d)=>{
+    const data = {
+      application: Object.clone(d.application),
+      web: Object.clone(d.web),
+      center: Object.clone(d.center)
+    }
+
     nodeData.value = data;
     if (!nodeData.value.web.hasOwnProperty('proxyCenterEnable')){
       nodeData.value.web.proxyCenterEnable = true;
@@ -472,7 +478,10 @@ const load = ()=>{
   });
 
   getConfigData("token").then((data)=>{
-    sslData.value = data;
+    sslData.value = {
+      sslKeyStorePassword: data.sslKeyStorePassword,
+      sslKeyManagerPassword: data.sslKeyManagerPassword
+    };
   });
 
   // getApplicationModules().then((data)=>{

@@ -10,12 +10,11 @@
 </template>
 
 <script setup>
-import {lp} from '@o2oa/component';
 const emit = defineEmits(['update:value', 'change']);
 
 const props = defineProps({
   label: String,
-  value: String,
+  value: '',
   inputType: {
     type: String,
     default: 'text'
@@ -35,11 +34,21 @@ const props = defineProps({
   options: {
     type: Object,
     default: null
-  },
+  }
 });
 
+// onUpdated(()=>{
+//   if (props.toArray) {
+//     const arr = Array.isArray(props.value) ? props.value : props.value.split(/\s*[,\n\r]\s*/g);
+//     props.value = arr.join('\n');
+//   }
+// });
+
 function changeValue(e){
-  const v = (props.inputType==='number') ? e.toFloat() : e;
+  let v = (props.inputType==='number') ? e.toFloat() : e;
+  // if (props.toArray){
+  //   v = v.split(/\s*[,\n\r]\s*/g);
+  // }
   emit('update:value', v);
   emit('change', v);
 }

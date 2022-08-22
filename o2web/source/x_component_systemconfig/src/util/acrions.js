@@ -196,6 +196,13 @@ async function getApplicationModules() {
 async function getDataEntrys() {
     return doAction('x_program_center', 'ConfigAction', 'listEntity');
 }
+async function executeCommand(data) {
+    return doAction('x_program_center', 'CommandAction', 'executeCommand', data);
+}
+async function getSystemLog(id) {
+    return doAction('x_program_center', 'WarnLogAction', 'getSystemLog', id);
+}
+
 
 export {
     getConfig,
@@ -230,5 +237,7 @@ export {
     deleteCollect,
     resetPasswordCollect,
     getApplicationModules,
-    getDataEntrys
+    getDataEntrys,
+    executeCommand,
+    getSystemLog
 };

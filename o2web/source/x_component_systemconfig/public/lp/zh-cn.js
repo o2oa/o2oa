@@ -47,6 +47,8 @@ o2.xApplication.systemconfig.LP = {
     "welinkConfig": "welink集成",
     "appTools": "APP工具",
 
+    "select": "选择",
+
     "_systemInfo": {
         "title": "配置系统的基础信息",
         "systemName": "系统名称",
@@ -537,23 +539,56 @@ o2.xApplication.systemconfig.LP = {
         "inputDatabaseUrl": "请填写数据库连接",
 
         "entityConfig": "实体类存储分配",
-        "entityConfigInfo": "如果您启用多数据库，您课已在此分配系统中实体类存储的数据库",
+        "entityConfigInfo": "如果您启用了多数据库，您可以在此分配系统中实体类存储的数据库，以提高性能。<span style='color: red'>您必须确保为所有实体类都分配了对应的存储数据库</span>",
+
+        "oneDatabase": "要为系统中实体类分配存储数据库，您必须要启用两个或以上的数据库，您现在只有一个数据库已启用。",
+        "oneDatabaseInfo": "要为系统中实体类分配存储数据库，您必须要启用两个或以上的数据库。",
+
 
         "includeEntity": "允许的实体类",
-        "includeEntityInfo": "此数据库允许存储的实体类，为空表示全部，多个用半角逗号分割。请慎重配置此选项，您必须确保您已启用应用的所有实体类都有对应的存储数据库。",
+        "includeEntityInfo": "此数据库允许存储的实体类，为空表示全部，多个用逗号或换行分割",
         "excludeEntity": "排除的实体类",
-        "excludeEntityInfo": "此数据库不会存储的实体类，为空表示不禁止任何实体类，多个用半角逗号分割。请慎重配置此选项，您必须确保您已启用应用的所有实体类都有对应的存储数据库。",
+        "excludeEntityInfo": "此数据库禁止存储的类，为空表示不禁止任何类，多个用逗号或换行分割",
 
 
         "editDatabase": "编辑数据库配置",
 
+
         "saveDatabaseConfig": "保存所有数据库配置",
+        "saveDatabaseConfigInfo": "本页中的配置在修改后不会立即保存，您必须点击此按钮后，您修改的配置才会被保存",
         "saveDatabaseConfirm": "您即将保存数据库配置<br><span style='color:red'>这有可能会影响到系统现有数据（包括业务数据和设计数据）</span><br><br>您是否确定要保存数据库配置？",
 
         "reloadDatabaseConfig": "恢复所有数据库配置",
+        "reloadDatabaseConfigInfo": "如果您想废弃本页中未保存的修改，可以点击此按钮，以重新载入配置",
         "reloadDatabaseConfirm": "此操作将重新载入数据库配置，未保存的修改将会丢失，您是否确定恢复数据库配置？",
 
-        "saveDatabaseConfigSuccess": "数据库配置保存成功，请重启服务器"
+        "saveEntityConfig": "保存实体类配置",
+        "saveEntityConfirm": "您即将保存实体类配置<br><span style='color:red'>这有可能会影响到系统现有数据（包括业务数据和设计数据）</span><br><br>您是否确定要保存实体类配置？",
+        "reloadEntityConfig": "恢复实体类配置",
+        "reloadEntityConfirm": "此操作将重新载入实体类配置，未保存的修改将会丢失，您是否确定恢复实体类配置？",
+
+        "entityList": "可选列表",
+        "selectedEntityList": "已选列表",
+        "findClass": "查找类名",
+
+        "removeDatabaseConfigTitle": "删除数据库配置确认",
+        "removeDatabaseConfig": "<span style='color: red'>注意：您即将删除数据库配置：“{name}”，请务必在删除数据库之前，备份系统数据。</span><br><br>您确定要进行此操作吗？",
+
+        "saveDatabaseConfigSuccess": "数据库配置保存成功，请重启服务器",
+        "saveEntityConfigSuccess": "实体类配置保存成功，请重启服务器",
+
+        "dumpRestoreTools": "数据库备份回复工具",
+        "toolsInfo": "O2OA提供了数据备份和回复工具，<span style='color: red'>修改数据库配置在大部分情况下都会影响到系统现有数据</span>，" +
+            "所以在修改数据库配置之前，建议您先使用O2OA的备份功能将系统数据进行备份，在修改完数据库配置后重启服务器，然后将备份的数据恢复到数据库。",
+
+        "dumpTools": "备份数据",
+        "dumpToolsInfo": "点击此按钮进行数据备份，<span style='color: red'>请勿在系统频繁读写数据期间进行</span>",
+        "dumpWaitLog": "数据备份未进行",
+        "dumpErrorLog": "数据备份发生错误",
+
+        "dumpBegin": "开始备份确认",
+        "dumpBeginInfo": "数据备份可能会影响服务器性能，您确定要开始数据备份吗？",
+
     },
     "_cloudConfig": {
         "info": "O2云服务提供了应用市场、移动办公定位、短信服务、文档转换等众多增值服务器，您只需登录到O2云服务器，即可使用。",

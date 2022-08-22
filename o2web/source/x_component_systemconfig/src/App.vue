@@ -193,4 +193,29 @@ button{
 .el-textarea__inner{
   border-radius: 15px!important;
 }
+.item_info_content{
+
+}
+
+.el-transfer-panel__filter {
+  text-align: center!important;
+  padding: 10px!important;;
+  margin: 0!important;;
+  box-sizing: border-box!important;
+  width: 100%!important;;
+}
+.el-transfer__buttons{
+  display: none!important;
+}
+.el-transfer-panel{
+  margin-left: 20px;
+}
+.el-transfer-panel *{
+  box-sizing: border-box!important;
+}
+.item_log{
+  color: #999999;
+  word-break: keep-all;
+  word-wrap: normal;
+}
 </style>

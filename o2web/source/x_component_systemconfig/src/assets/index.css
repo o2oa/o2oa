@@ -1,5 +1,5 @@
 :root{
-    --el-border-radius-base: 100px;
+    --el-border-radius-base: 20px;
 }
 .el-input__wrapper{
     border-radius: 15px;

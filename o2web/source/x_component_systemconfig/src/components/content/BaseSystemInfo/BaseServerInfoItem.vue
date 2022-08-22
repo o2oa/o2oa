@@ -13,7 +13,7 @@
 </template>
 
 <script setup>
-import {onMounted, defineProps, ref} from 'vue';
+import {ref} from 'vue';
 import {lp, o2} from '@o2oa/component';
 
 const props = defineProps({

@@ -7,9 +7,15 @@
     <div class="systemconfig_item_info" v-html="lp._databaseServer.info"></div>
     <div class="systemconfig_item_info" v-html="lp._databaseServer.info2"></div>
 
-    <div class="item_info">
-      <button class="mainColor_bg" @click="saveDatabaseConfig($event)">{{lp._databaseServer.saveDatabaseConfig}}</button>
-      <button class="" @click="reloadConfig($event)">{{lp._databaseServer.reloadDatabaseConfig}}</button>
+    <div class="item_info" style="display: flex; justify-content: flex-start;">
+      <div class="item_button_area">
+        <button class="mainColor_bg" @click="saveDatabaseConfig($event)">{{lp._databaseServer.saveDatabaseConfig}}</button>
+        <div>{{lp._databaseServer.saveDatabaseConfigInfo}}</div>
+      </div>
+      <div class="item_button_area">
+        <button class="" @click="reloadConfig($event)">{{lp._databaseServer.reloadDatabaseConfig}}</button>
+        <div>{{lp._databaseServer.reloadDatabaseConfigInfo}}</div>
+      </div>
     </div>
 
 
@@ -35,7 +41,7 @@
             <el-switch  @click="(e)=>{e.stopPropagation()}" @change="" v-model="item.enable"></el-switch>
           </div>
           <div style="display: flex; align-items: center; justify-content: flex-end; width: 100px">
-            <button class="o2icon-del mainColor_bg item_database_action" @click="(e)=>{e.stopPropagation();}"></button>
+            <button class="o2icon-del mainColor_bg item_database_action" @click="(e)=>{e.stopPropagation(); removeDatabase(e, index)}"></button>
           </div>
         </div>
       </div>
@@ -66,7 +72,7 @@
       <BaseInput :label="lp._databaseServer.password" input-type="password" show-password v-model:value="currentDatabaseData.password"/>
     </div>
 
-    <div class="item_database_editorArea1" ref="innerEditorArea">
+    <div class="item_database_editorArea" ref="innerEditorArea">
       <BaseSwitch v-if="databaseType==='external'" :options="{disabled: true}" :label="lp._databaseServer.enable" :value="false" :label-style="{width: '120px'}"/>
       <BaseSwitch v-else :label="lp._databaseServer.enable" v-model:value="currentDatabaseData.enable" :label-style="{width: '120px'}"/>
 
@@ -125,12 +131,52 @@ const externalEditorArea = ref();
 const innerEditorArea = ref();
 const currentDatabaseData = ref({});
 
+const removeDatabase = (e, idx)=>{
+  const dbUrl = externalDatabase.value[idx].url;
+  const text = lp._databaseServer.removeDatabaseConfig.replace(/{name}/, dbUrl.substring(0, dbUrl.lastIndexOf('/')));
+  const item = e.currentTarget.getParent('.item_database_item');
+  item.addClass('item_database_item_del');
+  component.confirm("warn", e, lp._databaseServer.removeDatabaseConfigTitle, {html: text}, 560, 230, function(){
+    externalDatabase.value.splice(idx, 1);
+    // saveConfig('token', 'ssos', ssos.value);
+    this.close();
+  }, function(){
+    item.removeClass('item_database_item_del');
+    this.close();
+  }, null, component.content);
+}
+
 const saveDatabaseConfig = (e)=>{
-  component.confirm("warn", e, lp._databaseServer.saveDatabaseConfig, {html: lp._databaseServer.saveDatabaseConfirm}, 500, 100, function(){
-    const p = [saveConfigData('externalDataSources', externalDatabase.value)];
-    servers.value.forEach((s)=>{
-      p.push(saveConfig('node_'+s.nodeAddress, 'data', s.node.data));
-    });
+  component.confirm("warn", e, lp._databaseServer.saveEntityConfig, {html: lp._databaseServer.saveEntityConfirm}, 500, 100, function(){
+    const p = [];
+    //if (databaseType==='external'){
+      p.push(loadRuntimeConfig('externalDataSources', true).then((data, idx)=>{
+        data.forEach((d, idx)=>{
+          Object.keys(d).forEach((k)=>{
+            if (k!=='includes' && k!=='excludes'){
+              d[k] = externalDatabase.value[idx][k];
+            }
+          });
+        });
+        return saveConfigData('externalDataSources', data);
+      }));
+    //}else {
+      p.push(getServers().then((data) => {
+        const saveP = [];
+        if (data.nodeList && data.nodeList.length) {
+          data.nodeList.forEach((d, idx) => {
+
+            Object.keys(d.node.data).forEach((k)=>{
+              if (k!=='includes' && k!=='excludes'){
+                d.node.data[k] = servers.value[idx].node.data[k];
+              }
+            });
+            saveP.push(saveConfig('node_' + d.nodeAddress, 'data', d.node.data));
+          });
+        }
+        return Promise.all(saveP);
+      }));
+    //}
     Promise.all(p).then(()=>{
       component.notice(lp._databaseServer.saveDatabaseConfigSuccess, "success");
     });
@@ -138,6 +184,20 @@ const saveDatabaseConfig = (e)=>{
   }, function(){
     this.close();
   }, null, component.content);
+
+
+  // component.confirm("warn", e, lp._databaseServer.saveDatabaseConfig, {html: lp._databaseServer.saveDatabaseConfirm}, 500, 100, function(){
+  //   const p = [saveConfigData('externalDataSources', externalDatabase.value)];
+  //   servers.value.forEach((s)=>{
+  //     p.push(saveConfig('node_'+s.nodeAddress, 'data', s.node.data));
+  //   });
+  //   Promise.all(p).then(()=>{
+  //     component.notice(lp._databaseServer.saveDatabaseConfigSuccess, "success");
+  //   });
+  //   this.close();
+  // }, function(){
+  //   this.close();
+  // }, null, component.content);
 }
 
 const reloadConfig = (e)=>{
@@ -202,14 +262,14 @@ const editExternalDatabase = (data, idx)=>{
     }else{
       component.notice( lp._databaseServer.inputDatabaseUrl, 'error',  dlg.node, {x: 'left', y: 'top'}, {x: 10, y: 10});
     }
-  }, 720, 400);
+  }, 740, 400);
 }
 
 const editInnerDatabase = (data, idx)=>{
   openEditDlg(data, innerEditorArea, (dlg)=>{
     servers.value[idx].node.data = currentDatabaseData.value;
     dlg.close();
-  },700, 600);
+  },740, 660);
 }
 
 const load = ()=>{
@@ -218,9 +278,6 @@ const load = ()=>{
   });
   getServers().then((data)=>{
     servers.value = data.nodeList;
-  });
-  getDataEntrys().then((data)=>{
-    dataEntitys.value = data;
   });
 }
 
@@ -281,9 +338,25 @@ load();
   font-weight: bold;
   color: #333333;
 }
-
+.item_database_item_del{
+  background-color: #ffecec;
+}
 .item_database_editorArea{
   display: none;
   padding: 20px;
+}
+.item_button_area{
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid #dddddd;
+  margin: 5px 10px;
+  border-radius: 15px;
+  width: 300px;
+  align-content: center;
+}
+.item_button_area div{
+  padding: 5px;
 }
 </style>
