@@ -218,4 +218,9 @@ button{
   word-break: keep-all;
   word-wrap: normal;
 }
+.item_log_completed{
+  color: #00b516;
+  word-break: keep-all;
+  word-wrap: normal;
+}
 </style>

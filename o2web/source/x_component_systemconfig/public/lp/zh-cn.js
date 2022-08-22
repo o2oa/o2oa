@@ -579,7 +579,8 @@ o2.xApplication.systemconfig.LP = {
 
         "dumpRestoreTools": "数据库备份回复工具",
         "toolsInfo": "O2OA提供了数据备份和回复工具，<span style='color: red'>修改数据库配置在大部分情况下都会影响到系统现有数据</span>，" +
-            "所以在修改数据库配置之前，建议您先使用O2OA的备份功能将系统数据进行备份，在修改完数据库配置后重启服务器，然后将备份的数据恢复到数据库。",
+            "所以在修改数据库配置之前，建议您先使用O2OA的备份功能将系统数据进行备份，在修改完数据库配置后重启服务器，然后将备份的数据恢复到数据库。<br>" +
+            "<span class='mainColor_color'>在您进行备份或恢复数据时，请勿离开本页面。您可以在另一个浏览器窗口中进行其它操作</span>",
 
         "dumpTools": "备份数据",
         "dumpToolsInfo": "点击此按钮进行数据备份，<span style='color: red'>请勿在系统频繁读写数据期间进行</span>",
@@ -588,6 +589,28 @@ o2.xApplication.systemconfig.LP = {
 
         "dumpBegin": "开始备份确认",
         "dumpBeginInfo": "数据备份可能会影响服务器性能，您确定要开始数据备份吗？",
+
+        "dumpCheckButton": "检查备份状态",
+        "dumpCheck": "正在检查备份状态 ...",
+        "dumpStop": "数据备份未进行",
+        "dumpRunning": "数据备份正在进行中 ...",
+        "dumpEnd": "数据备份已完成",
+
+        "restoreTools": "数据恢复",
+        "restoreToolsInfo": "点击此按钮进行数据恢复，<span style='color: red'>请勿在系统频繁读写数据期间进行</span>",
+        "restoreToolsInfo2": "如果您的系统中包含数据表，数据恢复完成后，请进入数据中心编译所有数据表，再执行一次数据恢复，然后重启服务器",
+        "restoreWaitLog": "数据恢复未进行",
+        "restoreErrorLog": "数据恢复发生错误",
+
+        "restoreBegin": "开始恢复确认",
+        "restoreBeginInfo": "数据恢复可能会影响服务器性能，您确定要开始数据恢复吗？",
+
+        "restoreCheckButton": "检查恢复状态",
+        "restoreCheck": "正在检查恢复状态 ...",
+        "restoreStop": "数据恢复未进行",
+        "restoreRunning": "数据恢复正在进行中 ...",
+        "restoreEnd": "数据恢复已完成"
+
 
     },
     "_cloudConfig": {
