@@ -213,7 +213,13 @@ function createXFormConcatTask(path, isMin, thisOptions) {
             'source/' + path + '/*.js',
             'source/x_component_process_Work/Processor.js',
             '!source/' + path + '/Documenteditor.js ',
-            '!source/' + path + '/Office.js'
+            '!source/' + path + '/Office.js',
+            '!source/' + path + '/WpsOffice.js',
+            '!source/' + path + '/WpsOffice2.js',
+            '!source/' + path + '/YozoOffice.js',
+            '!source/' + path + '/IWebOffice.js',
+            '!source/' + path + '/OnlyOffice.js',
+            '!source/' + path + '/TinyMCEEditor.js'
         ];
         var dest = option.dest+'/' + path + '/';
         return gulp.src(src, {sourcemaps: true})
