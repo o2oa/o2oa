@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.jpush.assemble.control.JpushConst;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -192,7 +193,7 @@ public class ActionSendMessage extends StandardJaxrsAction {
 		// 添加一条角标
 		com.x.jpush.assemble.control.huawei.android.BadgeNotification badgeNotification = com.x.jpush.assemble.control.huawei.android.BadgeNotification
 				.builder().setAddNum(1)
-				.setBadgeClass("net.zoneland.x.bpm.mobile.v1.zoneXBPM.app.o2.launch.LaunchActivity").build();
+				.setBadgeClass(JpushConst.launchActivity).build();
 		com.x.jpush.assemble.control.huawei.android.ClickAction clickAction = com.x.jpush.assemble.control.huawei.android.ClickAction
 				.builder().setType(3)// 启动应用
 				.build();
@@ -223,9 +224,9 @@ public class ActionSendMessage extends StandardJaxrsAction {
 				.collect(Collectors.toList());
 		Notification n = Notification.newBuilder()
 				// ios 消息
-				.addPlatformNotification(IosNotification.newBuilder().setSound("default").setAlert(message).build())
+				.addPlatformNotification(IosNotification.newBuilder().setSound("default").setBadge(1).setAlert(message).build())
 				// android 消息
-				.addPlatformNotification(AndroidNotification.newBuilder().setPriority(2).setAlert(message).build())
+				.addPlatformNotification(AndroidNotification.newBuilder().setPriority(2).setBadgeClass(JpushConst.launchActivity).setBadgeAddNum(1).setAlert(message).build())
 				.build();
 		PushPayload pushPayload = PushPayload.newBuilder().setPlatform(Platform.all())
 				.setAudience(Audience.registrationId(jiguangDeviceList))
