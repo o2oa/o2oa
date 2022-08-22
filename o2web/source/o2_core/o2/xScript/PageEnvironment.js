@@ -2487,7 +2487,8 @@ if (!MWF.xScript.JSONData) {
                 },
                 "check": {
                     "value": function (kk, v) {
-                        this.add(kk, v || "", false, true);
+                        var value = typeOf( v ) === "null" ? "" : v;
+                        this.add(kk, value, false, true);
                     }
                 },
                 "del": {
