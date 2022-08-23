@@ -30,6 +30,8 @@ MWF.xApplication.query.StatDesigner.Main = new Class({
             this.options.application = this.status.applicationId;
             this.application = this.status.application;
             this.options.id = this.status.id;
+        }else{
+            if( !this.application && this.options.application )this.application = this.options.application;
         }
 
         if (!this.options.id){
@@ -101,6 +103,8 @@ MWF.xApplication.query.StatDesigner.Main = new Class({
                 var _self = this;
                 var options = {
                     "appId": "query.StatDesigner"+view.id,
+                    "id": view.id,
+                    "application": _self.application,
                     "onQueryLoad": function(){
                         this.actions = _self.actions;
                         this.category = _self;
@@ -118,7 +122,7 @@ MWF.xApplication.query.StatDesigner.Main = new Class({
     loadView: function(){
 		this.getViewData(this.options.id, function(vdata){
             this.setTitle(this.options.appTitle + "-"+vdata.name);
-            this.taskitem.setText(this.options.appTitle + "-"+vdata.name);
+            if(this.taskitem)this.taskitem.setText(this.options.appTitle + "-"+vdata.name);
             this.options.appTitle = this.options.appTitle + "-"+vdata.name;
             this.view = new MWF.xApplication.query.StatDesigner.Stat(this, vdata);
 			this.view.load();

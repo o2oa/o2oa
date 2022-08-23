@@ -30,6 +30,8 @@ MWF.xApplication.query.TableDesigner.Main = new Class({
             this.options.application = this.status.applicationId;
             this.application = this.status.application;
             this.options.id = this.status.id;
+        }else{
+            if( !this.application && this.options.application )this.application = this.options.application;
         }
 
         if (!this.options.id){
@@ -93,6 +95,8 @@ MWF.xApplication.query.TableDesigner.Main = new Class({
                 var _self = this;
                 var options = {
                     "appId": "query.TableDesigner"+table.id,
+                    "id": table.id,
+                    "application": _self.application,
                     "onQueryLoad": function(){
                         this.actions = _self.actions;
                         this.category = _self;
@@ -110,7 +114,7 @@ MWF.xApplication.query.TableDesigner.Main = new Class({
     loadView: function(){
         this.getViewData(this.options.id, function(vdata){
             this.setTitle(this.options.appTitle + "-"+vdata.name);
-            this.taskitem.setText(this.options.appTitle + "-"+vdata.name);
+            if(this.taskitem)this.taskitem.setText(this.options.appTitle + "-"+vdata.name);
             this.options.appTitle = this.options.appTitle + "-"+vdata.name;
             this.table = new MWF.xApplication.query.TableDesigner.Table(this, vdata);
             this.table.load();

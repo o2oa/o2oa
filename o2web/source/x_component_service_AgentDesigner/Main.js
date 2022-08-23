@@ -839,7 +839,7 @@ MWF.xApplication.service.AgentDesigner.Main = new Class({
 
                 if (!notSetTile){
                     this.setTitle(this.options.appTitle + "-"+data.name);
-                    this.taskitem.setText(this.options.appTitle + "-"+data.name);
+                    if(this.taskitem)this.taskitem.setText(this.options.appTitle + "-"+data.name);
                     this.options.appTitle = this.options.appTitle + "-"+data.name;
                 }
 
