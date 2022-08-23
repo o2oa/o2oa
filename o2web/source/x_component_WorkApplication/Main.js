@@ -2769,6 +2769,7 @@ MWF.xApplication.WorkApplication.ManageWorkForm = new Class({
 		}.bind(this), null, false);
 	},
 	_loadReadDone : function (){
+		var lp = this.lp;
 		this.readDoneArea.empty();
 		this.readDoneContentNode = new Element("div").inject(this.readDoneArea);
 		var readDoneTableNode = new Element("table.table",{
@@ -3052,6 +3053,7 @@ MWF.xApplication.WorkApplication.ManageWorkForm = new Class({
 		}.bind(this), null, false);
 	},
 	_loadReview : function (){
+		var lp = this.lp;
 		this.reviewArea.empty();
 		this.reviewContentNode = new Element("div").inject(this.reviewArea)
 		var reviewTableNode = new Element("table.table",{
