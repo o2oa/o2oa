@@ -30,8 +30,6 @@ MWF.xApplication.query.TableDesigner.Main = new Class({
             this.options.application = this.status.applicationId;
             this.application = this.status.application;
             this.options.id = this.status.id;
-        }else{
-            if( !this.application && this.options.application )this.application = this.options.application;
         }
 
         if (!this.options.id){
@@ -96,7 +94,7 @@ MWF.xApplication.query.TableDesigner.Main = new Class({
                 var options = {
                     "appId": "query.TableDesigner"+table.id,
                     "id": table.id,
-                    "application": _self.application,
+                    "application": _self.application.id,
                     "onQueryLoad": function(){
                         this.actions = _self.actions;
                         this.category = _self;

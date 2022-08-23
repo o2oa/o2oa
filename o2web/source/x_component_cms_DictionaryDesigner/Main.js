@@ -28,8 +28,6 @@ MWF.xApplication.cms.DictionaryDesigner.Main = new Class({
             this.application = this.status.application || this.status.applicationId;
             this.options.id = this.status.id;
             this.setOptions(this.status.options);
-        }else{
-            if( !this.application && this.options.application )this.application = this.options.application;
         }
 
 		if (!this.options.id){

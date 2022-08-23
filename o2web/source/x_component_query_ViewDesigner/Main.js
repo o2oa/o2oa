@@ -28,8 +28,6 @@ MWF.xApplication.query.ViewDesigner.Main = new Class({
             this.options.application = this.status.applicationId;
             this.application = this.status.application;
             this.options.id = this.status.id;
-        }else{
-            if( !this.application && this.options.application )this.application = this.options.application;
         }
 
 		if (!this.options.id){
@@ -362,7 +360,7 @@ MWF.xApplication.query.ViewDesigner.Main = new Class({
                 var options = {
                     "appId": "query.ViewDesigner"+view.id,
                     "id": view.id,
-                    "application": _self.application,
+                    "application": _self.application.id,
                     "onQueryLoad": function(){
                         this.actions = _self.actions;
                         this.category = _self;
