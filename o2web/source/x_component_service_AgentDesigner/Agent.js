@@ -81,22 +81,35 @@ MWF.xApplication.service.AgentDesigner.Agent = new Class({
             this.setPropertyContent();
             //this.setIncludeNode();
 
-
-            if (this.editor.editor){
-                this.editor.editor.focus();
-                //this.editor.editor.navigateFileStart();
+            if (this.editor){
+                this.editor.focus();
+            }else{
+                this.loadEditor();
             }
+
+            this.setAreaNodeSize();
+
+            //if (this.editor.editor){
+            //    this.editor.editor.focus();
+                //this.editor.editor.navigateFileStart();
+            //}
         }.bind(this));
+
+
+        var _self = this;
         this.page.addEvent("queryClose", function(){
-            if (this.autoSaveTimerID) window.clearInterval(this.autoSaveTimerID);
+            if (_self.autoSaveTimerID) window.clearInterval(_self.autoSaveTimerID);
+            this.showIm();
             //this.saveSilence();
-            if (this.lisNode) this.lisNode.setStyles(this.designer.css.listAgentItem);
-        }.bind(this));
+            if (_self.lisNode) _self.lisNode.setStyles(_self.designer.css.listAgentItem);
+        });
         this.page.tabNode.addEvent("dblclick", this.designer.maxOrReturnEditor.bind(this.designer));
 
+        if (this.options.showTab) this.page.showTabIm();
+    },
+    loadEditor:function(){
 
-
-        this.editor = new MWF.widget.JavascriptEditor(this.areaNode, {"runtime": "service"});
+        this.editor = new MWF.widget.JavascriptEditor(this.areaNode, {"runtime": "service", "option": {"value": this.data.text}});
         this.editor.load(function(){
             if (this.data.text){
                 this.editor.editor.setValue(this.data.text);
@@ -123,7 +136,7 @@ MWF.xApplication.service.AgentDesigner.Agent = new Class({
                 defaultText += "********************/\n";
                 this.editor.editor.setValue(defaultText);
             }
-            this.editor.addEditorEvent("change", function(){
+            this.editor.addEditorEvent("change", function(e){
                 if (!this.isChanged){
                     this.isChanged = true;
                     this.page.textNode.set("text", " * "+this.page.textNode.get("text"));
@@ -197,8 +210,6 @@ MWF.xApplication.service.AgentDesigner.Agent = new Class({
                 this.designer.styleSelectNode.hide();
             }
         }.bind(this));
-
-        if (this.options.showTab) this.page.showTabIm();
     },
     showReferenceMenu: function(){
         var pos = this.editor.getCursorPixelPosition();
@@ -244,7 +255,10 @@ MWF.xApplication.service.AgentDesigner.Agent = new Class({
         }
     },
     setAreaNodeSize: function(){
-        var size = this.node.getSize();
+        if( !this.areaNode.offsetParent )return;
+        //var size = this.node.getSize();
+        var size = this.node.getComputedSize();
+        size.y = size.height;
         var tabSize = this.tab.tabNodeContainer.getSize();
         var y = size.y - tabSize.y;
         this.areaNode.setStyle("height", ""+y+"px");
