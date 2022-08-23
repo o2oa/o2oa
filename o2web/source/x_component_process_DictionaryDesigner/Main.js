@@ -778,16 +778,21 @@ MWF.xApplication.process.DictionaryDesigner.Main = new Class({
 
 
     recordStatus: function(){
+
         if (this.tab){
             var openDictionarys = [];
             this.tab.pages.each(function(page){
                 if (page.dictionary.data.id!=this.options.id) openDictionarys.push(page.dictionary.data.id);
             }.bind(this));
             var currentId = this.tab.showPage.dictionary.data.id;
+            var application = o2.typeOf(this.application) === "object" ? {
+                name: this.application.name,
+                id: this.application.id
+            } : this.application;
             var status = {
                 "id": this.options.id,
-                "application": this.application,
-                "applicationId": this.application.id || this.application,
+                "application": application,
+                "applicationId": application.id || application,
                 "openDictionarys": openDictionarys,
                 "currentId": currentId,
                 "options": {
@@ -800,6 +805,6 @@ MWF.xApplication.process.DictionaryDesigner.Main = new Class({
             };
             return status;
         }
-        return {"id": this.options.id, "application": this.application};
+        return {"id": this.options.id, "application": application};
     }
 });

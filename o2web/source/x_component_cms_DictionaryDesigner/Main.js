@@ -25,7 +25,7 @@ MWF.xApplication.cms.DictionaryDesigner.Main = new Class({
         this.shortcut = true;
         if (this.status){
             this.options.application = this.status.applicationId;
-            this.application = this.status.application || this.status.applicationId;;
+            this.application = this.status.application || this.status.applicationId;
             this.options.id = this.status.id;
             this.setOptions(this.status.options);
         }
@@ -668,7 +668,7 @@ MWF.xApplication.cms.DictionaryDesigner.Main = new Class({
         //debugger;
 		this.getDictionaryData(this.options.id, function(ddata){
             this.setTitle(this.options.appTitle + "-"+ddata.name);
-            this.taskitem.setText(this.options.appTitle + "-"+ddata.name);
+            if(this.taskitem)this.taskitem.setText(this.options.appTitle + "-"+ddata.name);
             this.options.appTitle = this.options.appTitle + "-"+ddata.name;
 
             if (this.options.readMode){
@@ -773,10 +773,14 @@ MWF.xApplication.cms.DictionaryDesigner.Main = new Class({
                 if (page.dictionary.data.id!=this.options.id) openDictionarys.push(page.dictionary.data.id);
             }.bind(this));
             var currentId = this.tab.showPage.dictionary.data.id;
+            var application = o2.typeOf(this.application) === "object" ? {
+                name: this.application.name,
+                id: this.application.id
+            } : this.application;
             var status = {
                 "id": this.options.id,
-                "application": this.application,
-                "applicationId": this.application.id || this.application,
+                "application": application,
+                "applicationId": application.id || application,
                 "openDictionarys": openDictionarys,
                 "currentId": currentId,
                 "options": {
@@ -789,6 +793,6 @@ MWF.xApplication.cms.DictionaryDesigner.Main = new Class({
             };
             return status;
         }
-        return {"id": this.options.id, "application": this.application};
+        return {"id": this.options.id, "application": application};
     }
 });
