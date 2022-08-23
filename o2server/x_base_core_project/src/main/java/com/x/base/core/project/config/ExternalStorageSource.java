@@ -19,22 +19,20 @@ public class ExternalStorageSource extends ConfigObject {
 	// 无需保存
 	private transient String _password;
 
-	public ExternalStorageSource() {
-		this.protocol = DEFAULT_PROTOCOL;
-		this.username = DEFAULT_USERNAME;
-		this.password = DEFAULT_PASSWORD;
-		this.host = DEFAULT_HOST;
-		this.port = DEFAULT_PORT;
-		this.prefix = DEFAULT_PREFIX;
-		this.enable = DEFAULT_ENABLE;
-		this.weight = DEFAULT_WEIGHT;
-		this.name = DEFAULT_NAME;
-		this.deepPath = DEFAULT_DEEPPATH;
-	}
-
 	public static ExternalStorageSource defaultInstance() {
-		return new ExternalStorageSource();
-
+		ExternalStorageSource o = new ExternalStorageSource();
+		o.protocol = DEFAULT_PROTOCOL;
+		o.username = DEFAULT_USERNAME;
+		o.password = DEFAULT_PASSWORD;
+		o.host = DEFAULT_HOST;
+		o.port = DEFAULT_PORT;
+		o.prefix = DEFAULT_PREFIX;
+		o.enable = DEFAULT_ENABLE;
+		o.weight = DEFAULT_WEIGHT;
+		o.name = DEFAULT_NAME;
+		o.deepPath = DEFAULT_DEEPPATH;
+		o.store = DEFAULT_STORE;
+		return o;
 	}
 
 	public static final StorageProtocol DEFAULT_PROTOCOL = StorageProtocol.webdav;
@@ -154,7 +152,5 @@ public class ExternalStorageSource extends ConfigObject {
 	public void setStore(String store) {
 		this.store = store;
 	}
-	
-	
 
 }

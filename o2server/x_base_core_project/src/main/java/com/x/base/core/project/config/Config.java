@@ -131,6 +131,7 @@ public class Config {
 	public static final String DIR_JVM = "jvm";
 	public static final String DIR_LOCAL = "local";
 	public static final String DIR_LOCAL_BACKUP = "local/backup";
+	public static final String DIR_LOCAL_DUMP = "local/dump";
 	public static final String DIR_LOCAL_REPOSITORY = "local/repository";
 	public static final String DIR_LOCAL_UPDATE = "local/update";
 	public static final String DIR_LOCAL_TEMP = "local/temp";
@@ -469,14 +470,13 @@ public class Config {
 		return new File(base(), DIR_STORE);
 	}
 
-	public static File dir_store(Boolean force) throws Exception {
+	public static File dir_store(boolean force) throws Exception {
 		File dir = new File(base(), DIR_STORE);
-		if (force) {
-			if ((!dir.exists()) || dir.isFile()) {
-				FileUtils.forceMkdir(dir);
-			}
+		if (force && ((!dir.exists()) || dir.isFile())) {
+			FileUtils.forceMkdir(dir);
 		}
 		return dir;
+
 	}
 
 	public static File dir_store_jars() throws Exception {
@@ -1218,19 +1218,6 @@ public class Config {
 		}
 	}
 
-//	private Organization organization;
-//
-//	public static synchronized Organization organization() throws Exception {
-//		if (null == instance().organization) {
-//			Organization obj = BaseTools.readConfigObject(PATH_CONFIG_ORGANIZATION, Organization.class);
-//			if (null == obj) {
-//				obj = Organization.defaultInstance();
-//			}
-//			instance().organization = obj;
-//		}
-//		return instance().organization;
-//	}
-
 	public static Object resource(String name) throws Exception {
 		return initialContext().lookup(name);
 	}
@@ -1253,11 +1240,6 @@ public class Config {
 		ConcurrentHashMap<String, Object> map = (ConcurrentHashMap<String, Object>) initialContext()
 				.lookup(RESOURCE_NODE_APPLICATIONS);
 		return (JsonElement) map.get(RESOURCE_NODE_APPLICATIONS);
-//		Object o = initialContext().lookup(RESOURCE_NODE_APPLICATIONS);
-//		if (null != o) {
-//			return (JsonElement) o;
-//		}
-//		return null;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -1265,7 +1247,6 @@ public class Config {
 		ConcurrentHashMap<String, Object> map = (ConcurrentHashMap<String, Object>) initialContext()
 				.lookup(RESOURCE_NODE_APPLICATIONS);
 		map.put(RESOURCE_NODE_APPLICATIONS, jsonElement);
-		// initialContext().rebind(RESOURCE_NODE_APPLICATIONS, jsonElement);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -1273,11 +1254,6 @@ public class Config {
 		ConcurrentHashMap<String, Object> map = (ConcurrentHashMap<String, Object>) initialContext()
 				.lookup(RESOURCE_NODE_APPLICATIONS);
 		return (Date) map.get(RESOURCE_NODE_APPLICATIONSTIMESTAMP);
-		// Object o = initialContext().lookup(RESOURCE_NODE_APPLICATIONSTIMESTAMP);
-//		if (null != o) {
-//			return (Date) o;
-//		}
-//		return null;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -1285,7 +1261,6 @@ public class Config {
 		ConcurrentHashMap<String, Object> map = (ConcurrentHashMap<String, Object>) initialContext()
 				.lookup(RESOURCE_NODE_APPLICATIONS);
 		map.put(RESOURCE_NODE_APPLICATIONSTIMESTAMP, date);
-		// initialContext().rebind(RESOURCE_NODE_APPLICATIONSTIMESTAMP, date);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -1293,11 +1268,6 @@ public class Config {
 		ConcurrentHashMap<String, Object> map = (ConcurrentHashMap<String, Object>) initialContext()
 				.lookup(RESOURCE_NODE_APPLICATIONS);
 		return (String) map.get(RESOURCE_NODE_CENTERSPRIMARYNODE);
-//		Object o = initialContext().lookup()RESOURCE_NODE_CENTERSPRIMARYNODE;
-//		if (null != o) {
-//			return (String) o;
-//		}
-//		return null;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -1312,11 +1282,6 @@ public class Config {
 		ConcurrentHashMap<String, Object> map = (ConcurrentHashMap<String, Object>) initialContext()
 				.lookup(RESOURCE_NODE_APPLICATIONS);
 		return (Integer) map.get(RESOURCE_NODE_CENTERSPRIMARYPORT);
-		// Object o = initialContext().lookup(RESOURCE_NODE_CENTERSPRIMARYPORT);
-//		if (null != o) {
-//			return (Integer) o;
-//		}
-//		return null;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -1324,7 +1289,6 @@ public class Config {
 		ConcurrentHashMap<String, Object> map = (ConcurrentHashMap<String, Object>) initialContext()
 				.lookup(RESOURCE_NODE_APPLICATIONS);
 		map.put(RESOURCE_NODE_CENTERSPRIMARYPORT, port);
-		// initialContext().rebind(RESOURCE_NODE_CENTERSPRIMARYPORT, port);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -1332,11 +1296,6 @@ public class Config {
 		ConcurrentHashMap<String, Object> map = (ConcurrentHashMap<String, Object>) initialContext()
 				.lookup(RESOURCE_NODE_APPLICATIONS);
 		return (Boolean) map.get(RESOURCE_NODE_CENTERSPRIMARYSSLENABLE);
-		// Object o = initialContext().lookup(RESOURCE_NODE_CENTERSPRIMARYSSLENABLE);
-//		if (null != o) {
-//			return (Boolean) o;
-//		}
-//		return null;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -1344,7 +1303,6 @@ public class Config {
 		ConcurrentHashMap<String, Object> map = (ConcurrentHashMap<String, Object>) initialContext()
 				.lookup(RESOURCE_NODE_APPLICATIONS);
 		map.put(RESOURCE_NODE_CENTERSPRIMARYSSLENABLE, sslEnable);
-		// initialContext().rebind(RESOURCE_NODE_CENTERSPRIMARYSSLENABLE, sslEnable);
 	}
 
 	public static synchronized ExecutorService[] resource_node_processPlatformExecutors() throws Exception {
@@ -1425,7 +1383,7 @@ public class Config {
 		return command_java_path().startsWith(dir_jvm().toPath().resolve(OS_MACOS + "_" + JAVAVERSION_JAVA11));
 	}
 
-	public static Path path_commons_hadoop_windows(boolean force) throws Exception {
+	public static Path path_commons_hadoop_windows(boolean force) throws IOException, URISyntaxException {
 		Path path = Paths.get(base(), DIR_COMMONS_HADOOP_WINDOWS);
 		if ((!Files.exists(path)) && force) {
 			Files.createDirectories(path);
@@ -1433,7 +1391,7 @@ public class Config {
 		return path;
 	}
 
-	public static Path path_commons_hadoop_linux(boolean force) throws Exception {
+	public static Path path_commons_hadoop_linux(boolean force) throws IOException, URISyntaxException {
 		Path path = Paths.get(base(), DIR_COMMONS_HADOOP_LINUX);
 		if ((!Files.exists(path)) && force) {
 			Files.createDirectories(path);
@@ -1441,7 +1399,7 @@ public class Config {
 		return path;
 	}
 
-	public static Path path_commons_hadoop_aix(boolean force) throws Exception {
+	public static Path path_commons_hadoop_aix(boolean force) throws IOException, URISyntaxException {
 		Path path = Paths.get(base(), DIR_COMMONS_HADOOP_AIX);
 		if ((!Files.exists(path)) && force) {
 			Files.createDirectories(path);
@@ -1449,7 +1407,7 @@ public class Config {
 		return path;
 	}
 
-	public static Path path_commons_hadoop_macos(boolean force) throws Exception {
+	public static Path path_commons_hadoop_macos(boolean force) throws IOException, URISyntaxException {
 		Path path = Paths.get(base(), DIR_COMMONS_HADOOP_MACOS);
 		if ((!Files.exists(path)) && force) {
 			Files.createDirectories(path);
@@ -1457,7 +1415,7 @@ public class Config {
 		return path;
 	}
 
-	public static Path path_commons_hadoop_raspi(boolean force) throws Exception {
+	public static Path path_commons_hadoop_raspi(boolean force) throws IOException, URISyntaxException {
 		Path path = Paths.get(base(), DIR_COMMONS_HADOOP_RASPI);
 		if ((!Files.exists(path)) && force) {
 			Files.createDirectories(path);
@@ -1465,7 +1423,7 @@ public class Config {
 		return path;
 	}
 
-	public static Path path_commons_hadoop_arm(boolean force) throws Exception {
+	public static Path path_commons_hadoop_arm(boolean force) throws IOException, URISyntaxException {
 		Path path = Paths.get(base(), DIR_COMMONS_HADOOP_ARM);
 		if ((!Files.exists(path)) && force) {
 			Files.createDirectories(path);
@@ -1473,8 +1431,16 @@ public class Config {
 		return path;
 	}
 
-	public static Path path_commons_hadoop_mips(boolean force) throws Exception {
+	public static Path path_commons_hadoop_mips(boolean force) throws IOException, URISyntaxException {
 		Path path = Paths.get(base(), DIR_COMMONS_HADOOP_MIPS);
+		if ((!Files.exists(path)) && force) {
+			Files.createDirectories(path);
+		}
+		return path;
+	}
+
+	public static Path path_local_dump(boolean force) throws IOException, URISyntaxException {
+		Path path = Paths.get(base(), DIR_LOCAL_DUMP);
 		if ((!Files.exists(path)) && force) {
 			Files.createDirectories(path);
 		}
