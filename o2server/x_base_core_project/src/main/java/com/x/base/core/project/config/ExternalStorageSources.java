@@ -61,6 +61,14 @@ public class ExternalStorageSources extends ConfigObject {
 	public Map<String, Store> getStore() {
 		if (null == this.store) {
 			this.store = new ConcurrentHashMap<>();
+			Store s = new Store();
+			s.setHost("hdfs://127.0.0.1");
+			s.setName("");
+			s.setUsername("");
+			s.setPassword("");
+			s.setProtocol(StorageProtocol.hdfs);
+			s.setPort(9000);
+			this.store.put("demo", s);
 		}
 		return this.store;
 	}
