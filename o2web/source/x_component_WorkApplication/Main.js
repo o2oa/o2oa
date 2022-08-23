@@ -25,7 +25,7 @@ MWF.xApplication.WorkApplication.Main = new Class({
 		this.initAcl(function (){
 			this.action.ApplicationAction.get(this.options.id).then(function (json){
 				if (json.data){
-					this.setTitle(this.options.title+"-"+json.data.name);
+					this.setTitle(this.lp.title+"-"+json.data.name);
 					this.application = json.data;
 					var url = this.path+this.options.style+"/view/view.html";
 					this.content.loadHtml(url, {"bind": {"acl":this.acl,"lp": this.lp,"data":{"application" : this.application}}, "module": this}, function(){
