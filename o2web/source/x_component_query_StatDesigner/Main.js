@@ -102,7 +102,7 @@ MWF.xApplication.query.StatDesigner.Main = new Class({
                 var options = {
                     "appId": "query.StatDesigner"+view.id,
                     "id": view.id,
-                    "application": _self.application,
+                    "application": _self.application.id,
                     "onQueryLoad": function(){
                         this.actions = _self.actions;
                         this.category = _self;
