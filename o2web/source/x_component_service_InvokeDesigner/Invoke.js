@@ -283,7 +283,7 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
     setInvokeUrlText: function(){
         debugger
         var action = this.designer.actions.action;
-        var url;
+        var uri;
 
         var enableToken = true;
         this.designer.propertyEnableTokenNode.getElements("option").each( function(option){
@@ -296,10 +296,11 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
             uri = action.address + action.actions.executeToken.uri ;
             uri = uri.replace("{flag}", this.data.alias || this.data.name || this.data.id );
         }else{
-            var uri = action.address + action.actions.executeInvoke.uri ;
+            uri = action.address + action.actions.executeInvoke.uri ;
             uri = uri.replace("{flag}", this.data.alias || this.data.name || this.data.id );
         }
-        this.designer.propertyInvokeUriNode.set("text", uri);
+        var url = o2.filterUrl(uri);
+        this.designer.propertyInvokeUriNode.set("text", url);
     },
 
     setAreaNodeSize: function(){

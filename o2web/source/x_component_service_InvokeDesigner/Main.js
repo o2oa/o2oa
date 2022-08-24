@@ -705,8 +705,9 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
                     uri = o2.Actions.load("x_program_center").InvokeAction.action.actions.execute.uri;
                     url = uri.replace("{flag}", alias || name || id);
                 }
+                url = o2.filterUrl( address + "/" + serviceName +  url );
                 var res = new Request({
-                    url: address + "/" + serviceName +  url,
+                    url: url,
                     async: false,
                     method: "POST",
                     onSuccess: function(responseText, responseXML){
