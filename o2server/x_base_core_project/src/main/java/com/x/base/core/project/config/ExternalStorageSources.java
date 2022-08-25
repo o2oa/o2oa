@@ -13,7 +13,7 @@ public class ExternalStorageSources extends ConfigObject {
 
 	private static final long serialVersionUID = 8229115124625865737L;
 
-	private static final Boolean DEFAULT_ENABLE = true;
+	private static final Boolean DEFAULT_ENABLE = false;
 
 	public static ExternalStorageSources defaultInstance() {
 
