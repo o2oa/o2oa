@@ -849,7 +849,7 @@ public class Config {
 		if (null == instance().storageMappings) {
 			ExternalStorageSources obj = BaseTools.readConfigObject(PATH_CONFIG_EXTERNALSTORAGESOURCES,
 					ExternalStorageSources.class);
-			if ((obj != null)) {
+			if ((obj != null) && BooleanUtils.isTrue(obj.getEnable())) {
 				instance().storageMappings = new StorageMappings(obj);
 			} else {
 				instance().storageMappings = new StorageMappings(nodes());
@@ -860,7 +860,7 @@ public class Config {
 
 	private File sslKeyStore;
 
-	public static synchronized File sslKeyStore() throws Exception {
+	public static synchronized File sslKeyStore() throws IOException, URISyntaxException {
 		if (null == instance().sslKeyStore) {
 			File file = new File(BaseTools.getBasePath(), PATH_CONFIG_SSLKEYSTORE);
 			if ((!file.exists()) || file.isDirectory()) {

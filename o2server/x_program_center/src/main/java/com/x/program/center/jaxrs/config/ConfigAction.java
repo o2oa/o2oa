@@ -431,10 +431,10 @@ public class ConfigAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@Operation(summary = "列示所有数据备份.", operationId = OPERATIONID_PREFIX + "listDumpData", responses = {
+	@Operation(summary = "列示所有节点数据备份.", operationId = OPERATIONID_PREFIX + "listDumpData", responses = {
 			@ApiResponse(content = {
 					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListDumpData.Wo.class))) }) })
-	@JaxrsMethodDescribe(value = "列示所有数据备份.", action = ActionListDumpData.class)
+	@JaxrsMethodDescribe(value = "列示所有节点数据备份.", action = ActionListDumpData.class)
 	@GET
 	@Path("list/dump/data")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -451,4 +451,24 @@ public class ConfigAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@Operation(summary = "列示本节点数据备份.", operationId = OPERATIONID_PREFIX + "listDumpDataCurrentNode", responses = {
+			@ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListDumpDataCurrentNode.Wo.class))) }) })
+	@JaxrsMethodDescribe(value = "列示本节点数据备份.", action = ActionListDumpDataCurrentNode.class)
+	@GET
+	@Path("list/dump/data/current/node")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listDumpDataCurrentNode(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<List<ActionListDumpDataCurrentNode.Wo>> result = new ActionResult<>();
+		try {
+			result = new ActionListDumpDataCurrentNode().execute(effectivePerson);
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 }
