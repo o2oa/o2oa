@@ -13,6 +13,8 @@ public class ExternalStorageSources extends ConfigObject {
 
 	private static final long serialVersionUID = 8229115124625865737L;
 
+	private static final Boolean DEFAULT_ENABLE = true;
+
 	public static ExternalStorageSources defaultInstance() {
 
 		ExternalStorageSources externalStorages = new ExternalStorageSources();
@@ -32,6 +34,7 @@ public class ExternalStorageSources extends ConfigObject {
 		externalStorages.getGeneral();
 		externalStorages.getCustom();
 		externalStorages.getStore();
+		externalStorages.enable = DEFAULT_ENABLE;
 		return externalStorages;
 	}
 
@@ -57,6 +60,8 @@ public class ExternalStorageSources extends ConfigObject {
 	private CopyOnWriteArrayList<ExternalStorageSource> custom;
 
 	private ConcurrentHashMap<String, Store> store;
+
+	private Boolean enable;
 
 	public Map<String, Store> getStore() {
 		if (null == this.store) {
@@ -107,6 +112,10 @@ public class ExternalStorageSources extends ConfigObject {
 		default:
 			return this.getCustom();
 		}
+	}
+
+	public Boolean getEnable() {
+		return (null == this.enable) ? DEFAULT_ENABLE : this.enable;
 	}
 
 	public List<ExternalStorageSource> getFile() {

@@ -24,20 +24,6 @@ public class StorageMappings extends ConcurrentHashMap<StorageType, CopyOnWriteA
 		super();
 	}
 
-//	public StorageMappings(ExternalStorageSources externalStorageSources) {
-//		for (Entry<StorageType, CopyOnWriteArrayList<ExternalStorageSource>> entry : externalStorageSources
-//				.entrySet()) {
-//			CopyOnWriteArrayList<StorageMapping> list = new CopyOnWriteArrayList<>();
-//			for (ExternalStorageSource externalStorageSource : entry.getValue()) {
-//				if (BooleanUtils.isTrue(externalStorageSource.getEnable())) {
-//					StorageMapping storageMapping = new StorageMapping(externalStorageSource);
-//					list.add(storageMapping);
-//				}
-//				this.put(entry.getKey(), list);
-//			}
-//		}
-//	}
-
 	public StorageMappings(ExternalStorageSources externalStorageSources) {
 		for (StorageType o : StorageType.values()) {
 			CopyOnWriteArrayList<StorageMapping> list = new CopyOnWriteArrayList<>();
