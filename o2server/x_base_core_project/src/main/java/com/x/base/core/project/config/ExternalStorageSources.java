@@ -121,7 +121,7 @@ public class ExternalStorageSources extends ConfigObject {
 	public List<ExternalStorageSource> getFile() {
 		if (null == this.file) {
 			this.file = new CopyOnWriteArrayList<>();
-			this.file.add(new ExternalStorageSource());
+			this.file.add(ExternalStorageSource.defaultInstance());
 		}
 		return this.file;
 	}
@@ -129,7 +129,7 @@ public class ExternalStorageSources extends ConfigObject {
 	public List<ExternalStorageSource> getMind() {
 		if (null == this.mind) {
 			this.mind = new CopyOnWriteArrayList<>();
-			this.mind.add(new ExternalStorageSource());
+			this.mind.add(ExternalStorageSource.defaultInstance());
 		}
 		return this.mind;
 	}
@@ -137,7 +137,7 @@ public class ExternalStorageSources extends ConfigObject {
 	public List<ExternalStorageSource> getMeeting() {
 		if (null == this.meeting) {
 			this.meeting = new CopyOnWriteArrayList<>();
-			this.meeting.add(new ExternalStorageSource());
+			this.meeting.add(ExternalStorageSource.defaultInstance());
 		}
 		return this.meeting;
 	}
@@ -145,7 +145,7 @@ public class ExternalStorageSources extends ConfigObject {
 	public List<ExternalStorageSource> getProcessPlatform() {
 		if (null == this.processPlatform) {
 			this.processPlatform = new CopyOnWriteArrayList<>();
-			this.processPlatform.add(new ExternalStorageSource());
+			this.processPlatform.add(ExternalStorageSource.defaultInstance());
 		}
 		return this.processPlatform;
 	}
@@ -153,7 +153,7 @@ public class ExternalStorageSources extends ConfigObject {
 	public List<ExternalStorageSource> getCalendar() {
 		if (null == this.calendar) {
 			this.calendar = new CopyOnWriteArrayList<>();
-			this.calendar.add(new ExternalStorageSource());
+			this.calendar.add(ExternalStorageSource.defaultInstance());
 		}
 		return this.calendar;
 	}
@@ -161,7 +161,7 @@ public class ExternalStorageSources extends ConfigObject {
 	public List<ExternalStorageSource> getOkr() {
 		if (null == this.okr) {
 			this.okr = new CopyOnWriteArrayList<>();
-			this.okr.add(new ExternalStorageSource());
+			this.okr.add(ExternalStorageSource.defaultInstance());
 		}
 		return this.okr;
 	}
@@ -169,7 +169,7 @@ public class ExternalStorageSources extends ConfigObject {
 	public List<ExternalStorageSource> getCms() {
 		if (null == this.cms) {
 			this.cms = new CopyOnWriteArrayList<>();
-			this.cms.add(new ExternalStorageSource());
+			this.cms.add(ExternalStorageSource.defaultInstance());
 		}
 		return this.cms;
 	}
@@ -177,7 +177,7 @@ public class ExternalStorageSources extends ConfigObject {
 	public List<ExternalStorageSource> getBbs() {
 		if (null == this.bbs) {
 			this.bbs = new CopyOnWriteArrayList<>();
-			this.bbs.add(new ExternalStorageSource());
+			this.bbs.add(ExternalStorageSource.defaultInstance());
 		}
 		return this.bbs;
 	}
@@ -185,7 +185,7 @@ public class ExternalStorageSources extends ConfigObject {
 	public List<ExternalStorageSource> getReport() {
 		if (null == this.report) {
 			this.report = new CopyOnWriteArrayList<>();
-			this.report.add(new ExternalStorageSource());
+			this.report.add(ExternalStorageSource.defaultInstance());
 		}
 		return this.report;
 	}
@@ -193,7 +193,7 @@ public class ExternalStorageSources extends ConfigObject {
 	public List<ExternalStorageSource> getStrategyDeploy() {
 		if (null == this.strategyDeploy) {
 			this.strategyDeploy = new CopyOnWriteArrayList<>();
-			this.strategyDeploy.add(new ExternalStorageSource());
+			this.strategyDeploy.add(ExternalStorageSource.defaultInstance());
 		}
 		return this.strategyDeploy;
 	}
@@ -201,7 +201,7 @@ public class ExternalStorageSources extends ConfigObject {
 	public List<ExternalStorageSource> getTeamwork() {
 		if (null == this.teamwork) {
 			this.teamwork = new CopyOnWriteArrayList<>();
-			this.teamwork.add(new ExternalStorageSource());
+			this.teamwork.add(ExternalStorageSource.defaultInstance());
 		}
 		return this.teamwork;
 	}
@@ -209,7 +209,7 @@ public class ExternalStorageSources extends ConfigObject {
 	public List<ExternalStorageSource> getStructure() {
 		if (null == this.structure) {
 			this.structure = new CopyOnWriteArrayList<>();
-			this.structure.add(new ExternalStorageSource());
+			this.structure.add(ExternalStorageSource.defaultInstance());
 		}
 		return this.structure;
 	}
@@ -217,7 +217,7 @@ public class ExternalStorageSources extends ConfigObject {
 	public List<ExternalStorageSource> getIm() {
 		if (null == this.im) {
 			this.im = new CopyOnWriteArrayList<>();
-			this.im.add(new ExternalStorageSource());
+			this.im.add(ExternalStorageSource.defaultInstance());
 		}
 		return this.im;
 	}
@@ -225,7 +225,7 @@ public class ExternalStorageSources extends ConfigObject {
 	public List<ExternalStorageSource> getGeneral() {
 		if (null == this.general) {
 			this.general = new CopyOnWriteArrayList<>();
-			this.general.add(new ExternalStorageSource());
+			this.general.add(ExternalStorageSource.defaultInstance());
 		}
 		return this.general;
 	}
@@ -233,7 +233,7 @@ public class ExternalStorageSources extends ConfigObject {
 	public List<ExternalStorageSource> getCustom() {
 		if (null == this.custom) {
 			this.custom = new CopyOnWriteArrayList<>();
-			this.custom.add(new ExternalStorageSource());
+			this.custom.add(ExternalStorageSource.defaultInstance());
 		}
 		return this.custom;
 	}
