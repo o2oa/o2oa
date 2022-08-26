@@ -90,6 +90,7 @@ public class Config {
 	public static final String PATH_CONFIG_ZHENGWUDINGDING = "config/zhengwuDingding.json";
 	public static final String PATH_CONFIG_QIYEWEIXIN = "config/qiyeweixin.json";
 	public static final String PATH_CONFIG_MPWEIXIN = "config/mpweixin.json";
+	public static final String PATH_CONFIG_MPWEIXIN2 = "config/mMweixin.json"; // 容错
 	public static final String PATH_CONFIG_BINDLOGO = "config/bindLogo.png";
 	public static final String PATH_COMMONS_INITIALSCRIPTTEXT = "commons/initialScriptText.js";
 	public static final String PATH_COMMONS_INITIALSERVICESCRIPTTEXT = "commons/initialServiceScriptText.js";
@@ -1014,6 +1015,9 @@ public class Config {
 	public static synchronized MPweixin mPweixin() throws Exception {
 		if (null == instance().mPweixin) {
 			MPweixin obj = BaseTools.readConfigObject(PATH_CONFIG_MPWEIXIN, MPweixin.class);
+			if (obj == null) { // 容错 因为生成的配置文件名称有大小写问题
+				obj = BaseTools.readConfigObject(PATH_CONFIG_MPWEIXIN2, MPweixin.class);
+			}
 			if (null == obj) {
 				obj = MPweixin.defaultInstance();
 			}
