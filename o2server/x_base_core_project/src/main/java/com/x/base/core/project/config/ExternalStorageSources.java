@@ -23,11 +23,8 @@ public class ExternalStorageSources extends ConfigObject {
 		externalStorages.getMeeting();
 		externalStorages.getProcessPlatform();
 		externalStorages.getCalendar();
-		externalStorages.getOkr();
 		externalStorages.getCms();
 		externalStorages.getBbs();
-		externalStorages.getReport();
-		externalStorages.getStrategyDeploy();
 		externalStorages.getTeamwork();
 		externalStorages.getStructure();
 		externalStorages.getIm();
@@ -48,11 +45,8 @@ public class ExternalStorageSources extends ConfigObject {
 	private CopyOnWriteArrayList<ExternalStorageSource> mind;
 	private CopyOnWriteArrayList<ExternalStorageSource> meeting;
 	private CopyOnWriteArrayList<ExternalStorageSource> calendar;
-	private CopyOnWriteArrayList<ExternalStorageSource> okr;
 	private CopyOnWriteArrayList<ExternalStorageSource> cms;
 	private CopyOnWriteArrayList<ExternalStorageSource> bbs;
-	private CopyOnWriteArrayList<ExternalStorageSource> report;
-	private CopyOnWriteArrayList<ExternalStorageSource> strategyDeploy;
 	private CopyOnWriteArrayList<ExternalStorageSource> teamwork;
 	private CopyOnWriteArrayList<ExternalStorageSource> structure;
 	private CopyOnWriteArrayList<ExternalStorageSource> im;
@@ -152,14 +146,6 @@ public class ExternalStorageSources extends ConfigObject {
 		return this.calendar;
 	}
 
-	public List<ExternalStorageSource> getOkr() {
-		if (null == this.okr) {
-			this.okr = new CopyOnWriteArrayList<>();
-			this.okr.add(ExternalStorageSource.defaultInstance());
-		}
-		return this.okr;
-	}
-
 	public List<ExternalStorageSource> getCms() {
 		if (null == this.cms) {
 			this.cms = new CopyOnWriteArrayList<>();
@@ -174,22 +160,6 @@ public class ExternalStorageSources extends ConfigObject {
 			this.bbs.add(ExternalStorageSource.defaultInstance());
 		}
 		return this.bbs;
-	}
-
-	public List<ExternalStorageSource> getReport() {
-		if (null == this.report) {
-			this.report = new CopyOnWriteArrayList<>();
-			this.report.add(ExternalStorageSource.defaultInstance());
-		}
-		return this.report;
-	}
-
-	public List<ExternalStorageSource> getStrategyDeploy() {
-		if (null == this.strategyDeploy) {
-			this.strategyDeploy = new CopyOnWriteArrayList<>();
-			this.strategyDeploy.add(ExternalStorageSource.defaultInstance());
-		}
-		return this.strategyDeploy;
 	}
 
 	public List<ExternalStorageSource> getTeamwork() {
