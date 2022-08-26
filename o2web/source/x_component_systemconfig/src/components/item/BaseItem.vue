@@ -3,7 +3,7 @@
   <div v-if="!!info || !!name" class="item_info">{{info || lp._systemInfo[name+'Info']}}</div>
   <div class="item_info" v-if="!editMode">
     <div  class="item_value mainColor_color">{{configText}}</div>
-    <button class="mainColor_bg" v-if="allowEditor" @click="toggleEditor">{{lp.operation.edit+(title || lp._systemInfo[name] || '')}}</button>
+    <button class="mainColor_bg" v-if="allowEditor" @click="()=>{(editMethod) ? editMethod() : toggleEditor()}">{{lp.operation.edit+(title || lp._systemInfo[name] || '')}}</button>
   </div>
   <div class="item_info" v-else>
     <el-input-number v-if="type==='number'" class="item_number_input" v-model="configValue" size="default" :min="0" v-bind="options"></el-input-number>
@@ -52,7 +52,8 @@ const props = defineProps({
   type: { type: String, default: 'text' },
   options: {},
   formatText: Function,
-  inputStyle: {type:Object, default: null}
+  inputStyle: {type:Object, default: null},
+  editMethod: Function
 });
 const configValue = ref('');
 const editMode = ref(false);

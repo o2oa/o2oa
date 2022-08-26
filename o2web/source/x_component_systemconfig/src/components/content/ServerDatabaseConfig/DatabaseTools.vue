@@ -31,7 +31,12 @@
       <button
           :class="{'item_disable': dumpStatus==='check' || dumpStatus==='running' || restoreStatus==='check' || restoreStatus==='running', 'mainColor_bg': dumpStatus!=='check' && dumpStatus!=='running' && restoreStatus!=='check' && restoreStatus!=='running'}"
           @click="restore($event)">{{lp._databaseServer.restoreTools}}</button>
-      <el-input v-model="dumpDataName" style="width: 210px; margin-left: 10px"></el-input>
+<!--      <el-input v-model="dumpDataName" style="width: 210px; margin-left: 10px"></el-input>-->
+
+      <el-select v-model="dumpDataName" style="margin-left: 10px">
+        <el-option v-for="d in dumpDataList" :key="d.value" :value="d.value"></el-option>
+      </el-select>
+
       <span class="item_info" v-if="restoreStatus==='check'">{{lp._databaseServer.restoreCheck}}</span>
       <span class="item_info" v-if="restoreStatus==='stop'">{{lp._databaseServer.restoreStop}}</span>
       <span class="item_info" v-if="restoreStatus==='running'">{{lp._databaseServer.restoreRunning}}</span>
@@ -52,15 +57,16 @@
 </template>
 
 <script setup>
-import {ref, computed} from 'vue';
+import {ref} from 'vue';
 import {component, lp, o2} from '@o2oa/component';
-import {loadRuntimeConfig, saveConfig, getServers, executeCommand, getSystemLog} from "@/util/acrions";
-import EntityEditor from '@/components/content/ServerDatabaseConfig/EntityEditor';
+import {getServers, executeCommand, getSystemLog, listDumpData} from "@/util/acrions";
 
 const servers = ref([]);
 const dumpLogArea = ref();
 const dumpStatus = ref('stop');
 const dumpDataName = ref('');
+const dumpDataList = ref([]);
+
 let checkTimes = ref(0);
 
 const restoreLogArea = ref();
@@ -83,13 +89,13 @@ const restoreCheck = ()=>{
   check(restoreStatus, restoreCheckTimes, readRestoreLog);
 }
 
-const runCommand = (e, command, title, info, area, status, logMethod)=>{
+const runCommand = (e, command, title, info, area, status, logMethod, server)=>{
   component.confirm("warn", e, title, info, 500, 100, (dlg)=>{
     area.value.empty();
     const body ={
       ctl: command,
-      nodeName: servers.value[0].nodeAddress,
-      nodePort: servers.value[0].node.nodeAgentPort
+      nodeName: (server) ? server.nodeAddress : servers.value[0].nodeAddress,
+      nodePort: (server) ? server.node.nodeAgentPort : servers.value[0].node.nodeAgentPort
     }
     executeCommand(body).then((data)=>{
       if (data.status==="success"){
@@ -107,51 +113,24 @@ const runCommand = (e, command, title, info, area, status, logMethod)=>{
 }
 const dump = (e)=>{
   runCommand(e, 'ctl -dd', lp._databaseServer.dumpBegin, lp._databaseServer.dumpBeginInfo, dumpLogArea, dumpStatus, readDumpLog);
-  // component.confirm("warn", e, lp._databaseServer.dumpBegin, lp._databaseServer.dumpBeginInfo, 500, 100, (dlg)=>{
-  //   dumpLogArea.value.empty();
-  //   const body ={
-  //     ctl: "ctl -dd",
-  //     nodeName: servers.value[0].nodeAddress,
-  //     nodePort: servers.value[0].node.nodeAgentPort
-  //   }
-  //   executeCommand(body).then((data)=>{
-  //     if (data.status==="success"){
-  //       const id = o2.uuid();
-  //       dumpStatus.value = 'running';
-  //       readDumpLog(id);
-  //     }else{
-  //       dumpStatus.value = 'error';
-  //     }
-  //   });
-  //   dlg.close();
-  // }, (dlg)=>{
-  //   dlg.close();
-  // }, null, component.content);
 }
 const restore = (e)=>{
-  const path = dumpDataName.value.includes('_') ? dumpDataName.value.substring(dumpDataName.value.lastIndexOf('_')+1) : dumpDataName.value;
-  runCommand(e, 'ctl -rd '+path, lp._databaseServer.restoreBegin, lp._databaseServer.restoreBeginInfo, restoreLogArea, restoreStatus, readRestoreLog);
+  const d = dumpDataList.value.find((data)=>{
+    return data.value===dumpDataName.value;
+  });
+  if (d){
+    const s = servers.value.find((server)=>{
+      return server.nodeAddress===d.node;
+    });
 
-  // component.confirm("warn", e, lp._databaseServer.restoreBegin, lp._databaseServer.restoreBeginInfo, 500, 100, (dlg)=>{
-  //   restoreLogArea.value.empty();
-  //   const body ={
-  //     ctl: "ctl -rd",
-  //     nodeName: servers.value[0].nodeAddress,
-  //     nodePort: servers.value[0].node.nodeAgentPort
-  //   }
-  //   executeCommand(body).then((data)=>{
-  //     if (data.status==="success"){
-  //       const id = o2.uuid();
-  //       restoreStatus.value = 'running';
-  //       readDumpLog(id);
-  //     }else{
-  //       restoreStatus.value = 'error';
-  //     }
-  //   });
-  //   dlg.close();
-  // }, (dlg)=>{
-  //   dlg.close();
-  // }, null, component.content);
+    if (s){
+      const path = d.value.includes('_') ? d.value.substring(d.value.lastIndexOf('_')+1) : d.value;
+      runCommand(e, 'ctl -rd '+path, lp._databaseServer.restoreBegin, lp._databaseServer.restoreBeginInfo, restoreLogArea, restoreStatus, readRestoreLog, s);
+    }
+  }
+
+
+
 }
 
 const printLog = (log, area, className)=>{
@@ -218,42 +197,10 @@ const readDumpLog = (id)=>{
     path = path.substring(0, path.indexOf(','));
     path = path.substring(path.lastIndexOf('/')+1);
     dumpDataName.value = path;
+    listDumpData().then((data)=>{
+      dumpDataList.value = data;
+    });
   });
-  // setTimeout(async () => {
-  //   const data = await getSystemLog(id);
-  //   let isDump = false;
-  //   if (data){
-  //     data.forEach((log)=>{
-  //       if (log.lineLog.includes('dump data completed')){
-  //         printDumpLog(log, 'item_log_completed');
-  //
-  //         let path = log.lineLog.substring(log.lineLog.indexOf('directory:'));
-  //         path = path.substring(0, path.indexOf(','));
-  //         path = path.substring(path.lastIndexOf('/')+1);
-  //         dumpDataName.value = path;
-  //
-  //         dumpStatus.value='end';
-  //         isDump = true;
-  //       }else if (log.lineLog.includes('dump') ){
-  //         printDumpLog(log);
-  //         isDump = true;
-  //       }
-  //     });
-  //   }
-  //
-  //   if (isDump && dumpStatus.value!=='end'){
-  //     dumpStatus.value='running';
-  //     checkTimes.value = 0;
-  //   }
-  //   if (dumpStatus.value === 'check') checkTimes.value++;
-  //   if (dumpStatus.value === 'check' && checkTimes.value>5){
-  //     dumpStatus.value = 'stop';
-  //     checkTimes.value = 0;
-  //   }
-  //   if (dumpStatus.value !== 'stop' && dumpStatus.value !== 'end'){
-  //     readDumpLog(id);
-  //   }
-  // }, 1000)
 }
 
 const readRestoreLog = (id)=>{
@@ -262,36 +209,6 @@ const readRestoreLog = (id)=>{
   }, (log)=>{
     return log.lineLog.includes('restore');
   }, restoreStatus, printRestoreLog, restoreCheckTimes);
-  // setTimeout(async () => {
-  //   const data = await getSystemLog(id);
-  //   let isGetLog = false;
-  //   if (data){
-  //     data.forEach((log)=>{
-  //       if (log.lineLog.includes('restore data completed')){
-  //         printRestoreLog(log, 'item_log_completed');
-  //
-  //         restoreStatus.value='end';
-  //         isGetLog = true;
-  //       }else if (log.lineLog.includes('restore') ){
-  //         printRestoreLog(log);
-  //         isGetLog = true;
-  //       }
-  //     });
-  //   }
-  //
-  //   if (isGetLog && restoreStatus.value!=='end'){
-  //     restoreStatus.value='running';
-  //     restoreCheckTimes.value = 0;
-  //   }
-  //   if (restoreStatus.value === 'check') restoreCheckTimes.value++;
-  //   if (restoreStatus.value === 'check' && restoreCheckTimes.value>5){
-  //     restoreStatus.value = 'stop';
-  //     restoreCheckTimes.value = 0;
-  //   }
-  //   if (restoreStatus.value !== 'stop' && restoreStatus.value !== 'end'){
-  //     readRestoreLog(id);
-  //   }
-  // }, 1000)
 }
 
 
@@ -300,6 +217,10 @@ const load = ()=>{
     servers.value = data.nodeList;
     dumpCheck();
     restoreCheck();
+  });
+
+  listDumpData().then((data)=>{
+    dumpDataList.value = data;
   });
 }
 

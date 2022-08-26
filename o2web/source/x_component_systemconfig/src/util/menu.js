@@ -23,14 +23,14 @@ function getMenuJson(){
                 // {'title': lp.appServer, 'component': '', 'icon': 'service' },
                 // {'title': lp.webServer, 'component': '', 'icon': 'web' },
                 {'title': lp.databaseServer, 'component': 'ServerDatabaseConfig', 'icon': 'database' },
-                {'title': lp.storageServer, 'component': '', 'icon': 'download' },
-                {'title': lp.cacheConfig, 'component': '', 'icon': 'cache' },
+                {'title': lp.storageServer, 'component': 'ServerStorageConfig', 'icon': 'download' },
+                {'title': lp.cacheConfig, 'component': 'ServerCacheConfig', 'icon': 'cache' },
                 // {'title': lp.clusterConfig, 'component': '', 'icon': 'servers' },
-                {'title': lp.orgConfig, 'component': '', 'icon': 'org' },
-                {'title': lp.processConfig, 'component': '', 'icon': 'flow' },
+                // {'title': lp.orgConfig, 'component': '', 'icon': 'org' },
+                {'title': lp.processConfig, 'component': 'ServerProcessConfig', 'icon': 'flow' },
                 {'title': lp.cloudConfig, 'component': 'ServerCloudConfig', 'icon': 'cloud' },
-                {'title': lp.dumpConfig, 'component': '', 'icon': 'dump' },
-                {'title': lp.worktimeConfig, 'component': 'WorktimeConfig', 'icon': 'timer' }
+                // {'title': lp.dumpConfig, 'component': '', 'icon': 'dump' },
+                {'title': lp.worktimeConfig, 'component': 'ServerWorktimeConfig', 'icon': 'timer' }
             ]
         },
         {
@@ -58,13 +58,13 @@ function getMenuJson(){
             'title': lp.mobileConfig,
             "icon": "mobile",
             'children': [
-                {'title': lp.connectConfig, 'component': '', 'icon': 'connect' },
-                {'title': lp.moduleConfig, 'component': '', 'icon': 'apps' },
-                {'title': lp.iconConfig, 'component': '', 'icon': 'icon' },
-                {'title': lp.ddConfig, 'component': '', 'icon': 'dingding' },
-                {'title': lp.wechatConfig, 'component': '', 'icon': 'wechat' },
-                {'title': lp.welinkConfig, 'component': '', 'icon': 'welink' },
-                {'title': lp.appTools, 'component': '', 'icon': 'tools' }
+                {'title': lp.appConfig, 'component': 'MobileAppConfig', 'icon': 'connect' },
+                // {'title': lp.moduleConfig, 'component': '', 'icon': 'apps' },
+                // {'title': lp.iconConfig, 'component': '', 'icon': 'icon' },
+                {'title': lp.integrationConfig, 'component': 'MobileIntegrationConfig', 'icon': 'dingding' },
+                // {'title': lp.wechatConfig, 'component': '', 'icon': 'wechat' },
+                // {'title': lp.welinkConfig, 'component': '', 'icon': 'welink' },
+                {'title': lp.appTools, 'component': 'MobileToolsConfig', 'icon': 'tools' }
             ]
         }
     ];

@@ -32,16 +32,28 @@
             </div>
 
         </div>
-
       </div>
+
+
     </div>
+
+    <div class="menuBottom">
+      <div class="menuTitleText" @click="(e)=>{layout.openApplication(e,'ConfigDesigner')}">JSON配置</div>
+    </div>
+
+<!--    <div class="menuItem" @click="(e)=>{layout.openApplication(e,'ConfigDesigner')}">-->
+<!--      <div class="menuItemIcon"><i class="o2icon-log"></i></div>-->
+<!--      <div class="menuItemText">JSON配置</div>-->
+<!--    </div>-->
+
+
   </div>
 </template>
 
 <script setup>
 import {getMenuJson} from '@/util/menu';
 import {ref} from 'vue';
-import {lp} from '@o2oa/component';
+import {lp, layout} from '@o2oa/component';
 
 const menuJson = ref(getMenuJson());
 let currentItem = ref(menuJson.value[0].children[0]);
@@ -188,7 +200,7 @@ function selectedItem(item){
 .subItem {
   height: 40px;
   line-height: 40px;
-  padding-left: 10px;
+  padding-left: 20px;
   font-size: 14px;
   color: #666666;
 }
@@ -198,5 +210,17 @@ function selectedItem(item){
 .subItemText{
   margin: 0 30px 0 40px;
   text-align: left;
+}
+.menuBottom{
+  margin: 0 20px;
+  height: 60px;
+  font-size: 18px;
+  color: #333333;
+  line-height: 60px;
+  border-top: 1px solid #cccccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
 }
 </style>

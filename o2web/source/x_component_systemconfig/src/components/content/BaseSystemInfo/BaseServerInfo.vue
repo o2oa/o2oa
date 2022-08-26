@@ -57,7 +57,7 @@
             <BaseServerInfoItem :data="server.node.application"></BaseServerInfoItem>
           </el-collapse-item>
 
-          <el-collapse-item v-if="!externalData.length">
+          <el-collapse-item v-if="databaseType==='inner'">
             <template #title>
               <div class="item_server_item_slot">
                 <div style="display: flex; align-items: center;">
@@ -91,7 +91,7 @@
     </div>
 
 
-    <div v-if="externalData && externalData.length">
+    <div v-if="databaseType==='external' && externalData.length">
       <div class="item_info">
         <div class="item_server_item lightColor_bg">
           <div class="item_server_area">
@@ -180,7 +180,7 @@
 </template>
 
 <script setup>
-import {ref} from 'vue';
+import {ref, computed} from 'vue';
 import {lp} from '@o2oa/component';
 import BaseServerInfoItem from './BaseServerInfoItem.vue';
 import {getServers, loadRuntimeConfig} from '@/util/acrions';
@@ -189,6 +189,10 @@ const servers = ref([]);
 const externalStorage = ref([]);
 const externalStorageType = ref();
 const externalData = ref([]);
+const databaseType = computed(()=>{
+  const d = (externalData.value) ? externalData.value.filter((db)=>{ return db.enable}) : null;
+  return (!d || !d.length) ? 'inner' : 'external';
+});
 
 const objectSpanMethod = (spanProps)=>{
   return (spanProps.columnIndex === 0) ? [spanProps.row.span || 0, (spanProps.row.span) ? 1 : 0] : [1, 1];

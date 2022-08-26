@@ -33,6 +33,59 @@
     <div class="systemconfig_item_info" v-html="lp._serversConfig.webSocketEnableInfo"></div>
     <BaseBoolean v-model:value="generalData.webSocketEnable" @change="(v)=>{saveConfig('general', 'webSocketEnable', v)}"/>
 
+    <div class="systemconfig_item_title">{{lp._serversConfig.personUnitOrderByAsc}}</div>
+    <div class="systemconfig_item_info" v-html="lp._serversConfig.personUnitOrderByAscInfo"></div>
+    <BaseBoolean v-model:value="personUnitOrderByAsc" @change="(v)=>{saveConfig('person', 'personUnitOrderByAsc', v)}"/>
+
+    <div class="systemconfig_item_title">{{lp._serversConfig.attachmentConfig}}</div>
+    <div class="systemconfig_item_info" v-html="lp._serversConfig.attachmentConfigInfo"></div>
+    <div class="item_info">
+      <label class="item_label" style="width: 130px">{{lp._serversConfig.fileSize}}</label>
+      <div class="item_input_area">
+        <BaseItem
+            :config="generalData.attachmentConfig.fileSize"
+            :allowEditor="true"
+            type="number"
+            @changeConfig="(value)=>{generalData.attachmentConfig.fileSize=value.toInt(); saveConfig('general', 'attachmentConfig.fileSize', value.toInt())}"
+        ></BaseItem>
+        <div class="item_info">{{lp._serversConfig.fileSizeInfo}}</div>
+      </div>
+    </div>
+
+    <div class="item_info">
+      <label class="item_label" style="width: 130px">{{lp._serversConfig.fileTypeIncludes}}</label>
+      <div class="item_input_area">
+        <BaseItem
+            :config="generalData.attachmentConfig.fileTypeIncludes"
+            :allowEditor="true"
+            type="textarea"
+            :input-style="{width: '310px'}"
+            :options="{rows: 2, spellcheck: false, style: 'word-break: break-all;'}"
+            @changeConfig="(value)=>{const v = value.split(/\s*,\s*/g); generalData.attachmentConfig.fileTypeIncludes=v; saveConfig('general', 'attachmentConfig.fileTypeIncludes', v)}"
+        ></BaseItem>
+        <div class="item_info">{{lp._serversConfig.fileTypeIncludesInfo}}</div>
+      </div>
+    </div>
+
+    <div class="item_info">
+      <label class="item_label" style="width: 130px">{{lp._serversConfig.fileTypeExcludes}}</label>
+      <div class="item_input_area">
+        <BaseItem
+            :config="generalData.attachmentConfig.fileTypeExcludes"
+            :allowEditor="true"
+            type="textarea"
+            :input-style="{width: '310px'}"
+            :options="{rows: 2, spellcheck: false, style: 'word-break: break-all;'}"
+            @changeConfig="(value)=>{const v = value.split(/\s*,\s*/g); generalData.attachmentConfig.fileTypeExcludes=v; saveConfig('general', 'attachmentConfig.fileTypeExcludes', v)}"
+        ></BaseItem>
+        <div class="item_info">{{lp._serversConfig.fileTypeExcludesInfo}}</div>
+      </div>
+    </div>
+
+
+
+
+
     <div class="systemconfig_item_title">{{lp._serversConfig.deployWarEnable}}</div>
     <div class="systemconfig_item_info" v-html="lp._serversConfig.deployWarEnableInfo"></div>
     <BaseBoolean v-model:value="generalData.deployWarEnable" @change="(v)=>{saveConfig('general', 'deployWarEnable', v)}"/>
@@ -105,7 +158,8 @@ import {ref} from 'vue';
 import BaseBoolean from "@/components/item/BaseBoolean";
 import BaseItem from "@/components/item/BaseItem";
 
-const generalData = ref({});
+const generalData = ref({attachmentConfig:{}});
+const personUnitOrderByAsc = ref(true);
 
 const getDruidUrl = ()=>{
   const port = layout.centerServer.port;
@@ -123,6 +177,19 @@ const getJestUrl = ()=>{
 getConfigData('general').then((data)=>{
   generalData.value = data;
 
+  if (!generalData.value.hasOwnProperty('attachmentConfig')){
+    generalData.value.attachmentConfig = {
+      "fileSize": 0,
+      "fileTypeIncludes": [],
+      "fileTypeExcludes": [
+        "jsp",
+        "exe",
+        "sh",
+        "tmp"
+      ]
+    };
+  }
+
   if (!generalData.value.hasOwnProperty('exposeJest')){
     generalData.value.exposeJest = true;
   }
@@ -132,6 +199,9 @@ getConfigData('general').then((data)=>{
   if (!generalData.value.hasOwnProperty('statExclusions')){
     generalData.value.statExclusions = '*.js,*.gif,*.jpg,*.png,*.css,*.ico';
   }
+});
+getConfigData('person').then((data)=>{
+  personUnitOrderByAsc.value = data.personUnitOrderByAsc;
 });
 
 </script>

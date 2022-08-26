@@ -52,29 +52,6 @@
       </el-checkbox-group>
     </div>
 
-<!--&lt;!&ndash;    @changeConfig="(value)=>{failureCount = value.toInt(); saveConfig('person', 'failureCount', value.toInt())}"&ndash;&gt;-->
-
-<!--    <div class="systemconfig_item_title">{{lp._ternaryManagement.logRetainDays}}</div>-->
-<!--    <div class="systemconfig_item_info" v-html="lp._ternaryManagement.logRetainDaysInfo"></div>-->
-<!--    <div>-->
-<!--      <div class="item_info" style="display: inline-flex; align-items: center;">-->
-<!--        <label class="item_label">{{lp._ternaryManagement.logRetainDays}}</label>-->
-<!--        <div class="item_input_area">-->
-<!--          <BaseItem-->
-<!--              :config="logRetainDays"-->
-<!--              :allowEditor="true"-->
-<!--              type="number"-->
-<!--              @changeConfig="(value)=>{logRetainDays=value.toInt(); saveConfig('general', 'requestLogRetainDays', value.toInt())}"-->
-<!--          ></BaseItem>-->
-
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-
-<!--    <div class="systemconfig_item_title">{{lp._ternaryManagement.logBodyEnable}}</div>-->
-<!--    <div class="systemconfig_item_info" v-html="lp._ternaryManagement.logBodyEnableInfo"></div>-->
-<!--    <BaseBoolean :value="logBodyEnable" @change="(value)=>{saveConfig('general', 'requestLogBodyEnable', value)}" />-->
-
   </div>
 </template>
 
@@ -82,7 +59,6 @@
 import {ref} from 'vue';
 import {lp} from '@o2oa/component';
 import {getConfigData, saveConfigData, saveConfig} from "@/util/acrions";
-import BaseBoolean from '@/components/item/BaseBoolean.vue';
 import BaseItem from '@/components/item/BaseItem.vue';
 
 

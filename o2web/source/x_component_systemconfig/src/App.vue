@@ -223,4 +223,9 @@ button{
   word-break: keep-all;
   word-wrap: normal;
 }
+.item_storage_module .el-collapse-item__header {
+  padding: 0 20px!important;
+  border-radius: 30px!important;
+  background-color: #f3f3f3!important;
+}
 </style>

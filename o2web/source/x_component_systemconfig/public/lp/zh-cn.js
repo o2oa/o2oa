@@ -40,12 +40,14 @@ o2.xApplication.systemconfig.LP = {
 
     "mobileConfig": "移动端配置",
     "connectConfig": "连接配置",
+    "appConfig": "APP配置",
     "moduleConfig": "模块配置",
     "iconConfig": "图标配置",
     "ddConfig": "钉钉集成",
     "wechatConfig": "微信集成",
     "welinkConfig": "welink集成",
     "appTools": "APP工具",
+    "integrationConfig": "应用集成",
 
     "select": "选择",
 
@@ -734,9 +736,6 @@ o2.xApplication.systemconfig.LP = {
         "saveServerIncludesSuccess": "保存启用应用模块成功",
         "saveServerExcludesSuccess": "保存禁用应用模块成功",
 
-
-
-
         "requestLogEnable": "启用HTTP日志",
         "requestLogBodyEnable": "记录Body内容",
         "requestLogRetainDays": "日志保留天数",
@@ -769,8 +768,40 @@ o2.xApplication.systemconfig.LP = {
             "合理配置此项可有效防止CSRF攻击。如配置 (.+?)o2oa.net(.+?) 仅允许referer包含“o2oa.net”的请求",
 
         "accessControlAllowOrigin": "跨域来源许可",
-        "accessControlAllowOriginInfo": "跨源资源共享许可，设置http返回的Access-Control-Allow-Origin标识，可以用于CORS攻击防护，如:https://www.o2oa.net"
+        "accessControlAllowOriginInfo": "跨源资源共享许可，设置http返回的Access-Control-Allow-Origin标识，可以用于CORS攻击防护，如:https://www.o2oa.net",
 
+        "personUnitOrderByAsc": "人员组织升序",
+        "personUnitOrderByAscInfo": "在展现获取人员组织数据时，是否使用升序排序，默认true，否则为降序排序",
+
+        "attachmentConfig": "附件上传配置",
+        "attachmentConfigInfo": "在此处可以配置系统中允许上传附件的大小和类型",
+
+        "fileSize": "附件大小限制",
+        "fileSizeInfo": "以M为单位，默认为0，表示不限制",
+        "fileTypeIncludes": "允许上传的附件类型",
+        "fileTypeIncludesInfo": "设置允许上传的附件类型，设置扩展名，用半角逗号分隔",
+        "fileTypeExcludes": "禁止上传的附件类型",
+        "fileTypeExcludesInfo": "设置禁止上传的附件类型，设置扩展名，用半角逗号分隔",
+
+        "dumpData": "自动备份数据",
+        "dumpDataInfo": "O2OA支持定时自动备份数据，请在此处配置",
+        "dumpEnable": "是否启用",
+        "dumpCron": "定时表达式",
+        "dumpSize": "最大备份数",
+        "dumpPath": "备份路径",
+        "saveDump": "保存自动备份配置",
+        "saveDumpSuccess": "保存自动备份配置成功",
+
+
+        "restoreData": "自动恢复数据",
+        "restoreDataInfo": "O2OA支持定时自动恢复数据，请在此处配置",
+        "restoreEnable": "是否启用",
+        "restoreCron": "定时表达式",
+        "restorePath": "恢复路径",
+        "saveRestore": "保存自动恢复配置",
+        "saveRestoreSuccess": "保存自动恢复配置成功",
+
+        "reloadServerConfig": "重新载入服务器配置"
     },
     "_worktimeConfig": {
         "amWorktime": "上午工作时间",
@@ -798,6 +829,400 @@ o2.xApplication.systemconfig.LP = {
             "周六": 7,
             "周日": 1
         }
-    }
+    },
+    "_cacheConfig": {
+        "type": "缓存类型",
+        "typeInfo": "O2OA系统支持guava和redis两种缓存，默认使用guava。",
 
+        "guava_maximumSize": "缓存最大容量",
+        "guava_maximumSizeInfo": "缓存最大容量，对象数量，默认值:3000",
+        "guava_expireMinutes": "过期时间",
+        "guava_expireMinutesInfo": "过期时间，单位分钟，默认值:30",
+
+        "redis": "redis服务配置",
+        "redisInfo": "在此配置redis服务",
+        "redis_host": "服务器地址",
+        "redis_port": "服务器端口",
+        "redis_user": "认证用户",
+        "redis_password": "认证口令",
+        "redis_connectionTimeout": "连接等待超时",
+        "redis_socketTimeout": "返回等待超时",
+        "redis_sslEnable": "启用SSL",
+        "redis_index": "数据库编号",
+
+        "saveRedis": "保存redis配置",
+        "saveRedisSuccess": "保存redis配置成功",
+    },
+    "_processConfig": {
+        "baseConfig": "基本配置",
+        "timerConfig": "定时器配置",
+
+        "maintenanceIdentity": "流程维护人身份",
+        "selectMaintenanceIdentity": "选择流程维护人身份",
+        "maintenanceIdentityInfo": "当流程工作发生意外错误，无法找到对应的处理人情况下，系统先尝试将工作分配给创建者身份，如果创建身份也不可获取，那么就分配给此处设定的身份",
+
+        "formVersionCount": "表单历史版本保留数量",
+        "formVersionCountInfo": "表单每次保存时，系统可以保留一个副本作为历史版本，以便在一些特殊情况下找回以前的设计。此处配置表单历史版本最多保留的数量，超过此数量的话最早的历史版本会被删除",
+
+        "processVersionCount": "流程历史版本保留数量",
+        "processVersionCountInfo": "流程每次保存时，系统可以保留一个副本作为历史版本，以便在一些特殊情况下找回以前的设计。此处配置流程历史版本最多保留的数量，超过此数量的话最早的历史版本会被删除",
+
+        "scriptVersionCount": "脚本历史版本保留数量",
+        "scriptVersionCountInfo": "脚本每次保存时，系统可以保留一个副本作为历史版本，以便在一些特殊情况下找回以前的设计。此处配置脚本历史版本最多保留的数量，超过此数量的话最早的历史版本会被删除",
+
+        "docToWordType": "公文编辑器组件转换WORD方式",
+        "docToWordTypeInfo": "公文编辑器组件在配置了转换WORD方式为“Service”时，由后端服务进行WORD转换。" +
+            "O2OA系统支持本地服务转换或者使用云服务转换，使用云服务转换能够更好的兼容WORD格式，但您必须先连接到O2云。请在“云服务配置”中连接O2云。",
+        "docWordTypeSelect": {
+            "local": "本地服务",
+            "cloud": "云服务"
+        },
+
+        "press": "工作提醒配置",
+        "pressInfo": "流程配置中的人工活动节点可以设置允许发起提醒，使得处理过某个工作的人可以对此工作当前的待办人发起办理提醒。您可以在此处设置对于此行为在一个时间段内的次数限制。",
+        "pressInfo1": "在",
+        "pressInfo2": "分钟内最多发起",
+        "pressInfo3": "次提醒",
+
+        "executorCount": "流转执行器数量",
+        "executorCountInfo": "处理流程流转的执行器数量。默认32，一般不建议修改",
+
+        "executorQueueBusyThreshold": "执行器队列繁忙阈值",
+        "executorQueueBusyThresholdInfo": "处理流程流转的执行器队列的繁忙阈值。默认5，一般不建议修改",
+
+        "timerInfo": "O2OA流程平台需要一些定时器来处理流程任务，您可在此处对这些定时器进行配置。（所有对定时器的修改，都需要重启服务器才能生效）",
+
+        "archiveHadoop": "归档到Hadoop",
+        "archiveHadoopInfo": "归档到Hadoop",
+
+        "enable": "是否启用",
+        "cron": "定时表达式",
+        "urge": "催办定时器",
+        "urgeInfo": "如果活动设置了超时时间，此定时器会检查即将到达规定时间的待办，并给其处理人发送催办信息。",
+
+        "expire": "超时定时器",
+        "expireInfo": "如果活动设置了超时时间，此定时器会检查待办是否已经超过了规定时间，并将这些待办标记为超时。",
+
+        "touchDelay": "定时活动触发定时器",
+        "touchDelayInfo": "此定时器用于触发流程中的定时活动。",
+
+        "deleteDraft": "清除草稿定时器",
+        "deleteDraftInfo": "流程中可以使用草稿模式创建流程实例，这种模式在保存前并没有正式启动流程，此定时器可以清除长期没有进行流转的草稿文件",
+
+        "thresholdMinutes": "时间阈值（分）",
+        "thresholdMinutesInfo": "设定阈值，单位分钟，如果超过这个时间认为是可以删除的草稿，默认为10天",
+
+        "passExpired": "自动流转定时器",
+        "passExpiredInfo": "如果流程活动启用了超时处理，此定时器会去流转那些已经超时的待办",
+
+        "touchDetained": "滞留待办检查定时器",
+        "touchDetainedInfo": "此定时器会查找长时间滞留的工作，并尝试驱动此工作进行流转，这可以自动处理由于人员变动等原因引起的工作滞留。",
+        "thresholdMinutesInfo_touchDetained":"定时器会处理滞留时间超过这个阈值的工作，默认1440分钟（1天）",
+
+        "updateTable": "同步到数据表定时器",
+        "updateTableInfo": "如果流程中设置了将流程数据映射到数据表，此定时器用于处理映射数据队列",
+
+        "archiveHadoop": "归档到Hadoop",
+        "archiveHadoopInfo": "O2OA支持将已完成的工作数据归档到Hadoop，您可以在此处设置Hadoop相关配置",
+        "fsDefaultFS": "Hadoop地址",
+        "username": "Hadoop用户名",
+        "path": "路径前缀",
+        "saveHadoop": "保存Hadoop配置",
+        "saveHadooping": "正在保存 ... ",
+        "saveHadoopSuccess": "保存成功",
+
+        "merge": "归档定时器",
+        "mergeInfo": "",
+    },
+    "_appConfig": {
+        "connectConfig": "连接配置",
+        "moduleConfig": "模块配置",
+        "iconConfig": "图标配置",
+
+        "cloudConnect": "云服务连接检查",
+        "connectedInfo": "<span style='color:#5fbf78'>[已连接到O2云服务]</span>",
+        "notConnectedInfo": "<span style='color:red'>[未连接到O2云服务]</span>，请到 云服务配置 页面进行注册登录",
+
+        "httpProtocol": "WEB访问协议",
+        "httpProtocolInfo": "请选择移动端访问中心服务使用HTTP协议还是HTTPS协议",
+
+        "centerServer": "中心服务器",
+        "centerServerInfo": "中心服务器对外服务的IP地址或域名和端口。",
+
+        "webServer": "WEB服务器",
+        "webServerInfo": "WEB服务器对外服务的IP地址或域名和端口，如果域名或IP地址为空或”127.0.0.1“则使用Center服务器地址。",
+
+        "applicationServer": "应用服务器",
+        "applicationServerInfo": "应用服务器对外服务的IP地址或域名和端口，如果域名或IP地址为空或”127.0.0.1“则使用Center服务器地址。",
+
+        "editServer": "编辑服务器地址",
+        "host": "域名或IP地址",
+        "port": "端口",
+
+        "connectTest": "手机连接测试",
+        "connectTestInfo": "使用手机扫描二维码，查看外网是否可以连接服务器",
+        "getQrcode": "生成连接测试二维码",
+
+
+        "mobileIndex": "移动端首页配置",
+        "mobileIndexInfo": "您可以配置移动端的首页为默认APP样式，或指定一个门户页面",
+
+        "simpleMode": "移动端简易模式",
+        "simpleModeInfo": "移动端开启简易模式后只显示首页和设置页面",
+
+        "systemMessageSwitch": "显示系统通知",
+        "systemMessageSwitchInfo": "移动App消息列表中是否显示系统通知",
+
+
+        "contactPermissionView": "移动App通讯录权限视图",
+        "contactPermissionViewInfo": "需要安装应用市场【通讯录】应用，应用内包含通讯录的权限配置视图",
+
+        "nativeAppList": "应用列表",
+        "nativeAppListInfo": "您可以在此设置移动端APP中，启用哪些应用，禁用哪些应用",
+
+        "imageNames": {
+            "application_top": {"text": "应用页面顶部图片", "action": "ApplicationTop"},
+            "index_bottom_menu_logo_blur": {"text": "主页导航图标（未选中）", "action": "MenuLogoBlur"},
+            "index_bottom_menu_logo_focus": {"text": "主页导航图标（选中）", "action": "MenuLogoFocus"},
+            "launch_logo": {"text": "启动Logo图片", "action": "LaunchLogo"},
+            "login_avatar": {"text": "登录界面默认头像图片", "action": "LoginAvatar"},
+            "process_default": {"text": "流程默认图标", "action": "ProcessDefault"},
+            "setup_about_logo": {"text": "关于页面图标", "action": "SetupAboutLogo"}
+        },
+        "imageSzie": "尺寸",
+        "changeImage": "更换图片",
+        "defaultImage": "默认图片",
+        "defaultImageTitle": "默认图片确认",
+        "defaultImageInfo": "您确定要将{name}，替换成默认图像吗？",
+    },
+    "_integrationConfig": {
+        "title": "移动端应用集成",
+
+        "dingding": "钉钉集成",
+        "mPweixin": "微信公众号集成",
+        "qiyeweixin": "企业微信集成",
+        "weLink": "华为WeLink集成",
+        "zhengwuDingding": "浙政钉集成",
+
+
+        "enable": "是否启用钉钉集成",
+        "corpId": "钉钉CorpId",
+        "agentId": "钉钉AgentId",
+        "appKey": "应用唯一标识",
+        "appSecret": "应用的密钥",
+        "syncCron": "同步检查回调信号定时",
+        "forceSyncCron": "强制同步定时",
+        "oapiAddress": "钉钉API服务器地址",
+        "token": "回调Token",
+        "encodingAesKey": "回调encodingAesKey",
+        "workUrl": "钉钉消息打开工作的URL",
+        "messageRedirectPortal": "处理完成后跳转到门户",
+        "messageEnable": "是否启用消息推送",
+        "scanLoginEnable": "是否开启钉钉扫码登录",
+        "scanLoginAppId": "钉钉扫码登录的AppId",
+        "scanLoginAppSecret": "钉钉扫码登录的appSecret",
+        "attendanceSyncEnable": "是否启用考勤信息",
+
+        "enableInfo": "O2OA平台拥有配套的原生开发的安卓和IOS移动APP，可以以微应用的方式集成到阿里钉钉，同步钉钉的企业通讯录作为本地组织人员架构，并且可以将待办等通知直接推送到钉钉进行消息提醒。(需要重启服务器)",
+        "enableInfo2": "<span class='mainColor_color'>如果O2OA成功接入钉钉，O2OA将会自动从钉钉拉取所有的人员和组织进行同步，O2OA的所有人员和组织以企业钉钉中创建的组织架构为准（ 本地已经创建的人员和组织将保留不会被删除，可能会造成人员和组织重复 ）</span>",
+        "enableInfo3": "更多O2OA与钉钉集成的内容，请查看：<a href='https://www.o2oa.net/search.html?q=%E9%92%89%E9%92%89' target='_blank'>钉钉</a>",
+
+        "syncCronInfo": "回调信号触发同步检查,默认每10分钟运行一次,如果期间内有钉钉回调信号接收到,那么触发同步任务进行人员同步.(需要在钉钉设置回调配置)",
+        "forceSyncCronInfo": "强制同步定时设置，默认在每天的8点和12点强制进行同步人员和组织",
+        "oapiAddressInfo": "钉钉API服务器地址，一般不需要修改",
+        "workUrlInfo": "钉钉消息打开工作的url地址，如：https://sample.o2oa.net/x_desktop/",
+        "messageRedirectPortalInfo": "当钉钉消息处理完成后，可指定跳转到特定的门户页面",
+
+        "saveDingding": "保存钉钉配置",
+        "saveDingdingSuccess": "钉钉配置保存成功",
+
+        "mpweixinText": {
+            "enable": "是否启用",
+            "enablePublish": "启用菜单发布",
+            "appid": "微信Appid",
+            "appSecret": "微信AppSecret",
+            "token": "微信Token",
+            "encodingAesKey": "微信encodingAesKey",
+            "portalId": "处理完成后跳转到门户",
+            "scriptId": "执行服务脚本",
+            "messageEnable": "启用模版消息",
+            "tempMessageId": "公众号模版消息id",
+            "fieldList": "模版字段配置",
+            "tempName": "模版字段",
+            "name": "业务字段",
+
+            "enableInfo": "O2OA支持微信公众号的集成，用户可以通过关注微信公众号进行工作处理。并且支持待办工作的消息提醒。(需要重启服务器)",
+            "enableInfo2": "更多O2OA与微信公众号的内容，请查看：<a href='https://www.o2oa.net/search.html?q=%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7' target='_blank'>微信公众号</a>",
+            "enablePublishInfo": "启用菜单发布后，可已将在O2OA中配置好的菜单功能，发布到微信公众号。可在 APP工具-公众号菜单配置 中配置微信公众号菜单",
+            "portalIdInfo": "当消息处理完成后，可指定跳转到特定的门户页面",
+            "scriptIdInfo": "当从公众号接收到文本消息时，可执行平台服务管理中的接口，在此处指定要执行的接口",
+            "fieldListInfo": "这个是模版的内容中业务字段的对应关系，目前O2OA提供了这几个业务字段 【creatorPerson:创建人,  activityName: 当前节点,  processName: 流程名称, startTime: 开始时间, title 标题】",
+
+            "saveMpweixin": "保存微信公众号配置",
+            "saveMpweixinSuccess": "微信公众号配置保存成功"
+        },
+        "qywenxinText": {
+            "enable": "是否启用",
+            "corpId": "企业微信CorpId",
+            "agentId": "企业微信AgentId",
+            "corpSecret": "企业微信CorpSecret",
+            "syncCron": "同步检查回调信号定时",
+            "forceSyncCron": "强制同步定时",
+            "apiAddress": "API服务地址",
+            "syncSecret": "通讯录同步Secret",
+            "token": "回调Token",
+            "encodingAesKey": "回调EncodingAesKey",
+            "workUrl": "消息打开工作的URL",
+            "messageRedirectPortal": "处理完成后跳转到门户",
+            "messageEnable": "是否启用消息推送",
+            "scanLoginEnable": "是否启用扫码登录",
+            "attendanceSyncEnable": "是否启用考勤信息",
+            "attendanceSyncAgentId": "考勤打卡应用ID",
+            "attendanceSyncSecret": "考勤打卡应用Secret",
+
+
+            "syncCronInfo": "回调信号触发同步检查,默认每10分钟运行一次,如果期间内有企业微信回调信号接收到,那么触发同步任务进行人员同步.(需要在企业微信设置回调配置)",
+            "forceSyncCronInfo": "强制同步定时设置，默认在每天的8点和12点强制进行同步人员和组织",
+            "apiAddressInfo": "企业微信API服务器地址，一般不需要修改",
+            "workUrlInfo": "企业微信消息打开工作的url地址，如：https://sample.o2oa.net/x_desktop/",
+            "messageRedirectPortalInfo": "当企业微信消息处理完成后，可指定跳转到特定的门户页面",
+
+            "enableInfo": "O2OA支持以自建应用的方式集成到企业微信，同步企业微信的企业通讯录作为本地组织人员架构，并且可以将待办等通知直接推送到企业微信进行消息提醒。",
+            "enableInfo2": "更多O2OA与企业微信的内容，请查看：<a href='https://www.o2oa.net/search.html?q=%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1' target='_blank'>企业微信</a>",
+
+            "saveText": "保存企业微信配置",
+            "saveSuccess": "企业微信配置保存成功"
+        },
+        "welinkText": {
+
+            "enable": "是否启用###",
+            "clientId": "应用的ClientId",
+            "clientSecret": "应用的ClientSecret###",
+            "syncCron": "同步检查回调信号定时",
+            "forceSyncCron": "强制同步定时",
+            "oapiAddress": "API服务地址",
+            "messageEnable": "是否启用消息推送",
+            "workUrl": "消息打开工作的URL",
+            "messageRedirectPortal": "处理完成后跳转到门户",
+
+            "enableInfo": "O2OA支持以华为WeLink企业内部轻应用的方式集成，同步WeLink的通讯录作为本地组织人员架构，并且可以将待办等通知直接推送到WeLink进行消息提醒。(需要重启服务器)",
+            "enableInfo2": "更多O2OA与WeLink的内容，请查看：<a href='https://www.o2oa.net/search.html?q=welink' target='_blank'>WeLink</a>",
+
+            "syncCronInfo": "回调信号触发同步检查,默认每10分钟运行一次,如果期间内有WeLink回调信号接收到,那么触发同步任务进行人员同步.(需要在WeLink设置回调配置)",
+            "forceSyncCronInfo": "强制同步定时设置，默认在每天的8点和12点强制进行同步人员和组织",
+
+            "workUrlInfo": "WeLink消息打开工作的url地址，如：https://sample.o2oa.net/x_desktop/",
+            "messageRedirectPortalInfo": "当WeLink消息处理完成后，可指定跳转到特定的门户页面",
+
+            "saveText": "保存WeLink配置",
+            "saveSuccess": "WeLink配置保存成功"
+        }
+    },
+    "_storageServer": {
+        "innerStorage": "内置存储服务",
+        "externalStorage": "扩展存储服务",
+
+        "info": "<span style='color: red'>修改存储配置在大部分情况下都会影响到系统现有的文件存储，请慎重修改此处配置！</span>",
+        "info2": "在修改存储配置之前，建议您先使用O2OA的备份功能（ctl -dd）将系统数据进行备份，在修改完存储配置后重启服务器，然后将备份的数据恢复（ctl -rd）。所有数据库相关配置的修改，都需要重启服务器",
+
+        "saveStorageConfig": "保存所有存储配置",
+        "saveStorageConfigInfo": "本页中的配置在修改后不会立即保存，您必须点击此按钮后，您修改的配置才会被保存",
+        "saveStorageConfirm": "您即将保存存储配置<br><span style='color:red'>这有可能会影响到系统现有文件存储。</span><br><br>您是否确定要保存存储配置？",
+
+        "reloadStorageConfig": "恢复所有存储配置",
+        "reloadStorageConfigInfo": "如果您想废弃本页中未保存的修改，可以点击此按钮，以重新载入配置",
+        "reloadStorageConfirm": "此操作将重新载入存储配置，未保存的修改将会丢失，您是否确定恢复存储配置？",
+
+        "storageType": "存储服务类型",
+        "storageTypeInfo": "O2OA系统内置提供了文件存储服务，您也可以更具需要采用外部扩展存储节点。",
+        "storageTypeData": [
+            {"value": 'inner', "label": "inner", "text": "内置存储服务"},
+            {"value": 'external', "label": "external", "text": "扩展存储服务"}
+        ],
+
+        "innerInnerInfo": "<span class='mainColor_color'>您正在使用内置文件存储服务</span>，<span style='color:red'>请务必为每个存储节点配置不同的名称</span>",
+        "innerExternalInfo": "<span class='mainColor_color'>您已启用扩展文件存储服务</span>，但您任然可以修改内置文件存储服务的配置，<span style='color:red'>请务必为每个存储节点配置不同的名称</span>",
+
+        "innerStorageConfig": "内置存储服务配置",
+
+        "enable": "是否启用",
+        "port": "端口",
+        "name": "名称",
+        "prefix": "前缀路径",
+        "deepPath": "使用深路径",
+        "saveStorage": "保存存储配置",
+        "saveStorageSuccess": "存储配置保存成功",
+
+        "externalInnerInfo": "<span class='mainColor_color'>您正在使用内置文件存储服务</span>，但您任然可以修改扩展文件存储服务的配置",
+        "externalExternalInfo": "<span class='mainColor_color'>您已启用扩展文件存储服</span>",
+
+        "enableExternal": "启用扩展文件存储",
+        "enableExternalInfo": "如果要启用扩展文件存储，请确保扩展文件存储配置已经完成，否则可能造成服务器运行异常。启用或禁用扩展存储服务都会影响到系统现有的文件存储，强烈建议先备份系统数据。",
+
+        "enableExternalTitle": "启用扩展文件存储确认",
+        "enableExternalConfirm": "您即将启用扩展文件存储，同时会禁用内置文件存储服务。<br><span style='color:red'>这会影响到系统现有已存储的文件</span><br><br>您是否确定要启用扩展文件存？",
+        "disableExternalTitle": "禁用扩展文件存储确认",
+        "disableExternalConfirm": "您即将禁用扩展文件存储，同时会启用内置文件存储服务。<br><span style='color:red'>这会影响到系统现有已存储的文件</span><br><br>您是否确定要启用扩展文件存？",
+
+        "externalStorageNode": "扩展存储节点配置",
+        "addStorageNode": "添加存储节点",
+        "editStorageNode": "编辑存储节点",
+        "inputStorageNodeKey": "请输入存储节点标识",
+
+        "external": {
+            "protocol": "协议",
+            "username": "用户名",
+            "password": "密码",
+            "host": "主机",
+            "port": "端口",
+            "name": "名称",
+            "key": "节点标识",
+            "protocolData": {
+                "webdav": "webdav",
+                "sftp": "sftp",
+                "ftps": "ftps",
+                "ftp": "ftp",
+                "file": "file",
+                "hdfs": "hdfs",
+                "cifs": "cifs",
+                "ali": "ali"
+            }
+        },
+        "removeNodeConfigTitle": "删除存储节点确认",
+        "removeNodeConfig": "即将删除存储节点“{name}”，此操作可能会影响到系统中已存储的文件，<br>您确定要删除存储节点“{name}”吗？",
+
+        "assignNode": "存储节点分配",
+        "assignNodeInfo": "O2OA中存在以下多种类型的文件，您可以给这些文件分配存储节点，一种类型的文件可分配多个节点。",
+        "files": {
+            "file": "网盘文件（file）",
+            "processPlatform": "流程平台文件（processPlatform）",
+            "mind": "脑图文件（mind）",
+            "meeting": "会议管理文件（meeting）",
+            "calendar": "日程安排文件（calendar）",
+            "cms": "内容管理文件（cms）",
+            "bbs": "论坛文件（bbs）",
+            "teamwork": "工作管理文件（strategyDeploy）",
+            "structure": "应用管理（structure）",
+            "im": "聊聊文件（im）",
+            "general": "其他通用文件（general）",
+            "custom": "自定义应用文件（custom）",
+        },
+
+        "store": "存储节点",
+
+        "noStoreNode": "未分配存储节点",
+        "addStore": "添加存储节点",
+        "saveStore": "保存"
+
+    },
+    "_appTools": {
+        "onlineBuild": "APP在线打包",
+        "mpweixinMenu": "公众号菜单配置",
+
+        "onlineBuildInfo": " <ul style='padding: 0'><li>当前移动App在线打包功能只支持Android端。</li>" +
+            "<li>需要在线打包，必须先到[云服务配置]中进行注册、登录。</li>" +
+            "<li>提交信息后，会显示当前打包状态，打包过程耗时较长，你可以先离开当前页面，等待打包完成后来本页面下载APK文件。</li></ul>",
+
+        "onlineBuildInfo1": "<span class='mainColor_color'>我们在应用市场提供了更优秀的“App在线打包”应用，您可以到应用市场查看获取</span>"
+    }
 }

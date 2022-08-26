@@ -152,56 +152,87 @@ async function loadPortals() {
     return json.data;
 }
 
-async function getServers() {
+function loadInvokes(){
+    return doAction('x_program_center', 'InvokeAction', 'list');
+}
+
+
+function getServers() {
     return doAction('x_program_center', 'CommandAction', 'getNodeInfoList');
 }
 
-async function getModules() {
+function getModules() {
     return doAction('x_program_center', 'ApplicationsAction', 'get');
 }
-async function connectCollect() {
+function connectCollect() {
     return doAction('x_program_center', 'CollectAction', 'connect');
 }
-async function validateCollect() {
+function validateCollect() {
     return doAction('x_program_center', 'CollectAction', 'validate');
 }
-async function loginToCollect(data) {
+function loginToCollect(data) {
     return doAction('x_program_center', 'CollectAction', 'validateDirect', data);
 }
-async function checkCollectName(name) {
+function checkCollectName(name) {
     return doAction('x_program_center', 'CollectAction', 'exist', name);
 }
-async function checkCollectPass(password) {
+function checkCollectPass(password) {
     return doAction('x_program_center', 'CollectAction', 'validatePassword', {password});
 }
-async function sendCode(mobile) {
+function sendCode(mobile) {
     return doAction('x_program_center', 'CollectAction', 'code', mobile);
 }
-async function registCollect(data) {
+function registCollect(data) {
     return doAction('x_program_center', 'CollectAction', 'regist', data);
 }
-async function disconnectCollect() {
+function disconnectCollect() {
     return doAction('x_program_center', 'CollectAction', 'disconnect');
 }
-async function deleteCollect(name, mobile, code) {
+function deleteCollect(name, mobile, code) {
     return doAction('x_program_center', 'CollectAction', 'delete', name, mobile, code);
 }
-async function resetPasswordCollect(data) {
+function resetPasswordCollect(data) {
     return doAction('x_program_center', 'CollectAction', 'resetPassword', data);
 }
 
-async function getApplicationModules() {
+function getApplicationModules() {
     return doAction('x_program_center', 'ConfigAction', 'listApplication');
 }
-async function getDataEntrys() {
+function getDataEntrys() {
     return doAction('x_program_center', 'ConfigAction', 'listEntity');
 }
-async function executeCommand(data) {
+function executeCommand(data) {
     return doAction('x_program_center', 'CommandAction', 'executeCommand', data);
 }
-async function getSystemLog(id) {
+function getSystemLog(id) {
     return doAction('x_program_center', 'WarnLogAction', 'getSystemLog', id);
 }
+
+function getProxy() {
+    return doAction('x_program_center', 'ConfigAction', 'getProxy');
+}
+function setProxy(data) {
+    return doAction('x_program_center', 'ConfigAction', 'setProxy', data);
+}
+function mobileCheckConnect() {
+    return doAction('x_program_center', 'CollectAction', 'mobileCheckConnect');
+}
+function getAppStyle() {
+    return doAction('x_program_center', 'AppStyleAction', 'currentStyle');
+}
+function saveAppStyle(data) {
+    return doAction('x_program_center', 'AppStyleAction', 'edit', data);
+}
+function eraseAppStyleImage(name) {
+    return doAction('x_program_center', 'AppStyleAction', 'image'+name+'Erase');
+}
+function uploadAppStyleImage(name, formdata, file, callback) {
+    return o2.Actions.load('x_program_center').AppStyleAction['image'+name](formdata, file, callback);
+}
+function listDumpData() {
+    return doAction('x_program_center', 'ConfigAction', 'listDumpData');
+}
+
 
 
 export {
@@ -223,6 +254,7 @@ export {
     loadQueryApplication,
     changePassword,
     loadPortals,
+    loadInvokes,
     getServers,
     loadRuntimeConfig,
     getModules,
@@ -239,5 +271,13 @@ export {
     getApplicationModules,
     getDataEntrys,
     executeCommand,
-    getSystemLog
+    getSystemLog,
+    getProxy,
+    setProxy,
+    mobileCheckConnect,
+    getAppStyle,
+    saveAppStyle,
+    eraseAppStyleImage,
+    uploadAppStyleImage,
+    listDumpData
 };

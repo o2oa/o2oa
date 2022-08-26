@@ -1,5 +1,7 @@
 <template xmlns="">
   <div v-if="nodeData">
+<!--    <button class="" @click="load">{{lp._serversConfig.reloadServerConfig}}</button>-->
+
     <div class="systemconfig_item_title">{{lp._serversConfig.sameConfig}}</div>
     <div class="systemconfig_item_info">{{lp._serversConfig.sameConfigInfo}}</div>
     <BaseBoolean v-model:value="sameConfig"></BaseBoolean>
@@ -176,6 +178,45 @@
     </div>
     <el-divider />
 
+    <div class="systemconfig_item_title">{{lp._serversConfig.dumpData}}</div>
+    <div class="systemconfig_item_info" v-html="lp._serversConfig.dumpDataInfo"></div>
+
+    <div class="item_info" style="display: block">
+      <BaseBoolean :label="lp._serversConfig.dumpEnable" v-model:value="dumpData.enable"/>
+    </div>
+    <div class="item_info" style="display: block">
+      <BaseCron :label="lp._serversConfig.dumpCron" v-model:value="dumpData.cron"/>
+    </div>
+    <div class="item_info" style="display: block">
+      <BaseInput :label="lp._serversConfig.dumpSize" v-model:value="dumpData.size" input-type="number"/>
+    </div>
+    <div class="item_info" style="display: block">
+      <BaseInput :label="lp._serversConfig.dumpPath" v-model:value="dumpData.path"/>
+    </div>
+    <div class="item_info" style="padding-left: 20px; display: flex;">
+      <button class="mainColor_bg" @click="saveDumpConfig">{{lp._serversConfig.saveDump}}</button>
+    </div>
+
+    <el-divider />
+
+    <div class="systemconfig_item_title">{{lp._serversConfig.restoreData}}</div>
+    <div class="systemconfig_item_info" v-html="lp._serversConfig.restoreDataInfo"></div>
+
+    <div class="item_info" style="display: block">
+      <BaseBoolean :label="lp._serversConfig.restoreEnable" v-model:value="restoreData.enable"/>
+    </div>
+    <div class="item_info" style="display: block">
+      <BaseCron :label="lp._serversConfig.restoreCron" v-model:value="restoreData.cron"/>
+    </div>
+    <div class="item_info" style="display: block">
+      <BaseInput :label="lp._serversConfig.restorePath" v-model:value="restoreData.path"/>
+    </div>
+    <div class="item_info" style="padding-left: 20px; display: flex;">
+      <button class="mainColor_bg" @click="saveRestoreConfig">{{lp._serversConfig.saveRestore}}</button>
+    </div>
+
+    <el-divider />
+
 
     <div class="systemconfig_item_title">{{lp._serversConfig.includes}}</div>
     <div class="systemconfig_item_info" v-html="lp._serversConfig.includesInfo"></div>
@@ -292,13 +333,13 @@
 
 <script setup>
 import {component, lp} from '@o2oa/component';
-import {getConfigData, saveConfigData, getApplicationModules} from "@/util/acrions";
+import {getConfigData, saveConfigData, getApplicationModules, saveConfig} from "@/util/acrions";
 import {ref, reactive} from 'vue';
 import BaseBoolean from "@/components/item/BaseBoolean";
 import BaseInput from "@/components/item/BaseInput";
 import BaseSelect from "@/components/item/BaseSelect";
 import BaseRadio from "@/components/item/BaseRadio";
-
+import BaseCron from "@/components/item/BaseCron";
 
 const props = defineProps({
   server: Object,
@@ -306,6 +347,9 @@ const props = defineProps({
 });
 
 const nodeData = ref(null);
+const dumpData = ref({});
+const restoreData = ref({});
+
 const sameConfig = ref(false);
 const sslEnable = ref(false);
 const sslData = ref({});
@@ -330,6 +374,17 @@ const checkPort = ()=>{
   }
   return true;
 }
+
+const saveDumpConfig = async () => {
+  await saveConfig(props.nodeName, 'dumpData', dumpData.value);
+  component.notice(lp._serversConfig.saveDumpSuccess, "success");
+}
+const saveRestoreConfig = async () => {
+  await saveConfig(props.nodeName, 'restoreData', restoreData.value);
+  component.notice(lp._serversConfig.saveRestoreSuccess, "success");
+}
+
+
 const saveServerConfig = async () => {
   if (sameConfig.value) {
     Object.keys(nodeData.value.application).forEach((k)=>{
@@ -344,6 +399,7 @@ const saveServerConfig = async () => {
       return false;
     }
   }
+
   await saveConfigData(props.nodeName, nodeData.value);
   component.notice(lp._serversConfig.saveServerConfigSuccess, "success");
   //await Promise.all([saveConfigData(props.nodeName, nodeData.value), saveConfigData('token', sslData.value)])
@@ -422,14 +478,17 @@ const checkSameConfig = (data)=>{
   return (appPort===cenPort && appPort===webPort);
 }
 const load = ()=>{
-  const nodePromise = getConfigData(props.nodeName).then((d)=>{
+  const nodePromise = getConfigData(props.nodeName, true).then((d)=>{
+    debugger;
     const data = {
       application: Object.clone(d.application),
       web: Object.clone(d.web),
       center: Object.clone(d.center)
     }
-
     nodeData.value = data;
+    dumpData.value = Object.clone(d.dumpData);
+    restoreData.value = Object.clone(d.restoreData);
+
     if (!nodeData.value.web.hasOwnProperty('proxyCenterEnable')){
       nodeData.value.web.proxyCenterEnable = true;
     }
