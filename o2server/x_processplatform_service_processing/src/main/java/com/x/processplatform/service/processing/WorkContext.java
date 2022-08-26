@@ -65,6 +65,11 @@ public class WorkContext {
 		this.taskCompleted = taskCompleted;
 	}
 
+	public WorkContext(Work work, Business business) {
+		this.business = business;
+		this.work = work;
+	}
+
 	public String getWork() {
 		return gson.toJson(work);
 	}
@@ -116,7 +121,7 @@ public class WorkContext {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return 当前注入的路由
 	 * @throws Exception
 	 */
@@ -271,7 +276,7 @@ public class WorkContext {
 
 	/**
 	 * 为脚本运行准备的Json对象,如果为空那么返回字符串null
-	 * 
+	 *
 	 * @return
 	 * @throws Exception
 	 */

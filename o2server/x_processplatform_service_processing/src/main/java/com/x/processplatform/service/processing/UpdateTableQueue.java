@@ -1,34 +1,41 @@
 package com.x.processplatform.service.processing;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject_;
 import com.x.base.core.project.Applications;
-import com.x.base.core.project.x_query_service_processing;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.queue.AbstractQueue;
+import com.x.base.core.project.scripting.JsonScriptingExecutor;
+import com.x.base.core.project.scripting.ScriptingFactory;
+import com.x.base.core.project.webservices.WebservicesClient;
+import com.x.base.core.project.x_query_service_processing;
 import com.x.processplatform.core.entity.content.Data;
+import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
+import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.message.Event;
 import com.x.processplatform.core.entity.message.Event_;
+import com.x.processplatform.service.processing.processor.AeiObjects;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.script.Bindings;
+import javax.script.CompiledScript;
+import javax.script.ScriptContext;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class UpdateTableQueue extends AbstractQueue<String> {
 
@@ -38,7 +45,9 @@ public class UpdateTableQueue extends AbstractQueue<String> {
 
 	private static final int RETRYMINUTES = 20;
 	private static final int THRESHOLDMINUTES = 60 * 24 * 3;
+	private transient ScriptContext scriptContext = null;
 
+	@Override
 	protected void execute(String id) throws Exception {
 		if (StringUtils.isNotEmpty(id)) {
 			update(id);
@@ -67,17 +76,26 @@ public class UpdateTableQueue extends AbstractQueue<String> {
 
 	private boolean push(Event event) {
 		LOGGER.debug("更新到自建表:{}, bundle:{}.", event::getTarget, event::getJob);
-		Data data = null;
-		WorkCompleted workCompleted = null;
+		JsonElement jsonElement = null;
 		try {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				workCompleted = emc.firstEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME, event.getJob());
+				Business business = new Business(emc);
+				WorkCompleted workCompleted = emc.firstEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME, event.getJob());
 				if (null != workCompleted) {
-					data = new WorkDataHelper(emc, workCompleted).get();
+					Data data = new WorkDataHelper(emc, workCompleted).get();
+					Process process = emc.find(workCompleted.getProcess(), Process.class);
+					if(hasTableAssignDataScript(process)){
+						AssignPublish assignPublish = new AssignPublish();
+						ScriptContext scriptContext = this.scriptContext(data, business, new Work(workCompleted));
+						this.evalTableBodyFromScript(scriptContext, business, process, assignPublish);
+						jsonElement = assignPublish.getData();
+					}
+					if(jsonElement == null){
+						jsonElement = XGsonBuilder.merge(gson.toJsonTree(workCompleted), gson.toJsonTree(data));
+					}
 				}
 			}
-			if (null != data) {
-				JsonElement jsonElement = XGsonBuilder.merge(gson.toJsonTree(workCompleted), gson.toJsonTree(data));
+			if (null != jsonElement) {
 				WrapBoolean resp = ThisApplication.context().applications().postQuery(x_query_service_processing.class,
 						Applications.joinQueryUri("table", event.getTarget(), "update", event.getJob()), jsonElement)
 						.getData(WrapBoolean.class);
@@ -87,6 +105,43 @@ public class UpdateTableQueue extends AbstractQueue<String> {
 			LOGGER.error(e);
 		}
 		return false;
+	}
+
+	private void evalTableBodyFromScript(ScriptContext scriptContext, Business business, Process process, final AssignPublish assignPublish) throws Exception {
+		WrapScriptObject assignBody = new WrapScriptObject();
+		CompiledScript cs = business.element().getCompiledScript(process.getApplication(),
+				process.getTargetAssignDataScript(), process.getTargetAssignDataScriptText());
+		scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_JAXRSBODY,
+				assignBody);
+		JsonScriptingExecutor.jsonElement(cs, scriptContext, o -> {
+			if (!o.isJsonNull()) {
+				assignPublish.setData(o);
+			}
+		});
+	}
+
+	private ScriptContext scriptContext(Data data, Business business, Work work) throws Exception {
+		if (null == this.scriptContext) {
+			this.scriptContext = ScriptingFactory.scriptContextEvalInitialScript();
+		}
+		Bindings bindings = this.scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+		AeiObjects.Resources resources = new AeiObjects.Resources();
+		resources.setApplications(ThisApplication.context().applications());
+		resources.setOrganization(business.organization());
+		resources.setWebservicesClient(new WebservicesClient());
+		resources.setContext(ThisApplication.context());
+		bindings.put(ScriptingFactory.BINDING_NAME_RESOURCES, resources);
+		bindings.put(ScriptingFactory.BINDING_NAME_WORKCONTEXT, new WorkContext(work, business));
+		bindings.put(ScriptingFactory.BINDING_NAME_DATA, data);
+		return this.scriptContext;
+	}
+
+	private boolean hasTableAssignDataScript(Process process) {
+		if(process == null){
+			return false;
+		}
+		return StringUtils.isNotEmpty(process.getTargetAssignDataScript())
+				|| StringUtils.isNotEmpty(process.getTargetAssignDataScriptText());
 	}
 
 	private Event exist(String id) {
@@ -168,6 +223,19 @@ public class UpdateTableQueue extends AbstractQueue<String> {
 		}
 		if (!list.isEmpty()) {
 			LOGGER.info("删除 {} 条超期的同步到自建表事件.", list::size);
+		}
+	}
+
+	public class AssignPublish {
+
+		private JsonElement data;
+
+		public JsonElement getData() {
+			return data;
+		}
+
+		public void setData(JsonElement data) {
+			this.data = data;
 		}
 	}
 }
