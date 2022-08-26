@@ -84,7 +84,7 @@
                   </el-table-column>
                 </el-table>
                 <div style="display: flex;justify-content: space-between;">
-                  <button class="mainColor_bg" style="margin-top: 10px; margin-left: 0" @click="saveData">{{lp._storageServer.saveStore}}</button>
+                  <button class="mainColor_bg" style="margin-top: 10px; margin-left: 0" @click="saveStoreData(type)">{{lp._storageServer.saveStore}}</button>
                   <button style="margin-top: 10px; margin-left: 0" @click="addStore(type)">{{lp._storageServer.addStore}}</button>
                 </div>
 
@@ -95,20 +95,6 @@
           </div>
         </el-collapse>
       </div>
-
-<!--      <div class="item_info" v-for="type in files" :key="key">-->
-<!--        <div class="item_database_item" @click="editStorageNode(key)">-->
-<!--          <div class="item_database_area">-->
-<!--            <div class="o2icon-download item_config_icon mainColor_bg"></div>-->
-<!--            <div class="item_server_item_slot item_bold" style="min-width: 340px">{{storageData.store[key].protocol}} : {{key}} - {{storageData.store[key].host}}:{{storageData.store[key].port}}</div>-->
-<!--            <div style="display: flex; align-items: center; justify-content: flex-end; width: 100px">-->
-<!--              <button class="o2icon-del mainColor_bg item_database_action" @click="(e)=>{e.stopPropagation(); removeNode(e, key)}"></button>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
-
-
     </div>
 
     <div class="item_storage_editorArea" ref="externalEditorArea">
@@ -126,8 +112,8 @@
 
 <script setup>
 import {lp, component, o2} from '@o2oa/component';
-import {ref, computed, onMounted, nextTick} from 'vue';
-import {getConfigData, getServers, loadRuntimeConfig, saveConfigData} from "@/util/acrions";
+import {ref, computed} from 'vue';
+import {loadRuntimeConfig, saveConfigData} from "@/util/acrions";
 import BaseBoolean from "@/components/item/BaseBoolean";
 import BaseInput from "@/components/item/BaseInput";
 import BaseSelect from "@/components/item/BaseSelect";
@@ -161,12 +147,11 @@ const storageType = computed(()=>{
 });
 
 const enableOrDisable = (v, node)=>{
-  debugger;
   const title = (v) ? lp._storageServer.enableExternalTitle : lp._storageServer.disableExternalTitle;
   const text = (v) ? lp._storageServer.enableExternalConfirm : lp._storageServer.disableExternalConfirm
   component.confirm("warn", node.value.input, title, {html: text}, 560, 230, (dlg)=>{
     storageData.value.enable = v;
-    // saveData();
+    saveData();
     dlg.close();
   }, (dlg)=>{
     storageData.value.enable = !v;
@@ -174,6 +159,13 @@ const enableOrDisable = (v, node)=>{
   }, null, component.content);
 }
 
+const saveStoreData = (type)=>{
+  const d = storageData.value[type].filter((s)=>{
+    return !!s.store;
+  });
+  storageData.value[type] = d;
+  saveData();
+}
 const saveData = async () => {
   await saveConfigData('externalStorageSources', storageData.value);
   component.notice(lp._storageServer.saveStorageSuccess, 'success');

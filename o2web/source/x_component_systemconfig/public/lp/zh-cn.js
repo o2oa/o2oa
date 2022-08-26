@@ -1224,5 +1224,27 @@ o2.xApplication.systemconfig.LP = {
             "<li>提交信息后，会显示当前打包状态，打包过程耗时较长，你可以先离开当前页面，等待打包完成后来本页面下载APK文件。</li></ul>",
 
         "onlineBuildInfo1": "<span class='mainColor_color'>我们在应用市场提供了更优秀的“App在线打包”应用，您可以到应用市场查看获取</span>"
+    },
+    "_pushConfig": {
+        "pushType": "消息推送服务",
+        "pushTypeInfo": "O2OA支持极光推送服务和华为推送服务，您可以根据需要选择推送服务",
+        "pushTypeData": [
+            {"value": "jpush", "label": "jpush", "text": "极光推送服务"},
+            {"value": "huawei", "label": "huawei", "text": "华为推送服务"},
+            {"value": "none", "label": "none", "text": "禁用消息推送"}
+        ],
+
+        "appKey": "极光推送AppKey",
+        "masterSecret": "极光推送MasterSecret",
+        "appKeyInfo": "极光推送应用的AppKey",
+        "masterSecretInfo": "极光推送应用的Master Secret",
+
+        "appId": "华为推送AppId",
+        "appSecret": "华为推送AppSecret",
+        "appIdInfo": "华为推送应用的appId",
+        "appSecretInfo": "华为推送应用的appSecret",
+    },
+    "_messageConfig": {
+        "exmail": "腾讯邮箱集成"
     }
 }

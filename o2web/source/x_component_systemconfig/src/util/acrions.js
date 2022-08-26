@@ -59,7 +59,6 @@ async function saveConfig(name, path, value) {
 async function saveConfigData(name, data) {
     const config = (configs[name]) ? configs[name] : (await loadConfig(name));
     Object.assign(config, data);
-    console.log(config);
     o2.Actions.load('x_program_center').ConfigAction.save({
         fileName: `${name}.json`,
         fileContent: JSON.stringify(config, null, "\t")

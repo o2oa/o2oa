@@ -24,11 +24,15 @@ function getMenuJson(){
                 // {'title': lp.webServer, 'component': '', 'icon': 'web' },
                 {'title': lp.databaseServer, 'component': 'ServerDatabaseConfig', 'icon': 'database' },
                 {'title': lp.storageServer, 'component': 'ServerStorageConfig', 'icon': 'download' },
+                {'title': lp.cloudConfig, 'component': 'ServerCloudConfig', 'icon': 'cloud' },
+                {'title': lp.processConfig, 'component': 'ServerProcessConfig', 'icon': 'flow' },
+
+                {'title': lp.messageConfig, 'component': 'ServerMessageConfig', 'icon': 'flow' },
                 {'title': lp.cacheConfig, 'component': 'ServerCacheConfig', 'icon': 'cache' },
                 // {'title': lp.clusterConfig, 'component': '', 'icon': 'servers' },
                 // {'title': lp.orgConfig, 'component': '', 'icon': 'org' },
-                {'title': lp.processConfig, 'component': 'ServerProcessConfig', 'icon': 'flow' },
-                {'title': lp.cloudConfig, 'component': 'ServerCloudConfig', 'icon': 'cloud' },
+
+
                 // {'title': lp.dumpConfig, 'component': '', 'icon': 'dump' },
                 {'title': lp.worktimeConfig, 'component': 'ServerWorktimeConfig', 'icon': 'timer' }
             ]
@@ -43,22 +47,23 @@ function getMenuJson(){
                 {'title': lp.ternaryManagement, 'component': 'SecurityTernaryConfig', 'icon': 'log' }
             ]
         },
-        {
-            'title': lp.messageConfig,
-            "icon": "message",
-            'children': [
-                {'title': lp.msgTypeConfig, 'component': '', 'icon': 'message' },
-                {'title': lp.pushConfig, 'component': '', 'icon': 'push' },
-                {'title': lp.mailConfig, 'component': '', 'icon': 'mail' },
-                {'title': lp.smsConfig, 'component': '', 'icon': 'sms' },
-                {'title': lp.mqConfig, 'component': '', 'icon': 'mq' }
-            ]
-        },
+        // {
+        //     'title': lp.messageConfig,
+        //     "icon": "message",
+        //     'children': [
+        //         {'title': lp.msgTypeConfig, 'component': '', 'icon': 'message' },
+        //
+        //         {'title': lp.mailConfig, 'component': '', 'icon': 'mail' },
+        //         {'title': lp.smsConfig, 'component': '', 'icon': 'sms' },
+        //         {'title': lp.mqConfig, 'component': '', 'icon': 'mq' }
+        //     ]
+        // },
         {
             'title': lp.mobileConfig,
             "icon": "mobile",
             'children': [
                 {'title': lp.appConfig, 'component': 'MobileAppConfig', 'icon': 'connect' },
+                {'title': lp.pushConfig, 'component': 'MobilePushConfig', 'icon': 'push' },
                 // {'title': lp.moduleConfig, 'component': '', 'icon': 'apps' },
                 // {'title': lp.iconConfig, 'component': '', 'icon': 'icon' },
                 {'title': lp.integrationConfig, 'component': 'MobileIntegrationConfig', 'icon': 'dingding' },
