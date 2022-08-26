@@ -574,6 +574,11 @@ public class DocumentQueryService {
 		own_permissonNames.addAll(userManagerService.listIdentitiesWithPerson( effectivePerson.getDistinguishedName()));
 		own_permissonNames.addAll(userManagerService.listUnitNamesWithPerson( effectivePerson.getDistinguishedName()));
 		own_permissonNames.addAll(userManagerService.listGroupNamesByPerson( effectivePerson.getDistinguishedName()));
+		final List<String> oList = new ArrayList<>();
+		own_permissonNames.stream().forEach(o -> {
+			oList.add(getShortTargetFlag(o));
+		});
+		own_permissonNames = ListTools.add(own_permissonNames, true, true, oList);
 //		LogUtil.INFO( ">>>>>>>>my_own_permissonNames" , own_permissonNames );
 		//管理员允许操作
 		if( effectivePerson.isManager() ) {
@@ -622,6 +627,23 @@ public class DocumentQueryService {
 			return true;
 		}
 		return false;
+	}
+
+	private String getShortTargetFlag(String distinguishedName) {
+		String target = null;
+		if( StringUtils.isNotEmpty( distinguishedName ) ){
+			String[] array = distinguishedName.split("@");
+			StringBuffer sb = new StringBuffer();
+			if( array.length == 3 ){
+				target = sb.append(array[1]).append("@").append(array[2]).toString();
+			}else if( array.length == 2 ){
+				//2段
+				target = sb.append(array[0]).append("@").append(array[1]).toString();
+			}else{
+				target = array[0];
+			}
+		}
+		return target;
 	}
 
 	/**
