@@ -74,21 +74,6 @@
       "store": ""
     }
   ],
-  "okr": [
-    {
-      "protocol": "webdav",
-      "username": "admin",
-      "password": "admin",
-      "host": "127.0.0.1",
-      "port": 8080.0,
-      "prefix": "",
-      "enable": true,
-      "weight": 100.0,
-      "name": "251",
-      "deepPath": false,
-      "store": ""
-    }
-  ],
   "cms": [
     {
       "protocol": "webdav",
@@ -105,36 +90,6 @@
     }
   ],
   "bbs": [
-    {
-      "protocol": "webdav",
-      "username": "admin",
-      "password": "admin",
-      "host": "127.0.0.1",
-      "port": 8080.0,
-      "prefix": "",
-      "enable": true,
-      "weight": 100.0,
-      "name": "251",
-      "deepPath": false,
-      "store": ""
-    }
-  ],
-  "report": [
-    {
-      "protocol": "webdav",
-      "username": "admin",
-      "password": "admin",
-      "host": "127.0.0.1",
-      "port": 8080.0,
-      "prefix": "",
-      "enable": true,
-      "weight": 100.0,
-      "name": "251",
-      "deepPath": false,
-      "store": ""
-    }
-  ],
-  "strategyDeploy": [
     {
       "protocol": "webdav",
       "username": "admin",
@@ -234,6 +189,6 @@
       "name": ""
     }
   },
-  "enable": true,
+  "enable": false,
   "###extension": "扩展设置.###"
 }
