@@ -168,7 +168,7 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
                 dlg.close();
             }.bind(this));
         }catch(e){
-            this.designer.notice(this.designer.lp.newLineSuccess, "error");
+            this.designer.notice(this.designer.lp.newLineJsonError, "error");
         }
 
     },
