@@ -30,9 +30,9 @@ import com.x.query.core.entity.Item;
 public class DocumentQueryService {
 	private UserManagerService userManagerService = new UserManagerService();
 	private DocumentInfoService documentInfoService = new DocumentInfoService();
-	
+
 	private ReviewService reviewService = new ReviewService();
-	
+
 	public Document get( String id ) throws Exception {
 		if( StringUtils.isEmpty( id ) ){
 			throw new Exception("id is null!");
@@ -43,7 +43,7 @@ public class DocumentQueryService {
 			throw e;
 		}
 	}
-	
+
 	public Long getViewableReview( String id , String personName ) throws Exception {
 		if( StringUtils.isEmpty( id ) ){
 			throw new Exception("id is null!");
@@ -54,7 +54,7 @@ public class DocumentQueryService {
 			throw e;
 		}
 	}
-	
+
 	public String getSequence(String id) throws Exception {
 		if( StringUtils.isEmpty( id ) ){
 			return null;
@@ -65,7 +65,7 @@ public class DocumentQueryService {
 			throw e;
 		}
 	}
-	
+
 	public Document view( String id, EffectivePerson effectivePerson ) throws Exception {
 		if( StringUtils.isEmpty( id ) ){
 			throw new Exception("id is null!");
@@ -78,7 +78,7 @@ public class DocumentQueryService {
 			throw e;
 		}
 	}
-	
+
 	public Data getDocumentData( Document document ) throws Exception {
 		if( document == null ){
 			throw new Exception("document is null!");
@@ -88,11 +88,11 @@ public class DocumentQueryService {
 		Gson gson = null;
 		JsonElement jsonElement = null;
 		DataItemConverter<Item> converter = null;
-		
+
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			business = new Business( emc );
 			dataItems = business.itemFactory().listWithDocmentWithPath( document.getId() );
-			
+
 			if ( ListTools.isEmpty( dataItems ) ) {
 				return new Data();
 			} else {
@@ -110,7 +110,7 @@ public class DocumentQueryService {
 			throw e;
 		}
 	}
-	
+
 	public List<Document> listByCategoryId( String categoryId ) throws Exception {
 		if( StringUtils.isEmpty( categoryId ) ){
 			throw new Exception("categoryId is null!");
@@ -123,7 +123,7 @@ public class DocumentQueryService {
 			throw e;
 		}
 	}
-	
+
 	public List<String> listIdsByCategoryId( String categoryId, String orderField, String orderType, int maxCount ) throws Exception {
 		if( StringUtils.isEmpty( categoryId ) ){
 			throw new Exception("categoryId is null!");
@@ -143,7 +143,7 @@ public class DocumentQueryService {
 			throw e;
 		}
 	}
-	
+
 	public List<String> listIdsByCategoryId( String categoryId, Integer maxCount ) throws Exception {
 		if( StringUtils.isEmpty( categoryId ) ){
 			throw new Exception("categoryId is null!");
@@ -154,7 +154,7 @@ public class DocumentQueryService {
 			throw e;
 		}
 	}
-	
+
 	public List<String> listIdsByCategoryId( String categoryId, String orderField, String orderType, Integer maxCount ) throws Exception {
 		if( StringUtils.isEmpty( categoryId ) ){
 			throw new Exception("categoryId is null!");
@@ -165,7 +165,7 @@ public class DocumentQueryService {
 			throw e;
 		}
 	}
-	
+
 	public List<String> listIdsByAppId( String appId, String documentType, Integer maxCount ) throws Exception {
 		if( StringUtils.isEmpty( appId ) ){
 			throw new Exception("categoryId is null!");
@@ -175,8 +175,8 @@ public class DocumentQueryService {
 		} catch ( Exception e ) {
 			throw e;
 		}
-	}	
-	
+	}
+
 	public Long countByCategoryId(String categoryId ) throws Exception {
 		if( StringUtils.isEmpty( categoryId ) ){
 			throw new Exception("categoryId is null!");
@@ -187,7 +187,7 @@ public class DocumentQueryService {
 			throw e;
 		}
 	}
-	
+
 	public Long countByAppId(String appId ) throws Exception {
 		if( StringUtils.isEmpty( appId ) ){
 			throw new Exception("appId is null!");
@@ -234,7 +234,7 @@ public class DocumentQueryService {
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * 从Document表里，忽略权限根据条件查询文档数量
 	 * @param queryFilter
@@ -248,7 +248,7 @@ public class DocumentQueryService {
 			throw e;
 		}
 	}
-	
+
 	public Long getViewCount( String id ) throws Exception {
 		if( StringUtils.isEmpty( id ) ){
 			throw new Exception("id is null!");
@@ -261,7 +261,7 @@ public class DocumentQueryService {
 			throw e;
 		}
 	}
-	
+
 	public List<String> listReviewedIdsByCategoryId( String categoryId, int maxCount ) throws Exception {
 		if( StringUtils.isEmpty( categoryId ) ){
 			throw new Exception("categoryId is empty!");
@@ -301,11 +301,11 @@ public class DocumentQueryService {
 
 	public List<Document> listNextWithConditionInReview( String lastId, Integer pageSize, String orderField, String orderType, String person, QueryFilter queryFilter ) throws Exception {
 		if( pageSize == 0 ) { pageSize = 20; }
-		
-		if( StringUtils.isEmpty( orderField ) ) { 
+
+		if( StringUtils.isEmpty( orderField ) ) {
 			orderField = Document.sequence_FIELDNAME;
 		}
-		if( StringUtils.isEmpty( orderType ) ) { 
+		if( StringUtils.isEmpty( orderType ) ) {
 			orderType = "desc";
 		}
 		Document document = null;
@@ -319,9 +319,9 @@ public class DocumentQueryService {
 				reviewList = reviewService.listNextViewableWithFilter( emc, pageSize, document.getSequence(), orderField, orderType, person, queryFilter );
 			}else {
 				reviewList = reviewService.listNextViewableWithFilter( emc, pageSize, null, orderField, orderType, person, queryFilter );
-			}	
+			}
 			//根据Review列表查询Document列表信息
-			documentList = listDocumentsWithReview( reviewList );			
+			documentList = listDocumentsWithReview( reviewList );
 			return documentList;
 		} catch ( Exception e ) {
 			throw e;
@@ -369,20 +369,20 @@ public class DocumentQueryService {
 	 */
 	public List<Review> listNextWithConditionInReview( String orderField, String orderType, String person, QueryFilter queryFilter, int maxCount ) throws Exception {
 		if( maxCount == 0 ) { maxCount = 20; }
-		if( StringUtils.isEmpty( orderField ) ) { 
+		if( StringUtils.isEmpty( orderField ) ) {
 			orderField = Document.sequence_FIELDNAME;
 		}
-		if( StringUtils.isEmpty( orderType ) ) { 
+		if( StringUtils.isEmpty( orderType ) ) {
 			orderType = "desc";
 		}
-		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {	
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			List<Review> reviews = reviewService.listViewableWithFilter( emc, orderField, orderType, person, queryFilter, maxCount );
 			return reviews;
 		} catch ( Exception e ) {
 			throw e;
 		}
 	}
-	
+
 	public List<String> listDocIdsWithConditionInReview(String personName, String orderField, String orderType, QueryFilter queryFilter, Integer maxCount ) throws Exception {
 		List<String> docIds = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
@@ -392,7 +392,7 @@ public class DocumentQueryService {
 			throw e;
 		}
 	}
-	
+
 	public List<String> listDocIdsWithConditionInReview(String personName, QueryFilter queryFilter, Integer maxCount ) throws Exception {
 		List<String> docIds = null;
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
@@ -418,7 +418,7 @@ public class DocumentQueryService {
 	public List<Document> listNextWithConditionOutofPermission( String lastId, Integer pageSize, String orderField, String orderType, QueryFilter queryFilter ) throws Exception {
 		if( pageSize == 0 ) { pageSize = 20; }
 		//按正常逻辑根据序列进行分页查询
-		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {			
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			return documentInfoService.listNextWithCondition( emc, pageSize, lastId, orderField, orderType, queryFilter );
 		} catch ( Exception e ) {
 			throw e;
@@ -486,7 +486,7 @@ public class DocumentQueryService {
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * 根据条件按指定的排序方式查询指定数量的文档信息列表
 	 * @param orderField
@@ -494,21 +494,21 @@ public class DocumentQueryService {
 	 * @param queryFilter
 	 * @param maxCount
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public List<Document> listNextWithConditionOutofPermission(String orderField, String orderType, QueryFilter queryFilter, int maxCount ) throws Exception {
-		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {			
+		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			return documentInfoService.listNextWithCondition(emc, orderField, orderType, queryFilter, maxCount );
 		} catch ( Exception e ) {
 			throw e;
 		}
 	}
-	
+
 	/**
 	 * 将Review列表转换为Document列表
 	 * @param reviewList
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	private List<Document> listDocumentsWithReview( List<Review> reviewList ) throws Exception {
 		List<String> docIds = new ArrayList<>();
@@ -565,7 +565,7 @@ public class DocumentQueryService {
 	 * @param effectivePerson
 	 * @param doc
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public boolean getFileInfoManagerAssess(EffectivePerson effectivePerson, Document doc, CategoryInfo category, AppInfo appInfo ) throws Exception {
 		List<String> setting_permissonNames = new ArrayList<>();
@@ -576,7 +576,7 @@ public class DocumentQueryService {
 		own_permissonNames.addAll(userManagerService.listGroupNamesByPerson( effectivePerson.getDistinguishedName()));
 //		LogUtil.INFO( ">>>>>>>>my_own_permissonNames" , own_permissonNames );
 		//管理员允许操作
-		if( effectivePerson.isManager() || effectivePerson.isCipher() ) {
+		if( effectivePerson.isManager() ) {
 			return true;
 		}
 		//管理员允许操作
@@ -609,7 +609,7 @@ public class DocumentQueryService {
 		setting_permissonNames.retainAll( own_permissonNames );
 		if( ListTools.isNotEmpty( setting_permissonNames )) {
 			return true;
-		}		
+		}
 		//拥有文档作者权限的用户允许操作
 		setting_permissonNames.clear();
 		setting_permissonNames.addAll( doc.getAuthorPersonList()  );

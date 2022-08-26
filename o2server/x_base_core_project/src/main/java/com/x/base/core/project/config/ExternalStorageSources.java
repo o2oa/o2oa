@@ -90,16 +90,10 @@ public class ExternalStorageSources extends ConfigObject {
 			return this.getMeeting();
 		case calendar:
 			return this.getCalendar();
-		case okr:
-			return this.getOkr();
 		case cms:
 			return this.getCms();
 		case bbs:
 			return this.getBbs();
-		case report:
-			return this.getReport();
-		case strategyDeploy:
-			return this.getStrategyDeploy();
 		case teamwork:
 			return this.getTeamwork();
 		case structure:
