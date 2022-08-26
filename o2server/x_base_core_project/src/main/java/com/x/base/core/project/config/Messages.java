@@ -231,6 +231,21 @@ public class Messages extends ConfigObject {
 		o.im_create = new Message(MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS_INNER)
 				.cloneThenSetDescription("聊聊消息.");
 		o.consumers = new LinkedHashMap<>();
+		o.consumers.put("ws_demo", XGsonBuilder.instance().toJsonTree(new WsConsumer()));
+		o.consumers.put("pmsinner_demo", XGsonBuilder.instance().toJsonTree(new PmsinnerConsumer()));
+		o.consumers.put("calendar_demo", XGsonBuilder.instance().toJsonTree(new CalendarConsumer()));
+		o.consumers.put("dingding_demo", XGsonBuilder.instance().toJsonTree(new DingdingConsumer()));
+		o.consumers.put("welink_demo", XGsonBuilder.instance().toJsonTree(new WelinkConsumer()));
+		o.consumers.put("qiyeweixin_demo", XGsonBuilder.instance().toJsonTree(new QiyeweixinConsumer()));
+		o.consumers.put("mpweixin_demo", XGsonBuilder.instance().toJsonTree(new MpweixinConsumer()));
+		o.consumers.put("kafka_demo", XGsonBuilder.instance().toJsonTree(KafkaConsumer.defaultInstance()));
+		o.consumers.put("activemq_demo", XGsonBuilder.instance().toJsonTree(ActivemqConsumer.defaultInstance()));
+		o.consumers.put("restful_demo", XGsonBuilder.instance().toJsonTree(RestfulConsumer.defaultInstance()));
+		o.consumers.put("mail_demo", XGsonBuilder.instance().toJsonTree(MailConsumer.defaultInstance()));
+		o.consumers.put("api_demo", XGsonBuilder.instance().toJsonTree(ApiConsumer.defaultInstance()));
+		o.consumers.put("jdbc_demo", XGsonBuilder.instance().toJsonTree( JdbcConsumer.defaultInstance()));
+		o.consumers.put("table_demo", XGsonBuilder.instance().toJsonTree( TableConsumer.defaultInstance()));
+		o.consumers.put("hadoop_demo", XGsonBuilder.instance().toJsonTree(HadoopConsumer.defaultInstance()));
 		o.loaders = new LinkedHashMap<>();
 		o.filters = new LinkedHashMap<>();
 		return o;
