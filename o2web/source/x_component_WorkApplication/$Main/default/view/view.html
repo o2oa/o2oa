@@ -1,0 +1,100 @@
+<div class="appNode" data-o2-element="appNode">
+    <div class="menuArea">
+        <div class="menu" data-o2-element="personMenuNode" >
+            <div class="menuTitle">
+                <div class="menuTitleIcon" data-o2-events="o2load:loadApplicationIcon"></div>
+                <div class="menuTitleText">{{$.data.application.name}}</div>
+                <div class="menuTitleAction" data-o2-events="click:startProcess">
+                    <icon class="o2WorkApplication icon-add mainColor_color"></icon>
+                </div>
+            </div>
+            <div class="menuItem" data-o2-element="allMenuNode" data-o2-events="click:loadList:all">
+                <div class="menuItemIcon"><icon class="o2WorkApplication icon-zhankai"></icon></div>
+                <div class="menuItemText">{{$.lp.mywork}}</div>
+            </div>
+            <div style="padding-left:20px" class="menuItem" data-o2-element="taskMenuNode" data-o2-events="click:loadList:task">
+                <div class="menuItemIcon"><icon class="o2WorkApplication icon-task"></icon></div>
+                <div class="menuItemCount" data-o2-element="taskCountNode"></div>
+                <div class="menuItemText">{{$.lp.task}}</div>
+            </div>
+            <div style="padding-left:20px" class="menuItem" data-o2-element="taskDoneMenuNode" data-o2-events="click:loadList:taskDone">
+                <div class="menuItemIcon"><icon class="o2WorkApplication icon-taskDone"></icon></div>
+                <div class="menuItemCount" data-o2-element="taskCompletedCountNode"></div>
+                <div class="menuItemText">{{$.lp.taskDone}}</div>
+            </div>
+            <div style="padding-left:20px" class="menuItem" data-o2-element="readMenuNode" data-o2-events="click:loadList:read">
+                <div class="menuItemCount" data-o2-element="readCountNode"></div>
+                <div class="menuItemIcon"><icon class="o2WorkApplication icon-read"></icon></div>
+                <div class="menuItemText">{{$.lp.read}}</div>
+            </div>
+            <div style="padding-left:20px" class="menuItem" data-o2-element="readDoneMenuNode" data-o2-events="click:loadList:readDone">
+                <div class="menuItemIcon"><icon class="o2WorkApplication icon-readDone"></icon></div>
+                <div class="menuItemCount" data-o2-element="readCompletedCountNode"></div>
+                <div class="menuItemText">{{$.lp.readDone}}</div>
+            </div>
+            <div style="padding-left:20px" class="menuItem" data-o2-element="draftMenuNode" data-o2-events="click:loadList:draft">
+                <div class="menuItemIcon"><icon class="o2WorkApplication icon-draft"></icon></div>
+                <div class="menuItemCount" data-o2-element="draftCountNode"></div>
+                <div class="menuItemText">{{$.lp.draft}}</div>
+            </div>
+            {{if $.acl.isProcessManager}}
+            <div class="menuDivider"></div>
+            <div class="menuItem" data-o2-events="">
+                <div class="menuItemIcon"><icon class="o2WorkApplication icon-zhankai"></icon></div>
+                <div class="menuItemText">{{$.lp.adminwork}}</div>
+            </div>
+            <div  style="padding-left:20px" class="menuItem" data-o2-element="workMenuNode" data-o2-events="click:loadList:work">
+                <div class="menuItemIcon"><icon class="o2WorkApplication icon-work"></icon></div>
+                <div class="menuItemText">{{$.lp.work}}</div>
+            </div>
+            <div  style="padding-left:20px" class="menuItem" data-o2-element="workCompletedMenuNode" data-o2-events="click:loadList:workCompleted">
+                <div class="menuItemIcon"><icon class="o2WorkApplication icon-workCompleted"></icon></div>
+                <div class="menuItemText">{{$.lp.workcompleted}}</div>
+            </div>
+            <div  style="padding-left:20px" class="menuItem" data-o2-element="snapMenuNode" data-o2-events="click:loadList:snap">
+                <div class="menuItemIcon"><icon class="o2WorkApplication icon-snap"></icon></div>
+                <div class="menuItemText">{{$.lp.workdelete}}</div>
+            </div>
+            {{end if}}
+            {{if $.acl.isAppManager}}
+            <div  style="padding-left:20px" class="menuItem" data-o2-element="dictMenuNode" data-o2-events="click:loadList:dict">
+                <div class="menuItemIcon"><icon class="o2WorkApplication icon-dict"></icon></div>
+                <div class="menuItemText">{{$.lp.dict}}</div>
+            </div>
+            <div  style="padding-left:20px" class="menuItem" data-o2-element="serialMenuNode" data-o2-events="click:loadList:serial">
+                <div class="menuItemIcon"><icon class="o2WorkApplication icon-serial"></icon></div>
+                <div class="menuItemText">{{$.lp.serial}}</div>
+            </div>
+            {{end if}}
+        </div>
+    </div>
+    <div class="contentArea" data-o2-element="mainNode">
+        <div class="content" data-o2-element="contentNode">
+            <div data-o2-element="searchNode"></div>
+            <div class="toolBarList" data-o2-element="toolBarNode"></div>
+            <div class="contentTitle" data-o2-element="listTitleNode">
+            </div>
+            <div class="contentList" data-o2-element="listContentNode">
+                <div class="skeleton" data-o2-element="skeletonNode">
+                    <div class="skeleton_item" style="width: 90%"></div>
+                    <div class="skeleton_item" style="width: 60%"></div>
+                    <div class="skeleton_item"></div>
+                    <div class="skeleton_item" style="width: 70%"></div>
+                    <div class="skeleton_item"></div>
+                    <div class="skeleton_item" style="width: 60%"></div>
+                    <div class="skeleton_item"></div>
+                    <div class="skeleton_item" style="width: 80%"></div>
+                </div>
+            </div>
+            <div class="contentBottom" data-o2-element="listBottomNode">
+                <div class="contentPageArea">
+                    <div class="firstPage" data-o2-events="click:firstPage">{{$.lp.firstPage}}</div>
+                    <div class="prevPage o2WorkApplication icon-left" data-o2-events="click:prevPage"></div>
+                    <div class="lastPage" data-o2-events="click:lastPage">{{$.lp.lastPage}}</div>
+                    <div class="nextPage o2WorkApplication icon-right" data-o2-events="click:nextPage"></div>
+                    <div class="pageNumberArea" data-o2-element="pageNumberAreaNode"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

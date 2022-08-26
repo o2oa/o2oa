@@ -1,0 +1,10 @@
+<div class="st_processListAppContent">
+    {{each $.processList}}
+    <div class="st_processItemArea">
+        <div class="st_processItem"
+             data-o2-events="mouseover:startProcessItemOver;mouseout:startProcessItemOut; mousedown:startProcessItemDown;mouseup:startProcessItemUp;click:startProcessItemClick;">
+            {{$.name}}
+        </div>
+    </div>
+    {{end each}}
+</div>

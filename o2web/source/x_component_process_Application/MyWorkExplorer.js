@@ -18,6 +18,27 @@ MWF.xApplication.process.Application.MyWorkExplorer = new Class({
                 this.app.myWorkCompletedConfig();
             }.bind(this)
         });
+
+        this.gotoNewNode = new Element("div", {
+            "styles": this.css.toCompletedNode,
+            "text": this.app.lp.toNew
+        }).inject(this.toolbarNode);
+        this.gotoNewNode.addEvents({
+            "mouseover": function(){
+                this.gotoNewNode.setStyles(this.css.toCompletedNode_over);
+            }.bind(this),
+            "mouseout": function(){
+                this.gotoNewNode.setStyles(this.css.toCompletedNode);
+            }.bind(this),
+            "click": function(){
+                var options = {
+                    "id": this.app.options.id,
+                    "appId":  "WorkApplication" + this.app.options.id
+                };
+                layout.openApplication(null, "WorkApplication", options);
+            }.bind(this)
+        });
+
     },
 
     _getFilterCount: function(callback){

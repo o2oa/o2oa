@@ -1,0 +1,33 @@
+<div>
+    {{if $.data.length}}
+    <table>
+        <colgroup>
+            <col width="30%">
+            <col width="20%">
+            <col width="30%">
+            <col width="20%">
+        </colgroup>
+        <tbody>
+
+        {{each $.data}}
+
+        <tr class="listItem" data-o2-events="click:open:{{$.id}}">
+
+            <td style="text-align: left;padding-left:10px"><span>{{$.name}}</span></td>
+            <td style="text-align: left;"><span>{{$.alias}}</span></td>
+            <td style="text-align: left;"><span>{{$.description}}</span></td>
+            <td style="text-align: left;"><span>{{$.updateTime}}</span></td>
+        </tr>
+        {{end each}}
+        </tbody>
+    </table>
+    {{end if}}
+    {{if !$.data.length}}
+    <div class="emptyListArea">
+        <div class="emptyListIcon"></div>
+        <div class="emptyListText">
+            {{$.lp.noFile}}
+        </div>
+    </div>
+    {{end if}}
+</div>
