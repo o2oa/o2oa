@@ -232,6 +232,10 @@ function uploadAppStyleImage(name, formdata, file, callback) {
 function listDumpData() {
     return doAction('x_program_center', 'ConfigAction', 'listDumpData');
 }
+// app打包Action
+function doAppPackAction(method, ...args) {
+    return doAction('x_program_center', 'AppPackAction', method, ...args);
+}
 
 
 
@@ -279,5 +283,6 @@ export {
     saveAppStyle,
     eraseAppStyleImage,
     uploadAppStyleImage,
-    listDumpData
+    listDumpData,
+    doAppPackAction
 };
