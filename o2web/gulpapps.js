@@ -89,7 +89,7 @@ var apps = [
     { "folder": "x_component_WorkApplication", "tasks": ["move", "min"] },
     { "folder": "x_component_appstore", "tasks": [] },
     { "folder": "x_component_appstore_application", "tasks": [] },
-    { "folder": "x_component_appstore_systemconfig", "tasks": [] },
+    { "folder": "x_component_systemconfig", "tasks": [] },
     { "folder": "x_test", "tasks": ["move", "min"] }
 ];
 

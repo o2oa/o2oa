@@ -4,18 +4,17 @@
     <div class="item_input_area">
       <el-input class="item_input" :style="inputStyle"
                 v-model="value" :type="inputType" :show-password="showPassword"
-                @change="changeValue($event)"/>
+                @change="changeValue($event)" v-bind="options"/>
     </div>
   </div>
 </template>
 
 <script setup>
-import {lp} from '@o2oa/component';
 const emit = defineEmits(['update:value', 'change']);
 
 const props = defineProps({
   label: String,
-  value: String,
+  value: '',
   inputType: {
     type: String,
     default: 'text'
@@ -31,12 +30,27 @@ const props = defineProps({
   inputStyle: {
     type: Object,
     default: {}
+  },
+  options: {
+    type: Object,
+    default: null
   }
 });
 
+// onUpdated(()=>{
+//   if (props.toArray) {
+//     const arr = Array.isArray(props.value) ? props.value : props.value.split(/\s*[,\n\r]\s*/g);
+//     props.value = arr.join('\n');
+//   }
+// });
+
 function changeValue(e){
-  emit('change', e);
-  emit('update:value', e);
+  let v = (props.inputType==='number') ? e.toFloat() : e;
+  // if (props.toArray){
+  //   v = v.split(/\s*[,\n\r]\s*/g);
+  // }
+  emit('update:value', v);
+  emit('change', v);
 }
 
 </script>
@@ -80,4 +94,5 @@ button {
   cursor: pointer;
   margin-left: 10px;
 }
+
 </style>

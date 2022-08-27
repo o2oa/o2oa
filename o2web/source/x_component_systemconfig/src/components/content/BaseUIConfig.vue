@@ -10,9 +10,9 @@
         <el-tab-pane :label="lp._uiConfig.menuConfig" lazy>
           <MenuConfig/>
         </el-tab-pane>
-        <el-tab-pane :label="lp._uiConfig.userConfig" lazy>
-        <!--          <ServiceDeploy></ServiceDeploy>-->
-        </el-tab-pane>
+<!--        <el-tab-pane :label="lp._uiConfig.userConfig" lazy>-->
+<!--        &lt;!&ndash;          <ServiceDeploy></ServiceDeploy>&ndash;&gt;-->
+<!--        </el-tab-pane>-->
 
       </el-tabs>
     </div>
@@ -22,8 +22,8 @@
 
 <script setup>
 import {lp} from '@o2oa/component';
-import BaseConfig from './uiConfig/BaseConfig.vue';
-import MenuConfig from './uiConfig/MenuConfig.vue';
+import BaseConfig from './BaseUIConfig/BaseConfig.vue';
+import MenuConfig from './BaseUIConfig/MenuConfig.vue';
 </script>
 
 <style scoped>

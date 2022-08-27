@@ -110,13 +110,21 @@ const contentComponent = computed(() => {
   color: rgb(153, 153, 153);
   clear: both;
 }
+.item_dlg_info{
+  overflow: hidden;
+  padding: 0 30px 10px 30px;
+  font-size: 14px;
+  color: rgb(153, 153, 153);
+  clear: both;
+}
 .item_value{
   overflow: hidden;
   padding-right: 30px;
   font-size: 14px;
   color: rgb(153, 153, 153);
   clear: both;
-  display: inline;
+  display: inline-flex;
+  height: 30px;
 }
 
 button{
@@ -147,5 +155,77 @@ button{
 * {
   scrollbar-color: #bbbbbb #dddddd;
   scrollbar-width: thin;
+}
+.el-table_head {
+  font-weight: 700;
+  color: var(--el-text-color-regular);
+  background-color: var(--el-fill-color-light)!important;
+}
+.item_descriptions_label{
+  font-weight: normal!important;
+}
+.item_descriptions_content{
+  font-weight: 300!important;
+}
+.item_div_button{
+  margin: 0;
+  height: var(--el-input-height, 40px);
+  border-radius: 100px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  cursor: pointer;
+}
+.item_validate_info{
+  color: red;
+  height: 10px;
+  padding: 5px 15px;
+  display: none;
+}
+.el-form-item__error{
+  margin-left: 15px;
+  font-size: 14px!important;
+}
+.el-form-item--large{
+  margin-bottom: 32px!important;
+}
+.el-textarea__inner{
+  border-radius: 15px!important;
+}
+.item_info_content{
+
+}
+
+.el-transfer-panel__filter {
+  text-align: center!important;
+  padding: 10px!important;;
+  margin: 0!important;;
+  box-sizing: border-box!important;
+  width: 100%!important;;
+}
+.el-transfer__buttons{
+  display: none!important;
+}
+.el-transfer-panel{
+  margin-left: 20px;
+}
+.el-transfer-panel *{
+  box-sizing: border-box!important;
+}
+.item_log{
+  color: #999999;
+  word-break: keep-all;
+  word-wrap: normal;
+}
+.item_log_completed{
+  color: #00b516;
+  word-break: keep-all;
+  word-wrap: normal;
+}
+.item_storage_module .el-collapse-item__header {
+  padding: 0 20px!important;
+  border-radius: 30px!important;
+  background-color: #f3f3f3!important;
 }
 </style>

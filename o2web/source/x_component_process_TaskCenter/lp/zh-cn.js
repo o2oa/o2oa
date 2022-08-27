@@ -59,6 +59,7 @@ MWF.xApplication.process.TaskCenter.LP = {
     "activityNameList": "办理活动",
     "completedTimeMonthList": "办理时间",
     "startTimeMonthList": "到达时间",
+    "completedList": "完成状态",
     "key": "关键字",
     "year": "年",
     "month": "月",

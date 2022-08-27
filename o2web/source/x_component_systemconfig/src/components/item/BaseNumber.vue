@@ -2,7 +2,7 @@
   <div class="item">
     <label class="item_label" v-if="label" :style="labelStyle">{{label}}</label>
     <div class="item_input_area">
-      <el-input-number  :style="inputStyle" v-model="value" size="default" @change="changeValue($event)"></el-input-number>
+      <el-input-number  :style="inputStyle" v-model="value" size="default" @change="changeValue($event)" :min="0"></el-input-number>
     </div>
   </div>
 </template>

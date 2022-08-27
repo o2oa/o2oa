@@ -18,16 +18,26 @@ async function loadConfig(name) {
         fileName: name + '.json'
     }
     const json = await o2.Actions.load('x_program_center').ConfigAction.open(body);
-    configs[name] = JSON.parse(json.data.fileContent);
-    return configs[name];
+    if (json.data.fileContent) {
+        configs[name] = JSON.parse(json.data.fileContent);
+        return configs[name];
+    }
+    return null;
+}
+async function loadRuntimeConfig(name) {
+    const body = {
+        fileName: name + '.json'
+    }
+    const json = await o2.Actions.load('x_program_center').ConfigAction.openRuntimeConfig(body);
+    return (json.data.fileContent) ? JSON.parse(json.data.fileContent) : null;
 }
 
 async function getConfig(name, path) {
     const data = configs[name] || (await loadConfig(name));
-    return data[path];
+    return data ? data[path] : null;
 }
-async function getConfigData(name) {
-    if (configs[name]) return configs[name];
+async function getConfigData(name, reload) {
+    if (configs[name] && !reload) return configs[name];
     return await loadConfig(name);
 }
 async function saveConfig(name, path, value) {
@@ -49,7 +59,6 @@ async function saveConfig(name, path, value) {
 async function saveConfigData(name, data) {
     const config = (configs[name]) ? configs[name] : (await loadConfig(name));
     Object.assign(config, data);
-    console.log(config);
     o2.Actions.load('x_program_center').ConfigAction.save({
         fileName: `${name}.json`,
         fileContent: JSON.stringify(config, null, "\t")
@@ -109,6 +118,11 @@ function clearPublicData(name){
         o2.UD.deletePublicData(name, dData=>resolve(dData));
     });
 }
+async function doAction(content, action, method, ...args) {
+    const m = o2.Actions.load(content)[action][method];
+    const json = await m.apply(m, args);
+    return json.data;
+}
 
 async function loadProcessApplication() {
     const json = await o2.Actions.load("x_processplatform_assemble_surface").ApplicationAction.listWithPerson();
@@ -137,6 +151,88 @@ async function loadPortals() {
     return json.data;
 }
 
+function loadInvokes(){
+    return doAction('x_program_center', 'InvokeAction', 'list');
+}
+
+
+function getServers() {
+    return doAction('x_program_center', 'CommandAction', 'getNodeInfoList');
+}
+
+function getModules() {
+    return doAction('x_program_center', 'ApplicationsAction', 'get');
+}
+function connectCollect() {
+    return doAction('x_program_center', 'CollectAction', 'connect');
+}
+function validateCollect() {
+    return doAction('x_program_center', 'CollectAction', 'validate');
+}
+function loginToCollect(data) {
+    return doAction('x_program_center', 'CollectAction', 'validateDirect', data);
+}
+function checkCollectName(name) {
+    return doAction('x_program_center', 'CollectAction', 'exist', name);
+}
+function checkCollectPass(password) {
+    return doAction('x_program_center', 'CollectAction', 'validatePassword', {password});
+}
+function sendCode(mobile) {
+    return doAction('x_program_center', 'CollectAction', 'code', mobile);
+}
+function registCollect(data) {
+    return doAction('x_program_center', 'CollectAction', 'regist', data);
+}
+function disconnectCollect() {
+    return doAction('x_program_center', 'CollectAction', 'disconnect');
+}
+function deleteCollect(name, mobile, code) {
+    return doAction('x_program_center', 'CollectAction', 'delete', name, mobile, code);
+}
+function resetPasswordCollect(data) {
+    return doAction('x_program_center', 'CollectAction', 'resetPassword', data);
+}
+
+function getApplicationModules() {
+    return doAction('x_program_center', 'ConfigAction', 'listApplication');
+}
+function getDataEntrys() {
+    return doAction('x_program_center', 'ConfigAction', 'listEntity');
+}
+function executeCommand(data) {
+    return doAction('x_program_center', 'CommandAction', 'executeCommand', data);
+}
+function getSystemLog(id) {
+    return doAction('x_program_center', 'WarnLogAction', 'getSystemLog', id);
+}
+
+function getProxy() {
+    return doAction('x_program_center', 'ConfigAction', 'getProxy');
+}
+function setProxy(data) {
+    return doAction('x_program_center', 'ConfigAction', 'setProxy', data);
+}
+function mobileCheckConnect() {
+    return doAction('x_program_center', 'CollectAction', 'mobileCheckConnect');
+}
+function getAppStyle() {
+    return doAction('x_program_center', 'AppStyleAction', 'currentStyle');
+}
+function saveAppStyle(data) {
+    return doAction('x_program_center', 'AppStyleAction', 'edit', data);
+}
+function eraseAppStyleImage(name) {
+    return doAction('x_program_center', 'AppStyleAction', 'image'+name+'Erase');
+}
+function uploadAppStyleImage(name, formdata, file, callback) {
+    return o2.Actions.load('x_program_center').AppStyleAction['image'+name](formdata, file, callback);
+}
+function listDumpData() {
+    return doAction('x_program_center', 'ConfigAction', 'listDumpData');
+}
+
+
 
 export {
     getConfig,
@@ -156,5 +252,31 @@ export {
     loadInforApplication,
     loadQueryApplication,
     changePassword,
-    loadPortals
+    loadPortals,
+    loadInvokes,
+    getServers,
+    loadRuntimeConfig,
+    getModules,
+    connectCollect,
+    validateCollect,
+    loginToCollect,
+    checkCollectName,
+    checkCollectPass,
+    sendCode,
+    registCollect,
+    disconnectCollect,
+    deleteCollect,
+    resetPasswordCollect,
+    getApplicationModules,
+    getDataEntrys,
+    executeCommand,
+    getSystemLog,
+    getProxy,
+    setProxy,
+    mobileCheckConnect,
+    getAppStyle,
+    saveAppStyle,
+    eraseAppStyleImage,
+    uploadAppStyleImage,
+    listDumpData
 };
