@@ -1,29 +1,5 @@
 package com.x.program.center.jaxrs.command;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.Socket;
-import java.net.URISyntaxException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
@@ -32,17 +8,43 @@ import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.Crypto;
-
+import com.x.base.core.project.tools.StringTools;
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.io.*;
+import java.net.Socket;
+import java.net.URISyntaxException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.util.*;
+import java.util.stream.Collectors;
+
+/**
+ * @author sword
+ */
 public class ActionUploadFile extends BaseAction {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionUploadFile.class);
+	private static final Set<String> set = Set.of("war", "jar");
+	private static final String CTL_JAR = "jar";
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String ctl, byte[] bytes,
-			FormDataContentDisposition disposition) throws Exception {
-		LOGGER.debug("execute:{}, ctl:{}.", effectivePerson::getDistinguishedName, () -> ctl);
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, byte[] bytes, FormDataContentDisposition disposition) throws Exception {
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 		if (BooleanUtils.isNotTrue(Config.general().getDeployWarEnable())) {
 			throw new ExceptionDeployDisable();
+		}
+		String fileName = this.fileName(disposition);
+		String ext = FilenameUtils.getExtension(fileName);
+		String ctl = this.getFileCtl(fileName, ext);
+		if(!StringTools.isFileName(fileName) || StringUtils.isBlank(ext) || !set.contains(ext) || StringUtils.isEmpty(ctl)){
+			throw new ExceptionIllegalFile(fileName);
 		}
 		ActionResult<Wo> result = new ActionResult<>();
 		List<String> list = Config.nodes().keySet().stream().filter(o -> {
@@ -56,7 +58,7 @@ public class ActionUploadFile extends BaseAction {
 		list.add(Config.node());
 		for (String node : list) {
 			try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes)) {
-				executeCommand(ctl, node, Config.nodes().get(node).nodeAgentPort(), byteArrayInputStream, disposition);
+				executeCommand(ctl, node, Config.nodes().get(node).nodeAgentPort(), byteArrayInputStream, fileName);
 			}
 		}
 		Wo wo = new Wo();
@@ -65,8 +67,28 @@ public class ActionUploadFile extends BaseAction {
 		return result;
 	}
 
+	private String getFileCtl(String fileName, String ext) throws Exception {
+		String ctl = "";
+		List<String> storeWars = Arrays.asList(Config.dir_store().list());
+		List<String> storeJars = Arrays.asList(Config.dir_store_jars().list());
+		if(CTL_JAR.equals(ext)){
+			if(storeJars.contains(fileName)){
+				ctl = "storeJar";
+			}else{
+				ctl = "customJar";
+			}
+		}else{
+			if(storeWars.contains(fileName)){
+				ctl = "storeWar";
+			}else{
+				ctl = "customWar";
+			}
+		}
+		return ctl;
+	}
+
 	private void executeCommand(String ctl, String nodeName, int nodePort, InputStream fileInputStream,
-			FormDataContentDisposition disposition)
+			String fileName)
 			throws IOException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException,
 			InvalidKeySpecException, IllegalBlockSizeException, BadPaddingException, URISyntaxException {
 		try (Socket socket = new Socket(nodeName, nodePort);
@@ -79,7 +101,7 @@ public class ActionUploadFile extends BaseAction {
 			commandObject.put("credential", Crypto.rsaEncrypt("o2@", Config.publicKey()));
 			dos.writeUTF(XGsonBuilder.toJson(commandObject));
 			dos.flush();
-			dos.writeUTF(disposition.getFileName());
+			dos.writeUTF(fileName);
 			dos.flush();
 			byte[] bytes = new byte[1024];
 			int length = 0;

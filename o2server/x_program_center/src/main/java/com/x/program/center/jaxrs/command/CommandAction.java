@@ -76,14 +76,13 @@ public class CommandAction<Wo> extends StandardJaxrsAction {
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	public void upload(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("命令名称(customJar|customWar|storeJar|storeWar)") @FormDataParam("ctl") String ctl,
 			@JaxrsParameterDescribe("附件名称") @FormDataParam(FILENAME_FIELD) String fileName,
 			@JaxrsParameterDescribe("文件内容") @FormDataParam(FILE_FIELD) byte[] bytes,
 			@JaxrsParameterDescribe("上传文件") @FormDataParam(FILE_FIELD) final FormDataContentDisposition disposition) {
 		ActionResult<ActionUploadFile.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionUploadFile().execute(effectivePerson, ctl, bytes, disposition);
+			result = new ActionUploadFile().execute(effectivePerson, bytes, disposition);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);
