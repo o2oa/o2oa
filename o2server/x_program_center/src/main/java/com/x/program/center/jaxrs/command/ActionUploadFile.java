@@ -36,11 +36,11 @@ public class ActionUploadFile extends BaseAction {
 	private static final String CTL_JAR = "jar";
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, byte[] bytes, FormDataContentDisposition disposition) throws Exception {
-		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 		if (BooleanUtils.isNotTrue(Config.general().getDeployWarEnable())) {
 			throw new ExceptionDeployDisable();
 		}
 		String fileName = this.fileName(disposition);
+		LOGGER.info("{}操作部署应用:{}.", effectivePerson::getDistinguishedName, () -> fileName);
 		String ext = FilenameUtils.getExtension(fileName);
 		String ctl = this.getFileCtl(fileName, ext);
 		if(!StringTools.isFileName(fileName) || StringUtils.isBlank(ext) || !set.contains(ext) || StringUtils.isEmpty(ctl)){
@@ -49,7 +49,7 @@ public class ActionUploadFile extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		List<String> list = Config.nodes().keySet().stream().filter(o -> {
 			try {
-				return StringUtils.equals(o, Config.node());
+				return !StringUtils.equals(o, Config.node());
 			} catch (Exception e) {
 				LOGGER.error(e);
 			}
