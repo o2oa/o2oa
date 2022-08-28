@@ -1,0 +1,116 @@
+{
+  "ws": {
+    "type": "ws",
+    "loader": "",
+    "filter": "",
+    "enable": true
+  },
+  "pmsinner": {
+    "type": "pmsinner",
+    "loader": "",
+    "filter": "",
+    "enable": true
+  },
+  "calendar": {
+    "type": "calendar",
+    "loader": "",
+    "filter": "",
+    "enable": true
+  },
+  "dingding": {
+    "type": "dingding",
+    "loader": "",
+    "filter": "",
+    "enable": true
+  },
+  "welink": {
+    "type": "welink",
+    "loader": "",
+    "filter": "",
+    "enable": true
+  },
+  "qiyeweixin": {
+    "type": "qiyeweixin",
+    "loader": "",
+    "filter": "",
+    "enable": true
+  },
+  "mpweixin": {
+    "type": "mpweixin",
+    "loader": "",
+    "filter": "",
+    "enable": true
+  },
+  "kafka": {
+    "bootstrapServers": "",
+    "topic": "o2oa",
+    "securityProtocol": "SASL_PLAINTEXT",
+    "saslMechanism": "PLAIN",
+    "username": "",
+    "password": "",
+    "type": "kafka",
+    "loader": "",
+    "filter": "",
+    "enable": true
+  },
+  "activemq": {
+    "username": "",
+    "password": "",
+    "url": "",
+    "queueName": "",
+    "type": "activemq",
+    "loader": "",
+    "filter": "",
+    "enable": true
+  },
+  "restful": {
+    "url": "",
+    "method": "get",
+    "internal": true,
+    "type": "restful",
+    "loader": "",
+    "filter": "",
+    "enable": true
+  },
+  "mail": {
+    "host": "",
+    "port": 465.0,
+    "sslEnable": true,
+    "auth": true,
+    "from": "admin@o2oa.net",
+    "password": "password",
+    "type": "mail",
+    "loader": "",
+    "filter": "",
+    "enable": true
+  },
+  "jdbc": {
+    "driverClass": "com.mysql.cj.jdbc.Driver",
+    "url": "jdbc:mysql://",
+    "username": "root",
+    "password": "password",
+    "catalog": "",
+    "schema": "",
+    "table": "NEWTABLE",
+    "type": "jdbc",
+    "loader": "",
+    "filter": "",
+    "enable": true
+  },
+  "table": {
+    "table": "",
+    "type": "table",
+    "loader": "",
+    "filter": "",
+    "enable": true
+  },
+  "hadoop": {
+    "fsDefaultFS": "hdfs://",
+    "username": "",
+    "path": "",
+    "type": "hadoop",
+    "loader": "",
+    "filter": "",
+    "enable": true
+  }
+}
