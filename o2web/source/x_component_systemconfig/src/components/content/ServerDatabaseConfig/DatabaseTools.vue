@@ -185,7 +185,7 @@ const readLog = (id, isComplete, isLog, status, logMethod, times, complete)=>{
     if (status.value !== 'stop' && status.value !== 'end'){
       readLog(id, isComplete, isLog, status, logMethod, times, complete);
     }
-  }, 1000)
+  }, 500)
 }
 const readDumpLog = (id)=>{
   readLog(id, (log)=>{

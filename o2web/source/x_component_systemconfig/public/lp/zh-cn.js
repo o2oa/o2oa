@@ -1242,9 +1242,96 @@ o2.xApplication.systemconfig.LP = {
         "appId": "华为推送AppId",
         "appSecret": "华为推送AppSecret",
         "appIdInfo": "华为推送应用的appId",
-        "appSecretInfo": "华为推送应用的appSecret",
+        "appSecretInfo": "华为推送应用的appSecret"
     },
     "_messageConfig": {
-        "exmail": "腾讯邮箱集成"
+        "messageConsumers": "通道配置",
+        "messageType": "类型配置",
+        "messageLoader": "加载器",
+        "messageFilter": "过滤器",
+
+        "consumerTypes": {
+            "ws": "WebSocket",
+            "pmsinner": "推送消息",
+            "calendar": "日程",
+            "dingding": "钉钉",
+            "welink": "welink",
+            "qiyeweixin": "企业微信",
+            "mpweixin": "微信公众号",
+            "kafka": "kafka",
+            "activemq": "ActiveMQ",
+            "restful": "Restful",
+            "mail": "邮件",
+            "jdbc": "JDBC",
+            "table": "数据表",
+            "hadoop": "Hadoop"
+        },
+        "consumerInfoTitle": "消息通道配置",
+        "consumerInfo": "O2OA系统提供多种消息通道，您可以在此处设置各类消息需要通过什么方式发送",
+        "addConsumer": "添加消息通道",
+        "consumerLabel": {
+            "key": "通道名称",
+            "type": "类型",
+            "filter": "过滤器",
+            "loader": "加载器"
+        },
+        "none": "无",
+        "editConsumer": "编辑消息通道",
+
+        "inputKey": "请输入消息通道名称",
+        "hasKey": "消息通道名称已存在，请使用其它名称",
+
+        "consumerData": {
+            "kafka": ['bootstrapServers', 'topic', 'securityProtocol', 'saslMechanism', 'saslMechanism', 'username', 'password'],
+            "activemq": ['url', 'queueName', 'username', 'password'],
+            "restful": ['url', 'method', 'internal'],
+            "mail": ['host', 'port', 'sslEnable', 'auth', 'from', 'password'],
+            "jdbc": ['driverClass', 'url', 'catalog', 'schema', 'table', 'username', 'password'],
+            "table": ['table'],
+            "hadoop": ['fsDefaultFS', 'path', 'username']
+        },
+
+        "messageTypeTitle": "消息类型设置",
+        "messageTypeInfo": "O2OA系统内置的各种事件可以发送消息，您可以在此处设置这些事件需要通过那些通道来发送消息。您也可以增加自定义的消息类型",
+
+        "noConsumer": "此类型消息未选择发送通道",
+        "selectConsumer": "选择通道",
+        "addTmpConsumer": "添加通道",
+
+        "addMessageType": "添加消息类型",
+        "newMessageData": {
+            "key": "消息标识",
+            "description": "描述"
+        },
+        "inputMessageKey": "请输入消息标识",
+        "hasMessageKey": "消息标识已存在，请使用其它标识",
+
+        "deleteTypeTitle": "删除消息类型确认",
+        "deleteTypeInfo": "您确定要删除消息类型“{name}”吗？",
+
+        "filterConfigTitle": "消息过滤器配置",
+        "filterConfigInfo": "消息通道中可以使用过滤器，过滤器是一个服务端脚本，在消息发送前被调用，过滤器返回true表示允许消息发送，返回false则此消息不会发送",
+        "addFilter": "添加消息过滤器",
+        "filterKey": "过滤器名称",
+
+        "inputFilterKey": "请输入过滤器名称",
+        "hasFilterKey": "过滤器名称已存在，请使用其它名称",
+
+        "deleteFilterTitle": "删除过滤器确认",
+        "deleteFilterInfo": "您确定要删除过滤器“{name}”吗？",
+
+        "loaderConfigTitle": "消息加载器配置",
+        "loaderConfigInfo": "消息通道中可以使用加载器，过滤器是一个服务端脚本，它用于在发送消息前，对消息内容进行修改，在消息发送前被调用，您必须返回一个JSON格式的数据，作为要发送的消息内容",
+        "addLoader": "添加消息加载器",
+        "loaderKey": "加载器名称",
+
+        "inputLoaderKey": "请输入加载器名称",
+        "hasLoaderKey": "加载器名称已存在，请使用其它名称",
+
+
+        "deleteLoaderTitle": "删除加载器确认",
+        "deleteLoaderInfo": "您确定要删除加载器“{name}”吗？"
+
+
     }
 }

@@ -103,7 +103,7 @@ o2.widget.ScriptArea = new Class({
         this.titleActionNode.store("status", "return");
 
         this.jsEditor.focus();
-
+        this.fireEvent("maxSize");
     },
 
     returnSize: function(){
@@ -125,6 +125,7 @@ o2.widget.ScriptArea = new Class({
         this.titleActionNode.store("status", "max");
 
         this.jsEditor.focus();
+        this.fireEvent("returnSize");
     },
     resizeContentNodeSize: function(){
         var titleSize = this.titleNode.getSize();
