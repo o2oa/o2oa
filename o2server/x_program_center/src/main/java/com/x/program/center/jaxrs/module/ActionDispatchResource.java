@@ -24,12 +24,11 @@ class ActionDispatchResource extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, boolean asNew, String fileName, String filePath,
 			byte[] bytes, FormDataContentDisposition disposition) throws Exception {
 
-		LOGGER.debug("execute:{}, asNew:{}, fileName:{}, filePath:{}.", effectivePerson::getDistinguishedName,
-				() -> asNew, () -> fileName, () -> filePath);
 		if (BooleanUtils.isNotTrue(Config.general().getDeployResourceEnable())) {
 			throw new ExceptionDeployDisable();
 		}
-
+		LOGGER.info("{}操作部署资源:{}到web目录{}.", effectivePerson::getDistinguishedName,
+				() -> fileName, () -> filePath);
 		String file = fileName;
 		ActionResult<Wo> result = new ActionResult<>();
 		if (StringUtils.isEmpty(file)) {

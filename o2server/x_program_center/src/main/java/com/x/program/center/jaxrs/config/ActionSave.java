@@ -69,7 +69,7 @@ public class ActionSave extends BaseAction {
 		if (BooleanUtils.isNotTrue(Config.general().getConfigApiEnable())) {
 			throw new ExceptionModifyConfig();
 		}
-
+		LOGGER.info("{}修改配置文件：{}", effectivePerson.getDistinguishedName(), fileName);
 		byte[] bytes = wi.getFileContent().getBytes(StandardCharsets.UTF_8);
 
 		Nodes nodes = Config.nodes();

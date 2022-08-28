@@ -183,7 +183,7 @@ public class NodeAgent extends Thread {
 								bytes = bos.toByteArray();
 							}
 
-							filename = filename.substring(0, filename.indexOf("."));
+							filename = filename.substring(0, filename.lastIndexOf("."));
 							// 部署
 							String result = this.redeploy(strCommand, filename, bytes, true);
 							logger.info("部署:" + result);
