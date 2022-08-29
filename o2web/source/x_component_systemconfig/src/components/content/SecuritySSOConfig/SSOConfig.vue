@@ -88,7 +88,7 @@ const removeSSO = (e, idx)=>{
 }
 const editSSOConfig = (data, idx)=>{
   currentSSOData.value = Object.clone(data);
-  const container = component.content;
+  const container = component.content.getElement('.systemconfig');
   const content = ssoEditorArea.value;
   content.show();
 

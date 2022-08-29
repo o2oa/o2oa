@@ -28,7 +28,7 @@
                 <div>{{server.node.center.proxyHost}}:{{server.node.center.proxyPort ||server.node.center.port}}</div>
               </div>
             </template>
-            <BaseServerInfoItem :data="server.node.center"></BaseServerInfoItem>
+            <BaseServerInfoItem :data="server.node.center" :item-lp="lp._systemInfo.serverData"></BaseServerInfoItem>
           </el-collapse-item>
 
           <el-collapse-item>
@@ -41,7 +41,7 @@
                 <div>{{server.node.web.proxyHost}}:{{server.node.web.proxyPort || server.node.web.port}}</div>
               </div>
             </template>
-            <BaseServerInfoItem :data="server.node.web"></BaseServerInfoItem>
+            <BaseServerInfoItem :data="server.node.web" :item-lp="lp._systemInfo.serverData"></BaseServerInfoItem>
           </el-collapse-item>
 
           <el-collapse-item>
@@ -54,7 +54,7 @@
                 <div>{{server.node.application.proxyHost}}:{{server.node.application.proxyPort || server.node.application.port}}</div>
               </div>
             </template>
-            <BaseServerInfoItem :data="server.node.application"></BaseServerInfoItem>
+            <BaseServerInfoItem :data="server.node.application" :item-lp="lp._systemInfo.serverData"></BaseServerInfoItem>
           </el-collapse-item>
 
           <el-collapse-item v-if="databaseType==='inner'">
@@ -66,7 +66,7 @@
                 </div>
               </div>
             </template>
-            <BaseServerInfoItem :data="server.node.data"></BaseServerInfoItem>
+            <BaseServerInfoItem :data="server.node.data" :item-lp="lp._systemInfo.serverData"></BaseServerInfoItem>
           </el-collapse-item>
 
           <el-collapse-item v-if="!externalStorage || !externalStorage.length">

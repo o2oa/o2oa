@@ -3,13 +3,14 @@
     <label class="item_label" v-if="label" :style="labelStyle">{{label}}</label>
     <div class="item_input_area">
       <el-input class="item_input" :style="inputStyle"
-                v-model="value" :type="inputType" :show-password="showPassword"
+                v-model="ev" :type="inputType" :show-password="showPassword"
                 @change="changeValue($event)" v-bind="options"/>
     </div>
   </div>
 </template>
 
 <script setup>
+import {ref, watch} from 'vue';
 const emit = defineEmits(['update:value', 'change']);
 
 const props = defineProps({
@@ -36,6 +37,12 @@ const props = defineProps({
     default: null
   }
 });
+
+const ev = ref(props.value);
+watch(
+    () => props.value,
+    (v) =>  ev.value = v
+);
 
 // onUpdated(()=>{
 //   if (props.toArray) {

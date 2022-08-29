@@ -2,12 +2,14 @@
   <div class="item">
     <label class="item_label" v-if="label" :style="labelStyle">{{label}}</label>
     <div class="item_input_area">
-      <el-switch :style="inputStyle" v-model="value" @change="changeValue($event)" v-bind="options"></el-switch>
+      <el-switch :style="inputStyle" v-model="ev" @change="changeValue($event)" v-bind="options"></el-switch>
     </div>
   </div>
 </template>
 
 <script setup>
+import {ref, watch} from "vue";
+
 const emit = defineEmits(['update:value', 'change']);
 
 const props = defineProps({
@@ -34,6 +36,12 @@ const props = defineProps({
     default: null
   },
 });
+
+const ev = ref(props.value);
+watch(
+    () => props.value,
+    (v) =>  ev.value = v
+);
 
 function changeValue(e){
   emit('change', e);

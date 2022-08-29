@@ -2,7 +2,7 @@
   <div class="item">
     <label class="item_label" v-if="label" :style="labelStyle">{{label}}</label>
     <div class="item_input">
-      <el-radio-group v-model="value" @change="changeValue($event)" :style="groupStyle">
+      <el-radio-group v-model="ev" @change="changeValue($event)" :style="groupStyle">
         <el-radio v-for="op in options" key="op.value" :label="op.label">{{op.text}}</el-radio>
       </el-radio-group>
     </div>
@@ -10,6 +10,8 @@
 </template>
 
 <script setup>
+import {ref, watch} from "vue";
+
 const emit = defineEmits(['update:value', 'change']);
 
 const props = defineProps({
@@ -28,6 +30,12 @@ const props = defineProps({
     default: {}
   }
 });
+
+const ev = ref(props.value);
+watch(
+    () => props.value,
+    (v) =>  ev.value = v
+);
 
 function changeValue(e){
   emit('change', e);

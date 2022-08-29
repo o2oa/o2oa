@@ -85,7 +85,7 @@ async function uninstallComponent(cmpt) {
 
 async function editComponent(cmpt, index) {
   currentComponent.value = Object.clone(cmpt);
-  const container = component.content;
+  const container = component.content.getElement('.systemconfig');
   const content = componentEditorNode.value;
   content.show();
 

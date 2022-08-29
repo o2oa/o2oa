@@ -99,7 +99,7 @@ const collectData = ref(null);
 const collectName = ref('');
 
 const openDlg = (content, width, height, title, buttonList)=>{
-  const container = component.content;
+  const container = component.content.getElement('.systemconfig');
   content.show();
   return o2.DL.open({
     title,

@@ -117,7 +117,7 @@ const saveData = ()=>{
 
 const openEditDlg = (data, node, cb, width, height)=>{
   currentData.value = Object.clone(data);
-  const container = component.content;
+  const container = component.content.getElement('.systemconfig');
   const content = node.value;
   content.show();
 
