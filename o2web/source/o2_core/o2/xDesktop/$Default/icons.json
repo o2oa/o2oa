@@ -135,6 +135,10 @@
     "icon": "setting.png",
     "color": "#758790"
   },
+  "systemconfig": {
+    "icon": "setting.png",
+    "color": "#758790"
+  },
   "Strategy": {
     "icon": "strategy.png",
     "color": "#4FB2E3"
