@@ -9,7 +9,7 @@ function getMenuJson(){
                 {'title': lp.systemInfo, 'component': 'BaseSystemInfo', 'icon': 'config', "expand": true},
                 {'title': lp.uiConfig, 'component': 'BaseUIConfig', 'icon': 'ui'},
                 // {'title': lp.componentDeploy, 'component': 'ComponentDeploy', 'icon': 'component'},
-                {'title': lp.resourceDeploy, 'component': 'BaseResourceDeploy', 'icon': 'upload' },
+                {'title': lp.resourceDeploy, 'component': 'BaseResourceDeploy', 'icon': 'upload' }
                 // {'title': lp.resourceDeploy, 'component': 'WebDeploy', 'icon': 'upload' },
                 // {'title': lp.serviceDeploy, 'component': 'ServiceDeploy', 'icon': 'deploy' }
             ]
