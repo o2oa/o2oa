@@ -3213,10 +3213,10 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
      * @example
      * this.form.get("fieldId").reload();
      */
-    reload: function(){
-        this.resetData();
+    reload: function(callback){
+        this.resetData(false, callback);
     },
-    resetData: function(diffFiletext){
+    resetData: function(diffFiletext, callback){
         this._computeData(false);
         this.pages = [];
         this.editMode = false;
@@ -3229,6 +3229,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 this._editFiletext("inline");
                 this.editMode = true;
             }
+            if (callback) callback();
         }.bind(this));
     },
     /**
