@@ -236,6 +236,10 @@ function listDumpData() {
 function doAppPackAction(method, ...args) {
     return doAction('x_program_center', 'AppPackAction', method, ...args);
 }
+// 微信菜单Action
+function doMPWeixinMenuAction(method, ...args) {
+    return doAction('x_program_center', 'MPWeixinAction', method, ...args);
+}
 
 
 
@@ -284,5 +288,6 @@ export {
     eraseAppStyleImage,
     uploadAppStyleImage,
     listDumpData,
-    doAppPackAction
+    doAppPackAction,
+    doMPWeixinMenuAction
 };

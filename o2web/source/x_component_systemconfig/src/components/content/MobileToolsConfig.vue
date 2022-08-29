@@ -9,7 +9,7 @@
           <OnlineBuild></OnlineBuild>
         </el-tab-pane>
         <el-tab-pane :label="lp._appTools.mpweixinMenu" lazy>
-          <MPweixinConfig></MPweixinConfig>
+          <MPweixinMenuManage></MPweixinMenuManage>
         </el-tab-pane>
 
       </el-tabs>
@@ -21,9 +21,7 @@
 <script setup>
 import {lp} from '@o2oa/component';
 import OnlineBuild from '@/components/content/MobileToolsConfig/OnlineBuild.vue';
-import MPweixinConfig from '@/components/content/MobileIntegrationConfig/MPweixinConfig.vue';
-import QYweixinConfig from "@/components/content/MobileIntegrationConfig/QYweixinConfig";
-import WelinkConfig from "@/components/content/MobileIntegrationConfig/WelinkConfig";
+import MPweixinMenuManage from '@/components/content/MobileToolsConfig/MPweixinMenuManage.vue';
 </script>
 
 <style scoped>
