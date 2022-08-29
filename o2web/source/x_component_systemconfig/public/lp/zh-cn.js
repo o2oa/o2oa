@@ -1245,7 +1245,7 @@ o2.xApplication.systemconfig.LP = {
         "appSecretInfo": "华为推送应用的appSecret",
     },
     "_messageConfig": {
-        "exmail": "腾讯邮箱集成"
+        "exmail": "腾讯邮箱集成",
         "onlineBuildInfo1": "<span class='mainColor_color'>我们在应用市场提供了更优秀的“App在线打包”应用，您可以到应用市场查看获取</span>",
 
         "appPack" : {
