@@ -15,7 +15,7 @@
     "vue": "^3.0.0"
   },
   "devDependencies": {
-    "@o2oa/vue-cli-plugin-o2component": "latest",
+    "@o2oa/vue-cli-plugin-o2component": "^1.0.70",
     "@vue/cli-service": "~4.5.15",
     "@vue/compiler-sfc": "^3.0.0"
   },
