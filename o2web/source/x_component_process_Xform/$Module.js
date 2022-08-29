@@ -147,6 +147,105 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         )) parent = parent.getParent();
         return (parent) ? parent.retrieve("module") : null;
     },
+    /**
+     * 获取当前组件所在的祖先组件.
+     * @param {String} [type] 需要获取的组件类型。
+     * 如果该参数省略，则获取离当前组件最近的祖先组件。type有效值如下：
+     * <div>form- 表单</div>
+     * <div>common- 通用组件</div>
+     * <div>datatable- 数据表格</div>
+     * <div>datatableline- 数据表格行</div>
+     * <div>datatemplate- 数据模板</div>
+     * <div>datatemplateline- 数据模板行</div>
+     * <div>div- 容器组件</div>
+     * <div>elcommon- Element通用组件</div>
+     * <div>elcontainer- Element容器组件</div>
+     * <div>subform- 子表单</div>
+     * <div>source- 数据源组件</div>
+     * <div>subsource- 子数据源</div>
+     * <div>subsourceitem- 子数据项组件</div>
+     * <div>tab- 分页组件</div>
+     * <div>tabpage- 分页组件的某个分页</div>
+     * <div>table- 表格</div>
+     * <div>tabletd- 单元格</div>
+     * <div>widget- 部件</div>
+     * @param {Function} [validateFunction] 进一步校验，参数为获取到匹配到类型的组件，返回false继续往上取对应类型的组件，返回true返回该组件。
+     * @return {MWF.xApplication.process.Xform.$Module}。
+     * @example
+     * var module = this.target.getParentModule(); //获取最近的祖先。
+     *
+     * var datatemplateLine = this.target.getParentModule("datatemplateline"); //获取当前组件所在的数据模板行.
+     *
+     * var module = this.target.getParentModule(null, function(module){
+     *     return module.json.id === "div_1";
+     * }); //获取当前组件id为div_1的父组件。
+     */
+    getParentModule: function( type, validateFunction ){
+        var lcType = ( type || "" ).toLowerCase();
+        if( lcType === "form" )return this.form;
+
+        var module, vm;
+
+        var parent;
+        if( ["datatableline","datatemplateline", "tabpage", "tab", "widget", "table"].contains( lcType ) ){
+            parent = this.node;
+        }else{
+            parent = this.node.getParent();
+        }
+        while(parent) {
+            module = null;
+            vm = null;
+            var MWFtype = parent.get("MWFtype");
+            if( MWFtype ){
+                module = parent.retrieve("module");
+                if( module ){
+                    switch (lcType) {
+                        case "":
+                            vm = module;
+                            break;
+                        case "table":
+                            if( module.table )vm = module.table;
+                            break;
+                        case "widget":
+                            if( module.widget )vm = module.widget;
+                            break;
+                        case "tab":
+                            if( module.tab )vm = module.tab;
+                            break;
+                        case "tabpage":
+                            if( module.page && module.tab )vm = module.page;
+                            break;
+                        case "datatableline":
+                            if( module.parentLine && module.parentDatatable )vm = module.parentLine;
+                            break;
+                        case "datatemplateline":
+                            if( module.parentLine && module.parentDatatemplate )vm = module.parentLine;
+                            break;
+                        case "subsourceitem":
+                            if( MWFtype.toLowerCase() === "subsourceitem" )vm = module;
+                            break;
+                        case "tabletd":
+                            if( module.json.type === "Table$Td" )vm = module;
+                            break;
+                        default:
+                            if( module.json.type.toLowerCase() === lcType )vm = module;
+                            break;
+                    }
+                }
+                if( vm ){
+                    if( !validateFunction ){
+                        return vm;
+                    }else if( validateFunction && validateFunction.call(this.form.Macro, vm) ){
+                        return vm;
+                    }
+                }
+                parent = parent.getParent();
+            }else{
+                parent = parent.getParent();
+            }
+        }
+        return null;
+    },
     isReadonly : function(){
         return !!(this.readonly || this.json.isReadonly || this.form.json.isReadonly);
     },

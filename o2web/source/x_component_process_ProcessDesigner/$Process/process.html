@@ -78,8 +78,9 @@
                 <tr>
                     <td class="editTableTitle">{{$.lp.startTerminal}}:</td>
                     <td class="editTableValue">
-                        <input class="editTableRadio" name="startableTerminal" text{($.startableTerminal!=='client' && $.startableTerminal!=='mobile')?'checked':''} type="radio" value="all"/>{{$.lp.pcAndMobile}}
+                        <input class="editTableRadio" name="startableTerminal" text{($.startableTerminal!=='client' && $.startableTerminal!=='mobile' && $.startableTerminal!=='none')?'checked':''} type="radio" value="all"/>{{$.lp.pcAndMobile}}
                         <input class="editTableRadio" name="startableTerminal" text{($.startableTerminal==='client')?'checked':''} type="radio" value="client"/>{{$.lp.onlyPc}}
+                        <input class="editTableRadio" name="startableTerminal" text{($.startableTerminal==='none')?'checked':''} type="radio" value="none"/>{{$.lp.none}}
     <!--                    <input class="editTableRadio" name="startableTerminal" text{($.startableTerminal==='mobile')?'checked':''} type="radio" value="mobile"/>移动端-->
                     </td>
                 </tr>
@@ -318,6 +319,19 @@
                 <td class="editTableValue"><div class="MWFTableSelector" name="updateTableList"></div></td>
             </tr>
         </table>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">{{$.lp.dataScript}}:</td>
+                <td class="editTableValue">
+                    <div class="MWFScript" name="targetAssignDataScript"></div>
+                </td>
+            </tr>
+        </table>
+        <div class="MWFScriptText" name="targetAssignDataScriptText" data-o2-api="../api/server.module_assignData.html#server.module_body"></div>
+        <div style="margin: 5px;">{{$.lp.getOldData}}: var data = Object.clone(this.data); </div>
+        <div style="margin: 5px;">{{$.lp.setNewPublishData}}: return data;</div>
+        <div style="padding: 5px"><a href="../api/server.module_body.html#server.module_body" target="_blank">{{$.lp.apiDoc}}</a></div>
+
     </div>
 
     <div title="{{$.lp.event}}"  class="MWFTab" data-o2-advanced="yes">

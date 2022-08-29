@@ -29,13 +29,43 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.core.entity.element.ActivityType;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "WorkAction", description = "工作接口.")
 @Path("work")
-@JaxrsDescribe("工作操作")
+@JaxrsDescribe("工作接口.")
 public class WorkAction extends StandardJaxrsAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(WorkAction.class);
 
-	@JaxrsMethodDescribe(value = "根据Work或workCompleted取得内容.", action = ActionGetWithWorkOrWorkCompleted.class)
+	private static final String OPERATIONID_PREFIX = "WorkAction::";
+
+	@JaxrsMethodDescribe(value = "根据id获取工作.", action = ActionGet.class)
+	@GET
+	@Path("{id}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id) {
+		ActionResult<ActionGet.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionGet().execute(effectivePerson, id);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@Deprecated(forRemoval = true)
+	@JaxrsMethodDescribe(value = "获取工作或者已完成工作内容.", action = ActionGetWithWorkOrWorkCompleted.class)
 	@GET
 	@Path("workorworkcompleted/{workOrWorkCompleted}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -64,7 +94,26 @@ public class WorkAction extends StandardJaxrsAction {
 		ActionResult<ActionCountWithPerson.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCountWithPerson().execute(credential);
+			result = new ActionCountWithPerson().execute(effectivePerson, credential, "");
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "获取指定人员在指定应用的Task,TaskCompleted,Read,ReadCompleted,Review.没有权限限制", action = ActionCountWithPerson.class)
+	@GET
+	@Path("count/{credential}/application/{appId}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void countWithPersonAndApplication(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+								@JaxrsParameterDescribe("个人标识") @PathParam("credential") String credential,
+								@JaxrsParameterDescribe("应用标志") @PathParam("appId") String appId) {
+		ActionResult<ActionCountWithPerson.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionCountWithPerson().execute(effectivePerson, credential, appId);
 		} catch (Exception e) {
 			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
@@ -1093,7 +1142,7 @@ public class WorkAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
-	@JaxrsMethodDescribe(value = "V2_增加一个会签分支", action = ActionAddSplit.class)
+	@JaxrsMethodDescribe(value = "V2_增加一个会签分支", action = V2AddSplit.class)
 	@PUT
 	@Path("v2/{id}/add/split")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -1111,7 +1160,7 @@ public class WorkAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
-	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = ActionAddSplit.class)
+	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = V2AddSplit.class)
 	@POST
 	@Path("v2/{id}/add/split/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -1187,30 +1236,12 @@ public class WorkAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据id获取工作.", action = ActionGet.class)
-	@GET
-	@Path("{id}")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id) {
-		ActionResult<ActionGet.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionGet().execute(effectivePerson, id);
-		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, null);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
-
 	@JaxrsMethodDescribe(value = "对指定的工作添加待办身份.", action = V2AddManualTaskIdentityMatrix.class)
 	@POST
 	@Path("{id}/add/manual/task/identity/matrix")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void v2AddManualTaskIdentityMatrix(@Suspended final AsyncResponse asyncResponse,
+	public void V2AddManualTaskIdentityMatrix(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
 			JsonElement jsonElement) {
 		ActionResult<V2AddManualTaskIdentityMatrix.Wo> result = new ActionResult<>();
@@ -1222,6 +1253,114 @@ public class WorkAction extends StandardJaxrsAction {
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@Operation(summary = "分页显示按条件过滤的当前用户创建的工作.", operationId = OPERATIONID_PREFIX + "V2ListPaging", responses = {
+			@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = V2BaseListAction.Wo.class)))) }, requestBody = @RequestBody(content = {
+					@Content(schema = @Schema(implementation = V2BaseListAction.Wi.class)) }))
+	@JaxrsMethodDescribe(value = "分页显示按条件过滤的当前用户创建的工作.", action = V2ListPaging.class)
+	@POST
+	@Path("v2/list/paging/{page}/size/{size}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void V2ListPaging(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
+			@JaxrsParameterDescribe("每页数量") @PathParam("size") Integer size, JsonElement jsonElement) {
+		ActionResult<List<V2BaseListAction.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2ListPaging().execute(effectivePerson, page, size, jsonElement);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+	}
+
+	@Operation(summary = "翻页显示按条件过滤的当前用户创建的工作,下一页.", operationId = OPERATIONID_PREFIX + "V2ListNext", responses = {
+			@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = V2BaseListAction.Wo.class)))) }, requestBody = @RequestBody(content = {
+					@Content(schema = @Schema(implementation = V2BaseListAction.Wi.class)) }))
+	@JaxrsMethodDescribe(value = "翻页显示按条件过滤的当前用户创建的工作,下一页.", action = V2ListNext.class)
+	@POST
+	@Path("v2/list/{id}/next/{count}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void V2ListNext(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("数量") @PathParam("count") Integer count, JsonElement jsonElement) {
+		ActionResult<List<V2BaseListAction.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2ListNext().execute(effectivePerson, id, count, jsonElement);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+	}
+
+	@Operation(summary = "翻页显示按条件过滤的当前用户创建的工作,上一页.", operationId = OPERATIONID_PREFIX + "V2ListPrev", responses = {
+			@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = V2BaseListAction.Wo.class)))) }, requestBody = @RequestBody(content = {
+					@Content(schema = @Schema(implementation = V2BaseListAction.Wi.class)) }))
+	@JaxrsMethodDescribe(value = "翻页显示按条件过滤的当前用户创建的工作,上一页.", action = V2ListPrev.class)
+	@POST
+	@Path("v2/list/{id}/prev/{count}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void V2ListPrev(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作标识") @PathParam("id") String id,
+			@JaxrsParameterDescribe("数量") @PathParam("count") Integer count, JsonElement jsonElement) {
+		ActionResult<List<V2BaseListAction.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2ListPrev().execute(effectivePerson, id, count, jsonElement);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+	}
+
+	@Operation(summary = "按条件过滤的当前用户创建的待办.", operationId = OPERATIONID_PREFIX + "V2List", responses = {
+			@ApiResponse(content = @Content(array = @ArraySchema(schema = @Schema(implementation = V2BaseListAction.Wo.class)))) }, requestBody = @RequestBody(content = {
+					@Content(schema = @Schema(implementation = V2BaseListAction.Wi.class)) }))
+	@JaxrsMethodDescribe(value = "按条件过滤的当前用户创建的待办.", action = V2List.class)
+	@POST
+	@Path("v2/list")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void V2List(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
+		ActionResult<List<V2BaseListAction.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2List().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+	}
+
+	@JaxrsMethodDescribe(value = "分页列示指定应用下根据过滤条件的Work.", action = ActionManageListWithApplicationPaging.class)
+	@POST
+	@Path("list/paging/{page}/size/{size}/application/{applicationFlag}/filter/manage")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void manageListWithApplicationPaging(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+						@JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
+						@JaxrsParameterDescribe("每页数量") @PathParam("size") Integer size,
+						@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag,
+						JsonElement jsonElement) {
+		ActionResult<List<ActionManageListWithApplicationPaging.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionManageListWithApplicationPaging().execute(effectivePerson, page, size, applicationFlag, jsonElement);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 }

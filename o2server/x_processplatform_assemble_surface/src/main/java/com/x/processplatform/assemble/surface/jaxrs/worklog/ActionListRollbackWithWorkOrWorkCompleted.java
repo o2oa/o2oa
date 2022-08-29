@@ -44,8 +44,7 @@ class ActionListRollbackWithWorkOrWorkCompleted extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 
-			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
-					new ExceptionEntityNotExist(workOrWorkCompleted))) {
+			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 
@@ -61,7 +60,7 @@ class ActionListRollbackWithWorkOrWorkCompleted extends BaseAction {
 				ThisApplication.threadPool());
 		List<WoTaskCompleted> taskCompleteds = futureTaskCompleteds.get();
 		List<Wo> wos = futureWorkLogs.get();
-		ListTools.groupStick(wos, taskCompleteds, WorkLog.fromActivityToken_FIELDNAME,
+		ListTools.groupStick(wos, taskCompleteds, WorkLog.FROMACTIVITYTOKEN_FIELDNAME,
 				TaskCompleted.activityToken_FIELDNAME, TASKCOMPLETEDLIST_FIELDNAME);
 		result.setData(wos);
 		return result;
@@ -82,7 +81,7 @@ class ActionListRollbackWithWorkOrWorkCompleted extends BaseAction {
 	private List<Wo> workLogs(String job) {
 		List<Wo> os = new ArrayList<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			os = emc.fetchEqual(WorkLog.class, Wo.copier, WorkLog.job_FIELDNAME, job).stream()
+			os = emc.fetchEqual(WorkLog.class, Wo.copier, WorkLog.JOB_FIELDNAME, job).stream()
 					.filter(o -> (!BooleanUtils.isTrue(o.getSplitting()))
 							&& (Objects.equals(o.getFromActivityType(), ActivityType.manual)))
 					.sorted(Comparator.comparing(WorkLog::getCreateTime, Comparator.nullsLast(Date::compareTo)))
@@ -98,15 +97,15 @@ class ActionListRollbackWithWorkOrWorkCompleted extends BaseAction {
 		private static final long serialVersionUID = -7666329770246726197L;
 
 		static WrapCopier<WorkLog, Wo> copier = WrapCopierFactory.wo(WorkLog.class, Wo.class,
-				ListTools.toList(WorkLog.id_FIELDNAME, WorkLog.fromActivity_FIELDNAME,
-						WorkLog.fromActivityType_FIELDNAME, WorkLog.fromActivityName_FIELDNAME,
-						WorkLog.fromActivityAlias_FIELDNAME, WorkLog.fromActivityToken_FIELDNAME,
-						WorkLog.fromTime_FIELDNAME, WorkLog.arrivedActivity_FIELDNAME,
-						WorkLog.arrivedActivityType_FIELDNAME, WorkLog.arrivedActivityName_FIELDNAME,
-						WorkLog.arrivedActivityAlias_FIELDNAME, WorkLog.arrivedActivityToken_FIELDNAME,
-						WorkLog.arrivedTime_FIELDNAME, WorkLog.routeName_FIELDNAME, WorkLog.connected_FIELDNAME,
-						WorkLog.splitting_FIELDNAME, WorkLog.fromGroup_FIELDNAME, WorkLog.arrivedGroup_FIELDNAME,
-						WorkLog.fromOpinionGroup_FIELDNAME, WorkLog.arrivedOpinionGroup_FIELDNAME),
+				ListTools.toList(WorkLog.id_FIELDNAME, WorkLog.FROMACTIVITY_FIELDNAME,
+						WorkLog.FROMACTIVITYTYPE_FIELDNAME, WorkLog.FROMACTIVITYNAME_FIELDNAME,
+						WorkLog.FROMACTIVITYALIAS_FIELDNAME, WorkLog.FROMACTIVITYTOKEN_FIELDNAME,
+						WorkLog.FROMTIME_FIELDNAME, WorkLog.ARRIVEDACTIVITY_FIELDNAME,
+						WorkLog.ARRIVEDACTIVITYTYPE_FIELDNAME, WorkLog.ARRIVEDACTIVITYNAME_FIELDNAME,
+						WorkLog.ARRIVEDACTIVITYALIAS_FIELDNAME, WorkLog.ARRIVEDACTIVITYTOKEN_FIELDNAME,
+						WorkLog.ARRIVEDTIME_FIELDNAME, WorkLog.ROUTENAME_FIELDNAME, WorkLog.CONNECTED_FIELDNAME,
+						WorkLog.SPLITTING_FIELDNAME, WorkLog.FROMGROUP_FIELDNAME, WorkLog.ARRIVEDGROUP_FIELDNAME,
+						WorkLog.FROMOPINIONGROUP_FIELDNAME, WorkLog.ARRIVEDOPINIONGROUP_FIELDNAME),
 				JpaObject.FieldsInvisible);
 
 		private List<WoTask> taskList = new ArrayList<>();
@@ -156,9 +155,9 @@ class ActionListRollbackWithWorkOrWorkCompleted extends BaseAction {
 		private static final long serialVersionUID = -7243683008987722267L;
 
 		static WrapCopier<Read, WoRead> copier = WrapCopierFactory.wo(Read.class, WoRead.class,
-				ListTools.toList(JpaObject.id_FIELDNAME, Read.person_FIELDNAME, Read.identity_FIELDNAME, Read.unit_FIELDNAME,
-						Read.opinion_FIELDNAME, Read.opinionLob_FIELDNAME, Read.startTime_FIELDNAME,
-						Read.activityName_FIELDNAME, Read.activityToken_FIELDNAME),
+				ListTools.toList(JpaObject.id_FIELDNAME, Read.person_FIELDNAME, Read.identity_FIELDNAME,
+						Read.unit_FIELDNAME, Read.opinion_FIELDNAME, Read.opinionLob_FIELDNAME,
+						Read.startTime_FIELDNAME, Read.activityName_FIELDNAME, Read.activityToken_FIELDNAME),
 				null);
 	}
 
@@ -181,9 +180,10 @@ class ActionListRollbackWithWorkOrWorkCompleted extends BaseAction {
 		private static final long serialVersionUID = 293599148568443301L;
 
 		static WrapCopier<Task, WoTask> copier = WrapCopierFactory.wo(Task.class, WoTask.class,
-				ListTools.toList(JpaObject.id_FIELDNAME, Task.person_FIELDNAME, Task.identity_FIELDNAME, Task.unit_FIELDNAME,
-						Task.routeName_FIELDNAME, Task.opinion_FIELDNAME, Task.opinionLob_FIELDNAME,
-						Task.startTime_FIELDNAME, Task.activityName_FIELDNAME, Task.activityToken_FIELDNAME),
+				ListTools.toList(JpaObject.id_FIELDNAME, Task.person_FIELDNAME, Task.identity_FIELDNAME,
+						Task.unit_FIELDNAME, Task.routeName_FIELDNAME, Task.opinion_FIELDNAME,
+						Task.opinionLob_FIELDNAME, Task.startTime_FIELDNAME, Task.activityName_FIELDNAME,
+						Task.activityToken_FIELDNAME),
 				null);
 	}
 

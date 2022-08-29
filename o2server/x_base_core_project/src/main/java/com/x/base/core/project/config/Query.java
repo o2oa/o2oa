@@ -14,6 +14,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.DefaultCharset;
 
+@Deprecated(forRemoval = true)
 public class Query extends ConfigObject {
 
 	public static Query defaultInstance() {

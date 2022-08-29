@@ -27,6 +27,8 @@ import com.x.base.core.project.config.ConfigObject;
 import com.x.base.core.project.config.Dingding;
 import com.x.base.core.project.config.DumpRestoreData;
 import com.x.base.core.project.config.Exmail;
+import com.x.base.core.project.config.ExternalStorageSources;
+import com.x.base.core.project.config.General;
 import com.x.base.core.project.config.HuaweiPushConfig;
 import com.x.base.core.project.config.JpushConfig;
 import com.x.base.core.project.config.MPweixin;
@@ -43,8 +45,6 @@ import com.x.base.core.project.config.WeLink;
 import com.x.base.core.project.config.WorkTime;
 import com.x.base.core.project.config.ZhengwuDingding;
 import com.x.base.core.project.gson.XGsonBuilder;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
 
 /**
@@ -53,8 +53,6 @@ import com.x.base.core.project.tools.DefaultCharset;
  *
  */
 public class CreateConfigSample {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(CreateConfigSample.class);
 
 	private static final String DEFAULTINSTANCE = "defaultInstance";
 
@@ -70,6 +68,7 @@ public class CreateConfigSample {
 		classes.add(Dingding.class);
 		classes.add(DumpRestoreData.class);
 		classes.add(Exmail.class);
+		classes.add(ExternalStorageSources.class);
 		classes.add(HuaweiPushConfig.class);
 		classes.add(JpushConfig.class);
 		// classes.add(Meeting.class);
@@ -88,6 +87,7 @@ public class CreateConfigSample {
 		classes.add(WeLink.class);
 		classes.add(WorkTime.class);
 		classes.add(ZhengwuDingding.class);
+		classes.add(General.class);
 
 		Collections.sort(classes, (c1, c2) -> c1.getCanonicalName().compareTo(c2.getCanonicalName()));
 		for (Class<?> cls : classes) {

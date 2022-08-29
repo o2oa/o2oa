@@ -1,15 +1,6 @@
 package com.x.cms.assemble.control.jaxrs.view;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
-import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
@@ -21,12 +12,21 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.cms.assemble.control.Business;
-import com.x.cms.assemble.control.ExceptionWrapInConvert;
 import com.x.cms.assemble.control.service.LogService;
+import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.element.View;
 import com.x.cms.core.entity.element.ViewCategory;
 import com.x.cms.core.entity.element.ViewFieldConfig;
+import org.apache.commons.lang3.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 保存列表配置
+ * @author sword
+ */
 public class ActionSave extends BaseAction {
 
 	private static  Logger logger = LoggerFactory.getLogger(ViewAction.class);
@@ -34,60 +34,36 @@ public class ActionSave extends BaseAction {
 	protected ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson,
 			JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
-			if (!business.isManager( effectivePerson)) {
-				throw new ExceptionAccessDenied(effectivePerson);
-			}
-		}
-		Wi wi = null;
-		View view = null;
-		Boolean check = true;
 
-		try {
-			wi = this.convertToWrapIn(jsonElement, Wi.class);
-		} catch (Exception e) {
-			check = false;
-			Exception exception = new ExceptionWrapInConvert(e, jsonElement);
-			result.error(exception);
-			logger.error(e, effectivePerson, request, null);
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+		if(StringUtils.isBlank(wi.getAppId())){
+			throw new ExceptionViewInfoAppIdEmpty();
+		}
+		if ( StringUtils.isEmpty(wi.getFormId())) {
+			throw new ExceptionViewInfoFormIdEmpty();
 		}
 
-		if (check) {
-			if ( StringUtils.isEmpty(wi.getFormId())) {
-				check = false;
-				Exception exception = new ExceptionViewInfoFormIdEmpty();
-				result.error(exception);
-			}
+		AppInfo appInfo = appInfoServiceAdv.get(wi.getAppId());
+		if(appInfo == null){
+			throw new ExceptionAppInfoNotExists(wi.getAppId());
 		}
-		if (check) {
-			if ( StringUtils.isEmpty(wi.getAppId())) {
-				check = false;
-				Exception exception = new ExceptionViewInfoAppIdEmpty();
-				result.error(exception);
-			}
+
+		Business business = new Business(null);
+		if (!business.isAppInfoManager(effectivePerson, appInfo)) {
+			throw new ExceptionAccessDenied(effectivePerson);
 		}
-		if (check) {
-			try {
-				view = viewServiceAdv.save(wi, effectivePerson, wi.getFields());
-				new LogService().log(null, effectivePerson.getDistinguishedName(), view.getName(), view.getAppId(), "",
-						"", view.getId(), "VIEW", "保存");
 
-				CacheManager.notify(View.class);
-				CacheManager.notify(ViewFieldConfig.class);
-				CacheManager.notify(ViewCategory.class);
+		View view = viewServiceAdv.save(wi, effectivePerson, wi.getFields());
+		new LogService().log(null, effectivePerson.getDistinguishedName(), view.getName(), view.getAppId(), "",
+				"", view.getId(), "VIEW", "保存");
 
-				Wo wo = new Wo();
-				wo.setId(view.getId());
-				result.setData(wo);
+		CacheManager.notify(View.class);
+		CacheManager.notify(ViewFieldConfig.class);
+		CacheManager.notify(ViewCategory.class);
 
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new ExceptionViewInfoProcess(e, "系统保存视图信息对象时发生异常。");
-				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
-			}
-		}
+		Wo wo = new Wo();
+		wo.setId(view.getId());
+		result.setData(wo);
 		return result;
 	}
 

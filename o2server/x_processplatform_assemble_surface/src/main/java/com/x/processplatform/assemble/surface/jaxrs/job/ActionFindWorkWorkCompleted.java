@@ -27,12 +27,16 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkCompleted_;
 import com.x.processplatform.core.entity.content.Work_;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionFindWorkWorkCompleted extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionFindWorkWorkCompleted.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionFindWorkWorkCompleted.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String job) throws Exception {
-		logger.debug(effectivePerson, "job:{}.", job);
+
+		LOGGER.debug("execute:{}, job:{}.", effectivePerson::getDistinguishedName, () -> job);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			if (!business.readableWithJob(effectivePerson, job)) {
@@ -69,7 +73,10 @@ class ActionFindWorkWorkCompleted extends BaseAction {
 		return business.entityManagerContainer().fetch(ids, WoWorkCompleted.copier);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.form.ActionFindWorkWorkCompleted$Wo")
 	public class Wo extends GsonPropertyObject {
+
+		private static final long serialVersionUID = 8586585135373549163L;
 
 		@FieldDescribe("属于job的work")
 		private List<WoWork> workList = new ArrayList<>();
@@ -94,6 +101,7 @@ class ActionFindWorkWorkCompleted extends BaseAction {
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.form.ActionFindWorkWorkCompleted$WoWork")
 	public static class WoWork extends Work {
 
 		private static final long serialVersionUID = 8844552543181007645L;
@@ -101,6 +109,7 @@ class ActionFindWorkWorkCompleted extends BaseAction {
 				JpaObject.singularAttributeField(Work.class, true, true), null);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.form.ActionFindWorkWorkCompleted$WoWorkCompleted")
 	public static class WoWorkCompleted extends WorkCompleted {
 
 		private static final long serialVersionUID = 6933166763697642092L;

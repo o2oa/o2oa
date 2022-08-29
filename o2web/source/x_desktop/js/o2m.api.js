@@ -1167,6 +1167,28 @@
   this.o2m.util.navigation.goBack = _o2m_u_navigation_goBack;
 
 
+  //o2m.util.navigation.openOtherApp 功能不完整，有很多限制。暂时不开放
+  this.o2m.util.navigation.openOtherAppSuccess = function (result) {
+    console.log("util navigation openOtherApp back, result:" + result);
+  };
+  var _o2m_u_navigation_openOtherApp = function (c) {
+    var onSuccess = c && c.onSuccess ? c.onSuccess : null;
+    var onFail = c && c.onFail ? c.onFail : null;
+    if (onSuccess && typeof onSuccess === "function") {
+      o2m.util.navigation.openOtherAppSuccess = onSuccess;
+    }
+    var schema = c && c.schema ? c.schema : "";
+    var body = {
+      type: "navigation.openOtherApp",
+      callback: "o2m.util.navigation.openOtherAppSuccess",
+      data: {
+        schema: schema
+      }
+    };
+    _util_post(body, onFail);
+  };
+  this.o2m.util.navigation.openOtherApp = _o2m_u_navigation_openOtherApp;
+
 
 
   /** ***** BEGIN BIZ BLOCK *****
@@ -1179,11 +1201,13 @@
    o2m.biz.contact.departmentsPicker
    o2m.biz.contact.ComplexPicker
    o2m.biz.contact.GroupPicker
+   o2m.biz.file.previewDoc
 
    * ***** END UTIL BLOCK ******/
 
   this.o2m.biz = {
-    contact: {}
+    contact: {},
+    file:{}
   };
 
   var _biz_post = function (body, onFail) {
@@ -1650,5 +1674,57 @@
   this.o2m.biz.contact.ComplexPicker = _o2m_b_contact_complex_picker;
 
 
+
+  //o2m.biz.contact.ComplexPicker
+  this.o2m.biz.file.PreviewDocSuccess = function (result) {
+    console.log("biz file preview doc back, result:" + result);
+  };
+  var _o2m_b_file_preview = function (c) {
+    var onSuccess = c && c.onSuccess ? c.onSuccess : null;
+    var onFail = c && c.onFail ? c.onFail : null;
+    if (onSuccess && typeof onSuccess === "function") {
+      o2m.biz.file.PreviewDocSuccess = onSuccess;
+    }
+    var fileUrl = c && c.url ? c.url : "";
+    var fileName = c && c.fileName ? c.fileName : "";
+    
+    var body = {
+      type: "file.previewDoc",
+      callback: "o2m.biz.file.PreviewDocSuccess ",
+      data: {
+        url: fileUrl,
+        fileName: fileName
+      }
+    };
+    _biz_post(body, onFail);
+  };
+  /**
+   * 文件预览
+   * @method PreviewDoc
+   * @memberOf o2m
+   * @o2membercategory biz
+   * @static
+   * @param {Object} obj  PreviewDoc需要传入对象
+   * <pre><code class='language-js'>{
+   *  url: String, //文件下载地址，比如https://www.o2oa.net/file.pdf
+   *  fileName：String 预览的文件名称，比如file.pdf
+   *  "onSuccess": function,  //成功回调
+   *  "onFail": function, //失败回调
+   * }</code></pre>
+   * @example
+   * o2m.biz.file.PreviewDoc({
+   * url: "https://www.o2oa.net/file.pdf", //文件下载地址
+   * fileName: "file.pdf",//预览的文件名称
+   * onSuccess : function(result) {
+   *     //返回结果样例
+   *     {
+   *       result:true,
+   *       message:""
+   *     }
+   * },
+   * onFail : function(err) {}
+   * });
+   */
+  this.o2m.biz.file.PreviewDoc = _o2m_b_file_preview;
 
 })();

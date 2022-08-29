@@ -22,16 +22,24 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.jaxrs.WoFile;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.File;
 import com.x.processplatform.core.entity.element.File_;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionDownload extends StandardJaxrsAction {
 
-	// private Ehcache cache = ApplicationCache.instance().getCache(File.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDownload.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, String applicationFlag) throws Exception {
+		
+		LOGGER.debug("execute:{}, flag:{}, applicationFlag:{}.", effectivePerson::getDistinguishedName, () -> flag,
+				() -> applicationFlag);
+		
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wo wo = null;
@@ -64,6 +72,7 @@ class ActionDownload extends StandardJaxrsAction {
 		}
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.file.ActionDownload$Wo")
 	public static class Wo extends WoFile {
 
 		public Wo(byte[] bytes, String contentType, String contentDisposition) {

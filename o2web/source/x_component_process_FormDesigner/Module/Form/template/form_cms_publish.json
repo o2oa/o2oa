@@ -706,6 +706,7 @@
         "log": {
           "id": "log",
           "type": "Log",
+          "logType": "record",
           "filterActivity": [],
           "filterPerson": [],
           "filterRoute": [],
@@ -931,7 +932,7 @@
           "type": "Label",
           "valueType": "script",
           "script": {
-            "code": "var cmsDocument = this.data.cmsDocument;\nreturn ( cmsDocument && cmsDocument.createTime ) ? cmsDocument.createTime : this.workContext.getWork().createTime;",
+            "code": "var cmsDocument = this.data.cmsDocument;\nreturn ( cmsDocument && cmsDocument.createTime ) ? cmsDocument.createTime : this.workContext.getWork().startTime;",
             "html": "return this.data.cmsDocument.createTime"
           },
           "moduleName": "label",
@@ -1397,7 +1398,7 @@
           "type": "Label",
           "valueType": "script",
           "script": {
-            "code": "var cmsDocument = this.data.cmsDocument;\nreturn ( cmsDocument && cmsDocument.createTime ) ? cmsDocument.createTime : this.workContext.getWork().createTime;",
+            "code": "var cmsDocument = this.data.cmsDocument;\nreturn ( cmsDocument && cmsDocument.createTime ) ? cmsDocument.createTime : this.workContext.getWork().startTime;",
             "html": "return this.data.cmsDocument.createTime"
           },
           "moduleName": "label",

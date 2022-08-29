@@ -27,11 +27,11 @@ class ActionUpload extends BaseAction {
 			if (null == file) {
 				throw new ExceptionEntityNotExist(id, File.class);
 			}
-			AppInfo application = emc.find(file.getAppId(), AppInfo.class);
-			if (null == application) {
+			AppInfo appInfo = emc.find(file.getAppId(), AppInfo.class);
+			if (null == appInfo) {
 				throw new ExceptionEntityNotExist(file.getAppId(), AppInfo.class);
 			}
-			if ((!business.editable(effectivePerson, application))) {
+			if ((!business.isAppInfoManager(effectivePerson, appInfo))) {
 				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 			}
 			emc.beginTransaction(File.class);

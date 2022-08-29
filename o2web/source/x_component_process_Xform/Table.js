@@ -40,10 +40,8 @@ MWF.xApplication.process.Xform.Table = MWF.APPTable =  new Class(
                         if( table.widget )this.widget = table.widget;
                         this.table = table;
                     });
+                    this.form.modules.push(module);
                 }
-
-
-                this.form.modules.push(module);
             }
         }
 
@@ -71,11 +69,11 @@ MWF.xApplication.process.Xform.Table = MWF.APPTable =  new Class(
 		// }.bind(this));
 	},
     _loadBorderStyle: function(){
+        if( this.json.styles && this.json.styles["table-layout"] ){
+            this.table.setStyle("table-layout",this.json.styles["table-layout"]);
+        }
         if (this.json.styles && this.json.styles.border){
             if (!this.table) this.table = this.node.getElement("table");
-            if( this.json.styles["table-layout"] ){
-                this.table.setStyle("table-layout",this.json.styles["table-layout"]);
-            }
             if (!this.json.styles["border-collapse"]) this.table.setStyle("border-collapse","separate");
             this.table.set("cellspacing", "0");
             this.table.setStyles({
@@ -104,6 +102,11 @@ MWF.xApplication.process.Xform.Table = MWF.APPTable =  new Class(
         }.bind(this));
         //if (this.form.json["$version"]!=="5.2")
             this._loadBorderStyle();
+
+        if(this.json.tableStyles){
+            if( !this.table )this.table = this.node.getElement("table");
+            if(this.table)this.table.setStyles( this.json.tableStyles );
+        }
     }
 });
 /** @class Table$Td 单元格组件。

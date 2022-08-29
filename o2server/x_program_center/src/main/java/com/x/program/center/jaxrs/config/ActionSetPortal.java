@@ -3,6 +3,8 @@ package com.x.program.center.jaxrs.config;
 import java.util.ArrayList;
 import java.util.Map;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.google.gson.JsonElement;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
@@ -23,7 +25,7 @@ public class ActionSetPortal extends BaseAction {
 		ActionResult<Wo> result = new ActionResult<>();
 		Map<String,Object> map = XGsonBuilder.instance().fromJson(jsonElement, Map.class);
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		if (!Config.nodes().centerServers().first().getValue().getConfigApiEnable()) {
+		if (BooleanUtils.isNotTrue(Config.general().getConfigApiEnable())) {
 			throw new ExceptionModifyConfig();
 		}
 		Wi.copier = WrapCopierFactory.wi(Wi.class, Portal.class, new ArrayList<>(map.keySet()), null);
@@ -39,11 +41,15 @@ public class ActionSetPortal extends BaseAction {
 
 	public static class Wi extends Portal {
 
+		private static final long serialVersionUID = -5504616886836435153L;
+		
 		static WrapCopier<Wi, Portal> copier = WrapCopierFactory.wi(Wi.class, Portal.class, null, null);
 
 	}
 
 	public static class Wo extends WrapBoolean {
+
+		private static final long serialVersionUID = 4806224720134525617L;
 
 	}
 }

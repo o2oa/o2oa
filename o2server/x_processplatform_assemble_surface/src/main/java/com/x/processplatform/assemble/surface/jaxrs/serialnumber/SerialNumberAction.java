@@ -28,8 +28,10 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+@Tag(name = "SerialNumberAction", description = "流水号接口.")
 @Path("serialnumber")
-@JaxrsDescribe("流水号操作")
+@JaxrsDescribe("流水号接口.")
 public class SerialNumberAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(SerialNumberAction.class);
@@ -68,6 +70,23 @@ public class SerialNumberAction extends StandardJaxrsAction {
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "创建SerialNumber内容.", action = ActionCreate.class)
+	@POST
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void create(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+					   JsonElement jsonElement) {
+		ActionResult<ActionCreate.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionCreate().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "更新SerialNumber内容.", action = ActionUpdate.class)

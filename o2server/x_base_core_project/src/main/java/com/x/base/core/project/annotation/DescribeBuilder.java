@@ -59,9 +59,7 @@ public class DescribeBuilder {
 	public static void main(String[] args) throws IOException {
 
 		File basedir = new File(args[0]);
-        System.out.println(args[0]);
 		File sourcesdir = new File(args[1]);
-		 System.out.println(args[1]);
 		File dir = new File(basedir, "src/main/webapp/describe");
 
 		FileUtils.forceMkdir(dir);
@@ -70,7 +68,13 @@ public class DescribeBuilder {
 
 		builder.scan(dir);
 
-		FileUtils.copyDirectory(sourcesdir, new File(dir, "sources"));
+		File copyToDir = new File(dir, "sources");
+
+		if (copyToDir.exists()) {
+			FileUtils.cleanDirectory(copyToDir);
+		}
+
+		FileUtils.copyDirectory(sourcesdir, copyToDir);
 
 	}
 
@@ -84,10 +88,10 @@ public class DescribeBuilder {
 				}
 			}
 			LinkedHashMap<String, List<?>> map = new LinkedHashMap<>();
-			
+
 			jaxrsClasses = jaxrsClasses.stream().sorted(Comparator.comparing(JaxrsClass::getName))
 					.collect(Collectors.toList());
-			
+
 			map.put("jaxrs", jaxrsClasses);
 			File file = new File(dir, "describe.json");
 			FileUtils.writeStringToFile(file, XGsonBuilder.toJson(map), DefaultCharset.charset);
@@ -96,6 +100,7 @@ public class DescribeBuilder {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private List<Class<?>> scanJaxrsClass() throws Exception {
 		try (ScanResult scanResult = new ClassGraph().disableJarScanning().enableAnnotationInfo().scan()) {
 			SetUniqueList<Class<?>> classes = SetUniqueList.setUniqueList(new ArrayList<Class<?>>());
@@ -105,7 +110,10 @@ public class DescribeBuilder {
 						"getClasses")) {
 					Path path = o.getAnnotation(Path.class);
 					JaxrsDescribe jaxrsDescribe = o.getAnnotation(JaxrsDescribe.class);
-					if (null != path && null != jaxrsDescribe) {
+//					if (null != path && (null != jaxrsDescribe) && (jaxrsDescribe.scope() == DescribeScope.commonly)) {
+//						classes.add(o);
+//					}
+					if (null != path && (null != jaxrsDescribe)) {
 						classes.add(o);
 					}
 				}
@@ -123,13 +131,16 @@ public class DescribeBuilder {
 		jaxrsClass.setDescription(jaxrsDescribe.value());
 		for (Method method : clz.getMethods()) {
 			JaxrsMethodDescribe jaxrsMethodDescribe = method.getAnnotation(JaxrsMethodDescribe.class);
+//			if ((null != jaxrsMethodDescribe) && (jaxrsMethodDescribe.scope() == DescribeScope.commonly)) {
+//				jaxrsClass.getMethods().add(this.jaxrsMethod(clz, method));
+//			}
 			if (null != jaxrsMethodDescribe) {
 				jaxrsClass.getMethods().add(this.jaxrsMethod(clz, method));
 			}
 		}
 		jaxrsClass.setMethods(jaxrsClass.getMethods().stream().sorted(Comparator.comparing(JaxrsMethod::getName))
 				.collect(Collectors.toList()));
-		
+
 		return jaxrsClass;
 	}
 
@@ -206,19 +217,20 @@ public class DescribeBuilder {
 				.sorted(Comparator.comparing(JaxrsFormParameter::getName, Comparator.nullsLast(String::compareTo)))
 				.collect(Collectors.toList()));
 		/*
-		 jaxrsMethod.setQueryParameters(jaxrsMethod.getQueryParameters().stream().filter(Objects::nonNull)
-				.sorted(Comparator.comparing(JaxrsQueryParameter::getName, Comparator.nullsLast(String::compareTo)))
-				.collect(Collectors.toList()));
-		*/
-		jaxrsMethod.setQueryParameters(jaxrsMethod.getQueryParameters().stream().filter(Objects::nonNull)
-                                      .collect(Collectors.toList()));
+		 * jaxrsMethod.setQueryParameters(jaxrsMethod.getQueryParameters().stream().
+		 * filter(Objects::nonNull)
+		 * .sorted(Comparator.comparing(JaxrsQueryParameter::getName,
+		 * Comparator.nullsLast(String::compareTo))) .collect(Collectors.toList()));
+		 */
+		jaxrsMethod.setQueryParameters(
+				jaxrsMethod.getQueryParameters().stream().filter(Objects::nonNull).collect(Collectors.toList()));
 		/*
-		jaxrsMethod.setPathParameters(jaxrsMethod.getPathParameters().stream().filter(Objects::nonNull)
-				.sorted(Comparator.comparing(JaxrsPathParameter::getName, Comparator.nullsLast(String::compareTo)))
-				.collect(Collectors.toList()));
-		*/
-		jaxrsMethod.setPathParameters(jaxrsMethod.getPathParameters().stream().filter(Objects::nonNull)
-				.collect(Collectors.toList()));
+		 * jaxrsMethod.setPathParameters(jaxrsMethod.getPathParameters().stream().filter
+		 * (Objects::nonNull) .sorted(Comparator.comparing(JaxrsPathParameter::getName,
+		 * Comparator.nullsLast(String::compareTo))) .collect(Collectors.toList()));
+		 */
+		jaxrsMethod.setPathParameters(
+				jaxrsMethod.getPathParameters().stream().filter(Objects::nonNull).collect(Collectors.toList()));
 		return jaxrsMethod;
 	}
 
@@ -306,7 +318,7 @@ public class DescribeBuilder {
 
 	private Class<?> getWiClass(Class<?> actionClass) {
 		for (Class<?> c : actionClass.getDeclaredClasses()) {
-			if (StringUtils.equals(c.getSimpleName(), "Wi")) {
+			if ((null != c.getAnnotation(WrapIn.class)) || StringUtils.equals(c.getSimpleName(), "Wi")) {
 				return c;
 			}
 		}
@@ -315,7 +327,7 @@ public class DescribeBuilder {
 
 	private Class<?> getWoClass(Class<?> actionClass) {
 		for (Class<?> c : actionClass.getDeclaredClasses()) {
-			if (StringUtils.equals(c.getSimpleName(), "Wo")) {
+			if ((null != c.getAnnotation(WrapOut.class)) || StringUtils.equals(c.getSimpleName(), "Wo")) {
 				return c;
 			}
 		}
@@ -350,10 +362,10 @@ public class DescribeBuilder {
 					if (StringUtils.containsAny(jaxrsField.getType(), "<String>", "<Boolean>", "<Date>", "<Integer>",
 							"<Double>", "<Long>", "<Float>")) {
 						jaxrsField.setIsBaseType(true);
-					}else {
-						//wwx add 获取类信息
+					} else {
+						// wwx add 获取类信息
 						FieldTypeDescribe fieldTypeDescribe = o.getAnnotation(FieldTypeDescribe.class);
-						if(null !=fieldTypeDescribe) {
+						if (null != fieldTypeDescribe) {
 							jaxrsField.setFieldType(fieldTypeDescribe.fieldType());
 							jaxrsField.setFieldValue(fieldTypeDescribe.fieldValue());
 							jaxrsField.setFieldTypeName(fieldTypeDescribe.fieldTypeName());
@@ -371,14 +383,14 @@ public class DescribeBuilder {
 					if (StringUtils.startsWithAny(jaxrsField.getType(), "String", "Boolean", "Date", "Integer",
 							"Double", "Long", "Float")) {
 						jaxrsField.setIsBaseType(true);
-					}else {
+					} else {
 						FieldTypeDescribe fieldTypeDescribe = o.getAnnotation(FieldTypeDescribe.class);
-						if(null !=fieldTypeDescribe) {
+						if (null != fieldTypeDescribe) {
 							jaxrsField.setFieldType(fieldTypeDescribe.fieldType());
 							jaxrsField.setFieldValue(fieldTypeDescribe.fieldValue());
 							jaxrsField.setFieldTypeName(fieldTypeDescribe.fieldTypeName());
 						}
-						
+
 						if (Enum.class.isAssignableFrom(o.getType())) {
 							jaxrsField.setFieldType("enum");
 						}
@@ -654,14 +666,12 @@ public class DescribeBuilder {
 		private Boolean isCollection;
 		private String description;
 		private Boolean isBaseType;
-		
-        //当参数不是基础类型时，记录类型信息
+
+		// 当参数不是基础类型时，记录类型信息
 		private String fieldType;
 		private String fieldValue;
 		private String fieldTypeName;
 		private String fieldSample;
-
-
 
 		public String getName() {
 			return name;
@@ -718,7 +728,7 @@ public class DescribeBuilder {
 		public void setFieldValue(String fieldValue) {
 			this.fieldValue = fieldValue;
 		}
-		
+
 		public String getFieldTypeName() {
 			return fieldTypeName;
 		}
@@ -726,7 +736,7 @@ public class DescribeBuilder {
 		public void setFieldTypeName(String fieldTypeName) {
 			this.fieldTypeName = fieldTypeName;
 		}
-		
+
 		public String getFieldSample() {
 			return fieldSample;
 		}

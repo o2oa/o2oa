@@ -13,11 +13,16 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.component.assemble.control.Business;
 import com.x.component.core.entity.Component;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionDeleteAll extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionDeleteAll.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDeleteAll.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
+
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -37,7 +42,10 @@ class ActionDeleteAll extends BaseAction {
 		}
 	}
 
+	@Schema(name = "com.x.component.assemble.control.jaxrs.component.ActionDeleteAll$Wo")
 	public static class Wo extends WrapBoolean {
+
+		private static final long serialVersionUID = 4441944401153239222L;
 
 	}
 

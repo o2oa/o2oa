@@ -1,11 +1,19 @@
 package com.x.base.core.project.config;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
@@ -22,16 +30,20 @@ import com.x.base.core.project.tools.DefaultCharset;
 
 public class Token extends ConfigObject {
 
+	private static final long serialVersionUID = 397619753053929409L;
+
 	private static final String surfix = "o2platform";
 
 	public static final String defaultInitialManager = "xadmin";
 
 	public static final String defaultInitialManagerDistinguishedName = "xadmin@o2oa@P";
 
-	public static final String initPassword = "o2";
+	public static final String initPassword = "o2oa@2022";
 
 	public static final String defaultSslKeyStorePassword = "123456";
 	public static final String defaultSslKeyManagerPassword = "123456";
+
+	public static final Boolean DEFAULT_RSAENABLE = false;
 
 	// 此对象临时计算无需存储
 	private transient String _cipher = "";
@@ -39,8 +51,7 @@ public class Token extends ConfigObject {
 	private transient String _password = "";
 
 	public static Token defaultInstance() {
-		Token o = new Token();
-		return o;
+		return new Token();
 	}
 
 	public Token() {
@@ -48,8 +59,8 @@ public class Token extends ConfigObject {
 		this.password = "";
 		this.sslKeyStorePassword = defaultSslKeyStorePassword;
 		this.sslKeyManagerPassword = defaultSslKeyManagerPassword;
-//		this.initialManager = defaultInitialManager;
-//		this.initialManagerDistinguishedName = defaultInitialManagerDistinguishedName;
+
+		this.rsaEnable = DEFAULT_RSAENABLE;
 	}
 
 	// 加密用的key,用于加密口令
@@ -65,12 +76,6 @@ public class Token extends ConfigObject {
 	@FieldDescribe("ssl管理密码")
 	private String sslKeyManagerPassword;
 
-//	@FieldDescribe("初始管理员名称,目前不可更改.")
-//	private String initialManager;
-
-//	@FieldDescribe("初始管理员DistinguishedName,不可更改.")
-//	private String initialManagerDistinguishedName;
-
 	@FieldDescribe("LDAP认证配置")
 	private LdapAuth ldapAuth;
 
@@ -82,6 +87,13 @@ public class Token extends ConfigObject {
 
 	@FieldDescribe("作为客户端单点登录配置")
 	private List<OauthClient> oauthClients = new ArrayList<>();
+
+	@FieldDescribe("启用rsa加密.")
+	private Boolean rsaEnable = DEFAULT_RSAENABLE;
+
+	public Boolean getRsaEnable() {
+		return null == this.rsaEnable ? DEFAULT_RSAENABLE : this.rsaEnable;
+	}
 
 	// 前面的代码是 key+surfix 结果是nullo2platform
 	public String getKey() {
@@ -102,7 +114,6 @@ public class Token extends ConfigObject {
 			this._cipher = DigestUtils.md5Hex(this.getPassword());
 		}
 		return this._cipher;
-		// return this.getPassword() + surfix;
 	}
 
 	public String getPassword() {
@@ -112,11 +123,13 @@ public class Token extends ConfigObject {
 		return this._password;
 	}
 
-	public void setPassword(String password) {
+	public void setPassword(String password)
+			throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException,
+			IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
 		if (StringUtils.equals(password, initPassword)) {
 			this.password = null;
 		} else {
-			this.password = password;
+			this.password = Crypto.formattedDefaultEncrypt(password);
 		}
 	}
 
@@ -124,25 +137,9 @@ public class Token extends ConfigObject {
 		return defaultInitialManager;
 	}
 
-//	public void setInitialManager(String initialManager) {
-//		if (StringUtils.equals(initialManager, defaultInitialManager)) {
-//			this.initialManager = null;
-//		} else {
-//			this.initialManager = initialManager;
-//		}
-//	}
-
 	public String getInitialManagerDistinguishedName() {
-		return   defaultInitialManagerDistinguishedName;
+		return defaultInitialManagerDistinguishedName;
 	}
-
-//	public void setInitialManagerDistinguishedName(String initialManagerDistinguishedName) {
-//		if (StringUtils.equals(initialManagerDistinguishedName, defaultInitialManagerDistinguishedName)) {
-//			this.initialManager = null;
-//		} else {
-//			this.initialManagerDistinguishedName = initialManagerDistinguishedName;
-//		}
-//	}
 
 	public String getSslKeyStorePassword() {
 		return StringUtils.isEmpty(this.sslKeyStorePassword) ? defaultSslKeyStorePassword : this.sslKeyStorePassword;
@@ -171,14 +168,14 @@ public class Token extends ConfigObject {
 
 	public List<Oauth> getOauths() {
 		if (null == this.oauths) {
-			return new ArrayList<Oauth>();
+			return new ArrayList<>();
 		}
 		return this.oauths;
 	}
 
 	public List<Sso> getSsos() {
 		if (null == this.ssos) {
-			return new ArrayList<Sso>();
+			return new ArrayList<>();
 		}
 		return this.ssos;
 	}
@@ -235,20 +232,18 @@ public class Token extends ConfigObject {
 		o.qq = "";
 		o.weibo = "";
 		o.mobile = "";
-		// o.icon = icon_initialManager;
-		o.roleList = new ArrayList<String>();
-		// o.roleList.add(RoleDefinition.UnitManager);
-		// o.roleList.add(RoleDefinition.GroupCreator);
+		o.roleList = new ArrayList<>();
 		o.roleList.add(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.Manager));
 		o.roleList.add(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.OrganizationManager));
 		o.roleList.add(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.MeetingManager));
-		// o.roleList.add(RoleDefinition.PersonManager);
-		// o.roleList.add(RoleDefinition.ProcessPlatformCreator);
 		o.roleList.add(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.ProcessPlatformManager));
 		return o;
 	}
 
 	public class InitialManager extends GsonPropertyObject {
+
+		private static final long serialVersionUID = 6295964037824026773L;
+
 		private String name;
 		private String unique;
 		private String id;
@@ -262,7 +257,6 @@ public class Token extends ConfigObject {
 		private String mobile;
 		private String pinyin;
 		private String pinyinInitial;
-		// private String icon;
 		private List<String> roleList;
 
 		public String getName() {
@@ -400,14 +394,13 @@ public class Token extends ConfigObject {
 	public static class Oauth extends ConfigObject {
 
 		public static Oauth defaultInstance() {
-			Oauth o = new Oauth();
-			return o;
+			return new Oauth();
 		}
 
 		public Oauth() {
 			this.enable = false;
 			this.clientId = "";
-			this.mapping = new LinkedHashMap<String, String>();
+			this.mapping = new LinkedHashMap<>();
 
 		}
 
@@ -436,7 +429,7 @@ public class Token extends ConfigObject {
 
 		public Map<String, String> getMapping() {
 			if (null == mapping) {
-				return new LinkedHashMap<String, String>();
+				return new LinkedHashMap<>();
 			}
 			return mapping;
 		}
@@ -474,8 +467,7 @@ public class Token extends ConfigObject {
 	public static class OauthClient extends ConfigObject {
 
 		public static OauthClient defaultInstance() {
-			OauthClient o = new OauthClient();
-			return o;
+			return new OauthClient();
 		}
 
 		public static final String default_authParameter = "client_id={$client_id}&redirect_uri={$redirect_uri}";
@@ -722,8 +714,7 @@ public class Token extends ConfigObject {
 	public static class Sso extends ConfigObject {
 
 		public static Sso defaultInstance() {
-			Sso o = new Sso();
-			return o;
+			return new Sso();
 		}
 
 		public Sso() {
@@ -762,8 +753,7 @@ public class Token extends ConfigObject {
 	public static class LdapAuth extends ConfigObject {
 
 		public static LdapAuth defaultInstance() {
-			LdapAuth o = new LdapAuth();
-			return o;
+			return new LdapAuth();
 		}
 
 		public LdapAuth() {

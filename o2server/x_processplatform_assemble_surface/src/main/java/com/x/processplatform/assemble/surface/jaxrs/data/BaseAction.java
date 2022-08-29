@@ -16,8 +16,6 @@ import org.apache.commons.lang3.math.NumberUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.dataitem.DataItemConverter;
 import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.entity.dataitem.ItemType;
@@ -27,6 +25,7 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.Data.DataWork;
@@ -56,14 +55,14 @@ abstract class BaseAction extends StandardJaxrsAction {
 		// return XGsonBuilder.convert(jsonElement, Data.class);
 	}
 
-	/** 将data中的Title 和 serial 字段同步到work中 */
+	// 将data中的Title 和 serial 字段同步到work中
 	void updateTitleSerial(Business business, Work work, JsonElement jsonElement) throws Exception {
 		String title = XGsonBuilder.extractString(jsonElement, Work.title_FIELDNAME);
 		if (null == title) {
 			title = XGsonBuilder.extractString(jsonElement, subject_path);
 		}
 		String serial = XGsonBuilder.extractString(jsonElement, Work.serial_FIELDNAME);
-		/* 如果有数据就将数据覆盖到work task taskCompleted read readCompleted review 中 */
+		// 如果有数据就将数据覆盖到work task taskCompleted read readCompleted review 中
 		if (((null != title) && (!Objects.equals(title, work.getTitle())))
 				|| ((null != serial) && (!Objects.equals(serial, work.getSerial())))) {
 			business.entityManagerContainer().beginTransaction(Work.class);
@@ -156,10 +155,10 @@ abstract class BaseAction extends StandardJaxrsAction {
 				this.fill(_o, work);
 				business.entityManagerContainer().persist(_o);
 			}
-			/* 标记数据已经被修改 */
+			// 标记数据已经被修改
 			business.entityManagerContainer().beginTransaction(Work.class);
 			work.setDataChanged(true);
-			/* 基于前面的原因,这里进行单独提交 */
+			// 基于前面的原因,这里进行单独提交
 			business.entityManagerContainer().commit();
 		}
 	}
@@ -341,24 +340,26 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	/**
 	 * ActionUpdateWithJob的权限校验方法
-	 * 
+	 *
 	 * @param effectivePerson
 	 * @param job
-	 * @param jsonElement
 	 * @throws Exception
 	 * @throws ExceptionJobNotExist
 	 * @throws ExceptionWorkAccessDenied
 	 */
 	protected void checkUpdateWithJobControl(EffectivePerson effectivePerson, Business business, String job)
 			throws Exception {
-		// 通过job获取任意一个work用于判断权限
-		Work work = business.entityManagerContainer().firstEqual(Work.class, Work.job_FIELDNAME, job);
-		if (null == work) {
+		if (!business.job().jobExist(job)) {
 			throw new ExceptionJobNotExist(job);
 		}
-		if (!business.editable(effectivePerson, work)) {
-			throw new ExceptionWorkAccessDenied(effectivePerson.getDistinguishedName(), work.getTitle(), work.getId());
+		if (!business.editable(effectivePerson, job)) {
+			throw new ExceptionJobAccessDenied(effectivePerson.getDistinguishedName(), job);
 		}
+	}
+
+	public static class Control extends WorkControl {
+
+		private static final long serialVersionUID = 7690414994902239024L;
 	}
 
 }

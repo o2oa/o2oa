@@ -27,6 +27,9 @@ import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
 import com.x.processplatform.core.entity.element.ActivityType;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "Snap", description = "流程平台快照.")
 @Entity
 @ContainerEntity(dumpSize = 2, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Content.Snap.table, uniqueConstraints = {
@@ -247,14 +250,12 @@ public class Snap extends SliceJpaObject {
 	public static final String activityAlias_FIELDNAME = "activityAlias";
 	@FieldDescribe("活动别名,针对已完成工作添加待阅字段为空.")
 	@Column(length = length_255B, name = ColumnNamePrefix + activityAlias_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + activityAlias_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String activityAlias;
 
 	public static final String activityDescription_FIELDNAME = "activityDescription";
 	@FieldDescribe("活动说明,针对已完成工作添加待阅字段为空.")
 	@Column(length = length_255B, name = ColumnNamePrefix + activityDescription_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + activityDescription_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String activityDescription;
 
@@ -269,13 +270,13 @@ public class Snap extends SliceJpaObject {
 	public static final String activityToken_FIELDNAME = "activityToken";
 	@FieldDescribe("活动Token,针对已完成工作添加待阅字段为空.")
 	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + activityToken_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + activityToken_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String activityToken;
 
 	public static final String startTime_FIELDNAME = "startTime";
 	@FieldDescribe("流程启动时间.")
 	@Column(name = ColumnNamePrefix + startTime_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + startTime_FIELDNAME)
 	private Date startTime;
 
 	public static final String properties_FIELDNAME = "properties";

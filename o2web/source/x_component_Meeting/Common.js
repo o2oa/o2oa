@@ -44,7 +44,7 @@ MWF.xApplication.Meeting.BuildingForm = new Class({
                 itemTemplate: {
                     name: { text : this.lp.name, notEmpty : true },
                     address: { text : this.lp.address },
-                    saveAction : { type : "button", className : "inputOkButton", value : this.lp.save, event : {
+                    saveAction : { type : "button", className : "inputOkButton", clazz: "mainColor_bg", value : this.lp.save, event : {
                         click : function(){ this.save();}.bind(this)
                     } },
                     removeAction : { type : "button", className : "inputCancelButton", value : this.lp.delete , event : {
@@ -99,8 +99,14 @@ MWF.xApplication.Meeting.BuildingTooltip = new Class({
         var data = this.data;
 
         var html =
-            "<div item='containr' style='height:16px;line-height:16px;'><div style='font-size: 14px;color:#666;float:left; '>"+ (data.address ? data.address : this.lp.noAddress) +"</div></div>";
+            "<div item='containr' style='height:16px;line-height:16px;'><div style='font-size: 14px;color:#666;float:left; ' item='address'></div></div>";
         return html;
+    },
+    _customNode : function( node, contentNode ){
+        var data = this.data;
+        contentNode.getElement("[item='address']").set("text", (data.address ? data.address : this.lp.noAddress) );
+
+        this.fireEvent("customContent", [contentNode, node])
     },
     loadActionBar : function(){
         if( MWF.AC.isMeetingAdministrator() ){
@@ -109,15 +115,17 @@ MWF.xApplication.Meeting.BuildingTooltip = new Class({
             //}).inject(this.node);
             var container = this.node.getElement("[item='containr']");
 
-            this.editAction = new Element("div", {
+            this.editAction = new Element("div.o2icon-edit2", {
                 styles: this.css.action_edit,
                 title : this.lp.editAddress,
                 events : {
                     mouseover : function(){
                         this.editAction.setStyles( this.css.action_edit_over );
+                        this.editAction.addClass("mainColor_color");
                     }.bind(this),
                     mouseout : function(){
                         this.editAction.setStyles( this.css.action_edit );
+                        this.editAction.removeClass("mainColor_color");
                     }.bind(this),
                     click : function(){
                         this.editBuilding( function(data){
@@ -127,15 +135,17 @@ MWF.xApplication.Meeting.BuildingTooltip = new Class({
                 }
             }).inject(container);
 
-            this.removeAction = new Element("div", {
+            this.removeAction = new Element("div.o2icon-delete", {
                 styles: this.css.action_remove,
                 title: this.lp.removeBuilding,
                 events : {
                     mouseover : function(){
                         this.removeAction.setStyles( this.css.action_remove_over );
+                        this.removeAction.addClass("mainColor_color");
                     }.bind(this),
                     mouseout : function(){
                         this.removeAction.setStyles( this.css.action_remove );
+                        this.removeAction.removeClass("mainColor_color");
                     }.bind(this),
                     click : function( e ){
                         this.removeBuilding(e);
@@ -326,13 +336,13 @@ MWF.xApplication.Meeting.RoomForm = new Class({
                         selectValue : [ "true", "false" ],
                         selectText : [ this.lp.enable, this.lp.disable ]
                     },
-                    saveAction : { type : "button", className : "inputOkButton", value : this.lp.save, event : {
+                    saveAction : { type : "button", className : "inputOkButton", clazz: "mainColor_bg", value : this.lp.save, event : {
                         click : function(){ this.save();}.bind(this)
                     } },
                     removeAction : { type : "button", className : "inputCancelButton", value : this.lp.delete , event : {
                         click : function( item, ev ){ this.removeRoom(ev); }.bind(this)
                     } },
-                    editAction : { type : "button", className : "inputOkButton", value : this.lp.editRoom , event : {
+                    editAction : { type : "button", className : "inputOkButton", clazz: "mainColor_bg", value : this.lp.editRoom , event : {
                         click : function(){ this.editRoom(); }.bind(this)
                     } },
                     cancelAction : { type : "button", className : "inputCancelButton", value : this.lp.close , event : {
@@ -567,10 +577,6 @@ MWF.xApplication.Meeting.RoomTooltip = new Class({
 
         var titleStyle = "font-size:14px;color:#333";
         var valueStyle = "font-size:14px;color:#666;padding-right:20px";
-        var device = [];
-        ( data.device || "" ).split("#").each( function( d ){
-            device.push( lp[d] );
-        }.bind(this));
 
         lp = this.lp.roomForm;
 
@@ -578,25 +584,45 @@ MWF.xApplication.Meeting.RoomTooltip = new Class({
             "<div style='overflow: hidden;padding:15px 20px 20px 10px;height:16px;line-height:16px;'>" +
             "   <div style='font-size: 16px;color:#333;float: left'>"+ this.lp.room +"</div>"+
             "</div>"+
-            "<div style='font-size: 18px;color:#333;padding:0px 10px 15px 20px;'>"+ data.name +"</div>"+
+            "<div style='font-size: 18px;color:#333;padding:0px 10px 15px 20px;' item='name'></div>"+
             "<div style='height:1px;margin:0px 20px;border-bottom:1px solid #ccc;'></div>"+
             "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' style='margin:13px 13px 13px 13px;'>" +
             "<tr><td style='"+titleStyle+"' width='100'>"+ lp.building+":</td>" +
             "    <td style='"+valueStyle+"' item='building'></td></tr>" +
             "<tr><td style='"+titleStyle+"'>" + lp.floor+":</td>" +
-            "    <td style='"+valueStyle+"'>" + data.floor + "</td></tr>" +
+            "    <td style='"+valueStyle+"' item='floor'></td></tr>" +
             "<tr><td style='"+titleStyle+"'>"+ lp.capacity +":</td>" +
-            "    <td style='"+valueStyle+"'>"+ data.capacity+"</td></tr>" +
+            "    <td style='"+valueStyle+"' item='capacity'></td></tr>" +
             "<tr><td style='"+titleStyle+"'>"+ lp.roomNumber +":</td>" +
-            "    <td style='"+valueStyle+"'>"+ data.roomNumber+"</td></tr>" +
+            "    <td style='"+valueStyle+"' item='roomNumber'></td></tr>" +
             "<tr><td style='"+titleStyle+"'>"+ lp.phone+":</td>" +
-            "    <td style='"+valueStyle+"'>"+ data.phoneNumber +"</td></tr>" +
+            "    <td style='"+valueStyle+"' item='phoneNumber'></td></tr>" +
             "<tr><td style='"+titleStyle+"'>"+ lp.device +":</td>" +
-            "    <td style='"+valueStyle+"'>"+ device.join( "," ) +"</td></tr>"+
+            "    <td style='"+valueStyle+"' item='device'></td></tr>"+
             "<tr><td style='"+titleStyle+"'>"+ lp.available +":</td>" +
-            "    <td style='"+valueStyle+"'>" + ( !data.available ? this.lp.disable : this.lp.enable ) + "</td></tr>"+
+            "    <td style='"+valueStyle+"' item='available'></td></tr>"+
             "</table>";
         return html;
+    },
+    _customNode : function( node, contentNode ){
+        var data = this.data;
+        var lp = this.lp.roomForm;
+
+        var device = [];
+        ( data.device || "" ).split("#").each( function( d ){
+            device.push( lp[d] );
+        }.bind(this));
+
+        contentNode.getElement("[item='name']").set("text", data.name );
+        // contentNode.getElement("[item='building']").set("text", end );
+        contentNode.getElement("[item='floor']").set("text", data.floor );
+        contentNode.getElement("[item='capacity']").set("text", data.capacity );
+        contentNode.getElement("[item='roomNumber']").set("text", data.roomNumber );
+        contentNode.getElement("[item='phoneNumber']").set("text", data.phoneNumber );
+        contentNode.getElement("[item='device']").set("text", device.join( "," ) );
+        contentNode.getElement("[item='available']").set("text", ( !data.available ? this.lp.disable : this.lp.enable ) );
+
+        this.fireEvent("customContent", [contentNode, node]);
     },
     loadBuilding: function( callback ){
         var area = this.node.getElement("[item='building']");
@@ -935,7 +961,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                         selectText : this.app.meetingConfig.typeList || [],
                         notEmpty: true
                     },
-                    acceptAction : { type : "button", value : this.lp.accept,  className : "inputAcceptButton",
+                    acceptAction : { type : "button", value : this.lp.accept,  className : "inputAcceptButton", clazz: "mainColor_bg",
                         event : {  click : function( it, ev ){ this.accept(ev); }.bind(this) }
                     },
                     rejectAction : { type : "button", value : this.lp.reject, style : {"margin-left": "20px"}, className : "inputDenyButton",
@@ -997,7 +1023,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                 style: "meeting",
                 itemTemplate: {
                     saveAction: {
-                        type: "button", className: "inputOkButton", value: this.lp.save, event: {
+                        type: "button", className: "inputOkButton", clazz: "mainColor_bg", value: this.lp.save, event: {
                             click: function () {
                                 this.save();
                             }.bind(this)
@@ -1011,7 +1037,7 @@ MWF.xApplication.Meeting.MeetingForm = new Class({
                         }
                     },
                     editAction: {
-                        type: "button", className: "inputOkButton", value: this.lp.editMeeting, event: {
+                        type: "button", className: "inputOkButton", clazz: "mainColor_bg", value: this.lp.editMeeting, event: {
                             click: function () {
                                 this.editMeeting();
                             }.bind(this)
@@ -1706,10 +1732,6 @@ MWF.xApplication.Meeting.MeetingTooltip = new Class({
         var data = this.data;
         var titleStyle = "font-size:14px;color:#333";
         var valueStyle = "font-size:14px;color:#666;padding-right:20px";
-        var persons = [];
-        data.invitePersonList.each( function( p ){
-            persons.push(p.split("@")[0] )
-        }.bind(this));
 
         var color = "#ccc";
         switch (data.status){
@@ -1730,15 +1752,6 @@ MWF.xApplication.Meeting.MeetingTooltip = new Class({
             color = "#FF7F7F";
         }
 
-
-        var beginDate = Date.parse(data.startTime);
-        var endDate = Date.parse(data.completedTime);
-        var dateStr = beginDate.format(this.app.lp.dateFormatDay);
-        var beginTime = this.getString( beginDate.getHours() ) + ":" + this.getString( beginDate.getMinutes() );
-        var endTime = this.getString( endDate.getHours() ) + ":" + this.getString( endDate.getMinutes() );
-        var meetingTime = dateStr + " " +  beginTime + "-" + endTime;
-        var description = (data.description || "")+(data.summary || "");
-
         debugger;
         var deletedInfor = "";
         this.userName = layout.desktop.session.user.distinguishedName;
@@ -1747,33 +1760,29 @@ MWF.xApplication.Meeting.MeetingTooltip = new Class({
         }
         var html = deletedInfor +
             "<div style='overflow: hidden;padding:15px 20px 20px 10px;height:16px;line-height:16px;'>" +
-            "   <div style='font-size: 12px;color:#666; float: right'>"+ this.lp.applyPerson  +":" + data.applicant.split("@")[0] +"</div>" +
-            "   <div style='font-size: 16px;color:#333;float: left'>"+ (this.data.type || this.lp.meetingDetail) +"</div>"+
+            "   <div style='font-size: 12px;color:#666; float: right' item='applicant'></div>" +
+            "   <div style='font-size: 16px;color:#333;float: left' item='type'></div>"+
             "</div>"+
-            "<div style='font-size: 18px;color:#333;padding:0px 10px 15px 20px;overflow:hidden;'>"+ data.subject +"</div>"+
+            "<div style='font-size: 18px;color:#333;padding:0px 10px 15px 20px;overflow:hidden;' item='subject'></div>"+
             "<div style='height:1px;margin:0px 20px;border-bottom:1px solid #ccc;'></div>"+
             "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' style='margin:13px 13px 13px 13px;'>" +
             "<tr><td style='"+titleStyle+";' width='70'>"+this.lp.meetingTime+":</td>" +
-            "    <td style='"+valueStyle+";color:"+ color +"'>" + meetingTime + "</td></tr>" +
-            //"<tr><td style='"+titleStyle+"' width='70'>"+this.lp.beginTime+":</td>" +
-            //"    <td style='"+valueStyle+"'>" + data.startTime + "</td></tr>" +
-            //"<tr><td style='"+titleStyle+"'>"+this.lp.endTime+":</td>" +
-            //"    <td style='"+valueStyle+"'>" + data.completedTime + "</td></tr>" +
+            "    <td style='"+valueStyle+";color:"+ color +"' item='meetingTime'></td></tr>" +
             "<tr><td style='"+titleStyle+"'>"+this.lp.selectRoom +":</td>" +
             "    <td style='"+valueStyle+"' item='meetingRoom'></td></tr>" +
             "<tr><td style='"+titleStyle+"'>"+this.lp.invitePerson2+":</td>" +
-            "    <td style='"+valueStyle+"' item='invitePerson'>"+persons.join(",")+"</td></tr>" +
+            "    <td style='"+valueStyle+"' item='invitePerson'></td></tr>" +
             "<tr><td style='"+titleStyle+"'>"+this.lp.meetingDescription+":</td>" +
-            "    <td style='"+valueStyle+"'>"+ description +"</td></tr>";
+            "    <td style='"+valueStyle+"' item='description'></td></tr>";
 
         if( this.data.hostPerson ){
             html += "<tr><td style='"+titleStyle+"'>"+this.lp.hostPerson+":</td>" +
-                "    <td style='"+valueStyle+"'>"+ this.data.hostPerson.split("@")[0] +"</td></tr>";
+                "    <td style='"+valueStyle+"' item='hostPerson'></td></tr>";
         }
 
         if( this.data.hostUnit ){
             html += "<tr><td style='"+titleStyle+"'>"+this.lp.hostUnit+":</td>" +
-                "    <td style='"+valueStyle+"'>"+ this.data.hostUnit.split("@")[0] +"</td></tr>";
+                "    <td style='"+valueStyle+"' item='hostUnit'></td></tr>";
         }
 
         if( !this.options.isHideAttachment ){
@@ -1783,6 +1792,38 @@ MWF.xApplication.Meeting.MeetingTooltip = new Class({
 
         html += "</table>";
         return html;
+    },
+    setItemValue: function( contentNode, name, value ){
+        var itemNode = contentNode.getElement("[item='"+name+"']");
+        if(itemNode)itemNode.set("text", value );
+    },
+    _customNode : function( node, contentNode ){
+        var data = this.data;
+
+        var persons = [];
+        data.invitePersonList.each( function( p ){
+            persons.push(p.split("@")[0] )
+        }.bind(this));
+
+        var beginDate = Date.parse(data.startTime);
+        var endDate = Date.parse(data.completedTime);
+        var dateStr = beginDate.format(this.app.lp.dateFormatDay);
+        var beginTime = this.getString( beginDate.getHours() ) + ":" + this.getString( beginDate.getMinutes() );
+        var endTime = this.getString( endDate.getHours() ) + ":" + this.getString( endDate.getMinutes() );
+        var meetingTime = dateStr + " " +  beginTime + "-" + endTime;
+        var description = (data.description || "")+(data.summary || "");
+
+        this.setItemValue(contentNode, "type", (this.data.type || this.lp.meetingDetail));
+        this.setItemValue(contentNode, "applicant",  this.lp.applyPerson  +":" + data.applicant.split("@")[0] );
+        this.setItemValue(contentNode, "subject",  data.subject );
+        this.setItemValue(contentNode, "meetingTime",  meetingTime );
+        this.setItemValue(contentNode, "subject",  data.subject );
+        this.setItemValue(contentNode, "invitePerson", persons.join(",") );
+        this.setItemValue(contentNode, "description",  description );
+        this.setItemValue(contentNode, "hostPerson",  this.data.hostPerson.split("@")[0] );
+        this.setItemValue(contentNode, "hostUnit",  this.data.hostUnit.split("@")[0] );
+
+        this.fireEvent("customContent", [contentNode, node]);
     },
     getString : function( str ){
         var s = "00" + str;
@@ -2046,10 +2087,12 @@ MWF.xApplication.Meeting.MeetingArea = new Class({
             mouseenter : function(){
                 this.node.setStyles( this.css.meetingNode_over );
                 this.subjectNode.setStyles( this.css.meetingSubjectNode_over );
+                this.subjectNode.addClass("mainColor_color");
             }.bind(this),
             mouseleave : function(){
                 this.node.setStyles( this.css.meetingNode );
                 this.subjectNode.setStyles( this.css.meetingSubjectNode );
+                this.subjectNode.removeClass("mainColor_color");
             }.bind(this),
             click : function(){
                 this.openMeeting()
@@ -2153,14 +2196,16 @@ MWF.xApplication.Meeting.MeetingArea = new Class({
         if( this.userName == this.data.applicant || this.userId == this.data.applicant || MWF.AC.isMeetingAdministrator() ){
 
             if( this.data.status=="wait"  ){
-                this.editAction = new Element("div", {
+                this.editAction = new Element("div.o2icon-edit2", {
                     styles: this.css.action_edit,
                     events : {
                         mouseover : function(){
                             this.editAction.setStyles( this.css.action_edit_over );
+                            this.editAction.addClass("mainColor_color");
                         }.bind(this),
                         mouseout : function(){
                             this.editAction.setStyles( this.css.action_edit );
+                            this.editAction.removeClass("mainColor_color");
                         }.bind(this),
                         click : function(e){
                             this.editMeeting();
@@ -2173,14 +2218,16 @@ MWF.xApplication.Meeting.MeetingArea = new Class({
                 //if (this.data.myWaitAccept) this.createAcceptActions();
                 //if (this.data.status=="wait" && this.isEdit) this.createCancelActions();
 
-                this.removeAction = new Element("div", {
+                this.removeAction = new Element("div.o2icon-delete", {
                     styles: this.css.action_remove,
                     events : {
                         mouseover : function(){
                             this.removeAction.setStyles( this.css.action_remove_over );
+                            this.removeAction.addClass("mainColor_color");
                         }.bind(this),
                         mouseout : function(){
                             this.removeAction.setStyles( this.css.action_remove );
+                            this.removeAction.removeClass("mainColor_color");
                         }.bind(this),
                         click : function( e ){
                             this.cancel(e);
@@ -2193,15 +2240,17 @@ MWF.xApplication.Meeting.MeetingArea = new Class({
 
 
         if (this.data.myWaitAccept){
-            this.acceptAction = new Element("div", {
+            this.acceptAction = new Element("div.o2icon-checkbox", {
                 styles: this.css.action_accept,
                 title : this.app.lp.accept,
                 events : {
                     mouseover : function(){
                         this.acceptAction.setStyles( this.css.action_accept_over );
+                        this.acceptAction.addClass("mainColor_color");
                     }.bind(this),
                     mouseout : function(){
                         this.acceptAction.setStyles( this.css.action_accept );
+                        this.acceptAction.removeClass("mainColor_color");
                     }.bind(this),
                     click : function( e ){
                         this.accept(e);
@@ -2210,15 +2259,17 @@ MWF.xApplication.Meeting.MeetingArea = new Class({
                 }
             }).inject(this.actionBar);
 
-            this.rejectAction = new Element("div", {
+            this.rejectAction = new Element("div.o2icon-off", {
                 styles: this.css.action_reject,
                 title : this.app.lp.reject,
                 events : {
                     mouseover : function(){
                         this.rejectAction.setStyles( this.css.action_reject_over );
+                        this.rejectAction.addClass("mainColor_color");
                     }.bind(this),
                     mouseout : function(){
                         this.rejectAction.setStyles( this.css.action_reject );
+                        this.rejectAction.removeClass("mainColor_color");
                     }.bind(this),
                     click : function( e ){
                         this.reject(e);

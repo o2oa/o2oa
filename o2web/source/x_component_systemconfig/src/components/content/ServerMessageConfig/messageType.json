@@ -1,0 +1,373 @@
+{
+  "application_create": {
+    "consumers": [],
+    "description": "创建应用."
+  },
+  "application_update": {
+    "consumers": [],
+    "description": "更新应用."
+  },
+  "application_delete": {
+    "consumers": [],
+    "description": "删除应用."
+  },
+  "process_create": {
+    "consumers": [],
+    "description": "创建流程."
+  },
+  "process_update": {
+    "consumers": [],
+    "description": "更新流程."
+  },
+  "process_delete": {
+    "consumers": [],
+    "description": "删除流程."
+  },
+  "activity_message": {
+    "consumers": [],
+    "description": "有新的工作通过消息节点."
+  },
+  "work_to_workCompleted": {
+    "consumers": [],
+    "description": "工作完成转已完成工作."
+  },
+  "work_create": {
+    "consumers": [],
+    "description": "创建工作."
+  },
+  "work_delete": {
+    "consumers": [],
+    "description": "删除工作."
+  },
+  "workCompleted_create": {
+    "consumers": [],
+    "description": "创建已完成工作."
+  },
+  "workCompleted_delete": {
+    "consumers": [],
+    "description": "删除已完成工作."
+  },
+  "task_to_taskCompleted": {
+    "consumers": [],
+    "description": "待办完成转已办."
+  },
+  "task_create": {
+    "consumers": [
+      {"consumer": "ws"},
+      {"consumer": "pmsinner"},
+      {"consumer": "dingding"},
+      {"consumer": "welink" },
+      {"consumer": "qiyeweixin"},
+      {"consumer": "mpweixin"}
+    ],
+    "description": "创建待办."
+  },
+  "task_delete": {
+    "consumers": [],
+    "description": "删除待办."
+  },
+  "task_urge": {
+    "consumers": [
+      {"consumer": "ws"},
+      {"consumer": "pmsinner"},
+      {"consumer": "dingding"},
+      {"consumer": "welink" },
+      {"consumer": "qiyeweixin"},
+      {"consumer": "mpweixin"}
+    ],
+    "description": "待办即将过期催办."
+  },
+  "task_expire": {
+    "consumers": [
+      {"consumer": "ws"},
+      {"consumer": "pmsinner"},
+      {"consumer": "dingding"},
+      {"consumer": "welink" },
+      {"consumer": "qiyeweixin"},
+      {"consumer": "mpweixin"}
+    ],
+    "description": "待办过期."
+  },
+  "task_press": {
+    "consumers": [
+      {"consumer": "ws"},
+      {"consumer": "pmsinner"},
+      {"consumer": "dingding"},
+      {"consumer": "welink" },
+      {"consumer": "qiyeweixin"},
+      {"consumer": "mpweixin"}
+    ],
+    "description": "待办提醒."
+  },
+  "taskCompleted_create": {
+    "consumers": [],
+    "description": "创建已办."
+  },
+  "taskCompleted_delete": {
+    "consumers": [],
+    "description": "删除已办."
+  },
+  "read_to_readCompleted": {
+    "consumers": [],
+    "description": "待阅转已阅."
+  },
+  "read_create": {
+    "consumers": [
+      {"consumer": "ws"},
+      {"consumer": "pmsinner"},
+      {"consumer": "dingding"},
+      {"consumer": "welink"},
+      {"consumer": "qiyeweixin"},
+      {"consumer": "mpweixin"}
+    ],
+    "description": "创建待阅."
+  },
+  "read_delete": {
+    "consumers": [],
+    "description": "删除待阅."
+  },
+  "readCompleted_create": {
+    "consumers": [],
+    "description": "创建已阅."
+  },
+  "readCompleted_delete": {
+    "consumers": [],
+    "description": "删除已阅."
+  },
+  "review_create": {
+    "consumers": [],
+    "description": "创建参阅."
+  },
+  "review_delete": {
+    "consumers": [],
+    "description": "删除参阅."
+  },
+  "meeting_invite": {
+    "consumers": [
+      {"consumer": "ws"},
+      {"consumer": "pmsinner"},
+      {"consumer": "dingding"},
+      {"consumer": "welink"},
+      {"consumer": "qiyeweixin"},
+      {"consumer": "mpweixin"}
+    ],
+    "description": "会议邀请."
+  },
+  "meeting_delete": {
+    "consumers": [],
+    "description": "删除会议."
+  },
+  "meeting_accept": {
+    "consumers": [
+      {"consumer": "ws"},
+      {"consumer": "pmsinner"},
+      {"consumer": "dingding"},
+      {"consumer": "welink"},
+      {"consumer": "qiyeweixin"},
+      {"consumer": "mpweixin"}
+    ],
+    "description": "会议邀请接受."
+  },
+  "meeting_reject": {
+    "consumers": [
+      {"consumer": "ws"},
+      {"consumer": "pmsinner"},
+      {"consumer": "dingding"},
+      {"consumer": "welink"},
+      {"consumer": "qiyeweixin"},
+      {"consumer": "mpweixin"}
+    ],
+    "description": "会议邀请拒绝."
+  },
+  "attachment_create": {
+    "consumers": [],
+    "description": "创建附件."
+  },
+  "attachment_delete": {
+    "consumers": [],
+    "description": "删除附件."
+  },
+  "attachment_share": {
+    "consumers": [
+      {"consumer": "ws"},
+      {"consumer": "pmsinner"},
+      {"consumer": "dingding"},
+      {"consumer": "welink"},
+      {"consumer": "qiyeweixin"},
+      {"consumer": "mpweixin"}
+    ],
+    "description": "附件分享."
+  },
+  "attachment_shareCancel": {
+    "consumers": [
+      {"consumer": "ws"},
+      {"consumer": "pmsinner"},
+      {"consumer": "dingding"},
+      {"consumer": "welink"},
+      {"consumer": "qiyeweixin"},
+      {"consumer": "mpweixin"}
+    ],
+    "description": "附件取消分享."
+  },
+  "attachment_editor": {
+    "consumers": [],
+    "description": "附件可编辑设置."
+  },
+  "attachment_editorCancel": {
+    "consumers": [],
+    "description": "附件可编辑取消."
+  },
+  "attachment_editorModify": {
+    "consumers": [],
+    "description": "附件可编辑修改."
+  },
+  "calendar_alarm": {
+    "consumers": [
+      {"consumer": "ws"},
+      {"consumer": "pmsinner"},
+      {"consumer": "dingding"},
+      {"consumer": "welink"},
+      {"consumer": "qiyeweixin"},
+      {"consumer": "mpweixin"}
+    ],
+    "description": "日历通知."
+  },
+  "custom_create": {
+    "consumers": [
+      {"consumer": "ws"},
+      {"consumer": "pmsinner"},
+      {"consumer": "dingding"},
+      {"consumer": "welink"},
+      {"consumer": "qiyeweixin"},
+      {"consumer": "mpweixin"}
+    ],
+    "description": "自定义消息创建."
+  },
+  "teamwork_taskCreate": {
+    "consumers": [
+      {"consumer": "ws"},
+      {"consumer": "pmsinner"},
+      {"consumer": "dingding"},
+      {"consumer": "welink"},
+      {"consumer": "qiyeweixin"},
+      {"consumer": "mpweixin"}
+    ],
+    "description": "工作管理任务创建."
+  },
+  "teamwork_taskUpdate": {
+    "consumers": [
+      {"consumer": "ws"},
+      {"consumer": "pmsinner"},
+      {"consumer": "dingding"},
+      {"consumer": "welink"},
+      {"consumer": "qiyeweixin"},
+      {"consumer": "mpweixin"}
+    ],
+    "description": "工作管理任务更新."
+  },
+  "teamwork_taskDelete": {
+    "consumers": [
+      {"consumer": "ws"},
+      {"consumer": "pmsinner"},
+      {"consumer": "dingding"},
+      {"consumer": "welink"},
+      {"consumer": "qiyeweixin"},
+      {"consumer": "mpweixin"}
+    ],
+    "description": "工作管理任务删除."
+  },
+  "teamwork_taskOvertime": {
+    "consumers": [
+      {"consumer": "ws"},
+      {"consumer": "pmsinner"},
+      {"consumer": "dingding"},
+      {"consumer": "welink"},
+      {"consumer": "qiyeweixin"},
+      {"consumer": "mpweixin"}
+    ],
+    "description": "工作管理任务超时."
+  },
+  "teamwork_chat": {
+    "consumers": [
+      {"consumer": "ws"},
+      {"consumer": "pmsinner"},
+      {"consumer": "dingding"},
+      {"consumer": "welink"},
+      {"consumer": "qiyeweixin"},
+      {"consumer": "mpweixin"}
+    ],
+    "description": "工作管理聊天."
+  },
+  "cms_publish": {
+    "consumers": [],
+    "description": "内容管理发布."
+  },
+  "cms_publish_to_creator": {
+    "consumers": [
+      {"consumer": "ws"},
+      {"consumer": "pmsinner"},
+      {"consumer": "dingding"},
+      {"consumer": "welink"},
+      {"consumer": "qiyeweixin"},
+      {"consumer": "mpweixin"}
+    ],
+    "description": "内容管理发布创建者通知."
+  },
+  "bbs_subjectCreate": {
+    "consumers": [
+      {"consumer": "ws"},
+      {"consumer": "pmsinner"},
+      {"consumer": "dingding"},
+      {"consumer": "welink"},
+      {"consumer": "qiyeweixin"},
+      {"consumer": "mpweixin"}
+    ],
+    "description": "论坛创建贴子."
+  },
+  "bbs_replyCreate": {
+    "consumers": [
+      {"consumer": "ws"},
+      {"consumer": "pmsinner"},
+      {"consumer": "dingding"},
+      {"consumer": "welink"},
+      {"consumer": "qiyeweixin"},
+      {"consumer": "mpweixin"}
+    ],
+    "description": "论坛创建回复."
+  },
+  "mind_fileSend": {
+    "consumers": [
+      {"consumer": "ws"},
+      {"consumer": "pmsinner"},
+      {"consumer": "dingding"},
+      {"consumer": "welink"},
+      {"consumer": "qiyeweixin"},
+      {"consumer": "mpweixin"}
+    ],
+    "description": "脑图发送."
+  },
+  "mind_fileShare": {
+    "consumers": [
+      {"consumer": "ws"},
+      {"consumer": "pmsinner"},
+      {"consumer": "dingding"},
+      {"consumer": "welink"},
+      {"consumer": "qiyeweixin"},
+      {"consumer": "mpweixin"}
+    ],
+    "description": "脑图分享."
+  },
+  "im_create": {
+    "consumers": [
+      {"consumer": "ws"},
+      {"consumer": "pmsinner"}
+    ],
+    "description": "聊聊消息."
+  },
+
+  "clean": {
+    "enable": true,
+    "cron": "30 30 6 * * ?",
+    "keep": 7.0
+  }
+}

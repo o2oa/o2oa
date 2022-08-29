@@ -17,11 +17,14 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * 脑图图标信息表
  * 
  * @author O2LEE
  */
+@Schema(name = "MindIconInfo", description = "脑图图标信息.")
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.MindIconInfo.table, uniqueConstraints = {

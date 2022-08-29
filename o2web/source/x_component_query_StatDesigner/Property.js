@@ -574,11 +574,22 @@ MWF.xApplication.query.StatDesigner.Property = MWF.FVProperty = new Class({
         if (columnNodes.length){
             columnNodes.each(function(node){
                 var key = node.get("name");
-                var v = this.data[key];
+                // var v = this.data[key];
+                var names = key.split(".");
+                var v = this.data;
+                for (var idx = 0; idx<names.length; idx++){
+                    if (!v[names[idx]]){
+                        v = null;
+                        break;
+                    }else{
+                        v = v[names[idx]];
+                    }
+                }
+
                 node.empty();
                 new Element("option", {
                     "value": "",
-                    "selected": true,
+                    // "selected": true,
                     "text": this.module.designer.lp.category
                 }).inject(node);
                 this.module.items.each(function(item){

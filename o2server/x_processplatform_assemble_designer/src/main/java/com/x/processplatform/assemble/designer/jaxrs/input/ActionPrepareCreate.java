@@ -13,47 +13,9 @@ import com.x.base.core.project.jaxrs.WrapPair;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.designer.Business;
-import com.x.processplatform.core.entity.element.Agent;
-import com.x.processplatform.core.entity.element.Application;
-import com.x.processplatform.core.entity.element.ApplicationDict;
-import com.x.processplatform.core.entity.element.Begin;
-import com.x.processplatform.core.entity.element.Cancel;
-import com.x.processplatform.core.entity.element.Choice;
-import com.x.processplatform.core.entity.element.Delay;
-import com.x.processplatform.core.entity.element.Embed;
-import com.x.processplatform.core.entity.element.End;
-import com.x.processplatform.core.entity.element.File;
-import com.x.processplatform.core.entity.element.Form;
-import com.x.processplatform.core.entity.element.FormField;
-import com.x.processplatform.core.entity.element.Invoke;
-import com.x.processplatform.core.entity.element.Manual;
-import com.x.processplatform.core.entity.element.Merge;
-import com.x.processplatform.core.entity.element.Parallel;
+import com.x.processplatform.core.entity.element.*;
 import com.x.processplatform.core.entity.element.Process;
-import com.x.processplatform.core.entity.element.Route;
-import com.x.processplatform.core.entity.element.Script;
-import com.x.processplatform.core.entity.element.Service;
-import com.x.processplatform.core.entity.element.Split;
-import com.x.processplatform.core.entity.element.wrap.WrapAgent;
-import com.x.processplatform.core.entity.element.wrap.WrapApplicationDict;
-import com.x.processplatform.core.entity.element.wrap.WrapCancel;
-import com.x.processplatform.core.entity.element.wrap.WrapChoice;
-import com.x.processplatform.core.entity.element.wrap.WrapDelay;
-import com.x.processplatform.core.entity.element.wrap.WrapEmbed;
-import com.x.processplatform.core.entity.element.wrap.WrapEnd;
-import com.x.processplatform.core.entity.element.wrap.WrapFile;
-import com.x.processplatform.core.entity.element.wrap.WrapForm;
-import com.x.processplatform.core.entity.element.wrap.WrapFormField;
-import com.x.processplatform.core.entity.element.wrap.WrapInvoke;
-import com.x.processplatform.core.entity.element.wrap.WrapManual;
-import com.x.processplatform.core.entity.element.wrap.WrapMerge;
-import com.x.processplatform.core.entity.element.wrap.WrapParallel;
-import com.x.processplatform.core.entity.element.wrap.WrapProcess;
-import com.x.processplatform.core.entity.element.wrap.WrapProcessPlatform;
-import com.x.processplatform.core.entity.element.wrap.WrapRoute;
-import com.x.processplatform.core.entity.element.wrap.WrapScript;
-import com.x.processplatform.core.entity.element.wrap.WrapService;
-import com.x.processplatform.core.entity.element.wrap.WrapSplit;
+import com.x.processplatform.core.entity.element.wrap.*;
 
 class ActionPrepareCreate extends BaseAction {
 
@@ -176,6 +138,12 @@ class ActionPrepareCreate extends BaseAction {
 			}
 			for (WrapParallel wrap : wrapProcess.getParallelList()) {
 				Parallel exist_parallel = business.entityManagerContainer().find(wrap.getId(), Parallel.class);
+				if (null != exist_parallel) {
+					wos.add(new Wo(wrap.getId(), JpaObject.createId()));
+				}
+			}
+			for (WrapPublish wrap : wrapProcess.getPublishList()) {
+				Publish exist_parallel = business.entityManagerContainer().find(wrap.getId(), Publish.class);
 				if (null != exist_parallel) {
 					wos.add(new Wo(wrap.getId(), JpaObject.createId()));
 				}

@@ -46,27 +46,43 @@ import com.x.processplatform.core.express.service.processing.jaxrs.task.V2ResetW
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2AddManualTaskIdentityMatrixWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2AddManualTaskIdentityMatrixWo;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public class V2Reset extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(V2Reset.class);
 
-	// 当前的待办
+	/**
+	 * 当前的待办
+	 */
 	private Task task;
-	// 添加的身份
+	/**
+	 * 添加的身份
+	 */
 	private List<String> identities;
-	// 当前的workLog,产生record必须
+	/**
+	 * 当前的workLog,产生record必须
+	 */
 	private WorkLog workLog;
-	// 当前的work
+	/**
+	 * 当前的work
+	 */
 	private Work work;
-	// work活动
+	/**
+	 * work活动
+	 */
 	private Manual manual;
-	// 如果在待办身份矩阵中删除自己,那么先把自己的待办转为不参与流程的已办
+	/**
+	 * 如果在待办身份矩阵中删除自己,那么先把自己的待办转为不参与流程的已办
+	 */
 	private List<TaskCompleted> taskCompleteds;
 	private final String series = StringTools.uniqueToken();
 	private String taskCompletedId;
 	private Wi wi;
 	private EffectivePerson effectivePerson;
-	// 返回的ManualTaskIdentityMatrix
+	/**
+	 * 返回的ManualTaskIdentityMatrix
+	 */
 	private ManualTaskIdentityMatrix manualTaskIdentityMatrix;
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
@@ -105,6 +121,7 @@ public class V2Reset extends BaseAction {
 		}
 
 		Record rec = RecordBuilder.ofWorkProcessing(Record.TYPE_RESET, workLog, effectivePerson, manual, newTaskIds);
+		rec.getProperties().setOpinion(wi.getOpinion());
 		RecordBuilder.processing(rec);
 
 		if (StringUtils.isNotEmpty(this.taskCompletedId)) {
@@ -127,8 +144,8 @@ public class V2Reset extends BaseAction {
 		if (null == task) {
 			throw new ExceptionEntityNotExist(id, Task.class);
 		}
-		this.workLog = business.entityManagerContainer().firstEqualAndEqual(WorkLog.class, WorkLog.job_FIELDNAME,
-				task.getJob(), WorkLog.fromActivityToken_FIELDNAME, task.getActivityToken());
+		this.workLog = business.entityManagerContainer().firstEqualAndEqual(WorkLog.class, WorkLog.JOB_FIELDNAME,
+				task.getJob(), WorkLog.FROMACTIVITYTOKEN_FIELDNAME, task.getActivityToken());
 		if (null == workLog) {
 			throw new ExceptionEntityNotExist(WorkLog.class);
 		}
@@ -154,7 +171,7 @@ public class V2Reset extends BaseAction {
 		req.setOpinion(opinion);
 		req.setRouteName(routeName);
 		WoId resp = ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-				Applications.joinQueryUri("task", task.getId()), req, task.getJob()).getData(WoId.class);
+				Applications.joinQueryUri("task", "v2", task.getId()), req, task.getJob()).getData(WoId.class);
 		if (StringUtils.isEmpty(resp.getId())) {
 			throw new ExceptionUpdateTask(task.getId());
 		}
@@ -213,23 +230,27 @@ public class V2Reset extends BaseAction {
 		}
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.task.V2Reset$Wi")
 	public static class Wi extends V2ResetWi {
 
 		private static final long serialVersionUID = 5747688678118966913L;
+
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.task.V2Reset$WoControl")
 	public static class WoControl extends WorkControl {
 
 		private static final long serialVersionUID = -6227098496393005824L;
+
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.task.V2Reset$Wo")
 	public static class Wo extends Record {
 
 		private static final long serialVersionUID = -4700549313374917582L;
 
 		static WrapCopier<Record, Wo> copier = WrapCopierFactory.wo(Record.class, Wo.class, null,
 				JpaObject.FieldsInvisible);
- 
 
 		private ManualTaskIdentityMatrix manualTaskIdentityMatrix;
 

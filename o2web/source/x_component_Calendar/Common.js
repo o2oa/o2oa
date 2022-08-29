@@ -24,6 +24,7 @@ MWFCalendar.EventForm = new Class({
     Implements: [Options, Events],
     options: {
         "style": "meeting",
+        "okClass": "mainColor_bg",
         "width": "800",
         "height": "475",
         "hasTop": true,
@@ -731,17 +732,17 @@ MWFCalendar.EventForm = new Class({
                 hasColon : true,
                 itemTemplate: {
                     moreInfor : {
-                        type : "a", value : this.lp.editMore, event : {
+                        type : "a", value : this.lp.editMore, clazz : "mainColor_color", event : {
                             click : function(){ this.openMoreInfor() }.bind(this)
                         }, disable : this.options.isFull
                     },
-                    saveAction : { type : "button", className : "inputOkButton", value : this.lp.save, event : {
+                    saveAction : { type : "button", className : "inputOkButton", clazz : "mainColor_bg", value : this.lp.save, event : {
                         click : function(){ this.save();}.bind(this)
                     } },
                     removeAction : { type : "button", className : "inputCancelButton", value : this.lp.cancelEvent , event : {
                         click : function( item, ev ){ this.cancelEvent(ev); }.bind(this)
                     } },
-                    editAction : { type : "button", className : "inputOkButton", value : this.lp.editEvent , event : {
+                    editAction : { type : "button", className : "inputOkButton", clazz : "mainColor_bg", value : this.lp.editEvent , event : {
                         click : function(){ this.editEvent(); }.bind(this)
                     } },
                     cancelAction : { type : "button", className : "inputCancelButton", value : this.lp.close , event : {
@@ -1070,6 +1071,7 @@ MWFCalendar.CalendarForm = new Class({
     Implements: [Options, Events],
     options: {
         "style": "meeting",
+        "okClass": "mainColor_bg",
         "width": "800",
         "height": "500",
         "hasTop": true,
@@ -1240,13 +1242,13 @@ MWFCalendar.CalendarForm = new Class({
                 style : "meeting",
                 hasColon : true,
                 itemTemplate: {
-                    saveAction : { type : "button", className : "inputOkButton", value : this.lp.save, event : {
+                    saveAction : { type : "button", className : "inputOkButton", clazz : "mainColor_bg", value : this.lp.save, event : {
                         click : function(){ this.ok();}.bind(this)
                     } },
                     removeAction : { type : "button", className : "inputCancelButton", value : this.lp.deleteCalendar , event : {
                         click : function( item, ev ){ this.deleteCalendar(ev); }.bind(this)
                     } },
-                    editAction : { type : "button", className : "inputOkButton", value : this.lp.editCalendar , event : {
+                    editAction : { type : "button", className : "inputOkButton", clazz : "mainColor_bg", value : this.lp.editCalendar , event : {
                         click : function(){ this.editCalendar(); }.bind(this)
                     } },
                     cancelAction : { type : "button", className : "inputCancelButton", value : this.lp.close , event : {
@@ -1341,6 +1343,7 @@ MWFCalendar.SaveOptionDialog = new Class({
     Implements: [Options, Events],
     options: {
         "style": "meeting",
+        "okClass": "mainColor_bg",
         "width": "470",
         "height": "325",
         "hasTop": true,
@@ -1402,6 +1405,7 @@ MWFCalendar.DeleteOptionDialog = new Class({
     Implements: [Options, Events],
     options: {
         "style": "meeting",
+        "okClass": "mainColor_bg",
         "width": "470",
         "height": "325",
         "hasTop": true,
@@ -1469,25 +1473,22 @@ MWFCalendar.EventTooltip = new Class({
         if(callback)callback();
     },
     _getHtml : function(){
-        var data = this.data;
         var titleStyle = "font-size:14px;color:#333";
         var valueStyle = "font-size:14px;color:#666;padding-right:10px";
 
-        var beginD = Date.parse(this.data.startTime);
-        var endD = Date.parse(this.data.endTime);
-        var begin = beginD.format(this.lp.dateFormatAll) + "（" + this.lp.weeks.arr[beginD.get("day")] + "）";
-        var end = endD.format(this.lp.dateFormatAll) + "（" + this.lp.weeks.arr[endD.get("day")] + "）";
+
+        var data = this.data;
 
         var html =
             "<div style='font-size: 16px;color:#333;padding:10px 10px 10px 20px;'>"+ o2.common.encodeHtml(data.title) +"</div>"+
             "<div style='height:1px;margin:0px 20px;border-bottom:1px solid #ccc;'></div>"+
             "<table width='100%' bordr='0' cellpadding='7' cellspacing='0' style='margin:13px 13px 13px 13px;'>" +
             "<tr><td style='"+titleStyle+";' width='40'>"+this.lp.begin+":</td>" +
-            "    <td style='"+valueStyle+"'>" + begin + "</td></tr>" +
+            "    <td style='"+valueStyle+"' item='begin'></td></tr>" +
             "<tr><td style='"+titleStyle+"'>"+this.lp.end+":</td>" +
-            "    <td style='"+valueStyle+ "'>"+ end +"</td></tr>" +
+            "    <td style='"+valueStyle+ "' item='end'></td></tr>" +
             "<tr><td style='"+titleStyle+"'>"+this.lp.locationName+":</td>" +
-            "    <td style='"+valueStyle+ "'>"+ (this.data.locationName||"") +"</td></tr>" +
+            "    <td style='"+valueStyle+ "' item='locationName'></td></tr>" +
             //( this.options.isHideAttachment ? "" :
             //"<tr><td style='"+titleStyle+"'>"+this.lp.eventAttachment+":</td>" +
             //"    <td style='"+valueStyle+"' item='attachment'></td></tr>"+
@@ -1496,6 +1497,19 @@ MWFCalendar.EventTooltip = new Class({
             "    <td style='"+valueStyle+ "' item='seeMore'></td></tr>"+
         "</table>";
         return html;
+    },
+    _customNode : function( node, contentNode ){
+        var data = this.data;
+        var beginD = Date.parse(this.data.startTime);
+        var endD = Date.parse(this.data.endTime);
+        var begin = beginD.format(this.lp.dateFormatAll) + "（" + this.lp.weeks.arr[beginD.get("day")] + "）";
+        var end = endD.format(this.lp.dateFormatAll) + "（" + this.lp.weeks.arr[endD.get("day")] + "）";
+
+        contentNode.getElement("[item='begin']").set("text", begin );
+        contentNode.getElement("[item='end']").set("text", end );
+        contentNode.getElement("[item='locationName']").set("text", (this.data.locationName||"") );
+
+        this.fireEvent("customContent", [contentNode, node])
     },
     destroy: function(){
         if( this.node ){
@@ -1523,6 +1537,7 @@ MWFCalendar.EventTooltip = new Class({
                 "cursor" : "pointer",
                 "color" : "#fff"
             },
+            class: "mainColor_bg",
             events : { click : function() {
                 debugger;
                 var form = new MWFCalendar.EventForm(this, this.data, {

@@ -8,7 +8,6 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
@@ -41,8 +40,6 @@ import com.x.query.core.entity.Item;
 abstract class BaseAction extends StandardJaxrsAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BaseAction.class);
-
-	protected Gson gson = XGsonBuilder.instance();
 
 	JsonElement getData(Business business, String job, String... paths) throws Exception {
 		JsonElement jsonElement = null;
@@ -93,6 +90,9 @@ abstract class BaseAction extends StandardJaxrsAction {
 	// 将data中的Title 和 serial 字段同步到work中
 	void updateTitleSerial(Business business, WorkCompleted workCompleted, JsonElement jsonElement) throws Exception {
 		String title = XGsonBuilder.extractString(jsonElement, WorkCompleted.title_FIELDNAME);
+		if (StringUtils.isBlank(title)) {
+			title = XGsonBuilder.extractString(jsonElement, WorkCompleted.TITLEALIAS_SUBJECT);
+		}
 		String serial = XGsonBuilder.extractString(jsonElement, WorkCompleted.serial_FIELDNAME);
 		// 如果有数据就将数据覆盖到work task taskCompleted read readCompleted review 中
 		if ((StringUtils.isNotBlank(title) && (!Objects.equals(title, workCompleted.getTitle())))

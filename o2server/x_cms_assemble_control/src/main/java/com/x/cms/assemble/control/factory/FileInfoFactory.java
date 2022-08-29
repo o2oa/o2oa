@@ -31,7 +31,7 @@ public class FileInfoFactory extends AbstractFactory {
 	public FileInfo get( String id ) throws Exception {
 		return this.entityManagerContainer().find( id, FileInfo.class, ExceptionWhen.none );
 	}
-	
+
 	/**
 	 * @return List：String
 	 * @throws Exception
@@ -45,9 +45,9 @@ public class FileInfoFactory extends AbstractFactory {
 		cq.select(root.get(FileInfo_.id));
 		return em.createQuery(cq).getResultList();
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param ids 需要查询的ID列表
 	 * @return List：FileInfo
 	 * @throws Exception
@@ -61,83 +61,63 @@ public class FileInfoFactory extends AbstractFactory {
 //		Predicate p = root.get(FileInfo_.id).in(ids);
 //		return em.createQuery(cq.where(p)).getResultList();
 //	}
-	
+
 	/**
 	 * 列示指定文档的所有附件以及文件信息ID列表
 	 * @param doucmentId 指定的文档ID
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	//@MethodDescribe("列示指定文档的所有附件以及文件信息ID列表")
-	public List<String> listAllByDocument( String doucmentId ) throws Exception {		
+	public List<String> listAllByDocument( String doucmentId ) throws Exception {
 		if( StringUtils.isEmpty(doucmentId) ){
 			throw new Exception("内容管理listByDocument方法不接受document为空的查询操作！");
-		}		
+		}
 		EntityManager em = this.entityManagerContainer().get( FileInfo.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery( String.class );
-		Root<FileInfo> root = cq.from( FileInfo.class );		
-		Predicate p = cb.equal(root.get( FileInfo_.documentId ), doucmentId);		
+		Root<FileInfo> root = cq.from( FileInfo.class );
+		Predicate p = cb.equal(root.get( FileInfo_.documentId ), doucmentId);
 		cq.select(root.get(FileInfo_.id));
 		return em.createQuery(cq.where(p)).getResultList();
 	}
-	
+
 	/**
 	 * 列示指定文档的所有附件信息ID列表
 	 * @param doucmentId 指定的文档ID
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	//@MethodDescribe("列示指定文档的所有附件信息ID列表")
-	public List<String> listAttachmentByDocument( String doucmentId ) throws Exception {		
+	public List<String> listAttachmentByDocument( String doucmentId ) throws Exception {
 		if( StringUtils.isEmpty(doucmentId) ){
 			throw new Exception("内容管理listByDocument方法不接受document为空的查询操作！");
-		}		
+		}
 		EntityManager em = this.entityManagerContainer().get( FileInfo.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery( String.class );
-		Root<FileInfo> root = cq.from( FileInfo.class );		
+		Root<FileInfo> root = cq.from( FileInfo.class );
 		Predicate p = cb.equal(root.get( FileInfo_.documentId ), doucmentId);
 		p = cb.and( p, cb.equal(root.get( FileInfo_.fileType ), "ATTACHMENT") );
 		cq.select(root.get(FileInfo_.id));
 		return em.createQuery(cq.where(p)).getResultList();
 	}
-	
-	/**
-	 * 列示指定文档的所有附件信息ID列表
-	 * @param documentId 指定的文档ID
-	 * @return
-	 * @throws Exception 
-	 */
-	//@MethodDescribe("列示指定文档的所有附件信息ID列表")
-	public List<String> listPictureByDocument( String documentId ) throws Exception {		
-		if( StringUtils.isEmpty(documentId) ){
-			throw new Exception("内容管理listByDocument方法不接受document为空的查询操作！");
-		}		
-		EntityManager em = this.entityManagerContainer().get( FileInfo.class );
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery( String.class );
-		Root<FileInfo> root = cq.from( FileInfo.class );		
-		Predicate p = cb.equal(root.get( FileInfo_.documentId ), documentId);
-		p = cb.and( p, cb.equal(root.get( FileInfo_.fileExtType ), "PICTURE") );
-		cq.select(root.get(FileInfo_.id));
-		return em.createQuery(cq.where(p)).getResultList();
-	}
+
 	/**
 	 * 列示指定文档的所有云文件图片信息ID列表
 	 * @param documentId 指定的文档ID
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	//@MethodDescribe("列示指定文档的所有云文件图片信息ID列表")
 	public List<String> listCloudPictureByDocument(String documentId) throws Exception {
 		if( StringUtils.isEmpty(documentId) ){
 			throw new Exception("内容管理listByDocument方法不接受document为空的查询操作！");
-		}		
+		}
 		EntityManager em = this.entityManagerContainer().get( FileInfo.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery( String.class );
-		Root<FileInfo> root = cq.from( FileInfo.class );		
+		Root<FileInfo> root = cq.from( FileInfo.class );
 		Predicate p = cb.equal(root.get( FileInfo_.documentId ), documentId);
 		p = cb.and( p, cb.equal(root.get( FileInfo_.fileExtType ), "PICTURE") );
 		p = cb.and( p, cb.equal(root.get( FileInfo_.fileType ), "CLOUD") );

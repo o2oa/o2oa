@@ -41,7 +41,7 @@
                     var r = protocol + "//" + location.host + location.pathname;
                     r = r + "?oauth=" + oauth;
                     if (redirect) r = r + "&redirect=" + redirect;
-
+                    r = o2.filterUrl(r);
                     var action = MWF.Actions.get("x_organization_assemble_authentication");
                     //企业微信单点登录
                     if (layout.isQywx()) {
@@ -49,7 +49,7 @@
                             if (redirect) {
                                 window.location = redirect;
                             } else {
-                                window.location = "/";
+                                window.location = "../";
                             }
                         }.bind(this));
                     } else if (layout.isDingding()) {
@@ -57,7 +57,7 @@
                             if (redirect) {
                                 window.location = redirect;
                             } else {
-                                window.location = "/";
+                                window.location = "../";
                             }
                         }.bind(this));
                     } else {
@@ -71,13 +71,13 @@
                                 if (redirect) {
                                     window.location = redirect;
                                 } else {
-                                    window.location = "/";
+                                    window.location = "../";
                                 }
                             }
 
                         }.bind(this), function(){
                             document.write("<div style='text-align: center; font-size: 24px; margin: 40px auto;'>无法获取用户凭证, 您可能未绑定“"+oauth+"”账号。</div>");
-                            document.write("<div style='text-align: center; font-size: 18px; margin: 40px auto;'>请<a href='/x_desktop/redirect.html?url="+encodeURIComponent("../x_desktop/oauth.html?oauth="+oauth+"&redirect=/&method=oauthBind")+"'>点击此处登陆</a>后，重新扫码绑定账号。</div>")
+                            document.write("<div style='text-align: center; font-size: 18px; margin: 40px auto;'>请<a href='../x_desktop/redirect.html?url="+encodeURIComponent("../x_desktop/oauth.html?oauth="+oauth+"&redirect=/&method=oauthBind")+"'>点击此处登陆</a>后，重新扫码绑定账号。</div>")
                         });
                     }
 
@@ -113,6 +113,7 @@
                             }
                             var r = protocol + "//" + location.host + location.pathname;
                             r = r + "?oauth=" + oauth + "&dingding=true";
+                            r = o2.filterUrl(r);
                             url += "&redirect_uri=" + encodeURIComponent(r);
                             window.location = url;
                         }.bind(this));
@@ -124,6 +125,7 @@
                             r = r + "?oauth=" + oauth;
                             if (method) r = r + "&method=" + method;
                             if (redirect) r = r + "&redirect=" + redirect;
+                            r = o2.filterUrl(r);
                             if (p.indexOf("{$redirect_uri}")!==-1){
                                 p = p.replace("{$redirect_uri}", encodeURIComponent(r));
                             }else{

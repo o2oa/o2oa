@@ -14,22 +14,8 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.processplatform.assemble.designer.Business;
 import com.x.processplatform.assemble.designer.MessageFactory;
-import com.x.processplatform.core.entity.element.Agent;
-import com.x.processplatform.core.entity.element.Application;
-import com.x.processplatform.core.entity.element.Begin;
-import com.x.processplatform.core.entity.element.Cancel;
-import com.x.processplatform.core.entity.element.Choice;
-import com.x.processplatform.core.entity.element.Delay;
-import com.x.processplatform.core.entity.element.Embed;
-import com.x.processplatform.core.entity.element.End;
-import com.x.processplatform.core.entity.element.Invoke;
-import com.x.processplatform.core.entity.element.Manual;
-import com.x.processplatform.core.entity.element.Merge;
-import com.x.processplatform.core.entity.element.Parallel;
+import com.x.processplatform.core.entity.element.*;
 import com.x.processplatform.core.entity.element.Process;
-import com.x.processplatform.core.entity.element.Route;
-import com.x.processplatform.core.entity.element.Service;
-import com.x.processplatform.core.entity.element.Split;
 import com.x.processplatform.core.entity.element.wrap.WrapProcess;
 
 class ActionCreate extends BaseAction {
@@ -66,6 +52,7 @@ class ActionCreate extends BaseAction {
 			jpaObjects.addAll(createManual(wrapIn.getManualList(), process));
 			jpaObjects.addAll(createMerge(wrapIn.getMergeList(), process));
 			jpaObjects.addAll(createParallel(wrapIn.getParallelList(), process));
+			jpaObjects.addAll(createPublish(wrapIn.getPublishList(), process));
 			jpaObjects.addAll(createService(wrapIn.getServiceList(), process));
 			jpaObjects.addAll(createSplit(wrapIn.getSplitList(), process));
 			jpaObjects.addAll(createRoute(wrapIn.getRouteList(), process));
@@ -81,6 +68,7 @@ class ActionCreate extends BaseAction {
 			emc.beginTransaction(Manual.class);
 			emc.beginTransaction(Merge.class);
 			emc.beginTransaction(Parallel.class);
+			emc.beginTransaction(Publish.class);
 			emc.beginTransaction(Service.class);
 			emc.beginTransaction(Split.class);
 			emc.beginTransaction(Route.class);

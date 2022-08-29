@@ -10,5 +10,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Inherited
 public @interface JaxrsDescribe {
+
 	String value();
+
+	DescribeScope scope() default DescribeScope.commonly;
 }

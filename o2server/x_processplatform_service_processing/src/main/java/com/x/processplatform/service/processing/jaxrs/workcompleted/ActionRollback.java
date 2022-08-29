@@ -39,6 +39,7 @@ import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Nodes;
 import com.x.processplatform.core.express.ProcessingAttributes;
 import com.x.processplatform.service.processing.Business;
+import com.x.processplatform.service.processing.MessageFactory;
 import com.x.processplatform.service.processing.ThisApplication;
 
 class ActionRollback extends BaseAction {
@@ -65,6 +66,7 @@ class ActionRollback extends BaseAction {
 		}
 
 		Callable<String> callable = new Callable<String>() {
+			@Override
 			public String call() throws Exception {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 
@@ -98,7 +100,7 @@ class ActionRollback extends BaseAction {
 						throw new ExceptionSplittingNotRollback(workCompleted.getId(), workLog.getId());
 					}
 
-					List<WorkLog> workLogs = emc.listEqual(WorkLog.class, WorkLog.job_FIELDNAME, workLog.getJob());
+					List<WorkLog> workLogs = emc.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, workLog.getJob());
 
 					WorkLogTree workLogTree = new WorkLogTree(workLogs);
 
@@ -115,7 +117,7 @@ class ActionRollback extends BaseAction {
 					emc.beginTransaction(ReadCompleted.class);
 					emc.beginTransaction(Review.class);
 
-					Work work = createWork(workCompleted, workLog);
+					Work work = createWork(business, workCompleted, workLog);
 					emc.persist(work, CheckPersistType.all);
 
 					disconnectWorkLog(work, workLog);
@@ -156,7 +158,7 @@ class ActionRollback extends BaseAction {
 		return result;
 	}
 
-	private Work createWork(WorkCompleted workCompleted, WorkLog workLog) throws Exception {
+	private Work createWork(Business business, WorkCompleted workCompleted, WorkLog workLog) throws Exception {
 		Work work = new Work(workCompleted);
 		work.setSplitting(false);
 		work.setActivityName(workLog.getFromActivityName());
@@ -166,6 +168,7 @@ class ActionRollback extends BaseAction {
 		work.setActivityDescription("");
 		work.setActivityToken(workLog.getFromActivityToken());
 		work.setActivityType(workLog.getFromActivityType());
+		work.setForm(business.element().lookupSuitableForm(work.getProcess(), work.getActivity()));
 //		work.setErrorRetry(0);
 		work.setWorkStatus(WorkStatus.processing);
 		// 因为workCompleted没有workCreateType属性，回溯到任何环节都必须要有待办，默认置为assign
@@ -192,6 +195,7 @@ class ActionRollback extends BaseAction {
 			if (!nodes.containsWorkLogWithActivityToken(o.getActivityToken())
 					|| StringUtils.equals(o.getActivityToken(), workLog.getFromActivityToken())) {
 				business.entityManagerContainer().remove(o);
+				MessageFactory.taskCompleted_delete(o);
 			} else {
 				o.setCompleted(false);
 				o.setWorkCompleted("");
@@ -206,6 +210,7 @@ class ActionRollback extends BaseAction {
 			if (!nodes.containsWorkLogWithActivityToken(o.getActivityToken())
 					|| StringUtils.equals(o.getActivityToken(), workLog.getFromActivityToken())) {
 				business.entityManagerContainer().remove(o);
+				MessageFactory.read_delete(o);
 			} else {
 				o.setCompleted(false);
 				o.setWorkCompleted("");
@@ -220,6 +225,7 @@ class ActionRollback extends BaseAction {
 			if (!nodes.containsWorkLogWithActivityToken(o.getActivityToken())
 					|| StringUtils.equals(o.getActivityToken(), workLog.getFromActivityToken())) {
 				business.entityManagerContainer().remove(o);
+				MessageFactory.readCompleted_delete(o);
 			} else {
 				o.setCompleted(false);
 				o.setWorkCompleted("");
@@ -234,6 +240,7 @@ class ActionRollback extends BaseAction {
 			for (Review o : list) {
 				if (null != o.getStartTime() && o.getStartTime().after(date)) {
 					business.entityManagerContainer().remove(o);
+					MessageFactory.review_delete(o);
 				} else {
 					o.setCompleted(false);
 					o.setWorkCompleted("");

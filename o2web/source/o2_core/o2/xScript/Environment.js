@@ -4,6 +4,8 @@ MWF.xScript.Environment = function(ev){
     var _form = ev.form;
     var _forms = ev.forms;
 
+    this.appType = "process";
+
     this.library = COMMON;
     //this.library.version = "4.0";
 
@@ -48,7 +50,7 @@ MWF.xScript.Environment = function(ev){
          * data数据用于存储表单获取的数据，所有属性都是动态的，其格式和访问方式都和JSON类似。<br/>
          * 在表单脚本中使用data对象，实现了data和表单可编辑元素的双向绑定。<br/>
          * 改变data对象，会自动更新表单元素，修改表单可编辑元素，也会自动修改data对象。<br/>
-         * <b>修改数据(this.data.subject = '')仅适用于表单上有该字段组件；建议使用this.data.add("subject","",true)方法，适用所有情况。</b>
+         * <b>数据赋值(this.data.subject = '')仅适用于表单上有该字段组件；建议使用this.data.add("subject","",true)方法，适用所有情况。</b>
          * @member {String|Number} [[property]]
          * @memberOf module:data
          * @instance
@@ -209,19 +211,19 @@ MWF.xScript.Environment = function(ev){
      * var context = this.workContext;
      */
     this.workContext = {
-    //  * <div><br/>
-    //  * 下面的Work对象和WorkCompleted对象为后台返回的数据，在前端脚本中我们对这两个对象进行了修改和补充，如下：
-    // * </div>
-    // * <pre><code class='language-js'>{
-    //     *      "creatorPersonDn": "张三@zhangsan@P",		//创建人，可能为空，如果由系统创建.
-    //     *      "creatorPerson": "张三",  //创建人姓名
-    //     *      "creatorIdentityDn": "张三@481c9edc-5fb5-41f1-b5c2-6ea609082cdb@I",		//创建人Identity,可能为空,如果由系统创建.
-    //     *      "creatorIdentity": "张三" //创建人姓名
-    //     *      "creatorUnitDn": "开发部@c448d8bb-98b8-4305-9d3f-12537723cfcc@U", //创建人组织全称,如果由系统创建。
-    //     *      "creatorUnit": "开发部",  //创建人组织名称
-    //     *      "creatorDepartment": "开发部",  //创建人组织名称，同creatorUnit
-    //     *      "creatorCompany": "xx公司"  //创建人顶层组织名称，creatorUnitLevelName的第一段
-    //     * }</code></pre>
+        //  * <div><br/>
+        //  * 下面的Work对象和WorkCompleted对象为后台返回的数据，在前端脚本中我们对这两个对象进行了修改和补充，如下：
+        // * </div>
+        // * <pre><code class='language-js'>{
+        //     *      "creatorPersonDn": "张三@zhangsan@P",		//创建人，可能为空，如果由系统创建.
+        //     *      "creatorPerson": "张三",  //创建人姓名
+        //     *      "creatorIdentityDn": "张三@481c9edc-5fb5-41f1-b5c2-6ea609082cdb@I",		//创建人Identity,可能为空,如果由系统创建.
+        //     *      "creatorIdentity": "张三" //创建人姓名
+        //     *      "creatorUnitDn": "开发部@c448d8bb-98b8-4305-9d3f-12537723cfcc@U", //创建人组织全称,如果由系统创建。
+        //     *      "creatorUnit": "开发部",  //创建人组织名称
+        //     *      "creatorDepartment": "开发部",  //创建人组织名称，同creatorUnit
+        //     *      "creatorCompany": "xx公司"  //创建人顶层组织名称，creatorUnitLevelName的第一段
+        //     * }</code></pre>
 
         /**
          * 获取当前流程实例对象：work对象或workCompleted对象。
@@ -1923,9 +1925,19 @@ MWF.xScript.Environment = function(ev){
         },
         parseFilter : function( filter, parameter ){
             if( typeOf(filter) !== "array" )return [];
+            if( !parameter )parameter = {};
             var filterList = [];
             ( filter || [] ).each( function (d) {
-                var parameterName = d.path.replace(/\./g, "_");
+                //var parameterName = d.path.replace(/\./g, "_");
+                var pName = d.path.replace(/\./g, "_");
+
+                var parameterName = pName;
+                var suffix = 1;
+                while( parameter[parameterName] ){
+                    parameterName = pName + "_" + suffix;
+                    suffix++;
+                }
+
                 var value = d.value;
                 if( d.comparison === "like" || d.comparison === "notLike" ){
                     if( value.substr(0, 1) !== "%" )value = "%"+value;
@@ -1938,6 +1950,8 @@ MWF.xScript.Environment = function(ev){
                         value = "{d '"+value+"'}"
                     }else if( d.formatType === "timeValue" ){
                         value = "{t '"+value+"'}"
+                    } else if (d.formatType === "numberValue"){
+                        value = parseFloat(value);
                     }
                     parameter[ parameterName ] = value;
                 }
@@ -2937,7 +2951,7 @@ MWF.xScript.Environment = function(ev){
          * @method startIM
          * @static
          * @param {String} [jobId] - 当前工作的jobId<br/>
-         *  
+         *
          * @example
          //带参数，启动创建界面
          this.form.startIM("jobId");
@@ -2945,10 +2959,10 @@ MWF.xScript.Environment = function(ev){
         "startIM": function(jobId){
             _form.openIMChatStarter(jobId);
         },
-         /**分享当前工作到IM聊天会话中。<b>（仅流程表单中可用）</b><br/>
+        /**分享当前工作到IM聊天会话中。<b>（仅流程表单中可用）</b><br/>
          * @method shareToIMChat
          * @static
-         *  
+         *
          * @example
          //不带参数
          this.form.shareToIMChat();
@@ -3109,6 +3123,177 @@ MWF.xScript.Environment = function(ev){
          */
         "notice": function(content, type, target, where, offset, option){
             _form.notice(content, type, target, where, offset, option);
+        },
+
+        /**弹出一个对话框层。
+         * @method dialog
+         * @static
+         * @return {Object} 对话框对象。
+         * @param {(Object)} options
+         * 弹出框选项:<br/>
+         * 如果有buttonList参数，则ok，cancel参数无效。<br/>
+         * 对话框内容的优先级为moduleName、content、url、html、text，有前面的参数则后面的参数无效。<br/>
+         * 调用弹出框对象后各事件执行先后顺序 onQueryLoad-->onPostLoad-->onQueryShow-->onPostShow。<br/>
+         * 其他说明如下：
+         * <pre><code class="language-js">{
+         *   "style" : "default", //（string）可选，弹出框使用的样式，默认是user，系统内置一些样式，比如：user,blue_flat,o2,flat等，对应样式文件位置：webserver\o2_core\o2\widget\$Dialog，用户也可以自己增加自定义样式风格，对应文件及结构参考已有样式风格。
+         *   "title" : "", //（string）可选，弹出框头部标题，在isTitle参数为true时有效。
+         *   "width" : 300, //（number）可选，弹出框宽度。 默认值：300
+         *   "height" : 150, //（number）可选，弹出框高度。 默认值：150
+         *   "isTitle" : true, //（boolean）可选，弹出框是否有标题栏。默认值：true。
+         *   "isMax" : false, //（boolean）可选，标题栏是否有最大化按钮，相对应有还原按钮，默认值：false。
+         *   "isClose" : false, //（boolean）可选，标题栏是否有关闭按钮。默认值：false。
+         *   "isResize" : true, //（boolean）可选，弹出框大小是否可调整。默认值：true。
+         *   "isMove" : true, //（boolean）可选，弹出框是否可移动。默认值：true。
+         *   "offset" : {"x":-200, "y": -100}, //（object）可选，弹出框相对容器(container)的x轴y轴位置偏移量，空则居中。
+         *   "mask" : true, //（boolean）可选，是否需要遮罩层。默认值：true。
+         *   "duration" : true, //（number）可选，动画显示弹出框效果时间。默认值：200。
+         *   "zindex": 100, //（number）可选，弹出框的z轴优先级，默认为100（日期控件的zindex为300，选人控件为1000，最好不要高于300）。
+         *   "buttonList" : [
+         *       {
+         *           "type": "ok", //(string) 样式，彩色底的按钮
+         *           "text": "确定", //（string）text：按钮显示名称
+         *           "action": function(){ //(function) 按钮对应的点击事件
+         *               //do something，this指向本对话框对象
+         *               this.close();
+         *           }
+         *       },
+         *       {
+         *           "type": "cancel", //(string) 样式，灰色底的按钮
+         *           "text": "取消",
+         *           "action": function(){
+         *               //do something
+         *               this.close();
+         *           }
+         *       }
+         *   ], //（Array）可选，定义底部按钮，数组列表。无该参数则默认有确定和取消两个按钮，这个时候options可以传入ok或者cancel方法作为回调。如果传入空数组“[]”则底部无按钮。
+         *   "ok": function(){}, //(function) 可选，无options.buttonList参数的时候，该方法作为“确定”按钮的回调方法，返回true关闭对话框，options.buttonList不为空则忽略该方法。
+         *   "close": function(){}, //(function) 可选，无options.buttonList参数的时候，该方法作为“取消”按钮的回调方法，返回true关闭对话框，options.buttonList不为空则忽略该方法。
+         *   "container" : this.form.getApp().content, //（Element/Dom）可选，弹出框层dom对象的父dom,位置相对对象。移动端默认插入到body中，PC端默认插入到表单节点所在容器（this.form.getApp().content）。
+         *   "moduleName": "div_1", //内容参数，优先级为1，（String）可选，表示表单组件名称，系统会获取该组件的node节点作为对话框内容，关闭对话框节点会插回到原来的位置。
+         *   "content": this.form.get("div1").node, //内容参数，优先级为2，（Element/Dom）可选，对话框内容，如果节点在document中，关闭对话框节点会插回到原来的位置。
+         *   "url": "http://xxx/xxx.html", //内容参数，优先级为3，(String）可选，该参数所指向的内容作为对话框的内容。
+         *   "html": "<div>html内容</div>", //内容参数，优先级为4，(String）可选，对话框的html内容。
+         *   "text": "文本内容", //内容参数，优先级为5，(String）可选，对话框的文本内容。
+         *   "onQueryClose": function(){}, //(function) 可选，关闭弹出框前事件，this指向对话框对象。
+         *   "onPostClose": function(){}, //(function) 可选，关闭弹出框后事件，this指向对话框对象。
+         *   "onQueryLoad": function(){}, //(function) 可选，弹出框载入前事件，this指向对话框对象。
+         *   "onPostLoad": function(){}, //(function) 可选，弹出框载入后事件，this指向对话框对象。
+         *   "onQueryShow": function(){}, //(function) 可选，弹出框显示前事件，this指向对话框对象。
+         *   "onPostShow": function(){} //(function) 可选，弹出框显示后事件，this指向对话框对象。
+         * }</code></pre>
+         * @example
+         * //打开一个对话框，使用html作为内容
+         * var _self = this;
+         * var dlg = this.form.dialog({
+         *   "title": "填写内容",
+         *   "width": "500",
+         *   "height": "300",
+         *   "html": "<div>内容：</div><div><input type='text'></div>",
+         *   "ok": function(){
+         *       var value = this.node.getElement("input").value; //this指向对话框对象
+         *       if( !value ){
+         *           _self.form.notice("请填写内容", "info");
+         *           return false; //返回false不关闭对话框
+         *       }else{
+         *           return true; //返回true关闭对话框
+         *       }
+         *   }
+         *});
+         * @example
+         * //打开一个对话框，使用表单中的div_1组件作为内容
+         * var _self = this;
+         * this.form.dialog({
+         *      "title": "填写内容",
+         *     "width": "400",
+         *      "height": "200",
+         *      "moduleName": "div_1", //内容为表单上的组件，标识为div_1
+         *      "buttonList" : [
+         *          {
+         *              "type": "ok", //(string) 样式，彩色底的按钮
+         *              "text": "确定", //（string）text：按钮显示名称
+         *              "action": function(){ //(function) 按钮对应的点击事件
+         *                  //do something，this指向本对话框对象
+         *                  var value = _self.form.get("textfield").getData(); //获取div_1中的组件textfield的值
+         *                  if( !value ){
+         *                    _self.form.notice("请填写内容","info");
+         *                  }else{
+         *                    this.close();
+         *                  }
+         *              }
+         *          },
+         *          {
+         *              "type": "cancel", //(string) 样式，灰色底的按钮
+         *              "text": "取消",
+         *              "action": function(){
+         *                  //do something
+         *                  this.close();
+         *              }
+         *          }
+         *      ]
+         * });
+         * @example
+         * //打开一个对话框，创建Dom节点作为内容
+         * var _self = this;
+         * var content = new Element("div");
+         * new Element("label", {
+         *    text: "内容："
+         * }).inject(content);
+         *         new Element("input", {
+         *    type: "text"
+         * }).inject(content);
+
+         * this.form.dialog({
+         *     "title": "填写内容",
+         *     "width": "400",
+         *     "height": "200",
+         *     "zindex": 301, //z轴优先级为301
+         *     "content": content, //new Element创建的内容，也可以使用 this.form.get(xx).node 作为内容
+         *     "buttonList" : [
+         *         {
+         *             "type": "ok", //(string) 样式，彩色底的按钮
+         *             "text": "确定", //（string）text：按钮显示名称
+         *             "action": function(){ //(function) 按钮对应的点击事件
+         *                 //do something，this指向本对话框对象
+         *                 var value = this.node.getElement("input").get("value"); //获取对话框节点中的input的值
+         *                 if( !value ){
+         *                   _self.form.notice("请填写内容","info");
+         *                 }else{
+         *                   this.close();
+         *                 }
+         *             }
+         *         },
+         *         {
+         *             "type": "cancel", //(string) 样式，灰色底的按钮
+         *             "text": "取消",
+         *             "action": function(){
+         *                 //do something
+         *                 this.close();
+         *             }
+         *         }
+         *     ],
+         *     "onQueryClose": function(){
+         *           console.log("-onQueryClose-");
+         *     },
+         *     "onPostClose": function(){
+         *           console.log("-onPostClose-");
+         *     },
+         *     "onQueryLoad":function(){
+         *         console.log("-onQueryLoad-");
+         *     },
+         *     "onPostLoad": function(){
+         *        console.log("-onPostLoad-");
+         *     },
+         *     "onQueryShow": function(){
+         *          console.log("-onQueryshow-");
+         *     },
+         *     "onPostShow": function(){
+         *         console.log("-onPostShow-");
+         *     }.bind(this)
+         *   });
+         */
+        "dialog": function ( options ) {
+            return _form.dialog( options );
         },
 
         /**给表单添加事件。
@@ -3899,9 +4084,12 @@ MWF.xScript.JSONData = function(data, callback, key, parent, _form){
                         return d;
                     }
                 }},
-            "check": {"value": function(kk, v){
-                    this.add(kk, v||"", false, true);
-                }},
+            "check": {
+                "value": function(kk, v){
+                    var value = typeOf( v ) === "null" ? "" : v;
+                    this.add(kk, value, false, true);
+                }
+            },
             "del": {"value": function(delKey){
                     if (!this.hasOwnProperty(delKey)) return null;
                     // delete data[delKey];

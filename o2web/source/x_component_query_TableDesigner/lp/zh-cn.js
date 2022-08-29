@@ -41,7 +41,7 @@ MWF.xApplication.query.TableDesigner.LP = {
         "delete": "删除",
         "add": "添加"
     },
-    "errorName": "列名只允许使用字母数字和下划线组合，并且不能以数字开头。",
+    "errorName": "列名只允许使用字母数字和下划线组合，并且不能以数字和大写字母开头。",
     "nameUseKeywork": "列名不允许使用{key}",
     "errorFieldList": "请先创建数据列。",
     "duplicateName": "同名的列已存在",

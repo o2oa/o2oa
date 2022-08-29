@@ -147,6 +147,8 @@ public abstract class Activity extends SliceJpaObject {
 			return ActivityType.merge;
 		} else if (this instanceof Parallel) {
 			return ActivityType.parallel;
+		} else if (this instanceof Publish) {
+			return ActivityType.publish;
 		} else if (this instanceof Service) {
 			return ActivityType.service;
 		} else if (this instanceof Split) {

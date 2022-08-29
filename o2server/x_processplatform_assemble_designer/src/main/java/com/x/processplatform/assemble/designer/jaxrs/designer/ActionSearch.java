@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
+import com.x.processplatform.core.entity.element.*;
+import com.x.processplatform.core.entity.element.Process;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -29,25 +31,6 @@ import com.x.base.core.project.tools.PropertyTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.designer.Business;
 import com.x.processplatform.assemble.designer.ThisApplication;
-import com.x.processplatform.core.entity.element.ActivityType;
-import com.x.processplatform.core.entity.element.Agent;
-import com.x.processplatform.core.entity.element.Application;
-import com.x.processplatform.core.entity.element.Begin;
-import com.x.processplatform.core.entity.element.Cancel;
-import com.x.processplatform.core.entity.element.Choice;
-import com.x.processplatform.core.entity.element.Delay;
-import com.x.processplatform.core.entity.element.Embed;
-import com.x.processplatform.core.entity.element.End;
-import com.x.processplatform.core.entity.element.Form;
-import com.x.processplatform.core.entity.element.Invoke;
-import com.x.processplatform.core.entity.element.Manual;
-import com.x.processplatform.core.entity.element.Merge;
-import com.x.processplatform.core.entity.element.Parallel;
-import com.x.processplatform.core.entity.element.Process;
-import com.x.processplatform.core.entity.element.Route;
-import com.x.processplatform.core.entity.element.Script;
-import com.x.processplatform.core.entity.element.Service;
-import com.x.processplatform.core.entity.element.Split;
 import com.x.processplatform.core.entity.element.wrap.WrapProcess;
 
 class ActionSearch extends BaseAction {
@@ -365,6 +348,19 @@ class ActionSearch extends BaseAction {
 			}
 		}
 		parallelList.clear();
+
+		List<Publish> publishList = business.entityManagerContainer().list(Publish.class,
+				business.publish().listWithProcess(process.getId()));
+		for (Publish active : publishList) {
+			if (StringTools.matchKeyword(wi.getKeyword(), XGsonBuilder.toJson(active), wi.getCaseSensitive(),
+					wi.getMatchWholeWord(), wi.getMatchRegExp())) {
+				if (wo == null) {
+					wo = this.getProcessWo(business, process);
+				}
+				wo.addPatternList(ActivityType.publish.toString(), active.getId(), active.getName(), null);
+			}
+		}
+		publishList.clear();
 
 		List<Service> serviceList = business.entityManagerContainer().list(Service.class,
 				business.service().listWithProcess(process.getId()));

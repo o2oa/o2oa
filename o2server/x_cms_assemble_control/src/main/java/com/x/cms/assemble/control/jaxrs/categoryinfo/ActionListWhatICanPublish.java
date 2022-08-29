@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.cms.assemble.control.Business;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.entity.JpaObject;
@@ -38,53 +39,16 @@ public class ActionListWhatICanPublish extends BaseAction {
 		Boolean appPublisher = false;
 		Boolean isAnonymous = effectivePerson.isAnonymous();
 		String personName = effectivePerson.getDistinguishedName();
-		
-		
+
+
 		List<String> unitNames = null;
 		List<String> groupNames = null;
-		
-		if ( StringUtils.isEmpty(appId)) {
-			check = false;
-			Exception exception = new ExceptionAppIdEmpty();
-			result.error(exception);
-		}
 
 		if( !isAnonymous  ) {
-			unitNames = userManagerService.listUnitNamesWithPerson( personName );
-			groupNames = userManagerService.listGroupNamesByPerson( personName );
-			
-			try {
-				manager = userManagerService.isManager( effectivePerson );
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new ExceptionCategoryInfoProcess(e, "系统在检查用户是否是平台管理员时发生异常。Name:" + personName);
-				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
-			}
-			
-			if (check) {// 判断用户是否该栏目的管理者
-				try {
-					appManager = appInfoServiceAdv.isAppInfoManager( appId, personName, unitNames, groupNames );
-				} catch (Exception e) {
-					check = false;
-					Exception exception = new ExceptionCategoryInfoProcess(e,
-							"系统在检查用户是否是平台管理员时发生异常。Name:" + personName );
-					result.error(exception);
-					logger.error(e, effectivePerson, request, null);
-				}
-			}
-
-			if (check) {// 判断用户是否该栏目的发布者
-				try {
-					appPublisher = appInfoServiceAdv.isAppInfoPublisher( appId, personName, unitNames, groupNames );
-				} catch (Exception e) {
-					check = false;
-					Exception exception = new ExceptionCategoryInfoProcess(e,
-							"系统在检查用户是否是平台发布者时发生异常。Name:" + personName );
-					result.error(exception);
-					logger.error(e, effectivePerson, request, null);
-				}
-			}
+			Business business = new Business(null);
+			manager = business.isManager( effectivePerson );
+			appManager = appInfoServiceAdv.isAppInfoManager( appId, personName, unitNames, groupNames );
+			appPublisher = appInfoServiceAdv.isAppInfoPublisher( appId, personName, unitNames, groupNames );
 		}
 
 		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), personName, appId, isAnonymous, manager, appManager, appPublisher );
@@ -106,7 +70,11 @@ public class ActionListWhatICanPublish extends BaseAction {
 				} else {
 					if (check) {
 						List<String> inAppInfoIds = new ArrayList<>();
-						inAppInfoIds.add( appId );						
+						inAppInfoIds.add( appId );
+						if(!isAnonymous){
+							unitNames = userManagerService.listUnitNamesWithPerson( personName );
+							groupNames = userManagerService.listGroupNamesByPerson( personName );
+						}
 						try {
 							ids = permissionQueryService.listPublishableCategoryIdByPerson(
 									personName, isAnonymous, unitNames, groupNames, inAppInfoIds, null,
@@ -156,15 +124,15 @@ public class ActionListWhatICanPublish extends BaseAction {
 
 		return result;
 	}
-	
+
 	public static class Wo extends CategoryInfo {
-		
+
 		private static final long serialVersionUID = -5076990764713538973L;
-		
+
 		public static List<String> Excludes = new ArrayList<String>();
 
 		static WrapCopier<CategoryInfo, Wo> copier = WrapCopierFactory.wo( CategoryInfo.class, Wo.class, null, ListTools.toList(JpaObject.FieldsInvisible));
-		
+
 		@FieldDescribe("扩展信息JSON内容")
 		private String extContent = null;
 

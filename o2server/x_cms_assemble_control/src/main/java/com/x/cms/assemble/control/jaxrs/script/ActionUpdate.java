@@ -1,21 +1,25 @@
 package com.x.cms.assemble.control.jaxrs.script;
 
-import java.util.Date;
-import java.util.List;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.cms.assemble.control.Business;
 import com.x.cms.assemble.control.ExceptionWrapInConvert;
+import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.Log;
 import com.x.cms.core.entity.element.Script;
+
+import java.util.Date;
+import java.util.List;
 
 class ActionUpdate extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
@@ -35,7 +39,15 @@ class ActionUpdate extends BaseAction {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Script script = emc.find(id, Script.class);
 				if (null == script) {
-					throw new Exception("script{id:" + id + "} not existed.");
+					throw new ExceptionEntityNotExist(id);
+				}
+				AppInfo appInfo = emc.find(script.getAppId(), AppInfo.class);
+				if (null == appInfo) {
+					throw new ExceptionAppInfoNotExists(script.getAppId());
+				}
+				Business business = new Business(emc);
+				if (!business.isAppInfoManager(effectivePerson, appInfo)) {
+					throw new ExceptionAccessDenied(effectivePerson);
 				}
 				emc.beginTransaction(Script.class);
 				wrapIn.copyTo(script, JpaObject.ID_DISTRIBUTEFACTOR);

@@ -74,7 +74,7 @@ public class ActionSendMessageTest extends StandardJaxrsAction {
                             .setAudience(Audience.registrationId(jiguangDeviceList))
                             .setNotification(Notification.alert(wi.getMessage()))
                             .setOptions(Options.newBuilder().setApnsProduction(true).build()).build();
-                    PushResult pushResult = business.sampleEntityClassNameFactory().jpushClient().sendPush(pushPayload);
+                    PushResult pushResult = business.pushDeviceFactory().jpushClient().sendPush(pushPayload);
                     logger.info("发送结果:{}.", pushResult);
                     wraps.setValue(true);
                     result.setData(wraps);

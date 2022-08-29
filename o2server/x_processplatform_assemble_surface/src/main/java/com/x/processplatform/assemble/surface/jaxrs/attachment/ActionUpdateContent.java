@@ -6,7 +6,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
@@ -18,20 +17,24 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.express.assemble.surface.jaxrs.attachment.ActionUpdateContentWi;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionUpdateContent extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionUpdateContent.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionUpdateContent.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String workId, JsonElement jsonElement) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String workId, JsonElement jsonElement)
+			throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			logger.debug("receive id:{}, workId:{}, fileName:{}, extraParam:{}.", id, workId, jsonElement.toString());
+			LOGGER.debug("receive id:{}, workId:{}, fileName:{}, extraParam:{}.", id, workId, jsonElement.toString());
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-			/* 后面要重新保存 */
+			// 后面要重新保存
 			Work work = emc.find(workId, Work.class);
-			/** 判断work是否存在 */
+			// 判断work是否存在
 			if (null == work) {
 				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
@@ -41,14 +44,14 @@ class ActionUpdateContent extends BaseAction {
 			}
 			String fileName = wi.getFileName();
 			if (StringUtils.isEmpty(fileName)) {
-				throw new Exception("fileName can not empty!");
+				throw new IllegalStateException("fileName can not empty!");
 			}
 			fileName = fileName + "." + attachment.getExtension();
-			if(!fileName.equalsIgnoreCase(attachment.getName())){
+			if (!fileName.equalsIgnoreCase(attachment.getName())) {
 				fileName = this.adjustFileName(business, work.getJob(), fileName);
 			}
-			/* 统计待办数量判断用户是否可以上传附件 */
-			WoControl control = business.getControl(effectivePerson, work, WoControl.class);
+			// 统计待办数量判断用户是否可以上传附件
+			Control control = business.getControl(effectivePerson, work, Control.class);
 			if (BooleanUtils.isNotTrue(control.getAllowSave())) {
 				throw new ExceptionAccessDenied(effectivePerson, work);
 			}
@@ -62,25 +65,22 @@ class ActionUpdateContent extends BaseAction {
 		}
 	}
 
-	public static class Wi {
-		@FieldDescribe("文件名称,不带扩展名的文件名.")
-		private String fileName;
+	public static class Control extends WorkControl {
 
+		private static final long serialVersionUID = 8378473605791533635L;
+	}
 
-		public String getFileName() {
-			return fileName;
-		}
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionUpdateContent$Wi")
+	public static class Wi extends ActionUpdateContentWi {
 
-		public void setFileName(String fileName) {
-			this.fileName = fileName;
-		}
+		private static final long serialVersionUID = 5219291599575309241L;
+
 	}
 
 	public static class Wo extends WoId {
 
-	}
+		private static final long serialVersionUID = 370663344764335319L;
 
-	public static class WoControl extends WorkControl {
 	}
 
 }

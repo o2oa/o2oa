@@ -10,6 +10,8 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.organization.assemble.personal.ThisApplication;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * 
  * @author ray
@@ -17,7 +19,7 @@ import com.x.organization.assemble.personal.ThisApplication;
  */
 class ActionCallback extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionCallback.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCallback.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String msgSignature, String timestamp, String nonce,
 			String body) throws Exception {
@@ -26,6 +28,7 @@ class ActionCallback extends BaseAction {
 		if (BooleanUtils.isTrue(Config.exmail().getEnable())) {
 			String msg = decrypt(msgSignature, timestamp, nonce, body);
 			ThisApplication.queueUpdateExmail.send(msg);
+			LOGGER.debug("msg:{}.", () -> msg);
 		}
 
 		Wo wo = new Wo();
@@ -38,11 +41,12 @@ class ActionCallback extends BaseAction {
 		WXBizMsgCrypt crypt = new WXBizMsgCrypt(Config.exmail().getToken(), Config.exmail().getEncodingAesKey(),
 				Config.exmail().getCorpId());
 		String msg = crypt.DecryptMsg(msgSignature, timestamp, nonce, body);
-		logger.debug("腾讯企业邮收到,msg_signature:{}, timestamp:{}, nonce:{}, body:{}, msg:{}.", msgSignature, timestamp,
+		LOGGER.debug("腾讯企业邮收到,msg_signature:{}, timestamp:{}, nonce:{}, body:{}, msg:{}.", msgSignature, timestamp,
 				nonce, body, msg);
 		return msg;
 	}
 
+	@Schema(name = "com.x.organization.assemble.personal.jaxrs.exmail.ActionCallback$Wo")
 	public static class Wo extends WrapBoolean {
 
 		private static final long serialVersionUID = 7769885660412690442L;

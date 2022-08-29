@@ -23,7 +23,7 @@ import com.x.processplatform.service.processing.Business;
  */
 class ActionDelete extends BaseAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCreateSerial.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDelete.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
 

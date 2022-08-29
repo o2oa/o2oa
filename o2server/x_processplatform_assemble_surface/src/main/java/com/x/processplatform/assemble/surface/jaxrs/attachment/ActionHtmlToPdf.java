@@ -14,10 +14,8 @@ import com.itextpdf.kernel.pdf.PdfWriter;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -27,10 +25,13 @@ import com.x.base.core.project.tools.DateTools;
 import com.x.general.core.entity.GeneralFile;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
+import com.x.processplatform.core.express.assemble.surface.jaxrs.attachment.ActionHtmlToPdfWi;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionHtmlToPdf extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionEdit.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionHtmlToPdf.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -43,10 +44,6 @@ class ActionHtmlToPdf extends BaseAction {
 			result.setData(wo);
 			return result;
 		}
-	}
-
-	public static class Wo extends WoId {
-
 	}
 
 	private String savePdf(Wi wi, String person, Business business) {
@@ -66,7 +63,6 @@ class ActionHtmlToPdf extends BaseAction {
 			try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
 				ConverterProperties props = new ConverterProperties();
 				DefaultFontProvider dfp = new DefaultFontProvider(false, false, false);
-				// dfp.addFont(Config.base()+"/commons/fonts/NotoSansCJKsc-Regular.otf");
 				dfp.addDirectory(Config.base() + "/commons/fonts");
 				props.setFontProvider(dfp);
 				PdfWriter writer = new PdfWriter(out);
@@ -87,47 +83,24 @@ class ActionHtmlToPdf extends BaseAction {
 			emc.persist(generalFile, CheckPersistType.all);
 			emc.commit();
 
-			String key = generalFile.getId();
-			return key;
+			return generalFile.getId();
 		} catch (Exception e) {
-			logger.warn("写work信息异常" + e.getMessage());
+			LOGGER.warn("写work信息异常:" + e.getMessage());
 		}
 		return "";
 	}
 
-	public static class Wi extends GsonPropertyObject {
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionHtmlToPdf$Wi")
+	public static class Wi extends ActionHtmlToPdfWi {
 
-		@FieldDescribe("待转换html.")
-		private String workHtml;
+		private static final long serialVersionUID = 339938457947418960L;
 
-		@FieldDescribe("转pdf页面宽度，默认A4.")
-		private Float pageWidth;
+	}
 
-		@FieldDescribe("pdf标题")
-		private String title;
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionHtmlToPdf$Wo")
+	public static class Wo extends WoId {
 
-		public String getWorkHtml() {
-			return workHtml;
-		}
+		private static final long serialVersionUID = -1487347751947636644L;
 
-		public void setWorkHtml(String workHtml) {
-			this.workHtml = workHtml;
-		}
-
-		public Float getPageWidth() {
-			return pageWidth;
-		}
-
-		public void setPageWidth(Float pageWidth) {
-			this.pageWidth = pageWidth;
-		}
-
-		public String getTitle() {
-			return title;
-		}
-
-		public void setTitle(String title) {
-			this.title = title;
-		}
 	}
 }

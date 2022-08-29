@@ -3,6 +3,7 @@ package com.x.base.core.project.tools;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -16,6 +17,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -31,8 +33,10 @@ import javax.script.SimpleScriptContext;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.commons.text.StringEscapeUtils;
 
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.scripting.JsonScriptingExecutor;
 import com.x.base.core.project.scripting.ScriptingFactory;
 
@@ -47,15 +51,34 @@ public class Crypto {
 
 	private static final String NEVERCHANGEKEY = "NEVERCHANGEKEY";
 
-	public static String encrypt(String data, String key)
+	private static Class<?> classSm4 = null;
+
+	private static final String TYPE_SM4 = "sm4";
+
+	private static final Pattern PLAINTEXT_TRANSFORM_REGEX = Pattern.compile("^\\((ENCRYPT:|SCRIPT:)(.+?)\\)$");
+
+	private static final String ENCRYPT_PREFIX = "ENCRYPT:";
+	private static final String SCRIPT_PREFIX = "SCRIPT:";
+
+	public static String encrypt(String data, String key) throws Exception {
+		return encrypt(data, key, Config.person().getEncryptType());
+	}
+
+	public static String encrypt(String data, String key, String type)
 			throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException,
-			IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
-		byte[] bt = encrypt(data.getBytes(), key.getBytes());
+			IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException, NoSuchMethodException,
+			IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+		byte[] bt = null;
+		if (StringUtils.equalsIgnoreCase(type, TYPE_SM4)) {
+			bt = encryptSm4(data.getBytes(StandardCharsets.UTF_8), key);
+		} else {
+			bt = encrypt(data.getBytes(), key.getBytes());
+		}
 		String str = Base64.encodeBase64URLSafeString(bt);
 		return URLEncoder.encode(str, StandardCharsets.UTF_8.name());
 	}
 
-	public static byte[] encrypt(byte[] data, byte[] key) throws InvalidKeyException, NoSuchAlgorithmException,
+	private static byte[] encrypt(byte[] data, byte[] key) throws InvalidKeyException, NoSuchAlgorithmException,
 			InvalidKeySpecException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
 		// 生成一个可信任的随机数源
 		SecureRandom sr = new SecureRandom();
@@ -71,19 +94,42 @@ public class Crypto {
 		return cipher.doFinal(data);
 	}
 
-	public static String decrypt(String data, String key)
+	private static byte[] encryptSm4(byte[] data, String password)
+			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+		return (byte[]) MethodUtils.invokeStaticMethod(getSm4Class(), "encryptMessageBySM4", data, password);
+	}
+
+	public static synchronized Class<?> getSm4Class() throws ClassNotFoundException {
+		if (null == classSm4) {
+			classSm4 = Class.forName("cfca.sadk.util.EncryptUtil");
+		}
+		return classSm4;
+	}
+
+	public static String decrypt(String data, String key) throws Exception {
+		return decrypt(data, key, Config.person().getEncryptType());
+	}
+
+	public static String decrypt(String data, String key, String type)
 			throws UnsupportedEncodingException, InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException,
-			NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
+			NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, NoSuchMethodException,
+			IllegalAccessException, InvocationTargetException, ClassNotFoundException {
 		if (StringUtils.isEmpty(data)) {
 			return null;
 		}
 		String str = URLDecoder.decode(data, StandardCharsets.UTF_8.name());
 		byte[] buf = Base64.decodeBase64(str);
-		byte[] bt = decrypt(buf, key.getBytes());
-		return new String(bt);
+		byte[] bt = null;
+		if (StringUtils.equalsIgnoreCase(type, TYPE_SM4)) {
+			bt = decryptSm4(buf, key);
+			return new String(bt, StandardCharsets.UTF_8);
+		} else {
+			bt = decrypt(buf, key.getBytes());
+			return new String(bt);
+		}
 	}
 
-	public static byte[] decrypt(byte[] data, byte[] key) throws InvalidKeyException, NoSuchAlgorithmException,
+	private static byte[] decrypt(byte[] data, byte[] key) throws InvalidKeyException, NoSuchAlgorithmException,
 			InvalidKeySpecException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
 		// 生成一个可信任的随机数源
 		SecureRandom sr = new SecureRandom();
@@ -97,6 +143,11 @@ public class Crypto {
 		// 用密钥初始化Cipher对象
 		cipher.init(Cipher.DECRYPT_MODE, securekey, sr);
 		return cipher.doFinal(data);
+	}
+
+	private static byte[] decryptSm4(byte[] data, String password)
+			throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, ClassNotFoundException {
+		return (byte[]) MethodUtils.invokeStaticMethod(getSm4Class(), "decryptMessageBySM4", data, password);
 	}
 
 	public static PublicKey rsaPublicKey(String publicKey) throws NoSuchAlgorithmException, InvalidKeySpecException {
@@ -148,24 +199,24 @@ public class Crypto {
 		if (StringUtils.isEmpty(text)) {
 			return text;
 		}
-		try {
-			Matcher matcher = StringTools.SCRIPTTEXT_REGEX.matcher(text);
-			if (matcher.matches()) {
-				String value = StringEscapeUtils.unescapeJson(matcher.group(1));
-				if (StringUtils.startsWithIgnoreCase(value, "ENCRYPT:")) {
-					String de = StringUtils.substringAfter(value, ":");
-					return decrypt(de, NEVERCHANGEKEY);
-				} else {
-					CompiledScript cs = ScriptingFactory.functionalizationCompile(text);
+		Matcher matcher = PLAINTEXT_TRANSFORM_REGEX.matcher(text);
+		if (matcher.matches()) {
+			try {
+				if (StringUtils.startsWithIgnoreCase(matcher.group(1), ENCRYPT_PREFIX)) {
+					return decrypt(matcher.group(2), NEVERCHANGEKEY, null);
+				} else if (StringUtils.startsWithIgnoreCase(matcher.group(1), SCRIPT_PREFIX)) {
+					CompiledScript cs = ScriptingFactory
+							.functionalizationCompile(StringEscapeUtils.unescapeJson(matcher.group(2)));
 					ScriptContext scriptContext = new SimpleScriptContext();
 					return JsonScriptingExecutor.evalString(cs, scriptContext);
 				}
-			} else {
-				return text;
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		} else {
+			return text;
 		}
+
 		return null;
 	}
 
@@ -175,5 +226,11 @@ public class Crypto {
 		byte[] bt = encrypt(data.getBytes(), NEVERCHANGEKEY.getBytes());
 		String str = Base64.encodeBase64URLSafeString(bt);
 		return URLEncoder.encode(str, StandardCharsets.UTF_8.name());
+	}
+
+	public static String formattedDefaultEncrypt(String data)
+			throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException,
+			IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
+		return "(" + ENCRYPT_PREFIX + defaultEncrypt(data) + ")";
 	}
 }

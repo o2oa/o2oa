@@ -77,23 +77,23 @@ public class ActionSaveImportView extends BaseAction {
 //			result.error( exception );
 //		}
 		
-		if( check ){
-			if( StringUtils.isNotEmpty( wi.getViewId() )) {
-				try {
-					view = queryViewService.getQueryView( wi.getViewId() );
-					if( view == null ){
-						check = false;
-						Exception exception = new ExceptionViewInfoNotExists( wi.getViewId() );
-						result.error( exception );
-					}
-				} catch (Exception e) {
-					check = false;
-					Exception exception = new ExceptionCategoryInfoProcess( e, "根据ID查询数据视图信息对象时发生异常。VIEWID:" + wi.getViewId() );
-					result.error( exception );
-					logger.error( e, effectivePerson, request, null);
-				}
-			}
-		}
+//		if( check ){
+//			if( StringUtils.isNotEmpty( wi.getViewId() )) {
+//				try {
+//					view = queryViewService.getQueryView( wi.getViewId() );
+//					if( view == null ){
+//						check = false;
+//						Exception exception = new ExceptionViewInfoNotExists( wi.getViewId() );
+//						result.error( exception );
+//					}
+//				} catch (Exception e) {
+//					check = false;
+//					Exception exception = new ExceptionCategoryInfoProcess( e, "根据ID查询数据视图信息对象时发生异常。VIEWID:" + wi.getViewId() );
+//					result.error( exception );
+//					logger.error( e, effectivePerson, request, null);
+//				}
+//			}
+//		}
 		
 		if( check ){
 			try {

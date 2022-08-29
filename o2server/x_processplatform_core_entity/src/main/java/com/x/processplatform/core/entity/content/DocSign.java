@@ -26,10 +26,14 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * 签批信息
  * @author sword
  */
+
+@Schema(name = "DocSign", description = "流程平台签名信息.")
 @Entity
 @ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Content.DocSign.table, uniqueConstraints = {
@@ -171,12 +175,11 @@ public class DocSign extends SliceJpaObject {
 
 	public static final String status_FIELDNAME = "status";
 	@FieldDescribe("状态：1(暂存)|2(签批正文不可以修改)|3(签批正文可以修改).")
-	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + status_FIELDNAME)
+	@Column(name = ColumnNamePrefix + status_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private Integer status;
 
 	public static final String commitTime_FIELDNAME = "commitTime";
-	@Temporal(TemporalType.TIME)
 	@FieldDescribe("提交时间.")
 	@Column(name = ColumnNamePrefix + commitTime_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + commitTime_FIELDNAME)

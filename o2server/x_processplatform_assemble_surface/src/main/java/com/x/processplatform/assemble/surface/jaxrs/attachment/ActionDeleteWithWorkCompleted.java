@@ -1,5 +1,7 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Applications;
@@ -17,11 +19,17 @@ import com.x.processplatform.assemble.surface.WorkCompletedControl;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionDeleteWithWorkCompleted extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionDeleteWithWorkCompleted.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDeleteWithWorkCompleted.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String workCompletedId) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}, workCompletedId:{}.", effectivePerson::getDistinguishedName, () -> id,
+				() -> workCompletedId);
+
 		ActionResult<Wo> result = new ActionResult<>();
 		Attachment attachment = null;
 		WorkCompleted workCompleted = null;
@@ -35,8 +43,8 @@ class ActionDeleteWithWorkCompleted extends BaseAction {
 			if (null == attachment) {
 				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
-			if (!business.canManageApplicationOrProcess(effectivePerson, attachment.getApplication(),
-					attachment.getProcess())) {
+			if (BooleanUtils.isFalse(business.canManageApplicationOrProcess(effectivePerson,
+					attachment.getApplication(), attachment.getProcess()))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 		}
@@ -51,11 +59,11 @@ class ActionDeleteWithWorkCompleted extends BaseAction {
 		return result;
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionDeleteWithWorkCompleted$Wo")
 	public static class Wo extends WoId {
 
-	}
+		private static final long serialVersionUID = 3526592093603200174L;
 
-	public static class WoControl extends WorkCompletedControl {
 	}
 
 }

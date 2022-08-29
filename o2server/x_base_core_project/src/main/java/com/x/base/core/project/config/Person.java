@@ -52,6 +52,8 @@ public class Person extends ConfigObject {
 
 	public static final Boolean DEFAULT_ENABLESAFELOGOUT = false;
 
+	public static final String DEFAULT_ENCRYPTTYPE = "";
+
 	public Person() {
 		this.captchaLogin = DEFAULT_CAPTCHALOGIN;
 		this.codeLogin = DEFAULT_CODELOGIN;
@@ -68,6 +70,7 @@ public class Person extends ConfigObject {
 		this.language = DEFAULT_LANGUAGE;
 		this.tokenName = DEFAULT_TOKENNAME;
 		this.enableSafeLogout = DEFAULT_ENABLESAFELOGOUT;
+		this.encryptType = DEFAULT_ENCRYPTTYPE;
 	}
 
 	public static Person defaultInstance() {
@@ -76,16 +79,16 @@ public class Person extends ConfigObject {
 
 	public static final Integer MAX_PASSWORDPERIOD = 365 * 10;
 
-	@FieldDescribe("是否启用验证码登录,默认值:false")
+	@FieldDescribe("是否启用图片验证码登录,默认值:false.")
 	private Boolean captchaLogin;
 
-	@FieldDescribe("是否启用验证码登录,默认值:true")
+	@FieldDescribe("是否启用短信验证码登录,默认值:true.")
 	private Boolean codeLogin;
 
-	@FieldDescribe("是否启用扫描二维码登录,默认值:false")
+	@FieldDescribe("是否启用扫描二维码登录,默认值:false.")
 	private Boolean bindLogin;
 
-	@FieldDescribe("是否启用刷脸登录,默认值:false")
+	@FieldDescribe("是否启用刷脸登录,默认值:false.")
 	private Boolean faceLogin;
 
 	@FieldDescribe("注册初始密码,使用()调用脚本生成初始密码,默认为:" + DEFAULT_PASSWORD)
@@ -133,6 +136,12 @@ public class Person extends ConfigObject {
 	@FieldDescribe("是否启用安全注销.")
 	private Boolean enableSafeLogout;
 
+	@FieldDescribe("加密方式,支持国密sm4")
+	private String encryptType;
+
+	public String getEncryptType() {
+		return StringUtils.isEmpty(this.encryptType) ? DEFAULT_ENCRYPTTYPE : this.encryptType;
+	}
 
 	public Boolean getEnableSafeLogout() {
 		return BooleanUtils.isTrue(this.enableSafeLogout);
@@ -379,50 +388,50 @@ public class Person extends ConfigObject {
 		this.enableSafeLogout = enableSafeLogout;
 	}
 
-	public static class Maintainer extends ConfigObject {
-
-		private static final long serialVersionUID = 9067834464099067485L;
-
-		public static final Boolean DEFAULT_ENABLE = false;
-		public static final String DEFAULT_NAME = "";
-		public static final String DEFAULT_UNIT = "";
-		public static final String DEFAULT_MOBILE = "";
-
-		public static Maintainer defaultInstance() {
-			return new Maintainer();
-		}
-
-		public Maintainer() {
-			this.enable = DEFAULT_ENABLE;
-			this.name = DEFAULT_NAME;
-			this.unit = DEFAULT_UNIT;
-			this.mobile = DEFAULT_MOBILE;
-		}
-
-		@FieldDescribe("是否启用")
-		private Boolean enable;
-		@FieldDescribe("维护者姓名")
-		private String name;
-		@FieldDescribe("组织")
-		private String unit;
-		@FieldDescribe("手机号")
-		private String mobile;
-
-		public Boolean getEnable() {
-			return BooleanUtils.isTrue(enable);
-		}
-
-		public String getName() {
-			return StringUtils.isEmpty(this.name) ? DEFAULT_NAME : this.name;
-		}
-
-		public String getUnit() {
-			return StringUtils.isEmpty(this.unit) ? DEFAULT_UNIT : this.unit;
-		}
-
-		public String getMobile() {
-			return StringUtils.isEmpty(this.mobile) ? DEFAULT_MOBILE : this.mobile;
-		}
-
-	}
+//	public static class Maintainer extends ConfigObject {
+//
+//		private static final long serialVersionUID = 9067834464099067485L;
+//
+//		public static final Boolean DEFAULT_ENABLE = false;
+//		public static final String DEFAULT_NAME = "";
+//		public static final String DEFAULT_UNIT = "";
+//		public static final String DEFAULT_MOBILE = "";
+//
+//		public static Maintainer defaultInstance() {
+//			return new Maintainer();
+//		}
+//
+//		public Maintainer() {
+//			this.enable = DEFAULT_ENABLE;
+//			this.name = DEFAULT_NAME;
+//			this.unit = DEFAULT_UNIT;
+//			this.mobile = DEFAULT_MOBILE;
+//		}
+//
+//		@FieldDescribe("是否启用")
+//		private Boolean enable;
+//		@FieldDescribe("维护者姓名")
+//		private String name;
+//		@FieldDescribe("组织")
+//		private String unit;
+//		@FieldDescribe("手机号")
+//		private String mobile;
+//
+//		public Boolean getEnable() {
+//			return BooleanUtils.isTrue(enable);
+//		}
+//
+//		public String getName() {
+//			return StringUtils.isEmpty(this.name) ? DEFAULT_NAME : this.name;
+//		}
+//
+//		public String getUnit() {
+//			return StringUtils.isEmpty(this.unit) ? DEFAULT_UNIT : this.unit;
+//		}
+//
+//		public String getMobile() {
+//			return StringUtils.isEmpty(this.mobile) ? DEFAULT_MOBILE : this.mobile;
+//		}
+//
+//	}
 }

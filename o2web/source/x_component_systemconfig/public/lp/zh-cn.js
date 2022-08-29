@@ -1444,6 +1444,5 @@ o2.xApplication.systemconfig.LP = {
 
         "deleteLoaderTitle": "删除加载器确认",
         "deleteLoaderInfo": "您确定要删除加载器“{name}”吗？"
-
     }
 }

@@ -50,6 +50,7 @@ public class CmsPlan extends Plan {
 
 	public WhereEntry where = new WhereEntry();
 
+	@Override
 	void adjust() throws Exception {
 		this.adjustRuntime();
 		this.adjustWhere();
@@ -84,6 +85,7 @@ public class CmsPlan extends Plan {
 		this.selectList = list;
 	}
 
+	@Override
 	List<String> listBundle() throws Exception {
 		// 根据where条件查询符合条件的所有文档ID列表
 		List<String> docIds = listBundleDocument();

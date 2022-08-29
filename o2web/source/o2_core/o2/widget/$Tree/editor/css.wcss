@@ -16,7 +16,8 @@
 	"treeItemNode":{
 		"height": "24px",
 		"border-bottom": "1px solid #DDD",
-		"background": "transparent"
+		"background": "transparent",
+		"position": "relative"
 	},
 	"treeChildrenNode": {
 	},
@@ -75,7 +76,7 @@
 		"font-family": "Verdana, Geneva, sans-serif"
 	},
 	"itemActionNode": {
-		"width": "70px",
+		"width": "86px",
 		"height": "22px",
 		"position": "absolute",
 		"z-index": 10000,
@@ -104,6 +105,38 @@
 		"height": "22px",
 		"float": "right",
 		"background": "url("+o2.session.path+"/widget/$Tree/editor/code.png) center center no-repeat"
+	},
+	"itemCheckActionNode": {
+		"padding-left": "3px",
+		"width": "19px",
+		"height": "22px",
+		"line-height": "20px",
+		"font-size": "8px",
+		"font-weight": "bold",
+		"float": "right",
+		"color": "#333"
+	},
+	"itemCheckedActionNode": {
+		"padding-left": "3px",
+		"width": "19px",
+		"height": "22px",
+		"line-height": "20px",
+		"float": "right",
+		"font-size": "8px",
+		"font-weight": "bold",
+		"color": "#4A90E2"
+	},
+	"itemCheckedNode": {
+		"position": "absolute",
+		"right": "0px",
+		"top": "1px",
+		"width": "19px",
+		"height": "22px",
+		"line-height": "20px",
+		"float": "right",
+		"font-size": "8px",
+		"font-weight": "bold",
+		"color": "#4A90E2"
 	},
 	"scriptNode":{
 		"width": "98%",

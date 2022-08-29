@@ -444,6 +444,9 @@ MWF.xApplication.Setting.Document.Image = new Class({
             case "setup_about_logo":
                 method = "imageSetupAboutLogo";
                 break;
+            case "application_top":
+                method = "imageApplicationTop";
+                break;
         }
 
         MWF.require("MWF.widget.Upload", function(){
@@ -499,6 +502,9 @@ MWF.xApplication.Setting.Document.Image = new Class({
                 break;
             case "setup_about_logo":
                 method = "imageSetupAboutLogoErase";
+                break;
+            case "application_top":
+                method = "imageApplicationTopErase";
                 break;
         }
         this.actions[method](function(){

@@ -15,6 +15,7 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.service.processing.Business;
 
 class ActionUpdateWithJobPath3 extends BaseAction {
@@ -27,16 +28,7 @@ class ActionUpdateWithJobPath3 extends BaseAction {
 				effectivePerson::getDistinguishedName, () -> job, () -> path0, () -> path1, () -> path2, () -> path3);
 		ActionResult<Wo> result = new ActionResult<>();
 
-		String executorSeed = null;
-
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			List<Work> works = emc.fetchEqual(Work.class, Arrays.asList(Work.job_FIELDNAME), Work.job_FIELDNAME, job);
-			if (!works.isEmpty()) {
-				executorSeed = job;
-			} else {
-				throw new ExceptionJobNotExist(job);
-			}
-		}
+		String executorSeed = job;
 
 		Callable<Wo> callable = callable(job, path0, path1, path2, path3, jsonElement);
 
@@ -55,6 +47,11 @@ class ActionUpdateWithJobPath3 extends BaseAction {
 				List<Work> works = emc.listEqual(Work.class, Work.job_FIELDNAME, job);
 				if (!works.isEmpty()) {
 					updateData(business, works.get(0), jsonElement, path0, path1, path2, path3);
+				}else{
+					List<WorkCompleted> workCompletedList = emc.listEqual(WorkCompleted.class, Work.job_FIELDNAME, job);
+					if(!workCompletedList.isEmpty()) {
+						updateData(business, workCompletedList.get(0), jsonElement, path0, path1, path2, path3);
+					}
 				}
 				wo.setId(job);
 			}

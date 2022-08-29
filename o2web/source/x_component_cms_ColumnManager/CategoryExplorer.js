@@ -2511,6 +2511,11 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
         var d = this.category.data;
         d.workflowAppId = appId;
         d.workflowAppName = appName;
+        if( !appId ){
+            d.workflowFlag = "";
+            d.workflowName = "";
+            d.workflowType = "";
+        }
         this.app.restActions.saveCategory(  d, function( json ){
             this.app.notice(this.lp.setProcessAppSucess);
         }.bind(this))
@@ -2536,6 +2541,12 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
         this.processAreaNode = new Element("div.processAreaNode" , {
             "styles": this.app.css.processAreaNode
         }).inject(this.processContentNode);
+
+        // this.processFormNoteNode = new Element("div.processAreaNode" , {
+        //     "style": 'color:#999;padding-left: 50px;font-size: 12px;display:none;',
+        //     "text": this.app.lp.category.useProcessFormNote
+        // }).inject(this.processContentNode);
+
         //this.processAreaNode.setStyle("display","none");
 
         //new Element("div.formTitleSepNode" , {
@@ -2552,6 +2563,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
         //}).inject(this.processAreaNode);
         this.createProcessAppSelect( this.category.data.workflowAppId || "" );
         this.createProcessSelect( this.category.data.workflowAppId || "", this.category.data.workflowFlag || "" );
+        // this.createProcessFormCheckbox( this.category.data.workflowAppId || "", this.category.data.workflowFlag || "", this.category.data.useWorkflowForm || "" )
     },
     createProcessAppSelect : function( appId ){
         this.processAppSelect = new Element("select", { styles : this.app.css.processSelect }).inject( this.processAreaNode );
@@ -2578,6 +2590,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
         this.processAppSelect.addEvent( "change" , function( ev ){
             var app = this.getSelectProcessApp();
             this.createProcessSelect( app.id );
+            // this.createProcessFormCheckbox( app.id );
             this.saveProcessApp( app.id, app.name );
         }.bind(this))
     },
@@ -2603,7 +2616,10 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
     },
 
     createProcessSelect : function( appId, processId ){
-        if( this.processSelect )this.processSelect.destroy();
+        if( this.processSelect ){
+            this.processSelect.destroy();
+            this.processSelect = null;
+        }
         if( !appId )return;
         this.processSelect = new Element("select", { styles : this.app.css.processSelect }).inject( this.processAreaNode );
         new Element( "option" ,　{
@@ -2625,6 +2641,7 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
         }.bind(this));
         this.processSelect.addEvent( "change" , function( ev ){
             var process = this.getSelectProcess();
+            // this.createProcessFormCheckbox( this.category.data.workflowAppId || "", process.id, this.category.data.useWorkflowForm || "" );
             this.saveProcess( process.id, process.name );
         }.bind(this))
     },
@@ -2652,6 +2669,48 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.CategoryProperty = new Class
             }.bind(this))
         }
     },
+
+    // createProcessFormCheckbox: function(appId, processId, useWorkflowForm){
+    //     if( this.useProcessForm ){
+    //         this.useProcessForm.destroy();
+    //         this.useProcessForm = null;
+    //     }
+    //     if( this.processFormNode ){
+    //         this.processFormNode.destroy();
+    //         this.processFormNode = null;
+    //     }
+    //     if( !appId || !processId){
+    //         this.processFormNoteNode.hide();
+    //         return;
+    //     }
+    //     this.processFormNoteNode.show();
+    //     var lp = this.app.lp.category;
+    //     this.processFormNode = new Element("div", {
+    //         styles : {
+    //             "display" : "inline-block",
+    //             "margin-left": "5px"
+    //         }
+    //     }).inject( this.processAreaNode );
+    //
+    //         this.useProcessForm = new MDomItem( this.processFormNode, {
+    //             type : "checkbox",
+    //             style: this.app.css.processSelect,
+    //             value : useWorkflowForm ? "true" : "",
+    //             selectValue : ["true"],
+    //             selectText: [lp.useProcessForm],
+    //             event : {
+    //                 change : function( item ){
+    //                     var d = this.category.data;
+    //                     d.useWorkflowForm = ( item.getValue() || [] ).length > 0;
+    //                     this.app.restActions.saveCategory(  d, function( json ){
+    //                         this.app.notice(lp.setSucess);
+    //                     }.bind(this))
+    //                 }.bind(this)
+    //             }
+    //         });
+    //         this.useProcessForm.load();
+    //
+    // },
 
     setContentHeight: function(){
         var size = this.node.getSize();
@@ -2809,11 +2868,11 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.ViewTooltip = new Class({
                "<tr><td style='"+titleStyle+";' width='70'>"+lp.type+":</td>" +
                "    <td style='"+valueStyle+";'>" + lp.list + "</td></tr>" +
                "<tr><td style='"+titleStyle+";' width='70'>"+lp.listName+":</td>" +
-               "    <td style='"+valueStyle+";'>" + data.name + "</td></tr>" +
+               "    <td style='"+valueStyle+";' item='name'></td></tr>" +
                "<tr><td style='"+titleStyle+"'>"+ lp.relativeForm +":</td>" +
-               "    <td style='"+valueStyle+"'>"+ (data.formName || "") +"</td></tr>" +
+               "    <td style='"+valueStyle+"' item='formName'></td></tr>" +
                "<tr><td style='"+titleStyle+"'>"+ lp.alias +":</td>" +
-               "    <td style='"+valueStyle+"'>"+(data.alias||"") +"</td></tr>" +
+               "    <td style='"+valueStyle+"' item='alias'></td></tr>" +
                "</table>";
        }else{
            var html =
@@ -2821,14 +2880,28 @@ MWF.xApplication.cms.ColumnManager.CategoryExplorer.ViewTooltip = new Class({
                "<tr><td style='"+titleStyle+";' width='70'>"+ lp.type +":</td>" +
                "    <td style='"+valueStyle+";'>" + lp.dataView + "</td></tr>" +
                "<tr><td style='"+titleStyle+";' width='70'>"+ lp.viewName +":</td>" +
-               "    <td style='"+valueStyle+";'>" + data.name + "</td></tr>" +
+               "    <td style='"+valueStyle+";' item='name'></td></tr>" +
                "<tr><td style='"+titleStyle+"'>"+ lp.column +":</td>" +
-               "    <td style='"+valueStyle+"'>"+ (data.appName || "") +"</td></tr>" +
+               "    <td style='"+valueStyle+"' item='appName'></td></tr>" +
                "<tr><td style='"+titleStyle+"'>"+ lp.alias +":</td>" +
-               "    <td style='"+valueStyle+"'>"+(data.alias||"")+"</td></tr>" +
+               "    <td style='"+valueStyle+"' item='alias'></td></tr>" +
                "</table>";
        }
         return html;
+    },
+    _customNode : function( node, contentNode ){
+        var data = this.data;
+        if( data.type == "list" ){
+            contentNode.getElement("[item='name']").set("text", data.name );
+            contentNode.getElement("[item='formName']").set("text", (data.formName || "") );
+            contentNode.getElement("[item='alias']").set("text", (data.alias||"") );
+        }else{
+            contentNode.getElement("[item='name']").set("text", data.name );
+            contentNode.getElement("[item='appName']").set("text", (data.appName || "") );
+            contentNode.getElement("[item='alias']").set("text", (data.alias||"") );
+        }
+
+        this.fireEvent("customContent", [contentNode, node])
     }
 });
 

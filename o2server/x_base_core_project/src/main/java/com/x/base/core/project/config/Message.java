@@ -2,9 +2,7 @@ package com.x.base.core.project.config;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
@@ -30,25 +28,14 @@ public class Message extends GsonPropertyObject {
 		Gson gson = XGsonBuilder.instance();
 		if (null != consumers) {
 			for (String arg : conusmers) {
-				// this.consumersV2.put(arg, "");
 				this.consumers.add(gson.toJsonTree(concreteConsumer(arg)));
 			}
 		}
 	}
 
-//	public Message(Map<String, String> map) {
-//		if (map != null) {
-//			this.consumersV2.putAll(map);
-//		}
-//	}
-
 	public static Message defaultInstance() {
 		return new Message();
 	}
-
-//	@FieldDescribe("早期配置,已经废弃")
-//	@Deprecated
-//	private Map<String, String> consumersV2 = new HashMap<>();
 
 	@FieldDescribe("消费通道配置")
 	private List<JsonElement> consumers = new ArrayList<>();
@@ -64,14 +51,6 @@ public class Message extends GsonPropertyObject {
 		return consumers;
 	}
 
-//	public Map<String, String> getConsumersV2() {
-//		return consumersV2;
-//	}
-//
-//	public void setConsumersV2(Map<String, String> consumersV2) {
-//		this.consumersV2 = consumersV2;
-//	}
-
 	public static class Consumer implements Serializable {
 
 		private static final long serialVersionUID = 392932139617988800L;
@@ -83,11 +62,14 @@ public class Message extends GsonPropertyObject {
 		private static final String DEFAULT_LOADER = "";
 		private static final String DEFAULT_FILTER = "";
 
+		private static final String DEFAULT_CONSUMER = "";
+
 		public Consumer() {
 			this.type = DEFAULT_TYPE;
 			this.enable = DEFAULT_ENABLE;
 			this.loader = DEFAULT_LOADER;
 			this.filter = DEFAULT_FILTER;
+			this.consumer = DEFAULT_CONSUMER;
 		}
 
 		public Consumer(String type, boolean enable) {
@@ -95,6 +77,7 @@ public class Message extends GsonPropertyObject {
 			this.enable = enable;
 			this.loader = DEFAULT_LOADER;
 			this.filter = DEFAULT_FILTER;
+			this.consumer = DEFAULT_CONSUMER;
 		}
 
 		public Consumer(String type) {
@@ -111,6 +94,8 @@ public class Message extends GsonPropertyObject {
 		private String loader;
 		@FieldDescribe("过滤脚本")
 		private String filter;
+		@FieldDescribe("配置项")
+		protected String consumer;
 
 		public Boolean getEnable() {
 			return (null == this.enable) ? DEFAULT_ENABLE : this.enable;
@@ -126,6 +111,10 @@ public class Message extends GsonPropertyObject {
 
 		public String getLoader() {
 			return StringUtils.isBlank(this.loader) ? DEFAULT_LOADER : this.loader;
+		}
+
+		public String getConsumer() {
+			return StringUtils.isBlank(this.consumer) ? DEFAULT_CONSUMER : this.consumer;
 		}
 
 	}
@@ -253,11 +242,17 @@ public class Message extends GsonPropertyObject {
 
 		private static final long serialVersionUID = -4452633351300698272L;
 
+		public static ApiConsumer defaultInstance() {
+			ApiConsumer o = new ApiConsumer();
+			o.application = DEFAULT_APPLICATION;
+			o.path = DEFAULT_PATH;
+			o.method = DEFAULT_METHOD;
+			o.consumer = null;
+			return o;
+		}
+
 		public ApiConsumer() {
 			super(MessageConnector.CONSUME_API, false);
-			this.application = DEFAULT_APPLICATION;
-			this.path = DEFAULT_PATH;
-			this.method = DEFAULT_METHOD;
 		}
 
 		private static final String DEFAULT_APPLICATION = "";
@@ -289,14 +284,21 @@ public class Message extends GsonPropertyObject {
 
 		private static final long serialVersionUID = -8411174187306234827L;
 
+		public static MailConsumer defaultInstance() {
+			MailConsumer o = new MailConsumer();
+			o.host = DEFAULT_HOST;
+			o.port = DEFAULT_PORT;
+			o.sslEnable = DEFAULT_SSLENABLE;
+			o.auth = DEFAULT_AUTH;
+			o.from = DEFAULT_FROM;
+			o.password = DEFAULT_PASSWORD;
+			o.consumer = null;
+			return o;
+		}
+
 		public MailConsumer() {
 			super(MessageConnector.CONSUME_MAIL, false);
-			this.host = DEFAULT_HOST;
-			this.port = DEFAULT_PORT;
-			this.sslEnable = DEFAULT_SSLENABLE;
-			this.auth = DEFAULT_AUTH;
-			this.from = DEFAULT_FROM;
-			this.password = DEFAULT_PASSWORD;
+
 		}
 
 		private static final String DEFAULT_HOST = "";
@@ -354,15 +356,21 @@ public class Message extends GsonPropertyObject {
 
 		private static final long serialVersionUID = 3234273317758806957L;
 
+		public static JdbcConsumer defaultInstance() {
+			JdbcConsumer o = new JdbcConsumer();
+			o.driverClass = DEFAULT_DRIVERCLASS;
+			o.url = DEFAULT_URL;
+			o.username = DEFAULT_USERNAME;
+			o.password = DEFAULT_PASSWORD;
+			o.catalog = DEFAULT_CATALOG;
+			o.schema = DEFAULT_SCHEMA;
+			o.table = DEFAULT_TABLE;
+			o.consumer = null;
+			return o;
+		}
+
 		public JdbcConsumer() {
 			super(MessageConnector.CONSUME_JDBC, false);
-			this.driverClass = DEFAULT_DRIVERCLASS;
-			this.url = DEFAULT_URL;
-			this.username = DEFAULT_USERNAME;
-			this.password = DEFAULT_PASSWORD;
-			this.catalog = DEFAULT_CATALOG;
-			this.schema = DEFAULT_SCHEMA;
-			this.table = DEFAULT_TABLE;
 		}
 
 		private static final String DEFAULT_DRIVERCLASS = "com.mysql.cj.jdbc.Driver";
@@ -428,9 +436,16 @@ public class Message extends GsonPropertyObject {
 
 		private static final long serialVersionUID = 1791986872720051543L;
 
+		public static TableConsumer defaultInstance() {
+			TableConsumer o = new TableConsumer();
+			o.table = DEFAULT_TABLE;
+			o.consumer = null;
+			return o;
+		}
+
 		public TableConsumer() {
 			super(MessageConnector.CONSUME_TABLE, false);
-			this.table = DEFAULT_TABLE;
+
 		}
 
 		private static final String DEFAULT_TABLE = "";
@@ -449,11 +464,20 @@ public class Message extends GsonPropertyObject {
 
 		private static final String DEFAULT_URL = "";
 		private static final String DEFAULT_METHOD = "get";
+		private static final Boolean DEFAULT_INTERNAL = true;
+
+		public static RestfulConsumer defaultInstance() {
+			RestfulConsumer o = new RestfulConsumer();
+			o.url = DEFAULT_URL;
+			o.method = DEFAULT_METHOD;
+			o.internal = DEFAULT_INTERNAL;
+			o.consumer = null;
+			return o;
+		}
 
 		public RestfulConsumer() {
 			super(MessageConnector.CONSUME_RESTFUL, false);
-			this.url = DEFAULT_URL;
-			this.method = DEFAULT_METHOD;
+
 		}
 
 		@FieldDescribe("地址")
@@ -461,6 +485,13 @@ public class Message extends GsonPropertyObject {
 
 		@FieldDescribe("方法")
 		private String method;
+
+		@FieldDescribe("是否是系统内部请求.")
+		private Boolean internal;
+
+		public Boolean getInternal() {
+			return null == this.internal ? DEFAULT_INTERNAL : this.internal;
+		}
 
 		public String getUrl() {
 			return StringUtils.isBlank(this.url) ? DEFAULT_URL : this.url;
@@ -475,11 +506,17 @@ public class Message extends GsonPropertyObject {
 
 		private static final long serialVersionUID = -8274136904009320770L;
 
+		public static HadoopConsumer defaultInstance() {
+			HadoopConsumer o = new HadoopConsumer();
+			o.fsDefaultFS = DEFAULT_FS_DEFAULTFS;
+			o.username = DEFAULT_USERNAME;
+			o.path = DEFAULT_PATH;
+			o.consumer = null;
+			return o;
+		}
+
 		public HadoopConsumer() {
 			super(MessageConnector.CONSUME_HADOOP, false);
-			this.fsDefaultFS = DEFAULT_FS_DEFAULTFS;
-			this.username = DEFAULT_USERNAME;
-			this.path = DEFAULT_PATH;
 		}
 
 		private static final String DEFAULT_FS_DEFAULTFS = "hdfs://";
@@ -512,14 +549,20 @@ public class Message extends GsonPropertyObject {
 
 		private static final long serialVersionUID = 8788289001004063043L;
 
+		public static KafkaConsumer defaultInstance() {
+			KafkaConsumer o = new KafkaConsumer();
+			o.bootstrapServers = DEFAULT_BOOTSTRAPSERVERS;
+			o.topic = DEFAULT_TOPIC;
+			o.securityProtocol = DEFAULT_SECURITYPROTOCOL;
+			o.saslMechanism = DEFAULT_SASLMECHANISM;
+			o.username = DEFAULT_USERNAME;
+			o.password = DEFAULT_PASSWORD;
+			o.consumer = null;
+			return o;
+		}
+
 		public KafkaConsumer() {
 			super(MessageConnector.CONSUME_KAFKA, false);
-			this.bootstrapServers = DEFAULT_BOOTSTRAPSERVERS;
-			this.topic = DEFAULT_TOPIC;
-			this.securityProtocol = DEFAULT_SECURITYPROTOCOL;
-			this.saslMechanism = DEFAULT_SASLMECHANISM;
-			this.username = DEFAULT_USERNAME;
-			this.password = DEFAULT_PASSWORD;
 		}
 
 		private static final String DEFAULT_BOOTSTRAPSERVERS = "";
@@ -577,12 +620,18 @@ public class Message extends GsonPropertyObject {
 
 		private static final long serialVersionUID = -7469816290407400176L;
 
+		public static ActivemqConsumer defaultInstance() {
+			ActivemqConsumer o = new ActivemqConsumer();
+			o.username = DEFAULT_USERNAME;
+			o.password = DEFAULT_PASSWORD;
+			o.url = DEFAULT_URL;
+			o.queueName = DEFAULT_QUEUENAME;
+			o.consumer = null;
+			return o;
+		}
+
 		public ActivemqConsumer() {
 			super(MessageConnector.CONSUME_ACTIVEMQ, false);
-			this.username = DEFAULT_USERNAME;
-			this.password = DEFAULT_PASSWORD;
-			this.url = DEFAULT_URL;
-			this.queueName = DEFAULT_QUEUENAME;
 		}
 
 		private static final String DEFAULT_USERNAME = "";

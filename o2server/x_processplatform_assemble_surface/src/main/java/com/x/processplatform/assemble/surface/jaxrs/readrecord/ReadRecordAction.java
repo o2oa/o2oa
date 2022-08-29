@@ -24,13 +24,25 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "ReadRecordAction", description = "阅读记录接口.")
 @Path("readrecord")
-@JaxrsDescribe("待阅已阅记录")
+@JaxrsDescribe("阅读记录接口.")
 public class ReadRecordAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ReadRecordAction.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ReadRecordAction.class);
+	private static final String OPERATIONID_PREFIX = "ReadRecordAction::";
 
-	@JaxrsMethodDescribe(value = "根据工作或完成工作标识获取记录.", action = ActionListWithWorkOrWorkCompleted.class)
+	@Operation(summary = "根据工作或完成工作标识获取阅读记录.", operationId = OPERATIONID_PREFIX
+			+ "listWithWorkOrWorkCompleted", responses = { @ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListWithWorkOrWorkCompleted.Wo.class))) }) })
+	@JaxrsMethodDescribe(value = "根据工作或完成工作标识获取阅读记录.", action = ActionListWithWorkOrWorkCompleted.class)
 	@GET
 	@Path("list/workorworkcompleted/{workOrWorkCompleted}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -43,13 +55,16 @@ public class ReadRecordAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListWithWorkOrWorkCompleted().execute(effectivePerson, workOrWorkCompleted);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据工作的job获取记录.", action = ActionListWithJob.class)
+	@Operation(summary = "根据任务标识获取阅读记录.", operationId = OPERATIONID_PREFIX + "listWithJob", responses = {
+			@ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListWithJob.Wo.class))) }) })
+	@JaxrsMethodDescribe(value = "根据任务标识获取阅读记录.", action = ActionListWithJob.class)
 	@GET
 	@Path("list/job/{job}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -61,7 +76,7 @@ public class ReadRecordAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListWithJob().execute(effectivePerson, job);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));

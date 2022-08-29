@@ -23,6 +23,8 @@ import com.x.base.core.project.cache.Cache;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
@@ -31,20 +33,26 @@ import com.x.processplatform.core.entity.element.Application_;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Process_;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionListWithPersonComplex extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWithPersonComplex.class);
+
+	@SuppressWarnings("unchecked")
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson) throws Exception {
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<List<Wo>> result = new ActionResult<>();
-			Cache.CacheKey cacheKey = new Cache.CacheKey(this.getClass(), effectivePerson.getDistinguishedName());
-			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
-			if (optional.isPresent()) {
-				result.setData((List<Wo>) optional.get());
-			}else {
-				List<Wo> wos = new ArrayList<>();
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+		ActionResult<List<Wo>> result = new ActionResult<>();
+		List<Wo> wos = new ArrayList<>();
+		Cache.CacheKey cacheKey = new Cache.CacheKey(this.getClass(), effectivePerson.getDistinguishedName());
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+		if (optional.isPresent()) {
+			wos = (List<Wo>) optional.get();
+		} else {
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
 				List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
-				/** 去除部门以及上级部门,如果设置了一级部门可用,那么一级部门下属的二级部门也可用 */
+				// 去除部门以及上级部门,如果设置了一级部门可用,那么一级部门下属的二级部门也可用
 				List<String> units = business.organization().unit().listWithPersonSupNested(effectivePerson);
 				List<String> roles = business.organization().role().listWithPerson(effectivePerson);
 				List<String> groups = business.organization().group().listWithIdentity(identities);
@@ -53,17 +61,20 @@ class ActionListWithPersonComplex extends BaseAction {
 					Application o = business.application().pick(id);
 					if (null != o) {
 						Wo wo = Wo.copier.copy(o);
-						wo.setProcessList(this.referenceProcess(business, effectivePerson, identities, units, groups, o));
+						wo.setProcessList(
+								this.referenceProcess(business, effectivePerson, identities, units, groups, o));
 						wos.add(wo);
 					}
 				}
 				wos = business.application().sort(wos);
-				result.setData(wos);
+				CacheManager.put(cacheCategory, cacheKey, wos);
 			}
-			return result;
 		}
+		result.setData(wos);
+		return result;
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.application.ActionListWithPersonComplex$Wo")
 	public static class Wo extends Application {
 
 		private static final long serialVersionUID = -4862564047240738097L;
@@ -71,10 +82,12 @@ class ActionListWithPersonComplex extends BaseAction {
 		static WrapCopier<Application, Wo> copier = WrapCopierFactory.wo(Application.class, Wo.class, null,
 				JpaObject.FieldsInvisible);
 
-		@FieldDescribe("流程对象")
+		@FieldDescribe("流程对象.")
+		@Schema(description = "流程对象.")
 		private List<WoProcess> processList;
 
-		@FieldDescribe("是否可编辑")
+		@FieldDescribe("是否可编辑.")
+		@Schema(description = "是否可编辑.")
 		private Boolean allowControl;
 
 		public Boolean getAllowControl() {
@@ -98,7 +111,6 @@ class ActionListWithPersonComplex extends BaseAction {
 	public static class WoProcess extends Process {
 
 		private static final long serialVersionUID = 1521228691441978462L;
-		public static List<String> Excludes = new ArrayList<>(JpaObject.FieldsInvisible);
 
 		static WrapCopier<Process, WoProcess> copier = WrapCopierFactory.wo(Process.class, WoProcess.class, null,
 				JpaObject.FieldsInvisible);
@@ -174,9 +186,10 @@ class ActionListWithPersonComplex extends BaseAction {
 	}
 
 	private List<WoProcess> referenceProcess(Business business, EffectivePerson effectivePerson,
-			List<String> identities, List<String> units, List<String> groups, Application application) throws Exception {
-		List<String> ids = business.process().listStartableWithApplication(effectivePerson, identities, units,
-				groups, application);
+			List<String> identities, List<String> units, List<String> groups, Application application)
+			throws Exception {
+		List<String> ids = business.process().listStartableWithApplication(effectivePerson, identities, units, groups,
+				application);
 		List<WoProcess> wos = new ArrayList<>();
 		for (String id : ids) {
 			WoProcess o = WoProcess.copier.copy(business.process().pick(id));

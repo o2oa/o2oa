@@ -43,6 +43,8 @@ MWF.xApplication.cms.ColumnManager.LP = {
         "empty": "Empty form",
         "publishEdit": "Publish Edit Form",
         "publishRead": "Publish Reading Form",
+        "publishEditGreen": "Publish Edit form (Green)",
+        "publishReadGreen": "Publish Read Form (Green)",
         "dataInput": "Data Input Form"
     },
 
@@ -102,7 +104,11 @@ MWF.xApplication.cms.ColumnManager.LP = {
         "none": "None",
         "noProcess": "There is no process in the system that you can manage",
         "documentType": "Document Type",
-        "excelImportView": "Data Import and Export View"
+        "excelImportView": "Data Import and Export View",
+
+        "useProcessForm": "Use Process Form",
+        "useProcessFormNote": "Note: If using a process form, then use the process form to open the published document, otherwise use the form set by category to open.",
+        "setSucess": "Set successfully"
     },
     "form": {
         "create": "New Form",
@@ -169,6 +175,7 @@ MWF.xApplication.cms.ColumnManager.LP = {
         "appType": "AppInfo Type",
         "ignoreTitle": "Ignore Title",
         "latest": "Check Draft",
+        "delayView": "Delayed View",
         "defaultEditForm": "Default Edit Form",
         "defaultReadForm": "Default Read Form",
         "editformNote": "Note: The default edit form when creating a category",
@@ -218,6 +225,8 @@ MWF.xApplication.cms.ColumnManager.LP = {
         "loadFiles": "Batch upload attachments"
     },
 
+    "enable": "enable",
+    "disable": "disable",
     "name": "Name",
     "alias": "Alias",
     "attachment": "Attachment",
@@ -291,6 +300,7 @@ MWF.xApplication.cms.ColumnManager.LP = {
     "ignoreTitleSelectText": ["Do not fill in the title of the new interface", "The title of the new interface needs to be filled in"],
     "checkDraftSelectText": ["New interface check draft","New interface does not check draft"],
     "showAllDocumentSelectText": ["Show all document views","Hide all document views"],
+    "showDelayDocumentSelectText": ["Show timed release document view","Hide timed release document view"],
 
     "selectRelateFormNotice": "Please select the related form of the view to be pasted",
 

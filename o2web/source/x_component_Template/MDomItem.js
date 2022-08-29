@@ -816,6 +816,7 @@ MDomItem.Text = new Class({
 
         item.set( options.attr || {} );
         if( className && this.css && this.css[className] )item.setStyles( this.css[className] );
+        if( options.clazz )item.addClass( options.clazz );
         item.setStyles( options.style || {} );
 
         this.bindDefaultEvent( item );
@@ -841,6 +842,7 @@ MDomItem.Text = new Class({
         });
         item.set( options.attr );
         if( className && this.css && this.css[className] )item.setStyles( this.css[className] );
+        if( options.clazz )item.addClass( options.clazz );
         item.setStyles( options.style || {}  );
 
         if(parent)item.inject(parent);
@@ -1008,6 +1010,7 @@ MDomItem.Textarea = new Class({
         });
         item.set( options.attr || {} );
         if( className && this.css && this.css[className] )item.setStyles( this.css[className] );
+        if( options.clazz )item.addClass( options.clazz );
         item.setStyles( options.style || {} );
         this.bindDefaultEvent( item );
         MDomItem.Util.bindEvent( this, item, options.event);
@@ -1032,6 +1035,7 @@ MDomItem.Textarea = new Class({
         });
         item.set( options.attr || {} );
         if( className && this.css && this.css[className] )item.setStyles( this.css[className] );
+        if( options.clazz )item.addClass( options.clazz );
         item.setStyles( options.style || {} );
 
         if(parent)item.inject(parent);
@@ -1182,6 +1186,7 @@ MDomItem.Password = new Class({
         });
         item.set( options.attr || {} );
         if( className && this.css && this.css[className] )item.setStyles( this.css[className] );
+        if( options.clazz )item.addClass( options.clazz );
         item.setStyles( options.style || {} );
         this.bindDefaultEvent( item );
         MDomItem.Util.bindEvent( this, item, options.event);
@@ -1287,6 +1292,7 @@ MDomItem.Radio = new Class({
 
             item = new Element( "div");
             if( className && this.css && this.css[className] )item.setStyles( this.css[className] );
+            if( this.options.clazz )item.addClass( this.options.clazz );
             item.setStyles( styles );
 
             var input = new Element( "input", {
@@ -1349,6 +1355,7 @@ MDomItem.Radio = new Class({
         });
         item.set( attr );
         if( className && this.css && this.css[className] )item.setStyles( this.css[className] );
+        if( this.options.clazz )item.addClass( this.options.clazz );
         item.setStyles( styles );
 
         if(parent)item.inject(parent);
@@ -1465,6 +1472,7 @@ MDomItem.Checkbox = new Class({
 
             item = new Element( "div");
             if( className && this.css && this.css[className] )item.setStyles( this.css[className] );
+            if( this.options.clazz )item.addClass( this.options.clazz );
             item.setStyles( styles );
 
             var input = new Element( "input", {
@@ -1527,6 +1535,7 @@ MDomItem.Checkbox = new Class({
         });
         item.set( attr );
         if( className && this.css && this.css[className] )item.setStyles( this.css[className] );
+        if( this.options.clazz )item.addClass( this.options.clazz );
         item.setStyles( styles );
 
         if(parent)item.inject(parent);
@@ -1647,6 +1656,7 @@ MDomItem.Select = new Class({
         item.set( attr );
         if( className && this.css && this.css[className] )item.setStyles( this.css[className] );
         item.setStyles( styles );
+        if( this.options.clazz )item.addClass( this.options.clazz );
 
         var selectValues = typeOf( selectValue ) == "array" ? selectValue : selectValue.split( this.valSeparator );
         var selectTexts =  typeOf( selectText ) == "array" ? selectText : selectText.split(this.valSeparator);
@@ -1691,6 +1701,7 @@ MDomItem.Select = new Class({
         });
         item.set( attr );
         if( className && this.css && this.css[className] )item.setStyles( this.css[className] );
+        if( this.options.clazz )item.addClass( this.options.clazz );
         item.setStyles( styles );
 
         if(parent)item.inject(parent);
@@ -1809,6 +1820,7 @@ MDomItem.Multiselect = new Class({
         });
         item.set( attr );
         if( className && this.css && this.css[className] )item.setStyles( this.css[className] );
+        if( this.options.clazz )item.addClass( this.options.clazz );
         item.setStyles( styles );
 
         var selectValues = typeOf( selectValue ) == "array" ? selectValue : selectValue.split( this.valSeparator );
@@ -1853,6 +1865,7 @@ MDomItem.Multiselect = new Class({
         item.set( attr );
         if( className && this.css && this.css[className] )item.setStyles( this.css[className] );
         item.setStyles( styles );
+        if( this.options.clazz )item.addClass( this.options.clazz );
 
         if(parent)item.inject(parent);
         this.items.push( item );
@@ -1968,6 +1981,7 @@ MDomItem.Innertext = new Class({
         });
         item.set( attr );
         if( className && this.css && this.css[className] )item.setStyles( this.css[className] );
+        if( this.options.clazz )item.addClass( this.options.clazz );
         item.setStyles( styles );
         if( this.options.isEdited ){
             MDomItem.Util.bindEvent( this, item, this.options.event);
@@ -2062,6 +2076,7 @@ MDomItem.Innerhtml = new Class({
         });
         item.set( attr );
         if( className && this.css && this.css[className] )item.setStyles( this.css[className] );
+        if( this.options.clazz )item.addClass( this.options.clazz );
         item.setStyles( styles );
         if( this.options.isEdited ){
             MDomItem.Util.bindEvent( this, item, this.options.event);
@@ -2147,6 +2162,7 @@ MDomItem.Img = new Class({
         item.set( attr );
         if( className && this.css && this.css[className] )item.setStyles( this.css[className] );
         item.setStyles( styles );
+        if( this.options.clazz )item.addClass( this.options.clazz );
 
         MDomItem.Util.bindEvent( this, item, event);
         if(parent)item.inject(parent);
@@ -2230,6 +2246,7 @@ MDomItem.Button = new Class({
         item.set( attr );
         if( className && this.css && this.css[className] )item.setStyles( this.css[className] );
         item.setStyles( styles );
+        if( this.options.clazz )item.addClass( this.options.clazz );
         MDomItem.Util.bindEvent( this, item, event);
         if(parent)item.inject(parent);
         this.items.push( item );
@@ -2311,6 +2328,7 @@ MDomItem.A = new Class({
         item.set( attr );
         if( className && this.css && this.css[className] )item.setStyles( this.css[className] );
         item.setStyles( styles );
+        if( this.options.clazz )item.addClass( this.options.clazz );
         MDomItem.Util.bindEvent( this, item, event);
         if(parent)item.inject(parent);
         this.items.push( item );
@@ -2429,6 +2447,7 @@ MDomItem.MSelector = new Class({
                 item.set( attr );
                 if( className && this.css && this.css[className] )item.setStyles( this.css[className] );
                 item.setStyles( styles );
+                if( this.options.clazz )item.addClass( this.options.clazz );
 
                 if(parent)item.inject(parent);
                 this.items.push( item );
@@ -2719,6 +2738,7 @@ MDomItem.Rtf = new Class({
         item.set( attr );
         if( className && this.css && this.css[className] )item.setStyles( this.css[className] );
         item.setStyles( styles );
+        if( this.options.clazz )item.addClass( this.options.clazz );
 
         if(parent)item.inject(parent);
 
@@ -2856,6 +2876,7 @@ MDomItem.Org = new Class({
         item.set( attr );
         if( className && this.css && this.css[className] )item.setStyles( this.css[className] );
         item.setStyles( styles );
+        if( this.options.clazz )item.addClass( this.options.clazz );
         this.loadOrgWidget( this.orgData, item, true );
         this.bindDefaultEvent( item );
         MDomItem.Util.bindEvent( this,  item, this.options.event );
@@ -2886,6 +2907,7 @@ MDomItem.Org = new Class({
         item.set( attr );
         if( className && this.css && this.css[className] )item.setStyles( this.css[className] );
         item.setStyles( styles );
+        if( this.options.clazz )item.addClass( this.options.clazz );
         this.loadOrgWidget( this.orgData, item , false);
 
         if(parent)item.inject(parent);

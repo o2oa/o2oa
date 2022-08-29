@@ -317,6 +317,7 @@ MWF.xApplication.query.ViewDesigner.LP = {
         "blueSimple":"Blue Simple",
         "official":"Official",
         "deepBlue":"Deep Blue",
-        "blueFlat":"Blue and white flat"
+        "blueFlat":"Blue and white flat",
+        "greenFlat": "Green Flat"
     }
 };

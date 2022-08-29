@@ -34,7 +34,6 @@ import com.x.cms.assemble.control.factory.TemplateFormFactory;
 import com.x.cms.assemble.control.factory.ViewCategoryFactory;
 import com.x.cms.assemble.control.factory.ViewFactory;
 import com.x.cms.assemble.control.factory.ViewFieldConfigFactory;
-import com.x.cms.assemble.control.factory.element.QueryViewFactory;
 import com.x.cms.assemble.control.factory.portal.PortalFactory;
 import com.x.cms.assemble.control.factory.process.ProcessFactory;
 import com.x.cms.core.entity.AppInfo;
@@ -42,6 +41,7 @@ import com.x.organization.core.express.Organization;
 
 /**
  * 通用业务类
+ * 
  * @author sword
  */
 public class Business {
@@ -67,7 +67,6 @@ public class Business {
 	private DocumentViewRecordFactory documentViewRecordFactory;
 	private FormFactory formFactory;
 	private FileFactory fileFactory;
-	private QueryViewFactory queryViewFactory;
 	private ViewCategoryFactory viewCategoryFactory;
 	private ViewFactory viewFactory;
 	private ViewFieldConfigFactory viewFieldConfigFactory;
@@ -173,15 +172,6 @@ public class Business {
 			this.documentViewRecordFactory = new DocumentViewRecordFactory(this);
 		}
 		return documentViewRecordFactory;
-	}
-
-
-
-	public QueryViewFactory queryViewFactory() throws Exception {
-		if (null == this.queryViewFactory) {
-			this.queryViewFactory = new QueryViewFactory(this);
-		}
-		return queryViewFactory;
 	}
 
 	public ViewCategoryFactory getViewCategoryFactory() throws Exception {
@@ -293,17 +283,17 @@ public class Business {
 		return portal;
 	}
 
-	public boolean isHasPlatformRole( String personName, String roleName) throws Exception {
-		if ( StringUtils.isEmpty( personName ) ) {
+	public boolean isHasPlatformRole(String personName, String roleName) throws Exception {
+		if (StringUtils.isEmpty(personName)) {
 			throw new Exception("personName is null!");
 		}
-		if ( StringUtils.isEmpty( roleName )) {
+		if (StringUtils.isEmpty(roleName)) {
 			throw new Exception("roleName is null!");
 		}
 		List<String> roleList = null;
-		roleList = organization().role().listWithPerson( personName );
-		if ( roleList != null && !roleList.isEmpty()) {
-			if( roleList.stream().filter( r -> roleName.equalsIgnoreCase( r )).count() > 0 ){
+		roleList = organization().role().listWithPerson(personName);
+		if (roleList != null && !roleList.isEmpty()) {
+			if (roleList.stream().filter(r -> roleName.equalsIgnoreCase(r)).count() > 0) {
 				return true;
 			}
 		} else {
@@ -314,17 +304,14 @@ public class Business {
 
 	/**
 	 * 判断用户是否管理员权限
-	 * 1、person.isManager()
-	 * 2、xadmin
-	 * 3、CMSManager
-	 *
+	 * 
 	 * @param person
 	 * @return
 	 * @throws Exception
 	 */
 	public boolean isManager(EffectivePerson person) throws Exception {
 		// 如果用户的身份是平台的超级管理员，那么就是超级管理员权限
-		if ( person.isManager() ) {
+		if (person.isManager()) {
 			return true;
 		} else {
 			if (organization().person().hasRole(person, OrganizationDefinition.Manager,
@@ -336,24 +323,46 @@ public class Business {
 	}
 
 	/**
+	 * 判断用户是否管理员权限
+	 * 
+	 * @param person
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean isCreatorManager(EffectivePerson person) throws Exception {
+		// 如果用户的身份是平台的超级管理员，那么就是超级管理员权限
+		if (person.isManager()) {
+			return true;
+		} else {
+			if (organization().person().hasRole(person, OrganizationDefinition.Manager,
+					OrganizationDefinition.CMSManager, OrganizationDefinition.CMSCreator)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * 是否是栏目管理员
+	 * 
 	 * @param person
 	 * @param appInfo
 	 * @return
 	 * @throws Exception
 	 */
 	public boolean isAppInfoManager(EffectivePerson person, AppInfo appInfo) throws Exception {
-		if( isManager(person) ) {
+		if (isManager(person)) {
 			return true;
 		}
-		if(appInfo != null) {
+		if (appInfo != null) {
 			if (ListTools.isNotEmpty(appInfo.getManageablePersonList())) {
 				if (appInfo.getManageablePersonList().contains(person.getDistinguishedName())) {
 					return true;
 				}
 			}
 			if (ListTools.isNotEmpty(appInfo.getManageableUnitList())) {
-				List<String> unitNames = this.organization().unit().listWithPersonSupNested(person.getDistinguishedName());
+				List<String> unitNames = this.organization().unit()
+						.listWithPersonSupNested(person.getDistinguishedName());
 				if (ListTools.containsAny(unitNames, appInfo.getManageableUnitList())) {
 					return true;
 				}
@@ -369,14 +378,51 @@ public class Business {
 	}
 
 	/**
+	 * 是否是栏目创建管理员
+	 * 
+	 * @param person
+	 * @param appInfo
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean isAppCreatorManager(EffectivePerson person, AppInfo appInfo) throws Exception {
+		if (appInfo != null) {
+			if (isManager(person)) {
+				return true;
+			}
+			if (ListTools.isNotEmpty(appInfo.getManageablePersonList())) {
+				if (appInfo.getManageablePersonList().contains(person.getDistinguishedName())) {
+					return true;
+				}
+			}
+			if (ListTools.isNotEmpty(appInfo.getManageableUnitList())) {
+				List<String> unitNames = this.organization().unit()
+						.listWithPersonSupNested(person.getDistinguishedName());
+				if (ListTools.containsAny(unitNames, appInfo.getManageableUnitList())) {
+					return true;
+				}
+			}
+			if (ListTools.isNotEmpty(appInfo.getManageableGroupList())) {
+				List<String> groupNames = this.organization().group().listWithPerson(person.getDistinguishedName());
+				if (ListTools.containsAny(groupNames, appInfo.getManageableGroupList())) {
+					return true;
+				}
+			}
+		} else if (isCreatorManager(person)) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
 	 * TODO (uncomplete)判断用户是否有权限进行：[表单模板管理]操作
 	 *
 	 * @param person
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean formEditAvailable( EffectivePerson person) throws Exception {
-		if ( isManager( person)) {
+	public boolean formEditAvailable(EffectivePerson person) throws Exception {
+		if (isManager(person)) {
 			return true;
 		}
 		// 其他情况暂时全部不允许操作
@@ -390,7 +436,7 @@ public class Business {
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean viewEditAvailable( EffectivePerson person) throws Exception {
+	public boolean viewEditAvailable(EffectivePerson person) throws Exception {
 		if (isManager(person)) {
 			return true;
 		}
@@ -398,37 +444,38 @@ public class Business {
 		return true;
 	}
 
-	public boolean editable( EffectivePerson effectivePerson, AppInfo appInfo ) throws Exception {
+	public boolean editable(EffectivePerson effectivePerson, AppInfo appInfo) throws Exception {
 		if ((StringUtils.equals(appInfo.getCreatorPerson(), effectivePerson.getDistinguishedName()))
-				|| effectivePerson.isManager() || organization().person().hasRole(effectivePerson,
-						OrganizationDefinition.CMSManager)) {
+				|| effectivePerson.isManager()
+				|| organization().person().hasRole(effectivePerson, OrganizationDefinition.CMSManager)) {
 			return true;
 		}
 
-		//判断effectivePerson是不是该栏目的管理者：涉及 个人，组织和群组
-		List<String> unitNameList= this.organization().unit().listWithPersonSupNested( effectivePerson.getDistinguishedName() );
+		// 判断effectivePerson是不是该栏目的管理者：涉及 个人，组织和群组
+		List<String> unitNameList = this.organization().unit()
+				.listWithPersonSupNested(effectivePerson.getDistinguishedName());
 		List<String> groupNameList = new ArrayList<String>();
-		List<String> groupList = this.organization().group().listWithPerson( effectivePerson.getDistinguishedName() );
+		List<String> groupList = this.organization().group().listWithPerson(effectivePerson.getDistinguishedName());
 		if (groupList != null && groupList.size() > 0) {
-			groupList.stream().filter( g -> !groupNameList.contains( g )).distinct().forEach( g -> groupNameList.add( g ));
+			groupList.stream().filter(g -> !groupNameList.contains(g)).distinct().forEach(g -> groupNameList.add(g));
 		}
 
-		if( ListTools.isNotEmpty( appInfo.getManageablePersonList() )) {
-			if (appInfo.getManageablePersonList().contains( effectivePerson.getDistinguishedName() )) {
+		if (ListTools.isNotEmpty(appInfo.getManageablePersonList())) {
+			if (appInfo.getManageablePersonList().contains(effectivePerson.getDistinguishedName())) {
 				return true;
 			}
 		}
 
-		if( ListTools.isNotEmpty( appInfo.getManageableGroupList() ) && ListTools.isNotEmpty( groupNameList )) {
-			groupNameList.retainAll( appInfo.getManageableGroupList()  );
-			if( ListTools.isNotEmpty( groupNameList )) {
+		if (ListTools.isNotEmpty(appInfo.getManageableGroupList()) && ListTools.isNotEmpty(groupNameList)) {
+			groupNameList.retainAll(appInfo.getManageableGroupList());
+			if (ListTools.isNotEmpty(groupNameList)) {
 				return true;
 			}
 		}
 
-		if( ListTools.isNotEmpty( appInfo.getManageableUnitList() )&& ListTools.isNotEmpty( unitNameList )) {
-			unitNameList.retainAll( appInfo.getManageableUnitList()  );
-			if( ListTools.isNotEmpty( unitNameList )) {
+		if (ListTools.isNotEmpty(appInfo.getManageableUnitList()) && ListTools.isNotEmpty(unitNameList)) {
+			unitNameList.retainAll(appInfo.getManageableUnitList());
+			if (ListTools.isNotEmpty(unitNameList)) {
 				return true;
 			}
 		}

@@ -189,19 +189,19 @@ public class PersonFactory extends AbstractFactory {
 		throw new Exception("find duplicate value{" + StringUtils.join(list, ",") + "}");
 	}
 
-	public void setPassword(Person person, String password, boolean isInitialization ) throws Exception {
+	public void setPassword(Person person, String password, boolean isInitialization) throws Exception {
 		Calendar cal = Calendar.getInstance();
 		person.setChangePasswordTime(cal.getTime());
-		person.setPassword(Crypto.encrypt(password, Config.token().getKey()));
+		person.setPassword(Crypto.encrypt(password, Config.token().getKey(), Config.person().getEncryptType()));
 		Integer passwordPeriod = Config.person().getPasswordPeriod();
 		if (passwordPeriod == null || passwordPeriod <= 0) {
 			person.setPasswordExpiredTime(null);
 		} else {
-			if(isInitialization) {
-				 person.setPasswordExpiredTime(new Date());
-			}else {
-			     cal.add(Calendar.DATE, passwordPeriod);
-			     person.setPasswordExpiredTime(cal.getTime());
+			if (isInitialization) {
+				person.setPasswordExpiredTime(new Date());
+			} else {
+				cal.add(Calendar.DATE, passwordPeriod);
+				person.setPasswordExpiredTime(cal.getTime());
 			}
 		}
 	}

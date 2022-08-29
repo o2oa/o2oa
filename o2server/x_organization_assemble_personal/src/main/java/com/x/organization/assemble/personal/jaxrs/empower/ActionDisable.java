@@ -12,11 +12,14 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.organization.core.entity.accredit.Empower;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionDisable extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionDisable.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDisable.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Empower empower = emc.find(id, Empower.class);
@@ -35,7 +38,10 @@ class ActionDisable extends BaseAction {
 		}
 	}
 
+	@Schema(name = "com.x.organization.assemble.personal.jaxrs.empower.ActionDisable$Wo")
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = 5206233299613547177L;
 
 	}
 

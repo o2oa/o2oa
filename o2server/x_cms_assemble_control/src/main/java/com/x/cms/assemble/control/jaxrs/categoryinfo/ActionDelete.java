@@ -2,6 +2,9 @@ package com.x.cms.assemble.control.jaxrs.categoryinfo;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.exception.ExceptionAccessDenied;
+import com.x.base.core.project.exception.ExceptionEntityNotExist;
+import com.x.cms.assemble.control.Business;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.annotation.AuditLog;
@@ -18,70 +21,48 @@ import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.element.ViewCategory;
 
+/**
+ * 删除分类
+ * @author sword
+ */
 public class ActionDelete extends BaseAction {
 
 	private static  Logger logger = LoggerFactory.getLogger(ActionDelete.class);
 
-	@AuditLog(operation = "删除分类")
 	protected ActionResult<Wo> execute(HttpServletRequest request, String id, EffectivePerson effectivePerson) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
-		CategoryInfo categoryInfo = null;
-		Boolean check = true;
 
-		if ( StringUtils.isEmpty( id )) {
-			check = false;
-			Exception exception = new ExceptionIdEmpty();
-			result.error(exception);
+		CategoryInfo categoryInfo = categoryInfoServiceAdv.get(id);
+		if (categoryInfo == null) {
+			throw new ExceptionEntityNotExist(id);
 		}
-		if (check) {
-			try {
-				categoryInfo = categoryInfoServiceAdv.get(id);
-				if (categoryInfo == null) {
-					check = false;
-					Exception exception = new ExceptionCategoryInfoNotExists(id);
-					result.error(exception);
-				}
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new ExceptionCategoryInfoProcess(e, "根据ID查询分类信息对象时发生异常。ID:" + id);
-				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
-			}
+		AppInfo appInfo = appInfoServiceAdv.get(categoryInfo.getAppId());
+		Business business = new Business(null);
+		if (!business.isAppInfoManager(effectivePerson, appInfo)) {
+			throw new ExceptionAccessDenied(effectivePerson);
 		}
 
-		if (check) {
-			Long count = documentServiceAdv.countByCategoryId( id );
-			if ( count > 0 ) {
-				check = false;
-				Exception exception = new ExceptionEditNotAllowed(count);
-				result.error(exception);
-			}
+		Long count = documentServiceAdv.countByCategoryId( id );
+		if ( count > 0 ) {
+			throw new ExceptionEditNotAllowed(count);
 		}
 
-		if (check) {
-			try {
-				categoryInfoServiceAdv.delete( id, effectivePerson );
+		categoryInfoServiceAdv.delete( id, effectivePerson );
 
-				Wo wo = new Wo();
-				wo.setId( categoryInfo.getId() );
-				result.setData( wo );
+		Wo wo = new Wo();
+		wo.setId( categoryInfo.getId() );
+		result.setData( wo );
 
-				//增加删除栏目批量操作（对分类和文档）的信息
-				new CmsBatchOperationPersistService().addOperation(
-						CmsBatchOperationProcessService.OPT_OBJ_CATEGORY,
-						CmsBatchOperationProcessService.OPT_TYPE_DELETE, id, id, "删除分类：ID=" + id );
+		//增加删除栏目批量操作（对分类和文档）的信息
+		new CmsBatchOperationPersistService().addOperation(
+				CmsBatchOperationProcessService.OPT_OBJ_CATEGORY,
+				CmsBatchOperationProcessService.OPT_TYPE_DELETE, id, id, "删除分类：ID=" + id );
 
-				new LogService().log(null, effectivePerson.getDistinguishedName(), categoryInfo.getAppName() + "-" + categoryInfo.getCategoryName(), id, "", "", "", "CATEGORY", "删除");
+		new LogService().log(null, effectivePerson.getDistinguishedName(), categoryInfo.getAppName() + "-" + categoryInfo.getCategoryName(), id, "", "", "", "CATEGORY", "删除");
 
-				CacheManager.notify( AppInfo.class );
-				CacheManager.notify( CategoryInfo.class );
-				CacheManager.notify( ViewCategory.class );
-			} catch (Exception e) {
-				Exception exception = new ExceptionCategoryInfoProcess(e, "分类信息在删除时发生异常。ID:" + id);
-				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
-			}
-		}
+		CacheManager.notify( AppInfo.class );
+		CacheManager.notify( CategoryInfo.class );
+		CacheManager.notify( ViewCategory.class );
 		return result;
 	}
 

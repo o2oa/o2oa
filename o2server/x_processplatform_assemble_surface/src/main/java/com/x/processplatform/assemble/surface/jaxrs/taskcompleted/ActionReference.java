@@ -12,7 +12,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.apache.commons.collections4.list.SetUniqueList;
+import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -26,13 +26,14 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.core.entity.content.ProcessingType;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkCompleted_;
 import com.x.processplatform.core.entity.content.WorkLog;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionReference extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
@@ -57,8 +58,7 @@ class ActionReference extends BaseAction {
 		EntityManagerContainer emc = business.entityManagerContainer();
 		List<String> ids = business.workLog().listWithJob(taskCompleted.getJob());
 		List<WorkLog> os = emc.list(WorkLog.class, ids);
-		List<WoWorkLog> wos = this.reference(business, os);
-		return wos;
+		return this.reference(business, os);
 	}
 
 	private List<WoWorkLog> reference(Business business, List<WorkLog> list) throws Exception {
@@ -72,11 +72,11 @@ class ActionReference extends BaseAction {
 
 	private WoWorkLog reference(Business business, WorkLog workLog) throws Exception {
 		WoWorkLog wo = WoWorkLog.copier.copy(workLog);
-		if (!workLog.getConnected()) {
+		if (BooleanUtils.isNotTrue(workLog.getConnected())) {
 			referenceWorkLogTask(business, wo);
 		} else {
 			/* 已经完成的不会有待办，返回一个空数组 */
-			wo.setTaskList(new ArrayList<WoTask>());
+			wo.setTaskList(new ArrayList<>());
 		}
 		referenceWorkLogTaskCompleted(business, wo);
 		return wo;
@@ -96,32 +96,34 @@ class ActionReference extends BaseAction {
 		os = os.stream()
 				.sorted(Comparator.comparing(TaskCompleted::getCompletedTime, Comparator.nullsLast(Date::compareTo)))
 				.collect(Collectors.toList());
-		/** 补充召回 */
-		List<WoTaskCompleted> wos = WoTaskCompleted.copier.copy(os);
-		List<WoTaskCompleted> list = new ArrayList<>();
-		for (WoTaskCompleted o : wos) {
-			list.add(o);
-			if (o.getProcessingType().equals(ProcessingType.retract)) {
-				WoTaskCompleted retract = new WoTaskCompleted();
-				o.copyTo(retract);
-				retract.setRouteName("撤回");
-				retract.setOpinion("撤回");
-				retract.setStartTime(retract.getRetractTime());
-				retract.setCompletedTime(retract.getRetractTime());
-				list.add(retract);
-			}
-		}
-		wo.setTaskCompletedList(list);
+//		/** 补充召回 */
+//		List<WoTaskCompleted> wos = WoTaskCompleted.copier.copy(os);
+//		List<WoTaskCompleted> list = new ArrayList<>();
+//		for (WoTaskCompleted o : wos) {
+//			list.add(o);
+//			if (o.getProcessingType().equals(ProcessingType.retract)) {
+//				WoTaskCompleted retract = new WoTaskCompleted();
+//				o.copyTo(retract);
+//				retract.setRouteName("撤回");
+//				retract.setOpinion("撤回");
+//				retract.setStartTime(retract.getRetractTime());
+//				retract.setCompletedTime(retract.getRetractTime());
+//				list.add(retract);
+//			}
+//		}
+//		wo.setTaskCompletedList(list);
+		wo.setTaskCompletedList(WoTaskCompleted.copier.copy(os));
 	}
 
+	// @TODO
 	private List<WoWork> listWork(Business business, TaskCompleted taskCompleted) throws Exception {
-		List<String> ids = business.workLog().listWithFromActivityTokenForward(taskCompleted.getActivityToken());
-		List<String> workIds = SetUniqueList.setUniqueList(new ArrayList<String>());
-		for (WorkLog o : business.entityManagerContainer().list(WorkLog.class, ids)) {
-			workIds.add(o.getWork());
-		}
-		List<WoWork> wos = WoWork.copier.copy(business.entityManagerContainer().list(Work.class, workIds));
-		return wos;
+		List<String> workIds = business.work().listWithJob(taskCompleted.getJob());
+//		List<String> ids = business.workLog().listWithFromActivityTokenForward(taskCompleted.getActivityToken());
+//		List<String> workIds = SetUniqueList.setUniqueList(new ArrayList<String>());
+//		for (WorkLog o : business.entityManagerContainer().list(WorkLog.class, ids)) {
+//			workIds.add(o.getWork());
+//		}
+		return WoWork.copier.copy(business.entityManagerContainer().list(Work.class, workIds));
 	}
 
 	private List<WoWorkCompleted> listWorkCompleted(Business business, TaskCompleted taskCompleted) throws Exception {
@@ -139,7 +141,10 @@ class ActionReference extends BaseAction {
 		return wos;
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.taskcompleted.ActionReference$Wo")
 	public static class Wo extends GsonPropertyObject {
+
+		private static final long serialVersionUID = 6314327570968988398L;
 
 		@FieldDescribe("已办对象")
 		private WoTaskCompleted taskCompleted;

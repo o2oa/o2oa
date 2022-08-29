@@ -21,16 +21,25 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.NameValueCountPair;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.ReadCompleted_;
+import com.x.processplatform.core.express.service.processing.jaxrs.readcompleted.V2CountWo;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 class V2Count extends V2Base {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(V2Count.class);
+
 	public ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		Wo wo = new Wo();
@@ -170,21 +179,29 @@ class V2Count extends V2Base {
 				.collect(Collectors.toList());
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.readcompleted.V2Count$Wi")
 	public static class Wi extends FilterWi {
 
-		@FieldDescribe("按应用分类")
+		private static final long serialVersionUID = 8585909929028550439L;
+
+		@FieldDescribe("按应用分类.")
+		@Schema(description = "按应用分类.")
 		private Boolean groupByApplication;
 
-		@FieldDescribe("按流程分类")
+		@FieldDescribe("按流程分类.")
+		@Schema(description = "按流程分类.")
 		private Boolean groupByProcess;
 
-		@FieldDescribe("按创建人分类")
+		@FieldDescribe("按创建人分类.")
+		@Schema(description = "按创建人分类.")
 		private Boolean groupByCreatorPerson;
 
-		@FieldDescribe("按创建人分类")
+		@FieldDescribe("按创建人分类.")
+		@Schema(description = "按创建人分类.")
 		private Boolean groupByCreatorUnit;
 
-		@FieldDescribe("按创建年月分类")
+		@FieldDescribe("按创建年月分类.")
+		@Schema(description = "按创建年月分类.")
 		private Boolean groupByStartTimeMonth;
 
 		public Boolean getGroupByApplication() {
@@ -229,73 +246,10 @@ class V2Count extends V2Base {
 
 	}
 
-	public static class Wo extends GsonPropertyObject {
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.readcompleted.V2Count$Wo")
+	public static class Wo extends V2CountWo {
 
-		@FieldDescribe("总数量")
-		private Long count;
-
-		@FieldDescribe("按应用分类数量")
-		private List<NameValueCountPair> applicationList = new ArrayList<>();
-
-		@FieldDescribe("按流程分类数量")
-		private List<NameValueCountPair> processList = new ArrayList<>();
-
-		@FieldDescribe("按创建人分类数量")
-		private List<NameValueCountPair> creatorPersonList = new ArrayList<>();
-
-		@FieldDescribe("按创建组织分类数量")
-		private List<NameValueCountPair> creatorUnitList = new ArrayList<>();
-
-		@FieldDescribe("按创建的年月分类")
-		private List<NameValueCountPair> startTimeMonthList = new ArrayList<>();
-
-		public Long getCount() {
-			return count;
-		}
-
-		public void setCount(Long count) {
-			this.count = count;
-		}
-
-		public List<NameValueCountPair> getApplicationList() {
-			return applicationList;
-		}
-
-		public void setApplicationList(List<NameValueCountPair> applicationList) {
-			this.applicationList = applicationList;
-		}
-
-		public List<NameValueCountPair> getProcessList() {
-			return processList;
-		}
-
-		public void setProcessList(List<NameValueCountPair> processList) {
-			this.processList = processList;
-		}
-
-		public List<NameValueCountPair> getCreatorPersonList() {
-			return creatorPersonList;
-		}
-
-		public void setCreatorPersonList(List<NameValueCountPair> creatorPersonList) {
-			this.creatorPersonList = creatorPersonList;
-		}
-
-		public List<NameValueCountPair> getCreatorUnitList() {
-			return creatorUnitList;
-		}
-
-		public void setCreatorUnitList(List<NameValueCountPair> creatorUnitList) {
-			this.creatorUnitList = creatorUnitList;
-		}
-
-		public List<NameValueCountPair> getStartTimeMonthList() {
-			return startTimeMonthList;
-		}
-
-		public void setStartTimeMonthList(List<NameValueCountPair> startTimeMonthList) {
-			this.startTimeMonthList = startTimeMonthList;
-		}
+		private static final long serialVersionUID = -6860820896873440973L;
 
 	}
 }

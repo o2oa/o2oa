@@ -21,7 +21,7 @@ import com.x.program.center.core.entity.Captcha_;
 
 public class CleanupCaptcha extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(CleanupCaptcha.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CleanupCaptcha.class);
 
 	@Override
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -30,7 +30,7 @@ public class CleanupCaptcha extends BaseAction {
 				cleanupCaptcha();
 			}
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 			throw new JobExecutionException(e);
 		}
 	}
@@ -55,7 +55,7 @@ public class CleanupCaptcha extends BaseAction {
 				}
 			}
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 			throw new JobExecutionException(e);
 		}
 

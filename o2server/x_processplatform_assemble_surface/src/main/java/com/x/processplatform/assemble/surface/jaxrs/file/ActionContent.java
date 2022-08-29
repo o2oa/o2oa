@@ -20,16 +20,25 @@ import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.jaxrs.WoFile;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.File;
 import com.x.processplatform.core.entity.element.File_;
 
-class ActionContent extends StandardJaxrsAction {
+import io.swagger.v3.oas.annotations.media.Schema;
+
+class ActionContent extends BaseAction {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionContent.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, String applicationFlag) throws Exception {
+
+		LOGGER.debug("execute:{}, flag:{}, applicationFlag:{}.", effectivePerson::getDistinguishedName, () -> flag,
+				() -> applicationFlag);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wo wo = null;
@@ -62,7 +71,10 @@ class ActionContent extends StandardJaxrsAction {
 		}
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.file.ActionContent$Wo")
 	public static class Wo extends WoFile {
+
+		private static final long serialVersionUID = 7892218945591687635L;
 
 		public Wo(byte[] bytes, String contentType, String contentDisposition) {
 			super(bytes, contentType, contentDisposition);

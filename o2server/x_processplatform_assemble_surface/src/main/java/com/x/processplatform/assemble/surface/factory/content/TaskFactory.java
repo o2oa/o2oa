@@ -137,18 +137,7 @@ public class TaskFactory extends AbstractFactory {
 		return em.createQuery(cq).getResultList();
 	}
 
-	/**
-	 * 统计指定人员所有的待办数量
-	 */
-	public Long countWithPerson(String person) throws Exception {
-		EntityManager em = this.entityManagerContainer().get(Task.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-		Root<Task> root = cq.from(Task.class);
-		Predicate p = cb.equal(root.get(Task_.person), person);
-		cq.select(cb.count(root)).where(p);
-		return em.createQuery(cq).getSingleResult();
-	}
+
 
 	/**
 	 * 统计指定人员在指定应用的待办,数量

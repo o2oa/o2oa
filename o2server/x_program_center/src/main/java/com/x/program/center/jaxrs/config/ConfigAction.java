@@ -1,5 +1,7 @@
 package com.x.program.center.jaxrs.config;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -23,11 +25,20 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
-@JaxrsDescribe("配置")
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "ConfigAction", description = "配置接口.")
+@JaxrsDescribe("配置接口.")
 @Path("config")
 public class ConfigAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ConfigAction.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigAction.class);
+	private static final String OPERATIONID_PREFIX = "ConfigAction::";
 
 	@JaxrsMethodDescribe(value = "获取设置.", action = ActionGet.class)
 	@GET
@@ -39,7 +50,7 @@ public class ConfigAction extends StandardJaxrsAction {
 		try {
 			result = new ActionGet().execute(effectivePerson);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -56,7 +67,7 @@ public class ConfigAction extends StandardJaxrsAction {
 		try {
 			result = new ActionGetPerson().execute(effectivePerson);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -74,7 +85,7 @@ public class ConfigAction extends StandardJaxrsAction {
 		try {
 			result = new ActionSetPerson().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -91,7 +102,7 @@ public class ConfigAction extends StandardJaxrsAction {
 		try {
 			result = new ActionGetToken().execute(effectivePerson);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -109,7 +120,7 @@ public class ConfigAction extends StandardJaxrsAction {
 		try {
 			result = new ActionSetToken().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -126,7 +137,7 @@ public class ConfigAction extends StandardJaxrsAction {
 		try {
 			result = new ActionGetCollect().execute(effectivePerson);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -144,7 +155,7 @@ public class ConfigAction extends StandardJaxrsAction {
 		try {
 			result = new ActionSetCollect().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -161,7 +172,7 @@ public class ConfigAction extends StandardJaxrsAction {
 		try {
 			result = new ActionGetCenterServer().execute(effectivePerson);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -179,7 +190,7 @@ public class ConfigAction extends StandardJaxrsAction {
 		try {
 			result = new ActionSetCenterServer().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -196,7 +207,7 @@ public class ConfigAction extends StandardJaxrsAction {
 		try {
 			result = new ActionGetProxy().execute(effectivePerson);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -214,7 +225,7 @@ public class ConfigAction extends StandardJaxrsAction {
 		try {
 			result = new ActionSetProxy().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -231,7 +242,7 @@ public class ConfigAction extends StandardJaxrsAction {
 		try {
 			result = new ActionGetPortal().execute(effectivePerson);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -249,7 +260,7 @@ public class ConfigAction extends StandardJaxrsAction {
 		try {
 			result = new ActionSetPortal().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -264,7 +275,7 @@ public class ConfigAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionList.Wo> result = new ActionResult<>();
 		try {
-			result = new ActionList().execute(request,effectivePerson);
+			result = new ActionList().execute(request, effectivePerson);
 		} catch (Exception e) {
 			e.printStackTrace();
 			result.error(e);
@@ -277,11 +288,30 @@ public class ConfigAction extends StandardJaxrsAction {
 	@Path("open")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void open(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, JsonElement jsonElement) {
+	public void open(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionOpen.Wo> result = new ActionResult<>();
 		try {
-			result = new ActionOpen().execute(request,effectivePerson, jsonElement);
+			result = new ActionOpen().execute(request, effectivePerson, jsonElement);
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+	}
+
+	@JaxrsMethodDescribe(value = "打开运行环境的config文件", action = ActionOpenRuntimeConfig.class)
+	@POST
+	@Path("open/run/time/config")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void openRuntimeConfig(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<ActionOpenRuntimeConfig.Wo> result = new ActionResult<>();
+		try {
+			result = new ActionOpenRuntimeConfig().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
 			e.printStackTrace();
 			result.error(e);
@@ -294,13 +324,14 @@ public class ConfigAction extends StandardJaxrsAction {
 	@Path("save")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	public void save(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, JsonElement jsonElement) {
+	public void save(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
 		ActionResult<ActionSave.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionSave().execute(request , effectivePerson, jsonElement);
+			result = new ActionSave().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -311,13 +342,14 @@ public class ConfigAction extends StandardJaxrsAction {
 	@Path("ternary/management")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void getTernaryManagement(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+	public void getTernaryManagement(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request) {
 		ActionResult<ActionGetTernaryManagement.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionGetTernaryManagement().execute(effectivePerson);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -329,16 +361,114 @@ public class ConfigAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void setTernaryManagement(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-						  JsonElement jsonElement) {
+			JsonElement jsonElement) {
 		ActionResult<ActionSetTernaryManagement.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionSetTernaryManagement().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
+	@JaxrsMethodDescribe(value = "更改管理员密码.", action = ActionChangePassword.class)
+	@POST
+	@Path("change/password")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void changePassword(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
+		ActionResult<ActionChangePassword.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionChangePassword().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+	}
+
+	@Operation(summary = "列示所有可配置实体类名称.", operationId = OPERATIONID_PREFIX + "listEntity", responses = {
+			@ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListEntity.Wo.class))) }) })
+	@JaxrsMethodDescribe(value = "列示所有可配置实体类名称.", action = ActionListEntity.class)
+	@GET
+	@Path("list/entity")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listEntity(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<List<ActionListEntity.Wo>> result = new ActionResult<>();
+		try {
+			result = new ActionListEntity().execute(effectivePerson);
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@Operation(summary = "列示所有可配置应用名称.", operationId = OPERATIONID_PREFIX + "listApplication", responses = {
+			@ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListApplication.Wo.class))) }) })
+	@JaxrsMethodDescribe(value = "列示所有可配置应用名称.", action = ActionListApplication.class)
+	@GET
+	@Path("list/application")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listApplication(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<List<ActionListApplication.Wo>> result = new ActionResult<>();
+		try {
+			result = new ActionListApplication().execute(effectivePerson);
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@Operation(summary = "列示所有节点数据备份.", operationId = OPERATIONID_PREFIX + "listDumpData", responses = {
+			@ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListDumpData.Wo.class))) }) })
+	@JaxrsMethodDescribe(value = "列示所有节点数据备份.", action = ActionListDumpData.class)
+	@GET
+	@Path("list/dump/data")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listDumpData(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<List<ActionListDumpData.Wo>> result = new ActionResult<>();
+		try {
+			result = new ActionListDumpData().execute(effectivePerson);
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@Operation(summary = "列示本节点数据备份.", operationId = OPERATIONID_PREFIX + "listDumpDataCurrentNode", responses = {
+			@ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListDumpDataCurrentNode.Wo.class))) }) })
+	@JaxrsMethodDescribe(value = "列示本节点数据备份.", action = ActionListDumpDataCurrentNode.class)
+	@GET
+	@Path("list/dump/data/current/node")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listDumpDataCurrentNode(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<List<ActionListDumpDataCurrentNode.Wo>> result = new ActionResult<>();
+		try {
+			result = new ActionListDumpDataCurrentNode().execute(effectivePerson);
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 }

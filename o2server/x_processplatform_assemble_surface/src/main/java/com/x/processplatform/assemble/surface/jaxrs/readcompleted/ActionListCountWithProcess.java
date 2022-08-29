@@ -17,6 +17,8 @@ import com.x.base.core.project.bean.NameValueCountPair;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.SortTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.ReadCompleted;
@@ -26,8 +28,13 @@ import com.x.processplatform.core.entity.element.Process;
 
 class ActionListCountWithProcess extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListCountWithProcess.class);
+
 	ActionResult<List<NameValueCountPair>> execute(EffectivePerson effectivePerson, String applicationFlag)
 			throws Exception {
+
+		LOGGER.debug("execute:{}, applicationFlag:{}.", effectivePerson::getDistinguishedName, () -> applicationFlag);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<NameValueCountPair>> result = new ActionResult<>();
 			Business business = new Business(emc);

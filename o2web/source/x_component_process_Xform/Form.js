@@ -303,19 +303,21 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
             while ((match = rex.exec(cssText)) !== null) {
                 var rulesStr = match[0];
-                if (rulesStr.indexOf(",") != -1) {
-                    var rules = rulesStr.split(/\s*,\s*/g);
-                    rules = rules.map(function (r) {
-                        return prefix + r;
-                    });
-                    var rule = rules.join(", ");
-                    cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
-                    rex.lastIndex = rex.lastIndex + (prefix.length * rules.length);
+                if( rulesStr.indexOf( "@media" ) === -1 ){
+                    if (rulesStr.indexOf(",") != -1) {
+                        var rules = rulesStr.split(/\s*,\s*/g);
+                        rules = rules.map(function (r) {
+                            return prefix + r;
+                        });
+                        var rule = rules.join(", ");
+                        cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
+                        rex.lastIndex = rex.lastIndex + (prefix.length * rules.length);
 
-                } else {
-                    var rule = prefix + match[0];
-                    cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
-                    rex.lastIndex = rex.lastIndex + prefix.length;
+                    } else {
+                        var rule = prefix + match[0];
+                        cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
+                        rex.lastIndex = rex.lastIndex + prefix.length;
+                    }
                 }
             }
 
@@ -727,7 +729,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
     },
     _loadMobileDefaultTools: function (callback) {
-        if (this.json.defaultTools) {
+        if (this.json.multiTools) {
+            if (callback) callback();
+        }else if (this.json.defaultTools) {
             if (callback) callback();
         } else {
             this.json.defaultTools = o2.JSON.get("../x_component_process_FormDesigner/Module/Form/toolbars.json", function (json) {
@@ -740,23 +744,36 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     _loadMobileActions: function (node, callback) {
         var tools = [];
         this._loadMobileDefaultTools(function () {
-            if (this.json.defaultTools) {
-                var jsonStr = JSON.stringify(this.json.defaultTools);
+
+            var jsonStr;
+            if( this.json.multiTools ){
+                jsonStr = JSON.stringify(this.json.multiTools);
                 jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.process.Xform.LP.form});
-                this.json.defaultTools = JSON.parse(jsonStr);
-                this.json.defaultTools.each(function (tool) {
+                this.multiToolsJson = JSON.parse(jsonStr);
+                var json = Array.clone(this.multiToolsJson);
+                json.each(function (tool) {
                     var flag = this._checkDefaultMobileActionItem(tool, this.options.readonly);
                     if (flag) tools.push(tool);
                 }.bind(this));
-            }
-            if (this.json.tools) {
-                var jsonStr = JSON.stringify(this.json.tools);
-                jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.process.Xform.LP.form});
-                this.json.tools = JSON.parse(jsonStr);
-                this.json.tools.each(function (tool) {
-                    var flag = this._checkCustomMobileActionItem(tool, this.options.readonly);
-                    if (flag) tools.push(tool);
-                }.bind(this));
+            }else{
+                if (this.json.defaultTools) {
+                    jsonStr = JSON.stringify(this.json.defaultTools);
+                    jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.process.Xform.LP.form});
+                    this.json.defaultTools = JSON.parse(jsonStr);
+                    this.json.defaultTools.each(function (tool) {
+                        var flag = this._checkDefaultMobileActionItem(tool, this.options.readonly);
+                        if (flag) tools.push(tool);
+                    }.bind(this));
+                }
+                if (this.json.tools) {
+                    jsonStr = JSON.stringify(this.json.tools);
+                    jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.process.Xform.LP.form});
+                    this.json.tools = JSON.parse(jsonStr);
+                    this.json.tools.each(function (tool) {
+                        var flag = this._checkCustomMobileActionItem(tool, this.options.readonly);
+                        if (flag) tools.push(tool);
+                    }.bind(this));
+                }
             }
             this.mobileTools = tools;
             //app上用原来的按钮样式
@@ -1221,26 +1238,19 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         return moduleNodes;
     },
 
-    _loadModules: function (dom, beforeLoadModule, replace) {
-        //var subDom = this.node.getFirst();
-        //while (subDom){
-        //    if (subDom.get("MWFtype")){
-        //        var json = this._getDomjson(subDom);
-        //        var module = this._loadModule(json, subDom);
-        //        this.modules.push(module);
-        //    }
-        //    subDom = subDom.getNext();
-        //}
+    _loadModules: function (dom, beforeLoadModule, replace, callback) {
         var moduleNodes = this._getModuleNodes(dom);
-        //alert(moduleNodes.length);
+        var modules = [], jsons = [];
 
         moduleNodes.each(function (node) {
             var json = this._getDomjson(node);
-            //if( json.type === "Subform" || json.moduleName === "subform" )this.subformCount++;
-            //if( json.type === "Subpage" || json.moduleName === "subpage" )this.subpageCount++;
+            jsons.push( json );
+
             var module = this._loadModule(json, node, beforeLoadModule, replace);
             this.modules.push(module);
+            modules.push( module );
         }.bind(this));
+        if( callback )callback( moduleNodes, jsons, modules )
     },
     _loadModule: function (json, node, beforeLoad, replace) {
         //console.log( json.id );
@@ -1740,7 +1750,15 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         // if (!this.options.readonly)
         //     if (this.businessData.work) this.workAction.checkDraft(this.businessData.work.id);
 
-        this.app.close();
+        // this.app.close();
+
+        if (layout.mobile) {
+            //移动端页面关闭
+            this.finishOnMobileReal();
+        } else {
+            this.app.close();
+        }
+
     },
     getMessageContent: function (data, maxLength, titlelp) {
         var content = "";
@@ -2831,6 +2849,98 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             options = Object.merge(options, option);
         }
         new mBox.Notice(options);
+    },
+    dialog: function( options ){
+        if( !options )options = {};
+        var opts = {
+            "style" : options.style || "user",
+            "title": options.title || "",
+            "width": options.width || 300,
+            "height" : options.height || 150,
+            "isMax": o2.typeOf( options.isMax ) === "boolean" ? options.isMax : false,
+            "isClose": o2.typeOf( options.isClose ) === "boolean"  ? options.isClose : true,
+            "isResize": o2.typeOf( options.isResize ) === "boolean"  ? options.isResize : true,
+            "isMove": o2.typeOf( options.isMove ) === "boolean"  ? options.isMove : true,
+            "isTitle": o2.typeOf( options.isTitle ) === "boolean"  ? options.isTitle : true,
+            "offset": options.offset || null,
+            "mask": o2.typeOf( options.mask ) === "boolean"  ? options.mask : true,
+            "container": options.container ||  ( layout.mobile ? $(documtn.body) : this.app.content ),
+            "duration": options.duration || 200,
+            "lp": options.lp || null,
+            "zindex": ( options.zindex || 100 ).toInt(),
+            "buttonList": options.buttonList || [
+                {
+                    "type": "ok",
+                    "text": MWF.LP.process.button.ok,
+                    "action": function(){
+                        if(options.ok){
+                            var flag = options.ok.call( this );
+                            if( flag === true || o2.typeOf(flag) === "null" )this.close();
+                        }else{
+                            this.close();
+                        }
+
+                    }
+                },
+                {
+                    "type": "cancel",
+                    "text": MWF.LP.process.button.cancel,
+                    "action": function(){
+                        if(options.close){
+                            var flag = options.close.call(this);
+                            if( flag === true || o2.typeOf(flag) === "null" )this.close();
+                        }else{
+                            this.close();
+                        }
+                    }
+                }
+            ]
+        };
+
+        var positionNode;
+        if( options.moduleName ){
+            var module, name = options.moduleName, subformName = options.subformName;
+            if( subformName && this.all[subformName +"_"+ name] ){
+                module = this.all[subformName +"_"+ name];
+            }else{
+                module = this.all[name];
+            }
+            if( module ){
+                opts.content = module.node;
+                positionNode = new Element("div", {style:"display:none;"}).inject( opts.content, "before" );
+            }
+        }else if( options.content ) {
+            opts.content = options.content;
+            var parent = opts.content.getParent();
+            if(parent)positionNode = new Element("div", {style:"display:none;"}).inject( opts.content, "before" );
+        }
+        if( options.url )opts.url = options.url;
+        if( options.html )opts.html = options.html;
+        if( options.text )opts.text = options.text;
+
+        opts.onQueryClose = function(){
+            if( positionNode && opts.content ){
+                opts.content.inject( positionNode, "after" );
+                positionNode.destroy();
+            }
+            if( o2.typeOf(options.onQueryClose) === "function" )options.onQueryClose.call( this );
+        }
+        if(opts.onPostClose)opts.onPostClose = options.onPostClose;
+        if(opts.onQueryLoad)opts.onQueryLoad = options.onQueryLoad;
+        if(opts.onPostLoad)opts.onPostLoad = options.onPostLoad;
+        if(opts.onQueryShow)opts.onQueryShow = options.onQueryShow;
+        if(opts.onPostShow)opts.onPostShow = options.onPostShow;
+
+        for( var key in options ){
+            if( !opts.hasOwnProperty( key ) ){
+                opts[key] = options[key];
+            }
+        }
+        var dialog;
+        MWF.require("MWF.xDesktop.Dialog", function(){
+            dialog = o2.DL.open(opts)
+        }, null, false);
+        return dialog;
     },
     addSplit: function () {
         if (!this.businessData.control["allowAddSplit"]) {
@@ -4666,39 +4776,47 @@ debugger;
     },
     // 分享到IM聊天
     shareToIMChat: function() {
-        var imJson = {}
-        if (this.businessData.workCompleted) {
-            imJson = {
-                type: "process",
-                title: this.businessData.workCompleted.title,
-                work: this.businessData.workCompleted.id,
-                process: this.businessData.workCompleted.process,
-                processName: this.businessData.workCompleted.processName,
-                application: this.businessData.workCompleted.application,
-                applicationName: this.businessData.workCompleted.applicationName,
-                job: this.businessData.workCompleted.job,
+        // app端 分享到聊天
+        if (window.o2android && window.o2android.postMessage) {
+            var body = {
+                type: "shareToIMChat",
             }
-        } else if (this.businessData.work) {
-            imJson = {
-                type: "process",
-                title: this.businessData.work.title,
-                work: this.businessData.work.id,
-                process: this.businessData.work.process,
-                processName: this.businessData.work.processName,
-                application: this.businessData.work.application,
-                applicationName: this.businessData.work.applicationName,
-                job: this.businessData.work.job,
-            }
+            window.o2android.postMessage(JSON.stringify(body));
         } else {
-            this.app.notice(MWF.xApplication.process.Xform.LP.noPermissionOrWorkNotExisted, "error")
-            return
+            var imJson = {}
+            if (this.businessData.workCompleted) {
+                imJson = {
+                    type: "process",
+                    title: this.businessData.workCompleted.title,
+                    work: this.businessData.workCompleted.id,
+                    process: this.businessData.workCompleted.process,
+                    processName: this.businessData.workCompleted.processName,
+                    application: this.businessData.workCompleted.application,
+                    applicationName: this.businessData.workCompleted.applicationName,
+                    job: this.businessData.workCompleted.job,
+                }
+            } else if (this.businessData.work) {
+                imJson = {
+                    type: "process",
+                    title: this.businessData.work.title,
+                    work: this.businessData.work.id,
+                    process: this.businessData.work.process,
+                    processName: this.businessData.work.processName,
+                    application: this.businessData.work.application,
+                    applicationName: this.businessData.work.applicationName,
+                    job: this.businessData.work.job,
+                }
+            } else {
+                this.app.notice(MWF.xApplication.process.Xform.LP.noPermissionOrWorkNotExisted, "error")
+                return
+            }
+            MWF.xDesktop.requireApp("IMV2", "Starter", function () {
+                var share = new MWF.xApplication.IMV2.ShareToConversation({
+                    msgBody: imJson
+                }, this.app);
+                share.load();
+            }.bind(this));
         }
-        MWF.xDesktop.requireApp("IMV2", "Starter", function () {
-            var share = new MWF.xApplication.IMV2.ShareToConversation({
-                msgBody: imJson
-            }, this.app);
-            share.load();
-        }.bind(this));
     },
 
     //移动端页面 工作处理完成后
@@ -4724,7 +4842,12 @@ debugger;
     },
 
     finishOnMobileReal: function () {
-        if (window.o2android && window.o2android.closeWork) {
+        if (window.o2android && window.o2android.postMessage) {
+            var body = {
+                type: "closeWork",
+            }
+            window.o2android.postMessage(JSON.stringify(body));
+        } else if (window.o2android && window.o2android.closeWork) {
             window.o2android.closeWork("");
         } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.closeWork) {
             window.webkit.messageHandlers.closeWork.postMessage("");
@@ -5227,7 +5350,6 @@ debugger;
 /**
  * @class PortalPage 门户页面。
  * @o2cn 门户页面
- * @alias PortalPage
  * @o2category FormComponents
  * @o2range {Portal}
  * @extends MWF.xApplication.process.Xform.Form
@@ -5294,6 +5416,18 @@ var PortalPage="";
  * @ignore
  */
 /**
+ * @event PortalPage#afterLoadProcessor
+ * @ignore
+ */
+/**
+ * @event PortalPage#beforeAddTask
+ * @ignore
+ */
+/**
+ * @event PortalPage#afterAddTask
+ * @ignore
+ */
+/**
  * @method PortalPage#getRouteDataList
  * @ignore
  */
@@ -5321,4 +5455,3 @@ var PortalPage="";
  * @method PortalPage#resumeTask
  * @ignore
  */
-

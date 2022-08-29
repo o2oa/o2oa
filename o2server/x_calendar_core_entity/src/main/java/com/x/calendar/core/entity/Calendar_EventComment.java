@@ -21,6 +21,8 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * 日程事件超长LOB信息
  * 如果事件COMMENT超过70个字符时，使用LOB字段进行存储，在COMMENT中使用'CLOB'来标记，在COMMENTID里指定其记录引用
@@ -28,6 +30,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
  * @author O2LEE
  *
  */
+@Schema(name = "Calendar_EventComment", description = "日程事件长信息.")
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.Calendar_EventComment.table, uniqueConstraints = {

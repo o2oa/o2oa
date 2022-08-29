@@ -1,5 +1,6 @@
 package com.x.base.core.project.config;
 
+import java.security.SecureRandom;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -17,20 +18,38 @@ public class StorageMappings extends ConcurrentHashMap<StorageType, CopyOnWriteA
 
 	private static final long serialVersionUID = 2056028069887353406L;
 
+	private Random random = new SecureRandom();
+
 	public StorageMappings() {
 		super();
 	}
 
 	public StorageMappings(ExternalStorageSources externalStorageSources) {
-		for (Entry<StorageType, CopyOnWriteArrayList<ExternalStorageSource>> entry : externalStorageSources
-				.entrySet()) {
+		for (StorageType o : StorageType.values()) {
 			CopyOnWriteArrayList<StorageMapping> list = new CopyOnWriteArrayList<>();
-			for (ExternalStorageSource externalStorageSource : entry.getValue()) {
+			for (ExternalStorageSource externalStorageSource : externalStorageSources.get(o)) {
 				if (BooleanUtils.isTrue(externalStorageSource.getEnable())) {
+					fillWithStore(externalStorageSources, externalStorageSource);
 					StorageMapping storageMapping = new StorageMapping(externalStorageSource);
 					list.add(storageMapping);
 				}
-				this.put(entry.getKey(), list);
+			}
+			this.put(o, list);
+		}
+	}
+
+	private void fillWithStore(ExternalStorageSources externalStorageSources,
+			ExternalStorageSource externalStorageSource) {
+		String key = externalStorageSource.getStore();
+		if (StringUtils.isNotBlank(key)) {
+			ExternalStorageSources.Store store = externalStorageSources.getStore().get(key);
+			if (null != store) {
+				externalStorageSource.setHost(store.getHost());
+				externalStorageSource.setName(store.getName());
+				externalStorageSource.setPassword(store.getPassword());
+				externalStorageSource.setUsername(store.getUsername());
+				externalStorageSource.setPort(store.getPort());
+				externalStorageSource.setProtocol(store.getProtocol());
 			}
 		}
 	}
@@ -39,7 +58,7 @@ public class StorageMappings extends ConcurrentHashMap<StorageType, CopyOnWriteA
 		super();
 		/** 填充空值 */
 		for (StorageType o : StorageType.values()) {
-			this.put(o, new CopyOnWriteArrayList<StorageMapping>());
+			this.put(o, new CopyOnWriteArrayList<>());
 		}
 		StorageServers storageServers = nodeConfigs.storageServers();
 		for (Entry<String, StorageServer> en : storageServers.entrySet()) {
@@ -62,20 +81,20 @@ public class StorageMappings extends ConcurrentHashMap<StorageType, CopyOnWriteA
 		}
 	}
 
-	private <T extends StorageObject> StorageType getStorageType(Class<T> clz) throws Exception {
+	private <T extends StorageObject> StorageType getStorageType(Class<T> clz) {
 		Storage o = clz.getAnnotation(Storage.class);
 		if (null == o) {
-			throw new Exception(
+			throw new IllegalStateException(
 					"can not find " + Storage.class.getName() + " annotation in class: " + clz.getName() + ".");
 		}
 		StorageType type = o.type();
 		if (null == type) {
-			throw new Exception("can not find storageType in class: " + clz.getName() + ".");
+			throw new IllegalStateException("can not find storageType in class: " + clz.getName() + ".");
 		}
 		return type;
 	}
 
-	public <T extends StorageObject> StorageMapping get(Class<T> clz, String name) throws Exception {
+	public <T extends StorageObject> StorageMapping get(Class<T> clz, String name) {
 		StorageType type = this.getStorageType(clz);
 		return this.get(type, name);
 	}
@@ -94,18 +113,17 @@ public class StorageMappings extends ConcurrentHashMap<StorageType, CopyOnWriteA
 		return storageMapping;
 	}
 
-	public <T extends StorageObject> StorageMapping random(Class<T> clz) throws Exception {
+	public <T extends StorageObject> StorageMapping random(Class<T> clz) {
 		StorageType type = this.getStorageType(clz);
 		return this.random(type);
 	}
 
-	private StorageMapping random(StorageType type) throws Exception {
+	private StorageMapping random(StorageType type) {
 		CopyOnWriteArrayList<StorageMapping> list = this.get(type);
 		if (ListTools.isEmpty(list)) {
-			throw new Exception("can not get storage of " + type);
+			throw new IllegalStateException("can not get storage of " + type);
 		}
 		int total = 0;
-		Random random = new Random();
 		for (StorageMapping o : list) {
 			total += o.getWeight();
 		}
@@ -117,6 +135,6 @@ public class StorageMappings extends ConcurrentHashMap<StorageType, CopyOnWriteA
 				return o;
 			}
 		}
-		throw new Exception("randomWithWeight error can not get available storage.");
+		throw new IllegalStateException("randomWithWeight error can not get available storage.");
 	}
 }

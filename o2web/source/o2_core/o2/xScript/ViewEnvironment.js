@@ -195,6 +195,45 @@ MWF.xScript = MWF.xScript || {};
 MWF.xScript.ViewEnvironment = function (ev) {
     var _form = ev.view;
 
+    /**
+     * 字符串，当前应用类型。<br/><br/>
+     * <table>
+     *   <tr>
+     *      <th>值</th>
+     *      <th>应用类型</th>
+     *   </tr>
+     *   <tr>
+     *      <td>cms</td>
+     *      <td>内容管理</td>
+     *   </tr>
+     *   <tr>
+     *      <td>process</td>
+     *      <td>流程管理</td>
+     *   </tr>
+     *   <tr>
+     *      <td>portal</td>
+     *      <td>门户管理</td>
+     *   </tr>
+     *   <tr>
+     *      <td>query</td>
+     *      <td>数据中心</td>
+     *   </tr>
+     * </table>
+     * @module appType
+     * @o2cn 应用类型
+     * @o2category web
+     * @o2ordernumber 170
+     * @instance
+     * @example
+     * var title;
+     * if( this.appType === "cms"  ){
+     *     title = this.documentContext.getDocument().title
+     * }else if( this.appType === "process"  ){
+     *     title = this.workContext.getWork().title
+     * }
+     **/
+    this.appType = "query";
+
     this.library = COMMON;
     //this.library.version = "4.0";
 
@@ -3274,9 +3313,18 @@ MWF.xScript.ViewEnvironment = function (ev) {
         },
         parseFilter : function( filter, parameter ){
             if( typeOf(filter) !== "array" )return [];
+            if( !parameter )parameter = {};
             var filterList = [];
             ( filter || [] ).each( function (d) {
-                var parameterName = d.path.replace(/\./g, "_");
+                //var parameterName = d.path.replace(/\./g, "_");
+                var pName = d.path.replace(/\./g, "_");
+
+                var parameterName = pName;
+                var suffix = 1;
+                while( parameter[parameterName] ){
+                    parameterName = pName + "_" + suffix;
+                    suffix++;
+                }
                 var value = d.value;
                 if( d.comparison === "like" || d.comparison === "notLike" ){
                     if( value.substr(0, 1) !== "%" )value = "%"+value;
@@ -3289,6 +3337,8 @@ MWF.xScript.ViewEnvironment = function (ev) {
                         value = "{d '"+value+"'}"
                     }else if( d.formatType === "timeValue" ){
                         value = "{t '"+value+"'}"
+                    } else if (d.formatType === "numberValue"){
+                        value = parseFloat(value);
                     }
                     parameter[ parameterName ] = value;
                 }
@@ -4257,6 +4307,15 @@ MWF.xScript.ViewEnvironment = function (ev) {
          */
         "notice": function (content, type, target, where, offset, option) {
             _form.notice(content, type, target, where, offset, option);
+        },
+
+        /**打开一个对话框
+         * @method dialog
+         * @static
+         * @see module:form.dialog
+         */
+        "dialog": function ( options ) {
+            return  _form.dialog( options );
         },
 
         /**　给视图添加事件。

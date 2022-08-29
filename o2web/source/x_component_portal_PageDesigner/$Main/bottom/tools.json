@@ -139,11 +139,11 @@
     "text": MWF.APPPOD.LP.modules.statement,
     "className": "Statement"
   },
-  "datagrid": {
-    "icon": "datagrid.png",
-    "text": MWF.APPPOD.LP.modules.datagrid,
-    "className": "Datagrid"
-  },
+//  "datagrid": {
+//    "icon": "datagrid.png",
+//    "text": MWF.APPPOD.LP.modules.datagrid,
+//    "className": "Datagrid"
+//  },
   "datatable": {
     "icon": "datagrid.png",
     "text": MWF.APPPOD.LP.modules.datatable,

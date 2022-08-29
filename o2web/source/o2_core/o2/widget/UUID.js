@@ -39,6 +39,36 @@ o2.widget.UUID = new Class({
 				+ this.getIntegerBits(this.rand(8191), 0, 15); // this last number is two octets long
 		return tl + tm + thv + csar + csl + n;
 	},
+	createTrueUUID: function(){
+		//
+		// Loose interpretation of the specification DCE 1.1: Remote Procedure Call
+		// described at
+		// http://www.opengroup.org/onlinepubs/009629399/apdxa.htm#tagtcjh_37
+		// since JavaScript doesn't allow access to internal systems, the last 48
+		// bits
+		// of the node section is made up using a series of random numbers (6 octets
+		// long).
+		//  
+		var dg = new Date(1582, 10, 15, 0, 0, 0, 0);
+		var dc = new Date();
+		var t = dc.getTime() - dg.getTime();
+		var tl = this.getIntegerBits(t, 0, 31);
+		var tm = this.getIntegerBits(t, 32, 47);
+		var thv = this.getIntegerBits(t, 48, 59) + '1'; // version 1, security version is 2
+		var csar = this.getIntegerBits(this.rand(4095), 0, 7);
+		var csl = this.getIntegerBits(this.rand(4095), 0, 7);
+
+		// since detection of anything about the machine/browser is far to buggy,
+		// include some more random numbers here
+		// if NIC or an IP can be obtained reliably, that should be put in
+		// here instead.
+		var n = this.getIntegerBits(this.rand(8191), 0, 7)
+				+ this.getIntegerBits(this.rand(8191), 8, 15)
+				+ this.getIntegerBits(this.rand(8191), 0, 7)
+				+ this.getIntegerBits(this.rand(8191), 8, 15)
+				+ this.getIntegerBits(this.rand(8191), 0, 15); // this last number is two octets long
+		return tl +"-"+ tm +"-"+ thv +"-"+ csar + csl +"-"+ n;
+	},
 	getIntegerBits: function(val, start, end){
 		var base16 = this.returnBase(val, 16);
 		var quadArray = new Array();

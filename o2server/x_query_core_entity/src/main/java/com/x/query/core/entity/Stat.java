@@ -30,10 +30,13 @@ import com.x.base.core.entity.annotation.Equal;
 import com.x.base.core.entity.annotation.Flag;
 import com.x.base.core.project.annotation.FieldDescribe;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * 统计对象
  * @author sword
  */
+@Schema(name = "Stat", description = "数据中心统计.")
 @Entity
 @ContainerEntity(dumpSize = 10, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Stat.table, uniqueConstraints = {

@@ -50,7 +50,7 @@ class ActionInfo extends BaseAction {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
 			if (StringUtils.isEmpty(accessToken)) {
-				String bearer = request.getHeader(HttpToken.X_Authorization);
+				String bearer = request.getHeader(HttpToken.X_AUTHORIZATION);
 				if (StringUtils.isNotEmpty(bearer)) {
 					accessToken = StringUtils.substringAfter(bearer, " ");
 				}
@@ -95,9 +95,6 @@ class ActionInfo extends BaseAction {
 		if (optional.isPresent()) {
 			return (CompiledScript) optional.get();
 		} else {
-			System.out.println("!!!!!###");
-			System.out.println(ScriptingFactory.functionalization(text));
-			System.out.println("!!!!!###");
 			CompiledScript compiledScript = ScriptingFactory.functionalizationCompile(text);
 			CacheManager.put(cache, cacheKey, compiledScript);
 			return compiledScript;

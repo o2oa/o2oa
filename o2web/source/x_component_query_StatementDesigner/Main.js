@@ -216,6 +216,8 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
             var _self = this;
             var options = {
                 "appId": "query.StatementDesigner"+statement.id,
+                "id" : statement.id,
+                "application": _self.application.id,
                 "onQueryLoad": function(){
                     this.actions = _self.actions;
                     this.category = _self;
@@ -484,7 +486,7 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
 	    debugger;
 		this.getStatementData(this.options.id, function(vdata){
             this.setTitle(this.options.appTitle + "-"+vdata.name);
-            this.taskitem.setText(this.options.appTitle + "-"+vdata.name);
+            if(this.taskitem)this.taskitem.setText(this.options.appTitle + "-"+vdata.name);
             this.options.appTitle = this.options.appTitle + "-"+vdata.name;
             this.statement = new MWF.xApplication.query.StatementDesigner.Statement(this, vdata);
 			this.statement.load();
@@ -568,9 +570,13 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
         var openViews = [];
         openViews.push(this.statement.data.id);
         var currentId = this.statement.data.id;
+        var application = o2.typeOf(this.application) === "object" ? {
+            name: this.application.name,
+            id: this.application.id
+        } : this.application;
         return {
             "id": this.options.id,
-            "application": this.application,
+            "application": application,
             "openViews": openViews,
             "currentId": currentId
         };

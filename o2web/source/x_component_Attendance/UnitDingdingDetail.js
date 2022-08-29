@@ -36,20 +36,30 @@ MWF.xApplication.Attendance.UnitDingdingDetail = new Class({
             this.detailPage = this.tabs.addTab(this.detailArea, this.app.lp.unitSigninDetail, false);
             this.detailPage.contentNodeArea.set("class", "detailPage");
             this.detailPage.addEvent("show", function () {
+                this.detailPage.tabNode.addClass( "mainColor_border" );
+                this.detailPage.textNode.addClass( "mainColor_color" );
                 if (!this.detailExplorer) {
                     this.detailExplorer = new MWF.xApplication.Attendance.UnitDingdingDetail.Explorer(this.detailArea, this);
                     this.detailExplorer.load();
                 }
+            }.bind(this)).addEvent("hide", function(){
+                this.detailPage.tabNode.removeClass( "mainColor_border" );
+                this.detailPage.textNode.removeClass( "mainColor_color" );
             }.bind(this));
 
 
             this.detailStaticPage = this.tabs.addTab(this.detailStaticArea, this.app.lp.unitSigninStatic, false);
             this.detailStaticPage.contentNodeArea.set("class", "detailStaticPage");
             this.detailStaticPage.addEvent("show", function () {
+                this.detailStaticPage.tabNode.addClass( "mainColor_border" );
+                this.detailStaticPage.textNode.addClass( "mainColor_color" );
                 if (!this.detailStaticExplorer) {
                     this.detailStaticExplorer = new MWF.xApplication.Attendance.UnitDingdingDetail.DetailStaticExplorer(this.detailStaticArea, this);
                     this.detailStaticExplorer.load();
                 }
+            }.bind(this)).addEvent("hide", function(){
+                this.detailStaticPage.tabNode.removeClass( "mainColor_border" );
+                this.detailStaticPage.textNode.removeClass( "mainColor_color" );
             }.bind(this));
 
             this.tabs.pages[0].showTab();
@@ -113,60 +123,77 @@ MWF.xApplication.Attendance.UnitDingdingDetail.Explorer = new Class({
         this.fileterNode.set("html", html);
 
         MWF.xDesktop.requireApp("Template", "MForm", function () {
+            var itemTemplate = {
+                unit: { text: lp.unit, type: "org", orgType: "unit", notEmpty: true, style: { "min-width": "100px" } },
+                year: {
+                    text: lp.annuaal,
+                    "type": "select",
+                    "selectValue": function () {
+                        var years = [];
+                        var year = new Date().getFullYear();
+                        for (var i = 0; i < 6; i++) {
+                            years.push(year--);
+                        }
+                        return years;
+                    },
+                    "event": {
+                        "change": function (item, ev) {
+                            var values = this.getDateSelectValue();
+                            item.form.getItem("day").resetItemOptions(values, values)
+                        }.bind(this)
+                    }
+                },
+                month: {
+                    text: lp.months,
+                    "type": "select",
+                    "defaultValue": function () {
+                        var month = (new Date().getMonth() + 1).toString();
+                        return month.length == 1 ? "0" + month : month;
+                    },
+                    "selectValue": ["", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"],
+                    "event": {
+                        "change": function (item, ev) {
+                            var values = this.getDateSelectValue();
+                            item.form.getItem("day").resetItemOptions(values, values)
+                        }.bind(this)
+                    }
+                },
+                day: { text: lp.date, "type": "select", "selectValue": this.getDateSelectValue.bind(this) },
+                checkType: { text: lp.signinType, "type": "select", "selectValue": ["", "OnDuty", "OffDuty"], "selectText": lp.signinTypeSelectText },
+                timeResult: { text: lp.signinResult, "type": "select", "selectValue": ["", "Normal", "Early", "Late", "SeriousLate", "Absenteeism", "NotSigned"], "selectText": lp.signinResultSelectText },
+                action: {
+                    "value": lp.query, type: "button", className: "filterButton",  clazz:"mainColor_bg", event: {
+                        click: function () {
+                            var result = this.form.getResult(true, ",", true, true, false);
+                            if (!result) return;
+                            if (result.day && result.day != "") {
+                                result.q_date = result.year + "-" + result.month + "-" + result.day;
+                            }
+                            this.loadView(result);
+                        }.bind(this)
+                    }
+                }
+            }
+            if( this.app.isAdmin() ){
+                itemTemplate.q_unitName = { text : lp.unit, type : "org", orgType : "unit", notEmpty : true, style : {"min-width": "100px" } };
+            }else{
+                var unitNameArr = []
+                var unitValueArr = this.app.manageUnits;
+                for (let i = 0; i < unitValueArr.length; i++) {
+                    const element = unitValueArr[i];
+                    if(element.indexOf("@") > -1){
+                        const name  = element.split("@")[0];
+                        unitNameArr.push(name);
+                    } else {
+                        unitNameArr.push(element);
+                    }
+                }
+                itemTemplate.q_unitName = { text : lp.unit, type : "select", selectValue : unitValueArr, "selectText": unitNameArr,  notEmpty : true, style : {"min-width": "100px" } };
+            }
             this.form = new MForm(this.fileterNode, {}, {
                 style: "attendance",
                 isEdited: true,
-                itemTemplate: {
-                    unit: { text: lp.unit, type: "org", orgType: "unit", notEmpty: true, style: { "min-width": "100px" } },
-                    year: {
-                        text: lp.annuaal,
-                        "type": "select",
-                        "selectValue": function () {
-                            var years = [];
-                            var year = new Date().getFullYear();
-                            for (var i = 0; i < 6; i++) {
-                                years.push(year--);
-                            }
-                            return years;
-                        },
-                        "event": {
-                            "change": function (item, ev) {
-                                var values = this.getDateSelectValue();
-                                item.form.getItem("day").resetItemOptions(values, values)
-                            }.bind(this)
-                        }
-                    },
-                    month: {
-                        text: lp.months,
-                        "type": "select",
-                        "defaultValue": function () {
-                            var month = (new Date().getMonth() + 1).toString();
-                            return month.length == 1 ? "0" + month : month;
-                        },
-                        "selectValue": ["", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"],
-                        "event": {
-                            "change": function (item, ev) {
-                                var values = this.getDateSelectValue();
-                                item.form.getItem("day").resetItemOptions(values, values)
-                            }.bind(this)
-                        }
-                    },
-                    day: { text: lp.date, "type": "select", "selectValue": this.getDateSelectValue.bind(this) },
-                    checkType: { text: lp.signinType, "type": "select", "selectValue": ["", "OnDuty", "OffDuty"], "selectText": lp.signinTypeSelectText },
-                    timeResult: { text: lp.signinResult, "type": "select", "selectValue": ["", "Normal", "Early", "Late", "SeriousLate", "Absenteeism", "NotSigned"], "selectText": lp.signinResultSelectText },
-                    action: {
-                        "value": lp.query, type: "button", className: "filterButton", event: {
-                            click: function () {
-                                var result = this.form.getResult(true, ",", true, true, false);
-                                if (!result) return;
-                                if (result.day && result.day != "") {
-                                    result.q_date = result.year + "-" + result.month + "-" + result.day;
-                                }
-                                this.loadView(result);
-                            }.bind(this)
-                        }
-                    }
-                }
+                itemTemplate: itemTemplate
             }, this.app, this.app.css);
             this.form.load();
         }.bind(this), true);
@@ -251,42 +278,59 @@ MWF.xApplication.Attendance.UnitDingdingDetail.DetailStaticExplorer = new Class(
         this.fileterNode.set("html", html);
 
         MWF.xDesktop.requireApp("Template", "MForm", function () {
+            var itemTemplate = {
+                q_unitName: { text: lp.unit, type: "org", orgType: "unit", notEmpty: true, style: { "min-width": "100px" } },
+                cycleYear: {
+                    text: lp.annuaal,
+                    "type": "select",
+                    "selectValue": function () {
+                        var years = [];
+                        var year = new Date().getFullYear();
+                        for (var i = 0; i < 6; i++) {
+                            years.push(year--);
+                        }
+                        return years;
+                    }
+                },
+                cycleMonth: {
+                    text: lp.months, notEmpty: true,
+                    "type": "select",
+                    "defaultValue": function () {
+                        var month = (new Date().getMonth() + 1).toString();
+                        return month.length == 1 ? "0" + month : month;
+                    },
+                    "selectValue": ["", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
+                },
+                action: {
+                    "value": lp.query, type: "button", className: "filterButton",  clazz:"mainColor_bg", event: {
+                        click: function () {
+                            var result = this.form.getResult(true, ",", true, true, false);
+                            if (!result) return;
+                            this.loadView(result);
+                        }.bind(this)
+                    }
+                }
+            }
+            if( this.app.isAdmin() ){
+                itemTemplate.q_unitName = { text : lp.unit, type : "org", orgType : "unit", notEmpty : true, style : {"min-width": "100px" } };
+            }else{
+                var unitNameArr = []
+                var unitValueArr = this.app.manageUnits;
+                for (let i = 0; i < unitValueArr.length; i++) {
+                    const element = unitValueArr[i];
+                    if(element.indexOf("@") > -1){
+                        const name  = element.split("@")[0];
+                        unitNameArr.push(name);
+                    } else {
+                        unitNameArr.push(element);
+                    }
+                }
+                itemTemplate.q_unitName = { text : lp.unit, type : "select", selectValue : unitValueArr, "selectText": unitNameArr,  notEmpty : true, style : {"min-width": "100px" } };
+            }
             this.form = new MForm(this.fileterNode, {}, {
                 style: "attendance",
                 isEdited: true,
-                itemTemplate: {
-                    q_unitName: { text: lp.unit, type: "org", orgType: "unit", notEmpty: true, style: { "min-width": "100px" } },
-                    cycleYear: {
-                        text: lp.annuaal,
-                        "type": "select",
-                        "selectValue": function () {
-                            var years = [];
-                            var year = new Date().getFullYear();
-                            for (var i = 0; i < 6; i++) {
-                                years.push(year--);
-                            }
-                            return years;
-                        }
-                    },
-                    cycleMonth: {
-                        text: lp.months, notEmpty: true,
-                        "type": "select",
-                        "defaultValue": function () {
-                            var month = (new Date().getMonth() + 1).toString();
-                            return month.length == 1 ? "0" + month : month;
-                        },
-                        "selectValue": ["", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
-                    },
-                    action: {
-                        "value": lp.query, type: "button", className: "filterButton", event: {
-                            click: function () {
-                                var result = this.form.getResult(true, ",", true, true, false);
-                                if (!result) return;
-                                this.loadView(result);
-                            }.bind(this)
-                        }
-                    }
-                }
+                itemTemplate: itemTemplate
             }, this.app, this.app.css);
             this.form.load();
         }.bind(this), true);

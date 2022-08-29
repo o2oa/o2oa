@@ -31,6 +31,7 @@ import com.x.processplatform.core.entity.element.util.WorkLogTree;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Nodes;
 
+@Deprecated(forRemoval = true)
 class ActionAddSplit extends BaseAction {
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement)
@@ -118,7 +119,7 @@ class ActionAddSplit extends BaseAction {
 	}
 
 	private List<WorkLog> listWorkLog(Business business, Work work) throws Exception {
-		return business.entityManagerContainer().listEqual(WorkLog.class, WorkLog.job_FIELDNAME, work.getJob());
+		return business.entityManagerContainer().listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, work.getJob());
 	}
 
 	public static class Req extends GsonPropertyObject {

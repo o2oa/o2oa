@@ -13,6 +13,8 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.EqualsTerms;
 import com.x.base.core.project.jaxrs.InTerms;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
@@ -21,6 +23,8 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Application;
 
 class ActionManageListPrev extends BaseAction {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionManageListPrev.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String id, Integer count, String applicationFlag)
 			throws Exception {
@@ -41,7 +45,7 @@ class ActionManageListPrev extends BaseAction {
 				result = this.standardListPrev(Wo.copier, id, count,  JpaObject.sequence_FIELDNAME, equalsTerms, null, null, null, null,
 						null, null, null, true, DESC);
 			} else {
-				List<String> ids = business.process().listControlableProcess(effectivePerson, application);
+				List<String> ids = business.process().listControllableProcess(effectivePerson, application);
 				if (ListTools.isNotEmpty(ids)) {
 					InTerms inTerms = new InTerms();
 					inTerms.put("process", ids);

@@ -172,6 +172,9 @@ o2.widget.TreeEditor.Tree.Node = new Class({
 				this.hideItemAction();
 			}.bind(this)
 		});
+		if( this.options.default ){
+			this.setDefaultItem();
+		}
 	},
 
 	appendChild: function(obj){
@@ -196,12 +199,52 @@ o2.widget.TreeEditor.Tree.Node = new Class({
 		
 		return treeNode;
 	},
+	createTextNode: function(){
+		this.textNode = new Element("td",{
+			"styles": this.tree.css.textNode
+		}).inject(this.nodeArea);
+		if (this.options.style){
+			if (this.tree.css[this.options.style]){
+				this.textNode.setStyles(this.tree.css[this.options.style].textNode);
+			}
+		}
+		//	var width = this.tree.container.getSize().x - (this.level*20+40);
+		//	this.textNode.setStyle("width", ""+width+"px");
+
+		var textDivNode = new Element("div", {
+			"styles": {"display": "inline-block"},
+			//	"html": this.options.text,
+			"title": this.options.title
+		});
+		textDivNode.setStyles(this.tree.css.textDivNode);
+		if (this.options.style){
+			if (this.tree.css[this.options.style]){
+				textDivNode.setStyles(this.tree.css[this.options.style].textDivNode);
+			}
+		}
+
+		if (this.tree.options.text=="html"){
+			textDivNode.set("html", this.options.text);
+		}else{
+			textDivNode.set("text", this.options.text);
+		}
+
+		textDivNode.addEvent("click", function(e){
+			this.clickNode(e);
+		}.bind(this));
+
+		textDivNode.inject(this.textNode);
+		if( this.options.default ){
+			this.selectNode();
+		}
+	},
 	doAction: function(e){
 		var textNode = e.target;
 		this.editItem(textNode);
 	},
 	hideItemAction: function(){
 		if (this.actionNode) this.actionNode.setStyle("display", "none");
+		if( this.defaultNode )this.defaultNode.show();
 	},
 	setActionPosition: function(){
 		if (this.actionNode){
@@ -226,11 +269,21 @@ o2.widget.TreeEditor.Tree.Node = new Class({
 		if (!this.actionNode) this.createItemActionNode();
 		this.setActionPosition();
 		this.actionNode.setStyle("display", "block");
+		if( this.defaultNode )this.defaultNode.hide();
 	},
 	createItemActionNode: function(){
 		this.actionNode = new Element("div", {
 			"styles": this.tree.css.itemActionNode
 		}).inject(this.itemNode);
+
+		this.defaultAction = new Element("div", {
+			"styles": this.tree.css.itemCheckActionNode,
+			"title": o2.LP.process.formAction.defaultNode,
+			"text": "✔",
+			"events": {
+				"click": this.switchDefaultItem.bind(this)
+			}
+		}).inject(this.actionNode);
 		
 		var deleteAction = new Element("div", {
 			"styles": this.tree.css.itemDeleteActionNode,
@@ -244,7 +297,7 @@ o2.widget.TreeEditor.Tree.Node = new Class({
 		
 		var scriptAction = new Element("div", {
 			"styles": this.tree.css.itemScriptActionNode,
-			"title": o2.LP.process.formAction["script"],
+			"title": o2.LP.process.formAction["clickScript"],
 			"events": {
 				"click": function(e){
 					this.editScriptItem(e);
@@ -317,7 +370,7 @@ o2.widget.TreeEditor.Tree.Node = new Class({
 				var node = new Element("div").inject(this.itemNode, "after");
 				o2.require("o2.widget.ScriptArea", function(){
 					this.scriptArea = new o2.widget.ScriptArea(node, {
-						"title": o2.LP.process.formAction["script"],
+						"title": o2.LP.process.formAction["clickScript"],
 						"maxObj": this.tree.editor.options.maxObj,
 						"style": "treeEditor",
 						"onChange": function(){
@@ -349,7 +402,7 @@ o2.widget.TreeEditor.Tree.Node = new Class({
 				this.scriptArea.container.scrollIntoView();
 				this.scriptArea.focus();
 				this.setActionPosition();
-			}.bind(this));;
+			}.bind(this));
 
 			this.isEditScript = true;
 			this.tree.currentEditNode = this;
@@ -371,6 +424,37 @@ o2.widget.TreeEditor.Tree.Node = new Class({
 		var textDivNode = treeNode.textNode.getElement("div");
 		treeNode.editItem(textDivNode);
 		
+	},
+	switchDefaultItem: function(e){
+		if( this.options.default ){
+			this.unsetDefaultItem();
+		}else{
+			if( this.tree.defaultItem ){
+				this.tree.defaultItem.unsetDefaultItem();
+			}
+			this.setDefaultItem( e );
+		}
+		this.tree.editor.fireEvent("change");
+	},
+	unsetDefaultItem: function(){
+		this.options.default = false;
+		if( this.defaultNode )this.defaultNode.destroy();
+		this.defaultAction.setStyles( this.tree.css.itemCheckActionNode );
+		this.tree.defaultItem = null;
+		this.unselectNode();
+	},
+	setDefaultItem: function(e){
+		this.defaultNode = new Element("div", {
+			"styles": this.tree.css.itemCheckedNode,
+			"title": o2.LP.process.formAction.defaultNode,
+			"text": "✔"
+		}).inject(this.itemNode);
+		this.tree.defaultItem = this;
+		if(e){
+			this.options.default = true;
+			this.defaultNode.hide();
+			this.defaultAction.setStyles( this.tree.css.itemCheckedActionNode );
+		}
 	},
 	deleteItem: function(e){
 		var treeNode = this;

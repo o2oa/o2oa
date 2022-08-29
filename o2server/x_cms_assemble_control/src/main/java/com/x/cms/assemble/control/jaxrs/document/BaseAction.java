@@ -27,7 +27,6 @@ import com.x.cms.assemble.control.service.FileInfoServiceAdv;
 import com.x.cms.assemble.control.service.FormServiceAdv;
 import com.x.cms.assemble.control.service.LogService;
 import com.x.cms.assemble.control.service.PermissionQueryService;
-import com.x.cms.assemble.control.service.QueryViewService;
 import com.x.cms.assemble.control.service.UserManagerService;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.Document;
@@ -39,7 +38,7 @@ public class BaseAction extends StandardJaxrsAction {
 	protected Cache.CacheCategory cacheCategory = new Cache.CacheCategory(Item.class, Document.class, DocumentCommentInfo.class);
 
 	protected LogService logService = new LogService();
-	protected QueryViewService queryViewService = new QueryViewService();
+//	protected QueryViewService queryViewService = new QueryViewService();
 	protected DocumentViewRecordServiceAdv documentViewRecordServiceAdv = new DocumentViewRecordServiceAdv();
 	protected DocumentPersistService documentPersistService = new DocumentPersistService();
 	protected DocumentQueryService documentQueryService = new DocumentQueryService();

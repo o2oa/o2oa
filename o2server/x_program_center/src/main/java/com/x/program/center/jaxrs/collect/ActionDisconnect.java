@@ -11,7 +11,7 @@ class ActionDisconnect extends BaseAction {
 	ActionResult<Wo> execute() throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
-		if (BooleanUtils.isNotTrue(Config.nodes().centerServers().first().getValue().getConfigApiEnable())) {
+		if (BooleanUtils.isNotTrue(Config.general().getConfigApiEnable())) {
 			throw new ExceptionModifyConfig();
 		}
 		wo.setValue(true);
@@ -23,6 +23,9 @@ class ActionDisconnect extends BaseAction {
 	}
 
 	public static class Wo extends WrapBoolean {
+
+		private static final long serialVersionUID = -5154323263692212576L;
+
 	}
 
 }

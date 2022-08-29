@@ -394,9 +394,6 @@ public class UserManagerService {
 		if (effectivePerson.isManager()) {
 			return true;
 		}
-		if (effectivePerson.isManager() || effectivePerson.isCipher()) {
-			return true;
-		}
 		if (this.isHasPlatformRole(effectivePerson.getDistinguishedName(), ThisApplication.ROLE_CMSManager)) {
 			return true;
 		}
@@ -631,11 +628,7 @@ public class UserManagerService {
 	}
 
 	public boolean hasCategoryManagerPermission( EffectivePerson person, String appId) throws Exception {
-		//xadmin或者Cipher
-		if( person.isManager() || person.isCipher() ){
-			return true;
-		}
-		if( StringUtils.equalsIgnoreCase("xadmin", person.getName() ) || StringUtils.equalsIgnoreCase("xadmin", person.getDistinguishedName() ) ){
+		if( person.isManager()){
 			return true;
 		}
 		UserManagerService userManagerService = new UserManagerService();

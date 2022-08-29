@@ -43,6 +43,8 @@ MWF.xApplication.cms.ColumnManager.LP = {
         "empty": "空白表单",
         "publishEdit": "发布类编辑表单",
         "publishRead": "发布类阅读表单",
+        "publishEditGreen": "发布类编辑表单(绿色)",
+        "publishReadGreen": "发布类阅读表单(绿色)",
         "dataInput": "数据录入类表单"
     },
 
@@ -102,7 +104,11 @@ MWF.xApplication.cms.ColumnManager.LP = {
         "none" : "无",
         "noProcess" : "系统中没有您可以管理的流程",
         "documentType" : "文档类型",
-        "excelImportView" : "数据导入导出视图"
+        "excelImportView" : "数据导入导出视图",
+
+        "useProcessForm": "使用流程表单",
+        "useProcessFormNote": "注：如果使用流程表单，那么使用流程表单打开发布后的文档，否则使用分类设置的表单打开。",
+        "setSucess": "设置成功"
 	},
 	"form": {
         "create": "新建表单",
@@ -170,6 +176,7 @@ MWF.xApplication.cms.ColumnManager.LP = {
         "appType" : "栏目类型",
         "ignoreTitle" : "忽略标题",
         "latest" : "检查草稿",
+        "delayView": "定时视图",
         "defaultEditForm": "默认编辑表单",
         "defaultReadForm": "默认阅读表单",
         "editformNote": "注：创建分类时的默认编辑表单",
@@ -219,6 +226,8 @@ MWF.xApplication.cms.ColumnManager.LP = {
         "loadFiles": "批量上传附件"
     },
 
+    "enable": "启用",
+    "disable": "禁用",
     "name": "名称",
     "alias": "别名",
     "attachment": "附件",
@@ -291,6 +300,7 @@ MWF.xApplication.cms.ColumnManager.LP = {
     "ignoreTitleSelectText": ["新建界面不填写标题","新建界面需要填写标题"],
     "checkDraftSelectText": ["新建界面检查草稿","新建界面不检查草稿"],
     "showAllDocumentSelectText": ["显示所有文档视图","隐藏所有文档视图"],
+    "showDelayDocumentSelectText": ["显示定时发布文档视图","隐藏定时发布文档视图"],
 
     "selectRelateFormNotice": "请选择需粘贴视图的关联表单",
 

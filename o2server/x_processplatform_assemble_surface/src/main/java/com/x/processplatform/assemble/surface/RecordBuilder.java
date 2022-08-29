@@ -115,6 +115,8 @@ public class RecordBuilder {
 		// 记录处理身份所在组织层级组织排序号
 		rec.getProperties()
 				.setUnitLevelOrderNumber(business.organization().unit().getLevelOrderNumber(rec.getUnit(), ""));
+		// 记录处理人身份所在目录的层级名.
+		rec.getProperties().setUnitLevelName(business.organization().unit().getLevelName(rec.getUnit(), ""));
 	}
 
 	private static void setNextManualListAndNextManualTaskIdentityList(Business business, List<String> newlyTaskIds,

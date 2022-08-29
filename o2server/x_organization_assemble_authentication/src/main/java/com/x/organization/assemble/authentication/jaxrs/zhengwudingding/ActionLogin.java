@@ -32,13 +32,13 @@ import com.x.organization.core.entity.Person_;
 
 class ActionLogin extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionLogin.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionLogin.class);
 
 	ActionResult<Wo> execute(HttpServletRequest request, HttpServletResponse response, EffectivePerson effectivePerson,
 			String code) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			logger.debug("receive:{}", code);
+			LOGGER.debug("execute:{}, code:{}.", effectivePerson::getDistinguishedName, () -> code);
 			String dingUserId = this.getDingUserId(code);
 			String userId = this.getUserIdByDingUserId(dingUserId);
 			Business business = new Business(emc);
@@ -50,7 +50,7 @@ class ActionLogin extends BaseAction {
 			List<String> roles = business.organization().role().listWithPerson(person.getDistinguishedName());
 			wo.setRoleList(roles);
 			EffectivePerson effective = new EffectivePerson(wo.getDistinguishedName(), TokenType.user,
-					Config.token().getCipher());
+					Config.token().getCipher(), Config.person().getEncryptType());
 			wo.setToken(effective.getToken());
 			HttpToken httpToken = new HttpToken();
 			httpToken.setToken(request, response, effective);

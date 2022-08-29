@@ -6,7 +6,7 @@ MWF.xApplication.cms.Xform = MWF.xApplication.cms.Xform || {};
 MWF.xApplication.cms.Xform.LP = Object.merge({},  MWF.xApplication.process.Xform.LP, {
     "dataSaved": "Data saved successfully",
     "documentPublished": "Published successfully",
-
+    "documentDelayedPublished": "Timed Published Successfully",
 
     "noSelectRange": "Cannot determine the selection range",
 
@@ -83,6 +83,8 @@ MWF.xApplication.cms.Xform.LP = Object.merge({},  MWF.xApplication.process.Xform
         "saveTitle": "Save Document",
         "publish": "Publish",
         "publishTitle": "Publish Document",
+        "publishDelayed": "Timed publishing",
+        "publishDelayedTitle": "Publish the document regularly",
         "saveDraft": "Save Draft",
         "saveDraftTitle": "Save Draft",
         "popular": "Set focus document",

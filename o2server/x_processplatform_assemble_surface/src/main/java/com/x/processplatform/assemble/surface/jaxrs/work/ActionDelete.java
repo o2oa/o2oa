@@ -16,11 +16,14 @@ import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Work;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionDelete extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionDelete.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDelete.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 		ActionResult<Wo> result = new ActionResult<>();
 		Work work = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -41,10 +44,16 @@ class ActionDelete extends BaseAction {
 		return result;
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.work.ActionDelete.Wo")
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = 5791562285104343968L;
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.work.ActionDelete.WoControl")
 	public static class WoControl extends WorkControl {
+
+		private static final long serialVersionUID = -7502336484666914474L;
 	}
 }

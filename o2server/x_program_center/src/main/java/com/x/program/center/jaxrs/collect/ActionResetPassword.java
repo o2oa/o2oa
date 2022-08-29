@@ -18,7 +18,7 @@ class ActionResetPassword extends BaseAction {
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		ActionResult<Wo> result = new ActionResult<>();
-		if (BooleanUtils.isNotTrue(Config.nodes().centerServers().first().getValue().getConfigApiEnable())) {
+		if (BooleanUtils.isNotTrue(Config.general().getConfigApiEnable())) {
 			throw new ExceptionModifyConfig();
 		}
 		String name = wi.getName();
@@ -53,6 +53,8 @@ class ActionResetPassword extends BaseAction {
 
 	public static class Wi extends Collect {
 
+		private static final long serialVersionUID = 5230110648080511863L;
+
 		static WrapCopier<Wi, Collect> copier = WrapCopierFactory.wi(Wi.class, Collect.class, null, null);
 
 		private String mobile;
@@ -77,5 +79,8 @@ class ActionResetPassword extends BaseAction {
 	}
 
 	public static class Wo extends WrapBoolean {
+
+		private static final long serialVersionUID = -7763796793681024809L;
+		
 	}
 }

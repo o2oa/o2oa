@@ -7,6 +7,7 @@ MWF.xApplication.process.ProcessDesigner.widget.ScriptText = new Class({
         "maskNode": $(document.body),
         "height": null,
         "maxObj": null,
+        "forceType": null,
         "type": "service"   //web or service
     },
     initialize: function(node, code, app, options){
@@ -66,6 +67,7 @@ MWF.xApplication.process.ProcessDesigner.widget.ScriptText = new Class({
         MWF.require("MWF.widget.JavascriptEditor", function(){
             this.editor = new MWF.widget.JavascriptEditor(this.editorNode, {
                 "runtime": "server",
+                "forceType": this.options.forceType,
                 "option": {"value": this.code, "lineNumbers": false},
                 "onSave": function(){
                     var value = this.editor.getValue();
@@ -73,6 +75,7 @@ MWF.xApplication.process.ProcessDesigner.widget.ScriptText = new Class({
                     this.app.saveProcess();
                 }.bind(this)
             });
+            debugger;
             this.editor.load(function(){
 
                 this.editor.addEditorEvent("blur", function(){

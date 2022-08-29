@@ -50,31 +50,37 @@
 
     "calendarPrevWeekNode": {
         "height": "30px",
-        "width": "40px",
-        "margin": "15px 0px 15px 40px",
-        "background": "url(../x_component_Meeting/$WeekView/default/icon/left24_gray.png) no-repeat center center",
+        "width": "24px",
+        "margin": "18px 0px 10px 40px",
+        "color": "#999",
+        "font-size": "24px",
+//       "background": "url(../x_component_Meeting/$WeekView/default/icon/left24_gray.png) no-repeat center center",
         "cursor": "pointer",
         "float": "left"
     },
     "calendarPrevWeekNode_over": {
-        "background": "url(../x_component_Meeting/$WeekView/default/icon/left24_blue.png) no-repeat center center"
+        "color": "#4990e2"
+        //"background": "url(../x_component_Meeting/$WeekView/default/icon/left24_blue.png) no-repeat center center"
     },
     "calendarPrevWeekNode_down": {
-        "background": "url(../x_component_Meeting/$WeekView/default/icon/left24_blue.png) no-repeat center center"
+        //"background": "url(../x_component_Meeting/$WeekView/default/icon/left24_blue.png) no-repeat center center"
     },
     "calendarNextWeekNode": {
         "height": "30px",
-        "width": "40px",
-        "margin": "15px 0px",
-        "background": "url(../x_component_Meeting/$WeekView/default/icon/right24_gray.png) no-repeat center center",
+        "width": "24px",
+        "margin": "18px 0px 10px 0px",
+        "color": "#999",
+        "font-size": "24px",
+//        "background": "url(../x_component_Meeting/$WeekView/default/icon/right24_gray.png) no-repeat center center",
         "cursor": "pointer",
         "float": "left"
     },
     "calendarNextWeekNode_over": {
-        "background": "url(../x_component_Meeting/$WeekView/default/icon/right24_blue.png) no-repeat center center"
+        "color": "#4990e2"
+        //"background": "url(../x_component_Meeting/$WeekView/default/icon/right24_blue.png) no-repeat center center"
     },
     "calendarNextWeekNode_down": {
-        "background": "url(../x_component_Meeting/$WeekView/default/icon/right24_blue.png) no-repeat center center"
+        //"background": "url(../x_component_Meeting/$WeekView/default/icon/right24_blue.png) no-repeat center center"
     },
     "calendarTitleTextNode": {
         "line-height": "60px",
@@ -368,30 +374,39 @@
         "padding-left" : "5px",
         "width" : "16px",
         "height" : "16px",
-        "background" : "url(../x_component_Meeting/$Main/default/icon/icon_newapply.png) no-repeat center center"
+        "font-size": "16px",
+        "color": "#999"
+        //        "background" : "url(../x_component_Meeting/$Main/default/icon/icon_newapply.png) no-repeat center center"
     },
     "createMeetingAction_over" : {
-        "background" : "url(../x_component_Meeting/$Main/default/icon/icon_newapply_click.png) no-repeat center center"
+        "color": "#3C76B7"
+        //"background" : "url(../x_component_Meeting/$Main/default/icon/icon_newapply_click.png) no-repeat center center"
     },
     "roomAction_edit" : {
         "float" : "left",
         "padding-left" : "5px",
         "width" : "16px",
         "height" : "16px",
+        "font-size": "16px",
+        "color": "#999",
         "background" : "url(../x_component_Meeting/$Main/default/icon/icon_bianji.png) no-repeat center center"
     },
     "roomAction_edit_over" : {
-        "background" : "url(../x_component_Meeting/$Main/default/icon/icon_bianji_click.png) no-repeat center center"
+        "color": "#3C76B7"
+//        "background" : "url(../x_component_Meeting/$Main/default/icon/icon_bianji_click.png) no-repeat center center"
     },
     "roomAction_remove" : {
         "float" : "left",
         "padding-left" : "5px",
         "width" : "16px",
         "height" : "16px",
-        "background" : "url(../x_component_Meeting/$Main/default/icon/icon_delete_grey.png) no-repeat center center"
+        "font-size": "16px",
+        "color": "#999"
+//        "background" : "url(../x_component_Meeting/$Main/default/icon/icon_delete_grey.png) no-repeat center center"
     },
     "roomAction_remove_over" : {
-        "background" : "url(../x_component_Meeting/$Main/default/icon/icon_delete_blue_click.png) no-repeat center center"
+        "color": "#3C76B7"
+//        "background" : "url(../x_component_Meeting/$Main/default/icon/icon_delete_blue_click.png) no-repeat center center"
     },
     "roomItemTitleIconsNode" : {
         "overflow" : "hidden",

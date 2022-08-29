@@ -12,6 +12,8 @@ import com.x.base.core.project.tools.DefaultCharset;
 
 public class Portal extends ConfigObject {
 
+	private static final Boolean DEFAULT_WEBSOCKETENABLE = true;
+
 	public static Portal defaultInstance() {
 		return new Portal();
 	}
@@ -20,6 +22,7 @@ public class Portal extends ConfigObject {
 		this.indexPage = new IndexPage();
 		this.loginPage = new LoginPage();
 		this.urlMapping = null;
+
 	}
 
 	@FieldDescribe("url转换配置.")

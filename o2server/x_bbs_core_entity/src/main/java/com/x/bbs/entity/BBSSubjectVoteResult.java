@@ -19,11 +19,14 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * 主题投票结果表
  * 
  * @author LIYI
  */
+@Schema(name = "BBSSubjectVoteResult", description = "论坛投票结果.")
 @ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.BBSSubjectVoteResult.table, uniqueConstraints = {

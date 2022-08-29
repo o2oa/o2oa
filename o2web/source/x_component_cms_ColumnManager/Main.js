@@ -1022,6 +1022,8 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
         html += "<tr><td class='formTitle'>"+this.app.lp.application.ignoreTitle+"</td><td id='formApplicationIgnoreTitle' class='formValue'>"+(flag ? lp.ignoreTitleSelectText[0] : lp.ignoreTitleSelectText[1] )+"</td></tr>";
         var flag = typeOf(this.config.latest) === "boolean" ? this.config.latest : true;
         html += "<tr><td class='formTitle'>"+this.app.lp.application.latest+"</td><td id='formApplicationLatest' class='formValue'>"+(flag ? lp.checkDraftSelectText[0] : lp.checkDraftSelectText[1] )+"</td></tr>";
+        var flag = typeOf(this.data.allowWaitPublish) === "boolean" ? this.data.allowWaitPublish : false;
+        html += "<tr><td class='formTitle'>"+this.app.lp.application.delayView+"</td><td id='formApplicationDelay' class='formValue'>"+(flag ? lp.showDelayDocumentSelectText[0] : lp.showDelayDocumentSelectText[1] )+"</td></tr>";
         var flag = typeOf(this.data.showAllDocuments) === "boolean" ? this.data.showAllDocuments : true;
         html += "<tr><td class='formTitle'>"+this.app.lp.application.showAllDocumentViews+"</td><td id='showAllDocumentViews' class='formValue'>"+(flag ? lp.showAllDocumentSelectText[0] : lp.showAllDocumentSelectText[1] )+"</td></tr>";
         // html += "<tr><td class='formTitle'>"+this.app.lp.application.type+"</td><td id='formApplicationType'></td></tr>";
@@ -1065,6 +1067,14 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
             value : ( typeOf(this.config.latest) === "boolean" ? this.config.latest : true ).toString(),
             selectValue : [ "true", "false" ],
             selectText : lp.checkDraftSelectText
+        });
+
+        this.delaySelect = new MDomItem( this.propertyContentNode.getElement("#formApplicationDelay"), {
+            type : "select",
+            defaultValue : "true",
+            value : ( typeOf(this.data.allowWaitPublish) === "boolean" ? this.data.allowWaitPublish : false ).toString(),
+            selectValue : [ "true", "false" ],
+            selectText : lp.showDelayDocumentSelectText
         });
 
         this.allDocumentViewSelect = new MDomItem( this.propertyContentNode.getElement("#showAllDocumentViews"), {
@@ -1143,6 +1153,7 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
 
         this.typeSelect.editMode();
         this.latestSelect.editMode();
+        this.delaySelect.editMode();
         this.ignoreTitleSelect.editMode();
         this.allDocumentViewSelect.editMode();
         this.defaultEditForm.editMode();
@@ -1158,6 +1169,7 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
         this.sortInput.readMode();
         this.typeSelect.readMode();
         this.latestSelect.readMode();
+        this.delaySelect.readMode();
         this.ignoreTitleSelect.readMode();
         this.allDocumentViewSelect.readMode();
         this.defaultEditForm.readMode();
@@ -1223,6 +1235,8 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
         this.config.ignoreTitle = this.ignoreTitleSelect.getValue() !== "false";
         this.config.latest = this.latestSelect.getValue() !== "false";
 
+        this.data.allowWaitPublish = this.delaySelect.getValue() === "true";
+
         this.data.config = JSON.stringify( this.config );
 
         //this.data.applicationCategory = this.appTypeInput.input.get("value");
@@ -1237,6 +1251,7 @@ MWF.xApplication.cms.ColumnManager.ApplicationProperty = new Class({
             this.sortInput.save();
             this.typeSelect.save();
             this.latestSelect.save();
+            this.delaySelect.save();
             this.ignoreTitleSelect.save();
             this.allDocumentViewSelect.save();
             this.defaultEditForm.save();

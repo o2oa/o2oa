@@ -5,6 +5,8 @@ MWF.xScript.CMSEnvironment = function(ev){
     var _form = ev.form;
     var _forms = ev.forms;
 
+    this.appType = "cms";
+
     this.library = COMMON;
     //this.library.version = "4.0";
 
@@ -1202,9 +1204,19 @@ MWF.xScript.CMSEnvironment = function(ev){
         },
         parseFilter : function( filter, parameter ){
             if( typeOf(filter) !== "array" )return [];
+            if( !parameter )parameter = {};
             var filterList = [];
             ( filter || [] ).each( function (d) {
-                var parameterName = d.path.replace(/\./g, "_");
+                //var parameterName = d.path.replace(/\./g, "_");
+                var pName = d.path.replace(/\./g, "_");
+
+                var parameterName = pName;
+                var suffix = 1;
+                while( parameter[parameterName] ){
+                    parameterName = pName + "_" + suffix;
+                    suffix++;
+                }
+
                 var value = d.value;
                 if( d.comparison === "like" || d.comparison === "notLike" ){
                     if( value.substr(0, 1) !== "%" )value = "%"+value;
@@ -1217,6 +1229,8 @@ MWF.xScript.CMSEnvironment = function(ev){
                         value = "{d '"+value+"'}"
                     }else if( d.formatType === "timeValue" ){
                         value = "{t '"+value+"'}"
+                    } else if (d.formatType === "numberValue"){
+                        value = parseFloat(value);
                     }
                     parameter[ parameterName ] = value;
                 }
@@ -1704,6 +1718,9 @@ MWF.xScript.CMSEnvironment = function(ev){
         "notice": function(content, type, target, where, offset, option){
             _form.notice(content, type, target, where, offset, option);
         },
+        "dialog": function ( options ) {
+            return _form.dialog( options );
+        },
         "addEvent": function(e, f){_form.addEvent(e, f);},
         "openWork": function(id, completedId, title, options){
             var op = options || {};
@@ -2024,6 +2041,67 @@ MWF.xScript.CMSEnvironment = function(ev){
         }
     };
     this.Table = MWF.xScript.createTable();
+
+
+    //兼容流程拷贝过来的表单
+    var _fitWorkContextList = function(callback, error){
+        var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
+        var list = [];
+        if (cb) cb(list);
+        return [];
+    };
+    this.workContext = {
+        "getWork": function(){
+            return (ev.data || {}).$work || {} ;
+        },
+
+        "getActivity": function(){return {}},
+        "getTask": function(){return {}},
+        "getTaskList": function(callback, error){
+            return _fitWorkContextList(callback, error)
+        },
+        "getTaskListByJob": function(callback, error){
+            return _fitWorkContextList(callback, error)
+        },
+        "getTaskCompletedList": function(callback, error){
+            return _fitWorkContextList(callback, error)
+        },
+        "getTaskCompletedListByJob": function(callback, error){
+            return _fitWorkContextList(callback, error)
+        },
+        "getReadList": function(callback, error){
+            return _fitWorkContextList(callback, error)
+        },
+        "getReadListByJob": function(callback, error){
+            return _fitWorkContextList(callback, error)
+        },
+        "getReadCompletedList": function(callback, error){
+            return _fitWorkContextList(callback, error)
+        },
+        "getReadCompletedListByJob": function(callback, error){
+            return _fitWorkContextList(callback, error)
+        },
+        "getReviewList": function(callback, error){
+            return _fitWorkContextList(callback, error)
+        },
+        "getReviewListByJob": this.getReviewList,
+        "getJobTaskList": this.getTaskListByJob,
+        "getJobReadList": this.getReadListByJob,
+        "getJobTaskCompletedList": this.getTaskCompletedListByJob,
+        "getJobReadCompletedList": this.getReadCompletedListByJob,
+        "getJobReviewList": this.getReviewList,
+        "getControl": function(){return ev.control;},
+        "getWorkLogList": function(){return [];},
+        "getRecordList": function(){return [];},
+        "getAttachmentList": function(callback, error){
+            var cb = (callback && o2.typeOf(callback)==="function") ? callback : null;
+            if(cb)cb( ev.attachmentList );
+            return ev.attachmentList;
+        },
+        "getRouteList": function(){return [];},
+        "getInquiredRouteList": function(){return null;}
+    };
+    this.workContent = this.workContext;
 };
 MWF.xScript.createTable = function(){
     return function(name){
@@ -2214,9 +2292,12 @@ MWF.xScript.CMSJSONData = function(data, callback, key, parent, _form){
                         return d;
                     }
                 }},
-            "check": {"value": function(kk, v){
-                    this.add(kk, v||"", false, true);
-                }},
+            "check": {
+                "value": function(kk, v){
+                    var value = typeOf( v ) === "null" ? "" : v;
+                    this.add(kk, value, false, true);
+                }
+             },
             "del": {"value": function(delKey){
                     if (!this.hasOwnProperty(delKey)) return null;
                     // delete data[delKey];
@@ -2733,3 +2814,4 @@ MWF.xScript.createCMSDict = function(application){
         this.destory = this["delete"];
     }
 };
+

@@ -17,6 +17,9 @@ import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.StringTools;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "OauthCode", description = "组织Oauth码.")
 @Entity
 @ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.OauthCode.table, uniqueConstraints = {

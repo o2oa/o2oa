@@ -2,6 +2,7 @@ package com.x.processplatform.assemble.surface.jaxrs.application;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -17,39 +18,60 @@ import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.cache.Cache;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
+import com.x.processplatform.assemble.surface.jaxrs.application.ActionListWithPersonComplex.Wo;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Application_;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Process_;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionListWithPersonLike extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWithPersonLike.class);
+
+	@SuppressWarnings("unchecked")
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String key) throws Exception {
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
-			ActionResult<List<Wo>> result = new ActionResult<>();
-			List<Wo> wos = new ArrayList<>();
-			List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
-			/** 去除部门以及上级部门,如果设置了一级部门可用,那么一级部门下属的二级部门也可用 */
-			List<String> units = business.organization().unit().listWithPersonSupNested(effectivePerson);
-			List<String> roles = business.organization().role().listWithPerson(effectivePerson);
-			List<String> groups = business.organization().group().listWithIdentity(identities);
-			List<String> ids = this.list(business, effectivePerson, roles, identities, units, groups, key);
-			for (String id : ids) {
-				Application o = business.application().pick(id);
-				wos.add(Wo.copier.copy(o));
+
+		LOGGER.debug("execute:{}, key:{}.", effectivePerson::getDistinguishedName, () -> key);
+
+		ActionResult<List<Wo>> result = new ActionResult<>();
+		List<Wo> wos = new ArrayList<>();
+		Cache.CacheKey cacheKey = new Cache.CacheKey(this.getClass(), effectivePerson.getDistinguishedName(), key);
+		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+		if (optional.isPresent()) {
+			wos = (List<Wo>) optional.get();
+		} else {
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
+				List<String> identities = business.organization().identity().listWithPerson(effectivePerson);
+				// 去除部门以及上级部门,如果设置了一级部门可用,那么一级部门下属的二级部门也可用
+				List<String> units = business.organization().unit().listWithPersonSupNested(effectivePerson);
+				List<String> roles = business.organization().role().listWithPerson(effectivePerson);
+				List<String> groups = business.organization().group().listWithIdentity(identities);
+				List<String> ids = this.list(business, effectivePerson, roles, identities, units, groups, key);
+				for (String id : ids) {
+					Application o = business.application().pick(id);
+					wos.add(Wo.copier.copy(o));
+				}
+				wos = business.application().sort(wos);
+				CacheManager.put(cacheCategory, cacheKey, wos);
 			}
-			wos = business.application().sort(wos);
-			result.setData(wos);
-			return result;
 		}
+		result.setData(wos);
+		return result;
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.application.ActionListWithPersonLike$Wo")
 	public static class Wo extends Application {
 
 		private static final long serialVersionUID = -4862564047240738097L;
@@ -62,7 +84,8 @@ class ActionListWithPersonLike extends BaseAction {
 	private List<String> list(Business business, EffectivePerson effectivePerson, List<String> roles,
 			List<String> identities, List<String> units, List<String> groups, String key) throws Exception {
 		List<String> ids = this.listFromApplication(business, effectivePerson, roles, identities, units);
-		List<String> fromProcessIds = this.listFromProcess(business, effectivePerson, roles, identities, units, groups, key);
+		List<String> fromProcessIds = this.listFromProcess(business, effectivePerson, roles, identities, units, groups,
+				key);
 		return ListUtils.intersection(ids, fromProcessIds);
 	}
 
@@ -100,10 +123,7 @@ class ActionListWithPersonLike extends BaseAction {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Process> root = cq.from(Process.class);
-		String str = key.replaceAll("_", "\\\\_");
-		str = str.replaceAll("%", "\\\\%");
-		str = str.toLowerCase();
-		Predicate p = cb.like(root.get(Process_.name), "%" + str + "%", '\\');
+		Predicate p = cb.like(root.get(Process_.name), "%" + key.toLowerCase() + "%", '\\');
 		if (effectivePerson.isNotManager() && (!business.organization().person().hasRole(effectivePerson,
 				OrganizationDefinition.Manager, OrganizationDefinition.ProcessPlatformManager))) {
 			p = cb.and(cb.isEmpty(root.get(Process_.startableIdentityList)),

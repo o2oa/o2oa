@@ -27,7 +27,7 @@ function getMenuJson(){
                 {'title': lp.cloudConfig, 'component': 'ServerCloudConfig', 'icon': 'cloud' },
                 {'title': lp.processConfig, 'component': 'ServerProcessConfig', 'icon': 'flow' },
 
-                {'title': lp.messageConfig, 'component': 'ServerMessageConfig', 'icon': 'flow' },
+                {'title': lp.messageConfig, 'component': 'ServerMessageConfig', 'icon': 'message' },
                 {'title': lp.cacheConfig, 'component': 'ServerCacheConfig', 'icon': 'cache' },
                 // {'title': lp.clusterConfig, 'component': '', 'icon': 'servers' },
                 // {'title': lp.orgConfig, 'component': '', 'icon': 'org' },

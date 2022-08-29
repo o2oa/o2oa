@@ -7,6 +7,8 @@ MWF.xApplication.cms.FormDesigner.LP = Object.merge( {}, MWF.xApplication.proces
         "empty": "空白表单",
         "publishEdit": "发布类编辑表单",
         "publishRead": "发布类阅读表单",
+        "publishEditGreen": "发布类编辑表单(绿色)",
+        "publishReadGreen": "发布类阅读表单(绿色)",
         "dataInput": "数据录入类表单"
     },
     "validation" : {
@@ -25,6 +27,7 @@ MWF.xApplication.cms.FormDesigner.LP = Object.merge( {}, MWF.xApplication.proces
         "defaultStyle": "传统样式",
         "redSimple": "红色简洁",
         "blueSimple": "蓝色简洁",
+        "greenFlat": "绿色扁平",
         "defaultMobileStyle": "手机样式",
         "banner": "横幅",
         "title": "标题",
@@ -70,6 +73,8 @@ MWF.xApplication.cms.FormDesigner.LP = Object.merge( {}, MWF.xApplication.proces
         "saveTitle": "保存文档",
         "publish": "发布",
         "publishTitle": "发布文档",
+        "publishDelayed": "定时发布",
+        "publishDelayedTitle": "定时发布文档",
         "saveDraft": "保存草稿",
         "saveDraftTitle": "保存草稿",
         "popular": "设置热点",

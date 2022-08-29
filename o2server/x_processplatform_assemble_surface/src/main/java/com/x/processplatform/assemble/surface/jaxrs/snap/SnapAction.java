@@ -30,8 +30,11 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "SnapAction", description = "工作快照接口.")
 @Path("snap")
-@JaxrsDescribe("快照")
+@JaxrsDescribe("工作快照接口.")
 public class SnapAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(SnapAction.class);
@@ -480,6 +483,27 @@ public class SnapAction extends StandardJaxrsAction {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionManageListFilterPaging().execute(effectivePerson, page, size, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+	}
+
+	@JaxrsMethodDescribe(value = "分页列示指定应用下根据过滤条件的snap.", action = ActionManageListWithApplicationPaging.class)
+	@POST
+	@Path("list/paging/{page}/size/{size}/application/{applicationFlag}/filter/manage")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void manageListWithApplicationPaging(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+								@JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
+								@JaxrsParameterDescribe("每页数量") @PathParam("size") Integer size,
+								@JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag,
+								JsonElement jsonElement) {
+		ActionResult<List<ActionManageListWithApplicationPaging.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionManageListWithApplicationPaging().execute(effectivePerson, page, size, applicationFlag, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);

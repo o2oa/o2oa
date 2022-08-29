@@ -359,6 +359,8 @@ MWF.xApplication.query.ViewDesigner.Main = new Class({
 
                 var options = {
                     "appId": "query.ViewDesigner"+view.id,
+                    "id": view.id,
+                    "application": _self.application.id,
                     "onQueryLoad": function(){
                         this.actions = _self.actions;
                         this.category = _self;
@@ -697,7 +699,7 @@ MWF.xApplication.query.ViewDesigner.Main = new Class({
     loadView: function(callback){
 		this.getViewData(this.options.id, function(vdata){
             this.setTitle(this.options.appTitle + "-"+vdata.name);
-            this.taskitem.setText(this.options.appTitle + "-"+vdata.name);
+            if(this.taskitem)this.taskitem.setText(this.options.appTitle + "-"+vdata.name);
             this.options.appTitle = this.options.appTitle + "-"+vdata.name;
 
             //if (this.options.readMode){
@@ -807,9 +809,13 @@ MWF.xApplication.query.ViewDesigner.Main = new Class({
             var openViews = [];
             openViews.push(this.view.data.id);
             var currentId = this.view.data.id;
+        var application = o2.typeOf(this.application) === "object" ? {
+            name: this.application.name,
+            id: this.application.id
+        } : this.application;
             return {
                 "id": this.options.id,
-                "application": this.application,
+                "application": application,
                 "openViews": openViews,
                 "currentId": currentId
             };

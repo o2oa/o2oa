@@ -58,6 +58,12 @@ public class OpenApiAction {
 				.resourcePackages(resourcePackages).configLocation(configLocation)
 				.openApiConfiguration(openApiConfiguration).ctxId(ctxId).buildContext(true);
 		OpenAPI oas = ctx.read();
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		System.out.println(XGsonBuilder.toJson(oas));
+		System.out.println(ctx.getOpenApiConfiguration().getReaderClass());
+		System.out.println(ctx.getOpenApiConfiguration().getScannerClass());
+		System.out.println(ctx.getOpenApiConfiguration().getUserDefinedOptions());
+		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 //		boolean pretty = false;
 //		if (ctx.getOpenApiConfiguration() != null
 //				&& Boolean.TRUE.equals(ctx.getOpenApiConfiguration().isPrettyPrint())) {

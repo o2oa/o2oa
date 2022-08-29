@@ -14,7 +14,7 @@ import com.x.organization.core.entity.Group;
 
 public class BaseAction extends StandardJaxrsAction {
 
-	/** 如果唯一标识不为空,要检查唯一标识是否唯一 */
+	// 如果唯一标识不为空,要检查唯一标识是否唯一
 	protected boolean uniqueDuplicateWhenNotEmpty(Business business, Group group) throws Exception {
 		if (StringUtils.isNotEmpty(group.getUnique())) {
 			if (business.entityManagerContainer().duplicateWithFlags(group.getId(), Group.class, group.getUnique())) {
@@ -41,6 +41,8 @@ public class BaseAction extends StandardJaxrsAction {
 
 	public static class Control extends GsonPropertyObject {
 
+		private static final long serialVersionUID = -711017560013703753L;
+
 		private Boolean allowEdit = false;
 		private Boolean allowDelete = false;
 
@@ -64,8 +66,8 @@ public class BaseAction extends StandardJaxrsAction {
 
 	protected <T extends WoGroupAbstract> void updateControl(EffectivePerson effectivePerson, Business business,
 			List<T> list) throws Exception {
-		if (effectivePerson.isSecurityManager()
-				|| business.hasAnyRole(effectivePerson, OrganizationDefinition.OrganizationManager)) {
+		if (effectivePerson.isSecurityManager() || business.hasAnyRole(effectivePerson,
+				OrganizationDefinition.OrganizationManager, OrganizationDefinition.GroupManager)) {
 			for (T t : list) {
 				t.getControl().setAllowDelete(true);
 				t.getControl().setAllowEdit(true);
@@ -80,8 +82,8 @@ public class BaseAction extends StandardJaxrsAction {
 
 	protected <T extends WoGroupAbstract> void updateControl(EffectivePerson effectivePerson, Business business, T t)
 			throws Exception {
-		if (effectivePerson.isSecurityManager()
-				|| business.hasAnyRole(effectivePerson, OrganizationDefinition.OrganizationManager)) {
+		if (effectivePerson.isSecurityManager() || business.hasAnyRole(effectivePerson,
+				OrganizationDefinition.OrganizationManager, OrganizationDefinition.GroupManager)) {
 			t.getControl().setAllowDelete(true);
 			t.getControl().setAllowEdit(true);
 		} else {

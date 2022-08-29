@@ -244,7 +244,7 @@ MWF.xApplication.query.StatDesigner.Stat = new Class({
 
     loadViewColumns: function(){
         //    for (var i=0; i<10; i++){
-        if (this.json.data.calculate.calculateList) {
+        if (this.json.data && this.json.data.calculate && this.json.data.calculate.calculateList) {
             this.json.data.calculate.calculateList.each(function (json) {
                 this.items.push(new MWF.xApplication.query.StatDesigner.Stat.Column(json, this));
             }.bind(this));

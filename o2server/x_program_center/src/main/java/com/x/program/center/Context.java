@@ -53,7 +53,7 @@ import com.x.organization.core.entity.Role_;
 
 public class Context extends AbstractContext {
 
-	private static Logger logger = LoggerFactory.getLogger(Context.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Context.class);
 
 	/* 应用的磁盘路径 */
 	private volatile String path;
@@ -207,7 +207,7 @@ public class Context extends AbstractContext {
 	}
 
 	private void initDatas() throws Exception {
-		logger.print("{} loading datas, entity size:{}.", this.clazz.getName(), this.module.containerEntities().length);
+		LOGGER.print("{} loading datas, entity size:{}.", this.clazz.getName(), this.module.containerEntities().length);
 		EntityManagerContainerFactory.init(path, ListTools.toList(this.module.containerEntities()));
 	}
 
@@ -217,10 +217,11 @@ public class Context extends AbstractContext {
 				OrganizationDefinition.GroupManager, OrganizationDefinition.UnitManager,
 				OrganizationDefinition.RoleManager, OrganizationDefinition.ProcessPlatformManager,
 				OrganizationDefinition.ProcessPlatformCreator, OrganizationDefinition.MeetingManager,
-				OrganizationDefinition.PortalManager, OrganizationDefinition.BBSManager,
-				OrganizationDefinition.TeamWorkManager, OrganizationDefinition.CMSManager,
-				OrganizationDefinition.OKRManager, OrganizationDefinition.CRMManager,
-				OrganizationDefinition.QueryManager, OrganizationDefinition.MessageManager,
+				OrganizationDefinition.PortalManager, OrganizationDefinition.PortalCreator,
+				OrganizationDefinition.BBSManager, OrganizationDefinition.TeamWorkManager,
+				OrganizationDefinition.CMSManager, OrganizationDefinition.OKRManager, OrganizationDefinition.CRMManager,
+				OrganizationDefinition.CMSCreator, OrganizationDefinition.QueryManager,
+				OrganizationDefinition.QueryCreator, OrganizationDefinition.MessageManager,
 				OrganizationDefinition.SearchPrivilege, OrganizationDefinition.HotPictureManager,
 				OrganizationDefinition.FileManager, OrganizationDefinition.ServiceManager);
 		roles = roles.stream().sorted(Comparator.comparing(String::toString)).collect(Collectors.toList());
@@ -280,10 +281,14 @@ public class Context extends AbstractContext {
 			return OrganizationDefinition.MeetingViewer_description;
 		} else if (OrganizationDefinition.PortalManager.equalsIgnoreCase(str)) {
 			return OrganizationDefinition.PortalManager_description;
+		} else if (OrganizationDefinition.PortalCreator.equalsIgnoreCase(str)) {
+			return OrganizationDefinition.PortalCreator_description;
 		} else if (OrganizationDefinition.BBSManager.equalsIgnoreCase(str)) {
 			return OrganizationDefinition.BBSManager_description;
 		} else if (OrganizationDefinition.CMSManager.equalsIgnoreCase(str)) {
 			return OrganizationDefinition.CMSManager_description;
+		} else if (OrganizationDefinition.CMSCreator.equalsIgnoreCase(str)) {
+			return OrganizationDefinition.CMSCreator_description;
 		} else if (OrganizationDefinition.OKRManager.equalsIgnoreCase(str)) {
 			return OrganizationDefinition.OKRManager_description;
 		} else if (OrganizationDefinition.CRMManager.equalsIgnoreCase(str)) {
@@ -292,6 +297,8 @@ public class Context extends AbstractContext {
 			return OrganizationDefinition.TeamWorkManager_description;
 		} else if (OrganizationDefinition.QueryManager.equalsIgnoreCase(str)) {
 			return OrganizationDefinition.QueryManager_description;
+		} else if (OrganizationDefinition.QueryCreator.equalsIgnoreCase(str)) {
+			return OrganizationDefinition.QueryCreator_description;
 		} else if (OrganizationDefinition.MessageManager.equalsIgnoreCase(str)) {
 			return OrganizationDefinition.MessageManager_description;
 		} else if (OrganizationDefinition.SearchPrivilege.equalsIgnoreCase(str)) {

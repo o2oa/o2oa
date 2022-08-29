@@ -3,6 +3,7 @@ package com.x.cms.assemble.control.service;
 import java.util.Date;
 import java.util.List;
 
+import com.x.cms.core.entity.enums.DocumentStatus;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -32,7 +33,7 @@ public class DocumentInfoService {
 		Business business = new Business( emc );
 		return business.getDocumentFactory().getSequence( id );
 	}
-	
+
 	/**
 	 * 根据指定分类里的文档ID，支持按指定列排序
 	 * @param emc
@@ -50,7 +51,7 @@ public class DocumentInfoService {
 		Business business = new Business( emc );
 		return business.getDocumentFactory().listByCategoryId( categoryId, orderField, orderType, maxCount );
 	}
-	
+
 	public List<String> listByAppId( EntityManagerContainer emc, String appId, String documentType, Integer maxCount ) throws Exception {
 		if( StringUtils.isEmpty( appId ) ){
 			return null;
@@ -61,7 +62,7 @@ public class DocumentInfoService {
 		Business business = new Business( emc );
 		return business.getDocumentFactory().listByAppId( appId, documentType, maxCount );
 	}
-	
+
 	public List<String> listByCategoryId( EntityManagerContainer emc, String categoryId ) throws Exception {
 		if( StringUtils.isEmpty( categoryId ) ){
 			return null;
@@ -85,7 +86,7 @@ public class DocumentInfoService {
 		Business business = new Business( emc );
 		return business.getDocumentFactory().countByCategoryId(categoryId);
 	}
-	
+
 	public Long countByAppId(EntityManagerContainer emc, String appId) throws Exception {
 		if( StringUtils.isEmpty( appId ) ){
 			return null;
@@ -108,7 +109,7 @@ public class DocumentInfoService {
 		Business business = new Business( emc );
 		return business.getDocumentFactory().countWithConditionOutofPermission( queryFilter );
 	}
-	
+
 	public Document save( EntityManagerContainer emc, Document wrapIn ) throws Exception {
 		if( wrapIn == null ){
 			throw new Exception("wrapIn document is null!");
@@ -118,7 +119,7 @@ public class DocumentInfoService {
 		document = emc.find( wrapIn.getId(), Document.class );
 		emc.beginTransaction( Document.class );
 		emc.beginTransaction( Log.class );
-		
+
 		if( wrapIn.getTitle() != null &&  wrapIn.getTitle().length() > 70 ) {
 			wrapIn.setTitle( wrapIn.getTitle().substring(0, 70) );
 		}
@@ -164,9 +165,9 @@ public class DocumentInfoService {
 				creatorTopUnitName = document.getCreatorTopUnitName();
 			}
 			if( document.getPublishTime() != null ){
-				publishTime = document.getPublishTime();	
+				publishTime = document.getPublishTime();
 			}
-			
+
 			wrapIn.copyTo( document, ListTools.toList(JpaObject.FieldsUnmodify, Document.isTop_FIELDNAME, Document.isAllRead_FIELDNAME) );
 			document.setViewCount( viewCount );
 			if( createTime != null ){
@@ -184,19 +185,19 @@ public class DocumentInfoService {
 			if( creatorTopUnitName != null ){
 				document.setCreatorTopUnitName(creatorTopUnitName);
 			}
-			if( publishTime != null ){
+			if( publishTime != null  && DocumentStatus.PUBLISHED.getValue().equals(document.getDocStatus())){
 				document.setPublishTime(publishTime);
 			}
 			document.setReviewed( false );
 			emc.check( document, CheckPersistType.all );
-			
+
 			log = getOperationLog( document.getCreatorPerson(), "用户[" + document.getCreatorPerson() + "]成功更新一个文档信息", document.getAppId(), document.getCategoryId(), document.getId(), "", "DOCUMENT", "更新" );
 			emc.persist( log, CheckPersistType.all );
 		}
 		emc.commit();
-		return document;		
+		return document;
 	}
-	
+
 	public Log getOperationLog( String person, String description, String appId, String categoryId, String documentId, String fileId, String operationLevel, String operationType ) throws Exception {
 		String operatorUid = person;
 		Log log = new Log();
@@ -211,7 +212,7 @@ public class DocumentInfoService {
 		log.setOperationLevel(operationLevel);
 		return log;
 	}
-	
+
 	/**
 	 * 对Document信息进行分页查询（忽略权限）
 	 * document和Review除了sequence还有5个排序列支持title, appAlias, categoryAlias, creatorPerson, creatorUnitName的分页查询
@@ -285,25 +286,25 @@ public class DocumentInfoService {
 		}
 		return business.getDocumentFactory().listPrevWithCondition( pageSize, sequenceFieldValue, orderField, orderType, queryFilter );
 	}
-	
+
 	public List<Document> listNextWithCondition(EntityManagerContainer emc, String orderField, String orderType, QueryFilter queryFilter, int maxCount) throws Exception {
 		if( maxCount == 0 ) { maxCount = 20; }
 		Business business = new Business(emc);
 		return business.getDocumentFactory().listNextWithCondition( orderField, orderType, queryFilter, maxCount );
 	}
-	
+
 	public List<Document> listMyDraft(EntityManagerContainer emc, String name, List<String> categoryIdList, String documentType) throws Exception {
-		Business business = new Business(emc);	
+		Business business = new Business(emc);
 		return business.getDocumentFactory().listMyDraft( name, categoryIdList, documentType );
 	}
-	
+
 	public Item getDataWithDocIdWithPath(EntityManagerContainer emc, Document document, String path0, String path1, String path2, String path3, String path4, String path5, String path6, String path7) throws Exception {
-		Business business = new Business(emc);	
+		Business business = new Business(emc);
 		return business.itemFactory().getWithDocmentWithPath( document.getId(), path0, path1, path2, path3, path4, path5, path6, path7);
 	}
 
 	public List<String> listReviewedIdsByCategoryId(EntityManagerContainer emc, String categoryId, int maxCount) throws Exception {
-		Business business = new Business(emc);	
+		Business business = new Business(emc);
 		return business.getDocumentFactory().listReviewedIdsByCategoryId( categoryId, maxCount);
 	}
 
@@ -317,7 +318,7 @@ public class DocumentInfoService {
 	}
 
 	public List<String> listUnReviewIds(EntityManagerContainer emc, Integer maxCount) throws Exception {
-		Business business = new Business(emc);	
+		Business business = new Business(emc);
 		return business.getDocumentFactory().listUnReviewIds( maxCount);
 	}
 
@@ -338,14 +339,14 @@ public class DocumentInfoService {
 		emc.beginTransaction( Item.class );
 		emc.beginTransaction( FileInfo.class );
 		emc.beginTransaction( DocumentCommentInfo.class );
-		
-		List<String> allFileInfoIds = null;		
-		Document document = emc.find( docId, Document.class );										
-		
+
+		List<String> allFileInfoIds = null;
+		Document document = emc.find( docId, Document.class );
+
 		//删除与该文档有关的所有数据信息
 		DocumentDataHelper documentDataHelper = new DocumentDataHelper( emc, document );
 		documentDataHelper.remove();
-		
+
 		allFileInfoIds = business.getFileInfoFactory().listAllByDocument( docId );
 		if( ListTools.isNotEmpty( allFileInfoIds ) ){
 			StorageMapping mapping = null;
@@ -361,7 +362,7 @@ public class DocumentInfoService {
 				emc.remove( fileInfo, CheckRemoveType.all );
 			}
 		}
-		
+
 		List<String>  commentIds = business.documentCommentInfoFactory().listWithDocument( docId );
 		if( ListTools.isNotEmpty( commentIds )) {
 			DocumentCommentInfo documentCommentInfo = null;
@@ -369,12 +370,12 @@ public class DocumentInfoService {
 				documentCommentInfo = emc.find( commentId, DocumentCommentInfo.class );
 				emc.remove( documentCommentInfo, CheckRemoveType.all );
 			}
-		}		
+		}
 		if( document != null ) {
 			emc.remove( document, CheckRemoveType.all );
-		}		
+		}
 		emc.commit();
-		
+
 		//压入队列，检查热点图片是否仍存在，如果存在则删除
 		ThisApplication.queueDocumentDelete.send( document.getId() );
 	}
@@ -390,7 +391,7 @@ public class DocumentInfoService {
 	 * @throws Exception
 	 */
 	public List<Item> listSortObjWithOrderFieldInData(EntityManagerContainer emc, List<String> docIds, String path0Name, String fieldType, String orderType ) throws Exception {
-		Business business = new Business(emc);	
+		Business business = new Business(emc);
 		return business.itemFactory().listSortObjWithOrderFieldInData( docIds, path0Name, fieldType, orderType );
 	}
 }

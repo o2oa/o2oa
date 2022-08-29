@@ -21,6 +21,9 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.express.tools.filter.QueryFilter;
 
+/**
+ * @author sword
+ */
 public class ActionQueryListWithFilterPaging extends BaseAction {
 
 	private static  Logger logger = LoggerFactory.getLogger(ActionQueryListWithFilterPaging.class);
@@ -140,6 +143,10 @@ public class ActionQueryListWithFilterPaging extends BaseAction {
 						if( wi.getNeedData() ) {
 							//需要组装数据
 							wo.setData( documentQueryService.getDocumentData( document ) );
+						}
+						Long count = documentViewRecordServiceAdv.countWithDocIdAndPerson(wo.getId(), effectivePerson.getDistinguishedName());
+						if(count!=null && count > 0){
+							wo.setHasRead(true);
 						}
 					} catch (Exception e) {
 						check = false;

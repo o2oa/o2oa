@@ -36,20 +36,30 @@ MWF.xApplication.Attendance.PeopleQywxDetail = new Class({
             this.detailPage = this.tabs.addTab(this.detailArea, this.app.lp.personSigninDetail, false);
             this.detailPage.contentNodeArea.set("class", "detailPage");
             this.detailPage.addEvent("show", function () {
+                this.detailPage.tabNode.addClass( "mainColor_border" );
+                this.detailPage.textNode.addClass( "mainColor_color" );
                 if (!this.detailExplorer) {
                     this.detailExplorer = new MWF.xApplication.Attendance.PeopleQywxDetail.Explorer(this.detailArea, this);
                     this.detailExplorer.load();
                 }
+            }.bind(this)).addEvent("hide", function(){
+                this.detailPage.tabNode.removeClass( "mainColor_border" );
+                this.detailPage.textNode.removeClass( "mainColor_color" );
             }.bind(this));
 
 
             this.detailStaticPage = this.tabs.addTab(this.detailStaticArea, this.app.lp.personSigninStatic, false);
             this.detailStaticPage.contentNodeArea.set("class", "detailStaticPage");
             this.detailStaticPage.addEvent("show", function () {
+                this.detailStaticPage.tabNode.addClass( "mainColor_border" );
+                this.detailStaticPage.textNode.addClass( "mainColor_color" );
                 if (!this.detailStaticExplorer) {
                     this.detailStaticExplorer = new MWF.xApplication.Attendance.PeopleQywxDetail.DetailStaticExplorer(this.detailStaticArea, this);
                     this.detailStaticExplorer.load();
                 }
+            }.bind(this)).addEvent("hide", function(){
+                this.detailStaticPage.tabNode.removeClass( "mainColor_border" );
+                this.detailStaticPage.textNode.removeClass( "mainColor_color" );
             }.bind(this));
 
 
@@ -114,11 +124,17 @@ MWF.xApplication.Attendance.PeopleQywxDetail.Explorer = new Class({
         this.fileterNode.set("html", html);
 
         MWF.xDesktop.requireApp("Template", "MForm", function () {
+            var empSelector = { text : lp.person, type : "org", orgType : "person", notEmpty : true, style : {"min-width": "100px" } };
+            if( !this.app.isAdmin() && this.app.manageUnits ){
+                empSelector =  { text : lp.person, type : "org", orgType : "identity", "units": this.app.manageUnits, orgOptions: {
+                    "resultType": "person",
+                } , notEmpty : true, style : {"min-width": "100px" } };
+            }
             this.form = new MForm(this.fileterNode, {}, {
                 style: "attendance",
                 isEdited: true,
                 itemTemplate: {
-                    person: { text: lp.person, type: "org", orgType: "person", notEmpty: true, style: { "min-width": "100px" } },
+                    person: empSelector,
                     year: {
                         text: lp.annuaal,
                         "type": "select",
@@ -156,7 +172,7 @@ MWF.xApplication.Attendance.PeopleQywxDetail.Explorer = new Class({
                     checkType: { text: lp.signinType, "type": "select", "selectValue": lp.signinQywxTypeSelectText, "selectText": lp.signinQywxTypeSelectText },
                     exceptionType: { text: lp.signinResult, "type": "select", "selectValue": lp.signinQywxResultSelectText, "selectText": lp.signinQywxResultSelectText },
                     action: {
-                        "value": lp.query, type: "button", className: "filterButton", event: {
+                        "value": lp.query, type: "button", className: "filterButton", clazz:"mainColor_bg", event: {
                             click: function () {
                                 var result = this.form.getResult(true, ",", true, true, false);
                                 if (!result) return;
@@ -264,11 +280,17 @@ MWF.xApplication.Attendance.PeopleQywxDetail.DetailStaticExplorer = new Class({
         this.fileterNode.set("html", html);
 
         MWF.xDesktop.requireApp("Template", "MForm", function () {
+            var empSelector = { text : lp.person, type : "org", orgType : "person", notEmpty : true, style : {"min-width": "100px" } };
+            if( !this.app.isAdmin() && this.app.manageUnits ){
+                empSelector =  { text : lp.person, type : "org", orgType : "identity", "units": this.app.manageUnits, orgOptions: {
+                    "resultType": "person",
+                } , notEmpty : true, style : {"min-width": "100px" } };
+            }
             this.form = new MForm(this.fileterNode, {}, {
                 style: "attendance",
                 isEdited: true,
                 itemTemplate: {
-                    q_empName: { text: lp.person, type: "org", orgType: "person", notEmpty: true, style: { "min-width": "100px" } },
+                    q_empName: empSelector,
                     cycleYear: {
                         text: lp.annuaal,
                         "type": "select",
@@ -291,7 +313,7 @@ MWF.xApplication.Attendance.PeopleQywxDetail.DetailStaticExplorer = new Class({
                         "selectValue": ["", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
                     },
                     action: {
-                        "value": lp.query, type: "button", className: "filterButton", event: {
+                        "value": lp.query, type: "button", className: "filterButton", clazz:"mainColor_bg", event: {
                             click: function () {
                                 var result = this.form.getResult(true, ",", true, true, false);
                                 if (!result) return;

@@ -10,6 +10,7 @@ import org.apache.commons.collections4.map.ListOrderedMap;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.x.base.core.entity.JpaObject;
@@ -27,15 +28,17 @@ public class Data extends ListOrderedMap<String, Object> {
 
 	private static final long serialVersionUID = 8339934499479910171L;
 
+	@JsonIgnore
 	public static void removeWork(JsonElement jsonElement) {
 		if (null != jsonElement && jsonElement.isJsonObject()) {
-		}
-		JsonObject o = jsonElement.getAsJsonObject();
-		if (o.has(Data.WORK_PROPERTY)) {
-			o.remove(Data.WORK_PROPERTY);
+			JsonObject o = jsonElement.getAsJsonObject();
+			if (o.has(Data.WORK_PROPERTY)) {
+				o.remove(Data.WORK_PROPERTY);
+			}
 		}
 	}
 
+	@JsonIgnore
 	public Data setWork(Work work) throws Exception {
 		DataWork dataWork = new DataWork();
 		if (null != work) {
@@ -46,6 +49,7 @@ public class Data extends ListOrderedMap<String, Object> {
 		return this;
 	}
 
+	@JsonIgnore
 	public Data removeWork() {
 		if (this.containsKey(WORK_PROPERTY)) {
 			this.remove(WORK_PROPERTY);
@@ -53,6 +57,7 @@ public class Data extends ListOrderedMap<String, Object> {
 		return this;
 	}
 
+	@JsonIgnore
 	public Data setWork(WorkCompleted workCompleted) throws Exception {
 		DataWork dataWork = new DataWork();
 		if (null != workCompleted) {
@@ -65,6 +70,7 @@ public class Data extends ListOrderedMap<String, Object> {
 		return this;
 	}
 
+	@JsonIgnore
 	public Data setAttachmentList(List<Attachment> attachmentList) throws Exception {
 		List<DataAttachment> list = new ArrayList<>();
 		if (ListTools.isEmpty(attachmentList)) {
@@ -74,6 +80,7 @@ public class Data extends ListOrderedMap<String, Object> {
 		return this;
 	}
 
+	@JsonIgnore
 	public Data removeAttachmentList() {
 		if (this.containsKey(ATTACHMENTLIST_PROPERTY)) {
 			this.remove(ATTACHMENTLIST_PROPERTY);

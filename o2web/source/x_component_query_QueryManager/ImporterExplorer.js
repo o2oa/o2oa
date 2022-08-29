@@ -235,6 +235,8 @@ MWF.xApplication.query.QueryManager.ImporterExplorer.Importer= new Class({
         var _self = this;
         var options = {
             "appId": "query.ImporterDesigner"+_self.data.id,
+            "id": _self.data.id,
+            "application":_self.explorer.app.options.application.id,
             "onQueryLoad": function(){
                 this.actions = _self.explorer.actions;
                 this.category = _self;

@@ -1,7 +1,5 @@
 package com.x.organization.assemble.personal.jaxrs;
 
-import java.util.Set;
-
 import javax.ws.rs.ApplicationPath;
 
 import com.x.base.core.project.jaxrs.AbstractActionApplication;
@@ -19,7 +17,8 @@ import com.x.organization.assemble.personal.jaxrs.reset.ResetAction;
 @ApplicationPath("jaxrs")
 public class ActionApplication extends AbstractActionApplication {
 
-	public Set<Class<?>> getClasses() {
+	public ActionApplication() {
+		super();
 		classes.add(PersonAction.class);
 		classes.add(PasswordAction.class);
 		classes.add(ResetAction.class);
@@ -30,6 +29,5 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(EmpowerAction.class);
 		classes.add(EmpowerLogAction.class);
 		classes.add(ExmailAction.class);
-		return classes;
 	}
 }

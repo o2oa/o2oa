@@ -15,11 +15,18 @@ import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionDownloadWorkInfo extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionDownloadWorkInfo.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDownloadWorkInfo.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workId, String flag, boolean stream) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workId, String flag, boolean stream)
+			throws Exception {
+
+		LOGGER.debug("execute:{}, workId:{}, flag:{}.", effectivePerson::getDistinguishedName, () -> workId,
+				() -> flag);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -41,7 +48,7 @@ class ActionDownloadWorkInfo extends BaseAction {
 			Wo wo = null;
 
 			GeneralFile generalFile = emc.find(flag, GeneralFile.class);
-			if(generalFile!=null){
+			if (generalFile != null) {
 				StorageMapping gfMapping = ThisApplication.context().storageMappings().get(GeneralFile.class,
 						generalFile.getStorage());
 				wo = new Wo(generalFile.readContent(gfMapping), this.contentType(stream, generalFile.getName()),
@@ -57,7 +64,10 @@ class ActionDownloadWorkInfo extends BaseAction {
 		}
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionDownloadWorkInfo$Wo")
 	public static class Wo extends WoFile {
+
+		private static final long serialVersionUID = -6795062593016814167L;
 
 		public Wo(byte[] bytes, String contentType, String contentDisposition) {
 			super(bytes, contentType, contentDisposition);

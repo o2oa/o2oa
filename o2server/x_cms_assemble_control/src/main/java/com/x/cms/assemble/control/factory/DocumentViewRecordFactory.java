@@ -18,7 +18,7 @@ import com.x.cms.core.entity.DocumentViewRecord_;
 
 /**
  * 文档权限基础功能服务类
- * 
+ *
  * @author O2LEE
  */
 public class DocumentViewRecordFactory extends AbstractFactory {
@@ -26,7 +26,7 @@ public class DocumentViewRecordFactory extends AbstractFactory {
 	public DocumentViewRecordFactory(Business business) throws Exception {
 		super(business);
 	}
-	
+
 	//@MethodDescribe("列示指定Id的DocumentViewRecord信息列表")
 	public List<DocumentViewRecord> list( List<String> ids ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( DocumentViewRecord.class );
@@ -48,7 +48,7 @@ public class DocumentViewRecordFactory extends AbstractFactory {
 		cq.select( root.get( DocumentViewRecord_.id ));
 		return em.createQuery( cq.where(p) ).setMaxResults(50).getResultList();
 	}
-	
+
 	//@MethodDescribe("根据访问者姓名列示指定Id的DocumentViewRecord信息列表")
 	public List<String> listByPerson( String personName, Integer maxCount ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( DocumentViewRecord.class );
@@ -60,7 +60,7 @@ public class DocumentViewRecordFactory extends AbstractFactory {
 		cq.select( root.get( DocumentViewRecord_.id ));
 		return em.createQuery( cq.where(p) ).setMaxResults( maxCount ).getResultList();
 	}
-	
+
 	public List<DocumentViewRecord> listRecordsByPerson( String personName, Integer maxCount ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( DocumentViewRecord.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -70,7 +70,7 @@ public class DocumentViewRecordFactory extends AbstractFactory {
 		cq.orderBy( cb.desc( root.get( DocumentViewRecord_.createTime ) ) );
 		return em.createQuery( cq.where(p) ).setMaxResults( maxCount ).getResultList();
 	}
-	
+
 	//@MethodDescribe("根据访问者姓名和文档ID列示指定Id的DocumentViewRecord信息列表")
 	public List<String> listByDocAndPerson( String documentId, String personName ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( DocumentViewRecord.class );
@@ -82,7 +82,7 @@ public class DocumentViewRecordFactory extends AbstractFactory {
 		cq.select( root.get( DocumentViewRecord_.id ));
 		return em.createQuery( cq.where(p) ).getResultList();
 	}
-	
+
 	/**
 	 * 根据文档ID，计算该文档所有的访问次数
 	 * @param id
@@ -97,7 +97,7 @@ public class DocumentViewRecordFactory extends AbstractFactory {
 		cq.select( cb.sumAsLong(root.get( DocumentViewRecord_.viewCount )) ).where(p);
 		return em.createQuery( cq.where(p) ).getSingleResult();
 	}
-	
+
 	public List<DocumentViewRecord> listNextWithDocIds( String docId, Integer count, Object sequenceFieldValue, String order ) throws Exception {
 		if( StringUtils.isEmpty(order) ){
 			order = "DESC";
@@ -130,9 +130,17 @@ public class DocumentViewRecordFactory extends AbstractFactory {
 		CriteriaQuery<Long> cq = cb.createQuery( Long.class );
 		Root<DocumentViewRecord> root = cq.from( DocumentViewRecord.class );
 		Predicate p = cb.equal( root.get( DocumentViewRecord_.documentId ), docId );
-		if( StringUtils.isNotEmpty(docId) ){
-			p = cb.and( p, cb.equal( root.get( DocumentViewRecord_.documentId ), docId ));
-		}
+		cq.select( cb.count( root ));
+		return em.createQuery(cq.where(p)).getSingleResult();
+	}
+
+	public Long countWithDocIdAndPerson(String docId, String person) throws Exception {
+		EntityManager em = this.entityManagerContainer().get( DocumentViewRecord.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery( Long.class );
+		Root<DocumentViewRecord> root = cq.from( DocumentViewRecord.class );
+		Predicate p = cb.equal( root.get( DocumentViewRecord_.documentId ), docId );
+		p = cb.and( p, cb.equal( root.get( DocumentViewRecord_.viewerName ), person ));
 		cq.select( cb.count( root ));
 		return em.createQuery(cq.where(p)).getSingleResult();
 	}
@@ -171,7 +179,7 @@ public class DocumentViewRecordFactory extends AbstractFactory {
 	 * @param ids
 	 * @param distinguishedName
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public List<String> listReadDocId(List<String> ids, String distinguishedName) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( DocumentViewRecord.class );
@@ -183,13 +191,13 @@ public class DocumentViewRecordFactory extends AbstractFactory {
 		cq.select(root.get( DocumentViewRecord_.documentId ));
 		return em.createQuery(cq.where(p)).getResultList();
 	}
-	
+
 	/**
 	 * 根据指定分类ID列表查询已读文档ID列表
 	 * @param categoryIds
 	 * @param distinguishedName
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public List<String> listReadDocIdWithCategory(List<String> categoryIds, String distinguishedName) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( DocumentViewRecord.class );
@@ -200,5 +208,5 @@ public class DocumentViewRecordFactory extends AbstractFactory {
 		p = cb.and( p, root.get( DocumentViewRecord_.categoryId ).in( categoryIds ));
 		cq.select(root.get( DocumentViewRecord_.documentId ));
 		return em.createQuery(cq.where(p)).getResultList();
-	}	
+	}
 }

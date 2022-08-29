@@ -12,32 +12,18 @@ public class ApplicationServer extends ConfigObject {
 	private static final long serialVersionUID = 4182216855396608843L;
 
 	public static ApplicationServer defaultInstance() {
-		return new ApplicationServer();
+		ApplicationServer o = new ApplicationServer();
+		o.enable = true;
+		o.port = DEFAULT_PORT;
+		o.sslEnable = false;
+		o.proxyHost = "";
+		o.proxyPort = DEFAULT_PORT;
+		o.includes = new CopyOnWriteArrayList<>();
+		o.excludes = new CopyOnWriteArrayList<>();
+		return o;
 	}
 
 	private static final Integer DEFAULT_PORT = 80;
-	private static final Boolean DEFAULT_STATENABLE = true;
-	private static final String DEFAULT_STATEXCLUSIONS = "*.js,*.gif,*.jpg,*.png,*.css,*.ico";
-	private static final Boolean DEFAULT_EXPOSEJEST = true;
-	private static final Boolean DEFAULT_REQUESTLOGENABLE = false;
-	private static final Integer DEFAULT_REQUESTLOGRETAINDAYS = 7;
-	private static final Boolean DEFAULT_REQUESTLOGBODYENABLE = false;
-
-	public ApplicationServer() {
-		this.enable = true;
-		this.port = DEFAULT_PORT;
-		this.sslEnable = false;
-		this.proxyHost = "";
-		this.proxyPort = DEFAULT_PORT;
-		this.includes = new CopyOnWriteArrayList<>();
-		this.excludes = new CopyOnWriteArrayList<>();
-		this.statEnable = DEFAULT_STATENABLE;
-		this.statExclusions = DEFAULT_STATEXCLUSIONS;
-		this.exposeJest = DEFAULT_EXPOSEJEST;
-		this.requestLogEnable = DEFAULT_REQUESTLOGENABLE;
-		this.requestLogRetainDays = DEFAULT_REQUESTLOGRETAINDAYS;
-		this.requestLogBodyEnable = DEFAULT_REQUESTLOGBODYENABLE;
-	}
 
 	@FieldDescribe("是否启用")
 	private Boolean enable;
@@ -53,34 +39,6 @@ public class ApplicationServer extends ConfigObject {
 	private CopyOnWriteArrayList<String> includes;
 	@FieldDescribe("选择不承载的应用,和includes的值配合使用可以选择或者排除承载的应用,可以使用*作为通配符.")
 	private CopyOnWriteArrayList<String> excludes;
-	@FieldDescribe("启用统计,默认启用统计.")
-	private Boolean statEnable;
-	@FieldDescribe("统计忽略路径,默认忽略*.js,*.gif,*.jpg,*.png,*.css,*.ico")
-	private String statExclusions;
-	@FieldDescribe("暴露jest接口.")
-	private Boolean exposeJest;
-	@FieldDescribe("启用访问日志功能.")
-	private Boolean requestLogEnable;
-	@FieldDescribe("访问日志记录天数,默认7天.")
-	private Integer requestLogRetainDays;
-	@FieldDescribe("访问日志是否记录post或者put的body内容,只对content-type为application/json的请求有效.")
-	private Boolean requestLogBodyEnable;
-
-	public Boolean getRequestLogBodyEnable() {
-		return BooleanUtils.isTrue(this.requestLogBodyEnable);
-	}
-
-	public Boolean getExposeJest() {
-		return BooleanUtils.isNotFalse(this.exposeJest);
-	}
-
-	public String getStatExclusions() {
-		return (StringUtils.isEmpty(statExclusions) ? DEFAULT_STATEXCLUSIONS : this.statExclusions) + ",/druid/*";
-	}
-
-	public Boolean getStatEnable() {
-		return BooleanUtils.isNotFalse(statEnable);
-	}
 
 	public Boolean getEnable() {
 		return BooleanUtils.isTrue(this.enable);
@@ -142,15 +100,6 @@ public class ApplicationServer extends ConfigObject {
 
 	public void setExcludes(CopyOnWriteArrayList<String> excludes) {
 		this.excludes = excludes;
-	}
-
-	public Boolean getRequestLogEnable() {
-		return BooleanUtils.isTrue(this.requestLogEnable);
-	}
-
-	public Integer getRequestLogRetainDays() {
-		return (null == this.requestLogRetainDays || this.requestLogRetainDays < 1) ? DEFAULT_REQUESTLOGRETAINDAYS
-				: this.requestLogRetainDays;
 	}
 
 }

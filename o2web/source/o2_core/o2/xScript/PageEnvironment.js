@@ -5,6 +5,8 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
         var _form = ev.form;
         var _forms = ev.forms;
 
+        this.appType = "portal";
+
         this.library = COMMON;
         //this.library.version = "4.0";
 
@@ -1303,9 +1305,18 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
             },
             parseFilter: function (filter, parameter) {
                 if (typeOf(filter) !== "array") return [];
+            if( !parameter )parameter = {};
                 var filterList = [];
                 (filter || []).each(function (d) {
-                    var parameterName = d.path.replace(/\./g, "_");
+                    //var parameterName = d.path.replace(/\./g, "_");
+                    var pName = d.path.replace(/\./g, "_");
+
+                    var parameterName = pName;
+                    var suffix = 1;
+                    while( parameter[parameterName] ){
+                        parameterName = pName + "_" + suffix;
+                        suffix++;
+                    }
                     var value = d.value;
                     if (d.comparison === "like" || d.comparison === "notLike") {
                         if (value.substr(0, 1) !== "%") value = "%" + value;
@@ -1318,6 +1329,8 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                             value = "{d '" + value + "'}"
                         } else if (d.formatType === "timeValue") {
                             value = "{t '" + value + "'}"
+                        } else if (d.formatType === "numberValue"){
+                            value = parseFloat(value);
                         }
                         parameter[parameterName] = value;
                     }
@@ -1795,6 +1808,16 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
             "notice": function (content, type, target, where, offset, option) {
                 _form.notice(content, type, target, where, offset, option);
             },
+
+            /**打开一个对话框
+             * @method dialog
+             * @static
+             * @see module:form.dialog
+             */
+            "dialog": function ( options ) {
+                return _form.dialog( options );
+            },
+
             /**给页面添加事件。
              * @method addEvent
              * @static
@@ -2464,7 +2487,8 @@ if (!MWF.xScript.JSONData) {
                 },
                 "check": {
                     "value": function (kk, v) {
-                        this.add(kk, v || "", false, true);
+                        var value = typeOf( v ) === "null" ? "" : v;
+                        this.add(kk, value, false, true);
                     }
                 },
                 "del": {

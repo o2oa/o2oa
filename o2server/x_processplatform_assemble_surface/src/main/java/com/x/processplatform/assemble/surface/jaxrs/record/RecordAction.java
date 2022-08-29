@@ -28,12 +28,25 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "RecordAction", description = "记录接口.")
 @Path("record")
-@JaxrsDescribe("记录")
+@JaxrsDescribe("记录接口.")
 public class RecordAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(RecordAction.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(RecordAction.class);
+	private static final String OPERATIONID_PREFIX = "RecordAction::";
 
+	@Operation(summary = "根据工作或完成工作标识获取记录.", operationId = OPERATIONID_PREFIX
+			+ "listWithWorkOrWorkCompleted", responses = { @ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListWithWorkOrWorkCompleted.Wo.class))) }) })
 	@JaxrsMethodDescribe(value = "根据工作或完成工作标识获取记录.", action = ActionListWithWorkOrWorkCompleted.class)
 	@GET
 	@Path("list/workorworkcompleted/{workOrWorkCompleted}")
@@ -47,13 +60,16 @@ public class RecordAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListWithWorkOrWorkCompleted().execute(effectivePerson, workOrWorkCompleted);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据工作或完成工作标识获取记录分页.", action = ActionListWithWorkOrWorkCompletedPaging.class)
+	@Operation(summary = "分页列示根据工作或完成工作标识获取的记录.", operationId = OPERATIONID_PREFIX
+			+ "listWithWorkOrWorkCompletedPaging", responses = { @ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListWithWorkOrWorkCompletedPaging.Wo.class))) }) })
+	@JaxrsMethodDescribe(value = "分页列示根据工作或完成工作标识获取的记录.", action = ActionListWithWorkOrWorkCompletedPaging.class)
 	@GET
 	@Path("list/workorworkcompleted/{workOrWorkCompleted}/paging/{page}/size/{size}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -69,13 +85,16 @@ public class RecordAction extends StandardJaxrsAction {
 			result = new ActionListWithWorkOrWorkCompletedPaging().execute(effectivePerson, workOrWorkCompleted, page,
 					size);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据(已完成)工作的job获取记录.", action = ActionListWithJob.class)
+	@Operation(summary = "根据任务标识获取记录.", operationId = OPERATIONID_PREFIX + "listWithJob", responses = {
+			@ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListWithJob.Wo.class))) }) })
+	@JaxrsMethodDescribe(value = "根据任务标识获取记录.", action = ActionListWithJob.class)
 	@GET
 	@Path("list/job/{job}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -87,13 +106,16 @@ public class RecordAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListWithJob().execute(effectivePerson, job);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据(已完成)工作的job获取记录分页.", action = ActionListWithJobPaging.class)
+	@Operation(summary = "分页列示根据任务标识获取的记录.", operationId = OPERATIONID_PREFIX + "listWithJobPaging", responses = {
+			@ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListWithJobPaging.Wo.class))) }) })
+	@JaxrsMethodDescribe(value = "分页列示根据任务标识获取的记录.", action = ActionListWithJobPaging.class)
 	@GET
 	@Path("list/job/{job}/paging/{page}/size/{size}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -107,13 +129,15 @@ public class RecordAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListWithJobPaging().execute(effectivePerson, job, page, size);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "管理删除记录.", action = ActionManageDelete.class)
+	@Operation(summary = "根据记录标识删除记录,需要管理权限.", operationId = OPERATIONID_PREFIX + "manageDelete", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionManageDelete.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "根据记录标识删除记录,需要管理权限.", action = ActionManageDelete.class)
 	@DELETE
 	@Path("{id}/manage")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -125,13 +149,16 @@ public class RecordAction extends StandardJaxrsAction {
 		try {
 			result = new ActionManageDelete().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "Mock Get To Delete.", action = ActionManageDelete.class)
+	@Operation(summary = "根据记录标识删除记录,需要管理权限(mock delete to get).", operationId = OPERATIONID_PREFIX
+			+ "manageDeleteMockDeleteToGet", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionManageDelete.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "根据记录标识删除记录,需要管理权限(mock delete to get).", action = ActionManageDelete.class)
 	@GET
 	@Path("{id}/manage/mockdeletetoget")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -143,13 +170,17 @@ public class RecordAction extends StandardJaxrsAction {
 		try {
 			result = new ActionManageDelete().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "管理根据job创建记录.", action = ActionManageCreateWithJob.class)
+	@Operation(summary = "根据任务标识创建记录,需要管理权限.", operationId = OPERATIONID_PREFIX + "manageCreateWithJob", responses = {
+			@ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionManageCreateWithJob.Wo.class)) }) }, requestBody = @RequestBody(content = {
+							@Content(schema = @Schema(implementation = ActionManageCreateWithJob.Wi.class)) }))
+	@JaxrsMethodDescribe(value = "根据任务标识创建记录,需要管理权限.", action = ActionManageCreateWithJob.class)
 	@POST
 	@Path("job/{job}/manage")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -161,13 +192,17 @@ public class RecordAction extends StandardJaxrsAction {
 		try {
 			result = new ActionManageCreateWithJob().execute(effectivePerson, job, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
-	@JaxrsMethodDescribe(value = "管理修改记录.", action = ActionManageEdit.class)
+	@Operation(summary = "根据记录标识修改记录,需要管理权限.", operationId = OPERATIONID_PREFIX + "manageEdit", responses = {
+			@ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionManageEdit.Wo.class)) }) }, requestBody = @RequestBody(content = {
+							@Content(schema = @Schema(implementation = ActionManageEdit.Wi.class)) }))
+	@JaxrsMethodDescribe(value = "根据记录标识修改记录,需要管理权限.", action = ActionManageEdit.class)
 	@PUT
 	@Path("{id}/manage")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -179,13 +214,17 @@ public class RecordAction extends StandardJaxrsAction {
 		try {
 			result = new ActionManageEdit().execute(effectivePerson, id, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
-	@JaxrsMethodDescribe(value = "Mock Post To Put.", action = ActionManageEdit.class)
+	@Operation(summary = "根据记录标识修改记录,需要管理权限(mock put to post).", operationId = OPERATIONID_PREFIX
+			+ "manageEdit", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionManageEdit.Wo.class)) }) }, requestBody = @RequestBody(content = {
+							@Content(schema = @Schema(implementation = ActionManageEdit.Wi.class)) }))
+	@JaxrsMethodDescribe(value = "根据记录标识修改记录,需要管理权限(mock put to post).", action = ActionManageEdit.class)
 	@POST
 	@Path("{id}/manage/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -198,7 +237,7 @@ public class RecordAction extends StandardJaxrsAction {
 		try {
 			result = new ActionManageEdit().execute(effectivePerson, id, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));

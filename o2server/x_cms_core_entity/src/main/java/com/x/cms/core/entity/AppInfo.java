@@ -31,12 +31,15 @@ import com.x.base.core.entity.annotation.Flag;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.ListTools;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * 栏目信息
  *
  * @author O2LEE
  *
  */
+@Schema(name = "AppInfo", description = "内容管理栏目信息.")
 @ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.AppInfo.table, uniqueConstraints = {
@@ -186,6 +189,12 @@ public class AppInfo extends SliceJpaObject {
 	@Column(name = ColumnNamePrefix + showAllDocuments_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean showAllDocuments = true;
+
+	public static final String allowWaitPublish_FIELDNAME = "allowWaitPublish";
+	@FieldDescribe("栏目是否允许定时发布：true | false(默认)")
+	@Column(name = ColumnNamePrefix + showAllDocuments_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Boolean allowWaitPublish = false;
 
 	public static final String defaultEditForm_FIELDNAME = "defaultEditForm";
 	@FieldDescribe("默认编辑表单")
@@ -792,5 +801,13 @@ public class AppInfo extends SliceJpaObject {
 
 	public void setDefaultReadForm(String defaultReadForm) {
 		this.defaultReadForm = defaultReadForm;
+	}
+
+	public Boolean getAllowWaitPublish() {
+		return allowWaitPublish;
+	}
+
+	public void setAllowWaitPublish(Boolean allowWaitPublish) {
+		this.allowWaitPublish = allowWaitPublish;
 	}
 }

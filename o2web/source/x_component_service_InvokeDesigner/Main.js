@@ -586,7 +586,7 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
         this.propertyEnableTokenNode = new Element("select", {"styles": this.css.propertySelectNode }).inject(this.propertyContentArea);
         new Element("option" , {  "value" : "true", "text" : this.lp.true  }).inject(this.propertyEnableTokenNode);
         new Element("option" , {  "value" : "false", "text" : this.lp.false  }).inject(this.propertyEnableTokenNode);
-        new Element("div", {"styles": this.css.propertyTextNode, "text": this.lp.enableTokenInfo}).setStyles({
+        new Element("div", {"styles": this.css.propertyTextNode, "html": this.lp.enableTokenInfo}).setStyles({
             "word-break":"break-all",
             "height" : "auto",
             "line-height": "18px",
@@ -637,6 +637,20 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
             }
         }).inject(this.propertyContentArea);
 
+
+        node = new Element("div", {"styles": this.css.propertyTextNode, "text": this.lp.tokenSetting+":"}).inject(this.propertyContentArea);
+        this.propertyTokenNode = new Element("select", {"styles": this.css.propertySelectNode }).inject(this.propertyContentArea);
+        o2.Actions.load("x_program_center").ConfigAction.getToken(function(json){
+            debugger;
+            json.data.ssos.each(function(sso){
+                if( sso.enable ){
+                    new Element("option" , {  "value" : sso.key, "text" : sso.client  }).inject(this.propertyTokenNode);
+                }
+            }.bind(this));
+        }.bind(this), function(){
+            return true;
+        });
+
         new Element("div", {"styles": this.css.propertyTextNode, "text": this.lp.runResult}).setStyles({
             "word-break":"break-all",
             "height" : "auto",
@@ -658,13 +672,42 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
             var id = this.propertyExecuteButton.retrieve("id");
             var body = this.propertyRequireBodyNode.get("value");
 
+            debugger;
+
+            var enableToken = false;
+            this.propertyEnableTokenNode.getElements("option").each(function(el){
+                if( el.selected )enableToken = el.get("value") === "true";
+            });
+
             if( id ){
                 var address = o2.Actions.getHost("x_program_center");
                 var serviceName = o2.Actions.load("x_program_center").InvokeAction.action.serviceName;
-                var uri = o2.Actions.load("x_program_center").InvokeAction.action.actions.execute.uri;
-                var url = uri.replace("{flag}", alias || name || id);
+                var uri, url;
+                if( enableToken ){
+                    uri = o2.Actions.load("x_program_center").InvokeAction.action.actions.executeToken.uri;
+                    var client, key, token;
+                    this.propertyTokenNode.getElements("option").each(function(el){
+                        if( el.selected ){
+                            client = el.get("text");
+                            key = el.get("value");
+                        }
+                    });
+                    if( client && key ){
+                        o2.Actions.load("x_program_center").InvokeAction.token({ client :  client }, function(json){
+                            token = json.data.value;
+                        }, null, false);
+                        url = uri.replace("{flag}", alias || name || id).replace("{client}", client).replace("{token}", token);
+                    }else{
+                        this.notice( this.lp.noSSOSetting, "error");
+                        return;
+                    }
+                }else{
+                    uri = o2.Actions.load("x_program_center").InvokeAction.action.actions.execute.uri;
+                    url = uri.replace("{flag}", alias || name || id);
+                }
+                url = o2.filterUrl( address + "/" + serviceName +  url );
                 var res = new Request({
-                    url: address + "/" + serviceName +  url,
+                    url: url,
                     async: false,
                     method: "POST",
                     onSuccess: function(responseText, responseXML){
@@ -910,7 +953,7 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
                 //"dependInvokeList": [],
                 "isNewInvoke": true,
                 "text": "",
-                "enableToken" : false,
+                "enableToken" : true,
                 "enable" : true,
                 "remoteAddrRegex" : "",
                 "lastStartTime" : "",
@@ -927,7 +970,7 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
 
                 if (!notSetTile){
                     this.setTitle(this.options.appTitle + "-"+data.name);
-                    this.taskitem.setText(this.options.appTitle + "-"+data.name);
+                    if(this.taskitem)this.taskitem.setText(this.options.appTitle + "-"+data.name);
                     this.options.appTitle = this.options.appTitle + "-"+data.name;
                 }
 

@@ -10,7 +10,7 @@ import com.x.base.core.project.x_message_assemble_communicate;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.Messages;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -27,16 +27,16 @@ class ActionCustomCreate extends BaseAction {
 	private static final String CUSTOM_PREFIX = "custom_";
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
-		
+
 		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
-		
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			if (!StringUtils.startsWith(wi.getType(), CUSTOM_PREFIX)) {
 				throw new ExceptionNotCustomMessage(wi.getType());
 			}
-			if (!Config.messages().containsKey(wi.getType())) {
+			if (!MessageConnector.TYPES.contains(wi.getType())) {
 				throw new ExceptionUndefinedMessageType(wi.getType());
 			}
 			Wo wo = ThisApplication.context().applications()
@@ -52,7 +52,7 @@ class ActionCustomCreate extends BaseAction {
 
 		static WrapCopier<Wi, MessageConnector.Wrap> copier = WrapCopierFactory.wi(Wi.class,
 				MessageConnector.Wrap.class, null, JpaObject.FieldsUnmodify);
-		
+
 		@FieldDescribe("类型")
 		private String type;
 

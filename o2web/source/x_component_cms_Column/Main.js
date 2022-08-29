@@ -102,7 +102,7 @@ MWF.xApplication.cms.Column.Main = new Class({
         }
 
 
-        if (MWF.AC.isCMSManager()) {
+        if (MWF.AC.isCMSCreator()) {
             this.createColumnNode = new Element("div.createColumnNode", {
                 "styles": this.css.createColumnNode,
                 "text": this.lp.column.create

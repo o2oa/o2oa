@@ -75,7 +75,7 @@ class ActionUploadWorkInfo extends BaseAction {
 					workHtml = "<html><head></head><body>" + workHtml + "</body></html>";
 				}
 			}
-			String id = saveHtml(workId, flag, workHtml, effectivePerson.getDistinguishedName(), title,
+			String id = saveHtml(flag, workHtml, effectivePerson.getDistinguishedName(), title,
 					wi.getPageWidth(), business);
 			Wo wo = new Wo();
 			wo.setId(id);
@@ -87,7 +87,7 @@ class ActionUploadWorkInfo extends BaseAction {
 	public static class Wo extends WoId {
 	}
 
-	private String saveHtml(String workId, String flag, String workHtml, String person, String title, Float pageWidth,
+	private String saveHtml(String flag, String workHtml, String person, String title, Float pageWidth,
 			Business business) {
 		try {
 			String name = "";

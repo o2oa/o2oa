@@ -42,7 +42,7 @@ class ActionManageListNext extends BaseAction {
 				result = this.standardListNext(Wo.copier, id, count,  JpaObject.sequence_FIELDNAME, equalsTerms, null, null, null, null,
 						null, null, null, true, DESC);
 			} else {
-				List<String> ids = business.process().listControlableProcess(effectivePerson, application);
+				List<String> ids = business.process().listControllableProcess(effectivePerson, application);
 				if (ListTools.isNotEmpty(ids)) {
 					InTerms inTerms = new InTerms();
 					inTerms.put("process", ids);

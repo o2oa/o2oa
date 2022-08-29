@@ -396,7 +396,7 @@
 
   var REGEXP_SPACES = /\s\s*/; // Misc
 
-  var BUTTONS = ['zoom-in', 'zoom-out', 'one-to-one', 'reset', 'prev', 'play', 'next', 'rotate-left', 'rotate-right', 'flip-horizontal', 'flip-vertical'];
+  var BUTTONS = ['zoom-in', 'zoom-out', 'one-to-one', 'reset', 'prev', 'play', 'next', 'rotate-left', 'rotate-right', 'flip-horizontal', 'flip-vertical', 'download'];
 
   /**
    * Check if the given value is a string.
@@ -1428,12 +1428,41 @@
         case 'flip-vertical':
           this.scaleY(-imageData.scaleY || -1);
           break;
+        case 'download':
+          this.download();
 
+          break;
         default:
           if (this.played) {
             this.stop();
           }
 
+      }
+    },
+    download : function (){
+
+      var isDingding = /dingtalk/i.test(navigator.userAgent.toLowerCase())
+
+
+      if(isDingding){
+
+        var xtoken = Cookie.read(o2.tokenName);
+        var url =  o2.filterUrl(this.image.src + "?"+o2.tokenName+"=" + xtoken);
+        var fileName = this.image.alt;
+        o2.load("/o2_lib/dingding/dingtalk.open-2.10.3.js",function(){
+          dd.biz.util.downloadFile({
+            url: url,
+            name: fileName,
+            onProgress: function(msg){
+            },
+            onSuccess : function(result) {
+            },
+            onFail : function() {
+            }
+          });
+        })
+      }else {
+        window.open(this.image.src);
       }
     },
     dblclick: function dblclick(event) {

@@ -168,7 +168,7 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
                 dlg.close();
             }.bind(this));
         }catch(e){
-            this.designer.notice(this.designer.lp.newLineSuccess, "error");
+            this.designer.notice(this.designer.lp.newLineJsonError, "error");
         }
 
     },
@@ -281,6 +281,10 @@ MWF.xApplication.query.TableDesigner.Table = new Class({
     checkColumnName: function(name){
         var rex = /^\d+|\.|\#|\s|\@|\&|\*|\(|\)|\=|\+|\!|\^|\$|\%|\;|\"|\{|\}|\[|\]|\||\\|\,|\.|\?|\/|\:|\;|\'|\"|\<|\>/g;
         if (rex.test(name)){
+            this.designer.notice(this.designer.lp.errorName, "error");
+            return false;
+        }
+        if((/^[A-Z]/).test(name.substr(0, 1))){
             this.designer.notice(this.designer.lp.errorName, "error");
             return false;
         }

@@ -189,6 +189,7 @@ MWF.xApplication.Setting.LP = {
     "mobile_style_imgs": {
         "launch_logo": "Start logo",
         "login_avatar": "Default avatar for login page",
+        "application_top": "Image at the Application page",
         "index_bottom_menu_logo_blur": "Home navigation icon (unchecked)",
         "index_bottom_menu_logo_focus": "Home navigation icon (selected)",
         "people_avatar_default": "User default avatar",

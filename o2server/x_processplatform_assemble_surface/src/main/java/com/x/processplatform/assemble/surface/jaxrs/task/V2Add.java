@@ -44,6 +44,9 @@ import com.x.processplatform.core.express.service.processing.jaxrs.task.V2AddWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.V2EditWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2AddManualTaskIdentityMatrixWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2AddManualTaskIdentityMatrixWi.Option;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2AddManualTaskIdentityMatrixWo;
 
 public class V2Add extends BaseAction {
@@ -51,12 +54,8 @@ public class V2Add extends BaseAction {
 	private static final Logger LOGGER = LoggerFactory.getLogger(V2Add.class);
 	// 当前提交的串号
 	private final String series = StringTools.uniqueToken();
-	// 新创建的待办标识列表
-	// private List<String> newTaskIds = new ArrayList<>();
 	// 当前待办转成已办得到的已办id
 	private String taskCompletedId;
-	// 已经存在的待办标识列表
-	// private List<String> existTaskIds = new ArrayList<>();
 	// 输入
 	private Wi wi;
 	// 当前执行用户
@@ -115,7 +114,7 @@ public class V2Add extends BaseAction {
 		req.setOpinion(opinion);
 		req.setRouteName(routeName);
 		WoId resp = ThisApplication.context().applications().putQuery(x_processplatform_service_processing.class,
-				Applications.joinQueryUri("task", task.getId()), req, task.getJob()).getData(WoId.class);
+				Applications.joinQueryUri("task", "v2", task.getId()), req, task.getJob()).getData(WoId.class);
 		if (StringUtils.isEmpty(resp.getId())) {
 			throw new ExceptionUpdateTask(task.getId());
 		}
@@ -132,8 +131,8 @@ public class V2Add extends BaseAction {
 			this.wi = this.convertToWrapIn(jsonElement, Wi.class);
 			this.initFilterOptionIdentities(business, wi, task.getWork());
 			this.initCheckOptionIdentities(wi);
-			this.workLog = emc.firstEqualAndEqual(WorkLog.class, WorkLog.job_FIELDNAME, task.getJob(),
-					WorkLog.fromActivityToken_FIELDNAME, task.getActivityToken());
+			this.workLog = emc.firstEqualAndEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, task.getJob(),
+					WorkLog.FROMACTIVITYTOKEN_FIELDNAME, task.getActivityToken());
 			if (null == workLog) {
 				throw new ExceptionEntityNotExist(WorkLog.class);
 			}
@@ -141,8 +140,6 @@ public class V2Add extends BaseAction {
 			if (BooleanUtils.isNotTrue(control.getAllowReset())) {
 				throw new ExceptionAccessDenied(effectivePerson, task);
 			}
-//			this.existTaskIds = emc.idsEqualAndEqual(Task.class, Task.job_FIELDNAME, task.getJob(), Task.work_FIELDNAME,
-//					task.getWork());
 			this.taskCompleteds = business.entityManagerContainer().listEqual(TaskCompleted.class,
 					TaskCompleted.activityToken_FIELDNAME, task.getActivityToken());
 		}
@@ -164,7 +161,7 @@ public class V2Add extends BaseAction {
 		}
 	}
 
-	private void initCheckOptionIdentities(Wi wi) throws Exception {
+	private void initCheckOptionIdentities(Wi wi) throws ExceptionEmptyOption {
 		Optional<List<String>> optional = wi.getOptionList().stream().map(Option::getIdentityList)
 				.filter(o -> !o.isEmpty()).findAny();
 		if (optional.isEmpty()) {
@@ -213,31 +210,6 @@ public class V2Add extends BaseAction {
 		}
 	}
 
-//	private void updateTaskCompleted() throws Exception {
-//		// 记录下一处理人信息
-//		WrapUpdateNextTaskIdentity req = new WrapUpdateNextTaskIdentity();
-//		req.getTaskCompletedList().add(this.taskCompletedId);
-//		req.setNextTaskIdentityList(rec.getProperties().getNextManualTaskIdentityList());
-//		ThisApplication.context().applications()
-//				.putQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
-//						Applications.joinQueryUri("taskcompleted", "next", "task", "identity"), req, task.getJob())
-//				.getData(WrapBoolean.class);
-//	}
-//
-//	private void updateTask() throws Exception {
-//		// 记录上一处理人信息
-//		if (ListTools.isNotEmpty(this.newTaskIds)) {
-//			WrapUpdatePrevTaskIdentity req = new WrapUpdatePrevTaskIdentity();
-//			req.setTaskList(this.newTaskIds);
-//			req.setPrevTaskIdentity(task.getIdentity());
-//			req.getPrevTaskIdentityList().add(task.getIdentity());
-//			ThisApplication.context().applications()
-//					.putQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
-//							Applications.joinQueryUri("task", "prev", "task", "identity"), req, task.getJob())
-//					.getData(WrapBoolean.class);
-//		}
-//	}
-
 	private ActionResult<Wo> result() throws InstantiationException, IllegalAccessException, IllegalArgumentException,
 			InvocationTargetException, NoSuchMethodException, SecurityException {
 		ActionResult<Wo> result = new ActionResult<>();
@@ -281,6 +253,7 @@ public class V2Add extends BaseAction {
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.task.V2Add.Wo")
 	public static class Wo extends Record {
 
 		private static final long serialVersionUID = 1416972392523085640L;

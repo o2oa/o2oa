@@ -16,7 +16,6 @@ import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
-import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
@@ -28,16 +27,20 @@ import com.x.processplatform.core.entity.content.Record;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionListWithWorkOrWorkCompleted.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWithWorkOrWorkCompleted.class);
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String workOrWorkCompleted) throws Exception {
 
+		LOGGER.debug("execute:{}, workOrWorkCompleted:{}.", effectivePerson::getDistinguishedName,
+				() -> workOrWorkCompleted);
+
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		CompletableFuture<List<Wo>> listFuture = this.listFuture(workOrWorkCompleted);
-		CompletableFuture<Boolean> checkControlFuture = this.checkControlFuture(effectivePerson,
-				workOrWorkCompleted);
+		CompletableFuture<Boolean> checkControlFuture = this.checkControlFuture(effectivePerson, workOrWorkCompleted);
 
 		if (BooleanUtils
 				.isFalse(checkControlFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS))) {
@@ -73,10 +76,10 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 					wos.add(Wo.copier.copy(this.taskToRecord(task)));
 				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 			return wos;
-		},ThisApplication.threadPool());
+		}, ThisApplication.threadPool());
 	}
 
 	private CompletableFuture<Boolean> checkControlFuture(EffectivePerson effectivePerson, String flag) {
@@ -84,31 +87,15 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 			Boolean value = false;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
-				value = business.readableWithWorkOrWorkCompleted(effectivePerson, flag,
-						new ExceptionEntityNotExist(flag));
+				value = business.readableWithWorkOrWorkCompleted(effectivePerson, flag);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 			return value;
-		},ThisApplication.threadPool());
+		}, ThisApplication.threadPool());
 	}
 
-	private Record taskToRecord(Task task) {
-		Record o = new Record();
-		o.setType(Record.TYPE_CURRENTTASK);
-		o.setFromActivity(task.getActivity());
-		o.setFromActivityAlias(task.getActivityAlias());
-		o.setFromActivityName(task.getActivityName());
-		o.setFromActivityToken(task.getActivityToken());
-		o.setFromActivityType(task.getActivityType());
-		o.setPerson(task.getPerson());
-		o.setIdentity(o.getIdentity());
-		o.setUnit(task.getUnit());
-		o.getProperties().setStartTime(task.getStartTime());
-		o.getProperties().setEmpowerFromIdentity(task.getEmpowerFromIdentity());
-		return o;
-	}
-
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.record.ActionListWithWorkOrWorkCompleted$Wo")
 	public static class Wo extends Record {
 
 		private static final long serialVersionUID = -7666329770246726197L;

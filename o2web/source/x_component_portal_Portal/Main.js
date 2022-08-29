@@ -170,7 +170,7 @@ MWF.xApplication.portal.Portal.Main = new Class({
         }else{
             this.getPageData(function(json){
                 this.options.pageId = this.portal.firstPage;
-                this.loadPortalPage();
+                this.loadPortalPage(par, callback);
             }.bind(this));
         }
     },

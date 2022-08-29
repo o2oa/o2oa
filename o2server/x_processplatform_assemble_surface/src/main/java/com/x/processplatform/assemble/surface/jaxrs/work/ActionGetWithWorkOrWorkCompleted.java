@@ -37,6 +37,7 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.query.core.entity.Item;
 import com.x.query.core.entity.Item_;
 
+@Deprecated(forRemoval = true)
 class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionGetWithWorkOrWorkCompleted.class);
@@ -45,7 +46,7 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 
 		LOGGER.debug("execute:{}, workOrWorkCompleted:{}.", effectivePerson::getDistinguishedName,
 				() -> workOrWorkCompleted);
-		
+
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		Work work = null;

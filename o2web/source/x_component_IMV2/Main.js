@@ -341,9 +341,9 @@ MWF.xApplication.IMV2.Main = new Class({
 							//刷新
 							cv.refreshLastMsg(nCv.lastMessage);
 							cv.refreshData(nCv);
-							if (this.conversationId === nCv.id) {
-								this.tapConv(nCv);
-							}
+							// if (this.conversationId === nCv.id) {
+							// 	this.tapConv(nCv);
+							// }
 						}
 					}
 					//新会话 创建
@@ -843,7 +843,7 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 			"fileName": fileName
 		};
 		var bodyJson = JSON.stringify(body);
-		var uuid = (new MWF.widget.UUID).toString();
+		var uuid = new MWF.widget.UUID().createTrueUUID();
 		var message = {
 			"id": uuid,
 			"conversationId": this.conversationId,
@@ -869,7 +869,7 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 		var time = this._currentTime();
 		var body = { "body": text, "type": type };
 		var bodyJson = JSON.stringify(body);
-		var uuid = (new MWF.widget.UUID).toString();
+		var uuid = new MWF.widget.UUID().createTrueUUID();
 		var textMessage = {
 			"id": uuid,
 			"conversationId": this.conversationId,

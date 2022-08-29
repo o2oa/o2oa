@@ -91,6 +91,7 @@ MWF.xApplication.process.workcenter.LP = {
 
 	"batch": "批量处理",
 	"selectBatch": "选中多个相同环节的待办进行批量处理",
-	"cannotSelectBatch": "不同环节的待办不能进行批量处理"
+	"cannotSelectBatch": "不同环节的待办不能进行批量处理",
+	"unnamed": "无标题"
 
 };

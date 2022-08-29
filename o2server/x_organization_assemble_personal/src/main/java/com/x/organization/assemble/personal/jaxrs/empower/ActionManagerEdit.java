@@ -19,11 +19,16 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.organization.assemble.personal.Business;
 import com.x.organization.core.entity.accredit.Empower;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionManagerEdit extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionManagerEdit.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionManagerEdit.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
@@ -33,7 +38,7 @@ class ActionManagerEdit extends BaseAction {
 				throw new ExceptionEntityNotExist(id, Empower.class);
 			}
 
-			if(effectivePerson.isManager()){
+			if (effectivePerson.isManager()) {
 				Wi.copier.copy(wi, empower);
 				this.check(business, empower);
 				String fromPerson = this.getPersonDNWithIdentityDN(business, empower.getFromIdentity());
@@ -61,6 +66,7 @@ class ActionManagerEdit extends BaseAction {
 		}
 	}
 
+	@Schema(name = "com.x.organization.assemble.personal.jaxrs.empower.ActionManagerEdit$Wi")
 	public static class Wi extends Empower {
 
 		private static final long serialVersionUID = 200222480341620744L;
@@ -69,7 +75,10 @@ class ActionManagerEdit extends BaseAction {
 				JpaObject.FieldsUnmodify);
 	}
 
+	@Schema(name = "com.x.organization.assemble.personal.jaxrs.empower.ActionManagerEdit$Wo")
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = 7941629273850565440L;
 
 	}
 

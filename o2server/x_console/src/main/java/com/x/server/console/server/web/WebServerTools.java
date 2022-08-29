@@ -31,7 +31,6 @@ import org.eclipse.jetty.webapp.WebAppContext;
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
 import com.x.base.core.project.x_program_center;
-import com.x.base.core.project.config.ApplicationServer;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.WebServer;
 import com.x.base.core.project.config.WebServers;
@@ -44,7 +43,7 @@ import com.x.server.console.server.Servers;
 
 public class WebServerTools extends JettySeverTools {
 
-	private static Logger logger = LoggerFactory.getLogger(WebServerTools.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(WebServerTools.class);
 
 	public static Server start(WebServer webServer) throws Exception {
 
@@ -81,16 +80,6 @@ public class WebServerTools extends JettySeverTools {
 	}
 
 	private static Server startStandalone(WebServer webServer) throws Exception {
-//		QueuedThreadPool threadPool = new QueuedThreadPool();
-//		threadPool.setName("WebServerQueuedThreadPool");
-//		threadPool.setMinThreads(THREAD_POOL_SIZE_MIN);
-//		threadPool.setMaxThreads(THREAD_POOL_SIZE_MAX);
-//		Server server = new Server(threadPool);
-//		if (BooleanUtils.isTrue(webServer.getSslEnable())) {
-//			addHttpsConnector(server, webServer.getPort(), true);
-//		} else {
-//			addHttpConnector(server, webServer.getPort(), true);
-//		}
 		HandlerList handlers = new HandlerList();
 		Server server = createServer(webServer, handlers);
 		WebAppContext context = webContext(webServer);
@@ -106,7 +95,7 @@ public class WebServerTools extends JettySeverTools {
 		server.setDumpAfterStart(false);
 		server.setDumpBeforeStop(false);
 		server.setStopAtShutdown(true);
-		if (BooleanUtils.isTrue(webServer.getRequestLogEnable())) {
+		if (BooleanUtils.isTrue(Config.general().getRequestLogEnable())) {
 			server.setRequestLog(requestLog(webServer));
 		}
 		context.setMimeTypes(Config.mimeTypes());
@@ -139,7 +128,7 @@ public class WebServerTools extends JettySeverTools {
 		return server;
 	}
 
-	private static WebAppContext webContext(WebServer webServer) throws IOException, URISyntaxException {
+	private static WebAppContext webContext(WebServer webServer) throws Exception {
 		WebAppContext context = new WebAppContext();
 		context.setContextPath("/");
 		context.setBaseResource(Resource.newResource(new File(Config.base(), "servers/webServer")));
@@ -154,9 +143,9 @@ public class WebServerTools extends JettySeverTools {
 		context.setGzipHandler(new GzipHandler());
 		context.setParentLoaderPriority(true);
 		context.getMimeTypes().addMimeMapping("wcss", "application/json");
-		if (BooleanUtils.isTrue(webServer.getStatEnable())) {
+		if (BooleanUtils.isTrue(Config.general().getStatEnable())) {
 			FilterHolder statFilterHolder = new FilterHolder(new WebStatFilter());
-			statFilterHolder.setInitParameter("exclusions", webServer.getStatExclusions());
+			statFilterHolder.setInitParameter("exclusions", Config.general().getStatExclusions());
 			context.addFilter(statFilterHolder, "/*", EnumSet.of(DispatcherType.REQUEST));
 			ServletHolder statServletHolder = new ServletHolder(StatViewServlet.class);
 			statServletHolder.setInitParameter("sessionStatEnable", "false");
@@ -169,7 +158,7 @@ public class WebServerTools extends JettySeverTools {
 		AsyncRequestLogWriter asyncRequestLogWriter = new AsyncRequestLogWriter();
 		asyncRequestLogWriter.setTimeZone(TimeZone.getDefault().getID());
 		asyncRequestLogWriter.setAppend(true);
-		asyncRequestLogWriter.setRetainDays(webServer.getRequestLogRetainDays());
+		asyncRequestLogWriter.setRetainDays(Config.general().getRequestLogRetainDays());
 		asyncRequestLogWriter.setFilename(
 				Config.dir_logs().toString() + File.separator + "web.request.yyyy_MM_dd." + Config.node() + ".log");
 		asyncRequestLogWriter.setFilenameDateFormat("yyyyMMdd");
@@ -196,7 +185,7 @@ public class WebServerTools extends JettySeverTools {
 							proxyHolder.setInitParameter("timeout", timeout + "000");
 							context.addServlet(proxyHolder, "/" + o + "/*");
 						} catch (Exception e) {
-							logger.error(e);
+							LOGGER.error(e);
 						}
 					});
 		}
@@ -254,4 +243,5 @@ public class WebServerTools extends JettySeverTools {
 			FileUtils.copyDirectory(p.toFile(), Config.path_servers_webServer(true).toFile());
 		}
 	}
+
 }

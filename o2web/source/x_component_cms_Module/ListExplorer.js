@@ -140,7 +140,8 @@ MWF.xApplication.cms.Module.ListExplorer = new Class({
             this.view = new MWF.xApplication.cms.Module.ListExplorer.ListForALL(this.elementContentNode, this.app,this, this.viewData, this.options.searchKey );
         }else if( this.revealData.isDraft ){
             this.view = new MWF.xApplication.cms.Module.ListExplorer.ListForDraft(this.elementContentNode, this.app,this, this.viewData, this.options.searchKey );
-
+        }else if( this.revealData.isDelay ){
+            this.view = new MWF.xApplication.cms.Module.ListExplorer.ListForDelay(this.elementContentNode, this.app,this, this.viewData, this.options.searchKey );
         }else if( (this.revealData.id == "defaultList") || (this.options.searchKey && this.options.searchKey!="") ){
             this.view = new MWF.xApplication.cms.Module.ListExplorer.DefaultList(this.elementContentNode, this.app,this, this.viewData, this.options.searchKey );
         }else{
@@ -239,12 +240,15 @@ MWF.xApplication.cms.Module.ListExplorer = new Class({
             "styles": this.css.searchBarNode
         }).inject(this.searchBarAreaNode);
 
-        this.searchBarActionNode = new Element("div", {
+        this.searchBarActionNode = new Element("div.o2icon-search2", {
             "styles": this.css.searchBarActionNode
         }).inject(this.searchBarNode);
-        this.searchBarResetActionNode = new Element("div", {
+        this.searchBarActionNode.addClass("mainColor_color");
+
+        this.searchBarResetActionNode = new Element("div.o2icon-back", {
             "styles": this.css.searchBarResetActionNode
         }).inject(this.searchBarNode);
+        this.searchBarResetActionNode.addClass("mainColor_color");
         this.searchBarResetActionNode.setStyle("display","none");
 
         this.searchBarInputBoxNode = new Element("div", {
@@ -734,6 +738,95 @@ MWF.xApplication.cms.Module.ListExplorer.ListForDraft = new Class({
         var data = {
             "appIdList": [ this.explorer.columnData.id ],
             "statusList": [ "draft" ],
+            "orderField" : this.orderField || null,
+            "orderType" : this.orderType || null,
+            "documentType": "全部"
+        };
+        if( this.searchKey && this.searchKey!="" ){
+            data.title = this.searchKey
+        }
+        if (this.filter && this.filter.filter ){
+            var filterResult = this.filter.getFilterResult();
+            for(var f in filterResult ){
+                data[f] = filterResult[f];
+            }
+            o2.Actions.load("x_cms_assemble_control").DocumentAction.query_listWithFilterPaging(page, count || this.pageCount, data, function(json){
+                if (callback) callback(json);
+            });
+            // this.actions.listDocumentFilterNext(id, count || this.pageCount, data, function(json){
+            //     if (callback) callback(json);
+            // });
+        }else{
+            o2.Actions.load("x_cms_assemble_control").DocumentAction.query_listWithFilterPaging(page, count || this.pageCount, data, function(json){
+                if (callback) callback(json);
+            });
+            // this.actions.listDocumentFilterNext(id, count || this.pageCount, data, function(json){
+            //     if (callback) callback(json);
+            // });
+        }
+    }
+
+});
+
+MWF.xApplication.cms.Module.ListExplorer.ListForDelay = new Class({
+    Extends: MWF.xApplication.cms.Module.ListExplorer.DefaultList,
+
+    createListHead : function(){
+        var _self = this;
+        var headNode = this.headNode = new Element("tr", {"styles": this.css.listHeadNode}).inject(this.table);
+
+        if( this.selectEnable ){
+            this.createSelectTh();
+        }
+
+        var listItemUrl = this.explorer.path+"listItemForDelay.json";
+        MWF.getJSON(listItemUrl, function(json){
+            this.listItemTemplate = json;
+            json.each(function(cell){
+                var isShow = true;
+                if( cell.access ){
+                    if( cell.access == "admin" && !this.explorer.options.isAdmin ){
+                        isShow = false;
+                    }
+                }
+                if(isShow) {
+                    var th = new Element("th", {
+                        "styles": this.css[cell.headStyles],
+                        "width": cell.width,
+                        "text": cell.title
+                    }).inject(headNode)
+                }
+                //var thText = new Element("div",{
+                //    "styles" : this.css.thTextNode,
+                //    "text": cell.title
+                //}).inject(th);
+                if( cell.sortByClickTitle == "yes" ){
+                    th.store("field",cell.item);
+                    if( this.orderField  == cell.item && this.orderType!="" ){
+                        th.store("orderType",this.orderType);
+                        this.sortIconNode = new Element("div",{
+                            "styles": this.orderType == "asc" ? this.css.sortIconNode_asc : this.css.sortIconNode_desc
+                        }).inject( th, "bottom" );
+                    }else{
+                        th.store("orderType","");
+                        this.sortIconNode = new Element("div",{"styles":this.css.sortIconNode}).inject( th, "bottom" );
+                    }
+                    th.setStyle("cursor","pointer");
+                    th.addEvent("click",function(){
+                        _self.resort( this );
+                    })
+                }
+            }.bind(this));
+        }.bind(this),false);
+    },
+    _getCurrentPageData: function(callback, count){
+        if(!count)count=this.explorer.countPerPage;
+        // var id = (this.items.length) ? this.items[this.items.length-1].data.id : "(0)";
+        var page = this.currentPage || 1;
+        this.currentPage = page + 1;
+        var data = {
+            "appIdList": [ this.explorer.columnData.id ],
+            "statusList": [ "waitPublish" ],
             "orderField" : this.orderField || null,
             "orderType" : this.orderType || null,
             "documentType": "全部"
@@ -1353,10 +1446,16 @@ MWF.xApplication.cms.Module.ListExplorer.DefaultDocument = new Class({
 
         if (this.deleteNode){
             this.deleteNode.addEvents({
-                "mouseover": function(){this.deleteNode.setStyles(this.css.actionDeleteNode_over);}.bind(this),
-                "mouseout": function(){this.deleteNode.setStyles(this.css.actionDeleteNode);}.bind(this),
-                "mousedown": function(){this.deleteNode.setStyles(this.css.actionDeleteNode_down);}.bind(this),
-                "mouseup": function(){this.deleteNode.setStyles(this.css.actionDeleteNode_over);}.bind(this),
+                "mouseover": function(){
+                    this.deleteNode.setStyles(this.css.actionDeleteNode_over);
+                    this.deleteNode.addClass("mainColor_color");
+                }.bind(this),
+                "mouseout": function(){
+                    this.deleteNode.setStyles(this.css.actionDeleteNode);
+                    this.deleteNode.removeClass("mainColor_color");
+                }.bind(this),
+                // "mousedown": function(){this.deleteNode.setStyles(this.css.actionDeleteNode_down);}.bind(this),
+                // "mouseup": function(){this.deleteNode.setStyles(this.css.actionDeleteNode_over);}.bind(this),
                 "click": function(e){
                     this.remove(e);
                     e.stopPropagation();
@@ -1366,10 +1465,16 @@ MWF.xApplication.cms.Module.ListExplorer.DefaultDocument = new Class({
 
         if (this.editNode){
             this.editNode.addEvents({
-                "mouseover": function(){this.editNode.setStyles(this.css.actionEditNode_over);}.bind(this),
-                "mouseout": function(){this.editNode.setStyles(this.css.actionEditNode);}.bind(this),
-                "mousedown": function(){this.editNode.setStyles(this.css.actionEditNode_down);}.bind(this),
-                "mouseup": function(){this.editNode.setStyles(this.css.actionEditNode_over);}.bind(this),
+                "mouseover": function(){
+                    this.editNode.setStyles(this.css.actionEditNode_over);
+                    this.editNode.addClass("mainColor_color");
+                }.bind(this),
+                "mouseout": function(){
+                    this.editNode.setStyles(this.css.actionEditNode);
+                    this.editNode.removeClass("mainColor_color");
+                }.bind(this),
+                // "mousedown": function(){this.editNode.setStyles(this.css.actionEditNode_down);}.bind(this),
+                // "mouseup": function(){this.editNode.setStyles(this.css.actionEditNode_over);}.bind(this),
                 "click": function(e){
                     this.openDocument( e, true );
                     e.stopPropagation();
@@ -1381,9 +1486,9 @@ MWF.xApplication.cms.Module.ListExplorer.DefaultDocument = new Class({
     setActions: function(){
         if( this.actionAreaNode ){
             if( this.explorer.options.isAdmin ){
-                this.deleteNode = new Element("div", {"styles": this.css.actionDeleteNode, "title": this.explorer.app.lp["delete"]}).inject(this.actionAreaNode);
+                this.deleteNode = new Element("div.o2icon-delete", {"styles": this.css.actionDeleteNode, "title": this.explorer.app.lp["delete"]}).inject(this.actionAreaNode);
 
-                this.editNode = new Element("div", {"styles": this.css.actionEditNode, "title": this.explorer.app.lp.edit}).inject(this.actionAreaNode);
+                this.editNode = new Element("div.o2icon-edit2", {"styles": this.css.actionEditNode, "title": this.explorer.app.lp.edit}).inject(this.actionAreaNode);
             }
         }
     },

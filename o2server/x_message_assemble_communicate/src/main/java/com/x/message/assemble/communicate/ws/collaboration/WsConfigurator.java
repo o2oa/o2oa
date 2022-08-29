@@ -19,7 +19,7 @@ public class WsConfigurator extends ServerEndpointConfig.Configurator {
 	public void modifyHandshake(ServerEndpointConfig config, HandshakeRequest request, HandshakeResponse response) {
 		try {
 			EffectivePerson effectivePerson = this.getEffectivePerson(request);
-			config.getUserProperties().put(HttpToken.X_Person, effectivePerson);
+			config.getUserProperties().put(HttpToken.X_PERSON, effectivePerson);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -1,7 +1,10 @@
 package com.x.base.core.project.message;
 
+import java.util.Collections;
+import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.x.base.core.project.Context;
@@ -149,13 +152,13 @@ public class MessageConnector {
 	public static final String TYPE_TEAMWORK_TASKUPDATE = "teamwork_taskUpdate";
 
 	// 工作管理任务删除
-	public static final String TYPE_TEAMWORK_TASKDELETE = "teamwork_taskDelelte";
+	public static final String TYPE_TEAMWORK_TASKDELETE = "teamwork_taskDelete";
 
 	// 工作管理任务超时
 	public static final String TYPE_TEAMWORK_TASKOVERTIME = "teamwork_taskOvertime";
 
 	// 工作管理聊天
-	public static final String TYPE_TEAMWORK_CHAT = "teamwork_taskChat";
+	public static final String TYPE_TEAMWORK_CHAT = "teamwork_chat";
 
 	// 内容管理发布
 	public static final String TYPE_CMS_PUBLISH = "cms_publish";
@@ -175,11 +178,11 @@ public class MessageConnector {
 	// 脑图文件分享
 	public static final String TYPE_MIND_FILESHARE = "mind_fileShare";
 
-	// 审计日志通知
-	public static final String TYPE_AUDIT_LOG = "audit_log";
-
 	// IM 聊天消息发送
 	public static final String TYPE_IM_CREATE = "im_create";
+
+	// 审计日志通知
+	// public static final String TYPE_AUDIT_LOG = "audit_log";
 
 	public static final String CONSUME_WS = "ws";
 
@@ -215,6 +218,20 @@ public class MessageConnector {
 	// 自定消费者类型前缀
 	public static final String CONSUME_CUSTOM_PREFIX = "custom_";
 
+	public static final Set<String> TYPES = Collections.unmodifiableSet(Sets.newHashSet(TYPE_APPLICATION_CREATE,
+			TYPE_APPLICATION_UPDATE, TYPE_APPLICATION_DELETE, TYPE_PROCESS_CREATE, TYPE_PROCESS_UPDATE,
+			TYPE_PROCESS_DELETE, TYPE_ACTIVITY_MESSAGE, TYPE_WORK_TO_WORKCOMPLETED, TYPE_WORK_CREATE, TYPE_WORK_DELETE,
+			TYPE_WORKCOMPLETED_CREATE, TYPE_WORKCOMPLETED_DELETE, TYPE_TASK_TO_TASKCOMPLETED, TYPE_TASK_CREATE,
+			TYPE_TASK_DELETE, TYPE_TASK_URGE, TYPE_TASK_EXPIRE, TYPE_TASK_PRESS, TYPE_TASKCOMPLETED_CREATE,
+			TYPE_TASKCOMPLETED_DELETE, TYPE_READ_TO_READCOMPLETED, TYPE_READ_CREATE, TYPE_READ_DELETE,
+			TYPE_READCOMPLETED_CREATE, TYPE_READCOMPLETED_DELETE, TYPE_REVIEW_CREATE, TYPE_REVIEW_DELETE,
+			TYPE_MEETING_INVITE, TYPE_MEETING_DELETE, TYPE_MEETING_ACCEPT, TYPE_MEETING_REJECT, TYPE_ATTACHMENT_CREATE,
+			TYPE_ATTACHMENT_DELETE, TYPE_ATTACHMENT_SHARE, TYPE_ATTACHMENT_SHARECANCEL, TYPE_ATTACHMENT_EDITOR,
+			TYPE_ATTACHMENT_EDITORCANCEL, TYPE_ATTACHMENT_EDITORMODIFY, TYPE_CALENDAR_ALARM, TYPE_CUSTOM_CREATE,
+			TYPE_TEAMWORK_TASKCREATE, TYPE_TEAMWORK_TASKUPDATE, TYPE_TEAMWORK_TASKDELETE, TYPE_TEAMWORK_TASKOVERTIME,
+			TYPE_TEAMWORK_CHAT, TYPE_CMS_PUBLISH, TYPE_CMS_PUBLISH_TO_CREATOR, TYPE_BBS_SUBJECTCREATE,
+			TYPE_BBS_REPLYCREATE, TYPE_MIND_FILESEND, TYPE_MIND_FILESHARE, TYPE_IM_CREATE));
+
 	private static Context context;
 
 	private static LinkedBlockingQueue<Wrap> connectQueue = new LinkedBlockingQueue<>(10000);
@@ -249,7 +266,7 @@ public class MessageConnector {
 		}
 	}
 
-	public static class ConnectorThread extends Thread {
+	private static class ConnectorThread extends Thread {
 		@Override
 		public void run() {
 			while (true) {
@@ -320,7 +337,7 @@ public class MessageConnector {
 
 	}
 
-	public static class StopSignal extends Wrap {
+	private static class StopSignal extends Wrap {
 
 		private static final long serialVersionUID = -5631247237688117035L;
 

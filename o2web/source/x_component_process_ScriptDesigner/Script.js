@@ -92,10 +92,13 @@ MWF.xApplication.process.ScriptDesigner.Script = new Class({
             }else{
                 this.loadEditor();
             }
+
+            this.setAreaNodeSize();
+
         }.bind(this));
         var _self = this;
         this.page.addEvent("queryClose", function(){
-            if (this.autoSaveTimerID) window.clearInterval(this.autoSaveTimerID);
+            if (_self.autoSaveTimerID) window.clearInterval(_self.autoSaveTimerID);
             this.showIm();
             //_self.saveSilence();
             if (_self.lisNode) _self.lisNode.setStyles(_self.designer.css.listScriptItem);
@@ -208,6 +211,7 @@ MWF.xApplication.process.ScriptDesigner.Script = new Class({
         this.designer.propertyDescriptionNode.set("value", this.data.description || "");
     },
     setAreaNodeSize: function(){
+        if( !this.areaNode.offsetParent )return;
         //var size = this.node.getSize();
         var size = this.node.getComputedSize();
         size.y = size.height;

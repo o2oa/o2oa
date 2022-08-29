@@ -33,6 +33,8 @@ import com.x.processplatform.core.entity.element.util.WorkLogTree;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Nodes;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionListWithWorkOrWorkCompleted.class);
@@ -66,8 +68,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 			Boolean value = false;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 				Business business = new Business(emc);
-				value = business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
-						new ExceptionEntityNotExist(workOrWorkCompleted));
+				value = business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted);
 			} catch (Exception e) {
 				logger.error(e);
 			}
@@ -125,13 +126,13 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 				wo.setNextTaskCompletedIdentityList(ListTools.trim(wo.getNextTaskCompletedIdentityList(), true, true));
 				wos.add(wo);
 			}
-			ListTools.groupStick(wos, tasks, WorkLog.fromActivityToken_FIELDNAME, Task.activityToken_FIELDNAME,
+			ListTools.groupStick(wos, tasks, WorkLog.FROMACTIVITYTOKEN_FIELDNAME, Task.activityToken_FIELDNAME,
 					TASKLIST_FIELDNAME);
-			ListTools.groupStick(wos, taskCompleteds, WorkLog.fromActivityToken_FIELDNAME,
+			ListTools.groupStick(wos, taskCompleteds, WorkLog.FROMACTIVITYTOKEN_FIELDNAME,
 					TaskCompleted.activityToken_FIELDNAME, TASKCOMPLETEDLIST_FIELDNAME);
-			ListTools.groupStick(wos, reads, WorkLog.fromActivityToken_FIELDNAME, Read.activityToken_FIELDNAME,
+			ListTools.groupStick(wos, reads, WorkLog.FROMACTIVITYTOKEN_FIELDNAME, Read.activityToken_FIELDNAME,
 					READLIST_FIELDNAME);
-			ListTools.groupStick(wos, readCompleteds, WorkLog.fromActivityToken_FIELDNAME,
+			ListTools.groupStick(wos, readCompleteds, WorkLog.FROMACTIVITYTOKEN_FIELDNAME,
 					ReadCompleted.activityToken_FIELDNAME, READCOMPLETEDLIST_FIELDNAME);
 			result.setData(wos);
 		}
@@ -189,7 +190,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 	private List<WorkLog> workLogs(String job) {
 		List<WorkLog> os = new ArrayList<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			os = emc.listEqual(WorkLog.class, WorkLog.job_FIELDNAME, job);
+			os = emc.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, job);
 			return os.stream()
 					.sorted(Comparator.comparing(WorkLog::getFromTime, Comparator.nullsLast(Date::compareTo))
 							.thenComparing(WorkLog::getArrivedTime, Comparator.nullsLast(Date::compareTo)))
@@ -200,21 +201,22 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 		return os;
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.worklog.ActionListWithWorkOrWorkCompleted$Wo")
 	public static class Wo extends WorkLog {
 
 		private static final long serialVersionUID = -7666329770246726197L;
 
 		static WrapCopier<WorkLog, Wo> copier = WrapCopierFactory.wo(WorkLog.class, Wo.class,
-				ListTools.toList(JpaObject.id_FIELDNAME, WorkLog.fromActivity_FIELDNAME,
-						WorkLog.fromActivityType_FIELDNAME, WorkLog.fromActivityName_FIELDNAME,
-						WorkLog.fromActivityAlias_FIELDNAME, WorkLog.fromActivityToken_FIELDNAME,
-						WorkLog.fromTime_FIELDNAME, WorkLog.arrivedActivity_FIELDNAME,
-						WorkLog.arrivedActivityType_FIELDNAME, WorkLog.arrivedActivityName_FIELDNAME,
-						WorkLog.arrivedActivityAlias_FIELDNAME, WorkLog.arrivedActivityToken_FIELDNAME,
-						WorkLog.arrivedTime_FIELDNAME, WorkLog.routeName_FIELDNAME, WorkLog.route_FIELDNAME,
-						WorkLog.connected_FIELDNAME, WorkLog.splitting_FIELDNAME, WorkLog.fromGroup_FIELDNAME,
-						WorkLog.arrivedGroup_FIELDNAME, WorkLog.fromOpinionGroup_FIELDNAME,
-						WorkLog.arrivedOpinionGroup_FIELDNAME),
+				ListTools.toList(JpaObject.id_FIELDNAME, WorkLog.FROMACTIVITY_FIELDNAME,
+						WorkLog.FROMACTIVITYTYPE_FIELDNAME, WorkLog.FROMACTIVITYNAME_FIELDNAME,
+						WorkLog.FROMACTIVITYALIAS_FIELDNAME, WorkLog.FROMACTIVITYTOKEN_FIELDNAME,
+						WorkLog.FROMTIME_FIELDNAME, WorkLog.ARRIVEDACTIVITY_FIELDNAME,
+						WorkLog.ARRIVEDACTIVITYTYPE_FIELDNAME, WorkLog.ARRIVEDACTIVITYNAME_FIELDNAME,
+						WorkLog.ARRIVEDACTIVITYALIAS_FIELDNAME, WorkLog.ARRIVEDACTIVITYTOKEN_FIELDNAME,
+						WorkLog.ARRIVEDTIME_FIELDNAME, WorkLog.ROUTENAME_FIELDNAME, WorkLog.ROUTE_FIELDNAME,
+						WorkLog.CONNECTED_FIELDNAME, WorkLog.SPLITTING_FIELDNAME, WorkLog.FROMGROUP_FIELDNAME,
+						WorkLog.ARRIVEDGROUP_FIELDNAME, WorkLog.FROMOPINIONGROUP_FIELDNAME,
+						WorkLog.ARRIVEDOPINIONGROUP_FIELDNAME),
 				JpaObject.FieldsInvisible);
 
 		private List<WoTask> taskList = new ArrayList<>();
@@ -279,6 +281,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.worklog.ActionListWithWorkOrWorkCompleted$WoTask")
 	public static class WoTask extends Task {
 
 		private static final long serialVersionUID = 293599148568443301L;
@@ -291,6 +294,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 				null);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.worklog.ActionListWithWorkOrWorkCompleted$WoTaskCompleted")
 	public static class WoTaskCompleted extends TaskCompleted {
 
 		private static final long serialVersionUID = -4432508672641778924L;
@@ -309,6 +313,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 				null);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.worklog.ActionListWithWorkOrWorkCompleted$WoRead")
 	public static class WoRead extends Read {
 
 		private static final long serialVersionUID = -7243683008987722267L;
@@ -321,6 +326,7 @@ class ActionListWithWorkOrWorkCompleted extends BaseAction {
 				null);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.worklog.ActionListWithWorkOrWorkCompleted$WoReadCompleted")
 	public static class WoReadCompleted extends ReadCompleted {
 
 		private static final long serialVersionUID = -7086077858353505033L;

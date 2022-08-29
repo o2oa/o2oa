@@ -22,6 +22,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.queue.AbstractQueue;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.WorkLog;
+import com.x.query.assemble.surface.Business;
 import com.x.query.assemble.surface.ThisApplication;
 import com.x.query.core.entity.ImportModel;
 import com.x.query.core.entity.ImportRecord;
@@ -30,7 +31,7 @@ import com.x.query.core.entity.schema.Table;
 
 /**
  * 数据模板数据导入
- *
+ * @author sword
  */
 public class QueueImportData extends AbstractQueue<String> {
 
@@ -40,6 +41,7 @@ public class QueueImportData extends AbstractQueue<String> {
 
 	private static final String PROCESS_STATUS_DRAFT = "draft";
 
+	@Override
 	public void execute(String recordId) {
 		logger.info("开始数据模板数据导入：{}", recordId);
 		try {
@@ -215,6 +217,8 @@ public class QueueImportData extends AbstractQueue<String> {
 	}
 
 	private void importDynamicTable(ImportRecord record, ImportModel model) throws Exception {
+		ClassLoader classLoader = Business.getDynamicEntityClassLoader();
+		Thread.currentThread().setContextClassLoader(classLoader);
 		JsonElement jsonElement = gson.fromJson(record.getData(), JsonElement.class);
 		JsonObject jsonObject = gson.fromJson(model.getData(), JsonObject.class);
 		String tableId = jsonObject.getAsJsonObject("dynamicTable").get("id").getAsString();

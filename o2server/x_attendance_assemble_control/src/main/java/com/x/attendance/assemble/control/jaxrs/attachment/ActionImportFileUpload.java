@@ -3,7 +3,10 @@ package com.x.attendance.assemble.control.jaxrs.attachment;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -27,51 +30,40 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
 
-public class ActionImportFileUpload {
+/**
+ * @author sword
+ */
+public class ActionImportFileUpload extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionImportFileUpload.class);
+	private static final List<String> EXCEL_EXTENSIONS = Arrays.asList("xls", "xlsx");
 
 	public static class Wo extends WoId {
 
 	}
 
-	protected ActionResult<WrapOutId> execute(HttpServletRequest request, EffectivePerson effectivePerson, byte[] bytes, FormDataContentDisposition disposition) {
+	protected ActionResult<WrapOutId> execute(HttpServletRequest request, EffectivePerson effectivePerson,
+											  byte[] bytes, FormDataContentDisposition disposition) throws Exception {
 		ActionResult<WrapOutId> result = new ActionResult<>();
-		AttendanceImportFileInfo importFile = null;
-		String fileName = null;
+		String fileName = this.fileName(disposition);
 		Boolean check = true;
-		
-		try {
-			fileName = FilenameUtils.getName(new String(disposition.getFileName().getBytes(DefaultCharset.name_iso_8859_1), DefaultCharset.name));
-		} catch (Exception e) {
-			check = false;
-			Exception exception = new ExceptionGetFileName(e);
-			result.error(exception);
-			logger.error(e, effectivePerson, request, null);
+		if (StringUtils.isEmpty(fileName) || StringUtils.isEmpty(FilenameUtils.getExtension(fileName))) {
+			throw new ExceptionEmptyExtension(fileName);
 		}
-		
-		if( check ) {
-			/** 禁止不带扩展名的文件上传 */
-			if (StringUtils.isEmpty(fileName)) {
-				check = false;
-				Exception exception = new ExceptionEmptyExtension(fileName);
-				result.error(exception);
-				logger.error(exception, effectivePerson, request, null);
-			} 
+		if(!EXCEL_EXTENSIONS.contains(FilenameUtils.getExtension(fileName).toLowerCase())){
+			throw new ExceptionErrorExtension(fileName);
 		}
-		
-		if( check ) {
-			importFile = new AttendanceImportFileInfo();
-			importFile.setId( AttendanceImportFileInfo.createId() );
-			importFile.setExtension( FilenameUtils.getExtension(fileName) );
-			importFile.setFileBody( bytes );
-			importFile.setFileName( fileName );
-			importFile.setName(fileName);
-			importFile.setCreatorUid( effectivePerson.getDistinguishedName() );
-			importFile.setCreateTime( new Date() );
-			importFile.setLastUpdateTime( new Date() );
-			importFile.setLength( Long.parseLong(bytes.length+"") );
-		}
-		
+
+		AttendanceImportFileInfo importFile = new AttendanceImportFileInfo();
+		importFile.setId( AttendanceImportFileInfo.createId() );
+		importFile.setExtension( FilenameUtils.getExtension(fileName) );
+		importFile.setFileBody( bytes );
+		importFile.setFileName( fileName );
+		importFile.setName(fileName);
+		importFile.setCreatorUid( effectivePerson.getDistinguishedName() );
+		importFile.setCreateTime( new Date() );
+		importFile.setLastUpdateTime( new Date() );
+		importFile.setLength( Long.parseLong(bytes.length+"") );
+
 		if( check ) {
 			try {
 				checkDataInFile( importFile.getId(), fileName, bytes, effectivePerson );
@@ -93,11 +85,11 @@ public class ActionImportFileUpload {
 				result.error(exception);
 				logger.error(exception, effectivePerson, request, null);
 			}
-		}		
+		}
 		return result;
 	}
-	
-	private void saveFile( AttendanceImportFileInfo importFile ) throws Exception {		
+
+	private void saveFile( AttendanceImportFileInfo importFile ) throws Exception {
 		// 将所有的附件信息存储到数据库里
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			emc.beginTransaction(AttendanceImportFileInfo.class);
@@ -107,7 +99,7 @@ public class ActionImportFileUpload {
 			throw ex;
 		}
 	}
-	
+
 	private void checkDataInFile( String id, String fileName, byte[] content, EffectivePerson effectivePerson ) throws ExceptionFileImportProcess {
 		// 将文件到应用服务器形成本地文件
 		String importFilePath = "./servers/applicationServer/work/x_attendance_assemble_control/temp/";
@@ -123,8 +115,8 @@ public class ActionImportFileUpload {
 				file.delete();
 			}
 			file.createNewFile();
-		
-			
+
+
 			try {
 				output = new FileOutputStream(importFilePath + importFileName);
 				//output = new FileOutputStream(file);
@@ -140,10 +132,10 @@ public class ActionImportFileUpload {
 			logger.warn( "将文件写入到本地文件时发生异常.");
 			logger.error( e );
 		}
-		
+
 		StatusSystemImportOpt.getInstance().cleanCacheImportFileStatus( id );
 		StatusSystemImportOpt.getInstance().getCacheImportFileStatus( id ).setFilePath( importFilePath + importFileName );
-		
+
 		// 然后进行数据检查
 		IRowReader reader = new ImportExcelReader();
 		try {

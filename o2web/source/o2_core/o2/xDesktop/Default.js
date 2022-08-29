@@ -365,7 +365,7 @@ o2.xDesktop.Default = new Class({
     loadDefaultLnk: function(){
         if (this.status && this.status.flatLnks && this.status.flatLnks.length){
             this.status.flatLnks.each(function(lnkJson){
-                console.log(lnkJson.name)
+                //console.log(lnkJson.name)
                 this.addLnk(lnkJson);
             }.bind(this));
         }else{
@@ -843,8 +843,7 @@ o2.xDesktop.Default = new Class({
                 if (i && this.apps[keys[i-1]] && this.apps[keys[i-1]].setCurrent){
                     this.apps[keys[i-1]].setCurrent();
                 }else{
-                    //if (app.appId!=="Homepage") layout.openApplication(null, "Homepage");
-                    layout.openApplication(null, "Homepage");
+                    this.loadDefaultPage()
                 }
             }
             this.checkTaskBarSize();
@@ -2039,7 +2038,7 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
         }
     },
     _drag_leave: function(el, inObj){
-        console.log("_drag_leave");
+        //console.log("_drag_leave");
         if (inObj.hasClass("layout_start_content_appContent")){
             //this.node.inject(this.menu.appContentNode);
         }else if (inObj.hasClass("layout_start_groupItem_menu_content")){
@@ -2067,7 +2066,7 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
     },
 
     _drag_cancel: function(dragging){
-        console.log("_drag_cancel");
+        //console.log("_drag_cancel");
         dragging.hide();
         if (this.layout.positionNode) this.layout.positionNode.hide();
         if (this.dragRemoveNode) this.dragRemoveNode.hide();

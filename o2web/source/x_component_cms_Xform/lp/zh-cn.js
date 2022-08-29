@@ -6,7 +6,7 @@ MWF.xApplication.cms.Xform = MWF.xApplication.cms.Xform || {};
 MWF.xApplication.cms.Xform.LP = Object.merge({}, MWF.xApplication.process.Xform.LP, {
     "dataSaved": "数据保存成功",
     "documentPublished" : "发布成功" ,
-
+    "documentDelayedPublished": "定时发布成功",
 
     "noSelectRange": "无法确定选择范围",
 
@@ -83,6 +83,8 @@ MWF.xApplication.cms.Xform.LP = Object.merge({}, MWF.xApplication.process.Xform.
         "saveTitle": "保存文档",
         "publish": "发布",
         "publishTitle": "发布文档",
+        "publishDelayed": "定时发布",
+        "publishDelayedTitle": "定时发布文档",
         "saveDraft": "保存草稿",
         "saveDraftTitle": "保存草稿",
         "popular": "设置热点",

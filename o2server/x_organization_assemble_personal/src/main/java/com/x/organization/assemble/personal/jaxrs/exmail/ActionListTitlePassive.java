@@ -9,9 +9,13 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapString;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.organization.assemble.personal.Business;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.PersonAttribute;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * 
@@ -20,7 +24,11 @@ import com.x.organization.core.entity.PersonAttribute;
  */
 class ActionListTitlePassive extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListTitlePassive.class);
+
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson) throws Exception {
+
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 
 		checkEnable();
 
@@ -54,6 +62,7 @@ class ActionListTitlePassive extends BaseAction {
 		return wos;
 	}
 
+	@Schema(name = "com.x.organization.assemble.personal.jaxrs.exmail.ActionListTitlePassive$Wo")
 	public static class Wo extends WrapString {
 
 		private static final long serialVersionUID = 1L;

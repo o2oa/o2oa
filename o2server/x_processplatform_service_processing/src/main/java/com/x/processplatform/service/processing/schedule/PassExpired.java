@@ -98,8 +98,8 @@ public class PassExpired extends AbstractJob {
 			String series = StringTools.uniqueToken();
 			WorkLog workLog = null;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				workLog = emc.firstEqualAndEqual(WorkLog.class, WorkLog.job_FIELDNAME, task.getJob(),
-						WorkLog.fromActivityToken_FIELDNAME, task.getActivityToken());
+				workLog = emc.firstEqualAndEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, task.getJob(),
+						WorkLog.FROMACTIVITYTOKEN_FIELDNAME, task.getActivityToken());
 			}
 			this.passExpired(task);
 			String taskCompletedId = this.porcessingTask(task);

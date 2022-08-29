@@ -1,5 +1,7 @@
 package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Applications;
@@ -13,14 +15,18 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
-import com.x.processplatform.assemble.surface.WorkControl;
 import com.x.processplatform.core.entity.content.Attachment;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionDelete extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionDelete.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDelete.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
+
 		ActionResult<Wo> result = new ActionResult<>();
 		Attachment attachment;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -29,27 +35,27 @@ class ActionDelete extends BaseAction {
 			if (null == attachment) {
 				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
-			Long taskCount = business.task().countWithPersonWithJob(effectivePerson.getDistinguishedName(), attachment.getJob());
-			if (taskCount<0 && !business.canManageApplicationOrProcess(effectivePerson, attachment.getApplication(),
-					attachment.getProcess())) {
+			Long taskCount = business.task().countWithPersonWithJob(effectivePerson.getDistinguishedName(),
+					attachment.getJob());
+			if (taskCount < 0 && BooleanUtils.isFalse(business.canManageApplicationOrProcess(effectivePerson,
+					attachment.getApplication(), attachment.getProcess()))) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 		}
-		Wo wo = ThisApplication.context().applications()
-				.deleteQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
-						Applications.joinQueryUri("attachment", attachment.getId()))
+		Wo wo = ThisApplication.context().applications().deleteQuery(effectivePerson.getDebugger(),
+				x_processplatform_service_processing.class, Applications.joinQueryUri("attachment", attachment.getId()))
 				.getData(Wo.class);
 		wo.setId(attachment.getId());
-		logger.info("{}操作删除附件：{}{}",effectivePerson.getDistinguishedName(),id,attachment.getName());
+		LOGGER.info("id: {}, name: {}.", id, attachment.getName());
 		result.setData(wo);
 		return result;
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionDelete$Wo")
 	public static class Wo extends WoId {
 
-	}
+		private static final long serialVersionUID = 5279214884633037713L;
 
-	public static class WoControl extends WorkControl {
 	}
 
 }

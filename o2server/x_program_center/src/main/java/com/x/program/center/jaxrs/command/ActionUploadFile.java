@@ -1,191 +1,122 @@
 package com.x.program.center.jaxrs.command;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.InputStream;
-import java.net.Socket;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-
-import com.hankcs.hanlp.corpus.io.IOUtil;
-import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.Nodes;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.Crypto;
+import com.x.base.core.project.tools.StringTools;
+import io.swagger.v3.oas.annotations.media.Schema;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.io.*;
+import java.net.Socket;
+import java.net.URISyntaxException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.util.*;
+import java.util.stream.Collectors;
+
+/**
+ * @author sword
+ */
 public class ActionUploadFile extends BaseAction {
-	private static Logger logger = LoggerFactory.getLogger(CommandAction.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionUploadFile.class);
+	private static final Set<String> set = Set.of("war", "jar");
+	private static final String CTL_JAR = "jar";
 
-	ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, String ctl, String nodeName,
-			String nodePort, InputStream fileInputStream, FormDataContentDisposition disposition) throws Exception {
-		ActionResult<Wo> result = new ActionResult<>();
-		Wo wo = null;
-		String curServer = request.getLocalAddr();
-		ByteArrayInputStream byteArrayInputStream = null;
-		byte[] byteArray = IOUtil.readBytesFromOtherInputStream(fileInputStream);
-		fileInputStream.close();
-		if (nodeName.equalsIgnoreCase("*")) {
-			Nodes nodes = Config.nodes();
-			logger.info("先其他服务器");
-			for (String node : nodes.keySet()) {
-				// 先其他服务器
-				if (!node.equalsIgnoreCase(curServer)) {
-					if (nodes.get(node).getApplication().getEnable() || nodes.get(node).getCenter().getEnable()) {
-						byteArrayInputStream = new ByteArrayInputStream(byteArray);
-						logger.info("node=" + node);
-						wo = executeCommand(ctl, node, nodes.get(node).nodeAgentPort(), byteArrayInputStream,
-								disposition);
-					}
-				}
-			}
-
-			logger.info("后当前服务器");
-			for (String node : nodes.keySet()) {
-				// 后当前服务器
-				if (node.equalsIgnoreCase(curServer)) {
-					if (nodes.get(curServer).getApplication().getEnable()
-							|| nodes.get(curServer).getCenter().getEnable()) {
-						byteArrayInputStream = new ByteArrayInputStream(byteArray);
-						logger.info("node=" + node);
-						wo = executeCommand(ctl, node, nodes.get(curServer).nodeAgentPort(), byteArrayInputStream,
-								disposition);
-					}
-				}
-			}
-		} else {
-
-			byteArrayInputStream = new ByteArrayInputStream(byteArray);
-			wo = executeCommand(ctl, nodeName, Integer.parseInt(nodePort), byteArrayInputStream, disposition);
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, byte[] bytes, FormDataContentDisposition disposition) throws Exception {
+		if (BooleanUtils.isNotTrue(Config.general().getDeployWarEnable())) {
+			throw new ExceptionDeployDisable();
 		}
-
+		String fileName = this.fileName(disposition);
+		LOGGER.info("{}操作部署应用:{}.", effectivePerson::getDistinguishedName, () -> fileName);
+		String ext = FilenameUtils.getExtension(fileName);
+		String ctl = this.getFileCtl(fileName, ext);
+		if(!StringTools.isFileName(fileName) || StringUtils.isBlank(ext) || !set.contains(ext) || StringUtils.isEmpty(ctl)){
+			throw new ExceptionIllegalFile(fileName);
+		}
+		ActionResult<Wo> result = new ActionResult<>();
+		List<String> list = Config.nodes().keySet().stream().filter(o -> {
+			try {
+				return !StringUtils.equals(o, Config.node());
+			} catch (Exception e) {
+				LOGGER.error(e);
+			}
+			return false;
+		}).collect(Collectors.toList());
+		list.add(Config.node());
+		for (String node : list) {
+			try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes)) {
+				executeCommand(ctl, node, Config.nodes().get(node).nodeAgentPort(), byteArrayInputStream, fileName);
+			}
+		}
+		Wo wo = new Wo();
+		wo.setValue(true);
 		result.setData(wo);
 		return result;
 	}
 
-	synchronized private Wo executeCommand(String ctl, String nodeName, int nodePort, InputStream fileInputStream,
-			FormDataContentDisposition disposition) throws Exception {
-		Wo wo = new Wo();
-		wo.setNode(nodeName);
-		wo.setStatus("success");
-		try (Socket socket = new Socket(nodeName, nodePort)) {
+	private String getFileCtl(String fileName, String ext) throws Exception {
+		String ctl = "";
+		List<String> storeWars = Arrays.asList(Config.dir_store().list());
+		List<String> storeJars = Arrays.asList(Config.dir_store_jars().list());
+		if(CTL_JAR.equals(ext)){
+			if(storeJars.contains(fileName)){
+				ctl = "storeJar";
+			}else{
+				ctl = "customJar";
+			}
+		}else{
+			if(storeWars.contains(fileName)){
+				ctl = "storeWar";
+			}else{
+				ctl = "customWar";
+			}
+		}
+		return ctl;
+	}
+
+	private void executeCommand(String ctl, String nodeName, int nodePort, InputStream fileInputStream,
+			String fileName)
+			throws IOException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException,
+			InvalidKeySpecException, IllegalBlockSizeException, BadPaddingException, URISyntaxException {
+		try (Socket socket = new Socket(nodeName, nodePort);
+				DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+				DataInputStream dis = new DataInputStream(socket.getInputStream())) {
 			socket.setKeepAlive(true);
 			socket.setSoTimeout(5000);
-			DataOutputStream dos = null;
-			DataInputStream dis = null;
-			try {
-				dos = new DataOutputStream(socket.getOutputStream());
-				dis = new DataInputStream(socket.getInputStream());
-
-				Map<String, Object> commandObject = new HashMap<>();
-				commandObject.put("command", "redeploy:" + ctl);
-				commandObject.put("credential", Crypto.rsaEncrypt("o2@", Config.publicKey()));
-				dos.writeUTF(XGsonBuilder.toJson(commandObject));
+			Map<String, Object> commandObject = new HashMap<>();
+			commandObject.put("command", "redeploy:" + ctl);
+			commandObject.put("credential", Crypto.rsaEncrypt("o2@", Config.publicKey()));
+			dos.writeUTF(XGsonBuilder.toJson(commandObject));
+			dos.flush();
+			dos.writeUTF(fileName);
+			dos.flush();
+			byte[] bytes = new byte[1024];
+			int length = 0;
+			while ((length = fileInputStream.read(bytes, 0, bytes.length)) != -1) {
+				dos.write(bytes, 0, length);
 				dos.flush();
-
-				dos.writeUTF(disposition.getFileName());
-				dos.flush();
-
-				logger.info("发送文件starting.......");
-				byte[] bytes = new byte[1024];
-				int length = 0;
-				while ((length = fileInputStream.read(bytes, 0, bytes.length)) != -1) {
-					dos.write(bytes, 0, length);
-					dos.flush();
-				}
-				logger.info("发送文件end.");
-
-			} finally {
-				dos.close();
-				dis.close();
-				socket.close();
-				fileInputStream.close();
 			}
-		} catch (Exception ex) {
-			wo.setStatus("fail");
-		}
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		wo.setTime(df.format(new Date()));
-		return wo;
-	}
-
-	public static class Wi extends GsonPropertyObject {
-		@FieldDescribe("命令")
-		private String ctl;
-		@FieldDescribe("节点")
-		private String nodeName;
-		@FieldDescribe("端口")
-		private String nodePort;
-
-		public String getCtl() {
-			return ctl;
-		}
-
-		public void setCtl(String ctl) {
-			this.ctl = ctl;
-		}
-
-		public String getNodeName() {
-			return nodeName;
-		}
-
-		public void setNodeName(String nodeName) {
-			this.nodeName = nodeName;
-		}
-
-		public String getNodePort() {
-			return nodePort;
-		}
-
-		public void setNodePort(String nodePort) {
-			this.nodePort = nodePort;
 		}
 	}
 
-	public static class Wo extends GsonPropertyObject {
+	@Schema(name = "com.x.program.center.jaxrs.command.ActionUploadFile$Wo")
+	public static class Wo extends WrapBoolean {
 
-		@FieldDescribe("执行时间")
-		private String time;
-		@FieldDescribe("执行结束")
-		private String status;
-		@FieldDescribe("执行服务器")
-		private String node;
+		private static final long serialVersionUID = 6597732235155964397L;
 
-		public String getTime() {
-			return time;
-		}
-
-		public void setTime(String time) {
-			this.time = time;
-		}
-
-		public String getNode() {
-			return node;
-		}
-
-		public void setNode(String node) {
-			this.node = node;
-		}
-
-		public String getStatus() {
-			return status;
-		}
-
-		public void setStatus(String status) {
-			this.status = status;
-		}
 	}
 
 }

@@ -13,6 +13,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.organization.OrganizationDefinition;
+import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.designer.Business;
 import com.x.processplatform.assemble.designer.MessageFactory;
 import com.x.processplatform.core.entity.element.Application;
@@ -36,6 +37,7 @@ class ActionCreate extends BaseAction {
 			application.setCreatorPerson(effectivePerson.getDistinguishedName());
 			application.setLastUpdatePerson(effectivePerson.getDistinguishedName());
 			application.setLastUpdateTime(new Date());
+			application.setControllerList(ListTools.add(application.getControllerList(), true, true, effectivePerson.getDistinguishedName()));
 			emc.persist(application, CheckPersistType.all);
 			emc.commit();
 			CacheManager.notify(Application.class);

@@ -17,6 +17,7 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
+import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
@@ -28,12 +29,14 @@ import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.TaskCompleted_;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionCountWithPerson extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionCountWithPerson.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCountWithPerson.class);
 
-	ActionResult<Wo> execute(String credential) throws Exception {
-
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String credential, String appId) throws Exception {
+		LOGGER.debug("execute:{}, credential:{}.", effectivePerson::getDistinguishedName, () -> credential);
 		ActionResult<Wo> result = new ActionResult<>();
 		Wo wo = new Wo();
 		String person = null;
@@ -43,11 +46,11 @@ class ActionCountWithPerson extends BaseAction {
 		}
 		if (StringUtils.isNotEmpty(person)) {
 			final String dn = person;
-			CompletableFuture<Long> taskFuture = this.taskFuture(dn);
-			CompletableFuture<Long> taskCompletedFuture = this.taskCompletedFuture(dn);
-			CompletableFuture<Long> readFuture = this.readFuture(dn);
-			CompletableFuture<Long> readCompletedFuture = this.readCompletedFuture(dn);
-			CompletableFuture<Long> reviewFuture = this.reviewFuture(dn);
+			CompletableFuture<Long> taskFuture = this.taskFuture(dn, appId);
+			CompletableFuture<Long> taskCompletedFuture = this.taskCompletedFuture(dn, appId);
+			CompletableFuture<Long> readFuture = this.readFuture(dn, appId);
+			CompletableFuture<Long> readCompletedFuture = this.readCompletedFuture(dn, appId);
+			CompletableFuture<Long> reviewFuture = this.reviewFuture(dn, appId);
 			wo.setTask(taskFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS));
 			wo.setTaskCompleted(
 					taskCompletedFuture.get(Config.processPlatform().getAsynchronousTimeout(), TimeUnit.SECONDS));
@@ -60,19 +63,23 @@ class ActionCountWithPerson extends BaseAction {
 		return result;
 	}
 
-	private CompletableFuture<Long> taskFuture(String dn) {
+	private CompletableFuture<Long> taskFuture(String dn, String appId) {
 		return CompletableFuture.supplyAsync(() -> {
 			Long count = 0L;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				count = emc.countEqual(Task.class, Task.person_FIELDNAME, dn);
+				if(StringUtils.isBlank(appId)) {
+					count = emc.countEqual(Task.class, Task.person_FIELDNAME, dn);
+				}else{
+					count = emc.countEqualAndEqual(Task.class, Task.person_FIELDNAME, dn, Task.application_FIELDNAME, appId);
+				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 			return count;
-		},ThisApplication.threadPool());
+		}, ThisApplication.threadPool());
 	}
 
-	private CompletableFuture<Long> taskCompletedFuture(String dn) {
+	private CompletableFuture<Long> taskCompletedFuture(String dn, String appId) {
 		return CompletableFuture.supplyAsync(() -> {
 			Long count = 0L;
 			// 已办仅取latest
@@ -83,65 +90,85 @@ class ActionCountWithPerson extends BaseAction {
 				CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 				Root<TaskCompleted> root = cq.from(TaskCompleted.class);
 				Predicate p = cb.equal(root.get(TaskCompleted_.person), dn);
+				if(StringUtils.isNotBlank(appId)){
+					p = cb.and(p, cb.equal(root.get(TaskCompleted_.application), appId));
+				}
 				p = cb.and(p, cb.or(cb.equal(root.get(TaskCompleted_.latest), true),
 						cb.isNull(root.get(TaskCompleted_.latest))));
 				count = em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 			return count;
-		},ThisApplication.threadPool());
+		}, ThisApplication.threadPool());
 	}
 
-	private CompletableFuture<Long> readFuture(String dn) {
+	private CompletableFuture<Long> readFuture(String dn, String appId) {
 		return CompletableFuture.supplyAsync(() -> {
 			Long count = 0L;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				count = emc.countEqual(Read.class, Read.person_FIELDNAME, dn);
+				if(StringUtils.isBlank(appId)) {
+					count = emc.countEqual(Read.class, Read.person_FIELDNAME, dn);
+				}else{
+					count = emc.countEqualAndEqual(Read.class, Read.person_FIELDNAME, dn, Read.application_FIELDNAME, appId);
+				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 			return count;
-		},ThisApplication.threadPool());
+		}, ThisApplication.threadPool());
 	}
 
-	private CompletableFuture<Long> readCompletedFuture(String dn) {
+	private CompletableFuture<Long> readCompletedFuture(String dn, String appId) {
 		return CompletableFuture.supplyAsync(() -> {
 			Long count = 0L;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				count = emc.countEqual(ReadCompleted.class, ReadCompleted.person_FIELDNAME, dn);
+				if(StringUtils.isBlank(appId)) {
+					count = emc.countEqual(ReadCompleted.class, ReadCompleted.person_FIELDNAME, dn);
+				}else{
+					count = emc.countEqualAndEqual(ReadCompleted.class, ReadCompleted.person_FIELDNAME, dn, ReadCompleted.application_FIELDNAME, appId);
+				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 			return count;
-		},ThisApplication.threadPool());
+		}, ThisApplication.threadPool());
 	}
 
-	private CompletableFuture<Long> reviewFuture(String dn) {
+	private CompletableFuture<Long> reviewFuture(String dn, String appId) {
 		return CompletableFuture.supplyAsync(() -> {
 			Long count = 0L;
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				count = emc.countEqual(Review.class, Review.person_FIELDNAME, dn);
+				if(StringUtils.isBlank(appId)) {
+					count = emc.countEqual(Review.class, Review.person_FIELDNAME, dn);
+				}else{
+					count = emc.countEqualAndEqual(Review.class, Review.person_FIELDNAME, dn, Review.application_FIELDNAME, appId);
+				}
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 			return count;
-		},ThisApplication.threadPool());
+		}, ThisApplication.threadPool());
 	}
 
 	public static class Wo extends GsonPropertyObject {
 
 		private static final long serialVersionUID = -4391978436352777470L;
 
-		@FieldDescribe("待办数量")
+		@FieldDescribe("待办数量.")
+		@Schema(description = "待办数量.")
 		private Long task = 0L;
-		@FieldDescribe("已办数量")
+		@FieldDescribe("已办数量.")
+		@Schema(description = "已办数量.")
 		private Long taskCompleted = 0L;
-		@FieldDescribe("待阅数量")
+		@FieldDescribe("待阅数量.")
+		@Schema(description = "待阅数量.")
 		private Long read = 0L;
-		@FieldDescribe("已阅数量")
+		@FieldDescribe("已阅数量.")
+		@Schema(description = "已阅数量.")
 		private Long readCompleted = 0L;
-		@FieldDescribe("待阅数量")
+		@FieldDescribe("待阅数量.")
+		@Schema(description = "待阅数量.")
 		private Long review = 0L;
 
 		public Long getTask() {

@@ -10,26 +10,22 @@ import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.assemble.surface.Business;
-import com.x.processplatform.core.entity.element.Agent;
-import com.x.processplatform.core.entity.element.Begin;
-import com.x.processplatform.core.entity.element.Cancel;
-import com.x.processplatform.core.entity.element.Choice;
-import com.x.processplatform.core.entity.element.Delay;
-import com.x.processplatform.core.entity.element.Embed;
-import com.x.processplatform.core.entity.element.End;
-import com.x.processplatform.core.entity.element.Invoke;
-import com.x.processplatform.core.entity.element.Manual;
-import com.x.processplatform.core.entity.element.Merge;
-import com.x.processplatform.core.entity.element.Parallel;
+import com.x.processplatform.core.entity.element.*;
 import com.x.processplatform.core.entity.element.Process;
-import com.x.processplatform.core.entity.element.Route;
-import com.x.processplatform.core.entity.element.Service;
-import com.x.processplatform.core.entity.element.Split;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionGetComplex extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionGetComplex.class);
+
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag) throws Exception {
+
+		LOGGER.debug("execute:{}, flag:{}.", effectivePerson::getDistinguishedName, () -> flag);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -43,6 +39,7 @@ class ActionGetComplex extends BaseAction {
 		}
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetComplex$Wo")
 	public static class Wo extends Process {
 
 		private static final long serialVersionUID = 1521228691441978462L;
@@ -62,6 +59,7 @@ class ActionGetComplex extends BaseAction {
 		private List<WoMerge> mergeList;
 		private List<WoRoute> routeList;
 		private List<WoParallel> parallelList;
+		private List<WoPublish> publishList;
 		private List<WoService> serviceList;
 		private List<WoSplit> splitList;
 
@@ -145,7 +143,7 @@ class ActionGetComplex extends BaseAction {
 			this.mergeList = mergeList;
 		}
 
-	 
+
 
 		public List<WoParallel> getParallelList() {
 			return parallelList;
@@ -179,8 +177,16 @@ class ActionGetComplex extends BaseAction {
 			this.routeList = routeList;
 		}
 
+		public List<WoPublish> getPublishList() {
+			return publishList;
+		}
+
+		public void setPublishList(List<WoPublish> publishList) {
+			this.publishList = publishList;
+		}
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetComplex$WoAgent")
 	public static class WoAgent extends Agent {
 
 		private static final long serialVersionUID = 6466513124630937459L;
@@ -188,6 +194,7 @@ class ActionGetComplex extends BaseAction {
 				JpaObject.FieldsInvisible);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetComplex$WoBegin")
 	public static class WoBegin extends Begin {
 
 		private static final long serialVersionUID = 6466513124630937459L;
@@ -195,6 +202,7 @@ class ActionGetComplex extends BaseAction {
 				JpaObject.FieldsInvisible);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetComplex$WoCancel")
 	public static class WoCancel extends Cancel {
 
 		private static final long serialVersionUID = 6466513124630937459L;
@@ -202,6 +210,7 @@ class ActionGetComplex extends BaseAction {
 				JpaObject.FieldsInvisible);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetComplex$WoChoice")
 	public static class WoChoice extends Choice {
 
 		private static final long serialVersionUID = 6466513124630937459L;
@@ -209,6 +218,7 @@ class ActionGetComplex extends BaseAction {
 				JpaObject.FieldsInvisible);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetComplex$WoDelay")
 	public static class WoDelay extends Delay {
 
 		private static final long serialVersionUID = 6466513124630937459L;
@@ -216,6 +226,7 @@ class ActionGetComplex extends BaseAction {
 				JpaObject.FieldsInvisible);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetComplex$WoEmbed")
 	public static class WoEmbed extends Embed {
 
 		private static final long serialVersionUID = 6466513124630937459L;
@@ -223,6 +234,7 @@ class ActionGetComplex extends BaseAction {
 				JpaObject.FieldsInvisible);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetComplex$WoEnd")
 	public static class WoEnd extends End {
 
 		private static final long serialVersionUID = 6466513124630937459L;
@@ -230,6 +242,7 @@ class ActionGetComplex extends BaseAction {
 				JpaObject.FieldsInvisible);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetComplex$WoInvoke")
 	public static class WoInvoke extends Invoke {
 
 		private static final long serialVersionUID = 6466513124630937459L;
@@ -237,6 +250,7 @@ class ActionGetComplex extends BaseAction {
 				JpaObject.FieldsInvisible);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetComplex$WoManual")
 	public static class WoManual extends Manual {
 
 		private static final long serialVersionUID = 6466513124630937459L;
@@ -244,6 +258,7 @@ class ActionGetComplex extends BaseAction {
 				JpaObject.FieldsInvisible);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetComplex$WoMerge")
 	public static class WoMerge extends Merge {
 
 		private static final long serialVersionUID = 6466513124630937459L;
@@ -251,8 +266,7 @@ class ActionGetComplex extends BaseAction {
 				JpaObject.FieldsInvisible);
 	}
 
-	 
-
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetComplex$WoParallel")
 	public static class WoParallel extends Parallel {
 
 		private static final long serialVersionUID = 6466513124630937459L;
@@ -260,6 +274,15 @@ class ActionGetComplex extends BaseAction {
 				JpaObject.FieldsInvisible);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetComplex$WoPublish")
+	public static class WoPublish extends Publish {
+
+		private static final long serialVersionUID = -4503137257516929365L;
+		static WrapCopier<Publish, WoPublish> copier = WrapCopierFactory.wo(Publish.class, WoPublish.class, null,
+				JpaObject.FieldsInvisible);
+	}
+
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetComplex$WoService")
 	public static class WoService extends Service {
 
 		private static final long serialVersionUID = 6466513124630937459L;
@@ -267,6 +290,7 @@ class ActionGetComplex extends BaseAction {
 				JpaObject.FieldsInvisible);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetComplex$WoSplit")
 	public static class WoSplit extends Split {
 
 		private static final long serialVersionUID = 6466513124630937459L;
@@ -274,6 +298,7 @@ class ActionGetComplex extends BaseAction {
 				JpaObject.FieldsInvisible);
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetComplex$WoRoute")
 	public static class WoRoute extends Route {
 
 		private static final long serialVersionUID = 6466513124630937459L;
@@ -296,6 +321,7 @@ class ActionGetComplex extends BaseAction {
 		wo.setManualList(WoManual.copier.copy(business.manual().listWithProcess(process)));
 		wo.setMergeList(WoMerge.copier.copy(business.merge().listWithProcess(process)));
 		wo.setParallelList(WoParallel.copier.copy(business.parallel().listWithProcess(process)));
+		wo.setPublishList(WoPublish.copier.copy(business.publish().listWithProcess(process)));
 		wo.setServiceList(WoService.copier.copy(business.service().listWithProcess(process)));
 		wo.setSplitList(WoSplit.copier.copy(business.split().listWithProcess(process)));
 		wo.setRouteList(WoRoute.copier.copy(business.route().listWithProcess(process)));

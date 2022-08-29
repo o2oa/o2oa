@@ -2,6 +2,7 @@ package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -17,7 +18,6 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.ProcessPlatform;
 import com.x.base.core.project.config.ProcessPlatform.WorkCompletedExtensionEvent;
@@ -26,34 +26,35 @@ import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.connection.CipherConnectionAction;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.DocumentTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
+import com.x.processplatform.core.express.assemble.surface.jaxrs.attachment.ActionDocToWordWorkOrWorkCompletedWi;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionDocToWordWorkOrWorkCompleted extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionDocToWordWorkOrWorkCompleted.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDocToWordWorkOrWorkCompleted.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workOrWorkCompleted, JsonElement jsonElement)
 			throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		if(StringUtils.isNotBlank(wi.getContent())){
+		if (StringUtils.isNotBlank(wi.getContent())) {
 			try {
 				String decodedContent = URLDecoder.decode(wi.getContent(), StandardCharsets.UTF_8.name());
 				wi.setContent(decodedContent);
 			} catch (Exception e) {
-				logger.warn("docContent URLDecoder error:"+e.getMessage());
+				LOGGER.warn("docContent URLDecoder error:" + e.getMessage());
 			}
 		}
 		Work work = null;
@@ -69,8 +70,7 @@ class ActionDocToWordWorkOrWorkCompleted extends BaseAction {
 			if ((null == work) && (null == workCompleted)) {
 				throw new ExceptionEntityNotExist(workOrWorkCompleted, Work.class);
 			}
-			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted,
-					new ExceptionEntityNotExist(workOrWorkCompleted))) {
+			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 		}
@@ -89,12 +89,12 @@ class ActionDocToWordWorkOrWorkCompleted extends BaseAction {
 			String activity, String job) throws Exception {
 		byte[] bytes = null;
 		Optional<WorkExtensionEvent> event;
-		if(wi.getFileName().toLowerCase().endsWith(OFD_ATT_KEY)){
-			event = Config.processPlatform().getExtensionEvents().getWorkDocToOfdEvents()
-					.bind(application, process, activity);
-		}else{
-			event = Config.processPlatform().getExtensionEvents().getWorkDocToWordEvents()
-					.bind(application, process, activity);
+		if (wi.getFileName().toLowerCase().endsWith(OFD_ATT_KEY)) {
+			event = Config.processPlatform().getExtensionEvents().getWorkDocToOfdEvents().bind(application, process,
+					activity);
+		} else {
+			event = Config.processPlatform().getExtensionEvents().getWorkDocToWordEvents().bind(application, process,
+					activity);
 		}
 		if (event.isPresent()) {
 			bytes = this.workExtensionService(effectivePerson, wi.getContent(), event.get(), job);
@@ -108,8 +108,8 @@ class ActionDocToWordWorkOrWorkCompleted extends BaseAction {
 		return bytes;
 	}
 
-	private byte[] workExtensionService(EffectivePerson effectivePerson, String content, WorkExtensionEvent event, String job)
-			throws Exception {
+	private byte[] workExtensionService(EffectivePerson effectivePerson, String content, WorkExtensionEvent event,
+			String job) throws Exception {
 		byte[] bytes = null;
 		Req req = new Req();
 		req.setContent(content);
@@ -123,16 +123,16 @@ class ActionDocToWordWorkOrWorkCompleted extends BaseAction {
 		return bytes;
 	}
 
-	private byte[] workCompletedConvert(EffectivePerson effectivePerson, Wi wi, String application, String process, String job)
-			throws Exception {
+	private byte[] workCompletedConvert(EffectivePerson effectivePerson, Wi wi, String application, String process,
+			String job) throws Exception {
 		byte[] bytes = null;
 		Optional<WorkCompletedExtensionEvent> event;
-		if(wi.getFileName().toLowerCase().endsWith(OFD_ATT_KEY)){
-			event = Config.processPlatform().getExtensionEvents()
-					.getWorkCompletedDocToOfdEvents().bind(application, process);
-		}else{
-			event = Config.processPlatform().getExtensionEvents()
-					.getWorkCompletedDocToWordEvents().bind(application, process);
+		if (wi.getFileName().toLowerCase().endsWith(OFD_ATT_KEY)) {
+			event = Config.processPlatform().getExtensionEvents().getWorkCompletedDocToOfdEvents().bind(application,
+					process);
+		} else {
+			event = Config.processPlatform().getExtensionEvents().getWorkCompletedDocToWordEvents().bind(application,
+					process);
 		}
 		if (event.isPresent()) {
 			bytes = this.workCompletedExtensionService(effectivePerson, wi.getContent(), event.get(), job);
@@ -265,54 +265,6 @@ class ActionDocToWordWorkOrWorkCompleted extends BaseAction {
 		}
 	}
 
-	private byte[] local(Wi wi) throws Exception {
-		try (POIFSFileSystem fs = new POIFSFileSystem();
-				InputStream is = new ByteArrayInputStream(wi.getContent().getBytes(DefaultCharset.name_iso_utf_8));
-				ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-			fs.createDocument(is, "WordDocument");
-			fs.writeFilesystem(out);
-			return out.toByteArray();
-		}
-	}
-
-	public static class Wo extends WoId {
-	}
-
-	public static class Wi extends GsonPropertyObject {
-
-		@FieldDescribe("转换文件名.")
-		private String fileName;
-		@FieldDescribe("附件site.")
-		private String site;
-		@FieldDescribe("内容.")
-		private String content;
-
-		public String getFileName() throws Exception {
-			return StringUtils.isEmpty(fileName) ? Config.processPlatform().getDocToWordDefaultFileName() : fileName;
-		}
-
-		public void setSite(String site) {
-			this.site = site;
-		}
-
-		public void setFileName(String fileName) {
-			this.fileName = fileName;
-		}
-
-		public String getSite() throws Exception {
-			return StringUtils.isEmpty(site) ? Config.processPlatform().getDocToWordDefaultSite() : site;
-		}
-
-		public String getContent() {
-			return content;
-		}
-
-		public void setContent(String content) {
-			this.content = content;
-		}
-
-	}
-
 	public static class Req {
 
 		private String person;
@@ -344,6 +296,30 @@ class ActionDocToWordWorkOrWorkCompleted extends BaseAction {
 		public void setJob(String job) {
 			this.job = job;
 		}
+	}
+
+	private byte[] local(Wi wi) throws IOException {
+		try (POIFSFileSystem fs = new POIFSFileSystem();
+				InputStream is = new ByteArrayInputStream(wi.getContent().getBytes(StandardCharsets.UTF_8));
+				ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+			fs.createDocument(is, "WordDocument");
+			fs.writeFilesystem(out);
+			return out.toByteArray();
+		}
+	}
+
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionDocToWordWorkOrWorkCompleted$Wo")
+	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = -2186410922141645057L;
+
+	}
+
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionDocToWordWorkOrWorkCompleted$Wi")
+	public static class Wi extends ActionDocToWordWorkOrWorkCompletedWi {
+
+		private static final long serialVersionUID = -205187635687327642L;
+
 	}
 
 }

@@ -1,8 +1,16 @@
 package com.x.base.core.project.config;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -50,14 +58,8 @@ public class TernaryManagement extends ConfigObject {
 
 	public TernaryManagement() {
 		this.enable = false;
-//        this.systemManager = INIT_SYSTEM_MANAGER;
-//        this.systemManagerDistinguishedName = INIT_SYSTEM_MANAGER_DISTINGUISHED_NAME;
 		this.systemManagerPassword = "";
-//        this.securityManager = INIT_SECURITY_MANAGER;
-//        this.securityManagerDistinguishedName = INIT_SECURITY_MANAGER_DISTINGUISHED_NAME;
 		this.securityManagerPassword = "";
-//        this.auditManager = INIT_AUDIT_MANAGER;
-//        this.auditManagerDistinguishedName = INIT_AUDIT_MANAGER_DISTINGUISHED_NAME;
 		this.auditManagerPassword = "";
 	}
 
@@ -171,6 +173,9 @@ public class TernaryManagement extends ConfigObject {
 	}
 
 	public class InitialManager extends GsonPropertyObject {
+
+		private static final long serialVersionUID = 1585586759890226859L;
+
 		private String name;
 		private String unique;
 		private String id;
@@ -303,29 +308,11 @@ public class TernaryManagement extends ConfigObject {
 	@FieldDescribe("是否启用三元管理.")
 	private Boolean enable;
 
-//    @FieldDescribe("系统管理员账号，不可更改.")
-//    private String systemManager;
-
-//    @FieldDescribe("系统管理员账号全称，不可更改.")
-//    private String systemManagerDistinguishedName;
-
 	@FieldDescribe("系统管理员账号密码.")
 	private String systemManagerPassword;
 
-//    @FieldDescribe("安全管理员账号，不可更改.")
-//    private String securityManager;
-
-//    @FieldDescribe("安全管理员账号全称，不可更改.")
-//    private String securityManagerDistinguishedName;
-
 	@FieldDescribe("安全管理员账号密码.")
 	private String securityManagerPassword;
-
-//    @FieldDescribe("安全审计员账号，不可更改.")
-//    private String auditManager;
-
-//    @FieldDescribe("安全审计员账号全称，不可更改.")
-//    private String auditManagerDistinguishedName;
 
 	@FieldDescribe("安全审计员账号密码.")
 	private String auditManagerPassword;
@@ -338,26 +325,6 @@ public class TernaryManagement extends ConfigObject {
 		this.enable = enable;
 	}
 
-//    public String getSystemManager() {
-//        return systemManager;
-//    }
-//
-//    public void setSystemManager(String systemManager) {
-//        this.systemManager = systemManager;
-//    }
-
-//    public String getSystemManagerDistinguishedName() {
-//        return systemManagerDistinguishedName;
-//    }
-//
-//    public void setSystemManagerDistinguishedName(String systemManagerDistinguishedName) {
-//        this.systemManagerDistinguishedName = systemManagerDistinguishedName;
-//    }
-
-//    public String getSystemManagerName() {
-//        return systemManagerDistinguishedName.split("@")[0];
-//    }
-
 	public String getSystemManagerPassword() {
 		if (StringUtils.isEmpty(this._systemManagerPassword)) {
 			String password = StringUtils.isBlank(this.systemManagerPassword) ? initPassword
@@ -367,29 +334,11 @@ public class TernaryManagement extends ConfigObject {
 		return this._systemManagerPassword;
 	}
 
-	public void setSystemManagerPassword(String systemManagerPassword) {
-		this.systemManagerPassword = systemManagerPassword;
+	public void setSystemManagerPassword(String systemManagerPassword)
+			throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException,
+			IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
+		this.systemManagerPassword = Crypto.formattedDefaultEncrypt(systemManagerPassword);
 	}
-
-//    public String getSecurityManager() {
-//        return securityManager;
-//    }
-//
-//    public void setSecurityManager(String securityManager) {
-//        this.securityManager = securityManager;
-//    }
-
-//    public String getSecurityManagerDistinguishedName() {
-//        return securityManagerDistinguishedName;
-//    }
-//
-//    public String getSecurityManagerName() {
-//        return securityManagerDistinguishedName.split("@")[0];
-//    }
-//
-//    public void setSecurityManagerDistinguishedName(String securityManagerDistinguishedName) {
-//        this.securityManagerDistinguishedName = securityManagerDistinguishedName;
-//    }
 
 	public String getSecurityManagerPassword() {
 		if (StringUtils.isEmpty(this._securityManagerPassword)) {
@@ -400,29 +349,11 @@ public class TernaryManagement extends ConfigObject {
 		return this._securityManagerPassword;
 	}
 
-	public void setSecurityManagerPassword(String securityManagerPassword) {
-		this.securityManagerPassword = securityManagerPassword;
+	public void setSecurityManagerPassword(String securityManagerPassword)
+			throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException,
+			IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
+		this.securityManagerPassword = Crypto.formattedDefaultEncrypt(securityManagerPassword);
 	}
-
-//    public String getAuditManager() {
-//        return auditManager;
-//    }
-//
-//    public void setAuditManager(String auditManager) {
-//        this.auditManager = auditManager;
-//    }
-//
-//    public String getAuditManagerDistinguishedName() {
-//        return auditManagerDistinguishedName;
-//    }
-//
-//    public void setAuditManagerDistinguishedName(String auditManagerDistinguishedName) {
-//        this.auditManagerDistinguishedName = auditManagerDistinguishedName;
-//    }
-//
-//    public String getAuditManagerName() {
-//        return auditManagerDistinguishedName.split("@")[0];
-//    }
 
 	public String getAuditManagerPassword() {
 		if (StringUtils.isEmpty(this._auditManagerPassword)) {
@@ -432,7 +363,9 @@ public class TernaryManagement extends ConfigObject {
 		return this._auditManagerPassword;
 	}
 
-	public void setAuditManagerPassword(String auditManagerPassword) {
-		this.auditManagerPassword = auditManagerPassword;
+	public void setAuditManagerPassword(String auditManagerPassword)
+			throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException,
+			IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
+		this.auditManagerPassword = Crypto.formattedDefaultEncrypt(auditManagerPassword);
 	}
 }

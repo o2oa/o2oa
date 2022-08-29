@@ -42,7 +42,7 @@ public class ActionCollaboration {
 
 	@OnOpen
 	public void open(Session session) {
-		EffectivePerson effectivePerson = (EffectivePerson) session.getUserProperties().get(HttpToken.X_Person);
+		EffectivePerson effectivePerson = (EffectivePerson) session.getUserProperties().get(HttpToken.X_PERSON);
 
 		LOGGER.debug("OnOpen: tokenType:{}, distinguishedName:{}.", effectivePerson::getTokenType,
 				effectivePerson::getDistinguishedName);
@@ -79,7 +79,7 @@ public class ActionCollaboration {
 
 	@OnMessage
 	public void message(String input, Session session) throws IOException {
-		EffectivePerson effectivePerson = (EffectivePerson) session.getUserProperties().get(HttpToken.X_Person);
+		EffectivePerson effectivePerson = (EffectivePerson) session.getUserProperties().get(HttpToken.X_PERSON);
 		LOGGER.debug("OnMessage receive: message {}, person:{}, ip:{}, client:{} .", () -> input,
 				effectivePerson::getDistinguishedName, effectivePerson::getRemoteAddress,
 				effectivePerson::getUserAgent);

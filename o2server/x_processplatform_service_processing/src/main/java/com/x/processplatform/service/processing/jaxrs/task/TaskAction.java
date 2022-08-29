@@ -285,7 +285,7 @@ public class TaskAction extends StandardJaxrsAction {
 
 	@JaxrsMethodDescribe(value = "更新待办中的办理意见以及路由决策.", action = V2Edit.class)
 	@PUT
-	@Path("{id}")
+	@Path("v2/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void v2Edit(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
@@ -296,6 +296,25 @@ public class TaskAction extends StandardJaxrsAction {
 			result = new V2Edit().execute(effectivePerson, id, jsonElement);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "记录待办访问时间.", action = V2View.class)
+	@GET
+	@Path("v2/work/{workId}/person/{person}/view")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void v2View(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@JaxrsParameterDescribe("工作标识") @PathParam("workId") String workId,
+			@JaxrsParameterDescribe("人员") @PathParam("person") String person) {
+		ActionResult<V2View.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2View().execute(effectivePerson, workId, person);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));

@@ -44,7 +44,7 @@ import com.x.processplatform.core.entity.element.Route;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(name = "Task", description = "待办")
+@Schema(name = "Task", description = "流程平台待办.")
 @Entity
 @ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Content.Task.table, uniqueConstraints = {
@@ -65,7 +65,8 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 		this.id = id;
 	}
 
-	@FieldDescribe("数据库主键,自动生成.")
+	@FieldDescribe("待办标识.")
+	@Schema(description = "待办标识.")
 	@Id
 	@Column(length = length_id, name = ColumnNamePrefix + id_FIELDNAME)
 	private String id = createId();
@@ -122,7 +123,7 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 		}
 	}
 
-	/* 更新运行方法 */
+	// 更新运行方法
 
 	public Task() {
 		this.properties = new TaskProperties();
@@ -169,7 +170,6 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 		this.routeName = "";
 		this.opinion = "";
 		this.modified = false;
-		this.viewed = false;
 		this.allowRapid = allowRapid;
 		this.copyProjectionFields(work);
 	}
@@ -495,19 +495,11 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 	@CheckPersist(allowEmpty = true)
 	private Boolean modified;
 
-	public static final String viewed_FIELDNAME = "viewed";
-	@Schema(description = "是否查看过标志.")
-	@FieldDescribe("是否查看过.")
-	@Column(name = ColumnNamePrefix + viewed_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private Boolean viewed;
-
 	public static final String VIEWTIME_FIELDNAME = "viewTime";
 	@Schema(description = "最早查看时间.")
 	@FieldDescribe("最早查看时间.")
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = ColumnNamePrefix + VIEWTIME_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + VIEWTIME_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date viewTime;
 
@@ -971,14 +963,6 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 		this.modified = modified;
 	}
 
-	public Boolean getViewed() {
-		return viewed;
-	}
-
-	public void setViewed(Boolean viewed) {
-		this.viewed = viewed;
-	}
-
 	public Boolean getAllowRapid() {
 		return allowRapid;
 	}
@@ -1401,6 +1385,14 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 
 	public void setPause(Boolean pause) {
 		this.pause = pause;
+	}
+
+	public Date getViewTime() {
+		return viewTime;
+	}
+
+	public void setViewTime(Date viewTime) {
+		this.viewTime = viewTime;
 	}
 
 }

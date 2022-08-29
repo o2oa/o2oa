@@ -20,6 +20,11 @@
     "icon": "form_tab_red.png"
   },
   {
+    "name": "form_tab_green.json",
+    "title": MWF.xApplication.process.ProcessManager.LP.greenForm,
+    "icon": "form_tab_green.png"
+  },
+  {
     "name": "form_cms_publish.json",
     "title": MWF.xApplication.process.ProcessManager.LP.publishForm,
     "icon": "form_cms_publish.png"

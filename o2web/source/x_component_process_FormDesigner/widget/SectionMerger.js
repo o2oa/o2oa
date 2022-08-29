@@ -344,12 +344,12 @@ MWF.xApplication.process.FormDesigner.widget.SectionMerger = new Class({
 			'    </table>' +
 			'    <div class="sectionMergeEditScriptArea">' +
 			'        <div class="MWFScriptArea" name="sectionMergeEditScript" title="'+this.lp.sectionMergeEditScript+' (S)"></div>' +
-			'        <div style="padding: 10px;color:#999">返回删除区段后合并的数据</div>' +
+			'        <div style="padding: 10px;color:#999">通过this.data[fieldId]获取字段数据，返回删除区段后合并的数据。</div>' +
 			'    </div>' +
 			'</div>' +
 			'<div class="sectionMergeSortScriptArea">' +
 			'    <div class="MWFScriptArea" name="sectionMergeSortScript" title="'+this.lp.sectionMergeSortScript+' (S)"></div>' +
-			'    <div style="padding: 10px;color:#999">排序脚本通过this.envent.a和this.evnet.b获取数据，处理后返回正数表示升序，负数表示降序。this.envent.a和this.envent.b值如: <br/>' +
+			'    <div style="padding: 10px;color:#999">排序脚本通过this.event.a和this.event.b获取数据，处理后返回正数表示升序，负数表示降序。this.event.a和this.event.b值如: <br/>' +
 			'        { <br/>' +
 			'        key: "张三@zhangsan@P", //区段值 <br/>' +
 			'        data: "内容" //字段内容 <br/>' +

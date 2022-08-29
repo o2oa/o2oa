@@ -4,14 +4,17 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.tools.DateTools;
+import com.x.base.core.project.tools.CronTools;
 import com.x.base.core.project.tools.NumberTools;
 
 public class Node extends ConfigObject {
 
-	public static final Integer DEFAULT_NODEAGENTPORT = 20010;
-	public static final String DEFAULT_BANNER = "O2OA";
-	public static final Boolean DEFAULT_SELFHEALTHCHECKENABLE = false;
+	private static final long serialVersionUID = -6598734923326779693L;
+
+	private static final Integer DEFAULT_NODEAGENTPORT = 20010;
+	private static final String DEFAULT_BANNER = "O2OA";
+	private static final Boolean DEFAULT_SELFHEALTHCHECKENABLE = false;
+	// private static final Integer DEFAULT_ORDER = 0;
 
 	public static Node defaultInstance() {
 		Node o = new Node();
@@ -27,12 +30,15 @@ public class Node extends ConfigObject {
 		o.nodeAgentEncrypt = true;
 		o.nodeAgentPort = DEFAULT_NODEAGENTPORT;
 		o.autoStart = true;
-		o.selfHealthCheckEnable = false;
+		o.selfHealthCheckEnable = DEFAULT_SELFHEALTHCHECKENABLE;
+		// o.order = DEFAULT_ORDER;
 		return o;
 	}
 
 	@FieldDescribe("是否启用")
 	private Boolean enable;
+	@FieldDescribe("节点顺序,节点选举顺序0,1,2...")
+	private Integer order;
 	@FieldDescribe("Center服务器配置")
 	private CenterServer center;
 	@FieldDescribe("Application服务器配置")
@@ -61,6 +67,10 @@ public class Node extends ConfigObject {
 	private Boolean autoStart;
 	@FieldDescribe("是否启用节点上模块健康自检查,如果启用在提交到center之前将进行模块的健康检查.默认false")
 	private Boolean selfHealthCheckEnable;
+
+//	public Integer getOrder() {
+//		return order == null ? DEFAULT_ORDER : this.order;
+//	}
 
 	public Boolean getSelfHealthCheckEnable() {
 		return BooleanUtils.isTrue(selfHealthCheckEnable);
@@ -138,7 +148,7 @@ public class Node extends ConfigObject {
 		}
 
 		public boolean available() {
-			return DateTools.cronAvailable(this.cron());
+			return CronTools.available(this.cron());
 		}
 
 		@FieldDescribe("是否启用,默认禁用.")
@@ -180,7 +190,7 @@ public class Node extends ConfigObject {
 		}
 
 		public boolean available() {
-			return DateTools.cronAvailable(this.cron) && StringUtils.isNotEmpty(this.path);
+			return CronTools.available(this.cron) && StringUtils.isNotEmpty(this.path);
 		}
 
 		@FieldDescribe("是否启用.")

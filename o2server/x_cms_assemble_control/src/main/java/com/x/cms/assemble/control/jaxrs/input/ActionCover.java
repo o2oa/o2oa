@@ -107,7 +107,7 @@ class ActionCover extends BaseAction {
 				obj.setName(this.idleNameWithEntity(business, appInfo.getId(), obj.getName(), Form.class, obj.getId()));
 			}
 		}
-		
+
 		for (WrapScript _o : wi.getScriptList()) {
 			Script obj = business.entityManagerContainer().find(_o.getId(), Script.class);
 			if (null != obj) {
@@ -123,7 +123,7 @@ class ActionCover extends BaseAction {
 				obj.setName(this.idleNameWithEntity(business, appInfo.getId(), obj.getName(), Script.class, obj.getId()));
 			}
 		}
-		
+
 		for (WrapFile _o : wi.getFileList()) {
 			File obj = business.entityManagerContainer().find(_o.getId(), File.class);
 			if (null != obj) {
@@ -140,7 +140,7 @@ class ActionCover extends BaseAction {
 			}
 			obj.setAppId(appInfo.getId());
 		}
-		
+
 		for (WrapAppDict _o : wi.getAppDictList()) {
 			AppDict obj = business.entityManagerContainer().find(_o.getId(), AppDict.class);
 			if (null != obj) {
@@ -171,7 +171,7 @@ class ActionCover extends BaseAction {
 			}
 			obj.setAppId(appInfo.getId());
 		}
-		
+
 		for ( WrapCategoryInfo wrapCategoryInfo : wi.getCategoryInfoList() ) {
 			CategoryInfo categoryInfo = business.entityManagerContainer().find(wrapCategoryInfo.getId(), CategoryInfo.class);
 			if (null != categoryInfo) {
@@ -184,8 +184,8 @@ class ActionCover extends BaseAction {
 				categoryInfo.setCategoryAlias(this.idleAliasWithCategory(business, appInfo.getId(), categoryInfo.getCategoryAlias(),
 						CategoryInfo.class, categoryInfo.getId()));
 			}
-			if (StringUtils.isNotEmpty(categoryInfo.getCategoryAlias())) {
-				categoryInfo.setCategoryAlias(this.idleNameWithCategory(business, appInfo.getId(), categoryInfo.getCategoryName(),
+			if (StringUtils.isNotEmpty(categoryInfo.getCategoryName())) {
+				categoryInfo.setCategoryName(this.idleNameWithCategory(business, appInfo.getId(), categoryInfo.getCategoryName(),
 						CategoryInfo.class, categoryInfo.getId()));
 			}
 
@@ -212,7 +212,7 @@ class ActionCover extends BaseAction {
 				}
 			}
 		}
-		
+
 		business.entityManagerContainer().beginTransaction(File.class);
 		business.entityManagerContainer().beginTransaction(AppInfo.class);
 		business.entityManagerContainer().beginTransaction(Script.class);
@@ -234,7 +234,7 @@ class ActionCover extends BaseAction {
 		for (JpaObject o : checkPersistObjects) {
 			business.entityManagerContainer().check(o, CheckPersistType.all);
 		}
-		
+
 		business.entityManagerContainer().commit();
 
 		CacheManager.notify(CategoryInfo.class);
@@ -445,7 +445,7 @@ class ActionCover extends BaseAction {
 		list = ListUtils.subtract(list, os);
 		return list.get(0);
 	}
-	
+
 	public static class Wi extends WrapCms{
 
 		private static final long serialVersionUID = -4612391443319365035L;

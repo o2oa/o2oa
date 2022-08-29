@@ -124,7 +124,9 @@ o2.LP.process = {
 		"copy": "Copy",
 		"delete": "Delete",
 		"add": "Add",
-		"script": "Script"
+		"script": "Script",
+		"clickScript": "Click Event Script",
+		"defaultNode": "Default Node"
 	}
 };
 o2.LP.desktop = {

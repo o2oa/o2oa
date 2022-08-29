@@ -229,18 +229,27 @@ MWF.xApplication.query.Query.Statistician.Stat = new Class({
     },
     toFloat: function(value){
         if (value.substr(0,1)==="￥") value = value.substr(1, value.length);
-        value = value.replace(",", "");
+        value = value.replace(/,/g, "");
         value = value.replace(/\s/g, "");
         return value.toFloat()
     },
     loadChartBar: function(){
         MWF.require("MWF.widget.chart.Bar", function(){
-            this.bar = new MWF.widget.chart.Bar(this.chartNode, this.statGridData, "displayName", {"delay": 0, "style": "monthly"});
+            var maxLength = 0, marginLeft = 40;
+            if (this.statGridData.length){
+                this.statGridData.each(function(d){
+                    maxLength = Math.max( (d.value || "" ).length, maxLength);
+                });
+                if( maxLength > 6 ){
+                    marginLeft = marginLeft + (maxLength - 6) * 7;
+                }
+            }
+            this.bar = new MWF.widget.chart.Bar(this.chartNode, this.statGridData, "displayName", {"delay": 0, "style": "monthly", "marginLeft": marginLeft});
             //this.bar.addBar("value");
             this.bar.addBar(function(d){
                 var value = d.value;
                 if (value.substr(0,1)==="￥") value = value.substr(1, value.length);
-                value = value.replace(",", "");
+                value = value.replace(/,/g, "");
                 value = value.replace(/\s/g, "");
                 return value.toFloat()
             }, function(d){
@@ -285,12 +294,21 @@ MWF.xApplication.query.Query.Statistician.Stat = new Class({
     },
     loadChartLine: function(){
         MWF.require("MWF.widget.chart.Line", function(){
-            this.bar = new MWF.widget.chart.Line(this.chartNode, this.statGridData, "displayName", {"delay": 0, "style": "monthly"});
+            var maxLength = 0, marginLeft = 40;
+            if (this.statGridData.length){
+                this.statGridData.each(function(d){
+                    maxLength = Math.max( (d.value || "" ).length, maxLength);
+                });
+                if( maxLength > 6 ){
+                    marginLeft = marginLeft + (maxLength - 6) * 7;
+                }
+            }
+            this.bar = new MWF.widget.chart.Line(this.chartNode, this.statGridData, "displayName", {"delay": 0, "style": "monthly", "marginLeft": marginLeft});
             //this.bar.addBar("value");
             this.bar.addBar(function(d){
                 var value = d.value;
                 if (value.substr(0,1)==="￥") value = value.substr(1, value.length);
-                value = value.replace(",", "");
+                value = value.replace(/,/g, "");
                 value = value.replace(/\s/g, "");
                 return value.toFloat()
             }, function(d){
@@ -406,7 +424,7 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
     },
     toFloat: function(value){
         if (value.substr(0,1)==="￥") value = value.substr(1, value.length);
-        value = value.replace(",", "");
+        value = value.replace(/,/g, "");
         value = value.replace(/\s/g, "");
         return value.toFloat()
     },
@@ -418,9 +436,19 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
 
         MWF.require("MWF.widget.chart.Bar", function(){
             //this.selectedData.each()
-
+            var maxLength = 0, marginLeft = 40;
+            if (this.selectedData.length){
+                this.selectedData.each(function(sd){
+                    (sd.list || []).each(function(d, i){
+                        maxLength = Math.max( (d.value || "" ).length, maxLength);
+                    }.bind(this));
+                })
+                if( maxLength > 6 ){
+                    marginLeft = marginLeft + (maxLength - 6) * 7;
+                }
+            }
             this.flag = [];
-            this.bar = new MWF.widget.chart.Bar(this.chartNode, this.selectedData, "group", {"delay": 0, "style": "monthly"});
+            this.bar = new MWF.widget.chart.Bar(this.chartNode, this.selectedData, "group", {"delay": 0, "style": "monthly", "marginLeft": marginLeft});
 
             if (this.selectedData.length){
                 this.selectedData[0].list.each(function(d, i){
@@ -535,9 +563,19 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
 
         MWF.require("MWF.widget.chart.Line", function(){
             //this.selectedData.each()
-
+            var maxLength = 0, marginLeft = 40;
+            if (this.selectedData.length){
+                this.selectedData.each(function(sd){
+                    (sd.list || []).each(function(d, i){
+                        maxLength = Math.max( (d.value || "" ).length, maxLength);
+                    }.bind(this));
+                })
+                if( maxLength > 6 ){
+                    marginLeft = marginLeft + (maxLength - 6) * 7;
+                }
+            }
             this.flag = [];
-            this.bar = new MWF.widget.chart.Line(this.chartNode, this.selectedData, "group", {"delay": 0, "style": "monthly"});
+            this.bar = new MWF.widget.chart.Line(this.chartNode, this.selectedData, "group", {"delay": 0, "style": "monthly", "marginLeft": marginLeft});
 
             if (this.selectedData.length){
                 this.selectedData[0].list.each(function(d, i){

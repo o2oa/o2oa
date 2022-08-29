@@ -30,6 +30,8 @@ import com.x.base.core.entity.dataitem.ItemStringValueType;
 import com.x.base.core.entity.dataitem.ItemType;
 import com.x.base.core.project.annotation.FieldDescribe;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+@Schema(name = "Item", description = "数据中心数据条目.")
 @Entity
 @ContainerEntity(dumpSize = 500, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Item.table, uniqueConstraints = {

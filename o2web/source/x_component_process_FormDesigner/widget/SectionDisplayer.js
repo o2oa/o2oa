@@ -154,7 +154,7 @@ MWF.xApplication.process.FormDesigner.widget.SectionDisplayer = new Class({
 			'</div>' +
 			'<div class="sectionDisplaySortScriptArea">' +
 			'    <div class="MWFScriptArea" name="sectionDisplaySortScript" title="'+this.lp.sectionMergeSortScript+' (S)"></div>' +
-			'    <div style="padding: 10px;color:#999">排序脚本通过this.envent.a和this.evnet.b获取数据，处理后返回正数表示升序，负数表示降序。this.envent.a和this.envent.b值如: <br/>' +
+			'    <div style="padding: 10px;color:#999">排序脚本通过this.event.a和this.event.b获取数据，处理后返回正数表示升序，负数表示降序。this.event.a和this.event.b值如: <br/>' +
 			'        { <br/>' +
 			'        key: "张三@zhangsan@P", //区段值 <br/>' +
 			'        data: "内容" //字段内容 <br/>' +

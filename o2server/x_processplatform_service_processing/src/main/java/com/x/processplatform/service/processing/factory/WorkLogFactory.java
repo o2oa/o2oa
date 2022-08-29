@@ -1,6 +1,5 @@
 package com.x.processplatform.service.processing.factory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -9,10 +8,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.apache.commons.collections4.list.SetUniqueList;
-import org.apache.commons.lang3.StringUtils;
-
-import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.content.WorkLog_;
 import com.x.processplatform.service.processing.AbstractFactory;

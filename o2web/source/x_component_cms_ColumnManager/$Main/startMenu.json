@@ -28,8 +28,8 @@
     "action": "viewConfig",
     "icon": "icon_lie_biao.png",
     "selectedIcon": "icon_lie_biao_click.png",
-    "create" : true,
-    "createAction" : "createView",
+//    "create" : true,
+//    "createAction" : "createView",
     "expand": false,
     "sub": []
   },

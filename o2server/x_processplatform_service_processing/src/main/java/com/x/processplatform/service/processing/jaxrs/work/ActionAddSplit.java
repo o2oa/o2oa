@@ -23,6 +23,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.processplatform.ManualTaskIdentityMatrix;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.content.Task;
@@ -79,7 +80,7 @@ class ActionAddSplit extends BaseAction {
 
 					result.setData(wos);
 
-					List<WorkLog> workLogs = emc.listEqual(WorkLog.class, WorkLog.job_FIELDNAME, work.getJob());
+					List<WorkLog> workLogs = emc.listEqual(WorkLog.class, WorkLog.JOB_FIELDNAME, work.getJob());
 
 					WorkLogTree tree = new WorkLogTree(workLogs);
 
@@ -109,14 +110,14 @@ class ActionAddSplit extends BaseAction {
 						workCopy.setActivityArrivedTime(new Date());
 						workCopy.setActivityDescription(activity.getDescription());
 						workCopy.setActivityName(activity.getName());
-						workCopy.setActivityToken(StringTools.uniqueToken());
+						workCopy.setActivityToken(from.getFromActivityToken());
 						workCopy.setActivityType(activity.getActivityType());
-						workCopy.setSplitTokenList(arrived.getProperties().getSplitTokenList());
+						workCopy.setSplitTokenList(arrived.getSplitTokenList());
 						workCopy.setSplitToken(arrived.getSplitToken());
 						workCopy.setSplitting(from.getSplitting());
 						workCopy.setSplitValue(splitValue);
-						// workCopy.getManualTaskIdentityList().clear();
-						workCopy.getManualTaskIdentityMatrix().clear();
+						workCopy.setSplitValueList(arrived.getSplitValueList());
+						workCopy.setManualTaskIdentityMatrix(new ManualTaskIdentityMatrix());
 						workCopy.setBeforeExecuted(false);
 						workCopy.setDestinationActivity(null);
 						workCopy.setDestinationActivityType(null);

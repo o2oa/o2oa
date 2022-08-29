@@ -39,6 +39,7 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
     clearTemplateStyles: function(styles){
 		if (styles){
 			if (styles.styles) this.removeStyles(styles.styles, "styles");
+			if (styles.tableStyles) this.removeStyles(styles.tableStyles, "tableStyles");
 			if (styles.properties) this.removeStyles(styles.properties, "properties");
 			if (styles.titleStyles) this.removeStyles(styles.titleStyles, "titleTdStyles");
 			if (styles.contentStyles) this.removeStyles(styles.contentStyles, "contentTdStyles");
@@ -48,6 +49,7 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 
 	setTemplateStyles: function(styles){
 		if (styles.styles) this.copyStyles(styles.styles, "styles");
+		if (styles.tableStyles) this.removeStyles(styles.tableStyles, "tableStyles");
 		if (styles.properties) this.copyStyles(styles.properties, "properties");
 		if (styles.titleStyles) this.copyStyles(styles.titleStyles, "titleTdStyles");
 		if (styles.contentStyles) this.copyStyles(styles.contentStyles, "contentTdStyles");
@@ -443,6 +445,8 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 			// 		this.node.setStyle(key, value);
 			// 	}
 			// }.bind(this));
+		}else if(name=="tableStyles"){
+			this.parseStyles( this.table, this.json.tableStyles );
 		}
 		if (name=="properties"){
 			this.node.getFirst().setProperties(this.json.properties);
@@ -493,6 +497,7 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
     },
     setAllStyles: function(){
         this.setPropertiesOrStyles("styles");
+		this.setPropertiesOrStyles("tableStyles");
         this.setPropertiesOrStyles("properties");
 
         this.setTabStyles();

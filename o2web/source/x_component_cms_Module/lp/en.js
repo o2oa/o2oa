@@ -2,6 +2,7 @@ MWF.xApplication.cms.Module.LP = {
 	"title": "Content Management",
 
 	"draftStatus": "Draft",
+	"delayStatus" : "Scheduled",
 	"publishedStatus": "Published",
 	"archivedStatus": "Archived",
 
@@ -102,5 +103,6 @@ MWF.xApplication.cms.Module.LP = {
 	"creatorCompany": "Create Company",
 	"creatorDepartment": "Create Department",
 	"creatorPerson": "Creator",
-	"publishTime": "Publish Time"
+	"publishTime": "Publish Time",
+	"publishTimeDelay": "Timed publishing time"
 };

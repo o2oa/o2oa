@@ -26,13 +26,25 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "ProcessAction", description = "流程接口.")
 @Path("process")
-@JaxrsDescribe("流程操作")
+@JaxrsDescribe("流程接口.")
 public class ProcessAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ProcessAction.class);
+	private static final String OPERATIONID_PREFIX = "ProcessAction::";
 
-	@JaxrsMethodDescribe(value = "获取流程.", action = ActionGet.class)
+	@Operation(summary = "根据流程标识获取流程.", operationId = OPERATIONID_PREFIX + "get", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionGet.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "根据流程标识获取流程.", action = ActionGet.class)
 	@GET
 	@Path("{flag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -50,7 +62,9 @@ public class ProcessAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "获取流程内容,附带所有的Activity信息", action = ActionGetComplex.class)
+	@Operation(summary = "获取流程内容,附带所有的活动节点信息.", operationId = OPERATIONID_PREFIX + "getComplex", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionGetComplex.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "获取流程内容,附带所有的活动节点信息.", action = ActionGetComplex.class)
 	@GET
 	@Path("{flag}/complex")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -68,7 +82,9 @@ public class ProcessAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "获取指定流程可调度到的节点.", action = ActionGetAllowRerouteTo.class)
+	@Operation(summary = "根据流程标识获取指定流程可调度到的节点.", operationId = OPERATIONID_PREFIX + "getAllowRerouteTo", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionGetAllowRerouteTo.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "根据流程标识获取指定流程可调度到的节点.", action = ActionGetAllowRerouteTo.class)
 	@GET
 	@Path("{flag}/allowrerouteto")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -86,7 +102,10 @@ public class ProcessAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据指定Application获取可启动的流程.", action = ActionListWithPersonWithApplication.class)
+	@Operation(summary = "根据指定应用标识获取可启动的流程.", operationId = OPERATIONID_PREFIX
+			+ "listWithPersonWithApplication", responses = { @ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListWithPersonWithApplication.Wo.class))) }) })
+	@JaxrsMethodDescribe(value = "根据指定应用标识获取可启动的流程.", action = ActionListWithPersonWithApplication.class)
 	@GET
 	@Path("list/application/{applicationFlag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -105,7 +124,11 @@ public class ProcessAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据指定Application和指定条件获取可启动的流程.", action = ActionListWithPersonWithApplicationFilter.class)
+	@Operation(summary = "根据指定应用标识和指定条件获取可启动的流程.", operationId = OPERATIONID_PREFIX
+			+ "listWithPersonWithApplicationFilter", responses = { @ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListWithPersonWithApplicationFilter.Wo.class))) }) }, requestBody = @RequestBody(content = {
+							@Content(schema = @Schema(implementation = ActionListWithPersonWithApplicationFilter.Wi.class)) }))
+	@JaxrsMethodDescribe(value = "根据指定应用标识和指定条件过滤可启动的流程.", action = ActionListWithPersonWithApplicationFilter.class)
 	@POST
 	@Path("list/application/{applicationFlag}/filter")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -126,6 +149,9 @@ public class ProcessAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@Operation(summary = "获取当前用户在指定流程中可启动流程的身份.", operationId = OPERATIONID_PREFIX
+			+ "listAvailableIdentityWithProcess", responses = { @ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListAvailableIdentityWithProcess.Wo.class))) }) })
 	@JaxrsMethodDescribe(value = "获取当前用户在指定流程中可启动流程的身份.", action = ActionListAvailableIdentityWithProcess.class)
 	@GET
 	@Path("list/available/identity/process/{flag}")
@@ -144,7 +170,10 @@ public class ProcessAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据应用和流程标识获取流程.", action = ActionGetWithProcessWithApplication.class)
+	@Operation(summary = "根据应用标识和流程标识获取流程.", operationId = OPERATIONID_PREFIX
+			+ "getWithProcessWithApplication", responses = { @ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionGetWithProcessWithApplication.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "根据应用标识和流程标识获取流程.", action = ActionGetWithProcessWithApplication.class)
 	@GET
 	@Path("{flag}/application/{applicationFlag}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -163,7 +192,11 @@ public class ProcessAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据流程id查询流程简要信息.", action = ActionListWithProcess.class)
+	@Operation(summary = "根据流程标识查询流程简要信息.", operationId = OPERATIONID_PREFIX + "ListWithIds", responses = {
+			@ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionListWithProcess.Wo.class)) }) }, requestBody = @RequestBody(content = {
+							@Content(schema = @Schema(implementation = ActionListWithProcess.Wi.class)) }))
+	@JaxrsMethodDescribe(value = "根据流程标识查询流程简要信息.", action = ActionListWithProcess.class)
 	@POST
 	@Path("list/ids")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -181,18 +214,42 @@ public class ProcessAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "获取流程节点信息.", action = ActionGetActivity.class)
+	@Operation(summary = "根据活动标识和活动类型获取流程节点信息.", operationId = OPERATIONID_PREFIX + "getActivity", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionGetActivity.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "根据活动标识和活动类型获取流程节点信息.", action = ActionGetActivity.class)
 	@GET
 	@Path("activity/{activity}/activityType/{activityType}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void getActivity(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-					@JaxrsParameterDescribe("流程节点标志") @PathParam("activity") String activity,
-					@JaxrsParameterDescribe("流程节点类型") @PathParam("activityType") String activityType) {
+			@JaxrsParameterDescribe("流程节点标志") @PathParam("activity") String activity,
+			@JaxrsParameterDescribe("流程节点类型") @PathParam("activityType") String activityType) {
 		ActionResult<ActionGetActivity.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
 			result = new ActionGetActivity().execute(effectivePerson, activity, activityType);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@Operation(summary = "根据指定应用标识获取可管理的流程.", operationId = OPERATIONID_PREFIX
+			+ "listControllableWithApplication", responses = { @ApiResponse(content = {
+			@Content(schema = @Schema(implementation = ActionListControllableWithApplication.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "根据指定应用标识获取可管理的流程.", action = ActionListControllableWithApplication.class)
+	@GET
+	@Path("list/controllable/application/{applicationFlag}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listControllableWithApplication(@Suspended final AsyncResponse asyncResponse,
+											  @Context HttpServletRequest request,
+											  @JaxrsParameterDescribe("应用标识") @PathParam("applicationFlag") String applicationFlag) {
+		ActionResult<ActionListControllableWithApplication.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListControllableWithApplication().execute(effectivePerson, applicationFlag);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

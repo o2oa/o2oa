@@ -59,7 +59,6 @@ public class CenterServerTools extends JettySeverTools {
 		modified(war, dir);
 
 		if (Objects.equals(Config.currentNode().getApplication().getPort(), centerServer.getPort())) {
-			// return startInApplication(centerServer);
 			return null;
 		} else {
 			return startStandalone(centerServer);
@@ -107,7 +106,7 @@ public class CenterServerTools extends JettySeverTools {
 		server.setDumpBeforeStop(false);
 		server.setStopAtShutdown(true);
 
-		if (BooleanUtils.isTrue(centerServer.getRequestLogEnable())
+		if (BooleanUtils.isTrue(Config.general().getRequestLogEnable())
 				|| BooleanUtils.isTrue(Config.ternaryManagement().getEnable())) {
 			server.setRequestLog(requestLog(centerServer));
 		}
@@ -141,10 +140,10 @@ public class CenterServerTools extends JettySeverTools {
 		return webApp;
 	}
 
-	private static void setStat(CenterServer centerServer, QuickStartWebApp webApp) {
-		if (BooleanUtils.isTrue(centerServer.getStatEnable())) {
+	private static void setStat(CenterServer centerServer, QuickStartWebApp webApp) throws Exception {
+		if (BooleanUtils.isTrue(Config.general().getStatEnable())) {
 			FilterHolder statFilterHolder = new FilterHolder(new WebStatFilter());
-			statFilterHolder.setInitParameter("exclusions", centerServer.getStatExclusions());
+			statFilterHolder.setInitParameter("exclusions", Config.general().getStatExclusions());
 			webApp.addFilter(statFilterHolder, "/*", EnumSet.of(DispatcherType.REQUEST));
 			ServletHolder statServletHolder = new ServletHolder(StatViewServlet.class);
 			statServletHolder.setInitParameter("sessionStatEnable", "false");
@@ -152,8 +151,8 @@ public class CenterServerTools extends JettySeverTools {
 		}
 	}
 
-	private static void setExposeJest(CenterServer centerServer, QuickStartWebApp webApp) {
-		if (BooleanUtils.isFalse(centerServer.getExposeJest())) {
+	private static void setExposeJest(CenterServer centerServer, QuickStartWebApp webApp) throws Exception {
+		if (BooleanUtils.isFalse(Config.general().getExposeJest())) {
 			FilterHolder denialOfServiceFilterHolder = new FilterHolder(new DenialOfServiceFilter());
 			webApp.addFilter(denialOfServiceFilterHolder, "/jest/*", EnumSet.of(DispatcherType.REQUEST));
 			webApp.addFilter(denialOfServiceFilterHolder, "/describe/sources/*", EnumSet.of(DispatcherType.REQUEST));
@@ -164,11 +163,11 @@ public class CenterServerTools extends JettySeverTools {
 		AsyncRequestLogWriter asyncRequestLogWriter = new AsyncRequestLogWriter();
 		asyncRequestLogWriter.setTimeZone(TimeZone.getDefault().getID());
 		asyncRequestLogWriter.setAppend(true);
-		asyncRequestLogWriter.setRetainDays(centerServer.getRequestLogRetainDays());
+		asyncRequestLogWriter.setRetainDays(Config.general().getRequestLogRetainDays());
 		asyncRequestLogWriter.setFilename(
 				Config.dir_logs().toString() + File.separator + "center.request.yyyy_MM_dd." + Config.node() + ".log");
 		asyncRequestLogWriter.setFilenameDateFormat("yyyyMMdd");
-		if (BooleanUtils.isTrue(centerServer.getRequestLogBodyEnable())
+		if (BooleanUtils.isTrue(Config.general().getRequestLogBodyEnable())
 				|| BooleanUtils.isTrue(Config.ternaryManagement().getEnable())) {
 			return new ServerRequestLog(asyncRequestLogWriter, LOG_FORMAT);
 		} else {

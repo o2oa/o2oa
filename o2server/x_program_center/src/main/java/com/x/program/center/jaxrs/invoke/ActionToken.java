@@ -28,8 +28,8 @@ class ActionToken extends BaseAction {
 			throw new ExceptionClientNotExist(wi.getClient());
 		}
 
-		wo.setValue(
-				Crypto.encrypt(effectivePerson.getDistinguishedName() + SPLIT + (new Date().getTime()), sso.getKey()));
+		wo.setValue(Crypto.encrypt(effectivePerson.getDistinguishedName() + SPLIT + (new Date().getTime()),
+				sso.getKey(), Config.person().getEncryptType()));
 		result.setData(wo);
 		return result;
 
@@ -53,6 +53,8 @@ class ActionToken extends BaseAction {
 	}
 
 	public static class Wo extends WrapString {
+
+		private static final long serialVersionUID = 71264076097806524L;
 
 	}
 

@@ -47,6 +47,7 @@ public class ThisApplication {
 		try {
 			CacheManager.init(context.clazz().getSimpleName());
 			MessageConnector.start(context());
+			initThreadPool();
 			context().startQueue(projectionExecuteQueue);
 			context().startQueue(mappingExecuteQueue);
 			context().startQueue(formVersionQueue);

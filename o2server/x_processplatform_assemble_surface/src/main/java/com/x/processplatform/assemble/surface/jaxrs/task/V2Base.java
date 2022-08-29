@@ -33,6 +33,8 @@ import com.x.processplatform.core.entity.content.Task_;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 abstract class V2Base extends StandardJaxrsAction {
 
 	public static abstract class FilterWi extends GsonPropertyObject {
@@ -65,37 +67,48 @@ abstract class V2Base extends StandardJaxrsAction {
 			return true;
 		}
 
-		@FieldDescribe("应用")
+		@FieldDescribe("应用标识.")
+		@Schema(description = "应用标识.")
 		private List<String> applicationList;
 
-		@FieldDescribe("流程")
+		@FieldDescribe("流程标识.")
+		@Schema(description = "流程标识.")
 		private List<String> processList;
 
-		@FieldDescribe("是否查找同版本流程待办：true(默认查找)|false")
+		@FieldDescribe("是否查找同版本流程待办:true(默认查找)|false.")
+		@Schema(description = "是否查找同版本流程待办:true(默认查找)|false.")
 		private Boolean relateEditionProcess = true;
 
-		@FieldDescribe("是否排除草稿待办：false(默认不排除)|true")
+		@FieldDescribe("是否排除草稿待办:false(默认不排除)|true.")
+		@Schema(description = "是否排除草稿待办:false(默认不排除)|true.")
 		private Boolean isExcludeDraft;
 
-		@FieldDescribe("开始时间yyyy-MM-dd HH:mm:ss")
+		@FieldDescribe("开始时间,格式为:yyyy-MM-dd HH:mm:ss.")
+		@Schema(description = "开始时间,格式为:yyyy-MM-dd HH:mm:ss.")
 		private String startTime;
 
-		@FieldDescribe("结束时间yyyy-MM-dd HH:mm:ss")
+		@FieldDescribe("结束时间,格式为:yyyy-MM-dd HH:mm:ss.")
+		@Schema(description = "结束时间,格式为:yyyy-MM-dd HH:mm:ss.")
 		private String endTime;
 
-		@FieldDescribe("创建用户")
+		@FieldDescribe("创建工作人员.")
+		@Schema(description = "创建工作人员.")
 		private List<String> creatorPersonList;
 
-		@FieldDescribe("创建组织")
+		@FieldDescribe("创建工作身份所属组织.")
+		@Schema(description = "创建工作身份所属组织.")
 		private List<String> creatorUnitList;
 
-		@FieldDescribe("开始时间")
+		@FieldDescribe("开始年月,格式为文本格式 yyyy-MM.")
+		@Schema(description = "开始年月,格式为文本格式 yyyy-MM.")
 		private List<String> startTimeMonthList;
 
-		@FieldDescribe("关键字")
+		@FieldDescribe("搜索关键字,搜索范围为:标题,意见,文号,创建人,创建部门.")
+		@Schema(description = "搜索关键字,搜索范围为:标题,意见,文号,创建人,创建部门.")
 		private String key;
 
-		@FieldDescribe("标题")
+		@FieldDescribe("标题.")
+		@Schema(description = "标题.")
 		private String title;
 
 		public List<String> getApplicationList() {
@@ -212,22 +225,28 @@ abstract class V2Base extends StandardJaxrsAction {
 			return true;
 		}
 
-		@FieldDescribe("是否关联work")
+		@FieldDescribe("是否关联工作.")
+		@Schema(description = "是否关联工作.")
 		private Boolean relateWork;
 
-		@FieldDescribe("是否关联workCompleted")
+		@FieldDescribe("是否关联已完成工作.")
+		@Schema(description = "是否关联已完成工作.")
 		private Boolean relateWorkCompleted;
 
-		@FieldDescribe("是否关联taskCompleted")
+		@FieldDescribe("是否关联已办.")
+		@Schema(description = "是否关联已办.")
 		private Boolean relateTaskCompleted;
 
-		@FieldDescribe("是否关联read")
+		@FieldDescribe("是否关联待阅.")
+		@Schema(description = "是否关联待阅.")
 		private Boolean relateRead;
 
-		@FieldDescribe("是否关联readCompleted")
+		@FieldDescribe("是否关联已阅.")
+		@Schema(description = "是否关联已阅.")
 		private Boolean relateReadCompleted;
 
-		@FieldDescribe("是否关联review")
+		@FieldDescribe("是否关联参阅.")
+		@Schema(description = "是否关联参阅.")
 		private Boolean relateReview;
 
 		public Boolean getRelateWork() {
@@ -397,9 +416,9 @@ abstract class V2Base extends StandardJaxrsAction {
 			p = cb.and(p, root.get(Task_.application).in(wi.getApplicationList()));
 		}
 		if (ListTools.isNotEmpty(wi.getProcessList())) {
-			if(BooleanUtils.isFalse(wi.getRelateEditionProcess())) {
+			if (BooleanUtils.isFalse(wi.getRelateEditionProcess())) {
 				p = cb.and(p, root.get(Task_.process).in(wi.getProcessList()));
-			}else{
+			} else {
 				p = cb.and(p, root.get(Task_.process).in(business.process().listEditionProcess(wi.getProcessList())));
 			}
 		}
@@ -420,10 +439,9 @@ abstract class V2Base extends StandardJaxrsAction {
 		if (ListTools.isNotEmpty(wi.getStartTimeMonthList())) {
 			p = cb.and(p, root.get(Task_.startTimeMonth).in(wi.getStartTimeMonthList()));
 		}
-		if(BooleanUtils.isTrue(wi.getExcludeDraft())){
-			p = cb.and(p, cb.or(cb.isFalse(root.get(Task_.first)),
-					cb.isNull(root.get(Task_.first)),
-					cb.equal(root.get(Task_.workCreateType),  Business.WORK_CREATE_TYPE_ASSIGN)));
+		if (BooleanUtils.isTrue(wi.getExcludeDraft())) {
+			p = cb.and(p, cb.or(cb.isFalse(root.get(Task_.first)), cb.isNull(root.get(Task_.first)),
+					cb.equal(root.get(Task_.workCreateType), Business.WORK_CREATE_TYPE_ASSIGN)));
 		}
 		String key = StringTools.escapeSqlLikeKey(wi.getKey());
 		if (StringUtils.isNotEmpty(key)) {

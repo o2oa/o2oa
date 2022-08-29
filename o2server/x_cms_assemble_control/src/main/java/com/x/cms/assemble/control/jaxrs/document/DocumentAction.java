@@ -1,24 +1,5 @@
 package com.x.cms.assemble.control.jaxrs.document;
 
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.container.AsyncResponse;
-import javax.ws.rs.container.Suspended;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
-import org.glassfish.jersey.media.multipart.FormDataParam;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
@@ -31,6 +12,16 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.cms.assemble.control.queue.DataImportStatus;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.*;
+import javax.ws.rs.container.AsyncResponse;
+import javax.ws.rs.container.Suspended;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 @Path("document")
 @JaxrsDescribe("信息发布信息文档管理")
@@ -388,7 +379,7 @@ public class DocumentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据文档ID正式发布文档，并且使用Message通知所有的阅读者。", action = ActionPersistPublishAndNotify.class)
+	@JaxrsMethodDescribe(value = "根据文档ID正式发布文档，消息通过publishNotify接口发送。", action = ActionPersistPublishAndNotify.class)
 	@PUT
 	@Path("publish/{id}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -413,7 +404,7 @@ public class DocumentAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据文档ID正式发布文档，并且使用Message通知所有的阅读者。", action = ActionPersistPublishAndNotify.class)
+	@JaxrsMethodDescribe(value = "根据文档ID正式发布文档，消息通过publishNotify接口发送。", action = ActionPersistPublishAndNotify.class)
 	@POST
 	@Path("publish/{id}/mockputtopost")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -669,50 +660,6 @@ public class DocumentAction extends StandardJaxrsAction {
 			try {
 				result = new ActionQueryListDraftNextWithFilter().execute(request, id, count, jsonElement,
 						effectivePerson);
-			} catch (Exception e) {
-				result = new ActionResult<>();
-				result.error(e);
-				logger.error(e, effectivePerson, request, null);
-			}
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
-
-	@JaxrsMethodDescribe(value = "根据信息发布文档ID查询文档第一张图片信息列表.", action = ActionQueryGetFirstPicture.class)
-	@GET
-	@Path("pictures/{id}/first")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void query_listFirstPictures(@Suspended final AsyncResponse asyncResponse,
-			@Context HttpServletRequest request, @JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id) {
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		ActionResult<ActionQueryGetFirstPicture.Wo> result = new ActionResult<>();
-		Boolean check = true;
-		if (check) {
-			try {
-				result = new ActionQueryGetFirstPicture().execute(request, id, effectivePerson);
-			} catch (Exception e) {
-				result = new ActionResult<>();
-				result.error(e);
-				logger.error(e, effectivePerson, request, null);
-			}
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
-
-	@JaxrsMethodDescribe(value = "根据信息发布文档ID查询文档所有的图片信息列表.", action = ActionQueryListAllPictures.class)
-	@GET
-	@Path("pictures/{id}/all")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void query_listAllPictures(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id) {
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		ActionResult<List<ActionQueryListAllPictures.Wo>> result = new ActionResult<>();
-		Boolean check = true;
-		if (check) {
-			try {
-				result = new ActionQueryListAllPictures().execute(request, id, effectivePerson);
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error(e);
@@ -1071,6 +1018,25 @@ public class DocumentAction extends StandardJaxrsAction {
 		ActionResult<ActionNotify.Wo> result = new ActionResult<>();
 		try {
 			result = new ActionNotify().execute(effectivePerson, id, jsonElement);
+		} catch (Exception e) {
+			result.error(e);
+			logger.error(e, effectivePerson, request, jsonElement);
+		}
+
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "已发布文档发送html文本到webServer下。", action = ActionPublishHtml.class)
+	@POST
+	@Path("{id}/publish/html")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void publishHtml(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+							  @JaxrsParameterDescribe("文档ID") @PathParam("id") String id, JsonElement jsonElement) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<ActionPublishHtml.Wo> result = new ActionResult<>();
+		try {
+			result = new ActionPublishHtml().execute(effectivePerson, id, jsonElement);
 		} catch (Exception e) {
 			result.error(e);
 			logger.error(e, effectivePerson, request, jsonElement);

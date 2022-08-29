@@ -18,12 +18,15 @@ import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
- * 内容管理栏目配置支持信息
+ * 内容管理栏目配置信息
  * 
  * @author O2LEE
  *
  */
+@Schema(name = "AppInfoConfig", description = "内容管理栏目配置信息.")
 @ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.AppInfoConfig.table, uniqueConstraints = {

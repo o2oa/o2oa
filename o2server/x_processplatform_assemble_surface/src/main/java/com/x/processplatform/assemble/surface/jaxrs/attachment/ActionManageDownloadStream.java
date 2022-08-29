@@ -15,6 +15,8 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Attachment;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * 管理员下载
  * 
@@ -48,7 +50,10 @@ class ActionManageDownloadStream extends BaseAction {
 		return result;
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionManageDownloadStream$Wo")
 	public static class Wo extends WoFile {
+
+		private static final long serialVersionUID = 4126464348338021484L;
 
 		public Wo(byte[] bytes, String contentType, String contentDisposition) {
 			super(bytes, contentType, contentDisposition);

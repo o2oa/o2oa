@@ -50,8 +50,7 @@ import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Merge;
 import com.x.processplatform.core.entity.element.Parallel;
 import com.x.processplatform.core.entity.element.Process;
-import com.x.processplatform.core.entity.element.QueryStat;
-import com.x.processplatform.core.entity.element.QueryView;
+import com.x.processplatform.core.entity.element.Publish;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.element.Script;
 import com.x.processplatform.core.entity.element.Service;
@@ -110,6 +109,7 @@ class ActionDelete extends BaseAction {
 			emc.beginTransaction(Manual.class);
 			emc.beginTransaction(Merge.class);
 			emc.beginTransaction(Parallel.class);
+			emc.beginTransaction(Publish.class);
 			emc.beginTransaction(Service.class);
 			emc.beginTransaction(Split.class);
 			emc.beginTransaction(Route.class);
@@ -117,10 +117,8 @@ class ActionDelete extends BaseAction {
 			emc.beginTransaction(Form.class);
 			emc.beginTransaction(Script.class);
 			emc.beginTransaction(SerialNumber.class);
-			emc.beginTransaction(QueryView.class);
-			emc.beginTransaction(QueryStat.class);
 			emc.beginTransaction(File.class);
-			for (String str : business.process().listWithApplication(id)) {
+			for (String str : business.process().listWithApplication(id, false)) {
 				/** 流程 1种 */
 				Process process = emc.find(str, Process.class);
 				/** 流程Activity 14种 */
@@ -135,6 +133,7 @@ class ActionDelete extends BaseAction {
 				this.deleteManual(business, process);
 				this.deleteMerge(business, process);
 				this.deleteParallel(business, process);
+				this.deletePublish(business, process);
 				this.deleteService(business, process);
 				this.deleteSplit(business, process);
 				/** 路由 1种 */
@@ -147,8 +146,6 @@ class ActionDelete extends BaseAction {
 			this.deleteScript(business, application);
 			this.deleteFile(business, application);
 			this.deleteSerialNumber(business, application);
-			this.deleteQueryView(business, application);
-			this.deleteQueryStat(business, application);
 			/** 应用本体 1种 */
 			emc.remove(application);
 			emc.commit();
@@ -165,6 +162,7 @@ class ActionDelete extends BaseAction {
 			CacheManager.notify(Manual.class);
 			CacheManager.notify(Merge.class);
 			CacheManager.notify(Parallel.class);
+			CacheManager.notify(Publish.class);
 			CacheManager.notify(Service.class);
 			CacheManager.notify(Split.class);
 			CacheManager.notify(Route.class);
@@ -173,8 +171,6 @@ class ActionDelete extends BaseAction {
 			CacheManager.notify(File.class);
 			CacheManager.notify(Script.class);
 			CacheManager.notify(SerialNumber.class);
-			CacheManager.notify(QueryView.class);
-			CacheManager.notify(QueryStat.class);
 			Wo wo = new Wo();
 			wo.setId(application.getId());
 			result.setData(wo);
@@ -263,6 +259,13 @@ class ActionDelete extends BaseAction {
 	private void deleteParallel(Business business, Process process) throws Exception {
 		for (String str : business.parallel().listWithProcess(process.getId())) {
 			Parallel o = business.entityManagerContainer().find(str, Parallel.class);
+			business.entityManagerContainer().remove(o);
+		}
+	}
+
+	private void deletePublish(Business business, Process process) throws Exception {
+		for (String str : business.publish().listWithProcess(process.getId())) {
+			Publish o = business.entityManagerContainer().find(str, Publish.class);
 			business.entityManagerContainer().remove(o);
 		}
 	}
@@ -389,16 +392,6 @@ class ActionDelete extends BaseAction {
 	private void deleteSerialNumber(Business business, Application application) throws Exception {
 		List<String> ids = business.serialNumber().listWithApplication(application.getId());
 		this.deleteBatch(business.entityManagerContainer(), SerialNumber.class, ids);
-	}
-
-	private void deleteQueryView(Business business, Application application) throws Exception {
-		List<String> ids = business.queryView().listWithApplication(application.getId());
-		this.deleteBatch(business.entityManagerContainer(), QueryView.class, ids);
-	}
-
-	private void deleteQueryStat(Business business, Application application) throws Exception {
-		List<String> ids = business.queryStat().listWithApplication(application.getId());
-		this.deleteBatch(business.entityManagerContainer(), QueryStat.class, ids);
 	}
 
 	private void deleteTask(Business business, Application application) throws Exception {

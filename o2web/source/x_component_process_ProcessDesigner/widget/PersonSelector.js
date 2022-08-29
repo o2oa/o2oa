@@ -20,8 +20,6 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
         this.node = $(node);
         this.app = app;
 
-        debugger;
-
         this.path = "../x_component_process_ProcessDesigner/widget/$PersonSelector/";
         this.cssPath = "../x_component_process_ProcessDesigner/widget/$PersonSelector/"+this.options.style+"/css.wcss";
         this._loadCss();
@@ -80,7 +78,6 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
                     }
                 }
                 names.each(function(name){
-                    debugger;
                     if (name){
                         var data = (typeOf(name)==="string") ? {"name": name, "id": name}: name;
                         MWF.require("MWF.widget.O2Identity", function(){

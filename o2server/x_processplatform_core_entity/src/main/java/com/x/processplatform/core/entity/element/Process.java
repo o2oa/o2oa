@@ -43,6 +43,9 @@ import com.x.base.core.entity.annotation.RestrictFlag;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.processplatform.core.entity.PersistenceProperties;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "Process", description = "流程平台流程.")
 @Entity
 @ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.element, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Element.Process.table, uniqueConstraints = {
@@ -64,6 +67,7 @@ public class Process extends SliceJpaObject {
 	public static final String STARTABLETERMINAL_CLIENT = "client";
 	public static final String STARTABLETERMINAL_MOBILE = "mobile";
 	public static final String STARTABLETERMINAL_ALL = "all";
+	public static final String STARTABLETERMINAL_NONE = "none";
 
 	@Override
 	public String getId() {
@@ -217,6 +221,8 @@ public class Process extends SliceJpaObject {
 			this.updateTableEnable = this.getProperties().getUpdateTableEnable();
 			this.updateTableList = this.getProperties().getUpdateTableList();
 			this.maintenanceIdentity = this.getProperties().getMaintenanceIdentity();
+			this.targetAssignDataScript = this.getProperties().getTargetAssignDataScript();
+			this.targetAssignDataScriptText = this.getProperties().getTargetAssignDataScriptText();
 		}
 	}
 
@@ -406,22 +412,6 @@ public class Process extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private Boolean expireWorkTime;
 
-//	public static final String expireScript_FIELDNAME = "expireScript";
-//	@IdReference(Script.class)
-//	/** 脚本可能使用名称,所以长度为255 */
-//	@FieldDescribe("过期时间设定脚本.")
-//	@Column(length = length_255B, name = ColumnNamePrefix + expireScript_FIELDNAME)
-//	@CheckPersist(allowEmpty = true)
-//	private String expireScript;
-
-//	public static final String expireScriptText_FIELDNAME = "expireScriptText";
-//	@FieldDescribe("过期时间设定脚本文本.")
-//	@Lob
-//	@Basic(fetch = FetchType.EAGER)
-//	@Column(length = JpaObject.length_1M, name = ColumnNamePrefix + expireScriptText_FIELDNAME)
-//	@CheckPersist(allowEmpty = true)
-//	private String expireScriptText;
-
 	public static final String checkDraft_FIELDNAME = "checkDraft";
 	@FieldDescribe("是否进行无内容的草稿删除校验.")
 	@Column(name = ColumnNamePrefix + checkDraft_FIELDNAME)
@@ -429,7 +419,7 @@ public class Process extends SliceJpaObject {
 	private Boolean checkDraft;
 
 	public static final String startableTerminal_FIELDNAME = "startableTerminal";
-	@FieldDescribe("可启动流程终端类型,可选值 client,mobile,all")
+	@FieldDescribe("可启动流程终端类型,可选值 client,mobile,all,none")
 	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + startableTerminal_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String startableTerminal;
@@ -621,6 +611,24 @@ public class Process extends SliceJpaObject {
 		this.manualStayScriptText = manualStayScriptText;
 	}
 
+	public String getTargetAssignDataScript() {
+		return targetAssignDataScript;
+	}
+
+	public void setTargetAssignDataScript(String targetAssignDataScript) {
+		this.getProperties().setTargetAssignDataScript(targetAssignDataScript);
+		this.targetAssignDataScript = targetAssignDataScript;
+	}
+
+	public String getTargetAssignDataScriptText() {
+		return targetAssignDataScriptText;
+	}
+
+	public void setTargetAssignDataScriptText(String targetAssignDataScriptText) {
+		this.getProperties().setTargetAssignDataScriptText(targetAssignDataScriptText);
+		this.targetAssignDataScriptText = targetAssignDataScriptText;
+	}
+
 	public String getManualBeforeTaskScriptText() {
 		return manualBeforeTaskScriptText;
 	}
@@ -670,6 +678,16 @@ public class Process extends SliceJpaObject {
 	@FieldDescribe("人工活动有停留脚本文本.")
 	@Transient
 	private String manualStayScriptText;
+
+	public static final String TARGETASSIGNDATASCRIPT_FIELDNAME = "targetAssignDataScript";
+	@FieldDescribe("数据执行前脚本.")
+	@Transient
+	private String targetAssignDataScript;
+
+	public static final String TARGETASSIGNDATASCRIPTTEXT_FIELDNAME = "targetAssignDataScriptText";
+	@FieldDescribe("数据执行前脚本文本.")
+	@Transient
+	private String targetAssignDataScriptText;
 
 	/* flag标志位 */
 

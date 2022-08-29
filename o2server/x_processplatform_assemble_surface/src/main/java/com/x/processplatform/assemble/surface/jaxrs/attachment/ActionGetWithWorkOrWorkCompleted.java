@@ -12,12 +12,23 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Attachment;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionGetWithWorkOrWorkCompleted extends BaseAction {
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String workId) throws Exception {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionGetWithWorkOrWorkCompleted.class);
+
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, String workOrWorkCompleted) throws Exception {
+
+		LOGGER.debug("execute:{}, id:{}, workId:{}.", effectivePerson::getDistinguishedName, () -> id,
+				() -> workOrWorkCompleted);
+
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -26,8 +37,7 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 				throw new ExceptionEntityNotExist(id, Attachment.class);
 			}
 
-			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workId,
-					new ExceptionEntityNotExist(workId))) {
+			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, workOrWorkCompleted)) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 
@@ -49,6 +59,7 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 		}
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionGetWithWorkOrWorkCompleted$Wo")
 	public static class Wo extends Attachment {
 
 		private static final long serialVersionUID = 1954637399762611493L;
@@ -68,7 +79,10 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionGetWithWorkOrWorkCompleted$WoControl")
 	public static class WoControl extends GsonPropertyObject {
+
+		private static final long serialVersionUID = -3595460506658680728L;
 
 		private Boolean allowRead = false;
 		private Boolean allowEdit = false;
@@ -100,52 +114,4 @@ class ActionGetWithWorkOrWorkCompleted extends BaseAction {
 
 	}
 
-	private boolean read(Wo wo, EffectivePerson effectivePerson, List<String> identities, List<String> units)
-			throws Exception {
-		boolean value = false;
-		if (effectivePerson.isPerson(wo.getPerson())) {
-			value = true;
-		} else if (ListTools.isEmpty(wo.getReadIdentityList()) && ListTools.isEmpty(wo.getReadUnitList())) {
-			value = true;
-		} else {
-			if (ListTools.containsAny(identities, wo.getReadIdentityList())
-					|| ListTools.containsAny(identities, wo.getReadUnitList())) {
-				value = true;
-			}
-		}
-		wo.getControl().setAllowRead(value);
-		return value;
-	}
-
-	private boolean edit(Wo wo, EffectivePerson effectivePerson, List<String> identities, List<String> units)
-			throws Exception {
-		boolean value = false;
-		if (effectivePerson.isPerson(wo.getPerson())) {
-			value = true;
-		} else if (ListTools.isEmpty(wo.getEditIdentityList()) && ListTools.isEmpty(wo.getEditUnitList())) {
-			value = true;
-		} else {
-			if (ListTools.containsAny(identities, wo.getEditIdentityList())
-					|| ListTools.containsAny(identities, wo.getEditUnitList())) {
-				value = true;
-			}
-		}
-		return value;
-	}
-
-	private boolean control(Wo wo, EffectivePerson effectivePerson, List<String> identities, List<String> units)
-			throws Exception {
-		boolean value = false;
-		if (effectivePerson.isPerson(wo.getPerson())) {
-			value = true;
-		} else if (ListTools.isEmpty(wo.getControllerUnitList()) && ListTools.isEmpty(wo.getControllerIdentityList())) {
-			value = true;
-		} else {
-			if (ListTools.containsAny(identities, wo.getControllerIdentityList())
-					|| ListTools.containsAny(identities, wo.getControllerUnitList())) {
-				value = true;
-			}
-		}
-		return value;
-	}
 }

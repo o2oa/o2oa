@@ -46,7 +46,7 @@ class ActionDispatch extends BaseAction {
 				String url = o.getUrlJaxrsRoot() + "cache";
 				logger.debug("dispatch cache request to : {}", url);
 				try {
-					CipherConnectionAction.put(effectivePerson.getDebugger(), url, wi);
+					CipherConnectionAction.post(effectivePerson.getDebugger(), url, wi);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -56,7 +56,7 @@ class ActionDispatch extends BaseAction {
 			List<Entry<String, CenterServer>> centerList = Config.nodes().centerServers().orderedEntry();
 			for (Entry<String, CenterServer> centerEntry : centerList) {
 				try {
-					CipherConnectionAction.put(effectivePerson.getDebugger(),
+					CipherConnectionAction.post(effectivePerson.getDebugger(),
 							Config.url_x_program_center_jaxrs(centerEntry, "cache"), wi);
 
 				} catch (Exception e) {

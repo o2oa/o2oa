@@ -54,8 +54,9 @@ const contentComponent = computed(() => {
   background: #FFFFFF;
   border-radius: 4px;
   overflow: auto;
-  display: flex;
+  /*display: flex;*/
   text-align: left;
+  position: relative;
 }
 </style>
 <style>
@@ -228,4 +229,17 @@ button{
   border-radius: 30px!important;
   background-color: #f3f3f3!important;
 }
+.item_message_module .el-collapse-item__header {
+  width: 98%!important;
+  height: 32px!important;
+  font-size: 12px!important;
+  padding: 0 20px!important;
+  border-radius: 30px!important;
+  background-color: #f3f3f3!important;
+  font-weight: bold;
+}
+.item_message_module .el-collapse-item__content{
+  padding-bottom: 0!important;
+}
+
 </style>

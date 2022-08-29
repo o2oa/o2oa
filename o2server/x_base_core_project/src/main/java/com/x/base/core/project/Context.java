@@ -15,10 +15,12 @@ import org.quartz.DateBuilder.IntervalUnit;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
+import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
+import org.quartz.TriggerKey;
 import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.matchers.EverythingMatcher;
 
@@ -40,6 +42,7 @@ import com.x.base.core.project.schedule.ScheduleRequest;
 import com.x.base.core.project.schedule.SchedulerFactoryProperties;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.SslTools;
+import com.x.base.core.project.tools.StringTools;
 
 public class Context extends AbstractContext {
 
@@ -229,20 +232,19 @@ public class Context extends AbstractContext {
 		this.scheduleLocalRequestList.add(new ScheduleLocalRequest(jobDetail, null, delay, interval));
 	}
 
-	/*
-	 * 接受Center调度的schedule在本地运行,和scheduleOnLocal没有本质区别,仅仅是个withDescription(
-	 * "schedule")不一样,在log中记录这个值.
-	 */
-	@Override
 	public <T extends AbstractJob> void fireScheduleOnLocal(Class<T> cls, Integer delay) throws Exception {
-		/* 需要单独生成一个独立任务,保证group和预约的任务不重复 */
+		// 需要单独生成一个独立任务,保证group和预约的任务不重复
+		// https://stackoverflow.com/questions/34176482/unable-to-store-job-because-one-already-exists-with-this-identification
+		String uniqueGroup = StringTools.uniqueToken();
+		JobKey jobKey = JobKey.jobKey(cls.getName(), uniqueGroup);
+		TriggerKey triggerKey = TriggerKey.triggerKey(cls.getName(), uniqueGroup);
 		JobDataMap jobDataMap = new JobDataMap();
 		jobDataMap.put("context", this);
-		JobDetail jobDetail = JobBuilder.newJob(cls).withIdentity(cls.getName(), clazz.getName())
-				.usingJobData(jobDataMap).withDescription(Config.node()).build();
-		/* 经过测试0代表不重复,仅运行一次 */
-		Trigger trigger = TriggerBuilder.newTrigger().withIdentity(cls.getName(), clazz.getName())
-				.withDescription("schedule").startAt(DateBuilder.futureDate(delay, IntervalUnit.SECOND))
+		JobDetail jobDetail = JobBuilder.newJob(cls).withIdentity(jobKey).usingJobData(jobDataMap)
+				.withDescription(Config.node()).build();
+		// 经过测试0代表不重复,仅运行一次
+		Trigger trigger = TriggerBuilder.newTrigger().withIdentity(triggerKey).withDescription("schedule")
+				.startAt(DateBuilder.futureDate(delay, IntervalUnit.SECOND))
 				.withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(1).withRepeatCount(0))
 				.build();
 		scheduler.scheduleJob(jobDetail, trigger);

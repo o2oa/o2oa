@@ -19,6 +19,8 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+@Schema(name = "ImportRecordItem", description = "数据中心导入记录条目.")
 @Entity
 @ContainerEntity(dumpSize = 10, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.soft)
 @Table(name = PersistenceProperties.Import.ImportRecordItem.table, uniqueConstraints = {

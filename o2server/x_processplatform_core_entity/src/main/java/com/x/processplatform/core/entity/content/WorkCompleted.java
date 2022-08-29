@@ -31,6 +31,8 @@ import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.core.entity.PersistenceProperties;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+@Schema(name = "WorkCompleted", description = "流程平台已完成工作.")
 @Entity
 @ContainerEntity(dumpSize = 100, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Content.WorkCompleted.table, uniqueConstraints = {
@@ -42,6 +44,8 @@ public class WorkCompleted extends SliceJpaObject implements ProjectionInterface
 
 	private static final long serialVersionUID = 8340732901486828267L;
 	private static final String TABLE = PersistenceProperties.Content.WorkCompleted.table;
+
+	public static final String TITLEALIAS_SUBJECT = "subject";
 
 	public String getId() {
 		return id;

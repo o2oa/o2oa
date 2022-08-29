@@ -21,7 +21,7 @@ MWF.xApplication.service.InvokeDesigner.LP = {
     "invokeUri" : "调用地址",
     "invokeMethod" : "调用方法",
     "enableToken": "启用鉴权",
-    "enableTokenInfo": "启用鉴权后，您必须使用鉴权客户端名称和加密后的token来调用服务",
+    "enableTokenInfo": "启用鉴权后，您必须使用鉴权客户端名称和加密后的token来调用服务。<a href='https://www.o2oa.net/cms/tech/430.html' target='_blank'>点击查看接口鉴权配置文档</a>",
     "invokeHead": "head",
 
     "openLogViewer": "打开日志查看器",
@@ -29,7 +29,9 @@ MWF.xApplication.service.InvokeDesigner.LP = {
     "run": "立即运行",
     "runSuccess": "运行成功",
     "requireArguments": "请求参数",
+    "tokenSetting": "鉴权配置",
     "runResult": "执行结果",
+    "noSSOSetting": "请先配置鉴权",
 
     "notice": {
         "save_success": "接口保存成功！",

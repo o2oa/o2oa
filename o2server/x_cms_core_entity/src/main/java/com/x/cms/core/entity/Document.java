@@ -1,28 +1,5 @@
 package com.x.cms.core.entity;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.OrderColumn;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.openjpa.persistence.PersistentCollection;
-import org.apache.openjpa.persistence.jdbc.ContainerTable;
-import org.apache.openjpa.persistence.jdbc.ElementColumn;
-import org.apache.openjpa.persistence.jdbc.ElementIndex;
-import org.apache.openjpa.persistence.jdbc.Index;
-
 import com.x.base.core.entity.AbstractPersistenceProperties;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.SliceJpaObject;
@@ -30,12 +7,27 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.openjpa.persistence.Persistent;
+import org.apache.openjpa.persistence.PersistentCollection;
+import org.apache.openjpa.persistence.jdbc.Index;
+import org.apache.openjpa.persistence.jdbc.*;
+
+import javax.persistence.OrderColumn;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 /**
  * 文档基础信息类
  *
  * @author O2LEE
  *
  */
+@Schema(name = "Document", description = "内容管理文档.")
 @Entity
 @ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Document.table, uniqueConstraints = {
@@ -53,7 +45,10 @@ public class Document extends SliceJpaObject {
 	/* 以上为 JpaObject 默认字段 */
 	@Override
 	public void onPersist() throws Exception {
+	}
 
+	public Document() {
+		this.properties = new DocumentProperties();
 	}
 
 	@Override
@@ -167,6 +162,12 @@ public class Document extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String readFormName;
 
+	public static final String ppFormId_FIELDNAME = "ppFormId";
+	@FieldDescribe("流程平台表单ID")
+	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + ppFormId_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String ppFormId;
+
 	public static final String creatorPerson_FIELDNAME = "creatorPerson";
 	@FieldDescribe("创建人，可能为空，如果由系统创建。")
 	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
@@ -196,7 +197,7 @@ public class Document extends SliceJpaObject {
 	private String creatorTopUnitName;
 
 	public static final String docStatus_FIELDNAME = "docStatus";
-	@FieldDescribe("文档状态: published | draft | checking | error")
+	@FieldDescribe("文档状态: published | waitPublish | draft | archived")
 	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + docStatus_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + docStatus_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
@@ -404,6 +405,14 @@ public class Document extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private List<String> pictureList;
 
+	public static final String properties_FIELDNAME = "properties";
+	@FieldDescribe("属性对象存储字段.")
+	@Persistent
+	@Strategy(JsonPropertiesValueHandler)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + properties_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private DocumentProperties properties;
+
 	public static final String stringValue01_FIELDNAME = "stringValue01";
 	@FieldDescribe("业务数据String值01.")
 	@Column(length = length_255B, name = ColumnNamePrefix + stringValue01_FIELDNAME)
@@ -431,6 +440,20 @@ public class Document extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + stringValue04_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String stringValue04;
+
+	public static final String stringValue05_FIELDNAME = "stringValue05";
+	@FieldDescribe("业务数据String值05.")
+	@Column(length = length_255B, name = ColumnNamePrefix + stringValue05_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + stringValue05_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String stringValue05;
+
+	public static final String stringValue06_FIELDNAME = "stringValue06";
+	@FieldDescribe("业务数据String值06.")
+	@Column(length = length_255B, name = ColumnNamePrefix + stringValue06_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + stringValue06_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String stringValue06;
 
 	public static final String longValue01_FIELDNAME = "longValue01";
 	@FieldDescribe("业务数据Long值01.")
@@ -475,6 +498,14 @@ public class Document extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + dateTimeValue02_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Date dateTimeValue02;
+
+	public static final String dateTimeValue03_FIELDNAME = "dateTimeValue03";
+	@Temporal(TemporalType.TIMESTAMP)
+	@FieldDescribe("业务数据DateTime值03.")
+	@Column(name = ColumnNamePrefix + dateTimeValue03_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + dateTimeValue03_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Date dateTimeValue03;
 
 	public Date getModifyTime() {
 		return modifyTime;
@@ -546,6 +577,14 @@ public class Document extends SliceJpaObject {
 
 	public void setFormName(String formName) {
 		this.formName = formName;
+	}
+
+	public String getPpFormId() {
+		return ppFormId;
+	}
+
+	public void setPpFormId(String ppFormId) {
+		this.ppFormId = ppFormId;
 	}
 
 	public String getReadFormId() {
@@ -882,6 +921,17 @@ public class Document extends SliceJpaObject {
 		this.sequenceCreatorUnitName = getSequenceString(sequenceCreatorUnitName);
 	}
 
+	public DocumentProperties getProperties() {
+		if (null == this.properties) {
+			this.properties = new DocumentProperties();
+		}
+		return this.properties;
+	}
+
+	public void setProperties(DocumentProperties properties) {
+		this.properties = properties;
+	}
+
 	public String getStringValue01() {
 		return stringValue01;
 	}
@@ -960,6 +1010,34 @@ public class Document extends SliceJpaObject {
 
 	public void setDateTimeValue02(Date dateTimeValue02) {
 		this.dateTimeValue02 = dateTimeValue02;
+	}
+
+	public static long getSerialVersionUID() {
+		return serialVersionUID;
+	}
+
+	public String getStringValue05() {
+		return stringValue05;
+	}
+
+	public void setStringValue05(String stringValue05) {
+		this.stringValue05 = stringValue05;
+	}
+
+	public String getStringValue06() {
+		return stringValue06;
+	}
+
+	public void setStringValue06(String stringValue06) {
+		this.stringValue06 = stringValue06;
+	}
+
+	public Date getDateTimeValue03() {
+		return dateTimeValue03;
+	}
+
+	public void setDateTimeValue03(Date dateTimeValue03) {
+		this.dateTimeValue03 = dateTimeValue03;
 	}
 
 	// -------------------Reader-------------------------

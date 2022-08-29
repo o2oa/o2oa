@@ -13,6 +13,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.project.tools.StringTools;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.google.gson.Gson;
@@ -27,15 +28,17 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.Crypto;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * 系统配置文件保存
+ *
  * @author sword
  */
 public class ActionSave extends BaseAction {
-	private static Logger logger = LoggerFactory.getLogger(ActionSave.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionSave.class);
 
-	ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, JsonElement jsonElement)
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement)
 			throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
@@ -43,8 +46,11 @@ public class ActionSave extends BaseAction {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String fileName = wi.getFileName();
 
-		if (fileName == null) {
+		if (StringUtils.isBlank(fileName)) {
 			throw new ExceptionNameEmpty();
+		}
+		if(!StringTools.isFileName(fileName)){
+			throw new ExceptionIllegalFileName(fileName);
 		}
 
 		String data = wi.getFileContent();
@@ -60,10 +66,10 @@ public class ActionSave extends BaseAction {
 			throw new ExceptionJsonError();
 		}
 
-		if (BooleanUtils.isNotTrue(Config.nodes().centerServers().first().getValue().getConfigApiEnable())) {
+		if (BooleanUtils.isNotTrue(Config.general().getConfigApiEnable())) {
 			throw new ExceptionModifyConfig();
 		}
-
+		LOGGER.info("{}修改配置文件：{}", effectivePerson.getDistinguishedName(), fileName);
 		byte[] bytes = wi.getFileContent().getBytes(StandardCharsets.UTF_8);
 
 		Nodes nodes = Config.nodes();
@@ -75,7 +81,7 @@ public class ActionSave extends BaseAction {
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 		this.configFlush(effectivePerson);
 
@@ -88,6 +94,7 @@ public class ActionSave extends BaseAction {
 
 	/**
 	 * 文件同步
+	 *
 	 * @param syncFilePath
 	 * @param nodeName
 	 * @param nodePort
@@ -102,7 +109,7 @@ public class ActionSave extends BaseAction {
 			socket.setSoTimeout(5000);
 			try (DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 					DataInputStream dis = new DataInputStream(socket.getInputStream());
-				 InputStream fileInputStream = new ByteArrayInputStream(byteArray)) {
+					InputStream fileInputStream = new ByteArrayInputStream(byteArray)) {
 				Map<String, Object> commandObject = new HashMap<>();
 				commandObject.put("command", "syncFile:" + syncFilePath);
 				commandObject.put("credential", Crypto.rsaEncrypt("o2@", Config.publicKey()));
@@ -118,11 +125,10 @@ public class ActionSave extends BaseAction {
 					dos.write(bytes, 0, length);
 					dos.flush();
 				}
-				logger.info("同步文件{}到节点{}完成.......", syncFilePath, nodeName);
 			}
 			syncFileFlag = true;
 		} catch (Exception ex) {
-			logger.warn("同步文件{}到节点{}异常：{}", syncFilePath, nodeName, ex.getMessage());
+			LOGGER.warn("同步文件{}到节点{}异常：{}.", syncFilePath, nodeName, ex.getMessage());
 			syncFileFlag = false;
 		}
 		return syncFileFlag;
@@ -130,33 +136,11 @@ public class ActionSave extends BaseAction {
 
 	public static class Wi extends GsonPropertyObject {
 
-		@FieldDescribe("服务器地址(*代表多台应用服务器)")
-		private String nodeName;
-
-		@FieldDescribe("服务端口")
-		private String nodePort;
-
 		@FieldDescribe("文件名")
 		private String fileName;
 
 		@FieldDescribe("config文件内容")
 		private String fileContent;
-
-		public String getNodeName() {
-			return nodeName;
-		}
-
-		public void setNodeName(String nodeName) {
-			this.nodeName = nodeName;
-		}
-
-		public String getNodePort() {
-			return nodePort;
-		}
-
-		public void setNodePort(String nodePort) {
-			this.nodePort = nodePort;
-		}
 
 		public String getFileName() {
 			return fileName;
@@ -178,20 +162,13 @@ public class ActionSave extends BaseAction {
 
 	public static class Wo extends GsonPropertyObject {
 
+		private static final long serialVersionUID = 8468331052732208961L;
+
 		@FieldDescribe("执行时间")
 		private String time;
 
 		@FieldDescribe("执行结果")
 		private String status;
-
-		@FieldDescribe("执行消息")
-		private String message;
-
-		@FieldDescribe("config文件内容")
-		private String fileContent;
-
-		@FieldDescribe("是否Sample")
-		private boolean isSample;
 
 		public String getTime() {
 			return time;
@@ -207,30 +184,6 @@ public class ActionSave extends BaseAction {
 
 		public void setStatus(String status) {
 			this.status = status;
-		}
-
-		public String getFileContent() {
-			return fileContent;
-		}
-
-		public void setFileContent(String fileContent) {
-			this.fileContent = fileContent;
-		}
-
-		public boolean isSample() {
-			return isSample;
-		}
-
-		public void setSample(boolean isSample) {
-			this.isSample = isSample;
-		}
-
-		public String getMessage() {
-			return message;
-		}
-
-		public void setMessage(String message) {
-			this.message = message;
 		}
 
 	}

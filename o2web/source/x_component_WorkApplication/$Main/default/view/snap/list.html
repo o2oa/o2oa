@@ -1,0 +1,62 @@
+<div>
+    {{if $.data.length}}
+    <table>
+        <colgroup>
+            <col width="4%">
+            <col width="40%">
+            <col width="15%">
+            <col width="10%">
+            <col width="10%">
+            <col width="10%">
+            <col width="15%">
+            <col width="15%">
+        </colgroup>
+        <tbody>
+
+        {{each $.data}}
+
+        <tr class="listItem" data-o2-events="mouseover:overTaskItem; mouseout:outTaskItem; o2load:loadItemFlag">
+            <td>
+                <div class="selectFlag" style="display: none">
+                    <div class="selectFlagArea" style="cursor: pointer"data-o2-events="click:selectFile:{{$.id}}">
+                        <div class="selectFlagIcon o2WorkApplication"></div>
+                    </div>
+                </div>
+            </td>
+            <td style="text-align: left;">
+                <div class="listItemTitle" style="display: flex">
+                    <div class="listItemTitleSubject">
+                        {{$.title}}
+                    </div>
+                </div>
+            </td>
+            <td style="text-align: left;"><span>{{$.processName}}</span></td>
+            <td style="text-align: left;"><span>
+                {{
+                (function(){
+                    if($.type === "abandonedWorkCompleted"){
+                        return "结束"
+                    }else{
+                        return $.activityName;
+                    }
+
+                })() }}
+            </span></td>
+            <td style="text-align: left;"><span>{{$.creatorPersonName}}</span></td>
+            <td style="text-align: left;"><span>{{$.creatorUnitName}}</span></td>
+            <td style="text-align: left;"><span>{{$.startTime}}</span></td>
+            <td style="text-align: left;"><span>{{$.createTime}}</span></td>
+        </tr>
+        {{end each}}
+        </tbody>
+    </table>
+    {{end if}}
+    {{if !$.data.length}}
+    <div class="emptyListArea">
+        <div class="emptyListIcon"></div>
+        <div class="emptyListText">
+            {{$.lp.noFile}}
+        </div>
+    </div>
+    {{end if}}
+</div>

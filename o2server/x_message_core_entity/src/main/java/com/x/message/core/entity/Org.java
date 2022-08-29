@@ -17,6 +17,9 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "Org", description = "消息组织.")
 @Entity
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Org.table, uniqueConstraints = {
@@ -24,19 +27,17 @@ import com.x.base.core.project.annotation.FieldDescribe;
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
 						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class Org extends SliceJpaObject{
+public class Org extends SliceJpaObject {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -5626959472585823064L;
 	private static final String TABLE = PersistenceProperties.Org.table;
 
-	
 	@FieldDescribe("数据库主键,自动生成.")
 	@Id
 	@Column(length = length_id, name = ColumnNamePrefix + id_FIELDNAME)
 	private String id = createId();
-
 
 	@Override
 	public void onPersist() throws Exception {
@@ -53,57 +54,56 @@ public class Org extends SliceJpaObject{
 		this.id = id;
 	}
 	/* 以上为 JpaObject 默认字段 */
-	
+
 	public static final String operType_FIELDNAME = "operType";
 	@FieldDescribe("操作类型(add|modify|delete)")
 	@Column(length = length_32B, name = ColumnNamePrefix + operType_FIELDNAME)
-	//@Index(name = TABLE + IndexNameMiddle + operType_FIELDNAME)
+	// @Index(name = TABLE + IndexNameMiddle + operType_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String operType;
-	
+
 	public static final String orgType_FIELDNAME = "orgType";
 	@FieldDescribe("数据类型(person(个人)|unit(部门)|group(群组)|identity(身份)|role(角色)|duty(职务))")
 	@Column(length = length_32B, name = ColumnNamePrefix + orgType_FIELDNAME)
-	//@Index(name = TABLE + IndexNameMiddle + orgType_FIELDNAME)
+	// @Index(name = TABLE + IndexNameMiddle + orgType_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
-	private String orgType;	
-	
+	private String orgType;
+
 	public static final String operUerId_FIELDNAME = "operUerId";
 	@FieldDescribe("数据操作者")
 	@Column(length = length_96B, name = ColumnNamePrefix + operUerId_FIELDNAME)
-	//@Index(name = TABLE + IndexNameMiddle + operUerId_FIELDNAME)
+	// @Index(name = TABLE + IndexNameMiddle + operUerId_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
-	private String operUerId;	
-	
+	private String operUerId;
+
 	public static final String operDataId_FIELDNAME = "operDataId";
 	@FieldDescribe("数据id")
 	@Column(length = length_96B, name = ColumnNamePrefix + operDataId_FIELDNAME)
-	//@Index(name = TABLE + IndexNameMiddle + operDataId_FIELDNAME)
+	// @Index(name = TABLE + IndexNameMiddle + operDataId_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String operDataId;
-	
+
 	public static final String receiveSystem_FIELDNAME = "receiveSystem";
 	@FieldDescribe("接收系统(authority(权限)|third(第三方系统))")
 	@Column(length = length_255B, name = ColumnNamePrefix + receiveSystem_FIELDNAME)
-	//@Index(name = TABLE + IndexNameMiddle + receiveSystem_FIELDNAME)
+	// @Index(name = TABLE + IndexNameMiddle + receiveSystem_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String receiveSystem;
-	
+
 	public static final String consumed_FIELDNAME = "consumed";
 	@FieldDescribe("是否消费(true|false)")
-	@Column( name = ColumnNamePrefix + consumed_FIELDNAME)
-	//@Index(name = TABLE + IndexNameMiddle + consumed_FIELDNAME)
+	@Column(name = ColumnNamePrefix + consumed_FIELDNAME)
+	// @Index(name = TABLE + IndexNameMiddle + consumed_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private Boolean consumed;
-	
-	
+
 	public static final String consumedModule_FIELDNAME = "consumedModule";
 	@FieldDescribe("已消费模块[ CMS|Teamwork|各模块名]")
 	@Column(length = length_255B, name = ColumnNamePrefix + consumedModule_FIELDNAME)
-	//@Index(name = TABLE + IndexNameMiddle + consumedModule_FIELDNAME)
+	// @Index(name = TABLE + IndexNameMiddle + consumedModule_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String consumedModule;
-	
+
 	public static final String body_FIELDNAME = "body";
 	@FieldDescribe("内容.")
 	@Lob
@@ -175,6 +175,4 @@ public class Org extends SliceJpaObject{
 		this.body = body;
 	}
 
-	
-	
 }

@@ -19,6 +19,8 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Attachment;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionPreviewImage extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionPreviewImage.class);
@@ -64,6 +66,7 @@ class ActionPreviewImage extends BaseAction {
 		return result;
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionPreviewImage$Wo")
 	public static class Wo extends WoId {
 
 		private static final long serialVersionUID = 902681475422445346L;

@@ -25,11 +25,15 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionManageCreateWithJob extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionManageCreateWithJob.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionManageCreateWithJob.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String job, JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}, job:{}.", effectivePerson::getDistinguishedName, () -> job);
 
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = null;
@@ -47,15 +51,15 @@ class ActionManageCreateWithJob extends BaseAction {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 		}
-		WoId resp = ThisApplication.context().applications()
-				.postQuery(x_processplatform_service_processing.class, Applications.joinQueryUri("record", "job", job), wi, job)
-				.getData(WoId.class);
+		WoId resp = ThisApplication.context().applications().postQuery(x_processplatform_service_processing.class,
+				Applications.joinQueryUri("record", "job", job), wi, job).getData(WoId.class);
 		Wo wo = new Wo();
 		wo.setId(resp.getId());
 		result.setData(wo);
 		return result;
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.record.ActionManageCreateWithJob$Wi")
 	public static class Wi extends Record {
 
 		private static final long serialVersionUID = 4179509440650818001L;
@@ -65,7 +69,10 @@ class ActionManageCreateWithJob extends BaseAction {
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.record.ActionManageCreateWithJob$Wo")
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = 355503272175884222L;
 
 	}
 

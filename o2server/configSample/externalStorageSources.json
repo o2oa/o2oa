@@ -11,16 +11,7 @@
       "weight": 100.0,
       "name": "251",
       "deepPath": false,
-      "###protocol": "协议,可选值ftp、sftp、webdav、file、hdfs、ali",
-      "###username": "登录用户名.###",
-      "###password": "登录密码.###",
-      "###host": "主机地址.###",
-      "###port": "端口.###",
-      "###prefix": "前缀路径.###",
-      "###enable": "是否启用###",
-      "###weight": "设置权重.###",
-      "###name": "存储节点名,对应存储名称,谨慎修改.###",
-      "###deepPath": "是否使用更深的路径.###"
+      "store": ""
     }
   ],
   "processPlatform": [
@@ -35,16 +26,7 @@
       "weight": 100.0,
       "name": "251",
       "deepPath": false,
-      "###protocol": "协议,可选值ftp、sftp、webdav、file、hdfs、ali",
-      "###username": "登录用户名.###",
-      "###password": "登录密码.###",
-      "###host": "主机地址.###",
-      "###port": "端口.###",
-      "###prefix": "前缀路径.###",
-      "###enable": "是否启用###",
-      "###weight": "设置权重.###",
-      "###name": "存储节点名,对应存储名称,谨慎修改.###",
-      "###deepPath": "是否使用更深的路径.###"
+      "store": ""
     }
   ],
   "mind": [
@@ -59,16 +41,7 @@
       "weight": 100.0,
       "name": "251",
       "deepPath": false,
-      "###protocol": "协议,可选值ftp、sftp、webdav、file、hdfs、ali",
-      "###username": "登录用户名.###",
-      "###password": "登录密码.###",
-      "###host": "主机地址.###",
-      "###port": "端口.###",
-      "###prefix": "前缀路径.###",
-      "###enable": "是否启用###",
-      "###weight": "设置权重.###",
-      "###name": "存储节点名,对应存储名称,谨慎修改.###",
-      "###deepPath": "是否使用更深的路径.###"
+      "store": ""
     }
   ],
   "meeting": [
@@ -83,16 +56,7 @@
       "weight": 100.0,
       "name": "251",
       "deepPath": false,
-      "###protocol": "协议,可选值ftp、sftp、webdav、file、hdfs、ali",
-      "###username": "登录用户名.###",
-      "###password": "登录密码.###",
-      "###host": "主机地址.###",
-      "###port": "端口.###",
-      "###prefix": "前缀路径.###",
-      "###enable": "是否启用###",
-      "###weight": "设置权重.###",
-      "###name": "存储节点名,对应存储名称,谨慎修改.###",
-      "###deepPath": "是否使用更深的路径.###"
+      "store": ""
     }
   ],
   "calendar": [
@@ -107,40 +71,7 @@
       "weight": 100.0,
       "name": "251",
       "deepPath": false,
-      "###protocol": "协议,可选值ftp、sftp、webdav、file、hdfs、ali",
-      "###username": "登录用户名.###",
-      "###password": "登录密码.###",
-      "###host": "主机地址.###",
-      "###port": "端口.###",
-      "###prefix": "前缀路径.###",
-      "###enable": "是否启用###",
-      "###weight": "设置权重.###",
-      "###name": "存储节点名,对应存储名称,谨慎修改.###",
-      "###deepPath": "是否使用更深的路径.###"
-    }
-  ],
-  "okr": [
-    {
-      "protocol": "webdav",
-      "username": "admin",
-      "password": "admin",
-      "host": "127.0.0.1",
-      "port": 8080.0,
-      "prefix": "",
-      "enable": true,
-      "weight": 100.0,
-      "name": "251",
-      "deepPath": false,
-      "###protocol": "协议,可选值ftp、sftp、webdav、file、hdfs、ali",
-      "###username": "登录用户名.###",
-      "###password": "登录密码.###",
-      "###host": "主机地址.###",
-      "###port": "端口.###",
-      "###prefix": "前缀路径.###",
-      "###enable": "是否启用###",
-      "###weight": "设置权重.###",
-      "###name": "存储节点名,对应存储名称,谨慎修改.###",
-      "###deepPath": "是否使用更深的路径.###"
+      "store": ""
     }
   ],
   "cms": [
@@ -155,16 +86,7 @@
       "weight": 100.0,
       "name": "251",
       "deepPath": false,
-      "###protocol": "协议,可选值ftp、sftp、webdav、file、hdfs、ali",
-      "###username": "登录用户名.###",
-      "###password": "登录密码.###",
-      "###host": "主机地址.###",
-      "###port": "端口.###",
-      "###prefix": "前缀路径.###",
-      "###enable": "是否启用###",
-      "###weight": "设置权重.###",
-      "###name": "存储节点名,对应存储名称,谨慎修改.###",
-      "###deepPath": "是否使用更深的路径.###"
+      "store": ""
     }
   ],
   "bbs": [
@@ -179,64 +101,7 @@
       "weight": 100.0,
       "name": "251",
       "deepPath": false,
-      "###protocol": "协议,可选值ftp、sftp、webdav、file、hdfs、ali",
-      "###username": "登录用户名.###",
-      "###password": "登录密码.###",
-      "###host": "主机地址.###",
-      "###port": "端口.###",
-      "###prefix": "前缀路径.###",
-      "###enable": "是否启用###",
-      "###weight": "设置权重.###",
-      "###name": "存储节点名,对应存储名称,谨慎修改.###",
-      "###deepPath": "是否使用更深的路径.###"
-    }
-  ],
-  "report": [
-    {
-      "protocol": "webdav",
-      "username": "admin",
-      "password": "admin",
-      "host": "127.0.0.1",
-      "port": 8080.0,
-      "prefix": "",
-      "enable": true,
-      "weight": 100.0,
-      "name": "251",
-      "deepPath": false,
-      "###protocol": "协议,可选值ftp、sftp、webdav、file、hdfs、ali",
-      "###username": "登录用户名.###",
-      "###password": "登录密码.###",
-      "###host": "主机地址.###",
-      "###port": "端口.###",
-      "###prefix": "前缀路径.###",
-      "###enable": "是否启用###",
-      "###weight": "设置权重.###",
-      "###name": "存储节点名,对应存储名称,谨慎修改.###",
-      "###deepPath": "是否使用更深的路径.###"
-    }
-  ],
-  "strategyDeploy": [
-    {
-      "protocol": "webdav",
-      "username": "admin",
-      "password": "admin",
-      "host": "127.0.0.1",
-      "port": 8080.0,
-      "prefix": "",
-      "enable": true,
-      "weight": 100.0,
-      "name": "251",
-      "deepPath": false,
-      "###protocol": "协议,可选值ftp、sftp、webdav、file、hdfs、ali",
-      "###username": "登录用户名.###",
-      "###password": "登录密码.###",
-      "###host": "主机地址.###",
-      "###port": "端口.###",
-      "###prefix": "前缀路径.###",
-      "###enable": "是否启用###",
-      "###weight": "设置权重.###",
-      "###name": "存储节点名,对应存储名称,谨慎修改.###",
-      "###deepPath": "是否使用更深的路径.###"
+      "store": ""
     }
   ],
   "teamwork": [
@@ -251,16 +116,7 @@
       "weight": 100.0,
       "name": "251",
       "deepPath": false,
-      "###protocol": "协议,可选值ftp、sftp、webdav、file、hdfs、ali",
-      "###username": "登录用户名.###",
-      "###password": "登录密码.###",
-      "###host": "主机地址.###",
-      "###port": "端口.###",
-      "###prefix": "前缀路径.###",
-      "###enable": "是否启用###",
-      "###weight": "设置权重.###",
-      "###name": "存储节点名,对应存储名称,谨慎修改.###",
-      "###deepPath": "是否使用更深的路径.###"
+      "store": ""
     }
   ],
   "structure": [
@@ -275,16 +131,22 @@
       "weight": 100.0,
       "name": "251",
       "deepPath": false,
-      "###protocol": "协议,可选值ftp、sftp、webdav、file、hdfs、ali",
-      "###username": "登录用户名.###",
-      "###password": "登录密码.###",
-      "###host": "主机地址.###",
-      "###port": "端口.###",
-      "###prefix": "前缀路径.###",
-      "###enable": "是否启用###",
-      "###weight": "设置权重.###",
-      "###name": "存储节点名,对应存储名称,谨慎修改.###",
-      "###deepPath": "是否使用更深的路径.###"
+      "store": ""
+    }
+  ],
+  "im": [
+    {
+      "protocol": "webdav",
+      "username": "admin",
+      "password": "admin",
+      "host": "127.0.0.1",
+      "port": 8080.0,
+      "prefix": "",
+      "enable": true,
+      "weight": 100.0,
+      "name": "251",
+      "deepPath": false,
+      "store": ""
     }
   ],
   "general": [
@@ -299,16 +161,34 @@
       "weight": 100.0,
       "name": "251",
       "deepPath": false,
-      "###protocol": "协议,可选值ftp、sftp、webdav、file、hdfs、ali",
-      "###username": "登录用户名.###",
-      "###password": "登录密码.###",
-      "###host": "主机地址.###",
-      "###port": "端口.###",
-      "###prefix": "前缀路径.###",
-      "###enable": "是否启用###",
-      "###weight": "设置权重.###",
-      "###name": "存储节点名,对应存储名称,谨慎修改.###",
-      "###deepPath": "是否使用更深的路径.###"
+      "store": ""
     }
-  ]
+  ],
+  "custom": [
+    {
+      "protocol": "webdav",
+      "username": "admin",
+      "password": "admin",
+      "host": "127.0.0.1",
+      "port": 8080.0,
+      "prefix": "",
+      "enable": true,
+      "weight": 100.0,
+      "name": "251",
+      "deepPath": false,
+      "store": ""
+    }
+  ],
+  "store": {
+    "demo": {
+      "protocol": "hdfs",
+      "username": "",
+      "password": "",
+      "host": "hdfs://127.0.0.1",
+      "port": 9000.0,
+      "name": ""
+    }
+  },
+  "enable": false,
+  "###extension": "扩展设置.###"
 }

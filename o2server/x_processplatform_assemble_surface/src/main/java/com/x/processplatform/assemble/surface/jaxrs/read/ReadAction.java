@@ -31,9 +31,9 @@ import com.x.base.core.project.logger.LoggerFactory;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-@Tag(name = "Read", description = "待阅")
+@Tag(name = "ReadAction", description = "待阅接口.")
 @Path("read")
-@JaxrsDescribe("待阅操作")
+@JaxrsDescribe("待阅接口")
 public class ReadAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ReadAction.class);
@@ -367,7 +367,7 @@ public class ReadAction extends StandardJaxrsAction {
 		ActionResult<ActionCountWithPerson.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCountWithPerson().execute(credential);
+			result = new ActionCountWithPerson().execute(effectivePerson, credential);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

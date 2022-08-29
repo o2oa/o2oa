@@ -211,6 +211,7 @@ MWF.xApplication.Attendance.AppealExplorer = new Class({
             "text" : this.app.lp.search,
             "styles" : this.app.css.filterButton
         }).inject(td);
+        input.addClass("mainColor_bg");
         input.addEvent("click", function(){
             /*var year = this.preMonthDate.getFullYear().toString();
             var month = (this.preMonthDate.getMonth()+1).toString();
@@ -241,7 +242,7 @@ MWF.xApplication.Attendance.AppealExplorer = new Class({
             "onComplete": function(items){
                 var  arr = [];
                 items.each(function(item){
-                    arr.push(item.data.name);
+                    arr.push(item.data.distinguishedName);
                 }.bind(this));
                 el.set("value",arr.join(","));
             }.bind(this)

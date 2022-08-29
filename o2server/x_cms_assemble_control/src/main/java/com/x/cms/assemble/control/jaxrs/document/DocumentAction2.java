@@ -662,50 +662,6 @@ public class DocumentAction2 extends StandardJaxrsAction{
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "根据信息发布文档ID查询文档第一张图片信息列表.", action = ActionQueryGetFirstPicture.class)
-	@GET
-	@Path("pictures/{id}/first")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void query_listFirstPictures( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id ) {
-		EffectivePerson effectivePerson = this.effectivePerson( request );
-		ActionResult<ActionQueryGetFirstPicture.Wo> result = new ActionResult<>();
-		Boolean check = true;
-		if( check ){
-			try {
-				result = new ActionQueryGetFirstPicture().execute( request, id, effectivePerson );
-			} catch (Exception e) {
-				result = new ActionResult<>();
-				result.error( e );
-				logger.error( e, effectivePerson, request, null);
-			}
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
-
-	@JaxrsMethodDescribe(value = "根据信息发布文档ID查询文档所有的图片信息列表.", action = ActionQueryListAllPictures.class)
-	@GET
-	@Path("pictures/{id}/all")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void query_listAllPictures( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			@JaxrsParameterDescribe("信息文档ID") @PathParam("id") String id ) {
-		EffectivePerson effectivePerson = this.effectivePerson( request );
-		ActionResult<List<ActionQueryListAllPictures.Wo>> result = new ActionResult<>();
-		Boolean check = true;
-		if( check ){
-			try {
-				result = new ActionQueryListAllPictures().execute( request, id, effectivePerson );
-			} catch (Exception e) {
-				result = new ActionResult<>();
-				result.error( e );
-				logger.error( e, effectivePerson, request, null);
-			}
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
-
 	@JaxrsMethodDescribe(value = "从Excel文件导入文档数据.", action = ActionPersistImportDataExcel.class)
 	@POST
 	@Path("import/category/{categoryId}")

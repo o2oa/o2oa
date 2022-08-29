@@ -23,6 +23,9 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.query.core.entity.PersistenceProperties;
 import com.x.query.core.entity.Stat;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+@Deprecated(forRemoval = true)
+@Schema(name = "Entry", description = "数据中心倒查表.")
 @Entity
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Segment.Entry.table, uniqueConstraints = {

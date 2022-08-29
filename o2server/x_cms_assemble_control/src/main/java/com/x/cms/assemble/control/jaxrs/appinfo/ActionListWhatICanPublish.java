@@ -14,6 +14,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.SortTools;
+import com.x.cms.assemble.control.Business;
 
 public class ActionListWhatICanPublish extends BaseAction {
 
@@ -24,19 +25,11 @@ public class ActionListWhatICanPublish extends BaseAction {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wos = new ArrayList<>();
 		List<Wo> wos_out = new ArrayList<>();
-		Boolean isXAdmin = false;
+		Business business = new Business(null);
+		Boolean isXAdmin = business.isManager( effectivePerson );
 		Boolean check = true;
 		Boolean isAnonymous = effectivePerson.isAnonymous();
 		String personName = effectivePerson.getDistinguishedName();
-
-		try {
-			isXAdmin = userManagerService.isManager( effectivePerson );
-		} catch (Exception e) {
-			check = false;
-			Exception exception = new ExceptionAppInfoProcess(e, "系统在检查用户是否是平台管理员时发生异常。Name:" + personName);
-			result.error(exception);
-			logger.error(e, effectivePerson, request, null);
-		}
 
 		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), personName, isAnonymous, isXAdmin );
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);

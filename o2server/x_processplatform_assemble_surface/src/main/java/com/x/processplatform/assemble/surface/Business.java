@@ -10,6 +10,7 @@ import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import com.x.processplatform.assemble.surface.factory.element.*;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -33,27 +34,6 @@ import com.x.processplatform.assemble.surface.factory.content.TaskFactory;
 import com.x.processplatform.assemble.surface.factory.content.WorkCompletedFactory;
 import com.x.processplatform.assemble.surface.factory.content.WorkFactory;
 import com.x.processplatform.assemble.surface.factory.content.WorkLogFactory;
-import com.x.processplatform.assemble.surface.factory.element.AgentFactory;
-import com.x.processplatform.assemble.surface.factory.element.ApplicationDictFactory;
-import com.x.processplatform.assemble.surface.factory.element.ApplicationDictItemFactory;
-import com.x.processplatform.assemble.surface.factory.element.ApplicationFactory;
-import com.x.processplatform.assemble.surface.factory.element.BeginFactory;
-import com.x.processplatform.assemble.surface.factory.element.CancelFactory;
-import com.x.processplatform.assemble.surface.factory.element.ChoiceFactory;
-import com.x.processplatform.assemble.surface.factory.element.DelayFactory;
-import com.x.processplatform.assemble.surface.factory.element.EmbedFactory;
-import com.x.processplatform.assemble.surface.factory.element.EndFactory;
-import com.x.processplatform.assemble.surface.factory.element.FileFactory;
-import com.x.processplatform.assemble.surface.factory.element.FormFactory;
-import com.x.processplatform.assemble.surface.factory.element.InvokeFactory;
-import com.x.processplatform.assemble.surface.factory.element.ManualFactory;
-import com.x.processplatform.assemble.surface.factory.element.MergeFactory;
-import com.x.processplatform.assemble.surface.factory.element.ParallelFactory;
-import com.x.processplatform.assemble.surface.factory.element.ProcessFactory;
-import com.x.processplatform.assemble.surface.factory.element.RouteFactory;
-import com.x.processplatform.assemble.surface.factory.element.ScriptFactory;
-import com.x.processplatform.assemble.surface.factory.element.ServiceFactory;
-import com.x.processplatform.assemble.surface.factory.element.SplitFactory;
 import com.x.processplatform.assemble.surface.factory.portal.PortalFactory;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Read;
@@ -336,6 +316,15 @@ public class Business {
 		return parallel;
 	}
 
+	private PublishFactory publish;
+
+	public PublishFactory publish() throws Exception {
+		if (null == this.publish) {
+			this.publish = new PublishFactory(this);
+		}
+		return publish;
+	}
+
 	private ServiceFactory service;
 
 	public ServiceFactory service() throws Exception {
@@ -448,6 +437,9 @@ public class Business {
 				break;
 			case parallel:
 				o = parallel().pick(id);
+				break;
+			case publish:
+				o = publish().pick(id);
 				break;
 			case service:
 				o = service().pick(id);
@@ -1028,8 +1020,8 @@ public class Business {
 		return true;
 	}
 
-	public boolean readableWithWorkOrWorkCompleted(EffectivePerson effectivePerson, String workOrWorkCompleted,
-			PromptException entityException) throws Exception {
+	public boolean readableWithWorkOrWorkCompleted(EffectivePerson effectivePerson, String workOrWorkCompleted)
+			throws Exception {
 		if (effectivePerson.isManager()) {
 			return true;
 		}
@@ -1065,11 +1057,7 @@ public class Business {
 			processId = work.getProcess();
 		}
 		if (StringUtils.isEmpty(job)) {
-			if (null != entityException) {
-				throw entityException;
-			} else {
-				return false;
-			}
+			return false;
 		}
 		if (effectivePerson.isPerson(creatorPerson)) {
 			return true;
@@ -1084,9 +1072,9 @@ public class Business {
 							effectivePerson.getDistinguishedName(), TaskCompleted.job_FIELDNAME, job) == 0) {
 						if (emc.countEqualAndEqual(ReadCompleted.class, ReadCompleted.person_FIELDNAME,
 								effectivePerson.getDistinguishedName(), ReadCompleted.job_FIELDNAME, job) == 0) {
-							Application application = application().pick(applicationId);
-							Process process = process().pick(processId);
-							if (!canManageApplicationOrProcess(effectivePerson, application, process)) {
+							Application a = application().pick(applicationId);
+							Process p = process().pick(processId);
+							if (BooleanUtils.isFalse(canManageApplicationOrProcess(effectivePerson, a, p))) {
 								return false;
 							}
 						}
@@ -1162,6 +1150,33 @@ public class Business {
 		}
 		if (BooleanUtils.isTrue(
 				this.canManageApplicationOrProcess(effectivePerson, work.getApplication(), work.getProcess()))) {
+			return true;
+		}
+		return false;
+	}
+
+	public boolean editable(EffectivePerson effectivePerson, String job) throws Exception {
+		if (effectivePerson.isManager()) {
+			return true;
+		}
+		if (this.task().countWithPersonWithJob(effectivePerson.getDistinguishedName(), job) > 0) {
+			return true;
+		}
+		String application = null, process = null;
+
+		Work work = this.entityManagerContainer().firstEqual(Work.class, Work.job_FIELDNAME, job);
+		if(work==null){
+			WorkCompleted workCompleted = this.entityManagerContainer().firstEqual(WorkCompleted.class, Work.job_FIELDNAME, job);
+			if(workCompleted!=null){
+				application = work.getApplication();
+				process = work.getProcess();
+			}
+		}else{
+			application = work.getApplication();
+			process = work.getProcess();
+		}
+		if (StringUtils.isNotBlank(application) && BooleanUtils.isTrue(
+				this.canManageApplicationOrProcess(effectivePerson, application, process))) {
 			return true;
 		}
 		return false;

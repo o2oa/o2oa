@@ -70,7 +70,7 @@ MWF.xApplication.portal.PageDesigner.Module.Tab = MWF.PCTab = new Class({
         }.bind(this));
     },
     addPage: function(){
-        tabNode = new Element("div");
+        var tabNode = new Element("div");
         var page = this.tabWidget.addTab(tabNode, "page", false);
 
         this.form.getTemplateData("Tab$Page", function(data){

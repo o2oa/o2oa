@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.List;
@@ -82,7 +83,7 @@ public class ConnectionAction {
 			int status = connection.getResponseCode();
 			if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM) {
 				String redirect = connection.getHeaderField("Location");
-				if(StringUtils.isNotBlank(redirect)) {
+				if (StringUtils.isNotBlank(redirect)) {
 					connection.disconnect();
 					return getDelete(connectTimeout, readTimeout, redirect, method, heads);
 				}
@@ -375,8 +376,8 @@ public class ConnectionAction {
 		IOUtils.write(StringTools.TWO_HYPHENS + boundary, output, StandardCharsets.UTF_8);
 		IOUtils.write(StringTools.CRLF, output, StandardCharsets.UTF_8);
 		IOUtils.write(
-				"Content-Disposition: form-data; name=\"" + filePart.getName().getBytes(StandardCharsets.UTF_8)
-						+ "\"; filename=\"" + filePart.getFileName().getBytes(StandardCharsets.UTF_8) + "\"",
+				"Content-Disposition: form-data; name=\"" + filePart.getName() + "\"; filename=\""
+						+ URLEncoder.encode(filePart.getFileName(), StandardCharsets.UTF_8) + "\"",
 				output, StandardCharsets.UTF_8);
 		IOUtils.write(StringTools.CRLF, output, StandardCharsets.UTF_8);
 		IOUtils.write("Content-Length: " + filePart.getBytes().length, output, StandardCharsets.UTF_8);

@@ -360,6 +360,23 @@ public class AppInfoAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "获取用户有权限发布(关联流程的分类)的所有信息栏目信息列表.", action = ActionListPublishWithProcess.class)
+	@GET
+	@Path("list/user/publish/with/process")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listPublishWithProcess( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<List<BaseAction.Wo>> result = new ActionResult<>();
+		try {
+			result = new ActionListPublishWithProcess().execute(effectivePerson);
+		} catch (Exception e) {
+			result.error(e);
+			logger.error(e, effectivePerson, request, null);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "获取用户有权限发布的所有信息栏目信息列表.", action = ActionListWhatICanPublish_WithAppType.class)
 	@GET
 	@Path("list/user/publish/type/{appType}")
@@ -604,7 +621,7 @@ public class AppInfoAction extends StandardJaxrsAction {
 		ActionResult<ActionAppIconUpload.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionAppIconUpload().execute(request, effectivePerson, appId, size, bytes, disposition );
+			result = new ActionAppIconUpload().execute(effectivePerson, appId, size, bytes);
 		} catch (Exception e) {
 			logger.error(e, effectivePerson, request, null);
 			result.error(e);

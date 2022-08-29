@@ -2,6 +2,7 @@ package com.x.processplatform.assemble.surface.jaxrs.attachment;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -16,13 +17,11 @@ import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
-import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.ProcessPlatform;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -33,12 +32,18 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.express.assemble.surface.jaxrs.attachment.ActionDocToWordWi;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionDocToWord extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionDocToWord.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDocToWord.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String workId, JsonElement jsonElement) throws Exception {
+
+		LOGGER.debug("execute:{}, workId:{}.", effectivePerson::getDistinguishedName, () -> workId);
+
 		ActionResult<Wo> result = new ActionResult<>();
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		if (StringUtils.isNotBlank(wi.getContent())) {
@@ -46,7 +51,7 @@ class ActionDocToWord extends BaseAction {
 				String decodedContent = URLDecoder.decode(wi.getContent(), StandardCharsets.UTF_8.name());
 				wi.setContent(decodedContent);
 			} catch (Exception e) {
-				logger.error(e);
+				LOGGER.error(e);
 			}
 		}
 		Work work = null;
@@ -58,8 +63,7 @@ class ActionDocToWord extends BaseAction {
 			if (null == work) {
 				throw new ExceptionEntityNotExist(workId, Work.class);
 			}
-			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, work.getId(),
-					new ExceptionEntityNotExist(work.getId()))) {
+			if (!business.readableWithWorkOrWorkCompleted(effectivePerson, work.getId())) {
 				throw new ExceptionAccessDenied(effectivePerson);
 			}
 		}
@@ -122,10 +126,10 @@ class ActionDocToWord extends BaseAction {
 
 	}
 
-	private byte[] local(Wi wi) throws Exception {
+	private byte[] local(Wi wi) throws IOException {
 		String content = "<html><head></head><body>" + wi.getContent() + "</body></html>";
 		try (POIFSFileSystem fs = new POIFSFileSystem();
-				InputStream is = new ByteArrayInputStream(content.getBytes("UTF-8"));
+				InputStream is = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8));
 				ByteArrayOutputStream out = new ByteArrayOutputStream()) {
 			fs.createDocument(is, "WordDocument");
 			fs.writeFilesystem(out);
@@ -133,41 +137,17 @@ class ActionDocToWord extends BaseAction {
 		}
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionDocToWord$Wo")
 	public static class Wo extends WoId {
+
+		private static final long serialVersionUID = 8076380614700207161L;
+
 	}
 
-	public static class Wi extends GsonPropertyObject {
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.attachment.ActionDocToWord$Wi")
+	public static class Wi extends ActionDocToWordWi {
 
-		@FieldDescribe("转换文件名.")
-		private String fileName;
-		@FieldDescribe("附件site.")
-		private String site;
-		@FieldDescribe("内容.")
-		private String content;
-
-		public String getFileName() throws Exception {
-			return StringUtils.isEmpty(fileName) ? Config.processPlatform().getDocToWordDefaultFileName() : fileName;
-		}
-
-		public void setSite(String site) {
-			this.site = site;
-		}
-
-		public void setFileName(String fileName) {
-			this.fileName = fileName;
-		}
-
-		public String getSite() throws Exception {
-			return StringUtils.isEmpty(site) ? Config.processPlatform().getDocToWordDefaultSite() : site;
-		}
-
-		public String getContent() {
-			return content;
-		}
-
-		public void setContent(String content) {
-			this.content = content;
-		}
+		private static final long serialVersionUID = -1098540826705109493L;
 
 	}
 }

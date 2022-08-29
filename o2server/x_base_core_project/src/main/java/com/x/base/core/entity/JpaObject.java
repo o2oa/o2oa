@@ -57,9 +57,9 @@ public abstract class JpaObject extends GsonPropertyObject implements Serializab
 
 	public static final String DefaultUniqueConstraintSuffix = "DUC";
 
-	abstract public String getId();
+	public abstract String getId();
 
-	abstract public void setId(String id);
+	public abstract void setId(String id);
 
 	public static final String id_FIELDNAME = "id";
 

@@ -12,20 +12,27 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.EqualsTerms;
 import com.x.base.core.project.jaxrs.InTerms;
 import com.x.base.core.project.jaxrs.LikeTerms;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Task;
+import com.x.processplatform.core.express.assemble.surface.jaxrs.task.ActionListNextFilterWi;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionListNextFilter extends BaseAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListNextFilter.class);
+
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String id, Integer count, JsonElement jsonElement)
 			throws Exception {
+		LOGGER.debug("execute:{}, id:{}, count:{}.", effectivePerson::getDistinguishedName, () -> id, () -> count);
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		Business business = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -36,25 +43,18 @@ class ActionListNextFilter extends BaseAction {
 		InTerms ins = new InTerms();
 		LikeTerms likes = new LikeTerms();
 		equals.put(Task.person_FIELDNAME, effectivePerson.getDistinguishedName());
-		if (ListTools.isNotEmpty(wi.getApplicationList())) {
-			ins.put(Task.application_FIELDNAME, wi.getApplicationList());
-		}
-		if (ListTools.isNotEmpty(wi.getProcessList())) {
-			if(BooleanUtils.isFalse(wi.getRelateEditionProcess())) {
-				ins.put(Task.process_FIELDNAME, wi.getProcessList());
-			}else{
-				ins.put(Task.process_FIELDNAME, business.process().listEditionProcess(wi.getProcessList()));
-			}
-		}
-		if (ListTools.isNotEmpty(wi.getCreatorUnitList())) {
-			ins.put(Task.creatorUnit_FIELDNAME, wi.getCreatorUnitList());
-		}
-		if (ListTools.isNotEmpty(wi.getStartTimeMonthList())) {
-			ins.put(Task.startTimeMonth_FIELDNAME, wi.getStartTimeMonthList());
-		}
-		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
-			ins.put(Task.activityName_FIELDNAME, wi.getActivityNameList());
-		}
+		predicateApplication(wi, ins);
+		predicateProcess(business, wi, ins);
+		predicateCreatorUnit(wi, ins);
+		predicateStartTimeMonth(wi, ins);
+		predicateActivityName(wi, ins);
+		predicateKey(wi, likes);
+		result = this.standardListNext(Wo.copier, id, count, JpaObject.sequence_FIELDNAME, equals, null, likes, ins,
+				null, null, null, null, true, DESC);
+		return result;
+	}
+
+	private void predicateKey(Wi wi, LikeTerms likes) {
 		if (StringUtils.isNotEmpty(wi.getKey())) {
 			String key = StringUtils.trim(StringUtils.replace(wi.getKey(), "\u3000", " "));
 			if (StringUtils.isNotEmpty(key)) {
@@ -65,92 +65,50 @@ class ActionListNextFilter extends BaseAction {
 				likes.put(Task.creatorUnit_FIELDNAME, key);
 			}
 		}
-		result = this.standardListNext(Wo.copier, id, count, Task.sequence_FIELDNAME, equals, null, likes, ins, null,
-				null, null, null, true, DESC);
-		return result;
 	}
 
-	public class Wi extends GsonPropertyObject {
-
-		@FieldDescribe("应用")
-		private List<String> applicationList;
-
-		@FieldDescribe("流程")
-		private List<String> processList;
-
-		@FieldDescribe("是否查找同版本流程数据：true(默认查找)|false")
-		private Boolean relateEditionProcess = true;
-
-		@FieldDescribe("活动名称")
-		private List<String> activityNameList;
-
-		@FieldDescribe("创建组织")
-		private List<String> creatorUnitList;
-
-		@FieldDescribe("开始时期")
-		private List<String> startTimeMonthList;
-
-		@FieldDescribe("匹配关键字")
-		private String key;
-
-		public List<String> getApplicationList() {
-			return applicationList;
+	private void predicateActivityName(Wi wi, InTerms ins) {
+		if (ListTools.isNotEmpty(wi.getActivityNameList())) {
+			ins.put(Task.activityName_FIELDNAME, wi.getActivityNameList());
 		}
+	}
 
-		public void setApplicationList(List<String> applicationList) {
-			this.applicationList = applicationList;
+	private void predicateStartTimeMonth(Wi wi, InTerms ins) {
+		if (ListTools.isNotEmpty(wi.getStartTimeMonthList())) {
+			ins.put(Task.startTimeMonth_FIELDNAME, wi.getStartTimeMonthList());
 		}
+	}
 
-		public List<String> getProcessList() {
-			return processList;
+	private void predicateCreatorUnit(Wi wi, InTerms ins) {
+		if (ListTools.isNotEmpty(wi.getCreatorUnitList())) {
+			ins.put(Task.creatorUnit_FIELDNAME, wi.getCreatorUnitList());
 		}
+	}
 
-		public void setProcessList(List<String> processList) {
-			this.processList = processList;
+	private void predicateProcess(Business business, Wi wi, InTerms ins) throws Exception {
+		if (ListTools.isNotEmpty(wi.getProcessList())) {
+			if (BooleanUtils.isFalse(wi.getRelateEditionProcess())) {
+				ins.put(Task.process_FIELDNAME, wi.getProcessList());
+			} else {
+				ins.put(Task.process_FIELDNAME, business.process().listEditionProcess(wi.getProcessList()));
+			}
 		}
+	}
 
-		public Boolean getRelateEditionProcess() {
-			return relateEditionProcess;
+	private void predicateApplication(Wi wi, InTerms ins) {
+		if (ListTools.isNotEmpty(wi.getApplicationList())) {
+			ins.put(Task.application_FIELDNAME, wi.getApplicationList());
 		}
+	}
 
-		public void setRelateEditionProcess(Boolean relateEditionProcess) {
-			this.relateEditionProcess = relateEditionProcess;
-		}
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.task.ActionListNextFilter.Wi")
+	public class Wi extends ActionListNextFilterWi {
 
-		public List<String> getStartTimeMonthList() {
-			return startTimeMonthList;
-		}
-
-		public void setStartTimeMonthList(List<String> startTimeMonthList) {
-			this.startTimeMonthList = startTimeMonthList;
-		}
-
-		public List<String> getActivityNameList() {
-			return activityNameList;
-		}
-
-		public void setActivityNameList(List<String> activityNameList) {
-			this.activityNameList = activityNameList;
-		}
-
-		public String getKey() {
-			return key;
-		}
-
-		public void setKey(String key) {
-			this.key = key;
-		}
-
-		public List<String> getCreatorUnitList() {
-			return creatorUnitList;
-		}
-
-		public void setCreatorUnitList(List<String> creatorUnitList) {
-			this.creatorUnitList = creatorUnitList;
-		}
+		private static final long serialVersionUID = -4563125130716132895L;
 
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.task.ActionListNextFilter.Wo")
 	public static class Wo extends Task {
 
 		private static final long serialVersionUID = 2279846765261247910L;
@@ -159,6 +117,7 @@ class ActionListNextFilter extends BaseAction {
 				JpaObject.FieldsInvisible);
 
 		@FieldDescribe("排序号")
+		@Schema(description = "排序号")
 		private Long rank;
 
 		public Long getRank() {

@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -49,7 +50,7 @@ public class CommandFactory {
 			System.out.println(">>> server directory:" + Config.base() + StringUtils.LF + ">>> version:"
 					+ Config.version() + StringUtils.LF + ">>> java:" + SystemUtils.JAVA_VERSION + StringUtils.LF
 					+ ">>> os:" + SystemUtils.OS_NAME + StringUtils.LF + ">>> nodeAgent "
-					+ (Config.currentNode().nodeAgentEnable()
+					+ (BooleanUtils.isTrue(Config.currentNode().nodeAgentEnable())
 							? ("port:" + Config.currentNode().nodeAgentPort() + ", encrypt:"
 									+ Config.currentNode().nodeAgentEncrypt())
 							: "disable"));
@@ -82,8 +83,8 @@ public class CommandFactory {
 			help += StringUtils.LF;
 			help += " setPassword (oldpasswd) (newpasswd)    change initial manager password.";
 			help += StringUtils.LF;
-			help += " create encrypt key                     create random RSA key.";
-			help += StringUtils.LF;
+//			help += " create encrypt key                     create random RSA key.";
+//			help += StringUtils.LF;
 			help += " version                                show available update version.";
 			help += StringUtils.LF;
 			help += " exit                                   exit after stop.";

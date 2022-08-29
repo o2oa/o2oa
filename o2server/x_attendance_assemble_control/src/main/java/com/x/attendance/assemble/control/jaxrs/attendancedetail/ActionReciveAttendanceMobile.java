@@ -72,6 +72,9 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 			}
 		}
 		if( check ){
+			if (StringUtils.isNotEmpty(wrapIn.getDescription())) {
+				attendanceDetailMobile.setDescription(wrapIn.getDescription());
+			}
 			if( StringUtils.isNotEmpty(wrapIn.getRecordAddress()) ){
 				attendanceDetailMobile.setRecordAddress( wrapIn.getRecordAddress() );
 			}

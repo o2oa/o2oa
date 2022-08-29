@@ -19,6 +19,8 @@ import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.Work;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionListWithWork extends BaseAction {
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String workId) throws Exception {
@@ -49,6 +51,7 @@ class ActionListWithWork extends BaseAction {
 		}
 	}
 
+	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.task.ActionListWithWork.Wo")
 	public static class Wo extends Task {
 
 		private static final long serialVersionUID = 2279846765261247910L;

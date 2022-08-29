@@ -93,6 +93,8 @@ MWF.xApplication.query.TableDesigner.Main = new Class({
                 var _self = this;
                 var options = {
                     "appId": "query.TableDesigner"+table.id,
+                    "id": table.id,
+                    "application": _self.application.id,
                     "onQueryLoad": function(){
                         this.actions = _self.actions;
                         this.category = _self;
@@ -110,7 +112,7 @@ MWF.xApplication.query.TableDesigner.Main = new Class({
     loadView: function(){
         this.getViewData(this.options.id, function(vdata){
             this.setTitle(this.options.appTitle + "-"+vdata.name);
-            this.taskitem.setText(this.options.appTitle + "-"+vdata.name);
+            if(this.taskitem)this.taskitem.setText(this.options.appTitle + "-"+vdata.name);
             this.options.appTitle = this.options.appTitle + "-"+vdata.name;
             this.table = new MWF.xApplication.query.TableDesigner.Table(this, vdata);
             this.table.load();

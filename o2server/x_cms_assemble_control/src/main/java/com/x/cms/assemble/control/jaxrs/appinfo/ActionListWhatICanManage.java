@@ -14,6 +14,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.SortTools;
+import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
 
@@ -29,18 +30,10 @@ public class ActionListWhatICanManage extends BaseAction {
 		List<CategoryInfo> catacoryList = null;
 		List<WoCategory> wrapOutCatacoryList = null;
 		List<String> app_ids = null;
-		Boolean isXAdmin = false;
+		Business business = new Business(null);
+		Boolean isXAdmin = business.isManager( effectivePerson );
 		Boolean check = true;
 		String personName = effectivePerson.getDistinguishedName();
-		
-		try {
-			isXAdmin = userManagerService.isManager( effectivePerson );
-		} catch (Exception e) {
-			check = false;
-			Exception exception = new ExceptionAppInfoProcess(e, "系统在检查用户是否是平台管理员时发生异常。Name:" + personName);
-			result.error(exception);
-			logger.error(e, effectivePerson, request, null);
-		}
 
 		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), personName, "manage", isXAdmin );
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
@@ -109,7 +102,7 @@ public class ActionListWhatICanManage extends BaseAction {
 							result.error(exception);
 							logger.error(e, effectivePerson, request, null);
 						}
-						query_categoryList = new ArrayList<>();				
+						query_categoryList = new ArrayList<>();
 						if( ListTools.isNotEmpty( wo.getCategoryList() )) {
 							for( String categoryId : wo.getCategoryList() ) {
 								if( categoryId != null && !"null".equalsIgnoreCase( categoryId.trim() ) ) {
