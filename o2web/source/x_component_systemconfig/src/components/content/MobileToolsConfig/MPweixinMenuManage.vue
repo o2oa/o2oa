@@ -316,10 +316,7 @@ const menuList = ref([]); // 菜单列表
 const showSubId = ref(""); // 哪个菜单的子菜单需要显示
 const mpweixinSubscribe = ref({}); // 订阅
 const currentMenu = ref({}); // 选中的菜单
-const labelStyle = {
-  fontWeight: 'bold',
-  fontSize: '16px'
-}
+
 const load = () => {
   loadMenuList();
   loadSubscribeInfo();
@@ -695,7 +692,7 @@ const saveMenu = () => {
   }
 };
 // 发布菜单到微信公众号
-const menuPublishToWeixin = (e) => {
+const menuPublishToWeixin = (ev) => {
   if (menuList.value.length > 0) {
     component.confirm(
       "warn",

@@ -7,7 +7,7 @@
     <div class="systemconfig_item_info error_tips" v-html="errorTip" v-if="errorTip != ''"></div>
     <div class="item_el_info"></div>
     
-    <div class="systemconfig_item_info my_row">
+    <div class="systemconfig_item_info my_row" v-if="packInfo.id">
       <label class="item_label">{{lp._appTools.appPack.statusLabel}}</label>
       <div class="error_tips">{{packStatusText()}}</div>
       <button class="mainColor_bg" @click="loadAppPackInfo" v-if="isShowRefreshBtn()">{{lp._appTools.appPack.refreshStatusBtnTitle}}</button>
@@ -56,7 +56,7 @@
                   :label-style="labelStyle"></BaseBoolean>
     <div class="item_el_info">{{lp._appTools.appPack.formEnableOuterPackageTip}}</div>
 
-    <div class="systemconfig_item_info my_row" >
+    <div class="systemconfig_item_info my_row" v-if="packInfo.id">
       <label class="item_label">{{lp._appTools.appPack.publishStatusLabel}}</label>
       <div class="error_tips">{{publishStatusText()}}</div>
       <button class="mainColor_bg" @click="publishApkTolocal" v-if="isShowPublishBtn()">{{lp._appTools.appPack.formDownloadPublishBtnTitle}}</button>
@@ -243,19 +243,19 @@ const saveForm = (e) => {
     const file = uploadLogoNode.value.files[0];
     formData.append('file', file);
     formData.append('fileName', file.name);
-    formData.append('appName', packInfo.value.appName);
-    formData.append('o2ServerProtocol', packInfo.value.o2ServerProtocol);
-    formData.append('o2ServerHost', packInfo.value.o2ServerHost);
-    formData.append('o2ServerPort', packInfo.value.o2ServerPort);
+    formData.append('appName', packInfo.value.appName  || '');
+    formData.append('o2ServerProtocol', packInfo.value.o2ServerProtocol  || '');
+    formData.append('o2ServerHost', packInfo.value.o2ServerHost  || '');
+    formData.append('o2ServerPort', packInfo.value.o2ServerPort  || '');
     formData.append('o2ServerContext', '/x_program_center');
-    formData.append('appVersionName', packInfo.value.versionName);
-    formData.append('appBuildNo', packInfo.value.buildNo);
+    formData.append('appVersionName', packInfo.value.versionName || '');
+    formData.append('appBuildNo', packInfo.value.buildNo || '');
     formData.append('isPackAppIdOuter', isPackAppIdOuter.value ? "2" : "1");
     formData.append('deleteHuawei', "1");
-    formData.append('urlMapping', packInfo.value.urlMapping);
-    formData.append('token', apppackConfigData.value.token);
-    doAppPackAction('androidPackStart', formData, "{}").then((data)=>{
-       loadAppPackInfo();
+    formData.append('urlMapping', packInfo.value.urlMapping || '');
+    formData.append('token', apppackConfigData.value.token  || '');
+    o2.Actions.load('x_program_center').AppPackAction['androidPackStart'](formData, "{}", ()=>{
+      loadAppPackInfo();
     });
     this.close();
   }, function(){
