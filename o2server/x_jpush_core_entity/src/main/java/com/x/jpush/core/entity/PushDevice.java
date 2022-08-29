@@ -16,12 +16,14 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * Created by fancyLou on 9/13/21.
  * Copyright © 2021 O2. All rights reserved.
  */
 
-
+@Schema(name = "PushDevice", description = "消息推送设备.")
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.PushDevice.table, uniqueConstraints = {

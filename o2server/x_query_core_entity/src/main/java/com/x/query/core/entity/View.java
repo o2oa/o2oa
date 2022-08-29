@@ -31,6 +31,9 @@ import com.x.base.core.entity.annotation.Equal;
 import com.x.base.core.entity.annotation.Flag;
 import com.x.base.core.project.annotation.FieldDescribe;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "View", description = "数据中心视图.")
 @Entity
 @ContainerEntity(dumpSize = 10, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.View.table, uniqueConstraints = {
@@ -61,8 +64,7 @@ public class View extends SliceJpaObject {
 	@FieldDescribe("数据库主键,自动生成.")
 	@Id
 	@Column(length = length_id, name = ColumnNamePrefix + id_FIELDNAME)
-	@CheckRemove(citationNotExists =
-	@CitationNotExist(type = Stat.class, fields = Stat.view_FIELDNAME))
+	@CheckRemove(citationNotExists = @CitationNotExist(type = Stat.class, fields = Stat.view_FIELDNAME))
 	private String id = createId();
 
 	/* 以上为 JpaObject 默认字段 */
@@ -238,7 +240,7 @@ public class View extends SliceJpaObject {
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
 			+ availableGroupList_FIELDNAME, joinIndex = @Index(name = TABLE + IndexNameMiddle
-			+ availableGroupList_FIELDNAME + JoinIndexNameSuffix))
+					+ availableGroupList_FIELDNAME + JoinIndexNameSuffix))
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ElementColumn(length = length_255B, name = ColumnNamePrefix + availableGroupList_FIELDNAME)
 	@ElementIndex(name = TABLE + IndexNameMiddle + availableGroupList_FIELDNAME + ElementIndexNameSuffix)

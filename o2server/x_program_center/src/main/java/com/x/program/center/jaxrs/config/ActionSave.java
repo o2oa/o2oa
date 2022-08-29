@@ -69,7 +69,7 @@ public class ActionSave extends BaseAction {
 		if (BooleanUtils.isNotTrue(Config.general().getConfigApiEnable())) {
 			throw new ExceptionModifyConfig();
 		}
-
+		LOGGER.info("{}修改配置文件：{}", effectivePerson.getDistinguishedName(), fileName);
 		byte[] bytes = wi.getFileContent().getBytes(StandardCharsets.UTF_8);
 
 		Nodes nodes = Config.nodes();
@@ -125,11 +125,10 @@ public class ActionSave extends BaseAction {
 					dos.write(bytes, 0, length);
 					dos.flush();
 				}
-				LOGGER.info("同步文件{}到节点{}完成.......", syncFilePath, nodeName);
 			}
 			syncFileFlag = true;
 		} catch (Exception ex) {
-			LOGGER.warn("同步文件{}到节点{}异常：{}", syncFilePath, nodeName, ex.getMessage());
+			LOGGER.warn("同步文件{}到节点{}异常：{}.", syncFilePath, nodeName, ex.getMessage());
 			syncFileFlag = false;
 		}
 		return syncFileFlag;

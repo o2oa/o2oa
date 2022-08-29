@@ -19,8 +19,6 @@ import com.x.base.core.project.jaxrs.CipherManagerUserJaxrsFilter;
         "/jaxrs/file/*",
         "/jaxrs/form/*",
         "/jaxrs/view/*",
-        "/jaxrs/queryview/*",
-        "/jaxrs/queryview/design/*",
         "/jaxrs/viewcategory/*",
         "/jaxrs/viewfieldconfig/*",
         "/jaxrs/image/*",

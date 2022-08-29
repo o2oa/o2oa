@@ -25,7 +25,7 @@ MWF.xApplication.cms.ScriptDesigner.Main = new Class({
             this.options.application = this.status.applicationId;
             this.application = this.status.application;
 			this.options.id = this.status.id;
-		}
+        }
 		if (!this.options.id){
 			this.options.desktopReload = false;
 			this.options.title = this.options.title + "-"+MWF.CMSSD.LP.newScript;
@@ -776,7 +776,7 @@ MWF.xApplication.cms.ScriptDesigner.Main = new Class({
 
                 if (!notSetTile){
                     this.setTitle(this.options.appTitle + "-"+data.name);
-                    this.taskitem.setText(this.options.appTitle + "-"+data.name);
+                    if(this.taskitem)this.taskitem.setText(this.options.appTitle + "-"+data.name);
                     this.options.appTitle = this.options.appTitle + "-"+data.name;
                 }
 
@@ -816,6 +816,11 @@ MWF.xApplication.cms.ScriptDesigner.Main = new Class({
         this.dictionary.implode();
     },
 	recordStatus: function(){
+	    debugger;
+        var application = o2.typeOf(this.application) === "object" ? {
+            name: this.application.name,
+            id: this.application.id
+        } : this.application;
         if (this.scriptTab){
             var openScripts = [];
             this.scriptTab.pages.each(function(page){
@@ -824,12 +829,12 @@ MWF.xApplication.cms.ScriptDesigner.Main = new Class({
             var currentId = this.scriptTab.showPage.script.data.id;
             var status = {
                 "id": this.options.id,
-                "application": this.application,
+                "application": application,
                 "openScripts": openScripts,
                 "currentId": currentId
             };
             return status;
         }
-		return {"id": this.options.id, "application": this.application};
+		return {"id": this.options.id, "application": application};
 	}
 });

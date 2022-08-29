@@ -31,12 +31,15 @@ import com.x.base.core.entity.annotation.Flag;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.ListTools;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * 内容管理栏目目录分类信息
  *
  * @author O2LEE
  *
  */
+@Schema(name = "CategoryInfo", description = "内容管理目录分类信息.")
 @ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.CategoryInfo.table, uniqueConstraints = {

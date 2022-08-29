@@ -729,7 +729,9 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         }
     },
     _loadMobileDefaultTools: function (callback) {
-        if (this.json.defaultTools) {
+        if (this.json.multiTools) {
+            if (callback) callback();
+        }else if (this.json.defaultTools) {
             if (callback) callback();
         } else {
             this.json.defaultTools = o2.JSON.get("../x_component_process_FormDesigner/Module/Form/toolbars.json", function (json) {
@@ -742,23 +744,36 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     _loadMobileActions: function (node, callback) {
         var tools = [];
         this._loadMobileDefaultTools(function () {
-            if (this.json.defaultTools) {
-                var jsonStr = JSON.stringify(this.json.defaultTools);
+
+            var jsonStr;
+            if( this.json.multiTools ){
+                jsonStr = JSON.stringify(this.json.multiTools);
                 jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.process.Xform.LP.form});
-                this.json.defaultTools = JSON.parse(jsonStr);
-                this.json.defaultTools.each(function (tool) {
+                this.multiToolsJson = JSON.parse(jsonStr);
+                var json = Array.clone(this.multiToolsJson);
+                json.each(function (tool) {
                     var flag = this._checkDefaultMobileActionItem(tool, this.options.readonly);
                     if (flag) tools.push(tool);
                 }.bind(this));
-            }
-            if (this.json.tools) {
-                var jsonStr = JSON.stringify(this.json.tools);
-                jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.process.Xform.LP.form});
-                this.json.tools = JSON.parse(jsonStr);
-                this.json.tools.each(function (tool) {
-                    var flag = this._checkCustomMobileActionItem(tool, this.options.readonly);
-                    if (flag) tools.push(tool);
-                }.bind(this));
+            }else{
+                if (this.json.defaultTools) {
+                    jsonStr = JSON.stringify(this.json.defaultTools);
+                    jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.process.Xform.LP.form});
+                    this.json.defaultTools = JSON.parse(jsonStr);
+                    this.json.defaultTools.each(function (tool) {
+                        var flag = this._checkDefaultMobileActionItem(tool, this.options.readonly);
+                        if (flag) tools.push(tool);
+                    }.bind(this));
+                }
+                if (this.json.tools) {
+                    jsonStr = JSON.stringify(this.json.tools);
+                    jsonStr = o2.bindJson(jsonStr, {"lp": MWF.xApplication.process.Xform.LP.form});
+                    this.json.tools = JSON.parse(jsonStr);
+                    this.json.tools.each(function (tool) {
+                        var flag = this._checkCustomMobileActionItem(tool, this.options.readonly);
+                        if (flag) tools.push(tool);
+                    }.bind(this));
+                }
             }
             this.mobileTools = tools;
             //app上用原来的按钮样式
@@ -2834,6 +2849,98 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             options = Object.merge(options, option);
         }
         new mBox.Notice(options);
+    },
+    dialog: function( options ){
+        if( !options )options = {};
+        var opts = {
+            "style" : options.style || "user",
+            "title": options.title || "",
+            "width": options.width || 300,
+            "height" : options.height || 150,
+            "isMax": o2.typeOf( options.isMax ) === "boolean" ? options.isMax : false,
+            "isClose": o2.typeOf( options.isClose ) === "boolean"  ? options.isClose : true,
+            "isResize": o2.typeOf( options.isResize ) === "boolean"  ? options.isResize : true,
+            "isMove": o2.typeOf( options.isMove ) === "boolean"  ? options.isMove : true,
+            "isTitle": o2.typeOf( options.isTitle ) === "boolean"  ? options.isTitle : true,
+            "offset": options.offset || null,
+            "mask": o2.typeOf( options.mask ) === "boolean"  ? options.mask : true,
+            "container": options.container ||  ( layout.mobile ? $(documtn.body) : this.app.content ),
+            "duration": options.duration || 200,
+            "lp": options.lp || null,
+            "zindex": ( options.zindex || 100 ).toInt(),
+            "buttonList": options.buttonList || [
+                {
+                    "type": "ok",
+                    "text": MWF.LP.process.button.ok,
+                    "action": function(){
+                        if(options.ok){
+                            var flag = options.ok.call( this );
+                            if( flag === true || o2.typeOf(flag) === "null" )this.close();
+                        }else{
+                            this.close();
+                        }
+
+                    }
+                },
+                {
+                    "type": "cancel",
+                    "text": MWF.LP.process.button.cancel,
+                    "action": function(){
+                        if(options.close){
+                            var flag = options.close.call(this);
+                            if( flag === true || o2.typeOf(flag) === "null" )this.close();
+                        }else{
+                            this.close();
+                        }
+                    }
+                }
+            ]
+        };
+
+        var positionNode;
+        if( options.moduleName ){
+            var module, name = options.moduleName, subformName = options.subformName;
+            if( subformName && this.all[subformName +"_"+ name] ){
+                module = this.all[subformName +"_"+ name];
+            }else{
+                module = this.all[name];
+            }
+            if( module ){
+                opts.content = module.node;
+                positionNode = new Element("div", {style:"display:none;"}).inject( opts.content, "before" );
+            }
+        }else if( options.content ) {
+            opts.content = options.content;
+            var parent = opts.content.getParent();
+            if(parent)positionNode = new Element("div", {style:"display:none;"}).inject( opts.content, "before" );
+        }
+        if( options.url )opts.url = options.url;
+        if( options.html )opts.html = options.html;
+        if( options.text )opts.text = options.text;
+
+        opts.onQueryClose = function(){
+            if( positionNode && opts.content ){
+                opts.content.inject( positionNode, "after" );
+                positionNode.destroy();
+            }
+            if( o2.typeOf(options.onQueryClose) === "function" )options.onQueryClose.call( this );
+        }
+        if(opts.onPostClose)opts.onPostClose = options.onPostClose;
+        if(opts.onQueryLoad)opts.onQueryLoad = options.onQueryLoad;
+        if(opts.onPostLoad)opts.onPostLoad = options.onPostLoad;
+        if(opts.onQueryShow)opts.onQueryShow = options.onQueryShow;
+        if(opts.onPostShow)opts.onPostShow = options.onPostShow;
+
+        for( var key in options ){
+            if( !opts.hasOwnProperty( key ) ){
+                opts[key] = options[key];
+            }
+        }
+        var dialog;
+        MWF.require("MWF.xDesktop.Dialog", function(){
+            dialog = o2.DL.open(opts)
+        }, null, false);
+        return dialog;
     },
     addSplit: function () {
         if (!this.businessData.control["allowAddSplit"]) {

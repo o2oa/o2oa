@@ -10,6 +10,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.google.common.net.HttpHeaders;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.http.FilterTools;
 import com.x.base.core.project.http.HttpToken;
@@ -24,13 +27,14 @@ public abstract class AnonymousCipherManagerUserJaxrsFilter extends TokenFilter 
 		try {
 			HttpServletRequest request = (HttpServletRequest) req;
 			HttpServletResponse response = (HttpServletResponse) res;
+			httpRequestCheck(request);
 			FilterTools.allow(request, response);
 			if (!request.getMethod().equalsIgnoreCase("options")) {
 				HttpToken httpToken = new HttpToken();
 				httpToken.who(request, response, Config.token().getCipher());
 				chain.doFilter(request, response);
 			} else {
-				options(request,response);
+				options(request, response);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

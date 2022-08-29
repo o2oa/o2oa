@@ -35,10 +35,9 @@ import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.DateTools;
 
-/**
- * 内容管理应用目录分类信息
- *
- */
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "FileInfo", description = "内容管理文件信息.")
 @ContainerEntity(dumpSize = 5, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.FileInfo.table, uniqueConstraints = {
@@ -523,7 +522,7 @@ public class FileInfo extends StorageObject {
 	}
 
 	@Override
-    public Long getLength() {
+	public Long getLength() {
 		return length;
 	}
 

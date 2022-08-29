@@ -510,7 +510,13 @@ function build_concat_xform(){
         'o2web/source/' + path + '/*.js',
         'o2web/source/x_component_process_Work/Processor.js',
         '!o2web/source/' + path + '/Documenteditor.js ',
-        '!o2web/source/' + path + '/Office.js'
+        '!o2web/source/' + path + '/Office.js',
+        '!o2web/source/' + path + '/WpsOffice.js',
+        '!o2web/source/' + path + '/WpsOffice2.js',
+        '!o2web/source/' + path + '/YozoOffice.js',
+        '!o2web/source/' + path + '/IWebOffice.js',
+        '!o2web/source/' + path + '/OnlyOffice.js',
+        '!o2web/source/' + path + '/TinyMCEEditor.js'
     ];
     var dest = 'target/o2server/servers/webServer/'+path+'/';
     return gulp.src(src, {sourcemaps: true})

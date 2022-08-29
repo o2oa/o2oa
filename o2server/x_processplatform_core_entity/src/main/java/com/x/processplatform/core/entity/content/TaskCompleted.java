@@ -46,6 +46,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * @author zhour
  *
  */
+@Schema(name = "Task", description = "流程平台已办.")
 @Entity
 @ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Content.TaskCompleted.table, uniqueConstraints = {

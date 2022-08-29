@@ -37,7 +37,7 @@ MWF.xApplication.cms.ScriptDesigner.Script = new Class({
         if(this.designer.application) this.data.application = this.designer.application.id;
 
         this.isNewScript = (this.data.id) ? false : true;
-    //    this.createProperty();
+        //    this.createProperty();
 
         this.autoSave();
         this.designer.addEvent("queryClose", function(){
@@ -85,39 +85,40 @@ MWF.xApplication.cms.ScriptDesigner.Script = new Class({
             this.setPropertyContent();
             this.setIncludeNode();
 
-            if (this.editor.editor){
-                this.editor.editor.focus();
-                //this.editor.editor.navigateFileStart();
+            if (this.editor){
+                this.editor.focus();
+            }else{
+                this.loadEditor();
             }
+
+            this.setAreaNodeSize();
+
+            //if (this.editor.editor){
+            //    this.editor.editor.focus();
+            //}
         }.bind(this));
+        var _self = this;
         this.page.addEvent("queryClose", function(){
-            if (this.autoSaveTimerID) window.clearInterval(this.autoSaveTimerID);
+            if (_self.autoSaveTimerID) window.clearInterval(_self.autoSaveTimerID);
+            this.showIm();
             //this.saveSilence();
-            if (this.lisNode) this.lisNode.setStyles(this.designer.css.listScriptItem);
-        }.bind(this));
+            if (_self.lisNode) _self.lisNode.setStyles(_self.designer.css.listScriptItem);
+        });
         this.page.tabNode.addEvent("dblclick", this.designer.maxOrReturnEditor.bind(this.designer));
 
+        if (this.options.showTab) this.page.showTabIm();
+    },
+    loadEditor: function(){
 
-
-        this.editor = new MWF.widget.JavascriptEditor(this.areaNode);
+        this.editor = new MWF.widget.JavascriptEditor(this.areaNode, {"option": {"value": this.data.text}});
         this.editor.load(function() {
-            if (this.data.text) {
-                this.editor.editor.setValue(this.data.text);
-            }
-            this.editor.addEditorEvent("change", function(){
+            if (this.data.text)this.editor.setValue(this.data.text);
+            this.editor.addEditorEvent("change", function(e){
                 if (!this.isChanged){
                     this.isChanged = true;
                     this.page.textNode.set("text", " * "+this.page.textNode.get("text"));
                 }
             }.bind(this));
-
-            // this.editor.editor.on("change", function (e) {
-            //     if (!this.isChanged) {
-            //         this.isChanged = true;
-            //         this.page.textNode.set("text", " * " + this.page.textNode.get("text"));
-            //     }
-            // }.bind(this));
-
             this.editor.addEvent("save", function () {
                 this.save();
             }.bind(this));
@@ -193,8 +194,6 @@ MWF.xApplication.cms.ScriptDesigner.Script = new Class({
             }
 
         }.bind(this));
-
-        if (this.options.showTab) this.page.showTabIm();
     },
     showReferenceMenu: function(){
         var pos = this.editor.getCursorPixelPosition();
@@ -216,11 +215,15 @@ MWF.xApplication.cms.ScriptDesigner.Script = new Class({
         this.designer.propertyDescriptionNode.set("value", this.data.description || "");
     },
     setAreaNodeSize: function(){
-        var size = this.node.getSize();
+        if( !this.areaNode.offsetParent )return;
+        //var size = this.node.getSize();
+        var size = this.node.getComputedSize();
+        size.y = size.height;
         var tabSize = this.tab.tabNodeContainer.getSize();
         var y = size.y - tabSize.y;
         this.areaNode.setStyle("height", ""+y+"px");
-        if (this.editor) if (this.editor.editor) this.editor.editor.resize();
+        if (this.editor) this.editor.resize(y);
+        //if (this.editor) if (this.editor.editor && this.editor.editor.resize) this.editor.editor.resize();
     },
 
     addInclude: function(){
@@ -251,7 +254,8 @@ MWF.xApplication.cms.ScriptDesigner.Script = new Class({
         this.data.alias = alias;
         this.data.description = description;
         this.data.validated = validated;
-        this.data.text = this.editor.editor.getValue();
+        //this.data.text = this.editor.editor.getValue();
+        this.data.text = this.editor.getValue();
 
         this.designer.actions.saveScript(this.data, function(json){
             this.data.isNewScript = false;
@@ -290,7 +294,8 @@ MWF.xApplication.cms.ScriptDesigner.Script = new Class({
             this.data.description = description;
             this.data.validated = validated;
         }
-        this.data.text = this.editor.editor.getValue();
+        //this.data.text = this.editor.editor.getValue();
+        this.data.text = this.editor.getValue();
 
         this.designer.actions.saveScript(this.data, function(json){
             this.data.isNewScript = false;

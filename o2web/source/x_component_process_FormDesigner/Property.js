@@ -2278,14 +2278,19 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             var name = node.get("name");
             var actionContent = this.data[name];
             MWF.xDesktop.requireApp("process.FormDesigner", "widget.ActionsEditor", function(){
-                var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, {
+                var options = {
                     "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                     "isSystemTool" : true,
+                    "target" : node.get("data-target"),
                     "onChange": function(){
                         this.data[name] = actionEditor.data;
                         this.changeData(name);
                     }.bind(this)
-                });
+                };
+                if(node.get("data-systemToolsAddress")){
+                    options.systemToolsAddress = node.get("data-systemToolsAddress");
+                }
+                var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, options);
                 actionEditor.load(actionContent);
             }.bind(this));
         }.bind(this));

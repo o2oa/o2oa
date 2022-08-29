@@ -22,6 +22,8 @@ import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.StringTools;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+@Schema(name = "PromptErrorLog", description = "服务管理提示错误.")
 @Entity
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.log, reference = ContainerEntity.Reference.soft)
 @Table(name = PersistenceProperties.PromptErrorLog.table, uniqueConstraints = {

@@ -31,31 +31,34 @@ public abstract class CipherJaxrsFilter extends TokenFilter {
 		try {
 			HttpServletRequest request = (HttpServletRequest) req;
 			HttpServletResponse response = (HttpServletResponse) res;
+			httpRequestCheck(request);
 			FilterTools.allow(request, response);
 			if (!request.getMethod().equalsIgnoreCase("options")) {
 				HttpToken httpToken = new HttpToken();
 				EffectivePerson effectivePerson = httpToken.who(request, response, Config.token().getCipher());
 				if (TokenType.anonymous.equals(effectivePerson.getTokenType())) {
-					/** 401 Unauthorized 未登录访问被拒绝 */
+					// 401 Unauthorized 未登录访问被拒绝
 					response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 					response.setHeader("Content-Type", "application/json;charset=UTF-8");
-					ActionResult result = new ActionResult();
+					ActionResult<?> result = new ActionResult<>();
 					ExceptionUnauthorized e = new ExceptionUnauthorized();
 					result.error(e);
-					String message = e.getFormatMessage(result.getPrompt(), request.getHeader(ResponseFactory.Accept_Language));
-					if(StringUtils.isNotBlank(message)) {
+					String message = e.getFormatMessage(result.getPrompt(),
+							request.getHeader(ResponseFactory.Accept_Language));
+					if (StringUtils.isNotBlank(message)) {
 						result.setMessage(message);
 					}
 					response.getWriter().write(result.toJson());
 				} else if (!TokenType.cipher.equals(effectivePerson.getTokenType())) {
-					/** 需要自己标志500 */
+					// 需要自己标志500
 					response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 					response.setHeader("Content-Type", "application/json;charset=UTF-8");
-					ActionResult result = new ActionResult();
+					ActionResult<?> result = new ActionResult<>();
 					ExceptionAccessDenied e = new ExceptionAccessDenied(effectivePerson);
 					result.error(e);
-					String message = e.getFormatMessage(result.getPrompt(), request.getHeader(ResponseFactory.Accept_Language));
-					if(StringUtils.isNotBlank(message)) {
+					String message = e.getFormatMessage(result.getPrompt(),
+							request.getHeader(ResponseFactory.Accept_Language));
+					if (StringUtils.isNotBlank(message)) {
 						result.setMessage(message);
 					}
 					response.getWriter().write(result.toJson());
@@ -63,7 +66,7 @@ public abstract class CipherJaxrsFilter extends TokenFilter {
 					chain.doFilter(request, response);
 				}
 			} else {
-				options(request,response);
+				options(request, response);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

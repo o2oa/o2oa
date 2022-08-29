@@ -46,7 +46,7 @@ abstract class AbstractJaxrsAction {
 	}
 
 	protected EffectivePerson effectivePerson(HttpServletRequest request) {
-		Object o = request.getAttribute(HttpToken.X_Person);
+		Object o = request.getAttribute(HttpToken.X_PERSON);
 		if (null != o) {
 			return (EffectivePerson) o;
 		} else {

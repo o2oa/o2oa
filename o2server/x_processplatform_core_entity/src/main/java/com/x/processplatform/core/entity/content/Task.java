@@ -44,7 +44,7 @@ import com.x.processplatform.core.entity.element.Route;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(name = "Task", description = "待办")
+@Schema(name = "Task", description = "流程平台待办.")
 @Entity
 @ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Content.Task.table, uniqueConstraints = {

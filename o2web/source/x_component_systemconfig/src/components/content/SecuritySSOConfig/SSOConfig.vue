@@ -18,7 +18,7 @@
       <div v-for="(sso, index) in ssos" :key="sso.client" class="item_sso">
         <div class="item_sso_item" @click="editSSOConfig(sso, index)">
           <div class="item_sso_area">
-            <div class="item_sso_icon o2icon-key mainColor_bg"></div>
+            <div class="o2icon-key item_sso_icon mainColor_bg"></div>
             <div class="item_sso_text item_bold">{{sso.client}}</div>
             <div class="item_sso_text">{{sso.key}}</div>
             <div class="item_sso_text" style="display: flex; align-items: center; justify-content: flex-end;">
@@ -187,7 +187,7 @@ load();
   width: 40px;
   height: 40px;
   text-align: center;
-  line-height: 40px;
+  line-height: 40px!important;
   border-radius: 40%;
   margin-right: 10px;
 }

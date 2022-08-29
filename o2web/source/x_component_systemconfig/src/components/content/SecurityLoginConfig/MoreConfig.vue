@@ -53,6 +53,16 @@
         type="text"
         @changeConfig="(value)=>{tokenName = value; saveConfig('person', 'tokenName', value)}"></BaseItem>
 
+    <div class="item_title">{{lp._loginConfig.superPermission}}</div>
+    <div class="item_info">{{lp._loginConfig.superPermissionInfo}}</div>
+    <div class="item_info">
+      <el-switch
+          @change="saveConfig('person', 'superPermission', superPermission)"
+          v-model="superPermission"
+          :active-text="lp.operation.enable" :inactive-text="lp.operation.disable">
+      </el-switch>
+    </div>
+
   </div>
 </template>
 
@@ -67,6 +77,7 @@ const failureInterval = ref(15);
 const tokenExpiredMinutes = ref(4320);
 const tokenName = ref('x-token');
 const enableSafeLogout = ref(false);
+const superPermission = ref(true);
 
 const load = async () => {
   const data = await getConfigData('person');
@@ -75,6 +86,7 @@ const load = async () => {
   if (data.tokenExpiredMinutes) tokenExpiredMinutes.value = data.tokenExpiredMinutes;
   if (data.tokenName) tokenName.value = data.tokenName;
   enableSafeLogout.value = !!data.enableSafeLogout;
+  superPermission.value = data.superPermission!==false;
 
 }
 

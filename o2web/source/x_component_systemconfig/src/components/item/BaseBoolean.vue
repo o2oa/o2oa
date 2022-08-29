@@ -2,7 +2,7 @@
   <div class="item">
     <label class="item_label" v-if="label" :style="labelStyle">{{label}}</label>
     <div class="item_input" ref="contentNode">
-      <el-switch :style="inputStyle"
+      <el-switch ref="node" :style="inputStyle"
           v-model="value"
           active-text="是"
           inactive-text="否"
@@ -13,7 +13,10 @@
 </template>
 
 <script setup>
+import {ref} from 'vue';
 const emit = defineEmits(['update:value', 'change']);
+
+const node = ref();
 
 const props = defineProps({
   label: String,
@@ -29,7 +32,7 @@ const props = defineProps({
 });
 
 function changeValue(e){
-  emit('change', e);
+  emit('change', e, node);
   emit('update:value', e);
 }
 </script>
@@ -37,7 +40,7 @@ function changeValue(e){
 <style scoped>
 .item{
   overflow: hidden;
-  padding: 10px 20px;
+  padding: 10px 30px;
   font-size: 14px;
   color: #666666;
   clear: both;

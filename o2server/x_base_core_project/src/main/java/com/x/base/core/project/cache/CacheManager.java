@@ -46,7 +46,9 @@ public abstract class CacheManager {
 
 	public static void put(CacheCategory category, CacheKey key, Object o) {
 		try {
-			cache().put(category, key, o);
+			if(o != null) {
+				cache().put(category, key, o);
+			}
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}

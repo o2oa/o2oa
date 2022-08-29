@@ -20,8 +20,8 @@ const props = defineProps({
     default: {}
   },
   options: {
-    type: Object,
-    default: {}
+    type: Array,
+    default: []
   },
   groupStyle: {
     type: Object,

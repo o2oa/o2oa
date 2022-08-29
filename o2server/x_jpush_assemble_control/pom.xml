@@ -29,7 +29,7 @@
 		<dependency>
 			<groupId>cn.jpush.api</groupId>
 			<artifactId>jpush-client</artifactId>
-			<version>3.4.2</version>
+			<version>3.6.6</version>
 		</dependency>
 		<dependency>
 			<groupId>com.github.fernandospr</groupId>

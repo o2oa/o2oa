@@ -132,37 +132,37 @@ public class ActionPersistImportDataExcel extends BaseAction {
 			}
 		}
 		
-		if( check ){
-			try {
-				view = queryViewService.getQueryView( viewId );
-				if( view == null ){
-					check = false;
-					Exception exception = new ExceptionViewNotExists( viewId );
-					result.error( exception );
-				}
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new ExceptionDocumentInfoProcess( e, "根据ID查询分类信息绑定的导入数据视图信息对象时发生异常。VIEWID:" + viewId );
-				result.error( exception );
-				logger.error( e, effectivePerson, request, null);
-			}
-		}
+//		if( check ){
+//			try {
+//				view = queryViewService.getQueryView( viewId );
+//				if( view == null ){
+//					check = false;
+//					Exception exception = new ExceptionViewNotExists( viewId );
+//					result.error( exception );
+//				}
+//			} catch (Exception e) {
+//				check = false;
+//				Exception exception = new ExceptionDocumentInfoProcess( e, "根据ID查询分类信息绑定的导入数据视图信息对象时发生异常。VIEWID:" + viewId );
+//				result.error( exception );
+//				logger.error( e, effectivePerson, request, null);
+//			}
+//		}
 		
-		if( check ){
-			try {
-				propertyNames = queryViewService.listColumnPathsFromQueryView(view);
-				if( ListTools.isEmpty( propertyNames )) {
-					check = false;
-					Exception exception = new ExceptionDocumentInfoProcess( "请检查导入视图中的列配置，数据路径path必须配置才可以导入。VIEWID:" + viewId );
-					result.error( exception );
-				}
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new ExceptionDocumentInfoProcess( e, "根据VIEWID查询数据视图中所有的列信息时发生异常。VIEWID:" + viewId );
-				result.error( exception );
-				logger.error( e, effectivePerson, request, null);
-			}
-		}
+//		if( check ){
+//			try {
+//				propertyNames = queryViewService.listColumnPathsFromQueryView(view);
+//				if( ListTools.isEmpty( propertyNames )) {
+//					check = false;
+//					Exception exception = new ExceptionDocumentInfoProcess( "请检查导入视图中的列配置，数据路径path必须配置才可以导入。VIEWID:" + viewId );
+//					result.error( exception );
+//				}
+//			} catch (Exception e) {
+//				check = false;
+//				Exception exception = new ExceptionDocumentInfoProcess( e, "根据VIEWID查询数据视图中所有的列信息时发生异常。VIEWID:" + viewId );
+//				result.error( exception );
+//				logger.error( e, effectivePerson, request, null);
+//			}
+//		}
 		
 		if( check ){			
 			template = new ExcelReadRuntime.DocTemplate();

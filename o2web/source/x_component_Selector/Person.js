@@ -1141,7 +1141,8 @@ MWF.xApplication.Selector.Person = new Class({
             letterNodeCss = this.css.letterNode_mobile || letterNodeCss;
             letterNodeCss_over = this.css.letterNode_mobile_over || letterNodeCss_over;
             var size = this.container.getSize();
-            var w = (layout.mobile) ? (size.x-18)/13 : (size.x-20-4-18)/13;
+            // var w = (layout.mobile) ? (size.x-18)/13 : (size.x-20-4-18)/13;
+            var w = (layout.mobile) ? (size.x - this.getOffsetX(this.container) - this.getOffsetX(this.letterAreaNode) - 10 )/13 : (size.x-20-4-18)/13;
             //letterNode.setStyle("width", ""+w+"px");
             letterNodeCss.width = ""+w+"px";
             letterNodeCss_over.width = ""+w+"px";

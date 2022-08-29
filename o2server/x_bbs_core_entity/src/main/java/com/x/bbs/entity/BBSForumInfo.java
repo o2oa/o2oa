@@ -28,11 +28,9 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 
-/**
- * 论坛信息表
- * 
- * @author LIYI
- */
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "BBSForumInfo", description = "论坛信息.")
 @ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.BBSForumInfo.table, uniqueConstraints = {

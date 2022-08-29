@@ -19,25 +19,17 @@ public class CenterServer extends ConfigObject {
 	private static final Boolean DEFAULT_ENABLE = true;
 	private static final Integer DEFAULT_PORT = 80;
 	private static final Integer DEFAULT_ORDER = 0;
-	private static final Boolean DEFAULT_STATENABLE = true;
-	private static final String DEFAULT_STATEXCLUSIONS = "*.js,*.gif,*.jpg,*.png,*.css,*.ico";
-	private static final Boolean DEFAULT_EXPOSEJEST = true;
 
 	public static CenterServer defaultInstance() {
-		return new CenterServer();
-	}
-
-	public CenterServer() {
-		this.enable = DEFAULT_ENABLE;
-		this.sslEnable = false;
-		this.order = DEFAULT_ORDER;
-		this.port = DEFAULT_PORT;
-		this.httpProtocol = "";
-		this.proxyHost = "";
-		this.proxyPort = DEFAULT_PORT;
-		this.statEnable = DEFAULT_STATENABLE;
-		this.statExclusions = DEFAULT_STATEXCLUSIONS;
-		this.exposeJest = DEFAULT_EXPOSEJEST;
+		CenterServer o = new CenterServer();
+		o.enable = DEFAULT_ENABLE;
+		o.order = DEFAULT_ORDER;
+		o.sslEnable = false;
+		o.port = DEFAULT_PORT;
+		o.httpProtocol = "";
+		o.proxyHost = "";
+		o.proxyPort = DEFAULT_PORT;
+		return o;
 	}
 
 	@FieldDescribe("是否启用")
@@ -54,24 +46,6 @@ public class CenterServer extends ConfigObject {
 	private String proxyHost;
 	@FieldDescribe("代理端口,当服务器是通过apache/nginx等代理服务器映射到公网或者通过路由器做端口映射,在这样的情况下需要设置此地址以标明公网访问端口.")
 	private Integer proxyPort;
-	@FieldDescribe("启用统计,默认启用统计.")
-	private Boolean statEnable;
-	@FieldDescribe("统计忽略路径,默认忽略*.js,*.gif,*.jpg,*.png,*.css,*.ico")
-	private String statExclusions;
-	@FieldDescribe("暴露jest接口.")
-	private Boolean exposeJest;
-
-	public Boolean getExposeJest() {
-		return BooleanUtils.isNotFalse(this.exposeJest);
-	}
-
-	public String getStatExclusions() {
-		return (StringUtils.isEmpty(statExclusions) ? DEFAULT_STATEXCLUSIONS : this.statExclusions) + ",/druid/*";
-	}
-
-	public Boolean getStatEnable() {
-		return BooleanUtils.isNotFalse(statEnable);
-	}
 
 	public Boolean getEnable() {
 		return enable == null ? DEFAULT_ENABLE : this.enable;

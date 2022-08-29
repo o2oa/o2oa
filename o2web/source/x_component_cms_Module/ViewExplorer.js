@@ -366,7 +366,7 @@ MWF.xApplication.cms.Module.QueryViewer = new Class({
                     "text": this.lp.action
                 }).inject(this.viewTitleLine);
                 viewCell.setStyle("width","40px");
-                if (this.json.titleStyles) viewCell.setStyles(this.json.titleStyles);
+                // if (this.json.titleStyles) viewCell.setStyles(this.json.titleStyles);
             }
 
             this.lookup(data);

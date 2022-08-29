@@ -1,5 +1,7 @@
 package com.x.program.center.jaxrs.config;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -23,11 +25,20 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
-@JaxrsDescribe("配置")
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "ConfigAction", description = "配置接口.")
+@JaxrsDescribe("配置接口.")
 @Path("config")
 public class ConfigAction extends StandardJaxrsAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigAction.class);
+	private static final String OPERATIONID_PREFIX = "ConfigAction::";
 
 	@JaxrsMethodDescribe(value = "获取设置.", action = ActionGet.class)
 	@GET
@@ -296,7 +307,7 @@ public class ConfigAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void openRuntimeConfig(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-					 JsonElement jsonElement) {
+			JsonElement jsonElement) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		ActionResult<ActionOpenRuntimeConfig.Wo> result = new ActionResult<>();
 		try {
@@ -380,4 +391,84 @@ public class ConfigAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
+	@Operation(summary = "列示所有可配置实体类名称.", operationId = OPERATIONID_PREFIX + "listEntity", responses = {
+			@ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListEntity.Wo.class))) }) })
+	@JaxrsMethodDescribe(value = "列示所有可配置实体类名称.", action = ActionListEntity.class)
+	@GET
+	@Path("list/entity")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listEntity(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<List<ActionListEntity.Wo>> result = new ActionResult<>();
+		try {
+			result = new ActionListEntity().execute(effectivePerson);
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@Operation(summary = "列示所有可配置应用名称.", operationId = OPERATIONID_PREFIX + "listApplication", responses = {
+			@ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListApplication.Wo.class))) }) })
+	@JaxrsMethodDescribe(value = "列示所有可配置应用名称.", action = ActionListApplication.class)
+	@GET
+	@Path("list/application")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listApplication(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<List<ActionListApplication.Wo>> result = new ActionResult<>();
+		try {
+			result = new ActionListApplication().execute(effectivePerson);
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@Operation(summary = "列示所有节点数据备份.", operationId = OPERATIONID_PREFIX + "listDumpData", responses = {
+			@ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListDumpData.Wo.class))) }) })
+	@JaxrsMethodDescribe(value = "列示所有节点数据备份.", action = ActionListDumpData.class)
+	@GET
+	@Path("list/dump/data")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listDumpData(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<List<ActionListDumpData.Wo>> result = new ActionResult<>();
+		try {
+			result = new ActionListDumpData().execute(effectivePerson);
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@Operation(summary = "列示本节点数据备份.", operationId = OPERATIONID_PREFIX + "listDumpDataCurrentNode", responses = {
+			@ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListDumpDataCurrentNode.Wo.class))) }) })
+	@JaxrsMethodDescribe(value = "列示本节点数据备份.", action = ActionListDumpDataCurrentNode.class)
+	@GET
+	@Path("list/dump/data/current/node")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listDumpDataCurrentNode(@Suspended final AsyncResponse asyncResponse,
+			@Context HttpServletRequest request) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<List<ActionListDumpDataCurrentNode.Wo>> result = new ActionResult<>();
+		try {
+			result = new ActionListDumpDataCurrentNode().execute(effectivePerson);
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
 }

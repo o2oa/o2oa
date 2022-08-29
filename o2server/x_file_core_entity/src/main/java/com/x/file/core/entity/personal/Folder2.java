@@ -23,6 +23,9 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.file.core.entity.PersistenceProperties;
 import com.x.file.core.entity.open.FileStatus;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "Folder2", description = "云文件个人新文件夹.")
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.Personal.Folder2.table, uniqueConstraints = {

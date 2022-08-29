@@ -16,30 +16,73 @@ public class ExternalDataSource extends ConfigObject {
 	private transient String _password;
 
 	public ExternalDataSource() {
-		this.enable = false;
-		this.url = "";
-		this.username = "";
-		this.password = "";
-		this.includes = new ArrayList<>();
-		this.excludes = new ArrayList<>();
-		this.driverClassName = "";
-		this.dictionary = "";
-		this.maxTotal = DEFAULT_MAXTOTAL;
-		this.maxIdle = DEFAULT_MAXIDLE;
-		this.logLevel = DEFAULT_LOGLEVEL;
-		this.statEnable = DEFAULT_STATENABLE;
-		this.statFilter = DEFAULT_STATFILTER;
-		this.slowSqlMillis = DEFAULT_SLOWSQLMILLIS;
-		this.transactionIsolation = DEFAULT_TRANSACTIONISOLATION;
-		this.testConnectionOnCheckin = DEFAULT_TESTCONNECTIONONCHECKIN;
-		this.testConnectionOnCheckout = DEFAULT_TESTCONNECTIONONCHECKOUT;
 	}
+
+	public static final Boolean DEFAULT_ENABLE = false;
+
+	public static final String DEFAULT_URL = "jdbc:mysql://127.0.0.1:3306/X?autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&characterEncoding=UTF-8&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8";
+
+	public static final String DEFAULT_USERNAME = "root";
+
+	public static final String DEFAULT_PASSWORD = "password";
+
+	public static final String DEFAULT_DRIVERCLASSNAME = "";
+
+	public static final String DEFAULT_DICTIONARY = "";
+
+	public static final Integer DEFAULT_MAXTOTAL = 100;
+
+	public static final Integer DEFAULT_MAXIDLE = 0;
+
+	public static final Boolean DEFAULT_STATENABLE = true;
+
+	public static final String DEFAULT_STATFILTER = "mergeStat";
+
+	public static final List<String> DEFAULT_INCLUDES = new ArrayList<>();
+
+	public static final List<String> DEFAULT_EXCLUDES = new ArrayList<>();
+
+	public static final Integer DEFAULT_SLOWSQLMILLIS = 2000;
+
+	public static final String DEFAULT_LOGLEVEL = "WARN";
+
+	public static final String DEFAULT_TRANSACTIONISOLATION = "read-committed";
+
+	public static final Boolean DEFAULT_TESTCONNECTIONONCHECKIN = false;
+
+	public static final Boolean DEFAULT_TESTCONNECTIONONCHECKOUT = false;
+
+	public static final Integer DEFAULT_MAXIDLETIME = 300;
+
+	public static final Boolean DEFAULT_AUTOCOMMIT = false;
 
 	public static ExternalDataSource defaultInstance() {
-		return new ExternalDataSource();
+
+		ExternalDataSource o = new ExternalDataSource();
+		o.enable = DEFAULT_ENABLE;
+		o.url = DEFAULT_URL;
+		o.username = DEFAULT_USERNAME;
+		o.password = DEFAULT_PASSWORD;
+		o.driverClassName = DEFAULT_DRIVERCLASSNAME;
+		o.dictionary = DEFAULT_DICTIONARY;
+		o.maxTotal = DEFAULT_MAXTOTAL;
+		o.maxIdle = DEFAULT_MAXIDLE;
+		o.statEnable = DEFAULT_STATENABLE;
+		o.statFilter = DEFAULT_STATFILTER;
+		o.slowSqlMillis = DEFAULT_SLOWSQLMILLIS;
+		o.includes = DEFAULT_INCLUDES;
+		o.excludes = DEFAULT_EXCLUDES;
+		o.logLevel = DEFAULT_LOGLEVEL;
+		o.transactionIsolation = DEFAULT_TRANSACTIONISOLATION;
+		o.testConnectionOnCheckin = DEFAULT_TESTCONNECTIONONCHECKIN;
+		o.testConnectionOnCheckout = DEFAULT_TESTCONNECTIONONCHECKOUT;
+		o.maxIdleTime = DEFAULT_MAXIDLETIME;
+		o.autoCommit = DEFAULT_AUTOCOMMIT;
+
+		return o;
 	}
 
-	@FieldDescribe("是否启用,可以使用切片方式启用多个数据以提高性能,如果启用多个数据库,那么必须是相同类型的,不能混用,且用户名密码必须一致.")
+	@FieldDescribe("是否启用,如果启用多个数据库,那么必须是相同类型的,不能混用,且用户名密码必须一致.")
 	private Boolean enable;
 	@FieldDescribe("jdbc连接地址.")
 	private String url;
@@ -77,28 +120,6 @@ public class ExternalDataSource extends ConfigObject {
 	private Integer maxIdleTime;
 	@FieldDescribe("自动提交,默认为false.")
 	private Boolean autoCommit = DEFAULT_AUTOCOMMIT;
-
-	public static final Integer DEFAULT_MAXTOTAL = 100;
-
-	public static final Integer DEFAULT_MAXIDLE = 0;
-
-	public static final Boolean DEFAULT_STATENABLE = true;
-
-	public static final String DEFAULT_STATFILTER = "mergeStat";
-
-	public static final Integer DEFAULT_SLOWSQLMILLIS = 2000;
-
-	public static final String DEFAULT_LOGLEVEL = "WARN";
-
-	public static final String DEFAULT_TRANSACTIONISOLATION = "read-committed";
-
-	public static final Boolean DEFAULT_TESTCONNECTIONONCHECKIN = false;
-
-	public static final Boolean DEFAULT_TESTCONNECTIONONCHECKOUT = false;
-
-	public static final Integer DEFAULT_MAXIDLETIME = 300;
-
-	public static final Boolean DEFAULT_AUTOCOMMIT = false;
 
 	public Boolean getAutoCommit() {
 		return (null == this.autoCommit) ? DEFAULT_AUTOCOMMIT : this.autoCommit;
@@ -144,7 +165,7 @@ public class ExternalDataSource extends ConfigObject {
 	}
 
 	public Boolean getStatEnable() {
-		return BooleanUtils.isNotFalse(this.statEnable);
+		return null == statEnable ? DEFAULT_STATENABLE : this.statEnable;
 	}
 
 	public Integer getMaxIdle() {
@@ -164,11 +185,11 @@ public class ExternalDataSource extends ConfigObject {
 	}
 
 	public Boolean getEnable() {
-		return BooleanUtils.isTrue(this.enable);
+		return null == enable ? DEFAULT_ENABLE : this.enable;
 	}
 
 	public String getUrl() {
-		return url;
+		return StringUtils.isEmpty(this.url) ? DEFAULT_URL : this.url;
 	}
 
 	public void setUrl(String url) {
@@ -195,7 +216,7 @@ public class ExternalDataSource extends ConfigObject {
 	}
 
 	public List<String> getIncludes() {
-		return includes;
+		return null == includes ? DEFAULT_INCLUDES : this.includes;
 	}
 
 	public void setIncludes(List<String> includes) {
@@ -203,7 +224,7 @@ public class ExternalDataSource extends ConfigObject {
 	}
 
 	public List<String> getExcludes() {
-		return excludes;
+		return null == excludes ? DEFAULT_EXCLUDES : this.excludes;
 	}
 
 	public void setExcludes(List<String> excludes) {

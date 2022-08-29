@@ -1204,7 +1204,7 @@
 	</dependencyManagement>
 
 	<!--	中心仓库发布地址-->
-	<distributionManagement>
+	<!--distributionManagement>
 		<snapshotRepository>
 			<id>ossrh</id>
 			<url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
@@ -1213,7 +1213,7 @@
 			<id>ossrh</id>
 			<url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
-	</distributionManagement>
+	</distributionManagement-->
 
 	<!--repositories>
 		<repository>
@@ -1227,11 +1227,11 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
-	</repositories>
+	</repositories-->
 	<distributionManagement>
 		<repository>
 			<id>o2oa-release</id>
 			<url>http://maven.o2oa.net/repository/o2oa-release/</url>
 		</repository>
-	</distributionManagement-->
+	</distributionManagement>
 </project>

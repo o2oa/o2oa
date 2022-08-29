@@ -90,6 +90,7 @@ public class Config {
 	public static final String PATH_CONFIG_ZHENGWUDINGDING = "config/zhengwuDingding.json";
 	public static final String PATH_CONFIG_QIYEWEIXIN = "config/qiyeweixin.json";
 	public static final String PATH_CONFIG_MPWEIXIN = "config/mpweixin.json";
+	public static final String PATH_CONFIG_MPWEIXIN2 = "config/mMweixin.json"; // 容错
 	public static final String PATH_CONFIG_BINDLOGO = "config/bindLogo.png";
 	public static final String PATH_COMMONS_INITIALSCRIPTTEXT = "commons/initialScriptText.js";
 	public static final String PATH_COMMONS_INITIALSERVICESCRIPTTEXT = "commons/initialServiceScriptText.js";
@@ -131,6 +132,7 @@ public class Config {
 	public static final String DIR_JVM = "jvm";
 	public static final String DIR_LOCAL = "local";
 	public static final String DIR_LOCAL_BACKUP = "local/backup";
+	public static final String DIR_LOCAL_DUMP = "local/dump";
 	public static final String DIR_LOCAL_REPOSITORY = "local/repository";
 	public static final String DIR_LOCAL_UPDATE = "local/update";
 	public static final String DIR_LOCAL_TEMP = "local/temp";
@@ -469,14 +471,13 @@ public class Config {
 		return new File(base(), DIR_STORE);
 	}
 
-	public static File dir_store(Boolean force) throws Exception {
+	public static File dir_store(boolean force) throws Exception {
 		File dir = new File(base(), DIR_STORE);
-		if (force) {
-			if ((!dir.exists()) || dir.isFile()) {
-				FileUtils.forceMkdir(dir);
-			}
+		if (force && ((!dir.exists()) || dir.isFile())) {
+			FileUtils.forceMkdir(dir);
 		}
 		return dir;
+
 	}
 
 	public static File dir_store_jars() throws Exception {
@@ -849,7 +850,7 @@ public class Config {
 		if (null == instance().storageMappings) {
 			ExternalStorageSources obj = BaseTools.readConfigObject(PATH_CONFIG_EXTERNALSTORAGESOURCES,
 					ExternalStorageSources.class);
-			if ((obj != null)) {
+			if ((obj != null) && BooleanUtils.isTrue(obj.getEnable())) {
 				instance().storageMappings = new StorageMappings(obj);
 			} else {
 				instance().storageMappings = new StorageMappings(nodes());
@@ -860,7 +861,7 @@ public class Config {
 
 	private File sslKeyStore;
 
-	public static synchronized File sslKeyStore() throws Exception {
+	public static synchronized File sslKeyStore() throws IOException, URISyntaxException {
 		if (null == instance().sslKeyStore) {
 			File file = new File(BaseTools.getBasePath(), PATH_CONFIG_SSLKEYSTORE);
 			if ((!file.exists()) || file.isDirectory()) {
@@ -882,8 +883,8 @@ public class Config {
 		String n = resource_node_centersPirmaryNode();
 		Integer p = resource_node_centersPirmaryPort();
 		Boolean s = resource_node_centersPirmarySslEnable();
-		StringBuffer buffer = new StringBuffer();
-		if (s) {
+		StringBuilder buffer = new StringBuilder();
+		if (BooleanUtils.isTrue(s)) {
 			buffer.append("https://").append(n);
 			if (!NumberTools.valueEuqals(p, 443)) {
 				buffer.append(":").append(p);
@@ -904,12 +905,11 @@ public class Config {
 		return buffer.toString();
 	}
 
-	public static String url_x_program_center_jaxrs(Entry<String, CenterServer> entry, String... paths)
-			throws Exception {
+	public static String url_x_program_center_jaxrs(Entry<String, CenterServer> entry, String... paths) {
 		String n = entry.getKey();
 		Integer p = entry.getValue().getPort();
-		Boolean s = entry.getValue().getSslEnable();
-		StringBuffer buffer = new StringBuffer();
+		boolean s = entry.getValue().getSslEnable();
+		StringBuilder buffer = new StringBuilder();
 		if (s) {
 			buffer.append("https://").append(n);
 			if (!NumberTools.valueEuqals(p, 443)) {
@@ -925,7 +925,7 @@ public class Config {
 		buffer.append("/jaxrs/");
 		List<String> os = new ArrayList<>();
 		for (String path : paths) {
-			os.add(URLEncoder.encode(StringUtils.strip(path, "/"), DefaultCharset.name));
+			os.add(URLEncoder.encode(StringUtils.strip(path, "/"), StandardCharsets.UTF_8));
 		}
 		buffer.append(StringUtils.join(os, "/"));
 		return buffer.toString();
@@ -941,122 +941,8 @@ public class Config {
 			}
 			instance().messages = obj;
 		}
-//		if (null == instance().messages) {
-//			Messages obj = Messages.defaultInstance();
-//			Messages custom = BaseTools.readConfigObject(PATH_CONFIG_MESSAGES, Messages.class);
-//			if (null != custom) {
-//				custom.entrySet().stream().forEach(o -> {
-//					obj.put(o.getKey(), new Message(o.getValue().getConsumers(), o.getValue().getConsumersV2()));
-//				});
-//			}
-//			instance().messages = obj;
-//		}
 		return instance().messages;
 	}
-
-//	private MessageRestful messageRestful;
-//
-//	public static synchronized MessageRestful messageRestful() throws Exception {
-//		if (null == instance().messageRestful) {
-//			MessageRestful obj = BaseTools.readConfigObject(PATH_CONFIG_MESSAGERESTFUL, MessageRestful.class);
-//			if (null == obj) {
-//				obj = MessageRestful.defaultInstance();
-//			}
-//			instance().messageRestful = obj;
-//		}
-//		return instance().messageRestful;
-//	}
-//
-//	private MessageMq messageMq;
-//
-//	public static synchronized MessageMq messageMq() throws Exception {
-//		if (null == instance().messageMq) {
-//			MessageMq obj = BaseTools.readConfigObject(PATH_CONFIG_MESSAGEMQ, MessageMq.class);
-//			if (null == obj) {
-//				obj = MessageMq.defaultInstance();
-//			}
-//			instance().messageMq = obj;
-//		}
-//		return instance().messageMq;
-//	}
-//
-//	private MessageMail messageMail;
-//
-//	public static synchronized MessageMail messageMail() throws Exception {
-//		if (null == instance().messageMail) {
-//			MessageMail obj = BaseTools.readConfigObject(PATH_CONFIG_MESSAGEMAIL, MessageMail.class);
-//			if (null == obj) {
-//				obj = MessageMail.defaultInstance();
-//			}
-//			instance().messageMail = obj;
-//		}
-//		return instance().messageMail;
-//	}
-//
-//	private MessageApi messageApi;
-//
-//	public static synchronized MessageApi messageApi() throws Exception {
-//		if (null == instance().messageApi) {
-//			MessageApi obj = BaseTools.readConfigObject(PATH_CONFIG_MESSAGEAPI, MessageApi.class);
-//			if (null == obj) {
-//				obj = MessageApi.defaultInstance();
-//			}
-//			instance().messageApi = obj;
-//		}
-//		return instance().messageApi;
-//	}
-//
-//	private MessageJdbc messageJdbc;
-//
-//	public static synchronized MessageJdbc messageJdbc() throws Exception {
-//		if (null == instance().messageJdbc) {
-//			MessageJdbc obj = BaseTools.readConfigObject(PATH_CONFIG_MESSAGEJDBC, MessageJdbc.class);
-//			if (null == obj) {
-//				obj = MessageJdbc.defaultInstance();
-//			}
-//			instance().messageJdbc = obj;
-//		}
-//		return instance().messageJdbc;
-//	}
-//
-//	private MessageTable messageTable;
-//
-//	public static synchronized MessageTable messageTable() throws Exception {
-//		if (null == instance().messageTable) {
-//			MessageTable obj = BaseTools.readConfigObject(PATH_CONFIG_MESSAGETABLE, MessageTable.class);
-//			if (null == obj) {
-//				obj = MessageTable.defaultInstance();
-//			}
-//			instance().messageTable = obj;
-//		}
-//		return instance().messageTable;
-//	}
-//
-//	private MessageHadoop messageHadoop;
-//
-//	public static synchronized MessageHadoop messageHadoop() throws Exception {
-//		if (null == instance().messageHadoop) {
-//			MessageHadoop obj = BaseTools.readConfigObject(PATH_CONFIG_MESSAGEHADOOP, MessageHadoop.class);
-//			if (null == obj) {
-//				obj = MessageHadoop.defaultInstance();
-//			}
-//			instance().messageHadoop = obj;
-//		}
-//		return instance().messageHadoop;
-//	}
-
-//	private String messageSendRuleScript;
-//
-//	public static synchronized String messageSendRuleScript() throws Exception {
-//		if (null == instance().messageSendRuleScript) {
-//			String scriptStr = BaseTools.readString(PATH_CONFIG_MESSAGES_SEND_RULE);
-//			if (scriptStr == null) {
-//				scriptStr = "";
-//			}
-//			instance().messageSendRuleScript = scriptStr;
-//		}
-//		return instance().messageSendRuleScript;
-//	}
 
 	private JpushConfig pushConfig;
 
@@ -1129,6 +1015,9 @@ public class Config {
 	public static synchronized MPweixin mPweixin() throws Exception {
 		if (null == instance().mPweixin) {
 			MPweixin obj = BaseTools.readConfigObject(PATH_CONFIG_MPWEIXIN, MPweixin.class);
+			if (obj == null) { // 容错 因为生成的配置文件名称有大小写问题
+				obj = BaseTools.readConfigObject(PATH_CONFIG_MPWEIXIN2, MPweixin.class);
+			}
 			if (null == obj) {
 				obj = MPweixin.defaultInstance();
 			}
@@ -1333,19 +1222,6 @@ public class Config {
 		}
 	}
 
-//	private Organization organization;
-//
-//	public static synchronized Organization organization() throws Exception {
-//		if (null == instance().organization) {
-//			Organization obj = BaseTools.readConfigObject(PATH_CONFIG_ORGANIZATION, Organization.class);
-//			if (null == obj) {
-//				obj = Organization.defaultInstance();
-//			}
-//			instance().organization = obj;
-//		}
-//		return instance().organization;
-//	}
-
 	public static Object resource(String name) throws Exception {
 		return initialContext().lookup(name);
 	}
@@ -1368,11 +1244,6 @@ public class Config {
 		ConcurrentHashMap<String, Object> map = (ConcurrentHashMap<String, Object>) initialContext()
 				.lookup(RESOURCE_NODE_APPLICATIONS);
 		return (JsonElement) map.get(RESOURCE_NODE_APPLICATIONS);
-//		Object o = initialContext().lookup(RESOURCE_NODE_APPLICATIONS);
-//		if (null != o) {
-//			return (JsonElement) o;
-//		}
-//		return null;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -1380,7 +1251,6 @@ public class Config {
 		ConcurrentHashMap<String, Object> map = (ConcurrentHashMap<String, Object>) initialContext()
 				.lookup(RESOURCE_NODE_APPLICATIONS);
 		map.put(RESOURCE_NODE_APPLICATIONS, jsonElement);
-		// initialContext().rebind(RESOURCE_NODE_APPLICATIONS, jsonElement);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -1388,11 +1258,6 @@ public class Config {
 		ConcurrentHashMap<String, Object> map = (ConcurrentHashMap<String, Object>) initialContext()
 				.lookup(RESOURCE_NODE_APPLICATIONS);
 		return (Date) map.get(RESOURCE_NODE_APPLICATIONSTIMESTAMP);
-		// Object o = initialContext().lookup(RESOURCE_NODE_APPLICATIONSTIMESTAMP);
-//		if (null != o) {
-//			return (Date) o;
-//		}
-//		return null;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -1400,7 +1265,6 @@ public class Config {
 		ConcurrentHashMap<String, Object> map = (ConcurrentHashMap<String, Object>) initialContext()
 				.lookup(RESOURCE_NODE_APPLICATIONS);
 		map.put(RESOURCE_NODE_APPLICATIONSTIMESTAMP, date);
-		// initialContext().rebind(RESOURCE_NODE_APPLICATIONSTIMESTAMP, date);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -1408,11 +1272,6 @@ public class Config {
 		ConcurrentHashMap<String, Object> map = (ConcurrentHashMap<String, Object>) initialContext()
 				.lookup(RESOURCE_NODE_APPLICATIONS);
 		return (String) map.get(RESOURCE_NODE_CENTERSPRIMARYNODE);
-//		Object o = initialContext().lookup()RESOURCE_NODE_CENTERSPRIMARYNODE;
-//		if (null != o) {
-//			return (String) o;
-//		}
-//		return null;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -1427,11 +1286,6 @@ public class Config {
 		ConcurrentHashMap<String, Object> map = (ConcurrentHashMap<String, Object>) initialContext()
 				.lookup(RESOURCE_NODE_APPLICATIONS);
 		return (Integer) map.get(RESOURCE_NODE_CENTERSPRIMARYPORT);
-		// Object o = initialContext().lookup(RESOURCE_NODE_CENTERSPRIMARYPORT);
-//		if (null != o) {
-//			return (Integer) o;
-//		}
-//		return null;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -1439,7 +1293,6 @@ public class Config {
 		ConcurrentHashMap<String, Object> map = (ConcurrentHashMap<String, Object>) initialContext()
 				.lookup(RESOURCE_NODE_APPLICATIONS);
 		map.put(RESOURCE_NODE_CENTERSPRIMARYPORT, port);
-		// initialContext().rebind(RESOURCE_NODE_CENTERSPRIMARYPORT, port);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -1447,11 +1300,6 @@ public class Config {
 		ConcurrentHashMap<String, Object> map = (ConcurrentHashMap<String, Object>) initialContext()
 				.lookup(RESOURCE_NODE_APPLICATIONS);
 		return (Boolean) map.get(RESOURCE_NODE_CENTERSPRIMARYSSLENABLE);
-		// Object o = initialContext().lookup(RESOURCE_NODE_CENTERSPRIMARYSSLENABLE);
-//		if (null != o) {
-//			return (Boolean) o;
-//		}
-//		return null;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -1459,7 +1307,6 @@ public class Config {
 		ConcurrentHashMap<String, Object> map = (ConcurrentHashMap<String, Object>) initialContext()
 				.lookup(RESOURCE_NODE_APPLICATIONS);
 		map.put(RESOURCE_NODE_CENTERSPRIMARYSSLENABLE, sslEnable);
-		// initialContext().rebind(RESOURCE_NODE_CENTERSPRIMARYSSLENABLE, sslEnable);
 	}
 
 	public static synchronized ExecutorService[] resource_node_processPlatformExecutors() throws Exception {
@@ -1540,7 +1387,7 @@ public class Config {
 		return command_java_path().startsWith(dir_jvm().toPath().resolve(OS_MACOS + "_" + JAVAVERSION_JAVA11));
 	}
 
-	public static Path path_commons_hadoop_windows(boolean force) throws Exception {
+	public static Path path_commons_hadoop_windows(boolean force) throws IOException, URISyntaxException {
 		Path path = Paths.get(base(), DIR_COMMONS_HADOOP_WINDOWS);
 		if ((!Files.exists(path)) && force) {
 			Files.createDirectories(path);
@@ -1548,7 +1395,7 @@ public class Config {
 		return path;
 	}
 
-	public static Path path_commons_hadoop_linux(boolean force) throws Exception {
+	public static Path path_commons_hadoop_linux(boolean force) throws IOException, URISyntaxException {
 		Path path = Paths.get(base(), DIR_COMMONS_HADOOP_LINUX);
 		if ((!Files.exists(path)) && force) {
 			Files.createDirectories(path);
@@ -1556,7 +1403,7 @@ public class Config {
 		return path;
 	}
 
-	public static Path path_commons_hadoop_aix(boolean force) throws Exception {
+	public static Path path_commons_hadoop_aix(boolean force) throws IOException, URISyntaxException {
 		Path path = Paths.get(base(), DIR_COMMONS_HADOOP_AIX);
 		if ((!Files.exists(path)) && force) {
 			Files.createDirectories(path);
@@ -1564,7 +1411,7 @@ public class Config {
 		return path;
 	}
 
-	public static Path path_commons_hadoop_macos(boolean force) throws Exception {
+	public static Path path_commons_hadoop_macos(boolean force) throws IOException, URISyntaxException {
 		Path path = Paths.get(base(), DIR_COMMONS_HADOOP_MACOS);
 		if ((!Files.exists(path)) && force) {
 			Files.createDirectories(path);
@@ -1572,7 +1419,7 @@ public class Config {
 		return path;
 	}
 
-	public static Path path_commons_hadoop_raspi(boolean force) throws Exception {
+	public static Path path_commons_hadoop_raspi(boolean force) throws IOException, URISyntaxException {
 		Path path = Paths.get(base(), DIR_COMMONS_HADOOP_RASPI);
 		if ((!Files.exists(path)) && force) {
 			Files.createDirectories(path);
@@ -1580,7 +1427,7 @@ public class Config {
 		return path;
 	}
 
-	public static Path path_commons_hadoop_arm(boolean force) throws Exception {
+	public static Path path_commons_hadoop_arm(boolean force) throws IOException, URISyntaxException {
 		Path path = Paths.get(base(), DIR_COMMONS_HADOOP_ARM);
 		if ((!Files.exists(path)) && force) {
 			Files.createDirectories(path);
@@ -1588,8 +1435,16 @@ public class Config {
 		return path;
 	}
 
-	public static Path path_commons_hadoop_mips(boolean force) throws Exception {
+	public static Path path_commons_hadoop_mips(boolean force) throws IOException, URISyntaxException {
 		Path path = Paths.get(base(), DIR_COMMONS_HADOOP_MIPS);
+		if ((!Files.exists(path)) && force) {
+			Files.createDirectories(path);
+		}
+		return path;
+	}
+
+	public static Path path_local_dump(boolean force) throws IOException, URISyntaxException {
+		Path path = Paths.get(base(), DIR_LOCAL_DUMP);
 		if ((!Files.exists(path)) && force) {
 			Files.createDirectories(path);
 		}

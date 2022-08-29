@@ -586,7 +586,7 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
         this.propertyEnableTokenNode = new Element("select", {"styles": this.css.propertySelectNode }).inject(this.propertyContentArea);
         new Element("option" , {  "value" : "true", "text" : this.lp.true  }).inject(this.propertyEnableTokenNode);
         new Element("option" , {  "value" : "false", "text" : this.lp.false  }).inject(this.propertyEnableTokenNode);
-        new Element("div", {"styles": this.css.propertyTextNode, "text": this.lp.enableTokenInfo}).setStyles({
+        new Element("div", {"styles": this.css.propertyTextNode, "html": this.lp.enableTokenInfo}).setStyles({
             "word-break":"break-all",
             "height" : "auto",
             "line-height": "18px",
@@ -705,8 +705,9 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
                     uri = o2.Actions.load("x_program_center").InvokeAction.action.actions.execute.uri;
                     url = uri.replace("{flag}", alias || name || id);
                 }
+                url = o2.filterUrl( address + "/" + serviceName +  url );
                 var res = new Request({
-                    url: address + "/" + serviceName +  url,
+                    url: url,
                     async: false,
                     method: "POST",
                     onSuccess: function(responseText, responseXML){
@@ -952,7 +953,7 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
                 //"dependInvokeList": [],
                 "isNewInvoke": true,
                 "text": "",
-                "enableToken" : false,
+                "enableToken" : true,
                 "enable" : true,
                 "remoteAddrRegex" : "",
                 "lastStartTime" : "",
@@ -969,7 +970,7 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
 
                 if (!notSetTile){
                     this.setTitle(this.options.appTitle + "-"+data.name);
-                    this.taskitem.setText(this.options.appTitle + "-"+data.name);
+                    if(this.taskitem)this.taskitem.setText(this.options.appTitle + "-"+data.name);
                     this.options.appTitle = this.options.appTitle + "-"+data.name;
                 }
 

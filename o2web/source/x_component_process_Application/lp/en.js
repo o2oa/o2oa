@@ -127,6 +127,8 @@ MWF.xApplication.process.Application.LP = {
     "toCompleted": "查看已完成的工作实例",
     "toWork": "查看流转中的工作实例",
 
+    "toNew": "转到新版",
+
     "serialNumber": "流水号",
 
     "category": "分类",

@@ -10,7 +10,8 @@
       "enable": true,
       "weight": 100.0,
       "name": "251",
-      "deepPath": false
+      "deepPath": false,
+      "store": ""
     }
   ],
   "processPlatform": [
@@ -24,7 +25,8 @@
       "enable": true,
       "weight": 100.0,
       "name": "251",
-      "deepPath": false
+      "deepPath": false,
+      "store": ""
     }
   ],
   "mind": [
@@ -38,7 +40,8 @@
       "enable": true,
       "weight": 100.0,
       "name": "251",
-      "deepPath": false
+      "deepPath": false,
+      "store": ""
     }
   ],
   "meeting": [
@@ -52,7 +55,8 @@
       "enable": true,
       "weight": 100.0,
       "name": "251",
-      "deepPath": false
+      "deepPath": false,
+      "store": ""
     }
   ],
   "calendar": [
@@ -66,21 +70,8 @@
       "enable": true,
       "weight": 100.0,
       "name": "251",
-      "deepPath": false
-    }
-  ],
-  "okr": [
-    {
-      "protocol": "webdav",
-      "username": "admin",
-      "password": "admin",
-      "host": "127.0.0.1",
-      "port": 8080.0,
-      "prefix": "",
-      "enable": true,
-      "weight": 100.0,
-      "name": "251",
-      "deepPath": false
+      "deepPath": false,
+      "store": ""
     }
   ],
   "cms": [
@@ -94,7 +85,8 @@
       "enable": true,
       "weight": 100.0,
       "name": "251",
-      "deepPath": false
+      "deepPath": false,
+      "store": ""
     }
   ],
   "bbs": [
@@ -108,35 +100,8 @@
       "enable": true,
       "weight": 100.0,
       "name": "251",
-      "deepPath": false
-    }
-  ],
-  "report": [
-    {
-      "protocol": "webdav",
-      "username": "admin",
-      "password": "admin",
-      "host": "127.0.0.1",
-      "port": 8080.0,
-      "prefix": "",
-      "enable": true,
-      "weight": 100.0,
-      "name": "251",
-      "deepPath": false
-    }
-  ],
-  "strategyDeploy": [
-    {
-      "protocol": "webdav",
-      "username": "admin",
-      "password": "admin",
-      "host": "127.0.0.1",
-      "port": 8080.0,
-      "prefix": "",
-      "enable": true,
-      "weight": 100.0,
-      "name": "251",
-      "deepPath": false
+      "deepPath": false,
+      "store": ""
     }
   ],
   "teamwork": [
@@ -150,7 +115,8 @@
       "enable": true,
       "weight": 100.0,
       "name": "251",
-      "deepPath": false
+      "deepPath": false,
+      "store": ""
     }
   ],
   "structure": [
@@ -164,7 +130,8 @@
       "enable": true,
       "weight": 100.0,
       "name": "251",
-      "deepPath": false
+      "deepPath": false,
+      "store": ""
     }
   ],
   "im": [
@@ -178,7 +145,8 @@
       "enable": true,
       "weight": 100.0,
       "name": "251",
-      "deepPath": false
+      "deepPath": false,
+      "store": ""
     }
   ],
   "general": [
@@ -192,7 +160,8 @@
       "enable": true,
       "weight": 100.0,
       "name": "251",
-      "deepPath": false
+      "deepPath": false,
+      "store": ""
     }
   ],
   "custom": [
@@ -206,9 +175,20 @@
       "enable": true,
       "weight": 100.0,
       "name": "251",
-      "deepPath": false
+      "deepPath": false,
+      "store": ""
     }
   ],
-  "store": {},
+  "store": {
+    "demo": {
+      "protocol": "hdfs",
+      "username": "",
+      "password": "",
+      "host": "hdfs://127.0.0.1",
+      "port": 9000.0,
+      "name": ""
+    }
+  },
+  "enable": false,
   "###extension": "扩展设置.###"
 }

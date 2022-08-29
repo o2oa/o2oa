@@ -25,7 +25,6 @@ import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.jpush.assemble.control.jaxrs.sample.ExceptionSampleEntityClassFind;
 
 @Path("device")
 @JaxrsDescribe("极光推送设备服务模块")
@@ -38,13 +37,13 @@ public class DeviceAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void listAllByPushType(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-						@JaxrsParameterDescribe("推送通道类型：jpush|huawei") @PathParam("pushType") String pushType) {
+			@JaxrsParameterDescribe("推送通道类型：jpush|huawei") @PathParam("pushType") String pushType) {
 		ActionResult<List<ActionListAll.Wo>> result = new ActionResult<>();
 		try {
 			result = new ActionListAll().execute(request, this.effectivePerson(request), pushType);
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			Exception exception = new ExceptionSampleEntityClassFind(e, "获取当前用户所有绑定设备时发生异常！");
+			Exception exception = new IllegalArgumentException("获取当前用户所有绑定设备时发生异常！", e);
 			result.error(exception);
 			logger.error(e, this.effectivePerson(request), request, null);
 		}
@@ -59,14 +58,15 @@ public class DeviceAction extends StandardJaxrsAction {
 	public void checkBind(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("设备号") @PathParam("deviceName") String deviceName,
 			@JaxrsParameterDescribe("设备类型：android|ios") @PathParam("deviceType") String deviceType,
-						  @JaxrsParameterDescribe("推送通道类型：jpush|huawei") @PathParam("pushType") String pushType) {
+			@JaxrsParameterDescribe("推送通道类型：jpush|huawei") @PathParam("pushType") String pushType) {
 
 		ActionResult<ActionCheck.Wo> result = new ActionResult<>();
 		try {
-			result = new ActionCheck().execute(request, this.effectivePerson(request), deviceName, deviceType, pushType);
+			result = new ActionCheck().execute(request, this.effectivePerson(request), deviceName, deviceType,
+					pushType);
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			Exception exception = new ExceptionSampleEntityClassFind(e, "检查设备是否已经绑定时发生异常！");
+			Exception exception = new IllegalArgumentException("检查设备是否已经绑定时发生异常！", e);
 			result.error(exception);
 			logger.error(e, this.effectivePerson(request), request, null);
 		}
@@ -86,7 +86,7 @@ public class DeviceAction extends StandardJaxrsAction {
 			result = new ActionBind().execute(request, this.effectivePerson(request), jsonElement);
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			Exception exception = new ExceptionSampleEntityClassFind(e, "绑定设备时发生异常！");
+			Exception exception = new IllegalArgumentException("绑定设备时发生异常！", e);
 			result.error(exception);
 			logger.error(e, this.effectivePerson(request), request, null);
 		}
@@ -107,7 +107,7 @@ public class DeviceAction extends StandardJaxrsAction {
 			result = new ActionRemoveBind().execute(request, this.effectivePerson(request), deviceName, deviceType);
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			Exception exception = new ExceptionSampleEntityClassFind(e, "设备解除绑定时发生异常！");
+			Exception exception = new IllegalArgumentException("设备解除绑定时发生异常！", e);
 			result.error(exception);
 			logger.error(e, this.effectivePerson(request), request, null);
 		}
@@ -120,22 +120,22 @@ public class DeviceAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void removeBindNew(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-						   @JaxrsParameterDescribe("设备号") @PathParam("deviceName") String deviceName,
-						   @JaxrsParameterDescribe("设备类型：android|ios") @PathParam("deviceType") String deviceType,
-									   @JaxrsParameterDescribe("推送通道类型：jpush|huawei") @PathParam("pushType") String pushType) {
+			@JaxrsParameterDescribe("设备号") @PathParam("deviceName") String deviceName,
+			@JaxrsParameterDescribe("设备类型：android|ios") @PathParam("deviceType") String deviceType,
+			@JaxrsParameterDescribe("推送通道类型：jpush|huawei") @PathParam("pushType") String pushType) {
 
 		ActionResult<ActionRemoveBindNew.Wo> result = new ActionResult<>();
 		try {
-			result = new ActionRemoveBindNew().execute(request, this.effectivePerson(request), deviceName, deviceType, pushType);
+			result = new ActionRemoveBindNew().execute(request, this.effectivePerson(request), deviceName, deviceType,
+					pushType);
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			Exception exception = new ExceptionSampleEntityClassFind(e, "设备解除绑定时发生异常！");
+			Exception exception = new IllegalArgumentException("设备解除绑定时发生异常！", e);
 			result.error(exception);
 			logger.error(e, this.effectivePerson(request), request, null);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
-
 
 	@JaxrsMethodDescribe(value = "查询推送通道类型，jpush|huawei", action = ActionConfigPushType.class)
 	@GET
@@ -149,13 +149,11 @@ public class DeviceAction extends StandardJaxrsAction {
 			result = new ActionConfigPushType().execute(request, this.effectivePerson(request));
 		} catch (Exception e) {
 			result = new ActionResult<>();
-			Exception exception = new ExceptionSampleEntityClassFind(e, "查询推送通道类型发生异常！");
+			Exception exception = new IllegalArgumentException("查询推送通道类型发生异常！", e);
 			result.error(exception);
 			logger.error(e, this.effectivePerson(request), request, null);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
-
-
 
 }

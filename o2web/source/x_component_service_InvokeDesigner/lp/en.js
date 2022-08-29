@@ -25,7 +25,7 @@ MWF.xApplication.service.InvokeDesigner.LP = {
     "invokeUri": "Invoke address",
     "invokeMethod": "Invoke Method",
     "enableToken": "Enable authentication",
-    "enableTokenInfo": "After enabling authentication, you must use the authentication client name and encrypted token to call the service",
+    "enableTokenInfo": "After enabling authentication, you must use the authentication client name and encrypted token to call the service. <a href='https://www.o2oa.net/cms/tech/430.html' target='_blank '>Click to view the interface authentication configuration document</a>",
     "invokeHead": "head",
 
     "openLogViewer": "Open LogViewer",

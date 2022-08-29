@@ -1808,6 +1808,16 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
             "notice": function (content, type, target, where, offset, option) {
                 _form.notice(content, type, target, where, offset, option);
             },
+
+            /**打开一个对话框
+             * @method dialog
+             * @static
+             * @see module:form.dialog
+             */
+            "dialog": function ( options ) {
+                return _form.dialog( options );
+            },
+
             /**给页面添加事件。
              * @method addEvent
              * @static
@@ -2477,7 +2487,8 @@ if (!MWF.xScript.JSONData) {
                 },
                 "check": {
                     "value": function (kk, v) {
-                        this.add(kk, v || "", false, true);
+                        var value = typeOf( v ) === "null" ? "" : v;
+                        this.add(kk, value, false, true);
                     }
                 },
                 "del": {

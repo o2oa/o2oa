@@ -22,11 +22,14 @@ import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.DateTools;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * 脑图回收站信息表
  * 
  * @author O2LEE
  */
+@Schema(name = "MindRecycleInfo", description = "脑图回收站信息.")
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.MindRecycleInfo.table, uniqueConstraints = {

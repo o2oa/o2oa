@@ -27,6 +27,8 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.StringTools;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+@Schema(name = "Structure", description = "服务管理结构体.")
 @Entity
 @ContainerEntity(dumpSize = 10, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Structure.table, uniqueConstraints = {

@@ -96,7 +96,7 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
     getInputData: function( flag ){
         if (this.node.getFirst()){
             var v = this.node.getElement("input").get("value");
-            if( flag )return v;  //不判断，直接返回原值
+            if( flag )return o2.typeOf(v) === "string" ? v.toFloat() : v;  //不判断，直接返回原值
             var n = v.toFloat();
             return (isNaN(n)) ? (this.json.emptyValue === "string" ? "" : 0) : n;
             //return (isNaN(n)) ? 0 : n;
@@ -181,7 +181,6 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
         return true;
     },
     validationConfigItem: function(routeName, data){
-        debugger;
         var flag = (data.status=="all") ? true: (routeName == data.decision);
         if (flag){
             var n = this.getInputData();
@@ -302,7 +301,9 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
         this.node.getFirst().addEvent("change", function(){
             this.validationMode();
             if (this.validation()) {
-                this._setBusinessData(this.getInputData("change"));
+                var value = this.getInputData("change");
+                var v = this.isNumber( value ) ? parseFloat(value) : value;
+                this._setBusinessData(v);
                 this.fireEvent("change");
             }
         }.bind(this));
@@ -337,11 +338,15 @@ MWF.xApplication.process.Xform.Number = MWF.APPNumber =  new Class({
         }
     },
     __setValue: function(value){
-        this._setBusinessData(value);
+        var v = this.isNumber( value ) ? parseFloat(value) : value;
+        this._setBusinessData(v);
         if (this.node.getFirst()) this.node.getFirst().set("value", value || (this.json.emptyValue === "string" ? "" : "0"));
         if (this.isReadonly()) this.node.set("text", value);
         this.moduleValueAG = null;
         this.fieldModuleLoaded = true;
         return value;
+    },
+    isNumber : function( d ){
+        return parseFloat(d).toString() !== "NaN";
     }
 });

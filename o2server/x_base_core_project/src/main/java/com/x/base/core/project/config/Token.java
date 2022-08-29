@@ -38,7 +38,7 @@ public class Token extends ConfigObject {
 
 	public static final String defaultInitialManagerDistinguishedName = "xadmin@o2oa@P";
 
-	public static final String initPassword = "o2";
+	public static final String initPassword = "o2oa@2022";
 
 	public static final String defaultSslKeyStorePassword = "123456";
 	public static final String defaultSslKeyManagerPassword = "123456";
@@ -168,14 +168,14 @@ public class Token extends ConfigObject {
 
 	public List<Oauth> getOauths() {
 		if (null == this.oauths) {
-			return new ArrayList<Oauth>();
+			return new ArrayList<>();
 		}
 		return this.oauths;
 	}
 
 	public List<Sso> getSsos() {
 		if (null == this.ssos) {
-			return new ArrayList<Sso>();
+			return new ArrayList<>();
 		}
 		return this.ssos;
 	}
@@ -232,7 +232,7 @@ public class Token extends ConfigObject {
 		o.qq = "";
 		o.weibo = "";
 		o.mobile = "";
-		o.roleList = new ArrayList<String>();
+		o.roleList = new ArrayList<>();
 		o.roleList.add(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.Manager));
 		o.roleList.add(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.OrganizationManager));
 		o.roleList.add(OrganizationDefinition.toDistinguishedName(OrganizationDefinition.MeetingManager));

@@ -30,7 +30,6 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.commons.vfs2.util.DelegatingFileSystemOptionsBuilder;
 import org.eclipse.jetty.quickstart.QuickStartWebApp;
 import org.eclipse.jetty.server.AsyncRequestLogWriter;
 import org.eclipse.jetty.server.RequestLog;
@@ -45,6 +44,7 @@ import org.w3c.dom.Document;
 
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
+import com.x.base.core.project.Applications;
 import com.x.base.core.project.x_attendance_assemble_control;
 import com.x.base.core.project.x_bbs_assemble_control;
 import com.x.base.core.project.x_calendar_assemble_control;
@@ -99,20 +99,6 @@ import io.github.classgraph.ScanResult;
 public class ApplicationServerTools extends JettySeverTools {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationServerTools.class);
-
-	private static final List<String> OFFICIAL_MODULE_SORTED = UnmodifiableList.unmodifiableList(Arrays.asList(
-			x_general_assemble_control.class.getName(), x_organization_assemble_authentication.class.getName(),
-			x_organization_assemble_express.class.getName(), x_organization_assemble_control.class.getName(),
-			x_organization_assemble_personal.class.getName(), x_component_assemble_control.class.getName(),
-			x_message_assemble_communicate.class.getName(), x_calendar_assemble_control.class.getName(),
-			x_processplatform_service_processing.class.getName(), x_processplatform_assemble_designer.class.getName(),
-			x_processplatform_assemble_surface.class.getName(), x_processplatform_assemble_bam.class.getName(),
-			x_cms_assemble_control.class.getName(), x_portal_assemble_designer.class.getName(),
-			x_portal_assemble_surface.class.getName(), x_attendance_assemble_control.class.getName(),
-			x_bbs_assemble_control.class.getName(), x_file_assemble_control.class.getName(),
-			x_meeting_assemble_control.class.getName(), x_mind_assemble_control.class.getName(),
-			x_hotpic_assemble_control.class.getName(), x_query_service_processing.class.getName(),
-			x_query_assemble_designer.class.getName(), x_query_assemble_surface.class.getName()));
 
 	public static Server start(ApplicationServer applicationServer) throws Exception {
 
@@ -242,18 +228,18 @@ public class ApplicationServerTools extends JettySeverTools {
 		});
 	}
 
-	private static void setExposeJest(ApplicationServer applicationServer, QuickStartWebApp webApp) {
-		if (BooleanUtils.isFalse(applicationServer.getExposeJest())) {
+	private static void setExposeJest(ApplicationServer applicationServer, QuickStartWebApp webApp) throws Exception {
+		if (BooleanUtils.isFalse(Config.general().getExposeJest())) {
 			FilterHolder denialOfServiceFilterHolder = new FilterHolder(new DenialOfServiceFilter());
 			webApp.addFilter(denialOfServiceFilterHolder, "/jest/*", EnumSet.of(DispatcherType.REQUEST));
 			webApp.addFilter(denialOfServiceFilterHolder, "/describe/sources/*", EnumSet.of(DispatcherType.REQUEST));
 		}
 	}
 
-	private static void setStat(ApplicationServer applicationServer, QuickStartWebApp webApp) {
-		if (BooleanUtils.isTrue(applicationServer.getStatEnable())) {
+	private static void setStat(ApplicationServer applicationServer, QuickStartWebApp webApp) throws Exception {
+		if (BooleanUtils.isTrue(Config.general().getStatEnable())) {
 			FilterHolder statFilterHolder = new FilterHolder(new WebStatFilter());
-			statFilterHolder.setInitParameter("exclusions", applicationServer.getStatExclusions());
+			statFilterHolder.setInitParameter("exclusions", Config.general().getStatExclusions());
 			webApp.addFilter(statFilterHolder, "/*", EnumSet.of(DispatcherType.REQUEST));
 			ServletHolder statServletHolder = new ServletHolder(StatViewServlet.class);
 			statServletHolder.setInitParameter("sessionStatEnable", BooleanUtils.toStringTrueFalse(false));
@@ -325,8 +311,8 @@ public class ApplicationServerTools extends JettySeverTools {
 					Config.currentNode().getApplication().getExcludes());
 			return classInfos.stream().filter(info -> names.contains(info.getName()))
 					.sorted(Comparator.comparing(ClassInfo::getName, (x, y) -> {
-						int indx = OFFICIAL_MODULE_SORTED.indexOf(x);
-						int indy = OFFICIAL_MODULE_SORTED.indexOf(y);
+						int indx = Applications.OFFICIAL_APPLICATIONS.indexOf(x);
+						int indy = Applications.OFFICIAL_APPLICATIONS.indexOf(y);
 						if (indx == indy) {
 							return 0;
 						} else if (indx == -1) {

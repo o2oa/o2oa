@@ -52,23 +52,37 @@ public class V2Reset extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(V2Reset.class);
 
-	// 当前的待办
+	/**
+	 * 当前的待办
+	 */
 	private Task task;
-	// 添加的身份
+	/**
+	 * 添加的身份
+	 */
 	private List<String> identities;
-	// 当前的workLog,产生record必须
+	/**
+	 * 当前的workLog,产生record必须
+	 */
 	private WorkLog workLog;
-	// 当前的work
+	/**
+	 * 当前的work
+	 */
 	private Work work;
-	// work活动
+	/**
+	 * work活动
+	 */
 	private Manual manual;
-	// 如果在待办身份矩阵中删除自己,那么先把自己的待办转为不参与流程的已办
+	/**
+	 * 如果在待办身份矩阵中删除自己,那么先把自己的待办转为不参与流程的已办
+	 */
 	private List<TaskCompleted> taskCompleteds;
 	private final String series = StringTools.uniqueToken();
 	private String taskCompletedId;
 	private Wi wi;
 	private EffectivePerson effectivePerson;
-	// 返回的ManualTaskIdentityMatrix
+	/**
+	 * 返回的ManualTaskIdentityMatrix
+	 */
 	private ManualTaskIdentityMatrix manualTaskIdentityMatrix;
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
@@ -107,6 +121,7 @@ public class V2Reset extends BaseAction {
 		}
 
 		Record rec = RecordBuilder.ofWorkProcessing(Record.TYPE_RESET, workLog, effectivePerson, manual, newTaskIds);
+		rec.getProperties().setOpinion(wi.getOpinion());
 		RecordBuilder.processing(rec);
 
 		if (StringUtils.isNotEmpty(this.taskCompletedId)) {

@@ -93,6 +93,8 @@ MWF.xApplication.query.ImporterDesigner.Main = new Class({
                 var _self = this;
                 var options = {
                     "appId": "query.ImporterDesigner"+importer.id,
+                    "id": importer.id,
+                    "application": _self.application.id,
                     "onQueryLoad": function(){
                         this.actions = _self.actions;
                         this.category = _self;
@@ -110,7 +112,7 @@ MWF.xApplication.query.ImporterDesigner.Main = new Class({
     loadView: function(){
         this.getViewData(this.options.id, function(vdata){
             this.setTitle(this.options.appTitle + "-"+vdata.name);
-            this.taskitem.setText(this.options.appTitle + "-"+vdata.name);
+            if(this.taskitem)this.taskitem.setText(this.options.appTitle + "-"+vdata.name);
             this.options.appTitle = this.options.appTitle + "-"+vdata.name;
             this.importer = new MWF.xApplication.query.ImporterDesigner.Importer(this, vdata);
             this.view = this.importer;

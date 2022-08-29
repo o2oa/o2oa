@@ -10,23 +10,19 @@ public class WebServer extends ConfigObject {
 	private static final long serialVersionUID = 7240874589722986538L;
 
 	public static WebServer defaultInstance() {
-		return new WebServer();
-	}
-
-	public WebServer() {
-		this.enable = true;
-		this.port = DEFAULT_HTTP_PORT;
-		this.sslEnable = false;
-		this.proxyHost = "";
-		this.proxyPort = null;
-		this.statEnable = DEFAULT_STATENABLE;
-		this.statExclusions = DEFAULT_STATEXCLUSIONS;
+		WebServer o = new WebServer();
+		o.enable = true;
+		o.port = DEFAULT_HTTP_PORT;
+		o.sslEnable = false;
+		o.proxyHost = "";
+		o.proxyPort = null;
+		o.proxyCenterEnable = DEFAULT_PROXYCENTERENABLE;
+		o.proxyApplicationEnable = DEFAULT_PROXYAPPLICATIONENABLE;
+		return o;
 	}
 
 	private static final Integer DEFAULT_HTTP_PORT = 80;
 	private static final Integer DEFAULT_HTTPS_PORT = 443;
-	private static final Boolean DEFAULT_STATENABLE = false;
-	private static final String DEFAULT_STATEXCLUSIONS = "*.gif,*.jpg,*.png,*.ico";
 	private static final Boolean DEFAULT_PROXYCENTERENABLE = true;
 	private static final Boolean DEFAULT_PROXYAPPLICATIONENABLE = true;
 	private static final Integer DEFAULT_PROXY_TIMEOUT = 300;
@@ -41,14 +37,8 @@ public class WebServer extends ConfigObject {
 	private String proxyHost;
 	@FieldDescribe("代理端口,当服务器是通过apache/nginx等代理服务器映射到公网或者通过路由器做端口映射,在这样的情况下需要设置此地址以标明公网访问端口.")
 	private Integer proxyPort;
-	@FieldDescribe("启用统计,默认启用统计.")
-	private Boolean statEnable;
-	@FieldDescribe("统计忽略路径,默认忽略*.gif,*.jpg,*.png,*.ico")
-	private String statExclusions;
-
 	@FieldDescribe("是否启用center服务器代理.")
 	private Boolean proxyCenterEnable;
-
 	@FieldDescribe("是否启用application服务器代理")
 	private Boolean proxyApplicationEnable;
 
@@ -61,14 +51,6 @@ public class WebServer extends ConfigObject {
 
 	public Boolean getProxyApplicationEnable() {
 		return proxyApplicationEnable == null ? DEFAULT_PROXYAPPLICATIONENABLE : this.proxyApplicationEnable;
-	}
-
-	public String getStatExclusions() {
-		return (StringUtils.isEmpty(statExclusions) ? DEFAULT_STATEXCLUSIONS : this.statExclusions) + ",/druid/*";
-	}
-
-	public Boolean getStatEnable() {
-		return BooleanUtils.isNotFalse(statEnable);
 	}
 
 	public Boolean getEnable() {

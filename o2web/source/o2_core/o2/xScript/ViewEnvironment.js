@@ -4309,6 +4309,15 @@ MWF.xScript.ViewEnvironment = function (ev) {
             _form.notice(content, type, target, where, offset, option);
         },
 
+        /**打开一个对话框
+         * @method dialog
+         * @static
+         * @see module:form.dialog
+         */
+        "dialog": function ( options ) {
+            return  _form.dialog( options );
+        },
+
         /**　给视图添加事件。
          * @method addEvent
          * @static

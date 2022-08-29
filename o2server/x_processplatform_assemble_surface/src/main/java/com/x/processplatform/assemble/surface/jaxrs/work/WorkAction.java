@@ -94,7 +94,26 @@ public class WorkAction extends StandardJaxrsAction {
 		ActionResult<ActionCountWithPerson.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCountWithPerson().execute(effectivePerson, credential);
+			result = new ActionCountWithPerson().execute(effectivePerson, credential, "");
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "获取指定人员在指定应用的Task,TaskCompleted,Read,ReadCompleted,Review.没有权限限制", action = ActionCountWithPerson.class)
+	@GET
+	@Path("count/{credential}/application/{appId}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void countWithPersonAndApplication(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+								@JaxrsParameterDescribe("个人标识") @PathParam("credential") String credential,
+								@JaxrsParameterDescribe("应用标志") @PathParam("appId") String appId) {
+		ActionResult<ActionCountWithPerson.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionCountWithPerson().execute(effectivePerson, credential, appId);
 		} catch (Exception e) {
 			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);

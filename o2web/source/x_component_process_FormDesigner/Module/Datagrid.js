@@ -287,6 +287,9 @@ MWF.xApplication.process.FormDesigner.Module.Datagrid = MWF.FCDatagrid = new Cla
 	},
 	setPropertiesOrStyles: function(name){
 		if (name=="styles"){
+			try{
+				this.setCustomStyles();
+			}catch(e){}
 			var border = this.node.getStyle("border");
 			this.node.clearStyles();
 			this.node.setStyles(this.css.moduleNode);
@@ -309,6 +312,9 @@ MWF.xApplication.process.FormDesigner.Module.Datagrid = MWF.FCDatagrid = new Cla
 		}
 
 		if (name=="properties"){
+			try{
+				this.setCustomProperties();
+			}catch(e){}
 			this.node.getFirst().setProperties(this.json.properties);
 		}
 	},

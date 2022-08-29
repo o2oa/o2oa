@@ -197,7 +197,7 @@ MWF.xApplication.process.FormDesigner.Module.Tab = MWF.FCTab = new Class({
 		this.tabWidget.css.tabNode = this.json.tabStyles;
 		this.tabWidget.css.tabTextNode = this.json.tabTextStyles;
 		this.tabWidget.css.tabNodeCurrent = this.json.tabCurrentStyles;
-        this.tabWidget.css.contentNodeContainer.clear = "both";
+        if( !this.json.contentNodeContainer || !this.json.contentNodeContainer.clear )this.tabWidget.css.contentNodeContainer.clear = "both";
 		this.tabWidget.css.tabTextNodeCurrent = this.json.tabTextCurrentStyles;
 	},
 	_getElements: function(){

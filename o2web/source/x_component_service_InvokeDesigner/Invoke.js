@@ -82,21 +82,33 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
             this.setPropertyContent();
             //this.setIncludeNode();
 
-            if (this.editor.editor){
-                this.editor.editor.focus();
-                //this.editor.editor.navigateFileStart();
+            if (this.editor){
+                this.editor.focus();
+            }else{
+                this.loadEditor();
             }
+
+            this.setAreaNodeSize();
+
+            //if (this.editor.editor){
+            //    this.editor.editor.focus();
+            //}
         }.bind(this));
+
+        var _self = this;
         this.page.addEvent("queryClose", function(){
-            if (this.autoSaveTimerID) window.clearInterval(this.autoSaveTimerID);
+            if (_self.autoSaveTimerID) window.clearInterval(_self.autoSaveTimerID);
+            this.showIm();
             //this.saveSilence();
-            if (this.lisNode) this.lisNode.setStyles(this.designer.css.listInvokeItem);
-        }.bind(this));
+            if (_self.lisNode) _self.lisNode.setStyles(_self.designer.css.listInvokeItem);
+        });
         this.page.tabNode.addEvent("dblclick", this.designer.maxOrReturnEditor.bind(this.designer));
 
+        if (this.options.showTab) this.page.showTabIm();
+    },
+    loadEditor:function(){
 
-
-        this.editor = new MWF.widget.JavascriptEditor(this.areaNode, {"runtime": "service"});
+        this.editor = new MWF.widget.JavascriptEditor(this.areaNode, {"runtime": "service", "option": {"value": this.data.text}});
         this.editor.load(function(){
             if (this.data.text){
                 this.editor.editor.setValue(this.data.text);
@@ -133,7 +145,7 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
                 defaultText += "********************/\n";
                 this.editor.editor.setValue(defaultText);
             }
-            this.editor.addEditorEvent("change", function(){
+            this.editor.addEditorEvent("change", function(e){
                 if (!this.isChanged){
                     this.isChanged = true;
                     this.page.textNode.set("text", " * "+this.page.textNode.get("text"));
@@ -205,8 +217,6 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
                 this.designer.styleSelectNode.hide();
             }
         }.bind(this));
-
-        if (this.options.showTab) this.page.showTabIm();
     },
     showReferenceMenu: function(){
         var pos = this.editor.getCursorPixelPosition();
@@ -273,7 +283,7 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
     setInvokeUrlText: function(){
         debugger
         var action = this.designer.actions.action;
-        var url;
+        var uri;
 
         var enableToken = true;
         this.designer.propertyEnableTokenNode.getElements("option").each( function(option){
@@ -286,14 +296,18 @@ MWF.xApplication.service.InvokeDesigner.Invoke = new Class({
             uri = action.address + action.actions.executeToken.uri ;
             uri = uri.replace("{flag}", this.data.alias || this.data.name || this.data.id );
         }else{
-            var uri = action.address + action.actions.executeInvoke.uri ;
+            uri = action.address + action.actions.executeInvoke.uri ;
             uri = uri.replace("{flag}", this.data.alias || this.data.name || this.data.id );
         }
-        this.designer.propertyInvokeUriNode.set("text", uri);
+        var url = o2.filterUrl(uri);
+        this.designer.propertyInvokeUriNode.set("text", url);
     },
 
     setAreaNodeSize: function(){
-        var size = this.node.getSize();
+        if( !this.areaNode.offsetParent )return;
+        //var size = this.node.getSize();
+        var size = this.node.getComputedSize();
+        size.y = size.height;
         var tabSize = this.tab.tabNodeContainer.getSize();
         var y = size.y - tabSize.y;
         this.areaNode.setStyle("height", ""+y+"px");

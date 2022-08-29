@@ -34,6 +34,8 @@ import com.x.base.core.entity.dataitem.ItemType;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.processplatform.core.entity.PersistenceProperties;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * 需要编写级联删除的地方:<br/>
  * 1.designer 的Applicaiton删除<br/>
@@ -41,6 +43,7 @@ import com.x.processplatform.core.entity.PersistenceProperties;
  * 3.processing中的脚本运行对象中的insert和delete<br/>
  * 4.surface中的ApplicationDict的增,删,改<br/>
  */
+@Schema(name = "ApplicationDictItem", description = "流程平台数据字典条目.")
 @Entity
 @ContainerEntity(dumpSize = 100, type = ContainerEntity.Type.element, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Element.ApplicationDictItem.table, uniqueConstraints = {

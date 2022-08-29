@@ -17,11 +17,13 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * Created by fancyLou on 3/12/21.
  * Copyright © 2021 O2. All rights reserved.
  */
-
+@Schema(name = "MPWeixinMenu", description = "服务管理微信菜单.")
 @Entity
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.MPWeixinMenu.table, uniqueConstraints = {

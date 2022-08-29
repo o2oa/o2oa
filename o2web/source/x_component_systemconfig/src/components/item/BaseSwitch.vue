@@ -2,7 +2,7 @@
   <div class="item">
     <label class="item_label" v-if="label" :style="labelStyle">{{label}}</label>
     <div class="item_input_area">
-      <el-switch :style="inputStyle" v-model="value" @change="changeValue($event)"></el-switch>
+      <el-switch :style="inputStyle" v-model="value" @change="changeValue($event)" v-bind="options"></el-switch>
     </div>
   </div>
 </template>
@@ -28,7 +28,11 @@ const props = defineProps({
   inputStyle: {
     type: Object,
     default: {}
-  }
+  },
+  options: {
+    type: Object,
+    default: null
+  },
 });
 
 function changeValue(e){
