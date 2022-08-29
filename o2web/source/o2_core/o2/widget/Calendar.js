@@ -1179,9 +1179,9 @@ o2.widget.Calendar = o2.Calendar = new Class({
 	},
 	_selectDate: function(dateStr){
 		if( this.options.yearOnly ){
-			dateStr = dateStr+"-1-1"
+			dateStr = dateStr+"-01-01"
 		}else if( this.options.monthOnly ){
-			dateStr = dateStr+"-1"
+			dateStr = dateStr+"-01"
 		}
 		var date = new Date(dateStr);
 		this.options.baseDate = date;
@@ -1286,7 +1286,8 @@ o2.widget.Calendar = o2.Calendar = new Class({
 					case "month" :
 						debugger;
 						if( calendar.options.monthOnly ){
-							calendar._selectDate(this.retrieve("year")+"-"+( this.retrieve("month").toInt() + 1 ), this);
+							var m = calendar.addZero(this.retrieve("month").toInt() + 1, 2 );
+							calendar._selectDate(this.retrieve("year")+"-"+ m , this);
 						}else{
 							calendar.changeViewToDay(this.retrieve("year"), this.retrieve("month"));
 						}
