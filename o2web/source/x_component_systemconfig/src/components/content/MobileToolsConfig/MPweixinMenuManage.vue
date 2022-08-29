@@ -136,49 +136,13 @@
               </div>
               <!-- 菜单类型 -->
               <div class="frm_control_group">
-                <label class="frm_label"
-                  ><strong class="title js_menuContent">{{
-                    lp._appTools.mpMenu.formRadioLabel
-                  }}</strong></label
-                >
-                <div class="frm_controls frm_vertical_pt">
-                  <label class="frm_radio_label js_radio_sendMsg">
-                    <i class="icon_radio"></i>
-                    <span class="lbl_content">{{
-                      lp._appTools.mpMenu.formRadioTypeMsg
-                    }}</span>
-                    <input
-                      type="radio"
-                      class="frm_radio"
-                      value="click"
-                      v-model="currentMenu.type"
-                    />
-                  </label>
-                  <label class="frm_radio_label js_radio_sendMsg">
-                    <i class="icon_radio"></i>
-                    <span class="lbl_content">{{
-                      lp._appTools.mpMenu.formRadioTypeUrl
-                    }}</span>
-                    <input
-                      type="radio"
-                      class="frm_radio"
-                      value="view"
-                      v-model="currentMenu.type"
-                    />
-                  </label>
-                  <label class="frm_radio_label js_radio_sendMsg">
-                    <i class="icon_radio"></i>
-                    <span class="lbl_content">{{
-                      lp._appTools.mpMenu.formRadioTypeMiniprogram
-                    }}</span>
-                    <input
-                      type="radio"
-                      class="frm_radio"
-                      value="miniprogram"
-                      v-model="currentMenu.type"
-                    />
-                  </label>
-                </div>
+                <BaseRadio :label="lp._appTools.mpMenu.formRadioLabel"
+                      :options="[
+                        {label: 'click', value: 'click', text: lp._appTools.mpMenu.formRadioTypeMsg}, 
+                        {label: 'view', value: 'view', text: lp._appTools.mpMenu.formRadioTypeUrl},
+                        {label: 'miniprogram', value: 'miniprogram', text: lp._appTools.mpMenu.formRadioTypeMiniprogram}
+                      ]"
+                      v-model:value="currentMenu.type"/>
               </div>
               <!-- 类型不同显示的具体内容不同 -->
               <div class="menu_content_container">
@@ -298,7 +262,6 @@
         <button class="mainColor_bg" @click="menuPublishToWeixin($event)">
           {{ lp._appTools.mpMenu.publishMpweixin }}
         </button>
-        <!-- <span class="btn btn_input btn_primary" ref="mpwxPublishBtnNode"><button>{{lp._appTools.mpMenu.publishMpweixin}}</button></span> -->
       </div>
 
       <!-- 关注回复 -->
@@ -338,7 +301,6 @@
         <button class="mainColor_bg" @click="saveSubscribe($event)">
           {{ lp._appTools.mpMenu.subscribeMpweixin_save }}
         </button>
-        <!-- <span class="btn btn_input btn_primary" ref="mpwxSaveSubscribeBtnNode"><button>{{lp._appTools.mpMenu.subscribeMpweixin_save}}</button></span> -->
       </div>
     </div>
   </div>
@@ -348,12 +310,16 @@
 import { ref } from "vue";
 import { component, lp, o2 } from "@o2oa/component";
 import { doMPWeixinMenuAction } from "@/util/acrions";
+import BaseRadio from '@/components/item/BaseRadio.vue';
 
 const menuList = ref([]); // 菜单列表
 const showSubId = ref(""); // 哪个菜单的子菜单需要显示
 const mpweixinSubscribe = ref({}); // 订阅
 const currentMenu = ref({}); // 选中的菜单
-
+const labelStyle = {
+  fontWeight: 'bold',
+  fontSize: '16px'
+}
 const load = () => {
   loadMenuList();
   loadSubscribeInfo();
@@ -970,10 +936,10 @@ textarea {
 }
 
 .menu_preview_area .pre_menu_item.current .pre_menu_link {
-  border: 1px solid #07c160;
+  border: 1px solid var(--el-color-primary);
   line-height: 48px;
   background-color: #fff;
-  color: #07c160;
+  color: var(--el-color-primary);
 }
 .menu_preview_area .icon14_menu_add {
   background: url(../../../assets/index_z49d030.png) 0 0 no-repeat;
@@ -998,13 +964,13 @@ textarea {
 }
 .menu_preview_area .sub_pre_menu_list li.current {
   background-color: #fff;
-  border: 1px solid #07c160;
+  border: 1px solid var(--el-color-primary);
   position: relative;
   z-index: 1;
   line-height: 45px;
 }
 .menu_preview_area .sub_pre_menu_list li.current a {
-  color: #07c160;
+  color: var(--el-color-primary);
 }
 .sub_pre_menu_box .arrow {
   position: absolute;
@@ -1252,20 +1218,7 @@ textarea {
   justify-content: center;
   align-items: center;
 }
-
-.btn_primary {
-  background-color: #07c160;
-  background-image: -webkit-gradient(
-    linear,
-    left top,
-    left bottom,
-    color-stop(0, #07c160),
-    to(#07c160)
-  );
-  background-image: linear-gradient(to bottom, #07c160 0, #07c160 100%);
-  border-color: #07c160;
-  color: #fff;
-}
+ 
 .btn {
   display: inline-block;
   overflow: visible;
