@@ -7,6 +7,29 @@
     <div class="contentArea">
       <div class="content">
         <div v-if="!!contentType" is="vue:contentComponent"></div>
+<!--        <BaseSystemInfo v-if="contentType==='BaseSystemInfo'"></BaseSystemInfo>-->
+<!--        <BaseUIConfig v-if="contentType==='BaseUIConfig'"></BaseUIConfig>-->
+<!--        <BaseResourceDeploy v-if="contentType==='BaseResourceDeploy'"></BaseResourceDeploy>-->
+
+<!--        <ServerServersConfig v-if="contentType==='ServerServersConfig'"></ServerServersConfig>-->
+<!--        <ServerDatabaseConfig v-if="contentType==='ServerDatabaseConfig'"></ServerDatabaseConfig>-->
+<!--        <ServerStorageConfig v-if="contentType==='ServerStorageConfig'"></ServerStorageConfig>-->
+<!--        <ServerCloudConfig v-if="contentType==='ServerCloudConfig'"></ServerCloudConfig>-->
+<!--        <ServerProcessConfig v-if="contentType==='ServerProcessConfig'"></ServerProcessConfig>-->
+<!--        <ServerMessageConfig v-if="contentType==='ServerMessageConfig'"></ServerMessageConfig>-->
+<!--        <ServerCacheConfig v-if="contentType==='ServerCacheConfig'"></ServerCacheConfig>-->
+<!--        <ServerWorktimeConfig v-if="contentType==='ServerWorktimeConfig'"></ServerWorktimeConfig>-->
+
+<!--        <SecurityPasswordConfig v-if="contentType==='SecurityPasswordConfig'"></SecurityPasswordConfig>-->
+<!--        <SecurityLoginConfig v-if="contentType==='SecurityLoginConfig'"></SecurityLoginConfig>-->
+<!--        <SecuritySSOConfig v-if="contentType==='SecuritySSOConfig'"></SecuritySSOConfig>-->
+<!--        <SecurityTernaryConfig v-if="contentType==='SecurityTernaryConfig'"></SecurityTernaryConfig>-->
+
+<!--        <MobileAppConfig v-if="contentType==='MobileAppConfig'"></MobileAppConfig>-->
+<!--        <MobilePushConfig v-if="contentType==='MobilePushConfig'"></MobilePushConfig>-->
+<!--        <MobileIntegrationConfig v-if="contentType==='MobileIntegrationConfig'"></MobileIntegrationConfig>-->
+<!--        <MobileToolsConfig v-if="contentType==='MobileToolsConfig'"></MobileToolsConfig>-->
+
       </div>
     </div>
   </div>
@@ -15,6 +38,32 @@
 <script setup>
 import Menu from './components/Menu.vue';
 import { ref, defineAsyncComponent, computed } from 'vue';
+import {lp} from "@o2oa/component";
+
+
+// import BaseSystemInfo from './components/content/BaseSystemInfo';
+// import BaseUIConfig from './components/content/BaseUIConfig';
+// import BaseResourceDeploy from './components/content/BaseResourceDeploy';
+//
+// import ServerServersConfig from './components/content/ServerServersConfig';
+// import ServerDatabaseConfig from './components/content/ServerDatabaseConfig';
+// import ServerStorageConfig from './components/content/ServerStorageConfig';
+// import ServerCloudConfig from './components/content/ServerCloudConfig';
+// import ServerProcessConfig from './components/content/ServerProcessConfig';
+// import ServerMessageConfig from './components/content/ServerMessageConfig';
+// import ServerCacheConfig from './components/content/ServerCacheConfig';
+// import ServerWorktimeConfig from './components/content/ServerWorktimeConfig';
+//
+// import SecurityPasswordConfig from './components/content/SecurityPasswordConfig';
+// import SecurityLoginConfig from './components/content/SecurityLoginConfig';
+// import SecuritySSOConfig from './components/content/SecuritySSOConfig';
+// import SecurityTernaryConfig from './components/content/SecurityTernaryConfig';
+//
+// import MobileAppConfig from './components/content/MobileAppConfig';
+// import MobilePushConfig from './components/content/MobilePushConfig';
+// import MobileIntegrationConfig from './components/content/MobileIntegrationConfig';
+// import MobileToolsConfig from './components/content/MobileToolsConfig';
+
 
 let contentType = ref("");
 function loadContent(type){
@@ -86,7 +135,7 @@ const contentComponent = computed(() => {
 .systemconfig_tab_area{
   padding: 20px 30px;
   width: 80%;
-  min-width: 960px;
+  min-width: 1100px;
   max-width: 2000px;
   margin-right: 100px;
 }

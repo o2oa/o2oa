@@ -19,7 +19,7 @@
 
       <div ref="scriptNode" class="item_hide">
         <div class="item_info">{{lp._passwordConfig.initialPasswordType.scriptInfo}}</div>
-        <BaseScript ref="scriptEditor" :label="lp._passwordConfig.passwordScript" v-model:value="passwordScript"></BaseScript>
+        <BaseScript ref="scriptEditor" :label="lp._passwordConfig.passwordScript" :value="passwordScript" @blur="(v)=>{passwordScript = v}"  @save="(v)=>{passwordScript = v}"></BaseScript>
         <div class="item_info">
           <button class="mainColor_bg" style="width: 100px" @click="saveInitialPassword">{{lp.operation.ok}}</button>
         </div>

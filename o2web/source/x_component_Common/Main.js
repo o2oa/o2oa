@@ -206,7 +206,40 @@ MWF.xApplication.Common.Main = new Class({
 				if (callback) callback();
 			}.bind(this)
 		};
-		this.window.node = new Element("div.layout_component_node").inject(layout.desktop.contentNode);
+
+        // var component = this;
+        // var OaComponent = class  extends HTMLDivElement {
+        //     constructor() {
+        //         super();
+        //         var shadow = this.attachShadow({mode: 'open'});
+        //
+        //         // var shadow = layout.desktop.contentNode.attachShadow({mode: 'open'});
+        //         // component.window.node = shadow;
+        //         component.window.content = new Element("div.layout_component_content");
+        //         component.content = component.window.content;
+        //         shadow.appendChild(component.content);
+        //     }
+        // };
+        // debugger;
+        // var id = this.options.name.toLowerCase();
+        // //var id = o2.uuid().substring(0,5).toLowerCase();
+        // customElements.define('oa-component-'+id, OaComponent);
+        // var node = document.createElement("oa-component"+id);
+        // node.className="layout_component_node";
+        // this.window.node = node;
+        // layout.desktop.contentNode.appendChild(node);
+        // component.content = new Element("div.layout_component_content").inject(node);
+
+        // this.window.node = new Element("oa-component.layout_component_node").inject(layout.desktop.contentNode);
+
+
+        // var shadow = layout.desktop.contentNode.attachShadow({mode: 'open'});
+        // this.window.node = shadow;
+        // this.window.content = new Element("div.layout_component_content");
+        // this.content = this.window.content;
+        // shadow.appendChild(this.content);
+
+        this.window.node = new Element("div.layout_component_node").inject(layout.desktop.contentNode);
 		this.window.content = new Element("div.layout_component_content").inject(this.window.node);
 		this.content = this.window.content;
 

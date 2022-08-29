@@ -14,11 +14,11 @@
 
 <script setup>
 import {ref} from 'vue';
-import {lp, o2} from '@o2oa/component';
+import {lp} from '@o2oa/component';
 
 const props = defineProps({
   data: { type: Object, default: {} },
-  itemLp: { type: Object, default: lp._systemInfo.serverData },
+  itemLp: { type: Object, default: {} },
 });
 const jsonNode = ref();
 

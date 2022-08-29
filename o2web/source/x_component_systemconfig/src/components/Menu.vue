@@ -61,41 +61,12 @@ let currentItem = ref(menuJson.value[0].children[0]);
 const emit = defineEmits(['changeItem']);
 
 emit("changeItem", currentItem.value.component);
-// setContentType(currentItem.value.component);
-
-// function subItemClass(item){
-//   if (item.expand) currentItem=item;
-//   return {'menuItem_current mainColor_color' : item.expand};
-// }
 
 function selectedItem(item){
   currentItem.value = item;
   emit("changeItem", item.component);
 }
 
-// const taskList = ref([]);
-// o2.Actions.load("x_processplatform_assemble_surface").TaskAction.V2ListPaging(1, 5).then((json)=>{
-//   taskList.value = json.data;
-// });
-//
-// function openTask(id){
-//   o2.api.page.openWork(id);
-// }
-// function openCalendar(){
-//   o2.api.page.openApplication("Calendar");
-// }
-// function openOrganization(){
-//   o2.api.page.openApplication("Org");
-// }
-// function openInBrowser() {
-//   component.openInNewBrowser(true);
-// }
-// function startProcess(){
-//   o2.api.page.startProcess();
-// }
-// function createDocument(){
-//   o2.api.page.createDocument();
-// }
 </script>
 
 <style scoped>
