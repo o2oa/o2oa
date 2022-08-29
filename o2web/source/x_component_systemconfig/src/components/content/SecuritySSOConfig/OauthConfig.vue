@@ -160,7 +160,7 @@ const removeSSO = (e, idx)=>{
 }
 const editSSOConfig = (data, idx)=>{
   currentSSOData.value = Object.clone(data);
-  const container = component.content;
+  const container = component.content.getElement('.systemconfig');
   const content = ssoEditorArea.value;
   content.show();
 
@@ -236,7 +236,7 @@ const removeOauthServer = (e, idx)=>{
 }
 
 const editOauthConfig = (idx, node, title, width, height, ok)=>{
-  const container = component.content;
+  const container = component.content.getElement('.systemconfig');
   const content = node.value;
   content.show();
 

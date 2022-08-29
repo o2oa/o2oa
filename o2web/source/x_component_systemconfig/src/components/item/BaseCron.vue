@@ -3,14 +3,14 @@
     <label class="item_label" v-if="label" :style="labelStyle">{{label}}</label>
     <div class="item_input_area">
       <el-input ref="inputNode" class="item_input" :style="inputStyle"
-                v-model="value" :type="inputType" :show-password="showPassword"
+                v-model="ev" :type="inputType" :show-password="showPassword"
                 @change="changeValue($event)" v-bind="options"/>
     </div>
   </div>
 </template>
 
 <script setup>
-import {ref, onMounted, nextTick} from "vue";
+import {ref, onMounted, nextTick, watch} from "vue";
 import {component, o2} from "@o2oa/component";
 
 const inputNode = ref();
@@ -40,7 +40,11 @@ const props = defineProps({
     default: null
   }
 });
-
+const ev = ref(props.value);
+watch(
+    () => props.value,
+    (v) =>  ev.value = v
+);
 function changeValue(e){
   let v = (props.inputType==='number') ? e.toFloat() : e;
   emit('update:value', v);
@@ -48,7 +52,6 @@ function changeValue(e){
 }
 onMounted(()=>{
   nextTick(()=>{
-    debugger;
     const node = inputNode.value.input;
     o2.requireApp("Template", "widget.CronPicker", ()=>{
       const cronPicker = new MWF.xApplication.Template.widget.CronPicker( component.content, node, component, {}, {

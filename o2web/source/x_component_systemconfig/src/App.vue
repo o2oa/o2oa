@@ -1,5 +1,5 @@
 <template>
-  <div class="appNode">
+  <div class="appNode systemconfig">
     <div class="menuArea">
       <Menu @changeItem="loadContent"/>
     </div>

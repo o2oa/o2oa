@@ -59,7 +59,7 @@ const saveLoader = ()=>{
 }
 
 const openEditDlg = (node, cb, title, width, height)=>{
-  const container = component.content;
+  const container = component.content.getElement('.systemconfig');
   const content = node.value;
   content.show();
 

@@ -44,7 +44,7 @@ const newPassword = ref('');
 const confirmPassword = ref('');
 
 const openDlg = (title, action)=>{
-  const container = component.content;
+  const container = component.content.getElement('.systemconfig');
   const content = changePasswordNode.value;
   content.show();
 

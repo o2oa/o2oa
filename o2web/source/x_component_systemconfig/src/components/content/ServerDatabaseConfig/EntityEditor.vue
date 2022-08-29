@@ -72,7 +72,7 @@ const selectEntityList = (db, item)=>{
 }
 const openEditDlg = (data, node, cb, width, height)=>{
   selectedItems.value = data;
-  const container = component.content;
+  const container = component.content.getElement('.systemconfig');
   const content = node.value;
   content.show();
 

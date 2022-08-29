@@ -2,10 +2,10 @@
   <div class="item">
     <label class="item_label" v-if="label" :style="labelStyle">{{label}}</label>
     <div class="item_input">
-      <el-select v-if="arr && arr.length" v-model="value" @change="changeValue" size="default">
+      <el-select v-if="arr && arr.length" v-model="ev" @change="changeValue" size="default">
         <el-option v-for="k in arr" :key="k.label || k" :value="k.value || k" :label="k.label || k"></el-option>
       </el-select>
-      <el-select v-else v-model="value" @change="changeValue" size="default">
+      <el-select v-else v-model="ev" @change="changeValue" size="default">
         <el-option v-for="k in Object.keys(options)" :key="k" :value="k" :label="options[k]"></el-option>
       </el-select>
     </div>
@@ -13,6 +13,8 @@
 </template>
 
 <script setup>
+import {ref, watch} from "vue";
+
 const emit = defineEmits(['update:value', 'change']);
 
 const props = defineProps({
@@ -32,6 +34,12 @@ const props = defineProps({
     default: {}
   }
 });
+
+const ev = ref(props.value);
+watch(
+    () => props.value,
+    (v) =>  ev.value = v
+);
 
 function changeValue(e){
   emit('change', e);

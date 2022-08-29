@@ -2,13 +2,14 @@
   <div class="item">
     <label class="item_label" v-if="label" :style="labelStyle">{{label}}</label>
     <div class="item_input_area">
-      <el-input-number  :style="inputStyle" v-model="value" size="default" @change="changeValue($event)" :min="0"></el-input-number>
+      <el-input-number  :style="inputStyle" v-model="ev" size="default" @change="changeValue($event)" :min="0"></el-input-number>
     </div>
   </div>
 </template>
 
 <script setup>
 import {lp} from '@o2oa/component';
+import {ref, watch} from 'vue';
 const emit = defineEmits(['update:value', 'change']);
 
 const props = defineProps({
@@ -31,6 +32,11 @@ const props = defineProps({
     default: {}
   }
 });
+const ev = ref(props.value);
+watch(
+    () => props.value,
+    (v) =>  ev.value = v
+);
 
 function changeValue(e){
   emit('change', e);

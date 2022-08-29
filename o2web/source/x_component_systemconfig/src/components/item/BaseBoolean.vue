@@ -3,7 +3,7 @@
     <label class="item_label" v-if="label" :style="labelStyle">{{label}}</label>
     <div class="item_input" ref="contentNode">
       <el-switch ref="node" :style="inputStyle"
-          v-model="value"
+          v-model="ev"
           active-text="是"
           inactive-text="否"
           @change="changeValue($event)">
@@ -13,7 +13,7 @@
 </template>
 
 <script setup>
-import {ref} from 'vue';
+import {ref, watch} from 'vue';
 const emit = defineEmits(['update:value', 'change']);
 
 const node = ref();
@@ -30,6 +30,11 @@ const props = defineProps({
     default: {}
   }
 });
+const ev = ref(props.value);
+watch(
+    () => props.value,
+    (v) =>  ev.value = v
+);
 
 function changeValue(e){
   emit('change', e, node);
