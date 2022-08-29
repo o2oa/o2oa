@@ -34,7 +34,7 @@ MWF.xApplication.process.Xform.Elradio = MWF.APPElradio =  new Class(
          * @event MWF.xApplication.process.Xform.$Module#postLoad
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
-        "moduleEvents": ["load", "queryLoad", "postLoad"],
+        "moduleEvents": ["load", "queryLoad", "postLoad", "change"],
         /**
          * 绑定值变化时触发的事件。this.event[0]为选中的 Radio label 值
          * @event MWF.xApplication.process.Xform.Elradio#change
