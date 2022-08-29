@@ -64,7 +64,7 @@ o2.xApplication.systemconfig.LP = {
         "moduleStatus": "模块运行状态",
         "language": "语言环境",
         "languageInfo": "设置服务端语言环境",
-        "languageValues":{
+        "languageValues": {
             "zh-CN": "简体中文",
             "en": "英文"
         },
@@ -75,7 +75,7 @@ o2.xApplication.systemconfig.LP = {
 
         "server": "服务器",
         "node": "节点",
-        "serverInfo":"服务器信息",
+        "serverInfo": "服务器信息",
         "webServer": "WEB服务器",
         "appServer": "应用服务器",
         "centerServer": "中心服务器",
@@ -274,7 +274,7 @@ o2.xApplication.systemconfig.LP = {
         "newPersonPasswordInfo": "创建新建用户时，会按以下设定生成用户初始密码，用户可登录系统后自行修改",
         "initialPassword": "用户初始密码",
         "initialPasswordText": "输入初始密码",
-        "initialPasswordTypeOptions":{
+        "initialPasswordTypeOptions": {
             "mobile": "手机号码后六位",
             "unique": "唯一编码后六位",
             "employee": "人员工号",
@@ -285,8 +285,8 @@ o2.xApplication.systemconfig.LP = {
         "initialPasswordType": {
             "mobileScript": "return person.getMobile().slice(-6)",
             "uniqueScript": "return person.getunique().slice(-6)",
-            "employeesScript":"return person.getEmployee()",
-            "pinyinScript":"return person.getPinyin()",
+            "employeesScript": "return person.getEmployee()",
+            "pinyinScript": "return person.getPinyin()",
             "textInfo": "在下面的输入框中输入的密码，将作为新创建用户的初始密码。",
             'scriptInfo': "在下面的编辑器中输入脚本，返回一个字符串值，作为新创建用户的初始密码。您可以使用person对象获取人员相关信息。如将人员姓名全拼作为初始密码，可使用脚本：return person.getPinyin()"
         },
@@ -353,11 +353,11 @@ o2.xApplication.systemconfig.LP = {
         "baseConfig": "基本配置",
         "moreConfig": "更多配置",
         "ldapConfig": "Ldap认证配置",
-        "captchaLogin":"启用图片验证码登录",
+        "captchaLogin": "启用图片验证码登录",
         "codeLogin": "启用短信验证码登录",
         "bindLogin": "启用扫描二维码登录",
         "faceLogin": "启用人脸识别登录",
-        "captchaLoginInfo":"启用后登陆时必须正确输入图片验证码",
+        "captchaLoginInfo": "启用后登陆时必须正确输入图片验证码",
         "codeLoginInfo": "启用后允许通过短信验证码登录",
         "bindLoginInfo": "启用后允许扫描二维码登录",
         "faceLoginInfo": "启用后允许人脸识别登录，用户可到个人设置中设置人脸特征。启用后您必须创建一个SSO配置，名称为face，密钥为xplatform（这是一个试验性功能，您必须启用https）",
@@ -509,10 +509,10 @@ o2.xApplication.systemconfig.LP = {
         "info": "<span style='color: red'>修改数据库配置在大部分情况下都会影响到系统现有数据，请慎重修改此处配置！</span>",
         "info2": "在修改数据库配置之前，建议您先使用O2OA的备份功能（ctl -dd）将系统数据进行备份，在修改完数据库配置后重启服务器，然后将备份的数据恢复到数据库（ctl -rd）。所有数据库相关配置的修改，都需要重启服务器",
 
-        "innerDataSources":"内置数据库",
-        "externalDataSources":"扩展数据库",
+        "innerDataSources": "内置数据库",
+        "externalDataSources": "扩展数据库",
         "innerDataSourcesInfo": "O2OA自带的数据库是一个内嵌式的内存数据库，适合用于开发环境、功能演示环境。",
-        "externalDataSourcesInfo":"O2OA支持外部数据库扩展，建议生产环境使用商用级别数据库以保证数据安全和性能。",
+        "externalDataSourcesInfo": "O2OA支持外部数据库扩展，建议生产环境使用商用级别数据库以保证数据安全和性能。",
 
         "addDatabaseConfig": "添加数据库配置",
 
@@ -917,7 +917,7 @@ o2.xApplication.systemconfig.LP = {
 
         "touchDetained": "滞留待办检查定时器",
         "touchDetainedInfo": "此定时器会查找长时间滞留的工作，并尝试驱动此工作进行流转，这可以自动处理由于人员变动等原因引起的工作滞留。",
-        "thresholdMinutesInfo_touchDetained":"定时器会处理滞留时间超过这个阈值的工作，默认1440分钟（1天）",
+        "thresholdMinutesInfo_touchDetained": "定时器会处理滞留时间超过这个阈值的工作，默认1440分钟（1天）",
 
         "updateTable": "同步到数据表定时器",
         "updateTableInfo": "如果流程中设置了将流程数据映射到数据表，此定时器用于处理映射数据队列",
@@ -1223,32 +1223,9 @@ o2.xApplication.systemconfig.LP = {
             "<li>需要在线打包，必须先到[云服务配置]中进行注册、登录。</li>" +
             "<li>提交信息后，会显示当前打包状态，打包过程耗时较长，你可以先离开当前页面，等待打包完成后来本页面下载APK文件。</li></ul>",
 
-        "onlineBuildInfo1": "<span class='mainColor_color'>我们在应用市场提供了更优秀的“App在线打包”应用，您可以到应用市场查看获取</span>"
-    },
-    "_pushConfig": {
-        "pushType": "消息推送服务",
-        "pushTypeInfo": "O2OA支持极光推送服务和华为推送服务，您可以根据需要选择推送服务",
-        "pushTypeData": [
-            {"value": "jpush", "label": "jpush", "text": "极光推送服务"},
-            {"value": "huawei", "label": "huawei", "text": "华为推送服务"},
-            {"value": "none", "label": "none", "text": "禁用消息推送"}
-        ],
-
-        "appKey": "极光推送AppKey",
-        "masterSecret": "极光推送MasterSecret",
-        "appKeyInfo": "极光推送应用的AppKey",
-        "masterSecretInfo": "极光推送应用的Master Secret",
-
-        "appId": "华为推送AppId",
-        "appSecret": "华为推送AppSecret",
-        "appIdInfo": "华为推送应用的appId",
-        "appSecretInfo": "华为推送应用的appSecret",
-    },
-    "_messageConfig": {
-        "exmail": "腾讯邮箱集成",
         "onlineBuildInfo1": "<span class='mainColor_color'>我们在应用市场提供了更优秀的“App在线打包”应用，您可以到应用市场查看获取</span>",
 
-        "appPack" : {
+        "appPack": {
             "formSubmitBtnTitle": "提交并开始打包",
             "formReinputBtnTitle": "重新填写表单并打包",
             "formRePackBtnTitle": "使用原有资料直接打包",
@@ -1344,9 +1321,9 @@ o2.xApplication.systemconfig.LP = {
             "formTypeMiniprogramUrlPlaceholder": "备用网页，旧版微信会打开这个备用网页",
             "formTypeMiniprogramUrlErrorEmpty": "备用网页不能为空！",
             "formNameTips4": "仅支持中英文和数字，字数不超过4个",
-             "formNameTips6": "仅支持中英文和数字，字数不超过6个",
-             "formOrderTips": "仅支持数字，字数不超过6个，排序按照字符串排序",
-             "msgFirstMaxLen": "一级菜单最多只能创建3个！",
+            "formNameTips6": "仅支持中英文和数字，字数不超过6个",
+            "formOrderTips": "仅支持数字，字数不超过6个，排序按照字符串排序",
+            "msgFirstMaxLen": "一级菜单最多只能创建3个！",
             "menuMsgSubMaxLen": "二级菜单最多只能创建5个！",
             "menuMsgParentNotSave": "上级菜单数据未保存，请先保存数据！",
             "menuDeleteAlertMsg": "确认要删除这条数据吗，会同时删除它的子菜单？",
@@ -1360,5 +1337,113 @@ o2.xApplication.systemconfig.LP = {
             "formOrderErrorNotNumber": "菜单排序号只能输入数字！",
             "formOrderErrorMaxLen": "菜单排序号字数不能超过6个！",
         }
+    },
+    "_pushConfig": {
+        "pushType": "消息推送服务",
+        "pushTypeInfo": "O2OA支持极光推送服务和华为推送服务，您可以根据需要选择推送服务",
+        "pushTypeData": [
+            {"value": "jpush", "label": "jpush", "text": "极光推送服务"},
+            {"value": "huawei", "label": "huawei", "text": "华为推送服务"},
+            {"value": "none", "label": "none", "text": "禁用消息推送"}
+        ],
+
+        "appKey": "极光推送AppKey",
+        "masterSecret": "极光推送MasterSecret",
+        "appKeyInfo": "极光推送应用的AppKey",
+        "masterSecretInfo": "极光推送应用的Master Secret",
+
+        "appId": "华为推送AppId",
+        "appSecret": "华为推送AppSecret",
+        "appIdInfo": "华为推送应用的appId",
+        "appSecretInfo": "华为推送应用的appSecret"
+    },
+    "_messageConfig": {
+        "messageConsumers": "通道配置",
+        "messageType": "类型配置",
+        "messageLoader": "加载器",
+        "messageFilter": "过滤器",
+
+        "consumerTypes": {
+            "ws": "WebSocket",
+            "pmsinner": "推送消息",
+            "calendar": "日程",
+            "dingding": "钉钉",
+            "welink": "welink",
+            "qiyeweixin": "企业微信",
+            "mpweixin": "微信公众号",
+            "kafka": "kafka",
+            "activemq": "ActiveMQ",
+            "restful": "Restful",
+            "mail": "邮件",
+            "jdbc": "JDBC",
+            "table": "数据表",
+            "hadoop": "Hadoop"
+        },
+        "consumerInfoTitle": "消息通道配置",
+        "consumerInfo": "O2OA系统提供多种消息通道，您可以在此处设置各类消息需要通过什么方式发送",
+        "addConsumer": "添加消息通道",
+        "consumerLabel": {
+            "key": "通道名称",
+            "type": "类型",
+            "filter": "过滤器",
+            "loader": "加载器"
+        },
+        "none": "无",
+        "editConsumer": "编辑消息通道",
+
+        "inputKey": "请输入消息通道名称",
+        "hasKey": "消息通道名称已存在，请使用其它名称",
+
+        "consumerData": {
+            "kafka": ['bootstrapServers', 'topic', 'securityProtocol', 'saslMechanism', 'saslMechanism', 'username', 'password'],
+            "activemq": ['url', 'queueName', 'username', 'password'],
+            "restful": ['url', 'method', 'internal'],
+            "mail": ['host', 'port', 'sslEnable', 'auth', 'from', 'password'],
+            "jdbc": ['driverClass', 'url', 'catalog', 'schema', 'table', 'username', 'password'],
+            "table": ['table'],
+            "hadoop": ['fsDefaultFS', 'path', 'username']
+        },
+
+        "messageTypeTitle": "消息类型设置",
+        "messageTypeInfo": "O2OA系统内置的各种事件可以发送消息，您可以在此处设置这些事件需要通过那些通道来发送消息。您也可以增加自定义的消息类型",
+
+        "noConsumer": "此类型消息未选择发送通道",
+        "selectConsumer": "选择通道",
+        "addTmpConsumer": "添加通道",
+
+        "addMessageType": "添加消息类型",
+        "newMessageData": {
+            "key": "消息标识",
+            "description": "描述"
+        },
+        "inputMessageKey": "请输入消息标识",
+        "hasMessageKey": "消息标识已存在，请使用其它标识",
+
+        "deleteTypeTitle": "删除消息类型确认",
+        "deleteTypeInfo": "您确定要删除消息类型“{name}”吗？",
+
+        "filterConfigTitle": "消息过滤器配置",
+        "filterConfigInfo": "消息通道中可以使用过滤器，过滤器是一个服务端脚本，在消息发送前被调用，过滤器返回true表示允许消息发送，返回false则此消息不会发送",
+        "addFilter": "添加消息过滤器",
+        "filterKey": "过滤器名称",
+
+        "inputFilterKey": "请输入过滤器名称",
+        "hasFilterKey": "过滤器名称已存在，请使用其它名称",
+
+        "deleteFilterTitle": "删除过滤器确认",
+        "deleteFilterInfo": "您确定要删除过滤器“{name}”吗？",
+
+        "loaderConfigTitle": "消息加载器配置",
+        "loaderConfigInfo": "消息通道中可以使用加载器，过滤器是一个服务端脚本，它用于在发送消息前，对消息内容进行修改，在消息发送前被调用，您必须返回一个JSON格式的数据，作为要发送的消息内容",
+        "addLoader": "添加消息加载器",
+        "loaderKey": "加载器名称",
+
+        "inputLoaderKey": "请输入加载器名称",
+        "hasLoaderKey": "加载器名称已存在，请使用其它名称",
+
+
+        "deleteLoaderTitle": "删除加载器确认",
+        "deleteLoaderInfo": "您确定要删除加载器“{name}”吗？"
+
     }
 }
