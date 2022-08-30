@@ -1119,9 +1119,12 @@ MWF.xApplication.query.ImporterDesigner.Importer.CalculateField = new Class({
             }
         }
         this.node.setStyles(this.css.viewCalculateFieldNode_selected);
-        // this.listNode.setStyles(this.css.cloumnListNode_selected);
-        new Fx.Scroll(this.view.areaNode, {"wheelStops": false, "duration": 100}).toElementEdge(this.node);
-        // new Fx.Scroll(this.view.designer.propertyDomArea, {"wheelStops": false, "duration": 100}).toElement(this.listNode);
+        // new Fx.Scroll(this.view.areaNode, {"wheelStops": false, "duration": 100}).toElementEdge(this.node);
+        try {
+            this.node.scrollIntoView(true);
+        }catch (e) {
+            
+        }
 
         this.view.currentSelectedModule = this;
         this.isSelected = true;
