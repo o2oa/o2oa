@@ -2,12 +2,12 @@
   <div class="item" :style="getItemStyle()">
     <label class="item_label" v-if="label" :style="Object.assign(labelStyle, {lineHeight: iconHeight, height: iconHeight})">{{label}}</label>
 
-    <BaseIconComponent v-if="itemType==='component'" :value="value" :icon-style="iconStyle" :icon-height="iconHeight" :icon-width="iconWidth"></BaseIconComponent>
-    <BaseIconGroup v-if="itemType==='group'" :value="value" :icon-style="iconStyle" :icon-height="iconHeight" :icon-width="iconWidth"></BaseIconGroup>
-    <BaseIconPortal v-if="itemType==='portal'" :value="value" :icon-style="iconStyle" :icon-height="iconHeight" :icon-width="iconWidth"></BaseIconPortal>
-    <BaseIconProcess v-if="itemType==='process'" :value="value" :icon-style="iconStyle" :icon-height="iconHeight" :icon-width="iconWidth"></BaseIconProcess>
-    <BaseIconInfor v-if="itemType==='infor'" :value="value" :icon-style="iconStyle" :icon-height="iconHeight" :icon-width="iconWidth"></BaseIconInfor>
-    <BaseIconQuery v-if="itemType==='query'" :value="value" :icon-style="iconStyle" :icon-height="iconHeight" :icon-width="iconWidth"></BaseIconQuery>
+    <BaseIconComponent v-if="itemType==='component'" :value="ev" :icon-style="iconStyle" :icon-height="iconHeight" :icon-width="iconWidth"></BaseIconComponent>
+    <BaseIconGroup v-if="itemType==='group'" :value="ev" :icon-style="iconStyle" :icon-height="iconHeight" :icon-width="iconWidth"></BaseIconGroup>
+    <BaseIconPortal v-if="itemType==='portal'" :value="ev" :icon-style="iconStyle" :icon-height="iconHeight" :icon-width="iconWidth"></BaseIconPortal>
+    <BaseIconProcess v-if="itemType==='process'" :value="ev" :icon-style="iconStyle" :icon-height="iconHeight" :icon-width="iconWidth"></BaseIconProcess>
+    <BaseIconInfor v-if="itemType==='infor'" :value="ev" :icon-style="iconStyle" :icon-height="iconHeight" :icon-width="iconWidth"></BaseIconInfor>
+    <BaseIconQuery v-if="itemType==='query'" :value="ev" :icon-style="iconStyle" :icon-height="iconHeight" :icon-width="iconWidth"></BaseIconQuery>
 
     <button class="mainColor_bg" @click="changeIcon" v-if="canChange">{{uploadText}}</button>
     <button class="" @click="clearIcon" v-if="canChange">{{clearText}}</button>
@@ -17,7 +17,7 @@
 
 <script setup>
 import {o2} from '@o2oa/component';
-import {ref} from 'vue';
+import {ref, watch, computed} from 'vue';
 import BaseIconComponent from './BaseIconComponent.vue';
 import BaseIconGroup from './BaseIconGroup.vue';
 import BaseIconPortal from './BaseIconPortal.vue';
@@ -44,13 +44,16 @@ const props = defineProps({
   clearText: { type: String, default: 'clear' }
 });
 
+const ev = ref(props.value);
+watch(()=>props.value, (v) =>  ev.value = v);
+
 const itemTypeObj = {
-  group: ()=>props.value.type==='group',
-  portal: ()=>props.value.hasOwnProperty('portalCategory'),
-  component: ()=>props.value.type==='system' || props.value.type==='custom',
-  infor: ()=>props.value.hasOwnProperty('documentType'),
-  query: ()=>props.value.hasOwnProperty('queryCategory'),
-  process: ()=>props.value.hasOwnProperty('applicationCategory')
+  group: ()=>ev.value.type==='group',
+  portal: ()=>ev.value.hasOwnProperty('portalCategory'),
+  component: ()=>ev.value.type==='system' || ev.value.type==='custom',
+  infor: ()=>ev.value.hasOwnProperty('documentType'),
+  query: ()=>ev.value.hasOwnProperty('queryCategory'),
+  process: ()=>ev.value.hasOwnProperty('applicationCategory')
 }
 
 function getItemNameType(){
@@ -58,7 +61,8 @@ function getItemNameType(){
     if (itemTypeObj[f]()) return f;
   }
 }
-const itemType = ref(getItemNameType());
+
+const itemType = computed(getItemNameType);
 
 
 function getItemStyle(){
@@ -85,16 +89,18 @@ function uploadIcon(){
         formData,
         file,
         (json)=>{
-          props.value.iconPath = o2.xDesktop.getImageSrc(json.id);
-          emit('update:value', props.value);
+          const v = props.value;
+          v.iconPath = o2.xDesktop.getImageSrc(json.id);
+          emit('update:value', v);
         }
     );
   }
 }
 
 function clearIcon(){
-  props.value.iconPath = 'appicon.png';
-  emit('update:value', props.value);
+  const v = props.value;
+  v.iconPath = 'appicon.png';
+  emit('update:value', v);
 }
 </script>
 

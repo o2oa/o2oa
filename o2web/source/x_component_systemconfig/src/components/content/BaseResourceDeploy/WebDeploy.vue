@@ -3,7 +3,7 @@
     <div class="systemconfig_item_title">{{lp._resource.webResource}}</div>
     <div class="systemconfig_item_info">{{lp._resource.webResourceInfo}}</div>
 
-    <div style="padding: 20px 10px">
+    <div style="padding: 20px 10px" v-if="general.deployResourceEnable">
       <BaseUpload :label-style="labelStyle"
                   :label="lp._resource.upload"
                   :warn="lp._resource.webUploadWarn"
@@ -21,13 +21,15 @@
 
       <button class="mainColor_bg" @click="deploy($event)">{{lp._resource.webResource}}</button>
     </div>
+    <div class="systemconfig_item_info" v-else v-html="lp._resource.notWebResource"></div>
+
   </div>
 </template>
 
 <script setup>
 import {ref} from 'vue';
 import {component, lp} from '@o2oa/component';
-import {deployWebResource} from '@/util/acrions';
+import {deployWebResource, getConfigData} from '@/util/acrions';
 import BaseUpload from '@/components/item/BaseUpload.vue';
 import BaseRadio from '@/components/item/BaseRadio.vue';
 import BaseInput from '@/components/item/BaseInput.vue';
@@ -66,6 +68,11 @@ async function deploy(e) {
     component.notice(lp._resource.deploySuccess, "success");
   });
 }
+
+const general = ref({});
+getConfigData('general').then((data)=>{
+  general.value = data;
+});
 
 </script>
 
