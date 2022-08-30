@@ -56,7 +56,7 @@
                 <el-table :data="storageData[type]" style="width: 100%" :empty-text="lp._storageServer.noStoreNode">
                   <el-table-column prop="store" :label="lp._storageServer.store">
                     <template #default="scope">
-                      <el-select v-model="scope.row.store" size="default">
+                      <el-select v-model="scope.row.store" size="default" popper-class="systemconfig">
                         <el-option v-for="s in Object.keys(storageData.store)" :key="s" :value="s" :label="s"></el-option>
                       </el-select>
                     </template>
