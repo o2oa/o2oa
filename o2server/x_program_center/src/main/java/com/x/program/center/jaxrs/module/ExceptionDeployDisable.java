@@ -7,7 +7,7 @@ class ExceptionDeployDisable extends LanguagePromptException {
 	private static final long serialVersionUID = -5285650034988505084L;
 
 	public ExceptionDeployDisable() {
-		super("禁用war包部署.");
+		super("禁用资源部署.");
 	}
 
 }
