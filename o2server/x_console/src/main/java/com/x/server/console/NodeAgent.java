@@ -72,7 +72,7 @@ public class NodeAgent extends Thread {
 
 	public static final Pattern execute_command_pattern = Pattern.compile("^command:(.+)$", Pattern.CASE_INSENSITIVE);
 
-	public static final int LOG_MAX_READ_SIZE = 4 * 1024;
+	public static final int LOG_MAX_READ_SIZE = 10 * 1024;
 
 	private static List<String> logLevelList = ImmutableList.of("debug", "info", "warn", "error", "print");
 
