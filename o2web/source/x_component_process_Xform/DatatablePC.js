@@ -598,12 +598,18 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				this.isNew = true;
 				bData[this.sectionBy] = this.getValue();
 			}
+
 			if( flag )this.setBusinessDataById( bData );
 			this.dataWithSectionBy = this.getAllSortedSectionData();
-			return flag ? this.getBusinessDataById() : bData;
+			var d = flag ? this.getBusinessDataById() : bData;
+			if( d && d.data )delete d.data;
+			if( d && d.total )delete d.total;
+			return d;
 		},
 		getAllSortedSectionData: function(){ //获取合并排序后的数据
 			var data = this.getBusinessDataById();
+			if( data && data.data )delete data.data;
+			if( data && data.total )delete data.total;
 			var array = [];
 			for( var key in data ){
 				array.push({
@@ -630,6 +636,9 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			var old;
 			if(fireChange)old = Object.clone(this.getBusinessDataById() || {});
 
+			if( data && data.data )delete data.data;
+			if( data && data.total )delete data.total;
+
 			this.setBusinessDataById(data);
 			this.data = data;
 
@@ -642,6 +651,31 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.lineList = [];
 			this.sectionlineList = [];
 			this._loadDatatable();
+		},
+		getSortedSectionData: function(){ //获取合并排序后的数据
+			var data = this.getBusinessDataById();
+			if( data && data.data )delete data.data;
+			if( data && data.total )delete data.total;
+			var array = [];
+			for( var key in data ){
+				array.push({
+					sectionKey: key,
+					key: key,
+					data: data[key]
+				})
+			}
+			if( this.json.sectionMergeSortScript && this.json.sectionMergeSortScript.code){
+				array.sort( function(a, b){
+					this.form.Macro.environment.event = {
+						"a": a,
+						"b": b
+					};
+					var flag = this.form.Macro.exec(this.json.sectionMergeSortScript.code, this);
+					this.form.Macro.environment.event = null;
+					return flag;
+				}.bind(this))
+			}
+			return array;
 		},
 		getSectionMergeReadData: function(){
 			switch (this.json.mergeTypeRead) {
