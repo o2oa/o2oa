@@ -15,7 +15,7 @@ public class Components extends ConfigObject {
 
 	private static final long serialVersionUID = -6261924434387247937L;
 
-	public static final String NAME_SETTING = "Setting";
+	public static final String NAME_SYSTEMCONFIG = "systemconfig";
 	public static final String NAME_ORG = "Org";
 	public static final String NAME_CMSMANAGER = "cmsManager";
 	public static final String NAME_APPLICATIONEXPLORER = "ApplicationExplorer";
@@ -41,7 +41,7 @@ public class Components extends ConfigObject {
 	public static final String NAME_SEARCH = "Search";
 	public static final String NAME_IM = "IMV2";
 
-	public static final List<String> SYSTEM_NAME_NAMES = ListTools.toList(NAME_SETTING, NAME_ORG, NAME_CMSMANAGER,
+	public static final List<String> SYSTEM_NAME_NAMES = ListTools.toList(NAME_SYSTEMCONFIG, NAME_ORG, NAME_CMSMANAGER,
 			NAME_APPLICATIONEXPLORER, NAME_PORTALEXPLORER, NAME_DATAEXPLORER, NAME_SERVICEMANAGER, NAME_APPSTORE,
 			NAME_APPCENTER, NAME_LOGVIEWER, NAME_PROFILE, NAME_BAM, NAME_CMS, NAME_WORKCENTER, NAME_HOMEPAGE,
 			NAME_HOTARTICLE, NAME_NOTE, NAME_MEETING, NAME_ATTENDANCE, NAME_FORUM, NAME_MINDER, NAME_CALENDAR, NAME_ANN,
@@ -51,8 +51,8 @@ public class Components extends ConfigObject {
 
 	public static Component systemComponent(String name) {
 		switch (name) {
-		case NAME_SETTING:
-			return new Component(NAME_SETTING, NAME_SETTING, "系统设置", APPICON_PNG, 1, Component.TYPE_SYSTEM);
+		case NAME_SYSTEMCONFIG:
+			return new Component(NAME_SYSTEMCONFIG, NAME_SYSTEMCONFIG, "系统设置", APPICON_PNG, 1, Component.TYPE_SYSTEM);
 		case NAME_ORG:
 			return new Component(NAME_ORG, NAME_ORG, "组织管理", APPICON_PNG, 2, Component.TYPE_SYSTEM);
 		case NAME_CMSMANAGER:
@@ -112,7 +112,7 @@ public class Components extends ConfigObject {
 
 	public static Components defaultInstance() {
 		Components o = new Components();
-		o.systems.add(systemComponent(NAME_SETTING));
+		o.systems.add(systemComponent(NAME_SYSTEMCONFIG));
 		o.systems.add(systemComponent(NAME_ORG));
 		o.systems.add(systemComponent(NAME_CMSMANAGER));
 		o.systems.add(systemComponent(NAME_CMS));
