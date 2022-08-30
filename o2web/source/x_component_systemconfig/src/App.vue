@@ -1,44 +1,48 @@
 <template>
-  <div class="appNode systemconfig">
-    <div class="menuArea">
-      <Menu @changeItem="loadContent"/>
-    </div>
-
-    <div class="contentArea">
-      <div class="content">
-        <div v-if="!!contentType" is="vue:contentComponent"></div>
-<!--        <BaseSystemInfo v-if="contentType==='BaseSystemInfo'"></BaseSystemInfo>-->
-<!--        <BaseUIConfig v-if="contentType==='BaseUIConfig'"></BaseUIConfig>-->
-<!--        <BaseResourceDeploy v-if="contentType==='BaseResourceDeploy'"></BaseResourceDeploy>-->
-
-<!--        <ServerServersConfig v-if="contentType==='ServerServersConfig'"></ServerServersConfig>-->
-<!--        <ServerDatabaseConfig v-if="contentType==='ServerDatabaseConfig'"></ServerDatabaseConfig>-->
-<!--        <ServerStorageConfig v-if="contentType==='ServerStorageConfig'"></ServerStorageConfig>-->
-<!--        <ServerCloudConfig v-if="contentType==='ServerCloudConfig'"></ServerCloudConfig>-->
-<!--        <ServerProcessConfig v-if="contentType==='ServerProcessConfig'"></ServerProcessConfig>-->
-<!--        <ServerMessageConfig v-if="contentType==='ServerMessageConfig'"></ServerMessageConfig>-->
-<!--        <ServerCacheConfig v-if="contentType==='ServerCacheConfig'"></ServerCacheConfig>-->
-<!--        <ServerWorktimeConfig v-if="contentType==='ServerWorktimeConfig'"></ServerWorktimeConfig>-->
-
-<!--        <SecurityPasswordConfig v-if="contentType==='SecurityPasswordConfig'"></SecurityPasswordConfig>-->
-<!--        <SecurityLoginConfig v-if="contentType==='SecurityLoginConfig'"></SecurityLoginConfig>-->
-<!--        <SecuritySSOConfig v-if="contentType==='SecuritySSOConfig'"></SecuritySSOConfig>-->
-<!--        <SecurityTernaryConfig v-if="contentType==='SecurityTernaryConfig'"></SecurityTernaryConfig>-->
-
-<!--        <MobileAppConfig v-if="contentType==='MobileAppConfig'"></MobileAppConfig>-->
-<!--        <MobilePushConfig v-if="contentType==='MobilePushConfig'"></MobilePushConfig>-->
-<!--        <MobileIntegrationConfig v-if="contentType==='MobileIntegrationConfig'"></MobileIntegrationConfig>-->
-<!--        <MobileToolsConfig v-if="contentType==='MobileToolsConfig'"></MobileToolsConfig>-->
-
+  <div class="appNode systemconfig"  v-if="o2.AC.isAdministrator()">
+      <div class="menuArea">
+        <Menu @changeItem="loadContent"/>
       </div>
-    </div>
+
+      <div class="contentArea">
+        <div class="content">
+          <div v-if="!!contentType" is="vue:contentComponent"></div>
+          <!--        <BaseSystemInfo v-if="contentType==='BaseSystemInfo'"></BaseSystemInfo>-->
+          <!--        <BaseUIConfig v-if="contentType==='BaseUIConfig'"></BaseUIConfig>-->
+          <!--        <BaseResourceDeploy v-if="contentType==='BaseResourceDeploy'"></BaseResourceDeploy>-->
+
+          <!--        <ServerServersConfig v-if="contentType==='ServerServersConfig'"></ServerServersConfig>-->
+          <!--        <ServerDatabaseConfig v-if="contentType==='ServerDatabaseConfig'"></ServerDatabaseConfig>-->
+          <!--        <ServerStorageConfig v-if="contentType==='ServerStorageConfig'"></ServerStorageConfig>-->
+          <!--        <ServerCloudConfig v-if="contentType==='ServerCloudConfig'"></ServerCloudConfig>-->
+          <!--        <ServerProcessConfig v-if="contentType==='ServerProcessConfig'"></ServerProcessConfig>-->
+          <!--        <ServerMessageConfig v-if="contentType==='ServerMessageConfig'"></ServerMessageConfig>-->
+          <!--        <ServerCacheConfig v-if="contentType==='ServerCacheConfig'"></ServerCacheConfig>-->
+          <!--        <ServerWorktimeConfig v-if="contentType==='ServerWorktimeConfig'"></ServerWorktimeConfig>-->
+
+          <!--        <SecurityPasswordConfig v-if="contentType==='SecurityPasswordConfig'"></SecurityPasswordConfig>-->
+          <!--        <SecurityLoginConfig v-if="contentType==='SecurityLoginConfig'"></SecurityLoginConfig>-->
+          <!--        <SecuritySSOConfig v-if="contentType==='SecuritySSOConfig'"></SecuritySSOConfig>-->
+          <!--        <SecurityTernaryConfig v-if="contentType==='SecurityTernaryConfig'"></SecurityTernaryConfig>-->
+
+          <!--        <MobileAppConfig v-if="contentType==='MobileAppConfig'"></MobileAppConfig>-->
+          <!--        <MobilePushConfig v-if="contentType==='MobilePushConfig'"></MobilePushConfig>-->
+          <!--        <MobileIntegrationConfig v-if="contentType==='MobileIntegrationConfig'"></MobileIntegrationConfig>-->
+          <!--        <MobileToolsConfig v-if="contentType==='MobileToolsConfig'"></MobileToolsConfig>-->
+
+        </div>
+      </div>
   </div>
+  <div class="appNode permission_denied"  v-if="!o2.AC.isAdministrator()">
+    {{lp.permissionDenied}}
+  </div>
+
 </template>
 
 <script setup>
 import Menu from './components/Menu.vue';
 import { ref, defineAsyncComponent, computed } from 'vue';
-import {lp} from "@o2oa/component";
+import {o2, lp} from "@o2oa/component";
 
 
 // import BaseSystemInfo from './components/content/BaseSystemInfo';
@@ -106,6 +110,15 @@ const contentComponent = computed(() => {
   /*display: flex;*/
   text-align: left;
   position: relative;
+}
+.permission_denied{
+  font-size: 18px;
+  color: #999999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60%;
 }
 </style>
 <style>

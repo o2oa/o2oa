@@ -24,32 +24,34 @@
     </div>
 
     <div class="componentEditorArea" ref="componentEditorNode">
-      <BaseInput :label="lp._component.name" v-model:value="currentComponent.name"/>
-      <BaseInput :label="lp._component.title" v-model:value="currentComponent.title"/>
-      <BaseInput :label="lp._component.path" v-model:value="currentComponent.path" @change="changePath"/>
-      <div class="editorPathInfo">{{lp._component.urlPathInfo}}</div>
-      <BaseBoolean :label="lp._component.visible" v-model:value="currentComponent.visible"/>
-      <BasePerson :label="lp._component.allowList" v-model:value="currentComponent.allowList"/>
-      <BasePerson :label="lp._component.denyList" v-model:value="currentComponent.denyList"/>
-      <BaseIcon :label="lp._component.icon" v-model:value="currentComponent"
-                :icon-style="{marginLeft:'10px'}"
-                :can-change="!!(currentComponent.path && currentComponent.path.startsWith('@url'))"
-                :upload-text="lp._component.selectIcon"
-                :clear-text="lp._component.clearIcon"/>
-      <BaseUpload v-if="currentComponent.type!=='system' &&  (!currentComponent.path || !currentComponent.path.startsWith('@url'))"
-                  :label="lp._component.upload"
-                  :warn="lp._component.uploadWarn"
-                  :upload-files="currentComponent.componentFile"
-                  accept=".zip"
-                  @upload="uploadComponentFile"
-                  @remove="removeComponentFile"/>
+      <div v-if="currentComponent">
+        <BaseInput :label="lp._component.name" v-model:value="currentComponent.name"/>
+        <BaseInput :label="lp._component.title" v-model:value="currentComponent.title"/>
+        <BaseInput :label="lp._component.path" v-model:value="currentComponent.path" @change="changePath"/>
+        <div class="editorPathInfo">{{lp._component.urlPathInfo}}</div>
+        <BaseBoolean :label="lp._component.visible" v-model:value="currentComponent.visible"/>
+        <BasePerson :label="lp._component.allowList" v-model:value="currentComponent.allowList"/>
+        <BasePerson :label="lp._component.denyList" v-model:value="currentComponent.denyList"/>
+        <BaseIcon :label="lp._component.icon" v-model:value="currentComponent"
+                  :icon-style="{marginLeft:'10px'}"
+                  :can-change="!!(currentComponent.path && currentComponent.path.startsWith('@url'))"
+                  :upload-text="lp._component.selectIcon"
+                  :clear-text="lp._component.clearIcon"/>
+        <BaseUpload v-if="currentComponent.type!=='system' &&  (!currentComponent.path || !currentComponent.path.startsWith('@url')) && general.deployResourceEnable"
+                    :label="lp._component.upload"
+                    :warn="lp._component.uploadWarn"
+                    :upload-files="currentComponent.componentFile"
+                    accept=".zip"
+                    @upload="uploadComponentFile"
+                    @remove="removeComponentFile"/>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
 import {component, lp, o2} from '@o2oa/component';
-import {loadComponents, removeComponent, saveComponent, dispatchComponentFile} from '@/util/acrions';
+import {loadComponents, removeComponent, saveComponent, dispatchComponentFile, getConfigData} from '@/util/acrions';
 import {ref} from "vue";
 import BaseInput from '@/components/item/BaseInput.vue';
 import BaseBoolean from '@/components/item/BaseBoolean.vue';
@@ -58,12 +60,18 @@ import BaseIcon from '@/components/item/BaseIcon.vue';
 import BaseUpload from '@/components/item/BaseUpload.vue';
 
 const components = ref([]);
-const currentComponent = ref({});
+const currentComponent = ref();
 const componentEditorNode = ref();
 
 loadComponents().then((data)=>{
   components.value = data;
 });
+
+const general = ref({});
+getConfigData('general').then((data)=>{
+  general.value = data;
+});
+
 
 function openApplication(cmpt){
   if (cmpt.visible) o2.api.page.openApplication(cmpt.path);
@@ -113,7 +121,8 @@ async function editComponent(cmpt, index) {
             await dispatchComponentFile(currentComponent.value.componentFile[0]);
             currentComponent.value.componentFile = null;
           }
-          await saveComponent(currentComponent.value);
+          const d = await saveComponent(currentComponent.value);
+          if (d.id) currentComponent.value.id = d.id;
           component.notice( lp._component.deploySuccess, "success");
           if (index || index===0){
             components.value[index] = currentComponent.value;

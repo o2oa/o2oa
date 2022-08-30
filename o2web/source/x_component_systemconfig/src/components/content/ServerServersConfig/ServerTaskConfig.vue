@@ -84,8 +84,6 @@
 
 
 
-
-
     <div class="systemconfig_item_title">{{lp._serversConfig.deployWarEnable}}</div>
     <div class="systemconfig_item_info" v-html="lp._serversConfig.deployWarEnableInfo"></div>
     <BaseBoolean v-model:value="generalData.deployWarEnable" @change="(v)=>{saveConfig('general', 'deployWarEnable', v)}"/>

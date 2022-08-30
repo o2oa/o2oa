@@ -360,7 +360,7 @@ const load = ()=>{
         d[k] = {};
         d[k].description = props.message[k].description;
         d[k].consumers = props.message[k].consumers.filter((c)=>{
-          return c.enable;
+          return c.enable || c.consumer;
         });
       }
     });
