@@ -174,6 +174,8 @@ public class Messages extends ConfigObject {
 	private Message mind_fileShare;
 	@FieldDescribe("聊聊消息.")
 	private Message im_create;
+	@FieldDescribe("自定义消息.")
+	private Map<String, Message> custom = new LinkedHashMap<>();
 
 	public static Messages defaultInstance() {
 		Messages o = new Messages();
@@ -230,6 +232,8 @@ public class Messages extends ConfigObject {
 		o.mind_fileShare = MESSAGE_ALL.cloneThenSetDescription("脑图分享.");
 		o.im_create = new Message(MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS_INNER)
 				.cloneThenSetDescription("聊聊消息.");
+		o.custom = new LinkedHashMap<>();
+		o.custom.put("foo", MESSAGE_ALL.cloneThenSetDescription("自定义消息类型."));
 		o.consumers = new LinkedHashMap<>();
 		o.consumers.put("ws_demo", XGsonBuilder.instance().toJsonTree(new WsConsumer()));
 		o.consumers.put("pmsinner_demo", XGsonBuilder.instance().toJsonTree(new PmsinnerConsumer()));
@@ -243,8 +247,8 @@ public class Messages extends ConfigObject {
 		o.consumers.put("restful_demo", XGsonBuilder.instance().toJsonTree(RestfulConsumer.defaultInstance()));
 		o.consumers.put("mail_demo", XGsonBuilder.instance().toJsonTree(MailConsumer.defaultInstance()));
 		o.consumers.put("api_demo", XGsonBuilder.instance().toJsonTree(ApiConsumer.defaultInstance()));
-		o.consumers.put("jdbc_demo", XGsonBuilder.instance().toJsonTree( JdbcConsumer.defaultInstance()));
-		o.consumers.put("table_demo", XGsonBuilder.instance().toJsonTree( TableConsumer.defaultInstance()));
+		o.consumers.put("jdbc_demo", XGsonBuilder.instance().toJsonTree(JdbcConsumer.defaultInstance()));
+		o.consumers.put("table_demo", XGsonBuilder.instance().toJsonTree(TableConsumer.defaultInstance()));
 		o.consumers.put("hadoop_demo", XGsonBuilder.instance().toJsonTree(HadoopConsumer.defaultInstance()));
 		o.loaders = new LinkedHashMap<>();
 		o.filters = new LinkedHashMap<>();
@@ -760,6 +764,12 @@ public class Messages extends ConfigObject {
 		case MessageConnector.TYPE_IM_CREATE:
 			return Optional.of(getImCreate());
 		default:
+			if ((null != this.custom) && type.startsWith(MessageConnector.TYPE_CUSTOM_PREFIX)) {
+				Message m = this.custom.get(StringUtils.substringAfter(type, MessageConnector.TYPE_CUSTOM_PREFIX));
+				if (null != m) {
+					return Optional.of(m);
+				}
+			}
 			return Optional.empty();
 		}
 	}

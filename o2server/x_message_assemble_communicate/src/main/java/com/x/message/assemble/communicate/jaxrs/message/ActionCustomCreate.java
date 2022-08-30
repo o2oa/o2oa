@@ -10,6 +10,7 @@ import com.x.base.core.project.x_message_assemble_communicate;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.Messages;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
@@ -20,11 +21,11 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.MessageConnector;
 import com.x.message.assemble.communicate.ThisApplication;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionCustomCreate extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCustomCreate.class);
-
-	private static final String CUSTOM_PREFIX = "custom_";
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 
@@ -33,10 +34,10 @@ class ActionCustomCreate extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-			if (!StringUtils.startsWith(wi.getType(), CUSTOM_PREFIX)) {
+			if (!StringUtils.startsWith(wi.getType(), MessageConnector.TYPE_CUSTOM_PREFIX)) {
 				throw new ExceptionNotCustomMessage(wi.getType());
 			}
-			if (!MessageConnector.TYPES.contains(wi.getType())) {
+			if (Config.messages().getConsumers(wi.getType()).isEmpty()) {
 				throw new ExceptionUndefinedMessageType(wi.getType());
 			}
 			Wo wo = ThisApplication.context().applications()
@@ -46,6 +47,7 @@ class ActionCustomCreate extends BaseAction {
 		}
 	}
 
+	@Schema(name = "com.x.message.assemble.communicate.jaxrs.message.ActionCustomCreate$Wi")
 	public static class Wi extends GsonPropertyObject {
 
 		private static final long serialVersionUID = 130960158845033826L;
@@ -99,6 +101,7 @@ class ActionCustomCreate extends BaseAction {
 
 	}
 
+	@Schema(name = "com.x.message.assemble.communicate.jaxrs.message.ActionCustomCreate$Wo")
 	public static class Wo extends WrapBoolean {
 
 		private static final long serialVersionUID = 7102367852270900958L;
