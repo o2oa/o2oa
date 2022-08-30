@@ -3,14 +3,14 @@
     <BaseItem name="systemName" :config="systemName" :allowEditor="true" @changeConfig="(value)=>{systemName=value; saveConfig('collect', 'title', value)}"/>
     <BaseItem name="systemSubTitle" :config="systemSubTitle" :allowEditor="true" @changeConfig="(value)=>{systemSubTitle=value; saveConfig('collect', 'footer', value)}"/>
 
-    <BaseItem
-        :title="lp._systemInfo.language"
-        :info="lp._systemInfo.languageInfo"
-        :config="language"
-        :allowEditor="true"
-        :options="lp._systemInfo.languageValues"
-        type="select"
-        @changeConfig="(value)=>{language = value; saveConfig('person', 'language', value)}"></BaseItem>
+<!--    <BaseItem-->
+<!--        :title="lp._systemInfo.language"-->
+<!--        :info="lp._systemInfo.languageInfo"-->
+<!--        :config="language"-->
+<!--        :allowEditor="true"-->
+<!--        :options="lp._systemInfo.languageValues"-->
+<!--        type="select"-->
+<!--        @changeConfig="(value)=>{language = value; saveConfig('person', 'language', value)}"></BaseItem>-->
 
 <!--    <div class="item_title">{{lp._systemInfo.language}}</div>-->
 <!--    <div class="item_info">{{lp._systemInfo.languageInfo}}</div>-->
