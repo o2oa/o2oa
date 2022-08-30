@@ -1840,11 +1840,18 @@ MWF.xApplication.query.StatementDesigner.View.Column = new Class({
         this.view.domListNode.show();
         this.node.setStyles(this.css.viewTitleColumnNode_selected);
         this.listNode.setStyles(this.css.cloumnListNode_selected);
-        new Fx.Scroll(this.view.areaNode, {"wheelStops": false, "duration": 100}).toElementEdge(this.node);
-        new Fx.Scroll(this.view.designer.propertyDomArea, {
-            "wheelStops": false,
-            "duration": 100
-        }).toElement(this.listNode);
+        // new Fx.Scroll(this.view.areaNode, {"wheelStops": false, "duration": 100}).toElementEdge(this.node);
+        // new Fx.Scroll(this.view.designer.propertyDomArea, {
+        //     "wheelStops": false,
+        //     "duration": 100
+        // }).toElement(this.listNode);
+
+        try{
+            this.node.scrollIntoView(true);
+            this.listNode.scrollIntoView(true);
+        }catch (e) {
+
+        }
 
         this.view.statement.selectMode = "viewColumn";
         this.view.statement.currentSelectedModule = this;
@@ -1935,9 +1942,12 @@ MWF.xApplication.query.StatementDesigner.View.Actionbar = new Class({
         }
         this.view.domListNode.show();
         this.node.setStyles(this.css.toolbarWarpNode_selected);
-        //this.listNode.setStyles(this.css.cloumnListNode_selected);
-        new Fx.Scroll(this.view.areaNode, {"wheelStops": false, "duration": 100}).toElementEdge(this.node);
-        //new Fx.Scroll(this.view.designer.propertyDomArea, {"wheelStops": false, "duration": 100}).toElement(this.listNode);
+        // new Fx.Scroll(this.view.areaNode, {"wheelStops": false, "duration": 100}).toElementEdge(this.node);
+        try {
+            this.node.scrollIntoView(true);
+        }catch (e) {
+
+        }
 
         this.view.statement.selectMode = "viewActionbar";
         this.view.statement.currentSelectedModule = this;
@@ -1982,7 +1992,12 @@ MWF.xApplication.query.StatementDesigner.View.Paging = new Class({
         }
         this.view.domListNode.show();
         this.node.setStyles(this.css.pagingWarpNode_selected);
-        new Fx.Scroll(this.view.areaNode, {"wheelStops": false, "duration": 100}).toElementEdge(this.node);
+        // new Fx.Scroll(this.view.areaNode, {"wheelStops": false, "duration": 100}).toElementEdge(this.node);
+        try {
+            this.node.scrollIntoView(true);
+        }catch (e) {
+
+        }
 
         this.view.statement.selectMode = "viewPaging";
         this.view.statement.currentSelectedModule = this;
