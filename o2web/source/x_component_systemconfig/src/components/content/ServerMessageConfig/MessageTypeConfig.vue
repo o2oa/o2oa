@@ -15,7 +15,7 @@
       <div class="item_message_module">
         <el-collapse :model-value="Object.keys(messageTypes)">
           <div class="item_info" v-for="type in Object.keys(messageTypes)" :key="type">
-            <el-collapse-item :name="type">
+            <el-collapse-item v-if="type!=='custom'" :name="type">
               <template #title>
                 <div style="display: flex; align-items: center; width: 100%;">
                   <div class="item_server_item_slot" style="width: 70%">{{messageTypes[type].description}}({{type}})</div>
@@ -24,12 +24,6 @@
               </template>
               <div class="item_info" style="display: flex; align-items: center;">
                 <div v-if="messageTypes[type].consumers.length" style="width: 100%">
-
-<!--                  <el-select v-model="messageTypes[type].consumers" multiple placeholder="Select" style="width:100%">-->
-<!--                    <el-option v-for="i in messageTypes[type].consumers" :key="i.consumer" :label="i.consumer" :value="i.consumer" />-->
-<!--                  </el-select>-->
-
-
                   <span v-for="i in messageTypes[type].consumers" :key="i">
                     <el-tag v-if="i.consumer" closable style="margin-right: 5px; margin-bottom: 5px;" @close="closeConsumer(type, i)" type="info">
                       {{i.consumer}}
@@ -42,10 +36,6 @@
                 <div v-else style="width: 100%">
                   <div class="item_no_consumer">{{lp._messageConfig.noConsumer}}</div>
                 </div>
-
-                <!--                <el-checkbox-group v-model="messageTypes[type].consumers" size="small">-->
-                <!--                  <el-checkbox v-for="i in Object.keys(consumersData)" :key="i" :label="i" size="small"/>-->
-                <!--                </el-checkbox-group>-->
                 <div style="min-width: 100px; display: flex; flex-direction: column; align-items: center; justify-content: space-around;">
                   <button class="item_msaage_button mainColor_bg" @click="selectConsumer(type)">{{lp._messageConfig.selectConsumer}}</button>
                   <button class="item_msaage_button mainColor_bg" @click="addTmpConsumer(type)">{{lp._messageConfig.addTmpConsumer}}</button>
@@ -53,7 +43,38 @@
               </div>
 
             </el-collapse-item>
+          </div>
+        </el-collapse>
+        <el-collapse :model-value="Object.keys(messageTypes.custom)">
+          <div class="item_info" v-for="type in Object.keys(messageTypes.custom)" :key="type">
+            <el-collapse-item v-if="type!=='custom'" :name="type">
+              <template #title>
+                <div style="display: flex; align-items: center; width: 100%;">
+                  <div class="item_server_item_slot" style="width: 70%">{{messageTypes.custom[type].description}}({{type}})</div>
+                  <div class="item_module_store_del o2icon-del" @click="deleteTmpMessage($event, type)"></div>
+                </div>
+              </template>
+              <div class="item_info" style="display: flex; align-items: center;">
+                <div v-if="messageTypes.custom[type].consumers.length" style="width: 100%">
+                  <span v-for="i in messageTypes.custom[type].consumers" :key="i">
+                    <el-tag v-if="i.consumer" closable style="margin-right: 5px; margin-bottom: 5px;" @close="closeConsumer(type, i, 'custom')" type="info">
+                      {{i.consumer}}
+                    </el-tag>
+                    <el-tag v-else closable style="margin-right: 5px; margin-bottom: 5px; cursor: pointer" @close="closeConsumer(type, i, 'custom')" @click="editConsumer(type, i, 'custom')">
+                      {{i.type}}
+                    </el-tag>
+                  </span>
+                </div>
+                <div v-else style="width: 100%">
+                  <div class="item_no_consumer">{{lp._messageConfig.noConsumer}}</div>
+                </div>
+                <div style="min-width: 100px; display: flex; flex-direction: column; align-items: center; justify-content: space-around;">
+                  <button class="item_msaage_button mainColor_bg" @click="selectConsumer(type, 'custom')">{{lp._messageConfig.selectConsumer}}</button>
+                  <button class="item_msaage_button mainColor_bg" @click="addTmpConsumer(type, 'custom')">{{lp._messageConfig.addTmpConsumer}}</button>
+                </div>
+              </div>
 
+            </el-collapse-item>
           </div>
         </el-collapse>
       </div>
@@ -196,8 +217,10 @@ const labelStyle = {
   width: '130px'
 }
 
-const saveData = (type)=>{
-  saveConfig('messages', type, messageTypes.value[type]);
+const saveData = (type, key)=>{
+  const path = key ? key+'.'+type : type;
+  const value = key ? messageTypes.value[key][type] : messageTypes.value[type];
+  saveConfig('messages', path, value);
 }
 
 const openEditDlg = (node, cb, title, width, height)=>{
@@ -230,29 +253,30 @@ const openEditDlg = (node, cb, title, width, height)=>{
   })
 }
 
-const selectConsumer = (type)=>{
+const selectConsumer = (type, key)=>{
   const consumers = [];
-  messageTypes.value[type].consumers.filter((c)=>{
+  const msgItem = key ? messageTypes.value[key][type] : messageTypes.value[type]
+  msgItem.consumers.forEach((c)=>{
     if (c.consumer){
       consumers.push(c.consumer);
     }
   });
   selectedConsumer.value = consumers;
   openEditDlg(consumerSelectArea, (dlg)=>{
-    messageTypes.value[type].consumers = messageTypes.value[type].consumers.filter((c)=>{
+    msgItem.consumers = msgItem.consumers.filter((c)=>{
       return !c.consumer
     });
     selectedConsumer.value.forEach((c)=>{
-      messageTypes.value[type].consumers.push({
+      msgItem.consumers.push({
         consumer: c
       });
     });
-    saveData(type);
+    saveData(type, key);
     dlg.close();
   }, lp._messageConfig.selectConsumer, 540, 300);
 }
 
-const addTmpConsumer = (type)=>{
+const addTmpConsumer = (type, key)=>{
   currentData.value = Object.clone(newConsumerData);
   openEditDlg(consumerEditorArea, (dlg)=>{
 
@@ -267,14 +291,16 @@ const addTmpConsumer = (type)=>{
         d[k] = currentData.value[k];
       });
     }
-    messageTypes.value[type].consumers.push(d);
-    saveData(type);
+
+    const msgItem = key ? messageTypes.value[key][type] : messageTypes.value[type]
+    msgItem.consumers.push(d);
+    saveData(type, key);
 
     dlg.close();
   }, lp._messageConfig.selectConsumer, 700, 500);
 }
 
-const editConsumer = (type, i)=>{
+const editConsumer = (type, i, key)=>{
   currentData.value = Object.clone(i);
   openEditDlg(consumerEditorArea, (dlg)=>{
 
@@ -289,20 +315,24 @@ const editConsumer = (type, i)=>{
         d[k] = currentData.value[k];
       });
     }
-    const idx = messageTypes.value[type].consumers.indexOf(i);
-    messageTypes.value[type].consumers[idx] = d;
+
+    const msgItem = key ? messageTypes.value[key][type] : messageTypes.value[type]
+    const idx = msgItem.consumers.indexOf(i);
+    msgItem.consumers[idx] = d;
     // messageTypes.value[type].consumers.push(d);
-    saveData(type);
+    saveData(type, key);
 
     dlg.close();
   }, lp._messageConfig.editConsumer, 700, 500);
 }
 
-const closeConsumer = (type, i)=>{
-  messageTypes.value[type].consumers = messageTypes.value[type].consumers.filter((c)=>{
+const closeConsumer = (type, i, key)=>{
+  const msgItem = key ? messageTypes.value[key][type] : messageTypes.value[type]
+
+  msgItem.consumers = msgItem.consumers.filter((c)=>{
     return i !== c;
   })
-  saveData(type);
+  saveData(type, key);
 }
 
 const addMessageType = ()=>{
@@ -316,13 +346,13 @@ const addMessageType = ()=>{
       component.notice(lp._messageConfig.inputMessageKey, 'error', dlg.node, {x: 'left', y: 'top'}, {x: 10, y: 10});
       return false
     }
-    const k = `custom_${newMessageData.value.key}`;
-    if (messageTypes.value[k]){
+    const k = newMessageData.value.key;
+    if (messageTypes.value.custom[k]){
       component.notice(lp._messageConfig.hasMessageKey, 'error', dlg.node, {x: 'left', y: 'top'}, {x: 10, y: 10});
       return false
     }
 
-    messageTypes.value[k] = {
+    messageTypes.value.custom[k] = {
       consumers: [],
       description: newMessageData.value.description
     }
@@ -332,7 +362,7 @@ const addMessageType = ()=>{
       node.scrollTo(0, node.scrollHeight+100)
     }, 100)
 
-    saveData(k);
+    saveData(k, 'custom');
 
     dlg.close();
   }, lp._messageConfig.addMessageType, 600, 300);
@@ -342,8 +372,8 @@ const deleteTmpMessage = (e, type)=>{
   e.stopPropagation();
   const text = lp._messageConfig.deleteTypeInfo.replace('{name}', type)
   component.confirm("warn", e, lp._messageConfig.deleteTypeTitle, text, 350, 170, (dlg)=>{
-    delete messageTypes.value[type];
-    delConfig('messages', type);
+    delete messageTypes.value.custom[type];
+    delConfig('messages', 'custom.'+type);
     dlg.close();
   }, (dlg)=>{
     dlg.close();
@@ -352,11 +382,10 @@ const deleteTmpMessage = (e, type)=>{
 }
 
 const load = ()=>{
-  debugger;
   if (props.message){
     const d = {};
     Object.keys(props.message).forEach((k)=>{
-      if (k!=='consumers' && k!=='filters' && k!=='loaders' && k!=='clean' && k.substring(0,3)!=='###'){
+      if (k!=='custom' && k!=='consumers' && k!=='filters' && k!=='loaders' && k!=='clean' && k.substring(0,3)!=='###'){
         d[k] = {};
         d[k].description = props.message[k].description;
         d[k].consumers = props.message[k].consumers.filter((c)=>{
@@ -364,6 +393,7 @@ const load = ()=>{
         });
       }
     });
+    d.custom = props.message.custom || {};
 
     messageTypes.value = d;
     consumersData.value = props.message.consumers;
