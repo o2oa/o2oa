@@ -162,7 +162,7 @@ MWF.xApplication.process.FormDesigner.widget.SectionMerger = new Class({
 					keyContentSeparator: {  name: this.data.pid + "keyContentSeparator",
 						tType : "text" , className: "editTableInput", event: {
 							change: function (it) {
-								this.property.setValue("keyContentSeparator", it.getValue(), this);
+								_self.property.setValue("keyContentSeparator", it.getValue(), this);
 							}
 						}},
 					sectionKey: { name: this.data.pid + "sectionKey",

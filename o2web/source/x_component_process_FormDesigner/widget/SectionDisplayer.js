@@ -81,7 +81,7 @@ MWF.xApplication.process.FormDesigner.widget.SectionDisplayer = new Class({
 					keyContentSeparatorSectionBy: {  name: this.data.pid + "keyContentSeparatorSectionBy",
 						tType : "text" , className: "editTableInput", event: {
 							change: function (it) {
-								this.property.setValue("keyContentSeparatorSectionBy", it.getValue(), this);
+								_self.property.setValue("keyContentSeparatorSectionBy", it.getValue(), this);
 							}
 						}}
 				}
