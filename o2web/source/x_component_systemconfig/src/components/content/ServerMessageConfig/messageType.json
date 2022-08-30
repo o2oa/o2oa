@@ -364,7 +364,7 @@
     ],
     "description": "聊聊消息."
   },
-
+  "custom": {},
   "clean": {
     "enable": true,
     "cron": "30 30 6 * * ?",
