@@ -181,6 +181,9 @@ public class MessageConnector {
 	// IM 聊天消息发送
 	public static final String TYPE_IM_CREATE = "im_create";
 
+	// IM 聊天消息发送
+	public static final String TYPE_CUSTOM_PREFIX = "custom_";
+
 	// 审计日志通知
 	// public static final String TYPE_AUDIT_LOG = "audit_log";
 
