@@ -150,7 +150,7 @@ const enableOrDisable = (v, node)=>{
   const title = (v) ? lp._storageServer.enableExternalTitle : lp._storageServer.disableExternalTitle;
   const text = (v) ? lp._storageServer.enableExternalConfirm : lp._storageServer.disableExternalConfirm
   component.confirm("warn", node.value.input, title, {html: text}, 560, 230, (dlg)=>{
-    storageData.value.enable = v;
+    //storageData.value.enable = v;
     saveData();
     dlg.close();
   }, (dlg)=>{
