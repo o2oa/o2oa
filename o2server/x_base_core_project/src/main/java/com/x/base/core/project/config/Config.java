@@ -525,7 +525,13 @@ public class Config {
 	}
 
 	public static synchronized void flush() {
-		INSTANCE = null;
+		Config newInstance = new Config();
+		if(INSTANCE != null){
+			newInstance.nodes = INSTANCE.nodes;
+			newInstance.externalStorageSources = INSTANCE.externalStorageSources;
+			newInstance.externalDataSources = INSTANCE.externalDataSources;
+		}
+		INSTANCE = newInstance;
 	}
 
 	private static synchronized Config instance() {
