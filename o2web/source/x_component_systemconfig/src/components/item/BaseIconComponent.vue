@@ -1,5 +1,5 @@
 <template>
-  <div class="item_input" v-if="value.path && iconJson">
+  <div class="item_input" v-if="ev.path && iconJson">
     <div :class="getClass" :style="getIcon"></div>
   </div>
 </template>
@@ -19,10 +19,7 @@ const ev = ref(props.value);
 watch(()=>props.value, (v) =>{
   ev.value = v;
 });
-watch(()=>props.value.path, (v) =>{
-  console.log(v)
-  ev.value.path = v;
-});
+
 
 if (!layout.iconJson){
   layout.iconJson = fetch('../o2_core/o2/xDesktop/$Default/icons.json').then((res)=>{
