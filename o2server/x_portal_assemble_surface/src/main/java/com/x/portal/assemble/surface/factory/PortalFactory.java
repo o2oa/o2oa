@@ -10,6 +10,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.project.cache.CacheManager;
@@ -53,8 +55,8 @@ public class PortalFactory extends AbstractFactory {
 	}
 
 	public boolean visible(EffectivePerson effectivePerson, Portal portal) throws Exception {
-		if (effectivePerson.isManager() || this.business().organization().person().hasRole(effectivePerson,
-				OrganizationDefinition.PortalManager)) {
+		if (effectivePerson.isManager() || BooleanUtils.isTrue(this.business().organization().person()
+				.hasRole(effectivePerson, OrganizationDefinition.PortalManager))) {
 			return true;
 		}
 		if (effectivePerson.isPerson(portal.getCreatorPerson())) {

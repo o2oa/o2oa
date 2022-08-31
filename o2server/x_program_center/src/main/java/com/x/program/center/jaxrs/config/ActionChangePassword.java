@@ -132,7 +132,7 @@ class ActionChangePassword extends BaseAction {
 	}
 
 	private void checkPasswordComplexity(String credential, String newPassword) throws Exception {
-		if (newPassword.matches(Config.person().getPasswordRegex())) {
+		if (!newPassword.matches(Config.person().getPasswordRegex())) {
 			throw new ExceptionInvalidPassword(credential, Config.person().getPasswordRegexHint());
 		}
 	}

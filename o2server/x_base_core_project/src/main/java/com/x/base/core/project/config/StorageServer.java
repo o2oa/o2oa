@@ -1,5 +1,7 @@
 package com.x.base.core.project.config;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -8,7 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.entity.StorageProtocol;
 import com.x.base.core.entity.StorageType;
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.tools.ListTools;
 
 public class StorageServer extends ConfigObject {
 
@@ -28,7 +29,7 @@ public class StorageServer extends ConfigObject {
 		this.port = default_port;
 		this.sslEnable = false;
 		this.name = default_name;
-		this.accounts = new CopyOnWriteArrayList<Account>();
+		// this.accounts = new CopyOnWriteArrayList<Account>();
 		this.prefix = default_prefix;
 		this.deepPath = default_deepPath;
 	}
@@ -41,8 +42,8 @@ public class StorageServer extends ConfigObject {
 	private Boolean sslEnable;
 	@FieldDescribe("名称,多个节点中不能重名,默认为251.")
 	private String name;
-	@FieldDescribe("二进制流文件是分多个账号分段存储的,可以单独设置每个分类的存储配置,一般不需要设置.")
-	private CopyOnWriteArrayList<Account> accounts;
+//	@FieldDescribe("二进制流文件是分多个账号分段存储的,可以单独设置每个分类的存储配置,一般不需要设置.")
+//	private CopyOnWriteArrayList<Account> accounts;
 	@FieldDescribe("ftp传输有主动和被动之分,如果使用了被动传输,设置被动端口范围,默认为29000-30000.")
 	private String passivePorts;
 	@FieldDescribe("路径前缀.")
@@ -50,18 +51,18 @@ public class StorageServer extends ConfigObject {
 	@FieldDescribe("使用更深的路径")
 	private Boolean deepPath;
 
-	public CopyOnWriteArrayList<Account> getCalculatedAccounts() throws Exception {
-		if (ListTools.isEmpty(accounts)) {
-			accounts = new CopyOnWriteArrayList<>();
-			for (StorageType o : StorageType.values()) {
-				Account account = new Account();
-				account.setProtocol(StorageProtocol.ftp);
-				account.setUsername(o.toString());
-				account.setWeight(100);
-				account.setPassword(Config.token().getPassword());
-				accounts.add(account);
-			}
+	public List<Account> getCalculatedAccounts() throws Exception {
+		// if (ListTools.isEmpty(accounts)) {
+		List<Account> accounts = new ArrayList<>();
+		for (StorageType o : StorageType.values()) {
+			Account account = new Account();
+			account.setProtocol(StorageProtocol.ftp);
+			account.setUsername(o.toString());
+			account.setWeight(100);
+			account.setPassword(Config.token().getPassword());
+			accounts.add(account);
 		}
+		// }
 		return accounts;
 	}
 
@@ -152,16 +153,16 @@ public class StorageServer extends ConfigObject {
 		this.enable = enable;
 	}
 
-	public void setAccounts(CopyOnWriteArrayList<Account> accounts) {
-		this.accounts = accounts;
-	}
-
-	public CopyOnWriteArrayList<Account> getAccounts() {
-		if (null == this.accounts) {
-			return new CopyOnWriteArrayList<Account>();
-		}
-		return accounts;
-	}
+//	public void setAccounts(CopyOnWriteArrayList<Account> accounts) {
+//		this.accounts = accounts;
+//	}
+//
+//	public CopyOnWriteArrayList<Account> getAccounts() {
+//		if (null == this.accounts) {
+//			return new CopyOnWriteArrayList<Account>();
+//		}
+//		return accounts;
+//	}
 
 	public void setName(String name) {
 		this.name = name;
