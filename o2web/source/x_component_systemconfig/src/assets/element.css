@@ -16674,3 +16674,16 @@ div[id^="el-popper-container"] .el-picker__popper.el-popper[data-popper-placemen
     border-right-color: transparent;
     border-top-color: transparent
 }
+
+
+div[id^="el-popper-container"] .el-popper.is-dark {
+    color: var(--el-bg-color);
+    background: var(--el-text-color-primary);
+    border: 1px solid var(--el-text-color-primary)
+}
+
+div[id^="el-popper-container"] .el-popper.is-dark .el-popper__arrow::before {
+    border: 1px solid var(--el-text-color-primary);
+    background: var(--el-text-color-primary);
+    right: 0
+}
