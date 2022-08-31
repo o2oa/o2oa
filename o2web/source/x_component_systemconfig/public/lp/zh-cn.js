@@ -1161,6 +1161,7 @@ o2.xApplication.systemconfig.LP = {
         "externalExternalInfo": "<span class='mainColor_color'>您已启用扩展文件存储服</span>",
 
         "enableExternal": "启用扩展文件存储",
+        "disableExternal": "禁用扩展文件存储",
         "enableExternalInfo": "如果要启用扩展文件存储，请确保扩展文件存储配置已经完成，否则可能造成服务器运行异常。启用或禁用扩展存储服务都会影响到系统现有的文件存储，强烈建议先备份系统数据。",
 
         "enableExternalTitle": "启用扩展文件存储确认",
