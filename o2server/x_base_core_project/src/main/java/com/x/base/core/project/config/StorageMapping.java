@@ -64,7 +64,7 @@ public class StorageMapping extends GsonPropertyObject {
 	}
 
 	public Integer getWeight() {
-		return weight;
+		return weight == null ? 1 : weight;
 	}
 
 	public String getName() {
