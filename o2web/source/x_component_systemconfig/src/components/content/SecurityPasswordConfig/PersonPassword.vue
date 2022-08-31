@@ -42,7 +42,7 @@
       <div class="item">
         <label class="item_label">{{lp._passwordConfig.passwordRegexLength}}</label>
         <div class="item_input_area">
-          <el-slider ref="passwordLengthNode" class="item_slider" v-model="passwordLength" range :max="30" :min="1" @input="recordPasswordLength" @change="savePasswordRuleConfig"></el-slider>
+          <el-slider ref="passwordLengthNode" class="item_slider" tooltip-class="systemconfig" v-model="passwordLength" range :max="30" :min="1" @input="recordPasswordLength" @change="savePasswordRuleConfig"></el-slider>
         </div>
       </div>
       <div class="item">
