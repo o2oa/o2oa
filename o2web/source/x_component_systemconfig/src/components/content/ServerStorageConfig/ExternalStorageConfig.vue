@@ -56,24 +56,24 @@
                 <el-table :data="storageData[type]" style="width: 100%" :empty-text="lp._storageServer.noStoreNode">
                   <el-table-column prop="store" :label="lp._storageServer.store">
                     <template #default="scope">
-                      <el-select v-model="scope.row.store" size="default" popper-class="systemconfig">
+                      <el-select v-model="scope.row.store" size="default" popper-class="systemconfig" @change="saveStoreData(type)">
                         <el-option v-for="s in Object.keys(storageData.store)" :key="s" :value="s" :label="s"></el-option>
                       </el-select>
                     </template>
                   </el-table-column>
                   <el-table-column prop="prefix" :label="lp._storageServer.prefix">
                     <template #default="scope">
-                      <el-input v-model="scope.row.prefix"></el-input>
+                      <el-input v-model="scope.row.prefix" @change="saveStoreData(type)"></el-input>
                     </template>
                   </el-table-column>
                   <el-table-column prop="deepPath" :label="lp._storageServer.deepPath">
                     <template #default="scope">
-                      <el-switch v-model="scope.row.deepPath"></el-switch>
+                      <el-switch v-model="scope.row.deepPath" @change="saveStoreData(type)"></el-switch>
                     </template>
                   </el-table-column>
                   <el-table-column prop="enable" :label="lp._storageServer.enable">
                     <template #default="scope">
-                      <el-switch v-model="scope.row.enable"></el-switch>
+                      <el-switch v-model="scope.row.enable" @change="saveStoreData(type)"></el-switch>
                     </template>
                   </el-table-column>
 
@@ -84,7 +84,7 @@
                   </el-table-column>
                 </el-table>
                 <div style="display: flex;justify-content: space-between;">
-                  <button class="mainColor_bg" style="margin-top: 10px; margin-left: 0" @click="saveStoreData(type)">{{lp._storageServer.saveStore}}</button>
+<!--                  <button class="mainColor_bg" style="margin-top: 10px; margin-left: 0" @click="saveStoreData(type)">{{lp._storageServer.saveStore}}</button>-->
                   <button style="margin-top: 10px; margin-left: 0" @click="addStore(type)">{{lp._storageServer.addStore}}</button>
                 </div>
 
@@ -166,19 +166,19 @@ const saveStoreData = (type)=>{
   storageData.value[type] = d;
   saveData();
 }
-const saveData = async () => {
+const saveData = async (notice) => {
   await saveConfigData('externalStorageSources', storageData.value);
-  component.notice(lp._storageServer.saveStorageSuccess, 'success');
+  if (notice) component.notice(lp._storageServer.saveStorageSuccess, 'success');
 }
 
 const addStore = (type)=>{
-  debugger;
   storageData.value[type].push({
     "store": "",
     "prefix": "",
     "enable": false,
     "deepPath": false
   });
+  // saveStoreData(type);
 }
 const deleteStore = (type, scope)=>{
   storageData.value[type].splice(scope.$index,1)

@@ -2,6 +2,7 @@ o2.xApplication.systemconfig.LP = {
     "title": "系统配置",
     "searchKey": "搜索设置项",
     "default": "默认",
+    "permissionDenied": "当前用户权限不足，您必须使用管理员帐号访问系统配置",
 
     "baseConfig": "基础配置",
     "systemInfo": "系统信息",
@@ -205,7 +206,10 @@ o2.xApplication.systemconfig.LP = {
         "deployPathInfo": "如果部署zip文件，路径可以为空；单个文件部署必须指定部署路径。如：/myWebResource/subPath",
 
         "noDeployFile": "请先选择要部署的资源文件",
-        "deploySuccess": "部署资源成功"
+        "deploySuccess": "部署资源成功",
+
+        "notWebResource": "<span style='color: red'>当前服务器不允许前端部署Web资源，您可以到服务器配置-服务器任务中开启此功能</span>",
+        "notServiceResource": "<span style='color: red'>当前服务器不允许前端部署部署自定义服务，您可以到服务器配置-服务器任务中开启此功能</span>"
     },
     "_uiConfig": {
         "baseConfig": "基本配置",
@@ -327,8 +331,8 @@ o2.xApplication.systemconfig.LP = {
         "newPassword": "新密码",
         "confirmPassword": "确认密码",
 
-        "ternaryPassword": "三元管理员密码",
-        "ternaryPasswordInfo": "如果您启用了三元管理，系统管理员可以在此处修改系统管理员（systemManager）、安全管理员（securityManager）和安全审计员（auditManager）的密码。",
+        "ternaryPassword": "三员管理员密码",
+        "ternaryPasswordInfo": "如果您启用了三员管理，系统管理员可以在此处修改系统管理员（systemManager）、安全管理员（securityManager）和安全审计员（auditManager）的密码。",
         "modifySystemManagerPassword": "修改系统管理员密码",
         "modifySecurityManagerPassword": "修改安全管理员密码",
         "modifyAuditManagerPassword": "修改安全审计员密码",
@@ -750,7 +754,7 @@ o2.xApplication.systemconfig.LP = {
         "deployWarEnable": "是否允许前端部署自定义应用",
         "deployWarEnableInfo": "此配置控制自定义应用（war）是否允许在WEB端上传部署（需要重启服务器）",
 
-        "deployResourceEnable": "是否允许前端部署资源",
+        "deployResourceEnable": "是否允许前端部署Web资源",
         "deployResourceEnableInfo": "此配置控制前端组件和静态资源，是否允许在WEB端上传部署（需要重启服务器）",
 
         "statEnable": "启用Druid统计",
@@ -1443,6 +1447,9 @@ o2.xApplication.systemconfig.LP = {
 
 
         "deleteLoaderTitle": "删除加载器确认",
-        "deleteLoaderInfo": "您确定要删除加载器“{name}”吗？"
+        "deleteLoaderInfo": "您确定要删除加载器“{name}”吗？",
+
+        "deleteConsumerTitle": "删除消息通道确认",
+        "deleteConsumerInfo": "您确定要删除消息通道“{name}”吗？"
     }
 }

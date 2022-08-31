@@ -71,9 +71,12 @@ async function delConfig(name, path) {
     });
 }
 
-async function saveConfigData(name, data) {
-    const config = (configs[name]) ? configs[name] : (await loadConfig(name));
-    Object.assign(config, data);
+async function saveConfigData(name, data, force) {
+    let config = data;
+    if (!force){
+        config = (configs[name]) ? configs[name] : (await loadConfig(name));
+        Object.assign(config, data);
+    }
     o2.Actions.load('x_program_center').ConfigAction.save({
         fileName: `${name}.json`,
         fileContent: JSON.stringify(config, null, "\t")

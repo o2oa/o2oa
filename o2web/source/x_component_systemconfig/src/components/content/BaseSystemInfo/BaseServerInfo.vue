@@ -69,7 +69,7 @@
             <BaseServerInfoItem :data="server.node.data" :item-lp="lp._systemInfo.serverData"></BaseServerInfoItem>
           </el-collapse-item>
 
-          <el-collapse-item v-if="!externalStorage || !externalStorage.length">
+          <el-collapse-item v-if="!externalStorageEnable">
             <template #title>
               <div class="item_server_item_slot">
                 <div style="display: flex; align-items: center;">
@@ -135,7 +135,7 @@
       </div>
     </div>
 
-    <div v-if="externalStorage && externalStorage.length">
+    <div v-if="externalStorageEnable">
       <div class="item_info">
         <div class="item_server_item lightColor_bg">
           <div class="item_server_area">
@@ -153,7 +153,7 @@
                     table-layout="auto"
                     :span-method="objectSpanMethod">
 
-            <el-table-column prop="username" :label="lp._systemInfo.storageAccounts.username"></el-table-column>
+            <el-table-column prop="usernameKey" :label="lp._systemInfo.storageAccounts.username"></el-table-column>
             <el-table-column prop="protocol" :label="lp._systemInfo.storageAccounts.protocol" />
             <el-table-column :label="lp._systemInfo.storageAccounts.host">
               <template  #default="scope">
@@ -189,6 +189,7 @@ const servers = ref([]);
 const externalStorage = ref([]);
 const externalStorageType = ref();
 const externalData = ref([]);
+const externalStorageEnable = ref(false);
 const databaseType = computed(()=>{
   const d = (externalData.value) ? externalData.value.filter((db)=>{ return db.enable}) : null;
   return (!d || !d.length) ? 'inner' : 'external';
@@ -202,30 +203,60 @@ const load = async () => {
   getServers().then((data)=>{
     servers.value = data.nodeList;
   });
-  Promise.all([loadRuntimeConfig('externalStorageSources'), loadRuntimeConfig('externalStorageType')]).then((arr)=>{
-    const storageData = arr[0];
-    let storageType = arr[1];
-    if (storageData){
-      if (storageData.store){
-        if (!storageType) storageType = storageData.store;
-        delete storageData.store;
-      }
+  loadRuntimeConfig('externalStorageSources').then((data)=>{
+    const storageData = (data) ? Object.clone(data) : {};
+    let storageType = data ? storageData.store : {};
+    delete storageData.store;
+    externalStorageEnable.value = !!storageData.enable;
 
+    if (storageData && storageData.enable){
       const storages = [];
       Object.keys(storageData).forEach((key)=>{
-        storageData[key].forEach((d, i)=>{
-          d.username = key;
-          if (i===0) d.span = storageData[key].length;
-          if (d.store && storageType && storageType[d.store] ){
-            Object.assign(d, storageType[d.store])
-          }
-          storages.push(d);
-        });
+
+        if (key!=='enable' && !key.startsWith('###')){
+          storageData[key].forEach((d, i)=>{
+            d.usernameKey = key;
+            if (i===0) d.span = storageData[key].length;
+            if (d.store && storageType && storageType[d.store] ){
+              Object.assign(d, storageType[d.store])
+            }
+            storages.push(d);
+          });
+        }
+
       });
+      debugger;
       externalStorage.value = storages;
       externalStorageType.value = storageType;
     }
   });
+
+
+
+  // Promise.all([loadRuntimeConfig('externalStorageSources'), loadRuntimeConfig('externalStorageType')]).then((arr)=>{
+  //   const storageData = arr[0];
+  //   let storageType = arr[1];
+  //   if (storageData){
+  //     if (storageData.store){
+  //       if (!storageType) storageType = storageData.store;
+  //       delete storageData.store;
+  //     }
+  //
+  //     const storages = [];
+  //     Object.keys(storageData).forEach((key)=>{
+  //       storageData[key].forEach((d, i)=>{
+  //         d.username = key;
+  //         if (i===0) d.span = storageData[key].length;
+  //         if (d.store && storageType && storageType[d.store] ){
+  //           Object.assign(d, storageType[d.store])
+  //         }
+  //         storages.push(d);
+  //       });
+  //     });
+  //     externalStorage.value = storages;
+  //     externalStorageType.value = storageType;
+  //   }
+  // });
 
   loadRuntimeConfig('externalDataSources').then((data)=>{
     externalData.value = data || [];

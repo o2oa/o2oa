@@ -45,6 +45,8 @@
                     @upload="uploadComponentFile"
                     @remove="removeComponentFile"/>
       </div>
+
+      <button @click="()=>{currentComponent.path='22222'}"></button>
     </div>
   </div>
 </template>
@@ -52,7 +54,7 @@
 <script setup>
 import {component, lp, o2} from '@o2oa/component';
 import {loadComponents, removeComponent, saveComponent, dispatchComponentFile, getConfigData} from '@/util/acrions';
-import {ref} from "vue";
+import {ref, reactive} from "vue";
 import BaseInput from '@/components/item/BaseInput.vue';
 import BaseBoolean from '@/components/item/BaseBoolean.vue';
 import BasePerson from '@/components/item/BasePerson.vue';
@@ -92,7 +94,7 @@ async function uninstallComponent(cmpt) {
 }
 
 async function editComponent(cmpt, index) {
-  currentComponent.value = Object.clone(cmpt);
+  if (cmpt) currentComponent.value = Object.clone(cmpt);
   const container = component.content.getElement('.systemconfig');
   const content = componentEditorNode.value;
   content.show();
@@ -151,8 +153,10 @@ function createComponent(){
     title: "",
     type: "",
     visible: true
-  }
-  editComponent(cmpt);
+  };
+  components.value.push(cmpt)
+  currentComponent.value = components.value[components.value.length-1];
+  editComponent();
 }
 
 function uploadComponentFile(file){

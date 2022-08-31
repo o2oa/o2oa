@@ -33,7 +33,7 @@
           @click="restore($event)">{{lp._databaseServer.restoreTools}}</button>
 <!--      <el-input v-model="dumpDataName" style="width: 210px; margin-left: 10px"></el-input>-->
 
-      <el-select v-model="dumpDataName" style="margin-left: 10px" popper-class="systemconfig">
+      <el-select v-model="dumpDataName" style="margin-left: 10px" popper-class="systemconfig" size="default">
         <el-option v-for="d in dumpDataList" :key="d.value" :value="d.value"></el-option>
       </el-select>
 

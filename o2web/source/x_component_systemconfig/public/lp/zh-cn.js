@@ -331,8 +331,8 @@ o2.xApplication.systemconfig.LP = {
         "newPassword": "新密码",
         "confirmPassword": "确认密码",
 
-        "ternaryPassword": "三元管理员密码",
-        "ternaryPasswordInfo": "如果您启用了三元管理，系统管理员可以在此处修改系统管理员（systemManager）、安全管理员（securityManager）和安全审计员（auditManager）的密码。",
+        "ternaryPassword": "三员管理员密码",
+        "ternaryPasswordInfo": "如果您启用了三员管理，系统管理员可以在此处修改系统管理员（systemManager）、安全管理员（securityManager）和安全审计员（auditManager）的密码。",
         "modifySystemManagerPassword": "修改系统管理员密码",
         "modifySecurityManagerPassword": "修改安全管理员密码",
         "modifyAuditManagerPassword": "修改安全审计员密码",
@@ -1447,6 +1447,9 @@ o2.xApplication.systemconfig.LP = {
 
 
         "deleteLoaderTitle": "删除加载器确认",
-        "deleteLoaderInfo": "您确定要删除加载器“{name}”吗？"
+        "deleteLoaderInfo": "您确定要删除加载器“{name}”吗？",
+
+        "deleteConsumerTitle": "删除消息通道确认",
+        "deleteConsumerInfo": "您确定要删除消息通道“{name}”吗？"
     }
 }

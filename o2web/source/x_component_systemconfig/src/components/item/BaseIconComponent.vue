@@ -6,13 +6,22 @@
 
 <script setup>
 import {layout} from '@o2oa/component';
-import {ref, computed} from 'vue';
+import {ref, computed, watch} from 'vue';
 
 const props = defineProps({
   value: Object,
   iconStyle: { type: Object, default: {} },
   iconWidth: { type: String, default: '50px' },
   iconHeight: { type: String, default: '50px' }
+});
+
+const ev = ref(props.value);
+watch(()=>props.value, (v) =>{
+  ev.value = v;
+});
+watch(()=>props.value.path, (v) =>{
+  console.log(v)
+  ev.value.path = v;
 });
 
 if (!layout.iconJson){
@@ -26,13 +35,13 @@ layout.iconJson.then((data)=>{
 });
 
 const getClass = computed(()=>{
-  const startWidthUrl = props.value.path.startsWith('@url')
-  const path = (startWidthUrl && (!props.value.iconPath || props.value.iconPath==='appicon.png')) ? 'Url' : props.value.path;
+  const startWidthUrl = ev.value.path.startsWith('@url')
+  const path = (startWidthUrl && (!ev.value.iconPath || ev.value.iconPath==='appicon.png')) ? 'Url' : ev.value.path;
   return (iconJson.value[path]) ? 'componentItemIconSystem' : 'componentItemIconCustom';
 });
 
 function computeIconStyle(){
-  const cmpt = props.value;
+  const cmpt = ev.value;
   const isUrl = cmpt.path.startsWith('@url');
   const iconObj = iconJson.value[cmpt.path] || ((isUrl && cmpt.iconPath==='appicon.png') ? iconJson.value['Url'] : null);
 
