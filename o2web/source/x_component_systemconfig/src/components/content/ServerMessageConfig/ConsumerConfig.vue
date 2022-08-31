@@ -18,7 +18,7 @@
             <div class="o2icon-mq item_config_icon mainColor_bg"></div>
             <div class="item_server_item_slot item_bold" style="width: 300px"> {{key}} : {{lp._messageConfig.consumerTypes[consumersData[key].type]}}</div>
             <div v-if="!lp._messageConfig.consumerTypes[key]">
-              <button class="o2icon-del grayColor_bg item_consumer_action" @click="(e)=>{e.stopPropagation(); removeNode(e, key)}"></button>
+              <button class="o2icon-del grayColor_bg item_consumer_action" @click="(e)=>{e.stopPropagation(); removeConsumer(e, key)}"></button>
             </div>
           </div>
         </div>
@@ -92,7 +92,7 @@
 <script setup>
 import {lp, o2, component} from '@o2oa/component';
 import {ref} from 'vue';
-import {saveConfig} from '@/util/acrions';
+import {delConfig, saveConfig} from '@/util/acrions';
 import BaseSwitch from '@/components/item/BaseSwitch.vue';
 import BaseSelect from '@/components/item/BaseSelect.vue';
 import BaseInput from '@/components/item/BaseInput.vue';
@@ -154,7 +154,8 @@ const editConsumer = (key)=>{
     }else if (data.hasOwnProperty('key') && consumersData.value[data.key]) {
       component.notice(lp._messageConfig.hasKey, 'error', dlg.node, {x: 'left', y: 'top'}, {x: 10, y: 10});
     }else{
-      consumersData.value[key] = {
+      const id = (o2.typeOf(key)==='string') ? key : key.key;
+      consumersData.value[id] = {
         type: currentData.value.type,
         loader: currentData.value.loader,
         filter: currentData.value.filter,
@@ -162,15 +163,22 @@ const editConsumer = (key)=>{
       }
       if (lp._messageConfig.consumerData[currentData.value.type]){
         lp._messageConfig.consumerData[currentData.value.type].forEach((k)=>{
-          consumersData.value[key][k] = currentData.value[k];
+          consumersData.value[id][k] = currentData.value[k];
         });
       }
       saveData();
+      dlg.close();
     }
   }, 700, 500)
 }
 const addConsumer = ()=>{
+  let n = 1;
+  while (consumersData.value['consumer'+n]){
+    n++;
+  }
+
   const data = {
+    "key": "consumer"+n,
     "type": "ws",
     "loader": "",
     "filter": "",
@@ -207,6 +215,20 @@ const addConsumer = ()=>{
   editConsumer(data)
 }
 
+const removeConsumer = (e, key)=>{
+  e.stopPropagation();
+  const text = lp._messageConfig.deleteConsumerInfo.replace('{name}', key);
+  const item = e.currentTarget.getParent('.item_consumer_item');
+  item.addClass('item_consumer_item_del');
+  component.confirm("warn", e, lp._messageConfig.deleteConsumerTitle, text, 350, 170, (dlg)=>{
+    delete consumersData.value[key];
+    delConfig('messages', 'consumers.'+key);
+    dlg.close();
+  }, (dlg)=>{
+    item.removeClass('item_consumer_item_del');
+    dlg.close();
+  }, null, component.content);
+}
 
 const load = ()=>{
   debugger;
@@ -266,5 +288,8 @@ load();
 .item_consumer_editorArea{
   padding: 20px;
   display: none;
+}
+.item_consumer_item_del{
+  background-color: #ffecec;
 }
 </style>

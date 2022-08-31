@@ -45,7 +45,13 @@ const props = defineProps({
 });
 
 const ev = ref(props.value);
-watch(()=>props.value, (v) =>  ev.value = v);
+watch(()=>props.value, (v) =>{
+  ev.value = v;
+});
+watch(()=>props.value.path, (v) =>{
+  console.log(11111111111111);
+  ev.value.path = v;
+});
 
 const itemTypeObj = {
   group: ()=>ev.value.type==='group',

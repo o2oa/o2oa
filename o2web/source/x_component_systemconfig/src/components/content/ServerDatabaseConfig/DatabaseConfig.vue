@@ -149,17 +149,21 @@ const removeDatabase = (e, idx)=>{
 const saveDatabaseConfig = (e)=>{
   component.confirm("warn", e, lp._databaseServer.saveEntityConfig, {html: lp._databaseServer.saveEntityConfirm}, 500, 100, function(){
     const p = [];
+
+    p.push(saveConfigData('externalDataSources', externalDatabase.value, true));
+
     //if (databaseType==='external'){
-      p.push(loadRuntimeConfig('externalDataSources', true).then((data, idx)=>{
-        data.forEach((d, idx)=>{
-          Object.keys(d).forEach((k)=>{
-            if (k!=='includes' && k!=='excludes'){
-              d[k] = externalDatabase.value[idx][k];
-            }
-          });
-        });
-        return saveConfigData('externalDataSources', data);
-      }));
+    //   p.push(loadRuntimeConfig('externalDataSources', true).then((dbData, idx)=>{
+    //     const data = dbData || [];
+    //     data.forEach((d, idx)=>{
+    //       Object.keys(d).forEach((k)=>{
+    //         if (k!=='includes' && k!=='excludes'){
+    //           d[k] = externalDatabase.value[idx][k];
+    //         }
+    //       });
+    //     });
+    //     return saveConfigData('externalDataSources', data, true);
+    //   }));
     //}else {
       p.push(getServers().then((data) => {
         const saveP = [];
@@ -211,7 +215,7 @@ const reloadConfig = (e)=>{
 
 const addExternalDatabase = ()=>{
   const data ={
-    url:'',
+    url:'jdbc:mysql://127.0.0.1:3306/X?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&useLegacyDatetimeCode=false&serverTimezone=GMT%2B8',
     username : '',
     password :'',
     includes: [],
@@ -282,6 +286,7 @@ const load = ()=>{
 }
 
 load();
+defineExpose({load});
 
 </script>
 

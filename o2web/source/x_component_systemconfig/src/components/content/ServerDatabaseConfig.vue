@@ -3,9 +3,9 @@
     <div class="systemconfig_title">{{lp.databaseServer}}</div>
 
     <div class="systemconfig_tab_area">
-      <el-tabs tab-position="right" @tab-click="changeTabPane">
-        <el-tab-pane :label="lp._databaseServer.databaseSource" lazy>
-          <DatabaseConfig></DatabaseConfig>
+      <el-tabs tab-position="right" @tab-click="changeTabPane" model-value="db">
+        <el-tab-pane :label="lp._databaseServer.databaseSource" name="db">
+          <DatabaseConfig ref="database"></DatabaseConfig>
         </el-tab-pane>
         <el-tab-pane :label="lp._databaseServer.entity" name="entity">
           <EntityConfig ref="entity"></EntityConfig>
@@ -28,10 +28,14 @@ import EntityConfig from '@/components/content/ServerDatabaseConfig/EntityConfig
 import DatabaseTools from '@/components/content/ServerDatabaseConfig/DatabaseTools.vue';
 
 const entity = ref();
+const database = ref();
 
 const changeTabPane = (pane, e)=>{
   if (pane.paneName === 'entity' && !pane.active){
     entity.value.load();
+  }
+  if (pane.paneName === 'db' && !pane.active){
+    database.value.load();
   }
 }
 
