@@ -633,8 +633,9 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			var old;
 			if(fireChange)old = Object.clone(this.getBusinessDataById() || {});
 
-			if( data && data.data )delete data.data;
-			if( data && data.total )delete data.total;
+			//删除并没有用，因为会对比数据提交，如果要清空可以给data.data = []; data.total = {}
+			// if( data && data.data )delete data.data;
+			// if( data && data.total )delete data.total;
 
 			this.setBusinessDataById(data);
 			this.data = data;
