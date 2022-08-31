@@ -601,18 +601,13 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 			if( flag )this.setBusinessDataById( bData );
 			this.dataWithSectionBy = this.getAllSortedSectionData();
-			var d = flag ? this.getBusinessDataById() : bData;
-			if( d && d.data )delete d.data;
-			if( d && d.total )delete d.total;
-			return d;
+			return flag ? this.getBusinessDataById() : bData;
 		},
 		getAllSortedSectionData: function(){ //获取合并排序后的数据
 			var data = this.getBusinessDataById();
-			if( data && data.data )delete data.data;
-			if( data && data.total )delete data.total;
 			var array = [];
 			for( var key in data ){
-				array.push({
+				if( !["data","total"].contains(key) )array.push({
 					sectionKey: key,
 					key: key,
 					data: data[key]
@@ -654,15 +649,13 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		},
 		getSortedSectionData: function(){ //获取合并排序后的数据
 			var data = this.getBusinessDataById();
-			if( data && data.data )delete data.data;
-			if( data && data.total )delete data.total;
 			var array = [];
 			for( var key in data ){
-				array.push({
+				if( !["data","total"].contains(key) )array.push({
 					sectionKey: key,
 					key: key,
 					data: data[key]
-				})
+				});
 			}
 			if( this.json.sectionMergeSortScript && this.json.sectionMergeSortScript.code){
 				array.sort( function(a, b){
