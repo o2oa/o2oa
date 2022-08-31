@@ -514,8 +514,10 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			var data;
 			if( this.isShowAllSection ){
 				data = { data : [] };
-				Object.each( this.getBusinessDataById(), function (d) {
-					data.data = data.data.concat( d.data )
+				Object.each( this.getBusinessDataById(), function (d, key) {
+					if( !["data","total"].contains(key) ){
+						data.data = data.data.concat( d.data )
+					}
 				})
 			}else if( this.isMergeRead ){
 				data = this.data;
