@@ -1,5 +1,23 @@
 package com.x.program.center.jaxrs.config;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.base.core.project.cache.CacheManager;
+import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.Nodes;
+import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.http.ActionResult;
+import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.Crypto;
+import com.x.base.core.project.tools.StringTools;
+import com.x.message.core.entity.Message;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -11,25 +29,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
-import com.x.base.core.project.tools.StringTools;
-import org.apache.commons.lang3.BooleanUtils;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.Nodes;
-import com.x.base.core.project.gson.GsonPropertyObject;
-import com.x.base.core.project.gson.XGsonBuilder;
-import com.x.base.core.project.http.ActionResult;
-import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.Crypto;
-import org.apache.commons.lang3.StringUtils;
-
 /**
  * 系统配置文件保存
  *
@@ -37,6 +36,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class ActionSave extends BaseAction {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionSave.class);
+	private static final String messageConfig = "messages.json";
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement)
 			throws Exception {
@@ -84,7 +84,9 @@ public class ActionSave extends BaseAction {
 			LOGGER.error(e);
 		}
 		this.configFlush(effectivePerson);
-
+		if(messageConfig.equals(fileName)){
+			CacheManager.notify(Message.class);
+		}
 		wo.setTime(df.format(new Date()));
 		wo.setStatus("success");
 		result.setData(wo);
