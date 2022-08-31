@@ -16634,3 +16634,43 @@ div[id^="el-popper-container"] .el-select-dropdown {
     border-radius: var(--el-border-radius-base);
     box-sizing: border-box;
 }
+
+div[id^="el-popper-container"] .el-select-dropdown {
+    z-index: calc(var(--el-index-top) + 1);
+    border-radius: var(--el-border-radius-base);
+    box-sizing: border-box;
+}
+
+div[id^="el-popper-container"] .el-picker__popper {
+    --el-datepicker-border-color: var(--el-disabled-border-color)
+}
+
+div[id^="el-popper-container"] .el-picker__popper.el-popper {
+    background: var(--el-bg-color-overlay);
+    border: 1px solid var(--el-datepicker-border-color);
+    box-shadow: var(--el-box-shadow-light)
+}
+
+div[id^="el-popper-container"] .el-picker__popper.el-popper .el-popper__arrow::before {
+    border: 1px solid var(--el-datepicker-border-color)
+}
+
+div[id^="el-popper-container"] .el-picker__popper.el-popper[data-popper-placement^=top] .el-popper__arrow::before {
+    border-top-color: transparent;
+    border-left-color: transparent
+}
+
+div[id^="el-popper-container"] .el-picker__popper.el-popper[data-popper-placement^=bottom] .el-popper__arrow::before {
+    border-bottom-color: transparent;
+    border-right-color: transparent
+}
+
+div[id^="el-popper-container"] .el-picker__popper.el-popper[data-popper-placement^=left] .el-popper__arrow::before {
+    border-left-color: transparent;
+    border-bottom-color: transparent
+}
+
+div[id^="el-popper-container"] .el-picker__popper.el-popper[data-popper-placement^=right] .el-popper__arrow::before {
+    border-right-color: transparent;
+    border-top-color: transparent
+}

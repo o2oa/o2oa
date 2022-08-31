@@ -12,9 +12,9 @@
       <el-option v-for="k in Object.keys(options)" :key="k" :value="k" :label="options[k]"></el-option>
     </el-select>
 
-    <el-time-picker v-else-if="type==='time'" v-model="configValue" v-bind="options" value-format="HH:mm:ss" format="HH:mm:ss"/>
+    <el-time-picker v-else-if="type==='time'" v-model="configValue" v-bind="options" value-format="HH:mm:ss" format="HH:mm:ss" popper-class="systemconfig"/>
 
-    <el-date-picker class="item_input" style="width: 450px" v-else-if="type==='date'" v-model="configValue" v-bind="options" value-format="YYYY-MM-DD" format="YYYY-MM-DD"/>
+    <el-date-picker class="item_input" style="width: 450px" v-else-if="type==='date'" v-model="configValue" v-bind="options" value-format="YYYY-MM-DD" format="YYYY-MM-DD" size="default" popper-class="systemconfig"/>
 
     <el-checkbox-group  v-else-if="type==='checkbox'" v-model="configValue">
       <el-checkbox v-for="k in Object.keys(options)" :key="k" :model-value="options[k]" :label="k"></el-checkbox>

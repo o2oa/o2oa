@@ -151,11 +151,11 @@ function createComponent(){
     name: "",
     path: "",
     title: "",
-    type: "",
+    type: "custom",
     visible: true
   };
-  components.value.push(cmpt)
-  currentComponent.value = components.value[components.value.length-1];
+  // components.value.push(cmpt)
+  currentComponent.value = cmpt;
   editComponent();
 }
 
