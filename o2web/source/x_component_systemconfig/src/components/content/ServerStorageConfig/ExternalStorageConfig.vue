@@ -9,7 +9,17 @@
     <div v-if="storageData">
       <div class="item_title" v-html="lp._storageServer.enableExternal"></div>
       <div class="item_info" v-html="lp._storageServer.enableExternalInfo"></div>
-      <BaseBoolean v-model:value="storageData.enable" @change="enableOrDisable"></BaseBoolean>
+
+      <div class="item_info" style="display: flex; align-items: center; justify-content: flex-start;">
+        <div class="mainColor_color" v-if="storageData.enable">{{lp._systemInfo.enable}}</div>
+        <div style="color: red" v-else>{{lp._systemInfo.stop}}</div>
+
+        <button v-if="storageData.enable" style="margin-left: 30px" @click="disableExternal">{{lp._storageServer.disableExternal}}</button>
+        <button class="mainColor_bg" v-else style="margin-left: 30px" @click="enableExternal">{{lp._storageServer.enableExternal}}</button>
+      </div>
+
+
+<!--      <BaseBoolean v-model:value="storageData.enable" @change="enableOrDisable"></BaseBoolean>-->
 
 
       <div class="item_title" v-html="lp._storageServer.externalStorageNode"></div>
@@ -146,18 +156,41 @@ const storageType = computed(()=>{
   return (storageData.value && storageData.value.enable) ? 'external' : 'inner'
 });
 
-const enableOrDisable = (v, node)=>{
-  const title = (v) ? lp._storageServer.enableExternalTitle : lp._storageServer.disableExternalTitle;
-  const text = (v) ? lp._storageServer.enableExternalConfirm : lp._storageServer.disableExternalConfirm
-  component.confirm("warn", node.value.input, title, {html: text}, 560, 230, (dlg)=>{
-    //storageData.value.enable = v;
+const enableExternal = (e)=>{
+  const title = lp._storageServer.enableExternalTitle;
+  const text = lp._storageServer.enableExternalConfirm;
+  component.confirm("warn", e, title, {html: text}, 560, 230, (dlg)=>{
+    storageData.value.enable = true;
     saveData();
     dlg.close();
   }, (dlg)=>{
-    storageData.value.enable = !v;
     dlg.close();
   }, null, component.content);
 }
+const disableExternal = (e)=>{
+  const title = lp._storageServer.disableExternalTitle;
+  const text = lp._storageServer.disableExternalConfirm;
+  component.confirm("warn", e, title, {html: text}, 560, 230, (dlg)=>{
+    storageData.value.enable = false;
+    saveData();
+    dlg.close();
+  }, (dlg)=>{
+    dlg.close();
+  }, null, component.content);
+}
+//
+// const enableOrDisable = (v, node)=>{
+//   const title = (v) ? lp._storageServer.enableExternalTitle : lp._storageServer.disableExternalTitle;
+//   const text = (v) ? lp._storageServer.enableExternalConfirm : lp._storageServer.disableExternalConfirm;
+//   component.confirm("warn", node.value.input, title, {html: text}, 560, 230, (dlg)=>{
+//     //storageData.value.enable = v;
+//     saveData();
+//     dlg.close();
+//   }, (dlg)=>{
+//     storageData.value.enable = !v;
+//     dlg.close();
+//   }, null, component.content);
+// }
 
 const saveStoreData = (type)=>{
   const d = storageData.value[type].filter((s)=>{
