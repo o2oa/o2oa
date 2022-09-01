@@ -48,7 +48,7 @@ MWF.xApplication.process.Xform.Eldropdown = MWF.APPEldropdown =  new Class(
 
         this.node.destroy();
         this.node = input;
-        this.node.setStyle("display", "none");
+        this.node.setStyle("opacity", 0);
         this.node.set({
             "id": this.json.id,
             "MWFType": this.json.type
@@ -69,7 +69,7 @@ MWF.xApplication.process.Xform.Eldropdown = MWF.APPEldropdown =  new Class(
     },
     _afterMounted: function(el){
         this.node = el;
-        this.node.setStyle("display", "");
+        this.node.setStyle("opacity", 1);
         this.node.set({
             "id": this.json.id,
             "MWFType": this.json.type
