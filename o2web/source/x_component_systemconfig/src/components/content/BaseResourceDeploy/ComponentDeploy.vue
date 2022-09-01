@@ -45,8 +45,6 @@
                     @upload="uploadComponentFile"
                     @remove="removeComponentFile"/>
       </div>
-
-      <button @click="()=>{currentComponent.path='22222'}"></button>
     </div>
   </div>
 </template>
