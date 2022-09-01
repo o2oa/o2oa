@@ -9,8 +9,9 @@
     "formNode": {
         "min-height": "100%",
         "font-size": "14px",
-        "overflow": "hidden",
-        "background-color": "#FFF"
+        "overflow": "auto",
+        "background-color": "#FFF",
+        "height": "100%",
     },
     "maskNode": {
         "background-color": "#666",
