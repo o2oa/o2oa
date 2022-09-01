@@ -3,6 +3,7 @@ package com.x.cms.assemble.control.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.x.cms.core.entity.enums.DocumentStatus;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -113,14 +114,15 @@ public class ReviewService {
 			AppInfo appInfo = emc.find( document.getAppId(), AppInfo.class );
 			CategoryInfo categoryInfo = emc.find( document.getCategoryId(), CategoryInfo.class );
 
-			if( "draft".equalsIgnoreCase( document.getDocStatus() ) ) {
+			if( DocumentStatus.DRAFT.getValue().equals( document.getDocStatus() ) ) {
 				logger.debug( "refreshDocumentReview -> refresh review for draft document: " + document.getTitle() );
 				//草稿只有拟稿人可以看见
 				List<String> persons = new ArrayList<>();
 				persons.add( document.getCreatorPerson() );
 				logger.debug( "refreshDocumentReview -> there are "+ persons.size() +" permission in this document: " + document.getTitle() );
 				refreshDocumentReview( emc, appInfo, categoryInfo, document, persons );
-			}else if( "published".equalsIgnoreCase( document.getDocStatus() ) ) {
+			}else if( DocumentStatus.PUBLISHED.getValue().equals( document.getDocStatus() ) ||
+					DocumentStatus.WAIT_PUBLISH.getValue().equals( document.getDocStatus() )) {
 				logger.debug( "refreshDocumentReview -> refresh review for published document: " + document.getTitle() );
 				List<String> persons = listPermissionPersons( appInfo, categoryInfo, document );
 				if(persons.contains("*")){
@@ -129,7 +131,7 @@ public class ReviewService {
 				//将文档新的权限与数据库中的权限进行比对，新建或者更新
 				logger.debug( "refreshDocumentReview -> there are "+ persons.size() +" permission in this document: " + document.getTitle() );
 				refreshDocumentReview( emc, appInfo, categoryInfo, document, persons );
-			}else if( "archived".equalsIgnoreCase( document.getDocStatus() ) ) {
+			}else if( DocumentStatus.ARCHIVED.getValue().equals( document.getDocStatus() ) ) {
 				logger.debug( "refreshDocumentReview -> refresh review for archived document: " + document.getTitle() );
 				//归档的文档应该只有管理员和拟稿人能看见
 				List<String> persons = listPublishAndManagePersons( appInfo, categoryInfo, document );
