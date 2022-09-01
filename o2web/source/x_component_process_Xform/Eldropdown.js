@@ -41,6 +41,21 @@ MWF.xApplication.process.Xform.Eldropdown = MWF.APPEldropdown =  new Class(
         if (this.isReadonly()) this.json.disabled = true;
         this._loadNodeEdit();
     },
+    _loadNodeEdit: function(){
+        this.json["$id"] = (this.json.id.indexOf("..")!==-1) ? this.json.id.replace(/\.\./g, "_") : this.json.id;
+         this.node.appendHTML(this._createElementHtml(), "before");
+        var input = this.node.getPrevious();
+
+        this.node.destroy();
+        this.node = input;
+        this.node.setStyle("opacity", 0);
+        this.node.set({
+            "id": this.json.id,
+            "MWFType": this.json.type
+        });
+        this.node.addClass("o2_vue");
+        this._createVueApp();
+    },
     _appendVueData: function(){
         if (!this.json.size) this.json.size = "";
         if (!this.json.placement) this.json.placement = "bottom-end";
@@ -51,6 +66,19 @@ MWF.xApplication.process.Xform.Eldropdown = MWF.APPEldropdown =  new Class(
         if (!this.json.showTimeout) this.json.showTimeout = 250;
         if (!this.json.hideTimeout) this.json.hideTimeout = 150;
         // if(o2.typeOf(this.json.disabled)!=="boolean")this.json.disabled = this.isReadonly();
+    },
+    _afterMounted: function(el){
+        this.node = el;
+        this.node.setStyle("opacity", 1);
+        this.node.set({
+            "id": this.json.id,
+            "MWFType": this.json.type
+        });
+        this._loadVueCss();
+        this._loadDomEvents();
+        this._afterLoaded();
+        this.fireEvent("postLoad");
+        this.fireEvent("load");
     },
     _createElementHtml: function() {
         var html = "<el-dropdown";

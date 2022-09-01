@@ -2,36 +2,34 @@ package com.x.program.center.jaxrs.command;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.Node;
 import com.x.base.core.project.config.Nodes;
-import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 
 //获取服器信息列表
-class ActionGet extends BaseAction {
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String currentIP) throws Exception {
+class ActionListNode extends BaseAction {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListNode.class);
+
+	ActionResult<Wo> execute(EffectivePerson effectivePerson) throws Exception {
+
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 
 		ActionResult<Wo> result = new ActionResult<>();
 		Nodes nodes = Config.nodes();
 
-		if (null == nodes) {
-			throw new ExceptionEntityNotExist(currentIP, "Nodes");
-		}
 		List<NodeInfo> nodeInfoList = new ArrayList<>();
 
-		for (String key : nodes.keySet()) {
+		for (Entry<String, Node> entry : nodes.entrySet()) {
 			NodeInfo nodeInfo = new NodeInfo();
-
-			if (key.equalsIgnoreCase("127.0.0.1")) {
-				nodeInfo.setNodeAddress(currentIP);
-			} else {
-				nodeInfo.setNodeAddress(key);
-			}
-
-			nodeInfo.setNode(nodes.get(key));
+			nodeInfo.setNodeAddress(entry.getKey());
+			nodeInfo.setNode(entry.getValue());
 			nodeInfoList.add(nodeInfo);
 		}
 
