@@ -1139,7 +1139,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             }.bind(this));
         },
         publishDocument: function (callback) {
-            this.fireEvent("beforeWaitPublish");
+            this.fireEvent("beforePublish");
             this.app.content.mask({
                 "destroyOnHide": true,
                 "style": this.app.css.maskNode
