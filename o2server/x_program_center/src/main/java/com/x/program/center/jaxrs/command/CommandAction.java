@@ -1,7 +1,5 @@
 package com.x.program.center.jaxrs.command;
 
-import java.io.InputStream;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -52,17 +50,16 @@ public class CommandAction<Wo> extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
-	@JaxrsMethodDescribe(value = "获取所有服务器信息", action = ActionGet.class)
+	@JaxrsMethodDescribe(value = "获取所有节点信息.", action = ActionListNode.class)
 	@GET
-	@Path("nodeInfoList")
+	@Path("list/node")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void getNodeInfoList(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
 		EffectivePerson effectivePerson = this.effectivePerson(request);
-		ActionResult<ActionGet.Wo> result = new ActionResult<>();
-		String currentIP = request.getLocalAddr();
+		ActionResult<ActionListNode.Wo> result = new ActionResult<>();
 		try {
-			result = (ActionResult<ActionGet.Wo>) new ActionGet().execute(effectivePerson, currentIP);
+			result = new ActionListNode().execute(effectivePerson);
 		} catch (Exception e) {
 			e.printStackTrace();
 			result.error(e);
