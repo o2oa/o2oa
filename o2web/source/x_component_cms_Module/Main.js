@@ -1175,7 +1175,7 @@ MWF.xApplication.cms.Module.Navi = new Class({
 			this.draftView = new MWF.xApplication.cms.Module.NaviDraftView( this, this.node, {}  );
 		}
 		var allowWaitPublish = (typeOf(this.columnData.allowWaitPublish) === "boolean" ? this.columnData.allowWaitPublish : false).toString();
-		if( allowWaitPublish !== "false" ){
+		if( allowWaitPublish === "true" ){
 			this.delayView = new MWF.xApplication.cms.Module.NaviDelayView( this, this.node, {}  );
 		}
 
