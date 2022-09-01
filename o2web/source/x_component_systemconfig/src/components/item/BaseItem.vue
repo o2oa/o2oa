@@ -8,7 +8,7 @@
   <div class="item_info" v-else>
     <el-input-number v-if="type==='number'" class="item_number_input" v-model="configValue" size="default" :min="0" v-bind="options"></el-input-number>
 
-    <el-select v-else-if="type==='select'" v-model="configValue" size="default" :teleported="false">
+    <el-select v-else-if="type==='select'" v-model="configValue" size="default" popper-class="systemconfig">
       <el-option v-for="k in Object.keys(options)" :key="k" :value="k" :label="options[k]"></el-option>
     </el-select>
 
