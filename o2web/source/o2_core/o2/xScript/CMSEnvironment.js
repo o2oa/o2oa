@@ -47,12 +47,82 @@ MWF.xScript.CMSEnvironment = function(ev){
      * var context = this.documentContext;
      */
     this.documentContext = {
+        // * @o2ActionOut x_cms_assemble_control.WoDocument|ignoreNoDescr=true|example=Document
         /**
          * 获取当前内容管理实例的文档对象：document对象。
          * @method getDocument
          * @static
          * @return {Document} 文档对象.
-         * @o2ActionOut x_cms_assemble_control.WoDocument|ignoreNoDescr=true|example=Document
+         * <pre><code class='language-js'>{
+         * 	"id": "3359aedd-c2d8-4d8c-b8b0-02507da1b3f4",		//数据库主键,自动生成.
+         * 	"summary": " ",		//文档摘要
+         * 		"title": "航天科工外部董事调研组到培训中心调研",		//文档标题
+         * 		"documentType": "信息",		//文档类型，跟随分类类型，信息 | 数据
+         * 		"appId": "c295f34c-9ce1-4122-b795-820267e32b68",		//栏目ID
+         * 		"appName": "通知公告",		//栏目名称
+         * 		"appAlias": " ",		//栏目别名
+         * 		"categoryId": "33fb19f0-0670-464d-875c-32fb86148f7a",		//分类ID
+         * 		"categoryName": "通知公告",		//分类名称
+         * 		"categoryAlias": "通知公告-通知公告",		//分类别名
+         * 		"form": "dddefed4-4411-4e4e-b982-cdd4cd083443",		//绑定的表单模板ID
+         * 		"formName": "通知公告编辑表单",		//绑定的表单模板名称
+         * 		"importBatchName": " ",		//文件导入的批次号：一般是分类ID+时间缀
+         * 		"readFormId": "d6f1f596-fcb7-4a87-baaf-7f6cdafe3cec",		//绑定的阅读表单模板ID
+         * 		"readFormName": "通知公告阅读表单",		//绑定的阅读表单模板名称
+         * 		"creatorPerson": "李义@liyi@P",		//创建人，可能为空，如果由系统创建。
+         * 		"creatorIdentity": "李义@469d1601-c4a5-46ae-b7bf-4da9af07b6fa@I",		//创建人Identity，可能为空，如果由系统创建。
+         * 		"creatorUnitName": "浙江兰德纵横@a706f5f0-4a3b-4785-8e1d-0a944bfad4eb@U",		//创建人组织，可能为空，如果由系统创建。
+         * 		"creatorTopUnitName": "浙江兰德纵横@a706f5f0-4a3b-4785-8e1d-0a944bfad4eb@U",		//创建人顶层组织，可能为空，如果由系统创建。
+         * 		"docStatus": "published",		//文档状态: waitPublished | published | draft | checking | error
+         * 		"description": " ",		//说明备注，可以填写说明信息，如导入信息检验失败原因等
+         * 		"viewCount": 1,		//文档被查看次数
+         * 		"commendCount": 1,		//文档被赞次数
+         * 		"commentCount": 1,		//文档评论次数
+         * 		"publishTime": "2018-01-04 14:17:16",		//文档发布时间
+         * 		"modifyTime": "2022-09-01 17:05:47",		//文档修改时间
+         * 		"isTop": true,		//是否置顶
+         * 		"hasIndexPic": true,		//是否含有首页图片
+         * 		"reviewed": true,		//是否已经更新review信息.
+         * 		"sequenceTitle": " ",		//用于标题排序的sequence
+         * 		"sequenceAppAlias": " ",		//用于栏目别名排序的sequence
+         * 		"sequenceCategoryAlias": " ",		//用于分类别名排序的sequence
+         * 		"sequenceCreatorPerson": " ",		//用于创建者排序的sequence
+         * 		"sequenceCreatorUnitName": " ",		//用于创建者组织排序的sequence
+         * 		"readPersonList": [
+         * 			"张三@zhangsan@P"
+         * 			"所有人"
+         * 		],		//阅读人员
+         * 		"readUnitList": [
+         * 		],		//阅读组织
+         * 		"readGroupList": [
+         * 		],		//阅读群组
+         * 		"authorPersonList": [
+         * 			"张三@zhangsan@P"
+         * 		],		//作者人员
+         * 		"authorUnitList": [
+         * 		],		//作者组织
+         * 		"authorGroupList": [
+         * 		],		//作者群组
+         * 		"remindPersonList": [
+         * 			" "
+         * 		],		//发布提醒人员
+         * 		"remindUnitList": [
+         * 			" "
+         * 		],		//发布提醒组织
+         * 		"remindGroupList": [
+         * 			" "
+         * 		],		//发布提醒群组
+         * 		"managerList": [
+         * 			"张三@zhangsan@P"
+         * 		],		//管理者
+         * 		"pictureList": [
+         * 		],		//首页图片列表
+         * 		"distributeFactor": 1,		//分布式存储标识位.
+         * 		"createTime": "2022-09-01 17:05:47",		//创建时间,自动生成,索引创建在约束中.
+         * 		"updateTime": "2022-09-01 17:05:47",		//修改时间,自动生成,索引创建在约束中.
+         * 		"sequence": " ",		//列表序号,由创建时间以及ID组成.在保存时自动生成,索引创建在约束中.
+         * 	}
+         *</code></pre>
          * @o2syntax
          * var doc = this.documentContext.getDocument();
          */

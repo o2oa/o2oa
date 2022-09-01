@@ -16,19 +16,20 @@
     "processName": "报销审批流程",
     "processAlias": "",
     "activity": "13d15daf-2ac5-4c1b-a669-1607a0e5ed15",
-    "activityType": "manual",
     "activityName": "部门领导审核",
     "activityAlias": "",
     "activityDescription": "",
     "activityArrivedTime": "2018-09-27 22:49:21",
     "serial": "",
-    "workStatus": "processing",
     "errorRetry": 0,
     "splitting": false,
     "form": "db3b2766-93a1-4058-b522-0edb922bd84f",
     "manualTaskIdentityList" : "张三@db3b2766-93a1-4058-b522-0edb922bd84f@I",
     "manualTaskIdentityText" : "张三",
-    "embedCompleted": true
+    "embedCompleted": true,
+    "activityType": "text:work_activityType",
+    "destinationActivityType": "text:work_activityType",
+    "workStatus": "text:work_workStatus"
   },
   "WorkParsed" : {
     "id": "854e2c22-718e-48bb-98db-96f4b43e7ee8",
@@ -47,18 +48,19 @@
     "processName": "报销审批流程",
     "processAlias": "",
     "activity": "13d15daf-2ac5-4c1b-a669-1607a0e5ed15",
-    "activityType": "manual",
     "activityName": "部门领导审核",
     "activityAlias": "",
     "activityDescription": "",
     "activityArrivedTime": "2018-09-27 22:49:21",
     "serial": "",
-    "workStatus": "processing",
     "errorRetry": 0,
     "splitting": false,
     "form": "db3b2766-93a1-4058-b522-0edb922bd84f",
     "manualTaskIdentityList" : "张三@db3b2766-93a1-4058-b522-0edb922bd84f@I",
-    "manualTaskIdentityText" : "张三"
+    "manualTaskIdentityText" : "张三",
+    "activityType": "text:work_activityType",
+    "destinationActivityType": "text:work_activityType",
+    "workStatus": "text:work_workStatus"
   },
   "WorkCompleted" : {
     "id": "be0195f1-f2e2-4eac-911c-99897a43ff8f",
@@ -120,7 +122,6 @@
     "activityName": "部门领导审核",
     "activityAlias": "",
     "activityDescription": "",
-    "activityType": "manual",
     "creatorPerson": "张三@zhangsan@P",
     "creatorIdentity": "张三@kfb_zhangsan@I",
     "creatorUnit": "开发部@kfb@U",
@@ -138,7 +139,9 @@
       "",
       ""
     ],
-    "first": true
+    "first": true,
+    "properties": "text:task_properties",
+    "activityType": "text:work_activityType"
   },
   "TaskParsed" : {
     "id": "dd476045-7c79-44f7-9dba-f51d322de40f",
@@ -160,7 +163,6 @@
     "activityName": "部门领导审核",
     "activityAlias": "",
     "activityDescription": "",
-    "activityType": "manual",
     "creatorPerson": "张三@zhangsan@P",
     "creatorIdentity": "张三@kfb_zhangsan@I",
     "creatorUnit": "开发部@kfb@U",
@@ -178,7 +180,9 @@
       "",
       ""
     ],
-    "first": true
+    "first": true,
+    "properties": "text:task_properties",
+    "activityType": "text:work_activityType"
   },
   "Read" : {
     "id": "dd476045-7c79-44f7-9dba-f51d322de40f",
@@ -201,10 +205,11 @@
     "activityName": "部门领导审核",
     "activityAlias": "",
     "activityDescription": "",
-    "activityType": "manual",
     "creatorPerson": "张三@zhangsan@P",
     "creatorIdentity": "张三@kfb_zhangsan@I",
-    "creatorUnit": "开发部@kfb@U"
+    "creatorUnit": "开发部@kfb@U",
+    "properties": "text:read_properties",
+    "activityType": "text:work_activityType"
   },
   "Activity" : {
     "id": "801087c5-a4e6-4b91-bf4d-a81cdaa04471",
@@ -239,9 +244,9 @@
     "lastUpdatePerson": "张三@zhangsan@P",
     "activity": "e31ad938-c495-45a6-8d77-b8a9b61a165b",
     "activityName": "申请人",
-    "activityType": "manual",
     "site": "$mediaOpinion",
-    "type": "image/png"
+    "type": "image/png",
+    "activityType": "text:work_activityType"
   },
   "FormInfor" : {
     "id": "db3b2766-93a1-4058-b522-0edb922bd84f",
@@ -274,10 +279,17 @@
     "creatorPerson": "xx@huqi@P",
     "creatorIdentity": "xxx@97a0584c-b78d-4cf5-8813-b64d9d355369@I",
     "creatorUnit": "xxx@42a21689-1183-4b11-aeb0-2891a290a04e@U",
-    "properties": {
-      "title": "文件标题"
-    },
     "createTime": "2021-12-15 14:03:50",
-    "updateTime": "2021-12-15 14:33:47"
+    "updateTime": "2021-12-15 14:33:47",
+    "properties": "text:review_properties"
+  },
+  "WorkLog": {
+    "fromActivityType": "text:work_activityType",
+    "arrivedActivityType": "text:work_activityType"
+  },
+  "Record": {
+    "fromActivityType": "text:work_activityType",
+    "arrivedActivityType": "text:work_activityType",
+    "properties": "text:record_properties"
   }
 }

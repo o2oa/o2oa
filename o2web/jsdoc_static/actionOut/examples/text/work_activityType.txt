@@ -1,0 +1,1 @@
+"manual",		//可选值:agent,begin,cancel,choice,delay,end,embed,invoke,manual,merge,message,parallel,service,split,publish
