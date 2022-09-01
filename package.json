@@ -56,7 +56,7 @@
         "author": "",
         "license": "ISC",
         "dependencies": {
-                "@o2oa/tidy-jsdoc-o2": "^0.0.25",
+                "@o2oa/tidy-jsdoc-o2": "^0.0.26",
                 "dateformat": "^3.0.3",
                 "docdash": "^1.2.0",
                 "fast-glob": "^3.2.2",
