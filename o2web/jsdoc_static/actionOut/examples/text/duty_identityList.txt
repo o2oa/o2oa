@@ -1,0 +1,18 @@
+[
+		{
+			"matchKey": " ",		//匹配字段
+			"name": " ",		//身份名称
+			"unique": " ",		//身份标识
+			"description": " ",		//说明
+			"distinguishedName": " ",		//识别名
+			"person": " ",		//人员
+			"unit": " ",		//组织
+			"unitName": " ",		//组织名称
+			"unitLevel": 1,		//组织级别
+			"unitLevelName": " ",		//组织级别名
+			"orderNumber": 1,		//排序号
+			"major": true,		//是否是设定的主身份
+			"serialVersionUID": 1,
+			"serialVersionUID": 1
+		}
+	]
