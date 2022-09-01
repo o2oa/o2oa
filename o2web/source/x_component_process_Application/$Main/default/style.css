@@ -1,8 +1,8 @@
 @font-face {
     font-family: "o2WorkApplication"; /* Project id 3538045 */
-    src: url('../x_component_WorkApplication/$Main/default/fonts/iconfont.woff2?t=1661153841763') format('woff2'),
-    url('../x_component_WorkApplication/$Main/default/fonts/iconfont.woff?t=1661153841763') format('woff'),
-    url('../x_component_WorkApplication/$Main/default/fonts/iconfont.ttf?t=1661153841763') format('truetype');
+    src: url('../x_component_process_Application/$Main/default/fonts/iconfont.woff2?t=1661153841763') format('woff2'),
+    url('../x_component_process_Application/$Main/default/fonts/iconfont.woff?t=1661153841763') format('woff'),
+    url('../x_component_process_Application/$Main/default/fonts/iconfont.ttf?t=1661153841763') format('truetype');
 }
 .o2WorkApplication {
     font-family: "o2WorkApplication" !important;
@@ -104,7 +104,6 @@
 .menuArea{
     max-width: 300px;
     min-width: 250px;
-    width: 15%;
     height: 100%;
     background: #FFFFFF;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.25);
@@ -406,7 +405,7 @@
 .emptyListIcon{
     width: 72px;
     height: 72px;
-    background-image: url(../x_component_WorkApplication/$Main/default/empty.png);
+    background-image: url(../x_component_process_Application/$Main/default/empty.png);
     background-position: center;
     background-repeat: no-repeat;
     margin: auto;

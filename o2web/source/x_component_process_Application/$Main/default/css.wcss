@@ -1,166 +1,614 @@
 {
-    "rightContentNode": {
-        "height": "100%",
-        "margin-left": "140px",
-        "overflow": "hidden",
-        "background-color": "#ffffff",
-        "opacity": 1
-    },
-    "startMenuNode": {
-		"overflow": "hidden",
-		"border-radius": "8px",
-		"box-shadow": "0px 0px 10px #333",
-		"border": "5px solid #999",
-		"position": "absolute",
-		"height": "130px",
-		"margin": "auto",
-		"background-color": "#EEE",
-	},
-	"startMenuNaviNode": {
-		"width": "90px",
-		"height": "90px",
-		"float": "left",
-		"margin": "20px",
-		"cursor": "pointer",
-		"box-shadow": "0px 0px 0px",
-		"border-radius": "8px",
-		"background-color": "#EEE",
-		"border": "2px solid #EEE"
-	},
-	"startMenuNaviNode_over": {
-		"box-shadow": "0px 0px 5px #333",
-		"background-color": "#EEE",
-		"border": "2px solid #EEE"
-	},
-	"startMenuNaviNode_current": {
-		"box-shadow": "0px 0px 5px #333",
-		"background-color": "#FFF",
-		"border": "2px solid #FFF"
-	},
-	"startMenuNaviNode_down": {
-		"box-shadow": "0px 0px 0px",
-		"border-top": "2px solid #CCC",
-		"border-left": "2px solid #CCC",
-		"border-right": "2px solid #FFF",
-		"border-bottom": "2px solid #FFF",
-		"background-color": "#EEE"
-	},
-	"startMenuIconNode": {
-		"width": "90px",
-		"height": "70px",
-		"background-repeat": "no-repeat",
-		"background-position": "center center"
-	},
-	"startMenuTextNode": {
-		"text-align": "center",
-		"font-family": "Microsoft YaHei",
-		"font-size": "14px"
-	},
-	"normalStartMenuNode": {
-		"width": "132px",
-		"height": "100%",
-		"top": "0",
-		"left": "0",
-		"overflow": "hidden",
-		"border-left": "0px",
-		"border-top": "0px",
-		"border-right": "0px solid #999",
-		"border-bottom": "0px",
-		"box-shadow": "0px 0px 15px #999",
-		"border-radius": "0px",
-		"float": "left",
-		"position": "block",
-		"overflow": "hidden"
-	},
+  "node" : {
+    "margin": "20px",
+    "height": "100%",
+    "overflow": "hidden"
+  },
+  "contentContainerNode" : {
+    "margin-left": "200px",
+    "overflow": "hidden",
+    "background-color" : "#eee",
+    "opacity": 1
+  },
+  "topContainerNode" : {
+    "overflow" : "hidden",
+    "margin" : "0px auto"
+  },
+  "topNode": {
+    "color" : "#333",
+    "min-height": "50px",
+    "overflow": "hidden",
+    "background-color": "#fff",
+    "line-height": "50px",
+    "font-size": "14px",
+    "font-weight": "bold",
+    "text-align": "left"
+  },
+  "topIconNode" : {
+    "margin-left": "10px",
+    "width": "24px",
+    "height": "24px",
+    "float": "left",
+    "background": "url(../x_component_ProcessTool/$Main/default/icon/topIcon.png) no-repeat 0px center",
+    "background-size": "24px 24px"
+  },
+  "topTextNode" : {
+    "color" : "#333",
+    "font-size": "16px",
+    "font-weight": "bold",
+    "float": "left",
+    "overflow" : "hidden",
+    "text-overflow" : "ellipsis",
+    "white-space":"nowrap"
+  },
+  "topOperateNode" : {
+      "margin" : "5px"
+  },
+  "topContentNode" : {
+    "padding-right" : "10px"
+  },
+  "searchDiv" : {
+    "overflow" : "hidden",
+    "float" : "left",
+    "margin-left" : "420px",
+    "margin-top" : "18px"
+  },
+  "fileterNode": {
+    "overflow": "hidden",
+    "padding-right" :"15px",
+    "padding-top": "10px",
+    "line-height": "28px"
+  },
+  "filterTable" : {
+    "color" : "#666",
+    "font-size" : "14px",
+    "font-weight" : "normal"
+  },
+  "filterTableTitle" : {
+    "text-align" : "right",
+    "padding-left": "15px"
+  },
+  "filterTableValue" : {
+    "text-align" : "left",
+    "padding-left": "5px"
+  },
+  "filterButton" :{
+    "margin-left": "15px",
+    "color": "#fff",
+    "cursor" : "pointer",
+    "height" : "26px",
+    "line-height" : "26px",
+    "padding": "0px 10px",
+    "min-width": "40px",
+    "background-color" : "#4A90E2",
+    "border": "1px solid #528BCC",
+    "border-radius": "15px"
+  },
+  "filterButtonGrey" :{
+    "margin-left": "5px",
+    "color": "#4A90E2",
+    "cursor" : "pointer",
+    "height" : "26px",
+    "line-height" : "26px",
+    "padding": "0px 10px",
+    "min-width": "40px",
+    "background-color" : "#fff",
+    "border": "1px solid #4A90E2",
+    "border-radius": "15px"
+  },
 
 
-	"taskTitleBar": {
-        "overflow": "hidden",
-        "height": "60px",
-        "background-color": "#4c6b87"
+  "middleNode" : {
+    "overflow" : "hidden",
+    "margin" : "0px auto"
+  },
+
+  "viewContainerNode" : {
+    "overflow" : "hidden",
+    "padding" : "10px 10px 0px 10px",
+    "margin-top": "10px",
+    "background": "#fff"
+  },
+  "noItemTextNode": {
+    "text-align": "center",
+    "padding": "20px",
+    "height": "60px",
+    "line-height": "60px",
+    "margin-top": "10px",
+    "margin-left": "0px",
+    "color": "#888",
+    "cursor": "pointer",
+    "font-size": "16px"
+  },
+
+
+  "listHeadNode": {
+    "width":"100%",
+    "height": "40px",
+    "background-color": "#F7F7F7",
+    "color": "#666666",
+    "font-weight": "normal",
+    "line-height": "40px",
+    "font-family": "Microsoft YaHei",
+    "font-size": "15px"
+  },
+
+  "normalThNode" : {
+    "background-color" : "#F7F7F7",
+    "text-align":"center",
+    "line-height": "24px",
+    "font-size": "15px",
+    "padding": "8px 0px",
+    "font-weight": "normal",
+    "border-top": "1px solid #FFF",
+    "border-bottom": "1px solid #E6E6E6"
+  },
+  "normalTdNode" : {
+    "height": "39px",
+    "text-align":"center",
+    "overflow" : "hidden",
+    "border-bottom": "1px solid #E6E6E6",
+    "cursor": "pointer"
+  },
+
+  "sortIconNode" : {
+    "height": "16px",
+    "width": "16px",
+    "line-height": "20px",
+    "margin-top": "5px",
+    "display":"inline-block",
+    "margin-right": "5px",
+    "background-position" : "center center",
+    "background-repeat" : "no-repeat",
+    "background-image" : "url(../x_component_Attendance/$Explorer/default/icon/dblsort.gif)"
+  },
+  "sortIconNode_asc" : {
+    "height": "16px",
+    "width": "16px",
+    "line-height": "20px",
+    "margin-top": "5px",
+    "display":"inline-block",
+    "margin-right": "5px",
+    "background-position" : "center center",
+    "background-repeat" : "no-repeat",
+    "background-image" : "url(../x_component_Attendance/$Explorer/default/icon/dblasc.gif)"
+  },
+  "sortIconNode_desc" : {
+    "height": "16px",
+    "width": "16px",
+    "line-height": "20px",
+    "margin-top": "5px",
+    "display":"inline-block",
+    "margin-right": "5px",
+    "background-position" : "center center",
+    "background-repeat" : "no-repeat",
+    "background-image" : "url(../x_component_Attendance/$Explorer/default/icon/dbldesc.gif)"
+  },
+
+  "documentNode": {
+    "overflow": "hidden",
+    "background-color": "#fff",
+    "min-height": "29px",
+    "color": "#666666",
+    "font-family": "Microsoft YaHei",
+    "font-size": "14px",
+    "cursor": "pointer"
+  },
+  "documentNode_noread": {
+    "background-color": "#fcfcfc"
+  },
+  "documentNode_over": {
+    "background-color": "#F7F7F7"
+  },
+  "documentNode_down": {
+    "background-color": "#F7F7F7"
+  },
+  "documentNode_remove": {
+    "background-color": "#ffcccc"
+  },
+
+  "documentActionNode": {
+    "height": "20px",
+    "border-radius": "3px",
+    "width": "20px",
+    "line-height": "20px",
+    "color": "#888",
+    "cursor": "pointer",
+    "display": "inline-block",
+    "margin-right": "5px",
+    "background-repeat": "no-repeat",
+    "background-position": "center center"
+  },
+  "documentActionNode_over":{
+  },
+  "actionDenyNode_down":{
+  },
+  "openAction": {
+    "height": "20px",
+    "border-radius": "3px",
+    "width": "20px",
+    "line-height": "20px",
+    "cursor": "pointer",
+    "display": "inline-block",
+    "margin-right": "5px",
+    "background-repeat": "no-repeat",
+    "background-position": "center center",
+    "background-image": "url(../x_component_ProcessTool/$Main/default/icon/open.png)"
+  },
+  "openAction_over": {
+    "background-repeat": "no-repeat",
+    "background-position": "center center",
+    "background-image": "url(../x_component_ProcessTool/$Main/default/icon/open_blue.png)"
+  },
+
+  "removeAction": {
+    "height": "20px",
+    "border-radius": "3px",
+    "width": "20px",
+    "line-height": "20px",
+    "cursor": "pointer",
+    "display": "inline-block",
+    "margin-right": "5px",
+    "background-repeat": "no-repeat",
+    "background-position": "center center",
+    "background-image": "url(../x_component_ProcessTool/$Main/default/icon/delete.png)"
+  },
+  "removeAction_over": {
+    "background-repeat": "no-repeat",
+    "background-position": "center center",
+    "background-image": "url(../x_component_ProcessTool/$Main/default/icon/delete_blue.png)"
+  },
+  "rollbackAction": {
+    "height": "20px",
+    "border-radius": "3px",
+    "width": "20px",
+    "line-height": "20px",
+    "cursor": "pointer",
+    "display": "inline-block",
+    "margin-right": "5px",
+    "background-repeat": "no-repeat",
+    "background-position": "center center",
+    "background-image": "url(../x_component_ProcessTool/$Main/default/icon/rollback.png)"
+  },
+  "rollbackAction_over": {
+    "background-repeat": "no-repeat",
+    "background-position": "center center",
+    "background-image": "url(../x_component_ProcessTool/$Main/default/icon/rollback_blue.png)"
+  },
+  "rerouteAction": {
+    "height": "20px",
+    "border-radius": "3px",
+    "width": "20px",
+    "line-height": "20px",
+    "cursor": "pointer",
+    "display": "inline-block",
+    "margin-right": "5px",
+    "background-repeat": "no-repeat",
+    "background-position": "center center",
+    "background-image": "url(../x_component_ProcessTool/$Main/default/icon/reroute.png)"
+  },
+  "rerouteAction_over": {
+    "background-repeat": "no-repeat",
+    "background-position": "center center",
+    "background-image": "url(../x_component_ProcessTool/$Main/default/icon/reroute_blue.png)"
+  },
+
+  "resetAction": {
+    "height": "20px",
+    "border-radius": "3px",
+    "width": "20px",
+    "line-height": "20px",
+    "cursor": "pointer",
+    "display": "inline-block",
+    "margin-right": "5px",
+    "background-repeat": "no-repeat",
+    "background-size" : "100% 100%",
+    "background-position": "center center",
+    "background-image": "url(../x_component_ProcessTool/$Main/default/icon/reset.png)"
+  },
+  "resetAction_over": {
+    "background-repeat": "no-repeat",
+    "background-position": "center center",
+    "background-size" : "100% 100%",
+    "background-image": "url(../x_component_ProcessTool/$Main/default/icon/reset_blue.png)"
+  },
+
+    "opinionAction": {
+      "height": "20px",
+      "border-radius": "3px",
+      "width": "20px",
+      "line-height": "20px",
+      "cursor": "pointer",
+      "display": "inline-block",
+      "margin-right": "5px",
+      "background-repeat": "no-repeat",
+      "background-size" : "100% 100%",
+      "background-position": "center center",
+      "background-image": "url(../x_component_ProcessTool/$Main/default/icon/edit.png)"
     },
-    "taskTitleUserNode": {
-        "width": "80px",
-        "float": "right"
+    "opinionAction_over": {
+      "background-repeat": "no-repeat",
+      "background-position": "center center",
+      "background-size" : "100% 100%",
+      "background-image": "url(../x_component_ProcessTool/$Main/default/icon/edit_blue.png)"
     },
-    "taskTitleUserIconNode": {
-        "background": "url("+"../x_component_process_Application/$Main/default/icon/user.png) center center no-repeat",
-        "width": "24px",
-        "height": "24px",
-        "margin-top": "18px",
-        "float": "left"
-    },
-    "taskTitleUserTextNode": {
-        "margin-left": "24px",
-        "color": "#FFF",
-        "font-size": "14px",
-        "line-height": "60px"
-    },
-    "startProcessAction": {
-        "width": "59px",
-        "height": "60px",
-        "background": "url("+"../x_component_process_Application/$Main/default/icon/stratProcess3.png) center center no-repeat",
-        "float": "left",
-        "border-right": "1px solid #FFF",
-        "cursor": "pointer"
-    },
-    "taskTitleIconNode": {
-        "float": "left",
-        "width": "60px",
-        "height": "60px"
-    },
-    "taskTitleIconImgNode": {
-        "width": "48px",
-        "height": "48px",
-        "margin": "6px auto",
-        "background-size": "cover"
-    },
-    "taskTitleTextNode": {
-        "padding-left": "20px",
-        "color": "#FFF",
-        "font-size": "18px",
-        "line-height": "60px",
-        "font-weight": "bold",
-        "width": "160px",
-        "float": "left"
-    },
-    "searchBarAreaNode": {
-        "margin": "0px 100px 0px 160px",
-        "height": "60px",
-        "overflow": "hidden"
-    },
-    "searchBarNode": {
-        "width": "80%",
-        "max-width": "500px",
-        "height": "30px",
-        "background-color": "#FFF",
-        "border": "0px solid #999",
-        "border-radius":"12px",
-        "margin-top": "15px",
-        "float": "right"
-    },
-    "searchBarActionNode": {
-        "width": "40px",
-        "height": "30px",
-        "background": "url("+"../x_component_process_Application/$Main/default/icon/search.png) center center no-repeat",
-        "float": "right",
-        "cursor": "pointer"
-    },
-    "searchBarInputBoxNode": {
-        "height": "30px",
-        "line-height": "30px",
-        "margin-left": "10px",
-        "margin-right": "50px"
-    },
-    "searchBarInputNode": {
-        "width": "100%",
-        "height": "24px",
-        "border": "0px",
-        "color": "#666"
-    },
-    "contentNode": {
-        "overflow": "hidden",
-        "border": "0px solid red",
-        "clear": "both"
-    }
+
+        "restoreAction": {
+          "height": "20px",
+          "border-radius": "3px",
+          "width": "20px",
+          "line-height": "20px",
+          "cursor": "pointer",
+          "display": "inline-block",
+          "margin-right": "5px",
+          "background-repeat": "no-repeat",
+          "background-size" : "100% 100%",
+          "background-position": "center center",
+          "background-image": "url(../x_component_ProcessTool/$Main/default/icon/restore.png)"
+        },
+        "restoreAction_over": {
+          "background-repeat": "no-repeat",
+          "background-position": "center center",
+          "background-size" : "100% 100%",
+          "background-image": "url(../x_component_ProcessTool/$Main/default/icon/restore_blue.png)"
+        },
+
+            "downloadAction": {
+              "height": "20px",
+              "border-radius": "3px",
+              "width": "20px",
+              "line-height": "20px",
+              "cursor": "pointer",
+              "display": "inline-block",
+              "margin-right": "5px",
+              "background-repeat": "no-repeat",
+              "background-size" : "100% 100%",
+              "background-position": "center center",
+              "background-image": "url(../x_component_ProcessTool/$Main/default/icon/download.png)"
+            },
+            "downloadAction_over": {
+              "background-repeat": "no-repeat",
+              "background-position": "center center",
+              "background-size" : "100% 100%",
+              "background-image": "url(../x_component_ProcessTool/$Main/default/icon/download_blue.png)"
+            },
+
+  "flowAction": {
+    "height": "20px",
+    "border-radius": "3px",
+    "width": "20px",
+    "line-height": "20px",
+    "cursor": "pointer",
+    "display": "inline-block",
+    "margin-right": "5px",
+    "background-repeat": "no-repeat",
+    "background-size" : "100% 100%",
+    "background-position": "center center",
+    "background-image": "url(../x_component_ProcessTool/$Main/default/icon/flow.png)"
+  },
+  "flowAction_over": {
+    "background-repeat": "no-repeat",
+    "background-position": "center center",
+    "background-size" : "100% 100%",
+    "background-image": "url(../x_component_ProcessTool/$Main/default/icon/flow_blue.png)"
+  },
+
+  "naviScrollNode" : {
+    "overflow": "auto"
+  },
+  "naviAreaNode" : {
+
+  },
+  "naviNode": {
+    "width": "190px",
+    "height": "100%",
+    "overflow": "hidden",
+    "float": "left",
+    "position": "static",
+    "background-color" : "#fff"
+  },
+  "naviTopNode" : {
+    "line-height": "50px",
+    "margin-left": "10px",
+    "padding-left": "32px",
+    "height": "50px",
+    "color" : "#333",
+    "font-size": "16px",
+    "font-weight": "bold",
+    "overflow" : "hidden",
+    "text-overflow" : "ellipsis",
+    "white-space":"nowrap",
+    "background": "url(../x_component_ProcessTool/$Main/appicon.png) no-repeat 0px center",
+    "background-size": "24px 24px"
+  },
+  "naviAllNode": {
+    "display" : "block",
+    "height": "40px",
+    "margin": "0px",
+    "line-height" :"40px",
+    "font-family": "Microsoft YaHei",
+    "font-size": "14px",
+    "color" : "#333",
+    "padding-left" : "38px",
+    "cursor": "pointer",
+    "background": "url(../x_component_ProcessTool/$Main/default/icon/all.png) no-repeat 13px center"
+  },
+  "naviAllNode_current" : {
+    "background-color" : "#F2F5F7",
+    "color" : "#4A90E2"
+  },
+  "naviAllNode_over" : {
+    "background-color" : "#F2F5F7",
+    "color" : "#666666"
+  },
+  "naviAllNode_normal" : {
+    "background-color" : "#fff",
+    "color" : "#333"
+  },
+  "naviMenuNode": {
+    "display" : "block",
+    "height": "40px",
+    "margin": "0px",
+    "line-height" :"40px",
+    "font-family": "Microsoft YaHei",
+    "font-size": "14px",
+    "color" : "#333",
+    "padding-left" : "8px",
+//    "background": "url(../x_component_ProcessTool/$Main/default/icon/triangle_down.png) no-repeat 15px center",
+    "cursor": "pointer"
+  },
+//  "naviMenuNode_collapse": {
+//    "background": "url(../x_component_ProcessTool/$Main/default/icon/triangle_right.png) no-repeat 15px center"
+//  },
+  "naviMenuNode_normal": {
+    "background-color" : "#fff",
+    "color" : "#666666"
+  },
+  "naviMenuNode_over": {
+    "background-color" : "#F2F5F7",
+    "color" : "#666666"
+  },
+  "naviMenuNode_current": {
+    "background-color" : "#F2F5F7",
+    "color" : "#4A90E2"
+  },
+  "naviMenuIconNode_collapse": {
+    "width": "30px",
+    "height": "40px",
+    "float": "left",
+    "backgroud-size":"100% 100%",
+    "background": "url(../x_component_ProcessTool/$Main/default/icon/all.png) no-repeat 5px center"
+  },
+  "naviMenuIconNode_expand": {
+    "width": "30px",
+    "height": "40px",
+    "float": "left",
+    "background": "url(../x_component_ProcessTool/$Main/default/icon/triangle_down.png) no-repeat 5px center"
+  },
+  "naviMenuTextNode": {
+    "margin-left": "25px",
+    "height": "40px",
+    "line-height" :"40px"
+  },
+
+  "naviItemNode" : {
+    "background-color" : "#fff",
+    "cursor" : "pointer",
+    "color" : "#666666",
+    "padding-left" : "40px",
+    "height" : "40px",
+    "line-height" : "40px",
+    "font-family": "Microsoft YaHei",
+    "font-size": "14px"
+  },
+  "naviItemNode_current" : {
+    "background-color" : "#F2F5F7",
+    "cursor" : "pointer",
+    "color" : "#4A90E2",
+    "padding-left" : "40px",
+    "height" : "40px",
+    "line-height" : "40px",
+    "font-family": "Microsoft YaHei",
+    "font-size": "14px"
+  },
+  "naviItemNode_over" : {
+    "background-color" : "#F2F5F7",
+    "color" : "#666666"
+  },
+
+      "rollbackItemIconNode": {
+          "height": "46px",
+          "width": "30px",
+          "float": "right",
+          "overflow": "hidden",
+          "background": "url("+"../x_component_process_Xform/$Form/default/icon/rollback_uncheck.png) no-repeat center center"
+      },
+      "rollbackItemIconNode_current": {
+          "background": "url("+"../x_component_process_Xform/$Form/default/icon/rollback_check.png) no-repeat center center"
+      },
+      "rollbackItemContentNode": {
+          "margin-right": "30px",
+          "height": "46px"
+      },
+
+      "rollbackAreaNode": {
+          "padding": "0 30px",
+          "font-size": "14px",
+          "overflow": "hidden"
+      },
+      "rollbackItemNode": {
+          "min-height": "46px",
+          "margin-bottom": "10px",
+          "padding": "10px",
+          "cursor": "pointer",
+          "background-color": "#ffffff"
+      },
+      "rollbackItemNode_over": {
+          "background-color": "#eaf1f9"
+      },
+      "rollbackItemNode_current": {
+          "background-color": "#6196d1"
+      },
+
+      "rollbackItemIconNode": {
+          "height": "46px",
+          "width": "30px",
+          "float": "right",
+          "overflow": "hidden",
+          "background": "url("+"../x_component_process_Xform/$Form/default/icon/rollback_uncheck.png) no-repeat center center"
+      },
+      "rollbackItemIconNode_current": {
+          "background": "url("+"../x_component_process_Xform/$Form/default/icon/rollback_check.png) no-repeat center center"
+      },
+      "rollbackItemContentNode": {
+          "margin-right": "30px",
+          "height": "46px"
+      },
+      "rollbackItemActivityNode": {
+          "height": "26px",
+          "line-height": "26px",
+          "font-weight": "bold",
+          "float": "left",
+          "color": "#000000",
+          "margin-right": "10px"
+      },
+      "rollbackItemActivityNode_current": {
+          "color": "#ffffff",
+      },
+      "rollbackItemTimeNode": {
+          "height": "26px",
+          "line-height": "26px",
+          "color": "#666666",
+          "float": "left"
+      },
+      "rollbackItemTimeNode_current": {
+          "color": "#eeeeee"
+      },
+      "rollbackItemTaskTitleNode": {
+          "float": "left",
+          "height": "20px",
+          "line-height": "20px",
+          "font-size": "12px",
+          "color": "#0000ff",
+          "font-weight": "bold"
+      },
+      "rollbackItemTaskTitleNode_current":{
+          "color": "#ffffff",
+      },
+      "rollbackItemTaskNode": {
+          "float": "left",
+          "margin-left": "5px",
+          "height": "20px",
+          "line-height": "20px",
+          "font-size": "12px",
+          "color": "#666666",
+          "float": "left"
+      },
+      "rollbackItemTaskCheckNode": {
+          "float": "left"
+      },
+      "rollbackItemTaskNode_current": {
+          "color": "#eeeeee"
+      },
+
 }
