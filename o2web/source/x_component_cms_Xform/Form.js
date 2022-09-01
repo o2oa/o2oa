@@ -948,6 +948,12 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             var data = this.getData();
             var specialData = this.getSpecialData();
             var documentData = this.getDocumentData(data);
+
+            if( documentData.docStatus === "waitPublish" ){
+                documentData.documentNotify = this.getNoticeOptions();
+            }
+
+
             documentData.readerList = specialData.readers;
             documentData.authorList = specialData.authors;
             documentData.pictureList = specialData.pictures;
