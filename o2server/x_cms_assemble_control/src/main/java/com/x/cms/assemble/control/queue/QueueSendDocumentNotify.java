@@ -1,19 +1,13 @@
 package com.x.cms.assemble.control.queue;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
-import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.Token;
+import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.message.MessageConnector;
@@ -26,6 +20,12 @@ import com.x.cms.core.entity.AppInfo;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.query.DocumentNotify;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Document正式发布后，向通知对象或者所有的阅读者推送消息通知
@@ -68,14 +68,14 @@ public class QueueSendDocumentNotify extends AbstractQueue<DocumentNotify> {
 					persons.addAll(reviewService.listPermissionPersons(appInfo, category, document));
 					if (persons.contains("*")) {
 						String topUnitName = document.getCreatorTopUnitName();
-						if (StringUtils.equalsAnyIgnoreCase("cipher", topUnitName) ||
-								StringUtils.equalsAnyIgnoreCase("xadmin", topUnitName)) {
+						if (EffectivePerson.CIPHER.equalsIgnoreCase(topUnitName)
+								|| Token.defaultInitialManager.equalsIgnoreCase(topUnitName)) {
 							//取发起人所有顶层组织
-							if (!StringUtils.equalsAnyIgnoreCase("cipher", document.getCreatorIdentity()) &&
-									!StringUtils.equalsAnyIgnoreCase("xadmin", document.getCreatorIdentity())) {
+							if (!EffectivePerson.CIPHER.equalsIgnoreCase(document.getCreatorIdentity()) &&
+									!Token.defaultInitialManager.equalsIgnoreCase(document.getCreatorIdentity())) {
 								topUnitName = userManagerService.getTopUnitNameByIdentity(document.getCreatorIdentity());
-							} else if (!StringUtils.equalsAnyIgnoreCase("cipher", document.getCreatorPerson()) &&
-									!StringUtils.equalsAnyIgnoreCase("xadmin", document.getCreatorPerson())) {
+							} else if (!EffectivePerson.CIPHER.equalsIgnoreCase(document.getCreatorPerson()) &&
+									!Token.defaultInitialManager.equalsIgnoreCase(document.getCreatorPerson())) {
 								topUnitName = userManagerService.getTopUnitNameWithPerson(document.getCreatorPerson());
 							}
 						}
@@ -91,11 +91,10 @@ public class QueueSendDocumentNotify extends AbstractQueue<DocumentNotify> {
 					persons.addAll(userManagerService.listPersonWithName(name));
 				});
 			}
-
 			if (ListTools.isNotEmpty(persons)) {
 				List<String> personList = persons.stream().distinct().collect(Collectors.toList());
 				persons.clear();
-				logger.debug("消息发送人数：{}",personList.size());
+				logger.info("{}-文档消息发送人数：{}", document.getTitle(),personList.size());
 				MessageWo wo = MessageWo.copier.copy(document);
 				for (String person : personList) {
 					if (!StringUtils.equals("*", person)) {
