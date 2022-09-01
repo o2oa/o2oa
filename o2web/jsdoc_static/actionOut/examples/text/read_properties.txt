@@ -1,0 +1,5 @@
+    {
+		"serialVersionUID": 1,
+		"title": " ",		//标题
+		"opinion": " ",		//意见
+	}

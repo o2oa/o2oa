@@ -1,0 +1,35 @@
+    {
+        "serialVersionUID": 1,
+        "identityOrderNumber": 1,		//record中记录的处理人身份排序值.
+        "unitOrderNumber": 1,		//record中记录的处理人身份所在组织排序值.
+        "unitLevelOrderNumber": " ",		//record中记录的处理人身份所在组织层级排序值.
+        "unitDutyList": [
+            " "
+        ],		//record中记录的处理人身份所拥有的组织职务,向上递归.
+        "nextManualList": [
+            {
+                "activity": " ",		//活动
+                "activityType": " ",//可选值:agent,begin,cancel,choice,delay,end,embed,invoke,manual,merge,parallel,service,split,		//活动类型
+                "activityName": " ",		//活动名称
+                "activityAlias": " ",		//活动别名
+                "activityToken": " ",		//活动活动令牌
+                "taskIdentityList": [
+                    " "
+                ] 		//待办处理人
+            }
+        ],		//后续人工环节
+        "nextManualTaskIdentityList": [
+            " "
+        ],		//后续人工环节处理人
+        "empowerToPerson": " ",		//授权给处理人
+        "empowerToIdentity": " ",		//授权给处理人的身份
+        "empowerFromIdentity": " ",		//授权自身份
+        "empowerToUnit": " ",		//授权给处理人的组织
+        "routeName": " ",		//路由名称
+        "opinion": " ",		//意见
+        "mediaOpinion": " ",		//多媒体意见
+        "startTime": "2022-07-27 13:29:35",		//开始时间.
+        "elapsed": 1,		//耗时
+        "fromGroup": " ",		//活动组
+        "fromOpinionGroup": " "		//意见组
+    }

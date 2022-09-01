@@ -230,7 +230,7 @@ MWF.xScript.Environment = function(ev){
          * @method getWork
          * @static
          * @return {(Work|WorkCompleted)} 流程实例对象；如果流程已结束，返回已结束的流程实例对象。
-         * @o2ActionOut x_processplatform_assemble_surface.WorkAction.manageGet|example=WorkParsed|extension=Work|ignoreNoDescr=true|ignoreProps=[properties]|Work对象:
+         * @o2ActionOut x_processplatform_assemble_surface.WorkAction.manageGet|example=WorkParsed|extension=Work|ignoreNoDescr=true|ignoreProps=[properties,manualTaskIdentityMatrix]|Work对象:
          * @o2ActionOut x_processplatform_assemble_surface.WorkCompletedAction.get|example=WorkCompletedParsed|extension=Work||ignoreProps=[properties]|WorkCompleted对象:
          * @o2syntax
          * var work = this.workContext.getWork();
@@ -662,7 +662,7 @@ MWF.xScript.Environment = function(ev){
          * @method getWorkLogList
          * @static
          * @return {WorkLog[]} 流程记录对象.
-         * @o2ActionOut x_processplatform_assemble_surface.WorkLogAction.listWithJob
+         * @o2ActionOut x_processplatform_assemble_surface.WorkLogAction.listWithJob|example=WorkLog|ignoreProps=[properties]
          * @o2syntax
          * var workLogList = this.workContext.getWorkLogList();
          */
@@ -670,7 +670,7 @@ MWF.xScript.Environment = function(ev){
         /**
          * @summary 获取当前流程实例的所有流程记录(Record)。
          * @method getRecordList
-         * @o2ActionOut x_processplatform_assemble_surface.RecordAction.listWithJob
+         * @o2ActionOut x_processplatform_assemble_surface.RecordAction.listWithJob|example=Record
          * @static
          * @return {Record[]} 流程记录(Record)对象.
          * @o2syntax

@@ -1,7 +1,7 @@
 {
   "Person" : {
     "name": "李四",
-    "genderType": "m",
+    "genderType": "text:person_genderType",
     "signature": "",
     "description": "",
     "employee": "1111",
@@ -42,7 +42,8 @@
   },
   "Duty": {
     "name": "部门领导",
-    "unit": "开发部@kfb@U"
+    "unit": "开发部@kfb@U",
+    "identityList": "text:duty_identityList"
   },
   "UnitDuty" : {
     "name": "李四",
