@@ -61,7 +61,7 @@ public class QueueSendDocumentNotify extends AbstractQueue<DocumentNotify> {
 			return;
 		}
 		final List<String> persons = new ArrayList<>();
-		if(Config.messages().get(MessageConnector.TYPE_CMS_PUBLISH)!=null) {
+		if(ListTools.isNotEmpty(Config.messages().getConsumers(MessageConnector.TYPE_CMS_PUBLISH))) {
 			if(BooleanUtils.isTrue(documentNotify.getNotifyByDocumentReadPerson())){
 				if(!CategoryInfo.DOCUMENT_TYPE_DATA.equals(document.getDocumentType())) {
 					ReviewService reviewService = new ReviewService();
