@@ -76,8 +76,21 @@
 
             </el-collapse-item>
           </div>
+
+          <div class="item_info">
+            <div class="item_message_item" @click="addMessageType">
+              <div class="item_message_area">
+                <div class="item_config_icon o2icon-plus mainColor_bg"></div>
+                <div style="margin-left: 0; font-size: 16px; color: #666666">{{lp._messageConfig.addMessageType}}</div>
+              </div>
+            </div>
+          </div>
+
         </el-collapse>
+
       </div>
+
+
 
       <div class="item_consumer_editorArea" ref="consumerSelectArea">
         <el-checkbox-group v-model="selectedConsumer" size="small">
