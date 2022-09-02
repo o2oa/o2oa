@@ -37,6 +37,7 @@ const storageData = ref([]);
 
 const runtimeExternalStorage = ref();
 const storageType = computed(()=>{
+  if (!runtimeExternalStorage.value.hasOwnProperty('enable')) runtimeExternalStorage.value.enable = true;
   return (runtimeExternalStorage.value && runtimeExternalStorage.value.enable) ? 'external' : 'inner'
 });
 

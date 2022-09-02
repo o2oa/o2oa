@@ -231,7 +231,6 @@ const removeConsumer = (e, key)=>{
 }
 
 const load = ()=>{
-  debugger;
   if (props.message){
     if (props.message.consumers && Object.keys(props.message.consumers).length){
       consumersData.value = Object.clone(props.message.consumers);

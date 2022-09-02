@@ -35,7 +35,6 @@ const changeTabPane = (pane)=>{
   if (pane.paneName === 'inner' && !pane.active){
     if (innerComponent.value) innerComponent.value.load();
   }
-  debugger;
   if (pane.paneName === 'external' && !pane.active){
 
     if (externalComponent.value) externalComponent.value.load();
