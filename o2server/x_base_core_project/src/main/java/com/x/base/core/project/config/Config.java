@@ -1146,7 +1146,7 @@ public class Config {
 			if (null == obj.getLoginPage() || (BooleanUtils.isFalse(obj.getLoginPage().getEnable())
 					&& StringUtils.isBlank(obj.getLoginPage().getPortal()))) {
 				JsonObject personJsonObject = BaseTools.readConfigObject(PATH_CONFIG_PERSON, JsonObject.class);
-				if (personJsonObject.has("loginPage")) {
+				if (null != personJsonObject && personJsonObject.has("loginPage")) {
 					obj.setLoginPage(XGsonBuilder.convert(personJsonObject.get("loginPage"), Portal.LoginPage.class));
 				}
 			}
