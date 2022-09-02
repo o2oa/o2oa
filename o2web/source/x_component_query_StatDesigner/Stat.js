@@ -219,7 +219,8 @@ MWF.xApplication.query.StatDesigner.Stat = new Class({
                 "displayName": this.designer.lp.unnamed,
                 "calculateType": "sum",
                 "orderType": "original",
-                "orderEffectType": "key"
+                "orderEffectType": "key",
+                "formatType": "number"
             };
             if (!this.json.data.calculate.calculateList) this.json.data.calculate.calculateList = [];
             this.json.data.calculate.calculateList.push(json);
@@ -504,7 +505,8 @@ MWF.xApplication.query.StatDesigner.Stat.Column = new Class({
                     "displayName": this.view.designer.lp.unnamed,
                     "calculateType": "sum",
                     "orderType": "original",
-                    "orderEffectType": "key"
+                    "orderEffectType": "key",
+                    "formatType": "number"
                 };
             }
 
