@@ -104,7 +104,6 @@ const indexPortal = ref('');
 const portalList = ref([]);
 
 const load = async () => {
-  debugger;
   getConfigData('person').then((data)=>{
     captchaLogin.value = !!data.captchaLogin;
     codeLogin.value = !!data.codeLogin;
