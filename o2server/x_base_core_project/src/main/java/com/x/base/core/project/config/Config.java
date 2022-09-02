@@ -526,7 +526,7 @@ public class Config {
 
 	public static synchronized void flush() {
 		Config newInstance = new Config();
-		if(INSTANCE != null){
+		if (INSTANCE != null) {
 			newInstance.nodes = INSTANCE.nodes;
 			newInstance.externalStorageSources = INSTANCE.externalStorageSources;
 			newInstance.externalDataSources = INSTANCE.externalDataSources;
@@ -1141,6 +1141,14 @@ public class Config {
 			Portal obj = BaseTools.readConfigObject(PATH_CONFIG_PORTAL, Portal.class);
 			if (null == obj) {
 				obj = Portal.defaultInstance();
+			}
+			// 兼容7.2之前person.json设置登录页配置
+			if (null == obj.getLoginPage() || (BooleanUtils.isFalse(obj.getLoginPage().getEnable())
+					&& StringUtils.isBlank(obj.getLoginPage().getPortal()))) {
+				JsonObject personJsonObject = BaseTools.readConfigObject(PATH_CONFIG_PERSON, JsonObject.class);
+				if (personJsonObject.has("loginPage")) {
+					obj.setLoginPage(XGsonBuilder.convert(personJsonObject.get("loginPage"), Portal.LoginPage.class));
+				}
 			}
 			instance().portal = obj;
 		}

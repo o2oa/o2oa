@@ -49,6 +49,10 @@ public class Portal extends ConfigObject {
 		return this.loginPage;
 	}
 
+	public void setLoginPage(LoginPage loginPage) {
+		this.loginPage = loginPage;
+	}
+
 	public void setIndexPage(IndexPage indexPage) {
 		this.indexPage = indexPage;
 	}
