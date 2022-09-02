@@ -104,18 +104,27 @@ const indexPortal = ref('');
 const portalList = ref([]);
 
 const load = async () => {
+  debugger;
   getConfigData('person').then((data)=>{
     captchaLogin.value = !!data.captchaLogin;
     codeLogin.value = !!data.codeLogin;
     bindLogin.value = !!data.bindLogin;
     faceLogin.value = !!data.faceLogin;
     if (data.register) register.value = data.register;
+    if (data.loginPage){
+      loginPage.value = !!data.loginPage.enable;
+      loginPortal.value = data.loginPage.portal || 'default';
+    }
   });
   getConfigData('portal').then((data)=>{
-    loginPage.value = !!data.loginPage.enable;
-    loginPortal.value = data.loginPage.portal || 'default';
-    indexPage.value = !!data.indexPage.enable;
-    indexPortal.value = data.indexPage.portal;
+    if (data.loginPage){
+      loginPage.value = !!data.loginPage.enable;
+      loginPortal.value = data.loginPage.portal || 'default';
+    }
+    if (data.indexPage) {
+      indexPage.value = !!data.indexPage.enable;
+      indexPortal.value = data.indexPage.portal;
+    }
   });
   loadPortals().then((data)=>{
     portalList.value = data;
