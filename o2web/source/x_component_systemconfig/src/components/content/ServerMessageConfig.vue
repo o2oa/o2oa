@@ -43,12 +43,14 @@ const messageData = ref();
 const loaded = ref(false);
 const load = ()=>{
   getConfigData('messages').then((data)=>{
-    debugger;
     if (data){
       if (!data.consumers || !Object.keys(data.consumers).length){
         data.consumers = consumersJson;
       }
       messageData.value = data;
+      if (!messageData.value.filters) messageData.value.filters = {};
+      if (!messageData.value.loaders) messageData.value.loaders = {};
+      if (!messageData.value.consumers) messageData.value.consumers = {};
     }else{
       // messageData.value = messageTypeJson;
       // messageData.value.consumers = consumersJson;

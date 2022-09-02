@@ -44,7 +44,6 @@
         </div>
       </div>
 
-
       <div class="item_title" v-html="lp._storageServer.assignNode"></div>
       <div class="item_info" v-html="lp._storageServer.assignNodeInfo"></div>
 
@@ -132,12 +131,7 @@ const storageData = ref();
 const externalEditorArea = ref();
 const currentNodeData = ref({});
 const initData = {
-  "file": [{
-    "store": "node1",
-    "prefix": "",
-    "enable": true,
-    "deepPath": false
-  }],
+  "file": [],
   "processPlatform": [],
   "mind": [],
   "meeting": [],
@@ -302,17 +296,13 @@ const removeNode = (e, key)=>{
 
 
 const load = ()=>{
-  debugger;
   loadRuntimeConfig('externalStorageSources').then((data)=>{
     storageData.value = data;
     if (!data){
-      // getConfigData('externalStorageSources').then((d)=>{
-      //   d.enable = false;
-      //   storageData.value = d;
-      // });
-
       storageData.value = initData;
     }
+    if (!storageData.value.hasOwnProperty('enable')) storageData.value.enable = true;
+    if (!storageData.value.store) storageData.value.store = {};
   });
 }
 
