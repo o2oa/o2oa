@@ -131,6 +131,7 @@ const storageData = ref();
 const externalEditorArea = ref();
 const currentNodeData = ref({});
 const initData = {
+  "enable": false,
   "file": [],
   "processPlatform": [],
   "mind": [],
