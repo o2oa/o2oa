@@ -58,7 +58,7 @@ public class StatPlan extends GsonPropertyObject {
 				LOGGER.error(e);
 			}
 		});
-		
+
 		if (BooleanUtils.isTrue(calculate.isGroup)) {
 			this.setCalculateGrid(this.mergeGroup(plans));
 		} else {
@@ -230,13 +230,25 @@ public class StatPlan extends GsonPropertyObject {
 										});
 										// 如果有添加的分类值,有可能取得的是null
 										if (StringUtils.equals(calculateEntry.calculateType, Plan.CALCULATE_AVERAGE)) {
-											cell.value = numberFormat
-													.format(values.stream().mapToDouble(d -> d).average().orElse(0));
-										} else if (StringUtils.equals(calculateEntry.calculateType,
-												Plan.CALCULATE_SUM)) {
-											cell.value = numberFormat.format(values.stream().mapToDouble(d -> d).sum());
+											if (StringUtils.equals(calculateEntry.formatType, CalculateEntry.FORMATTYPE_NUMBER)){
+												cell.value = Double.valueOf(numberFormat
+														.format(values.stream().mapToDouble(d -> d).average().orElse(0)));
+											} else{
+												cell.value = numberFormat
+														.format(values.stream().mapToDouble(d -> d).average().orElse(0));
+											}
+										} else if (StringUtils.equals(calculateEntry.calculateType, Plan.CALCULATE_SUM)) {
+											if (StringUtils.equals(calculateEntry.formatType, CalculateEntry.FORMATTYPE_NUMBER)){
+												cell.value = Double.valueOf(numberFormat.format(values.stream().mapToDouble(d -> d).sum()));
+											} else{
+												cell.value = numberFormat.format(values.stream().mapToDouble(d -> d).sum());
+											}
 										} else {
-											cell.value = numberFormat.format(values.stream().count());
+											if (StringUtils.equals(calculateEntry.formatType, CalculateEntry.FORMATTYPE_NUMBER)){
+												cell.value = Long.valueOf(values.stream().count());
+											} else {
+												cell.value = numberFormat.format(values.stream().count());
+											}
 										}
 									}
 								}
@@ -290,12 +302,25 @@ public class StatPlan extends GsonPropertyObject {
 							if (null != cell) {
 								r.list.stream().forEach(c -> values.add(c.getAsDouble(o.column)));
 								if (StringUtils.equals(calculateEntry.calculateType, Plan.CALCULATE_AVERAGE)) {
-									cell.value = numberFormat
-											.format(values.stream().mapToDouble(d -> d).average().orElse(0));
+									if (StringUtils.equals(calculateEntry.formatType, CalculateEntry.FORMATTYPE_NUMBER)){
+										cell.value = Double.valueOf(numberFormat
+												.format(values.stream().mapToDouble(d -> d).average().orElse(0)));
+									} else{
+										cell.value = numberFormat
+												.format(values.stream().mapToDouble(d -> d).average().orElse(0));
+									}
 								} else if (StringUtils.equals(calculateEntry.calculateType, Plan.CALCULATE_SUM)) {
-									cell.value = numberFormat.format(values.stream().mapToDouble(d -> d).sum());
+									if (StringUtils.equals(calculateEntry.formatType, CalculateEntry.FORMATTYPE_NUMBER)){
+										cell.value = Double.valueOf(numberFormat.format(values.stream().mapToDouble(d -> d).sum()));
+									} else{
+										cell.value = numberFormat.format(values.stream().mapToDouble(d -> d).sum());
+									}
 								} else {
-									cell.value = numberFormat.format(values.stream().count());
+									if (StringUtils.equals(calculateEntry.formatType, CalculateEntry.FORMATTYPE_NUMBER)){
+										cell.value = Long.valueOf(values.stream().count());
+									} else {
+										cell.value = numberFormat.format(values.stream().count());
+									}
 								}
 							}
 						});
@@ -312,12 +337,25 @@ public class StatPlan extends GsonPropertyObject {
 							values.add(r.getAsDouble(o.column));
 							CalculateCell cell = row.getCell(calculateEntry.id);
 							if (StringUtils.equals(calculateEntry.calculateType, Plan.CALCULATE_AVERAGE)) {
-								cell.value = numberFormat
-										.format(values.stream().mapToDouble(d -> d).average().orElse(0));
+								if (StringUtils.equals(calculateEntry.formatType, CalculateEntry.FORMATTYPE_NUMBER)){
+									cell.value = Double.valueOf(numberFormat
+											.format(values.stream().mapToDouble(d -> d).average().orElse(0)));
+								} else{
+									cell.value = numberFormat
+											.format(values.stream().mapToDouble(d -> d).average().orElse(0));
+								}
 							} else if (StringUtils.equals(calculateEntry.calculateType, Plan.CALCULATE_SUM)) {
-								cell.value = numberFormat.format(values.stream().mapToDouble(d -> d).sum());
+								if (StringUtils.equals(calculateEntry.formatType, CalculateEntry.FORMATTYPE_NUMBER)){
+									cell.value = Double.valueOf(numberFormat.format(values.stream().mapToDouble(d -> d).sum()));
+								} else{
+									cell.value = numberFormat.format(values.stream().mapToDouble(d -> d).sum());
+								}
 							} else {
-								cell.value = numberFormat.format(values.stream().count());
+								if (StringUtils.equals(calculateEntry.formatType, CalculateEntry.FORMATTYPE_NUMBER)){
+									cell.value = Long.valueOf(values.stream().count());
+								} else {
+									cell.value = numberFormat.format(values.stream().count());
+								}
 							}
 						});
 					}
@@ -347,6 +385,7 @@ public class StatPlan extends GsonPropertyObject {
 
 		Collator collator = Collator.getInstance(java.util.Locale.CHINA);
 
+		@Override
 		public int compare(CalculateGroupRow r1, CalculateGroupRow r2) {
 			return collator.compare(Objects.toString(r1.group, ""), Objects.toString(r2.group, ""));
 		}
@@ -362,12 +401,21 @@ public class StatPlan extends GsonPropertyObject {
 			this.column = column;
 		}
 
+		@Override
 		public int compare(CalculateGroupRow r1, CalculateGroupRow r2) {
 			Object o1 = r1.getCell(column).value;
 			Object o2 = r2.getCell(column).value;
 			if ((o1 instanceof Number) && (o2 instanceof Number)) {
 				Double d1 = ((Number) o1).doubleValue();
 				Double d2 = ((Number) o2).doubleValue();
+				return d1.compareTo(d2);
+			} else if ((o1 instanceof Double) && (o2 instanceof Double)) {
+				Double d1 = (Double) o1;
+				Double d2 = (Double) o2;
+				return d1.compareTo(d2);
+			} else if ((o1 instanceof Long) && (o2 instanceof Long)) {
+				Long d1 = (Long) o1;
+				Long d2 = (Long) o2;
 				return d1.compareTo(d2);
 			} else {
 				return collator.compare(Objects.toString(o1, ""), Objects.toString(o2, ""));
