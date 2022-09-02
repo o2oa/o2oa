@@ -104,19 +104,20 @@ const indexPortal = ref('');
 const portalList = ref([]);
 
 const load = async () => {
-  getConfigData('person').then((data)=>{
+  const personP = getConfigData('person').then((data)=>{
     captchaLogin.value = !!data.captchaLogin;
     codeLogin.value = !!data.codeLogin;
     bindLogin.value = !!data.bindLogin;
     faceLogin.value = !!data.faceLogin;
     if (data.register) register.value = data.register;
-    if (data.loginPage){
+    if (data.loginPage && data.loginPage.enable){
       loginPage.value = !!data.loginPage.enable;
       loginPortal.value = data.loginPage.portal || 'default';
     }
+    return data;
   });
-  getConfigData('portal').then((data)=>{
-    if (data.loginPage){
+  const portalP = getConfigData('portal').then((data)=>{
+    if (data.loginPage && data.loginPage.enable){
       loginPage.value = !!data.loginPage.enable;
       loginPortal.value = data.loginPage.portal || 'default';
     }
@@ -124,7 +125,17 @@ const load = async () => {
       indexPage.value = !!data.indexPage.enable;
       indexPortal.value = data.indexPage.portal;
     }
+    return data;
   });
+
+  Promise.all([personP, portalP]).then((arr)=>{
+    const loginPageData = (arr[1].loginPage && arr[1].loginPage.enable) ? arr[1].loginPage : arr[0].loginPage;
+    if (loginPageData){
+      loginPage.value = !!loginPageData.enable;
+      loginPortal.value = loginPageData.portal || 'default';
+    }
+  });
+
   loadPortals().then((data)=>{
     portalList.value = data;
   });
