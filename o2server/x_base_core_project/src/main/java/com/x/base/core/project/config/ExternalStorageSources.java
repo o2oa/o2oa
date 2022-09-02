@@ -103,7 +103,8 @@ public class ExternalStorageSources extends ConfigObject {
 	}
 
 	public Boolean getEnable() {
-		return (null == this.enable) ? DEFAULT_ENABLE : this.enable;
+		// 兼容7.2之前版本
+		return (null == this.enable) ? true : this.enable;
 	}
 
 	public List<ExternalStorageSource> getFile() {
