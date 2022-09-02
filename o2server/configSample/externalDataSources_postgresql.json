@@ -5,6 +5,7 @@
 		"password" :"password",
 		"includes": [],
 		"excludes": [],
-		"enable" : true
+		"enable" : true,
+		"statEnable" : false
 	}
 ]
