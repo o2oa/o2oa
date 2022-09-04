@@ -154,7 +154,7 @@ const editConsumer = (key)=>{
     }else if (data.hasOwnProperty('key') && consumersData.value[data.key]) {
       component.notice(lp._messageConfig.hasKey, 'error', dlg.node, {x: 'left', y: 'top'}, {x: 10, y: 10});
     }else{
-      const id = (o2.typeOf(key)==='string') ? key : key.key;
+      const id = (o2.typeOf(key)==='string') ? key : currentData.value.key;
       consumersData.value[id] = {
         type: currentData.value.type,
         loader: currentData.value.loader,
