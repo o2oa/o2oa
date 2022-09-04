@@ -181,7 +181,7 @@ public class MessageConnector {
 	// IM 聊天消息发送
 	public static final String TYPE_IM_CREATE = "im_create";
 
-	// IM 聊天消息发送
+	// 自定义消息
 	public static final String TYPE_CUSTOM_PREFIX = "custom_";
 
 	// 审计日志通知
@@ -210,7 +210,7 @@ public class MessageConnector {
 	public static final String CONSUME_RESTFUL = "restful";
 	// 邮件类型
 	public static final String CONSUME_MAIL = "mail";
-	// 内部调用
+	// 系统内部借口调用
 	public static final String CONSUME_API = "api";
 	// jdbc写入
 	public static final String CONSUME_JDBC = "jdbc";
