@@ -66,11 +66,11 @@ const load = ()=>{
     servers.value.forEach((s)=>{
       o.push({
         nodeAddress: s.nodeAddress,
-        enable: true,
-        port: 20040,
-        name: "251",
-        prefix: "",
-        deepPath: false
+        enable: s.enable,
+        port: s.port,
+        name: s.name,
+        prefix: s.prefix,
+        deepPath: s.deepPath
       });
     });
     storageData.value = o;
