@@ -13,7 +13,7 @@ public class DataServer extends ConfigObject {
 	private static final long serialVersionUID = 77120835343101221L;
 
 	private static final Integer DEFAULT_TCPPORT = 20050;
-	private static final Integer DEFAULT_WEBPORT = 20051;
+	private static final Integer DEFAULT_WEBPORT = null;
 	private static final Integer DEFAULT_CACHESIZE = 512;
 	private static final Boolean DEFAULT_JMXENABLE = false;
 	private static final Integer DEFAULT_MAXTOTAL = 50;

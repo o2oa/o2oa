@@ -23,7 +23,7 @@
 <script setup>
 import {ref} from 'vue';
 import {component, lp} from '@o2oa/component';
-import {deployWebResource, getConfigData} from '@/util/acrions';
+import {deployWarResource, getConfigData} from '@/util/acrions';
 import BaseUpload from '@/components/item/BaseUpload.vue';
 
 const deloyData = ref({
@@ -49,11 +49,11 @@ async function deploy(e) {
   var p = [];
   deloyData.value.file.forEach((f)=>{
     const o = {
-      file: [f],
-      overwrite: deloyData.value.overwrite,
-      path: deloyData.value.path
+      file: [f]
+      // overwrite: deloyData.value.overwrite,
+      // path: deloyData.value.path
     }
-    p.push(deployWebResource(o));
+    p.push(deployWarResource(o));
   });
   // const data = await deployWebResource(deloyData.value);
   Promise.all(p).then(()=>{

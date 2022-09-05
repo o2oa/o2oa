@@ -246,9 +246,9 @@ public class Messages extends ConfigObject {
 		o.consumers.put("activemq_demo", XGsonBuilder.instance().toJsonTree(ActivemqConsumer.defaultInstance()));
 		o.consumers.put("restful_demo", XGsonBuilder.instance().toJsonTree(RestfulConsumer.defaultInstance()));
 		o.consumers.put("mail_demo", XGsonBuilder.instance().toJsonTree(MailConsumer.defaultInstance()));
-		o.consumers.put("api_demo", XGsonBuilder.instance().toJsonTree(ApiConsumer.defaultInstance()));
+//		o.consumers.put("api_demo", XGsonBuilder.instance().toJsonTree(ApiConsumer.defaultInstance()));
 		o.consumers.put("jdbc_demo", XGsonBuilder.instance().toJsonTree(JdbcConsumer.defaultInstance()));
-		o.consumers.put("table_demo", XGsonBuilder.instance().toJsonTree(TableConsumer.defaultInstance()));
+//		o.consumers.put("table_demo", XGsonBuilder.instance().toJsonTree(TableConsumer.defaultInstance()));
 		o.consumers.put("hadoop_demo", XGsonBuilder.instance().toJsonTree(HadoopConsumer.defaultInstance()));
 		o.loaders = new LinkedHashMap<>();
 		o.filters = new LinkedHashMap<>();

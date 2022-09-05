@@ -125,6 +125,16 @@ async function deployWebResource(data) {
     const result = await action.dispatchResource(data.overwrite, formData, file);
     return result.data;
 }
+async function deployWarResource(data) {
+    var action = o2.Actions.load("x_program_center").CommandAction;
+    const formData = new FormData();
+    const file = data.file[0];
+    formData.append('file', file);
+    formData.append('fileName', file.name);
+    //formData.append('filePath', data.path);
+    const result = await action.upload(formData, file);
+    return result.data;
+}
 
 function getPublicData(name){
     return new Promise((resolve)=>{
@@ -272,6 +282,7 @@ export {
     saveComponent,
     dispatchComponentFile,
     deployWebResource,
+    deployWarResource,
     getPublicData,
     clearPublicData,
     loadProcessApplication,
