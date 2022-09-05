@@ -46,7 +46,9 @@ public class DataServerTools {
 		System.out.println("****************************************");
 		System.out.println("* data server start completed.");
 		System.out.println("* port: " + dataServer.getTcpPort() + ".");
-		System.out.println("* web console port: " + dataServer.getWebPort() + ".");
+		if ((null != webPort) && (webPort > 0)) {
+			System.out.println("* web console port: " + dataServer.getWebPort() + ".");
+		}
 		System.out.println("****************************************");
 		return new DataTcpWebServer(tcpServer, webServer);
 	}
