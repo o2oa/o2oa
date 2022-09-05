@@ -33,6 +33,7 @@ import com.x.cms.assemble.control.jaxrs.output.OutputAction;
 import com.x.cms.assemble.control.jaxrs.permission.PermissionAction;
 import com.x.cms.assemble.control.jaxrs.permission.PermissionForDocumentAction;
 import com.x.cms.assemble.control.jaxrs.permission.PermissionManagerAction;
+import com.x.cms.assemble.control.jaxrs.review.ReviewAction;
 import com.x.cms.assemble.control.jaxrs.script.ScriptAction;
 import com.x.cms.assemble.control.jaxrs.script.ScriptAnonymousAction;
 import com.x.cms.assemble.control.jaxrs.search.SearchFilterAction;
@@ -87,6 +88,9 @@ public class ActionApplication extends AbstractActionApplication {
 		this.classes.add(DocumentCommentInfoAction.class);
 		this.classes.add(DocumentCommendAction.class);
 		this.classes.add(DesignerAction.class);
+
+		this.classes.add(ReviewAction.class);
+		
 		return this.classes;
 	}
 

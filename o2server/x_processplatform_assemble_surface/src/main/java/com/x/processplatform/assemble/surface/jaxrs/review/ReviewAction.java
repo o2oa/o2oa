@@ -28,6 +28,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+
 @Tag(name = "ReviewAction", description = "参阅接口.")
 @Path("review")
 @JaxrsDescribe("参阅接口.")
@@ -375,7 +376,7 @@ public class ReviewAction extends StandardJaxrsAction {
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void listWithJob(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-							@JaxrsParameterDescribe("任务标识") @PathParam("job") String job) {
+			@JaxrsParameterDescribe("任务标识") @PathParam("job") String job) {
 		ActionResult<List<ActionListWithJob.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
@@ -385,6 +386,24 @@ public class ReviewAction extends StandardJaxrsAction {
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "搜索.", action = V2Search.class)
+	@POST
+	@Path("v2/search")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void v2Search(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
+		ActionResult<List<V2Search.Wo>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new V2Search().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 }
