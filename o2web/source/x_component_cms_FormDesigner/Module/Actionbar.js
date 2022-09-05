@@ -42,7 +42,7 @@ MWF.xApplication.cms.FormDesigner.Module.Actionbar = MWF.CMSFCActionbar = new Cl
 	_checkProcessTool: function(){
 		//删除从流程拷贝过来的系统按钮
 		debugger;
-		var processTools = this.json.multiTools.filter( function (tool) {
+		var processTools = ( this.json.multiTools || [] ).filter( function (tool) {
 			return ["closeWork","saveWork","processWork","rerouteWork","resetWork","addTask","addSplit","retractWork","rollback",
 				"deleteWork","printWork","pressWork","pauseTask","resumeTask","downloadAll"].contains( tool.action )
 		});
