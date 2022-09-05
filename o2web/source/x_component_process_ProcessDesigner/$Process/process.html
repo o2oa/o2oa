@@ -209,56 +209,56 @@
             </table>
         </div>
     </div>
-    <div title="{{$.lp.aging}}"  class="MWFTab" data-o2-advanced="yes">
-        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-            <tr>
-                <td class="editTableTitle">{{$.lp.processTimeLimit}}:</td>
-                <td class="editTableValue">
-                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}expireTypeAppointEditArea').setStyle('display', 'none'); $('text{$.id}expireTypeScriptEditArea').setStyle('display', 'none');}" name="expireType" text{($.expireType!='appoint' && $.expireType!='script')?'checked':''} type="radio" value="never"/>{{$.lp.noLimit}}
-                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}expireTypeAppointEditArea').setStyle('display', 'block'); $('text{$.id}expireTypeScriptEditArea').setStyle('display', 'none');}" name="expireType" text{($.expireType=='appoint')?'checked':''} type="radio" value="appoint"/>{{$.lp.specifyDuration}}
-                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}expireTypeAppointEditArea').setStyle('display', 'none'); $('text{$.id}expireTypeScriptEditArea').setStyle('display', 'block');}" name="expireType" text{($.expireType=='script')?'checked':''} type="radio" value="script"/>{{$.lp.byScript}}
-                </td>
-            </tr>
-        </table>
+<!--    <div title="{{$.lp.aging}}"  class="MWFTab" data-o2-advanced="yes">-->
+<!--        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+<!--            <tr>-->
+<!--                <td class="editTableTitle">{{$.lp.processTimeLimit}}:</td>-->
+<!--                <td class="editTableValue">-->
+<!--                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}expireTypeAppointEditArea').setStyle('display', 'none'); $('text{$.id}expireTypeScriptEditArea').setStyle('display', 'none');}" name="expireType" text{($.expireType!='appoint' && $.expireType!='script')?'checked':''} type="radio" value="never"/>{{$.lp.noLimit}}-->
+<!--                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}expireTypeAppointEditArea').setStyle('display', 'block'); $('text{$.id}expireTypeScriptEditArea').setStyle('display', 'none');}" name="expireType" text{($.expireType=='appoint')?'checked':''} type="radio" value="appoint"/>{{$.lp.specifyDuration}}-->
+<!--                    <input class="editTableRadio" onclick="if (this.checked){ $('text{$.id}expireTypeAppointEditArea').setStyle('display', 'none'); $('text{$.id}expireTypeScriptEditArea').setStyle('display', 'block');}" name="expireType" text{($.expireType=='script')?'checked':''} type="radio" value="script"/>{{$.lp.byScript}}-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--        </table>-->
 
-        <div id="text{$.id}expireTypeAppointEditArea" style="display: text{($.expireType=='appoint')?'block':'none'}; margin-top: 5px;">
-            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-                <tr>
-                    <td class="editTableTitle">{{$.lp.timeLimit}}:</td>
-                    <td class="editTableValue">
-                        <input type="text" name="expireDay" value="text{ $.expireDay === 0 ? 0 : ($.expireDay || 7) }" style="width: 80px; border: 1px solid #cccccc"/> {{$.lp.days}} <br/>
-                        <input type="text" name="expireHour" value="text{($.expireHour) ? $.expireHour : 0}" style="width: 80px; border: 1px solid #cccccc"/> {{$.lp.hours}}
-                    </td>
-                </tr>
-                <tr>
-                    <td class="editTableTitle"></td>
-                    <td class="editTableValue">
-                        <input class="editTableRadio" name="expireWorkTime" text{!($.expireWorkTime===false)?'checked':''} type="radio" value="true"/>{{$.lp.workTimeOnly}}
-                        <input class="editTableRadio" name="expireWorkTime" text{($.expireWorkTime===false)?'checked':''} type="radio" value="false"/>{{$.lp.includeNoworkTime}}
-                    </td>
-                </tr>
-            </table>
-        </div>
+<!--        <div id="text{$.id}expireTypeAppointEditArea" style="display: text{($.expireType=='appoint')?'block':'none'}; margin-top: 5px;">-->
+<!--            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+<!--                <tr>-->
+<!--                    <td class="editTableTitle">{{$.lp.timeLimit}}:</td>-->
+<!--                    <td class="editTableValue">-->
+<!--                        <input type="text" name="expireDay" value="text{ $.expireDay === 0 ? 0 : ($.expireDay || 7) }" style="width: 80px; border: 1px solid #cccccc"/> {{$.lp.days}} <br/>-->
+<!--                        <input type="text" name="expireHour" value="text{($.expireHour) ? $.expireHour : 0}" style="width: 80px; border: 1px solid #cccccc"/> {{$.lp.hours}}-->
+<!--                    </td>-->
+<!--                </tr>-->
+<!--                <tr>-->
+<!--                    <td class="editTableTitle"></td>-->
+<!--                    <td class="editTableValue">-->
+<!--                        <input class="editTableRadio" name="expireWorkTime" text{!($.expireWorkTime===false)?'checked':''} type="radio" value="true"/>{{$.lp.workTimeOnly}}-->
+<!--                        <input class="editTableRadio" name="expireWorkTime" text{($.expireWorkTime===false)?'checked':''} type="radio" value="false"/>{{$.lp.includeNoworkTime}}-->
+<!--                    </td>-->
+<!--                </tr>-->
+<!--            </table>-->
+<!--        </div>-->
 
-        <div id="text{$.id}expireTypeScriptEditArea" style="display: text{($.expireType=='script')?'block':'none'}; margin-top: 5px; padding: 5px">
-            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-                <tr>
-                    <td class="editTableTitle">{{$.lp.script}}:</td>
-                    <td class="editTableValue">
-                        <div class="MWFScript" name="expireScript"></div>
-                    </td>
-                </tr>
-            </table>
-            <div class="MWFScriptText" name="expireScriptText" data-o2-api="../api/server.module_expire.html#server.module_expire"></div><hr />
-            <div style="margin: 5px;">{{$.lp.returnJson}}: <br>
-                return {hour: 3}  <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>//{{$.lp.hourTimeout}}}<br>
-                return {workHour: 5}   <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>//{{$.lp.hourWorkTimeout}}}<br>
-                return {date: '2016-08-01'}    <span>&nbsp;&nbsp;</span>//{{$.lp.specifyTimeout}}}<br>
-                {{$.lp.oneOfThree}}</div>
-            <div><a href="../api/server.module_expire.html#server.module_expire" target="_blank">{{$.lp.apiDoc}}</a></div>
-        </div>
+<!--        <div id="text{$.id}expireTypeScriptEditArea" style="display: text{($.expireType=='script')?'block':'none'}; margin-top: 5px; padding: 5px">-->
+<!--            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">-->
+<!--                <tr>-->
+<!--                    <td class="editTableTitle">{{$.lp.script}}:</td>-->
+<!--                    <td class="editTableValue">-->
+<!--                        <div class="MWFScript" name="expireScript"></div>-->
+<!--                    </td>-->
+<!--                </tr>-->
+<!--            </table>-->
+<!--            <div class="MWFScriptText" name="expireScriptText" data-o2-api="../api/server.module_expire.html#server.module_expire"></div><hr />-->
+<!--            <div style="margin: 5px;">{{$.lp.returnJson}}: <br>-->
+<!--                return {hour: 3}  <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>//{{$.lp.hourTimeout}}}<br>-->
+<!--                return {workHour: 5}   <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>//{{$.lp.hourWorkTimeout}}}<br>-->
+<!--                return {date: '2016-08-01'}    <span>&nbsp;&nbsp;</span>//{{$.lp.specifyTimeout}}}<br>-->
+<!--                {{$.lp.oneOfThree}}</div>-->
+<!--            <div><a href="../api/server.module_expire.html#server.module_expire" target="_blank">{{$.lp.apiDoc}}</a></div>-->
+<!--        </div>-->
 
-    </div>
+<!--    </div>-->
 
     <div title="{{$.lp.mapping}}"  class="MWFTab" data-o2-advanced="yes">
         <div class="MWFProjection" name="projection">
