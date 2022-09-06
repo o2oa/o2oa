@@ -1161,6 +1161,7 @@ o2.xApplication.systemconfig.LP = {
         "externalExternalInfo": "<span class='mainColor_color'>您已启用扩展文件存储服</span>",
 
         "enableExternal": "启用扩展文件存储",
+        "disableExternal": "禁用扩展文件存储",
         "enableExternalInfo": "如果要启用扩展文件存储，请确保扩展文件存储配置已经完成，否则可能造成服务器运行异常。启用或禁用扩展存储服务都会影响到系统现有的文件存储，强烈建议先备份系统数据。",
 
         "enableExternalTitle": "启用扩展文件存储确认",
@@ -1450,6 +1451,9 @@ o2.xApplication.systemconfig.LP = {
         "deleteLoaderInfo": "您确定要删除加载器“{name}”吗？",
 
         "deleteConsumerTitle": "删除消息通道确认",
-        "deleteConsumerInfo": "您确定要删除消息通道“{name}”吗？"
+        "deleteConsumerInfo": "您确定要删除消息通道“{name}”吗？",
+
+        "loaderComment": "/*\nmessage 对象是消息体,有脚本执行上下文环境环境自动注入,其中有四个字段\nmessage.title: 标题\nmessage.person: 发送对象\nmessage.type: 消息类型，如：task_create\nmessage.body: 消息体，如：类型是task_create的消息中消息体是json格式存储的task(待办)数据\nreturn 返回的message对象\n*/\nreturn message;",
+        "filterComment": "/*\nmessage 对象是消息体,有脚本执行上下文环境环境自动注入,其中有四个字段\nmessage.title: 标题\nmessage.person: 发送对象\nmessage.type: 消息类型，如：task_create\nmessage.body: 消息体，如：类型是task_create的消息中消息体是json格式存储的task(待办)数据\nreturn 返回的boolan，true表示需要发送；false表示不发送\n*/\nreturn true;"
     }
 }
