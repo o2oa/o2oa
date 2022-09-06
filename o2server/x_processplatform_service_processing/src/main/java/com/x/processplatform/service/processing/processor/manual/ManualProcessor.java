@@ -382,7 +382,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Deprecated(forRemoval = true,since = "7.3")
+	@Deprecated(forRemoval = true,since = "8.0")
 	private ManualTaskIdentityMatrix executingManualTaskIdentityMatrix(AeiObjects aeiObjects, Manual manual)
 			throws Exception {
 		ManualTaskIdentityMatrix matrix = aeiObjects.getWork().getManualTaskIdentityMatrix();
