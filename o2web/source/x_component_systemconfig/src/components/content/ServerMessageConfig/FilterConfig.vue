@@ -99,7 +99,7 @@ const addFilter = ()=>{
       component.notice(lp._messageConfig.hasFilterKey, 'error', dlg.node, {x: 'left', y: 'top'}, {x: 10, y: 10});
       return false
     }
-    filters.value[k] = '';
+    filters.value[k] = lp._messageConfig.filterComment;;
     saveFilter();
     dlg.close()
   }, lp._messageConfig.addFilter, 500, 200)

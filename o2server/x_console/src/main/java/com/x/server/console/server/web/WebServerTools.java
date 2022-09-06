@@ -143,14 +143,14 @@ public class WebServerTools extends JettySeverTools {
 		context.setGzipHandler(new GzipHandler());
 		context.setParentLoaderPriority(true);
 		context.getMimeTypes().addMimeMapping("wcss", "application/json");
-		if (BooleanUtils.isTrue(Config.general().getStatEnable())) {
-			FilterHolder statFilterHolder = new FilterHolder(new WebStatFilter());
-			statFilterHolder.setInitParameter("exclusions", Config.general().getStatExclusions());
-			context.addFilter(statFilterHolder, "/*", EnumSet.of(DispatcherType.REQUEST));
-			ServletHolder statServletHolder = new ServletHolder(StatViewServlet.class);
-			statServletHolder.setInitParameter("sessionStatEnable", "false");
-			context.addServlet(statServletHolder, "/druid/*");
-		}
+//		if (BooleanUtils.isTrue(Config.general().getStatEnable())) {
+//			FilterHolder statFilterHolder = new FilterHolder(new WebStatFilter());
+//			statFilterHolder.setInitParameter("exclusions", Config.general().getStatExclusions());
+//			context.addFilter(statFilterHolder, "/*", EnumSet.of(DispatcherType.REQUEST));
+//			ServletHolder statServletHolder = new ServletHolder(StatViewServlet.class);
+//			statServletHolder.setInitParameter("sessionStatEnable", "false");
+//			context.addServlet(statServletHolder, "/druid/*");
+//		}
 		return context;
 	}
 

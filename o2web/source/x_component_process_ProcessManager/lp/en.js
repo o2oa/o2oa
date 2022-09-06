@@ -170,6 +170,9 @@ MWF.xApplication.process.ProcessManager.LP = {
         "setUsableUnit": "Set UsableUnit",
         "setAppUsableIdentity": "Set AppUsableIdentity",
         "setAppUsableUnit": "Set AppUsableUnit",
+
+        "maintenanceIdentity": "Process Maintainer",
+        "setMaintainer": "Set Process Maintainer"
     },
     "createSelectTemplate": "Create: Select template",
     "templateCategory": "Template Category: ",

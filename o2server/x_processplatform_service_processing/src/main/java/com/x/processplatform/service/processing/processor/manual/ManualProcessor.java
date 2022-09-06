@@ -248,9 +248,13 @@ public class ManualProcessor extends AbstractManualProcessor {
 	private void ifTaskIdentitiesEmptyForceToCreatorOrMaintenance(AeiObjects aeiObjects, TaskIdentities taskIdentities)
 			throws Exception {
 		if (taskIdentities.isEmpty()) {
-			String identity = aeiObjects.business().organization().identity()
-					.get(aeiObjects.getProcess().getMaintenanceIdentity());
-			if (StringUtils.isEmpty(identity)) {
+			String identity = null;
+			if (StringUtils.isNotBlank(aeiObjects.getProcess().getMaintenanceIdentity())) {
+				identity = aeiObjects.business().organization().identity()
+						.get(aeiObjects.getProcess().getMaintenanceIdentity());
+			}
+			if (StringUtils.isEmpty(identity)
+					&& StringUtils.isNotBlank(aeiObjects.getApplication().getMaintenanceIdentity())) {
 				identity = aeiObjects.business().organization().identity()
 						.get(aeiObjects.getApplication().getMaintenanceIdentity());
 			}
@@ -258,7 +262,8 @@ public class ManualProcessor extends AbstractManualProcessor {
 				identity = aeiObjects.business().organization().identity()
 						.get(aeiObjects.getWork().getCreatorIdentity());
 			}
-			if (StringUtils.isEmpty(identity)) {
+			if (StringUtils.isEmpty(identity)
+					&& StringUtils.isNotBlank(Config.processPlatform().getMaintenanceIdentity())) {
 				identity = aeiObjects.business().organization().identity()
 						.get(Config.processPlatform().getMaintenanceIdentity());
 			}
@@ -328,6 +333,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 		ManualTaskIdentityMatrix matrix = executingManualTaskIdentityMatrix(aeiObjects, manual);
 		List<TaskCompleted> taskCompleteds = executingJoinInquireCheckRouteNameTaskCompleteds(aeiObjects);
 		executingCompletedIdentityInTaskCompleteds(aeiObjects, matrix, taskCompleteds);
+
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes().push(Signal.manualExecute(aeiObjects.getWork().getActivityToken(), manual,
 				Objects.toString(manual.getManualMode(), ""), matrix.flat()));
@@ -376,27 +382,30 @@ public class ManualProcessor extends AbstractManualProcessor {
 	}
 
 	@SuppressWarnings("unchecked")
+	@Deprecated(forRemoval = true,since = "8.0")
 	private ManualTaskIdentityMatrix executingManualTaskIdentityMatrix(AeiObjects aeiObjects, Manual manual)
 			throws Exception {
 		ManualTaskIdentityMatrix matrix = aeiObjects.getWork().getManualTaskIdentityMatrix();
-		if (matrix.isEmpty()) {
-			List<String> identities = new ArrayList<>();
-			// 兼容7.2.0之前的版本
-			if (PropertyUtils.isReadable(aeiObjects.getWork(), DEPRECATED_WORK_FIELD_MANUALTASKIDENTITYLIST)) {
-				identities.addAll((List<String>) PropertyUtils.getProperty(aeiObjects.getWork(),
-						DEPRECATED_WORK_FIELD_MANUALTASKIDENTITYLIST));
-				identities = aeiObjects.business().organization().identity().list(identities);
-			}
-			if (identities.isEmpty() && aeiObjects
-					.getJoinInquireTaskCompletedsWithActivityToken(aeiObjects.getWork().getActivityToken()).isEmpty()) {
-				identities = calculateTaskIdentities(aeiObjects, manual);
-				LOGGER.info("工作设置的处理人已经全部无效,且没有已办,重新计算当前环节所有处理人进行处理,标题:{}, id:{}, 设置的处理人:{}.",
-						aeiObjects.getWork()::getTitle, aeiObjects.getWork()::getId, identities::toString);
-				matrix = manual.identitiesToManualTaskIdentityMatrix(identities);
-				// 重新绑定到对象上.
-				aeiObjects.getWork().setManualTaskIdentityMatrix(matrix);
-			}
+//		if (matrix.isEmpty()) {
+		List<String> identities = new ArrayList<>();
+		// 兼容7.2.0之前的版本
+		if (PropertyUtils.isReadable(aeiObjects.getWork(), DEPRECATED_WORK_FIELD_MANUALTASKIDENTITYLIST)) {
+			identities.addAll((List<String>) PropertyUtils.getProperty(aeiObjects.getWork(),
+					DEPRECATED_WORK_FIELD_MANUALTASKIDENTITYLIST));
+			identities = aeiObjects.business().organization().identity().list(identities);
+		} else {
+			identities = aeiObjects.business().organization().identity().list(matrix.flat());
 		}
+		if (identities.isEmpty() && aeiObjects
+				.getJoinInquireTaskCompletedsWithActivityToken(aeiObjects.getWork().getActivityToken()).isEmpty()) {
+			identities = calculateTaskIdentities(aeiObjects, manual);
+			LOGGER.info("工作设置的处理人已经全部无效,且没有已办,重新计算当前环节所有处理人进行处理,标题:{}, id:{}, 设置的处理人:{}.",
+					aeiObjects.getWork()::getTitle, aeiObjects.getWork()::getId, identities::toString);
+			matrix = manual.identitiesToManualTaskIdentityMatrix(identities);
+			// 重新绑定到对象上.
+			aeiObjects.getWork().setManualTaskIdentityMatrix(matrix);
+		}
+//		}
 		return matrix;
 	}
 
