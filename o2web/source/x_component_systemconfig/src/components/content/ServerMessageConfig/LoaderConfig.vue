@@ -99,10 +99,10 @@ const addLoader = ()=>{
       component.notice(lp._messageConfig.hasLoaderKey, 'error', dlg.node, {x: 'left', y: 'top'}, {x: 10, y: 10});
       return false
     }
-    loaders.value[k] = '';
+    loaders.value[k] = lp._messageConfig.loaderComment;
     saveLoader();
     dlg.close()
-  }, lp._messageConfig.addLoader, 500, 200)
+  }, lp._messageConfig.addLoader, 500, 200);
 }
 
 const deleteLoader = (e, key)=>{
