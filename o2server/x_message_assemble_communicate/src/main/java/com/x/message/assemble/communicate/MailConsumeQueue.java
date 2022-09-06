@@ -1,5 +1,6 @@
 package com.x.message.assemble.communicate;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -107,7 +108,7 @@ public class MailConsumeQueue extends AbstractQueue<Message> {
 		mime.setFrom(new InternetAddress(consumer.getFrom()));
 		mime.addRecipient(javax.mail.Message.RecipientType.TO, new InternetAddress(recipient));
 		mime.setSubject(message.getTitle());
-		mime.setText(message.getBody());
+		mime.setText(message.getBody(), StandardCharsets.UTF_8.name(), "html");
 		Transport.send(mime);
 	}
 
