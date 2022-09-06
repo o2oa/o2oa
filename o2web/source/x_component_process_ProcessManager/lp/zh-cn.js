@@ -173,7 +173,10 @@ MWF.xApplication.process.ProcessManager.LP = {
         "setUsableIdentity" : "设置可用身份",
         "setUsableUnit" : "设置可用组织",
         "setAppUsableIdentity" : "设置应用可用身份",
-        "setAppUsableUnit" : "设置应用可用组织"
+        "setAppUsableUnit" : "设置应用可用组织",
+
+        "maintenanceIdentity": "流程维护人",
+        "setMaintainer": "设置流程维护人"
     },
     "createSelectTemplate": "新建：选择模板",
     "templateCategory": "模板分类：",
