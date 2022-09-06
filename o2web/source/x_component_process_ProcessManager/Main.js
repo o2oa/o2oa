@@ -643,6 +643,8 @@ MWF.xApplication.process.ProcessManager.ApplicationProperty = new Class({
 
             this.createAvailableNode();
             this.createControllerListNode();
+
+            this.createMaintainerNode();
         }.bind(this));
     },
     setContentHeight: function(){
@@ -828,10 +830,44 @@ MWF.xApplication.process.ProcessManager.ApplicationProperty = new Class({
 
         if (this.data.controllerList){
             this.data.controllerList.each(function(name){
-                if (name) var admin = new MWF.widget.O2Person({"name": name}, this.administratorsContentNode, {"style": "application"});
+                if (name) var admin = new MWF.widget.O2Identity({"name": name}, this.administratorsContentNode, {"style": "application"});
             }.bind(this));
         }
     },
+    createMaintainerNode: function(){
+        this.maintainerTitleNode = new Element("div", {
+            "styles": this.app.css.controllerListTitleNode,
+            "text": this.app.lp.application.maintenanceIdentity
+        }).inject(this.contentAreaNode);
+
+        this.maintainerContentNode = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.contentAreaNode);
+        this.maintainerContentAreaNode = new Element("div", {"styles": this.app.css.administratorsContentNode}).inject(this.maintainerContentNode);
+
+        var changeMaintainer = new Element("div", {
+            "styles": {
+                "margin-left": "40px",
+                "float": "left",
+                "background-color": "#FFF",
+                "padding": "4px 14px",
+                "border": "1px solid #999",
+                "border-radius": "3px",
+                "margin-top": "10px",
+                "margin-bottom": "20px",
+                "font-size": "14px",
+                "color": "#666",
+                "cursor": "pointer"
+            },
+            "text": this.app.lp.application.setMaintainer //"设置管理者"
+        }).inject(this.contentAreaNode);
+        changeMaintainer.addEvent("click", function(){
+            this.changeMaintainer();
+        }.bind(this));
+
+        if (this.data.maintenanceIdentity){
+            new MWF.widget.O2Person({"name": this.data.maintenanceIdentity}, this.maintainerContentAreaNode, {"style": "application"});
+        }
+    },
+
     changeAdministrators: function(){
         var options = {
             "type": "person",
@@ -854,6 +890,30 @@ MWF.xApplication.process.ProcessManager.ApplicationProperty = new Class({
 
         var selector = new MWF.O2Selector(this.app.content, options);
     },
+    changeMaintainer: function(){
+        var options = {
+            "type": "identity",
+            "count": 1,
+            "title": this.app.lp.application.setMaintainer,
+            "values": [this.data.maintenanceIdentity],
+            "onComplete": function(items){
+                this.maintainerContentAreaNode.empty();
+                if (items && items.length){
+                    var item = items[0];
+                    this.data.maintenanceIdentity = item.data.distinguishedName;
+                    var admin = new MWF.widget.O2Identity(item.data, this.maintainerContentAreaNode, {"style": "application"});
+                }else{
+                    this.data.maintenanceIdentity = "";
+                }
+
+                this.app.restActions.saveApplication(this.data, function(json){
+                }.bind(this));
+            }.bind(this)
+        };
+
+        var selector = new MWF.O2Selector(this.app.content, options);
+    },
+
 
     createAvailableNode: function(){
         //if (!this.personActions) this.personActions = new MWF.xAction.org.express.RestActions();

@@ -271,6 +271,9 @@ public class Business {
 				organization().identity().listWithPerson(effectivePerson))) {
 			return true;
 		}
+		if (CollectionUtils.containsAny(statement.getExecutePersonList(), effectivePerson.getDistinguishedName())) {
+			return true;
+		}
 		if (CollectionUtils.containsAny(statement.getExecuteUnitList(),
 				organization().unit().listWithPersonSupNested(effectivePerson))) {
 			return true;
