@@ -22,45 +22,46 @@ public class DingdingFactory {
 	private List<Department> orgs = new ArrayList<>();
 
 	private List<User> users = new ArrayList<>();
-	
-    private int  count = 0;
-    
-    public void syncSleep(int time) {
-    	int defaultTime = 2000;
-    	 try {
-    		if(time == 0) {
-    			time =defaultTime;
-    		}
-    		Thread.sleep(time);//延时2秒
- 		} catch (InterruptedException e) {
- 			// TODO Auto-generated catch block
- 			e.printStackTrace();
- 		}    
-    }
-    
-    public boolean syncExceptionDeal(Integer retCode, String retMessage) {
-    	boolean exceptionDeal = false;
-    	if((retCode == 90002) ||(retCode == 90018) ||  (retCode == 90006) || (retCode == 90005) || (retCode == 90019) ||
-    	    (retCode == 90010) ||  (retCode == 90008) || (retCode == 90014) ) {
-    		this.syncSleep(0);
-    		exceptionDeal = true;
-    	}
-    	return exceptionDeal;
-    }
-    
+
+	private int count = 0;
+
+	public void syncSleep(int time) {
+		int defaultTime = 2000;
+		try {
+			if (time == 0) {
+				time = defaultTime;
+			}
+			Thread.sleep(time);// 延时2秒
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public boolean syncExceptionDeal(Integer retCode, String retMessage) {
+		boolean exceptionDeal = false;
+		if ((retCode == 90002) || (retCode == 90018) || (retCode == 90006) || (retCode == 90005) || (retCode == 90019)
+				|| (retCode == 90010) || (retCode == 90008) || (retCode == 90014)) {
+			this.syncSleep(0);
+			exceptionDeal = true;
+		}
+		return exceptionDeal;
+	}
+
 	public DingdingFactory(String accessToken) throws Exception {
 		this.accessToken = accessToken;
 		orgs.add(this.detailOrg(1L));
 		for (Department o : this.orgs()) {
-			orgs.add(this.detailOrg(o.getId()));
+			Department sub = this.detailOrg(o.getId());
+			if (null != sub) {
+				orgs.add(sub);
+			}
 			for (UserSimple u : this.users(o)) {
-				
-				this.count = this.count + 1; //解决主动调用的频率限制 不能超过20秒3000次
-				if(this.count >3000) {
+				this.count = this.count + 1; // 解决主动调用的频率限制 不能超过20秒3000次
+				if (this.count > 3000) {
 					this.syncSleep(5000);
-					this.count =0;
+					this.count = 0;
 				}
-				
 				users.add(this.detailUser(u));
 			}
 		}
@@ -91,7 +92,9 @@ public class DingdingFactory {
 		OrgResp resp = HttpConnection.getAsObject(address, null, OrgResp.class);
 		logger.debug("detailOrg response:{}.", resp);
 		if (resp.getErrcode() != 0) {
-			throw new ExceptionDetailOrg(resp.getErrcode(), resp.getErrmsg());
+			logger.error(new ExceptionDetailOrg(resp.getErrcode(), resp.getErrmsg()));
+			resp = null;
+			// throw new ExceptionDetailOrg(resp.getErrcode(), resp.getErrmsg());
 		}
 		return resp;
 	}
@@ -112,12 +115,12 @@ public class DingdingFactory {
 				+ simple.getUserid();
 		UserResp resp = HttpConnection.getAsObject(address, null, UserResp.class);
 		logger.debug("detailUser response:{}.", resp);
-		
+
 		if (resp.getErrcode() != 0) {
-			if(this.syncExceptionDeal(resp.getErrcode(), resp.getErrmsg())) {
+			if (this.syncExceptionDeal(resp.getErrcode(), resp.getErrmsg())) {
 				resp = HttpConnection.getAsObject(address, null, UserResp.class);
-			}else {
-			 throw new ExceptionDetailUser(resp.getErrcode(), resp.getErrmsg());
+			} else {
+				throw new ExceptionDetailUser(resp.getErrcode(), resp.getErrmsg());
 			}
 		}
 		return resp;
