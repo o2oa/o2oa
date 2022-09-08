@@ -438,9 +438,9 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
         td = tr.insertCell(5).setStyles(css);
         td.set("text",router);
         var opinionTd = tr.insertCell(6).setStyles(css);
-        opinionTd.set("html", "<div style='display: inline-block; float: left'>"+opinion+"</div>");
+        opinionTd.set("html", "<div style='display: inline-block; float: left'>"+o2.txt(opinion)+"</div>");
         td = tr.insertCell(7).setStyles(css);
-        td.set("text",arrivedActivitys);
+        td.set("text",o2.txt(arrivedActivitys));
         td = tr.insertCell(8).setStyles(css);
         td.set("html", arrivedUsers);
 
@@ -597,15 +597,15 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
 
             html = html.replace(/\{person\}/g, person );
             html = html.replace(/\{department\}/g, (task.unit) ? task.unit.substring(0, task.unit.indexOf("@")) : "");
-            html = html.replace(/\{route\}/g, router);
+            html = html.replace(/\{route\}/g, o2.txt(router));
             html = html.replace(/\{time\}/g, task.recordTime);
             html = html.replace(/\{date\}/g, new Date().parse(task.recordTime).format("%Y-%m-%d"));
-            html = html.replace(/\{opinion\}/g, opinion);
+            html = html.replace(/\{opinion\}/g, o2.txt(opinion));
             html = html.replace(/\{company\}/g, company.substring(0, company.indexOf("@")));
             html = html.replace(/\{startTime\}/g, task.properties.startTime);
             html = html.replace(/\{startDate\}/g, new Date().parse(task.properties.startTime).format("%Y-%m-%d"));
-            html = html.replace(/\{activity\}/g, task.fromActivityName);
-            html = html.replace(/\{arrivedActivity\}/g, arrivedActivitys);
+            html = html.replace(/\{activity\}/g, o2.txt(task.fromActivityName));
+            html = html.replace(/\{arrivedActivity\}/g, o2.txt(arrivedActivitys));
             html = html.replace(/\{img\}/g, "<span class='mwf_log_img'></span>");
             html = html.replace(/\{empowerTo\}/g, arrivedUsers);
             html = html.replace(/\{next\}/g, nextTaskText);
@@ -1456,7 +1456,7 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
         td = tr.insertCell(4).setStyles(this.form.css[style]);
         td.set("text", (task.processingType=="empower") ? MWF.xApplication.process.Xform.LP.empower : task.routeName || "");
         td = tr.insertCell(5).setStyles(this.form.css[style]);
-        opinion = (task.processingType=="empower") ? MWF.xApplication.process.Xform.LP.empowerTo + o2.name.cn(task.empowerToIdentity || "") : "<div style='line-height: 28px; float:left'>" + (task.opinion || "")+"</div>";
+        opinion = (task.processingType=="empower") ? MWF.xApplication.process.Xform.LP.empowerTo + o2.name.cn(task.empowerToIdentity || "") : "<div style='line-height: 28px; float:left'>" + o2.txt(task.opinion || "")+"</div>";
         td.set("html", opinion);
 
 
@@ -1788,15 +1788,15 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
             }
             html = html.replace(/\{person\}/g, person );
             html = html.replace(/\{department\}/g, task.unit.substring(0, task.unit.indexOf("@")));
-            html = html.replace(/\{route\}/g, task.routeName);
+            html = html.replace(/\{route\}/g, o2.txt(task.routeName));
             html = html.replace(/\{time\}/g, task.completedTime);
             html = html.replace(/\{date\}/g, new Date().parse(task.completedTime).format("%Y-%m-%d"));
-            html = html.replace(/\{opinion\}/g, task.opinion || "");
+            html = html.replace(/\{opinion\}/g, o2.txt(task.opinion || ""));
             html = html.replace(/\{company\}/g, company.substring(0, company.indexOf("@")));
             html = html.replace(/\{startTime\}/g, task.startTime);
             html = html.replace(/\{startDate\}/g, new Date().parse(task.startTime).format("%Y-%m-%d"));
-            html = html.replace(/\{activity\}/g, log.fromActivityName);
-            html = html.replace(/\{arrivedActivity\}/g, log.arrivedActivityName);
+            html = html.replace(/\{activity\}/g, o2.txt(log.fromActivityName));
+            html = html.replace(/\{arrivedActivity\}/g, o2.txt(log.arrivedActivityName));
             html = html.replace(/\{img\}/g, "<span class='mwf_log_img'></span>");
             html = html.replace(/\{empowerTo\}/g, ((task.empowerToIdentity) ? o2.name.cn(task.empowerToIdentity) : ""));
 
