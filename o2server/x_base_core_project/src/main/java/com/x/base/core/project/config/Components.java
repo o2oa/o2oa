@@ -110,42 +110,40 @@ public class Components extends ConfigObject {
 		}
 	}
 
+	public Components() {
+		this.systems.add(systemComponent(NAME_SYSTEMCONFIG));
+		this.systems.add(systemComponent(NAME_ORG));
+		this.systems.add(systemComponent(NAME_CMSMANAGER));
+		this.systems.add(systemComponent(NAME_CMS));
+		this.systems.add(systemComponent(NAME_APPLICATIONEXPLORER));
+		this.systems.add(systemComponent(NAME_PORTALEXPLORER));
+		this.systems.add(systemComponent(NAME_DATAEXPLORER));
+		this.systems.add(systemComponent(NAME_SERVICEMANAGER));
+		this.systems.add(systemComponent(NAME_APPSTORE));
+		this.systems.add(systemComponent(NAME_APPCENTER));
+		this.systems.add(systemComponent(NAME_LOGVIEWER));
+		this.systems.add(systemComponent(NAME_PROFILE));
+		this.systems.add(systemComponent(NAME_BAM));
+		this.systems.add(systemComponent(NAME_WORKCENTER));
+		this.systems.add(systemComponent(NAME_HOMEPAGE));
+		this.systems.add(systemComponent(NAME_HOTARTICLE));
+		this.systems.add(systemComponent(NAME_NOTE));
+		this.systems.add(systemComponent(NAME_MEETING));
+		this.systems.add(systemComponent(NAME_ATTENDANCE));
+		this.systems.add(systemComponent(NAME_FORUM));
+		this.systems.add(systemComponent(NAME_MINDER));
+		this.systems.add(systemComponent(NAME_CALENDAR));
+		this.systems.add(systemComponent(NAME_ANN));
+		this.systems.add(systemComponent(NAME_SEARCH));
+		this.systems.add(systemComponent(NAME_IM));
+	}
+
 	public static Components defaultInstance() {
-		Components o = new Components();
-		o.systems.add(systemComponent(NAME_SYSTEMCONFIG));
-		o.systems.add(systemComponent(NAME_ORG));
-		o.systems.add(systemComponent(NAME_CMSMANAGER));
-		o.systems.add(systemComponent(NAME_CMS));
-		o.systems.add(systemComponent(NAME_APPLICATIONEXPLORER));
-		o.systems.add(systemComponent(NAME_PORTALEXPLORER));
-		o.systems.add(systemComponent(NAME_DATAEXPLORER));
-		o.systems.add(systemComponent(NAME_SERVICEMANAGER));
-		o.systems.add(systemComponent(NAME_APPSTORE));
-		o.systems.add(systemComponent(NAME_APPCENTER));
-		o.systems.add(systemComponent(NAME_LOGVIEWER));
-		o.systems.add(systemComponent(NAME_PROFILE));
-		o.systems.add(systemComponent(NAME_BAM));
-		o.systems.add(systemComponent(NAME_WORKCENTER));
-		o.systems.add(systemComponent(NAME_HOMEPAGE));
-		o.systems.add(systemComponent(NAME_HOTARTICLE));
-		o.systems.add(systemComponent(NAME_NOTE));
-		o.systems.add(systemComponent(NAME_MEETING));
-		o.systems.add(systemComponent(NAME_ATTENDANCE));
-		o.systems.add(systemComponent(NAME_FORUM));
-		o.systems.add(systemComponent(NAME_MINDER));
-		o.systems.add(systemComponent(NAME_CALENDAR));
-		o.systems.add(systemComponent(NAME_ANN));
-		o.systems.add(systemComponent(NAME_SEARCH));
-		o.systems.add(systemComponent(NAME_IM));
-		return o;
+		return new Components();
 	}
 
 	@FieldDescribe("默认模块")
 	private List<Component> systems = new ArrayList<>();
-
-	public Components() {
-		// nothing
-	}
 
 	public void save() throws Exception {
 		File file = new File(Config.base(), Config.PATH_CONFIG_PORTAL);
