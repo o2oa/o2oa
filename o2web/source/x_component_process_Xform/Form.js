@@ -1808,7 +1808,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                                 ids.push(cn)
                             }
                         });
-                        var t = "<b>" + MWF.xApplication.process.Xform.LP.nextActivity + "</b><span style='color: #ea621f'>" + a.activityName + "</span>；<b>" + MWF.xApplication.process.Xform.LP.nextUser + "</b><span style='color: #ea621f'>" + ids.join(",") + "</span>";
+                        var t = "<b>" + MWF.xApplication.process.Xform.LP.nextActivity + "</b><span style='color: #ea621f'>" + o2.txt(a.activityName) + "</span>；<b>" + MWF.xApplication.process.Xform.LP.nextUser + "</b><span style='color: #ea621f'>" + ids.join(",") + "</span>";
                         activityUsers.push(t);
                     });
                     content += activityUsers.join("<br>");
@@ -1830,7 +1830,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
 
                 } else {
                     if (data.arrivedActivityName) {
-                        content += MWF.xApplication.process.Xform.LP.arrivedActivity + data.arrivedActivityName;
+                        content += MWF.xApplication.process.Xform.LP.arrivedActivity + o2.txt(data.arrivedActivityName);
                     } else {
                         content += MWF.xApplication.process.Xform.LP.taskCompleted;
                     }
@@ -1842,7 +1842,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         if (maxLength && title.length > maxLength) {
             title = title.substr(0, maxLength) + "..."
         }
-        return "<div>" + (titlelp || MWF.xApplication.process.Xform.LP.taskProcessedMessage) + "“" + title + "”</div>" + content;
+        return "<div>" + (titlelp || MWF.xApplication.process.Xform.LP.taskProcessedMessage) + "“" + o2.txt(title) + "”</div>" + content;
     },
     addMessage: function (data, notShowBrowserDkg) {
         if (layout.desktop.message) {
@@ -2292,13 +2292,13 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 this.app.options.workId = json.data[0].work;
                 if (layout.mobile || !layout.desktop.message) {
                     if (layout.notice) {
-                        layout.notice(MWF.xApplication.process.Xform.LP.processStartedMessage + "“[" + json.data[0].processName + "]" + (this.businessData.data.title || this.businessData.data.subject));
+                        layout.notice(MWF.xApplication.process.Xform.LP.processStartedMessage + "“[" + o2.txt(json.data[0].processName) + "]" + o2.txt(this.businessData.data.title || this.businessData.data.subject));
                     }
                 } else {
                     if (layout.desktop.message) {
                         var msg = {
                             "subject": MWF.xApplication.process.Xform.LP.processStarted,
-                            "content": "<div>" + MWF.xApplication.process.Xform.LP.processStartedMessage + "“[" + json.data[0].processName + "]" + (this.businessData.data.title || this.businessData.data.subject) + "”</div>"
+                            "content": "<div>" + MWF.xApplication.process.Xform.LP.processStartedMessage + "“[" + o2.txt(json.data[0].processName) + "]" + o2.txt(this.businessData.data.title || this.businessData.data.subject) + "”</div>"
                         };
 
                         var tooltip = layout.desktop.message.addTooltip(msg);
@@ -3437,19 +3437,19 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         data.each(function (task) {
             users.push(MWF.name.cn(task.person) + "(" + MWF.name.cn(task.unit) + ")");
         }.bind(this));
-        var content = "<div><b>" + MWF.xApplication.process.Xform.LP.currentActivity + "<font style=\"color: #ea621f\">" + data[0].activityName + "</font>, " + MWF.xApplication.process.Xform.LP.nextUser + "<font style=\"color: #ea621f\">" + users.join(", ") + "</font></b></div>";
+        var content = "<div><b>" + MWF.xApplication.process.Xform.LP.currentActivity + "<font style=\"color: #ea621f\">" + o2.txt(data[0].activityName) + "</font>, " + MWF.xApplication.process.Xform.LP.nextUser + "<font style=\"color: #ea621f\">" + users.join(", ") + "</font></b></div>";
 
 
         if (layout.desktop.message) {
             var msg = {
                 "subject": MWF.xApplication.process.Xform.LP.workRollback,
-                "content": "<div>" + MWF.xApplication.process.Xform.LP.rollbackWorkInfor + "“" + this.businessData.work.title + "”</div>" + content
+                "content": "<div>" + MWF.xApplication.process.Xform.LP.rollbackWorkInfor + "“" + o2.txt(this.businessData.work.title) + "”</div>" + content
             };
             layout.desktop.message.addTooltip(msg);
             return layout.desktop.message.addMessage(msg);
         } else {
             if (this.app.inBrowser) {
-                this.inBrowserDkg("<div>" + MWF.xApplication.process.Xform.LP.rollbackWorkInfor + "“" + this.businessData.work.title + "”</div>" + content);
+                this.inBrowserDkg("<div>" + MWF.xApplication.process.Xform.LP.rollbackWorkInfor + "“" + o2.txt(this.businessData.work.title) + "”</div>" + content);
             }
         }
     },

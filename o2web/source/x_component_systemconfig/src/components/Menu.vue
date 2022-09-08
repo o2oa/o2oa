@@ -87,6 +87,8 @@ function selectedItem(item){
   color: #333333;
   line-height: 60px;
   border-bottom: 1px solid #cccccc;
+  display:flex;
+  overflow: hidden;
 }
 .menuTitleLogo{
   background-repeat: no-repeat;
@@ -102,6 +104,7 @@ function selectedItem(item){
 }
 .menuTitleText{
   float: left;
+  overflow: hidden;
 }
 .searchArea{
   height: 30px;

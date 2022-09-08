@@ -1386,6 +1386,8 @@ o2.xApplication.systemconfig.LP = {
         },
         "consumerInfoTitle": "消息通道配置",
         "consumerInfo": "O2OA系统提供多种消息通道，您可以在此处设置各类消息需要通过什么方式发送",
+        "consumerInfo2": "更多关于消息配置的内容，请查看：<a href='https://www.o2oa.net/search.html?q=%E6%B6%88%E6%81%AF%E9%85%8D%E7%BD%AE' target='_blank'>消息</a>",
+
         "addConsumer": "添加消息通道",
         "consumerLabel": {
             "key": "通道名称",

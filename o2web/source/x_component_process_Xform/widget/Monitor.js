@@ -497,7 +497,7 @@ MWF.xApplication.process.Xform.widget.Monitor = new Class({
                 log.taskCompletedList.each(function(task){
                     var taskNode = new Element("div", {"styles": this.css.workLogTaskNode}).inject(workNode);
                     var html = "<div style='font-weight: bold'>"+task.person.substring(0, task.person.indexOf("@"))+": </div>";
-                    html += "<div style='margin-left: 10px'>["+(task.routeName || "")+"] "+task.opinion+"</div>";
+                    html += "<div style='margin-left: 10px'>["+(task.routeName || "")+"] "+o2.txt(task.opinion)+"</div>";
                     html += "<div style='text-align: right'>"+task.completedTime+"</div>";
                     taskNode.set("html", html);
                 }.bind(this));
