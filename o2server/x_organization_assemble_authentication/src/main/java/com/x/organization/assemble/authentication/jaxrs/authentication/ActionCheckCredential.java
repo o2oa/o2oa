@@ -25,7 +25,7 @@ class ActionCheckCredential extends BaseAction {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
 			Wo wo = new Wo();
-			wo.setValue(StringUtils.isEmpty(business.person().getWithCredential(credential)));
+			wo.setValue(StringUtils.isNotEmpty(business.person().getWithCredential(credential)));
 			result.setData(wo);
 			return result;
 		}
