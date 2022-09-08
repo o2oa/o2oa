@@ -2,6 +2,7 @@
     <div v-if="consumersData">
       <div class="item_title">{{lp._messageConfig.consumerInfoTitle}}</div>
       <div class="item_info">{{lp._messageConfig.consumerInfo}}</div>
+      <div class="item_info" v-html="lp._messageConfig.consumerInfo2"></div>
 
       <div class="item_info">
         <div class="item_consumer_item" @click="addConsumer">

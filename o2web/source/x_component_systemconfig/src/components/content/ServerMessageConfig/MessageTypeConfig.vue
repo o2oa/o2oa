@@ -2,6 +2,7 @@
     <div v-if="consumersData" ref="componentNode">
       <div class="item_title">{{lp._messageConfig.messageTypeTitle}}</div>
       <div class="item_info">{{lp._messageConfig.messageTypeInfo}}</div>
+      <div class="item_info" v-html="lp._messageConfig.consumerInfo2"></div>
 
       <div class="item_info">
         <div class="item_message_item" @click="addMessageType">

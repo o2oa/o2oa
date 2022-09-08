@@ -35,9 +35,9 @@ import BaseInput from "@/components/item/BaseInput";
 const servers = ref([]);
 const storageData = ref([]);
 
-const runtimeExternalStorage = ref();
+const runtimeExternalStorage = ref({});
 const storageType = computed(()=>{
-  if (!runtimeExternalStorage.value.hasOwnProperty('enable')) runtimeExternalStorage.value.enable = true;
+  if (runtimeExternalStorage.value && !runtimeExternalStorage.value.hasOwnProperty('enable')) runtimeExternalStorage.value.enable = true;
   return (runtimeExternalStorage.value && runtimeExternalStorage.value.enable) ? 'external' : 'inner'
 });
 

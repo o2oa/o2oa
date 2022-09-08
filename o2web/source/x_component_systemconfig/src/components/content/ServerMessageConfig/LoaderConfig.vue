@@ -2,6 +2,7 @@
     <div v-if="loaders" ref="componentNode">
       <div class="item_title">{{lp._messageConfig.loaderConfigTitle}}</div>
       <div class="item_info">{{lp._messageConfig.loaderConfigInfo}}</div>
+      <div class="item_info" v-html="lp._messageConfig.consumerInfo2"></div>
 
       <div class="item_info">
         <div class="item_message_item" @click="addLoader">
