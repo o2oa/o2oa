@@ -293,9 +293,9 @@ MWF.xDesktop.WebSocket = new Class({
 
         var task = data.body;
         //var content = MWF.LP.desktop.messsage.receiveTask+"《"+task.title+"》, "+MWF.LP.desktop.messsage.activity+": <font style='color: #ea621f'>"+(task.activityName || "")+"</font>";
-        var content = data.title;
-        content += "<br/><font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.appliction+": </font><font style='color: #ea621f'>"+task.applicationName+"</font>;  "+
-            "<font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.process+": </font><font style='color: #ea621f'>"+task.processName+"</font>";
+        var content = o2.txt(data.title);
+        content += "<br/><font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.appliction+": </font><font style='color: #ea621f'>"+o2.txt(task.applicationName)+"</font>;  "+
+            "<font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.process+": </font><font style='color: #ea621f'>"+o2.txt(task.processName)+"</font>";
         var msg = {
             "subject": MWF.LP.desktop.messsage.taskMessage,
             "content": content
@@ -315,9 +315,9 @@ MWF.xDesktop.WebSocket = new Class({
     receiveReadMessage: function(data){
         var read = data.body;
         //var content = MWF.LP.desktop.messsage.receiveRead+"《"+read.title+"》. ";
-        var content = data.title;
-        content += "<br/><font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.appliction+": </font><font style='color: #ea621f'>"+read.applicationName+"</font>;  "+
-            "<font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.process+": </font><font style='color: #ea621f'>"+read.processName+"</font>";
+        var content = o2.txt(data.title);
+        content += "<br/><font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.appliction+": </font><font style='color: #ea621f'>"+o2.txt(read.applicationName)+"</font>;  "+
+            "<font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.process+": </font><font style='color: #ea621f'>"+o2.txt(read.processName)+"</font>";
         var msg = {
             "subject": MWF.LP.desktop.messsage.readMessage,
             "content": content
@@ -336,7 +336,7 @@ MWF.xDesktop.WebSocket = new Class({
         }.bind(this));
     },
     receiveCustomMessage: function(data){
-        var content = "<font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.customMessage+"：</font>"+data.body;
+        var content = "<font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.customMessage+"：</font>"+o2.txt(data.body);
         var msg = {
             "subject": MWF.LP.desktop.messsage.customMessageTitle,
             "content": content
@@ -358,7 +358,7 @@ MWF.xDesktop.WebSocket = new Class({
         } else if (body.type == "cms") {
             msgBody = "["+MWF.LP.desktop.messsage.cmsDoc+"]";
         }
-        var content = "<font style='color: #333; font-weight: bold'>"+data.title+"</font>: "+msgBody;
+        var content = "<font style='color: #333; font-weight: bold'>"+o2.txt(data.title)+"</font>: "+o2.txt(msgBody);
         var msg = {
             "subject": MWF.LP.desktop.messsage.customMessageTitle,
             "content": content
@@ -384,9 +384,9 @@ MWF.xDesktop.WebSocket = new Class({
 
 
     receiveReviewMessage: function(data){
-        var content = MWF.LP.desktop.messsage.receiveReview+"《"+data.title+"》. ";
-        content += "<br/><font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.appliction+": </font><font style='color: #ea621f'>"+data.applicationName+"</font>;  "+
-            "<font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.process+": </font><font style='color: #ea621f'>"+data.processName+"</font>";
+        var content = MWF.LP.desktop.messsage.receiveReview+"《"+o2.txt(data.title)+"》. ";
+        content += "<br/><font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.appliction+": </font><font style='color: #ea621f'>"+o2.txt(data.applicationName)+"</font>;  "+
+            "<font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.process+": </font><font style='color: #ea621f'>"+o2.txt(data.processName)+"</font>";
         var msg = {
             "subject": MWF.LP.desktop.messsage.reviewMessage,
             "content": content
@@ -415,7 +415,7 @@ MWF.xDesktop.WebSocket = new Class({
 
     receiveFileEditorMessage: function(data){
 
-        var content = "<font style='color: #ea621f; font-weight: bold'>"+MWF.name.cn(data.body.person)+"</font> "+MWF.LP.desktop.messsage.receiveFileEditor+"“"+data.body.name+"”. ";
+        var content = "<font style='color: #ea621f; font-weight: bold'>"+MWF.name.cn(data.body.person)+"</font> "+MWF.LP.desktop.messsage.receiveFileEditor+"“"+o2.txt(data.body.name)+"”. ";
         var msg = {
             "subject": MWF.LP.desktop.messsage.fileEditorMessage,
             "content": content
@@ -446,7 +446,7 @@ MWF.xDesktop.WebSocket = new Class({
 
     receiveFileShareMessage: function(data){
 
-        var content = "<font style='color: #ea621f; font-weight: bold'>"+MWF.name.cn(data.body.person)+"</font> "+MWF.LP.desktop.messsage.receiveFileShare+"“"+data.body.name+"”. ";
+        var content = "<font style='color: #ea621f; font-weight: bold'>"+MWF.name.cn(data.body.person)+"</font> "+MWF.LP.desktop.messsage.receiveFileShare+"“"+o2.txt(data.body.name)+"”. ";
         var msg = {
             "subject": MWF.LP.desktop.messsage.fileShareMessage,
             "content": content
@@ -513,8 +513,8 @@ MWF.xDesktop.WebSocket = new Class({
             content = content.replace(/{person}/g, MWF.name.cn(meeting.applicant));
             var date = Date.parse(meeting.startTime).format("%Y-%m-%d- %H:%M");
             content = content.replace(/{date}/g, date);
-            content = content.replace(/{subject}/g, meeting.subject);
-            content = content.replace(/{addr}/g, meeting.roomName+"("+meeting.buildingName+")");
+            content = content.replace(/{subject}/g, o2.txt(meeting.subject));
+            content = content.replace(/{addr}/g, o2.txt(meeting.roomName+"("+meeting.buildingName+")"));
 
             var msg = {
                 "subject": MWF.LP.desktop.messsage.meetingInviteMessage,
@@ -541,8 +541,8 @@ MWF.xDesktop.WebSocket = new Class({
             content = content.replace(/{person}/g, MWF.name.cn(meeting.applicant));
             var date = Date.parse(meeting.startTime).format("%Y-%m-%d- %H:%M");
             content = content.replace(/{date}/g, date);
-            content = content.replace(/{subject}/g, meeting.subject);
-            content = content.replace(/{addr}/g, meeting.roomName+"("+meeting.buildingName+")");
+            content = content.replace(/{subject}/g, o2.txt(meeting.subject));
+            content = content.replace(/{addr}/g, o2.txt(meeting.roomName+"("+meeting.buildingName+")"));
 
             var msg = {
                 "subject": MWF.LP.desktop.messsage.meetingDeleteInviteMessage,
@@ -569,8 +569,8 @@ MWF.xDesktop.WebSocket = new Class({
             content = content.replace(/{person}/g, MWF.name.cn(meeting.applicant));
             var date = Date.parse(meeting.startTime).format("%Y-%m-%d- %H:%M");
             content = content.replace(/{date}/g, date);
-            content = content.replace(/{subject}/g, meeting.subject);
-            content = content.replace(/{addr}/g, meeting.roomName+"("+meeting.buildingName+")");
+            content = content.replace(/{subject}/g, o2.txt(meeting.subject));
+            content = content.replace(/{addr}/g, o2.txt(meeting.roomName+"("+meeting.buildingName+")"));
 
             var msg = {
                 "subject": MWF.LP.desktop.messsage.meetingCancelMessage,
@@ -598,8 +598,8 @@ MWF.xDesktop.WebSocket = new Class({
             content = content.replace(/{person}/g, MWF.name.cn(data.person));
             var date = Date.parse(meeting.startTime).format("%Y-%m-%d- %H:%M");
             content = content.replace(/{date}/g, date);
-            content = content.replace(/{subject}/g, meeting.subject);
-            content = content.replace(/{addr}/g, meeting.roomName+"("+meeting.buildingName+")");
+            content = content.replace(/{subject}/g, o2.txt(meeting.subject));
+            content = content.replace(/{addr}/g, o2.txt(meeting.roomName+"("+meeting.buildingName+")"));
 
             var msg = {
                 "subject": MWF.LP.desktop.messsage.meetingAcceptMessage,
@@ -627,8 +627,8 @@ MWF.xDesktop.WebSocket = new Class({
             content = content.replace(/{person}/g, MWF.name.cn(data.person));
             var date = Date.parse(meeting.startTime).format("%Y-%m-%d- %H:%M");
             content = content.replace(/{date}/g, date);
-            content = content.replace(/{subject}/g, meeting.subject);
-            content = content.replace(/{addr}/g, meeting.roomName+"("+meeting.buildingName+")");
+            content = content.replace(/{subject}/g, o2.txt(meeting.subject));
+            content = content.replace(/{addr}/g, o2.txt(meeting.roomName+"("+meeting.buildingName+")"));
 
             var msg = {
                 "subject": MWF.LP.desktop.messsage.meetingRejectMessage,
@@ -650,7 +650,7 @@ MWF.xDesktop.WebSocket = new Class({
     },
     receiveAttendanceAppealInviteMessage : function(data){
         var content = MWF.LP.desktop.messsage.attendanceAppealInvite;
-        content = content.replace(/{subject}/g, data.subject);
+        content = content.replace(/{subject}/g, o2.txt(data.subject));
 
         var msg = {
             "subject": MWF.LP.desktop.messsage.attendanceAppealInviteMessage,
@@ -671,7 +671,7 @@ MWF.xDesktop.WebSocket = new Class({
     },
     receiveAttendanceAppealAcceptMessage : function(data){
         var content = MWF.LP.desktop.messsage.attendanceAppealAccept;
-        content = content.replace(/{subject}/g, data.subject);
+        content = content.replace(/{subject}/g, o2.txt(data.subject));
 
         var msg = {
             "subject": MWF.LP.desktop.messsage.attendanceAppealAcceptMessage,
@@ -692,7 +692,7 @@ MWF.xDesktop.WebSocket = new Class({
     },
     receiveAttendanceAppealRejectMessage : function(data){
         var content = MWF.LP.desktop.messsage.attendanceAppealReject;
-        content = content.replace(/{subject}/g, data.subject);
+        content = content.replace(/{subject}/g, o2.txt(data.subject));
 
         var msg = {
             "subject": MWF.LP.desktop.messsage.attendanceAppealRejectMessage,
@@ -714,7 +714,7 @@ MWF.xDesktop.WebSocket = new Class({
     receiveCalendarAlarmMessage: function(data){
 
         var content = MWF.LP.desktop.messsage.canlendarAlarm;
-        content = content.replace(/{title}/g, data.title);
+        content = content.replace(/{title}/g, o2.txt(data.title));
 
         var msg = {
             "subject": MWF.LP.desktop.messsage.canlendarAlarmMessage,
@@ -761,7 +761,7 @@ MWF.xDesktop.WebSocket = new Class({
 
         var task = data.body;
         //var content = MWF.LP.desktop.messsage.receiveTask+"《"+task.title+"》, "+MWF.LP.desktop.messsage.activity+": <font style='color: #ea621f'>"+(task.activityName || "")+"</font>";
-        var content = data.title;
+        var content = o2.txt(data.title);
         //content += "<br/><font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.teamwork.creatorPerson+": </font><font style='color: #ea621f'>"+task.creatorPerson+"</font>;  "+
         //    "<font style='color: #333; font-weight: bold'>"+MWF.LP.desktop.messsage.teamwork.executor+": </font><font style='color: #ea621f'>"+task.executor+"</font>";
         var msg = {
