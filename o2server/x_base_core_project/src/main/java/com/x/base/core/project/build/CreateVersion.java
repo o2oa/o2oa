@@ -12,6 +12,7 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.eclipse.jgit.api.DescribeCommand;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
 
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.DateTools;
@@ -36,8 +37,8 @@ public class CreateVersion {
 			map.put("version", version);
 			map.put("date", DateTools.format(new Date()));
 			return map;
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (GitAPIException e) {
+			System.err.print("can not fetch git version, use maven version as tag.");
 		}
 		return new LinkedHashMap<>();
 	}
