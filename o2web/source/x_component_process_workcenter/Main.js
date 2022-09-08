@@ -1333,7 +1333,7 @@ MWF.xApplication.process.workcenter.ReadList = new Class({
 		var inforNode = new Element("div.pf_workLogInfor");
 		var html = "<div>"+o2.name.cn(data.person)+"</div>";
 		if (data.completedTime){
-			html += "<div>"+this.lp.opinion+": "+(data.opinion || data.routeName)+"</div>";
+			html += "<div>"+this.lp.opinion+": "+o2.txt(data.opinion || data.routeName)+"</div>";
 			html += "<div>"+this.lp.time+": "+data.completedTime.substring(0,16)+"</div>";
 		}else{
 			html += "<div style='color:red'>"+this.lp.processing+"</div>";

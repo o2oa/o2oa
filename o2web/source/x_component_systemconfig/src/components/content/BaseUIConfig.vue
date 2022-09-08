@@ -1,5 +1,5 @@
 <template>
-  <div class="systemconfig_area">
+  <div class="systemconfig_area" style="height:100%">
     <div class="systemconfig_title">{{lp.uiConfig}}</div>
 
     <div class="systemconfig_tab_area">
