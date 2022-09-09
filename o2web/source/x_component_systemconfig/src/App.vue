@@ -157,7 +157,7 @@ const contentComponent = computed(() => {
   flex-direction: column;
   width: 100%;
 }
-.item_title{
+.systemconfig .item_title{
   height: 30px;
   line-height: 30px;
   padding: 20px 0 0 30px;
@@ -166,21 +166,21 @@ const contentComponent = computed(() => {
   clear: both;
   color: rgb(102, 102, 102);
 }
-.item_info{
+.systemconfig .item_info{
   overflow: hidden;
   padding: 5px 30px;
   font-size: 14px;
   color: rgb(153, 153, 153);
   clear: both;
 }
-.item_dlg_info{
+.systemconfig .item_dlg_info{
   overflow: hidden;
   padding: 0 30px 10px 30px;
   font-size: 14px;
   color: rgb(153, 153, 153);
   clear: both;
 }
-.item_value{
+.systemconfig .item_value{
   overflow: hidden;
   padding-right: 30px;
   font-size: 14px;
@@ -190,47 +190,47 @@ const contentComponent = computed(() => {
   height: 30px;
 }
 
-button{
+.systemconfig button{
   border-radius: 100px;
   border: 0;
   padding: 6px 20px;
   cursor: pointer;
   margin-left: 10px;
 }
-*::-webkit-scrollbar {
+.systemconfig *::-webkit-scrollbar {
   width:8px;
   height: 8px;
   border-radius: 8px;
   background-color: #dddddd;
 }
-*::-webkit-scrollbar-thumb{
+.systemconfig *::-webkit-scrollbar-thumb{
   width: 8px;
   border-radius: 8px;
   background-color: #bbbbbb;
   cursor: pointer;
 }
-*::-webkit-scrollbar-thumb:hover{
+.systemconfig *::-webkit-scrollbar-thumb:hover{
   width: 8px;
   border-radius: 8px;
   background-color: #666666;
   cursor: pointer;
 }
-* {
+.systemconfig * {
   scrollbar-color: #bbbbbb #dddddd;
   scrollbar-width: thin;
 }
-.el-table_head {
+.systemconfig .el-table_head {
   font-weight: 700;
   color: var(--el-text-color-regular);
   background-color: var(--el-fill-color-light)!important;
 }
-.item_descriptions_label{
+.systemconfig .item_descriptions_label{
   font-weight: normal!important;
 }
-.item_descriptions_content{
+.systemconfig .item_descriptions_content{
   font-weight: 300!important;
 }
-.item_div_button{
+.systemconfig .item_div_button{
   margin: 0;
   height: var(--el-input-height, 40px);
   border-radius: 100px;
@@ -240,58 +240,58 @@ button{
   justify-content: space-evenly;
   cursor: pointer;
 }
-.item_validate_info{
+.systemconfig .item_validate_info{
   color: red;
   height: 10px;
   padding: 5px 15px;
   display: none;
 }
-.el-form-item__error{
+.systemconfig .el-form-item__error{
   margin-left: 15px;
   font-size: 14px!important;
 }
-.el-form-item--large{
+.systemconfig .el-form-item--large{
   margin-bottom: 32px!important;
 }
-.el-textarea__inner{
+.systemconfig .el-textarea__inner{
   border-radius: 15px!important;
 }
-.item_info_content{
+.systemconfig .item_info_content{
 
 }
 
-.el-transfer-panel__filter {
+.systemconfig .el-transfer-panel__filter {
   text-align: center!important;
   padding: 10px!important;;
   margin: 0!important;;
   box-sizing: border-box!important;
   width: 100%!important;;
 }
-.el-transfer__buttons{
+.systemconfig .el-transfer__buttons{
   display: none!important;
 }
-.el-transfer-panel{
+.systemconfig .el-transfer-panel{
   margin-left: 20px;
 }
-.el-transfer-panel *{
+.systemconfig .el-transfer-panel *{
   box-sizing: border-box!important;
 }
-.item_log{
+.systemconfig .item_log{
   color: #999999;
   word-break: keep-all;
   word-wrap: normal;
 }
-.item_log_completed{
+.systemconfig .item_log_completed{
   color: #00b516;
   word-break: keep-all;
   word-wrap: normal;
 }
-.item_storage_module .el-collapse-item__header {
+.systemconfig .item_storage_module .el-collapse-item__header {
   padding: 0 20px!important;
   border-radius: 30px!important;
   background-color: #f3f3f3!important;
 }
-.item_message_module .el-collapse-item__header {
+.systemconfig .item_message_module .el-collapse-item__header {
   width: 98%!important;
   height: 32px!important;
   font-size: 12px!important;
@@ -300,7 +300,7 @@ button{
   background-color: #f3f3f3!important;
   font-weight: bold;
 }
-.item_message_module .el-collapse-item__content{
+.systemconfig .item_message_module .el-collapse-item__content{
   padding-bottom: 0!important;
 }
 
