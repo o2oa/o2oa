@@ -48,10 +48,12 @@ public class End extends Activity {
 	private static final long serialVersionUID = 4743363087103193389L;
 	private static final String TABLE = PersistenceProperties.Element.End.table;
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -111,7 +113,7 @@ public class End extends Activity {
 	@Override
 	public void setCustomData(JsonElement customData) {
 		this.customData = customData;
-		this.properties.setCustomData(customData);
+		this.getProperties().setCustomData(customData);
 	}
 
 	@FieldDescribe("分组")
@@ -419,58 +421,72 @@ public class End extends Activity {
 	@CheckPersist(allowEmpty = true)
 	private EndProperties properties;
 
+	@Override
 	public String getDisplayLogScript() {
 		return displayLogScript;
 	}
 
+	@Override
 	public void setDisplayLogScript(String displayLogScript) {
 		this.displayLogScript = displayLogScript;
 	}
 
+	@Override
 	public String getDisplayLogScriptText() {
 		return displayLogScriptText;
 	}
 
+	@Override
 	public void setDisplayLogScriptText(String displayLogScriptText) {
 		this.displayLogScriptText = displayLogScriptText;
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
 
+	@Override
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	@Override
 	public String getAlias() {
 		return alias;
 	}
 
+	@Override
 	public void setAlias(String alias) {
 		this.alias = alias;
 	}
 
+	@Override
 	public String getDescription() {
 		return description;
 	}
 
+	@Override
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
+	@Override
 	public String getProcess() {
 		return process;
 	}
 
+	@Override
 	public void setProcess(String process) {
 		this.process = process;
 	}
 
+	@Override
 	public String getPosition() {
 		return position;
 	}
 
+	@Override
 	public void setPosition(String position) {
 		this.position = position;
 	}
@@ -479,10 +495,12 @@ public class End extends Activity {
 		return extension;
 	}
 
+	@Override
 	public Boolean getAllowSuspend() {
 		return allowSuspend;
 	}
 
+	@Override
 	public void setAllowSuspend(Boolean allowSuspend) {
 		this.allowSuspend = allowSuspend;
 	}
@@ -523,42 +541,52 @@ public class End extends Activity {
 		this.afterExecuteScript = afterExecuteScript;
 	}
 
+	@Override
 	public String getForm() {
 		return form;
 	}
 
+	@Override
 	public void setForm(String form) {
 		this.form = form;
 	}
 
+	@Override
 	public List<String> getReviewIdentityList() {
 		return reviewIdentityList;
 	}
 
+	@Override
 	public void setReviewIdentityList(List<String> reviewIdentityList) {
 		this.reviewIdentityList = reviewIdentityList;
 	}
 
+	@Override
 	public List<String> getReviewUnitList() {
 		return reviewUnitList;
 	}
 
+	@Override
 	public void setReviewUnitList(List<String> reviewUnitList) {
 		this.reviewUnitList = reviewUnitList;
 	}
 
+	@Override
 	public String getReviewScript() {
 		return reviewScript;
 	}
 
+	@Override
 	public void setReviewScript(String reviewScript) {
 		this.reviewScript = reviewScript;
 	}
 
+	@Override
 	public String getReviewScriptText() {
 		return reviewScriptText;
 	}
 
+	@Override
 	public void setReviewScriptText(String reviewScriptText) {
 		this.reviewScriptText = reviewScriptText;
 	}
@@ -595,54 +623,67 @@ public class End extends Activity {
 		this.afterExecuteScriptText = afterExecuteScriptText;
 	}
 
+	@Override
 	public List<String> getReadIdentityList() {
 		return readIdentityList;
 	}
 
+	@Override
 	public void setReadIdentityList(List<String> readIdentityList) {
 		this.readIdentityList = readIdentityList;
 	}
 
+	@Override
 	public List<String> getReadUnitList() {
 		return readUnitList;
 	}
 
+	@Override
 	public void setReadUnitList(List<String> readUnitList) {
 		this.readUnitList = readUnitList;
 	}
 
+	@Override
 	public String getReadScript() {
 		return readScript;
 	}
 
+	@Override
 	public void setReadScript(String readScript) {
 		this.readScript = readScript;
 	}
 
+	@Override
 	public String getReadScriptText() {
 		return readScriptText;
 	}
 
+	@Override
 	public void setReadScriptText(String readScriptText) {
 		this.readScriptText = readScriptText;
 	}
 
+	@Override
 	public Boolean getAllowReroute() {
 		return allowReroute;
 	}
 
+	@Override
 	public void setAllowReroute(Boolean allowReroute) {
 		this.allowReroute = allowReroute;
 	}
 
+	@Override
 	public Boolean getAllowRerouteTo() {
 		return allowRerouteTo;
 	}
 
+	@Override
 	public void setAllowRerouteTo(Boolean allowRerouteTo) {
 		this.allowRerouteTo = allowRerouteTo;
 	}
 
+	@Override
 	public String getReadDuty() {
 		return readDuty;
 	}
@@ -651,42 +692,52 @@ public class End extends Activity {
 		this.readDuty = readDuty;
 	}
 
+	@Override
 	public List<String> getReadDataPathList() {
 		return readDataPathList;
 	}
 
+	@Override
 	public void setReadDataPathList(List<String> readDataPathList) {
 		this.readDataPathList = readDataPathList;
 	}
 
+	@Override
 	public String getReviewDuty() {
 		return reviewDuty;
 	}
 
+	@Override
 	public void setReviewDuty(String reviewDuty) {
 		this.reviewDuty = reviewDuty;
 	}
 
+	@Override
 	public List<String> getReviewDataPathList() {
 		return reviewDataPathList;
 	}
 
+	@Override
 	public void setReviewDataPathList(List<String> reviewDataPathList) {
 		this.reviewDataPathList = reviewDataPathList;
 	}
 
+	@Override
 	public List<String> getReadGroupList() {
 		return readGroupList;
 	}
 
+	@Override
 	public void setReadGroupList(List<String> readGroupList) {
 		this.readGroupList = readGroupList;
 	}
 
+	@Override
 	public List<String> getReviewGroupList() {
 		return reviewGroupList;
 	}
 
+	@Override
 	public void setReviewGroupList(List<String> reviewGroupList) {
 		this.reviewGroupList = reviewGroupList;
 	}
@@ -731,18 +782,22 @@ public class End extends Activity {
 		this.allowRollback = allowRollback;
 	}
 
+	@Override
 	public String getGroup() {
 		return group;
 	}
 
+	@Override
 	public void setGroup(String group) {
 		this.group = group;
 	}
 
+	@Override
 	public String getOpinionGroup() {
 		return opinionGroup;
 	}
 
+	@Override
 	public void setOpinionGroup(String opinionGroup) {
 		this.opinionGroup = opinionGroup;
 	}
