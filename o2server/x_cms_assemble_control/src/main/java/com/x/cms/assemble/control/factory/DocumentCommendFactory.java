@@ -126,4 +126,18 @@ public class DocumentCommendFactory extends AbstractFactory {
 			return em.createQuery(cq).setMaxResults(maxCount).getResultList();
 		}
 	}
+
+	public Long countByDocAndType( String docId, String type) throws Exception {
+		EntityManager em = this.entityManagerContainer().get( DocumentCommend.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery( Long.class );
+		Root<DocumentCommend> root = cq.from( DocumentCommend.class );
+		Predicate p = cb.equal(root.get( DocumentCommend_.documentId), docId );
+		if(StringUtils.isNoneBlank(type)){
+			p = cb.and( p, cb.equal(root.get( DocumentCommend_.type), type ) );
+		}
+		cq.select( cb.count(root) ).where(p);
+		Long count = em.createQuery(cq).getSingleResult();
+		return count == null ? 0L : count;
+	}
 }

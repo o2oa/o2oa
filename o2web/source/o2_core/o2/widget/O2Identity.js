@@ -677,7 +677,14 @@ o2.widget.O2File = new Class({
         });
         var extName = this.data.fileName.substring(this.data.fileName.lastIndexOf(".")+1, this.data.fileName.length).toLowerCase();
         if (["png","jpg","bmp","gif","jpeg","jpe"].indexOf(extName)!==-1){
-            var url = (this.data.portal) ? MWF.xDesktop.getPortalFileUr(this.data.id, this.data.portal) : MWF.xDesktop.getProcessFileUr(this.data.id, this.data.application);
+            var url;
+            if(this.data.portal) {
+                url = MWF.xDesktop.getPortalFileUr(this.data.id, this.data.portal);
+            }else if( this.data.appId ){
+                url = MWF.xDesktop.getCMSFileUr(this.data.id, this.data.appId);
+            }else{
+                url = MWF.xDesktop.getProcessFileUr(this.data.id, this.data.application)
+            };
             var img = new Element("img", {"src": url, "styles": {"max-width": "280px", "max-height": "140px"}}).inject(this.inforNode);
         }else{
             var nameNode = new Element("div", {

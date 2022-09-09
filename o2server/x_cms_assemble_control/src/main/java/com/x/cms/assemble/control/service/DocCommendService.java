@@ -95,7 +95,7 @@ class DocCommendService {
 				Document doc = emc.find( wrapIn.getDocumentId(), Document.class );
 				if( doc != null ) {
 					emc.beginTransaction( Document.class );
-					doc.addCommendCount(1);
+					doc.setCommendCount(business.documentCommendFactory().countByDocAndType(doc.getId(), DocumentCommend.COMMEND_TYPE_DOCUMENT) + 1);
 					emc.check( doc, CheckPersistType.all );
 				}
 			}
@@ -124,8 +124,9 @@ class DocCommendService {
 			}else{
 				Document doc = emc.find( documentCommend.getDocumentId(), Document.class );
 				if( doc != null ) {
+					Business business = new Business( emc );
 					emc.beginTransaction( Document.class );
-					doc.subCommendCount(1);
+					doc.setCommendCount(business.documentCommendFactory().countByDocAndType(doc.getId(), DocumentCommend.COMMEND_TYPE_DOCUMENT) - 1);
 					emc.check( doc, CheckPersistType.all );
 				}
 			}
@@ -141,9 +142,11 @@ class DocCommendService {
 		}
 		List<DocumentCommend> documentCommends = emc.list( DocumentCommend.class, ids  );
 		if( ListTools.isNotEmpty( documentCommends )){
+			Business business = new Business( emc );
 			emc.beginTransaction( DocumentCommend.class );
 			emc.beginTransaction( DocumentCommentInfo.class );
-			emc.beginTransaction( Document.class );
+
+			Long docCommendCount = 0L;
 			for( DocumentCommend documentCommend : documentCommends ) {
 				if(DocumentCommend.COMMEND_TYPE_COMMENT.equals(documentCommend.getType())){
 					DocumentCommentInfo doc = emc.find( documentCommend.getCommentId(), DocumentCommentInfo.class );
@@ -152,13 +155,17 @@ class DocCommendService {
 						emc.check( doc, CheckPersistType.all );
 					}
 				}else{
-					Document doc = emc.find( documentCommend.getDocumentId(), Document.class );
-					if( doc != null ) {
-						doc.subCommendCount(1);
-						emc.check( doc, CheckPersistType.all );
-					}
+					docCommendCount ++;
 				}
 				emc.remove( documentCommend, CheckRemoveType.all );
+			}
+			if(docCommendCount > 0) {
+				Document doc = emc.find(documentCommends.get(0).getDocumentId(), Document.class);
+				if (doc != null) {
+					emc.beginTransaction( Document.class );
+					doc.setCommendCount(business.documentCommendFactory().countByDocAndType(doc.getId(), DocumentCommend.COMMEND_TYPE_DOCUMENT) - docCommendCount);
+					emc.check(doc, CheckPersistType.all);
+				}
 			}
 			emc.commit();
 		}
