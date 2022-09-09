@@ -363,6 +363,20 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
 		if (!text.length) text = [""];
 		return {"value": value, "text": text};
 	},
+    /**
+     * @summary 获取选中项的text，如果未选中返回空数组。
+     * @return {Array} 返回选中项的text数组
+     * @example
+     * var array = this.form.get('fieldId').getText(); //获取选中项的数组
+     */
+    getText: function(){
+        var texts = this.getTextData().text;
+        if( texts && texts.length === 1 ){
+            return texts[0] ? texts : [];
+        }else{
+            return (texts && texts.length) ? texts : [];
+        }
+    },
     //getData: function(){
 		//var inputs = this.node.getElements("input");
 		//var value = [];
