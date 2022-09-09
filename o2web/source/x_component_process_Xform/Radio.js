@@ -404,6 +404,16 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
 		}
 		return {"value": [value] || "", "text": [text || value || ""]};
 	},
+    /**
+     * @summary 获取选中项的text。
+     * @return {String} 返回选中项的text
+     * @example
+     * var text = this.form.get('fieldId').getText(); //获取选中项的文本
+     */
+    getText: function(){
+        var texts = this.getTextData().text;
+        return (texts && texts.length) ? texts[0] : "";
+    },
     getInputData: function(){
         if (this.isReadonly()){
             return this._getBusinessData();

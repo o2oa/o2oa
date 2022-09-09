@@ -45,7 +45,14 @@ MWF.xApplication.process.Xform.Image = MWF.APPImage =  new Class(
         }else if (this.json.srcfile && this.json.srcfile!="none"){
             value = this.json.srcfile;
             if (typeOf(value)==="object"){
-                var url = (value.portal) ? MWF.xDesktop.getPortalFileUr(value.id, value.portal) : MWF.xDesktop.getProcessFileUr(value.id, value.application);
+                var url;
+                if(value.portal) {
+                    url = MWF.xDesktop.getPortalFileUr(value.id, value.portal);
+                }else if(value.appId){
+                    url = MWF.xDesktop.getCMSFileUr(value.id, value.appId);
+                }else{
+                    url = MWF.xDesktop.getProcessFileUr(value.id, value.application);
+                }
                 url = o2.filterUrl(url);
                 this.node.set("src", url);
             }else{
