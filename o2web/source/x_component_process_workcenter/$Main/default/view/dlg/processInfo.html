@@ -79,7 +79,7 @@
                         <div class="pf_itemOpinionArea">
                         {{each $.taskList.concat($.taskCompletedList).slice(0,3).reverse() }}
                             <div class="pf_itemOpinionIconArea" data-o2-events="o2load:attachShowPersonLog">
-                                <img class="pf_itemOpinionIcon" src="{{o2.Actions.getHost('x_organization_assemble_control')}}/x_organization_assemble_control/jaxrs/person/{{encodeURIComponent($.person)}}/icon" />
+                                <img class="pf_itemOpinionIcon" src="{{o2.filterUrl(o2.Actions.getHost('x_organization_assemble_control')+'/x_organization_assemble_control/jaxrs/person/'+encodeURIComponent($.person)+'/icon')}}" />
                                 <div class="pf_itemOpinionPerson">{{o2.name.cn($.person)}}</div>
                                 {{if $.completedTime}}
                                 <icon class="pf_itemOpinionIconFlag o2icon-xuanzhong"></icon>
