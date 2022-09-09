@@ -1659,6 +1659,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         var querystatNodes = this.propertyContent.getElements(".MWFQueryStatSelect");
         var fileNodes = this.propertyContent.getElements(".MWFImageFileSelect");
         var processFileNodes = this.propertyContent.getElements(".MWFProcessImageFileSelect");
+        var cmsFileNodes = this.propertyContent.getElements(".MWFCMSImageFileSelect");
         var scriptNodes = this.propertyContent.getElements(".MWFScriptSelect");
         var formStyleNodes = this.propertyContent.getElements(".MWFFormStyleSelect");
         var dictionaryNodes = this.propertyContent.getElements(".MWFDictionarySelect");
@@ -1981,6 +1982,22 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 }
                 new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
                     "type": "ProcessFile",
+                    "count": 1,
+                    "isImage": true,
+                    "values": (data.id) ? [data.id] : [],
+                    "onChange": function(ids){this.saveFileItem(node, ids);}.bind(this)
+                });
+            }.bind(this));
+
+            cmsFileNodes.each(function(node){
+                var d = this.data[node.get("name")];
+                var data = d || {};
+                //this.form
+                if (d && typeOf(d)==="string"){
+                    data = {"id": d, "appId": this.form.application || this.form.appId}
+                }
+                new MWF.xApplication.process.ProcessDesigner.widget.PersonSelector(node, this.form.designer, {
+                    "type": "CMSFile",
                     "count": 1,
                     "isImage": true,
                     "values": (data.id) ? [data.id] : [],

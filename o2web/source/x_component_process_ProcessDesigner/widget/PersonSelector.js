@@ -105,6 +105,7 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
 
                             if (type==="portalfile") this.identitys.push(new MWF.widget.O2File(data, this.node));
                             if (type==="processfile") this.identitys.push(new MWF.widget.O2File(data, this.node));
+                            if (type==="cmsfile") this.identitys.push(new MWF.widget.O2File(data, this.node));
 
                             if (type==="dictionary") this.identitys.push(new MWF.widget.O2Dictionary(data, this.node));
                             if (type==="script") this.identitys.push(new MWF.widget.O2Script(data, this.node));
@@ -225,6 +226,7 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
                                 if (type==="dutyname") this.identitys.push(new MWF.widget.O2Duty(item.data, this.node));
                                 if (type==="portalfile") this.identitys.push(new MWF.widget.O2File(item.data, this.node));
                                 if (type==="processfile") this.identitys.push(new MWF.widget.O2File(item.data, this.node));
+                                if (type==="cmsfile") this.identitys.push(new MWF.widget.O2File(item.data, this.node));
 
                                 if (type==="dictionary") this.identitys.push(new MWF.widget.O2Dictionary(item.data, this.node));
                                 if (type==="script") this.identitys.push(new MWF.widget.O2Script(item.data, this.node));
