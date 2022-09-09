@@ -3,6 +3,7 @@ package com.x.cms.assemble.control.service;
 import java.util.Date;
 import java.util.List;
 
+import com.x.cms.core.entity.*;
 import com.x.cms.core.entity.enums.DocumentStatus;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -17,10 +18,6 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.assemble.control.DocumentDataHelper;
 import com.x.cms.assemble.control.ThisApplication;
-import com.x.cms.core.entity.Document;
-import com.x.cms.core.entity.DocumentCommentInfo;
-import com.x.cms.core.entity.FileInfo;
-import com.x.cms.core.entity.Log;
 import com.x.cms.core.express.tools.filter.QueryFilter;
 import com.x.query.core.entity.Item;
 
@@ -170,6 +167,8 @@ public class DocumentInfoService {
 
 			wrapIn.copyTo( document, ListTools.toList(JpaObject.FieldsUnmodify, Document.isTop_FIELDNAME, Document.isAllRead_FIELDNAME) );
 			document.setViewCount( viewCount );
+			Business business = new Business(emc);
+			document.setCommendCount(business.documentCommendFactory().countByDocAndType(document.getId(), DocumentCommend.COMMEND_TYPE_DOCUMENT));
 			if( createTime != null ){
 				document.setCreateTime(createTime);
 			}
