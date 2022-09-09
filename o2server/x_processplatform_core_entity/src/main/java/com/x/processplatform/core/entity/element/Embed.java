@@ -179,7 +179,7 @@ public class Embed extends Activity {
 	@Override
 	public void setCustomData(JsonElement customData) {
 		this.customData = customData;
-		this.properties.setCustomData(customData);
+		this.getProperties().setCustomData(customData);
 	}
 
 	public void setCompletedEndScript(String completedEndScript) {

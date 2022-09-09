@@ -108,7 +108,7 @@ public class Choice extends Activity {
 	@Override
 	public void setCustomData(JsonElement customData) {
 		this.customData = customData;
-		this.properties.setCustomData(customData);
+		this.getProperties().setCustomData(customData);
 	}
 
 	@FieldDescribe("分组")
