@@ -178,6 +178,20 @@
                 </td>
             </tr>
             <tr>
+                <td class="editTableTitle">{{$.lp.allowConfig}}:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="isConfig" text{($.isConfig!=='n')?'checked':''} type="radio" value="y"/>{{$.lp.allow}}
+                    <input class="editTableRadio" name="isConfig" text{($.isConfig=='n')?'checked':''} type="radio" value="n"/>{{$.lp.notAllow}}
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.allowOrder}}:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="isOrder" text{($.isOrder!=='n')?'checked':''} type="radio" value="y"/>{{$.lp.allow}}
+                    <input class="editTableRadio" name="isOrder" text{($.isOrder=='n')?'checked':''} type="radio" value="n"/>{{$.lp.notAllow}}
+                </td>
+            </tr>
+            <tr>
                 <td class="editTableTitle">{{$.lp.actionBar}}:</td>
                 <td class="editTableValue">
                     <input class="editTableRadio" name="toolbarGroupHidden" text{(($.toolbarGroupHidden || []).indexOf('edit')!=-1)?'checked':''} type="checkbox" value="edit"/>{{$.lp.hideEditButton}}<br/>

@@ -705,6 +705,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "allowDelCurActivityAtt": "仅允许本活动上传的文件",
         "allowDelMyCurActivityAtt": "仅允许本活动且本人上传的文件",
         "allowReplace": "允许替换",
+        "allowConfig": "允许设置权限",
+        "allowOrder": "允许排序",
         "actionBar": "操作条",
         "hideEditButton": "隐藏编辑操作组",
         "hideReadButton": "隐藏阅读操作组",

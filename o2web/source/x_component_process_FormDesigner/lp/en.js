@@ -701,6 +701,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "allowDelCurActivityAtt": "Only allow delete files uploaded on current activity",
         "allowDelMyCurActivityAtt": "Only allow delete files uploaded by this event on current activity",
         "allowReplace": "Allow Replace",
+        "allowConfig": "Allow setting permissions",
+        "allowOrder": "Allow Ordering",
         "actionBar": "Action Bar",
         "hideEditButton": "Hide Edit Buttons",
         "hideReadButton": "Hide Read Buttons",

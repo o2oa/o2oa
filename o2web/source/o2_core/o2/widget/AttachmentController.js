@@ -15,6 +15,8 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
         "isDownload": true,
         "isPreviewAtt": true,
         "isSizeChange": true,
+        "isConfig": true,
+        "isOrder": true,
         "readonly": false,
         "availableListStyles" : ["list","seq","icon","preview"],
         "toolbarGroupHidden" : [], //edit read list view
@@ -523,12 +525,20 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
     //    }
     },
     checkUploadAction: function(){
-        if (this.options.readonly){
-            this.setActionDisabled(this.uploadAction);
-            this.setActionDisabled(this.min_uploadAction);
+        if (this.options.readonly) {
+            if (this.options.isUpload === "hidden") {
+                this.setActionHidden(this.uploadAction);
+                this.setActionHidden(this.min_uploadAction);
+            } else {
+                this.setActionDisabled(this.uploadAction);
+                this.setActionDisabled(this.min_uploadAction);
+            }
             return false;
         }
-        if (!this.options.isUpload){
+        if (this.options.isUpload === "hidden" ){
+            this.setActionHidden(this.uploadAction);
+            this.setActionHidden(this.min_uploadAction);
+        }else if (!this.options.isUpload){
             this.setActionDisabled(this.uploadAction);
             this.setActionDisabled(this.min_uploadAction);
         }else{
@@ -684,6 +694,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
 
     setActionEnabled: function(action){
         if (action){
+            action.show();
             if (action.retrieve("disabled")){
                 var iconNode = action.getFirst();
                 var icon = iconNode.getStyle("background-image");
@@ -705,6 +716,9 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
                 action.store("disabled", true);
             }
         }
+    },
+    setActionHidden: function(action){
+        if (action)action.hide();
     },
     setReadonly: function() {
         this.actions.each(function(action){
@@ -1294,6 +1308,10 @@ o2.widget.AttachmentController.Attachment = new Class({
         return parseFloat(d).toString() !== "NaN"
     },
     load: function(){
+        if( this.controller.module && this.controller.module.fireEvent ){
+            this.controller.module.fireEvent("beforeLoadAttachment", [this]);
+        }
+
 	    if (this.message){
             this.node = new Element("div").inject(this.message.node, "after");
             this.message.node.destroy();
@@ -1345,6 +1363,10 @@ o2.widget.AttachmentController.Attachment = new Class({
         }.bind(this));
 
         this.setEvent();
+
+        if( this.controller.module && this.controller.module.fireEvent ){
+            this.controller.module.fireEvent("loadAttachment", [this]);
+        }
     },
     createInforNode: function(callback){
         var size = "";
@@ -1760,6 +1782,10 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
         this.load();
     },
     load: function(){
+        if( this.controller.module && this.controller.module.fireEvent ){
+            this.controller.module.fireEvent("beforeLoadAttachment", [this]);
+        }
+
         if (this.message){
             this.node = new Element("div").inject(this.message.node, "after");
             this.message.node.destroy();
@@ -1806,6 +1832,10 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
             });
         }
         this.setEvent();
+
+        if( this.controller.module && this.controller.module.fireEvent ){
+            this.controller.module.fireEvent("loadAttachment", [this]);
+        }
     },
     loadList: function() {
         debugger;

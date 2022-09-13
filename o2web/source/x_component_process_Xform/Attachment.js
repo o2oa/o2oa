@@ -1076,79 +1076,121 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
          * @event MWF.xApplication.process.Xform.Attachment#postLoad
          * @ignore
          */
-        /**附件组件（this.target）加载前触发。
-         * @event MWF.xApplication.process.Xform.Attachment#queryLoad
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-         */
-        /**附件容器（this.target.attachmentController）初始化之前触发，可以通过this.event获取附件容器的选项。
-         * @event MWF.xApplication.process.Xform.Attachment#queryLoadController
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-         */
-        /**附件容器（this.target.attachmentController）初始化之后，加载之前触发。
-         * @event MWF.xApplication.process.Xform.Attachment#loadController
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-         */
-        /**附件容器（this.target.attachmentController）加载之后触发，但这时还未加载具体的附件。
-         * @event MWF.xApplication.process.Xform.Attachment#postLoadController
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-         */
-        /**
-         * 附件组件（this.target）加载完成后触发。这时候附件容器和每个附件都已加载完成。
-         * @event MWF.xApplication.process.Xform.Attachment#load
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-         */
-        /**
-         * 附件组件（this.target）加载完成后触发。这时候附件容器和每个附件都已加载完成。
-         * @event MWF.xApplication.process.Xform.Attachment#afterLoad
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-         */
-        /**
-         * 附件上传前触发。本事件中可以通过this.event获取上传的文件数组
-         * @event MWF.xApplication.process.Xform.Attachment#beforeUpload
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-         */
-        /**
-         * 附件上传后触发。本事件中可以通过this.event获取上传附件的数据
-         * @event MWF.xApplication.process.Xform.Attachment#upload
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-         */
-        /**
-         * 删除附件前触发。本事件中可以通过this.event获取被删附件的数据
-         * @event MWF.xApplication.process.Xform.Attachment#delete
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-         */
-        /**
-         * 删除附件后触发。本事件中可以通过this.event获取被删附件的数据
-         * @event MWF.xApplication.process.Xform.Attachment#afterDelete
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-         */
-        /**
-         * 附件有变化的时候会被触发，包括上传、替换、删除、排序
-         * @event MWF.xApplication.process.Xform.Attachment#change
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-         */
-        /**
-         * 下载附件后触发。本事件中可以通过this.event获取被下载附件对象
-         * @event MWF.xApplication.process.Xform.Attachment#download
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-         */
-        /**
-         * 打开附件后触发。本事件中可以通过this.event获取被打开附件对象
-         * @event MWF.xApplication.process.Xform.Attachment#open
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-         */
-        /**
-         * 选中附件后触发。本事件中可以通过this.event获取被选中的附件对象
-         * @event MWF.xApplication.process.Xform.Attachment#select
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-         */
-        /**
-         * 取消选中附件后触发。本事件中可以通过this.event获取被取消选中的附件对象
-         * @event MWF.xApplication.process.Xform.Attachment#unselect
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-         */
-        "moduleEvents": ["beforeUpload", "upload", "delete", "afterDelete", "load", "afterLoad", "change","download",
-            "open", "queryLoad", "queryLoadController", "loadController", "postLoadController","select","unselect"]
+        "moduleEvents": [
+            /**附件组件（this.target）加载前触发。
+             * @event MWF.xApplication.process.Xform.Attachment#queryLoad
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "queryLoad",
+
+            /**附件容器（this.target.attachmentController）初始化之前触发，可以通过this.event获取附件容器的选项。
+             * @event MWF.xApplication.process.Xform.Attachment#queryLoadController
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "queryLoadController",
+
+            /**附件容器（this.target.attachmentController）初始化之后，加载之前触发。
+             * @event MWF.xApplication.process.Xform.Attachment#loadController
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "loadController",
+
+            /**附件容器（this.target.attachmentController）加载之后触发，但这时还未加载具体的附件。
+             * @event MWF.xApplication.process.Xform.Attachment#postLoadController
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "postLoadController",
+
+            /**
+             * 附件组件（this.target）加载完成后触发。这时候附件容器和每个附件都已加载完成。
+             * @event MWF.xApplication.process.Xform.Attachment#load
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "load",
+
+            /**
+             * 附件组件（this.target）加载完成后触发。这时候附件容器和每个附件都已加载完成。
+             * @event MWF.xApplication.process.Xform.Attachment#afterLoad
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "afterLoad",
+
+            /**
+             * 加载每个附件前触发。本事件中可以通过this.event获取加载的附件对象
+             * @event MWF.xApplication.process.Xform.Attachment#beforeLoadAttachment
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "beforeLoadAttachment",
+
+            /**
+             * 加载每个附件后触发。本事件中可以通过this.event获取加载的附件对象
+             * @event MWF.xApplication.process.Xform.Attachment#loadAttachment
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "loadAttachment",
+
+            /**
+             * 附件上传前触发。本事件中可以通过this.event获取上传的文件数组
+             * @event MWF.xApplication.process.Xform.Attachment#beforeUpload
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "beforeUpload",
+
+            /**
+             * 附件上传后触发。本事件中可以通过this.event获取上传附件的数据
+             * @event MWF.xApplication.process.Xform.Attachment#upload
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "upload",
+
+            /**
+             * 删除附件前触发。本事件中可以通过this.event获取被删附件的数据
+             * @event MWF.xApplication.process.Xform.Attachment#delete
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "delete",
+
+            /**
+             * 删除附件后触发。本事件中可以通过this.event获取被删附件的数据
+             * @event MWF.xApplication.process.Xform.Attachment#afterDelete
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "afterDelete",
+
+            /**
+             * 附件有变化的时候会被触发，包括上传、替换、删除、排序
+             * @event MWF.xApplication.process.Xform.Attachment#change
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "change",
+
+            /**
+             * 下载附件后触发。本事件中可以通过this.event获取被下载附件对象
+             * @event MWF.xApplication.process.Xform.Attachment#download
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "download",
+
+            /**
+             * 打开附件后触发。本事件中可以通过this.event获取被打开附件对象
+             * @event MWF.xApplication.process.Xform.Attachment#open
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "open",
+
+            /**
+             * 选中附件后触发。本事件中可以通过this.event获取被选中的附件对象
+             * @event MWF.xApplication.process.Xform.Attachment#select
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "select",
+
+            /**
+             * 取消选中附件后触发。本事件中可以通过this.event获取被取消选中的附件对象
+             * @event MWF.xApplication.process.Xform.Attachment#unselect
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "unselect"]
     },
 
     initialize: function (node, json, form, options) {
@@ -1174,6 +1216,16 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             this.loadAttachmentController();
         }
     },
+    getFlagDefaultFalse: function( key ){
+        if( this.json[key] === "y" || this.json[key] === "true" )return true;
+        if( this.json[key] === "hidden" )return "hidden";
+        return false;
+    },
+    getFlagDefaultTrue: function( key ){
+        if( this.json[key] === "n" || this.json[key] === "false" )return false;
+        if( this.json[key] === "hidden" )return "hidden";
+        return true;
+    },
     loadAttachmentController: function () {
         //MWF.require("MWF.widget.AttachmentController", function() {
         var options = {
@@ -1181,14 +1233,16 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             "title": MWF.xApplication.process.Xform.LP.attachmentArea,
             "listStyle": this.json.listStyle || "icon",
             "size": this.json.size || "max",
-            "resize": (this.json.resize === "y" || this.json.resize === "true"),
+            "resize": this.getFlagDefaultFalse("resize"),
             "attachmentCount": this.json.attachmentCount || 0,
-            "isUpload": (this.json.isUpload === "y" || this.json.isUpload === "true"),
-            "isDelete": (this.json.isDelete === "y" || this.json.isDelete === "true"),
-            "isReplace": (this.json.isReplace === "y" || this.json.isReplace === "true"),
-            "isDownload": (this.json.isDownload === "y" || this.json.isDownload === "true"),
-            "isPreviewAtt": (this.json.isPreviewAtt === "y" || this.json.isPreviewAtt === "true"),
-            "isSizeChange": (this.json.isSizeChange === "y" || this.json.isSizeChange === "true"),
+            "isUpload": this.getFlagDefaultFalse("isUpload"),
+            "isDelete": this.getFlagDefaultFalse("isDelete"),
+            "isReplace": this.getFlagDefaultFalse("isReplace"),
+            "isDownload": this.getFlagDefaultFalse("isDownload"),
+            "isPreviewAtt": this.getFlagDefaultFalse("isPreviewAtt"),
+            "isSizeChange": this.getFlagDefaultFalse("isSizeChange"),
+            "isConfig": this.getFlagDefaultTrue("isConfig"),
+            "isOrder": this.getFlagDefaultTrue("isOrder"),
             "readonly": (this.json.readonly === "y" || this.json.readonly === "true" || this.json.isReadonly || this.form.json.isReadonly),
             "availableListStyles": this.json.availableListStyles ? this.json.availableListStyles : ["list", "seq", "icon", "preview"],
             "isDeleteOption": this.json.isDelete,
@@ -2270,13 +2324,15 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
             "title": MWF.xApplication.process.Xform.LP.attachmentArea,
             "listStyle": this.json.listStyle || "icon",
             "size": this.json.size || "max",
-            "resize": (this.json.resize === "y" || this.json.resize === "true"),
+            "resize": this.getFlagDefaultFalse("resize"),
             "attachmentCount": this.json.attachmentCount || 0,
-            "isUpload": (this.json.isUpload === "y" || this.json.isUpload === "true"),
-            "isDelete": (this.json.isDelete === "y" || this.json.isDelete === "true"),
-            "isReplace": (this.json.isReplace === "y" || this.json.isReplace === "true"),
-            "isDownload": (this.json.isDownload === "y" || this.json.isDownload === "true"),
-            "isSizeChange": (this.json.isSizeChange === "y" || this.json.isSizeChange === "true"),
+            "isUpload": this.getFlagDefaultFalse("isUpload"),
+            "isDelete": this.getFlagDefaultFalse("isDelete"),
+            "isReplace": this.getFlagDefaultFalse("isReplace"),
+            "isDownload": this.getFlagDefaultFalse("isDownload"),
+            "isSizeChange": this.getFlagDefaultFalse("isSizeChange"),
+            "isConfig": this.getFlagDefaultTrue("isConfig"),
+            "isOrder": this.getFlagDefaultTrue("isOrder"),
             "readonly": (this.json.readonly === "y" || this.json.readonly === "true" || this.json.isReadonly || this.form.json.isReadonly),
             "availableListStyles": this.json.availableListStyles ? this.json.availableListStyles : ["list", "seq", "icon", "preview"],
             "isDeleteOption": this.json.isDelete,
