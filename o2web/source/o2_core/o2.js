@@ -117,8 +117,8 @@ if (!window.o2) {
          * var v = o2.version.v;
          */
         this.o2.version = {
-            "v": "7.3",
-            "build": "2022.04.27",
+            "v": "7.2",
+            "build": "2022.09.01",
             "info": "O2OA 活力办公 创意无限. Copyright © 2022, o2oa.net O2 Team All rights reserved."
         };
 
