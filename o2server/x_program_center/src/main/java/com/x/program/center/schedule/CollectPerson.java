@@ -67,7 +67,7 @@ public class CollectPerson extends BaseAction {
 						req.setCenterProxyPort(centerServer.getProxyPort());
 						req.setHttpProtocol(centerServer.getHttpProtocol());
 						if(null != Config.portal().getUrlMapping()){
-							req.setUrlMapping(XGsonBuilder.convert(XGsonBuilder.toJson(Config.portal().getUrlMapping()), JsonElement.class));
+							req.setUrlMapping(XGsonBuilder.convert(Config.portal().getUrlMapping(), JsonElement.class));
 						}
 						try {
 							ActionResponse response = ConnectionAction
