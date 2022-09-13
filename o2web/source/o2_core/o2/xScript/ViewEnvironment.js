@@ -629,7 +629,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @method delete
      * @methodOf module:Dict
      * @instance
-     * @param {String} path 数据字典中的数据路径，允许使用中文。当路径为多级时，用点号(.)分隔。如果数据路径不存在，则报错。
+     * @param {String} path 数据字典中的数据路径，允许使用中文。当路径为多级时，用点号(.)分隔。如果数据路径不存在，则报错。如果删除数组中的某一项，只能删除最后一项。
      * @param {Function} [success] 删除数据成功时的回调函数。
      * @param {Function} [failure] 删除数据错误时的回调函数。
      * @o2syntax
@@ -702,6 +702,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * }
      *
      * dict.delete( "category.2");
+     * //category是数组，只能删除最后一项也就是下标2
      * //数据字典的值变为
      * {
      *    "category": [

@@ -103,9 +103,10 @@ MWF.xApplication.process.FormDesigner.Module.Image = MWF.FCImage = new Class({
         }
 		if (this.json.properties && this.json.properties["src"]){
             var value = this.json.properties["src"];
-            if ((value.indexOf("x_processplatform_assemble_surface")!=-1 || value.indexOf("x_portal_assemble_surface")!=-1)){
+            if ((value.indexOf("x_processplatform_assemble_surface")!=-1 || value.indexOf("x_portal_assemble_surface")!=-1 || value.indexOf("x_cms_assemble_control")!=-1)){
                 var host1 = MWF.Actions.getHost("x_processplatform_assemble_surface");
                 var host2 = MWF.Actions.getHost("x_portal_assemble_surface");
+                var host3 = MWF.Actions.getHost("x_cms_assemble_control");
                 if (value.indexOf("/x_processplatform_assemble_surface")!==-1){
                     value = value.replace("/x_processplatform_assemble_surface", host1+"/x_processplatform_assemble_surface");
                 }else if (value.indexOf("x_processplatform_assemble_surface")!==-1){
@@ -115,6 +116,11 @@ MWF.xApplication.process.FormDesigner.Module.Image = MWF.FCImage = new Class({
                     value = value.replace("/x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
                 }else if (value.indexOf("x_portal_assemble_surface")!==-1){
                     value = value.replace("x_portal_assemble_surface", host2+"/x_portal_assemble_surface");
+                }
+                if (value.indexOf("/x_cms_assemble_control")!==-1){
+                    value = value.replace("/x_cms_assemble_control", host2+"/x_cms_assemble_control");
+                }else if (value.indexOf("x_cms_assemble_control")!==-1){
+                    value = value.replace("x_cms_assemble_control", host2+"/x_cms_assemble_control");
                 }
                 value = o2.filterUrl(value);
             }

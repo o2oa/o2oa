@@ -418,6 +418,16 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 		if (!text.length) text = [""];
 		return {"value": value, "text": text};
 	},
+	/**
+	 * @summary 获取选中项的text。
+	 * @return {String} 返回选中项的text
+	 * @example
+	 * var text = this.form.get('fieldId').getText(); //获取选中项的文本
+	 */
+	getText: function(){
+		var texts = this.getTextData().text;
+		return (texts && texts.length) ? texts[0] : "";
+	},
     getInputData: function(){
 		if( this.isReadonly()){
 			return this._getBusinessData();

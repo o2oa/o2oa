@@ -26,7 +26,7 @@ export default {
   },
   methods: {
     openSetting(){
-      o2.api.page.openApplication('Setting');
+      o2.api.page.openApplication('systemconfig');
     },
     openDoc(){
       o2.openWindow(lp.configDocUrl);
