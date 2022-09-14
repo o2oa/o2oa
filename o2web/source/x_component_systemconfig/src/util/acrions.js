@@ -15,8 +15,8 @@ function exec(text, bind, arg){
 
 async function loadConfig(name) {
     const body = {
-        fileName: name + '.json'
-    }
+        fileName: (name==='node') ? 'node' : name + '.json'
+    };
     const json = await o2.Actions.load('x_program_center').ConfigAction.open(body);
     if (json.data.fileContent) {
         configs[name] = JSON.parse(json.data.fileContent);
