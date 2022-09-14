@@ -91,16 +91,16 @@ public class LdapTools {
     }
 
     public static void main(String[] args) throws Exception{
-        ConnectionConfig connConfig = new ConnectionConfig("ldap://172.16.84.3:5389");
+        ConnectionConfig connConfig = new ConnectionConfig("ldap://127.0.0.1:5389");
         connConfig.setConnectionInitializer(
-                new BindConnectionInitializer("cn=root", new Credential("zone2009")));
+                new BindConnectionInitializer("cn=root", new Credential("***")));
         SearchDnResolver dnResolver = new SearchDnResolver(new DefaultConnectionFactory(connConfig));
         dnResolver.setBaseDn("DC=CMCC");
         dnResolver.setUserFilter("uid={user}");
         dnResolver.setSubtreeSearch(true);
         BindAuthenticationHandler authHandler = new BindAuthenticationHandler(new DefaultConnectionFactory(connConfig));
         Authenticator auth = new Authenticator(dnResolver, authHandler);
-        AuthenticationResponse response = auth.authenticate(new AuthenticationRequest("baiyumei", new Credential("zone2009")));
+        AuthenticationResponse response = auth.authenticate(new AuthenticationRequest("baiyumei", new Credential("***")));
         if (response.getResult()) {
             System.out.println("success");
         } else {
