@@ -3,6 +3,7 @@ package com.x.program.center.jaxrs.config;
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.Node;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -41,7 +42,7 @@ public class ActionOpen extends BaseAction {
 		}
 
 		if(NODE_CONFIG.equals(fileName)){
-			List<JsonElement> nodeInfoList = new ArrayList<>();
+			List<NodeInfo> nodeInfoList = new ArrayList<>();
 			for (String key : Config.nodes().keySet()) {
 				File file = new File(Config.base(),"config/"+NODE_CONFIG+"_"+key+".json");
 				if (!file.exists()) {
@@ -49,7 +50,10 @@ public class ActionOpen extends BaseAction {
 				}
 				if(file.exists()){
 					String json = FileUtils.readFileToString(file, DefaultCharset.charset);
-					nodeInfoList.add(gson.fromJson(json, JsonElement.class));
+					NodeInfo nodeInfo = new NodeInfo();
+					nodeInfo.setNodeAddress(key);
+					nodeInfo.setNode(gson.fromJson(json, Node.class));
+					nodeInfoList.add(nodeInfo);
 				}
 			}
 			wo.setFileContent(gson.toJson(nodeInfoList));
@@ -138,6 +142,27 @@ public class ActionOpen extends BaseAction {
 			this.isSample = isSample;
 		}
 
+	}
+
+	public class NodeInfo {
+		private String nodeAddress;
+		private Node node;
+
+		public String getNodeAddress() {
+			return nodeAddress;
+		}
+
+		public void setNodeAddress(String nodeAddress) {
+			this.nodeAddress = nodeAddress;
+		}
+
+		public Node getNode() {
+			return node;
+		}
+
+		public void setNode(Node node) {
+			this.node = node;
+		}
 	}
 
 }
