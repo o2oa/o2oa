@@ -49,9 +49,9 @@ class ActionLogin extends BaseAction {
 				if (people.isEmpty()) {
 					throw new ExceptionPersonNotExistOrInvalidPassword();
 				} else if (people.size() == 1) {
-					person = this.personLogin(business, people.get(0), password);
+					person = this.personLogin(business, people.get(0), password, wi.getCredential());
 				} else {
-					person = this.peopleLogin(business, people, password);
+					person = this.peopleLogin(business, people, password, wi.getCredential());
 				}
 				if (null == person) {
 					throw new ExceptionPersonNotExistOrInvalidPassword();
