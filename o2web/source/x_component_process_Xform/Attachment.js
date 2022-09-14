@@ -23,7 +23,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
 
     },
     checkAttachmentDeleteAction: function () {
-        if (this.options.readonly || this.options.isDeleteOption==="n" || !this.attachments.length) {
+        if (this.options.readonly || this.options.isDeleteOption==="n" || this.options.isDeleteOption==="hidden" || !this.attachments.length) {
             this.setAttachmentsAction("delete", false);
             return false;
         }
@@ -38,11 +38,23 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         this.checkAttachmentDeleteAction();
 
         if (this.options.readonly) {
-            this.setActionDisabled(this.deleteAction);
-            this.setActionDisabled(this.min_deleteAction);
+            if (this.options.isDeleteOption === "hidden") {
+                this.setActionHidden(this.deleteAction);
+                this.setActionHidden(this.min_deleteAction);
+            } else {
+                this.setActionDisabled(this.deleteAction);
+                this.setActionDisabled(this.min_deleteAction);
+            }
             return false;
         }
-        if (this.options.isDeleteOption !== "n") {
+
+        if (this.options.isDeleteOption === "hidden") {
+            this.setActionHidden(this.deleteAction);
+            this.setActionHidden(this.min_deleteAction);
+        }else if( this.options.isDeleteOption === "n" ){
+            this.setActionDisabled(this.deleteAction);
+            this.setActionDisabled(this.min_deleteAction);
+        } else {
             if (this.selectedAttachments.length) {
                 var user = layout.session.user.distinguishedName;
                 var flag = true;
@@ -107,24 +119,27 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
                 this.setActionDisabled(this.deleteAction);
                 this.setActionDisabled(this.min_deleteAction);
             }
-        } else {
-            // if (!this.options.isDelete){
-            this.setActionDisabled(this.deleteAction);
-            this.setActionDisabled(this.min_deleteAction);
-            // }else{
-            //     if (this.selectedAttachments.length){
-            //         this.setActionEnabled(this.deleteAction);
-            //         this.setActionEnabled(this.min_deleteAction);
-            //     }else{
-            //         this.setActionDisabled(this.deleteAction);
-            //         this.setActionDisabled(this.min_deleteAction);
-            //     }
-            // }
         }
+        // else {
+        //     // if (!this.options.isDelete){
+        //     this.setActionDisabled(this.deleteAction);
+        //     this.setActionDisabled(this.min_deleteAction);
+        //     // }else{
+        //     //     if (this.selectedAttachments.length){
+        //     //         this.setActionEnabled(this.deleteAction);
+        //     //         this.setActionEnabled(this.min_deleteAction);
+        //     //     }else{
+        //     //         this.setActionDisabled(this.deleteAction);
+        //     //         this.setActionDisabled(this.min_deleteAction);
+        //     //     }
+        //     // }
+        // }
     },
     checkPreviewAttAction: function () {
         if(layout.mobile){
             this.setActionDisabled(this.previewAttAction);
+        } else if (this.options.isPreviewAtt === "hidden" ){
+            this.setActionHidden(this.previewAttAction);
         } else if (!this.options.isPreviewAtt){
             this.setActionDisabled(this.previewAttAction);
             //this.setActionDisabled(this.min_downloadAction);
@@ -158,7 +173,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
     isAttDeleteAvailable: function (att) {
         if (this.options.readonly) return false;
         if (this.options.toolbarGroupHidden.contains("edit")) return false;
-        if (this.options.isDeleteOption === "n") return false;
+        if (this.options.isDeleteOption === "n" || this.options.isDeleteOption === "hidden") return false;
 
         var user = layout.session.user.distinguishedName;
         var flag = true;
@@ -208,12 +223,23 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
     checkReplaceAction: function () {
         if (this.options.isReplaceHidden) return;
         if (this.options.readonly) {
-            this.setActionDisabled(this.replaceAction);
-            this.setActionDisabled(this.min_replaceAction);
+            if (this.options.isReplaceOption === "hidden") {
+                this.setActionHidden(this.replaceAction);
+                this.setActionHidden(this.min_replaceAction);
+            }else{
+                this.setActionDisabled(this.replaceAction);
+                this.setActionDisabled(this.min_replaceAction);
+            }
             return false;
         }
 
-        if (this.options.isReplaceOption !== "n") {
+        if (this.options.isReplaceOption === "hidden") {
+            this.setActionHidden(this.replaceAction);
+            this.setActionHidden(this.min_replaceAction);
+        }else if(this.options.isReplaceOption === "n"){
+            this.setActionDisabled(this.replaceAction);
+            this.setActionDisabled(this.min_replaceAction);
+        } else {
             if (this.selectedAttachments.length && this.selectedAttachments.length === 1) {
 
                 var att = this.selectedAttachments[0];
@@ -246,20 +272,12 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
                 this.setActionDisabled(this.replaceAction);
                 this.setActionDisabled(this.min_replaceAction);
             }
-        } else {
-            // if (!this.options.isReplace){
-            this.setActionDisabled(this.replaceAction);
-            this.setActionDisabled(this.min_replaceAction);
-            // }else{
-            //     if (this.selectedAttachments.length && this.selectedAttachments.length===1){
-            //         this.setActionEnabled(this.replaceAction);
-            //         this.setActionEnabled(this.min_replaceAction);
-            //     }else{
-            //         this.setActionDisabled(this.replaceAction);
-            //         this.setActionDisabled(this.min_replaceAction);
-            //     }
-            // }
         }
+        // else {
+        //     // if (!this.options.isReplace){
+        //     this.setActionDisabled(this.replaceAction);
+        //     this.setActionDisabled(this.min_replaceAction);
+        // }
     },
     replaceAttachment: function (e, node) {
         var att = this.selectedAttachments[0].data;
@@ -285,7 +303,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         if (this.options.readonly) return false;
         if (this.options.toolbarGroupHidden.contains("edit")) return false;
 
-        if (this.options.isReplaceOption === "n") return false;
+        if (this.options.isReplaceOption === "n" || this.options.isReplaceOption === "hidden") return false;
 
         var user = layout.session.user.distinguishedName;
         var flag = true;
@@ -1190,7 +1208,8 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
              * @event MWF.xApplication.process.Xform.Attachment#unselect
              * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
              */
-            "unselect"]
+            "unselect"
+        ]
     },
 
     initialize: function (node, json, form, options) {
