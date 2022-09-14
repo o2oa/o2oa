@@ -42,9 +42,11 @@ public class ActionOpen extends BaseAction {
 
 		if(NODE_CONFIG.equals(fileName)){
 			List<JsonElement> nodeInfoList = new ArrayList<>();
-
 			for (String key : Config.nodes().keySet()) {
 				File file = new File(Config.base(),"config/"+NODE_CONFIG+"_"+key+".json");
+				if (!file.exists()) {
+					file = new File(Config.base(),"config/"+NODE_CONFIG+"_"+key+".json");
+				}
 				if(file.exists()){
 					String json = FileUtils.readFileToString(file, DefaultCharset.charset);
 					nodeInfoList.add(gson.fromJson(json, JsonElement.class));
