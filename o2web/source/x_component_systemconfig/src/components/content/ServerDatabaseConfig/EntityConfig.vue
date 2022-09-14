@@ -54,7 +54,7 @@
 <script setup>
 import {ref, computed} from 'vue';
 import {component, lp, o2} from '@o2oa/component';
-import {loadRuntimeConfig, saveConfig, getServers, getDataEntrys, saveConfigData} from "@/util/acrions";
+import {loadRuntimeConfig, saveConfig, getServers, getDataEntrys, saveConfigData, getConfigData} from "@/util/acrions";
 import EntityEditor from '@/components/content/ServerDatabaseConfig/EntityEditor';
 
 const externalDatabase = ref([]);
@@ -88,19 +88,35 @@ const saveDatabaseConfig = (e)=>{
         return saveConfigData('externalDataSources', data);
       }));
     }else {
-      p.push(getServers().then((data) => {
-        const saveP = [];
-        if (data.nodeList && data.nodeList.length) {
-          data.nodeList.forEach((d, idx) => {
-            if (d.node.data.enable) {
-              d.node.data.includes = (innerDatabase.value[idx].includes.trim()) ? innerDatabase.value[idx].includes.split(/\s*[,\n\r]\s*/g) : [];
-              d.node.data.excludes = (innerDatabase.value[idx].excludes.trim()) ? innerDatabase.value[idx].excludes.split(/\s*[,\n\r]\s*/g) : [];
-            }
-            saveP.push(saveConfig('node_' + d.nodeAddress, 'data', d.node.data));
-          });
-        }
+      p.push(getConfigData('node').then((data) => {
+        // const saveP = [];
+        // if (data && data.length) {
+        const saveP = data.map((d, idx) => {
+          if (d.node.data.enable) {
+            d.node.data.includes = (innerDatabase.value[idx].includes.trim()) ? innerDatabase.value[idx].includes.split(/\s*[,\n\r]\s*/g) : [];
+            d.node.data.excludes = (innerDatabase.value[idx].excludes.trim()) ? innerDatabase.value[idx].excludes.split(/\s*[,\n\r]\s*/g) : [];
+          }
+          // saveP.push(saveConfig('node_' + d.nodeAddress, 'data', d.node.data));
+          return saveConfig('node_' + d.nodeAddress, 'data', d.node.data);
+        });
+        // }
         return Promise.all(saveP);
       }));
+
+
+      // p.push(getServers().then((data) => {
+      //   const saveP = [];
+      //   if (data.nodeList && data.nodeList.length) {
+      //     data.nodeList.forEach((d, idx) => {
+      //       if (d.node.data.enable) {
+      //         d.node.data.includes = (innerDatabase.value[idx].includes.trim()) ? innerDatabase.value[idx].includes.split(/\s*[,\n\r]\s*/g) : [];
+      //         d.node.data.excludes = (innerDatabase.value[idx].excludes.trim()) ? innerDatabase.value[idx].excludes.split(/\s*[,\n\r]\s*/g) : [];
+      //       }
+      //       saveP.push(saveConfig('node_' + d.nodeAddress, 'data', d.node.data));
+      //     });
+      //   }
+      //   return Promise.all(saveP);
+      // }));
     }
     Promise.all(p).then(()=>{
       component.notice(lp._databaseServer.saveEntityConfigSuccess, "success");
@@ -134,9 +150,9 @@ const load = ()=>{
     }
   });
 
-  getServers().then((data)=>{
-    if (data.nodeList && data.nodeList.length){
-      innerDatabase.value = data.nodeList.map((d)=>{
+  getConfigData('node').then((data)=>{
+    if (data && data.length){
+      innerDatabase.value = data.map((d)=>{
         return {
           url: d.nodeAddress,
           tcpPort: d.node.data.tcpPort,
@@ -147,6 +163,19 @@ const load = ()=>{
       });
     }
   });
+  // getServers().then((data)=>{
+  //   if (data.nodeList && data.nodeList.length){
+  //     innerDatabase.value = data.nodeList.map((d)=>{
+  //       return {
+  //         url: d.nodeAddress,
+  //         tcpPort: d.node.data.tcpPort,
+  //         enable: d.node.data.enable,
+  //         includes: d.node.data.includes.join('\n'),
+  //         excludes: d.node.data.excludes.join('\n')
+  //       };
+  //     });
+  //   }
+  // });
 
   getDataEntrys().then((data)=>{
     dataEntitys.value = data.map((d)=>{

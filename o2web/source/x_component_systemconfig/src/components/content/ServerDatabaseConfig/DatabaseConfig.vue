@@ -165,21 +165,38 @@ const saveDatabaseConfig = (e)=>{
     //     return saveConfigData('externalDataSources', data, true);
     //   }));
     //}else {
-      p.push(getServers().then((data) => {
-        const saveP = [];
-        if (data.nodeList && data.nodeList.length) {
-          data.nodeList.forEach((d, idx) => {
 
-            Object.keys(d.node.data).forEach((k)=>{
-              if (k!=='includes' && k!=='excludes'){
-                d.node.data[k] = servers.value[idx].node.data[k];
-              }
-            });
-            saveP.push(saveConfig('node_' + d.nodeAddress, 'data', d.node.data));
+    p.push(getConfigData('node').then((data) => {
+      // const saveP = [];
+      // if (data && data.length) {
+      const saveP = data.map((d, idx) => {
+          Object.keys(d.node.data).forEach((k)=>{
+            if (k!=='includes' && k!=='excludes'){
+              d.node.data[k] = servers.value[idx].node.data[k];
+            }
           });
-        }
-        return Promise.all(saveP);
-      }));
+          // saveP.push(saveConfig('node_' + d.nodeAddress, 'data', d.node.data));
+          return saveConfig('node_' + d.nodeAddress, 'data', d.node.data)
+        });
+      // }
+      return Promise.all(saveP);
+    }));
+
+    // p.push(getServers().then((data) => {
+    //   const saveP = [];
+    //   if (data.nodeList && data.nodeList.length) {
+    //     data.nodeList.forEach((d, idx) => {
+    //
+    //       Object.keys(d.node.data).forEach((k)=>{
+    //         if (k!=='includes' && k!=='excludes'){
+    //           d.node.data[k] = servers.value[idx].node.data[k];
+    //         }
+    //       });
+    //       saveP.push(saveConfig('node_' + d.nodeAddress, 'data', d.node.data));
+    //     });
+    //   }
+    //   return Promise.all(saveP);
+    // }));
     //}
     Promise.all(p).then(()=>{
       component.notice(lp._databaseServer.saveDatabaseConfigSuccess, "success");
@@ -280,9 +297,12 @@ const load = ()=>{
   loadRuntimeConfig('externalDataSources', true).then((data)=>{
     externalDatabase.value = data || [];
   });
-  getServers().then((data)=>{
-    servers.value = data.nodeList;
-  });
+  getConfigData('node').then((data)=>{
+    servers.value = data;
+  })
+  // getServers().then((data)=>{
+  //   servers.value = data.nodeList;
+  // });
 }
 
 load();
