@@ -1235,7 +1235,7 @@ MWF.xApplication.process.Application.Toolbar = new Class({
 					}
 				}).inject( toolgroupNode );
 
-				var iconNode = new Element("icon",{"class":"o2WorkApplication " + tool.icon,"style":"margin-right:6px"}).inject(toolNode);
+				//var iconNode = new Element("icon",{"class":"o2WorkApplication " + tool.icon,"style":"margin-right:6px"}).inject(toolNode);
 				var textNode = new Element("span").inject(toolNode);
 				textNode.set("text",tool.text);
 
