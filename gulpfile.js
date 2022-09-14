@@ -1107,8 +1107,10 @@ function build_web_api() {
 
 function build_doc(){
     return getGitV().then(function(arr){
+        console.log('jsdoc -c o2web/jsdoc.conf.json -q version='+arr[0]+'-'+arr[1]+'');
         return (shell.task('jsdoc -c o2web/jsdoc.conf.json -q version='+arr[0]+'-'+arr[1]+''))();
     }, function(){
+        console.log('jsdoc -c o2web/jsdoc.conf.json -q version=');
         return (shell.task('jsdoc -c o2web/jsdoc.conf.json -q version='))();
     });
 }
