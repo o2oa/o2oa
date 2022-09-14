@@ -1065,8 +1065,10 @@ function getGitV(){
     var tagPromise = new Promise(function(s, f){
         git.exec({args : 'describe --tag'}, function (err, stdout) {
             if (err){
+                console.log(err);
                 f(err);
             }
+            console.log(stdout);
             var v = stdout.substring(0, stdout.lastIndexOf("-"));
             s(v);
         });
@@ -1074,8 +1076,10 @@ function getGitV(){
     var revPromise = new Promise(function(s, f){
         git.exec({args : 'rev-parse --short HEAD'}, function (err, hash) {
             if (err){
+                console.log(err);
                 f(err);
             }
+            console.log(hash);
             s(hash.trim());
         });
     });
