@@ -422,6 +422,8 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
                     attachment.data = json.data;
                     attachment.reload();
 
+                    this.fireEvent("change");
+
                     if (o.messageId && this.attachmentController.messageItemList) {
                         var message = this.attachmentController.messageItemList[o.messageId];
                         if( message && message.node )message.node.destroy();

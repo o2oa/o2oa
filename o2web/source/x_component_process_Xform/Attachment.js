@@ -354,33 +354,46 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
     checkOrderAction: function () {
         //this.checkAttachmentOrderAction();
         if (this.options.readonly) {
-            this.setActionDisabled(this.orderAction);
-            this.setActionDisabled(this.min_orderAction);
-            return false;
-        }
-        if (this.attachments.length && this.attachments.length > 1) {
-            var flag = true;
-            var user = layout.session.user.distinguishedName;
-            for (var i = 0; i < this.attachments.length; i++) {
-                var att = this.attachments[i];
-                if (!att.data.person && att.data.creatorUid) att.data.person = att.data.creatorUid;
-                if ((!att.data.control.allowControl && !att.data.control.allowEdit) && att.data.person !== user) { //|| !att.data.control.allowEdit
-                    flag = false;
-                    break;
-                }
-            }
-            if (flag) {
-                this.setActionEnabled(this.orderAction);
-                this.setActionEnabled(this.min_orderAction);
-            } else {
+            if( this.options.isOrder === "hidden" ){
+                this.setActionHidden(this.orderAction);
+                this.setActionHidden(this.min_orderAction);
+            }else{
                 this.setActionDisabled(this.orderAction);
                 this.setActionDisabled(this.min_orderAction);
             }
-            //this.setActionEnabled(this.min_deleteAction);
-        } else {
+            return false;
+        }
+        if( this.options.isOrder === "hidden" ){
+            this.setActionHidden(this.orderAction);
+            this.setActionHidden(this.min_orderAction);
+        }else if( !this.options.isOrder ){
             this.setActionDisabled(this.orderAction);
             this.setActionDisabled(this.min_orderAction);
-            //this.setActionDisabled(this.min_deleteAction);
+        }else{
+            if (this.attachments.length && this.attachments.length > 1) {
+                var flag = true;
+                var user = layout.session.user.distinguishedName;
+                for (var i = 0; i < this.attachments.length; i++) {
+                    var att = this.attachments[i];
+                    if (!att.data.person && att.data.creatorUid) att.data.person = att.data.creatorUid;
+                    if ((!att.data.control.allowControl && !att.data.control.allowEdit) && att.data.person !== user) { //|| !att.data.control.allowEdit
+                        flag = false;
+                        break;
+                    }
+                }
+                if (flag) {
+                    this.setActionEnabled(this.orderAction);
+                    this.setActionEnabled(this.min_orderAction);
+                } else {
+                    this.setActionDisabled(this.orderAction);
+                    this.setActionDisabled(this.min_orderAction);
+                }
+                //this.setActionEnabled(this.min_deleteAction);
+            } else {
+                this.setActionDisabled(this.orderAction);
+                this.setActionDisabled(this.min_orderAction);
+                //this.setActionDisabled(this.min_deleteAction);
+            }
         }
     },
     isAttOrderAvailable: function (att) {
@@ -456,7 +469,67 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         this.checkOrderAction();
 
         this.checkListStyleAction();
+
+        if( this.options.size === "max" ){
+            this.checkEditActionBox();
+            this.checkConfigActionBox();
+        }else if( this.options.size === "min" ){
+            this.checkMinActionBox();
+        }
+
         //    }
+    },
+    checkEditActionBox: function(){
+        var isShowEdit = false;
+        ["isUpload", "isDelete", "isReplace", "isPreviewAtt"].each(function( key ){
+            if( key === "isReplace" && this.options.isReplaceHidden )return;
+            if( key === "isPreviewAtt" && layout.mobile )return;
+            if( this.options[key] !== "hidden" )isShowEdit = true;
+        }.bind(this));
+
+        var isShowRead = false;
+        ["isDownload"].each(function( key ){
+            if( this.options[key] !== "hidden" )isShowRead = true;
+        }.bind(this));
+
+        if(this.editActionSeparateNode)this.editActionSeparateNode.setStyle( "display", isShowEdit && isShowRead ? "" : "none" );
+        if(this.editActionBoxNode )this.editActionBoxNode.setStyle( "display", isShowEdit || isShowRead ? "" : "none" );
+    },
+    checkConfigActionBox: function(){
+        var isShowConfig = false;
+        ["isConfig"].each(function( key ){
+            if( this.options[key] !== "hidden" )isShowConfig = true;
+        }.bind(this));
+
+        var isShowOrder = false;
+        ["isOrder"].each(function( key ){
+            if( this.options[key] !== "hidden" )isShowOrder = true;
+        }.bind(this));
+
+        if(this.configActionSeparateNode)this.configActionSeparateNode.setStyle( "display", isShowConfig && isShowOrder ? "" : "none" );
+        if(this.configActionBoxNode )this.configActionBoxNode.setStyle( "display", isShowConfig || isShowOrder ? "" : "none" );
+    },
+    checkMinActionBox: function(){
+        var isShowLeft = false;
+        var hiddenGroup = this.options.toolbarGroupHidden || [];
+        if( this.min_closeOfficeAction ){
+            isShowLeft = true;
+        }else {
+            ["isUpload", "isDelete", "isReplace", "isDownload", "isOrder"].each(function (key) {
+                if (key === "isReplace" && this.options.isReplaceHidden) return;
+                if (this.options[key] !== "hidden") isShowLeft = true;
+            }.bind(this));
+            if( isShowLeft ){
+                if( hiddenGroup.contains("edit") && hiddenGroup.contains("read") && hiddenGroup.contains("config") ){
+                    isShowLeft = false;
+                }
+            }
+        }
+
+        var isShowRight = this.options.isSizeChange && !hiddenGroup.contains("view");
+
+        if(this.minSeparateNode)this.minSeparateNode.setStyle( "display", isShowLeft && isShowRight ? "" : "none" );
+        if(this.minActionAreaNode )this.minActionAreaNode.setStyle( "display", isShowLeft || isShowRight ? "" : "none" );
     },
 
     checkAttachmentConfigAction: function () {
@@ -472,6 +545,15 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         }
     },
     checkConfigAction: function () {
+        if( this.options.isConfig === "hidden" ){
+            this.setActionHidden(this.configAction);
+            return;
+        }
+        if( !this.options.isConfig ){
+            this.setActionDisabled(this.configAction);
+            return;
+        }
+
         this.checkAttachmentConfigAction();
         if (this.options.readonly) {
             this.setActionDisabled(this.configAction);
@@ -512,6 +594,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
     },
     isAttConfigAvailable: function (att) {
         if (this.options.readonly) return false;
+        if (this.options.isConfig === "hidden") return false;
         if (this.options.toolbarGroupHidden.contains("config")) return false;
         var user = layout.session.user.distinguishedName;
         var flag = true;
@@ -565,7 +648,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         //         this.checkImageTex(e, node);
         //     }.bind(this));
         // }
-        this.createSeparate(this.configActionsGroupNode);
+        this.configActionSeparateNode = this.createSeparate(this.configActionsGroupNode);
 
         this.orderAction = this.createAction(this.configActionsGroupNode, "order", MWF.LP.widget.order, function (e, node) {
             this.orderAttachment(e, node);
@@ -622,7 +705,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
 
 
         if (!hiddenGroup.contains("edit") || !hiddenGroup.contains("read")) {
-            this.createSeparate(this.minActionAreaNode);
+            this.minSeparateNode = this.createSeparate(this.minActionAreaNode);
         }
 
         //this.createSeparate(this.configActionsGroupNode);

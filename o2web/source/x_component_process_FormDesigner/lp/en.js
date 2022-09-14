@@ -709,7 +709,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "hideLayoutButton": "Hide Layout Buttons",
         "hideSettingButton": "Hide Setting Buttons",
         "hideModeButton": "Hide Mode Button",
-        "showInDatagrid": "Show In Datatable",
+        "showInDatagrid": "Show In Datagrid(Deprecated)",
         "attachmentValidation": "Validate when uploading",
         "attachmentValidationNote": "The currently uploading attachments can be obtained through this.target.uploadingFiles. Returning true means passed, and the system prompts the text to interrupt the upload.",
         "attachmentValidationScript": "Validation script when uploading",

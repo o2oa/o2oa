@@ -203,17 +203,16 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
             }.bind(this));
         }
 
-        if( !hiddenGroup.contains("edit") || !hiddenGroup.contains("read")) {
+        var hasChangeSize = this.options.isSizeChange && !hiddenGroup.contains("view");
+
+        if(  (!hiddenGroup.contains("edit") || !hiddenGroup.contains("read")) && hasChangeSize ) {
             this.createSeparate(this.minActionAreaNode);
         }
 
-        if (this.options.isSizeChange){
-            //this.createSeparate(this.minActionAreaNode);
-            if( !hiddenGroup.contains("view")) {
-                this.sizeAction = this.createAction(this.minActionAreaNode, "max", o2.LP.widget.min, function () {
-                    this.changeControllerSize();
-                }.bind(this));
-            }
+        if (hasChangeSize){
+            this.sizeAction = this.createAction(this.minActionAreaNode, "max", o2.LP.widget.min, function () {
+                this.changeControllerSize();
+            }.bind(this));
         }
     },
 
@@ -492,9 +491,23 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
             this.checkListStyleAction();
 
         if( this.options.size === "max" ){
-            this.editActionBoxNode
+            this.checkEditActionBox();
         }
-    //    }
+    },
+    checkEditActionBox: function(){
+        var isShowEdit = false;
+        ["isUpload", "isDelete", "isReplace"].each(function( key ){
+            if( key === "isReplace" && this.options.isReplaceHidden )return;
+            if( this.options[key] !== "hidden" )isShowEdit = true;
+        }.bind(this));
+
+        var isShowRead = false;
+        ["isDownload"].each(function( key ){
+            if( this.options[key] !== "hidden" )isShowRead = true;
+        }.bind(this));
+
+        if(this.editActionSeparateNode)this.editActionSeparateNode.setStyle( "display", isShowEdit && isShowRead ? "" : "none" );
+        if(this.editActionBoxNode )this.editActionBoxNode.setStyle( "display", isShowEdit || isShowRead ? "" : "none" );
     },
     checkUploadAction: function(){
         if (this.options.readonly) {
