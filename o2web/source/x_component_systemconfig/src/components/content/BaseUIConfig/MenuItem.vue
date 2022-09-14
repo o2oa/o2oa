@@ -140,6 +140,7 @@ const unmaskNode = function(node){
 
 const groupArea = ref();
 const openGroup = ()=>{
+  if (!groupArea.value) return false;
   const areaNode = itemNode.value.getParent('.item_menu_area');
   maskNode(areaNode);
 
