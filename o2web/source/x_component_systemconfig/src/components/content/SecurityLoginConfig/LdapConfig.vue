@@ -17,21 +17,21 @@
           :config="ldapAuthUrl"
           :allowEditor="true"
           type="text"
-          @changeConfig="(value)=>{ldapAuthUrl = value; saveConfig('token', 'ldapAuth.ldapUrl.', value)}"></BaseItem>
+          @changeConfig="(value)=>{ldapAuthUrl = value; saveConfig('token', 'ldapAuth.ldapUrl', value)}"></BaseItem>
       <BaseItem
           :title="lp._loginConfig.baseDn"
           :info="lp._loginConfig.baseDnInfo"
           :config="baseDn"
           :allowEditor="true"
           type="text"
-          @changeConfig="(value)=>{baseDn = value; saveConfig('token', 'ldapAuth.baseDn.', value)}"></BaseItem>
+          @changeConfig="(value)=>{baseDn = value; saveConfig('token', 'ldapAuth.baseDn', value)}"></BaseItem>
       <BaseItem
           :title="lp._loginConfig.userDn"
           :info="lp._loginConfig.userDnInfo"
           :config="userDn"
           :allowEditor="true"
           type="text"
-          @changeConfig="(value)=>{userDn = value; saveConfig('token', 'ldapAuth.userDn.', value)}"></BaseItem>
+          @changeConfig="(value)=>{userDn = value; saveConfig('token', 'ldapAuth.userDn', value)}"></BaseItem>
     </div>
   </div>
 </template>
