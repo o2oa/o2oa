@@ -4,13 +4,13 @@
     <div class="item_info">{{lp._loginConfig.ldapAuthEnableInfo}}</div>
     <div class="item_info">
       <el-switch
-          @change="enableLdap"
+          @change="saveConfig('token', 'ldapAuth.enable', ldapAuthEnable)"
           v-model="ldapAuthEnable"
           :active-text="lp.operation.enable" :inactive-text="lp.operation.disable">
       </el-switch>
     </div>
 
-    <div>
+    <div v-if="!!ldapAuthEnable">
       <BaseItem
           :title="lp._loginConfig.ldapAuthUrl"
           :info="lp._loginConfig.ldapAuthUrlInfo"
@@ -32,28 +32,13 @@
           :allowEditor="true"
           type="text"
           @changeConfig="(value)=>{userDn = value; saveConfig('token', 'ldapAuth.userDn', value)}"></BaseItem>
-      <BaseItem
-          :title="lp._loginConfig.bindDnUser"
-          :info="lp._loginConfig.bindDnUserInfo"
-          :config="bindDnUser"
-          :allowEditor="true"
-          type="text"
-          @changeConfig="(value)=>{bindDnUser = value; saveConfig('token', 'ldapAuth.bindDnUser', value)}"></BaseItem>
-      <BaseItem
-          :title="lp._loginConfig.bindDnPwd"
-          :info="lp._loginConfig.bindDnPwdInfo"
-          :config="bindDnPwd"
-          :allowEditor="true"
-          type="password"
-          :options="{'show-password': true}"
-          @changeConfig="(value)=>{bindDnPwd = value; saveConfig('token', 'ldapAuth.bindDnPwd', value)}"></BaseItem>
     </div>
   </div>
 </template>
 
 <script setup>
 import {ref} from 'vue';
-import {lp, component} from '@o2oa/component';
+import {lp} from '@o2oa/component';
 import BaseItem from '@/components/item/BaseItem.vue';
 import {getConfigData, getConfig, saveConfig} from '@/util/acrions';
 
@@ -61,17 +46,6 @@ const ldapAuthEnable = ref(false);
 const ldapAuthUrl = ref('');
 const baseDn = ref('');
 const userDn = ref('');
-const bindDnUser = ref('');
-const bindDnPwd = ref('');
-
-const enableLdap = (value)=>{
-  if (!!value && (!ldapAuthUrl.value || !baseDn.value || !userDn.value || !bindDnUser.value || !bindDnPwd.value)){
-    component.notice(lp._loginConfig.ldapEnabledError, 'error');
-    ldapAuthEnable.value = false;
-  }else{
-    saveConfig('token', 'ldapAuth.enable', ldapAuthEnable.value);
-  }
-}
 
 const load = async () => {
   const data = await getConfigData('token');
@@ -80,8 +54,6 @@ const load = async () => {
     ldapAuthUrl.value = data.ldapAuth.ldapUrl || '';
     baseDn.value = data.ldapAuth.baseDn || '';
     userDn.value = data.ldapAuth.userDn || '';
-    bindDnUser.value = data.ldapAuth.bindDnUser || '';
-    bindDnPwd.value = data.ldapAuth.bindDnPwd || '';
   }
 }
 

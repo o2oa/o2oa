@@ -405,18 +405,11 @@ o2.xApplication.systemconfig.LP = {
         "ldapAuthUrlInfo": "Ldap服务地址，ldap://域名或IP:端口",
         "baseDn": "LDAP查询根(BaseDN)",
         "baseDnInfo": "LDAP查询的根名称,如：dc=zone,DC=COM",
-        "userDn": "认证用户绑定属性",
-        "userDnInfo": "认证用户绑定属性：uid、手机号、员工编码或邮箱(需确保在baseDn下查找到的数据是唯一的并且在o2能查到关联人员, 如： uid 或 mail等",
+        "userDn": "认证用户的DN(UserDN)",
+        "userDnInfo": "认证用户的DN(UserDN), 如：uid=*,ou=users,dc=zone,DC=COM，其中uid=*中的*表示用户的唯一编码，此唯一编码与O2用户的唯一编码对应",
 
         "superPermission": "启用超级管理员口令",
-        "superPermissionInfo": "开启此项允许用超级管理员（xadmin）的口令登录其他用户账户，以方便管理员用普通用户的身份进行数据维护和故障排除。",
-
-        "bindDnUser": "绑定管理用户",
-        "bindDnUserInfo": "绑定一个管理员(需有管理权限的用户)，用于查询认证，如：cn=root",
-        "bindDnPwd": "管理用户密码",
-        "bindDnPwdInfo": "绑定管理员的密码",
-        "ldapEnabledError": "请完整配置所有LDAP参数后，再启用LDAP认证"
-
+        "superPermissionInfo": "开启此项允许用超级管理员（xadmin）的口令登录其他用户账户，以方便管理员用普通用户的身份进行数据维护和故障排除。"
     },
     "_ssoConfig": {
         "ssoConfig": "鉴权密钥配置",
