@@ -3,7 +3,7 @@
     <label class="item_label" v-if="label" :style="labelStyle">{{label}}</label>
     <div class="item_input">
       <el-select v-if="arr && arr.length" v-model="ev" @change="changeValue" size="default" popper-class="systemconfig">
-        <el-option v-for="k in arr" :key="k.label || k" :value="k.value || k" :label="k.label || k"></el-option>
+        <el-option v-for="k in arr" :key="k.label || k" :value="(k.value==null) ? k : k.value" :label="k.label || k"></el-option>
       </el-select>
       <el-select v-else v-model="ev" @change="changeValue" size="default" popper-class="systemconfig">
         <el-option v-for="k in Object.keys(options)" :key="k" :value="k" :label="options[k]"></el-option>
