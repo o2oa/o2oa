@@ -23,7 +23,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
 
     },
     checkAttachmentDeleteAction: function () {
-        if (this.options.readonly || this.options.isDeleteOption==="n" || !this.attachments.length) {
+        if (this.options.readonly || this.options.isDeleteOption==="n" || this.options.isDeleteOption==="hidden" || !this.attachments.length) {
             this.setAttachmentsAction("delete", false);
             return false;
         }
@@ -38,11 +38,23 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         this.checkAttachmentDeleteAction();
 
         if (this.options.readonly) {
-            this.setActionDisabled(this.deleteAction);
-            this.setActionDisabled(this.min_deleteAction);
+            if (this.options.isDeleteOption === "hidden") {
+                this.setActionHidden(this.deleteAction);
+                this.setActionHidden(this.min_deleteAction);
+            } else {
+                this.setActionDisabled(this.deleteAction);
+                this.setActionDisabled(this.min_deleteAction);
+            }
             return false;
         }
-        if (this.options.isDeleteOption !== "n") {
+
+        if (this.options.isDeleteOption === "hidden") {
+            this.setActionHidden(this.deleteAction);
+            this.setActionHidden(this.min_deleteAction);
+        }else if( this.options.isDeleteOption === "n" ){
+            this.setActionDisabled(this.deleteAction);
+            this.setActionDisabled(this.min_deleteAction);
+        } else {
             if (this.selectedAttachments.length) {
                 var user = layout.session.user.distinguishedName;
                 var flag = true;
@@ -107,24 +119,27 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
                 this.setActionDisabled(this.deleteAction);
                 this.setActionDisabled(this.min_deleteAction);
             }
-        } else {
-            // if (!this.options.isDelete){
-            this.setActionDisabled(this.deleteAction);
-            this.setActionDisabled(this.min_deleteAction);
-            // }else{
-            //     if (this.selectedAttachments.length){
-            //         this.setActionEnabled(this.deleteAction);
-            //         this.setActionEnabled(this.min_deleteAction);
-            //     }else{
-            //         this.setActionDisabled(this.deleteAction);
-            //         this.setActionDisabled(this.min_deleteAction);
-            //     }
-            // }
         }
+        // else {
+        //     // if (!this.options.isDelete){
+        //     this.setActionDisabled(this.deleteAction);
+        //     this.setActionDisabled(this.min_deleteAction);
+        //     // }else{
+        //     //     if (this.selectedAttachments.length){
+        //     //         this.setActionEnabled(this.deleteAction);
+        //     //         this.setActionEnabled(this.min_deleteAction);
+        //     //     }else{
+        //     //         this.setActionDisabled(this.deleteAction);
+        //     //         this.setActionDisabled(this.min_deleteAction);
+        //     //     }
+        //     // }
+        // }
     },
     checkPreviewAttAction: function () {
         if(layout.mobile){
             this.setActionDisabled(this.previewAttAction);
+        } else if (this.options.isPreviewAtt === "hidden" ){
+            this.setActionHidden(this.previewAttAction);
         } else if (!this.options.isPreviewAtt){
             this.setActionDisabled(this.previewAttAction);
             //this.setActionDisabled(this.min_downloadAction);
@@ -158,7 +173,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
     isAttDeleteAvailable: function (att) {
         if (this.options.readonly) return false;
         if (this.options.toolbarGroupHidden.contains("edit")) return false;
-        if (this.options.isDeleteOption === "n") return false;
+        if (this.options.isDeleteOption === "n" || this.options.isDeleteOption === "hidden") return false;
 
         var user = layout.session.user.distinguishedName;
         var flag = true;
@@ -208,12 +223,23 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
     checkReplaceAction: function () {
         if (this.options.isReplaceHidden) return;
         if (this.options.readonly) {
-            this.setActionDisabled(this.replaceAction);
-            this.setActionDisabled(this.min_replaceAction);
+            if (this.options.isReplaceOption === "hidden") {
+                this.setActionHidden(this.replaceAction);
+                this.setActionHidden(this.min_replaceAction);
+            }else{
+                this.setActionDisabled(this.replaceAction);
+                this.setActionDisabled(this.min_replaceAction);
+            }
             return false;
         }
 
-        if (this.options.isReplaceOption !== "n") {
+        if (this.options.isReplaceOption === "hidden") {
+            this.setActionHidden(this.replaceAction);
+            this.setActionHidden(this.min_replaceAction);
+        }else if(this.options.isReplaceOption === "n"){
+            this.setActionDisabled(this.replaceAction);
+            this.setActionDisabled(this.min_replaceAction);
+        } else {
             if (this.selectedAttachments.length && this.selectedAttachments.length === 1) {
 
                 var att = this.selectedAttachments[0];
@@ -246,20 +272,12 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
                 this.setActionDisabled(this.replaceAction);
                 this.setActionDisabled(this.min_replaceAction);
             }
-        } else {
-            // if (!this.options.isReplace){
-            this.setActionDisabled(this.replaceAction);
-            this.setActionDisabled(this.min_replaceAction);
-            // }else{
-            //     if (this.selectedAttachments.length && this.selectedAttachments.length===1){
-            //         this.setActionEnabled(this.replaceAction);
-            //         this.setActionEnabled(this.min_replaceAction);
-            //     }else{
-            //         this.setActionDisabled(this.replaceAction);
-            //         this.setActionDisabled(this.min_replaceAction);
-            //     }
-            // }
         }
+        // else {
+        //     // if (!this.options.isReplace){
+        //     this.setActionDisabled(this.replaceAction);
+        //     this.setActionDisabled(this.min_replaceAction);
+        // }
     },
     replaceAttachment: function (e, node) {
         var att = this.selectedAttachments[0].data;
@@ -285,7 +303,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         if (this.options.readonly) return false;
         if (this.options.toolbarGroupHidden.contains("edit")) return false;
 
-        if (this.options.isReplaceOption === "n") return false;
+        if (this.options.isReplaceOption === "n" || this.options.isReplaceOption === "hidden") return false;
 
         var user = layout.session.user.distinguishedName;
         var flag = true;
@@ -336,33 +354,46 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
     checkOrderAction: function () {
         //this.checkAttachmentOrderAction();
         if (this.options.readonly) {
-            this.setActionDisabled(this.orderAction);
-            this.setActionDisabled(this.min_orderAction);
-            return false;
-        }
-        if (this.attachments.length && this.attachments.length > 1) {
-            var flag = true;
-            var user = layout.session.user.distinguishedName;
-            for (var i = 0; i < this.attachments.length; i++) {
-                var att = this.attachments[i];
-                if (!att.data.person && att.data.creatorUid) att.data.person = att.data.creatorUid;
-                if ((!att.data.control.allowControl && !att.data.control.allowEdit) && att.data.person !== user) { //|| !att.data.control.allowEdit
-                    flag = false;
-                    break;
-                }
-            }
-            if (flag) {
-                this.setActionEnabled(this.orderAction);
-                this.setActionEnabled(this.min_orderAction);
-            } else {
+            if( this.options.isOrder === "hidden" ){
+                this.setActionHidden(this.orderAction);
+                this.setActionHidden(this.min_orderAction);
+            }else{
                 this.setActionDisabled(this.orderAction);
                 this.setActionDisabled(this.min_orderAction);
             }
-            //this.setActionEnabled(this.min_deleteAction);
-        } else {
+            return false;
+        }
+        if( this.options.isOrder === "hidden" ){
+            this.setActionHidden(this.orderAction);
+            this.setActionHidden(this.min_orderAction);
+        }else if( !this.options.isOrder ){
             this.setActionDisabled(this.orderAction);
             this.setActionDisabled(this.min_orderAction);
-            //this.setActionDisabled(this.min_deleteAction);
+        }else{
+            if (this.attachments.length && this.attachments.length > 1) {
+                var flag = true;
+                var user = layout.session.user.distinguishedName;
+                for (var i = 0; i < this.attachments.length; i++) {
+                    var att = this.attachments[i];
+                    if (!att.data.person && att.data.creatorUid) att.data.person = att.data.creatorUid;
+                    if ((!att.data.control.allowControl && !att.data.control.allowEdit) && att.data.person !== user) { //|| !att.data.control.allowEdit
+                        flag = false;
+                        break;
+                    }
+                }
+                if (flag) {
+                    this.setActionEnabled(this.orderAction);
+                    this.setActionEnabled(this.min_orderAction);
+                } else {
+                    this.setActionDisabled(this.orderAction);
+                    this.setActionDisabled(this.min_orderAction);
+                }
+                //this.setActionEnabled(this.min_deleteAction);
+            } else {
+                this.setActionDisabled(this.orderAction);
+                this.setActionDisabled(this.min_orderAction);
+                //this.setActionDisabled(this.min_deleteAction);
+            }
         }
     },
     isAttOrderAvailable: function (att) {
@@ -438,7 +469,67 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         this.checkOrderAction();
 
         this.checkListStyleAction();
+
+        if( this.options.size === "max" ){
+            this.checkEditActionBox();
+            this.checkConfigActionBox();
+        }else if( this.options.size === "min" ){
+            this.checkMinActionBox();
+        }
+
         //    }
+    },
+    checkEditActionBox: function(){
+        var isShowEdit = false;
+        ["isUpload", "isDelete", "isReplace", "isPreviewAtt"].each(function( key ){
+            if( key === "isReplace" && this.options.isReplaceHidden )return;
+            if( key === "isPreviewAtt" && layout.mobile )return;
+            if( this.options[key] !== "hidden" )isShowEdit = true;
+        }.bind(this));
+
+        var isShowRead = false;
+        ["isDownload"].each(function( key ){
+            if( this.options[key] !== "hidden" )isShowRead = true;
+        }.bind(this));
+
+        if(this.editActionSeparateNode)this.editActionSeparateNode.setStyle( "display", isShowEdit && isShowRead ? "" : "none" );
+        if(this.editActionBoxNode )this.editActionBoxNode.setStyle( "display", isShowEdit || isShowRead ? "" : "none" );
+    },
+    checkConfigActionBox: function(){
+        var isShowConfig = false;
+        ["isConfig"].each(function( key ){
+            if( this.options[key] !== "hidden" )isShowConfig = true;
+        }.bind(this));
+
+        var isShowOrder = false;
+        ["isOrder"].each(function( key ){
+            if( this.options[key] !== "hidden" )isShowOrder = true;
+        }.bind(this));
+
+        if(this.configActionSeparateNode)this.configActionSeparateNode.setStyle( "display", isShowConfig && isShowOrder ? "" : "none" );
+        if(this.configActionBoxNode )this.configActionBoxNode.setStyle( "display", isShowConfig || isShowOrder ? "" : "none" );
+    },
+    checkMinActionBox: function(){
+        var isShowLeft = false;
+        var hiddenGroup = this.options.toolbarGroupHidden || [];
+        if( this.min_closeOfficeAction ){
+            isShowLeft = true;
+        }else {
+            ["isUpload", "isDelete", "isReplace", "isDownload", "isOrder"].each(function (key) {
+                if (key === "isReplace" && this.options.isReplaceHidden) return;
+                if (this.options[key] !== "hidden") isShowLeft = true;
+            }.bind(this));
+            if( isShowLeft ){
+                if( hiddenGroup.contains("edit") && hiddenGroup.contains("read") && hiddenGroup.contains("config") ){
+                    isShowLeft = false;
+                }
+            }
+        }
+
+        var isShowRight = this.options.isSizeChange && !hiddenGroup.contains("view");
+
+        if(this.minSeparateNode)this.minSeparateNode.setStyle( "display", isShowLeft && isShowRight ? "" : "none" );
+        if(this.minActionAreaNode )this.minActionAreaNode.setStyle( "display", isShowLeft || isShowRight ? "" : "none" );
     },
 
     checkAttachmentConfigAction: function () {
@@ -454,6 +545,15 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         }
     },
     checkConfigAction: function () {
+        if( this.options.isConfig === "hidden" ){
+            this.setActionHidden(this.configAction);
+            return;
+        }
+        if( !this.options.isConfig ){
+            this.setActionDisabled(this.configAction);
+            return;
+        }
+
         this.checkAttachmentConfigAction();
         if (this.options.readonly) {
             this.setActionDisabled(this.configAction);
@@ -494,6 +594,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
     },
     isAttConfigAvailable: function (att) {
         if (this.options.readonly) return false;
+        if (this.options.isConfig === "hidden") return false;
         if (this.options.toolbarGroupHidden.contains("config")) return false;
         var user = layout.session.user.distinguishedName;
         var flag = true;
@@ -547,7 +648,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         //         this.checkImageTex(e, node);
         //     }.bind(this));
         // }
-        this.createSeparate(this.configActionsGroupNode);
+        this.configActionSeparateNode = this.createSeparate(this.configActionsGroupNode);
 
         this.orderAction = this.createAction(this.configActionsGroupNode, "order", MWF.LP.widget.order, function (e, node) {
             this.orderAttachment(e, node);
@@ -604,7 +705,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
 
 
         if (!hiddenGroup.contains("edit") || !hiddenGroup.contains("read")) {
-            this.createSeparate(this.minActionAreaNode);
+            this.minSeparateNode = this.createSeparate(this.minActionAreaNode);
         }
 
         //this.createSeparate(this.configActionsGroupNode);
@@ -1049,7 +1150,26 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
 
         this.reloadAttachments();
         this.fireEvent("order");
-    }
+    },
+
+    checkPreviewAttachment: function( e, node, attachments ){
+        if( !attachments.length )return;
+        var flag = false;
+        var att = attachments[0];
+        if (this.options.allowPreviewExtension.contains(att.data.extension)) {
+            flag = true;
+        }
+        if (["doc","docx","xls","xlsx","ppt","pptx"].contains(att.data.extension)) {
+            if(layout.serviceAddressList["x_libreoffice_assemble_control"] && layout.config.previewOffice){
+                flag = true;
+            }
+        }
+        if( flag ){
+            this.module.previewAttachment([att])
+        }else{
+            this.module.openAttachment(e, node, [att])
+        }
+    },
 
 });
 
@@ -1076,79 +1196,122 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
          * @event MWF.xApplication.process.Xform.Attachment#postLoad
          * @ignore
          */
-        /**附件组件（this.target）加载前触发。
-         * @event MWF.xApplication.process.Xform.Attachment#queryLoad
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-         */
-        /**附件容器（this.target.attachmentController）初始化之前触发，可以通过this.event获取附件容器的选项。
-         * @event MWF.xApplication.process.Xform.Attachment#queryLoadController
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-         */
-        /**附件容器（this.target.attachmentController）初始化之后，加载之前触发。
-         * @event MWF.xApplication.process.Xform.Attachment#loadController
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-         */
-        /**附件容器（this.target.attachmentController）加载之后触发，但这时还未加载具体的附件。
-         * @event MWF.xApplication.process.Xform.Attachment#postLoadController
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-         */
-        /**
-         * 附件组件（this.target）加载完成后触发。这时候附件容器和每个附件都已加载完成。
-         * @event MWF.xApplication.process.Xform.Attachment#load
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-         */
-        /**
-         * 附件组件（this.target）加载完成后触发。这时候附件容器和每个附件都已加载完成。
-         * @event MWF.xApplication.process.Xform.Attachment#afterLoad
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-         */
-        /**
-         * 附件上传前触发。本事件中可以通过this.event获取上传的文件数组
-         * @event MWF.xApplication.process.Xform.Attachment#beforeUpload
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-         */
-        /**
-         * 附件上传后触发。本事件中可以通过this.event获取上传附件的数据
-         * @event MWF.xApplication.process.Xform.Attachment#upload
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-         */
-        /**
-         * 删除附件前触发。本事件中可以通过this.event获取被删附件的数据
-         * @event MWF.xApplication.process.Xform.Attachment#delete
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-         */
-        /**
-         * 删除附件后触发。本事件中可以通过this.event获取被删附件的数据
-         * @event MWF.xApplication.process.Xform.Attachment#afterDelete
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-         */
-        /**
-         * 附件有变化的时候会被触发，包括上传、替换、删除、排序
-         * @event MWF.xApplication.process.Xform.Attachment#change
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-         */
-        /**
-         * 下载附件后触发。本事件中可以通过this.event获取被下载附件对象
-         * @event MWF.xApplication.process.Xform.Attachment#download
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-         */
-        /**
-         * 打开附件后触发。本事件中可以通过this.event获取被打开附件对象
-         * @event MWF.xApplication.process.Xform.Attachment#open
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-         */
-        /**
-         * 选中附件后触发。本事件中可以通过this.event获取被选中的附件对象
-         * @event MWF.xApplication.process.Xform.Attachment#select
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-         */
-        /**
-         * 取消选中附件后触发。本事件中可以通过this.event获取被取消选中的附件对象
-         * @event MWF.xApplication.process.Xform.Attachment#unselect
-         * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
-         */
-        "moduleEvents": ["beforeUpload", "upload", "delete", "afterDelete", "load", "afterLoad", "change","download",
-            "open", "queryLoad", "queryLoadController", "loadController", "postLoadController","select","unselect"]
+        "moduleEvents": [
+            /**附件组件（this.target）加载前触发。
+             * @event MWF.xApplication.process.Xform.Attachment#queryLoad
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "queryLoad",
+
+            /**附件容器（this.target.attachmentController）初始化之前触发，可以通过this.event获取附件容器的选项。
+             * @event MWF.xApplication.process.Xform.Attachment#queryLoadController
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "queryLoadController",
+
+            /**附件容器（this.target.attachmentController）初始化之后，加载之前触发。
+             * @event MWF.xApplication.process.Xform.Attachment#loadController
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "loadController",
+
+            /**附件容器（this.target.attachmentController）加载之后触发，但这时还未加载具体的附件。
+             * @event MWF.xApplication.process.Xform.Attachment#postLoadController
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "postLoadController",
+
+            /**
+             * 附件组件（this.target）加载完成后触发。这时候附件容器和每个附件都已加载完成。
+             * @event MWF.xApplication.process.Xform.Attachment#load
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "load",
+
+            /**
+             * 附件组件（this.target）加载完成后触发。这时候附件容器和每个附件都已加载完成。
+             * @event MWF.xApplication.process.Xform.Attachment#afterLoad
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "afterLoad",
+
+            /**
+             * 加载每个附件前触发。本事件中可以通过this.event获取加载的附件对象
+             * @event MWF.xApplication.process.Xform.Attachment#beforeLoadAttachment
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "beforeLoadAttachment",
+
+            /**
+             * 加载每个附件后触发。本事件中可以通过this.event获取加载的附件对象
+             * @event MWF.xApplication.process.Xform.Attachment#loadAttachment
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "loadAttachment",
+
+            /**
+             * 附件上传前触发。本事件中可以通过this.event获取上传的文件数组
+             * @event MWF.xApplication.process.Xform.Attachment#beforeUpload
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "beforeUpload",
+
+            /**
+             * 附件上传后触发。本事件中可以通过this.event获取上传附件的数据
+             * @event MWF.xApplication.process.Xform.Attachment#upload
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "upload",
+
+            /**
+             * 删除附件前触发。本事件中可以通过this.event获取被删附件的数据
+             * @event MWF.xApplication.process.Xform.Attachment#delete
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "delete",
+
+            /**
+             * 删除附件后触发。本事件中可以通过this.event获取被删附件的数据
+             * @event MWF.xApplication.process.Xform.Attachment#afterDelete
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "afterDelete",
+
+            /**
+             * 附件有变化的时候会被触发，包括上传、替换、删除、排序
+             * @event MWF.xApplication.process.Xform.Attachment#change
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "change",
+
+            /**
+             * 下载附件后触发。本事件中可以通过this.event获取被下载附件对象
+             * @event MWF.xApplication.process.Xform.Attachment#download
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "download",
+
+            /**
+             * 打开附件后触发。本事件中可以通过this.event获取被打开附件对象
+             * @event MWF.xApplication.process.Xform.Attachment#open
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "open",
+
+            /**
+             * 选中附件后触发。本事件中可以通过this.event获取被选中的附件对象
+             * @event MWF.xApplication.process.Xform.Attachment#select
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "select",
+
+            /**
+             * 取消选中附件后触发。本事件中可以通过this.event获取被取消选中的附件对象
+             * @event MWF.xApplication.process.Xform.Attachment#unselect
+             * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
+             */
+            "unselect"
+        ]
     },
 
     initialize: function (node, json, form, options) {
@@ -1174,6 +1337,16 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             this.loadAttachmentController();
         }
     },
+    getFlagDefaultFalse: function( key ){
+        if( this.json[key] === "y" || this.json[key] === "true" )return true;
+        if( this.json[key] === "hidden" )return "hidden";
+        return false;
+    },
+    getFlagDefaultTrue: function( key ){
+        if( this.json[key] === "n" || this.json[key] === "false" )return false;
+        if( this.json[key] === "hidden" )return "hidden";
+        return true;
+    },
     loadAttachmentController: function () {
         //MWF.require("MWF.widget.AttachmentController", function() {
         var options = {
@@ -1181,14 +1354,17 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             "title": MWF.xApplication.process.Xform.LP.attachmentArea,
             "listStyle": this.json.listStyle || "icon",
             "size": this.json.size || "max",
-            "resize": (this.json.resize === "y" || this.json.resize === "true"),
+            "resize": this.getFlagDefaultFalse("resize"),
             "attachmentCount": this.json.attachmentCount || 0,
-            "isUpload": (this.json.isUpload === "y" || this.json.isUpload === "true"),
-            "isDelete": (this.json.isDelete === "y" || this.json.isDelete === "true"),
-            "isReplace": (this.json.isReplace === "y" || this.json.isReplace === "true"),
-            "isDownload": (this.json.isDownload === "y" || this.json.isDownload === "true"),
-            "isPreviewAtt": (this.json.isPreviewAtt === "y" || this.json.isPreviewAtt === "true"),
-            "isSizeChange": (this.json.isSizeChange === "y" || this.json.isSizeChange === "true"),
+            "isUpload": this.getFlagDefaultFalse("isUpload"),
+            "isDelete": this.getFlagDefaultFalse("isDelete"),
+            "isReplace": this.getFlagDefaultFalse("isReplace"),
+            "isDownload": this.getFlagDefaultFalse("isDownload"),
+            "isPreviewAtt": this.getFlagDefaultFalse("isPreviewAtt"),
+            "isSizeChange": this.getFlagDefaultFalse("isSizeChange"),
+            "isConfig": this.getFlagDefaultTrue("isConfig"),
+            "isOrder": this.getFlagDefaultTrue("isOrder"),
+            "dblclick": this.json.dblclick,
             "readonly": (this.json.readonly === "y" || this.json.readonly === "true" || this.json.isReadonly || this.form.json.isReadonly),
             "availableListStyles": this.json.availableListStyles ? this.json.availableListStyles : ["list", "seq", "icon", "preview"],
             "isDeleteOption": this.json.isDelete,
@@ -2270,13 +2446,16 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
             "title": MWF.xApplication.process.Xform.LP.attachmentArea,
             "listStyle": this.json.listStyle || "icon",
             "size": this.json.size || "max",
-            "resize": (this.json.resize === "y" || this.json.resize === "true"),
+            "resize": this.getFlagDefaultFalse("resize"),
             "attachmentCount": this.json.attachmentCount || 0,
-            "isUpload": (this.json.isUpload === "y" || this.json.isUpload === "true"),
-            "isDelete": (this.json.isDelete === "y" || this.json.isDelete === "true"),
-            "isReplace": (this.json.isReplace === "y" || this.json.isReplace === "true"),
-            "isDownload": (this.json.isDownload === "y" || this.json.isDownload === "true"),
-            "isSizeChange": (this.json.isSizeChange === "y" || this.json.isSizeChange === "true"),
+            "isUpload": this.getFlagDefaultFalse("isUpload"),
+            "isDelete": this.getFlagDefaultFalse("isDelete"),
+            "isReplace": this.getFlagDefaultFalse("isReplace"),
+            "isDownload": this.getFlagDefaultFalse("isDownload"),
+            "isSizeChange": this.getFlagDefaultFalse("isSizeChange"),
+            "isConfig": this.getFlagDefaultTrue("isConfig"),
+            "isOrder": this.getFlagDefaultTrue("isOrder"),
+            "dblclick": this.json.dblclick,
             "readonly": (this.json.readonly === "y" || this.json.readonly === "true" || this.json.isReadonly || this.form.json.isReadonly),
             "availableListStyles": this.json.availableListStyles ? this.json.availableListStyles : ["list", "seq", "icon", "preview"],
             "isDeleteOption": this.json.isDelete,
