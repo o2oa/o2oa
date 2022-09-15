@@ -4,7 +4,39 @@
   "type": "Attachment",
   "description": "",
   "events": {
+    "queryLoad" : {
+      "code": "",
+      "html": ""
+    },
+    "queryLoadController" : {
+      "code": "",
+      "html": ""
+    },
+    "loadController" : {
+      "code": "",
+      "html": ""
+    },
+    "postLoadController" : {
+      "code": "",
+      "html": ""
+    },
     "load" : {
+      "code": "",
+      "html": ""
+    },
+    "afterLoad" : {
+      "code": "",
+      "html": ""
+    },
+    "beforeLoadAttachment": {
+      "code": "",
+      "html": ""
+    },
+    "loadAttachment": {
+      "code": "",
+      "html": ""
+    },
+    "beforeUpload": {
       "code": "",
       "html": ""
     },
@@ -17,6 +49,26 @@
       "html": ""
     },
     "afterDelete": {
+      "code": "",
+      "html": ""
+    },
+    "change": {
+      "code": "",
+      "html": ""
+    },
+    "download": {
+      "code": "",
+      "html": ""
+    },
+    "open": {
+      "code": "",
+      "html": ""
+    },
+    "select": {
+      "code": "",
+      "html": ""
+    },
+    "unselect": {
       "code": "",
       "html": ""
     },

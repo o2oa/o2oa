@@ -24,6 +24,22 @@
       "code": "",
       "html": ""
     },
+    "afterLoad" : {
+      "code": "",
+      "html": ""
+    },
+    "beforeLoadAttachment": {
+      "code": "",
+      "html": ""
+    },
+    "loadAttachment": {
+      "code": "",
+      "html": ""
+    },
+    "beforeUpload": {
+      "code": "",
+      "html": ""
+    },
     "upload": {
       "code": "",
       "html": ""
@@ -33,6 +49,10 @@
       "html": ""
     },
     "afterDelete": {
+      "code": "",
+      "html": ""
+    },
+    "change": {
       "code": "",
       "html": ""
     },

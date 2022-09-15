@@ -145,20 +145,37 @@
                 <td class="editTableValue">
                     <input class="editTableRadio" name="isUpload" text{($.isUpload=='y')?'checked':''} type="radio" value="y"/>{{$.lp.allow}}
                     <input class="editTableRadio" name="isUpload" text{($.isUpload=='n')?'checked':''} type="radio" value="n"/>{{$.lp.notAllow}}
+                    <input class="editTableRadio" name="isUpload" text{($.isUpload=='hidden')?'checked':''} type="radio" value="hidden"/>{{$.lp.hide}}
                 </td>
             </tr>
             <tr>
                 <td class="editTableTitle">{{$.lp.allowPreview}}:</td>
                 <td class="editTableValue">
                     <input class="editTableRadio" name="isPreviewAtt" text{($.isPreviewAtt=='y')?'checked':''} type="radio" value="y"/>{{$.lp.allow}}
-                    <input class="editTableRadio" name="isPreviewAtt" text{($.isPreviewAtt=='n')?'checked':''} type="radio" value="n"/>{{$.lp.notAllow}}<br/>
-                </td>
+                    <input class="editTableRadio" name="isPreviewAtt" text{($.isPreviewAtt=='n')?'checked':''} type="radio" value="n"/>{{$.lp.notAllow}}
+                    <input class="editTableRadio" name="isPreviewAtt" text{($.isPreviewAtt=='hidden')?'checked':''} type="radio" value="hidden"/>{{$.lp.hide}}
+                    <br/>
+                 </td>
             </tr>
             <tr>
                 <td class="editTableTitle">{{$.lp.allowDownload}}:</td>
                 <td class="editTableValue">
-                    <input class="editTableRadio" name="isDownload" text{($.isDownload!=='n')?'checked':''} type="radio" value="y"/>{{$.lp.allow}}
+                    <input class="editTableRadio" name="isDownload" text{($.isDownload!=='n' && $.isDownload!=='hidden')?'checked':''} type="radio" value="y"/>{{$.lp.allow}}
                     <input class="editTableRadio" name="isDownload" text{($.isDownload=='n')?'checked':''} type="radio" value="n"/>{{$.lp.notAllow}}
+                    <input class="editTableRadio" name="isDownload" text{($.isDownload=='hidden')?'checked':''} type="radio" value="hidden"/>{{$.lp.hide}}
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.dblClickAttachment}}:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="dblclick" text{($.dblclick=='open' || (!$.dblclick && $.isDownload!=="n") )?'checked':''} type="radio" value="open"/>{{$.lp.openAtt}}
+                    <input class="editTableRadio" name="dblclick" text{($.dblclick=='preview')?'checked':''} type="radio" value="preview"/>{{$.lp.previewFirst}}
+                    <input class="editTableRadio" name="dblclick" text{($.dblclick=='disable' || (!$.dblclick && $.isDownload==="n") )?'checked':''} type="radio" value="disable"/>{{$.lp.notAllow}}
+                    <div style="position: relative;float:right;">
+                        <div class="MWFHelp" style="position: absolute;height: 16px;width: 16px;top:4px;right:4px;background: url('../x_component_process_FormDesigner/$Main/default/formtoolbar/question.png')">
+                            {{$.lp.previewAttachmentNote}}
+                        </div>
+                    </div>
                 </td>
             </tr>
             <tr>
@@ -167,6 +184,7 @@
                     <input class="editTableRadio" name="isDelete" text{($.isDelete=='y')?'checked':''} type="radio" value="y"/>{{$.lp.allow}}
                     <input class="editTableRadio" name="isDelete" text{($.isDelete=='n')?'checked':''} type="radio" value="n"/>{{$.lp.notAllow}}<br/>
                     <input class="editTableRadio" name="isDelete" text{($.isDelete=='o')?'checked':''} type="radio" value="o"/>{{$.lp.allowDelMyAtt}}<br/>
+                    <input class="editTableRadio" name="isDelete" text{($.isDelete=='hidden')?'checked':''} type="radio" value="hidden"/>{{$.lp.hide}}
                 </td>
             </tr>
             <tr>
@@ -175,6 +193,23 @@
                     <input class="editTableRadio" name="isReplace" text{($.isReplace=='y')?'checked':''} type="radio" value="y"/>{{$.lp.allow}}
                     <input class="editTableRadio" name="isReplace" text{($.isReplace=='n')?'checked':''} type="radio" value="n"/>{{$.lp.notAllow}}<br/>
                     <input class="editTableRadio" name="isReplace" text{($.isReplace=='o')?'checked':''} type="radio" value="o"/>{{$.lp.allowDelMyAtt}}<br/>
+                    <input class="editTableRadio" name="isReplace" text{($.isReplace=='hidden')?'checked':''} type="radio" value="hidden"/>{{$.lp.hide}}
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.allowConfig}}:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="isConfig" text{($.isConfig!=='n' && $.isConfig!=='hidden')?'checked':''} type="radio" value="y"/>{{$.lp.allow}}
+                    <input class="editTableRadio" name="isConfig" text{($.isConfig=='n')?'checked':''} type="radio" value="n"/>{{$.lp.notAllow}}
+                    <input class="editTableRadio" name="isConfig" text{($.isConfig=='hidden')?'checked':''} type="radio" value="hidden"/>{{$.lp.hide}}
+                </td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.allowOrder}}:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="isOrder" text{($.isOrder!=='n' && $.isOrder!=='hidden')?'checked':''} type="radio" value="y"/>{{$.lp.allow}}
+                    <input class="editTableRadio" name="isOrder" text{($.isOrder=='n')?'checked':''} type="radio" value="n"/>{{$.lp.notAllow}}
+                    <input class="editTableRadio" name="isOrder" text{($.isOrder=='hidden')?'checked':''} type="radio" value="hidden"/>{{$.lp.hide}}
                 </td>
             </tr>
             <tr>

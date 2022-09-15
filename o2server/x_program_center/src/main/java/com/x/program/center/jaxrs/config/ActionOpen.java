@@ -1,24 +1,25 @@
 package com.x.program.center.jaxrs.config;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import javax.servlet.http.HttpServletRequest;
-
-import com.x.base.core.project.tools.StringTools;
-import org.apache.commons.io.FileUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.Node;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DefaultCharset;
+import com.x.base.core.project.tools.StringTools;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 获取配置文件
@@ -26,6 +27,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class ActionOpen extends BaseAction {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionOpen.class);
+	private static final String NODE_CONFIG = "node";
 
 	ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson,JsonElement jsonElement) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
@@ -39,18 +41,37 @@ public class ActionOpen extends BaseAction {
 			throw new ExceptionIllegalFileName(fileName);
 		}
 
-		File file = new File(Config.base(),"config/"+fileName);
-		wo.setSample(false);
+		if(NODE_CONFIG.equals(fileName)){
+			List<NodeInfo> nodeInfoList = new ArrayList<>();
+			for (String key : Config.nodes().keySet()) {
+				File file = new File(Config.base(),"config/"+NODE_CONFIG+"_"+key+".json");
+				if (!file.exists()) {
+					file = new File(Config.base(),"config/"+NODE_CONFIG+"_"+key+".json");
+				}
+				if(file.exists()){
+					String json = FileUtils.readFileToString(file, DefaultCharset.charset);
+					NodeInfo nodeInfo = new NodeInfo();
+					nodeInfo.setNodeAddress(key);
+					nodeInfo.setNode(gson.fromJson(json, Node.class));
+					nodeInfoList.add(nodeInfo);
+				}
+			}
+			wo.setFileContent(gson.toJson(nodeInfoList));
+			wo.setSample(false);
+		}else {
+			File file = new File(Config.base(), "config/" + fileName);
+			wo.setSample(false);
 
-		if(!file.exists()) {
-		   file = new File(Config.base(),"configSample/"+fileName);
-		   wo.setSample(true);
-		}
+			if (!file.exists()) {
+				file = new File(Config.base(), "configSample/" + fileName);
+				wo.setSample(true);
+			}
 
-		if(file.exists()) {
-			if(file.isFile()) {
-				String json = FileUtils.readFileToString(file, DefaultCharset.charset);
-				wo.setFileContent(json);
+			if (file.exists()) {
+				if (file.isFile()) {
+					String json = FileUtils.readFileToString(file, DefaultCharset.charset);
+					wo.setFileContent(json);
+				}
 			}
 		}
 
@@ -121,6 +142,27 @@ public class ActionOpen extends BaseAction {
 			this.isSample = isSample;
 		}
 
+	}
+
+	public class NodeInfo {
+		private String nodeAddress;
+		private Node node;
+
+		public String getNodeAddress() {
+			return nodeAddress;
+		}
+
+		public void setNodeAddress(String nodeAddress) {
+			this.nodeAddress = nodeAddress;
+		}
+
+		public Node getNode() {
+			return node;
+		}
+
+		public void setNode(Node node) {
+			this.node = node;
+		}
 	}
 
 }

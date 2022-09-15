@@ -111,14 +111,17 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
             "title": MWF.xApplication.cms.Xform.LP.attachmentArea,
             "listStyle": this.json.listStyle || "icon",
             "size": this.json.size || "max",
-            "resize": (this.json.resize === "y" || this.json.resize === "true"),
+            "resize": this.getFlagDefaultFalse("resize"),
             "attachmentCount": this.json.attachmentCount || 0,
-            "isUpload": (this.json.isUpload === "y" || this.json.isUpload === "true"),
-            "isDelete": (this.json.isDelete === "y" || this.json.isDelete === "true"),
-            "isReplace": (this.json.isReplace === "y" || this.json.isReplace === "true"),
-            "isDownload": (this.json.isDownload === "y" || this.json.isDownload === "true"),
-            "isPreviewAtt": (this.json.isPreviewAtt === "y" || this.json.isPreviewAtt === "true"),
-            "isSizeChange": (this.json.isSizeChange === "y" || this.json.isSizeChange === "true"),
+            "isUpload": this.getFlagDefaultFalse("isUpload"),
+            "isDelete": this.getFlagDefaultFalse("isDelete"),
+            "isReplace": this.getFlagDefaultFalse("isReplace"),
+            "isDownload": this.getFlagDefaultFalse("isDownload"),
+            "isPreviewAtt": this.getFlagDefaultFalse("isPreviewAtt"),
+            "isSizeChange": this.getFlagDefaultFalse("isSizeChange"),
+            "isConfig": this.getFlagDefaultTrue("isConfig"),
+            "isOrder": this.getFlagDefaultTrue("isOrder"),
+            "dblclick": this.json.dblclick,
             "readonly": (this.json.readonly === "y" || this.json.readonly === "true" || this.json.isReadonly || this.form.json.isReadonly),
             "availableListStyles": this.json.availableListStyles ? this.json.availableListStyles : ["list", "seq", "icon", "preview"],
             "isDeleteOption": this.json.isDelete,
@@ -420,6 +423,8 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
                     attachment.data = json.data;
                     attachment.reload();
 
+                    this.fireEvent("change");
+
                     if (o.messageId && this.attachmentController.messageItemList) {
                         var message = this.attachmentController.messageItemList[o.messageId];
                         if( message && message.node )message.node.destroy();
@@ -617,13 +622,16 @@ MWF.xApplication.cms.Xform.AttachmentDg = MWF.CMSAttachmentDg = new Class({
             "title": MWF.xApplication.process.Xform.LP.attachmentArea,
             "listStyle": this.json.listStyle || "icon",
             "size": this.json.size || "max",
-            "resize": (this.json.resize === "y" || this.json.resize === "true"),
+            "resize": this.getFlagDefaultFalse("resize"),
             "attachmentCount": this.json.attachmentCount || 0,
-            "isUpload": (this.json.isUpload === "y" || this.json.isUpload === "true"),
-            "isDelete": (this.json.isDelete === "y" || this.json.isDelete === "true"),
-            "isReplace": (this.json.isReplace === "y" || this.json.isReplace === "true"),
-            "isDownload": (this.json.isDownload === "y" || this.json.isDownload === "true"),
-            "isSizeChange": (this.json.isSizeChange === "y" || this.json.isSizeChange === "true"),
+            "isUpload": this.getFlagDefaultFalse("isUpload"),
+            "isDelete": this.getFlagDefaultFalse("isDelete"),
+            "isReplace": this.getFlagDefaultFalse("isReplace"),
+            "isDownload": this.getFlagDefaultFalse("isDownload"),
+            "isSizeChange": this.getFlagDefaultFalse("isSizeChange"),
+            "isConfig": this.getFlagDefaultTrue("isConfig"),
+            "isOrder": this.getFlagDefaultTrue("isOrder"),
+            "dblclick": this.json.dblclick,
             "readonly": (this.json.readonly === "y" || this.json.readonly === "true" || this.json.isReadonly || this.form.json.isReadonly),
             "availableListStyles": this.json.availableListStyles ? this.json.availableListStyles : ["list", "seq", "icon", "preview"],
             "isDeleteOption": this.json.isDelete,

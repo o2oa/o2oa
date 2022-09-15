@@ -164,7 +164,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 				: password;
 	}
 
-	protected Person personLogin(Business business, String id, String password) throws Exception {
+	protected Person personLogin(Business business, String id, String password, String credential) throws Exception {
 		Person person = business.entityManagerContainer().find(id, Person.class);
 		if (null == person) {
 			return null;
@@ -178,7 +178,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			throw new ExceptionFailureLocked(person.getName(), Config.person().getFailureInterval());
 		}
 
-		if (validatePassword(person, password)) {
+		if (validatePassword(person, password, credential)) {
 			return person;
 		} else {
 			business.entityManagerContainer().beginTransaction(Person.class);
@@ -188,20 +188,19 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}
 	}
 
-	Person peopleLogin(Business business, List<String> people, String password) throws Exception {
+	Person peopleLogin(Business business, List<String> people, String password, String credential) throws Exception {
 		for (String id : people) {
 			Person person = business.entityManagerContainer().find(id, Person.class);
-			if (validatePassword(person, password)) {
+			if (validatePassword(person, password, credential)) {
 				return person;
 			}
 		}
 		return null;
 	}
 
-	protected boolean validatePassword(Person person, String password) throws Exception {
-		if (BooleanUtils.isTrue(Config.token().getLdapAuth().getEnable())
-				&& LdapTools.auth(person.getUnique(), password)) {
-			return true;
+	protected boolean validatePassword(Person person, String password, String credential) throws Exception {
+		if (BooleanUtils.isTrue(Config.token().getLdapAuth().getEnable())) {
+			return LdapTools.auth(credential, password);
 		}
 		return (StringUtils.equals(Crypto.encrypt(password, Config.token().getKey(), Config.person().getEncryptType()),
 				person.getPassword()) || StringUtils.equals(MD5Tool.getMD5Str(password), person.getPassword()));

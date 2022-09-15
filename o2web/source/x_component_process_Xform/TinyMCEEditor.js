@@ -392,15 +392,6 @@ MWF.xApplication.process.Xform.TinyMCEEditor = MWF.APPTinyMCEEditor = new Class(
             }
             return true;
         },
-        /**
-         * @summary 根据组件的校验设置进行校验。
-         *  @param {String} [routeName] - 可选，路由名称.
-         *  @example
-         *  if( !this.form.get('fieldId').validation() ){
-         *      return false;
-         *  }
-         *  @return {Boolean} 是否通过校验
-         */
         validation: function (routeName, opinion) {
             if (!this.validationConfig(routeName, opinion)) return false;
 

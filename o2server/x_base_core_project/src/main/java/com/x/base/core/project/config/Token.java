@@ -759,6 +759,8 @@ public class Token extends ConfigObject {
 		public LdapAuth() {
 			this.enable = false;
 			this.ldapUrl = "";
+			this.bindDnUser = "";
+			this.bindDnPwd = "";
 			this.baseDn = "";
 			this.userDn = "";
 		}
@@ -766,13 +768,19 @@ public class Token extends ConfigObject {
 		@FieldDescribe("是否启用")
 		private Boolean enable;
 
-		@FieldDescribe("LDAP地址")
+		@FieldDescribe("LDAP服务器如：ldap://127.0.0.1:389")
 		private String ldapUrl;
+
+		@FieldDescribe("BindDn用户(需有管理权限的用户)，如：cn=root")
+		private String bindDnUser;
+
+		@FieldDescribe("BindDn用户的密码")
+		private String bindDnPwd;
 
 		@FieldDescribe("LDAP查询的根名称如：dc=zone,DC=COM")
 		private String baseDn;
 
-		@FieldDescribe("认证用户的DN如：uid=*,ou=users,dc=zone,DC=COM，其中uid=*中的*表示用户的唯一编码，此唯一编码与O2用户的唯一编码对应")
+		@FieldDescribe("认证用户绑定属性：uid、手机号、员工编码或邮箱(需确保在baseDn下查找到的数据是唯一的并且在o2能查到关联人员)")
 		private String userDn;
 
 		public Boolean getEnable() {
@@ -805,6 +813,22 @@ public class Token extends ConfigObject {
 
 		public void setUserDn(String userDn) {
 			this.userDn = userDn;
+		}
+
+		public String getBindDnUser() {
+			return bindDnUser;
+		}
+
+		public void setBindDnUser(String bindDnUser) {
+			this.bindDnUser = bindDnUser;
+		}
+
+		public String getBindDnPwd() {
+			return StringUtils.isBlank(this.bindDnPwd) ? this.bindDnPwd : Crypto.plainText(this.bindDnPwd);
+		}
+
+		public void setBindDnPwd(String bindDnPwd) {
+			this.bindDnPwd = bindDnPwd;
 		}
 	}
 

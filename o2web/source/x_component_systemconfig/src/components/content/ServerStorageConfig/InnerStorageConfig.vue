@@ -26,9 +26,9 @@
 </template>
 
 <script setup>
-import {lp, component} from '@o2oa/component';
-import {ref, computed} from 'vue';
-import {getServers, loadRuntimeConfig, saveConfigData} from "@/util/acrions";
+import {component, lp} from '@o2oa/component';
+import {computed, ref} from 'vue';
+import {loadRuntimeConfig, saveConfigData, getConfigData} from "@/util/acrions";
 import BaseBoolean from "@/components/item/BaseBoolean";
 import BaseInput from "@/components/item/BaseInput";
 
@@ -60,21 +60,36 @@ const load = ()=>{
   loadRuntimeConfig('externalStorageSources').then((data)=>{
     runtimeExternalStorage.value = data;
   });
-  getServers().then((data)=>{
-    servers.value = data.nodeList;
-    const o = [];
-    servers.value.forEach((s)=>{
-      o.push({
+
+  getConfigData('node').then((data)=>{
+    servers.value = data;
+    storageData.value = servers.value.map((s) => {
+      return {
         nodeAddress: s.nodeAddress,
-        enable: s.enable,
-        port: s.port,
-        name: s.name,
-        prefix: s.prefix,
-        deepPath: s.deepPath
-      });
+        enable: s.node.storage.enable,
+        port: s.node.storage.port,
+        name: s.node.storage.name,
+        prefix: s.node.storage.prefix,
+        deepPath: s.node.storage.deepPath
+      }
     });
-    storageData.value = o;
   });
+
+  // getServers().then((data)=>{
+  //   servers.value = data.nodeList;
+  //   const o = [];
+  //   servers.value.forEach((s)=>{
+  //     o.push({
+  //       nodeAddress: s.nodeAddress,
+  //       enable: s.enable,
+  //       port: s.port,
+  //       name: s.name,
+  //       prefix: s.prefix,
+  //       deepPath: s.deepPath
+  //     });
+  //   });
+  //   storageData.value = o;
+  // });
 }
 
 load();
