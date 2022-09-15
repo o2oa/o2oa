@@ -85,11 +85,19 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
      * @summary 根据组件的校验设置进行校验。
      *  @param {String} [routeName] - 可选，路由名称.
      *  @example
-     *  if( !this.form.get('fieldId').validation() ){
+     *  if( !this.form.get('fieldId').validate() ){
      *      return false;
      *  }
      *  @return {Boolean} 是否通过校验
      */
+    validate: function (routeName, opinion) {
+        if( this.validationMode )this.validationMode();
+        if( this.validation ){
+            return this.validation(routeName, opinion);
+        }else{
+            return true;
+        }
+    },
     validation: function (routeName, opinion) {
         if (!this.isReadonly()){
             if (this.getInputData){

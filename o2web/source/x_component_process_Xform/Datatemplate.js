@@ -1387,15 +1387,6 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			}
 			return true;
 		},
-		/**
-		 * @summary 根据组件的校验设置进行校验。
-		 *  @param {String} [routeName] - 可选，路由名称.
-		 *  @example
-		 *  if( !this.form.get('fieldId').validation() ){
-		 *      return false;
-		 *  }
-		 *  @return {Boolean} 是否通过校验
-		 */
 		validation: function(routeName, opinion){
 			if (this.isEdit){
 				if (!this.editValidation()){
