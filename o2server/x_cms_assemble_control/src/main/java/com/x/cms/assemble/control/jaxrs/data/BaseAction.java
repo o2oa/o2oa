@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Objects;
 
 import com.google.gson.reflect.TypeToken;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.cms.assemble.control.factory.ProjectionFactory;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Projection;
@@ -26,6 +28,7 @@ import com.x.query.core.entity.Item;
 
 public class BaseAction extends StandardJaxrsAction {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(BaseAction.class);
 	private static final String title_path = "title";
 	private static final String subject_path = "subject";
 //	protected Cache.CacheCategory cacheCategory = new Cache.CacheCategory(Item.class, Document.class);
@@ -73,7 +76,11 @@ public class BaseAction extends StandardJaxrsAction {
 				this.fill(_o, document);
 				business.entityManagerContainer().persist(_o);
 			}
-			this.projection(business, document, XGsonBuilder.convert(jsonElement, Data.class));
+			try {
+				this.projection(business, document, XGsonBuilder.convert(jsonElement, Data.class));
+			} catch (Exception e) {
+				LOGGER.warn("{}文档数据映射失败：{}", document.getId(), e.getMessage());
+			}
 			/* 基于前面的原因,这里进行单独提交 */
 			business.entityManagerContainer().commit();
 		}
