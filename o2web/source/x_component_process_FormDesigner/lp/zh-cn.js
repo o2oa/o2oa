@@ -707,6 +707,11 @@ MWF.xApplication.process.FormDesigner.LP = {
         "allowReplace": "允许替换",
         "allowConfig": "允许设置权限",
         "allowOrder": "允许排序",
+        "dblClickAttachment": "双击附件",
+        "openAtt": "打开",
+        "previewFirst": "优先预览",
+        "previewAttachmentNote": "下列文件格式可直接预览：zip, pdf, ofd, png, jpg, bmp, jpeg, gif, js, css, java, json, xml, php, html, htm, xhtml, log, md, txt。下列格式需安装liberoffice: doc, docx, xls, xlsx, ppt, pptx。不在上述格式中的双击直接打开附件。",
+
         "actionBar": "操作条",
         "hideEditButton": "隐藏编辑操作组",
         "hideReadButton": "隐藏阅读操作组",

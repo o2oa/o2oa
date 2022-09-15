@@ -1150,7 +1150,26 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
 
         this.reloadAttachments();
         this.fireEvent("order");
-    }
+    },
+
+    checkPreviewAttachment: function( e, node, attachments ){
+        if( !attachments.length )return;
+        var flag = false;
+        var att = attachments[0];
+        if (this.options.allowPreviewExtension.contains(att.data.extension)) {
+            flag = true;
+        }
+        if (["doc","docx","xls","xlsx","ppt","pptx"].contains(att.data.extension)) {
+            if(layout.serviceAddressList["x_libreoffice_assemble_control"] && layout.config.previewOffice){
+                flag = true;
+            }
+        }
+        if( flag ){
+            this.module.previewAttachment([att])
+        }else{
+            this.module.openAttachment(e, node, [att])
+        }
+    },
 
 });
 
@@ -1345,6 +1364,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             "isSizeChange": this.getFlagDefaultFalse("isSizeChange"),
             "isConfig": this.getFlagDefaultTrue("isConfig"),
             "isOrder": this.getFlagDefaultTrue("isOrder"),
+            "dblclick": this.json.dblclick,
             "readonly": (this.json.readonly === "y" || this.json.readonly === "true" || this.json.isReadonly || this.form.json.isReadonly),
             "availableListStyles": this.json.availableListStyles ? this.json.availableListStyles : ["list", "seq", "icon", "preview"],
             "isDeleteOption": this.json.isDelete,
@@ -2435,6 +2455,7 @@ MWF.xApplication.process.Xform.AttachmentDg = MWF.APPAttachmentDg = new Class({
             "isSizeChange": this.getFlagDefaultFalse("isSizeChange"),
             "isConfig": this.getFlagDefaultTrue("isConfig"),
             "isOrder": this.getFlagDefaultTrue("isOrder"),
+            "dblclick": this.json.dblclick,
             "readonly": (this.json.readonly === "y" || this.json.readonly === "true" || this.json.isReadonly || this.form.json.isReadonly),
             "availableListStyles": this.json.availableListStyles ? this.json.availableListStyles : ["list", "seq", "icon", "preview"],
             "isDeleteOption": this.json.isDelete,

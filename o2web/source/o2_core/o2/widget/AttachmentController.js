@@ -1188,9 +1188,24 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
     },
 
     openAttachment: function(e, node, attachment){
-        if( !this.options.isDownload || this.options.isDownload === "hidden" )return;
+        if( !this.options.dblclick ){
+            if( !this.options.isDownload || this.options.isDownload === "hidden" )return; //兼容以前的配置
+        }
         if (attachment){
             if (this.module) this.module.openAttachment(e, node, attachment);
+        }
+    },
+    dblclickAttachment: function(e, node, attachment){
+        if( !attachment || !this.module || this.options.dblclick === "disable" ){
+            return;
+        }else if( this.options.dblclick === "preview" ){
+            if( this.checkPreviewAttachment ){
+                this.checkPreviewAttachment(e, node, attachment);
+            }else{
+                this.module.openAttachment(e, node, attachment);
+            }
+        }else{
+            this.module.openAttachment(e, node, attachment);
         }
     },
 
@@ -1585,7 +1600,13 @@ o2.widget.AttachmentController.Attachment = new Class({
             "mouseout": function(){if (!this.isSelected) this.node.setStyles(this.css["attachmentNode_"+this.controller.options.listStyle])}.bind(this),
             "mousedown": function(e){this.selected(e); e.stopPropagation();}.bind(this),
             "click": function(e){e.stopPropagation();}.bind(this),
-            "dblclick": function(e){this.openAttachment(e);}.bind(this)
+            "dblclick": function(e){
+                if( this.controller.options.dblclick ){
+                    this.controller.dblclickAttachment(e, null, [this]);
+                }else{
+                    this.openAttachment(e);
+                }
+            }.bind(this)
         });
 
         if (this.iconImgNode){
@@ -1680,7 +1701,9 @@ o2.widget.AttachmentController.Attachment = new Class({
         this.setEvent();
     },
     openAttachment: function(e){
-	    if( !this.controller.options.isDownload || this.controller.options.isDownload === "hidden")return;
+	    if( !this.controller.options.dblclick ){
+            if (!this.controller.options.isDownload || this.controller.options.isDownload === "hidden") return; //兼容以前的配置
+        }
         if (this.controller.module) this.controller.module.openAttachment(e, null, [this]);
     },
     setActionEnabled: function(action){
@@ -1980,7 +2003,13 @@ o2.widget.AttachmentController.AttachmentMin = new Class({
             }.bind(this),
             "mousedown": function(e){this.selected(e);e.stopPropagation();}.bind(this),
             "click": function(e){e.stopPropagation();}.bind(this),
-            "dblclick": function(e){this.openAttachment(e);}.bind(this)
+            "dblclick": function(e){
+                if( this.controller.options.dblclick ){
+                    this.controller.dblclickAttachment(e, null, [this]);
+                }else{
+                    this.openAttachment(e);
+                }
+            }.bind(this)
         });
 
         if (this.iconImgNode){
