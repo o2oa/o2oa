@@ -479,7 +479,6 @@ const checkSameConfig = (data)=>{
 }
 const load = ()=>{
   const nodePromise = getConfigData(props.nodeName, true).then((d)=>{
-    debugger;
     const data = {
       application: Object.clone(d.application),
       web: Object.clone(d.web),
