@@ -41,7 +41,7 @@ public class RestfulConsumeQueue extends AbstractQueue<Message> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RestfulConsumeQueue.class);
 
-	private static final Pattern pattern = Pattern.compile("\\{\\$(.+?)\\}");
+	private static final Pattern pattern = Pattern.compile("\\{(.+?)\\}");
 
 	private static final Gson gson = XGsonBuilder.instance();
 
@@ -82,8 +82,8 @@ public class RestfulConsumeQueue extends AbstractQueue<Message> {
 			if (BooleanUtils.isTrue(consumer.getInternal())) {
 				CipherConnectionAction.cipher().forEach(o -> heads.put(o.getName(), o.getValue().toString()));
 			}
-			HttpConnectionResponse response = client.restful(consumer.getMethod(), url, heads, gson.toJson(message),
-					5000, 5000);
+			HttpConnectionResponse response = client.restful(consumer.getMethod(), url, heads, message.getBody(), 5000,
+					5000);
 			if (null == response) {
 				throw new ExceptionRestful(message.getTitle(), message.getPerson(), url);
 			}
@@ -96,19 +96,20 @@ public class RestfulConsumeQueue extends AbstractQueue<Message> {
 
 	private String url(Message message, RestfulConsumer consumer) {
 		String url = consumer.getUrl();
-		JsonElement jsonElement = gson.toJsonTree(message.getBody());
+		JsonElement jsonElement = gson.fromJson(message.getBody(), JsonElement.class);
 		if (jsonElement.isJsonObject()) {
 			JsonObject jsonObject = jsonElement.getAsJsonObject();
 			if (null != jsonObject) {
 				Matcher matcher = pattern.matcher(url);
-				while (matcher.find()) {
+				int loop = 0;
+				while (matcher.find() && loop++ < 20) {
 					String key = matcher.group(1);
+					String value = "";
 					if (jsonObject.has(key)) {
-						String value = jsonObject.get(key).getAsString();
-						if (null != value) {
-							url = StringUtils.replace(url, matcher.group(), value);
-						}
+						value = jsonObject.get(key).getAsString();
 					}
+					url = StringUtils.replace(url, matcher.group(), value);
+					matcher = pattern.matcher(url);
 				}
 			}
 		}
