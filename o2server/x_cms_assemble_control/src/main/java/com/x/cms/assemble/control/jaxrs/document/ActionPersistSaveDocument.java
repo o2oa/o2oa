@@ -420,6 +420,8 @@ public class ActionPersistSaveDocument extends BaseAction {
 		@FieldDescribe("业务数据String值03.")
 		private String stringValue03;
 
+		private String importBatchName;
+
 		public static final WrapCopier<Wi, Document> copier = WrapCopierFactory.wi( Wi.class, Document.class, null, JpaObject.FieldsUnmodifyExcludeId);
 
 		public String getId() {
@@ -591,6 +593,14 @@ public class ActionPersistSaveDocument extends BaseAction {
 
 		public void setDocumentNotify(DocumentNotify documentNotify) {
 			this.documentNotify = documentNotify;
+		}
+
+		public String getImportBatchName() {
+			return importBatchName;
+		}
+
+		public void setImportBatchName(String importBatchName) {
+			this.importBatchName = importBatchName;
 		}
 	}
 
