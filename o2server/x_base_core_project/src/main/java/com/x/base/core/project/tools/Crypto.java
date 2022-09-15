@@ -233,4 +233,12 @@ public class Crypto {
 			IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
 		return "(" + ENCRYPT_PREFIX + defaultEncrypt(data) + ")";
 	}
+
+	public static String base64Encode(String value) {
+		return Base64.encodeBase64URLSafeString(value.getBytes(StandardCharsets.UTF_8));
+	}
+
+	public static String base64Decode(String value) {
+		return new String(Base64.decodeBase64(value), StandardCharsets.UTF_8);
+	}
 }
