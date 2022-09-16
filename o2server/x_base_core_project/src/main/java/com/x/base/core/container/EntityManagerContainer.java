@@ -1426,6 +1426,48 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 		return list;
 	}
 
+	public <T extends JpaObject, V extends Object> List<T> fetchEqualAndEqualAndIn(Class<T> clz, String firstAttribute,
+			Object firstValue, String secondAttribute, Object secondValue, String thirdAttribute,
+			Collection<V> thirdValues) throws Exception {
+		return this.fetchEqualAndEqualAndIn(clz, JpaObject.singularAttributeField(clz, true, true), firstAttribute,
+				firstValue, secondAttribute, secondValue, thirdAttribute, thirdValues);
+	}
+
+	public <T extends JpaObject, W extends GsonPropertyObject, V extends Object> List<W> fetchEqualAndEqualAndIn(
+			Class<T> clz, WrapCopier<T, W> copier, String firstAttribute, Object firstValue, String secondAttribute,
+			Object secondValue, String thirdAttribute, Collection<V> thirdValues) throws Exception {
+		List<T> os = this.fetchEqualAndEqualAndIn(clz, copier.getCopyFields(), firstAttribute, firstValue,
+				secondAttribute, secondValue, thirdAttribute, thirdValues);
+		return copier.copy(os);
+	}
+
+	public <T extends JpaObject, V extends Object> List<T> fetchEqualAndEqualAndIn(Class<T> clz,
+			List<String> fetchAttributes, String firstAttribute, Object firstValue, String secondAttribute,
+			Object secondValue, String thirdAttribute, Collection<V> thirdValues) throws Exception {
+		List<T> list = new ArrayList<>();
+		List<String> fields = ListTools.trim(fetchAttributes, true, true, JpaObject.id_FIELDNAME);
+		EntityManager em = this.get(clz);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
+		Root<T> root = cq.from(clz);
+		List<Selection<?>> selections = new ArrayList<>();
+		for (String str : fields) {
+			selections.add(root.get(str));
+		}
+		Predicate p = cb.and(cb.equal(root.get(firstAttribute), firstValue),
+				cb.equal(root.get(secondAttribute), secondValue),
+				cb.isMember(root.get(thirdAttribute), cb.literal(thirdValues)));
+		cq.multiselect(selections).where(p);
+		for (Tuple o : em.createQuery(cq).getResultList()) {
+			T t = clz.getDeclaredConstructor().newInstance();
+			for (int i = 0; i < fields.size(); i++) {
+				PropertyUtils.setProperty(t, fields.get(i), o.get(selections.get(i)));
+			}
+			list.add(t);
+		}
+		return list;
+	}
+
 	public <T extends JpaObject, V extends Object> List<T> fetchEqualAndIn(Class<T> clz, String attribute, Object value,
 			String otherAttribute, Collection<V> otherValues) throws Exception {
 		return this.fetchEqualAndIn(clz, JpaObject.singularAttributeField(clz, true, true), attribute, value,

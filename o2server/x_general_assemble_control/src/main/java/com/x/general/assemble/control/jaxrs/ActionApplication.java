@@ -10,6 +10,7 @@ import com.x.general.assemble.control.jaxrs.ecnet.EcnetAction;
 import com.x.general.assemble.control.jaxrs.generalfile.GeneralFileAction;
 import com.x.general.assemble.control.jaxrs.office.OfficeAction;
 import com.x.general.assemble.control.jaxrs.qrcode.QrCodeAction;
+import com.x.general.assemble.control.jaxrs.search.SearchAction;
 import com.x.general.assemble.control.jaxrs.upgrade.UpgradeAction;
 import com.x.general.assemble.control.jaxrs.worktime.WorkTimeAction;
 
@@ -25,6 +26,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(GeneralFileAction.class);
 		classes.add(UpgradeAction.class);
 		classes.add(QrCodeAction.class);
+		classes.add(SearchAction.class);
 		return classes;
 	}
 
