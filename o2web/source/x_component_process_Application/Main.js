@@ -13,12 +13,18 @@ MWF.xApplication.process.Application.Main = new Class({
 		"icon": "icon.png",
 		"application": "",
 		"id": "",
+		"navi" : "all",
 		"title": MWF.xApplication.process.Application.LP.title
 	},
 	onQueryLoad: function(){
 		this.lp = MWF.xApplication.process.Application.LP;
 		this.action = o2.Actions.load("x_processplatform_assemble_surface");
-		if (this.status) this.options.id = this.status.id;
+		if (this.status) {
+			this.options.id = this.status.id;
+			if(this.status.navi){
+				this.options.navi = this.status.navi;
+			}
+		}
 		this._loadCss();
 	},
 	loadApplication: function(callback){
@@ -30,7 +36,7 @@ MWF.xApplication.process.Application.Main = new Class({
 					var url = this.path+this.options.style+"/view/view.html";
 					this.content.loadHtml(url, {"bind": {"acl":this.acl,"lp": this.lp,"data":{"application" : this.application}}, "module": this}, function(){
 						this.setLayout();
-						this.loadList("all");
+						this.loadList(this.options.navi);
 						if (callback) callback();
 					}.bind(this));
 				}
