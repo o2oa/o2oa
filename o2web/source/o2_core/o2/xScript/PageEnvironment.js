@@ -2108,7 +2108,7 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
              * @static
              * @see module:form.startProcess
              */
-            "startProcess": function (app, process, data, identity, callback, target, latest) {
+            "startProcess": function (app, process, data, identity, callback, target, latest, afterCreated) {
                 if (arguments.length > 2) {
                     for (var i = 2; i < arguments.length; i++) {
                         if (typeOf(arguments[i]) == "boolean") {
@@ -2162,6 +2162,7 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                                 "identity": identity,
                                 "latest": latest,
                                 "onStarted": function (data, title, processName) {
+                                    var application;
                                     if (data.work) {
                                         var work = data.work;
                                         var options = {
@@ -2169,7 +2170,8 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                                             "appId": "process.Work" + (new o2.widget.UUID).toString(),
                                             "desktopReload": false
                                         };
-                                        layout.desktop.openApplication(null, "process.Work", options);
+                                        if( !layout.inBrowser && afterCreated )options.onPostLoadForm = afterCreated;
+                                        application = layout.desktop.openApplication(null, "process.Work", options);
                                     } else {
                                         var currentTask = [];
                                         data.each(function (work) {
@@ -2178,7 +2180,8 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
 
                                         if (currentTask.length == 1) {
                                             var options = {"workId": currentTask[0], "appId": currentTask[0]};
-                                            layout.desktop.openApplication(null, "process.Work", options);
+                                            if( !layout.inBrowser && afterCreated )options.onPostLoadForm = afterCreated;
+                                            application = layout.desktop.openApplication(null, "process.Work", options);
                                         } else {
                                         }
                                     }
@@ -2194,6 +2197,10 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                                     // } else { }
 
                                     if (callback) callback(data);
+
+                                    if(layout.inBrowser && afterCreated){
+                                        afterCreated(application)
+                                    }
                                 }.bind(this)
                             });
                             starter.load();
