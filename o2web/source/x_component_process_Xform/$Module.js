@@ -255,7 +255,7 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         return null;
     },
     isReadonly : function(){
-        return !!(this.readonly || this.json.isReadonly || this.form.json.isReadonly);
+        return !!(this.readonly || this.json.isReadonly || this.form.json.isReadonly || this.isSectionMergeRead());
     },
     isAllSectionShow: function(){
         return this.json.showAllSection && this.json.section === "yes" && this.isSectionData();

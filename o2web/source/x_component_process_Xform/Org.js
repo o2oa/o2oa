@@ -136,11 +136,11 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
         if( this.json.isReadonly === "script" ){
             if( this.json.readonlyScript && this.json.readonlyScript.code ){
                 readonly = this.form.Macro.exec(this.json.readonlyScript.code, this);
-                return !!readonly;
             }
         }else{
-            return !!this.json.isReadonly
+            readonly = !!this.json.isReadonly
         }
+        return readonly || !!this.isSectionMergeRead();
     },
     getTextData: function(){
         //var value = this.node.get("value");
