@@ -1,5 +1,6 @@
 package com.x.base.core.project.tools;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
@@ -647,6 +648,13 @@ public class DateTools {
 	 */
 	public static long toTimestamp(long unixTimeStamp) {
 		return unixTimeStamp * 1000;
+	}
+
+	public static String toUTC(Date date) {
+		if (null == date) {
+			return null;
+		}
+		return (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")).format(date);
 	}
 
 	public static void main(String[] args) {

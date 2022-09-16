@@ -27,7 +27,9 @@ class ActionAccept extends BaseAction {
 				// "rejectPersonList", true);
 				emc.check(meeting, CheckPersistType.all);
 				emc.commit();
-				MessageFactory.meeting_accept(effectivePerson.getDistinguishedName(), meeting);
+				// MessageFactory.meeting_accept(effectivePerson.getDistinguishedName(),
+				// meeting);
+				MessageFactory.meeting_accept(meeting.getApplicant(), meeting);
 			}
 			Wo wo = new Wo();
 			wo.setId(meeting.getId());
