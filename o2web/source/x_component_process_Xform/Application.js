@@ -78,7 +78,6 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
         var status = this.getComponentStatus() || {};
         var options = this.getComponentOptions() || {};
         this.getComponentPath(function (componentPath) {
-            debugger;
             if( componentPath.indexOf("@url:") === 0 ){
                 this.loadIframe( componentPath.substring(5, componentPath.length ) );
             }else{
@@ -133,9 +132,8 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
             clazz = clazz[a];
         });
         clazz.options = clazz.options || {};
-        try{
-            MWF.xDesktop.requireApp(path, "lp."+o2.language, null, false);
-            MWF.xDesktop.requireApp(path, "Main", null, false);
+
+        var _load = function () {
             if( clazz.Main ){
                 var opt = options || {};
                 var stt = status || {};
@@ -161,6 +159,18 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
                 this.component.setEventTarget(this.form.app);
             }else{
                 this.form.app.notice(this.form.app.lp.applicationNotFound+":"+path, "error");
+            }
+        }.bind(this);
+
+        try{
+            MWF.xDesktop.requireApp(path, "lp."+o2.language, null, false);
+            MWF.xDesktop.requireApp(path, "Main", null, false);
+            if (clazz.loading && clazz.loading.then){
+                clazz.loading.then(function(){
+                    _load();
+                });
+            }else{
+                _load();
             }
         }catch (e) {
             this.form.app.notice( e.message, "error" );
