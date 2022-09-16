@@ -757,7 +757,7 @@ MWF.xApplication.process.Work.Main = new Class({
 
                 if( this.$events && this.$events.queryLoadForm ){
                     this.appForm.addEvent( "queryLoad", function () {
-                        this.fireEvent("queryLoadForm");
+                        this.fireEvent("queryLoadForm", [this]);
                     }.bind(this));
                 }
 
@@ -781,7 +781,7 @@ MWF.xApplication.process.Work.Main = new Class({
                         this.options.action = "";
                     }
 
-                    this.fireEvent("postLoadForm");
+                    this.fireEvent("postLoadForm", [this]);
                 }.bind(this));
             }.bind(this));
         }

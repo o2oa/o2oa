@@ -3715,9 +3715,10 @@ MWF.xScript.Environment = function(ev){
          * @param {String} process  - 要启动的流程的名称、别名或ID。
          * @param {Object} [data]   - 流程启动时默认的业务数据。
          * @param {String} [identity]  - 流程启动所使用的身份。如果此参数为空/空字符串，且当前人有多个身份的情况下，会弹出身份选择对话框；否则使用默认身份。
-         * @param {Function} [callback]  - 流程启动后的回调函数。
+         * @param {Function} [callback]  - 流程启动后的回调函数，可以获取到启动的数据。
          * @param {Boolean} [target]  - 为true时，在当前页面打开启动的流程实例；否则打开新窗口。默认false。
          * @param {Boolean} [latest]  - 为true时，如果当前用户已经创建了此流程的实例，并且没有流转过，直接调用此实例为新流程实例；否则创建一个新实例。默认false。
+         * @param {Function} [afterCreated]  - 流程创建后的回调，可以获取到创建的流程Work对象（桌面模式）或者Window对象(浏览器模式)。
          * @example
          //启动一个发文管理实例
          this.form.startProcess("公文管理", "发文管理");
@@ -3725,9 +3726,15 @@ MWF.xScript.Environment = function(ev){
          //启动一个发文管理实例，标题为：my file title，启动后提示
          this.form.startProcess("公文管理", "发文管理", {"title": "my file title"}, "张三@kfb_zhangsan@I", function(json){
             this.form.notice("create file success!", "success");
+        }, false, false, function(workApp){
+              if( layout.inBrowser ){ //浏览器模式
+                //workApp 为流程的window对象
+              }else{
+                //workApp 为流程Work app对象
+              }
         });
          */
-        "startProcess": function(app, process, data, identity, callback, target, latest){
+        "startProcess": function(app, process, data, identity, callback, target, latest, afterCreated){
             if (arguments.length>2){
                 for (var i=2; i<arguments.length; i++){
                     if (typeOf(arguments[i])=="boolean"){
@@ -3781,10 +3788,12 @@ MWF.xScript.Environment = function(ev){
                             "identity": identity,
                             "latest": latest,
                             "onStarted": function(data, title, processName){
+                                var application;
                                 if (data.work){
                                     var work = data.work;
                                     var options = {"draft": work, "appId": "process.Work"+(new o2.widget.UUID).toString(), "desktopReload": false};
-                                    layout.desktop.openApplication(null, "process.Work", options);
+                                    if( !layout.inBrowser && afterCreated )options.onPostLoadForm = afterCreated;
+                                    application = layout.desktop.openApplication(null, "process.Work", options);
                                 }else{
                                     var currentTask = [];
                                     data.each(function(work){
@@ -3793,11 +3802,16 @@ MWF.xScript.Environment = function(ev){
 
                                     if (currentTask.length==1){
                                         var options = {"workId": currentTask[0], "appId": currentTask[0]};
-                                        layout.desktop.openApplication(null, "process.Work", options);
+                                        if( !layout.inBrowser && afterCreated )options.onPostLoadForm = afterCreated;
+                                        application = layout.desktop.openApplication(null, "process.Work", options);
                                     }else{}
                                 }
 
                                 if (callback) callback(data);
+
+                                if(layout.inBrowser && afterCreated){
+                                    afterCreated(application)
+                                }
                             }.bind(this)
                         });
                         starter.load();
