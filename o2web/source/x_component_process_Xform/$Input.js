@@ -290,7 +290,7 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
      * @return {Boolean} 是否只读.
      */
 	isReadonly : function(){
-        return !!(this.readonly || this.json.isReadonly || this.form.json.isReadonly);
+        return !!(this.readonly || this.json.isReadonly || this.form.json.isReadonly || this.isSectionMergeRead());
     },
 	getTextData: function(){
 		//var value = this.node.get("value");
