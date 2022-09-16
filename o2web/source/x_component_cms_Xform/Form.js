@@ -755,11 +755,11 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 var json = this._getDomjson(node);
                 jsons.push( json );
 
-                if (!this.options.showAttachment && json.type == "Attachment") {
+                if (!this.options.showAttachment && json && json.type == "Attachment") {
                     return;
                 }
                 //移动端去掉操作栏
-                if (layout.mobile && json.type === "Actionbar") {
+                if (layout.mobile && json && json.type === "Actionbar") {
                     return;
                 }
                 var module = this._loadModule(json, node, beforeLoadModule, replace);

@@ -4565,6 +4565,24 @@ MWF.xScript.ViewEnvironment = function (ev) {
                 onAfterPublish = columnOrOptions.onAfterPublish;
                 onPostPublish = columnOrOptions.onPostPublish;
             }
+            // 移动端 app相关的实现
+            if (layout.mobile) {
+                var options = {};
+                if (column) {
+                    options["column"] = column
+                }
+                if (category) {
+                    options["category"] = category
+                }
+                if (window.o2android && window.o2android.createO2CmsDocument){
+                    window.o2android.createO2CmsDocument(JSON.stringify(options));
+                    return;
+                } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.createO2CmsDocument) {
+                    window.webkit.messageHandlers.createO2CmsDocument.postMessage(options);
+                    return;
+                }
+            }
+            // 下面是pc端
             if (target) {
                 if (layout.app && layout.app.inBrowser) {
                     layout.app.content.empty();
