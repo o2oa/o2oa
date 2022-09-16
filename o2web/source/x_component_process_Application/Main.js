@@ -1309,16 +1309,14 @@ MWF.xApplication.process.Application.Toolbar = new Class({
 						});
 					}else {
 
-						_self.action.WorkAction.manageDelete( data.id , function(){
+						_self.action.WorkAction.delete( data.id , function(){
 							count++;
 							if( dataList.length == count ){
 								_self.app.notice("成功删除"+count+"个工作。");
 								_self.explorer.refresh();
 							}
 						});
-
 					}
-
 
 				}.bind(this));
 
