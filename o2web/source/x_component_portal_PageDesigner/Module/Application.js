@@ -236,12 +236,11 @@ MWF.xApplication.portal.PageDesigner.Module.Application = MWF.PCApplication = ne
 			clazz = clazz[a];
 		});
 		clazz.options = clazz.options || {};
-		try{
-			MWF.xDesktop.requireApp(app, "lp."+o2.language, null, false);
-			MWF.xDesktop.requireApp(app, "Main", null, false);
+
+		var _load = function () {
 			if( clazz.Main ){
 				var opt = options || {};
-				opt.embededParent = this.node;
+				opt.embededParent = new Element("div").inject(this.node);
 				this.application = new clazz.Main(this.form.designer.desktop, opt);
 				this.application.status = status;
 				this.application.load();
@@ -249,6 +248,19 @@ MWF.xApplication.portal.PageDesigner.Module.Application = MWF.PCApplication = ne
 				this.loadMask();
 			}else{
 				this.form.designer.notice(this.form.designer.lp.applicationNotFound+":"+app, "error");
+			}
+		}.bind(this);
+
+		try{
+			MWF.xDesktop.requireApp(app, "lp."+o2.language, null, false);
+			MWF.xDesktop.requireApp(app, "Main", null, false);
+
+			if (clazz.loading && clazz.loading.then){
+				clazz.loading.then(function(){
+					_load();
+				});
+			}else{
+				_load();
 			}
 		}catch (e) {
 			this.form.designer.notice( e.message, "error" );
