@@ -41,7 +41,7 @@ MWF.xApplication.process.Xform.Textfield = MWF.APPTextfield =  new Class({
     loadDescription: function(){
         if (this.isReadonly())return;
         var v = this._getBusinessData();
-        if (!v){
+        if (!v && v!==0){
             if (this.json.description){
                 var size = this.node.getFirst().getSize();
                 var w = size.x-3;
