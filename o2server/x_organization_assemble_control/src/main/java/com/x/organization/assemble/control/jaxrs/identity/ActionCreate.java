@@ -56,9 +56,10 @@ class ActionCreate extends BaseAction {
 				if (!effectivePerson.isSecurityManager() && !business.editable(effectivePerson, unit)) {
 					throw new ExceptionAccessDenied(effectivePerson, unit);
 				}
-				if (this.existedWithPersonWithUnit(business, person, unit)) {
-					throw new ExceptionExistInUnit(person, unit);
-				}
+				//sy 注释掉
+//				if (this.existedWithPersonWithUnit(business, person, unit)) {
+//					throw new ExceptionExistInUnit(person, unit);
+//				}
 				if (StringUtils.isEmpty(wi.getName())) {
 					throw new ExceptionNameEmpty();
 				}

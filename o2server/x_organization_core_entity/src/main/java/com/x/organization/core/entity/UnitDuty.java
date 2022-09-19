@@ -32,9 +32,6 @@ import com.x.base.core.entity.annotation.Flag;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.DateTools;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-
-@Schema(name = "UnitDuty", description = "组织组织职务.")
 @Entity
 @ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.UnitDuty.table, uniqueConstraints = {
@@ -145,6 +142,41 @@ public class UnitDuty extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true, citationExists = { @CitationExist(type = Identity.class) })
 	private List<String> identityList;
 
+
+	/**
+	 * @author sy  add
+	 * @date 2022/08/03 08:53
+	 * @description
+	 */
+	public static final String jobLevel_FIELDNAME = "jobLevel";
+	@FieldDescribe("岗位职级.")
+	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + jobLevel_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + jobLevel_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String jobLevel;
+
+	/**
+	 * @author sy  add
+	 * @date 2022/08/03 08:53
+	 * @description
+	 */
+	public static final String superiorName_FIELDNAME = "superiorName";
+	@FieldDescribe("上级职务名称.")
+	@Column(length = length_255B, name = ColumnNamePrefix + superiorName_FIELDNAME)
+	@Index(name = TABLE + IndexNameMiddle + superiorName_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private String superiorName;
+
+
+	/**
+	 * @author sy  add
+	 * @date 2022/08/03 08:53
+	 * @description
+	 */
+	@FieldDescribe("描述的排序字段.")
+	@CheckPersist(allowEmpty = true)
+	private Integer descriptionNumber;
+
 	/** flag标志位 */
 
 	// public static String[] FLA GS = new String[] { JpaObject.id_FIELDNAME,
@@ -221,6 +253,30 @@ public class UnitDuty extends SliceJpaObject {
 
 	public String getPinyinInitial() {
 		return pinyinInitial;
+	}
+
+	public String getJobLevel() {
+		return jobLevel;
+	}
+
+	public void setJobLevel(String jobLevel) {
+		this.jobLevel = jobLevel;
+	}
+
+	public String getSuperiorName() {
+		return superiorName;
+	}
+
+	public void setSuperiorName(String superiorName) {
+		this.superiorName = superiorName;
+	}
+
+	public Integer getDescriptionNumber() {
+		return descriptionNumber;
+	}
+
+	public void setDescriptionNumber(Integer descriptionNumber) {
+		this.descriptionNumber = descriptionNumber;
 	}
 
 }

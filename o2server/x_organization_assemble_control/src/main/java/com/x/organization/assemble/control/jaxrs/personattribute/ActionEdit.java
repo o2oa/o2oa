@@ -40,9 +40,10 @@ class ActionEdit extends BaseAction {
 			if (StringUtils.isEmpty(wi.getName())) {
 				throw new ExceptionNameEmpty();
 			}
-			if (this.duplicateOnPerson(business, person, wi.getName(), o)) {
-				throw new ExceptionNameExistWithPerson(person, wi.getName());
-			}
+			//sy 2022/08/03  允许重名
+//			if (this.duplicateOnPerson(business, person, wi.getName(), o)) {
+//				throw new ExceptionNameExistWithPerson(person, wi.getName());
+//			}
 			/** 由于需要修改再次取出 */
 			emc.beginTransaction(PersonAttribute.class);
 			o = emc.find(o.getId(), PersonAttribute.class);

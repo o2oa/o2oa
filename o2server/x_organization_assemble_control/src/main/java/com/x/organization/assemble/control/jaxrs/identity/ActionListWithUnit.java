@@ -61,6 +61,11 @@ class ActionListWithUnit extends BaseAction {
 		CriteriaQuery<Identity> cq = cb.createQuery(Identity.class);
 		Root<Identity> root = cq.from(Identity.class);
 		Predicate p = cb.equal(root.get(Identity_.unit), unit.getId());
+
+		/*
+		  组织管理  过滤掉自动跳转这个人
+		 */
+		p = cb.and(p, cb.notEqual(root.get(Identity_.name), "自动跳转"));
 		List<Identity> os = em.createQuery(cq.select(root).where(p)).getResultList();
 		List<Wo> wos = Wo.copier.copy(os);
 		wos = business.identity().sort(wos);

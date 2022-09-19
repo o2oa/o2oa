@@ -42,9 +42,10 @@ class ActionCreate extends BaseAction {
 				throw new ExceptionDuplicateUnique(o.getName(), o.getUnique());
 			}
 			o.setPerson(person.getId());
-			if (this.duplicateOnPerson(business, person, wi.getName(), o)) {
-				throw new ExceptionNameExistWithPerson(person, wi.getName());
-			}
+			//sy 注释  2022/08/03
+//			if (this.duplicateOnPerson(business, person, wi.getName(), o)) {
+//				throw new ExceptionNameExistWithPerson(person, wi.getName());
+//			}
 			emc.beginTransaction(PersonAttribute.class);
 			emc.persist(o, CheckPersistType.all);
 			emc.commit();

@@ -1,56 +1,38 @@
 package com.x.organization.assemble.control.jaxrs.person;
 
-import java.util.List;
-import java.util.Optional;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.apache.commons.collections4.set.ListOrderedSet;
-import org.apache.commons.lang3.StringUtils;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.cache.Cache;
 import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.exception.ExceptionPersonNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.control.Business;
-import com.x.organization.core.entity.Group;
-import com.x.organization.core.entity.Group_;
-import com.x.organization.core.entity.Identity;
-import com.x.organization.core.entity.Identity_;
-import com.x.organization.core.entity.Person;
-import com.x.organization.core.entity.PersonAttribute;
-import com.x.organization.core.entity.PersonAttribute_;
-import com.x.organization.core.entity.Role;
-import com.x.organization.core.entity.Role_;
-import com.x.organization.core.entity.Unit;
-import com.x.organization.core.entity.UnitDuty;
-import com.x.organization.core.entity.UnitDuty_;
+import com.x.organization.core.entity.*;
+import org.apache.commons.collections4.set.ListOrderedSet;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.List;
+import java.util.Optional;
 
 class ActionGet extends BaseAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionGet.class);
-	
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			ActionResult<Wo> result = new ActionResult<>();
-			CacheKey cacheKey = new Cache.CacheKey(this.getClass(), flag);
+			CacheKey cacheKey = new CacheKey(this.getClass(), flag);
 			Optional<?> optional = CacheManager.get(business.cache(), cacheKey);
 			if (optional.isPresent()) {
 				result.setData((Wo) optional.get());
@@ -78,6 +60,14 @@ class ActionGet extends BaseAction {
 			this.hide(effectivePerson, business, result.getData());
 			return result;
 		}
+	}
+	//sy 2022/08/04 新增关联查询上级对象
+	private void referencePersonSuperior(Business business,Wo wo) throws Exception {
+		EntityManager em=business.entityManagerContainer().get(PersonSuperior.class);
+		CriteriaBuilder cb=em.getCriteriaBuilder();
+		CriteriaQuery<PersonSuperior> cq=cb.createQuery(PersonSuperior.class);
+		Root<PersonSuperior> root=cq.from(PersonSuperior.class);
+		Predicate p = cb.equal(root.get(PersonSuperior_.person), wo.getId());
 	}
 
 	private void referencePersonAttribute(Business business, Wo wo) throws Exception {
@@ -197,6 +187,9 @@ class ActionGet extends BaseAction {
 		@FieldDescribe("个人属性对象")
 		private List<WoPersonAttribute> woPersonAttributeList;
 
+		@FieldDescribe("上级领导对象")
+		private List<WoPersonSuperior> woPersonSuperiorList;
+
 		public List<WoIdentity> getWoIdentityList() {
 			return woIdentityList;
 		}
@@ -227,6 +220,14 @@ class ActionGet extends BaseAction {
 
 		public void setWoPersonAttributeList(List<WoPersonAttribute> woPersonAttributeList) {
 			this.woPersonAttributeList = woPersonAttributeList;
+		}
+
+		public List<WoPersonSuperior> getWoPersonSuperiorList() {
+			return woPersonSuperiorList;
+		}
+
+		public void setWoPersonSuperiorList(List<WoPersonSuperior> woPersonSuperiorList) {
+			this.woPersonSuperiorList = woPersonSuperiorList;
 		}
 
 	}
@@ -333,5 +334,16 @@ class ActionGet extends BaseAction {
 		static WrapCopier<PersonAttribute, WoPersonAttribute> copier = WrapCopierFactory.wo(PersonAttribute.class,
 				WoPersonAttribute.class, null, ListTools.toList(JpaObject.FieldsInvisible));
 	}
+
+
+	public static class WoPersonSuperior extends PersonSuperior {
+
+		private static final long serialVersionUID = -3155093360276871418L;
+
+		static WrapCopier<PersonSuperior, WoPersonSuperior> copier = WrapCopierFactory.wo(PersonSuperior.class,
+				WoPersonSuperior.class, null, ListTools.toList(JpaObject.FieldsInvisible));
+	}
+
+
 
 }

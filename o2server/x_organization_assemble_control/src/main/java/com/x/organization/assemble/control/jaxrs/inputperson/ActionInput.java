@@ -109,12 +109,11 @@ class ActionInput extends BaseAction {
 			}
 		}
 		for (PersonItem o : people) {
-			o.setPassword(Crypto.encrypt(o.getPassword(), Config.token().getKey(), Config.person().getEncryptType()));
+			o.setPassword(Crypto.encrypt(o.getPassword(), Config.token().getKey()));
 		}
 	}
 
-	private List<PersonItem> scanPerson(PersonSheetConfigurator configurator, Sheet sheet)
-			throws ExceptionNameColumnEmpty, ExceptionMobileColumnEmpty {
+	private List<PersonItem> scanPerson(PersonSheetConfigurator configurator, Sheet sheet) throws Exception {
 		if (null == configurator.getNameColumn()) {
 			throw new ExceptionNameColumnEmpty();
 		}

@@ -49,8 +49,7 @@ import com.x.organization.core.entity.UnitDuty_;
 import com.x.organization.core.entity.Unit_;
 
 class ActionReserveDelete extends BaseAction {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionReserveDelete.class);
+	private static Logger logger = LoggerFactory.getLogger(ActionReserveDelete.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -258,7 +257,7 @@ class ActionReserveDelete extends BaseAction {
 			String data = resp.getData().toString();
 			return true;
 		} catch (Exception e) {
-			LOGGER.error(e);
+			logger.print(e.toString());
 			return false;
 		}
 	}

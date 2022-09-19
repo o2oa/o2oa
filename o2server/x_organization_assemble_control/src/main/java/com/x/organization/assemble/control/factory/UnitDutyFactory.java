@@ -99,10 +99,33 @@ public class UnitDutyFactory extends AbstractFactory {
 	}
 
 	public <T extends UnitDuty> List<T> sort(List<T> list) {
+		/*
+			修改排序逻辑 按照职级大小排序
+			sy  2022/08/03
+		 */
+		for (T t : list) {
+			if (t.getDescription() != null && isStr2Num(t.getDescription())){
+				t.setDescriptionNumber(Integer.parseInt(t.getDescription()));
+			}
+		}
 		list = list.stream().sorted(
-				Comparator.comparing(UnitDuty::getOrderNumber, Comparator.nullsLast(Integer::compareTo)).thenComparing(
+				Comparator.comparing(UnitDuty::getDescriptionNumber, Comparator.nullsLast(Integer::compareTo)).thenComparing(
 						Comparator.comparing(UnitDuty::getName, Comparator.nullsFirst(String::compareTo)).reversed()))
 				.collect(Collectors.toList());
 		return list;
+	}
+
+	/**
+	 * @author dcs
+	 * @date 2021/11/03 15:19
+	 * @description
+	 */
+	public static boolean isStr2Num(String str){
+		try {
+			Integer.parseInt(str);
+			return true;
+		}catch (NumberFormatException e){
+			return false;
+		}
 	}
 }

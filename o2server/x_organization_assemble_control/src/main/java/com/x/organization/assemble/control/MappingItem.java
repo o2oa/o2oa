@@ -215,6 +215,25 @@ public class MappingItem extends GsonPropertyObject {
 		return list;
 	}
 
+	//sy  2022-08-16
+	public static List<MappingItem> personSuperiorMappings() {
+		List<MappingItem> list = new ArrayList<>();
+		list.add(new MappingItem("名称", "name", MappingItemValueType.string));
+		list.add(new MappingItem("唯一编码", "unique", MappingItemValueType.string));
+		list.add(new MappingItem("人员", "person", MappingItemValueType.string));
+		list.add(new MappingItem("标识", "id", MappingItemValueType.string));
+		list.add(new MappingItem("属性值", "attributeList", MappingItemValueType.stringList));
+		list.add(new MappingItem("创建时间", "createTime", MappingItemValueType.date));
+		return list;
+	}
+
+	public static List<MappingItem> personSuperiorMappings(Sheet sheet) throws Exception {
+		List<MappingItem> list = personSuperiorMappings();
+		mappingColumns(list, sheet);
+		return list;
+	}
+	//sy  2022-08-16
+
 	public static List<MappingItem> companyAttributeMappings() {
 		List<MappingItem> list = new ArrayList<>();
 		list.add(new MappingItem("名称", "name", MappingItemValueType.string));

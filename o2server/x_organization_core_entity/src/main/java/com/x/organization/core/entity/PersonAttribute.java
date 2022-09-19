@@ -32,9 +32,6 @@ import com.x.base.core.entity.annotation.Flag;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.tools.DateTools;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-
-@Schema(name = "PersonAttribute", description = "组织人员属性.")
 @Entity
 @ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.PersonAttribute.table, uniqueConstraints = {
@@ -98,13 +95,25 @@ public class PersonAttribute extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private String description;
 
+
+	/**
+	 * 修改设置 允许同一组织中 名称重复
+	 * @author sy  2022/08/02
+	 */
 	public static final String name_FIELDNAME = "name";
-	@FieldDescribe("名称,同一个组织中不可重名.")
+	@FieldDescribe("名称,同一个组织中可重名.")
 	@Column(length = length_255B, name = ColumnNamePrefix + name_FIELDNAME)
 	@Index(name = TABLE + IndexNameMiddle + name_FIELDNAME)
-	@CheckPersist(allowEmpty = false, simplyString = true, citationNotExists = @CitationNotExist(fields = {
-			name_FIELDNAME }, type = PersonAttribute.class, equals = @Equal(property = "person", field = "person")))
+	@CheckPersist(allowEmpty = false, simplyString = true)
 	private String name;
+
+//	public static final String name_FIELDNAME = "name";
+//	@FieldDescribe("名称,同一个组织中不可重名.")
+//	@Column(length = length_255B, name = ColumnNamePrefix + name_FIELDNAME)
+//	@Index(name = TABLE + IndexNameMiddle + name_FIELDNAME)
+//	@CheckPersist(allowEmpty = false, simplyString = true, citationNotExists = @CitationNotExist(fields = {
+//			name_FIELDNAME }, type = PersonAttribute.class, equals = @Equal(property = "person", field = "person")))
+//	private String name;
 
 	public static final String unique_FIELDNAME = "unique";
 	@Flag

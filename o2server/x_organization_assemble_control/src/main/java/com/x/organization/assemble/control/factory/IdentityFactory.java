@@ -70,7 +70,9 @@ public class IdentityFactory extends AbstractFactory {
 				CriteriaBuilder cb = em.getCriteriaBuilder();
 				CriteriaQuery<Identity> cq = cb.createQuery(Identity.class);
 				Root<Identity> root = cq.from(Identity.class);
+				//sy 20220815 数据库存的是识别名 这里是用名称查  无修改
 				Predicate p = cb.equal(root.get(Identity_.name), name);
+				//sy 20220815
 				List<Identity> os = em.createQuery(cq.select(root).where(p)).getResultList();
 				if (os.size() == 1) {
 					o = os.get(0);

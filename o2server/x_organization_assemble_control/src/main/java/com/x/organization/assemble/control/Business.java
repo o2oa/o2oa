@@ -28,6 +28,7 @@ import com.x.organization.assemble.control.factory.PermissionSettingFactory;
 import com.x.organization.assemble.control.factory.PersonAttributeFactory;
 import com.x.organization.assemble.control.factory.PersonCardFactory;
 import com.x.organization.assemble.control.factory.PersonFactory;
+import com.x.organization.assemble.control.factory.PersonSuperiorFactory;
 import com.x.organization.assemble.control.factory.RoleFactory;
 import com.x.organization.assemble.control.factory.UnitAttributeFactory;
 import com.x.organization.assemble.control.factory.UnitDutyFactory;
@@ -38,6 +39,7 @@ import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Identity_;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.PersonAttribute;
+import com.x.organization.core.entity.PersonSuperior;
 import com.x.organization.core.entity.Person_;
 import com.x.organization.core.entity.Role;
 import com.x.organization.core.entity.Role_;
@@ -53,7 +55,7 @@ public class Business {
 
 	public Business(EntityManagerContainer emc) throws Exception {
 		this.emc = emc;
-		this.cacheCategory = new CacheCategory(Group.class, Role.class, Person.class, PersonAttribute.class, Unit.class,
+		this.cacheCategory = new CacheCategory(Group.class, Role.class, Person.class, PersonAttribute.class, PersonSuperior.class, Unit.class,
 				UnitDuty.class, UnitAttribute.class, Identity.class);
 	}
 
@@ -105,6 +107,17 @@ public class Business {
 		}
 		return personAttribute;
 	}
+
+	//sy 20220815 新增
+	private PersonSuperiorFactory personSuperior;
+
+	public PersonSuperiorFactory personSuperior() throws Exception {
+		if (null == this.personSuperior) {
+			this.personSuperior = new PersonSuperiorFactory(this);
+		}
+		return personSuperior;
+	}
+	//sy 20220815 新增
 
 	private IdentityFactory identity;
 
