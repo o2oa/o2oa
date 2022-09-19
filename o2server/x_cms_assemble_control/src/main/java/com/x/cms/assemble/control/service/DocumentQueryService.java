@@ -177,12 +177,12 @@ public class DocumentQueryService {
 		}
 	}
 
-	public Long countByCategoryId(String categoryId ) throws Exception {
+	public Long countByCategoryId(String categoryId, boolean containDraft) throws Exception {
 		if( StringUtils.isEmpty( categoryId ) ){
 			throw new Exception("categoryId is null!");
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
-			return documentInfoService.countByCategoryId( emc, categoryId );
+			return documentInfoService.countByCategoryId( emc, categoryId, containDraft);
 		} catch ( Exception e ) {
 			throw e;
 		}

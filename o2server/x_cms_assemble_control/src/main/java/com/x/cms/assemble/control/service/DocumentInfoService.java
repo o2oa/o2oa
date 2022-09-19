@@ -76,12 +76,16 @@ public class DocumentInfoService {
 		return business.getDocumentFactory().get( id );
 	}
 
-	public Long countByCategoryId(EntityManagerContainer emc, String categoryId) throws Exception {
+	public Long countByCategoryId(EntityManagerContainer emc, String categoryId, boolean containDraft) throws Exception {
 		if( StringUtils.isEmpty( categoryId ) ){
 			return null;
 		}
 		Business business = new Business( emc );
-		return business.getDocumentFactory().countByCategoryId(categoryId);
+		if(containDraft){
+			return business.getDocumentFactory().countByCategoryId(categoryId);
+		}else{
+			return business.getDocumentFactory().countByCategoryIdNotContainDraft(categoryId);
+		}
 	}
 
 	public Long countByAppId(EntityManagerContainer emc, String appId) throws Exception {

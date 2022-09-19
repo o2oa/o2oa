@@ -14,6 +14,7 @@ import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Selection;
 import javax.persistence.criteria.Subquery;
 
+import com.x.cms.core.entity.enums.DocumentStatus;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -186,6 +187,17 @@ public class DocumentFactory extends AbstractFactory {
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<Document> root = cq.from(Document.class);
 		Predicate p = cb.equal( root.get(Document_.categoryId), categoryId );
+		cq.select(cb.count(root)).where(p);
+		return em.createQuery(cq).getSingleResult();
+	}
+
+	public Long countByCategoryIdNotContainDraft( String categoryId ) throws Exception {
+		EntityManager em = this.entityManagerContainer().get( Document.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<Document> root = cq.from(Document.class);
+		Predicate p = cb.equal( root.get(Document_.categoryId), categoryId );
+		p = cb.and(p, cb.notEqual(root.get(Document_.docStatus), DocumentStatus.DRAFT.getValue()));
 		cq.select(cb.count(root)).where(p);
 		return em.createQuery(cq).getSingleResult();
 	}

@@ -150,10 +150,8 @@ public class CategoryInfoAction extends StandardJaxrsAction{
 		try {
 			result = new ActionDelete().execute( request, id, effectivePerson );
 		} catch (Exception e) {
-			result = new ActionResult<>();
-			Exception exception = new ExceptionCategoryInfoProcess( e, "分类信息在删除时发生异常。ID:" + id );
-			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
+			result.error( e );
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
@@ -170,10 +168,8 @@ public class CategoryInfoAction extends StandardJaxrsAction{
 		try {
 			result = new ActionDelete().execute( request, id, effectivePerson );
 		} catch (Exception e) {
-			result = new ActionResult<>();
-			Exception exception = new ExceptionCategoryInfoProcess( e, "分类信息在删除时发生异常。ID:" + id );
-			result.error( exception );
 			logger.error( e, effectivePerson, request, null);
+			result.error( e );
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
@@ -190,9 +186,7 @@ public class CategoryInfoAction extends StandardJaxrsAction{
 		try {
 			result = new ActionEraseDocumentWithCategory().execute(request, id, effectivePerson );
 		} catch (Exception e) {
-			result = new ActionResult<>();
-			Exception exception = new ExceptionCategoryInfoProcess(e, "根据分类ID删除所有的信息文档发生未知异常，ID:" + id);
-			result.error(exception);
+			result.error(e);
 			logger.error(e, effectivePerson, request, null);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -210,9 +204,7 @@ public class CategoryInfoAction extends StandardJaxrsAction{
 		try {
 			result = new ActionEraseDocumentWithCategory().execute(request, id, effectivePerson );
 		} catch (Exception e) {
-			result = new ActionResult<>();
-			Exception exception = new ExceptionCategoryInfoProcess(e, "根据分类ID删除所有的信息文档发生未知异常，ID:" + id);
-			result.error(exception);
+			result.error(e);
 			logger.error(e, effectivePerson, request, null);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
