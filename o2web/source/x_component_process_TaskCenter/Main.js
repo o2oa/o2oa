@@ -1175,7 +1175,14 @@ MWF.xApplication.process.TaskCenter.Process = new Class({
     startProcessDraft: function(data, title, processName){
         var work = data.work;
         var options = {"draft": work, "appId": "process.Work"+(new o2.widget.UUID).toString(), "desktopReload": false};
-        this.app.desktop.openApplication(null, "process.Work", options);
+        if( !layout.inBrowser )options.onPostLoadForm = function(app){
+            this.starter.fireEvent("afterStartProcess", [app]);
+        }.bind(this);
+        var win = this.app.desktop.openApplication(null, "process.Work", options);
+
+        if( layout.inBrowser ){
+            this.starter.fireEvent("afterStartProcess", [win]);
+        }
 
         // var msg = {
         //     "subject": this.app.lp.processStarted,
@@ -1198,7 +1205,13 @@ MWF.xApplication.process.TaskCenter.Process = new Class({
                 window.location = o2.filterUrl(url);
             } else {
                 var options = {"workId": currentTask[0], "appId": "process.Work"+currentTask[0]};
-                this.app.desktop.openApplication(null, "process.Work", options);
+                if( !layout.inBrowser )options.onPostLoadForm = function(app){
+                    this.starter.fireEvent("afterStartProcess", [app]);
+                }.bind(this);
+                var win = this.app.desktop.openApplication(null, "process.Work", options);
+                if( layout.inBrowser ){
+                    this.starter.fireEvent("afterStartProcess", [win]);
+                }
             }            
 
             if (layout.desktop.message) this.createStartWorkResault(workInfors, title, processName, false);
