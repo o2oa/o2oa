@@ -691,7 +691,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         if (this.app && this.app.fireEvent) this.app.fireEvent("beforeModulesLoad");
         this._loadModules(this.node);
         if (Browser.firefox) this.container.setStyle("opacity", 1);
-
+        debugger;
         if (this.json.mode === "Mobile") {
             var node = document.body.getElement(".o2_form_mobile_actions");
             if (node) {
@@ -1049,8 +1049,14 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             flag = flag && (!hideFlag);
         }
         if (tool.id == "action_processWork") {
-            if (!this.businessData.task || !this.businessData.work || !this.businessData.work.startTime) {
-                flag = false;
+            if (this.businessData.work.startTime) { // 正常模式
+                if (!this.businessData.task || !this.businessData.work || !this.businessData.work.startTime) {
+                    flag = false;
+                }
+            } else { // 草稿模式
+                if (!this.businessData.work) {
+                    flag = false;
+                }
             }
         }
         if (tool.id == "action_rollback") tool.read = true;
