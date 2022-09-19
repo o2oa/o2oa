@@ -650,24 +650,4 @@ public class DateTools {
 		return unixTimeStamp * 1000;
 	}
 
-	public static String toUTC(Date date) {
-		if (null == date) {
-			return null;
-		}
-		return (new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")).format(date);
-	}
-
-	public static void main(String[] args) {
-		try {
-			Date today = new Date();
-			today = DateTools.floorDate(today, null);
-			Date sevenDayBefore = DateTools.addDay(today, -7);
-			System.out.println(DateTools.format(today));
-			System.out.println(DateTools.format(sevenDayBefore));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-	}
-
 }
