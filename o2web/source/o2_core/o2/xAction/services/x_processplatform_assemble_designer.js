@@ -278,6 +278,20 @@
     },
     addForm: function(formData, mobileData, fieldList, success, failure){
         var data, mobileDataStr;
+        var relatedScriptMap = null;
+        if (formData && formData.json.includeScripts && formData.json.includeScripts.length){
+            relatedScriptMap = {};
+            formData.json.includeScripts.each(function(s){
+                relatedScriptMap[s.id] = ((s.appType==="process") ? "processPlatform" : s.appType);
+            });
+        }
+        var mobileRelatedScriptMap = null;
+        if (mobileData && mobileData.json.includeScripts && mobileData.json.includeScripts.length){
+            mobileRelatedScriptMap = {};
+            mobileData.json.includeScripts.each(function(s){
+                mobileRelatedScriptMap[s.id] = ((s.appType==="process") ? "processPlatform" : s.appType);
+            });
+        }
         if (!formData.json.id){
             this.getUUID(function(id){
                 formData.json.id = id;
@@ -290,23 +304,6 @@
                     mobileData.json.id = id;
                 }
                 if (mobileData) mobileDataStr = MWF.encodeJsonString(JSON.encode(mobileData));
-
-                var relatedScriptMap = null;
-                if (formData && formData.json.includeScripts && formData.json.includeScripts.length){
-                    relatedScriptMap = {};
-                    formData.json.includeScripts.each(function(s){
-                        relatedScriptMap[s.id] = ((s.appType==="process") ? "processPlatform" : s.appType);
-                    });
-                };
-
-                var mobileRelatedScriptMap = null;
-                if (mobileData && mobileData.json.includeScripts && mobileData.json.includeScripts.length){
-                    mobileRelatedScriptMap = {};
-                    mobileData.json.includeScripts.each(function(s){
-                        mobileRelatedScriptMap[s.id] = ((s.appType==="process") ? "processPlatform" : s.appType);
-                    });
-                }
-
 
                 var json = {
                     "id": formData.json.id,
@@ -353,7 +350,13 @@
                 "hasMobile": false,
                 "description": formData.json.description,
                 "application": formData.json.application,
-                "category": formData.json.category
+                "category": formData.json.category,
+                "icon": formData.json.formIcon,
+                "formFieldList": fieldList,
+                "relatedScriptMap": relatedScriptMap,
+                "relatedFormList": (formData && formData.json.subformList) ? formData.json.subformList : [],
+                "mobileRelatedScriptMap": mobileRelatedScriptMap,
+                "mobileRelatedFormList": (mobileData && mobileData.json.subformList) ? mobileData.json.subformList : []
             };
             if (mobileData && mobileData.json.moduleList){
                 if (Object.keys(mobileData.json.moduleList).length){
