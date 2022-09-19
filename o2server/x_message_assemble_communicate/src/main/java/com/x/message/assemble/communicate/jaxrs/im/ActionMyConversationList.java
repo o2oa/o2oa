@@ -1,6 +1,7 @@
 package com.x.message.assemble.communicate.jaxrs.im;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -29,9 +30,8 @@ public class ActionMyConversationList extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Business business = new Business(emc);
-			List<String> ids = business.imConversationFactory()
-					.listConversationWithPerson(effectivePerson.getDistinguishedName());
-			List<Wo> wos = Wo.copier.copy(emc.list(IMConversation.class, ids));
+			List<Wo> wos = Wo.copier.copy(business.imConversationFactory()
+					.listConversationWithPerson(effectivePerson.getDistinguishedName()));
 			for (Wo wo : wos) {
 				IMConversationExt ext = business.imConversationFactory()
 						.getConversationExt(effectivePerson.getDistinguishedName(), wo.getId());
@@ -49,9 +49,22 @@ public class ActionMyConversationList extends BaseAction {
 					wo.setUnreadNumber(business.imConversationFactory().unreadNumber(conversationExt));
 
 				}
-				wo.setLastMessage(WoMsg.copier.copy(business.imConversationFactory().lastMessage(wo.getId())));
+
 			}
-			result.setData(wos);
+			// 删除空的会话
+			List<Wo> trueWos = wos.stream().filter((wo)-> {
+				WoMsg woMsg;
+				try {
+					 woMsg = WoMsg.copier.copy(business.imConversationFactory().lastMessage(wo.getId()));
+					 if (woMsg != null) {
+						 wo.setLastMessage(woMsg);
+					 }
+				} catch (Exception e) {
+					woMsg = null;
+				}
+				return (woMsg != null);
+			}).collect(Collectors.toList());
+			result.setData(trueWos);
 			return result;
 		}
 	}

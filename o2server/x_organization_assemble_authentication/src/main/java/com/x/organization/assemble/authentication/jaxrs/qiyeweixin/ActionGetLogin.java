@@ -46,11 +46,20 @@ class ActionGetLogin extends BaseAction {
 			String url = Config.qiyeweixin().getApiAddress() + "/cgi-bin/user/getuserinfo?access_token="
 					+ Config.qiyeweixin().corpAccessToken() + "&code=" + code;
 			logger.debug("qyweixin url:{}.", url);
-			String str = HttpConnection.getAsString(url, null);
-			logger.debug("qyweixin return:{}", str);
-			JsonElement jsonElement = gson.fromJson(str, JsonElement.class);
-
-			String userId = jsonElement.getAsJsonObject().get("UserId").getAsString();
+//			String str = HttpConnection.getAsString(url, null);
+			QiyeweixinGetUserInfoResp resp = HttpConnection.getAsObject(url, null, QiyeweixinGetUserInfoResp.class);
+			if (resp == null || resp.getErrcode() == null || resp.getErrcode() != 0) {
+				Integer errCode;
+				if (resp == null) errCode = -1;
+				else errCode = resp.getErrcode();
+				String errMsg = resp == null ? "" : resp.getErrmsg();
+				throw new ExceptionQywxResponse(errCode, errMsg);
+			}
+			String userId = resp.getUserId();
+			if (StringUtils.isEmpty(userId)) {
+				logger.info("userId为空，无法单点登录！！！");
+				throw new ExceptionQywxResponse(resp.getErrcode(), resp.getErrmsg());
+			}
 			Business business = new Business(emc);
 			String personId = business.person().getPersonIdWithQywxid(userId);
 			if (StringUtils.isEmpty(personId)) {
@@ -102,6 +111,58 @@ class ActionGetLogin extends BaseAction {
 
 		public void setRoleList(List<String> roleList) {
 			this.roleList = roleList;
+		}
+	}
+
+
+
+	public static class QiyeweixinGetUserInfoResp {
+
+		/**
+		 * <code>	 {
+		 *    "errcode": 0,
+		 *    "errmsg": "ok",
+		 *    "UserId":"USERID",
+		 *    "DeviceId":"DEVICEID",
+		 * }
+		 * </code>
+		 */
+
+		private Integer errcode;
+		private String errmsg;
+		private String UserId;
+		private String DeviceId;
+
+		public Integer getErrcode() {
+			return errcode;
+		}
+
+		public void setErrcode(Integer errcode) {
+			this.errcode = errcode;
+		}
+
+		public String getErrmsg() {
+			return errmsg;
+		}
+
+		public void setErrmsg(String errmsg) {
+			this.errmsg = errmsg;
+		}
+
+		public String getUserId() {
+			return UserId;
+		}
+
+		public void setUserId(String userId) {
+			UserId = userId;
+		}
+
+		public String getDeviceId() {
+			return DeviceId;
+		}
+
+		public void setDeviceId(String deviceId) {
+			DeviceId = deviceId;
 		}
 	}
 

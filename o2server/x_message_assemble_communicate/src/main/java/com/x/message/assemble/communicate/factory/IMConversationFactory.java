@@ -48,13 +48,29 @@ public class IMConversationFactory extends AbstractFactory {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<String> listConversationWithPerson(String person) throws Exception {
+	public List<String> listConversationIdListWithPerson(String person) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(IMConversation.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<IMConversation> root = cq.from(IMConversation.class);
 		Predicate p = cb.isMember(person, root.get(IMConversation_.personList));
 		cq.select(root.get(IMConversation_.id)).where(p);
+		return em.createQuery(cq).getResultList();
+	}
+
+	/**
+	 * 获取成员包含person的会话id 列表
+	 * @param person
+	 * @return
+	 * @throws Exception
+	 */
+	public List<IMConversation> listConversationWithPerson(String person) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(IMConversation.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<IMConversation> cq = cb.createQuery(IMConversation.class);
+		Root<IMConversation> root = cq.from(IMConversation.class);
+		Predicate p = cb.isMember(person, root.get(IMConversation_.personList));
+		cq.select(root).where(p);
 		return em.createQuery(cq).getResultList();
 	}
 

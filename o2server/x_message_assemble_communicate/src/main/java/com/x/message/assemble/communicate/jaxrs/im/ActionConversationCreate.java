@@ -55,9 +55,8 @@ public class ActionConversationCreate extends BaseAction {
 			// 单聊 判断会话是否存在
 			if (conversation.getType().equals(CONVERSATION_TYPE_SINGLE)) {
 				Business business = new Business(emc);
-				List<String> ids = business.imConversationFactory()
+				List<IMConversation> list = business.imConversationFactory()
 						.listConversationWithPerson(effectivePerson.getDistinguishedName());
-				List<IMConversation> list = emc.list(IMConversation.class, ids);
 				if (list != null && !list.isEmpty()) {
 					for (int i = 0; i < list.size(); i++) {
 						IMConversation c = list.get(i);

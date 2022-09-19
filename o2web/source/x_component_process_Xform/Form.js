@@ -691,7 +691,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         if (this.app && this.app.fireEvent) this.app.fireEvent("beforeModulesLoad");
         this._loadModules(this.node);
         if (Browser.firefox) this.container.setStyle("opacity", 1);
-        debugger;
+        
         if (this.json.mode === "Mobile") {
             var node = document.body.getElement(".o2_form_mobile_actions");
             if (node) {
