@@ -582,8 +582,13 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			var data = this.getBusinessDataById();
 			if( o2.typeOf( data ) === "object" ){
 				var keys = Object.keys(data);
-				if( o2.typeOf(data[keys[0]]) === "object" && o2.typeOf(data[keys[0]].data) === "array" ){
-					return true;
+				for( var i=0; i<keys.length; i++ ){
+					var key = keys[i];
+					if( key !== "data" && key !== "total" ){
+						if( o2.typeOf(data[key]) === "object" && o2.typeOf(data[key].data) === "array" ){
+							return true;
+						}
+					}
 				}
 			}
 			return false;
