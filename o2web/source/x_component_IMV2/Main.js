@@ -289,7 +289,8 @@ MWF.xApplication.IMV2.Main = new Class({
 				var c = _self.conversationNodeItemList[i];
 				if (newConv.id == c.data.id) {
 					isOld = true;
-					_self.tapConv(c);
+					_self.tapConv(c.data);
+					break;
 				}
 			}
 			if (!isOld) {
