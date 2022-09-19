@@ -395,8 +395,16 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			var data = this.getBusinessDataById();
 			if( o2.typeOf( data ) === "object" ){
 				var keys = Object.keys(data);
-				if( o2.typeOf(data[keys[0]]) === "array"  ){
-					return true;
+				// if( o2.typeOf(data[keys[0]]) === "array"  ){
+				// 	return true;
+				// }
+				for( var i=0; i<keys.length; i++ ){
+					var key = keys[i];
+					if( key !== "data" ){
+						if( o2.typeOf(data[key]) === "array"  ){
+							return true;
+						}
+					}
 				}
 			}
 			return false;
