@@ -61,7 +61,7 @@
             type="textarea"
             :input-style="{width: '310px'}"
             :options="{rows: 2, spellcheck: false, style: 'word-break: break-all;'}"
-            @changeConfig="(value)=>{const v = value.split(/\s*,\s*/g); generalData.attachmentConfig.fileTypeIncludes=v; saveConfig('general', 'attachmentConfig.fileTypeIncludes', v)}"
+            @changeConfig="(value)=>{const v = (value && !Array.isArray(value)) ? value.split(/\s*,\s*/g): (value||[]); generalData.attachmentConfig.fileTypeIncludes=v; saveConfig('general', 'attachmentConfig.fileTypeIncludes', v)}"
         ></BaseItem>
         <div class="item_info">{{lp._serversConfig.fileTypeIncludesInfo}}</div>
       </div>
@@ -76,7 +76,7 @@
             type="textarea"
             :input-style="{width: '310px'}"
             :options="{rows: 2, spellcheck: false, style: 'word-break: break-all;'}"
-            @changeConfig="(value)=>{const v = value.split(/\s*,\s*/g); generalData.attachmentConfig.fileTypeExcludes=v; saveConfig('general', 'attachmentConfig.fileTypeExcludes', v)}"
+            @changeConfig="(value)=>{const v = (value && !Array.isArray(value)) ? value.split(/\s*,\s*/g): (value||[]); generalData.attachmentConfig.fileTypeExcludes=v; saveConfig('general', 'attachmentConfig.fileTypeExcludes', v)}"
         ></BaseItem>
         <div class="item_info">{{lp._serversConfig.fileTypeExcludesInfo}}</div>
       </div>
@@ -124,7 +124,7 @@
         :config="generalData.scriptingBlockedClasses"
         :allowEditor="true"
         type="textarea"
-        @changeConfig="(value)=>{generalData.scriptingBlockedClasses=value; saveConfig('general', 'scriptingBlockedClasses', value.split(/\s*,\s*/g))}"
+        @changeConfig="(value)=>{const v = (value && !Array.isArray(value)) ? value.split(/\s*,\s*/g): (value||[]); generalData.scriptingBlockedClasses=v; saveConfig('general', 'scriptingBlockedClasses', v)}"
     ></BaseItem>
 
     <BaseItem
