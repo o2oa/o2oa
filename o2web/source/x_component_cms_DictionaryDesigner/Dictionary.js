@@ -1202,6 +1202,30 @@ MWF.xApplication.cms.DictionaryDesigner.Dictionary.item = new Class({
                 "blur": function(e){
                     this.editValueConfirm(e);
                 }.bind(this),
+                "dblclick" : function (e){
+                    var opt = {
+                        "types": ["identity","person","unit","group","role","duty","process","application","platApp","view"],
+                        "count": 1,
+                        "title": "Select",
+                        "values":[],
+                        "onComplete": function (items) {
+                            var d = items[0].data;
+                            var v;
+                            if(d.distinguishedName){
+                                v = d.distinguishedName;
+                            }else{
+                                v = d.id === d.name? d.id : d.name + "|" + d.id
+                            }
+                            if(items.length>0){
+                                this.editValueNode.set("value", v);
+                            }
+                            this.editValueConfirm(e);
+                        }.bind(this)
+                    };
+                    o2.xDesktop.requireApp("Selector", "package", function(){
+                        new o2.O2Selector(this.dictionary.designer.content, opt);
+                    }.bind(this), false);
+                }.bind(this),
                 "keydown": function(e){
                     if (e.code==13){
                         this.editValueConfirm(e);
@@ -1232,8 +1256,8 @@ MWF.xApplication.cms.DictionaryDesigner.Dictionary.item = new Class({
         this.value = value;
         this.parent.value[this.key] = this.value;
 
-        this.editValueNode.destroy();
-        this.editValueNode = null;
+        // this.editValueNode.destroy();
+        // this.editValueNode = null;
 
         this.setNodeText();
         this.dictionary.jsonParse.loadObjectTree();

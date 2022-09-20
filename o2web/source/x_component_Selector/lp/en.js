@@ -32,6 +32,7 @@ MWF.xApplication.Selector.LP = MWF.SelectorLP = {
 
     "identity" : "Identity",
     "person" : "Person",
+    "duty" : "Duty",
     "application" : "Application",
     "CMSApplication" : "Application",
     "CMSCategory" : "Category",
