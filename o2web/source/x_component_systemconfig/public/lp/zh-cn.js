@@ -590,8 +590,8 @@ o2.xApplication.systemconfig.LP = {
         "saveDatabaseConfigSuccess": "数据库配置保存成功，请重启服务器",
         "saveEntityConfigSuccess": "实体类配置保存成功，请重启服务器",
 
-        "dumpRestoreTools": "数据库备份回复工具",
-        "toolsInfo": "O2OA提供了数据备份和回复工具，<span style='color: red'>修改数据库配置在大部分情况下都会影响到系统现有数据</span>，" +
+        "dumpRestoreTools": "数据库备份恢复工具",
+        "toolsInfo": "O2OA提供了数据备份和恢复工具，<span style='color: red'>修改数据库配置在大部分情况下都会影响到系统现有数据</span>，" +
             "所以在修改数据库配置之前，建议您先使用O2OA的备份功能将系统数据进行备份，在修改完数据库配置后重启服务器，然后将备份的数据恢复到数据库。<br>" +
             "<span class='mainColor_color'>在您进行备份或恢复数据时，请勿离开本页面。您可以在另一个浏览器窗口中进行其它操作</span>",
 
