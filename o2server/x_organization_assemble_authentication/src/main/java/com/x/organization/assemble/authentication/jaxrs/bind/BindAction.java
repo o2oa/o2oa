@@ -15,32 +15,27 @@ import javax.ws.rs.core.MediaType;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
 import com.x.base.core.project.http.ActionResult;
-import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
 import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
+import com.x.organization.assemble.authentication.wrapout.WrapOutBind;
 
 @Path("bind")
-@JaxrsDescribe("绑定.")
+@JaxrsDescribe("绑定")
 public class BindAction extends StandardJaxrsAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(BindAction.class);
-
-	@JaxrsMethodDescribe(value = "列示所有绑定对象.", action = ActionList.class)
+	@JaxrsMethodDescribe(value = "列示所有Bind对象.", action = ActionList.class)
 	@GET
 	@Path("list")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void listNext(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		ActionResult<List<ActionList.Wo>> result = new ActionResult<>();
+		ActionResult<List<WrapOutBind>> result = new ActionResult<>();
 		try {
-			result = new ActionList().execute(effectivePerson);
-		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, null);
-			result.error(e);
+			result = new ActionList().execute();
+		} catch (Throwable th) {
+			th.printStackTrace();
+			result.error(th);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}

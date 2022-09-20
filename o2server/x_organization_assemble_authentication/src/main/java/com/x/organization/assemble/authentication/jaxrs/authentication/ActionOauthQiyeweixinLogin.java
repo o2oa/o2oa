@@ -17,17 +17,11 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.organization.assemble.authentication.Business;
 import com.x.organization.core.entity.Person;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-
 public class ActionOauthQiyeweixinLogin extends BaseAction {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionOauthQiyeweixinLogin.class);
+	private static Logger logger = LoggerFactory.getLogger(ActionOauthQiyeweixinLogin.class);
 
 	ActionResult<ActionOauthQiyeweixinLogin.Wo> execute(HttpServletRequest request, HttpServletResponse response,
 			EffectivePerson effectivePerson, String code) throws Exception {
-
-		LOGGER.debug("execute:{}, code:{}.", effectivePerson::getDistinguishedName, () -> code);
-
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<ActionOauthQiyeweixinLogin.Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
@@ -35,11 +29,11 @@ public class ActionOauthQiyeweixinLogin extends BaseAction {
 			String url = Config.qiyeweixin().getApiAddress() + "/cgi-bin/user/getuserinfo?access_token="
 					+ Config.qiyeweixin().corpAccessToken() + "&code=" + code;
 			String str = HttpConnection.getAsString(url, null);
-			LOGGER.debug("企业微信获取用户 return:{}", str);
+			logger.debug("企业微信获取用户 return:{}", str);
 			JsonElement jsonElement = gson.fromJson(str, JsonElement.class);
 			String userId = jsonElement.getAsJsonObject().get("UserId").getAsString();
 
-			LOGGER.info("credential:{}", userId);
+			logger.info("credential:{}", userId);
 			if (StringUtils.isEmpty(userId)) {
 				throw new ExceptionOauthEmptyCredential();
 			}
@@ -61,7 +55,6 @@ public class ActionOauthQiyeweixinLogin extends BaseAction {
 
 	}
 
-	@Schema(name = "com.x.organization.assemble.authentication.jaxrs.authentication.ActionOauthQiyeweixinLogin$Wo")
 	public static class Wo extends AbstractWoAuthentication {
 
 		private static final long serialVersionUID = -1473824515272368422L;

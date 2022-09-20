@@ -19,7 +19,7 @@ import com.x.base.core.project.tools.Crypto;
 
 class ActionGetEncrypt extends BaseAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionGetEncrypt.class);
+	private static Logger logger = LoggerFactory.getLogger(ActionGetEncrypt.class);
 
 	ActionResult<Wo> execute(HttpServletRequest request, HttpServletResponse response, EffectivePerson effectivePerson,
 			String client, String key, String credential) throws Exception {
@@ -38,7 +38,9 @@ class ActionGetEncrypt extends BaseAction {
 			throw new ExceptionClientNotExist(client);
 		}
 		String str = credential + TOKEN_SPLIT + new Date().getTime();
-		String token = Crypto.encrypt(str, key, Config.person().getEncryptType());
+		String token = Crypto.encrypt(str, key);
+//		byte[] bs = Crypto.encrypt(str.getBytes(DefaultCharset.charset), key.getBytes());
+//		String token = new String(Base64.encodeBase64(bs), DefaultCharset.charset);
 		Wo wo = new Wo();
 		wo.setToken(token);
 		result.setData(wo);
@@ -46,8 +48,6 @@ class ActionGetEncrypt extends BaseAction {
 	}
 
 	public static class Wo extends GsonPropertyObject {
-
-		private static final long serialVersionUID = 1541377202197787268L;
 
 		@FieldDescribe("令牌")
 		private String token;

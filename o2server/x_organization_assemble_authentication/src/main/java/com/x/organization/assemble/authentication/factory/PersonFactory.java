@@ -43,9 +43,7 @@ public class PersonFactory extends AbstractFactory {
 			o = (Person) optional.get();
 		} else {
 			o = this.pickObject(flag);
-			if (null != o) {
-				CacheManager.put(cache, cacheKey, o);
-			}
+			CacheManager.put(cache, cacheKey, o);
 		}
 		return o;
 	}
@@ -90,8 +88,8 @@ public class PersonFactory extends AbstractFactory {
 				list.add((Person) optional.get());
 			} else {
 				Person o = this.pickObject(str);
+				CacheManager.put(cache, cacheKey, o);
 				if (null != o) {
-					CacheManager.put(cache, cacheKey, o);
 					list.add(o);
 				}
 			}
@@ -104,7 +102,9 @@ public class PersonFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Person> root = cq.from(Person.class);
-		Predicate p = cb.equal(root.get(Person_.name), credential);
+		//sy 20220819新增工号登录
+		Predicate p = cb.equal(root.get(Person_.employee), credential);
+		p = cb.or(p, cb.equal(root.get(Person_.name), credential));
 		p = cb.or(p, cb.equal(root.get(Person_.distinguishedName), credential));
 		p = cb.or(p, cb.equal(root.get(Person_.unique), credential));
 		p = cb.or(p, cb.equal(root.get(Person_.id), credential));
@@ -112,7 +112,7 @@ public class PersonFactory extends AbstractFactory {
 		p = cb.or(p, cb.equal(root.get(Person_.qq), credential));
 		p = cb.or(p, cb.equal(root.get(Person_.weixin), credential));
 		p = cb.or(p, cb.equal(root.get(Person_.mobile), credential));
-		p = cb.or(p, cb.equal(root.get(Person_.employee), credential));
+		//p = cb.or(p, cb.equal(root.get(Person_.employee), credential));
 		p = cb.or(p, cb.equal(root.get(Person_.mpwxopenId), credential));
 		p = cb.or(p, cb.equal(root.get(Person_.open1Id), credential));
 		p = cb.or(p, cb.equal(root.get(Person_.open2Id), credential));
@@ -123,10 +123,21 @@ public class PersonFactory extends AbstractFactory {
 		List<String> list = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		if (list.size() == 1) {
 			return list.get(0);
-		} else {
+		}else if(list.size() > 1){
+			String temp = "";
+			for (int i = 0; i < list.size(); i++) {
+				if(temp.equalsIgnoreCase("")) {
+					temp = list.get(i);
+				}else{
+					temp = temp + "," + list.get(i);
+				}
+			}
+		    return temp;
+		}else {
 			return null;
 		}
 	}
+
 
 	public String getPersonIdWithQywxid(String credential) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(Person.class);
@@ -138,7 +149,17 @@ public class PersonFactory extends AbstractFactory {
 		List<String> list = em.createQuery(cq).getResultList().stream().distinct().collect(Collectors.toList());
 		if (list.size() == 1) {
 			return list.get(0);
-		} else {
+		}else if(list.size() > 1){
+			String temp = "";
+			for (int i = 0; i < list.size(); i++) {
+				if(temp.equalsIgnoreCase("")) {
+					temp = list.get(i);
+				}else{
+					temp = temp + "," + list.get(i);
+				}
+			}
+			return temp;
+		}else {
 			return null;
 		}
 	}

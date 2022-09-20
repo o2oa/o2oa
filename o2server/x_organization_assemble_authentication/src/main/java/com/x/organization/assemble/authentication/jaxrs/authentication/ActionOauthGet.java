@@ -7,23 +7,18 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.Token.OauthClient;
+import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.organization.core.express.assemble.authentication.jaxrs.authentication.ActionOauthGetWo;
-
-import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionOauthGet extends BaseAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionOauthGet.class);
+	private static Logger logger = LoggerFactory.getLogger(ActionOauthGet.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String name) throws Exception {
-
-		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
-
 		ActionResult<Wo> result = new ActionResult<>();
 		OauthClient oauthClient = null;
 		if (ListTools.isNotEmpty(Config.token().getOauthClients())) {
@@ -44,17 +39,68 @@ class ActionOauthGet extends BaseAction {
 		wo.setIcon(oauthClient.getIcon());
 		Map<String, Object> param = oauthCreateParam(oauthClient, "", "");
 		String authParameter = fillParameter(oauthClient.getAuthParameter(), param);
-		LOGGER.debug("auth parameter:{}.", authParameter);
+		logger.debug("auth parameter:{}.", authParameter);
 		wo.setAuthParameter(authParameter);
 		result.setData(wo);
 		return result;
 	}
 
-	@Schema(name = "com.x.organization.assemble.authentication.jaxrs.authentication.ActionOauthGet$Wo")
-	public static class Wo extends ActionOauthGetWo {
+	public static class Wo extends GsonPropertyObject {
 
-		private static final long serialVersionUID = 4572263092554577141L;
+		private String name;
+		private String redirectUri;
+		private String authAddress;
+		private String authMethod;
+		private String authParameter;
+		private String icon;
 
+		public String getIcon() {
+			return icon;
+		}
+
+		public void setIcon(String icon) {
+			this.icon = icon;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		public String getRedirectUri() {
+			return redirectUri;
+		}
+
+		public void setRedirectUri(String redirectUri) {
+			this.redirectUri = redirectUri;
+		}
+
+		public String getAuthMethod() {
+			return authMethod;
+		}
+
+		public void setAuthMethod(String authMethod) {
+			this.authMethod = authMethod;
+		}
+
+		public String getAuthParameter() {
+			return authParameter;
+		}
+
+		public void setAuthParameter(String authParameter) {
+			this.authParameter = authParameter;
+		}
+
+		public String getAuthAddress() {
+			return authAddress;
+		}
+
+		public void setAuthAddress(String authAddress) {
+			this.authAddress = authAddress;
+		}
 	}
 
 }

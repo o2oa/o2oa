@@ -16,6 +16,7 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
@@ -35,7 +36,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 @JaxrsDescribe("认证")
 public class AuthenticationAction extends StandardJaxrsAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationAction.class);
+	private static Logger logger = LoggerFactory.getLogger(AuthenticationAction.class);
 
 	@JaxrsMethodDescribe(value = "获取当前可用的登录模式.", action = ActionMode.class)
 	@GET
@@ -48,7 +49,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		try {
 			result = new ActionMode().execute(effectivePerson);
 		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, null);
+			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -66,7 +67,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		try {
 			result = new ActionCheckCredential().execute(effectivePerson, credential);
 		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, null);
+			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -83,7 +84,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		try {
 			result = new ActionLogin().execute(request, response, effectivePerson, jsonElement);
 		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, null);
+			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		// 擦除密码
@@ -102,7 +103,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		try {
 			result = new ActionLogout().execute(request, response, effectivePerson);
 		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, null);
+			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -120,7 +121,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		try {
 			result = new ActionLogout().execute(request, response, effectivePerson);
 		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, null);
+			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -136,7 +137,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		try {
 			result = new ActionWho().execute(request, effectivePerson);
 		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, null);
+			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -154,12 +155,18 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		try {
 			result = new ActionCaptchaLogin().execute(request, response, effectivePerson, jsonElement);
 		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, null);
+			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		// 擦除密码
 		erasePassword(jsonElement);
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+
+		// sy 2022-08-15
+		//原
+		//asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+		//原
+		Response entityTagActionResultResponse = ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement);
+		asyncResponse.resume(entityTagActionResultResponse);
 	}
 
 	@JaxrsMethodDescribe(value = "获取图片验证码.", action = ActionCaptcha.class)
@@ -175,25 +182,25 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		try {
 			result = new ActionCaptcha().execute(effectivePerson, width, height);
 		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, null);
+			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "获取公钥publicKey", action = ActionCaptchaRSAPublicKey.class)
+	@JaxrsMethodDescribe(value = "获取公钥publicKey", action = ActionCaptchaLoginRSAPublicKey.class)
 	@GET
 	@Path("captchaRSAPublicKey")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void captchaRSAPublicKey(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@Context HttpServletResponse response) {
-		ActionResult<ActionCaptchaRSAPublicKey.Wo> result = new ActionResult<>();
+		ActionResult<ActionCaptchaLoginRSAPublicKey.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
 		try {
-			result = new ActionCaptchaRSAPublicKey().execute(effectivePerson);
+			result = new ActionCaptchaLoginRSAPublicKey().execute(request, response, effectivePerson);
 		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, null);
+			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -211,7 +218,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		try {
 			result = new ActionCodeLogin().execute(request, response, effectivePerson, jsonElement);
 		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, null);
+			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -229,7 +236,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		try {
 			result = new ActionCode().execute(effectivePerson, credential);
 		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, null);
+			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -246,7 +253,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		try {
 			result = new ActionBind().execute(effectivePerson);
 		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, null);
+			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -264,7 +271,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		try {
 			result = new ActionBindLogin().execute(request, response, effectivePerson, meta);
 		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, null);
+			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -282,7 +289,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		try {
 			result = new ActionBindMeta().execute(effectivePerson, meta);
 		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, null);
+			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -299,7 +306,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		try {
 			result = new ActionOauthList().execute(effectivePerson);
 		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, null);
+			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -317,7 +324,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		try {
 			result = new ActionOauthQiyeweixinConfig().execute(effectivePerson);
 		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, null);
+			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -334,7 +341,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		try {
 			result = new ActionOauthDingdingConfig().execute(effectivePerson);
 		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, null);
+			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -352,7 +359,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		try {
 			result = new ActionOauthGet().execute(effectivePerson, name);
 		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, null);
+			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -373,7 +380,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		try {
 			result = new ActionOauthLogin().execute(request, response, name, code, redirectUri);
 		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, null);
+			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -391,7 +398,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		try {
 			result = new ActionOauthQiyeweixinLogin().execute(request, response, effectivePerson, code);
 		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, null);
+			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -409,7 +416,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		try {
 			result = new ActionOauthDingdingLogin().execute(request, response, effectivePerson, code);
 		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, null);
+			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -430,7 +437,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		try {
 			result = new ActionOauthBind().execute(request, response, effectivePerson, name, code, redirectUri);
 		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, null);
+			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -448,7 +455,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		try {
 			result = new ActionSwitchUser().execute(request, response, effectivePerson, jsonElement);
 		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, jsonElement);
+			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -466,7 +473,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		try {
 			result = new ActionSwitchUser().execute(request, response, effectivePerson, jsonElement);
 		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, jsonElement);
+			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
@@ -484,7 +491,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 		try {
 			result = new ActionSafeLogout().execute(request, response, effectivePerson);
 		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, null);
+			logger.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -492,7 +499,7 @@ public class AuthenticationAction extends StandardJaxrsAction {
 
 	/**
 	 * 由于有日志记录功能,需要将jsonElement中的password进行擦除.
-	 * 
+	 *
 	 * @param jsonElement
 	 */
 	private void erasePassword(JsonElement jsonElement) {
