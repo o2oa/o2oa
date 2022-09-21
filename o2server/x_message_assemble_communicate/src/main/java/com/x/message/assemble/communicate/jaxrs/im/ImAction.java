@@ -263,9 +263,12 @@ public class ImAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+
+
 	@JaxrsMethodDescribe(value = "撤回消息", action = ActionMsgRevoke.class)
 	@GET
 	@Path("msg/revoke/{id}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void msgRevoke(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
 			@JaxrsParameterDescribe("消息标识") @PathParam("id") String id) {
@@ -342,7 +345,6 @@ public class ImAction extends StandardJaxrsAction {
 	@JaxrsMethodDescribe(value = "下载图片设定宽高后的(png格式).width(0-5000)像素,0代表不限制,height(0-5000)像素,0代表不限制.", action = ActionImageDownloadWidthHeight.class)
 	@GET
 	@Path("msg/download/{id}/image/width/{width}/height/{height}")
-	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void downloadImageWidthHeight(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request, @JaxrsParameterDescribe("附件标识") @PathParam("id") String id,

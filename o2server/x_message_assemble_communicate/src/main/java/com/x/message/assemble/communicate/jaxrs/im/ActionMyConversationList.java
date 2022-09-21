@@ -1,5 +1,6 @@
 package com.x.message.assemble.communicate.jaxrs.im;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -63,6 +64,14 @@ public class ActionMyConversationList extends BaseAction {
 					woMsg = null;
 				}
 				return (woMsg != null);
+			}).sorted((a, b)-> {
+				Date aC = a.lastMessage.getCreateTime();
+				Date bC = b.lastMessage.getCreateTime();
+				if (aC != null  && bC != null ) {
+					return aC.getTime() > bC.getTime() ? -1 : 1;
+				} else {
+					return 0;
+				}
 			}).collect(Collectors.toList());
 			result.setData(trueWos);
 			return result;
