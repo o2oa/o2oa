@@ -42,9 +42,13 @@ public class ActionDelete extends BaseAction {
 			throw new ExceptionAccessDenied(effectivePerson);
 		}
 
-		Long count = documentServiceAdv.countByCategoryId( id );
+		Long count = documentServiceAdv.countByCategoryId( id,false );
 		if ( count > 0 ) {
 			throw new ExceptionEditNotAllowed(count);
+		}
+		count = documentServiceAdv.countByCategoryId( id,true );
+		if ( count > 0 ) {
+			new ActionEraseDocumentWithCategory().execute(request, id, effectivePerson);
 		}
 
 		categoryInfoServiceAdv.delete( id, effectivePerson );
