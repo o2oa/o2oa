@@ -62,6 +62,7 @@
           <BaseInput label="port" v-model:value="currentData.port" :label-style="labelStyle"/>
           <BaseSwitch label="sslEnable" v-model:value="currentData.sslEnable" :label-style="labelStyle"/>
           <BaseSwitch label="auth" v-model:value="currentData.auth" :label-style="labelStyle"/>
+          <BaseSwitch :label="lp._messageConfig.consumerLabel.startTlsEnable" v-model:value="currentData.startTlsEnable" :label-style="labelStyle"/>
           <BaseInput label="from" v-model:value="currentData.from" :label-style="labelStyle"/>
           <BaseInput label="password" v-model:value="currentData.password" :label-style="labelStyle"/>
         </div>

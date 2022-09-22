@@ -1400,7 +1400,8 @@ o2.xApplication.systemconfig.LP = {
             "key": "通道名称",
             "type": "类型",
             "filter": "过滤器",
-            "loader": "加载器"
+            "loader": "加载器",
+            "startTlsEnable": "升级传输加密"
         },
         "none": "无",
         "editConsumer": "编辑消息通道",
@@ -1412,7 +1413,7 @@ o2.xApplication.systemconfig.LP = {
             "kafka": ['bootstrapServers', 'topic', 'securityProtocol', 'saslMechanism', 'saslMechanism', 'username', 'password'],
             "activemq": ['url', 'queueName', 'username', 'password'],
             "restful": ['url', 'method', 'internal'],
-            "mail": ['host', 'port', 'sslEnable', 'auth', 'from', 'password'],
+            "mail": ['host', 'port', 'sslEnable', 'auth', 'startTlsEnable', 'from', 'password'],
             "jdbc": ['driverClass', 'url', 'catalog', 'schema', 'table', 'username', 'password'],
             "table": ['table'],
             "hadoop": ['fsDefaultFS', 'path', 'username']
