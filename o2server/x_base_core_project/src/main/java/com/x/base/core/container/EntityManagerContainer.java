@@ -157,8 +157,8 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 
 	private void checkIdFormat(JpaObject jpa) throws Exception {
 		String value = jpa.getId();
-		if (StringUtils.isNotBlank(value) && ((StringUtils.isNotBlank(Config.general().getIdFormatCheckRegex())
-				&& value.matches(Config.general().getIdFormatCheckRegex()))
+		if (StringUtils.isNotBlank(value) && ((StringUtils.isNotBlank(Config.general().getIdFormatCheckRegular())
+				&& value.matches(Config.general().getIdFormatCheckRegular()))
 				|| StringTools.UUID_REGEX.matcher(value).matches())) {
 			return;
 		}
