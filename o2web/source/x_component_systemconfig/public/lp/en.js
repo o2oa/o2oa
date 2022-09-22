@@ -289,7 +289,7 @@ o2.xApplication.systemconfig.LP = {
         "initialPasswordType": {
             "mobileScript": "return person.getMobile().slice(-6)",
             "uniqueScript": "return person.getunique().slice(-6)",
-            "employeesScript": "return person.getEmployee()",
+            "employeeScript": "return person.getEmployee()",
             "pinyinScript": "return person.getPinyin()",
             "textInfo": "在下面的输入框中输入的密码，将作为新创建用户的初始密码。",
             'scriptInfo': "在下面的编辑器中输入脚本，返回一个字符串值，作为新创建用户的初始密码。您可以使用person对象获取人员相关信息。如将人员姓名全拼作为初始密码，可使用脚本：return person.getPinyin()"
