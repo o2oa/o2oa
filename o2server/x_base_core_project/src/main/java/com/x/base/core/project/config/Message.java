@@ -289,6 +289,7 @@ public class Message extends GsonPropertyObject {
 			o.host = DEFAULT_HOST;
 			o.port = DEFAULT_PORT;
 			o.sslEnable = DEFAULT_SSLENABLE;
+			o.startTlsEnable = DEFAULT_STARTTLSENABLE;
 			o.auth = DEFAULT_AUTH;
 			o.from = DEFAULT_FROM;
 			o.password = DEFAULT_PASSWORD;
@@ -304,6 +305,7 @@ public class Message extends GsonPropertyObject {
 		private static final String DEFAULT_HOST = "";
 		private static final Integer DEFAULT_PORT = 465;
 		private static final Boolean DEFAULT_SSLENABLE = true;
+		private static final Boolean DEFAULT_STARTTLSENABLE = false;
 		private static final Boolean DEFAULT_AUTH = true;
 		private static final String DEFAULT_FROM = "admin@o2oa.net";
 		private static final String DEFAULT_PASSWORD = "password";
@@ -316,6 +318,9 @@ public class Message extends GsonPropertyObject {
 
 		@FieldDescribe("smtp 使用ssl加密.")
 		private Boolean sslEnable;
+
+		@FieldDescribe("smtp 启用升级到加密链接.")
+		private Boolean startTlsEnable;
 
 		@FieldDescribe("stmp启用认证.")
 		private Boolean auth;
@@ -336,6 +341,10 @@ public class Message extends GsonPropertyObject {
 
 		public Boolean getSslEnable() {
 			return null == sslEnable ? DEFAULT_SSLENABLE : this.sslEnable;
+		}
+
+		public Boolean getStartTlsEnable() {
+			return null == startTlsEnable ? DEFAULT_STARTTLSENABLE : this.startTlsEnable;
 		}
 
 		public Boolean getAuth() {
