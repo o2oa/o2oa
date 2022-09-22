@@ -3353,6 +3353,12 @@ Object.defineProperties(bind.assignData, {"data": {
 //--------------------------------------------------------------
 //封装java对象data, 以兼容javascript对象
 (function (bind) {
+    Object.prototype.containsKey = function(key){
+        return Object.keys(this).indexOf(key)!==-1;
+    }
+    Object.prototype.put = function(key, value){
+        this[key] = value;
+    }
     var javaClass;
     try {
         javaClass = {
@@ -3405,7 +3411,8 @@ Object.defineProperties(bind.assignData, {"data": {
     function _setter(key, data, proxy) {
         return function (value) {
             proxy.proxyData[key] = createProxyData(value, proxy);
-            data[key] = value;
+            data.put(key, value);
+            // data[key] = value;
         }
     }
     function _addData(data, proxy) {
@@ -3413,7 +3420,8 @@ Object.defineProperties(bind.assignData, {"data": {
             if (proxy.hasOwnProperty(key)) {
                 proxy[key] = value;
             } else {
-                data[key] = value;
+                data.put(key, value);
+                //data[key] = value;
                 Object.defineProperty(proxy, key, {
                     configurable: true,
                     enumerable: true,
