@@ -1080,9 +1080,11 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
         var bg = table.getStyle("background-color");
         if (bg && bg!=="transparent"){
             bg = this.getColorHex(bg);
-            var oo_shd = this.createEl(oo_doc, "shd");
-            this.setAttrs(oo_shd, {"val": "clear", "color": "auto", "fill": bg});
-            oo_tblPr.appendChild(oo_shd);
+            if (bg!=="transparent"){
+                var oo_shd = this.createEl(oo_doc, "shd");
+                this.setAttrs(oo_shd, {"val": "clear", "color": "auto", "fill": bg});
+                oo_tblPr.appendChild(oo_shd);
+            }
         }
 
 
@@ -1198,9 +1200,11 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
                 var bg = td.getStyle("background-color");
                 if (bg && bg!=="transparent"){
                     bg = this.getColorHex(bg);
-                    var oo_shd = this.createEl(oo_doc, "shd");
-                    this.setAttrs(oo_shd, {"val": "clear", "color": "auto", "fill": bg});
-                    oo_tcPr.appendChild(oo_shd);
+                    if (bg!=="transparent"){
+                        var oo_shd = this.createEl(oo_doc, "shd");
+                        this.setAttrs(oo_shd, {"val": "clear", "color": "auto", "fill": bg});
+                        oo_tcPr.appendChild(oo_shd);
+                    }
                 }
 
                 //单元格边距
