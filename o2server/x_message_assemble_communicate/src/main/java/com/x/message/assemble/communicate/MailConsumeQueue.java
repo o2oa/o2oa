@@ -97,6 +97,7 @@ public class MailConsumeQueue extends AbstractQueue<Message> {
 		properties.put("mail.smtp.host", consumer.getHost());
 		properties.put("mail.smtp.port", consumer.getPort());
 		properties.put("mail.smtp.ssl.enable", consumer.getSslEnable());
+		properties.put("mail.smtp.starttls.enable", consumer.getStartTlsEnable());
 		properties.put("mail.smtp.auth", consumer.getAuth());
 		Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
 			@Override
