@@ -91,7 +91,7 @@ class ActionCrawlWork extends BaseAction {
 	}
 
 	private String body(Business business, Work work) throws Exception {
-		String value = converter.text(business.entityManagerContainer().listEqualAndEqual(Item.class,
+		String value = DataItemConverter.ItemText.text(business.entityManagerContainer().listEqualAndEqual(Item.class,
 				Item.itemCategory_FIELDNAME, ItemCategory.pp, Item.bundle_FIELDNAME, work.getJob()), true, true, true,
 				true, true, ",");
 		return StringUtils.deleteWhitespace(value);

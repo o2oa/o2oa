@@ -423,7 +423,7 @@ public class Generate {
 		scriptContext.getBindings(ScriptContext.ENGINE_SCOPE).put(ScriptingFactory.BINDING_NAME_DATA, data);
 		outValue.addAll(JsonScriptingExecutor.evalStrings(attachmentCompiledScript, scriptContext));
 		StringBuilder text = new StringBuilder();
-		String dataText = converter.text(items, true, true, true, true, true, ",");
+		String dataText =  DataItemConverter.ItemText.text(items, true, true, true, true, true, ",");
 		dataText = StringUtils.replaceEach(dataText, outValue.toArray(new String[outValue.size()]),
 				StringTools.fill(outValue.size(), ","));
 		text.append(dataText);

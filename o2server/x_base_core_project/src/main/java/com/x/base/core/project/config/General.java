@@ -34,6 +34,7 @@ public class General extends ConfigObject {
 	private static final Boolean DEFAULT_EXPOSEJEST = true;
 	private static final String DEFAULT_REFERERHEADCHECKREGULAR = "";
 	private static final String DEFAULT_ACCESSCONTROLALLOWORIGIN = "";
+	private static final String DEFAULT_IDFORMATCHECKREGEX = "^[0-9a-fA-F]{8}(-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}$";
 
 	public static General defaultInstance() {
 		General o = new General();
@@ -95,6 +96,13 @@ public class General extends ConfigObject {
 
 	@FieldDescribe("附件上传限制大小或者类型.")
 	private AttachmentConfig attachmentConfig;
+
+	@FieldDescribe("对象id格式校验正则表达式.")
+	private String idFormatCheckRegex = "";
+
+	public String getIdFormatCheckRegex() {
+		return this.idFormatCheckRegex;
+	}
 
 	public String getRefererHeadCheckRegular() {
 		return (StringUtils.isBlank(refererHeadCheckRegular) ? DEFAULT_REFERERHEADCHECKREGULAR

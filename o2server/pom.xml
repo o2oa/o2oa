@@ -1218,6 +1218,12 @@
 				<artifactId>jsoup</artifactId>
 				<version>1.15.3</version>
 			</dependency>
+			<!-- tika needs -->
+			<dependency>
+				<groupId>com.zaxxer</groupId>
+				<artifactId>SparseBitSet</artifactId>
+				<version>1.2</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
