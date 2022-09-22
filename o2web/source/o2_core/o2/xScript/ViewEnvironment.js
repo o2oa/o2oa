@@ -125,13 +125,11 @@
  * "李四@lisi@P" //人员识别名
  * "cce8bc22-225a-4f85-8132-7374d546886e" //人员id
  * "lisi" //人员unique
- * "李四" //人员名称，不重名时才有效
  *
  * //包含下列属性的对象
  * { "distinguishedName": "李四@lisi@P" } //人员识别名
  * { "id": "cce8bc22-225a-4f85-8132-7374d546886e" } //人员id
  * { "unique": "lisi" } //人员unique
- * { "name": "李四" } //人员名称，不重名时才有效
  */
 
 /**
@@ -154,7 +152,7 @@
  */
 
 /**
- * 在本API的this.org模块中，当使用身份作为检索参数的时候，允许使用身份的distinguishedName、name、id、unique属性值或包含这些属性的对象。
+ * 在本API的this.org模块中，当使用身份作为检索参数的时候，允许使用身份的distinguishedName、id、unique属性值或包含这些属性的对象。
  * @typedef {(String|Object)} IdentityFlag
  * @example
  * //以下均为合法参数
@@ -163,17 +161,15 @@
  * "张三@903dbb04-085c-4bb1-9c24-3009bd5f7372@I" //身份识别名
  * "903dbb04-085c-4bb1-9c24-3009bd5f7372" //身份id
  * "903dbb04-085c-4bb1-9c24-3009bd5f7372" //身份unique，系统默认的unique和id一致
- * "张三" //身份名称，有可能存在重名，需要精确匹配的请不要使用
  *
  * //包含下列属性的对象
  * { "distinguishedName": "张三@903dbb04-085c-4bb1-9c24-3009bd5f7372@I" } //身份识别名
  * { "id": "903dbb04-085c-4bb1-9c24-3009bd5f7372" } //身份id
  * { "unique": "903dbb04-085c-4bb1-9c24-3009bd5f7372" } //身份unique，系统默认的unique和id一致
- * { "name": "张三" } //身份名称，有可能存在重名，需要精确匹配的请不要使用
  */
 
 /**
- * 在本API的this.org模块中，当使用组织作为检索参数的时候，允许使用组织的distinguishedName、name、id、unique属性值或包含这些属性的对象。
+ * 在本API的this.org模块中，当使用组织作为检索参数的时候，允许使用组织的distinguishedName、id、unique属性值或包含这些属性的对象。
  * @typedef {(String|Object)} UnitFlag
  * @example
  * //以下均为合法参数
@@ -182,13 +178,11 @@
  * "开发部@kfb@U" //组织标识名
  * "cce8bc22-225a-4f85-8132-7374d546886e" //组织id
  * "kfb" //组织unique
- * "开发部" //组织名称，有可能存在重名，需要精确匹配的请不要使用
  *
  * //包含下列属性的对象
  * { "distinguishedName": "开发部@kfb@U" } //组织标识名
- * { "id": "cce8bc22-225a-4f85-8132-7374d546886e" } //身份id
+ * { "id": "cce8bc22-225a-4f85-8132-7374d546886e" } //组织id
  * { "unique": "kfb" } //组织unique
- * { "name": "开发部" } //组织名称，有可能存在重名，需要精确匹配的请不要使用
  */
 
 MWF.xScript = MWF.xScript || {};
@@ -768,7 +762,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @o2membercategory identity
          * @methodOf module:org
          * @static
-         * @param {IdentityFlag|IdentityFlag[]} name - 身份的distinguishedName、name、id、unique属性值，身份对象，或上述属性值和对象的数组。
+         * @param {IdentityFlag|IdentityFlag[]} name - 身份的distinguishedName、id、unique属性值，身份对象，或上述属性值和对象的数组。
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
          * @return {Promise|IdentityData|IdentityData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
@@ -810,7 +804,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @o2membercategory identity
          * @methodOf module:org
          * @static
-         * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
+         * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、id、unique属性值，人员对象，或上述属性值和对象的数组。
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
          * @return {Promise|IdentityData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
@@ -852,7 +846,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @o2membercategory identity
          * @methodOf module:org
          * @static
-         * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
+         * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。
          * @param {Boolean} [nested] true嵌套的所有身份成员；false直接身份成员；默认false。
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
          * @return {Promise|IdentityData[]} 当async为true时，返回
@@ -916,7 +910,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @o2membercategory unit
          * @methodOf module:org
          * @static
-         * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
+         * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
          * @return {Promise|UnitData|UnitData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
@@ -959,7 +953,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @o2membercategory unit
          * @methodOf module:org
          * @static
-         * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
+         * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。
          * @param {Boolean} [nested]  true嵌套的所有下级组织；false直接下级组织；默认false。
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
          * @return {Promise|UnitData[]} 当async为true时，返回
@@ -1008,7 +1002,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @o2membercategory unit
          * @methodOf module:org
          * @static
-         * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
+         * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。
          * @param {Boolean} [nested]  true嵌套的所有上级组织；false直接上级组织；默认false。
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
          * @return {Promise|UnitData[]} 当async为true时，返回
@@ -1075,7 +1069,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @o2membercategory unit
          * @methodOf module:org
          * @static
-         * @param {IdentityFlag} name - 身份的distinguishedName、name、id、unique属性值，身份对象。
+         * @param {IdentityFlag} name - 身份的distinguishedName、id、unique属性值，身份对象。
          * @param {String|Number} [flag]  当值为数字的时候， 表示获取第几层的组织。<br/> 当值为字符串的时候，表示获取指定类型的组织。<br/> 当值为空的时候，表示获取直接所在组织。
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
          * @return {Promise|UnitData|UnitData[]} 当async为true时，返回
@@ -1172,7 +1166,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @o2membercategory unit
          * @methodOf module:org
          * @static
-         * @param {IdentityFlag|IdentityFlag[]} name - 身份的distinguishedName、name、id、unique属性值，身份对象，或上述属性值和对象的数组。
+         * @param {IdentityFlag|IdentityFlag[]} name - 身份的distinguishedName、id、unique属性值，身份对象，或上述属性值和对象的数组。
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
          * @return {Promise|UnitData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
@@ -1213,7 +1207,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @o2membercategory unit
          * @methodOf module:org
          * @static
-         * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
+         * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、id、unique属性值，人员对象，或上述属性值和对象的数组。
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
          * @return {Promise|UnitData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
@@ -1254,7 +1248,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @o2membercategory unit
          * @methodOf module:org
          * @static
-         * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
+         * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、id、unique属性值，人员对象，或上述属性值和对象的数组。
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
          * @return {Promise|UnitData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
@@ -1338,7 +1332,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @methodOf module:org
          * @static
          * @param {String} dutyName 组织职务名称。
-         * @param {IdentityFlag} identity 身份的distinguishedName、name、id、unique属性值，身份对象。
+         * @param {IdentityFlag} identity 身份的distinguishedName、id、unique属性值，身份对象。
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
          * @return {Promise|UnitData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
@@ -1420,7 +1414,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @o2membercategory person
          * @methodOf module:org
          * @static
-         * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
+         * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、id、unique属性值，人员对象，或上述属性值和对象的数组。
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
          * @return {Promise|PersonData|PersonData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
@@ -1467,7 +1461,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @o2membercategory person
          * @methodOf module:org
          * @static
-         * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
+         * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、id、unique属性值，人员对象，或上述属性值和对象的数组。
          * @param {Boolean} [nested]  true嵌套的所有下级人员；false直接下级人员；默认false。
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
          * @return {Promise|PersonData[]} 当async为true时，返回
@@ -1516,7 +1510,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @o2membercategory person
          * @methodOf module:org
          * @static
-         * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
+         * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、id、unique属性值，人员对象，或上述属性值和对象的数组。
          * @param {Boolean} [nested]  true嵌套的所有上级人员；false直接上级人员；默认false。
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
          * @return {Promise|PersonData[]} 当async为true时，返回
@@ -1647,7 +1641,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @o2membercategory person
          * @methodOf module:org
          * @static
-         * @param {IdentityFlag|IdentityFlag[]} name - 身份的distinguishedName、name、id、unique属性值，身份对象，或上述属性值和对象的数组。
+         * @param {IdentityFlag|IdentityFlag[]} name - 身份的distinguishedName、id、unique属性值，身份对象，或上述属性值和对象的数组。
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
          * @return {Promise|PersonData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
@@ -1704,7 +1698,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @o2membercategory person
          * @methodOf module:org
          * @static
-         * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
+         * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。
          * @param {Boolean} [nested] 是否嵌套获取组织以及下级组织的人员，true表示嵌套，flase表示获取直接组织。默认为false
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
          * @return {Promise|PersonData[]} 当async为true时，返回
@@ -1817,7 +1811,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @methodOf module:org
          * @static
          * @param {String} dutyName 组织职务名称。
-         * @param {UnitFlag} unit 组织的distinguishedName、name、id、unique属性值，组织对象。
+         * @param {UnitFlag} unit 组织的distinguishedName、id、unique属性值，组织对象。
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
          * @return {Promise|IdentityData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
@@ -1859,7 +1853,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @o2membercategory duty
          * @methodOf module:org
          * @static
-         * @param {IdentityFlag|IdentityFlag[]} identity - 身份的distinguishedName、name、id、unique属性值，身份对象，或上述属性值和对象的数组。
+         * @param {IdentityFlag|IdentityFlag[]} identity - 身份的distinguishedName、id、unique属性值，身份对象，或上述属性值和对象的数组。
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
          * @return {Promise|String[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
@@ -1899,7 +1893,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @o2membercategory duty
          * @methodOf module:org
          * @static
-         * @param {UnitFlag|UnitFlag[]} unit - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
+         * @param {UnitFlag|UnitFlag[]} unit - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
          * @return {Promise|String[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
@@ -1939,7 +1933,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @o2membercategory duty
          * @methodOf module:org
          * @static
-         * @param {UnitFlag|UnitFlag[]} unit - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
+         * @param {UnitFlag|UnitFlag[]} unit - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
          * @return {Promise|Object[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
@@ -2147,7 +2141,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @o2membercategory group
          * @methodOf module:org
          * @static
-         * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
+         * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、id、unique属性值，人员对象，或上述属性值和对象的数组。
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
          * @return {Promise|GroupData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
@@ -2283,7 +2277,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @o2membercategory role
          * @methodOf module:org
          * @static
-         * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
+         * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、id、unique属性值，人员对象，或上述属性值和对象的数组。
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
          * @return {Promise|RoleData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
@@ -2330,7 +2324,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @o2membercategory role
          * @methodOf module:org
          * @static
-         * @param {PersonFlag} name - 人员的distinguishedName、name、id、unique属性值，人员对象。
+         * @param {PersonFlag} name - 人员的distinguishedName、id、unique属性值，人员对象。
          * @param {RoleFlag|RoleFlag[]} roleList - 角色的distinguishedName、name、id、unique属性值，角色对象；或上述属性值和对象的数组。
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
          * @return {Promise|Boolean} 当async为true时，返回
@@ -2426,7 +2420,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @o2membercategory personAttribute
          * @methodOf module:org
          * @static
-         * @param {PersonFlag} person - 人员的distinguishedName、name、id、unique属性值，人员对象。
+         * @param {PersonFlag} person - 人员的distinguishedName、id、unique属性值，人员对象。
          * @param {String} attr 属性名称。
          * @param {String[]} values 属性值，必须为数组。
          * @param {Function} [success] 执行成功的回调。
@@ -2470,7 +2464,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @o2membercategory personAttribute
          * @methodOf module:org
          * @static
-         * @param {PersonFlag} person - 人员的distinguishedName、name、id、unique属性值，人员对象。
+         * @param {PersonFlag} person - 人员的distinguishedName、id、unique属性值，人员对象。
          * @param {String} attr 属性名称。
          * @param {String[]} values 属性值，必须为数组。
          * @param {Function} [success] 执行成功的回调。
@@ -2514,7 +2508,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @o2membercategory personAttribute
          * @methodOf module:org
          * @static
-         * @param {PersonFlag} person - 人员的distinguishedName、name、id、unique属性值，人员对象。
+         * @param {PersonFlag} person - 人员的distinguishedName、id、unique属性值，人员对象。
          * @param {String} attr 属性名称。
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
          * @return {String[]} 当async为true时，返回
@@ -2557,7 +2551,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @o2membercategory personAttribute
          * @methodOf module:org
          * @static
-         * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
+         * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、id、unique属性值，人员对象，或上述属性值和对象的数组。
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
          * @return {String[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
@@ -2598,7 +2592,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @o2membercategory personAttribute
          * @methodOf module:org
          * @static
-         * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
+         * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、id、unique属性值，人员对象，或上述属性值和对象的数组。
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
          * @return {Object[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
@@ -2647,7 +2641,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @o2membercategory unitAttribute
          * @methodOf module:org
          * @static
-         * @param {UnitFlag} unit - 组织的distinguishedName、name、id、unique属性值，组织对象。
+         * @param {UnitFlag} unit - 组织的distinguishedName、id、unique属性值，组织对象。
          * @param {String} attribute 属性名称。
          * @param {String[]} valueArray 属性值，必须为数组。
          * @param {Function} [success] 执行成功的回调。
@@ -2701,7 +2695,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @o2membercategory unitAttribute
          * @methodOf module:org
          * @static
-         * @param {UnitFlag} unit - 组织的distinguishedName、name、id、unique属性值，组织对象。
+         * @param {UnitFlag} unit - 组织的distinguishedName、id、unique属性值，组织对象。
          * @param {String} attribute 属性名称。
          * @param {String[]} valueArray 属性值，必须为数组。
          * @param {Function} [success] 执行成功的回调。
@@ -2754,7 +2748,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @o2membercategory unitAttribute
          * @methodOf module:org
          * @static
-         * @param {UnitFlag} unit - 组织的distinguishedName、name、id、unique属性值，组织对象。
+         * @param {UnitFlag} unit - 组织的distinguishedName、id、unique属性值，组织对象。
          * @param {String} attr 属性名称。
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
          * @return {String[]} 当async为true时，返回
@@ -2797,7 +2791,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @o2membercategory unitAttribute
          * @methodOf module:org
          * @static
-         * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
+         * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
          * @return {String[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
@@ -2838,7 +2832,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @o2membercategory unitAttribute
          * @methodOf module:org
          * @static
-         * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
+         * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
          * @return {Object[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
