@@ -1159,6 +1159,34 @@ MWF.xApplication.process.DictionaryDesigner.Dictionary.item = new Class({
                 "blur": function(e){
                     this.editValueConfirm(e);
                 }.bind(this),
+                "dblclick" : function (e){
+                    if( this.type === "string" ){
+                        var opt = {
+                            "types": ["identity","person","unit","group","role","duty","process","application","platApp","view"],
+                            "count": 1,
+                            "title": "Select",
+                            "values":[],
+                            "onComplete": function (items) {
+                                if(items.length>0){
+                                    var d = items[0].data;
+                                    var v;
+                                    if(d.distinguishedName){
+                                        v = d.distinguishedName;
+                                    }else{
+                                        v = d.id === d.name? d.id : d.name + "|" + d.id
+                                    }
+                                    this.editValueNode.set("value", v);
+                                }else {
+                                    this.editValueNode.set("value", "");
+                                }
+                                this.editValueConfirm(e);
+                            }.bind(this)
+                        };
+                        o2.xDesktop.requireApp("Selector", "package", function(){
+                            new o2.O2Selector(this.dictionary.designer.content, opt);
+                        }.bind(this), false);
+                    }
+                }.bind(this),
                 "keydown": function(e){
                     if (e.code==13){
                         this.editValueConfirm(e);
@@ -1189,8 +1217,8 @@ MWF.xApplication.process.DictionaryDesigner.Dictionary.item = new Class({
         this.value = value;
         this.parent.value[this.key] = this.value;
 
-        this.editValueNode.destroy();
-        this.editValueNode = null;
+        // this.editValueNode.destroy();
+        // this.editValueNode = null;
 
         this.setNodeText();
         this.dictionary.jsonParse.loadObjectTree();
