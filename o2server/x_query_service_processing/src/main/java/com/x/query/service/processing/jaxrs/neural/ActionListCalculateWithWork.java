@@ -117,7 +117,7 @@ class ActionListCalculateWithWork extends BaseAction {
 				ItemCategory.pp, Item.bundle_FIELDNAME, work.getJob());
 		TreeSet<String> inValue = new TreeSet<>();
 		StringBuffer text = new StringBuffer();
-		text.append(converter.text(items, true, true, true, true, false, ","));
+		text.append( DataItemConverter.ItemText.text(items, true, true, true, true, false, ","));
 		List<Attachment> attachments = business.entityManagerContainer().listEqual(Attachment.class,
 				Attachment.job_FIELDNAME, work.getJob());
 		StorageMapping mapping = null;

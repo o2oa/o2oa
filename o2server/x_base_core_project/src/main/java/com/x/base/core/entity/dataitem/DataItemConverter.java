@@ -7,9 +7,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jsoup.Jsoup;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -300,49 +306,11 @@ public class DataItemConverter<T extends DataItem> {
 		return true;
 	}
 
-	public String text(List<T> items, boolean escapeNumber, boolean escapeBoolean, boolean escapeId,
-			boolean simplifyDistinguishedName, boolean htmlToText, String split) {
-		StringBuilder builder = new StringBuilder();
-		this.sort(items);
-		for (T t : items) {
-			if (Objects.equals(t.getItemType(), ItemType.p)) {
-				if (Objects.equals(t.getItemPrimitiveType(), ItemPrimitiveType.s)
-						&& StringUtils.isNotEmpty(t.getStringValue())) {
-					if (escapeId && StringTools.isUUIDFormat(t.getStringValue())) {
-						continue;
-					}
-					if (simplifyDistinguishedName && OrganizationDefinition.isDistinguishedName(t.getStringValue())) {
-						builder.append(OrganizationDefinition.name(t.getStringValue()));
-						builder.append(split);
-						continue;
-					}
-					if (htmlToText) {
-						builder.append(t.getStringValue().replaceAll("(?s)<[^>]*>(\\s*<[^>]*>)*", ""));
-						builder.append(split);
-						continue;
-					}
-					builder.append(t.getStringValue());
-				}
-				if (Objects.equals(t.getItemPrimitiveType(), ItemPrimitiveType.b) && (null != t.getBooleanValue())
-						&& (!escapeBoolean)) {
-					builder.append(Objects.toString(t.getBooleanValue()));
-					builder.append(split);
-				}
-				if (Objects.equals(t.getItemPrimitiveType(), ItemPrimitiveType.n) && (null != t.getNumberValue())
-						&& (!escapeNumber)) {
-					builder.append(Objects.toString(t.getNumberValue()));
-					builder.append(split);
-				}
-			}
-		}
-		return builder.toString();
-	}
-
 	/**
 	 * 此方法在item数据较大(>20000) 时由于双重循环导致运行时间较长( > 5000ms) 改为新的使用hashMap实现.<br>
 	 * Thanks 李舟<lizhou@mochasoft.com.cn>
 	 **/
-	public List<T> subtract(List<T> l1, List<T> l2) throws Exception {
+	public List<T> subtract(List<T> l1, List<T> l2) {
 		List<T> result = new ArrayList<>();
 		HashMap<Wrap, T> map = new HashMap<>();
 		for (T t2 : l2) {
@@ -428,4 +396,88 @@ public class DataItemConverter<T extends DataItem> {
 			return true;
 		}
 	}
+
+	public static class ItemText {
+
+		private static final Predicate<DataItem> NUMBERPREDICATE = o -> Objects.equals(ItemType.p, o.getItemType())
+				&& Objects.equals(ItemPrimitiveType.n, o.getItemPrimitiveType());
+
+		public static final Predicate<DataItem> BOOLEANPREDICATE = o -> Objects.equals(ItemType.p, o.getItemType())
+				&& Objects.equals(ItemPrimitiveType.b, o.getItemPrimitiveType());
+
+		public static final Predicate<DataItem> STRINGPREDICATE = o -> Objects.equals(ItemType.p, o.getItemType())
+				&& Objects.equals(ItemPrimitiveType.s, o.getItemPrimitiveType());
+
+		public static final UnaryOperator<String> ESCAPEIDFUNCTION = o -> (null == o
+				|| (StringTools.UUID_REGEX.matcher(o).matches())) ? "" : o;
+
+		public static final UnaryOperator<String> SIMPLIFYDISTINGUISHEDNAMEFUNCTION = o -> OrganizationDefinition
+				.isDistinguishedName(o) ? OrganizationDefinition.name(o) : o;
+
+		public static final UnaryOperator<String> HTMLTOTEXTFUNCTION = o -> Jsoup.parse(o).text();
+
+		public static final Function<DataItem, String> DATAITEMTOSTRINGFUNCTION = o -> {
+			String value = "";
+			switch (o.getItemPrimitiveType()) {
+			case b:
+				if (null != o.getBooleanValue()) {
+					value = BooleanUtils.toStringTrueFalse(o.getBooleanValue());
+				}
+				break;
+			case n:
+				if (null != o.getNumberValue()) {
+					value = Objects.toString(o.getNumberValue());
+				}
+				break;
+			default:
+				value = o.getStringValue();
+			}
+			return value;
+		};
+
+		public static String text(List<? extends DataItem> items, boolean escapeNumber, boolean escapeBoolean,
+				boolean escapeId, boolean simplifyDistinguishedName, boolean htmlToText, String split) {
+
+			Predicate<DataItem> predicate = concretePredicate(escapeNumber, escapeBoolean);
+
+			Function<String, String> function = concreteFunction(escapeId, simplifyDistinguishedName, htmlToText);
+
+			return items.stream().filter(predicate).map(DATAITEMTOSTRINGFUNCTION).map(function)
+					.filter(StringUtils::isNotBlank).distinct()
+					.collect(Collectors.joining(StringUtils.isBlank(split) ? "," : split));
+
+		}
+
+		private static Predicate<DataItem> concretePredicate(boolean escapeNumber, boolean escapeBoolean) {
+
+			Predicate<DataItem> p = STRINGPREDICATE;
+
+			if (!escapeNumber) {
+				p.or(NUMBERPREDICATE);
+			}
+
+			if (!escapeBoolean) {
+				p.or(BOOLEANPREDICATE);
+			}
+			return p;
+
+		}
+
+		private static Function<String, String> concreteFunction(boolean escapeId, boolean simplifyDistinguishedName,
+				boolean htmlToText) {
+			Function<String, String> f = StringUtils::trim;
+			if (escapeId) {
+				f = f.andThen(ESCAPEIDFUNCTION);
+			}
+			if (simplifyDistinguishedName) {
+				f = f.andThen(SIMPLIFYDISTINGUISHEDNAMEFUNCTION);
+			}
+			if (htmlToText) {
+				f = f.andThen(HTMLTOTEXTFUNCTION);
+			}
+			return f;
+		}
+
+	}
+
 }

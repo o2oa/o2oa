@@ -91,7 +91,7 @@ class ActionCrawlWorkCompleted extends BaseAction {
 	}
 
 	private String body(Business business, WorkCompleted workCompleted) throws Exception {
-		String value = converter.text(
+		String value =  DataItemConverter.ItemText.text(
 				business.entityManagerContainer().listEqualAndEqual(Item.class, Item.itemCategory_FIELDNAME,
 						ItemCategory.pp, Item.bundle_FIELDNAME, workCompleted.getJob()),
 				true, true, true, true, true, ",");

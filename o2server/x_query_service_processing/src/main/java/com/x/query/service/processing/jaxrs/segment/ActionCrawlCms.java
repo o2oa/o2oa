@@ -88,7 +88,7 @@ class ActionCrawlCms extends BaseAction {
 	}
 
 	private String body(Business business, Document document) throws Exception {
-		String value = converter.text(business.entityManagerContainer().listEqualAndEqual(Item.class,
+		String value =  DataItemConverter.ItemText.text(business.entityManagerContainer().listEqualAndEqual(Item.class,
 				Item.itemCategory_FIELDNAME, ItemCategory.cms, Item.bundle_FIELDNAME, document.getId()), true, true,
 				true, true, true, ",");
 		return StringUtils.deleteWhitespace(value);
