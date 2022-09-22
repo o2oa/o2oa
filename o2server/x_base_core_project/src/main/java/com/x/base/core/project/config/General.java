@@ -35,6 +35,8 @@ public class General extends ConfigObject {
 	private static final String DEFAULT_REFERERHEADCHECKREGULAR = "";
 	private static final String DEFAULT_ACCESSCONTROLALLOWORIGIN = "";
 
+	private static final String DEFAULT_IDFORMATCHECKREGULAR = "";
+
 	public static General defaultInstance() {
 		General o = new General();
 		o.webSocketEnable = DEFAULT_WEBSOCKETENABLE;
@@ -50,6 +52,7 @@ public class General extends ConfigObject {
 		o.exposeJest = DEFAULT_EXPOSEJEST;
 		o.refererHeadCheckRegular = DEFAULT_REFERERHEADCHECKREGULAR;
 		o.accessControlAllowOrigin = DEFAULT_ACCESSCONTROLALLOWORIGIN;
+		o.idFormatCheckRegular = DEFAULT_IDFORMATCHECKREGULAR;
 		o.attachmentConfig = new AttachmentConfig();
 		return o;
 	}
@@ -95,6 +98,13 @@ public class General extends ConfigObject {
 
 	@FieldDescribe("附件上传限制大小或者类型.")
 	private AttachmentConfig attachmentConfig;
+
+	@FieldDescribe("对象id格式校验正则表达式.")
+	private String idFormatCheckRegular = "";
+
+	public String getIdFormatCheckRegular() {
+		return this.idFormatCheckRegular;
+	}
 
 	public String getRefererHeadCheckRegular() {
 		return (StringUtils.isBlank(refererHeadCheckRegular) ? DEFAULT_REFERERHEADCHECKREGULAR
