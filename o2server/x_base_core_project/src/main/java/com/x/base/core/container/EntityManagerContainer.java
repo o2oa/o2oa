@@ -37,6 +37,7 @@ import com.x.base.core.entity.annotation.CheckRemoveType;
 import com.x.base.core.entity.annotation.RestrictFlag;
 import com.x.base.core.entity.tools.JpaObjectTools;
 import com.x.base.core.project.bean.WrapCopier;
+import com.x.base.core.project.config.Config;
 import com.x.base.core.project.exception.ExceptionWhen;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.tools.ListTools;
@@ -156,10 +157,13 @@ public class EntityManagerContainer extends EntityManagerContainerBasic {
 
 	private void checkIdFormat(JpaObject jpa) throws Exception {
 		String value = jpa.getId();
-		if (null == value || (!StringTools.UUID_REGEX.matcher(value).matches())) {
-			throw new Exception("check id error, class:" + jpa.getClass().getName() + ", field:id, value:" + value
-					+ ", invalid format.");
+		if (StringUtils.isNotBlank(value) && ((StringUtils.isNotBlank(Config.general().getIdFormatCheckRegular())
+				&& value.matches(Config.general().getIdFormatCheckRegular()))
+				|| StringTools.UUID_REGEX.matcher(value).matches())) {
+			return;
 		}
+		throw new IllegalStateException("check id error, class:" + jpa.getClass().getName() + ", field:id, value:"
+				+ value + ", invalid format.");
 	}
 
 	@SuppressWarnings("unchecked")
