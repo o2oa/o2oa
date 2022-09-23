@@ -30,10 +30,14 @@ layout.addReady(function(){
 
             layout.openApplication(null, appName, option||{}, m_status);
 
-            o2.xDesktop.getUserLayout(function(){
-                var style = layout.userLayout.flatStyle;
-                o2.loadCss("../o2_core/o2/xDesktop/$Default/"+style+"/style-skin.css");
-            });
+            if (layout.session.user.name === "anonymous"){
+                o2.loadCss("../o2_core/o2/xDesktop/$Default/blue/style-skin.css");
+            }else{
+                o2.xDesktop.getUserLayout(function(){
+                    var style = layout.userLayout.flatStyle;
+                    o2.loadCss("../o2_core/o2/xDesktop/$Default/"+style+"/style-skin.css");
+                });
+            }
         };
 
         // if (layout.session && layout.session.user){
