@@ -7,6 +7,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.message.MessageConnector;
 import com.x.message.core.entity.IMConversation;
 import com.x.message.core.entity.IMMsg;
 
@@ -47,6 +48,10 @@ public class ActionMsgRevoke extends BaseAction {
 			emc.beginTransaction(IMMsg.class);
 			emc.remove(imMsg);
 			emc.commit();
+
+			// 发送ws消息
+			sendWsMessage(conversation, imMsg, MessageConnector.TYPE_IM_REVOKE, effectivePerson);
+
 			Wo wo = new Wo();
 			wo.setId(id);
 			result.setData(wo);

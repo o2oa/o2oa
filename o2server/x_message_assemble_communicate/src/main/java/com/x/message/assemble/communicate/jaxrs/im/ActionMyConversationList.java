@@ -20,6 +20,8 @@ import com.x.message.core.entity.IMConversation;
 import com.x.message.core.entity.IMConversationExt;
 import com.x.message.core.entity.IMMsg;
 
+import static com.x.message.core.entity.IMConversation.CONVERSATION_TYPE_GROUP;
+
 public class ActionMyConversationList extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionMyConversationList.class);
@@ -63,8 +65,16 @@ public class ActionMyConversationList extends BaseAction {
 				} catch (Exception e) {
 					woMsg = null;
 				}
+				// 群聊不管有没有聊天消息都展现。
+				if (wo.getType() != null && wo.getType().equals(CONVERSATION_TYPE_GROUP)) {
+					return true;
+				}
+				// 单聊没有聊天消息就不展现
 				return (woMsg != null);
 			}).sorted((a, b)-> {
+				if (a.lastMessage == null || b.lastMessage == null) {
+					return 0;
+				}
 				Date aC = a.lastMessage.getCreateTime();
 				Date bC = b.lastMessage.getCreateTime();
 				if (aC != null  && bC != null ) {
