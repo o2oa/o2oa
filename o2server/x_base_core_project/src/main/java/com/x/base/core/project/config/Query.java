@@ -115,7 +115,7 @@ public class Query extends ConfigObject {
 			return o;
 		}
 
-		public final static Boolean DEFAULT_ENABLE = true;
+		public final static Boolean DEFAULT_ENABLE = false;
 
 		public final static String DEFAULT_CRON = "30 30 9,12,15,18 * * ?";
 
@@ -190,7 +190,7 @@ public class Query extends ConfigObject {
 			return o;
 		}
 
-		public final static Boolean DEFAULT_ENABLE = true;
+		public final static Boolean DEFAULT_ENABLE = false;
 
 		public final static String DEFAULT_CRON = "40 40 10,12,14,16 * * ?";
 
@@ -278,7 +278,7 @@ public class Query extends ConfigObject {
 			return o;
 		}
 
-		public final static Boolean DEFAULT_ENABLE = true;
+		public final static Boolean DEFAULT_ENABLE = false;
 
 		public final static String DEFAULT_CRON = "50 50 21 * * ?";
 

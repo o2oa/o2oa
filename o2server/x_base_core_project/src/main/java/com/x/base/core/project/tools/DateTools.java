@@ -1,6 +1,5 @@
 package com.x.base.core.project.tools;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
@@ -35,6 +34,8 @@ public class DateTools {
 	public final static String formatCompact_HHmmss = "HHmmss";
 	public final static String formatCompact_HHmm = "HHmm";
 	public final static String formatCompact_yyyyMMddHHmmss = "yyyyMMddHHmmss";
+
+	public final static String format_yyyyMMddTHHmmss = "yyyy-MM-ddTHH:mm:ss";
 
 	public static boolean isFormat(String str, String format) {
 		if (StringUtils.isEmpty(str)) {
