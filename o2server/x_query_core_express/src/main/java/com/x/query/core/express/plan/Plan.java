@@ -361,10 +361,10 @@ public abstract class Plan extends GsonPropertyObject {
 	}
 
 	public List<String> fetchBundles() throws Exception {
-		// 先获取所有记录对应的job值作为返回的结果集
-		List<String> bundles = this.listBundle();
 		// 先进行字段调整
 		this.adjust();
+		// 先获取所有记录对应的job值作为返回的结果集
+		List<String> bundles = this.listBundle();
 		this.group = this.findGroupSelectEntry();
 		this.orderList = this.listOrderSelectEntry();
 		if ((null != this.runtime.count) && (this.runtime.count > 0) && (this.runtime.count < bundles.size())) {
