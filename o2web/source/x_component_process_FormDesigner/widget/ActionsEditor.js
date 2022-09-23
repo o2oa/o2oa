@@ -363,6 +363,7 @@ MWF.xApplication.process.FormDesigner.widget.ActionsEditor.ButtonAction = new Cl
             var item = this.iconMenu.addMenuItem("", "click", function(ev){
                 var src = this.item.getElement("img").get("src");
                 _self.data.img = src.substr(src.lastIndexOf("/")+1, src.length);
+                _self.data.customImg = true;
                 _self.iconNode.setStyle("background-image", "url("+src+")");
                 _self.editor.fireEvent("change");
                 ev.stopPropagation();

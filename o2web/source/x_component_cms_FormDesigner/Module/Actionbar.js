@@ -274,12 +274,36 @@ MWF.xApplication.cms.FormDesigner.Module.Actionbar = MWF.CMSFCActionbar = new Cl
 			}
 		}.bind(this));
 	},
+
+    getImagePath: function(img, iscustom){
+        if( iscustom ){
+			var style;
+			if( this.json.customIconStyle ){
+				style = this.json.customIconStyle;
+			}else{
+				style = (this.json.style || "default").indexOf("red") > -1 ? "red" : "blue";
+			}
+            return this.path+""+this.options.style +"/custom/"+ style +"/"+ img;
+        }else{
+            return this.path+""+this.options.style +"/tools/"+ (this.json.style || "default") +"/"+img;
+        }
+    },
+    getImageOverPath: function(img_over, img, iscustom){
+        if( iscustom ){
+            var style_over = this.json.customIconOverStyle || "white";
+            return this.path+""+this.options.style+"/custom/"+ style_over +"/"+img;
+        }else{
+            return this.path+""+this.options.style+"/tools/"+ (this.json.style || "default") +"/"+ img_over;
+        }
+    },
 	setToolbars: function(tools, node){
 		tools.each(function(tool){
 			var actionNode = new Element("div", {
 				"MWFnodetype": tool.type,
-				"MWFButtonImage": this.path+""+this.options.style +"/tools/"+ (this.json.style || "default") +"/"+tool.img,
-				"MWFButtonImageOver": this.path+""+this.options.style+"/tools/"+ (this.json.style || "default") +"/"+tool.img_over,
+				//"MWFButtonImage": this.path+""+this.options.style +"/tools/"+ (this.json.style || "default") +"/"+tool.img,
+				//"MWFButtonImageOver": this.path+""+this.options.style+"/tools/"+ (this.json.style || "default") +"/"+tool.img_over,
+                "MWFButtonImage": this.getImagePath(tool.img, tool.customImg),
+                "MWFButtonImageOver": this.getImageOverPath(tool.img_over, tool.img, tool.customImg),
 				"title": tool.title,
 				"MWFButtonAction": tool.action,
 				"MWFButtonText": tool.text
