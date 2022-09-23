@@ -174,6 +174,8 @@ public class Messages extends ConfigObject {
 	private Message mind_fileShare;
 	@FieldDescribe("聊聊消息.")
 	private Message im_create;
+	@FieldDescribe("聊聊消息.")
+	private Message im_revoke;
 	@FieldDescribe("自定义消息.")
 	private Map<String, Message> custom = new LinkedHashMap<>();
 
@@ -232,6 +234,7 @@ public class Messages extends ConfigObject {
 		o.mind_fileShare = MESSAGE_ALL.cloneThenSetDescription("脑图分享.");
 		o.im_create = new Message(MessageConnector.CONSUME_WS, MessageConnector.CONSUME_PMS_INNER)
 				.cloneThenSetDescription("聊聊消息.");
+		o.im_revoke = new Message(MessageConnector.CONSUME_WS).cloneThenSetDescription("聊聊消息.");
 		o.custom = new LinkedHashMap<>();
 		o.custom.put("foo", MESSAGE_ALL.cloneThenSetDescription("自定义消息类型."));
 		o.consumers = new LinkedHashMap<>();
@@ -657,6 +660,13 @@ public class Messages extends ConfigObject {
 		return this.im_create;
 	}
 
+	private Message getImRevoke() {
+		if (null == this.im_revoke) {
+			this.im_revoke = new Message(MessageConnector.CONSUME_WS).cloneThenSetDescription("聊聊消息.");
+		}
+		return this.im_revoke;
+	}
+
 	private Optional<Message> getMessage(String type) {
 		switch (Objects.toString(type, "")) {
 		case MessageConnector.TYPE_APPLICATION_CREATE:
@@ -763,6 +773,8 @@ public class Messages extends ConfigObject {
 			return Optional.of(getMindFileShare());
 		case MessageConnector.TYPE_IM_CREATE:
 			return Optional.of(getImCreate());
+		case MessageConnector.TYPE_IM_REVOKE:
+			return Optional.of(getImRevoke());
 		default:
 			if ((null != this.custom) && type.startsWith(MessageConnector.TYPE_CUSTOM_PREFIX)) {
 				Message m = this.custom.get(StringUtils.substringAfter(type, MessageConnector.TYPE_CUSTOM_PREFIX));

@@ -167,6 +167,7 @@ MWF.xDesktop.WebSocket = new Class({
                             case "custom_create":
                                 this.receiveCustomMessage(data);
                             case "im_create":
+                            case "im_revoke":
                                 this.receiveIMMessage(data);
                                 break;
                             case "cms_publish" :
@@ -344,39 +345,61 @@ MWF.xDesktop.WebSocket = new Class({
         var messageItem = layout.desktop.message.addMessage(msg);
         var tooltipItem = layout.desktop.message.addTooltip(msg);
     },
+
+    // im消息处理器 messageType 消息类型，如im_revoke im_create , callback处理函数
+    addImListener: function(messageType, callback) {
+        this.imListenerMap = this.imListenerMap || {};
+        this.imListenerMap[messageType] = callback;
+    },
+    /// im消息处理
     receiveIMMessage: function(data){
         var imBody = data.body;
-        var jsonBody = imBody.body;
-        var conversationId = imBody.conversationId;
-
-        var body = JSON.parse(jsonBody);
-        var msgBody = body.body; //默认text 文本消息
-        if (body.type && body.type == "emoji") { //表情 消息
-            msgBody = "["+MWF.LP.desktop.messsage.emoji+"]";
-        } else if (body.type == "process") {
-            msgBody = "["+MWF.LP.desktop.messsage.processWork+"]";
-        } else if (body.type == "cms") {
-            msgBody = "["+MWF.LP.desktop.messsage.cmsDoc+"]";
+        // 撤回消息
+        if (data.type == "im_revoke") {
+            // 执行im callback 刷新页面信息
+            if (this.imListenerMap && this.imListenerMap["im_revoke"] && typeof this.imListenerMap["im_revoke"] == 'function') {
+                this.imListenerMap["im_revoke"](imBody);
+            }
+            return;
         }
-        var content = "<font style='color: #333; font-weight: bold'>"+o2.txt(data.title)+"</font>: "+o2.txt(msgBody);
-        var msg = {
-            "subject": MWF.LP.desktop.messsage.customMessageTitle,
-            "content": content
-        };
-        var messageItem = layout.desktop.message.addMessage(msg);
-        var options = {"conversationId": conversationId};
-        messageItem.contentNode.addEvent("click", function(e){
-            layout.desktop.message.addUnread(-1);
-            layout.desktop.message.hide();
-            layout.desktop.openApplication(e, "IMV2", options);
-        }.bind(this));
+        // im_create 暂时不变
+        if (data.type == "im_create") {
+            // 系统消息
+            var jsonBody = imBody.body;
+            var conversationId = imBody.conversationId;
+            var body = JSON.parse(jsonBody);
+            var msgBody = body.body; //默认text 文本消息
+            if (body.type && body.type == "emoji") { //表情 消息
+                msgBody = "["+MWF.LP.desktop.messsage.emoji+"]";
+            } else if (body.type == "process") {
+                msgBody = "["+MWF.LP.desktop.messsage.processWork+"]";
+            } else if (body.type == "cms") {
+                msgBody = "["+MWF.LP.desktop.messsage.cmsDoc+"]";
+            }
+            var content = "<font style='color: #333; font-weight: bold'>"+o2.txt(data.title)+"</font>: "+o2.txt(msgBody);
+            var msg = {
+                "subject": MWF.LP.desktop.messsage.customMessageTitle,
+                "content": content
+            };
+            var messageItem = layout.desktop.message.addMessage(msg);
+            var options = {"conversationId": conversationId};
+            messageItem.contentNode.addEvent("click", function(e){
+                layout.desktop.message.addUnread(-1);
+                layout.desktop.message.hide();
+                layout.desktop.openApplication(e, "IMV2", options);
+            }.bind(this));
 
-        var tooltipItem = layout.desktop.message.addTooltip(msg);
-        tooltipItem.contentNode.addEvent("click", function(e){
-            layout.desktop.message.hide();
-            layout.desktop.openApplication(e, "IMV2", options);
-        }.bind(this));
-
+            var tooltipItem = layout.desktop.message.addTooltip(msg);
+            tooltipItem.contentNode.addEvent("click", function(e){
+                layout.desktop.message.hide();
+                layout.desktop.openApplication(e, "IMV2", options);
+            }.bind(this));
+            // 执行im callback 刷新页面信息
+            if (this.imListenerMap && this.imListenerMap["im_create"] && typeof this.imListenerMap["im_create"] == 'function') {
+                this.imListenerMap["im_create"](imBody);
+            }
+            return;
+        }
        
     },
 

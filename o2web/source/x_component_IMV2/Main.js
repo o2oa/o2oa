@@ -49,7 +49,7 @@ MWF.xApplication.IMV2.Main = new Class({
 		return {"conversationId": this.conversationId, "mode": this.mode};
 	},
 	onQueryClose: function () {
-		this.closeListening();
+		// this.closeListening();
 	},
 	// 获取组件名称
 	loadComponentName: function () {
@@ -77,8 +77,13 @@ MWF.xApplication.IMV2.Main = new Class({
 			this.content.loadHtml(url, { "bind": { "lp": this.lp, "data": {} }, "module": this }, function () {
 				//设置content
 				this.app.content = this.o2ImMainNode;
+				// 给websocket 添加撤回消息回调函数
+				if (layout.desktop && layout.desktop.socket) {
+					layout.desktop.socket.addImListener("im_revoke", this.revokeMsgCallback.bind(this));
+					layout.desktop.socket.addImListener("im_create", this.createNewMsgCallback.bind(this));
+				}
 				//启动监听
-				this.startListening();
+				// this.startListening();
 				// 处理窗口模式
 				if (this.mode === "onlyChat" && this.conversationId != "") {
 					this.o2ConversationListNode.setStyle("display", "none");
@@ -106,30 +111,40 @@ MWF.xApplication.IMV2.Main = new Class({
 		
 		this.loadComponentName();
 	},
+	// 撤回消息回调
+	revokeMsgCallback: function(msg) {
+		if (this.chatNodeBox) {
+			this.chatNodeBox._checkRevokeMsg(msg);
+		}
+	},
+	// websocket过来的新消息回调
+	createNewMsgCallback: function(msg) {
+		this.reciveNewMessage();
+	},
 	// 监听ws消息
-	startListening: function () {
-		if (layout.desktop && layout.desktop.message) {
-			this.messageNumber = layout.desktop.message.items.length;
-			//查询ws消息 如果增加
-			if (this.listener) {
-				clearInterval(this.listener);
-			}
-			this.listener = setInterval(function () {
-				var newNumber = layout.desktop.message.items.length;
-				//判断是否有新的ws消息
-				if (newNumber > this.messageNumber) {
-					this.reciveNewMessage();
-					this.messageNumber = newNumber;
-				}
-			}.bind(this), 1000);
-		}
-	},
-	// 关闭监听
-	closeListening: function () {
-		if (this.listener) {
-			clearInterval(this.listener);
-		}
-	},
+	// startListening: function () {
+	// 	if (layout.desktop && layout.desktop.message) {
+	// 		this.messageNumber = layout.desktop.message.items.length;
+	// 		//查询ws消息 如果增加
+	// 		if (this.listener) {
+	// 			clearInterval(this.listener);
+	// 		}
+	// 		this.listener = setInterval(function () {
+	// 			var newNumber = layout.desktop.message.items.length;
+	// 			//判断是否有新的ws消息
+	// 			if (newNumber > this.messageNumber) {
+	// 				this.reciveNewMessage();
+	// 				this.messageNumber = newNumber;
+	// 			}
+	// 		}.bind(this), 1000);
+	// 	}
+	// },
+	// // 关闭监听
+	// closeListening: function () {
+	// 	if (this.listener) {
+	// 		clearInterval(this.listener);
+	// 	}
+	// },
 	// 接收新的消息 会话列表更新 或者 聊天窗口更新
 	reciveNewMessage: function () {
 		//查询会话数据
@@ -709,7 +724,16 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 			}.bind(this), false);
 		}
 	},
-
+	// 撤回消息
+	_checkRevokeMsg: function(msg) {
+		if (this.conversationId && this.conversationId != "") {//是否有会话窗口
+			if (msg.conversationId && msg.conversationId == this.conversationId) {
+				// 删除数据
+				this.messageList.splice(this.messageList.findIndex(e => e.id === msg.id), 1);
+				this._removeMsgNode(msg);
+			}
+		}
+	},
 	// 加载更多
 	loadMoreMsgList: function() {
 		this.page += 1;
@@ -955,7 +979,17 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 	sendEmojiMsg: function (emoji) {
 		this._newAndSendTextMsg(emoji.key, "emoji");
 	},
-
+	// 撤回、删除 消息
+	_removeMsgNode: function(msg) {
+		var itemNode = this.chatContentNode.getElement("#"+msg.id);
+		if (itemNode) {
+			var beforeNode = itemNode.getPrevious();
+			itemNode.destroy();
+			if (beforeNode) {
+				beforeNode.destroy();
+			}
+		}
+	},
 	//创建消息html节点
 	_buildMsgNode: function (msg, isTop) {
 		var createPerson = msg.createPerson;
