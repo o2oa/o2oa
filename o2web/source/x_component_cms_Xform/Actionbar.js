@@ -135,6 +135,29 @@ MWF.xApplication.cms.Xform.Actionbar = MWF.CMSActionbar =  new Class({
             }
         }.bind(this));
     },
+    getImagePath: function(img, iscustom){
+            var path = "../x_component_cms_FormDesigner/Module/Actionbar/";
+            if( iscustom ){
+                var style;
+                if( this.json.customIconStyle ){
+                    style = this.json.customIconStyle;
+                }else{
+                    style = (this.json.style || "default").indexOf("red") > -1 ? "red" : "blue";
+                }
+                return path+""+this.form.options.style+"/custom/"+ style + "/" +img;
+            }else{
+                return path+(this.options.style||"default") +"/tools/"+ (this.json.style || "default") +"/"+img
+            }
+        },
+        getImageOverPath: function(img_over, img, iscustom){
+            var path = "../x_component_cms_FormDesigner/Module/Actionbar/";
+            if( iscustom ){
+                var style_over = this.json.customIconOverStyle || "white";
+                return path+""+this.form.options.style+"/custom/" + style_over + "/"+ img;
+            }else{
+                return path+(this.options.style||"default")+"/tools/"+ (this.json.style || "default") +"/"+img_over;
+            }
+        },
     setToolbars: function(tools, node, readonly, noCondition){
         tools.each(function(tool){
             var flag = true;
@@ -162,8 +185,10 @@ MWF.xApplication.cms.Xform.Actionbar = MWF.CMSActionbar =  new Class({
                 var actionNode = new Element("div", {
                     "id": tool.id,
                     "MWFnodetype": tool.type,
-                    "MWFButtonImage": "../x_component_cms_FormDesigner/Module/Actionbar/"+(this.options.style||"default") +"/tools/"+ (this.json.style || "default") +"/"+tool.img,
-                    "MWFButtonImageOver": "../x_component_cms_FormDesigner/Module/Actionbar/"+(this.options.style||"default")+"/tools/"+ (this.json.style || "default") +"/"+tool.img_over,
+                    //"MWFButtonImage": "../x_component_cms_FormDesigner/Module/Actionbar/"+(this.options.style||"default") +"/tools/"+ (this.json.style || "default") +"/"+tool.img,
+                    //"MWFButtonImageOver": "../x_component_cms_FormDesigner/Module/Actionbar/"+(this.options.style||"default")+"/tools/"+ (this.json.style || "default") +"/"+tool.img_over,
+                    "MWFButtonImage": this.getImagePath(tool.img, tool.customImg),
+                    "MWFButtonImageOver": this.getImageOverPath(tool.img_over, tool.img, tool.customImg),
                     "title": tool.title,
                     "MWFButtonAction": tool.action,
                     "MWFButtonText": tool.text
