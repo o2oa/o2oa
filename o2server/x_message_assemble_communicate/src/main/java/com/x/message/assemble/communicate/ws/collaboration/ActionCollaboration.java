@@ -17,6 +17,7 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
+import com.x.base.core.project.tools.ListTools;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -35,6 +36,10 @@ import com.x.message.assemble.communicate.message.WsMessage;
 import com.x.message.core.entity.Message;
 import com.x.message.core.entity.Message_;
 
+/**
+ * websocket连接
+ * @author sword
+ */
 @ServerEndpoint(value = "/ws/collaboration", configurator = WsConfigurator.class)
 public class ActionCollaboration {
 
@@ -101,14 +106,18 @@ public class ActionCollaboration {
 			Root<Message> root = cq.from(Message.class);
 			Predicate p = cb.equal(root.get(Message_.person), effectivePerson.getDistinguishedName());
 			p = cb.and(p, cb.equal(root.get(Message_.consumer), MessageConnector.CONSUME_WS));
-			p = cb.and(p, cb.equal(root.get(Message_.consumed), false));
+			p = cb.and(p, cb.isFalse(root.get(Message_.consumed)));
 			cq.select(root).where(p).orderBy(cb.desc(root.get(JpaObject_.createTime)));
-			os = em.createQuery(cq).setMaxResults(10).getResultList();
+			os = em.createQuery(cq).getResultList();
 			emc.beginTransaction(Message.class);
 			for (Message o : os) {
 				o.setConsumed(true);
 			}
 			emc.commit();
+			int maxCount = 10;
+			if(os.size() > maxCount) {
+				os = os.subList(0, maxCount);
+			}
 		} catch (Exception e) {
 			LOGGER.error(e);
 		}
