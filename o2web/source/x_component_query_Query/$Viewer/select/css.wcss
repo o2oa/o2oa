@@ -136,7 +136,7 @@
         "overflow": "hidden",
         "float": "right",
         "cursor": "pointer",
-        "background": "url(../x_component_process_Application/$Viewer/default/icon/search.png) center center no-repeat",
+        "background": "url(../x_component_query_Query/$Viewer/default/icon/search.png) center center no-repeat",
     },
     "searchSimpleInputNode": {
         "border": "0px",
@@ -179,7 +179,7 @@
     "viewFilterSearchIconNode": {
         "height": "24px",
         "width": "40px",
-        "background": "url("+"../x_component_process_Application/$Viewer/default/icon/search.png) center center no-repeat",
+        "background": "url("+"../x_component_query_Query/$Viewer/default/icon/search.png) center center no-repeat",
         "float": "right",
         "cursor": "pointer"
     },
@@ -200,7 +200,7 @@
         "width": "20px",
         "height": "80px",
         "float": "right",
-        "background": "url("+"../x_component_process_Application/$Viewer/default/icon/back.png) center 5px no-repeat",
+        "background": "url("+"../x_component_query_Query/$Viewer/default/icon/back.png) center 5px no-repeat",
         "cursor": "pointer"
     },
     "viewFilterSearchCustomContentNode": {
@@ -234,7 +234,7 @@
         "cursor": "pointer"
     },
     "viewFilterSearchCustomAddIconNode": {
-        "background": "url("+"../x_component_process_Application/$Viewer/default/icon/right.png) center center no-repeat",
+        "background": "url("+"../x_component_query_Query/$Viewer/default/icon/right.png) center center no-repeat",
         "height": "80px"
     },
     "viewFilterSearchCustomFilterContentNode": {
@@ -323,11 +323,11 @@
     "viewSearchFilterDeleteNode": {
         "width": "20px",
         "height": "19px",
-        "background": "url("+"../x_component_process_Application/$Viewer/default/icon/delFilter.png) center center no-repeat",
+        "background": "url("+"../x_component_query_Query/$Viewer/default/icon/delFilter.png) center center no-repeat",
         "float": "left"
     },
     "viewSearchFilterDeleteNode_over": {
-        "background": "url("+"../x_component_process_Application/$Viewer/default/icon/delFilter_over.png) center center no-repeat"
+        "background": "url("+"../x_component_query_Query/$Viewer/default/icon/delFilter_over.png) center center no-repeat"
     },
     "contentAreaNode": {
         //"padding": "0px 20px",
@@ -359,7 +359,7 @@
     "viewLoadingIconNode": {
         "height": "26px",
         "width": "28px",
-        "background": "url("+"../x_component_process_Application/$Viewer/default/icon/loading.gif) center center no-repeat",
+        "background": "url("+"../x_component_query_Query/$Viewer/default/icon/loading.gif) center center no-repeat",
         "float": "left"
     },
     "viewLoadingTextNode": {
@@ -431,7 +431,7 @@
         "width": "20px",
         "height": "20px",
         "float": "right",
-        "background": "url("+"../x_component_process_Application/$Viewer/default/icon/close.png) center center no-repeat",
+        "background": "url("+"../x_component_query_Query/$Viewer/default/icon/close.png) center center no-repeat",
         "cursor": "pointer"
     },
     "worksAreaContentNode": {
