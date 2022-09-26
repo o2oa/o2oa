@@ -19,9 +19,11 @@ import com.x.base.core.project.http.HttpToken;
 
 /**
  * 必须由前台已经登陆的用户访问
+ * @author sword
  */
 public abstract class AnonymousCipherManagerUserJaxrsFilter extends TokenFilter {
 
+	@Override
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
 			throws IOException, ServletException {
 		try {
@@ -29,9 +31,9 @@ public abstract class AnonymousCipherManagerUserJaxrsFilter extends TokenFilter 
 			HttpServletResponse response = (HttpServletResponse) res;
 			httpRequestCheck(request);
 			FilterTools.allow(request, response);
-			if (!request.getMethod().equalsIgnoreCase("options")) {
+			if (!request.getMethod().equalsIgnoreCase(HTTP_OPTIONS)) {
 				HttpToken httpToken = new HttpToken();
-				httpToken.who(request, response, Config.token().getCipher());
+				httpToken.whoNotRefreshToken(request, response, Config.token().getCipher());
 				chain.doFilter(request, response);
 			} else {
 				options(request, response);
