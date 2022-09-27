@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
+import com.x.processplatform.core.entity.content.*;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -23,15 +24,6 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
-import com.x.processplatform.core.entity.content.Attachment;
-import com.x.processplatform.core.entity.content.Read;
-import com.x.processplatform.core.entity.content.ReadCompleted;
-import com.x.processplatform.core.entity.content.Review;
-import com.x.processplatform.core.entity.content.TaskCompleted;
-import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.content.WorkCompleted;
-import com.x.processplatform.core.entity.content.WorkLog;
-import com.x.processplatform.core.entity.content.WorkStatus;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.util.WorkLogTree;
@@ -116,6 +108,7 @@ class ActionRollback extends BaseAction {
 					emc.beginTransaction(Read.class);
 					emc.beginTransaction(ReadCompleted.class);
 					emc.beginTransaction(Review.class);
+					emc.beginTransaction(Record.class);
 
 					Work work = createWork(business, workCompleted, workLog);
 					emc.persist(work, CheckPersistType.all);
@@ -133,6 +126,9 @@ class ActionRollback extends BaseAction {
 
 					rollbackReview(business, work, nodes,
 							emc.listEqual(Review.class, Review.job_FIELDNAME, work.getJob()));
+
+					rollbackRecord(business, work, nodes, workLog,
+							emc.listEqual(Record.class, Record.job_FIELDNAME, work.getJob()));
 
 					rollbackWorkLog(business, work, nodes, workLogs);
 
@@ -255,6 +251,20 @@ class ActionRollback extends BaseAction {
 			o.setCompleted(false);
 			o.setWork(work.getId());
 			o.setWorkCompleted("");
+		}
+	}
+
+	private void rollbackRecord(Business business, Work work, Nodes nodes, WorkLog workLog,
+									   List<Record> list) throws Exception {
+		for (Record o : list) {
+			if (!nodes.containsWorkLogWithActivityToken(o.getFromActivityToken())
+					|| StringUtils.equals(o.getFromActivityToken(), workLog.getFromActivityToken())) {
+				business.entityManagerContainer().remove(o);
+			} else {
+				o.setCompleted(false);
+				o.setWorkCompleted("");
+				o.setWork(work.getId());
+			}
 		}
 	}
 

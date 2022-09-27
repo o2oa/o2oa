@@ -42,13 +42,13 @@ public class Query extends ConfigObject {
 	private CrawlCms crawlCms;
 
 	@FieldDescribe("抽取office中的文本.")
-	private Boolean extractOffice = true;
+	private Boolean extractOffice = false;
 
 	@FieldDescribe("抽取pdf中的文本.")
-	private Boolean extractPdf = true;
+	private Boolean extractPdf = false;
 
 	@FieldDescribe("抽取文本中的文本.")
-	private Boolean extractText = true;
+	private Boolean extractText = false;
 
 	@FieldDescribe("抽取图像中的文本.")
 	private Boolean extractImage = false;
@@ -59,9 +59,9 @@ public class Query extends ConfigObject {
 	@FieldDescribe("查询批次大小.")
 	private Integer planQueryBatchSize = DEFAULT_PLANQUERYBATCHSIZE;
 
-	public static final Boolean DEFAULT_EXTRACTOFFICE = true;
-	public static final Boolean DEFAULT_EXTRACTPDF = true;
-	public static final Boolean DEFAULT_EXTRACTTEXT = true;
+	public static final Boolean DEFAULT_EXTRACTOFFICE = false;
+	public static final Boolean DEFAULT_EXTRACTPDF = false;
+	public static final Boolean DEFAULT_EXTRACTTEXT = false;
 	public static final Boolean DEFAULT_EXTRACTIMAGE = false;
 	public static final String DEFAULT_TESSLANGUAGE = "chi_sim";
 	public static final Integer DEFAULT_PLANQUERYBATCHSIZE = 500;
@@ -115,7 +115,7 @@ public class Query extends ConfigObject {
 			return o;
 		}
 
-		public final static Boolean DEFAULT_ENABLE = true;
+		public final static Boolean DEFAULT_ENABLE = false;
 
 		public final static String DEFAULT_CRON = "30 30 9,12,15,18 * * ?";
 

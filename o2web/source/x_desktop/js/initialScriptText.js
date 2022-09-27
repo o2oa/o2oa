@@ -666,7 +666,7 @@ bind.org = {
      * @o2membercategory group
      * @methodOf module:server.org
      * @static
-     * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
+     * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、id、unique属性值，人员对象，或上述属性值和对象的数组。
      * @return {GroupData[]} 返回群组对象数组。
      * @o2ActionOut x_organization_assemble_express.GroupAction.listWithPersonObject|example=Group
      * @o2syntax
@@ -725,7 +725,7 @@ bind.org = {
      * @o2membercategory role
      * @methodOf module:server.org
      * @static
-     * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
+     * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、id、unique属性值，人员对象，或上述属性值和对象的数组。
      * @return {RoleData[]} 返回角色对象数组。
      * @o2ActionOut x_organization_assemble_express.RoleAction.listWithPersonObject|example=Role
      * @o2syntax
@@ -745,7 +745,7 @@ bind.org = {
      * @o2membercategory role
      * @methodOf module:server.org
      * @static
-     * @param {PersonFlag} name - 人员的distinguishedName、name、id、unique属性值，人员对象。
+     * @param {PersonFlag} name - 人员的distinguishedName、id、unique属性值，人员对象。
      * @param {RoleFlag|RoleFlag[]} roleList - 角色的distinguishedName、name、id、unique属性值，角色对象；或上述属性值和对象的数组。
      * @return {Boolean} 如果人员拥有角色返回true, 否则返回false。
      * @o2syntax
@@ -764,7 +764,7 @@ bind.org = {
      * @o2membercategory person
      * @methodOf module:server.org
      * @static
-     * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
+     * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、id、unique属性值，人员对象，或上述属性值和对象的数组。
      * @return {PersonData|PersonData[]} 返回人员，单个是Object，多个是Array。
      * @o2ActionOut x_organization_assemble_express.PersonAction.listObject|example=Person
      * @o2syntax
@@ -787,7 +787,7 @@ bind.org = {
      * @o2membercategory person
      * @methodOf module:server.org
      * @static
-     * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
+     * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、id、unique属性值，人员对象，或上述属性值和对象的数组。
      * @param {Boolean} [nested]  true嵌套的所有下级人员；false直接下级人员；默认false。
      * @return {PersonData[]} 返回人员数组。
      * @o2ActionOut x_organization_assemble_express.PersonAction.listWithPersonSubDirectObject|example=Person
@@ -813,7 +813,7 @@ bind.org = {
      * @o2membercategory person
      * @methodOf module:server.org
      * @static
-     * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
+     * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、id、unique属性值，人员对象，或上述属性值和对象的数组。
      * @param {Boolean} [nested]  true嵌套的所有上级人员；false直接上级人员；默认false。
      * @return {PersonData[]} 返回人员数组。
      * @o2ActionOut x_organization_assemble_express.PersonAction.listWithPersonSupDirectObject|example=Person
@@ -880,7 +880,7 @@ bind.org = {
      * @o2membercategory person
      * @methodOf module:server.org
      * @static
-     * @param {IdentityFlag|IdentityFlag[]} name - 身份的distinguishedName、name、id、unique属性值，身份对象，或上述属性值和对象的数组。
+     * @param {IdentityFlag|IdentityFlag[]} name - 身份的distinguishedName、id、unique属性值，身份对象，或上述属性值和对象的数组。
      * @return {PersonData[]} 返回人员对象数组。
      * @o2ActionOut x_organization_assemble_express.PersonAction.listWithIdentityObject|example=Person
      * @o2syntax
@@ -899,7 +899,7 @@ bind.org = {
      * @o2membercategory person
      * @methodOf module:server.org
      * @static
-     * @param {IdentityFlag|IdentityFlag[]} name - 身份的distinguishedName、name、id、unique属性值，身份对象，或上述属性值和对象的数组。
+     * @param {IdentityFlag|IdentityFlag[]} name - 身份的distinguishedName、id、unique属性值，身份对象，或上述属性值和对象的数组。
      * @return {PersonData|PersonData[]} 返回人员对象，单个是Object，多个是Array。
      * @o2ActionOut x_organization_assemble_express.PersonAction.listWithIdentityObject|example=Person
      * @o2syntax
@@ -920,7 +920,7 @@ bind.org = {
      * @o2membercategory person
      * @methodOf module:server.org
      * @static
-     * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
+     * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。
      * @param {Boolean} [nested] 是否嵌套获取组织以及下级组织的人员，true表示嵌套，flase表示获取直接组织。默认为false
      * @return {PersonData[]} 返回人员对象数组。
      * @o2ActionOut x_organization_assemble_express.PersonAction.listWithUnitSubDirectObject|example=Person
@@ -949,7 +949,7 @@ bind.org = {
      * @o2membercategory personAttribute
      * @methodOf module:server.org
      * @static
-     * @param {PersonFlag} person - 人员的distinguishedName、name、id、unique属性值，人员对象。
+     * @param {PersonFlag} person - 人员的distinguishedName、id、unique属性值，人员对象。
      * @param {String} attr 属性名称。
      * @param {String[]} values 属性值，必须为数组。
      * @param {Function} [success] 执行成功的回调。
@@ -970,7 +970,7 @@ bind.org = {
      * @o2membercategory personAttribute
      * @methodOf module:server.org
      * @static
-     * @param {PersonFlag} person - 人员的distinguishedName、name、id、unique属性值，人员对象。
+     * @param {PersonFlag} person - 人员的distinguishedName、id、unique属性值，人员对象。
      * @param {String} attr 属性名称。
      * @param {String[]} values 属性值，必须为数组。
      * @param {Function} [success] 执行成功的回调。
@@ -991,7 +991,7 @@ bind.org = {
      * @o2membercategory personAttribute
      * @methodOf module:server.org
      * @static
-     * @param {PersonFlag} person - 人员的distinguishedName、name、id、unique属性值，人员对象。
+     * @param {PersonFlag} person - 人员的distinguishedName、id、unique属性值，人员对象。
      * @param {String} attr 属性名称。
      * @return {String[]} 返回属性值数组，
      * 如：<pre><code class='language-js'>[ value1, value2 ]</code></pre>
@@ -1018,7 +1018,7 @@ bind.org = {
      * @o2membercategory personAttribute
      * @methodOf module:server.org
      * @static
-     * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
+     * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、id、unique属性值，人员对象，或上述属性值和对象的数组。
      * @return {String[]} 返回人员属性名称数组，
      * 如：<pre><code class='language-js'>[ attributeName1, attributeName2 ]</code></pre>
      * @o2syntax
@@ -1058,7 +1058,7 @@ bind.org = {
      * @o2membercategory identity
      * @methodOf module:server.org
      * @static
-     * @param {IdentityFlag|IdentityFlag[]} name - 身份的distinguishedName、name、id、unique属性值，身份对象，或上述属性值和对象的数组。
+     * @param {IdentityFlag|IdentityFlag[]} name - 身份的distinguishedName、id、unique属性值，身份对象，或上述属性值和对象的数组。
      * @return {IdentityData|IdentityData[]} 返回身份，单个是Object，多个是Array。
      * @o2ActionOut x_organization_assemble_express.IdentityAction.listObject|example=Identity|ignoreNoDescr=true|ignoreProps=[woUnitDutyList,woUnit,woGroupList]
      * @o2syntax
@@ -1080,7 +1080,7 @@ bind.org = {
      * @o2membercategory identity
      * @methodOf module:server.org
      * @static
-     * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
+     * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、id、unique属性值，人员对象，或上述属性值和对象的数组。
      * @return {IdentityData[]} 返回身份对象数组。
      * @o2ActionOut x_organization_assemble_express.IdentityAction.listWithPersonObject|example=Identity
      * @o2syntax
@@ -1100,7 +1100,7 @@ bind.org = {
      * @o2membercategory identity
      * @methodOf module:server.org
      * @static
-     * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
+     * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。
      * @param {Boolean} [nested] true嵌套的所有身份成员；false直接身份成员；默认false。
      * @return {IdentityData[]} 返回身份对象数组。
      * @o2ActionOut x_organization_assemble_express.IdentityAction.listWithUnitSubNestedObject|example=Identity
@@ -1130,7 +1130,7 @@ bind.org = {
      * @o2membercategory unit
      * @methodOf module:server.org
      * @static
-     * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
+     * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。
      * @return {UnitData|UnitData[]} 单个是Object，多个是Array。
      * @o2ActionOut x_organization_assemble_express.UnitAction.listObject|example=Unit
      * @o2syntax
@@ -1153,7 +1153,7 @@ bind.org = {
      * @o2membercategory unit
      * @methodOf module:server.org
      * @static
-     * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
+     * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。
      * @param {Boolean} [nested]  true嵌套的所有下级组织；false直接下级组织；默认false。
      * @return {UnitData[]} 返回组织数组。
      * @o2ActionOut x_organization_assemble_express.UnitAction.listWithUnitSubNestedObject|example=Unit
@@ -1179,7 +1179,7 @@ bind.org = {
      * @o2membercategory unit
      * @methodOf module:server.org
      * @static
-     * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
+     * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。
      * @param {Boolean} [nested]  true嵌套的所有上级组织；false直接上级组织；默认false。
      * @return {UnitData[]} 返回组织数组。
      * @o2ActionOut x_organization_assemble_express.UnitAction.listWithUnitSupNestedObject|example=Unit
@@ -1207,7 +1207,7 @@ bind.org = {
      * @o2membercategory unit
      * @methodOf module:server.org
      * @static
-     * @param {IdentityFlag} name - 身份的distinguishedName、name、id、unique属性值，身份对象。
+     * @param {IdentityFlag} name - 身份的distinguishedName、id、unique属性值，身份对象。
      * @param {String|Number} [flag]  当值为数字的时候， 表示获取第几层的组织。<br/> 当值为字符串的时候，表示获取指定类型的组织。<br/> 当值为空的时候，表示获取直接所在组织。
      * @return {UnitData|UnitData[]} 返回对应组织，单个为对象，多个为数组。
      * @o2ActionOut x_organization_assemble_express.UnitAction.getWithIdentityWithLevelObject|example=Unit
@@ -1252,7 +1252,7 @@ bind.org = {
      * @o2membercategory unit
      * @methodOf module:server.org
      * @static
-     * @param {IdentityFlag|IdentityFlag[]} name - 身份的distinguishedName、name、id、unique属性值，身份对象，或上述属性值和对象的数组。
+     * @param {IdentityFlag|IdentityFlag[]} name - 身份的distinguishedName、id、unique属性值，身份对象，或上述属性值和对象的数组。
      * @return {UnitData[]} 返回组织数组。
      * @o2ActionOut x_organization_assemble_express.UnitAction.listWithIdentitySupNestedObject|example=Unit
      * @o2syntax
@@ -1271,7 +1271,7 @@ bind.org = {
      * @o2membercategory unit
      * @methodOf module:server.org
      * @static
-     * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
+     * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、id、unique属性值，人员对象，或上述属性值和对象的数组。
      * @return {UnitData[]} 返回组织数组。
      * @o2ActionOut x_organization_assemble_express.UnitAction.listWithPersonObject|example=Unit
      * @o2syntax
@@ -1290,7 +1290,7 @@ bind.org = {
      * @o2membercategory unit
      * @methodOf module:server.org
      * @static
-     * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、name、id、unique属性值，人员对象，或上述属性值和对象的数组。
+     * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、id、unique属性值，人员对象，或上述属性值和对象的数组。
      * @return {UnitData[]} 返回个人所在组织及所有上级组织。
      * @o2ActionOut x_organization_assemble_express.UnitAction.listWithPersonSupNestedObject|example=Unit
      * @o2syntax
@@ -1330,7 +1330,7 @@ bind.org = {
      * @methodOf module:server.org
      * @static
      * @param {String} dutyName 组织职务名称。
-     * @param {IdentityFlag} identity 身份的distinguishedName、name、id、unique属性值，身份对象。
+     * @param {IdentityFlag} identity 身份的distinguishedName、id、unique属性值，身份对象。
      * @return {UnitData[]} 返回组织数组。
      * @o2ActionOut x_organization_assemble_express.UnitAction.listWithUnitDutyObject|example=Unit
      * @o2syntax
@@ -1352,7 +1352,7 @@ bind.org = {
      * @methodOf module:server.org
      * @static
      * @param {String} dutyName 组织职务名称。
-     * @param {UnitFlag} unit 组织的distinguishedName、name、id、unique属性值，组织对象。
+     * @param {UnitFlag} unit 组织的distinguishedName、id、unique属性值，组织对象。
      * @return {IdentityData[]} 返回身份数组。
      * @o2ActionOut x_organization_assemble_express.UnitDutyAction.getWithUnitWithName|example=Identity
      * @o2syntax
@@ -1372,7 +1372,7 @@ bind.org = {
      * @o2membercategory duty
      * @methodOf module:server.org
      * @static
-     * @param {IdentityFlag|IdentityFlag[]} identity - 身份的distinguishedName、name、id、unique属性值，身份对象，或上述属性值和对象的数组。
+     * @param {IdentityFlag|IdentityFlag[]} identity - 身份的distinguishedName、id、unique属性值，身份对象，或上述属性值和对象的数组。
      * @return {String[]} 返回职务名称数组。
      * @o2syntax
      * //返回职务名称数组。
@@ -1399,7 +1399,7 @@ bind.org = {
      * @o2membercategory duty
      * @methodOf module:server.org
      * @static
-     * @param {UnitFlag|UnitFlag[]} unit - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
+     * @param {UnitFlag|UnitFlag[]} unit - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。
      * @return {String[]} 返回职务名称数组。
      * @o2syntax
      * //返回职务名称数组。
@@ -1426,7 +1426,7 @@ bind.org = {
      * @o2membercategory duty
      * @methodOf module:server.org
      * @static
-     * @param {UnitFlag|UnitFlag[]} unit - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
+     * @param {UnitFlag|UnitFlag[]} unit - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。
      * @return {Object[]} 返回职务数组
      * @o2ActionOut x_organization_assemble_express.UnitDutyAction.listWithUnitObject|example=Duty
      * @o2syntax
@@ -1452,7 +1452,7 @@ bind.org = {
      * @o2membercategory unitAttribute
      * @methodOf module:server.org
      * @static
-     * @param {UnitFlag} unit - 组织的distinguishedName、name、id、unique属性值，组织对象。
+     * @param {UnitFlag} unit - 组织的distinguishedName、id、unique属性值，组织对象。
      * @param {String} attribute 属性名称。
      * @param {String[]} valueArray 属性值，必须为数组。
      * @param {Function} [success] 执行成功的回调。
@@ -1472,7 +1472,7 @@ bind.org = {
      * @o2membercategory unitAttribute
      * @methodOf module:server.org
      * @static
-     * @param {UnitFlag} unit - 组织的distinguishedName、name、id、unique属性值，组织对象。
+     * @param {UnitFlag} unit - 组织的distinguishedName、id、unique属性值，组织对象。
      * @param {String} attribute 属性名称。
      * @param {String[]} valueArray 属性值，必须为数组。
      * @param {Function} [success] 执行成功的回调。
@@ -1492,7 +1492,7 @@ bind.org = {
      * @o2membercategory unitAttribute
      * @methodOf module:server.org
      * @static
-     * @param {UnitFlag} unit - 组织的distinguishedName、name、id、unique属性值，组织对象。
+     * @param {UnitFlag} unit - 组织的distinguishedName、id、unique属性值，组织对象。
      * @param {String} attr 属性名称。
      * @return {String[]} 返回属性值数组，
      * 如：<pre><code class='language-js'>[ value1, value2 ]</code></pre>
@@ -1519,7 +1519,7 @@ bind.org = {
      * @o2membercategory unitAttribute
      * @methodOf module:server.org
      * @static
-     * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
+     * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。
      * @return {String[]} 返回组织属性名称数组，
      * 如：<pre><code class='language-js'>[ attributeName1, attributeName2 ]</code></pre>
      * @o2syntax
@@ -1547,7 +1547,7 @@ bind.org = {
      * @o2membercategory unitAttribute
      * @methodOf module:server.org
      * @static
-     * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、name、id、unique属性值，组织对象，或上述属性值和对象的数组。
+     * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。
      * @return {Object[]} 返回组织属性对象数组，如：
      * <pre><code class='language-js'>[{
      *    "name": "部门类别",
@@ -3353,6 +3353,12 @@ Object.defineProperties(bind.assignData, {"data": {
 //--------------------------------------------------------------
 //封装java对象data, 以兼容javascript对象
 (function (bind) {
+    Object.prototype.containsKey = function(key){
+        return Object.keys(this).indexOf(key)!==-1;
+    }
+    Object.prototype.put = function(key, value){
+        this[key] = value;
+    }
     var javaClass;
     try {
         javaClass = {
@@ -3405,7 +3411,8 @@ Object.defineProperties(bind.assignData, {"data": {
     function _setter(key, data, proxy) {
         return function (value) {
             proxy.proxyData[key] = createProxyData(value, proxy);
-            data[key] = value;
+            data.put(key, value);
+            // data[key] = value;
         }
     }
     function _addData(data, proxy) {
@@ -3413,7 +3420,8 @@ Object.defineProperties(bind.assignData, {"data": {
             if (proxy.hasOwnProperty(key)) {
                 proxy[key] = value;
             } else {
-                data[key] = value;
+                data.put(key, value);
+                //data[key] = value;
                 Object.defineProperty(proxy, key, {
                     configurable: true,
                     enumerable: true,

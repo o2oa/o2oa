@@ -289,7 +289,7 @@ o2.xApplication.systemconfig.LP = {
         "initialPasswordType": {
             "mobileScript": "return person.getMobile().slice(-6)",
             "uniqueScript": "return person.getunique().slice(-6)",
-            "employeesScript": "return person.getEmployee()",
+            "employeeScript": "return person.getEmployee()",
             "pinyinScript": "return person.getPinyin()",
             "textInfo": "在下面的输入框中输入的密码，将作为新创建用户的初始密码。",
             'scriptInfo': "在下面的编辑器中输入脚本，返回一个字符串值，作为新创建用户的初始密码。您可以使用person对象获取人员相关信息。如将人员姓名全拼作为初始密码，可使用脚本：return person.getPinyin()"
@@ -583,8 +583,8 @@ o2.xApplication.systemconfig.LP = {
         "saveDatabaseConfigSuccess": "数据库配置保存成功，请重启服务器",
         "saveEntityConfigSuccess": "实体类配置保存成功，请重启服务器",
 
-        "dumpRestoreTools": "数据库备份回复工具",
-        "toolsInfo": "O2OA提供了数据备份和回复工具，<span style='color: red'>修改数据库配置在大部分情况下都会影响到系统现有数据</span>，" +
+        "dumpRestoreTools": "数据库备份恢复工具",
+        "toolsInfo": "O2OA提供了数据备份和恢复工具，<span style='color: red'>修改数据库配置在大部分情况下都会影响到系统现有数据</span>，" +
             "所以在修改数据库配置之前，建议您先使用O2OA的备份功能将系统数据进行备份，在修改完数据库配置后重启服务器，然后将备份的数据恢复到数据库。<br>" +
             "<span class='mainColor_color'>在您进行备份或恢复数据时，请勿离开本页面。您可以在另一个浏览器窗口中进行其它操作</span>",
 
@@ -1392,7 +1392,8 @@ o2.xApplication.systemconfig.LP = {
             "key": "通道名称",
             "type": "类型",
             "filter": "过滤器",
-            "loader": "加载器"
+            "loader": "加载器",
+            "startTlsEnable": "升级传输加密"
         },
         "none": "无",
         "editConsumer": "编辑消息通道",
@@ -1404,7 +1405,7 @@ o2.xApplication.systemconfig.LP = {
             "kafka": ['bootstrapServers', 'topic', 'securityProtocol', 'saslMechanism', 'saslMechanism', 'username', 'password'],
             "activemq": ['url', 'queueName', 'username', 'password'],
             "restful": ['url', 'method', 'internal'],
-            "mail": ['host', 'port', 'sslEnable', 'auth', 'from', 'password'],
+            "mail": ['host', 'port', 'sslEnable', 'auth', 'startTlsEnable', 'from', 'password'],
             "jdbc": ['driverClass', 'url', 'catalog', 'schema', 'table', 'username', 'password'],
             "table": ['table'],
             "hadoop": ['fsDefaultFS', 'path', 'username']

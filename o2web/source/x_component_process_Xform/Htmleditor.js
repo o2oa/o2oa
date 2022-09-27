@@ -82,8 +82,9 @@ MWF.xApplication.process.Xform.Htmleditor = MWF.APPHtmleditor =  new Class(
                         this.fireEvent("afterLoad");
                         this.fieldModuleLoaded = true;
                     }
-                }.bind(this))
+                }.bind(this));
             }
+            this.node.loadCss("../o2_lib/htmleditor/ckeditor4161/contents.css");
         }else{
             var config = Object.clone(this.json.editorProperties);
             if (this.json.config){

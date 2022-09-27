@@ -201,6 +201,23 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class(
             }.bind(this));
         },
 
+        getImagePath: function(img, iscustom){
+            var path = "../x_component_process_FormDesigner/Module/Actionbar/";
+            if( iscustom ){
+                var iconPath = this.json.customIconStyle ? (this.json.customIconStyle+ "/") : "";
+                return path+""+this.form.options.style+"/custom/"+iconPath+img;
+            }else{
+                return path+(this.options.style||"default") +"/tools/"+ (this.json.style || "default") +"/"+img;
+            }
+        },
+        getImageOverPath: function(img, iscustom){
+            var path = "../x_component_process_FormDesigner/Module/Actionbar/";
+            if( iscustom && this.json.customIconOverStyle ){
+                return path+""+this.form.options.style +"/custom/"+this.json.customIconOverStyle+ "/" +img
+            }else{
+                return path+""+(this.options.style||"default")+"/tools/"+( this.json.iconOverStyle || "default" )+"/"+img;
+            }
+        },
         setToolbarItem: function(tool, node, readonly, noCondition){
             var path = "../x_component_process_FormDesigner/Module/Actionbar/";
             var flag = true;
@@ -235,13 +252,13 @@ MWF.xApplication.process.Xform.Actionbar = MWF.APPActionbar =  new Class(
                     "id": tool.id,
                     "MWFnodetype": tool.type,
                     //"MWFButtonImage": this.form.path+""+this.form.options.style+"/actionbar/"+tool.img,
-                    "MWFButtonImage": path+(this.options.style||"default") +"/tools/"+ (this.json.style || "default") +"/"+tool.img,
+                    "MWFButtonImage": this.getImagePath(tool.img, tool.customImg),
                     "title": tool.title,
                     "MWFButtonAction": tool.action,
                     "MWFButtonText": tool.text
                 }).inject(node);
                 if( this.json.iconOverStyle ){
-                    actionNode.set("MWFButtonImageOver" , path+""+(this.options.style||"default")+"/tools/"+( this.json.iconOverStyle || "default" )+"/"+tool.img );
+                    actionNode.set("MWFButtonImageOver" , this.getImageOverPath(tool.img, tool.customImg) );
                 }
                 if( tool.properties ){
                     actionNode.set(tool.properties);

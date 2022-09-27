@@ -4,12 +4,12 @@
       <div class="item_title">{{lp._passwordConfig.newPersonPassword}}</div>
       <div class="item_info">{{lp._passwordConfig.newPersonPasswordInfo}}</div>
 
-      <BaseSelect :label="lp._passwordConfig.initialPassword" @change="changePasswordType" v-model:value="initialPasswordType" :options="lp._passwordConfig.initialPasswordTypeOptions"></BaseSelect>
+      <BaseSelect :label="lp._passwordConfig.initialPassword" :label-style="{width: '100px'}" @change="changePasswordType" v-model:value="initialPasswordType" :options="lp._passwordConfig.initialPasswordTypeOptions"></BaseSelect>
 
       <div ref="passwordNode" class="item_hide">
         <div class="item_info">{{lp._passwordConfig.initialPasswordType.textInfo}}</div>
         <form>
-          <BaseInput :label="lp._passwordConfig.initialPasswordText" input-type="password" :show-password="true" v-model:value="passwordText"></BaseInput>
+          <BaseInput :label="lp._passwordConfig.initialPasswordText" :label-style="{width: '100px'}" input-type="password" :show-password="true" v-model:value="passwordText"></BaseInput>
           <div class="item_info" style="padding-left: 20px">
             <button class="mainColor_bg" style="width: 100px" @click="saveInitialPassword">{{lp.operation.ok}}</button>
           </div>
@@ -182,6 +182,7 @@ const savePasswordRuleConfig = async ()=>{
 }
 
 const saveInitialPasswordConfig = async (type) => {
+  initialPasswordType.value = type;
   personData.value.extension.initialPasswordType = type || initialPasswordType.value;
   switch (initialPasswordType.value) {
     case 'text':
