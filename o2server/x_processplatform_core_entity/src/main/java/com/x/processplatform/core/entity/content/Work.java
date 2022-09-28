@@ -46,6 +46,7 @@ import com.x.processplatform.core.entity.PersistenceProperties;
 import com.x.processplatform.core.entity.element.ActivityType;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+
 @Schema(name = "Work", description = "流程平台工作.")
 @Entity
 @ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
@@ -112,6 +113,8 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 		this.embedTargetJob = this.getProperties().getEmbedTargetJob();
 		this.embedCompleted = this.getProperties().getEmbedCompleted();
 		this.manualTaskIdentityMatrix = this.getProperties().getManualTaskIdentityMatrix();
+		this.parentJob = this.getProperties().getParentJob();
+		this.parentWork = this.getProperties().getParentWork();
 	}
 
 	/* 更新运行方法 */
@@ -204,6 +207,25 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 		this.getProperties().setManualTaskIdentityMatrix(manualTaskIdentityMatrix);
 	}
 
+	public void setParentWork(String parentWork) {
+		this.getProperties().setParentWork(parentWork);
+		this.parentWork = parentWork;
+
+	}
+
+	public String getParentWork() {
+		return parentWork;
+	}
+
+	public void setparentJob(String parentJob) {
+		this.getProperties().setParentJob(parentJob);
+		this.parentJob = parentJob;
+	}
+
+	public String getParentJob() {
+		return parentJob;
+	}
+
 	@Transient
 	@FieldDescribe("要拆分的值")
 	private List<String> splitValueList;
@@ -220,6 +242,16 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	@FieldDescribe("待办身份矩阵.")
 	@Transient
 	private ManualTaskIdentityMatrix manualTaskIdentityMatrix;
+
+	public static final String PARENTWORK_FIELDNAME = "parentWork";
+	@Transient
+	@FieldDescribe("父工作,在当前工作是通过子流程调用时产生.")
+	private String parentWork;
+
+	public static final String PARENTJOB_FIELDNAME = "parentJob";
+	@Transient
+	@FieldDescribe("父工作Job,在当前工作是通过子流程调用时产生.")
+	private String parentJob;
 
 	public static final String job_FIELDNAME = "job";
 	@FieldDescribe("工作")
@@ -922,8 +954,6 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 		this.activityType = activityType;
 	}
 
-
-
 	public ActivityType getDestinationActivityType() {
 		return destinationActivityType;
 	}
@@ -1295,7 +1325,7 @@ public class Work extends SliceJpaObject implements ProjectionInterface {
 	public void setManualTaskIdentityList(List<String> manualTaskIdentityList) {
 		this.manualTaskIdentityList = manualTaskIdentityList;
 	}
-	
+
 	public List<String> getManualTaskIdentityList() {
 		return manualTaskIdentityList;
 	}
