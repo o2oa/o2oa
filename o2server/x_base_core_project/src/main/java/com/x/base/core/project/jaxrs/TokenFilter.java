@@ -17,6 +17,8 @@ public abstract class TokenFilter implements Filter {
 
 	private static Optional<Pattern> refererPattern;
 
+	public static final String HTTP_OPTIONS = "options";
+
 	protected void options(HttpServletRequest request, HttpServletResponse response) {
 		response.setStatus(204);
 	}

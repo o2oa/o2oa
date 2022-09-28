@@ -228,8 +228,16 @@ public class EffectivePerson extends GsonPropertyObject {
 		return token;
 	}
 
+	void setToken(String token) {
+		this.token = token;
+	}
+
 	private void setTokenType(TokenType tokenType) {
 		this.tokenType = tokenType;
+	}
+
+	public String getUnique() {
+		return unique;
 	}
 
 	public String getName() {

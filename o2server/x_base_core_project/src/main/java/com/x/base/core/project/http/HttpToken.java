@@ -55,6 +55,20 @@ public class HttpToken {
 		return effectivePerson;
 	}
 
+	public EffectivePerson whoNotRefreshToken(HttpServletRequest request, HttpServletResponse response, String key) throws Exception {
+		String token = this.getToken(request);
+		EffectivePerson effectivePerson = this.who(token, key, remoteAddress(request));
+		effectivePerson.setRemoteAddress(HttpToken.remoteAddress(request));
+		effectivePerson.setUserAgent(this.userAgent(request));
+		effectivePerson.setUri(request.getRequestURI());
+		// 加入调试标记
+		Object debugger = request.getHeader(HttpToken.X_DEBUGGER);
+		effectivePerson.setDebugger((null != debugger) && BooleanUtils.toBoolean(Objects.toString(debugger)));
+		effectivePerson.setToken(token);
+		setToken(request, response, effectivePerson);
+		return effectivePerson;
+	}
+
 	public EffectivePerson who(String token, String key, String address) {
 		if (StringUtils.length(token) < 16) {
 			/* token应该是8的倍数有可能前台会输入null空值等可以通过这个过滤掉 */
