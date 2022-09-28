@@ -245,14 +245,12 @@ abstract class BaseAction extends StandardJaxrsAction {
 			// 标记数据已经被修改
 			business.entityManagerContainer().beginTransaction(Work.class);
 			work.setDataChanged(true);
-			if (BooleanUtils.isTrue(Config.processPlatform().getUpdateDataProjectionEnable())) {
-				business.entityManagerContainer().beginTransaction(Task.class);
-				business.entityManagerContainer().beginTransaction(TaskCompleted.class);
-				business.entityManagerContainer().beginTransaction(Read.class);
-				business.entityManagerContainer().beginTransaction(ReadCompleted.class);
-				business.entityManagerContainer().beginTransaction(Review.class);
-				projection(business, work, XGsonBuilder.convert(jsonObject, Data.class));
-			}
+			business.entityManagerContainer().beginTransaction(Task.class);
+			business.entityManagerContainer().beginTransaction(TaskCompleted.class);
+			business.entityManagerContainer().beginTransaction(Read.class);
+			business.entityManagerContainer().beginTransaction(ReadCompleted.class);
+			business.entityManagerContainer().beginTransaction(Review.class);
+			projection(business, work, XGsonBuilder.convert(jsonObject, Data.class));
 			// 基于前面的原因,这里进行单独提交
 			business.entityManagerContainer().commit();
 		}
@@ -284,15 +282,13 @@ abstract class BaseAction extends StandardJaxrsAction {
 				this.fill(_o, workCompleted);
 				business.entityManagerContainer().persist(_o);
 			}
-			if (BooleanUtils.isTrue(Config.processPlatform().getUpdateDataProjectionEnable())) {
-				business.entityManagerContainer().beginTransaction(WorkCompleted.class);
-				business.entityManagerContainer().beginTransaction(Task.class);
-				business.entityManagerContainer().beginTransaction(TaskCompleted.class);
-				business.entityManagerContainer().beginTransaction(Read.class);
-				business.entityManagerContainer().beginTransaction(ReadCompleted.class);
-				business.entityManagerContainer().beginTransaction(Review.class);
-				projection(business, workCompleted, XGsonBuilder.convert(jsonObject, Data.class));
-			}
+			business.entityManagerContainer().beginTransaction(WorkCompleted.class);
+			business.entityManagerContainer().beginTransaction(Task.class);
+			business.entityManagerContainer().beginTransaction(TaskCompleted.class);
+			business.entityManagerContainer().beginTransaction(Read.class);
+			business.entityManagerContainer().beginTransaction(ReadCompleted.class);
+			business.entityManagerContainer().beginTransaction(Review.class);
+			projection(business, workCompleted, XGsonBuilder.convert(jsonObject, Data.class));
 			// 基于前面的原因,这里进行单独提交
 			business.entityManagerContainer().commit();
 
@@ -353,14 +349,12 @@ abstract class BaseAction extends StandardJaxrsAction {
 		// 标记数据已经被修改
 		business.entityManagerContainer().beginTransaction(Work.class);
 		work.setDataChanged(true);
-		if (BooleanUtils.isTrue(Config.processPlatform().getUpdateDataProjectionEnable())) {
-			business.entityManagerContainer().beginTransaction(Task.class);
-			business.entityManagerContainer().beginTransaction(TaskCompleted.class);
-			business.entityManagerContainer().beginTransaction(Read.class);
-			business.entityManagerContainer().beginTransaction(ReadCompleted.class);
-			business.entityManagerContainer().beginTransaction(Review.class);
-			projection(business, work, XGsonBuilder.convert(jsonElement, Data.class));
-		}
+		business.entityManagerContainer().beginTransaction(Task.class);
+		business.entityManagerContainer().beginTransaction(TaskCompleted.class);
+		business.entityManagerContainer().beginTransaction(Read.class);
+		business.entityManagerContainer().beginTransaction(ReadCompleted.class);
+		business.entityManagerContainer().beginTransaction(Review.class);
+		projection(business, work, XGsonBuilder.convert(jsonElement, Data.class));
 		business.entityManagerContainer().commit();
 	}
 
