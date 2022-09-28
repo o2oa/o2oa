@@ -20,6 +20,10 @@ MWF.xApplication.process.FormDesigner.widget.SectionMerger = new Class({
 		// this.path = "../x_component_process_FormDesigner/widget/$SectionMerger/";
 		// this.cssPath = "../x_component_process_FormDesigner/widget/$SectionMerger/"+this.options.style+"/css.wcss";
 		this.lp = this.app.lp.propertyTemplate;
+		if( !this.lp ){
+			o2.xDesktop.requireApp("process.FormDesigner", "lp."+o2.language, null, false);
+			this.lp = MWF.xApplication.process.FormDesigner.LP.propertyTemplate;
+		}
 		// this._loadCss();
 	},
 	
