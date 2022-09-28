@@ -56,6 +56,8 @@ public class ExternalDataSource extends ConfigObject {
 
 	public static final Boolean DEFAULT_AUTOCOMMIT = false;
 
+	public static final Boolean DEFAULT_TRACESQLENABLE = false;
+
 	public static ExternalDataSource defaultInstance() {
 
 		ExternalDataSource o = new ExternalDataSource();
@@ -78,7 +80,7 @@ public class ExternalDataSource extends ConfigObject {
 		o.testConnectionOnCheckout = DEFAULT_TESTCONNECTIONONCHECKOUT;
 		o.maxIdleTime = DEFAULT_MAXIDLETIME;
 		o.autoCommit = DEFAULT_AUTOCOMMIT;
-
+		o.traceSqlEnable = DEFAULT_TRACESQLENABLE;
 		return o;
 	}
 
@@ -120,6 +122,12 @@ public class ExternalDataSource extends ConfigObject {
 	private Integer maxIdleTime;
 	@FieldDescribe("自动提交,默认为false.")
 	private Boolean autoCommit = DEFAULT_AUTOCOMMIT;
+	@FieldDescribe("启用sql跟踪.")
+	private Boolean traceSqlEnable = DEFAULT_TRACESQLENABLE;
+
+	public Boolean getTraceSqlEnable() {
+		return (null == this.traceSqlEnable) ? DEFAULT_TRACESQLENABLE : this.traceSqlEnable;
+	}
 
 	public Boolean getAutoCommit() {
 		return (null == this.autoCommit) ? DEFAULT_AUTOCOMMIT : this.autoCommit;
