@@ -14,6 +14,7 @@ import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Selection;
 import javax.persistence.criteria.Subquery;
 
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.cms.core.entity.enums.DocumentStatus;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -481,23 +482,22 @@ public class DocumentFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		EntityManager em1 = this.entityManagerContainer().get( Review.class );
 		CriteriaBuilder cb1 = em1.getCriteriaBuilder();
-		//CriteriaQuery<Document> cq = cb.createQuery(Document.class);
 		CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
 		Root<Document> root = cq.from(Document.class);
 		Predicate p = CriteriaBuilderTools.composePredicateWithQueryFilter( Document_.class, cb, null, root, queryFilter );
 
 		if(StringUtils.isNotBlank(personName)){
 			if(!BooleanUtils.isTrue(isAuthor)) {
-				Subquery<Review> subquery = cq.subquery(Review.class);
-				Root<Review> root2 = subquery.from(em1.getMetamodel().entity(Review.class));
-				subquery.select(root2);
+				Subquery<Review> subQuery = cq.subquery(Review.class);
+				Root<Review> root2 = subQuery.from(em1.getMetamodel().entity(Review.class));
+				subQuery.select(root2);
 				Predicate p_permission = cb1.equal(root2.get(Review_.permissionObj), personName);
 				p_permission = cb1.and(p_permission, cb1.equal(root2.get(Review_.docId), root.get(Document_.id)));
-				subquery.where(p_permission);
+				subQuery.where(p_permission);
 				if(BooleanUtils.isTrue(excludeAllRead)){
-					p = cb.and(p, cb.exists(subquery));
+					p = cb.and(p, cb.exists(subQuery));
 				}else {
-					Predicate orP = cb.or(cb.isTrue(root.get(Document_.isAllRead)), cb.exists(subquery));
+					Predicate orP = cb.or(cb.isTrue(root.get(Document_.isAllRead)), cb.exists(subQuery));
 					p = cb.and(p, orP);
 				}
 			}else {
@@ -540,30 +540,26 @@ public class DocumentFactory extends AbstractFactory {
 			selections.add(root.get(str));
 		}
 		cq.multiselect(selections).where(p);
-		//cq.select(root).where(p);
 
-		//排序，添加排序列，默认使用sequence
+		//排序，添加排序列，先按是否置顶，再按指定字段，最后按照序列号
 		List<Order> orders = new ArrayList<>();
 		Order isTopOrder = CriteriaBuilderTools.getOrder( cb, root, Document_.class, Document.isTop_FIELDNAME, "desc" );
 		if( isTopOrder != null ){
 			orders.add( isTopOrder );
 		}
 
-		Order orderWithField = CriteriaBuilderTools.getOrder( cb, root, Document_.class, orderField, orderType );
-		if( orderWithField != null ){
-			orders.add( orderWithField );
-		}
-
-		if( !Document.isFieldInSequence(orderField)) {
-			//如果是其他的列，很可能排序值不唯一，所以使用多一列排序列来确定每次查询的顺序
-			orderWithField = CriteriaBuilderTools.getOrder( cb, root, Document_.class, Document.id_FIELDNAME, orderType );
-			if( orderWithField != null ){
-				orders.add( orderWithField );
+		if(StringUtils.isNotBlank(orderField) && fields.contains(orderField)) {
+			String defaultOrderBy = "asc";
+			if( defaultOrderBy.equalsIgnoreCase( orderType )) {
+				orders.add(cb.asc( root.get( orderField )));
+			}else {
+				orders.add(cb.desc( root.get( orderField )));
 			}
 		}
-		if( ListTools.isNotEmpty(  orders )){
-			cq.orderBy( orders );
+		if(!Document.sequence_FIELDNAME.equals(orderField)) {
+			orders.add(cb.desc(root.get(Document.sequence_FIELDNAME)));
 		}
+		cq.orderBy( orders );
 
 		//return em.createQuery(cq).setFirstResult((adjustPage - 1) * adjustPageSize).setMaxResults(adjustPageSize).getResultList();
 		List<Tuple> list = em.createQuery(cq).setFirstResult((adjustPage - 1) * adjustPageSize).setMaxResults(adjustPageSize)
