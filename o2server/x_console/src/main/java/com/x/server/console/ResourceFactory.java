@@ -213,6 +213,7 @@ public class ResourceFactory {
 				dataSource.setFilters(ds.getStatFilter());
 				Properties properties = new Properties();
 				properties.setProperty("druid.stat.slowSqlMillis", ds.getSlowSqlMillis().toString());
+				properties.setProperty("druid.log.stmt.executableSql", ds.getTraceSqlEnable().toString());
 				dataSource.setProperties(properties);
 			}
 			// 增加autoCommit设置
