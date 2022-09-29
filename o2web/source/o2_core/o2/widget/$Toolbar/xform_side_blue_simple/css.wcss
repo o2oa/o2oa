@@ -33,7 +33,7 @@
 		//"float": "left",
 		"border": "1px solid #fff",
 		"background-color": "#fff",
-		"height": "30px",
+		"min-height": "30px",
 		"margin-right": "8px",
 		"padding-left": "2px",
 		"padding-right": "2px",
@@ -57,12 +57,18 @@
 	},
 	"buttonTextDiv": {
 		"display":"block",
-		"float": "left",
-		"height": "30px",
+//		"float": "left",
+//		"height": "30px",
 		"padding-left": "2px",
 		"padding-right": "2px",
-		"line-height": "30px",
-		"cursor": "pointer"
+//		"line-height": "30px",
+		"cursor": "pointer",
+		"min-height": "20px",
+		"margin-left": "22px",
+		"line-height": "20px",
+		"padding-top": "5px",
+		"padding-bottom": "5px",
+		"word-break": "break-all"
 	},
 
 	"buttonDisable": {
