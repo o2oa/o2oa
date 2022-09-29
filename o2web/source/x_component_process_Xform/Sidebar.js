@@ -42,6 +42,12 @@ MWF.xApplication.process.Xform.Sidebar = MWF.APPSidebar =  new Class(
         },
     _loadUserInterface: function(){
         this.node.setStyles(this.form.css.sidebar);
+        this.node.setStyles({
+           "min-width":"126px",
+           "max-width":"240px",
+           "width": "auto"
+        });
+        // this.node.setStyle("width", this.node.getSize().x+"px");
         this.toolbarNode = this.node.getFirst("div");
         this.toolbarNode.empty();
 
@@ -222,11 +228,17 @@ MWF.xApplication.process.Xform.Sidebar = MWF.APPSidebar =  new Class(
         }
 
 
-        var left = sideSize.x+sidePosition.x+5;
+        //var left = sideSize.x+sidePosition.x+5;
+        var x = sidePosition.x+sideSize.x+nodeSize.x;
+        var left;
+        if( x > size.x ){
+            left = size.x - nodeSize.x - 5;
+        }else{
+            left = sideSize.x+sidePosition.x+5;
+        }
+
         this.node.setStyle("left", ""+left+"px");
         this.node.setStyle("position", "absolute");
-
-
         this.node.setStyles({"right": "auto", "bottom": "auto"});
 
         // this.json.styles = this.node.getStyles(["top", "left", "bottom", "right", "position"]);
