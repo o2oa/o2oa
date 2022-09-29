@@ -197,7 +197,7 @@ public class ManualProcessor extends AbstractManualProcessor {
 		}
 		if (taskIdentities.isEmpty()) {
 			taskIdentities = TranslateTaskIdentityTools.translate(aeiObjects, manual);
-			this.ifTaskIdentitiesEmptyForceToCreatorOrMaintenance(aeiObjects, taskIdentities);
+			this.ifTaskIdentitiesEmptyForceToCreatorOrMaintenance(aeiObjects, manual, taskIdentities);
 			// 处理授权
 			this.writeToEmpowerMap(aeiObjects, taskIdentities);
 		}
@@ -238,18 +238,23 @@ public class ManualProcessor extends AbstractManualProcessor {
 	}
 
 	/**
-	 * 如果没能计算到活动处理人,那么按照流程维护人,应用维护人,工作创建者,平台维护人顺序查找处理人
+	 * 如果没能计算到活动处理人,先判断人员活动是否有设置人员,如果有那么先返回工作创建者,再按照流程维护人,应用维护人,工作创建者,平台维护人顺序查找处理人
 	 * 
 	 * @param aeiObjects
 	 * @param manual
 	 * @param taskIdentities
 	 * @throws Exception
 	 */
-	private void ifTaskIdentitiesEmptyForceToCreatorOrMaintenance(AeiObjects aeiObjects, TaskIdentities taskIdentities)
-			throws Exception {
+	private void ifTaskIdentitiesEmptyForceToCreatorOrMaintenance(AeiObjects aeiObjects, Manual manual,
+			TaskIdentities taskIdentities) throws Exception {
 		if (taskIdentities.isEmpty()) {
 			String identity = null;
-			if (StringUtils.isNotBlank(aeiObjects.getProcess().getMaintenanceIdentity())) {
+			if (!ifManualAssignTaskIdentity(manual)) {
+				identity = aeiObjects.business().organization().identity()
+						.get(aeiObjects.getWork().getCreatorIdentity());
+			}
+			if (StringUtils.isEmpty(identity)
+					&& StringUtils.isNotBlank(aeiObjects.getProcess().getMaintenanceIdentity())) {
 				identity = aeiObjects.business().organization().identity()
 						.get(aeiObjects.getProcess().getMaintenanceIdentity());
 			}
@@ -273,6 +278,45 @@ public class ManualProcessor extends AbstractManualProcessor {
 			}
 			taskIdentities.addIdentity(identity);
 		}
+	}
+
+	/**
+	 * 判读是否在活动中制定了处理人,这里没有对脚本的注解和空行进行判断
+	 * 
+	 * @param manual
+	 * @return
+	 */
+	private boolean ifManualAssignTaskIdentity(Manual manual) {
+		/* 指定了的身份 */
+		if (ListTools.isNotEmpty(manual.getTaskIdentityList())) {
+			return true;
+		}
+		/* 选择了职务 */
+		if (StringUtils.isNotBlank(manual.getTaskDuty())) {
+			return true;
+		}
+		/* 指定data数据路径值 */
+		if (ListTools.isNotEmpty(manual.getTaskDataPathList())) {
+			return true;
+		}
+		/* 使用脚本计算 */
+		if (StringUtils.isNotEmpty(manual.getTaskScriptText())) {
+			return true;
+		} else {
+			if (StringUtils.isNotEmpty(manual.getTaskScript())) {
+				String clean = manual.getTaskScript().replaceAll("/\\*[^*]*(?:\\*(?!/)[^*]*)*\\*/|//.*", "");
+				clean = StringUtils.trimToEmpty(clean);
+				if (StringUtils.isNotBlank(clean)) {
+					return true;
+				}
+			}
+		}
+		/* 指定处理组织 */
+		if (ListTools.isNotEmpty(manual.getTaskUnitList())) {
+			return true;
+		}
+		/* 指定处理群组 */
+		return (ListTools.isNotEmpty(manual.getTaskGroupList()));
 	}
 
 	// 更新授权,通过surface创建且workThroughManual=false 代表是草稿,那么不需要授权.
@@ -331,13 +375,14 @@ public class ManualProcessor extends AbstractManualProcessor {
 	protected List<Work> executing(AeiObjects aeiObjects, Manual manual) throws Exception {
 		List<Work> results = new ArrayList<>();
 		ManualTaskIdentityMatrix matrix = executingManualTaskIdentityMatrix(aeiObjects, manual);
-		List<TaskCompleted> taskCompleteds = executingJoinInquireCheckRouteNameTaskCompleteds(aeiObjects);
+		List<TaskCompleted> taskCompleteds = aeiObjects.getJoinInquireTaskCompletedsRouteNameAvailableWithActivityToken(
+				aeiObjects.getWork().getActivityToken());
 		executingCompletedIdentityInTaskCompleteds(aeiObjects, matrix, taskCompleteds);
 
 		// 发送ProcessingSignal
 		aeiObjects.getProcessingAttributes().push(Signal.manualExecute(aeiObjects.getWork().getActivityToken(), manual,
 				Objects.toString(manual.getManualMode(), ""), matrix.flat()));
-		if (matrix.isEmpty()) {
+		if (matrix.isEmpty() && (!taskCompleteds.isEmpty())) {
 			results.add(aeiObjects.getWork());
 			aeiObjects.getTasks().stream().filter(
 					t -> StringUtils.equalsIgnoreCase(t.getActivityToken(), aeiObjects.getWork().getActivityToken()))
@@ -364,22 +409,22 @@ public class ManualProcessor extends AbstractManualProcessor {
 		return results;
 	}
 
-	/**
-	 * 获取当前参与流转的已办,同时过滤路由决策在路由中的已办.
-	 * 
-	 * @param aeiObjects
-	 * @return
-	 * @throws Exception
-	 */
-	private List<TaskCompleted> executingJoinInquireCheckRouteNameTaskCompleteds(AeiObjects aeiObjects)
-			throws Exception {
-		List<TaskCompleted> taskCompleteds = aeiObjects
-				.getJoinInquireTaskCompletedsWithActivityToken(aeiObjects.getWork().getActivityToken());
-		List<String> routeNames = aeiObjects.getRoutes().stream().map(Route::getName).collect(Collectors.toList());
-		taskCompleteds = taskCompleteds.stream().filter(t -> routeNames.contains(t.getRouteName()))
-				.collect(Collectors.toList());
-		return taskCompleteds;
-	}
+//	/**
+//	 * 获取当前参与流转的已办,同时过滤路由决策在路由中的已办.
+//	 * 
+//	 * @param aeiObjects
+//	 * @return
+//	 * @throws Exception
+//	 */
+//	private List<TaskCompleted> executingJoinInquireCheckRouteNameTaskCompleteds(AeiObjects aeiObjects)
+//			throws Exception {
+//		List<TaskCompleted> taskCompleteds = aeiObjects
+//				.getJoinInquireTaskCompletedsWithActivityToken(aeiObjects.getWork().getActivityToken());
+//		List<String> routeNames = aeiObjects.getRoutes().stream().map(Route::getName).collect(Collectors.toList());
+//		taskCompleteds = taskCompleteds.stream().filter(t -> routeNames.contains(t.getRouteName()))
+//				.collect(Collectors.toList());
+//		return taskCompleteds;
+//	}
 
 	@SuppressWarnings("unchecked")
 	@Deprecated(forRemoval = true, since = "8.0")
@@ -396,15 +441,15 @@ public class ManualProcessor extends AbstractManualProcessor {
 						DEPRECATED_WORK_FIELD_MANUALTASKIDENTITYLIST));
 				identities = aeiObjects.business().organization().identity().list(identities);
 			}
-			if (identities.isEmpty() && aeiObjects
-					.getJoinInquireTaskCompletedsWithActivityToken(aeiObjects.getWork().getActivityToken()).isEmpty()) {
+			if (identities.isEmpty() && aeiObjects.getJoinInquireTaskCompletedsRouteNameAvailableWithActivityToken(
+					aeiObjects.getWork().getActivityToken()).isEmpty()) {
 				identities = calculateTaskIdentities(aeiObjects, manual);
 				LOGGER.info("工作设置的处理人已经全部无效,且没有已办,重新计算当前环节所有处理人进行处理,标题:{}, id:{}, 设置的处理人:{}.",
 						aeiObjects.getWork()::getTitle, aeiObjects.getWork()::getId, identities::toString);
-				matrix = manual.identitiesToManualTaskIdentityMatrix(identities);
-				// 重新绑定到对象上.
 			}
+			matrix = manual.identitiesToManualTaskIdentityMatrix(identities);
 		}
+		// 重新绑定到对象上.
 		aeiObjects.getWork().setManualTaskIdentityMatrix(matrix);
 		return matrix;
 	}
