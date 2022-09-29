@@ -113,7 +113,9 @@ public class ActionLoginAndGetPrivateInfo extends BaseAction {
                 if (userinfo != null && StringUtils.isNotEmpty(userinfo.getUser_ticket())) {
                     String url = Config.qiyeweixin().getApiAddress() + "/cgi-bin/auth/getuserdetail?access_token="
                             + Config.qiyeweixin().corpAccessToken();
-                    if (logger.isDebugEnabled()) logger.debug("getuserdetail url:{}.", url);
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("getuserdetail url:{}.", url);
+                    }
                     QiyeweixinPostUserDetailBody body = new QiyeweixinPostUserDetailBody();
                     body.setUser_ticket(userinfo.getUser_ticket());
                     QiyeweixinGetUserDetailResp resp = HttpConnection.postAsObject(url, null, body.toString(), QiyeweixinGetUserDetailResp.class);
@@ -123,6 +125,9 @@ public class ActionLoginAndGetPrivateInfo extends BaseAction {
                         else errCode = resp.getErrcode();
                         String errMsg = resp == null ? "" : resp.getErrmsg();
                         throw new ExceptionQywxResponse(errCode, errMsg);
+                    }
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("获取到企业微信用户详细信息： {}.", resp.toString());
                     }
                     String userId = resp.getUserid();
                     if (StringUtils.isEmpty(userId)) {
@@ -146,7 +151,7 @@ public class ActionLoginAndGetPrivateInfo extends BaseAction {
                         person.setGenderType(Objects.equals("1", resp.getGender()) ? GenderType.m : GenderType.f);
                         if (StringUtils.isNotEmpty(resp.getAvatar())) {
                             if (logger.isDebugEnabled()) {
-                                logger.debug("下载微信头像的url： ", resp.getAvatar());
+                                logger.debug("下载微信头像的url： {}.", resp.getAvatar());
                             }
                             byte[] bytes = ConnectionAction.getBinary(resp.getAvatar(), null);
                             if (bytes != null && bytes.length > 0) {
@@ -176,7 +181,9 @@ public class ActionLoginAndGetPrivateInfo extends BaseAction {
                         }
                         emc.commit();
                         CacheManager.notify(Person.class);
-                        logger.info("更新用户信息成功，perso：{}", person.toString());
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("更新用户信息成功，perso：{}", person.toString());
+                        }
                     }
                 } else {
                     logger.info("没有获取到用户认证后的 user_ticket 无法获取用户敏感信息！！！");
