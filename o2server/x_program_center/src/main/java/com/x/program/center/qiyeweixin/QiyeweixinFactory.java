@@ -12,6 +12,7 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
+import org.apache.commons.lang3.StringUtils;
 
 public class QiyeweixinFactory {
 
@@ -59,7 +60,24 @@ public class QiyeweixinFactory {
 		if (resp.getErrcode() != 0) {
 			throw new ExceptionListUser(resp.getErrcode(), resp.getErrmsg());
 		}
-		return resp.getUserlist();
+		// @Date 2022-09-29 因为企业微信api权限调整，无法读取用户手机号码，这里开始填充一个假的值
+		List<User> userList = resp.getUserlist();
+		if (userList != null && !userList.isEmpty()) {
+			return userList.stream().peek(this::setDefaultMobileStr).collect(Collectors.toList());
+
+		}
+		return userList;
+	}
+
+	private void setDefaultMobileStr(User user) {
+		if (user != null && StringUtils.isNotEmpty(user.getUserid()) && StringUtils.isEmpty(user.getMobile())) {
+			String userId = user.getUserid();
+			if (userId.length() < 11) {
+				userId = String.format("%11s", userId).replace(" ","0");
+			}
+			logger.debug("这里是补全11位，{}.", userId);
+			user.setMobile(userId);
+		}
 	}
 
 	public List<User> listUser(Department org) throws Exception {
