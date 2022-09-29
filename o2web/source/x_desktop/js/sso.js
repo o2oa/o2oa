@@ -22,7 +22,7 @@ function getServiceAddress(config, callback){
                 getServiceAddressConfigArray(config, callback);
             }
         }else{
-            MWF.xDesktop.getServiceAddressConfigObject(callback, {
+            getServiceAddressConfigObject(callback, {
                 "host": window.location.hostname,
                 "port": window.location.port || 80
             });
