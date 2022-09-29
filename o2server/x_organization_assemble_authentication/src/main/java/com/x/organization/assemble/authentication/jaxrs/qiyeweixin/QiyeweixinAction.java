@@ -46,4 +46,22 @@ public class QiyeweixinAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "企业微信获取用户详细信息.", action = ActionLoginAndGetPrivateInfo.class)
+	@GET
+	@Path("update/person/detail/{code}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updatePersonInfoFromQywx(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			@Context HttpServletResponse response, @PathParam("code") String code) {
+		ActionResult<ActionLoginAndGetPrivateInfo.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionLoginAndGetPrivateInfo().execute(request, response, effectivePerson, code);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 }
