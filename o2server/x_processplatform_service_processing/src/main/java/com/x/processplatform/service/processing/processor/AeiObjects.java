@@ -321,11 +321,10 @@ public class AeiObjects extends GsonPropertyObject {
 	}
 
 	public List<TaskCompleted> getJoinInquireTaskCompletedsWithActivityToken(String activityToken) throws Exception {
-		List<String> routeNames = this.getRoutes().stream().map(Route::getName).collect(Collectors.toList());
 		return this.getTaskCompleteds().stream()
 				.filter(o -> StringUtils.equalsIgnoreCase(activityToken, o.getActivityToken())
 						&& BooleanUtils.isNotFalse(o.getJoinInquire()))
-				.filter(t -> routeNames.contains(t.getRouteName())).collect(Collectors.toList());
+				.collect(Collectors.toList());
 	}
 
 	public List<TaskCompleted> getJoinInquireTaskCompletedsRouteNameAvailableWithActivityToken(String activityToken)
