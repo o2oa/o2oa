@@ -300,11 +300,11 @@ public class ManualProcessor extends AbstractManualProcessor {
 			return true;
 		}
 		/* 使用脚本计算 */
-		if (StringUtils.isNotEmpty(manual.getTaskScriptText())) {
+		if (StringUtils.isNotEmpty(manual.getTaskScript())) {
 			return true;
 		} else {
-			if (StringUtils.isNotEmpty(manual.getTaskScript())) {
-				String clean = manual.getTaskScript().replaceAll("/\\*[^*]*(?:\\*(?!/)[^*]*)*\\*/|//.*", "");
+			if (StringUtils.isNotEmpty(manual.getTaskScriptText())) {
+				String clean = manual.getTaskScriptText().replaceAll("/\\*[^*]*(?:\\*(?!/)[^*]*)*\\*/|//.*", "");
 				clean = StringUtils.trimToEmpty(clean);
 				if (StringUtils.isNotBlank(clean)) {
 					return true;
