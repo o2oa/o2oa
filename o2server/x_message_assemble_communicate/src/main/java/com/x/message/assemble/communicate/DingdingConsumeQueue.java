@@ -1,6 +1,7 @@
 package com.x.message.assemble.communicate;
 
 import java.net.URLEncoder;
+import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -47,19 +48,21 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 							+ URLEncoder.encode(openUrl, DefaultCharset.name);
 					LOGGER.info("钉钉pc 打开消息 url：{}", ()-> dingtalkUrl);
 					// 内容管理
+					String cardTitle = UUID.randomUUID().toString(); // message.getTitle() 使用uuid  消息重发的问题
 					if (MessageConnector.TYPE_CMS_PUBLISH.equals(message.getType())
 							|| MessageConnector.TYPE_CMS_PUBLISH_TO_CREATOR.equals(message.getType())) {
 						String categoryName = DingdingConsumeQueue.OuterMessageHelper.getPropertiesFromBody("categoryName", message.getBody());
 						if (StringUtils.isEmpty(categoryName)) {
 							categoryName = "信息通知";
 						}
-						m.setActionCardMsg("【"+categoryName+"】", message.getTitle(), dingtalkUrl);
+						m.setActionCardMsg(cardTitle, "# 【"+categoryName+"】 \n " +message.getTitle(), dingtalkUrl);
 					} else {
 						String processName = DingdingConsumeQueue.OuterMessageHelper.getPropertiesFromBody("processName", message.getBody());
 						if (StringUtils.isEmpty(processName)) {
 							processName = "工作通知";
 						}
-						m.setActionCardMsg("【"+processName+"】", "# 【"+processName+"】 \n " + message.getTitle(), dingtalkUrl);
+
+						m.setActionCardMsg(cardTitle, "# 【"+processName+"】 \n " + message.getTitle(), dingtalkUrl);
 					}
 //
 //					m.getMsg().setMsgtype("markdown");
