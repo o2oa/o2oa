@@ -1091,6 +1091,21 @@ o2.xApplication.systemconfig.LP = {
             "attendanceSyncAgentId": "考勤打卡应用ID",
             "attendanceSyncSecret": "考勤打卡应用Secret",
 
+            "getUserPrivateInfoMessageTitle": "企业微信获取个人隐私信息的消息发送",
+            "getUserPrivateInfoMessageDesc": "企业微信新版本同步API限制了用户隐私信息（比如：手机号码、邮箱等）的获取，目前同步程序只能获取到用户姓名和userId。下面的消息发送功能是给用户发送一个授权获取隐私信息的消息，用户点击这个消息后，本程序就能读取到需要的用户信息！",
+            "getUserPrivateInfoMessageConsumerList": "消息接收者",
+            "getUserPrivateInfoMessageFormTitle": "消息标题",
+            "getUserPrivateInfoMessageFormContent": "消息内容",
+            "getUserPrivateInfoMessageFormTitleDefault": "【授权获取个人信息】",
+            "getUserPrivateInfoMessageFormContentDefault": "应用需要获取您的个人信息，点击授权！",
+            "getUserPrivateInfoMessageConsumerEmpty": "请先选择消息接收者！",
+            "getUserPrivateInfoMessageFormTitleEmpty": "消息标题不能为空！",
+            "getUserPrivateInfoMessageFormContentEmpty": "消息内容不能为空！",
+            "getUserPrivateInfoMessageConfirmTitle": "提示",
+            "getUserPrivateInfoMessageConfirmText": "确定要给所有选择的用户和组织下人员发送一条获取隐私信息的企业微信消息？",
+            "getUserPrivateInfoMessageSendBtn": "发送消息",
+            "getUserPrivateInfoMessageSendSuccess": "发送消息成功，请稍后在企业微信中查收！",
+
 
             "syncCronInfo": "回调信号触发同步检查,默认每10分钟运行一次,如果期间内有企业微信回调信号接收到,那么触发同步任务进行人员同步.(需要在企业微信设置回调配置)",
             "forceSyncCronInfo": "强制同步定时设置，默认在每天的8点和12点强制进行同步人员和组织",

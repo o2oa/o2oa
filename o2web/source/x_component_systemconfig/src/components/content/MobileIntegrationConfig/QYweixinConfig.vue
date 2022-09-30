@@ -79,8 +79,24 @@
       <div style="text-align: center; margin-bottom: 50px">
         <button class="mainColor_bg" @click="saveDingDing">{{lp._integrationConfig.qywenxinText.saveText}}</button>
       </div>
+
     </div>
 
+    <div class="systemconfig_title">{{lp._integrationConfig.qywenxinText.getUserPrivateInfoMessageTitle}}</div>
+    <div class="systemconfig_item_info" v-html="lp._integrationConfig.qywenxinText.getUserPrivateInfoMessageDesc"></div>
+    <div >
+      <BasePersonAndOrg :label="lp._integrationConfig.qywenxinText.getUserPrivateInfoMessageConsumerList" v-model:value="messageConsumerList"/>
+      <div class="item_el_info"></div>
+      <BaseInput :label="lp._integrationConfig.qywenxinText.getUserPrivateInfoMessageFormTitle" v-model:value="messageFormTitle"
+                 :label-style="labelStyle"></BaseInput>
+      <div class="item_el_info"></div>
+      <BaseInput :label="lp._integrationConfig.qywenxinText.getUserPrivateInfoMessageFormContent" v-model:value="messageFormContent"
+                 :label-style="labelStyle"></BaseInput>
+      <div class="item_el_info"></div>
+      <div style="text-align: center; margin-bottom: 50px">
+        <button class="mainColor_bg" @click="sendGetPrivateInfoMessage($event)">{{lp._integrationConfig.qywenxinText.getUserPrivateInfoMessageSendBtn}}</button>
+      </div>
+    </div>
 
   </div>
 
@@ -94,9 +110,13 @@ import BaseSelect from '@/components/item/BaseSelect.vue';
 import BaseInput from '@/components/item/BaseInput.vue';
 import BaseCron from '@/components/item/BaseCron.vue';
 import BaseBoolean from '@/components/item/BaseBoolean.vue';
+import BasePersonAndOrg from '@/components/item/BasePersonAndOrg.vue';
 
 const configData = ref({});
 const portalList = ref([]);
+const messageConsumerList = ref([]);
+const messageFormTitle = ref();
+const messageFormContent = ref("");
 
 const labelStyle={
   minWidth: '180px',
@@ -108,8 +128,62 @@ const saveDingDing = async () => {
   await saveConfigData('qiyeweixin', configData.value);
   component.notice(lp._integrationConfig.qywenxinText.saveSuccess, 'success');
 }
+const sendGetPrivateInfoMessage = (ev) => {
+    const list = messageConsumerList.value;
+    if (list.length === 0) {
+      component.notice(lp._integrationConfig.qywenxinText.getUserPrivateInfoMessageConsumerEmpty, "error");
+      return
+    }
+    component.confirm(
+      "warn",
+      ev,
+      lp._integrationConfig.qywenxinText.getUserPrivateInfoMessageConfirmTitle,
+      { html: lp._integrationConfig.qywenxinText.getUserPrivateInfoMessageConfirmText },
+      560,
+      230,
+      function () {
+        const body = {
+          consumerList: list,
+          messageTitle: messageFormTitle.value,
+          messageContent: messageFormContent.value
+        }
+        o2.Actions.load('x_program_center').QiyeweixinAction['getPrivateInfoMessage'](body, ()=>{
+          component.notice(lp._integrationConfig.qywenxinText.getUserPrivateInfoMessageSendSuccess, "success");
+        });
+        this.close();
+      },
+      function () {
+        this.close();
+      },
+      null,
+      component.content
+    );
+  
+}
+
+// 选择组织或人员 发送消息用
+const choosePeopleOrOrg = () => {
+  o2.requireApp('Selector', 'package', ()=>{
+    new MWF.O2Selector(component.content, {
+      count: 1,
+      type: 'identity',
+      title: lp._processConfig.selectMaintenanceIdentity,
+      values: (processData.value.maintenanceIdentity) ? [processData.value.maintenanceIdentity] : [],
+      onComplete: (items)=>{
+        if (items && items.length){
+          processData.value.maintenanceIdentity = items[0].data.distinguishedName
+        }else{
+          processData.value.maintenanceIdentity = '';
+        }
+        saveConfig('processPlatform', 'maintenanceIdentity', processData.value.maintenanceIdentity);
+      }
+    })
+  })
+}
 
 const load = ()=>{
+  messageFormTitle.value = lp._integrationConfig.qywenxinText.getUserPrivateInfoMessageFormTitleDefault;
+  messageFormContent.value = lp._integrationConfig.qywenxinText.getUserPrivateInfoMessageFormContentDefault;
   getConfigData('qiyeweixin').then((data)=>{
     configData.value = data;
   });

@@ -121,4 +121,23 @@ public class QiyeweixinAction extends StandardJaxrsAction {
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+
+
+	@JaxrsMethodDescribe(value = "发送获取隐私信息请求的消息.", action = ActionSendGetPrivateInfoMessage.class)
+	@POST
+	@Path("send/getprivateinfo/message")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void getPrivateInfoMessage(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+								JsonElement jsonElement) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<ActionSendGetPrivateInfoMessage.Wo> result = new ActionResult<>();
+		try {
+			result = new ActionSendGetPrivateInfoMessage().execute(jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
+	}
 }
