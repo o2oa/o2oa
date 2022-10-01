@@ -22,6 +22,8 @@
 !/o2server/configSample/web.json
 /o2server/*/src/main/webapp/describe/
 /o2server/*/src/main/webapp/WEB-INF/
+# mnist图片资源
+!/o2server/x_program_center/src/main/webapp/WEB-INF/mnist/*
 **/.settings/
 **/.classpath
 **/.project
