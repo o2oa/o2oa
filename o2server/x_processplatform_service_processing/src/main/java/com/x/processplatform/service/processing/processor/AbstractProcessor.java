@@ -101,17 +101,11 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 				aeiObjects.entityManagerContainer().commit();
 			}
 			return work.getId();
-		} catch (
-
-		Exception e) {
+		} catch (Exception e) {
 			LOGGER.error(e);
 			return null;
 		}
 	}
-
-//	private void arriveCleanManualTaskIdentityList(AeiObjects aeiObjects) {
-//		aeiObjects.getWork().setManualTaskIdentityList(new ArrayList<>());
-//	}
 
 	private void arriveCleanManualTaskIdentityMatrix(AeiObjects aeiObjects) {
 		aeiObjects.getWork().setManualTaskIdentityMatrix(new ManualTaskIdentityMatrix());
@@ -332,9 +326,7 @@ public abstract class AbstractProcessor extends AbstractBaseProcessor {
 				// 执行AfterInquireScript中的代码可能修改了data数据.
 				aeiObjects.entityManagerContainer().commit();
 			}
-		} catch (
-
-		Exception e) {
+		} catch (Exception e) {
 			LOGGER.error(e);
 		}
 		return results;
