@@ -1,7 +1,7 @@
 package com.x.message.assemble.communicate;
 
 import java.net.URLEncoder;
-import java.util.UUID;
+import java.util.Random;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -48,7 +48,7 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 							+ URLEncoder.encode(openUrl, DefaultCharset.name);
 					LOGGER.info("钉钉pc 打开消息 url：{}", ()-> dingtalkUrl);
 					// 内容管理
-					String cardTitle = UUID.randomUUID().toString(); // message.getTitle() 使用uuid  消息重发的问题
+					String cardTitle = cardTitle(message.getTitle()); // message.getTitle() 使用uuid  消息重发的问题
 					if (MessageConnector.TYPE_CMS_PUBLISH.equals(message.getType())
 							|| MessageConnector.TYPE_CMS_PUBLISH_TO_CREATOR.equals(message.getType())) {
 						String categoryName = DingdingConsumeQueue.OuterMessageHelper.getPropertiesFromBody("categoryName", message.getBody());
@@ -87,6 +87,19 @@ public class DingdingConsumeQueue extends AbstractQueue<Message> {
 				success(message.getId());
 			}
 		}
+	}
+
+	private String cardTitle(String title) {
+		String retTitle = title;
+		if (StringUtils.isNotEmpty(retTitle)) {
+			if (retTitle.length() > 46) {
+				retTitle = retTitle.substring(0, 46);
+			}
+			Random r = new Random();
+			int i = r.nextInt(9999-1000) + 1000;
+			retTitle = retTitle + i;
+		}
+		return retTitle;
 	}
 
 	/**
