@@ -19,7 +19,7 @@ MWF.xApplication.process.FormDesigner.Module.Elcascader = MWF.FCElcascader = new
 		html += " :size=\"size\"";
 		html += " :clearable=\"clearable\"";
 		html += " :popper-class=\"popperClass\"";
-		html += " :show-all-levels=\"multiple\"";
+		html += " :show-all-levels=\"showAllLevels\"";
 		html += " :collapse-tags=\"collapseTags\"";
 		html += " :separator=\"separator\"";
 
