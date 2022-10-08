@@ -103,7 +103,7 @@ MWF.xApplication.process.Xform.Elautocomplete = MWF.APPElautocomplete =  new Cla
     },
     _createElementHtml: function(){
         var html = "<el-autocomplete";
-        html += " v-model=\""+this.json.id+"\"";
+        html += " v-model=\""+this.json.$id+"\"";
         html += " :placement=\"placement\"";
         html += " :popper-class=\"popperClass\"";
         html += " :trigger-on-focus=\"triggerOnFocus\"";
