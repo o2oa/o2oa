@@ -1574,7 +1574,7 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 		var moduleNodes = this.form._getModuleNodes(this.node);
 
 		//拆分状态
-		var sectionKey = this.options.sectionKey || this.template._getSectionBy();
+		var sectionKey = this.options.sectionKey || this.template.sectionBy;
 
 		moduleNodes.each(function (node) {
 			if (node.get("MWFtype") !== "form") {

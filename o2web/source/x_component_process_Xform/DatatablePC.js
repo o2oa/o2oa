@@ -2152,7 +2152,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 		var moduleNodes = this.form._getModuleNodes(this.node, true);
 
 		//合并状态或拆分状态
-		var sectionKey = this.options.sectionKey || this.datatable._getSectionBy();
+		var sectionKey = this.options.sectionKey || this.datatable.sectionBy;
 		moduleNodes.each(function (node) {
 			var mwfType = node.get("MWFtype");
 			if (mwfType === "form")return;
