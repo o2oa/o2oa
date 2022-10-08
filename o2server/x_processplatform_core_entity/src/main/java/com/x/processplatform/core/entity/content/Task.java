@@ -158,6 +158,19 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 		this.creatorUnit = work.getCreatorUnit();
 		this.workCreateType = work.getWorkCreateType();
 		this.expireTime = expireTime;
+		this.routeName = "";
+		this.opinion = "";
+		this.modified = false;
+		this.allowRapid = allowRapid;
+		this.copyProjectionFields(work);
+		updateRoute(routes);
+	}
+
+	public Task updateRoute(List<Route> routes) {
+		this.routeList = new ArrayList<>();
+		this.routeNameList = new ArrayList<>();
+		this.routeOpinionList = new ArrayList<>();
+		this.routeDecisionOpinionList = new ArrayList<>();
 		if (ListTools.isNotEmpty(routes)) {
 			routes.stream().sorted(Comparator.comparing(Route::getOrderNumber, Comparator.nullsLast(Integer::compareTo))
 					.thenComparing(Route::getUpdateTime, Date::compareTo)).forEach(o -> {
@@ -167,11 +180,7 @@ public class Task extends SliceJpaObject implements ProjectionInterface {
 						this.routeDecisionOpinionList.add(StringUtils.trimToEmpty(o.getDecisionOpinion()));
 					});
 		}
-		this.routeName = "";
-		this.opinion = "";
-		this.modified = false;
-		this.allowRapid = allowRapid;
-		this.copyProjectionFields(work);
+		return this;
 	}
 
 	public TaskProperties getProperties() {
