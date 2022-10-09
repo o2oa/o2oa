@@ -11,7 +11,7 @@
         <form>
           <BaseInput :label="lp._passwordConfig.initialPasswordText" :label-style="{width: '100px'}" input-type="password" :show-password="true" v-model:value="passwordText"></BaseInput>
           <div class="item_info" style="padding-left: 20px">
-            <button class="mainColor_bg" style="width: 100px" @click="saveInitialPassword">{{lp.operation.ok}}</button>
+            <button class="mainColor_bg" style="width: 100px" @click="saveInitialPassword($event, 'text')">{{lp.operation.ok}}</button>
           </div>
         </form>
 
@@ -21,7 +21,7 @@
         <div class="item_info">{{lp._passwordConfig.initialPasswordType.scriptInfo}}</div>
         <BaseScript ref="scriptEditor" :label="lp._passwordConfig.passwordScript" :value="passwordScript" @blur="(v)=>{passwordScript = v}"  @save="(v)=>{passwordScript = v}"></BaseScript>
         <div class="item_info">
-          <button class="mainColor_bg" style="width: 100px" @click="saveInitialPassword">{{lp.operation.ok}}</button>
+          <button class="mainColor_bg" style="width: 100px" @click="saveInitialPassword($event, 'script')">{{lp.operation.ok}}</button>
         </div>
       </div>
     </div>
@@ -182,6 +182,7 @@ const savePasswordRuleConfig = async ()=>{
 }
 
 const saveInitialPasswordConfig = async (type) => {
+  debugger;
   initialPasswordType.value = type;
   personData.value.extension.initialPasswordType = type || initialPasswordType.value;
   switch (initialPasswordType.value) {
@@ -202,8 +203,8 @@ const saveInitialPasswordConfig = async (type) => {
 
   await saveConfigData('person', personData.value);
 }
-const saveInitialPassword = async (e) => {
-  saveInitialPasswordConfig()
+const saveInitialPassword = async (e, type) => {
+  saveInitialPasswordConfig(type)
   component.notice(lp._passwordConfig.saveSuccess, "success");
   if (e) e.preventDefault();
 }
