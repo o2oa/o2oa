@@ -120,9 +120,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 							storageObject.getStorage());
 					if (null != mapping) {
 						/* 忽略设置强制不索引图片 */
-						return ExtractTextTools.extract(storageObject.readContent(mapping), storageObject.getName(),
-								Config.query().getExtractOffice(), Config.query().getExtractPdf(),
-								Config.query().getExtractText(), false);
+						return ExtractTextTools.extract(storageObject.readContent(mapping), storageObject.getName());
 					} else {
 						logger.print(
 								"storageMapping is null can not extract storageObject text, storageObject:{}, name:{}.",
