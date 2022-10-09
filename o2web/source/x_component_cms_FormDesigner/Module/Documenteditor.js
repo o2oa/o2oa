@@ -3,5 +3,8 @@ MWF.xDesktop.requireApp("process.FormDesigner", "Module.Documenteditor", null, f
 MWF.xDesktop.requireApp("cms.FormDesigner", "Property", null, false);
 MWF.xApplication.cms.FormDesigner.Module.Documenteditor = MWF.CMSFCDocumenteditor = new Class({
 	Extends: MWF.FCDocumenteditor,
-	Implements : [MWF.CMSFCMI]
+	Implements : [MWF.CMSFCMI],
+	options: {
+		"propertyPath": "../x_component_cms_FormDesigner/Module/Documenteditor/documenteditor.html"
+	}
 });
