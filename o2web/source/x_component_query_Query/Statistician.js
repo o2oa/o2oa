@@ -423,6 +423,7 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
         this.loadChartBar();
     },
     toFloat: function(value){
+        if(o2.typeOf(value) === "number")return value.toFloat();
         if (value.substr(0,1)==="￥") value = value.substr(1, value.length);
         value = value.replace(/,/g, "");
         value = value.replace(/\s/g, "");
