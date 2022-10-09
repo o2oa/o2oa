@@ -10,6 +10,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 
 	public static class HtmlToWordResultObject extends GsonPropertyObject {
 
+		private static final long serialVersionUID = 2715784686635081821L;
+		
 		private byte[] bytes;
 		private String name;
 		private String person;

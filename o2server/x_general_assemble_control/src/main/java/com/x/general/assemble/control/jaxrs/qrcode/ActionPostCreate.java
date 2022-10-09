@@ -11,12 +11,14 @@ import com.x.base.core.project.jaxrs.WoFile;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public class ActionPostCreate extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionPostCreate.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
-		LOGGER.debug("effectivePerson: {}.", effectivePerson.getDistinguishedName());
+		LOGGER.debug("effectivePerson: {}.", effectivePerson::getDistinguishedName);
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		ActionResult<Wo> result = new ActionResult<>();
 		byte[] bytes = this.create(wi.getWidth(), wi.getHeight(), wi.getText());
@@ -25,13 +27,17 @@ public class ActionPostCreate extends BaseAction {
 		return result;
 	}
 
+	@Schema(name = "com.x.general.assemble.control.jaxrs.qrcode.ActionPostCreate$Wi")
 	public class Wi extends GsonPropertyObject {
 		private static final long serialVersionUID = -670631145209495465L;
-		@FieldDescribe("转换文本")
+		@FieldDescribe("转换文本.")
+		@Schema(description = "转换文本.")
 		private String text;
 		@FieldDescribe("图像宽度,默认200.")
+		@Schema(description = "图像宽度,默认200.")
 		private Integer width;
 		@FieldDescribe("图像高度,默认200.")
+		@Schema(description = "图像高度,默认200.")
 		private Integer height;
 
 		public String getText() {
@@ -60,6 +66,7 @@ public class ActionPostCreate extends BaseAction {
 
 	}
 
+	@Schema(name = "com.x.general.assemble.control.jaxrs.qrcode.ActionPostCreate$Wo")
 	public class Wo extends WoFile {
 		private static final long serialVersionUID = -6210739068105920249L;
 

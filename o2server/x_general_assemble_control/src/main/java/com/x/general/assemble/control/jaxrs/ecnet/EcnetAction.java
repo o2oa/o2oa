@@ -20,14 +20,27 @@ import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.general.assemble.control.jaxrs.qrcode.ActionPostCreate;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "EcnetAction", description = "文本纠错.")
 @Path("ecnet")
-@JaxrsDescribe("文本纠错")
+@JaxrsDescribe("文本纠错.")
 public class EcnetAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(EcnetAction.class);
+	private static final Logger logger = LoggerFactory.getLogger(EcnetAction.class);
+	private static final String OPERATIONID_PREFIX = "EcnetAction::";
 
-	@JaxrsMethodDescribe(value = "文本纠错.", action = ActionCheck.class)
+	@Operation(summary = "文本纠错检查.", operationId = OPERATIONID_PREFIX + "check", responses = { @ApiResponse(content = {
+			@Content(schema = @Schema(implementation = ActionCheck.Wo.class)) }) }, requestBody = @RequestBody(content = {
+					@Content(schema = @Schema(implementation = ActionCheck.Wi.class)) }))
+	@JaxrsMethodDescribe(value = "文本纠错检查.", action = ActionCheck.class)
 	@POST
 	@Path("check")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -39,7 +52,7 @@ public class EcnetAction extends StandardJaxrsAction {
 		try {
 			result = new ActionCheck().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			logger.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));

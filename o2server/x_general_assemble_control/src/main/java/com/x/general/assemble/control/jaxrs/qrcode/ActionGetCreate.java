@@ -6,13 +6,15 @@ import com.x.base.core.project.jaxrs.WoFile;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public class ActionGetCreate extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionGetCreate.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, Integer width, Integer height, String text)
 			throws Exception {
-		LOGGER.debug("effectivePerson: {}.", effectivePerson.getDistinguishedName());
+		LOGGER.debug("effectivePerson: {}.", effectivePerson::getDistinguishedName);
 		ActionResult<Wo> result = new ActionResult<>();
 		byte[] bytes = this.create(width, height, text);
 		Wo wo = new Wo(bytes, this.contentType(false, FILENAME), this.contentDisposition(false, FILENAME));
@@ -20,7 +22,9 @@ public class ActionGetCreate extends BaseAction {
 		return result;
 	}
 
+	@Schema(name = "com.x.general.assemble.control.jaxrs.qrcode.ActionGetCreate$Wo")
 	public class Wo extends WoFile {
+
 		private static final long serialVersionUID = -6210739068105920249L;
 
 		public Wo(byte[] bytes, String contentType, String contentDisposition) {

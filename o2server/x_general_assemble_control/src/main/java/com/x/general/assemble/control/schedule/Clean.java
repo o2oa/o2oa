@@ -14,6 +14,7 @@ import org.quartz.JobExecutionException;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.JpaObject_;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -23,22 +24,20 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.utils.time.TimeStamp;
 import com.x.general.assemble.control.ThisApplication;
 import com.x.general.core.entity.GeneralFile;
-import com.x.general.core.entity.GeneralFile_;
 
 public class Clean extends AbstractJob {
 
-	private static Logger logger = LoggerFactory.getLogger(Clean.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Clean.class);
 
 	@Override
 	public void schedule(JobExecutionContext jobExecutionContext) throws Exception {
-		try{
-			logger.print("开始定时清理过期的缓存附件！");
+		try {
+			LOGGER.print("开始定时清理过期的缓存附件！");
 			TimeStamp stamp = new TimeStamp();
 			Long instantCount = this.clearGeneralFile();
-			logger.print("清理过期的缓存附件：{} 条, 耗时: {}.", instantCount,
-					stamp.consumingMilliseconds());
+			LOGGER.print("清理过期的缓存附件：{} 条, 耗时: {}.", instantCount, stamp.consumingMilliseconds());
 		} catch (Exception e) {
-			logger.error(e);
+			LOGGER.error(e);
 			throw new JobExecutionException(e);
 		}
 	}
@@ -52,14 +51,20 @@ public class Clean extends AbstractJob {
 				if (!os.isEmpty()) {
 					emc.beginTransaction(GeneralFile.class);
 					for (GeneralFile o : os) {
-						StorageMapping gfMapping = ThisApplication.context().storageMappings().get(GeneralFile.class,
+						StorageMapping mapping = ThisApplication.context().storageMappings().get(GeneralFile.class,
 								o.getStorage());
-						o.deleteContent(gfMapping);
+						if (null != mapping) {
+							o.deleteContent(mapping);
+						} else {
+							LOGGER.warn("storage mapping not exist:{}.", o.getStorage());
+						}
 						emc.remove(o);
 					}
 					emc.commit();
 					count += os.size();
 				}
+			} catch (Exception e) {
+				LOGGER.error(e);
 			}
 		} while (ListTools.isNotEmpty(os));
 		return count;
@@ -71,7 +76,7 @@ public class Clean extends AbstractJob {
 		CriteriaQuery<GeneralFile> cq = cb.createQuery(GeneralFile.class);
 		Root<GeneralFile> root = cq.from(GeneralFile.class);
 		Date limit = DateTools.floorDate(new Date(), 0);
-		Predicate p = cb.lessThan(root.get(GeneralFile_.createTime), limit);
+		Predicate p = cb.lessThan(root.get(JpaObject_.createTime), limit);
 		return em.createQuery(cq.select(root).where(p)).setMaxResults(100).getResultList();
 	}
 

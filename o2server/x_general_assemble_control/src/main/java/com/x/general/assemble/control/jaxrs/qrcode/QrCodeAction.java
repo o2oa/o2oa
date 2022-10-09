@@ -22,28 +22,23 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "QrCodeAction", description = "二维码.")
 @Path("qrcode")
 @JaxrsDescribe("二维码")
 public class QrCodeAction extends StandardJaxrsAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(QrCodeAction.class);
+	private static final String OPERATIONID_PREFIX = "QrCodeAction::";
 
-	@JaxrsMethodDescribe(value = "POST方法生成二维码图像.", action = ActionPostCreate.class)
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	public void postCreate(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-			JsonElement jsonElement) {
-		ActionResult<ActionPostCreate.Wo> result = new ActionResult<>();
-		EffectivePerson effectivePerson = this.effectivePerson(request);
-		try {
-			result = new ActionPostCreate().execute(effectivePerson, jsonElement);
-		} catch (Exception e) {
-			LOGGER.error(e, effectivePerson, request, jsonElement);
-			result.error(e);
-		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-	}
-
+	@Operation(summary = "GET方法生成二维码图像.", operationId = OPERATIONID_PREFIX + "getCreate", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionGetCreate.Wo.class)) }) })
 	@JaxrsMethodDescribe(value = "GET方法生成二维码图像.", action = ActionGetCreate.class)
 	@GET
 	@Path("width/{width}/height/{height}/text/{text}")
@@ -58,6 +53,26 @@ public class QrCodeAction extends StandardJaxrsAction {
 			result = new ActionGetCreate().execute(effectivePerson, width, height, text);
 		} catch (Exception e) {
 			LOGGER.error(e, effectivePerson, request, null);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@Operation(summary = "POST方法生成二维码图像.", operationId = OPERATIONID_PREFIX + "postCreate", responses = {
+			@ApiResponse(content = {
+					@Content(schema = @Schema(implementation = ActionPostCreate.Wo.class)) }) }, requestBody = @RequestBody(content = {
+							@Content(schema = @Schema(implementation = ActionPostCreate.Wi.class)) }))
+	@JaxrsMethodDescribe(value = "POST方法生成二维码图像.", action = ActionPostCreate.class)
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void postCreate(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+			JsonElement jsonElement) {
+		ActionResult<ActionPostCreate.Wo> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionPostCreate().execute(effectivePerson, jsonElement);
+		} catch (Exception e) {
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
