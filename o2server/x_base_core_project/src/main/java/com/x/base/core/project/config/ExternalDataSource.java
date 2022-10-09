@@ -44,7 +44,7 @@ public class ExternalDataSource extends ConfigObject {
 
 	public static final Integer DEFAULT_SLOWSQLMILLIS = 2000;
 
-	public static final String DEFAULT_LOGLEVEL = "WARN";
+	public static final String DEFAULT_LOGLEVEL = "ERROR";
 
 	public static final String DEFAULT_TRANSACTIONISOLATION = "read-committed";
 
