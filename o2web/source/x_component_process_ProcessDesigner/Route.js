@@ -991,8 +991,8 @@ MWF.xApplication.process.ProcessDesigner.Route = new Class({
         }
     },
     _setEditProperty: function (name, input, oldValue) {
-        debugger;
-        if (name === "passExpired" || name === "passSameTarget"  || name === "sole" || name === "soleDirect") {
+        // if (name === "passExpired" || name === "passSameTarget"  || name === "sole" || name === "soleDirect") {
+        if (name === "passExpired" || name === "passSameTarget"  || name === "sole") {
             if (this.data[name]) {
                 if (this.fromActivity) {
                     this.fromActivity.routes.each(function(route){
