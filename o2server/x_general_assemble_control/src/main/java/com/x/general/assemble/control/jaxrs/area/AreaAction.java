@@ -23,14 +23,27 @@ import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.general.assemble.control.jaxrs.qrcode.ActionGetCreate;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "AreaAction", description = "行政区域.")
 @Path("area")
-@JaxrsDescribe("行政区域")
+@JaxrsDescribe("行政区域.")
 public class AreaAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(AreaAction.class);
+	private static final Logger logger = LoggerFactory.getLogger(AreaAction.class);
+	private static final String OPERATIONID_PREFIX = "AreaAction::";
 
-	@JaxrsMethodDescribe(value = "获取指定的Attachment信息.", action = ActionListProvince.class)
+	@Operation(summary = "列示省级行政区域信息.", operationId = OPERATIONID_PREFIX + "listProvince", responses = {
+			@ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListProvince.Wo.class))) }) })
+	@JaxrsMethodDescribe(value = "列示省级行政区域信息.", action = ActionListProvince.class)
 	@GET
 	@Path("list")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -47,7 +60,10 @@ public class AreaAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "列示指定省下属市", action = ActionListCity.class)
+	@Operation(summary = "列示指定省所属市级行政区域信息.", operationId = OPERATIONID_PREFIX + "listCity", responses = {
+			@ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListCity.Wo.class))) }) })
+	@JaxrsMethodDescribe(value = "列示指定省所属市级行政区域信息.", action = ActionListCity.class)
 	@GET
 	@Path("list/province/{province}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -65,7 +81,10 @@ public class AreaAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "列示指定省/市下属区", action = ActionListStreet.class)
+	@Operation(summary = "列示指定省市所属区行政区域信息.", operationId = OPERATIONID_PREFIX + "listDistrict", responses = {
+			@ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListDistrict.Wo.class))) }) })
+	@JaxrsMethodDescribe(value = "列示指定省市所属区行政区域信息.", action = ActionListDistrict.class)
 	@GET
 	@Path("list/province/{province}/city/{city}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -84,7 +103,10 @@ public class AreaAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "列示指定省/市/区的下属街道", action = ActionListStreet.class)
+	@Operation(summary = "列示指定省市区所属街道行政区域信息.", operationId = OPERATIONID_PREFIX + "listStreet", responses = {
+			@ApiResponse(content = {
+					@Content(array = @ArraySchema(schema = @Schema(implementation = ActionListStreet.Wo.class))) }) })
+	@JaxrsMethodDescribe(value = "列示指定省市区所属街道行政区域信息.", action = ActionListStreet.class)
 	@GET
 	@Path("list/province/{province}/city/{city}/district/{district}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)

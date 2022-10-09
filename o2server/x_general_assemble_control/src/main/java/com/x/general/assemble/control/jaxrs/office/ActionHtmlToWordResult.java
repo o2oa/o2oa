@@ -13,12 +13,14 @@ import com.x.base.core.project.jaxrs.WoFile;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionHtmlToWordResult extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionHtmlToWordResult.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionHtmlToWordResult.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag) throws Exception {
-		logger.info("{}", flag);
+		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 		ActionResult<Wo> result = new ActionResult<>();
 		CacheKey cacheKey = new CacheKey(flag);
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
@@ -35,8 +37,11 @@ class ActionHtmlToWordResult extends BaseAction {
 		}
 		return result;
 	}
-
+	
+	@Schema(name = "com.x.general.assemble.control.jaxrs.office.ActionHtmlToWordResult$Wo")
 	public static class Wo extends WoFile {
+
+		private static final long serialVersionUID = 565805012046296971L;
 
 		public Wo(byte[] bytes, String contentType, String contentDisposition) {
 			super(bytes, contentType, contentDisposition);

@@ -37,7 +37,7 @@ public class SearchAction extends StandardJaxrsAction {
 
 	@Operation(summary = "搜索.", operationId = OPERATIONID_PREFIX + "search", responses = {
 			@ApiResponse(content = { @Content(schema = @Schema(implementation = JsonElement.class)) }) })
-	@JaxrsMethodDescribe(value = "G搜索.", action = ActionSearch.class)
+	@JaxrsMethodDescribe(value = "搜索.", action = ActionSearch.class)
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)

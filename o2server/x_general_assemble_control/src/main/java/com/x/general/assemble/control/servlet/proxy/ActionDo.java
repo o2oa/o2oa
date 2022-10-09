@@ -18,7 +18,7 @@ public class ActionDo extends ProxyServlet {
 
 	private static final long serialVersionUID = -2607395779516788482L;
 
-	private static Logger logger = LoggerFactory.getLogger(ActionDo.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionDo.class);
 
 	@Override
 	protected String rewriteTarget(HttpServletRequest clientRequest) {
@@ -38,7 +38,7 @@ public class ActionDo extends ProxyServlet {
 				return URLDecoder.decode(url, StandardCharsets.UTF_8.name());
 			}
 		} catch (UnsupportedEncodingException e) {
-			logger.error(e);
+			LOGGER.error(e);
 		}
 		return null;
 	}

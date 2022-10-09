@@ -32,6 +32,7 @@ import fr.opensagres.poi.xwpf.converter.xhtml.XHTMLConverter;
 import fr.opensagres.poi.xwpf.converter.xhtml.XHTMLOptions;
 import fr.opensagres.xdocreport.converter.Options;
 import fr.opensagres.xdocreport.converter.docx.poi.xhtml.XWPF2XHTMLConverter;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class ActionToHtml extends BaseAction {
 
@@ -56,7 +57,7 @@ public class ActionToHtml extends BaseAction {
 	 */
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, byte[] bytes, FormDataContentDisposition disposition)
 			throws ParserConfigurationException, IOException, TransformerException, ExceptionUnsupportType {
-		LOGGER.debug("{} execute, fileName:{}.", effectivePerson::getDistinguishedName, disposition::getFileName);
+		LOGGER.debug("execute:{}, fileName:{}.", effectivePerson::getDistinguishedName, disposition::getFileName);
 		ActionResult<Wo> result = new ActionResult<>();
 		Tika tika = new Tika();
 		String type = tika.detect(bytes);
@@ -108,6 +109,7 @@ public class ActionToHtml extends BaseAction {
 		}
 	}
 
+	@Schema(name = "com.x.general.assemble.control.jaxrs.office.ActionToHtml$Wo")
 	public static class Wo extends WrapString {
 		private static final long serialVersionUID = 6581539366197332222L;
 	}

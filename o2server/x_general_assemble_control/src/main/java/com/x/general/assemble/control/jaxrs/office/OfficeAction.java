@@ -26,14 +26,26 @@ import com.x.base.core.project.jaxrs.ResponseFactory;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.general.assemble.control.jaxrs.ecnet.ActionCheck;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "OfficeAction", description = "office文件转换.")
 @Path("office")
-@JaxrsDescribe("office文件转换")
+@JaxrsDescribe("office文件转换.")
 public class OfficeAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(OfficeAction.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(OfficeAction.class);
+	private static final String OPERATIONID_PREFIX = "OfficeAction::";
 
-	@JaxrsMethodDescribe(value = "转换成html.", action = ActionToHtml.class)
+	@Operation(summary = "word转换html.", operationId = OPERATIONID_PREFIX + "input", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionToHtml.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "word转换html.", action = ActionToHtml.class)
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -45,13 +57,15 @@ public class OfficeAction extends StandardJaxrsAction {
 		try {
 			result = new ActionToHtml().execute(effectivePerson, bytes, disposition);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "html转换成word.", action = ActionHtmlToWord.class)
+	@Operation(summary = "html转换word.", operationId = OPERATIONID_PREFIX + "htmlToWord", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionHtmlToWord.Wo.class)) }) })
+	@JaxrsMethodDescribe(value = "html转换word.", action = ActionHtmlToWord.class)
 	@POST
 	@Path("html/to/word")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -63,12 +77,14 @@ public class OfficeAction extends StandardJaxrsAction {
 		try {
 			result = new ActionHtmlToWord().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+			LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@Operation(summary = "html转换成word结果流文件.", operationId = OPERATIONID_PREFIX + "htmlToWordResult", responses = {
+			@ApiResponse(content = { @Content(schema = @Schema(implementation = ActionHtmlToWordResult.Wo.class)) }) })
 	@JaxrsMethodDescribe(value = "html转换成word结果流文件.", action = ActionHtmlToWordResult.class)
 	@GET
 	@Path("html/to/word/result/{flag}")
@@ -80,7 +96,7 @@ public class OfficeAction extends StandardJaxrsAction {
 		try {
 			result = new ActionHtmlToWordResult().execute(effectivePerson, flag);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
