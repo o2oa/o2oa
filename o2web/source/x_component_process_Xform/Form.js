@@ -4104,6 +4104,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                             "choiceList",
                             "delayList",
                             "embedList",
+                            "publishList",
                             "endList",
                             "invokeList",
                             "manualList",
