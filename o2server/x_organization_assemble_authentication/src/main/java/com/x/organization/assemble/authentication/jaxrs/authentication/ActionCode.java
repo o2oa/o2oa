@@ -31,18 +31,18 @@ class ActionCode extends BaseAction {
 				throw new ExceptionDisableCollect();
 			}
 			Wo wo = new Wo();
+			wo.setValue(true);
+			result.setData(wo);
 			Business business = new Business(emc);
 			String id = business.person().getWithCredential(credential);
 			if (StringUtils.isEmpty(id)) {
-				throw new ExceptionPersonNotExist(credential);
+				return result;
 			}
 			Person o = emc.find(id, Person.class);
 			if (!Config.person().isMobile(o.getMobile())) {
 				throw new ExceptionInvalidMobile(o.getMobile());
 			}
 			business.instrument().code().create(o.getMobile());
-			wo.setValue(true);
-			result.setData(wo);
 			return result;
 		}
 	}
