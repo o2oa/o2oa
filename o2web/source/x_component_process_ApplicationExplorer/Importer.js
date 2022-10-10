@@ -166,6 +166,7 @@ MWF.xApplication.process.ApplicationExplorer.Importer = new Class({
                     process.parallelList.each(function(a){a.process = id;});
                     process.serviceList.each(function(a){a.process = id;});
                     process.splitList.each(function(a){a.process = id;});
+                    if(process.publishList)process.publishList.each(function(a){a.process = id;});
 
                     this.actions.updateProcess(process, function(){
                         this.progressBarTextNode.set("text", "Import Process \""+process.name+"\" ...");
