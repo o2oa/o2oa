@@ -701,7 +701,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		copyNode.setStyle("display", "none");
 	},
 	_dragDrop: function(module, flag){
-		var f = flag || !(new Event(event)).control;
+		var f = flag || !(window.event || {}).ctrlKey;
 		if( f ){
 			this.node.setStyles((this.options.mode==="Mobile") ? this.css.formMobileNode : this.css.formNode);
 			this.node.setStyles(this.json.styles);
@@ -812,11 +812,11 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		});
 	},
 	_setInjectActionAreaPosition: function(){
-		var e = new Event(event);
+		var e = window.event || {};
 		var formOffset = this.node.getOffsetParent().getPosition();
 		//var p = this.node.getPosition(this.form.node.getOffsetParent());
-		var y = e.page.y - formOffset.y - 60;
-		var x = e.page.x - formOffset.x - 60;
+		var y = e.pageY - formOffset.y - 60;
+		var x = e.pageX - formOffset.x - 60;
 		this.injectActionArea.setPosition({"x": x, "y": y});
 	},
 	injectBefore : function( e ){
