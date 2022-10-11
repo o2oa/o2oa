@@ -739,11 +739,11 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		});
 	},
 	_setInjectActionAreaPosition: function(){
-		var e = new Event(event);
+		var e = window.event || {};
 		var formOffset = this.form.node.getOffsetParent().getPosition();
 		//var p = this.node.getPosition(this.form.node.getOffsetParent());
-		var y = e.page.y - formOffset.y;
-		var x = e.page.x - formOffset.x;
+		var y = e.pageY - formOffset.y;
+		var x = e.pageX - formOffset.x;
 		this.injectActionArea.setPosition({"x": x, "y": y});
 
 		y = y-60;
@@ -777,6 +777,7 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 			window.clearTimeout( this.dragTimeout );
 			this.dragTimeout = null;
 		}
+		debugger;
 		if (this.parentContainer){
 			var available = true;
 			if( !this.options.injectActions )available = false;
@@ -787,8 +788,8 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 			if( module.moduleName === "datatable$Data" && !module.options.allowModules.contains( this.moduleName ) )available = false;
 			if( module.parentContainer && module.parentContainer.moduleName === "datatable$Data" &&
 				!module.parentContainer.options.allowModules.contains( this.moduleName ) )available = false;
-			var e = new Event(event);
-			if( available && e.control ){
+			var e = window.event || {};
+			if( available && e.ctrlKey ){
 				if( this.copyNode )this.copyNode.setStyle("display","none");
 				module._showInjectAction( this );
 			}else{
