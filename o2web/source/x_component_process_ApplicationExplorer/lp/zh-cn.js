@@ -70,8 +70,10 @@ MWF.xApplication.process.ApplicationExplorer.LP = {
 		//
 		"deleteElements": "删除选中的应用",
 		"deleteElementsTitle": "删除应用确认",
-		"deleteElementsConfirm": "您确定要删除选中的应用吗？ <br><font style='color: red'>此操作将删除所选应用的所有设计元素，包括流程、表单、数据、脚本和正在流转的流程实例，并且不可恢复<br></font>",
+		// "deleteElementsConfirm": "您确定要删除选中的应用吗？ <br><font style='color: red'>此操作将删除所选应用的所有设计元素，包括流程、表单、数据、脚本和正在流转的流程实例，并且不可恢复<br></font>",
+        "deleteElementsConfirm": "您确定要删除选中的应用吗？ <br><font style='color: red'>此操作将删除所选应用的所有设计元素，包括流程、表单、数据、脚本，并且不可恢复<br></font>",
 		"deleteApplicationAllConfirm": "同时删除已流转完成的流程实例",
+        "deleteApplicationAllInfo": "您需要确保此应用没有流转中的工作实例，否则无法删除！",
 		"deleteElementsConfirmAgain": "<font style='color: #00F; font-size:14px'>请再次确认您要删除以下应用：</font>",
 		"deleteElementsAllConfirmAgain": "<font style='color: #00F; font-size:14px'>请再次确认您要删除以下应用，并且删除此应用的所有流程实例：</font>",
 		// "loadding": "正在加载……",
