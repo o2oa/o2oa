@@ -259,15 +259,15 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		this._resetTreeNode();
 		this.node.inject(container.node);
 	},
-	move: function(e){
+	move: function(e, operation){
 		this._createMoveNode();
 		var thisDisplay = this.node.getStyle("display");
 		this.node.store("thisDisplay", thisDisplay);
 		this.node.setStyle("display", "none");
-		this._setNodeMove(e);
+		this._setNodeMove(e, operation || "move");
 	},
 	copy: function(e){
-		this.copyTo().move(e);
+		this.copyTo().move(e, "copy");
 	},
 	copyTo: function(node){
 		if (!node) node = this.form;
@@ -474,7 +474,7 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		this.json = data;
 		this.json.id = this._getNewId();
 		this._createMoveNode();
-		this._setNodeMove(e);
+		this._setNodeMove(e, "create");
 	},
 	createImmediately: function(data, relativeNode, position, selectDisabled){
 		this.json = data;
@@ -508,10 +508,11 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 	_getDroppableNodes: function(){
 		return [this.form.node].concat(this.form.moduleElementNodeList, this.form.moduleContainerNodeList, this.form.moduleComponentNodeList);
 	},
-	_setNodeMove: function(e){
+	_setNodeMove: function(e, operation){
 		this._setMoveNodePosition(e);
 		this.form.node.focus();
 		var droppables = this._getDroppableNodes();
+		this.operation = operation;
 		var nodeDrag = new Drag.Move(this.moveNode, {
 			"droppables": droppables,
 			"onEnter": function(dragging, inObj){
@@ -533,9 +534,11 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 				}else{
 					this._dragCancel(dragging);
 				}
+				this.operation = null;
 			}.bind(this),
 			"onCancel": function(dragging){
 				this._dragCancel(dragging);
+				this.operation = null;
 			}.bind(this)
 		});
 		nodeDrag.start(e);
@@ -777,7 +780,6 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 			window.clearTimeout( this.dragTimeout );
 			this.dragTimeout = null;
 		}
-		debugger;
 		if (this.parentContainer){
 			var available = true;
 			if( !this.options.injectActions )available = false;
@@ -803,10 +805,12 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		this.setStyleTemplate();
 
 		if( this.injectNoticeNode )this.injectNoticeNode.destroy();
-		var overflow = this.moveNode.retrieve("overflow");
-		if( overflow ){
-			this.moveNode.setStyle("overflow",overflow);
-			this.moveNode.eliminate("overflow");
+		if(this.moveNode){
+			var overflow = this.moveNode.retrieve("overflow");
+			if( overflow ){
+				this.moveNode.setStyle("overflow",overflow);
+				this.moveNode.eliminate("overflow");
+			}
 		}
 
 		if (!this.node){
@@ -838,6 +842,13 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		if (this.form.scriptDesigner) this.form.scriptDesigner.createModuleScript(this.json);
 
 		if( !selectDisabled )this.selected();
+
+		if(this.form.history)this.form.history.add({
+			"operation": this.operation,
+			"type": "module",
+			"json": Object.clone(this.json),
+			"html": this.node.get("html")
+		}, this)
 	},
 	_resetTreeNode: function(){
 

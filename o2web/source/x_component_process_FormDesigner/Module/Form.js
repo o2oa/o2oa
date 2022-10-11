@@ -179,6 +179,8 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			if (this.autoSaveTimerID) window.clearInterval(this.autoSaveTimerID);
 		}.bind(this));
 
+		this.loadHistory();
+
 		this.designer.fireEvent("postFormLoad");
 	},
     removeStyles: function(from, to){
@@ -344,6 +346,12 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
             }.bind(this), 60000);
         }
     },
+	loadHistory: function(){
+		o2.xDesktop.requireApp("process.FormDesigner", "widget.History", function () {
+			this.history = new MWF.xApplication.process.FormDesigner.widget.History(this);
+			this.history.load();
+		}.bind(this));
+	},
 	checkUUID: function(){
 		this.designer.actions.getUUID(function(id){
             this.json.id = id;
