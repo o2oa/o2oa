@@ -463,7 +463,7 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 	},
 	_setEditStyle_custom: function(name, obj, oldValue){
 		if (name=="id"){
-			if (name!=oldValue){
+			if (oldValue && this.json.id!=oldValue){
 				var reg = new RegExp("^"+oldValue, "i");
 				this.containers.each(function(container){
 					var id = container.json.id;

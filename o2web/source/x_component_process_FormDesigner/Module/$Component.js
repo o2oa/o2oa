@@ -121,7 +121,7 @@ MWF.xApplication.process.FormDesigner.Module.$Component = MWF.FC$Component = new
 		copyNode.setStyle("display", "none");
 	},
 	_dragDrop: function(module, flag){
-        var f = flag || !(new Event(event)).control;
+        var f = flag || !(window.event || {}).ctrlKey;
         if( f ){
             this.node.setStyles(this.css.moduleNode);
             this.setCustomStyles();
