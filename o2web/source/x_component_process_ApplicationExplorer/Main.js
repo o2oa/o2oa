@@ -551,7 +551,8 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
 			applicationList.push(app.data.name);
 		});
 		var confirmStr = this.lp.application.deleteElementsConfirm+" ("+applicationList.join("、")+") ";
-		var check = "<br/><br/><input type=\"checkbox\" id=\"deleteApplicationAllCheckbox\" value=\"yes\">"+this.lp.application.deleteApplicationAllConfirm;
+		// var check = "<br/><br/><input style='display:none' type=\"checkbox\" id=\"deleteApplicationAllCheckbox\" value=\"yes\">"+this.lp.application.deleteApplicationAllConfirm;
+        var check = "<br/><br/><input style='display:none' type=\"checkbox\" id=\"deleteApplicationAllCheckbox\" value=\"yes\">"+this.lp.application.deleteApplicationAllInfo;
 		confirmStr += check;
 
 		this.confirm("infor", e, this.lp.application.deleteElementsTitle, {"html":confirmStr}, 530, 250, function(){
@@ -576,7 +577,7 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
 					if (doCount == readyCount){
 						_self.reloadApplicationCategoryList( true );
 						if (errorText){
-							_self.app.notice(errorText, "error");
+							_self.notice(errorText, "error");
 						}
 					}
 				};
