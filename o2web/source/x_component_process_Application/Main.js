@@ -1776,6 +1776,13 @@ MWF.xApplication.process.Application.Toolbar = new Class({
 						}).inject(select);
 					}.bind(_self));
 
+					if (json.data.publishList) json.data.publishList.each(function(activity){
+						new Element("option", {
+							"value": activity.id+"#publish",
+							"text": activity.name
+						}).inject(select);
+					}.bind(_self));
+
 					if (json.data.endList) json.data.endList.each(function(activity){
 						new Element("option", {
 							"value": activity.id+"#end",

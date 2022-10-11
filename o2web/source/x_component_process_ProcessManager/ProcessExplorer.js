@@ -135,6 +135,7 @@ MWF.xApplication.process.ProcessManager.ProcessExplorer = new Class({
         if (process.splitList) process.splitList.each(function(a){a.process = process.id;});
         if (process.mergeList) process.mergeList.each(function(a){a.process = process.id;});
         if (process.embedList) process.embedList.each(function(a){a.process = process.id;});
+        if (process.publishList) process.publishList.each(function(a){a.process = process.id;});
         if (process.invokeList) process.invokeList.each(function(a){a.process = process.id;});
         if (process.cancelList) process.cancelList.each(function(a){a.process = process.id;});
         if (process.delayList) process.delayList.each(function(a){a.process = process.id;});
@@ -177,6 +178,7 @@ MWF.xApplication.process.ProcessManager.ProcessExplorer = new Class({
         if (process.splitList) process.splitList.each(function(a){oldIds.push(a.id);});
         if (process.mergeList) process.mergeList.each(function(a){oldIds.push(a.id);});
         if (process.embedList) process.embedList.each(function(a){oldIds.push(a.id);});
+        if (process.publishList) process.publishList.each(function(a){oldIds.push(a.id);});
         if (process.invokeList) process.invokeList.each(function(a){oldIds.push(a.id);});
         if (process.cancelList) process.cancelList.each(function(a){oldIds.push(a.id);});
         if (process.delayList) process.delayList.each(function(a){oldIds.push(a.id);});
@@ -412,6 +414,7 @@ MWF.xApplication.process.ProcessManager.ProcessExplorer.Process = new Class({
                 if (process.splitList) process.splitList.each(function(a){oldIds.push(a.id);});
                 if (process.mergeList) process.mergeList.each(function(a){oldIds.push(a.id);});
                 if (process.embedList) process.embedList.each(function(a){oldIds.push(a.id);});
+                if (process.publishList) process.publishList.each(function(a){oldIds.push(a.id);});
                 if (process.invokeList) process.invokeList.each(function(a){oldIds.push(a.id);});
                 if (process.cancelList) process.cancelList.each(function(a){oldIds.push(a.id);});
                 if (process.delayList) process.delayList.each(function(a){oldIds.push(a.id);});
