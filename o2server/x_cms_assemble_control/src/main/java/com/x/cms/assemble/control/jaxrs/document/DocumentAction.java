@@ -708,7 +708,7 @@ public class DocumentAction extends StandardJaxrsAction {
 			} catch (Exception e) {
 				result = new ActionResult<>();
 				result.error(e);
-				logger.error(e, effectivePerson, request, null);
+				logger.error(e, effectivePerson, request, jsonElement);
 			}
 		}
 
