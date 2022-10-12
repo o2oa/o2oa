@@ -395,6 +395,17 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
                 this.changeDesignerModeToMobile();
             }
         }.bind(this));
+
+        this.formToolbarNode.setStyles({"position":"relative"});
+        this.historyActionNode = new Element("div", { "styles": this.css.historyActionNode  }).inject(this.formToolbarNode);
+        this.historyMobileActionNode = new Element("div", { "styles": this.css.historyActionNode  }).inject(this.formToolbarNode);
+        if( this.currentDesignerMode === "mobile" ){
+            this.historyActionNode.hide();
+            this.currentHistoryNode = this.historyMobileActionNode;
+        }else{
+            this.historyMobileActionNode.hide();
+            this.currentHistoryNode = this.historyActionNode;
+        }
     },
     changeDesignerModeToPC: function(){
         this.pcDesignerActionNode.setStyles(this.css.designerActionNode_current);

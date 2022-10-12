@@ -1,13 +1,15 @@
 MWF.xApplication.process.FormDesigner.widget = MWF.xApplication.process.FormDesigner.widget || {};
+MWF.xDesktop.requireApp("Template", "MTooltips", null, false);
 MWF.xApplication.process.FormDesigner.widget.History = new Class({
 	Implements: [Options, Events],
 	Extends: MWF.widget.Common,
 	options: {
 
 	},
-	initialize: function(form, options){
+	initialize: function(form, actionNode, options){
 		this.setOptions(options);
         this.form = form;
+        this.actionNode = actionNode;
 		// this.path = "../x_component_process_FormDesigner/widget/$ImageClipper/";
 		// this.cssPath = "../x_component_process_FormDesigner/widget/$ImageClipper/"+this.options.style+"/css.wcss";
 		// this._loadCss();
@@ -20,9 +22,27 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         this.nextArray = [];
         //中间数组
         this.middleArray = [];
+
+        this.node = new Element("div");
+
+        var _self = this;
+        debugger;
+        this.tooltips = new MWF.xApplication.process.FormDesigner.widget.History.Tooltips(
+            this.form.designer.formContentNode,
+            this.actionNode,
+            this.form.designer,
+            null,
+            {
+                onPostCreate: function () {
+                    _self.node.inject( this.contentNode );
+                }
+            }
+        );
+        this.tooltips.load();
     },
     //获取domPath
-    getPath: function (root, node) {
+    getPath: function (node) {
+	    var root = this.form.node;
         var path = [];
         var parent, childrens, nodeIndex;
         while (node && node !== root) {
@@ -44,9 +64,9 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         // };
         debugger;
 
-        log.newPath = this.getPath(this.form.node, module.node);
+        log.newPath = this.getPath(module.node);
 
-        var item = new MWF.xApplication.process.FormDesigner.widget.HistoryItem(this, log);
+        var item = new MWF.xApplication.process.FormDesigner.widget.History.Item(this, log);
 
         this.middleArray.push(item);
     },
@@ -92,9 +112,36 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
     },
 });
 
-MWF.xApplication.process.FormDesigner.widget.HistoryItem = new Class({
+MWF.xApplication.process.FormDesigner.widget.History.Tooltips = new Class({
+    Extends: MTooltips,
+    options : {
+        axis: "y",      //箭头在x轴还是y轴上展现
+        position : { //node 固定的位置
+            x : "center", //x轴上left center right,  auto 系统自动计算
+            y : "bottom" //y 轴上top middle bottom, auto 系统自动计算
+        },
+        event : "click", //事件类型，有target 时有效， mouseenter对应mouseleave，click 对应 container 的  click
+        hiddenDelay : 200, //ms  , 有target 且 事件类型为 mouseenter 时有效
+        displayDelay : 0,   //ms , 有target 且事件类型为 mouseenter 时有效
+        hasArrow : false
+    },
+    _customNode : function( node, contentNode ){
+        //var width = ( parseInt( this.selector.options.width )  )+ "px";
+        //node.setStyles({
+        //    "width": width,
+        //    "max-width": width
+        //});
+        debugger;
+        // if( this.data && this.data.length > 0 ){
+        //     this.createItemList( this.data, contentNode )
+        // }else if( this.selector.options.tooltipWhenNoSelectValue ){
+        //     this.createNoSelectValueNode( contentNode );
+        // }
+    },
+})
+
+MWF.xApplication.process.FormDesigner.widget.History.Item = new Class({
     Implements: [Options, Events],
-    Extends: MWF.widget.Common,
     options: {},
     initialize: function (history, log) {
         this.history = history;

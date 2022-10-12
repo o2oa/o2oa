@@ -513,6 +513,10 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		this.form.node.focus();
 		var droppables = this._getDroppableNodes();
 		this.operation = operation;
+		debugger;
+		if( this.form.history && operation === "move" ){
+			this.fromPath = this.form.history.getPath( this.node );
+		}
 		var nodeDrag = new Drag.Move(this.moveNode, {
 			"droppables": droppables,
 			"onEnter": function(dragging, inObj){
@@ -535,10 +539,12 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 					this._dragCancel(dragging);
 				}
 				this.operation = null;
+				this.fromPath = null;
 			}.bind(this),
 			"onCancel": function(dragging){
 				this._dragCancel(dragging);
 				this.operation = null;
+				this.fromPath = null;
 			}.bind(this)
 		});
 		nodeDrag.start(e);
@@ -847,7 +853,8 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 			"operation": this.operation,
 			"type": "module",
 			"json": Object.clone(this.json),
-			"html": this.node.get("html")
+			"html": this.node.get("html"),
+			"fromPath": this.fromPath
 		}, this)
 	},
 	_resetTreeNode: function(){
