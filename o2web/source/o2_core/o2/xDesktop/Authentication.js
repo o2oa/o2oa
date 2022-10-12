@@ -1000,16 +1000,16 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
             credentialItem.setWarning(this.lp.inputYourUserName, "empty");
             return;
         } else {
-            this.actions.checkCredential(credential, function (json) {
-                if (!json.data.value) {
-                    flag = false;
-                    credentialItem.setWarning(this.lp.userNotExist, "invalid");
-                }
-            }.bind(this), function (errorObj) {
-                flag = false;
-                var error = JSON.parse(errorObj.responseText);
-                credentialItem.setWarning(error.message, "invalid");
-            }.bind(this), false)
+            // this.actions.checkCredential(credential, function (json) {
+            //     if (!json.data.value) {
+            //         flag = false;
+            //         credentialItem.setWarning(this.lp.userNotExist, "invalid");
+            //     }
+            // }.bind(this), function (errorObj) {
+            //     flag = false;
+            //     var error = JSON.parse(errorObj.responseText);
+            //     credentialItem.setWarning(error.message, "invalid");
+            // }.bind(this), false)
         }
         if (!flag) {
             return;
@@ -1019,6 +1019,10 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
         this.actions.createCredentialCode(credential, function (json) {
         }, function (errorObj) {
             var error = JSON.parse(errorObj.responseText);
+            var codeAnswerItem = this.form.getItem("codeAnswer");
+            if(codeAnswerItem){
+                codeAnswerItem.clearWarning("empty");
+            }
             this.setWarning(error.message);
             flag = false
         }.bind(this));
