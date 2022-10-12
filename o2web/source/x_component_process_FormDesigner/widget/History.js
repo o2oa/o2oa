@@ -34,10 +34,7 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         }
         return path.reverse();
     },
-    createItem: function(){
-
-    },
-    addItem: function(log, module) {
+    add: function(log, module) {
         // var log = {
         //     "operation": "create", //操作 create, copy, move, delete
         //     "type": "module", //property
@@ -48,7 +45,10 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         debugger;
 
         log.newPath = this.getPath(this.form.node, module.node);
-        this.middleArray.push(log);
+
+        var item = new MWF.xApplication.process.FormDesigner.widget.HistoryItem(this, log);
+
+        this.middleArray.push(item);
     },
     undo : function( itemNode ){
         if(this.preArray.length>0){
@@ -96,8 +96,9 @@ MWF.xApplication.process.FormDesigner.widget.HistoryItem = new Class({
     Implements: [Options, Events],
     Extends: MWF.widget.Common,
     options: {},
-    initialize: function (history, options) {
+    initialize: function (history, log) {
         this.history = history;
+        this.data = log;
     }
 })
 
