@@ -23,12 +23,12 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         //中间数组
         this.middleArray = [];
 
-        this.node = new Element("div");
+        this.node = new Element("div", {"height":"100px"});
 
         var _self = this;
         debugger;
         this.tooltips = new MWF.xApplication.process.FormDesigner.widget.History.Tooltips(
-            this.form.designer.formContentNode,
+            this.form.designer.formNode,
             this.actionNode,
             this.form.designer,
             null,
@@ -115,17 +115,31 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
 MWF.xApplication.process.FormDesigner.widget.History.Tooltips = new Class({
     Extends: MTooltips,
     options : {
+        style: "design",
         axis: "y",      //箭头在x轴还是y轴上展现
         position : { //node 固定的位置
-            x : "center", //x轴上left center right,  auto 系统自动计算
+            x : "right", //x轴上left center right,  auto 系统自动计算
             y : "bottom" //y 轴上top middle bottom, auto 系统自动计算
         },
         event : "click", //事件类型，有target 时有效， mouseenter对应mouseleave，click 对应 container 的  click
+        isAutoHide: false,
         hiddenDelay : 200, //ms  , 有target 且 事件类型为 mouseenter 时有效
         displayDelay : 0,   //ms , 有target 且事件类型为 mouseenter 时有效
-        hasArrow : false
+        hasArrow : false,
+        hasCloseAction: true,
+        hasMask: false,
+        isParentOffset: true,
+        nodeStyles: {
+            padding: "0px",
+            "min-height": "100px",
+            "border-radius" : "0px"
+        }
     },
     _customNode : function( node, contentNode ){
+        new Element("div", {
+            "style": "padding-left: 10px; background-color: rgb(242, 242, 242); color: #333333; height: 30px; line-height: 30px; ",
+            "text": "历史记录"
+        }).inject(contentNode, "before");
         //var width = ( parseInt( this.selector.options.width )  )+ "px";
         //node.setStyles({
         //    "width": width,
