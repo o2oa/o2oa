@@ -167,6 +167,8 @@ MWF.xApplication.process.FormDesigner.Module.$Component = MWF.FC$Component = new
     copyTo: function(node){
         if (!node) node = this.form;
 
+        debugger;
+
         var containerTmpNodes = this.copyClearContainer();
 
         var newNode = this.node.clone(true);
