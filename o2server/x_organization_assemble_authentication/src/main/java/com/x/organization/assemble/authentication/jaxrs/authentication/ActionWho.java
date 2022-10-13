@@ -51,7 +51,7 @@ class ActionWho extends BaseAction {
 				} else {
 					Person person = this.getPerson(business, effectivePerson);
 					wo = this.user(null, null, business, person, Wo.class);
-					this.recordLogin(person.getName(), request.getRemoteAddr(), request.getHeader(HttpToken.X_Client));
+					this.recordLogin(person.getName(), request.getRemoteAddr(), request.getHeader(HttpToken.X_CLIENT));
 				}
 				wo.setTokenType(TokenType.manager);
 				wo.setToken(effectivePerson.getToken());
@@ -64,7 +64,7 @@ class ActionWho extends BaseAction {
 				} else {
 					Person person = this.getPerson(business, effectivePerson);
 					wo = this.user(null, null, business, person, Wo.class);
-					this.recordLogin(person.getName(), request.getRemoteAddr(), request.getHeader(HttpToken.X_Client));
+					this.recordLogin(person.getName(), request.getRemoteAddr(), request.getHeader(HttpToken.X_CLIENT));
 				}
 				wo.setTokenType(effectivePerson.getTokenType());
 				wo.setToken(effectivePerson.getToken());
@@ -72,7 +72,7 @@ class ActionWho extends BaseAction {
 			case user:
 				Person person = this.getPerson(business, effectivePerson);
 				wo = this.user(null, null, business, person, Wo.class);
-				this.recordLogin(person.getName(), request.getRemoteAddr(), request.getHeader(HttpToken.X_Client));
+				this.recordLogin(person.getName(), request.getRemoteAddr(), request.getHeader(HttpToken.X_CLIENT));
 				break;
 			default:
 				break;
