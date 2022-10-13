@@ -572,7 +572,7 @@ MSelector.Tootips = new Class({
         displayDelay : 0,   //ms , 有target 且事件类型为 mouseenter 时有效
         hasArrow : false
     },
-    _customNode : function( node, contentNode ){
+    _customNode : function( node, contentNode ){ 
         //var width = ( parseInt( this.selector.options.width )  )+ "px";
         //node.setStyles({
         //    "width": width,

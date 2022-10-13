@@ -160,6 +160,7 @@ MWF.xApplication.process.FormDesigner.widget.History.Item = new Class({
     initialize: function (history, log) {
         this.history = history;
         this.data = log;
-    }
+    },
+
 })
 
