@@ -82,8 +82,9 @@ o2.xApplication.process.Xform.$ElModule = MWF.APP$ElModule =  new Class(
     },
 
     _loadVue: function(callback){
-        if (!window.Vue){
-            var vue = (o2.session.isDebugger) ? "vue_develop" : "vue";
+        var vue = (o2.session.isDebugger) ? "vue_develop" : "vue";
+        var vueName = (o2.session.isDebugger) ? "Vue" : "Cn";
+        if (!window.Vue || window.Vue.name!==vueName){
             o2.loadAll({"css": "../o2_lib/vue/element/index.css", "js": [vue, "elementui"]}, { "sequence": true }, callback);
         }else{
             if (callback) callback();
