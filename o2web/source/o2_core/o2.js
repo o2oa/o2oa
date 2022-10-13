@@ -828,7 +828,7 @@ if (!window.o2) {
                 if (op.bind) cssText = cssText.bindJson(op.bind);
                 if (op.dom) {
 
-                    var rex = new RegExp("(.+)(?=\\{)", "g");
+                    var rex = new RegExp("(.+)(?=[\\r\\n]*\\{)", "g");
                     var match;
                     var prefix = "." + uuid + " ";
                     while ((match = rex.exec(cssText)) !== null) {
