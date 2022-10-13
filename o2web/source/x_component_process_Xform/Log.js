@@ -1456,7 +1456,8 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
         td = tr.insertCell(4).setStyles(this.form.css[style]);
         td.set("text", (task.processingType=="empower") ? MWF.xApplication.process.Xform.LP.empower : task.routeName || "");
         td = tr.insertCell(5).setStyles(this.form.css[style]);
-        opinion = (task.processingType=="empower") ? MWF.xApplication.process.Xform.LP.empowerTo + o2.name.cn(task.empowerToIdentity || "") : "<div style='line-height: 28px; float:left'>" + o2.txt(task.opinion || "")+"</div>";
+        var op = (task.properties && task.properties.opinion) ?  task.properties.opinion : task.opinion;
+        var opinion = (task.processingType=="empower") ? MWF.xApplication.process.Xform.LP.empowerTo + o2.name.cn(task.empowerToIdentity || "") : "<div style='line-height: 28px; float:left'>" + o2.txt(op || "")+"</div>";
         td.set("html", opinion);
 
 
@@ -1791,7 +1792,8 @@ MWF.xApplication.process.Xform.Log = MWF.APPLog =  new Class(
             html = html.replace(/\{route\}/g, o2.txt(task.routeName));
             html = html.replace(/\{time\}/g, task.completedTime);
             html = html.replace(/\{date\}/g, new Date().parse(task.completedTime).format("%Y-%m-%d"));
-            html = html.replace(/\{opinion\}/g, o2.txt(task.opinion || ""));
+            var op = (task.properties && task.properties.opinion) ?  task.properties.opinion : task.opinion;
+            html = html.replace(/\{opinion\}/g, o2.txt(op || ""));
             html = html.replace(/\{company\}/g, company.substring(0, company.indexOf("@")));
             html = html.replace(/\{startTime\}/g, task.startTime);
             html = html.replace(/\{startDate\}/g, new Date().parse(task.startTime).format("%Y-%m-%d"));
