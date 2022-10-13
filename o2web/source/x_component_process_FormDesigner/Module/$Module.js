@@ -538,13 +538,9 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 				}else{
 					this._dragCancel(dragging);
 				}
-				this.operation = null;
-				this.fromPath = null;
 			}.bind(this),
 			"onCancel": function(dragging){
 				this._dragCancel(dragging);
-				this.operation = null;
-				this.fromPath = null;
 			}.bind(this)
 		});
 		nodeDrag.start(e);
@@ -855,7 +851,10 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 			"json": Object.clone(this.json),
 			"html": this.node.get("html"),
 			"fromPath": this.fromPath
-		}, this)
+		}, this);
+
+		this.operation = null;
+		this.fromPath = null;
 	},
 	_resetTreeNode: function(){
 
@@ -922,6 +921,9 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		this.copyNode = null;
 		this.moveNode = null;
 		this.form.moveModule = null;
+
+		this.operation = null;
+		this.fromPath = null;
 	},
 	_nodeDrag: function(e, drag){
 		if( !this.dragTimeout ){

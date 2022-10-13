@@ -67,27 +67,28 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         log.newPath = this.getPath(module.node);
 
         var item = new MWF.xApplication.process.FormDesigner.widget.History.Item(this, log);
+        item.load();
 
-        this.middleArray.push(item);
+        this.preArray.push(item);
     },
     undo : function( itemNode ){
         if(this.preArray.length>0){
             var popData=this.preArray.pop();
             var midData=this.middleArray[this.preArray.length+1];
             this.nextArray.push(midData);
-            this.ctx.putImageData(popData,0,0);
+            // this.ctx.putImageData(popData,0,0);
         }
 
-        this.toolbar.setAllItemsStatus();
+        // this.toolbar.setAllItemsStatus();
     },
     redo : function( itemNode ){
         if(this.nextArray.length){
             var popData=this.nextArray.pop();
             var midData=this.middleArray[this.middleArray.length-this.nextArray.length-2];
             this.preArray.push(midData);
-            this.ctx.putImageData(popData,0,0);
+            // this.ctx.putImageData(popData,0,0);
         }
-        this.toolbar.setAllItemsStatus();
+        // this.toolbar.setAllItemsStatus();
     },
     storeToPreArray : function(preData){
         //当前表面进栈
@@ -161,6 +162,26 @@ MWF.xApplication.process.FormDesigner.widget.History.Item = new Class({
         this.history = history;
         this.data = log;
     },
-
+    load: function () {
+        this.node = new Element("div", {
+            styles : {
+                "padding": "5px"
+            },
+            text: this.getText(),
+            events: {
+                click: this.goHere.bind(this)
+            }
+        }).inject( this.history.node )
+    },
+    getText: function () {
+        return this.data.operation + " " + this.data.json.id
+    },
+    goHere: function () {
+        this.undoed = true;
+        this.node.setStyles({
+            "color": "#ccc"
+        })
+        this.history.goto(this)
+    }
 })
 
