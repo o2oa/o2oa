@@ -77,9 +77,18 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		var id = p+moduleName;
 
 		var type = (this.json) ? this.json.type : this.moduleName.capitalize();
-		while (this.form.checkModuleId(id, type).elementConflict){
+		while (this.form.checkModuleId(id, type).elementConflict || this.form.json.moduleList[id]){
 			//while (this.form.json.moduleList[id]){
 			id = p+moduleName+"_"+idx;
+			idx++;
+		}
+		return id;
+	},
+	_getCopyId: function( oid ){
+		var id = oid;
+		var idx = 1;
+		while (this.form.json.moduleList[id]) {
+			id = oid + "_" + idx;
 			idx++;
 		}
 		return id;
