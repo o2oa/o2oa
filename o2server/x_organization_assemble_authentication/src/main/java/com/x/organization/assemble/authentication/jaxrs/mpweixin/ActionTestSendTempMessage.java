@@ -13,7 +13,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.MPweixin;
-import com.x.base.core.project.config.MPweixinMessageTemp;
+import com.x.base.core.project.config.MPweixin.MPweixinMessageTemp;
 import com.x.base.core.project.connection.HttpConnection;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
