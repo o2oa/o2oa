@@ -72,7 +72,7 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 		this.json.isSaved = true;
 	},
 	_loadVue: function(callback){
-		if (!window.Vue){
+		if (!window.Vue || window.Vue.name!=='Vue'){
 			o2.load(["vue_develop", "elementui"], { "sequence": true }, function(){
 				window.Vue.config.errorHandler = function (err, vm, info) {
 					if (vm.$o2module && info=="nextTick"){
