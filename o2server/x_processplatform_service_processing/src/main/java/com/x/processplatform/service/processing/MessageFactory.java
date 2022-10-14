@@ -54,7 +54,7 @@ public class MessageFactory {
 
 	public static void workCompleted_delete(WorkCompleted workCompleted) throws Exception {
 		String title = "删除完成工作:" + adjustTitle(workCompleted);
-		MessageConnector.send(MessageConnector.TYPE_WORKCOMPLETED_CREATE, title, "", workCompleted);
+		MessageConnector.send(MessageConnector.TYPE_WORKCOMPLETED_DELETE, title, "", workCompleted);
 	}
 
 	public static void task_press(Task task, String from) throws Exception {
