@@ -62,7 +62,7 @@ public class GBaseDictionary extends DBDictionary {
 		floatTypeName = "FLOAT";
 		doubleTypeName = "DOUBLE PRECISION";
 		bitTypeName = "BOOLEAN";
-		blobTypeName = "BYTE";
+		blobTypeName = "BLOB";
 		dateTypeName = "DATE";
 		timeTypeName = "DATETIME HOUR TO SECOND";
 		timestampTypeName = "DATETIME YEAR TO FRACTION(5)";
