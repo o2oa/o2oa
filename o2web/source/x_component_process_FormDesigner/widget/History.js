@@ -10,6 +10,7 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
 		this.setOptions(options);
         this.form = form;
         this.actionNode = actionNode;
+        this.root = this.form.node;
 		// this.path = "../x_component_process_FormDesigner/widget/$ImageClipper/";
 		// this.cssPath = "../x_component_process_FormDesigner/widget/$ImageClipper/"+this.options.style+"/css.wcss";
 		// this._loadCss();
@@ -20,8 +21,6 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         this.preArray = [];
         //存储当前表面状态数组-下一步
         this.nextArray = [];
-        //中间数组
-        this.middleArray = [];
 
         this.node = new Element("div", {"height":"100px"});
 
@@ -42,7 +41,7 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
     },
     //获取domPath
     getPath: function (node) {
-	    var root = this.form.node;
+	    var root = this.root;
         var path = [];
         var parent, childrens, nodeIndex;
         while (node && node !== root) {
@@ -53,6 +52,32 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
             node = parent;
         }
         return path.reverse();
+    },
+    //根据路径获取dom
+    getDomByPath: function(path){
+	    var i, nodeIndex;
+	    var node = this.root;
+	    for( i=0; i<path.length; i++ ){
+	        nodeIndex = path[i];
+            node = node.children[nodeIndex];
+        }
+	    return node;
+    },
+    //插入到对应位置
+    injectToByPath: function(path, dom){
+        var i, nodeIndex;
+        var node = this.root;
+        for( i=0; i<path.length - 1; i++ ){
+            nodeIndex = path[i];
+            node = node.children[nodeIndex];
+        }
+        var last = path.getLast();
+        if( last === 0 ){
+            dom.inject( node, "top" );
+        }else{
+            node = node.children[last-1];
+            dom.inject(node, "after");
+        }
     },
     add: function(log, module) {
         // var log = {
@@ -69,49 +94,133 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         var item = new MWF.xApplication.process.FormDesigner.widget.History.Item(this, log);
         item.load();
 
+        var it;
+        while( this.nextArray.length ){
+            it = this.nextArray.pop();
+            it.destroy();
+        }
+
         this.preArray.push(item);
     },
-    undo : function( itemNode ){
-        if(this.preArray.length>0){
-            var popData=this.preArray.pop();
-            var midData=this.middleArray[this.preArray.length+1];
-            this.nextArray.push(midData);
-            // this.ctx.putImageData(popData,0,0);
+    goto: function(item){
+	    debugger;
+	    var it;
+	    if( item.status === "pre" ){
+	        it = this.preArray.getLast();
+	        while (it && item !== it){
+                it.undo();
+                this.nextArray.unshift(it); //插入到灰显数组前面
+                this.preArray.pop(); //删除preArray最后一个
+                it = this.preArray.getLast();
+            }
+        }else if( item.status === "next" ){
+            it = this.nextArray[0];
+            while (it && item !== it){
+                it.redo();
+                this.preArray.push(it); //插入到preArray数组最后
+                this.nextArray.shift();
+                it = this.nextArray[0];
+            }
+            item.redo();
+            this.preArray.push(item); //插入到preArray数组最后
+            this.nextArray.shift();
         }
-
-        // this.toolbar.setAllItemsStatus();
-    },
-    redo : function( itemNode ){
-        if(this.nextArray.length){
-            var popData=this.nextArray.pop();
-            var midData=this.middleArray[this.middleArray.length-this.nextArray.length-2];
-            this.preArray.push(midData);
-            // this.ctx.putImageData(popData,0,0);
-        }
-        // this.toolbar.setAllItemsStatus();
-    },
-    storeToPreArray : function(preData){
-        //当前表面进栈
-        this.preArray.push(preData);
-    },
-    storeToMiddleArray : function( preData ){
-        //当前状态
-        if( this.nextArray.length==0){
-            this.middleArray.push(preData);
-        }else{
-            this.middleArray=[];
-            this.middleArray=this.middleArray.concat(this.preArray);
-            this.middleArray.push(preData);
-            this.nextArray=[];
-            this.toolbar.enableItem("redo");
-        }
-
-        if(this.preArray.length){
-            this.toolbar.enableItem("undo");
-            this.toolbar.enableItem("reset");
-        }
-    },
+	    console.log( this.preArray, this.nextArray );
+    }
 });
+
+MWF.xApplication.process.FormDesigner.widget.History.Item = new Class({
+    Implements: [Options, Events],
+    options: {},
+    initialize: function (history, log) {
+        this.history = history;
+        this.data = log;
+        this.status = "pre";
+    },
+    load: function () {
+        this.node = new Element("div", {
+            styles : {
+                "color": "#333",
+                "padding": "5px"
+            },
+            text: this.getText(),
+            events: {
+                click: this.comeHere.bind(this)
+            }
+        }).inject( this.history.node );
+
+
+        // var log = {
+        //     "operation": "create", //操作 create, copy, move, delete
+        //     "type": "module", //property
+        //     "json": {},
+        //     "html": "",
+        //     "path": ""
+        // };
+    },
+    getText: function () {
+        return this.data.operation + " " + this.data.json.id
+    },
+    comeHere: function () {
+        this.history.goto(this)
+    },
+    undo: function () { //回退
+        this.status = "next";
+        this.node.setStyles({
+            "color": "#ccc"
+        });
+        switch (this.data.type) {
+            case "module":
+                this.undoModule();
+                break;
+            case "property":
+                this.undoPropery();
+                break;
+        }
+    },
+    undoModule: function(){
+        var dom, module;
+        switch (this.data.operation) {
+            case "create":
+                dom = this.history.getDomByPath( this.data.newPath );
+                if(dom)module = dom.retrieve("module");
+                if(module)module.destroy();
+                break;
+            case "copy":
+                dom = this.history.getDomByPath( this.data.newPath );
+                if(dom)module = dom.retrieve("module");
+                if(module)module.destroy();
+                break;
+            case "move":
+                dom = this.history.getDomByPath( this.data.newPath );
+                this.history.injectToByPath( this.data.fromPath, dom );
+                break;
+            case "delete":
+                break;
+        }
+        this.history.form.currentSelectedModule = null;
+    },
+    redo: function(){ //重做
+        this.status = "pre";
+        this.node.setStyles({
+            "color": "#333"
+        });
+        switch (this.data.type) {
+            case "module":
+                this.redoModule();
+                break;
+            case "property":
+                this.redoPropery();
+                break;
+        }
+    },
+    redoModule: function(){
+
+    },
+    destroy: function () {
+        this.node.destroy();
+    }
+})
 
 MWF.xApplication.process.FormDesigner.widget.History.Tooltips = new Class({
     Extends: MTooltips,
@@ -154,34 +263,3 @@ MWF.xApplication.process.FormDesigner.widget.History.Tooltips = new Class({
         // }
     },
 })
-
-MWF.xApplication.process.FormDesigner.widget.History.Item = new Class({
-    Implements: [Options, Events],
-    options: {},
-    initialize: function (history, log) {
-        this.history = history;
-        this.data = log;
-    },
-    load: function () {
-        this.node = new Element("div", {
-            styles : {
-                "padding": "5px"
-            },
-            text: this.getText(),
-            events: {
-                click: this.goHere.bind(this)
-            }
-        }).inject( this.history.node )
-    },
-    getText: function () {
-        return this.data.operation + " " + this.data.json.id
-    },
-    goHere: function () {
-        this.undoed = true;
-        this.node.setStyles({
-            "color": "#ccc"
-        })
-        this.history.goto(this)
-    }
-})
-
