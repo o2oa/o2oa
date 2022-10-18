@@ -135,6 +135,7 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Page = MWF.FCTab$Page = new Cla
 		page.showTabIm();
 	},
 	"delete": function(e){
+		debugger;
 		var module = this;
 		this.form.designer.confirm("warn", e, MWF.APPFD.LP.notice.deleteElementTitle, MWF.APPFD.LP.notice.deleteElement, 300, 120, function(){
 
@@ -142,6 +143,19 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Page = MWF.FCTab$Page = new Cla
 				module.tab.destroy();
 			}else{
 				var contentModule = module.page.contentNode.retrieve("module");
+
+				if(module.form.history)module.form.history.add({
+                    "operation": "delete",
+                    "type": "module",
+                    "json": Object.clone(module.json),
+                    "jsonObject": module.getJson(),
+                    "html": module.node.outerHTML,
+					"contentJson": Object.clone(contentModule.json),
+                    "contentJsonObject": contentModule.getJson(),
+					"conntentHtml": contentModule.node.outerHTML,
+					"contentToPath": module.form.history.getPath( contentModule.node )
+                }, module);
+
 				module.destroy();
                 module.tab.elements.erase(module);
 				contentModule.destroy();

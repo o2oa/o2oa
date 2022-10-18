@@ -79,17 +79,84 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
             dom.inject(node, "after");
         }
     },
+    //插入HTML到对应位置
+    injectHtmlByPath: function(path, html){
+	    debugger;
+        var i, nodeIndex;
+        var node = this.root;
+        for( i=0; i<path.length - 1; i++ ){
+            nodeIndex = path[i];
+            node = node.children[nodeIndex];
+        }
+        var dom = new Element("div");
+        var last = path.getLast();
+        var parentNode = node;
+        if( last === 0 ){
+            dom.inject( node, "top" );
+        }else{
+            node = node.children[last-1];
+            dom.inject(node, "after");
+        }
+        dom.outerHTML = html; //dom没了
+        dom = parentNode.children[last];
+        return dom;
+    },
+    //给指定位置插入outerHTML
+    getInjectPositionByPath: function(path){
+        var i, nodeIndex;
+        var node = this.root;
+        for( i=0; i<path.length - 1; i++ ){
+            nodeIndex = path[i];
+            node = node.children[nodeIndex];
+        }
+        var dom = new Element("div");
+        var last = path.getLast();
+        if( last === 0 ){
+            return {
+                node: node,
+                position: "top"
+            };
+        }else{
+            node = node.children[last-1];
+            return {
+                node: node,
+                position: "after"
+            };
+        }
+    },
+    loadModule: function( path, html, json, jsonObject ){
+        var dom = this.injectHtmlByPath( path, html );
+        if(jsonObject){
+            for( var id in jsonObject ){
+                this.form.json.moduleList[id] = jsonObject[id];
+            }
+        }
+        var parent, parentNode = dom.getParent();
+        while( parentNode && !parent ){
+            var mwftype = parentNode.get("mwftype");
+            if( mwftype === "form") {
+                parent = this.form;
+            }else if( mwftype ){
+                parent = parentNode.retrieve("module");
+            }else{
+                parentNode = parentNode.getParent();
+            }
+        }
+        var module = this.form.loadModule(json, dom, parent || this.form);
+        module._setEditStyle_custom("id");
+    },
     add: function(log, module) {
         // var log = {
         //     "operation": "create", //操作 create, copy, move, delete
         //     "type": "module", //property
         //     "json": {},
+        //     "jsonObject": {},
         //     "html": "",
         //     "path": ""
         // };
         debugger;
 
-        log.newPath = this.getPath(module.node);
+        log.toPath = this.getPath(module.node);
 
         var item = new MWF.xApplication.process.FormDesigner.widget.History.Item(this, log);
         item.load();
@@ -178,25 +245,34 @@ MWF.xApplication.process.FormDesigner.widget.History.Item = new Class({
                 break;
         }
     },
+    undoPropery: function(){
+
+    },
     undoModule: function(){
         var dom, module;
         switch (this.data.operation) {
             case "create":
-                dom = this.history.getDomByPath( this.data.newPath );
+                dom = this.history.getDomByPath( this.data.toPath );
                 if(dom)module = dom.retrieve("module");
                 if(module)module.destroy();
                 break;
             case "copy":
-                dom = this.history.getDomByPath( this.data.newPath );
+                dom = this.history.getDomByPath( this.data.toPath );
                 if(dom)module = dom.retrieve("module");
                 if(module)module.destroy();
                 break;
             case "move":
-                dom = this.history.getDomByPath( this.data.newPath );
+                dom = this.history.getDomByPath( this.data.toPath );
                 this.history.injectToByPath( this.data.fromPath, dom );
                 break;
             case "delete":
+                this.history.loadModule( this.data.toPath, this.data.html, this.data.json, this.data.jsonObject );
+                // var obj = this.history.getInjectPositionByPath( this.data.toPath );
+                // this.history.form.createModuleImmediately( this.data.json, obj.node, obj.position, true );
                 break;
+        }
+        if(this.history.form.currentSelectedModule && this.history.form.currentSelectedModule.unSelected){
+            this.history.form.currentSelectedModule.unSelected()
         }
         this.history.form.currentSelectedModule = null;
     },
@@ -214,8 +290,32 @@ MWF.xApplication.process.FormDesigner.widget.History.Item = new Class({
                 break;
         }
     },
-    redoModule: function(){
+    redoPropery: function(){
 
+    },
+    redoModule: function(){
+        var dom, module;
+        switch (this.data.operation) {
+            case "create":
+                this.history.loadModule( this.data.toPath, this.data.html, this.data.json, this.data.jsonObject);
+                break;
+            case "copy":
+                this.history.loadModule( this.data.toPath, this.data.html, this.data.json, this.data.jsonObject );
+                break;
+            case "move":
+                dom = this.history.getDomByPath( this.data.fromPath );
+                this.history.injectToByPath( this.data.toPath, dom );
+                break;
+            case "delete":
+                dom = this.history.getDomByPath( this.data.toPath );
+                if(dom)module = dom.retrieve("module");
+                if(module)module.destroy();
+                break;
+        }
+        if(this.history.form.currentSelectedModule && this.history.form.currentSelectedModule.unSelected){
+            this.history.form.currentSelectedModule.unSelected();
+        }
+        this.history.form.currentSelectedModule = null;
     },
     destroy: function () {
         this.node.destroy();

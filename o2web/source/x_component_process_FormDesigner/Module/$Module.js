@@ -298,6 +298,14 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 			module.form.selected();
 			module.form.designer.shortcut = true;
 
+			if(module.form.history)module.form.history.add({
+				"operation": "delete",
+				"type": "module",
+				"json": Object.clone(module.json),
+				"jsonObject": module.getJson(),
+				"html": module.node.outerHTML
+			}, module);
+
 			module.destroy();
 			this.close();
 		}, function(){
@@ -845,11 +853,12 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 
 		if( !selectDisabled )this.selected();
 
-		if(this.form.history)this.form.history.add({
+		if(this.form.history && this.operation)this.form.history.add({
 			"operation": this.operation,
 			"type": "module",
 			"json": Object.clone(this.json),
-			"html": this.node.get("html"),
+			"jsonObject": this.getJson(),
+			"html": this.node.outerHTML,
 			"fromPath": this.fromPath
 		}, this);
 
