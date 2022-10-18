@@ -238,7 +238,7 @@ MWF.xApplication.process.FormDesigner.widget.History.Item = new Class({
         });
         switch (this.data.type) {
             case "module":
-                this.undoModule();
+                this.data.json.name === "Tab$Page" ? this.undoTabpage : this.undoModule();
                 break;
             case "property":
                 this.undoPropery();
@@ -267,8 +267,32 @@ MWF.xApplication.process.FormDesigner.widget.History.Item = new Class({
                 break;
             case "delete":
                 this.history.loadModule( this.data.toPath, this.data.html, this.data.json, this.data.jsonObject );
-                // var obj = this.history.getInjectPositionByPath( this.data.toPath );
-                // this.history.form.createModuleImmediately( this.data.json, obj.node, obj.position, true );
+                break;
+        }
+        if(this.history.form.currentSelectedModule && this.history.form.currentSelectedModule.unSelected){
+            this.history.form.currentSelectedModule.unSelected()
+        }
+        this.history.form.currentSelectedModule = null;
+    },
+    undoTabpage: function(){
+        var dom, module;
+        switch (this.data.operation) {
+            case "create":
+                // dom = this.history.getDomByPath( this.data.toPath );
+                // if(dom)module = dom.retrieve("module");
+                // if(module)module.destroy();
+                break;
+            case "copy":
+                // dom = this.history.getDomByPath( this.data.toPath );
+                // if(dom)module = dom.retrieve("module");
+                // if(module)module.destroy();
+                break;
+            case "move":
+                // dom = this.history.getDomByPath( this.data.toPath );
+                // this.history.injectToByPath( this.data.fromPath, dom );
+                break;
+            case "delete":
+                this.history.loadModule( this.data.toPath, this.data.html, this.data.json, this.data.jsonObject );
                 break;
         }
         if(this.history.form.currentSelectedModule && this.history.form.currentSelectedModule.unSelected){

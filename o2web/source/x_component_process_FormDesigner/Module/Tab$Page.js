@@ -150,10 +150,12 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Page = MWF.FCTab$Page = new Cla
                     "json": Object.clone(module.json),
                     "jsonObject": module.getJson(),
                     "html": module.node.outerHTML,
-					"contentJson": Object.clone(contentModule.json),
-                    "contentJsonObject": contentModule.getJson(),
-					"conntentHtml": contentModule.node.outerHTML,
-					"contentToPath": module.form.history.getPath( contentModule.node )
+					"content": {
+						"json": Object.clone(contentModule.json),
+						"jsonObject": contentModule.getJson(),
+						"html": contentModule.node.outerHTML,
+						"toPath": module.form.history.getPath( contentModule.node )
+					}
                 }, module);
 
 				module.destroy();

@@ -346,6 +346,28 @@ MWF.xApplication.process.FormDesigner.Module.Tab = MWF.FCTab = new Class({
 		return page;
 	},
 
+	loadSinglePage: function(tabNode, contentNode, tabJson, contentJson){
+		var tabPage = new MWF.widget.TabPage(tabNode, "", this.tabWidget, {"isClose": false});
+		tabPage.contentNodeArea = contentNode;
+
+		tabPage.tabNode = tabNode;
+		tabPage.textNode = tabNode.getFirst();
+		if(tabPage.textNode)tabPage.closeNode = tabPage.textNode.getFirst();
+
+		tabPage.load();
+		this.tabWidget.pages.push(tabPage);
+
+		var page = new MWF.FCTab$Page(this, tabPage);
+		page.load(tabJson, tabPage.tabNode, this);
+		this.elements.push(page);
+
+		var tabContent = new MWF.FCTab$Content(this, tabPage);
+		tabContent.load(contentJson, tabPage.contentNode, this);
+		this.containers.push(tabContent);
+	},
+
+
+
     copyComponentJsonData: function(newNode, pid){
 
         var tabNodeContainer = newNode.getFirst();
