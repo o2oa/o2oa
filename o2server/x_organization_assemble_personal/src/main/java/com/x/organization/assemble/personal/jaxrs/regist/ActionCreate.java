@@ -1,8 +1,5 @@
 package com.x.organization.assemble.personal.jaxrs.regist;
 
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -13,21 +10,27 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.StringTools;
+import com.x.base.core.project.x_organization_assemble_control;
 import com.x.organization.assemble.personal.Business;
+import com.x.organization.assemble.personal.ThisApplication;
 import com.x.organization.core.entity.Person;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 class ActionCreate extends BaseAction {
 
 	private static Logger logger = LoggerFactory.getLogger(ActionCreate.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
+		ActionResult<Wo> result = new ActionResult<>();
+		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+		Person person;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
-			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
 			String name = wi.getName();
 			String passwd = wi.getPassword();
@@ -65,7 +68,7 @@ class ActionCreate extends BaseAction {
 				throw new ExceptionInvalidPassword(Config.person().getPasswordRegexHint());
 			}
 			if (null == genderType) {
-				throw new ExceptionInvalidGenderType();
+				genderType = GenderType.d;
 			}
 			if (StringUtils.equals(com.x.base.core.project.config.Person.REGISTER_TYPE_CODE,
 					Config.person().getRegister())) {
@@ -79,15 +82,21 @@ class ActionCreate extends BaseAction {
 					throw new ExceptionInvalidCaptcha();
 				}
 			}
-			this.register(business, name, passwd, genderType, mobile, mail);
-			Wo wo = new Wo();
-			wo.setValue(true);
-			result.setData(wo);
-			return result;
+			if(StringUtils.isNotBlank(wi.getUnit()) && business.unit().pick(wi.getUnit()) == null){
+				throw new ExceptionInvalidUnit(wi.getUnit());
+			}
+			person = this.register(business, name, passwd, genderType, mobile, mail);
 		}
+		if(StringUtils.isNotBlank(wi.getUnit())){
+			this.createIdentity(person, wi.getUnit());
+		}
+		Wo wo = new Wo();
+		wo.setValue(true);
+		result.setData(wo);
+		return result;
 	}
 
-	private void register(Business business, String name, String password, GenderType genderType, String mobile, String mail)
+	private Person register(Business business, String name, String password, GenderType genderType, String mobile, String mail)
 			throws Exception {
 		Person o = new Person();
 		o.setName(name);
@@ -98,6 +107,46 @@ class ActionCreate extends BaseAction {
 		business.entityManagerContainer().beginTransaction(Person.class);
 		business.entityManagerContainer().persist(o, CheckPersistType.all);
 		business.entityManagerContainer().commit();
+		return o;
+	}
+
+	private void createIdentity(Person person, String unit) throws Exception {
+		WrapIdentity identity = new WrapIdentity();
+		identity.setName(person.getName());
+		identity.setPerson(person.getId());
+		identity.setUnit(unit);
+		ThisApplication.context().applications().postQuery(x_organization_assemble_control.class,
+				"identity", identity);
+	}
+
+	private static class WrapIdentity extends GsonPropertyObject {
+		private String person;
+		private String name;
+		private String unit;
+
+		public String getPerson() {
+			return person;
+		}
+
+		public void setPerson(String person) {
+			this.person = person;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		public String getUnit() {
+			return unit;
+		}
+
+		public void setUnit(String unit) {
+			this.unit = unit;
+		}
 	}
 
 	public static class Wi extends GsonPropertyObject {
@@ -125,6 +174,9 @@ class ActionCreate extends BaseAction {
 
 		@FieldDescribe("邮件地址(非必填).")
 		private String mail;
+
+		@FieldDescribe("归属组织(非必填).")
+		private String unit;
 
 		public String getName() {
 			return name;
@@ -188,6 +240,14 @@ class ActionCreate extends BaseAction {
 
 		public void setMail(String mail) {
 			this.mail = mail;
+		}
+
+		public String getUnit() {
+			return unit;
+		}
+
+		public void setUnit(String unit) {
+			this.unit = unit;
 		}
 	}
 
