@@ -34,6 +34,12 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
             {
                 onPostCreate: function () {
                     _self.node.inject( this.contentNode );
+                    _self.add({
+                        "operation": "open", //操作 create, copy, move, delete
+                        "type": "form", //property
+                        "json": {}
+                    });
+
                 }
             }
         );
@@ -156,7 +162,7 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         // };
         debugger;
 
-        log.toPath = this.getPath(module.node);
+        if( module )log.toPath = this.getPath(module.node);
 
         var item = new MWF.xApplication.process.FormDesigner.widget.History.Item(this, log);
         item.load();
