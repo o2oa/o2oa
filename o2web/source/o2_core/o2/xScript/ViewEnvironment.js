@@ -4569,7 +4569,14 @@ MWF.xScript.ViewEnvironment = function (ev) {
                 if (category) {
                     options["category"] = category
                 }
-                if (window.o2android && window.o2android.createO2CmsDocument){
+                if (window.o2android && window.o2android.postMessage) {
+                        var body = {
+                        type: "createO2CmsDocument",
+                        data: options
+                    };
+                    window.o2android.postMessage(JSON.stringify(body));
+                    return;
+                } else if (window.o2android && window.o2android.createO2CmsDocument){
                     window.o2android.createO2CmsDocument(JSON.stringify(options));
                     return;
                 } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.createO2CmsDocument) {
