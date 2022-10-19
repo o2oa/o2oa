@@ -193,7 +193,8 @@ MWF.xApplication.process.FormDesigner.Module.Subform = MWF.FCSubform = new Class
 				"type": "module",
 				"json": Object.clone(module.json),
 				"jsonObject": module.getJson(),
-				"html": module.getHtml()
+				"html": module.getHtml(),
+                "toPath": module.form.history.getPath(module.node)
 			}, module);
 
             module.destroy();

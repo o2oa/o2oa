@@ -346,28 +346,6 @@ MWF.xApplication.process.FormDesigner.Module.Tab = MWF.FCTab = new Class({
 		return page;
 	},
 
-	loadSinglePage: function(tabNode, contentNode, tabJson, contentJson){
-		var tabPage = new MWF.widget.TabPage(tabNode, "", this.tabWidget, {"isClose": false});
-		tabPage.contentNodeArea = contentNode;
-
-		tabPage.tabNode = tabNode;
-		tabPage.textNode = tabNode.getFirst();
-		if(tabPage.textNode)tabPage.closeNode = tabPage.textNode.getFirst();
-
-		tabPage.load();
-		this.tabWidget.pages.push(tabPage);
-
-		var page = new MWF.FCTab$Page(this, tabPage);
-		page.load(tabJson, tabPage.tabNode, this);
-		this.elements.push(page);
-
-		var tabContent = new MWF.FCTab$Content(this, tabPage);
-		tabContent.load(contentJson, tabPage.contentNode, this);
-		this.containers.push(tabContent);
-	},
-
-
-
     copyComponentJsonData: function(newNode, pid){
 
         var tabNodeContainer = newNode.getFirst();
@@ -423,6 +401,28 @@ MWF.xApplication.process.FormDesigner.Module.Tab = MWF.FCTab = new Class({
 		this.recoveryWidgetstyle = null;
 		if (this.json.recoveryStyles) this.json.styles = this.json.recoveryStyles;
 		this.json.recoveryStyles = null;
+	},
+
+	loadExistedNodePage: function(tabNode, contentNodeArea, tabJson, contentJson){
+		var tabPage = new MWF.widget.TabPage(contentNodeArea.getFirst(), "", this.tabWidget, {"isClose": false});
+		tabPage.contentNodeArea = contentNodeArea;
+
+		tabPage.tabNode = tabNode;
+		tabPage.textNode = tabNode.getFirst();
+		if(tabPage.textNode)tabPage.closeNode = tabPage.textNode.getFirst();
+
+		tabPage.loadExisted();
+		this.tabWidget.pages.push(tabPage);
+
+		var page = new MWF.FCTab$Page(this, tabPage);
+		page.load(tabJson, tabPage.tabNode, this);
+		this.elements.push(page);
+
+		var tabContent = new MWF.FCTab$Content(this, tabPage);
+		tabContent.load(contentJson, tabPage.contentNode, this);
+		this.containers.push(tabContent);
+
+		tabPage.showTabIm();
 	}
 	// setCustomStyles: function(){
 	// 	this._recoveryModuleData();

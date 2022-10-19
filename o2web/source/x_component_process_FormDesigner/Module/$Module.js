@@ -303,7 +303,8 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 				"type": "module",
 				"json": Object.clone(module.json),
 				"jsonObject": module.getJson(),
-				"html": module.node.outerHTML
+				"html": module.node.outerHTML,
+				"toPath": module.form.history.getPath(module.node)
 			}, module);
 
 			module.destroy();
@@ -520,11 +521,12 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		this._setMoveNodePosition(e);
 		this.form.node.focus();
 		var droppables = this._getDroppableNodes();
+
 		this.operation = operation;
-		debugger;
 		if( this.form.history && operation === "move" ){
 			this.fromPath = this.form.history.getPath( this.node );
 		}
+
 		var nodeDrag = new Drag.Move(this.moveNode, {
 			"droppables": droppables,
 			"onEnter": function(dragging, inObj){
@@ -853,17 +855,20 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 
 		if( !selectDisabled )this.selected();
 
-		if(this.form.history && this.operation)this.form.history.add({
+		if(this.form.history && this.operation && !this.historyAddDelay)this.form.history.add({
 			"operation": this.operation,
 			"type": "module",
 			"json": Object.clone(this.json),
 			"jsonObject": this.getJson(),
 			"html": this.node.outerHTML,
-			"fromPath": this.fromPath
+			"fromPath": this.fromPath,
+			"toPath": this.form.history.getPath(this.node)
 		}, this);
 
-		this.operation = null;
-		this.fromPath = null;
+		if( !this.historyAddDelay ){
+			this.operation = null;
+			this.fromPath = null;
+		}
 	},
 	_resetTreeNode: function(){
 

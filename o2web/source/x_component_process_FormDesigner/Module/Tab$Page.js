@@ -135,13 +135,14 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Page = MWF.FCTab$Page = new Cla
 		page.showTabIm();
 	},
 	"delete": function(e){
-		debugger;
 		var module = this;
 		this.form.designer.confirm("warn", e, MWF.APPFD.LP.notice.deleteElementTitle, MWF.APPFD.LP.notice.deleteElement, 300, 120, function(){
 
 			if (module.tab.containers.length<=1){
 				module.tab.destroy();
 			}else{
+				debugger;
+
 				var contentModule = module.page.contentNode.retrieve("module");
 
 				if(module.form.history)module.form.history.add({
@@ -150,11 +151,12 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Page = MWF.FCTab$Page = new Cla
                     "json": Object.clone(module.json),
                     "jsonObject": module.getJson(),
                     "html": module.node.outerHTML,
+					"toPath": module.form.history.getPath(module.node),
 					"content": {
 						"json": Object.clone(contentModule.json),
 						"jsonObject": contentModule.getJson(),
-						"html": contentModule.node.outerHTML,
-						"toPath": module.form.history.getPath( contentModule.node )
+						"html": module.page.contentNodeArea.outerHTML,
+						"toPath": module.form.history.getPath( module.page.contentNodeArea )
 					}
                 }, module);
 
@@ -185,7 +187,7 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Page = MWF.FCTab$Page = new Cla
 		this.treeNode.destroy();
 	},
 
-	move: function(e){
+	move: function(e, operation){
 		var pageNodes = [];
 		this.tab.tabWidget.pages.each(function(page){
 			if (page!=this.page){
@@ -195,7 +197,7 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Page = MWF.FCTab$Page = new Cla
 
 		this._createMoveNode();
 
-		this._setNodeMove(pageNodes, e);
+		this._setNodeMove(pageNodes, e, operation || "move");
 		
 	},
 	_createMoveNode: function(){
@@ -219,13 +221,17 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Page = MWF.FCTab$Page = new Cla
 			return false;
 		});
 	},
-	_setNodeMove: function(droppables, e){
+	_setNodeMove: function(droppables, e, operation){
 		this._setMoveNodePosition(e);
 		var movePosition = this.moveNode.getPosition();
 		var moveSize = this.moveNode.getSize();
 		var tabPosition = this.tab.node.getPosition();
 		var tabSize = this.tab.node.getSize();
-		
+
+		this.operation = operation;
+		if( this.form.history && operation === "move" ){
+			this.fromPath = this.form.history.getPath( this.node );
+		}
 		var nodeDrag = new Drag.Move(this.moveNode, {
 			"droppables": droppables,
 			"limit": {
@@ -245,13 +251,59 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Page = MWF.FCTab$Page = new Cla
 			"onDrop": function(dragging, inObj){
 				if (inObj){
 					var module = inObj.retrieve("module");
+
+					this.historyAddDelay = true;
+
 					if (module) module._dragDrop(this);
 					this._nodeDrop( module );
 
                     if (module){
+
+						if(this.form.history ){
+							this.toPath = this.form.history.getPath( this.node );
+							if( this.operation === "move" ){
+								this.contentFromPath = this.form.history.getPath( this.page.contentNodeArea );
+							}
+						}
+
                         this.page.contentNodeArea.inject(module.page.contentNodeArea, "before");
+
+						if(this.form.history ){
+							this.contentToPath = this.form.history.getPath( this.page.contentNodeArea );
+							if( this.operation === "move" ){
+								this.form.history.add({
+									"operation": this.operation,
+									"type": "module",
+									"json": Object.clone(this.json),
+									"fromPath": this.fromPath,
+									"toPath": this.toPath,
+									"content": {
+										"fromPath": this.contentFromPath,
+										"toPath": this.contentToPath
+									}
+								}, this);
+							}else{
+								this.form.history.add({
+									"operation": this.operation,
+									"type": "module",
+									"json": Object.clone(this.json),
+									"jsonObject": this.getJson(),
+									"html": this.node.outerHTML,
+									"toPath": this.toPath,
+									"content": {
+										"toPath": this.contentToPath
+									}
+								}, this);
+							}
+						}
                     }
 
+                    this.historyAddDelay = null;
+					this.operation = null;
+					this.fromPath = null;
+					this.toPath = null;
+					this.contentFromPath = null;
+					this.contentToPath = null;
 				}else{
 					this._dragCancel(dragging);
 				}

@@ -130,13 +130,25 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
             };
         }
     },
-    loadModule: function( path, html, json, jsonObject ){
-        var dom = this.injectHtmlByPath( path, html );
+    addModulesJson: function( jsonObject ){
         if(jsonObject){
             for( var id in jsonObject ){
                 this.form.json.moduleList[id] = jsonObject[id];
             }
         }
+    },
+    getParentModuleByNode: function( node, moduleType ){
+        var parentNode = node;
+        var module;
+        while( parentNode && !module ){
+            if( parentNode.get("mwftype") === moduleType )module = parentNode.retrieve("module");
+            parentNode = parentNode.getParent();
+        }
+        return module;
+    },
+    loadModule: function( path, html, json, jsonObject ){
+        var dom = this.injectHtmlByPath( path, html );
+        this.addModulesJson(jsonObject);
         var parent, parentNode = dom.getParent();
         while( parentNode && !parent ){
             var mwftype = parentNode.get("mwftype");
@@ -160,9 +172,9 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         //     "html": "",
         //     "path": ""
         // };
-        debugger;
 
-        if( module )log.toPath = this.getPath(module.node);
+        debugger;
+        //if( module )log.toPath = this.getPath(module.node);
 
         var item = new MWF.xApplication.process.FormDesigner.widget.History.Item(this, log);
         item.load();
@@ -198,7 +210,6 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
             this.preArray.push(item); //插入到preArray数组最后
             this.nextArray.shift();
         }
-	    console.log( this.preArray, this.nextArray );
     }
 });
 
@@ -221,15 +232,6 @@ MWF.xApplication.process.FormDesigner.widget.History.Item = new Class({
                 click: this.comeHere.bind(this)
             }
         }).inject( this.history.node );
-
-
-        // var log = {
-        //     "operation": "create", //操作 create, copy, move, delete
-        //     "type": "module", //property
-        //     "json": {},
-        //     "html": "",
-        //     "path": ""
-        // };
     },
     getText: function () {
         return this.data.operation + " " + this.data.json.id
@@ -244,7 +246,7 @@ MWF.xApplication.process.FormDesigner.widget.History.Item = new Class({
         });
         switch (this.data.type) {
             case "module":
-                this.data.json.name === "Tab$Page" ? this.undoTabpage : this.undoModule();
+                this.data.json.type === "Tab$Page" ? this.undoTabpage() : this.undoModule();
                 break;
             case "property":
                 this.undoPropery();
@@ -294,30 +296,20 @@ MWF.xApplication.process.FormDesigner.widget.History.Item = new Class({
                 // if(module)module.destroy();
                 break;
             case "move":
-                // dom = this.history.getDomByPath( this.data.toPath );
-                // this.history.injectToByPath( this.data.fromPath, dom );
+                dom = this.history.getDomByPath( this.data.toPath );
+                this.history.injectToByPath( this.data.fromPath, dom );
                 break;
             case "delete":
-                var tabNode = this.history.injectHtmlByPath( this.data.path, this.data.html );
-                if(this.data.jsonObject){
-                    for( var id in this.data.jsonObject ){
-                        this.history.form.json.moduleList[id] = this.data.jsonObject[id];
-                    }
-                }
+                debugger;
+                var contentNode = this.history.injectHtmlByPath( this.data.content.toPath, this.data.content.html );
+                this.history.addModulesJson( this.data.content.jsonObject );
 
-                var contentNode = this.history.injectHtmlByPath( this.data.content.path, this.data.content.html );
-                if(this.data.content.jsonObject){
-                    for( var id in this.data.content.jsonObject ){
-                        this.history.form.json.moduleList[id] = this.data.content.jsonObject[id];
-                    }
-                }
+                var tabNode = this.history.injectHtmlByPath( this.data.toPath, this.data.html );
+                this.history.addModulesJson( this.data.jsonObject );
 
-                var parentNode = tabNode;
-                var tabModule;
-                while( !tabModule ){
-                    if( parentNode.get("mwftype") === "tab" )tabModule = parentNode.retrieve("tab");
-                }
-                tabModule.loadSinglePage(tabNode, contentNode, this.data.json, this.data.content.json);
+                var tabModule = this.history.getParentModuleByNode(tabNode, "tab");
+
+                tabModule.loadExistedNodePage(tabNode, contentNode, this.data.json, this.data.content.json);
 
                 break;
         }
