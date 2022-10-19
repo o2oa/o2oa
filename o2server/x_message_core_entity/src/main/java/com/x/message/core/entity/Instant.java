@@ -99,16 +99,6 @@ public class Instant extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false)
 	private Boolean consumed;
 
-	public static final String consumerList_FIELDNAME = "consumerList";
-	@FieldDescribe("消费对象.")
-	@PersistentCollection(fetch = FetchType.EAGER)
-	@OrderColumn(name = ORDERCOLUMNCOLUMN)
-	@ContainerTable(name = TABLE + ContainerTableNameMiddle
-			+ consumerList_FIELDNAME, joinIndex = @Index(name = TABLE + consumerList_FIELDNAME + JoinIndexNameSuffix))
-	@ElementColumn(length = JpaObject.length_64B, name = ColumnNamePrefix + consumerList_FIELDNAME)
-	@ElementIndex(name = TABLE + consumerList_FIELDNAME + ElementIndexNameSuffix)
-	private List<String> consumerList;
-
 	public String getBody() {
 		return body;
 	}
@@ -123,14 +113,6 @@ public class Instant extends SliceJpaObject {
 
 	public void setType(String type) {
 		this.type = type;
-	}
-
-	public List<String> getConsumerList() {
-		return consumerList;
-	}
-
-	public void setConsumerList(List<String> consumerList) {
-		this.consumerList = consumerList;
 	}
 
 	public String getPerson() {
