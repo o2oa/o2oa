@@ -504,7 +504,8 @@ o2.LP.authentication = {
 	"inputYourNewPassword" : "Enter a new password",
 	"changePasswordSuccess" : "Successfully change password",
 	"userAppCameraHtml" : "<div>open <div styles='bindTipLinkArea'>APP </div> and scan</div>",
-	"loginToPage": "Login to the page"
+	"loginToPage": "Login to the page",
+	"accessError": "Failed to access background service"
 
 };
 o2.LP.script = {
