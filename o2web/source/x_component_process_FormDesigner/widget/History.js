@@ -37,7 +37,7 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
                     _self.add({
                         "operation": "open", //操作 create, copy, move, delete
                         "type": "form", //property
-                        "json": {}
+                        "json": {"id":"form"}
                     });
 
                 }
@@ -298,7 +298,27 @@ MWF.xApplication.process.FormDesigner.widget.History.Item = new Class({
                 // this.history.injectToByPath( this.data.fromPath, dom );
                 break;
             case "delete":
-                this.history.loadModule( this.data.toPath, this.data.html, this.data.json, this.data.jsonObject );
+                var tabNode = this.history.injectHtmlByPath( this.data.path, this.data.html );
+                if(this.data.jsonObject){
+                    for( var id in this.data.jsonObject ){
+                        this.history.form.json.moduleList[id] = this.data.jsonObject[id];
+                    }
+                }
+
+                var contentNode = this.history.injectHtmlByPath( this.data.content.path, this.data.content.html );
+                if(this.data.content.jsonObject){
+                    for( var id in this.data.content.jsonObject ){
+                        this.history.form.json.moduleList[id] = this.data.content.jsonObject[id];
+                    }
+                }
+
+                var parentNode = tabNode;
+                var tabModule;
+                while( !tabModule ){
+                    if( parentNode.get("mwftype") === "tab" )tabModule = parentNode.retrieve("tab");
+                }
+                tabModule.loadSinglePage(tabNode, contentNode, this.data.json, this.data.content.json);
+
                 break;
         }
         if(this.history.form.currentSelectedModule && this.history.form.currentSelectedModule.unSelected){
