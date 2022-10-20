@@ -128,21 +128,34 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Page = MWF.FCTab$Page = new Cla
 			this.node.set("title", this.json.description);
 		}
 	},
-	"addPage": function(){
-		var page = this.tab.addPage();
+	"addPage": function( ev ){
+		debugger;
+		var historyLog, tabPageModule;
+		var page = this.tab.addPage(null, function(log, module) {
+			historyLog = log;
+			tabPageModule = module;
+		});
+
 		page.tabNode.inject(this.page.tabNode, "before");
         page.contentNodeArea.inject(this.page.contentNodeArea, "before");
 		page.showTabIm();
+
+		if( this.form.history ){
+			historyLog.toPath = this.form.history.getPath( tabPageModule.node );
+			historyLog.content.toPath = this.form.history.getPath( tabPageModule.page.contentNodeArea );
+			this.form.history.add(historyLog)
+		}
 	},
 	"delete": function(e){
 		var module = this;
 		this.form.designer.confirm("warn", e, MWF.APPFD.LP.notice.deleteElementTitle, MWF.APPFD.LP.notice.deleteElement, 300, 120, function(){
 
 			if (module.tab.containers.length<=1){
+
+				module.tab.addHistoryLog("delete");
+
 				module.tab.destroy();
 			}else{
-				debugger;
-
 				var contentModule = module.page.contentNode.retrieve("module");
 
 				if(module.form.history)module.form.history.add({
@@ -160,16 +173,24 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Page = MWF.FCTab$Page = new Cla
 					}
                 }, module);
 
-				module.destroy();
-                module.tab.elements.erase(module);
-				contentModule.destroy();
-                module.tab.containers.erase(contentModule);
-				module.page.closeTab();
+				module._delete();
 			}
 			this.close();
 		}, function(){
 			this.close();
 		}, null);
+	},
+	_delete: function(){
+		if (this.tab.containers.length<=1){
+			this.tab.destroy();
+		}else{
+			var contentModule = this.page.contentNode.retrieve("module");
+			this.destroy();
+			this.tab.elements.erase(this);
+			contentModule.destroy();
+			this.tab.containers.erase(contentModule);
+			this.page.closeTab();
+		}
 	},
 	destroy: function(){
 		this.form.moduleList.erase(this);
@@ -279,18 +300,6 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Page = MWF.FCTab$Page = new Cla
 									"toPath": this.toPath,
 									"content": {
 										"fromPath": this.contentFromPath,
-										"toPath": this.contentToPath
-									}
-								}, this);
-							}else{
-								this.form.history.add({
-									"operation": this.operation,
-									"type": "module",
-									"json": Object.clone(this.json),
-									"jsonObject": this.getJson(),
-									"html": this.node.outerHTML,
-									"toPath": this.toPath,
-									"content": {
 										"toPath": this.contentToPath
 									}
 								}, this);

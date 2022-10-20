@@ -25,8 +25,7 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         this.node = new Element("div", {"height":"100px"});
 
         var _self = this;
-        debugger;
-        this.tooltips = new MWF.xApplication.process.FormDesigner.widget.History.Tooltips(
+        this.tooltips = new MWF.FCWHistory.Tooltips(
             this.form.designer.formNode,
             this.actionNode,
             this.form.designer,
@@ -59,111 +58,8 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         }
         return path.reverse();
     },
-    //根据路径获取dom
-    getDomByPath: function(path){
-	    var i, nodeIndex;
-	    var node = this.root;
-	    for( i=0; i<path.length; i++ ){
-	        nodeIndex = path[i];
-            node = node.children[nodeIndex];
-        }
-	    return node;
-    },
-    //插入到对应位置
-    injectToByPath: function(path, dom){
-        var i, nodeIndex;
-        var node = this.root;
-        for( i=0; i<path.length - 1; i++ ){
-            nodeIndex = path[i];
-            node = node.children[nodeIndex];
-        }
-        var last = path.getLast();
-        if( last === 0 ){
-            dom.inject( node, "top" );
-        }else{
-            node = node.children[last-1];
-            dom.inject(node, "after");
-        }
-    },
-    //插入HTML到对应位置
-    injectHtmlByPath: function(path, html){
-	    debugger;
-        var i, nodeIndex;
-        var node = this.root;
-        for( i=0; i<path.length - 1; i++ ){
-            nodeIndex = path[i];
-            node = node.children[nodeIndex];
-        }
-        var dom = new Element("div");
-        var last = path.getLast();
-        var parentNode = node;
-        if( last === 0 ){
-            dom.inject( node, "top" );
-        }else{
-            node = node.children[last-1];
-            dom.inject(node, "after");
-        }
-        dom.outerHTML = html; //dom没了
-        dom = parentNode.children[last];
-        return dom;
-    },
-    //给指定位置插入outerHTML
-    getInjectPositionByPath: function(path){
-        var i, nodeIndex;
-        var node = this.root;
-        for( i=0; i<path.length - 1; i++ ){
-            nodeIndex = path[i];
-            node = node.children[nodeIndex];
-        }
-        var dom = new Element("div");
-        var last = path.getLast();
-        if( last === 0 ){
-            return {
-                node: node,
-                position: "top"
-            };
-        }else{
-            node = node.children[last-1];
-            return {
-                node: node,
-                position: "after"
-            };
-        }
-    },
-    addModulesJson: function( jsonObject ){
-        if(jsonObject){
-            for( var id in jsonObject ){
-                this.form.json.moduleList[id] = jsonObject[id];
-            }
-        }
-    },
-    getParentModuleByNode: function( node, moduleType ){
-        var parentNode = node;
-        var module;
-        while( parentNode && !module ){
-            if( parentNode.get("mwftype") === moduleType )module = parentNode.retrieve("module");
-            parentNode = parentNode.getParent();
-        }
-        return module;
-    },
-    loadModule: function( path, html, json, jsonObject ){
-        var dom = this.injectHtmlByPath( path, html );
-        this.addModulesJson(jsonObject);
-        var parent, parentNode = dom.getParent();
-        while( parentNode && !parent ){
-            var mwftype = parentNode.get("mwftype");
-            if( mwftype === "form") {
-                parent = this.form;
-            }else if( mwftype ){
-                parent = parentNode.retrieve("module");
-            }else{
-                parentNode = parentNode.getParent();
-            }
-        }
-        var module = this.form.loadModule(json, dom, parent || this.form);
-        module._setEditStyle_custom("id");
-    },
     add: function(log, module) {
+	    debugger;
         // var log = {
         //     "operation": "create", //操作 create, copy, move, delete
         //     "type": "module", //property
@@ -172,11 +68,18 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         //     "html": "",
         //     "path": ""
         // };
-
-        debugger;
-        //if( module )log.toPath = this.getPath(module.node);
-
-        var item = new MWF.xApplication.process.FormDesigner.widget.History.Item(this, log);
+        var item;
+        switch (log.json.type) {
+            case "Tab$Page":
+                item = new MWF.FCWHistory.TabpageItem(this, log);
+                break;
+            case "Tab":
+                item = new MWF.FCWHistory.TabItem(this, log);
+                break;
+            default:
+                item = new MWF.FCWHistory.Item(this, log);
+                break;
+        }
         item.load();
 
         var it;
@@ -188,7 +91,6 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         this.preArray.push(item);
     },
     goto: function(item){
-	    debugger;
 	    var it;
 	    if( item.status === "pre" ){
 	        it = this.preArray.getLast();
@@ -213,13 +115,17 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
     }
 });
 
-MWF.xApplication.process.FormDesigner.widget.History.Item = new Class({
+MWF.FCWHistory = MWF.xApplication.process.FormDesigner.widget.History;
+
+MWF.FCWHistory.Item = new Class({
     Implements: [Options, Events],
     options: {},
     initialize: function (history, log) {
         this.history = history;
         this.data = log;
         this.status = "pre";
+        this.form = this.history.form;
+        this.root = this.history.root;
     },
     load: function () {
         this.node = new Element("div", {
@@ -246,77 +152,13 @@ MWF.xApplication.process.FormDesigner.widget.History.Item = new Class({
         });
         switch (this.data.type) {
             case "module":
-                this.data.json.type === "Tab$Page" ? this.undoTabpage() : this.undoModule();
+                this.undoModule();
                 break;
             case "property":
                 this.undoPropery();
                 break;
         }
-    },
-    undoPropery: function(){
-
-    },
-    undoModule: function(){
-        var dom, module;
-        switch (this.data.operation) {
-            case "create":
-                dom = this.history.getDomByPath( this.data.toPath );
-                if(dom)module = dom.retrieve("module");
-                if(module)module.destroy();
-                break;
-            case "copy":
-                dom = this.history.getDomByPath( this.data.toPath );
-                if(dom)module = dom.retrieve("module");
-                if(module)module.destroy();
-                break;
-            case "move":
-                dom = this.history.getDomByPath( this.data.toPath );
-                this.history.injectToByPath( this.data.fromPath, dom );
-                break;
-            case "delete":
-                this.history.loadModule( this.data.toPath, this.data.html, this.data.json, this.data.jsonObject );
-                break;
-        }
-        if(this.history.form.currentSelectedModule && this.history.form.currentSelectedModule.unSelected){
-            this.history.form.currentSelectedModule.unSelected()
-        }
-        this.history.form.currentSelectedModule = null;
-    },
-    undoTabpage: function(){
-        var dom, module;
-        switch (this.data.operation) {
-            case "create":
-                // dom = this.history.getDomByPath( this.data.toPath );
-                // if(dom)module = dom.retrieve("module");
-                // if(module)module.destroy();
-                break;
-            case "copy":
-                // dom = this.history.getDomByPath( this.data.toPath );
-                // if(dom)module = dom.retrieve("module");
-                // if(module)module.destroy();
-                break;
-            case "move":
-                dom = this.history.getDomByPath( this.data.toPath );
-                this.history.injectToByPath( this.data.fromPath, dom );
-                break;
-            case "delete":
-                debugger;
-                var contentNode = this.history.injectHtmlByPath( this.data.content.toPath, this.data.content.html );
-                this.history.addModulesJson( this.data.content.jsonObject );
-
-                var tabNode = this.history.injectHtmlByPath( this.data.toPath, this.data.html );
-                this.history.addModulesJson( this.data.jsonObject );
-
-                var tabModule = this.history.getParentModuleByNode(tabNode, "tab");
-
-                tabModule.loadExistedNodePage(tabNode, contentNode, this.data.json, this.data.content.json);
-
-                break;
-        }
-        if(this.history.form.currentSelectedModule && this.history.form.currentSelectedModule.unSelected){
-            this.history.form.currentSelectedModule.unSelected()
-        }
-        this.history.form.currentSelectedModule = null;
+        console.log( this.data );
     },
     redo: function(){ //重做
         this.status = "pre";
@@ -331,40 +173,290 @@ MWF.xApplication.process.FormDesigner.widget.History.Item = new Class({
                 this.redoPropery();
                 break;
         }
+        console.log( this.data );
+    },
+    undoPropery: function(){
+
     },
     redoPropery: function(){
 
+    },
+    undoModule: function(){
+        var dom, module;
+        switch (this.data.operation) {
+            case "create":
+                dom = this.getDomByPath( this.data.toPath );
+                if(dom)module = dom.retrieve("module");
+                if(module)module.destroy();
+                break;
+            case "copy":
+                dom = this.getDomByPath( this.data.toPath );
+                if(dom)module = dom.retrieve("module");
+                if(module)module.destroy();
+                break;
+            case "move":
+                dom = this.getDomByPath( this.data.toPath );
+                this.injectToByPath( this.data.fromPath, dom );
+                break;
+            case "delete":
+                this.loadModule();
+                break;
+        }
+        this.unselectModule();
     },
     redoModule: function(){
         var dom, module;
         switch (this.data.operation) {
             case "create":
-                this.history.loadModule( this.data.toPath, this.data.html, this.data.json, this.data.jsonObject);
+                this.loadModule();
                 break;
             case "copy":
-                this.history.loadModule( this.data.toPath, this.data.html, this.data.json, this.data.jsonObject );
+                this.loadModule();
                 break;
             case "move":
-                dom = this.history.getDomByPath( this.data.fromPath );
-                this.history.injectToByPath( this.data.toPath, dom );
+                dom = this.getDomByPath( this.data.fromPath );
+                this.injectToByPath( this.data.toPath, dom );
                 break;
             case "delete":
-                dom = this.history.getDomByPath( this.data.toPath );
+                dom = this.getDomByPath( this.data.toPath );
                 if(dom)module = dom.retrieve("module");
                 if(module)module.destroy();
                 break;
         }
-        if(this.history.form.currentSelectedModule && this.history.form.currentSelectedModule.unSelected){
-            this.history.form.currentSelectedModule.unSelected();
-        }
-        this.history.form.currentSelectedModule = null;
+        this.unselectModule();
     },
+
     destroy: function () {
         this.node.destroy();
-    }
-})
+    },
+    unselectModule: function () {
+        if(this.form.currentSelectedModule && this.form.currentSelectedModule.unSelected){
+            this.form.currentSelectedModule.unSelected()
+        }
+        this.form.currentSelectedModule = null;
+    },
 
-MWF.xApplication.process.FormDesigner.widget.History.Tooltips = new Class({
+
+    //根据路径获取dom
+    getDomByPath: function(path){
+        var i, nodeIndex;
+        var node = this.root;
+        for( i=0; i<path.length; i++ ){
+            nodeIndex = path[i];
+            node = node.children[nodeIndex];
+        }
+        return node;
+    },
+    //插入到对应位置
+    injectToByPath: function(path, dom){
+        var i, nodeIndex;
+        var node = this.root;
+        for( i=0; i<path.length - 1; i++ ){
+            nodeIndex = path[i];
+            node = node.children[nodeIndex];
+        }
+        var last = path.getLast();
+        if( last === 0 ){
+            dom.inject( node, "top" );
+        }else{
+            var contains = false;
+            for( i=0; i<last; i++ ){
+                if( node.children[i] === dom ){ //如果位置包含当前dom
+                    contains = true;
+                    break;
+                }
+            }
+            node = node.children[contains ? last : (last-1)];
+            dom.inject(node, "after");
+        }
+    },
+    //插入HTML到对应位置
+    injectHtmlByPath: function(path, html){
+        debugger;
+        var i, nodeIndex;
+        var node = this.root;
+        for( i=0; i<path.length - 1; i++ ){
+            nodeIndex = path[i];
+            node = node.children[nodeIndex];
+        }
+        var dom = new Element("div");
+        var last = path.getLast();
+        var parentNode = node;
+        if( last === 0 ){
+            dom.inject( node, "top" );
+        }else{
+            node = node.children[last-1];
+            dom.inject(node, "after");
+        }
+        dom.outerHTML = html; //dom没了
+        dom = parentNode.children[last];
+        return dom;
+    },
+    addModulesJson: function( jsonObject ){
+        if(jsonObject){
+            for( var id in jsonObject ){
+                this.form.json.moduleList[id] = jsonObject[id];
+            }
+        }
+    },
+    getParentModuleByNode: function( node, moduleType ){
+        var parentNode = node;
+        var module;
+        while( parentNode && !module ){
+            if( parentNode.get("mwftype") === moduleType )module = parentNode.retrieve("module");
+            parentNode = parentNode.getParent();
+        }
+        return module;
+    },
+    loadModule: function(){
+        this._loadModule( this.data.toPath, this.data.html, this.data.json, this.data.jsonObject );
+    },
+    _loadModule: function( path, html, json, jsonObject ){
+        var dom = this.injectHtmlByPath( path, html );
+        this.addModulesJson(jsonObject);
+        var parent, parentNode = dom.getParent();
+        while( parentNode && !parent ){
+            var mwftype = parentNode.get("mwftype");
+            if( mwftype === "form") {
+                parent = this.form;
+            }else if( mwftype ){
+                parent = parentNode.retrieve("module");
+            }else{
+                parentNode = parentNode.getParent();
+            }
+        }
+        var module = this.form.loadModule(json, dom, parent || this.form);
+        module._setEditStyle_custom("id");
+    }
+});
+
+MWF.FCWHistory.TabItem = new Class({
+    Extends: MWF.xApplication.process.FormDesigner.widget.History.Item,
+    undoModule: function(){
+        var dom, module;
+        switch (this.data.operation) {
+            case "create":
+                dom = this.getDomByPath( this.data.toPath );
+                if(dom)module = dom.retrieve("module");
+                if(module)module.destroy();
+                break;
+            // case "add":
+            //     dom = this.getDomByPath( this.data.toPath );
+            //     if(dom)module = dom.retrieve("module");
+            //     if(module)module._delete();
+            //     break;
+            case "copy":
+                dom = this.getDomByPath( this.data.toPath );
+                if(dom)module = dom.retrieve("module");
+                if(module)module.destroy();
+                break;
+            case "move":
+                dom = this.getDomByPath( this.data.toPath );
+                this.injectToByPath( this.data.fromPath, dom );
+                break;
+            case "delete":
+                this.loadModule();
+                break;
+        }
+        this.unselectModule();
+    },
+    redoModule: function(){
+        var dom, module;
+        switch (this.data.operation) {
+            case "create":
+                this.loadModule();
+                break;
+            // case "add":
+            //     var nextDom = this.getDomByPath( this.data.toPath );
+            //     if(nextDom)module = nextDom.retrieve("module");
+            //     if(module)module.addPage( null, true );
+            //     break;
+            case "copy":
+                this.loadModule();
+                break;
+            case "move":
+                dom = this.getDomByPath( this.data.fromPath );
+                this.injectToByPath( this.data.toPath, dom );
+                break;
+            case "delete":
+                dom = this.getDomByPath( this.data.toPath );
+                if(dom)module = dom.retrieve("module");
+                if(module)module.destroy();
+                break;
+        }
+        this.unselectModule();
+    },
+});
+
+MWF.FCWHistory.TabpageItem = new Class({
+    Extends: MWF.xApplication.process.FormDesigner.widget.History.Item,
+    restoreTabage: function(){
+        var contentNode = this.injectHtmlByPath( this.data.content.toPath, this.data.content.html );
+        this.addModulesJson( this.data.content.jsonObject );
+
+        var tabNode = this.injectHtmlByPath( this.data.toPath, this.data.html );
+        this.addModulesJson( this.data.jsonObject );
+
+        var tabModule = this.getParentModuleByNode(tabNode, "tab");
+
+        tabModule.loadExistedNodePage(tabNode, contentNode, this.data.json, this.data.content.json);
+    },
+    undoModule: function(){
+        var dom, module;
+        switch (this.data.operation) {
+            case "add":
+                dom = this.getDomByPath( this.data.toPath );
+                if(dom)module = dom.retrieve("module");
+                if(module)module._delete();
+                break;
+            case "copy":
+                break;
+            case "move":
+                dom = this.getDomByPath( this.data.toPath );
+                this.injectToByPath( this.data.fromPath, dom );
+
+                dom = this.getDomByPath( this.data.content.toPath );
+                this.injectToByPath( this.data.content.fromPath, dom );
+                break;
+            case "delete":
+                this.restoreTabage();
+                break;
+        }
+        this.unselectModule();
+    },
+    redoModule: function(){
+        var dom, module;
+        switch (this.data.operation) {
+            case "add":
+                this.restoreTabage();
+                // var nextDom = this.getDomByPath( this.data.toPath );
+                // if(nextDom){
+                //     module = nextDom.retrieve("module");
+                //     if(module)module.addPage( null, true );
+                // }else{
+                // }
+                break;
+            case "copy":
+                break;
+            case "move":
+                debugger;
+                dom = this.getDomByPath( this.data.fromPath );
+                this.injectToByPath( this.data.toPath, dom );
+
+                dom = this.getDomByPath( this.data.content.fromPath );
+                this.injectToByPath( this.data.content.toPath, dom );
+                break;
+            case "delete":
+                dom = this.getDomByPath( this.data.toPath );
+                if(dom)module = dom.retrieve("module");
+                if(module)module._delete();
+                break;
+        }
+        this.unselectModule();
+    }
+});
+
+MWF.FCWHistory.Tooltips = new Class({
     Extends: MTooltips,
     options : {
         style: "design",

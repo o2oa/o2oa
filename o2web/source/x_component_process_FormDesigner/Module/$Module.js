@@ -298,14 +298,7 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 			module.form.selected();
 			module.form.designer.shortcut = true;
 
-			if(module.form.history)module.form.history.add({
-				"operation": "delete",
-				"type": "module",
-				"json": Object.clone(module.json),
-				"jsonObject": module.getJson(),
-				"html": module.node.outerHTML,
-				"toPath": module.form.history.getPath(module.node)
-			}, module);
+			module.addHistoryLog("delete");
 
 			module.destroy();
 			this.close();
@@ -313,6 +306,20 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 			module.form.designer.shortcut = true;
 			this.close();
 		}, null);
+	},
+	addHistoryLog: function( operation, fromPath, html ){
+		if(!this.form.history)return;
+		var module = this;
+		var log = {
+			"operation": operation,
+			"type": "module",
+			"json": Object.clone(module.json),
+			"jsonObject": module.getJson(),
+			"html": html || module.node.outerHTML,
+			"toPath": module.form.history.getPath(module.node)
+		};
+		if(fromPath)log.fromPath = fromPath;
+		module.form.history.add( log, module);
 	},
 	selectedContainer: function(){
 		debugger;
@@ -855,15 +862,9 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 
 		if( !selectDisabled )this.selected();
 
-		if(this.form.history && this.operation && !this.historyAddDelay)this.form.history.add({
-			"operation": this.operation,
-			"type": "module",
-			"json": Object.clone(this.json),
-			"jsonObject": this.getJson(),
-			"html": this.node.outerHTML,
-			"fromPath": this.fromPath,
-			"toPath": this.form.history.getPath(this.node)
-		}, this);
+		if( this.operation && !this.historyAddDelay ){
+			this.addHistoryLog( this.operation, this.fromPath );
+		}
 
 		if( !this.historyAddDelay ){
 			this.operation = null;
