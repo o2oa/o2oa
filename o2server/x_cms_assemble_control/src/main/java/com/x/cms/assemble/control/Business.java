@@ -1,7 +1,9 @@
 package com.x.cms.assemble.control;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
@@ -418,6 +420,7 @@ public class Business {
 
 	/**
 	 * 是否是文档的编辑者
+	 * 文档不存在判断是否是分类或应用的发布者
 	 * @param person
 	 * @param appInfo
 	 * @return
@@ -427,8 +430,8 @@ public class Business {
 		if (isManager(person)) {
 			return true;
 		}
-		List<String> unitNames = null;
-		List<String> groupNames = null;
+		List<String> unitNames = this.organization().unit().listWithPersonSupNested(person.getDistinguishedName());
+		List<String> groupNames = this.organization().group().listWithPerson(person.getDistinguishedName());
 		if(document!=null){
 			if( ListTools.isNotEmpty( document.getAuthorPersonList() )) {
 				if( document.getAuthorPersonList().contains( getShortTargetFlag(person.getDistinguishedName()) ) ) {
@@ -436,65 +439,52 @@ public class Business {
 				}
 			}
 			if( ListTools.isNotEmpty( document.getAuthorUnitList() )) {
-				unitNames = this.organization().unit()
-						.listWithPersonSupNested(person.getDistinguishedName());
 				if( ListTools.containsAny( getShortTargetFlag(unitNames), document.getAuthorUnitList())) {
 					return true;
 				}
 			}
 			if( ListTools.isNotEmpty( document.getAuthorGroupList() )) {
-				groupNames = this.organization().group().listWithPerson(person.getDistinguishedName());
 				if( ListTools.containsAny( getShortTargetFlag(groupNames), document.getAuthorGroupList())) {
 					return true;
 				}
 			}
 		}
 		if (categoryInfo != null) {
-			if (ListTools.isNotEmpty(categoryInfo.getManageablePersonList())) {
-				if (categoryInfo.getManageablePersonList().contains(person.getDistinguishedName())) {
-					return true;
-				}
+			Set<String> catePersonList = new HashSet<>(categoryInfo.getManageablePersonList());
+			Set<String> cateUnitList = new HashSet<>(categoryInfo.getManageableUnitList());
+			Set<String> cateGroupList = new HashSet<>(categoryInfo.getManageableGroupList());
+			if(document == null){
+				catePersonList.addAll(categoryInfo.getPublishablePersonList());
+				cateUnitList.addAll(categoryInfo.getPublishableUnitList());
+				cateGroupList.addAll(categoryInfo.getPublishableGroupList());
 			}
-			if (ListTools.isNotEmpty(categoryInfo.getManageableUnitList())) {
-				if(unitNames == null) {
-					unitNames = this.organization().unit()
-							.listWithPersonSupNested(person.getDistinguishedName());
-				}
-				if (ListTools.containsAny(unitNames, categoryInfo.getManageableUnitList())) {
-					return true;
-				}
+			if (catePersonList.size() > 0 && catePersonList.contains(person.getDistinguishedName())) {
+				return true;
 			}
-			if (ListTools.isNotEmpty(categoryInfo.getManageableGroupList())) {
-				if(groupNames == null) {
-					groupNames = this.organization().group().listWithPerson(person.getDistinguishedName());
-				}
-				if (ListTools.containsAny(groupNames, categoryInfo.getManageableGroupList())) {
-					return true;
-				}
+			if (cateUnitList.size() > 0 && ListTools.containsAny(unitNames, new ArrayList<>(cateUnitList))) {
+				return true;
+			}
+			if (cateGroupList.size() > 0 && ListTools.containsAny(groupNames, new ArrayList<>(cateGroupList))) {
+				return true;
 			}
 		}
 		if (appInfo != null) {
-			if (ListTools.isNotEmpty(appInfo.getManageablePersonList())) {
-				if (appInfo.getManageablePersonList().contains(person.getDistinguishedName())) {
-					return true;
-				}
+			Set<String> appPersonList = new HashSet<>(appInfo.getManageablePersonList());
+			Set<String> appUnitList = new HashSet<>(appInfo.getManageableUnitList());
+			Set<String> appGroupList = new HashSet<>(appInfo.getManageableGroupList());
+			if(document == null){
+				appPersonList.addAll(appInfo.getPublishablePersonList());
+				appUnitList.addAll(appInfo.getPublishableUnitList());
+				appGroupList.addAll(appInfo.getPublishableGroupList());
 			}
-			if (ListTools.isNotEmpty(appInfo.getManageableUnitList())) {
-				if(unitNames == null) {
-					unitNames = this.organization().unit()
-							.listWithPersonSupNested(person.getDistinguishedName());
-				}
-				if (ListTools.containsAny(unitNames, appInfo.getManageableUnitList())) {
-					return true;
-				}
+			if (appPersonList.size() > 0 && appPersonList.contains(person.getDistinguishedName())) {
+				return true;
 			}
-			if (ListTools.isNotEmpty(appInfo.getManageableGroupList())) {
-				if(groupNames == null) {
-					groupNames = this.organization().group().listWithPerson(person.getDistinguishedName());
-				}
-				if (ListTools.containsAny(groupNames, appInfo.getManageableGroupList())) {
-					return true;
-				}
+			if (appUnitList.size() > 0 && ListTools.containsAny(unitNames, new ArrayList<>(appUnitList))) {
+				return true;
+			}
+			if (appGroupList.size() > 0 && ListTools.containsAny(groupNames, new ArrayList<>(appGroupList))) {
+				return true;
 			}
 		}
 		return false;
