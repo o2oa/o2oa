@@ -35,7 +35,7 @@ public class DocumentQueryService {
 
 	public Document get( String id ) throws Exception {
 		if( StringUtils.isEmpty( id ) ){
-			throw new Exception("id is null!");
+			return null;
 		}
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			return documentInfoService.get( emc, id );
