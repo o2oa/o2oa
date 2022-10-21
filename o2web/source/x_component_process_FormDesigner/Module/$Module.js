@@ -314,10 +314,12 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 			"operation": operation,
 			"type": "module",
 			"json": Object.clone(module.json),
-			"jsonObject": module.getJson(),
-			"html": html || module.node.outerHTML,
 			"toPath": module.form.history.getPath(module.node)
 		};
+		if( operation !== "move" ){
+			log.jsonObject = module.getJson();
+			log.html = html || module.node.outerHTML;
+		}
 		if(fromPath)log.fromPath = fromPath;
 		module.form.history.add( log, module);
 	},

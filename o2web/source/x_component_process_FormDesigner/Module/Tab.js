@@ -345,25 +345,31 @@ MWF.xApplication.process.FormDesigner.Module.Tab = MWF.FCTab = new Class({
 		}.bind(this), false);
 		page.showTabIm();
 
-		var historyLog = {
-			"operation": "add",
-			"type": "module",
-			"json": Object.clone(tabPage.json),
-			"jsonObject": tabPage.getJson(),
-			"html": tabPage.node.outerHTML,
-			"toPath": this.form.history.getPath(tabPage.node),
-			"content": {
-				"json": Object.clone(tabContent.json),
-				"jsonObject": tabContent.getJson(),
-				"html": tabPage.page.contentNodeArea.outerHTML,
-				"toPath": this.form.history.getPath( tabPage.page.contentNodeArea )
-			}
-		};
 		if( historyCallback ){
-			historyCallback( historyLog, tabPage );
-		}else if( this.form.history ){
-			this.form.history.add( historyLog );
+			historyCallback( tabPage );
+		}else{
+			tabPage.addHistoryLog("add")
 		}
+
+		// var historyLog = {
+		// 	"operation": "add",
+		// 	"type": "module",
+		// 	"json": Object.clone(tabPage.json),
+		// 	"jsonObject": tabPage.getJson(),
+		// 	"html": tabPage.node.outerHTML,
+		// 	"toPath": this.form.history.getPath(tabPage.node),
+		// 	"content": {
+		// 		"json": Object.clone(tabContent.json),
+		// 		"jsonObject": tabContent.getJson(),
+		// 		"html": tabPage.page.contentNodeArea.outerHTML,
+		// 		"toPath": this.form.history.getPath( tabPage.page.contentNodeArea )
+		// 	}
+		// };
+		// if( historyCallback ){
+		// 	historyCallback( historyLog, tabPage );
+		// }else if( this.form.history ){
+		// 	this.form.history.add( historyLog );
+		// }
 
 		return page;
 	},
