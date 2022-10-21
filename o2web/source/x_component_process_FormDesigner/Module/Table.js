@@ -210,7 +210,13 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 
 		if (this.form.selectedModules.length>1){
 
-			var fromHtml = this.node.outerHTML;
+			debugger;
+			var fromLog;
+			if(this.form.history)fromLog = {
+				html: this.node.outerHTML,
+				json: Object.clone(this.json),
+				jsonObject: this.getJson()
+			};
 
 			var firstModuleObj = this.form._getFirstMultiSelectedModule();
 			var firstModule = firstModuleObj.module;
@@ -270,11 +276,14 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 			}
 			firstModule.selected();
 
-			this.addHistoryLog("mergeCell", null, null, fromHtml);
+			this.addHistoryLog("mergeCell", fromLog );
 		}
 
 
 
+
+	},
+	addHistoryLog_cell: function(){
 
 	},
 	
@@ -439,12 +448,12 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 		this.selected();
 
 		if( this.operation && !this.historyAddDelay ){
-			this.addHistoryLog( this.operation, this.fromPath );
+			this.addHistoryLog( this.operation, this.fromLog );
 		}
 
 		if( !this.historyAddDelay ){
 			this.operation = null;
-			this.fromPath = null;
+			this.fromLog = null;
 		}
 	},
 	

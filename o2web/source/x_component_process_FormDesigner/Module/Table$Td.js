@@ -407,7 +407,8 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 				cellNumber = cellNumber-colspan;
 			}.bind(this));
 		}
-		
+
+		var moduleList = [];
 		for (var n=1; n<=rows; n++){
 			var newTr = new Element("tr").inject(tr, position);
 			for (var m=1; m<=cellNumber; m++){
@@ -416,6 +417,7 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 				this.form.getTemplateData("Table$Td", function(data){
 					var moduleData = Object.clone(data);
 					var tdContainer = new MWF.FCTable$Td(this.form);
+					moduleList.push(tdContainer);
                     tdContainer.table = this.table;
 					tdContainer.load(moduleData, cell, this.parentContainer);
 					this.parentContainer.containers.push(tdContainer);
@@ -426,6 +428,8 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 		}
 		this.unSelected();
 		this.selected();
+
+		this.addHistoryLogList( "insertRow", moduleList );
 	},
 	
 	insertCol: function(){

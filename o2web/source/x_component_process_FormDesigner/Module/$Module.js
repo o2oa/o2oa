@@ -307,23 +307,6 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 			this.close();
 		}, null);
 	},
-	addHistoryLog: function( operation, fromPath, html, fromHtml ){
-		if(!this.form.history)return;
-		var module = this;
-		var log = {
-			"operation": operation,
-			"type": "module",
-			"json": Object.clone(module.json),
-			"toPath": module.form.history.getPath(module.node)
-		};
-		if( operation !== "move" ){
-			log.jsonObject = module.getJson();
-			log.html = html || module.node.outerHTML;
-		}
-		if(fromPath)log.fromPath = fromPath;
-		if(fromHtml)log.fromHtml = fromHtml;
-		module.form.history.add( log, module);
-	},
 	selectedContainer: function(){
 		debugger;
 		if (this.parentContainer) this.parentContainer.selected();
@@ -534,7 +517,7 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 
 		this.operation = operation;
 		if( this.form.history && operation === "move" ){
-			this.fromPath = this.form.history.getPath( this.node );
+			this.fromLog = { path: this.form.history.getPath( this.node ) };
 		}
 
 		var nodeDrag = new Drag.Move(this.moveNode, {
@@ -866,12 +849,12 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		if( !selectDisabled )this.selected();
 
 		if( this.operation && !this.historyAddDelay ){
-			this.addHistoryLog( this.operation, this.fromPath );
+			this.addHistoryLog( this.operation, this.fromLog );
 		}
 
 		if( !this.historyAddDelay ){
 			this.operation = null;
-			this.fromPath = null;
+			this.fromLog = null;
 		}
 	},
 	_resetTreeNode: function(){
@@ -941,7 +924,7 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		this.form.moveModule = null;
 
 		this.operation = null;
-		this.fromPath = null;
+		this.fromLog = null;
 	},
 	_nodeDrag: function(e, drag){
 		if( !this.dragTimeout ){
@@ -1181,6 +1164,47 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		o[json.id] = json;
 		this._getSubModuleJson(this.node, o);
 		return o;
+	},
+
+	addHistoryLog: function( operation, fromLog, html ){
+		if(!this.form.history)return;
+		var module = this;
+		var log = {
+			"operation": operation,
+			"type": "module",
+			"json": Object.clone(module.json),
+			"path": module.form.history.getPath(module.node)
+		};
+		if( operation !== "move" ){
+			log.jsonObject = module.getJson();
+			log.html = html || module.node.outerHTML;
+		}
+		if(fromLog)log.fromLog = fromLog;
+		module.form.history.add( log, module);
+	},
+	addHistoryLogList: function( operation, moduleList ){
+		if(!this.form.history)return;
+		var obj = {
+			"operation": operation,
+			"type": "module",
+			"json": Object.clone(this.json)
+		};
+		var logList = [];
+		moduleList.each(function (module) {
+			logList.push( module.createHistoryLog() );
+		}.bind(this));
+		this.form.history.add( obj, this);
+	},
+	createHistoryLog: function ( fromLog ) {
+		if( !this.form.history )return null;
+		var obj = {
+			"json": Object.clone(this.json),
+			"path": this.form.history.getPath(this.node),
+			"jsonObject": this.getJson(),
+			"html": this.node.outerHTML
+		};
+		if(fromLog)obj.fromLog = fromLog;
+		return obj;
 	}
 
 

@@ -140,12 +140,6 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Page = MWF.FCTab$Page = new Cla
 		page.showTabIm();
 
 		tabPageModule.addHistoryLog("add");
-
-		// if( this.form.history ){
-		// 	historyLog.toPath = this.form.history.getPath( tabPageModule.node );
-		// 	historyLog.content.toPath = this.form.history.getPath( tabPageModule.page.contentNodeArea );
-		// 	this.form.history.add(historyLog)
-		// }
 	},
 	"delete": function(e){
 		var module = this;
@@ -157,22 +151,6 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Page = MWF.FCTab$Page = new Cla
 
 				module.tab.destroy();
 			}else{
-				// var contentModule = module.page.contentNode.retrieve("module");
-				//
-				// if(module.form.history)module.form.history.add({
-                //     "operation": "delete",
-                //     "type": "module",
-                //     "json": Object.clone(module.json),
-                //     "jsonObject": module.getJson(),
-                //     "html": module.node.outerHTML,
-				// 	"toPath": module.form.history.getPath(module.node),
-				// 	"content": {
-				// 		"json": Object.clone(contentModule.json),
-				// 		"jsonObject": contentModule.getJson(),
-				// 		"html": module.page.contentNodeArea.outerHTML,
-				// 		"toPath": module.form.history.getPath( module.page.contentNodeArea )
-				// 	}
-                // }, module);
 
 				module.addHistoryLog("delete");
 
@@ -183,7 +161,7 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Page = MWF.FCTab$Page = new Cla
 			this.close();
 		}, null);
 	},
-	addHistoryLog: function( operation, fromPath, contentFromPath ){
+	addHistoryLog: function( operation, fromLog, contentFromLog ){
 		if(!this.form.history)return;
 		var module = this;
 		var contentModule = module.page.contentNode.retrieve("module");
@@ -191,10 +169,10 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Page = MWF.FCTab$Page = new Cla
 			"operation": operation,
 			"type": "module",
 			"json": Object.clone(module.json),
-			"toPath": module.form.history.getPath(module.node),
+			"path": module.form.history.getPath(module.node),
 			"content": {
 				"json": Object.clone(contentModule.json),
-				"toPath": module.form.history.getPath( module.page.contentNodeArea )
+				"path": module.form.history.getPath( module.page.contentNodeArea )
 			}
 		};
 		if( operation !== "move" ){
@@ -204,8 +182,8 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Page = MWF.FCTab$Page = new Cla
 			log.content.jsonObject = contentModule.getJson();
 			log.content.html = module.page.contentNodeArea.outerHTML;
 		}
-		if(fromPath)log.fromPath = fromPath;
-		if(contentFromPath)log.content.fromPath = contentFromPath;
+		if(fromLog)log.fromLog = fromLog;
+		if(contentFromLog)log.content.fromLog = contentFromLog;
 		module.form.history.add( log, module);
 	},
 	_delete: function(){
@@ -279,7 +257,7 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Page = MWF.FCTab$Page = new Cla
 
 		this.operation = operation;
 		if( this.form.history && operation === "move" ){
-			this.fromPath = this.form.history.getPath( this.node );
+			this.fromLog = { "path": this.form.history.getPath( this.node ) };
 		}
 		var nodeDrag = new Drag.Move(this.moveNode, {
 			"droppables": droppables,
@@ -309,42 +287,18 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Page = MWF.FCTab$Page = new Cla
                     if (module){
 
 						if(this.form.history && this.operation === "move" ){
-							this.contentFromPath = this.form.history.getPath( this.page.contentNodeArea );
+							this.contentFromLog = { path: this.form.history.getPath( this.page.contentNodeArea ) };
 						}
-						// if(this.form.history ){
-						// 	this.toPath = this.form.history.getPath( this.node );
-						// 	if( this.operation === "move" ){
-						// 		this.contentFromPath = this.form.history.getPath( this.page.contentNodeArea );
-						// 	}
-						// }
 
                         this.page.contentNodeArea.inject(module.page.contentNodeArea, "before");
 
-						if(this.operation)this.addHistoryLog( this.operation, this.fromPath, this.contentFromPath );
-						// if(this.form.history ){
-							// this.contentToPath = this.form.history.getPath( this.page.contentNodeArea );
-							// if( this.operation === "move" ){
-								// this.form.history.add({
-								// 	"operation": this.operation,
-								// 	"type": "module",
-								// 	"json": Object.clone(this.json),
-								// 	"fromPath": this.fromPath,
-								// 	"toPath": this.toPath,
-								// 	"content": {
-								// 		"fromPath": this.contentFromPath,
-								// 		"toPath": this.contentToPath
-								// 	}
-								// }, this);
-							// }
-						// }
+						if(this.operation)this.addHistoryLog( this.operation, this.fromLog, this.contentFromLog );
                     }
 
                     this.historyAddDelay = null;
 					this.operation = null;
-					this.fromPath = null;
-					this.toPath = null;
-					this.contentFromPath = null;
-					this.contentToPath = null;
+					this.fromLog = null;
+					this.contentFromLog = null;
 				}else{
 					this._dragCancel(dragging);
 				}

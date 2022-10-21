@@ -59,14 +59,19 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         return path.reverse();
     },
     add: function(log, module) {
-	    debugger;
-        // var log = {
-        //     "operation": "create", //操作 create, copy, move, delete
+        // var log = { //也有可能是对象数组
+        //     "operation": "create", //操作 create, copy, move, delete, mergeCell
         //     "type": "module", //property
-        //     "json": {},
-        //     "jsonObject": {},
-        //     "html": "",
-        //     "path": ""
+        //     "json": {},  //最终json
+        //     "jsonObject": {}, //本json所包含的子json
+        //     "html": "", //最终html
+        //     "path": "", //最终dom path
+        //      "fromLog": { //初始数据
+        //          "json": {},
+        //          "jsonObject": {},
+        //          "html": "",
+        //          "path": ""
+        //      }
         // };
         var item;
         switch (log.json.type) {
@@ -75,7 +80,6 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
                 break;
             default:
                 item = new MWF.FCWHistory.Item(this, log);
-                break;
         }
         item.load();
 
@@ -182,28 +186,29 @@ MWF.FCWHistory.Item = new Class({
         var dom, module;
         switch (this.data.operation) {
             case "create":
-                dom = this.getDomByPath( this.data.toPath );
+                dom = this.getDomByPath( this.data.path );
                 if(dom)module = dom.retrieve("module");
                 if(module)module.destroy();
                 break;
             case "copy":
-                dom = this.getDomByPath( this.data.toPath );
+                dom = this.getDomByPath( this.data.path );
                 if(dom)module = dom.retrieve("module");
                 if(module)module.destroy();
                 break;
             case "move":
-                dom = this.getDomByPath( this.data.toPath );
-                this.injectToByPath( this.data.fromPath, dom );
+                dom = this.getDomByPath( this.data.path );
+                this.injectToByPath( this.data.fromLog.path, dom );
                 break;
             case "delete":
                 this.loadModule();
                 break;
-            case "mergeCell":
-                dom = this.getDomByPath( this.data.toPath );
-                if(dom){
-                    module = dom.retrieve("module");
-                    dom.set("html")
-                }
+            case "mergeCell": //合并单元格
+                dom = this.getDomByPath( this.data.path );
+                module = dom.retrieve("module");
+                module.destroy();
+                this._loadModule( this.data.path, this.data.fromLog.html, this.data.fromLog.json, this.data.fromLog.jsonObject );
+                break;
+            case "insertRow":
                 break;
         }
         this.unselectModule();
@@ -218,13 +223,21 @@ MWF.FCWHistory.Item = new Class({
                 this.loadModule();
                 break;
             case "move":
-                dom = this.getDomByPath( this.data.fromPath );
-                this.injectToByPath( this.data.toPath, dom );
+                dom = this.getDomByPath( this.data.fromLog.path );
+                this.injectToByPath( this.data.path, dom );
                 break;
             case "delete":
-                dom = this.getDomByPath( this.data.toPath );
+                dom = this.getDomByPath( this.data.path );
                 if(dom)module = dom.retrieve("module");
                 if(module)module.destroy();
+                break;
+            case "mergeCell": //合并单元格
+                dom = this.getDomByPath( this.data.path );
+                module = dom.retrieve("module");
+                module.destroy();
+                this.loadModule();
+                break;
+            case "insertRow":
                 break;
         }
         this.unselectModule();
@@ -299,8 +312,10 @@ MWF.FCWHistory.Item = new Class({
     },
     resetTreeNode: function(node){
         var module = node.retrieve("module");
-        module.parentContainer = this.getParentModule( node );
-        module._resetTreeNode();
+        if(module){
+            module.parentContainer = this.getParentModule( node );
+            module._resetTreeNode();
+        }
     },
     addModulesJson: function( jsonObject ){
         if(jsonObject){
@@ -310,7 +325,7 @@ MWF.FCWHistory.Item = new Class({
         }
     },
     loadModule: function(){
-        this._loadModule( this.data.toPath, this.data.html, this.data.json, this.data.jsonObject );
+        this._loadModule( this.data.path, this.data.html, this.data.json, this.data.jsonObject );
     },
     _loadModule: function( path, html, json, jsonObject ){
         var dom = this.injectHtmlByPath( path, html );
@@ -348,10 +363,10 @@ MWF.FCWHistory.Item = new Class({
 MWF.FCWHistory.TabpageItem = new Class({
     Extends: MWF.xApplication.process.FormDesigner.widget.History.Item,
     restoreTabage: function(){
-        var contentNode = this.injectHtmlByPath( this.data.content.toPath, this.data.content.html );
+        var contentNode = this.injectHtmlByPath( this.data.content.path, this.data.content.html );
         this.addModulesJson( this.data.content.jsonObject );
 
-        var tabNode = this.injectHtmlByPath( this.data.toPath, this.data.html );
+        var tabNode = this.injectHtmlByPath( this.data.path, this.data.html );
         this.addModulesJson( this.data.jsonObject );
 
         var tabModule = this.getParentModuleByType(tabNode, "tab");
@@ -362,18 +377,18 @@ MWF.FCWHistory.TabpageItem = new Class({
         var dom, module;
         switch (this.data.operation) {
             case "add":
-                dom = this.getDomByPath( this.data.toPath );
+                dom = this.getDomByPath( this.data.path );
                 if(dom)module = dom.retrieve("module");
                 if(module)module._delete();
                 break;
             case "copy":
                 break;
             case "move":
-                dom = this.getDomByPath( this.data.toPath );
-                this.injectToByPath( this.data.fromPath, dom );
+                dom = this.getDomByPath( this.data.path );
+                this.injectToByPath( this.data.fromLog.path, dom );
 
-                dom = this.getDomByPath( this.data.content.toPath );
-                this.injectToByPath( this.data.content.fromPath, dom );
+                dom = this.getDomByPath( this.data.content.path );
+                this.injectToByPath( this.data.content.fromLog.Path, dom );
                 break;
             case "delete":
                 this.restoreTabage();
@@ -391,14 +406,14 @@ MWF.FCWHistory.TabpageItem = new Class({
                 break;
             case "move":
                 debugger;
-                dom = this.getDomByPath( this.data.fromPath );
-                this.injectToByPath( this.data.toPath, dom );
+                dom = this.getDomByPath( this.data.fromLog.path );
+                this.injectToByPath( this.data.path, dom );
 
-                dom = this.getDomByPath( this.data.content.fromPath );
-                this.injectToByPath( this.data.content.toPath, dom );
+                dom = this.getDomByPath( this.data.content.fromLog.path );
+                this.injectToByPath( this.data.content.path, dom );
                 break;
             case "delete":
-                dom = this.getDomByPath( this.data.toPath );
+                dom = this.getDomByPath( this.data.path );
                 if(dom)module = dom.retrieve("module");
                 if(module)module._delete();
                 break;
