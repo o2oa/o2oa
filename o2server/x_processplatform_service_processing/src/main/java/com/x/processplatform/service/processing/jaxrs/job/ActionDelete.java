@@ -54,6 +54,7 @@ public class ActionDelete extends BaseAction {
 					emc.beginTransaction(WorkCompleted.class);
 					for (WorkCompleted o : emc.listEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME, job)) {
 						emc.remove(o);
+						MessageFactory.workCompleted_delete(o);
 						Wo wo = new Wo();
 						wo.setId(o.getId());
 						wos.add(wo);

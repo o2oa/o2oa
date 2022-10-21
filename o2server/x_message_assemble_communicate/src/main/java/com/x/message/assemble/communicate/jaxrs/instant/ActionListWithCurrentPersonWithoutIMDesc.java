@@ -13,6 +13,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.entity.JpaObject_;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.ActionResult;
@@ -26,39 +27,38 @@ import com.x.message.core.entity.Instant_;
 
 class ActionListWithCurrentPersonWithoutIMDesc extends BaseAction {
 
-	private static final Logger LOGGER= LoggerFactory.getLogger(ActionListWithCurrentPersonWithoutIMDesc.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWithCurrentPersonWithoutIMDesc.class);
 
-	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, Integer count) throws Exception {
-		
-		LOGGER.debug("execute:{}, count:{}.", effectivePerson::getDistinguishedName, () -> count);
-		
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
-			ActionResult<List<Wo>> result = new ActionResult<>();
-			List<Wo> wos = this.list(business, NumberUtils.min(200, NumberUtils.max(1, count)), effectivePerson);
-			result.setData(wos);
-			return result;
-		}
-	}
+    ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, Integer count) throws Exception {
 
-	private List<Wo> list(Business business, Integer count, EffectivePerson effectivePerson) throws Exception {
-		EntityManager em = business.entityManagerContainer().get(Instant.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Instant> cq = cb.createQuery(Instant.class);
-		Root<Instant> root = cq.from(Instant.class);
-		Predicate p = cb.equal(root.get(Instant_.person), effectivePerson.getDistinguishedName());
-		p = cb.and(p, cb.notEqual(root.get(Instant_.type), MessageConnector.TYPE_IM_CREATE));
-		p = cb.and(p, cb.isNotEmpty(root.get(Instant_.consumerList)));
-		List<Instant> os = em.createQuery(cq.select(root).where(p).orderBy(cb.desc(root.get(Instant_.createTime))))
-				.setMaxResults(count).getResultList();
-		return Wo.copier.copy(os);
-	}
+        LOGGER.debug("execute:{}, count:{}.", effectivePerson::getDistinguishedName, () -> count);
 
-	public static class Wo extends Instant {
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            Business business = new Business(emc);
+            ActionResult<List<Wo>> result = new ActionResult<>();
+            List<Wo> wos = this.list(business, NumberUtils.min(200, NumberUtils.max(1, count)), effectivePerson);
+            result.setData(wos);
+            return result;
+        }
+    }
 
-		private static final long serialVersionUID = 681982898431236763L;
-		static WrapCopier<Instant, Wo> copier = WrapCopierFactory.wo(Instant.class, Wo.class, null,
-				JpaObject.FieldsInvisible);
-	}
+    private List<Wo> list(Business business, Integer count, EffectivePerson effectivePerson) throws Exception {
+        EntityManager em = business.entityManagerContainer().get(Instant.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Instant> cq = cb.createQuery(Instant.class);
+        Root<Instant> root = cq.from(Instant.class);
+        Predicate p = cb.equal(root.get(Instant_.person), effectivePerson.getDistinguishedName());
+        p = cb.and(p, cb.notEqual(root.get(Instant_.type), MessageConnector.TYPE_IM_CREATE));
+        List<Instant> os = em.createQuery(cq.select(root).where(p).orderBy(cb.desc(root.get(JpaObject_.createTime))))
+                .setMaxResults(count).getResultList();
+        return Wo.copier.copy(os);
+    }
+
+    public static class Wo extends Instant {
+
+        private static final long serialVersionUID = 681982898431236763L;
+        static WrapCopier<Instant, Wo> copier = WrapCopierFactory.wo(Instant.class, Wo.class, null,
+                JpaObject.FieldsInvisible);
+    }
 
 }

@@ -46,46 +46,62 @@ MWF.xDesktop.Authentication = new Class({
     },
 
     loadLogin: function (node) {
-        if(node)this.loginNode = node;
-        if( !node && this.loginNode )node = this.loginNode;
-        if (layout.config.loginPage && layout.config.loginPage.enable && layout.config.loginPage.portal) {
-            MWF.xDesktop.loadPortal(layout.config.loginPage.portal, this.options.loginParameter);
-            this.fireEvent("openLogin");
-        } else {
-            this.popupOptions = {
-                "draggable": false,
-                "closeAction": false,
-                "hasMask": false,
-                "relativeToApp": false
-            };
-            this.popupPara = {
-                container: node
-            };
-            this.postLogin = function (json) {
-                layout.desktop.session.user = json.data;
-                layout.session.user = json.data;
-                layout.session.token = layout.session.user.token;
-                var user = layout.desktop.session.user;
-                if (!user.identityList) user.identityList = [];
-                if (user.roleList) {
-                    var userRoleName = [];
-                    user.roleList.each(function (role) {
-                        userRoleName.push(role.substring(0, role.indexOf("@")));
-                    });
-                    user.roleList = user.roleList.concat(userRoleName);
+        o2.Actions.load("x_organization_assemble_authentication").EchoAction.get(function () {
+            if (node) this.loginNode = node;
+            if (!node && this.loginNode) node = this.loginNode;
+            if (layout.config.loginPage && layout.config.loginPage.enable && layout.config.loginPage.portal) {
+                MWF.xDesktop.loadPortal(layout.config.loginPage.portal, this.options.loginParameter);
+                this.fireEvent("openLogin");
+            } else {
+                this.popupOptions = {
+                    "draggable": false,
+                    "closeAction": false,
+                    "hasMask": false,
+                    "relativeToApp": false
+                };
+                this.popupPara = {
+                    container: node
+                };
+                this.postLogin = function (json) {
+                    layout.desktop.session.user = json.data;
+                    layout.session.user = json.data;
+                    layout.session.token = layout.session.user.token;
+                    var user = layout.desktop.session.user;
+                    if (!user.identityList) user.identityList = [];
+                    if (user.roleList) {
+                        var userRoleName = [];
+                        user.roleList.each(function (role) {
+                            userRoleName.push(role.substring(0, role.indexOf("@")));
+                        });
+                        user.roleList = user.roleList.concat(userRoleName);
+                    }
+                    var roleLCList = (user.roleList || []).map(function (role) {
+                        return role.toLowerCase();
+                    }.bind(this));
+                    if (roleLCList.isIntersect(["systemmanager", "securitymanager", "auditmanager"])) {
+                        window.location = "../x_desktop/app.html?app=ThreeMember";
+                    } else {
+                        window.location.reload();
+                    }
+                }.bind(this);
+                this.openLoginForm(this.popupOptions);
+                this.fireEvent("openLogin");
+            }
+        }.bind(this), function (xhr) {
+            var message;
+            if (xhr) {
+                try {
+                    var responseJSON = JSON.parse(xhr.responseText);
+                    message = responseJSON.message; //message为错误提示文本
+                } catch (e) {
                 }
-                var roleLCList = (user.roleList || []).map(function(role){
-                    return role.toLowerCase();
-                }.bind(this));
-                if( roleLCList.isIntersect(["systemmanager","securitymanager","auditmanager"]) ){
-                    window.location = "../x_desktop/app.html?app=ThreeMember";
-                }else{
-                    window.location.reload();
-                }
-            }.bind(this);
-            this.openLoginForm(this.popupOptions);
-            this.fireEvent("openLogin");
-        }
+            }
+            if (!message) message = MWF.LP.authentication.accessError;
+            new Element("div", {
+                "style": "font-size:16px;font-weight:bold;",
+                "text": message
+            }).inject(node);
+        }.bind(this));
     },
     safeLogout: function(){
         o2.Actions.get("x_organization_assemble_authentication").safeLogout(function () {
