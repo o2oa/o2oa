@@ -307,7 +307,7 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 			this.close();
 		}, null);
 	},
-	addHistoryLog: function( operation, fromPath, html ){
+	addHistoryLog: function( operation, fromPath, html, fromHtml ){
 		if(!this.form.history)return;
 		var module = this;
 		var log = {
@@ -321,6 +321,7 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 			log.html = html || module.node.outerHTML;
 		}
 		if(fromPath)log.fromPath = fromPath;
+		if(fromHtml)log.fromHtml = fromHtml;
 		module.form.history.add( log, module);
 	},
 	selectedContainer: function(){

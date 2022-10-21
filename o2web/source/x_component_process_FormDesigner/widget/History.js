@@ -73,9 +73,6 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
             case "Tab$Page":
                 item = new MWF.FCWHistory.TabpageItem(this, log);
                 break;
-            case "Tab":
-                item = new MWF.FCWHistory.TabItem(this, log);
-                break;
             default:
                 item = new MWF.FCWHistory.Item(this, log);
                 break;
@@ -201,6 +198,13 @@ MWF.FCWHistory.Item = new Class({
             case "delete":
                 this.loadModule();
                 break;
+            case "mergeCell":
+                dom = this.getDomByPath( this.data.toPath );
+                if(dom){
+                    module = dom.retrieve("module");
+                    dom.set("html")
+                }
+                break;
         }
         this.unselectModule();
     },
@@ -269,6 +273,7 @@ MWF.FCWHistory.Item = new Class({
             node = node.children[contains ? last : (last-1)];
             dom.inject(node, "after");
         }
+        this.resetTreeNode( dom );
     },
     //插入HTML到对应位置
     injectHtmlByPath: function(path, html){
@@ -292,6 +297,11 @@ MWF.FCWHistory.Item = new Class({
         dom = parentNode.children[last];
         return dom;
     },
+    resetTreeNode: function(node){
+        var module = node.retrieve("module");
+        module.parentContainer = this.getParentModule( node );
+        module._resetTreeNode();
+    },
     addModulesJson: function( jsonObject ){
         if(jsonObject){
             for( var id in jsonObject ){
@@ -299,22 +309,18 @@ MWF.FCWHistory.Item = new Class({
             }
         }
     },
-    getParentModuleByNode: function( node, moduleType ){
-        var parentNode = node;
-        var module;
-        while( parentNode && !module ){
-            if( parentNode.get("mwftype") === moduleType )module = parentNode.retrieve("module");
-            parentNode = parentNode.getParent();
-        }
-        return module;
-    },
     loadModule: function(){
         this._loadModule( this.data.toPath, this.data.html, this.data.json, this.data.jsonObject );
     },
     _loadModule: function( path, html, json, jsonObject ){
         var dom = this.injectHtmlByPath( path, html );
         this.addModulesJson(jsonObject);
-        var parent, parentNode = dom.getParent();
+        var parentModule = this.getParentModule(dom);
+        var module = this.form.loadModule(json, dom, parentModule || this.form);
+        module._setEditStyle_custom("id");
+    },
+    getParentModule: function (node) {
+        var parent, parentNode = node.getParent();
         while( parentNode && !parent ){
             var mwftype = parentNode.get("mwftype");
             if( mwftype === "form") {
@@ -325,68 +331,19 @@ MWF.FCWHistory.Item = new Class({
                 parentNode = parentNode.getParent();
             }
         }
-        var module = this.form.loadModule(json, dom, parent || this.form);
-        module._setEditStyle_custom("id");
+        return parent;
+    },
+    getParentModuleByType: function( node, moduleType ){
+        var parentNode = node;
+        var module;
+        while( parentNode && !module ){
+            if( parentNode.get("mwftype") === moduleType )module = parentNode.retrieve("module");
+            parentNode = parentNode.getParent();
+        }
+        return module;
     }
 });
 
-MWF.FCWHistory.TabItem = new Class({
-    Extends: MWF.xApplication.process.FormDesigner.widget.History.Item,
-    undoModule: function(){
-        var dom, module;
-        switch (this.data.operation) {
-            case "create":
-                dom = this.getDomByPath( this.data.toPath );
-                if(dom)module = dom.retrieve("module");
-                if(module)module.destroy();
-                break;
-            // case "add":
-            //     dom = this.getDomByPath( this.data.toPath );
-            //     if(dom)module = dom.retrieve("module");
-            //     if(module)module._delete();
-            //     break;
-            case "copy":
-                dom = this.getDomByPath( this.data.toPath );
-                if(dom)module = dom.retrieve("module");
-                if(module)module.destroy();
-                break;
-            case "move":
-                dom = this.getDomByPath( this.data.toPath );
-                this.injectToByPath( this.data.fromPath, dom );
-                break;
-            case "delete":
-                this.loadModule();
-                break;
-        }
-        this.unselectModule();
-    },
-    redoModule: function(){
-        var dom, module;
-        switch (this.data.operation) {
-            case "create":
-                this.loadModule();
-                break;
-            // case "add":
-            //     var nextDom = this.getDomByPath( this.data.toPath );
-            //     if(nextDom)module = nextDom.retrieve("module");
-            //     if(module)module.addPage( null, true );
-            //     break;
-            case "copy":
-                this.loadModule();
-                break;
-            case "move":
-                dom = this.getDomByPath( this.data.fromPath );
-                this.injectToByPath( this.data.toPath, dom );
-                break;
-            case "delete":
-                dom = this.getDomByPath( this.data.toPath );
-                if(dom)module = dom.retrieve("module");
-                if(module)module.destroy();
-                break;
-        }
-        this.unselectModule();
-    },
-});
 
 MWF.FCWHistory.TabpageItem = new Class({
     Extends: MWF.xApplication.process.FormDesigner.widget.History.Item,
@@ -397,7 +354,7 @@ MWF.FCWHistory.TabpageItem = new Class({
         var tabNode = this.injectHtmlByPath( this.data.toPath, this.data.html );
         this.addModulesJson( this.data.jsonObject );
 
-        var tabModule = this.getParentModuleByNode(tabNode, "tab");
+        var tabModule = this.getParentModuleByType(tabNode, "tab");
 
         tabModule.loadExistedNodePage(tabNode, contentNode, this.data.json, this.data.content.json);
     },
@@ -429,12 +386,6 @@ MWF.FCWHistory.TabpageItem = new Class({
         switch (this.data.operation) {
             case "add":
                 this.restoreTabage();
-                // var nextDom = this.getDomByPath( this.data.toPath );
-                // if(nextDom){
-                //     module = nextDom.retrieve("module");
-                //     if(module)module.addPage( null, true );
-                // }else{
-                // }
                 break;
             case "copy":
                 break;
@@ -455,6 +406,7 @@ MWF.FCWHistory.TabpageItem = new Class({
         this.unselectModule();
     }
 });
+
 
 MWF.FCWHistory.Tooltips = new Class({
     Extends: MTooltips,

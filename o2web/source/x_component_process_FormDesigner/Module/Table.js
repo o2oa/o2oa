@@ -209,6 +209,9 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 	mergerCell: function(){
 
 		if (this.form.selectedModules.length>1){
+
+			var fromHtml = this.node.outerHTML;
+
 			var firstModuleObj = this.form._getFirstMultiSelectedModule();
 			var firstModule = firstModuleObj.module;
 			
@@ -266,7 +269,13 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 				}
 			}
 			firstModule.selected();
+
+			this.addHistoryLog("mergeCell", null, null, fromHtml);
 		}
+
+
+
+
 	},
 	
 	_getContainers: function(){
@@ -428,6 +437,15 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 
 		this.form.json.moduleList[this.json.id] = this.json;
 		this.selected();
+
+		if( this.operation && !this.historyAddDelay ){
+			this.addHistoryLog( this.operation, this.fromPath );
+		}
+
+		if( !this.historyAddDelay ){
+			this.operation = null;
+			this.fromPath = null;
+		}
 	},
 	
 	setPropertiesOrStyles: function(name){
