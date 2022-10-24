@@ -486,7 +486,8 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 		var tr = this.node.getParent("tr");
 		var table = tr.getParent("table");
 		var colIndex = this.__getCellIndex(this.node);
-		
+
+		var moduleList = [];
 
 		for (var m=1; m<=cols; m++){
 			var insertTdObjs = this.__getInsertTableColTds(table, colIndex);
@@ -496,6 +497,7 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 				this.form.getTemplateData("Table$Td", function(data){
 					var moduleData = Object.clone(data);
 					var tdContainer = new MWF.FCTable$Td(this.form);
+					moduleList.push(tdContainer);
                     tdContainer.table = this.table;
 					tdContainer.load(moduleData, obj.td, this.parentContainer);
 					this.parentContainer.containers.push(tdContainer);
@@ -505,6 +507,8 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 		
 		this.unSelected();
 		this.selected();
+
+		this.addHistoryLogList( "insertCol", moduleList );
 		
 	},
 	

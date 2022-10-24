@@ -183,7 +183,7 @@ MWF.FCWHistory.Item = new Class({
 
     },
     undoModule: function(){
-        var dom, module;
+        var dom, module, log;
         debugger;
         switch (this.data.operation) {
             case "create":
@@ -203,16 +203,16 @@ MWF.FCWHistory.Item = new Class({
             case "delete":
                 this.loadModule();
                 break;
-            case "mergeCell": //合并单元格
+            case "mergeCell": //table的操作，合并单元格
                 dom = this.getDomByPath( this.data.path );
                 module = dom.retrieve("module");
                 module.destroy();
                 this._loadModule( this.data.path, this.data.fromLog.html, this.data.fromLog.json, this.data.fromLog.jsonObject );
                 break;
-            case "insertRow":
+            case "insertRow": //td的操作，插入行
                 var tr;
                 for( var i=this.data.logList.length-1; i>-1; i-- ){
-                    var log = this.data.logList[i];
+                    log = this.data.logList[i];
                     dom = this.getDomByPath( log.path );
                     if( !tr )tr = dom.getParent("tr");
                     module = dom.retrieve("module");
@@ -220,11 +220,22 @@ MWF.FCWHistory.Item = new Class({
                 }
                 if(tr)tr.destroy();
                 break;
+            case "insertCol": //td的操作，插入列
+                for( var i=this.data.logList.length-1; i>-1; i-- ){
+                    log = this.data.logList[i];
+                    dom = this.getDomByPath( log.path );
+                    module = dom.retrieve("module");
+                    module.destroy();
+                }
+                break;
+            case "deleteRow": //td的操作，删除行
+
+                break;
         }
         this.unselectModule();
     },
     redoModule: function(){
-        var dom, module;
+        var dom, module, log;
         switch (this.data.operation) {
             case "create":
                 this.loadModule();
@@ -247,9 +258,20 @@ MWF.FCWHistory.Item = new Class({
                 module.destroy();
                 this.loadModule();
                 break;
-            case "insertRow":
-                var path = this.data.logList[0];
-                var dom = this.injectHtmlByPath( path, html );
+            case "insertRow": //td的操作，插入行
+                var path = Array.clone(this.data.logList[0].path);
+                path.pop();
+                this.injectHtmlByPath( path, "<tr></tr>" ); //创建tr
+                for( var i=0; i<this.data.logList.length; i++ ){
+                    log = this.data.logList[i];
+                    this._loadModule( log.path, log.html, log.json, log.jsonObject );
+                }
+                break;
+            case "insertCol": //td的操作，插入列
+                for( var i=0; i<this.data.logList.length; i++ ){
+                    log = this.data.logList[i];
+                    this._loadModule( log.path, log.html, log.json, log.jsonObject );
+                }
                 break;
         }
         this.unselectModule();
