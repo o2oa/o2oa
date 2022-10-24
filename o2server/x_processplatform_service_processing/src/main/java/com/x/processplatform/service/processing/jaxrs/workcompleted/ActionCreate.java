@@ -34,7 +34,6 @@ import com.x.processplatform.core.entity.content.ReadCompleted;
 import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.Task;
 import com.x.processplatform.core.entity.content.TaskCompleted;
-import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
@@ -171,9 +170,6 @@ class ActionCreate extends BaseAction {
             emc.beginTransaction(Review.class);
             for (WorkCompleted o : emc.listEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME, job)) {
                 ProjectionFactory.projectionWorkCompleted(projections, data, o);
-            }
-            for (Task o : emc.listEqual(Task.class, Task.job_FIELDNAME, job)) {
-                ProjectionFactory.projectionTask(projections, data, o);
             }
             for (TaskCompleted o : emc.listEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME, job)) {
                 ProjectionFactory.projectionTaskCompleted(projections, data, o);
