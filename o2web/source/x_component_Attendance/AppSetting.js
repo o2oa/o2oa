@@ -124,6 +124,7 @@ MWF.xApplication.Attendance.AppSetting = new Class({
                 value : (!d.APPEAL_AUDIFLOW_ID||d.APPEAL_AUDIFLOW_ID== lp.none || d.APPEAL_AUDIFLOW_ID=="无") ?"":d.APPEAL_AUDIFLOW_ID,
                 defaultValue : "",
                 orgWidgetOptions : {
+                    "lazy": false,
                     "onLoadedInfor": function(item){
                         // this.loadAcceptAndReject( item );
                         console.log(item);

@@ -793,13 +793,12 @@ MWF.xApplication.Attendance.MyDetail.Document = new Class({
         this.getProcess(id, function(process){
             MWF.xDesktop.requireApp("process.TaskCenter", "ProcessStarter", function(){
                 var starter = new MWF.xApplication.process.TaskCenter.ProcessStarter(process, this.app, {
-                    "latest" : latest,
+                    "latest" : latest || false,
                     "workData" : processData,
                     "onStarted": function(data, title, processName){
                         this.afterStartProcess(data, title, processName);
                     }.bind(this)
                 });
-                debugger;
                 starter.load();
             }.bind(this));
         }.bind(this));
