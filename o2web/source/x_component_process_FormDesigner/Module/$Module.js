@@ -1189,9 +1189,9 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 			"type": "module",
 			"json": Object.clone(this.json)
 		};
-		var logList = [];
+		obj.logList = [];
 		moduleList.each(function (module) {
-			logList.push( module.createHistoryLog() );
+			obj.logList.push( module.createHistoryLog() );
 		}.bind(this));
 		this.form.history.add( obj, this);
 	},

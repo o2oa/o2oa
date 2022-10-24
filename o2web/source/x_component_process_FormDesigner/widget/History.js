@@ -184,6 +184,7 @@ MWF.FCWHistory.Item = new Class({
     },
     undoModule: function(){
         var dom, module;
+        debugger;
         switch (this.data.operation) {
             case "create":
                 dom = this.getDomByPath( this.data.path );
@@ -209,6 +210,15 @@ MWF.FCWHistory.Item = new Class({
                 this._loadModule( this.data.path, this.data.fromLog.html, this.data.fromLog.json, this.data.fromLog.jsonObject );
                 break;
             case "insertRow":
+                var tr;
+                for( var i=this.data.logList.length-1; i>-1; i-- ){
+                    var log = this.data.logList[i];
+                    dom = this.getDomByPath( log.path );
+                    if( !tr )tr = dom.getParent("tr");
+                    module = dom.retrieve("module");
+                    module.destroy();
+                }
+                if(tr)tr.destroy();
                 break;
         }
         this.unselectModule();
@@ -238,6 +248,8 @@ MWF.FCWHistory.Item = new Class({
                 this.loadModule();
                 break;
             case "insertRow":
+                var path = this.data.logList[0];
+                var dom = this.injectHtmlByPath( path, html );
                 break;
         }
         this.unselectModule();
