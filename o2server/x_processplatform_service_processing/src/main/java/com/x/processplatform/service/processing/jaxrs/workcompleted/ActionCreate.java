@@ -164,14 +164,13 @@ class ActionCreate extends BaseAction {
         private void projection(Business business, String job, Data data, List<Projection> projections)
                 throws Exception {
             EntityManagerContainer emc = business.entityManagerContainer();
-            emc.beginTransaction(Work.class);
-            emc.beginTransaction(Task.class);
+            emc.beginTransaction(WorkCompleted.class);
             emc.beginTransaction(TaskCompleted.class);
             emc.beginTransaction(Read.class);
             emc.beginTransaction(ReadCompleted.class);
             emc.beginTransaction(Review.class);
-            for (Work o : emc.listEqual(Work.class, Work.job_FIELDNAME, job)) {
-                ProjectionFactory.projectionWork(projections, data, o);
+            for (WorkCompleted o : emc.listEqual(WorkCompleted.class, WorkCompleted.job_FIELDNAME, job)) {
+                ProjectionFactory.projectionWorkCompleted(projections, data, o);
             }
             for (Task o : emc.listEqual(Task.class, Task.job_FIELDNAME, job)) {
                 ProjectionFactory.projectionTask(projections, data, o);
