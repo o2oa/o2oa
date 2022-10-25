@@ -145,11 +145,15 @@ MWF.xApplication.cms.ColumnManager.Main = new Class({
         }.bind(this));
     },
     getColumn: function(success, failure){
+        // if( this.options.column && o2.typeOf(this.options.column)==="object" ){
+        //         //     if (success) success();
+        //         //     return;
+        //         // }
+        var columnId;
         if( this.options.column && o2.typeOf(this.options.column)==="object" ){
-            if (success) success();
-            return;
+            columnId = this.options.column.id;
         }
-        var columnId = this.options.columnId;
+        if( !columnId )columnId = this.options.columnId;
         if( !columnId )columnId = this.status && this.status.column;
         if( !columnId ){
             if (failure) failure();
