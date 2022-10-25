@@ -62,15 +62,15 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         // var log = { //也有可能是对象数组
         //     "operation": "create", //操作 create, copy, move, delete, mergeCell
         //     "type": "module", //property
-        //     "moduleType": "", //
-        //     "moduleId": "",
+        //     "moduleType": "", //模块类型
+        //     "moduleId": "", //模块id
         //      "fromList": [{  //初始数据
         //          "json": {},  //最终json
         //         "jsonObject": {}, //本json所包含的子json
         //         "html": "", //最终html
         //         "path": "", //最终dom path
         //      }],
-        //      "toList": [{
+        //      "toList": [{  //结束数据
         //          "json": {},  //最终json
         //          "jsonObject": {}, //本json所包含的子json
         //          "html": "", //最终html
