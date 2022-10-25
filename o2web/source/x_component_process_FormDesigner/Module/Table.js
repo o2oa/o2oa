@@ -632,6 +632,19 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 		this.json.recoveryStyles = null;
 		if (!this.table) this.table = this.node.getElement("table");
 		//this.table.setStyle("border-collapse","separate");
+	},
+	loadExistedNodeTd: function (cell, moduleData) {
+		var tdContainer = new MWF.FCTable$Td(this.form);
+		tdContainer.table = this;
+		tdContainer.load(moduleData, cell, this);
+		this.containers.push(tdContainer);
+	},
+	deleteTdWithNode: function (cell) {
+		var module = cell.retrieve("module");
+		if (module){
+			this.containers.erase(module);
+			module.destroy();
+		}
 	}
 	
 });

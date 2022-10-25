@@ -1182,26 +1182,29 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		if(fromLog)log.fromLog = fromLog;
 		module.form.history.add( log, module);
 	},
-	addHistoryLogList: function( operation, moduleList ){
+	addHistoryLogList: function( operation, moduleList, fromLog ){
 		if(!this.form.history)return;
-		var obj = {
-			"operation": operation,
-			"type": "module",
-			"json": Object.clone(this.json)
-		};
-		obj.logList = [];
-		moduleList.each(function (module) {
-			obj.logList.push( module.createHistoryLog() );
-		}.bind(this));
+		var obj = this.createHistoryLog(fromLog);
+		obj.operation = operation;
+		obj.type = "module";
+		obj.logList = this.createHistoryLogList(moduleList);
 		this.form.history.add( obj, this);
 	},
-	createHistoryLog: function ( fromLog ) {
+	createHistoryLogList: function( moduleList ){
+		var logList = [];
+		moduleList.each(function (module) {
+			logList.push( module.createHistoryLog() );
+		}.bind(this));
+		return logList;
+	},
+	createHistoryLog: function ( fromLog, module ) {
 		if( !this.form.history )return null;
+		if( !module )module = this;
 		var obj = {
-			"json": Object.clone(this.json),
-			"path": this.form.history.getPath(this.node),
-			"jsonObject": this.getJson(),
-			"html": this.node.outerHTML
+			"json": Object.clone(module.json),
+			"path": module.form.history.getPath(module.node),
+			"jsonObject": module.getJson(),
+			"html": module.node.outerHTML
 		};
 		if(fromLog)obj.fromLog = fromLog;
 		return obj;

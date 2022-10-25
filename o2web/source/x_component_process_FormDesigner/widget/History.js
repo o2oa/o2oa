@@ -75,6 +75,9 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         // };
         var item;
         switch (log.json.type) {
+            case "Table$Td":
+                item = new MWF.FCWHistory.TableTdItem(this, log);
+                break;
             case "Tab$Page":
                 item = new MWF.FCWHistory.TabpageItem(this, log);
                 break;
@@ -209,28 +212,6 @@ MWF.FCWHistory.Item = new Class({
                 module.destroy();
                 this._loadModule( this.data.path, this.data.fromLog.html, this.data.fromLog.json, this.data.fromLog.jsonObject );
                 break;
-            case "insertRow": //td的操作，插入行
-                var tr;
-                for( var i=this.data.logList.length-1; i>-1; i-- ){
-                    log = this.data.logList[i];
-                    dom = this.getDomByPath( log.path );
-                    if( !tr )tr = dom.getParent("tr");
-                    module = dom.retrieve("module");
-                    module.destroy();
-                }
-                if(tr)tr.destroy();
-                break;
-            case "insertCol": //td的操作，插入列
-                for( var i=this.data.logList.length-1; i>-1; i-- ){
-                    log = this.data.logList[i];
-                    dom = this.getDomByPath( log.path );
-                    module = dom.retrieve("module");
-                    module.destroy();
-                }
-                break;
-            case "deleteRow": //td的操作，删除行
-
-                break;
         }
         this.unselectModule();
     },
@@ -257,21 +238,6 @@ MWF.FCWHistory.Item = new Class({
                 module = dom.retrieve("module");
                 module.destroy();
                 this.loadModule();
-                break;
-            case "insertRow": //td的操作，插入行
-                var path = Array.clone(this.data.logList[0].path);
-                path.pop();
-                this.injectHtmlByPath( path, "<tr></tr>" ); //创建tr
-                for( var i=0; i<this.data.logList.length; i++ ){
-                    log = this.data.logList[i];
-                    this._loadModule( log.path, log.html, log.json, log.jsonObject );
-                }
-                break;
-            case "insertCol": //td的操作，插入列
-                for( var i=0; i<this.data.logList.length; i++ ){
-                    log = this.data.logList[i];
-                    this._loadModule( log.path, log.html, log.json, log.jsonObject );
-                }
                 break;
         }
         this.unselectModule();
@@ -390,6 +356,105 @@ MWF.FCWHistory.Item = new Class({
             parentNode = parentNode.getParent();
         }
         return module;
+    }
+});
+
+
+MWF.FCWHistory.TableTdItem = new Class({
+    Extends: MWF.xApplication.process.FormDesigner.widget.History.Item,
+    restoreTd: function( path, html, json, jsonObject ){
+        var tdNode = this.injectHtmlByPath( path, html );
+        this.addModulesJson( jsonObject );
+
+        var tableModule = this.getParentModuleByType(tdNode, "table");
+        tableModule.loadExistedNodeTd(tdNode, json);
+    },
+    getTrPathList: function(){
+        var trPathStrList = [];
+        this.data.logList.each(function (log) {
+            var path = Array.clone(log.path);
+            path.pop();
+            var str = path.join(",");
+            if( trPathStrList.indexOf( str ) === -1 )trPathStrList.push(str);
+        });
+        return trPathStrList.map(function (str) {
+            return str.split(",");
+        }.bind(this));
+    },
+    deleteTd: function( dom ){
+        var tableModule = this.getParentModuleByType(dom, "table");
+        tableModule.deleteTdWithNode(dom);
+    },
+    restoreRow: function(){
+        this.getTrPathList().each(function (path) {
+            this.injectHtmlByPath( path, "<tr></tr>" ); //创建tr
+        }.bind(this));
+        this.restoreTds();
+    },
+    restoreTds: function(){
+        var log;
+        for( var i=0; i<this.data.logList.length; i++ ){
+            log = this.data.logList[i];
+            this.restoreTd( log.path, log.html, log.json, log.jsonObject );
+        }
+    },
+    deleteRow: function(){
+        this.deleteTds();
+        this.getTrPathList().reverse().each(function (path) {
+            var tr = this.getDomByPath( path );
+            if(tr)tr.destroy();
+        }.bind(this));
+    },
+    deleteTds: function(){
+        var log, dom;
+        for( var i=this.data.logList.length-1; i>-1; i-- ){
+            log = this.data.logList[i];
+            dom = this.getDomByPath( log.path );
+            this.deleteTd( dom );
+        }
+    },
+    undoModule: function(){
+        debugger;
+        switch (this.data.operation) {
+            case "insertRow": //td的操作，插入行
+                this.deleteRow();
+                break;
+            case "insertCol": //td的操作，插入列
+                this.deleteTds();
+                break;
+            case "deleteRow": //td的操作，删除行
+                this.restoreRow();
+                break;
+            case "deleteCol": //td的操作，删除列
+                this.restoreTds();
+                break;
+            case "splitCell": //拆分单元格
+                this.deleteTds(); //先删除新建的单元格
+                var fromlog = this.data.fromlog; //恢复原有的单元格
+                this.restoreTd( fromlog.path, fromlog.html, fromlog.json, fromlog.jsonObject );
+                break;
+        }
+        this.unselectModule();
+    },
+    redoModule: function(){
+        var dom, module, log;
+        switch (this.data.operation) {
+            case "insertRow": //td的操作，插入行
+                this.restoreRow();
+                break;
+            case "insertCol": //td的操作，插入列
+                this.restoreTds();
+                break;
+            case "deleteRow": //td的操作，插入列
+                this.deleteRow();
+                break;
+            case "deleteCol": //td的操作，删除列
+                this.deleteTds();
+                break;
+            case "splitCell": //拆分单元格
+                break;
+        }
+        this.unselectModule();
     }
 });
 
