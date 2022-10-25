@@ -430,8 +430,8 @@ MWF.FCWHistory.TableTdItem = new Class({
                 break;
             case "splitCell": //拆分单元格
                 this.deleteTds(); //先删除新建的单元格
-                var fromlog = this.data.fromlog; //恢复原有的单元格
-                this.restoreTd( fromlog.path, fromlog.html, fromlog.json, fromlog.jsonObject );
+                var fromLog = this.data.fromLog; //恢复原有的单元格
+                this.restoreTd( fromLog.path, fromLog.html, fromLog.json, fromLog.jsonObject );
                 break;
         }
         this.unselectModule();
@@ -452,6 +452,9 @@ MWF.FCWHistory.TableTdItem = new Class({
                 this.deleteTds();
                 break;
             case "splitCell": //拆分单元格
+                dom = this.getDomByPath( fromLog.path );
+                this.deleteTd( dom );
+                this.restoreTds()
                 break;
         }
         this.unselectModule();

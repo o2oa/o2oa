@@ -1036,6 +1036,14 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 		}
 		this.form._completeSelectMulti();
 
+		moduleList.push(this);
+		moduleList.sort(function (a, b) {
+			if( a.node.cellIndex === b.node.cellIndex ){
+				return a.node.getParent().rowIndex - b.node.getParent().rowIndex;
+			}else{
+				return a.node.cellIndex - b.node.cellIndex
+			}
+		});
 		this.addHistoryLogList("splitCell", moduleList, fromLog);
 	}
 
