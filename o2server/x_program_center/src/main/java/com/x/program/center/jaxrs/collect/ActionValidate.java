@@ -14,11 +14,9 @@ class ActionValidate extends BaseAction {
 		wo.setValue(true);
 		if (BooleanUtils.isNotTrue(this.connect())) {
 			wo.setValue(false);
-		}
-		if (BooleanUtils.isFalse(Config.collect().getEnable())) {
+		}else if (BooleanUtils.isFalse(Config.collect().getEnable())) {
 			wo.setValue(false);
-		}
-		if (BooleanUtils.isNotTrue(this.validate(Config.collect().getName(), Config.collect().getPassword()))) {
+		}else if (BooleanUtils.isNotTrue(this.validate(Config.collect().getName(), Config.collect().getPassword()))) {
 			wo.setValue(false);
 		}
 		result.setData(wo);
