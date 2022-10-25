@@ -849,7 +849,7 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		if( !selectDisabled )this.selected();
 
 		if( this.operation && !this.historyAddDelay ){
-			this.addHistoryLog( this.operation, this.fromLog );
+			this.addHistoryLog( this.operation, null, this.fromLog );
 		}
 
 		if( !this.historyAddDelay ){
@@ -1166,38 +1166,67 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		return o;
 	},
 
-	addHistoryLog: function( operation, fromLog, html ){
-		if(!this.form.history)return;
-		var module = this;
+	addHistoryLog: function(operation, toModuleList, fromList, moduleId, moduleType, html ){
 		var log = {
 			"operation": operation,
 			"type": "module",
-			"json": Object.clone(module.json),
-			"path": module.form.history.getPath(module.node)
+			"moduleType": moduleType || this.json.type,
+			"moduleId": moduleId || this.json.id
 		};
-		if( operation !== "move" ){
-			log.jsonObject = module.getJson();
-			log.html = html || module.node.outerHTML;
+		if( toModuleList ){
+			log.toList = this.createHistoryLogList( toModuleList );
+		}else{
+			var to = {
+				"json": Object.clone(this.json),
+				"path": this.form.history.getPath(this.node)
+			};
+			if( operation !== "move" ){
+				to.jsonObject = this.getJson();
+				to.html = html || this.node.outerHTML;
+			}
+			log.toList = [ to ];
 		}
-		if(fromLog)log.fromLog = fromLog;
-		module.form.history.add( log, module);
+
+		if( fromList ){
+			log.fromList = o2.typeOf(fromList) === "array" ? fromList : [fromList];
+		}
+		this.form.history.add( log, this);
 	},
-	addHistoryLogList: function( operation, moduleList, fromLog ){
-		if(!this.form.history)return;
-		var obj = this.createHistoryLog(fromLog);
-		obj.operation = operation;
-		obj.type = "module";
-		obj.logList = this.createHistoryLogList(moduleList);
-		this.form.history.add( obj, this);
-	},
+	// addHistoryLog: function( operation, fromLog, html ){
+	// 	if(!this.form.history)return;
+	// 	var module = this;
+	// 	var log = {
+	// 		"operation": operation,
+	// 		"type": "module",
+	// 		"json": Object.clone(module.json),
+	// 		"path": module.form.history.getPath(module.node)
+	// 	};
+	// 	if( operation !== "move" ){
+	// 		log.jsonObject = module.getJson();
+	// 		log.html = html || module.node.outerHTML;
+	// 	}
+	// 	if(fromLog)log.fromLog = fromLog;
+	// 	module.form.history.add( log, module);
+	// },
+	// addHistoryLogList: function( operation, moduleList, fromLog ){
+	// 	if(!this.form.history)return;
+	// 	var obj = this.createHistoryLog(fromLog);
+	// 	obj.operation = operation;
+	// 	obj.type = "module";
+	// 	obj.logList = this.createHistoryLogList(moduleList);
+	// 	this.form.history.add( obj, this);
+	// },
 	createHistoryLogList: function( moduleList ){
 		var logList = [];
-		moduleList.each(function (module) {
-			logList.push( module.createHistoryLog() );
-		}.bind(this));
+		if(moduleList){
+			var list = o2.typeOf(moduleList) === "array" ? moduleList : [moduleList];
+			list.each(function (module) {
+				logList.push( module.createHistoryLog() );
+			}.bind(this));
+		}
 		return logList;
 	},
-	createHistoryLog: function ( fromLog, module ) {
+	createHistoryLog: function ( module ) {
 		if( !this.form.history )return null;
 		if( !module )module = this;
 		var obj = {
@@ -1206,7 +1235,6 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 			"jsonObject": module.getJson(),
 			"html": module.node.outerHTML
 		};
-		if(fromLog)obj.fromLog = fromLog;
 		return obj;
 	}
 

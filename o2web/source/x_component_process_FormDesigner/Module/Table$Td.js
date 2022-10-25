@@ -436,7 +436,7 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 				return a.node.cellIndex - b.node.cellIndex
 			}
 		});
-		this.addHistoryLogList( "insertRow", moduleList );
+		this.addHistoryLog( "insertRow", moduleList );
 	},
 	
 	insertCol: function(){
@@ -523,7 +523,7 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 				return a.node.cellIndex - b.node.cellIndex
 			}
 		});
-		this.addHistoryLogList( "insertCol", moduleList );
+		this.addHistoryLog( "insertCol", moduleList );
 		
 	},
 	
@@ -543,7 +543,7 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 					var m = td.retrieve("module");
 					if(m)moduleList.push(m);
 				});
-				module.addHistoryLogList("deleteRow", moduleList);
+				module.addHistoryLog("deleteRow", moduleList);
 			}
 
 			module._deleteRow();
@@ -854,7 +854,7 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 					var m = td.retrieve("module");
 					if(m)moduleList.push(m);
 				});
-				module.addHistoryLogList("deleteCol", moduleList);
+				module.addHistoryLog("deleteCol", moduleList);
 			}
 
 			module._deleteCol();
@@ -1044,7 +1044,7 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 				return a.node.cellIndex - b.node.cellIndex
 			}
 		});
-		this.addHistoryLogList("splitCell", moduleList, fromLog);
+		this.addHistoryLog("splitCell", moduleList, fromLog);
 	}
 
 	//_showInjectAction : function( module ){

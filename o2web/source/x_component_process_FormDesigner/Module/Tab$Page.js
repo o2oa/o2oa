@@ -161,13 +161,18 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Page = MWF.FCTab$Page = new Cla
 			this.close();
 		}, null);
 	},
-	addHistoryLog: function( operation, fromLog, contentFromLog ){
+	addHistoryLog: function( operation, from, contentFrom ){
 		if(!this.form.history)return;
 		var module = this;
 		var contentModule = module.page.contentNode.retrieve("module");
 		var log = {
 			"operation": operation,
 			"type": "module",
+			"moduleType": this.json.type,
+			"moduleId": this.json.id
+		};
+
+		var to = {
 			"json": Object.clone(module.json),
 			"path": module.form.history.getPath(module.node),
 			"content": {
@@ -176,14 +181,20 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Page = MWF.FCTab$Page = new Cla
 			}
 		};
 		if( operation !== "move" ){
-			log.jsonObject = module.getJson();
-			log.html = module.node.outerHTML;
+			to.jsonObject = module.getJson();
+			to.html = module.node.outerHTML;
 
-			log.content.jsonObject = contentModule.getJson();
-			log.content.html = module.page.contentNodeArea.outerHTML;
+			to.content.jsonObject = contentModule.getJson();
+			to.content.html = module.page.contentNodeArea.outerHTML;
 		}
-		if(fromLog)log.fromLog = fromLog;
-		if(contentFromLog)log.content.fromLog = contentFromLog;
+		log.toList = [to];
+
+		if( from || contentFrom ){
+			if(!from)from = {};
+			if(contentFrom)from.content = contentFrom;
+			log.fromList = [from];
+		}
+
 		module.form.history.add( log, module);
 	},
 	_delete: function(){
