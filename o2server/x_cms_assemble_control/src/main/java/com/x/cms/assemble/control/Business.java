@@ -449,6 +449,7 @@ public class Business {
 				}
 			}
 		}
+		boolean publishFlag = document == null ? true : false;
 		if (categoryInfo != null) {
 			Set<String> catePersonList = new HashSet<>(categoryInfo.getManageablePersonList());
 			Set<String> cateUnitList = new HashSet<>(categoryInfo.getManageableUnitList());
@@ -457,6 +458,10 @@ public class Business {
 				catePersonList.addAll(categoryInfo.getPublishablePersonList());
 				cateUnitList.addAll(categoryInfo.getPublishableUnitList());
 				cateGroupList.addAll(categoryInfo.getPublishableGroupList());
+				if(!categoryInfo.getPublishablePersonList().isEmpty() || !categoryInfo.getPublishableUnitList().isEmpty()
+						|| !categoryInfo.getPublishableGroupList().isEmpty()){
+					publishFlag = false;
+				}
 			}
 			if (catePersonList.size() > 0 && catePersonList.contains(person.getDistinguishedName())) {
 				return true;
@@ -476,6 +481,10 @@ public class Business {
 				appPersonList.addAll(appInfo.getPublishablePersonList());
 				appUnitList.addAll(appInfo.getPublishableUnitList());
 				appGroupList.addAll(appInfo.getPublishableGroupList());
+				if(!appInfo.getPublishablePersonList().isEmpty() || !appInfo.getPublishableUnitList().isEmpty()
+						|| !appInfo.getPublishableGroupList().isEmpty()){
+					publishFlag = false;
+				}
 			}
 			if (appPersonList.size() > 0 && appPersonList.contains(person.getDistinguishedName())) {
 				return true;
@@ -487,7 +496,7 @@ public class Business {
 				return true;
 			}
 		}
-		return false;
+		return publishFlag;
 	}
 
 	/**
