@@ -97,6 +97,7 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         this.addItem(item);
     },
     checkPropery: function(log){
+	    debugger;
         // var log = {
         //     "type": "property",
         //     "moduleId": this.json.id,
@@ -218,8 +219,10 @@ MWF.FCWHistory.Item = new Class({
         if( this.data.title )return this.data.title;
         if( this.data.type === "module" ){
             return  this.data.operation + " " + this.data.moduleId
+        }else if( this.data.type === "property" ){
+            return "property " + this.data.moduleId
         }else{
-            return "change propery " + this.data.moduleId
+            return  this.data.operation + " " + this.data.moduleId
         }
 
     },
