@@ -830,7 +830,7 @@ MWF.xApplication.process.ProcessManager.ApplicationProperty = new Class({
 
         if (this.data.controllerList){
             this.data.controllerList.each(function(name){
-                if (name) var admin = new MWF.widget.O2Identity({"name": name}, this.administratorsContentNode, {"style": "application"});
+                if (name) var admin = new MWF.widget.O2Person({"name": name}, this.administratorsContentNode, {"style": "application"});
             }.bind(this));
         }
     },
@@ -864,7 +864,7 @@ MWF.xApplication.process.ProcessManager.ApplicationProperty = new Class({
         }.bind(this));
 
         if (this.data.maintenanceIdentity){
-            new MWF.widget.O2Person({"name": this.data.maintenanceIdentity}, this.maintainerContentAreaNode, {"style": "application"});
+            new MWF.widget.O2Identity({"name": this.data.maintenanceIdentity}, this.maintainerContentAreaNode, {"style": "application"});
         }
     },
 
