@@ -121,6 +121,11 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
                     if (module.moduleType != "form" && module.moduleName.indexOf("$") == -1) {
                         this.copyModule();
                         var _form = module.form;
+
+                        if( _form.history ){
+                            module.addHistoryLog("cut");
+                        }
+
                         module.destroy();
                         _form.currentSelectedModule = null;
                         _form.selected();
@@ -172,18 +177,25 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
                                 parent = toModule.parentContainer;
                             }
                         }
+
+                        var moduleList = [];
                         var copyModuleNode = tmpNode.getFirst();
                         while (copyModuleNode) {
                             copyModuleNode.inject(injectNode, where);
                             var copyModuleJson = this.form.getDomjson(copyModuleNode);
-                            module = this.form.loadModule(copyModuleJson, copyModuleNode, parent);
+                            var module = this.form.loadModule(copyModuleJson, copyModuleNode, parent);
                             module._setEditStyle_custom("id");
                             module.selected();
+                            moduleList.push( module );
 
                             copyModuleNode = tmpNode.getFirst();
                         }
                         tmpNode.destroy();
                         tmpNode = null;
+
+                        if( this.form.history && moduleList.length){
+                            moduleList[0].addHistoryLog("paste", moduleList);
+                        }
                     }
                 }
             }

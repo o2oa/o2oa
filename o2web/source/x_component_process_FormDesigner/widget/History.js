@@ -60,7 +60,7 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
     },
     add: function(log, module) {
         // var log = { //也有可能是对象数组
-        //     "operation": "create", //操作 create, copy, move, delete, mergeCell
+        //     "operation": "create", //操作 create, copy, move, delete
         //     "type": "module", //property
         //     "moduleType": "", //模块类型
         //     "moduleId": "", //模块id
@@ -200,62 +200,55 @@ MWF.FCWHistory.Item = new Class({
 
     },
     undoModule: function(){
-        var dom, module, to = this.data.toList[0], from;
         debugger;
         switch (this.data.operation) {
             case "create":
-                dom = this.getDomByPath( to.path );
-                if(dom)module = dom.retrieve("module");
-                if(module)module.destroy();
+                this.deleteModuleList();
                 break;
             case "copy":
-                dom = this.getDomByPath( to.path );
-                if(dom)module = dom.retrieve("module");
-                if(module)module.destroy();
+                this.deleteModuleList();
                 break;
             case "move":
-                from = this.data.fromList[0];
-                dom = this.getDomByPath( to.path );
+                var to = this.data.toList[0];
+                var from = this.data.fromList[0];
+                var dom = this.getDomByPath( to.path );
                 this.injectToByPath( from.path, dom );
                 break;
             case "delete":
-                this.loadModule();
+                this.loadModuleList();
                 break;
-            // case "mergeCell": //table的操作，合并单元格
-            //     from = this.data.fromList[0];
-            //     dom = this.getDomByPath( to.path );
-            //     module = dom.retrieve("module");
-            //     module.destroy();
-            //     this._loadModule( to.path, from.html, from.json, from.jsonObject );
-            //     break;
+            case "cut":
+                this.loadModuleList();
+                break;
+            case "paste":
+                this.deleteModuleList();
+                break;
         }
         this.unselectModule();
     },
     redoModule: function(){
-        var dom, module, to = this.data.toList[0], from;
         switch (this.data.operation) {
             case "create":
-                this.loadModule();
+                this.loadModuleList();
                 break;
             case "copy":
-                this.loadModule();
+                this.loadModuleList();
                 break;
             case "move":
-                from = this.data.fromList[0];
-                dom = this.getDomByPath( from.path );
+                var to = this.data.toList[0];
+                var from = this.data.fromList[0];
+                var dom = this.getDomByPath( from.path );
                 this.injectToByPath( to.path, dom );
                 break;
             case "delete":
-                dom = this.getDomByPath( to.path );
-                if(dom)module = dom.retrieve("module");
-                if(module)module.destroy();
+                this.deleteModuleList();
                 break;
-            // case "mergeCell": //合并单元格
-            //     dom = this.getDomByPath( to.path );
-            //     module = dom.retrieve("module");
-            //     module.destroy();
-            //     this.loadModule();
-            //     break;
+            case "cut":
+                this.deleteModuleList();
+                break;
+            case "paste":
+                this.loadModuleList();
+                break;
         }
         this.unselectModule();
     },
@@ -272,6 +265,30 @@ MWF.FCWHistory.Item = new Class({
         if( this.form.selectedModules && this.form.selectedModules.length ){
             this.form.selectedModules = []
         }
+    },
+    deleteModuleList: function(){
+        for( var i=this.data.toList.length-1; i>-1; i-- ){
+            var to = this.data.toList[i];
+            this._deleteModule( to.path );
+        }
+    },
+    _deleteModule: function( path ){
+        var module, dom = this.getDomByPath( path );
+        if(dom)module = dom.retrieve("module");
+        if(module)module.destroy();
+    },
+    loadModuleList: function(){
+        for( var i=0; i<this.data.toList.length; i++ ) {
+            var to = this.data.toList[i];
+            this._loadModule(to.path, to.html, to.json, to.jsonObject);
+        }
+    },
+    _loadModule: function( path, html, json, jsonObject ){
+        var dom = this.injectHtmlByPath( path, html );
+        this.addModulesJson(jsonObject);
+        var parentModule = this.getParentModule(dom);
+        var module = this.form.loadModule(json, dom, parentModule || this.form);
+        module._setEditStyle_custom("id");
     },
     //根据路径顺序排序
     sortByPath: function( arr ){
@@ -354,17 +371,6 @@ MWF.FCWHistory.Item = new Class({
                 this.form.json.moduleList[id] = jsonObject[id];
             }
         }
-    },
-    loadModule: function(){
-        var to = this.data.toList[0];
-        this._loadModule( to.path, to.html, to.json, to.jsonObject );
-    },
-    _loadModule: function( path, html, json, jsonObject ){
-        var dom = this.injectHtmlByPath( path, html );
-        this.addModulesJson(jsonObject);
-        var parentModule = this.getParentModule(dom);
-        var module = this.form.loadModule(json, dom, parentModule || this.form);
-        module._setEditStyle_custom("id");
     },
     getParentModule: function (node) {
         var parent, parentNode = node.getParent();
