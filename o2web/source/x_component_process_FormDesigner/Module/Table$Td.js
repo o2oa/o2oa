@@ -429,13 +429,13 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 		this.unSelected();
 		this.selected();
 
-		moduleList.sort(function (a, b) {
-			if( a.node.cellIndex === b.node.cellIndex ){
-				return a.node.getParent().rowIndex - b.node.getParent().rowIndex;
-			}else{
-				return a.node.cellIndex - b.node.cellIndex
-			}
-		});
+		// moduleList.sort(function (a, b) {
+		// 	if( a.node.cellIndex === b.node.cellIndex ){
+		// 		return a.node.getParent().rowIndex - b.node.getParent().rowIndex;
+		// 	}else{
+		// 		return a.node.cellIndex - b.node.cellIndex
+		// 	}
+		// });
 		this.addHistoryLog( "insertRow", moduleList );
 	},
 	
@@ -515,14 +515,6 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 		this.unSelected();
 		this.selected();
 
-
-		moduleList.sort(function (a, b) {
-			if( a.node.cellIndex === b.node.cellIndex ){
-				return a.node.getParent().rowIndex - b.node.getParent().rowIndex;
-			}else{
-				return a.node.cellIndex - b.node.cellIndex
-			}
-		});
 		this.addHistoryLog( "insertCol", moduleList );
 		
 	},
@@ -1037,13 +1029,13 @@ MWF.xApplication.process.FormDesigner.Module.Table$Td = MWF.FCTable$Td = new Cla
 		this.form._completeSelectMulti();
 
 		moduleList.push(this);
-		moduleList.sort(function (a, b) {
-			if( a.node.cellIndex === b.node.cellIndex ){
-				return a.node.getParent().rowIndex - b.node.getParent().rowIndex;
-			}else{
-				return a.node.cellIndex - b.node.cellIndex
-			}
-		});
+		// moduleList.sort(function (a, b) {
+		// 	if( a.node.cellIndex === b.node.cellIndex ){
+		// 		return a.node.getParent().rowIndex - b.node.getParent().rowIndex;
+		// 	}else{
+		// 		return a.node.cellIndex - b.node.cellIndex
+		// 	}
+		// });
 		this.addHistoryLog("splitCell", moduleList, fromLog);
 	}
 

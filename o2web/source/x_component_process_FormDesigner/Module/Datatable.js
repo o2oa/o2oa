@@ -269,6 +269,15 @@ MWF.xApplication.process.FormDesigner.Module.Datatable = MWF.FCDatatable = new C
 
 		this.form.json.moduleList[this.json.id] = this.json;
 		this.selected();
+
+		if( this.operation && !this.historyAddDelay ){
+			this.addHistoryLog( this.operation, null, this.fromLog );
+		}
+
+		if( !this.historyAddDelay ){
+			this.operation = null;
+			this.fromLog = null;
+		}
 	},
 
 	_initModule: function(){
@@ -594,6 +603,32 @@ MWF.xApplication.process.FormDesigner.Module.Datatable = MWF.FCDatatable = new C
 			this.form.json.moduleList[newElementJson.id] = newElementJson;
 			th.set("id", newElementJson.id);
 		}.bind(this));
+	},
+
+
+	loadExistedNodeTh: function (cell, moduleData) {
+		var thElement = new MWF.FCDatatable$Title(this.form);
+		thElement.load(moduleData, cell, this);
+		this.elements.push(thElement);
+	},
+	loadExistedNodeTd: function (cell, moduleData) {
+		var tdContainer = new MWF.FCDatatable$Data(this.form);
+		tdContainer.load(moduleData, cell, this);
+		this.containers.push(tdContainer);
+	},
+	deleteThWithNode: function (cell) {
+		var module = cell.retrieve("module");
+		if (module){
+			this.elements.erase(module);
+			module.destroy();
+		}
+	},
+	deleteTdWithNode: function (cell) {
+		var module = cell.retrieve("module");
+		if (module){
+			this.containers.erase(module);
+			module.destroy();
+		}
 	}
 
 });

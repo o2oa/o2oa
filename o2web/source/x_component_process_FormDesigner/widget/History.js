@@ -82,6 +82,10 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
             case "Table$Td":
                 item = new MWF.FCWHistory.TableTdItem(this, log);
                 break;
+            case "Datatable$Title":
+            case "Datatable$Data":
+                item = new MWF.FCWHistory.DatatableTdItem(this, log);
+                break;
             case "Tab$Page":
                 item = new MWF.FCWHistory.TabpageItem(this, log);
                 break;
@@ -146,6 +150,12 @@ MWF.FCWHistory.Item = new Class({
                 click: this.comeHere.bind(this)
             }
         }).inject( this.history.node );
+        if( this.data.toList && this.data.toList.length > 1 ){
+            this.sortByPath(this.data.toList);
+        }
+        if( this.data.fromList && this.data.fromList.length > 1 ){
+            this.sortByPath(this.data.fromList);
+        }
     },
     getText: function () {
         return this.data.title || (this.data.operation + " " + this.data.moduleId)
@@ -384,13 +394,6 @@ MWF.FCWHistory.Item = new Class({
 
 MWF.FCWHistory.TableTdItem = new Class({
     Extends: MWF.xApplication.process.FormDesigner.widget.History.Item,
-    restoreTd: function( path, html, json, jsonObject ){
-        var tdNode = this.injectHtmlByPath( path, html );
-        this.addModulesJson( jsonObject );
-
-        var tableModule = this.getParentModuleByType(tdNode, "table");
-        tableModule.loadExistedNodeTd(tdNode, json);
-    },
     getTrPathList: function(){
         var trPathStrList = [];
         this.data.toList.each(function (log) {
@@ -405,10 +408,6 @@ MWF.FCWHistory.TableTdItem = new Class({
             });
         }.bind(this));
     },
-    deleteTd: function( dom ){
-        var tableModule = this.getParentModuleByType(dom, "table");
-        tableModule.deleteTdWithNode(dom);
-    },
     restoreRow: function(){
         this.getTrPathList().each(function (path) {
             this.injectHtmlByPath( path, "<tr></tr>" ); //创建tr
@@ -419,8 +418,15 @@ MWF.FCWHistory.TableTdItem = new Class({
         var log;
         for( var i=0; i<this.data.toList.length; i++ ){
             log = this.data.toList[i];
-            this.restoreTd( log.path, log.html, log.json, log.jsonObject );
+            this.restoreTd( log.path, log.html, log.json, log.jsonObject, i );
         }
+    },
+    restoreTd: function( path, html, json, jsonObject, i ){
+        var tdNode = this.injectHtmlByPath( path, html );
+        this.addModulesJson( jsonObject );
+
+        var tableModule = this.getParentModuleByType(tdNode, "table");
+        tableModule.loadExistedNodeTd(tdNode, json);
     },
     deleteRow: function(){
         this.deleteTds();
@@ -434,8 +440,12 @@ MWF.FCWHistory.TableTdItem = new Class({
         for( var i=this.data.toList.length-1; i>-1; i-- ){
             log = this.data.toList[i];
             dom = this.getDomByPath( log.path );
-            this.deleteTd( dom );
+            this.deleteTd( dom, i );
         }
+    },
+    deleteTd: function( dom, i ){
+        var tableModule = this.getParentModuleByType(dom, "table");
+        tableModule.deleteTdWithNode(dom);
     },
     undoModule: function(){
         debugger;
@@ -492,7 +502,7 @@ MWF.FCWHistory.TableTdItem = new Class({
                 break;
             case "mergeCell": //合并单元格
                 //删除原单元格
-                for( var i=0; i<this.data.fromList.length; i++ ){
+                for( var i=this.data.fromList.length-1; i>-1; i--){
                     dom = this.getDomByPath( this.data.fromList[i].path );
                     this.deleteTd(dom);
                 }
@@ -505,6 +515,52 @@ MWF.FCWHistory.TableTdItem = new Class({
     }
 });
 
+MWF.FCWHistory.DatatableTdItem = new Class({
+    Extends: MWF.xApplication.process.FormDesigner.widget.History.TableTdItem,
+    restoreTd: function (path, html, json, jsonObject, i) {
+        var tdNode = this.injectHtmlByPath(path, html);
+        this.addModulesJson(jsonObject);
+
+        var tableModule = this.getParentModuleByType(tdNode, "datatable");
+        if( tdNode.tagName === "TD"){
+            tableModule.loadExistedNodeTd(tdNode, json);
+        }else if( tdNode.tagName === "TH"){
+            tableModule.loadExistedNodeTh(tdNode, json);
+        }
+    },
+    deleteTd: function( dom, i ){
+        var tableModule = this.getParentModuleByType(dom, "datatable");
+        if( dom.tagName === "TD"){
+            tableModule.deleteTdWithNode(dom);
+        }else if( dom.tagName === "TH"){
+            tableModule.deleteThWithNode(dom);
+        }
+    },
+    undoModule: function(){
+        debugger;
+        switch (this.data.operation) {
+            case "insertCol": //td的操作，插入列
+                this.deleteTds();
+                break;
+            case "deleteCol": //td的操作，删除列
+                this.restoreTds();
+                break;
+        }
+        this.unselectModule();
+    },
+    redoModule: function(){
+        var dom, module, log;
+        switch (this.data.operation) {
+            case "insertCol": //td的操作，插入列
+                this.restoreTds();
+                break;
+            case "deleteCol": //td的操作，删除列
+                this.deleteTds();
+                break;
+        }
+        this.unselectModule();
+    }
+});
 
 MWF.FCWHistory.TabpageItem = new Class({
     Extends: MWF.xApplication.process.FormDesigner.widget.History.Item,
