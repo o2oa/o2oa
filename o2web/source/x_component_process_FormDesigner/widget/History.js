@@ -263,8 +263,18 @@ MWF.FCWHistory.Item = new Class({
             this.form.selectedModules = []
         }
     },
-
-
+    //根据路径顺序排序
+    sortByPath: function( arr ){
+        arr.sort(function (a, b) {
+            var max = Math.max(a.path.length, b.path.length);
+            for( var i=0; i< max; i++ ){
+                if( a.path[i] && !b.path[i] && b.path[i]!==0 )return -1;
+                if( b.path[i] && !a.path[i] && a.path[i]!==0 )return 1;
+                if( a.path[i] !== b.path[i] )return a.path[i] - b.path[i];
+            }
+            return -1;
+        })
+    },
     //根据路径获取dom
     getDomByPath: function(path){
         var i, nodeIndex;
@@ -426,15 +436,6 @@ MWF.FCWHistory.TableTdItem = new Class({
             dom = this.getDomByPath( log.path );
             this.deleteTd( dom );
         }
-    },
-    sortByPath: function( arr ){
-        arr.sort(function (a, b) {
-            for( var i=0; i<a.path.length; i++ ){
-                if( !b.path[i] )return -1;
-                if( a.path[i] !== b.path[i] )return a.path[i] - b.path[i];
-                return -1;
-            }
-        })
     },
     undoModule: function(){
         debugger;
