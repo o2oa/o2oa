@@ -451,6 +451,7 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 	},
 
 	showProperty: function(callback){
+		if( this.form.history )this.originalJson = Object.clone(this.json);
 		if (!this.property){
 			this.property = new MWF.xApplication.process.FormDesigner.Property(this, this.form.designer.propertyContentArea, this.form.designer, {
 				"path": this.options.propertyPath,
@@ -467,6 +468,8 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		}
 	},
 	hideProperty: function(){
+		this.addHistoryPropertyLog();
+
 		if (this.property) this.property.hide();
 	},
 
@@ -1166,7 +1169,19 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		return o;
 	},
 
+	addHistoryPropertyLog: function(toModuleList){
+		if( !this.form.history )return null;
+		var log = {
+			"type": "property",
+			"moduleId": this.json.id,
+			"from": this.originalJson,
+			"to": this.json
+		};
+		this.form.history.checkPropery(log);
+	},
+
 	addHistoryLog: function(operation, toModuleList, fromList, moduleId, moduleType, html ){
+		if( !this.form.history )return null;
 		var log = {
 			"operation": operation,
 			"type": "module",
@@ -1192,31 +1207,8 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		}
 		this.form.history.add( log, this);
 	},
-	// addHistoryLog: function( operation, fromLog, html ){
-	// 	if(!this.form.history)return;
-	// 	var module = this;
-	// 	var log = {
-	// 		"operation": operation,
-	// 		"type": "module",
-	// 		"json": Object.clone(module.json),
-	// 		"path": module.form.history.getPath(module.node)
-	// 	};
-	// 	if( operation !== "move" ){
-	// 		log.jsonObject = module.getJson();
-	// 		log.html = html || module.node.outerHTML;
-	// 	}
-	// 	if(fromLog)log.fromLog = fromLog;
-	// 	module.form.history.add( log, module);
-	// },
-	// addHistoryLogList: function( operation, moduleList, fromLog ){
-	// 	if(!this.form.history)return;
-	// 	var obj = this.createHistoryLog(fromLog);
-	// 	obj.operation = operation;
-	// 	obj.type = "module";
-	// 	obj.logList = this.createHistoryLogList(moduleList);
-	// 	this.form.history.add( obj, this);
-	// },
 	createHistoryLogList: function( moduleList ){
+		if( !this.form.history )return null;
 		var logList = [];
 		if(moduleList){
 			var list = o2.typeOf(moduleList) === "array" ? moduleList : [moduleList];

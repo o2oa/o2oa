@@ -60,19 +60,19 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
     },
     add: function(log, module) {
         // var log = { //也有可能是对象数组
-        //     "operation": "create", //操作 create, copy, move, delete
-        //     "type": "module", //property
+        //     "operation": "create", //操作 create, copy, move, delete, cut, paste
+        //     "type": "module", //property 组件变化或属性变化
         //     "moduleType": "", //模块类型
         //     "moduleId": "", //模块id
-        //      "fromList": [{  //初始数据
-        //          "json": {},  //最终json
-        //         "jsonObject": {}, //本json所包含的子json
-        //         "html": "", //最终html
-        //         "path": "", //最终dom path
+        //      "fromList": [{  //原始数据
+        //          "json": {},  //原始json
+        //         "jsonObject": {}, //本module所包含的子json
+        //         "html": "", //原始html
+        //         "path": "", //原始dom path
         //      }],
         //      "toList": [{  //结束数据
         //          "json": {},  //最终json
-        //          "jsonObject": {}, //本json所包含的子json
+        //          "jsonObject": {}, //本module所包含的子json
         //          "html": "", //最终html
         //          "path": "", //最终dom path
         //      }]
@@ -94,6 +94,22 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         }
         item.load();
 
+        this.addItem(item);
+    },
+    checkPropery: function(log){
+        // var log = {
+        //     "type": "property",
+        //     "moduleId": this.json.id,
+        //     "from": this.originalJson,
+        //     "to": this.json
+        // }
+        if( !this.compareObjects(log.from, log.to) ){
+            var item = new MWF.FCWHistory.Item(this, log);
+            item.load();
+            this.addItem(item);
+        }
+    },
+    addItem: function(item){
         var it;
         while( this.nextArray.length ){
             it = this.nextArray.pop();
@@ -124,6 +140,47 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
             this.preArray.push(item); //插入到preArray数组最后
             this.nextArray.shift();
         }
+    },
+    compareObjects: function(o, p, deep){
+        if( !deep )deep = 0;
+        if( deep > 15 )return false; //最大层数，避免相互嵌套
+        var type1 = typeOf( o ), type2 = typeOf( p );
+        if( type1 !== type2 )return false;
+
+        if( type1 === "object" ){
+            for( var k in o ){
+                if( o[k] === null || o[k] === undefined )delete o[k]
+            }
+            for( var k in p ){
+                if( p[k] === null || p[k] === undefined )delete p[k]
+            }
+        }
+        switch (type1) {
+            case "object":
+            case "array":
+                var i, keysO = Object.keys(o), keysP = Object.keys(p);
+                if (keysO.length !== keysP.length){
+                    return false;
+                }
+                keysO.sort();
+                keysP.sort();
+                for ( i=0; i<keysO.length; i++ ){
+                    var key = keysO[i];
+                    if( type1 === "array" )key = key.toInt();
+                    var valueO = o[key], valueP = p[key];
+                    if( this.compareObjects( valueO, valueP, deep++ ) === false ){
+                        return false;
+                    }
+                }
+                break;
+            case "function":
+                break;
+            default:
+                if  (o!==p){
+                    return false;
+                }
+        }
+        return true;
     }
 });
 
@@ -158,7 +215,13 @@ MWF.FCWHistory.Item = new Class({
         }
     },
     getText: function () {
-        return this.data.title || (this.data.operation + " " + this.data.moduleId)
+        if( this.data.title )return this.data.title;
+        if( this.data.type === "module" ){
+            return  this.data.operation + " " + this.data.moduleId
+        }else{
+            return "change propery " + this.data.moduleId
+        }
+
     },
     comeHere: function () {
         this.history.goto(this)
@@ -584,7 +647,7 @@ MWF.FCWHistory.TabpageItem = new Class({
         tabModule.loadExistedNodePage(tabNode, contentNode, to.json, to.content.json);
     },
     undoModule: function(){
-        var dom, module, to = this.data.toList[0], from;
+        var dom, module, to = this.data.toList[0];
         switch (this.data.operation) {
             case "add":
                 dom = this.getDomByPath( to.path );
@@ -607,7 +670,7 @@ MWF.FCWHistory.TabpageItem = new Class({
         this.unselectModule();
     },
     redoModule: function(){
-        var dom, module, to = this.data.toList[0], from;
+        var dom, module, to = this.data.toList[0];
         switch (this.data.operation) {
             case "add":
                 this.restoreTabage();
