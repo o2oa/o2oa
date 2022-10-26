@@ -427,6 +427,15 @@ MWF.FCWHistory.TableTdItem = new Class({
             this.deleteTd( dom );
         }
     },
+    sortByPath: function( arr ){
+        arr.sort(function (a, b) {
+            for( var i=0; i<a.path.length; i++ ){
+                if( !b.path[i] )return -1;
+                if( a.path[i] !== b.path[i] )return a.path[i] - b.path[i];
+                return -1;
+            }
+        })
+    },
     undoModule: function(){
         debugger;
         switch (this.data.operation) {
