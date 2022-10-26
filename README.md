@@ -137,7 +137,7 @@ Linux环境：https://www.o2oa.net/course/yto8af.html
 
 6.自动完成后打开浏览器访问http://127.0.0.1。
 
-7.输入用户名xadmin密码o2登陆系统。
+7.输入用户名xadmin密码o2oa@2022登陆系统。
 
 ## linux
 
@@ -157,7 +157,7 @@ Linux环境：https://www.o2oa.net/course/yto8af.html
 
 8.自动完成后打开浏览器访问http://127.0.0.1。
 
-9.输入用户名xadmin密码o2登陆系统。
+9.输入用户名xadmin密码o2oa@2022登陆系统。
 
 
 
