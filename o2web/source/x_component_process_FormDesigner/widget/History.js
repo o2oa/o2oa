@@ -143,6 +143,8 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         }
     },
     compareObjects: function(o, p, deep){
+	    return JSON.stringify(o) === JSON.stringify(p);
+
         if( !deep )deep = 0;
         if( deep > 15 ){
             debugger;
