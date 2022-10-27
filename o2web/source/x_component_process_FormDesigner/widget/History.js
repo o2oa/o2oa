@@ -144,9 +144,15 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
     },
     compareObjects: function(o, p, deep){
         if( !deep )deep = 0;
-        if( deep > 15 )return false; //最大层数，避免相互嵌套
+        if( deep > 15 ){
+            debugger;
+            return false; //最大层数，避免相互嵌套
+        }
         var type1 = typeOf( o ), type2 = typeOf( p );
-        if( type1 !== type2 )return false;
+        if( type1 !== type2 ){
+            debugger;
+            return false;
+        }
 
         if( type1 === "object" ){
             for( var k in o ){
@@ -161,6 +167,7 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
             case "array":
                 var i, keysO = Object.keys(o), keysP = Object.keys(p);
                 if (keysO.length !== keysP.length){
+                    debugger;
                     return false;
                 }
                 keysO.sort();
@@ -170,6 +177,7 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
                     if( type1 === "array" )key = key.toInt();
                     var valueO = o[key], valueP = p[key];
                     if( this.compareObjects( valueO, valueP, deep++ ) === false ){
+                        debugger;
                         return false;
                     }
                 }
@@ -178,6 +186,7 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
                 break;
             default:
                 if  (o!==p){
+                    debugger;
                     return false;
                 }
         }

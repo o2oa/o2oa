@@ -451,7 +451,6 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 	},
 
 	showProperty: function(callback){
-		if( this.form.history )this.originalJson = Object.clone(this.json);
 		if (!this.property){
 			this.property = new MWF.xApplication.process.FormDesigner.Property(this, this.form.designer.propertyContentArea, this.form.designer, {
 				"path": this.options.propertyPath,
@@ -459,6 +458,10 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 					this.property.show();
 					this.isPropertyLoaded = true;
 					if (callback) callback();
+				}.bind(this),
+				"onPostShow": function () {
+					alert(2)
+					if( this.form.history )this.originalJson = Object.clone(this.json);
 				}.bind(this)
 			});
 			this.property.load();
@@ -1170,7 +1173,7 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 	},
 
 	addHistoryPropertyLog: function(toModuleList){
-		if( !this.form.history )return null;
+		if( !this.form.history || !this.originalJson )return null;
 		var log = {
 			"type": "property",
 			"moduleId": this.json.id,

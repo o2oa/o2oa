@@ -131,6 +131,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 
                     if( this.postShow )this.postShow();
 
+                    this.fireEvent("postShow");
+
                     // this.loadScriptIncluder();
                     // this.loadDictionaryIncluder();
                     //this.testRestful();
@@ -140,6 +142,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             }.bind(this));
         }else{
             this.propertyContent.setStyle("display", "block");
+
+            this.fireEvent("postShow");
         }
 
         (new Fx.Scroll(layout.desktop.node)).toTop();
