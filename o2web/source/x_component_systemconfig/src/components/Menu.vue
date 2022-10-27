@@ -161,6 +161,8 @@ function selectedItem(item){
 .menuItemText{
   margin: 0 30px 0 46px;
   text-align: left;
+  word-break: break-all;
+  white-space: nowrap;
 }
 .menuItemCount{
   margin-right: 20px;
@@ -184,6 +186,8 @@ function selectedItem(item){
 .subItemText{
   margin: 0 30px 0 40px;
   text-align: left;
+  word-break: break-all;
+  white-space: nowrap;
 }
 .menuBottom{
   margin: 0 20px;
