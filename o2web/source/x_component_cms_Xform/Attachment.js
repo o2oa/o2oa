@@ -479,7 +479,15 @@ MWF.xApplication.cms.Xform.Attachment = MWF.CMSAttachment = new Class({
     downloadAttachment: function (e, node, attachments) {
         if (this.form.businessData.document) {
             attachments.each(function (att) {
-                if (window.o2android && window.o2android.downloadAttachment) {
+                if (window.o2android && window.o2android.postMessage) {
+                    var body = {
+                    type: "downloadAttachment",
+                    data: {
+                        attachmentId: att.data.id
+                    }
+                    };
+                    window.o2android.postMessage(JSON.stringify(body))
+                } else if (window.o2android && window.o2android.downloadAttachment) {
                     window.o2android.downloadAttachment(att.data.id);
                 } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadAttachment) {
                     window.webkit.messageHandlers.downloadAttachment.postMessage({ "id": att.data.id, "site": this.json.id });
@@ -700,7 +708,16 @@ MWF.xApplication.cms.Xform.AttachmentDg = MWF.CMSAttachmentDg = new Class({
     },
     uploadAttachment: function (e, node, files) {
         debugger;
-        if (window.o2android && window.o2android.uploadAttachmentForDatagrid) {
+        if (window.o2android && window.o2android.postMessage) {
+            var body = {
+                type: "uploadAttachmentForDatagrid",
+                data: {
+                    param: this.json.id,
+                    site: this.json.site || this.json.id
+                }
+            };
+            window.o2android.postMessage(JSON.stringify(body));
+        } else if (window.o2android && window.o2android.uploadAttachmentForDatagrid) {
             window.o2android.uploadAttachmentForDatagrid((this.json.site || this.json.id), this.json.id);
         } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.uploadAttachmentForDatagrid) {
             window.webkit.messageHandlers.uploadAttachmentForDatagrid.postMessage({ "site": (this.json.site || this.json.id) , "param":this.json.id});
@@ -712,7 +729,17 @@ MWF.xApplication.cms.Xform.AttachmentDg = MWF.CMSAttachmentDg = new Class({
         }
     },
     replaceAttachment: function (e, node, attachment) {
-        if (window.o2android && window.o2android.replaceAttachmentForDatagrid) {
+        if (window.o2android && window.o2android.postMessage) {
+            var body = {
+                type: "replaceAttachmentForDatagrid",
+                data: {
+                    attachmentId: attachment.data.id,
+                    param: this.json.id,
+                    site: this.json.site || this.json.id
+                }
+            };
+            window.o2android.postMessage(JSON.stringify(body));
+        } else if (window.o2android && window.o2android.replaceAttachmentForDatagrid) {
             window.o2android.replaceAttachmentForDatagrid(attachment.data.id, (this.json.site || this.json.id), this.json.id);
         } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.replaceAttachmentForDatagrid) {
             window.webkit.messageHandlers.replaceAttachmentForDatagrid.postMessage({ "id": attachment.data.id, "site": (this.json.site || this.json.id) , "param":this.json.id});

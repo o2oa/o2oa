@@ -1617,7 +1617,13 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
          * 移动端处理关闭
          */
         closeWindowOnMobile: function () {
-            if (window.o2android && window.o2android.closeDocumentWindow) {
+            if (window.o2android && window.o2android.postMessage) {
+                var body = {
+                    type: "closeDocumentWindow",
+                    data: {}
+                };
+                window.o2android.postMessage(JSON.stringify(body));
+            } else if (window.o2android && window.o2android.closeDocumentWindow) {
                 window.o2android.closeDocumentWindow("");
             } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.closeDocumentWindow) {
                 window.webkit.messageHandlers.closeDocumentWindow.postMessage("");
