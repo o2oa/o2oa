@@ -418,12 +418,23 @@ MWF.xApplication.process.Xform.Sidebar = MWF.APPSidebar =  new Class(
 
         if( !opinion.opinion && !opinion.medias.length && this.isOpinionRequired(route)){
             this.form.notice(MWF.xApplication.process.Work.LP.opinionRequired, "error");
-            return;
+            return false;
         }
 
         this.form.Macro.environment.form.currentRouteName = route;
         this.form.Macro.environment.form.opinion = opinion.opinion;
         this.form.Macro.environment.form.medias = opinion.medias;
+
+        var routeId = this.getRouteId( route );
+        var routeData = this.getRouteData( routeId );
+        if (routeData.validationScriptText) {
+            var validation = this.form.Macro.exec(routeData.validationScriptText, this);
+            if (!validation || validation.toString() !== "true") {
+                validation = typeOf(validation) === "string" ? validation : MWF.xApplication.process.Work.LP.routeValidFailure;
+                this.form.notice(validation, "error");
+                return false;
+            }
+        }
 
         if (!this.form.formCustomValidation()){
             this.form.app.content.unmask();
@@ -431,7 +442,6 @@ MWF.xApplication.process.Xform.Sidebar = MWF.APPSidebar =  new Class(
             return false;
         }
 
-        var routeId = this.getRouteId( route );
         if( this.getVisableOrgData( routeId ).length > 0 ){
             this.form.processWork( routeId );
         }else{
