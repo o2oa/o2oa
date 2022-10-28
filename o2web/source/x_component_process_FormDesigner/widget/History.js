@@ -144,55 +144,54 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
     },
     compareObjects: function(o, p, deep){
 	    return JSON.stringify(o) === JSON.stringify(p);
-
-        if( !deep )deep = 0;
-        if( deep > 15 ){
-            debugger;
-            return false; //最大层数，避免相互嵌套
-        }
-        var type1 = typeOf( o ), type2 = typeOf( p );
-        if( type1 !== type2 ){
-            debugger;
-            return false;
-        }
-
-        if( type1 === "object" ){
-            for( var k in o ){
-                if( o[k] === null || o[k] === undefined )delete o[k]
-            }
-            for( var k in p ){
-                if( p[k] === null || p[k] === undefined )delete p[k]
-            }
-        }
-        switch (type1) {
-            case "object":
-            case "array":
-                var i, keysO = Object.keys(o), keysP = Object.keys(p);
-                if (keysO.length !== keysP.length){
-                    debugger;
-                    return false;
-                }
-                keysO.sort();
-                keysP.sort();
-                for ( i=0; i<keysO.length; i++ ){
-                    var key = keysO[i];
-                    if( type1 === "array" )key = key.toInt();
-                    var valueO = o[key], valueP = p[key];
-                    if( this.compareObjects( valueO, valueP, deep++ ) === false ){
-                        debugger;
-                        return false;
-                    }
-                }
-                break;
-            case "function":
-                break;
-            default:
-                if  (o!==p){
-                    debugger;
-                    return false;
-                }
-        }
-        return true;
+        // if( !deep )deep = 0;
+        // if( deep > 15 ){
+        //     debugger;
+        //     return false; //最大层数，避免相互嵌套
+        // }
+        // var type1 = typeOf( o ), type2 = typeOf( p );
+        // if( type1 !== type2 ){
+        //     debugger;
+        //     return false;
+        // }
+        //
+        // if( type1 === "object" ){
+        //     for( var k in o ){
+        //         if( o[k] === null || o[k] === undefined )delete o[k]
+        //     }
+        //     for( var k in p ){
+        //         if( p[k] === null || p[k] === undefined )delete p[k]
+        //     }
+        // }
+        // switch (type1) {
+        //     case "object":
+        //     case "array":
+        //         var i, keysO = Object.keys(o), keysP = Object.keys(p);
+        //         if (keysO.length !== keysP.length){
+        //             debugger;
+        //             return false;
+        //         }
+        //         keysO.sort();
+        //         keysP.sort();
+        //         for ( i=0; i<keysO.length; i++ ){
+        //             var key = keysO[i];
+        //             if( type1 === "array" )key = key.toInt();
+        //             var valueO = o[key], valueP = p[key];
+        //             if( this.compareObjects( valueO, valueP, deep++ ) === false ){
+        //                 debugger;
+        //                 return false;
+        //             }
+        //         }
+        //         break;
+        //     case "function":
+        //         break;
+        //     default:
+        //         if  (o!==p){
+        //             debugger;
+        //             return false;
+        //         }
+        // }
+        // return true;
     }
 });
 

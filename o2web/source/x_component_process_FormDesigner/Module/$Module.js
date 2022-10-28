@@ -460,7 +460,6 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 					if (callback) callback();
 				}.bind(this),
 				"onPostShow": function () {
-					alert(2)
 					if( this.form.history )this.originalJson = Object.clone(this.json);
 				}.bind(this)
 			});

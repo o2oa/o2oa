@@ -75,6 +75,9 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     // this.propertyContent.injectHtml(htmlStr, {"bind": {"lp": MWF.xApplication.process.FormDesigner.LP.propertyTemplate}});
                     this.propertyContent.set("html", this.JsonTemplate.load());
 
+                    this.loadingCount = 0;
+                    this.loadedCount = 0;
+
                     this.setEditNodeEvent();
                     this.setEditNodeStyles(this.propertyContent);
                     this.loadPropertyTab();
@@ -131,7 +134,9 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 
                     if( this.postShow )this.postShow();
 
-                    this.fireEvent("postShow");
+                    this.ready = true;
+
+                    this.checkLoaded( true );
 
                     // this.loadScriptIncluder();
                     // this.loadDictionaryIncluder();
@@ -149,7 +154,13 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         (new Fx.Scroll(layout.desktop.node)).toTop();
 
 	},
-
+    checkLoaded: function( flag ){
+        if(!flag)this.loadedCount++;
+        debugger;
+	    if( this.ready && this.loadingCount === this.loadedCount ){
+            this.fireEvent("postShow");
+        }
+    },
 	hide: function(){
 		//this.JsonTemplate = null;
 		//this.propertyNode.set("html", "");
@@ -165,6 +176,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
     loadElTreeData: function(){
         var arrays = this.propertyContent.getElements(".MWFElTreeData");
         arrays.each(function(node){
+            this.loadingCount++;
             var title = node.get("title");
             var name = node.get("name");
             var json = this.data[name];
@@ -183,6 +195,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     }.bind(this)
                 });
                 treeEditor.load(json);
+                this.checkLoaded();
             }.bind(this));
             node.addEvent("keydown", function(e){e.stopPropagation();});
         }.bind(this));
@@ -195,6 +208,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             var name = node.get("name");
             var json = this.data[name];
             if (!json) json = [];
+            this.loadingCount++;
             MWF.requireApp("process.FormDesigner", "widget.ElDropdownItemEditor", function(){
                 var treeEditor = new MWF.xApplication.process.FormDesigner.widget.ElDropdownItemEditor(node, {
                     "title": title,
@@ -203,6 +217,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     }.bind(this)
                 });
                 treeEditor.load(json);
+                this.checkLoaded();
             }.bind(this));
             node.addEvent("keydown", function(e){e.stopPropagation();});
         }.bind(this));
@@ -215,6 +230,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             var name = node.get("name");
             var json = this.data[name];
             if (!json) json = [];
+            this.loadingCount++;
             MWF.requireApp("process.FormDesigner", "widget.ElCarouselContent", function(){
                 var treeEditor = new MWF.xApplication.process.FormDesigner.widget.ElCarouselContent(node, {
                     "title": title,
@@ -223,6 +239,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     }.bind(this)
                 });
                 treeEditor.load(json);
+                this.checkLoaded();
             }.bind(this));
             node.addEvent("keydown", function(e){e.stopPropagation();});
         }.bind(this));
@@ -235,6 +252,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 			var name = node.get("name");
 			var json = this.data[name];
 			if (!json) json = [];
+            this.loadingCount++;
 			MWF.require("MWF.widget.TreeEditor", function(){
 				var treeEditor = new MWF.widget.TreeEditor(node, {
 					"title": title,
@@ -247,6 +265,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 					}.bind(this)
 				});
 				treeEditor.load(json);
+                this.checkLoaded();
 			}.bind(this));
             node.addEvent("keydown", function(e){e.stopPropagation();});
 		}.bind(this));
@@ -259,6 +278,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             // var name = node.get("name");
             // var json = this.data[name];
             // if (!json) json = {};
+            this.loadingCount++;
             MWF.requireApp("process.FormDesigner", "widget.SectionMerger", function(){
                 var merger = new MWF.xApplication.process.FormDesigner.widget.SectionMerger(node, this, {
                     // "title": title,
@@ -267,6 +287,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     }.bind(this)
                 });
                 merger.load(this.data);
+                this.checkLoaded();
             }.bind(this));
             node.addEvent("keydown", function(e){e.stopPropagation();});
         }.bind(this));
@@ -275,6 +296,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
     loadSectionDisplayer: function(){
         var arrays = this.propertyContent.getElements(".MWFSectionDisplayerArea");
         arrays.each(function(node){
+            this.loadingCount++;
             MWF.requireApp("process.FormDesigner", "widget.SectionDisplayer", function(){
                 var merger = new MWF.xApplication.process.FormDesigner.widget.SectionDisplayer(node, this, {
                     // "title": title,
@@ -283,6 +305,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     }.bind(this)
                 });
                 merger.load(this.data);
+                this.checkLoaded();
             }.bind(this));
             node.addEvent("keydown", function(e){e.stopPropagation();});
         }.bind(this));
@@ -412,6 +435,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
     loadFormSelect: function(){
         var formNodes = this.propertyContent.getElements(".MWFFormSelect");
         if (formNodes.length){
+            this.loadingCount++;
             this.getFormList(function(){
                 formNodes.each(function(node){
                     var select = new Element("select").inject(node);
@@ -432,6 +456,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     //    this.setFormSelectOptions(node, select);
                     //}.bind(this));
                 }.bind(this));
+                this.checkLoaded();
             }.bind(this));
         }
     },
