@@ -1356,27 +1356,31 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             };
             debugger;
             this.app.confirm("infor", event, MWF.xApplication.cms.Xform.LP.deleteDocumentTitle, MWF.xApplication.cms.Xform.LP.deleteDocumentText, 380, 120, function () {
-                _self.app.content.mask({
-                    "style": {
-                        "background-color": "#999",
-                        "opacity": 0.6
-                    }
-                });
-
-                _self.fireEvent("beforeDelete");
-                if (_self.app && _self.app.fireEvent) _self.app.fireEvent("beforeDelete");
-
-                _self.documentAction.removeDocument(_self.businessData.document.id, function (json) {
-                    debugger;
-                    _self.fireEvent("afterDelete");
-                    if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterDelete");
-                    _self.app.notice(MWF.xApplication.cms.Xform.LP.documentDelete + ": “" + _self.businessData.document.title + "”", "success");
-                    _self.options.autoSave = false;
-                    _self.options.saveOnClose = false;
-                    _self.fireEvent("postDelete");
-                    _self.app.close();
-                    this.close();
-                }.bind(this));
+                if (layout.mobile) {
+                    _self.deleteDocumentForMobile();
+                } else {
+                    _self.app.content.mask({
+                        "style": {
+                            "background-color": "#999",
+                            "opacity": 0.6
+                        }
+                    });
+    
+                    _self.fireEvent("beforeDelete");
+                    if (_self.app && _self.app.fireEvent) _self.app.fireEvent("beforeDelete");
+    
+                    _self.documentAction.removeDocument(_self.businessData.document.id, function (json) {
+                        debugger;
+                        _self.fireEvent("afterDelete");
+                        if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterDelete");
+                        _self.app.notice(MWF.xApplication.cms.Xform.LP.documentDelete + ": “" + _self.businessData.document.title + "”", "success");
+                        _self.options.autoSave = false;
+                        _self.options.saveOnClose = false;
+                        _self.fireEvent("postDelete");
+                        _self.app.close();
+                        this.close();
+                    }.bind(this));
+                }
                 //this.close();
             }, function () {
                 this.close();
