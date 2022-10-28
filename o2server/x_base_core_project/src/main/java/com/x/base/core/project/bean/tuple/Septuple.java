@@ -1,66 +1,72 @@
 package com.x.base.core.project.bean.tuple;
 
-public class Septuple<A, B, C, D, E, F, G> {
+public abstract class Septuple<A, B, C, D, E, F, G> {
 
-	protected A first;
+    protected A first;
 
-	protected B second;
+    protected B second;
 
-	protected C third;
+    protected C third;
 
-	protected D fourth;
+    protected D fourth;
 
-	protected E fifth;
+    protected E fifth;
 
-	protected F sixth;
+    protected F sixth;
 
-	protected G seventh;
+    protected G seventh;
 
-	public static <A, B, C, D, E, F, G> Septuple<A, B, C, D, E, F, G> of(final A first, final B second, final C third,
-			final D fourth, final E fifth, final F sixth, final G seventh) {
-		return new ImmutableSeptuple<>(first, second, third, fourth, fifth, sixth, seventh);
-	}
+    public static <A, B, C, D, E, F, G> Septuple<A, B, C, D, E, F, G> of(final A first, final B second, final C third,
+            final D fourth, final E fifth, final F sixth, final G seventh) {
+        return new ImmutableSeptuple<>(first, second, third, fourth, fifth, sixth, seventh);
+    }
 
-	public A first() {
-		return this.first;
-	}
+    public static <A, B, C, D, E, F, G> Septuple<A, B, C, D, E, F, G> of(final Sextuple<A, B, C, D, E, F> sextuple,
+            final G seventh) {
+        return new ImmutableSeptuple<>(sextuple.first(), sextuple.second(), sextuple.third(), sextuple.fourth(),
+                sextuple.fifth(), sextuple.sixth(), seventh);
+    }
 
-	public B second() {
-		return this.second;
-	}
+    public A first() {
+        return this.first;
+    }
 
-	public C third() {
-		return this.third;
-	}
+    public B second() {
+        return this.second;
+    }
 
-	public D fourth() {
-		return this.fourth;
-	}
+    public C third() {
+        return this.third;
+    }
 
-	public E fifth() {
-		return this.fifth;
-	}
+    public D fourth() {
+        return this.fourth;
+    }
 
-	public F sixth() {
-		return this.sixth;
-	}
+    public E fifth() {
+        return this.fifth;
+    }
 
-	public G seventh() {
-		return this.seventh;
-	}
+    public F sixth() {
+        return this.sixth;
+    }
 
-	public static class ImmutableSeptuple<A, B, C, D, E, F, G> extends Septuple<A, B, C, D, E, F, G> {
+    public G seventh() {
+        return this.seventh;
+    }
 
-		public ImmutableSeptuple(final A first, final B second, final C third, final D fourth, E fifth, F sixth,
-				G seventh) {
-			this.first = first;
-			this.second = second;
-			this.third = third;
-			this.fourth = fourth;
-			this.fifth = fifth;
-			this.sixth = sixth;
-			this.seventh = seventh;
-		}
-	}
+    public static class ImmutableSeptuple<A, B, C, D, E, F, G> extends Septuple<A, B, C, D, E, F, G> {
+
+        public ImmutableSeptuple(final A first, final B second, final C third, final D fourth, E fifth, F sixth,
+                G seventh) {
+            this.first = first;
+            this.second = second;
+            this.third = third;
+            this.fourth = fourth;
+            this.fifth = fifth;
+            this.sixth = sixth;
+            this.seventh = seventh;
+        }
+    }
 
 }
