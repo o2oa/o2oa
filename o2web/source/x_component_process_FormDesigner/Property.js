@@ -284,10 +284,12 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     // "title": title,
                     "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
                     "onChange": function(){
+                    }.bind(this),
+                    "onPostLoad": function () {
+                        this.checkLoaded();
                     }.bind(this)
                 });
                 merger.load(this.data);
-                this.checkLoaded();
             }.bind(this));
             node.addEvent("keydown", function(e){e.stopPropagation();});
         }.bind(this));
@@ -302,10 +304,12 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     // "title": title,
                     "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
                     "onChange": function(){
+                    }.bind(this),
+                    "onPostLoad": function () {
+                        this.checkLoaded();
                     }.bind(this)
                 });
                 merger.load(this.data);
-                this.checkLoaded();
             }.bind(this));
             node.addEvent("keydown", function(e){e.stopPropagation();});
         }.bind(this));

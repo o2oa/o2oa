@@ -95,6 +95,7 @@ MWF.xApplication.process.FormDesigner.widget.SectionDisplayer = new Class({
 			this.loadMaplist();
 			this.loadScriptArea();
 			this.checkShow( this.data );
+			this.fireEvent("postLoad");
 		}.bind(this), true);
 	},
 	checkShow: function(d){

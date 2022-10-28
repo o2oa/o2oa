@@ -68,13 +68,13 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         //          "json": {},  //原始json
         //         "jsonObject": {}, //本module所包含的子json
         //         "html": "", //原始html
-        //         "path": "", //原始dom path
+        //         "path": [], //原始dom path
         //      }],
         //      "toList": [{  //结束数据
         //          "json": {},  //最终json
         //          "jsonObject": {}, //本module所包含的子json
         //          "html": "", //最终html
-        //          "path": "", //最终dom path
+        //          "path": [], //最终dom path
         //      }]
         // };
         var item;
@@ -97,15 +97,27 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         this.addItem(item);
     },
     checkPropery: function(log){
+	    return;
 	    debugger;
         // var log = {
         //     "type": "property",
         //     "moduleId": this.json.id,
-        //     "from": this.originalJson,
-        //     "to": this.json
+        //     "list": [{
+        //         "path": [], //节点所在路径
+        //         "from": this.originalJson,
+        //         "to": this.json
+        //     }]
         // }
-        if( !this.compareObjects(log.from, log.to) ){
-            var item = new MWF.FCWHistory.Item(this, log);
+        var i, item, l, flag = false;
+        for( i=0; i<log.list.length; i++ ){
+            l = log.list[i];
+            if( !this.compareObjects(l.from, l.to) ){
+                flag = true;
+                break;
+            }
+        }
+        if( flag ){
+            item = new MWF.FCWHistory.Item(this, log);
             item.load();
             this.addItem(item);
         }
@@ -218,21 +230,24 @@ MWF.FCWHistory.Item = new Class({
                 click: this.comeHere.bind(this)
             }
         }).inject( this.history.node );
-        if( this.data.toList && this.data.toList.length > 1 ){
-            this.sortByPath(this.data.toList);
-        }
-        if( this.data.fromList && this.data.fromList.length > 1 ){
-            this.sortByPath(this.data.fromList);
+        if( this.data.type === "module" ){
+            if( this.data.toList && this.data.toList.length > 1 ){
+                this.sortByPath(this.data.toList);
+            }
+            if( this.data.fromList && this.data.fromList.length > 1 ){
+                this.sortByPath(this.data.fromList);
+            }
         }
     },
     getText: function () {
         if( this.data.title )return this.data.title;
+        var lp = MWF.xApplication.process.FormDesigner.LP.formAction;
         if( this.data.type === "module" ){
-            return  this.data.operation + " " + this.data.moduleId
+            return  ( lp[this.data.operation] || this.data.operation ) + " " + this.data.moduleId;
         }else if( this.data.type === "property" ){
-            return "property " + this.data.moduleId
+            return "property " + this.data.moduleId;
         }else{
-            return  this.data.operation + " " + this.data.moduleId
+            return  ( lp[this.data.operation] || this.data.operation ) + " " + this.data.moduleId;
         }
 
     },
@@ -270,10 +285,42 @@ MWF.FCWHistory.Item = new Class({
         console.log( this.data );
     },
     undoPropery: function(){
-
+        this.data.list.each(function (log) {
+            var module, dom = this.getDomByPath( log.path );
+            if(dom)module = dom.retrieve("module");
+            if(module){
+                if(module.property){
+                    module.property.propertyContent.destroy();
+                    module.property = null;
+                }
+                module.json = log.from;
+                if( log.from.id !== log.to.id ){
+                    module._setEditStyle_custom("id");
+                }
+                module.originalJson = Object.clone(module.json);
+                module.showProperty();
+            }
+            // if(module)module.
+        }.bind(this))
     },
     redoPropery: function(){
-
+        this.data.list.each(function (log) {
+            var module, dom = this.getDomByPath( log.path );
+            if(dom)module = dom.retrieve("module");
+            if(module){
+                if(module.property){
+                    module.property.propertyContent.destroy();
+                    module.property = null;
+                }
+                module.json = log.to;
+                if( log.from.id !== log.to.id ){
+                    module._setEditStyle_custom("id");
+                }
+                module.originalJson = Object.clone(module.json);
+                module.showProperty();
+            }
+            // if(module)module.
+        }.bind(this))
     },
     undoModule: function(){
         debugger;
