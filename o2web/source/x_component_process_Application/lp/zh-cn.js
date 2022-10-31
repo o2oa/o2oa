@@ -15,11 +15,10 @@ MWF.xApplication.process.Application.LP = {
 	"work" : "流转中工作",
 	"workcompleted" : "已完成工作",
 	"workdelete" : "已删除工作",
-	"draft" : "草稿",
 	"dict" : "数据配置",
 	"serial" : "编号配置",
 	"startProcess" : "发起流程",
-	"index": "索引",
+	"index": "检索",
 
 	"query": "搜索",
 	"reset": "重置",
@@ -63,7 +62,6 @@ MWF.xApplication.process.Application.LP = {
 	"idea" : "意见",
 	"editIdea" : "意见修改",
 	"allFile" : "全部文件",
-
 
 
 	"firstPage": "第一页",
@@ -128,7 +126,7 @@ MWF.xApplication.process.Application.LP = {
 	"creatorUnit": "部门",
 
 	"fieldSelect": "列选择",
-	"docTotalInfor": "为您找到相关结果<span class='mainColor_color'>{count}</span>个，耗时{time}秒",
+	"docTotalInfor": "为您找到相关结果<span class='mainColor_color'>{count}</span>个，耗时{time}秒"
 
 
 };
