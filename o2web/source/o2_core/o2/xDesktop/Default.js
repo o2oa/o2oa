@@ -637,11 +637,26 @@ o2.xDesktop.Default = new Class({
     doSearch: function(){
         var key = this.searchInputNode.get("value");
         if (key){
-            if (this.apps["Search"]){
-                this.apps["Search"].input.setValue(key);
-                this.apps["Search"].input.doSearch();
+            if( layout.serviceAddressList["x_custom_index_assemble_control"] ){
+                if (this.apps["ftsearch"]){
+                    this.apps["ftsearch"].doSearch( key );
+                }
+                layout.openApplication(null,"ftsearch", {"query": key});
+            }else{
+                var root = o2.Actions.load("x_general_assemble_control");
+                if( root && root.SearchAction && root.SearchAction.search ){
+                    if (this.apps["SearchDocument"]){
+                        this.apps["SearchDocument"].doSearch( key );
+                    }
+                    layout.openApplication(null,"SearchDocument", {"query": key});
+                }else{
+                    if (this.apps["Search"]){
+                        this.apps["Search"].input.setValue(key);
+                        this.apps["Search"].input.doSearch();
+                    }
+                    layout.openApplication(null,"Search", {"key": key});
+                }
             }
-            layout.openApplication(null,"Search", {"key": key});
         }
     },
     clearSearchResult: function(){

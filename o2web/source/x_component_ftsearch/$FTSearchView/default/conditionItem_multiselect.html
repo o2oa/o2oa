@@ -1,0 +1,17 @@
+<div class="item-title">{{$.data.label}}</div>
+<div class="item-content">
+    <ul class="subitem-wrap">
+        {{each $.data.valueCountPairList}}
+        <li class="subitem">
+            <div class="subItem-content" data-o2-events="click:multiSelect;mouseover:subConditionOver_multi;mouseout:subConditionOut_multi">
+                <i class="checkbox o2icon-check_box_outline_blank"></i>
+                {{$.label}}({{$.count}})
+            </div>
+        </li>
+        {{end each}}
+    </ul>
+    <div class="buttonArea">
+        <div class="okButton mainColor_bg" data-o2-events="click:okMultiSelect">{{$.lp.ok}}</div>
+        <div class="cancelButton" data-o2-events="click:cancelMultiSelect">{{$.lp.cancel}}</div>
+    </div>
+</div>
