@@ -15,6 +15,9 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-icon__chakan:before {
+  content: "\e609";
+}
 .icon-xuanzhong:before {
     content: "\e605";
 }

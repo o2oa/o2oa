@@ -37,6 +37,10 @@
                 <div class="menuItemCount" data-o2-element="draftCountNode"></div>
                 <div class="menuItemText">{{$.lp.draft}}</div>
             </div>
+            <div style="padding-left:20px" class="menuItem" data-o2-element="indexMenuNode" data-o2-events="click:openIndexView:index">
+                <div class="menuItemIcon"><icon class="o2WorkApplication icon-icon__chakan"></icon></div>
+                <div class="menuItemText">{{$.lp.index}}</div>
+            </div>
             {{if $.acl.isProcessManager}}
             <div class="menuDivider"></div>
             <div class="menuItem" data-o2-events="">

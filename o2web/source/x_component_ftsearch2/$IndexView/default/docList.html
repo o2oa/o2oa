@@ -1,0 +1,34 @@
+<table align="left" class="listTable" border="0" width="100%" cellpadding="0" cellspacing="0">
+    <tr>
+        {{each $.fieldList}}
+        <th data-o2-events="click:orderColumn:{{$.field}};">
+            {{$.name}}
+            <i class="{{$.icon}}"></i>
+        </th>
+        {{end each}}
+    </tr>
+
+    {{each $.data}}
+    <tr class="row" data-o2-events="click:openItem:{{$.id}};mouseover:rowOver;mouseout:rowOut">
+        {{each $._.fieldList}}
+
+        {{if $.field === "title"}}
+        <td><a href="#">{{$._[$.field]}}</a></td>
+        {{end if}}
+
+        {{if $.field !== "title"}}
+        <td>{{$._[$.field]}}</td>
+        {{end if}}
+
+        {{end each}}
+    </tr>
+    {{end each}}
+</table>
+
+<!--{{if !$.data}}-->
+<!--<div class="listNoData">{{$.lp.noSearchkey}}</div>-->
+<!--{{end if}}-->
+
+{{if !$.data || !$.data.length}}
+<div class="listNoData">{{$.lp.noData}}</div>
+{{end if}}

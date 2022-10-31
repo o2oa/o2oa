@@ -19,6 +19,7 @@ MWF.xApplication.process.Application.LP = {
     "dict" : "Data configuration",
     "serial" : "Numbering configuration",
     "startProcess" : "Start Process",
+    "index": "Index",
 
     "query": "Search",
     "reset": "Reset",

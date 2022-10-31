@@ -19,6 +19,7 @@ MWF.xApplication.process.Application.LP = {
 	"dict" : "数据配置",
 	"serial" : "编号配置",
 	"startProcess" : "发起流程",
+	"index": "索引",
 
 	"query": "搜索",
 	"reset": "重置",
@@ -99,9 +100,35 @@ MWF.xApplication.process.Application.LP = {
 	"editAction" : "维护",
 
 
+	"more": "更多",
+    "collapse": "收起",
+    "multiSelect": "多选",
+    "export": "导出",
+    "moreFilter": "更多筛选条件",
+    "collapseFilter": "收起筛选条件",
 
-	"firstPage": "第一页",
-	"lastPage": "最后一页",
+	"rangeSeparator": "至",
+    "startPlaceholder": "开始时间",
+    "endPlaceholder": "结束时间",
+    "to": "到",
+    "min": "最小值",
+    "max": "最大值",
+    "fromValue": "起始值",
+    "toValue": "结束值",
+    "minGreatThanMaxError": "起始值不能大于结束值",
+    "tooMinError": "不能小于最小值",
+    "tooMaxError": "不能大于最大值",
+    "moreFieldSelect": "更多列选择",
+    "collapseFieldSelect": "收起列选择",
+
+	"category": "分类",
+	"createTimeMonth": "创建月份",
+	"updateTimeMonth": "更新月份",
+	"creatorPerson": "创建者",
+	"creatorUnit": "部门",
+
+	"fieldSelect": "列选择",
+	"docTotalInfor": "为您找到相关结果<span class='mainColor_color'>{count}</span>个，耗时{time}秒",
 
 
 };

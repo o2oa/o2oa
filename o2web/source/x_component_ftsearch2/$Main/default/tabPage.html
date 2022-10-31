@@ -1,0 +1,28 @@
+<div class="tl_title">
+    <div style="float:right;">
+<!--        mouseover:iconOver;mouseout:iconOut;-->
+        <div class="tl_titleAction mainColor_color" data-o2-events="click:closeSelectModule;"><icon class="o2icon-close"/></div>
+<!--        data-o2-events="mouseover:inputOver_searchArea;mouseout:inputOut_searchArea"-->
+        <div class="tl_core_searchArea mainColor_border" style="margin-bottom: 0!important;">
+            <input class="tl_core_search" data-o2-element="searchCoreInput" placeholder="{{$.lp.searchCorePlacholder}}" data-o2-events="keydown:searchCoreKeydown"/>
+            <i class="tl_core_coreButton o2icon-search1" data-o2-events="click:search;mouseover:iconOver_searchButton;mouseout:iconOut_searchButton"></i>
+        </div>
+    </div>
+    <div class="breadcrumb-tab">
+        <span>{{$.lp.location}}</span>
+        <a data-o2-events="click:gotoMainPage">{{$.lp.mainPage}}</a>
+        <span>></span>
+        <span>{{$.lp.index}}</span>
+        <span>></span>
+        <span class="mainColor_color">{{$.lp.selectModule}}</span>
+    </div>
+<!--    <div class="tl_titleText">{{$.lp.selectModule}}</div>-->
+</div>
+<div class="tl_contentWrap" data-o2-element="tl_contentWrap">
+    <div class="tl_tabTitles mainColor_border" data-o2-element="tl_tabTitles">
+        <div class="tl_tabTitle" data-o2-tab-content="tl_workTabListNode">{{$.lp.processManager}}</div>
+        <div class="tl_tabTitle" data-o2-tab-content="tl_docTabListNode">{{$.lp.cmsManager}}</div>
+    </div>
+    <div class="tl_listNode" data-o2-element="tl_workTabListNode"></div>
+    <div class="tl_listNode" style="display: none;" data-o2-element="tl_docTabListNode"></div>
+</div>
