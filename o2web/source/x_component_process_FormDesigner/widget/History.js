@@ -81,14 +81,14 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         if( log.type === "module" ){
             switch (log.moduleType) {
                 case "Table$Td":
-                    item = new MWF.FCWHistory.TableTdItem(this, log);
+                    item = new MWF.FCWHistory.ModuleTableTdItem(this, log);
                     break;
                 case "Datatable$Title":
                 case "Datatable$Data":
-                    item = new MWF.FCWHistory.DatatableTdItem(this, log);
+                    item = new MWF.FCWHistory.ModuleDatatableTdItem(this, log);
                     break;
                 case "Tab$Page":
-                    item = new MWF.FCWHistory.TabpageItem(this, log);
+                    item = new MWF.FCWHistory.ModuleTabpageItem(this, log);
                     break;
                 default:
                     item = new MWF.FCWHistory.ModuleItem(this, log);
@@ -450,7 +450,7 @@ MWF.FCWHistory.ModuleItem = new Class({
     }
 });
 
-MWF.FCWHistory.TableTdItem = new Class({
+MWF.FCWHistory.ModuleTableTdItem = new Class({
     Extends: MWF.FCWHistory.ModuleItem,
     getTrPathList: function(){
         var trPathStrList = [];
@@ -573,8 +573,8 @@ MWF.FCWHistory.TableTdItem = new Class({
     }
 });
 
-MWF.FCWHistory.DatatableTdItem = new Class({
-    Extends: MWF.FCWHistory.TableTdItem,
+MWF.FCWHistory.ModuleDatatableTdItem = new Class({
+    Extends: MWF.FCWHistory.ModuleTableTdItem,
     restoreTd: function (path, html, json, jsonObject, i) {
         var tdNode = this.injectHtmlByPath(path, html);
         this.addModulesJson(jsonObject);
@@ -620,7 +620,7 @@ MWF.FCWHistory.DatatableTdItem = new Class({
     }
 });
 
-MWF.FCWHistory.TabpageItem = new Class({
+MWF.FCWHistory.ModuleTabpageItem = new Class({
     Extends: MWF.FCWHistory.ModuleItem,
     restoreTabage: function(){
         var to = this.data.toList[0];

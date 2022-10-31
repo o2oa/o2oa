@@ -66,6 +66,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "paste": "Paste",
         "open": "Open",
         "script": "Script",
+        "create": "Create",
+        "mergeCell": "Merge Cells",
         "styleBrush": "StyleBrush",
         "insertTop": "Insert Top",
         "insertBottom": "Insert to the bottom",
