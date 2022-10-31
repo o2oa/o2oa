@@ -186,7 +186,6 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     "title": title,
                     "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
                     "onChange": function(){
-                        debugger;
                         // this.data[name] = Object.assign(this.data[name], treeEditor.toJson());
                         // this.data[name] = treeEditor.toJson();
                         // this.module.json[name] = this.data[name];
@@ -2238,6 +2237,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                         }
                         var json = scriptArea.toJson();
                         this.data[name].code = json.code;
+                        console.log("script changed " + this.data[name].code);
                         //this.data[name].html = json.html;
                     }.bind(this),
                     "onSave": function(){
@@ -2434,8 +2434,6 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                         this.changeData(name);
 					}.bind(this),
                     "onDelete": function(key){
-					    debugger;
-
                         this.module.deletePropertiesOrStyles(name, key);
                     }.bind(this),
                     "isProperty": (lName.contains("properties") || lName.contains("property") || lName.contains("attribute"))
@@ -2639,6 +2637,9 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         this.module.setPropertiesOrStyles(name, oldData);
     },
     changeData: function(name, input, oldValue){
+	    if( this.module.form.history ){
+            this.module.checkPropertyHistory(name, oldValue);
+        }
         this.module._setEditStyle(name, input, oldValue);
     },
     changeJsonDate: function(key, value){

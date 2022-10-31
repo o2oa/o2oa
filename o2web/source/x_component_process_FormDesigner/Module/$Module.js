@@ -460,7 +460,7 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 					if (callback) callback();
 				}.bind(this),
 				"onPostShow": function () {
-					if( this.form.history )this.originalJson = Object.clone(this.json);
+					// if( this.form.history )this.originalJson = Object.clone(this.json);
 				}.bind(this)
 			});
 			this.property.load();
@@ -470,8 +470,6 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		}
 	},
 	hideProperty: function(){
-		this.addHistoryPropertyLog();
-
 		if (this.property) this.property.hide();
 	},
 
@@ -1171,36 +1169,38 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		return o;
 	},
 
-	addHistoryPropertyLog: function(moduleList){
-		if( !this.form.history || !this.originalJson )return null;
+	checkPropertyHistory: function(name, oldValue){
+		if( !this.form.history )return null;
 		var log = {
 			"type": "property",
-			"moduleId": this.json.id
+			"moduleId": this.json.id,
+			"name": name,
+			"fromValue": oldValue,
+			"toValue": this.json[name]
 		};
-		log.list = this.createHistoryPropertyLogList(moduleList || this);
 		this.form.history.checkPropery(log);
 	},
-	createHistoryPropertyLogList: function( moduleList ){
-		if( !this.form.history )return null;
-		var logList = [];
-		if(moduleList){
-			var list = o2.typeOf(moduleList) === "array" ? moduleList : [moduleList];
-			list.each(function (module) {
-				logList.push( module.createHistoryPropertyLog() );
-			}.bind(this));
-		}
-		return logList;
-	},
-	createHistoryPropertyLog: function ( module ) {
-		if( !this.form.history )return null;
-		if( !module )module = this;
-		var obj = {
-			"path": module.form.history.getPath(module.node),
-			"from": module.originalJson,
-			"to": module.json
-		};
-		return obj;
-	},
+	// createHistoryPropertyLogList: function( moduleList ){
+	// 	if( !this.form.history )return null;
+	// 	var logList = [];
+	// 	if(moduleList){
+	// 		var list = o2.typeOf(moduleList) === "array" ? moduleList : [moduleList];
+	// 		list.each(function (module) {
+	// 			logList.push( module.createHistoryPropertyLog() );
+	// 		}.bind(this));
+	// 	}
+	// 	return logList;
+	// },
+	// createHistoryPropertyLog: function ( module ) {
+	// 	if( !this.form.history )return null;
+	// 	if( !module )module = this;
+	// 	var obj = {
+	// 		"path": module.form.history.getPath(module.node),
+	// 		"from": module.originalJson,
+	// 		"to": module.json
+	// 	};
+	// 	return obj;
+	// },
 
 	addHistoryLog: function(operation, toModuleList, fromList, moduleId, moduleType, html ){
 		if( !this.form.history )return null;
