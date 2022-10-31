@@ -109,12 +109,12 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         //     "toValue": this.json[name]
         // };
         if( this.preArray.length ){
-            var last = this.preArray.getLast();
-            if( last.data.moduleId === log.id ){
-                if( last.data.name === log.name ){
-                    last.data.toValue = log.toValue;
+            var lastItem = this.preArray.getLast();
+            if( lastItem.data.moduleId === log.id ){
+                if( lastItem.data.name === log.name ){
+                    lastItem.data.toValue = log.toValue;
                 }else{
-                    last.category.items.push( log );
+                    lastItem.category.items.push( log );
                 }
             }
         }
