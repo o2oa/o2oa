@@ -1259,6 +1259,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         if( callback )callback( moduleNodes, jsons, modules )
     },
     _loadModule: function (json, node, beforeLoad, replace) {
+        if( !json )return null;
         //console.log( json.id );
         if (json.type === "Subform" || json.moduleName === "subform") this.subformCount++;
         //if( json.type === "Subform" || json.moduleName === "subform" ){
