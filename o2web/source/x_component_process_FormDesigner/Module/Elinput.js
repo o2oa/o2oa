@@ -25,7 +25,7 @@ MWF.xApplication.process.FormDesigner.Module.Elinput = MWF.FCElinput = new Class
 		// if (this.json.size && this.json.size!=="default") html += " size=\""+this.json.size+"\"";
 		// html += " rows=\""+(this.json.textareaRows || "2")+"\"";
 
-		html += " :placeholder=\"description\"";
+		html += " :placeholder=\"id\"";
 		html += " :type=\"inputType\"";
 		html += " :maxlength=\"maxlength\"";
 		html += " :show-word-limit=\"showWordLimit\"";
