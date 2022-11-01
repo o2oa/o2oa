@@ -77,8 +77,9 @@ MWF.xApplication.process.Xform.Elinput = MWF.APPElinput =  new Class(
     //     }.bind(this);
     // },
     _createElementHtml: function(){
+        var numberStr = (this.json.inputType === "number" && this.json.resultType === "number" ) ? ".number" : "";
         var html = "<el-input";
-        html += " v-model=\""+this.json.$id+"\"";
+        html += " v-model"+ numberStr +"=\""+this.json.$id+"\"";
         html += " :maxlength=\"maxlength\"";
         html += " :minlength=\"minlength\"";
         html += " :show-word-limit=\"showWordLimit\"";
