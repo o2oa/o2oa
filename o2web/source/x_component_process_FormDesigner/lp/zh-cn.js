@@ -834,6 +834,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "number": "数字",
         "datetime": "日期",
         "boolean": "布尔",
+        "resultType": "结果保存类型",
         "asDefaultFilter": "作为默认过滤条件",
         "asCustomFilter": "作为自定义过滤数据",
         "logic": "逻辑",
