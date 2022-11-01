@@ -27,10 +27,10 @@ import com.x.cms.core.entity.Document;
 
 public class ActionRefreshDocumentPermission extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionRefreshDocumentPermission.class);
+	private static final Logger logger = LoggerFactory.getLogger(ActionRefreshDocumentPermission.class);
 
-	@AuditLog(operation = "刷新文档权限")
 	protected ActionResult<Wo> execute(HttpServletRequest request, EffectivePerson effectivePerson, JsonElement jsonElement ) throws Exception {
+		logger.info("{}操作刷新文档权限信息：{}", effectivePerson.getDistinguishedName(), jsonElement.toString());
 		ActionResult<Wo> result = new ActionResult<>();
 		Document document = null;
 		Wi wi = null;
