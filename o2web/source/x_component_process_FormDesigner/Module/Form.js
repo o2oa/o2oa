@@ -352,6 +352,17 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			this.history.load();
 		}.bind(this));
 	},
+	checkPropertyHistory: function(name, oldValue, newValue){
+		if( !this.history )return null;
+		var log = {
+			"type": "property",
+			"moduleId": "form",
+			"name": name,
+			"fromValue": oldValue,
+			"toValue": newValue || this.json[name]
+		};
+		this.history.checkProperty(log, this);
+	},
 	checkUUID: function(){
 		this.designer.actions.getUUID(function(id){
             this.json.id = id;

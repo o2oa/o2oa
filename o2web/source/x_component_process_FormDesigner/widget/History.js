@@ -100,7 +100,7 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
 
         this.addItem(item);
     },
-    checkProperty: function(log){
+    checkProperty: function(log, module){
         // var log = {
         //     "type": "property",
         //     "moduleId": this.json.id,
@@ -108,42 +108,35 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         //     "fromValue": oldValue,
         //     "toValue": this.json[name]
         // };
+        debugger;
+        if( !log.fromValue && !log.toValue )return;
+        if( this.compareObjects( log.fromValue, log.toValue ) )return;
+
+        console.log( "fromValue = " , log.fromValue, "toValue = " , log.toValue );
+
+        var flag = false;
         if( this.preArray.length ){
             var lastItem = this.preArray.getLast();
-            if( lastItem.data.moduleId === log.id ){
-                if( lastItem.data.name === log.name ){
-                    lastItem.data.toValue = log.toValue;
-                }else{
-                    lastItem.category.items.push( log );
+            var lastSubItem;
+            if( lastItem.data.type === "property" ) {
+                if (lastItem.moduleIdList.contains(log.moduleId) || (log.name === "id" && lastItem.moduleIdList.contains(log.fromValue))) {
+                    if (log.name === "id") lastItem.moduleIdList.push(log.toValue);
+                    lastSubItem = lastItem.getLastSubItem();
+                    if (lastSubItem.data.name === log.name) {
+                        lastSubItem.data.toValue = log.toValue;
+                    } else {
+                        lastItem.addSubItem(log);
+                    }
+                    flag = true;
                 }
             }
         }
+        if( !flag ){
+            var item = new MWF.FCWHistory.PropertyItem(this, log);
+            item.load( module );
+            this.addItem(item);
+        }
     },
-    // checkPropery: function(log){
-	//     debugger;
-    //     // var log = {
-    //     //     "type": "property",
-    //     //     "moduleId": this.json.id,
-    //     //     "list": [{
-    //     //         "path": [], //节点所在路径
-    //     //         "from": this.originalJson,
-    //     //         "to": this.json
-    //     //     }]
-    //     // }
-    //     var i, item, l, flag = false;
-    //     for( i=0; i<log.list.length; i++ ){
-    //         l = log.list[i];
-    //         if( !this.compareObjects(l.from, l.to) ){
-    //             flag = true;
-    //             break;
-    //         }
-    //     }
-    //     if( flag ){
-    //         item = new MWF.FCWHistory.Item(this, log);
-    //         item.load();
-    //         this.addItem(item);
-    //     }
-    // },
     addItem: function(item){
         var it;
         while( this.nextArray.length ){
@@ -177,6 +170,8 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         }
     },
     compareObjects: function(o, p, deep){
+	    debugger;
+	    if( o === p )return true;
 	    return JSON.stringify(o) === JSON.stringify(p);
     }
 });
@@ -193,7 +188,7 @@ MWF.FCWHistory.Item = new Class({
         this.form = this.history.form;
         this.root = this.history.root;
     },
-    load: function () {
+    load: function (module) {
         this.node = new Element("div", {
             styles : {
                 "color": "#333",
@@ -204,7 +199,7 @@ MWF.FCWHistory.Item = new Class({
                 click: this.comeHere.bind(this)
             }
         }).inject( this.history.node );
-        this._afterLoad();
+        this._afterLoad(module);
     },
     _afterLoad: function(){
 
@@ -686,22 +681,109 @@ MWF.FCWHistory.ModuleTabpageItem = new Class({
 
 MWF.FCWHistory.PropertyItem = new Class({
     Extends: MWF.FCWHistory.Item,
-    _afterLoad: function () {
-        this.subPropertyItemList = [];
-        var subItem = new MWF.FCWHistory.Item.SubPropertyItem(this, this.data);
-        subItem.load();
-        this.subPropertyItemList.push(subItem);
+    _afterLoad: function ( module ) {
+        this.moduleIdList = [ this.data.moduleId ];
+        this.nextArray = [];
+        this.preArray = [];
+        this.path = this.data.path || this.history.getPath( module.node );
+        this.addSubItem( this.data );
+    },
+    getModuleJson: function(){
+        var module, dom = this.getDomByPath( this.path );
+        if(dom)module = dom.retrieve("module");
+        if(module)return module.json;
+        return null;
     },
     _getText: function () {
         if( this.data.title )return this.data.title;
         var lp = MWF.xApplication.process.FormDesigner.LP.formAction;
         return "property " + this.data.moduleId;
+    },
+    destroy: function () {
+        var si = this.preArray.pop();
+        while (si){
+            si.destroy();
+            si = this.preArray.pop(); //删除preArray最后一个
+        }
+
+        var si = this.nextArray.pop();
+        while (si){
+            si.destroy();
+            si = this.nextArray.pop(); //删除nextArray最后一个
+        }
+
+        this.node.destroy();
+    },
+    _undo: function () {
+        // for( var i=this.subItemList.length-1; i > -1; i-- ){
+        //     var subItem = this.subItemList.length[i];
+        //     subItem.undo();
+        // }
+        var si = this.preArray.getLast();
+        while (si){
+            si.undo();
+            this.nextArray.unshift(si); //插入到灰显数组前面
+            this.preArray.pop(); //删除preArray最后一个
+            si = this.preArray.getLast();
+        }
+    },
+    _redo: function () {
+        // for( var i=0; i < this.subItemList.length; i++ ){
+        //     var subItem = this.subItemList.length[i];
+        //     subItem.redo();
+        // }
+        var si = this.nextArray[0];
+        while (si){
+            si.redo();
+            this.preArray.push(si); //插入到preArray数组最后
+            this.nextArray.shift();
+            si = this.nextArray[0];
+        }
+    },
+    getLastSubItem: function(){
+        return this.preArray.getLast();
+    },
+    addSubItem: function ( data ) {
+        var subItem = new MWF.FCWHistory.PropertyItem.SubItem(this, data);
+        subItem.load();
+        this._addSubItem(subItem);
+    },
+    _addSubItem: function(subItem){
+        var si;
+        while( this.nextArray.length ){
+            si = this.nextArray.pop();
+            si.destroy();
+        }
+
+        this.preArray.push(subItem);
+    },
+    goto: function(subItem){
+        var si;
+        if( subItem.status === "pre" ){
+            si = this.preArray.getLast();
+            while (si && subItem !== si){
+                si.undo();
+                this.nextArray.unshift(si); //插入到灰显数组前面
+                this.preArray.pop(); //删除preArray最后一个
+                si = this.preArray.getLast();
+            }
+        }else if( subItem.status === "next" ){
+            si = this.nextArray[0];
+            while (si && subItem !== si){
+                si.redo();
+                this.preArray.push(si); //插入到preArray数组最后
+                this.nextArray.shift();
+                si = this.nextArray[0];
+            }
+            subItem.redo();
+            this.preArray.push(subItem); //插入到preArray数组最后
+            this.nextArray.shift();
+        }
     }
-})
+});
 
 MWF.FCWHistory.PropertyItem.SubItem = new Class({
-    Implements: [Options, Events],
-    options: {},
+    Extends: MWF.FCWHistory.Item,
     initialize: function (item, log) {
         this.parentItem = item;
         this.history = item.history;
@@ -714,7 +796,7 @@ MWF.FCWHistory.PropertyItem.SubItem = new Class({
         this.node = new Element("div", {
             styles: {
                 "color": "#333",
-                "padding": "15px"
+                "padding": "5px 5px 5px 15px"
             },
             text: this.getText(),
             events: {
@@ -724,8 +806,48 @@ MWF.FCWHistory.PropertyItem.SubItem = new Class({
     },
     getText: function () {
         return this.data.name;
+    },
+    comeHere: function () {
+        this.parentItem.comeHere();
+        this.parentItem.goto( this );
+    },
+    undo: function () { //回退
+        this.status = "next";
+        this.node.setStyles({
+            "color": "#ccc"
+        });
+        this._undo();
+    },
+    redo: function(){ //重做
+        this.status = "pre";
+        this.node.setStyles({
+            "color": "#333"
+        });
+        this._redo();
+    },
+    _undo: function () {
+        if( this.data.name === "id" ){
+            var json = this.parentItem.getModuleJson();
+            if( json ){
+                json.id = this.data.fromValue;
+                this.form.json.moduleList[ this.data.fromValue ] = json;
+                delete this.form.json.moduleList[ this.data.toValue ];
+            }
+
+        }
+    },
+    _redo: function () {
+        if( this.data.name === "id" ){
+            var json = this.parentItem.getModuleJson();
+            if( json ){
+                json.id = this.data.toValue;
+                this.form.json.moduleList[ this.data.toValue ] = json;
+                delete this.form.json.moduleList[ this.data.fromValue ];
+            }
+
+        }
     }
-})
+});
 
 MWF.FCWHistory.Tooltips = new Class({
     Extends: MTooltips,

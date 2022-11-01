@@ -12,6 +12,8 @@ MWF.xApplication.process.FormDesigner.widget.EventsEditor = new Class({
 		this.setOptions(options);
 		this.node = $(node);
         this.app = designer;
+
+        debugger;
 		
 		this.path = "../x_component_process_FormDesigner/widget/$EventsEditor/";
 		this.cssPath = "../x_component_process_FormDesigner/widget/$EventsEditor/"+this.options.style+"/css.wcss";
@@ -43,6 +45,8 @@ MWF.xApplication.process.FormDesigner.widget.EventsEditor = new Class({
 	},
 
 	deleteItem: function(item){
+		var oldValue = item.oldData;
+
 		this.items.erase(item);
 
 		if (this.data[item.event]){
@@ -53,6 +57,8 @@ MWF.xApplication.process.FormDesigner.widget.EventsEditor = new Class({
 		}
 
         item.deleteScriptDesignerItem();
+
+		this.fireEvent("change", [item.event, null, oldValue]);
 		
 		if (item.container){
 			item.container.destroy();
@@ -60,9 +66,12 @@ MWF.xApplication.process.FormDesigner.widget.EventsEditor = new Class({
 	},
 	addItem: function(item){
 		this.data[item.event] = item.data;
+
+		this.fireEvent("change", [item.event, item.data]);
+
 		this.items.push(item);
 	},
-	addEvent: function(){
+	addEventItem: function(){
 		var item = new MWF.xApplication.process.FormDesigner.widget.EventsEditor.Item(this);
 		item.load("", "");
 	}
@@ -79,6 +88,7 @@ MWF.xApplication.process.FormDesigner.widget.EventsEditor.Item = new Class({
 		}else{
 			this.event = event;
 			this.data = data;
+			this.oldData = Object.clone(data);
 			this.createContainer();
 			this.createActions();
 		}
@@ -198,12 +208,18 @@ MWF.xApplication.process.FormDesigner.widget.EventsEditor.Item = new Class({
 						var json = this.codeEditor.toJson();
 						this.data.code = json.code;
 						this.data.html = json.html;
+
+						this.editor.fireEvent("change", [this.event, this.data, this.oldData]);
+
 						this.checkIcon();
 					}.bind(this),
                     "onSave": function(){
                         var json = this.codeEditor.toJson();
                         this.data.code = json.code;
                         this.data.html = json.html;
+
+						this.editor.fireEvent("change", [this.event, this.data, this.oldData]);
+
                         this.editor.app.saveForm();
                     }.bind(this)
 				});
@@ -229,6 +245,9 @@ MWF.xApplication.process.FormDesigner.widget.EventsEditor.Item = new Class({
 			var json = this.codeEditor.toJson();
 			this.data.code = json.code;
 			this.data.html = json.html;
+
+			this.editor.fireEvent("change", [this.event, this.data, this.oldData]);
+
 			this.checkIcon();
 		}
 		if (!this.morph){
@@ -263,7 +282,7 @@ MWF.xApplication.process.FormDesigner.widget.EventsEditor.Item = new Class({
 		}).inject(this.actionNode);
 		
 		addAction.addEvent("click", function(e){
-			this.editor.addEvent();
+			this.editor.addEventItem();
 		}.bind(this));
 		
 	},
