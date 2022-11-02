@@ -48,6 +48,18 @@
   },
   {
     "type": "MWFToolBarButton",
+    "img": "submitDelayed.png",
+    "img_over": "submitDelayed_over.png",
+    "title": "{{$.lp.publishDelayedTitle}}",
+    "action": "publishDocumentDelayed",
+    "text": "{{$.lp.publishDelayed}}",
+    "id": "action_publishDocumentDelayed",
+    "control": "allowPublishDocumentDelayed",
+    "read": false,
+    "edit" : true
+  },
+  {
+    "type": "MWFToolBarButton",
     "img": "save.png",
     "img_over": "save_over.png",
     "title": "{{$.lp.saveDraftTitle}}",
