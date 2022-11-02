@@ -302,6 +302,7 @@ MWF.xApplication.process.FormDesigner.widget.ElCarouselContent.Tree.Node = new C
 				MWF.require("MWF.widget.ScriptArea", function(){
 					this.srcScriptEditor = new MWF.widget.ScriptArea(tr, {
 						"title": "图片资源(src)脚本",
+						"isbind": false,
 						"mode": "javascript",
 						"maxObj": this.tree.editor.options.maxObj,
 						"onChange": function(){
@@ -334,6 +335,7 @@ MWF.xApplication.process.FormDesigner.widget.ElCarouselContent.Tree.Node = new C
 				MWF.require("MWF.widget.ScriptArea", function(){
 					this.textScriptEditor = new MWF.widget.ScriptArea(tr, {
 						"title": "文本内容脚本",
+						"isbind": false,
 						"mode": "javascript",
 						"maxObj": this.tree.editor.options.maxObj,
 						"onChange": function(){
@@ -361,6 +363,7 @@ MWF.xApplication.process.FormDesigner.widget.ElCarouselContent.Tree.Node = new C
 				MWF.require("MWF.widget.ScriptArea", function(){
 					this.clickScriptEditor = new MWF.widget.ScriptArea(tr, {
 						"title": "点击事件脚本",
+						"isbind": false,
 						"mode": "javascript",
 						"maxObj": this.tree.editor.options.maxObj,
 						"onChange": function(){

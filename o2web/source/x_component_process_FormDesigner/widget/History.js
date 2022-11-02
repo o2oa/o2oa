@@ -112,7 +112,7 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         if( !log.fromValue && !log.toValue )return;
         if( this.compareObjects( log.fromValue, log.toValue ) )return;
 
-        console.log( "fromValue = " , log.fromValue, "toValue = " , log.toValue );
+        console.log( log, "fromValue = " , log.fromValue, "toValue = " , log.toValue );
 
         var flag = false;
         if( this.preArray.length ){
@@ -122,11 +122,19 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
                 if (lastItem.moduleIdList.contains(log.moduleId) || (log.name === "id" && lastItem.moduleIdList.contains(log.fromValue))) {
                     if (log.name === "id") lastItem.moduleIdList.push(log.toValue);
                     lastSubItem = lastItem.getLastSubItem();
+
+                    var it;
+                    while( this.nextArray.length ){
+                        it = this.nextArray.pop();
+                        it.destroy();
+                    }
+
                     if (lastSubItem.data.name === log.name) {
                         lastSubItem.data.toValue = log.toValue;
                     } else {
                         lastItem.addSubItem(log);
                     }
+
                     flag = true;
                 }
             }
@@ -688,11 +696,10 @@ MWF.FCWHistory.PropertyItem = new Class({
         this.path = this.data.path || this.history.getPath( module.node );
         this.addSubItem( this.data );
     },
-    getModuleJson: function(){
+    getModule: function(){
         var module, dom = this.getDomByPath( this.path );
         if(dom)module = dom.retrieve("module");
-        if(module)return module.json;
-        return null;
+        return module;
     },
     _getText: function () {
         if( this.data.title )return this.data.title;
@@ -726,6 +733,10 @@ MWF.FCWHistory.PropertyItem = new Class({
             this.preArray.pop(); //删除preArray最后一个
             si = this.preArray.getLast();
         }
+        var module = this.getModule();
+        if( module && module.property ){
+            module.property.reset()
+        }
     },
     _redo: function () {
         // for( var i=0; i < this.subItemList.length; i++ ){
@@ -738,6 +749,10 @@ MWF.FCWHistory.PropertyItem = new Class({
             this.preArray.push(si); //插入到preArray数组最后
             this.nextArray.shift();
             si = this.nextArray[0];
+        }
+        var module = this.getModule();
+        if( module && module.property ){
+            module.property.reset()
         }
     },
     getLastSubItem: function(){
@@ -778,6 +793,10 @@ MWF.FCWHistory.PropertyItem = new Class({
             subItem.redo();
             this.preArray.push(subItem); //插入到preArray数组最后
             this.nextArray.shift();
+        }
+        var module = this.getModule();
+        if( module && module.property ){
+            module.property.reset()
         }
     }
 });
@@ -826,25 +845,51 @@ MWF.FCWHistory.PropertyItem.SubItem = new Class({
         this._redo();
     },
     _undo: function () {
-        if( this.data.name === "id" ){
-            var json = this.parentItem.getModuleJson();
-            if( json ){
+        var module = this.parentItem.getModule();
+        if (module) {
+            var json = module.json;
+            if (this.data.name === "id") {
                 json.id = this.data.fromValue;
-                this.form.json.moduleList[ this.data.fromValue ] = json;
-                delete this.form.json.moduleList[ this.data.toValue ];
+                this.form.json.moduleList[this.data.fromValue] = json;
+                delete this.form.json.moduleList[this.data.toValue];
+            }else{
+                // json[this.data.name] = this.data.fromValue;
+                this.changeJsonDate(json, this.data.name, this.data.fromValue);
+                module.setPropertiesOrStyles(this.data.name, this.data.toValue);
             }
-
+            module._setEditStyle(this.data.name, null, this.data.toValue);
         }
     },
     _redo: function () {
-        if( this.data.name === "id" ){
-            var json = this.parentItem.getModuleJson();
-            if( json ){
-                json.id = this.data.toValue;
-                this.form.json.moduleList[ this.data.toValue ] = json;
-                delete this.form.json.moduleList[ this.data.fromValue ];
+        var module = this.parentItem.getModule();
+        if (module) {
+            var json = module.json;
+            if( this.data.name === "id" ){
+                    json.id = this.data.toValue;
+                    this.form.json.moduleList[ this.data.toValue ] = json;
+                    delete this.form.json.moduleList[ this.data.fromValue ];
+            }else{
+                // json[this.data.name] = this.data.toValue;
+                this.changeJsonDate(json, this.data.name, this.data.toValue);
+                module.setPropertiesOrStyles(this.data.name, this.data.fromValue);
             }
-
+            module._setEditStyle(this.data.name, null, this.data.fromValue)
+        }
+    },
+    changeJsonDate: function(json, name, value){
+        debugger;
+        var key = name.split(".");
+        var len = key.length-1;
+        key.each(function(n, i){
+            if (i<len) {
+                if (!json.hasOwnProperty(n)) json[n] = {};
+                json = json[n];
+            }
+        }.bind(this));
+        if( typeOf(value) === "null" ){
+            delete json[key[len]];
+        }else{
+            json[key[len]] = value;
         }
     }
 });

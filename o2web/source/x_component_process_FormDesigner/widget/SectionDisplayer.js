@@ -230,6 +230,7 @@ MWF.xApplication.process.FormDesigner.widget.SectionDisplayer = new Class({
 			MWF.require("MWF.widget.ScriptArea", function(){
 				var scriptArea = new MWF.widget.ScriptArea(node, {
 					"title": title,
+					"isbind": false,
 					"mode": mode || "javascript",
 					//"maxObj": this.propertyNode.parentElement.parentElement.parentElement,
 					"maxObj": this.designer.formContentNode || this.designer.pageContentNode,

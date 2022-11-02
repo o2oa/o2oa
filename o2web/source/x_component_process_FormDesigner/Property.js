@@ -41,6 +41,24 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 		}
         this.propertyNode.addEvent("keydown", function(e){e.stopPropagation();});
 	},
+    reset: function(){
+        this.propertyTabIndex = 0;
+        if(this.propertyContent){
+            var isShow = this.propertyContent.offsetParent !== null;
+            if( isShow && this.propertyTab){
+                var tab = this.propertyTab;
+                if( tab && tab.pages && tab.pages.length && tab.showPage ){
+                    this.propertyTabIndex = tab.pages.indexOf( tab.showPage );
+                    this.propertyTabScrollY = tab.showPage.contentScrollNode.getScroll().y;
+                }
+            }
+            this.propertyContent.destroy();
+            this.propertyContent = null;
+            if( isShow ){
+                this.show();
+            }
+        }
+    },
 	editProperty: function(td){
 	},
     getHtmlString: function(callback){
@@ -77,6 +95,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 
                     this.loadingCount = 0;
                     this.loadedCount = 0;
+                    this.ready = false;
 
                     this.setEditNodeEvent();
                     this.setEditNodeStyles(this.propertyContent);
@@ -161,6 +180,13 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         if(!flag)this.loadedCount++;
         debugger;
 	    if( this.ready && this.loadingCount === this.loadedCount ){
+            if( this.propertyTabScrollY ){
+                var tab = this.propertyTab;
+                if( tab && tab.showPage ){
+                    tab.showPage.contentScrollNode.scrollTo(0, this.propertyTabScrollY);
+                    this.propertyTabScrollY = null;
+                }
+            }
             this.fireEvent("postShow");
         }
     },
@@ -2255,6 +2281,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             MWF.require("MWF.widget.ScriptArea", function(){
                 var scriptArea = new MWF.widget.ScriptArea(node, {
                     "title": title,
+                    "isbind": false,
                     "mode": mode || "javascript",
                     //"maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                     "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
@@ -2267,7 +2294,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                         var oldValue = this.data[name].code;
                         var json = scriptArea.toJson();
                         this.data[name].code = json.code;
-                        this.checkHistory(name, oldValue, json.code);
+                        this.checkHistory(name+".code", oldValue, json.code);
                         // console.log("script changed " + this.data[name].code);
                         //this.data[name].html = json.html;
                     }.bind(this),
@@ -2539,7 +2566,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                             this.setScrollBar(page.contentScrollNode, "small", null, null);
                         }
                     }.bind(this));
-                    tabPages[0].showTab();
+                    tabPages[this.propertyTabIndex || 0].showTab();
 
                     this.propertyTab = tab;
 

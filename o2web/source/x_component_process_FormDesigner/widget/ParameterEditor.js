@@ -85,6 +85,7 @@ MWF.xApplication.process.FormDesigner.widget.ParameterEditor.Item = new Class({
 			if (!this.codeEditor){
 				this.codeEditor = new MWF.widget.ScriptArea(this.codeNode, {
 					"style": "event",
+					"isbind": false,
 					"title": this.event+" (S)",
 					"maxObj": this.editor.options.maxObj,
 					"onChange": function(){
