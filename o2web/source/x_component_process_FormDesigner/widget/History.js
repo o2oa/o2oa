@@ -106,7 +106,8 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         //     "moduleId": this.json.id,
         //     "name": name,
         //     "fromValue": oldValue,
-        //     "toValue": this.json[name]
+        //     "toValue": this.json[name],
+        //      "notSetEditStyle": false
         // };
         debugger;
         if( !log.fromValue && !log.toValue )return;
@@ -160,6 +161,17 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
             it.destroy();
         }
 
+        //删除上一个property的已经undo的subItem
+        if( this.preArray.length ){
+            it = this.preArray.getLast();
+            if( it.data.type === "property" ){
+                while( it.nextArray.length ){
+                    var subit = it.nextArray.pop();
+                    subit.destroy();
+                }
+            }
+        }
+
         this.preArray.push(item);
     },
     destroyItem: function(item){
@@ -177,6 +189,10 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
                 it = this.preArray.getLast();
             }
         }else if( item.status === "next" ){
+	        if( this.preArray.length ){  //上一个property的subItem要redo一下
+                it = this.preArray.getLast();
+                if( it.data.type === "property" )it.redo();
+            }
             it = this.nextArray[0];
             while (it && item !== it){
                 it.redo();
@@ -739,15 +755,19 @@ MWF.FCWHistory.PropertyItem = new Class({
         //     subItem.undo();
         // }
         var si = this.preArray.getLast();
+        var flag = false;
         while (si){
             si.undo();
+            flag = true;
             this.nextArray.unshift(si); //插入到灰显数组前面
             this.preArray.pop(); //删除preArray最后一个
             si = this.preArray.getLast();
         }
-        var module = this.getModule();
-        if( module && module.property ){
-            module.property.reset()
+        if(flag){
+            var module = this.getModule();
+            if( module && module.property ){
+                module.property.reset()
+            }
         }
     },
     _redo: function () {
@@ -756,15 +776,19 @@ MWF.FCWHistory.PropertyItem = new Class({
         //     subItem.redo();
         // }
         var si = this.nextArray[0];
+        var flag = false;
         while (si){
             si.redo();
+            flag = true;
             this.preArray.push(si); //插入到preArray数组最后
             this.nextArray.shift();
             si = this.nextArray[0];
         }
-        var module = this.getModule();
-        if( module && module.property ){
-            module.property.reset()
+        if(flag){
+            var module = this.getModule();
+            if( module && module.property ){
+                module.property.reset()
+            }
         }
     },
     getLastSubItem: function(){
@@ -873,7 +897,7 @@ MWF.FCWHistory.PropertyItem.SubItem = new Class({
                 this.changeJsonDate(json, this.data.name, this.data.fromValue);
                 module.setPropertiesOrStyles(this.data.name, this.data.toValue);
             }
-            module._setEditStyle(this.data.name, null, this.data.toValue);
+            if(!this.data.notSetEditStyle)module._setEditStyle(this.data.name, null, this.data.toValue);
         }
     },
     _redo: function () {
@@ -889,7 +913,7 @@ MWF.FCWHistory.PropertyItem.SubItem = new Class({
                 this.changeJsonDate(json, this.data.name, this.data.toValue);
                 module.setPropertiesOrStyles(this.data.name, this.data.fromValue);
             }
-            module._setEditStyle(this.data.name, null, this.data.fromValue)
+            if(!this.data.notSetEditStyle)module._setEditStyle(this.data.name, null, this.data.fromValue)
         }
     },
     changeJsonDate: function(json, name, value){

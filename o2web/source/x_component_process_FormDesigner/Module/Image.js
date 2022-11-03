@@ -50,7 +50,13 @@ MWF.xApplication.process.FormDesigner.Module.Image = MWF.FCImage = new Class({
 				this.node.src = src;
                 this.setPropertiesOrStyles("styles");
 			}else{
-                this.node.set("src", this.path +this.options.style+"/icon/image1.png");
+                if (this.json.properties.src) {
+                    this._setEditStyle_custom("properties");
+                }else if( this.json.srcfile ){
+			        this._setEditStyle_custom("srcfile");
+                }else{
+                    this.node.set("src", this.path +this.options.style+"/icon/image1.png");
+                }
 			}
 		}
 		if (name=="srcfile"){

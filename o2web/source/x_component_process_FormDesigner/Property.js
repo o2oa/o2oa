@@ -2373,7 +2373,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                             maps.each(function(o){
                                 _self.data[name][o.key] = o.map.toJson();
                             }.bind(this));
-                            _self.changeData(name, node, oldData);
+                            _self.changeData(name, node, oldData, true);
+                            _self.checkHistory(name+"."+k, oldData[k], _self.data[name][k]);
                         }
                     });
                     maps.push({"key": k, "map": maplist});
@@ -2389,15 +2390,16 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         multiActionArea.each(function(node){
             var name = node.get("name");
             var actionContent = this.data[name];
+            var oldValue = actionContent ? JSON.parse( JSON.stringify(actionContent) ) : actionContent;
             MWF.xDesktop.requireApp("process.FormDesigner", "widget.ActionsEditor", function(){
                 var options = {
                     "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                     "isSystemTool" : true,
                     "target" : node.get("data-target"),
                     "onChange": function(){
-                        var oldValue = this.data[name];
                         this.data[name] = actionEditor.data;
                         this.changeData(name, null, oldValue);
+                        oldValue = JSON.parse( JSON.stringify(this.data[name]) );
                     }.bind(this)
                 };
                 if(node.get("data-systemToolsAddress")){
@@ -2412,6 +2414,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         actionAreas.each(function(node){
             var name = node.get("name");
             var actionContent = this.data[name];
+            var oldValue = actionContent ? JSON.parse( JSON.stringify(actionContent) ) : actionContent;
             MWF.xDesktop.requireApp("process.FormDesigner", "widget.ActionsEditor", function(){
 
                 // debugger;
@@ -2430,7 +2433,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                     "onChange": function(){
                         this.data[name] = actionEditor.data;
-                        this.changeData(name);
+                        this.changeData(name, null, oldValue);
+                        oldValue = JSON.parse( JSON.stringify(this.data[name]) );
                     }.bind(this)
                 });
                 actionEditor.load(actionContent);
@@ -2442,6 +2446,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         actionAreas.each(function(node){
             var name = node.get("name");
             var actionContent = this.data[name] || this.module.defaultToolBarsData;
+            var oldValue = actionContent ? JSON.parse( JSON.stringify(actionContent) ) : actionContent;
             MWF.xDesktop.requireApp("process.FormDesigner", "widget.ActionsEditor", function(){
 
                 var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, {
@@ -2455,7 +2460,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     "noEditShow": true,
                     "onChange": function(){
                         this.data[name] = actionEditor.data;
-                        this.changeData(name);
+                        this.changeData(name, null, oldValue);
+                        oldValue = JSON.parse( JSON.stringify(this.data[name]) );
                     }.bind(this)
                 });
                 actionEditor.load(actionContent);
@@ -2570,6 +2576,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                             this.setScrollBar(page.contentScrollNode, "small", null, null);
                         }
                     }.bind(this));
+                    debugger;
                     tabPages[this.propertyTabIndex || 0].showTab();
 
                     this.propertyTab = tab;
@@ -2633,7 +2640,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                         input.addEvent("keydown", function(e){
                             e.stopPropagation();
                         });
-                        property.setRadioValue(jsondata, input);
+                        property.setRadioValue(jsondata, input, true);
 						break;
 					case "checkbox":
 
@@ -2696,16 +2703,16 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 		}.bind(this));
 		
 	},
-    checkHistory: function(name, oldValue, newValue){
+    checkHistory: function(name, oldValue, newValue, notSetEditStyle){
         if( this.isLoaded() && this.module.form.history ){
-            this.module.checkPropertyHistory(name, oldValue, newValue);
+            this.module.checkPropertyHistory(name, oldValue, newValue, notSetEditStyle);
         }
     },
     changeStyle: function(name, oldData){
         this.module.setPropertiesOrStyles(name, oldData);
     },
-    changeData: function(name, input, oldValue){
-	    this.checkHistory(name, oldValue);
+    changeData: function(name, input, oldValue, notCheckHistory, historyNotSetEditStyle){
+	    if(!notCheckHistory)this.checkHistory(name, oldValue, null, historyNotSetEditStyle);
         this.module._setEditStyle(name, input, oldValue);
     },
     changeJsonDate: function(key, value){
@@ -2723,7 +2730,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 
         //this.data[key] = value;
     },
-	setRadioValue: function(name, input){
+	setRadioValue: function(name, input, notCheckHistory){
 		if (input.checked){
             var i = name.indexOf("*");
             var names = (i==-1) ? name.split(".") : name.substr(i+1, name.length).split(".");
@@ -2747,7 +2754,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 			// if (value==="true") value = true;
 			//var oldValue = this.data[name];
 			this.changeJsonDate(names, value);
-            this.changeData(name, input, oldValue);
+            this.changeData(name, input, oldValue, notCheckHistory, true);
 		}
 	},
 	setCheckboxValue: function(name, input){

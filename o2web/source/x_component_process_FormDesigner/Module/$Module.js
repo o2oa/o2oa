@@ -1169,14 +1169,15 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		return o;
 	},
 
-	checkPropertyHistory: function(name, oldValue, newValue){
+	checkPropertyHistory: function(name, oldValue, newValue, notSetEditStyle){
 		if( !this.form.history )return null;
 		var log = {
 			"type": "property",
 			"moduleId": this.json.id,
 			"name": name,
 			"fromValue": oldValue,
-			"toValue": newValue || this.json[name]
+			"toValue": newValue || this.json[name],
+			"notSetEditStyle": notSetEditStyle
 		};
 		this.form.history.checkProperty(log, this);
 	},
