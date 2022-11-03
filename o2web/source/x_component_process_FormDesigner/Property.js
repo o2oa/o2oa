@@ -1509,7 +1509,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                         this.setValue(e.target.getParent("div").get("name"), e.target.options[e.target.selectedIndex].value);
                     }.bind(this));
                     this.setUnitTypeSelectOptions(node, select);
-                    this.setValue(select.getParent("div").get("name"), select.options[select.selectedIndex].value);
+                    this.setValue(select.getParent("div").get("name"), select.options[select.selectedIndex].value, null, true);
                     // var refreshNode = new Element("div", {"styles": this.form.css.propertyRefreshFormNode}).inject(node);
                     // refreshNode.addEvent("click", function(e){
                     //     this.getUnitTypeList(function(){
@@ -2788,7 +2788,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         this.changeData(name, select, oldValue);
 	},
 	
-	setValue: function(name, value, obj){
+	setValue: function(name, value, obj, notCheckHistory){
 		if (name==="id"){
 			if (value!==this.module.json.id) {
                 if (!value) {
@@ -2852,7 +2852,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 
 		//this.data[name] = value;
         this.changeJsonDate(names, value);
-        this.changeData(name, obj, oldValue);
+        this.changeData(name, obj, oldValue, notCheckHistory);
 	},
 	setEditNodeStyles: function(node){
 		var nodes = node.getChildren();
