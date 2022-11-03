@@ -130,7 +130,15 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
                     }
 
                     if (lastSubItem.data.name === log.name) {
-                        lastSubItem.data.toValue = log.toValue;
+                        // if( lastSubItem.data.fromValue === log.toValue ){ //回到最初的值了
+                        //     if( lastItem.preArray.length === 1 ){
+                        //         this.destroyItem( lastItem );
+                        //     }else{
+                        //         lastItem.destroySubItem(lastSubItem);
+                        //     }
+                        // }else{
+                            lastSubItem.data.toValue = log.toValue;
+                        // }
                     } else {
                         lastItem.addSubItem(log);
                     }
@@ -153,6 +161,10 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         }
 
         this.preArray.push(item);
+    },
+    destroyItem: function(item){
+        this.preArray.erase(item);
+        item.destroy();
     },
     goto: function(item){
 	    var it;
@@ -757,6 +769,10 @@ MWF.FCWHistory.PropertyItem = new Class({
     },
     getLastSubItem: function(){
         return this.preArray.getLast();
+    },
+    destroySubItem: function(subItem){
+        this.preArray.erase( subItem );
+        subItem.destroy();
     },
     addSubItem: function ( data ) {
         var subItem = new MWF.FCWHistory.PropertyItem.SubItem(this, data);

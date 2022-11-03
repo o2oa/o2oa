@@ -45,11 +45,12 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         this.propertyTabIndex = 0;
         if(this.propertyContent){
             var isShow = this.propertyContent.offsetParent !== null;
-            if( isShow && this.propertyTab){
+            if( isShow && this.propertyTab && this.propertyTab.pages){
                 var tab = this.propertyTab;
-                if( tab && tab.pages && tab.pages.length && tab.showPage ){
-                    this.propertyTabIndex = tab.pages.indexOf( tab.showPage );
-                    this.propertyTabScrollY = tab.showPage.contentScrollNode.getScroll().y;
+                var showPage = tab.showPage || tab.pages[0];
+                if( showPage ){
+                    this.propertyTabIndex = tab.pages.indexOf( showPage );
+                    this.propertyTabScrollY = showPage.contentScrollNode.getScroll().y;
                 }
             }
             this.propertyContent.destroy();
@@ -151,9 +152,9 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 
                     this.loadHelp();
 
-                    if( this.postShow )this.postShow();
-
                     this.ready = true;
+
+                    if( this.postShow )this.postShow();
 
                     this.checkLoaded( true );
 
@@ -180,10 +181,11 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         if(!flag)this.loadedCount++;
         debugger;
 	    if( this.ready && this.loadingCount === this.loadedCount ){
-            if( this.propertyTabScrollY ){
+            if( this.propertyTabScrollY && this.propertyTab && this.propertyTab.pages ){
                 var tab = this.propertyTab;
-                if( tab && tab.showPage ){
-                    tab.showPage.contentScrollNode.scrollTo(0, this.propertyTabScrollY);
+                var showPage = tab.showPage || tab.pages[0];
+                if( showPage ){
+                    showPage.contentScrollNode.scrollTo(0, this.propertyTabScrollY);
                     this.propertyTabScrollY = null;
                 }
             }
@@ -1577,7 +1579,9 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 				var arraylist = new MWF.widget.Arraylist(node, {
 					"title": title,
 					"onChange": function(){
+					    var oldValue = this.data[name];
 						this.data[name] = arraylist.toArray();
+                        this.checkHistory(name, oldValue, this.data[name]);
 					}.bind(this)
 				});
 				arraylist.load(arr);
@@ -2831,7 +2835,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         var names = name.split(".");
         var oldValue = this.data;
         for (var idx = 0; idx<names.length; idx++){
-            if (!oldValue[names[idx]]){
+            if (!oldValue.hasOwnProperty(names[idx])){
                 oldValue = null;
                 break;
             }else{
