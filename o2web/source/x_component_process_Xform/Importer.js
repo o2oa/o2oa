@@ -59,6 +59,8 @@ MWF.xApplication.process.Xform.Importer = MWF.APPImporter =  new Class(
          * <caption>this.event格式如下：</caption>
          * {
          *     "status": "导入成功", //导入结果：状态有 "导入成功","部分成功","导入失败"
+         *     "data": {}, //前台组织好的需要导入的数据
+         *     "rowList: [], //前台组织好的行对行
          *     "count" : 10, //导入总数量
          *     "failCount": 0, //失败数量
          *     "distribution": "" //导入时候时的错误信息
