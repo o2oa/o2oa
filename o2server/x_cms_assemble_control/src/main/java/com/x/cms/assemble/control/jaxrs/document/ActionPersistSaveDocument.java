@@ -262,7 +262,9 @@ public class ActionPersistSaveDocument extends BaseAction {
 
 		if (check) {
 			try {//将读者以及作者信息持久化到数据库中
-				documentPersistService.refreshDocumentPermission( document.getId(), wi.getReaderList(), wi.getAuthorList() );
+				if(oldDocument==null || wi.getReaderList() != null || wi.getAuthorList() != null){
+					documentPersistService.refreshDocumentPermission( document.getId(), wi.getReaderList(), wi.getAuthorList() );
+				}
 			} catch (Exception e) {
 				check = false;
 				Exception exception = new ExceptionDocumentInfoProcess(e, "系统在核对文档访问管理权限信息时发生异常！");

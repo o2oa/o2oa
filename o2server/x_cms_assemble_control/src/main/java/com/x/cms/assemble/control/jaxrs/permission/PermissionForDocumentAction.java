@@ -26,7 +26,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 public class PermissionForDocumentAction extends StandardJaxrsAction{
 
 	private static  Logger logger = LoggerFactory.getLogger( PermissionForDocumentAction.class );
-	
+
 	@JaxrsMethodDescribe(value = "刷新信息文档发布权限.", action = ActionRefreshDocumentPermission.class)
 	@POST
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -46,7 +46,7 @@ public class PermissionForDocumentAction extends StandardJaxrsAction{
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 }

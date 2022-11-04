@@ -10,7 +10,9 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 
 import com.x.base.core.project.config.Token;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.tools.DateTools;
+import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.enums.DocumentStatus;
 import com.x.cms.core.entity.query.DocumentNotify;
 import org.apache.commons.io.FilenameUtils;
@@ -52,90 +54,51 @@ public class ActionPersistPublishContent extends BaseAction {
 
 	protected ActionResult<Wo> execute( HttpServletRequest request, JsonElement jsonElement, EffectivePerson effectivePerson) throws Exception {
 		ActionResult<Wo> result = new ActionResult<>();
-		List<FileInfo> cloudPictures = null;
-		AppInfo appInfo = null;
-		CategoryInfo categoryInfo = null;
 		Document document = null;
-		Form form = null;
-		Wi wi = null;
+		Wi wi = this.convertToWrapIn( jsonElement, Wi.class );
 		Boolean check = true;
 
-		try {
-			wi = this.convertToWrapIn( jsonElement, Wi.class );
-		} catch (Exception e ) {
-			check = false;
-			Exception exception = new ExceptionDocumentInfoProcess( e, "系统在将JSON信息转换为对象时发生异常。JSON:" + jsonElement.toString() );
-			result.error( exception );
-			logger.error( e, effectivePerson, request, null);
+		if ( StringUtils.isEmpty( wi.getCategoryId() ) ) {
+			throw new ExceptionDocumentCategoryIdEmpty();
 		}
 
-		if (check) {
-			if ( StringUtils.isEmpty(wi.getCategoryId())) {
-				check = false;
-				Exception exception = new ExceptionDocumentCategoryIdEmpty();
-				result.error(exception);
+		CategoryInfo categoryInfo;
+		AppInfo appInfo = null;
+
+		Document oldDocument = documentQueryService.get(wi.getId());
+		if(oldDocument != null){
+			categoryInfo = categoryInfoServiceAdv.get( oldDocument.getCategoryId() );
+			appInfo = appInfoServiceAdv.get(oldDocument.getAppId());
+		}else{
+			categoryInfo = categoryInfoServiceAdv.get( wi.getCategoryId() );
+			if(categoryInfo != null) {
+				appInfo = appInfoServiceAdv.get(categoryInfo.getAppId());
 			}
 		}
 
-		if (check) {
-			try {
-				categoryInfo = categoryInfoServiceAdv.get( wi.getCategoryId() );
-				if (categoryInfo == null) {
-					check = false;
-					Exception exception = new ExceptionCategoryInfoNotExists(wi.getCategoryId());
-					result.error(exception);
-				}
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new ExceptionDocumentInfoProcess(e,"系统在根据ID查询分类信息时发生异常！ID：" + wi.getCategoryId());
-				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
-			}
+		if(categoryInfo == null){
+			throw new ExceptionCategoryInfoNotExists(wi.getCategoryId());
+		}
+		if (appInfo == null) {
+			throw new ExceptionAppInfoNotExists(categoryInfo.getAppId());
 		}
 
-		if (check) {
-			try {
-				appInfo = appInfoServiceAdv.get( categoryInfo.getAppId() );
-				if (appInfo == null) {
-					check = false;
-					Exception exception = new ExceptionAppInfoNotExists(categoryInfo.getAppId());
-					result.error(exception);
-				}
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new ExceptionDocumentInfoProcess(e, "系统在根据ID查询应用栏目信息时发生异常！ID：" + categoryInfo.getAppId());
-				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
-			}
+		Business business = new Business(null);
+		if(!business.isDocumentEditor(effectivePerson, appInfo, categoryInfo, oldDocument)){
+			throw new ExceptionAccessDenied(effectivePerson);
 		}
 
 		// 查询分类设置的编辑表单
-		if (check) {
-			if ( StringUtils.isEmpty(categoryInfo.getFormId())) {
-				check = false;
-				Exception exception = new ExceptionCategoryFormIdEmpty();
-				result.error(exception);
-			}
+		if ( StringUtils.isEmpty(categoryInfo.getFormId() )) {
+			throw new ExceptionCategoryFormIdEmpty();
 		}
 
-		if (check) {
-			try {
-				form = formServiceAdv.get(categoryInfo.getFormId());
-				if (form == null) {
-					check = false;
-					Exception exception = new ExceptionFormForEditNotExists(categoryInfo.getFormId());
-					result.error(exception);
-				} else {
-					wi.setForm(form.getId());
-					wi.setFormName(form.getName());
-				}
-			} catch (Exception e) {
-				check = false;
-				Exception exception = new ExceptionDocumentInfoProcess(e,
-						"系统在根据ID查询编辑表单时发生异常！ID：" + categoryInfo.getFormId());
-				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
-			}
+		Form form = formServiceAdv.get(categoryInfo.getFormId());
+		if (form == null) {
+			throw new ExceptionFormForEditNotExists(categoryInfo.getFormId());
+		} else {
+			wi.setForm(form.getId());
+			wi.setFormName(form.getName());
 		}
 
 		if (check) {
@@ -345,7 +308,9 @@ public class ActionPersistPublishContent extends BaseAction {
 		if ( check && !wi.getSkipPermission() ) {
 			//将读者以及作者信息持久化到数据库中
 			try {
-				documentPersistService.refreshDocumentPermission( document.getId(), wi.getReaderList(), wi.getAuthorList() );
+				if(oldDocument==null || wi.getReaderList() != null || wi.getAuthorList() != null) {
+					documentPersistService.refreshDocumentPermission(document.getId(), wi.getReaderList(), wi.getAuthorList());
+				}
 			} catch (Exception e) {
 				Exception exception = new ExceptionDocumentInfoProcess(e, "系统在核对文档访问管理权限信息时发生异常！");
 				result.error(exception);
