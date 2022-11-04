@@ -4,16 +4,17 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
 	Implements: [Options, Events],
 	Extends: MWF.widget.Common,
 	options: {
-
+        style: "default"
 	},
 	initialize: function(form, actionNode, options){
 		this.setOptions(options);
         this.form = form;
         this.actionNode = actionNode;
         this.root = this.form.node;
-		// this.path = "../x_component_process_FormDesigner/widget/$ImageClipper/";
-		// this.cssPath = "../x_component_process_FormDesigner/widget/$ImageClipper/"+this.options.style+"/css.wcss";
-		// this._loadCss();
+		this.path = "../x_component_process_FormDesigner/widget/$History/";
+        this.iconPath = this.path+this.options.style+"/icon/";
+		this.cssPath = this.path+this.options.style+"/css.wcss";
+		this._loadCss();
 	},
 
 	load: function(data) {
@@ -188,6 +189,8 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
                 this.preArray.pop(); //删除preArray最后一个
                 it = this.preArray.getLast();
             }
+            debugger;
+            item.selectModule("undo");
         }else if( item.status === "next" ){
 	        if( this.preArray.length ){  //上一个property的subItem要redo一下
                 it = this.preArray.getLast();
@@ -203,6 +206,7 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
             item.redo();
             this.preArray.push(item); //插入到preArray数组最后
             this.nextArray.shift();
+            item.selectModule("redo");
         }
     },
     compareObjects: function(o, p, deep){
@@ -226,19 +230,20 @@ MWF.FCWHistory.Item = new Class({
     },
     load: function (module) {
         this.node = new Element("div", {
-            styles : {
-                "color": "#333",
-                "padding": "5px"
-            },
+            styles : this._getItemStyle(),
             text: this._getText(),
             events: {
                 click: this.comeHere.bind(this)
             }
         }).inject( this.history.node );
+        this.node.setStyle("background-image", "url("+this.history.iconPath+ this.data.operation +".png)");
         this._afterLoad(module);
     },
     _afterLoad: function(){
 
+    },
+    _getItemStyle: function(){
+        return this.history.css.itemNode;
     },
     _getText: function () {
         if( this.data.title )return this.data.title;
@@ -250,16 +255,12 @@ MWF.FCWHistory.Item = new Class({
     },
     undo: function () { //回退
         this.status = "next";
-        this.node.setStyles({
-            "color": "#ccc"
-        });
+        this.node.setStyles( this.history.css.itemNode_undo );
         this._undo();
     },
     redo: function(){ //重做
         this.status = "pre";
-        this.node.setStyles({
-            "color": "#333"
-        });
+        this.node.setStyles(this.history.css.itemNode_redo);
         this._redo();
     },
     _undo: function(){
@@ -278,6 +279,13 @@ MWF.FCWHistory.Item = new Class({
 
         if( this.form.selectedModules && this.form.selectedModules.length ){
             this.form.selectedModules = []
+        }
+    },
+    _selectModule: function (path) {
+        var dom = this.getDomByPath(path);
+        if(dom){
+            var module = dom.retrieve("module");
+            if(module)module.selected();
         }
     },
     deleteModuleList: function(){
@@ -408,6 +416,9 @@ MWF.FCWHistory.Item = new Class({
             parentNode = parentNode.getParent();
         }
         return module;
+    },
+    selectModule(type){
+        this.form.selected()
     }
 });
 
@@ -478,11 +489,21 @@ MWF.FCWHistory.ModuleItem = new Class({
                 break;
         }
         this.unselectModule();
+    },
+    selectModule: function(type){
+        if( ["delete","cut"].contains(this.data.operation) || this.data.toList.length > 1){
+            this.form.selected();
+        }else{
+            this._selectModule(this.data.toList[0].path);
+        }
     }
 });
 
 MWF.FCWHistory.ModuleTableTdItem = new Class({
     Extends: MWF.FCWHistory.ModuleItem,
+    _getItemStyle: function(){
+        return this.history.css.itemNode_table;
+    },
     getTrPathList: function(){
         var trPathStrList = [];
         this.data.toList.each(function (log) {
@@ -601,6 +622,22 @@ MWF.FCWHistory.ModuleTableTdItem = new Class({
                 break;
         }
         this.unselectModule();
+    },
+    selectModule: function(type){
+        if( ["mergeCell"].contains(this.data.operation) ){
+            this._selectModule(this.data.toList[0].path);
+        }else{
+            this.selectTableModule();
+        }
+    },
+    selectTableModule: function () {
+        var log = this.data.toList[0] || this.data.fromList[0];
+        var path = Array.clone(log.path);
+        path.pop();
+        path.pop();
+        var dom = this.getDomByPath(path);
+        var tableModule = this.getParentModuleByType(dom, "table");
+        tableModule.selected();
     }
 });
 
@@ -648,6 +685,18 @@ MWF.FCWHistory.ModuleDatatableTdItem = new Class({
                 break;
         }
         this.unselectModule();
+    },
+    selectModule: function(type){
+        this.selectTableModule();
+    },
+    selectTableModule: function () {
+        var log = this.data.toList[0] || this.data.fromList[0];
+        var path = Array.clone(log.path);
+        path.pop();
+        path.pop();
+        var dom = this.getDomByPath(path);
+        var tableModule = this.getParentModuleByType(dom, "datatable");
+        tableModule.selected();
     }
 });
 
@@ -712,11 +761,32 @@ MWF.FCWHistory.ModuleTabpageItem = new Class({
                 break;
         }
         this.unselectModule();
+    },
+    selectModule: function(type){
+        if( ["delete"].contains(this.data.operation) || this.data.toList.length > 1){
+            this.form.selected();
+        }else{
+            this._selectModule(this.data.toList[0].path);
+        }
     }
 });
 
 MWF.FCWHistory.PropertyItem = new Class({
     Extends: MWF.FCWHistory.Item,
+    load: function (module) {
+        this.node = new Element("div", {
+            styles : this._getItemStyle(),
+            text: this._getText()
+            // events: {
+            //     click: this.comeHere.bind(this)
+            // }
+        }).inject( this.history.node );
+        this.node.setStyle("background-image", "url("+this.history.iconPath+ "property.png)");
+        this._afterLoad(module);
+    },
+    _getItemStyle: function(){
+        return this.history.css.itemNode_property;
+    },
     _afterLoad: function ( module ) {
         this.moduleIdList = [ this.data.moduleId ];
         this.nextArray = [];
@@ -732,7 +802,7 @@ MWF.FCWHistory.PropertyItem = new Class({
     _getText: function () {
         if( this.data.title )return this.data.title;
         var lp = MWF.xApplication.process.FormDesigner.LP.formAction;
-        return "property " + this.data.moduleId;
+        return lp.property + " " + this.data.moduleId;
     },
     destroy: function () {
         var si = this.preArray.pop();
@@ -748,6 +818,16 @@ MWF.FCWHistory.PropertyItem = new Class({
         }
 
         this.node.destroy();
+    },
+    undo: function () { //回退
+        this.status = "next";
+        this.node.setStyles( this.history.css.itemNode_property_undo );
+        this._undo();
+    },
+    redo: function(){ //重做
+        this.status = "pre";
+        this.node.setStyles(this.history.css.itemNode_property_redo);
+        this._redo();
     },
     _undo: function () {
         // for( var i=this.subItemList.length-1; i > -1; i-- ){
@@ -838,6 +918,9 @@ MWF.FCWHistory.PropertyItem = new Class({
         if( module && module.property ){
             module.property.reset()
         }
+    },
+    selectModule: function(){
+        this._selectModule(this.path);
     }
 });
 
@@ -853,10 +936,7 @@ MWF.FCWHistory.PropertyItem.SubItem = new Class({
     },
     load: function () {
         this.node = new Element("div", {
-            styles: {
-                "color": "#333",
-                "padding": "5px 5px 5px 15px"
-            },
+            styles: this.history.css.subItemNode,
             text: this.getText(),
             events: {
                 click: this.comeHere.bind(this)
@@ -872,16 +952,12 @@ MWF.FCWHistory.PropertyItem.SubItem = new Class({
     },
     undo: function () { //回退
         this.status = "next";
-        this.node.setStyles({
-            "color": "#ccc"
-        });
+        this.node.setStyles( this.history.css.subItemNode_undo );
         this._undo();
     },
     redo: function(){ //重做
         this.status = "pre";
-        this.node.setStyles({
-            "color": "#333"
-        });
+        this.node.setStyles( this.history.css.subItemNode_redo );
         this._redo();
     },
     _undo: function () {

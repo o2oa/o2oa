@@ -73,7 +73,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "insertBottom": "Insert to the bottom",
         "insertBefore": "InsertBefore",
         "insertAfter": "Insert After",
-        "injectNotice": "Hold down Ctrl and release the mouse for precise positioning"
+        "injectNotice": "Hold down Ctrl and release the mouse for precise positioning",
+        "property": "Property"
     },
 
     "actionbar": {

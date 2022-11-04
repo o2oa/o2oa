@@ -936,6 +936,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                }else{
                    data = this.data[name] = [];
                }
+               var oldValue = Array.clone(data);
                 MWF.xDesktop.requireApp("process.FormDesigner", "widget.FiledConfigurator", function(){
                     var filedConfigurator = new MWF.xApplication.process.FormDesigner.widget.FiledConfigurator(node, this.designer, {
                         "title": node.get("data-title"),
@@ -949,6 +950,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                                     filedConfigurator.data = _self.module.getExpImpFieldJson();
                                     filedConfigurator.reloadContent();
                                     _self.data[name] = filedConfigurator.data;
+                                    _self.checkHistory(name, oldValue, _self.data[name]);
+                                    oldValue = Array.clone( _self.data[name] || [] );
                                     this.close();
                                 }, function(){
                                     this.close();
@@ -958,10 +961,14 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                                 filedConfigurator.data = _self.module.getExpImpFieldJson();
                                 filedConfigurator.reloadContent();
                                 _self.data[name] = filedConfigurator.data;
+                                _self.checkHistory(name, oldValue, _self.data[name]);
+                                oldValue = Array.clone(_self.data[name] || [] );
                             }
                         }.bind(this),
                         "onChange": function(){
                             this.data[name] = filedConfigurator.getData();
+                            this.checkHistory(name, oldValue, this.data[name]);
+                            oldValue = Array.clone(this.data[name] || []);
                         }.bind(this)
                     }, data);
                     filedConfigurator.load()
