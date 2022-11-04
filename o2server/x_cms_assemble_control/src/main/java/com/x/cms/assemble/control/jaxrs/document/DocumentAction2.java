@@ -447,7 +447,7 @@ public class DocumentAction2 extends StandardJaxrsAction{
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "直接发布信息内容，创建新的信息发布文档并且直接发布.", action = ActionPersistPublishContent.class)
@@ -471,7 +471,7 @@ public class DocumentAction2 extends StandardJaxrsAction{
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "根据ID取消信息内容发布状态，修改为草稿.", action = ActionPersistPublishCancel.class)
@@ -703,7 +703,7 @@ public class DocumentAction2 extends StandardJaxrsAction{
 			}
 		}
 
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "文档点赞.", action = ActionPersistCommend.class)

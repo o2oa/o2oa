@@ -50,7 +50,7 @@ public class DocumentAction extends StandardJaxrsAction {
 			}
 		}
 
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "变更指定文档的分类信息.", action = ActionPersistChangeCategory.class)
@@ -74,7 +74,7 @@ public class DocumentAction extends StandardJaxrsAction {
 			}
 		}
 
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "指修改指定文档的数据。", action = ActionPersistBatchModifyData.class)
@@ -96,7 +96,7 @@ public class DocumentAction extends StandardJaxrsAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "指修改指定文档的数据。", action = ActionPersistBatchModifyData.class)
@@ -118,7 +118,7 @@ public class DocumentAction extends StandardJaxrsAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "根据导入批次号查询导入状态信息.", action = ActionQueryImportStatusWithName.class)
@@ -256,7 +256,7 @@ public class DocumentAction extends StandardJaxrsAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "查询符合过滤条件的已发布的信息数量.", action = ActionQueryCountWithFilter.class)
@@ -279,7 +279,7 @@ public class DocumentAction extends StandardJaxrsAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "根据ID删除信息发布文档信息.", action = ActionPersistDeleteDocument.class)
@@ -401,7 +401,7 @@ public class DocumentAction extends StandardJaxrsAction {
 			}
 		}
 
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "根据文档ID正式发布文档，消息通过publishNotify接口发送。", action = ActionPersistPublishAndNotify.class)
@@ -426,7 +426,7 @@ public class DocumentAction extends StandardJaxrsAction {
 			}
 		}
 
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "直接发布信息内容，创建新的信息发布文档并且直接发布.", action = ActionPersistPublishContent.class)
@@ -451,7 +451,7 @@ public class DocumentAction extends StandardJaxrsAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "直接发布信息内容，创建新的信息发布文档并且直接发布.", action = ActionPersistPublishContent.class)
@@ -476,7 +476,7 @@ public class DocumentAction extends StandardJaxrsAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "根据ID取消信息内容发布状态，修改为草稿.", action = ActionPersistPublishCancel.class)
@@ -712,7 +712,7 @@ public class DocumentAction extends StandardJaxrsAction {
 			}
 		}
 
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "文档点赞.", action = ActionPersistCommend.class)
@@ -825,7 +825,7 @@ public class DocumentAction extends StandardJaxrsAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "分页查询符合过滤条件的已发布的信息内容.", action = ActionQueryListWithFilterPaging.class)
@@ -850,7 +850,7 @@ public class DocumentAction extends StandardJaxrsAction {
 				logger.error(e, effectivePerson, request, null);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "获取文件访问控制信息.", action = ActionQueryGetControl.class)
@@ -937,7 +937,7 @@ public class DocumentAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 		}
 
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "列示文档.", action = ActionQueryListDocument.class)
@@ -957,7 +957,7 @@ public class DocumentAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 		}
 
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "查看文档数据.", action = ActionQueryGetDocumentData.class)
@@ -1004,7 +1004,7 @@ public class DocumentAction extends StandardJaxrsAction {
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "已发布文档消息通知。", action = ActionNotify.class)
@@ -1023,7 +1023,7 @@ public class DocumentAction extends StandardJaxrsAction {
 			logger.error(e, effectivePerson, request, jsonElement);
 		}
 
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "已发布文档发送html文本到webServer下。", action = ActionPublishHtml.class)
