@@ -16,7 +16,7 @@ import org.apache.lucene.document.TextField;
 import org.apache.lucene.util.BytesRef;
 
 import com.x.base.core.project.gson.GsonPropertyObject;
-import com.x.query.service.processing.Business;
+import com.x.query.core.express.index.Indexs;
 
 public class Doc extends GsonPropertyObject {
 
@@ -322,21 +322,21 @@ public class Doc extends GsonPropertyObject {
 
     public org.apache.lucene.document.Document toDocument(boolean convertData) {
         org.apache.lucene.document.Document document = new org.apache.lucene.document.Document();
-        document.add(new StringField(Business.Index.FIELD_ID, this.getId(), Field.Store.YES));
-        document.add(new TextField(Business.Index.FIELD_TITLE, this.getTitle(), Field.Store.YES));
-        document.add(new TextField(Business.Index.FIELD_SUMMARY, this.getSummary(), Field.Store.YES));
-        document.add(new TextField(Business.Index.FIELD_BODY, this.getBody(), Field.Store.YES));
-        document.add(new TextField(Business.Index.FIELD_ATTACHMENT, this.getAttachment(), Field.Store.YES));
+        document.add(new StringField(Indexs.FIELD_ID, this.getId(), Field.Store.YES));
+        document.add(new TextField(Indexs.FIELD_TITLE, this.getTitle(), Field.Store.YES));
+        document.add(new TextField(Indexs.FIELD_SUMMARY, this.getSummary(), Field.Store.YES));
+        document.add(new TextField(Indexs.FIELD_BODY, this.getBody(), Field.Store.YES));
+        document.add(new TextField(Indexs.FIELD_ATTACHMENT, this.getAttachment(), Field.Store.YES));
         this.getReaders().stream()
-                .forEach(o -> document.add(new StringField(Business.Index.FIELD_READERS, o, Field.Store.YES)));
-        addString(document, Business.Index.FIELD_CATEGORY, this.getCategory());
-        addString(document, Business.Index.FIELD_CREATETIMEMONTH, this.getCreateTimeMonth());
-        addString(document, Business.Index.FIELD_UPDATETIMEMONTH, this.getUpdateTimeMonth());
-        addString(document, Business.Index.FIELD_CREATORPERSON, this.getCreatorPerson());
-        addString(document, Business.Index.FIELD_CREATORUNIT, this.getCreatorUnit());
-        addDate(document, Business.Index.FIELD_INDEXTIME, new Date());
-        addDate(document, Business.Index.FIELD_CREATETIME, this.getCreateTime());
-        addDate(document, Business.Index.FIELD_UPDATETIME, this.getUpdateTime());
+                .forEach(o -> document.add(new StringField(Indexs.FIELD_READERS, o, Field.Store.YES)));
+        addString(document, Indexs.FIELD_CATEGORY, this.getCategory());
+        addString(document, Indexs.FIELD_CREATETIMEMONTH, this.getCreateTimeMonth());
+        addString(document, Indexs.FIELD_UPDATETIMEMONTH, this.getUpdateTimeMonth());
+        addString(document, Indexs.FIELD_CREATORPERSON, this.getCreatorPerson());
+        addString(document, Indexs.FIELD_CREATORUNIT, this.getCreatorUnit());
+        addDate(document, Indexs.FIELD_INDEXTIME, new Date());
+        addDate(document, Indexs.FIELD_CREATETIME, this.getCreateTime());
+        addDate(document, Indexs.FIELD_UPDATETIME, this.getUpdateTime());
         if (convertData) {
             this.getStringRepo().entrySet().stream().filter(o -> null != o.getValue())
                     .forEach(o -> addString(document, o.getKey(), o.getValue()));
@@ -347,13 +347,13 @@ public class Doc extends GsonPropertyObject {
             this.getBooleanRepo().entrySet().stream().filter(o -> null != o.getValue())
                     .forEach(o -> addBoolean(document, o.getKey(), o.getValue()));
             this.getDataStringRepo().entrySet().stream().filter(o -> null != o.getValue())
-                    .forEach(o -> addString(document, Business.Index.PREFIX_FIELD_DATA_STRING + o.getKey(), o.getValue()));
+                    .forEach(o -> addString(document, Indexs.PREFIX_FIELD_DATA_STRING + o.getKey(), o.getValue()));
             this.getDataDateRepo().entrySet().stream().filter(o -> null != o.getValue())
-                    .forEach(o -> addDate(document, Business.Index.PREFIX_FIELD_DATA_DATE + o.getKey(), o.getValue()));
+                    .forEach(o -> addDate(document, Indexs.PREFIX_FIELD_DATA_DATE + o.getKey(), o.getValue()));
             this.getDataNumberRepo().entrySet().stream().filter(o -> null != o.getValue())
-                    .forEach(o -> addNumber(document, Business.Index.PREFIX_FIELD_DATA_NUMBER + o.getKey(), o.getValue()));
+                    .forEach(o -> addNumber(document, Indexs.PREFIX_FIELD_DATA_NUMBER + o.getKey(), o.getValue()));
             this.getDataBooleanRepo().entrySet().stream().filter(o -> null != o.getValue()).forEach(
-                    o -> addBoolean(document, Business.Index.PREFIX_FIELD_DATA_BOOLEAN + o.getKey(), o.getValue()));
+                    o -> addBoolean(document, Indexs.PREFIX_FIELD_DATA_BOOLEAN + o.getKey(), o.getValue()));
         }
         return document;
     }

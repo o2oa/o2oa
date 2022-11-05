@@ -14,7 +14,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.query.core.entity.index.State;
-import com.x.query.service.processing.Business;
+import com.x.query.core.express.index.Indexs;
 import com.x.query.service.processing.IndexWriteQueue;
 import com.x.query.service.processing.ThisApplication;
 import com.x.query.service.processing.index.FrequencyWorkCompleted;
@@ -56,16 +56,16 @@ public class LowFrequencyWorkCompleted extends FrequencyWorkCompleted {
     private void cleanup() throws Exception {
         Date threshold = DateUtils.addDays(new Date(),
                 -Config.query().index().getWorkCompletedCleanupThresholdDays());
-        Business.Index
-                .subDirectoryPathOfCategoryType(Business.Index.CATEGORY_PROCESSPLATFORM,
-                        Business.Index.TYPE_WORKCOMPLETED)
+        Indexs
+                .subDirectoryPathOfCategoryType(Indexs.CATEGORY_PROCESSPLATFORM,
+                        Indexs.TYPE_WORKCOMPLETED)
                 .stream().forEach(o -> {
                     try {
                         ThisApplication.indexWriteQueue
-                                .send(new IndexWriteQueue.CleanMessage(Business.Index.CATEGORY_PROCESSPLATFORM,
-                                        Business.Index.TYPE_WORKCOMPLETED, o, true, threshold));
+                                .send(new IndexWriteQueue.CleanMessage(Indexs.CATEGORY_PROCESSPLATFORM,
+                                        Indexs.TYPE_WORKCOMPLETED, o, true, threshold));
                         ThisApplication.indexWriteQueue.send(new IndexWriteQueue.CheckMessage(
-                                Business.Index.CATEGORY_PROCESSPLATFORM, Business.Index.TYPE_WORKCOMPLETED, o));
+                                Indexs.CATEGORY_PROCESSPLATFORM, Indexs.TYPE_WORKCOMPLETED, o));
                     } catch (Exception e) {
                         LOGGER.error(e);
                     }

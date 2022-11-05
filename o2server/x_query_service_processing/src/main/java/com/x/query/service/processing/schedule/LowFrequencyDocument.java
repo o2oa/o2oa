@@ -14,7 +14,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.query.core.entity.index.State;
-import com.x.query.service.processing.Business;
+import com.x.query.core.express.index.Indexs;
 import com.x.query.service.processing.IndexWriteQueue;
 import com.x.query.service.processing.ThisApplication;
 import com.x.query.service.processing.index.FrequencyDocument;
@@ -56,16 +56,16 @@ public class LowFrequencyDocument extends FrequencyDocument {
     private void cleanup() throws Exception {
         Date threshold = DateUtils.addDays(new Date(),
                 -Config.query().index().getDocumentCleanupThresholdDays());
-        Business.Index.subDirectoryPathOfCategoryType(Business.Index.CATEGORY_CMS, Business.Index.TYPE_DOCUMENT)
+        Indexs.subDirectoryPathOfCategoryType(Indexs.CATEGORY_CMS, Indexs.TYPE_DOCUMENT)
                 .stream()
                 .forEach(o -> {
                     try {
                         ThisApplication.indexWriteQueue
-                                .send(new IndexWriteQueue.CleanMessage(Business.Index.CATEGORY_CMS,
-                                        Business.Index.TYPE_DOCUMENT, o, true, threshold));
+                                .send(new IndexWriteQueue.CleanMessage(Indexs.CATEGORY_CMS,
+                                        Indexs.TYPE_DOCUMENT, o, true, threshold));
                         ThisApplication.indexWriteQueue.send(
-                                new IndexWriteQueue.CheckMessage(Business.Index.CATEGORY_CMS,
-                                        Business.Index.TYPE_DOCUMENT,
+                                new IndexWriteQueue.CheckMessage(Indexs.CATEGORY_CMS,
+                                        Indexs.TYPE_DOCUMENT,
                                         o));
                     } catch (Exception e) {
                         LOGGER.error(e);

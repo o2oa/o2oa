@@ -441,6 +441,34 @@ public class Query extends ConfigObject {
         public static final Integer DEFAULT_HIGHFREQUENCYDOCUMENTMAXCOUNT = 200;
         public static final Integer DEFAULT_HIGHFREQUENCYDOCUMENTMAXMINUTES = 5;
 
+        public static final Boolean DEFAULT_SEARCHENABLE = true;
+
+        public static final Float DEFAULT_SEARCHTITLEBOOST = 4.0f;
+        public static final Float DEFAULT_SEARCHSUMMARYBOOST = 3.0f;
+        public static final Float DEFAULT_SEARCHBODYBOOST = 2.0f;
+        public static final Float DEFAULT_SEARCHATTACHMENTBOOST = 1.0f;
+
+        public static final Integer DEFAULT_SEARCHSIZE = 20;
+        public static final Integer DEFAULT_SEARCHMAXSIZE = 1000;
+
+        public static final Integer DEFAULT_SEARCHMAXHITS = 1000000;
+
+        public static final Integer DEFAULT_FACETMAXGROUPS = 100;
+
+        public static final String FACETGROUPORDER_KEYASC = "keyAsc";
+        public static final String FACETGROUPORDER_KEYDESC = "keyDesc";
+        public static final String FACETGROUPORDER_COUNTASC = "countAsc";
+        public static final String FACETGROUPORDER_COUNTDESC = "countDesc";
+
+        public static final String DEFAULT_FACETGROUPORDER = FACETGROUPORDER_KEYASC;
+
+        public static final String DEFAULT_HIGHLIGHTPRE = "<em>";
+        public static final String DEFAULT_HIGHLIGHTPOST = "</em>";
+        public static final Integer DEFAULT_HIGHLIGHTFRAGMENTSIZE = 64;
+        public static final Integer DEFAULT_HIGHLIGHTFRAGMENTCOUNT = 3;
+
+        public static final Integer DEFAULT_MLTSIZE = 10;
+
         private String mode;
         private String hdfsDirectoryDefaultFS;
         private String directoryPath;
@@ -475,6 +503,98 @@ public class Query extends ConfigObject {
 
         private Integer workCompletedCleanupThresholdDays;
         private Integer documentCleanupThresholdDays;
+
+        private Boolean searchEnable;
+
+        private Float searchTitleBoost;
+        private Float searchSummaryBoost;
+        private Float searchBodyBoost;
+        private Float searchAttachmentBoost;
+
+        private Integer searchSize;
+        private Integer searchMaxSize;
+        private Integer searchMaxHits;
+
+        private Integer facetMaxGroups;
+        private String facetGroupOrder;
+
+        @FieldDescribe("高亮返回片段长度.")
+        private Integer highlightFragmentSize;
+        @FieldDescribe("高亮返回片段数量.")
+        private Integer highlightFragmentCount;
+        @FieldDescribe("高亮前缀.")
+        private String highlightPre;
+        @FieldDescribe("高亮后缀.")
+        private String highlightPost;
+
+        private Integer mltSize;
+
+        public Integer getMltSize() {
+            return NumberTools.nullOrLessThan(this.mltSize, 1) ? DEFAULT_MLTSIZE
+                    : this.mltSize;
+        }
+
+        public Integer getHighlightFragmentSize() {
+            return NumberTools.nullOrLessThan(this.highlightFragmentSize, 1) ? DEFAULT_HIGHLIGHTFRAGMENTSIZE
+                    : this.highlightFragmentSize;
+        }
+
+        public Integer getHighlightFragmentCount() {
+            return NumberTools.nullOrLessThan(this.highlightFragmentCount, 1) ? DEFAULT_HIGHLIGHTFRAGMENTCOUNT
+                    : this.highlightFragmentCount;
+        }
+
+        public String getHighlightPre() {
+            return StringUtils.isEmpty(this.highlightPre) ? DEFAULT_HIGHLIGHTPRE : this.highlightPre;
+        }
+
+        public String getHighlightPost() {
+            return StringUtils.isEmpty(this.highlightPost) ? DEFAULT_HIGHLIGHTPOST : this.highlightPost;
+        }
+
+        public String getFacetGroupOrder() {
+            return StringUtils.isBlank(facetGroupOrder) ? DEFAULT_FACETGROUPORDER
+                    : facetGroupOrder;
+        }
+
+        public Integer getFacetMaxGroups() {
+            return NumberTools.nullOrLessThan(this.facetMaxGroups, 1) ? DEFAULT_FACETMAXGROUPS
+                    : this.facetMaxGroups;
+        }
+
+        public Integer getSearchMaxHits() {
+            return NumberTools.nullOrLessThan(searchMaxHits, -1) ? DEFAULT_SEARCHMAXHITS : this.searchMaxHits;
+        }
+
+        public Integer getSearchSize() {
+            return NumberTools.nullOrLessThan(searchSize, 1) ? DEFAULT_SEARCHSIZE : searchSize;
+        }
+
+        public Integer getSearchMaxSize() {
+            return NumberTools.nullOrLessThan(searchMaxSize, 1) ? DEFAULT_SEARCHMAXSIZE : searchMaxSize;
+        }
+
+        public Float getSearchTitleBoost() {
+            return NumberTools.nullOrLessThan(searchTitleBoost, 0) ? DEFAULT_SEARCHTITLEBOOST : this.searchTitleBoost;
+        }
+
+        public Float getSearchSummaryBoost() {
+            return NumberTools.nullOrLessThan(searchSummaryBoost, 0) ? DEFAULT_SEARCHSUMMARYBOOST
+                    : this.searchSummaryBoost;
+        }
+
+        public Float getSearchBodyBoost() {
+            return NumberTools.nullOrLessThan(searchBodyBoost, 0) ? DEFAULT_SEARCHBODYBOOST : this.searchBodyBoost;
+        }
+
+        public Float getSearchAttachmentBoost() {
+            return NumberTools.nullOrLessThan(searchAttachmentBoost, 0) ? DEFAULT_SEARCHATTACHMENTBOOST
+                    : this.searchAttachmentBoost;
+        }
+
+        public Boolean getSearchEnable() {
+            return null == searchEnable ? DEFAULT_SEARCHENABLE : this.searchEnable;
+        }
 
         public String getLowFrequencyWorkCompletedCron() {
             if (StringUtils.isNotEmpty(this.lowFrequencyWorkCompletedCron)

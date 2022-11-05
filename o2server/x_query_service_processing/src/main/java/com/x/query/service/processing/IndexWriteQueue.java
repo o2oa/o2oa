@@ -25,6 +25,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.queue.AbstractQueue;
 import com.x.cms.core.entity.AppInfo;
 import com.x.processplatform.core.entity.element.Application;
+import com.x.query.core.express.index.Indexs;
 import com.x.query.service.processing.index.Doc;
 
 public class IndexWriteQueue extends AbstractQueue<IndexWriteQueue.Message> {
@@ -52,7 +53,7 @@ public class IndexWriteQueue extends AbstractQueue<IndexWriteQueue.Message> {
                                 p.getValue().stream().collect(Collectors.groupingBy(Doc::getKey)).entrySet().stream()
                                         .forEach(q -> {
                                             String key = q.getKey();
-                                            Optional<Directory> optional = Business.Index.directory(category, type,
+                                            Optional<Directory> optional = Indexs.directory(category, type,
                                                     key, false);
                                             if (optional.isPresent()) {
                                                 update(optional.get(), q.getValue(), true);
@@ -61,7 +62,7 @@ public class IndexWriteQueue extends AbstractQueue<IndexWriteQueue.Message> {
                             });
                 });
         if (BooleanUtils.isTrue(updateMessage.getUpdateSearch())) {
-            Optional<Directory> optional = Business.Index.searchDirectory(false);
+            Optional<Directory> optional = Indexs.searchDirectory(false);
             if (optional.isPresent()) {
                 update(optional.get(), updateMessage.getWrapList(), false);
             }
@@ -76,7 +77,7 @@ public class IndexWriteQueue extends AbstractQueue<IndexWriteQueue.Message> {
             indexWriterConfig.setOpenMode(OpenMode.CREATE_OR_APPEND);
             list.stream().map(o -> o.toDocument(convertData)).forEach(o -> {
                 try {
-                    indexWriter.updateDocument(new Term(Business.Index.FIELD_ID, o.get(Business.Index.FIELD_ID)), o);
+                    indexWriter.updateDocument(new Term(Indexs.FIELD_ID, o.get(Indexs.FIELD_ID)), o);
                 } catch (IOException e) {
                     LOGGER.error(e);
                 }
@@ -88,13 +89,13 @@ public class IndexWriteQueue extends AbstractQueue<IndexWriteQueue.Message> {
     }
 
     private void clean(CleanMessage cleanMessage) {
-        Optional<Directory> optional = Business.Index.directory(cleanMessage.category, cleanMessage.type,
+        Optional<Directory> optional = Indexs.directory(cleanMessage.category, cleanMessage.type,
                 cleanMessage.key, true);
         if (optional.isPresent()) {
             clean(optional.get(), cleanMessage.getThreshold());
         }
         if (BooleanUtils.isTrue(cleanMessage.getCleanSearch())) {
-            optional = Business.Index.searchDirectory(true);
+            optional = Indexs.searchDirectory(true);
             if (optional.isPresent()) {
                 clean(optional.get(), cleanMessage.getThreshold());
             }
@@ -106,7 +107,7 @@ public class IndexWriteQueue extends AbstractQueue<IndexWriteQueue.Message> {
             IndexWriterConfig indexWriterConfig = new IndexWriterConfig();
             indexWriterConfig.setOpenMode(OpenMode.CREATE_OR_APPEND);
             try (IndexWriter writer = new IndexWriter(directory, indexWriterConfig)) {
-                Query rangeQuery = LongPoint.newRangeQuery(Business.Index.FIELD_INDEXTIME, Long.MIN_VALUE,
+                Query rangeQuery = LongPoint.newRangeQuery(Indexs.FIELD_INDEXTIME, Long.MIN_VALUE,
                         threshold.getTime());
                 writer.deleteDocuments(rangeQuery);
                 writer.commit();
@@ -117,14 +118,14 @@ public class IndexWriteQueue extends AbstractQueue<IndexWriteQueue.Message> {
     }
 
     private void check(CheckMessage checkMessage) {
-        if (StringUtils.equalsIgnoreCase(Business.Index.CATEGORY_PROCESSPLATFORM,
+        if (StringUtils.equalsIgnoreCase(Indexs.CATEGORY_PROCESSPLATFORM,
                 checkMessage.getCategory())
-                && StringUtils.equalsIgnoreCase(Business.Index.TYPE_WORKCOMPLETED,
+                && StringUtils.equalsIgnoreCase(Indexs.TYPE_WORKCOMPLETED,
                         checkMessage.getType())) {
             checkIfDeleteProcessPlatformDirectory(checkMessage.getKey());
-        } else if (StringUtils.equalsIgnoreCase(Business.Index.CATEGORY_CMS,
+        } else if (StringUtils.equalsIgnoreCase(Indexs.CATEGORY_CMS,
                 checkMessage.getCategory())
-                && StringUtils.equalsIgnoreCase(Business.Index.TYPE_DOCUMENT,
+                && StringUtils.equalsIgnoreCase(Indexs.TYPE_DOCUMENT,
                         checkMessage.getType())) {
             checkIfDeleteCmsDirectory(checkMessage.getKey());
         }
@@ -134,8 +135,8 @@ public class IndexWriteQueue extends AbstractQueue<IndexWriteQueue.Message> {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Application application = emc.find(key, Application.class);
             if (null == application) {
-                Business.Index.deleteDirectory(Business.Index.CATEGORY_PROCESSPLATFORM,
-                        Business.Index.TYPE_WORKCOMPLETED,
+                Indexs.deleteDirectory(Indexs.CATEGORY_PROCESSPLATFORM,
+                        Indexs.TYPE_WORKCOMPLETED,
                         key);
             }
         } catch (Exception e) {
@@ -147,8 +148,8 @@ public class IndexWriteQueue extends AbstractQueue<IndexWriteQueue.Message> {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             AppInfo appInfo = emc.find(key, AppInfo.class);
             if (null == appInfo) {
-                Business.Index.deleteDirectory(Business.Index.CATEGORY_CMS,
-                        Business.Index.TYPE_DOCUMENT, key);
+                Indexs.deleteDirectory(Indexs.CATEGORY_CMS,
+                        Indexs.TYPE_DOCUMENT, key);
             }
         } catch (Exception e) {
             LOGGER.error(e);

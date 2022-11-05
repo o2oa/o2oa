@@ -40,6 +40,7 @@ import com.x.processplatform.core.entity.content.Review;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.query.core.entity.Item;
+import com.x.query.core.express.index.Indexs;
 import com.x.query.service.processing.Business;
 import com.x.query.service.processing.ThisApplication;
 
@@ -70,8 +71,8 @@ public class DocFunction {
             Doc wrap = new Doc();
             wrap.setReaders(readers(param.first(), workCompleted));
             wrap.setId(workCompleted.getJob());
-            wrap.setCategory(Business.Index.CATEGORY_PROCESSPLATFORM);
-            wrap.setType(Business.Index.TYPE_WORKCOMPLETED);
+            wrap.setCategory(Indexs.CATEGORY_PROCESSPLATFORM);
+            wrap.setType(Indexs.TYPE_WORKCOMPLETED);
             wrap.setKey(workCompleted.getApplication());
             wrap.setTitle(workCompleted.getTitle());
             wrap.setCreateTime(workCompleted.getCreateTime());
@@ -80,17 +81,17 @@ public class DocFunction {
             wrap.setUpdateTimeMonth(DateTools.format(workCompleted.getUpdateTime(), DateTools.format_yyyyMM));
             wrap.setCreatorPerson(OrganizationDefinition.name(workCompleted.getCreatorPerson()));
             wrap.setCreatorUnit(OrganizationDefinition.name(workCompleted.getCreatorUnit()));
-            wrap.addString(Business.Index.FIELD_CREATORUNITLEVELNAME, workCompleted.getCreatorUnitLevelName());
-            wrap.addString(Business.Index.FIELD_APPLICATION, workCompleted.getApplication());
-            wrap.addString(Business.Index.FIELD_APPLICATIONNAME, workCompleted.getApplicationName());
-            wrap.addString(Business.Index.FIELD_APPLICATIONALIAS, workCompleted.getApplicationAlias());
-            wrap.addString(Business.Index.FIELD_PROCESS, workCompleted.getProcess());
-            wrap.addString(Business.Index.FIELD_PROCESSNAME, workCompleted.getProcessName());
-            wrap.addString(Business.Index.FIELD_PROCESSALIAS, workCompleted.getProcessAlias());
-            wrap.addString(Business.Index.FIELD_JOB, workCompleted.getJob());
-            wrap.addString(Business.Index.FIELD_SERIAL, workCompleted.getSerial());
-            wrap.addBoolean(Business.Index.FIELD_EXPIRED, workCompleted.getExpired());
-            wrap.addDate(Business.Index.FIELD_EXPIRETIME, workCompleted.getExpireTime());
+            wrap.addString(Indexs.FIELD_CREATORUNITLEVELNAME, workCompleted.getCreatorUnitLevelName());
+            wrap.addString(Indexs.FIELD_APPLICATION, workCompleted.getApplication());
+            wrap.addString(Indexs.FIELD_APPLICATIONNAME, workCompleted.getApplicationName());
+            wrap.addString(Indexs.FIELD_APPLICATIONALIAS, workCompleted.getApplicationAlias());
+            wrap.addString(Indexs.FIELD_PROCESS, workCompleted.getProcess());
+            wrap.addString(Indexs.FIELD_PROCESSNAME, workCompleted.getProcessName());
+            wrap.addString(Indexs.FIELD_PROCESSALIAS, workCompleted.getProcessAlias());
+            wrap.addString(Indexs.FIELD_JOB, workCompleted.getJob());
+            wrap.addString(Indexs.FIELD_SERIAL, workCompleted.getSerial());
+            wrap.addBoolean(Indexs.FIELD_EXPIRED, workCompleted.getExpired());
+            wrap.addDate(Indexs.FIELD_EXPIRETIME, workCompleted.getExpireTime());
             update(param.first(), workCompleted, wrap);
             return Optional.of(wrap);
         } catch (Exception e) {
@@ -108,8 +109,8 @@ public class DocFunction {
             Doc wrap = new Doc();
             wrap.setReaders(readers(param.first(), document));
             wrap.setId(document.getId());
-            wrap.setCategory(Business.Index.CATEGORY_CMS);
-            wrap.setType(Business.Index.TYPE_DOCUMENT);
+            wrap.setCategory(Indexs.CATEGORY_CMS);
+            wrap.setType(Indexs.TYPE_DOCUMENT);
             wrap.setKey(document.getAppId());
             wrap.setTitle(document.getTitle());
             wrap.setCreateTime(document.getCreateTime());
@@ -118,15 +119,15 @@ public class DocFunction {
             wrap.setUpdateTimeMonth(DateTools.format(document.getUpdateTime(), DateTools.format_yyyyMM));
             wrap.setCreatorPerson(OrganizationDefinition.name(document.getCreatorPerson()));
             wrap.setCreatorUnit(OrganizationDefinition.name(document.getCreatorUnitName()));
-            wrap.addString(Business.Index.FIELD_APPID, document.getAppId());
-            wrap.addString(Business.Index.FIELD_APPNAME, document.getAppName());
-            wrap.addString(Business.Index.FIELD_APPALIAS, document.getAppAlias());
-            wrap.addString(Business.Index.FIELD_CATEGORYID, document.getCategoryId());
-            wrap.addString(Business.Index.FIELD_CATEGORYNAME, document.getCategoryName());
-            wrap.addString(Business.Index.FIELD_CATEGORYALIAS, document.getCategoryAlias());
-            wrap.addString(Business.Index.FIELD_DESCRIPTION, document.getDescription());
-            wrap.addDate(Business.Index.FIELD_PUBLISHTIME, document.getPublishTime());
-            wrap.addDate(Business.Index.FIELD_MODIFYTIME, document.getModifyTime());
+            wrap.addString(Indexs.FIELD_APPID, document.getAppId());
+            wrap.addString(Indexs.FIELD_APPNAME, document.getAppName());
+            wrap.addString(Indexs.FIELD_APPALIAS, document.getAppAlias());
+            wrap.addString(Indexs.FIELD_CATEGORYID, document.getCategoryId());
+            wrap.addString(Indexs.FIELD_CATEGORYNAME, document.getCategoryName());
+            wrap.addString(Indexs.FIELD_CATEGORYALIAS, document.getCategoryAlias());
+            wrap.addString(Indexs.FIELD_DESCRIPTION, document.getDescription());
+            wrap.addDate(Indexs.FIELD_PUBLISHTIME, document.getPublishTime());
+            wrap.addDate(Indexs.FIELD_MODIFYTIME, document.getModifyTime());
             update(param.first(), document, wrap, Config.query().index().getDataStringThreshold());
             return Optional.of(wrap);
         } catch (Exception e) {
@@ -218,18 +219,18 @@ public class DocFunction {
             if (StringUtils.length(value) <= dataStringThreshold) {
                 if (BooleanUtils.isTrue(DateTools.isDateTimeOrDateOrTime(value))) {
                     try {
-                        doc.addDate(Business.Index.PREFIX_FIELD_DATA_DATE + name, DateTools.parse(value));
+                        doc.addDate(Indexs.PREFIX_FIELD_DATA_DATE + name, DateTools.parse(value));
                     } catch (Exception e) {
                         LOGGER.error(e);
                     }
                 } else {
-                    doc.addString(Business.Index.PREFIX_FIELD_DATA_STRING + name, value);
+                    doc.addString(Indexs.PREFIX_FIELD_DATA_STRING + name, value);
                 }
             }
         } else if (jsonPrimitive.isBoolean()) {
-            doc.addBoolean(Business.Index.PREFIX_FIELD_DATA_BOOLEAN + name, jsonPrimitive.getAsBoolean());
+            doc.addBoolean(Indexs.PREFIX_FIELD_DATA_BOOLEAN + name, jsonPrimitive.getAsBoolean());
         } else if (jsonPrimitive.isNumber()) {
-            doc.addNumber(Business.Index.PREFIX_FIELD_DATA_NUMBER + name, jsonPrimitive.getAsNumber());
+            doc.addNumber(Indexs.PREFIX_FIELD_DATA_NUMBER + name, jsonPrimitive.getAsNumber());
         }
     }
 
@@ -245,10 +246,10 @@ public class DocFunction {
         if (BooleanUtils.isTrue(list.stream().map(JsonPrimitive::isString).reduce(true, (a, b) -> a && b))) {
             updateArrayString(doc, name, list);
         } else if (BooleanUtils.isTrue(list.stream().map(JsonPrimitive::isNumber).reduce(true, (a, b) -> a && b))) {
-            doc.addNumberList(Business.Index.PREFIX_FIELD_DATA_NUMBERS + name,
+            doc.addNumberList(Indexs.PREFIX_FIELD_DATA_NUMBERS + name,
                     list.stream().map(JsonPrimitive::getAsNumber).collect(Collectors.toList()));
         } else if (BooleanUtils.isTrue(list.stream().map(JsonPrimitive::isBoolean).reduce(true, (a, b) -> a && b))) {
-            doc.addBooleanList(Business.Index.PREFIX_FIELD_DATA_BOOLEANS + name,
+            doc.addBooleanList(Indexs.PREFIX_FIELD_DATA_BOOLEANS + name,
                     list.stream().map(JsonPrimitive::getAsBoolean).collect(Collectors.toList()));
         }
     }
@@ -257,7 +258,7 @@ public class DocFunction {
         List<String> values = list.stream().map(JsonPrimitive::getAsString).collect(Collectors.toList());
         if (BooleanUtils
                 .isTrue(values.stream().map(DateTools::isDateTimeOrDateOrTime).reduce(true, (a, b) -> a && b))) {
-            wrap.addDateList(Business.Index.PREFIX_FIELD_DATA_DATES + name, values.stream().map(s -> {
+            wrap.addDateList(Indexs.PREFIX_FIELD_DATA_DATES + name, values.stream().map(s -> {
                 try {
                     return DateTools.parse(s);
                 } catch (Exception e) {
@@ -266,7 +267,7 @@ public class DocFunction {
                 return null;
             }).collect(Collectors.toList()));
         } else {
-            wrap.addStringList(Business.Index.PREFIX_FIELD_DATA_STRINGS + name, values);
+            wrap.addStringList(Indexs.PREFIX_FIELD_DATA_STRINGS + name, values);
         }
     }
 
