@@ -1,46 +1,36 @@
-MWF.xApplication.ftsearch.options.multitask = false;
-MWF.xApplication.ftsearch.Main = new Class({
+MWF.xApplication.StandingBook.options.multitask = false;
+MWF.xApplication.StandingBook.Main = new Class({
 	Extends: MWF.xApplication.Common.Main,
 	Implements: [Options, Events],
 
 	options: {
 		"style1": "default",
 		"style": "default",
-		"name": "ftsearch",
+		"name": "StandingBook",
 		"mvcStyle": "style.css",
 		"icon": "icon.png",
-		"title": MWF.xApplication.ftsearch.LP.title,
+		"title": MWF.xApplication.StandingBook.LP.title,
 		"query":""
 	},
 	onQueryLoad: function(){
-		this.lp = MWF.xApplication.ftsearch.LP;
+		this.lp = MWF.xApplication.StandingBook.LP;
 	},
 	loadApplication: function(callback, noLoadView){
 		var url = this.path+this.options.style+"/main.html";
 		this.content.loadHtml(url, {"bind": {"lp": this.lp}, "module": this}, function(){
 			// this.loadMenu();
-			if( !noLoadView ){
-				var view, query, tab;
-				if( this.status && this.status.view ){
-					view = this.status.view;
-					query = this.status.query;
-					tab = this.status.tab;
-				}else{
-					view = this.options.view || "";
-					tab = this.options.tab;
-					query = this.options.query || "";
-					if( query && !view )view = "ftsearch";
-				}
-				switch (view) {
-					case "ftsearch":
-						this.openFTSearchView( query );
-						break;
-					case "index":
-						this.openIndexView( tab );
-						break
-				}
-				this.status = null;
+			var tab;
+			if( this.status && this.status.tab){
+				tab = this.status.tab;
+			}else{
+				tab = this.options.tab;
 			}
+			if( tab ){
+				this.openIndexView( tab );
+			}else{
+				this.selectTab();
+			}
+			this.status = null;
 		}.bind(this));
 	},
 	// loadMenu: function(){
@@ -68,63 +58,11 @@ MWF.xApplication.ftsearch.Main = new Class({
 			childNode.hide();
 		}
 	},
-	// menuItemOver: function(e){
-	// 	this.getEventTarget(e, "menuItem").addClass('menuItem_over');
-	// },
-	// menuItemOut: function(e){
-	// 	this.getEventTarget(e, "menuItem").removeClass('menuItem_over');
-	// },
-	// selectMenuItem: function(action, e){
-	// 	if( this.currentMenuItem ){
-	// 		this.currentMenuItem.removeClass('menuItem_current');
-	// 		this.currentMenuItem.removeClass('mainColor_color');
-	// 	}
-	// 	var menuItem = this.getEventTarget(e, "menuItem")
-	// 	menuItem.addClass('menuItem_current');
-	// 	menuItem.addClass('mainColor_color');
-	// 	this.currentMenuItem = menuItem;
-	// 	if( this[action] )this[action]();
-	// },
-	// openSearchView: function(){
-	// 	if(this.view)this.view.destroy();
-	// 	o2.requireApp("ftsearch", "SearchView", function () {
-	// 		this.view = new MWF.xApplication.ftsearch.SearchView(this.contentArea, this, {});
-	// 	}.bind(this), false);
-	//
-	// },
-	searchKeydown: function(e){
-		if( e.keyCode === 13 ){
-			var query = this.searchInput.get("value");
-			if(query)this.openFTSearchView( query );
-		}
-	},
-	searchClick: function(e){
-		var query = this.searchInput.get("value");
-		if(query)this.openFTSearchView( query );
-	},
-	doSearch: function(query){
-		this.closeSelectModule();
-		this.openFTSearchView(query);
-	},
-	gotoMainPage: function(){
-		if( this.view && this.view.destroy )this.view.destroy();
-		this.content.empty();
-		this.loadApplication( null,true );
-	},
-	openFTSearchView: function( query ){
-		if( this.view && this.view.destroy )this.view.destroy();
-		this.contentArea.empty();
-		o2.requireApp("ftsearch", "FTSearchView", function () {
-			this.view = new MWF.xApplication.ftsearch.FTSearchView(this.contentArea, this, {
-				query: query
-			});
-		}.bind(this), false);
-	},
 	openIndexView: function( data ){
 		if( this.view && this.view.destroy )this.view.destroy();
 		this.contentArea.empty();
-		o2.requireApp("ftsearch", "IndexView", function () {
-			this.view = new MWF.xApplication.ftsearch.IndexView(this.contentArea, this, {}, data);
+		o2.requireApp("StandingBook", "IndexView", function () {
+			this.view = new MWF.xApplication.StandingBook.IndexView(this.contentArea, this, {}, data);
 		}.bind(this), false);
 	},
 	iconOver: function(e){
@@ -163,12 +101,12 @@ MWF.xApplication.ftsearch.Main = new Class({
 		}
 		this.appNode.show();
 	},
-	selectTab: function( ev, callback){
+	selectTab: function( ev, callback, closeEnable){
 		var tabContent = new Element("div.tl_area");
 		this.tabContent = tabContent;
 		tabContent.loadHtml(this.path+this.options.style+"/tabPage.html",
 			{
-				"bind": {"lp": this.lp },
+				"bind": {"lp": this.lp, "status": { closeEnable: closeEnable } },
 				"module": this,
 				"reload": true
 			},

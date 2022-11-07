@@ -77,7 +77,7 @@ var apps = [
     { "folder": "x_component_Search", "tasks": ["move", "min"] },
     { "folder": "x_component_SearchDocument", "tasks": ["move", "min"] },
     { "folder": "x_component_ftsearch", "tasks": ["move", "min"] },
-    { "folder": "x_component_ftsearch2", "tasks": ["move", "min"] },
+    { "folder": "x_component_StandingBook", "tasks": ["move", "min"] },
     { "folder": "x_component_Selector", "tasks": ["move", "min"] },
     { "folder": "x_component_service_AgentDesigner", "tasks": ["move", "min"] },
     { "folder": "x_component_service_InvokeDesigner", "tasks": ["move", "min"] },

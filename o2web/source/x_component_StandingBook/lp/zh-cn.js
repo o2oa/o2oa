@@ -1,5 +1,5 @@
-MWF.xApplication.ftsearch.LP = {
-	"title": "搜索",
+MWF.xApplication.StandingBook.LP = {
+	"title": "台账",
 	"searchCondition": "查询条件",
 
     "searchInfor": "为您找到相关结果约{count}个，耗时{time}秒",
@@ -90,5 +90,5 @@ MWF.xApplication.ftsearch.LP = {
     "selectModule": "选择应用",
     "searching": "您正在查询",
     "switch": "切换",
-    "searchCorePlacholder": "请输入关键字，按“回车”搜索应用或流程"
+    "searchCorePlacholder": "请输入关键字，按“回车”搜索应用"
 };

@@ -1,4 +1,4 @@
-MWF.xApplication.ftsearch.LP = {
+MWF.xApplication.StandingBook.LP = {
 	"title": "Search",
 	"searchCondition": "Search Condition",
 
@@ -92,5 +92,5 @@ MWF.xApplication.ftsearch.LP = {
 	"selectModule": "Select Application",
 	"searching": "You are searching",
 	"switch": "Switch",
-	"searchCorePlacholder": "Please enter a keyword and press \"Enter\" to search for an application or process"
+	"searchCorePlacholder": "Please enter a keyword and press \"Enter\" to search for an application"
 };

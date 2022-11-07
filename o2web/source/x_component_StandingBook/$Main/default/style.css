@@ -5,9 +5,9 @@
 @font-face {
     font-family: 'ftsearch';
     src:
-            url('../x_component_ftsearch/$Main/default/fonts/ftsearch.ttf?j6lkqm') format('truetype'),
-            url('../x_component_ftsearch/$Main/default/fonts/ftsearch.woff?j6lkqm') format('woff'),
-            url('../x_component_ftsearch/$Main/default/fonts/ftsearch.svg?j6lkqm#ftsearch') format('svg');
+            url('../x_component_StandingBook/$Main/default/fonts/ftsearch.ttf?j6lkqm') format('truetype'),
+            url('../x_component_StandingBook/$Main/default/fonts/ftsearch.woff?j6lkqm') format('woff'),
+            url('../x_component_StandingBook/$Main/default/fonts/ftsearch.svg?j6lkqm#ftsearch') format('svg');
     font-weight: normal;
     font-style: normal;
     font-display: block;
@@ -406,12 +406,6 @@ ul {
     display: inline-block;
 }
 
-.ftsearch-wrap{
-    width: 100%;
-    height: 100%;
-    margin: 0px auto;
-    background-color: #F0F0F0;
-}
 .index-wrap{
     margin: 0px auto;
     height: 100%;
@@ -425,7 +419,7 @@ ul {
 .index-top-inner{
     overflow: hidden;
     min-width: 810px;
-    max-width: 1400px;
+    /*max-width: 1400px;*/
 }
 .index-search-wrap{
     height: 100%;
@@ -434,17 +428,6 @@ ul {
     background-color: #F0F0F0;
 }
 
-.ftsearch-top{
-    background-color: #ffffff;
-    padding: 20px;
-    margin-bottom: 10px;
-    overflow: hidden;
-}
-.ftsearch-top-inner{
-    overflow: hidden;
-    min-width: 1010px;
-    max-width: 1400px;
-}
 .view_inputArea{
     float: left;
     width: 500px;
@@ -474,7 +457,7 @@ ul {
     color: #999;
     padding-left:20px;
     margin-top:8px;
-    background: url("../x_component_ftsearch/$Main/default/icons/location.png") no-repeat;
+    background: url("../x_component_StandingBook/$Main/default/icons/location.png") no-repeat;
 }
 .breadcrumb-index a{
     cursor: pointer;
@@ -490,7 +473,7 @@ ul {
     font-size: 14px;
     color: #999;
     padding-left:20px;
-    background: url("../x_component_ftsearch/$Main/default/icons/location.png") left center no-repeat;
+    background: url("../x_component_StandingBook/$Main/default/icons/location.png") left center no-repeat;
 }
 .breadcrumb-tab a{
     cursor: pointer;
@@ -507,46 +490,9 @@ ul {
     display: flex;
     flex-direction: column;
 }
-.docContent-ftsearch{
-    height: calc( 100% - 140px );
-    background:#ffffff;
-    padding:20px;
-    overflow:auto;
-    display: flex;
-    flex-direction: column;
-}
-.contentWrap-ftsearch{
-    min-width: 1010px;
-    max-width: 1400px;
-}
 .contentWrap-index{
     min-width: 810px;
-    max-width: 1400px;
-}
-.ftsearch-topLink{
-    cursor: pointer;
-    display: inline-block;
-    width: 100px;
-    height: 30px;
-    line-height: 30px;
-    text-align: center;
-    margin-left: 10px;
-    background: #FFFFFF;
-    border-radius: 15px;
-    color: #4A90E2;
-    border: 1px solid #4A90E2;
-}
-.ftsearch-topButton{
-    cursor: pointer;
-    display: inline-block;
-    width: 100px;
-    height: 32px;
-    line-height: 32px;
-    margin-left:10px;
-    color: #fff;
-    background: #4A90E2;
-    border-radius: 15px;
-    text-align: center;
+    /*max-width: 1400px;*/
 }
 .index-topLink{
     cursor: pointer;
@@ -582,12 +528,6 @@ ul {
     overflow:hidden;
     width: 100%;
 }
-.listNoData-ftsearch{
-    max-width: 900px;
-    text-align: center;
-    padding-top:50px;
-    padding-bottom:50px;
-}
 .listNoData{
     text-align: center;
     padding-top:50px;
@@ -597,7 +537,7 @@ ul {
     width: 60px;
     height: 60px;
     margin: 0 auto;
-    background: url("../x_component_ftsearch/$Main/default/icons/nodata.png") no-repeat;
+    background: url("../x_component_StandingBook/$Main/default/icons/nodata.png") no-repeat;
 }
 .listNoDataText{
     line-height: 50px;

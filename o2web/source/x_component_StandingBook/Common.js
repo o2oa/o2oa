@@ -1,4 +1,4 @@
-MWF.xApplication.ftsearch.ElModule = new Class({
+MWF.xApplication.StandingBook.ElModule = new Class({
     Implements: [Events, Options],
     options:{
         id: ""
@@ -71,8 +71,8 @@ MWF.xApplication.ftsearch.ElModule = new Class({
     // },
 });
 
-MWF.xApplication.ftsearch.Input = new Class({
-    Extends: MWF.xApplication.ftsearch.ElModule,
+MWF.xApplication.StandingBook.Input = new Class({
+    Extends: MWF.xApplication.StandingBook.ElModule,
     options: {
         value: "",
         id: ""
@@ -169,8 +169,8 @@ MWF.xApplication.ftsearch.Input = new Class({
     }
 });
 
-MWF.xApplication.ftsearch.DatePicker = new Class({
-    Extends: MWF.xApplication.ftsearch.ElModule,
+MWF.xApplication.StandingBook.DatePicker = new Class({
+    Extends: MWF.xApplication.StandingBook.ElModule,
     options: {
         start: "",
         end: "",
@@ -241,8 +241,8 @@ MWF.xApplication.ftsearch.DatePicker = new Class({
     }
 });
 
-MWF.xApplication.ftsearch.NumberRange = new Class({
-    Extends: MWF.xApplication.ftsearch.ElModule,
+MWF.xApplication.StandingBook.NumberRange = new Class({
+    Extends: MWF.xApplication.StandingBook.ElModule,
     options: {
         max: "100",
         min: "1",

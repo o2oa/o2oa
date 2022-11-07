@@ -1,6 +1,6 @@
 o2.require("o2.widget.Paging", null, false);
-o2.requireApp("ftsearch", "Common", null, false);
-MWF.xApplication.ftsearch.IndexView = new Class({
+o2.requireApp("StandingBook", "Common", null, false);
+MWF.xApplication.StandingBook.IndexView = new Class({
     Extends: MWF.widget.Common,
     Implements: [Options, Events],
 
@@ -11,7 +11,7 @@ MWF.xApplication.ftsearch.IndexView = new Class({
     initialize: function(node, app, options, tabData){
         this.setOptions(options);
 
-        this.path = "../x_component_ftsearch/$IndexView/";
+        this.path = "../x_component_StandingBook/$IndexView/";
 
         this.app = app;
         this.container = $(node);
@@ -61,10 +61,7 @@ MWF.xApplication.ftsearch.IndexView = new Class({
         this.container.empty();
     },
     selectTab: function(){
-        this.app.selectTab();
-    },
-    gotoFTSearch: function(){
-        this.app.openFTSearchView( "", true );
+        this.app.selectTab(null, null, true);
     },
     searchByCondition: function(){
         this.dynamicConditionList = [];
@@ -503,7 +500,7 @@ MWF.xApplication.ftsearch.IndexView = new Class({
         }.bind(this);
         switch (row.fieldType) {
             case "string":
-                new MWF.xApplication.ftsearch.Input(e.target, {
+                new MWF.xApplication.StandingBook.Input(e.target, {
                     id: row.name,
                     onChange: function (data) {
                         // this.changeCustomConditionItemString(row, data);
@@ -512,7 +509,7 @@ MWF.xApplication.ftsearch.IndexView = new Class({
                 }, this.app);
                 break;
             case "date":
-                new MWF.xApplication.ftsearch.DatePicker(e.target, {
+                new MWF.xApplication.StandingBook.DatePicker(e.target, {
                     start: row.min,
                     end: row.max,
                     id: row.name,
@@ -523,7 +520,7 @@ MWF.xApplication.ftsearch.IndexView = new Class({
                 }, this.app);
                 break;
             case "number":
-                new MWF.xApplication.ftsearch.NumberRange(e.target, {
+                new MWF.xApplication.StandingBook.NumberRange(e.target, {
                     min: row.min,
                     max: row.max,
                     id: row.name,
