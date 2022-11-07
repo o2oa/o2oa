@@ -1273,7 +1273,7 @@ MWF.xApplication.query.Query.Importer.Row = new Class({
         return srcData;
     },
     getResult: function(){
-        if( this.importer.json.type === "cms" ){g
+        if( this.importer.json.type === "cms" ){
             this.document.srcData = this.getSrcData(); //this.importedData;
             return this.document;
         }else if( this.importer.json.type === "process" ){
