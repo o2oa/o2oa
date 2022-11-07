@@ -104,21 +104,6 @@ MWF.xApplication.process.Application.Main = new Class({
 			this.countData.draft = json.size;
 		}.bind(this));
 	},
-	openIndexView: function(type,ev,data){
-		if (this.currentMenu) this.setMenuItemStyleDefault(this.currentMenu);
-		this.setMenuItemStyleCurrent(this[type+"MenuNode"]);
-		this.currentMenu = this[type+"MenuNode"];
-		this._loadIndexViewContent(type);
-	},
-	_loadIndexViewContent: function(){
-		this.mainNode.empty();
-		o2.requireApp("process.Application", "IndexView", function () {
-			this.view = new MWF.xApplication.process.Application.IndexView(this.mainNode, this, {}, {
-				key: "3cdc9048-7a25-4bd2-8d9f-af3d89d1973b"
-			});
-		}.bind(this), false);
-		this.currentList = null;
-	},
 	loadList: function(type,ev,data){
 		if (this.currentMenu) this.setMenuItemStyleDefault(this.currentMenu);
 		this.setMenuItemStyleCurrent(this[type+"MenuNode"]);
@@ -274,14 +259,6 @@ MWF.xApplication.process.Application.Main = new Class({
 	},
 	recordStatus: function(){
 		return { "id": this.options.id};
-	},
-	getEventTarget: function(e, className) {
-		var parentItem = e.target;
-		if( parentItem.hasClass(className) )return parentItem;
-		while ( parentItem && !parentItem.hasClass(className) ){
-			parentItem = parentItem.getParent();
-			if( parentItem.hasClass(className) )return parentItem;
-		}
 	}
 });
 MWF.xApplication.process.Application.List = new Class({

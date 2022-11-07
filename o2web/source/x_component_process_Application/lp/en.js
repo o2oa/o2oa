@@ -15,10 +15,10 @@ MWF.xApplication.process.Application.LP = {
     "work" : "Working in Circulation",
     "workcompleted" : "Work Completed",
     "workdelete" : "Work deleted",
+    "draft" : "Draft",
     "dict" : "Data configuration",
     "serial" : "Numbering configuration",
     "startProcess" : "Start Process",
-    "index": "Index",
 
     "query": "Search",
     "reset": "Reset",
@@ -99,35 +99,9 @@ MWF.xApplication.process.Application.LP = {
     "editAction" : "Maintenance",
 
 
-    "more": "more",
-    "collapse": "Collapse",
-    "multiSelect": "Multiple Select",
-    "export": "Export",
-    "moreFilter": "More filter criteria",
-    "collapseFilter": "Collapse filter criteria",
 
-    "rangeSeparator": "to",
-    "startPlaceholder": "Start time",
-    "endPlaceholder": "End Time",
-    "to": "to",
-    "min": "minimum value",
-    "max": "Maximum value",
-    "fromValue": "FromValue",
-    "toValue": "End Value",
-    "minGreatThanMaxError": "Start value cannot be greater than end value",
-    "tooMinError": "Cannot be less than the minimum value",
-    "tooMaxError": "Cannot be greater than the maximum value",
-    "moreFieldSelect": "More column selection",
-    "collapseFieldSelect": "Collapse column selection",
-
-    "category": "Category",
-    "createTimeMonth": "Create month",
-    "updateTimeMonth": "Update Month",
-    "creatorPerson": "Creator",
-    "creatorUnit": "Department",
-
-    "fieldSelect": "Column Select",
-    "docTotalInfor": "Find <span class='mainColor_color'>{count}</span> related results for you, which takes {time} seconds"
+    "firstPage": "First Page",
+    "lastPage": "Last Page",
 
 
 };
