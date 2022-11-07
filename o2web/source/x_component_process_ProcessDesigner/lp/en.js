@@ -97,6 +97,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 	"deleteDutyTitle": "Remove duty confirmation",
 	"deleteDutyText": "Are you sure you want to remove the duty \"{duty}\"?",
 	"selectIcon": "Select Icon",
+	"centerServer": "Center Serve",
 
 	"creatorUnit": "The Unit of the author",
 	"currentUnit": "The Unit of the processor",

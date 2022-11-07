@@ -97,6 +97,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
     "deleteDutyTitle": "移除职务确认",
     "deleteDutyText": "您确认要移除职务“{duty}”吗？",
     "selectIcon": "选择图标",
+	"centerServer": "中心服务",
 
     "creatorUnit": "拟稿人所在组织",
     "currentUnit": "处理人所在组织",
@@ -348,7 +349,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"responseScript": "响应脚本",
 
 		"use": "使用",
-		"getJson": "获取响应内容。如果响应内容是JSON格式的字符串，则返回JSON对象；否则返回原始响应内容。",
+		"getJson": "获取响应内容。如果响应内容是JSON格式的字符串，则返回JSON对象；否则返回原始响应内容。如果调用本平台服务管理中的接口，在接口中返回的数据需放在data中，如:{ \"data\" : [] }",
 		"systemRequest": "系统内请求",
 		"restAddr": "REST地址",
 		"requestBodyScript": "消息体脚本",
