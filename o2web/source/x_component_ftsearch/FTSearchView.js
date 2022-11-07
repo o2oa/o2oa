@@ -97,7 +97,7 @@ MWF.xApplication.ftsearch.FTSearchView = new Class({
                 //     end: xxx
                 // }
             });
-            o2.Actions.load("x_custom_index_assemble_control").SearchAction.post({
+            o2.Actions.load("x_query_assemble_surface").SearchAction.post({
                 query: this.currentKey,
                 page:  this.docPageNum,
                 size: this.pageSize,
@@ -164,8 +164,16 @@ MWF.xApplication.ftsearch.FTSearchView = new Class({
             ev.target.getParent().hide();
         }
     },
+    // openWork: function(id, event, row){
+    //     o2.api.page.openWork(id);
+    // },
     openWork: function(id, event, row){
-        o2.api.page.openWork(id);
+        var appId = "process.Work"+id;
+        var op = {
+            "jobId": id,
+            "appId": appId
+        };
+        return layout.desktop.openApplication(this.event, "process.Work", op);
     },
     openDoc: function(id, event, row){
         debugger;

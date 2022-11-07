@@ -1,0 +1,82 @@
+{
+	"id": "",
+	"name": "",
+	"type": "Relatedlink",
+    "count": "6",
+	"mode": "default", //default table or text
+	"textStyle": "<div><font style='color:#00F'>{title}</font> （{createTime}）</div>",
+	"events": {
+		"queryLoad": {
+		  "code": "",
+		  "html": ""
+		},
+		"postLoad": {
+			"code": "",
+			"html": ""
+		},
+		"afterLoad": {
+			"code": "",
+			"html": ""
+		},
+		"postLoadData": {
+			"code": "",
+			"html": ""
+		},
+		"postLoadLink": {
+			"code": "",
+			"html": ""
+		},
+		"click": {
+			"code": "",
+			"html": ""
+		},
+		"dblclick": {
+			"code": "",
+			"html": ""
+		},
+		"keydown": {
+			"code": "",
+			"html": ""
+		},
+		"keypress": {
+			"code": "",
+			"html": ""
+		},
+		"keyup": {
+			"code": "",
+			"html": ""
+		},
+		"mousedown": {
+			"code": "",
+			"html": ""
+		},
+		"mousemove": {
+			"code": "",
+			"html": ""
+		},
+		"mouseout": {
+			"code": "",
+			"html": ""
+		},
+		"mouseover": {
+			"code": "",
+			"html": ""
+		},
+		"mouseup": {
+			"code": "",
+			"html": ""
+		},
+		"focus": {
+			"code": "",
+			"html": ""
+		},
+		"blur": {
+			"code": "",
+			"html": ""
+		}
+	},
+	"properties": {},
+	"class": "",
+	"styles": {},
+	"container": ""
+}

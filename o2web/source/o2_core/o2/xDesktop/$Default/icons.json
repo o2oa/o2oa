@@ -174,5 +174,13 @@
   "IMV2": {
     "icon": "chat.png",
     "color": "#fdad0a"
+  },
+  "StandingBook": {
+    "icon": "standingBook.png",
+    "color": "#FDAD0A"
+  },
+  "ftsearch": {
+    "icon": "ftsearch.png",
+    "color": "#758790"
   }
 }

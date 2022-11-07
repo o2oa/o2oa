@@ -361,7 +361,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "importer": "数据导入",
         "readLog": "阅读记录",
         "writingBoard": "手写板",
-        "tinymceEditor": "Tinymce编辑器"
+        "tinymceEditor": "Tinymce编辑器",
+        "relatedLink": "相关链接"
     },
     "propertyTemplate": {
         "base": "基本",
@@ -457,6 +458,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "compute": "计算",
         "create": "创建",
         "save": "保存",
+        "linkStyles": "条目样式",
 
         "defaultValue": "默认值",
         "verificationScript": "校验脚本",
@@ -923,6 +925,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "defaultExpandCount": "默认展开条数",
         "expandHtml": "展开节点HTML",
         "collapseHtml": "折叠节点HTML",
+        "relativedLinkField": "可选字段：flag,title,createTime,updateTime,creatorPerson,creatorUnit,score",
 
         "fileTemplate": "文件模板",
         "systemTemplate": "系统模板",

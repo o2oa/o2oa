@@ -141,7 +141,7 @@ MWF.xApplication.StandingBook.IndexView = new Class({
             })
         }.bind(this));
 
-        o2.Actions.load("x_custom_index_assemble_control").IndexAction.post({
+        o2.Actions.load("x_query_assemble_surface").IndexAction.post({
             key: this.tabData.key,
             type: this.tabData.type,
             category: this.tabData.category,
@@ -201,7 +201,7 @@ MWF.xApplication.StandingBook.IndexView = new Class({
             })
         }.bind(this));
 
-        o2.Actions.load("x_custom_index_assemble_control").IndexAction.export({
+        o2.Actions.load("x_query_assemble_surface").IndexAction.export({
             key: this.tabData.key,
             type: this.tabData.type,
             category: this.tabData.category,
@@ -212,7 +212,7 @@ MWF.xApplication.StandingBook.IndexView = new Class({
             filterList: filterList
         }).then(function(json){
             debugger;
-            var indexAction = o2.Actions.load("x_custom_index_assemble_control").IndexAction;
+            var indexAction = o2.Actions.load("x_query_assemble_surface").IndexAction;
             var address = indexAction.action.address;
             var uri = indexAction.action.actions.exportResult.uri.replace("{flag}", json.data.id);
             window.open(address+uri, "_blank");
@@ -238,8 +238,16 @@ MWF.xApplication.StandingBook.IndexView = new Class({
     gotoMainPage: function(){
         this.app.gotoMainPage();
     },
+    // openWork: function(id, event, row){
+    //     o2.api.page.openWork(id);
+    // },
     openWork: function(id, event, row){
-        o2.api.page.openWork(id);
+        var appId = "process.Work"+id;
+        var op = {
+            "jobId": id,
+            "appId": appId
+        };
+        return layout.desktop.openApplication(this.event, "process.Work", op);
     },
 
     openDoc: function(id, event, row){

@@ -147,7 +147,7 @@ MWF.xApplication.StandingBook.Main = new Class({
 		}.bind(this));
 	},
 	loadTabList: function( callback ){
-		o2.Actions.load("x_custom_index_assemble_control").IndexAction.get().then(function(json){
+		o2.Actions.load("x_query_assemble_surface").IndexAction.get().then(function(json){
 			this.tabData = json;
 			this._loadTabList( callback );
 		}.bind(this));
