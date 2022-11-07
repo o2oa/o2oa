@@ -5207,7 +5207,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @method rowCountWhere
      * @methodOf module:Table
      * @instance
-     * @param {String} where 查询条件，格式为jpql语法,o.name='zhangsan'，允许为空。
+     * @param {String} where 查询条件，格式为jpql语法,o.name='zhangsan'。
      * @param {Function} [success] 调用成功时的回调函数。
      * @param {Function} [failure] 调用错误时的回调函数。
      * @param {Boolean} [async] 是否异步调用，默认为true。

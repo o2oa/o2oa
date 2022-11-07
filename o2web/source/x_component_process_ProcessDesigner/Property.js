@@ -976,6 +976,7 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
                 Object.each(layout.serviceAddressList, function(v, key){
                     var option = new Element("option", {"value": key, "text": v.name, "selected": (value==key)}).inject(select);
                 }.bind(this));
+                var option = new Element("option", {"value": "x_program_center", "text": this.process.designer.lp.centerServer, "selected": (value=="x_program_center")}).inject(select);
                 select.addEvent("change", function(){
                     var data = select.options[select.selectedIndex].value;
                     // this.changeJsonDate(name, data);
