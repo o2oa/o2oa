@@ -1780,7 +1780,6 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
     loadIcon: function(){
         var icon;
         var bgcolor = "";
-        debugger;
         if( this.data.path ){
             if (this.data.path.substring(0, 4)==="@url"){
                 if (this.data.iconPath){
@@ -2121,7 +2120,6 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
                 this.layout.startMenu.createApplicationMenuItem(this.data);
 
         }
-        debugger;
         this.destroy();
         if (!this.menu.data.itemDataList.length){
             this.menu.hide(function(){
@@ -2133,7 +2131,6 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
 
     },
     addGroup: function(){
-        debugger;
         if (this.overItem.data.type==="group"){
             this.overItem.addItem(this.data);
         }else{
@@ -2406,7 +2403,6 @@ o2.xDesktop.Default.StartMenu.GroupItem = new Class({
     },
 
     resetMenuData: function(){
-        debugger;
         var nodes = this.menuContentNode.getChildren(".layout_start_item");
         var data = [];
 
