@@ -1780,34 +1780,36 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
     loadIcon: function(){
         var icon;
         var bgcolor = "";
-        if (this.data.path.substring(0, 4)==="@url"){
-            if (this.data.iconPath){
-                icon = this.data.iconPath;
-            }else{
-                if (this.layout.iconsJson["Url"] && this.layout.iconsJson["Url"].icon){
-                    icon = this.layout.path+"appicons/"+this.layout.iconsJson["Url"].icon;
-                    bgcolor = this.layout.iconsJson["Url"].color;
+        if( this.data.path ){
+            if (this.data.path.substring(0, 4)==="@url"){
+                if (this.data.iconPath){
+                    icon = this.data.iconPath;
                 }else{
-                    icon = "../x_component_Setting/$Main/default/icon/site.png";
+                    if (this.layout.iconsJson["Url"] && this.layout.iconsJson["Url"].icon){
+                        icon = this.layout.path+"appicons/"+this.layout.iconsJson["Url"].icon;
+                        bgcolor = this.layout.iconsJson["Url"].color;
+                    }else{
+                        icon = "../x_component_Setting/$Main/default/icon/site.png";
+                        bgcolor = "";
+                    }
+                }
+            }else{
+                if (this.layout.iconsJson[this.data.path] && this.layout.iconsJson[this.data.path].icon){
+                    icon = this.layout.path+"appicons/"+this.layout.iconsJson[this.data.path].icon;
+                    bgcolor = this.layout.iconsJson[this.data.path].color;
+                }else{
+                    icon = "../x_component_"+this.data.path.replace(/\./g, "_")+"/$Main/"+this.data.iconPath;
                     bgcolor = "";
                 }
             }
-        }else{
-            if (this.layout.iconsJson[this.data.path] && this.layout.iconsJson[this.data.path].icon){
-                icon = this.layout.path+"appicons/"+this.layout.iconsJson[this.data.path].icon;
-                bgcolor = this.layout.iconsJson[this.data.path].color;
-            }else{
-                icon = "../x_component_"+this.data.path.replace(/\./g, "_")+"/$Main/"+this.data.iconPath;
-                bgcolor = "";
+            if (icon && bgcolor){
+                this.iconNode.addClass("layout_start_item_icon_flat");
+                this.iconNode.setStyle("background-color", bgcolor);
             }
+            this.iconNode.setStyle("background-image", "url("+icon+")");
+            this.icon = icon;
+            this.bgcolor = bgcolor;
         }
-        if (icon && bgcolor){
-            this.iconNode.addClass("layout_start_item_icon_flat");
-            this.iconNode.setStyle("background-color", bgcolor);
-        }
-        this.iconNode.setStyle("background-image", "url("+icon+")");
-        this.icon = icon;
-        this.bgcolor = bgcolor;
     },
     loadBadge: function(){
         this.badgeNode.set("title", o2.LP.desktop.addLnk).addClass("icon_add_red");
@@ -2080,11 +2082,28 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
         if (this.positionFlagNode) this.positionFlagNode.destroy();
         this.positionFlagNode = null;
     },
+    getItemType: function( data ){
+        if( data.type === "group" ){
+            return "group";
+        }else if( data.type==='system' || data.type==='custom' ){
+            return "component";
+        }else if( data.hasOwnProperty('portalCategory') ){
+            return "portal";
+        }else if( data.hasOwnProperty('documentType') ){
+            return "cms";
+        }else if( data.hasOwnProperty('queryCategory') ){
+            return "query"
+        }else if( data.hasOwnProperty('applicationCategory')  ){
+            return "process";
+        }else{
+            return data.type || "";
+        }
+    },
     removeFormGroup: function(){
         // this.menu.itemDataList.erase(this.data);
         // this.menu.items.erase(this);
         this.menu.data.itemDataList.erase(this.data);
-        switch (this.data.type){
+        switch (this.getItemType(this.data)){
             case "portal":
                 this.layout.startMenu.createPortalMenuItem(this.data);
                 break;
@@ -2101,7 +2120,6 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
                 this.layout.startMenu.createApplicationMenuItem(this.data);
 
         }
-        debugger;
         this.destroy();
         if (!this.menu.data.itemDataList.length){
             this.menu.hide(function(){
@@ -2113,7 +2131,6 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
 
     },
     addGroup: function(){
-        debugger;
         if (this.overItem.data.type==="group"){
             this.overItem.addItem(this.data);
         }else{
@@ -2225,7 +2242,7 @@ o2.xDesktop.Default.StartMenu.GroupItem = new Class({
                 return i.data.id == data.id;
             });
             if (!item){
-                switch (data.type){
+                switch (this.getItemType(data)){
                     case "portal":
                         this.items.push(new o2.xDesktop.Default.StartMenu.PortalItem(this, this.menuContentNode, data));
                         break;
@@ -2316,7 +2333,7 @@ o2.xDesktop.Default.StartMenu.GroupItem = new Class({
         this.data.itemDataList.push(data);
     },
     setSubItemIcon: function(data, node){
-        switch (data.type){
+        switch (this.getItemType(data)){
             case "process":
                 this.setAppSubItemIcon(node, data.icon, "processDefault", "../x_component_process_ApplicationExplorer/$Main/default/icon/application.png");
                 break;
@@ -2356,35 +2373,36 @@ o2.xDesktop.Default.StartMenu.GroupItem = new Class({
     setDefaultSubItemIcon: function(data, node){
         var icon;
         var bgcolor = "";
-        if (data.path.substring(0, 4)==="@url"){
-            if (data.iconPath){
-                icon = data.iconPath;
-            }else{
-                if (this.layout.iconsJson["Url"] && this.layout.iconsJson["Url"].icon){
-                    icon = this.layout.path+"appicons/"+this.layout.iconsJson["Url"].icon;
-                    bgcolor = this.layout.iconsJson["Url"].color;
+        if( data.path ){
+            if (data.path.substring(0, 4)==="@url"){
+                if (data.iconPath){
+                    icon = data.iconPath;
                 }else{
-                    icon = "../x_component_Setting/$Main/default/icon/site.png";
+                    if (this.layout.iconsJson["Url"] && this.layout.iconsJson["Url"].icon){
+                        icon = this.layout.path+"appicons/"+this.layout.iconsJson["Url"].icon;
+                        bgcolor = this.layout.iconsJson["Url"].color;
+                    }else{
+                        icon = "../x_component_Setting/$Main/default/icon/site.png";
+                        bgcolor = "";
+                    }
+                }
+            }else{
+                if (this.layout.iconsJson[data.path] && this.layout.iconsJson[data.path].icon){
+                    icon = this.layout.path+"appicons/"+this.layout.iconsJson[data.path].icon;
+                    bgcolor = this.layout.iconsJson[data.path].color;
+                }else{
+                    icon = "../x_component_"+data.path.replace(/\./g, "_")+"/$Main/"+data.iconPath;
                     bgcolor = "";
                 }
             }
-        }else{
-            if (this.layout.iconsJson[data.path] && this.layout.iconsJson[data.path].icon){
-                icon = this.layout.path+"appicons/"+this.layout.iconsJson[data.path].icon;
-                bgcolor = this.layout.iconsJson[data.path].color;
-            }else{
-                icon = "../x_component_"+data.path.replace(/\./g, "_")+"/$Main/"+data.iconPath;
-                bgcolor = "";
+            if (icon && bgcolor){
+                node.setStyle("background-color", bgcolor);
             }
+            node.setStyle("background-image", "url("+icon+")");
         }
-        if (icon && bgcolor){
-            node.setStyle("background-color", bgcolor);
-        }
-        node.setStyle("background-image", "url("+icon+")");
     },
 
     resetMenuData: function(){
-        debugger;
         var nodes = this.menuContentNode.getChildren(".layout_start_item");
         var data = [];
 
