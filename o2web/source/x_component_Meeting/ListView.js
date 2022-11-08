@@ -323,9 +323,25 @@ MWF.xApplication.Meeting.ListView.View.Line = new Class({
 
         var room = roomData.name+"("+bulidingData.name+((roomData.roomNumber) ? " #"+roomData.roomNumber : "")+")";
 
+        // this.node = new Element("tr",{
+        //     "html": "<td></td><td>"+bdate+"</td><td>"+btime+"-"+etime+"</td><td>"+this.data.subject+"</td><td>"+room+"</td>"
+        // }).inject(this.container);
+
         this.node = new Element("tr",{
-            "html": "<td></td><td>"+bdate+"</td><td>"+btime+"-"+etime+"</td><td>"+this.data.subject+"</td><td>"+room+"</td>"
+            "html": "<td></td><td></td><td></td><td></td><td></td>"
         }).inject(this.container);
+        this.node.getElements("td").each(function (td, i) {
+            switch (i) {
+                case 1:
+                    td.set("text", bdate); break;
+                case 2:
+                    td.set("text", btime+"-"+etime); break;
+                case 3:
+                    td.set("text", this.data.subject); break;
+                case 4:
+                    td.set("text", room); break;
+            }
+        }.bind(this));
 
         this.personNode = this.node.getFirst("td");
         if (this.data.applicant){
