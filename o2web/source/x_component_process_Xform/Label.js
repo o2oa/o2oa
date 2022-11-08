@@ -40,11 +40,12 @@ MWF.xApplication.process.Xform.Label = MWF.APPLabel =  new Class(
                 "height": "100%"
 			}, "text": text}).inject(this.node);
 
+            var height = (this.node.offsetParent === null) ? "20" : this.node.getSize().y;
             if (this.json.prefixIcon){
                 var node = new Element("div", {"styles": {
                     "float": "left",
                     "width": "20px",
-                    "height": ""+this.node.getSize().y+"px",
+                    "height": ""+height+"px",
                     "background": "url("+this.json.prefixIcon+") center center no-repeat"
                 }}).inject(tNode, "before");
             }
@@ -52,7 +53,7 @@ MWF.xApplication.process.Xform.Label = MWF.APPLabel =  new Class(
                 var node = new Element("div", {"styles": {
                     "float": "right",
                     "width": "20px",
-                    "height": ""+this.node.getSize().y+"px",
+                    "height": ""+height+"px",
                     "background": "url("+this.json.suffixIcon+") center center no-repeat"
                 }}).inject(tNode, "before");
             }
