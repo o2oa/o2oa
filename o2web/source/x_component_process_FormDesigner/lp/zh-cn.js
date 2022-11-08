@@ -441,6 +441,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "none": "无",
         "default": "默认",
         "byScript": "根据脚本",
+        "byFormat": "根据格式",
         "languageDefaultInfo": "系统会自动载入名称为 \"lp-\"+o2.language 的数据字典(或脚本)，作为语言包",
 
         "prefix": "前缀",

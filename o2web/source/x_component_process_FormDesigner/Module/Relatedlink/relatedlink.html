@@ -24,12 +24,16 @@
 				<td class="editTableValue">
 					<input class="editTableRadio" onclick="if (this.checked){
 		    		$('text{$.pid}displayScriptArea').setStyle('display', 'none');
+		    		$('text{$.pid}textStyleArea').setStyle('display', 'none');
+		    	}" name="mode" text{($.mode=='table')?'checked':''} type="radio" value="table"/>{{$.lp.table}}
+					<input class="editTableRadio" onclick="if (this.checked){
+		    		$('text{$.pid}displayScriptArea').setStyle('display', 'none');
 		    		$('text{$.pid}textStyleArea').setStyle('display', 'block');
-		    	}" name="mode" text{($.mode=='default')?'checked':''} type="radio" value="default"/>{{$.lp.default}}
+		    	}" name="mode" text{($.mode=='text')?'checked':''} type="radio" value="text"/>{{$.lp.byFormat}}
 					<input class="editTableRadio" onclick="if (this.checked){
 		    	 	$('text{$.pid}displayScriptArea').setStyle('display', 'block');
 		    	 	$('text{$.pid}textStyleArea').setStyle('display', 'none');
-		    	 }"  name="mode" text{($.mode=='text')?'checked':''} type="radio" value="script"/>{{$.lp.byScript}}
+		    	 }"  name="mode" text{($.mode=='script')?'checked':''} type="radio" value="script"/>{{$.lp.byScript}}
 					<br>
 
 				</td>
