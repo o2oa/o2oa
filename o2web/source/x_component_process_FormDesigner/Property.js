@@ -586,9 +586,10 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     var oldValue = this.data[appNodeName] || "";
                     this.data[appNodeName] = !apps.length ? "" : apps[0].data.id;
                     if( oldValue !== this.data[appNodeName] ){
+                        this.checkHistory(appNodeName, oldValue, this.data[appNodeName]);
                         this.getSubFormList(function(){
                             this.setSubformSelectOptions(formSelectNode, formSelect);
-                            formSelect.fireEvent("change");
+                            formSelect.fireEvent("change", [null, true]);
                         }.bind(this), true, appNodeName);
                     }
                 }.bind(this));
@@ -613,9 +614,9 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
     _loadSubformSelect : function( node, formNodeName, appNodeName ){
         var select = new Element("select").inject(node);
         this.getSubFormList(function(){
-            select.addEvent("change", function(e){
+            select.addEvent("change", function(e, flag){
                 var value = select.options[select.selectedIndex].value;
-                this.setValue(formNodeName, value, select);
+                this.setValue(formNodeName, value, select, flag);
             }.bind(this));
             this.setSubformSelectOptions(node, select);
 
@@ -1137,9 +1138,10 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 var selectNode = new Element("div", {"styles": this.form.css.processIconSelectNode, "text": this.form.designer.lp.empty}).inject(node);
                 selectNode.addEvent("click", function(e){
                     var id = node.get("name");
+                    var oldValue = this.data[id];
                     this.data[id] = "";
                     node.getFirst("div").setStyle("background-image", "");
-                    this.changeData(id);
+                    this.changeData(id, null, oldValue);
                     e.stopPropagation();
                 }.bind(this));
 
@@ -1161,9 +1163,10 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 var item = iconSelectMenu.addMenuItem("", "click", function(){
                     var id = node.get("name");
                     var src = this.item.getElement("img").get("src");
+                    var oldValue = _self.data[id];
                     _self.data[id] = src;
                     node.getFirst("div").setStyle("background-image", "url("+src+")");
-                    _self.changeData(id);
+                    _self.changeData(id, null, oldValue);
                 }, icon);
                 item.iconName = icon;
             }
