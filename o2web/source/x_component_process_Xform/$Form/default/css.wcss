@@ -720,10 +720,14 @@
     "attachmentPermissionNode": {
         "overflow": "hidden",
         "width": "500px",
-        "padding": "0px 40px",
+        "padding": "0px 40px"
+    },
+    "attachmentPermissionNode_mobile": {
+      "overflow": "hidden",
+      "padding": "0px 10px"
     },
     "attachmentPermissionNamesNode": {
-        "overflow": "hidden",
+        "overflow": "hidden"
     },
     "attachmentPermissionNamesTitleNode": {
         "font-size": "14px",
@@ -747,7 +751,7 @@
     "attachmentPermissionTitleNode": {
         "font-size": "14px",
         "color": "#666666",
-        "height": "26px",
+        "min-height": "26px",
         "line-height": "26px"
     },
     "attachmentPermissionInputNode": {
@@ -1152,10 +1156,13 @@
         "height": "600px",
         "padding": "10px 10px 5px 10px"
     },
+  "attachmentOrderNode_mobile":{
+    "padding": "10px 0px 5px 0px"
+  },
     "attachmentOrderInforNode": {
-        "padding": "10px 20px 5px 20px",
-        "height": "30px",
-        "line-height": "30px",
+        "padding": "15px 20px 10px 20px",
+        "min-height": "20px",
+        "line-height": "20px",
         "color": "#666666"
     },
     "attachmentOrderAreaNode": {
@@ -1164,6 +1171,11 @@
         "height": "530px",
         "overflow": "auto"
     },
+  "attachmentOrderAreaNode_mobile": {
+    "padding": "10px 0px 5px 0px",
+    "background-color": "#ffffff",
+    "overflow": "auto"
+  },
     "attachmentOrderItemNode": {
         "min-height": "30px",
         "overflow": "auto",
@@ -1186,11 +1198,23 @@
         "padding": "0px 5px",
         "color": "#666666"
     },
+  "attachmentOrderItemTextNode_mobile": {
+    "margin-left": "30px",
+    "margin-right": "60px",
+    "min-height": "30px",
+    "padding": "0px 5px",
+    "color": "#666666"
+  },
     "attachmentOrderItemActionNode": {
         "width": "130px",
         "height": "30px",
         "float": "right"
     },
+  "attachmentOrderItemActionNode_mobile": {
+    "width": "60px",
+    "height": "30px",
+    "float": "right"
+  },
     "attachmentOrderItemActionUpNode": {
         "border": "1px solid #999999",
         "border-radius": "3px",
