@@ -40,10 +40,13 @@
 			</tr>
 		</table>
 
-		<div style="color:#999; padding:5px; line-height:20px">{{$.lp.relativedLinkField}}</div>
-		<div style="display: text{($.mode=='script') ?'block':'none'}" id="text{$.pid}displayScriptArea" class="MWFScriptArea" name="displayScript" title="{{$.lp.logFormatScript}} (S)"></div>
+		<div style="display: text{($.mode=='script') ?'block':'none'}" id="text{$.pid}displayScriptArea">
+			<div style="color:#999; padding:5px; line-height:20px">{{$.lp.relativedLinkField}}</div>
+			<div class="MWFScriptArea" name="displayScript" title="{{$.lp.logFormatScript}} (S)"></div>
+		</div>
 
 		<div style="display: text{($.mode=='default') ?'block':'none'}" id="text{$.pid}textStyleArea">
+			<div style="color:#999; padding:5px; line-height:20px">{{$.lp.relativedLinkField}}</div>
 			<div class="MWFHtmlEditorArea" name="textStyle" title="{{$.lp.logFormat}} (H)"></div>
 		</div>
 		

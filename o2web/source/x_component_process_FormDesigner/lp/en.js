@@ -443,6 +443,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "default": "default",
         "byScript": "byScript",
         "byFormat": "byFormat",
+        "table": "Table",
         "languageDefaultInfo": "The system will automatically load a data dictionary named (\"lp-\"+o2.language) as a language pack",
 
         "prefix": "Prefix",

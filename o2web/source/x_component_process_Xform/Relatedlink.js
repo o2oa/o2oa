@@ -48,7 +48,6 @@ MWF.xApplication.process.Xform.Relatedlink = MWF.APPRelatedlink =  new Class(
     _loadUserInterface: function(){
         this.node.empty();
         this.node.setStyle("-webkit-user-select", "text");
-        this.node.setStyles(this.form.css.logActivityNode_record);
 
         o2.Actions.load("x_query_assemble_surface").MoreLikeThisAction.post({
             flag: this.getFlag(),
@@ -58,6 +57,7 @@ MWF.xApplication.process.Xform.Relatedlink = MWF.APPRelatedlink =  new Class(
             this.linkData = json.data.moreLikeThisList;
             this.fireEvent("postLoadData");
             this.loadLinks();
+            this.fireEvent("afterLoad");
         }.bind(this));
     },
     getFlag: function(){
@@ -76,16 +76,79 @@ MWF.xApplication.process.Xform.Relatedlink = MWF.APPRelatedlink =  new Class(
             case "script":
                 this.loadLinkByScript();
                 break;
-            default:
+            case "text":
                 this.loadLinkDefault();
+                break;
+            default:
+                this.loadLinkTable();
         }
+    },
+    loadLinkTable: function(){
+        var table = new Element("table", {
+            "styles": this.form.css.relatedlinkTable,
+            "border": "0",
+            "cellSpacing": "0",
+            "cellpadding": "3px",
+            "width": "100%"
+        }).inject(this.node);
+        var tr = table.insertRow(0).setStyles(this.form.css.relatedlinkTableTitleLine);
+
+        var lp = MWF.xApplication.process.Xform.LP;
+        var thStyle = this.form.css.relatedlinkTableTitle;
+        var td = tr.insertCell(0).setStyles(thStyle);
+        td.set("text", lp.title);
+        td = tr.insertCell(1).setStyles(thStyle);
+        td.set("text", lp.creatorPerson);
+        td = tr.insertCell(2).setStyles(thStyle);
+        td.set("text", lp.creatorUnit);
+        td = tr.insertCell(3).setStyles(thStyle);
+        td.set("text", lp.createTime);
+        td = tr.insertCell(4).setStyles(thStyle);
+        td.set("text", lp.updateTime);
+        td = tr.insertCell(5).setStyles(thStyle);
+        td.set("text", lp.score);
+
+        var tdStyle = this.form.css.relatedlinkTableCell;
+        this.linkData.each(function (log, idx) {
+            var tr = table.insertRow(table.rows.length);
+            tr.setStyles( this.form.css.relatedlinkTableLine );
+            tr.addEvents({
+                "mouseover": function () {
+                    tr.setStyles( this.form.css.relatedlinkTableLine_over )
+                }.bind(this),
+                "mouseout": function () {
+                    tr.setStyles( this.form.css.relatedlinkTableLine )
+                }.bind(this)
+            })
+
+            var td = tr.insertCell(0).setStyles( tdStyle );
+            td.set("text", log.title);
+            td.setStyles( this.form.css.relatedlinkTableCell_title );
+
+            td = tr.insertCell(1).setStyles(tdStyle);
+            td.set("text", log.creatorPerson);
+            td = tr.insertCell(2).setStyles(tdStyle);
+            td.set("text", log.creatorUnit);
+            td = tr.insertCell(3).setStyles(tdStyle);
+            td.set("text", log.createTime);
+            td = tr.insertCell(4).setStyles(tdStyle);
+            td.set("text", log.updateTime);
+            td = tr.insertCell(5).setStyles(tdStyle);
+            td.set("text", log.score);
+
+            this.setOpenEvent(tr, log);
+
+            this.fireEvent("postLoadLink", [{
+                node: tr,
+                data: log
+            }]);
+        }.bind(this))
     },
     loadLinkByScript: function(){
         if (this.json.displayScript && this.json.displayScript.code){
             var code = this.json.displayScript.code;
             this.linkData.each(function(log){
-                this.form.Macro.environment.log = log;
-                this.form.Macro.environment.list = null;
+                this.form.Macro.environment.link = log;
                 var r = this.form.Macro.exec(code, this);
 
                 var t = o2.typeOf(r);
@@ -106,11 +169,10 @@ MWF.xApplication.process.Xform.Relatedlink = MWF.APPRelatedlink =  new Class(
     loadLinkDefault: function(){
         var text = this.json.textStyle;
         var readPersons = [];
-        this.lineClass = "logTaskNode";
+        this.lineClass = "relatedlinkNode";
         this.linkData.each(function(log, i){
             var div = new Element("div", {styles: this.form.css[this.lineClass]}).inject(this.node);
-            var leftDiv = new Element("div", {styles: this.form.css.logTaskIconNode_record}).inject(div);
-            var rightDiv = new Element("div", {styles: this.form.css.logTaskTextNode}).inject(div);
+            var rightDiv = new Element("div", {styles: this.form.css.relatedlinkTextNode}).inject(div);
             var html = text.replace(/{flag}/g, log.flag)
                 .replace(/{createDate}/g, log.createTime.substring(0.10))
                 .replace(/{createTime}/g, log.createTime)
@@ -121,10 +183,10 @@ MWF.xApplication.process.Xform.Relatedlink = MWF.APPRelatedlink =  new Class(
                 .replace(/{title}/g, log.title || "");
             rightDiv.appendHTML(html);
 
-            if (this.lineClass === "logTaskNode"){
-                this.lineClass = "logTaskNode_even";
+            if (this.lineClass === "relatedlinkNode"){
+                this.lineClass = "relatedlinkNode_even";
             }else{
-                this.lineClass = "logTaskNode";
+                this.lineClass = "relatedlinkNode";
             }
             this.setOpenEvent(div, log);
             this.fireEvent("postLoadLink", [{
