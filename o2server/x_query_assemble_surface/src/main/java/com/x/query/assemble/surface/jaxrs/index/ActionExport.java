@@ -51,8 +51,8 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.general.core.entity.GeneralFile;
 import com.x.query.assemble.surface.Business;
 import com.x.query.assemble.surface.ThisApplication;
+import com.x.query.core.express.assemble.surface.jaxrs.index.ActionExportWi;
 import com.x.query.core.express.index.Indexs;
-import com.x.query.core.express.jaxrs.index.ActionExportWi;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -71,14 +71,13 @@ class ActionExport extends BaseAction {
         Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 
         String category = wi.getCategory();
-        String type = wi.getType();
         String key = wi.getKey();
 
         List<String> readers = new ArrayList<>();
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Business business = new Business(emc);
             String person = business.index().who(effectivePerson, wi.getPerson());
-            readers = business.index().determineReaders(person, category, type, key);
+            readers = business.index().determineReaders(person, category, key);
         }
 
         Optional<Query> searchQuery = searchQuery(wi.getQuery(), new HanLPAnalyzer());
@@ -90,12 +89,12 @@ class ActionExport extends BaseAction {
         filterQueries.stream().forEach(o -> builder.add(o, BooleanClause.Occur.MUST));
         Query query = builder.build();
         LOGGER.debug("index export lucene query:{}.", query::toString);
-        Optional<Directory> optional = Indexs.directory(category, type, key, true);
+        Optional<Directory> optional = Indexs.directory(category, key, true);
         if (optional.isEmpty()) {
             throw new ExceptionDirectoryNotExist();
         }
         try (DirectoryReader reader = DirectoryReader.open(optional.get()); Workbook workbook = new XSSFWorkbook()) {
-            List<Triple<String, String, String>> outFields = outFields(type, wi.getFixedFieldList(),
+            List<Triple<String, String, String>> outFields = outFields(wi.getFixedFieldList(),
                     wi.getDynamicFieldList());
             IndexSearcher searcher = new IndexSearcher(reader);
             TopFieldCollector topFieldCollector = TopFieldCollector.create(sort(wi.getSort()),
@@ -139,11 +138,11 @@ class ActionExport extends BaseAction {
         return result;
     }
 
-    private List<Triple<String, String, String>> outFields(String type, List<String> fixedFieldList,
+    private List<Triple<String, String, String>> outFields(List<String> fixedFieldList,
             List<String> dynamicFieldList) {
         List<Triple<String, String, String>> list = new ArrayList<>();
         if (ListTools.isEmpty(fixedFieldList) && ListTools.isEmpty(dynamicFieldList)) {
-            list.addAll(getFixedFieldList(Indexs.CATEGORY_PROCESSPLATFORM, type).stream()
+            list.addAll(getFixedFieldList(Indexs.CATEGORY_PROCESSPLATFORM).stream()
                     .map(o -> Triple.of(o.getField(), o.getName(), o.getFieldType())).collect(Collectors.toList()));
         } else {
             if (!ListTools.isEmpty(fixedFieldList)) {
@@ -193,7 +192,7 @@ class ActionExport extends BaseAction {
                 .map(o -> Quintuple.of(o.first().first(), o.first().second(), o.first().third(), o.second(),
                         param.second().getField(o.first().first())))
                 .filter(o -> !Objects.isNull(o.fifth())).forEach(o -> {
-                    Object value = indexableFieldValue(o.fifth(), o.third());
+                    Object value = Indexs.indexableFieldValue(o.fifth(), o.third());
                     Cell cell = row.createCell(o.fourth().intValue());
                     cell.setCellValue(Objects.toString(value, ""));
                     cell.setCellStyle(param.fourth());

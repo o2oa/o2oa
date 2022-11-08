@@ -14,13 +14,14 @@ import com.x.base.core.project.annotation.ModuleType;
         "com.x.query.core.entity.neural.OutValue", "com.x.query.core.entity.neural.Model",
         "com.x.query.core.entity.schema.*", "com.x.query.core.entity.index.State",
         "com.x.processplatform.core.entity.content.Review",
-        "com.x.processplatform.core.entity.content.Process",
-        "com.x.processplatform.core.entity.content.Application",
+        "com.x.processplatform.core.entity.element.Process",
+        "com.x.processplatform.core.entity.element.Application",
         "com.x.query.core.entity.ImportModel", "com.x.processplatform.core.entity.content.Work",
         "com.x.processplatform.core.entity.content.WorkCompleted",
         "com.x.processplatform.core.entity.content.Attachment", "com.x.cms.core.entity.Document",
         "com.x.cms.core.entity.FileInfo", "com.x.cms.core.entity.AppInfo",
-        "com.x.cms.core.entity.CategoryInfo" }, storageTypes = { StorageType.processPlatform,
+        "com.x.cms.core.entity.CategoryInfo", "com.x.cms.core.entity.Review" }, storageTypes = {
+                StorageType.processPlatform,
                 StorageType.cms }, storeJars = { "x_query_core_express", "x_query_core_entity",
                         "x_organization_core_entity", "x_organization_core_express", "x_processplatform_core_entity",
                         "x_cms_core_entity" })

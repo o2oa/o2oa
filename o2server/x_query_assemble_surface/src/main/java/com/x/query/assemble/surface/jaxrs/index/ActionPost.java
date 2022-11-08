@@ -39,12 +39,12 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.query.assemble.surface.Business;
+import com.x.query.core.express.assemble.surface.jaxrs.index.ActionPostWi;
+import com.x.query.core.express.assemble.surface.jaxrs.index.ActionPostWo;
 import com.x.query.core.express.index.Facets;
 import com.x.query.core.express.index.Filter;
 import com.x.query.core.express.index.Indexs;
 import com.x.query.core.express.index.WoField;
-import com.x.query.core.express.jaxrs.index.ActionPostWi;
-import com.x.query.core.express.jaxrs.index.ActionPostWo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -63,7 +63,6 @@ class ActionPost extends BaseAction {
         Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 
         String category = wi.getCategory();
-        String type = wi.getType();
         String key = wi.getKey();
         Integer rows = Indexs.rows(wi.getSize());
         Integer start = Indexs.start(wi.getPage(), rows);
@@ -72,7 +71,7 @@ class ActionPost extends BaseAction {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Business business = new Business(emc);
             String person = business.index().who(effectivePerson, wi.getPerson());
-            readers = business.index().determineReaders(person, category, type, key);
+            readers = business.index().determineReaders(person, category, key);
         }
 
         initWo(wo, wi);
@@ -86,7 +85,7 @@ class ActionPost extends BaseAction {
         filterQueries.stream().forEach(o -> builder.add(o, BooleanClause.Occur.MUST));
         Query query = builder.build();
         LOGGER.debug("index lucene query:{}.", query::toString);
-        Optional<Directory> optional = Indexs.directory(category, type, key, true);
+        Optional<Directory> optional = Indexs.directory(category, key, true);
         if (optional.isEmpty()) {
             throw new ExceptionDirectoryNotExist();
         }
@@ -148,7 +147,7 @@ class ActionPost extends BaseAction {
     }
 
     private void initWo(Wo wo, Wi wi) {
-        wo.setFixedFieldList(this.getFixedFieldList(Indexs.CATEGORY_PROCESSPLATFORM, wi.getType()));
+        wo.setFixedFieldList(this.getFixedFieldList(Indexs.CATEGORY_PROCESSPLATFORM));
     }
 
     private void writeDocument(IndexSearcher searcher, TopFieldCollector topFieldCollector, int start, int rows, Wo wo,
@@ -164,7 +163,7 @@ class ActionPost extends BaseAction {
                     Map<String, Object> map = outFields.stream()
                             .map(f -> Quadruple.of(Indexs.judgeField(f), document.getField(f)))
                             .filter(param -> null != param.fourth())
-                            .map(p -> Pair.of(p.first(), indexableFieldValue(p.fourth(), p.third())))
+                            .map(p -> Pair.of(p.first(), Indexs.indexableFieldValue(p.fourth(), p.third())))
                             .collect(Collectors.toMap(Pair::first, Pair::second));
                     wo.getDocumentList().add(map);
                 } catch (Exception e) {

@@ -37,6 +37,7 @@ import com.x.cms.core.entity.FileInfo;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.Review;
+import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.query.core.entity.Item;
@@ -61,6 +62,44 @@ public class DocFunction {
 
     private static final Gson gson = XGsonBuilder.instance();
 
+    public static final Function<Pair<Business, String>, Optional<Doc>> wrapWork = param -> {
+        try {
+            Work work = param.first().entityManagerContainer().find(param.second(),
+                    Work.class);
+            if (null == work) {
+                throw new ExceptionEntityNotExist(param.second(), Work.class);
+            }
+            Doc wrap = new Doc();
+            wrap.setReaders(readers(param.first(), work));
+            wrap.setCompleted(false);
+            wrap.setId(work.getJob());
+            wrap.setCategory(Indexs.CATEGORY_PROCESSPLATFORM);
+            wrap.setType(Indexs.TYPE_WORKCOMPLETED);
+            wrap.setKey(work.getApplication());
+            wrap.setTitle(work.getTitle());
+            wrap.setCreateTime(work.getCreateTime());
+            wrap.setUpdateTime(work.getUpdateTime());
+            wrap.setCreateTimeMonth(DateTools.format(work.getCreateTime(), DateTools.format_yyyyMM));
+            wrap.setUpdateTimeMonth(DateTools.format(work.getUpdateTime(), DateTools.format_yyyyMM));
+            wrap.setCreatorPerson(OrganizationDefinition.name(work.getCreatorPerson()));
+            wrap.setCreatorUnit(OrganizationDefinition.name(work.getCreatorUnit()));
+            wrap.addString(Indexs.FIELD_CREATORUNITLEVELNAME, work.getCreatorUnitLevelName());
+            wrap.addString(Indexs.FIELD_APPLICATION, work.getApplication());
+            wrap.addString(Indexs.FIELD_APPLICATIONNAME, work.getApplicationName());
+            wrap.addString(Indexs.FIELD_APPLICATIONALIAS, work.getApplicationAlias());
+            wrap.addString(Indexs.FIELD_PROCESS, work.getProcess());
+            wrap.addString(Indexs.FIELD_PROCESSNAME, work.getProcessName());
+            wrap.addString(Indexs.FIELD_PROCESSALIAS, work.getProcessAlias());
+            wrap.addString(Indexs.FIELD_JOB, work.getJob());
+            wrap.addString(Indexs.FIELD_SERIAL, work.getSerial());
+            update(param.first(), work, wrap);
+            return Optional.of(wrap);
+        } catch (Exception e) {
+            LOGGER.error(e);
+        }
+        return Optional.empty();
+    };
+
     public static final Function<Pair<Business, String>, Optional<Doc>> wrapWorkCompleted = param -> {
         try {
             WorkCompleted workCompleted = param.first().entityManagerContainer().find(param.second(),
@@ -70,6 +109,7 @@ public class DocFunction {
             }
             Doc wrap = new Doc();
             wrap.setReaders(readers(param.first(), workCompleted));
+            wrap.setCompleted(true);
             wrap.setId(workCompleted.getJob());
             wrap.setCategory(Indexs.CATEGORY_PROCESSPLATFORM);
             wrap.setType(Indexs.TYPE_WORKCOMPLETED);
@@ -108,6 +148,7 @@ public class DocFunction {
             }
             Doc wrap = new Doc();
             wrap.setReaders(readers(param.first(), document));
+            wrap.setCompleted(true);
             wrap.setId(document.getId());
             wrap.setCategory(Indexs.CATEGORY_CMS);
             wrap.setType(Indexs.TYPE_DOCUMENT);
@@ -136,6 +177,25 @@ public class DocFunction {
         return Optional.empty();
     };
 
+    private static List<String> readers(Business business, Work work) throws Exception {
+        List<String> list = business.entityManagerContainer()
+                .fetchEqualAndEqual(Review.class, PROCESSPLATFORM_REVIEW_FIELDS, Review.job_FIELDNAME,
+                        work.getJob(), Review.application_FIELDNAME, work.getApplication())
+                .stream().map(Review::getPerson).filter(StringUtils::isNotBlank).distinct()
+                .collect(Collectors.toList());
+        list.add(work.getApplication());
+        list.add(work.getProcess());
+        Optional<Process> optional = business.process().get(work.getProcess());
+        if (optional.isPresent()) {
+            list.add(optional.get().getId());
+            String edition = optional.get().getEdition();
+            if (StringUtils.isNotEmpty(edition)) {
+                list.add(edition);
+            }
+        }
+        return list.stream().distinct().collect(Collectors.toList());
+    }
+
     private static List<String> readers(Business business, WorkCompleted workCompleted) throws Exception {
         List<String> list = business.entityManagerContainer()
                 .fetchEqualAndEqual(Review.class, PROCESSPLATFORM_REVIEW_FIELDS, Review.job_FIELDNAME,
@@ -146,6 +206,7 @@ public class DocFunction {
         list.add(workCompleted.getProcess());
         Optional<Process> optional = business.process().get(workCompleted.getProcess());
         if (optional.isPresent()) {
+            list.add(optional.get().getId());
             String edition = optional.get().getEdition();
             if (StringUtils.isNotEmpty(edition)) {
                 list.add(edition);
@@ -166,6 +227,24 @@ public class DocFunction {
         return list;
     }
 
+    private static void update(Business business, Work work, Doc wrap) {
+        try {
+            List<Item> items = business.entityManagerContainer().listEqualAndEqual(Item.class,
+                    DataItem.bundle_FIELDNAME,
+                    work.getJob(), DataItem.itemCategory_FIELDNAME, ItemCategory.pp);
+            wrap.setBody(DataItemConverter.ItemText.text(items, true, true, true, true, true, ","));
+            wrap.setSummary(HanLP.getSummary(wrap.getBody(), Config.query().index().getSummaryLength()));
+            if (BooleanUtils.isTrue((Config.query().index().getWorkIndexAttachment()))) {
+                wrap.setAttachment(attachment(business, work.getJob()));
+            } else {
+                wrap.setAttachment("");
+            }
+            update(wrap, CONVERTER.assemble(items), "", Config.query().index().getDataStringThreshold());
+        } catch (Exception e) {
+            LOGGER.error(e);
+        }
+    }
+
     private static void update(Business business, WorkCompleted workCompleted, Doc wrap) {
         try {
             List<Item> items = null;
@@ -178,7 +257,11 @@ public class DocFunction {
             }
             wrap.setBody(DataItemConverter.ItemText.text(items, true, true, true, true, true, ","));
             wrap.setSummary(HanLP.getSummary(wrap.getBody(), Config.query().index().getSummaryLength()));
-            wrap.setAttachment(attachment(business, workCompleted));
+            if (BooleanUtils.isTrue((Config.query().index().getWorkCompletedIndexAttachment()))) {
+                wrap.setAttachment(attachment(business, workCompleted.getJob()));
+            } else {
+                wrap.setAttachment("");
+            }
             update(wrap, CONVERTER.assemble(items), "", Config.query().index().getDataStringThreshold());
         } catch (Exception e) {
             LOGGER.error(e);
@@ -192,7 +275,11 @@ public class DocFunction {
                     DataItem.bundle_FIELDNAME, document.getId(), DataItem.itemCategory_FIELDNAME, ItemCategory.cms);
             wrap.setBody(DataItemConverter.ItemText.text(items, true, true, true, true, true, ","));
             wrap.setSummary(HanLP.getSummary(wrap.getBody(), Config.query().index().getSummaryLength()));
-            wrap.setAttachment(attachment(business, document));
+            if (BooleanUtils.isTrue((Config.query().index().getWorkCompletedIndexAttachment()))) {
+                wrap.setAttachment(attachment(business, document));
+            } else {
+                wrap.setAttachment("");
+            }
             update(wrap, CONVERTER.assemble(items), "", dataStringThreshold);
         } catch (Exception e) {
             LOGGER.error(e);
@@ -271,11 +358,11 @@ public class DocFunction {
         }
     }
 
-    private static String attachment(Business business, WorkCompleted workCompleted) throws Exception {
+    private static String attachment(Business business, String job) throws Exception {
         List<String> list = new ArrayList<>();
         Tika tika = new Tika();
-        for (Attachment o : business.entityManagerContainer().listEqual(Attachment.class, WorkCompleted.job_FIELDNAME,
-                workCompleted.getJob())) {
+        for (Attachment o : business.entityManagerContainer().listEqual(Attachment.class, Attachment.job_FIELDNAME,
+                job)) {
             list.add(o.getName());
             if (StringUtils.isNotEmpty(o.getText())) {
                 list.add(o.getText());

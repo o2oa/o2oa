@@ -50,6 +50,8 @@ public class Doc extends GsonPropertyObject {
 
     private String creatorUnit;
 
+    private Boolean completed;
+
     private List<String> readers;
 
     private Map<String, String> stringRepo = new HashMap<>();
@@ -71,6 +73,14 @@ public class Doc extends GsonPropertyObject {
     private Map<String, List<Date>> dataDateListRepo = new HashMap<>();
     private Map<String, List<Boolean>> dataBooleanListRepo = new HashMap<>();
     private Map<String, List<Number>> dataNumberListRepo = new HashMap<>();
+
+    public Boolean getCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(Boolean completed) {
+        this.completed = completed;
+    }
 
     public Map<String, String> getStringRepo() {
         return stringRepo;
@@ -337,6 +347,7 @@ public class Doc extends GsonPropertyObject {
         addDate(document, Indexs.FIELD_INDEXTIME, new Date());
         addDate(document, Indexs.FIELD_CREATETIME, this.getCreateTime());
         addDate(document, Indexs.FIELD_UPDATETIME, this.getUpdateTime());
+        addBoolean(document, Indexs.FIELD_COMPLETED, this.getCompleted());
         if (convertData) {
             this.getStringRepo().entrySet().stream().filter(o -> null != o.getValue())
                     .forEach(o -> addString(document, o.getKey(), o.getValue()));

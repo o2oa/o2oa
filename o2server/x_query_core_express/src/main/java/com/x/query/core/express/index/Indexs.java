@@ -7,6 +7,7 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,12 +17,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.fs.CommonConfigurationKeysPublic;
 import org.apache.hadoop.fs.LocatedFileStatus;
 import org.apache.hadoop.fs.RemoteIterator;
+import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.util.NumericUtils;
 import org.apache.solr.store.hdfs.HdfsDirectory;
 
 import com.x.base.core.project.bean.tuple.Triple;
@@ -38,9 +41,13 @@ public class Indexs {
 
     public static final String CATEGORY_PROCESSPLATFORM = "processPlatform";
     public static final String CATEGORY_CMS = "cms";
+    public static final String CATEGORY_SEARCH = "search";
 
     public static final String TYPE_WORKCOMPLETED = "workCompleted";
+    public static final String TYPE_WORK = "work";
     public static final String TYPE_DOCUMENT = "document";
+
+    public static final String KEY_ENTIRE = "entire";
 
     public static final String FIELD_ID = "id";
     public static final String FIELD_CATEGORY = "category";
@@ -69,6 +76,7 @@ public class Indexs {
     public static final String FIELD_SERIAL = "serial";
     public static final String FIELD_EXPIRED = "expired";
     public static final String FIELD_EXPIRETIME = "expireTime";
+    public static final String FIELD_COMPLETED = "completed";
 
     public static final String FIELD_APPID = "appId";
     public static final String FIELD_APPNAME = "appName";
@@ -181,13 +189,12 @@ public class Indexs {
     }
 
     @SuppressWarnings("deprecation")
-    public static Optional<Directory> directory(String category, String type, String key, boolean checkExists) {
+    public static Optional<Directory> directory(String category, String key, boolean checkExists) {
         try {
             if (StringUtils.equals(Config.query().index().getMode(), Query.Index.MODE_HDFSDIRECTORY)) {
                 org.apache.hadoop.conf.Configuration configuration = hdfsConfiguration();
                 org.apache.hadoop.fs.Path path = hdfsBase();
                 path = new org.apache.hadoop.fs.Path(path, category);
-                path = new org.apache.hadoop.fs.Path(path, type);
                 path = new org.apache.hadoop.fs.Path(path, key);
                 if (checkExists) {
                     try (org.apache.hadoop.fs.FileSystem fileSystem = org.apache.hadoop.fs.FileSystem
@@ -199,7 +206,7 @@ public class Indexs {
                 }
                 return Optional.of(new HdfsDirectory(path, configuration));
             } else {
-                java.nio.file.Path path = Config.path_local_repository_index(true).resolve(category).resolve(type)
+                java.nio.file.Path path = Config.path_local_repository_index(true).resolve(category)
                         .resolve(key);
                 if (checkExists && (!Files.exists(path))) {
                     return Optional.empty();
@@ -212,34 +219,66 @@ public class Indexs {
         return Optional.empty();
     }
 
-    @SuppressWarnings("deprecation")
-    public static Optional<Directory> searchDirectory(boolean checkExists) {
-        try {
-            if (StringUtils.equals(Config.query().index().getMode(), Query.Index.MODE_HDFSDIRECTORY)) {
-                org.apache.hadoop.conf.Configuration configuration = hdfsConfiguration();
-                org.apache.hadoop.fs.Path path = hdfsBase();
-                path = new org.apache.hadoop.fs.Path(path, DIRECTORY_SEARCH);
-                if (checkExists) {
-                    try (org.apache.hadoop.fs.FileSystem fileSystem = org.apache.hadoop.fs.FileSystem
-                            .get(configuration)) {
-                        if (!fileSystem.exists(path)) {
-                            return Optional.empty();
-                        }
-                    }
-                }
-                return Optional.of(new HdfsDirectory(path, configuration));
-            } else {
-                java.nio.file.Path path = Config.path_local_repository_index(true).resolve(DIRECTORY_SEARCH);
-                if (checkExists && (!Files.exists(path))) {
-                    return Optional.empty();
-                }
-                return Optional.of(FSDirectory.open(path));
-            }
-        } catch (Exception e) {
-            LOGGER.error(e);
-        }
-        return Optional.empty();
-    }
+//    @SuppressWarnings("deprecation")
+//    public static Optional<Directory> directory(String category, String type, String key, boolean checkExists) {
+//        try {
+//            if (StringUtils.equals(Config.query().index().getMode(), Query.Index.MODE_HDFSDIRECTORY)) {
+//                org.apache.hadoop.conf.Configuration configuration = hdfsConfiguration();
+//                org.apache.hadoop.fs.Path path = hdfsBase();
+//                path = new org.apache.hadoop.fs.Path(path, category);
+//                path = new org.apache.hadoop.fs.Path(path, type);
+//                path = new org.apache.hadoop.fs.Path(path, key);
+//                if (checkExists) {
+//                    try (org.apache.hadoop.fs.FileSystem fileSystem = org.apache.hadoop.fs.FileSystem
+//                            .get(configuration)) {
+//                        if (!fileSystem.exists(path)) {
+//                            return Optional.empty();
+//                        }
+//                    }
+//                }
+//                return Optional.of(new HdfsDirectory(path, configuration));
+//            } else {
+//                java.nio.file.Path path = Config.path_local_repository_index(true).resolve(category).resolve(type)
+//                        .resolve(key);
+//                if (checkExists && (!Files.exists(path))) {
+//                    return Optional.empty();
+//                }
+//                return Optional.of(FSDirectory.open(path));
+//            }
+//        } catch (Exception e) {
+//            LOGGER.error(e);
+//        }
+//        return Optional.empty();
+//    }
+
+//    @SuppressWarnings("deprecation")
+//    public static Optional<Directory> searchDirectory(boolean checkExists) {
+//        try {
+//            if (StringUtils.equals(Config.query().index().getMode(), Query.Index.MODE_HDFSDIRECTORY)) {
+//                org.apache.hadoop.conf.Configuration configuration = hdfsConfiguration();
+//                org.apache.hadoop.fs.Path path = hdfsBase();
+//                path = new org.apache.hadoop.fs.Path(path, DIRECTORY_SEARCH);
+//                if (checkExists) {
+//                    try (org.apache.hadoop.fs.FileSystem fileSystem = org.apache.hadoop.fs.FileSystem
+//                            .get(configuration)) {
+//                        if (!fileSystem.exists(path)) {
+//                            return Optional.empty();
+//                        }
+//                    }
+//                }
+//                return Optional.of(new HdfsDirectory(path, configuration));
+//            } else {
+//                java.nio.file.Path path = Config.path_local_repository_index(true).resolve(DIRECTORY_SEARCH);
+//                if (checkExists && (!Files.exists(path))) {
+//                    return Optional.empty();
+//                }
+//                return Optional.of(FSDirectory.open(path));
+//            }
+//        } catch (Exception e) {
+//            LOGGER.error(e);
+//        }
+//        return Optional.empty();
+//    }
 
     private static org.apache.hadoop.conf.Configuration hdfsConfiguration() throws Exception {
         org.apache.hadoop.conf.Configuration configuration = new org.apache.hadoop.conf.Configuration();
@@ -393,6 +432,26 @@ public class Indexs {
             return Triple.of(field, field, Indexs.FIELD_TYPE_DATE);
         } else {
             return Triple.of(field, field, Indexs.FIELD_TYPE_STRING);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T indexableFieldValue(IndexableField indexableField, String fileType) {
+        if (null == indexableField) {
+            return null;
+        }
+        if (StringUtils.equalsIgnoreCase(Indexs.FIELD_TYPE_DATE, fileType)) {
+            Number number = indexableField.numericValue();
+            return (null != number) ? (T) new Date(number.longValue()) : null;
+        } else if (StringUtils.equalsIgnoreCase(Indexs.FIELD_TYPE_NUMBER, fileType)) {
+            Number number = indexableField.numericValue();
+            return (null != number) ? (T) Double.valueOf(NumericUtils.sortableLongToDouble(number.longValue())) : null;
+        } else if (StringUtils.equalsIgnoreCase(Indexs.FIELD_TYPE_BOOLEAN, fileType)) {
+            Number number = indexableField.numericValue();
+            return (null != number) ? (T) Boolean.valueOf(number.longValue() != 0L) : null;
+        } else {
+            String str = indexableField.stringValue();
+            return (null != str) ? (T) str : null;
         }
     }
 }

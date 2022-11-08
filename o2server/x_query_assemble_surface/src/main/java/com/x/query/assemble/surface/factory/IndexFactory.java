@@ -64,17 +64,15 @@ public class IndexFactory extends AbstractFactory {
      * @return
      * @throws Exception
      */
-    public List<String> determineReaders(String person, String category, String type, String key) throws Exception {
+    public List<String> determineReaders(String person, String category, String key) throws Exception {
         if (StringUtils.isBlank(person)) {
             return new ArrayList<>();
         }
-        if (StringUtils.equalsIgnoreCase(Indexs.CATEGORY_PROCESSPLATFORM, category)
-                && StringUtils.equalsIgnoreCase(Indexs.TYPE_WORKCOMPLETED, type)) {
+        if (StringUtils.equalsIgnoreCase(Indexs.CATEGORY_PROCESSPLATFORM, category)) {
             return determineReadersApplication(person, key);
-        } else if (StringUtils.equalsIgnoreCase(Indexs.CATEGORY_CMS, category)
-                && StringUtils.equalsIgnoreCase(Indexs.TYPE_DOCUMENT, type)) {
+        } else if (StringUtils.equalsIgnoreCase(Indexs.CATEGORY_CMS, category)) {
             return determineReadersAppInfo(person, key);
-        } else if (StringUtils.isAllBlank(category, type, key)) {
+        } else if (StringUtils.equalsIgnoreCase(Indexs.CATEGORY_SEARCH, category)) {
             return determineReadersSearch(person);
         }
         return Arrays.asList(person);

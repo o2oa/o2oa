@@ -7,7 +7,7 @@ import javax.ws.rs.ApplicationPath;
 import com.x.base.core.project.jaxrs.AbstractActionApplication;
 import com.x.query.assemble.surface.jaxrs.importmodel.ImportModelAction;
 import com.x.query.assemble.surface.jaxrs.index.IndexAction;
-import com.x.query.assemble.surface.jaxrs.mlt.MltAction;
+import com.x.query.assemble.surface.jaxrs.morelikethis.MoreLikeThisAction;
 import com.x.query.assemble.surface.jaxrs.neural.NeuralAction;
 import com.x.query.assemble.surface.jaxrs.query.QueryAction;
 import com.x.query.assemble.surface.jaxrs.reveal.RevealAction;
@@ -33,7 +33,7 @@ public class ActionApplication extends AbstractActionApplication {
         classes.add(ImportModelAction.class);
         classes.add(SearchAction.class);
         classes.add(IndexAction.class);
-        classes.add(MltAction.class);
+        classes.add(MoreLikeThisAction.class);
         return classes;
     }
 

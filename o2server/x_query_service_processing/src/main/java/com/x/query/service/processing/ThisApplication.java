@@ -13,17 +13,22 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.x.base.core.project.Context;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.config.Query;
 import com.x.query.service.processing.schedule.CrawlCms;
 import com.x.query.service.processing.schedule.CrawlWork;
 import com.x.query.service.processing.schedule.CrawlWorkCompleted;
-import com.x.query.service.processing.schedule.HighFrequencyDocument;
-import com.x.query.service.processing.schedule.HighFrequencyWorkCompleted;
-import com.x.query.service.processing.schedule.LowFrequencyDocument;
-import com.x.query.service.processing.schedule.LowFrequencyWorkCompleted;
-import com.x.query.service.processing.schedulelocal.HighFrequencyDocumentLocal;
-import com.x.query.service.processing.schedulelocal.HighFrequencyWorkCompletedLocal;
-import com.x.query.service.processing.schedulelocal.LowFrequencyDocumentLocal;
-import com.x.query.service.processing.schedulelocal.LowFrequencyWorkCompletedLocal;
+import com.x.query.service.processing.schedule.HighFreqDocument;
+import com.x.query.service.processing.schedule.HighFreqWork;
+import com.x.query.service.processing.schedule.HighFreqWorkCompleted;
+import com.x.query.service.processing.schedule.LowFreqDocument;
+import com.x.query.service.processing.schedule.LowFreqWork;
+import com.x.query.service.processing.schedule.LowFreqWorkCompleted;
+import com.x.query.service.processing.schedulelocal.HighFreqDocumentLocal;
+import com.x.query.service.processing.schedulelocal.HighFreqWorkCompletedLocal;
+import com.x.query.service.processing.schedulelocal.HighFreqWorkLocal;
+import com.x.query.service.processing.schedulelocal.LowFreqDocumentLocal;
+import com.x.query.service.processing.schedulelocal.LowFreqWorkCompletedLocal;
+import com.x.query.service.processing.schedulelocal.LowFreqWorkLocal;
 
 public class ThisApplication {
 
@@ -63,9 +68,11 @@ public class ThisApplication {
             context.startQueue(indexWriteQueue);
             CacheManager.init(context.clazz().getSimpleName());
             scheduleLowFrequencyDocument();
+            scheduleLowFrequencyWork();
             scheduleLowFrequencyWorkCompleted();
             scheduleHighFrequencyDocument();
             scheduleHighFrequencyWorkCompleted();
+            scheduleHighFrequencyWork();
             if (BooleanUtils.isTrue(Config.query().getCrawlWork().getEnable())) {
                 context.schedule(CrawlWork.class, Config.query().getCrawlWork().getCron());
             }
@@ -81,49 +88,73 @@ public class ThisApplication {
     }
 
     private static void scheduleLowFrequencyDocument() throws Exception {
-        if (BooleanUtils.isTrue(Config.query().index().getLowFrequencyDocumentEnable())) {
-            if (StringUtils.equals(Config.query().index().getMode(), Config.query().index().MODE_LOCALDIRECTORY)) {
-                context.scheduleLocal(LowFrequencyDocumentLocal.class,
-                        Config.query().index().getLowFrequencyDocumentCron());
+        if (BooleanUtils.isTrue(Config.query().index().getLowFreqDocumentEnable())) {
+            if (StringUtils.equals(Config.query().index().getMode(), Query.Index.MODE_LOCALDIRECTORY)) {
+                context.scheduleLocal(LowFreqDocumentLocal.class,
+                        Config.query().index().getLowFreqDocumentCron());
             } else {
-                context.scheduleLocal(LowFrequencyDocument.class,
-                        Config.query().index().getLowFrequencyDocumentCron());
+                context.schedule(LowFreqDocument.class,
+                        Config.query().index().getLowFreqDocumentCron());
             }
         }
     }
 
     private static void scheduleLowFrequencyWorkCompleted() throws Exception {
-        if (BooleanUtils.isTrue(Config.query().index().getLowFrequencyWorkCompletedEnable())) {
-            if (StringUtils.equals(Config.query().index().getMode(), Config.query().index().MODE_LOCALDIRECTORY)) {
-                context.scheduleLocal(LowFrequencyWorkCompletedLocal.class,
-                        Config.query().index().getLowFrequencyWorkCompletedCron());
+        if (BooleanUtils.isTrue(Config.query().index().getLowFreqWorkCompletedEnable())) {
+            if (StringUtils.equals(Config.query().index().getMode(), Query.Index.MODE_LOCALDIRECTORY)) {
+                context.scheduleLocal(LowFreqWorkCompletedLocal.class,
+                        Config.query().index().getLowFreqWorkCompletedCron());
             } else {
-                context.scheduleLocal(LowFrequencyWorkCompleted.class,
-                        Config.query().index().getLowFrequencyWorkCompletedCron());
+                context.schedule(LowFreqWorkCompleted.class,
+                        Config.query().index().getLowFreqWorkCompletedCron());
+            }
+        }
+    }
+
+    private static void scheduleLowFrequencyWork() throws Exception {
+        if (BooleanUtils.isTrue(Config.query().index().getLowFreqWorkEnable())) {
+            if (StringUtils.equals(Config.query().index().getMode(), Query.Index.MODE_LOCALDIRECTORY)) {
+                context.scheduleLocal(LowFreqWorkLocal.class,
+                        Config.query().index().getLowFreqWorkCompletedCron());
+            } else {
+                context.schedule(LowFreqWork.class,
+                        Config.query().index().getLowFreqWorkCompletedCron());
             }
         }
     }
 
     private static void scheduleHighFrequencyDocument() throws Exception {
-        if (BooleanUtils.isTrue(Config.query().index().getHighFrequencyDocumentEnable())) {
-            if (StringUtils.equals(Config.query().index().getMode(), Config.query().index().MODE_LOCALDIRECTORY)) {
-                context.scheduleLocal(HighFrequencyDocumentLocal.class,
-                        Config.query().index().getHighFrequencyDocumentCron());
+        if (BooleanUtils.isTrue(Config.query().index().getHighFreqDocumentEnable())) {
+            if (StringUtils.equals(Config.query().index().getMode(), Query.Index.MODE_LOCALDIRECTORY)) {
+                context.scheduleLocal(HighFreqDocumentLocal.class,
+                        Config.query().index().getHighFreqDocumentCron());
             } else {
-                context.scheduleLocal(HighFrequencyDocument.class,
-                        Config.query().index().getHighFrequencyDocumentCron());
+                context.schedule(HighFreqDocument.class,
+                        Config.query().index().getHighFreqDocumentCron());
             }
         }
     }
 
     private static void scheduleHighFrequencyWorkCompleted() throws Exception {
-        if (BooleanUtils.isTrue(Config.query().index().getHighFrequencyWorkCompletedEnable())) {
-            if (StringUtils.equals(Config.query().index().getMode(), Config.query().index().MODE_LOCALDIRECTORY)) {
-                context.scheduleLocal(HighFrequencyWorkCompletedLocal.class,
-                        Config.query().index().getHighFrequencyWorkCompletedCron());
+        if (BooleanUtils.isTrue(Config.query().index().getHighFreqWorkCompletedEnable())) {
+            if (StringUtils.equals(Config.query().index().getMode(), Query.Index.MODE_LOCALDIRECTORY)) {
+                context.scheduleLocal(HighFreqWorkCompletedLocal.class,
+                        Config.query().index().getHighFreqWorkCompletedCron());
             } else {
-                context.scheduleLocal(HighFrequencyWorkCompleted.class,
-                        Config.query().index().getHighFrequencyWorkCompletedCron());
+                context.schedule(HighFreqWorkCompleted.class,
+                        Config.query().index().getHighFreqWorkCompletedCron());
+            }
+        }
+    }
+
+    private static void scheduleHighFrequencyWork() throws Exception {
+        if (BooleanUtils.isTrue(Config.query().index().getHighFreqWorkEnable())) {
+            if (StringUtils.equals(Config.query().index().getMode(), Query.Index.MODE_LOCALDIRECTORY)) {
+                context.scheduleLocal(HighFreqWorkLocal.class,
+                        Config.query().index().getHighFreqWorkCron());
+            } else {
+                context.schedule(HighFreqWork.class,
+                        Config.query().index().getHighFreqWorkCompletedCron());
             }
         }
     }

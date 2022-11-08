@@ -15,7 +15,8 @@ import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.NumberTools;
 
-@Deprecated(forRemoval = true)
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public class Query extends ConfigObject {
 
     public static Query defaultInstance() {
@@ -31,32 +32,39 @@ public class Query extends ConfigObject {
         this.extractText = DEFAULT_EXTRACTTEXT;
         this.extractImage = DEFAULT_EXTRACTIMAGE;
         this.tessLanguage = DEFAULT_TESSLANGUAGE;
+        this.index = new Index();
+
     }
 
+    @Deprecated(forRemoval = true)
     @FieldDescribe("已完成工作收集器设置.")
     private CrawlWorkCompleted crawlWorkCompleted;
 
+    @Deprecated(forRemoval = true)
     @FieldDescribe("工作收集器设置.")
     private CrawlWork crawlWork;
 
+    @Deprecated(forRemoval = true)
     @FieldDescribe("内容管理收集器设置.")
     private CrawlCms crawlCms;
 
+    @Deprecated(forRemoval = true)
     @FieldDescribe("抽取office中的文本.")
     private Boolean extractOffice = true;
 
+    @Deprecated(forRemoval = true)
     @FieldDescribe("抽取pdf中的文本.")
     private Boolean extractPdf = true;
 
+    @Deprecated(forRemoval = true)
     @FieldDescribe("抽取文本中的文本.")
     private Boolean extractText = true;
 
+    @Deprecated(forRemoval = true)
     @FieldDescribe("抽取图像中的文本.")
     private Boolean extractImage = false;
 
-    @FieldDescribe("tess使用语言.")
-    private String tessLanguage = "chi_sim";
-
+    @Deprecated(forRemoval = true)
     @FieldDescribe("查询批次大小.")
     private Integer planQueryBatchSize = DEFAULT_PLANQUERYBATCHSIZE;
 
@@ -391,13 +399,22 @@ public class Query extends ConfigObject {
         this.tessLanguage = tessLanguage;
     }
 
+    @FieldDescribe("tess使用语言.")
+    private String tessLanguage = "chi_sim";
+
+    @FieldDescribe("检索配置.")
+    @Schema(description = "检索配置.")
     private Index index;
 
     public Index index() {
         return this.index == null ? new Index() : this.index;
     }
 
-    public static class Index {
+    public static class Index extends ConfigObject {
+
+        public static Index defaultInstance() {
+            return new Index();
+        }
 
         public static final String FIELD_HIGHLIGHTING = "highlighting";
         public static final String READERS_SYMBOL_ALL = "ALL";
@@ -414,32 +431,47 @@ public class Query extends ConfigObject {
         public static final Integer DEFAULT_DATASTRINGTHRESHOLD = 50;
         public static final Integer DEFAULT_SUMMARYLENGTH = 250;
         public static final Integer DEFAULT_ATTACHMENTMAXSIZE = 5;
+        public static final Boolean DEFAULT_WORKINDEXATTACHMENT = false;
+        public static final Boolean DEFAULT_WORKCOMPLETEDINDEXATTACHMENT = true;
+        public static final Boolean DEFAULT_DOCUMENTINDEXATTACHMENT = true;
 
-        public static final Boolean DEFAULT_LOWFREQUENCYWORKCOMPLETEDENABLE = true;
-        public static final String DEFAULT_LOWFREQUENCYWORKCOMPLETEDCRON = "40 15 21 * * ?";
-        public static final Integer DEFAULT_LOWFREQUENCYWORKCOMPLETEDBATCHSIZE = 200;
-        public static final Integer DEFAULT_LOWFREQUENCYWORKCOMPLETEDMAXCOUNT = 50000;
-        public static final Integer DEFAULT_LOWFREQUENCYWORKCOMPLETEDMAXMINUTES = 120;
+        public static final Boolean DEFAULT_LOWFREQWORKENABLE = true;
+        public static final String DEFAULT_LOWFREQWORKCRON = "40 15 21 * * ?";
+        public static final Integer DEFAULT_LOWFREQWORKBATCHSIZE = 200;
+        public static final Integer DEFAULT_LOWFREQWORKMAXCOUNT = 50000;
+        public static final Integer DEFAULT_LOWFREQWORKMAXMINUTES = 120;
+
+        public static final Boolean DEFAULT_LOWFREQWORKCOMPLETEDENABLE = true;
+        public static final String DEFAULT_LOWFREQWORKCOMPLETEDCRON = "40 15 21 * * ?";
+        public static final Integer DEFAULT_LOWFREQWORKCOMPLETEDBATCHSIZE = 200;
+        public static final Integer DEFAULT_LOWFREQWORKCOMPLETEDMAXCOUNT = 50000;
+        public static final Integer DEFAULT_LOWFREQWORKCOMPLETEDMAXMINUTES = 120;
         public static final Integer DEFAULT_WORKCOMPLETEDCLEANUPTHRESHOLDDAYS = 180;
 
-        public static final Boolean DEFAULT_LOWFREQUENCYDOCUMENTENABLE = true;
-        public static final String DEFAULT_LOWFREQUENCYDOCUMENTCRON = "40 15 20 * * ?";
-        public static final Integer DEFAULT_LOWFREQUENCYDOCUMENTBATCHSIZE = 50;
-        public static final Integer DEFAULT_LOWFREQUENCYDOCUMENTMAXCOUNT = 10000;
-        public static final Integer DEFAULT_LOWFREQUENCYDOCUMENTMAXMINUTES = 60;
+        public static final Boolean DEFAULT_LOWFREQDOCUMENTENABLE = true;
+        public static final String DEFAULT_LOWFREQDOCUMENTCRON = "40 15 20 * * ?";
+        public static final Integer DEFAULT_LOWFREQDOCUMENTBATCHSIZE = 50;
+        public static final Integer DEFAULT_LOWFREQDOCUMENTMAXCOUNT = 10000;
+        public static final Integer DEFAULT_LOWFREQDOCUMENTMAXMINUTES = 60;
         public static final Integer DEFAULT_DOCUMENTCLEANUPTHRESHOLDDAYS = 180;
 
-        public static final Boolean DEFAULT_HIGHFREQUENCYWORKCOMPLETEDENABLE = true;
-        public static final String DEFAULT_HIGHFREQUENCYWORKCOMPLETEDCRON = "40 0/10 7-19 * * ?";
-        public static final Integer DEFAULT_HIGHFREQUENCYWORKCOMPLETEDBATCHSIZE = 50;
-        public static final Integer DEFAULT_HIGHFREQUENCYWORKCOMPLETEDMAXCOUNT = 200;
-        public static final Integer DEFAULT_HIGHFREQUENCYWORKCOMPLETEDMAXMINUTES = 5;
+        public static final Boolean DEFAULT_HIGHFREQWORKENABLE = true;
+        public static final String DEFAULT_HIGHFREQWORKCRON = "40 2/5 7-19 * * ?";
+        public static final Integer DEFAULT_HIGHFREQWORKBATCHSIZE = 50;
+        public static final Integer DEFAULT_HIGHFREQWORKMAXCOUNT = 200;
+        public static final Integer DEFAULT_HIGHFREQWORKMAXMINUTES = 5;
 
-        public static final Boolean DEFAULT_HIGHFREQUENCYDOCUMENTENABLE = true;
-        public static final String DEFAULT_HIGHFREQUENCYDOCUMENTCRON = "55 0/15 7-19 * * ?";
-        public static final Integer DEFAULT_HIGHFREQUENCYDOCUMENTBATCHSIZE = 50;
-        public static final Integer DEFAULT_HIGHFREQUENCYDOCUMENTMAXCOUNT = 200;
-        public static final Integer DEFAULT_HIGHFREQUENCYDOCUMENTMAXMINUTES = 5;
+        public static final Boolean DEFAULT_HIGHFREQWORKCOMPLETEDENABLE = true;
+        public static final String DEFAULT_HIGHFREQWORKCOMPLETEDCRON = "40 0/10 7-19 * * ?";
+        public static final Integer DEFAULT_HIGHFREQWORKCOMPLETEDBATCHSIZE = 50;
+        public static final Integer DEFAULT_HIGHFREQWORKCOMPLETEDMAXCOUNT = 200;
+        public static final Integer DEFAULT_HIGHFREQWORKCOMPLETEDMAXMINUTES = 5;
+
+        public static final Boolean DEFAULT_HIGHFREQDOCUMENTENABLE = true;
+        public static final String DEFAULT_HIGHFREQDOCUMENTCRON = "55 0/15 7-19 * * ?";
+        public static final Integer DEFAULT_HIGHFREQDOCUMENTBATCHSIZE = 50;
+        public static final Integer DEFAULT_HIGHFREQDOCUMENTMAXCOUNT = 200;
+        public static final Integer DEFAULT_HIGHFREQDOCUMENTMAXMINUTES = 5;
 
         public static final Boolean DEFAULT_SEARCHENABLE = true;
 
@@ -467,55 +499,217 @@ public class Query extends ConfigObject {
         public static final Integer DEFAULT_HIGHLIGHTFRAGMENTSIZE = 64;
         public static final Integer DEFAULT_HIGHLIGHTFRAGMENTCOUNT = 3;
 
-        public static final Integer DEFAULT_MLTSIZE = 10;
+        public static final Integer DEFAULT_MORELIKETHISSIZE = 10;
+        public static final Integer DEFAULT_MORELIKETHISMAXSIZE = 100;
+        public static final Integer DEFAULT_MORELIKETHISMINTERMFREQ = 2;
+        public static final Integer DEFAULT_MORELIKETHISMINDOCFREQ = 2;
+        public static final Float DEFAULT_MORELIKETHISSCORETHRESHOLD = 8.0f;
 
+        @FieldDescribe("索引模式:localDirectory(本地文件系统),hdfsDirectory(hadoop),sharedDirectory(共享文件系统目录).")
+        @Schema(description = "索引模式:localDirectory(本地文件系统),hdfsDirectory(hadoop),sharedDirectory(共享文件系统目录).")
         private String mode;
+
+        @FieldDescribe("hadoop文件系统地址.")
+        @Schema(description = "hadoop文件系统地址.")
         private String hdfsDirectoryDefaultFS;
+
+        @FieldDescribe("本地文件系统或者共享文件系统目录.")
+        @Schema(description = "本地文件系统或者共享文件系统目录.")
         private String directoryPath;
+
+        @FieldDescribe("业务数据最大文本长度阈值,超过此阈值将忽略写入到索引.")
+        @Schema(description = "业务数据最大文本长度阈值,超过此阈值将忽略写入到索引.")
         private Integer dataStringThreshold;
+
+        @FieldDescribe("摘要长度.")
+        @Schema(description = "摘要长度.")
         private Integer summaryLength;
+
+        @FieldDescribe("附件索引阈值(兆),超过此值的附件不进行索引.")
+        @Schema(description = "附件索引阈值(兆),超过此值的附件不进行索引.")
         private Integer attachmentMaxSize;
 
-        private Boolean lowFrequencyWorkCompletedEnable;
-        private String lowFrequencyWorkCompletedCron;
+        @FieldDescribe("是否对流转中工作进行索引.")
+        @Schema(description = "是否对流转中工作进行索引.")
+        private Boolean workIndexAttachment;
 
-        private Integer lowFrequencyWorkCompletedBatchSize;
-        private Integer lowFrequencyWorkCompletedMaxCount;
-        private Integer lowFrequencyWorkCompletedMaxMinutes;
+        @FieldDescribe("是否对已完成工作进行索引.")
+        @Schema(description = "是否对已完成工作进行索引.")
+        private Boolean workCompletedIndexAttachment;
 
-        private Boolean lowFrequencyDocumentEnable;
-        private String lowFrequencyDocumentCron;
-        private Integer lowFrequencyDocumentBatchSize;
-        private Integer lowFrequencyDocumentMaxCount;
-        private Integer lowFrequencyDocumentMaxMinutes;
+        @FieldDescribe("是否对内容管理文档进行索引.")
+        @Schema(description = "是否对内容管理文档进行索引.")
+        private Boolean documentIndexAttachment;
 
-        private Boolean highFrequencyWorkCompletedEnable;
-        private String highFrequencyWorkCompletedCron;
-        private Integer highFrequencyWorkCompletedBatchSize;
-        private Integer highFrequencyWorkCompletedMaxCount;
-        private Integer highFrequencyWorkCompletedMaxMinutes;
+        @FieldDescribe("是否启用流转中工作低频索引.")
+        @Schema(description = "是否启用流转中工作低频索引.")
+        private Boolean lowFreqWorkEnable;
+        
+        @FieldDescribe("流转中工作低频索引定时配置.")
+        @Schema(description = "流转中工作低频索引定时配置.")
+        private String lowFreqWorkCron;
+        
+        @FieldDescribe("流转中工作低频索引批量获取大小.")
+        @Schema(description = "流转中工作低频索引批量获取大小.")
+        private Integer lowFreqWorkBatchSize;
+        
+        @FieldDescribe("流转中工作低频索单次最大处理数量.")
+        @Schema(description = "流转中工作低频索单次最大处理数量.")
+        private Integer lowFreqWorkMaxCount;
+        
+        @FieldDescribe("流转中工作低频索单次最大处理时长(分钟).")
+        @Schema(description = "流转中工作低频索单次最大处理时长(分钟).")
+        private Integer lowFreqWorkMaxMinutes;
+        
+        @FieldDescribe("是否启用已完成工作低频索引.")
+        @Schema(description = "是否启用已完成工作低频索引.")
+        private Boolean lowFreqWorkCompletedEnable;
+        
+        @FieldDescribe("已完成工作低频索引定时配置.")
+        @Schema(description = "已完成工作低频索引定时配置.")
+        private String lowFreqWorkCompletedCron;
+        
+        
+        
+        @FieldDescribe("流转中工作低频索引定时配置.")
+        @Schema(description = "流转中工作低频索引定时配置.")
+        private Integer lowFreqWorkCompletedBatchSize;
+        
+        @FieldDescribe("流转中工作低频索引定时配置.")
+        @Schema(description = "流转中工作低频索引定时配置.")
+        private Integer lowFreqWorkCompletedMaxCount;
+        
+        @FieldDescribe("流转中工作低频索引定时配置.")
+        @Schema(description = "流转中工作低频索引定时配置.")
+        private Integer lowFreqWorkCompletedMaxMinutes;
 
-        private Boolean highFrequencyDocumentEnable;
-        private String highFrequencyDocumentCron;
-        private Integer highFrequencyDocumentBatchSize;
-        private Integer highFrequencyDocumentMaxCount;
-        private Integer highFrequencyDocumentMaxMinutes;
+        @FieldDescribe("流转中工作低频索引定时配置.")
+        @Schema(description = "流转中工作低频索引定时配置.")
+        private Boolean lowFreqDocumentEnable;
+        
+        @FieldDescribe("流转中工作低频索引定时配置.")
+        @Schema(description = "流转中工作低频索引定时配置.")
+        private String lowFreqDocumentCron;
+        
+        @FieldDescribe("流转中工作低频索引定时配置.")
+        @Schema(description = "流转中工作低频索引定时配置.")
+        private Integer lowFreqDocumentBatchSize;
+        
+        @FieldDescribe("流转中工作低频索引定时配置.")
+        @Schema(description = "流转中工作低频索引定时配置.")
+        private Integer lowFreqDocumentMaxCount;
+        
+        @FieldDescribe("流转中工作低频索引定时配置.")
+        @Schema(description = "流转中工作低频索引定时配置.")
+        private Integer lowFreqDocumentMaxMinutes;
 
+        @FieldDescribe("流转中工作低频索引定时配置.")
+        @Schema(description = "流转中工作低频索引定时配置.")
+        private Boolean highFreqWorkEnable;
+        
+        @FieldDescribe("流转中工作低频索引定时配置.")
+        @Schema(description = "流转中工作低频索引定时配置.")
+        private String highFreqWorkCron;
+        
+        @FieldDescribe("流转中工作低频索引定时配置.")
+        @Schema(description = "流转中工作低频索引定时配置.")
+        private Integer highFreqWorkBatchSize;
+        
+        @FieldDescribe("流转中工作低频索引定时配置.")
+        @Schema(description = "流转中工作低频索引定时配置.")
+        private Integer highFreqWorkMaxCount;
+        
+        @FieldDescribe("流转中工作低频索引定时配置.")
+        @Schema(description = "流转中工作低频索引定时配置.")
+        private Integer highFreqWorkMaxMinutes;
+
+        @FieldDescribe("流转中工作低频索引定时配置.")
+        @Schema(description = "流转中工作低频索引定时配置.")
+        private Boolean highFreqWorkCompletedEnable;
+        
+        @FieldDescribe("流转中工作低频索引定时配置.")
+        @Schema(description = "流转中工作低频索引定时配置.")
+        private String highFreqWorkCompletedCron;
+        
+        @FieldDescribe("流转中工作低频索引定时配置.")
+        @Schema(description = "流转中工作低频索引定时配置.")
+        private Integer highFreqWorkCompletedBatchSize;
+        
+        @FieldDescribe("流转中工作低频索引定时配置.")
+        @Schema(description = "流转中工作低频索引定时配置.")
+        private Integer highFreqWorkCompletedMaxCount;
+        
+        @FieldDescribe("流转中工作低频索引定时配置.")
+        @Schema(description = "流转中工作低频索引定时配置.")
+        private Integer highFreqWorkCompletedMaxMinutes;
+
+        @FieldDescribe("流转中工作低频索引定时配置.")
+        @Schema(description = "流转中工作低频索引定时配置.")
+        private Boolean highFreqDocumentEnable;
+        
+        @FieldDescribe("流转中工作低频索引定时配置.")
+        @Schema(description = "流转中工作低频索引定时配置.")
+        private String highFreqDocumentCron;
+        
+        @FieldDescribe("流转中工作低频索引定时配置.")
+        @Schema(description = "流转中工作低频索引定时配置.")
+        private Integer highFreqDocumentBatchSize;
+        
+        @FieldDescribe("流转中工作低频索引定时配置.")
+        @Schema(description = "流转中工作低频索引定时配置.")
+        private Integer highFreqDocumentMaxCount;
+        
+        @FieldDescribe("流转中工作低频索引定时配置.")
+        @Schema(description = "流转中工作低频索引定时配置.")
+        private Integer highFreqDocumentMaxMinutes;
+
+        
+        @FieldDescribe("流转中工作低频索引定时配置.")
+        @Schema(description = "流转中工作低频索引定时配置.")
         private Integer workCompletedCleanupThresholdDays;
+        
+        @FieldDescribe("流转中工作低频索引定时配置.")
+        @Schema(description = "流转中工作低频索引定时配置.")
         private Integer documentCleanupThresholdDays;
 
+        @FieldDescribe("流转中工作低频索引定时配置.")
+        @Schema(description = "流转中工作低频索引定时配置.")
         private Boolean searchEnable;
 
+        @FieldDescribe("流转中工作低频索引定时配置.")
+        @Schema(description = "流转中工作低频索引定时配置.")
         private Float searchTitleBoost;
+        
+        @FieldDescribe("流转中工作低频索引定时配置.")
+        @Schema(description = "流转中工作低频索引定时配置.")
         private Float searchSummaryBoost;
+        
+        @FieldDescribe("流转中工作低频索引定时配置.")
+        @Schema(description = "流转中工作低频索引定时配置.")
         private Float searchBodyBoost;
+        
+        @FieldDescribe("流转中工作低频索引定时配置.")
+        @Schema(description = "流转中工作低频索引定时配置.")
         private Float searchAttachmentBoost;
 
+        @FieldDescribe("流转中工作低频索引定时配置.")
+        @Schema(description = "流转中工作低频索引定时配置.")
         private Integer searchSize;
+        
+        @FieldDescribe("流转中工作低频索引定时配置.")
+        @Schema(description = "流转中工作低频索引定时配置.")
         private Integer searchMaxSize;
+        
+        @FieldDescribe("流转中工作低频索引定时配置.")
+        @Schema(description = "流转中工作低频索引定时配置.")
         private Integer searchMaxHits;
 
+        @FieldDescribe("流转中工作低频索引定时配置.")
+        @Schema(description = "流转中工作低频索引定时配置.")
         private Integer facetMaxGroups;
+        
+        @FieldDescribe("流转中工作低频索引定时配置.")
+        @Schema(description = "流转中工作低频索引定时配置.")
         private String facetGroupOrder;
 
         @FieldDescribe("高亮返回片段长度.")
@@ -527,11 +721,105 @@ public class Query extends ConfigObject {
         @FieldDescribe("高亮后缀.")
         private String highlightPost;
 
-        private Integer mltSize;
+        private Integer moreLikeThisSize;
+        private Integer moreLikeThisMaxSize;
+        private Integer moreLikeThisMinTermFreq;
+        private Integer moreLikeThisMinDocFreq;
+        private Integer moreLikeThisScoreThreshold;
 
-        public Integer getMltSize() {
-            return NumberTools.nullOrLessThan(this.mltSize, 1) ? DEFAULT_MLTSIZE
-                    : this.mltSize;
+        public Boolean getWorkIndexAttachment() {
+            return (null == this.workIndexAttachment) ? DEFAULT_WORKINDEXATTACHMENT : this.workIndexAttachment;
+        }
+
+        public Boolean getWorkCompletedIndexAttachment() {
+            return (null == this.workCompletedIndexAttachment) ? DEFAULT_WORKCOMPLETEDINDEXATTACHMENT
+                    : this.workCompletedIndexAttachment;
+        }
+
+        public Boolean getDocumentIndexAttachment() {
+            return (null == this.documentIndexAttachment) ? DEFAULT_DOCUMENTINDEXATTACHMENT
+                    : this.documentIndexAttachment;
+        }
+
+        public Boolean getHighFreqWorkEnable() {
+            return null == highFreqWorkEnable ? DEFAULT_HIGHFREQWORKENABLE : this.highFreqWorkEnable;
+        }
+
+        public String getHighFreqWorkCron() {
+            if (StringUtils.isNotEmpty(this.highFreqWorkCron)
+                    && CronExpression.isValidExpression(this.highFreqWorkCron)) {
+                return this.highFreqWorkCron;
+            } else {
+                return DEFAULT_HIGHFREQWORKCRON;
+            }
+        }
+
+        public Integer getHighFreqWorkBatchSize() {
+            return NumberTools.nullOrLessThan(this.highFreqWorkBatchSize, 1) ? DEFAULT_HIGHFREQWORKBATCHSIZE
+                    : this.highFreqWorkBatchSize;
+        }
+
+        public Integer getHighFreqWorkMaxCount() {
+            return NumberTools.nullOrLessThan(this.highFreqWorkMaxCount, 1) ? DEFAULT_HIGHFREQWORKMAXCOUNT
+                    : this.highFreqWorkMaxCount;
+        }
+
+        public Integer getHighFreqWorkMaxMinutes() {
+            return NumberTools.nullOrLessThan(this.highFreqWorkMaxMinutes, 1) ? DEFAULT_HIGHFREQWORKMAXMINUTES
+                    : this.highFreqWorkMaxMinutes;
+        }
+
+        public Boolean getLowFreqWorkEnable() {
+            return null == lowFreqWorkEnable ? DEFAULT_LOWFREQWORKENABLE : this.lowFreqWorkEnable;
+        }
+
+        public String getLowFreqWorkCron() {
+            if (StringUtils.isNotEmpty(this.lowFreqWorkCron)
+                    && CronExpression.isValidExpression(this.lowFreqWorkCron)) {
+                return this.lowFreqWorkCron;
+            } else {
+                return DEFAULT_LOWFREQWORKCRON;
+            }
+        }
+
+        public Integer getLowFreqWorkBatchSize() {
+            return NumberTools.nullOrLessThan(this.lowFreqWorkBatchSize, 1) ? DEFAULT_LOWFREQWORKBATCHSIZE
+                    : this.lowFreqWorkBatchSize;
+        }
+
+        public Integer getLowFreqWorkMaxCount() {
+            return NumberTools.nullOrLessThan(this.lowFreqWorkMaxCount, 1) ? DEFAULT_LOWFREQWORKMAXCOUNT
+                    : this.lowFreqWorkMaxCount;
+        }
+
+        public Integer getLowFreqWorkMaxMinutes() {
+            return NumberTools.nullOrLessThan(this.lowFreqWorkMaxMinutes, 1) ? DEFAULT_LOWFREQWORKMAXMINUTES
+                    : this.lowFreqWorkMaxMinutes;
+        }
+
+        public Integer getMoreLikeThisSize() {
+            return NumberTools.nullOrLessThan(this.moreLikeThisSize, 1) ? DEFAULT_MORELIKETHISSIZE
+                    : this.moreLikeThisSize;
+        }
+
+        public Integer getMoreLikeThisMaxSize() {
+            return NumberTools.nullOrLessThan(this.moreLikeThisMaxSize, 1) ? DEFAULT_MORELIKETHISMAXSIZE
+                    : this.moreLikeThisMaxSize;
+        }
+
+        public Integer getMoreLikeThisMinTermFreq() {
+            return NumberTools.nullOrLessThan(this.moreLikeThisMinTermFreq, 1) ? DEFAULT_MORELIKETHISMINTERMFREQ
+                    : this.moreLikeThisMinTermFreq;
+        }
+
+        public Integer getMoreLikeThisMinDocFreq() {
+            return NumberTools.nullOrLessThan(this.moreLikeThisMinDocFreq, 1) ? DEFAULT_MORELIKETHISMINDOCFREQ
+                    : this.moreLikeThisMinDocFreq;
+        }
+
+        public Float getMoreLikeThisScoreThreshold() {
+            return NumberTools.nullOrLessThan(this.moreLikeThisScoreThreshold, 0f) ? DEFAULT_MORELIKETHISSCORETHRESHOLD
+                    : this.moreLikeThisScoreThreshold;
         }
 
         public Integer getHighlightFragmentSize() {
@@ -596,39 +884,39 @@ public class Query extends ConfigObject {
             return null == searchEnable ? DEFAULT_SEARCHENABLE : this.searchEnable;
         }
 
-        public String getLowFrequencyWorkCompletedCron() {
-            if (StringUtils.isNotEmpty(this.lowFrequencyWorkCompletedCron)
-                    && CronExpression.isValidExpression(this.lowFrequencyWorkCompletedCron)) {
-                return this.lowFrequencyWorkCompletedCron;
+        public String getLowFreqWorkCompletedCron() {
+            if (StringUtils.isNotEmpty(this.lowFreqWorkCompletedCron)
+                    && CronExpression.isValidExpression(this.lowFreqWorkCompletedCron)) {
+                return this.lowFreqWorkCompletedCron;
             } else {
-                return DEFAULT_LOWFREQUENCYWORKCOMPLETEDCRON;
+                return DEFAULT_LOWFREQWORKCOMPLETEDCRON;
             }
         }
 
-        public String getLowFrequencyDocumentCron() {
-            if (StringUtils.isNotEmpty(this.lowFrequencyDocumentCron)
-                    && CronExpression.isValidExpression(this.lowFrequencyDocumentCron)) {
-                return this.lowFrequencyDocumentCron;
+        public String getLowFreqDocumentCron() {
+            if (StringUtils.isNotEmpty(this.lowFreqDocumentCron)
+                    && CronExpression.isValidExpression(this.lowFreqDocumentCron)) {
+                return this.lowFreqDocumentCron;
             } else {
-                return DEFAULT_LOWFREQUENCYDOCUMENTCRON;
+                return DEFAULT_LOWFREQDOCUMENTCRON;
             }
         }
 
-        public String getHighFrequencyWorkCompletedCron() {
-            if (StringUtils.isNotEmpty(this.highFrequencyWorkCompletedCron)
-                    && CronExpression.isValidExpression(this.highFrequencyWorkCompletedCron)) {
-                return this.highFrequencyWorkCompletedCron;
+        public String getHighFreqWorkCompletedCron() {
+            if (StringUtils.isNotEmpty(this.highFreqWorkCompletedCron)
+                    && CronExpression.isValidExpression(this.highFreqWorkCompletedCron)) {
+                return this.highFreqWorkCompletedCron;
             } else {
-                return DEFAULT_HIGHFREQUENCYWORKCOMPLETEDCRON;
+                return DEFAULT_HIGHFREQWORKCOMPLETEDCRON;
             }
         }
 
-        public String getHighFrequencyDocumentCron() {
-            if (StringUtils.isNotEmpty(this.highFrequencyDocumentCron)
-                    && CronExpression.isValidExpression(this.highFrequencyDocumentCron)) {
-                return this.highFrequencyDocumentCron;
+        public String getHighFreqDocumentCron() {
+            if (StringUtils.isNotEmpty(this.highFreqDocumentCron)
+                    && CronExpression.isValidExpression(this.highFreqDocumentCron)) {
+                return this.highFreqDocumentCron;
             } else {
-                return DEFAULT_HIGHFREQUENCYDOCUMENTCRON;
+                return DEFAULT_HIGHFREQDOCUMENTCRON;
             }
         }
 
@@ -649,27 +937,27 @@ public class Query extends ConfigObject {
                     : this.workCompletedCleanupThresholdDays;
         }
 
-        public Integer getLowFrequencyWorkCompletedMaxMinutes() {
-            return NumberTools.nullOrLessThan(lowFrequencyWorkCompletedMaxMinutes, 1)
-                    ? DEFAULT_LOWFREQUENCYWORKCOMPLETEDMAXMINUTES
-                    : this.lowFrequencyWorkCompletedMaxMinutes;
+        public Integer getLowFreqWorkCompletedMaxMinutes() {
+            return NumberTools.nullOrLessThan(lowFreqWorkCompletedMaxMinutes, 1)
+                    ? DEFAULT_LOWFREQWORKCOMPLETEDMAXMINUTES
+                    : this.lowFreqWorkCompletedMaxMinutes;
         }
 
-        public Integer getLowFrequencyWorkCompletedMaxCount() {
-            return NumberTools.nullOrLessThan(lowFrequencyWorkCompletedMaxCount, 1)
-                    ? DEFAULT_LOWFREQUENCYWORKCOMPLETEDMAXCOUNT
-                    : this.lowFrequencyWorkCompletedMaxCount;
+        public Integer getLowFreqWorkCompletedMaxCount() {
+            return NumberTools.nullOrLessThan(lowFreqWorkCompletedMaxCount, 1)
+                    ? DEFAULT_LOWFREQWORKCOMPLETEDMAXCOUNT
+                    : this.lowFreqWorkCompletedMaxCount;
         }
 
-        public Integer getLowFrequencyWorkCompletedBatchSize() {
-            return NumberTools.nullOrLessThan(lowFrequencyWorkCompletedBatchSize, 1)
-                    ? DEFAULT_LOWFREQUENCYWORKCOMPLETEDBATCHSIZE
-                    : this.lowFrequencyWorkCompletedBatchSize;
+        public Integer getLowFreqWorkCompletedBatchSize() {
+            return NumberTools.nullOrLessThan(lowFreqWorkCompletedBatchSize, 1)
+                    ? DEFAULT_LOWFREQWORKCOMPLETEDBATCHSIZE
+                    : this.lowFreqWorkCompletedBatchSize;
         }
 
-        public Boolean getLowFrequencyWorkCompletedEnable() {
-            return null == lowFrequencyWorkCompletedEnable ? DEFAULT_LOWFREQUENCYWORKCOMPLETEDENABLE
-                    : this.lowFrequencyWorkCompletedEnable;
+        public Boolean getLowFreqWorkCompletedEnable() {
+            return null == lowFreqWorkCompletedEnable ? DEFAULT_LOWFREQWORKCOMPLETEDENABLE
+                    : this.lowFreqWorkCompletedEnable;
         }
 
         public Integer getDocumentCleanupThresholdDays() {
@@ -678,73 +966,73 @@ public class Query extends ConfigObject {
                     : this.documentCleanupThresholdDays;
         }
 
-        public Integer getLowFrequencyDocumentMaxMinutes() {
-            return NumberTools.nullOrLessThan(this.lowFrequencyDocumentMaxMinutes, 1)
-                    ? DEFAULT_LOWFREQUENCYDOCUMENTMAXMINUTES
-                    : this.lowFrequencyDocumentMaxMinutes;
+        public Integer getLowFreqDocumentMaxMinutes() {
+            return NumberTools.nullOrLessThan(this.lowFreqDocumentMaxMinutes, 1)
+                    ? DEFAULT_LOWFREQDOCUMENTMAXMINUTES
+                    : this.lowFreqDocumentMaxMinutes;
         }
 
-        public Integer getLowFrequencyDocumentMaxCount() {
-            return NumberTools.nullOrLessThan(lowFrequencyDocumentMaxCount, 1)
-                    ? DEFAULT_LOWFREQUENCYDOCUMENTMAXCOUNT
-                    : this.lowFrequencyDocumentMaxCount;
+        public Integer getLowFreqDocumentMaxCount() {
+            return NumberTools.nullOrLessThan(lowFreqDocumentMaxCount, 1)
+                    ? DEFAULT_LOWFREQDOCUMENTMAXCOUNT
+                    : this.lowFreqDocumentMaxCount;
         }
 
-        public Integer getLowFrequencyDocumentBatchSize() {
-            return NumberTools.nullOrLessThan(lowFrequencyDocumentBatchSize, 1)
-                    ? DEFAULT_LOWFREQUENCYDOCUMENTBATCHSIZE
-                    : this.lowFrequencyDocumentBatchSize;
+        public Integer getLowFreqDocumentBatchSize() {
+            return NumberTools.nullOrLessThan(lowFreqDocumentBatchSize, 1)
+                    ? DEFAULT_LOWFREQDOCUMENTBATCHSIZE
+                    : this.lowFreqDocumentBatchSize;
         }
 
-        public Boolean getLowFrequencyDocumentEnable() {
-            return null == lowFrequencyDocumentEnable ? DEFAULT_LOWFREQUENCYDOCUMENTENABLE
-                    : this.lowFrequencyDocumentEnable;
+        public Boolean getLowFreqDocumentEnable() {
+            return null == lowFreqDocumentEnable ? DEFAULT_LOWFREQDOCUMENTENABLE
+                    : this.lowFreqDocumentEnable;
         }
 
-        public Integer getHighFrequencyDocumentMaxMinutes() {
-            return NumberTools.nullOrLessThan(this.highFrequencyDocumentMaxMinutes, 1)
-                    ? DEFAULT_HIGHFREQUENCYDOCUMENTMAXMINUTES
-                    : this.highFrequencyDocumentMaxMinutes;
+        public Integer getHighFreqDocumentMaxMinutes() {
+            return NumberTools.nullOrLessThan(this.highFreqDocumentMaxMinutes, 1)
+                    ? DEFAULT_HIGHFREQDOCUMENTMAXMINUTES
+                    : this.highFreqDocumentMaxMinutes;
         }
 
-        public Integer getHighFrequencyDocumentMaxCount() {
-            return NumberTools.nullOrLessThan(highFrequencyDocumentMaxCount, 1)
-                    ? DEFAULT_HIGHFREQUENCYDOCUMENTMAXCOUNT
-                    : this.highFrequencyDocumentMaxCount;
+        public Integer getHighFreqDocumentMaxCount() {
+            return NumberTools.nullOrLessThan(highFreqDocumentMaxCount, 1)
+                    ? DEFAULT_HIGHFREQDOCUMENTMAXCOUNT
+                    : this.highFreqDocumentMaxCount;
         }
 
-        public Integer getHighFrequencyDocumentBatchSize() {
-            return NumberTools.nullOrLessThan(highFrequencyDocumentBatchSize, 1)
-                    ? DEFAULT_HIGHFREQUENCYDOCUMENTBATCHSIZE
-                    : this.highFrequencyDocumentBatchSize;
+        public Integer getHighFreqDocumentBatchSize() {
+            return NumberTools.nullOrLessThan(highFreqDocumentBatchSize, 1)
+                    ? DEFAULT_HIGHFREQDOCUMENTBATCHSIZE
+                    : this.highFreqDocumentBatchSize;
         }
 
-        public Boolean getHighFrequencyDocumentEnable() {
-            return null == highFrequencyDocumentEnable ? DEFAULT_HIGHFREQUENCYDOCUMENTENABLE
-                    : this.highFrequencyDocumentEnable;
+        public Boolean getHighFreqDocumentEnable() {
+            return null == highFreqDocumentEnable ? DEFAULT_HIGHFREQDOCUMENTENABLE
+                    : this.highFreqDocumentEnable;
         }
 
-        public Integer getHighFrequencyWorkCompletedMaxMinutes() {
-            return NumberTools.nullOrLessThan(this.highFrequencyWorkCompletedMaxMinutes, 1)
-                    ? DEFAULT_HIGHFREQUENCYWORKCOMPLETEDMAXMINUTES
-                    : this.highFrequencyWorkCompletedMaxMinutes;
+        public Integer getHighFreqWorkCompletedMaxMinutes() {
+            return NumberTools.nullOrLessThan(this.highFreqWorkCompletedMaxMinutes, 1)
+                    ? DEFAULT_HIGHFREQWORKCOMPLETEDMAXMINUTES
+                    : this.highFreqWorkCompletedMaxMinutes;
         }
 
-        public Integer getHighFrequencyWorkCompletedMaxCount() {
-            return NumberTools.nullOrLessThan(highFrequencyWorkCompletedMaxCount, 1)
-                    ? DEFAULT_HIGHFREQUENCYWORKCOMPLETEDMAXCOUNT
-                    : this.highFrequencyWorkCompletedMaxCount;
+        public Integer getHighFreqWorkCompletedMaxCount() {
+            return NumberTools.nullOrLessThan(highFreqWorkCompletedMaxCount, 1)
+                    ? DEFAULT_HIGHFREQWORKCOMPLETEDMAXCOUNT
+                    : this.highFreqWorkCompletedMaxCount;
         }
 
-        public Integer getHighFrequencyWorkCompletedBatchSize() {
-            return NumberTools.nullOrLessThan(highFrequencyWorkCompletedBatchSize, 1)
-                    ? DEFAULT_HIGHFREQUENCYWORKCOMPLETEDBATCHSIZE
-                    : this.highFrequencyWorkCompletedBatchSize;
+        public Integer getHighFreqWorkCompletedBatchSize() {
+            return NumberTools.nullOrLessThan(highFreqWorkCompletedBatchSize, 1)
+                    ? DEFAULT_HIGHFREQWORKCOMPLETEDBATCHSIZE
+                    : this.highFreqWorkCompletedBatchSize;
         }
 
-        public Boolean getHighFrequencyWorkCompletedEnable() {
-            return null == highFrequencyWorkCompletedEnable ? DEFAULT_HIGHFREQUENCYWORKCOMPLETEDENABLE
-                    : this.highFrequencyWorkCompletedEnable;
+        public Boolean getHighFreqWorkCompletedEnable() {
+            return null == highFreqWorkCompletedEnable ? DEFAULT_HIGHFREQWORKCOMPLETEDENABLE
+                    : this.highFreqWorkCompletedEnable;
         }
 
         public Integer getAttachmentMaxSize() {

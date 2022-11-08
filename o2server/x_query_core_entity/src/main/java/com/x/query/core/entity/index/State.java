@@ -1,10 +1,14 @@
 package com.x.query.core.entity.index;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import com.x.base.core.entity.JpaObject;
@@ -29,10 +33,11 @@ public class State extends SliceJpaObject {
     private static final String TABLE = PersistenceProperties.Index.State.TABLE;
 
     public static final String TYPE_WORKCOMPLETED = "workCompleted";
+    public static final String TYPE_WORK = "work";
     public static final String TYPE_DOCUMENT = "document";
 
-    public static final String FREQUENCY_LOW = "low";
-    public static final String FREQUENCY_HIGH = "high";
+    public static final String FREQ_LOW = "low";
+    public static final String FREQ_HIGH = "high";
 
     @Override
     public String getId() {
@@ -55,16 +60,17 @@ public class State extends SliceJpaObject {
     }
 
     public static final String LATESTUPDATEID_FIELDNAME = "latestUpdateId";
-    @FieldDescribe("最后查询标识.")
+    @FieldDescribe("最后更新对象标识.")
     @Column(length = JpaObject.length_id, name = ColumnNamePrefix + LATESTUPDATEID_FIELDNAME)
     @CheckPersist(allowEmpty = true)
-    private String latestUpdateId;
+    private String latestId;
 
-    public static final String LATESTUPDATESEQUENCE_FIELDNAME = "latestUpdateSequence";
-    @FieldDescribe("最后查询顺序标识.")
-    @Column(length = JpaObject.length_128B, name = ColumnNamePrefix + LATESTUPDATESEQUENCE_FIELDNAME)
+    public static final String LATESTUPDATETIME_FIELDNAME = "latestUpdateTime";
+    @FieldDescribe("最后更新对象时间.")
+    @Column(name = ColumnNamePrefix + LATESTUPDATETIME_FIELDNAME)
     @CheckPersist(allowEmpty = true)
-    private String latestUpdateSequence;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date latestUpdateTime;
 
     public static final String TYPE_FIELDNAME = "type";
     @Flag
@@ -80,26 +86,26 @@ public class State extends SliceJpaObject {
     @CheckPersist(allowEmpty = false)
     private String node;
 
-    public static final String FREQUENCY_FIELDNAME = "frequency";
+    public static final String FREQ_FIELDNAME = "freq";
     @FieldDescribe("频率.")
-    @Column(length = length_8B, name = ColumnNamePrefix + FREQUENCY_FIELDNAME)
+    @Column(length = length_8B, name = ColumnNamePrefix + FREQ_FIELDNAME)
     @CheckPersist(allowEmpty = false)
-    private String frequency;
+    private String freq;
 
-    public String getLatestUpdateId() {
-        return latestUpdateId;
+    public String getLatestId() {
+        return latestId;
     }
 
-    public void setLatestUpdateId(String latestUpdateId) {
-        this.latestUpdateId = latestUpdateId;
+    public void setLatestId(String latestId) {
+        this.latestId = latestId;
     }
 
-    public String getLatestUpdateSequence() {
-        return latestUpdateSequence;
+    public Date getLatestUpdateTime() {
+        return latestUpdateTime;
     }
 
-    public void setLatestUpdateSequence(String latestUpdateSequence) {
-        this.latestUpdateSequence = latestUpdateSequence;
+    public void setLatestUpdateTime(Date latestUpdateTime) {
+        this.latestUpdateTime = latestUpdateTime;
     }
 
     public String getType() {
@@ -118,12 +124,12 @@ public class State extends SliceJpaObject {
         this.node = node;
     }
 
-    public String getFrequency() {
-        return frequency;
+    public String getFreq() {
+        return freq;
     }
 
-    public void setFrequency(String frequency) {
-        this.frequency = frequency;
+    public void setFreq(String freq) {
+        this.freq = freq;
     }
 
 }

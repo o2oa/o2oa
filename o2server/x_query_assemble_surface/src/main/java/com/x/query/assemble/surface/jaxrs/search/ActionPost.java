@@ -47,11 +47,11 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.query.assemble.surface.Business;
+import com.x.query.core.express.assemble.surface.jaxrs.search.ActionPostWi;
+import com.x.query.core.express.assemble.surface.jaxrs.search.ActionPostWo;
 import com.x.query.core.express.index.Facets;
 import com.x.query.core.express.index.Filter;
 import com.x.query.core.express.index.Indexs;
-import com.x.query.core.express.jaxrs.search.ActionPostWi;
-import com.x.query.core.express.jaxrs.search.ActionPostWo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -76,7 +76,7 @@ class ActionPost extends BaseAction {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Business business = new Business(emc);
             String person = business.index().who(effectivePerson, wi.getPerson());
-            readers = business.index().determineReaders(person, null, null, null);
+            readers = business.index().determineReaders(person, Indexs.CATEGORY_SEARCH, "");
         }
         Analyzer analyzer = new HanLPAnalyzer();
         Optional<Query> searchQuery = this.searchQuery(wi.getQuery(), analyzer);
@@ -89,7 +89,7 @@ class ActionPost extends BaseAction {
         filterQueries.stream().forEach(o -> builder.add(o, BooleanClause.Occur.MUST));
         Query query = builder.build();
         LOGGER.debug("search lucene query:{}.", query::toString);
-        Optional<Directory> optional = Indexs.searchDirectory(true);
+        Optional<Directory> optional = Indexs.directory(Indexs.CATEGORY_SEARCH, Indexs.KEY_ENTIRE, true);
         if (optional.isEmpty()) {
             throw new ExceptionDirectoryNotExist();
         }
