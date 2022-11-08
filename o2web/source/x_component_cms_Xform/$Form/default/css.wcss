@@ -106,6 +106,57 @@
 		"opacity": 1,
 		"height": "26px"
 	},
+
+  "relatedlinkTable": {
+    "border-top": "1px solid #CCC",
+    "font-size": "12px"
+  },
+  "relatedlinkTableTitleLine": {
+    "text-align": "center",
+    "font-weight": "bold",
+    "background-color": "#edf3f9"
+  },
+  "relatedlinkTableTitle": {
+    "line-height": "28px",
+    "border-bottom": "1px solid #CCC"
+  },
+  "relatedlinkTableCell": {
+    "line-height": "28px",
+    "border-bottom": "1px solid #CCC"
+  },
+  "relatedlinkTableCell_title": {
+    "font-size": "14px"
+  },
+  "relatedlinkTableLine": {
+    "background": "#ffffff"
+  },
+  "relatedlinkTableLine_over": {
+    "background": "#f6f6f6"
+  },
+  "relatedlinkNode": {
+    "clear": "both",
+    "overflow": "hidden",
+    "line-height": "24px",
+    "padding": "5px 10px",
+    //"border-bottom": "1px solid #CCC",
+    "font-size": "14px",
+    "background": "transparent"
+  },
+  "relatedlinkNode_even": {
+    "overflow": "hidden",
+    "line-height": "24px",
+    "padding": "5px 10px",
+    //"border-bottom": "1px solid #CCC",
+    "font-size": "14px",
+    "background": "transparent" //,"#f6f6f6"
+  },
+  "relatedlinkTextNode": {
+    "margin-right": "10px",
+    "overflow": "hidden"
+    //"float": "left",
+    //"margin-left": "28px"
+  },
+
 	"datagridTitle": {
 		"height": "28px",
 		"cursor": "pointer",
