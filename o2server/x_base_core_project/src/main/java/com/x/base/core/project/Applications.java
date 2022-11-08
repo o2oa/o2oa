@@ -695,7 +695,7 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
 		this.updateTimestamp = updateTimestamp;
 	}
 
-	private String urlPrefixOfCenterServer(String nodeName, CenterServer centerServer) {
+	public String urlPrefixOfCenterServer(String nodeName, CenterServer centerServer) {
 		Integer port = centerServer.getPort();
 		StringBuilder buffer = new StringBuilder();
 		if (BooleanUtils.isTrue(centerServer.getSslEnable())) {
