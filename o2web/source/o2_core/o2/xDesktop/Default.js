@@ -2096,7 +2096,7 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
         }else if( data.hasOwnProperty('applicationCategory')  ){
             return "process";
         }else{
-            return data.type;
+            return data.type || "";
         }
     },
     removeFormGroup: function(){
