@@ -357,10 +357,14 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		var log = {
 			"type": "property",
 			"moduleId": "form",
-			"name": name,
-			"fromValue": oldValue,
-			"toValue": newValue || this.json[name],
-			"notSetEditStyle": notSetEditStyle
+			"notSetEditStyle": notSetEditStyle,
+			"changeList": [
+				{
+					"name": name,
+					"fromValue": oldValue,
+					"toValue": newValue || this.json[name]
+				}
+			]
 		};
 		this.history.checkProperty(log, this);
 	},

@@ -1174,11 +1174,24 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		var log = {
 			"type": "property",
 			"moduleId": this.json.id,
-			"name": name,
-			"fromValue": oldValue,
-			"toValue": newValue || this.json[name],
-			"notSetEditStyle": notSetEditStyle
+			"notSetEditStyle": notSetEditStyle,
+			"changeList": []
 		};
+		if( typeOf(name) === "array" ){
+			name.each(function (n, i) {
+				log.changeList.push({
+					"name": n,
+					"fromValue": oldValue[i],
+					"toValue": newValue[i] || this.json[n]
+				})
+			})
+		}else{
+			log.changeList.push({
+				"name": name,
+				"fromValue": oldValue,
+				"toValue": newValue || this.json[name]
+			})
+		}
 		this.form.history.checkProperty(log, this);
 	},
 	// createHistoryPropertyLogList: function( moduleList ){

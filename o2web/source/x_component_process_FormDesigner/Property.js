@@ -586,10 +586,13 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     var oldValue = this.data[appNodeName] || "";
                     this.data[appNodeName] = !apps.length ? "" : apps[0].data.id;
                     if( oldValue !== this.data[appNodeName] ){
-                        this.checkHistory(appNodeName, oldValue, this.data[appNodeName]);
                         this.getSubFormList(function(){
                             this.setSubformSelectOptions(formSelectNode, formSelect);
-                            formSelect.fireEvent("change", [null, true]);
+                            formSelect.fireEvent("change", [null, {
+                                name: appNodeName,
+                                fromValue: oldValue,
+                                toValue: this.data[appNodeName]
+                            }]);
                         }.bind(this), true, appNodeName);
                     }
                 }.bind(this));
@@ -612,11 +615,19 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         }.bind(this))
     },
     _loadSubformSelect : function( node, formNodeName, appNodeName ){
+        this.subforms = null;
         var select = new Element("select").inject(node);
+        var oldValue = this.data[formNodeName];
         this.getSubFormList(function(){
-            select.addEvent("change", function(e, flag){
+            select.addEvent("change", function(e, appChange){
                 var value = select.options[select.selectedIndex].value;
-                this.setValue(formNodeName, value, select, flag);
+                if( appChange ){
+                    this.setValue(formNodeName, value, select, true);
+                    this.checkHistory([appChange.name, formNodeName], [appChange.fromValue, oldValue], [appChange.toValue, value] )
+                }else{
+                    this.setValue(formNodeName, value, select);
+                }
+                oldValue = value;
             }.bind(this));
             this.setSubformSelectOptions(node, select);
 
@@ -720,7 +731,11 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     if( oldValue !== this.data[appNodeName] ){
                         this.getWidgetList(function(){
                             this.setWidgetSelectOptions(widgetSelectNode, widgetSelect);
-                            widgetSelect.fireEvent("change");
+                            widgetSelect.fireEvent("change", [null, {
+                                name: appNodeName,
+                                fromValue: oldValue,
+                                toValue: this.data[appNodeName]
+                            }]);
                         }.bind(this), true, appNodeName);
                     }
                 }.bind(this));
@@ -743,11 +758,19 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         }.bind(this))
     },
     _loadWidgetSelect : function( node, widgetNodeName, appNodeName ){
+        this.widgets = null;
         var select = new Element("select").inject(node);
+        var oldValue = this.data[widgetNodeName];
         this.getWidgetList(function(){
-            select.addEvent("change", function(e){
+            select.addEvent("change", function(e, appChange){
                 var value = select.options[select.selectedIndex].value;
-                this.setValue(widgetNodeName, value, select);
+                if( appChange ){
+                    this.setValue(widgetNodeName, value, select, true);
+                    this.checkHistory([appChange.name, widgetNodeName], [appChange.fromValue, oldValue], [appChange.toValue, value] )
+                }else{
+                    this.setValue(widgetNodeName, value, select);
+                }
+                oldValue = value;
             }.bind(this));
             this.setWidgetSelectOptions(node, select);
 
@@ -841,6 +864,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
     loadViewFilter: function(){
         var nodes = this.propertyContent.getElements(".MWFViewFilter");
         var filtrData = this.data.filterList;
+        var oldValue = Array.clone(filtrData || []);
         nodes.each(function(node){
             MWF.xDesktop.requireApp("query.ViewDesigner", "widget.ViewFilter", function(){
                 var _slef = this;
@@ -848,6 +872,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     "onChange": function(ids){
                         var data = this.getData();
                         _slef.changeJsonDate(["filterList"], data.data);
+                        _slef.checkHistory("filterList", oldValue, data.data);
+                        oldValue = Array.clone(data.data);
                         //_slef.changeJsonDate(["data", "customFilterEntryList"], data.customData);
                     }
                 });

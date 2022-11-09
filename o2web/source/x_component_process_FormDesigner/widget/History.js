@@ -1,23 +1,23 @@
 MWF.xApplication.process.FormDesigner.widget = MWF.xApplication.process.FormDesigner.widget || {};
 MWF.xDesktop.requireApp("Template", "MTooltips", null, false);
 MWF.xApplication.process.FormDesigner.widget.History = new Class({
-	Implements: [Options, Events],
-	Extends: MWF.widget.Common,
-	options: {
+    Implements: [Options, Events],
+    Extends: MWF.widget.Common,
+    options: {
         style: "default"
-	},
-	initialize: function(form, actionNode, options){
-		this.setOptions(options);
+    },
+    initialize: function(form, actionNode, options){
+        this.setOptions(options);
         this.form = form;
         this.actionNode = actionNode;
         this.root = this.form.node;
-		this.path = "../x_component_process_FormDesigner/widget/$History/";
+        this.path = "../x_component_process_FormDesigner/widget/$History/";
         this.iconPath = this.path+this.options.style+"/icon/";
-		this.cssPath = this.path+this.options.style+"/css.wcss";
-		this._loadCss();
-	},
+        this.cssPath = this.path+this.options.style+"/css.wcss";
+        this._loadCss();
+    },
 
-	load: function(data) {
+    load: function(data) {
         //存储当前表面状态数组-上一步
         this.preArray = [];
         //存储当前表面状态数组-下一步
@@ -47,7 +47,7 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
     },
     //获取domPath
     getPath: function (node) {
-	    var root = this.root;
+        var root = this.root;
         var path = [];
         var parent, childrens, nodeIndex;
         while (node && node !== root) {
@@ -104,25 +104,39 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
     checkProperty: function(log, module){
         // var log = {
         //     "type": "property",
+        //     "title": "",
         //     "moduleId": this.json.id,
-        //     "name": name,
-        //     "fromValue": oldValue,
-        //     "toValue": this.json[name],
-        //      "notSetEditStyle": false
+        //     "notSetEditStyle": false
+        //     "changeList": [
+        //          {
+        //              "name": name,
+        //              "fromValue": oldValue,
+        //              "toValue": this.json[name]
+        //          }
+        //      ]
         // };
         debugger;
-        if( !log.fromValue && !log.toValue )return;
-        if( this.compareObjects( log.fromValue, log.toValue ) )return;
 
-        console.log( log, "fromValue = " , log.fromValue, "toValue = " , log.toValue );
+        var isModified = false;
+        for( var i=0; i<log.changeList.length; i++ ){
+            var c = log.changeList[i];
+            if( !c.fromValue && !c.toValue )continue;
+            if( this.compareObjects( c.fromValue, c.toValue ) )continue;
+            isModified = true;
+            break;
+        }
+        if( !isModified )return;
+
+        console.log( log );
 
         var flag = false;
         if( this.preArray.length ){
             var lastItem = this.preArray.getLast();
             var lastSubItem;
             if( lastItem.data.type === "property" ) {
-                if (lastItem.moduleIdList.contains(log.moduleId) || (log.name === "id" && lastItem.moduleIdList.contains(log.fromValue))) {
-                    if (log.name === "id") lastItem.moduleIdList.push(log.toValue);
+                var change = log.changeList[0];
+                if (lastItem.moduleIdList.contains(log.moduleId) || (change.name === "id" && lastItem.moduleIdList.contains(change.fromValue))) {
+                    if (change.name === "id") lastItem.moduleIdList.push(change.toValue);
                     lastSubItem = lastItem.getLastSubItem();
 
                     var it;
@@ -131,15 +145,16 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
                         it.destroy();
                     }
 
-                    if (lastSubItem.data.name === log.name) {
-                        // if( lastSubItem.data.fromValue === log.toValue ){ //回到最初的值了
+                    var lastChangeList = lastSubItem.data.changeList;
+                    if (lastChangeList.length === 1 && log.changeList.length === 1  && lastChangeList[0].name === change.name) {
+                        // if( lastSubItem.data.fromValue === change.toValue ){ //回到最初的值了
                         //     if( lastItem.preArray.length === 1 ){
                         //         this.destroyItem( lastItem );
                         //     }else{
                         //         lastItem.destroySubItem(lastSubItem);
                         //     }
                         // }else{
-                            lastSubItem.data.toValue = log.toValue;
+                        lastChangeList[0].toValue = change.toValue;
                         // }
                     } else {
                         lastItem.addSubItem(log);
@@ -150,7 +165,7 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
             }
         }
         if( !flag ){
-            var item = new MWF.FCWHistory.PropertyItem(this, log);
+            var item = new MWF.FCWHistory.PropertySingleItem(this, log);
             item.load( module );
             this.addItem(item);
         }
@@ -179,11 +194,11 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         this.preArray.erase(item);
         item.destroy();
     },
-    goto: function(item){
-	    var it;
-	    if( item.status === "pre" ){
-	        it = this.preArray.getLast();
-	        while (it && item !== it){
+    goto: function(item, notRedoItem){
+        var it;
+        if( item.status === "pre" ){
+            it = this.preArray.getLast();
+            while (it && item !== it){
                 it.undo();
                 this.nextArray.unshift(it); //插入到灰显数组前面
                 this.preArray.pop(); //删除preArray最后一个
@@ -192,7 +207,7 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
             debugger;
             item.selectModule("undo");
         }else if( item.status === "next" ){
-	        if( this.preArray.length ){  //上一个property的subItem要redo一下
+            if( this.preArray.length ){  //上一个property的subItem要redo一下
                 it = this.preArray.getLast();
                 if( it.data.type === "property" )it.redo();
             }
@@ -203,16 +218,16 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
                 this.nextArray.shift();
                 it = this.nextArray[0];
             }
-            item.redo();
+            item.redo( notRedoItem );
             this.preArray.push(item); //插入到preArray数组最后
             this.nextArray.shift();
             item.selectModule("redo");
         }
     },
     compareObjects: function(o, p, deep){
-	    debugger;
-	    if( o === p )return true;
-	    return JSON.stringify(o) === JSON.stringify(p);
+        debugger;
+        if( o === p )return true;
+        return JSON.stringify(o) === JSON.stringify(p);
     }
 });
 
@@ -250,8 +265,8 @@ MWF.FCWHistory.Item = new Class({
         var lp = MWF.xApplication.process.FormDesigner.LP.formAction;
         return  ( lp[this.data.operation] || this.data.operation ) + " " + this.data.moduleId;
     },
-    comeHere: function () {
-        this.history.goto(this)
+    comeHere: function ( e, notRedoThis ) {
+        this.history.goto(this, notRedoThis)
     },
     undo: function () { //回退
         this.status = "next";
@@ -771,7 +786,7 @@ MWF.FCWHistory.ModuleTabpageItem = new Class({
     }
 });
 
-MWF.FCWHistory.PropertyItem = new Class({
+MWF.FCWHistory.PropertySingleItem = new Class({
     Extends: MWF.FCWHistory.Item,
     load: function (module) {
         this.node = new Element("div", {
@@ -824,10 +839,10 @@ MWF.FCWHistory.PropertyItem = new Class({
         this.node.setStyles( this.history.css.itemNode_property_undo );
         this._undo();
     },
-    redo: function(){ //重做
+    redo: function( notRedoItem ){ //重做
         this.status = "pre";
         this.node.setStyles(this.history.css.itemNode_property_redo);
-        this._redo();
+        if( !notRedoItem )this._redo();
     },
     _undo: function () {
         // for( var i=this.subItemList.length-1; i > -1; i-- ){
@@ -879,7 +894,7 @@ MWF.FCWHistory.PropertyItem = new Class({
         subItem.destroy();
     },
     addSubItem: function ( data ) {
-        var subItem = new MWF.FCWHistory.PropertyItem.SubItem(this, data);
+        var subItem = new MWF.FCWHistory.PropertySingleItem.SubItem(this, data);
         subItem.load();
         this._addSubItem(subItem);
     },
@@ -924,7 +939,7 @@ MWF.FCWHistory.PropertyItem = new Class({
     }
 });
 
-MWF.FCWHistory.PropertyItem.SubItem = new Class({
+MWF.FCWHistory.PropertySingleItem.SubItem = new Class({
     Extends: MWF.FCWHistory.Item,
     initialize: function (item, log) {
         this.parentItem = item;
@@ -944,10 +959,10 @@ MWF.FCWHistory.PropertyItem.SubItem = new Class({
         }).inject(this.history.node);
     },
     getText: function () {
-        return this.data.name;
+        return this.data.changeList[0].name;
     },
-    comeHere: function () {
-        this.parentItem.comeHere();
+    comeHere: function (e) {
+        this.parentItem.comeHere( null, true );
         this.parentItem.goto( this );
     },
     undo: function () { //回退
@@ -961,35 +976,43 @@ MWF.FCWHistory.PropertyItem.SubItem = new Class({
         this._redo();
     },
     _undo: function () {
+        console.log( "_undo", this.data);
         var module = this.parentItem.getModule();
         if (module) {
             var json = module.json;
-            if (this.data.name === "id") {
-                json.id = this.data.fromValue;
-                this.form.json.moduleList[this.data.fromValue] = json;
-                delete this.form.json.moduleList[this.data.toValue];
-            }else{
-                // json[this.data.name] = this.data.fromValue;
-                this.changeJsonDate(json, this.data.name, this.data.fromValue);
-                module.setPropertiesOrStyles(this.data.name, this.data.toValue);
+            for( var i=this.data.changeList.length-1; i>-1; i-- ){
+                var change = this.data.changeList[i];
+                if (change.name === "id") {
+                    json.id = change.fromValue;
+                    this.form.json.moduleList[change.fromValue] = json;
+                    delete this.form.json.moduleList[change.toValue];
+                }else{
+                    // json[change.name] = change.fromValue;
+                    this.changeJsonDate(json, change.name, change.fromValue);
+                    module.setPropertiesOrStyles(change.name, change.toValue);
+                }
+                if(!this.data.notSetEditStyle)module._setEditStyle(change.name, null, change.toValue);
             }
-            if(!this.data.notSetEditStyle)module._setEditStyle(this.data.name, null, this.data.toValue);
         }
     },
     _redo: function () {
+        console.log( "_redo", this.data);
         var module = this.parentItem.getModule();
         if (module) {
             var json = module.json;
-            if( this.data.name === "id" ){
-                    json.id = this.data.toValue;
-                    this.form.json.moduleList[ this.data.toValue ] = json;
-                    delete this.form.json.moduleList[ this.data.fromValue ];
-            }else{
-                // json[this.data.name] = this.data.toValue;
-                this.changeJsonDate(json, this.data.name, this.data.toValue);
-                module.setPropertiesOrStyles(this.data.name, this.data.fromValue);
+            for( var i=0; i<this.data.changeList.length; i++ ){
+                var change = this.data.changeList[i];
+                if( change.name === "id" ){
+                    json.id = change.toValue;
+                    this.form.json.moduleList[ change.toValue ] = json;
+                    delete this.form.json.moduleList[ change.fromValue ];
+                }else{
+                    // json[change.name] = change.toValue;
+                    this.changeJsonDate(json, change.name, change.toValue);
+                    module.setPropertiesOrStyles(change.name, change.fromValue);
+                }
+                if(!this.data.notSetEditStyle)module._setEditStyle(change.name, null, change.fromValue)
             }
-            if(!this.data.notSetEditStyle)module._setEditStyle(this.data.name, null, this.data.fromValue)
         }
     },
     changeJsonDate: function(json, name, value){
