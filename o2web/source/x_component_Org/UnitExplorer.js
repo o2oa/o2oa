@@ -771,6 +771,12 @@ MWF.xApplication.Org.UnitExplorer.UnitContent = new Class({
     },
     _listIdentityMembers: function(){
         var _self = this;
+
+        if(this.identityMemberList){
+            this.identityMemberList.clear();
+        }
+        this.personMemberContentNode.empty();
+
         this.identityMemberList = new MWF.xApplication.Org.List(this.personMemberContentNode, this, {
             "action": _self.getIdentityActionPermission(),
             "canEdit": false,
@@ -794,7 +800,7 @@ MWF.xApplication.Org.UnitExplorer.UnitContent = new Class({
                 "get": function(){return this.woPerson.mail}
             }, {
                 "getHtml": function(){
-                    return "<div style='width:24px; height:24px; background:url(../x_component_Org/$Explorer/"+
+                    return "<div style='float:right;width:24px; height:24px; background:url(../x_component_Org/$Explorer/"+
                         _self.explorer.app.options.style+"/icon/open.png) center center no-repeat'></div>";
                 },
                 "events": {
@@ -826,6 +832,11 @@ MWF.xApplication.Org.UnitExplorer.UnitContent = new Class({
                     this.sortAction.addEvent("click", function (e) {
                         _self.sortByPinYin(e)
                     })
+
+                    this.sortByManualAction = new Element("div", {"styles": this.css.sortActionNode, "text": _self.explorer.app.lp.sortByManual}).inject(this.actionNode);
+                    this.sortByManualAction.addEvent("click", function (e) {
+                        _self.sortByManual(e)
+                    })
                 }
             }
         });
@@ -836,11 +847,76 @@ MWF.xApplication.Org.UnitExplorer.UnitContent = new Class({
             {"style": "", "text": this.explorer.app.lp.personEmployee},
             {"style": "", "text": this.explorer.app.lp.personMobile},
             {"style": "", "text": this.explorer.app.lp.personMail},
-            {"style": "width: 10px", "text": ""},
-            {"style": "width: 10px", "text": ""}
+            {"style": "width: 100px", "text": ""},
+            {"style": "width: 100px", "text": ""}
         ]);
         this.data.woSubDirectIdentityList.each(function(id){
             var item = this.identityMemberList.push(id);
+        }.bind(this));
+    },
+    sortByManual: function(){
+        var _self = this;
+        if(this.identityMemberList)this.identityMemberList.clear();
+        this.identityMemberList = null;
+        this.personMemberContentNode.empty();
+
+        this.identitySortList = new MWF.xApplication.Org.List(this.personMemberContentNode, this, {
+            "action": false,
+            "canEdit": false,
+            "attr": [{
+                "getHtml": function(){
+                    var src = _self.explorer.actions.getPersonIcon(this.woPerson.id);
+                    return "<div style='width:24px; height:24px;''><img style='width:24px; height:24px; border-radius:12px; border: 0' src='"+src+"'/></div>";
+                },
+                "set": function(){}
+            }, {
+                "get": function(){return this.woPerson.name}
+            }, {
+                "get": function(){return this.woPerson.employee}
+            }, {
+                "get": function(){return this.woPerson.mobile}
+            }, {
+                "get": function(){return this.woPerson.mail}
+            }, {
+                "getHtml": function(){
+                    return "<input class='orderNumber' type='number' min=1 value='"+this.orderNumber+"'/>";
+                }
+            }]
+        });
+        this.identitySortList.loadAction = function(){
+            this.actionAreaNode = new Element("div", {"styles": this.css.actionAreaNode}).inject(this.contentNode, "top");
+            this.actionNode = new Element("div", {"styles": this.css.actionNode}).inject(this.actionAreaNode);
+            this.sortCancelAction = new Element("div", {"styles": this.css.cancelActionNode, "text": _self.explorer.app.lp.cancel}).inject(this.actionNode);
+            this.sortCancelAction.addEvent("click", function (e) {
+                _self._listIdentityMembers(e)
+            })
+
+            this.sortOkAction = new Element("div", {"styles": this.css.okActionNode, "text": _self.explorer.app.lp.ok}).inject(this.actionNode);
+            this.sortOkAction.addEvent("click", function (e) {
+                var pList = [];
+                _self.identitySortList.items.each(function(item){
+                    item.data.orderNumber = item.tr.tr.getElement(".orderNumber").get("value").toInt();
+                    var p = o2.Actions.load("x_organization_assemble_control").IdentityAction.edit(item.data.id, item.data);
+                    pList.push(p);
+                })
+                Promise.all(pList).then(function () {
+                    _self.data.woSubDirectIdentityList.sort(function(a, b){
+                        return a.orderNumber - b.orderNumber;
+                    })
+                    _self._listIdentityMembers(e)
+                })
+            })
+        };
+        this.identitySortList.load([
+            {"style": "width: 30px", "text": ""},
+            {"style": "width: 20%", "text": this.explorer.app.lp.personName},
+            {"style": "", "text": this.explorer.app.lp.personEmployee},
+            {"style": "", "text": this.explorer.app.lp.personMobile},
+            {"style": "", "text": this.explorer.app.lp.personMail},
+            {"style": "", "text": this.explorer.app.lp.orderNumber}
+        ]);
+        this.data.woSubDirectIdentityList.each(function(id){
+            var item = this.identitySortList.push(id);
         }.bind(this));
     },
     sortByPinYin : function(e){
