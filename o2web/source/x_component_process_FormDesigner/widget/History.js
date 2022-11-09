@@ -285,6 +285,7 @@ MWF.FCWHistory.Item = new Class({
 
     destroy: function () {
         this.node.destroy();
+        MWF.release(this);
     },
     unselectModule: function () {
         if(this.form.currentSelectedModule && this.form.currentSelectedModule.unSelected){
@@ -833,6 +834,7 @@ MWF.FCWHistory.PropertySingleItem = new Class({
         }
 
         this.node.destroy();
+        MWF.release(this);
     },
     undo: function () { //回退
         this.status = "next";
