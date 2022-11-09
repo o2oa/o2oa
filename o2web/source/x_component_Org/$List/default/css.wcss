@@ -120,5 +120,38 @@
         "line-height": "normal",
         "color":"#333",
         "border-radius":"3px"
+    },
+    "okActionNode": {
+        "background": "url(../x_component_Org/$Explorer/default/icon/mainid.png) 5px center no-repeat",
+        "background-size": "12px",
+        "float": "right",
+        "cursor": "pointer",
+        "margin-top": "0px",
+        "margin-left": "5px",
+        "padding": "3px 5px",
+        "padding-left": "22px",
+        "font-size": "12px",
+        "font-weight": "normal",
+        "border": "1px solid #666",
+        "background-color": "#FFF",
+        "line-height": "normal",
+        "color":"#333",
+        "border-radius":"3px"
+    },
+    "cancelActionNode": {
+        //        "background": "url(../x_component_Org/$List/default/icon/order.png) 3px center no-repeat",
+        "float": "right",
+        "cursor": "pointer",
+        "margin-top": "0px",
+        "margin-left": "5px",
+        "padding": "3px 5px",
+        //        "padding-left": "22px",
+        "font-size": "12px",
+        "font-weight": "normal",
+        "border": "1px solid #666",
+        "background-color": "#FFF",
+        "line-height": "normal",
+        "color":"#333",
+        "border-radius":"3px"
     }
 }

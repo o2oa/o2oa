@@ -24,6 +24,7 @@ MWF.xApplication.Org.LP = {
     "no": "No",
     "sortByPinYin" : "Sort by pinyin",
     "sortByPinYinConfirmContent" : "This operation will sort the identities in the organization according to pinyin, confirm the operation?",
+    "sortByManual": "Change the sort number ",
 
 	"search": "Search",
 	"searchText": "Input search keyword",
