@@ -426,8 +426,12 @@ public class Query extends ConfigObject {
         public static final String MODE_SHAREDDIRECTORY = "sharedDirectory";
 
         public static final String DEFAULT_HDFSDIRECTORYDEFAULTFS = "hdfs://127.0.0.1:9000";
-        public static final String DEFAULT_DIRECTORYPATH = "/repository/index";
+        public static final String DEFAULT_HDFSDIRECTORYPATH = "/";
+        public static final String DEFAULT_SHAREDDIRECTORYPATH = "/repository/index";
         public static final String DEFAULT_MODE = MODE_LOCALDIRECTORY;
+        public static final Integer DEFAULT_MAXSEGMENTS = 1;
+        public static final Integer DEFAULT_CLEANUPTHRESHOLDDAYS = 180;
+
         public static final Integer DEFAULT_DATASTRINGTHRESHOLD = 50;
         public static final Integer DEFAULT_SUMMARYLENGTH = 250;
         public static final Integer DEFAULT_ATTACHMENTMAXSIZE = 5;
@@ -435,42 +439,43 @@ public class Query extends ConfigObject {
         public static final Boolean DEFAULT_WORKCOMPLETEDINDEXATTACHMENT = true;
         public static final Boolean DEFAULT_DOCUMENTINDEXATTACHMENT = true;
 
+        public static final Boolean DEFAULT_LOWFREQDOCUMENTENABLE = true;
+        public static final String DEFAULT_LOWFREQDOCUMENTCRON = "40 15 19 * * ?";
+        public static final Integer DEFAULT_LOWFREQDOCUMENTBATCHSIZE = 50;
+        public static final Integer DEFAULT_LOWFREQDOCUMENTMAXCOUNT = 50000;
+        public static final Integer DEFAULT_LOWFREQDOCUMENTMAXMINUTES = 60;
+
         public static final Boolean DEFAULT_LOWFREQWORKENABLE = true;
-        public static final String DEFAULT_LOWFREQWORKCRON = "40 15 21 * * ?";
-        public static final Integer DEFAULT_LOWFREQWORKBATCHSIZE = 200;
+        public static final String DEFAULT_LOWFREQWORKCRON = "40 15 20 * * ?";
+        public static final Integer DEFAULT_LOWFREQWORKBATCHSIZE = 50;
         public static final Integer DEFAULT_LOWFREQWORKMAXCOUNT = 50000;
-        public static final Integer DEFAULT_LOWFREQWORKMAXMINUTES = 120;
+        public static final Integer DEFAULT_LOWFREQWORKMAXMINUTES = 60;
 
         public static final Boolean DEFAULT_LOWFREQWORKCOMPLETEDENABLE = true;
         public static final String DEFAULT_LOWFREQWORKCOMPLETEDCRON = "40 15 21 * * ?";
         public static final Integer DEFAULT_LOWFREQWORKCOMPLETEDBATCHSIZE = 200;
-        public static final Integer DEFAULT_LOWFREQWORKCOMPLETEDMAXCOUNT = 50000;
+        public static final Integer DEFAULT_LOWFREQWORKCOMPLETEDMAXCOUNT = 500000;
         public static final Integer DEFAULT_LOWFREQWORKCOMPLETEDMAXMINUTES = 120;
-        public static final Integer DEFAULT_WORKCOMPLETEDCLEANUPTHRESHOLDDAYS = 180;
 
-        public static final Boolean DEFAULT_LOWFREQDOCUMENTENABLE = true;
-        public static final String DEFAULT_LOWFREQDOCUMENTCRON = "40 15 20 * * ?";
-        public static final Integer DEFAULT_LOWFREQDOCUMENTBATCHSIZE = 50;
-        public static final Integer DEFAULT_LOWFREQDOCUMENTMAXCOUNT = 10000;
-        public static final Integer DEFAULT_LOWFREQDOCUMENTMAXMINUTES = 60;
-        public static final Integer DEFAULT_DOCUMENTCLEANUPTHRESHOLDDAYS = 180;
+        public static final Boolean DEFAULT_OPTIMIZEINDEXENABLE = true;
+        public static final String DEFAULT_OPTIMIZEINDEXCRON = "40 15 23 * * ?";
 
         public static final Boolean DEFAULT_HIGHFREQWORKENABLE = true;
-        public static final String DEFAULT_HIGHFREQWORKCRON = "40 2/5 7-19 * * ?";
+        public static final String DEFAULT_HIGHFREQWORKCRON = "40 0/3 7-19 * * ?";
         public static final Integer DEFAULT_HIGHFREQWORKBATCHSIZE = 50;
         public static final Integer DEFAULT_HIGHFREQWORKMAXCOUNT = 200;
-        public static final Integer DEFAULT_HIGHFREQWORKMAXMINUTES = 5;
+        public static final Integer DEFAULT_HIGHFREQWORKMAXMINUTES = 2;
 
         public static final Boolean DEFAULT_HIGHFREQWORKCOMPLETEDENABLE = true;
         public static final String DEFAULT_HIGHFREQWORKCOMPLETEDCRON = "40 0/10 7-19 * * ?";
         public static final Integer DEFAULT_HIGHFREQWORKCOMPLETEDBATCHSIZE = 50;
-        public static final Integer DEFAULT_HIGHFREQWORKCOMPLETEDMAXCOUNT = 200;
+        public static final Integer DEFAULT_HIGHFREQWORKCOMPLETEDMAXCOUNT = 500;
         public static final Integer DEFAULT_HIGHFREQWORKCOMPLETEDMAXMINUTES = 5;
 
         public static final Boolean DEFAULT_HIGHFREQDOCUMENTENABLE = true;
-        public static final String DEFAULT_HIGHFREQDOCUMENTCRON = "55 0/15 7-19 * * ?";
+        public static final String DEFAULT_HIGHFREQDOCUMENTCRON = "55 0/10 7-19 * * ?";
         public static final Integer DEFAULT_HIGHFREQDOCUMENTBATCHSIZE = 50;
-        public static final Integer DEFAULT_HIGHFREQDOCUMENTMAXCOUNT = 200;
+        public static final Integer DEFAULT_HIGHFREQDOCUMENTMAXCOUNT = 500;
         public static final Integer DEFAULT_HIGHFREQDOCUMENTMAXMINUTES = 5;
 
         public static final Boolean DEFAULT_SEARCHENABLE = true;
@@ -480,8 +485,8 @@ public class Query extends ConfigObject {
         public static final Float DEFAULT_SEARCHBODYBOOST = 2.0f;
         public static final Float DEFAULT_SEARCHATTACHMENTBOOST = 1.0f;
 
-        public static final Integer DEFAULT_SEARCHSIZE = 20;
-        public static final Integer DEFAULT_SEARCHMAXSIZE = 1000;
+        public static final Integer DEFAULT_SEARCHPAGESIZE = 20;
+        public static final Integer DEFAULT_SEARCHMAXPAGESIZE = 5000;
 
         public static final Integer DEFAULT_SEARCHMAXHITS = 1000000;
 
@@ -513,9 +518,25 @@ public class Query extends ConfigObject {
         @Schema(description = "hadoop文件系统地址.")
         private String hdfsDirectoryDefaultFS;
 
-        @FieldDescribe("本地文件系统或者共享文件系统目录.")
-        @Schema(description = "本地文件系统或者共享文件系统目录.")
-        private String directoryPath;
+        @FieldDescribe("hadoop文件系统目录.")
+        @Schema(description = "hadoop文件系统目录.")
+        private String hdfsDirectoryPath;
+
+        @FieldDescribe("共享文件系统目录.")
+        @Schema(description = "共享文件系统目录.")
+        private String sharedDirectoryPath;
+
+        @FieldDescribe("索引分段数量.")
+        @Schema(description = "索引分段数量.")
+        private Integer maxSegments;
+
+        @FieldDescribe("是否启用优化索引.")
+        @Schema(description = "是否启用优化索引.")
+        private Boolean optimizeIndexEnable;
+
+        @FieldDescribe("优化索引定时配置.")
+        @Schema(description = "优化索引定时配置.")
+        private String optimizeIndexCron;
 
         @FieldDescribe("业务数据最大文本长度阈值,超过此阈值将忽略写入到索引.")
         @Schema(description = "业务数据最大文本长度阈值,超过此阈值将忽略写入到索引.")
@@ -544,188 +565,228 @@ public class Query extends ConfigObject {
         @FieldDescribe("是否启用流转中工作低频索引.")
         @Schema(description = "是否启用流转中工作低频索引.")
         private Boolean lowFreqWorkEnable;
-        
+
         @FieldDescribe("流转中工作低频索引定时配置.")
         @Schema(description = "流转中工作低频索引定时配置.")
         private String lowFreqWorkCron;
-        
+
         @FieldDescribe("流转中工作低频索引批量获取大小.")
         @Schema(description = "流转中工作低频索引批量获取大小.")
         private Integer lowFreqWorkBatchSize;
-        
+
         @FieldDescribe("流转中工作低频索单次最大处理数量.")
         @Schema(description = "流转中工作低频索单次最大处理数量.")
         private Integer lowFreqWorkMaxCount;
-        
+
         @FieldDescribe("流转中工作低频索单次最大处理时长(分钟).")
         @Schema(description = "流转中工作低频索单次最大处理时长(分钟).")
         private Integer lowFreqWorkMaxMinutes;
-        
+
         @FieldDescribe("是否启用已完成工作低频索引.")
         @Schema(description = "是否启用已完成工作低频索引.")
         private Boolean lowFreqWorkCompletedEnable;
-        
+
         @FieldDescribe("已完成工作低频索引定时配置.")
         @Schema(description = "已完成工作低频索引定时配置.")
         private String lowFreqWorkCompletedCron;
-        
-        
-        
-        @FieldDescribe("流转中工作低频索引定时配置.")
-        @Schema(description = "流转中工作低频索引定时配置.")
+
+        @FieldDescribe("流转中工作低频索引批量获取大小.")
+        @Schema(description = "流转中工作低频索引批量获取大小.")
         private Integer lowFreqWorkCompletedBatchSize;
-        
-        @FieldDescribe("流转中工作低频索引定时配置.")
-        @Schema(description = "流转中工作低频索引定时配置.")
+
+        @FieldDescribe("流转中工作低频索引单次最大处理数量.")
+        @Schema(description = "流转中工作低频索引单次最大处理数量.")
         private Integer lowFreqWorkCompletedMaxCount;
-        
-        @FieldDescribe("流转中工作低频索引定时配置.")
-        @Schema(description = "流转中工作低频索引定时配置.")
+
+        @FieldDescribe("流转中工作低频索引单次最大处理时长(分钟).")
+        @Schema(description = "流转中工作低频索引单次最大处理时长(分钟).")
         private Integer lowFreqWorkCompletedMaxMinutes;
 
-        @FieldDescribe("流转中工作低频索引定时配置.")
-        @Schema(description = "流转中工作低频索引定时配置.")
+        @FieldDescribe("是否启用内容管理文档低频索引.")
+        @Schema(description = "是否启用内容管理文档低频索引.")
         private Boolean lowFreqDocumentEnable;
-        
-        @FieldDescribe("流转中工作低频索引定时配置.")
-        @Schema(description = "流转中工作低频索引定时配置.")
+
+        @FieldDescribe("内容管理文档低频索引定时配置.")
+        @Schema(description = "内容管理文档低频索引定时配置.")
         private String lowFreqDocumentCron;
-        
-        @FieldDescribe("流转中工作低频索引定时配置.")
-        @Schema(description = "流转中工作低频索引定时配置.")
+
+        @FieldDescribe("内容管理文档低频索引批量获取大小.")
+        @Schema(description = "内容管理文档低频索引批量获取大小.")
         private Integer lowFreqDocumentBatchSize;
-        
-        @FieldDescribe("流转中工作低频索引定时配置.")
-        @Schema(description = "流转中工作低频索引定时配置.")
+
+        @FieldDescribe("内容管理文档低频索引单次最大处理数量.")
+        @Schema(description = "内容管理文档低频索引单次最大处理数量.")
         private Integer lowFreqDocumentMaxCount;
-        
-        @FieldDescribe("流转中工作低频索引定时配置.")
-        @Schema(description = "流转中工作低频索引定时配置.")
+
+        @FieldDescribe("内容管理文档低频索引单次最大处理时长(分钟).")
+        @Schema(description = "内容管理文档低频索引单次最大处理时长(分钟).")
         private Integer lowFreqDocumentMaxMinutes;
 
-        @FieldDescribe("流转中工作低频索引定时配置.")
-        @Schema(description = "流转中工作低频索引定时配置.")
+        @FieldDescribe("是否启用流转中工作高频索引.")
+        @Schema(description = "是否启用流转中工作高频索引.")
         private Boolean highFreqWorkEnable;
-        
-        @FieldDescribe("流转中工作低频索引定时配置.")
-        @Schema(description = "流转中工作低频索引定时配置.")
+
+        @FieldDescribe("流转中工作高频索引定时配置.")
+        @Schema(description = "流转中工作高频索引定时配置.")
         private String highFreqWorkCron;
-        
-        @FieldDescribe("流转中工作低频索引定时配置.")
-        @Schema(description = "流转中工作低频索引定时配置.")
+
+        @FieldDescribe("流转中工作高频索引批量获取大小.")
+        @Schema(description = "流转中工作高频索引批量获取大小.")
         private Integer highFreqWorkBatchSize;
-        
-        @FieldDescribe("流转中工作低频索引定时配置.")
-        @Schema(description = "流转中工作低频索引定时配置.")
+
+        @FieldDescribe("流转中工作高频索引单次最大处理数量.")
+        @Schema(description = "流转中工作高频索引单次最大处理数量.")
         private Integer highFreqWorkMaxCount;
-        
-        @FieldDescribe("流转中工作低频索引定时配置.")
-        @Schema(description = "流转中工作低频索引定时配置.")
+
+        @FieldDescribe("流转中工作高频索引单次最大处理时长(分钟).")
+        @Schema(description = "流转中工作高频索引单次最大处理时长(分钟).")
         private Integer highFreqWorkMaxMinutes;
 
-        @FieldDescribe("流转中工作低频索引定时配置.")
-        @Schema(description = "流转中工作低频索引定时配置.")
+        @FieldDescribe("是否启用已完成工作高频索引.")
+        @Schema(description = "是否启用已完成工作高频索引.")
         private Boolean highFreqWorkCompletedEnable;
-        
-        @FieldDescribe("流转中工作低频索引定时配置.")
-        @Schema(description = "流转中工作低频索引定时配置.")
+
+        @FieldDescribe("已完成工作高频索引定时配置.")
+        @Schema(description = "已完成工作高频索引定时配置.")
         private String highFreqWorkCompletedCron;
-        
-        @FieldDescribe("流转中工作低频索引定时配置.")
-        @Schema(description = "流转中工作低频索引定时配置.")
+
+        @FieldDescribe("已完成工作高频索引批量获取大小.")
+        @Schema(description = "已完成工作高频索引批量获取大小.")
         private Integer highFreqWorkCompletedBatchSize;
-        
-        @FieldDescribe("流转中工作低频索引定时配置.")
-        @Schema(description = "流转中工作低频索引定时配置.")
+
+        @FieldDescribe("已完成工作高频索引单次最大处理数量.")
+        @Schema(description = "已完成工作高频索引单次最大处理数量.")
         private Integer highFreqWorkCompletedMaxCount;
-        
-        @FieldDescribe("流转中工作低频索引定时配置.")
-        @Schema(description = "流转中工作低频索引定时配置.")
+
+        @FieldDescribe("已完成工作高频索引单次最大处理时长(分钟).")
+        @Schema(description = "已完成工作高频索引单次最大处理时长(分钟).")
         private Integer highFreqWorkCompletedMaxMinutes;
 
-        @FieldDescribe("流转中工作低频索引定时配置.")
-        @Schema(description = "流转中工作低频索引定时配置.")
+        @FieldDescribe("是否启用内容管理文档高频索引.")
+        @Schema(description = "是否启用内容管理文档高频索引.")
         private Boolean highFreqDocumentEnable;
-        
-        @FieldDescribe("流转中工作低频索引定时配置.")
-        @Schema(description = "流转中工作低频索引定时配置.")
+
+        @FieldDescribe("内容管理文档高频索引定时配置.")
+        @Schema(description = "内容管理文档高频索引定时配置.")
         private String highFreqDocumentCron;
-        
-        @FieldDescribe("流转中工作低频索引定时配置.")
-        @Schema(description = "流转中工作低频索引定时配置.")
+
+        @FieldDescribe("内容管理文档高频索引批量获取大小.")
+        @Schema(description = "内容管理文档高频索引批量获取大小.")
         private Integer highFreqDocumentBatchSize;
-        
-        @FieldDescribe("流转中工作低频索引定时配置.")
-        @Schema(description = "流转中工作低频索引定时配置.")
+
+        @FieldDescribe("内容管理文档高频索引单次最大处理数量.")
+        @Schema(description = "内容管理文档高频索引单次最大处理数量.")
         private Integer highFreqDocumentMaxCount;
-        
-        @FieldDescribe("流转中工作低频索引定时配置.")
-        @Schema(description = "流转中工作低频索引定时配置.")
+
+        @FieldDescribe("内容管理文档高频索引单次最大处理时长(分钟).")
+        @Schema(description = "内容管理文档高频索引单次最大处理时长(分钟).")
         private Integer highFreqDocumentMaxMinutes;
 
-        
-        @FieldDescribe("流转中工作低频索引定时配置.")
-        @Schema(description = "流转中工作低频索引定时配置.")
-        private Integer workCompletedCleanupThresholdDays;
-        
-        @FieldDescribe("流转中工作低频索引定时配置.")
-        @Schema(description = "流转中工作低频索引定时配置.")
-        private Integer documentCleanupThresholdDays;
+        @FieldDescribe("检索内容清理阈值(天).")
+        @Schema(description = "检索内容清理阈值(天).")
+        private Integer cleanupThresholdDays;
 
-        @FieldDescribe("流转中工作低频索引定时配置.")
-        @Schema(description = "流转中工作低频索引定时配置.")
+        @FieldDescribe("是否启用搜索.")
+        @Schema(description = "是否启用搜索.")
         private Boolean searchEnable;
 
-        @FieldDescribe("流转中工作低频索引定时配置.")
-        @Schema(description = "流转中工作低频索引定时配置.")
+        @FieldDescribe("搜索标题加权.")
+        @Schema(description = "搜索标题加权.")
         private Float searchTitleBoost;
-        
-        @FieldDescribe("流转中工作低频索引定时配置.")
-        @Schema(description = "流转中工作低频索引定时配置.")
+
+        @FieldDescribe("搜索摘要加权.")
+        @Schema(description = "搜索摘要加权.")
         private Float searchSummaryBoost;
-        
-        @FieldDescribe("流转中工作低频索引定时配置.")
-        @Schema(description = "流转中工作低频索引定时配置.")
+
+        @FieldDescribe("搜索内容加权.")
+        @Schema(description = "搜索内容加权.")
         private Float searchBodyBoost;
-        
-        @FieldDescribe("流转中工作低频索引定时配置.")
-        @Schema(description = "流转中工作低频索引定时配置.")
+
+        @FieldDescribe("搜索附件加权.")
+        @Schema(description = "搜索附件加权.")
         private Float searchAttachmentBoost;
 
-        @FieldDescribe("流转中工作低频索引定时配置.")
-        @Schema(description = "流转中工作低频索引定时配置.")
-        private Integer searchSize;
-        
-        @FieldDescribe("流转中工作低频索引定时配置.")
-        @Schema(description = "流转中工作低频索引定时配置.")
-        private Integer searchMaxSize;
-        
-        @FieldDescribe("流转中工作低频索引定时配置.")
-        @Schema(description = "流转中工作低频索引定时配置.")
+        @FieldDescribe("搜索分页大小.")
+        @Schema(description = "搜索分页大小.")
+        private Integer searchPageSize;
+
+        @FieldDescribe("搜索最大分页大小.")
+        @Schema(description = "搜索最大分页大小.")
+        private Integer searchMaxPageSize;
+
+        @FieldDescribe("搜索最大命中数量.")
+        @Schema(description = "搜索最大命中数量.")
         private Integer searchMaxHits;
 
-        @FieldDescribe("流转中工作低频索引定时配置.")
-        @Schema(description = "流转中工作低频索引定时配置.")
+        @FieldDescribe("维度最大分组数量.")
+        @Schema(description = "维度最大分组数量.")
         private Integer facetMaxGroups;
-        
-        @FieldDescribe("流转中工作低频索引定时配置.")
+
+        @FieldDescribe("维度分组排序方式:keyAsc(依据分组值升序排序),keyDesc(依据分组值奖序排序),countAsc(依据分组数量升序排序),countDesc(依据分组数量降序排序).")
         @Schema(description = "流转中工作低频索引定时配置.")
         private String facetGroupOrder;
 
         @FieldDescribe("高亮返回片段长度.")
+        @Schema(description = "高亮返回片段长度.")
         private Integer highlightFragmentSize;
         @FieldDescribe("高亮返回片段数量.")
+        @Schema(description = "高亮返回片段数量.")
         private Integer highlightFragmentCount;
-        @FieldDescribe("高亮前缀.")
+        @FieldDescribe("高亮前缀,默认<em>.")
+        @Schema(description = "高亮前缀,默认<em>.")
         private String highlightPre;
-        @FieldDescribe("高亮后缀.")
+        @FieldDescribe("高亮后缀,默认</em>.")
+        @Schema(description = "高亮后缀,默认</em>.")
         private String highlightPost;
 
+        @FieldDescribe("相似检索返回文档数量.")
+        @Schema(description = "相似检索返回文档数量.")
         private Integer moreLikeThisSize;
+
+        @FieldDescribe("相似检索最大返回文档数量.")
+        @Schema(description = "相似检索最大返回文档数量.")
         private Integer moreLikeThisMaxSize;
+
+        @FieldDescribe("相似检索中检索项最小出现多少次即作为有效检索项.")
+        @Schema(description = "相似检索中检索项最小出现多少次即作为有效检索项.")
         private Integer moreLikeThisMinTermFreq;
+
+        @FieldDescribe("相似检索中检索项最小出现在多少个文档中即作为有效检索项.")
+        @Schema(description = "相似检索中检索项最小出现在多少个文档中即作为有效检索项.")
         private Integer moreLikeThisMinDocFreq;
-        private Integer moreLikeThisScoreThreshold;
+
+        @FieldDescribe("相似检索得分阈值,低于此分数则忽略.")
+        @Schema(description = "相似检索得分阈值,低于此分数则忽略.")
+        private Float moreLikeThisScoreThreshold;
+
+        public Boolean getOptimizeIndexEnable() {
+            return null == this.optimizeIndexEnable ? DEFAULT_OPTIMIZEINDEXENABLE : this.optimizeIndexEnable;
+        }
+
+        public String getOptimizeIndexCron() {
+            if (StringUtils.isNotEmpty(this.optimizeIndexCron)
+                    && CronExpression.isValidExpression(this.optimizeIndexCron)) {
+                return this.optimizeIndexCron;
+            } else {
+                return DEFAULT_OPTIMIZEINDEXCRON;
+            }
+        }
+
+        public String getHdfsDirectoryPath() {
+            return StringUtils.isBlank(hdfsDirectoryPath)
+                    ? DEFAULT_HDFSDIRECTORYPATH
+                    : adjustHdfsDirectoryPath();
+        }
+
+        private String adjustHdfsDirectoryPath() {
+            return StringUtils.startsWith(this.hdfsDirectoryPath, "/") ? this.hdfsDirectoryPath
+                    : "/" + hdfsDirectoryPath;
+        }
+
+        public Integer getMaxSegments() {
+            return NumberTools.nullOrLessThan(this.maxSegments, 1) ? DEFAULT_MAXSEGMENTS
+                    : this.maxSegments;
+        }
 
         public Boolean getWorkIndexAttachment() {
             return (null == this.workIndexAttachment) ? DEFAULT_WORKINDEXATTACHMENT : this.workIndexAttachment;
@@ -854,12 +915,12 @@ public class Query extends ConfigObject {
             return NumberTools.nullOrLessThan(searchMaxHits, -1) ? DEFAULT_SEARCHMAXHITS : this.searchMaxHits;
         }
 
-        public Integer getSearchSize() {
-            return NumberTools.nullOrLessThan(searchSize, 1) ? DEFAULT_SEARCHSIZE : searchSize;
+        public Integer getSearchPageSize() {
+            return NumberTools.nullOrLessThan(searchPageSize, 1) ? DEFAULT_SEARCHPAGESIZE : searchPageSize;
         }
 
-        public Integer getSearchMaxSize() {
-            return NumberTools.nullOrLessThan(searchMaxSize, 1) ? DEFAULT_SEARCHMAXSIZE : searchMaxSize;
+        public Integer getSearchMaxPageSize() {
+            return NumberTools.nullOrLessThan(searchMaxPageSize, 1) ? DEFAULT_SEARCHMAXPAGESIZE : searchMaxPageSize;
         }
 
         public Float getSearchTitleBoost() {
@@ -920,21 +981,21 @@ public class Query extends ConfigObject {
             }
         }
 
-        public String getDirectoryPath() {
-            return StringUtils.isBlank(directoryPath)
-                    ? DEFAULT_DIRECTORYPATH
-                    : adjustDirectoryPath();
+        public String getSharedDirectoryPath() {
+            return StringUtils.isBlank(sharedDirectoryPath)
+                    ? DEFAULT_SHAREDDIRECTORYPATH
+                    : adjustSharedDirectoryPath();
         }
 
-        private String adjustDirectoryPath() {
-            return StringUtils.startsWith(this.directoryPath, "/") ? this.directoryPath
-                    : "/" + directoryPath;
+        private String adjustSharedDirectoryPath() {
+            return StringUtils.startsWith(this.sharedDirectoryPath, "/") ? this.sharedDirectoryPath
+                    : "/" + sharedDirectoryPath;
         }
 
-        public Integer getWorkCompletedCleanupThresholdDays() {
-            return NumberTools.nullOrLessThan(workCompletedCleanupThresholdDays, 1)
-                    ? DEFAULT_WORKCOMPLETEDCLEANUPTHRESHOLDDAYS
-                    : this.workCompletedCleanupThresholdDays;
+        public Integer getCleanupThresholdDays() {
+            return NumberTools.nullOrLessThan(cleanupThresholdDays, 1)
+                    ? DEFAULT_CLEANUPTHRESHOLDDAYS
+                    : this.cleanupThresholdDays;
         }
 
         public Integer getLowFreqWorkCompletedMaxMinutes() {
@@ -958,12 +1019,6 @@ public class Query extends ConfigObject {
         public Boolean getLowFreqWorkCompletedEnable() {
             return null == lowFreqWorkCompletedEnable ? DEFAULT_LOWFREQWORKCOMPLETEDENABLE
                     : this.lowFreqWorkCompletedEnable;
-        }
-
-        public Integer getDocumentCleanupThresholdDays() {
-            return NumberTools.nullOrLessThan(documentCleanupThresholdDays, 1)
-                    ? DEFAULT_DOCUMENTCLEANUPTHRESHOLDDAYS
-                    : this.documentCleanupThresholdDays;
         }
 
         public Integer getLowFreqDocumentMaxMinutes() {

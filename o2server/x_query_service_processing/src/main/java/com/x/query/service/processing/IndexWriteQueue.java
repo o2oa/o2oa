@@ -4,9 +4,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.LongPoint;
@@ -14,7 +12,10 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.IndexWriterConfig.OpenMode;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.store.Directory;
 
 import com.hankcs.lucene.HanLPAnalyzer;
@@ -42,31 +43,15 @@ public class IndexWriteQueue extends AbstractQueue<IndexWriteQueue.Message> {
             check((CheckMessage) message);
         } else if (DeleteMessage.class.isAssignableFrom(message.getClass())) {
             delete((DeleteMessage) message);
+        } else if (MergeMessage.class.isAssignableFrom(message.getClass())) {
+            merge((MergeMessage) message);
         }
     }
 
     private void update(UpdateMessage updateMessage) {
-        updateMessage.getWrapList().stream().collect(Collectors.groupingBy(Doc::getCategory)).entrySet().stream()
-                .forEach(o -> {
-                    String category = o.getKey();
-                    o.getValue().stream().collect(Collectors.groupingBy(Doc::getType)).entrySet().stream()
-                            .forEach(p -> {
-                                p.getValue().stream().collect(Collectors.groupingBy(Doc::getKey)).entrySet().stream()
-                                        .forEach(q -> {
-                                            String key = q.getKey();
-                                            Optional<Directory> optional = Indexs.directory(category,
-                                                    key, false);
-                                            if (optional.isPresent()) {
-                                                update(optional.get(), q.getValue(), true);
-                                            }
-                                        });
-                            });
-                });
-        if (BooleanUtils.isTrue(updateMessage.getUpdateSearch())) {
-            Optional<Directory> optional = Indexs.directory(Indexs.CATEGORY_SEARCH, Indexs.KEY_ENTIRE, false);
-            if (optional.isPresent()) {
-                update(optional.get(), updateMessage.getWrapList(), false);
-            }
+        Optional<Directory> optional = Indexs.directory(updateMessage.getCategory(), updateMessage.getKey(), false);
+        if (optional.isPresent()) {
+            update(optional.get(), updateMessage.getWrapList(), updateMessage.getConvertData());
         }
     }
 
@@ -83,7 +68,6 @@ public class IndexWriteQueue extends AbstractQueue<IndexWriteQueue.Message> {
                     LOGGER.error(e);
                 }
             });
-            indexWriter.forceMerge(1);
             indexWriter.commit();
         } catch (IOException e) {
             LOGGER.error(e);
@@ -91,16 +75,9 @@ public class IndexWriteQueue extends AbstractQueue<IndexWriteQueue.Message> {
     }
 
     private void clean(CleanMessage cleanMessage) {
-        Optional<Directory> optional = Indexs.directory(cleanMessage.category,
-                cleanMessage.key, true);
+        Optional<Directory> optional = Indexs.directory(cleanMessage.getDir(), true);
         if (optional.isPresent()) {
             clean(optional.get(), cleanMessage.getThreshold());
-        }
-        if (BooleanUtils.isTrue(cleanMessage.getCleanSearch())) {
-            optional = Indexs.directory(Indexs.CATEGORY_SEARCH, Indexs.KEY_ENTIRE, true);
-            if (optional.isPresent()) {
-                clean(optional.get(), cleanMessage.getThreshold());
-            }
         }
     }
 
@@ -112,7 +89,6 @@ public class IndexWriteQueue extends AbstractQueue<IndexWriteQueue.Message> {
                 Query rangeQuery = LongPoint.newRangeQuery(Indexs.FIELD_INDEXTIME, Long.MIN_VALUE,
                         threshold.getTime());
                 indexWriter.deleteDocuments(rangeQuery);
-                indexWriter.forceMerge(1);
                 indexWriter.commit();
             }
         } catch (Exception e) {
@@ -122,14 +98,10 @@ public class IndexWriteQueue extends AbstractQueue<IndexWriteQueue.Message> {
 
     private void check(CheckMessage checkMessage) {
         if (StringUtils.equalsIgnoreCase(Indexs.CATEGORY_PROCESSPLATFORM,
-                checkMessage.getCategory())
-                && StringUtils.equalsIgnoreCase(Indexs.TYPE_WORKCOMPLETED,
-                        checkMessage.getType())) {
+                checkMessage.getCategory())) {
             checkIfDeleteProcessPlatformDirectory(checkMessage.getKey());
         } else if (StringUtils.equalsIgnoreCase(Indexs.CATEGORY_CMS,
-                checkMessage.getCategory())
-                && StringUtils.equalsIgnoreCase(Indexs.TYPE_DOCUMENT,
-                        checkMessage.getType())) {
+                checkMessage.getCategory())) {
             checkIfDeleteCmsDirectory(checkMessage.getKey());
         }
     }
@@ -138,9 +110,7 @@ public class IndexWriteQueue extends AbstractQueue<IndexWriteQueue.Message> {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Application application = emc.find(key, Application.class);
             if (null == application) {
-                Indexs.deleteDirectory(Indexs.CATEGORY_PROCESSPLATFORM,
-                        Indexs.TYPE_WORKCOMPLETED,
-                        key);
+                Indexs.deleteDirectory(Indexs.CATEGORY_PROCESSPLATFORM, key);
             }
         } catch (Exception e) {
             LOGGER.error(e);
@@ -151,8 +121,7 @@ public class IndexWriteQueue extends AbstractQueue<IndexWriteQueue.Message> {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             AppInfo appInfo = emc.find(key, AppInfo.class);
             if (null == appInfo) {
-                Indexs.deleteDirectory(Indexs.CATEGORY_CMS,
-                        Indexs.TYPE_DOCUMENT, key);
+                Indexs.deleteDirectory(Indexs.CATEGORY_CMS, key);
             }
         } catch (Exception e) {
             LOGGER.error(e);
@@ -162,15 +131,37 @@ public class IndexWriteQueue extends AbstractQueue<IndexWriteQueue.Message> {
     private void delete(DeleteMessage deleteMessage) {
         Optional<Directory> optional = Indexs.directory(deleteMessage.getCategory(), deleteMessage.getKey(), true);
         if (optional.isPresent()) {
-            delete(deleteMessage.getIdList(), optional.get());
-        }
-        if (BooleanUtils.isTrue(deleteMessage.getDeleteSearch())) {
-            Optional<Directory> optionalSearch = Indexs.directory(Indexs.CATEGORY_SEARCH, Indexs.KEY_ENTIRE, true);
-            delete(deleteMessage.getIdList(), optionalSearch.get());
+            if (null == deleteMessage.getQuery()) {
+                delete(optional.get(), deleteMessage.getIdList());
+            } else {
+                delete(optional.get(), deleteMessage.getIdList(), deleteMessage.getQuery());
+            }
         }
     }
 
-    private void delete(List<String> ids, Directory directory) {
+    private void delete(Directory directory, List<String> ids, Query query) {
+        Analyzer analyzer = new HanLPAnalyzer();
+        IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
+        try (IndexWriter indexWriter = new IndexWriter(directory, indexWriterConfig)) {
+            indexWriterConfig.setOpenMode(OpenMode.CREATE_OR_APPEND);
+            ids.stream().forEach(o -> {
+                try {
+                    BooleanQuery.Builder builder = new BooleanQuery.Builder();
+                    Query idQuery = new TermQuery(new Term(Indexs.FIELD_ID, o));
+                    builder.add(query, BooleanClause.Occur.MUST);
+                    builder.add(idQuery, BooleanClause.Occur.MUST);
+                    indexWriter.deleteDocuments(builder.build());
+                } catch (IOException e) {
+                    LOGGER.error(e);
+                }
+            });
+            indexWriter.commit();
+        } catch (IOException e) {
+            LOGGER.error(e);
+        }
+    }
+
+    private void delete(Directory directory, List<String> ids) {
         Analyzer analyzer = new HanLPAnalyzer();
         IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
         try (IndexWriter indexWriter = new IndexWriter(directory, indexWriterConfig)) {
@@ -182,8 +173,24 @@ public class IndexWriteQueue extends AbstractQueue<IndexWriteQueue.Message> {
                     LOGGER.error(e);
                 }
             });
-            indexWriter.forceMerge(1);
             indexWriter.commit();
+        } catch (IOException e) {
+            LOGGER.error(e);
+        }
+    }
+
+    private void merge(MergeMessage mergeMessage) throws Exception {
+        Optional<Directory> optional = Indexs.directory(mergeMessage.getDir(), true);
+        if (optional.isPresent()) {
+            merge(optional.get(), mergeMessage.getMaxSegments());
+        }
+    }
+
+    private void merge(Directory directory, Integer maxSegments) {
+        Analyzer analyzer = new HanLPAnalyzer();
+        IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
+        try (IndexWriter indexWriter = new IndexWriter(directory, indexWriterConfig)) {
+            indexWriter.forceMerge(maxSegments);
         } catch (IOException e) {
             LOGGER.error(e);
         }
@@ -195,13 +202,33 @@ public class IndexWriteQueue extends AbstractQueue<IndexWriteQueue.Message> {
 
     public static class UpdateMessage implements Message {
 
-        public UpdateMessage(List<Doc> wrapList, Boolean updateSearch) {
+        public UpdateMessage(List<Doc> wrapList, String category, String key, Boolean convertData) {
             this.wrapList = wrapList;
-            this.updateSearch = updateSearch;
+            this.category = category;
+            this.key = key;
+            this.convertData = convertData;
         }
 
+        private String category;
+        private String key;
         private List<Doc> wrapList;
-        private Boolean updateSearch;
+        private Boolean convertData;
+
+        public String getCategory() {
+            return category;
+        }
+
+        public void setCategory(String category) {
+            this.category = category;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public void setKey(String key) {
+            this.key = key;
+        }
 
         public List<Doc> getWrapList() {
             return wrapList;
@@ -211,29 +238,36 @@ public class IndexWriteQueue extends AbstractQueue<IndexWriteQueue.Message> {
             this.wrapList = wrapList;
         }
 
-        public Boolean getUpdateSearch() {
-            return updateSearch;
+        public Boolean getConvertData() {
+            return convertData;
         }
 
-        public void setUpdateSearch(Boolean updateSearch) {
-            this.updateSearch = updateSearch;
+        public void setConvertData(Boolean convertData) {
+            this.convertData = convertData;
         }
-
     }
 
     public static class DeleteMessage implements Message {
 
-        public DeleteMessage(List<String> idList, String category, String key, Boolean deleteSearch) {
+        public DeleteMessage(List<String> idList, String category, String key, Query query) {
             this.idList = idList;
             this.category = category;
             this.key = key;
-            this.deleteSearch = deleteSearch;
+            this.query = query;
         }
 
         private List<String> idList;
         private String category;
         private String key;
-        private Boolean deleteSearch;
+        private Query query;
+
+        public Query getQuery() {
+            return query;
+        }
+
+        public void setQuery(Query query) {
+            this.query = query;
+        }
 
         public List<String> getIdList() {
             return idList;
@@ -259,27 +293,15 @@ public class IndexWriteQueue extends AbstractQueue<IndexWriteQueue.Message> {
             this.key = key;
         }
 
-        public Boolean getDeleteSearch() {
-            return deleteSearch;
-        }
-
-        public void setDeleteSearch(Boolean deleteSearch) {
-            this.deleteSearch = deleteSearch;
-        }
-
     }
 
     public static class CleanMessage implements Message {
 
-        private String category;
-        private String key;
-        private Boolean cleanSearch;
+        private String dir;
         private Date threshold;
 
-        public CleanMessage(String category, String type, String key, boolean cleanSearch, Date threshold) {
-            this.category = category;
-            this.key = key;
-            this.cleanSearch = cleanSearch;
+        public CleanMessage(String dir, Date threshold) {
+            this.dir = dir;
             this.threshold = threshold;
         }
 
@@ -291,41 +313,22 @@ public class IndexWriteQueue extends AbstractQueue<IndexWriteQueue.Message> {
             this.threshold = threshold;
         }
 
-        public String getCategory() {
-            return category;
+        public String getDir() {
+            return dir;
         }
 
-        public void setCategory(String category) {
-            this.category = category;
+        public void setDir(String dir) {
+            this.dir = dir;
         }
-
-        public String getKey() {
-            return key;
-        }
-
-        public void setKey(String key) {
-            this.key = key;
-        }
-
-        public Boolean getCleanSearch() {
-            return cleanSearch;
-        }
-
-        public void setCleanSearch(Boolean cleanSearch) {
-            this.cleanSearch = cleanSearch;
-        }
-
     }
 
     public static class CheckMessage implements Message {
 
         private String category;
-        private String type;
         private String key;
 
-        public CheckMessage(String category, String type, String key) {
+        public CheckMessage(String category, String key) {
             this.category = category;
-            this.type = type;
             this.key = key;
         }
 
@@ -337,14 +340,6 @@ public class IndexWriteQueue extends AbstractQueue<IndexWriteQueue.Message> {
             this.category = category;
         }
 
-        public String getType() {
-            return type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
-        }
-
         public String getKey() {
             return key;
         }
@@ -352,6 +347,35 @@ public class IndexWriteQueue extends AbstractQueue<IndexWriteQueue.Message> {
         public void setKey(String key) {
             this.key = key;
         }
+    }
+
+    public static class MergeMessage implements Message {
+
+        public MergeMessage(String dir, Integer maxSegments) {
+            this.dir = dir;
+            this.maxSegments = maxSegments;
+        }
+
+        private String dir;
+
+        private Integer maxSegments;
+
+        public String getDir() {
+            return dir;
+        }
+
+        public void setDir(String dir) {
+            this.dir = dir;
+        }
+
+        public Integer getMaxSegments() {
+            return maxSegments;
+        }
+
+        public void setMaxSegments(Integer maxSegments) {
+            this.maxSegments = maxSegments;
+        }
+
     }
 
 }

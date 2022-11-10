@@ -216,6 +216,10 @@
 			<artifactId>poi-ooxml-schemas</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-scratchpad</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>fr.opensagres.xdocreport</groupId>
 			<artifactId>xdocreport</artifactId>
 		</dependency>

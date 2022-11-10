@@ -3,6 +3,7 @@ package com.x.query.core.express.index;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
@@ -36,6 +37,10 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.NumberTools;
 
 public class Indexs {
+
+    private Indexs() {
+        // nothing
+    }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Indexs.class);
 
@@ -91,7 +96,7 @@ public class Indexs {
     public static final String FIELD_HIGHLIGHTING = "highlighting";
     public static final String READERS_SYMBOL_ALL = "ALL";
 
-    public static final List<String> FACET_FIELDS = Stream.<String>of(FIELD_CATEGORY,
+    private static final List<String> FACET_FIELDS = Stream.<String>of(FIELD_CATEGORY,
             FIELD_CREATETIMEMONTH, FIELD_UPDATETIMEMONTH, FIELD_APPLICATIONNAME,
             FIELD_PROCESSNAME, FIELD_APPNAME, FIELD_CATEGORYNAME,
             FIELD_CREATORPERSON, FIELD_CREATORUNIT)
@@ -133,10 +138,10 @@ public class Indexs {
 
     public static Integer rows(Integer size) throws Exception {
         if (NumberTools.nullOrLessThan(size, 1)) {
-            return Config.query().index().getSearchSize();
+            return Config.query().index().getSearchPageSize();
         } else {
-            return (NumberTools.nullOrGreaterThan(size, Config.query().index().getSearchMaxSize())
-                    ? Config.query().index().getSearchMaxSize()
+            return (NumberTools.nullOrGreaterThan(size, Config.query().index().getSearchMaxPageSize())
+                    ? Config.query().index().getSearchMaxPageSize()
                     : size);
         }
     }
@@ -145,23 +150,29 @@ public class Indexs {
         return (NumberTools.nullOrLessThan(page, 1) ? 0 : page - 1) * rows;
     }
 
-    public static boolean deleteDirectory(String category, String type, String key) {
+    public static boolean deleteDirectory(String category, String key) {
+        return deleteDirectory(category + "_" + key);
+    }
+
+    public static boolean deleteDirectory(String dir) {
         try {
             if (StringUtils.equals(Config.query().index().getMode(), Query.Index.MODE_HDFSDIRECTORY)) {
                 org.apache.hadoop.conf.Configuration configuration = hdfsConfiguration();
+                org.apache.hadoop.fs.Path path = hdfsBase();
+                path = new org.apache.hadoop.fs.Path(path, dir);
                 try (org.apache.hadoop.fs.FileSystem fileSystem = org.apache.hadoop.fs.FileSystem
                         .get(configuration)) {
-                    org.apache.hadoop.fs.Path path = hdfsBase();
-                    path = new org.apache.hadoop.fs.Path(path, category);
-                    path = new org.apache.hadoop.fs.Path(path, type);
-                    path = new org.apache.hadoop.fs.Path(path, key);
                     if (fileSystem.exists(path) && fileSystem.getFileStatus(path).isDirectory()) {
                         return fileSystem.delete(path, true);
                     }
                 }
             } else {
-                java.nio.file.Path path = Config.path_local_repository_index(true).resolve(category).resolve(type)
-                        .resolve(key);
+                java.nio.file.Path path = null;
+                if (StringUtils.equals(Config.query().index().getMode(), Query.Index.MODE_SHAREDDIRECTORY)) {
+                    path = Paths.get(Config.query().index().getSharedDirectoryPath()).resolve(dir);
+                } else {
+                    path = Config.path_local_repository_index(true).resolve(dir);
+                }
                 if (Files.exists(path) && Files.isDirectory(path)) {
                     Files.walkFileTree(path, new SimpleFileVisitor<java.nio.file.Path>() {
                         @Override
@@ -181,7 +192,6 @@ public class Indexs {
                     return true;
                 }
             }
-            return false;
         } catch (Exception e) {
             LOGGER.error(e);
         }
@@ -189,13 +199,12 @@ public class Indexs {
     }
 
     @SuppressWarnings("deprecation")
-    public static Optional<Directory> directory(String category, String key, boolean checkExists) {
+    public static Optional<Directory> directory(String dir, boolean checkExists) {
         try {
             if (StringUtils.equals(Config.query().index().getMode(), Query.Index.MODE_HDFSDIRECTORY)) {
                 org.apache.hadoop.conf.Configuration configuration = hdfsConfiguration();
                 org.apache.hadoop.fs.Path path = hdfsBase();
-                path = new org.apache.hadoop.fs.Path(path, category);
-                path = new org.apache.hadoop.fs.Path(path, key);
+                path = new org.apache.hadoop.fs.Path(path, dir);
                 if (checkExists) {
                     try (org.apache.hadoop.fs.FileSystem fileSystem = org.apache.hadoop.fs.FileSystem
                             .get(configuration)) {
@@ -206,8 +215,13 @@ public class Indexs {
                 }
                 return Optional.of(new HdfsDirectory(path, configuration));
             } else {
-                java.nio.file.Path path = Config.path_local_repository_index(true).resolve(category)
-                        .resolve(key);
+                java.nio.file.Path path = null;
+                if (StringUtils.equals(Config.query().index().getMode(), Query.Index.MODE_SHAREDDIRECTORY)) {
+                    path = Paths.get(Config.query().index().getSharedDirectoryPath()).resolve(dir);
+
+                } else {
+                    path = Config.path_local_repository_index(true).resolve(dir);
+                }
                 if (checkExists && (!Files.exists(path))) {
                     return Optional.empty();
                 }
@@ -219,66 +233,9 @@ public class Indexs {
         return Optional.empty();
     }
 
-//    @SuppressWarnings("deprecation")
-//    public static Optional<Directory> directory(String category, String type, String key, boolean checkExists) {
-//        try {
-//            if (StringUtils.equals(Config.query().index().getMode(), Query.Index.MODE_HDFSDIRECTORY)) {
-//                org.apache.hadoop.conf.Configuration configuration = hdfsConfiguration();
-//                org.apache.hadoop.fs.Path path = hdfsBase();
-//                path = new org.apache.hadoop.fs.Path(path, category);
-//                path = new org.apache.hadoop.fs.Path(path, type);
-//                path = new org.apache.hadoop.fs.Path(path, key);
-//                if (checkExists) {
-//                    try (org.apache.hadoop.fs.FileSystem fileSystem = org.apache.hadoop.fs.FileSystem
-//                            .get(configuration)) {
-//                        if (!fileSystem.exists(path)) {
-//                            return Optional.empty();
-//                        }
-//                    }
-//                }
-//                return Optional.of(new HdfsDirectory(path, configuration));
-//            } else {
-//                java.nio.file.Path path = Config.path_local_repository_index(true).resolve(category).resolve(type)
-//                        .resolve(key);
-//                if (checkExists && (!Files.exists(path))) {
-//                    return Optional.empty();
-//                }
-//                return Optional.of(FSDirectory.open(path));
-//            }
-//        } catch (Exception e) {
-//            LOGGER.error(e);
-//        }
-//        return Optional.empty();
-//    }
-
-//    @SuppressWarnings("deprecation")
-//    public static Optional<Directory> searchDirectory(boolean checkExists) {
-//        try {
-//            if (StringUtils.equals(Config.query().index().getMode(), Query.Index.MODE_HDFSDIRECTORY)) {
-//                org.apache.hadoop.conf.Configuration configuration = hdfsConfiguration();
-//                org.apache.hadoop.fs.Path path = hdfsBase();
-//                path = new org.apache.hadoop.fs.Path(path, DIRECTORY_SEARCH);
-//                if (checkExists) {
-//                    try (org.apache.hadoop.fs.FileSystem fileSystem = org.apache.hadoop.fs.FileSystem
-//                            .get(configuration)) {
-//                        if (!fileSystem.exists(path)) {
-//                            return Optional.empty();
-//                        }
-//                    }
-//                }
-//                return Optional.of(new HdfsDirectory(path, configuration));
-//            } else {
-//                java.nio.file.Path path = Config.path_local_repository_index(true).resolve(DIRECTORY_SEARCH);
-//                if (checkExists && (!Files.exists(path))) {
-//                    return Optional.empty();
-//                }
-//                return Optional.of(FSDirectory.open(path));
-//            }
-//        } catch (Exception e) {
-//            LOGGER.error(e);
-//        }
-//        return Optional.empty();
-//    }
+    public static Optional<Directory> directory(String category, String key, boolean checkExists) {
+        return directory(category + "_" + key, checkExists);
+    }
 
     private static org.apache.hadoop.conf.Configuration hdfsConfiguration() throws Exception {
         org.apache.hadoop.conf.Configuration configuration = new org.apache.hadoop.conf.Configuration();
@@ -288,29 +245,27 @@ public class Indexs {
     }
 
     private static org.apache.hadoop.fs.Path hdfsBase() throws IllegalArgumentException, Exception {
-        return new org.apache.hadoop.fs.Path(Config.query().index().getDirectoryPath());
+        return new org.apache.hadoop.fs.Path(Config.query().index().getHdfsDirectoryPath());
     }
 
-    public static List<String> subDirectoryPathOfCategoryType(String category, String type) {
+    public static List<String> directories(String category) {
+        return directories().stream().filter(o -> StringUtils.startsWith(o, category + "_"))
+                .collect(Collectors.toList());
+    }
+
+    public static List<String> directories() {
         try {
             if (StringUtils.equals(Config.query().index().getMode(), Query.Index.MODE_HDFSDIRECTORY)) {
-                return subDirectoryPathOfCategoryTypeHdfs(category, type);
+                return directoriesHdfs();
             } else {
-                java.nio.file.Path path = Config.path_local_repository_index(true).resolve(category).resolve(type);
+                java.nio.file.Path path = null;
+                if (StringUtils.equals(Config.query().index().getMode(), Query.Index.MODE_SHAREDDIRECTORY)) {
+                    path = Paths.get(Config.query().index().getSharedDirectoryPath());
+                } else {
+                    path = Config.path_local_repository_index(true);
+                }
                 if (Files.exists(path)) {
-                    List<String> list = new ArrayList<>();
-                    try (Stream<java.nio.file.Path> stream = Files.walk(path, 1)) {
-                        stream.filter(o -> {
-                            try {
-                                return !Files.isSameFile(o, path);
-                            } catch (IOException e) {
-                                LOGGER.error(e);
-                            }
-                            return false;
-                        }).filter(Files::isDirectory).map(path::relativize).map(java.nio.file.Path::toString)
-                                .forEach(list::add);
-                    }
-                    return list;
+                    return directoriesPath(path);
                 }
             }
         } catch (Exception e) {
@@ -319,14 +274,27 @@ public class Indexs {
         return new ArrayList<>();
     }
 
-    private static List<String> subDirectoryPathOfCategoryTypeHdfs(String category, String type)
-            throws Exception {
+    private static List<String> directoriesPath(final java.nio.file.Path path) throws IOException {
+        List<String> list = new ArrayList<>();
+        try (Stream<java.nio.file.Path> stream = Files.walk(path, 1)) {
+            stream.filter(o -> {
+                try {
+                    return !Files.isSameFile(o, path);
+                } catch (IOException e) {
+                    LOGGER.error(e);
+                }
+                return false;
+            }).filter(Files::isDirectory).map(path::relativize).map(java.nio.file.Path::toString)
+                    .forEach(list::add);
+        }
+        return list;
+    }
+
+    private static List<String> directoriesHdfs() throws Exception {
         List<String> list = new ArrayList<>();
         org.apache.hadoop.conf.Configuration configuration = hdfsConfiguration();
         try (org.apache.hadoop.fs.FileSystem fileSystem = org.apache.hadoop.fs.FileSystem.get(configuration)) {
             org.apache.hadoop.fs.Path path = hdfsBase();
-            path = new org.apache.hadoop.fs.Path(path, category);
-            path = new org.apache.hadoop.fs.Path(path, type);
             if (fileSystem.exists(path)) {
                 RemoteIterator<LocatedFileStatus> fileStatusListIterator = fileSystem.listLocatedStatus(path);
                 while (fileStatusListIterator.hasNext()) {

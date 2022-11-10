@@ -340,4 +340,25 @@ public class TouchAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
+    @Operation(summary = "执行优化索引.", operationId = OPERATIONID_PREFIX + "optimizeIndex", responses = {
+            @ApiResponse(content = {
+                    @Content(schema = @Schema(implementation = ActionOptimizeIndex.Wo.class)) }) })
+    @JaxrsMethodDescribe(value = "执行优化索引.", action = ActionOptimizeIndex.class)
+    @GET
+    @Path("optimize/index/{node}/touch")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void optimizeIndex(@Suspended final AsyncResponse asyncResponse,
+            @Context HttpServletRequest request, @JaxrsParameterDescribe("节点") @PathParam("node") String node) {
+        ActionResult<ActionOptimizeIndex.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionOptimizeIndex().execute(effectivePerson, node);
+        } catch (Exception e) {
+            LOGGER.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
 }
