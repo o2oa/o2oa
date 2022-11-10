@@ -18,9 +18,11 @@ import com.x.base.core.project.annotation.ModuleType;
         "com.x.processplatform.core.entity.element.Application",
         "com.x.query.core.entity.ImportModel", "com.x.processplatform.core.entity.content.Work",
         "com.x.processplatform.core.entity.content.WorkCompleted",
-        "com.x.processplatform.core.entity.content.Attachment", "com.x.cms.core.entity.Document",
+        "com.x.processplatform.core.entity.content.Attachment", "com.x.processplatform.core.entity.message.WorkEvent",
+        "com.x.processplatform.core.entity.message.WorkCompletedEvent", "com.x.cms.core.entity.Document",
         "com.x.cms.core.entity.FileInfo", "com.x.cms.core.entity.AppInfo",
-        "com.x.cms.core.entity.CategoryInfo", "com.x.cms.core.entity.Review" }, storageTypes = {
+        "com.x.cms.core.entity.CategoryInfo", "com.x.cms.core.entity.Review",
+        "com.x.cms.core.entity.message.DocumentEvent" }, storageTypes = {
                 StorageType.processPlatform,
                 StorageType.cms }, storeJars = { "x_query_core_express", "x_query_core_entity",
                         "x_organization_core_entity", "x_organization_core_express", "x_processplatform_core_entity",

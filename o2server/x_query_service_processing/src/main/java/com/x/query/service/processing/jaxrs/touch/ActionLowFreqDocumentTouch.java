@@ -2,8 +2,6 @@ package com.x.query.service.processing.jaxrs.touch;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Application;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.connection.CipherConnectionAction;
@@ -19,35 +17,32 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionLowFreqDocumentTouch extends BaseAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionLowFreqDocumentTouch.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActionLowFreqDocumentTouch.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String node) throws Exception {
+    ActionResult<Wo> execute(EffectivePerson effectivePerson, String node) throws Exception {
 
-		LOGGER.info("execute:{}.", effectivePerson::getDistinguishedName);
-
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
-			Wo wo = new Wo();
-			wo.setValue(false);
-			for (Application application : ThisApplication.context().applications()
-					.get(ThisApplication.context().clazz())) {
-				if (StringUtils.equals(node, application.getNode())) {
-					String url = application.getUrlJaxrsRoot() + Applications.joinQueryUri("fireschedule", "classname",
-							LowFreqDocument.class.getName());
-					CipherConnectionAction.get(false, url);
-					wo.setValue(true);
-				}
-			}
-			result.setData(wo);
-			return result;
-		}
-	}
+        LOGGER.info("execute:{}.", effectivePerson::getDistinguishedName);
+        ActionResult<Wo> result = new ActionResult<>();
+        Wo wo = new Wo();
+        wo.setValue(false);
+        for (Application application : ThisApplication.context().applications()
+                .get(ThisApplication.context().clazz())) {
+            if (StringUtils.equals(node, application.getNode())) {
+                String url = application.getUrlJaxrsRoot() + Applications.joinQueryUri("fireschedule", "classname",
+                        LowFreqDocument.class.getName());
+                CipherConnectionAction.get(false, url);
+                wo.setValue(true);
+            }
+        }
+        result.setData(wo);
+        return result;
+    }
 
     @Schema(name = "com.x.query.service.processing.jaxrs.touch.ActionLowFreqDocumentTouch$Wo")
-	public static class Wo extends WrapBoolean {
+    public static class Wo extends WrapBoolean {
 
-		private static final long serialVersionUID = -6264750611455675968L;
+        private static final long serialVersionUID = -6264750611455675968L;
 
-	}
+    }
 
 }

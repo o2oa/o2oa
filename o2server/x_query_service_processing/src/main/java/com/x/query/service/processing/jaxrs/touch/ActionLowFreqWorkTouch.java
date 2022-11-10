@@ -24,23 +24,20 @@ class ActionLowFreqWorkTouch extends BaseAction {
     ActionResult<Wo> execute(EffectivePerson effectivePerson, String node) throws Exception {
 
         LOGGER.info("execute:{}.", effectivePerson::getDistinguishedName);
-        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-
-            ActionResult<Wo> result = new ActionResult<>();
-            Wo wo = new Wo();
-            wo.setValue(false);
-            for (Application application : ThisApplication.context().applications()
-                    .get(ThisApplication.context().clazz())) {
-                if (StringUtils.equals(node, application.getNode())) {
-                    String url = application.getUrlJaxrsRoot() + Applications.joinQueryUri("fireschedule", "classname",
-                            LowFreqWork.class.getName());
-                    CipherConnectionAction.get(false, url);
-                    wo.setValue(true);
-                }
+        ActionResult<Wo> result = new ActionResult<>();
+        Wo wo = new Wo();
+        wo.setValue(false);
+        for (Application application : ThisApplication.context().applications()
+                .get(ThisApplication.context().clazz())) {
+            if (StringUtils.equals(node, application.getNode())) {
+                String url = application.getUrlJaxrsRoot() + Applications.joinQueryUri("fireschedule", "classname",
+                        LowFreqWork.class.getName());
+                CipherConnectionAction.get(false, url);
+                wo.setValue(true);
             }
-            result.setData(wo);
-            return result;
         }
+        result.setData(wo);
+        return result;
     }
 
     @Schema(name = "com.x.query.service.processing.jaxrs.touch.ActionLowFreqWorkTouch$Wo")

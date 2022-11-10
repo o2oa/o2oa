@@ -24,6 +24,7 @@ import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.organization.core.express.Organization;
 import com.x.query.service.processing.factory.ProcessFactory;
 import com.x.query.service.processing.factory.QueryFactory;
+import com.x.query.service.processing.factory.StateFactory;
 
 public class Business {
 
@@ -89,6 +90,15 @@ public class Business {
             this.query = new QueryFactory(this);
         }
         return query;
+    }
+    
+    private StateFactory state;
+
+    public StateFactory state() throws Exception {
+        if (null == this.state) {
+            this.state = new StateFactory(this);
+        }
+        return state;
     }
 
     public boolean isManager(EffectivePerson effectivePerson) throws Exception {

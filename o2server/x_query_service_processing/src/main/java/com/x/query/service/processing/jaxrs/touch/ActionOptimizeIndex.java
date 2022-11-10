@@ -13,17 +13,19 @@ import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.query.service.processing.ThisApplication;
-import com.x.query.service.processing.schedule.HighFreqWorkCompleted;
+import com.x.query.service.processing.schedule.HighFreqDocument;
+import com.x.query.service.processing.schedule.OptimizeIndex;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-class ActionHighFreqWorkCompletedTouch extends BaseAction {
+class ActionOptimizeIndex extends BaseAction {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ActionHighFreqWorkCompletedTouch.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActionOptimizeIndex.class);
 
     ActionResult<Wo> execute(EffectivePerson effectivePerson, String node) throws Exception {
 
         LOGGER.info("execute:{}.", effectivePerson::getDistinguishedName);
+
         ActionResult<Wo> result = new ActionResult<>();
         Wo wo = new Wo();
         wo.setValue(false);
@@ -31,7 +33,7 @@ class ActionHighFreqWorkCompletedTouch extends BaseAction {
                 .get(ThisApplication.context().clazz())) {
             if (StringUtils.equals(node, application.getNode())) {
                 String url = application.getUrlJaxrsRoot() + Applications.joinQueryUri("fireschedule", "classname",
-                        HighFreqWorkCompleted.class.getName());
+                        OptimizeIndex.class.getName());
                 CipherConnectionAction.get(false, url);
                 wo.setValue(true);
             }
@@ -40,7 +42,7 @@ class ActionHighFreqWorkCompletedTouch extends BaseAction {
         return result;
     }
 
-    @Schema(name = "com.x.query.service.processing.jaxrs.touch.ActionHighFreqWorkCompletedTouch$Wo")
+    @Schema(name = "com.x.query.service.processing.jaxrs.touch.ActionOptimizeIndex$Wo")
     public static class Wo extends WrapBoolean {
 
         private static final long serialVersionUID = -6750436099546415573L;

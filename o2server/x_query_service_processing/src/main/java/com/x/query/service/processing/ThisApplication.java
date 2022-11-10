@@ -23,6 +23,7 @@ import com.x.query.service.processing.schedule.HighFreqWorkCompleted;
 import com.x.query.service.processing.schedule.LowFreqDocument;
 import com.x.query.service.processing.schedule.LowFreqWork;
 import com.x.query.service.processing.schedule.LowFreqWorkCompleted;
+import com.x.query.service.processing.schedule.OptimizeIndex;
 import com.x.query.service.processing.schedulelocal.HighFreqDocumentLocal;
 import com.x.query.service.processing.schedulelocal.HighFreqWorkCompletedLocal;
 import com.x.query.service.processing.schedulelocal.HighFreqWorkLocal;
@@ -67,12 +68,13 @@ public class ThisApplication {
             initThreadPool();
             context.startQueue(indexWriteQueue);
             CacheManager.init(context.clazz().getSimpleName());
-            scheduleLowFrequencyDocument();
-            scheduleLowFrequencyWork();
-            scheduleLowFrequencyWorkCompleted();
-            scheduleHighFrequencyDocument();
-            scheduleHighFrequencyWorkCompleted();
-            scheduleHighFrequencyWork();
+            scheduleLowFreqDocument();
+            scheduleLowFreqWork();
+            scheduleLowFreqWorkCompleted();
+            scheduleHighFreqDocument();
+            scheduleHighFreqWorkCompleted();
+            scheduleHighFreqWork();
+            scheduleOptimizeIndex();
             if (BooleanUtils.isTrue(Config.query().getCrawlWork().getEnable())) {
                 context.schedule(CrawlWork.class, Config.query().getCrawlWork().getCron());
             }
@@ -87,7 +89,7 @@ public class ThisApplication {
         }
     }
 
-    private static void scheduleLowFrequencyDocument() throws Exception {
+    private static void scheduleLowFreqDocument() throws Exception {
         if (BooleanUtils.isTrue(Config.query().index().getLowFreqDocumentEnable())) {
             if (StringUtils.equals(Config.query().index().getMode(), Query.Index.MODE_LOCALDIRECTORY)) {
                 context.scheduleLocal(LowFreqDocumentLocal.class,
@@ -99,7 +101,7 @@ public class ThisApplication {
         }
     }
 
-    private static void scheduleLowFrequencyWorkCompleted() throws Exception {
+    private static void scheduleLowFreqWorkCompleted() throws Exception {
         if (BooleanUtils.isTrue(Config.query().index().getLowFreqWorkCompletedEnable())) {
             if (StringUtils.equals(Config.query().index().getMode(), Query.Index.MODE_LOCALDIRECTORY)) {
                 context.scheduleLocal(LowFreqWorkCompletedLocal.class,
@@ -111,7 +113,7 @@ public class ThisApplication {
         }
     }
 
-    private static void scheduleLowFrequencyWork() throws Exception {
+    private static void scheduleLowFreqWork() throws Exception {
         if (BooleanUtils.isTrue(Config.query().index().getLowFreqWorkEnable())) {
             if (StringUtils.equals(Config.query().index().getMode(), Query.Index.MODE_LOCALDIRECTORY)) {
                 context.scheduleLocal(LowFreqWorkLocal.class,
@@ -123,7 +125,7 @@ public class ThisApplication {
         }
     }
 
-    private static void scheduleHighFrequencyDocument() throws Exception {
+    private static void scheduleHighFreqDocument() throws Exception {
         if (BooleanUtils.isTrue(Config.query().index().getHighFreqDocumentEnable())) {
             if (StringUtils.equals(Config.query().index().getMode(), Query.Index.MODE_LOCALDIRECTORY)) {
                 context.scheduleLocal(HighFreqDocumentLocal.class,
@@ -135,7 +137,7 @@ public class ThisApplication {
         }
     }
 
-    private static void scheduleHighFrequencyWorkCompleted() throws Exception {
+    private static void scheduleHighFreqWorkCompleted() throws Exception {
         if (BooleanUtils.isTrue(Config.query().index().getHighFreqWorkCompletedEnable())) {
             if (StringUtils.equals(Config.query().index().getMode(), Query.Index.MODE_LOCALDIRECTORY)) {
                 context.scheduleLocal(HighFreqWorkCompletedLocal.class,
@@ -147,7 +149,7 @@ public class ThisApplication {
         }
     }
 
-    private static void scheduleHighFrequencyWork() throws Exception {
+    private static void scheduleHighFreqWork() throws Exception {
         if (BooleanUtils.isTrue(Config.query().index().getHighFreqWorkEnable())) {
             if (StringUtils.equals(Config.query().index().getMode(), Query.Index.MODE_LOCALDIRECTORY)) {
                 context.scheduleLocal(HighFreqWorkLocal.class,
@@ -155,6 +157,18 @@ public class ThisApplication {
             } else {
                 context.schedule(HighFreqWork.class,
                         Config.query().index().getHighFreqWorkCompletedCron());
+            }
+        }
+    }
+
+    private static void scheduleOptimizeIndex() throws Exception {
+        if (BooleanUtils.isTrue(Config.query().index().getOptimizeIndexEnable())) {
+            if (StringUtils.equals(Config.query().index().getMode(), Query.Index.MODE_LOCALDIRECTORY)) {
+                context.scheduleLocal(OptimizeIndex.class,
+                        Config.query().index().getOptimizeIndexCron());
+            } else {
+                context.schedule(OptimizeIndex.class,
+                        Config.query().index().getOptimizeIndexCron());
             }
         }
     }

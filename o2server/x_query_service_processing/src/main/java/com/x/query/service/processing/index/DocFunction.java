@@ -32,6 +32,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.DateTools;
+import com.x.base.core.project.tools.ListTools;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.FileInfo;
 import com.x.processplatform.core.entity.content.Attachment;
@@ -62,119 +63,119 @@ public class DocFunction {
 
     private static final Gson gson = XGsonBuilder.instance();
 
-    public static final Function<Pair<Business, String>, Optional<Doc>> wrapWork = param -> {
+    public static final Function<Pair<Business, String>, Pair<String, Optional<Doc>>> wrapWork = param -> {
         try {
             Work work = param.first().entityManagerContainer().find(param.second(),
                     Work.class);
             if (null == work) {
                 throw new ExceptionEntityNotExist(param.second(), Work.class);
             }
-            Doc wrap = new Doc();
-            wrap.setReaders(readers(param.first(), work));
-            wrap.setCompleted(false);
-            wrap.setId(work.getJob());
-            wrap.setCategory(Indexs.CATEGORY_PROCESSPLATFORM);
-            wrap.setType(Indexs.TYPE_WORKCOMPLETED);
-            wrap.setKey(work.getApplication());
-            wrap.setTitle(work.getTitle());
-            wrap.setCreateTime(work.getCreateTime());
-            wrap.setUpdateTime(work.getUpdateTime());
-            wrap.setCreateTimeMonth(DateTools.format(work.getCreateTime(), DateTools.format_yyyyMM));
-            wrap.setUpdateTimeMonth(DateTools.format(work.getUpdateTime(), DateTools.format_yyyyMM));
-            wrap.setCreatorPerson(OrganizationDefinition.name(work.getCreatorPerson()));
-            wrap.setCreatorUnit(OrganizationDefinition.name(work.getCreatorUnit()));
-            wrap.addString(Indexs.FIELD_CREATORUNITLEVELNAME, work.getCreatorUnitLevelName());
-            wrap.addString(Indexs.FIELD_APPLICATION, work.getApplication());
-            wrap.addString(Indexs.FIELD_APPLICATIONNAME, work.getApplicationName());
-            wrap.addString(Indexs.FIELD_APPLICATIONALIAS, work.getApplicationAlias());
-            wrap.addString(Indexs.FIELD_PROCESS, work.getProcess());
-            wrap.addString(Indexs.FIELD_PROCESSNAME, work.getProcessName());
-            wrap.addString(Indexs.FIELD_PROCESSALIAS, work.getProcessAlias());
-            wrap.addString(Indexs.FIELD_JOB, work.getJob());
-            wrap.addString(Indexs.FIELD_SERIAL, work.getSerial());
-            update(param.first(), work, wrap);
-            return Optional.of(wrap);
+            Doc doc = new Doc();
+            doc.setReaders(readers(param.first(), work));
+            doc.setCompleted(false);
+            doc.setId(work.getJob());
+            doc.setCategory(Indexs.CATEGORY_PROCESSPLATFORM);
+            doc.setType(Indexs.TYPE_WORKCOMPLETED);
+            doc.setKey(work.getApplication());
+            doc.setTitle(work.getTitle());
+            doc.setCreateTime(work.getCreateTime());
+            doc.setUpdateTime(work.getUpdateTime());
+            doc.setCreateTimeMonth(DateTools.format(work.getCreateTime(), DateTools.format_yyyyMM));
+            doc.setUpdateTimeMonth(DateTools.format(work.getUpdateTime(), DateTools.format_yyyyMM));
+            doc.setCreatorPerson(OrganizationDefinition.name(work.getCreatorPerson()));
+            doc.setCreatorUnit(OrganizationDefinition.name(work.getCreatorUnit()));
+            doc.addString(Indexs.FIELD_CREATORUNITLEVELNAME, work.getCreatorUnitLevelName());
+            doc.addString(Indexs.FIELD_APPLICATION, work.getApplication());
+            doc.addString(Indexs.FIELD_APPLICATIONNAME, work.getApplicationName());
+            doc.addString(Indexs.FIELD_APPLICATIONALIAS, work.getApplicationAlias());
+            doc.addString(Indexs.FIELD_PROCESS, work.getProcess());
+            doc.addString(Indexs.FIELD_PROCESSNAME, work.getProcessName());
+            doc.addString(Indexs.FIELD_PROCESSALIAS, work.getProcessAlias());
+            doc.addString(Indexs.FIELD_JOB, work.getJob());
+            doc.addString(Indexs.FIELD_SERIAL, work.getSerial());
+            update(param.first(), work, doc);
+            return Pair.of(work.getApplication(), Optional.of(doc));
         } catch (Exception e) {
             LOGGER.error(e);
         }
-        return Optional.empty();
+        return Pair.of("", Optional.empty());
     };
 
-    public static final Function<Pair<Business, String>, Optional<Doc>> wrapWorkCompleted = param -> {
+    public static final Function<Pair<Business, String>, Pair<String, Optional<Doc>>> wrapWorkCompleted = param -> {
         try {
             WorkCompleted workCompleted = param.first().entityManagerContainer().find(param.second(),
                     WorkCompleted.class);
             if (null == workCompleted) {
                 throw new ExceptionEntityNotExist(param.second(), WorkCompleted.class);
             }
-            Doc wrap = new Doc();
-            wrap.setReaders(readers(param.first(), workCompleted));
-            wrap.setCompleted(true);
-            wrap.setId(workCompleted.getJob());
-            wrap.setCategory(Indexs.CATEGORY_PROCESSPLATFORM);
-            wrap.setType(Indexs.TYPE_WORKCOMPLETED);
-            wrap.setKey(workCompleted.getApplication());
-            wrap.setTitle(workCompleted.getTitle());
-            wrap.setCreateTime(workCompleted.getCreateTime());
-            wrap.setUpdateTime(workCompleted.getUpdateTime());
-            wrap.setCreateTimeMonth(DateTools.format(workCompleted.getCreateTime(), DateTools.format_yyyyMM));
-            wrap.setUpdateTimeMonth(DateTools.format(workCompleted.getUpdateTime(), DateTools.format_yyyyMM));
-            wrap.setCreatorPerson(OrganizationDefinition.name(workCompleted.getCreatorPerson()));
-            wrap.setCreatorUnit(OrganizationDefinition.name(workCompleted.getCreatorUnit()));
-            wrap.addString(Indexs.FIELD_CREATORUNITLEVELNAME, workCompleted.getCreatorUnitLevelName());
-            wrap.addString(Indexs.FIELD_APPLICATION, workCompleted.getApplication());
-            wrap.addString(Indexs.FIELD_APPLICATIONNAME, workCompleted.getApplicationName());
-            wrap.addString(Indexs.FIELD_APPLICATIONALIAS, workCompleted.getApplicationAlias());
-            wrap.addString(Indexs.FIELD_PROCESS, workCompleted.getProcess());
-            wrap.addString(Indexs.FIELD_PROCESSNAME, workCompleted.getProcessName());
-            wrap.addString(Indexs.FIELD_PROCESSALIAS, workCompleted.getProcessAlias());
-            wrap.addString(Indexs.FIELD_JOB, workCompleted.getJob());
-            wrap.addString(Indexs.FIELD_SERIAL, workCompleted.getSerial());
-            wrap.addBoolean(Indexs.FIELD_EXPIRED, workCompleted.getExpired());
-            wrap.addDate(Indexs.FIELD_EXPIRETIME, workCompleted.getExpireTime());
-            update(param.first(), workCompleted, wrap);
-            return Optional.of(wrap);
+            Doc doc = new Doc();
+            doc.setReaders(readers(param.first(), workCompleted));
+            doc.setCompleted(true);
+            doc.setId(workCompleted.getJob());
+            doc.setCategory(Indexs.CATEGORY_PROCESSPLATFORM);
+            doc.setType(Indexs.TYPE_WORKCOMPLETED);
+            doc.setKey(workCompleted.getApplication());
+            doc.setTitle(workCompleted.getTitle());
+            doc.setCreateTime(workCompleted.getCreateTime());
+            doc.setUpdateTime(workCompleted.getUpdateTime());
+            doc.setCreateTimeMonth(DateTools.format(workCompleted.getCreateTime(), DateTools.format_yyyyMM));
+            doc.setUpdateTimeMonth(DateTools.format(workCompleted.getUpdateTime(), DateTools.format_yyyyMM));
+            doc.setCreatorPerson(OrganizationDefinition.name(workCompleted.getCreatorPerson()));
+            doc.setCreatorUnit(OrganizationDefinition.name(workCompleted.getCreatorUnit()));
+            doc.addString(Indexs.FIELD_CREATORUNITLEVELNAME, workCompleted.getCreatorUnitLevelName());
+            doc.addString(Indexs.FIELD_APPLICATION, workCompleted.getApplication());
+            doc.addString(Indexs.FIELD_APPLICATIONNAME, workCompleted.getApplicationName());
+            doc.addString(Indexs.FIELD_APPLICATIONALIAS, workCompleted.getApplicationAlias());
+            doc.addString(Indexs.FIELD_PROCESS, workCompleted.getProcess());
+            doc.addString(Indexs.FIELD_PROCESSNAME, workCompleted.getProcessName());
+            doc.addString(Indexs.FIELD_PROCESSALIAS, workCompleted.getProcessAlias());
+            doc.addString(Indexs.FIELD_JOB, workCompleted.getJob());
+            doc.addString(Indexs.FIELD_SERIAL, workCompleted.getSerial());
+            doc.addBoolean(Indexs.FIELD_EXPIRED, workCompleted.getExpired());
+            doc.addDate(Indexs.FIELD_EXPIRETIME, workCompleted.getExpireTime());
+            update(param.first(), workCompleted, doc);
+            return Pair.of(workCompleted.getApplication(), Optional.of(doc));
         } catch (Exception e) {
             LOGGER.error(e);
         }
-        return Optional.empty();
+        return Pair.of("", Optional.empty());
     };
 
-    public static final Function<Pair<Business, String>, Optional<Doc>> wrapDocument = param -> {
+    public static final Function<Pair<Business, String>, Pair<String, Optional<Doc>>> wrapDocument = param -> {
         try {
             Document document = param.first().entityManagerContainer().find(param.second(), Document.class);
             if (null == document) {
                 throw new ExceptionEntityNotExist(param.second(), Document.class);
             }
-            Doc wrap = new Doc();
-            wrap.setReaders(readers(param.first(), document));
-            wrap.setCompleted(true);
-            wrap.setId(document.getId());
-            wrap.setCategory(Indexs.CATEGORY_CMS);
-            wrap.setType(Indexs.TYPE_DOCUMENT);
-            wrap.setKey(document.getAppId());
-            wrap.setTitle(document.getTitle());
-            wrap.setCreateTime(document.getCreateTime());
-            wrap.setUpdateTime(document.getUpdateTime());
-            wrap.setCreateTimeMonth(DateTools.format(document.getCreateTime(), DateTools.format_yyyyMM));
-            wrap.setUpdateTimeMonth(DateTools.format(document.getUpdateTime(), DateTools.format_yyyyMM));
-            wrap.setCreatorPerson(OrganizationDefinition.name(document.getCreatorPerson()));
-            wrap.setCreatorUnit(OrganizationDefinition.name(document.getCreatorUnitName()));
-            wrap.addString(Indexs.FIELD_APPID, document.getAppId());
-            wrap.addString(Indexs.FIELD_APPNAME, document.getAppName());
-            wrap.addString(Indexs.FIELD_APPALIAS, document.getAppAlias());
-            wrap.addString(Indexs.FIELD_CATEGORYID, document.getCategoryId());
-            wrap.addString(Indexs.FIELD_CATEGORYNAME, document.getCategoryName());
-            wrap.addString(Indexs.FIELD_CATEGORYALIAS, document.getCategoryAlias());
-            wrap.addString(Indexs.FIELD_DESCRIPTION, document.getDescription());
-            wrap.addDate(Indexs.FIELD_PUBLISHTIME, document.getPublishTime());
-            wrap.addDate(Indexs.FIELD_MODIFYTIME, document.getModifyTime());
-            update(param.first(), document, wrap, Config.query().index().getDataStringThreshold());
-            return Optional.of(wrap);
+            Doc doc = new Doc();
+            doc.setReaders(readers(param.first(), document));
+            doc.setCompleted(true);
+            doc.setId(document.getId());
+            doc.setCategory(Indexs.CATEGORY_CMS);
+            doc.setType(Indexs.TYPE_DOCUMENT);
+            doc.setKey(document.getAppId());
+            doc.setTitle(document.getTitle());
+            doc.setCreateTime(document.getCreateTime());
+            doc.setUpdateTime(document.getUpdateTime());
+            doc.setCreateTimeMonth(DateTools.format(document.getCreateTime(), DateTools.format_yyyyMM));
+            doc.setUpdateTimeMonth(DateTools.format(document.getUpdateTime(), DateTools.format_yyyyMM));
+            doc.setCreatorPerson(OrganizationDefinition.name(document.getCreatorPerson()));
+            doc.setCreatorUnit(OrganizationDefinition.name(document.getCreatorUnitName()));
+            doc.addString(Indexs.FIELD_APPID, document.getAppId());
+            doc.addString(Indexs.FIELD_APPNAME, document.getAppName());
+            doc.addString(Indexs.FIELD_APPALIAS, document.getAppAlias());
+            doc.addString(Indexs.FIELD_CATEGORYID, document.getCategoryId());
+            doc.addString(Indexs.FIELD_CATEGORYNAME, document.getCategoryName());
+            doc.addString(Indexs.FIELD_CATEGORYALIAS, document.getCategoryAlias());
+            doc.addString(Indexs.FIELD_DESCRIPTION, document.getDescription());
+            doc.addDate(Indexs.FIELD_PUBLISHTIME, document.getPublishTime());
+            doc.addDate(Indexs.FIELD_MODIFYTIME, document.getModifyTime());
+            update(param.first(), document, doc, Config.query().index().getDataStringThreshold());
+            return Pair.of(document.getAppId(), Optional.of(doc));
         } catch (Exception e) {
             LOGGER.error(e);
         }
-        return Optional.empty();
+        return Pair.of("", Optional.empty());
     };
 
     private static List<String> readers(Business business, Work work) throws Exception {
@@ -232,14 +233,18 @@ public class DocFunction {
             List<Item> items = business.entityManagerContainer().listEqualAndEqual(Item.class,
                     DataItem.bundle_FIELDNAME,
                     work.getJob(), DataItem.itemCategory_FIELDNAME, ItemCategory.pp);
-            wrap.setBody(DataItemConverter.ItemText.text(items, true, true, true, true, true, ","));
-            wrap.setSummary(HanLP.getSummary(wrap.getBody(), Config.query().index().getSummaryLength()));
-            if (BooleanUtils.isTrue((Config.query().index().getWorkIndexAttachment()))) {
-                wrap.setAttachment(attachment(business, work.getJob()));
+            if (!ListTools.isEmpty(items)) {
+                wrap.setBody(DataItemConverter.ItemText.text(items, true, true, true, true, true, ","));
+                wrap.setSummary(HanLP.getSummary(wrap.getBody(), Config.query().index().getSummaryLength()));
+                if (BooleanUtils.isTrue((Config.query().index().getWorkIndexAttachment()))) {
+                    wrap.setAttachment(attachment(business, work.getJob()));
+                } else {
+                    wrap.setAttachment("");
+                }
+                update(wrap, CONVERTER.assemble(items), "", Config.query().index().getDataStringThreshold());
             } else {
-                wrap.setAttachment("");
+                LOGGER.warn("class:DocFunction, function:update work:{}, items is empty.", work.getId());
             }
-            update(wrap, CONVERTER.assemble(items), "", Config.query().index().getDataStringThreshold());
         } catch (Exception e) {
             LOGGER.error(e);
         }
@@ -255,14 +260,19 @@ public class DocFunction {
                 items = business.entityManagerContainer().listEqualAndEqual(Item.class, DataItem.bundle_FIELDNAME,
                         workCompleted.getJob(), DataItem.itemCategory_FIELDNAME, ItemCategory.pp);
             }
-            wrap.setBody(DataItemConverter.ItemText.text(items, true, true, true, true, true, ","));
-            wrap.setSummary(HanLP.getSummary(wrap.getBody(), Config.query().index().getSummaryLength()));
-            if (BooleanUtils.isTrue((Config.query().index().getWorkCompletedIndexAttachment()))) {
-                wrap.setAttachment(attachment(business, workCompleted.getJob()));
+            if (!ListTools.isEmpty(items)) {
+                wrap.setBody(DataItemConverter.ItemText.text(items, true, true, true, true, true, ","));
+                wrap.setSummary(HanLP.getSummary(wrap.getBody(), Config.query().index().getSummaryLength()));
+                if (BooleanUtils.isTrue((Config.query().index().getWorkCompletedIndexAttachment()))) {
+                    wrap.setAttachment(attachment(business, workCompleted.getJob()));
+                } else {
+                    wrap.setAttachment("");
+                }
+                update(wrap, CONVERTER.assemble(items), "", Config.query().index().getDataStringThreshold());
             } else {
-                wrap.setAttachment("");
+                LOGGER.warn("class:DocFunction, function:update workCompleted:{}, items is empty.",
+                        workCompleted.getId());
             }
-            update(wrap, CONVERTER.assemble(items), "", Config.query().index().getDataStringThreshold());
         } catch (Exception e) {
             LOGGER.error(e);
         }
@@ -273,14 +283,18 @@ public class DocFunction {
         try {
             List<Item> items = business.entityManagerContainer().listEqualAndEqual(Item.class,
                     DataItem.bundle_FIELDNAME, document.getId(), DataItem.itemCategory_FIELDNAME, ItemCategory.cms);
-            wrap.setBody(DataItemConverter.ItemText.text(items, true, true, true, true, true, ","));
-            wrap.setSummary(HanLP.getSummary(wrap.getBody(), Config.query().index().getSummaryLength()));
-            if (BooleanUtils.isTrue((Config.query().index().getWorkCompletedIndexAttachment()))) {
-                wrap.setAttachment(attachment(business, document));
+            if (!ListTools.isEmpty(items)) {
+                wrap.setBody(DataItemConverter.ItemText.text(items, true, true, true, true, true, ","));
+                wrap.setSummary(HanLP.getSummary(wrap.getBody(), Config.query().index().getSummaryLength()));
+                if (BooleanUtils.isTrue((Config.query().index().getWorkCompletedIndexAttachment()))) {
+                    wrap.setAttachment(attachment(business, document));
+                } else {
+                    wrap.setAttachment("");
+                }
+                update(wrap, CONVERTER.assemble(items), "", dataStringThreshold);
             } else {
-                wrap.setAttachment("");
+                LOGGER.warn("class:DocFunction, function:update document:{}, items is empty.", document.getId());
             }
-            update(wrap, CONVERTER.assemble(items), "", dataStringThreshold);
         } catch (Exception e) {
             LOGGER.error(e);
         }

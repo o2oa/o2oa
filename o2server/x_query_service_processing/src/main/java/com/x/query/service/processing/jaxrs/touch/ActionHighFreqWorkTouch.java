@@ -19,35 +19,32 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionHighFreqWorkTouch extends BaseAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionHighFreqWorkTouch.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActionHighFreqWorkTouch.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String node) throws Exception {
+    ActionResult<Wo> execute(EffectivePerson effectivePerson, String node) throws Exception {
 
-		LOGGER.info("execute:{}.", effectivePerson::getDistinguishedName);
-
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
-			Wo wo = new Wo();
-			wo.setValue(false);
-			for (Application application : ThisApplication.context().applications()
-					.get(ThisApplication.context().clazz())) {
-				if (StringUtils.equals(node, application.getNode())) {
-					String url = application.getUrlJaxrsRoot() + Applications.joinQueryUri("fireschedule", "classname",
-							HighFreqWork.class.getName());
-					CipherConnectionAction.get(false, url);
-					wo.setValue(true);
-				}
-			}
-			result.setData(wo);
-			return result;
-		}
-	}
+        LOGGER.info("execute:{}.", effectivePerson::getDistinguishedName);
+        ActionResult<Wo> result = new ActionResult<>();
+        Wo wo = new Wo();
+        wo.setValue(false);
+        for (Application application : ThisApplication.context().applications()
+                .get(ThisApplication.context().clazz())) {
+            if (StringUtils.equals(node, application.getNode())) {
+                String url = application.getUrlJaxrsRoot() + Applications.joinQueryUri("fireschedule", "classname",
+                        HighFreqWork.class.getName());
+                CipherConnectionAction.get(false, url);
+                wo.setValue(true);
+            }
+        }
+        result.setData(wo);
+        return result;
+    }
 
     @Schema(name = "com.x.query.service.processing.jaxrs.touch.ActionHighFreqWorkTouch$Wo")
-	public static class Wo extends WrapBoolean {
+    public static class Wo extends WrapBoolean {
 
-		private static final long serialVersionUID = -6750436099546415573L;
+        private static final long serialVersionUID = -6750436099546415573L;
 
-	}
+    }
 
 }

@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.lucene.document.Field;
@@ -333,17 +334,18 @@ public class Doc extends GsonPropertyObject {
     public org.apache.lucene.document.Document toDocument(boolean convertData) {
         org.apache.lucene.document.Document document = new org.apache.lucene.document.Document();
         document.add(new StringField(Indexs.FIELD_ID, this.getId(), Field.Store.YES));
-        document.add(new TextField(Indexs.FIELD_TITLE, this.getTitle(), Field.Store.YES));
-        document.add(new TextField(Indexs.FIELD_SUMMARY, this.getSummary(), Field.Store.YES));
-        document.add(new TextField(Indexs.FIELD_BODY, this.getBody(), Field.Store.YES));
-        document.add(new TextField(Indexs.FIELD_ATTACHMENT, this.getAttachment(), Field.Store.YES));
+        document.add(new TextField(Indexs.FIELD_TITLE, Objects.toString(this.getTitle(), ""), Field.Store.YES));
+        document.add(new TextField(Indexs.FIELD_SUMMARY, Objects.toString(this.getSummary(), ""), Field.Store.YES));
+        document.add(new TextField(Indexs.FIELD_BODY, Objects.toString(this.getBody(), ""), Field.Store.YES));
+        document.add(
+                new TextField(Indexs.FIELD_ATTACHMENT, Objects.toString(this.getAttachment(), ""), Field.Store.YES));
         this.getReaders().stream()
                 .forEach(o -> document.add(new StringField(Indexs.FIELD_READERS, o, Field.Store.YES)));
         addString(document, Indexs.FIELD_CATEGORY, this.getCategory());
         addString(document, Indexs.FIELD_CREATETIMEMONTH, this.getCreateTimeMonth());
         addString(document, Indexs.FIELD_UPDATETIMEMONTH, this.getUpdateTimeMonth());
-        addString(document, Indexs.FIELD_CREATORPERSON, this.getCreatorPerson());
-        addString(document, Indexs.FIELD_CREATORUNIT, this.getCreatorUnit());
+        addString(document, Indexs.FIELD_CREATORPERSON, Objects.toString(this.getCreatorPerson(), ""));
+        addString(document, Indexs.FIELD_CREATORUNIT, Objects.toString(this.getCreatorUnit(), ""));
         addDate(document, Indexs.FIELD_INDEXTIME, new Date());
         addDate(document, Indexs.FIELD_CREATETIME, this.getCreateTime());
         addDate(document, Indexs.FIELD_UPDATETIME, this.getUpdateTime());
