@@ -145,6 +145,11 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
                         it.destroy();
                     }
 
+                    while( lastItem.nextArray && lastItem.nextArray.length ){
+                        it = lastItem.nextArray.pop();
+                        it.destroy();
+                    }
+
                     var lastChangeList = lastSubItem.data.changeList;
                     if (lastChangeList.length === 1 && log.changeList.length === 1  && lastChangeList[0].name === change.name) {
                         // if( lastSubItem.data.fromValue === change.toValue ){ //回到最初的值了
@@ -790,6 +795,7 @@ MWF.FCWHistory.ModuleTabpageItem = new Class({
 MWF.FCWHistory.PropertySingleItem = new Class({
     Extends: MWF.FCWHistory.Item,
     load: function (module) {
+        this.module = module;
         this.node = new Element("div", {
             styles : this._getItemStyle(),
             text: this._getText()
@@ -813,6 +819,9 @@ MWF.FCWHistory.PropertySingleItem = new Class({
     getModule: function(){
         var module, dom = this.getDomByPath( this.path );
         if(dom)module = dom.retrieve("module");
+        if( !module && this.module && this.form.moduleList.contains(this.module) ){
+            module = this.module;
+        }
         return module;
     },
     _getText: function () {

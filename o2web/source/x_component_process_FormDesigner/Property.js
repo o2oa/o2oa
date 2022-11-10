@@ -830,12 +830,16 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                             "selected": (this.data[name]==k)
                         }).inject(node);
                     }.bind(this));
+                    var oldValue = this.data[name];
                     node.addEvent("change", function(e){
-                        var oldValue = this.data[name];
                         var value = e.target.options[e.target.selectedIndex].value;
-                        var name = e.target.options[e.target.selectedIndex].get("text");
-                        this.changeJsonDate([name], value);
-                        this.changeData(name, node, oldValue);
+                        var name1 = e.target.options[e.target.selectedIndex].get("text");
+                        this.changeJsonDate([name1], value);
+                        this.changeData(name1, node, oldValue);
+
+                        this.checkHistory([name, name1], [oldValue, oldValue], [value, value])
+
+                        oldValue = this.data[name];
                     }.bind(this));
                 }.bind(this));
             }.bind(this));
@@ -845,6 +849,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         var nodes = this.propertyContent.getElements(".MWFStatementFilter");
         var filtrData = this.data.filterList;
         var parameterData = this.data.parameterList;
+        var oldFiltrData = Array.clone( filtrData || [] );
+        var oldParameterData = Array.clone( parameterData || [] );
         nodes.each(function(node){
             MWF.xDesktop.requireApp("query.StatementDesigner", "widget.ViewFilter", function(){
                 var _slef = this;
@@ -856,6 +862,10 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                         _slef.changeJsonDate(["filterList"], data.filterData);
                         _slef.changeJsonDate(["parameterList"], data.parameterData);
                         //_slef.changeJsonDate(["data", "customFilterEntryList"], data.customData);
+                        _slef.checkHistory( "filterList", oldFiltrData, data.filterData );
+                        _slef.checkHistory( "parameterList", oldParameterData, data.parameterData );
+                        oldFiltrData = Array.clone( data.filterData );
+                        oldParameterData = Array.clone( data.parameterData );
                     }
                 });
             }.bind(this));
@@ -1638,8 +1648,10 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     //"maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                     "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
                     "onChange": function(){
+                        debugger;
+                        var oldValue = this.data[name];
                         this.data[name] = htmlArea.getValue();
-                        this.changeData(name);
+                        this.changeData(name, null, oldValue);
                         htmlArea.isChanged = true;
                     }.bind(this),
                     // "onBlur": function(){
@@ -2748,7 +2760,11 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         this.module.setPropertiesOrStyles(name, oldData);
     },
     changeData: function(name, input, oldValue, notCheckHistory, historyNotSetEditStyle){
-	    if(!notCheckHistory)this.checkHistory(name, oldValue, null, historyNotSetEditStyle);
+	    if(!notCheckHistory){
+	        var flag = false;
+	        if( input && input.hasAttribute )flag = input.hasAttribute("data-notAutoHistory");
+            if(!flag)this.checkHistory(name, oldValue, null, historyNotSetEditStyle);
+        }
         this.module._setEditStyle(name, input, oldValue);
     },
     changeJsonDate: function(key, value){

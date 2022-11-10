@@ -276,10 +276,10 @@ MWF.xApplication.process.Xform.Combox = MWF.APPCombox =  new Class(
      */
 	addOption: function(text, value){
         if (this.combox){
-            var list = this.getOptions();
+            var list = this.combox.options.list || [];
             list.push({
 				"text": text,
-				"value": value
+                "value": value
 			});
             this.combox.setOptions({"list": list});
         }

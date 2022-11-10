@@ -1169,6 +1169,13 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		return o;
 	},
 
+	getJsonData: function(name){
+		var d = this.json;
+		Array.each(name.split("."), function (n) {
+			if (d) d = d[n];
+		});
+		return d;
+	},
 	checkPropertyHistory: function(name, oldValue, newValue, notSetEditStyle){
 		if( !this.form.history )return null;
 		var log = {
@@ -1177,19 +1184,20 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 			"notSetEditStyle": notSetEditStyle,
 			"changeList": []
 		};
+
 		if( typeOf(name) === "array" ){
 			name.each(function (n, i) {
 				log.changeList.push({
 					"name": n,
 					"fromValue": oldValue[i],
-					"toValue": newValue[i] || this.json[n]
+					"toValue": newValue[i] || this.getJsonData(n)
 				})
-			})
+			}.bind(this))
 		}else{
 			log.changeList.push({
 				"name": name,
 				"fromValue": oldValue,
-				"toValue": newValue || this.json[name]
+				"toValue": newValue || this.getJsonData(name)
 			})
 		}
 		this.form.history.checkProperty(log, this);
