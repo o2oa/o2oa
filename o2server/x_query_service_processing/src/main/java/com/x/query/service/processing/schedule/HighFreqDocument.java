@@ -51,38 +51,8 @@ public class HighFreqDocument extends HighFreq {
         do {
             list = this.list(state, DocumentEvent.class, Config.query().index().getHighFreqDocumentBatchSize());
             if (!list.isEmpty()) {
-                list.stream().filter(o -> StringUtils.equalsIgnoreCase(o.getType(), DocumentEvent.TYPE_DELETE))
-                        .map(o -> Pair.of(o.getAppInfo(), o.getDocument())).collect(Collectors.groupingBy(Pair::first))
-                        .entrySet().forEach(o -> {
-                            try {
-                                List<String> ids = o.getValue().stream().map(Pair::second).distinct()
-                                        .collect(Collectors.toList());
-                                ThisApplication.indexWriteQueue.send(new IndexWriteQueue.DeleteMessage(ids,
-                                        Indexs.CATEGORY_CMS, o.getKey(), null));
-                                ThisApplication.indexWriteQueue.send(new IndexWriteQueue.DeleteMessage(ids,
-                                        Indexs.CATEGORY_SEARCH, Indexs.KEY_ENTIRE, null));
-                                deleteCount.addAndGet(ids.size());
-                            } catch (Exception e) {
-                                LOGGER.error(e);
-                            }
-                        });
-                list.stream().filter(o -> StringUtils.equalsAnyIgnoreCase(o.getType(), DocumentEvent.TYPE_CREATE,
-                        DocumentEvent.TYPE_UPDATE)).collect(Collectors.groupingBy(DocumentEvent::getAppInfo)).entrySet()
-                        .stream().forEach(o -> {
-                            Map<String, String> map = new LinkedHashMap<>();
-                            o.getValue().stream().forEach(p -> map.put(p.getAppInfo(), p.getDocument()));
-                            List<Doc> docs = index(map.values().stream().collect(Collectors.toList()),
-                                    DocFunction.wrapDocument);
-                            try {
-                                ThisApplication.indexWriteQueue.send(new IndexWriteQueue.UpdateMessage(docs,
-                                        Indexs.CATEGORY_CMS, o.getKey(), true));
-                                ThisApplication.indexWriteQueue.send(new IndexWriteQueue.UpdateMessage(docs,
-                                        Indexs.CATEGORY_SEARCH, Indexs.KEY_ENTIRE, false));
-                            } catch (Exception e) {
-                                LOGGER.error(e);
-                            }
-                            indexCount.addAndGet(map.entrySet().size());
-                        });
+                update(list, indexCount);
+                delete(list, deleteCount);
                 Optional<Map.Entry<Date, List<Pair<String, Date>>>> optional = list.stream()
                         .map(o -> Pair.of(o.getId(), DateUtils.truncate(o.getCreateTime(), Calendar.SECOND)))
                         .collect(Collectors.groupingBy(o -> DateUtils.truncate(o.second(), Calendar.SECOND)))
@@ -99,12 +69,50 @@ public class HighFreqDocument extends HighFreq {
             }
         } while ((!list.isEmpty())
                 && ((new Date().getTime() - startAt.getTime()) < Config.query().index()
-                        .getHighFreqWorkMaxMinutes() * 1000 * 60)
-                && count < Config.query().index().getHighFreqWorkMaxCount());
+                        .getHighFreqDocumentMaxMinutes() * 1000 * 60)
+                && count < Config.query().index().getHighFreqDocumentMaxCount());
         LOGGER.info(
-                "high freq index document start at:{}, elapsed:{} minutes, total count:{}, merge index:{}, merge delete:{}.",
+                "high freq index document start at:{}, elapsed:{} minutes, total count:{}, write:{}, delete:{}.",
                 DateTools.format(startAt), ((new Date()).getTime() - startAt.getTime()) / (1000 * 60), count,
                 indexCount.get(), deleteCount.get());
+    }
+
+    private void delete(List<DocumentEvent> list, AtomicInteger deleteCount) {
+        list.stream().filter(o -> StringUtils.equalsIgnoreCase(o.getType(), DocumentEvent.TYPE_DELETE))
+                .map(o -> Pair.of(o.getAppInfo(), o.getDocument())).collect(Collectors.groupingBy(Pair::first))
+                .entrySet().forEach(o -> {
+                    try {
+                        List<String> ids = o.getValue().stream().map(Pair::second).distinct()
+                                .collect(Collectors.toList());
+                        ThisApplication.indexWriteQueue.send(new IndexWriteQueue.DeleteMessage(ids,
+                                Indexs.CATEGORY_CMS, o.getKey(), null));
+                        ThisApplication.indexWriteQueue.send(new IndexWriteQueue.DeleteMessage(ids,
+                                Indexs.CATEGORY_SEARCH, Indexs.KEY_ENTIRE, null));
+                        deleteCount.addAndGet(ids.size());
+                    } catch (Exception e) {
+                        LOGGER.error(e);
+                    }
+                });
+    }
+
+    private void update(List<DocumentEvent> list, AtomicInteger indexCount) {
+        list.stream().filter(o -> StringUtils.equalsAnyIgnoreCase(o.getType(), DocumentEvent.TYPE_CREATE,
+                DocumentEvent.TYPE_UPDATE)).collect(Collectors.groupingBy(DocumentEvent::getAppInfo)).entrySet()
+                .stream().forEach(o -> {
+                    Map<String, String> map = new LinkedHashMap<>();
+                    o.getValue().stream().forEach(p -> map.put(p.getAppInfo(), p.getDocument()));
+                    List<Doc> docs = index(map.values().stream().collect(Collectors.toList()),
+                            DocFunction.wrapDocument);
+                    try {
+                        ThisApplication.indexWriteQueue.send(new IndexWriteQueue.UpdateMessage(docs,
+                                Indexs.CATEGORY_CMS, o.getKey(), true));
+                        ThisApplication.indexWriteQueue.send(new IndexWriteQueue.UpdateMessage(docs,
+                                Indexs.CATEGORY_SEARCH, Indexs.KEY_ENTIRE, false));
+                        indexCount.addAndGet(map.entrySet().size());
+                    } catch (Exception e) {
+                        LOGGER.error(e);
+                    }
+                });
     }
 
 }

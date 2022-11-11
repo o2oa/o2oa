@@ -16,6 +16,7 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.processplatform.core.entity.PersistenceProperties;
+import com.x.processplatform.core.entity.content.WorkCompleted;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -58,36 +59,46 @@ public class WorkCompletedEvent extends SliceJpaObject {
 
     }
 
-    public static WorkCompletedEvent updateEvent(String application, String workCompleted, String work,
-            String job) {
-        WorkCompletedEvent o = new WorkCompletedEvent();
-        o.setType(TYPE_UPDATE);
-        o.setApplication(application);
-        o.setWorkCompleted(workCompleted);
-        o.setWork(work);
-        o.setJob(job);
-        return o;
-    }
-
-    public static WorkCompletedEvent createEvent(String application, String workCompleted, String work,
-            String job) {
+    public static WorkCompletedEvent createEventInstance(String application, String workCompleted, String job) {
         WorkCompletedEvent o = new WorkCompletedEvent();
         o.setType(TYPE_CREATE);
         o.setApplication(application);
         o.setWorkCompleted(workCompleted);
-        o.setWork(work);
         o.setJob(job);
         return o;
     }
 
-    public static WorkCompletedEvent deleteEvent(String application, String workCompleted, String work, String job) {
+    public static WorkCompletedEvent updateEventInstance(String application, String workCompleted, String job) {
+        WorkCompletedEvent o = new WorkCompletedEvent();
+        o.setType(TYPE_UPDATE);
+        o.setApplication(application);
+        o.setWorkCompleted(workCompleted);
+        o.setJob(job);
+        return o;
+    }
+
+    public static WorkCompletedEvent deleteEventInstance(String application, String workCompleted, String job) {
         WorkCompletedEvent o = new WorkCompletedEvent();
         o.setType(TYPE_DELETE);
         o.setApplication(application);
         o.setWorkCompleted(workCompleted);
-        o.setWork(work);
         o.setJob(job);
         return o;
+    }
+
+    public static WorkCompletedEvent createEventInstance(WorkCompleted workCompleted) {
+        return createEventInstance(workCompleted.getApplication(), workCompleted.getId(),
+                workCompleted.getJob());
+    }
+
+    public static WorkCompletedEvent updateEventInstance(WorkCompleted workCompleted) {
+        return updateEventInstance(workCompleted.getApplication(), workCompleted.getId(),
+                workCompleted.getJob());
+    }
+
+    public static WorkCompletedEvent deleteEventInstance(WorkCompleted workCompleted) {
+        return deleteEventInstance(workCompleted.getApplication(), workCompleted.getId(),
+                workCompleted.getJob());
     }
 
     public static final String JOB_FIELDNAME = "job";
@@ -97,14 +108,6 @@ public class WorkCompletedEvent extends SliceJpaObject {
     @Index(name = TABLE + IndexNameMiddle + JOB_FIELDNAME)
     @CheckPersist(allowEmpty = false)
     private String job;
-
-    public static final String WORK_FIELDNAME = "work";
-    @Schema(description = "工作标识.")
-    @FieldDescribe("工作标识.")
-    @Column(length = JpaObject.length_id, name = ColumnNamePrefix + WORK_FIELDNAME)
-    @Index(name = TABLE + IndexNameMiddle + WORK_FIELDNAME)
-    @CheckPersist(allowEmpty = false)
-    private String work;
 
     public static final String WORKCOMPLETED_FIELDNAME = "workCompleted";
     @Schema(description = "已完成工作标识.")
@@ -152,14 +155,6 @@ public class WorkCompletedEvent extends SliceJpaObject {
 
     public void setJob(String job) {
         this.job = job;
-    }
-
-    public String getWork() {
-        return work;
-    }
-
-    public void setWork(String work) {
-        this.work = work;
     }
 
     public String getType() {
