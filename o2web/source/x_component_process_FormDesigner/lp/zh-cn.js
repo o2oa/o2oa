@@ -622,7 +622,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "draggable": "允许拖拽",
         "allowDrag": "判断节点能否被拖拽",
         "allowDrop": "拖拽时判定目标节点能否被放置",
-        "emptyText": "内容为空显示的脚本",
+        "emptyText": "内容为空显示的文本",
         "allowDragNote": "this.event为传入节点，'return true'表示允许拖拽",
         "allowDropNote": "this.event 可以获取数据 { draggingNode, dropNode, type }。type 参数有三种情况：'prev'、'inner' 和 'next'，分别表示放置在目标节点前、插入至目标节点和放置在目标节点后。'return true'表示允许插入。",
         "loadFun": "加载子树数据脚本",

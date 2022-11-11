@@ -3,6 +3,7 @@
 	"name": "",
 	"type": "Datatable$Data",
 	"description": "",
+	"cellType": "content",
 	"events": {
 	  "queryLoad": {
 		"code": "",

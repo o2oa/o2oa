@@ -97,6 +97,9 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     this.loadingCount = 0;
                     this.loadedCount = 0;
                     this.ready = false;
+                    if(this.module.hasOwnProperty("isPropertyLoaded")){ //ElementUI需要判断isPropertyLoaded为true的时候才会setEditStyle
+                        this.module.isPropertyLoaded = false;
+                    }
 
                     this.setEditNodeEvent();
                     this.setEditNodeStyles(this.propertyContent);
@@ -181,6 +184,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         if(!flag)this.loadedCount++;
         debugger;
 	    if( this.ready && this.loadingCount === this.loadedCount ){
+            if(this.module.hasOwnProperty("isPropertyLoaded"))this.module.isPropertyLoaded = true;
             if( this.propertyTabScrollY && this.propertyTab && this.propertyTab.pages ){
                 var tab = this.propertyTab;
                 var showPage = tab.showPage || tab.pages[0];
@@ -212,6 +216,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             var name = node.get("name");
             var json = this.data[name];
             if (!json) json = [];
+            var oldValue = Array.clone(json);
             MWF.requireApp("process.FormDesigner", "widget.ElTreeEditor", function(){
                 var treeEditor = new MWF.xApplication.process.FormDesigner.widget.ElTreeEditor(node, {
                     "title": title,
@@ -221,6 +226,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                         // this.data[name] = treeEditor.toJson();
                         // this.module.json[name] = this.data[name];
                         //
+                        this.checkHistory(name, oldValue, json);
+                        oldValue = Array.clone(json);
                         this.module._refreshTree();
                     }.bind(this)
                 });
@@ -238,12 +245,15 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             var name = node.get("name");
             var json = this.data[name];
             if (!json) json = [];
+            var oldValue = Array.clone(json);
             this.loadingCount++;
             MWF.requireApp("process.FormDesigner", "widget.ElDropdownItemEditor", function(){
                 var treeEditor = new MWF.xApplication.process.FormDesigner.widget.ElDropdownItemEditor(node, {
                     "title": title,
                     "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
                     "onChange": function(){
+                        this.checkHistory(name, oldValue, json);
+                        oldValue = Array.clone(json);
                     }.bind(this)
                 });
                 treeEditor.load(json);
@@ -260,12 +270,15 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             var name = node.get("name");
             var json = this.data[name];
             if (!json) json = [];
+            var oldValue = Array.clone(json);
             this.loadingCount++;
             MWF.requireApp("process.FormDesigner", "widget.ElCarouselContent", function(){
                 var treeEditor = new MWF.xApplication.process.FormDesigner.widget.ElCarouselContent(node, {
                     "title": title,
                     "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
                     "onChange": function(){
+                        this.checkHistory(name, oldValue, json);
+                        oldValue = Array.clone(json);
                     }.bind(this)
                 });
                 treeEditor.load(json);
@@ -1039,6 +1052,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 nodes.each(function(node){
                     var name = node.get("name");
                     var v = _self.data[name] || "";
+                    var oldValue = v;
                     var data = {};
                     data[name] = v;
                     new Vue({
@@ -1046,7 +1060,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                         methods: {
                             change: function(color){
                                 _self.data[name] = color;
-                                _self.changeData(name);
+                                _self.changeData(name, null, oldValue);
+                                oldValue = _self.data[name];
                             }
                         }
                     }).$mount(node);
@@ -1069,6 +1084,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             nodes.each(function(node){
                 var name = node.get("name");
                 var data = this.data[name] || "";
+                var oldValue = data;
                 var area = new Element("div", {
                     "styles": {
                         "height": "300px",
@@ -1091,7 +1107,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                                 if (iNode && iNode.hasClass("mainColor_bg")){
                                     iNode.removeClass("mainColor_bg");
                                     _self.data[name] = "";
-                                    _self.changeData(name);
+                                    _self.changeData(name, null, oldValue);
+                                    oldValue = _self.data[name];
                                 }else{
                                     this.$el.getElements("i").forEach(function(el){
                                         if (el.hasClass("mainColor_bg")) el.removeClass("mainColor_bg");
@@ -1100,7 +1117,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                                         iNode.addClass("mainColor_bg");
                                         var iconName = iNode.dataset["icon"];
                                         _self.data[name] = iconName;
-                                        _self.changeData(name);
+                                        _self.changeData(name, null, oldValue);
+                                        oldValue = _self.data[name];
                                     }
                                 }
                             }
@@ -2794,7 +2812,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             var oldValue = this.data;
             for (var idx = 0; idx<names.length; idx++){
                 if (!oldValue[names[idx]]){
-                    oldValue = null;
+                    oldValue = oldValue[names[idx]];
+                    //oldValue = null;
                     break;
                 }else{
                     oldValue = oldValue[names[idx]];
@@ -2806,7 +2825,10 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 			// if (value==="true") value = true;
 			//var oldValue = this.data[name];
 			this.changeJsonDate(names, value);
-            this.changeData(name, input, oldValue, notCheckHistory, true);
+            //由于加载property的时候，会自动setRadioValue，会setEditStyle。这里就让history不要setEditStyle了。
+            //但是ElementUI有isPropertyLoaded判断，这个时候又需要setEditStyle了。
+            var historyNotSetEditStyle = !this.module.vm;
+            this.changeData(name, input, oldValue, notCheckHistory, historyNotSetEditStyle);
 		}
 	},
 	setCheckboxValue: function(name, input){

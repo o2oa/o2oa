@@ -205,6 +205,8 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 		// this.vm.$destroy();
 		// node.destroy();
 
+		this.reseting = true;
+
 		var node = this.vm.$el;
 		this.vm.$destroy();
 		node.empty();
@@ -216,6 +218,7 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 			this._setNodeProperty();
 			if (!this.form.isSubform) this._createIconAction();
 			this._setNodeEvent();
+			this.reseting = false;
 		}.bind(this));
 		if (this._resetElementFun){
 			this.form.removeEvent("postSave", this._resetElementFun);

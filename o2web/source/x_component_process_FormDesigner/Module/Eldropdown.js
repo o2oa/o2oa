@@ -83,11 +83,13 @@ MWF.xApplication.process.FormDesigner.Module.Eldropdown = MWF.FCEldropdown = new
 			case "text":
 			case "size":
 			case "buttonType":
-			case "vueSlot":
-				if (this.isPropertyLoaded) if (this.vm) this.resetElement(); break;
 			case "showButton":
 			case "splitButton":
-				if (this.isPropertyLoaded) if (this.vm) this.resetElement(); break;
+			case "vueSlot":
+				if (this.isPropertyLoaded && !this.reseting) {
+					if (this.vm) this.resetElement();
+				}
+				break;
 			default: break;
 		}
 	},

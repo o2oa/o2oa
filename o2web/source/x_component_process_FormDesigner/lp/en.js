@@ -623,7 +623,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "draggable": "Dragging allowed",
         "allowDrag": "Judging whether the node can be dragged",
         "allowDrop": "Determine whether the target node can be dropped while dragging",
-        "emptyText": "Script with empty content",
+        "emptyText": "Text with empty content",
         "allowDragNote": "this.event is the incoming node,'return true' means dragging is allowed",
         "allowDropNote": "this.event can get data {draggingNode, dropNode, type }. There are three cases for the type parameter:'prev','inner' and'next', which respectively indicate to be placed in front of the target node, inserted into the target node and Placed after the target node.'return true' means inserting is allowed.",
         "loadFun": "Method of loading subtree data",

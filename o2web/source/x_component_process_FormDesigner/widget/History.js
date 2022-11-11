@@ -209,7 +209,6 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
                 this.preArray.pop(); //删除preArray最后一个
                 it = this.preArray.getLast();
             }
-            debugger;
             item.selectModule("undo");
         }else if( item.status === "next" ){
             if( this.preArray.length ){  //上一个property的subItem要redo一下
@@ -230,7 +229,6 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         }
     },
     compareObjects: function(o, p, deep){
-        debugger;
         if( o === p )return true;
         return JSON.stringify(o) === JSON.stringify(p);
     }
@@ -381,7 +379,6 @@ MWF.FCWHistory.Item = new Class({
     },
     //插入HTML到对应位置
     injectHtmlByPath: function(path, html){
-        debugger;
         var i, nodeIndex;
         var node = this.root;
         for( i=0; i<path.length - 1; i++ ){
@@ -459,7 +456,6 @@ MWF.FCWHistory.ModuleItem = new Class({
         return  ( lp[this.data.operation] || this.data.operation ) + " " + this.data.moduleId;
     },
     _undo: function(){
-        debugger;
         switch (this.data.operation) {
             case "create":
                 this.deleteModuleList();
@@ -579,7 +575,6 @@ MWF.FCWHistory.ModuleTableTdItem = new Class({
         tableModule.deleteTdWithNode(dom);
     },
     _undo: function(){
-        debugger;
         switch (this.data.operation) {
             case "insertRow": //td的操作，插入行
                 this.deleteRow();
@@ -684,7 +679,6 @@ MWF.FCWHistory.ModuleDatatableTdItem = new Class({
         }
     },
     _undo: function(){
-        debugger;
         switch (this.data.operation) {
             case "insertCol": //td的操作，插入列
                 this.deleteTds();
@@ -768,7 +762,6 @@ MWF.FCWHistory.ModuleTabpageItem = new Class({
             case "copy":
                 break;
             case "move":
-                debugger;
                 dom = this.getDomByPath( this.data.fromList[0].path );
                 this.injectToByPath( to.path, dom );
 
@@ -1077,7 +1070,6 @@ MWF.FCWHistory.Tooltips = new Class({
         //    "width": width,
         //    "max-width": width
         //});
-        debugger;
         // if( this.data && this.data.length > 0 ){
         //     this.createItemList( this.data, contentNode )
         // }else if( this.selector.options.tooltipWhenNoSelectValue ){
