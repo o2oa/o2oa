@@ -51,9 +51,6 @@ public class CleanEvent extends AbstractJob {
         CriteriaQuery<T> cq = cb.createQuery(clazz);
         Root<T> root = cq.from(clazz);
         cq.where(cb.lessThan(root.get(JpaObject_.createTime), threshold));
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!22");
-        System.out.println(cq.toString());
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!22");
         List<T> os = em.createQuery(cq).setMaxResults(200).getResultList();
         int count = 0;
         while (!os.isEmpty()) {
@@ -63,9 +60,6 @@ public class CleanEvent extends AbstractJob {
             }
             emc.commit();
             count += os.size();
-            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!22");
-            System.out.println(cq.toString());
-            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!22");
             os = em.createQuery(cq).setMaxResults(200).getResultList();
         }
         return count;

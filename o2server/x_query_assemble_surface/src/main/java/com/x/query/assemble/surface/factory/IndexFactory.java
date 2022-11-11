@@ -59,7 +59,6 @@ public class IndexFactory extends AbstractFactory {
      * 
      * @param person
      * @param category
-     * @param type
      * @param key
      * @return
      * @throws Exception

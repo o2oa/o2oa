@@ -76,7 +76,7 @@ class ActionPost extends BaseAction {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Business business = new Business(emc);
             String person = business.index().who(effectivePerson, wi.getPerson());
-            readers = business.index().determineReaders(person, Indexs.CATEGORY_SEARCH, "");
+            readers = business.index().determineReaders(person, Indexs.CATEGORY_SEARCH, Indexs.KEY_ENTIRE);
         }
         Analyzer analyzer = new HanLPAnalyzer();
         Optional<Query> searchQuery = this.searchQuery(wi.getQuery(), analyzer);

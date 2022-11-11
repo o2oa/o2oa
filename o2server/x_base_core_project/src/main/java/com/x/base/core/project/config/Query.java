@@ -462,21 +462,21 @@ public class Query extends ConfigObject {
 
         public static final Boolean DEFAULT_HIGHFREQWORKENABLE = true;
         public static final String DEFAULT_HIGHFREQWORKCRON = "2 0/2 7-19 * * ?";
-        public static final Integer DEFAULT_HIGHFREQWORKBATCHSIZE = 50;
-        public static final Integer DEFAULT_HIGHFREQWORKMAXCOUNT = 200;
+        public static final Integer DEFAULT_HIGHFREQWORKBATCHSIZE = 500;
+        public static final Integer DEFAULT_HIGHFREQWORKMAXCOUNT = 5000;
         public static final Integer DEFAULT_HIGHFREQWORKMAXMINUTES = 2;
 
         public static final Boolean DEFAULT_HIGHFREQWORKCOMPLETEDENABLE = true;
         public static final String DEFAULT_HIGHFREQWORKCOMPLETEDCRON = "2 1/2 7-19 * * ?";
-        public static final Integer DEFAULT_HIGHFREQWORKCOMPLETEDBATCHSIZE = 50;
-        public static final Integer DEFAULT_HIGHFREQWORKCOMPLETEDMAXCOUNT = 500;
-        public static final Integer DEFAULT_HIGHFREQWORKCOMPLETEDMAXMINUTES = 5;
+        public static final Integer DEFAULT_HIGHFREQWORKCOMPLETEDBATCHSIZE = 500;
+        public static final Integer DEFAULT_HIGHFREQWORKCOMPLETEDMAXCOUNT = 5000;
+        public static final Integer DEFAULT_HIGHFREQWORKCOMPLETEDMAXMINUTES = 2;
 
         public static final Boolean DEFAULT_HIGHFREQDOCUMENTENABLE = true;
         public static final String DEFAULT_HIGHFREQDOCUMENTCRON = "2 1/2 7-19 * * ?";
-        public static final Integer DEFAULT_HIGHFREQDOCUMENTBATCHSIZE = 50;
-        public static final Integer DEFAULT_HIGHFREQDOCUMENTMAXCOUNT = 500;
-        public static final Integer DEFAULT_HIGHFREQDOCUMENTMAXMINUTES = 5;
+        public static final Integer DEFAULT_HIGHFREQDOCUMENTBATCHSIZE = 500;
+        public static final Integer DEFAULT_HIGHFREQDOCUMENTMAXCOUNT = 5000;
+        public static final Integer DEFAULT_HIGHFREQDOCUMENTMAXMINUTES = 2;
 
         public static final Boolean DEFAULT_SEARCHENABLE = true;
 
