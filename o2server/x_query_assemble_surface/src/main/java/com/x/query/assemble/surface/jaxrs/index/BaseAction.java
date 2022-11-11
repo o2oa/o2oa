@@ -50,8 +50,7 @@ abstract class BaseAction extends StandardJaxrsAction {
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseAction.class);
 
     protected static final WoField IDWOFIELD = new WoField(Indexs.FIELD_ID, "标识", Indexs.FIELD_TYPE_STRING);
-    protected static final CacheCategory cacheCategory = new CacheCategory(Application.class, Process.class,
-            AppInfo.class, CategoryInfo.class);
+    protected static final CacheCategory cacheCategory = new CacheCategory(Application.class, AppInfo.class);
 
     protected static final List<WoField> FIXEDFIELD_APPLICATION = ListUtils
             .unmodifiableList(Arrays.asList(new WoField(Indexs.FIELD_TITLE, "标题", Indexs.FIELD_TYPE_STRING),

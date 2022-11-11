@@ -438,16 +438,19 @@ public class ManualProcessor extends AbstractManualProcessor {
         if (matrix.isEmpty()) {
             List<String> identities = new ArrayList<>();
             // 兼容7.2.0之前的版本
+            List<String> deprecatedIdentities = new ArrayList<>();
             if (PropertyUtils.isReadable(aeiObjects.getWork(), DEPRECATED_WORK_FIELD_MANUALTASKIDENTITYLIST)) {
-                identities.addAll((List<String>) PropertyUtils.getProperty(aeiObjects.getWork(),
+                deprecatedIdentities.addAll((List<String>) PropertyUtils.getProperty(aeiObjects.getWork(),
                         DEPRECATED_WORK_FIELD_MANUALTASKIDENTITYLIST));
+                identities.addAll(deprecatedIdentities);
                 identities = aeiObjects.business().organization().identity().list(identities);
             }
             if (identities.isEmpty() && aeiObjects.getJoinInquireTaskCompletedsRouteNameAvailableWithActivityToken(
                     aeiObjects.getWork().getActivityToken()).isEmpty()) {
                 identities = calculateTaskIdentities(aeiObjects, manual);
-                LOGGER.info("工作设置的处理人已经全部无效,且没有已办,重新计算当前环节所有处理人进行处理,标题:{}, id:{}, 设置的处理人:{}.",
-                        aeiObjects.getWork()::getTitle, aeiObjects.getWork()::getId, identities::toString);
+                LOGGER.info("工作设置的处理人 {} 已经全部无效, 且没有已办, 重新计算当前环节所有处理人进行处理, 标题:{}, id:{}, 强制设置的处理人:{}.",
+                        () -> StringUtils.join(deprecatedIdentities), aeiObjects.getWork()::getTitle,
+                        aeiObjects.getWork()::getId, identities::toString);
             }
             matrix = manual.identitiesToManualTaskIdentityMatrix(identities);
         }
