@@ -56,40 +56,8 @@ public class HighFreqWorkCompleted extends HighFreq {
             list = this.list(state, WorkCompletedEvent.class,
                     Config.query().index().getHighFreqWorkCompletedBatchSize());
             if (!list.isEmpty()) {
-                list.stream().filter(o -> StringUtils.equalsIgnoreCase(o.getType(), WorkCompletedEvent.TYPE_DELETE))
-                        .map(o -> Pair.of(o.getApplication(), o.getJob())).collect(Collectors.groupingBy(Pair::first))
-                        .entrySet().forEach(o -> {
-                            try {
-                                List<String> jobs = o.getValue().stream().map(Pair::second).distinct()
-                                        .collect(Collectors.toList());
-                                ThisApplication.indexWriteQueue.send(new IndexWriteQueue.DeleteMessage(jobs,
-                                        Indexs.CATEGORY_PROCESSPLATFORM, o.getKey(), additionalQuery));
-                                ThisApplication.indexWriteQueue.send(new IndexWriteQueue.DeleteMessage(jobs,
-                                        Indexs.CATEGORY_SEARCH, Indexs.KEY_ENTIRE, additionalQuery));
-                                deleteCount.addAndGet(jobs.size());
-                            } catch (Exception e) {
-                                LOGGER.error(e);
-                            }
-                        });
-                list.stream().filter(o -> StringUtils.equalsAnyIgnoreCase(o.getType(), WorkCompletedEvent.TYPE_CREATE,
-                        WorkCompletedEvent.TYPE_UPDATE))
-                        .collect(Collectors.groupingBy(WorkCompletedEvent::getApplication))
-                        .entrySet()
-                        .stream().forEach(o -> {
-                            Map<String, String> map = new LinkedHashMap<>();
-                            o.getValue().stream().forEach(p -> map.put(p.getJob(), p.getWork()));
-                            List<Doc> docs = index(map.values().stream().collect(Collectors.toList()),
-                                    DocFunction.wrapWorkCompleted);
-                            try {
-                                ThisApplication.indexWriteQueue.send(new IndexWriteQueue.UpdateMessage(docs,
-                                        Indexs.CATEGORY_PROCESSPLATFORM, o.getKey(), true));
-                                ThisApplication.indexWriteQueue.send(new IndexWriteQueue.UpdateMessage(docs,
-                                        Indexs.CATEGORY_SEARCH, Indexs.KEY_ENTIRE, false));
-                            } catch (Exception e) {
-                                LOGGER.error(e);
-                            }
-                            indexCount.addAndGet(map.entrySet().size());
-                        });
+                update(list, indexCount);
+                delete(list, deleteCount, additionalQuery);
                 Optional<Map.Entry<Date, List<Pair<String, Date>>>> optional = list.stream()
                         .map(o -> Pair.of(o.getId(), DateUtils.truncate(o.getCreateTime(), Calendar.SECOND)))
                         .collect(Collectors.groupingBy(o -> DateUtils.truncate(o.second(), Calendar.SECOND)))
@@ -106,12 +74,52 @@ public class HighFreqWorkCompleted extends HighFreq {
             }
         } while ((!list.isEmpty())
                 && ((new Date().getTime() - startAt.getTime()) < Config.query().index()
-                        .getHighFreqWorkMaxMinutes() * 1000 * 60)
-                && count < Config.query().index().getHighFreqWorkMaxCount());
+                        .getHighFreqWorkCompletedMaxMinutes() * 1000 * 60)
+                && count < Config.query().index().getHighFreqWorkCompletedMaxCount());
         LOGGER.info(
-                "high freq index workCompleted start at:{}, elapsed:{} minutes, total count:{}, merge index:{}, merge delete:{}.",
+                "high freq index workCompleted start at:{}, elapsed:{} minutes, total count:{}, write:{}, delete:{}.",
                 DateTools.format(startAt), ((new Date()).getTime() - startAt.getTime()) / (1000 * 60), count,
                 indexCount.get(), deleteCount.get());
+    }
+
+    private void update(List<WorkCompletedEvent> list, AtomicInteger indexCount) {
+        list.stream().filter(o -> StringUtils.equalsAnyIgnoreCase(o.getType(), WorkCompletedEvent.TYPE_CREATE,
+                WorkCompletedEvent.TYPE_UPDATE))
+                .collect(Collectors.groupingBy(WorkCompletedEvent::getApplication))
+                .entrySet()
+                .stream().forEach(o -> {
+                    Map<String, String> map = new LinkedHashMap<>();
+                    o.getValue().stream().forEach(p -> map.put(p.getJob(), p.getWorkCompleted()));
+                    List<Doc> docs = index(map.values().stream().collect(Collectors.toList()),
+                            DocFunction.wrapWorkCompleted);
+                    try {
+                        ThisApplication.indexWriteQueue.send(new IndexWriteQueue.UpdateMessage(docs,
+                                Indexs.CATEGORY_PROCESSPLATFORM, o.getKey(), true));
+                        ThisApplication.indexWriteQueue.send(new IndexWriteQueue.UpdateMessage(docs,
+                                Indexs.CATEGORY_SEARCH, Indexs.KEY_ENTIRE, false));
+                        indexCount.addAndGet(map.entrySet().size());
+                    } catch (Exception e) {
+                        LOGGER.error(e);
+                    }
+                });
+    }
+
+    private void delete(List<WorkCompletedEvent> list, AtomicInteger deleteCount, Query additionalQuery) {
+        list.stream().filter(o -> StringUtils.equalsIgnoreCase(o.getType(), WorkCompletedEvent.TYPE_DELETE))
+                .map(o -> Pair.of(o.getApplication(), o.getJob())).collect(Collectors.groupingBy(Pair::first))
+                .entrySet().forEach(o -> {
+                    try {
+                        List<String> jobs = o.getValue().stream().map(Pair::second).distinct()
+                                .collect(Collectors.toList());
+                        ThisApplication.indexWriteQueue.send(new IndexWriteQueue.DeleteMessage(jobs,
+                                Indexs.CATEGORY_PROCESSPLATFORM, o.getKey(), additionalQuery));
+                        ThisApplication.indexWriteQueue.send(new IndexWriteQueue.DeleteMessage(jobs,
+                                Indexs.CATEGORY_SEARCH, Indexs.KEY_ENTIRE, additionalQuery));
+                        deleteCount.addAndGet(jobs.size());
+                    } catch (Exception e) {
+                        LOGGER.error(e);
+                    }
+                });
     }
 
 }

@@ -821,7 +821,7 @@ public class AeiObjects extends GsonPropertyObject {
             // 保存工作
             this.getCreateWorks().forEach(o -> {
                 try {
-                    this.workEvents.add(WorkEvent.createWorkEvent(o.getId(), o.getJob()));
+                    this.workEvents.add(WorkEvent.createEventInstance(o));
                     this.business.entityManagerContainer().persist(o, CheckPersistType.all);
                 } catch (Exception e) {
                     LOGGER.error(e);
@@ -830,7 +830,7 @@ public class AeiObjects extends GsonPropertyObject {
             // 更新工作
             this.getUpdateWorks().forEach(o -> {
                 try {
-                    this.workEvents.add(WorkEvent.updateWorkEvent(o.getId(), o.getJob()));
+                    this.workEvents.add(WorkEvent.updateEventInstance(o));
                     this.business.entityManagerContainer().check(o, CheckPersistType.all);
                 } catch (Exception e) {
                     LOGGER.error(e);
@@ -840,9 +840,9 @@ public class AeiObjects extends GsonPropertyObject {
             this.getDeleteWorks().stream().forEach(o -> {
                 Work obj;
                 try {
-                    this.workEvents.add(WorkEvent.deleteWorkEvent(o.getId(), o.getJob()));
                     obj = this.business.entityManagerContainer().find(o.getId(), Work.class);
                     if (null != obj) {
+                        this.workEvents.add(WorkEvent.deleteEventInstance(obj));
                         this.business.entityManagerContainer().remove(obj, CheckRemoveType.all);
                     }
                 } catch (Exception e) {
@@ -859,6 +859,7 @@ public class AeiObjects extends GsonPropertyObject {
             // 保存完成工作
             this.getCreateWorkCompleteds().stream().forEach(o -> {
                 try {
+                    this.workCompletedEvents.add(WorkCompletedEvent.createEventInstance(o));
                     this.business.entityManagerContainer().persist(o, CheckPersistType.all);
                 } catch (Exception e) {
                     LOGGER.error(e);
@@ -867,6 +868,7 @@ public class AeiObjects extends GsonPropertyObject {
             // 更新完成工作
             this.getUpdateWorkCompleteds().forEach(o -> {
                 try {
+                    this.workCompletedEvents.add(WorkCompletedEvent.updateEventInstance(o));
                     this.business.entityManagerContainer().check(o, CheckPersistType.all);
                 } catch (Exception e) {
                     LOGGER.error(e);
@@ -878,6 +880,7 @@ public class AeiObjects extends GsonPropertyObject {
                 try {
                     obj = this.business.entityManagerContainer().find(o.getId(), WorkCompleted.class);
                     if (null != obj) {
+                        this.workCompletedEvents.add(WorkCompletedEvent.deleteEventInstance(obj));
                         this.business.entityManagerContainer().remove(obj, CheckRemoveType.all);
                     }
                 } catch (Exception e) {

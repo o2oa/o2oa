@@ -441,19 +441,19 @@ public class Query extends ConfigObject {
 
         public static final Boolean DEFAULT_LOWFREQDOCUMENTENABLE = true;
         public static final String DEFAULT_LOWFREQDOCUMENTCRON = "40 15 19 * * ?";
-        public static final Integer DEFAULT_LOWFREQDOCUMENTBATCHSIZE = 50;
+        public static final Integer DEFAULT_LOWFREQDOCUMENTBATCHSIZE = 100;
         public static final Integer DEFAULT_LOWFREQDOCUMENTMAXCOUNT = 50000;
         public static final Integer DEFAULT_LOWFREQDOCUMENTMAXMINUTES = 60;
 
         public static final Boolean DEFAULT_LOWFREQWORKENABLE = true;
         public static final String DEFAULT_LOWFREQWORKCRON = "40 15 20 * * ?";
-        public static final Integer DEFAULT_LOWFREQWORKBATCHSIZE = 50;
+        public static final Integer DEFAULT_LOWFREQWORKBATCHSIZE = 100;
         public static final Integer DEFAULT_LOWFREQWORKMAXCOUNT = 50000;
         public static final Integer DEFAULT_LOWFREQWORKMAXMINUTES = 60;
 
         public static final Boolean DEFAULT_LOWFREQWORKCOMPLETEDENABLE = true;
         public static final String DEFAULT_LOWFREQWORKCOMPLETEDCRON = "40 15 21 * * ?";
-        public static final Integer DEFAULT_LOWFREQWORKCOMPLETEDBATCHSIZE = 200;
+        public static final Integer DEFAULT_LOWFREQWORKCOMPLETEDBATCHSIZE = 100;
         public static final Integer DEFAULT_LOWFREQWORKCOMPLETEDMAXCOUNT = 500000;
         public static final Integer DEFAULT_LOWFREQWORKCOMPLETEDMAXMINUTES = 120;
 
@@ -461,19 +461,19 @@ public class Query extends ConfigObject {
         public static final String DEFAULT_OPTIMIZEINDEXCRON = "40 15 23 * * ?";
 
         public static final Boolean DEFAULT_HIGHFREQWORKENABLE = true;
-        public static final String DEFAULT_HIGHFREQWORKCRON = "40 0/3 7-19 * * ?";
+        public static final String DEFAULT_HIGHFREQWORKCRON = "2 0/2 7-19 * * ?";
         public static final Integer DEFAULT_HIGHFREQWORKBATCHSIZE = 50;
         public static final Integer DEFAULT_HIGHFREQWORKMAXCOUNT = 200;
         public static final Integer DEFAULT_HIGHFREQWORKMAXMINUTES = 2;
 
         public static final Boolean DEFAULT_HIGHFREQWORKCOMPLETEDENABLE = true;
-        public static final String DEFAULT_HIGHFREQWORKCOMPLETEDCRON = "40 0/10 7-19 * * ?";
+        public static final String DEFAULT_HIGHFREQWORKCOMPLETEDCRON = "2 1/2 7-19 * * ?";
         public static final Integer DEFAULT_HIGHFREQWORKCOMPLETEDBATCHSIZE = 50;
         public static final Integer DEFAULT_HIGHFREQWORKCOMPLETEDMAXCOUNT = 500;
         public static final Integer DEFAULT_HIGHFREQWORKCOMPLETEDMAXMINUTES = 5;
 
         public static final Boolean DEFAULT_HIGHFREQDOCUMENTENABLE = true;
-        public static final String DEFAULT_HIGHFREQDOCUMENTCRON = "55 0/10 7-19 * * ?";
+        public static final String DEFAULT_HIGHFREQDOCUMENTCRON = "2 1/2 7-19 * * ?";
         public static final Integer DEFAULT_HIGHFREQDOCUMENTBATCHSIZE = 50;
         public static final Integer DEFAULT_HIGHFREQDOCUMENTMAXCOUNT = 500;
         public static final Integer DEFAULT_HIGHFREQDOCUMENTMAXMINUTES = 5;

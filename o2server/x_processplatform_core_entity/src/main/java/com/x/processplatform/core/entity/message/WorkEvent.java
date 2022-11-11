@@ -16,6 +16,7 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.processplatform.core.entity.PersistenceProperties;
+import com.x.processplatform.core.entity.content.Work;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -58,16 +59,7 @@ public class WorkEvent extends SliceJpaObject {
 
     }
 
-    public static WorkEvent updateEvent(String application, String work, String job) {
-        WorkEvent o = new WorkEvent();
-        o.setType(TYPE_UPDATE);
-        o.setApplication(application);
-        o.setJob(job);
-        o.setWork(work);
-        return o;
-    }
-
-    public static WorkEvent createWorkEvent(String application, String work, String job) {
+    public static WorkEvent createEventInstance(String application, String work, String job) {
         WorkEvent o = new WorkEvent();
         o.setType(TYPE_CREATE);
         o.setApplication(application);
@@ -76,13 +68,34 @@ public class WorkEvent extends SliceJpaObject {
         return o;
     }
 
-    public static WorkEvent deleteWorkEvent(String application, String work, String job) {
+    public static WorkEvent updateEventInstance(String application, String work, String job) {
+        WorkEvent o = new WorkEvent();
+        o.setType(TYPE_UPDATE);
+        o.setApplication(application);
+        o.setJob(job);
+        o.setWork(work);
+        return o;
+    }
+
+    public static WorkEvent deleteEventInstance(String application, String work, String job) {
         WorkEvent o = new WorkEvent();
         o.setType(TYPE_DELETE);
         o.setApplication(application);
         o.setJob(job);
         o.setWork(work);
         return o;
+    }
+
+    public static WorkEvent createEventInstance(Work work) {
+        return createEventInstance(work.getApplication(), work.getId(), work.getJob());
+    }
+
+    public static WorkEvent updateEventInstance(Work work) {
+        return updateEventInstance(work.getApplication(), work.getId(), work.getJob());
+    }
+
+    public static WorkEvent deleteEventInstance(Work work) {
+        return deleteEventInstance(work.getApplication(), work.getId(), work.getJob());
     }
 
     public static final String JOB_FIELDNAME = "job";

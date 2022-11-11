@@ -15,6 +15,7 @@ import com.x.base.core.entity.SliceJpaObject;
 import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
+import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.PersistenceProperties;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -55,10 +56,10 @@ public class DocumentEvent extends SliceJpaObject {
     }
 
     public DocumentEvent() {
-
+        //nothing
     }
 
-    public static DocumentEvent updateEvent(String appInfo, String document) {
+    public static DocumentEvent updateEventInstance(String appInfo, String document) {
         DocumentEvent o = new DocumentEvent();
         o.setType(TYPE_UPDATE);
         o.setAppInfo(appInfo);
@@ -66,7 +67,7 @@ public class DocumentEvent extends SliceJpaObject {
         return o;
     }
 
-    public static DocumentEvent createEvent(String appInfo, String document) {
+    public static DocumentEvent createEventInstance(String appInfo, String document) {
         DocumentEvent o = new DocumentEvent();
         o.setType(TYPE_CREATE);
         o.setAppInfo(appInfo);
@@ -74,12 +75,24 @@ public class DocumentEvent extends SliceJpaObject {
         return o;
     }
 
-    public static DocumentEvent deleteEvent(String appInfo, String document) {
+    public static DocumentEvent deleteEventInstance(String appInfo, String document) {
         DocumentEvent o = new DocumentEvent();
         o.setType(TYPE_DELETE);
         o.setAppInfo(appInfo);
         o.setDocument(document);
         return o;
+    }
+
+    public static DocumentEvent updateEventInstance(Document document) {
+        return updateEventInstance(document.getAppId(), document.getId());
+    }
+
+    public static DocumentEvent createEventInstance(Document document) {
+        return createEventInstance(document.getAppId(), document.getId());
+    }
+
+    public static DocumentEvent deleteEventInstance(Document document) {
+        return deleteEventInstance(document.getAppId(), document.getId());
     }
 
     public static final String DOCUMENT_FIELDNAME = "document";
