@@ -10,6 +10,8 @@ import com.x.cms.assemble.control.factory.ProjectionFactory;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Projection;
 import com.x.cms.core.entity.content.Data;
+import com.x.cms.core.entity.enums.DocumentStatus;
+import com.x.cms.core.entity.message.DocumentEvent;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -80,6 +82,11 @@ public class BaseAction extends StandardJaxrsAction {
 				this.projection(business, document, XGsonBuilder.convert(jsonElement, Data.class));
 			} catch (Exception e) {
 				LOGGER.warn("{}文档数据映射失败：{}", document.getId(), e.getMessage());
+			}
+			if(DocumentStatus.isEndStatus(document.getDocStatus())){
+				business.entityManagerContainer().beginTransaction(DocumentEvent.class);
+				DocumentEvent documentEvent = DocumentEvent.updateEventInstance(document);
+				business.entityManagerContainer().persist(documentEvent);
 			}
 			/* 基于前面的原因,这里进行单独提交 */
 			business.entityManagerContainer().commit();
