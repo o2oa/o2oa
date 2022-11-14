@@ -177,9 +177,37 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
     },
     checkMultiProperty: function(log, modules){
         debugger;
-        var item = new MWF.FCWHistory.PropertyMultiItem(this, log);
-        item.load( modules );
-        this.addItem(item);
+        var flag = false;
+        if( this.preArray.length ){
+            var lastItem = this.preArray.getLast();
+            if( lastItem.data.type === "multiProperty" ) {
+                var change = log.changeList[0];
+                var lastChangeList = lastItem.data.changeList;
+                if (lastChangeList[0].name === change.name) {
+                    var moduleIdList = log.changeList.map(function (c) {
+                        return c.module.json.id;
+                    });
+                    if( this.compareObjects( lastItem.moduleIdList, moduleIdList ) ){
+                        var it;
+                        while( this.nextArray.length ){
+                            it = this.nextArray.pop();
+                            it.destroy();
+                        }
+
+                        lastItem.data.changeList.each(function ( c ) {
+                            c.toValue = change.toValue;
+                        });
+
+                        flag = true;
+                    }
+                }
+            }
+        }
+        if( !flag ) {
+            var item = new MWF.FCWHistory.PropertyMultiItem(this, log);
+            item.load(modules);
+            this.addItem(item);
+        }
     },
     addItem: function(item){
         var it;
@@ -1044,8 +1072,7 @@ MWF.FCWHistory.PropertySingleItem.SubItem = new Class({
 
 MWF.FCWHistory.PropertyMultiItem = new Class({
     Extends: MWF.FCWHistory.Item,
-    load: function (modules) {
-        this.modules = modules;
+    load: function () {
         this.node = new Element("div", {
             styles: this._getItemStyle(),
             text: this._getText(),
@@ -1054,9 +1081,14 @@ MWF.FCWHistory.PropertyMultiItem = new Class({
             }
         }).inject(this.history.node);
         this.node.setStyle("background-image", "url(" + this.history.iconPath + "property.png)");
+
+        this.modules = [];
+        this.moduleIdList = [];
         this.data.changeList.each(function (log) {
-            log.path = this.history.getPath(log.module.node)
-        })
+            log.path = this.history.getPath(log.module.node);
+            this.modules.push( log.module );
+            this.moduleIdList.push( log.module.json.id );
+        }.bind(this))
     },
     _getItemStyle: function () {
         return this.history.css.itemNode;

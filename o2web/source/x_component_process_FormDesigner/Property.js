@@ -2769,6 +2769,41 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 		}.bind(this));
 		
 	},
+    loadMaplist: function(){
+        var maplists = this.propertyContent.getElements(".MWFMaplist");
+        maplists.each(function(node){
+            var title = node.get("title");
+            var name = node.get("name");
+            var lName = name.toLowerCase();
+            var collapse = node.get("collapse");
+            var mapObj = this.data[name];
+            if (!mapObj) mapObj = {};
+            MWF.require("MWF.widget.Maplist", function(){
+                node.empty();
+                var maplist = new MWF.widget.Maplist(node, {
+                    "title": title,
+                    "collapse": (collapse) ? true : false,
+                    "onChange": function(){
+                        //this.data[name] = maplist.toJson();
+                        //
+                        var oldData = this.getOldValueList(name);
+                        this.changeJsonDate(name, maplist.toJson());
+                        this.changeStyle(name, oldData);
+                        this.changeData(name, null, oldData);
+                        this.checkHistory( name, oldData );
+                    }.bind(this),
+                    "onDelete": function(key){
+                        this.modules.each(function (module) {
+                            module.deletePropertiesOrStyles(name, key);
+                        })
+                    }.bind(this),
+                    "isProperty": (lName.contains("properties") || lName.contains("property") || lName.contains("attribute"))
+                });
+                maplist.load(mapObj);
+                this.maplists[name] = maplist;
+            }.bind(this));
+        }.bind(this));
+    },
     checkHistory: function(name, oldValue, newValue, notSetEditStyle){
         if( this.isLoaded() && this.module.form.history ){
             this.module.checkPropertyHistory(name, oldValue, newValue, notSetEditStyle);
@@ -3121,22 +3156,127 @@ MWF.xApplication.process.FormDesigner.PropertyMulti = new Class({
     hide: function(){
         if (this.propertyContent) this.propertyContent.destroy();
     },
-    checkHistory: function(name, oldValue, newValue){
-        if( this.form.history ){
-            this.form.checkMultiPropertyHistory(name, oldValue, newValue, this.modules);
-        }
+    setEditNodeEvent: function(){
+        var property = this;
+        //	var inputs = this.process.propertyListNode.getElements(".editTableInput");
+        var inputs = this.propertyContent.getElements("input");
+        inputs.each(function(input){
+
+            var jsondata = input.get("name");
+
+            if (this.module){
+                var id = this.data.pid;
+                //var id = this.form.json.id;
+                // input.set("name", this.form.options.mode+id+jsondata);
+                input.set("name", id+jsondata);
+            }
+
+            if (jsondata){
+                var inputType = input.get("type").toLowerCase();
+                switch (inputType){
+                    case "radio":
+                        input.addEvent("change", function(e){
+                            var oldValueList = property.getOldValueList(jsondata);
+                            property.setRadioValue(jsondata, this, true);
+                            property.checkHistory( jsondata, oldValueList );
+                        });
+                        input.addEvent("blur", function(e){
+                            property.setRadioValue(jsondata, this, true);
+                        });
+                        input.addEvent("keydown", function(e){
+                            e.stopPropagation();
+                        });
+                        property.setRadioValue(jsondata, input, true);
+                        break;
+                    case "checkbox":
+
+                        input.addEvent("change", function(e){
+                            property.setCheckboxValue(jsondata, this, true);
+                        });
+                        input.addEvent("click", function(e){
+                            var oldValueList = property.getOldValueList(jsondata);
+                            property.setCheckboxValue(jsondata, this, true);
+                            property.checkHistory( jsondata, oldValueList );
+                        });
+                        input.addEvent("keydown", function(e){
+                            e.stopPropagation();
+                        });
+                        break;
+                    default:
+                        input.addEvent("change", function(e){
+                            var oldValueList = property.getOldValueList(jsondata);
+                            var v = (this.type==="number") ? this.value.toFloat() : this.value;
+                            property.setValue(jsondata, v, this, true);
+                            property.checkHistory( jsondata, oldValueList );
+                        });
+                        input.addEvent("blur", function(e){
+                            var v = (this.type==="number") ? this.value.toFloat() : this.value;
+                            property.setValue(jsondata, v, this, true);
+                        });
+                        input.addEvent("keydown", function(e){
+                            if (e.code==13){
+                                var oldValueList = property.getOldValueList(jsondata);
+                                var v = (this.type==="number") ? this.value.toFloat() : this.value;
+                                property.setValue(jsondata, v, this, true);
+                                property.checkHistory( jsondata, oldValueList );
+                            }
+                            e.stopPropagation();
+                        });
+                }
+            }
+        }.bind(this));
+
+        var selects = this.propertyContent.getElements("select");
+
+        selects.each(function(select){
+            var jsondata = select.get("name");
+            if (jsondata){
+                select.addEvent("change", function(e){
+                    var oldValueList = property.getOldValueList(jsondata);
+                    property.setSelectValue(jsondata, this);
+                    property.checkHistory( jsondata, oldValueList );
+                });
+                //property.setSelectValue(jsondata, select);
+            }
+        });
+
+        var textareas = this.propertyContent.getElements("textarea");
+        textareas.each(function(input){
+            var jsondata = input.get("name");
+            if (jsondata){
+                input.addEvent("change", function(e){
+                    var oldValueList = property.getOldValueList(jsondata);
+                    property.setValue(jsondata, this.value);
+                    property.checkHistory( jsondata, oldValueList );
+                });
+                input.addEvent("blur", function(e){
+                    property.setValue(jsondata, this.value, true);
+                });
+                input.addEvent("keydown", function(e){
+                    e.stopPropagation();
+                });
+            }
+        }.bind(this));
+
     },
     changeStyle: function(name){
         this.modules.each(function(module){
             module.setPropertiesOrStyles(name);
         }.bind(this));
     },
-    changeData: function(name, input, oldValue, notCheckHistory){
-        if(!notCheckHistory){
-            var flag = false;
-            if( input && input.hasAttribute )flag = input.hasAttribute("data-notAutoHistory");
-            if(!flag)this.checkHistory(name, oldValue, null);
+    getOldValueList: function(name){
+        var oldValueList = [];
+        this.modules.each(function(module){
+           oldValueList.push( module.json[name] );
+        }.bind(this));
+        return oldValueList;
+    },
+    checkHistory: function(name, oldValueList, newValue){
+        if( this.form.history ){
+            this.form.checkMultiPropertyHistory(name, oldValueList, newValue, this.modules);
         }
+    },
+    changeData: function(name, input, oldValue){
         this.modules.each(function(module){
             module._setEditStyle(name, input, oldValue);
         }.bind(this));
