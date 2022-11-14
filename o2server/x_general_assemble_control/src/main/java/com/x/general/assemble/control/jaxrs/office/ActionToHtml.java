@@ -28,7 +28,7 @@ import com.x.base.core.project.jaxrs.WrapString;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
-import fr.opensagres.poi.hwpf.converter.xhtml.XHTMLConverter;
+import fr.opensagres.poi.xwpf.converter.xhtml.XHTMLConverter;
 import fr.opensagres.poi.xwpf.converter.xhtml.XHTMLOptions;
 import fr.opensagres.xdocreport.converter.Options;
 import fr.opensagres.xdocreport.converter.docx.poi.xhtml.XWPF2XHTMLConverter;
