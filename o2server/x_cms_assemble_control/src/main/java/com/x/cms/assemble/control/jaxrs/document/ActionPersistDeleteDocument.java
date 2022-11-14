@@ -23,6 +23,8 @@ import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.DocumentCommend;
 import com.x.cms.core.entity.DocumentCommentInfo;
 import com.x.cms.core.entity.FileInfo;
+import com.x.cms.core.entity.enums.DocumentStatus;
+import com.x.cms.core.entity.message.DocumentEvent;
 import com.x.query.core.entity.Item;
 
 /**
@@ -54,6 +56,7 @@ public class ActionPersistDeleteDocument extends BaseAction {
 			emc.beginTransaction( Item.class );
 			emc.beginTransaction( FileInfo.class );
 			emc.beginTransaction( DocumentCommentInfo.class );
+
 
 			//删除与该文档有关的所有数据信息
 			DocumentDataHelper documentDataHelper = new DocumentDataHelper( emc, document );
@@ -89,6 +92,9 @@ public class ActionPersistDeleteDocument extends BaseAction {
 			}
 			//删除文档信息
 			emc.remove( document, CheckRemoveType.all );
+			emc.beginTransaction(DocumentEvent.class);
+			DocumentEvent documentEvent = DocumentEvent.deleteEventInstance(document);
+			emc.persist(documentEvent);
 			emc.commit();
 
 			CacheManager.notify( Document.class );

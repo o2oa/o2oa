@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.x.cms.core.entity.enums.DocumentStatus;
+import com.x.cms.core.entity.message.DocumentEvent;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -474,6 +476,9 @@ public class CategoryInfoService {
 								} catch ( Exception e1 ) {
 									e1.printStackTrace();
 								}
+								emc.beginTransaction(DocumentEvent.class);
+								DocumentEvent documentEvent = DocumentEvent.deleteEventInstance(document);
+								emc.persist(documentEvent);
 								emc.remove( document );
 							}
 						}
