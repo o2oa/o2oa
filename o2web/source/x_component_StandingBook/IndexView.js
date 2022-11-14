@@ -24,7 +24,6 @@ MWF.xApplication.StandingBook.IndexView = new Class({
             view: "index",
             tab: {
                 key: this.tabData.key,
-                type: this.tabData.type,
                 name: this.tabData.name,
                 category: this.tabData.category
             }
@@ -142,9 +141,10 @@ MWF.xApplication.StandingBook.IndexView = new Class({
         }.bind(this));
 
         o2.Actions.load("x_query_assemble_surface").IndexAction.post({
-            key: this.tabData.key,
-            type: this.tabData.type,
-            category: this.tabData.category,
+            directoryList: [{
+                key: this.tabData.key,
+                category: this.tabData.category
+            }],
             // query: this.searchInput.get("value") || "",
             page:  this.docPageNum,
             size: this.pageSize,
@@ -202,9 +202,13 @@ MWF.xApplication.StandingBook.IndexView = new Class({
         }.bind(this));
 
         o2.Actions.load("x_query_assemble_surface").IndexAction.export({
-            key: this.tabData.key,
-            type: this.tabData.type,
-            category: this.tabData.category,
+            // key: this.tabData.key,
+            // type: this.tabData.type,
+            // category: this.tabData.category,
+            directoryList: [{
+                key: this.tabData.key,
+                category: this.tabData.category
+            }],
             // sortList: sortList,
             sort: sortList[0] || null,
             fixedFieldList: fixedFieldList,

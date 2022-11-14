@@ -147,35 +147,45 @@ MWF.xApplication.StandingBook.Main = new Class({
 		}.bind(this));
 	},
 	loadTabList: function( callback ){
-		o2.Actions.load("x_query_assemble_surface").IndexAction.get().then(function(json){
+		o2.Actions.load("x_query_assemble_surface").IndexAction.listDirectory().then(function(json){
 			this.tabData = json;
 			this._loadTabList( callback );
 		}.bind(this));
 	},
 	_loadTabList: function(callback){
-		this.tl_workTabListNode.empty();
-		this.tl_workTabListNode.loadHtml(this.path+this.options.style+"/tabList_work.html",
-			{
-				"bind": {"lp": this.lp, "data": this.tabData.data.applicationList || []},
-				"module": this,
-				"reload": true
-			},
-			function(){
-				if(callback)callback();
-			}.bind(this)
-		);
-
-		this.tl_docTabListNode.empty();
-		this.tl_docTabListNode.loadHtml(this.path+this.options.style+"/tabList_doc.html",
-			{
-				"bind": {"lp": this.lp, "data": this.tabData.data.appInfoList || []},
-				"module": this,
-				"reload": true
-			},
-			function(){
-				if(callback)callback();
-			}.bind(this)
-		);
+		this.tabData.data.each(function(obj){
+			if( obj.category === "processPlatform" ){
+				obj.keyList.each(function(k){
+					k.category = "processPlatform";
+				});
+				this.tl_workTabListNode.empty();
+				this.tl_workTabListNode.loadHtml(this.path+this.options.style+"/tabList_work.html",
+					{
+						"bind": {"lp": this.lp, "data": obj.keyList || []},
+						"module": this,
+						"reload": true
+					},
+					function(){
+						if(callback)callback();
+					}.bind(this)
+				);
+			}else if( obj.category === "cms" ){
+				obj.keyList.each(function(k){
+					k.category = "cms";
+				});
+				this.tl_docTabListNode.empty();
+				this.tl_docTabListNode.loadHtml(this.path+this.options.style+"/tabList_doc.html",
+					{
+						"bind": {"lp": this.lp, "data": obj.keyList || []},
+						"module": this,
+						"reload": true
+					},
+					function(){
+						if(callback)callback();
+					}.bind(this)
+				);
+			}
+		}.bind(this));
 	},
 	loadItemIcon: function(application, e){
 		var node = e.currentTarget;

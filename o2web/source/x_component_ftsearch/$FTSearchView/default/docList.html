@@ -1,6 +1,6 @@
 {{each $.data}}
 
-    {{if $.category==='document'}}
+    {{if $.category==='cms'}}
     <div class="listItem">
         <a class="listItem-title" data-o2-events="click:openDoc:{{$.id}}">{{$.title}}</a>
         <div class="listItem-body" data-o2-events="o2load:setBody"></div>
@@ -21,7 +21,7 @@
     </div>
     {{end if}}
 
-    {{if $.category!=='document'}}
+    {{if $.category!=='cms'}}
     <div class="listItem">
         <a class="listItem-title" data-o2-events="click:openWork:{{$.id}}">{{$.title}}</a>
         <div class="listItem-body" data-o2-events="o2load:setBody"></div>
