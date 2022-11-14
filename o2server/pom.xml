@@ -216,6 +216,10 @@
 			<artifactId>poi-ooxml-schemas</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-scratchpad</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>fr.opensagres.xdocreport</groupId>
 			<artifactId>fr.opensagres.poi.xwpf.converter.xhtml</artifactId>
 		</dependency>
@@ -799,6 +803,11 @@
 			<dependency>
 				<groupId>org.apache.poi</groupId>
 				<artifactId>poi-ooxml-schemas</artifactId>
+				<version>4.1.2</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.poi</groupId>
+				<artifactId>poi-scratchpad</artifactId>
 				<version>4.1.2</version>
 			</dependency>
 			<dependency>
