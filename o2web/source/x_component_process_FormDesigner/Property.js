@@ -2861,8 +2861,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 			//var oldValue = this.data[name];
 			this.changeJsonDate(names, value);
             //由于加载property的时候，会自动setRadioValue，会setEditStyle。这里就让history不要setEditStyle了。
-            //但是ElementUI有isPropertyLoaded判断，这个时候又需要setEditStyle了。
             var historyNotSetEditStyle = true;
+            //但是ElementUI有isPropertyLoaded判断，这个时候又需要setEditStyle了。
             if( this.module && this.module.vm )historyNotSetEditStyle = false;
             this.changeData(name, input, oldValue, notCheckHistory, historyNotSetEditStyle);
 		}
