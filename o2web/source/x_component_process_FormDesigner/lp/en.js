@@ -75,7 +75,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "insertAfter": "Insert After",
         "injectNotice": "Hold down Ctrl and release the mouse for precise positioning",
         "property": "Property",
-        "multiChangeProperty": "Batch modify properties"
+        "batchModify": "Batch modify "
     },
 
     "actionbar": {

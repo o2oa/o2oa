@@ -1104,7 +1104,7 @@ MWF.FCWHistory.PropertyMultiItem = new Class({
     _getText: function () {
         if (this.data.title) return this.data.title;
         var lp = MWF.xApplication.process.FormDesigner.LP.formAction;
-        return lp.multiChangeProperty;
+        return lp.batchModify + this.data.changeList[0].name + lp.property;
     },
     _undo: function () {
         console.log( "_undo", this.data);

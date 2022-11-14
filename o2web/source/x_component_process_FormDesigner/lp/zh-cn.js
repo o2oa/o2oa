@@ -76,7 +76,7 @@ MWF.xApplication.process.FormDesigner.LP = {
             "injectNotice" : "按住Ctrl松开鼠标精确定位",
             "selectedContainer": "选择父对象",
             "property": "属性",
-            "multiChangeProperty": "批量修改属性"
+            "batchModify": "批量修改"
 		},
 
         "actionbar": {
