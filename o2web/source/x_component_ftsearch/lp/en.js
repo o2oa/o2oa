@@ -6,6 +6,7 @@ MWF.xApplication.ftsearch.LP = {
 
 	"location": "Your location:",
 
+	"processPlatform": "Process Management",
 	"processManager": "Process Management",
 	"cmsManager": "Content Management",
 	"noData": "No data was found according to the condition",
