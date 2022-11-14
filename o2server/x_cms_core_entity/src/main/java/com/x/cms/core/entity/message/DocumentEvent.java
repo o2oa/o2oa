@@ -36,10 +36,12 @@ public class DocumentEvent extends SliceJpaObject {
     public static final String TYPE_CREATE = "create";
     public static final String TYPE_DELETE = "delete";
 
+    @Override
     public String getId() {
         return id;
     }
 
+    @Override
     public void setId(String id) {
         this.id = id;
     }
@@ -51,6 +53,7 @@ public class DocumentEvent extends SliceJpaObject {
 
     /* 以上为 JpaObject 默认字段 */
 
+    @Override
     public void onPersist() throws Exception {
         // nothing
     }

@@ -18,6 +18,13 @@ public enum DocumentStatus {
 		this.name = name;
 	}
 
+	public static boolean isEndStatus(String status){
+		if(PUBLISHED.getValue().equals(status) || ARCHIVED.getValue().equals(status)){
+			return true;
+		}
+		return false;
+	}
+
 	public String getValue() {
 		return value;
 	}
