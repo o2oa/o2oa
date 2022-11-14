@@ -1,5 +1,6 @@
 package com.x.query.assemble.surface.jaxrs.index;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -10,7 +11,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.collections4.list.TreeList;
 import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.MultiReader;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
@@ -23,7 +27,6 @@ import org.apache.lucene.search.grouping.FirstPassGroupingCollector;
 import org.apache.lucene.search.grouping.SearchGroup;
 import org.apache.lucene.search.grouping.TermGroupSelector;
 import org.apache.lucene.search.grouping.TopGroupsCollector;
-import org.apache.lucene.store.Directory;
 import org.apache.lucene.util.BytesRef;
 
 import com.google.gson.JsonElement;
@@ -62,22 +65,26 @@ class ActionPost extends BaseAction {
 
         Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 
-        String category = wi.getCategory();
-        String key = wi.getKey();
         Integer rows = Indexs.rows(wi.getSize());
         Integer start = Indexs.start(wi.getPage(), rows);
 
-        List<String> readers = new ArrayList<>();
+        List<String> readers = new TreeList<>();
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Business business = new Business(emc);
             String person = business.index().who(effectivePerson, wi.getPerson());
-            readers = business.index().determineReaders(person, category, key);
+            wi.getDirectoryList().stream().forEach(o -> {
+                try {
+                    readers.addAll(business.index().determineReaders(person, o.getCategory(), o.getKey()));
+                } catch (Exception e) {
+                    LOGGER.error(e);
+                }
+            });
         }
 
         initWo(wo, wi);
 
         Optional<Query> searchQuery = searchQuery(wi.getQuery(), new HanLPAnalyzer());
-        Optional<Query> readersQuery = Indexs.readersQuery(readers);
+        Optional<Query> readersQuery = Indexs.readersQuery(ListTools.trim(readers, true, true));
         List<Query> filterQueries = Indexs.filterQueries(wi.getFilterList());
         BooleanQuery.Builder builder = new BooleanQuery.Builder();
         Stream.of(searchQuery, readersQuery).filter(Optional::isPresent)
@@ -85,13 +92,13 @@ class ActionPost extends BaseAction {
         filterQueries.stream().forEach(o -> builder.add(o, BooleanClause.Occur.MUST));
         Query query = builder.build();
         LOGGER.debug("index lucene query:{}.", query::toString);
-        Optional<Directory> optional = Indexs.directory(category, key, true);
-        if (optional.isEmpty()) {
-            throw new ExceptionDirectoryNotExist();
+        IndexReader[] indexReaders = this.indexReaders(wi);
+        if (indexReaders.length == 0) {
+            return result;
         }
-        try (DirectoryReader reader = DirectoryReader.open(optional.get())) {
-            wo.setDynamicFieldList(getDynamicFieldList(reader));
-            IndexSearcher searcher = new IndexSearcher(reader);
+        try (MultiReader multiReader = new MultiReader(indexReaders)) {
+            IndexSearcher searcher = new IndexSearcher(multiReader);
+            wo.setDynamicFieldList(getDynamicFieldList(multiReader));
             TopFieldCollector topFieldCollector = TopFieldCollector.create(sort(wi.getSort()), 1000, 1000);
             List<Pair<String, FirstPassGroupingCollector<BytesRef>>> firstPassGroupingCollectorPairs = Indexs
                     .adjustFacetField(wi.getFilterList().stream().map(Filter::getField).collect(Collectors.toList()))
@@ -146,8 +153,20 @@ class ActionPost extends BaseAction {
         return result;
     }
 
-    private void initWo(Wo wo, Wi wi) {
+    private void initWo(Wo wo) {
         wo.setFixedFieldList(this.getFixedFieldList(Indexs.CATEGORY_PROCESSPLATFORM));
+    }
+
+    private IndexReader[] indexReaders(Wi wi) {
+        return wi.getDirectoryList().stream().map(o -> Indexs.directory(o.getCategory(), o.getKey(), true))
+                .filter(Optional::isPresent).map(Optional::get).map(o -> {
+                    try {
+                        return DirectoryReader.open(o);
+                    } catch (IOException e) {
+                        LOGGER.error(e);
+                    }
+                    return null;
+                }).filter(o -> !Objects.isNull(o)).toArray(s -> new IndexReader[s]);
     }
 
     private void writeDocument(IndexSearcher searcher, TopFieldCollector topFieldCollector, int start, int rows, Wo wo,

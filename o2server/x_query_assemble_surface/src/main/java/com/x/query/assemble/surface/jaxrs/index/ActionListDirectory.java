@@ -26,9 +26,9 @@ import com.x.query.core.express.index.Indexs;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-class ActionListCategory extends BaseAction {
+class ActionListDirectory extends BaseAction {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ActionListCategory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActionListDirectory.class);
 
     private static final List<String> APPLICATIONATTRIBUTES = Stream
             .<String>of(JpaObject.id_FIELDNAME, Application.name_FIELDNAME).collect(Collectors.toUnmodifiableList());

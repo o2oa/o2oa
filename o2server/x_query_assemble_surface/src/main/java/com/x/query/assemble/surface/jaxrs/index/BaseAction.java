@@ -12,8 +12,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.IndexableField;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.PointValues;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
@@ -37,9 +36,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.cms.core.entity.AppInfo;
-import com.x.cms.core.entity.CategoryInfo;
 import com.x.processplatform.core.entity.element.Application;
-import com.x.processplatform.core.entity.element.Process;
 import com.x.query.core.express.index.Indexs;
 import com.x.query.core.express.index.Sort;
 import com.x.query.core.express.index.WoFacet;
@@ -60,13 +57,13 @@ abstract class BaseAction extends StandardJaxrsAction {
                     new WoField(Indexs.FIELD_UPDATETIME, "更新时间", Indexs.FIELD_TYPE_DATE),
                     new WoField(Indexs.FIELD_SERIAL, "文号", Indexs.FIELD_TYPE_STRING),
                     new WoField(Indexs.FIELD_PROCESSNAME, "流程", Indexs.FIELD_TYPE_STRING)));
-    protected static final List<WoField> FIXEDFIELD_PROCESS = ListUtils
-            .unmodifiableList(Arrays.asList(new WoField(Indexs.FIELD_TITLE, "标题", Indexs.FIELD_TYPE_STRING),
-                    new WoField(Indexs.FIELD_CREATORPERSON, "创建者", Indexs.FIELD_TYPE_STRING),
-                    new WoField(Indexs.FIELD_CREATORUNIT, "部门", Indexs.FIELD_TYPE_STRING),
-                    new WoField(Indexs.FIELD_CREATETIME, "创建时间", Indexs.FIELD_TYPE_DATE),
-                    new WoField(Indexs.FIELD_UPDATETIME, "更新时间", Indexs.FIELD_TYPE_DATE),
-                    new WoField(Indexs.FIELD_SERIAL, "文号", Indexs.FIELD_TYPE_STRING)));
+//    protected static final List<WoField> FIXEDFIELD_PROCESS = ListUtils
+//            .unmodifiableList(Arrays.asList(new WoField(Indexs.FIELD_TITLE, "标题", Indexs.FIELD_TYPE_STRING),
+//                    new WoField(Indexs.FIELD_CREATORPERSON, "创建者", Indexs.FIELD_TYPE_STRING),
+//                    new WoField(Indexs.FIELD_CREATORUNIT, "部门", Indexs.FIELD_TYPE_STRING),
+//                    new WoField(Indexs.FIELD_CREATETIME, "创建时间", Indexs.FIELD_TYPE_DATE),
+//                    new WoField(Indexs.FIELD_UPDATETIME, "更新时间", Indexs.FIELD_TYPE_DATE),
+//                    new WoField(Indexs.FIELD_SERIAL, "文号", Indexs.FIELD_TYPE_STRING)));
     protected static final List<WoField> FIXEDFIELD_APPINFO = ListUtils
             .unmodifiableList(Arrays.asList(new WoField(Indexs.FIELD_TITLE, "标题", Indexs.FIELD_TYPE_STRING),
                     new WoField(Indexs.FIELD_CREATORPERSON, "创建者", Indexs.FIELD_TYPE_STRING),
@@ -75,13 +72,13 @@ abstract class BaseAction extends StandardJaxrsAction {
                     new WoField(Indexs.FIELD_UPDATETIME, "更新时间", Indexs.FIELD_TYPE_DATE),
                     new WoField(Indexs.FIELD_CATEGORYNAME, "分类", Indexs.FIELD_TYPE_STRING),
                     new WoField(Indexs.FIELD_DESCRIPTION, "说明", Indexs.FIELD_TYPE_STRING)));
-    protected static final List<WoField> FIXEDFIELD_CATEGORYINFO = ListUtils
-            .unmodifiableList(Arrays.asList(new WoField(Indexs.FIELD_TITLE, "标题", Indexs.FIELD_TYPE_STRING),
-                    new WoField(Indexs.FIELD_CREATORPERSON, "创建者", Indexs.FIELD_TYPE_STRING),
-                    new WoField(Indexs.FIELD_CREATORUNIT, "部门", Indexs.FIELD_TYPE_STRING),
-                    new WoField(Indexs.FIELD_CREATETIME, "创建时间", Indexs.FIELD_TYPE_DATE),
-                    new WoField(Indexs.FIELD_UPDATETIME, "更新时间", Indexs.FIELD_TYPE_DATE),
-                    new WoField(Indexs.FIELD_DESCRIPTION, "说明", Indexs.FIELD_TYPE_STRING)));
+//    protected static final List<WoField> FIXEDFIELD_CATEGORYINFO = ListUtils
+//            .unmodifiableList(Arrays.asList(new WoField(Indexs.FIELD_TITLE, "标题", Indexs.FIELD_TYPE_STRING),
+//                    new WoField(Indexs.FIELD_CREATORPERSON, "创建者", Indexs.FIELD_TYPE_STRING),
+//                    new WoField(Indexs.FIELD_CREATORUNIT, "部门", Indexs.FIELD_TYPE_STRING),
+//                    new WoField(Indexs.FIELD_CREATETIME, "创建时间", Indexs.FIELD_TYPE_DATE),
+//                    new WoField(Indexs.FIELD_UPDATETIME, "更新时间", Indexs.FIELD_TYPE_DATE),
+//                    new WoField(Indexs.FIELD_DESCRIPTION, "说明", Indexs.FIELD_TYPE_STRING)));
 
     protected static final List<String> FACET_FIELDS = ListUtils
             .unmodifiableList(Arrays.asList(Indexs.FIELD_CREATETIMEMONTH, Indexs.FIELD_UPDATETIMEMONTH,
@@ -157,7 +154,7 @@ abstract class BaseAction extends StandardJaxrsAction {
         }
     }
 
-    protected List<WoField> getDynamicFieldList(DirectoryReader reader) {
+    protected List<WoField> getDynamicFieldList(IndexReader reader) {
         List<WoField> list = org.apache.lucene.luke.models.util.IndexUtils.getFieldNames(reader).stream()
                 .filter(o -> StringUtils.startsWithAny(o, Indexs.PREFIX_FIELD_DATA_STRING,
                         Indexs.PREFIX_FIELD_DATA_STRINGS, Indexs.PREFIX_FIELD_DATA_BOOLEAN,

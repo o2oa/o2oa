@@ -31,7 +31,7 @@ import com.x.base.core.project.tools.DefaultCharset;
  */
 public class TernaryManagement extends ConfigObject {
 
-	public static final String initPassword = "o2";
+	public static final String initPassword = "o2oa@2022";
 
 	public static final String INIT_SYSTEM_MANAGER = "systemManager";
 	public static final String INIT_SYSTEM_MANAGER_DISTINGUISHED_NAME = "系统管理员@systemManager@P";

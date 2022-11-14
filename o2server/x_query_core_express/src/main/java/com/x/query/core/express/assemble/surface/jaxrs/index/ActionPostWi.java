@@ -14,13 +14,9 @@ public class ActionPostWi extends GsonPropertyObject {
 
     private static final long serialVersionUID = 1360655000630283661L;
 
-    @FieldDescribe("分类.")
-    @Schema(description = "分类.")
-    private String category;
-
-    @FieldDescribe("标识.")
-    @Schema(description = "标识.")
-    private String key;
+    @FieldDescribe("检索目录.")
+    @Schema(description = "检索目录.")
+    private List<WiDirectory> directoryList = new ArrayList<>();
 
     @FieldDescribe("搜索内容.")
     @Schema(description = "搜索内容.")
@@ -102,20 +98,12 @@ public class ActionPostWi extends GsonPropertyObject {
         this.size = size;
     }
 
-    public String getCategory() {
-        return category;
+    public List<WiDirectory> getDirectoryList() {
+        return directoryList;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
+    public void setDirectoryList(List<WiDirectory> directoryList) {
+        this.directoryList = directoryList;
     }
 
     public String getPerson() {
@@ -132,6 +120,35 @@ public class ActionPostWi extends GsonPropertyObject {
 
     public void setFilterList(List<Filter> filterList) {
         this.filterList = filterList;
+    }
+
+    @Schema(name = "com.x.query.core.express.assemble.surface.jaxrs.index.ActionPostWi$WiDirectory")
+    public static class WiDirectory {
+
+        @FieldDescribe("分类.")
+        @Schema(description = "分类.")
+        private String category;
+
+        @FieldDescribe("标识.")
+        @Schema(description = "标识.")
+        private String key;
+
+        public String getCategory() {
+            return category;
+        }
+
+        public void setCategory(String category) {
+            this.category = category;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public void setKey(String key) {
+            this.key = key;
+        }
+
     }
 
 }
