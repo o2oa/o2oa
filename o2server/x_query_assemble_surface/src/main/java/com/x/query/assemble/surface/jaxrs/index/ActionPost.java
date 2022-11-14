@@ -81,7 +81,7 @@ class ActionPost extends BaseAction {
             });
         }
 
-        initWo(wo, wi);
+        initWo(wo);
 
         Optional<Query> searchQuery = searchQuery(wi.getQuery(), new HanLPAnalyzer());
         Optional<Query> readersQuery = Indexs.readersQuery(ListTools.trim(readers, true, true));
