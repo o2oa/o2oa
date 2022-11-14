@@ -102,18 +102,18 @@ public class IndexAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
-    @Operation(summary = "获取检索目录列表.", operationId = OPERATIONID_PREFIX + "listCategory", responses = {
-            @ApiResponse(content = { @Content(schema = @Schema(implementation = ActionListCategory.Wo.class)) }) })
-    @JaxrsMethodDescribe(value = "获取检索目录列表.", action = ActionListCategory.class)
+    @Operation(summary = "获取检索目录列表.", operationId = OPERATIONID_PREFIX + "listDirectory", responses = {
+            @ApiResponse(content = { @Content(schema = @Schema(implementation = ActionListDirectory.Wo.class)) }) })
+    @JaxrsMethodDescribe(value = "获取检索目录列表.", action = ActionListDirectory.class)
     @GET
-    @Path("list/category")
+    @Path("list/directory")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
-    public void listCategory(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
-        ActionResult<List<ActionListCategory.Wo>> result = new ActionResult<>();
+    public void listDirectory(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+        ActionResult<List<ActionListDirectory.Wo>> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
-            result = new ActionListCategory().execute(effectivePerson);
+            result = new ActionListDirectory().execute(effectivePerson);
         } catch (Exception e) {
             LOGGER.error(e, effectivePerson, request, null);
             result.error(e);
