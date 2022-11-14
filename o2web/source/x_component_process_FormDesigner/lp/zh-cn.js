@@ -75,7 +75,8 @@ MWF.xApplication.process.FormDesigner.LP = {
             "insertAfter" : "插入到后面",
             "injectNotice" : "按住Ctrl松开鼠标精确定位",
             "selectedContainer": "选择父对象",
-            "property": "属性"
+            "property": "属性",
+            "multiChangeProperty": "批量修改属性"
 		},
 
         "actionbar": {

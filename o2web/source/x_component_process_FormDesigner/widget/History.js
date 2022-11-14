@@ -175,6 +175,12 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
             this.addItem(item);
         }
     },
+    checkMultiProperty: function(log, modules){
+        debugger;
+        var item = new MWF.FCWHistory.PropertyMultiItem(this, log);
+        item.load( modules );
+        this.addItem(item);
+    },
     addItem: function(item){
         var it;
         while( this.nextArray.length ){
@@ -437,6 +443,21 @@ MWF.FCWHistory.Item = new Class({
     },
     selectModule(type){
         this.form.selected()
+    },
+    changeJsonDate: function(json, name, value){
+        var key = name.split(".");
+        var len = key.length-1;
+        key.each(function(n, i){
+            if (i<len) {
+                if (!json.hasOwnProperty(n)) json[n] = {};
+                json = json[n];
+            }
+        }.bind(this));
+        if( typeOf(value) === "null" ){
+            delete json[key[len]];
+        }else{
+            json[key[len]] = value;
+        }
     }
 });
 
@@ -1018,21 +1039,65 @@ MWF.FCWHistory.PropertySingleItem.SubItem = new Class({
                 if(!this.data.notSetEditStyle)module._setEditStyle(change.name, null, change.fromValue)
             }
         }
-    },
-    changeJsonDate: function(json, name, value){
-        debugger;
-        var key = name.split(".");
-        var len = key.length-1;
-        key.each(function(n, i){
-            if (i<len) {
-                if (!json.hasOwnProperty(n)) json[n] = {};
-                json = json[n];
+    }
+});
+
+MWF.FCWHistory.PropertyMultiItem = new Class({
+    Extends: MWF.FCWHistory.Item,
+    load: function (modules) {
+        this.modules = modules;
+        this.node = new Element("div", {
+            styles: this._getItemStyle(),
+            text: this._getText(),
+            events: {
+                click: this.comeHere.bind(this)
             }
-        }.bind(this));
-        if( typeOf(value) === "null" ){
-            delete json[key[len]];
-        }else{
-            json[key[len]] = value;
+        }).inject(this.history.node);
+        this.node.setStyle("background-image", "url(" + this.history.iconPath + "property.png)");
+        this.data.changeList.each(function (log) {
+            log.path = this.history.getPath(log.module.node)
+        })
+    },
+    _getItemStyle: function () {
+        return this.history.css.itemNode;
+    },
+    getModule: function ( log ) {
+        var module, dom = this.getDomByPath(log.path);
+        if (dom) module = dom.retrieve("module");
+        if( !module && log.module ){
+            module = log.module;
+        }
+        return module;
+    },
+    _getText: function () {
+        if (this.data.title) return this.data.title;
+        var lp = MWF.xApplication.process.FormDesigner.LP.formAction;
+        return lp.multiChangeProperty;
+    },
+    _undo: function () {
+        console.log( "_undo", this.data);
+        for( var i=this.data.changeList.length-1; i>-1; i-- ){
+            var change = this.data.changeList[i];
+            var module = this.getModule( change );
+            if( module ){
+                var json = module.json;
+                this.changeJsonDate(json, change.name, change.fromValue);
+                module.setPropertiesOrStyles(change.name, change.toValue);
+                module._setEditStyle(change.name, null, change.toValue);
+            }
+        }
+    },
+    _redo: function () {
+        console.log( "_redo", this.data);
+        for( var i=0; i<this.data.changeList.length; i++ ){
+            var change = this.data.changeList[i];
+            var module = this.getModule( change );
+            if( module ) {
+                var json = module.json;
+                this.changeJsonDate(json, change.name, change.toValue);
+                module.setPropertiesOrStyles(change.name, change.fromValue);
+                module._setEditStyle(change.name, null, change.fromValue)
+            }
         }
     }
 });

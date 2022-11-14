@@ -2701,7 +2701,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 							property.setRadioValue(jsondata, this);
 						});
 						input.addEvent("blur", function(e){
-							property.setRadioValue(jsondata, this);
+							property.setRadioValue(jsondata, this, true);
 						});
                         input.addEvent("keydown", function(e){
                             e.stopPropagation();
@@ -2711,7 +2711,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 					case "checkbox":
 
 						input.addEvent("change", function(e){
-							property.setCheckboxValue(jsondata, this);
+							property.setCheckboxValue(jsondata, this, true);
 						});
 						input.addEvent("click", function(e){
 							property.setCheckboxValue(jsondata, this);
@@ -2727,7 +2727,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 						});
 						input.addEvent("blur", function(e){
                             var v = (this.type==="number") ? this.value.toFloat() : this.value;
-							property.setValue(jsondata, v, this);
+							property.setValue(jsondata, v, this, true);
 						});
 						input.addEvent("keydown", function(e){
 							if (e.code==13){
@@ -2827,11 +2827,12 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 			this.changeJsonDate(names, value);
             //由于加载property的时候，会自动setRadioValue，会setEditStyle。这里就让history不要setEditStyle了。
             //但是ElementUI有isPropertyLoaded判断，这个时候又需要setEditStyle了。
-            var historyNotSetEditStyle = !this.module.vm;
+            var historyNotSetEditStyle = true;
+            if( this.module && this.module.vm )historyNotSetEditStyle = false;
             this.changeData(name, input, oldValue, notCheckHistory, historyNotSetEditStyle);
 		}
 	},
-	setCheckboxValue: function(name, input){
+	setCheckboxValue: function(name, input, notCheckHistory){
         //var id = this.module.json.id;
         //var id = this.form.json.id;
         var id = this.data.pid;
@@ -2847,7 +2848,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 		var oldValue = this.data[name];
 		//this.data[name] = values;
         this.changeJsonDate(name, values);
-        this.changeData(name, input, oldValue);
+        this.changeData(name, input, oldValue, notCheckHistory);
 	},
 	setSelectValue: function(name, select){
 		var idx = select.selectedIndex;
@@ -3120,13 +3121,22 @@ MWF.xApplication.process.FormDesigner.PropertyMulti = new Class({
     hide: function(){
         if (this.propertyContent) this.propertyContent.destroy();
     },
+    checkHistory: function(name, oldValue, newValue){
+        if( this.form.history ){
+            this.form.checkMultiPropertyHistory(name, oldValue, newValue, this.modules);
+        }
+    },
     changeStyle: function(name){
         this.modules.each(function(module){
             module.setPropertiesOrStyles(name);
         }.bind(this));
     },
-    changeData: function(name, input, oldValue){
-
+    changeData: function(name, input, oldValue, notCheckHistory){
+        if(!notCheckHistory){
+            var flag = false;
+            if( input && input.hasAttribute )flag = input.hasAttribute("data-notAutoHistory");
+            if(!flag)this.checkHistory(name, oldValue, null);
+        }
         this.modules.each(function(module){
             module._setEditStyle(name, input, oldValue);
         }.bind(this));

@@ -368,6 +368,22 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 		};
 		this.history.checkProperty(log, this);
 	},
+	checkMultiPropertyHistory: function(name, oldValue, newValue, modules){
+		if( !this.history )return null;
+		var log = {
+			"type": "multiProperty",
+			"moduleId": "form",
+			"changeList": modules.map(function (module) {
+				return {
+					"module": module,
+					"name": name,
+					"fromValue": oldValue,
+					"toValue": newValue || module.json[name]
+				}
+			})
+		};
+		this.history.checkMultiProperty(log, modules);
+	},
 	checkUUID: function(){
 		this.designer.actions.getUUID(function(id){
             this.json.id = id;
