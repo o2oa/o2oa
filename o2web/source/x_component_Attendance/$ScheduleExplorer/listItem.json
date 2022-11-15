@@ -3,7 +3,7 @@
     "title": MWF.xApplication.Attendance.LP.schedule.unit,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
-    "item" : "function(d){ return d.unitName.split('@')[0] }",
+    "item" : "function(d){ return (d.unitName || '').split('@')[0] }",
     "name" : "unitName",
     "width" : "11%"
   },
