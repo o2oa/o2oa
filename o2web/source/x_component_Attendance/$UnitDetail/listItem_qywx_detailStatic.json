@@ -3,7 +3,7 @@
     "title" : MWF.xApplication.Attendance.LP.person,
     "headStyles": "normalThNode",
     "contentStyles": "normalTdNode",
-    "item": "function( d ){ return d.o2User.split('@')[0] }",
+    "item": "function( d ){ return (d.o2User||'').split('@')[0] }",
     "name": "o2User",
     "width": "9%"
   },
