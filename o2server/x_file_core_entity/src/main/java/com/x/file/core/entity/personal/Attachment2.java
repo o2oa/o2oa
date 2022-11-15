@@ -41,10 +41,12 @@ public class Attachment2 extends SliceJpaObject {
 
 	private static final String TABLE = PersistenceProperties.Personal.Attachment2.table;
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -56,6 +58,7 @@ public class Attachment2 extends SliceJpaObject {
 
 	/* 以上为 JpaObject 默认字段 */
 
+	@Override
 	public void onPersist() throws Exception {
 		this.lastUpdateTime = new Date();
 		/* 如果为顶层，那么将目录设置为空 */
@@ -94,6 +97,7 @@ public class Attachment2 extends SliceJpaObject {
 			throw new Exception("extension can not be null.");
 		}
 		this.type = FileType.getExtType(this.extension);
+		this.fileVersion = 1;
 	}
 
 	public static final String person_FIELDNAME = "person";
@@ -175,6 +179,12 @@ public class Attachment2 extends SliceJpaObject {
 	@Index(name = TABLE + IndexNameMiddle + description_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
 	private String description;
+
+	public static final String fileVersion_FIELDNAME = "fileVersion";
+	@FieldDescribe("文件版本")
+	@Column(name = ColumnNamePrefix + fileVersion_FIELDNAME)
+	@CheckPersist(allowEmpty = true)
+	private Integer fileVersion;
 
 	public String getPerson() {
 		return person;
@@ -262,5 +272,13 @@ public class Attachment2 extends SliceJpaObject {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public Integer getFileVersion() {
+		return fileVersion == null ? 1 : fileVersion;
+	}
+
+	public void setFileVersion(Integer fileVersion) {
+		this.fileVersion = fileVersion;
 	}
 }
