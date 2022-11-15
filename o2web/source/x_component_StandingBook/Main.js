@@ -152,14 +152,14 @@ MWF.xApplication.StandingBook.Main = new Class({
 			this._loadTabList( callback );
 		}.bind(this));
 	},
-	_loadTabList: function(callback, multiSelect){
+	_loadTabList: function(callback){
 		this.tabData.data.each(function(obj){
 			if( obj.category === "processPlatform" ){
 				obj.keyList.each(function(k){
 					if(!k.category)k.category = "processPlatform";
 				});
 				this.tl_workTabListNode.empty();
-				this.tl_workTabListNode.loadHtml(this.path+this.options.style+"/tabList"+ (multiSelect ? "_multiselect" : "") +".html",
+				this.tl_workTabListNode.loadHtml(this.path+this.options.style+"/tabList"+ (this.multiSelect ? "_multiselect" : "") +".html",
 					{
 						"bind": {"lp": this.lp, "data": obj.keyList || []},
 						"module": this,
@@ -174,7 +174,7 @@ MWF.xApplication.StandingBook.Main = new Class({
 					if(!k.category)k.category = "cms";
 				});
 				this.tl_docTabListNode.empty();
-				this.tl_docTabListNode.loadHtml(this.path+this.options.style+"/tabList"+ (multiSelect ? "_multiselect" : "") +".html",
+				this.tl_docTabListNode.loadHtml(this.path+this.options.style+"/tabList"+ (this.multiSelect ? "_multiselect" : "") +".html",
 					{
 						"bind": {"lp": this.lp, "data": obj.keyList || []},
 						"module": this,
@@ -312,11 +312,13 @@ MWF.xApplication.StandingBook.Main = new Class({
 			}
 		});
 		this.curMultiSelectTabList = [];
+		this.multiSelect = false;
 		this.closeSelectModule(e);
 		this.openIndexView(data);
 	},
 	enableMultiSelect: function(e, data){
 		this.curMultiSelectTabList = [];
+		this.multiSelect = true;
 		this.enableMultiNode.hide();
 		this.disableMultiNode.setStyle("display","inline-block");
 		this.tl_multiActionNode.show();
@@ -324,10 +326,11 @@ MWF.xApplication.StandingBook.Main = new Class({
 		this.tl_docTabListNode.setStyle("height", "calc( 100% - 90px )");
 		this._loadTabList(function () {
 
-		}, true)
+		})
 	},
 	disableMultiSelect: function(e, data){
 		this.curMultiSelectTabList = [];
+		this.multiSelect = false;
 		this.disableMultiNode.hide();
 		this.enableMultiNode.setStyle("display","inline-block");
 		this.tl_multiActionNode.hide();
@@ -335,7 +338,7 @@ MWF.xApplication.StandingBook.Main = new Class({
 		this.tl_docTabListNode.setStyle("height", "calc( 100% - 40px )");
 		this._loadTabList(function () {
 
-		}, false)
+		})
 	},
 	searchCoreKeydown: function(e){
 		if( e.keyCode === 13 ){
@@ -343,6 +346,7 @@ MWF.xApplication.StandingBook.Main = new Class({
 		}
 	},
 	searchCore: function(){
+		this.curMultiSelectTabList = [];
 		var value = this.searchCoreInput.get("value");
 		if( !value ){
 			this._loadTabList();
