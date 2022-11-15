@@ -11,7 +11,7 @@
     "title" : MWF.xApplication.Attendance.LP.permission.personName,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
-    "item" : "function(d){ return d.adminName.split('@')[0] }",
+    "item" : "function(d){ return (d.adminName || '').split('@')[0] }",
     "name" : "adminName",
     "width" : "30%"
   },
@@ -19,7 +19,7 @@
     "title" : MWF.xApplication.Attendance.LP.permission.unit,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
-    "item" : "function(d){ return d.unitName.split('@')[0] }",
+    "item" : "function(d){ return (d.unitName || '').split('@')[0] }",
     "name" : "unitName",
     "width" : "30%"
   },

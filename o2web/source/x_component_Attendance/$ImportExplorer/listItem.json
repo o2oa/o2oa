@@ -27,7 +27,7 @@
     "title" : MWF.xApplication.Attendance.LP.uploadPerson,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
-    "item" : "function(d){ return d.creatorUid.split('@')[0] }",
+    "item" : "function(d){ return (d.creatorUid || '').split('@')[0] }",
     "name" : "creatorUid",
     "width" : "20%"
   },

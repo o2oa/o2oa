@@ -12,7 +12,7 @@
     "title" : MWF.xApplication.Attendance.LP.employeeName,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
-    "item" : "function(d){ return d.empName.split('@')[0] }",
+    "item" : "function(d){ return (d.empName || '').split('@')[0] }",
     "name" : "empName",
     "width" : "9%"
   },
@@ -20,7 +20,7 @@
     "title" : MWF.xApplication.Attendance.LP.department,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
-    "item" : "function(d){ return d.unitName.split('@')[0] }",
+    "item" : "function(d){ return (d.unitName || '').split('@')[0] }",
     "name" : "unitName",
     "width" : "9%"
   },
