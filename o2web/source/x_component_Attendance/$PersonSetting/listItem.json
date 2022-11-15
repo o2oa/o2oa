@@ -11,7 +11,7 @@
     "title" : MWF.xApplication.Attendance.LP.topUnitName,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
-    "item" : "function(d){ return d.topUnitName.split('@')[0] }",
+    "item" : "function(d){ return (d.topUnitName || '').split('@')[0] }",
     "name" : "topUnitName",
     "width" : "20%"
   },
@@ -19,7 +19,7 @@
     "title" : MWF.xApplication.Attendance.LP.unitName,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
-    "item" : "function(d){ return d.unitName.split('@')[0] }",
+    "item" : "function(d){ return (d.unitName || '').split('@')[0] }",
     "name" : "unitName",
     "width" : "20%"
   },
@@ -27,7 +27,7 @@
     "title" : MWF.xApplication.Attendance.LP.employeeName,
     "headStyles" : "normalThNode",
     "contentStyles" : "normalTdNode",
-    "item" : "function(d){ return d.employeeName.split('@')[0] }",
+    "item" : "function(d){ return (d.employeeName || '').split('@')[0] }",
     "name" : "employeeName",
     "width" : "10%"
   },
