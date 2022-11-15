@@ -5,10 +5,6 @@
         <a class="listItem-title" data-o2-events="click:openDoc:{{$.id}}">{{$.title}}</a>
         <div class="listItem-body" data-o2-events="o2load:setBody"></div>
         <div>
-            <span class="listItem-infor-title mainColor_color">{{$._.lp.summary}}：</span>
-            <div class="listItem-summary" data-o2-events="o2load:setSummary"></div>
-        </div>
-        <div>
             <span class="listItem-infor-title mainColor_color">{{$._.lp.createTime}}：</span>
             <span class="listItem-infor-content">{{($.createTime || "")}}</span>
 
@@ -26,16 +22,6 @@
         <a class="listItem-title" data-o2-events="click:openWork:{{$.id}}">{{$.title}}</a>
         <div class="listItem-body" data-o2-events="o2load:setBody"></div>
         <div>
-            <span class="listItem-infor-title mainColor_color">{{$._.lp.summary}}：</span>
-            <div class="listItem-summary" data-o2-events="o2load:setSummary"></div>
-        </div>
-        <div>
-<!--            <span class="listItem-infor-title">{{$._.lp.app}}：</span>-->
-<!--            <span class="listItem-infor-content">{{$.applicationName}}</span>-->
-
-<!--            <span class="listItem-infor-title">{{$._.lp.process}}：</span>-->
-<!--            <span class="listItem-infor-content">{{$.processName}}</span>-->
-
             <span class="listItem-infor-title mainColor_color">{{$._.lp.createTime}}：</span>
             <span class="listItem-infor-content">{{($.createTime || "")}}</span>
 

@@ -6,6 +6,7 @@ MWF.xApplication.ftsearch.LP = {
 
 	"location": "Your location:",
 
+	"cms": "CMS",
 	"processPlatform": "Process Management",
 	"processManager": "Process Management",
 	"cmsManager": "Content Management",
@@ -39,6 +40,9 @@ MWF.xApplication.ftsearch.LP = {
 	"activityNameList": "Activity",
 	"workStatusList": "Process Status",
 	"updateTime": "Update Time",
+	"completed": "Completed",
+	"true": "true",
+	"false": "false",
 
 	"application": "Process Application",
 	"process": "Process",

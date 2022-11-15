@@ -6,6 +6,7 @@ MWF.xApplication.ftsearch.LP = {
 
     "location": "您的位置:",
 
+    "cms": "内容管理",
     "processPlatform": "流程管理",
     "processManager": "流程管理",
     "cmsManager": "内容管理",
@@ -37,6 +38,9 @@ MWF.xApplication.ftsearch.LP = {
     "activityNameList": "活动",
     "workStatusList": "流程状态",
     "updateTime": "更新时间",
+    "completed": "已完成",
+    "true": "是",
+    "false": "否",
 
     "application": "流程应用",
     "process": "流程",

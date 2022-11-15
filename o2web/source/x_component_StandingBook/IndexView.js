@@ -8,25 +8,21 @@ MWF.xApplication.StandingBook.IndexView = new Class({
         "style": "default",
         "date": null
     },
-    initialize: function(node, app, options, tabData){
+    initialize: function(node, app, options, tabList){
         this.setOptions(options);
 
         this.path = "../x_component_StandingBook/$IndexView/";
 
         this.app = app;
         this.container = $(node);
-        this.tabData = tabData;
+        this.tabList = tabList;
         this.facetOrderList = ["category","applicationName", "processName","appName","categoryName"];
         this.load();
     },
     recordStatus: function(){
         return {
             view: "index",
-            tab: {
-                key: this.tabData.key,
-                name: this.tabData.name,
-                category: this.tabData.category
-            }
+            tab: this.tabList
         }
     },
     load: function(){
@@ -45,7 +41,11 @@ MWF.xApplication.StandingBook.IndexView = new Class({
         var url = this.path+this.options.style+"/view.html";
         this.container.loadHtml(url, {"bind": {
                 "lp": this.app.lp,
-                "tabData": this.tabData
+                "tabData": {
+                    name: this.tabList.map(function (tab) {
+                        return tab.name
+                    }).join("， ")
+                }
             }, "module": this}, function(){
             // this.loadSelectedCondition();
             this.search();
@@ -141,10 +141,7 @@ MWF.xApplication.StandingBook.IndexView = new Class({
         }.bind(this));
 
         o2.Actions.load("x_query_assemble_surface").IndexAction.post({
-            directoryList: [{
-                key: this.tabData.key,
-                category: this.tabData.category
-            }],
+            directoryList: this.tabList,
             // query: this.searchInput.get("value") || "",
             page:  this.docPageNum,
             size: this.pageSize,
@@ -205,17 +202,13 @@ MWF.xApplication.StandingBook.IndexView = new Class({
             // key: this.tabData.key,
             // type: this.tabData.type,
             // category: this.tabData.category,
-            directoryList: [{
-                key: this.tabData.key,
-                category: this.tabData.category
-            }],
+            directoryList: this.tabList,
             // sortList: sortList,
             sort: sortList[0] || null,
             fixedFieldList: fixedFieldList,
             dynamicFieldList: dynamicFieldList,
             filterList: filterList
         }).then(function(json){
-            debugger;
             var indexAction = o2.Actions.load("x_query_assemble_surface").IndexAction;
             var address = indexAction.action.address;
             var uri = indexAction.action.actions.exportResult.uri.replace("{flag}", json.data.id);
@@ -232,8 +225,8 @@ MWF.xApplication.StandingBook.IndexView = new Class({
         }.bind(this));
         return facetList
     },
-    openItem: function(id, event, row){
-        if( this.tabData.type === "process" || this.tabData.type === "application" ){
+    openItem: function(id, isProcess, event, row){
+        if( isProcess.toString() === "true" ){
             this.openWork(id, event, row)
         }else{
             this.openDoc(id, event, row)
@@ -300,6 +293,13 @@ MWF.xApplication.StandingBook.IndexView = new Class({
             }
             return field;
         }.bind(this));
+
+        var sequence = (this.docPageNum - 1) * this.pageSize;
+        json.data.documentList.map(function (d) {
+            sequence++;
+            d.sequence = sequence;
+            return d;
+        });
 
         this.docListNode.loadHtml(this.path+this.options.style+"/docList.html",
             {
@@ -475,8 +475,8 @@ MWF.xApplication.StandingBook.IndexView = new Class({
                 d.valueCountPairList.each(function (v) {
                     v.field = d.field;
                     v.parentLabel = d.label;
-                    if (d.field === "category") {
-                        v.label = lp[v.value] || v.value;
+                    if (["category","completed"].contains(d.field)) {
+                        v.label = lp[v.value.toString()] || v.value;
                     } else {
                         v.label = v.value;
                     }

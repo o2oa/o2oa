@@ -458,6 +458,10 @@ ul {
     padding-left:20px;
     margin-top:8px;
     background: url("../x_component_StandingBook/$Main/default/icons/location.png") no-repeat;
+    width: calc( 100% - 150px );
+    height: 20px;
+    line-height: 20px;
+    overflow: hidden;
 }
 .breadcrumb-index a{
     cursor: pointer;
@@ -783,6 +787,8 @@ ul {
 }
 
 
+
+
 .actionbar{
     text-align: center;margin-bottom: 20px;
 }
@@ -891,7 +897,58 @@ ul {
     margin:10px;
     flex-direction: column;
 }
-
+/*.index-topLink{*/
+/*    cursor: pointer;*/
+/*    display: inline-block;*/
+/*    width: 100px;*/
+/*    height: 30px;*/
+/*    line-height: 30px;*/
+/*    text-align: center;*/
+/*    margin-left: 10px;*/
+/*    background: #FFFFFF;*/
+/*    border-radius: 15px;*/
+/*    color: #4A90E2;*/
+/*    border: 1px solid #4A90E2;*/
+/*}*/
+.tl_button{
+    cursor: pointer;
+    display: inline-block;
+    width: 100px;
+    height: 32px;
+    line-height: 32px;
+    color: #fff;
+    font-size: 14px;
+    background: #4A90E2;
+    border-radius: 16px;
+}
+.tl_multiActionNode{
+    border-top: 1px solid #4A90E2;
+    line-height:60px;
+    height:60px;
+}
+.tl_okButton{
+    height: 34px;
+    line-height: 34px;
+    cursor: pointer;
+    background: #4A90E2;
+    border-radius: 20px;
+    color: #ffffff;
+    font-size:14px;
+    width: 180px;
+    display: inline-block;
+}
+.tl_cancelButton{
+    margin-left: 30px;
+    height: 34px;
+    line-height: 34px;
+    cursor: pointer;
+    color: #666666;
+    background: #F0F0F0;
+    border-radius: 20px;
+    font-size:14px;
+    width: 120px;
+    display: inline-block;
+}
 .tl_contentWrap{
     height: calc( 100% - 90px );
     background:#ffffff;
@@ -987,7 +1044,7 @@ ul {
     border-bottom: 1px solid #E6E6E6;
 }
 .tl_coreListAppIcon{
-    margin-top:10px;
+    margin-top:5px;
     width: 30px;
     height: 30px;
     /*margin-right: 10px;*/
@@ -1009,8 +1066,8 @@ ul {
     overflow: hidden;
 }
 .tl_coreListAppText{
-    margin-top: 10px;
-    font-size: 16px;
+    margin-top: 5px;
+    font-size: 15px;
     color: #666666;
     cursor: pointer;
     height: 30px;
@@ -1019,6 +1076,9 @@ ul {
     padding: 0 10px;
     border-radius: 20px;
     user-select: none;
+}
+.checkbox{
+    margin-right:5px;
 }
 .tl_coreItemArea{
     height: 30px;

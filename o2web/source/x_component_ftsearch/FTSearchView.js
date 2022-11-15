@@ -103,7 +103,13 @@ MWF.xApplication.ftsearch.FTSearchView = new Class({
                 size: this.pageSize,
                 filterList: filterList
             }).then(function(json){
-                this.docList = json.data.documentList;
+                var sequence = (this.docPageNum - 1) * this.pageSize;
+                this.docList = json.data.documentList.map(function (d) {
+                    sequence++;
+                    d.sequence = sequence;
+                    return d;
+                });
+
                 this.docTotal =  json.data.count;
 
                 this.loadDocList(this.docList);
@@ -151,7 +157,7 @@ MWF.xApplication.ftsearch.FTSearchView = new Class({
         // if( !body && d._summary_){
         //     body = o2.typeOf( d._summary_ ) === "array" ? d._summary_.join("") : d._summary_;
         // }
-        ev.target.set("html", d.highlighting || "")
+        ev.target.set("html", d.highlighting || d.summary || "")
     },
     setSummary: function(ev, d){
         var body;
@@ -215,12 +221,12 @@ MWF.xApplication.ftsearch.FTSearchView = new Class({
     loadCondition: function( json ){
         var lp = this.app.lp;
         json.each(function(d){
-            d.label = lp[d.field] || d.field;
+            d.label = lp[d.field.toString()] || d.field;
             d.valueCountPairList.each(function (v) {
                 v.field = d.field;
                 v.parentLabel = d.label;
-                if( d.field === "category" ){
-                    v.label = lp[v.value] || v.value;
+                if( ["category","completed"].contains(d.field)){
+                    v.label = lp[v.value.toString()] || v.value;
                 }else{
                     v.label = v.value;
                 }

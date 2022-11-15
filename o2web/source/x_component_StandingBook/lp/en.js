@@ -6,6 +6,7 @@ MWF.xApplication.StandingBook.LP = {
 
 	"location": "Your location:",
 
+	"cms": "CMS",
 	"processPlatform": "Process Management",
 	"processManager": "Process Management",
 	"cmsManager": "Content Management",
@@ -62,10 +63,13 @@ MWF.xApplication.StandingBook.LP = {
 	"categoryName": "Content Management Category",
 	"selectConditionNote": "Please select",
 	"fieldSelect": "Column Select",
+	"sequence": "Sequence",
 
 	"more": "more",
 	"collapse": "Collapse",
 	"multiSelect": "Multiple Select",
+	"enableMultiSelect": "Allow Multiple Select ",
+	"disableMultiSelect": "disables Multiple Select",
 	"ok": "OK",
 	"cancel": "Cancel",
 	"reset": "Reset",
@@ -73,6 +77,11 @@ MWF.xApplication.StandingBook.LP = {
 	"moreFilter": "More filter criteria",
 	"collapseFilter": "Collapse filter criteria",
 
+	"notSelectNotice": "Please select at least one application ",
+
+	"completed": "completed",
+	"true": "true",
+	"false": "false",
 	"rangeSeparator": "to",
 	"startPlaceholder": "Start time",
 	"endPlaceholder": "End time",

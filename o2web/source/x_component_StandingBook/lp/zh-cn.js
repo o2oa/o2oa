@@ -6,6 +6,7 @@ MWF.xApplication.StandingBook.LP = {
 
     "location": "您的位置:",
 
+    "cms": "内容管理",
     "processPlatform": "流程管理",
     "processManager": "流程管理",
     "cmsManager": "内容管理",
@@ -60,10 +61,13 @@ MWF.xApplication.StandingBook.LP = {
     "categoryName": "内容管理分类",
     "selectConditionNote": "请选择",
     "fieldSelect": "列选择",
+    "sequence": "序号",
 
     "more": "更多",
     "collapse": "收起",
     "multiSelect": "多选",
+    "enableMultiSelect": "允许多选",
+    "disableMultiSelect": "取消多选",
     "ok": "确定",
     "cancel": "取消",
     "reset": "重置",
@@ -71,6 +75,11 @@ MWF.xApplication.StandingBook.LP = {
     "moreFilter": "更多筛选条件",
     "collapseFilter": "收起筛选条件",
 
+    "notSelectNotice": "请至少选择一个应用",
+
+    "completed": "已完成",
+    "true": "是",
+    "false": "否",
     "rangeSeparator": "至",
     "startPlaceholder": "开始时间",
     "endPlaceholder": "结束时间",

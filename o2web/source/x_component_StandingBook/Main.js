@@ -152,14 +152,14 @@ MWF.xApplication.StandingBook.Main = new Class({
 			this._loadTabList( callback );
 		}.bind(this));
 	},
-	_loadTabList: function(callback){
+	_loadTabList: function(callback, multiSelect){
 		this.tabData.data.each(function(obj){
 			if( obj.category === "processPlatform" ){
 				obj.keyList.each(function(k){
-					k.category = "processPlatform";
+					if(!k.category)k.category = "processPlatform";
 				});
 				this.tl_workTabListNode.empty();
-				this.tl_workTabListNode.loadHtml(this.path+this.options.style+"/tabList_work.html",
+				this.tl_workTabListNode.loadHtml(this.path+this.options.style+"/tabList"+ (multiSelect ? "_multiselect" : "") +".html",
 					{
 						"bind": {"lp": this.lp, "data": obj.keyList || []},
 						"module": this,
@@ -171,10 +171,10 @@ MWF.xApplication.StandingBook.Main = new Class({
 				);
 			}else if( obj.category === "cms" ){
 				obj.keyList.each(function(k){
-					k.category = "cms";
+					if(!k.category)k.category = "cms";
 				});
 				this.tl_docTabListNode.empty();
-				this.tl_docTabListNode.loadHtml(this.path+this.options.style+"/tabList_doc.html",
+				this.tl_docTabListNode.loadHtml(this.path+this.options.style+"/tabList"+ (multiSelect ? "_multiselect" : "") +".html",
 					{
 						"bind": {"lp": this.lp, "data": obj.keyList || []},
 						"module": this,
@@ -209,15 +209,20 @@ MWF.xApplication.StandingBook.Main = new Class({
 	coreListItemUp: function(e){
 		e.target.removeClass("mainColor_bg");
 	},
-	coreListItemClick: function(e, data){
+	coreListItemClick: function(e, tab){
 		// var tList = (data.tabList || []).filter(function (tab) {
 		// 	return tab.core === data.core;
 		// });
 		// if( tList.length ){
 			this.closeSelectModule(e);
-			this.openIndexView(data);
+			this.openIndexView([{
+				category: tab.category,
+				key: tab.key,
+				name: tab.name
+			}]);
 		// }
 	},
+
 	coreItemOver: function(e){
 		var node = e.target;
 		while (node && !node.hasClass("tl_coreItem")){ node = node.getParent();}
@@ -250,7 +255,7 @@ MWF.xApplication.StandingBook.Main = new Class({
 			node.removeClass("mainColor_bg");
 		}
 	},
-	coreItemClick: function(e, data){
+	coreItemClick: function(e, tab){
 		// var tList = (data.tabList || []).filter(function (tab) {
 		// 	return tab.core === data.core;
 		// });
@@ -258,8 +263,79 @@ MWF.xApplication.StandingBook.Main = new Class({
 		// if( tList.length ){
 		// 	this.currentTabObj = tList[0];
 			this.closeSelectModule(e);
-			this.openIndexView(data);
+			this.openIndexView([{
+				category: tab.category,
+				key: tab.key,
+				name: tab.name
+			}]);
 		// }
+	},
+
+	coreListItemOver_multi: function(e){
+		this.getEventTarget(e, "tl_coreListAppText").addClass("mainColor_bg_opacity");
+	},
+	coreListItemOut_multi: function(e){
+		this.getEventTarget(e, "tl_coreListAppText").removeClass("mainColor_bg_opacity");
+	},
+	coreListItemDown_multi: function(e){
+		this.getEventTarget(e, "tl_coreListAppText").addClass("mainColor_bg_opacity");
+	},
+	coreListItemUp_multi: function(e){
+		this.getEventTarget(e, "tl_coreListAppText").removeClass("mainColor_bg_opacity");
+	},
+	coreListItemClick_multi: function(e, item){
+		debugger;
+		if( !this.curMultiSelectTabList )this.curMultiSelectTabList = [];
+		var target = this.getEventTarget(e, "tl_coreListAppText");
+		var index = -1;
+		this.curMultiSelectTabList.each(function (tab, idx) {
+			if( tab.key === item.key )index = idx;
+		});
+		if( index > -1 ){ //已经选择了
+			target.getElement("i.checkbox").removeClass("o2icon-check_box").addClass("o2icon-check_box_outline_blank").removeClass("mainColor_color");
+			this.curMultiSelectTabList.splice(index, 1);
+		}else{ //还没有选择
+			target.getElement("i.checkbox").removeClass("o2icon-check_box_outline_blank").addClass("o2icon-check_box").addClass("mainColor_color");
+			this.curMultiSelectTabList.push(item);
+		}
+	},
+	okMultiSelect: function(e){
+		if( this.curMultiSelectTabList.length === 0){
+			this.notice( this.lp.notSelectNotice, "info");
+			return;
+		}
+		var data = this.curMultiSelectTabList.map(function (tab) {
+			return {
+				category: tab.category,
+				key: tab.key,
+				name: tab.name
+			}
+		});
+		this.curMultiSelectTabList = [];
+		this.closeSelectModule(e);
+		this.openIndexView(data);
+	},
+	enableMultiSelect: function(e, data){
+		this.curMultiSelectTabList = [];
+		this.enableMultiNode.hide();
+		this.disableMultiNode.setStyle("display","inline-block");
+		this.tl_multiActionNode.show();
+		this.tl_workTabListNode.setStyle("height", "calc( 100% - 90px )");
+		this.tl_docTabListNode.setStyle("height", "calc( 100% - 90px )");
+		this._loadTabList(function () {
+
+		}, true)
+	},
+	disableMultiSelect: function(e, data){
+		this.curMultiSelectTabList = [];
+		this.disableMultiNode.hide();
+		this.enableMultiNode.setStyle("display","inline-block");
+		this.tl_multiActionNode.hide();
+		this.tl_workTabListNode.setStyle("height", "calc( 100% - 40px )");
+		this.tl_docTabListNode.setStyle("height", "calc( 100% - 40px )");
+		this._loadTabList(function () {
+
+		}, false)
 	},
 	searchCoreKeydown: function(e){
 		if( e.keyCode === 13 ){
