@@ -2312,10 +2312,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         var item = layout.desktop.message.addMessage(msg);
                     }
                 }
-                if (layout.app && layout.app.inBrowser) {
-                    if (layout.app) layout.app.$openWithSelf = true;
-                    layout.desktop.openApplication(null, "process.Work", { "workId": this.app.options.workId, "action": "processTask" });
-                }
+                // 多次加载的bug
+                // if (layout.app && layout.app.inBrowser) {
+                //     if (layout.app) layout.app.$openWithSelf = true;
+                //     layout.desktop.openApplication(null, "process.Work", { "workId": this.app.options.workId, "action": "processTask" });
+                // }
                 this.app.options.action = "processTask";
                 this.app.reload();
 
