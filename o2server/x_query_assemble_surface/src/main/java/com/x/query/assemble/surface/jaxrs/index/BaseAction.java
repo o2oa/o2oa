@@ -1,17 +1,21 @@
 package com.x.query.assemble.surface.jaxrs.index;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.PointValues;
 import org.apache.lucene.queryparser.classic.ParseException;
@@ -35,8 +39,10 @@ import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
+import com.x.base.core.project.tools.ListTools;
 import com.x.cms.core.entity.AppInfo;
 import com.x.processplatform.core.entity.element.Application;
+import com.x.query.assemble.surface.jaxrs.index.ActionPost.Wi;
 import com.x.query.core.express.index.Indexs;
 import com.x.query.core.express.index.Sort;
 import com.x.query.core.express.index.WoFacet;
@@ -56,14 +62,8 @@ abstract class BaseAction extends StandardJaxrsAction {
                     new WoField(Indexs.FIELD_CREATETIME, "创建时间", Indexs.FIELD_TYPE_DATE),
                     new WoField(Indexs.FIELD_UPDATETIME, "更新时间", Indexs.FIELD_TYPE_DATE),
                     new WoField(Indexs.FIELD_SERIAL, "文号", Indexs.FIELD_TYPE_STRING),
-                    new WoField(Indexs.FIELD_PROCESSNAME, "流程", Indexs.FIELD_TYPE_STRING)));
-//    protected static final List<WoField> FIXEDFIELD_PROCESS = ListUtils
-//            .unmodifiableList(Arrays.asList(new WoField(Indexs.FIELD_TITLE, "标题", Indexs.FIELD_TYPE_STRING),
-//                    new WoField(Indexs.FIELD_CREATORPERSON, "创建者", Indexs.FIELD_TYPE_STRING),
-//                    new WoField(Indexs.FIELD_CREATORUNIT, "部门", Indexs.FIELD_TYPE_STRING),
-//                    new WoField(Indexs.FIELD_CREATETIME, "创建时间", Indexs.FIELD_TYPE_DATE),
-//                    new WoField(Indexs.FIELD_UPDATETIME, "更新时间", Indexs.FIELD_TYPE_DATE),
-//                    new WoField(Indexs.FIELD_SERIAL, "文号", Indexs.FIELD_TYPE_STRING)));
+                    new WoField(Indexs.FIELD_PROCESSNAME, "流程", Indexs.FIELD_TYPE_STRING),
+                    new WoField(Indexs.FIELD_COMPLETED, "已完成", Indexs.FIELD_TYPE_BOOLEAN)));
     protected static final List<WoField> FIXEDFIELD_APPINFO = ListUtils
             .unmodifiableList(Arrays.asList(new WoField(Indexs.FIELD_TITLE, "标题", Indexs.FIELD_TYPE_STRING),
                     new WoField(Indexs.FIELD_CREATORPERSON, "创建者", Indexs.FIELD_TYPE_STRING),
@@ -72,13 +72,6 @@ abstract class BaseAction extends StandardJaxrsAction {
                     new WoField(Indexs.FIELD_UPDATETIME, "更新时间", Indexs.FIELD_TYPE_DATE),
                     new WoField(Indexs.FIELD_CATEGORYNAME, "分类", Indexs.FIELD_TYPE_STRING),
                     new WoField(Indexs.FIELD_DESCRIPTION, "说明", Indexs.FIELD_TYPE_STRING)));
-//    protected static final List<WoField> FIXEDFIELD_CATEGORYINFO = ListUtils
-//            .unmodifiableList(Arrays.asList(new WoField(Indexs.FIELD_TITLE, "标题", Indexs.FIELD_TYPE_STRING),
-//                    new WoField(Indexs.FIELD_CREATORPERSON, "创建者", Indexs.FIELD_TYPE_STRING),
-//                    new WoField(Indexs.FIELD_CREATORUNIT, "部门", Indexs.FIELD_TYPE_STRING),
-//                    new WoField(Indexs.FIELD_CREATETIME, "创建时间", Indexs.FIELD_TYPE_DATE),
-//                    new WoField(Indexs.FIELD_UPDATETIME, "更新时间", Indexs.FIELD_TYPE_DATE),
-//                    new WoField(Indexs.FIELD_DESCRIPTION, "说明", Indexs.FIELD_TYPE_STRING)));
 
     protected static final List<String> FACET_FIELDS = ListUtils
             .unmodifiableList(Arrays.asList(Indexs.FIELD_CREATETIMEMONTH, Indexs.FIELD_UPDATETIMEMONTH,
@@ -146,12 +139,26 @@ abstract class BaseAction extends StandardJaxrsAction {
         }).collect(Collectors.toList());
     }
 
-    protected List<WoField> getFixedFieldList(String category) {
-        if (StringUtils.equals(Indexs.CATEGORY_PROCESSPLATFORM, category)) {
-            return FIXEDFIELD_APPLICATION;
-        } else {
-            return FIXEDFIELD_APPINFO;
+    protected IndexReader[] indexReaders(List<com.x.query.core.express.index.Directory> dirs) {
+        return dirs.stream().map(o -> Indexs.directory(o.getCategory(), o.getKey(), true))
+                .filter(Optional::isPresent).map(Optional::get).map(o -> {
+                    try {
+                        return DirectoryReader.open(o);
+                    } catch (IOException e) {
+                        LOGGER.error(e);
+                    }
+                    return null;
+                }).filter(o -> !Objects.isNull(o)).toArray(s -> new IndexReader[s]);
+    }
+
+    protected List<WoField> getFixedFieldList(List<String> list) {
+        List<WoField> woFields = new ArrayList<>();
+        if (list.contains(Indexs.CATEGORY_PROCESSPLATFORM)) {
+            woFields.addAll(FIXEDFIELD_APPLICATION);
+        } else if (list.contains(Indexs.CATEGORY_CMS)) {
+            woFields.addAll(FIXEDFIELD_APPINFO);
         }
+        return ListTools.trim(woFields, true, true);
     }
 
     protected List<WoField> getDynamicFieldList(IndexReader reader) {
@@ -229,6 +236,39 @@ abstract class BaseAction extends StandardJaxrsAction {
                         LOGGER.error(e);
                     }
                 });
+        return list;
+    }
+
+    protected List<String> categories(List<com.x.query.core.express.index.Directory> dirs) {
+        if (ListTools.isEmpty(dirs)) {
+            return new ArrayList<>();
+        }
+        return dirs.stream()
+                .map(com.x.query.core.express.index.Directory::getCategory).filter(StringUtils::isNotBlank)
+                .collect(Collectors.toList());
+    }
+
+    protected List<String> adjustFacetField(List<String> categories, List<String> filters) {
+        List<String> list = FACET_FIELDS.stream().filter(o -> (!filters.contains(o))).collect(Collectors.toList());
+        if (list.contains(Indexs.FIELD_PROCESSNAME)) {
+            list.removeAll(Arrays.asList(Indexs.FIELD_APPLICATIONNAME, Indexs.FIELD_PROCESSNAME,
+                    Indexs.FIELD_APPNAME, Indexs.FIELD_CATEGORYNAME));
+        }
+        if (list.contains(Indexs.FIELD_APPLICATIONNAME)) {
+            list.removeAll(Arrays.asList(Indexs.FIELD_APPLICATIONNAME, Indexs.FIELD_APPNAME,
+                    Indexs.FIELD_CATEGORYNAME));
+        }
+        if (list.contains(Indexs.FIELD_CATEGORYNAME)) {
+            list.removeAll(Arrays.asList(Indexs.FIELD_APPNAME, Indexs.FIELD_CATEGORYNAME,
+                    Indexs.FIELD_APPLICATIONNAME, Indexs.FIELD_PROCESSNAME));
+        }
+        if (list.contains(Indexs.FIELD_APPNAME)) {
+            list.removeAll(Arrays.asList(Indexs.FIELD_APPNAME, Indexs.FIELD_APPLICATIONNAME,
+                    Indexs.FIELD_PROCESSNAME));
+        }
+        if (!ListTools.contains(categories, Indexs.CATEGORY_PROCESSPLATFORM)) {
+            list.remove(Indexs.FIELD_COMPLETED);
+        }
         return list;
     }
 }

@@ -8,12 +8,14 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.fs.CommonConfigurationKeysPublic;
 import org.apache.hadoop.fs.LocatedFileStatus;
@@ -96,10 +98,13 @@ public class Indexs {
     public static final String FIELD_HIGHLIGHTING = "highlighting";
     public static final String READERS_SYMBOL_ALL = "ALL";
 
+    public static final String BOOLEAN_TRUE_STRING_VALUE = "true";
+    public static final String BOOLEAN_FALSE_STRING_VALUE = "false";
+
     private static final List<String> FACET_FIELDS = Stream.<String>of(FIELD_CATEGORY,
             FIELD_CREATETIMEMONTH, FIELD_UPDATETIMEMONTH, FIELD_APPLICATIONNAME,
             FIELD_PROCESSNAME, FIELD_APPNAME, FIELD_CATEGORYNAME,
-            FIELD_CREATORPERSON, FIELD_CREATORUNIT)
+            FIELD_CREATORPERSON, FIELD_CREATORUNIT, FIELD_COMPLETED)
             .collect(Collectors.toUnmodifiableList());
 
     private static final List<String> FIXED_DATE_FIELDS = Stream
@@ -308,8 +313,8 @@ public class Indexs {
         return list;
     }
 
-    public static Optional<org.apache.lucene.search.Query> readersQuery(List<String> readers) {
-        if (ListTools.isEmpty(readers)) {
+    public static Optional<org.apache.lucene.search.Query> readersQuery(Collection<String> readers) {
+        if ((null == readers) || readers.isEmpty()) {
             return Optional.empty();
         }
         BooleanQuery.Builder builder = new BooleanQuery.Builder();
@@ -343,7 +348,7 @@ public class Indexs {
         return Optional.of(builder.build());
     }
 
-    public static List<String> adjustFacetField(List<String> filters) {
+    public static List<String> adjustFacetField(List<String> categories, List<String> filters) {
         List<String> list = FACET_FIELDS.stream().filter(o -> (!filters.contains(o))).collect(Collectors.toList());
         if (list.contains(FIELD_PROCESSNAME)) {
             list.removeAll(Arrays.asList(FIELD_APPLICATIONNAME, FIELD_PROCESSNAME,
@@ -360,6 +365,9 @@ public class Indexs {
         if (list.contains(FIELD_APPNAME)) {
             list.removeAll(Arrays.asList(FIELD_APPNAME, FIELD_APPLICATIONNAME,
                     FIELD_PROCESSNAME));
+        }
+        if (!ListTools.contains(categories, Indexs.CATEGORY_PROCESSPLATFORM)) {
+            list.remove(Indexs.FIELD_COMPLETED);
         }
         return list;
     }
@@ -415,8 +423,8 @@ public class Indexs {
             Number number = indexableField.numericValue();
             return (null != number) ? (T) Double.valueOf(NumericUtils.sortableLongToDouble(number.longValue())) : null;
         } else if (StringUtils.equalsIgnoreCase(Indexs.FIELD_TYPE_BOOLEAN, fileType)) {
-            Number number = indexableField.numericValue();
-            return (null != number) ? (T) Boolean.valueOf(number.longValue() != 0L) : null;
+            String str = indexableField.stringValue();
+            return (T) Boolean.valueOf(StringUtils.equalsIgnoreCase(str, BOOLEAN_TRUE_STRING_VALUE));
         } else {
             String str = indexableField.stringValue();
             return (null != str) ? (T) str : null;

@@ -391,10 +391,10 @@ public class Doc extends GsonPropertyObject {
     }
 
     private static void addBoolean(org.apache.lucene.document.Document document, String field, Boolean value) {
-        long store = BooleanUtils.isTrue(value) ? 1L : 0L;
-        document.add(new NumericDocValuesField(field, store));
-        document.add(new LongPoint(field, store));
-        document.add(new StoredField(field, store));
+        String store = BooleanUtils.isTrue(value) ? Indexs.BOOLEAN_TRUE_STRING_VALUE
+                : Indexs.BOOLEAN_FALSE_STRING_VALUE;
+        document.add(new SortedDocValuesField(field, new BytesRef(store)));
+        document.add(new StringField(field, store, Field.Store.YES));
     }
 
 }

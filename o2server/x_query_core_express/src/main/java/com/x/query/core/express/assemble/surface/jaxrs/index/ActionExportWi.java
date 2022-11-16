@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.query.core.express.index.Directory;
 import com.x.query.core.express.index.Filter;
 import com.x.query.core.express.index.Sort;
 
@@ -14,13 +15,9 @@ public class ActionExportWi extends GsonPropertyObject {
 
     private static final long serialVersionUID = 1360655000630283661L;
 
-    @FieldDescribe("分类.")
-    @Schema(description = "分类.")
-    private String category;
-
-    @FieldDescribe("标识.")
-    @Schema(description = "标识.")
-    private String key;
+    @FieldDescribe("检索目录.")
+    @Schema(description = "检索目录.")
+    private List<Directory> directoryList = new ArrayList<>();
 
     @FieldDescribe("搜索内容.")
     @Schema(description = "搜索内容.")
@@ -53,6 +50,14 @@ public class ActionExportWi extends GsonPropertyObject {
     @FieldDescribe("排序字段.")
     @Schema(description = "排序字段.")
     Sort sort;
+
+    public List<Directory> getDirectoryList() {
+        return directoryList;
+    }
+
+    public void setDirectoryList(List<Directory> directoryList) {
+        this.directoryList = directoryList;
+    }
 
     public Sort getSort() {
         return sort;
@@ -100,22 +105,6 @@ public class ActionExportWi extends GsonPropertyObject {
 
     public void setSize(Integer size) {
         this.size = size;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
     }
 
     public String getPerson() {

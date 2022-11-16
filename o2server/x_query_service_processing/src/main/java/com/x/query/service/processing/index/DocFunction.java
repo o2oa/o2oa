@@ -26,7 +26,6 @@ import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.project.bean.tuple.Pair;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
-import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -68,6 +67,7 @@ public class DocFunction {
             Work work = param.first().entityManagerContainer().find(param.second(),
                     Work.class);
             if (null != work) {
+                LOGGER.debug("DocFunction wrapWork:{}.", param.second());
                 Doc doc = new Doc();
                 doc.setReaders(readers(param.first(), work));
                 doc.setCompleted(false);
@@ -105,6 +105,7 @@ public class DocFunction {
             WorkCompleted workCompleted = param.first().entityManagerContainer().find(param.second(),
                     WorkCompleted.class);
             if (null != workCompleted) {
+                LOGGER.debug("DocFunction wrapWorkCompleted:{}.", param.second());
                 Doc doc = new Doc();
                 doc.setReaders(readers(param.first(), workCompleted));
                 doc.setCompleted(true);
@@ -143,9 +144,9 @@ public class DocFunction {
         try {
             Document document = param.first().entityManagerContainer().find(param.second(), Document.class);
             if (null != document) {
+                LOGGER.debug("DocFunction wrapDocument:{}.", param.second());
                 Doc doc = new Doc();
                 doc.setReaders(readers(param.first(), document));
-                doc.setCompleted(true);
                 doc.setId(document.getId());
                 doc.setCategory(Indexs.CATEGORY_CMS);
                 doc.setType(Indexs.TYPE_DOCUMENT);
@@ -226,8 +227,9 @@ public class DocFunction {
     }
 
     private static void update(Business business, Work work, Doc wrap) {
+        List<Item> items = null;
         try {
-            List<Item> items = business.entityManagerContainer().listEqualAndEqual(Item.class,
+            items = business.entityManagerContainer().listEqualAndEqual(Item.class,
                     DataItem.bundle_FIELDNAME,
                     work.getJob(), DataItem.itemCategory_FIELDNAME, ItemCategory.pp);
             if (!ListTools.isEmpty(items)) {
@@ -243,13 +245,13 @@ public class DocFunction {
                 LOGGER.warn("class:DocFunction, function:update work:{}, items is empty.", work.getId());
             }
         } catch (Exception e) {
-            LOGGER.error(e);
+            LOGGER.error(new ExceptionWorkUpdate(e, work.getId(), items));
         }
     }
 
     private static void update(Business business, WorkCompleted workCompleted, Doc wrap) {
+        List<Item> items = null;
         try {
-            List<Item> items = null;
             if (BooleanUtils.isTrue(workCompleted.getMerged())) {
                 Data data = workCompleted.getProperties().getData();
                 items = CONVERTER.disassemble(gson.toJsonTree(data));
@@ -271,14 +273,15 @@ public class DocFunction {
                         workCompleted.getId());
             }
         } catch (Exception e) {
-            LOGGER.error(e);
+            LOGGER.error(new ExceptionWorkCompletedUpdate(e, workCompleted.getId(), items));
         }
     }
 
     private static void update(Business business, com.x.cms.core.entity.Document document, Doc wrap,
             Integer dataStringThreshold) {
+        List<Item> items = null;
         try {
-            List<Item> items = business.entityManagerContainer().listEqualAndEqual(Item.class,
+            items = business.entityManagerContainer().listEqualAndEqual(Item.class,
                     DataItem.bundle_FIELDNAME, document.getId(), DataItem.itemCategory_FIELDNAME, ItemCategory.cms);
             if (!ListTools.isEmpty(items)) {
                 wrap.setBody(DataItemConverter.ItemText.text(items, true, true, true, true, true, ","));
@@ -293,7 +296,7 @@ public class DocFunction {
                 LOGGER.warn("class:DocFunction, function:update document:{}, items is empty.", document.getId());
             }
         } catch (Exception e) {
-            LOGGER.error(e);
+            LOGGER.error(new ExceptionDocumentUpdate(e, document.getId(), items));
         }
     }
 

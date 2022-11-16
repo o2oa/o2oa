@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.query.core.express.index.Directory;
 import com.x.query.core.express.index.Filter;
 import com.x.query.core.express.index.Sort;
 
@@ -16,7 +17,7 @@ public class ActionPostWi extends GsonPropertyObject {
 
     @FieldDescribe("检索目录.")
     @Schema(description = "检索目录.")
-    private List<WiDirectory> directoryList = new ArrayList<>();
+    private List<Directory> directoryList = new ArrayList<>();
 
     @FieldDescribe("搜索内容.")
     @Schema(description = "搜索内容.")
@@ -98,11 +99,11 @@ public class ActionPostWi extends GsonPropertyObject {
         this.size = size;
     }
 
-    public List<WiDirectory> getDirectoryList() {
+    public List<Directory> getDirectoryList() {
         return directoryList;
     }
 
-    public void setDirectoryList(List<WiDirectory> directoryList) {
+    public void setDirectoryList(List<Directory> directoryList) {
         this.directoryList = directoryList;
     }
 
@@ -120,35 +121,6 @@ public class ActionPostWi extends GsonPropertyObject {
 
     public void setFilterList(List<Filter> filterList) {
         this.filterList = filterList;
-    }
-
-    @Schema(name = "com.x.query.core.express.assemble.surface.jaxrs.index.ActionPostWi$WiDirectory")
-    public static class WiDirectory {
-
-        @FieldDescribe("分类.")
-        @Schema(description = "分类.")
-        private String category;
-
-        @FieldDescribe("标识.")
-        @Schema(description = "标识.")
-        private String key;
-
-        public String getCategory() {
-            return category;
-        }
-
-        public void setCategory(String category) {
-            this.category = category;
-        }
-
-        public String getKey() {
-            return key;
-        }
-
-        public void setKey(String key) {
-            this.key = key;
-        }
-
     }
 
 }
