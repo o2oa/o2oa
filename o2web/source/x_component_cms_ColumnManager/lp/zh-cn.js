@@ -131,7 +131,7 @@ MWF.xApplication.cms.ColumnManager.LP = {
         "searchText": "请输入关键字",
         "selectRelativeForm" : "选择列表关联表单",
 
-        "noViewNoticeText": "此栏目现在还没有列表，您可以点击此处创建一个列表",
+        "noViewNoticeText": "本设计元素已经过时，请使用视图或者查询配置展现数据。",
         "noViewNoCreateNoticeText": "此栏目现在没有列表",
         "loaded": "列表加载完毕",
         "deleteFormTitle": "删除列表确认",
