@@ -177,11 +177,11 @@ MWF.xApplication.cms.ColumnManager.ViewExplorer = new Class({
                     "styles": this.css.noElementNode,
                     "text": (this.options.noCreate) ? MWF.CMSCM.LP.view.noViewNoCreateNoticeText : this.options.tooltip.noElement
                 }).inject(this.elementContentListNode);
-                if (!this.options.noCreate){
-                    noElementNode.addEvent("click", function(e){
-                        this._createElement(e);
-                    }.bind(this));
-                }
+                // if (!this.options.noCreate){
+                //     noElementNode.addEvent("click", function(e){
+                //         this._createElement(e);
+                //     }.bind(this));
+                // }
             }
         }.bind(this));
     },

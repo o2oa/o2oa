@@ -130,7 +130,7 @@ MWF.xApplication.cms.ColumnManager.LP = {
         "searchText": "Please enter a keyword",
         "selectRelativeForm": "Select Relative Form",
 
-        "noViewNoticeText": "There is no list for this AppInfo, you can click here to create a list",
+        "noViewNoticeText": "This design element has been deprecated, please use the view or query configuration to present the data.",
         "noViewNoCreateNoticeText": "There is no list for this AppInfo now",
         "loaded": "The list is loaded",
         "deleteFormTitle": "Confirm Delete List",
