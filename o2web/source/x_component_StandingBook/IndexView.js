@@ -74,7 +74,7 @@ MWF.xApplication.StandingBook.IndexView = new Class({
             }else if(o2.typeOf(data) === "string"){
                 this.dynamicConditionList.push({
                     field: key,
-                    valueList: ["*"+data+"*"]
+                    valueList: [data]
                 });
             }
         }.bind(this));
@@ -423,10 +423,13 @@ MWF.xApplication.StandingBook.IndexView = new Class({
         var facetList = [];
         var index = 0;
         json.data.dynamicFieldList.each(function (field) {
+            // if( !this.selectedFieldList.contains(field.field) ){ //在已选列里才允许作为条件
+            //     return;
+            // }
             field.label = lp[field.field] || field.name || field.field;
             if( !field.fixed ){
                 if( field.fieldType === "date" || field.fieldType === "number" ){
-                    if( field.min && field.min !== "null" && field.max && field.max !== "null" && (field.min != field.max) ){
+                    if( field.min && field.min !== "null" && field.max && field.max !== "null" ){ //&& (field.min != field.max)
                         // if( this.dynamicConditionValueMap[field.field] ){
                         //     field.data = this.dynamicConditionValueMap[field.field];
                         // }
