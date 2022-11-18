@@ -1,5 +1,6 @@
 package com.x.query.service.processing.index;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.LongPoint;
 import org.apache.lucene.document.NumericDocValuesField;
@@ -51,8 +53,6 @@ public class Doc extends GsonPropertyObject {
 
     private String creatorUnit;
 
-    private Boolean completed;
-
     private List<String> readers;
 
     private Map<String, String> stringRepo = new HashMap<>();
@@ -60,92 +60,10 @@ public class Doc extends GsonPropertyObject {
     private Map<String, Boolean> booleanRepo = new HashMap<>();
     private Map<String, Number> numberRepo = new HashMap<>();
 
-    private Map<String, List<String>> stringListRepo = new HashMap<>();
-    private Map<String, List<Date>> dateListRepo = new HashMap<>();
-    private Map<String, List<Boolean>> booleanListRepo = new HashMap<>();
-    private Map<String, List<Number>> numberListRepo = new HashMap<>();
-
-    private Map<String, String> dataStringRepo = new HashMap<>();
-    private Map<String, Date> dataDateRepo = new HashMap<>();
-    private Map<String, Boolean> dataBooleanRepo = new HashMap<>();
-    private Map<String, Number> dataNumberRepo = new HashMap<>();
-
-    private Map<String, List<String>> dataStringListRepo = new HashMap<>();
-    private Map<String, List<Date>> dataDateListRepo = new HashMap<>();
-    private Map<String, List<Boolean>> dataBooleanListRepo = new HashMap<>();
-    private Map<String, List<Number>> dataNumberListRepo = new HashMap<>();
-
-    public Boolean getCompleted() {
-        return completed;
-    }
-
-    public void setCompleted(Boolean completed) {
-        this.completed = completed;
-    }
-
-    public Map<String, String> getStringRepo() {
-        return stringRepo;
-    }
-
-    public Map<String, Date> getDateRepo() {
-        return dateRepo;
-    }
-
-    public Map<String, Boolean> getBooleanRepo() {
-        return booleanRepo;
-    }
-
-    public Map<String, Number> getNumberRepo() {
-        return numberRepo;
-    }
-
-    public Map<String, List<String>> getStringListRepo() {
-        return stringListRepo;
-    }
-
-    public Map<String, List<Date>> getDateListRepo() {
-        return dateListRepo;
-    }
-
-    public Map<String, List<Boolean>> getBooleanListRepo() {
-        return booleanListRepo;
-    }
-
-    public Map<String, List<Number>> getNumberListRepo() {
-        return numberListRepo;
-    }
-
-    public Map<String, String> getDataStringRepo() {
-        return dataStringRepo;
-    }
-
-    public Map<String, Date> getDataDateRepo() {
-        return dataDateRepo;
-    }
-
-    public Map<String, Boolean> getDataBooleanRepo() {
-        return dataBooleanRepo;
-    }
-
-    public Map<String, Number> getDataNumberRepo() {
-        return dataNumberRepo;
-    }
-
-    public Map<String, List<String>> getDataStringListRepo() {
-        return dataStringListRepo;
-    }
-
-    public Map<String, List<Date>> getDataDateListRepo() {
-        return dataDateListRepo;
-    }
-
-    public Map<String, List<Boolean>> getDataBooleanListRepo() {
-        return dataBooleanListRepo;
-    }
-
-    public Map<String, List<Number>> getDataNumberListRepo() {
-        return dataNumberListRepo;
-    }
+    private Map<String, Collection<String>> stringsRepo = new HashMap<>();
+    private Map<String, Collection<Date>> datesRepo = new HashMap<>();
+    private Map<String, Collection<Boolean>> booleansRepo = new HashMap<>();
+    private Map<String, Collection<Number>> numbersRepo = new HashMap<>();
 
     public String getAttachment() {
         return attachment;
@@ -267,74 +185,66 @@ public class Doc extends GsonPropertyObject {
         this.updateTimeMonth = updateTimeMonth;
     }
 
-    public void addString(String name, String value) {
-        stringRepo.put(name, value);
+    public Doc addString(String prefix, String field, String value) {
+        if (StringUtils.isNotBlank(value)) {
+            this.stringRepo.put(prefix + field, value);
+        }
+        return this;
     }
 
-    public void addDate(String name, Date value) {
-        dateRepo.put(name, value);
+    public Doc addDate(String prefix, String field, Date value) {
+        if (null != value) {
+            this.dateRepo.put(prefix + field, value);
+        }
+        return this;
     }
 
-    public void addBoolean(String name, Boolean value) {
-        booleanRepo.put(name, value);
+    public Doc addBoolean(String prefix, String field, Boolean value) {
+        if (null != value) {
+            this.booleanRepo.put(prefix + field, value);
+        }
+        return this;
     }
 
-    public void addNumber(String name, Number value) {
-        numberRepo.put(name, value);
+    public Doc addNumber(String prefix, String field, Number value) {
+        if (null != value) {
+            this.numberRepo.put(prefix + field, value);
+        }
+        return this;
     }
 
-    public void addStringList(String name, List<String> values) {
-        stringListRepo.put(name, values);
+    public Doc addStrings(String prefix, String field, Collection<String> values) {
+        if ((null != values) && (!values.isEmpty())) {
+            this.stringsRepo.put(prefix + field, values);
+        }
+        return this;
     }
 
-    public void addDateList(String name, List<Date> values) {
-        dateListRepo.put(name, values);
+    public Doc addDates(String prefix, String field, Collection<Date> values) {
+        if ((null != values) && (!values.isEmpty())) {
+            this.datesRepo.put(prefix + field, values);
+        }
+        return this;
     }
 
-    public void addBooleanList(String name, List<Boolean> values) {
-        booleanListRepo.put(name, values);
+    public Doc addBooleans(String prefix, String field, Collection<Boolean> values) {
+        if ((null != values) && (!values.isEmpty())) {
+            this.booleansRepo.put(prefix + field, values);
+        }
+        return this;
     }
 
-    public void addNumberList(String name, List<Number> values) {
-        numberListRepo.put(name, values);
-    }
-
-    public void dataAddString(String name, String value) {
-        dataStringRepo.put(name, value);
-    }
-
-    public void dataAddDate(String name, Date value) {
-        dataDateRepo.put(name, value);
-    }
-
-    public void dataAddBoolean(String name, Boolean value) {
-        dataBooleanRepo.put(name, value);
-    }
-
-    public void dataAddNumber(String name, Number value) {
-        dataNumberRepo.put(name, value);
-    }
-
-    public void dataAddStringList(String name, List<String> values) {
-        dataStringListRepo.put(name, values);
-    }
-
-    public void dataAddDateList(String name, List<Date> values) {
-        dataDateListRepo.put(name, values);
-    }
-
-    public void dataAddBooleanList(String name, List<Boolean> values) {
-        dataBooleanListRepo.put(name, values);
-    }
-
-    public void dataAddNumberList(String name, List<Number> values) {
-        dataNumberListRepo.put(name, values);
+    public Doc addNumbers(String prefix, String field, Collection<Number> values) {
+        if ((null != values) && (!values.isEmpty())) {
+            this.numbersRepo.put(prefix + field, values);
+        }
+        return this;
     }
 
     public org.apache.lucene.document.Document toDocument(boolean convertData) {
         org.apache.lucene.document.Document document = new org.apache.lucene.document.Document();
         document.add(new StringField(Indexs.FIELD_ID, this.getId(), Field.Store.YES));
-        document.add(new TextField(Indexs.FIELD_TITLE, Objects.toString(this.getTitle(), ""), Field.Store.YES));
+        addTitle(document, this.getTitle());
         document.add(new TextField(Indexs.FIELD_SUMMARY, Objects.toString(this.getSummary(), ""), Field.Store.YES));
         document.add(new TextField(Indexs.FIELD_BODY, Objects.toString(this.getBody(), ""), Field.Store.YES));
         document.add(
@@ -349,26 +259,31 @@ public class Doc extends GsonPropertyObject {
         addDate(document, Indexs.FIELD_INDEXTIME, new Date());
         addDate(document, Indexs.FIELD_CREATETIME, this.getCreateTime());
         addDate(document, Indexs.FIELD_UPDATETIME, this.getUpdateTime());
-        addBoolean(document, Indexs.FIELD_COMPLETED, this.getCompleted());
         if (convertData) {
-            this.getStringRepo().entrySet().stream().filter(o -> null != o.getValue())
+            this.stringRepo.entrySet().stream().filter(o -> null != o.getValue())
                     .forEach(o -> addString(document, o.getKey(), o.getValue()));
-            this.getDateRepo().entrySet().stream().filter(o -> null != o.getValue())
+            this.dateRepo.entrySet().stream().filter(o -> null != o.getValue())
                     .forEach(o -> addDate(document, o.getKey(), o.getValue()));
-            this.getNumberRepo().entrySet().stream().filter(o -> null != o.getValue())
+            this.numberRepo.entrySet().stream().filter(o -> null != o.getValue())
                     .forEach(o -> addNumber(document, o.getKey(), o.getValue()));
-            this.getBooleanRepo().entrySet().stream().filter(o -> null != o.getValue())
-                    .forEach(o -> addBoolean(document, o.getKey(), o.getValue()));
-            this.getDataStringRepo().entrySet().stream().filter(o -> null != o.getValue())
-                    .forEach(o -> addString(document, Indexs.PREFIX_FIELD_DATA_STRING + o.getKey(), o.getValue()));
-            this.getDataDateRepo().entrySet().stream().filter(o -> null != o.getValue())
-                    .forEach(o -> addDate(document, Indexs.PREFIX_FIELD_DATA_DATE + o.getKey(), o.getValue()));
-            this.getDataNumberRepo().entrySet().stream().filter(o -> null != o.getValue())
-                    .forEach(o -> addNumber(document, Indexs.PREFIX_FIELD_DATA_NUMBER + o.getKey(), o.getValue()));
-            this.getDataBooleanRepo().entrySet().stream().filter(o -> null != o.getValue()).forEach(
-                    o -> addBoolean(document, Indexs.PREFIX_FIELD_DATA_BOOLEAN + o.getKey(), o.getValue()));
+            this.booleanRepo.entrySet().stream().filter(o -> null != o.getValue()).forEach(
+                    o -> addBoolean(document, o.getKey(), o.getValue()));
+            this.stringsRepo.entrySet().stream().filter(o -> null != o.getValue())
+                    .forEach(o -> addStrings(document, o.getKey(), o.getValue()));
+            this.datesRepo.entrySet().stream().filter(o -> null != o.getValue())
+                    .forEach(o -> addDates(document, o.getKey(), o.getValue()));
+            this.numbersRepo.entrySet().stream().filter(o -> null != o.getValue())
+                    .forEach(o -> addNumbers(document, o.getKey(), o.getValue()));
+            this.booleansRepo.entrySet().stream().filter(o -> null != o.getValue()).forEach(
+                    o -> addBooleans(document, o.getKey(), o.getValue()));
         }
         return document;
+    }
+
+    private void addTitle(org.apache.lucene.document.Document document, String value) {
+        String str = Objects.toString(this.getTitle(), "");
+        document.add(new TextField(Indexs.FIELD_TITLE, str, Field.Store.YES));
+        document.add(new SortedDocValuesField(Indexs.FIELD_TITLE, new BytesRef(str)));
     }
 
     private void addString(org.apache.lucene.document.Document document, String field, String value) {
@@ -391,10 +306,40 @@ public class Doc extends GsonPropertyObject {
     }
 
     private static void addBoolean(org.apache.lucene.document.Document document, String field, Boolean value) {
-        long store = BooleanUtils.isTrue(value) ? 1L : 0L;
-        document.add(new NumericDocValuesField(field, store));
-        document.add(new LongPoint(field, store));
-        document.add(new StoredField(field, store));
+        String store = BooleanUtils.isTrue(value) ? Indexs.BOOLEAN_TRUE_STRING_VALUE
+                : Indexs.BOOLEAN_FALSE_STRING_VALUE;
+        document.add(new SortedDocValuesField(field, new BytesRef(store)));
+        document.add(new StringField(field, store, Field.Store.YES));
+    }
+
+    private void addStrings(org.apache.lucene.document.Document document, String field, Collection<String> values) {
+        values.stream().filter(o -> !Objects.isNull(o))
+                .forEach(o -> document.add(new StringField(field, o, Field.Store.YES)));
+    }
+
+    private void addNumbers(org.apache.lucene.document.Document document, String field, Collection<Number> values) {
+        values.stream().filter(o -> !Objects.isNull(o)).forEach(o -> {
+            long store = org.apache.lucene.util.NumericUtils.doubleToSortableLong(o.doubleValue());
+            document.add(new LongPoint(field, store));
+            document.add(new StoredField(field, store));
+        });
+    }
+
+    private void addDates(org.apache.lucene.document.Document document, String field, Collection<Date> values) {
+        values.stream().filter(o -> !Objects.isNull(o)).forEach(o -> {
+            long store = o.getTime();
+            document.add(new LongPoint(field, store));
+            document.add(new StoredField(field, store));
+        });
+    }
+
+    private void addBooleans(org.apache.lucene.document.Document document, String field,
+            Collection<Boolean> values) {
+        values.stream().filter(o -> !Objects.isNull(o)).forEach(o -> {
+            String store = BooleanUtils.isTrue(o) ? Indexs.BOOLEAN_TRUE_STRING_VALUE
+                    : Indexs.BOOLEAN_FALSE_STRING_VALUE;
+            document.add(new StringField(field, store, Field.Store.YES));
+        });
     }
 
 }

@@ -11,7 +11,6 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.bean.NameValuePair;
 import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.gson.GsonPropertyObject;
@@ -60,8 +59,8 @@ class ActionListDirectory extends BaseAction {
     private Wo processPlatform(Business business) throws Exception {
         EntityManagerContainer emc = business.entityManagerContainer();
         List<Application> os = emc.fetchAll(Application.class, APPLICATIONATTRIBUTES);
-        List<NameValuePair> keys = os.stream().map(o -> new NameValuePair(o.getName(), o.getId()))
-                .sorted(Comparator.nullsLast(Comparator.comparing(NameValuePair::getName))).collect(
+        List<WoKey> keys = os.stream().map(o -> new WoKey(o.getName(), o.getId()))
+                .sorted(Comparator.nullsLast(Comparator.comparing(WoKey::getName))).collect(
                         ArrayList::new, List::add,
                         List::addAll);
         Wo wo = new Wo();
@@ -73,8 +72,8 @@ class ActionListDirectory extends BaseAction {
     private Wo cms(Business business) throws Exception {
         EntityManagerContainer emc = business.entityManagerContainer();
         List<AppInfo> os = emc.fetchAll(AppInfo.class, APPINFOATTRIBUTES);
-        List<NameValuePair> keys = os.stream().map(o -> new NameValuePair(o.getAppName(), o.getId()))
-                .sorted(Comparator.nullsLast(Comparator.comparing(NameValuePair::getName))).collect(
+        List<WoKey> keys = os.stream().map(o -> new WoKey(o.getAppName(), o.getId()))
+                .sorted(Comparator.nullsLast(Comparator.comparing(WoKey::getName))).collect(
                         ArrayList::new, List::add,
                         List::addAll);
         Wo wo = new Wo();
@@ -83,7 +82,7 @@ class ActionListDirectory extends BaseAction {
         return wo;
     }
 
-    @Schema(name = "com.x.custom.index.assemble.control.jaxrs.index.ActionPost$Wo")
+    @Schema(name = "com.x.query.assemble.surface.jaxrs.index.ActionListDirectory$Wo")
     public class Wo extends GsonPropertyObject {
 
         @FieldDescribe("分类")
@@ -92,7 +91,7 @@ class ActionListDirectory extends BaseAction {
 
         @FieldDescribe("标识")
         @Schema(description = "标识")
-        private List<NameValuePair> keyList = new ArrayList<>();
+        private List<WoKey> keyList = new ArrayList<>();
 
         public String getCategory() {
             return category;
@@ -102,12 +101,46 @@ class ActionListDirectory extends BaseAction {
             this.category = category;
         }
 
-        public List<NameValuePair> getKeyList() {
+        public List<WoKey> getKeyList() {
             return keyList;
         }
 
-        public void setKeyList(List<NameValuePair> keyList) {
+        public void setKeyList(List<WoKey> keyList) {
             this.keyList = keyList;
+        }
+
+    }
+
+    @Schema(name = "com.x.query.assemble.surface.jaxrs.index.ActionListDirectory$WoKey")
+    public class WoKey extends GsonPropertyObject {
+
+        public WoKey(String name, String key) {
+            this.name = name;
+            this.key = key;
+        }
+
+        @FieldDescribe("名称.")
+        @Schema(description = "名称.")
+        private String name;
+
+        @FieldDescribe("标识.")
+        @Schema(description = "标识.")
+        private String key;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public void setKey(String key) {
+            this.key = key;
         }
 
     }
