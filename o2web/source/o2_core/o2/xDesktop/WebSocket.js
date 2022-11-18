@@ -288,6 +288,7 @@ MWF.xDesktop.WebSocket = new Class({
                     "navi": "task"
                 }
             });
+            return true;
         }.bind(this));
     },
     receiveTaskMessage: function(data){
