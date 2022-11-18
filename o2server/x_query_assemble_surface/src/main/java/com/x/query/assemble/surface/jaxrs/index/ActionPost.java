@@ -99,7 +99,7 @@ class ActionPost extends BaseAction {
         }
         try (MultiReader multiReader = new MultiReader(indexReaders)) {
             IndexSearcher searcher = new IndexSearcher(multiReader);
-            wo.setDynamicFieldList(getDynamicFieldList(multiReader));
+            wo.setDynamicFieldList(getDynamicFieldList(categories, multiReader));
             TopFieldCollector topFieldCollector = TopFieldCollector.create(sort(wi.getSort()), 1000, 1000);
             List<Pair<String, FirstPassGroupingCollector<BytesRef>>> firstPassGroupingCollectorPairs = this
                     .adjustFacetField(categories,
@@ -170,8 +170,8 @@ class ActionPost extends BaseAction {
                 try {
                     org.apache.lucene.document.Document document = searcher.doc(o.doc);
                     Map<String, Object> map = outFields.stream()
-                            .map(f -> Quadruple.of(Indexs.judgeField(f), document.getField(f)))
-                            .filter(param -> null != param.fourth())
+                            .map(f -> Quadruple.of(Indexs.judgeField(f), document.getFields(f)))
+                            .filter(param -> param.fourth().length > 0)
                             .map(p -> Pair.of(p.first(), Indexs.indexableFieldValue(p.fourth(), p.third())))
                             .collect(Collectors.toMap(Pair::first, Pair::second));
                     wo.getDocumentList().add(map);

@@ -102,31 +102,31 @@ class ActionPost extends BaseAction {
                     org.apache.lucene.document.Document document = reader.document(scoreDoc.doc);
                     ActionPostWo.WoMoreLikeThis woMoreLikeThis = new ActionPostWo.WoMoreLikeThis();
                     woMoreLikeThis.setTitle(
-                            Indexs.<String>indexableFieldValue(document.getField(Indexs.FIELD_TITLE),
+                            Indexs.<String>indexableFieldValue(document.getFields(Indexs.FIELD_TITLE),
                                     Indexs.FIELD_TYPE_STRING));
                     woMoreLikeThis.setFlag(
-                            Indexs.<String>indexableFieldValue(document.getField(Indexs.FIELD_ID),
+                            Indexs.<String>indexableFieldValue(document.getFields(Indexs.FIELD_ID),
                                     Indexs.FIELD_TYPE_STRING));
                     woMoreLikeThis.setCategory(
-                            Indexs.<String>indexableFieldValue(document.getField(Indexs.FIELD_CATEGORY),
+                            Indexs.<String>indexableFieldValue(document.getFields(Indexs.FIELD_CATEGORY),
                                     Indexs.FIELD_TYPE_STRING));
                     woMoreLikeThis.setType(
-                            Indexs.<String>indexableFieldValue(document.getField(Indexs.FIELD_TYPE),
+                            Indexs.<String>indexableFieldValue(document.getFields(Indexs.FIELD_TYPE),
                                     Indexs.FIELD_TYPE_STRING));
                     woMoreLikeThis.setKey(
-                            Indexs.<String>indexableFieldValue(document.getField(Indexs.FIELD_KEY),
+                            Indexs.<String>indexableFieldValue(document.getFields(Indexs.FIELD_KEY),
                                     Indexs.FIELD_TYPE_STRING));
                     woMoreLikeThis.setCreateTime(
-                            Indexs.<Date>indexableFieldValue(document.getField(Indexs.FIELD_CREATETIME),
+                            Indexs.<Date>indexableFieldValue(document.getFields(Indexs.FIELD_CREATETIME),
                                     Indexs.FIELD_TYPE_DATE));
                     woMoreLikeThis.setUpdateTime(
-                            Indexs.<Date>indexableFieldValue(document.getField(Indexs.FIELD_UPDATETIME),
+                            Indexs.<Date>indexableFieldValue(document.getFields(Indexs.FIELD_UPDATETIME),
                                     Indexs.FIELD_TYPE_DATE));
                     woMoreLikeThis.setCreatorPerson(Indexs.<String>indexableFieldValue(
-                            document.getField(Indexs.FIELD_CREATORPERSON),
+                            document.getFields(Indexs.FIELD_CREATORPERSON),
                             Indexs.FIELD_TYPE_STRING));
                     woMoreLikeThis.setCreatorUnit(Indexs.<String>indexableFieldValue(
-                            document.getField(Indexs.FIELD_CREATORUNIT),
+                            document.getFields(Indexs.FIELD_CREATORUNIT),
                             Indexs.FIELD_TYPE_STRING));
                     woMoreLikeThis.setKey(document.get(Indexs.FIELD_KEY));
                     woMoreLikeThis.setScore(scoreDoc.score);

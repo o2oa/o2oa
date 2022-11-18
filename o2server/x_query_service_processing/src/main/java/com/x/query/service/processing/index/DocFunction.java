@@ -37,6 +37,8 @@ import com.x.cms.core.entity.FileInfo;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Data;
 import com.x.processplatform.core.entity.content.Review;
+import com.x.processplatform.core.entity.content.Task;
+import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.element.Process;
@@ -55,6 +57,7 @@ public class DocFunction {
 
     private static final List<String> PROCESSPLATFORM_REVIEW_FIELDS = new UnmodifiableList<>(
             Arrays.asList(Review.person_FIELDNAME));
+
     private static final List<String> CMS_REVIEW_FIELDS = new UnmodifiableList<>(
             Arrays.asList(com.x.cms.core.entity.Review.permissionObj_FIELDNAME));
 
@@ -70,7 +73,6 @@ public class DocFunction {
                 LOGGER.debug("DocFunction wrapWork:{}.", param.second());
                 Doc doc = new Doc();
                 doc.setReaders(readers(param.first(), work));
-                doc.setCompleted(false);
                 doc.setId(work.getJob());
                 doc.setCategory(Indexs.CATEGORY_PROCESSPLATFORM);
                 doc.setType(Indexs.TYPE_WORKCOMPLETED);
@@ -82,15 +84,25 @@ public class DocFunction {
                 doc.setUpdateTimeMonth(DateTools.format(work.getUpdateTime(), DateTools.format_yyyyMM));
                 doc.setCreatorPerson(OrganizationDefinition.name(work.getCreatorPerson()));
                 doc.setCreatorUnit(OrganizationDefinition.name(work.getCreatorUnit()));
-                doc.addString(Indexs.FIELD_CREATORUNITLEVELNAME, work.getCreatorUnitLevelName());
-                doc.addString(Indexs.FIELD_APPLICATION, work.getApplication());
-                doc.addString(Indexs.FIELD_APPLICATIONNAME, work.getApplicationName());
-                doc.addString(Indexs.FIELD_APPLICATIONALIAS, work.getApplicationAlias());
-                doc.addString(Indexs.FIELD_PROCESS, work.getProcess());
-                doc.addString(Indexs.FIELD_PROCESSNAME, work.getProcessName());
-                doc.addString(Indexs.FIELD_PROCESSALIAS, work.getProcessAlias());
-                doc.addString(Indexs.FIELD_JOB, work.getJob());
-                doc.addString(Indexs.FIELD_SERIAL, work.getSerial());
+                doc.addBoolean(Indexs.PREFIX_FIELD_PROCESSPLATFORM_BOOLEAN, TaskCompleted.completed_FIELDNAME, false);
+                doc.addString(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING, Work.creatorUnitLevelName_FIELDNAME,
+                        work.getCreatorUnitLevelName());
+                doc.addString(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING, Work.application_FIELDNAME,
+                        work.getApplication());
+                doc.addString(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING, Work.applicationName_FIELDNAME,
+                        work.getApplicationName());
+                doc.addString(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING, Work.applicationAlias_FIELDNAME,
+                        work.getApplicationAlias());
+                doc.addString(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING, Work.process_FIELDNAME, work.getProcess());
+                doc.addString(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING, Work.processName_FIELDNAME,
+                        work.getProcessName());
+                doc.addString(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING, Work.processAlias_FIELDNAME,
+                        work.getProcessAlias());
+                doc.addString(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING, Work.job_FIELDNAME, work.getJob());
+                doc.addString(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING, Work.serial_FIELDNAME, work.getSerial());
+                doc.addString(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING, Work.activityName_FIELDNAME,
+                        work.getActivityName());
+                workAddTaskPersonNames(doc, param.first(), work);
                 update(param.first(), work, doc);
                 return Pair.of(work.getApplication(), Optional.of(doc));
             }
@@ -108,7 +120,6 @@ public class DocFunction {
                 LOGGER.debug("DocFunction wrapWorkCompleted:{}.", param.second());
                 Doc doc = new Doc();
                 doc.setReaders(readers(param.first(), workCompleted));
-                doc.setCompleted(true);
                 doc.setId(workCompleted.getJob());
                 doc.setCategory(Indexs.CATEGORY_PROCESSPLATFORM);
                 doc.setType(Indexs.TYPE_WORKCOMPLETED);
@@ -120,17 +131,29 @@ public class DocFunction {
                 doc.setUpdateTimeMonth(DateTools.format(workCompleted.getUpdateTime(), DateTools.format_yyyyMM));
                 doc.setCreatorPerson(OrganizationDefinition.name(workCompleted.getCreatorPerson()));
                 doc.setCreatorUnit(OrganizationDefinition.name(workCompleted.getCreatorUnit()));
-                doc.addString(Indexs.FIELD_CREATORUNITLEVELNAME, workCompleted.getCreatorUnitLevelName());
-                doc.addString(Indexs.FIELD_APPLICATION, workCompleted.getApplication());
-                doc.addString(Indexs.FIELD_APPLICATIONNAME, workCompleted.getApplicationName());
-                doc.addString(Indexs.FIELD_APPLICATIONALIAS, workCompleted.getApplicationAlias());
-                doc.addString(Indexs.FIELD_PROCESS, workCompleted.getProcess());
-                doc.addString(Indexs.FIELD_PROCESSNAME, workCompleted.getProcessName());
-                doc.addString(Indexs.FIELD_PROCESSALIAS, workCompleted.getProcessAlias());
-                doc.addString(Indexs.FIELD_JOB, workCompleted.getJob());
-                doc.addString(Indexs.FIELD_SERIAL, workCompleted.getSerial());
-                doc.addBoolean(Indexs.FIELD_EXPIRED, workCompleted.getExpired());
-                doc.addDate(Indexs.FIELD_EXPIRETIME, workCompleted.getExpireTime());
+                doc.addBoolean(Indexs.PREFIX_FIELD_PROCESSPLATFORM_BOOLEAN, TaskCompleted.completed_FIELDNAME, true);
+                doc.addString(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING, WorkCompleted.creatorUnitLevelName_FIELDNAME,
+                        workCompleted.getCreatorUnitLevelName());
+                doc.addString(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING, WorkCompleted.application_FIELDNAME,
+                        workCompleted.getApplication());
+                doc.addString(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING, WorkCompleted.applicationName_FIELDNAME,
+                        workCompleted.getApplicationName());
+                doc.addString(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING, WorkCompleted.applicationAlias_FIELDNAME,
+                        workCompleted.getApplicationAlias());
+                doc.addString(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING, WorkCompleted.process_FIELDNAME,
+                        workCompleted.getProcess());
+                doc.addString(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING, WorkCompleted.processName_FIELDNAME,
+                        workCompleted.getProcessName());
+                doc.addString(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING, WorkCompleted.processAlias_FIELDNAME,
+                        workCompleted.getProcessAlias());
+                doc.addString(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING, WorkCompleted.job_FIELDNAME,
+                        workCompleted.getJob());
+                doc.addString(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING, WorkCompleted.serial_FIELDNAME,
+                        workCompleted.getSerial());
+                doc.addBoolean(Indexs.PREFIX_FIELD_PROCESSPLATFORM_BOOLEAN, WorkCompleted.expired_FIELDNAME,
+                        workCompleted.getExpired());
+                doc.addDate(Indexs.PREFIX_FIELD_PROCESSPLATFORM_DATE, WorkCompleted.expireTime_FIELDNAME,
+                        workCompleted.getExpireTime());
                 update(param.first(), workCompleted, doc);
                 return Pair.of(workCompleted.getApplication(), Optional.of(doc));
             }
@@ -158,15 +181,19 @@ public class DocFunction {
                 doc.setUpdateTimeMonth(DateTools.format(document.getUpdateTime(), DateTools.format_yyyyMM));
                 doc.setCreatorPerson(OrganizationDefinition.name(document.getCreatorPerson()));
                 doc.setCreatorUnit(OrganizationDefinition.name(document.getCreatorUnitName()));
-                doc.addString(Indexs.FIELD_APPID, document.getAppId());
-                doc.addString(Indexs.FIELD_APPNAME, document.getAppName());
-                doc.addString(Indexs.FIELD_APPALIAS, document.getAppAlias());
-                doc.addString(Indexs.FIELD_CATEGORYID, document.getCategoryId());
-                doc.addString(Indexs.FIELD_CATEGORYNAME, document.getCategoryName());
-                doc.addString(Indexs.FIELD_CATEGORYALIAS, document.getCategoryAlias());
-                doc.addString(Indexs.FIELD_DESCRIPTION, document.getDescription());
-                doc.addDate(Indexs.FIELD_PUBLISHTIME, document.getPublishTime());
-                doc.addDate(Indexs.FIELD_MODIFYTIME, document.getModifyTime());
+                doc.addString(Indexs.PREFIX_FIELD_CMS_STRING, Document.appId_FIELDNAME,
+                        document.getAppId());
+                doc.addString(Indexs.PREFIX_FIELD_CMS_STRING, Document.appName_FIELDNAME,
+                        document.getAppName());
+                doc.addString(Indexs.PREFIX_FIELD_CMS_STRING, Document.appAlias_FIELDNAME, document.getAppAlias());
+                doc.addString(Indexs.PREFIX_FIELD_CMS_STRING, Document.categoryId_FIELDNAME, document.getCategoryId());
+                doc.addString(Indexs.PREFIX_FIELD_CMS_STRING, Document.categoryName_FIELDNAME,
+                        document.getCategoryName());
+                doc.addString(Indexs.PREFIX_FIELD_CMS_STRING, Document.categoryAlias_FIELDNAME,
+                        document.getCategoryAlias());
+                doc.addString(Indexs.PREFIX_FIELD_CMS_STRING, Indexs.FIELD_DESCRIPTION, document.getDescription());
+                doc.addDate(Indexs.PREFIX_FIELD_CMS_STRING, Indexs.FIELD_PUBLISHTIME, document.getPublishTime());
+                doc.addDate(Indexs.PREFIX_FIELD_CMS_STRING, Indexs.FIELD_MODIFYTIME, document.getModifyTime());
                 update(param.first(), document, doc, Config.query().index().getDataStringThreshold());
                 return Pair.of(document.getAppId(), Optional.of(doc));
             }
@@ -193,6 +220,19 @@ public class DocFunction {
             }
         }
         return list.stream().distinct().collect(Collectors.toList());
+    }
+
+    private static void workAddTaskPersonNames(Doc doc, Business business, Work work) throws Exception {
+        List<Task> list = business.entityManagerContainer().listEqualAndEqual(Task.class, Task.job_FIELDNAME,
+                work.getJob(), Task.application_FIELDNAME, work.getApplication());
+        doc.addStrings(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRINGS, Indexs.FIELD_ROCESSPLATFORM_TASKPERSONNAMES,
+                list.stream().map(Task::getPerson).filter(StringUtils::isNotBlank)
+                        .map(OrganizationDefinition::name).distinct()
+                        .collect(Collectors.toList()));
+        doc.addStrings(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRINGS, Indexs.FIELD_ROCESSPLATFORM_PRETASKPERSONNAMES,
+                list.stream().map(Task::getPerson).filter(StringUtils::isNotBlank)
+                        .map(OrganizationDefinition::name).distinct()
+                        .collect(Collectors.toList()));
     }
 
     private static List<String> readers(Business business, WorkCompleted workCompleted) throws Exception {
@@ -320,18 +360,18 @@ public class DocFunction {
             if (StringUtils.length(value) <= dataStringThreshold) {
                 if (BooleanUtils.isTrue(DateTools.isDateTimeOrDateOrTime(value))) {
                     try {
-                        doc.addDate(Indexs.PREFIX_FIELD_DATA_DATE + name, DateTools.parse(value));
+                        doc.addDate(Indexs.PREFIX_FIELD_DATA_DATE, name, DateTools.parse(value));
                     } catch (Exception e) {
                         LOGGER.error(e);
                     }
                 } else {
-                    doc.addString(Indexs.PREFIX_FIELD_DATA_STRING + name, value);
+                    doc.addString(Indexs.PREFIX_FIELD_DATA_STRING, name, value);
                 }
             }
         } else if (jsonPrimitive.isBoolean()) {
-            doc.addBoolean(Indexs.PREFIX_FIELD_DATA_BOOLEAN + name, jsonPrimitive.getAsBoolean());
+            doc.addBoolean(Indexs.PREFIX_FIELD_DATA_BOOLEAN, name, jsonPrimitive.getAsBoolean());
         } else if (jsonPrimitive.isNumber()) {
-            doc.addNumber(Indexs.PREFIX_FIELD_DATA_NUMBER + name, jsonPrimitive.getAsNumber());
+            doc.addNumber(Indexs.PREFIX_FIELD_DATA_NUMBER, name, jsonPrimitive.getAsNumber());
         }
     }
 
@@ -347,10 +387,10 @@ public class DocFunction {
         if (BooleanUtils.isTrue(list.stream().map(JsonPrimitive::isString).reduce(true, (a, b) -> a && b))) {
             updateArrayString(doc, name, list);
         } else if (BooleanUtils.isTrue(list.stream().map(JsonPrimitive::isNumber).reduce(true, (a, b) -> a && b))) {
-            doc.addNumberList(Indexs.PREFIX_FIELD_DATA_NUMBERS + name,
+            doc.addNumbers(Indexs.PREFIX_FIELD_DATA_NUMBERS, name,
                     list.stream().map(JsonPrimitive::getAsNumber).collect(Collectors.toList()));
         } else if (BooleanUtils.isTrue(list.stream().map(JsonPrimitive::isBoolean).reduce(true, (a, b) -> a && b))) {
-            doc.addBooleanList(Indexs.PREFIX_FIELD_DATA_BOOLEANS + name,
+            doc.addBooleans(Indexs.PREFIX_FIELD_DATA_BOOLEANS, name,
                     list.stream().map(JsonPrimitive::getAsBoolean).collect(Collectors.toList()));
         }
     }
@@ -359,7 +399,7 @@ public class DocFunction {
         List<String> values = list.stream().map(JsonPrimitive::getAsString).collect(Collectors.toList());
         if (BooleanUtils
                 .isTrue(values.stream().map(DateTools::isDateTimeOrDateOrTime).reduce(true, (a, b) -> a && b))) {
-            wrap.addDateList(Indexs.PREFIX_FIELD_DATA_DATES + name, values.stream().map(s -> {
+            wrap.addDates(Indexs.PREFIX_FIELD_DATA_DATES, name, values.stream().map(s -> {
                 try {
                     return DateTools.parse(s);
                 } catch (Exception e) {
@@ -368,7 +408,7 @@ public class DocFunction {
                 return null;
             }).collect(Collectors.toList()));
         } else {
-            wrap.addStringList(Indexs.PREFIX_FIELD_DATA_STRINGS + name, values);
+            wrap.addStrings(Indexs.PREFIX_FIELD_DATA_STRINGS, name, values);
         }
     }
 
