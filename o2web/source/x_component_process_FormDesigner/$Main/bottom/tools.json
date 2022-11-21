@@ -236,5 +236,10 @@
     "icon": "writingBoard.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.writingBoard,
     "className": "WritingBoard"
+  },
+  "relatedlink": {
+    "icon": "relatedLink.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.relatedLink,
+    "className": "Relatedlink"
   }
 }

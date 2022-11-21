@@ -1,0 +1,42 @@
+<div class="separator mainColor_border"></div>
+<div class="condition" style="margin-bottom: 20px!important;">
+    <div>
+        <div data-o2-element="defaultConditionArea"></div>
+
+        <div data-o2-element="dynamicConditionArea">
+        {{each $.data}}
+        <div class="item" style="display:{{ ($.index > 0 && !$._.status.isShowAllFilter ) ? 'none' : '' }}">
+            <div class="item-title" title="{{$.label}}">{{$.label}}</div>
+            <div class="item-content">
+                <ul class="input-subitem-wrap">
+                    <li class="mainColor_color" data-o2-events="o2load:loadCustomConditionItem"></li>
+                </ul>
+            </div>
+        </div>
+        {{end each}}
+        </div>
+    </div>
+</div>
+
+{{if $.data.length > 0}}
+<div class="actionbar">
+    <div class="search-action mainColor_bg" data-o2-events="click:searchByCondition">
+<!--        <i class="o2icon-search1 mainColor_color"></i>-->
+        <span>{{this.lp.ok}}</span>
+    </div>
+    <div class="export-action" data-o2-events="click:reset">
+<!--        <i class="o2icon-dump mainColor_color"></i>-->
+        <span>{{this.lp.reset}}</span>
+    </div>
+    <div class="export-action" data-o2-events="click:exportExcel">
+<!--        <i class="o2icon-download mainColor_color"></i>-->
+        <span>{{this.lp.export}}</span>
+    </div>
+    {{if $.data.length > 1}}
+    <div class="switch-filter-action" data-o2-events="click:switchMoreFilterItem">
+        <i class="switch-filter-icon {{$.status.isShowAllFilter ? 'o2icon-chevron-thin-up' : 'o2icon-chevron-thin-down'}} mainColor_color"></i>
+        <span class="switch-filter-text">{{$.status.isShowAllFilter ? $.lp.collapseFilter : $.lp.moreFilter}}</span>
+    </div>
+    {{end if}}
+</div>
+{{end if}}

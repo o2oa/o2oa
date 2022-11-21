@@ -1,0 +1,45 @@
+{{if $.data && $.data.length}}
+<div class="separator mainColor_border"></div>
+<div class="condition" data-o2-element="conditionNode">
+    <div>
+        {{each $.data}}
+
+        {{if $.valueCountPairList && $.valueCountPairList.length}}
+        <div class="item-multiselect mainColor_border mainColor_bg_opacity"></div>
+        <div class="item">
+            <div class="item-title">{{$.label}}</div>
+
+            <div class="item-content">
+                {{if $.valueCountPairList.length>1}}
+                <div class="multi-button" data-o2-events="click:loadMultiSelectConditionItem;mouseover:mainColorOver:multi-button;mouseout:mainColorOut:multi-button">
+                    <i class="o2icon-add"></i><span>{{$._.lp.multiSelect}}</span>
+                </div>
+                {{end if}}
+                <div class="switch-button" data-o2-events="click:switchConditionItem;mouseover:mainColorOver:switch-button;mouseout:mainColorOut:switch-button">
+                    <i class="o2icon-triangle_down"></i><span>{{$._.lp.more}}</span>
+                </div>
+                <ul class="subitem-wrap">
+                    {{each $.valueCountPairList}}
+                    <li class="subitem">
+                        <div class="subItem-content" data-o2-events="click:changeSingleCondition;mouseover:subConditionOver;mouseout:subConditionOut">
+                            {{if $.documentFieldType === "date"}}
+
+                            {{end if}}
+
+                            {{if $.documentFieldType !== "date"}}
+                                {{$.label}}({{$.count}})
+                            {{end if}}
+                        </div>
+                    </li>
+                    {{end each}}
+                </ul>
+                <div data-o2-events="o2load:checkSwitchButton"></div>
+            </div>
+
+        </div>
+        {{end if}}
+
+        {{end each}}
+    </div>
+</div>
+{{end if}}

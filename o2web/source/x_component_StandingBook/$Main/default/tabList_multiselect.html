@@ -1,0 +1,29 @@
+<div class="tl_coreListBox">
+    {{each $.data}}
+        <div class="tl_coreListApp">
+            <div class="tl_left">
+                {{if ($.key)}}
+                <div class="tl_coreListAppIcon" data-o2-events="o2load:loadItemIcon:{{$.key}}"></div>
+                {{end if}}
+            </div>
+            <div class="tl_right">
+                <div class="tl_coreListAppTitle">
+                    <div class="tl_coreListAppText" title="{{$.name}}"
+                         data-o2-events="mouseover:coreListItemOver_multi;mouseout:coreListItemOut_multi; mousedown:coreListItemDown_multi;mouseup:coreListItemUp_multi;click:coreListItemClick_multi;"
+                    >
+                        <i class="checkbox o2icon-check_box_outline_blank"></i>{{$.name}}</div>
+                </div>
+<!--                <div class="tl_coreListAppContent">-->
+<!--                    {{each $.processList}}-->
+<!--                    <div class="tl_coreItemArea">-->
+<!--                        <div class="tl_coreItem"-->
+<!--                             data-o2-events="mouseover:coreItemOver;mouseout:coreItemOut; mousedown:coreItemDown;mouseup:coreItemUp;click:coreItemClick;">-->
+<!--                            {{$.name}}-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    {{end each}}-->
+<!--                </div>-->
+            </div>
+        </div>
+    {{end each}}
+</div>

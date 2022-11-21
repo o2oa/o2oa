@@ -120,6 +120,8 @@ MWF.xApplication.cms.FormDesigner.Script = new Class({
                 this.loadStatementSelectorScript(v); break;
             case "Importer":
                 this.loadImporterScript(v); break;
+            case "Relatedlink":
+                this.loadRelatedlinkScript(v); break;
             case "IWebOffice":
                 this.addScriptItem(v.readScript, "code", v, "readScript");
                 this.loadEventsScript(v);

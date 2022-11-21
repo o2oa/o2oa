@@ -266,7 +266,11 @@
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.writingBoard,
     "className": "WritingBoard"
   },
-
+  "relatedlink": {
+    "icon": "relatedLink.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.relatedLink,
+    "className": "Relatedlink"
+  },
   "elcontainer": {
     "fontIcon": "el-icon-s-grid",
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.el_container,
