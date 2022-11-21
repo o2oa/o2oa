@@ -75,7 +75,6 @@ var apps = [
     { "folder": "x_component_query_TableDesigner", "tasks": ["move", "min"] },
     { "folder": "x_component_query_StatementDesigner", "tasks": ["move", "min"] },
     { "folder": "x_component_Search", "tasks": ["move", "min"] },
-    { "folder": "x_component_SearchDocument", "tasks": ["move", "min"] },
     { "folder": "x_component_ftsearch", "tasks": ["move", "min"] },
     { "folder": "x_component_StandingBook", "tasks": ["move", "min"] },
     { "folder": "x_component_Selector", "tasks": ["move", "min"] },
