@@ -71,8 +71,8 @@ window.RangeArrayUtils = {
     },
     //区域是否相交
     isIntersection : function( range1, range2 ){
-        var r1 = typeOf( range1 == "array" ) ? range1 : this.getRangeObject( range1 );
-        var r2 = typeOf( range2 == "array" ) ? range2 : this.getRangeObject( range2 );
+        var r1 = typeOf( range1 ) === "object" ? range1 : this.getRangeObject( range1 );
+        var r2 = typeOf( range2 ) === "object" ? range2 : this.getRangeObject( range2 );
         if( r1.start > r2.end )return false;
         if( r2.start > r1.end )return false;
         return true;
