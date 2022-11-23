@@ -535,21 +535,36 @@ MWF.xApplication.process.DictionaryDesigner.Dictionary.item = new Class({
             this.valueNode.inject(this.nextSibling.valueNode, "before");
         }else{
             if (this.parent){
-                if (this.parent.children.length){
-                    var injectItem = this.parent.children.getLast();
-                    this.itemNode.inject(injectItem.itemNode, "after");
-                    this.typeNode.inject(injectItem.typeNode, "after");
-                    this.valueNode.inject(injectItem.valueNode, "after");
-                }else{
-                    this.itemNode.inject(this.parent.itemNode, "after");
-                    this.typeNode.inject(this.parent.typeNode, "after");
-                    this.valueNode.inject(this.parent.valueNode, "after");
-                }
+                this.itemNode.inject(this.parent.itemChildrenNode);
+                this.typeNode.inject(this.parent.typeChildrenNode);
+                this.valueNode.inject(this.parent.valueChildrenNode);
+
+
+                // if (this.parent.children.length){
+                //     var injectItem = this.parent.children.getLast();
+                //
+                //     var flag = injectItem.exp;
+                //     if (injectItem.exp) injectItem.expOrColChildren();
+                //
+                //     this.itemNode.inject(injectItem.itemNode, "after");
+                //     this.typeNode.inject(injectItem.typeNode, "after");
+                //     this.valueNode.inject(injectItem.valueNode, "after");
+                //
+                //     if (flag) injectItem.expOrColChildren();
+                // }else{
+                //     this.itemNode.inject(this.parent.itemNode, "after");
+                //     this.typeNode.inject(this.parent.typeNode, "after");
+                //     this.valueNode.inject(this.parent.valueNode, "after");
+                // }
             }else{
                 this.itemNode.inject(this.dictionary.itemsNode);
                 this.typeNode.inject(this.dictionary.typesNode);
                 this.valueNode.inject(this.dictionary.valuesNode);
             }
+
+            this.itemChildrenNode = new Element("div.Children", {"styles": {"overflow": "hidden"}}).inject(this.itemNode, "after");
+            this.typeChildrenNode = new Element("div.Children", {"styles": {"overflow": "hidden"}}).inject(this.typeNode, "after");
+            this.valueChildrenNode = new Element("div.Children", {"styles": {"overflow": "hidden"}}).inject(this.valueNode, "after");
         }
 
     },
@@ -766,6 +781,7 @@ MWF.xApplication.process.DictionaryDesigner.Dictionary.item = new Class({
     addItem: function(e){
         if (!this.parent){
             this.createChildrenItems();
+            if (!this.exp) this.expOrColChildren();
             this.addChild();
         }else{
             if (this.exp){
