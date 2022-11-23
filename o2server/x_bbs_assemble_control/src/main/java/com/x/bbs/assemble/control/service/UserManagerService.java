@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
 import com.x.bbs.assemble.control.Business;
 import com.x.bbs.entity.BBSShutup;
@@ -185,14 +186,11 @@ public class UserManagerService {
 		}
 	}
 
-
-
-
 	/**
 	 * 判断用户是否有指定的平台角色，比如BBS系统管理员
 	 *
 	 * @param name
-	 * @param string
+	 * @param roleName
 	 * @return
 	 * @throws Exception
 	 */
