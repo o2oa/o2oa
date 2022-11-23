@@ -573,7 +573,9 @@ MWF.xApplication.process.DictionaryDesigner.Dictionary.item = new Class({
                 this.itemExpColActionNode.destroy();
                 this.itemExpColActionNode = null;
             }
-            if (this.type!="boolean") this.valueTextNode.addEvent("mousedown", function(e){this.editValue();}.bind(this));
+            if (!this.editValueFun) this.editValueFun = function(){this.editValue();}.bind(this);
+            this.valueTextNode.removeEvent("mousedown", this.editValueFun);
+            if (this.type!="boolean") this.valueTextNode.addEvent("mousedown", this.editValueFun);
         }
         if (this.type=="array" || this.type=="object" || (this.parent && this.parent.type=="array")){
             if (!this.itemAddActionNode){
@@ -585,10 +587,14 @@ MWF.xApplication.process.DictionaryDesigner.Dictionary.item = new Class({
             this.itemAddActionNode = null;
         }
 
+        if (!this.selectBooleanValueFun) this.selectBooleanValueFun = function(){this.selectBooleanValue();}.bind(this);
+        if (this.valueSelActionNode) this.valueSelActionNode.removeEvent("click", this.selectBooleanValueFun);
+        this.valueTextNode.removeEvent("click", this.selectBooleanValueFun);
+
         if (this.type=="boolean"){
             if (!this.valueSelActionNode) this.valueSelActionNode = new Element("div", {"styles": this.css.valueSelActionNode}).inject(this.valueActionsAreaNode);
-            this.valueSelActionNode.addEvent("click", function(){this.selectBooleanValue();}.bind(this));
-            this.valueTextNode.addEvent("click", function(){this.selectBooleanValue();}.bind(this));
+            this.valueSelActionNode.addEvent("click", this.selectBooleanValueFun);
+            this.valueTextNode.addEvent("click", this.selectBooleanValueFun);
         }
 
         if (this.parent){
@@ -1040,13 +1046,18 @@ MWF.xApplication.process.DictionaryDesigner.Dictionary.item = new Class({
         this.changeTypeObjectToPrimitive(type);
     },
     changeTypePrimitiveToPrimitive: function(type){
+        var value;
         switch(type){
             case "string":
                 value = this.value.toString();
                 break;
             case "number":
-                value = this.value.toFloat();
-                if (isNaN(value)) value = 0
+                try{
+                    value = this.value.toFloat();
+                }catch (e){
+                    value = 0;
+                }
+                if (isNaN(value)) value = 0;
                 break;
             case "boolean":
                 value = true;

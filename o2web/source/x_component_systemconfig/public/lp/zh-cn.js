@@ -1213,7 +1213,8 @@ o2.xApplication.systemconfig.LP = {
                 "file": "file",
                 "hdfs": "hdfs",
                 "cifs": "cifs",
-                "ali": "ali"
+                "ali": "ali（阿里云存储）",
+                "s3":"s3（亚马逊云存储）"
             }
         },
         "removeNodeConfigTitle": "删除存储节点确认",
