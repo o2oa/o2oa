@@ -51,7 +51,7 @@ public class PermissionInfoAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "查询用户在指定板块中的所有操作权限.", action = ActionGetSectionOperationPermissoin.class)
+	@JaxrsMethodDescribe(value = "查询用户在指定板块中的所有操作权限.", action = ActionGetSectionOperationPermission.class)
 	@GET
 	@Path("section/{sectionId}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -59,25 +59,13 @@ public class PermissionInfoAction extends StandardJaxrsAction {
 	public void getSectionOperationPermissoin(@Suspended final AsyncResponse asyncResponse,
 			@Context HttpServletRequest request,
 			@JaxrsParameterDescribe("版块ID") @PathParam("sectionId") String sectionId) {
-		ActionResult<ActionGetSectionOperationPermissoin.Wo> result = new ActionResult<>();
+		ActionResult<ActionGetSectionOperationPermission.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
-		Boolean check = true;
-		if (check) {
-			if (sectionId == null || sectionId.isEmpty()) {
-				check = false;
-				Exception exception = new ExceptionSectionIdEmpty();
-				result.error(exception);
-			}
-		}
-		if (check) {
-			try {
-				result = new ActionGetSectionOperationPermissoin().execute(request, effectivePerson, sectionId);
-			} catch (Exception e) {
-				result = new ActionResult<>();
-				Exception exception = new ExceptionConfigSettingProcess(e, "查询用户在指定板块中的所有操作权限时发生异常！");
-				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
-			}
+		try {
+			result = new ActionGetSectionOperationPermission().execute(request, effectivePerson, sectionId);
+		} catch (Exception e) {
+			result.error(e);
+			logger.error(e, effectivePerson, request, null);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
@@ -122,23 +110,11 @@ public class PermissionInfoAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("版块ID") @PathParam("sectionId") String sectionId) {
 		ActionResult<ActionCheckSubjectPublishable.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
-		Boolean check = true;
-		if (check) {
-			if (sectionId == null || sectionId.isEmpty()) {
-				check = false;
-				Exception exception = new ExceptionSectionIdEmpty();
-				result.error(exception);
-			}
-		}
-		if (check) {
-			try {
-				result = new ActionCheckSubjectPublishable().execute(request, effectivePerson, sectionId);
-			} catch (Exception e) {
-				result = new ActionResult<>();
-				Exception exception = new ExceptionConfigSettingProcess(e, "查询用户中否可以在指定版块中发布主题时发生异常！");
-				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
-			}
+		try {
+			result = new ActionCheckSubjectPublishable().execute(request, effectivePerson, sectionId);
+		} catch (Exception e) {
+			result.error(e);
+			logger.error(e, effectivePerson, request, null);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
