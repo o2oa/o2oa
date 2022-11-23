@@ -19,13 +19,13 @@
       "isResize" : false,
       "duration" : 0
     },
-    "attachmentStyle": {
-      "style": "mobile_blue_flat",
-      "actionShowText": true,
-      "isReplaceHidden": true,
-      "iconConfigUrl": "../x_component_File/$Main/mobile_blue_flat/icon.json",
-      "iconFolderUrl": "../x_component_File/$Main/mobile_blue_flat/file/"
-    },
+//    "attachmentStyle": {
+//      "style": "mobile_blue_flat",
+//      "actionShowText": true,
+//      "isReplaceHidden": true,
+//      "iconConfigUrl": "../x_component_File/$Main/mobile_blue_flat/icon.json",
+//      "iconFolderUrl": "../x_component_File/$Main/mobile_blue_flat/file/"
+//    },
     "hideModuleIcon": true,
     "nodeStyleWithhideModuleIcon": {
       "margin-right": "0px"
