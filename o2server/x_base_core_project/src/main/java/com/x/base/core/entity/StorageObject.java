@@ -252,6 +252,13 @@ public abstract class StorageObject extends SliceJpaObject {
 					+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost() + "/"
 					+ mapping.getName();
 			break;
+		case s3:
+			prefix = "s3://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
+					+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" + mapping.getHost();
+			if(StringUtils.isNotBlank(mapping.getName()) && !mapping.getHost().startsWith(mapping.getName())) {
+				prefix = prefix + "/" + mapping.getName();
+			}
+			break;
 		case file:
 			prefix = "file://";
 			break;
@@ -324,8 +331,6 @@ public abstract class StorageObject extends SliceJpaObject {
 			ftpsBuilder.setSoTimeout(opts, Duration.ofMillis(10 * 1000));
 			ftpsBuilder.setControlEncoding(opts, DefaultCharset.name);
 			break;
-		case cifs:
-			break;
 		case webdav:
 			Webdav4FileSystemConfigBuilder webdavBuilder = Webdav4FileSystemConfigBuilder.getInstance();
 			webdavBuilder.setConnectionTimeout(opts, Duration.ofMillis(10 * 1000));
@@ -334,8 +339,6 @@ public abstract class StorageObject extends SliceJpaObject {
 			webdavBuilder.setMaxConnectionsPerHost(opts, 200);
 			webdavBuilder.setMaxTotalConnections(opts, 200);
 			webdavBuilder.setFollowRedirect(opts, true);
-			break;
-		case file:
 			break;
 		default:
 			break;
@@ -365,7 +368,8 @@ public abstract class StorageObject extends SliceJpaObject {
 				this.setLength(length);
 				if ((!Objects.equals(StorageProtocol.webdav, mapping.getProtocol()))
 						&& (!Objects.equals(StorageProtocol.sftp, mapping.getProtocol()))
-						&& (!Objects.equals(StorageProtocol.ali, mapping.getProtocol()))) {
+						&& (!Objects.equals(StorageProtocol.ali, mapping.getProtocol()))
+						&& (!Objects.equals(StorageProtocol.s3, mapping.getProtocol()))) {
 					/* webdav关闭会试图去关闭commons.httpClient */
 					manager.closeFileSystem(fo.getFileSystem());
 				}
@@ -406,7 +410,8 @@ public abstract class StorageObject extends SliceJpaObject {
 						fo.getPublicURIString() + " not existed, object:" + this.toString() + ".");
 			}
 			if (!Objects.equals(StorageProtocol.webdav, mapping.getProtocol())
-					&& (!Objects.equals(StorageProtocol.ali, mapping.getProtocol()))) {
+					&& (!Objects.equals(StorageProtocol.ali, mapping.getProtocol()))
+					&& (!Objects.equals(StorageProtocol.s3, mapping.getProtocol()))) {
 				/* webdav关闭会试图去关闭commons.httpClient */
 				manager.closeFileSystem(fo.getFileSystem());
 			}
@@ -447,7 +452,8 @@ public abstract class StorageObject extends SliceJpaObject {
 				}
 			}
 			if (!Objects.equals(StorageProtocol.webdav, mapping.getProtocol())
-					&& (!Objects.equals(StorageProtocol.ali, mapping.getProtocol()))) {
+					&& (!Objects.equals(StorageProtocol.ali, mapping.getProtocol()))
+					&& (!Objects.equals(StorageProtocol.s3, mapping.getProtocol()))) {
 				// webdav关闭会试图去关闭commons.httpClient
 				manager.closeFileSystem(fo.getFileSystem());
 			}
