@@ -157,7 +157,7 @@ MWF.xApplication.process.ProcessDesigner.Activity = new Class({
 
             this.set.click(function(e){
                 if (this.process.isCreateRoute){
-                    this.checkCreateRoute();
+                    // this.checkCreateRoute();
                 }else{
                     if (this.process.selectedActivitys.length){
                         if (!this.noselected){
@@ -248,6 +248,7 @@ MWF.xApplication.process.ProcessDesigner.Activity = new Class({
             if (!route.fromActivity){
                 this.process.routeCreateFromActivity(this);
             }else{
+                debugger;
                 this.process.routeCreateToActivity(this);
             }
         }

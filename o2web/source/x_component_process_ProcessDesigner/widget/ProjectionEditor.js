@@ -12,7 +12,7 @@ MWF.xApplication.process.ProcessDesigner.widget.ProjectionEditor = new Class({
             "boolean": 2,
             "date":2,
             "time": 2,
-            "datetime": 5
+            "dateTime": 5
         }
 	},
 	initialize: function(node, text, options){
@@ -47,6 +47,7 @@ MWF.xApplication.process.ProcessDesigner.widget.ProjectionEditor = new Class({
             "<th>"+MWF.xApplication.process.ProcessDesigner.LP.projectionDataName+"</th>" +
             "<th>"+MWF.xApplication.process.ProcessDesigner.LP.projectionPath+"</th>" +
             "<th>"+MWF.xApplication.process.ProcessDesigner.LP.projectionType+"</th>" +
+            "<th>"+MWF.xApplication.process.ProcessDesigner.LP.projectionName+"</th>" +
             "<th></th>" +
             "</tr></table>";
         this.tableArea.set("html", html);
@@ -127,6 +128,24 @@ MWF.xApplication.process.ProcessDesigner.widget.ProjectionEditor = new Class({
         }
         return true;
     },
+    checkItemColumn: function(){
+        var columnNames = {
+            "string": 0,
+            "long": 0,
+            "double": 0,
+            "boolean": 0,
+            "date":0,
+            "time": 0,
+            "dateTime": 0
+        };
+        var rows = this.table.rows;
+        for (var i=0; i<this.data.length; i++){
+            columnNames[this.data[i].type]++;
+            var n = columnNames[this.data[i].type] || 1;
+            var c = this.data[i].type+"Value"+(n>=10 ? n : "0"+n);
+            rows[i+1].cells[3].set("text", c);
+        }
+    },
     modifyProjectionItem: function(){
         var name = this.nameInput.get("value");
         var path = this.pathInput.get("value");
@@ -138,6 +157,9 @@ MWF.xApplication.process.ProcessDesigner.widget.ProjectionEditor = new Class({
             this.currentItem.data.type = type;
             this.currentItem.refresh();
             this.currentItem.unSelected();
+
+            this.checkItemColumn();
+
             this.fireEvent("change");
             this.fireEvent("modifyItem");
         }
@@ -151,6 +173,9 @@ MWF.xApplication.process.ProcessDesigner.widget.ProjectionEditor = new Class({
             var o = { "name": name, "path": path, "type": type };
             this.data.push(o);
             new MWF.xApplication.process.ProcessDesigner.widget.ProjectionEditor.Item(o, this);
+
+            this.checkItemColumn();
+
             this.fireEvent("change");
             this.fireEvent("addItem");
         }
@@ -159,6 +184,7 @@ MWF.xApplication.process.ProcessDesigner.widget.ProjectionEditor = new Class({
         this.data.each(function(d){
             new MWF.xApplication.process.ProcessDesigner.widget.ProjectionEditor.Item(d, this);
         }.bind(this));
+        this.checkItemColumn();
     }
 
 });
@@ -174,6 +200,8 @@ MWF.xApplication.process.ProcessDesigner.widget.ProjectionEditor.Item = new Clas
         this.tr = new Element('tr').inject(this.table);
         var td = this.tr.insertCell().setStyles(this.css.projectionTableTd).set("text", this.data.name);
         td = this.tr.insertCell().setStyles(this.css.projectionTableTd).set("text", this.data.path);
+        td = this.tr.insertCell().setStyles(this.css.projectionTableTd).set("text", this.data.type);
+
         td = this.tr.insertCell().setStyles(this.css.projectionTableTd).set("text", this.data.type);
 
         td = this.tr.insertCell().setStyles(this.css.projectionTableTd);
@@ -197,8 +225,9 @@ MWF.xApplication.process.ProcessDesigner.widget.ProjectionEditor.Item = new Clas
 
         this.tr.addEvents({
             "click": function(){
-                if (this.editor.currentItem) this.editor.currentItem.unSelected();
-                this.selected();
+                var item = this.editor.currentItem;
+                if (item) item.unSelected();
+                if (item!==this) this.selected();
             }.bind(this)
         })
     },
@@ -228,8 +257,12 @@ MWF.xApplication.process.ProcessDesigner.widget.ProjectionEditor.Item = new Clas
         tds[2].set("text", this.data.type);
     },
     destroy: function(){
+        this.unSelected();
         this.tr.destroy();
         this.editor.data.erase(this.data);
+
+        this.editor.checkItemColumn();
+
         this.editor.fireEvent("change");
         this.editor.fireEvent("deleteItem");
         o2.release(this);

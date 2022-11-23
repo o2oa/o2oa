@@ -427,6 +427,7 @@ o2.xApplication.systemconfig.LP = {
         "isEnable": "是否启用",
         "ssoConfigName": "鉴权名称",
         "ssoConfigKey": "密钥",
+        "ssoConfigKeyInfo": "密钥长度8位",
         "removeSSOConfigTitle": "删除鉴权配置确认",
         "removeSSOConfig": "您确定要删除鉴权配置：“{name}” 吗？",
 

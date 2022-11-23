@@ -55,6 +55,7 @@
       <BaseSwitch :label="lp._ssoConfig.isEnable" v-model:value="currentSSOData.enable"/>
       <BaseInput :label="lp._ssoConfig.ssoConfigName" v-model:value="currentSSOData.client"/>
       <BaseInput :label="lp._ssoConfig.ssoConfigKey" v-model:value="currentSSOData.key"/>
+      <div style="color: #999999; margin-left: 120px">{{lp._ssoConfig.ssoConfigKeyInfo}}</div>
     </div>
   </div>
 </template>

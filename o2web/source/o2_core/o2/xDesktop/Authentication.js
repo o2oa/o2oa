@@ -461,7 +461,7 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
             var _self = this;
             var res = new Request.JSON({
                 "method": "POST",
-                "url": url + "/jaxrs/sso",
+                "url": o2.filterUrl(url + "/jaxrs/sso"),
                 "data": JSON.stringify(json),
                 secure: false,
                 emulation: false,
