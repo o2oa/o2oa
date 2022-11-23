@@ -8,16 +8,20 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.hadoop.fs.CommonConfigurationKeysPublic;
 import org.apache.hadoop.fs.LocatedFileStatus;
 import org.apache.hadoop.fs.RemoteIterator;
+import org.apache.lucene.document.LongPoint;
 import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
@@ -33,6 +37,7 @@ import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.Query;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.DateTools;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.NumberTools;
 
@@ -96,10 +101,13 @@ public class Indexs {
     public static final String FIELD_HIGHLIGHTING = "highlighting";
     public static final String READERS_SYMBOL_ALL = "ALL";
 
+    public static final String BOOLEAN_TRUE_STRING_VALUE = "true";
+    public static final String BOOLEAN_FALSE_STRING_VALUE = "false";
+
     private static final List<String> FACET_FIELDS = Stream.<String>of(FIELD_CATEGORY,
             FIELD_CREATETIMEMONTH, FIELD_UPDATETIMEMONTH, FIELD_APPLICATIONNAME,
             FIELD_PROCESSNAME, FIELD_APPNAME, FIELD_CATEGORYNAME,
-            FIELD_CREATORPERSON, FIELD_CREATORUNIT)
+            FIELD_CREATORPERSON, FIELD_CREATORUNIT, FIELD_COMPLETED)
             .collect(Collectors.toUnmodifiableList());
 
     private static final List<String> FIXED_DATE_FIELDS = Stream
@@ -124,6 +132,37 @@ public class Indexs {
     public static final String PREFIX_FIELD_DATA_NUMBERS = PREFIX_FIELD_DATA + FIELD_TYPE_NUMBERS + "_";
     public static final String PREFIX_FIELD_DATA_DATE = PREFIX_FIELD_DATA + FIELD_TYPE_DATE + "_";
     public static final String PREFIX_FIELD_DATA_DATES = PREFIX_FIELD_DATA + FIELD_TYPE_DATES + "_";
+
+    public static final String PREFIX_FIELD_PROCESSPLATFORM = "processPlatform_";
+
+    public static final String FIELD_ROCESSPLATFORM_TASKPERSONNAMES = "taskPersonNames";
+    public static final String FIELD_ROCESSPLATFORM_PRETASKPERSONNAMES = "preTaskPersonNames";
+
+    public static final String PREFIX_FIELD_PROCESSPLATFORM_STRING = PREFIX_FIELD_PROCESSPLATFORM + FIELD_TYPE_STRING
+            + "_";
+    public static final String PREFIX_FIELD_PROCESSPLATFORM_STRINGS = PREFIX_FIELD_PROCESSPLATFORM + FIELD_TYPE_STRINGS
+            + "_";
+    public static final String PREFIX_FIELD_PROCESSPLATFORM_BOOLEAN = PREFIX_FIELD_PROCESSPLATFORM + FIELD_TYPE_BOOLEAN
+            + "_";
+    public static final String PREFIX_FIELD_PROCESSPLATFORM_BOOLEANS = PREFIX_FIELD_PROCESSPLATFORM
+            + FIELD_TYPE_BOOLEANS + "_";
+    public static final String PREFIX_FIELD_PROCESSPLATFORM_NUMBER = PREFIX_FIELD_PROCESSPLATFORM + FIELD_TYPE_NUMBER
+            + "_";
+    public static final String PREFIX_FIELD_PROCESSPLATFORM_NUMBERS = PREFIX_FIELD_PROCESSPLATFORM + FIELD_TYPE_NUMBERS
+            + "_";
+    public static final String PREFIX_FIELD_PROCESSPLATFORM_DATE = PREFIX_FIELD_PROCESSPLATFORM + FIELD_TYPE_DATE + "_";
+    public static final String PREFIX_FIELD_PROCESSPLATFORM_DATES = PREFIX_FIELD_PROCESSPLATFORM + FIELD_TYPE_DATES
+            + "_";
+
+    public static final String PREFIX_FIELD_CMS = "cms_";
+    public static final String PREFIX_FIELD_CMS_STRING = PREFIX_FIELD_CMS + FIELD_TYPE_STRING + "_";
+    public static final String PREFIX_FIELD_CMS_STRINGS = PREFIX_FIELD_CMS + FIELD_TYPE_STRINGS + "_";
+    public static final String PREFIX_FIELD_CMS_BOOLEAN = PREFIX_FIELD_CMS + FIELD_TYPE_BOOLEAN + "_";
+    public static final String PREFIX_FIELD_CMS_BOOLEANS = PREFIX_FIELD_CMS + FIELD_TYPE_BOOLEANS + "_";
+    public static final String PREFIX_FIELD_CMS_NUMBER = PREFIX_FIELD_CMS + FIELD_TYPE_NUMBER + "_";
+    public static final String PREFIX_FIELD_CMS_NUMBERS = PREFIX_FIELD_CMS + FIELD_TYPE_NUMBERS + "_";
+    public static final String PREFIX_FIELD_CMS_DATE = PREFIX_FIELD_CMS + FIELD_TYPE_DATE + "_";
+    public static final String PREFIX_FIELD_CMS_DATES = PREFIX_FIELD_CMS + FIELD_TYPE_DATES + "_";
 
     private static final String[] QUERY_IGNORES = new String[] { "[", "]", "*", "?" };
     private static final String[] QUERY_IGNOREREPLACES = new String[] { "", "", "", "" };
@@ -308,8 +347,8 @@ public class Indexs {
         return list;
     }
 
-    public static Optional<org.apache.lucene.search.Query> readersQuery(List<String> readers) {
-        if (ListTools.isEmpty(readers)) {
+    public static Optional<org.apache.lucene.search.Query> readersQuery(Collection<String> readers) {
+        if ((null == readers) || readers.isEmpty()) {
             return Optional.empty();
         }
         BooleanQuery.Builder builder = new BooleanQuery.Builder();
@@ -323,18 +362,38 @@ public class Indexs {
         if (ListTools.isEmpty(filters)) {
             return list;
         }
-        List<Filter> fields = filters.stream().filter(o -> FACET_FIELDS.contains(o.getField()))
-                .collect(Collectors.toList());
-        if (ListTools.isEmpty(fields)) {
-            return list;
-        }
-        fields.stream().map(Indexs::fitlerQuery).filter(Optional::isPresent).forEach(o -> list.add(o.get()));
+        filters.stream().map(Indexs::fitlerQuery).filter(Optional::isPresent).forEach(o -> list.add(o.get()));
         return list;
     }
 
     private static Optional<org.apache.lucene.search.Query> fitlerQuery(Filter filter) {
-        if (ListTools.isEmpty(filter.getValueList())) {
+        if (ListTools.isEmpty(filter.getValueList()) && StringUtils.isEmpty(filter.getMin())
+                && StringUtils.isEmpty(filter.getMax())) {
             return Optional.empty();
+        }
+        if (filter.getField().startsWith(PREFIX_FIELD_DATA_DATE)) {
+            if (!(StringUtils.isEmpty(filter.getMin()) && StringUtils.isEmpty(filter.getMax()))) {
+                return Optional
+                        .of(LongPoint.newRangeQuery(filter.getField(), stringOfDateToLongElseMin(filter.getMin()),
+                                stringOfDateToLongElseMax(filter.getMax())));
+            } else {
+                return Optional.empty();
+            }
+        }
+        if (filter.getField().startsWith(PREFIX_FIELD_DATA_NUMBER)) {
+            if (!(StringUtils.isEmpty(filter.getMin()) && StringUtils.isEmpty(filter.getMax()))) {
+                return Optional
+                        .of(LongPoint.newRangeQuery(filter.getField(), stringOfNumberToLongElseMin(filter.getMin()),
+                                stringOfNumberToLongElseMax(filter.getMax())));
+            } else {
+                return Optional.empty();
+            }
+        }
+        if (filter.getField().startsWith(PREFIX_FIELD_DATA_BOOLEAN)) {
+            String value = StringUtils.equalsIgnoreCase(filter.getValueList().get(0), Indexs.BOOLEAN_TRUE_STRING_VALUE)
+                    ? BOOLEAN_TRUE_STRING_VALUE
+                    : BOOLEAN_FALSE_STRING_VALUE;
+            return Optional.of(new TermQuery(new Term(filter.getField(), value)));
         }
         BooleanQuery.Builder builder = new BooleanQuery.Builder();
         filter.getValueList().stream().filter(StringUtils::isNotBlank)
@@ -343,7 +402,37 @@ public class Indexs {
         return Optional.of(builder.build());
     }
 
-    public static List<String> adjustFacetField(List<String> filters) {
+    private static Long stringOfDateToLongElseMin(String text) {
+        try {
+            Date date = DateTools.parse(text);
+            return date.getTime();
+        } catch (Exception e) {
+            LOGGER.error(new IllegalArgumentException("text:" + text + " can not parse to date.", e));
+        }
+        return Long.MIN_VALUE;
+    }
+
+    private static Long stringOfDateToLongElseMax(String text) {
+        try {
+            Date date = DateTools.parse(text);
+            return date.getTime();
+        } catch (Exception e) {
+            LOGGER.error(new IllegalArgumentException("text:" + text + " can not parse to date.", e));
+        }
+        return Long.MAX_VALUE;
+    }
+
+    private static Long stringOfNumberToLongElseMin(String text) {
+        Double value = NumberUtils.toDouble(text, Double.MIN_VALUE);
+        return org.apache.lucene.util.NumericUtils.doubleToSortableLong(value.doubleValue());
+    }
+
+    private static Long stringOfNumberToLongElseMax(String text) {
+        Double value = NumberUtils.toDouble(text, Double.MAX_VALUE);
+        return org.apache.lucene.util.NumericUtils.doubleToSortableLong(value.doubleValue());
+    }
+
+    public static List<String> adjustFacetField(List<String> categories, List<String> filters) {
         List<String> list = FACET_FIELDS.stream().filter(o -> (!filters.contains(o))).collect(Collectors.toList());
         if (list.contains(FIELD_PROCESSNAME)) {
             list.removeAll(Arrays.asList(FIELD_APPLICATIONNAME, FIELD_PROCESSNAME,
@@ -361,6 +450,9 @@ public class Indexs {
             list.removeAll(Arrays.asList(FIELD_APPNAME, FIELD_APPLICATIONNAME,
                     FIELD_PROCESSNAME));
         }
+        if (!ListTools.contains(categories, Indexs.CATEGORY_PROCESSPLATFORM)) {
+            list.remove(Indexs.FIELD_COMPLETED);
+        }
         return list;
     }
 
@@ -372,6 +464,20 @@ public class Indexs {
      */
 
     public static Triple<String, String, String> judgeField(String field) {
+        if (StringUtils.startsWith(field, Indexs.PREFIX_FIELD_DATA)) {
+            return judgeFieldData(field);
+        } else if (StringUtils.startsWith(field, Indexs.PREFIX_FIELD_PROCESSPLATFORM)) {
+            return judgeFieldProcessPlatform(field);
+        } else if (StringUtils.startsWith(field, Indexs.PREFIX_FIELD_CMS)) {
+            return judgeFieldCms(field);
+        } else if (FIXED_DATE_FIELDS.contains(field)) {
+            return Triple.of(field, field, Indexs.FIELD_TYPE_DATE);
+        } else {
+            return Triple.of(field, field, Indexs.FIELD_TYPE_STRING);
+        }
+    }
+
+    private static Triple<String, String, String> judgeFieldData(String field) {
         if (StringUtils.startsWith(field, Indexs.PREFIX_FIELD_DATA_STRING)) {
             return Triple.of(field, StringUtils.substringAfter(field, Indexs.PREFIX_FIELD_DATA_STRING),
                     Indexs.FIELD_TYPE_STRING);
@@ -396,29 +502,99 @@ public class Indexs {
         } else if (StringUtils.startsWith(field, Indexs.PREFIX_FIELD_DATA_BOOLEANS)) {
             return Triple.of(field, StringUtils.substringAfter(field, Indexs.PREFIX_FIELD_DATA_BOOLEANS),
                     Indexs.FIELD_TYPE_BOOLEANS);
-        } else if (FIXED_DATE_FIELDS.contains(field)) {
-            return Triple.of(field, field, Indexs.FIELD_TYPE_DATE);
-        } else {
-            return Triple.of(field, field, Indexs.FIELD_TYPE_STRING);
         }
+        return Triple.of(field, StringUtils.substringAfter(field, Indexs.PREFIX_FIELD_DATA_STRING),
+                Indexs.FIELD_TYPE_STRING);
+    }
+
+    private static Triple<String, String, String> judgeFieldProcessPlatform(String field) {
+        if (StringUtils.startsWith(field, Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING)) {
+            return Triple.of(field, StringUtils.substringAfter(field, Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING),
+                    Indexs.FIELD_TYPE_STRING);
+        } else if (StringUtils.startsWith(field, Indexs.PREFIX_FIELD_PROCESSPLATFORM_DATE)) {
+            return Triple.of(field, StringUtils.substringAfter(field, Indexs.PREFIX_FIELD_PROCESSPLATFORM_DATE),
+                    Indexs.FIELD_TYPE_DATE);
+        } else if (StringUtils.startsWith(field, Indexs.PREFIX_FIELD_PROCESSPLATFORM_NUMBER)) {
+            return Triple.of(field, StringUtils.substringAfter(field, Indexs.PREFIX_FIELD_PROCESSPLATFORM_NUMBER),
+                    Indexs.FIELD_TYPE_NUMBER);
+        } else if (StringUtils.startsWith(field, Indexs.PREFIX_FIELD_PROCESSPLATFORM_BOOLEAN)) {
+            return Triple.of(field, StringUtils.substringAfter(field, Indexs.PREFIX_FIELD_PROCESSPLATFORM_BOOLEAN),
+                    Indexs.FIELD_TYPE_BOOLEAN);
+        } else if (StringUtils.startsWith(field, Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRINGS)) {
+            return Triple.of(field, StringUtils.substringAfter(field, Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRINGS),
+                    Indexs.FIELD_TYPE_STRINGS);
+        } else if (StringUtils.startsWith(field, Indexs.PREFIX_FIELD_PROCESSPLATFORM_DATES)) {
+            return Triple.of(field, StringUtils.substringAfter(field, Indexs.PREFIX_FIELD_PROCESSPLATFORM_DATES),
+                    Indexs.FIELD_TYPE_DATES);
+        } else if (StringUtils.startsWith(field, Indexs.PREFIX_FIELD_PROCESSPLATFORM_NUMBERS)) {
+            return Triple.of(field, StringUtils.substringAfter(field, Indexs.PREFIX_FIELD_PROCESSPLATFORM_NUMBERS),
+                    Indexs.FIELD_TYPE_NUMBERS);
+        } else if (StringUtils.startsWith(field, Indexs.PREFIX_FIELD_PROCESSPLATFORM_BOOLEANS)) {
+            return Triple.of(field, StringUtils.substringAfter(field, Indexs.PREFIX_FIELD_PROCESSPLATFORM_BOOLEANS),
+                    Indexs.FIELD_TYPE_BOOLEANS);
+        }
+        return Triple.of(field, StringUtils.substringAfter(field, Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING),
+                Indexs.FIELD_TYPE_STRING);
+    }
+
+    private static Triple<String, String, String> judgeFieldCms(String field) {
+        if (StringUtils.startsWith(field, Indexs.PREFIX_FIELD_CMS_STRING)) {
+            return Triple.of(field, StringUtils.substringAfter(field, Indexs.PREFIX_FIELD_CMS_STRING),
+                    Indexs.FIELD_TYPE_STRING);
+        } else if (StringUtils.startsWith(field, Indexs.PREFIX_FIELD_CMS_DATE)) {
+            return Triple.of(field, StringUtils.substringAfter(field, Indexs.PREFIX_FIELD_CMS_DATE),
+                    Indexs.FIELD_TYPE_DATE);
+        } else if (StringUtils.startsWith(field, Indexs.PREFIX_FIELD_CMS_NUMBER)) {
+            return Triple.of(field, StringUtils.substringAfter(field, Indexs.PREFIX_FIELD_CMS_NUMBER),
+                    Indexs.FIELD_TYPE_NUMBER);
+        } else if (StringUtils.startsWith(field, Indexs.PREFIX_FIELD_CMS_BOOLEAN)) {
+            return Triple.of(field, StringUtils.substringAfter(field, Indexs.PREFIX_FIELD_CMS_BOOLEAN),
+                    Indexs.FIELD_TYPE_BOOLEAN);
+        } else if (StringUtils.startsWith(field, Indexs.PREFIX_FIELD_CMS_STRINGS)) {
+            return Triple.of(field, StringUtils.substringAfter(field, Indexs.PREFIX_FIELD_CMS_STRINGS),
+                    Indexs.FIELD_TYPE_STRINGS);
+        } else if (StringUtils.startsWith(field, Indexs.PREFIX_FIELD_CMS_DATES)) {
+            return Triple.of(field, StringUtils.substringAfter(field, Indexs.PREFIX_FIELD_CMS_DATES),
+                    Indexs.FIELD_TYPE_DATES);
+        } else if (StringUtils.startsWith(field, Indexs.PREFIX_FIELD_CMS_NUMBERS)) {
+            return Triple.of(field, StringUtils.substringAfter(field, Indexs.PREFIX_FIELD_CMS_NUMBERS),
+                    Indexs.FIELD_TYPE_NUMBERS);
+        } else if (StringUtils.startsWith(field, Indexs.PREFIX_FIELD_CMS_BOOLEANS)) {
+            return Triple.of(field, StringUtils.substringAfter(field, Indexs.PREFIX_FIELD_CMS_BOOLEANS),
+                    Indexs.FIELD_TYPE_BOOLEANS);
+        }
+        return Triple.of(field, StringUtils.substringAfter(field, Indexs.PREFIX_FIELD_CMS_STRING),
+                Indexs.FIELD_TYPE_STRING);
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T indexableFieldValue(IndexableField indexableField, String fileType) {
-        if (null == indexableField) {
-            return null;
-        }
-        if (StringUtils.equalsIgnoreCase(Indexs.FIELD_TYPE_DATE, fileType)) {
-            Number number = indexableField.numericValue();
+    public static <T> T indexableFieldValue(IndexableField[] indexableFields, String fileType) {
+        if (StringUtils.equalsIgnoreCase(Indexs.FIELD_TYPE_DATES, fileType)) {
+            return (T) Stream.of(indexableFields).map(IndexableField::numericValue).filter(o -> !Objects.isNull(o))
+                    .<Date>map(o -> new Date(o.longValue())).collect(Collectors.toList());
+        } else if (StringUtils.equalsIgnoreCase(Indexs.FIELD_TYPE_NUMBERS, fileType)) {
+            return (T) Stream.of(indexableFields).map(IndexableField::numericValue).filter(o -> !Objects.isNull(o))
+                    .<Double>map(o -> Double.valueOf(NumericUtils.sortableLongToDouble(o.longValue())))
+                    .collect(Collectors.toList());
+        } else if (StringUtils.equalsIgnoreCase(Indexs.FIELD_TYPE_BOOLEANS, fileType)) {
+            return (T) Stream.of(indexableFields).map(IndexableField::stringValue).filter(o -> !Objects.isNull(o))
+                    .<Boolean>map(o -> Boolean.valueOf(StringUtils.equalsIgnoreCase(o, BOOLEAN_TRUE_STRING_VALUE)))
+                    .collect(Collectors.toList());
+        } else if (StringUtils.equalsIgnoreCase(Indexs.FIELD_TYPE_STRINGS, fileType)) {
+            return (T) Stream.of(indexableFields).<String>map(IndexableField::stringValue)
+                    .filter(o -> !Objects.isNull(o))
+                    .collect(Collectors.toList());
+        } else if (StringUtils.equalsIgnoreCase(Indexs.FIELD_TYPE_DATE, fileType)) {
+            Number number = indexableFields[0].numericValue();
             return (null != number) ? (T) new Date(number.longValue()) : null;
         } else if (StringUtils.equalsIgnoreCase(Indexs.FIELD_TYPE_NUMBER, fileType)) {
-            Number number = indexableField.numericValue();
+            Number number = indexableFields[0].numericValue();
             return (null != number) ? (T) Double.valueOf(NumericUtils.sortableLongToDouble(number.longValue())) : null;
         } else if (StringUtils.equalsIgnoreCase(Indexs.FIELD_TYPE_BOOLEAN, fileType)) {
-            Number number = indexableField.numericValue();
-            return (null != number) ? (T) Boolean.valueOf(number.longValue() != 0L) : null;
+            String str = indexableFields[0].stringValue();
+            return (T) Boolean.valueOf(StringUtils.equalsIgnoreCase(str, BOOLEAN_TRUE_STRING_VALUE));
         } else {
-            String str = indexableField.stringValue();
+            String str = indexableFields[0].stringValue();
             return (null != str) ? (T) str : null;
         }
     }

@@ -1,0 +1,51 @@
+{{each $.data}}
+
+    {{if $.category==='cms'}}
+    <div class="listItem">
+        <a class="listItem-title" data-o2-events="click:openDoc:{{$.id}}">{{$.title}}</a>
+        <div class="listItem-body" data-o2-events="o2load:setBody"></div>
+        <div>
+            <span class="listItem-infor-title mainColor_color">{{$._.lp.createTime}}：</span>
+            <span class="listItem-infor-content">{{($.createTime || "")}}</span>
+
+            <span class="listItem-infor-title mainColor_color">{{$._.lp.creatorIdentity}}：</span>
+            <span class="listItem-infor-content">{{($.creatorPerson || "").split("@")[0]}}</span>
+
+            <span class="listItem-infor-title mainColor_color">{{$._.lp.unit}}：</span>
+            <span class="listItem-infor-content">{{($.creatorUnit || "").split("@")[0]}}</span>
+        </div>
+    </div>
+    {{end if}}
+
+    {{if $.category!=='cms'}}
+    <div class="listItem">
+        <a class="listItem-title" data-o2-events="click:openWork:{{$.id}}">{{$.title}}</a>
+        <div class="listItem-body" data-o2-events="o2load:setBody"></div>
+        <div>
+            <span class="listItem-infor-title mainColor_color">{{$._.lp.createTime}}：</span>
+            <span class="listItem-infor-content">{{($.createTime || "")}}</span>
+
+            <span class="listItem-infor-title mainColor_color">{{$._.lp.creatorIdentity}}：</span>
+            <span class="listItem-infor-content">{{($.creatorPerson || "").split("@")[0]}}</span>
+
+            <span class="listItem-infor-title mainColor_color">{{$._.lp.unit}}：</span>
+            <span class="listItem-infor-content">{{($.creatorUnit || "").split("@")[0]}}</span>
+        </div>
+    </div>
+    {{end if}}
+
+{{end each}}
+
+{{if !$.data}}
+<div class="listNoData-ftsearch">
+    <div class="listNoDataIcon"></div>
+    <div class="listNoDataText">{{$.lp.noSearchkey}}</div>
+</div>
+{{end if}}
+
+{{if $.data && !$.data.length}}
+<div class="listNoData-ftsearch">
+    <div class="listNoDataIcon"></div>
+    <div class="listNoDataText">{{$.lp.noData}}</div>
+</div>
+{{end if}}

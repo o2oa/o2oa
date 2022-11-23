@@ -14,6 +14,7 @@ import com.x.base.core.project.annotation.ModuleType;
         "com.x.query.core.entity.neural.OutValue", "com.x.query.core.entity.neural.Model",
         "com.x.query.core.entity.schema.*", "com.x.query.core.entity.index.State",
         "com.x.processplatform.core.entity.content.Review",
+        "com.x.processplatform.core.entity.content.Task",
         "com.x.processplatform.core.entity.element.Process",
         "com.x.processplatform.core.entity.element.Application",
         "com.x.query.core.entity.ImportModel", "com.x.processplatform.core.entity.content.Work",

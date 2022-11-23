@@ -1,0 +1,86 @@
+{
+	"id": "",
+	"name": "",
+	"type": "Relatedlink",
+    "count": "6",
+	"mode": "table", //script table or text
+	"textStyle": "<div><font style='color:#00F'>{title}</font> （{createTime}）</div>",
+	"displayScript": {
+		"html": "return \"<div style='cursor:pointer;padding:5px 10px;line-height:24px;'><font style='color:#00F'>\"+this.link.title+\"</font> （\"+this.link.createTime+\"）</div>\"",
+		"code": "return \"<div style='cursor:pointer;padding:5px 10px;line-height:24px;'><font style='color:#00F'>\"+this.link.title+\"</font> （\"+this.link.createTime+\"）</div>\""
+	},
+	"events": {
+		"queryLoad": {
+		  "code": "",
+		  "html": ""
+		},
+		"postLoad": {
+			"code": "",
+			"html": ""
+		},
+		"afterLoad": {
+			"code": "",
+			"html": ""
+		},
+		"postLoadData": {
+			"code": "",
+			"html": ""
+		},
+		"postLoadLink": {
+			"code": "",
+			"html": ""
+		},
+		"click": {
+			"code": "",
+			"html": ""
+		},
+		"dblclick": {
+			"code": "",
+			"html": ""
+		},
+		"keydown": {
+			"code": "",
+			"html": ""
+		},
+		"keypress": {
+			"code": "",
+			"html": ""
+		},
+		"keyup": {
+			"code": "",
+			"html": ""
+		},
+		"mousedown": {
+			"code": "",
+			"html": ""
+		},
+		"mousemove": {
+			"code": "",
+			"html": ""
+		},
+		"mouseout": {
+			"code": "",
+			"html": ""
+		},
+		"mouseover": {
+			"code": "",
+			"html": ""
+		},
+		"mouseup": {
+			"code": "",
+			"html": ""
+		},
+		"focus": {
+			"code": "",
+			"html": ""
+		},
+		"blur": {
+			"code": "",
+			"html": ""
+		}
+	},
+	"properties": {},
+	"class": "",
+	"styles": {},
+	"container": ""
+}

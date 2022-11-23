@@ -637,11 +637,16 @@ o2.xDesktop.Default = new Class({
     doSearch: function(){
         var key = this.searchInputNode.get("value");
         if (key){
-            if (this.apps["Search"]){
-                this.apps["Search"].input.setValue(key);
-                this.apps["Search"].input.doSearch();
+            if (this.apps["ftsearch"]){
+                this.apps["ftsearch"].doSearch( key );
             }
-            layout.openApplication(null,"Search", {"key": key});
+            layout.openApplication(null,"ftsearch", {"query": key});
+
+            // if (this.apps["Search"]){
+            //     this.apps["Search"].input.setValue(key);
+            //     this.apps["Search"].input.doSearch();
+            // }
+            // layout.openApplication(null,"Search", {"key": key});
         }
     },
     clearSearchResult: function(){

@@ -38,5 +38,10 @@
     "icon": "smartbi.png",
     "text": MWF.xApplication.process.FormDesigner.LP.modules.SmartBI,
     "className": "SmartBI"
+  },
+  "relatedlink": {
+    "icon": "relatedLink.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.relatedLink,
+    "className": "Relatedlink"
   }
 }

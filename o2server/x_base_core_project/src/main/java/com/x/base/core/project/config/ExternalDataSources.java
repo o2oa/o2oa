@@ -99,14 +99,23 @@ public class ExternalDataSources extends CopyOnWriteArrayList<ExternalDataSource
 		return "DefaultLevel=WARN, Tool=WARN, Enhance=WARN, METADATA=WARN, Runtime=WARN, Query=WARN, DataCache=WARN, JDBC=ERROR, SQL=WARN";
 	}
 
-	public String dictionary() throws Exception {
-		for (ExternalDataSource o : this) {
-			if (BooleanUtils.isTrue(o.getEnable())) {
-				return o.getDictionary();
-			}
-		}
-		throw new Exception("dictionary error.");
-	}
+    public String dictionary() throws Exception {
+        for (ExternalDataSource o : this) {
+            if (BooleanUtils.isTrue(o.getEnable())) {
+                return o.getDictionary();
+            }
+        }
+        throw new IllegalStateException("get dictionary error.");
+    }
+    
+    public String schema() throws Exception {
+        for (ExternalDataSource o : this) {
+            if (BooleanUtils.isTrue(o.getEnable())) {
+                return o.getSchema();
+            }
+        }
+        throw new IllegalStateException("get schema error.");
+    }
 
 	public boolean hasSchema() throws Exception {
 		for (ExternalDataSource o : this) {

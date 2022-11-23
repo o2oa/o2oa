@@ -1,5 +1,7 @@
 package com.x.query.core.express.index;
 
+import java.util.Objects;
+
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 
@@ -18,6 +20,24 @@ public class WoField extends GsonPropertyObject {
         this.field = field;
         this.name = name;
         this.fieldType = fieldType;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(field, fieldType, name);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        WoField other = (WoField) obj;
+        return Objects.equals(field, other.field) && Objects.equals(fieldType, other.fieldType)
+                && Objects.equals(name, other.name);
     }
 
     @FieldDescribe("字段标识.")

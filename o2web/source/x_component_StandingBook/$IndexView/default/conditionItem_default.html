@@ -1,0 +1,25 @@
+{{each $.data}}
+<div class="item">
+    <div class="item-title">{{$.label}}</div>
+
+    <div class="item-content">
+
+        {{if $.valueCountPairList && $.valueCountPairList.length}}
+        <div class="switch-button" data-o2-events="click:switchConditionItem;mouseover:mainColorOver:switch-button;mouseout:mainColorOut:switch-button">
+            <i class="o2icon-triangle_down"></i><span>{{$._.lp.more}}</span>
+        </div>
+        <ul class="subitem-wrap">
+            {{each $.valueCountPairList}}
+            <li class="subitem">
+                <div class="subItem-content" data-o2-events="click:changeSingleCondition;mouseover:subConditionOver;mouseout:subConditionOut">
+                    {{$.label}}({{$.count}})
+                </div>
+            </li>
+            {{end each}}
+        </ul>
+        <div data-o2-events="o2load:checkSwitchButton"></div>
+        {{end if}}
+    </div>
+
+</div>
+{{end each}}

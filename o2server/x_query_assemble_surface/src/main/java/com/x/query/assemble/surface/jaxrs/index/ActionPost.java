@@ -1,6 +1,5 @@
 package com.x.query.assemble.surface.jaxrs.index;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -8,11 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.commons.collections4.list.TreeList;
-import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.MultiReader;
 import org.apache.lucene.search.BooleanClause;
@@ -68,7 +67,7 @@ class ActionPost extends BaseAction {
         Integer rows = Indexs.rows(wi.getSize());
         Integer start = Indexs.start(wi.getPage(), rows);
 
-        List<String> readers = new TreeList<>();
+        Set<String> readers = new TreeSet<>();
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Business business = new Business(emc);
             String person = business.index().who(effectivePerson, wi.getPerson());
@@ -81,10 +80,12 @@ class ActionPost extends BaseAction {
             });
         }
 
-        initWo(wo);
+        List<String> categories = this.categories(wi.getDirectoryList());
+
+        initWo(wo, categories);
 
         Optional<Query> searchQuery = searchQuery(wi.getQuery(), new HanLPAnalyzer());
-        Optional<Query> readersQuery = Indexs.readersQuery(ListTools.trim(readers, true, true));
+        Optional<Query> readersQuery = Indexs.readersQuery(readers);
         List<Query> filterQueries = Indexs.filterQueries(wi.getFilterList());
         BooleanQuery.Builder builder = new BooleanQuery.Builder();
         Stream.of(searchQuery, readersQuery).filter(Optional::isPresent)
@@ -92,16 +93,17 @@ class ActionPost extends BaseAction {
         filterQueries.stream().forEach(o -> builder.add(o, BooleanClause.Occur.MUST));
         Query query = builder.build();
         LOGGER.debug("index lucene query:{}.", query::toString);
-        IndexReader[] indexReaders = this.indexReaders(wi);
+        IndexReader[] indexReaders = this.indexReaders(wi.getDirectoryList());
         if (indexReaders.length == 0) {
             return result;
         }
         try (MultiReader multiReader = new MultiReader(indexReaders)) {
             IndexSearcher searcher = new IndexSearcher(multiReader);
-            wo.setDynamicFieldList(getDynamicFieldList(multiReader));
+            wo.setDynamicFieldList(getDynamicFieldList(categories, multiReader));
             TopFieldCollector topFieldCollector = TopFieldCollector.create(sort(wi.getSort()), 1000, 1000);
-            List<Pair<String, FirstPassGroupingCollector<BytesRef>>> firstPassGroupingCollectorPairs = Indexs
-                    .adjustFacetField(wi.getFilterList().stream().map(Filter::getField).collect(Collectors.toList()))
+            List<Pair<String, FirstPassGroupingCollector<BytesRef>>> firstPassGroupingCollectorPairs = this
+                    .adjustFacetField(categories,
+                            wi.getFilterList().stream().map(Filter::getField).collect(Collectors.toList()))
                     .stream()
                     .<Pair<String, FirstPassGroupingCollector<BytesRef>>>map(o -> {
                         try {
@@ -153,20 +155,8 @@ class ActionPost extends BaseAction {
         return result;
     }
 
-    private void initWo(Wo wo) {
-        wo.setFixedFieldList(this.getFixedFieldList(Indexs.CATEGORY_PROCESSPLATFORM));
-    }
-
-    private IndexReader[] indexReaders(Wi wi) {
-        return wi.getDirectoryList().stream().map(o -> Indexs.directory(o.getCategory(), o.getKey(), true))
-                .filter(Optional::isPresent).map(Optional::get).map(o -> {
-                    try {
-                        return DirectoryReader.open(o);
-                    } catch (IOException e) {
-                        LOGGER.error(e);
-                    }
-                    return null;
-                }).filter(o -> !Objects.isNull(o)).toArray(s -> new IndexReader[s]);
+    private void initWo(Wo wo, List<String> categories) {
+        wo.setFixedFieldList(this.getFixedFieldList(categories));
     }
 
     private void writeDocument(IndexSearcher searcher, TopFieldCollector topFieldCollector, int start, int rows, Wo wo,
@@ -180,8 +170,8 @@ class ActionPost extends BaseAction {
                 try {
                     org.apache.lucene.document.Document document = searcher.doc(o.doc);
                     Map<String, Object> map = outFields.stream()
-                            .map(f -> Quadruple.of(Indexs.judgeField(f), document.getField(f)))
-                            .filter(param -> null != param.fourth())
+                            .map(f -> Quadruple.of(Indexs.judgeField(f), document.getFields(f)))
+                            .filter(param -> param.fourth().length > 0)
                             .map(p -> Pair.of(p.first(), Indexs.indexableFieldValue(p.fourth(), p.third())))
                             .collect(Collectors.toMap(Pair::first, Pair::second));
                     wo.getDocumentList().add(map);

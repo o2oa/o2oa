@@ -362,7 +362,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "importer": "DataImporter",
         "readLog": "Read Log",
         "writingBoard": "writingBoard",
-        "tinymceEditor": "TinyMCE"
+        "tinymceEditor": "TinyMCE",
+        "relatedLink": "Related Link"
     },
     "propertyTemplate": {
         "base": "Base",
@@ -441,6 +442,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "none": "none",
         "default": "default",
         "byScript": "byScript",
+        "byFormat": "byFormat",
+        "table": "Table",
         "languageDefaultInfo": "The system will automatically load a data dictionary named (\"lp-\"+o2.language) as a language pack",
 
         "prefix": "Prefix",
@@ -458,6 +461,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "compute": "Compute",
         "create": "Create",
         "save": "Save",
+        "linkStyles": "Item Style",
 
         "defaultValue": "DefaultValue",
         "verificationScript": "Verification Script",
@@ -917,6 +921,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "defaultExpandCount": "Eefault Expand Count",
         "expandHtml": "Expand Html",
         "collapseHtml": "Collapse Html",
+        "relativedLinkField": "Selectable Field：flag,title,createTime,updateTime,creatorPerson,creatorUnit,score",
 
         "fileTemplate": "File Template",
         "systemTemplate": "System Template",

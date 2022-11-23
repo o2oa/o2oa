@@ -24,161 +24,174 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 
 public class ActionListNextWithFilter extends BaseAction {
-	
-	private static  Logger logger = LoggerFactory.getLogger( ActionListNextWithFilter.class );
-	protected DateOperation dateOperation = new DateOperation();
-	protected ActionResult<List<Wo>> execute( HttpServletRequest request, EffectivePerson effectivePerson, String id, Integer count, JsonElement jsonElement ) throws Exception {
-		ActionResult<List<Wo>> result = new ActionResult<>();
-		List<Wo> wraps = new ArrayList<>();
-		EffectivePerson currentPerson = this.effectivePerson(request);
-		Long total = 0L;
-		List<AttendanceSelfHoliday> detailList = null;
-		List<String> topUnitNames = new ArrayList<String>();
-		List<String> unitNames = new ArrayList<String>();
-		List<String> unitNameList = null;
-		WrapIn wrapIn = null;
-		Boolean check = true;
-		Date startDate = null;
-		Date endDate = null;
-		
-		try {
-			wrapIn = this.convertToWrapIn( jsonElement, WrapIn.class );
-			startDate = dateOperation.getDateFromString( wrapIn.getStartdateString() + " 00:00:00");
-			endDate = dateOperation.getDateFromString( wrapIn.getEnddateString() + " 23:59:59");
 
-			if( endDate == null ){
-				endDate = dateOperation.getLastDateInMonth( new Date() );
-			}
+    private static Logger logger = LoggerFactory.getLogger(ActionListNextWithFilter.class);
+    protected DateOperation dateOperation = new DateOperation();
 
-			if( startDate == null ){
-				startDate = dateOperation.getFirstDateInMonth( new Date() );
-			}
+    protected ActionResult<List<Wo>> execute(HttpServletRequest request, EffectivePerson effectivePerson, String id,
+            Integer count, JsonElement jsonElement) throws Exception {
+        ActionResult<List<Wo>> result = new ActionResult<>();
+        List<Wo> wraps = new ArrayList<>();
+        EffectivePerson currentPerson = this.effectivePerson(request);
+        Long total = 0L;
+        List<AttendanceSelfHoliday> detailList = null;
+        List<String> topUnitNames = new ArrayList<String>();
+        List<String> unitNames = new ArrayList<String>();
+        List<String> unitNameList = null;
+        WrapIn wrapIn = null;
+        Boolean check = true;
+        Date startDate = null;
+        Date endDate = null;
 
-			if( startDate.after( endDate ) ){
-				startDate = dateOperation.getFirstDateInMonth( new Date() );
-			}
-			wrapIn.setStartdate(startDate);
-			wrapIn.setEnddate(endDate);
-		} catch (Exception e ) {
-			check = false;
-			Exception exception = new ExceptionWrapInConvert( e, jsonElement );
-			result.error( exception );
-			logger.error( e, currentPerson, request, null);
-		}
-		if(check ){
-			try {		
-				EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
-				Business business = new Business(emc);
-				
-				//查询出ID对应的记录的sequence
-				Object sequence = null;
-				if( id == null || "(0)".equals(id) || id.isEmpty() ){
-					//logger.info( "第一页查询，没有id传入" );
-				}else{
-					if (!StringUtils.equalsIgnoreCase(id,StandardJaxrsAction.EMPTY_SYMBOL)) {
-						sequence = PropertyUtils.getProperty(emc.find( id, AttendanceSelfHoliday.class ),  JpaObject.sequence_FIELDNAME);
-					}
-				}
-				
-				//处理一下顶层组织，查询下级顶层组织
-				if( StringUtils.isNotEmpty( wrapIn.getQ_topUnitName() ) ){
-					topUnitNames.add( wrapIn.getQ_topUnitName() );
-					try{
-						unitNameList = userManagerService.listSubUnitNameWithParent( wrapIn.getQ_topUnitName() );
-					}catch(Exception e){
-						Exception exception = new ExceptionSelfHolidayProcess( e, 
-								"系统根据顶层组织名称查询所有下级组织列表时发生异常.Name:" + wrapIn.getQ_topUnitName() );
-						result.error( exception );
-						logger.error( e, currentPerson, request, null);
-					}
-					if( unitNameList != null && unitNameList.size() > 0 ){
-						for( String unitName : unitNameList){
-							topUnitNames.add( unitName );
-						}
-					}
-					wrapIn.setTopUnitNames( topUnitNames );
-				}
-				
-				//处理一下组织,查询下级组织
-				if( StringUtils.isNotEmpty( wrapIn.getQ_unitName() ) ){
-					unitNames.add(wrapIn.getQ_unitName());
-					try{
-						unitNameList = userManagerService.listSubUnitNameWithParent( wrapIn.getQ_unitName() );
-					}catch(Exception e){
-						Exception exception = new ExceptionSelfHolidayProcess( e, "系统根据组织名称查询所有下级组织列表时发生异常.Name:" + wrapIn.getQ_unitName() );
-						result.error( exception );
-						logger.error( e, currentPerson, request, null);
-					}
-					if( unitNameList != null && unitNameList.size() > 0 ){
-						for( String unitName : unitNameList){
-							unitNames.add( unitName );
-						}
-					}
-					wrapIn.setUnitNames(unitNames);
-				}
-				
-				//从数据库中查询符合条件的一页数据对象
-				detailList = business.getAttendanceSelfHolidayFactory().listIdsNextWithFilter( id, count, sequence, wrapIn );
-				
-				//从数据库中查询符合条件的对象总数
-				total = business.getAttendanceSelfHolidayFactory().getCountWithFilter( wrapIn );
+        try {
+            wrapIn = this.convertToWrapIn(jsonElement, WrapIn.class);
+            if (StringUtils.isNotBlank(wrapIn.getStartdateString())) {
+                startDate = dateOperation.getDateFromString(wrapIn.getStartdateString() + " 00:00:00");
+            }
 
-				//将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
-				wraps = Wo.copier.copy( detailList );
-			} catch (Throwable th) {
-				th.printStackTrace();
-				result.error(th);
-			}
-		}
-		result.setCount( total );
-		result.setData(wraps);
-		return result;
-	}
-	public static class WrapIn extends WrapInFilter{
-		String startdateString;
-		String enddateString;
-		Date startdate = null;
-		Date enddate = null;
+            if (StringUtils.isNotBlank(wrapIn.getEnddateString())) {
+                endDate = dateOperation.getDateFromString(wrapIn.getEnddateString() + " 23:59:59");
+            }
 
-		public String getStartdateString() {
-			return startdateString;
-		}
+            if (endDate == null) {
+                endDate = dateOperation.getLastDateInMonth(new Date());
+            }
 
-		public void setStartdateString(String startdateString) {
-			this.startdateString = startdateString;
-		}
+            if (startDate == null) {
+                startDate = dateOperation.getFirstDateInMonth(new Date());
+            }
 
-		public String getEnddateString() {
-			return enddateString;
-		}
+            if (startDate.after(endDate)) {
+                startDate = dateOperation.getFirstDateInMonth(new Date());
+            }
+            wrapIn.setStartdate(startDate);
+            wrapIn.setEnddate(endDate);
+        } catch (Exception e) {
+            check = false;
+            Exception exception = new ExceptionWrapInConvert(e, jsonElement);
+            result.error(exception);
+            logger.error(e, currentPerson, request, null);
+        }
+        if (check) {
+            try {
+                EntityManagerContainer emc = EntityManagerContainerFactory.instance().create();
+                Business business = new Business(emc);
 
-		public void setEnddateString(String enddateString) {
-			this.enddateString = enddateString;
-		}
+                // 查询出ID对应的记录的sequence
+                Object sequence = null;
+                if (id == null || "(0)".equals(id) || id.isEmpty()) {
+                    // logger.info( "第一页查询，没有id传入" );
+                } else {
+                    if (!StringUtils.equalsIgnoreCase(id, StandardJaxrsAction.EMPTY_SYMBOL)) {
+                        sequence = PropertyUtils.getProperty(emc.find(id, AttendanceSelfHoliday.class),
+                                JpaObject.sequence_FIELDNAME);
+                    }
+                }
 
-		public Date getStartdate() {
-			return startdate;
-		}
+                // 处理一下顶层组织，查询下级顶层组织
+                if (StringUtils.isNotEmpty(wrapIn.getQ_topUnitName())) {
+                    topUnitNames.add(wrapIn.getQ_topUnitName());
+                    try {
+                        unitNameList = userManagerService.listSubUnitNameWithParent(wrapIn.getQ_topUnitName());
+                    } catch (Exception e) {
+                        Exception exception = new ExceptionSelfHolidayProcess(e,
+                                "系统根据顶层组织名称查询所有下级组织列表时发生异常.Name:" + wrapIn.getQ_topUnitName());
+                        result.error(exception);
+                        logger.error(e, currentPerson, request, null);
+                    }
+                    if (unitNameList != null && unitNameList.size() > 0) {
+                        for (String unitName : unitNameList) {
+                            topUnitNames.add(unitName);
+                        }
+                    }
+                    wrapIn.setTopUnitNames(topUnitNames);
+                }
 
-		public void setStartdate(Date startdate) {
-			this.startdate = startdate;
-		}
+                // 处理一下组织,查询下级组织
+                if (StringUtils.isNotEmpty(wrapIn.getQ_unitName())) {
+                    unitNames.add(wrapIn.getQ_unitName());
+                    try {
+                        unitNameList = userManagerService.listSubUnitNameWithParent(wrapIn.getQ_unitName());
+                    } catch (Exception e) {
+                        Exception exception = new ExceptionSelfHolidayProcess(e,
+                                "系统根据组织名称查询所有下级组织列表时发生异常.Name:" + wrapIn.getQ_unitName());
+                        result.error(exception);
+                        logger.error(e, currentPerson, request, null);
+                    }
+                    if (ListTools.isNotEmpty(unitNameList)) {
+                        for (String unitName : unitNameList) {
+                            unitNames.add(unitName);
+                        }
+                    }
+                    wrapIn.setUnitNames(unitNames);
+                }
 
-		public Date getEnddate() {
-			return enddate;
-		}
+                // 从数据库中查询符合条件的一页数据对象
+                detailList = business.getAttendanceSelfHolidayFactory().listIdsNextWithFilter(id, count, sequence,
+                        wrapIn);
 
-		public void setEnddate(Date enddate) {
-			this.enddate = enddate;
-		}
-	}
-	public static class Wo extends AttendanceSelfHoliday  {
-		
-		private static final long serialVersionUID = -5076990764713538973L;
-		
-		public static WrapCopier<AttendanceSelfHoliday, Wo> copier = 
-				WrapCopierFactory.wo(AttendanceSelfHoliday.class, Wo.class, null,JpaObject.FieldsInvisible);
-	}
+                // 从数据库中查询符合条件的对象总数
+                total = business.getAttendanceSelfHolidayFactory().getCountWithFilter(wrapIn);
+
+                // 将所有查询出来的有状态的对象转换为可以输出的过滤过属性的对象
+                wraps = Wo.copier.copy(detailList);
+            } catch (Throwable th) {
+                th.printStackTrace();
+                result.error(th);
+            }
+        }
+        result.setCount(total);
+        result.setData(wraps);
+        return result;
+    }
+
+    public static class WrapIn extends WrapInFilter {
+        String startdateString;
+        String enddateString;
+        Date startdate = null;
+        Date enddate = null;
+
+        public String getStartdateString() {
+            return startdateString;
+        }
+
+        public void setStartdateString(String startdateString) {
+            this.startdateString = startdateString;
+        }
+
+        public String getEnddateString() {
+            return enddateString;
+        }
+
+        public void setEnddateString(String enddateString) {
+            this.enddateString = enddateString;
+        }
+
+        public Date getStartdate() {
+            return startdate;
+        }
+
+        public void setStartdate(Date startdate) {
+            this.startdate = startdate;
+        }
+
+        public Date getEnddate() {
+            return enddate;
+        }
+
+        public void setEnddate(Date enddate) {
+            this.enddate = enddate;
+        }
+    }
+
+    public static class Wo extends AttendanceSelfHoliday {
+
+        private static final long serialVersionUID = -5076990764713538973L;
+
+        public static WrapCopier<AttendanceSelfHoliday, Wo> copier = WrapCopierFactory.wo(AttendanceSelfHoliday.class,
+                Wo.class, null, JpaObject.FieldsInvisible);
+    }
 }

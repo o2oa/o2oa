@@ -1,5 +1,6 @@
 package com.x.query.assemble.surface.jaxrs.search;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -67,6 +68,28 @@ abstract class BaseAction extends StandardJaxrsAction {
         readers.stream().filter(StringUtils::isNotBlank).map(o -> new TermQuery(new Term(Indexs.FIELD_READERS, o)))
                 .forEach(o -> builder.add(o, BooleanClause.Occur.SHOULD));
         return Optional.of(builder.build());
+    }
+
+    protected List<String> adjustFacetField(List<String> filters) {
+        List<String> list = FACET_FIELDS.stream().filter(o -> (!filters.contains(o))).collect(Collectors.toList());
+        if (list.contains(Indexs.FIELD_PROCESSNAME)) {
+            list.removeAll(Arrays.asList(Indexs.FIELD_APPLICATIONNAME, Indexs.FIELD_PROCESSNAME,
+                    Indexs.FIELD_APPNAME, Indexs.FIELD_CATEGORYNAME));
+        }
+        if (list.contains(Indexs.FIELD_APPLICATIONNAME)) {
+            list.removeAll(Arrays.asList(Indexs.FIELD_APPLICATIONNAME, Indexs.FIELD_APPNAME,
+                    Indexs.FIELD_CATEGORYNAME));
+        }
+        if (list.contains(Indexs.FIELD_CATEGORYNAME)) {
+            list.removeAll(Arrays.asList(Indexs.FIELD_APPNAME, Indexs.FIELD_CATEGORYNAME,
+                    Indexs.FIELD_APPLICATIONNAME, Indexs.FIELD_PROCESSNAME));
+        }
+        if (list.contains(Indexs.FIELD_APPNAME)) {
+            list.removeAll(Arrays.asList(Indexs.FIELD_APPNAME, Indexs.FIELD_APPLICATIONNAME,
+                    Indexs.FIELD_PROCESSNAME));
+        }
+        list.remove(Indexs.FIELD_COMPLETED);
+        return list;
     }
 
 }

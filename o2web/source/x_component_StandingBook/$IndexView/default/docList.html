@@ -1,0 +1,43 @@
+<table align="left" class="listTable" border="0" width="100%" cellpadding="0" cellspacing="0">
+    <tr>
+        <th style="width: 30px;">
+            {{$.lp.sequence}}
+        </th>
+        {{each $.fieldList}}
+        <th data-o2-events="click:orderColumn:{{$.field}};">
+            {{$.name}}
+            <i class="{{$.icon}}"></i>
+        </th>
+        {{end each}}
+    </tr>
+
+    {{each $.data}}
+    <tr class="row" data-o2-events="click:openItem:{{$.id}}:{{!!$.processName}};mouseover:rowOver;mouseout:rowOut">
+        <td>{{$.sequence}}</td>
+
+        {{each $._.fieldList}}
+
+        {{if $.field === "title"}}
+        <td><a href="#">{{$._[$.field]}}</a></td>
+        {{end if}}
+
+        {{if $.field === "completed"}}
+        <td>{{ $._._.lp[$._[$.field]] }}</td>
+        {{end if}}
+
+        {{if ["title","completed"].indexOf($.field) === -1  }}
+        <td>{{$._[$.field]}}</td>
+        {{end if}}
+
+        {{end each}}
+    </tr>
+    {{end each}}
+</table>
+
+<!--{{if !$.data}}-->
+<!--<div class="listNoData">{{$.lp.noSearchkey}}</div>-->
+<!--{{end if}}-->
+
+{{if !$.data || !$.data.length}}
+<div class="listNoData">{{$.lp.noData}}</div>
+{{end if}}

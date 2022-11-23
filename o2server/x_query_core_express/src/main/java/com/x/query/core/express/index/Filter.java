@@ -9,46 +9,46 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(name = "com.x.query.core.express.index.Filter")
 public class Filter extends GsonPropertyObject {
 
-	private static final long serialVersionUID = 8404002412785606829L;
+    private static final long serialVersionUID = 8404002412785606829L;
 
-	String field;
+    String field;
 
-	List<String> valueList;
+    List<String> valueList;
 
-	String start;
+    String min;
 
-	String end;
+    String max;
 
-	public String getField() {
-		return field;
-	}
+    public String getField() {
+        return field;
+    }
 
-	public void setField(String field) {
-		this.field = field;
-	}
+    public void setField(String field) {
+        this.field = field;
+    }
 
-	public List<String> getValueList() {
-		return valueList;
-	}
+    public List<String> getValueList() {
+        return valueList;
+    }
 
-	public void setValueList(List<String> valueList) {
-		this.valueList = valueList;
-	}
+    public void setValueList(List<String> valueList) {
+        this.valueList = valueList;
+    }
 
-	public String getStart() {
-		return start;
-	}
+    public String getMin() {
+        return min;
+    }
 
-	public void setStart(String start) {
-		this.start = start;
-	}
+    public void setMin(String min) {
+        this.min = min;
+    }
 
-	public String getEnd() {
-		return end;
-	}
+    public String getMax() {
+        return max;
+    }
 
-	public void setEnd(String end) {
-		this.end = end;
-	}
+    public void setMax(String max) {
+        this.max = max;
+    }
 
 }

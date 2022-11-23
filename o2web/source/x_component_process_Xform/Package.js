@@ -58,7 +58,8 @@ MWF.xApplication.process.Xform.require = function(callback){
         ["process.Xform", "Statement"],
         ["process.Xform", "StatementSelector"],
         ["process.Xform", "Importer"],
-        ["process.Xform", "ReadLog"]
+        ["process.Xform", "ReadLog"],
+        ["process.Xform", "Relatedlink"]
     ];
     MWF.xDesktop.requireApp(modules, null, function(){
         if (callback) callback();
