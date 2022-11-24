@@ -26,14 +26,12 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.query.assemble.designer.Business;
 import com.x.query.core.entity.ImportModel;
 import com.x.query.core.entity.Query;
-import com.x.query.core.entity.Reveal;
 import com.x.query.core.entity.Stat;
 import com.x.query.core.entity.View;
 import com.x.query.core.entity.schema.Statement;
 import com.x.query.core.entity.schema.Table;
 import com.x.query.core.entity.wrap.WrapImportModel;
 import com.x.query.core.entity.wrap.WrapQuery;
-import com.x.query.core.entity.wrap.WrapReveal;
 import com.x.query.core.entity.wrap.WrapStat;
 import com.x.query.core.entity.wrap.WrapStatement;
 import com.x.query.core.entity.wrap.WrapTable;
@@ -80,19 +78,6 @@ class ActionPrepareCover extends BaseAction {
 		for (MatchElement<WrapStat, Stat> m : this.match(business, wi.getStatList(),
 				ListUtils.union(this.listWithIds(business, wi.getStatList(), Stat.class),
 						business.stat().listWithQueryObject(exist.getId())))) {
-			if ((null != m.getW()) && (null != m.getT())) {
-				if (!StringUtils.equals(m.getW().getId(), m.getT().getId())) {
-					if (StringUtils.equals(m.getW().getQuery(), m.getT().getQuery())) {
-						wos.add(new Wo(m.getW().getId(), m.getT().getId()));
-					} else {
-						wos.add(new Wo(m.getW().getId(), JpaObject.createId()));
-					}
-				}
-			}
-		}
-		for (MatchElement<WrapReveal, Reveal> m : this.match(business, wi.getRevealList(),
-				ListUtils.union(this.listWithIds(business, wi.getRevealList(), Reveal.class),
-						business.reveal().listWithQueryObject(exist.getId())))) {
 			if ((null != m.getW()) && (null != m.getT())) {
 				if (!StringUtils.equals(m.getW().getId(), m.getT().getId())) {
 					if (StringUtils.equals(m.getW().getQuery(), m.getT().getQuery())) {

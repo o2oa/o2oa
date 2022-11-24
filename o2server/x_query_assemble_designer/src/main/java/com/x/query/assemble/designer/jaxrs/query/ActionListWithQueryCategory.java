@@ -25,8 +25,6 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.query.assemble.designer.Business;
 import com.x.query.core.entity.Query;
 import com.x.query.core.entity.Query_;
-import com.x.query.core.entity.Reveal;
-import com.x.query.core.entity.Reveal_;
 import com.x.query.core.entity.Stat;
 import com.x.query.core.entity.Stat_;
 import com.x.query.core.entity.View;
@@ -34,147 +32,117 @@ import com.x.query.core.entity.View_;
 
 class ActionListWithQueryCategory extends BaseAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWithQueryCategory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWithQueryCategory.class);
 
-	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String queryCategory) throws Exception {
+    ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, String queryCategory) throws Exception {
 
-		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+        LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 
-			Business business = new Business(emc);
-			if ((!effectivePerson.isManager()) && (!business.organization().person().hasRole(effectivePerson,
-					OrganizationDefinition.QueryManager, OrganizationDefinition.QueryCreator))) {
-				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
-			}
-			ActionResult<List<Wo>> result = new ActionResult<>();
-			List<Wo> wos = Wo.copier.copy(this.list(business, queryCategory));
-			List<String> ids = ListTools.extractField(wos, JpaObject.id_FIELDNAME, String.class, true, true);
-			List<WoView> views = WoView.copier.copy(this.listView(business, ids));
-			List<WoStat> stats = WoStat.copier.copy(this.listStat(business, ids));
-			List<WoReveal> reveals = WoReveal.copier.copy(this.listReveal(business, ids));
-			ListTools.groupStick(wos, views, JpaObject.id_FIELDNAME, View.query_FIELDNAME, "viewList");
-			ListTools.groupStick(wos, stats, JpaObject.id_FIELDNAME, Stat.query_FIELDNAME, "statList");
-			ListTools.groupStick(wos, reveals, JpaObject.id_FIELDNAME, Reveal.query_FIELDNAME, "revealList");
-			wos.stream().forEach(o -> {
-				try {
-					o.setViewList(business.view().sort(o.getViewList()));
-					o.setStatList(business.stat().sort(o.getStatList()));
-					o.setRevealList(business.reveal().sort(o.getRevealList()));
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			});
-			wos = business.query().sort(wos);
-			result.setData(wos);
-			return result;
-		}
-	}
+            Business business = new Business(emc);
+            if ((!effectivePerson.isManager()) && (!business.organization().person().hasRole(effectivePerson,
+                    OrganizationDefinition.QueryManager, OrganizationDefinition.QueryCreator))) {
+                throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
+            }
+            ActionResult<List<Wo>> result = new ActionResult<>();
+            List<Wo> wos = Wo.copier.copy(this.list(business, queryCategory));
+            List<String> ids = ListTools.extractField(wos, JpaObject.id_FIELDNAME, String.class, true, true);
+            List<WoView> views = WoView.copier.copy(this.listView(business, ids));
+            List<WoStat> stats = WoStat.copier.copy(this.listStat(business, ids));
+            ListTools.groupStick(wos, views, JpaObject.id_FIELDNAME, View.query_FIELDNAME, "viewList");
+            ListTools.groupStick(wos, stats, JpaObject.id_FIELDNAME, Stat.query_FIELDNAME, "statList");
+            wos.stream().forEach(o -> {
+                try {
+                    o.setViewList(business.view().sort(o.getViewList()));
+                    o.setStatList(business.stat().sort(o.getStatList()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+            wos = business.query().sort(wos);
+            result.setData(wos);
+            return result;
+        }
+    }
 
-	private List<Query> list(Business business, String queryCategory) throws Exception {
-		String _category = StringUtils.trimToEmpty(queryCategory);
-		_category = StringUtils.equals(_category, EMPTY_SYMBOL) ? "" : _category;
-		EntityManager em = business.entityManagerContainer().get(Query.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Query> cq = cb.createQuery(Query.class);
-		Root<Query> root = cq.from(Query.class);
-		Predicate p = cb.equal(root.get(Query_.queryCategory), _category);
-		List<Query> os = em.createQuery(cq.select(root).where(p)).getResultList();
-		return os;
-	}
+    private List<Query> list(Business business, String queryCategory) throws Exception {
+        String _category = StringUtils.trimToEmpty(queryCategory);
+        _category = StringUtils.equals(_category, EMPTY_SYMBOL) ? "" : _category;
+        EntityManager em = business.entityManagerContainer().get(Query.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Query> cq = cb.createQuery(Query.class);
+        Root<Query> root = cq.from(Query.class);
+        Predicate p = cb.equal(root.get(Query_.queryCategory), _category);
+        List<Query> os = em.createQuery(cq.select(root).where(p)).getResultList();
+        return os;
+    }
 
-	private List<View> listView(Business business, List<String> queryIds) throws Exception {
-		EntityManager em = business.entityManagerContainer().get(View.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<View> cq = cb.createQuery(View.class);
-		Root<View> root = cq.from(View.class);
-		Predicate p = root.get(View_.query).in(queryIds);
-		List<View> os = em.createQuery(cq.select(root).where(p)).getResultList();
-		return os;
-	}
+    private List<View> listView(Business business, List<String> queryIds) throws Exception {
+        EntityManager em = business.entityManagerContainer().get(View.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<View> cq = cb.createQuery(View.class);
+        Root<View> root = cq.from(View.class);
+        Predicate p = root.get(View_.query).in(queryIds);
+        List<View> os = em.createQuery(cq.select(root).where(p)).getResultList();
+        return os;
+    }
 
-	private List<Stat> listStat(Business business, List<String> queryIds) throws Exception {
-		EntityManager em = business.entityManagerContainer().get(Stat.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Stat> cq = cb.createQuery(Stat.class);
-		Root<Stat> root = cq.from(Stat.class);
-		Predicate p = root.get(Stat_.query).in(queryIds);
-		List<Stat> os = em.createQuery(cq.select(root).where(p)).getResultList();
-		return os;
-	}
+    private List<Stat> listStat(Business business, List<String> queryIds) throws Exception {
+        EntityManager em = business.entityManagerContainer().get(Stat.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Stat> cq = cb.createQuery(Stat.class);
+        Root<Stat> root = cq.from(Stat.class);
+        Predicate p = root.get(Stat_.query).in(queryIds);
+        List<Stat> os = em.createQuery(cq.select(root).where(p)).getResultList();
+        return os;
+    }
 
-	private List<Reveal> listReveal(Business business, List<String> queryIds) throws Exception {
-		EntityManager em = business.entityManagerContainer().get(Reveal.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Reveal> cq = cb.createQuery(Reveal.class);
-		Root<Reveal> root = cq.from(Reveal.class);
-		Predicate p = root.get(Reveal_.query).in(queryIds);
-		List<Reveal> os = em.createQuery(cq.select(root).where(p)).getResultList();
-		return os;
-	}
+    public static class Wo extends Query {
 
-	public static class Wo extends Query {
+        private static final long serialVersionUID = 2886873983211744188L;
 
-		private static final long serialVersionUID = 2886873983211744188L;
+        static WrapCopier<Query, Wo> copier = WrapCopierFactory.wo(Query.class, Wo.class,
+                JpaObject.singularAttributeField(View.class, true, false), null);
 
-		static WrapCopier<Query, Wo> copier = WrapCopierFactory.wo(Query.class, Wo.class,
-				JpaObject.singularAttributeField(View.class, true, false), null);
+        private List<WoView> viewList = new ArrayList<>();
 
-		private List<WoView> viewList = new ArrayList<>();
+        private List<WoStat> statList = new ArrayList<>();
 
-		private List<WoStat> statList = new ArrayList<>();
+        public List<WoView> getViewList() {
+            return viewList;
+        }
 
-		private List<WoReveal> revealList = new ArrayList<>();
+        public void setViewList(List<WoView> viewList) {
+            this.viewList = viewList;
+        }
 
-		public List<WoView> getViewList() {
-			return viewList;
-		}
+        public List<WoStat> getStatList() {
+            return statList;
+        }
 
-		public void setViewList(List<WoView> viewList) {
-			this.viewList = viewList;
-		}
+        public void setStatList(List<WoStat> statList) {
+            this.statList = statList;
+        }
 
-		public List<WoStat> getStatList() {
-			return statList;
-		}
+    }
 
-		public void setStatList(List<WoStat> statList) {
-			this.statList = statList;
-		}
+    public static class WoView extends View {
 
-		public List<WoReveal> getRevealList() {
-			return revealList;
-		}
+        private static final long serialVersionUID = 3456154680561609726L;
 
-		public void setRevealList(List<WoReveal> revealList) {
-			this.revealList = revealList;
-		}
+        static WrapCopier<View, WoView> copier = WrapCopierFactory.wo(View.class, WoView.class,
+                JpaObject.singularAttributeField(View.class, true, true), null);
 
-	}
+    }
 
-	public static class WoView extends View {
+    public static class WoStat extends Stat {
 
-		private static final long serialVersionUID = 3456154680561609726L;
+        private static final long serialVersionUID = -6331662271434269932L;
 
-		static WrapCopier<View, WoView> copier = WrapCopierFactory.wo(View.class, WoView.class,
-				JpaObject.singularAttributeField(View.class, true, true), null);
+        static WrapCopier<Stat, WoStat> copier = WrapCopierFactory.wo(Stat.class, WoStat.class,
+                JpaObject.singularAttributeField(Stat.class, true, true), null);
 
-	}
+    }
 
-	public static class WoStat extends Stat {
-
-		private static final long serialVersionUID = -6331662271434269932L;
-
-		static WrapCopier<Stat, WoStat> copier = WrapCopierFactory.wo(Stat.class, WoStat.class,
-				JpaObject.singularAttributeField(Stat.class, true, true), null);
-
-	}
-
-	public static class WoReveal extends Reveal {
-
-		private static final long serialVersionUID = -2348134755539702740L;
-
-		static WrapCopier<Reveal, WoReveal> copier = WrapCopierFactory.wo(Reveal.class, WoReveal.class,
-				JpaObject.singularAttributeField(Reveal.class, true, true), null);
-	}
 }

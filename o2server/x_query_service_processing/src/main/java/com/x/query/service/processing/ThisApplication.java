@@ -14,9 +14,6 @@ import com.x.base.core.project.Context;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.Query;
-import com.x.query.service.processing.schedule.CrawlCms;
-import com.x.query.service.processing.schedule.CrawlWork;
-import com.x.query.service.processing.schedule.CrawlWorkCompleted;
 import com.x.query.service.processing.schedule.HighFreqDocument;
 import com.x.query.service.processing.schedule.HighFreqWork;
 import com.x.query.service.processing.schedule.HighFreqWorkCompleted;
@@ -75,15 +72,6 @@ public class ThisApplication {
             scheduleHighFreqWorkCompleted();
             scheduleHighFreqWork();
             scheduleOptimizeIndex();
-            if (BooleanUtils.isTrue(Config.query().getCrawlWork().getEnable())) {
-                context.schedule(CrawlWork.class, Config.query().getCrawlWork().getCron());
-            }
-            if (BooleanUtils.isTrue(Config.query().getCrawlWorkCompleted().getEnable())) {
-                context.schedule(CrawlWorkCompleted.class, Config.query().getCrawlWorkCompleted().getCron());
-            }
-            if (BooleanUtils.isTrue(Config.query().getCrawlCms().getEnable())) {
-                context.schedule(CrawlCms.class, Config.query().getCrawlCms().getCron());
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }

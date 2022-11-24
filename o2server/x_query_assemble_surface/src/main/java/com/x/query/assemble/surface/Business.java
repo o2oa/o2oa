@@ -35,12 +35,11 @@ import com.x.query.assemble.surface.factory.ImportModelFactory;
 import com.x.query.assemble.surface.factory.IndexFactory;
 import com.x.query.assemble.surface.factory.ProcessFactory;
 import com.x.query.assemble.surface.factory.QueryFactory;
-import com.x.query.assemble.surface.factory.RevealFactory;
 import com.x.query.assemble.surface.factory.StatFactory;
 import com.x.query.assemble.surface.factory.ViewFactory;
 import com.x.query.core.entity.ImportModel;
+import com.x.query.core.entity.PersistenceProperties.Reveal;
 import com.x.query.core.entity.Query;
-import com.x.query.core.entity.Reveal;
 import com.x.query.core.entity.Stat;
 import com.x.query.core.entity.View;
 import com.x.query.core.entity.schema.Statement;
@@ -141,15 +140,6 @@ public class Business {
             this.importModel = new ImportModelFactory(this);
         }
         return importModel;
-    }
-
-    private RevealFactory reveal;
-
-    public RevealFactory reveal() throws Exception {
-        if (null == this.reveal) {
-            this.reveal = new RevealFactory(this);
-        }
-        return reveal;
     }
 
     private ProcessFactory process;
@@ -319,33 +309,6 @@ public class Business {
             return true;
         }
         Query q = this.entityManagerContainer().find(statement.getQuery(), Query.class);
-        // 在所属query的管理人员中
-        if (null != q && ListTools.contains(q.getControllerList(), effectivePerson.getDistinguishedName())) {
-            return true;
-        }
-        return organization().person().hasRole(effectivePerson, OrganizationDefinition.Manager,
-                OrganizationDefinition.QueryManager);
-    }
-
-    public boolean readable(EffectivePerson effectivePerson, Reveal reveal) throws Exception {
-        if (null == reveal) {
-            return false;
-        }
-        if (effectivePerson.isManager()) {
-            return true;
-        }
-        if (reveal.getAvailableIdentityList().isEmpty() && reveal.getAvailableUnitList().isEmpty()) {
-            return true;
-        }
-        if (CollectionUtils.containsAny(reveal.getAvailableIdentityList(),
-                organization().identity().listWithPerson(effectivePerson))) {
-            return true;
-        }
-        if (CollectionUtils.containsAny(reveal.getAvailableUnitList(),
-                organization().unit().listWithPersonSupNested(effectivePerson))) {
-            return true;
-        }
-        Query q = this.entityManagerContainer().find(reveal.getQuery(), Query.class);
         // 在所属query的管理人员中
         if (null != q && ListTools.contains(q.getControllerList(), effectivePerson.getDistinguishedName())) {
             return true;
