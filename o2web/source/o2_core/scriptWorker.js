@@ -328,7 +328,13 @@ layout.addReady(function(){
         Object.keys(o).each(function (key) {
             if (key!="__type__"){
                 var keyType = typeOf(o[key]);
-                var oRange = Object.clone(range);
+                // var oRange = Object.clone(range);
+                var oRange = {
+                    endColumn: range.endColumn,
+                    endLineNumber: range.endLineNumber,
+                    startColumn: range.startColumn,
+                    startLineNumber: range.startLineNumber
+                }
                 switch (keyType){
                     case "function":
                         var count = o[key].length;
@@ -380,7 +386,13 @@ layout.addReady(function(){
         Object.keys(o).each(function(key){
             if (key!="__type__"){
                 var keyType = typeOf(o[key]);
-                var oRange = (range) ? Object.clone(range): null;
+                var oRange = (range) ? (function(){
+                    var o = {};
+                    Object.keys(range).each(function(k){
+                        o[k] = range[k];
+                    });
+                    return o;
+                })() : null;
                 var offset = 0;
                 switch (keyType){
                     case "function":

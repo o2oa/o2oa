@@ -433,7 +433,12 @@ o2.xApplication.systemconfig.LP = {
         "useSSOConfigInfo2": "2、外部系统需要调用O2OA平台的接口服务;",
         "useSSOConfigInfo3": "需要将鉴权的名称，密钥告知外部系统，外部系统采取3DES算法使用密钥对<span style='color: blue'>\"person#timestamp\"</span>文本进行加密，获取到访问O2OA的临时票据（token）。<br/>" +
             "<span style='color: blue'>person</span>：表示指定用户的用户名、唯一编码或员工号。（具体使用哪个要根据外部系统与O2OA的用户关联的字段）<br/>" +
-            "<span style='color: blue'>timestamp</span>：表示为1970年1月1日0时0秒到当前时间的毫秒数。（为了确保token的时效性,有效时间为15分钟）<br/>",
+            "<span style='color: blue'>timestamp</span>：表示为1970年1月1日0时0秒到当前时间的毫秒数。（为了确保token的时效性,有效时间为15分钟）<br/><br>" +
+            "生成token后，外部系统可以直接通过访问以下地址，实现与O2OA的单点认证：<br/>" +
+            "http://servername/x_desktop/sso.html?client={<span style='color: blue'>client</span>}&xtoken={<span style='color: blue'>token</span>}&redirect={<span style='color: blue'>redirect</span>}<br/>" +
+            "<span style='color: blue'>client</span>表示使用的鉴权名称；<br/>" +
+            "<span style='color: blue'>token</span>表示产生的临时票据token；<br/>" +
+            "<span style='color: blue'>redirect</span>表示认证成功后要跳转到的地址；<br/>",
 
         "useSSOConfigInfo4": "更多有关鉴权配置的说明，<a target='_blank' href='https://www.o2oa.net/search.html?q=%E9%89%B4%E6%9D%83'>请点击此处查看</a>。",
 
