@@ -35,10 +35,6 @@
     "file": "externalStorageSources.json",
     "description": "文件存储配置"
   },
-  "huaweiPushConfig": {
-    "file": "huaweiPushConfig.json",
-    "description": "华为推送配置"
-  },
   "jpushConfig": {
     "file": "jpushConfig.json",
     "description": "极光推送配置"

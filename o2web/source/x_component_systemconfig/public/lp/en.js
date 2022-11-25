@@ -1369,7 +1369,6 @@ o2.xApplication.systemconfig.LP = {
         "pushTypeInfo": "O2OA支持极光推送服务和华为推送服务，您可以根据需要选择推送服务",
         "pushTypeData": [
             {"value": "jpush", "label": "jpush", "text": "极光推送服务"},
-            {"value": "huawei", "label": "huawei", "text": "华为推送服务"},
             {"value": "none", "label": "none", "text": "禁用消息推送"}
         ],
 
