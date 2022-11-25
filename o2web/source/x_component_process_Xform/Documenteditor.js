@@ -2057,7 +2057,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
         var stopFun = function(e){ e.stopPropagation(); };
         if (text===MWF.xApplication.process.Xform.LP.returnScreen){
-            this.form.node.getParent().show();
+            //this.form.node.getParent().show();
+            this.form.node.show();
             this.node.inject(this.positionNode, "before");
             this.positionNode.destroy();
 
@@ -2086,7 +2087,8 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
             this.positionNode = new Element("div").inject(this.node, "after");
             this.node.inject(this.scrollNode, "top");
-            this.form.node.getParent().hide();
+            //this.form.node.getParent().hide();
+            this.form.node.hide();
 
             // var position = content.getStyle("poaition");
             // var overflow = content.getStyle("overflow");
