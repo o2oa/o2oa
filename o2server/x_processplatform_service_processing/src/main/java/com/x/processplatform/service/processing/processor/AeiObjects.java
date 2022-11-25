@@ -33,6 +33,8 @@ import com.x.base.core.project.webservices.WebservicesClient;
 import com.x.organization.core.express.Organization;
 import com.x.processplatform.core.entity.content.Attachment;
 import com.x.processplatform.core.entity.content.Data;
+import com.x.processplatform.core.entity.content.DocSign;
+import com.x.processplatform.core.entity.content.DocSignScrawl;
 import com.x.processplatform.core.entity.content.DocumentVersion;
 import com.x.processplatform.core.entity.content.Read;
 import com.x.processplatform.core.entity.content.ReadCompleted;
@@ -107,6 +109,10 @@ public class AeiObjects extends GsonPropertyObject {
     // 使用用懒加载,初始为null
     private List<DocumentVersion> documentVersions = null;
     // 使用用懒加载,初始为null
+    private List<DocSignScrawl> docSignScrawls = null;
+    // 使用用懒加载,初始为null
+    private List<DocSign> docSigns = null;
+    // 使用用懒加载,初始为null
     private List<Snap> snaps = null;
     // 使用用懒加载,初始为null
     private List<Record> records = null;
@@ -172,6 +178,14 @@ public class AeiObjects extends GsonPropertyObject {
     private List<DocumentVersion> createDocumentVersions = new ArrayList<>();
     private List<DocumentVersion> updateDocumentVersions = new ArrayList<>();
     private List<DocumentVersion> deleteDocumentVersions = new ArrayList<>();
+
+    private List<DocSignScrawl> createDocSignScrawls = new ArrayList<>();
+    private List<DocSignScrawl> updateDocSignScrawls = new ArrayList<>();
+    private List<DocSignScrawl> deleteDocSignScrawls = new ArrayList<>();
+
+    private List<DocSign> createDocSigns = new ArrayList<>();
+    private List<DocSign> updateDocSigns = new ArrayList<>();
+    private List<DocSign> deleteDocSigns = new ArrayList<>();
 
     private List<Snap> createSnaps = new ArrayList<>();
     private List<Snap> updateSnaps = new ArrayList<>();
@@ -371,6 +385,22 @@ public class AeiObjects extends GsonPropertyObject {
         return this.documentVersions;
     }
 
+    public List<DocSignScrawl> getDocSignScrawls() throws Exception {
+        if (null == this.docSignScrawls) {
+            this.docSignScrawls = this.business.entityManagerContainer().listEqual(DocSignScrawl.class,
+                    DocSignScrawl.job_FIELDNAME, this.work.getJob());
+        }
+        return this.docSignScrawls;
+    }
+
+    public List<DocSign> getDocSigns() throws Exception {
+        if (null == this.docSigns) {
+            this.docSigns = this.business.entityManagerContainer().listEqual(DocSign.class,
+                    DocSign.job_FIELDNAME, this.work.getJob());
+        }
+        return this.docSigns;
+    }
+
     public List<Snap> getSnaps() throws Exception {
         if (null == this.snaps) {
             this.snaps = this.business.entityManagerContainer().listEqual(Snap.class, Snap.job_FIELDNAME,
@@ -506,6 +536,30 @@ public class AeiObjects extends GsonPropertyObject {
         return updateDocumentVersions;
     }
 
+    public List<DocSignScrawl> getCreateDocSignScrawls() {
+        return createDocSignScrawls;
+    }
+
+    public List<DocSignScrawl> getDeleteDocSignScrawls() {
+        return deleteDocSignScrawls;
+    }
+
+    public List<DocSignScrawl> getUpdateDocSignScrawls() {
+        return updateDocSignScrawls;
+    }
+
+    public List<DocSign> getCreateDocSigns() {
+        return createDocSigns;
+    }
+
+    public List<DocSign> getDeleteDocSigns() {
+        return deleteDocSigns;
+    }
+
+    public List<DocSign> getUpdateDocSigns() {
+        return updateDocSigns;
+    }
+
     public List<Snap> getCreateSnaps() {
         return createSnaps;
     }
@@ -604,6 +658,8 @@ public class AeiObjects extends GsonPropertyObject {
         /* review必须在task,taskCompleted,read,readCompleted之后提交,需要创建新的review */
         this.commitReview();
         this.commitDocumentVersion();
+        this.commitDocSign();
+        this.commitDocSignScrawl();
         this.commitSnap();
         this.commitRecord();
         this.commitAttachment();
@@ -1259,6 +1315,76 @@ public class AeiObjects extends GsonPropertyObject {
             this.getDeleteDocumentVersions().stream().forEach(o -> {
                 try {
                     DocumentVersion obj = this.business.entityManagerContainer().find(o.getId(), DocumentVersion.class);
+                    if (null != obj) {
+                        this.business.entityManagerContainer().remove(obj, CheckRemoveType.all);
+                    }
+                } catch (Exception e) {
+                    LOGGER.error(e);
+                }
+            });
+        }
+    }
+
+    private void commitDocSignScrawl() throws Exception {
+        if (ListTools.isNotEmpty(this.getCreateDocSignScrawls())
+                || ListTools.isNotEmpty(this.getDeleteDocSignScrawls())
+                || ListTools.isNotEmpty(this.getUpdateDocSignScrawls())) {
+            this.entityManagerContainer().beginTransaction(DocSignScrawl.class);
+            // 保存签批涂鸦信息
+            this.getCreateDocSignScrawls().stream().forEach(o -> {
+                try {
+                    this.business.entityManagerContainer().persist(o, CheckPersistType.all);
+                } catch (Exception e) {
+                    LOGGER.error(e);
+                }
+            });
+            // 更新签批涂鸦信息
+            this.getUpdateDocSignScrawls().stream().forEach(o -> {
+                try {
+                    this.business.entityManagerContainer().check(o, CheckPersistType.all);
+                } catch (Exception e) {
+                    LOGGER.error(e);
+                }
+            });
+            // 删除签批涂鸦信息
+            this.getDeleteDocSignScrawls().stream().forEach(o -> {
+                try {
+                    DocSignScrawl obj = this.business.entityManagerContainer().find(o.getId(), DocSignScrawl.class);
+                    if (null != obj) {
+                        this.business.entityManagerContainer().remove(obj, CheckRemoveType.all);
+                    }
+                } catch (Exception e) {
+                    LOGGER.error(e);
+                }
+            });
+        }
+    }
+
+    private void commitDocSign() throws Exception {
+        if (ListTools.isNotEmpty(this.getCreateDocSigns())
+                || ListTools.isNotEmpty(this.getDeleteDocSigns())
+                || ListTools.isNotEmpty(this.getUpdateDocSigns())) {
+            this.entityManagerContainer().beginTransaction(DocSign.class);
+            // 保存手写签批
+            this.getCreateDocSigns().stream().forEach(o -> {
+                try {
+                    this.business.entityManagerContainer().persist(o, CheckPersistType.all);
+                } catch (Exception e) {
+                    LOGGER.error(e);
+                }
+            });
+            // 更新手写签批
+            this.getUpdateDocSigns().stream().forEach(o -> {
+                try {
+                    this.business.entityManagerContainer().check(o, CheckPersistType.all);
+                } catch (Exception e) {
+                    LOGGER.error(e);
+                }
+            });
+            // 删除手写签批
+            this.getDeleteDocSigns().stream().forEach(o -> {
+                try {
+                    DocSign obj = this.business.entityManagerContainer().find(o.getId(), DocSign.class);
                     if (null != obj) {
                         this.business.entityManagerContainer().remove(obj, CheckRemoveType.all);
                     }
