@@ -35,58 +35,58 @@ public class TouchAction extends StandardJaxrsAction {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TouchAction.class);
 
-    private static final String OPERATIONID_PREFIX = "ScheduleAction::";
+    private static final String OPERATIONID_PREFIX = "TouchAction::";
 
-    @JaxrsMethodDescribe(value = "执行crawlCms.", action = ActionCrawlCms.class)
-    @GET
-    @Path("crawl/cms")
-    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void crawlCms(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
-        ActionResult<ActionCrawlCms.Wo> result = new ActionResult<>();
-        EffectivePerson effectivePerson = this.effectivePerson(request);
-        try {
-            result = new ActionCrawlCms().execute(effectivePerson);
-        } catch (Exception e) {
-            LOGGER.error(e, effectivePerson, request, null);
-            result.error(e);
-        }
-        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-    }
-
-    @JaxrsMethodDescribe(value = "执行crawlWork.", action = ActionCrawlWork.class)
-    @GET
-    @Path("crawl/work")
-    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void crawlWork(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
-        ActionResult<ActionCrawlWork.Wo> result = new ActionResult<>();
-        EffectivePerson effectivePerson = this.effectivePerson(request);
-        try {
-            result = new ActionCrawlWork().execute(effectivePerson);
-        } catch (Exception e) {
-            LOGGER.error(e, effectivePerson, request, null);
-            result.error(e);
-        }
-        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-    }
-
-    @JaxrsMethodDescribe(value = "执行crawlWorkCompleted.", action = ActionCrawlWorkCompleted.class)
-    @GET
-    @Path("crawl/workcompleted")
-    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void crawlWorkCompleted(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
-        ActionResult<ActionCrawlWorkCompleted.Wo> result = new ActionResult<>();
-        EffectivePerson effectivePerson = this.effectivePerson(request);
-        try {
-            result = new ActionCrawlWorkCompleted().execute(effectivePerson);
-        } catch (Exception e) {
-            LOGGER.error(e, effectivePerson, request, null);
-            result.error(e);
-        }
-        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-    }
+//    @JaxrsMethodDescribe(value = "执行crawlCms.", action = ActionCrawlCms.class)
+//    @GET
+//    @Path("crawl/cms")
+//    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    public void crawlCms(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+//        ActionResult<ActionCrawlCms.Wo> result = new ActionResult<>();
+//        EffectivePerson effectivePerson = this.effectivePerson(request);
+//        try {
+//            result = new ActionCrawlCms().execute(effectivePerson);
+//        } catch (Exception e) {
+//            LOGGER.error(e, effectivePerson, request, null);
+//            result.error(e);
+//        }
+//        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+//    }
+//
+//    @JaxrsMethodDescribe(value = "执行crawlWork.", action = ActionCrawlWork.class)
+//    @GET
+//    @Path("crawl/work")
+//    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    public void crawlWork(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+//        ActionResult<ActionCrawlWork.Wo> result = new ActionResult<>();
+//        EffectivePerson effectivePerson = this.effectivePerson(request);
+//        try {
+//            result = new ActionCrawlWork().execute(effectivePerson);
+//        } catch (Exception e) {
+//            LOGGER.error(e, effectivePerson, request, null);
+//            result.error(e);
+//        }
+//        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+//    }
+//
+//    @JaxrsMethodDescribe(value = "执行crawlWorkCompleted.", action = ActionCrawlWorkCompleted.class)
+//    @GET
+//    @Path("crawl/workcompleted")
+//    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    public void crawlWorkCompleted(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+//        ActionResult<ActionCrawlWorkCompleted.Wo> result = new ActionResult<>();
+//        EffectivePerson effectivePerson = this.effectivePerson(request);
+//        try {
+//            result = new ActionCrawlWorkCompleted().execute(effectivePerson);
+//        } catch (Exception e) {
+//            LOGGER.error(e, effectivePerson, request, null);
+//            result.error(e);
+//        }
+//        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+//    }
 
     @Operation(summary = "执行工作高频索引.", operationId = OPERATIONID_PREFIX
             + "highFreqWorkTouch", responses = { @ApiResponse(content = {

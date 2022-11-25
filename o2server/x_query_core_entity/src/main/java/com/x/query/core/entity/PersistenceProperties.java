@@ -38,18 +38,6 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
         public static final String table = "QRY_ITEM";
     }
 
-    public static class Segment {
-
-        public static class Entry {
-            public static final String table = "QRY_SEG_ENTRY";
-        }
-
-        public static class Word {
-            public static final String table = "QRY_SEG_WORD";
-        }
-
-    }
-
     public static class Schema {
 
         public static class Table {

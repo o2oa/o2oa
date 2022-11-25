@@ -8,7 +8,8 @@ goto out
 if not exist "%~dp0local" (
 md "%~dp0local"
 )
-echo ^<configuration^> > "%~dp0local\service.xml"
+echo ^<?xml version="1.0" encoding="GBK" ?^> > "%~dp0local\service.xml"
+echo ^<configuration^> >> "%~dp0local\service.xml"
 echo ^<id^>O2SERVER^<^/id^> >> "%~dp0local\service.xml"
 echo ^<name^>O2SERVER SERVICE^<^/name^> >> "%~dp0local\service.xml"
 echo ^<description^>O2OA Platform Service.^<^/description^> >> "%~dp0local\service.xml"

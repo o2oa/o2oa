@@ -16,12 +16,15 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.hadoop.fs.CommonConfigurationKeysPublic;
 import org.apache.hadoop.fs.LocatedFileStatus;
 import org.apache.hadoop.fs.RemoteIterator;
 import org.apache.lucene.document.LongPoint;
+import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
@@ -163,6 +166,53 @@ public class Indexs {
     public static final String PREFIX_FIELD_CMS_NUMBERS = PREFIX_FIELD_CMS + FIELD_TYPE_NUMBERS + "_";
     public static final String PREFIX_FIELD_CMS_DATE = PREFIX_FIELD_CMS + FIELD_TYPE_DATE + "_";
     public static final String PREFIX_FIELD_CMS_DATES = PREFIX_FIELD_CMS + FIELD_TYPE_DATES + "_";
+
+//    private static final Map<String, String> PROCESSPLATFORM_FIELDNAME = ImmutableMap.<String, String>builder()
+//            .put(Indexs.PREFIX_FIELD_PROCESSPLATFORM_BOOLEAN + "completed", "已完成")
+//            .put(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING + "creatorUnitLevelName", "创建者部门层级名")
+//            .put(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING + "application", "应用标识")
+//            .put(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING + "applicationName", "应用名称")
+//            .put(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING + "applicationAlias", "应用别名")
+//            .put(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING + "process", "流程标识")
+//            .put(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING + "processName", "流程名称")
+//            .put(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING + "processAlias", "流程别名")
+//            .put(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING + "job", "任务")
+//            .put(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING + "serial", "编号")
+//            .put(Indexs.PREFIX_FIELD_PROCESSPLATFORM_BOOLEAN + "expired", "超时")
+//            .put(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING + "activityName", "活动环节")
+//            .put(Indexs.PREFIX_FIELD_PROCESSPLATFORM_DATE + "expireTime", "截至时间")
+//            .put(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRINGS + Indexs.FIELD_ROCESSPLATFORM_TASKPERSONNAMES, "当前处理人")
+//            .put(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRINGS + Indexs.FIELD_ROCESSPLATFORM_PRETASKPERSONNAMES, "前序处理人")
+//            .build();
+//
+//    private static final Map<String, String> CMS_FIELDNAME = ImmutableMap.<String, String>builder()
+//            .put(Indexs.PREFIX_FIELD_CMS_STRING + "appId", "栏目标识")
+//            .put(Indexs.PREFIX_FIELD_CMS_STRING + "appName", "栏目名称")
+//            .put(Indexs.PREFIX_FIELD_CMS_STRING + "appAlias", "栏目别名")
+//            .put(Indexs.PREFIX_FIELD_CMS_STRING + "categoryId", "分类标识")
+//            .put(Indexs.PREFIX_FIELD_CMS_STRING + "categoryName", "分类名称")
+//            .put(Indexs.PREFIX_FIELD_CMS_STRING +"categoryAlias", "分类别名")
+//            .put(Indexs.PREFIX_FIELD_CMS_STRING + "description", "说明")
+//            .put(Indexs.PREFIX_FIELD_CMS_DATE + "publishTime", "发布时间")
+//            .put(Indexs.PREFIX_FIELD_CMS_DATE + "modifyTime", "修改时间").build();
+
+    protected static final List<WoField> FIXEDFIELD_APPLICATION = ListUtils
+            .unmodifiableList(Arrays.asList(new WoField(Indexs.FIELD_TITLE, "标题", Indexs.FIELD_TYPE_STRING),
+                    new WoField(Indexs.FIELD_CREATORPERSON, "创建者", Indexs.FIELD_TYPE_STRING),
+                    new WoField(Indexs.FIELD_CREATORUNIT, "部门", Indexs.FIELD_TYPE_STRING),
+                    new WoField(Indexs.FIELD_CREATETIME, "创建时间", Indexs.FIELD_TYPE_DATE),
+                    new WoField(Indexs.FIELD_UPDATETIME, "更新时间", Indexs.FIELD_TYPE_DATE),
+                    new WoField(Indexs.FIELD_SERIAL, "文号", Indexs.FIELD_TYPE_STRING),
+                    new WoField(Indexs.FIELD_PROCESSNAME, "流程", Indexs.FIELD_TYPE_STRING)));
+
+    protected static final List<WoField> FIXEDFIELD_APPINFO = ListUtils
+            .unmodifiableList(Arrays.asList(new WoField(Indexs.FIELD_TITLE, "标题", Indexs.FIELD_TYPE_STRING),
+                    new WoField(Indexs.FIELD_CREATORPERSON, "创建者", Indexs.FIELD_TYPE_STRING),
+                    new WoField(Indexs.FIELD_CREATORUNIT, "部门", Indexs.FIELD_TYPE_STRING),
+                    new WoField(Indexs.FIELD_CREATETIME, "创建时间", Indexs.FIELD_TYPE_DATE),
+                    new WoField(Indexs.FIELD_UPDATETIME, "更新时间", Indexs.FIELD_TYPE_DATE),
+                    new WoField(Indexs.FIELD_CATEGORYNAME, "分类", Indexs.FIELD_TYPE_STRING),
+                    new WoField(Indexs.FIELD_DESCRIPTION, "说明", Indexs.FIELD_TYPE_STRING)));
 
     private static final String[] QUERY_IGNORES = new String[] { "[", "]", "*", "?" };
     private static final String[] QUERY_IGNOREREPLACES = new String[] { "", "", "", "" };
@@ -598,4 +648,39 @@ public class Indexs {
             return (null != str) ? (T) str : null;
         }
     }
+
+    /**
+     * 根据传入的分类值,processPlatform 或者 cms 或者同时包含确定输出的固定字段.
+     * 
+     * @param list
+     * @return
+     */
+    public List<WoField> getFixedFieldList(List<String> list) {
+        List<WoField> woFields = new ArrayList<>();
+        if (list.contains(Indexs.CATEGORY_PROCESSPLATFORM)) {
+            woFields.addAll(FIXEDFIELD_APPLICATION);
+        } else if (list.contains(Indexs.CATEGORY_CMS)) {
+            woFields.addAll(FIXEDFIELD_APPINFO);
+        }
+        return ListTools.trim(woFields, true, true);
+    }
+
+    /**
+     * 根据directory对象获取reader
+     * 
+     * @param dirs
+     * @return
+     */
+    public static IndexReader[] indexReaders(List<com.x.query.core.express.index.Directory> dirs) {
+        return dirs.stream().map(o -> Indexs.directory(o.getCategory(), o.getKey(), true)).filter(Optional::isPresent)
+                .map(Optional::get).map(o -> {
+                    try {
+                        return DirectoryReader.open(o);
+                    } catch (IOException e) {
+                        LOGGER.error(e);
+                    }
+                    return null;
+                }).filter(o -> !Objects.isNull(o)).toArray(s -> new IndexReader[s]);
+    }
+
 }

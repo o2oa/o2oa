@@ -11,9 +11,22 @@ public class Directory {
     @Schema(description = "分类.")
     private String category;
 
+    @FieldDescribe("名称.")
+    @Schema(description = "名称.")
+    private String name;
+
     @FieldDescribe("标识.")
     @Schema(description = "标识.")
     private String key;
+
+    public Directory() {
+    }
+
+    public Directory(String category, String name, String key) {
+        this.category = category;
+        this.name = name;
+        this.key = key;
+    }
 
     public String getCategory() {
         return category;
@@ -29,6 +42,14 @@ public class Directory {
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
 }
