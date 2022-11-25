@@ -121,10 +121,6 @@ public class ActionQueryViewDocument extends BaseAction {
 		List<String> groupNames = null;
 		Boolean isAnonymous = effectivePerson.isAnonymous();
 		String personName = effectivePerson.getDistinguishedName();
-		Business business = null;
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			business = new Business(emc);
-		}
 
 		if( !isAnonymous ) {
 			try {
@@ -301,39 +297,32 @@ public class ActionQueryViewDocument extends BaseAction {
 			if ( isManager || isAppAdmin || isCategoryAdmin || isCreator ) {
 				isEditor = true;
 			} else {
-				// 判断当前登录者是不是该文档的可编辑者
-				try {
-					if( !isAnonymous ) {
-						if( ListTools.isNotEmpty( document.getAuthorPersonList() )) {
-							if( document.getAuthorPersonList().contains( getShortTargetFlag(personName) ) ) {
-								isEditor = true;
-							}
-						}
-						if( ListTools.isNotEmpty( document.getAuthorUnitList() )) {
-							if( ListTools.containsAny( getShortTargetFlag(unitNames), document.getAuthorUnitList())) {
-								isEditor = true;
-							}
-						}
-						if( ListTools.isNotEmpty( document.getAuthorGroupList() )) {
-							if( ListTools.containsAny( getShortTargetFlag(groupNames), document.getAuthorGroupList())) {
-								isEditor = true;
-							}
+				if( !isAnonymous ) {
+					if( ListTools.isNotEmpty( document.getAuthorPersonList() )) {
+						if( document.getAuthorPersonList().contains( getShortTargetFlag(personName) ) ) {
+							isEditor = true;
 						}
 					}
-				} catch (Exception e) {
-					check = false;
-					Exception exception = new ExceptionDocumentInfoProcess(e, "判断用户是否可编辑文档时发生异常！user:" + personName);
-					result.error(exception);
-					logger.error(e, effectivePerson, request, null);
+					if( ListTools.isNotEmpty( document.getAuthorUnitList() )) {
+						if( ListTools.containsAny( getShortTargetFlag(unitNames), document.getAuthorUnitList())) {
+							isEditor = true;
+						}
+					}
+					if( ListTools.isNotEmpty( document.getAuthorGroupList() )) {
+						if( ListTools.containsAny( getShortTargetFlag(groupNames), document.getAuthorGroupList())) {
+							isEditor = true;
+						}
+					}
 				}
 			}
 		}
 
 		if(!isEditor) {
-			check = this.hasReadPermission(business, document, unitNames, groupNames, effectivePerson, null);
-
-			if (!check) {
-				throw new ExceptionAccessDenied(effectivePerson, document);
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				Business business = new Business(emc);
+				if(!business.isDocumentReader(effectivePerson, document)){
+					throw new ExceptionAccessDenied(effectivePerson, document);
+				}
 			}
 		}
 
