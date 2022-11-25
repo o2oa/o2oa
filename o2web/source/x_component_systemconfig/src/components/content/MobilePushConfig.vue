@@ -28,27 +28,6 @@
 
       </div>
 
-      <div v-if="confgiData.pushType==='huawei'">
-
-        <BaseItem
-            :title="lp._pushConfig.appId"
-            :info="lp._pushConfig.appIdInfo"
-            :config="confgiData.huawei.appId"
-            :allowEditor="true"
-            @changeConfig="(value)=>{confgiData.huawei.appId = value; saveData()}"
-        ></BaseItem>
-
-        <BaseItem
-            :title="lp._pushConfig.appSecret"
-            :info="lp._pushConfig.appSecretInfo"
-            :config="confgiData.huawei.appSecret"
-            :allowEditor="true"
-            @changeConfig="(value)=>{confgiData.huawei.appSecret = value; saveData()}"
-        ></BaseItem>
-
-      </div>
-
-
     </div>
 
   </div>
@@ -70,26 +49,17 @@ const saveData = async () => {
   const d = {
     enable: confgiData.value.pushType==='jpush',
     appKey: confgiData.value.jpush.appKey,
-    masterSecret: confgiData.value.jpush.masterSecret,
-    huaweiPushEnable: (confgiData.value.pushType==='huawei'),
-    huaweiPushConfig: {
-      appId: confgiData.value.huawei.appId,
-      appSecret: confgiData.value.huawei.appSecret,
-    }
+    masterSecret: confgiData.value.jpush.masterSecret
   }
   await saveConfigData('jpushConfig', d);
 }
 
 getConfigData('jpushConfig').then((data)=>{
   confgiData.value = {
-    pushType: (data.enable) ? 'jpush' : ((data.huaweiPushEnable) ? 'huawei': 'none'),
+    pushType: (data.enable) ? 'jpush' :  'none',
     jpush: {
       appKey: data.appKey,
       masterSecret: data.masterSecret
-    },
-    huawei:{
-      appId: data.huaweiPushConfig.appId,
-      appSecret: data.huaweiPushConfig.appSecret
     }
   };
 });
