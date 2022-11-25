@@ -7,6 +7,7 @@ import java.util.Set;
 
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -497,6 +498,34 @@ public class Business {
 			}
 		}
 		return publishFlag;
+	}
+
+	/**
+	 * 是否是文档的读者
+	 * @param person
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean isDocumentReader(EffectivePerson person, Document document) throws Exception {
+		if (isManager(person)) {
+			return true;
+		}
+		String documentType = "数据";
+		if(documentType.equals(document.getDocumentType())){
+			return true;
+		}
+		if(BooleanUtils.isTrue(document.getIsAllRead())){
+			return true;
+		}
+		Long count = this.reviewFactory().countByDocumentAndPerson(document.getId(), person.getDistinguishedName());
+		if(count > 0){
+			return true;
+		}
+		count = this.reviewFactory().countByDocumentAndPerson(document.getId(), "*");
+		if(count > 0){
+			return true;
+		}
+		return false;
 	}
 
 	/**
