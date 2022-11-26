@@ -30,8 +30,8 @@ import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Projection;
 import com.x.processplatform.core.entity.element.util.ProjectionFactory;
+import com.x.processplatform.core.express.WorkDataHelper;
 import com.x.processplatform.service.processing.Business;
-import com.x.processplatform.service.processing.WorkDataHelper;
 
 class V2Projection extends BaseAction {
 

@@ -9,7 +9,6 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.processplatform.service.processing.ThisApplication;
 import com.x.processplatform.service.processing.schedule.CleanEvent;
-import com.x.processplatform.service.processing.schedule.DeleteDraft;
 
 class ActionCleanEvent extends BaseAction {
 

@@ -197,7 +197,7 @@ class ActionExport extends BaseAction {
         Streams.mapWithIndex(param.first().stream(), Pair::of)
                 .map(o -> Quintuple.of(o.first().first(), o.first().second(), o.first().third(), o.second(),
                         param.second().getFields(o.first().first())))
-                .filter(o -> !Objects.isNull(o.fifth())).forEach(o -> {
+                .filter(o -> o.fifth().length > 0).forEach(o -> {
                     Object value = Indexs.indexableFieldValue(o.fifth(), o.third());
                     Cell cell = row.createCell(o.fourth().intValue());
                     if ((null != value) && (Date.class.isAssignableFrom(value.getClass()))) {
