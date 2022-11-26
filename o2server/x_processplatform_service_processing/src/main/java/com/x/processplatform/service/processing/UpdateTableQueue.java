@@ -1,29 +1,8 @@
 package com.x.processplatform.service.processing;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.container.factory.EntityManagerContainerFactory;
-import com.x.base.core.entity.JpaObject_;
-import com.x.base.core.project.Applications;
-import com.x.base.core.project.gson.XGsonBuilder;
-import com.x.base.core.project.jaxrs.WrapBoolean;
-import com.x.base.core.project.logger.Logger;
-import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.queue.AbstractQueue;
-import com.x.base.core.project.scripting.JsonScriptingExecutor;
-import com.x.base.core.project.scripting.ScriptingFactory;
-import com.x.base.core.project.webservices.WebservicesClient;
-import com.x.base.core.project.x_query_service_processing;
-import com.x.processplatform.core.entity.content.Data;
-import com.x.processplatform.core.entity.content.Work;
-import com.x.processplatform.core.entity.content.WorkCompleted;
-import com.x.processplatform.core.entity.element.Process;
-import com.x.processplatform.core.entity.message.Event;
-import com.x.processplatform.core.entity.message.Event_;
-import com.x.processplatform.service.processing.processor.AeiObjects;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -33,9 +12,33 @@ import javax.persistence.criteria.Root;
 import javax.script.Bindings;
 import javax.script.CompiledScript;
 import javax.script.ScriptContext;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.entity.JpaObject_;
+import com.x.base.core.project.Applications;
+import com.x.base.core.project.x_query_service_processing;
+import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.jaxrs.WrapBoolean;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.queue.AbstractQueue;
+import com.x.base.core.project.scripting.JsonScriptingExecutor;
+import com.x.base.core.project.scripting.ScriptingFactory;
+import com.x.base.core.project.webservices.WebservicesClient;
+import com.x.processplatform.core.entity.content.Data;
+import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.content.WorkCompleted;
+import com.x.processplatform.core.entity.element.Process;
+import com.x.processplatform.core.entity.message.Event;
+import com.x.processplatform.core.entity.message.Event_;
+import com.x.processplatform.core.express.WorkDataHelper;
+import com.x.processplatform.service.processing.processor.AeiObjects;
 
 public class UpdateTableQueue extends AbstractQueue<String> {
 

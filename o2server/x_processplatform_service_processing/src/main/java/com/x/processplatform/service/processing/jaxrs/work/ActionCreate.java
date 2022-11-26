@@ -18,9 +18,9 @@ import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Begin;
 import com.x.processplatform.core.entity.element.Process;
+import com.x.processplatform.core.express.WorkDataHelper;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
-import com.x.processplatform.service.processing.WorkDataHelper;
 
 /**
  * 创建处于start状态的work

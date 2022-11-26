@@ -58,11 +58,11 @@ import com.x.processplatform.core.entity.element.util.ProjectionFactory;
 import com.x.processplatform.core.entity.message.WorkCompletedEvent;
 import com.x.processplatform.core.entity.message.WorkEvent;
 import com.x.processplatform.core.express.ProcessingAttributes;
+import com.x.processplatform.core.express.WorkDataHelper;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
 import com.x.processplatform.service.processing.ThisApplication;
 import com.x.processplatform.service.processing.WorkContext;
-import com.x.processplatform.service.processing.WorkDataHelper;
 import com.x.processplatform.service.processing.configurator.ActivityProcessingConfigurator;
 import com.x.processplatform.service.processing.configurator.ProcessingConfigurator;
 
