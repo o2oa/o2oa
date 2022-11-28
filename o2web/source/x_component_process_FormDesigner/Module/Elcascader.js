@@ -23,7 +23,7 @@ MWF.xApplication.process.FormDesigner.Module.Elcascader = MWF.FCElcascader = new
 		html += " :collapse-tags=\"collapseTags\"";
 		html += " :separator=\"separator\"";
 
-		html += " :style=\"elStyles\"";
+		html += " :style=\"tmpElStyles\"";
 
 		html += " :value=\"id\">";
 

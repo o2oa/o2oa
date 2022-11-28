@@ -41,7 +41,7 @@ MWF.xApplication.process.FormDesigner.Module.Eltime = MWF.FCEltime = new Class({
 			}, this);
 		}
 
-		html += " :style=\"elStyles\">";
+		html += " :style=\"tmpElStyles\">";
 		if (this.json.vueSlot) html += this.json.vueSlot;
 		return html;
 	},

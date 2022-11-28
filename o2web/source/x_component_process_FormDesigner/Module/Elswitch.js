@@ -32,7 +32,7 @@ MWF.xApplication.process.FormDesigner.Module.Elswitch = MWF.FCElswitch = new Cla
 		html += " :active-icon-class=\"activeIconClass\"";
 		html += " :inactive-icon-class=\"inactiveIconClass\"";
 
-		html += " :style=\"elStyles\"";
+		html += " :style=\"tmpElStyles\"";
 
 		html += "></el-switch>";
 		return html;
@@ -41,6 +41,7 @@ MWF.xApplication.process.FormDesigner.Module.Elswitch = MWF.FCElswitch = new Cla
 		//var data = this.json;
 		return function(){
 			this.json[this.json.id] = true;
+			this.setElStyles();
 			return Object.assign(this.json, this.tmpVueData||{});
 		}.bind(this);
 	},
