@@ -39,7 +39,7 @@ MWF.xApplication.process.FormDesigner.Module.Elautocomplete = MWF.FCElautocomple
 			}, this);
 		}
 
-		html += " :style=\"elStyles\"";
+		html += " :style=\"tmpElStyles\"";
 
 		// if (this.json.elStyles){
 		// 	var style = "";

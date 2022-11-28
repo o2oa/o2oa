@@ -2395,6 +2395,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 					"onChange": function(){
 						//this.data[name] = maplist.toJson();
 						//
+                        debugger;
                         var oldData = this.data[name];
                         this.changeJsonDate(name, maplist.toJson());
                         this.changeStyle(name, oldData);

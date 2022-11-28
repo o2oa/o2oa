@@ -46,7 +46,7 @@ MWF.xApplication.process.FormDesigner.Module.Elselect = MWF.FCElselect = new Cla
 		html += " :remote=\"remote\"";
 		html += " :loading-text=\"loadingText\"";
 
-		html += " :style=\"elStyles\"";
+		html += " :style=\"tmpElStyles\"";
 
 		html += " value=\"\"";
 		html += " :placeholder=\"id\">";
@@ -60,6 +60,7 @@ MWF.xApplication.process.FormDesigner.Module.Elselect = MWF.FCElselect = new Cla
 		//var data = this.json;
 		return function(){
 			// this.json[this.json.id] = "";
+			this.setElStyles();
 			return Object.assign(this.json, this.tmpVueData||{});
 		}.bind(this)
 	},

@@ -40,7 +40,7 @@ MWF.xApplication.process.FormDesigner.Module.Elnumber = MWF.FCElnumber = new Cla
 				if (this.json.elProperties[k]) html += " "+k+"=\""+this.json.elProperties[k]+"\"";
 			}, this);
 		}
-		html += " :style=\"elStyles\"";
+		html += " :style=\"tmpElStyles\"";
 
 		// if (this.json.elStyles){
 		// 	var style = "";
