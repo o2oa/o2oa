@@ -31,7 +31,7 @@ MWF.xApplication.process.FormDesigner.Module.Eldate = MWF.FCEldate = new Class({
 			}, this);
 		}
 
-		html += " :style=\"elStyles\">";
+		html += " :style=\"tmpElStyles\">";
 		if (this.json.vueSlot) html += this.json.vueSlot;
 		html += "</el-date-picker>";
 		return html;

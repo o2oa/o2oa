@@ -40,7 +40,7 @@ MWF.xApplication.process.FormDesigner.Module.Elcarousel = MWF.FCElcarousel = new
 			}, this);
 		}
 
-		html += " :style=\"elStyles\">";
+		html += " :style=\"tmpElStyles\">";
 
 		if (this.json.vueSlot){
 			html += this.json.vueSlot;
