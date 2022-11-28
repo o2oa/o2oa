@@ -25,7 +25,7 @@ MWF.xApplication.process.FormDesigner.Module.Elradio = MWF.FCElradio = new Class
 		html += (this.json.buttonRadio) ? " ><el-radio-button" : " ><el-radio";
 		html += " :border=\"border\"";
 
-		html += " :style=\"elStyles\"";
+		html += " :style=\"tmpElStyles\"";
 
 		html += ">{{id}}"+((this.json.buttonRadio) ? "</el-radio-button></el-radio-group>" : "</el-radio></el-radio-group>");
 		return html;

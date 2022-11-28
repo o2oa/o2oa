@@ -41,7 +41,7 @@ MWF.xApplication.process.FormDesigner.Module.Elbutton = MWF.FCElbutton = new Cla
 			}, this);
 		}
 
-		html += " :style=\"elStyles\"";
+		html += " :style=\"tmpElStyles\"";
 
 		// if (this.json.elStyles){
 		// 	var style = "";

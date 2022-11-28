@@ -30,7 +30,7 @@ MWF.xApplication.process.FormDesigner.Module.Elrate = MWF.FCElrate = new Class({
 			}, this);
 		}
 
-		html += " :style=\"elStyles\">";
+		html += " :style=\"tmpElStyles\">";
 		if (this.json.vueSlot) html += this.json.vueSlot;
 		html += "</el-rate>";
 		return html;

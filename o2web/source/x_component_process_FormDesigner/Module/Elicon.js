@@ -21,7 +21,7 @@ MWF.xApplication.process.FormDesigner.Module.Elicon = MWF.FCElicon = new Class({
 			}, this);
 		}
 
-		html += " :style=\"[elStyles, {fontSize: iconSize+'px', color: iconColor}]\"";
+		html += " :style=\"[tmpElStyles, {fontSize: iconSize+'px', color: iconColor}]\"";
 
 		// var styles = {};
 		// if (this.json.iconSize) styles["font-size"] = this.json.iconSize+"px";
@@ -68,6 +68,9 @@ MWF.xApplication.process.FormDesigner.Module.Elicon = MWF.FCElicon = new Class({
 	_preprocessingModuleData: function(){
 		this.node.clearStyles();
 		//if (this.initialStyles) this.node.setStyles(this.initialStyles);
+
+		if( this.json.tmpElStyles )delete this.json.tmpElStyles;
+
 		this.json.recoveryStyles = Object.clone(this.json.styles);
 
 		if (this.json.recoveryStyles) Object.each(this.json.recoveryStyles, function(value, key){

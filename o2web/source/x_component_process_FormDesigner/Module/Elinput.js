@@ -55,7 +55,7 @@ MWF.xApplication.process.FormDesigner.Module.Elinput = MWF.FCElinput = new Class
 			}, this);
 		}
 
-		html += " :style=\"elStyles\"";
+		html += " :style=\"tmpElStyles\"";
 
 		// if (this.json.elStyles){
 		// 	var style = "";

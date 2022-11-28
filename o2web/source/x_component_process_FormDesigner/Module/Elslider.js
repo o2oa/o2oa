@@ -46,7 +46,7 @@ MWF.xApplication.process.FormDesigner.Module.Elslider = MWF.FCElslider = new Cla
 		html += " :show-tooltip=\"showTooltip\"";
 		html += " :tooltip-class=\"tooltipClass\"";
 
-		html += " :style=\"elStyles\"";
+		html += " :style=\"tmpElStyles\"";
 		html += "></el-slider>";
 		return html;
 	},
@@ -74,6 +74,7 @@ MWF.xApplication.process.FormDesigner.Module.Elslider = MWF.FCElslider = new Cla
 		};
 	},
 	_createVueData: function(){
+		this.setElStyles();
 		var data = this.json;
 		Object.assign(data, this.tmpVueData||{});
 
