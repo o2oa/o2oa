@@ -37,7 +37,10 @@ MWF.xApplication.process.ProcessDesigner.Main = new Class({
         //this.actions = new MWF.xApplication.process.ProcessManager.Actions.RestActions();
 
         this.lp = MWF.xApplication.process.ProcessDesigner.LP;
-//		this.processData = this.options.processData;		
+//		this.processData = this.options.processData;
+        if( !this.application && this.options.application ){
+            this.application = this.options.application;
+        }
     },
     loadApplication: function(callback){
         this.gadgets = [];

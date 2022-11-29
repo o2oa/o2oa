@@ -30,6 +30,10 @@ MWF.xApplication.portal.ScriptDesigner.Main = new Class({
 			this.options.title = this.options.title + "-"+MWF.xApplication.portal.ScriptDesigner.LP.newScript;
 		}
 
+        if( this.options.application ){
+            if( !this.application  )this.application = this.options.application;
+        }
+
         this.actions = MWF.Actions.get("x_portal_assemble_designer");
 		//this.actions = new MWF.xApplication.portal.PortalManager.Actions.RestActions();
 		

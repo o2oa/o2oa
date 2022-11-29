@@ -30,6 +30,9 @@ MWF.xApplication.process.ScriptDesigner.Main = new Class({
 			this.options.desktopReload = false;
 			this.options.title = this.options.title + "-"+MWF.APPSD.LP.newScript;
 		}
+        if( !this.application && this.options.application ){
+            this.application = this.options.application;
+        }
 
         this.actions = MWF.Actions.get("x_processplatform_assemble_designer");
 		//this.actions = new MWF.xApplication.process.ProcessManager.Actions.RestActions();
