@@ -173,7 +173,10 @@ class ActionRollback extends BaseAction {
 		work.setActivityDescription("");
 		work.setActivityToken(workLog.getFromActivityToken());
 		work.setActivityType(workLog.getFromActivityType());
-		work.setForm(business.element().lookupSuitableForm(work.getProcess(), work.getActivity()));
+		String formId =business.element().lookupSuitableForm(work.getProcess(), work.getActivity()); 
+        if (StringUtils.isNotBlank(formId)) {
+            work.setForm(formId);                   
+        }
 //		work.setErrorRetry(0);
 		work.setWorkStatus(WorkStatus.processing);
 		// 因为workCompleted没有workCreateType属性，回溯到任何环节都必须要有待办，默认置为assign
