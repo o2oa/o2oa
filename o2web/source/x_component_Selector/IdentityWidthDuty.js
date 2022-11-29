@@ -132,7 +132,9 @@ MWF.xApplication.Selector.IdentityWidthDuty = new Class({
                             }
                         });
                         if( flag ){ //需要获取层次名来排序
-                            o2.Actions.load("x_organization_assemble_express").UnitAction.listObject( function (json) {
+                            o2.Actions.load("x_organization_assemble_express").UnitAction.listObject( {
+                                unitList: unitList
+                            }, function (json) {
                                 unitObjectList = json.data || [];
                                 loadNestedUnit();
                             }.bind(this) )
