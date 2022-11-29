@@ -167,10 +167,15 @@ MWF.xApplication.portal.PortalManager.ScriptExplorer = new Class({
 
     _createElement: function(e){
         var _self = this;
+        var application = _self.app.options.application || _self.app.application;
         var options = {
+            "application":{
+                "name": application.name,
+                "id": application.id
+            },
             "onQueryLoad": function(){
                 this.actions = _self.app.restActions;
-                this.application = _self.app.options.application || _self.app.application;
+                this.application = application;
                 this.explorer = _self;
             }
         };
@@ -223,7 +228,11 @@ MWF.xApplication.portal.PortalManager.ScriptExplorer.Script = new Class({
 		var options = {
             "appId": "portal.ScriptDesigner"+_self.data.id,
             "id": _self.data.id,
-            "application": _self.explorer.app.options.application.id,
+            // "application": _self.explorer.app.options.application.id,
+            "application":{
+                "name": _self.explorer.app.options.application.name,
+                "id": _self.explorer.app.options.application.id
+            },
 			"onQueryLoad": function(){
 				this.actions = _self.explorer.actions;
 				this.category = _self;

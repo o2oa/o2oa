@@ -194,6 +194,10 @@ MWF.xApplication.portal.PortalManager.WidgetExplorer = new Class({
         var options = {
             "style": layout.desktop.pageDesignerStyle || "default",
             //"templateId": "page.json",
+            "application":{
+                "name": _self.app.options.application.name,
+                "id": _self.app.options.application.id
+            },
             "onQueryLoad": function(){
                 this.actions = _self.app.restActions;
                 this.application = _self.app.options.application;
@@ -231,7 +235,11 @@ MWF.xApplication.portal.PortalManager.WidgetExplorer.Widget= new Class({
         var options = {
             "appId": "portal.WidgetDesigner"+_self.data.id,
             "id": _self.data.id,
-            "application": _self.explorer.app.options.application.id,
+            // "application": _self.explorer.app.options.application.id,
+            "application":{
+                "name": _self.explorer.app.options.application.name,
+                "id": _self.explorer.app.options.application.id
+            },
             "onQueryLoad": function(){
                 this.actions = _self.explorer.actions;
                 this.category = _self;

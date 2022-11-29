@@ -30,7 +30,9 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
             this.application = this.status.application;
             this.options.id = this.status.id;
         }
-
+        if( !this.application && this.options.application ){
+            this.application = this.options.application;
+        }
         if (!this.options.id){
             this.options.desktopReload = false;
             this.options.title = this.options.title + "-"+MWF.APPDSMD.LP.newStatement;
@@ -217,7 +219,11 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
             var options = {
                 "appId": "query.StatementDesigner"+statement.id,
                 "id" : statement.id,
-                "application": _self.application.id,
+                // "application": _self.application.id,
+                "application": {
+                    "name": _self.application.name,
+                    "id": _self.application.id,
+                },
                 "onQueryLoad": function(){
                     this.actions = _self.actions;
                     this.category = _self;

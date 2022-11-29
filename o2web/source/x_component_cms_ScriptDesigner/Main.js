@@ -26,6 +26,12 @@ MWF.xApplication.cms.ScriptDesigner.Main = new Class({
             this.application = this.status.application;
 			this.options.id = this.status.id;
         }
+
+        if( this.options.application ){
+            if( !this.application  )this.application = this.options.application;
+            if( !this.column  )this.column = this.options.application;
+        }
+
 		if (!this.options.id){
 			this.options.desktopReload = false;
 			this.options.title = this.options.title + "-"+MWF.CMSSD.LP.newScript;

@@ -30,6 +30,11 @@ MWF.xApplication.cms.DictionaryDesigner.Main = new Class({
             this.setOptions(this.status.options);
         }
 
+        if( this.options.application ){
+            if( !this.application  )this.application = this.options.application;
+            if( !this.column  )this.column = this.options.application;
+        }
+
 		if (!this.options.id){
 			this.options.desktopReload = false;
 			this.options.title = this.options.title + "-"+MWF.CMSDD.LP.newDictionary;

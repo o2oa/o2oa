@@ -189,18 +189,29 @@ MWF.xApplication.portal.PortalManager.PageExplorer = new Class({
     },
 
     _createElement: function(e){
-        layout.desktop.getPageDesignerStyle(function(){
-            var _self = this;
-            var options = {
-                "style": layout.desktop.pageDesignerStyle,
-                "template": "page.json",
-                "onQueryLoad": function(){
-                    this.actions = _self.app.restActions;
-                    this.application = _self.app.options.application;
-                }
-            };
-            layout.desktop.openApplication(e, "portal.PageDesigner", options);
-        }.bind(this));
+	    if( layout.desktop && layout.desktop.getPageDesignerStyle ){
+            layout.desktop.getPageDesignerStyle(function(){
+                this.__createElement(e, layout.desktop.pageDesignerStyle )
+            }.bind(this));
+        }else{
+            this.__createElement( e,"default" );
+        }
+    },
+    __createElement: function( e, style ){
+        var _self = this;
+        var options = {
+            "style": style,
+            "template": "page.json",
+            "application":{
+                "name": _self.app.options.application.name,
+                "id": _self.app.options.application.id
+            },
+            "onQueryLoad": function(){
+                this.actions = _self.app.restActions;
+                this.application = _self.app.options.application;
+            }
+        };
+        layout.desktop.openApplication(e, "portal.PageDesigner", options);
     },
 
     _loadItemDataList: function(callback){
@@ -233,7 +244,11 @@ MWF.xApplication.portal.PortalManager.PageExplorer.Page= new Class({
         var options = {
             "appId": "portal.PageDesigner"+_self.data.id,
             "id": _self.data.id,
-            "application": _self.explorer.app.options.application.id,
+            // "application": _self.explorer.app.options.application.id,
+            "application":{
+                "name": _self.explorer.app.options.application.name,
+                "id": _self.explorer.app.options.application.id
+            },
             "onQueryLoad": function(){
                 this.actions = _self.explorer.actions;
                 this.category = _self;

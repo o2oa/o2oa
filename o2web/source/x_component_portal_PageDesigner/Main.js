@@ -33,6 +33,9 @@ MWF.xApplication.portal.PageDesigner.Main = new Class({
 			this.options.desktopReload = false;
 			this.options.title = this.options.title + "-"+MWF.APPPOD.LP.newPage;
 		}
+        if( this.options.application ){
+            if( !this.application  )this.application = this.options.application;
+        }
         this.actions = MWF.Actions.get("x_portal_assemble_designer");
 		//this.actions = new MWF.xApplication.portal.PortalManager.Actions.RestActions();
 		
