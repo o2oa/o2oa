@@ -13,11 +13,16 @@ MWF.xApplication.cms.ColumnManager.ScriptExplorer = new Class({
 
     _createElement: function(e){
         var _self = this;
+        var application = _self.app.options.application || _self.app.application || _self.app.options.column || _self.app.column;
         var options = {
+            "application":{
+                "name": application.name,
+                "id": application.id
+            },
             "onQueryLoad": function(){
                 this.actions = _self.app.restActions;
                 //_self.app.options.application = _self.app.options.application || _self.app.options.column;
-                this.application = _self.app.options.application || _self.app.application || _self.app.options.column || _self.app.column;
+                this.application = application;
                 this.column = this.application;
                 this.explorer = _self;
             },
@@ -223,16 +228,21 @@ MWF.xApplication.cms.ColumnManager.ScriptExplorer.Script = new Class({
     },
 	_open: function(e){
 		var _self = this;
+		var application = _self.explorer.app.options.application || _self.explorer.app.options.column;
 		var options = {
             "appId": "cms.ScriptDesigner"+_self.data.id,
             "id": _self.data.id,
-            "application": (_self.explorer.app.options.application || _self.explorer.app.options.column).id,
+            // "application": (_self.explorer.app.options.application || _self.explorer.app.options.column).id,
+            "application":{
+                "name": application.name,
+                "id": application.id
+            },
 			"onQueryLoad": function(){
 				this.actions = _self.explorer.actions;
 				this.category = _self;
 				this.options.id = _self.data.id;
-                this.application = _self.explorer.app.options.application || _self.explorer.app.options.column;
-                this.column = _self.explorer.app.options.application || _self.explorer.app.options.column;
+                this.application = application;
+                this.column = application;
                 this.explorer = _self.explorer
 			}
 		};

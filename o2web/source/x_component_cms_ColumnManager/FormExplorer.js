@@ -97,6 +97,10 @@ MWF.xApplication.cms.ColumnManager.FormExplorer = new Class({
                     var options = {
                         "style": layout.desktop.formDesignerStyle,
                         "template": template,
+                        "application":{
+                            "name": _self.app.options.application.name,
+                            "id": _self.app.options.application.id
+                        },
                         "onQueryLoad": function () {
                             this.actions = _self.app.restActions;
                             this.application = _self.app.options.application;
@@ -113,6 +117,10 @@ MWF.xApplication.cms.ColumnManager.FormExplorer = new Class({
                     var options = {
                         "style": layout.desktop.formDesignerStyle,
                         "templateId": template,
+                        "application":{
+                            "name": _self.app.options.application.name,
+                            "id": _self.app.options.application.id
+                        },
                         "onQueryLoad": function () {
                             this.actions = _self.app.restActions;
                             this.application = _self.app.options.application;
@@ -374,7 +382,11 @@ MWF.xApplication.cms.ColumnManager.FormExplorer.Form = new Class({
                 "style": layout.desktop.formDesignerStyle,
                 "appId": "cms.FormDesigner"+_self.data.id,
                 "id": _self.data.id,
-                "application": _self.explorer.app.options.column.id,
+                // "application": _self.explorer.app.options.column.id,
+                "application":{
+                    "name": _self.explorer.app.options.column.name,
+                    "id": _self.explorer.app.options.column.id
+                },
                 "onQueryLoad": function(){
                     this.actions = _self.explorer.actions;
                     this.category = _self;

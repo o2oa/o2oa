@@ -12,6 +12,10 @@ MWF.xApplication.cms.ColumnManager.DictionaryExplorer = new Class({
     _createElement: function(e){
         var _self = this;
         var options = {
+            "application":{
+                "name": _self.app.options.column.name,
+                "id": _self.app.options.column.id
+            },
             "onQueryLoad": function(){
                 this.actions = _self.app.restActions;
                 this.application = _self.app.options.column;
@@ -338,7 +342,11 @@ MWF.xApplication.cms.ColumnManager.DictionaryExplorer.Dictionary = new Class({
 		var options = {
             "appId": "cms.DictionaryDesigner"+_self.data.id,
             "id": _self.data.id,
-            "application": _self.explorer.app.options.column.id,
+            // "application": _self.explorer.app.options.column.id,
+            "application":{
+                "name": _self.explorer.app.options.column.name,
+                "id": _self.explorer.app.options.column.id
+            },
 			"onQueryLoad": function(){
 				this.actions = _self.explorer.actions;
 				this.category = _self;

@@ -29,7 +29,9 @@ MWF.xApplication.query.ViewDesigner.Main = new Class({
             this.application = this.status.application;
             this.options.id = this.status.id;
         }
-
+        if( !this.application && this.options.application ){
+            this.application = this.options.application;
+        }
 		if (!this.options.id){
 			this.options.desktopReload = false;
 			this.options.title = this.options.title + "-"+MWF.APPDVD.LP.newView;
@@ -183,7 +185,8 @@ MWF.xApplication.query.ViewDesigner.Main = new Class({
 	},
     getApplication:function(callback){
         if (!this.application){
-            this.actions.getApplication((this.options.application), function(json){
+            var app = typeOf(this.options.application) === "string" ? this.options.application : this.options.application.id;
+            this.actions.getApplication((app), function(json){
                 this.application = {"name": json.data.name, "id": json.data.id};
                 if (callback) callback();
             }.bind(this));
@@ -360,7 +363,11 @@ MWF.xApplication.query.ViewDesigner.Main = new Class({
                 var options = {
                     "appId": "query.ViewDesigner"+view.id,
                     "id": view.id,
-                    "application": _self.application.id,
+                    // "application": _self.application.id,
+                    "application": {
+                        "name": _self.application.name,
+                        "id": _self.application.id,
+                    },
                     "onQueryLoad": function(){
                         this.actions = _self.actions;
                         this.category = _self;
