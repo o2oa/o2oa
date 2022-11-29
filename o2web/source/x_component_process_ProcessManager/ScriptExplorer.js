@@ -157,6 +157,10 @@ MWF.xApplication.process.ProcessManager.ScriptExplorer = new Class({
     _createElement: function(e){
         var _self = this;
         var options = {
+            "application":{
+                "name": (_self.app.options.application || _self.app.application).name,
+                "id": (_self.app.options.application || _self.app.application).id
+            },
             "onQueryLoad": function(){
                 this.actions = _self.app.restActions;
                 this.application = _self.app.options.application || _self.app.application;
@@ -214,7 +218,11 @@ MWF.xApplication.process.ProcessManager.ScriptExplorer.Script = new Class({
 		var options = {
             "appId": "process.ScriptDesigner"+_self.data.id,
             "id": _self.data.id,
-            "application": _self.explorer.app.options.application.id,
+            // "application": _self.explorer.app.options.application.id,
+            "application":{
+                "name": _self.explorer.app.options.application.name,
+                "id": _self.explorer.app.options.application.id
+            },
 			"onQueryLoad": function(){
 				this.actions = _self.explorer.actions;
 				this.category = _self;
