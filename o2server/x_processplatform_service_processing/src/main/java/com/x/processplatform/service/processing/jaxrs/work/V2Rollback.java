@@ -162,7 +162,11 @@ class V2Rollback extends BaseAction {
 		work.setSplitting(workLog.getSplitting());
 		work.setSplitToken(workLog.getSplitToken());
 		work.setSplitValue(workLog.getSplitValue());
-		work.setForm(business.element().lookupSuitableForm(work.getProcess(), work.getActivity()));
+	      // 重新设置表单
+        String formId =business.element().lookupSuitableForm(work.getProcess(), work.getActivity()); 
+        if (StringUtils.isNotBlank(formId)) {
+            work.setForm(formId);                   
+        }
 		workLog.setConnected(false);
 		workLog.setArrivedActivity("");
 		workLog.setArrivedActivityAlias("");
