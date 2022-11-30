@@ -271,7 +271,8 @@ public class PersistenceXmlHelper {
         Properties properties = propertiesBaseSlice(className);
         properties.put("openjpa.jdbc.DBDictionary", Config.externalDataSources().dictionary());
         /* 如果是DB2 添加 Schema,mysql 不需要Schema 如果用了Schema H2数据库就会报错说没有Schema */
-        if (Config.externalDataSources().hasSchema()) {
+        if (Config.externalDataSources().hasSchema()
+                && (StringUtils.isNotBlank(Config.externalDataSources().schema()))) {
             properties.put("openjpa.jdbc.Schema", Config.externalDataSources().schema());
         }
         properties.put("openjpa.slice.Names",
@@ -315,7 +316,8 @@ public class PersistenceXmlHelper {
         Properties properties = propertiesBaseSingle(className);
         properties.put("openjpa.jdbc.DBDictionary", Config.externalDataSources().dictionary());
         /* 如果是DB2 添加 Schema,mysql 不需要Schema 如果用了Schema H2数据库就会报错说没有Schema */
-        if (Config.externalDataSources().hasSchema()) {
+        if (Config.externalDataSources().hasSchema()
+                && (StringUtils.isNotBlank(Config.externalDataSources().schema()))) {
             properties.put("openjpa.jdbc.Schema", Config.externalDataSources().schema());
         }
         if (StringUtils.isNotEmpty(Config.externalDataSources().getTransactionIsolation())) {
