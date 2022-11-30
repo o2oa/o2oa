@@ -29,7 +29,9 @@ MWF.xApplication.process.DictionaryDesigner.Main = new Class({
             this.options.id = this.status.id;
             this.setOptions(this.status.options);
         }
-
+        if( !this.application && this.options.application ){
+            this.application = this.options.application;
+        }
 		if (!this.options.id){
 			this.options.desktopReload = false;
 			this.options.title = this.options.title + "-"+MWF.APPDD.LP.newDictionary;

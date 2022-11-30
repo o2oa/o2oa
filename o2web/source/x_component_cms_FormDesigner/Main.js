@@ -38,6 +38,12 @@ MWF.xApplication.cms.FormDesigner.Main = new Class({
 		this.actions = MWF.Actions.get("x_cms_assemble_control"); //new MWF.xApplication.cms.ColumnManager.Actions.RestActions();
 		
 		this.lp = MWF.xApplication.cms.FormDesigner.LP;
+
+		if( this.options.application ){
+            if( !this.application  )this.application = this.options.application;
+            if( !this.column  )this.column = this.options.application;
+        }
+
 //		this.processData = this.options.processData;
 	},
 
