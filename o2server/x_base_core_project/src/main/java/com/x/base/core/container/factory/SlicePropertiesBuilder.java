@@ -129,7 +129,7 @@ public class SlicePropertiesBuilder {
         } else if (StringUtils.containsIgnoreCase(url, "jdbc:mysql:")) {
             return false;
         } else if (StringUtils.containsIgnoreCase(url, "jdbc:postgresql:")) {
-            return false;
+            return true;
         } else if (StringUtils.containsIgnoreCase(url, "jdbc:informix-sqli:")) {
             return true;
         } else if (StringUtils.containsIgnoreCase(url, "jdbc:gbasedbt-sqli:")) {
