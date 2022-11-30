@@ -195,7 +195,7 @@ public class Process extends SliceJpaObject {
 	}
 
 	public Boolean getRouteNameAsOpinion() {
-		return !BooleanUtils.isFalse(routeNameAsOpinion);
+		return BooleanUtils.isNotFalse(routeNameAsOpinion);
 	}
 
 	public ProcessProperties getProperties() {
