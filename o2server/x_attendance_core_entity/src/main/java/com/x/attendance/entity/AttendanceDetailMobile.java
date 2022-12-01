@@ -147,13 +147,13 @@ public class AttendanceDetailMobile extends SliceJpaObject {
 
 	public static final String optMachineType_FIELDNAME = "optMachineType";
 	@FieldDescribe("操作设备类别：手机品牌|PAD|PC|其他")
-	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + optMachineType_FIELDNAME )
+	@Column( length = JpaObject.length_128B, name = ColumnNamePrefix + optMachineType_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String optMachineType;
 
 	public static final String optSystemName_FIELDNAME = "optSystemName";
 	@FieldDescribe("操作设备类别：Mac|Windows|IOS|Android|其他")
-	@Column( length = JpaObject.length_32B, name = ColumnNamePrefix + optSystemName_FIELDNAME )
+	@Column( length = JpaObject.length_128B, name = ColumnNamePrefix + optSystemName_FIELDNAME )
 	@CheckPersist(allowEmpty = true)
 	private String optSystemName;
 

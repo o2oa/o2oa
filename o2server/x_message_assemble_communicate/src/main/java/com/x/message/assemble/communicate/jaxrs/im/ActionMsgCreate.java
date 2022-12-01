@@ -2,7 +2,11 @@ package com.x.message.assemble.communicate.jaxrs.im;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
+import com.x.message.assemble.communicate.Business;
+import com.x.message.core.entity.IMConversationExt;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.text.StringEscapeUtils;
 
@@ -24,6 +28,8 @@ import com.x.message.core.entity.IMConversation;
 import com.x.message.core.entity.IMMsg;
 import com.x.message.core.entity.Message;
 
+import static com.x.message.core.entity.IMConversation.CONVERSATION_TYPE_SINGLE;
+
 public class ActionMsgCreate extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionMsgCreate.class);
@@ -42,18 +48,37 @@ public class ActionMsgCreate extends BaseAction {
 				throw new ExceptionMsgEmptyBody();
 			}
 			msg.setCreatePerson(effectivePerson.getDistinguishedName());
-			escapeHTML(msg);
+			escapeHTML(msg); // 清除可执行的代码
 			LOGGER.info("escape html json:" + msg.getBody());
 
 			emc.beginTransaction(IMMsg.class);
 			emc.persist(msg, CheckPersistType.all);
 			emc.commit();
 
+			// 更新会话最后消息时间
 			emc.beginTransaction(IMConversation.class);
 			IMConversation conversation = emc.find(msg.getConversationId(), IMConversation.class);
 			conversation.setLastMessageTime(new Date());
 			emc.check(conversation, CheckPersistType.all);
 			emc.commit();
+			if (conversation.getType().equals(CONVERSATION_TYPE_SINGLE)) { // 单聊才有这种情况
+				List<String> persons = conversation.getPersonList().stream().filter((s)-> !Objects.equals(s, effectivePerson.getDistinguishedName())).collect(Collectors.toList());
+				if (!persons.isEmpty()) {
+					String person = persons.get(0);
+					// 更新会话扩展 如果已经删除的 有新消息就改为未删除
+					Business business = new Business(emc);
+					IMConversationExt ext = business.imConversationFactory()
+							.getConversationExt(person, msg.getConversationId());
+					if (ext != null) {
+						ext.setIsDeleted(false);
+						emc.beginTransaction(IMConversationExt.class);
+						emc.persist(ext, CheckPersistType.all);
+						emc.commit();
+					}
+				}
+
+			}
+
 
 			// 发送ws消息
 			sendWsMessage(conversation, msg, MessageConnector.TYPE_IM_CREATE, effectivePerson);

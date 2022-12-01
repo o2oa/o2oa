@@ -26,16 +26,11 @@ public class ActionConversationCancelTop extends BaseAction {
 				ext = new IMConversationExt();
 				ext.setConversationId(conversationId);
 				ext.setPerson(effectivePerson.getDistinguishedName());
-				ext.setIsTop(false);
-				emc.beginTransaction(IMConversationExt.class);
-				emc.persist(ext, CheckPersistType.all);
-				emc.commit();
-			} else {
-				ext.setIsTop(false);
-				emc.beginTransaction(IMConversationExt.class);
-				emc.persist(ext, CheckPersistType.all);
-				emc.commit();
 			}
+			ext.setIsTop(false);
+			emc.beginTransaction(IMConversationExt.class);
+			emc.persist(ext, CheckPersistType.all);
+			emc.commit();
 
 			WoId woId = new WoId();
 			woId.setId(ext.getId());

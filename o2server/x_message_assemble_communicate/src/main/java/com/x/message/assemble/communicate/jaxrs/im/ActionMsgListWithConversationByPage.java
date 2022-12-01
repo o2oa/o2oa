@@ -1,5 +1,6 @@
 package com.x.message.assemble.communicate.jaxrs.im;
 
+import java.util.Date;
 import java.util.List;
 
 import com.google.gson.JsonElement;
@@ -15,6 +16,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.message.assemble.communicate.Business;
+import com.x.message.core.entity.IMConversationExt;
 import com.x.message.core.entity.IMMsg;
 
 public class ActionMsgListWithConversationByPage extends BaseAction {
@@ -36,18 +38,23 @@ public class ActionMsgListWithConversationByPage extends BaseAction {
 			if (wi.getConversationId() == null || wi.getConversationId().isEmpty()) {
 				throw new ExceptionMsgEmptyConversationId();
 			}
+			IMConversationExt ext = business.imConversationFactory().getConversationExt(effectivePerson.getDistinguishedName(), wi.getConversationId());
+			Date lastDeleteTime = null;
+			if (ext != null) {
+				lastDeleteTime = ext.getLastDeleteTime();
+			}
 			Integer adjustPage = this.adjustPage(page);
 			Integer adjustPageSize = this.adjustSize(size);
 			List<IMMsg> msgList = business.imConversationFactory().listMsgWithConversationByPage(adjustPage,
-					adjustPageSize, wi.getConversationId());
+					adjustPageSize, wi.getConversationId(), lastDeleteTime);
 			List<Wo> wos = Wo.copier.copy(msgList);
 			result.setData(wos);
-			result.setCount(business.imConversationFactory().count(wi.getConversationId()));
+			result.setCount(business.imConversationFactory().count(wi.getConversationId(), lastDeleteTime));
 			return result;
 		}
 	}
 
-	public class Wi extends GsonPropertyObject {
+	public static class Wi extends GsonPropertyObject {
 
 		private static final long serialVersionUID = 33404493425589133L;
 
