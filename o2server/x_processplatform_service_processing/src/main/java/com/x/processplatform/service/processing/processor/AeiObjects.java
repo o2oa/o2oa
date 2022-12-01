@@ -300,7 +300,10 @@ public class AeiObjects extends GsonPropertyObject {
 
     public List<Route> getRoutes() throws Exception {
         if (null == this.routes) {
-            this.routes = this.business.element().listRouteWithActvity(work.getActivity(), work.getActivityType());
+            List<Route> os = this.business.element().listRouteWithActvity(work.getActivity(), work.getActivityType());
+            this.routes = os.stream().sorted(Comparator.nullsLast(
+                    Comparator.comparing(Route::getOrderNumber, Comparator.nullsLast(Comparator.naturalOrder()))))
+                    .collect(Collectors.toList());
         }
         return this.routes;
     }
