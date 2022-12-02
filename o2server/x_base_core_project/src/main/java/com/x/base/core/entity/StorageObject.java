@@ -259,6 +259,17 @@ public abstract class StorageObject extends SliceJpaObject {
 				prefix = prefix + "/" + mapping.getName();
 			}
 			break;
+		case min:
+			prefix = "min://" + URLEncoder.encode(mapping.getUsername(), DefaultCharset.name) + ":"
+					+ URLEncoder.encode(mapping.getPassword(), DefaultCharset.name) + "@" ;
+			String split = "//";
+			if(mapping.getHost().indexOf(split) > -1) {
+				prefix = prefix + StringUtils.substringAfter(mapping.getHost(), split);
+			}else{
+				prefix = prefix + mapping.getHost();
+			}
+			prefix = prefix.equals("/") ? prefix + mapping.getName() : prefix + "/" + mapping.getName();
+			break;
 		case file:
 			prefix = "file://";
 			break;
