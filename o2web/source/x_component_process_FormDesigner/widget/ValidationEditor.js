@@ -326,7 +326,7 @@ MWF.xApplication.process.FormDesigner.widget.ValidationEditor.Item = new Class({
     },
     unSelected: function(){
         this.node.setStyles(this.css.itemNode);
-        this.editor.currentItem = this;
+        this.editor.currentItem = null;
         //this.editor.modifyValidation();
         this.editor.disabledModify();
     },
