@@ -1,12 +1,17 @@
 package com.x.cms.assemble.control.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.Identity;
-import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.organization.Person;
 import com.x.base.core.project.organization.Unit;
 import com.x.base.core.project.tools.ListTools;
@@ -14,12 +19,6 @@ import com.x.cms.assemble.control.Business;
 import com.x.cms.assemble.control.ThisApplication;
 import com.x.cms.core.entity.AppInfo;
 import com.x.organization.core.entity.PersistenceProperties;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
 
 /**
  * 组织人员角色相关信息的服务类
@@ -38,14 +37,17 @@ public class UserManagerService {
 	 * @throws Exception
 	 */
 	public Person getPerson(String personName) throws Exception {
-		if(StringUtils.isNotBlank(personName)){
-			return null;
+		Person person = null;
+		try {
+			Business business = new Business(null);
+			if(personName.split("@").length == 2){
+				personName = personName.split("@")[0];
+			}
+			person = business.organization().person().getObject(personName);
+		} catch (Exception e) {
+			throw e;
 		}
-		Business business = new Business(null);
-		if(personName.split("@").length == 2){
-			personName = personName.split("@")[0];
-		}
-		return business.organization().person().getObject(personName);
+		return person;
 	}
 
 	/**
@@ -63,10 +65,12 @@ public class UserManagerService {
 		Unit unit = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
-			if(StringUtils.isNotBlank(personName) && personName.split("@").length == 2){
-				personName = personName.split("@")[0];
-			}
 			unitNames = business.organization().unit().listWithPerson(personName);
+			if ( ListTools.isEmpty( unitNames )) {
+				if (personName.endsWith("@P") && personName.split("@").length == 2) {
+					unitNames = business.organization().unit().listWithPerson( personName.split("@")[0] );
+				}
+			}
 			if ( ListTools.isNotEmpty( unitNames )) {
 				for (String unitName : unitNames) {
 					unit = business.organization().unit().getObject(unitName);
@@ -90,8 +94,17 @@ public class UserManagerService {
 	 * @throws Exception
 	 */
 	public String getUnitNameByIdentity(String identity) throws Exception {
-		Business business = new Business(null);
-		return business.organization().unit().getWithIdentity(identity);
+		Business business = null;
+		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			business = new Business(emc);
+			return business.organization().unit().getWithIdentity(identity);
+		} catch (NullPointerException e) {
+			System.out.println("根据身份获取所属组织名称时发生NullPointerException异常。identity：" + identity);
+			return null;
+		} catch (Exception e) {
+			System.out.println("根据身份获取所属组织名称时发生异常。identity：" + identity);
+			throw e;
+		}
 	}
 
 	/**
@@ -107,14 +120,16 @@ public class UserManagerService {
 		Business business = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
-			if(!OrganizationDefinition.isPersonDistinguishedName(personName)){
-				if(personName.split("@").length == 2){
-					personName = personName.split("@")[0];
+			// 兼容一下传过来的perosnName有可能是个人，有可能是身份
+			if( StringUtils.isNotEmpty( personName )){
+				if (personName.endsWith("@P") && personName.split("@").length == 2) {
+					personName = business.organization().person().get(personName.split("@")[0]);
+				}else{
+					personName = business.organization().person().get(personName);
 				}
-				personName = business.organization().person().get(personName);
 			}
 			identity = getMajorIdentityWithPerson(personName);
-			if (StringUtils.isNotBlank(identity)) {
+			if (identity != null && !identity.isEmpty()) {
 				topUnitName = business.organization().unit().getWithIdentityWithLevel(identity, 1);
 			}
 			return topUnitName;
@@ -153,7 +168,7 @@ public class UserManagerService {
 		Business business = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
-			if(!OrganizationDefinition.isPersonDistinguishedName(personName)){
+			if( StringUtils.isNotEmpty( personName )){
 				if (personName.endsWith("@P") && personName.split("@").length == 2) {
 					personName = business.organization().person().get(personName.split("@")[0]);
 				}else{
@@ -167,7 +182,7 @@ public class UserManagerService {
 				}else{
 					for (String identity : identities) {
 						Identity obj = business.organization().identity().getObject(identity);
-						if (BooleanUtils.isTrue(obj.getMajor())) {
+						if (obj.getMajor()) {
 							return identity;
 						}
 					}
@@ -214,8 +229,12 @@ public class UserManagerService {
 		Business business = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
-			if( StringUtils.isNotEmpty( personName ) && personName.split("@").length == 2){
-				personName = personName.split("@")[0];
+			if( StringUtils.isNotEmpty( personName )){
+				if (personName.endsWith("@P") && personName.split("@").length == 2) {
+					personName = business.organization().person().get(personName.split("@")[0]);
+				}else{
+					personName = business.organization().person().get(personName);
+				}
 			}
 			unitNames = business.organization().unit().listWithPersonSupNested(personName);
 			return unitNames == null ? new ArrayList<>() : unitNames;
@@ -240,8 +259,12 @@ public class UserManagerService {
 		Business business = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
-			if( StringUtils.isNotEmpty( personName ) && personName.split("@").length == 2){
-				personName = personName.split("@")[0];
+			if( StringUtils.isNotEmpty( personName )){
+				if (personName.endsWith("@P") && personName.split("@").length == 2) {
+					personName = business.organization().person().get(personName.split("@")[0]);
+				}else{
+					personName = business.organization().person().get(personName);
+				}
 			}
 			return business.organization().identity().listWithPerson(personName);
 		} catch (NullPointerException e) {
@@ -296,8 +319,12 @@ public class UserManagerService {
 		List<String> nameList = new ArrayList<String>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
-			if( StringUtils.isNotEmpty( personName ) && personName.split("@").length == 2){
-				personName = personName.split("@")[0];
+			if( StringUtils.isNotEmpty( personName )){
+				if (personName.endsWith("@P") && personName.split("@").length == 2) {
+					personName = business.organization().person().get(personName.split("@")[0]);
+				}else{
+					personName = business.organization().person().get(personName);
+				}
 			}
 			groupList = business.organization().group().listWithPerson(personName);
 			if (groupList != null && groupList.size() > 0) {
@@ -330,8 +357,12 @@ public class UserManagerService {
 		Business business = null;
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
-			if( StringUtils.isNotEmpty( personName ) && personName.split("@").length == 2){
-				personName = personName.split("@")[0];
+			if( StringUtils.isNotEmpty( personName )){
+				if (personName.endsWith("@P") && personName.split("@").length == 2) {
+					personName = business.organization().person().get(personName.split("@")[0]);
+				}else{
+					personName = business.organization().person().get(personName);
+				}
 			}
 			roleList = business.organization().role().listWithPerson(personName);
 			if (roleList != null && !roleList.isEmpty()) {
