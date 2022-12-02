@@ -231,6 +231,10 @@ public class RestoreData {
         @SuppressWarnings("unchecked")
         private void binary(Object o, Class<?> cls, Path sub, StorageMappings storageMappings) throws Exception {
             StorageObject so = (StorageObject) o;
+            Path path = sub.resolve(Paths.get(so.path()).getFileName());
+            if (!Files.exists(path)) {
+                LOGGER.warn("file not exist: {}.", path.toString());
+            }
             StorageMapping mapping = null;
             if (BooleanUtils.isTrue(Config.dumpRestoreData().getRedistributeStorage())) {
                 mapping = storageMappings.random((Class<StorageObject>) cls);
@@ -238,11 +242,11 @@ public class RestoreData {
                 mapping = storageMappings.get((Class<StorageObject>) cls, so.getStorage());
             }
             if (null == mapping) {
-                throw new ExceptionMappingNotExist();
-            }
-            Path path = sub.resolve(Paths.get(so.path()).getFileName());
-            if (!Files.exists(path)) {
-                LOGGER.warn("file not exist: {}.", path.toString());
+                if (BooleanUtils.isTrue(Config.dumpRestoreData().getExceptionInvalidStorage())) {
+                    throw new ExceptionInvalidStorage(so);
+                } else {
+                    LOGGER.warn("can not access storage:{}.", so.getStorage());
+                }
             } else {
                 try (InputStream input = Files.newInputStream(path)) {
                     so.saveContent(mapping, input, so.getName());
