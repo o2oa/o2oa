@@ -517,6 +517,11 @@ public class Business {
 		if(BooleanUtils.isTrue(document.getIsAllRead())){
 			return true;
 		}
+		String allPerson = "所有人";
+		if( document.getReadPersonList().contains(getShortTargetFlag(person.getDistinguishedName())) ||
+				document.getReadPersonList().contains(allPerson)) {
+			return true;
+		}
 		Long count = this.reviewFactory().countByDocumentAndPerson(document.getId(), person.getDistinguishedName());
 		if(count > 0){
 			return true;
@@ -597,7 +602,7 @@ public class Business {
 	}
 
 	public static String getShortTargetFlag(String distinguishedName) {
-		String target = null;
+		String target = distinguishedName;
 		if( StringUtils.isNotEmpty( distinguishedName ) ){
 			String[] array = distinguishedName.split("@");
 			StringBuffer sb = new StringBuffer();
