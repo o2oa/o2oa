@@ -351,6 +351,15 @@ public abstract class StorageObject extends SliceJpaObject {
 			webdavBuilder.setMaxTotalConnections(opts, 200);
 			webdavBuilder.setFollowRedirect(opts, true);
 			break;
+		case min:
+			MinFileSystemConfigBuilder minBuilder = MinFileSystemConfigBuilder.getInstance();
+			minBuilder.setTaskTimeOut(opts, 10 * 1000L);
+			String https = "https";
+			if(mapping.getHost().startsWith(https)){
+				minBuilder.setUseHttps(opts, true);
+			}else{
+				minBuilder.setUseHttps(opts, false);
+			}
 		default:
 			break;
 		}

@@ -3,6 +3,7 @@ package com.x.base.core.entity;
 import org.apache.commons.vfs2.FileSystem;
 import org.apache.commons.vfs2.FileSystemConfigBuilder;
 import org.apache.commons.vfs2.FileSystemOptions;
+import org.apache.commons.vfs2.provider.http.HttpFileSystem;
 
 /**
  * The config builder for various MinIo cloud oss configuration options.
@@ -32,7 +33,7 @@ public class MinFileSystemConfigBuilder extends FileSystemConfigBuilder {
 
     @Override
     protected Class<? extends FileSystem> getConfigClass() {
-        return FileSystem.class;
+        return HttpFileSystem.class;
     }
 
     void setOption(FileSystemOptions opts, String name, Object value) {
