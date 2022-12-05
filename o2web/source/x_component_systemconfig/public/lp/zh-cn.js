@@ -909,9 +909,6 @@ o2.xApplication.systemconfig.LP = {
 
         "timerInfo": "O2OA流程平台需要一些定时器来处理流程任务，您可在此处对这些定时器进行配置。（所有对定时器的修改，都需要重启服务器才能生效）",
 
-        "archiveHadoop": "归档到Hadoop",
-        "archiveHadoopInfo": "归档到Hadoop",
-
         "enable": "是否启用",
         "cron": "定时表达式",
         "urge": "催办定时器",
@@ -949,7 +946,7 @@ o2.xApplication.systemconfig.LP = {
         "saveHadoopSuccess": "保存成功",
 
         "merge": "归档定时器",
-        "mergeInfo": "",
+        "mergeInfo": ""
     },
     "_appConfig": {
         "connectConfig": "连接配置",
@@ -1219,7 +1216,8 @@ o2.xApplication.systemconfig.LP = {
                 "hdfs": "hdfs",
                 "cifs": "cifs",
                 "ali": "ali（阿里云存储）",
-                "s3":"s3（亚马逊云存储）"
+                "s3":"s3（亚马逊云存储）",
+                "min":"MinIO存储"
             }
         },
         "removeNodeConfigTitle": "删除存储节点确认",
