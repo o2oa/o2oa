@@ -141,7 +141,7 @@ public class RecordBuilder {
 		rec.getProperties().setNextManualTaskIdentityList(new ArrayList<>(identities));
 	}
 
-	public static Record ofTaskEmpower(Task task, String empowerFromIdentity, String empowerFromPerson,
+	public static Record ofTaskEmpower(Task task, String empowerFromPerson,
 			String empowerFromUnit) {
 		Record o = new Record();
 		o.setType(Record.TYPE_EMPOWER);
