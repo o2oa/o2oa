@@ -6,7 +6,7 @@ import com.x.base.core.project.annotation.ModuleCategory;
 import com.x.base.core.project.annotation.ModuleType;
 
 @Module(type = ModuleType.ASSEMBLE, category = ModuleCategory.OFFICIAL, name = "数据查询设计", packageName = "com.x.query.assemble.designer", containerEntities = {
-        "com.x.query.core.entity.program.Argument", "com.x.query.core.entity.Item", "com.x.query.core.entity.Query",
+        "com.x.query.core.entity.Item", "com.x.query.core.entity.Query",
         "com.x.query.core.entity.View", "com.x.query.core.entity.Stat",
 //		"com.x.query.core.entity.Reveal",
         "com.x.query.core.entity.neural.Entry", "com.x.query.core.entity.neural.InText",
