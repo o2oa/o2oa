@@ -348,9 +348,9 @@ class ActionProcessing extends BaseAction {
             try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
                 Business business = new Business(emc);
                 for (Task o : empowerTasks) {
-                    Record r = RecordBuilder.ofTaskEmpower(o, task.getEmpowerFromIdentity(),
-                            business.organization().person().getWithIdentity(task.getEmpowerFromIdentity()),
-                            business.organization().unit().getWithIdentity(task.getEmpowerFromIdentity()));
+                    Record r = RecordBuilder.ofTaskEmpower(o,
+                            business.organization().person().getWithIdentity(o.getEmpowerFromIdentity()),
+                            business.organization().unit().getWithIdentity(o.getEmpowerFromIdentity()));
                     records.add(r);
                 }
             }
