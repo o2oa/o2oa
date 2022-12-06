@@ -167,35 +167,6 @@ public class Indexs {
     public static final String PREFIX_FIELD_CMS_DATE = PREFIX_FIELD_CMS + FIELD_TYPE_DATE + "_";
     public static final String PREFIX_FIELD_CMS_DATES = PREFIX_FIELD_CMS + FIELD_TYPE_DATES + "_";
 
-//    private static final Map<String, String> PROCESSPLATFORM_FIELDNAME = ImmutableMap.<String, String>builder()
-//            .put(Indexs.PREFIX_FIELD_PROCESSPLATFORM_BOOLEAN + "completed", "已完成")
-//            .put(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING + "creatorUnitLevelName", "创建者部门层级名")
-//            .put(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING + "application", "应用标识")
-//            .put(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING + "applicationName", "应用名称")
-//            .put(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING + "applicationAlias", "应用别名")
-//            .put(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING + "process", "流程标识")
-//            .put(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING + "processName", "流程名称")
-//            .put(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING + "processAlias", "流程别名")
-//            .put(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING + "job", "任务")
-//            .put(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING + "serial", "编号")
-//            .put(Indexs.PREFIX_FIELD_PROCESSPLATFORM_BOOLEAN + "expired", "超时")
-//            .put(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING + "activityName", "活动环节")
-//            .put(Indexs.PREFIX_FIELD_PROCESSPLATFORM_DATE + "expireTime", "截至时间")
-//            .put(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRINGS + Indexs.FIELD_ROCESSPLATFORM_TASKPERSONNAMES, "当前处理人")
-//            .put(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRINGS + Indexs.FIELD_ROCESSPLATFORM_PRETASKPERSONNAMES, "前序处理人")
-//            .build();
-//
-//    private static final Map<String, String> CMS_FIELDNAME = ImmutableMap.<String, String>builder()
-//            .put(Indexs.PREFIX_FIELD_CMS_STRING + "appId", "栏目标识")
-//            .put(Indexs.PREFIX_FIELD_CMS_STRING + "appName", "栏目名称")
-//            .put(Indexs.PREFIX_FIELD_CMS_STRING + "appAlias", "栏目别名")
-//            .put(Indexs.PREFIX_FIELD_CMS_STRING + "categoryId", "分类标识")
-//            .put(Indexs.PREFIX_FIELD_CMS_STRING + "categoryName", "分类名称")
-//            .put(Indexs.PREFIX_FIELD_CMS_STRING +"categoryAlias", "分类别名")
-//            .put(Indexs.PREFIX_FIELD_CMS_STRING + "description", "说明")
-//            .put(Indexs.PREFIX_FIELD_CMS_DATE + "publishTime", "发布时间")
-//            .put(Indexs.PREFIX_FIELD_CMS_DATE + "modifyTime", "修改时间").build();
-
     protected static final List<WoField> FIXEDFIELD_APPLICATION = ListUtils
             .unmodifiableList(Arrays.asList(new WoField(Indexs.FIELD_TITLE, "标题", Indexs.FIELD_TYPE_STRING),
                     new WoField(Indexs.FIELD_CREATORPERSON, "创建者", Indexs.FIELD_TYPE_STRING),
@@ -214,8 +185,12 @@ public class Indexs {
                     new WoField(Indexs.FIELD_CATEGORYNAME, "分类", Indexs.FIELD_TYPE_STRING),
                     new WoField(Indexs.FIELD_DESCRIPTION, "说明", Indexs.FIELD_TYPE_STRING)));
 
-    private static final String[] QUERY_IGNORES = new String[] { "[", "]", "*", "?" };
-    private static final String[] QUERY_IGNOREREPLACES = new String[] { "", "", "", "" };
+    private static final String[] QUERY_IGNORES = new String[] { ":", "\"", "-", "+", "[", "]", "*", "?", "\\", "/",
+            "(", ")", "~",
+            "!", "{",
+            "}", "^" };
+    private static final String[] QUERY_IGNOREREPLACES = new String[] { "", "", "", "", "", "", "", "", "", "", "",
+            "", "", "", "", "", "" };
 
     public static final String DIRECTORY_SEARCH = "search";
 

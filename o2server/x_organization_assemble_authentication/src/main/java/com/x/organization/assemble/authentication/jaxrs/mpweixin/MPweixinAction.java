@@ -16,6 +16,7 @@ import javax.ws.rs.core.MediaType;
 import com.google.gson.JsonElement;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
+import com.x.base.core.project.annotation.JaxrsParameterDescribe;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpMediaType;
@@ -40,19 +41,18 @@ public class MPweixinAction extends StandardJaxrsAction {
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
     public void loginWithCode(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-                                @Context HttpServletResponse response, @PathParam("code") String code) {
+            @Context HttpServletResponse response, @JaxrsParameterDescribe("码") @PathParam("code") String code) {
 
         ActionResult<ActionLoginWithCode.Wo> result = new ActionResult<>();
         try {
             EffectivePerson effectivePerson = this.effectivePerson(request);
             result = new ActionLoginWithCode().execute(request, response, effectivePerson, code);
-        }catch (Exception e) {
+        } catch (Exception e) {
             logger.error(e);
             result.error(e);
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
-
 
     @JaxrsMethodDescribe(value = "绑定微信公众号openid到当前登录用户.", action = ActionBindWithCode.class)
     @GET
@@ -60,19 +60,18 @@ public class MPweixinAction extends StandardJaxrsAction {
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
     public void bindWithCode(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-                              @Context HttpServletResponse response, @PathParam("code") String code) {
+            @Context HttpServletResponse response, @JaxrsParameterDescribe("码") @PathParam("code") String code) {
 
         ActionResult<ActionBindWithCode.Wo> result = new ActionResult<>();
         try {
             EffectivePerson effectivePerson = this.effectivePerson(request);
             result = new ActionBindWithCode().execute(effectivePerson, code);
-        }catch (Exception e) {
+        } catch (Exception e) {
             logger.error(e);
             result.error(e);
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
-
 
     @JaxrsMethodDescribe(value = "测试发送模版消息", action = ActionTestSendTempMessage.class)
     @POST
@@ -80,12 +79,13 @@ public class MPweixinAction extends StandardJaxrsAction {
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
     public void testSendMessage(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-                           @Context HttpServletResponse response, @PathParam("person") String person, JsonElement jsonElement) {
+            @Context HttpServletResponse response, @JaxrsParameterDescribe("人员") @PathParam("person") String person,
+            JsonElement jsonElement) {
 
         ActionResult<ActionTestSendTempMessage.Wo> result = new ActionResult<>();
         try {
             result = new ActionTestSendTempMessage().execute(person, jsonElement);
-        }catch (Exception e) {
+        } catch (Exception e) {
             logger.error(e);
             result.error(e);
         }

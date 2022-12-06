@@ -44,11 +44,8 @@ public class StateFactory extends AbstractFactory {
         List<State> os = em.createQuery(cq).setMaxResults(1).getResultList();
         if (!os.isEmpty()) {
             state = os.get(0);
-        }
-        if (null != state) {
             this.business().entityManagerContainer().get(State.class).detach(state);
-        }
-        if (null == state) {
+        } else {
             state = new State();
             state.setNode(node);
             state.setType(type);
