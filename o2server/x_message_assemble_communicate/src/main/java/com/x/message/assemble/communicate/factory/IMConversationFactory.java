@@ -1,5 +1,6 @@
 package com.x.message.assemble.communicate.factory;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -42,21 +43,6 @@ public class IMConversationFactory extends AbstractFactory {
 		return em.createQuery(cq).getResultList();
 	}
 
-	/**
-	 * 获取成员包含person的会话id 列表
-	 * @param person
-	 * @return
-	 * @throws Exception
-	 */
-	public List<String> listConversationIdListWithPerson(String person) throws Exception {
-		EntityManager em = this.entityManagerContainer().get(IMConversation.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<String> cq = cb.createQuery(String.class);
-		Root<IMConversation> root = cq.from(IMConversation.class);
-		Predicate p = cb.isMember(person, root.get(IMConversation_.personList));
-		cq.select(root.get(IMConversation_.id)).where(p);
-		return em.createQuery(cq).getResultList();
-	}
 
 	/**
 	 * 获取成员包含person的会话id 列表
@@ -138,7 +124,8 @@ public class IMConversationFactory extends AbstractFactory {
 	}
 
 	/**
-	 * 分页查询会话中的聊天消息
+	 * 查询会话中的聊天消息
+	 * 分页查询需要
 	 * @param adjustPage
 	 * @param adjustPageSize
 	 * @param conversationId
@@ -146,16 +133,40 @@ public class IMConversationFactory extends AbstractFactory {
 	 * @throws Exception
 	 */
 	public List<IMMsg> listMsgWithConversationByPage(Integer adjustPage,
-													 Integer adjustPageSize, String conversationId) throws Exception {
+													 Integer adjustPageSize, String conversationId, Date lastDeleteTime) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(IMMsg.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<IMMsg> cq = cb.createQuery(IMMsg.class);
 		Root<IMMsg> root = cq.from(IMMsg.class);
 		Predicate p = cb.equal(root.get(IMMsg_.conversationId), conversationId);
+		if (lastDeleteTime != null) {
+			p = cb.and(p, cb.greaterThan(root.get(IMMsg_.createTime),lastDeleteTime));
+		}
 		cq.select(root).where(p).orderBy(cb.desc(root.get(IMMsg_.createTime)));
 		return em.createQuery(cq).setFirstResult((adjustPage - 1) * adjustPageSize).setMaxResults(adjustPageSize)
 				.getResultList();
 	}
+
+	/**
+	 * 查询会话聊天消息总数
+	 * 分页查询需要
+	 * @param conversationId
+	 * @return
+	 * @throws Exception
+	 */
+	public Long count(String conversationId, Date lastDeleteTime) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(IMMsg.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<IMMsg> root = cq.from(IMMsg.class);
+		Predicate p = cb.equal(root.get(IMMsg_.conversationId), conversationId);
+		if (lastDeleteTime != null) {
+			p = cb.and(p, cb.greaterThan(root.get(IMMsg_.createTime),lastDeleteTime));
+		}
+		return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
+	}
+
+
 
 	/**
 	 * 根据会话id查询所有的消息id
@@ -174,18 +185,18 @@ public class IMConversationFactory extends AbstractFactory {
 	}
 
 	/**
-	 * 查询会话聊天消息总数
-	 * 分页查询需要
-	 * @param conversationId
+	 * 根据会话id查询所有关联的会话扩展
+	 * 删除会话扩展用
+	 * @param conversationId 会话id
 	 * @return
 	 * @throws Exception
 	 */
-	public Long count(String conversationId) throws Exception {
-		EntityManager em = this.entityManagerContainer().get(IMMsg.class);
+	public List<String> listAllConversationExtIdsWithConversationId(String conversationId) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(IMConversationExt.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-		Root<IMMsg> root = cq.from(IMMsg.class);
-		Predicate p = cb.equal(root.get(IMMsg_.conversationId), conversationId);
-		return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<IMConversationExt> root = cq.from(IMConversationExt.class);
+		Predicate p = cb.equal(root.get(IMConversationExt_.conversationId), conversationId);
+		return em.createQuery(cq.select(root.get(IMConversationExt_.id)).where(p)).getResultList();
 	}
 }

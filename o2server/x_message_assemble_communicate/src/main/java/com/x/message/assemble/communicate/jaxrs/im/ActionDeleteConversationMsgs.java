@@ -44,7 +44,6 @@ public class ActionDeleteConversationMsgs extends BaseAction {
 			if (msgIds == null || msgIds.isEmpty()) {
 				LOGGER.info("没有聊天记录，无需清空！ conversationId:" + conversationId);
 			} else {
-				// 这里是1条条删除的 优化一下？
 				emc.beginTransaction(IMMsg.class);
 				emc.delete(IMMsg.class, msgIds);
 				emc.commit();

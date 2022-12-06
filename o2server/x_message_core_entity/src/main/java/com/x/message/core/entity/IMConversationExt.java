@@ -83,6 +83,18 @@ public class IMConversationExt extends SliceJpaObject  {
     private Date lastReadTime;
 
 
+
+    public static final String lastDeleteTime_FIELDNAME = "lastDeleteTime";
+    @FieldDescribe("当前用户把会话删除的时间")
+    @Column(name = ColumnNamePrefix + lastDeleteTime_FIELDNAME)
+    private Date lastDeleteTime;
+
+    public static final String isDeleted_FIELDNAME = "isDeleted";
+    @FieldDescribe("是否删除，个人删除后不显示到会话列表，如果会话中有新的聊天消息会重置为true.")
+    @Column(name = ColumnNamePrefix + isDeleted_FIELDNAME)
+    private Boolean isDeleted = false;
+
+
     public String getConversationId() {
         return conversationId;
     }
@@ -113,5 +125,21 @@ public class IMConversationExt extends SliceJpaObject  {
 
     public void setLastReadTime(Date lastReadTime) {
         this.lastReadTime = lastReadTime;
+    }
+
+    public Date getLastDeleteTime() {
+        return lastDeleteTime;
+    }
+
+    public void setLastDeleteTime(Date lastDeleteTime) {
+        this.lastDeleteTime = lastDeleteTime;
+    }
+
+    public Boolean getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(Boolean deleted) {
+        isDeleted = deleted;
     }
 }

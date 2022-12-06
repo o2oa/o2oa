@@ -30,16 +30,11 @@ public class ActionConversationRead extends BaseAction {
 				ext = new IMConversationExt();
 				ext.setConversationId(conversationId);
 				ext.setPerson(effectivePerson.getDistinguishedName());
-				ext.setLastReadTime(new Date());
-				emc.beginTransaction(IMConversationExt.class);
-				emc.persist(ext, CheckPersistType.all);
-				emc.commit();
-			} else {
-				ext.setLastReadTime(new Date());
-				emc.beginTransaction(IMConversationExt.class);
-				emc.persist(ext, CheckPersistType.all);
-				emc.commit();
 			}
+			ext.setLastReadTime(new Date());
+			emc.beginTransaction(IMConversationExt.class);
+			emc.persist(ext, CheckPersistType.all);
+			emc.commit();
 
 			WoId woId = new WoId();
 			woId.setId(ext.getId());
