@@ -81,7 +81,7 @@ MWF.xApplication.ftsearch.FTSearchView = new Class({
         pageNum = o2.typeOf(pageNum) === "number" ? pageNum : null;
         this.docPageNum = pageNum || 1;
         this.currentKey = query || this.searchInput.get("value") || "";
-        // if( this.currentKey ){
+        if( this.currentKey ){
 
             var startDate = new Date();
 
@@ -126,16 +126,15 @@ MWF.xApplication.ftsearch.FTSearchView = new Class({
                     this.loadDocPagination();
                 }
             }.bind(this));
-        // }else{
-        //     this.docList = [];
-        //     this.docTotal = 0;
-        //     this.docTotalNode.set("text", "");
-        //     this.loadSelectedCondition();
-        //     this.loadCondition( []);
-        //     this.loadDocList();
-        //     this.loadDocPagination();
-        //
-        // }
+        }else{
+            this.docList = [];
+            this.docTotal = 0;
+            this.docTotalNode.set("text", "");
+            this.loadSelectedCondition();
+            this.loadCondition( []);
+            this.loadDocList();
+            this.loadDocPagination();
+        }
     },
     orderFacet: function(facetList){
         facetList.sort(function (a, b) {
