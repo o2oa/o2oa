@@ -234,6 +234,7 @@ public class RestoreData {
             Path path = sub.resolve(Paths.get(so.path()).getFileName());
             if (!Files.exists(path)) {
                 LOGGER.warn("file not exist: {}.", path.toString());
+                return;
             }
             StorageMapping mapping = null;
             if (BooleanUtils.isTrue(Config.dumpRestoreData().getRedistributeStorage())) {
