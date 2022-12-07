@@ -10,6 +10,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -40,7 +41,7 @@ class ActionListObject extends BaseAction {
 		logger.debug(effectivePerson.getDistinguishedName());
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		ActionResult<List<Wo>> result = new ActionResult<>();
-		CacheKey cacheKey = new CacheKey(this.getClass(), wi.getUnitList());
+		CacheKey cacheKey = new CacheKey(this.getClass(), wi.getUnitList(), wi.getUseNameFind());
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 		if (optional.isPresent()) {
 			result.setData((List<Wo>) optional.get());
@@ -58,12 +59,23 @@ class ActionListObject extends BaseAction {
 		@FieldDescribe("组织")
 		private List<String> unitList = new ArrayList<>();
 
+		@FieldDescribe("是否需要根据名称查找，默认false")
+		private Boolean useNameFind = false;
+
 		public List<String> getUnitList() {
 			return unitList;
 		}
 
 		public void setUnitList(List<String> unitList) {
 			this.unitList = unitList;
+		}
+
+		public Boolean getUseNameFind() {
+			return useNameFind;
+		}
+
+		public void setUseNameFind(Boolean useNameFind) {
+			this.useNameFind = useNameFind;
 		}
 
 	}
@@ -115,8 +127,14 @@ class ActionListObject extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
 			for (String str : wi.getUnitList()) {
-				Unit o = business.unit().pick(str);
-				if (o != null) {
+				List<Unit> os = new ArrayList<>();
+				Unit unit = business.unit().pick(str);
+				if(unit != null){
+					os.add(unit);
+				}else if(BooleanUtils.isTrue(wi.getUseNameFind())){
+					os.addAll(business.unit().listWithName(List.of(str)));
+				}
+				for(Unit o : os){
 					Wo wo = Wo.copier.copy(o);
 					wo.setMatchKey(str);
 					if (StringUtils.isNotEmpty(wo.getSuperior())) {

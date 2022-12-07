@@ -35,7 +35,7 @@ class ActionListWithPersonObject extends BaseAction {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			ActionResult<List<Wo>> result = new ActionResult<>();
 			Business business = new Business(emc);
-			CacheKey cacheKey = new CacheKey(this.getClass(), wi.getPersonList());
+			CacheKey cacheKey = new CacheKey(this.getClass(), wi.getPersonList(), wi.getUseNameFind());
 			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 			if (optional.isPresent()) {
 				result.setData((List<Wo>) optional.get());
@@ -52,12 +52,23 @@ class ActionListWithPersonObject extends BaseAction {
 		@FieldDescribe("个人")
 		private List<String> personList = new ArrayList<>();
 
+		@FieldDescribe("是否需要根据名称查找，默认false")
+		private Boolean useNameFind = false;
+
 		public List<String> getPersonList() {
 			return personList;
 		}
 
 		public void setPersonList(List<String> personList) {
 			this.personList = personList;
+		}
+
+		public Boolean getUseNameFind() {
+			return useNameFind;
+		}
+
+		public void setUseNameFind(Boolean useNameFind) {
+			this.useNameFind = useNameFind;
 		}
 	}
 
@@ -67,7 +78,7 @@ class ActionListWithPersonObject extends BaseAction {
 	private List<Wo> list(Business business, Wi wi) throws Exception {
 		List<Wo> wos = new ArrayList<>();
 		List<String> personMajorIds = new ArrayList<>();
-		List<Person> os = business.person().pick(wi.getPersonList());
+		List<Person> os = business.person().pick(wi.getPersonList(), wi.getUseNameFind());
 		List<String> personIds = ListTools.extractProperty(os, JpaObject.id_FIELDNAME, String.class, true, true);
 		List<Identity> personMajors = business.identity().listMajorOfPerson(business, personIds);
 		if (ListTools.isNotEmpty(personMajors)) {

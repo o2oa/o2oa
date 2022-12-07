@@ -24,7 +24,7 @@ class ActionList extends BaseAction {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
-			CacheKey cacheKey = new CacheKey(this.getClass(), wi.getPersonList());
+			CacheKey cacheKey = new CacheKey(this.getClass(), wi.getPersonList(), wi.getUseNameFind());
 			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 			if (optional.isPresent()) {
 				result.setData((Wo) optional.get());
@@ -42,6 +42,9 @@ class ActionList extends BaseAction {
 		@FieldDescribe("个人")
 		private List<String> personList = new ArrayList<>();
 
+		@FieldDescribe("是否需要根据名称查找，默认false")
+		private Boolean useNameFind = false;
+
 		public List<String> getPersonList() {
 			return personList;
 		}
@@ -50,6 +53,13 @@ class ActionList extends BaseAction {
 			this.personList = personList;
 		}
 
+		public Boolean getUseNameFind() {
+			return useNameFind;
+		}
+
+		public void setUseNameFind(Boolean useNameFind) {
+			this.useNameFind = useNameFind;
+		}
 	}
 
 	public static class Wo extends WoPersonListAbstract {
@@ -57,7 +67,7 @@ class ActionList extends BaseAction {
 	}
 
 	private Wo list(Business business, Wi wi) throws Exception {
-		List<Person> os = business.person().pick(wi.getPersonList());
+		List<Person> os = business.person().pick(wi.getPersonList(), wi.getUseNameFind());
 		List<String> list = ListTools.extractProperty(os, "distinguishedName", String.class, true, true);
 		Wo wo = new Wo();
 		wo.getPersonList().addAll(list);

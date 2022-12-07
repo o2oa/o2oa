@@ -1,9 +1,6 @@
 package com.x.organization.assemble.express.factory;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
@@ -103,6 +100,44 @@ public class PersonFactory extends AbstractFactory {
 			}
 		}
 		return list;
+	}
+
+	public List<Person> pick(List<String> flags, Boolean useNameFind) throws Exception {
+		List<Person> list = new ArrayList<>();
+		for (String str : ListTools.trim(flags, true, false)) {
+			CacheKey cacheKey = new CacheKey(Person.class.getName(), str);
+			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+			if (optional.isPresent()) {
+				list.add((Person) optional.get());
+			} else {
+				Person o = this.pickObject(str);
+				if (null != o) {
+					CacheManager.put(cacheCategory, cacheKey, o);
+					list.add(o);
+				}
+			}
+		}
+		if(list.isEmpty() && BooleanUtils.isTrue(useNameFind)){
+			list = this.listWithName(flags);
+		}
+		return list;
+	}
+
+	public List<Person> listWithName(List<String> names) throws Exception {
+		if(ListTools.isEmpty(names)){
+			return Collections.EMPTY_LIST;
+		}
+		EntityManager em = this.entityManagerContainer().get(Person.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Person> cq = cb.createQuery(Person.class);
+		Root<Person> root = cq.from(Person.class);
+		Predicate p;
+		if(names.size() > 1){
+			p = root.get(Person_.name).in(names);
+		}else{
+			p = cb.equal(root.get(Person_.name), names.get(0));
+		}
+		return em.createQuery(cq.select(root).where(p)).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	public <T extends Person> List<T> sort(List<T> list) {
