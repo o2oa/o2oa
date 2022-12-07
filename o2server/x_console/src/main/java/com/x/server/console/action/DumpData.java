@@ -226,16 +226,24 @@ public class DumpData {
                     if (BooleanUtils.isTrue(Config.dumpRestoreData().getExceptionInvalidStorage())) {
                         throw new ExceptionInvalidStorage(s);
                     } else {
-                        LOGGER.warn("can not access storage:{}.", s);
+                        LOGGER.warn("can not access storage, storageObject:{}.", s);
                     }
                 } else {
-                    Path p = sub.resolve(FilenameUtils.getName(s.path()));
-                    if (s.existContent(mapping)) {
-                        try (OutputStream out = Files.newOutputStream(p)) {
-                            out.write(s.readContent(mapping));
-                        }
-                    }
+                    binaryWriteOut(sub, s, mapping);
                 }
+            }
+        }
+
+        private void binaryWriteOut(Path sub, StorageObject s, StorageMapping mapping) throws Exception {
+            Path p = sub.resolve(FilenameUtils.getName(s.path()));
+            if (s.existContent(mapping)) {
+                try (OutputStream out = Files.newOutputStream(p)) {
+                    out.write(s.readContent(mapping));
+                } catch (Exception e) {
+                    LOGGER.error(e);
+                }
+            } else {
+                LOGGER.warn("storage file not exist, path:{}, storageObject:{}.", p, s);
             }
         }
     }
