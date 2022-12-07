@@ -40,6 +40,7 @@ import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.entity.dataitem.DataItem;
 import com.x.base.core.entity.dataitem.ItemCategory;
 import com.x.base.core.entity.tools.JpaObjectTools;
+import com.x.base.core.project.bean.tuple.Pair;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.DumpRestoreData;
 import com.x.base.core.project.config.StorageMapping;
@@ -106,8 +107,16 @@ public class RestoreData {
         @Override
         public void run() {
             try {
-                List<String> classNames = entities(catalog, classLoader);
-                LOGGER.print("find: {} data to restore, path: {}.", classNames.size(), this.dir.toString());
+                Pair<List<String>, List<String>> pair = entities(catalog, classLoader);
+                List<String> classNames = pair.first();
+                if (pair.second().isEmpty()) {
+                    LOGGER.print("find: {} data to restore from path: {}.", classNames.size(),
+                            this.dir.toString());
+                } else {
+                    LOGGER.print("find: {} data to restore from path: {}, can not find entity classes:{}.",
+                            classNames.size(),
+                            this.dir.toString(), gson.toJson(pair.second()));
+                }
                 Path xml = Paths.get(Config.dir_local_temp_classes().getAbsolutePath(),
                         DateTools.compact(start) + "_restore.xml");
                 PersistenceXmlHelper.write(xml.toString(), classNames, true, classLoader);
@@ -209,7 +218,8 @@ public class RestoreData {
             return list;
         }
 
-        private List<String> entities(DumpRestoreDataCatalog catalog, ClassLoader classLoader) throws Exception {
+        private Pair<List<String>, List<String>> entities(DumpRestoreDataCatalog catalog, ClassLoader classLoader)
+                throws Exception {
             List<String> containerEntityNames = new ArrayList<>(JpaObjectTools.scanContainerEntityNames(classLoader));
             if (StringUtils.equalsIgnoreCase(DumpRestoreData.MODE_LITE, Config.dumpRestoreData().getMode())) {
                 containerEntityNames = containerEntityNames.stream().filter(o -> {
@@ -225,7 +235,9 @@ public class RestoreData {
             List<String> classNames = new ArrayList<>(catalog.keySet());
             classNames = ListTools.includesExcludesWildcard(classNames, Config.dumpRestoreData().getIncludes(),
                     Config.dumpRestoreData().getExcludes());
-            return ListUtils.intersection(containerEntityNames, classNames);
+            return Pair.of(ListUtils.intersection(classNames, containerEntityNames),
+                    ListUtils.subtract(classNames, containerEntityNames));
+
         }
 
         @SuppressWarnings("unchecked")
@@ -233,7 +245,7 @@ public class RestoreData {
             StorageObject so = (StorageObject) o;
             Path path = sub.resolve(Paths.get(so.path()).getFileName());
             if (!Files.exists(path)) {
-                LOGGER.warn("file not exist: {}.", path.toString());
+                LOGGER.warn("storage file not exist, path:{}, storageObject:{}.", path, so);
                 return;
             }
             StorageMapping mapping = null;
@@ -246,11 +258,13 @@ public class RestoreData {
                 if (BooleanUtils.isTrue(Config.dumpRestoreData().getExceptionInvalidStorage())) {
                     throw new ExceptionInvalidStorage(so);
                 } else {
-                    LOGGER.warn("can not access storage:{}.", so.getStorage());
+                    LOGGER.warn("can not access storage:{}, storageObject:{}.", so.getStorage(), so);
                 }
             } else {
                 try (InputStream input = Files.newInputStream(path)) {
                     so.saveContent(mapping, input, so.getName());
+                } catch (Exception e) {
+                    LOGGER.error(e);
                 }
             }
         }
@@ -269,22 +283,27 @@ public class RestoreData {
                 list = list(cls, em, containerEntity);
                 if (ListTools.isNotEmpty(list)) {
                     em.getTransaction().begin();
-                    for (T t : list) {
-                        if (BooleanUtils.isTrue(Config.dumpRestoreData().getAttachStorage())
-                                && StorageObject.class.isAssignableFrom(cls)) {
-                            StorageObject so = (StorageObject) t;
-                            @SuppressWarnings("unchecked")
-                            StorageMapping mapping = storageMappings.get((Class<StorageObject>) cls, so.getStorage());
-                            if (null != mapping) {
-                                so.deleteContent(mapping);
-                            }
-                        }
-                        em.remove(t);
-                    }
+                    remove(cls, em, storageMappings, list);
                     em.getTransaction().commit();
                     em.clear();
                 }
             } while (ListTools.isNotEmpty(list));
+        }
+
+        private <T> void remove(Class<T> cls, EntityManager em, StorageMappings storageMappings, List<T> list)
+                throws Exception {
+            for (T t : list) {
+                if (BooleanUtils.isTrue(Config.dumpRestoreData().getAttachStorage())
+                        && StorageObject.class.isAssignableFrom(cls)) {
+                    StorageObject so = (StorageObject) t;
+                    @SuppressWarnings("unchecked")
+                    StorageMapping mapping = storageMappings.get((Class<StorageObject>) cls, so.getStorage());
+                    if (null != mapping) {
+                        so.deleteContent(mapping);
+                    }
+                }
+                em.remove(t);
+            }
         }
 
         private <T> List<T> list(Class<T> cls, EntityManager em, ContainerEntity containerEntity) throws Exception {
