@@ -1109,19 +1109,6 @@ public class Config {
 		return instance().initialContext;
 	}
 
-//	public Slice slice;
-//
-//	public static synchronized Slice slice() throws Exception {
-//		if (null == instance().slice) {
-//			Slice obj = BaseTools.readConfigObject(PATH_CONFIG_SLICE, Slice.class);
-//			if (null == obj) {
-//				obj = Slice.defaultInstance();
-//			}
-//			instance().slice = obj;
-//		}
-//		return instance().slice;
-//	}
-
 	public Exmail exmail;
 
 	public static synchronized Exmail exmail() throws Exception {

@@ -27,6 +27,7 @@ import com.x.base.core.project.bean.tuple.Pair;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.organization.OrganizationDefinition;
@@ -83,7 +84,16 @@ public class DocFunction {
                 doc.setCreateTimeMonth(DateTools.format(work.getCreateTime(), DateTools.format_yyyyMM));
                 doc.setUpdateTimeMonth(DateTools.format(work.getUpdateTime(), DateTools.format_yyyyMM));
                 doc.setCreatorPerson(OrganizationDefinition.name(work.getCreatorPerson()));
+                if (StringUtils.isEmpty(doc.getCreatorPerson())) {
+                    doc.setCreatorPerson(Config.query().index().getCreatorPersonUnknown());
+                }
+                if (StringUtils.equals(EffectivePerson.CIPHER, doc.getCreatorPerson())) {
+                    doc.setCreatorPerson(Config.query().index().getCreatorPersonCipher());
+                }
                 doc.setCreatorUnit(OrganizationDefinition.name(work.getCreatorUnit()));
+                if (StringUtils.isEmpty(doc.getCreatorUnit())) {
+                    doc.setCreatorUnit(Config.query().index().getCreatorUnitUnknown());
+                }
                 doc.addBoolean(Indexs.PREFIX_FIELD_PROCESSPLATFORM_BOOLEAN, TaskCompleted.completed_FIELDNAME, false);
                 doc.addString(Indexs.PREFIX_FIELD_PROCESSPLATFORM_STRING, Work.creatorUnitLevelName_FIELDNAME,
                         work.getCreatorUnitLevelName());
