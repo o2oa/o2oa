@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queries.mlt.MoreLikeThis;
 import org.apache.lucene.search.BooleanClause;
@@ -101,34 +102,15 @@ class ActionPost extends BaseAction {
                     }
                     org.apache.lucene.document.Document document = reader.document(scoreDoc.doc);
                     ActionPostWo.WoMoreLikeThis woMoreLikeThis = new ActionPostWo.WoMoreLikeThis();
-                    woMoreLikeThis.setTitle(
-                            Indexs.<String>indexableFieldValue(document.getFields(Indexs.FIELD_TITLE),
-                                    Indexs.FIELD_TYPE_STRING));
-                    woMoreLikeThis.setFlag(
-                            Indexs.<String>indexableFieldValue(document.getFields(Indexs.FIELD_ID),
-                                    Indexs.FIELD_TYPE_STRING));
-                    woMoreLikeThis.setCategory(
-                            Indexs.<String>indexableFieldValue(document.getFields(Indexs.FIELD_CATEGORY),
-                                    Indexs.FIELD_TYPE_STRING));
-                    woMoreLikeThis.setType(
-                            Indexs.<String>indexableFieldValue(document.getFields(Indexs.FIELD_TYPE),
-                                    Indexs.FIELD_TYPE_STRING));
-                    woMoreLikeThis.setKey(
-                            Indexs.<String>indexableFieldValue(document.getFields(Indexs.FIELD_KEY),
-                                    Indexs.FIELD_TYPE_STRING));
-                    woMoreLikeThis.setCreateTime(
-                            Indexs.<Date>indexableFieldValue(document.getFields(Indexs.FIELD_CREATETIME),
-                                    Indexs.FIELD_TYPE_DATE));
-                    woMoreLikeThis.setUpdateTime(
-                            Indexs.<Date>indexableFieldValue(document.getFields(Indexs.FIELD_UPDATETIME),
-                                    Indexs.FIELD_TYPE_DATE));
-                    woMoreLikeThis.setCreatorPerson(Indexs.<String>indexableFieldValue(
-                            document.getFields(Indexs.FIELD_CREATORPERSON),
-                            Indexs.FIELD_TYPE_STRING));
-                    woMoreLikeThis.setCreatorUnit(Indexs.<String>indexableFieldValue(
-                            document.getFields(Indexs.FIELD_CREATORUNIT),
-                            Indexs.FIELD_TYPE_STRING));
-                    woMoreLikeThis.setKey(document.get(Indexs.FIELD_KEY));
+                    setTitle(document, woMoreLikeThis);
+                    setFlag(document, woMoreLikeThis);
+                    setCategory(document, woMoreLikeThis);
+                    setType(document, woMoreLikeThis);
+                    setKey(document, woMoreLikeThis);
+                    setCreateTime(document, woMoreLikeThis);
+                    setUpdateTime(document, woMoreLikeThis);
+                    setCreatorPerson(document, woMoreLikeThis);
+                    setCreatorUnit(document, woMoreLikeThis);
                     woMoreLikeThis.setScore(scoreDoc.score);
                     wo.getMoreLikeThisList().add(woMoreLikeThis);
                 }
@@ -139,6 +121,78 @@ class ActionPost extends BaseAction {
             }
         }
         return result;
+    }
+
+    private void setCreatorUnit(org.apache.lucene.document.Document document,
+            ActionPostWo.WoMoreLikeThis woMoreLikeThis) {
+        IndexableField[] fields = document.getFields(Indexs.FIELD_CREATORUNIT);
+        if (fields.length > 0) {
+            woMoreLikeThis.setCreatorUnit(Indexs.<String>indexableFieldValue(fields, Indexs.FIELD_TYPE_STRING));
+        }
+    }
+
+    private void setCreatorPerson(org.apache.lucene.document.Document document,
+            ActionPostWo.WoMoreLikeThis woMoreLikeThis) {
+        IndexableField[] fields = document.getFields(Indexs.FIELD_CREATORPERSON);
+        if (fields.length > 0) {
+            woMoreLikeThis.setCreatorPerson(Indexs.<String>indexableFieldValue(fields, Indexs.FIELD_TYPE_STRING));
+        }
+    }
+
+    private void setUpdateTime(org.apache.lucene.document.Document document,
+            ActionPostWo.WoMoreLikeThis woMoreLikeThis) {
+        IndexableField[] fields = document.getFields(Indexs.FIELD_UPDATETIME);
+        if (fields.length > 0) {
+            woMoreLikeThis.setUpdateTime(Indexs.<Date>indexableFieldValue(fields, Indexs.FIELD_TYPE_DATE));
+        }
+    }
+
+    private void setCreateTime(org.apache.lucene.document.Document document,
+            ActionPostWo.WoMoreLikeThis woMoreLikeThis) {
+        IndexableField[] fields = document.getFields(Indexs.FIELD_CREATETIME);
+        if (fields.length > 0) {
+            woMoreLikeThis.setCreateTime(Indexs.<Date>indexableFieldValue(fields, Indexs.FIELD_TYPE_DATE));
+        }
+    }
+
+    private void setKey(org.apache.lucene.document.Document document, ActionPostWo.WoMoreLikeThis woMoreLikeThis) {
+        IndexableField[] fields = document.getFields(Indexs.FIELD_KEY);
+        if (fields.length > 0) {
+            woMoreLikeThis.setKey(
+                    Indexs.<String>indexableFieldValue(fields, Indexs.FIELD_TYPE_STRING));
+        }
+    }
+
+    private void setType(org.apache.lucene.document.Document document, ActionPostWo.WoMoreLikeThis woMoreLikeThis) {
+        IndexableField[] fields = document.getFields(Indexs.FIELD_TYPE);
+        if (fields.length > 0) {
+            woMoreLikeThis.setType(
+                    Indexs.<String>indexableFieldValue(fields, Indexs.FIELD_TYPE_STRING));
+        }
+    }
+
+    private void setCategory(org.apache.lucene.document.Document document, ActionPostWo.WoMoreLikeThis woMoreLikeThis) {
+        IndexableField[] fields = document.getFields(Indexs.FIELD_CATEGORY);
+        if (fields.length > 0) {
+            woMoreLikeThis.setCategory(
+                    Indexs.<String>indexableFieldValue(fields, Indexs.FIELD_TYPE_STRING));
+        }
+    }
+
+    private void setFlag(org.apache.lucene.document.Document document, ActionPostWo.WoMoreLikeThis woMoreLikeThis) {
+        IndexableField[] fields = document.getFields(Indexs.FIELD_ID);
+        if (fields.length > 0) {
+            woMoreLikeThis.setFlag(
+                    Indexs.<String>indexableFieldValue(fields, Indexs.FIELD_TYPE_STRING));
+        }
+    }
+
+    private void setTitle(org.apache.lucene.document.Document document, ActionPostWo.WoMoreLikeThis woMoreLikeThis) {
+        IndexableField[] fields = document.getFields(Indexs.FIELD_TITLE);
+        if (fields.length > 0) {
+            woMoreLikeThis.setTitle(
+                    Indexs.<String>indexableFieldValue(fields, Indexs.FIELD_TYPE_STRING));
+        }
     }
 
     @Schema(name = "com.x.query.assemble.surface.jaxrs.mlt.ActionPost$Wi")
