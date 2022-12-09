@@ -6,7 +6,7 @@
 
         {{if $.valueCountPairList && $.valueCountPairList.length}}
         <div class="item-multiselect mainColor_border mainColor_bg_opacity"></div>
-        <div class="item">
+        <div class="item" style="display: {{($._.status.collapseCondition && $.index) ? 'none': ''}};">
             <div class="item-title">{{$.label}}</div>
 
             <div class="item-content">
@@ -41,5 +41,13 @@
 
         {{end each}}
     </div>
+
+    {{if $.status.showSwitch}}
+    <div class="switch" data-o2-element="switchNode" data-o2-events="click:switchCondition;mouseover:mainColorOver:switch;mouseout:mainColorOut:switch">
+        <i style="margin-right: 3px;" class="{{$.status.collapseCondition ? 'o2icon-chevron-thin-down' : 'o2icon-chevron-thin-up'}}"></i>
+        <span>{{$.status.collapseCondition ? $.lp.expandCondition : $.lp.collapseCondition}}</span>
+    </div>
+    {{end if}}
+
 </div>
 {{end if}}
