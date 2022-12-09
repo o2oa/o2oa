@@ -377,6 +377,19 @@ ul {
     border-radius: 0px 0px 30px 30px;
     border: 1px solid #CCCCCC;
     padding-bottom: 10px;
+    position: relative;
+}
+.condition .switch{
+    cursor: pointer;
+    padding-left: 5px;
+    position: absolute;
+    width: 60px;
+    height: 30px;
+    left: calc( 50% - 30px );
+    bottom: -20px;
+    background: #fff;
+    text-align: center;
+    color: #999;
 }
 .condition .switch-button{
     background: #ffffff;

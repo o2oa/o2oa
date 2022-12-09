@@ -95,5 +95,8 @@ MWF.xApplication.ftsearch.LP = {
     "selectModule": "选择应用",
     "searching": "您正在查询",
     "switch": "切换",
-    "searchCorePlacholder": "请输入关键字，按“回车”搜索应用或流程"
+    "searchCorePlacholder": "请输入关键字，按“回车”搜索应用或流程",
+
+    "expandCondition":"更多",
+    "collapseCondition": "收起"
 };
