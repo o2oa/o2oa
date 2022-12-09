@@ -593,6 +593,13 @@ public class Indexs {
     }
 
     @SuppressWarnings("unchecked")
+    /**
+     * 
+     * @param <T>
+     * @param indexableFields 同名的所有字段列表,不能为空数组.
+     * @param fileType 字段类型
+     * @return
+     */
     public static <T> T indexableFieldValue(IndexableField[] indexableFields, String fileType) {
         if (StringUtils.equalsIgnoreCase(Indexs.FIELD_TYPE_DATES, fileType)) {
             return (T) Stream.of(indexableFields).map(IndexableField::numericValue).filter(o -> !Objects.isNull(o))

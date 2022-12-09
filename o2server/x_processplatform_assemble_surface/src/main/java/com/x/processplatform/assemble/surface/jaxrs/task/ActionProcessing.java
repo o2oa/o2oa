@@ -3,6 +3,7 @@ package com.x.processplatform.assemble.surface.jaxrs.task;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -111,7 +112,7 @@ class ActionProcessing extends BaseAction {
 
         startSignalThreadIfAsyncSupported(effectivePerson, id, responeQueue);
 
-        Wo wo = responeQueue.take();
+        Wo wo = responeQueue.poll(300, TimeUnit.SECONDS);
 
         if (exception != null) {
             throw exception;
@@ -285,11 +286,11 @@ class ActionProcessing extends BaseAction {
             this.processingUpdateTask();
         } else {
             this.rec = RecordBuilder.ofTaskProcessing(Record.TYPE_TASK, workLog, task, taskCompletedId, newTaskIds);
-            // 加签也记录流程意见和路由决策
+            // 这里的record不需要写入到数据库,work和workCompleted都消失了,可能走了cancel环节,这里的rec仅作为返回值生成wo
             this.rec.getProperties().setOpinion(this.task.getOpinion());
             this.rec.getProperties().setRouteName(this.task.getRouteName());
             rec.setCompleted(true);
-            RecordBuilder.processing(rec);
+            // RecordBuilder.processing(rec);
         }
     }
 
