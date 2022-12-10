@@ -140,7 +140,7 @@ MWF.xApplication.process.Work.Main = new Class({
                 this.loadWorkByDraft(json.data.work, json.data.data);
             }.bind(this));
         }else if (this.options.draft){
-            this.loadWorkByDraft(this.options.draft);
+            this.loadWorkByDraft(this.options.draft, this.options.draftData);
         }else if (this.options.jobId || this.options.jobid || this.options.job){
             var jobId = this.options.jobId || this.options.jobid || this.options.job;
             delete this.options.jobId;
