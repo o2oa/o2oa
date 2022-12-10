@@ -40,30 +40,6 @@
         "background": "url(../x_component_process_Work/$Processor/task/checked.png) no-repeat 5px center",
         "background-color": "#4a90e2"
     },
-
-//    "routeNode": {
-//        "float": "left",
-//        "margin-left": "20px",
-//        "border-radius": "5px",
-//        "background-color": "#E3E3E3",
-//        "height": "24px",
-//        "line-height": "24px",
-//        "margin-top": "8px",
-//        "padding-right": "8px",
-//        "cursor": "pointer"
-//    },
-//    "routeIconNode": {
-//        "width": "24px",
-//        "height": "24px",
-//        "float": "left",
-//        "background": "url("+"../x_component_process_Work/$Processor/task/nocheck.png) no-repeat center center",
-//    },
-//    "routeTextNode": {
-//        "margin-left": "24px",
-//        "line-height": "24px",
-//        "color": "#000"
-//    },
-
     "routeOpinionTile": {
         "clear": "both",
         "overflow": "hidden",
@@ -77,9 +53,8 @@
     "routeOpinionArea": {
         "height": "99px",
         "margin": "0px 10px 0px 20px",
-        "border-bottom": "0px solid #6681a5",
+        "border-bottom": "0px solid #6681a5"
     },
-
     "inputOpinionNode": {
         "height": "97px",
         "width": "350px",
@@ -138,7 +113,7 @@
         "height": "30px",
         "width": "40px",
         "float": "left",
-        "background": "url("+"../x_component_process_Work/$Processor/task/ok-18.png) no-repeat center center",
+        "background": "url(../x_component_process_Work/$Processor/task/ok-18.png) no-repeat center center"
     },
     "okTextNode": {
         "font-size": "14px",
@@ -162,7 +137,7 @@
         "height": "28px",
         "width": "33px",
         "float": "left",
-        "background": "url("+"../x_component_process_Work/$Processor/task/cancel-18.png) no-repeat center center",
+        "background": "url(../x_component_process_Work/$Processor/task/cancel-18.png) no-repeat center center"
     },
     "cancelTextNode": {
         "font-size": "14px",
@@ -195,7 +170,6 @@
         "padding-left": "24px",
         "padding-right": "5px",
         "margin-left": "5px",
-        "cursor": "pointer",
         "background": "url(../x_component_process_Work/$Processor/default/write.png) no-repeat 5px center"
     },
 
@@ -236,8 +210,7 @@
         "padding-left": "24px",
         "padding-right": "5px",
         "margin-left": "5px",
-        "cursor": "pointer",
-        "background": "url("+"../x_component_process_Work/$Processor/default/audioRecord.png) no-repeat 5px center"
+        "background": "url(../x_component_process_Work/$Processor/default/audioRecord.png) no-repeat 5px center"
     },
     "orgsTitle": {
         "overflow": "hidden",

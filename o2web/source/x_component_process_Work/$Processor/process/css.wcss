@@ -109,20 +109,6 @@
         "background": "url(../x_component_process_Work/$Processor/process/checked.png) no-repeat 5px center",
         "background-color": "#4a90e2"
     },
-
-//    "routeIconNode": {
-//        "width": "24px",
-//        "height": "24px",
-//        "float": "left",
-//        "background": "url(../x_component_process_Work/$Processor/default/route.png) no-repeat center center"
-//        //"background": "url(../x_component_process_Work/$Processor/default/nocheck.png) no-repeat center center"
-//    },
-//    "routeTextNode": {
-//        "margin-left": "24px",
-//        "line-height": "24px",
-//        "color": "#000"
-//    },
-
     "routeOpinionTile": {
         "overflow": "hidden",
         "height": "30px",
@@ -178,7 +164,7 @@
         "background-color": "#FFF",
         "margin-top": "2px",
         "padding": "2px 2px 2px 12px",
-        "background": "url("+"../x_component_process_Work/$Processor/process/point.png) no-repeat 3px center",
+        "background": "url(../x_component_process_Work/$Processor/process/point.png) no-repeat 3px center",
         "overflow": "hidden"
     },
     "selectIdeaItemNode_over": {
@@ -206,7 +192,7 @@
         "height": "30px",
         "width": "40px",
         "float": "left",
-        "background": "url("+"../x_component_process_Work/$Processor/default/ok-18.png) no-repeat center center",
+        "background": "url(../x_component_process_Work/$Processor/default/ok-18.png) no-repeat center center"
     },
     "okTextNode": {
         "font-size": "14px",
@@ -230,7 +216,7 @@
         "height": "28px",
         "width": "33px",
         "float": "left",
-        "background": "url("+"../x_component_process_Work/$Processor/default/cancel-18.png) no-repeat center center",
+        "background": "url(../x_component_process_Work/$Processor/default/cancel-18.png) no-repeat center center"
     },
     "cancelTextNode": {
         "font-size": "14px",
@@ -326,8 +312,7 @@
         "padding-left": "24px",
         "padding-right": "5px",
         "margin-left": "5px",
-        "cursor": "pointer",
-        "background": "url("+"../x_component_process_Work/$Processor/default/audioRecord.png) no-repeat 5px center"
+        "background": "url(../x_component_process_Work/$Processor/default/audioRecord.png) no-repeat 5px center"
     },
     "orgsTitle": {
         "overflow": "hidden",
@@ -414,7 +399,6 @@
         "margin-right" : "5px"
     },
     "empowerAreaContent": {
-        "overflow": "hidden",
         "margin-bottom": "10px",
         "position": "relative",
         "border":"1px solid #ccc",
@@ -427,10 +411,8 @@
         "padding-left" : "20px",
         "font-size" : "14px",
         "width": "40px",
-        //"margin-right" : "10px",
         "float": "right",
         "overflow": "hidden",
-        "color" : "inherit",
         "cursor" : "pointer",
         "color" : "#3C76B7",
         "background": "url(../x_component_process_Work/$Processor/process/empower_unchecked.png) no-repeat left center"

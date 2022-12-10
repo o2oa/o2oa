@@ -505,7 +505,7 @@ MWF.xApplication.process.Work.Processor = new Class({
                 node.addClass("mainColor_bg");
                 node.removeClass("lightColor_bg");
                 //node.setStyle("background-color", "#da7429");
-                //node.getFirst().setStyle("background-image", "url("+"../x_component_process_Work/$Processor/default/checked.png)");
+                //node.getFirst().setStyle("background-image", "url(../x_component_process_Work/$Processor/default/checked.png)");
                 //node.getLast().setStyle("color", "#FFF");
 
             } else { //取消选中当前路由
@@ -535,7 +535,7 @@ MWF.xApplication.process.Work.Processor = new Class({
             node.addClass("mainColor_bg");
             node.removeClass("lightColor_bg");
             //node.setStyle("background-color", "#da7429");
-            //node.getFirst().setStyle("background-image", "url("+"../x_component_process_Work/$Processor/default/checked.png)");
+            //node.getFirst().setStyle("background-image", "url(../x_component_process_Work/$Processor/default/checked.png)");
             //node.getLast().setStyle("color", "#FFF");
         }
         this.routeSelectorArea.setStyle("background-color", "#FFF");
