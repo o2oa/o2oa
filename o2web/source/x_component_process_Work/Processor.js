@@ -768,7 +768,13 @@ MWF.xApplication.process.Work.Processor = new Class({
                 "contentWidth": this.options.tabletWidth || 0,
                 "contentHeight": this.options.tabletHeight || 0,
                 "onSave": function (base64code, base64Image, imageFile) {
-                    this.handwritingFile = imageFile;
+                    if( !this.tablet.isBlank() ){
+                        this.handwritingFile = imageFile;
+                        this.handwritingAction.setStyles( this.css.inputOpinionHandwritingOkAction )
+                    }else{
+                        this.handwritingFile = null
+                        this.handwritingAction.setStyles( this.css.inputOpinionHandwritingAction );
+                    }
                     this.handwritingNode.hide();
                     this.handwritingNodeMask.hide();
                     // this.page.get("div_image").node.set("src",base64Image);
@@ -776,6 +782,7 @@ MWF.xApplication.process.Work.Processor = new Class({
                 }.bind(this),
                 "onCancel": function () {
                     this.handwritingFile = null;
+                    this.handwritingAction.setStyles( this.css.inputOpinionHandwritingAction );
                     this.handwritingNode.hide();
                     this.handwritingNodeMask.hide();
                 }.bind(this)

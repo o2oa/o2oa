@@ -273,7 +273,18 @@
         "padding-left": "24px",
         "padding-right": "5px",
         "margin-left": "5px",
-        "background": "url("+"../x_component_process_Work/$Processor/default/write.png) no-repeat 5px center"
+        "background": "url(../x_component_process_Work/$Processor/default/write.png) no-repeat 5px center"
+    },
+
+    "inputOpinionHandwritingOkAction": {
+        "float": "right",
+        "border": "1px solid #6681a5",
+        "border-radius": "3px",
+        "cursor": "pointer",
+        "padding-left": "24px",
+        "padding-right": "5px",
+        "margin-left": "5px",
+        "background": "url(../x_component_process_Work/$Processor/default/writeok.png) no-repeat 5px center"
     },
 
     "handwritingMask" : {
