@@ -314,7 +314,7 @@ MWF.xApplication.query.QueryManager.TableExplorer.Table= new Class({
         var id = item.id;
         var name = item.name;
         this.explorer.app.restActions.getTable(this.data.id, function(json){
-
+            var data = json.data;
             var draftDataJson = (data.draftData) ? JSON.decode(data.draftData): "";
             data.draftData = draftDataJson;
 
