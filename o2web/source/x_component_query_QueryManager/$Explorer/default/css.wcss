@@ -211,6 +211,16 @@
 		"cursor": "pointer",
 		"background": "url("+"../x_component_process_ProcessManager/$Explorer/default/processIcon/deleteProcess.png) no-repeat center center"
 	},
+	"saveasActionNode": {
+	    "padding": "0px",
+        "float": "right",
+        "width": "16px",
+        "height": "16px",
+        "margin-right": "5px",
+        "opacity": 0,
+        "cursor": "pointer",
+        "background": "url("+"../x_component_process_ProcessManager/$Explorer/default/processIcon/copy.png) no-repeat center center"
+	},
 	"itemTextDescriptionNode": {
 	    "margin-left": "50px",
     	"margin-right": "20px",
@@ -235,7 +245,7 @@
         "position": "relative",
         "top": "-70px",
         "left": "-10px",
-        "background": "url("+"../x_component_process_ProcessManager/$Explorer/default/icon/new.png) no-repeat right"
+        "background": "url(../x_component_process_ProcessManager/$Explorer/default/icon/new.png) no-repeat right"
     },
 
     "createTemplateMaskNode": {

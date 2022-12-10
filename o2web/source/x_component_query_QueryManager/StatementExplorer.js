@@ -302,9 +302,7 @@ MWF.xApplication.query.QueryManager.StatementExplorer.Statement= new Class({
         var name = item.name;
         this.explorer.app.restActions.getStatement(this.data.id, function(json){
             var data = json.data;
-            var dataJson = (data.data) ? JSON.decode(data.data): "";
-            data.data = dataJson;
-            data.data.id = "";
+            data.id = "";
             var oldName = data.name;
             o2.Actions.load("x_query_assemble_designer").StatementAction.manageList(function(dJson){
                 var i=1;
