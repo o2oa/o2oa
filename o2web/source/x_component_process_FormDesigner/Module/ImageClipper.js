@@ -53,6 +53,31 @@ MWF.xApplication.process.FormDesigner.Module.ImageClipper = MWF.FCImageClipper =
 	_loadNodeStyles: function(){
 		var button = this.node.getFirst("button");
 		button.setStyles(this.css.buttonIcon);
+		button.setStyles(this.json.buttonStyles);
+	},
+
+
+	setAllStyles: function(){
+		this.setPropertiesOrStyles("styles");
+		this.setPropertiesOrStyles("buttonStyles");
+		this.setPropertiesOrStyles("imageStyles");
+		this.setPropertiesOrStyles("properties");
+		this.reloadMaplist();
+	},
+	_initModule: function(){
+		if (!this.json.isSaved) this.setStyleTemplate();
+
+		this._resetModuleDomNode();
+
+		this.setPropertiesOrStyles("styles");
+		this.setPropertiesOrStyles("buttonStyles");
+		this.setPropertiesOrStyles("imageStyles");
+		this.setPropertiesOrStyles("properties");
+
+		this._setNodeProperty();
+		if (!this.form.isSubform) this._createIconAction();
+		this._setNodeEvent();
+		this.json.isSaved = true;
 	},
 
 	unSelected: function(){
@@ -81,6 +106,27 @@ MWF.xApplication.process.FormDesigner.Module.ImageClipper = MWF.FCImageClipper =
 		if (!this.copyNode) this._createCopyNode();
 		this.copyNode.setStyle("display", "inline-block");
 		return this.copyNode;
+	},
+
+	setPropertiesOrStyles: function(name){
+		if (name=="styles"){
+			try{
+				this.setCustomStyles();
+			}catch(e){}
+		}
+		if (name=="properties"){
+			try{
+				this.setCustomProperties();
+			}catch(e){}
+		}
+		if (name=="buttonStyles"){
+			if (this.json.buttonStyles){
+				var button = this.node.getElement("button");
+				button.clearStyles();
+				button.setStyles(this.css.buttonIcon);
+				button.setStyles(this.json.buttonStyles);
+			}
+		}
 	},
 
 	_setEditStyle_custom: function(name){
