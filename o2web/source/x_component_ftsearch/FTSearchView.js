@@ -72,16 +72,24 @@ MWF.xApplication.ftsearch.FTSearchView = new Class({
             this.search();
         }
     },
-    search: function(pageNum, query){
+     search: function(pageNum, query){
         this.selectedConditionList = [];
         this.loadSelectedCondition();
-        this._search(pageNum, query);
+
+        if( typeOf(this.collapseCondition) === "boolean" ){
+            this._search(pageNum, query);
+        }else{
+            MWF.UD.getDataJson("ftsearchCollapseCondition", function (json) {
+                this.collapseCondition = json === "true";
+                this._search(pageNum, query);
+            }.bind(this), true);
+        }
     },
     _search: function( pageNum, query ){
         pageNum = o2.typeOf(pageNum) === "number" ? pageNum : null;
         this.docPageNum = pageNum || 1;
         this.currentKey = query || this.searchInput.get("value") || "";
-        // if( this.currentKey ){
+        if( this.currentKey ){
 
             var startDate = new Date();
 
@@ -126,16 +134,15 @@ MWF.xApplication.ftsearch.FTSearchView = new Class({
                     this.loadDocPagination();
                 }
             }.bind(this));
-        // }else{
-        //     this.docList = [];
-        //     this.docTotal = 0;
-        //     this.docTotalNode.set("text", "");
-        //     this.loadSelectedCondition();
-        //     this.loadCondition( []);
-        //     this.loadDocList();
-        //     this.loadDocPagination();
-        //
-        // }
+        }else{
+            this.docList = [];
+            this.docTotal = 0;
+            this.docTotalNode.set("text", "");
+            this.loadSelectedCondition();
+            this.loadCondition( []);
+            this.loadDocList();
+            this.loadDocPagination();
+        }
     },
     orderFacet: function(facetList){
         facetList.sort(function (a, b) {
@@ -236,9 +243,15 @@ MWF.xApplication.ftsearch.FTSearchView = new Class({
         json = json.filter(function(d){
             return d.valueCountPairList && d.valueCountPairList.length;
         });
+        json.each(function(d, i){
+            d.index = i;
+        });
         this.conditionArea.loadHtml(this.path+this.options.style+"/condition.html",
             {
-                "bind": {"lp": this.app.lp, "data": json},
+                "bind": {"lp": this.app.lp, "data": json, status: {
+                        collapseCondition: this.collapseCondition,
+                        showSwitch: json.length > 1
+                    }},
                 "module": this,
                 "reload": true
             },
@@ -247,6 +260,23 @@ MWF.xApplication.ftsearch.FTSearchView = new Class({
             }.bind(this)
         );
         // }.bind(this));
+    },
+    switchCondition: function(){
+        this.collapseCondition = !this.collapseCondition;
+        if( this.collapseCondition ){
+            this.switchNode.getElement("i").addClass( 'o2icon-chevron-thin-down' ).removeClass('o2icon-chevron-thin-up');
+            this.switchNode.getElement("span").set("text", this.app.lp.expandCondition);
+            this.conditionNode.getElements(".item").each(function (item, index) {
+                item.setStyle("display", index ? "none": "")
+            })
+        }else{
+            this.switchNode.getElement("i").removeClass( 'o2icon-chevron-thin-down' ).addClass('o2icon-chevron-thin-up');
+            this.switchNode.getElement("span").set("text", this.app.lp.collapseCondition);
+            this.conditionNode.getElements(".item").each(function (item, index) {
+                item.setStyle("display", "");
+            })
+        }
+        MWF.UD.putData("ftsearchCollapseCondition", this.collapseCondition.toString(), null,);
     },
     loadSelectedCondition: function(){
         this.conditionSelectedArea.empty();

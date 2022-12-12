@@ -97,5 +97,8 @@ MWF.xApplication.ftsearch.LP = {
 	"selectModule": "Select Application",
 	"searching": "You are searching",
 	"switch": "Switch",
-	"searchCorePlacholder": "Please enter a keyword and press \"Enter\" to search for an application or process"
+	"searchCorePlacholder": "Please enter a keyword and press \"Enter\" to search for an application or process",
+
+	"expandCondition":"Expand",
+	"collapseCondition": "Collapse"
 };

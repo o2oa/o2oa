@@ -410,7 +410,7 @@ MWF.xApplication.process.Xform.LP = {
     "createTime": "创建时间",
     "creatorPerson": "创建人",
     "creatorUnit": "创建组织",
-    "score": "匹配度",
+    "score": "关联度",
     "updateTime": "更新时间"
 
 };

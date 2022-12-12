@@ -24,7 +24,7 @@ class ActionList extends BaseAction {
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
-			CacheKey cacheKey = new CacheKey(this.getClass(), wi.getUnitList());
+			CacheKey cacheKey = new CacheKey(this.getClass(), wi.getUnitList(), wi.getUseNameFind());
 			Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 			if (optional.isPresent()) {
 				result.setData((Wo) optional.get());
@@ -42,6 +42,9 @@ class ActionList extends BaseAction {
 		@FieldDescribe("组织")
 		private List<String> unitList = new ArrayList<>();
 
+		@FieldDescribe("是否需要根据名称查找，默认false")
+		private Boolean useNameFind = false;
+
 		public List<String> getUnitList() {
 			return unitList;
 		}
@@ -50,6 +53,13 @@ class ActionList extends BaseAction {
 			this.unitList = unitList;
 		}
 
+		public Boolean getUseNameFind() {
+			return useNameFind;
+		}
+
+		public void setUseNameFind(Boolean useNameFind) {
+			this.useNameFind = useNameFind;
+		}
 	}
 
 	public static class Wo extends WoUnitListAbstract {
@@ -57,7 +67,7 @@ class ActionList extends BaseAction {
 	}
 
 	private Wo list(Business business, Wi wi) throws Exception {
-		List<Unit> os = business.unit().pick(wi.getUnitList());
+		List<Unit> os = business.unit().pick(wi.getUnitList(), wi.getUseNameFind());
 		List<String> list = ListTools.extractProperty(os, "distinguishedName", String.class, true, true);
 		Wo wo = new Wo();
 		wo.getUnitList().addAll(list);

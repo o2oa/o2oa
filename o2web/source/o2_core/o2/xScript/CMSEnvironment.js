@@ -389,10 +389,12 @@ MWF.xScript.CMSEnvironment = function(ev){
             // return v;
         },
         //获取人员--返回人员的对象数组
-        getPerson: function(name, async){
+        getPerson: function(name, async, findCN){
             getOrgActions();
             var data = {"personList": getNameFlag(name)};
-
+            if( o2.typeOf(findCN) === "boolean"){
+                data.useNameFind = findCN;
+            }
             var v = null;
             var cb = function(json){
                 v = json.data;
@@ -668,9 +670,12 @@ MWF.xScript.CMSEnvironment = function(ev){
             return (!!async) ? promise : v;
         },
         //列出人员的身份
-        listIdentityWithPerson: function(name, async){
+        listIdentityWithPerson: function(name, async, findCN){
             getOrgActions();
             var data = {"personList":getNameFlag(name)};
+            if( o2.typeOf(findCN) === "boolean"){
+                data.useNameFind = findCN;
+            }
             var v = null;
             var cb = function(json){
                 v = json.data;
@@ -715,9 +720,12 @@ MWF.xScript.CMSEnvironment = function(ev){
 
         //组织**********
         //获取组织
-        getUnit: function(name, async){
+        getUnit: function(name, async, findCN){
             getOrgActions();
             var data = {"unitList":getNameFlag(name)};
+            if( o2.typeOf(findCN) === "boolean"){
+                data.useNameFind = findCN;
+            }
             var v = null;
             var cb = function(json){
                 v = json.data;

@@ -362,7 +362,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "readLog": "阅读记录",
         "writingBoard": "手写板",
         "tinymceEditor": "Tinymce编辑器",
-        "relatedLink": "相关链接"
+        "relatedLink": "相关推荐"
     },
     "propertyTemplate": {
         "base": "基本",

@@ -91,7 +91,8 @@ class ActionPost extends BaseAction {
         LOGGER.debug("search lucene query:{}.", query::toString);
         Optional<Directory> optional = Indexs.directory(Indexs.CATEGORY_SEARCH, Indexs.KEY_ENTIRE, true);
         if (optional.isEmpty()) {
-            throw new ExceptionDirectoryNotExist();
+            LOGGER.warn("search directory not exist.");
+            return result;
         }
         try (DirectoryReader reader = DirectoryReader.open(optional.get())) {
             IndexSearcher searcher = new IndexSearcher(reader);

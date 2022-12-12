@@ -29,9 +29,7 @@
         "width": "24px",
         "height": "24px",
         "float": "left",
-        "background": "url("
-        +
-        "../x_component_process_Work/$Processor/default/nocheck.png) no-repeat center center",
+        "background": "url(../x_component_process_Work/$Processor/default/nocheck.png) no-repeat center center"
     },
     "routeTextNode": {
         "margin-left": "24px",
@@ -50,7 +48,7 @@
     },
     "routeOpinionArea": {
         "height": "129px",
-        "border-bottom": "1px solid #6681a5",
+        "border-bottom": "1px solid #6681a5"
     },
     "inputOpinionNode": {
         "height": "129px",
@@ -85,7 +83,7 @@
     },
     "buttonsArea": {
         "height": "50px",
-        "overflow": "hidden",
+        "overflow": "hidden"
     },
     "okButton": {
         "height": "30px",
@@ -102,9 +100,7 @@
         "height": "30px",
         "width": "40px",
         "float": "left",
-        "background": "url("
-        +
-        "../x_component_process_Work/$Processor/default/ok-18.png) no-repeat center center",
+        "background": "url(../x_component_process_Work/$Processor/default/ok-18.png) no-repeat center center"
     },
     "okTextNode": {
         "font-size": "14px",
@@ -142,7 +138,7 @@
         "height": "120px",
         "padding": "3px",
         "color": "#666",
-        "background": "#FFF",
+        "background": "#FFF"
     },
     "inputOpinionMediaActionArea": {
         "position": "relative",
@@ -155,14 +151,21 @@
         "float": "right",
         "border": "1px solid #6681a5",
         "border-radius": "3px",
-        "cursor": "pointer",
         "padding-left": "24px",
         "padding-right": "5px",
         "margin-left": "5px",
         "cursor": "pointer",
-        "background": "url("
-        +
-        "../x_component_process_Work/$Processor/default/write.png) no-repeat 5px center"
+        "background": "url(../x_component_process_Work/$Processor/default/write.png) no-repeat 5px center"
+    },
+    "inputOpinionHandwritingOkAction": {
+        "float": "right",
+        "border": "1px solid #6681a5",
+        "border-radius": "3px",
+        "padding-left": "24px",
+        "padding-right": "5px",
+        "margin-left": "5px",
+        "cursor": "pointer",
+        "background": "url(../x_component_process_Work/$Processor/default/writeok.png) no-repeat 5px center"
     },
     "handwritingNode": {
         "position": "absolute",
@@ -193,7 +196,6 @@
         "padding-left": "24px",
         "padding-right": "5px",
         "margin-left": "5px",
-        "cursor": "pointer",
         "background": "url(../x_component_process_Work/$Processor/default/audioRecord.png) no-repeat 5px center"
     },
     "orgsTitle": {

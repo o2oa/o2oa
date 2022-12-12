@@ -1,6 +1,6 @@
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
-/** @class Relatedlink 相关链接组件，本组件根据其当前流程实例的相关性分数列式其他流程实例（带权限）。
- * @o2cn 相关链接组件
+/** @class Relatedlink 相关推荐组件，本组件根据其当前流程实例的相关性分数列式其他流程实例（带权限）。
+ * @o2cn 相关推荐组件
  * @example
  * //可以在脚本中获取该组件
  * //方法1：

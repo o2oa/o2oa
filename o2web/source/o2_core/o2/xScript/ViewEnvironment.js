@@ -806,6 +806,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @static
          * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、id、unique属性值，人员对象，或上述属性值和对象的数组。
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @param {(Boolean)} [findCN] 是否需要额外查找中文名称（如张三），默认false。如果为true，除匹配unique和distingiushedName外，还会在身份的第一段中查找所有匹配到的身份（精确匹配）。
          * @return {Promise|IdentityData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回身份对象数组。
@@ -825,9 +826,12 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *     //identityList 返回的身份对象数组。
          * })
          */
-        listIdentityWithPerson: function(name, async){
+        listIdentityWithPerson: function(name, async, findCN){
             getOrgActions();
             var data = {"personList":getNameFlag(name)};
+            if( o2.typeOf(findCN) === "boolean"){
+                data.useNameFind = findCN;
+            }
             var v = null;
             var cb = function(json){
                 v = json.data;
@@ -912,6 +916,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @static
          * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @param {(Boolean)} [findCN] 是否需要额外查找中文名称（如综合部），默认false。如果为true，除匹配unique和distingiushedName外，还会在名称的第一段中查找所有匹配到的部门（精确匹配）。
          * @return {Promise|UnitData|UnitData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回组织，单个是Object，多个是Array。
@@ -931,9 +936,12 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *     //unitList 为返回的组织，单个是对象，多个是数组。
          * })
          */
-        getUnit: function(name, async){
+        getUnit: function(name, async, findCN){
             getOrgActions();
             var data = {"unitList":getNameFlag(name)};
+            if( o2.typeOf(findCN) === "boolean"){
+                data.useNameFind = findCN;
+            }
             var v = null;
             var cb = function(json){
                 v = json.data;
@@ -1416,6 +1424,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @static
          * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、id、unique属性值，人员对象，或上述属性值和对象的数组。
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @param {(Boolean)} [findCN] 是否需要额外查找中文名称（如张三），默认false。如果为true，除匹配unique和distingiushedName外，还会在名称的第一段中查找所有匹配到的人（精确匹配）。
          * @return {Promise|PersonData|PersonData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回人员，单个是Object，多个是Array。
@@ -1435,10 +1444,12 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *     //personList 为返回的人员，单个是对象，多个是数组。
          * })
          */
-        getPerson: function(name, async){
+        getPerson: function(name, async, findCN){
             getOrgActions();
             var data = {"personList": getNameFlag(name)};
-
+            if( o2.typeOf(findCN) === "boolean"){
+                data.useNameFind = findCN;
+            }
             var v = null;
             var cb = function(json){
                 v = json.data;
