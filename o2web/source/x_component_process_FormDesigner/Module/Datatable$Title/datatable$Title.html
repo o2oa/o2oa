@@ -29,6 +29,14 @@
                 </td>
             </tr>
             <tr>
+                <td class="editTableTitle">{{$.lp.prefix}}:</td>
+                <td class="editTableValue"><div class="MWFLabelFlag" name="prefixIcon"></div></td>
+            </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.suffix}}:</td>
+                <td class="editTableValue"><div class="MWFLabelFlag" name="suffixIcon"></div></td>
+            </tr>
+            <tr>
                 <td class="editTableTitle">{{$.lp.exportImport}}:</td>
                 <td class="editTableValue">
                     <input class="editTableRadio" name="isImpExp" text{($.isImpExp!==false)?'checked':''} type="radio" value="true"/>{{$.lp.allow}} <br/>
