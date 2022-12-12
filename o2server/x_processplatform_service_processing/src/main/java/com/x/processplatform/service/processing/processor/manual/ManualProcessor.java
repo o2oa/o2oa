@@ -661,13 +661,21 @@ public class ManualProcessor extends AbstractManualProcessor {
         }
     }
 
+    /**
+     * 存在优先路由,如果有人选择了优先路由那么直接流转.需要判断是否启用了soleDirect,允许存在多个优先路由
+     * 
+     * @param aeiObjects
+     * @param taskCompleteds
+     * @return
+     * @throws Exception
+     */
     private boolean soleDirect(AeiObjects aeiObjects, List<TaskCompleted> taskCompleteds) throws Exception {
-        // 存在优先路由,如果有人选择了优先路由那么直接流转.需要判断是否启用了soleDirect
-        Optional<Route> route = aeiObjects.getRoutes().stream().filter(r -> BooleanUtils.isTrue(r.getSoleDirect()))
-                .findFirst();
-        if (route.isPresent()) {
+        final List<String> soleRouteNames = aeiObjects.getRoutes().stream()
+                .filter(r -> BooleanUtils.isTrue(r.getSoleDirect()))
+                .map(Route::getName).collect(Collectors.toList());
+        if (!soleRouteNames.isEmpty()) {
             Optional<TaskCompleted> taskCompleted = taskCompleteds.stream()
-                    .filter(t -> StringUtils.equals(t.getRouteName(), route.get().getName())).findFirst();
+                    .filter(t -> soleRouteNames.contains(t.getRouteName())).findFirst();
             if (taskCompleted.isPresent()) {
                 return true;
             }
