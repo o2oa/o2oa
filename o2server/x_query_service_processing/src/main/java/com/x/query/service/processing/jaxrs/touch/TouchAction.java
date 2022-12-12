@@ -37,61 +37,10 @@ public class TouchAction extends StandardJaxrsAction {
 
     private static final String OPERATIONID_PREFIX = "TouchAction::";
 
-//    @JaxrsMethodDescribe(value = "执行crawlCms.", action = ActionCrawlCms.class)
-//    @GET
-//    @Path("crawl/cms")
-//    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    public void crawlCms(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
-//        ActionResult<ActionCrawlCms.Wo> result = new ActionResult<>();
-//        EffectivePerson effectivePerson = this.effectivePerson(request);
-//        try {
-//            result = new ActionCrawlCms().execute(effectivePerson);
-//        } catch (Exception e) {
-//            LOGGER.error(e, effectivePerson, request, null);
-//            result.error(e);
-//        }
-//        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-//    }
-//
-//    @JaxrsMethodDescribe(value = "执行crawlWork.", action = ActionCrawlWork.class)
-//    @GET
-//    @Path("crawl/work")
-//    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    public void crawlWork(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
-//        ActionResult<ActionCrawlWork.Wo> result = new ActionResult<>();
-//        EffectivePerson effectivePerson = this.effectivePerson(request);
-//        try {
-//            result = new ActionCrawlWork().execute(effectivePerson);
-//        } catch (Exception e) {
-//            LOGGER.error(e, effectivePerson, request, null);
-//            result.error(e);
-//        }
-//        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-//    }
-//
-//    @JaxrsMethodDescribe(value = "执行crawlWorkCompleted.", action = ActionCrawlWorkCompleted.class)
-//    @GET
-//    @Path("crawl/workcompleted")
-//    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    public void crawlWorkCompleted(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
-//        ActionResult<ActionCrawlWorkCompleted.Wo> result = new ActionResult<>();
-//        EffectivePerson effectivePerson = this.effectivePerson(request);
-//        try {
-//            result = new ActionCrawlWorkCompleted().execute(effectivePerson);
-//        } catch (Exception e) {
-//            LOGGER.error(e, effectivePerson, request, null);
-//            result.error(e);
-//        }
-//        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-//    }
-
-    @Operation(summary = "执行工作高频索引.", operationId = OPERATIONID_PREFIX
+    @Operation(summary = "执行在流转工作高频索引.", operationId = OPERATIONID_PREFIX
             + "highFreqWorkTouch", responses = { @ApiResponse(content = {
                     @Content(schema = @Schema(implementation = ActionHighFreqWorkTouch.Wo.class)) }) })
-    @JaxrsMethodDescribe(value = "执行已完成工作高频索引.", action = ActionHighFreqWorkTouch.class)
+    @JaxrsMethodDescribe(value = "执行在流转工作高频索引.", action = ActionHighFreqWorkTouch.class)
     @GET
     @Path("high/freq/work/node/{node}/touch")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -109,10 +58,10 @@ public class TouchAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
-    @Operation(summary = "重置工作高频索引定时任务状态.", operationId = OPERATIONID_PREFIX
+    @Operation(summary = "重置在流转工作高频索引定时任务状态.", operationId = OPERATIONID_PREFIX
             + "highFreqWorkReset", responses = { @ApiResponse(content = {
                     @Content(schema = @Schema(implementation = ActionHighFreqWorkReset.Wo.class)) }) })
-    @JaxrsMethodDescribe(value = "重置已完成工作高频索引定时任务状态.", action = ActionHighFreqWorkReset.class)
+    @JaxrsMethodDescribe(value = "重置在流转工作高频索引定时任务状态.", action = ActionHighFreqWorkReset.class)
     @GET
     @Path("high/freq/work/node/{node}/reset")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -130,10 +79,10 @@ public class TouchAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
-    @Operation(summary = "执行工作低频索引.", operationId = OPERATIONID_PREFIX
+    @Operation(summary = "执行在流转工作低频索引.", operationId = OPERATIONID_PREFIX
             + "lowFreqIndexWorkTouch", responses = { @ApiResponse(content = {
                     @Content(schema = @Schema(implementation = ActionLowFreqWorkTouch.Wo.class)) }) })
-    @JaxrsMethodDescribe(value = "执行已完成工作低频索引.", action = ActionLowFreqWorkTouch.class)
+    @JaxrsMethodDescribe(value = "执行在流转工作低频索引.", action = ActionLowFreqWorkTouch.class)
     @GET
     @Path("low/freq/work/node/{node}/touch")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -151,10 +100,10 @@ public class TouchAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
-    @Operation(summary = "重置工作低频索引定时任务状态.", operationId = OPERATIONID_PREFIX
+    @Operation(summary = "重置在流转工作低频索引定时任务状态.", operationId = OPERATIONID_PREFIX
             + "lowFreqWorkReset", responses = { @ApiResponse(content = {
                     @Content(schema = @Schema(implementation = ActionLowFreqWorkReset.Wo.class)) }) })
-    @JaxrsMethodDescribe(value = "重置工作低频索引定时任务状态.", action = ActionLowFreqWorkReset.class)
+    @JaxrsMethodDescribe(value = "重置在流转工作低频索引定时任务状态.", action = ActionLowFreqWorkReset.class)
     @GET
     @Path("low/freq/work/node/{node}/reset")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)

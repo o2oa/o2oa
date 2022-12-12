@@ -102,7 +102,7 @@ public class Indexs {
     public static final String FIELD_MODIFYTIME = "modifyTime";
 
     public static final String FIELD_HIGHLIGHTING = "highlighting";
-    public static final String READERS_SYMBOL_ALL = "ALL";
+    public static final String READERS_SYMBOL_ALL = "*";
 
     public static final String BOOLEAN_TRUE_STRING_VALUE = "true";
     public static final String BOOLEAN_FALSE_STRING_VALUE = "false";
@@ -597,7 +597,7 @@ public class Indexs {
      * 
      * @param <T>
      * @param indexableFields 同名的所有字段列表,不能为空数组.
-     * @param fileType 字段类型
+     * @param fileType        字段类型
      * @return
      */
     public static <T> T indexableFieldValue(IndexableField[] indexableFields, String fileType) {

@@ -17,7 +17,7 @@ import com.x.base.core.project.tools.SortTools;
 
 public class ActionListWhatICanViewAllDocType extends BaseAction {
 
-	private static  Logger logger = LoggerFactory.getLogger(ActionListWhatICanViewAllDocType.class);
+	private static  final Logger LOGGER = LoggerFactory.getLogger(ActionListWhatICanViewAllDocType.class);
 
 	@SuppressWarnings("unchecked")
 	protected ActionResult<List<Wo>> execute(HttpServletRequest request, EffectivePerson effectivePerson)
@@ -36,7 +36,7 @@ public class ActionListWhatICanViewAllDocType extends BaseAction {
 			check = false;
 			Exception exception = new ExceptionAppInfoProcess(e, "系统在检查用户是否是平台管理员时发生异常。Name:" + personName);
 			result.error(exception);
-			logger.error(e, effectivePerson, request, null);
+			LOGGER.error(e, effectivePerson, request, null);
 		}
 
 		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), personName, isAnonymous, isXAdmin );
@@ -52,7 +52,7 @@ public class ActionListWhatICanViewAllDocType extends BaseAction {
 					check = false;
 					Exception exception = new ExceptionAppInfoProcess(e, "系统在根据用户权限查询所有可见的分类信息时发生异常。Name:" + personName);
 					result.error(exception);
-					logger.error(e, effectivePerson, request, null);
+					LOGGER.error(e, effectivePerson, request, null);
 				}
 				if( ListTools.isNotEmpty( wos_out )){
 					for( Wo wo : wos_out ) {
@@ -63,7 +63,7 @@ public class ActionListWhatICanViewAllDocType extends BaseAction {
 								check = false;
 								Exception exception = new ExceptionAppInfoProcess(e, "系统根据ID查询栏目配置支持信息时发生异常。ID=" + wo.getId() );
 								result.error(exception);
-								logger.error(e, effectivePerson, request, null);
+								LOGGER.error(e, effectivePerson, request, null);
 							}
 							wos.add( wo );
 //						}
