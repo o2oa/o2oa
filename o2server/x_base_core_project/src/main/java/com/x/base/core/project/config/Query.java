@@ -475,6 +475,10 @@ public class Query extends ConfigObject {
             }
         }
 
+        public String getHdfsDirectoryPath() {
+            return this.adjustHdfsDirectoryPath();
+        }
+
         private String adjustHdfsDirectoryPath() {
             return StringUtils.startsWith(this.hdfsDirectoryPath, "/") ? this.hdfsDirectoryPath
                     : "/" + hdfsDirectoryPath;
