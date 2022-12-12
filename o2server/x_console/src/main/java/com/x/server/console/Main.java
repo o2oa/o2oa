@@ -32,7 +32,6 @@ import java.util.regex.Matcher;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.quartz.Scheduler;
 
 import com.x.base.core.project.config.ApplicationServer;
 import com.x.base.core.project.config.CenterServer;
@@ -44,7 +43,6 @@ import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.Crypto;
 import com.x.base.core.project.tools.DefaultCharset;
 import com.x.base.core.project.tools.StringTools;
-import com.x.server.console.action.ActionConfig;
 import com.x.server.console.action.ActionControl;
 import com.x.server.console.action.ActionSetPassword;
 import com.x.server.console.action.ActionVersion;
@@ -123,7 +121,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
         init();
         if (null == Config.currentNode()) {
-            throw new Exception("无法找到当前节点,请检查config/node_{name}.json与local/node.cfg文件内容中的名称是否一致.");
+            throw new IllegalStateException("无法找到当前节点,请检查config/node_{name}.json与local/node.cfg文件内容中的名称是否一致.");
         }
         swapCommandThread.start();
         consoleCommandThread.start();
@@ -134,8 +132,8 @@ public class Main {
             nodeAgent.start();
         }
 
-        SchedulerBuilder schedulerBuilder = new SchedulerBuilder();
-        Scheduler scheduler = schedulerBuilder.start();
+//        SchedulerBuilder schedulerBuilder = new SchedulerBuilder();
+//        Scheduler scheduler = schedulerBuilder.start();
 
         if (BooleanUtils.isTrue(Config.currentNode().autoStart())) {
             startAll();
@@ -217,11 +215,7 @@ public class Main {
             matcher = CommandFactory.setPassword_pattern.matcher(cmd);
             if (matcher.find()) {
                 setPassword(matcher.group(1), matcher.group(2));
-                if (config()) {
-                    break;
-                } else {
-                    continue;
-                }
+                continue;
             }
 
             matcher = CommandFactory.control_pattern.matcher(cmd);
@@ -242,9 +236,6 @@ public class Main {
             }
             System.out.println("unknown command:" + cmd);
         }
-        // 关闭定时器
-        scheduler.shutdown();
-        // SystemOutErrorSideCopyBuilder.stop();
     }
 
     private static void version() {
@@ -253,15 +244,6 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    private static boolean config() {
-        try {
-            return new ActionConfig().execute();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return true;
     }
 
     private static void startDataServer() {
