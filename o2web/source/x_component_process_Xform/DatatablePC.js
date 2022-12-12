@@ -1837,6 +1837,53 @@ MWF.xApplication.process.Xform.DatatablePC$Title = new Class({
 		if(this.json.recoveryStyles){
 			this.node.setStyles(this.json.recoveryStyles);
 		}
+		if (this.json.prefixIcon || this.json.suffixIcon){
+			var text = this.node.get("text");
+			this.node.empty();
+
+			var height = (this.node.offsetParent === null) ? "28" : (this.node.getSize().y - this.getOffsetY());
+            this.wrapNode = new Element("div", {
+                "styles": {
+                    "position":"relative",
+                    "display":"inline-block",
+                    "height": height,
+                    "line-height": height
+                }
+            }).inject(this.node);
+
+			this.textNode = new Element("div", {"styles": {
+				"padding-left": (this.json.prefixIcon) ? "20px" : "0px",
+				"padding-right": (this.json.suffixIcon) ? "20px" : "0px"
+			}, "text": text}).inject(this.wrapNode);
+
+			var  textHeight = (this.node.offsetParent === null) ? "28" : this.textNode.getSize().y;
+			if (this.json.prefixIcon){
+				this.prefixNode = new Element("div", {"styles": {
+					"position": "absolute",
+					"top": "0px",
+					"left": "0px",
+					"width": "20px",
+					"height": ""+ textHeight +"px",
+					"background": "url("+this.json.prefixIcon+") center center no-repeat"
+				}}).inject(this.textNode, "before");
+			}
+			if (this.json.suffixIcon){
+				this.suffixNode = new Element("div", {"styles": {
+					"position": "absolute",
+					"top": "0px",
+					"right": "0px",
+					"width": "20px",
+					"height": ""+textHeight+"px",
+					"background": "url("+this.json.suffixIcon+") center center no-repeat"
+				}}).inject(this.textNode, "before");
+			}
+		}
+	},
+	getOffsetY: function(){
+		return (this.node.getStyle("padding-top") || 0).toInt()
+			+ (this.node.getStyle("padding-bottom") || 0).toInt()
+			+ (this.node.getStyle("border-top") || 0).toInt()
+			+ (this.node.getStyle("border-bottom") || 0).toInt()
 	}
 });
 

@@ -861,7 +861,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                     }
                 }
             });
-            return result.length > 0 ? result : null;
+            return result;
         },
         getSpecialData: function () {
             var data = this.businessData.data;
