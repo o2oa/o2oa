@@ -53,8 +53,6 @@ public class ProcessPlatform extends ConfigObject {
 
     public static final Boolean DEFAULT_DELETEAPPLICATIONINUSE = false;
 
-//	public static final Boolean DEFAULT_UPDATEDATAPROJECTIONENABLE = false;
-
     public static final Boolean DEFAULT_PROCESSINGSIGNALPERSISTENABLE = false;
 
     public static final Integer DEFAULT_ASYNCHRONOUSTIMEOUT = 60;
@@ -73,7 +71,6 @@ public class ProcessPlatform extends ConfigObject {
         this.docToWordDefaultSite = DEFAULT_DOCTOWORDDEFAULTSITE;
         this.executorCount = DEFAULT_EXECUTORCOUNT;
         this.executorQueueBusyThreshold = DEFAULT_EXECUTORQUEUEBUSYTHRESHOLD;
-//		this.updateDataProjectionEnable = DEFAULT_UPDATEDATAPROJECTIONENABLE;
         this.urge = new Urge();
         this.expire = new Expire();
         this.touchDelay = new TouchDelay();
@@ -121,10 +118,6 @@ public class ProcessPlatform extends ConfigObject {
         return StringUtils.isEmpty(docToWordDefaultSite) ? DEFAULT_DOCTOWORDDEFAULTSITE : docToWordDefaultSite;
     }
 
-//	public Boolean getUpdateDataProjectionEnable() {
-//		return BooleanUtils.isTrue(this.updateDataProjectionEnable);
-//	}
-
     @FieldDescribe("维护身份,当工作发生意外错误,无法找到对应的处理人情况下,先尝试将工作分配给创建身份,如果创建身份也不可获取,那么分配给指定人员,默认情况下这个值为空.")
     private String maintenanceIdentity;
 
@@ -151,9 +144,6 @@ public class ProcessPlatform extends ConfigObject {
 
     @FieldDescribe("执行器队列繁忙阈值")
     private Integer executorQueueBusyThreshold;
-
-//	@FieldDescribe("更新data数据是否执行映射.")
-//	private boolean updateDataProjectionEnable;
 
     @FieldDescribe("催办任务设置,发现即将过期时发送提醒消息.")
     private Urge urge;

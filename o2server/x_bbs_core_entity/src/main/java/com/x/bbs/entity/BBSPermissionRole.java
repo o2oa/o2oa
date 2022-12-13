@@ -25,7 +25,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * @author LIYI
  */
 @Schema(name = "BBSPermissionRole", description = "论坛权限角色绑定关系.")
-@ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
+@ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.element, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.BBSPermissionRole.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.BBSPermissionRole.table + JpaObject.IndexNameMiddle

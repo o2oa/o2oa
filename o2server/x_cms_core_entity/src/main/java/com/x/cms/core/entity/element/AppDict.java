@@ -1,4 +1,4 @@
-package com.x.cms.core.entity.element;
+ package com.x.cms.core.entity.element;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,7 +25,7 @@ import com.x.cms.core.entity.PersistenceProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(name = "AppDict", description = "内容管理字典.")
-@ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
+@ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.element, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.Element.AppDict.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Element.AppDict.table + JpaObject.IndexNameMiddle

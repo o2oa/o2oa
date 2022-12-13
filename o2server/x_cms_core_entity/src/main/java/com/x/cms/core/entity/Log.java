@@ -23,7 +23,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  *
  */
 @Schema(name = "Log", description = "内容管理日志信息.")
-@ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
+@ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.log, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.Log.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Log.table + JpaObject.IndexNameMiddle
