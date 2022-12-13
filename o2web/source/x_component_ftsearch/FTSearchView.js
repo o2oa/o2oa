@@ -302,11 +302,13 @@ MWF.xApplication.ftsearch.FTSearchView = new Class({
                 click: function (ev) {
                     this.removeSelectedConditionItem(ev, item, condNode)
                 }.bind(this),
-            })
+            });
 
             new Element("span", {
                 text: item.parentLabel+":"
             }).inject(condNode);
+
+            var titleList = [];
             item.labelList.each(function (label, i) {
                 if( i === 2 ){
                     new Element("div.item-text", {
@@ -317,9 +319,13 @@ MWF.xApplication.ftsearch.FTSearchView = new Class({
                         text: label
                     }).inject(condNode);
                 }
+                titleList.push( label );
             });
+
             var iconNode = new Element("i.o2icon-close").inject(condNode);
-            condNode.addClass("icon");
+            iconNode.addClass("icon");
+
+            condNode.set("title", item.parentLabel+":" + titleList.join(","));
         }.bind(this))
     },
     // loadSelectedCondition: function(){
