@@ -28,6 +28,58 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
+.before_search_blank{
+    max-height: 290px;
+    min-height: 150px;
+    height: calc(100% - 360px);
+}
+.main_inputWrap{
+    background-color: #ffffff;
+    padding: 20px;
+    margin-bottom: 10px;
+}
+.main_inputWrap_main{
+    width: 600px;
+    background-color: #ffffff;
+    margin: 0 auto;
+}
+.main_inputArea{
+    max-width: 600px;
+    /*margin-bottom: 10px;*/
+    /*border: 1px solid #ccc;*/
+    border: 1px solid #4A90E2;
+    border-radius: 20px;
+    padding: 0 0 0 15px;
+    margin-right: 140px;
+    /*box-shadow: 0 2px 5px 1px rgb(64 60 67 / 16%);*/
+}
+.main_input {
+    width: calc( 100% - 40px );
+    height: 38px;
+    font-size: 16px;
+    color: #666;
+    border: 0;
+}
+.main_inputButton{
+    cursor: pointer;
+    line-height: 40px;
+    font-size: 18px;
+    color: #ccc;
+}
+.main_searchButton{
+    float:right;
+    height: 42px;
+    line-height: 42px;
+    cursor: pointer;
+    background: #4A90E2;
+    border-radius: 20px;
+    color: #ffffff;
+    font-size:16px;
+    text-align: center;
+    width: 120px;
+    display: inline-block;
+}
+
 
 .o2icon-indeterminate_check_box:before {
   content: "\e900";
@@ -203,8 +255,8 @@ ul {
 
 .ftsearch-top{
     background-color: #ffffff;
-    padding: 20px;
-    margin-bottom: 10px;
+    padding: 15px 20px;
+    /*margin-bottom: 10px;*/
     overflow: hidden;
 }
 .ftsearch-top-inner{
@@ -237,9 +289,9 @@ ul {
 }
 
 .docContent-ftsearch{
-    height: calc( 100% - 140px );
+    height: calc( 100% - 90px );
     background:#ffffff;
-    padding:20px;
+    padding:0 20px 20px 20px;
     overflow:auto;
     display: flex;
     flex-direction: column;
@@ -274,7 +326,8 @@ ul {
     text-align: center;
 }
 .docTotalNode{
-    padding: 0 0 10px 5px
+    float:right;
+    padding: 10px 0 10px 5px
 }
 .listNode{
     min-height: 300px;
@@ -334,7 +387,7 @@ ul {
 
 .conditionSelected{
     overflow: hidden;
-    margin-bottom: 10px;
+    /*margin-bottom: 10px;*/
 }
 .conditionSelected .item{
     float: left;
@@ -373,8 +426,8 @@ ul {
 }
 .condition{
     width: 100%;
-    margin-bottom: 30px;
-    border-radius: 0px 0px 30px 30px;
+    margin-bottom: 20px;
+    border-radius: 0px 0px 20px 20px;
     border: 1px solid #CCCCCC;
     padding-bottom: 10px;
     position: relative;
@@ -383,9 +436,9 @@ ul {
     cursor: pointer;
     padding-left: 5px;
     position: absolute;
-    width: 60px;
+    width: 120px;
     height: 30px;
-    left: calc( 50% - 30px );
+    left: calc( 50% + 10px );
     bottom: -20px;
     background: #fff;
     text-align: center;
@@ -466,6 +519,7 @@ ul {
     line-height: 40px;
     border: 1px solid #4A90E2;
     background: rgba(74, 144, 226, 0.12);
+    margin-bottom: 10px;
 }
 .condition .item-multiselect .item-title{
     float: left;

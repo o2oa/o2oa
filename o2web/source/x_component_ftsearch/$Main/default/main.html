@@ -1,7 +1,14 @@
 <div class="appNode" data-o2-element="appNode">
     <div class="contentArea">
         <div class="content" data-o2-element="contentArea">
-
+            <div class="before_search_blank"></div>
+            <div class="main_inputWrap_main">
+                <div class="main_searchButton mainColor_bg" data-o2-events="click:searchClick:1:;">{{$.lp.search}}</div>
+                <div class="main_inputArea mainColor_border">
+                    <i class="main_inputButton o2icon-search1" data-o2-events="click:searchClick;mouseover:iconOver;mouseout:iconOut"></i>
+                    <input class="main_input" data-o2-element="searchInput" placeholder="{{$.lp.searchPlacholder}}" data-o2-events="keydown:searchKeydown"/>
+                </div>
+            </div>
         </div>
     </div>
 </div>

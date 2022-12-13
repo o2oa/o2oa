@@ -22,7 +22,9 @@ MWF.xApplication.ftsearch.Main = new Class({
 			if( this.status && this.status.query ){
 				query = this.status.query;
 			}
-			this.openFTSearchView( query );
+			if( query ){
+				this.openFTSearchView( query );
+			}
 			this.status = null;
 		}.bind(this));
 	},
@@ -33,6 +35,16 @@ MWF.xApplication.ftsearch.Main = new Class({
 			parentItem = parentItem.getParent();
 			if( parentItem.hasClass(className) )return parentItem;
 		}
+	},
+	searchKeydown: function(e){
+		if( e.keyCode === 13 ){
+			var query = this.searchInput.get("value");
+			if(query)this.openFTSearchView( query );
+		}
+	},
+	searchClick: function(e){
+		var query = this.searchInput.get("value");
+		if(query)this.openFTSearchView( query );
 	},
 	doSearch: function(query){
 		this.openFTSearchView(query);
