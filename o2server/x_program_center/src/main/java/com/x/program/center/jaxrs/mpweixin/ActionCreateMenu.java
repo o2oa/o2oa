@@ -3,6 +3,7 @@ package com.x.program.center.jaxrs.mpweixin;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.x.base.core.project.config.Mpweixin;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -11,7 +12,6 @@ import com.google.gson.GsonBuilder;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.MPweixin;
 import com.x.base.core.project.connection.HttpConnection;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
@@ -29,12 +29,12 @@ public class ActionCreateMenu  extends BaseAction {
 
     ActionResult<Wo> execute() throws Exception {
         ActionResult<Wo> result = new ActionResult<>();
-        if (Config.mPweixin() == null || BooleanUtils.isNotTrue(Config.mPweixin().getEnable()) || BooleanUtils.isNotTrue(Config.mPweixin().getEnablePublish())) {
+        if (Config.mpweixin() == null || BooleanUtils.isNotTrue(Config.mpweixin().getEnable()) || BooleanUtils.isNotTrue(Config.mpweixin().getEnablePublish())) {
             throw new ExceptionConfigError();
         }
-        String accessToken = Config.mPweixin().accessToken();
+        String accessToken = Config.mpweixin().accessToken();
         logger.info("accessToken: "+accessToken);
-        String createUrl = MPweixin.default_apiAddress + "/cgi-bin/menu/create?access_token="+accessToken;
+        String createUrl = Mpweixin.default_apiAddress + "/cgi-bin/menu/create?access_token="+accessToken;
         logger.info("url: "+createUrl);
 
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {

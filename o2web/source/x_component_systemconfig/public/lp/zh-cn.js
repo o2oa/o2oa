@@ -1058,6 +1058,7 @@ o2.xApplication.systemconfig.LP = {
             "token": "微信Token",
             "encodingAesKey": "微信encodingAesKey",
             "portalId": "处理完成后跳转到门户",
+            "workUrl": "微信公众号消息打开工作的URL",
             "scriptId": "执行服务脚本",
             "messageEnable": "启用模版消息",
             "tempMessageId": "公众号模版消息id",
@@ -1065,6 +1066,7 @@ o2.xApplication.systemconfig.LP = {
             "tempName": "模版字段",
             "name": "业务字段",
 
+            "workUrlInfo": "微信公众号消息打开工作的url地址，如：https://sample.o2oa.net/x_desktop/",
             "enableInfo": "O2OA支持微信公众号的集成，用户可以通过关注微信公众号进行工作处理。并且支持待办工作的消息提醒。(需要重启服务器)",
             "enableInfo2": "更多O2OA与微信公众号的内容，请查看：<a href='https://www.o2oa.net/search.html?q=%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7' target='_blank'>微信公众号</a>",
             "enablePublishInfo": "启用菜单发布后，可已将在O2OA中配置好的菜单功能，发布到微信公众号。可在 APP工具-公众号菜单配置 中配置微信公众号菜单",

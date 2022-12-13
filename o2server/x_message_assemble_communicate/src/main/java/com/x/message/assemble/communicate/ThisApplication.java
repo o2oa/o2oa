@@ -106,8 +106,8 @@ public class ThisApplication {
 		if (Config.weLink().getEnable() && Config.weLink().getMessageEnable()) {
 			context().startQueue(welinkConsumeQueue);
 		}
-		if (BooleanUtils.isTrue(Config.mPweixin().getEnable())
-				&& BooleanUtils.isTrue(Config.mPweixin().getMessageEnable())) {
+		if (BooleanUtils.isTrue(Config.mpweixin().getEnable())
+				&& BooleanUtils.isTrue(Config.mpweixin().getMessageEnable())) {
 			context().startQueue(mpweixinConsumeQueue);
 		}
 		context().startQueue(wsConsumeQueue);
