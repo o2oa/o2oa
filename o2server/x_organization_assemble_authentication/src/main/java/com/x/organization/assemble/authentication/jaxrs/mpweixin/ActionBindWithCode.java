@@ -1,5 +1,6 @@
 package com.x.organization.assemble.authentication.jaxrs.mpweixin;
 
+import com.x.base.core.project.config.Mpweixin;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -7,7 +8,6 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.MPweixin;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
@@ -30,12 +30,12 @@ public class ActionBindWithCode extends BaseAction {
         if (StringUtils.isEmpty(code)) {
             throw new ExceptionNoCode();
         }
-        if (Config.mPweixin() == null || BooleanUtils.isFalse(Config.mPweixin().getEnable())) {
+        if (Config.mpweixin() == null || BooleanUtils.isFalse(Config.mpweixin().getEnable())) {
             throw new ExceptionConfigError();
         }
         ActionResult<Wo> result = new ActionResult<Wo>();
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-            MPweixin.WeixinAuth2AccessResp resp = Config.mPweixin().mpAuth2(code);
+            Mpweixin.WeixinAuth2AccessResp resp = Config.mpweixin().mpAuth2(code);
             if (resp == null) {
                 throw new ExceptionGetAccessTokenFail();
             }

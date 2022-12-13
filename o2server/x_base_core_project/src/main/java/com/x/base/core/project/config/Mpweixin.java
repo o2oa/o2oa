@@ -14,7 +14,7 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 /**
  * Created by fancyLou on 3/8/21. Copyright © 2021 O2. All rights reserved.
  */
-public class MPweixin extends ConfigObject {
+public class Mpweixin extends ConfigObject {
 
 	@FieldDescribe("是否启用.")
 	private Boolean enable;
@@ -28,6 +28,8 @@ public class MPweixin extends ConfigObject {
 	private String token = "";
 	@FieldDescribe("微信公众号配的encodingAesKey")
 	private String encodingAesKey = "";
+	@FieldDescribe("微信公众号消息打开工作的url地址，如：https://sample.o2oa.net/x_desktop/")
+	private String workUrl = "";
 	@FieldDescribe("微信公众号测试菜单的门户地址")
 	private String portalId = "";
 	@FieldDescribe("接收到文本消息默认执行的服务脚本id")
@@ -43,17 +45,18 @@ public class MPweixin extends ConfigObject {
 	public static final String default_apiAddress = "https://api.weixin.qq.com";
 	public static final Boolean default_enable = false;
 
-	public static MPweixin defaultInstance() {
-		return new MPweixin();
+	public static Mpweixin defaultInstance() {
+		return new Mpweixin();
 	}
 
-	public MPweixin() {
+	public Mpweixin() {
 		this.enable = default_enable;
 		this.enablePublish = default_enable; // 禁用发布功能，sample上防止用户乱发布菜单
 		this.appid = "";
 		this.appSecret = "";
 		this.token = "";
 		this.encodingAesKey = "";
+		this.workUrl = "";
 		this.portalId = "";
 		this.scriptId = "";
 		this.messageEnable = false;
@@ -189,6 +192,14 @@ public class MPweixin extends ConfigObject {
 
 	public void setScriptId(String scriptId) {
 		this.scriptId = scriptId;
+	}
+
+	public String getWorkUrl() {
+		return workUrl;
+	}
+
+	public void setWorkUrl(String workUrl) {
+		this.workUrl = workUrl;
 	}
 
 	/**

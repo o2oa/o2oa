@@ -1017,16 +1017,16 @@ public class Config {
 		return instance().weLink;
 	}
 
-	private MPweixin mPweixin;
+	private Mpweixin mPweixin;
 
-	public static synchronized MPweixin mPweixin() throws Exception {
+	public static synchronized Mpweixin mpweixin() throws Exception {
 		if (null == instance().mPweixin) {
-			MPweixin obj = BaseTools.readConfigObject(PATH_CONFIG_MPWEIXIN, MPweixin.class);
+			Mpweixin obj = BaseTools.readConfigObject(PATH_CONFIG_MPWEIXIN, Mpweixin.class);
 			if (obj == null) { // 容错 因为生成的配置文件名称有大小写问题
-				obj = BaseTools.readConfigObject(PATH_CONFIG_MPWEIXIN2, MPweixin.class);
+				obj = BaseTools.readConfigObject(PATH_CONFIG_MPWEIXIN2, Mpweixin.class);
 			}
 			if (null == obj) {
-				obj = MPweixin.defaultInstance();
+				obj = Mpweixin.defaultInstance();
 			}
 			instance().mPweixin = obj;
 		}

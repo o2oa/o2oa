@@ -21,7 +21,7 @@ public class ActionCheckMPWeixin extends BaseAction {
         logger.info("微信公众号接收到验证消息,signature:{}, timestamp:{}, nonce:{}, echostr:{}.", signature, timestamp, nonce, echostr);
         ActionResult<Wo> result = new ActionResult<>();
         Wo wo = new Wo();
-        String token = Config.mPweixin().getToken();
+        String token = Config.mpweixin().getToken();
         wo.setText(checkSignature(signature, timestamp, nonce, echostr, token));
         result.setData(wo);
 

@@ -118,7 +118,7 @@ public class ActionReceiveMsg  extends BaseAction {
                 String toUser = map.get("FromUserName");
                 logger.info("接收到文本消息： text: {} ", text);
                 //TODO 目前支持异步执行服务脚本，这里必须马上返回 否则会超时，脚本里面可以调用微信客服消息进行回复. 脚本id暂时先保存到配置文件
-                String id = Config.mPweixin().getScriptId();
+                String id = Config.mpweixin().getScriptId();
                 if (StringUtils.isNotBlank(id)) {
                     ExecuteServiceScriptThread runner1 = new ExecuteServiceScriptThread(toUser, text, id);
                     Thread thread1 = new Thread(runner1);
