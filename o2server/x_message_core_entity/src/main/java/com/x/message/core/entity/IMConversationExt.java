@@ -18,24 +18,21 @@ import com.x.base.core.project.annotation.FieldDescribe;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-
 /**
  * 会话的扩展对象 每个人一个，保存当前用户的会话扩展属性
  */
-@Schema(name = "IMConversation", description = "消息会话扩展.")
+@Schema(name = "IMConversationExt", description = "消息会话扩展.")
 @Entity
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.IMConversationExt.table, uniqueConstraints = {
         @UniqueConstraint(name = PersistenceProperties.IMConversationExt.table + JpaObject.IndexNameMiddle
                 + JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
-                JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
+                        JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public class IMConversationExt extends SliceJpaObject  {
-
+public class IMConversationExt extends SliceJpaObject {
 
     private static final String TABLE = PersistenceProperties.IMConversationExt.table;
     private static final long serialVersionUID = 1928069073101719523L;
-
 
     @Override
     public void onPersist() throws Exception {
@@ -56,7 +53,6 @@ public class IMConversationExt extends SliceJpaObject  {
     @Column(length = length_id, name = ColumnNamePrefix + id_FIELDNAME)
     private String id = createId();
 
-
     public static final String conversationId_FIELDNAME = "conversationId";
     @FieldDescribe("会话id， 关联的会话.")
     @Column(length = length_64B, name = ColumnNamePrefix + conversationId_FIELDNAME)
@@ -75,14 +71,11 @@ public class IMConversationExt extends SliceJpaObject  {
     @Column(name = ColumnNamePrefix + isTop_FIELDNAME)
     private Boolean isTop = false;
 
-
     public static final String lastReadTime_FIELDNAME = "lastReadTime";
     @FieldDescribe("最后阅读时间")
     @Column(name = ColumnNamePrefix + lastReadTime_FIELDNAME)
     @CheckPersist(allowEmpty = true)
     private Date lastReadTime;
-
-
 
     public static final String lastDeleteTime_FIELDNAME = "lastDeleteTime";
     @FieldDescribe("当前用户把会话删除的时间")
@@ -93,7 +86,6 @@ public class IMConversationExt extends SliceJpaObject  {
     @FieldDescribe("是否删除，个人删除后不显示到会话列表，如果会话中有新的聊天消息会重置为true.")
     @Column(name = ColumnNamePrefix + isDeleted_FIELDNAME)
     private Boolean isDeleted = false;
-
 
     public String getConversationId() {
         return conversationId;

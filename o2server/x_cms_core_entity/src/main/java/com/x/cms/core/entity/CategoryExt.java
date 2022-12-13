@@ -23,7 +23,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  *
  */
 @Schema(name = "AppInfoConfig", description = "内容管理目录分类信息.")
-@ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
+@ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.element, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.CategoryExt.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.CategoryExt.table + JpaObject.IndexNameMiddle

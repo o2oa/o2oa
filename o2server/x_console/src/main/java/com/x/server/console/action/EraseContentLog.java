@@ -16,7 +16,6 @@ public class EraseContentLog extends EraseContent {
             addClass(classLoader.loadClass("com.x.processplatform.core.entity.element.FormVersion"));
             addClass(classLoader.loadClass("com.x.processplatform.core.entity.element.ProcessVersion"));
             addClass(classLoader.loadClass("com.x.processplatform.core.entity.element.ScriptVersion"));
-//			addClass(classLoader.loadClass("com.x.processplatform.core.entity.log.SignalStackLog"));
             addClass(classLoader.loadClass("com.x.program.center.core.entity.PromptErrorLog"));
             addClass(classLoader.loadClass("com.x.program.center.core.entity.ScheduleLog"));
             addClass(classLoader.loadClass("com.x.program.center.core.entity.UnexpectedErrorLog"));
