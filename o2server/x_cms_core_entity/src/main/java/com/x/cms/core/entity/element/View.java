@@ -37,7 +37,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(name = "View", description = "内容管理视图.")
 @Entity
-@ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
+@ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.element, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Element.View.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.Element.View.table + JpaObject.IndexNameMiddle
 				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,

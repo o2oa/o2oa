@@ -31,7 +31,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  * @author LIYI
  */
 @Schema(name = "BBSUserInfo", description = "论坛用户信息.")
-@ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
+@ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.element, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.BBSUserInfo.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.BBSUserInfo.table + JpaObject.IndexNameMiddle

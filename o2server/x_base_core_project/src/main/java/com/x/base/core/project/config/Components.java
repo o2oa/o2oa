@@ -52,7 +52,7 @@ public class Components extends ConfigObject {
     public static Component systemComponent(String name) {
         switch (name) {
             case NAME_SYSTEMCONFIG:
-                return new Component(NAME_SYSTEMCONFIG, NAME_SYSTEMCONFIG, "系统设置", APPICON_PNG, 1,
+                return new Component(NAME_SYSTEMCONFIG, NAME_SYSTEMCONFIG, "系统配置", APPICON_PNG, 1,
                         Component.TYPE_SYSTEM);
             case NAME_ORG:
                 return new Component(NAME_ORG, NAME_ORG, "组织管理", APPICON_PNG, 2, Component.TYPE_SYSTEM);
@@ -106,7 +106,7 @@ public class Components extends ConfigObject {
             case NAME_FTSEARCH:
                 return new Component(NAME_FTSEARCH, NAME_FTSEARCH, "搜索", APPICON_PNG, 25, Component.TYPE_SYSTEM);
             case NAME_IM:
-                return new Component(NAME_IM, NAME_IM, "聊天", APPICON_PNG, 26, Component.TYPE_SYSTEM);
+                return new Component(NAME_IM, NAME_IM, "聊聊", APPICON_PNG, 26, Component.TYPE_SYSTEM);
             default:
                 return null;
         }
