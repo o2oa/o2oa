@@ -74,18 +74,20 @@ MWF.xApplication.ftsearch.FTSearchView = new Class({
     },
      search: function(pageNum, query){
         this.selectedConditionList = [];
-        this.loadSelectedCondition();
-
         if( typeOf(this.collapseCondition) === "boolean" ){
-            this._search(pageNum, query);
+            this._search(pageNum, query, function () {
+                this.loadSelectedCondition();
+            }.bind(this));
         }else{
             MWF.UD.getDataJson("ftsearchCollapseCondition", function (json) {
-                this.collapseCondition = json === "true";
-                this._search(pageNum, query);
+                this.collapseCondition = json === "true" || !json ;
+                this._search(pageNum, query, function () {
+                    this.loadSelectedCondition();
+                }.bind(this));
             }.bind(this), true);
         }
     },
-    _search: function( pageNum, query ){
+    _search: function( pageNum, query, callback ){
         pageNum = o2.typeOf(pageNum) === "number" ? pageNum : null;
         this.docPageNum = pageNum || 1;
         this.currentKey = query || this.searchInput.get("value") || "";
@@ -133,6 +135,9 @@ MWF.xApplication.ftsearch.FTSearchView = new Class({
 
                     this.loadDocPagination();
                 }
+
+                if( typeOf(callback) === "function" )callback();
+
             }.bind(this));
         }else{
             this.docList = [];
@@ -142,6 +147,7 @@ MWF.xApplication.ftsearch.FTSearchView = new Class({
             this.loadCondition( []);
             this.loadDocList();
             this.loadDocPagination();
+            if( typeOf(callback) === "function" )callback();
         }
     },
     orderFacet: function(facetList){
@@ -266,13 +272,13 @@ MWF.xApplication.ftsearch.FTSearchView = new Class({
         if( this.collapseCondition ){
             this.switchNode.getElement("i").addClass( 'o2icon-chevron-thin-down' ).removeClass('o2icon-chevron-thin-up');
             this.switchNode.getElement("span").set("text", this.app.lp.expandCondition);
-            this.conditionNode.getElements(".item").each(function (item, index) {
+            this.conditionNode.getElements(".itemWrap").each(function (item, index) {
                 item.setStyle("display", index ? "none": "")
             })
         }else{
             this.switchNode.getElement("i").removeClass( 'o2icon-chevron-thin-down' ).addClass('o2icon-chevron-thin-up');
             this.switchNode.getElement("span").set("text", this.app.lp.collapseCondition);
-            this.conditionNode.getElements(".item").each(function (item, index) {
+            this.conditionNode.getElements(".itemWrap").each(function (item, index) {
                 item.setStyle("display", "");
             })
         }
@@ -280,18 +286,55 @@ MWF.xApplication.ftsearch.FTSearchView = new Class({
     },
     loadSelectedCondition: function(){
         this.conditionSelectedArea.empty();
-        this.conditionSelectedArea.loadHtml(this.path+this.options.style+"/conditionSelected.html",
-            {
-                "bind": {"lp": this.app.lp, "data": this.selectedConditionList},
-                "module": this,
-                "reload": true
-            },
-            function(){
+        this.selectedConditionList.each(function (item) {
+            var condNode = new Element("div.item", {
+                    events: {
+                        mouseover: function (ev) {
+                            this.conditionSelectedOver(ev)
+                        }.bind(this),
+                        mouseout: function (ev) {
+                            this.conditionSelectedOut(ev)
+                        }.bind(this)
+                    }
+            }).inject( this.conditionSelectedArea );
+            condNode.addClass("mainColor_bg");
+            condNode.addEvents({
+                click: function (ev) {
+                    this.removeSelectedConditionItem(ev, item, condNode)
+                }.bind(this),
+            })
 
-            }.bind(this)
-        );
-        // }.bind(this));
+            new Element("span", {
+                text: item.parentLabel+":"
+            }).inject(condNode);
+            item.labelList.each(function (label, i) {
+                if( i === 2 ){
+                    new Element("div.item-text", {
+                        text: "..."
+                    }).inject(condNode);
+                }else if( i <= 1 ){
+                    new Element("div.item-text", {
+                        text: label
+                    }).inject(condNode);
+                }
+            });
+            var iconNode = new Element("i.o2icon-close").inject(condNode);
+            condNode.addClass("icon");
+        }.bind(this))
     },
+    // loadSelectedCondition: function(){
+    //     this.conditionSelectedArea.empty();
+    //     this.conditionSelectedArea.loadHtml(this.path+this.options.style+"/conditionSelected.html",
+    //         {
+    //             "bind": {"lp": this.app.lp, "data": this.selectedConditionList},
+    //             "module": this,
+    //             "reload": true
+    //         },
+    //         function(){
+    //
+    //         }.bind(this)
+    //     );
+    // },
 
     iconOver: function(e){
         e.target.addClass('mainColor_color');
@@ -402,7 +445,7 @@ MWF.xApplication.ftsearch.FTSearchView = new Class({
             ul.store("expand", true);
         }
     },
-    changeCondition: function(e, item){
+    changeCondition: function(e, item, removedItemNode){
         var index = -1;
         this.selectedConditionList.each(function (cond, idx) {
             if( cond.field === item.field )index = idx;
@@ -412,8 +455,11 @@ MWF.xApplication.ftsearch.FTSearchView = new Class({
         }else{
             this.selectedConditionList.push(item);
         }
-        this.loadSelectedCondition();
-        this._search();
+        // this.loadSelectedCondition();
+        this._search( null, null,function () {
+            // if(removedItemNode)removedItemNode.destroy();
+            this.loadSelectedCondition()
+        }.bind(this));
     },
     changeSingleCondition: function(e, item){
         var itemIndex = -1, valueIndex = -1;
@@ -431,7 +477,6 @@ MWF.xApplication.ftsearch.FTSearchView = new Class({
             if( !this.selectedConditionList[itemIndex].valueList.length ){
                 this.selectedConditionList.splice(itemIndex, 1);
             }
-            this.loadSelectedCondition();
         }else{ //还没有选择
             e.target.removeClass('mainColor_bg_opacity');
             e.target.addClass('mainColor_bg');
@@ -447,9 +492,10 @@ MWF.xApplication.ftsearch.FTSearchView = new Class({
                     labelList: [item.label]
                 });
             }
-            this.loadSelectedCondition();
         }
-        this._search();
+        this._search(null, null, function () {
+            this.loadSelectedCondition();
+        }.bind(this));
     },
     subConditionOver: function(e){
         if(!e.target.retrieve("selected"))e.target.addClass('mainColor_bg_opacity');
@@ -465,8 +511,8 @@ MWF.xApplication.ftsearch.FTSearchView = new Class({
         var target = this.app.getEventTarget(e, "subItem-content");
         if(!target.retrieve("selected"))target.removeClass('mainColor_bg_opacity');
     },
-    removeSelectedConditionItem: function(e, item){
-        this.changeCondition(e, item);
+    removeSelectedConditionItem: function(e, item, itemNode){
+        this.changeCondition(e, item, itemNode);
     },
     conditionSelectedOver: function(e){
         this.app.getEventTarget(e, "item").getElement("i").addClass("icon_over");
