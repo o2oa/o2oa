@@ -1832,6 +1832,7 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
                 "onSuccess": function(){
                     if (o.LP && o.LP.title) {
                         this.textNode.set("text", o.LP.title);
+                        this.data.title = o.LP.title;
                     }else{
                         this.textNode.set("text", this.data.title || this.data.name);
                     }
