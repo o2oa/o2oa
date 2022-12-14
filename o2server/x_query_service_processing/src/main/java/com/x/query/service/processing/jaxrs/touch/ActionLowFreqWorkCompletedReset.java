@@ -38,7 +38,6 @@ class ActionLowFreqWorkCompletedReset extends BaseAction {
                         State.FREQ_FIELDNAME, State.FREQ_LOW, State.TYPE_FIELDNAME,
                         State.TYPE_WORKCOMPLETED);
             }
-
             if (!list.isEmpty()) {
                 emc.beginTransaction(State.class);
                 for (State state : list) {
