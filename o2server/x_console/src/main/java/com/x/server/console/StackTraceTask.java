@@ -33,7 +33,7 @@ public class StackTraceTask implements Job {
 			String file = Config.dir_logs().getAbsolutePath() + "/jstack_" + Config.node() + "_"
 					+ DateTools.format(now, DateTools.formatCompact_yyyyMMddHHmmss) + ".txt";
 			String command = Config.command_jstack_path().toString() + " -l -e " + pid + " > " + file;
-			ProcessBuilder processBuilder = new ProcessBuilder();
+			java.lang.ProcessBuilder processBuilder = new java.lang.ProcessBuilder();
 			if (SystemUtils.IS_OS_WINDOWS) {
 				processBuilder.command("cmd", "/c", command);
 			} else {

@@ -21,7 +21,7 @@ public class General extends ConfigObject {
 	private static final Boolean DEFAULT_WEBSOCKETENABLE = true;
 	private static final Boolean DEFAULT_CONFIGAPIENABLE = true;
 	private static final List<String> DEFAULT_SCRIPTINGBLOCKEDCLASSES = Arrays.asList(Runtime.class.getName(),
-			File.class.getName(), Path.class.getName(), ProcessBuilder.class.getName());
+			File.class.getName(), Path.class.getName(), java.lang.ProcessBuilder.class.getName());
 	private static final Boolean DEFAULT_REQUESTLOGENABLE = false;
 	private static final Integer DEFAULT_REQUESTLOGRETAINDAYS = 7;
 	private static final Boolean DEFAULT_REQUESTLOGBODYENABLE = false;
