@@ -334,7 +334,7 @@ public class Business {
 
 		LOGGER.debug("enhance command:{}.", () -> command);
 
-		ProcessBuilder processBuilder = new ProcessBuilder();
+		java.lang.ProcessBuilder processBuilder = new java.lang.ProcessBuilder();
 
 		if (SystemUtils.IS_OS_WINDOWS) {
 			processBuilder.command("cmd", "/c", command);

@@ -19,6 +19,7 @@ import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexableField;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Collector;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.MultiCollector;
 import org.apache.lucene.search.Query;
@@ -80,6 +81,9 @@ class ActionPost extends BaseAction {
         }
         Analyzer analyzer = new HanLPAnalyzer();
         Optional<Query> searchQuery = this.searchQuery(wi.getQuery(), analyzer);
+        if (searchQuery.isEmpty()) {
+            return result;
+        }
         Optional<Query> readersQuery = Indexs.readersQuery(readers);
         List<Query> filterQueries = Indexs.filterQueries(wi.getFilterList());
 
@@ -110,8 +114,13 @@ class ActionPost extends BaseAction {
                                             org.apache.lucene.search.Sort.INDEXORDER,
                                             facetMaxGroups)))
                     .collect(Collectors.toList());
-            searcher.search(query, MultiCollector.wrap(topScoreDocCollector, MultiCollector
-                    .wrap(firstPassGroupingCollectorPairs.stream().map(Pair::second).collect(Collectors.toList()))));
+
+            List<Collector> collectors = firstPassGroupingCollectorPairs.stream().map(Pair::second)
+                    .collect(Collectors.toList());
+
+            collectors.add(topScoreDocCollector);
+
+            searcher.search(query, MultiCollector.wrap(collectors));
             writeDocument(searcher, analyzer, highlighter, topScoreDocCollector, start, rows, wo);
             List<Pair<String, TopGroupsCollector<BytesRef>>> topGroupsCollectorPairs = firstPassGroupingCollectorPairs
                     .stream().<Pair<String, Optional<Collection<SearchGroup<BytesRef>>>>>map(param -> {

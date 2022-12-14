@@ -42,8 +42,7 @@ abstract class BaseAction extends StandardJaxrsAction {
     protected Optional<Query> searchQuery(String query, Analyzer analyzer) throws Exception {
         query = Indexs.alignQuery(query);
         if (StringUtils.isBlank(query)) {
-            // return Optional.of(new MatchAllDocsQuery());
-            throw new ExceptionQueryEmpty();
+            return Optional.empty();
         }
         Query titleQuery = new QueryParser(Indexs.FIELD_TITLE, analyzer).parse(query);
         Query summaryQuery = new QueryParser(Indexs.FIELD_SUMMARY, analyzer).parse(query);
