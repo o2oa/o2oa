@@ -550,6 +550,24 @@ public class AppInfoAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "获取有权限看到文档并指定分类的栏目列表.", action = ActionListHasDocument_WithAppType.class)
+	@GET
+	@Path("list/has/document/type/{appType}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listHasDocument_WithAppType( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+											 @JaxrsParameterDescribe("栏目类别") @PathParam("appType") String appType) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<List<BaseAction.Wo>> result = new ActionResult<>();
+		try {
+			result = new ActionListHasDocument_WithAppType().execute(request, effectivePerson, appType);
+		} catch (Exception e) {
+			result.error(e);
+			logger.error(e, effectivePerson, request, null);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "列示根据过滤条件的信息栏目信息,下一页.", action = ActionListNextWithFilter.class)
 	@PUT
 	@Path("filter/list/{id}/next/{count}")

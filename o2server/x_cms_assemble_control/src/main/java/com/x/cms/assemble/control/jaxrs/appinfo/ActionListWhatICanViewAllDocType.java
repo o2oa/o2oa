@@ -56,17 +56,25 @@ public class ActionListWhatICanViewAllDocType extends BaseAction {
 				}
 				List<String> appIds = business.getAppInfoFactory().listPeopleViewAppInfoIds(personName, unitNames, groupNames, "全部", isManager);
 				if(ListTools.isNotEmpty(appIds)){
-					wos = emc.fetch(appIds, Wo.copier2);
-					wos.stream().forEach(wo -> {
+					List<AppInfo> apps = emc.list(AppInfo.class, appIds);
+					for(AppInfo appInfo : apps){
+						Wo wo = Wo.copier2.copy(appInfo);
 						try {
-							wo.setConfig( appInfoServiceAdv.getConfigJson( wo.getId() ) );
+							wo.setConfig(appInfoServiceAdv.getConfigJson(wo.getId()));
 						} catch (Exception e) {
 							LOGGER.debug(e.getMessage());
 						}
-						if(StringUtils.isBlank(wo.getAppType())){
+						boolean isAppManager = isManager || this.isAppInfoManager(personName, unitNames, groupNames, appInfo);
+						List<String> cateIds = business.getCategoryInfoFactory().listPeopleViewIds(personName,
+								unitNames, groupNames, wo.getId(), isAppManager);
+						if(ListTools.isNotEmpty(cateIds)){
+							wo.setWrapOutCategoryList(emc.fetch(cateIds, WoCategory.copier2));
+						}
+						if (StringUtils.isBlank(wo.getAppType())) {
 							wo.setAppType("未分类");
 						}
-					});
+						wos.add(wo);
+					}
 					SortTools.asc( wos, AppInfo.appInfoSeq_FIELDNAME);
 					CacheManager.put(cacheCategory, cacheKey, wos);
 				}

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.x.base.core.project.http.EffectivePerson;
 import com.x.cms.core.entity.Document;
 import com.x.cms.core.entity.Review;
 import org.apache.commons.lang3.StringUtils;
@@ -293,8 +294,39 @@ public class BaseAction extends StandardJaxrsAction {
                 null, ListTools.toList(JpaObject.FieldsInvisible));
 
         static WrapCopier<CategoryInfo, WoCategory> copier2 = WrapCopierFactory.wo(CategoryInfo.class, WoCategory.class,
-                JpaObject.singularAttributeField(CategoryInfo.class, true, false), null);
+                JpaObject.singularAttributeField(CategoryInfo.class, true, true), null);
 
+    }
+
+    /**
+     * 是否是栏目管理员
+     *
+     * @param person
+     * @param appInfo
+     * @return
+     * @throws Exception
+     */
+    public boolean isAppInfoManager(String person, List<String> unitNames, List<String> groupNames, AppInfo appInfo) throws Exception {
+        if (appInfo != null) {
+            if (ListTools.isNotEmpty(appInfo.getManageablePersonList())) {
+                if (appInfo.getManageablePersonList().contains(person)) {
+                    return true;
+                }
+            }
+            if (ListTools.isNotEmpty(appInfo.getManageableUnitList())) {
+                if (ListTools.isNotEmpty(unitNames) &&
+                        ListTools.containsAny(unitNames, appInfo.getManageableUnitList())) {
+                    return true;
+                }
+            }
+            if (ListTools.isNotEmpty(appInfo.getManageableGroupList())) {
+                if (ListTools.isNotEmpty(groupNames) &&
+                        ListTools.containsAny(groupNames, appInfo.getManageableGroupList())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }
