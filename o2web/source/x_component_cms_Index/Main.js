@@ -163,7 +163,8 @@ MWF.xApplication.cms.Index.Main = new Class({
 			"styles": this.css.columnTop_category
 		}).inject(this.titleBar);
 
-		this.restActions.listAllAppType( function( json ){
+		// this.restActions.listAllAppType( function( json ){
+		o2.Actions.load("x_cms_assemble_control").AppInfoAction.listHasDocumentAppType( function( json ){
 			(json.data || []).each( function( typeObject ){
 				new Element( "div.columnTop_category", {
 					"styles" : this.css.columnTop_categoryItem,
@@ -180,7 +181,7 @@ MWF.xApplication.cms.Index.Main = new Class({
 						}.bind( typeObject.appType )
 					}
 				}).inject( this.typeListContainer )
-			}.bind(this))
+			}.bind(this));
 			if (this.typeListContainer.getScrollSize().y> Math.round(this.typeListContainer.getSize().y) && !this.columnTypeExpandNode ) this.createTypeExpandButton();
 		}.bind(this))
 	},
@@ -289,11 +290,13 @@ MWF.xApplication.cms.Index.Main = new Class({
 	createColumnNodes: function(){
 		this.contentNode.empty();
 		if( this.currentAppType === "all" ){
-			this.restActions.listColumn( function(json){
+			// this.restActions.listColumn( function(json){
+			o2.Actions.load("x_cms_assemble_control").AppInfoAction.listHasDocument(function(json){
 				this._createColumnNodes( json )
 			}.bind(this));
 		}else{
-			this.restActions.listWhatICanViewWithAppType(this.currentAppType, function(json){
+			// this.restActions.listWhatICanViewWithAppType(this.currentAppType, function(json){
+			o2.Actions.load("x_cms_assemble_control").AppInfoAction.listHasDocument_WithAppType(this.currentAppType, function(json){
 				this._createColumnNodes( json )
 			}.bind(this));
 		}
