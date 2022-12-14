@@ -14,7 +14,8 @@
 		"display":"block",
 		"font-size": "inherit",
 		"border-top": "0px",
-		"border-bottom": "2px solid #dcdcdc"
+		"border-bottom": "2px solid #dcdcdc",
+		"margin" : "0px auto"
 	},
 	"toolbarSeparator": {
 		"display":"block",

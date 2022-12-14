@@ -10,12 +10,10 @@
 		"padding-right": "5px",
 		"z-index": "300",
 		"cursor": "pointer",
-		"overflow": "hidden",
 		"display":"block",
 		"font-size": "12px",
 		"position": "fixed",
 		"bottom": "0px"
-
 	},
 	"toolbarSeparator": {
 		"display":"block",
@@ -31,7 +29,6 @@
 	"button": {
 		"border": "0",
 		"overflow": "hidden",
-		"display":"block",
 		"position": "static",
 		"float": "left",
 		"background-color": "#121212",
