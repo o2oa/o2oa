@@ -1,12 +1,5 @@
 package com.x.query.service.processing.jaxrs.touch;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-
-import com.x.base.core.container.EntityManagerContainer;
-import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.Application;
 import com.x.base.core.project.Applications;
 import com.x.base.core.project.connection.CipherConnectionAction;
@@ -15,7 +8,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.query.service.processing.ThisApplication;
 import com.x.query.service.processing.schedule.HighFreqWorkCompleted;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -31,12 +23,10 @@ class ActionHighFreqWorkCompletedTouch extends BaseAction {
         Wo wo = new Wo();
         wo.setValue(false);
         for (Application application : listApplication(node)) {
-            if (StringUtils.equals(node, application.getNode())) {
-                String url = application.getUrlJaxrsRoot() + Applications.joinQueryUri("fireschedule", "classname",
-                        HighFreqWorkCompleted.class.getName());
-                CipherConnectionAction.get(false, url);
-                wo.setValue(true);
-            }
+            String url = application.getUrlJaxrsRoot() + Applications.joinQueryUri("fireschedule", "classname",
+                    HighFreqWorkCompleted.class.getName());
+            CipherConnectionAction.get(false, url);
+            wo.setValue(true);
         }
         result.setData(wo);
         return result;

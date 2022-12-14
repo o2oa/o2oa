@@ -10,7 +10,6 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.query.service.processing.ThisApplication;
 import com.x.query.service.processing.schedule.LowFreqDocument;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -26,12 +25,10 @@ class ActionLowFreqDocumentTouch extends BaseAction {
         Wo wo = new Wo();
         wo.setValue(false);
         for (Application application : listApplication(node)) {
-            if (StringUtils.equals(node, application.getNode())) {
-                String url = application.getUrlJaxrsRoot() + Applications.joinQueryUri("fireschedule", "classname",
-                        LowFreqDocument.class.getName());
-                CipherConnectionAction.get(false, url);
-                wo.setValue(true);
-            }
+            String url = application.getUrlJaxrsRoot() + Applications.joinQueryUri("fireschedule", "classname",
+                    LowFreqDocument.class.getName());
+            CipherConnectionAction.get(false, url);
+            wo.setValue(true);
         }
         result.setData(wo);
         return result;
