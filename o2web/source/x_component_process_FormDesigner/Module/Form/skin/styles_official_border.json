@@ -622,5 +622,43 @@
     "imageStyles": {
 
     }
+  },
+  "relatedlink": {
+    "buttonStyles": {
+      "border-radius": "10px",
+      "height": "30px",
+      "line-height": "30px",
+      "padding-left": "34px",
+      "padding-right": "5px",
+      "cursor": "pointer",
+      "border": "1px solid #cc3d3d",
+      "margin": "10px auto",
+      "background": "url(../x_component_process_FormDesigner/Module/Relatedlink/default/icon/down_red.png) no-repeat 15px center",
+      "width": "70px"
+    },
+    "tableStyles": {
+      "border-top": "1px solid #CCC",
+      "font-size": "12px"
+    },
+    "tableTitleCellStyles": {
+      "text-align": "center",
+      "font-weight": "bold",
+      "line-height": "28px",
+      "border-bottom": "1px solid #CCC",
+      "background": "#f7f7f7"
+    },
+    "tableContentLineStyles": {
+      "background": "#ffffff"
+    },
+    "tableContentLineStyles_over": {
+      "background": "#fff6f6"
+    },
+    "tableContentCellStyles": {
+      "line-height": "28px",
+      "border-bottom": "1px solid #CCC"
+    },
+    "tableContentCellStyles_title": {
+      "font-size": "14px"
+    }
   }
 }

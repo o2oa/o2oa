@@ -744,9 +744,15 @@ MWF.xApplication.process.FormDesigner.LP = {
         "cellpadding": "单元格边距",
         "cellspacing": "单元格间距",
 
+        "containStyle": "容器样式",
+        "containAttribute": "容器属性",
         "titleCellStyle": "标题单元格样式",
         "contentCellStyle": "内容单元格样式",
         "layoutCellStyle": "布局单元格样式",
+
+        "contentTitleCellStyle": "内容标题单元格样式",
+        "contentLineStyle": "内容行样式",
+        "contentLineOverStyle": "内容行经过样式",
 
         "columns": "列数",
         "onTheLeft": "所选之左",
@@ -806,6 +812,13 @@ MWF.xApplication.process.FormDesigner.LP = {
         "calculationSubform": "计算子表单",
         "subform": "子表单",
         "subformScript": "子表单脚本",
+
+        "activeType": "激活方式",
+        "click": "点击激活",
+        "delay": "延迟激活",
+        "immediately": "直接激活",
+        "buttonText": "按钮文本",
+        "delayNote": "选择延时激活时，需要使用this.form.get(moduleId).active()激活",
 
         "viewBox": "视图选择框",
         "viewBoxTitle": "选择框标题",

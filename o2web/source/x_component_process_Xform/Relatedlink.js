@@ -49,6 +49,47 @@ MWF.xApplication.process.Xform.Relatedlink = MWF.APPRelatedlink =  new Class(
         this.node.empty();
         this.node.setStyle("-webkit-user-select", "text");
 
+        switch (this.json.activeType) {
+            case "click":
+                this.loadButton();
+                break;
+            case "delay":
+                break;
+            case "immediately":
+                this.loadContent();
+                break;
+        }
+    },
+    loadButton: function(){
+        this.buttonNode = new Element("div.rlbutton", {
+            "styles": this.json.buttonStyles || {},
+            "text": this.json.buttonText,
+            "events":{
+                click: function () {
+                    this.active();
+                    this.buttonNode.destroy();
+                    this.buttonNode = null;
+                }.bind(this)
+            }
+        }).inject( this.node );
+    },
+    /**
+     * @summary 当相关推荐被设置为延迟激活，通过active方法激活
+     * @param {Function} callback 激活后的回调
+     * @example
+     * var relativeLink = this.form.get("fieldId");
+     * relativeLink.active(function(){
+     *     //do someting
+     * })
+     */
+    active: function( callback ){
+	    if( !this.loaded ){
+	        this.loadContent( callback );
+	    }else{
+	        if(callback)callback();
+        }
+    },
+    loadContent: function( callback ){
         o2.Actions.load("x_query_assemble_surface").MoreLikeThisAction.post({
             flag: this.getFlag(),
             category: this.getCategory(),
@@ -57,7 +98,9 @@ MWF.xApplication.process.Xform.Relatedlink = MWF.APPRelatedlink =  new Class(
             this.linkData = json.data.moreLikeThisList;
             this.fireEvent("postLoadData");
             this.loadLinks();
+            this.loaded = true;
             this.fireEvent("afterLoad");
+            if(callback)callback();
         }.bind(this));
     },
     getFlag: function(){
@@ -85,16 +128,16 @@ MWF.xApplication.process.Xform.Relatedlink = MWF.APPRelatedlink =  new Class(
     },
     loadLinkTable: function(){
         var table = new Element("table", {
-            "styles": this.form.css.relatedlinkTable,
+            "styles": this.json.tableStyles || this.form.css.relatedlinkTable,
             "border": "0",
             "cellSpacing": "0",
             "cellpadding": "3px",
             "width": "100%"
         }).inject(this.node);
-        var tr = table.insertRow(0).setStyles(this.form.css.relatedlinkTableTitleLine);
+        var tr = table.insertRow(0); //.setStyles( this.form.css.relatedlinkTableTitleLine );
 
         var lp = MWF.xApplication.process.Xform.LP;
-        var thStyle = this.form.css.relatedlinkTableTitle;
+        var thStyle = this.json.tableTitleCellStyles || this.form.css.relatedlinkTableTitle;
         var td = tr.insertCell(0).setStyles(thStyle);
         td.set("text", lp.title);
         td = tr.insertCell(1).setStyles(thStyle);
@@ -108,22 +151,22 @@ MWF.xApplication.process.Xform.Relatedlink = MWF.APPRelatedlink =  new Class(
         td = tr.insertCell(5).setStyles(thStyle);
         td.set("text", lp.score);
 
-        var tdStyle = this.form.css.relatedlinkTableCell;
+        var tdStyle = this.json.tableContentCellStyles || this.form.css.relatedlinkTableCell;
         this.linkData.each(function (log, idx) {
             var tr = table.insertRow(table.rows.length);
-            tr.setStyles( this.form.css.relatedlinkTableLine );
+            tr.setStyles( this.json.tableContentLineStyles || this.form.css.relatedlinkTableLine );
             tr.addEvents({
                 "mouseover": function () {
-                    tr.setStyles( this.form.css.relatedlinkTableLine_over )
+                    tr.setStyles( this.json.tableContentLineStyles_over || this.form.css.relatedlinkTableLine_over )
                 }.bind(this),
                 "mouseout": function () {
-                    tr.setStyles( this.form.css.relatedlinkTableLine )
+                    tr.setStyles( this.json.tableContentLineStyles || this.form.css.relatedlinkTableLine )
                 }.bind(this)
             })
 
             var td = tr.insertCell(0).setStyles( tdStyle );
             td.set("text", log.title);
-            td.setStyles( this.form.css.relatedlinkTableCell_title );
+            td.setStyles( this.json.tableContentCellStyles_title || this.form.css.relatedlinkTableCell_title );
 
             td = tr.insertCell(1).setStyles(tdStyle);
             td.set("text", log.creatorPerson);

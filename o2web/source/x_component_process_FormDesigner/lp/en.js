@@ -743,6 +743,13 @@ MWF.xApplication.process.FormDesigner.LP = {
         "contentCellStyle": "Content Cell Style",
         "layoutCellStyle": "Layout Cell Style",
 
+        "containStyle": "Contain Style",
+        "containAttribute": "Contain Attribute",
+
+        "contentTitleCellStyle": "Content Title Cell Style",
+        "contentLineStyle": "Content Line Style",
+        "contentLineOverStyle": "Content Line Over Style",
+
         "columns": "Columns",
         "onTheLeft": "On The Left",
         "onTheRight": "On The Right",
@@ -800,6 +807,13 @@ MWF.xApplication.process.FormDesigner.LP = {
         "calculationSubform": "Calculation",
         "subform": "Subform",
         "subformScript": "Subform Script",
+
+        "activeType": "Activation method",
+        "click": "Click to activate",
+        "delay": "Delay activation",
+        "immediately": "Activate directly",
+        "buttonText": "Button Text",
+        "delayNote": "When you choose delayed activation, you need to use this.form.get(moduleId).active() to activate",
 
         "viewBox": "View Box",
         "viewBoxTitle": "View Box Title",

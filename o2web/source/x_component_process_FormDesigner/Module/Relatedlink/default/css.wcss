@@ -34,7 +34,6 @@
 	},
 	"moduleNode": {
 		"border": "1px dashed #333",
-		"min-height": "100px",
 		"cursor": "pointer",
 		"line-height": "22px",
 		"overflow": "hidden",
@@ -46,8 +45,12 @@
 		"top": "auto",
 		"left": "auto",
 		"width": "auto",
-		"opacity": 1,
-		"background-color": "#EEE"
+		"opacity": 1
+	},
+	"contentNode": {
+		"background-color": "#EEE",
+		"height": "80px",
+		"overflow": "hidden"
 	},
 	"iconNode": {
         "width": "100px",
@@ -55,7 +58,7 @@
         "color": "#999",
         "font-size": "12px",
         "margin": "auto",
-        "margin-top": "36px",
+        "margin-top": "26px",
         "border-top": "1px solid #FFF",
         "border-left": "1px solid #FFF",
         "border-right": "1px solid #CCC",
