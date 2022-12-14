@@ -650,7 +650,8 @@ public class DocumentFactory extends AbstractFactory {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<String> cq = cb.createQuery( String.class );
 		Root<Document> root = cq.from( Document.class );
-		cq.select(root.get( Document_.appId)).distinct(true);
+		Predicate p = cb.equal(root.get(Document_.docStatus), DocumentStatus.PUBLISHED.getValue());
+		cq.select(root.get( Document_.appId)).distinct(true).where(p);
 		return em.createQuery( cq ).getResultList();
 	}
 

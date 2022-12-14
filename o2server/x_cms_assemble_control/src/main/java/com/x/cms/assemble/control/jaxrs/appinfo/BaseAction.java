@@ -278,6 +278,9 @@ public class BaseAction extends StandardJaxrsAction {
         static WrapCopier<AppInfo, Wo> copier2 = WrapCopierFactory.wo(AppInfo.class, Wo.class,
                 JpaObject.singularAttributeField(AppInfo.class, true, false), null);
 
+        static WrapCopier<AppInfo, Wo> copier3 = WrapCopierFactory.wo(AppInfo.class, Wo.class,
+                JpaObject.singularAttributeField(AppInfo.class, true, true), null);
+
     }
 
     public static class WoCategory extends CategoryInfo {
