@@ -29,8 +29,7 @@ class ActionOptimizeIndex extends BaseAction {
         ActionResult<Wo> result = new ActionResult<>();
         Wo wo = new Wo();
         wo.setValue(false);
-        for (Application application : ThisApplication.context().applications()
-                .get(ThisApplication.context().clazz())) {
+        for (Application application : listApplication(node)) {
             if (StringUtils.equals(node, application.getNode())) {
                 String url = application.getUrlJaxrsRoot() + Applications.joinQueryUri("fireschedule", "classname",
                         OptimizeIndex.class.getName());

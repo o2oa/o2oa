@@ -1,5 +1,8 @@
 package com.x.query.service.processing.jaxrs.touch;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -27,8 +30,7 @@ class ActionHighFreqWorkCompletedTouch extends BaseAction {
         ActionResult<Wo> result = new ActionResult<>();
         Wo wo = new Wo();
         wo.setValue(false);
-        for (Application application : ThisApplication.context().applications()
-                .get(ThisApplication.context().clazz())) {
+        for (Application application : listApplication(node)) {
             if (StringUtils.equals(node, application.getNode())) {
                 String url = application.getUrlJaxrsRoot() + Applications.joinQueryUri("fireschedule", "classname",
                         HighFreqWorkCompleted.class.getName());

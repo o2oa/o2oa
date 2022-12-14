@@ -1,6 +1,9 @@
 package com.x.query.service.processing.jaxrs.touch;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -26,9 +29,16 @@ class ActionHighFreqWorkReset extends BaseAction {
         Wo wo = new Wo();
         wo.setValue(false);
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-            List<State> list = emc.listEqualAndEqualAndEqual(State.class, State.NODE_FIELDNAME, node,
-                    State.FREQ_FIELDNAME, State.FREQ_HIGH, State.TYPE_FIELDNAME,
-                    State.TYPE_WORK);
+            List<State> list = new ArrayList<>();
+            if (!StringUtils.equals(node, EMPTY_SYMBOL)) {
+                list = emc.listEqualAndEqualAndEqual(State.class, State.NODE_FIELDNAME, node,
+                        State.FREQ_FIELDNAME, State.FREQ_HIGH, State.TYPE_FIELDNAME,
+                        State.TYPE_WORK);
+            } else {
+                list = emc.listEqualAndEqual(State.class,
+                        State.FREQ_FIELDNAME, State.FREQ_HIGH, State.TYPE_FIELDNAME,
+                        State.TYPE_WORK);
+            }
             if (!list.isEmpty()) {
                 emc.beginTransaction(State.class);
                 for (State state : list) {
