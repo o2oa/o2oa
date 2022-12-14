@@ -1,13 +1,5 @@
 package com.x.cms.assemble.control.jaxrs.appinfo;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.cache.Cache;
@@ -20,41 +12,42 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.SortTools;
 import com.x.cms.assemble.control.Business;
 import com.x.cms.core.entity.AppInfo;
-import com.x.cms.core.entity.CategoryInfo;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 /**
- * 列示我可查看的应用
+ * 列示有权限看到文档的应用
  * @author sword
  */
-public class ActionListWhatICanViewAllDocType extends BaseAction {
+public class ActionListHasDocument extends BaseAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWhatICanViewAllDocType.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListHasDocument.class);
 
 	protected ActionResult<List<Wo>> execute(HttpServletRequest request, EffectivePerson effectivePerson)
 			throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wos = new ArrayList<>();
-		Business business = new Business(null);
-		Boolean isManager = business.isManager( effectivePerson );
-		Boolean isAnonymous = effectivePerson.isAnonymous();
 		String personName = effectivePerson.getDistinguishedName();
 
-		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), personName, isAnonymous, isManager );
+		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), personName);
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 
 		if (optional.isPresent()) {
 			result.setData((List<Wo>)optional.get());
 		} else {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				business = new Business(emc);
-				List<String> unitNames = null;
-				List<String> groupNames = null;
-				if(!isManager && !isAnonymous) {
-					unitNames = userManagerService.listUnitNamesWithPerson(personName);
-					groupNames = userManagerService.listGroupNamesByPerson(personName);
+				Business business = new Business(emc);
+				Boolean isManager = business.isManager( effectivePerson );
+				List<String> appIds;
+				if(isManager){
+					appIds = business.getDocumentFactory().listApp();
+				}else{
+					appIds = business.reviewFactory().listApp(personName);
 				}
-				List<String> appIds = business.getAppInfoFactory().listPeopleViewAppInfoIds(personName, unitNames, groupNames, "全部", isManager);
 				if(ListTools.isNotEmpty(appIds)){
 					wos = emc.fetch(appIds, Wo.copier2);
 					wos.stream().forEach(wo -> {

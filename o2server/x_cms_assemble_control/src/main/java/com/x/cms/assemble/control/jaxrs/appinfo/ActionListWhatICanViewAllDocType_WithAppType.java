@@ -6,6 +6,8 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.x.base.core.container.EntityManagerContainer;
+import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.cache.Cache;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
@@ -14,67 +16,57 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.SortTools;
+import com.x.cms.assemble.control.Business;
+import com.x.cms.core.entity.AppInfo;
+import org.apache.commons.lang3.StringUtils;
 
+/**
+ * @author sword
+ */
 public class ActionListWhatICanViewAllDocType_WithAppType extends BaseAction {
 
-	private static  Logger logger = LoggerFactory.getLogger(ActionListWhatICanViewAllDocType_WithAppType.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWhatICanViewAllDocType_WithAppType.class);
 
-	@SuppressWarnings("unchecked")
 	protected ActionResult<List<Wo>> execute(HttpServletRequest request, EffectivePerson effectivePerson, String appType )
 			throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wos = new ArrayList<>();
-		List<Wo> wos_out = new ArrayList<>();
-		Boolean isXAdmin = false;
-		Boolean check = true;
+		Business business = new Business(null);
+		Boolean isManager = business.isManager( effectivePerson );
 		Boolean isAnonymous = effectivePerson.isAnonymous();
 		String personName = effectivePerson.getDistinguishedName();
-		
-		try {
-			isXAdmin = userManagerService.isManager( effectivePerson );
-		} catch (Exception e) {
-			check = false;
-			Exception exception = new ExceptionAppInfoProcess(e, "系统在检查用户是否是平台管理员时发生异常。Name:" + personName);
-			result.error(exception);
-			logger.error(e, effectivePerson, request, null);
-		}
 
-		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), personName, appType, isAnonymous, isXAdmin );
+		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), personName, appType, isAnonymous, isManager );
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 
 		if (optional.isPresent()) {
 			result.setData((List<Wo>)optional.get());
 		} else {
-			if (check) {
-				try {
-					wos_out = listViewAbleAppInfoByPermission( personName, isAnonymous, null, appType, "全部", isXAdmin, 1000 );
-				} catch (Exception e) {
-					check = false;
-					Exception exception = new ExceptionAppInfoProcess(e, "系统在根据用户权限查询所有可见的分类信息时发生异常。Name:" + personName);
-					result.error(exception);
-					logger.error(e, effectivePerson, request, null);
+			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+				business = new Business(emc);
+				List<String> unitNames = null;
+				List<String> groupNames = null;
+				if(!isManager && !isAnonymous) {
+					unitNames = userManagerService.listUnitNamesWithPerson(personName);
+					groupNames = userManagerService.listGroupNamesByPerson(personName);
 				}
-				if( ListTools.isNotEmpty( wos_out )){
-					for( Wo wo : wos_out ) {
-//						if( ListTools.isNotEmpty( wo.getWrapOutCategoryList() )) {
-
-							try {
-								wo.setConfig( appInfoServiceAdv.getConfigJson( wo.getId() ) );
-							} catch (Exception e) {
-								check = false;
-								Exception exception = new ExceptionAppInfoProcess(e, "系统根据ID查询栏目配置支持信息时发生异常。ID=" + wo.getId() );
-								result.error(exception);
-								logger.error(e, effectivePerson, request, null);
-							}
-
-							wos.add( wo );
-//						}
-					}
-					//按appInfoSeq列的值， 排个序
-					SortTools.asc( wos, "appInfoSeq");
+				List<String> appIds = business.getAppInfoFactory().listPeopleViewAppInfoIds(personName, unitNames, groupNames, appType, isManager);
+				if(ListTools.isNotEmpty(appIds)){
+					wos = emc.fetch(appIds, Wo.copier2);
+					wos.stream().forEach(wo -> {
+						try {
+							wo.setConfig( appInfoServiceAdv.getConfigJson( wo.getId() ) );
+						} catch (Exception e) {
+							LOGGER.debug(e.getMessage());
+						}
+						if(StringUtils.isBlank(wo.getAppType())){
+							wo.setAppType("未分类");
+						}
+					});
+					SortTools.asc( wos, AppInfo.appInfoSeq_FIELDNAME);
 					CacheManager.put(cacheCategory, cacheKey, wos);
-					result.setData( wos );
 				}
+				result.setData( wos );
 			}
 		}
 

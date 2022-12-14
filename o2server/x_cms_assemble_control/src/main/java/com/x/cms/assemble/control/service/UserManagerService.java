@@ -613,10 +613,14 @@ public class UserManagerService {
 	 */
 	public boolean isTopUnit(String unitName) throws Exception {
 		if (StringUtils.isEmpty(unitName)) {
-			throw new Exception("unitName is empty!");
+			return false;
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
+			String[] splitName = unitName.split("@");
+			if(splitName.length == 2){
+				unitName = business.organization().unit().get(splitName[0]);
+			}
 			List<String> unitNames = business.organization().unit().listWithLevel(1);
 			if (ListTools.isNotEmpty(unitNames) && unitNames.contains(unitName)) {
 				return true;
