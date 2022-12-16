@@ -96,7 +96,7 @@ public class Query extends ConfigObject {
         public static final String MODE_SHAREDDIRECTORY = "sharedDirectory";
 
         public static final String DEFAULT_HDFSDIRECTORYDEFAULTFS = "hdfs://127.0.0.1:9000";
-        public static final String DEFAULT_HDFSDIRECTORYPATH = "/";
+        public static final String DEFAULT_HDFSDIRECTORYPATH = "/repository/index";
         public static final String DEFAULT_SHAREDDIRECTORYPATH = "/repository/index";
         public static final String DEFAULT_MODE = MODE_LOCALDIRECTORY;
         public static final Integer DEFAULT_MAXSEGMENTS = 1;
@@ -210,8 +210,8 @@ public class Query extends ConfigObject {
         @Schema(description = "是否启用优化索引.")
         private Boolean optimizeIndexEnable;
 
-        @FieldDescribe("优化索引定时配置.")
-        @Schema(description = "优化索引定时配置.")
+        @FieldDescribe("优化索引定时配置, 默认值:" + DEFAULT_OPTIMIZEINDEXCRON)
+        @Schema(description = "优化索引定时配置, 默认值:" + DEFAULT_OPTIMIZEINDEXCRON)
         private String optimizeIndexCron;
 
         @FieldDescribe("业务数据最大文本长度阈值,超过此阈值将忽略写入到索引.")
@@ -242,8 +242,8 @@ public class Query extends ConfigObject {
         @Schema(description = "是否启用流转中工作低频索引.")
         private Boolean lowFreqWorkEnable;
 
-        @FieldDescribe("流转中工作低频索引定时配置.")
-        @Schema(description = "流转中工作低频索引定时配置.")
+        @FieldDescribe("流转中工作低频索引定时配置, 默认值:" + DEFAULT_LOWFREQWORKCRON)
+        @Schema(description = "流转中工作低频索引定时配置, 默认值:" + DEFAULT_LOWFREQWORKCRON)
         private String lowFreqWorkCron;
 
         @FieldDescribe("流转中工作低频索引批量获取大小.")
@@ -262,8 +262,8 @@ public class Query extends ConfigObject {
         @Schema(description = "是否启用已完成工作低频索引.")
         private Boolean lowFreqWorkCompletedEnable;
 
-        @FieldDescribe("已完成工作低频索引定时配置.")
-        @Schema(description = "已完成工作低频索引定时配置.")
+        @FieldDescribe("已完成工作低频索引定时配置, 默认值:" + DEFAULT_LOWFREQWORKCOMPLETEDCRON)
+        @Schema(description = "已完成工作低频索引定时配置, 默认值:" + DEFAULT_LOWFREQWORKCOMPLETEDCRON)
         private String lowFreqWorkCompletedCron;
 
         @FieldDescribe("流转中工作低频索引批量获取大小.")
@@ -282,8 +282,8 @@ public class Query extends ConfigObject {
         @Schema(description = "是否启用内容管理文档低频索引.")
         private Boolean lowFreqDocumentEnable;
 
-        @FieldDescribe("内容管理文档低频索引定时配置.")
-        @Schema(description = "内容管理文档低频索引定时配置.")
+        @FieldDescribe("内容管理文档低频索引定时配置, 默认值:" + DEFAULT_LOWFREQDOCUMENTCRON)
+        @Schema(description = "内容管理文档低频索引定时配置, 默认值:" + DEFAULT_LOWFREQDOCUMENTCRON)
         private String lowFreqDocumentCron;
 
         @FieldDescribe("内容管理文档低频索引批量获取大小.")
@@ -302,8 +302,8 @@ public class Query extends ConfigObject {
         @Schema(description = "是否启用流转中工作高频索引.")
         private Boolean highFreqWorkEnable;
 
-        @FieldDescribe("流转中工作高频索引定时配置.")
-        @Schema(description = "流转中工作高频索引定时配置.")
+        @FieldDescribe("流转中工作高频索引定时配置, 默认值:" + DEFAULT_HIGHFREQWORKCRON)
+        @Schema(description = "流转中工作高频索引定时配置, 默认值:" + DEFAULT_HIGHFREQWORKCRON)
         private String highFreqWorkCron;
 
         @FieldDescribe("流转中工作高频索引批量获取大小.")
@@ -322,8 +322,8 @@ public class Query extends ConfigObject {
         @Schema(description = "是否启用已完成工作高频索引.")
         private Boolean highFreqWorkCompletedEnable;
 
-        @FieldDescribe("已完成工作高频索引定时配置.")
-        @Schema(description = "已完成工作高频索引定时配置.")
+        @FieldDescribe("已完成工作高频索引定时配置, 默认值:" + DEFAULT_HIGHFREQWORKCOMPLETEDCRON)
+        @Schema(description = "已完成工作高频索引定时配置, 默认值:" + DEFAULT_HIGHFREQWORKCOMPLETEDCRON)
         private String highFreqWorkCompletedCron;
 
         @FieldDescribe("已完成工作高频索引批量获取大小.")
@@ -342,8 +342,8 @@ public class Query extends ConfigObject {
         @Schema(description = "是否启用内容管理文档高频索引.")
         private Boolean highFreqDocumentEnable;
 
-        @FieldDescribe("内容管理文档高频索引定时配置.")
-        @Schema(description = "内容管理文档高频索引定时配置.")
+        @FieldDescribe("内容管理文档高频索引定时配置, 默认值:" + DEFAULT_HIGHFREQDOCUMENTCRON)
+        @Schema(description = "内容管理文档高频索引定时配置, 默认值:" + DEFAULT_HIGHFREQDOCUMENTCRON)
         private String highFreqDocumentCron;
 
         @FieldDescribe("内容管理文档高频索引批量获取大小.")
@@ -475,8 +475,13 @@ public class Query extends ConfigObject {
             }
         }
 
+        /**
+         * 如果有空返回默认路径,如果有值那么判断时候否是从根目录开始,补全根目录标识.
+         * 
+         * @return
+         */
         public String getHdfsDirectoryPath() {
-            return this.adjustHdfsDirectoryPath();
+            return StringUtils.isEmpty(this.hdfsDirectoryPath) ? DEFAULT_HDFSDIRECTORYPATH : adjustHdfsDirectoryPath();
         }
 
         private String adjustHdfsDirectoryPath() {
