@@ -5,22 +5,29 @@
     </div>
     <div class="st_processContent">
         <div class="st_menu">
-            <div clasS="st_all st_appListItem mainColor_bg_opacity" data-o2-events="mouseover:startAppItemOver;mouseout:startAppItemOut;click:startAppItemClick;">{{$.lp.all}}({{
-                (function(){
-                    var count = 0;
-                    $.data.app.forEach(function(app){
-                        count+=app.processList.length;
-                    });
-                    $.data.column.forEach(function(column){
-                        count+=column.wrapOutCategoryList.length;
-                    });
-                    return count;
-                })() }})</div>
+            <div class="st_tab">
+                <div data-o2-element="allNode" class="st_all st_appListItem st_tabItem mainColor_bg_opacity mainColor_border"
+                     data-o2-events="mouseover:startAppItemOver;mouseout:startAppItemOut;click:startAppItemClick;">{{$.lp.all}}({{
+                    (function(){
+                        var count = 0;
+                        $.data.app.forEach(function(app){
+                            count+=app.processList.length;
+                        });
+                        $.data.column.forEach(function(column){
+                            count+=column.wrapOutCategoryList.length;
+                        });
+                        return count;
+                    })() }})
+                </div>
+                <div data-o2-element="byTypeNode" class="st_byType st_appListItem st_tabItem" data-o2-events="mouseover:startAppItemOver;mouseout:startAppItemOut;click:startAppItemClick;">
+                    {{$.lp.byType}}
+                </div>
+             </div>
             <div clasS="st_search">
                 <div class="st_searchIcon"><icon class="o2icon-sousuo mainColor_color"/></div>
                 <div class="st_searchInputArea"><input type="text" placeholder="{{$.lp.filterStartPlaceholder}}"  data-o2-events="keydown:startProcessSearch"/></div>
             </div>
-            <div class="st_appListArea">
+            <div data-o2-element="allContentNode" class="st_appListArea">
                 {{each $.data.app}}
                     <div class="st_appListItem" data-o2-events="mouseover:startAppItemOver;mouseout:startAppItemOut;click:startAppItemClick;">
                         <div class="st_appItemIcon" data-o2-events="o2load:loadItemIcon:{{$.id}};click:clickitem"></div>
@@ -38,6 +45,38 @@
                 {{end each}}
             </div>
 
+            <div data-o2-element="byTypeContentNode" class="st_appListArea" style="display:none;">
+                {{each $.data.appByType}}
+                    <div class="st_appCategoryWrap">
+                        <div class="st_appCategory st_appListItem" data-o2-events="mouseover:startAppItemOver;mouseout:startAppItemOut;click:startAppItemClick;">
+                            <i class="st_appCategoryIcon o2icon-triangle_right2" data-o2-events="click:appCategoryExpandOrCollapse;"></i>
+                            <div class="st_appCategoryText">{{$.key}}</div>
+                        </div>
+
+                        <div class="st_appCategoryContent" style="display: none;">
+                            {{each $.appList}}
+
+                                {{if !$.appName}}
+                                <div class="st_appListItem" style="padding-left: 15px;" data-o2-events="mouseover:startAppItemOver;mouseout:startAppItemOut;click:startAppItemClick;">
+                                    <div class="st_appItemIcon" data-o2-events="o2load:loadItemIcon:{{$.id}};click:clickitem"></div>
+                                    <div class="st_appItemText" title="{{$.name}}">{{$.name}}</div>
+                                    <div class="st_appItemCount">{{$.processList.length}}</div>
+                                </div>
+                                {{end if}}
+
+                                {{if $.appName}}
+                                <div class="st_appListItem" style="padding-left: 15px;" data-o2-events="mouseover:startAppItemOver;mouseout:startAppItemOut;click:startAppItemClick;">
+                                    <div class="st_appItemIcon" data-o2-events="o2load:loadColumnItemIcon:{{$.id}};click:clickitem"></div>
+                                    <div class="st_appItemText" title="{{$.name}}">{{$.appName}}</div>
+                                    <div class="st_appItemCount">{{$.wrapOutCategoryList.length}}</div>
+                                </div>
+                                {{end if}}
+
+                            {{end each}}
+                        </div>
+                    </div>
+                {{end each}}
+            </div>
         </div>
         <div class="st_processList" data-o2-events="o2load:loadStartProcessList"></div>
     </div>

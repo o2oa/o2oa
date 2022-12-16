@@ -7,6 +7,7 @@ MWF.xApplication.process.workcenter.LP = {
 	"draft": "Draft",
 	"createProcess": "Create Process",
 	"all": "All",
+	"byType": "Category",
 
 	"expire1": "Task deadline: {time}",
 	"expire2": "The task is about to time out. Deadline:{time}",

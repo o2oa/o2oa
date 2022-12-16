@@ -7,6 +7,7 @@ MWF.xApplication.process.workcenter.LP = {
 	"draft": "草稿",
 	"createProcess": "新建流程",
 	"all": "全部",
+	"byType": "按分类",
 
 	"expire1": "任务截至时间：{time}",
 	"expire2": "任务即将超时，截至时间：{time}",
