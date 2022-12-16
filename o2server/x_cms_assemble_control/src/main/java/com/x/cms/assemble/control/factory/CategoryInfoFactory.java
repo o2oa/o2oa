@@ -70,7 +70,37 @@ public class CategoryInfoFactory extends ElementFactory {
 		Root<CategoryInfo> root = cq.from( CategoryInfo.class );
 		Predicate p = cb.equal(root.get( CategoryInfo_.appId ), appId );
 		cq.select(root.get( CategoryInfo_.id));
-		return em.createQuery( cq.where(p) ).setMaxResults(1000).getResultList();
+		return em.createQuery( cq.where(p) ).getResultList();
+	}
+
+	public List<String> listPeopleViewIds(String personName, List<String> unitNames, List<String> groupNames, String appId, Boolean isManager) throws Exception {
+		if(BooleanUtils.isTrue(isManager)){
+			return listByAppId(appId);
+		}
+		EntityManager em = this.entityManagerContainer().get(CategoryInfo.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<CategoryInfo> root = cq.from(CategoryInfo.class);
+		cq.select(root.get(CategoryInfo_.id));
+		Predicate query = cb.equal(root.get(CategoryInfo_.appId), appId);
+		Predicate p = cb.isTrue(root.get(CategoryInfo_.allPeopleView));
+		if (StringUtils.isNotEmpty(personName)) {
+			p = cb.or(p, cb.isMember(personName, root.get(CategoryInfo_.viewablePersonList)));
+			p = cb.or(p, cb.isMember(personName, root.get(CategoryInfo_.publishablePersonList)));
+			p = cb.or(p, cb.isMember(personName, root.get(CategoryInfo_.manageablePersonList)));
+		}
+		if(ListTools.isNotEmpty(unitNames)){
+			p = cb.or(p, root.get(CategoryInfo_.viewableUnitList).in(unitNames));
+			p = cb.or(p, root.get(CategoryInfo_.publishableUnitList).in(unitNames));
+			p = cb.or(p, root.get(CategoryInfo_.manageableUnitList).in(unitNames));
+		}
+		if(ListTools.isNotEmpty(groupNames)){
+			p = cb.or(p, root.get(CategoryInfo_.viewableGroupList).in(unitNames));
+			p = cb.or(p, root.get(CategoryInfo_.publishableGroupList).in(groupNames));
+			p = cb.or(p, root.get(CategoryInfo_.manageableGroupList).in(groupNames));
+		}
+		query = cb.and(query, p);
+		return em.createQuery(cq.where(query)).getResultList().stream().distinct().collect(Collectors.toList());
 	}
 
 	public List<String> listByAppIds( List<String> appIds, Boolean hasProcess) throws Exception {

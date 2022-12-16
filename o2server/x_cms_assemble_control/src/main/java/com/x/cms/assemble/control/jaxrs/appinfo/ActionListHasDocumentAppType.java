@@ -25,33 +25,30 @@ import java.util.stream.Collectors;
 /**
  * @author sword
  */
-public class ActionListAllAppType extends BaseAction {
+public class ActionListHasDocumentAppType extends BaseAction {
 
-	private static  Logger logger = LoggerFactory.getLogger( ActionListAllAppType.class );
+	private static  Logger logger = LoggerFactory.getLogger( ActionListHasDocumentAppType.class );
 
 	protected ActionResult<List<Wo>> execute( HttpServletRequest request, EffectivePerson effectivePerson ) throws Exception {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wos = new ArrayList<>();
 		String personName = effectivePerson.getDistinguishedName();
-		Boolean isAnonymous = effectivePerson.isAnonymous();
-		Business business = new Business(null);
-		Boolean isManager = business.isManager( effectivePerson );
 
-		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), personName, isAnonymous, isManager );
+		Cache.CacheKey cacheKey = new Cache.CacheKey( this.getClass(), personName);
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
 
 		if (optional.isPresent()) {
 			result.setData((List<Wo>)optional.get());
 		} else {
 			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				business = new Business(emc);
-				List<String> unitNames = null;
-				List<String> groupNames = null;
-				if(!isManager && !isAnonymous) {
-					unitNames = userManagerService.listUnitNamesWithPerson(personName);
-					groupNames = userManagerService.listGroupNamesByPerson(personName);
+				Business business = new Business(emc);
+				Boolean isManager = business.isManager( effectivePerson );
+				List<String> appIds;
+				if(isManager){
+					appIds = business.getDocumentFactory().listApp();
+				}else{
+					appIds = business.reviewFactory().listApp(personName);
 				}
-				List<String> appIds = business.getAppInfoFactory().listPeopleViewAppInfoIds(personName, unitNames, groupNames, "全部", isManager);
 				if(ListTools.isNotEmpty(appIds)){
 					final String noneType = "未分类";
 					List<BaseAction.Wo> apps = emc.fetch(appIds, BaseAction.Wo.copier3);

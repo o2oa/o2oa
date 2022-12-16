@@ -42,10 +42,12 @@ public class Review extends SliceJpaObject {
 
 	public static final String TABLE = PersistenceProperties.Review.table;
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -56,6 +58,7 @@ public class Review extends SliceJpaObject {
 	private String id = createId();
 
 	/* 以上为 JpaObject 默认字段 */
+	@Override
 	public void onPersist() throws Exception {
 	}
 
@@ -173,18 +176,6 @@ public class Review extends SliceJpaObject {
 	@CheckPersist(allowEmpty = true)
 	private Date publishTime;
 
-	public static final String isTop_FIELDNAME = "isTop";
-	@FieldDescribe("是否置顶")
-	@Column(name = ColumnNamePrefix + isTop_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private Boolean isTop = false;
-
-	public static final String hasIndexPic_FIELDNAME = "hasIndexPic";
-	@FieldDescribe("是否含有首页图片")
-	@Column(name = ColumnNamePrefix + hasIndexPic_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private Boolean hasIndexPic = false;
-
 	public static final String permissionObj_FIELDNAME = "permissionObj";
 	@FieldDescribe("权限拥有者")
 	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
@@ -198,107 +189,6 @@ public class Review extends SliceJpaObject {
 	@Column(length = JpaObject.length_16B, name = ColumnNamePrefix + permissionObjType_FIELDNAME)
 	@CheckPersist(allowEmpty = false)
 	private String permissionObjType;
-
-	public static final String importBatchName_FIELDNAME = "importBatchName";
-	@FieldDescribe("文件导入的批次号：一般是分类ID+时间缀")
-	@Column(length = JpaObject.length_128B, name = ColumnNamePrefix + importBatchName_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private String importBatchName;
-
-	public static final String viewCount_FIELDNAME = "viewCount";
-	@FieldDescribe("文档被查看次数")
-	@Column(name = ColumnNamePrefix + viewCount_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private Long viewCount = 0L;
-
-	public static final String commendCount_FIELDNAME = "commendCount";
-	@FieldDescribe("文档被赞次数")
-	@Column(name = ColumnNamePrefix + commendCount_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private Long commendCount = 0L;
-
-	public static final String commentCount_FIELDNAME = "commentCount";
-	@FieldDescribe("文档评论次数")
-	@Column(name = ColumnNamePrefix + commentCount_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private Long commentCount = 0L;
-
-	public static final String modifyTime_FIELDNAME = "modifyTime";
-	@FieldDescribe("文档修改时间")
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = ColumnNamePrefix + modifyTime_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private Date modifyTime;
-
-	public static final String sequenceTitle_FIELDNAME = "sequenceTitle";
-	@FieldDescribe("用于标题排序的sequence")
-	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + sequenceTitle_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private String sequenceTitle = "";
-
-	public static final String sequenceAppAlias_FIELDNAME = "sequenceAppAlias";
-	@FieldDescribe("用于栏目别名排序的sequence")
-	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + sequenceAppAlias_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private String sequenceAppAlias = "";
-
-	public static final String sequenceCategoryAlias_FIELDNAME = "sequenceCategoryAlias";
-	@FieldDescribe("用于分类别名排序的sequence")
-	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + sequenceCategoryAlias_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private String sequenceCategoryAlias = "";
-
-	public static final String sequenceCreatorPerson_FIELDNAME = "sequenceCreatorPerson";
-	@FieldDescribe("用于创建者排序的sequence")
-	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + sequenceCreatorPerson_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private String sequenceCreatorPerson = "";
-
-	public static final String sequenceCreatorUnitName_FIELDNAME = "sequenceCreatorUnitName";
-	@FieldDescribe("用于创建者组织排序的sequence")
-	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + sequenceCreatorUnitName_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private String sequenceCreatorUnitName = "";
-
-	public Date getModifyTime() {
-		return modifyTime;
-	}
-
-	public void setModifyTime(Date modifyTime) {
-		this.modifyTime = modifyTime;
-	}
-
-	public Long getViewCount() {
-		return viewCount;
-	}
-
-	public void setViewCount(Long viewCount) {
-		this.viewCount = viewCount;
-	}
-
-	public Long getCommendCount() {
-		return commendCount;
-	}
-
-	public void setCommendCount(Long commendCount) {
-		this.commendCount = commendCount;
-	}
-
-	public Long getCommentCount() {
-		return commentCount;
-	}
-
-	public void setCommentCount(Long commentCount) {
-		this.commentCount = commentCount;
-	}
-
-	public String getImportBatchName() {
-		return importBatchName;
-	}
-
-	public void setImportBatchName(String importBatchName) {
-		this.importBatchName = importBatchName;
-	}
 
 	public String getDocumentType() {
 		return documentType;
@@ -428,22 +318,6 @@ public class Review extends SliceJpaObject {
 		this.docCreateTime = docCreateTime;
 	}
 
-	public Boolean getIsTop() {
-		return isTop;
-	}
-
-	public void setIsTop(Boolean isTop) {
-		this.isTop = isTop;
-	}
-
-	public Boolean getHasIndexPic() {
-		return hasIndexPic;
-	}
-
-	public void setHasIndexPic(Boolean hasIndexPic) {
-		this.hasIndexPic = hasIndexPic;
-	}
-
 	public String getPermissionObj() {
 		return permissionObj;
 	}
@@ -466,118 +340,6 @@ public class Review extends SliceJpaObject {
 
 	public void setDocSequence(String docSequence) {
 		this.docSequence = getSequenceString(docSequence);
-	}
-
-	public String getSequenceTitle() {
-		return sequenceTitle;
-	}
-
-	public void setSequenceTitle(String sequenceTitle) {
-		this.sequenceTitle = getSequenceString(sequenceTitle);
-	}
-
-	public String getSequenceAppAlias() {
-		return sequenceAppAlias;
-	}
-
-	public void setSequenceAppAlias(String sequenceAppAlias) {
-		this.sequenceAppAlias = getSequenceString(sequenceAppAlias);
-	}
-
-	public String getSequenceCategoryAlias() {
-		return sequenceCategoryAlias;
-	}
-
-	public void setSequenceCategoryAlias(String sequenceCategoryAlias) {
-		this.sequenceCategoryAlias = getSequenceString(sequenceCategoryAlias);
-	}
-
-	public String getSequenceCreatorPerson() {
-		return sequenceCreatorPerson;
-	}
-
-	public void setSequenceCreatorPerson(String sequenceCreatorPerson) {
-		this.sequenceCreatorPerson = getSequenceString(sequenceCreatorPerson);
-	}
-
-	public String getSequenceCreatorUnitName() {
-		return sequenceCreatorUnitName;
-	}
-
-	public void setSequenceCreatorUnitName(String sequenceCreatorUnitName) {
-		this.sequenceCreatorUnitName = getSequenceString(sequenceCreatorUnitName);
-	}
-
-	public static final String[] sortableFieldNames = { appAlias_FIELDNAME, appId_FIELDNAME, appName_FIELDNAME,
-			categoryAlias_FIELDNAME, categoryId_FIELDNAME, categoryName_FIELDNAME, commendCount_FIELDNAME,
-			commentCount_FIELDNAME, creatorPerson_FIELDNAME, creatorTopUnitName_FIELDNAME, creatorUnitName_FIELDNAME,
-			docStatus_FIELDNAME, hasIndexPic_FIELDNAME, isTop_FIELDNAME, modifyTime_FIELDNAME, publishTime_FIELDNAME,
-			title_FIELDNAME, viewCount_FIELDNAME };
-
-	public static Boolean isFieldInSequence(String orderField) {
-		// 判断排序列情况
-		if (StringUtils.isEmpty(orderField)) {
-			return true;
-		}
-		if (id_FIELDNAME.equalsIgnoreCase(orderField)) {
-			return true;
-		}
-		if (sequence_FIELDNAME.equalsIgnoreCase(orderField)) {
-			return true;
-		}
-		if (title_FIELDNAME.equalsIgnoreCase(orderField)) {
-			return true;
-		}
-		if (appAlias_FIELDNAME.equalsIgnoreCase(orderField)) {
-			return true;
-		}
-		if (appName_FIELDNAME.equalsIgnoreCase(orderField)) {
-			return true;
-		}
-		if (categoryAlias_FIELDNAME.equalsIgnoreCase(orderField)) {
-			return true;
-		}
-		if (categoryName_FIELDNAME.equalsIgnoreCase(orderField)) {
-			return true;
-		}
-		if (creatorPerson_FIELDNAME.equalsIgnoreCase(orderField)) {
-			return true;
-		}
-		if (creatorUnitName_FIELDNAME.equalsIgnoreCase(orderField)) {
-			return true;
-		}
-		return false;
-	}
-
-	public static String getSequnceFieldNameWithProperty(String fieldName) {
-		if (sequence_FIELDNAME.equalsIgnoreCase(fieldName)) {
-			return sequence_FIELDNAME;
-		}
-		if (id_FIELDNAME.equalsIgnoreCase(fieldName)) {
-			return id_FIELDNAME;
-		}
-		if (title_FIELDNAME.equalsIgnoreCase(fieldName)) {
-			return sequenceTitle_FIELDNAME;
-		}
-		if (appAlias_FIELDNAME.equalsIgnoreCase(fieldName)) {
-			return sequenceAppAlias_FIELDNAME;
-		}
-		if (appName_FIELDNAME.equalsIgnoreCase(fieldName)) {
-			return sequenceAppAlias_FIELDNAME;
-		}
-		if (categoryAlias_FIELDNAME.equalsIgnoreCase(fieldName)) {
-			return sequenceCategoryAlias_FIELDNAME;
-		}
-		if (categoryName_FIELDNAME.equalsIgnoreCase(fieldName)) {
-			return sequenceCategoryAlias_FIELDNAME;
-		}
-		if (creatorPerson_FIELDNAME.equalsIgnoreCase(fieldName)) {
-			return sequenceCreatorPerson_FIELDNAME;
-		}
-		if (creatorUnitName_FIELDNAME.equalsIgnoreCase(fieldName)) {
-			return sequenceCreatorUnitName_FIELDNAME;
-		}
-		return sequence_FIELDNAME;
 	}
 
 	private String getSequenceString(String sequenceString) {

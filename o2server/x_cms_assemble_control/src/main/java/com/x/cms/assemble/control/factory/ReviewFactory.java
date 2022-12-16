@@ -46,6 +46,17 @@ public class ReviewFactory extends AbstractFactory {
 		return em.createQuery(cq).getSingleResult();
 	}
 
+	public List<String> listApp( String person ) throws Exception {
+		EntityManager em = this.entityManagerContainer().get( Review.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery( String.class );
+		Root<Review> root = cq.from( Review.class );
+		Predicate p = cb.equal(root.get( Review_.permissionObj ), person );
+		p = cb.or(p, cb.equal(root.get( Review_.permissionObj ), "*" ));
+		cq.select(root.get( Review_.appId)).distinct(true).where(p);
+		return em.createQuery( cq ).getResultList();
+	}
+
 	public List<String> listByAppId( String appId, Integer maxCount ) throws Exception {
 		if( maxCount == null ) {
 			maxCount = 1000;
@@ -79,7 +90,12 @@ public class ReviewFactory extends AbstractFactory {
 		Root<Review> root = cq.from( Review.class );
 		Predicate p = cb.equal(root.get( Review_.docId ), docId );
 		cq.select(root.get( Review_.id)).where(p);
-		return em.createQuery( cq ).setMaxResults(maxCount).getResultList();
+		if(maxCount != null && maxCount > 0){
+			return em.createQuery( cq ).setMaxResults(maxCount).getResultList();
+		}else{
+			return em.createQuery( cq ).getResultList();
+		}
+
 	}
 
 	public List<String> listByDocumentAndPerson(String docId, String person) throws Exception {
@@ -172,12 +188,6 @@ public class ReviewFactory extends AbstractFactory {
 		Predicate p = CriteriaBuilderTools.composePredicateWithQueryFilter( Review_.class, cb, p_permission, root, queryFilter );
 
 		List<Order> orders = new ArrayList<>();
-		if( !Review.isTop_FIELDNAME.equals( orderField )) {
-			Order isTopOrder = CriteriaBuilderTools.getOrder( cb, root, Review_.class, Review.isTop_FIELDNAME, "desc" );
-			if( isTopOrder != null ){
-				orders.add( isTopOrder );
-			}
-		}
 		Order orderWithField = CriteriaBuilderTools.getOrder( cb, root, Review_.class, orderField, orderType );
 		if( orderWithField != null ){
 			orders.add( orderWithField );
