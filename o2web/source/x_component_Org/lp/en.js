@@ -224,6 +224,12 @@ MWF.xApplication.Org.LP = {
     "unlockPersonText": "\"{name}\" has entered the wrong password more than the specified number of times, is it allowed to log in again?",
     "unlockPersonSuccess" : "User \"{name}\" has been allowed to login!",
 
+    "expiredTime": "Password expiration time",
+    "expiredTimeTitle": "Password Expiration Time",
+    "expiredTimeSuccess": "Set password expiration time successfully",
+    "inputExpiredTime": "Password expiration time cannot be empty",
+    "inputExpiredTime2": "The password expiration time cannot be earlier than the current time",
+
     "attributeName": "Attribute",
 	"attributeValue": "Value",
 
