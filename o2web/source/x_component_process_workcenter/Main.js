@@ -454,7 +454,6 @@ MWF.xApplication.process.workcenter.Main = new Class({
 	},
 
 	loadColumnItemIcon: function(columnId, e, data){
-		debugger;
 		var node = e.currentTarget;
 		if (data.appIcon){
 			node.setStyle("background-image", "url(data:image/png;base64,"+data.appIcon+")");
