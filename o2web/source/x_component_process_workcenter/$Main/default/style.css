@@ -707,20 +707,34 @@
 /*    border-radius: 8px;*/
 /*    margin: 0 20px;*/
 /*}*/
-.st_all{
-    height: 40px;
-    line-height: 40px;
+
+.st_tab{
+    height: 51px;
+    line-height: 45px;
     color: #666666;
     font-size: 16px;
-    padding: 0 10px;
+    /*padding: 0 10px;*/
     cursor: pointer;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
+    overflow:hidden;
+}
+.st_tabItem{
+    width: 50%;
+    font-size: 16px;
+    border-bottom: 2px solid #fff;
+    display: flex;
+    justify-content: center;
+    float: left;
+}
+.st_all{
+
 }
 .st_search{
     height: 40px;
     line-height: 40px;
     border-bottom: 1px solid #E6E6E6;
+    border-top: 1px solid #E6E6E6;
 }
 .st_searchIcon{
     float: left; width: 43px; height: 40px; text-align: center;line-height: 45px;
@@ -738,6 +752,21 @@
     background: transparent;
     font-size: 14px;
     color: #666666;
+}
+.st_appCategory{
+    height: 45px;
+    line-height: 45px;
+    display: flex;
+    color: #666666;
+    cursor: pointer;
+    overflow:hidden;
+}
+.st_appCategoryIcon{
+    padding: 15px 5px 15px 10px;
+    float:left;
+}
+.st_appCategoryText{
+    float:left;
 }
 .st_appListArea{
     height: 100%;
@@ -894,9 +923,9 @@
 @font-face {
     font-family: 'o2taskcenter';
     src:
-            url('../x_component_process_workcenter/$Main/default/fonts/o2taskcenter.ttf?mcfdrb') format('truetype'),
-            url('../x_component_process_workcenter/$Main/default/fonts/o2taskcenter.woff?mcfdrb') format('woff'),
-            url('../x_component_process_workcenter/$Main/default/fonts/o2taskcenter.svg?mcfdrb#o2taskcenter') format('svg');
+            url('../x_component_process_workcenter/$Main/default/fonts/o2taskcenter.ttf?rnzpdq') format('truetype'),
+            url('../x_component_process_workcenter/$Main/default/fonts/o2taskcenter.woff?rnzpdq') format('woff'),
+            url('../x_component_process_workcenter/$Main/default/fonts/o2taskcenter.svg?rnzpdq#o2taskcenter') format('svg');
     font-weight: normal;
     font-style: normal;
     font-display: block;
@@ -970,4 +999,16 @@
 }
 .o2icon-zengjia:before {
     content: "\e911";
+}
+.o2icon-triangle_left2:before {
+  content: "\e9b1";
+}
+.o2icon-triangle_down2:before {
+  content: "\e9b2";
+}
+.o2icon-triangle_right2:before {
+  content: "\e9b3";
+}
+.o2icon-triangle_up2:before {
+  content: "\e9b4";
 }

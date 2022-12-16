@@ -15,7 +15,7 @@
  * <b>equals</b> 或 <b>==</b> 或：表示等于。<br/>
  * <b>notEquals</b> 或 <b>!=</b> ：表示不等于。<br/>
  * <b>greaterThan</b> 或 <b>></b> ：表示大于。<br/>
- * <b>greaterThanOrEqualTo</b> 或 <b>=></b> ：表示大于或等于。<br/>
+ * <b>greaterThanOrEqualTo</b> 或 <b>>=</b> ：表示大于或等于。<br/>
  * <b>lessThan</b> 或 <b><</b> ：表示小于。<br/>
  * <b>lessThanOrEqualTo</b> 或 <b><=</b> ：表示小于等于。<br/>
  * <b>like</b> ：表示部分匹配。<br/>
