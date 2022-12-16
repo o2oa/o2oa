@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.x.base.core.project.http.EffectivePerson;
+import com.x.cms.core.entity.Document;
+import com.x.cms.core.entity.Review;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.entity.JpaObject;
@@ -36,7 +39,7 @@ public class BaseAction extends StandardJaxrsAction {
 
     protected Cache.CacheCategory cacheCategory = new Cache.CacheCategory(AppInfo.class, CategoryInfo.class,
             AppDict.class, AppDictItem.class, View.class,
-            ViewCategory.class, ViewFieldConfig.class);
+            ViewCategory.class, ViewFieldConfig.class, Review.class);
 
     protected AppInfoServiceAdv appInfoServiceAdv = new AppInfoServiceAdv();
     protected FormServiceAdv formServiceAdv = new FormServiceAdv();
@@ -53,7 +56,7 @@ public class BaseAction extends StandardJaxrsAction {
      * 2、根据人员的访问权限获取可以访问的分类信息ID列表
      * 3、将栏目信息和分类信息查询出来组织在一起，如果只有分类，那么也要把栏目信息加上
      * 4、如果栏目信息下没有分类，则删除栏目信息的输出
-     * 
+     *
      * @param personName
      * @param isAnonymous
      * @param inAppInfoIds
@@ -115,7 +118,7 @@ public class BaseAction extends StandardJaxrsAction {
      * 2、根据人员的发布权限获取可以发布文档的分类信息ID列表<br/>
      * 3、将栏目信息和分类信息查询出来组织在一起，如果只有分类，那么也要把栏目信息加上
      * 4、如果栏目信息下没有分类，则删除栏目信息的输出
-     * 
+     *
      * @param personName
      * @param isAnonymous
      * @param inAppInfoIds
@@ -152,7 +155,7 @@ public class BaseAction extends StandardJaxrsAction {
 
     /**
      * 根据指定的栏目和分类ID，将分类组织到栏目信息中
-     * 
+     *
      * @param appInfoIds
      * @param categoryInfoIds
      * @param appType
@@ -276,6 +279,9 @@ public class BaseAction extends StandardJaxrsAction {
         static WrapCopier<AppInfo, Wo> copier2 = WrapCopierFactory.wo(AppInfo.class, Wo.class,
                 JpaObject.singularAttributeField(AppInfo.class, true, false), null);
 
+        static WrapCopier<AppInfo, Wo> copier3 = WrapCopierFactory.wo(AppInfo.class, Wo.class,
+                JpaObject.singularAttributeField(AppInfo.class, true, true), null);
+
     }
 
     public static class WoCategory extends CategoryInfo {
@@ -288,8 +294,39 @@ public class BaseAction extends StandardJaxrsAction {
                 null, ListTools.toList(JpaObject.FieldsInvisible));
 
         static WrapCopier<CategoryInfo, WoCategory> copier2 = WrapCopierFactory.wo(CategoryInfo.class, WoCategory.class,
-                JpaObject.singularAttributeField(CategoryInfo.class, true, false), null);
+                JpaObject.singularAttributeField(CategoryInfo.class, true, true), null);
 
+    }
+
+    /**
+     * 是否是栏目管理员
+     *
+     * @param person
+     * @param appInfo
+     * @return
+     * @throws Exception
+     */
+    public boolean isAppInfoManager(String person, List<String> unitNames, List<String> groupNames, AppInfo appInfo) throws Exception {
+        if (appInfo != null) {
+            if (ListTools.isNotEmpty(appInfo.getManageablePersonList())) {
+                if (appInfo.getManageablePersonList().contains(person)) {
+                    return true;
+                }
+            }
+            if (ListTools.isNotEmpty(appInfo.getManageableUnitList())) {
+                if (ListTools.isNotEmpty(unitNames) &&
+                        ListTools.containsAny(unitNames, appInfo.getManageableUnitList())) {
+                    return true;
+                }
+            }
+            if (ListTools.isNotEmpty(appInfo.getManageableGroupList())) {
+                if (ListTools.isNotEmpty(groupNames) &&
+                        ListTools.containsAny(groupNames, appInfo.getManageableGroupList())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }
