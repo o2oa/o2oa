@@ -485,24 +485,43 @@ var MDomItem = new Class({
         var flag = true;
 
         //if( value && value != "" && value != " " ){
+        var rule, msg, method, valid;
+        if( typeOf( rules ) === "object" ){
             for(var r in rules ){
-                var valid = true;
-                var rule = rules[r];
+                valid = true;
+                rule = rules[r];
 
                 if( typeof rule == "function"){
                     valid = rule.call( this, value, this );
                 }else if( this.validMethod[r] ){
-                    var method = this.validMethod[r];
+                    method = this.validMethod[r];
                     valid = method.call(this, value, rule, this );
                 }
 
                 if( !valid && isShowWarning ){
-                    var msg = this.getValidMessage( r, rule );
+                    msg = this.getValidMessage( r, rule );
                     if( msg != "" )msgs.push( msg );
                 }
 
                 if( !valid )flag = false;
             }
+        }else if( typeOf( rules ) === "array" ){
+            for( var i = 0; i<rules.length; i++ ){
+                if( typeof rules[i] == "function"){
+                    msg = rules[i].call( this, value, this );
+                    if( msg && typeof msg === "string" ){
+                        flag = false;
+                        if( isShowWarning )msgs.push( msg );
+                    }
+                }
+            }
+        }else if( typeOf( rules ) === "function" ){
+            msg = rules.call( this, value, this );
+            if( msg && typeof msg === "string" ){
+                flag = false;
+                if( isShowWarning )msgs.push( msg );
+            }
+        }
         //}
 
         if( msgs.length > 0 ){
