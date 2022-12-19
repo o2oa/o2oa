@@ -660,6 +660,46 @@ MDomItem.Util = {
         return calendar;
     },
     selectPerson: function( container, options, callback  ){
+        if( options.selectType === "custom" ){
+            this._selectCustom(container, options, callback);
+        }else{
+            this._selectPerson(container, options, callback);
+        }
+    },
+    _selectCustom: function( container, options, callback  ){
+        MWF.xDesktop.requireApp("Template", "Selector.Custom", null, false); //加载资源
+
+        var opt  = {
+            "title": options.title,
+            "count" : options.count,
+            "values": options.selectedValues || [],
+            "expand": typeOf( options.expand ) === "boolean" ? options.expand : true,
+            "exclude" : options.exclude || [],
+            "expandSubEnable" : typeOf( options.expandSubEnable ) === "boolean" ? options.expandSubEnable : true,
+            "hasLetter" : false, //是否点击字母搜索
+            "hasTop" : false, //可选、已选的标题
+            // "level1Indent" : 0, //第一层的缩进
+            // "indent" : 36, //第二层及以上的缩进
+            "selectAllEnable" : true, //是否允许多选，如果分类可以被选中，blue_flat样式下失效
+            "width" : "700px", //选中框宽度
+            "height" :"550px", //选中框高度
+            "category": true, //按分类选择
+            "noSelectedContainer" : false, //是否隐藏右侧已选区域
+            "categorySelectable" : false, //分类是否可以被选择，如果可以被选择那么执行的是item的事件
+            "uniqueFlag" : "id", //项目匹配（是否选中）关键字
+            "defaultExpandLevel" : 1, //默认展开项目，0表示折叠所有分类
+            "onComplete": function( array ){
+                if( callback )callback( array );
+            }.bind(this)
+        };
+        if( options.orgOptions ){
+            opt = Object.merge(opt, options.orgOptions);
+        }
+        if( opt.types.length === 0 )opt.types = null;
+        var selector = new new MWF.xApplication.Template.Selector.Custom(container, opt );
+        selector.load();
+    },
+    _selectPerson: function( container, options, callback  ){
         MWF.xDesktop.requireApp("Selector", "package", null, false);
 
         var selectType = "", selectTypeList = [];
