@@ -660,7 +660,7 @@ MDomItem.Util = {
         return calendar;
     },
     selectPerson: function( container, options, callback  ){
-        if( options.selectType === "custom" ){
+        if( options.type === "custom" ){
             this._selectCustom(container, options, callback);
         }else{
             this._selectPerson(container, options, callback);
