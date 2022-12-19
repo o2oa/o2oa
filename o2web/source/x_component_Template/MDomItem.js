@@ -695,8 +695,7 @@ MDomItem.Util = {
         if( options.orgOptions ){
             opt = Object.merge(opt, options.orgOptions);
         }
-        if( opt.types.length === 0 )opt.types = null;
-        var selector = new new MWF.xApplication.Template.Selector.Custom(container, opt );
+        var selector = new MWF.xApplication.Template.Selector.Custom(container, opt );
         selector.load();
     },
     _selectPerson: function( container, options, callback  ){
