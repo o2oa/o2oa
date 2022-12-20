@@ -253,7 +253,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
                             this._setBusinessData(v || []);
                             //this._setEnvironmentData(v || []);
                             //this._setBusinessData(this.getInputData("change") || []);
-                            this.fireEvent("change");
+                            this.fireEvent("change", [radio]);
                         }
                     }.bind(this));
 
