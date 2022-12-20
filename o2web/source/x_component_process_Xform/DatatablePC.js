@@ -2309,7 +2309,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 					// }
 					if(this.options.isEdited) {
 						if (json.type !== "Attachment" && json.type !== "AttachmentDg"){
-							if( module.json.compute === "save" ){
+							if( module.json.compute === "save" && module.getInputData ){
 								this.data[templateJsonId] = module.getInputData();
 							}else{
 								this.data[templateJsonId] = module.getData();
@@ -2566,7 +2566,6 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 		this.init();
 	},
 	computeModuleData: function( when ){
-		var data = this.data;
 		for( var key in this.allField_templateId){
 			var module = this.allField_templateId[key];
 			if( module.json.compute === when ){
