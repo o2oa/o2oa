@@ -320,6 +320,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.reloading = false;
 		},
 		loadDatatable: function(){
+			this.loading = true;
 			this._loadStyles();
 
 			this._loadTitleTr();
@@ -330,6 +331,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this._loadDatatable(function(){
 				this._loadImportExportAction();
 				this.fieldModuleLoaded = true;
+				this.loading = false;
 				this.fireEvent("postLoad");
 			}.bind(this));
 		},
@@ -935,7 +937,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				}
 			}else{
 				var index = line.options.index;
-				var data = this.getData();
+				var data = this.getInputData();
 				data.data[index] = d;
 				this.setData( data );
 			}
@@ -967,7 +969,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				line.isNewAdd = true;
 			}else{
 				index = this.lineList.length;
-				data = this.getData();
+				data = this.getInputData();
 
 				data.data.push(d||{});
 				this.newLineIndex = index;
@@ -1012,7 +1014,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			}else {
 				index = beforeLine.options.index + 1;
 
-				data = this.getData();
+				data = this.getInputData();
 				data.data.splice(index, 0, {});
 				this.newLineIndex = index;
 				this.setData(data);
@@ -1049,7 +1051,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				line.isNewAdd = true;
 			}else {
 				//使用数据驱动
-				data = this.getData();
+				data = this.getInputData();
 				if (data.data.length < index) return null;
 				data.data.splice(index, 0, d || {});
 				this.setData(data);
@@ -1096,7 +1098,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			if( this.isShowAllSection ){
 				data = this.getBusinessDataById();
 			}else{
-				data = _self.getData();
+				data = _self.getInputData();
 			}
 
 			lines.reverse().each(function(line){
@@ -1158,7 +1160,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				if(this.currentEditedLine === line)this.currentEditedLine = null;
 				this.setAllSectionData( data );
 			}else{
-				data = this.getData();
+				data = this.getInputData();
 				data.data.splice(line.options.index, 1);
 
 				if(this.currentEditedLine === line)this.currentEditedLine = null;
@@ -1211,6 +1213,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 			line.isNewAdd = false;
 			// line.data = line.getData();
+			line.computeModuleData("save");
 			line.originalData = Object.clone(line.data);
 			line.changeEditMode(false);
 			this._loadTotal();
@@ -1247,7 +1250,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			}else {
 				if (line.options.index === 0) return;
 
-				data = this.getData();
+				data = this.getInputData();
 				upData = data.data[line.options.index - 1];
 				curData = data.data[line.options.index];
 				data.data[line.options.index] = upData;
@@ -1398,7 +1401,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		 * @return {Boolean} 是否为空
 		 */
 		isEmpty: function(){
-			var data = this.getData();
+			var data = this.getInputData();
 			if( !data || !data.data )return true;
 			if( o2.typeOf( data.data ) === "array" ){
 				return data.data.length === 0;
@@ -1551,6 +1554,21 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				// 		line.data = line.getData();
 				// 	}
 				// });
+				if( this.multiEditMode){
+					this.lineList.each(function (line) {
+						line.computeModuleData("save");
+					})
+				}
+				return this._getBusinessData();
+			}else{
+				return this._getBusinessData();
+			}
+		},
+		getInputData: function(){
+			if( this.importer ){
+				this.importer.destroySimulateModule();
+			}
+			if (this.editable!==false){
 				return this._getBusinessData();
 			}else{
 				return this._getBusinessData();
@@ -1646,7 +1664,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			var flag = (data.status=="all") ? true: (routeName == data.decision);
 			if (flag){
 				//???
-				var n = this.getData();
+				var n = this.getInputData();
 				if( o2.typeOf(n)==="object"){
 					var arr = [];
 					Object.each( n, function (d, key) {
@@ -2241,6 +2259,28 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 					if( _self.widget )this.widget = _self.widget;
 					this.parentLine = _self;
 					this.parentDatatable = _self.datatable;
+
+					//只读方法值在页面加载的时候或者new的时候计算一下
+					if( this.json.compute === "show" ){
+						var needComputeShow = false;
+						if( _self.datatable.loading ) {
+							needComputeShow = true;
+						}else if( _self.options.isNew && !_self.reloading ){
+							needComputeShow = true;
+						}
+						if( !needComputeShow ){
+							this.json.compute = "create"; //
+							if( this.options.moduleEvents && this.options.moduleEvents.length ){ //恢复compute
+								var eventName = ( this.options.moduleEvents || [] ).contains("afterLoad") ? "afterLoad" : "load";
+								var resetCompute = function () {
+									this.json.compute = "show";
+									this.removeEvent( eventName, resetCompute );
+								}.bind(this)
+								this.addEvent(eventName, resetCompute);
+							}
+						}
+					}
+
 				});
 				if(!module.parentLine)module.parentLine = this;
 				if(!module.parentDatatable)module.parentDatatable = this.datatable;
@@ -2269,7 +2309,11 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 					// }
 					if(this.options.isEdited) {
 						if (json.type !== "Attachment" && json.type !== "AttachmentDg"){
-							this.data[templateJsonId] = module.getData();
+							if( module.json.compute === "save" ){
+								this.data[templateJsonId] = module.getInputData();
+							}else{
+								this.data[templateJsonId] = module.getData();
+							}
 						}
 					}
 					this.allField[id] = module;
@@ -2493,6 +2537,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 		}
 	},
 	reload: function(){
+		this.reloading = true;
 		for(var key in this.all){
 			var module = this.all[key];
 			this.form.modules.erase(module);
@@ -2506,6 +2551,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 		}
 		this.init();
 		this.load();
+		this.reloading = false;
 	},
 	clearSubModules: function () { //把module清除掉
 		for(var key in this.all){
@@ -2518,6 +2564,15 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 		}
 		this.node.destroy();
 		this.init();
+	},
+	computeModuleData: function( when ){
+		var data = this.data;
+		for( var key in this.allField_templateId){
+			var module = this.allField_templateId[key];
+			if( module.json.compute === when ){
+				this.data[key] = module.getData();
+			}
+		}
 	},
 	getData: function () {
 		var data = this.data;
