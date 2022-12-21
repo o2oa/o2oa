@@ -219,13 +219,14 @@ var MGrid = new Class({
             this.table.set( tableAttr );
             this.fireEvent( "postCreateTable", [this] );
         }
+        return this.table;
     },
     createHead : function( itemData ){
         if( !this.options.isCreateTh )return;
         if( this.thTemplate ){
-            this.createHead_byTemplate( itemData );
+            return this.createHead_byTemplate( itemData );
         }else{
-            this.createHead_noTemplate( itemData );
+            return this.createHead_noTemplate( itemData );
         }
     },
     createHead_byTemplate : function( itemData ){
@@ -247,6 +248,7 @@ var MGrid = new Class({
             if( add_button )this.createAddButton( add_button );
         }
         th.inject( this.table );
+        return th;
     },
     createHead_noTemplate : function( itemData ){
         var tr = this.tableHead = new Element("tr");
@@ -283,6 +285,7 @@ var MGrid = new Class({
         }
         tr.inject( this.table );
         this.fireEvent("postCreateHead", [tr] );
+        return tr;
     },
     createAddButton : function( container ){
         var button = new Element("div", { title : MWF.xApplication.Template.LP.MGrid.add }).inject( container );
@@ -303,9 +306,12 @@ var MGrid = new Class({
     },
     addTrs : function( count ){
         if( 100 < count )count = 100;
+        var trObj, trObjList = [];
         for( var i=0 ; i<count; i++ ){
-            this.createTr( this.itemTemplate, true );
+            trObj = this.createTr( this.itemTemplate, true );
+            trObjList.push( trObj );
         }
+        return trObjList;
     },
     appendTr : function( d, isNew, unid, sourceData ){
         var items = this.itemTemplate;
@@ -314,10 +320,11 @@ var MGrid = new Class({
                 items[ it ].value  = d[it];
             }
         }
-        this.createTr( items, isNew, unid, sourceData );
+        var trObj = this.createTr( items, isNew, unid, sourceData );
         for( var it in this.itemTemplate ){
             this.itemTemplate[it].value = "";
         }
+        return trObj;
     },
     getTrCounts : function(){
         return  this.trList.length;
