@@ -325,7 +325,7 @@ var MGrid = new Class({
     createTr : function( itemData, isNew, unid, sourceData ){
         if( this.options.maxTrCount  ){
             if( this.getTrCounts() < this.options.maxTrCount ){
-                this._createTr( itemData, isNew, unid, sourceData )
+                return this._createTr( itemData, isNew, unid, sourceData )
             }else{
                 if( this.app && this.app.notice ){
                     var text = MWF.xApplication.Template.LP.MGrid.addMaxLimitText.replace("{count}", this.options.maxTrCount);
@@ -333,7 +333,7 @@ var MGrid = new Class({
                 }
             }
         }else{
-            this._createTr( itemData, isNew, unid, sourceData )
+            return this._createTr( itemData, isNew, unid, sourceData )
         }
     },
     _createTr : function( itemData, isNew, unid, sourceData ){
@@ -386,6 +386,8 @@ var MGrid = new Class({
         }
 
         this.fireEvent("postCreateTr",[this, trObj]);
+
+        return trObj;
     },
     replaceTr : function( oldTrObjOr_Index, data, isNew, unid, sourceData ){
         var oldTrObj;
@@ -445,6 +447,8 @@ var MGrid = new Class({
         for( var it in this.itemTemplate ){
             this.itemTemplate[it].value = "";
         }
+
+        return trObj;
     },
     createRemoveButton : function( trObj, container ){
         var button = new Element("div", { title : MWF.xApplication.Template.LP.MGrid.delete }).inject( container );
@@ -507,9 +511,9 @@ var MGrid = new Class({
         var self = this;
         this.trIndex ++;
         if( this.trTemplate ){
-            this.createTr_textOnly_byTemplate( itemData );
+            return this.createTr_textOnly_byTemplate( itemData );
         }else{
-            this.createTr_textOnly_noTemplate( itemData );
+            return this.createTr_textOnly_noTemplate( itemData );
         }
     },
     createTr_textOnly_byTemplate : function( itemData ){
@@ -543,6 +547,8 @@ var MGrid = new Class({
         sequenceContainers.set("text", this.trIndex );
 
         tr.inject( this.table );
+
+        return tr;
     },
     createTr_textOnly_noTemplate : function( itemData ){
         var tr = new Element("tr" , { "data-id" : "_"+this.trIndex });
@@ -578,6 +584,7 @@ var MGrid = new Class({
         }
         tr.inject( this.table );
 
+        return tr;
     },
 
     getResult : function( verify, separator, isAlert, onlyModified, keepAllData ){
