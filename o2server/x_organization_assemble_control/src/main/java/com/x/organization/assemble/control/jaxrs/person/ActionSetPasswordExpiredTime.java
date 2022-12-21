@@ -8,6 +8,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.config.Config;
 import com.x.base.core.project.exception.ExceptionPersonNotExist;
@@ -20,6 +21,8 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
 import com.x.organization.assemble.control.Business;
 import com.x.organization.core.entity.Person;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 class ActionSetPasswordExpiredTime extends BaseAction {
 
@@ -59,8 +62,11 @@ class ActionSetPasswordExpiredTime extends BaseAction {
         }
     }
 
+    
     public static class Wi extends GsonPropertyObject {
 
+    	@FieldDescribe("到期日期.")
+    	@Schema(description = "到期日期.")
         private Date passwordExpiredTime;
 
         public Date getPasswordExpiredTime() {
