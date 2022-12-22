@@ -46,7 +46,7 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class(
     },
     /**
      * @summary 当子表单被设置为延迟加载，通过active方法激活
-     * @param {Function} callback
+     * @param {Function} callback 激活后的回调方法，另外已经激活过该方法还会被执行。
      * @example
      * var subform = this.form.get("fieldId");
      * subform.active(function(){
@@ -216,6 +216,15 @@ MWF.xApplication.process.Xform.Subform = MWF.APPSubform = new Class(
             this.form.checkSubformLoaded();
         }
         //console.log( "add subformLoadedCount , this.form.subformLoadedCount = "+ this.form.subformLoadedCount)
+
+        /**
+         * @summary 表单是否加载（激活）过。
+         * @member {Boolean}
+         * @example
+         * if( !this.form.get("fieldId").loaded ){ //判断子表单是否加载过
+         *     this.form.get("fieldId").active(); //没有加载过则激活
+         * }
+         */
         this.loaded = true;
         this.checked = true;
     },

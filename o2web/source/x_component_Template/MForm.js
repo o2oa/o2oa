@@ -54,7 +54,7 @@ var MForm = new Class({
         this.app = app;
         this.container = $(container);
 
-        this.data = data;
+        this.data = typeOf( data ) === "object" ? [data] : data;
 
         this.isSourceDataEmpty = false;
         if( !this.data || this.data == "" ){

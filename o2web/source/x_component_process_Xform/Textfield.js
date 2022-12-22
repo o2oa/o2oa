@@ -43,16 +43,23 @@ MWF.xApplication.process.Xform.Textfield = MWF.APPTextfield =  new Class({
         var v = this._getBusinessData();
         if (!v && v!==0){
             if (this.json.description){
-                var size = this.node.getFirst().getSize();
-                var w = size.x-3;
-                if( this.hasIcon() ){
-                    if (COMMON.Browser.safari) w = w-20;
+            var size, w;
+                if( this.node.offsetParent === null ){ //隐藏
+                    size = { y: 26 }
+                }else{
+                     size = this.node.getFirst().getSize();
+                     w = size.x-3;
+                    if( this.hasIcon() ){
+                        if (COMMON.Browser.safari) w = w-20;
+                    }
                 }
                 this.descriptionNode = new Element("div", {"styles": this.form.css.descriptionNode, "text": this.json.description}).inject(this.node);
                 this.descriptionNode.setStyles({
-                    "width": ""+w+"px",
                     "height": ""+size.y+"px",
                     "line-height": ""+size.y+"px"
+                });
+                if( w )this.descriptionNode.setStyles({
+                    "width": ""+w+"px"
                 });
                 this.setDescriptionEvent();
             }
