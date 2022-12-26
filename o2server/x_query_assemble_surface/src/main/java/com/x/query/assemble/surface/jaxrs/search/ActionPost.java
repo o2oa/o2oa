@@ -104,7 +104,7 @@ class ActionPost extends BaseAction {
             final int facetMaxGroups = Config.query().index().getFacetMaxGroups();
             final int searchMaxHits = Config.query().index().getSearchMaxHits();
             TopScoreDocCollector topScoreDocCollector = TopScoreDocCollector.create(searchMaxHits, Integer.MAX_VALUE);
-            List<Pair<String, FirstPassGroupingCollector<BytesRef>>> firstPassGroupingCollectorPairs = this
+            List<Pair<String, FirstPassGroupingCollector<BytesRef>>> firstPassGroupingCollectorPairs = Indexs
                     .adjustFacetField(
                             wi.getFilterList().stream().map(Filter::getField).collect(Collectors.toList()))
                     .stream()
