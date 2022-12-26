@@ -107,7 +107,7 @@ public class Indexs {
     public static final String BOOLEAN_TRUE_STRING_VALUE = "true";
     public static final String BOOLEAN_FALSE_STRING_VALUE = "false";
 
-    private static final List<String> FACET_FIELDS = Stream.<String>of(FIELD_CATEGORY,
+    public static final List<String> FACET_FIELDS = Stream.<String>of(FIELD_CATEGORY,
             FIELD_CREATETIMEMONTH, FIELD_UPDATETIMEMONTH, FIELD_APPLICATIONNAME,
             FIELD_PROCESSNAME, FIELD_APPNAME, FIELD_CATEGORYNAME,
             FIELD_CREATORPERSON, FIELD_CREATORUNIT, FIELD_COMPLETED)
