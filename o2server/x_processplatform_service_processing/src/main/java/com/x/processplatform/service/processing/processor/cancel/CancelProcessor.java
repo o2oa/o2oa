@@ -76,7 +76,10 @@ public class CancelProcessor extends AbstractCancelProcessor {
             aeiObjects.getWorks().stream().forEach(o -> aeiObjects.getDeleteWorks().add(o));
             // cancel 可以不删除快照
         }
-        return new ArrayList<>();
+        // 需要返回work,否则事件无法执行.
+        List<Work> results = new ArrayList<>();
+        results.add(aeiObjects.getWork());
+        return results;
     }
 
     @Override
