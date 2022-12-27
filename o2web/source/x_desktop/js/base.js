@@ -163,8 +163,9 @@ if (!window.layout || !layout.desktop || !layout.addReady) {
             if (job) docurl += ((docurl.indexOf("?") != -1) ? "&" : "?") + "jobid=" + job;
             docurl += ((redirectlink) ? "&redirectlink=" + redirectlink : "");
             docurl += ((layout.debugger) ? "&debugger" : "");
-
-            window.location = o2.filterUrl(docurl);
+            //使用相对路径不需要filterUrl
+            //window.location = o2.filterUrl(docurl);
+            window.location = docurl;
         };
         var _openWork = function (options) {
             if (!_openWorkAndroid(options)) if (!_openWorkIOS(options)) _openWorkHTML(options);
