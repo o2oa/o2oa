@@ -1,6 +1,5 @@
 package com.x.query.assemble.surface.jaxrs.search;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -13,7 +12,6 @@ import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.BoostQuery;
-import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 
@@ -33,6 +31,11 @@ abstract class BaseAction extends StandardJaxrsAction {
     protected static final List<String> DATE_FIELDS = Stream
             .<String>of(Indexs.FIELD_INDEXTIME, Indexs.FIELD_CREATETIME, Indexs.FIELD_UPDATETIME)
             .collect(Collectors.toUnmodifiableList());
+
+    // 默认维度字段
+    protected static final List<String> FACET_FIELDS = Stream.<String>of(Indexs.FIELD_CATEGORY,
+            Indexs.FIELD_CREATETIMEMONTH, Indexs.FIELD_UPDATETIMEMONTH,
+            Indexs.FIELD_CREATORPERSON, Indexs.FIELD_CREATORUNIT).collect(Collectors.toUnmodifiableList());
 
     protected Optional<Query> searchQuery(String query, Analyzer analyzer) throws Exception {
         query = Indexs.alignQuery(query);
@@ -63,6 +66,16 @@ abstract class BaseAction extends StandardJaxrsAction {
         readers.stream().filter(StringUtils::isNotBlank).map(o -> new TermQuery(new Term(Indexs.FIELD_READERS, o)))
                 .forEach(o -> builder.add(o, BooleanClause.Occur.SHOULD));
         return Optional.of(builder.build());
+    }
+
+    /**
+     * 对默认维度字段进行判断如果过滤字段有了这个字段那么就删除这个维度
+     * 
+     * @param filters
+     * @return
+     */
+    protected List<String> adjustFacetField(List<String> filters) {
+        return FACET_FIELDS.stream().filter(o -> (!filters.contains(o))).collect(Collectors.toList());
     }
 
 }
