@@ -3,12 +3,15 @@ package com.x.organization.assemble.express.jaxrs.unit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
@@ -31,6 +34,13 @@ import com.x.organization.core.entity.Identity_;
 import com.x.organization.core.entity.Unit;
 import com.x.organization.core.entity.Unit_;
 
+/**
+ * levelName在数据库中是使用clob存储的,在oracle中无法使用where levelName =
+ * 'abc',所以先将levelName中的name取出做判断,然后再根据levelName做filter
+ * 
+ * @author ray
+ *
+ */
 class ActionListWithLevelNameObject extends BaseAction {
 	private static Logger logger = LoggerFactory.getLogger(ActionListWithLevelNameObject.class);
 
@@ -38,7 +48,7 @@ class ActionListWithLevelNameObject extends BaseAction {
 		logger.debug(effectivePerson.getDistinguishedName());
 		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 		ActionResult<List<Wo>> result = new ActionResult<>();
-		if(ListTools.isEmpty(wi.getUnitList())){
+		if (ListTools.isEmpty(wi.getUnitList())) {
 			return result;
 		}
 		CacheKey cacheKey = new CacheKey(this.getClass(), wi.getUnitList());
@@ -47,7 +57,7 @@ class ActionListWithLevelNameObject extends BaseAction {
 			result.setData((List<Wo>) optional.get());
 		} else {
 			List<Wo> wos = this.list(wi);
-			if(ListTools.isNotEmpty(wos)) {
+			if (ListTools.isNotEmpty(wos)) {
 				CacheManager.put(cacheCategory, cacheKey, wos);
 			}
 			result.setData(wos);
@@ -114,14 +124,27 @@ class ActionListWithLevelNameObject extends BaseAction {
 
 	}
 
+	/**
+	 * 取得unitList的层次名,取最后的层次名作为名称进行查询,获取的unit再次进行过滤
+	 * 
+	 * @param wi
+	 * @return
+	 * @throws Exception
+	 */
 	private List<Wo> list(Wi wi) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
-			List<Unit> unitList = emc.listIn(Unit.class, Unit.levelName_FIELDNAME, wi.getUnitList());
+			List<String> names = wi.getUnitList().stream().map(o -> {
+				String name = StringUtils.substringAfterLast(o, "/");
+				return StringUtils.isEmpty(name) ? o : name;
+			}).filter(StringUtils::isNotEmpty).distinct().collect(Collectors.toList());
+			List<Unit> unitList = emc.listIn(Unit.class, Unit.name_FIELDNAME, names);
+			unitList = unitList.stream().filter(o -> wi.getUnitList().contains(o.getLevelName()))
+					.collect(Collectors.toList());
 			unitList = business.unit().sort(unitList);
 			List<Wo> wos = new ArrayList<>();
-			if(ListTools.isNotEmpty(unitList)){
-				for(Unit unit : unitList){
+			if (ListTools.isNotEmpty(unitList)) {
+				for (Unit unit : unitList) {
 					Wo wo = Wo.copier.copy(unit);
 					wo.setMatchKey(wo.getLevelName());
 					wo.setSubDirectIdentityCount(this.countSubDirectIdentity(business, wo));
