@@ -158,7 +158,7 @@ var MDomItem = new Class({
                 if( fun.length && /\(\s*([\s\S]*?)\s*\)/.exec(fun)[1].split(/\s*,\s*/)[0] == "callback" ){ //如果有行参(fun.length!=0),并且第一形参是callback，注意，funciont不能bind(this),否则不能判断
                     callbackNameList.push( o );
                 }else{
-                    options[o] = fun( options ); //执行fun
+                    options[o] = fun( options, this ); //执行fun
                 }
             }
         }
