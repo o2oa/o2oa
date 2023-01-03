@@ -3238,6 +3238,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         html += "<div style=\"line-height: 30px; height: 30px; color: #333333; overflow: hidden;float:right;\"><input class='rollback_flowOption' checked type='checkbox' />"+lp.tryToProcess+"</div>";
         html += "<div style=\"clear:both; max-height: 300px; margin-bottom:10px; margin-top:10px; overflow-y:auto;\"></div>";
         node.set("html", html);
+        if( layout.mobile ){
+            node.getFirst().setStyle("float", "none");
+            node.getFirst().getNext().setStyle("float", "none");
+        }
         var rollbackItemNode = node.getLast();
         this.getRollbackLogs(rollbackItemNode);
         node.inject(this.app.content);
@@ -3247,7 +3251,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             "style": this.json.dialogStyle || "user",
             "isResize": false,
             "content": node,
-            "width": 600,
+            "width": layout.mobile ? "100%" : 600,
             "buttonList": [
                 {
                     "type": "ok",
