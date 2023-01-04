@@ -184,7 +184,7 @@ public class ActionReciveAttendanceMobile extends BaseAction {
 			//attendanceDetailMobile.setCheckin_type( woSignFeature.getCheckinType() );
 			attendanceDetailMobile.setCheckin_type(wrapIn.getCheckin_type());
 			if( StringUtils.isEmpty( wrapIn.getSignDescription() )){
-				attendanceDetailMobile.setSignDescription( woSignFeature.getCheckinType() );
+				attendanceDetailMobile.setSignDescription( wrapIn.getCheckin_type() );
 			}else{
 				attendanceDetailMobile.setSignDescription( wrapIn.getSignDescription() );
 			}
