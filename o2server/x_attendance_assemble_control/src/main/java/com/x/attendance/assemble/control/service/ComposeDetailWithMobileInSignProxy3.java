@@ -40,7 +40,7 @@ class ComposeDetailWithMobileInSignProxy3 {
 			scheduleSetting.setMiddayRestStartTime("11:30");
 		}
 		if(StringUtils.isEmpty( scheduleSetting.getMiddayRestEndTime() )){
-			scheduleSetting.setMiddayRestStartTime("13:30");
+			scheduleSetting.setMiddayRestEndTime("13:30");
 		}
 		String middayRestStartTime = scheduleSetting.getMiddayRestStartTime();
 		String middayRestEndTime = scheduleSetting.getMiddayRestEndTime();
