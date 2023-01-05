@@ -43,7 +43,7 @@
 	"margin-top" : "22px",
 	"padding-left" : "18px",
 	"font-size": "28px",
-	"float": "left",
+//	"float": "left",
 	"overflow" : "hidden",
 	"text-overflow" : "ellipsis",
 	"white-space":"nowrap"
