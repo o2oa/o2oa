@@ -97,7 +97,7 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
                 "enctype": "formData",
                 "method": "POST",
                 "uri": "/jaxrs/onlyoffice/upload"
-            }
+            };
             o2.require("o2.widget.Upload", null, false);
             var upload = new o2.widget.Upload(this.content, {
                 "action": o2.Actions.get("x_onlyofficefile_assemble_control").action,
@@ -106,6 +106,7 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
                 "parameter": {
                 },
                 "data":{
+                    "relevanceId" : this.form.businessData.work.job
                 },
                 "onCompleted": function(data){
 
