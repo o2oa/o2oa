@@ -56,8 +56,8 @@ abstract class BaseAction extends StandardJaxrsAction {
 
     /**
      * 检查是否在时间段内有,1.开始时间处于时间段内 2.结束时间处于时间段内 3,开始时间小于指定开始时间且结束时间大于指定结束时间
-     * 必须是 lessThanOrEqualTo 否则可以创建多个相同时间段的授权
-     * 
+     * 合并后就是!(开始时间大于指定结束时间||结束时间小于指定开始时间)
+     * 考虑到正好完全一致的时间点发生了授权可能性小允许结束时间等于新的开始时间
      * @param business
      * @param empower
      * @return
@@ -72,20 +72,16 @@ abstract class BaseAction extends StandardJaxrsAction {
         p = cb.and(p, cb.equal(root.get(Empower_.type), Empower.TYPE_ALL));
         p = cb.and(p, cb.notEqual(root.get(Empower_.id), empower.getId()));
         p = cb.and(p, cb.equal(root.get(Empower_.enable), true));
-        p = cb.and(p, cb.or(cb.and(cb.greaterThanOrEqualTo(root.get(Empower_.startTime), empower.getStartTime()),
-                cb.lessThanOrEqualTo(root.get(Empower_.startTime), empower.getCompletedTime())),
-                cb.and(cb.greaterThanOrEqualTo(root.get(Empower_.completedTime), empower.getStartTime()),
-                        cb.lessThanOrEqualTo(root.get(Empower_.completedTime), empower.getCompletedTime())),
-                cb.and(cb.lessThanOrEqualTo(root.get(Empower_.startTime), empower.getStartTime()),
-                        cb.greaterThanOrEqualTo(root.get(Empower_.completedTime), empower.getCompletedTime()))));
+        p = cb.and(p, cb.not(cb.or(cb.greaterThanOrEqualTo(root.get(Empower_.startTime), empower.getCompletedTime()),
+                cb.lessThanOrEqualTo(root.get(Empower_.completedTime), empower.getStartTime()))));
         Long count = em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
         return count > 0;
     }
 
     /**
      * 检查是否在时间段内有,1.开始时间处于时间段内 2.结束时间处于时间段内 3,开始时间小于指定开始时间且结束时间大于指定结束时间
-     * 必须是 lessThanOrEqualTo 否则可以创建多个相同时间段的授权
-     * 
+     * 合并后就是!(开始时间大于指定结束时间||结束时间小于指定开始时间)
+     * 考虑到正好完全一致的时间点发生了授权可能性小允许结束时间等于新的开始时间
      * @param business
      * @param empower
      * @return
@@ -104,20 +100,16 @@ abstract class BaseAction extends StandardJaxrsAction {
         p = cb.and(p, cb.equal(root.get(Empower_.application), empower.getApplication()));
         p = cb.and(p, cb.notEqual(root.get(Empower_.id), empower.getId()));
         p = cb.and(p, cb.equal(root.get(Empower_.enable), true));
-        p = cb.and(p, cb.or(cb.and(cb.greaterThanOrEqualTo(root.get(Empower_.startTime), empower.getStartTime()),
-                cb.lessThanOrEqualTo(root.get(Empower_.startTime), empower.getCompletedTime())),
-                cb.and(cb.greaterThanOrEqualTo(root.get(Empower_.completedTime), empower.getStartTime()),
-                        cb.lessThanOrEqualTo(root.get(Empower_.completedTime), empower.getCompletedTime())),
-                cb.and(cb.lessThanOrEqualTo(root.get(Empower_.startTime), empower.getStartTime()),
-                        cb.greaterThanOrEqualTo(root.get(Empower_.completedTime), empower.getCompletedTime()))));
+        p = cb.and(p, cb.not(cb.or(cb.greaterThanOrEqualTo(root.get(Empower_.startTime), empower.getCompletedTime()),
+                cb.lessThanOrEqualTo(root.get(Empower_.completedTime), empower.getStartTime()))));
         Long count = em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
         return count > 0;
     }
 
     /**
      * 检查是否在时间段内有,1.开始时间处于时间段内 2.结束时间处于时间段内 3,开始时间小于指定开始时间且结束时间大于指定结束时间
-     * 必须是 lessThanOrEqualTo 否则可以创建多个相同时间段的授权
-     * 
+     * 合并后就是!(开始时间大于指定结束时间||结束时间小于指定开始时间)
+     * 考虑到正好完全一致的时间点发生了授权可能性小允许结束时间等于新的开始时间
      * @param business
      * @param empower
      * @return
@@ -133,12 +125,8 @@ abstract class BaseAction extends StandardJaxrsAction {
         p = cb.and(p, cb.equal(root.get(Empower_.process), empower.getProcess()));
         p = cb.and(p, cb.notEqual(root.get(Empower_.id), empower.getId()));
         p = cb.and(p, cb.equal(root.get(Empower_.enable), true));
-        p = cb.and(p, cb.or(cb.and(cb.greaterThanOrEqualTo(root.get(Empower_.startTime), empower.getStartTime()),
-                cb.lessThanOrEqualTo(root.get(Empower_.startTime), empower.getCompletedTime())),
-                cb.and(cb.greaterThanOrEqualTo(root.get(Empower_.completedTime), empower.getStartTime()),
-                        cb.lessThanOrEqualTo(root.get(Empower_.completedTime), empower.getCompletedTime())),
-                cb.and(cb.lessThanOrEqualTo(root.get(Empower_.startTime), empower.getStartTime()),
-                        cb.greaterThanOrEqualTo(root.get(Empower_.completedTime), empower.getCompletedTime()))));
+        p = cb.and(p, cb.not(cb.or(cb.greaterThanOrEqualTo(root.get(Empower_.startTime), empower.getCompletedTime()),
+                cb.lessThanOrEqualTo(root.get(Empower_.completedTime), empower.getStartTime()))));
         Long count = em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
         return count > 0;
     }
