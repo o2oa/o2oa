@@ -948,6 +948,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "customTemplate": "自定义模板",
         "selectTemplate": "选择模板",
         "templatePath": "模板路径",
+        "templateId": "模板标识",
         "edit": "编辑",
         "printFile": "打印正文",
         "viewTraces": "查看痕迹",
