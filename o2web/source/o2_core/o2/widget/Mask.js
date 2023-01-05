@@ -99,6 +99,7 @@ o2.widget.Mask = new Class({
 
                 var size = $(node).getSize();
                 var tmpLeft = (size.x-120)/2;
+				if( tmpLeft<0 )tmpLeft = 0;
                 //var tmpLeft = (size.x)/2;
                 var tmpTop = (size.y-30)/2;
                 if (tmpTop<=0) tmpTop = (window.screen.height-30)/2-100;
