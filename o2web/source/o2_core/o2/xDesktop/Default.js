@@ -1828,11 +1828,15 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
                 o = o[name];
             });
 
+            id = this.data.id;
+            var d = this.menu.layoutJson.find(function(i){ return (i.id === id); });
+            if (!d) d = this.menu.componentJson.find(function(i){ return (i.id === id); });
+
             o2.xDesktop.requireApp(this.data.path, "lp." + o2.language, {
                 "onSuccess": function(){
                     if (o.LP && o.LP.title) {
                         this.textNode.set("text", o.LP.title);
-                        this.data.title = o.LP.title;
+                        d.title = o.LP.title;
                     }else{
                         this.textNode.set("text", this.data.title || this.data.name);
                     }
