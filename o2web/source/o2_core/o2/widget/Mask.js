@@ -78,6 +78,7 @@ o2.widget.Mask = new Class({
 				//var size = $(window).getSize();
                 var size = this.container.getSize();
 				var tmpLeft = (size.x-120)/2;
+				if( tmpLeft<0 )tmpLeft = 0;
 				var tmpTop = (size.y-30)/2;
 				if (tmpTop<=0) tmpTop = (window.screen.height-30)/2;
 				this.loadBar.setStyle("left", ""+tmpLeft+"px");
@@ -97,8 +98,9 @@ o2.widget.Mask = new Class({
                 this.loadBar.setStyle("display", "block");
 
                 var size = $(node).getSize();
-                //var tmpLeft = (size.x-120)/2;
-                var tmpLeft = (size.x)/2;
+                var tmpLeft = (size.x-120)/2;
+				if( tmpLeft<0 )tmpLeft = 0;
+                //var tmpLeft = (size.x)/2;
                 var tmpTop = (size.y-30)/2;
                 if (tmpTop<=0) tmpTop = (window.screen.height-30)/2-100;
                 this.loadBar.setStyle("left", ""+tmpLeft+"px");
