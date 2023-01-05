@@ -175,11 +175,13 @@ MWF.xApplication.IMV2.Main = new Class({
 	openSettingsDialog: function () {
 		var settingNode = new Element("div", {"style":"padding:10px;background-color:#fff;"});
 
-		var lineNode = new Element("div", {"style":"height:24px;line-height: 24px;", "text": this.lp.settingsClearMsg}).inject(settingNode);
+		var lineNode = new Element("div", {"style":"height:24px;line-height: 24px;"}).inject(settingNode);
 		var isClearEnableNode = new Element("input", {"type":"checkbox", "checked": this.imConfig.enableClearMsg || false, "name": "clearEnable"}).inject(lineNode);
+		new Element("span", { "text": this.lp.settingsClearMsg}).inject(lineNode);
 
-		var line2Node = new Element("div", {"style":"height:24px;line-height: 24px;", "text": this.lp.settingsRevokeMsg}).inject(settingNode);
+		var line2Node = new Element("div", {"style":"height:24px;line-height: 24px;"}).inject(settingNode);
 		var isRevokeEnableNode = new Element("input", {"type":"checkbox", "checked": this.imConfig.enableRevokeMsg || false, "name": "revokeEnable"}).inject(line2Node);
+		new Element("span", { "text": this.lp.settingsRevokeMsg}).inject(line2Node);
 
 		var dlg = o2.DL.open({
 				"title": this.lp.setting,
