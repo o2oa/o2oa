@@ -510,6 +510,10 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
     },
 
     _createTableContent: function () {
+        if( this.formTopTextNode && this.formTopCloseActionNode ){
+            this.formTopCloseActionNode.inject( this.formTopTextNode, "before" )
+        }
+
         this.loginType = "captcha";
         this.codeLogin = false;
         this.bindLogin = false;
@@ -1234,6 +1238,10 @@ MWF.xDesktop.Authentication.SignUpForm = new Class({
         this._loadCss();
     },
     _createTableContent: function () {
+        if( this.formTopTextNode && this.formTopCloseActionNode ){
+            this.formTopCloseActionNode.inject( this.formTopTextNode, "before" )
+        }
+
         var self = this;
 
         this.actions = MWF.Actions.get("x_organization_assemble_personal");
@@ -1749,6 +1757,11 @@ MWF.xDesktop.Authentication.ResetPasswordForm = new Class({
         this.gotoLoginNode.addEvent("click", function () { this.gotoLogin() }.bind(this));
     },
     _createTableContent: function () {
+
+        if( this.formTopTextNode && this.formTopCloseActionNode ){
+            this.formTopCloseActionNode.inject( this.formTopTextNode, "before" )
+        }
+
         this.formTableContainer.setStyles(this.css.formTableContainer2);
         this.loadSteps();
         this.loadStepForm_1();
@@ -2188,6 +2201,10 @@ MWF.xDesktop.Authentication.ChangePasswordForm = new Class({
     },
     _createTableContent: function () {
         var self = this;
+
+        if( this.formTopTextNode && this.formTopCloseActionNode ){
+            this.formTopCloseActionNode.inject( this.formTopTextNode, "before" )
+        }
 
         this.actions = MWF.Actions.get("x_organization_assemble_personal");
 

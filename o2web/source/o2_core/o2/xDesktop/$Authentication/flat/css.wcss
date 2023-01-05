@@ -45,8 +45,8 @@
 	"font-size": "28px",
 	"overflow" : "hidden",
 	"min-height": "36px",
-	"margin-right": "20px",
-	  "float" : "left"
+	"margin-right": "20px"
+//	  "float" : "left"
   },
   "formTopCloseActionNode": {
 	"width": "32px",
