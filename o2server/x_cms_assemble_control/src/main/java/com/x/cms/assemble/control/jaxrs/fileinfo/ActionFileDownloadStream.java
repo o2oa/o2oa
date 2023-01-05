@@ -53,7 +53,7 @@ public class ActionFileDownloadStream extends BaseAction {
 			Optional<Cms.DocExtensionEvent> event = Config.cms().getExtensionEvents()
 					.getDocAttachmentDownloadEvents().bind(document.getAppId(), document.getCategoryId());
 			if (event.isPresent()) {
-				bytes = this.extensionService(effectivePerson, document.getId(), event.get());
+				bytes = this.extensionService(effectivePerson, fileInfo.getId(), event.get());
 			} else {
 				bytes = fileInfo.readContent(mapping);
 			}
