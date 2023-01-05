@@ -14,10 +14,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.quartz.JobExecutionContext;
 
+import com.google.gson.Gson;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.bean.tuple.Pair;
 import com.x.base.core.project.config.Config;
+import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
@@ -55,7 +57,7 @@ public class HighFreqDocument extends HighFreq {
                 delete(list, deleteCount);
                 Optional<Map.Entry<Date, List<Pair<String, Date>>>> optional = list.stream()
                         .map(o -> Pair.of(o.getId(), DateUtils.truncate(o.getCreateTime(), Calendar.SECOND)))
-                        .collect(Collectors.groupingBy(o -> DateUtils.truncate(o.second(), Calendar.SECOND)))
+                        .collect(Collectors.groupingBy(Pair::second))
                         .entrySet().stream()
                         .max(Comparator.comparingLong(o -> o.getKey().getTime()));
                 if (optional.isPresent()) {

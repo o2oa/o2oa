@@ -43,11 +43,12 @@ public abstract class HighFreq extends AbstractJob {
             if (!Objects.isNull(state.getLatestUpdateTime())) {
                 Date latestTime = DateUtils.truncate(state.getLatestUpdateTime(), Calendar.SECOND);
                 p = cb.greaterThanOrEqualTo(root.get(JpaObject_.createTime), latestTime);
-                p = cb.and(p, cb.not(cb.and(cb.equal(root.get(JpaObject_.createTime), latestTime),
-                        root.get(JpaObject.id_FIELDNAME).in(state.getLatestIdList()))));
+//                p = cb.and(p, cb.not(cb.and(cb.equal(root.get(JpaObject_.createTime), latestTime),
+//                        root.get(JpaObject.id_FIELDNAME).in(state.getLatestIdList()))));
+                p = cb.and(p, cb.not(root.get(JpaObject.id_FIELDNAME).in(state.getLatestIdList())));
             }
             cq.select(root).where(p).orderBy(cb.asc(root.get(JpaObject_.createTime)));
-            LOGGER.debug("freqWork qurey sql:{}.", cq.toString());
+            LOGGER.debug("freq list qurey sql:{}.", cq.toString());
             return em.createQuery(cq).setMaxResults(size).getResultList();
         }
     }
