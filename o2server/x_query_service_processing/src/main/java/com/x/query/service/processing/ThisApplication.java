@@ -27,6 +27,7 @@ import com.x.query.service.processing.schedulelocal.HighFreqWorkLocal;
 import com.x.query.service.processing.schedulelocal.LowFreqDocumentLocal;
 import com.x.query.service.processing.schedulelocal.LowFreqWorkCompletedLocal;
 import com.x.query.service.processing.schedulelocal.LowFreqWorkLocal;
+import com.x.query.service.processing.schedulelocal.OptimizeIndexLocal;
 
 public class ThisApplication {
 
@@ -105,10 +106,10 @@ public class ThisApplication {
         if (BooleanUtils.isTrue(Config.query().index().getLowFreqWorkEnable())) {
             if (StringUtils.equals(Config.query().index().getMode(), Query.Index.MODE_LOCALDIRECTORY)) {
                 context.scheduleLocal(LowFreqWorkLocal.class,
-                        Config.query().index().getLowFreqWorkCompletedCron());
+                        Config.query().index().getLowFreqWorkCron());
             } else {
                 context.schedule(LowFreqWork.class,
-                        Config.query().index().getLowFreqWorkCompletedCron());
+                        Config.query().index().getLowFreqWorkCron());
             }
         }
     }
@@ -144,7 +145,7 @@ public class ThisApplication {
                         Config.query().index().getHighFreqWorkCron());
             } else {
                 context.schedule(HighFreqWork.class,
-                        Config.query().index().getHighFreqWorkCompletedCron());
+                        Config.query().index().getHighFreqWorkCron());
             }
         }
     }
@@ -152,7 +153,7 @@ public class ThisApplication {
     private static void scheduleOptimizeIndex() throws Exception {
         if (BooleanUtils.isTrue(Config.query().index().getOptimizeIndexEnable())) {
             if (StringUtils.equals(Config.query().index().getMode(), Query.Index.MODE_LOCALDIRECTORY)) {
-                context.scheduleLocal(OptimizeIndex.class,
+                context.scheduleLocal(OptimizeIndexLocal.class,
                         Config.query().index().getOptimizeIndexCron());
             } else {
                 context.schedule(OptimizeIndex.class,

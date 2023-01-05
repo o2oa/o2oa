@@ -38,7 +38,7 @@ public class ActionPublishAPK2Local extends BaseAction {
 
     private static Logger logger = LoggerFactory.getLogger(ActionPublishAPK2Local.class);
 
-    ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement)  throws Exception {
+    ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
         ActionResult<Wo> result = new ActionResult<>();
 
         Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
@@ -71,7 +71,7 @@ public class ActionPublishAPK2Local extends BaseAction {
                 appPackApkFile.setAppVersionName(wi.getAppVersionName());
                 appPackApkFile.setIsPackAppIdOuter(wi.getIsPackAppIdOuter());
                 emc.check(appPackApkFile, CheckPersistType.all);
-                appPackApkFile.saveContent(mapping, new byte[]{}, fileName);
+                appPackApkFile.saveContent(mapping, new byte[] {}, fileName);
                 emc.beginTransaction(AppPackApkFile.class);
                 emc.persist(appPackApkFile);
                 emc.commit();
@@ -89,7 +89,6 @@ public class ActionPublishAPK2Local extends BaseAction {
         }
         return result;
     }
-
 
     public class DownloadJob extends Thread {
         private Wi wi;
@@ -109,7 +108,7 @@ public class ActionPublishAPK2Local extends BaseAction {
                     throw new ExceptionAllocateStorageMapping();
                 }
                 String url = Config.collect().appPackServerUrl() + wi.getApkPath() + "?token=" + wi.getToken();
-                logger.info("下载apk的url： "+url);
+                logger.info("下载apk的url： " + url);
                 byte[] bytes = ConnectionAction.getBinary(url, null);
                 try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
                     AppPackApkFile file = emc.find(this.id, AppPackApkFile.class);
@@ -120,19 +119,20 @@ public class ActionPublishAPK2Local extends BaseAction {
                         file.setLastUpdateTime(new Date());
                         emc.commit();
                         // 发布成功了，需要修改jpush配置文件，把outer包的key配置上去
-                        if (StringUtils.isNotBlank(file.getIsPackAppIdOuter()) && "2".equals(file.getIsPackAppIdOuter())) {
+                        if (StringUtils.isNotBlank(file.getIsPackAppIdOuter())
+                                && "2".equals(file.getIsPackAppIdOuter())) {
                             updateJpushConfig();
                         }
                         updateAppUrl(wi.getWebUrl());
                         logger.info("下载发布apk成功。。。。。。");
                     } else {
-                        logger.error(new Exception("错误，没有找到对应的文件对象，id："+id));
+                        logger.error(new Exception("错误，没有找到对应的文件对象，id：" + id));
                     }
                 }
 
             } catch (Exception e) {
                 logger.error(e);
-                logger.info("下载失败，更新错误状态!!!!");
+                logger.info("下载失败，更新错误状态.");
                 try {
                     try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
                         AppPackApkFile file = emc.find(this.id, AppPackApkFile.class);
@@ -142,10 +142,10 @@ public class ActionPublishAPK2Local extends BaseAction {
                             file.setLastUpdateTime(new Date());
                             emc.commit();
                         } else {
-                            logger.error(new Exception("错误，没有找到对应的文件对象，id："+id));
+                            logger.error(new IllegalStateException("错误，没有找到对应的文件对象，id：" + id + "."));
                         }
                     }
-                }catch (Exception e1) {
+                } catch (Exception e1) {
                     logger.error(e1);
                 }
             }
@@ -156,18 +156,17 @@ public class ActionPublishAPK2Local extends BaseAction {
                 logger.info("开始修改jpush文件.......");
                 JpushConfig newConfig = JpushConfig.defaultInstance().getOuterApplicationJpushConfig();
                 updateConfigFileOnLine(Config.NAME_CONFIG_JPUSH, newConfig.toString());
-            }catch (Exception e) {
+            } catch (Exception e) {
                 logger.error(e);
             }
         }
-
 
         /**
          * 更新appUrl collect.json配置文件 登录界面扫码可以下载
          */
         private void updateAppUrl(String webUrl) {
             try {
-                logger.info("updateAppUrl : "+webUrl);
+                logger.info("updateAppUrl : " + webUrl);
                 if (StringUtils.isNotEmpty(webUrl)) {
                     String myUrl = webUrl;
                     String protocol = Config.nodes().centerServers().first().getValue().getHttpProtocol();
@@ -183,26 +182,26 @@ public class ActionPublishAPK2Local extends BaseAction {
                         }
                     }
                     if (StringUtils.isNotEmpty(webProxyHost)) {
-                        String url = protocol + "://" +webProxyHost + ":" +webProxyPort;
+                        String url = protocol + "://" + webProxyHost + ":" + webProxyPort;
                         if (!url.equals(webUrl)) {
                             myUrl = url;
                         }
                     }
                     logger.info("最后的URL ：" + myUrl);
-                    Config.collect().setAppUrl(myUrl+ "/x_desktop/appDownload.html");
-                    updateConfigFileOnLine(Config.NAME_CONFIG_COLLECT,  Config.collect().toString());
+                    Config.collect().setAppUrl(myUrl + "/x_desktop/appDownload.html");
+                    updateConfigFileOnLine(Config.NAME_CONFIG_COLLECT, Config.collect().toString());
                 }
 
-            }catch (Exception e) {
+            } catch (Exception e) {
                 logger.error(e);
             }
         }
 
-
         /**
          * 更新配置文件
+         * 
          * @param fileName 配置文件名称 如 jpushConfig.json
-         * @param content 配置文件内容 json
+         * @param content  配置文件内容 json
          * @throws Exception
          */
         private void updateConfigFileOnLine(String fileName, String content) throws Exception {
@@ -212,14 +211,15 @@ public class ActionPublishAPK2Local extends BaseAction {
             JPushConfigSaveWi wi = new JPushConfigSaveWi();
             wi.setFileName(fileName);
             wi.setFileContent(content);
-            ActionResponse response = CipherConnectionAction.post(false, Config.url_x_program_center_jaxrs("config", "save") ,wi);
+            ActionResponse response = CipherConnectionAction.post(false,
+                    Config.url_x_program_center_jaxrs("config", "save"), wi);
             if (response != null) {
                 ActionSave.Wo wo = response.getData(ActionSave.Wo.class);
                 if (wo != null && wo.getStatus() != null) {
-                    logger.info("修改保存["+fileName+"]配置文件成功！");
+                    logger.info("修改保存[" + fileName + "]配置文件成功！");
                 }
             } else {
-                logger.info("保存["+fileName+"]配置文件 返回为空！！");
+                logger.info("保存[" + fileName + "]配置文件 返回为空！！");
             }
         }
     }
@@ -263,7 +263,6 @@ public class ActionPublishAPK2Local extends BaseAction {
 
         @FieldDescribe("前端web地址，如 http://dd.o2oa.net")
         private String webUrl;
-
 
         public String getWebUrl() {
             return webUrl;
@@ -321,7 +320,6 @@ public class ActionPublishAPK2Local extends BaseAction {
             this.isPackAppIdOuter = isPackAppIdOuter;
         }
     }
-
 
     public static class Wo extends WrapBoolean {
 
