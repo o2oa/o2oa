@@ -54,8 +54,8 @@ MWF.xApplication.IMV2.LP = {
 	"msgShareError": "分享、转发消息失败！",
 	
 	
-	"settingsClearMsg": "是否开启会话删除功能：",
-	"settingsRevokeMsg": "是否开启聊天消息撤回功能：",
+	"settingsClearMsg": " 是否开启会话删除功能",
+	"settingsRevokeMsg": " 是否开启聊天消息撤回功能",
 
 	"enterMessage": "输入消息内容",
 	"send": "发送",

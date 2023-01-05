@@ -54,8 +54,8 @@ MWF.xApplication.IMV2.LP = {
 	"msgShareError": "Failed to share and forward messages!",
 
 		
-	"settingsClearMsg": "Enable Clearing msg: ",
-	"settingsRevokeMsg": "Enable Revoke msg: ",
+	"settingsClearMsg": " Enable Clearing msg",
+	"settingsRevokeMsg": " Enable Revoke msg",
 
 	"enterMessage": "Enter message content",
 	"send": "Send",
