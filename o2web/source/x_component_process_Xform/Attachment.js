@@ -903,7 +903,8 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
             var imgNode = new Element("img", { "styles": css.attachmentOCRImageNode }).inject(previewNode);
 
             o2.Actions.get("x_processplatform_assemble_surface").getAttachmentUrl(att.data.id, this.module.form.businessData.work.id, function (url) {
-                imgNode.set("src", o2.filterUrl(url));
+                // imgNode.set("src", o2.filterUrl(url));
+                imgNode.set("src", url);
             });
 
             var areaNode = new Element("div", { "styles": css.attachmentOCRInputAreaNode }).inject(node);
@@ -1882,13 +1883,15 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                 case "mobile":
                     this.form.workAction[actionUrl](att.data.id, workId, function (url) {
                         var xtoken = Cookie.read(o2.tokenName);
-                        window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
+                        // window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
+                        window.location = url + "?"+o2.tokenName+"=" + xtoken;
                     });
                     break;
                 case "pcClient":
                     this.form.workAction[actionUrl](att.data.id, workId, function (url) {
                         var xtoken = Cookie.read(o2.tokenName);
-                        window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
+                        // window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
+                        window.location = url + "?"+o2.tokenName+"=" + xtoken;
                     });
                     break;
                 default:
@@ -1967,13 +1970,15 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                 case "mobile":
                     this.form.workAction[actionUrl](att.data.id, workId, function (url) {
                         var xtoken = Cookie.read(o2.tokenName);
-                        window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
+                        // window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
+                        window.location = url + "?"+o2.tokenName+"=" + xtoken;
                     });
                     break;
                 case "pcClient":
                     this.form.workAction[actionUrl](att.data.id, workId, function (url) {
                         var xtoken = Cookie.read(o2.tokenName);
-                        window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
+                        // window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
+                        window.location = url + "?"+o2.tokenName+"=" + xtoken;
                     });
                     break;
                 default:
