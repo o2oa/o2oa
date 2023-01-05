@@ -406,6 +406,10 @@ MWF.xApplication.process.Xform.LP = {
         "nofile" : "nofile ,please upload",
         "upload" : "upload"
     },
+    "onlyoffice" : {
+        "noInstall" : "no install",
+        "filetext" : "filetext"
+    },
     "title": "Title",
     "createTime": "Created Time",
     "creatorPerson": "Creator",

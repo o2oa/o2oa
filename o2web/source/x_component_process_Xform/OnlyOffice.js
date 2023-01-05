@@ -1,3 +1,6 @@
+MWF.xAction.RestActions.Action["x_onlyofficefile_assemble_control"] = new Class({
+    Extends: MWF.xAction.RestActions.Action
+});
 MWF.xDesktop.requireApp("process.Xform", "$Module", null, false);
 MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
     Extends: MWF.APP$Module,
@@ -24,14 +27,21 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
     },
     _afterLoaded: function(){
         if(!layout.serviceAddressList["x_onlyofficefile_assemble_control"]){
-            this.node.set("html","<h3><font color=red>请先安装onlyoffice应用</font></h3>");
+            this.node.set("html","<h3><font color=red>"+MWF.xApplication.process.Xform.LP.onlyoffice.noInstall+"</font></h3>");
             return false;
         }
+
+
+        if(this.mode !== "read" && this.json.allowUpload){
+            this.createUpload();
+        }
+
+
         this.action = o2.Actions.load("x_onlyofficefile_assemble_control");
         if (!this.json.isNotLoadNow){
             this.data = this.getData();
             if(this.data.documentId === ""){
-                this.createDocument(function (){
+                this[this.json.officeType === "other"&&this.json.template !== ""? "createDocumentByTemplate":"createDocument"](function (){
                     this.loadDocument();
                 }.bind(this));
             }else {
@@ -42,7 +52,7 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
     },
     createDocument : function (callback){
         var data = {
-            "fileName" : "文件正文." + this.json.officeType,
+            "fileName" : MWF.xApplication.process.Xform.LP.onlyoffice.filetext + "." + this.json.officeType,
             "fileType" : this.json.officeType,
             "relevanceId" : this.form.businessData.work.job
         }
@@ -53,6 +63,65 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
                 if (callback) callback();
             }.bind(this),null, false
         );
+    },
+    createDocumentByTemplate : function (callback){
+
+        this.action.OnlyofficeAction.get(this.json.template).then(function(json) {
+            var data = {
+                "fileName": MWF.xApplication.process.Xform.LP.onlyoffice.filetext + "." + json.data.fileModel.document.fileType,
+                "fileType": json.data.fileModel.document.fileType,
+                "relevanceId": this.form.businessData.work.job,
+                "sampleName": this.json.template
+            }
+
+            this.action.OnlyofficeAction.create(data,
+                function( json ){
+                    this.documentId = json.data.id;
+                    this.setData();
+                    if (callback) callback();
+                }.bind(this),null, false
+            );
+
+        }.bind(this))
+    },
+    createUpload : function (){
+
+
+        this.uploadNode = new Element("div",{"style":"margin:10px;"}).inject(this.node);
+
+        var uploadBtn = new Element("button",{"text":MWF.xApplication.process.Xform.LP.ofdview.upload,"style":"margin-left: 15px; color: rgb(255, 255, 255); cursor: pointer; height: 26px; line-height: 26px; padding: 0px 10px; min-width: 40px; background-color: rgb(74, 144, 226); border: 1px solid rgb(82, 139, 204); border-radius: 15px;"}).inject(this.uploadNode);
+        uploadBtn.addEvent("click",function (){
+
+            o2.Actions.get("x_onlyofficefile_assemble_control").action.actions = {};
+            o2.Actions.get("x_onlyofficefile_assemble_control").action.actions.upload = {
+                "enctype": "formData",
+                "method": "POST",
+                "uri": "/jaxrs/onlyoffice/upload"
+            };
+            o2.require("o2.widget.Upload", null, false);
+            var upload = new o2.widget.Upload(this.content, {
+                "action": o2.Actions.get("x_onlyofficefile_assemble_control").action,
+                "method": "upload",
+                "accept" : ".docx,.xlsx,.pptx",
+                "parameter": {
+                },
+                "data":{
+                    "relevanceId" : this.form.businessData.work.job
+                },
+                "onCompleted": function(data){
+
+                    this.documentId = data.id;
+                    this.setData();
+                    this.node.empty();
+                    this.createUpload();
+                    this.loadDocument();
+
+                }.bind(this)
+            });
+
+            upload.load();
+        }.bind(this));
+
     },
     loadDocument: function () {
         this.getEditor(function () {
@@ -178,9 +247,11 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
         if(layout.mobile){
             this.document.editor.type = "mobile";
         }
+
         this.officeNode = new Element("div#_" + this.documentId, {
             "styles": this.form.css.officeAreaNode
         }).inject(this.node);
+
         if (this.node.getSize().y<800) this.node.setStyle("height", "800px");
         debugger
         this.document.editor.editorConfig.mode = this.mode;
@@ -189,7 +260,11 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
         if(lang != "en"){
             lang = "zh";
         }
-        this.document.editor.editorConfig.lang = lang,
+        this.document.editor.editorConfig.lang = "zh";
+        this.document.editor.editorConfig.location = "zh-CN";
+        this.document.editor.editorConfig.region = "zh-CN";
+
+
         this.document.editor.editorConfig.customization = {
             "chat": this.json.chat,
             "commentAuthorOnly": false,
