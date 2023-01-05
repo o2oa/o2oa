@@ -3544,6 +3544,9 @@ MWF.xScript.ViewEnvironment = function (ev) {
         "upload": function (options, callback, async) {
             MWF.xDesktop.requireApp("query.Query", "Importer", function () {
                 var importer = new MWF.xApplication.query.Query.Importer(_form.app.content, options, {}, _form.app, _form.Macro);
+                importer.addEvent("afterImport", function (data) {
+                    if(callback)callback(data);
+                });
                 importer.load();
             }.bind(this));
 
@@ -3578,14 +3581,14 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *  "application" : "testQuery",
          * },"导入模板", function( object ){
          *     //添加一项
-         *     object.data.push("备注");
+         *     object.data[0].push("备注");
          *     object.colWidthArray.push(300)
          * });
          */
-        "downloadTemplate": function(options, fileName){
+        "downloadTemplate": function(options, fileName,callback){
             MWF.xDesktop.requireApp("query.Query", "Importer", function () {
                 var importer = new MWF.xApplication.query.Query.Importer(_form.app.content, options, {}, _form.app, _form.Macro);
-                importer.downloadTemplate(fileName);
+                importer.downloadTemplate(fileName, callback);
             }.bind(this));
         }
     };

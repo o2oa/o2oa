@@ -2076,13 +2076,16 @@ MWF.xScript.Environment = function(ev){
         "upload": function (options, callback, async) {
             MWF.xDesktop.requireApp("query.Query", "Importer", function () {
                 var importer = new MWF.xApplication.query.Query.Importer(_form.app.content, options, {}, _form.app, _form.Macro);
+                importer.addEvent("afterImport", function (data) {
+                    if(callback)callback(data);
+                });
                 importer.load();
             }.bind(this));
         },
-        "downloadTemplate": function(options, fileName){
+        "downloadTemplate": function(options, fileName, callback){
             MWF.xDesktop.requireApp("query.Query", "Importer", function () {
                 var importer = new MWF.xApplication.query.Query.Importer(_form.app.content, options, {}, _form.app, _form.Macro);
-                importer.downloadTemplate(fileName);
+                importer.downloadTemplate(fileName, callback);
             }.bind(this));
         }
     };
