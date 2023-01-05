@@ -12,7 +12,7 @@ MWF.xAction.RestActions.Action["x_cms_assemble_control"] = new Class({
         if (!columnData.isNewColumn){
             this.updateColumn(columnData, success, failure);
         }else{
-            this.addColumn(columnData, success, failure); 
+            this.addColumn(columnData, success, failure);
         }
     },
     addColumn: function(columnData, success, failure){
@@ -97,7 +97,7 @@ MWF.xAction.RestActions.Action["x_cms_assemble_control"] = new Class({
             this.addForm(formData, mobileData, fieldList, success, failure);
         }
     },
-    updateForm: function(formData, mobileData, fieldList, success, failure){ 
+    updateForm: function(formData, mobileData, fieldList, success, failure){
         var data, mobileDataStr;
         if (formData) data = MWF.encodeJsonString(JSON.encode(formData));
         if (mobileData) mobileDataStr = MWF.encodeJsonString(JSON.encode(mobileData));
@@ -399,8 +399,7 @@ MWF.xAction.RestActions.Action["x_cms_assemble_control"] = new Class({
     },
     getAttachmentData: function(id, documentid){
         this.action.getActions(function(){
-            var url = this.action.actions.getAttachmentData.uri;
-            url = url.replace("{id}", encodeURIComponent(id));
+            var url = layout.user.tokenType === "anonymous"?this.action.actions.getAttachmentDataByAnonymous.uri:this.action.actions.getAttachmentData.uri;            url = url.replace("{id}", encodeURIComponent(id));
             url = url.replace("{documentid}", encodeURIComponent(documentid));
             window.open(o2.filterUrl(this.action.address+url));
         }.bind(this));
