@@ -186,6 +186,7 @@
   "replaceAttachment": {"uri": "/jaxrs/fileinfo/update/document/{documentid}/attachment/{id}", "method": "POST", "enctype": "formData"},
   //"getAttachmentData": {"uri": "/servlet/download/{id}/document/{documentid}", "method": "GET"},
   "getAttachmentData": {"uri": "/jaxrs/fileinfo/download/document/{id}", "method": "GET"}, //document/{documentid}/
+  "getAttachmentDataByAnonymous": {"uri": "/jaxrs/anonymous/fileinfo/download/document/{id}", "method": "GET"}, //document/{documentid}/
   "getAttachmentStream": {"uri": "/jaxrs/fileinfo/download/document/{id}/stream", "method": "GET"}, //document/{documentid}/
 
   //获取互联网URL指向的图片的base64编码[Jaxrs],必填, 需要获取的图片URL地址
@@ -255,7 +256,7 @@
   "importDocumentFormExcel": {"uri" : "/jaxrs/document/import/category/{categoryId}", "method": "POST", "enctype": "formData"},
   "deleteDocumentWithBatchName" :  {"uri":"/jaxrs/document/batch/{batchId}","method":"DELETE"},
   "checkImportStatus" : {"uri" : "/jaxrs/document/batch/{batchName}/status"},
-  "checkAllImportStatus" : {"uri" : "/jaxrs/document/batch/status"}, 
+  "checkAllImportStatus" : {"uri" : "/jaxrs/document/batch/status"},
 
   "getColumnByAlias": {"uri": "/jaxrs/appinfo/alias/{alias}"},
   "getCategoryByAlias" : {"uri":"/jaxrs/categoryinfo/alias/{alias}"},
