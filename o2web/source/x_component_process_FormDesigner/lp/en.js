@@ -942,6 +942,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "customTemplate": "Custom Template",
         "selectTemplate": "Select Template",
         "templatePath": "Template Path",
+        "templateId": "Template Id",
         "edit": "Edit",
         "printFile": "Print File",
         "viewTraces": "View Traces",

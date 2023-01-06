@@ -65,6 +65,7 @@ public class CreateConfigSample {
 		classes.add(WorkTime.class);
 		classes.add(ZhengwuDingding.class);
 		classes.add(General.class);
+		classes.add(Cms.class);
 
 		Collections.sort(classes, (c1, c2) -> c1.getCanonicalName().compareTo(c2.getCanonicalName()));
 		for (Class<?> cls : classes) {

@@ -45,8 +45,9 @@ public abstract class LowFreq extends AbstractJob {
             if (!Objects.isNull(state.getLatestUpdateTime())) {
                 Date latestTime = DateUtils.truncate(state.getLatestUpdateTime(), Calendar.SECOND);
                 p = cb.greaterThanOrEqualTo(root.get(JpaObject_.createTime), latestTime);
-                p = cb.and(p, cb.not(cb.and(cb.equal(root.get(JpaObject_.createTime), latestTime),
-                        root.get(JpaObject.id_FIELDNAME).in(state.getLatestIdList()))));
+//                p = cb.and(p, cb.not(cb.and(cb.equal(root.get(JpaObject_.createTime), latestTime),
+//                        root.get(JpaObject.id_FIELDNAME).in(state.getLatestIdList()))));
+                p = cb.and(p, cb.not(root.get(JpaObject.id_FIELDNAME).in(state.getLatestIdList())));
             } else {
                 p = cb.conjunction();
             }
