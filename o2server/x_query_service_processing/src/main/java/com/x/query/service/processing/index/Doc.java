@@ -252,6 +252,7 @@ public class Doc extends GsonPropertyObject {
         this.getReaders().stream()
                 .forEach(o -> document.add(new StringField(Indexs.FIELD_READERS, o, Field.Store.YES)));
         addString(document, Indexs.FIELD_CATEGORY, this.getCategory());
+        addString(document, Indexs.FIELD_TYPE, this.getType());
         addString(document, Indexs.FIELD_CREATETIMEMONTH, this.getCreateTimeMonth());
         addString(document, Indexs.FIELD_UPDATETIMEMONTH, this.getUpdateTimeMonth());
         addString(document, Indexs.FIELD_CREATORPERSON, Objects.toString(this.getCreatorPerson(), ""));
