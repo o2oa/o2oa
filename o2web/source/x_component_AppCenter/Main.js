@@ -174,6 +174,7 @@ MWF.xApplication.AppCenter.Module = new Class({
         this.app = app;
         this.data = data;
         this.json = JSON.decode(this.data.data);
+        if (!this.json) this.json = {};
         this.json.structure = this.data.id;
         this.lp = this.app.lp;
         this.css = this.app.css;
@@ -495,7 +496,7 @@ MWF.xApplication.AppCenter.Exporter = new Class({
         this.showStatusItemList("processPlatformList", ["processList", "formList", "applicationDictList", "scriptList", "fileList"]);
         this.showStatusItemList("portalList", ["pageList", "scriptList", "widgetList", "fileList"]);
         this.showStatusItemList("cmsList", ["categoryInfoList", "formList", "appDictList", "scriptList"]);
-        this.showStatusItemList("queryList", ["viewList", "statList", "revealList", "tableList", "statementList", "importModelList"]);
+        this.showStatusItemList("queryList", ["viewList", "statList", "tableList", "statementList", "importModelList"]);
         this.showStatusItemList("serviceModuleList", ["agentList", "invokeList"]);
 
     },
@@ -964,7 +965,6 @@ MWF.xApplication.AppCenter.Exporter.QueryElement = new Class({
             "description": this.data.description,
             "viewList": [],
             "statList": [],
-            "revealList": [],
             "statementList": [],
             "tableList": [],
             "importModelList": []
@@ -975,17 +975,15 @@ MWF.xApplication.AppCenter.Exporter.QueryElement = new Class({
     },
     selectAll: function(){
         var selectData = this.postData;
-        if (selectData.viewList.length || selectData.statList.length || selectData.revealList.length|| selectData.statementList.length|| selectData.tableList.length|| selectData.importModelList.length){
+        if (selectData.viewList.length || selectData.statList.length || selectData.statementList.length|| selectData.tableList.length|| selectData.importModelList.length){
             if (selectData.viewList.length===this.data.viewList.length &&
                 selectData.statList.length===this.data.statList.length &&
                 selectData.statementList.length===this.data.statementList.length &&
                 selectData.tableList.length===this.data.tableList.length &&
-                selectData.revealList.length===this.data.revealList.length &&
                 selectData.importModelList.length===this.data.importModelList.length){
                 selectData =  {
                     "viewList": [],
                     "statList": [],
-                    "revealList": [],
                     "statementList": [],
                     "tableList": [],
                     "importModelList": []
@@ -994,7 +992,6 @@ MWF.xApplication.AppCenter.Exporter.QueryElement = new Class({
                 selectData =  {
                     "viewList": this.data.viewList,
                     "statList": this.data.statList,
-                    "revealList": this.data.revealList,
                     "statementList": this.data.statementList,
                     "tableList": this.data.tableList,
                     "importModelList": this.data.importModelList,
@@ -1004,7 +1001,6 @@ MWF.xApplication.AppCenter.Exporter.QueryElement = new Class({
             selectData =  {
                 "viewList": this.data.viewList,
                 "statList": this.data.statList,
-                "revealList": this.data.revealList,
                 "statementList": this.data.statementList,
                 "tableList": this.data.tableList,
                 "importModelList": this.data.importModelList
@@ -1015,7 +1011,6 @@ MWF.xApplication.AppCenter.Exporter.QueryElement = new Class({
     checkSelect: function(selectData){
         this.postData.viewList = selectData.viewList;
         this.postData.statList = selectData.statList;
-        this.postData.revealList = selectData.revealList;
 
         this.postData.statementList = selectData.statementList;
         this.postData.tableList = selectData.tableList;
@@ -1023,14 +1018,14 @@ MWF.xApplication.AppCenter.Exporter.QueryElement = new Class({
 
         this.exporter.selectData.queryList.erase(this.postData);
 
-        if (selectData.viewList.length || selectData.statList.length || selectData.revealList.length|| selectData.statementList.length|| selectData.tableList.length|| selectData.importModelList.length){
+        //|| selectData.revealList.length
+        if (selectData.viewList.length || selectData.statList.length || selectData.statementList.length|| selectData.tableList.length|| selectData.importModelList.length){
             this.exporter.selectData.queryList.push(this.postData);
             if (selectData.viewList.length==this.data.viewList.length &&
                 selectData.statList.length==this.data.statList.length &&
                 selectData.statementList.length==this.data.statementList.length &&
                 selectData.tableList.length==this.data.tableList.length &&
-                selectData.importModelList.length==this.data.importModelList.length &&
-                selectData.revealList.length==this.data.revealList.length){
+                selectData.importModelList.length==this.data.importModelList.length){
                 this.iconNode.setStyle("background", "url("+this.app.path+this.app.options.style+"/icon/sel_all.png) center center no-repeat");
             }else{
                 this.iconNode.setStyle("background", "url("+this.app.path+this.app.options.style+"/icon/sel_part.png) center center no-repeat");
@@ -1356,7 +1351,6 @@ MWF.xApplication.AppCenter.Exporter.Element.QuerySelector = new Class({
         return {
             "viewList": [],
             "statList": [],
-            "revealList": [],
             "tableList": [],
             "statementList": [],
             "importModelList": []
@@ -1365,7 +1359,6 @@ MWF.xApplication.AppCenter.Exporter.Element.QuerySelector = new Class({
     checkSelect: function() {
         this.selectData.viewList = this.getCheckedList(this.listViewContent);
         this.selectData.statList = this.getCheckedList(this.listStatContent);
-        this.selectData.revealList = this.getCheckedList(this.listRevealContent);
         this.selectData.statementList = this.getCheckedList(this.listStatementContent);
         this.selectData.tableList = this.getCheckedList(this.listTableContent);
         this.selectData.importModelList = this.getCheckedList(this.listImportModelContent);
@@ -1376,7 +1369,7 @@ MWF.xApplication.AppCenter.Exporter.Element.QuerySelector = new Class({
         this.contentAreaNode = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.contentNode);
         this.listViewContent = this.listProcess("viewList");
         this.listStatContent = this.listProcess("statList");
-        this.listRevealContent = this.listProcess("revealList");
+        // this.listRevealContent = this.listProcess("revealList");
 
         this.listTableContent = this.listProcess("tableList");
         this.listStatementContent = this.listProcess("statementList");
