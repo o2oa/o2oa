@@ -485,7 +485,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
             }
             this.showNotValidationMode(this.node);
 
-            if (!this.node.isIntoView()) this.node.scrollIntoView();
+            if (!this.errNode.isIntoView()) this.errNode.scrollIntoView(false);
         }
     },
     validationMode: function(){
