@@ -287,7 +287,9 @@ var MTooltips = new Class({
             if( this.options.isAutoHide ){
                 this.node.addEvents({
                     "mouseleave" : function(){
-                        this.timer_hide = setTimeout( this.hide.bind(this),this.options.hiddenDelay );
+                        if(this.options.isAutoHide){
+                            this.timer_hide = setTimeout( this.hide.bind(this),this.options.hiddenDelay );
+                        }
                     }.bind(this)
                 });
             }
