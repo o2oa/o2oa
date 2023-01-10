@@ -120,10 +120,10 @@ MWF.xApplication.portal.PageDesigner.Module.Application = MWF.PCApplication = ne
 
 	},
     postGetPageData: function(node){
-        if (!node || node.contains(this.node)) this.show();
+        if ((!node || node.contains(this.node)) && this.show) this.show();
     },
     queryGetPageData: function(node){
-        if (!node || node.contains(this.node)) this.hide();
+        if ((!node || node.contains(this.node)) && this.hide) this.hide();
     },
     hide: function(){
 		this.clean();
