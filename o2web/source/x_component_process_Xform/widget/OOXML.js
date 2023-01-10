@@ -613,15 +613,29 @@ o2.xApplication.process.Xform.widget.OOXML.WordprocessingML = o2.OOXML.WML = new
 
         var line = (dom.currentStyle) ? dom.currentStyle["line-height"] : dom.getStyle("line-height");
         //var line = dom.getStyle("line-height");
-        if (line && line.toFloat()){
+
+        var msoStyle = this.getMsoStyle(dom);
+        var lineRule = msoStyle["mso-line-rule"] || "exact";
+
+        if (line && parseFloat(line)){
             var line = this.pxToPt(line)*20;
             if (line) {
                 pPrs.spacing = {
-                    lineRule: "exact",
+                    lineRule: lineRule,
                     line: line
                 };
             }
         }
+
+        // if (line && line.toFloat()){
+        //     var line = this.pxToPt(line)*20;
+        //     if (line) {
+        //         pPrs.spacing = {
+        //             lineRule: "exact",
+        //             line: line
+        //         };
+        //     }
+        // }
 
         var pageBreak = dom.getStyle("page-break-after");
         if (pageBreak && pageBreak.toString().toLowerCase()=="avoid"){
