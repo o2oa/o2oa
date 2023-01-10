@@ -1829,8 +1829,8 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
             });
 
             id = this.data.id;
-            var d = this.menu.layoutJson.find(function(i){ return (i.id === id); });
-            if (!d) d = this.menu.componentJson.find(function(i){ return (i.id === id); });
+            if (this.menu.layoutJson) var d = this.menu.layoutJson.find(function(i){ return (i.id === id); });
+            if (!d && this.menu.componentJson) d = this.menu.componentJson.find(function(i){ return (i.id === id); });
 
             o2.xDesktop.requireApp(this.data.path, "lp." + o2.language, {
                 "onSuccess": function(){
