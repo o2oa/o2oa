@@ -80,8 +80,28 @@ o2.widget.ImageLazyLoader = o2.ImageLazyLoader = new Class({
                 }
             }
         }
+
+        html = this.replaceHrefJavascriptStr( html );
+
         this.parseDone = true;
         this.html_new = html;
+    },
+    replaceHrefJavascriptStr: function( html ){
+        var regexp_a_all = /(i?)(<a)([^>]+>)/gmi;
+        var as = html.match(regexp_a_all);
+        if(as){
+            if (as.length){
+                for (var i=0; i<as.length; i++){
+                    var a = as[i];
+                    var href =  this.getAttributeValue(a, "href");
+                    if( href.indexOf('javascript:') > -1 ){
+                        var a1 = this.removeAttribute(a, "href");
+                        html = html.replace(a, a1);
+                    }
+                }
+            }
+        }
+        return html;
     },
     getAttrRegExp: function( attr ){
         return "\\s+" + attr + "\\s*=\\s*[\"|\'](.*?)[\"|\']";

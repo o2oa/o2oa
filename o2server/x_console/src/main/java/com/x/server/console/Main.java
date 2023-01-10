@@ -132,9 +132,6 @@ public class Main {
             nodeAgent.start();
         }
 
-//        SchedulerBuilder schedulerBuilder = new SchedulerBuilder();
-//        Scheduler scheduler = schedulerBuilder.start();
-
         if (BooleanUtils.isTrue(Config.currentNode().autoStart())) {
             startAll();
         }
