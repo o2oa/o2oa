@@ -509,7 +509,7 @@ MWF.xApplication.process.Xform.Radio = MWF.APPRadio =  new Class(
             }
             this.showNotValidationMode(this.node);
 
-            if (!this.node.isIntoView()) this.node.scrollIntoView();
+            if (!this.errNode.isIntoView()) this.errNode.scrollIntoView(false);
         }
     },
 
