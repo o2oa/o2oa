@@ -211,7 +211,7 @@ MWFCalendar.EventForm = new Class({
 
         if( data.comment ){
             html += "<tr><td styles='formTableTitle' valign='top'><div style='padding-top: 15px;'>"+ this.lp.content +"：</div></td>" +
-                "    <td styles='formTableValue'>"+data.comment+"</td>" +
+                "    <td styles='formTableValue'>"+ this.replaceHrefJavascriptStr(data.comment)+"</td>" +
                 "</tr>";
         }else{
             html += "<tr><td styles='formTableTitle' valign='top'>"+ this.lp.content +"：</td>" +
@@ -1063,6 +1063,40 @@ MWFCalendar.EventForm = new Class({
         this.fireEvent("postClose");
         if( this.waitReload && this.view)this.view.reload();
         delete this;
+    },
+    getAttrRegExp: function( attr ){
+        return "\\s+" + attr + "\\s*=\\s*[\"|\'](.*?)[\"|\']";
+    },
+    getAttributeValue: function(str, attribute){
+        var regexp = new RegExp( this.getAttrRegExp(attribute) , "i");
+        var array = str.match( regexp );
+        return (o2.typeOf(array) === "array" && array.length === 2) ? array[1] : "";
+    },
+    addAttribute: function(str, attribute, value){
+        var regexp = new RegExp( "\\/*\\s*>" , "i");
+        return str.replace( regexp, ' ' + attribute + '="' + value + '"' + " />");
+    },
+    removeAttribute: function(str, attribute){
+        var regexp = new RegExp( this.getAttrRegExp(attribute) , "ig");
+        return str.replace( regexp, "" );
+    },
+    replaceHrefJavascriptStr: function( html ){
+        debugger;
+        var regexp_a_all = /(i?)(<a)([^>]+>)/gmi;
+        var as = html.match(regexp_a_all);
+        if(as){
+            if (as.length){
+                for (var i=0; i<as.length; i++){
+                    var a = as[i];
+                    var href =  this.getAttributeValue(a, "href");
+                    if( href.indexOf('javascript:') > -1 ){
+                        var a1 = this.removeAttribute(a, "href");
+                        html = html.replace(a, a1);
+                    }
+                }
+            }
+        }
+        return html;
     }
 });
 
