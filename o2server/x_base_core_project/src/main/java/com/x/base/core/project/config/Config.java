@@ -84,6 +84,7 @@ public class Config {
 	public static final String PATH_CONFIG_PUBLICKEY = "config/public.key";
 	public static final String PATH_CONFIG_PRIVATEKEY = "config/private.key";
 	public static final String PATH_CONFIG_PROCESSPLATFORM = "config/processPlatform.json";
+	public static final String PATH_CONFIG_CMS = "config/cms.json";
 	public static final String PATH_CONFIG_QUERY = "config/query.json";
 	public static final String PATH_CONFIG_DINGDING = "config/dingding.json";
 	public static final String PATH_CONFIG_WELINK = "config/weLink.json";
@@ -963,6 +964,19 @@ public class Config {
 			}
 		}
 		return instance().pushConfig;
+	}
+
+	private Cms cms;
+
+	public static synchronized Cms cms() throws Exception {
+		if (null == instance().cms) {
+			Cms obj = BaseTools.readConfigObject(PATH_CONFIG_CMS, Cms.class);
+			if (null == obj) {
+				obj = Cms.defaultInstance();
+			}
+			instance().cms = obj;
+		}
+		return instance().cms;
 	}
 
 	private ProcessPlatform processPlatform;

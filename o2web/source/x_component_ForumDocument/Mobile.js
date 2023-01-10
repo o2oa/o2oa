@@ -377,11 +377,24 @@ MWF.xApplication.ForumDocument.Mobile.ReplyDocument = new Class({
         //}.bind(this) );
     },
     createReply : function(itemNode, ev ){ // 对回复进行回复
-        var ua = navigator.userAgent.toLowerCase();
-        if (/iphone|ipad|ipod/.test(ua)) {
-            window.webkit.messageHandlers.ReplyAction.postMessage({body:this.data.id});
-        } else if (/android/.test(ua)) {
+        // var ua = navigator.userAgent.toLowerCase();
+        // if (/iphone|ipad|ipod/.test(ua)) {
+        //     window.webkit.messageHandlers.ReplyAction.postMessage({body:this.data.id});
+        // } else if (/android/.test(ua)) {
+        //     window.o2bbs.reply( this.data.id );
+        // }
+        if (window.o2android && window.o2android.postMessage) {
+            var body = {
+                type: "bbsReply",
+                data: {
+                    parentId: this.data.id 
+                }
+            };
+            window.o2android.postMessage(JSON.stringify(body));
+        } else if (window.o2bbs && window.o2bbs.reply) {
             window.o2bbs.reply( this.data.id );
+        } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.ReplyAction) {
+            window.webkit.messageHandlers.ReplyAction.postMessage({body:this.data.id});
         }
     }
 });
