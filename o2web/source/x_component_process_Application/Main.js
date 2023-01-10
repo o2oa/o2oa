@@ -405,6 +405,7 @@ MWF.xApplication.process.Application.List = new Class({
 
 								}
 							}
+							result.applicationList = this.filterList.applicationList;
 							this.filterList = result;
 							this.refresh();
 						}.bind(this)
