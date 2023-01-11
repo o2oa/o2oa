@@ -39,14 +39,15 @@ class ActionCreate extends BaseAction {
             emc.beginTransaction(Application.class);
             Application application = new Application();
             Wi.copier.copy(wi, application);
-            // 如果是管理员就不写入到创建者
-            if (!effectivePerson.isManager()) {
-                application.setCreatorPerson(effectivePerson.getDistinguishedName());
-            }
+            application.setCreatorPerson(effectivePerson.getDistinguishedName());
             application.setLastUpdatePerson(effectivePerson.getDistinguishedName());
             application.setLastUpdateTime(new Date());
-            application.setControllerList(
-                    ListTools.add(application.getControllerList(), true, true, effectivePerson.getDistinguishedName()));
+            // 如果是管理员就不加入到管理者
+            if (!effectivePerson.isManager()) {
+                application.setControllerList(
+                        ListTools.add(application.getControllerList(), true, true,
+                                effectivePerson.getDistinguishedName()));
+            }
             emc.persist(application, CheckPersistType.all);
             emc.commit();
             CacheManager.notify(Application.class);
