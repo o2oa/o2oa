@@ -61,17 +61,21 @@ public class IdentityFactory {
 
 	/** 查询人员的身份 */
 	public List<String> listWithPerson(Collection<String> values) throws Exception {
-		return ActionListWithPerson.execute(context, values);
+		return ActionListWithPerson.execute(context, values, false);
+	}
+
+	public List<String> listWithPerson(Collection<String> values, Boolean useNameFind) throws Exception {
+		return ActionListWithPerson.execute(context, values, useNameFind);
 	}
 
 	/** 查询人员的身份 */
 	public List<String> listWithPerson(String... values) throws Exception {
-		return ActionListWithPerson.execute(context, Arrays.asList(values));
+		return ActionListWithPerson.execute(context, Arrays.asList(values), false);
 	}
 
 	/** 查询人员的身份 */
 	public List<String> listWithPerson(EffectivePerson effectivePerson) throws Exception {
-		return ActionListWithPerson.execute(context, ListTools.toList(effectivePerson.getDistinguishedName()));
+		return ActionListWithPerson.execute(context, ListTools.toList(effectivePerson.getDistinguishedName()), false);
 	}
 
 	/** 查询群组的身份 */
