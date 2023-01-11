@@ -41,7 +41,16 @@ public class PersonFactory {
 
 	/** 获取单个个人的distinguishedName */
 	public String get(String value) throws Exception {
-		List<String> os = ActionList.execute(context, Arrays.asList(value));
+		List<String> os = ActionList.execute(context, Arrays.asList(value), false);
+		if (ListTools.isEmpty(os)) {
+			return "";
+		} else {
+			return os.get(0);
+		}
+	}
+
+	public String get(String value, Boolean useNameFind) throws Exception {
+		List<String> os = ActionList.execute(context, Arrays.asList(value), useNameFind);
 		if (ListTools.isEmpty(os)) {
 			return "";
 		} else {
@@ -56,12 +65,16 @@ public class PersonFactory {
 
 	/** 批量获取个人的distinguishedName */
 	public List<String> list(Collection<String> values) throws Exception {
-		return ActionList.execute(context, values);
+		return ActionList.execute(context, values, false);
+	}
+
+	public List<String> list(Collection<String> values, Boolean useNameFind) throws Exception {
+		return ActionList.execute(context, values, useNameFind);
 	}
 
 	/** 批量获取个人的distinguishedName */
 	public List<String> list(String... values) throws Exception {
-		return ActionList.execute(context, Arrays.asList(values));
+		return ActionList.execute(context, Arrays.asList(values), false);
 	}
 
 	/** 查询所有个人 */
@@ -77,7 +90,16 @@ public class PersonFactory {
 
 	/** 获取个人对象 */
 	public Person getObject(String value) throws Exception {
-		List<? extends Person> os = ActionListObject.execute(context, Arrays.asList(value));
+		List<? extends Person> os = ActionListObject.execute(context, Arrays.asList(value), false);
+		if (ListTools.isEmpty(os)) {
+			return null;
+		} else {
+			return os.get(0);
+		}
+	}
+
+	public Person getObject(String value, Boolean useNameFind) throws Exception {
+		List<? extends Person> os = ActionListObject.execute(context, Arrays.asList(value), useNameFind);
 		if (ListTools.isEmpty(os)) {
 			return null;
 		} else {
@@ -109,13 +131,18 @@ public class PersonFactory {
 
 	/** 批量获取个人对象 */
 	public List<Person> listObject(Collection<String> values) throws Exception {
-		List<? extends Person> os = ActionListObject.execute(context, values);
+		List<? extends Person> os = ActionListObject.execute(context, values, false);
+		return (List<Person>) os;
+	}
+
+	public List<Person> listObject(Collection<String> values, Boolean useNameFind) throws Exception {
+		List<? extends Person> os = ActionListObject.execute(context, values, useNameFind);
 		return (List<Person>) os;
 	}
 
 	/** 批量获取个人对象 */
 	public List<Person> listObject(String... values) throws Exception {
-		List<? extends Person> os = ActionListObject.execute(context, Arrays.asList(values));
+		List<? extends Person> os = ActionListObject.execute(context, Arrays.asList(values), false);
 		return (List<Person>) os;
 	}
 
