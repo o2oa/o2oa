@@ -11,7 +11,7 @@ import com.x.base.core.project.organization.Unit;
 
 class ActionListObject extends BaseAction {
 
-	public static List<? extends Unit> execute(AbstractContext context, Collection<String> collection) throws Exception {
+	public static List<? extends Unit> execute(AbstractContext context, Collection<String> collection, Boolean useNameFind) throws Exception {
 		Wi wi = new Wi();
 		if (null != collection) {
 			wi.getUnitList().addAll(collection);
@@ -26,6 +26,9 @@ class ActionListObject extends BaseAction {
 		@FieldDescribe("组织")
 		private List<String> unitList = new ArrayList<>();
 
+		@FieldDescribe("是否需要根据名称查找，默认false")
+		private Boolean useNameFind = false;
+
 		public List<String> getUnitList() {
 			return unitList;
 		}
@@ -34,6 +37,13 @@ class ActionListObject extends BaseAction {
 			this.unitList = unitList;
 		}
 
+		public Boolean getUseNameFind() {
+			return useNameFind;
+		}
+
+		public void setUseNameFind(Boolean useNameFind) {
+			this.useNameFind = useNameFind;
+		}
 	}
 
 	public static class Wo extends Unit {

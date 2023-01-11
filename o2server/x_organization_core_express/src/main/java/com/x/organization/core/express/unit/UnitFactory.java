@@ -19,7 +19,16 @@ public class UnitFactory {
 
 	/** 获取单个组织的distinguishedName */
 	public String get(String value) throws Exception {
-		List<String> os = ActionList.execute(context, Arrays.asList(value));
+		List<String> os = ActionList.execute(context, Arrays.asList(value), false);
+		if (ListTools.isEmpty(os)) {
+			return "";
+		} else {
+			return os.get(0);
+		}
+	}
+
+	public String get(String value, Boolean useNameFind) throws Exception {
+		List<String> os = ActionList.execute(context, Arrays.asList(value), useNameFind);
 		if (ListTools.isEmpty(os)) {
 			return "";
 		} else {
@@ -44,12 +53,16 @@ public class UnitFactory {
 
 	/** 批量获取组织的distinguishedName */
 	public List<String> list(Collection<String> values) throws Exception {
-		return ActionList.execute(context, values);
+		return ActionList.execute(context, values, false);
+	}
+
+	public List<String> list(Collection<String> values, Boolean useNameFind) throws Exception {
+		return ActionList.execute(context, values, useNameFind);
 	}
 
 	/** 批量获取组织的distinguishedName */
 	public List<String> list(String... values) throws Exception {
-		return ActionList.execute(context, Arrays.asList(values));
+		return ActionList.execute(context, Arrays.asList(values), false);
 	}
 
 	/** 查询所有组织 */
@@ -65,7 +78,16 @@ public class UnitFactory {
 
 	/** 获取组织对象 */
 	public Unit getObject(String value) throws Exception {
-		List<? extends Unit> os = ActionListObject.execute(context, Arrays.asList(value));
+		List<? extends Unit> os = ActionListObject.execute(context, Arrays.asList(value), false);
+		if (ListTools.isEmpty(os)) {
+			return null;
+		} else {
+			return os.get(0);
+		}
+	}
+
+	public Unit getObject(String value, Boolean useNameFind) throws Exception {
+		List<? extends Unit> os = ActionListObject.execute(context, Arrays.asList(value), useNameFind);
 		if (ListTools.isEmpty(os)) {
 			return null;
 		} else {
@@ -75,13 +97,18 @@ public class UnitFactory {
 
 	/** 批量获取组织对象 */
 	public List<Unit> listObject(Collection<String> values) throws Exception {
-		List<? extends Unit> os = ActionListObject.execute(context, values);
+		List<? extends Unit> os = ActionListObject.execute(context, values, false);
+		return (List<Unit>) os;
+	}
+
+	public List<Unit> listObject(Collection<String> values, Boolean useNameFind) throws Exception {
+		List<? extends Unit> os = ActionListObject.execute(context, values, useNameFind);
 		return (List<Unit>) os;
 	}
 
 	/** 批量获取组织对象 */
 	public List<Unit> listObject(String... values) throws Exception {
-		List<? extends Unit> os = ActionListObject.execute(context, Arrays.asList(values));
+		List<? extends Unit> os = ActionListObject.execute(context, Arrays.asList(values), false);
 		return (List<Unit>) os;
 	}
 
@@ -219,7 +246,7 @@ public class UnitFactory {
 
 	/** 根据组织获取排序号 */
 	public Integer getOrderNumber(String value, Integer defaultValue) throws Exception {
-		List<? extends Unit> os = ActionListObject.execute(context, Arrays.asList(value));
+		List<? extends Unit> os = ActionListObject.execute(context, Arrays.asList(value), false);
 		if (os.isEmpty()) {
 			return defaultValue;
 		} else {
@@ -229,7 +256,7 @@ public class UnitFactory {
 
 	/** 根据组织获取层级排序号 */
 	public String getLevelOrderNumber(String value, String defaultValue) throws Exception {
-		List<? extends Unit> os = ActionListObject.execute(context, Arrays.asList(value));
+		List<? extends Unit> os = ActionListObject.execute(context, Arrays.asList(value), false);
 		if (os.isEmpty()) {
 			return defaultValue;
 		} else {
@@ -239,7 +266,7 @@ public class UnitFactory {
 
 	/** 根据组织获取层级排序号 */
 	public String getLevelName(String value, String defaultValue) throws Exception {
-		List<? extends Unit> os = ActionListObject.execute(context, Arrays.asList(value));
+		List<? extends Unit> os = ActionListObject.execute(context, Arrays.asList(value), false);
 		if (os.isEmpty()) {
 			return defaultValue;
 		} else {
