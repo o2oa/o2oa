@@ -6,6 +6,7 @@
 	"officeType": "docx",
 	"allowUpload" : false,
 	"template" : "",
+	"templateType" : "value",
 	"isNotLoadNow": false,
 	"autosave": true,
 	"chat": false,
@@ -31,6 +32,10 @@
 		"html": ""
 	},
 	"events": {
+		"queryLoad": {
+			"code": "",
+			"html": ""
+		},
 		"afterOpen": {
 			"code": "",
 			"html": ""
