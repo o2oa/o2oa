@@ -227,6 +227,7 @@ var MDomItem = new Class({
         if(keep)this.save();
         this.options.isEdited = true;
         this.dispose();
+        this.items = [];
         this.load();
     },
     save : function(){
@@ -236,6 +237,7 @@ var MDomItem = new Class({
         if(keep)this.save();
         this.options.isEdited = false;
         this.dispose();
+        this.items = [];
         this.load();
     },
     enable : function(){
