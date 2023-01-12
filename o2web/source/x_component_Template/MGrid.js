@@ -142,7 +142,7 @@ var MGrid = new Class({
             }
             for( var i=0; i<this.data.length; i++ ){
                 var d = this.data[i];
-                var items = this.itemTemplate;
+                var items = Object.clone(this.itemTemplate);
                 for (var it in d ){
                     if ( items[ it ] ){
                         items[ it ].value  = d[it];
@@ -150,9 +150,9 @@ var MGrid = new Class({
                 }
                 this.createTr( items, false, null, d );
             }
-            for( var it in this.itemTemplate ){
-                this.itemTemplate[it].value = "";
-            }
+            //for( var it in this.itemTemplate ){
+            //    this.itemTemplate[it].value = "";
+            //}
         }else if( this.options.isCreateTrOnNull ){
             this.createTr( this.itemTemplate, true );
         }
@@ -164,7 +164,7 @@ var MGrid = new Class({
             }
             for( var i=0; i<this.data.length; i++ ){
                 var d = this.data[i];
-                var items = this.itemTemplate;
+                var items = Object.clone(this.itemTemplate);
                 for (var it in d ){
                     if ( items[ it ] ){
                         items[ it ].value  = d[it];
@@ -172,9 +172,9 @@ var MGrid = new Class({
                 }
                 this.createTr( items, false, null, d );
             }
-            for( var it in this.itemTemplate ){
-                this.itemTemplate[it].value = "";
-            }
+            //for( var it in this.itemTemplate ){
+            //    this.itemTemplate[it].value = "";
+            //}
         }else if( this.options.isCreateTrOnNull ){
             this.createTr( this.itemTemplate, true );
         }
@@ -186,7 +186,7 @@ var MGrid = new Class({
             }
             for( var i=0; i<this.data.length; i++ ){
                 var d = this.data[i];
-                var items = this.itemTemplate;
+                var items = Object.clone(this.itemTemplate);
                 for (var it in d ){
                     if ( items[ it ] ){
                         items[ it ].value  = d[it];
@@ -314,16 +314,16 @@ var MGrid = new Class({
         return trObjList;
     },
     appendTr : function( d, isNew, unid, sourceData ){
-        var items = this.itemTemplate;
+        var items = Object.clone(this.itemTemplate);
         for (var it in d ){
             if ( items[ it ] ){
                 items[ it ].value  = d[it];
             }
         }
         var trObj = this.createTr( items, isNew, unid, sourceData );
-        for( var it in this.itemTemplate ){
-            this.itemTemplate[it].value = "";
-        }
+        //for( var it in this.itemTemplate ){
+        //    this.itemTemplate[it].value = "";
+        //}
         return trObj;
     },
     getTrCounts : function(){
@@ -403,7 +403,7 @@ var MGrid = new Class({
         }else{
             oldTrObj = oldTrObjOr_Index;
         }
-        var itemData = this.itemTemplate;
+        var itemData = Object.clone(this.itemTemplate);
         for (var it in data ){
             if ( itemData[ it ] ){
                 itemData[ it ].value  = data[it];
@@ -451,9 +451,9 @@ var MGrid = new Class({
 
         oldTrObj.mElement.destroy();
 
-        for( var it in this.itemTemplate ){
-            this.itemTemplate[it].value = "";
-        }
+        //for( var it in this.itemTemplate ){
+        //    this.itemTemplate[it].value = "";
+        //}
 
         return trObj;
     },

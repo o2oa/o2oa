@@ -1366,21 +1366,23 @@ MDomItem.Radio = new Class({
             var textNode = new Element( "span", {
                 "text" : selectTexts[i]
             }).inject(item);
-            textNode.addEvent("click", function( ev ){
-                this.input.checked = ! this.input.checked;
-                var envents = MDomItem.Util.getEvents( _self.options.event );
-                if( typeOf( envents ) == "object" ){
-                    if( envents.change ){
-                        envents.change.call( this.input, _self.module, ev );
+
+            textNode.addEvent("click", function (ev) {
+                if( _self.options.attr && _self.options.attr.disabled )return;
+                this.input.checked = !this.input.checked;
+                var envents = MDomItem.Util.getEvents(_self.options.event);
+                if (typeOf(envents) == "object") {
+                    if (envents.change) {
+                        envents.change.call(this.input, _self.module, ev);
                     }
-                    if( envents.click ){
-                        envents.click.call( this.input, _self.module, ev );
+                    if (envents.click) {
+                        envents.click.call(this.input, _self.module, ev);
                     }
                 }
-                if( _self.options.validImmediately ){
-                    _self.module.verify( true );
+                if (_self.options.validImmediately) {
+                    _self.module.verify(true);
                 }
-            }.bind( {input : input} ) );
+            }.bind({input: input}));
 
             if( this.options.validImmediately ){
                 input.addEvent( "click", function(){ this.module.verify( true )}.bind(this) );
@@ -1547,6 +1549,7 @@ MDomItem.Checkbox = new Class({
                 "text" : selectTexts[i]
             }).inject(item);
             textNode.addEvent("click", function( ev ){
+                if( _self.options.attr && _self.options.attr.disabled )return;
                 this.input.checked = ! this.input.checked;
                 var envents = MDomItem.Util.getEvents( _self.options.event );
                 if( typeOf( envents ) == "object" ){
