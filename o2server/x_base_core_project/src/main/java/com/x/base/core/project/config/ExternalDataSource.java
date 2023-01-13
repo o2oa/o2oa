@@ -3,7 +3,6 @@ package com.x.base.core.project.config;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.factory.SlicePropertiesBuilder;
@@ -42,7 +41,7 @@ public class ExternalDataSource extends ConfigObject {
 
     public static final List<String> DEFAULT_EXCLUDES = new ArrayList<>();
 
-    public static final Integer DEFAULT_SLOWSQLMILLIS = 2000;
+    public static final Integer DEFAULT_SLOWSQLMILLIS = 3000;
 
     public static final String DEFAULT_LOGLEVEL = "ERROR";
 
@@ -56,7 +55,7 @@ public class ExternalDataSource extends ConfigObject {
 
     public static final Boolean DEFAULT_AUTOCOMMIT = false;
 
-    public static final Boolean DEFAULT_TRACESQLENABLE = false;
+//    public static final Boolean DEFAULT_TRACESQLENABLE = false;
 
     public static final String DEFAULT_SCHEMA = "X";
 
@@ -82,7 +81,7 @@ public class ExternalDataSource extends ConfigObject {
         o.testConnectionOnCheckout = DEFAULT_TESTCONNECTIONONCHECKOUT;
         o.maxIdleTime = DEFAULT_MAXIDLETIME;
         o.autoCommit = DEFAULT_AUTOCOMMIT;
-        o.traceSqlEnable = DEFAULT_TRACESQLENABLE;
+//        o.traceSqlEnable = DEFAULT_TRACESQLENABLE;
         return o;
     }
 
@@ -124,14 +123,14 @@ public class ExternalDataSource extends ConfigObject {
     private Integer maxIdleTime;
     @FieldDescribe("自动提交,默认为false.")
     private Boolean autoCommit = DEFAULT_AUTOCOMMIT;
-    @FieldDescribe("启用sql跟踪.")
-    private Boolean traceSqlEnable = DEFAULT_TRACESQLENABLE;
+//    @FieldDescribe("启用sql跟踪.")
+//    private Boolean traceSqlEnable = DEFAULT_TRACESQLENABLE;
     @FieldDescribe("模式.")
     private String schema = DEFAULT_SCHEMA;
 
-    public Boolean getTraceSqlEnable() {
-        return (null == this.traceSqlEnable) ? DEFAULT_TRACESQLENABLE : this.traceSqlEnable;
-    }
+//    public Boolean getTraceSqlEnable() {
+//        return (null == this.traceSqlEnable) ? DEFAULT_TRACESQLENABLE : this.traceSqlEnable;
+//    }
 
     public Boolean getAutoCommit() {
         return (null == this.autoCommit) ? DEFAULT_AUTOCOMMIT : this.autoCommit;
