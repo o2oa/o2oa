@@ -1796,6 +1796,9 @@ MWF.xScript.CMSEnvironment = function(ev){
         //"confirm": function(type, e, title, text, width, height, ok, cancel, callback){
         //    _form.confirm(type, e, title, text, width, height, ok, cancel, callback);
         //},
+        "alert": function(type, title, text, width, height){
+            _form.alert(type, title, text, width, height);
+        },
         "notice": function(content, type, target, where, offset, option){
             _form.notice(content, type, target, where, offset, option);
         },
