@@ -20,6 +20,7 @@ import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.Process_;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.eclipse.jetty.util.StringUtil;
 
 import javax.persistence.EntityManager;
@@ -136,7 +137,7 @@ class ActionListWithPersonAndTerminal extends BaseAction {
             Predicate p = cb.and(cb.isEmpty(root.get(Application_.availableIdentityList)),
                     cb.isEmpty(root.get(Application_.availableUnitList)));
             p = cb.or(p, cb.isMember(effectivePerson.getDistinguishedName(), root.get(Application_.controllerList)));
-            p = cb.or(p, cb.equal(root.get(Application_.creatorPerson), effectivePerson.getDistinguishedName()));
+            // p = cb.or(p, cb.equal(root.get(Application_.creatorPerson), effectivePerson.getDistinguishedName()));
             if (ListTools.isNotEmpty(identities)) {
                 p = cb.or(p, root.get(Application_.availableIdentityList).in(identities));
             }
@@ -150,8 +151,16 @@ class ActionListWithPersonAndTerminal extends BaseAction {
     }
 
     /**
-     *
-     * 从Process中获取可以启动的Process的application.
+     * 从Process中获取可以启动的Process的application.不考虑创建者.
+     * 
+     * @param business
+     * @param effectivePerson
+     * @param roles
+     * @param identities
+     * @param units
+     * @param groups
+     * @return
+     * @throws Exception
      */
     private List<String> listFromProcess(Business business, EffectivePerson effectivePerson, List<String> roles,
             List<String> identities, List<String> units, List<String> groups) throws Exception {
@@ -160,12 +169,13 @@ class ActionListWithPersonAndTerminal extends BaseAction {
         CriteriaQuery<String> cq = cb.createQuery(String.class);
         Root<Process> root = cq.from(Process.class);
         Predicate p = cb.conjunction();
-        if (!business.canManageApplication(effectivePerson, null)) {
+        if (BooleanUtils.isNotTrue(business.canManageApplication(effectivePerson, null))) {
             p = cb.and(cb.isEmpty(root.get(Process_.startableIdentityList)),
                     cb.isEmpty(root.get(Process_.startableUnitList)),
                     cb.isEmpty(root.get(Process_.startableGroupList)));
             p = cb.or(p, cb.isMember(effectivePerson.getDistinguishedName(), root.get(Process_.controllerList)));
-            p = cb.or(p, cb.equal(root.get(Process_.creatorPerson), effectivePerson.getDistinguishedName()));
+            // p = cb.or(p, cb.equal(root.get(Process_.creatorPerson),
+            // effectivePerson.getDistinguishedName()));
             if (ListTools.isNotEmpty(identities)) {
                 p = cb.or(p, root.get(Process_.startableIdentityList).in(identities));
             }

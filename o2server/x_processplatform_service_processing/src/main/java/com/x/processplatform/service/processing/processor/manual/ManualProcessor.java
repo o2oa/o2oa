@@ -380,15 +380,18 @@ public class ManualProcessor extends AbstractManualProcessor {
         List<TaskCompleted> taskCompleteds = aeiObjects.getJoinInquireTaskCompletedsRouteNameAvailableWithActivityToken(
                 aeiObjects.getWork().getActivityToken());
         executingCompletedIdentityInTaskCompleteds(aeiObjects, matrix, taskCompleteds);
-
         // 发送ProcessingSignal
         aeiObjects.getProcessingAttributes().push(Signal.manualExecute(aeiObjects.getWork().getActivityToken(), manual,
                 Objects.toString(manual.getManualMode(), ""), matrix.flat()));
         if (matrix.isEmpty() && (!taskCompleteds.isEmpty())) {
             results.add(aeiObjects.getWork());
-            aeiObjects.getTasks().stream().filter(
+            List<Task> tasks = aeiObjects.getTasks().stream().filter(
                     t -> StringUtils.equalsIgnoreCase(t.getActivityToken(), aeiObjects.getWork().getActivityToken()))
-                    .forEach(aeiObjects::deleteTask);
+                    .collect(Collectors.toList());
+            tasks.stream().forEach(aeiObjects::deleteTask);
+            uncompletedTaskToRead(aeiObjects, manual, tasks);
+            // aeiObjects.business().organization().identity().listObject(null)
+
         } else {
             switch (manual.getManualMode()) {
                 case parallel:
@@ -628,9 +631,11 @@ public class ManualProcessor extends AbstractManualProcessor {
             List<TaskCompleted> taskCompleteds) throws Exception {
         if (soleDirect(aeiObjects, taskCompleteds)) {
             matrix.clear();
-            aeiObjects.getTasks().stream().filter(
+            List<Task> tasks = aeiObjects.getTasks().stream().filter(
                     t -> StringUtils.equalsIgnoreCase(t.getActivityToken(), aeiObjects.getWork().getActivityToken()))
-                    .forEach(aeiObjects::deleteTask);
+                    .collect(Collectors.toList());
+            tasks.stream().forEach(aeiObjects::deleteTask);
+            uncompletedTaskToRead(aeiObjects, manual, tasks);
         } else {
             task(aeiObjects, manual, matrix.read());
         }
@@ -641,9 +646,11 @@ public class ManualProcessor extends AbstractManualProcessor {
         // 是否有优先路由
         if (soleDirect(aeiObjects, taskCompleteds)) {
             matrix.clear();
-            aeiObjects.getTasks().stream().filter(
+            List<Task> tasks = aeiObjects.getTasks().stream().filter(
                     t -> StringUtils.equalsIgnoreCase(t.getActivityToken(), aeiObjects.getWork().getActivityToken()))
-                    .forEach(aeiObjects::deleteTask);
+                    .collect(Collectors.toList());
+            tasks.stream().forEach(aeiObjects::deleteTask);
+            uncompletedTaskToRead(aeiObjects, manual, tasks);
         } else {
             task(aeiObjects, manual, matrix.flat());
         }
@@ -653,9 +660,11 @@ public class ManualProcessor extends AbstractManualProcessor {
             List<TaskCompleted> taskCompleteds) throws Exception {
         if (soleDirect(aeiObjects, taskCompleteds)) {
             matrix.clear();
-            aeiObjects.getTasks().stream().filter(
+            List<Task> tasks = aeiObjects.getTasks().stream().filter(
                     t -> StringUtils.equalsIgnoreCase(t.getActivityToken(), aeiObjects.getWork().getActivityToken()))
-                    .forEach(aeiObjects::deleteTask);
+                    .collect(Collectors.toList());
+            tasks.stream().forEach(aeiObjects::deleteTask);
+            uncompletedTaskToRead(aeiObjects, manual, tasks);
         } else {
             task(aeiObjects, manual, matrix.read());
         }
@@ -931,5 +940,24 @@ public class ManualProcessor extends AbstractManualProcessor {
             }
         }
 
+    }
+
+    private void uncompletedTaskToRead(AeiObjects aeiObjects, Manual manual, List<Task> tasks) {
+        if (BooleanUtils.isTrue(manual.getManualUncompletedTaskToRead())) {
+            tasks.stream().forEach(o -> {
+                try {
+                    String identity = aeiObjects.business().organization().identity().get(o.getIdentity());
+                    String unit = aeiObjects.business().organization().unit().getWithIdentity(identity);
+                    String person = aeiObjects.business().organization().person().getWithIdentity(identity);
+                    if (StringUtils.isNotEmpty(identity) && StringUtils.isNotEmpty(unit)
+                            && StringUtils.isNotEmpty(person)) {
+                        aeiObjects.getCreateReads()
+                                .add(new Read(aeiObjects.getWork(), identity, unit, person));
+                    }
+                } catch (Exception e) {
+                    LOGGER.error(e);
+                }
+            });
+        }
     }
 }
