@@ -1455,7 +1455,7 @@ MWF.xApplication.query.StatementDesigner.View = new Class({
                 //this.setContentColumnWidth();
             }
             this.setViewWidth();
-            this.addColumnNode.scrollIntoView(true);
+            this.addColumnNode.scrollIntoView(false);
 
         }.bind(this));
         //new Fx.Scroll(this.view.areaNode, {"wheelStops": false, "duration": 0}).toRight();
@@ -1847,8 +1847,8 @@ MWF.xApplication.query.StatementDesigner.View.Column = new Class({
         // }).toElement(this.listNode);
 
         try{
-            this.node.scrollIntoView(true);
-            this.listNode.scrollIntoView(true);
+            this.node.scrollIntoView(false);
+            this.listNode.scrollIntoView(false);
         }catch (e) {
 
         }
@@ -1944,7 +1944,7 @@ MWF.xApplication.query.StatementDesigner.View.Actionbar = new Class({
         this.node.setStyles(this.css.toolbarWarpNode_selected);
         // new Fx.Scroll(this.view.areaNode, {"wheelStops": false, "duration": 100}).toElementEdge(this.node);
         try {
-            this.node.scrollIntoView(true);
+            this.node.scrollIntoView(false);
         }catch (e) {
 
         }
@@ -1994,7 +1994,7 @@ MWF.xApplication.query.StatementDesigner.View.Paging = new Class({
         this.node.setStyles(this.css.pagingWarpNode_selected);
         // new Fx.Scroll(this.view.areaNode, {"wheelStops": false, "duration": 100}).toElementEdge(this.node);
         try {
-            this.node.scrollIntoView(true);
+            this.node.scrollIntoView(false);
         }catch (e) {
 
         }

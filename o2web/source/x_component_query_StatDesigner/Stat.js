@@ -237,7 +237,7 @@ MWF.xApplication.query.StatDesigner.Stat = new Class({
                 //this.setContentColumnWidth();
             }
             this.setViewWidth();
-            this.addColumnNode.scrollIntoView(true);
+            this.addColumnNode.scrollIntoView(false);
 
         }.bind(this));
         //new Fx.Scroll(this.view.areaNode, {"wheelStops": false, "duration": 0}).toRight();
