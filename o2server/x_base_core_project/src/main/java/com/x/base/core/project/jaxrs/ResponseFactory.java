@@ -107,18 +107,33 @@ public class ResponseFactory {
 			if ((null != result.getData()) && (result.getData() instanceof WoFile)) {
 				// 附件,二进制流文件
 				WoFile wo = (WoFile) result.getData();
-				EntityTag tag = new EntityTag(etagWoFile(wo));
-				if (notModified(request, tag)) {
-					return Response.notModified().tag(tag).build();
-				}
-				if (wo.getStreamingOutput() != null){
-					return Response.ok(wo.getStreamingOutput()).header(Content_Disposition, wo.getContentDisposition())
-							.header(Content_Type, wo.getContentType()).header(Content_Length, wo.getContentLength())
-							.header(Accept_Ranges, "bytes").tag(tag).build();
-				}else {
-					return Response.ok(wo.getBytes()).header(Content_Disposition, wo.getContentDisposition())
-							.header(Content_Type, wo.getContentType()).header(Content_Length, wo.getBytes().length)
-							.header(Accept_Ranges, "bytes").tag(tag).build();
+				Integer maxAge = maxAgeDefault(wo);
+				if (null != maxAge) {
+					CacheControl cacheControl = new CacheControl();
+					cacheControl.setMaxAge(maxAge);
+					if (wo.getStreamingOutput() != null){
+						return Response.ok(wo.getStreamingOutput()).header(Content_Disposition, wo.getContentDisposition())
+								.header(Content_Type, wo.getContentType()).header(Content_Length, wo.getContentLength())
+								.header(Accept_Ranges, "bytes").cacheControl(cacheControl).build();
+					}else {
+						return Response.ok(wo.getBytes()).header(Content_Disposition, wo.getContentDisposition())
+								.header(Content_Type, wo.getContentType()).header(Content_Length, wo.getBytes().length)
+								.header(Accept_Ranges, "bytes").cacheControl(cacheControl).build();
+					}
+				} else {
+					EntityTag tag = new EntityTag(etagWoFile(wo));
+					if (notModified(request, tag)) {
+						return Response.notModified().tag(tag).build();
+					}
+					if (wo.getStreamingOutput() != null) {
+						return Response.ok(wo.getStreamingOutput()).header(Content_Disposition, wo.getContentDisposition())
+								.header(Content_Type, wo.getContentType()).header(Content_Length, wo.getContentLength())
+								.header(Accept_Ranges, "bytes").tag(tag).build();
+					} else {
+						return Response.ok(wo.getBytes()).header(Content_Disposition, wo.getContentDisposition())
+								.header(Content_Type, wo.getContentType()).header(Content_Length, wo.getBytes().length)
+								.header(Accept_Ranges, "bytes").tag(tag).build();
+					}
 				}
 			} else if ((null != result.getData()) && (result.getData() instanceof WoText)) {
 				// 纯文本text

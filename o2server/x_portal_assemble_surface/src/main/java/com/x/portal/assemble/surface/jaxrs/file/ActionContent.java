@@ -56,6 +56,8 @@ class ActionContent extends StandardJaxrsAction {
 				}
 				wo = new Wo(bs, this.contentType(false, file.getFileName()),
 						this.contentDisposition(false, file.getFileName()));
+				wo.setFastETag(file.getId()+file.getUpdateTime().getTime());
+				wo.setMaxAge(3600 * 24);
 				CacheManager.put(cache, cacheKey, wo);
 			}
 			result.setData(wo);
