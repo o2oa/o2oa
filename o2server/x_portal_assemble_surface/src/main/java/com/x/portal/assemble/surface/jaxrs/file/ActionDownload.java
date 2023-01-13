@@ -56,6 +56,7 @@ class ActionDownload extends StandardJaxrsAction {
 				}
 				wo = new Wo(bs, this.contentType(true, file.getFileName()),
 						this.contentDisposition(true, file.getFileName()));
+				wo.setFastETag(file.getId()+file.getUpdateTime().getTime());
 				CacheManager.put(cache, cacheKey, wo);
 			}
 			result.setData(wo);
