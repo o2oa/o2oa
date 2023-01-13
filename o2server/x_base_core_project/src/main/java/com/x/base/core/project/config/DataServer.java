@@ -20,7 +20,7 @@ public class DataServer extends ConfigObject {
 	private static final Integer DEFAULT_MAXIDLE = 0;
 	private static final Boolean DEFAULT_STATENABLE = false;
 	private static final String DEFAULT_STATFILTER = "mergeStat";
-	private static final Integer DEFAULT_SLOWSQLMILLIS = 2000;
+	private static final Integer DEFAULT_SLOWSQLMILLIS = 3000;
 	private static final Integer DEFAULT_LOCKTIMEOUT = 120000;
 	private static final String DEFAULT_LOGLEVEL = "WARN";
 
