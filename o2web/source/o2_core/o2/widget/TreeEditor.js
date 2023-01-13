@@ -399,7 +399,7 @@ o2.widget.TreeEditor.Tree.Node = new Class({
 				"height": "200px",
 				"overflow": "auto"
 			}).chain(function(){
-				this.scriptArea.container.scrollIntoView();
+				this.scriptArea.container.scrollIntoView(false);
 				this.scriptArea.focus();
 				this.setActionPosition();
 			}.bind(this));

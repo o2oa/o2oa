@@ -381,7 +381,7 @@ MWF.xApplication.process.FormDesigner.widget.ElCarouselContent.Tree.Node = new C
 			}
 
 			this.propertyArea.setStyle("display", "block");
-			this.propertyArea.scrollIntoView();
+			this.propertyArea.scrollIntoView(false);
 			this.setActionPosition();
 
 			this.isEditProperty = true;
