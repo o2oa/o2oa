@@ -715,7 +715,7 @@ MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree.Node = new Class(
 			}
 
 			this.propertyArea.setStyle("display", "block");
-			this.propertyArea.scrollIntoView();
+			this.propertyArea.scrollIntoView(false);
 			this.setActionPosition();
 
 			this.isEditProperty = true;
