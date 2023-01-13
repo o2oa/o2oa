@@ -4760,14 +4760,14 @@ MWF.xScript.ViewEnvironment = function (ev) {
      *    "genderType": "m",                                  //性别
      *    "icon": "...",                                      //头像
      *    "signature": "",                                    //个人签名
-     *    "name": "胡起",                                     //姓名
-     *    "employee": "huqi",                                 //员工号
-     *    "unique": "huqi",                                   //唯一标识
-     *    "distinguishedName": "xx@huqi@P",                   //人员全称
+     *    "name": "张三",                                     //姓名
+     *    "employee": "zhansan",                                 //员工号
+     *    "unique": "zhansan",                                   //唯一标识
+     *    "distinguishedName": "xx@zhansan@P",                   //人员全称
      *    "superior": "",                                     //上级人员id
      *    "changePasswordTime": "2017-03-13",                 //修改密码时间
      *    "lastLoginTime": "2019-01-02",                      //最后登录时间
-     *    "mail": "huqi@zoneland.net",                        //邮件地址
+     *    "mail": "zhansan@zoneland.net",                        //邮件地址
      *    "weixin": "",                                       //微信号
      *    "qq": "",                                           //QQ
      *    "mobile": "18057190078",                            //手机号码
