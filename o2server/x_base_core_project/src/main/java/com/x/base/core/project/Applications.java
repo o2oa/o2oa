@@ -34,6 +34,8 @@ import com.x.base.core.project.tools.StringTools;
 
 public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList<Application>> {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(Applications.class);
+
     public static final List<String> OFFICIAL_APPLICATIONS = UnmodifiableList.unmodifiableList(Arrays.asList(
             x_general_assemble_control.class.getName(), x_organization_assemble_authentication.class.getName(),
             x_organization_assemble_express.class.getName(), x_organization_assemble_control.class.getName(),
@@ -672,8 +674,12 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
         List<Application> list = this.get(this.findApplicationName(applicationName));
         CRC32 crc32 = new CRC32();
         crc32.update(seed.getBytes(DefaultCharset.charset));
-        int idx = (int) crc32.getValue() % list.size();
-        return list.get(Math.abs(idx));
+        int idx = Math.abs((int) crc32.getValue() % list.size());
+        Application application = list.get(idx);
+        LOGGER.debug("randomWithSeed applicationName:{}, seed:{}, idx:{}, applications:{}.", () -> applicationName,
+                () -> seed, () -> idx,
+                () -> list.stream().map(Application::getNode).collect(Collectors.joining(";")));
+        return application;
     }
 
     public static String joinQueryUri(String... parts) {
