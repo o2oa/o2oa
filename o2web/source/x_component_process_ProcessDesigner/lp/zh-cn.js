@@ -547,6 +547,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"byDataPath": "通过数据路径",
 		"byDataScript": "通过数据脚本",
 		"publishTableConfig": "数据表发布配置",
-		"queryTableDataPathNote": "注：根路径为空，数据表格填数据表格标识.data（如datatable1.data），数据模板填数据模板标识（如datatemplate1）。"
+		"queryTableDataPathNote": "注：根路径为空，数据表格填数据表格标识.data（如datatable1.data），数据模板填数据模板标识（如datatemplate1）。",
+		"orgIdPlaceholder" : "如：departmentLeader"
 	}
 };
