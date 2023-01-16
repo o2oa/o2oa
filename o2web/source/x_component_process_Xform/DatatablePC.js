@@ -250,8 +250,10 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 			this.editModules = [];
 
-			this.node.setStyle("overflow-x", "auto");
-			this.node.setStyle("overflow-y", "hidden");
+			if( !layout.mobile ){
+				this.node.setStyle("overflow-x", "auto");
+				this.node.setStyle("overflow-y", "hidden");
+			}
 			this.table = this.node.getElement("table");
 			this.tBody = this.table.getElement("tbody");
 
