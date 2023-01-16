@@ -88,7 +88,7 @@
 }
 .o2_profile_inforContent {
     margin-left: 80px;
-    height: 36px;
+    min-height: 36px;
     line-height: 36px;
     overflow: hidden;
 }
@@ -265,7 +265,7 @@
     color: #FFFFFF;
 }
 .o2_profile_passwordConfigArea_view{
-    height: 550px;
+    /*height: 550px;*/
     width: 550px;
     margin: auto;
     color: #666;
@@ -277,7 +277,7 @@
     position: absolute;
 }
 .o2_profile_passwordConfigArea{
-    height: 250px;
+    /*height: 250px;*/
     min-width: 550px;
     width: 50%;
     margin: 40px auto;
@@ -327,7 +327,7 @@
     padding-left: 10px;
     padding-top: 10px;
     line-height: 27px;
-    width: 200px;
+    min-width: 200px;
     font-size: 12px;
     color: #999999;
 }
