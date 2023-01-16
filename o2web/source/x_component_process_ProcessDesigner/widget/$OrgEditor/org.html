@@ -6,12 +6,12 @@
                 <!--<td class="editTableValue">text{$.id}</td>-->
             <!--</tr>-->
             <tr>
-                <td class="editTableTitle">{{$.lp.name}}:</td>
-                <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+                <td class="editTableTitle">{{$.lp.id}}:</td>
+                <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput" placeholder="{{$.lp.orgIdPlaceholder}}"/></td>
             </tr>
             <tr>
                 <td class="editTableTitle">{{$.lp.title}}:</td>
-                <td class="editTableValue"><input type="text" name="title" value="text{$.title}" class="editTableInput"/><div>{{$.lp.titleInfo}}</div></td>
+                <td class="editTableValue"><input type="text" name="title" value="text{$.title}" class="editTableInput" placeholder="{{$.lp.titleInfo}}"/></td>
             </tr>
         </table>
         <br/>
