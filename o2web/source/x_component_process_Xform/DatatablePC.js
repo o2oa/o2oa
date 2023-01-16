@@ -249,8 +249,11 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.isShowAllSection = this.isAllSectionShow();
 
 			this.editModules = [];
-			this.node.setStyle("overflow-x", "auto");
-			this.node.setStyle("overflow-y", "hidden");
+
+			if( !layout.mobile ){
+				this.node.setStyle("overflow-x", "auto");
+				this.node.setStyle("overflow-y", "hidden");
+			}
 			this.table = this.node.getElement("table");
 			this.tBody = this.table.getElement("tbody");
 
@@ -725,6 +728,9 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 					"border-top": this.json.border,
 					"border-left": this.json.border
 				});
+			}
+			if( this.json.recoveryStyles ){
+				this.node.setStyles(this.json.recoveryStyles);
 			}
 			this.node.setStyles(this.json.styles);
 			this.table.setStyles(this.json.tableStyles);
