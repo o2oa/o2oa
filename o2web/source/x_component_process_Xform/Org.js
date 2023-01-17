@@ -196,7 +196,16 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
             this.descriptionNode.addEvents({
                 "mousedown": function( ev ){
                     this.descriptionNode.setStyle("display", "none");
-                    this.clickSelect( ev );
+                    if( this.json.isInput ){
+                        if( this.combox ){
+                            if (!this.combox.editItem) this.combox.intoEdit(ev);
+                            window.setTimeout( function () {
+                                this.combox.input.node.focus();
+                            }.bind(this), 300)
+                        }
+                    }else{
+                        this.clickSelect( ev );
+                    }
                 }.bind(this)
             });
         }
