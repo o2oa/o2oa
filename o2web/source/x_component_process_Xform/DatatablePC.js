@@ -2667,7 +2667,10 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 					var closeNode = new Element("div",{
 						"styles" : this.form.json.errorStyle.close ,
 						"events": {
-							"click" : function(){ this.destroy(); }.bind(node)
+							"click" : function(){
+								// (tr || node).destroy();
+								this.validationMode()
+							}.bind(this)
 						}
 					}).inject(node);
 				}
