@@ -233,27 +233,6 @@ public class Business {
 
 	/**
 	 * TODO 判断用户是否管理员权限 1、person.isManager() 2、xadmin 3、CRMManager
-	 *
-	 * @param request
-	 * @return
-	 * @throws Exception
-	 */
-	public boolean isManager(HttpServletRequest request, EffectivePerson person) throws Exception {
-		// 如果用户的身份是平台的超级管理员，那么就是超级管理员权限
-		if (person.isManager()) {
-			return true;
-		}
-		if ("xadmin".equalsIgnoreCase(person.getDistinguishedName())) {
-			return true;
-		}
-		if (isHasPlatformRole(person.getDistinguishedName(), ThisApplication.ROLE_AttendanceManager)) {
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * TODO 判断用户是否管理员权限 1、person.isManager() 2、xadmin 3、CRMManager
 	 * @return
 	 * @throws Exception
 	 */
@@ -261,9 +240,6 @@ public class Business {
 	public boolean isManager(EffectivePerson person) throws Exception {
 		// 如果用户的身份是平台的超级管理员，那么就是超级管理员权限
 		if (person.isManager()) {
-			return true;
-		}
-		if ("xadmin".equalsIgnoreCase(person.getDistinguishedName())) {
 			return true;
 		}
 		if (isHasPlatformRole(person.getDistinguishedName(), ThisApplication.ROLE_AttendanceManager)) {

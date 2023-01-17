@@ -42,17 +42,12 @@ public class AttendanceAdminAction extends StandardJaxrsAction {
 			@Context HttpServletRequest request) {
 		ActionResult<List<ActionListAll.Wo>> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
-		Boolean check = true;
 
-		if (check) {
-			try {
-				result = new ActionListAll().execute(request, effectivePerson);
-			} catch (Exception e) {
-				result = new ActionResult<>();
-				Exception exception = new ExceptionAttendanceAdminProcess(e, "根据ID获取信息时发生异常！");
-				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
-			}
+		try {
+			result = new ActionListAll().execute(request, effectivePerson);
+		} catch (Exception e) {
+			result.error(e);
+			logger.error(e, effectivePerson, request, null);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
@@ -66,17 +61,11 @@ public class AttendanceAdminAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("考勤管理员配置信息ID") @PathParam("id") String id) {
 		ActionResult<ActionGet.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
-		Boolean check = true;
-
-		if (check) {
-			try {
-				result = new ActionGet().execute(request, effectivePerson, id);
-			} catch (Exception e) {
-				result = new ActionResult<>();
-				Exception exception = new ExceptionAttendanceAdminProcess(e, "根据ID获取信息时发生异常！");
-				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
-			}
+		try {
+			result = new ActionGet().execute(request, effectivePerson, id);
+		} catch (Exception e) {
+			result.error(e);
+			logger.error(e, effectivePerson, request, null);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
@@ -89,17 +78,11 @@ public class AttendanceAdminAction extends StandardJaxrsAction {
 			JsonElement jsonElement) {
 		ActionResult<ActionSave.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
-		Boolean check = true;
-
-		if (check) {
-			try {
-				result = new ActionSave().execute(request, effectivePerson, jsonElement);
-			} catch (Exception e) {
-				result = new ActionResult<>();
-				Exception exception = new ExceptionAttendanceAdminProcess(e, "保存信息时发生异常！");
-				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
-			}
+		try {
+			result = new ActionSave().execute(request, effectivePerson, jsonElement);
+		} catch (Exception e) {
+			result.error(e);
+			logger.error(e, effectivePerson, request, null);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
@@ -113,16 +96,11 @@ public class AttendanceAdminAction extends StandardJaxrsAction {
 			@JaxrsParameterDescribe("考勤管理员配置信息ID") @PathParam("id") String id) {
 		ActionResult<ActionDelete.Wo> result = new ActionResult<>();
 		EffectivePerson effectivePerson = this.effectivePerson(request);
-		Boolean check = true;
-		if (check) {
-			try {
-				result = new ActionDelete().execute(request, effectivePerson, id);
-			} catch (Exception e) {
-				result = new ActionResult<>();
-				Exception exception = new ExceptionAttendanceAdminProcess(e, "根据ID删除信息时发生异常！");
-				result.error(exception);
-				logger.error(e, effectivePerson, request, null);
-			}
+		try {
+			result = new ActionDelete().execute(request, effectivePerson, id);
+		} catch (Exception e) {
+			result.error(e);
+			logger.error(e, effectivePerson, request, null);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
