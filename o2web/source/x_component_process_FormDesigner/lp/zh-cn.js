@@ -776,6 +776,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "tableStyle": "表格样式",
         "defaultData": "默认数据",
         "allowAdd": "允许添加",
+        "allowSort": "允许排序",
         "exportImport": "导出导入",
         "enabled": "启用",
         "disabled": "禁用",
