@@ -472,8 +472,9 @@ MWF.xApplication.process.Xform.$Input = MWF.APP$Input =  new Class(
                         "styles" : this.form.json.errorStyle.close ,
                         "events": {
                             "click" : function(){
-                                this.destroy();
-                            }.bind(node)
+                                //this.destroy();
+                                this.validationMode();
+                            }.bind(this)
                         }
                     }).inject(node);
                 }
