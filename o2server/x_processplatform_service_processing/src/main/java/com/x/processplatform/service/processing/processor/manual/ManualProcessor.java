@@ -330,7 +330,9 @@ public class ManualProcessor extends AbstractManualProcessor {
         if (!(StringUtils.equals(aeiObjects.getWork().getWorkCreateType(), Work.WORKCREATETYPE_SURFACE)
                 && BooleanUtils.isFalse(aeiObjects.getWork().getWorkThroughManual()))) {
             List<String> values = taskIdentities.identities();
+
             values = ListUtils.subtract(values, aeiObjects.getProcessingAttributes().getIgnoreEmpowerIdentityList());
+
             taskIdentities.empower(aeiObjects.business().organization().empower().listWithIdentityObject(
                     aeiObjects.getWork().getApplication(), aeiObjects.getProcess().getEdition(),
                     aeiObjects.getWork().getProcess(), aeiObjects.getWork().getId(), values));

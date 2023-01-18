@@ -26,6 +26,8 @@ import com.x.base.core.project.connection.ActionResponse;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.express.Business;
 import com.x.organization.assemble.express.ThisApplication;
@@ -36,182 +38,187 @@ import com.x.organization.core.entity.accredit.Filter;
 
 class ActionListWithIdentityObject extends BaseAction {
 
-	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-			ActionResult<List<Wo>> result = new ActionResult<>();
-			Business business = new Business(emc);
-			List<Wo> wos = this.convert(business, wi);
-			result.setData(wos);
-			return result;
-		}
-	}
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActionListWithIdentityObject.class);
 
-	public static class Wi extends GsonPropertyObject {
+    ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 
-		@FieldDescribe("应用")
-		private String application;
+        LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 
-		@FieldDescribe("流程版本")
-		private String edition;
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+            ActionResult<List<Wo>> result = new ActionResult<>();
+            Business business = new Business(emc);
+            List<Wo> wos = this.convert(business, wi);
+            result.setData(wos);
+            return result;
+        }
+    }
 
-		@FieldDescribe("流程")
-		private String process;
+    public static class Wi extends GsonPropertyObject {
 
-		@FieldDescribe("工作")
-		private String work;
+        @FieldDescribe("应用")
+        private String application;
 
-		@FieldDescribe("身份")
-		private List<String> identityList = new ArrayList<>();
+        @FieldDescribe("流程版本")
+        private String edition;
 
-		public List<String> getIdentityList() {
-			return identityList;
-		}
+        @FieldDescribe("流程")
+        private String process;
 
-		public void setIdentityList(List<String> identityList) {
-			this.identityList = identityList;
-		}
+        @FieldDescribe("工作")
+        private String work;
 
-		public String getApplication() {
-			return application;
-		}
+        @FieldDescribe("身份")
+        private List<String> identityList = new ArrayList<>();
 
-		public void setApplication(String application) {
-			this.application = application;
-		}
+        public List<String> getIdentityList() {
+            return identityList;
+        }
 
-		public String getProcess() {
-			return process;
-		}
+        public void setIdentityList(List<String> identityList) {
+            this.identityList = identityList;
+        }
 
-		public void setProcess(String process) {
-			this.process = process;
-		}
+        public String getApplication() {
+            return application;
+        }
 
-		public String getWork() {
-			return work;
-		}
+        public void setApplication(String application) {
+            this.application = application;
+        }
 
-		public void setWork(String work) {
-			this.work = work;
-		}
+        public String getProcess() {
+            return process;
+        }
 
-		public String getEdition() {
-			return edition;
-		}
+        public void setProcess(String process) {
+            this.process = process;
+        }
 
-		public void setEdition(String edition) {
-			this.edition = edition;
-		}
+        public String getWork() {
+            return work;
+        }
 
-	}
+        public void setWork(String work) {
+            this.work = work;
+        }
 
-	public static class Wo extends Empower {
+        public String getEdition() {
+            return edition;
+        }
 
-		private static final long serialVersionUID = 1559687446726204650L;
+        public void setEdition(String edition) {
+            this.edition = edition;
+        }
 
-		public Wo() {
+    }
 
-		}
+    public static class Wo extends Empower {
 
-		public Wo(String fromIdentity, String toIdentity) {
-			this.setFromIdentity(fromIdentity);
-			this.setToIdentity(toIdentity);
-		}
+        private static final long serialVersionUID = 1559687446726204650L;
 
-	}
+        public Wo() {
 
-	private List<Wo> convert(Business business, Wi wi) throws Exception {
+        }
 
-		List<Wo> wos = new ArrayList<>();
+        public Wo(String fromIdentity, String toIdentity) {
+            this.setFromIdentity(fromIdentity);
+            this.setToIdentity(toIdentity);
+        }
 
-		Map<String, List<Empower>> map = this.list(business, wi).stream()
-				.collect(Collectors.groupingBy(o -> o.getFromIdentity()));
+    }
 
-		for (String str : wi.getIdentityList()) {
+    private List<Wo> convert(Business business, Wi wi) throws Exception {
 
-			List<Empower> list = map.get(str);
+        List<Wo> wos = new ArrayList<>();
 
-			if (ListTools.isNotEmpty(list)) {
-				list.sort(new EmpowerComparator());
-				Empower empower = this.pick(business, list, wi.getWork());
-				if (null != empower) {
-					Wo wo = new Wo(str, str);
-					wo.setToIdentity(list.get(0).getToIdentity());
-					wos.add(wo);
-				}
-			}
-		}
-		return wos;
-	}
+        Map<String, List<Empower>> map = this.list(business, wi).stream()
+                .collect(Collectors.groupingBy(Empower::getFromIdentity));
 
-	private Empower pick(Business business, List<Empower> list, String work) throws Exception {
-		for (Empower empower : list) {
+        for (String str : wi.getIdentityList()) {
+            List<Empower> list = map.get(str);
+            if (ListTools.isNotEmpty(list)) {
+                list.sort(new EmpowerComparator());
+                Empower empower = this.pick(business, list, wi.getWork());
+                if (null != empower) {
+                    Wo wo = new Wo(str, str);
+                    wo.setToIdentity(list.get(0).getToIdentity());
+                    wos.add(wo);
+                }
+            }
+        }
+        return wos;
+    }
 
-			if (StringUtils.equals(Empower.TYPE_FILTER, empower.getType())
-					&& StringUtils.isNotEmpty(empower.getFilterListData())) {
-				List<Filter> filters = gson.fromJson(empower.getFilterListData(), Filter.LISTTYPE);
-				Filter filter = filters.get(0);
-				ActionResponse response = ThisApplication.context().applications().getQuery(
-						x_processplatform_assemble_surface.class, Applications.joinQueryUri("data", "work", work) + "/"
-								+ StringUtils.replace(filter.path, ".", "/"));
-				if (null != response.getData()) {
-					if (StringUtils.equals(filter.value, response.getData().getAsString())) {
-						return empower;
-					}
-				} else {
-					return empower;
-				}
-			}
-		}
-		return list.get(0);
-	}
+    private Empower pick(Business business, List<Empower> list, String work) throws Exception {
+        for (Empower empower : list) {
 
-	private class EmpowerComparator implements Comparator<Empower> {
-		public int compare(Empower o1, Empower o2) {
-			if (StringUtils.equals(Empower.TYPE_FILTER, o1.getType())) {
-				return -1;
-			} else if (StringUtils.equals(Empower.TYPE_FILTER, o2.getType())) {
-				return 1;
-			} else if (StringUtils.equals(Empower.TYPE_PROCESS, o1.getType())) {
-				return -1;
-			} else if (StringUtils.equals(Empower.TYPE_PROCESS, o2.getType())) {
-				return 1;
-			} else if (StringUtils.equals(Empower.TYPE_APPLICATION, o1.getType())) {
-				return -1;
-			} else if (StringUtils.equals(Empower.TYPE_APPLICATION, o2.getType())) {
-				return 1;
-			} else {
-				return 0;
-			}
-		}
-	}
+            if (StringUtils.equals(Empower.TYPE_FILTER, empower.getType())
+                    && StringUtils.isNotEmpty(empower.getFilterListData())) {
+                List<Filter> filters = gson.fromJson(empower.getFilterListData(), Filter.LISTTYPE);
+                Filter filter = filters.get(0);
+                ActionResponse response = ThisApplication.context().applications().getQuery(
+                        x_processplatform_assemble_surface.class, Applications.joinQueryUri("data", "work", work) + "/"
+                                + StringUtils.replace(filter.path, ".", "/"));
+                if (null != response.getData()) {
+                    if (StringUtils.equals(filter.value, response.getData().getAsString())) {
+                        return empower;
+                    }
+                } else {
+                    return empower;
+                }
+            }
+        }
+        return list.get(0);
+    }
 
-	private List<Empower> list(Business business, Wi wi) throws Exception {
+    private class EmpowerComparator implements Comparator<Empower> {
+        public int compare(Empower o1, Empower o2) {
+            if (StringUtils.equals(Empower.TYPE_FILTER, o1.getType())) {
+                return -1;
+            } else if (StringUtils.equals(Empower.TYPE_FILTER, o2.getType())) {
+                return 1;
+            } else if (StringUtils.equals(Empower.TYPE_PROCESS, o1.getType())) {
+                return -1;
+            } else if (StringUtils.equals(Empower.TYPE_PROCESS, o2.getType())) {
+                return 1;
+            } else if (StringUtils.equals(Empower.TYPE_APPLICATION, o1.getType())) {
+                return -1;
+            } else if (StringUtils.equals(Empower.TYPE_APPLICATION, o2.getType())) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    }
 
-		List<Identity> identities = business.identity().pick(wi.getIdentityList());
-		List<String> names = ListTools.extractProperty(identities, JpaObject.DISTINGUISHEDNAME, String.class, true,
-				true);
-		EntityManager em = business.entityManagerContainer().get(Empower.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Empower> cq = cb.createQuery(Empower.class);
-		Root<Empower> root = cq.from(Empower.class);
-		Predicate p = cb.or(cb.equal(root.get(Empower_.type), Empower.TYPE_ALL),
-				cb.and(cb.equal(root.get(Empower_.type), Empower.TYPE_APPLICATION),
-						cb.equal(root.get(Empower_.application), wi.getApplication())),
-				cb.and(cb.equal(root.get(Empower_.type), Empower.TYPE_PROCESS), cb.or(
-						cb.and(cb.isNotNull(root.get(Empower_.edition)), cb.notEqual(root.get(Empower_.edition), ""),
-								cb.equal(root.get(Empower_.edition), wi.getEdition())),
-						cb.equal(root.get(Empower_.process), wi.getProcess()))),
-				cb.and(cb.equal(root.get(Empower_.type), Empower.TYPE_FILTER), cb.or(
-						cb.and(cb.isNotNull(root.get(Empower_.edition)), cb.notEqual(root.get(Empower_.edition), ""),
-								cb.equal(root.get(Empower_.edition), wi.getEdition())),
-						cb.equal(root.get(Empower_.process), wi.getProcess()))));
-		p = cb.and(p, root.get(Empower_.fromIdentity).in(names));
-		p = cb.and(p, cb.equal(root.get(Empower_.enable), true));
-		p = cb.and(p, cb.lessThan(root.get(Empower_.startTime), new Date()),
-				cb.greaterThan(root.get(Empower_.completedTime), new Date()));
-		return em.createQuery(cq.select(root).where(p)).getResultList().stream().distinct().collect(Collectors.toList());
-	}
+    private List<Empower> list(Business business, Wi wi) throws Exception {
+
+        List<Identity> identities = business.identity().pick(wi.getIdentityList());
+        List<String> names = ListTools.extractProperty(identities, JpaObject.DISTINGUISHEDNAME, String.class, true,
+                true);
+        EntityManager em = business.entityManagerContainer().get(Empower.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Empower> cq = cb.createQuery(Empower.class);
+        Root<Empower> root = cq.from(Empower.class);
+        Predicate p = cb.or(cb.equal(root.get(Empower_.type), Empower.TYPE_ALL),
+                cb.and(cb.equal(root.get(Empower_.type), Empower.TYPE_APPLICATION),
+                        cb.equal(root.get(Empower_.application), wi.getApplication())),
+                cb.and(cb.equal(root.get(Empower_.type), Empower.TYPE_PROCESS), cb.or(
+                        cb.and(cb.isNotNull(root.get(Empower_.edition)), cb.notEqual(root.get(Empower_.edition), ""),
+                                cb.equal(root.get(Empower_.edition), wi.getEdition())),
+                        cb.equal(root.get(Empower_.process), wi.getProcess()))),
+                cb.and(cb.equal(root.get(Empower_.type), Empower.TYPE_FILTER), cb.or(
+                        cb.and(cb.isNotNull(root.get(Empower_.edition)), cb.notEqual(root.get(Empower_.edition), ""),
+                                cb.equal(root.get(Empower_.edition), wi.getEdition())),
+                        cb.equal(root.get(Empower_.process), wi.getProcess()))));
+        p = cb.and(p, root.get(Empower_.fromIdentity).in(names));
+        p = cb.and(p, cb.equal(root.get(Empower_.enable), true));
+        p = cb.and(p, cb.lessThan(root.get(Empower_.startTime), new Date()),
+                cb.greaterThan(root.get(Empower_.completedTime), new Date()));
+        List<Empower> os = em.createQuery(cq.select(root).where(p)).getResultList().stream().distinct()
+                .collect(Collectors.toList());
+        return os;
+    }
 
 }

@@ -29,8 +29,10 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.eclipse.jetty.plus.jndi.Resource;
 
+import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceC3P0Adapter;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.JsonElement;
@@ -209,13 +211,21 @@ public class ResourceFactory {
             dataSource.setTestConnectionOnCheckout(ds.getTestConnectionOnCheckout());
             dataSource.setMaxIdleTime(ds.getMaxIdleTime());
             dataSource.setAcquireIncrement(2);
-            Properties properties = new Properties();
+            DruidDataSource druidDataSource = (DruidDataSource) FieldUtils.readField(dataSource, "dataSource", true);
             if (BooleanUtils.isTrue(ds.getStatEnable())) {
                 dataSource.setFilters(ds.getStatFilter());
-                properties.setProperty("druid.stat.slowSqlMillis", ds.getSlowSqlMillis().toString());
-                properties.setProperty("druid.stat.logSlowSql", "true");
+                if (BooleanUtils.isTrue(ds.getSlowSqlEnable())) {
+                    Properties properties = new Properties();
+                    properties.setProperty("druid.stat.slowSqlMillis",
+                            ds.getSlowSqlThreshold().toString());
+                    properties.setProperty("druid.stat.logSlowSql", "true");
+                    dataSource.setProperties(properties);
+                }
+                if (BooleanUtils.isTrue(ds.getLogStatEnable())) {
+                    druidDataSource.setStatLogger(new DruidStatLogger());
+                    druidDataSource.setTimeBetweenLogStatsMillis(60000L * ds.getLogStatInterval());
+                }
             }
-            dataSource.setProperties(properties);
             // 增加autoCommit设置
             dataSource.setAutoCommitOnClose(ds.getAutoCommit());
             String name = Config.externalDataSources().name(ds);
@@ -259,13 +269,21 @@ public class ResourceFactory {
             dataSource.setMaxPoolSize(entry.getValue().getMaxTotal());
             dataSource.setMinPoolSize(entry.getValue().getMaxIdle());
             dataSource.setAcquireIncrement(2);
-            Properties properties = new Properties();
+            DruidDataSource druidDataSource = (DruidDataSource) FieldUtils.readField(dataSource, "dataSource", true);
             if (BooleanUtils.isTrue(entry.getValue().getStatEnable())) {
                 dataSource.setFilters(entry.getValue().getStatFilter());
-                properties.setProperty("druid.stat.slowSqlMillis", entry.getValue().getSlowSqlMillis().toString());
-                properties.setProperty("druid.stat.logSlowSql", "true");
+                if (BooleanUtils.isTrue(entry.getValue().getSlowSqlEnable())) {
+                    Properties properties = new Properties();
+                    properties.setProperty("druid.stat.slowSqlMillis",
+                            entry.getValue().getSlowSqlThreshold().toString());
+                    properties.setProperty("druid.stat.logSlowSql", "true");
+                    dataSource.setProperties(properties);
+                }
+                if (BooleanUtils.isTrue(entry.getValue().getLogStatEnable())) {
+                    druidDataSource.setStatLogger(new DruidStatLogger());
+                    druidDataSource.setTimeBetweenLogStatsMillis(60000L * entry.getValue().getLogStatInterval());
+                }
             }
-            dataSource.setProperties(properties);
             // 增加autoCommit设置
             dataSource.setAutoCommitOnClose(false);
             String name = Config.nodes().dataServers().name(entry.getValue());

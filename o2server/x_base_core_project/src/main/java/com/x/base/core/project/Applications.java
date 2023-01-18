@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -90,6 +91,7 @@ public class Applications extends ConcurrentHashMap<String, CopyOnWriteArrayList
             this.put(className, list);
         }
         list.add(application);
+        list.sort(Comparator.comparing(Application::getNode));
     }
 
     public ActionResponse getQuery(Class<?> applicationClass, String uri) throws Exception {
