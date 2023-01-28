@@ -14,12 +14,13 @@ MWF.xApplication.ftsearch.LP = {
 	"noSearchkey": "Please enter a keyword to search",
 	"noSearchkeyAndCondition": "Please enter a keyword or click filter to search",
 	"searchPlacholder": "Please enter a keyword and press \"Enter\" to search",
-	"docTotalInfor": "Find <span class='mainColor_color'>{count}</span> related results for you, it took {time} seconds",
+	"docTotalInfor": "Find <span class='mainColor_color'>{count}</span> related results, it took {time} seconds",
 
 	"mainPage": "Home",
 	"search": "Search",
 	"index": "Advanced Search",
 	"ftsearch": "Full Text Search",
+	"filter": "Filter",
 
 	"summary": "Summary",
 	"docTitle": "Title",
