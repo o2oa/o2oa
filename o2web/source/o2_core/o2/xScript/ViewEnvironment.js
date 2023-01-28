@@ -37,7 +37,15 @@
  *    "logic":"and",
  *    "path":"$work.title",
  *    "comparison":"like",
- *    "value":"7月",
+ *    "value":"关于",
+ *    "formatType":"textValue"
+ * }
+ * @example
+ *  {
+ *    "logic":"and",
+ *    "path":"month",
+ *    "comparison":"in",
+ *    "value":"一月,二月,三月",
  *    "formatType":"textValue"
  * }
  */
