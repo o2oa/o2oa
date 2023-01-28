@@ -14,12 +14,13 @@ MWF.xApplication.ftsearch.LP = {
     "noSearchkey": "请输入关键字搜索",
     "noSearchkeyAndCondition": "请输入关键字或点击过滤条件搜索",
     "searchPlacholder": "请输入关键字，按“回车”搜索",
-    "docTotalInfor": "为您找到相关结果<span class='mainColor_color'>{count}</span>个，耗时{time}秒",
+    "docTotalInfor": "查询到相关结果<span class='mainColor_color'>{count}</span>个，耗时{time}秒",
 
     "mainPage": "首页",
     "search": "搜索",
     "index": "高级搜索",
     "ftsearch": "全文搜索",
+    "filter": "过滤",
 
     "summary": "摘要",
     "docTitle": "标题",
