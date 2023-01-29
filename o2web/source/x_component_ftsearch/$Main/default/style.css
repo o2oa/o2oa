@@ -389,7 +389,7 @@ ul {
 
 .index-filter{
     min-height: 50px;
-    border-bottom: 1px solid #4A90E2;
+    border-bottom: 2px solid #4A90E2;
 }
 .index-filterNoDoc{
     border-bottom: 0;
