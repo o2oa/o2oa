@@ -7,6 +7,8 @@ MWF.xApplication.process.FormDesigner.LP = {
 
 		"repetitionsId": "重复的元素标识符",
 		"notNullId": "元素标识符不能为空",
+        "history": "历史",
+        "componentTree": "组件树",
 
 		"button":{
 			"ok": "确定",

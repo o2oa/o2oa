@@ -1,15 +1,15 @@
 MWF.xApplication.process.FormDesigner.widget = MWF.xApplication.process.FormDesigner.widget || {};
-MWF.xDesktop.requireApp("Template", "MTooltips", null, false);
+// MWF.xDesktop.requireApp("Template", "MTooltips", null, false);
 MWF.xApplication.process.FormDesigner.widget.History = new Class({
     Implements: [Options, Events],
     Extends: MWF.widget.Common,
     options: {
         style: "default"
     },
-    initialize: function(form, actionNode, options){
+    initialize: function(form, container, options){
         this.setOptions(options);
         this.form = form;
-        this.actionNode = actionNode;
+        this.container = container;
         this.root = this.form.node;
         this.path = "../x_component_process_FormDesigner/widget/$History/";
         this.iconPath = this.path+this.options.style+"/icon/";
@@ -23,27 +23,32 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         //存储当前表面状态数组-下一步
         this.nextArray = [];
 
-        this.node = new Element("div", {"height":"100px"});
+        this.node = new Element("div", {"style":"font-size:12px;"}).inject(this.container);
+        this.add({
+            "operation": "open", //操作 create, copy, move, delete
+            "type": "form", //property
+            "moduleId": "form"
+        });
 
-        var _self = this;
-        this.tooltips = new MWF.FCWHistory.Tooltips(
-            this.form.designer.formNode,
-            this.actionNode,
-            this.form.designer,
-            null,
-            {
-                onPostCreate: function () {
-                    _self.node.inject( this.contentNode );
-                    _self.add({
-                        "operation": "open", //操作 create, copy, move, delete
-                        "type": "form", //property
-                        "moduleId": "form"
-                    });
-
-                }
-            }
-        );
-        this.tooltips.load();
+        // var _self = this;
+        // this.tooltips = new MWF.FCWHistory.Tooltips(
+        //     this.form.designer.formNode,
+        //     this.actionNode,
+        //     this.form.designer,
+        //     null,
+        //     {
+        //         onPostCreate: function () {
+        //             _self.node.inject( this.contentNode );
+        //             _self.add({
+        //                 "operation": "open", //操作 create, copy, move, delete
+        //                 "type": "form", //property
+        //                 "moduleId": "form"
+        //             });
+        //
+        //         }
+        //     }
+        // );
+        // this.tooltips.load();
     },
     //获取domPath
     getPath: function (node) {
@@ -115,7 +120,6 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         //          }
         //      ]
         // };
-        debugger;
 
         var isModified = false;
         for( var i=0; i<log.changeList.length; i++ ){
@@ -1134,43 +1138,33 @@ MWF.FCWHistory.PropertyMultiItem = new Class({
     }
 });
 
-MWF.FCWHistory.Tooltips = new Class({
-    Extends: MTooltips,
-    options : {
-        style: "design",
-        axis: "y",      //箭头在x轴还是y轴上展现
-        position : { //node 固定的位置
-            x : "right", //x轴上left center right,  auto 系统自动计算
-            y : "bottom" //y 轴上top middle bottom, auto 系统自动计算
-        },
-        event : "click", //事件类型，有target 时有效， mouseenter对应mouseleave，click 对应 container 的  click
-        isAutoHide: false,
-        hiddenDelay : 200, //ms  , 有target 且 事件类型为 mouseenter 时有效
-        displayDelay : 0,   //ms , 有target 且事件类型为 mouseenter 时有效
-        hasArrow : false,
-        hasCloseAction: true,
-        hasMask: false,
-        isParentOffset: true,
-        nodeStyles: {
-            padding: "0px",
-            "min-height": "100px",
-            "border-radius" : "0px"
-        }
-    },
-    _customNode : function( node, contentNode ){
-        new Element("div", {
-            "style": "padding-left: 10px; background-color: rgb(242, 242, 242); color: #333333; height: 30px; line-height: 30px; ",
-            "text": "历史记录"
-        }).inject(contentNode, "before");
-        //var width = ( parseInt( this.selector.options.width )  )+ "px";
-        //node.setStyles({
-        //    "width": width,
-        //    "max-width": width
-        //});
-        // if( this.data && this.data.length > 0 ){
-        //     this.createItemList( this.data, contentNode )
-        // }else if( this.selector.options.tooltipWhenNoSelectValue ){
-        //     this.createNoSelectValueNode( contentNode );
-        // }
-    },
-})
+// MWF.FCWHistory.Tooltips = new Class({
+//     Extends: MTooltips,
+//     options : {
+//         style: "design",
+//         axis: "y",      //箭头在x轴还是y轴上展现
+//         position : { //node 固定的位置
+//             x : "right", //x轴上left center right,  auto 系统自动计算
+//             y : "bottom" //y 轴上top middle bottom, auto 系统自动计算
+//         },
+//         event : "click", //事件类型，有target 时有效， mouseenter对应mouseleave，click 对应 container 的  click
+//         isAutoHide: false,
+//         hiddenDelay : 200, //ms  , 有target 且 事件类型为 mouseenter 时有效
+//         displayDelay : 0,   //ms , 有target 且事件类型为 mouseenter 时有效
+//         hasArrow : false,
+//         hasCloseAction: true,
+//         hasMask: false,
+//         isParentOffset: true,
+//         nodeStyles: {
+//             padding: "0px",
+//             "min-height": "100px",
+//             "border-radius" : "0px"
+//         }
+//     },
+//     _customNode : function( node, contentNode ){
+//         new Element("div", {
+//             "style": "padding-left: 10px; background-color: rgb(242, 242, 242); color: #333333; height: 30px; line-height: 30px; ",
+//             "text": "历史记录"
+//         }).inject(contentNode, "before");
+//     },
+// })
