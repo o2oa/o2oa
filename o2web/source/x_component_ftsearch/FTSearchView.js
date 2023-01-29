@@ -700,7 +700,7 @@ MWF.xApplication.ftsearch.FTSearchView = new Class({
             displayDelay : 100,
             offset : {
                 x : 0,
-                y : -1
+                y : -2
             },
             position : { //node 固定的位置
                 x : "center", //x 轴上left center right, auto 系统自动计算
