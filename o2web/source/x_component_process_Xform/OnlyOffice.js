@@ -6,7 +6,7 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
     Extends: MWF.APP$Module,
     isActive: false,
     options:{
-        "moduleEvents": ["beforeOpen",
+        "moduleEvents": ["queryLoad","beforeOpen",
             "afterOpen",
             "afterSave"
         ]
@@ -26,6 +26,7 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
         });
     },
     _afterLoaded: function(){
+        this.fireEvent("queryLoad");
         if(!layout.serviceAddressList["x_onlyofficefile_assemble_control"]){
             this.node.set("html","<h3><font color=red>"+MWF.xApplication.process.Xform.LP.onlyoffice.noInstall+"</font></h3>");
             return false;
@@ -41,6 +42,11 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
         if (!this.json.isNotLoadNow){
             this.data = this.getData();
             if(this.data.documentId === ""){
+
+                if (this.json.officeType === "other" && this.json.templateType === "script"){
+                    this.json.template = this.form.Macro.exec(this.json.templeteScript.code, this);
+                }
+
                 this[this.json.officeType === "other"&&this.json.template !== ""? "createDocumentByTemplate":"createDocument"](function (){
                     this.loadDocument();
                 }.bind(this));
