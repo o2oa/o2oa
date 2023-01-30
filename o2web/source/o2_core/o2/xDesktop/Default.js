@@ -30,14 +30,20 @@ o2.xDesktop.Default = new Class({
             if (layout.userLayout.scale>5) layout.userLayout.scale = 5;
         }
         if (layout.userLayout.scale){
-            var s = (1/layout.userLayout.scale)*100;
-            var p = s+"%";
-            document.id(document.documentElement).setStyles({
-                "transform": "scale("+layout.userLayout.scale+")",
-                "transform-origin": "0 0",
-                "width": p,
-                "height":p
-            });
+            // var s = (1/layout.userLayout.scale)*100;
+            // var p = s+"%";
+            // document.id(document.documentElement).setStyles({
+            //     "transform": "scale("+layout.userLayout.scale+")",
+            //     "transform-origin": "0 0",
+            //     "width": p,
+            //     "height":p
+            // });
+
+            document.body.style.zoom = layout.userLayout.scale;
+            // if (layout.desktop){
+            //     if (layout.desktop.setSize) layout.desktop.setSize();
+            // }
+
             this.fireEvent("resize");
             this.setZoomValue();
         }

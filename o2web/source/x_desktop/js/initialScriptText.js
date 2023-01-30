@@ -765,14 +765,15 @@ bind.org = {
      * @methodOf module:server.org
      * @static
      * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、id、unique属性值，人员对象，或上述属性值和对象的数组。
+     * @param {(Boolean)} [findCN] 是否需要额外查找中文名称（如张三），默认false。如果为true，除匹配unique和distingiushedName外，还会在名称的第一段中查找所有匹配到的人（精确匹配）。
      * @return {PersonData|PersonData[]} 返回人员，单个是Object，多个是Array。
      * @o2ActionOut x_organization_assemble_express.PersonAction.listObject|example=Person
      * @o2syntax
      * //返回人员，单个是对象，多个是数组。
      * var personList = this.org.getPerson( name );
      */
-    getPerson: function(name){
-        var v = this.oPerson.listObject(getNameFlag(name));
+    getPerson: function(name, findCN){
+        var v = this.oPerson.listObject(getNameFlag(name), !!findCN);
         var v_json = (!v || !v.length) ? null: JSON.parse(v.toString());
         // if (!v || !v.length) v = null;
         // return (v && v.length===1) ? v[0] : v;
@@ -1130,15 +1131,16 @@ bind.org = {
      * @o2membercategory unit
      * @methodOf module:server.org
      * @static
-     * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。
+     * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。]
+     * @param {(Boolean)} [findCN] 是否需要额外查找中文名称（如综合部），默认false。如果为true，除匹配unique和distingiushedName外，还会在名称的第一段中查找所有匹配到的部门（精确匹配）。
      * @return {UnitData|UnitData[]} 单个是Object，多个是Array。
      * @o2ActionOut x_organization_assemble_express.UnitAction.listObject|example=Unit
      * @o2syntax
      * //返回组织，单个是对象，多个是数组。
      * var unitList = this.org.getUnit( name );
      */
-    getUnit: function(name){
-        var v = this.oUnit.listObject(getNameFlag(name));
+    getUnit: function(name, findCN){
+        var v = this.oUnit.listObject(getNameFlag(name), !!findCN);
         var v_json = (!v || !v.length) ? null: JSON.parse(v.toString());
         return (v_json && v_json.length===1) ? v_json[0] : v_json;
         // if (!v || !v.length) v = null;
