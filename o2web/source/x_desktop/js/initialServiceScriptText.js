@@ -397,8 +397,8 @@ bind.org = {
         return this.oPerson.hasRole(nameFlag, getNameFlag(role));
     },
     //获取人员--返回人员的对象数组
-    getPerson: function(name){
-        var v = this.oPerson.listObject(getNameFlag(name));
+    getPerson: function(name, findCN){
+        var v = this.oPerson.listObject(getNameFlag(name), !!findCN);
         var v_json = (!v || !v.length) ? null: JSON.parse(v.toString());
         // if (!v || !v.length) v = null;
         // return (v && v.length===1) ? v[0] : v;
@@ -537,8 +537,8 @@ bind.org = {
 
     //组织**********
     //获取组织
-    getUnit: function(name){
-        var v = this.oUnit.listObject(getNameFlag(name));
+    getUnit: function(name, findCN){
+        var v = this.oUnit.listObject(getNameFlag(name), !!findCN);
         var v_json = (!v || !v.length) ? null: JSON.parse(v.toString());
         return (v_json && v_json.length===1) ? v_json[0] : v_json;
         // if (!v || !v.length) v = null;
