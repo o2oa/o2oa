@@ -1774,6 +1774,7 @@ debugger;
         var styles = span.getStyles("font-size", "color", "letter-spacing", "font-weight", "font-family", "line-height");
         var keys = Object.keys(styles);
         var msoStyle = this.getMsoStyle(span);
+        styles["font-size"] = window.getComputedStyle(span).fontSize;
 
         for (var i = 0; i<keys.length; i++){
             switch (keys[i]){
@@ -1860,6 +1861,7 @@ debugger;
         var font = Object.clone(runPrs.font);
         var styles = span.getStyles("font-size", "color", "letter-spacing", "font-weight", "font-family")
         var keys = Object.keys(styles);
+        styles["font-size"] = window.getComputedStyle(span).fontSize;
 
         for (var i = 0; i<keys.length; i++){
             switch (keys[i]){
