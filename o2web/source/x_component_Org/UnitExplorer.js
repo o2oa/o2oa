@@ -945,10 +945,11 @@ MWF.xApplication.Org.UnitExplorer.UnitContent = new Class({
         var div = td.getFirst("div");
         var size = tr.getSize();
         var titleTr = table.getElement("tr");
+        var _self = this;
 
         var moveNode = new Element("table", {"styles": {
-            "opacity": 0.7,
-            "border": "1px dashed #999",
+            "opacity": 0.3,
+            "border": "0px dashed #999",
             "z-index": 10000,
             "width": size.x,
             "height": size.y,
@@ -973,13 +974,13 @@ MWF.xApplication.Org.UnitExplorer.UnitContent = new Class({
         if (!nextData) nextData={};
 
         var drag = new Drag.Move(moveNode, {
-            "container": table,
+            // "container": table,
             "droppables": table.getElements("tr").erase(tr),
             "preventDefault": true,
             "stopPropagation": true,
             "onStart": function(){
                 tr.setStyles({
-                    "display": "none",
+                    // "display": "none",
                     "background-color": "#dff3fc"
                 });
             }.bind(this),
@@ -987,7 +988,7 @@ MWF.xApplication.Org.UnitExplorer.UnitContent = new Class({
                 tr.inject(droppable, "after");
                 droppable.setStyles({"background": "#fcf8f1"});
                 tr.setStyles({"display": "table-row"});
-                element.setStyles({"display": "none"});
+                // element.setStyles({"display": "none"});
 
                 var nextTr = tr.getNext("tr");
                 if (nextTr){
@@ -999,55 +1000,56 @@ MWF.xApplication.Org.UnitExplorer.UnitContent = new Class({
 
             },
             "onLeave": function(element, droppable){
-                droppable.setStyles({"background": "transparent "});
-                tr.setStyles({"display": "none"});
+                droppable.setStyles({"background": "transparent"});
+                // tr.setStyles({"display": "none"});
                 element.setStyles({"display": "block"});
             },
             "onDrop": function(dragging, droppable, e){
-                var nextTr = tr.getNext("tr");
-                if (nextTr){
-                    nextData = nextTr.retrieve("data");
-                }else{
-                    nextData={};
-                }
-                if (!nextData) nextData={};
-                moveNode.destroy();
+                if (droppable){
+                    var nextTr = tr.getNext("tr");
+                    if (nextTr){
+                        nextData = nextTr.retrieve("data");
+                    }else{
+                        nextData={};
+                    }
+                    if (!nextData) nextData={};
+                    moveNode.destroy();
 
-                droppable.setStyles({"background": "transparent "});
-                tr.setStyles({"background": "transparent "});
-                this.explorer.actions.orderIdentity(item.data.id, nextData.id || "(0)", function(){});
-                div.setStyle("display", "block");
+                    droppable.setStyles({"background": "transparent"});
+                    // tr.setStyles({"background": "transparent "});
+                    this.fadeTr(tr);
+
+                    this.explorer.actions.orderIdentity(item.data.id, nextData.id || "(0)", function(){});
+                    div.setStyle("display", "block");
+                }else{
+                    _self.cancelDrag(dragging, div, tr, drag);
+                }
             }.bind(this),
             "onCancel": function(dragging){
-                dragging.destroy();
-                drag = null;
-                div.setStyle("display", "block");
+                _self.cancelDrag(dragging, div, tr, drag);
             }
         });
         drag.start(e);
-
-
-
-        // var moveNode = new Element("div", {"styles": {
-        //     "opacity": 0.7,
-        //     "border": "1px dashed #999",
-        //     "z-index": 10000,
-        //     "width": size.x,
-        //     "height": size.y,
-        //     "background-color": "#CCC",
-        //     "position": "absolute"
-        // }}).inject(this.explorer.app.content);
-        // moveNode.setStyles({
-        //     "opacity": 0.7,
-        //     "border": "1px dashed #999",
-        //     "z-index": 10000,
-        //     "width": size.x,
-        //     "height": size.y,
-        //     "background-color": "#CCC",
-        //     "position": "absolute"
+    },
+    cancelDrag: function(dragging, div, tr, drag){
+        if (dragging) dragging.destroy();
+        drag = null;
+        div.setStyle("display", "block");
+        this.fadeTr(tr);
+        // tr.setStyles({
+        //     "display": "table-row",
+        //     "background-color": "transparent"
         // });
+    },
+    fadeTr: function(tr){
+        tr.setStyles({"display": "table-row"});
 
-
+        tr.morph({
+            "background-color": "#fdfdfd"
+        });
+        window.setTimeout(function(){
+            tr.setStyles({"background-color": "transparent"});
+        }, 800);
     },
 
     addPersonMember: function(){
