@@ -15,12 +15,15 @@ import com.x.base.core.project.message.MessageConnector;
 import com.x.cms.assemble.control.queue.DataImportStatus;
 import com.x.cms.assemble.control.queue.ProjectionExecuteQueue;
 import com.x.cms.assemble.control.queue.QueueBatchOperation;
-import com.x.cms.assemble.control.queue.QueueDataRowImport;
 import com.x.cms.assemble.control.queue.QueueDocumentDelete;
 import com.x.cms.assemble.control.queue.QueueDocumentUpdate;
 import com.x.cms.assemble.control.queue.QueueDocumentViewCountUpdate;
 import com.x.cms.assemble.control.queue.QueueSendDocumentNotify;
-import com.x.cms.assemble.control.timertask.*;
+import com.x.cms.assemble.control.timertask.PublishWaitDocumentTask;
+import com.x.cms.assemble.control.timertask.Timertask_BatchOperationTask;
+import com.x.cms.assemble.control.timertask.Timertask_InitOperationRunning;
+import com.x.cms.assemble.control.timertask.Timertask_LogRecordCheckTask;
+import com.x.cms.assemble.control.timertask.Timertask_RefreshAllDocumentReviews;
 
 public class ThisApplication {
 
@@ -46,8 +49,6 @@ public class ThisApplication {
 
 	public static final String ROLE_CMSManager = "CMSManager@CMSManagerSystemRole@R";
 	public static final String ROLE_Manager = "Manager@ManagerSystemRole@R";
-	// 文档批量导入时数据存储过程
-	public static final QueueDataRowImport queueDataRowImport = new QueueDataRowImport();
 	// Document删除时也需要检查一下热点图片里的数据是否已经删除掉了
 	public static final QueueDocumentDelete queueDocumentDelete = new QueueDocumentDelete();
 	// Document变更标题时也需要更新一下热点图片里的数据
@@ -73,7 +74,6 @@ public class ThisApplication {
 		initThreadPool();
 		context().startQueue(queueBatchOperation);
 		context().startQueue(queueDocumentDelete);
-		context().startQueue(queueDataRowImport);
 		context().startQueue(queueDocumentUpdate);
 		context().startQueue(queueDocumentViewCountUpdate);
 		context().startQueue(queueSendDocumentNotify);
