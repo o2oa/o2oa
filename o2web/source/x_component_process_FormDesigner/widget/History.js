@@ -198,8 +198,8 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
                             it.destroy();
                         }
 
-                        lastItem.data.changeList.each(function ( c ) {
-                            c.toValue = change.toValue;
+                        lastItem.data.changeList.each(function ( c, i ) {
+                            c.toValue = log.changeList[i].toValue;
                         });
 
                         flag = true;
@@ -208,6 +208,7 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
             }
         }
         if( !flag ) {
+            console.log(log);
             var item = new MWF.FCWHistory.PropertyMultiItem(this, log);
             item.load(modules);
             this.addItem(item);
@@ -1120,6 +1121,7 @@ MWF.FCWHistory.PropertyMultiItem = new Class({
                 this.changeJsonDate(json, change.name, change.fromValue);
                 module.setPropertiesOrStyles(change.name, change.toValue);
                 module._setEditStyle(change.name, null, change.toValue);
+                if( module.property )module.property.reset();
             }
         }
     },
@@ -1132,7 +1134,8 @@ MWF.FCWHistory.PropertyMultiItem = new Class({
                 var json = module.json;
                 this.changeJsonDate(json, change.name, change.toValue);
                 module.setPropertiesOrStyles(change.name, change.fromValue);
-                module._setEditStyle(change.name, null, change.fromValue)
+                module._setEditStyle(change.name, null, change.fromValue);
+                if( module.property )module.property.reset();
             }
         }
     }

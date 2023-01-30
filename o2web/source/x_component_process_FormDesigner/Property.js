@@ -3135,12 +3135,13 @@ MWF.xApplication.process.FormDesigner.PropertyMulti = new Class({
                     "collapse": (collapse) ? true : false,
                     "onChange": function(){
                         //this.data[name] = maplist.toJson();
-                        //
+                        debugger;
                         var oldData = this.getOldValueList(name);
                         this.changeJsonDate(name, maplist.toJson());
                         this.changeStyle(name, oldData);
                         this.changeData(name, null, oldData);
                         this.checkHistory( name, oldData );
+                        this.reshowProperty();
                     }.bind(this),
                     "onDelete": function(key){
                         this.modules.each(function (module) {
@@ -3177,6 +3178,7 @@ MWF.xApplication.process.FormDesigner.PropertyMulti = new Class({
                             var oldValueList = property.getOldValueList(jsondata);
                             property.setRadioValue(jsondata, this, true);
                             property.checkHistory( jsondata, oldValueList );
+                            property.reshowProperty();
                         });
                         input.addEvent("blur", function(e){
                             property.setRadioValue(jsondata, this, true);
@@ -3195,6 +3197,7 @@ MWF.xApplication.process.FormDesigner.PropertyMulti = new Class({
                             var oldValueList = property.getOldValueList(jsondata);
                             property.setCheckboxValue(jsondata, this, true);
                             property.checkHistory( jsondata, oldValueList );
+                            property.reshowProperty();
                         });
                         input.addEvent("keydown", function(e){
                             e.stopPropagation();
@@ -3206,6 +3209,7 @@ MWF.xApplication.process.FormDesigner.PropertyMulti = new Class({
                             var v = (this.type==="number") ? this.value.toFloat() : this.value;
                             property.setValue(jsondata, v, this, true);
                             property.checkHistory( jsondata, oldValueList );
+                            property.reshowProperty();
                         });
                         input.addEvent("blur", function(e){
                             var v = (this.type==="number") ? this.value.toFloat() : this.value;
@@ -3217,6 +3221,7 @@ MWF.xApplication.process.FormDesigner.PropertyMulti = new Class({
                                 var v = (this.type==="number") ? this.value.toFloat() : this.value;
                                 property.setValue(jsondata, v, this, true);
                                 property.checkHistory( jsondata, oldValueList );
+                                property.reshowProperty();
                             }
                             e.stopPropagation();
                         });
@@ -3265,13 +3270,16 @@ MWF.xApplication.process.FormDesigner.PropertyMulti = new Class({
     getOldValueList: function(name){
         var oldValueList = [];
         this.modules.each(function(module){
-           oldValueList.push( module.json[name] );
+            var value = module.json[name];
+            var v = o2.typeOf( value ) === "object" ? Object.clone(value) : value;
+           oldValueList.push( v );
         }.bind(this));
         return oldValueList;
     },
     checkHistory: function(name, oldValueList, newValue){
         if( this.form.history ){
-            this.form.checkMultiPropertyHistory(name, oldValueList, newValue, this.modules);
+            var newV = typeOf( newValue ) === "object" ? Object.clone(newValue) : newValue;
+            this.form.checkMultiPropertyHistory(name, oldValueList, newV, this.modules);
         }
     },
     changeData: function(name, input, oldValue){
@@ -3282,7 +3290,13 @@ MWF.xApplication.process.FormDesigner.PropertyMulti = new Class({
     changeJsonDate: function(key, value){
         //alert(key+": "+value );
         this.modules.each(function(module){
-            module.json[key] = value;
+            var v = typeOf(value) === "object" ? Object.clone(value) : value;
+            module.json[key] = v;
         }.bind(this));
     },
+    reshowProperty: function(){
+        this.modules.each(function(module){
+            if( module.property )module.property.reset();
+        }.bind(this));
+    }
 });

@@ -32,6 +32,7 @@ MWF.xApplication.process.FormDesigner.Module.Datatable = MWF.FCDatatable = new C
 		debugger;
 	},
 	clearTemplateStyles: function(styles){
+		debugger;
 		if (styles){
 			if (styles.styles) this.removeStyles(styles.styles, "styles");
 			if (styles.tableStyles) this.removeStyles(styles.tableStyles, "tableStyles");
@@ -43,9 +44,12 @@ MWF.xApplication.process.FormDesigner.Module.Datatable = MWF.FCDatatable = new C
 			if (styles.sectionAmountStyles) this.removeStyles(styles.sectionAmountStyles, "sectionAmountStyles");
 			if (styles.itemTitleStyles) this.removeStyles(styles.itemTitleStyles, "itemTitleStyles");
 			if (styles.properties) this.removeStyles(styles.properties, "properties");
+			if (styles.importActionStyles) this.removeStyles(styles.importActionStyles, "importActionStyles");
+			if (styles.exportActionStyles) this.removeStyles(styles.exportActionStyles, "exportActionStyles");
 		}
 	},
 	setTemplateStyles: function(styles){
+		debugger;
 		if (styles.styles) this.copyStyles(styles.styles, "styles");
 		if (styles.tableStyles) this.copyStyles(styles.tableStyles, "tableStyles");
 		if (styles.titleStyles) this.copyStyles(styles.titleStyles, "titleStyles");
@@ -56,6 +60,8 @@ MWF.xApplication.process.FormDesigner.Module.Datatable = MWF.FCDatatable = new C
 		if (styles.sectionAmountStyles) this.copyStyles(styles.sectionAmountStyles, "sectionAmountStyles");
 		if (styles.itemTitleStyles) this.copyStyles(styles.itemTitleStyles, "itemTitleStyles");
 		if (styles.properties) this.copyStyles(styles.properties, "properties");
+		if (styles.importActionStyles) this.copyStyles(styles.importActionStyles, "importActionStyles");
+		if (styles.exportActionStyles) this.copyStyles(styles.exportActionStyles, "exportActionStyles");
 	},
 	setImpExpTableStyles: function(){
 		//设置导入导出表格样式

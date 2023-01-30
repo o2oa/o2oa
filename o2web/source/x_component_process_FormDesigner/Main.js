@@ -871,12 +871,13 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 
         this.domPage.showTabIm();
 
-        // this.viewPage.addEvent("postShow", function () {
-        //     if (this.view) {
-        //         this.view.setContentHeight();
-        //         this.view.selected();
-        //     }
-        // }.bind(this));
+        this.domPage.addEvent("postShow", function () {
+            var module = this.form.currentSelectedModule;
+            if (module && module.treeNode){
+                (new Fx.Scroll(this.propertyDomScrollArea)).toElement(module.treeNode.node);
+            }
+        }.bind(this));
+
         // this.runPage.addEvent("postShow", function () {
         //     this.selected();
         // }.bind(this));
