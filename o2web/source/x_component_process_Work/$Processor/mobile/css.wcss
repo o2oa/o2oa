@@ -76,7 +76,7 @@
         "padding-left": "20px"
     },
     "routeOpinionArea": {
-        "height": "129px",
+//        "height": "129px",
         "border-bottom": "0px solid #6681a5"
     },
 
