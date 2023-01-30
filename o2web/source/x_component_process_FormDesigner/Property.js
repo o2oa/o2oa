@@ -2544,8 +2544,6 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         }.bind(this));
 
     },
-
-
 	loadMaplist: function(){
 		var maplists = this.propertyContent.getElements(".MWFMaplist");
 		maplists.each(function(node){
@@ -2769,41 +2767,6 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 		}.bind(this));
 		
 	},
-    loadMaplist: function(){
-        var maplists = this.propertyContent.getElements(".MWFMaplist");
-        maplists.each(function(node){
-            var title = node.get("title");
-            var name = node.get("name");
-            var lName = name.toLowerCase();
-            var collapse = node.get("collapse");
-            var mapObj = this.data[name];
-            if (!mapObj) mapObj = {};
-            MWF.require("MWF.widget.Maplist", function(){
-                node.empty();
-                var maplist = new MWF.widget.Maplist(node, {
-                    "title": title,
-                    "collapse": (collapse) ? true : false,
-                    "onChange": function(){
-                        //this.data[name] = maplist.toJson();
-                        //
-                        var oldData = this.getOldValueList(name);
-                        this.changeJsonDate(name, maplist.toJson());
-                        this.changeStyle(name, oldData);
-                        this.changeData(name, null, oldData);
-                        this.checkHistory( name, oldData );
-                    }.bind(this),
-                    "onDelete": function(key){
-                        this.modules.each(function (module) {
-                            module.deletePropertiesOrStyles(name, key);
-                        })
-                    }.bind(this),
-                    "isProperty": (lName.contains("properties") || lName.contains("property") || lName.contains("attribute"))
-                });
-                maplist.load(mapObj);
-                this.maplists[name] = maplist;
-            }.bind(this));
-        }.bind(this));
-    },
     checkHistory: function(name, oldValue, newValue, notSetEditStyle){
         if( this.isLoaded() && this.module.form.history ){
             this.module.checkPropertyHistory(name, oldValue, newValue, notSetEditStyle);
@@ -3155,6 +3118,41 @@ MWF.xApplication.process.FormDesigner.PropertyMulti = new Class({
     },
     hide: function(){
         if (this.propertyContent) this.propertyContent.destroy();
+    },
+    loadMaplist: function(){
+        var maplists = this.propertyContent.getElements(".MWFMaplist");
+        maplists.each(function(node){
+            var title = node.get("title");
+            var name = node.get("name");
+            var lName = name.toLowerCase();
+            var collapse = node.get("collapse");
+            var mapObj = this.data[name];
+            if (!mapObj) mapObj = {};
+            MWF.require("MWF.widget.Maplist", function(){
+                node.empty();
+                var maplist = new MWF.widget.Maplist(node, {
+                    "title": title,
+                    "collapse": (collapse) ? true : false,
+                    "onChange": function(){
+                        //this.data[name] = maplist.toJson();
+                        //
+                        var oldData = this.getOldValueList(name);
+                        this.changeJsonDate(name, maplist.toJson());
+                        this.changeStyle(name, oldData);
+                        this.changeData(name, null, oldData);
+                        this.checkHistory( name, oldData );
+                    }.bind(this),
+                    "onDelete": function(key){
+                        this.modules.each(function (module) {
+                            module.deletePropertiesOrStyles(name, key);
+                        })
+                    }.bind(this),
+                    "isProperty": (lName.contains("properties") || lName.contains("property") || lName.contains("attribute"))
+                });
+                maplist.load(mapObj);
+                this.maplists[name] = maplist;
+            }.bind(this));
+        }.bind(this));
     },
     setEditNodeEvent: function(){
         var property = this;
