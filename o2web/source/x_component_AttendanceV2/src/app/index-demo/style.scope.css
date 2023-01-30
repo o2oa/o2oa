@@ -1,0 +1,56 @@
+.hello{
+    text-align: center;
+}
+h3 {
+    margin: 40px 0 0;
+}
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+li {
+    display: inline-block;
+    margin: 0 10px;
+}
+a {
+    color: #42b983;
+}
+.logo {
+    margin-top: 20px;
+    width: 200px;
+    height: 200px;
+}
+.taskListTable{
+    width: 800px;
+    box-sizing: border-box;
+    border-collapse: collapse;
+}
+.taskListTable th{
+    height: 30px;
+    line-height: 30px;
+    background-color: #d4e6fb;
+}
+.taskListTable td{
+    height: 24px;
+    line-height: 24px;
+}
+button {
+    cursor: pointer;
+    font-size: 12px;
+    margin: 10px;
+    padding: 5px 10px;
+    color: #ffffff;
+    background-color: #4a90e2;
+    border: 1px solid #4a90e2;
+    border-radius: 100px;
+}
+input {
+    height: 26px;
+    border-radius: 13px;
+    border: 1px solid #cccccc;
+    margin: 10px 10px;
+    padding: 0 5px;
+}
+input:focus{
+    border: 1px solid #4a90e2;
+}

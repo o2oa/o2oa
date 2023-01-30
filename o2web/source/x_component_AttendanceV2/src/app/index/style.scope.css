@@ -1,56 +1,32 @@
-.hello{
-    text-align: center;
+ .att {
+  background-color: white;
+ }
+ .index_page_header_container {
+  display: flex;
+  height: 48px;
+  padding: 0 18px;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #eee;
 }
-h3 {
-    margin: 40px 0 0;
+.index_page_header_title {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  color: #171a1d;
+  margin-right: 4px;
 }
-ul {
-    list-style-type: none;
-    padding: 0;
+.index_page_content_container {
+  display: flex;
 }
-li {
-    display: inline-block;
-    margin: 0 10px;
+.index_page_nav_container {
+  flex-shrink: 0;
+  height: calc(100vh - 48px);
+  overflow: auto;
 }
-a {
-    color: #42b983;
-}
-.logo {
-    margin-top: 20px;
-    width: 200px;
-    height: 200px;
-}
-.taskListTable{
-    width: 800px;
-    box-sizing: border-box;
-    border-collapse: collapse;
-}
-.taskListTable th{
-    height: 30px;
-    line-height: 30px;
-    background-color: #d4e6fb;
-}
-.taskListTable td{
-    height: 24px;
-    line-height: 24px;
-}
-button {
-    cursor: pointer;
-    font-size: 12px;
-    margin: 10px;
-    padding: 5px 10px;
-    color: #ffffff;
-    background-color: #4a90e2;
-    border: 1px solid #4a90e2;
-    border-radius: 100px;
-}
-input {
-    height: 26px;
-    border-radius: 13px;
-    border: 1px solid #cccccc;
-    margin: 10px 10px;
-    padding: 0 5px;
-}
-input:focus{
-    border: 1px solid #4a90e2;
+.index_page_route_container {
+  flex-grow: 1;
+  overflow: hidden;
+  position: relative;
+  min-width: 670px;
 }

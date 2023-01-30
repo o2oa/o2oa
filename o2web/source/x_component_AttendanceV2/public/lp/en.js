@@ -1,5 +1,5 @@
 MWF.xApplication.AttendanceV2.LP = {
-    "title": "AttendanceV2",
+    "title": "Attendance",
     "welcome": "Welcome to O2OA Component",
     "taskListTitle": "Here are your top 5 task",
 
