@@ -1,0 +1,1 @@
+module.exports = require('@o2oa/oovm-scripts');

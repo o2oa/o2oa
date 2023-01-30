@@ -1,0 +1,15 @@
+<div class="hello">
+    <img class="logo" alt="O2OA logo" src="../../assets/o2logo.png">
+    <h1>{{ $.lp.welcome }}</h1>
+    <p>
+        For more O2OA development document,<br>
+        check out the
+        <a href="https://www.o2oa.net/develop.html" target="_blank" rel="noopener">O2OA develop documentation</a>.
+    </p>
+    <task-list></task-list>
+
+    <div>
+        <div><label>{{$.lp.inputSomething}}: <input oo-model="inputValue"/></label></div>
+        <div oo-if="$$.inputValue">{{$.lp.inputContent}}: {{$$.inputValue}}</div>
+    </div>
+</div>

@@ -90,7 +90,8 @@ var apps = [
     { "folder": "x_component_process_workcenter", "tasks": ["move", "min"] },
     { "folder": "x_component_appstore", "tasks": [] },
     { "folder": "x_component_appstore_application", "tasks": [] },
-    { "folder": "x_component_systemconfig", "tasks": [] }
+    { "folder": "x_component_systemconfig", "tasks": [] },
+    { "folder": "x_component_AttendanceV2", "tasks": [] }
 ];
 
 module.exports = apps;

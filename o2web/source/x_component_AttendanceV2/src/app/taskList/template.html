@@ -1,0 +1,24 @@
+<div class="task" >
+    <h3>{{$.lp.taskListTitle}}</h3>
+    <br>
+    <table align="center" class="taskListTable" border="1">
+        <tr>
+            <th>{{$.lp.taskTitle}}</th>
+            <th>{{$.lp.taskProcess}}</th>
+            <th>{{$.lp.taskTime}}</th>
+        </tr>
+
+        <tr oo-each="$.data" oo-item="i">
+            <td><a href="#" @click="openTask">{{i.value.title}}</a></td>
+            <td>{{i.value.processName}}</td>
+            <td>{{i.value.startTime}}</td>
+        </tr>
+    </table>
+    <br>
+    <button @click="openCalendar">{{$.lp.openCalendar}}</button>
+    <button @click="openOrganization">{{$.lp.openOrganization}}</button>
+    <button @click="startProcess">{{$.lp.startProcess}}</button>
+    <button @click="createDocument">{{$.lp.createDocument}}</button>
+    <br>
+    <button @click="openInBrowser">{{$.lp.openInBrowser}}</button>
+</div>
