@@ -104,4 +104,22 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 	public static class AttendanceWorkPlace {
 		public static final String table = "ATDC_WORK_PLACE";
 	}
+
+
+
+	//////////////V2版本///////////////////////////////
+
+	public static class AttendanceV2Shift {
+		public static final String table = "ATTEND_V2_SHIFT";
+	}
+	public static class AttendanceV2WorkPlace {
+		public static final String table = "ATTEND_V2_WORK_PLACE";
+	}
+
+	public static class AttendanceV2Group {
+		public static final String table = "ATTEND_V2_GROUP";
+	}
+
+
+
 }
