@@ -827,9 +827,14 @@ MWF.xApplication.Common.Main = new Class({
 			debugger;
 			var x = 0, y = 0;
 			if (e === "center") {
-				var p = o2.getCenterPosition(this.content, width, height);
-				x = p.x;
-				y = p.y;
+				if( layout.mobile ){
+					x = (size.x - parseFloat(width)) / 2;
+					y = (size.y - parseFloat(height)) / 2;
+				}else{
+                    var p = o2.getCenterPosition(this.content, width, height);
+                    x = p.x;
+                    y = p.y;
+				}
 			} else {
 				x = parseFloat(e.event.x);
 				y = parseFloat(e.event.y);
