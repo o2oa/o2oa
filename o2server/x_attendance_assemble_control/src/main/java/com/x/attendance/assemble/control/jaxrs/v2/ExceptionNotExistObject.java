@@ -1,13 +1,13 @@
-package com.x.attendance.assemble.control.jaxrs.v2.shift;
+package com.x.attendance.assemble.control.jaxrs.v2;
 
 import com.x.base.core.project.exception.PromptException;
 
-class ExceptionNotExistObject extends PromptException {
+public class ExceptionNotExistObject extends PromptException {
 
 
 	private static final long serialVersionUID = 385265565348213466L;
 
-	ExceptionNotExistObject(String name) {
+	public ExceptionNotExistObject(String name) {
 		super(name + "不存在！");
 	}
 }

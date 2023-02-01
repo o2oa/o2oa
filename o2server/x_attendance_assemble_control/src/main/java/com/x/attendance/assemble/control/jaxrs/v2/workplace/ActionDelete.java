@@ -1,8 +1,8 @@
-package com.x.attendance.assemble.control.jaxrs.v2.shift;
+package com.x.attendance.assemble.control.jaxrs.v2.workplace;
 
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionNotExistObject;
-import com.x.attendance.entity.v2.AttendanceV2Shift;
+import com.x.attendance.entity.v2.AttendanceV2WorkPlace;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.http.ActionResult;
@@ -24,12 +24,12 @@ public class ActionDelete extends BaseAction {
             throw new ExceptionEmptyParameter("id");
         }
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-            AttendanceV2Shift shift = emc.find(id, AttendanceV2Shift.class);
-            if (shift == null) {
-                throw new ExceptionNotExistObject(id+"班次");
+            AttendanceV2WorkPlace workPlace = emc.find(id, AttendanceV2WorkPlace.class);
+            if (workPlace == null) {
+                throw new ExceptionNotExistObject(id+"工作地点");
             }
-            emc.beginTransaction(AttendanceV2Shift.class);
-            emc.delete(AttendanceV2Shift.class, shift.getId());
+            emc.beginTransaction(AttendanceV2WorkPlace.class);
+            emc.delete(AttendanceV2WorkPlace.class, workPlace.getId());
             emc.commit();
             Wo wo = new Wo();
             wo.setValue(true);
