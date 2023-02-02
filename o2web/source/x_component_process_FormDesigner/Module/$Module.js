@@ -1272,6 +1272,19 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 			"html": module.node.outerHTML
 		};
 		return obj;
+	},
+
+	//脚本附签上的脚本编辑器
+	addScriptJsEditor: function (propertyName, jsEditor) {
+		if( !this.scriptJsEditors )this.scriptJsEditors = {};
+		this.scriptJsEditors[propertyName] = jsEditor;
+	},
+	getScriptJsEditor: function (propertyName) {
+		if( !this.scriptJsEditors ){
+			return null;
+		}else{
+			return this.scriptJsEditors[propertyName];
+		}
 	}
 
 

@@ -132,6 +132,7 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         if( !isModified )return;
 
         console.log( log );
+        debugger;
 
         var flag = false;
         if( this.preArray.length ){
@@ -1048,6 +1049,7 @@ MWF.FCWHistory.PropertySingleItem.SubItem = new Class({
                     // json[change.name] = change.fromValue;
                     this.changeJsonDate(json, change.name, change.fromValue);
                     module.setPropertiesOrStyles(change.name, change.toValue);
+                    this.setScriptJsEditor(module, change.name, change.fromValue);
                 }
                 if(!this.data.notSetEditStyle)module._setEditStyle(change.name, null, change.toValue);
             }
@@ -1068,9 +1070,30 @@ MWF.FCWHistory.PropertySingleItem.SubItem = new Class({
                     // json[change.name] = change.toValue;
                     this.changeJsonDate(json, change.name, change.toValue);
                     module.setPropertiesOrStyles(change.name, change.fromValue);
+                    this.setScriptJsEditor(module, change.name, change.toValue);
                 }
                 if(!this.data.notSetEditStyle)module._setEditStyle(change.name, null, change.fromValue)
             }
+        }
+    },
+    setScriptJsEditor: function (module, name, value) {
+        var jsEditor = module.getScriptJsEditor(name);
+        if(jsEditor){
+            var v = "";
+            switch ( o2.typeOf(value)) {
+                case "object":
+                    if( o2.typeOf(value.code) === "string" ){
+                        v = value.code;
+                    }else if( o2.typeOf(value.actionScript) === "string" ){
+                        v = value.actionScript;
+                    }
+                    break;
+                case "string":
+                    v = value;
+                    break;
+            }
+            debugger;
+            jsEditor.setValue( v, true );
         }
     }
 });

@@ -175,6 +175,7 @@ o2.widget.JavascriptEditor = new Class({
                     this.fireEvent("blur");
                 }.bind(this));
                 this.editor.onDidChangeModelContent(function(e){
+                    if( this.silent )return;
                     this.fireEvent("change");
                 }.bind(this));
 
@@ -255,6 +256,7 @@ o2.widget.JavascriptEditor = new Class({
                     this.fireEvent("blur");
                 }.bind(this));
                 this.editor.on("change", function(){
+                    if( this.silent )return;
                     this.fireEvent("change");
                 }.bind(this));
 
@@ -492,8 +494,10 @@ o2.widget.JavascriptEditor = new Class({
         }
     },
 
-    setValue: function(v){
+    setValue: function(v, silent ){
+	    this.silent = silent;
         if (this.editor) this.editor.setValue(v);
+        this.silent = null;
     },
     insertValue : function(v){
         if (this.editor){
