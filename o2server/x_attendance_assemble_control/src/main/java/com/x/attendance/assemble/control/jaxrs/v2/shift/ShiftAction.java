@@ -39,7 +39,7 @@ public class ShiftAction extends StandardJaxrsAction {
     @Path("list/{page}/size/{size}")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
-    public void msgListByPaging(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+    public void listByPaging(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
                                 @JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
                                 @JaxrsParameterDescribe("数量") @PathParam("size") Integer size, JsonElement jsonElement) {
         ActionResult<List<ActionListByPage.Wo>> result = new ActionResult<>();
@@ -77,7 +77,7 @@ public class ShiftAction extends StandardJaxrsAction {
     @Path("delete/{id}")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
-    public void clearConversationMsg(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+    public void delete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
                                      @JaxrsParameterDescribe("班次ID") @PathParam("id") String id) {
         ActionResult<ActionDelete.Wo> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);

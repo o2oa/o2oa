@@ -1,5 +1,6 @@
  .att {
   background-color: white;
+  height: 100%;
  }
  .index_page_header_container {
   display: flex;
@@ -18,10 +19,10 @@
 }
 .index_page_content_container {
   display: flex;
+  height: calc(100%-50px);
 }
 .index_page_nav_container {
   flex-shrink: 0;
-  height: calc(100vh - 48px);
   overflow: auto;
 }
 .index_page_route_container {
