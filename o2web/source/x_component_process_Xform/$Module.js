@@ -123,6 +123,9 @@ MWF.xApplication.process.Xform.$Module = MWF.APP$Module =  new Class(
         }
         return true;
     },
+    saveValidation: function () {
+        return true;
+    },
     /**
      * 当前组件在数据源组件中时，可以通过此方法获取所在的上级数据源/子数据源/子数项组件.
      * @param {String} [type] 需要获取的类型，"source"为表示数据源,"subSource"表示子数据源,"subSourceItem"表示子数据项组件。
