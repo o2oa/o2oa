@@ -1741,7 +1741,7 @@ debugger;
 							var options = {
 								"appId": "process.ScriptDesigner"+pattern.designerId,
 								"id": pattern.designerId,
-								"application":  pattern.appId,
+								"application": {"id": pattern.appId},
 							};
 							layout.openApplication(null, "process.ScriptDesigner", options);
 							break;
@@ -1749,7 +1749,7 @@ debugger;
 							var options = {
 								"appId": "cms.ScriptDesigner"+pattern.designerId,
 								"id": pattern.designerId,
-								"application":  pattern.appId,
+								"application":  {"id": pattern.appId},
 							};
 							layout.openApplication(null, "cms.ScriptDesigner", options);
 							break;
@@ -1757,7 +1757,7 @@ debugger;
 							var options = {
 								"appId": "portal.ScriptDesigner"+pattern.designerId,
 								"id": pattern.designerId,
-								"application":  pattern.appId,
+								"application":  {"id": pattern.appId},
 							};
 							layout.openApplication(null, "portal.ScriptDesigner", options);
 							break;
@@ -1845,7 +1845,7 @@ debugger;
 					var options = {
 						"appId": "query.ViewDesigner"+pattern.designerId,
 						"id": pattern.designerId,
-						"application": pattern.appId,
+						"application": {"id": pattern.appId },
 						"onPostViewLoad": function(){
 							_self.checkSelectDesignerElement_view(this, pattern, 0);
 						}
@@ -1857,7 +1857,7 @@ debugger;
 					var options = {
 						"appId": "query.StatementDesigner"+pattern.designerId,
 						"id": pattern.designerId,
-						"application": pattern.appId
+						"application": { "id": pattern.appId }
 					};
 					layout.openApplication(null, "query.StatementDesigner", options);
 					break;
