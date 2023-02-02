@@ -1472,6 +1472,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     saveWork: function (callback, silent) {
 
         if (this.businessData.control["allowSave"]) {
+
+            if (!this.formSaveValidation()) {
+                if (callback) callback();
+                return false;
+            }
+
             this.fireEvent("beforeSave");
             this.fireEvent("beforeSaveWork");
 
@@ -1864,6 +1870,15 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 this.inBrowserDkg(this.getMessageContent(data, 0, MWF.xApplication.process.Xform.LP.taskProcessedMessage));
             }
         }
+    },
+    formSaveValidation: function(){
+        var flag = true;
+        Object.each(this.forms, function (field, key) {
+            if( !field.json.id || field.json.id.indexOf("..") > 0 )return;
+            field.validationMode();
+            if (!field.saveValidation()) flag = false;
+        }.bind(this));
+        return flag;
     },
     formValidation: function (routeName, opinion, medias) {
         if (this.options.readonly) return true;

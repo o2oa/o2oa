@@ -4824,7 +4824,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
 
     /**
      * 本文档说明如何在前台脚本中使用Actions调用平台的RESTful服务。<br/>
-     * 通过访问以下地址来查询服务列表：http://server:20030/x_program_center/jest/list.html
+     * 通过访问以下地址来查询服务列表：http://server/x_program_center/jest/list.html (v7.2之前版本需要加端口20030)
      * @module Actions
      * @o2cn 服务调用
      * @o2category web
@@ -4839,11 +4839,11 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @method getHost
      * @methodOf module:Actions
      * @static
-     * @param {String} root 平台RESTful服务根，具体服务列表参见:http://server:20030/x_program_center/jest/list.html。
+     * @param {String} root 平台RESTful服务根，具体服务列表参见:http://server/x_program_center/jest/list.html。(v7.2之前版本需要加端口20030)
      *如:<pre><code class='language-js'>
      * "x_processplatform_assemble_surface" //流程平台相关服务根
      * </code></pre>
-     * @return {String} 对应服务跟对应的host。如：http://127.0.0.1:20020
+     * @return {String} 对应服务跟对应的host。如：http://127.0.0.1 (v7.2之前版本可能带端口20020)
      * @o2syntax
      * var actions = this.Actions.getHost( root );
      */
@@ -4853,7 +4853,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @method load
      * @methodOf module:Actions
      * @instance
-     * @param {String} root 平台RESTful服务根，具体服务列表参见:http://server:20030/x_program_center/jest/list.html。
+     * @param {String} root 平台RESTful服务根，具体服务列表参见:http://server/x_program_center/jest/list.html (v7.2之前版本需要加端口20030)。
      * 如:
      *<pre><code class='language-js'>
      * "x_processplatform_assemble_surface" //流程平台相关服务根
@@ -4930,7 +4930,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * <caption>
      *     <b>样例1:</b>
      *     根据x_processplatform_assemble_surface服务获取当前用户的待办列表：<br/>
-     *     可以通过对应服务的查询页面，http://server:20020/x_processplatform_assemble_surface/jest/index.html<br/>
+     *     可以通过对应服务的查询页面，http://server/x_processplatform_assemble_surface/jest/index.html(v7.2之前版本需要带端口20020)<br/>
      *     可以看到以下界面：<img src="img/module/Actions/Actions.png"/>
      *     我们可以找到TaskAction的V2ListPaging服务是列式当前用户待办的服务。<br/>
      *     该服务有以下信息：<br/>
@@ -5010,11 +5010,11 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @deprecated
      * @methodOf module:Actions
      * @instance
-     * @param {String} root 平台RESTful服务根，具体服务列表参见:http://server:20030/x_program_center/jest/list.html。
+     * @param {String} root 平台RESTful服务根，具体服务列表参见:http://server/x_program_center/jest/list.html(v7.2之前版本需要加端口20030)。
      *如:<pre><code class='language-js'>
      *  "x_processplatform_assemble_surface" //流程平台相关服务根
      * </code></pre>
-     * @return {String} 对应服务根的host。如：http://127.0.0.1:20020
+     * @return {String} 对应服务根的host。如：http://127.0.0.1 (v7.2之前版本可能带端口20020)
      * @o2syntax
      * var actions = this.Actions.get( root );
      * actions[ methodName ]( arguements );

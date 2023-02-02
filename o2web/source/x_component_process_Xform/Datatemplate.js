@@ -1410,6 +1410,13 @@ MWF.xApplication.process.Xform.Datatemplate = MWF.APPDatatemplate = new Class(
 			}
 			return true;
 		},
+		saveValidation: function () {
+			var flag = true;
+			for (var i=0; i<this.lineList.length; i++){
+				if( this.lineList[i] && !this.lineList[i].saveValidation())flag = false;
+			}
+			return flag;
+		},
 		validation: function(routeName, opinion){
 			if (this.isEdit){
 				if (!this.editValidation()){
@@ -1881,6 +1888,17 @@ MWF.xApplication.process.Xform.Datatemplate.Line =  new Class({
 			}
 		}
 		return saveFlag;
+	},
+	saveValidation: function(){
+		if( !this.options.isEdited )return true;
+		var flag = true;
+		this.fields.each(function(field, key){
+			if (field.json.type!="sequence" && field.validationMode ){
+				field.validationMode();
+				if (!field.saveValidation()) flag = false;
+			}
+		}.bind(this));
+		return flag;
 	}
 });
 
