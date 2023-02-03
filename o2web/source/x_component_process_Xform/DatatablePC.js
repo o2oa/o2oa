@@ -584,6 +584,9 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			data.total = totalData;
 			return totalData;
 		},
+		isTotalNumberModule: function( id ){
+			return this.totalNumberModuleIds.contains(id)
+		},
 
 		isShowSectionKey: function(){
 			return this.json.showSectionKey && this.isMergeRead ;
@@ -2170,6 +2173,9 @@ MWF.xApplication.process.Xform.DatatablePC.SectionLine =  new Class({
 		}.bind(this));
 		data.total = totalData;
 		return totalData;
+	},
+	isTotalNumberModule: function( id ){
+		return this.totalNumberModuleIds.contains(id)
 	}
 });
 
@@ -2358,7 +2364,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 						}.bind(this))
 					}
 					//该字段是合集数值字段
-					if(this.datatable.multiEditMode && this.datatable.totalNumberModuleIds.contains(templateJsonId)){
+					if(this.datatable.multiEditMode && this.isTotalNumberModule(templateJsonId)){
 						//module
 						module.addEvent("change", function(){
 							this.datatable._loadTotal();
@@ -2368,6 +2374,13 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 				}
 			}
 		}.bind(this));
+	},
+	isTotalNumberModule: function(id){
+		if( this.sectionLine ){
+			return this.sectionLine.isTotalNumberModule(id)
+		}else{
+			return this.datatable.isTotalNumberModule(id)
+		}
 	},
 	getIndex: function(){
 		return this.options.index;
