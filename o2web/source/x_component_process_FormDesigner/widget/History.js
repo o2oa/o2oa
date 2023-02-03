@@ -9,6 +9,7 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
     initialize: function(form, container, options){
         this.setOptions(options);
         this.form = form;
+        this.designer = form.designer;
         this.container = container;
         this.root = this.form.node;
         this.path = "../x_component_process_FormDesigner/widget/$History/";
@@ -306,7 +307,32 @@ MWF.FCWHistory.Item = new Class({
     _getText: function () {
         if( this.data.title )return this.data.title;
         var lp = MWF.xApplication.process.FormDesigner.LP.formAction;
-        return  ( lp[this.data.operation] || this.data.operation ) + " " + this.data.moduleId;
+        var type = this.getType();
+        type = type ?  (" <" + type + "> ") : " ";
+        return  ( lp[this.data.operation] || this.data.operation ) + type + this.data.moduleId;
+    },
+    getType: function(){
+        var type = (this.data.type || "").toLowerCase();
+        switch ( type ) {
+            case "module":
+                return (this.data.moduleType || "").capitalize();
+            default:
+                return type.capitalize();
+        }
+    },
+    getTypeText: function(){
+        debugger;
+        var type = (this.data.type || "").toLowerCase();
+        switch ( type ) {
+            case "form": return this.history.designer.lp.propertyTemplate.form;
+            case "page": return this.history.designer.lp.pageform;
+            case "module":
+                var moduleType = (this.data.moduleType || "").toLowerCase();
+                var tool = this.history.designer.toolsData[moduleType] || this.history.designer.toolsData[moduleType.capitalize()];
+                return (tool) ? tool.text : moduleType;
+            default:
+                return "";
+        }
     },
     comeHere: function ( e, notRedoThis ) {
         this.history.goto(this, notRedoThis)
@@ -508,7 +534,9 @@ MWF.FCWHistory.ModuleItem = new Class({
     _getText: function () {
         if( this.data.title )return this.data.title;
         var lp = MWF.xApplication.process.FormDesigner.LP.formAction;
-        return  ( lp[this.data.operation] || this.data.operation ) + " " + this.data.moduleId;
+        var type = this.getType();
+        type = type ?  (" <" + type + "> ") : " ";
+        return  ( lp[this.data.operation] || this.data.operation ) + type + this.data.moduleId;
     },
     _undo: function(){
         switch (this.data.operation) {
@@ -875,7 +903,9 @@ MWF.FCWHistory.PropertySingleItem = new Class({
     _getText: function () {
         if( this.data.title )return this.data.title;
         var lp = MWF.xApplication.process.FormDesigner.LP.formAction;
-        return lp.property + " " + this.data.moduleId;
+        var type = this.getType();
+        type = type ?  (" <" + type + "> ") : " ";
+        return lp.property + " " + type + this.data.moduleId;
     },
     destroy: function () {
         var si = this.preArray.pop();
