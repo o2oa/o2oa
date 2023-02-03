@@ -1176,11 +1176,13 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		});
 		return d;
 	},
-	checkPropertyHistory: function(name, oldValue, newValue, notSetEditStyle){
+	checkPropertyHistory: function(name, oldValue, newValue, notSetEditStyle, compareName, force){
 		if( !this.form.history )return null;
 		var log = {
 			"type": "property",
+			"force": force,
 			"moduleId": this.json.id,
+			"moduleType": this.json.type,
 			"notSetEditStyle": notSetEditStyle,
 			"changeList": []
 		};
@@ -1191,14 +1193,15 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 					"name": n,
 					"fromValue": oldValue[i],
 					"toValue": newValue[i] || this.getJsonData(n)
-				})
-			}.bind(this))
+				});
+			}.bind(this));
 		}else{
 			log.changeList.push({
 				"name": name,
+				"compareName": compareName,
 				"fromValue": oldValue,
 				"toValue": newValue || this.getJsonData(name)
-			})
+			});
 		}
 		this.form.history.checkProperty(log, this);
 	},

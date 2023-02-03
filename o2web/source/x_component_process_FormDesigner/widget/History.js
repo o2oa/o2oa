@@ -4,7 +4,8 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
     Implements: [Options, Events],
     Extends: MWF.widget.Common,
     options: {
-        style: "default"
+        style: "default",
+        maxLength: 20 //最大的item数，0表示不限制
     },
     initialize: function(form, container, options){
         this.setOptions(options);
@@ -110,12 +111,15 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
     checkProperty: function(log, module){
         // var log = {
         //     "type": "property",
+        //     "force": false,
         //     "title": "",
         //     "moduleId": this.json.id,
+        //     "moduleType": "",
         //     "notSetEditStyle": false
         //     "changeList": [
         //          {
         //              "name": name,
+        //              "compareName": compareName, //对比名称，value对应的是name, 但是对比名称和name不一样时可以传这个
         //              "fromValue": oldValue,
         //              "toValue": this.json[name]
         //          }
@@ -157,18 +161,28 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
                     }
 
                     var lastChangeList = lastSubItem.data.changeList;
-                    if (lastChangeList.length === 1 && log.changeList.length === 1  && lastChangeList[0].name === change.name) {
-                        // if( lastSubItem.data.fromValue === change.toValue ){ //回到最初的值了
-                        //     if( lastItem.preArray.length === 1 ){
-                        //         this.destroyItem( lastItem );
-                        //     }else{
-                        //         lastItem.destroySubItem(lastSubItem);
-                        //     }
-                        // }else{
-                        lastChangeList[0].toValue = change.toValue;
-                        // }
-                    } else {
+                    if ( log.force ) {
                         lastItem.addSubItem(log);
+                    }else if( change.compareName ){
+                        if (lastChangeList.length === 1 && log.changeList.length === 1  && lastChangeList[0].compareName === change.compareName) {
+                            lastChangeList[0].toValue = change.toValue;
+                        }else{
+                            lastItem.addSubItem(log);
+                        }
+                    }else{
+                        if (lastChangeList.length === 1 && log.changeList.length === 1  && lastChangeList[0].name === change.name) {
+                            // if( lastSubItem.data.fromValue === change.toValue ){ //回到最初的值了
+                            //     if( lastItem.preArray.length === 1 ){
+                            //         this.destroyItem( lastItem );
+                            //     }else{
+                            //         lastItem.destroySubItem(lastSubItem);
+                            //     }
+                            // }else{
+                            lastChangeList[0].toValue = change.toValue;
+                            // }
+                        } else {
+                            lastItem.addSubItem(log);
+                        }
                     }
 
                     flag = true;
@@ -235,6 +249,11 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         }
 
         this.preArray.push(item);
+
+        //大于最大条目数
+        if( this.options.maxLength > 0 && this.preArray.length > this.options.maxLength ){
+            this.destroyItem(this.preArray[0]);
+        }
     },
     destroyItem: function(item){
         this.preArray.erase(item);
@@ -314,7 +333,7 @@ MWF.FCWHistory.Item = new Class({
     getType: function(){
         var type = (this.data.type || "").toLowerCase();
         switch ( type ) {
-            case "module":
+            case "module": case "property":
                 return (this.data.moduleType || "").capitalize();
             default:
                 return type.capitalize();
@@ -335,7 +354,7 @@ MWF.FCWHistory.Item = new Class({
         }
     },
     comeHere: function ( e, notRedoThis ) {
-        this.history.goto(this, notRedoThis)
+        this.history.goto(this, notRedoThis);
     },
     undo: function () { //回退
         this.status = "next";
@@ -358,12 +377,12 @@ MWF.FCWHistory.Item = new Class({
     },
     unselectModule: function () {
         if(this.form.currentSelectedModule && this.form.currentSelectedModule.unSelected){
-            this.form.currentSelectedModule.unSelected()
+            this.form.currentSelectedModule.unSelected();
         }
         this.form.currentSelectedModule = null;
 
         if( this.form.selectedModules && this.form.selectedModules.length ){
-            this.form.selectedModules = []
+            this.form.selectedModules = [];
         }
     },
     _selectModule: function (path) {
@@ -407,7 +426,7 @@ MWF.FCWHistory.Item = new Class({
                 if( a.path[i] !== b.path[i] )return a.path[i] - b.path[i];
             }
             return -1;
-        })
+        });
     },
     //根据路径获取dom
     getDomByPath: function(path){
@@ -501,8 +520,8 @@ MWF.FCWHistory.Item = new Class({
         }
         return module;
     },
-    selectModule(type){
-        this.form.selected()
+    selectModule: function(type){
+        this.form.selected();
     },
     changeJsonDate: function(json, name, value){
         var key = name.split(".");
@@ -901,6 +920,7 @@ MWF.FCWHistory.PropertySingleItem = new Class({
         return module;
     },
     _getText: function () {
+        debugger;
         if( this.data.title )return this.data.title;
         var lp = MWF.xApplication.process.FormDesigner.LP.formAction;
         var type = this.getType();
@@ -914,7 +934,7 @@ MWF.FCWHistory.PropertySingleItem = new Class({
             si = this.preArray.pop(); //删除preArray最后一个
         }
 
-        var si = this.nextArray.pop();
+        si = this.nextArray.pop();
         while (si){
             si.destroy();
             si = this.nextArray.pop(); //删除nextArray最后一个
@@ -950,7 +970,7 @@ MWF.FCWHistory.PropertySingleItem = new Class({
         if(flag){
             var module = this.getModule();
             if( module && module.property ){
-                module.property.reset()
+                module.property.reset();
             }
         }
     },
@@ -971,7 +991,7 @@ MWF.FCWHistory.PropertySingleItem = new Class({
         if(flag){
             var module = this.getModule();
             if( module && module.property ){
-                module.property.reset()
+                module.property.reset();
             }
         }
     },
@@ -1020,7 +1040,7 @@ MWF.FCWHistory.PropertySingleItem = new Class({
         }
         var module = this.getModule();
         if( module && module.property ){
-            module.property.reset()
+            module.property.reset();
         }
     },
     selectModule: function(){
@@ -1048,7 +1068,7 @@ MWF.FCWHistory.PropertySingleItem.SubItem = new Class({
         }).inject(this.history.node);
     },
     getText: function () {
-        return this.data.changeList[0].name;
+        return this.data.changeList[0].compareName || this.data.changeList[0].name;
     },
     comeHere: function (e) {
         this.parentItem.comeHere( null, true );
@@ -1102,7 +1122,7 @@ MWF.FCWHistory.PropertySingleItem.SubItem = new Class({
                     module.setPropertiesOrStyles(change.name, change.fromValue);
                     this.setScriptJsEditor(module, change.name, change.toValue);
                 }
-                if(!this.data.notSetEditStyle)module._setEditStyle(change.name, null, change.fromValue)
+                if(!this.data.notSetEditStyle)module._setEditStyle(change.name, null, change.fromValue);
             }
         }
     },

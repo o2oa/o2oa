@@ -2462,9 +2462,11 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                     "isSystemTool" : true,
                     "target" : node.get("data-target"),
-                    "onChange": function(){
+                    "onChange": function( historyOptions ){
+                        historyOptions = historyOptions || {};
                         this.data[name] = actionEditor.data;
-                        this.changeData(name, null, oldValue);
+                        this.changeData(name, null, oldValue, true);
+                        this.checkHistory(name, oldValue, null, false, name +"."+ historyOptions.compareName, historyOptions.force );
                         oldValue = JSON.parse( JSON.stringify(this.data[name]) );
                     }.bind(this)
                 };
@@ -2497,9 +2499,11 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 
                 var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, {
                     "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
-                    "onChange": function(){
+                    "onChange": function(historyOptions){
+                        historyOptions = historyOptions || {};
                         this.data[name] = actionEditor.data;
-                        this.changeData(name, null, oldValue);
+                        this.changeData(name, null, oldValue, true);
+                        this.checkHistory(name, oldValue, null, false, name +"."+ historyOptions.compareName, historyOptions.force );
                         oldValue = JSON.parse( JSON.stringify(this.data[name]) );
                     }.bind(this)
                 });
@@ -2524,9 +2528,11 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     "noReadShow": true,
                     "target" : node.get("data-target"),
                     "noEditShow": true,
-                    "onChange": function(){
+                    "onChange": function(historyOptions){
+                        historyOptions = historyOptions || {};
                         this.data[name] = actionEditor.data;
-                        this.changeData(name, null, oldValue);
+                        this.changeData(name, null, oldValue, true);
+                        this.checkHistory(name, oldValue, null, false, name +"."+ historyOptions.compareName, historyOptions.force );
                         oldValue = JSON.parse( JSON.stringify(this.data[name]) );
                     }.bind(this)
                 });
@@ -2767,9 +2773,9 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 		}.bind(this));
 		
 	},
-    checkHistory: function(name, oldValue, newValue, notSetEditStyle){
+    checkHistory: function(name, oldValue, newValue, notSetEditStyle, compareName, force){
         if( this.isLoaded() && this.module.form.history ){
-            this.module.checkPropertyHistory(name, oldValue, newValue, notSetEditStyle);
+            this.module.checkPropertyHistory(name, oldValue, newValue, notSetEditStyle, compareName, force);
         }
     },
     changeStyle: function(name, oldData){

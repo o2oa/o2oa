@@ -352,15 +352,18 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			this.history.load();
 		}.bind(this));
 	},
-	checkPropertyHistory: function(name, oldValue, newValue, notSetEditStyle){
+	checkPropertyHistory: function(name, oldValue, newValue, notSetEditStyle, compareName, force){
 		if( !this.history )return null;
 		var log = {
 			"type": "property",
+			"force": force,
 			"moduleId": "form",
+			"moduleType": "form",
 			"notSetEditStyle": notSetEditStyle,
 			"changeList": [
 				{
 					"name": name,
+					"compareName": compareName,
 					"fromValue": oldValue,
 					"toValue": newValue || this.json[name]
 				}
