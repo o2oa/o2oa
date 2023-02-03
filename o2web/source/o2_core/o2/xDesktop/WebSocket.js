@@ -105,6 +105,7 @@ MWF.xDesktop.WebSocket = new Class({
                             case "task_urge":
                             case "task_expire":
                             case "task_press":
+                            case "task_delete":
                                 this.receiveTaskMessage(data);
                                 break;
                             case "read":
@@ -306,12 +307,12 @@ MWF.xDesktop.WebSocket = new Class({
         var tooltipItem = layout.desktop.message.addTooltip(msg, data.body.startTime);
         tooltipItem.contentNode.addEvent("click", function(e){
             layout.desktop.message.hide();
-            this.openWork(task.work,e);
+            if( data.type !== "task_delete" )this.openWork(task.work,e);
         }.bind(this));
         messageItem.contentNode.addEvent("click", function(e){
             layout.desktop.message.addUnread(-1);
             layout.desktop.message.hide();
-            this.openWork(task.work,e);
+            if( data.type !== "task_delete" )this.openWork(task.work,e);
         }.bind(this));
     },
     receiveReadMessage: function(data){
