@@ -2,6 +2,48 @@
   background-color: white;
   height: 100%;
  }
+ .att button {
+  border-radius: 100px;
+  border: 0;
+  padding: 6px 20px;
+  cursor: pointer;
+  margin-left: 10px;
+ }
+ .att thead {
+  width: 100%;
+  height: 40px;
+  background-color: rgb(247, 247, 247);
+  color: rgb(102, 102, 102);
+  font-weight: normal;
+  line-height: 40px;
+  font-size: 15px;
+ }
+ .att th {
+  background-color: rgb(247, 247, 247);
+  text-align: center;
+  line-height: 24px;
+  padding: 8px 0px;
+  font-weight: normal;
+  border-top: 1px solid rgb(255, 255, 255);
+  border-bottom: 1px solid rgb(230, 230, 230);
+ }
+ .att tr {
+  overflow: hidden;
+  background-color: rgb(255, 255, 255);
+  min-height: 29px;
+  color: rgb(102, 102, 102);
+  font-family: "Microsoft YaHei";
+  font-size: 14px;
+ }
+.att td {
+  height: 39px;
+    text-align: center;
+    overflow: hidden;
+    border-bottom: 1px solid rgb(230, 230, 230);
+}
+ .att .operator_link {
+  color: var(--el-color-primary);
+ }
  .index_page_header_container {
   display: flex;
   height: 48px;

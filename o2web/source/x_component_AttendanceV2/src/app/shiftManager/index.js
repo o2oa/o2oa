@@ -6,5 +6,8 @@ export default content({
     template,
     bind(){
         return {lp};
+    },
+    addShift() {
+        console.log('新增班次');
     }
 });

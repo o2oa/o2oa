@@ -1,5 +1,22 @@
-<div class="hello">
-    <img class="logo" alt="O2OA logo" src="../../assets/o2logo.png">
-    <h1>这里是班次管理</h1>
-    
+<div>
+    <div class="index_page_header_container">
+        <div class="index_page_header_title">{{$.lp.shiftTitle}}</div>
+    </div>
+    <div style="padding: 20px;">
+        <button class="mainColor_bg" @click="addShift" >{{$.lp.addShift}}</button>
+        <table  width="100%" border="0" cellpadding="5" cellspacing="0"  >
+            <thead>
+                <th>{{$.lp.shiftName}}</th>
+                <th>{{$.lp.checkInTime}}</th>
+                <th style="width: 10%;">{{$.lp.operate}}</th>
+            </thead>
+            <tr>
+                <td>交一重庆移动物联网</td>
+                <td>09:00-17:30</td>
+                <td>
+                    <span class="operator_link">编辑</span>
+                </td>
+            </tr>
+        </table>
+    </div>
 </div>

@@ -15,4 +15,20 @@ MWF.xApplication.AttendanceV2.LP = {
 
     "inputContent": "这是你输入的内容",
     "inputSomething": "请输入一些内容",
+
+    "menu": {
+        "myAttendance": "我的考勤",
+        "myAttendanceMonth": "我的考勤月报",
+        "myAttendanceStatistic": "我的考勤统计",
+        "config": "配置",
+        "shiftManager": "班次管理",
+        "groupmanager": "考勤组管理",
+    },
+
+    "operate": "操作",
+
+    "shiftTitle": "班次管理",
+    "addShift": "新增班次",
+    "shiftName": "班次名称",
+    "checkInTime": "考勤时间",
 };

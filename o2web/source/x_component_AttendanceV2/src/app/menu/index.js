@@ -12,19 +12,19 @@ export default content({
     bind(){
         return {
             lp,
-            currentMenuId: 3,
+            currentMenuId: 5,
             menuData: [
               {
-                title: "我的考勤",
+                title: lp.menu.myAttendance,
                 sub: [
                   {
                     id: 1,
-                    title: "我的考勤月报",
+                    title: lp.menu.myAttendanceMonth,
                     action: "shiftManager"
                   },
                   {
                     id: 2,
-                    title: "我的考勤统计",
+                    title: lp.menu.myAttendanceStatistic,
                     action: "shiftManager"
                   }
                 ]
@@ -46,17 +46,17 @@ export default content({
                 ]
               },
               {
-                title: "配置",
+                title: lp.menu.config,
                 access: "admin",
                 sub: [
                   {
                     id: 5,
-                    title: "班次管理",
+                    title: lp.menu.shiftManager,
                     action: "shiftManager"
                   },
                   {
                     id: 6,
-                    title: "考勤组管理",
+                    title: lp.menu.groupmanager,
                     action: "groupManager"
                   }
                 ]

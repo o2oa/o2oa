@@ -15,4 +15,7 @@ MWF.xApplication.AttendanceV2.LP = {
 
     "inputContent": "This is what you typed",
     "inputSomething": "Please enter something",
+
+    "shiftTitle": "班次管理",
+    "addShift": "新增班次",
 };
