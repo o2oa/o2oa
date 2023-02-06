@@ -347,8 +347,8 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
         }
     },
 	loadHistory: function(){
-		o2.xDesktop.requireApp("process.FormDesigner", "widget.History", function () {
-			this.history = new MWF.xApplication.process.FormDesigner.widget.History(this, this.designer.currentHistoryNode);
+		o2.xDesktop.requireApp("process.FormDesigner", "History", function () {
+			this.history = new MWF.xApplication.process.FormDesigner.History(this, this.designer.currentHistoryNode);
 			this.history.load();
 		}.bind(this));
 	},

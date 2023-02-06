@@ -1,6 +1,7 @@
-MWF.xApplication.process.FormDesigner.widget = MWF.xApplication.process.FormDesigner.widget || {};
 // MWF.xDesktop.requireApp("Template", "MTooltips", null, false);
-MWF.xApplication.process.FormDesigner.widget.History = new Class({
+MWF.xApplication.process = MWF.xApplication.process || {};
+MWF.xApplication.process.FormDesigner = MWF.xApplication.process.FormDesigner || {};
+MWF.xApplication.process.FormDesigner.History = new Class({
     Implements: [Options, Events],
     Extends: MWF.widget.Common,
     options: {
@@ -13,7 +14,7 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         this.designer = form.designer;
         this.container = container;
         this.root = this.form.node;
-        this.path = "../x_component_process_FormDesigner/widget/$History/";
+        this.path = "../x_component_process_FormDesigner/$History/";
         this.iconPath = this.path+this.options.style+"/icon/";
         this.cssPath = this.path+this.options.style+"/css.wcss";
         this._loadCss();
@@ -293,7 +294,7 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
     }
 });
 
-MWF.FCWHistory = MWF.xApplication.process.FormDesigner.widget.History;
+MWF.FCWHistory = MWF.xApplication.process.FormDesigner.History;
 
 MWF.FCWHistory.Item = new Class({
     Implements: [Options, Events],
