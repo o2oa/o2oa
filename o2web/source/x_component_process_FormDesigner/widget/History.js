@@ -26,7 +26,6 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         this.nextArray = [];
 
         this.node = new Element("div", {"style":"font-size:12px;"}).inject(this.container);
-        debugger;
         this.add({
             "operation": "open", //操作 create, copy, move, delete
             "type": "form", //property
