@@ -1016,20 +1016,35 @@ MWF.FCWHistory.PropertySingleItem = new Class({
 
         this.preArray.push(subItem);
     },
+    getNext: function(subItem){
+        var index = this.nextArray.indexOf(subItem);
+        if( index < 0 )return null;
+        if( index === this.nextArray.length - 1 )return null;
+        return this.nextArray[ index + 1 ];
+    },
     goto: function(subItem){
-        var si;
+        var si, si_next, notSetEditStyle = false;
         if( subItem.status === "pre" ){
             si = this.preArray.getLast();
             while (si && subItem !== si){
-                si.undo();
+                //如果下一个subitem的名称和现在一样，不设置SetEditStyle
+                si_next = this.preArray.length>1 ? this.preArray[this.preArray.length-2] : null;
+                notSetEditStyle = si_next && (subItem !== si_next) && ( si_next.data.changeList[0].name === si.data.changeList[0].name );
+
+                si.undo( notSetEditStyle );
                 this.nextArray.unshift(si); //插入到灰显数组前面
                 this.preArray.pop(); //删除preArray最后一个
                 si = this.preArray.getLast();
             }
         }else if( subItem.status === "next" ){
+            var subItemNext = this.getNext(subItem);
             si = this.nextArray[0];
             while (si && subItem !== si){
-                si.redo();
+                //如果下一个subitem的名称和现在一样，不设置SetEditStyle
+                si_next = this.nextArray.length>1 ? this.nextArray[1] : null;
+                notSetEditStyle = si_next && (subItemNext !== si_next) && ( si_next.data.changeList[0].name === si.data.changeList[0].name );
+
+                si.redo( notSetEditStyle );
                 this.preArray.push(si); //插入到preArray数组最后
                 this.nextArray.shift();
                 si = this.nextArray[0];
@@ -1074,17 +1089,18 @@ MWF.FCWHistory.PropertySingleItem.SubItem = new Class({
         this.parentItem.comeHere( null, true );
         this.parentItem.goto( this );
     },
-    undo: function () { //回退
+    undo: function ( notSetEditStyle ) { //回退
         this.status = "next";
         this.node.setStyles( this.history.css.subItemNode_undo );
-        this._undo();
+        this._undo( notSetEditStyle );
     },
-    redo: function(){ //重做
+    redo: function( notSetEditStyle ){ //重做
         this.status = "pre";
         this.node.setStyles( this.history.css.subItemNode_redo );
-        this._redo();
+        this._redo( notSetEditStyle );
     },
-    _undo: function () {
+    _undo: function ( notSetEditStyle ) {
+        debugger;
         console.log( "_undo", this.data);
         var module = this.parentItem.getModule();
         if (module) {
@@ -1101,11 +1117,14 @@ MWF.FCWHistory.PropertySingleItem.SubItem = new Class({
                     module.setPropertiesOrStyles(change.name, change.toValue);
                     this.setScriptJsEditor(module, change.name, change.fromValue);
                 }
-                if(!this.data.notSetEditStyle)module._setEditStyle(change.name, null, change.toValue);
+                if(!notSetEditStyle && !this.data.notSetEditStyle){
+                    console.log("change.name")
+                    module._setEditStyle(change.name, null, change.toValue);
+                }
             }
         }
     },
-    _redo: function () {
+    _redo: function (notSetEditStyle) {
         console.log( "_redo", this.data);
         var module = this.parentItem.getModule();
         if (module) {
@@ -1122,7 +1141,10 @@ MWF.FCWHistory.PropertySingleItem.SubItem = new Class({
                     module.setPropertiesOrStyles(change.name, change.fromValue);
                     this.setScriptJsEditor(module, change.name, change.toValue);
                 }
-                if(!this.data.notSetEditStyle)module._setEditStyle(change.name, null, change.fromValue);
+                if(!notSetEditStyle && !this.data.notSetEditStyle){
+                    console.log("change.name")
+                    module._setEditStyle(change.name, null, change.fromValue);
+                }
             }
         }
     },
