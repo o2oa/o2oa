@@ -26,10 +26,11 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         this.nextArray = [];
 
         this.node = new Element("div", {"style":"font-size:12px;"}).inject(this.container);
+        debugger;
         this.add({
             "operation": "open", //操作 create, copy, move, delete
             "type": "form", //property
-            "moduleId": "form"
+            "moduleId": (this.form.json.name || "form" )+ " ["+this.form.json.mode+"]"
         });
 
         // var _self = this;
@@ -196,7 +197,6 @@ MWF.xApplication.process.FormDesigner.widget.History = new Class({
         }
     },
     checkMultiProperty: function(log, modules){
-        debugger;
         var flag = false;
         if( this.preArray.length ){
             var lastItem = this.preArray.getLast();
@@ -340,7 +340,6 @@ MWF.FCWHistory.Item = new Class({
         }
     },
     getTypeText: function(){
-        debugger;
         var type = (this.data.type || "").toLowerCase();
         switch ( type ) {
             case "form": return this.history.designer.lp.propertyTemplate.form;
@@ -920,7 +919,6 @@ MWF.FCWHistory.PropertySingleItem = new Class({
         return module;
     },
     _getText: function () {
-        debugger;
         if( this.data.title )return this.data.title;
         var lp = MWF.xApplication.process.FormDesigner.LP.formAction;
         var type = this.getType();
@@ -1100,7 +1098,6 @@ MWF.FCWHistory.PropertySingleItem.SubItem = new Class({
         this._redo( notSetEditStyle );
     },
     _undo: function ( notSetEditStyle ) {
-        debugger;
         console.log( "_undo", this.data);
         var module = this.parentItem.getModule();
         if (module) {
@@ -1164,7 +1161,6 @@ MWF.FCWHistory.PropertySingleItem.SubItem = new Class({
                     v = value;
                     break;
             }
-            debugger;
             jsEditor.setValue( v, true );
         }
     }
