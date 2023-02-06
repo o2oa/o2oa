@@ -2,15 +2,17 @@ MWF.xApplication.cms.FormDesigner.widget = MWF.xApplication.cms.FormDesigner.wid
 MWF.xDesktop.requireApp("process.FormDesigner", "widget.EventsEditor", null, false);
 MWF.xApplication.cms.FormDesigner.widget.EventsEditor = new Class({
 	Extends: MWF.xApplication.process.FormDesigner.widget.EventsEditor,
-	load: function(data){
+	load: function(data, module, path){
 		this.data = data;
+        this.module = module;
+        this.scriptPath = path;
 		Object.each(data, function(obj, key){
 			var item = new MWF.xApplication.cms.FormDesigner.widget.EventsEditor.Item(this);
 			item.load(key, obj);
 			this.items.push(item);
 		}.bind(this));
 	},
-	addEvent: function(){
+	addEventItem: function(){
 		var item = new MWF.xApplication.cms.FormDesigner.widget.EventsEditor.Item(this);
 		item.load("", "");
 	}
@@ -33,12 +35,18 @@ MWF.xApplication.cms.FormDesigner.widget.EventsEditor.Item = new Class({
 						var json = this.codeEditor.toJson();
 						this.data.code = json.code;
 						this.data.html = json.html;
+
+						this.editor.fireEvent("change", [this.event, this.data, this.oldData]);
+
 						this.checkIcon();
 					}.bind(this),
                     "onSave": function(){
                         var json = this.codeEditor.toJson();
                         this.data.code = json.code;
                         this.data.html = json.html;
+
+						this.editor.fireEvent("change", [this.event, this.data, this.oldData]);
+
                         this.editor.app.saveForm();
                     }.bind(this),
 					"helpStyle" : "cms"

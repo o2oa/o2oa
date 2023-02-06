@@ -1,3 +1,5 @@
+MWF.xApplication.process = MWF.xApplication.process || {};
+MWF.xApplication.process.FormDesigner = MWF.xApplication.process.FormDesigner || {};
 MWF.xApplication.process.FormDesigner.widget = MWF.xApplication.process.FormDesigner.widget || {};
 MWF.require("MWF.widget.ScriptArea", null, false);
 MWF.xApplication.process.FormDesigner.widget.EventsEditor = new Class({

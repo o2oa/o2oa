@@ -52,7 +52,11 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor = new Class({
         action.load(o);
         this.data.push(o);
         this.actions.push(action);
-        this.fireEvent("change");
+
+        this.fireEvent("change", [{
+            compareName: "addAction",
+            force: true
+        }]);
 	},
     restoreButtonAction : function(){
         var list = this.listRemovedSystemTool();
@@ -77,11 +81,13 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor = new Class({
             "values": [],
             "onComplete": function( array ){
                 if( !array || array.length == 0 )return;
+                var actionNameList = [];
                 array.each( function(tool){
                     for( var i=0; i<list.length; i++ ){
                         if( list[i].id === tool.data.id ){
                             list[i].system = true;
                             this.data.push( list[i] );
+                            actionNameList.push( list[i].action );
                             var action = new MWF.xApplication.cms.FormDesigner.widget.ActionsEditor.ButtonAction(this);
                             action.load(list[i]);
                             this.actions.push(action);
@@ -89,7 +95,10 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor = new Class({
                         }
                     }
                 }.bind(this));
-                this.fireEvent("change");
+                this.fireEvent("change", [{
+                    compareName: "addSystemAction:"+actionNameList,
+                    force: true
+                }]);
             }.bind(this)
         };
         var selector = new MWF.xApplication.Template.Selector.Custom(this.options.maxObj, opt );
@@ -132,7 +141,9 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor.ButtonAction = new Class(
                 }else{
                     this.propertiesButton.setStyle("background-image", "url("+this.editor.path+this.editor.options.style+"/icon/property.png)");
                 }
-                this.editor.fireEvent("change");
+                this.editor.fireEvent("change", [{
+                    compareName: this.getName() + ".property"
+                }]);
             }.bind(this)
         });
         this.propertiesArea.load( this.data.properties || {});
@@ -180,11 +191,15 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor.ButtonAction = new Class(
                 "maxObj": this.editor.designer.formContentNode,
                 "onChange": function () {
                     this.data.actionScript = this.scriptArea.editor.getValue();
-                    this.editor.fireEvent("change");
+                    this.editor.fireEvent("change", [{
+                        compareName: this.getName() + ".actionScript"
+                    }]);
                 }.bind(this),
                 "onSave": function () {
                     this.data.actionScript = this.scriptArea.editor.getValue();
-                    this.editor.fireEvent("change");
+                    this.editor.fireEvent("change", [{
+                        compareName: this.getName() + ".actionScript"
+                    }]);
                     this.editor.designer.saveForm();
                 }.bind(this),
                 "onPostLoad": function () {
@@ -206,11 +221,15 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor.ButtonAction = new Class(
                 }else{
                     this.conditionButton.setStyle("background-image", "url("+this.editor.path+this.editor.options.style+"/icon/code_empty.png)");
                 }
-                this.editor.fireEvent("change");
+                this.editor.fireEvent("change", [{
+                    compareName: this.getName() + ".conditionScript"
+                }]);
             }.bind(this),
             "onSave": function(){
                 this.data.condition = this.conditionArea.editor.getValue();
-                this.editor.fireEvent("change");
+                this.editor.fireEvent("change", [{
+                    compareName: this.getName() + ".conditionScript"
+                }]);
                 this.editor.designer.saveForm();
             }.bind(this),
             "onPostLoad": function(){
@@ -259,7 +278,9 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor.ButtonAction = new Class(
                 _self.data.img = src.substr(src.lastIndexOf("/")+1, src.length);
                 _self.data.customImg = true;
                 _self.iconNode.setStyle("background-image", "url("+src+")");
-                _self.editor.fireEvent("change");
+                _self.editor.fireEvent("change", [{
+                    compareName: _self.getName() + ".img"
+                }]);
                 ev.stopPropagation();
             }, icon);
             item.iconName = i+".png";
@@ -288,7 +309,9 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor.ButtonAction = new Class(
             dataList[dataIndex_before] = dataList.splice(dataIndex, 1, dataList[dataIndex_before])[0];
             this.editor.data = dataList;
 
-            this.editor.fireEvent("change");
+            this.editor.fireEvent("change", [{
+                compareName: this.getName() + ".sequence"
+            }]);
             e.stopPropagation();
         }.bind(this));
 
@@ -326,7 +349,9 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor.ButtonAction = new Class(
                 this.editButton.setStyle("background-image", "url("+this.editor.path+this.editor.options.style+"/icon/edit.png)");
                 this.data.editShow = true;
             }
-            this.editor.fireEvent("change");
+            this.editor.fireEvent("change", [{
+                compareName: this.getName() + ".editShow"
+            }]);
             e.stopPropagation();
         }.bind(this));
         if (this.readButton)this.readButton.addEvent("click", function(e){
@@ -337,7 +362,9 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor.ButtonAction = new Class(
                 this.readButton.setStyle("background-image", "url("+this.editor.path+this.editor.options.style+"/icon/read.png)");
                 this.data.readShow = true;
             }
-            this.editor.fireEvent("change");
+            this.editor.fireEvent("change", [{
+                compareName: this.getName() + ".readShow"
+            }]);
             e.stopPropagation();
         }.bind(this));
 

@@ -145,7 +145,6 @@ MWF.xApplication.process.FormDesigner.widget.ActionsEditor = new Class({
         this.data.push(o);
         this.actions.push(action);
 
-        var key = (this.data.length - 1).toString();
         this.fireEvent("change", [{
             compareName: "addAction",
             force: true

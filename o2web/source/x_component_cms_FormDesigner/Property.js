@@ -27,6 +27,7 @@ MWF.xApplication.cms.FormDesigner.Property = MWF.CMSFCProperty = new Class({
         scriptAreas.each(function(node){
             var title = node.get("title");
             var name = node.get("name");
+            if (!this.data[name]) this.data[name] = {"code": "", "html": ""};
             var scriptContent = this.data[name];
 
             MWF.require("MWF.widget.ScriptArea", function(){
@@ -35,6 +36,10 @@ MWF.xApplication.cms.FormDesigner.Property = MWF.CMSFCProperty = new Class({
                     //"maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                     "maxObj": this.designer.formContentNode,
                     "onChange": function(){
+                        if (!this.data[name]){
+                            this.data[name] = {"code": "", "html": ""};
+                            if (this.module.form.scriptDesigner) this.module.form.scriptDesigner.addScriptItem(this.data[name], "code", this.data, name);
+                        }
                         var oldValue = this.data[name].code;
                         var json = scriptArea.toJson();
                         this.data[name].code = json.code;
@@ -67,7 +72,7 @@ MWF.xApplication.cms.FormDesigner.Property = MWF.CMSFCProperty = new Class({
             var name = node.get("name");
             var actionContent = this.data[name];
             var oldValue = actionContent ? JSON.parse( JSON.stringify(actionContent) ) : actionContent;
-            MWF.xDesktop.requireApp("process.FormDesigner", "widget.ActionsEditor", function(){
+            MWF.xDesktop.requireApp("cms.FormDesigner", "widget.ActionsEditor", function(){
                 var options = {
                     "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                     "isSystemTool" : true,
@@ -83,7 +88,7 @@ MWF.xApplication.cms.FormDesigner.Property = MWF.CMSFCProperty = new Class({
                 if(node.get("data-systemToolsAddress")){
                     options.systemToolsAddress = node.get("data-systemToolsAddress");
                 }
-                var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, options);
+                var actionEditor = new MWF.xApplication.cms.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, options);
                 actionEditor.load(actionContent);
             }.bind(this));
         }.bind(this));
@@ -180,9 +185,12 @@ MWF.xApplication.cms.FormDesigner.Property = MWF.CMSFCProperty = new Class({
             MWF.xDesktop.requireApp("cms.FormDesigner", "widget.EventsEditor", function(){
                 var eventsEditor = new MWF.xApplication.cms.FormDesigner.widget.EventsEditor(events, this.designer, {
                     //"maxObj": this.propertyNode.parentElement.parentElement.parentElement,
-                    "maxObj": this.designer.formContentNode
+                    "maxObj": this.designer.formContentNode,
+                    "onChange": function (eventName, newValue, oldValue) {
+                        this.checkHistory(name+"."+eventName, oldValue, newValue);
+                    }.bind(this)
                 });
-                eventsEditor.load(eventsObj);
+                eventsEditor.load(eventsObj, this.data, name);
             }.bind(this));
         }
     },
@@ -194,8 +202,10 @@ MWF.xApplication.cms.FormDesigner.Property = MWF.CMSFCProperty = new Class({
                 MWF.xDesktop.requireApp("cms.FormDesigner", "widget.ValidationEditor", function(){
                     var validationEditor = new MWF.xApplication.cms.FormDesigner.widget.ValidationEditor(node, this.designer, {
                         "onChange": function(){
+                            var oldVaue = this.data[name];
                             var data = validationEditor.getValidationData();
                             this.data[name] = data;
+                            this.checkHistory(name, oldVaue, data);
                         }.bind(this)
                     });
                     validationEditor.load(this.data[name])

@@ -633,9 +633,6 @@ MWF.xApplication.cms.Index.Newer = new Class({
         var workId = currentTask[0];
 
         MWF.Actions.get("x_processplatform_assemble_surface").saveData(function(){
-
-
-
             if (currentTask.length==1){
                 var options = {"workId": workId};
                 var handle = this.app.desktop.openApplication(null, "process.Work", options);
