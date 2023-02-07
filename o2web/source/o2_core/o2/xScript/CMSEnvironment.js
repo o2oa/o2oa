@@ -1960,8 +1960,8 @@ MWF.xScript.CMSEnvironment = function(ev){
                 }
             });
         },
-        "openApplication":function(name, options){
-            return layout.desktop.openApplication(null, name, options);
+        "openApplication":function(name, options, status){
+            return layout.desktop.openApplication(null, name, options, status);
         },
         "createDocument": function (columnOrOptions, category, data, identity, callback, target, latest, selectColumnEnable, ignoreTitle, restrictToColumn) {
             var column = columnOrOptions;
