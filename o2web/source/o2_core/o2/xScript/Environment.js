@@ -3616,10 +3616,14 @@ MWF.xScript.Environment = function(ev){
          * @method openApplication
          * @static
          * @param {String} name - 要打开的component的名称。component对应的名称可以在“控制面板-系统设置-界面设置-模块部署”中找到（即“组件路径”）。
-         * @param {Object} [options] - 打开的component的相关参数
+         * @param {Object} [options] - 打开的component的相关参数，对应该应用源码Main.js中的的options。
+         * @param {Object} [status] - 打开的component的状态，对应用户的操作后的状态。双击桌面模式的应用，在打开应用的浏览器地址上可以查到对应的status。
          * @example
          //打开会议管理
          this.form.openApplication("Meeting");
+         * @example
+         //打开会议管理的周视图
+         this.form.openApplication("Meeting", null, {"action":"toWeek" });
          * @example
          //打开一个流转中的流程实例。与 this.form.openWork(id, "", "work title");效果相同
          this.form.openApplication("process.Work", {
@@ -3630,8 +3634,8 @@ MWF.xScript.Environment = function(ev){
             "appId": "process.Work"+id  //给新打开的component实例一个唯一名称
         });
          */
-        "openApplication":function(name, options){
-            return layout.desktop.openApplication(null, name, options);
+        "openApplication":function(name, options, status){
+            return layout.desktop.openApplication(null, name, options, status);
         },
 
         /**创建一条内容管理文档。

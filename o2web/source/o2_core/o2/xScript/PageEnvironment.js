@@ -2050,8 +2050,8 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
              * @static
              * @see module:form.openApplication
              */
-            "openApplication": function (name, options) {
-                return layout.desktop.openApplication(null, name, options);
+            "openApplication": function (name, options, status) {
+                return layout.desktop.openApplication(null, name, options, status);
             },
             /**创建一个内容管理文档
              * @method createDocument

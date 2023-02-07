@@ -584,6 +584,9 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			data.total = totalData;
 			return totalData;
 		},
+		isTotalNumberModule: function( id ){
+			return this.totalNumberModuleIds.contains(id)
+		},
 
 		isShowSectionKey: function(){
 			return this.json.showSectionKey && this.isMergeRead ;
@@ -1212,7 +1215,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			}
 			return true;
 		},
-		_completeLineEdit: function( ev, fireChange ){
+		_completeLineEdit: function( ev, fireChange, ignoerSave ){
 			var line = this.currentEditedLine;
 			if( !line )return true;
 			if( !line.validation() )return false;
@@ -1232,7 +1235,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			line.changeEditMode(false);
 			this._loadTotal();
 			if( line.sectionLine )line.sectionLine._loadTotal();
-			if(line.attachmentChangeFlag){
+			if(line.attachmentChangeFlag && !ignoerSave){
 				this.form.saveFormData();
 				line.attachmentChangeFlag = false;
 			}
@@ -1759,6 +1762,15 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			}
 			return true;
 		},
+		saveValidation: function () {
+			return this.validationCurrentEditedLine();
+		},
+		validationCurrentEditedLine: function () {
+			var line = this.currentEditedLine;
+			if( !line )return true;
+			if( !line.validation() )return false;
+			return true;
+		},
 		validation: function(routeName, opinion){
 			if (this.isEdit){
 				if (!this.editValidation()){
@@ -1766,6 +1778,8 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				}
 			}
 			if (!this.validationConfig(routeName, opinion))  return false;
+
+			if( !this.validationCurrentEditedLine() )return false;
 
 			if (!this.json.validation) return true;
 			if (!this.json.validation.code) return true;
@@ -2159,6 +2173,9 @@ MWF.xApplication.process.Xform.DatatablePC.SectionLine =  new Class({
 		}.bind(this));
 		data.total = totalData;
 		return totalData;
+	},
+	isTotalNumberModule: function( id ){
+		return this.totalNumberModuleIds.contains(id)
 	}
 });
 
@@ -2347,7 +2364,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 						}.bind(this))
 					}
 					//该字段是合集数值字段
-					if(this.datatable.multiEditMode && this.datatable.totalNumberModuleIds.contains(templateJsonId)){
+					if(this.datatable.multiEditMode && this.isTotalNumberModule(templateJsonId)){
 						//module
 						module.addEvent("change", function(){
 							this.datatable._loadTotal();
@@ -2357,6 +2374,13 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 				}
 			}
 		}.bind(this));
+	},
+	isTotalNumberModule: function(id){
+		if( this.sectionLine ){
+			return this.sectionLine.isTotalNumberModule(id)
+		}else{
+			return this.datatable.isTotalNumberModule(id)
+		}
 	},
 	getIndex: function(){
 		return this.options.index;
@@ -2612,7 +2636,9 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 	},
 	validation: function(){
 		if( !this.options.isEdited || !this.options.isEditable )return true;
-		return this.validationFields() && this.validationCompleteLine();
+		if( !this.validationFields())return false;
+		if( !this.validationCompleteLine())return false;
+		return true;
 	},
 	validationFields: function(){
 		if( !this.options.isEdited || !this.options.isEditable )return true;
@@ -2656,7 +2682,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 			}else{
 				if( isTr ){
 					tr = new Element("tr");
-					td = new Element("td", {"colspan": this.node.getElements("td").filter(function(td){return td.offsetParent !== null;}).length}).inject(tr);
+					td = new Element("td", {"colspan": this.datatable.columnCount}).inject(tr);
 				}
 				node = new Element("div",{
 					"styles" : this.form.json.errorStyle.node,
@@ -2678,7 +2704,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 		}else{
 			if( isTr ){
 				tr = new Element("tr");
-				td = new Element("td", {"colspan": this.node.getElements("td").filter(function(td){return td.offsetParent !== null;}).length}).inject(tr);
+				td = new Element("td", {"colspan": this.datatable.columnCount}).inject(tr);
 			}
 			node = new Element("div");
 			if( td )node.inject(td);

@@ -20,7 +20,6 @@ import com.x.base.core.project.cache.Cache.CacheCategory;
 import com.x.base.core.project.cache.Cache.CacheKey;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.EffectivePerson;
-import com.x.base.core.project.organization.OrganizationDefinition;
 import com.x.base.core.project.tools.ListTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.core.entity.element.Application;
@@ -43,6 +42,37 @@ public class ProcessFactory extends ElementFactory {
 
     public Process pick(Application application, String flag) throws Exception {
         return this.pick(application, flag, Process.class);
+    }
+
+    /**
+     * 在启动方法中根据应用和流程标识找到流程,需要考虑如果启用版本管理,那么流程名是重复的
+     * 
+     * @param application
+     * @param flag
+     * @return
+     * @throws Exception
+     */
+    public Process pickProcessEditionEnabled(Application application, String flag)
+            throws Exception {
+        if (null == application) {
+            return null;
+        }
+        CacheCategory cacheCategory = new CacheCategory(Process.class);
+        CacheKey cacheKey = new CacheKey(application.getId(), flag, "pickProcessEditionEnabled");
+        Process p = null;
+        Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
+        if (optional.isPresent()) {
+            p = (Process) optional.get();
+        } else {
+            p = this.entityManagerContainer().restrictFlagEqualAndNotEqual(flag, Process.class,
+                    Process.application_FIELDNAME,
+                    application.getId(), Process.editionEnable_FIELDNAME, false);
+            if (p != null) {
+                this.entityManagerContainer().get(Process.class).detach(p);
+                CacheManager.put(cacheCategory, cacheKey, p);
+            }
+        }
+        return p;
     }
 
     public Process pickEnabled(String application, String edition) throws Exception {

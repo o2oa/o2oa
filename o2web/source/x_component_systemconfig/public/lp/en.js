@@ -982,11 +982,16 @@ o2.xApplication.systemconfig.LP = {
 
         "systemMessageSwitch": "显示系统通知",
         "systemMessageSwitchInfo": "移动App消息列表中是否显示系统通知",
+        "systemMessageCanClickInfo": "移动App系统通知是否可点击打开",
 
 
         "contactPermissionView": "移动App通讯录权限视图",
         "contactPermissionViewInfo": "需要安装应用市场【通讯录】应用，应用内包含通讯录的权限配置视图",
 
+        
+        "appExitAlert": "app退出提示",
+        "appExitAlertInfo": "app退出的时候弹出窗口的提示语，为空就不弹窗",
+        
         "nativeAppList": "应用列表",
         "nativeAppListInfo": "您可以在此设置移动端APP中，启用哪些应用，禁用哪些应用",
 

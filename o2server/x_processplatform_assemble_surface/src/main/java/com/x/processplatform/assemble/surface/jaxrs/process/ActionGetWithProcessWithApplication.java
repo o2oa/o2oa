@@ -21,39 +21,39 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 public class ActionGetWithProcessWithApplication extends BaseAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionGetWithProcessWithApplication.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActionGetWithProcessWithApplication.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, String applicationFlag) throws Exception {
+    ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, String applicationFlag) throws Exception {
 
-		LOGGER.debug("execute:{}, flag:{}, applicationFlag:{}.", effectivePerson::getDistinguishedName, () -> flag,
-				() -> applicationFlag);
+        LOGGER.debug("execute:{}, flag:{}, applicationFlag:{}.", effectivePerson::getDistinguishedName, () -> flag,
+                () -> applicationFlag);
 
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
-			Business business = new Business(emc);
-			Application application = business.application().pick(applicationFlag);
-			if (null == application) {
-				throw new ExceptionEntityNotExist(applicationFlag, Application.class);
-			}
-			Process process = business.process().pick(application, flag);
-			if (null == process) {
-				throw new ExceptionEntityNotExist(flag, Process.class);
-			}
-			if (StringUtils.isNotEmpty(process.getEdition()) && BooleanUtils.isFalse(process.getEditionEnable())) {
-				process = business.process().pickEnabled(process.getApplication(), process.getEdition());
-			}
-			Wo wo = Wo.copier.copy(process);
-			result.setData(wo);
-			return result;
-		}
-	}
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            ActionResult<Wo> result = new ActionResult<>();
+            Business business = new Business(emc);
+            Application application = business.application().pick(applicationFlag);
+            if (null == application) {
+                throw new ExceptionEntityNotExist(applicationFlag, Application.class);
+            }
+            Process process = business.process().pickProcessEditionEnabled(application, flag);
+            if (null == process) {
+                throw new ExceptionEntityNotExist(flag, Process.class);
+            }
+            if (StringUtils.isNotEmpty(process.getEdition()) && BooleanUtils.isFalse(process.getEditionEnable())) {
+                process = business.process().pickEnabled(process.getApplication(), process.getEdition());
+            }
+            Wo wo = Wo.copier.copy(process);
+            result.setData(wo);
+            return result;
+        }
+    }
 
-	@Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetWithProcessWithApplication$Wo")
-	public static class Wo extends Process {
+    @Schema(name = "com.x.processplatform.assemble.surface.jaxrs.process.ActionGetWithProcessWithApplication$Wo")
+    public static class Wo extends Process {
 
-		private static final long serialVersionUID = 1521228691441978462L;
+        private static final long serialVersionUID = 1521228691441978462L;
 
-		static WrapCopier<Process, Wo> copier = WrapCopierFactory.wo(Process.class, Wo.class, null,
-				JpaObject.FieldsInvisible);
-	}
+        static WrapCopier<Process, Wo> copier = WrapCopierFactory.wo(Process.class, Wo.class, null,
+                JpaObject.FieldsInvisible);
+    }
 }
