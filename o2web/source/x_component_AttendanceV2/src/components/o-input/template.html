@@ -1,0 +1,7 @@
+<div class="o-input-item">
+  <div class="o-input-item-label" oo-if="$.label">
+    <span class="required" oo-if="$.isRequried">*</span>
+    {{$.label}}
+  </div>
+  <input class="o-input-item-input"  oo-model="value"  @input="onValueChange"  />
+</div>

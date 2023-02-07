@@ -44,6 +44,12 @@
  .att .operator_link {
   color: var(--el-color-primary);
  }
+ .att .link_btn {
+  line-height: 32px;
+  font-size: 18px;
+  cursor: pointer;
+  margin-left: 10px;
+ }
  .index_page_header_container {
   display: flex;
   height: 48px;
@@ -61,7 +67,7 @@
 }
 .index_page_content_container {
   display: flex;
-  height: calc(100%-50px);
+  height: calc(100% - 50px);
 }
 .index_page_nav_container {
   flex-shrink: 0;

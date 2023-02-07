@@ -26,9 +26,20 @@ MWF.xApplication.AttendanceV2.LP = {
     },
 
     "operate": "操作",
+    "positive": "确定",
+    "cancel": "取消",
+    "add": "添加",
 
     "shiftTitle": "班次管理",
     "addShift": "新增班次",
     "shiftName": "班次名称",
     "checkInTime": "考勤时间",
+    "form" : {
+        "shiftNameLabel": "班次名称",
+        "checkInTimeLabel": "上下班时间",
+    },
+
+    "components": {
+        "chooseTimePlaceholder": "请选择时间"
+    }
 };

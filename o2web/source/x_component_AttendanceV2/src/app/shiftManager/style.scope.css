@@ -1,0 +1,133 @@
+.cc-mask {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.cc-mask-show {
+  opacity: 1;
+}
+.cc-mask-hide {
+  display: none;
+  opacity: 0;
+}
+.s-dialog {
+  position: relative;
+  margin: 15vh auto 50px;
+  background: white;
+  border-radius: 2px;
+  box-shadow: 0px 12px 32px 4px rgba(0, 0, 0, .04), 0px 8px 20px rgba(0, 0, 0, .08);
+  box-sizing: border-box;
+  width: 50%;
+}
+.s-dialog-header {
+  padding: 20px;
+  padding-bottom: 10px;
+  margin-right: 16px;
+  text-align: left;
+}
+.s-dialog-footer {
+  padding: 20px;
+  padding-top: 10px;
+  margin-right: 16px;
+  text-align: right;
+}
+.s-dialog-header .title {
+  line-height: 24px;
+  font-size: 18px;
+  color: #333333;
+}
+.s-dialog-header .close {
+    position: absolute;
+    top: 6px;
+    right: 0;
+    padding: 0;
+    width: 54px;
+    height: 54px;
+    background: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #999999;
+}
+.s-dialog-content {
+  padding: 20px;
+  max-height: 500px;
+    overflow: auto;
+}
+
+.item-label {
+  height: 32px;
+  line-height: 32px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #171a1d;
+}
+.item-label .required {
+  color: #ff5219;
+  font-size: 12px;
+  margin-right: 6px;
+}
+.item-content {
+  font-size: 14px;
+  color: #171a1d;
+}
+.item-content .required {
+  color: #ff5219;
+  font-size: 12px;
+  margin-right: 6px;
+}
+
+.a-card {
+  border: 1px solid #f0f0f0;
+  margin: 0;
+  padding: 0;
+  color: #171a1d;
+  font-size: 14px;
+  line-height: 1.5715;
+  list-style: none;
+  position: relative;
+  background: #fff;
+  border-radius: 6px;
+}
+.a-card-gray {
+  background-color: rgba(23,26,29,.04);
+  margin-bottom: 12px;
+}
+.a-card-head {
+  min-height: 36px;
+  margin-bottom: -1px;
+  padding: 0 12px;
+  color: #171a1d;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 36px;
+  background: transparent;
+  border-bottom: 1px solid #f0f0f0;
+  border-radius: 6px 6px 0 0;
+}
+.a-card-body {
+  padding: 12px;
+}
+
+.r-box {
+  display: inline-block;
+  flex-wrap: nowrap;
+  border-radius: 4px;
+  background-color: #fff;
+    background-image: none;
+    border: 1px solid #d9d9d9;
+    transition: all 0.3s;
+}
+.r-item {
+  margin: 0;
+  display: inline-block;
+  padding: 4px 11px;
+  color: #171a1d;
+  font-size: 14px;
+  line-height: 1.5715;
+  cursor: pointer;
+}
