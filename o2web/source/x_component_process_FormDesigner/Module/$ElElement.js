@@ -74,6 +74,7 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 	_loadVue: function(callback){
 		if (!window.Vue){
 			o2.load(["vue_develop", "elementui"], { "sequence": true }, function(){
+				if( window.Vue.config )window.Vue.config = {};
 				window.Vue.config.errorHandler = function (err, vm, info) {
 					if (vm.$o2module && info=="nextTick"){
 						vm.$o2module._createVueAppNode();

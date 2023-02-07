@@ -13,7 +13,7 @@ MWF.xApplication.process.FormDesigner.widget.ParameterEditor = new Class({
         //if (!Object.getLength(this.data)){
             this.addNewItemAction = new Element("div", {"styles": this.css.addNewItemAction, "text": "+"}).inject(this.node);
             this.addNewItemAction.addEvent("click", function(){
-                this.addEvent();
+                this.addEventItem();
                 this.addNewItemAction.setStyle("display", "none");
             }.bind(this));
         //}
@@ -23,15 +23,9 @@ MWF.xApplication.process.FormDesigner.widget.ParameterEditor = new Class({
 			this.items.push(item);
 		}.bind(this));
 	},
-	addItem: function(item){
-		this.data[item.event] = item.data;
-		this.items.push(item);
-	},
-	addEvent: function(){
-		var item = new MWF.xApplication.process.FormDesigner.widget.ParameterEditor.Item(this);
-		item.load("", "");
-	},
     deleteItem: function(item){
+		var oldValue = item.oldData;
+
         this.items.erase(item);
 
         if (this.data[item.event]){
@@ -42,14 +36,26 @@ MWF.xApplication.process.FormDesigner.widget.ParameterEditor = new Class({
         }
         item.deleteScriptDesignerItem();
 
+		this.fireEvent("change", [item.event, null, oldValue]);
+
         if (item.container){
             item.container.destroy();
         }
         if (!Object.getLength(this.data)){
             if (this.addNewItemAction) this.addNewItemAction.setStyle("display", "block");
         }
-    }
-	
+    },
+	addItem: function(item){
+		this.data[item.event] = item.data;
+
+		this.fireEvent("change", [item.event, item.data]);
+
+		this.items.push(item);
+	},
+	addEventItem: function(){
+		var item = new MWF.xApplication.process.FormDesigner.widget.ParameterEditor.Item(this);
+		item.load("", "");
+	}
 });
 
 MWF.xApplication.process.FormDesigner.widget.ParameterEditor.Item = new Class({
@@ -92,6 +98,9 @@ MWF.xApplication.process.FormDesigner.widget.ParameterEditor.Item = new Class({
 						var json = this.codeEditor.toJson();
 						this.data.code = json.code;
 						this.data.html = json.html;
+
+						this.editor.fireEvent("change", [this.event, this.data, this.oldData]);
+
 						this.checkIcon();
 					}.bind(this),
                     "onSave": function(){
@@ -99,6 +108,9 @@ MWF.xApplication.process.FormDesigner.widget.ParameterEditor.Item = new Class({
                         this.data.code = json.code;
                         this.data.html = json.html;
                         this.checkIcon();
+
+						this.editor.fireEvent("change", [this.event, this.data, this.oldData]);
+
                         this.editor.app.savePage();
                     }.bind(this)
 				});

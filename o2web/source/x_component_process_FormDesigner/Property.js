@@ -1623,7 +1623,11 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 MWF.xDesktop.requireApp("process.FormDesigner", "widget.ParameterEditor", function(){
                     var parameterEditor = new MWF.xApplication.process.FormDesigner.widget.ParameterEditor(par, this.designer, {
                         //"maxObj": this.propertyNode.parentElement.parentElement.parentElement,
-                        "maxObj": this.designer.formContentNode
+                        "maxObj": this.designer.formContentNode,
+                        "onChange": function (eventName, newValue, oldValue) {
+                            debugger;
+                            this.checkHistory(name+"."+eventName, oldValue, newValue);
+                        }.bind(this)
                     });
                     parameterEditor.load(parObj, this.data, name);
                 }.bind(this));
