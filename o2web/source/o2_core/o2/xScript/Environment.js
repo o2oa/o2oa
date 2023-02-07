@@ -3605,7 +3605,7 @@ MWF.xScript.Environment = function(ev){
          * @method openApplication
          * @static
          * @param {String} name - 要打开的component的名称。component对应的名称可以在“控制面板-系统设置-界面设置-模块部署”中找到（即“组件路径”）。
-         * @param {Object} [options] - 打开的component的相关参数，对应源码中的的options。
+         * @param {Object} [options] - 打开的component的相关参数，对应该应用源码Main.js中的的options。
          * @param {Object} [status] - 打开的component的状态，对应用户的操作后的状态。双击桌面模式的应用，在打开应用的浏览器地址上可以查到对应的status。
          * @example
          //打开会议管理
