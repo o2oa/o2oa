@@ -2470,7 +2470,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                         historyOptions = historyOptions || {};
                         this.data[name] = actionEditor.data;
                         this.changeData(name, null, oldValue, true);
-                        this.checkHistory(name, oldValue, null, false, name +"."+ historyOptions.compareName, historyOptions.force );
+                        this.checkHistory(name, oldValue, null, false, name + historyOptions.compareName, historyOptions.force );
                         oldValue = JSON.parse( JSON.stringify(this.data[name]) );
                     }.bind(this)
                 };
@@ -2507,7 +2507,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                         historyOptions = historyOptions || {};
                         this.data[name] = actionEditor.data;
                         this.changeData(name, null, oldValue, true);
-                        this.checkHistory(name, oldValue, null, false, name +"."+ historyOptions.compareName, historyOptions.force );
+                        this.checkHistory(name, oldValue, null, false, name + historyOptions.compareName, historyOptions.force );
                         oldValue = JSON.parse( JSON.stringify(this.data[name]) );
                     }.bind(this)
                 });
@@ -2536,7 +2536,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                         historyOptions = historyOptions || {};
                         this.data[name] = actionEditor.data;
                         this.changeData(name, null, oldValue, true);
-                        this.checkHistory(name, oldValue, null, false, name +"."+ historyOptions.compareName, historyOptions.force );
+                        this.checkHistory(name, oldValue, null, false, name + historyOptions.compareName, historyOptions.force );
                         oldValue = JSON.parse( JSON.stringify(this.data[name]) );
                     }.bind(this)
                 });

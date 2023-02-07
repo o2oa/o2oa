@@ -151,7 +151,7 @@ if( !MWF.CMSProperty_Process ){
                             historyOptions = historyOptions || {};
                             this.data[name] = actionEditor.data;
                             this.changeData(name, null, oldValue, true);
-                            this.checkHistory(name, oldValue, null, false, name +"."+ historyOptions.compareName, historyOptions.force );
+                            this.checkHistory(name, oldValue, null, false, name + historyOptions.compareName, historyOptions.force );
                             oldValue = JSON.parse( JSON.stringify(this.data[name]) );
                         }.bind(this)
                     };
@@ -175,7 +175,7 @@ if( !MWF.CMSProperty_Process ){
                             historyOptions = historyOptions || {};
                         this.data[name] = actionEditor.data;
                         this.changeData(name, null, oldValue, true);
-                        this.checkHistory(name, oldValue, null, false, name +"."+ historyOptions.compareName, historyOptions.force );
+                        this.checkHistory(name, oldValue, null, false, name + historyOptions.compareName, historyOptions.force );
                         oldValue = JSON.parse( JSON.stringify(this.data[name]) );
                         }.bind(this)
                     });
@@ -220,7 +220,7 @@ if( !MWF.CMSProperty_Process ){
                             historyOptions = historyOptions || {};
                             this.data[name] = actionEditor.data;
                             this.changeData(name, null, oldValue, true);
-                            this.checkHistory(name, oldValue, null, false, name +"."+ historyOptions.compareName, historyOptions.force );
+                            this.checkHistory(name, oldValue, null, false, name + historyOptions.compareName, historyOptions.force );
                             oldValue = JSON.parse( JSON.stringify(this.data[name]) );
                         }.bind(this)
                     });

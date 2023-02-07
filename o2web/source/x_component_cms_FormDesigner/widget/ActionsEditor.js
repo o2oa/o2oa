@@ -54,7 +54,7 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor = new Class({
         this.actions.push(action);
 
         this.fireEvent("change", [{
-            compareName: "addAction",
+            compareName: " [addAction]",
             force: true
         }]);
 	},
@@ -96,7 +96,7 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor = new Class({
                     }
                 }.bind(this));
                 this.fireEvent("change", [{
-                    compareName: "addSystemAction:"+actionNameList,
+                    compareName: " [addSystemAction]:"+actionNameList,
                     force: true
                 }]);
             }.bind(this)
@@ -142,7 +142,7 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor.ButtonAction = new Class(
                     this.propertiesButton.setStyle("background-image", "url("+this.editor.path+this.editor.options.style+"/icon/property.png)");
                 }
                 this.editor.fireEvent("change", [{
-                    compareName: this.getName() + ".property"
+                    compareName: "."+this.getName() + ".property"
                 }]);
             }.bind(this)
         });
@@ -192,13 +192,13 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor.ButtonAction = new Class(
                 "onChange": function () {
                     this.data.actionScript = this.scriptArea.editor.getValue();
                     this.editor.fireEvent("change", [{
-                        compareName: this.getName() + ".actionScript"
+                        compareName: "."+this.getName() + ".actionScript"
                     }]);
                 }.bind(this),
                 "onSave": function () {
                     this.data.actionScript = this.scriptArea.editor.getValue();
                     this.editor.fireEvent("change", [{
-                        compareName: this.getName() + ".actionScript"
+                        compareName: "."+this.getName() + ".actionScript"
                     }]);
                     this.editor.designer.saveForm();
                 }.bind(this),
@@ -222,13 +222,13 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor.ButtonAction = new Class(
                     this.conditionButton.setStyle("background-image", "url("+this.editor.path+this.editor.options.style+"/icon/code_empty.png)");
                 }
                 this.editor.fireEvent("change", [{
-                    compareName: this.getName() + ".conditionScript"
+                    compareName: "."+this.getName() + ".conditionScript"
                 }]);
             }.bind(this),
             "onSave": function(){
                 this.data.condition = this.conditionArea.editor.getValue();
                 this.editor.fireEvent("change", [{
-                    compareName: this.getName() + ".conditionScript"
+                    compareName: "."+this.getName() + ".conditionScript"
                 }]);
                 this.editor.designer.saveForm();
             }.bind(this),
@@ -265,7 +265,9 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor.ButtonAction = new Class(
                 _self.data.img = src.substr(src.lastIndexOf("/")+1, src.length);
                 _self.data.customImg = true;
                 _self.iconNode.setStyle("background-image", "url("+src+")");
-                _self.editor.fireEvent("change");
+                _self.editor.fireEvent("change", [{
+                    compareName: "."+_self.getName() + ".img"
+                }]);
                 ev.stopPropagation();
             }, icon);
             item.iconName = i+".png";
@@ -279,7 +281,7 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor.ButtonAction = new Class(
                 _self.data.customImg = true;
                 _self.iconNode.setStyle("background-image", "url("+src+")");
                 _self.editor.fireEvent("change", [{
-                    compareName: _self.getName() + ".img"
+                    compareName: "."+_self.getName() + ".img"
                 }]);
                 ev.stopPropagation();
             }, icon);
@@ -310,7 +312,7 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor.ButtonAction = new Class(
             this.editor.data = dataList;
 
             this.editor.fireEvent("change", [{
-                compareName: this.getName() + ".sequence"
+                compareName: "."+this.getName() + " [up]"
             }]);
             e.stopPropagation();
         }.bind(this));
@@ -350,7 +352,7 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor.ButtonAction = new Class(
                 this.data.editShow = true;
             }
             this.editor.fireEvent("change", [{
-                compareName: this.getName() + ".editShow"
+                compareName: "."+this.getName() + ".editShow"
             }]);
             e.stopPropagation();
         }.bind(this));
@@ -363,7 +365,7 @@ MWF.xApplication.cms.FormDesigner.widget.ActionsEditor.ButtonAction = new Class(
                 this.data.readShow = true;
             }
             this.editor.fireEvent("change", [{
-                compareName: this.getName() + ".readShow"
+                compareName: "."+this.getName() + ".readShow"
             }]);
             e.stopPropagation();
         }.bind(this));
