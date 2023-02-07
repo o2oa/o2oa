@@ -391,7 +391,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             this.viewJson.selectList.each(function(column){
                 this.entries[column.column] = column;
                 if (column.hideColumn) this.hideColumns.push(column.column);
-                if (!column.allowOpen) this.openColumns.push(column.column);
+                if (column.allowOpen) this.openColumns.push(column.column);
             }.bind(this));
             this.lookup(data, callback);
         }
