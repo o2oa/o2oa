@@ -398,7 +398,7 @@ bind.org = {
     },
     //获取人员,附带身份,身份所在的组织,个人所在群组,个人拥有角色.
     getPersonData: function(name){
-        var v = this.oPerson.getObject(name);
+        var v = this.oPerson.getExt(name);
         var v_json = (!v) ? null: JSON.parse(v.toString());
         return v_json;
     },

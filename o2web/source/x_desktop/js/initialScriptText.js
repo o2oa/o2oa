@@ -772,7 +772,7 @@ bind.org = {
      * var person = this.org.getPersonData( name );
      */
     getPersonData: function(name){
-        var v = this.oPerson.getObject(name);
+        var v = this.oPerson.getExt(name);
         var v_json = (!v) ? null: JSON.parse(v.toString());
         return v_json;
     },
