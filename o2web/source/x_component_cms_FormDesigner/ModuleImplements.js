@@ -265,8 +265,8 @@ if( !MWF.CMSProperty_Process ){
                     var eventsEditor = new MWF.xApplication.cms.FormDesigner.widget.EventsEditor(events, this.designer, {
                         //"maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                         "maxObj": this.designer.formContentNode,
-                        "onChange": function (eventName, newValue, oldValue) {
-                            this.checkHistory(name+"."+eventName, oldValue, newValue);
+                        "onChange": function (eventName, newValue, oldValue, compareName) {
+                            this.checkHistory(name+"."+eventName, oldValue, newValue, null, compareName ? (name+"."+compareName) : "");
                         }.bind(this)
                     });
                     eventsEditor.load(eventsObj, this.data, name);

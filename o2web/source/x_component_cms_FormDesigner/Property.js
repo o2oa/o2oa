@@ -81,7 +81,7 @@ MWF.xApplication.cms.FormDesigner.Property = MWF.CMSFCProperty = new Class({
                         historyOptions = historyOptions || {};
                         this.data[name] = actionEditor.data;
                         this.changeData(name, null, oldValue, true);
-                        this.checkHistory(name, oldValue, null, false, name +"."+ historyOptions.compareName, historyOptions.force );
+                        this.checkHistory(name, oldValue, null, false, name + historyOptions.compareName, historyOptions.force );
                         oldValue = JSON.parse( JSON.stringify(this.data[name]) );
                     }.bind(this)
                 };
@@ -105,7 +105,7 @@ MWF.xApplication.cms.FormDesigner.Property = MWF.CMSFCProperty = new Class({
                         historyOptions = historyOptions || {};
                         this.data[name] = actionEditor.data;
                         this.changeData(name, null, oldValue, true);
-                        this.checkHistory(name, oldValue, null, false, name +"."+ historyOptions.compareName, historyOptions.force );
+                        this.checkHistory(name, oldValue, null, false, name + historyOptions.compareName, historyOptions.force );
                         oldValue = JSON.parse( JSON.stringify(this.data[name]) );
                     }.bind(this)
                 });
@@ -150,7 +150,7 @@ MWF.xApplication.cms.FormDesigner.Property = MWF.CMSFCProperty = new Class({
                         historyOptions = historyOptions || {};
                         this.data[name] = actionEditor.data;
                         this.changeData(name, null, oldValue, true);
-                        this.checkHistory(name, oldValue, null, false, name +"."+ historyOptions.compareName, historyOptions.force );
+                        this.checkHistory(name, oldValue, null, false, name + historyOptions.compareName, historyOptions.force );
                         oldValue = JSON.parse( JSON.stringify(this.data[name]) );
                     }.bind(this)
                 });
@@ -186,8 +186,8 @@ MWF.xApplication.cms.FormDesigner.Property = MWF.CMSFCProperty = new Class({
                 var eventsEditor = new MWF.xApplication.cms.FormDesigner.widget.EventsEditor(events, this.designer, {
                     //"maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                     "maxObj": this.designer.formContentNode,
-                    "onChange": function (eventName, newValue, oldValue) {
-                        this.checkHistory(name+"."+eventName, oldValue, newValue);
+                    "onChange": function (eventName, newValue, oldValue, compareName) {
+                        this.checkHistory(name+"."+eventName, oldValue, newValue, null, compareName ? (name+"."+compareName) : "");
                     }.bind(this)
                 });
                 eventsEditor.load(eventsObj, this.data, name);

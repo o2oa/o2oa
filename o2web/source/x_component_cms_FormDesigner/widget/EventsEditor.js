@@ -36,7 +36,7 @@ MWF.xApplication.cms.FormDesigner.widget.EventsEditor.Item = new Class({
 						this.data.code = json.code;
 						this.data.html = json.html;
 
-						this.editor.fireEvent("change", [this.event, this.data, this.oldData]);
+						this.editor.fireEvent("change", [this.event, Object.clone(this.data), this.oldData]);
 
 						this.checkIcon();
 					}.bind(this),
@@ -45,7 +45,7 @@ MWF.xApplication.cms.FormDesigner.widget.EventsEditor.Item = new Class({
                         this.data.code = json.code;
                         this.data.html = json.html;
 
-						this.editor.fireEvent("change", [this.event, this.data, this.oldData]);
+						this.editor.fireEvent("change", [this.event, Object.clone(this.data), this.oldData]);
 
                         this.editor.app.saveForm();
                     }.bind(this),
