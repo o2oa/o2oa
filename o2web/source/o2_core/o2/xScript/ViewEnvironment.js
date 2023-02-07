@@ -1423,6 +1423,45 @@ MWF.xScript.ViewEnvironment = function (ev) {
         },
 
         //人员
+        //获取人员,附带身份,身份所在的组织,个人所在群组,个人拥有角色.
+        /**
+         根据人员标识获取对应的人员对象，附带身份,身份所在的组织,个人所在群组,个人拥有角色.
+         * @method getPersonData
+         * @o2membercategory person
+         * @methodOf module:org
+         * @static
+         * @param {String} name - 人员的distinguishedName、id、unique属性值，人员名称。
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {Promise|PersonData} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则返回人员对象。
+         * @o2ActionOut x_organization_assemble_express.PersonAction.listObject|example=Person
+         * @o2syntax
+         * //同步执行，返回人员对象。
+         * var person = this.org.getPersonData( name );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.getPersonData( name, true);
+         * promise.then(function(person){
+         *     //personList 为返回的人员对象。
+         * })
+         *
+         * //异步执行，在回调方法中获取人员
+         * this.org.getPersonData( name, function(person){
+         *     //personList 为返回的人员对象。
+         * })
+         */
+        getPersonData: function(name, async){
+            getOrgActions();
+            var v = null;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+            var promise = orgActions.getPerson(null, cb, null, !!async, {"flag": name});
+            return (!!async) ? promise : v;
+        },
         //获取人员--返回人员的对象数组
         /**
          根据人员标识获取对应的人员对象或数组：person对象或数组

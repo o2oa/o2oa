@@ -757,6 +757,26 @@ bind.org = {
         return this.oPerson.hasRole(nameFlag, getNameFlag(role));
     },
 
+    //获取人员,附带身份,身份所在的组织,个人所在群组,个人拥有角色.
+    /**
+     根据人员标识获取对应的人员对象,附带身份,身份所在的组织,个人所在群组,个人拥有角色.
+     * @method getPersonData
+     * @o2membercategory person
+     * @methodOf module:server.org
+     * @static
+     * @param {String} name - 人员的distinguishedName、id、unique属性值，人员名称。
+     * @return {PersonData|PersonData[]} 返回人员对象。
+     * @o2ActionOut x_organization_assemble_express.PersonAction.listObject|example=Person
+     * @o2syntax
+     * //返回人员对象。
+     * var person = this.org.getPersonData( name );
+     */
+    getPersonData: function(name){
+        var v = this.oPerson.getObject(name);
+        var v_json = (!v) ? null: JSON.parse(v.toString());
+        return v_json;
+    },
+
     //获取人员--返回人员的对象数组
     /**
      根据人员标识获取对应的人员对象或数组：person对象或数组

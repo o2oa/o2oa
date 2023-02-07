@@ -388,6 +388,18 @@ MWF.xScript.CMSEnvironment = function(ev){
             // orgActions.personHasRole(data, function(json){v = json.data.value;}, null, false);
             // return v;
         },
+        //获取人员,附带身份,身份所在的组织,个人所在群组,个人拥有角色.
+        getPersonData: function(name, async){
+            getOrgActions();
+            var v = null;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+            var promise = orgActions.getPerson(null, cb, null, !!async, {"flag": name});
+            return (!!async) ? promise : v;
+        },
         //获取人员--返回人员的对象数组
         getPerson: function(name, async, findCN){
             getOrgActions();

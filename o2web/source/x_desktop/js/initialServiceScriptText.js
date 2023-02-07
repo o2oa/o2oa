@@ -396,6 +396,12 @@ bind.org = {
         nameFlag = (library.typeOf(name)==="object") ? (name.distinguishedName || name.id || name.unique || name.name) : name;
         return this.oPerson.hasRole(nameFlag, getNameFlag(role));
     },
+    //获取人员,附带身份,身份所在的组织,个人所在群组,个人拥有角色.
+    getPersonData: function(name){
+        var v = this.oPerson.getObject(name);
+        var v_json = (!v) ? null: JSON.parse(v.toString());
+        return v_json;
+    },
     //获取人员--返回人员的对象数组
     getPerson: function(name, findCN){
         var v = this.oPerson.listObject(getNameFlag(name), !!findCN);
