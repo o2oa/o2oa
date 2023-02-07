@@ -28,7 +28,9 @@ MWF.xApplication.process.FormDesigner.widget.ParameterEditor = new Class({
 
         this.items.erase(item);
 
+        var data;
         if (this.data[item.event]){
+			data = Object.clone( this.data[item.event] );
             this.data[item.event].code = "";
             this.data[item.event].html = "";
 
@@ -36,7 +38,7 @@ MWF.xApplication.process.FormDesigner.widget.ParameterEditor = new Class({
         }
         item.deleteScriptDesignerItem();
 
-		this.fireEvent("change", [item.event, null, oldValue]);
+		this.fireEvent("change", [item.event, null, data, item.event+" [delete]"]);
 
         if (item.container){
             item.container.destroy();
@@ -48,7 +50,7 @@ MWF.xApplication.process.FormDesigner.widget.ParameterEditor = new Class({
 	addItem: function(item){
 		this.data[item.event] = item.data;
 
-		this.fireEvent("change", [item.event, item.data]);
+		this.fireEvent("change", [item.event, Object.clone(item.data)]);
 
 		this.items.push(item);
 	},
@@ -99,7 +101,7 @@ MWF.xApplication.process.FormDesigner.widget.ParameterEditor.Item = new Class({
 						this.data.code = json.code;
 						this.data.html = json.html;
 
-						this.editor.fireEvent("change", [this.event, this.data, this.oldData]);
+						this.editor.fireEvent("change", [this.event, Object.clone(this.data), this.oldData]);
 
 						this.checkIcon();
 					}.bind(this),
@@ -109,7 +111,7 @@ MWF.xApplication.process.FormDesigner.widget.ParameterEditor.Item = new Class({
                         this.data.html = json.html;
                         this.checkIcon();
 
-						this.editor.fireEvent("change", [this.event, this.data, this.oldData]);
+						this.editor.fireEvent("change", [this.event, Object.clone(this.data), this.oldData]);
 
                         this.editor.app.savePage();
                     }.bind(this)

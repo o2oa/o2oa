@@ -1362,8 +1362,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 				var eventsEditor = new MWF.xApplication.process.FormDesigner.widget.EventsEditor(events, this.designer, {
 					//"maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                     "maxObj": this.designer.formContentNode  || this.designer.pageContentNode,
-                    "onChange": function (eventName, newValue, oldValue) {
-                        this.checkHistory(name+"."+eventName, oldValue, newValue);
+                    "onChange": function (eventName, newValue, oldValue, compareName) {
+                        this.checkHistory(name+"."+eventName, oldValue, newValue, null, compareName ? (name+"."+compareName) : "");
                     }.bind(this)
 				});
 				eventsEditor.load(eventsObj, this.data, name);
@@ -1624,9 +1624,9 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     var parameterEditor = new MWF.xApplication.process.FormDesigner.widget.ParameterEditor(par, this.designer, {
                         //"maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                         "maxObj": this.designer.formContentNode,
-                        "onChange": function (eventName, newValue, oldValue) {
+                        "onChange": function (eventName, newValue, oldValue, compareName) {
                             debugger;
-                            this.checkHistory(name+"."+eventName, oldValue, newValue);
+                            this.checkHistory(name+"."+eventName, oldValue, newValue, null, compareName ? (name+"."+compareName) : "");
                         }.bind(this)
                     });
                     parameterEditor.load(parObj, this.data, name);

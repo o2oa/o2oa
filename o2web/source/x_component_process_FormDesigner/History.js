@@ -1146,6 +1146,7 @@ MWF.FCWHistory.PropertySingleItem.SubItem = new Class({
         }
     },
     setScriptJsEditor: function (module, name, value) {
+        if( module )return;
         var jsEditor = module.getScriptJsEditor(name);
         if(jsEditor){
             var v = "";
