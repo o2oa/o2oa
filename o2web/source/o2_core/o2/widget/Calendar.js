@@ -17,7 +17,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		"timeOnly": false,
 		"yearOnly" : false,
 		"monthOnly": false,
-		"defaultDate": new Date(),
+		"defaultDate": null,
 
 		"beforeCurrent": true,
 		"clearEnable": true,
