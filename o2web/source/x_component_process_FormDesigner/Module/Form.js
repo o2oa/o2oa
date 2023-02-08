@@ -179,6 +179,8 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			if (this.autoSaveTimerID) window.clearInterval(this.autoSaveTimerID);
 		}.bind(this));
 
+		this.loadHistory();
+
 		this.designer.fireEvent("postFormLoad");
 	},
     removeStyles: function(from, to){
@@ -344,6 +346,47 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
             }.bind(this), 60000);
         }
     },
+	loadHistory: function(){
+		o2.xDesktop.requireApp("process.FormDesigner", "History", function () {
+			this.history = new MWF.xApplication.process.FormDesigner.History(this, this.designer.currentHistoryNode);
+			this.history.load();
+		}.bind(this));
+	},
+	checkPropertyHistory: function(name, oldValue, newValue, notSetEditStyle, compareName, force){
+		if( !this.history )return null;
+		var log = {
+			"type": "property",
+			"force": force,
+			"moduleId": "form",
+			"moduleType": "form",
+			"notSetEditStyle": notSetEditStyle,
+			"changeList": [
+				{
+					"name": name,
+					"compareName": compareName,
+					"fromValue": oldValue,
+					"toValue": newValue || this.json[name]
+				}
+			]
+		};
+		this.history.checkProperty(log, this);
+	},
+	checkMultiPropertyHistory: function(name, oldValueList, newValue, modules){
+		if( !this.history )return null;
+		var log = {
+			"type": "multiProperty",
+			"moduleId": "form",
+			"changeList": modules.map(function (module, i) {
+				return {
+					"module": module,
+					"name": name,
+					"fromValue": oldValueList[i],
+					"toValue": newValue || module.json[name]
+				}
+			})
+		};
+		this.history.checkMultiProperty(log, modules);
+	},
 	checkUUID: function(){
 		this.designer.actions.getUUID(function(id){
             this.json.id = id;
@@ -1483,7 +1526,21 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 			}
 		}.bind(this));
 		return object;
+	},
+
+	//脚本附签上的脚本编辑器
+	addScriptJsEditor: function (propertyName, jsEditor) {
+		if( !this.scriptJsEditors )this.scriptJsEditors = {};
+		this.scriptJsEditors[propertyName] = jsEditor;
+	},
+	getScriptJsEditor: function (propertyName) {
+		if( !this.scriptJsEditors ){
+			return null;
+		}else{
+			return this.scriptJsEditors[propertyName];
+		}
 	}
+
 	// getAllFieldModuleNameList: function(){
     	// var moduleNameList = [];
     	// Object.each(this.json.moduleList, function(o, k){

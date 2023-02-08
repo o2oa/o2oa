@@ -9,6 +9,8 @@ MWF.APPPOD.LP = {
 
     "repetitionsId": "Element ID is not unique",
     "notNullId": "Element ID cannot be empty",
+    "history": "History",
+    "componentTree": "Component Tree",
 
     "button":{
         "ok": "OK",

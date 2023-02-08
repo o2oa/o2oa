@@ -168,6 +168,11 @@ o2.widget.TabPage = new Class({
 
 		this.tab.resize();
 	},
+	loadExisted: function(){
+		this.tabNode.addEvent("mousedown", function(event){event.stop();});
+		this.tabNode.addEvent("click", this._showTab.bind(this));
+		this.tab.resize();
+	},
 	_showTab: function(){
 		this.showTabIm();
 	},

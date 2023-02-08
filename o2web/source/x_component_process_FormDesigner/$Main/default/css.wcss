@@ -208,6 +208,15 @@
         "-moz-user-select": "none",
         "display": "none"
 	},
+	"historyActionNode": {
+		"position": "absolute",
+		"top": "33px",
+		"cursor": "pointer",
+		"right": "5px",
+		"width": "16px",
+		"height": "16px",
+		"background": "url(../x_component_process_FormDesigner/$Main/default/icon/history.png) center center no-repeat"
+	},
 	"propertyTitleActionNode": {
         "width": "30px",
         "height": "26px",

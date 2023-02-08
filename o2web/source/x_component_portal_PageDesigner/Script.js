@@ -1078,8 +1078,25 @@ MWF.xApplication.portal.PageDesigner.Script.Item = new Class({
         this.script.currentItem = this;
         this.showScript();
 
+        // if (this.module.type==="Form" || this.module.type==="Page"){
+        //     (this.script.designer.form || this.script.designer.page).selected();
+        // }else{
+        //     var list = (this.script.designer.form || this.script.designer.page).moduleList;
+        //     var module = null;
+        //     for (var i=0; i<list.length; i++){
+        //         if (list[i].json.id===this.module.id){
+        //             module = list[i];
+        //             break;
+        //         }
+        //     }
+        //     if (module) module.selected();
+        // }
+        var module = this.getFormModule();
+        if (module) module.selected();
+    },
+    getFormModule: function(){
         if (this.module.type==="Form" || this.module.type==="Page"){
-            (this.script.designer.form || this.script.designer.page).selected();
+            return (this.script.designer.form || this.script.designer.page);
         }else{
             var list = (this.script.designer.form || this.script.designer.page).moduleList;
             var module = null;
@@ -1089,14 +1106,42 @@ MWF.xApplication.portal.PageDesigner.Script.Item = new Class({
                     break;
                 }
             }
-            if (module) module.selected();
+            return module;
         }
     },
     save: function(){
         this.script.designer.saveForm();
     },
     change: function(){
+        var oldValue = Object.clone(this.data);
         this.data[this.key] = this.jsEditor.getValue();
+        this.checkHistory(this.path, oldValue );
+    },
+    checkHistory: function(name, oldValue){
+        var form = (this.script.designer.form || this.script.designer.page), module;
+        if( form.history ){
+            if (this.module.type==="Form" || this.module.type==="Page"){
+                module = form;
+            }else{
+                var moduleNode = form.container.getElement("#"+this.module.id);
+                if(moduleNode) module = moduleNode.retrieve("module")
+            }
+            if(module){
+                if( name.indexOf(this.script.designer.lp.events+".") === 0){
+                    name = "events." + name.replace(this.script.designer.lp.events+".", "");
+                }
+                var newValue = "";
+                switch (typeOf(this.data)) {
+                    case "object":
+                        newValue = Object.clone(this.data);
+                        break;
+                    case "string":
+                        newValue = this.data;
+                        break;
+                }
+                module.checkPropertyHistory(name, oldValue, newValue, true);
+            }
+        }
     },
     setSize: function(){
         var size = this.script.scriptTabNode.getComputedSize();
@@ -1129,6 +1174,7 @@ MWF.xApplication.portal.PageDesigner.Script.Item = new Class({
                 this.editor.id = "1";
 
                 this.jsEditor.addEditorEvent("change", function() {
+                    if( this.jsEditor.silent )return;
                     var text = this.scriptPage.textNode.get("text");
                     if (text.substr(0,1)!=="*") this.scriptPage.textNode.set("text","*"+ text);
                     this.change();
@@ -1169,6 +1215,15 @@ MWF.xApplication.portal.PageDesigner.Script.Item = new Class({
             this.scriptItem.scriptPage = null;
             this.scriptItem.jsEditor = null;
         });
+
+        var module = this.getFormModule();
+        if(module){
+            var name = this.path;
+            if( name.indexOf(this.script.designer.lp.events+".") === 0){
+                name = "events." + name.replace(this.script.designer.lp.events+".", "");
+            }
+            module.addScriptJsEditor( name, this.jsEditor );
+        }
         //this.scriptPage.tabNode.addEvent("dblclick")
     },
     showScript: function(){

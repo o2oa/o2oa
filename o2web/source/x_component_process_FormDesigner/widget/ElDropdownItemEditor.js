@@ -96,6 +96,9 @@ MWF.xApplication.process.FormDesigner.widget.ElDropdownItemEditor.Tree.Node = ne
 						blur: function () {
 							this.data.label = this.labelInput.get("value");
 							this.textNode.getElement("div").set("text", this.data.label);
+							this.tree.editor.fireEvent("change", [{
+								compareName: "."+this.getLevelName() + ".label"
+							}]);
 						}.bind(this)
 					}
 				}).inject(td);
@@ -108,6 +111,9 @@ MWF.xApplication.process.FormDesigner.widget.ElDropdownItemEditor.Tree.Node = ne
 					events: {
 						blur: function () {
 							this.data.command = this.idCommand.get("value");
+							this.tree.editor.fireEvent("change", [{
+								compareName: "."+this.getLevelName() + ".command"
+							}]);
 						}.bind(this)
 					}
 				}).inject(td);
@@ -123,6 +129,9 @@ MWF.xApplication.process.FormDesigner.widget.ElDropdownItemEditor.Tree.Node = ne
 						"click": function () {
 							this.data.disabled = true;
 							radio_disabled_2.checked = false;
+							this.tree.editor.fireEvent("change", [{
+								compareName: "."+this.getLevelName() + ".disabled"
+							}]);
 						}.bind(this)
 					}
 				}).inject( div );
@@ -134,6 +143,9 @@ MWF.xApplication.process.FormDesigner.widget.ElDropdownItemEditor.Tree.Node = ne
 						"click": function () {
 							this.data.disabled = false;
 							radio_disabled_1.checked = false;
+							this.tree.editor.fireEvent("change", [{
+								compareName: "."+this.getLevelName() + ".disabled"
+							}]);
 						}.bind(this)
 					}
 				}).inject( div );
@@ -150,6 +162,9 @@ MWF.xApplication.process.FormDesigner.widget.ElDropdownItemEditor.Tree.Node = ne
 						"click": function(){
 							this.data.divided = true;
 							radio_divided_2.checked = false;
+							this.tree.editor.fireEvent("change", [{
+								compareName: "."+this.getLevelName() + ".divided"
+							}]);
 						}.bind(this)
 					}
 				}).inject( div );
@@ -161,6 +176,9 @@ MWF.xApplication.process.FormDesigner.widget.ElDropdownItemEditor.Tree.Node = ne
 						"click": function () {
 							this.data.divided = false;
 							radio_divided_1.checked = false;
+							this.tree.editor.fireEvent("change", [{
+								compareName: "."+this.getLevelName() + ".divided"
+							}]);
 						}.bind(this)
 					}
 				}).inject( div );
@@ -245,6 +263,9 @@ MWF.xApplication.process.FormDesigner.widget.ElDropdownItemEditor.Tree.Node = ne
 									iNode.removeClass("mainColor_bg");
 									_self.iconNode.removeClass(_self.data.icon);
 									_self.data.icon = "";
+                                    _self.tree.editor.fireEvent("change", [{
+                                        compareName: "."+_self.getLevelName() + ".icon"
+                                    }]);
 									dlg.close()
 								}else{
 									this.$el.getElements("i").forEach(function(el){
@@ -255,6 +276,9 @@ MWF.xApplication.process.FormDesigner.widget.ElDropdownItemEditor.Tree.Node = ne
 										var iconName = iNode.dataset["icon"];
 										_self.iconNode.removeClass(_self.data.icon).addClass(iconName);
 										_self.data.icon = iconName;
+                                        _self.tree.editor.fireEvent("change", [{
+                                            compareName: "."+_self.getLevelName() + ".icon"
+                                        }]);
 										dlg.close();
 									}
 								}
@@ -327,7 +351,9 @@ MWF.xApplication.process.FormDesigner.widget.ElDropdownItemEditor.Tree.Node = ne
 
 		if( this.labelInput )this.labelInput.set("value", text);
 
-		this.tree.editor.fireEvent("change");
+		this.tree.editor.fireEvent("change", [{
+			compareName: "."+this.getLevelName() + ".label"
+		}]);
 		
 		return true;
 	}

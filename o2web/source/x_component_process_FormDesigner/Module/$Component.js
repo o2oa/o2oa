@@ -133,7 +133,7 @@ MWF.xApplication.process.FormDesigner.Module.$Component = MWF.FC$Component = new
 	},
     copy: function(e){
         var newModule = this.copyTo();
-        newModule.move(e);
+        newModule.move(e, "copy");
     },
 
     copyClearContainer: function(){

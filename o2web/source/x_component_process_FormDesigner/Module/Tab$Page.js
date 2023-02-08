@@ -128,30 +128,86 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Page = MWF.FCTab$Page = new Cla
 			this.node.set("title", this.json.description);
 		}
 	},
-	"addPage": function(){
-		var page = this.tab.addPage();
+	"addPage": function( ev ){
+		debugger;
+		var tabPageModule;
+		var page = this.tab.addPage(null, function(module) {
+			tabPageModule = module;
+		});
+
 		page.tabNode.inject(this.page.tabNode, "before");
         page.contentNodeArea.inject(this.page.contentNodeArea, "before");
 		page.showTabIm();
+
+		tabPageModule.addHistoryLog("add");
 	},
 	"delete": function(e){
 		var module = this;
 		this.form.designer.confirm("warn", e, MWF.APPFD.LP.notice.deleteElementTitle, MWF.APPFD.LP.notice.deleteElement, 300, 120, function(){
 
 			if (module.tab.containers.length<=1){
+
+				module.tab.addHistoryLog("delete");
+
 				module.tab.destroy();
 			}else{
-				var contentModule = module.page.contentNode.retrieve("module");
-				module.destroy();
-                module.tab.elements.erase(module);
-				contentModule.destroy();
-                module.tab.containers.erase(contentModule);
-				module.page.closeTab();
+
+				module.addHistoryLog("delete");
+
+				module._delete();
 			}
 			this.close();
 		}, function(){
 			this.close();
 		}, null);
+	},
+	addHistoryLog: function( operation, from, contentFrom ){
+		if(!this.form.history)return;
+		var module = this;
+		var contentModule = module.page.contentNode.retrieve("module");
+		var log = {
+			"operation": operation,
+			"type": "module",
+			"moduleType": this.json.type,
+			"moduleId": this.json.id
+		};
+
+		var to = {
+			"json": Object.clone(module.json),
+			"path": module.form.history.getPath(module.node),
+			"content": {
+				"json": Object.clone(contentModule.json),
+				"path": module.form.history.getPath( module.page.contentNodeArea )
+			}
+		};
+		if( operation !== "move" ){
+			to.jsonObject = module.getJson();
+			to.html = module.node.outerHTML;
+
+			to.content.jsonObject = contentModule.getJson();
+			to.content.html = module.page.contentNodeArea.outerHTML;
+		}
+		log.toList = [to];
+
+		if( from || contentFrom ){
+			if(!from)from = {};
+			if(contentFrom)from.content = contentFrom;
+			log.fromList = [from];
+		}
+
+		module.form.history.add( log, module);
+	},
+	_delete: function(){
+		if (this.tab.containers.length<=1){
+			this.tab.destroy();
+		}else{
+			var contentModule = this.page.contentNode.retrieve("module");
+			this.destroy();
+			this.tab.elements.erase(this);
+			contentModule.destroy();
+			this.tab.containers.erase(contentModule);
+			this.page.closeTab();
+		}
 	},
 	destroy: function(){
 		this.form.moduleList.erase(this);
@@ -169,7 +225,7 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Page = MWF.FCTab$Page = new Cla
 		this.treeNode.destroy();
 	},
 
-	move: function(e){
+	move: function(e, operation){
 		var pageNodes = [];
 		this.tab.tabWidget.pages.each(function(page){
 			if (page!=this.page){
@@ -179,7 +235,7 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Page = MWF.FCTab$Page = new Cla
 
 		this._createMoveNode();
 
-		this._setNodeMove(pageNodes, e);
+		this._setNodeMove(pageNodes, e, operation || "move");
 		
 	},
 	_createMoveNode: function(){
@@ -203,13 +259,17 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Page = MWF.FCTab$Page = new Cla
 			return false;
 		});
 	},
-	_setNodeMove: function(droppables, e){
+	_setNodeMove: function(droppables, e, operation){
 		this._setMoveNodePosition(e);
 		var movePosition = this.moveNode.getPosition();
 		var moveSize = this.moveNode.getSize();
 		var tabPosition = this.tab.node.getPosition();
 		var tabSize = this.tab.node.getSize();
-		
+
+		this.operation = operation;
+		if( this.form.history && operation === "move" ){
+			this.fromLog = { "path": this.form.history.getPath( this.node ) };
+		}
 		var nodeDrag = new Drag.Move(this.moveNode, {
 			"droppables": droppables,
 			"limit": {
@@ -229,13 +289,27 @@ MWF.xApplication.process.FormDesigner.Module.Tab$Page = MWF.FCTab$Page = new Cla
 			"onDrop": function(dragging, inObj){
 				if (inObj){
 					var module = inObj.retrieve("module");
+
+					this.historyAddDelay = true;
+
 					if (module) module._dragDrop(this);
 					this._nodeDrop( module );
 
                     if (module){
+
+						if(this.form.history && this.operation === "move" ){
+							this.contentFromLog = { path: this.form.history.getPath( this.page.contentNodeArea ) };
+						}
+
                         this.page.contentNodeArea.inject(module.page.contentNodeArea, "before");
+
+						if(this.operation)this.addHistoryLog( this.operation, this.fromLog, this.contentFromLog );
                     }
 
+                    this.historyAddDelay = null;
+					this.operation = null;
+					this.fromLog = null;
+					this.contentFromLog = null;
 				}else{
 					this._dragCancel(dragging);
 				}

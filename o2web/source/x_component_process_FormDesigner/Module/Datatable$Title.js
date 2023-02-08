@@ -208,6 +208,8 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Title = MWF.FCDatatable$T
 		var colIndex = this.node.cellIndex;
 		var titleTr = table.rows[0];
 		var dataTr = table.rows[1];
+
+		var moduleList = [];
 		
 		var baseTh = titleTr.cells[colIndex];
 		for (var m=1; m<=cols; m++){
@@ -216,6 +218,7 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Title = MWF.FCDatatable$T
 				var moduleData = Object.clone(data);
 				var thElement = new MWF.FCDatatable$Title(this.form);
 				thElement.load(moduleData, newTh, this.parentContainer);
+				moduleList.push(thElement);
 				this.parentContainer.elements.push(thElement);
 			}.bind(this));
 		}
@@ -227,17 +230,37 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Title = MWF.FCDatatable$T
 				var moduleData = Object.clone(data);
 				var tdContainer = new MWF.FCDatatable$Data(this.form);
 				tdContainer.load(moduleData, newTd, this.parentContainer);
+				moduleList.push(tdContainer);
 				this.parentContainer.containers.push(tdContainer);
 			}.bind(this));
 		}
 		
 		this.unSelected();
 		this.selected();
+
+		this.addHistoryLog( "insertCol", moduleList );
 	},
 	
 	deleteCol: function(e){
 		var module = this;
 		this.form.designer.confirm("warn", e, MWF.LP.process.notice.deleteColTitle, MWF.LP.process.notice.deleteCol, 300, 120, function(){
+
+			var tr = module.node.getParent("tr");
+			var table = tr.getParent("table");
+			var colIndex = module.node.cellIndex;
+			var titleTr = table.rows[0];
+			var dataTr = table.rows[1];
+			if (tr.cells.length<=1){
+				module.parentContainer.addHistoryLog("delete");
+			}else{
+				var deleteTh = titleTr.cells[colIndex];
+				var deleteTd = dataTr.cells[colIndex];
+				var thModule = deleteTh.retrieve("module");
+				var tdModule = deleteTd.retrieve("module");
+				module.addHistoryLog("deleteCol", [thModule, tdModule]);
+			}
+
+
 			module._deleteCol();
 			this.close();
 		}, function(){

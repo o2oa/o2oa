@@ -41,6 +41,25 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 		}
         this.propertyNode.addEvent("keydown", function(e){e.stopPropagation();});
 	},
+    reset: function(){
+        this.propertyTabIndex = 0;
+        if(this.propertyContent){
+            var isShow = this.propertyContent.offsetParent !== null;
+            if( isShow && this.propertyTab && this.propertyTab.pages){
+                var tab = this.propertyTab;
+                var showPage = tab.showPage || tab.pages[0];
+                if( showPage ){
+                    this.propertyTabIndex = tab.pages.indexOf( showPage );
+                    this.propertyTabScrollY = showPage.contentScrollNode.getScroll().y;
+                }
+            }
+            this.propertyContent.destroy();
+            this.propertyContent = null;
+            if( isShow ){
+                this.show();
+            }
+        }
+    },
 	editProperty: function(td){
 	},
     getHtmlString: function(callback){
@@ -74,6 +93,13 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     // var htmlStr = this.JsonTemplate.load();
                     // this.propertyContent.injectHtml(htmlStr, {"bind": {"lp": MWF.xApplication.process.FormDesigner.LP.propertyTemplate}});
                     this.propertyContent.set("html", this.JsonTemplate.load());
+
+                    this.loadingCount = 0;
+                    this.loadedCount = 0;
+                    this.ready = false;
+                    if(this.module.hasOwnProperty("isPropertyLoaded")){ //ElementUI需要判断isPropertyLoaded为true的时候才会setEditStyle
+                        this.module.isPropertyLoaded = false;
+                    }
 
                     this.setEditNodeEvent();
                     this.setEditNodeStyles(this.propertyContent);
@@ -129,7 +155,11 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 
                     this.loadHelp();
 
+                    this.ready = true;
+
                     if( this.postShow )this.postShow();
+
+                    this.checkLoaded( true );
 
                     // this.loadScriptIncluder();
                     // this.loadDictionaryIncluder();
@@ -140,12 +170,32 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             }.bind(this));
         }else{
             this.propertyContent.setStyle("display", "block");
+
+            this.fireEvent("postShow");
         }
 
         (new Fx.Scroll(layout.desktop.node)).toTop();
 
 	},
-
+    isLoaded: function(){
+	    return this.ready && this.loadingCount === this.loadedCount;
+    },
+    checkLoaded: function( flag ){
+        if(!flag)this.loadedCount++;
+        debugger;
+	    if( this.ready && this.loadingCount === this.loadedCount ){
+            if(this.module.hasOwnProperty("isPropertyLoaded"))this.module.isPropertyLoaded = true;
+            if( this.propertyTabScrollY && this.propertyTab && this.propertyTab.pages ){
+                var tab = this.propertyTab;
+                var showPage = tab.showPage || tab.pages[0];
+                if( showPage ){
+                    showPage.contentScrollNode.scrollTo(0, this.propertyTabScrollY);
+                    this.propertyTabScrollY = null;
+                }
+            }
+            this.fireEvent("postShow");
+        }
+    },
 	hide: function(){
 		//this.JsonTemplate = null;
 		//this.propertyNode.set("html", "");
@@ -161,24 +211,29 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
     loadElTreeData: function(){
         var arrays = this.propertyContent.getElements(".MWFElTreeData");
         arrays.each(function(node){
+            this.loadingCount++;
             var title = node.get("title");
             var name = node.get("name");
             var json = this.data[name];
             if (!json) json = [];
+            var oldValue = Array.clone(json);
             MWF.requireApp("process.FormDesigner", "widget.ElTreeEditor", function(){
                 var treeEditor = new MWF.xApplication.process.FormDesigner.widget.ElTreeEditor(node, {
                     "title": title,
                     "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
-                    "onChange": function(){
-                        debugger;
+                    "onChange": function(historyOptions){
                         // this.data[name] = Object.assign(this.data[name], treeEditor.toJson());
                         // this.data[name] = treeEditor.toJson();
                         // this.module.json[name] = this.data[name];
                         //
+                        historyOptions = historyOptions || {};
+                        this.checkHistory(name, oldValue, json, false, name + historyOptions.compareName, historyOptions.force);
+                        oldValue = Array.clone(json);
                         this.module._refreshTree();
                     }.bind(this)
                 });
                 treeEditor.load(json);
+                this.checkLoaded();
             }.bind(this));
             node.addEvent("keydown", function(e){e.stopPropagation();});
         }.bind(this));
@@ -191,14 +246,20 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             var name = node.get("name");
             var json = this.data[name];
             if (!json) json = [];
+            var oldValue = Array.clone(json);
+            this.loadingCount++;
             MWF.requireApp("process.FormDesigner", "widget.ElDropdownItemEditor", function(){
                 var treeEditor = new MWF.xApplication.process.FormDesigner.widget.ElDropdownItemEditor(node, {
                     "title": title,
                     "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
-                    "onChange": function(){
+                    "onChange": function(historyOptions){
+                        historyOptions = historyOptions || {};
+                        this.checkHistory(name, oldValue, json, false, name + historyOptions.compareName, historyOptions.force);
+                        oldValue = Array.clone(json);
                     }.bind(this)
                 });
                 treeEditor.load(json);
+                this.checkLoaded();
             }.bind(this));
             node.addEvent("keydown", function(e){e.stopPropagation();});
         }.bind(this));
@@ -211,14 +272,20 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             var name = node.get("name");
             var json = this.data[name];
             if (!json) json = [];
+            var oldValue = Array.clone(json);
+            this.loadingCount++;
             MWF.requireApp("process.FormDesigner", "widget.ElCarouselContent", function(){
                 var treeEditor = new MWF.xApplication.process.FormDesigner.widget.ElCarouselContent(node, {
                     "title": title,
                     "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
-                    "onChange": function(){
+                    "onChange": function( historyOptions ){
+                        historyOptions = historyOptions || {};
+                        this.checkHistory(name, oldValue, json, false, name + historyOptions.compareName, historyOptions.force);
+                        oldValue = Array.clone(json);
                     }.bind(this)
                 });
                 treeEditor.load(json);
+                this.checkLoaded();
             }.bind(this));
             node.addEvent("keydown", function(e){e.stopPropagation();});
         }.bind(this));
@@ -231,18 +298,30 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 			var name = node.get("name");
 			var json = this.data[name];
 			if (!json) json = [];
+            this.loadingCount++;
 			MWF.require("MWF.widget.TreeEditor", function(){
+                var oldValue = Array.clone(this.data[name] || []);
 				var treeEditor = new MWF.widget.TreeEditor(node, {
 					"title": title,
 					"maxObj": this.propertyNode.parentElement.parentElement.parentElement,
-					"onChange": function(){
-						this.data[name] = treeEditor.toJson();
-						this.module.json[name] = this.data[name];
-
-						this.module._refreshTree();
-					}.bind(this)
+                    "onChange": function( historyOptions ){
+                        historyOptions = historyOptions || {};
+                        this.data[name] = treeEditor.toJson();
+                        this.module.json[name] = this.data[name];
+                        this.checkHistory(name, oldValue, this.data[name], false, name + historyOptions.compareName, historyOptions.force);
+                        this.module._refreshTree();
+                        oldValue = this.data[name];
+                    }.bind(this)
+					// "onChange": function(){
+                    //     var oldValue = this.data[name];
+					// 	this.data[name] = treeEditor.toJson();
+					// 	this.module.json[name] = this.data[name];
+					// 	this.checkHistory(name, oldValue, this.data[name]);
+					// 	this.module._refreshTree();
+					// }.bind(this)
 				});
 				treeEditor.load(json);
+                this.checkLoaded();
 			}.bind(this));
             node.addEvent("keydown", function(e){e.stopPropagation();});
 		}.bind(this));
@@ -255,11 +334,16 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             // var name = node.get("name");
             // var json = this.data[name];
             // if (!json) json = {};
+            this.loadingCount++;
             MWF.requireApp("process.FormDesigner", "widget.SectionMerger", function(){
                 var merger = new MWF.xApplication.process.FormDesigner.widget.SectionMerger(node, this, {
                     // "title": title,
                     "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
                     "onChange": function(){
+
+                    }.bind(this),
+                    "onPostLoad": function () {
+                        this.checkLoaded();
                     }.bind(this)
                 });
                 merger.load(this.data);
@@ -271,11 +355,15 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
     loadSectionDisplayer: function(){
         var arrays = this.propertyContent.getElements(".MWFSectionDisplayerArea");
         arrays.each(function(node){
+            this.loadingCount++;
             MWF.requireApp("process.FormDesigner", "widget.SectionDisplayer", function(){
                 var merger = new MWF.xApplication.process.FormDesigner.widget.SectionDisplayer(node, this, {
                     // "title": title,
                     "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
                     "onChange": function(){
+                    }.bind(this),
+                    "onPostLoad": function () {
+                        this.checkLoaded();
                     }.bind(this)
                 });
                 merger.load(this.data);
@@ -408,6 +496,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
     loadFormSelect: function(){
         var formNodes = this.propertyContent.getElements(".MWFFormSelect");
         if (formNodes.length){
+            this.loadingCount++;
             this.getFormList(function(){
                 formNodes.each(function(node){
                     var select = new Element("select").inject(node);
@@ -428,6 +517,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     //    this.setFormSelectOptions(node, select);
                     //}.bind(this));
                 }.bind(this));
+                this.checkLoaded();
             }.bind(this));
         }
     },
@@ -523,7 +613,11 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     if( oldValue !== this.data[appNodeName] ){
                         this.getSubFormList(function(){
                             this.setSubformSelectOptions(formSelectNode, formSelect);
-                            formSelect.fireEvent("change");
+                            formSelect.fireEvent("change", [null, {
+                                name: appNodeName,
+                                fromValue: oldValue,
+                                toValue: this.data[appNodeName]
+                            }]);
                         }.bind(this), true, appNodeName);
                     }
                 }.bind(this));
@@ -546,11 +640,19 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         }.bind(this))
     },
     _loadSubformSelect : function( node, formNodeName, appNodeName ){
+        this.subforms = null;
         var select = new Element("select").inject(node);
+        var oldValue = this.data[formNodeName];
         this.getSubFormList(function(){
-            select.addEvent("change", function(e){
+            select.addEvent("change", function(e, appChange){
                 var value = select.options[select.selectedIndex].value;
-                this.setValue(formNodeName, value, select);
+                if( appChange ){
+                    this.setValue(formNodeName, value, select, true);
+                    this.checkHistory([appChange.name, formNodeName], [appChange.fromValue, oldValue], [appChange.toValue, value] )
+                }else{
+                    this.setValue(formNodeName, value, select);
+                }
+                oldValue = value;
             }.bind(this));
             this.setSubformSelectOptions(node, select);
 
@@ -654,7 +756,11 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     if( oldValue !== this.data[appNodeName] ){
                         this.getWidgetList(function(){
                             this.setWidgetSelectOptions(widgetSelectNode, widgetSelect);
-                            widgetSelect.fireEvent("change");
+                            widgetSelect.fireEvent("change", [null, {
+                                name: appNodeName,
+                                fromValue: oldValue,
+                                toValue: this.data[appNodeName]
+                            }]);
                         }.bind(this), true, appNodeName);
                     }
                 }.bind(this));
@@ -677,11 +783,19 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         }.bind(this))
     },
     _loadWidgetSelect : function( node, widgetNodeName, appNodeName ){
+        this.widgets = null;
         var select = new Element("select").inject(node);
+        var oldValue = this.data[widgetNodeName];
         this.getWidgetList(function(){
-            select.addEvent("change", function(e){
+            select.addEvent("change", function(e, appChange){
                 var value = select.options[select.selectedIndex].value;
-                this.setValue(widgetNodeName, value, select);
+                if( appChange ){
+                    this.setValue(widgetNodeName, value, select, true);
+                    this.checkHistory([appChange.name, widgetNodeName], [appChange.fromValue, oldValue], [appChange.toValue, value] )
+                }else{
+                    this.setValue(widgetNodeName, value, select);
+                }
+                oldValue = value;
             }.bind(this));
             this.setWidgetSelectOptions(node, select);
 
@@ -741,12 +855,16 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                             "selected": (this.data[name]==k)
                         }).inject(node);
                     }.bind(this));
+                    var oldValue = this.data[name];
                     node.addEvent("change", function(e){
-                        var oldValue = this.data[name];
                         var value = e.target.options[e.target.selectedIndex].value;
-                        var name = e.target.options[e.target.selectedIndex].get("text");
-                        this.changeJsonDate([name], value);
-                        this.changeData(name, node, oldValue);
+                        var name1 = e.target.options[e.target.selectedIndex].get("text");
+                        this.changeJsonDate([name1], value);
+                        this.changeData(name1, node, oldValue);
+
+                        this.checkHistory([name, name1], [oldValue, oldValue], [value, value])
+
+                        oldValue = this.data[name];
                     }.bind(this));
                 }.bind(this));
             }.bind(this));
@@ -756,6 +874,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         var nodes = this.propertyContent.getElements(".MWFStatementFilter");
         var filtrData = this.data.filterList;
         var parameterData = this.data.parameterList;
+        var oldFiltrData = Array.clone( filtrData || [] );
+        var oldParameterData = Array.clone( parameterData || [] );
         nodes.each(function(node){
             MWF.xDesktop.requireApp("query.StatementDesigner", "widget.ViewFilter", function(){
                 var _slef = this;
@@ -767,6 +887,10 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                         _slef.changeJsonDate(["filterList"], data.filterData);
                         _slef.changeJsonDate(["parameterList"], data.parameterData);
                         //_slef.changeJsonDate(["data", "customFilterEntryList"], data.customData);
+                        _slef.checkHistory( "filterList", oldFiltrData, data.filterData );
+                        _slef.checkHistory( "parameterList", oldParameterData, data.parameterData );
+                        oldFiltrData = Array.clone( data.filterData );
+                        oldParameterData = Array.clone( data.parameterData );
                     }
                 });
             }.bind(this));
@@ -775,6 +899,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
     loadViewFilter: function(){
         var nodes = this.propertyContent.getElements(".MWFViewFilter");
         var filtrData = this.data.filterList;
+        var oldValue = Array.clone(filtrData || []);
         nodes.each(function(node){
             MWF.xDesktop.requireApp("query.ViewDesigner", "widget.ViewFilter", function(){
                 var _slef = this;
@@ -782,6 +907,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     "onChange": function(ids){
                         var data = this.getData();
                         _slef.changeJsonDate(["filterList"], data.data);
+                        _slef.checkHistory("filterList", oldValue, data.data);
+                        oldValue = Array.clone(data.data);
                         //_slef.changeJsonDate(["data", "customFilterEntryList"], data.customData);
                     }
                 });
@@ -846,8 +973,10 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 MWF.xDesktop.requireApp("process.FormDesigner", "widget.ValidationEditor", function(){
                     var validationEditor = new MWF.xApplication.process.FormDesigner.widget.ValidationEditor(node, this.designer, {
                         "onChange": function(){
+                            var oldVaue = this.data[name];
                             var data = validationEditor.getValidationData();
                             this.data[name] = data;
+                            this.checkHistory(name, oldVaue, data);
                         }.bind(this)
                     });
                     validationEditor.load(this.data[name])
@@ -869,6 +998,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                }else{
                    data = this.data[name] = [];
                }
+               var oldValue = Array.clone(data);
                 MWF.xDesktop.requireApp("process.FormDesigner", "widget.FiledConfigurator", function(){
                     var filedConfigurator = new MWF.xApplication.process.FormDesigner.widget.FiledConfigurator(node, this.designer, {
                         "title": node.get("data-title"),
@@ -882,6 +1012,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                                     filedConfigurator.data = _self.module.getExpImpFieldJson();
                                     filedConfigurator.reloadContent();
                                     _self.data[name] = filedConfigurator.data;
+                                    _self.checkHistory(name, oldValue, _self.data[name]);
+                                    oldValue = Array.clone( _self.data[name] || [] );
                                     this.close();
                                 }, function(){
                                     this.close();
@@ -891,10 +1023,14 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                                 filedConfigurator.data = _self.module.getExpImpFieldJson();
                                 filedConfigurator.reloadContent();
                                 _self.data[name] = filedConfigurator.data;
+                                _self.checkHistory(name, oldValue, _self.data[name]);
+                                oldValue = Array.clone(_self.data[name] || [] );
                             }
                         }.bind(this),
                         "onChange": function(){
                             this.data[name] = filedConfigurator.getData();
+                            this.checkHistory(name, oldValue, this.data[name]);
+                            oldValue = Array.clone(this.data[name] || []);
                         }.bind(this)
                     }, data);
                     filedConfigurator.load()
@@ -928,6 +1064,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 nodes.each(function(node){
                     var name = node.get("name");
                     var v = _self.data[name] || "";
+                    var oldValue = v;
                     var data = {};
                     data[name] = v;
                     new Vue({
@@ -935,7 +1072,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                         methods: {
                             change: function(color){
                                 _self.data[name] = color;
-                                _self.changeData(name);
+                                _self.changeData(name, null, oldValue);
+                                oldValue = _self.data[name];
                             }
                         }
                     }).$mount(node);
@@ -958,6 +1096,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             nodes.each(function(node){
                 var name = node.get("name");
                 var data = this.data[name] || "";
+                var oldValue = data;
                 var area = new Element("div", {
                     "styles": {
                         "height": "300px",
@@ -980,7 +1119,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                                 if (iNode && iNode.hasClass("mainColor_bg")){
                                     iNode.removeClass("mainColor_bg");
                                     _self.data[name] = "";
-                                    _self.changeData(name);
+                                    _self.changeData(name, null, oldValue);
+                                    oldValue = _self.data[name];
                                 }else{
                                     this.$el.getElements("i").forEach(function(el){
                                         if (el.hasClass("mainColor_bg")) el.removeClass("mainColor_bg");
@@ -989,7 +1129,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                                         iNode.addClass("mainColor_bg");
                                         var iconName = iNode.dataset["icon"];
                                         _self.data[name] = iconName;
-                                        _self.changeData(name);
+                                        _self.changeData(name, null, oldValue);
+                                        oldValue = _self.data[name];
                                     }
                                 }
                             }
@@ -1063,9 +1204,10 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 var selectNode = new Element("div", {"styles": this.form.css.processIconSelectNode, "text": this.form.designer.lp.empty}).inject(node);
                 selectNode.addEvent("click", function(e){
                     var id = node.get("name");
+                    var oldValue = this.data[id];
                     this.data[id] = "";
                     node.getFirst("div").setStyle("background-image", "");
-                    this.changeData(id);
+                    this.changeData(id, null, oldValue);
                     e.stopPropagation();
                 }.bind(this));
 
@@ -1087,9 +1229,10 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 var item = iconSelectMenu.addMenuItem("", "click", function(){
                     var id = node.get("name");
                     var src = this.item.getElement("img").get("src");
+                    var oldValue = _self.data[id];
                     _self.data[id] = src;
                     node.getFirst("div").setStyle("background-image", "url("+src+")");
-                    _self.changeData(id);
+                    _self.changeData(id, null, oldValue);
                 }, icon);
                 item.iconName = icon;
             }
@@ -1230,7 +1373,10 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             MWF.xDesktop.requireApp("process.FormDesigner", "widget.EventsEditor", function(){
 				var eventsEditor = new MWF.xApplication.process.FormDesigner.widget.EventsEditor(events, this.designer, {
 					//"maxObj": this.propertyNode.parentElement.parentElement.parentElement,
-                    "maxObj": this.designer.formContentNode  || this.designer.pageContentNode
+                    "maxObj": this.designer.formContentNode  || this.designer.pageContentNode,
+                    "onChange": function (eventName, newValue, oldValue, compareName) {
+                        this.checkHistory(name+"."+eventName, oldValue, newValue, null, compareName ? (name+"."+compareName) : "");
+                    }.bind(this)
 				});
 				eventsEditor.load(eventsObj, this.data, name);
 			}.bind(this));
@@ -1439,7 +1585,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                         this.setValue(e.target.getParent("div").get("name"), e.target.options[e.target.selectedIndex].value);
                     }.bind(this));
                     this.setUnitTypeSelectOptions(node, select);
-                    this.setValue(select.getParent("div").get("name"), select.options[select.selectedIndex].value);
+                    this.setValue(select.getParent("div").get("name"), select.options[select.selectedIndex].value, null, true);
                     // var refreshNode = new Element("div", {"styles": this.form.css.propertyRefreshFormNode}).inject(node);
                     // refreshNode.addEvent("click", function(e){
                     //     this.getUnitTypeList(function(){
@@ -1489,7 +1635,11 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 MWF.xDesktop.requireApp("process.FormDesigner", "widget.ParameterEditor", function(){
                     var parameterEditor = new MWF.xApplication.process.FormDesigner.widget.ParameterEditor(par, this.designer, {
                         //"maxObj": this.propertyNode.parentElement.parentElement.parentElement,
-                        "maxObj": this.designer.formContentNode
+                        "maxObj": this.designer.formContentNode,
+                        "onChange": function (eventName, newValue, oldValue, compareName) {
+                            debugger;
+                            this.checkHistory(name+"."+eventName, oldValue, newValue, null, compareName ? (name+"."+compareName) : "");
+                        }.bind(this)
                     });
                     parameterEditor.load(parObj, this.data, name);
                 }.bind(this));
@@ -1509,7 +1659,9 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 				var arraylist = new MWF.widget.Arraylist(node, {
 					"title": title,
 					"onChange": function(){
+					    var oldValue = this.data[name];
 						this.data[name] = arraylist.toArray();
+                        this.checkHistory(name, oldValue, this.data[name]);
 					}.bind(this)
 				});
 				arraylist.load(arr);
@@ -1530,8 +1682,10 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     //"maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                     "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
                     "onChange": function(){
+                        debugger;
+                        var oldValue = this.data[name];
                         this.data[name] = htmlArea.getValue();
-                        this.changeData(name);
+                        this.changeData(name, null, oldValue);
                         htmlArea.isChanged = true;
                     }.bind(this),
                     // "onBlur": function(){
@@ -2016,8 +2170,10 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 MWF.xDesktop.requireApp("process.FormDesigner", "widget.DictionaryIncluder", function(){
                     var dictionaryIncluder = new MWF.xApplication.process.FormDesigner.widget.DictionaryIncluder(node, this.designer, {
                         "onChange": function(){
+                            var oldValue = this.data[name];
                             var data = dictionaryIncluder.getData();
                             this.data[name] = data;
+                            this.checkHistory(name, oldValue, this.data[name]);
                         }.bind(this)
                     });
                     dictionaryIncluder.load(this.data[name])
@@ -2034,8 +2190,10 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 MWF.xDesktop.requireApp("process.FormDesigner", "widget.ScriptIncluder", function(){
                     var scriptIncluder = new MWF.xApplication.process.FormDesigner.widget.ScriptIncluder(node, this.designer, {
                         "onChange": function(){
+                            var oldValue = this.data[name];
                             var data = scriptIncluder.getData();
                             this.data[name] = data;
+                            this.checkHistory(name, oldValue, this.data[name]);
                         }.bind(this)
                     });
                     scriptIncluder.load(this.data[name])
@@ -2045,15 +2203,18 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 
     },
     saveFileItem: function(node, ids){
+	    var oldValue = this.data[node.get("name")];
         if (ids[0]){
             var file = ids[0].data;
             this.data[node.get("name")] = file;
         }else{
             this.data[node.get("name")] = null;
         }
-        this.changeData(node.get("name"));
+        this.changeData(node.get("name"), null, oldValue);
     },
     saveViewItem: function(node, ids){
+        var name = node.get("name");
+        var oldValue = this.data[name];
         if (ids[0]){
             var view = ids[0].data;
             var data = {
@@ -2068,6 +2229,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         }else{
             this.data[node.get("name")] = null;
         }
+        this.checkHistory(name, oldValue, this.data[name]);
+
         if (this.module._checkView) this.module._checkView();
     },
     removeViewItem: function(node, item){
@@ -2128,7 +2291,11 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             value.each(function(v) {
                 values = values.erase(v);
             });
-            this.data[node.get("name")] = JSON.encode(values);
+
+            var name = node.get("name");
+            var oldValue = this.data[name];
+            this.data[name] = JSON.encode(values);
+            this.checkHistory(name, oldValue, this.data[name]);
         }
         item.node.destroy();
         MWF.release(item);
@@ -2152,7 +2319,10 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 values.push({"name": id.data.name, "id": id.data.id, "dutyId": id.data.dutyId, "code": id.data.code});
             }
         }.bind(this));
-        this.data[node.get("name")] = JSON.encode(values);
+        var name = node.get("name");
+        var oldValue = this.data[name];
+        this.data[name] = JSON.encode(values);
+        this.checkHistory(name, oldValue, this.data[name]);
     },
     loadFormFieldInput: function(){
         var fieldNodes = this.propertyContent.getElements(".MWFFormFieldPerson");
@@ -2173,7 +2343,10 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         ids.each(function(id){
             values.push(MWF.org.parseOrgData(id.data));
         }.bind(this));
-        this.data[node.get("name")] = values;
+        var name = node.get("name");
+        var oldValue = this.data[name];
+        this.data[name] = values;
+        this.checkHistory(name, oldValue, this.data[name]);
     },
 
 
@@ -2194,6 +2367,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             MWF.require("MWF.widget.ScriptArea", function(){
                 var scriptArea = new MWF.widget.ScriptArea(node, {
                     "title": title,
+                    "isbind": false,
                     "mode": mode || "javascript",
                     //"maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                     "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
@@ -2203,8 +2377,11 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                             this.data[name] = {"code": "", "html": ""};
                             if (this.module.form.scriptDesigner) this.module.form.scriptDesigner.addScriptItem(this.data[name], "code", this.data, name);
                         }
+                        var oldValue = this.data[name].code;
                         var json = scriptArea.toJson();
                         this.data[name].code = json.code;
+                        this.checkHistory(name+".code", oldValue, json.code);
+                        // console.log("script changed " + this.data[name].code);
                         //this.data[name].html = json.html;
                     }.bind(this),
                     "onSave": function(){
@@ -2274,11 +2451,12 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                         "title": k,
                         "collapse": true,
                         "onChange": function(){
-                            var oldData = _self.data[name];
+                            var oldData = Object.clone(_self.data[name]);
                             maps.each(function(o){
                                 _self.data[name][o.key] = o.map.toJson();
                             }.bind(this));
-                            _self.changeData(name, node, oldData);
+                            _self.changeData(name, node, oldData, true);
+                            _self.checkHistory(name+"."+k, oldData[k], _self.data[name][k]);
                         }
                     });
                     maps.push({"key": k, "map": maplist});
@@ -2294,14 +2472,18 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         multiActionArea.each(function(node){
             var name = node.get("name");
             var actionContent = this.data[name];
+            var oldValue = actionContent ? JSON.parse( JSON.stringify(actionContent) ) : actionContent;
             MWF.xDesktop.requireApp("process.FormDesigner", "widget.ActionsEditor", function(){
                 var options = {
                     "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                     "isSystemTool" : true,
                     "target" : node.get("data-target"),
-                    "onChange": function(){
+                    "onChange": function( historyOptions ){
+                        historyOptions = historyOptions || {};
                         this.data[name] = actionEditor.data;
-                        this.changeData(name);
+                        this.changeData(name, null, oldValue, true);
+                        this.checkHistory(name, oldValue, null, false, name + historyOptions.compareName, historyOptions.force );
+                        oldValue = JSON.parse( JSON.stringify(this.data[name]) );
                     }.bind(this)
                 };
                 if(node.get("data-systemToolsAddress")){
@@ -2316,6 +2498,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         actionAreas.each(function(node){
             var name = node.get("name");
             var actionContent = this.data[name];
+            var oldValue = actionContent ? JSON.parse( JSON.stringify(actionContent) ) : actionContent;
             MWF.xDesktop.requireApp("process.FormDesigner", "widget.ActionsEditor", function(){
 
                 // debugger;
@@ -2332,9 +2515,12 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 
                 var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, {
                     "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
-                    "onChange": function(){
+                    "onChange": function(historyOptions){
+                        historyOptions = historyOptions || {};
                         this.data[name] = actionEditor.data;
-                        this.changeData(name);
+                        this.changeData(name, null, oldValue, true);
+                        this.checkHistory(name, oldValue, null, false, name + historyOptions.compareName, historyOptions.force );
+                        oldValue = JSON.parse( JSON.stringify(this.data[name]) );
                     }.bind(this)
                 });
                 actionEditor.load(actionContent);
@@ -2346,6 +2532,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         actionAreas.each(function(node){
             var name = node.get("name");
             var actionContent = this.data[name] || this.module.defaultToolBarsData;
+            var oldValue = actionContent ? JSON.parse( JSON.stringify(actionContent) ) : actionContent;
             MWF.xDesktop.requireApp("process.FormDesigner", "widget.ActionsEditor", function(){
 
                 var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, {
@@ -2357,9 +2544,12 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                     "noReadShow": true,
                     "target" : node.get("data-target"),
                     "noEditShow": true,
-                    "onChange": function(){
+                    "onChange": function(historyOptions){
+                        historyOptions = historyOptions || {};
                         this.data[name] = actionEditor.data;
-                        this.changeData(name);
+                        this.changeData(name, null, oldValue, true);
+                        this.checkHistory(name, oldValue, null, false, name + historyOptions.compareName, historyOptions.force );
+                        oldValue = JSON.parse( JSON.stringify(this.data[name]) );
                     }.bind(this)
                 });
                 actionEditor.load(actionContent);
@@ -2376,8 +2566,6 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         }.bind(this));
 
     },
-
-
 	loadMaplist: function(){
 		var maplists = this.propertyContent.getElements(".MWFMaplist");
 		maplists.each(function(node){
@@ -2399,11 +2587,9 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                         var oldData = this.data[name];
                         this.changeJsonDate(name, maplist.toJson());
                         this.changeStyle(name, oldData);
-                        this.changeData(name);
+                        this.changeData(name, null, oldData);
 					}.bind(this),
                     "onDelete": function(key){
-					    debugger;
-
                         this.module.deletePropertiesOrStyles(name, key);
                     }.bind(this),
                     "isProperty": (lName.contains("properties") || lName.contains("property") || lName.contains("attribute"))
@@ -2477,7 +2663,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                             this.setScrollBar(page.contentScrollNode, "small", null, null);
                         }
                     }.bind(this));
-                    tabPages[0].showTab();
+                    debugger;
+                    tabPages[this.propertyTabIndex || 0].showTab();
 
                     this.propertyTab = tab;
 
@@ -2535,17 +2722,17 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 							property.setRadioValue(jsondata, this);
 						});
 						input.addEvent("blur", function(e){
-							property.setRadioValue(jsondata, this);
+							property.setRadioValue(jsondata, this, true);
 						});
                         input.addEvent("keydown", function(e){
                             e.stopPropagation();
                         });
-                        property.setRadioValue(jsondata, input);
+                        property.setRadioValue(jsondata, input, true);
 						break;
 					case "checkbox":
 
 						input.addEvent("change", function(e){
-							property.setCheckboxValue(jsondata, this);
+							property.setCheckboxValue(jsondata, this, true);
 						});
 						input.addEvent("click", function(e){
 							property.setCheckboxValue(jsondata, this);
@@ -2561,7 +2748,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 						});
 						input.addEvent("blur", function(e){
                             var v = (this.type==="number") ? this.value.toFloat() : this.value;
-							property.setValue(jsondata, v, this);
+							property.setValue(jsondata, v, this, true);
 						});
 						input.addEvent("keydown", function(e){
 							if (e.code==13){
@@ -2603,10 +2790,20 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 		}.bind(this));
 		
 	},
+    checkHistory: function(name, oldValue, newValue, notSetEditStyle, compareName, force){
+        if( this.isLoaded() && this.module.form.history ){
+            this.module.checkPropertyHistory(name, oldValue, newValue, notSetEditStyle, compareName, force);
+        }
+    },
     changeStyle: function(name, oldData){
         this.module.setPropertiesOrStyles(name, oldData);
     },
-    changeData: function(name, input, oldValue){
+    changeData: function(name, input, oldValue, notCheckHistory, historyNotSetEditStyle){
+	    if(!notCheckHistory){
+	        var flag = false;
+	        if( input && input.hasAttribute )flag = input.hasAttribute("data-notAutoHistory");
+            if(!flag)this.checkHistory(name, oldValue, null, historyNotSetEditStyle);
+        }
         this.module._setEditStyle(name, input, oldValue);
     },
     changeJsonDate: function(key, value){
@@ -2624,7 +2821,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 
         //this.data[key] = value;
     },
-	setRadioValue: function(name, input){
+	setRadioValue: function(name, input, notCheckHistory){
 		if (input.checked){
             var i = name.indexOf("*");
             var names = (i==-1) ? name.split(".") : name.substr(i+1, name.length).split(".");
@@ -2636,7 +2833,8 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
             var oldValue = this.data;
             for (var idx = 0; idx<names.length; idx++){
                 if (!oldValue[names[idx]]){
-                    oldValue = null;
+                    oldValue = oldValue[names[idx]];
+                    //oldValue = null;
                     break;
                 }else{
                     oldValue = oldValue[names[idx]];
@@ -2648,10 +2846,14 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 			// if (value==="true") value = true;
 			//var oldValue = this.data[name];
 			this.changeJsonDate(names, value);
-            this.changeData(name, input, oldValue);
+            //由于加载property的时候，会自动setRadioValue，会setEditStyle。这里就让history不要setEditStyle了。
+            var historyNotSetEditStyle = true;
+            //但是ElementUI有isPropertyLoaded判断，这个时候又需要setEditStyle了。
+            if( this.module && this.module.vm )historyNotSetEditStyle = false;
+            this.changeData(name, input, oldValue, notCheckHistory, historyNotSetEditStyle);
 		}
 	},
-	setCheckboxValue: function(name, input){
+	setCheckboxValue: function(name, input, notCheckHistory){
         //var id = this.module.json.id;
         //var id = this.form.json.id;
         var id = this.data.pid;
@@ -2667,7 +2869,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 		var oldValue = this.data[name];
 		//this.data[name] = values;
         this.changeJsonDate(name, values);
-        this.changeData(name, input, oldValue);
+        this.changeData(name, input, oldValue, notCheckHistory);
 	},
 	setSelectValue: function(name, select){
 		var idx = select.selectedIndex;
@@ -2682,7 +2884,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         this.changeData(name, select, oldValue);
 	},
 	
-	setValue: function(name, value, obj){
+	setValue: function(name, value, obj, notCheckHistory){
 		if (name==="id"){
 			if (value!==this.module.json.id) {
                 if (!value) {
@@ -2736,7 +2938,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
         var names = name.split(".");
         var oldValue = this.data;
         for (var idx = 0; idx<names.length; idx++){
-            if (!oldValue[names[idx]]){
+            if (!oldValue.hasOwnProperty(names[idx])){
                 oldValue = null;
                 break;
             }else{
@@ -2746,7 +2948,7 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 
 		//this.data[name] = value;
         this.changeJsonDate(names, value);
-        this.changeData(name, obj, oldValue);
+        this.changeData(name, obj, oldValue, notCheckHistory);
 	},
 	setEditNodeStyles: function(node){
 		var nodes = node.getChildren();
@@ -2940,13 +3142,170 @@ MWF.xApplication.process.FormDesigner.PropertyMulti = new Class({
     hide: function(){
         if (this.propertyContent) this.propertyContent.destroy();
     },
+    loadMaplist: function(){
+        var maplists = this.propertyContent.getElements(".MWFMaplist");
+        maplists.each(function(node){
+            var title = node.get("title");
+            var name = node.get("name");
+            var lName = name.toLowerCase();
+            var collapse = node.get("collapse");
+            var mapObj = this.data[name];
+            if (!mapObj) mapObj = {};
+            MWF.require("MWF.widget.Maplist", function(){
+                node.empty();
+                var maplist = new MWF.widget.Maplist(node, {
+                    "title": title,
+                    "collapse": (collapse) ? true : false,
+                    "onChange": function(){
+                        //this.data[name] = maplist.toJson();
+                        debugger;
+                        var oldData = this.getOldValueList(name);
+                        this.changeJsonDate(name, maplist.toJson());
+                        this.changeStyle(name, oldData);
+                        this.changeData(name, null, oldData);
+                        this.checkHistory( name, oldData );
+                        this.reshowProperty();
+                    }.bind(this),
+                    "onDelete": function(key){
+                        this.modules.each(function (module) {
+                            module.deletePropertiesOrStyles(name, key);
+                        })
+                    }.bind(this),
+                    "isProperty": (lName.contains("properties") || lName.contains("property") || lName.contains("attribute"))
+                });
+                maplist.load(mapObj);
+                this.maplists[name] = maplist;
+            }.bind(this));
+        }.bind(this));
+    },
+    setEditNodeEvent: function(){
+        var property = this;
+        //	var inputs = this.process.propertyListNode.getElements(".editTableInput");
+        var inputs = this.propertyContent.getElements("input");
+        inputs.each(function(input){
+
+            var jsondata = input.get("name");
+
+            if (this.module){
+                var id = this.data.pid;
+                //var id = this.form.json.id;
+                // input.set("name", this.form.options.mode+id+jsondata);
+                input.set("name", id+jsondata);
+            }
+
+            if (jsondata){
+                var inputType = input.get("type").toLowerCase();
+                switch (inputType){
+                    case "radio":
+                        input.addEvent("change", function(e){
+                            var oldValueList = property.getOldValueList(jsondata);
+                            property.setRadioValue(jsondata, this, true);
+                            property.checkHistory( jsondata, oldValueList );
+                            property.reshowProperty();
+                        });
+                        input.addEvent("blur", function(e){
+                            property.setRadioValue(jsondata, this, true);
+                        });
+                        input.addEvent("keydown", function(e){
+                            e.stopPropagation();
+                        });
+                        property.setRadioValue(jsondata, input, true);
+                        break;
+                    case "checkbox":
+
+                        input.addEvent("change", function(e){
+                            property.setCheckboxValue(jsondata, this, true);
+                        });
+                        input.addEvent("click", function(e){
+                            var oldValueList = property.getOldValueList(jsondata);
+                            property.setCheckboxValue(jsondata, this, true);
+                            property.checkHistory( jsondata, oldValueList );
+                            property.reshowProperty();
+                        });
+                        input.addEvent("keydown", function(e){
+                            e.stopPropagation();
+                        });
+                        break;
+                    default:
+                        input.addEvent("change", function(e){
+                            var oldValueList = property.getOldValueList(jsondata);
+                            var v = (this.type==="number") ? this.value.toFloat() : this.value;
+                            property.setValue(jsondata, v, this, true);
+                            property.checkHistory( jsondata, oldValueList );
+                            property.reshowProperty();
+                        });
+                        input.addEvent("blur", function(e){
+                            var v = (this.type==="number") ? this.value.toFloat() : this.value;
+                            property.setValue(jsondata, v, this, true);
+                        });
+                        input.addEvent("keydown", function(e){
+                            if (e.code==13){
+                                var oldValueList = property.getOldValueList(jsondata);
+                                var v = (this.type==="number") ? this.value.toFloat() : this.value;
+                                property.setValue(jsondata, v, this, true);
+                                property.checkHistory( jsondata, oldValueList );
+                                property.reshowProperty();
+                            }
+                            e.stopPropagation();
+                        });
+                }
+            }
+        }.bind(this));
+
+        var selects = this.propertyContent.getElements("select");
+
+        selects.each(function(select){
+            var jsondata = select.get("name");
+            if (jsondata){
+                select.addEvent("change", function(e){
+                    var oldValueList = property.getOldValueList(jsondata);
+                    property.setSelectValue(jsondata, this);
+                    property.checkHistory( jsondata, oldValueList );
+                });
+                //property.setSelectValue(jsondata, select);
+            }
+        });
+
+        var textareas = this.propertyContent.getElements("textarea");
+        textareas.each(function(input){
+            var jsondata = input.get("name");
+            if (jsondata){
+                input.addEvent("change", function(e){
+                    var oldValueList = property.getOldValueList(jsondata);
+                    property.setValue(jsondata, this.value);
+                    property.checkHistory( jsondata, oldValueList );
+                });
+                input.addEvent("blur", function(e){
+                    property.setValue(jsondata, this.value, true);
+                });
+                input.addEvent("keydown", function(e){
+                    e.stopPropagation();
+                });
+            }
+        }.bind(this));
+
+    },
     changeStyle: function(name){
         this.modules.each(function(module){
             module.setPropertiesOrStyles(name);
         }.bind(this));
     },
+    getOldValueList: function(name){
+        var oldValueList = [];
+        this.modules.each(function(module){
+            var value = module.json[name];
+            var v = o2.typeOf( value ) === "object" ? Object.clone(value) : value;
+           oldValueList.push( v );
+        }.bind(this));
+        return oldValueList;
+    },
+    checkHistory: function(name, oldValueList, newValue){
+        if( this.form.history ){
+            var newV = typeOf( newValue ) === "object" ? Object.clone(newValue) : newValue;
+            this.form.checkMultiPropertyHistory(name, oldValueList, newV, this.modules);
+        }
+    },
     changeData: function(name, input, oldValue){
-
         this.modules.each(function(module){
             module._setEditStyle(name, input, oldValue);
         }.bind(this));
@@ -2954,7 +3313,13 @@ MWF.xApplication.process.FormDesigner.PropertyMulti = new Class({
     changeJsonDate: function(key, value){
         //alert(key+": "+value );
         this.modules.each(function(module){
-            module.json[key] = value;
+            var v = typeOf(value) === "object" ? Object.clone(value) : value;
+            module.json[key] = v;
         }.bind(this));
     },
+    reshowProperty: function(){
+        this.modules.each(function(module){
+            if( module.property )module.property.reset();
+        }.bind(this));
+    }
 });

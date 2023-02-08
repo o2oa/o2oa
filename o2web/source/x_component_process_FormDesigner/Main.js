@@ -124,6 +124,11 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
                     if (module.moduleType != "form" && module.moduleName.indexOf("$") == -1) {
                         this.copyModule();
                         var _form = module.form;
+
+                        if( _form.history ){
+                            module.addHistoryLog("cut");
+                        }
+
                         module.destroy();
                         _form.currentSelectedModule = null;
                         _form.selected();
@@ -175,18 +180,25 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
                                 parent = toModule.parentContainer;
                             }
                         }
+
+                        var moduleList = [];
                         var copyModuleNode = tmpNode.getFirst();
                         while (copyModuleNode) {
                             copyModuleNode.inject(injectNode, where);
                             var copyModuleJson = this.form.getDomjson(copyModuleNode);
-                            module = this.form.loadModule(copyModuleJson, copyModuleNode, parent);
+                            var module = this.form.loadModule(copyModuleJson, copyModuleNode, parent);
                             module._setEditStyle_custom("id");
                             module.selected();
+                            moduleList.push( module );
 
                             copyModuleNode = tmpNode.getFirst();
                         }
                         tmpNode.destroy();
                         tmpNode = null;
+
+                        if( this.form.history && moduleList.length){
+                            moduleList[0].addHistoryLog("paste", moduleList);
+                        }
                     }
                 }
             }
@@ -214,6 +226,11 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 
         MWF.require("MWF.widget.ScrollBar", function(){
             new MWF.widget.ScrollBar(this.propertyDomScrollArea, {
+                "style":"default", "where": "before", "distance": 30, "friction": 4, "indent": false, "axis": {"x": false, "y": true}
+            });
+        }.bind(this));
+        MWF.require("MWF.widget.ScrollBar", function(){
+            new MWF.widget.ScrollBar(this.historyScrollArea, {
                 "style":"default", "where": "before", "distance": 30, "friction": 4, "indent": false, "axis": {"x": false, "y": true}
             });
         }.bind(this));
@@ -398,6 +415,8 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
                 this.changeDesignerModeToMobile();
             }
         }.bind(this));
+
+        this.formToolbarNode.setStyles({"position":"relative"});
     },
     changeDesignerModeToPC: function(){
         this.pcDesignerActionNode.setStyles(this.css.designerActionNode_current);
@@ -427,6 +446,10 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
         }
 
         this.currentDesignerMode = "PC";
+
+        this.historyArea.show();
+        this.historyAreaMobile.hide();
+        this.currentHistoryNode = this.historyArea;
     },
 
     changeDesignerModeToMobile: function(){
@@ -465,6 +488,10 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
         }
 
         this.currentDesignerMode = "Mobile";
+
+        this.historyArea.hide();
+        this.historyAreaMobile.show();
+        this.currentHistoryNode = this.historyAreaMobile;
     },
 
 
@@ -793,14 +820,15 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
             "styles": this.css.propertyDomContentArea
         }).inject(this.propertyContentNode);
 
-        this.propertyDomScrollArea = new Element("div", {
-            "styles": this.css.propertyDomScrollArea
-        }).inject(this.propertyDomContentArea);
+        this.propertyDomTabArea = new Element("div").inject(this.propertyDomContentArea);
 
-		this.propertyDomArea = new Element("div", {
-			"styles": this.css.propertyDomArea
-		}).inject(this.propertyDomScrollArea);
-		
+        // this.propertyDomArea = new Element("div", {
+        //     "styles": this.css.propertyDomArea
+        // }).inject(this.propertyDomScrollArea);
+
+        this.loadPropertyTab();
+
+
 		this.propertyDomPercent = 0.3;
 		this.propertyContentResizeNode = new Element("div", {
 			"styles": this.css.propertyContentResizeNode
@@ -813,6 +841,50 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 
 		this.loadPropertyContentResize();
 	},
+    loadPropertyTab: function (callback) {
+        var _self = this;
+        MWF.require("MWF.widget.Tab", null, false);
+
+        this.propertyDomTab = new MWF.widget.Tab(this.propertyDomTabArea, {"style": "formPropertyList"});
+        this.propertyDomTab.load();
+
+        this.tabDomNode = Element("div");
+        this.propertyDomScrollArea = new Element("div", {
+            "styles": this.css.propertyDomScrollArea
+        }).inject(this.tabDomNode);
+        this.propertyDomArea = new Element("div", {
+            "styles": this.css.propertyDomArea
+        }).inject(this.propertyDomScrollArea);
+
+        this.tabHistoryNode = Element("div");
+        this.historyScrollArea = new Element("div", {
+            "styles": this.css.propertyDomScrollArea
+        }).inject(this.tabHistoryNode);
+        this.historyArea = new Element("div", {
+            "styles": this.css.propertyDomArea
+        }).inject(this.historyScrollArea);
+        this.historyAreaMobile = new Element("div", {
+            "styles": this.css.propertyDomArea
+        }).inject(this.historyScrollArea);
+        this.historyAreaMobile.hide();
+        this.currentHistoryNode = this.historyArea;
+
+        this.domPage = this.propertyDomTab.addTab(this.tabDomNode, this.lp.componentTree);
+        this.historyPage = this.propertyDomTab.addTab(this.tabHistoryNode, this.lp.history);
+
+        this.domPage.showTabIm();
+
+        this.domPage.addEvent("postShow", function () {
+            var module = this.form.currentSelectedModule;
+            if (module && module.treeNode){
+                (new Fx.Scroll(this.propertyDomScrollArea)).toElement(module.treeNode.node);
+            }
+        }.bind(this));
+
+        // this.runPage.addEvent("postShow", function () {
+        //     this.selected();
+        // }.bind(this));
+    },
     loadPropertyResizeBottom: function(){
         if (!this.propertyResizeBottom){
             this.propertyResizeBottom = new Drag(this.propertyTitleNode,{
@@ -953,7 +1025,8 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 		var contentHeight = height-domHeight;
 		
 		this.propertyDomContentArea.setStyle("height", ""+domHeight+"px");
-        this.propertyDomScrollArea.setStyle("height", ""+domHeight+"px");
+        this.propertyDomScrollArea.setStyle("height", ""+(domHeight-28)+"px");
+        this.historyScrollArea.setStyle("height", ""+(domHeight-28)+"px");
 		this.propertyContentArea.setStyle("height", ""+contentHeight+"px");
 		
 		if (this.form){
@@ -1157,7 +1230,8 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
         this.propertyResizeBar.setStyle("height", ""+y+"px");
 
         this.propertyDomContentArea.setStyle("height", ""+y+"px");
-        this.propertyDomScrollArea.setStyle("height", ""+y+"px");
+        this.propertyDomScrollArea.setStyle("height", ""+(y-28)+"px");
+        this.historyScrollArea.setStyle("height", ""+(y-28)+"px");
 
         this.propertyContentResizeNode.setStyle("height", ""+y+"px");
         this.propertyContentArea.setStyle("height", ""+y+"px");

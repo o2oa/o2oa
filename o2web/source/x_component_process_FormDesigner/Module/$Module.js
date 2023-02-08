@@ -268,15 +268,15 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		this._resetTreeNode();
 		this.node.inject(container.node);
 	},
-	move: function(e){
+	move: function(e, operation){
 		this._createMoveNode();
 		var thisDisplay = this.node.getStyle("display");
 		this.node.store("thisDisplay", thisDisplay);
 		this.node.setStyle("display", "none");
-		this._setNodeMove(e);
+		this._setNodeMove(e, operation || "move");
 	},
 	copy: function(e){
-		this.copyTo().move(e);
+		this.copyTo().move(e, "copy");
 	},
 	copyTo: function(node){
 		if (!node) node = this.form;
@@ -306,6 +306,8 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 
 			module.form.selected();
 			module.form.designer.shortcut = true;
+
+			module.addHistoryLog("delete");
 
 			module.destroy();
 			this.close();
@@ -465,6 +467,9 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 					this.property.show();
 					this.isPropertyLoaded = true;
 					if (callback) callback();
+				}.bind(this),
+				"onPostShow": function () {
+					// if( this.form.history )this.originalJson = Object.clone(this.json);
 				}.bind(this)
 			});
 			this.property.load();
@@ -483,7 +488,7 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		this.json = data;
 		this.json.id = this._getNewId();
 		this._createMoveNode();
-		this._setNodeMove(e);
+		this._setNodeMove(e, "create");
 	},
 	createImmediately: function(data, relativeNode, position, selectDisabled){
 		this.json = data;
@@ -517,10 +522,16 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 	_getDroppableNodes: function(){
 		return [this.form.node].concat(this.form.moduleElementNodeList, this.form.moduleContainerNodeList, this.form.moduleComponentNodeList);
 	},
-	_setNodeMove: function(e){
+	_setNodeMove: function(e, operation){
 		this._setMoveNodePosition(e);
 		this.form.node.focus();
 		var droppables = this._getDroppableNodes();
+
+		this.operation = operation;
+		if( this.form.history && operation === "move" ){
+			this.fromLog = { path: this.form.history.getPath( this.node ) };
+		}
+
 		var nodeDrag = new Drag.Move(this.moveNode, {
 			"droppables": droppables,
 			"onEnter": function(dragging, inObj){
@@ -786,7 +797,6 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 			window.clearTimeout( this.dragTimeout );
 			this.dragTimeout = null;
 		}
-		debugger;
 		if (this.parentContainer){
 			var available = true;
 			if( !this.options.injectActions )available = false;
@@ -812,10 +822,12 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		this.setStyleTemplate();
 
 		if( this.injectNoticeNode )this.injectNoticeNode.destroy();
-		var overflow = this.moveNode.retrieve("overflow");
-		if( overflow ){
-			this.moveNode.setStyle("overflow",overflow);
-			this.moveNode.eliminate("overflow");
+		if(this.moveNode){
+			var overflow = this.moveNode.retrieve("overflow");
+			if( overflow ){
+				this.moveNode.setStyle("overflow",overflow);
+				this.moveNode.eliminate("overflow");
+			}
 		}
 
 		if (!this.node){
@@ -847,6 +859,15 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		if (this.form.scriptDesigner) this.form.scriptDesigner.createModuleScript(this.json);
 
 		if( !selectDisabled )this.selected();
+
+		if( this.operation && !this.historyAddDelay ){
+			this.addHistoryLog( this.operation, null, this.fromLog );
+		}
+
+		if( !this.historyAddDelay ){
+			this.operation = null;
+			this.fromLog = null;
+		}
 	},
 	_resetTreeNode: function(){
 
@@ -913,6 +934,9 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		this.copyNode = null;
 		this.moveNode = null;
 		this.form.moveModule = null;
+
+		this.operation = null;
+		this.fromLog = null;
 	},
 	_nodeDrag: function(e, drag){
 		if( !this.dragTimeout ){
@@ -1152,6 +1176,127 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 		o[json.id] = json;
 		this._getSubModuleJson(this.node, o);
 		return o;
+	},
+
+	getJsonData: function(name){
+		var d = this.json;
+		Array.each(name.split("."), function (n) {
+			if (d) d = d[n];
+		});
+		return d;
+	},
+	checkPropertyHistory: function(name, oldValue, newValue, notSetEditStyle, compareName, force){
+		if( !this.form.history )return null;
+		var log = {
+			"type": "property",
+			"force": force,
+			"moduleId": this.json.id,
+			"moduleType": this.json.type,
+			"notSetEditStyle": notSetEditStyle,
+			"changeList": []
+		};
+
+		if( typeOf(name) === "array" ){
+			name.each(function (n, i) {
+				log.changeList.push({
+					"name": n,
+					"fromValue": oldValue[i],
+					"toValue": newValue[i] || this.getJsonData(n)
+				});
+			}.bind(this));
+		}else{
+			log.changeList.push({
+				"name": name,
+				"compareName": compareName,
+				"fromValue": oldValue,
+				"toValue": newValue || this.getJsonData(name)
+			});
+		}
+		this.form.history.checkProperty(log, this);
+	},
+	// createHistoryPropertyLogList: function( moduleList ){
+	// 	if( !this.form.history )return null;
+	// 	var logList = [];
+	// 	if(moduleList){
+	// 		var list = o2.typeOf(moduleList) === "array" ? moduleList : [moduleList];
+	// 		list.each(function (module) {
+	// 			logList.push( module.createHistoryPropertyLog() );
+	// 		}.bind(this));
+	// 	}
+	// 	return logList;
+	// },
+	// createHistoryPropertyLog: function ( module ) {
+	// 	if( !this.form.history )return null;
+	// 	if( !module )module = this;
+	// 	var obj = {
+	// 		"path": module.form.history.getPath(module.node),
+	// 		"from": module.originalJson,
+	// 		"to": module.json
+	// 	};
+	// 	return obj;
+	// },
+
+	addHistoryLog: function(operation, toModuleList, fromList, moduleId, moduleType, html ){
+		if( !this.form.history )return null;
+		var log = {
+			"operation": operation,
+			"type": "module",
+			"moduleType": moduleType || this.json.type,
+			"moduleId": moduleId || this.json.id
+		};
+		if( toModuleList ){
+			log.toList = this.createHistoryLogList( toModuleList );
+		}else{
+			var to = {
+				"json": Object.clone(this.json),
+				"path": this.form.history.getPath(this.node)
+			};
+			if( operation !== "move" ){
+				to.jsonObject = this.getJson();
+				to.html = html || this.node.outerHTML;
+			}
+			log.toList = [ to ];
+		}
+
+		if( fromList ){
+			log.fromList = o2.typeOf(fromList) === "array" ? fromList : [fromList];
+		}
+		this.form.history.add( log, this);
+	},
+	createHistoryLogList: function( moduleList ){
+		if( !this.form.history )return null;
+		var logList = [];
+		if(moduleList){
+			var list = o2.typeOf(moduleList) === "array" ? moduleList : [moduleList];
+			list.each(function (module) {
+				logList.push( module.createHistoryLog() );
+			}.bind(this));
+		}
+		return logList;
+	},
+	createHistoryLog: function ( module ) {
+		if( !this.form.history )return null;
+		if( !module )module = this;
+		var obj = {
+			"json": Object.clone(module.json),
+			"path": module.form.history.getPath(module.node),
+			"jsonObject": module.getJson(),
+			"html": module.node.outerHTML
+		};
+		return obj;
+	},
+
+	//脚本附签上的脚本编辑器
+	addScriptJsEditor: function (propertyName, jsEditor) {
+		if( !this.scriptJsEditors )this.scriptJsEditors = {};
+		this.scriptJsEditors[propertyName] = jsEditor;
+	},
+	getScriptJsEditor: function (propertyName) {
+		if( !this.scriptJsEditors ){
+			return null;
+		}else{
+			return this.scriptJsEditors[propertyName];
+		}
 	}
 
 

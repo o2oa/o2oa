@@ -112,6 +112,9 @@ MWF.xApplication.process.FormDesigner.Module.Eltree = MWF.FCEltree = new Class({
 			// case "range":
 			// case "max":
 			// case "vertical":
+			case "dataJson":
+				if( this.isPropertyLoaded && this.vm)this.resetElement();
+				break;
 			case "dataType":
 				var data = this.json;
 				if( data.dataType !== oldValue ){

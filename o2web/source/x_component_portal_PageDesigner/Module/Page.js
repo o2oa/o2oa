@@ -135,6 +135,8 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
                 if (this.autoSaveTimerID) window.clearInterval(this.autoSaveTimerID);
             }.bind(this));
 
+			this.loadHistory();
+
             this.fireEvent("postLoad");
         }.bind(this));
 	},
@@ -192,6 +194,47 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
             }.bind(this), 60000);
         }
     },
+	loadHistory: function(){
+		o2.xDesktop.requireApp("process.FormDesigner", "History", function () {
+			this.history = new MWF.xApplication.process.FormDesigner.History(this, this.designer.currentHistoryNode);
+			this.history.load();
+		}.bind(this));
+	},
+	checkPropertyHistory: function(name, oldValue, newValue, notSetEditStyle, compareName, force){
+		if( !this.history )return null;
+		var log = {
+			"type": "property",
+			"force": force,
+			"moduleId": "form",
+			"moduleType": "form",
+			"notSetEditStyle": notSetEditStyle,
+			"changeList": [
+				{
+					"name": name,
+					"compareName": compareName,
+					"fromValue": oldValue,
+					"toValue": newValue || this.json[name]
+				}
+			]
+		};
+		this.history.checkProperty(log, this);
+	},
+	checkMultiPropertyHistory: function(name, oldValueList, newValue, modules){
+		if( !this.history )return null;
+		var log = {
+			"type": "multiProperty",
+			"moduleId": "form",
+			"changeList": modules.map(function (module, i) {
+				return {
+					"module": module,
+					"name": name,
+					"fromValue": oldValueList[i],
+					"toValue": newValue || module.json[name]
+				}
+			})
+		};
+		this.history.checkMultiProperty(log, modules);
+	},
 	checkUUID: function(){
 		this.designer.actions.getUUID(function(id){
             this.json.id = id;
@@ -476,17 +519,19 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
 	},
 	
 	
-	showProperty: function(){
+	showProperty: function(callback){
 		if (!this.property){
 			this.property = new MWF.xApplication.process.FormDesigner.Property(this, this.designer.propertyContentArea, this.designer, {
 				"path": this.options.propertyPath,
 				"onPostLoad": function(){
 					this.property.show();
+					if (callback) callback();
 				}.bind(this)
 			});
 			this.property.load();	
 		}else{
 			this.property.show();
+			if (callback) callback();
 		}
 	},
     hideProperty: function(){

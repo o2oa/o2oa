@@ -325,24 +325,52 @@ MWF.xApplication.process.FormDesigner.Module.Tab = MWF.FCTab = new Class({
         this.reloadMaplist();
     },
 
-	addPage: function(){
+	addPage: function( ev, historyCallback ){
 		tabNode = new Element("div");
 		var page = this.tabWidget.addTab(tabNode, "page", false);
-	
+
+		var tabPage, tabContent;
 		this.form.getTemplateData("Tab$Page", function(data){
 			var moduleData = Object.clone(data);
 			moduleData.name = page.tabNode.get("text");
-			var tabPage = new MWF.FCTab$Page(this, page);
+			tabPage = new MWF.FCTab$Page(this, page);
 			tabPage.load(moduleData, page.tabNode, this);
 			this.elements.push(tabPage);
-		}.bind(this));
+		}.bind(this), false);
 		this.form.getTemplateData("Tab$Content", function(data){
 			var moduleData = Object.clone(data);
-			var tabContent = new MWF.FCTab$Content(this, page);
+			tabContent = new MWF.FCTab$Content(this, page);
 			tabContent.load(moduleData, page.contentNode, this);
 			this.containers.push(tabContent);
-		}.bind(this));
+		}.bind(this), false);
 		page.showTabIm();
+
+		if( historyCallback ){
+			historyCallback( tabPage );
+		}else{
+			tabPage.addHistoryLog("add")
+		}
+
+		// var historyLog = {
+		// 	"operation": "add",
+		// 	"type": "module",
+		// 	"json": Object.clone(tabPage.json),
+		// 	"jsonObject": tabPage.getJson(),
+		// 	"html": tabPage.node.outerHTML,
+		// 	"toPath": this.form.history.getPath(tabPage.node),
+		// 	"content": {
+		// 		"json": Object.clone(tabContent.json),
+		// 		"jsonObject": tabContent.getJson(),
+		// 		"html": tabPage.page.contentNodeArea.outerHTML,
+		// 		"toPath": this.form.history.getPath( tabPage.page.contentNodeArea )
+		// 	}
+		// };
+		// if( historyCallback ){
+		// 	historyCallback( historyLog, tabPage );
+		// }else if( this.form.history ){
+		// 	this.form.history.add( historyLog );
+		// }
+
 		return page;
 	},
 
@@ -401,6 +429,28 @@ MWF.xApplication.process.FormDesigner.Module.Tab = MWF.FCTab = new Class({
 		this.recoveryWidgetstyle = null;
 		if (this.json.recoveryStyles) this.json.styles = this.json.recoveryStyles;
 		this.json.recoveryStyles = null;
+	},
+
+	loadExistedNodePage: function(tabNode, contentNodeArea, tabJson, contentJson){
+		var tabPage = new MWF.widget.TabPage(contentNodeArea.getFirst(), "", this.tabWidget, {"isClose": false});
+		tabPage.contentNodeArea = contentNodeArea;
+
+		tabPage.tabNode = tabNode;
+		tabPage.textNode = tabNode.getFirst();
+		if(tabPage.textNode)tabPage.closeNode = tabPage.textNode.getFirst();
+
+		tabPage.loadExisted();
+		this.tabWidget.pages.push(tabPage);
+
+		var page = new MWF.FCTab$Page(this, tabPage);
+		page.load(tabJson, tabPage.tabNode, this);
+		this.elements.push(page);
+
+		var tabContent = new MWF.FCTab$Content(this, tabPage);
+		tabContent.load(contentJson, tabPage.contentNode, this);
+		this.containers.push(tabContent);
+
+		tabPage.showTabIm();
 	}
 	// setCustomStyles: function(){
 	// 	this._recoveryModuleData();
