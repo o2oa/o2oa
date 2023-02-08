@@ -137,7 +137,7 @@ MWF.xApplication.process.FormDesigner.History = new Class({
         }
         if( !isModified )return;
 
-        console.log( log );
+        // console.log( log );
         debugger;
 
         var flag = false;
@@ -224,7 +224,7 @@ MWF.xApplication.process.FormDesigner.History = new Class({
             }
         }
         if( !flag ) {
-            console.log(log);
+            //console.log(log);
             var item = new MWF.FCWHistory.PropertyMultiItem(this, log);
             item.load(modules);
             this.addItem(item);
@@ -1098,7 +1098,7 @@ MWF.FCWHistory.PropertySingleItem.SubItem = new Class({
         this._redo( notSetEditStyle );
     },
     _undo: function ( notSetEditStyle ) {
-        console.log( "_undo", this.data);
+        //console.log( "_undo", this.data);
         var module = this.parentItem.getModule();
         if (module) {
             var json = module.json;
@@ -1115,14 +1115,14 @@ MWF.FCWHistory.PropertySingleItem.SubItem = new Class({
                     this.setScriptJsEditor(module, change.name, change.fromValue);
                 }
                 if(!notSetEditStyle && !this.data.notSetEditStyle){
-                    console.log("change.name")
+                    //console.log("change.name")
                     module._setEditStyle(change.name, null, change.toValue);
                 }
             }
         }
     },
     _redo: function (notSetEditStyle) {
-        console.log( "_redo", this.data);
+        //console.log( "_redo", this.data);
         var module = this.parentItem.getModule();
         if (module) {
             var json = module.json;
@@ -1139,7 +1139,6 @@ MWF.FCWHistory.PropertySingleItem.SubItem = new Class({
                     this.setScriptJsEditor(module, change.name, change.toValue);
                 }
                 if(!notSetEditStyle && !this.data.notSetEditStyle){
-                    console.log("change.name")
                     module._setEditStyle(change.name, null, change.fromValue);
                 }
             }
@@ -1204,7 +1203,7 @@ MWF.FCWHistory.PropertyMultiItem = new Class({
         return lp.batchModify + this.data.changeList[0].name + lp.property;
     },
     _undo: function () {
-        console.log( "_undo", this.data);
+        //console.log( "_undo", this.data);
         for( var i=this.data.changeList.length-1; i>-1; i-- ){
             var change = this.data.changeList[i];
             var module = this.getModule( change );
@@ -1218,7 +1217,7 @@ MWF.FCWHistory.PropertyMultiItem = new Class({
         }
     },
     _redo: function () {
-        console.log( "_redo", this.data);
+        //console.log( "_redo", this.data);
         for( var i=0; i<this.data.changeList.length; i++ ){
             var change = this.data.changeList[i];
             var module = this.getModule( change );
