@@ -536,6 +536,19 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"publishTableConfig": "Data table publishing configuration",
 		"queryTableDataPathNote": "Note: the root path is empty, the data table is filled with the data table identifier .data (eg datatable1.data), and the data template is filled with the data template identifier (eg datatemplate1).",
 		"orgIdPlaceholder" : "Such as: departmentLeader"
+	},
+	"processAction": {
+		"move": "Move",
+		"copy": "Copy",
+		"delete": "Delete",
+		"add": "Add",
+		"cut": "Cut",
+		"paste": "Paste",
+		"open": "Open",
+		"script": "Script",
+		"create": "Create",
+		"property": "Property",
+		"batchModify": "Batch Modify"
 	}
 
 };
