@@ -655,7 +655,7 @@ var MTooltips = new Class({
             left = left + pOffset.x;
         }
 
-        node.setStyles({
+        var obj = {
             "left" : left,
             "top" : t || top
         };
@@ -891,7 +891,7 @@ var MTooltips = new Class({
             l = (l || left) + pOffset.x;
         }
 
-        node.setStyles({
+        var obj = {
             "left" : l || left,
             "top" : top
         };
