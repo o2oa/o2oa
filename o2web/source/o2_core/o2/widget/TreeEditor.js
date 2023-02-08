@@ -87,6 +87,11 @@ o2.widget.TreeEditor = new Class({
 			
 			var textDivNode = treeNode.textNode.getElement("div");
 			treeNode.editItem(textDivNode);
+
+			this.fireEvent("change", [{
+				compareName: " [addSub]",
+				force: true
+			}]);
 		} 
 		
 	},
@@ -145,7 +150,9 @@ o2.widget.TreeEditor.Tree = new Class({
 			treeNode.options.expand = true;
 		}
 		treeNode.setOperateIcon();
-		this.editor.fireEvent("change");
+		this.editor.fireEvent("change", [{
+			compareName: "."+treeNode.getLevelName() + ".expand"
+		}]);
 	}
 	
 });
@@ -198,6 +205,15 @@ o2.widget.TreeEditor.Tree.Node = new Class({
 		this.children.push(treeNode);
 		
 		return treeNode;
+	},
+	getLevelName: function(){
+		var parentTextList = [];
+		var parent = this;
+		while (parent){
+			parentTextList.push( parent.options.text );
+			parent = parent.parentNode;
+		}
+		return parentTextList.reverse().join(".");
 	},
 	createTextNode: function(){
 		this.textNode = new Element("td",{
@@ -375,7 +391,9 @@ o2.widget.TreeEditor.Tree.Node = new Class({
 						"style": "treeEditor",
 						"onChange": function(){
 							this.options.action = this.scriptArea.toJson();
-							this.tree.editor.fireEvent("change");
+							this.tree.editor.fireEvent("change", [{
+								compareName: "."+this.getLevelName() + ".action"
+							}]);
 						}.bind(this)
 					});
 					if (!this.options.action) this.options.action = {};
@@ -423,7 +441,11 @@ o2.widget.TreeEditor.Tree.Node = new Class({
 		
 		var textDivNode = treeNode.textNode.getElement("div");
 		treeNode.editItem(textDivNode);
-		
+
+		this.tree.editor.fireEvent("change", [{
+			compareName: "."+this.getLevelName() + " [addSub]",
+			force: true
+		}]);
 	},
 	switchDefaultItem: function(e){
 		if( this.options.default ){
@@ -434,7 +456,9 @@ o2.widget.TreeEditor.Tree.Node = new Class({
 			}
 			this.setDefaultItem( e );
 		}
-		this.tree.editor.fireEvent("change");
+		this.tree.editor.fireEvent("change", [{
+			compareName: "."+this.getLevelName() + ".default"
+		}]);
 	},
 	unsetDefaultItem: function(){
 		this.options.default = false;
@@ -464,7 +488,10 @@ o2.widget.TreeEditor.Tree.Node = new Class({
 
 		MWF.xDesktop.confirm("warn", tmpe, o2.LP.process.notice.deleteTreeNodeTitle, o2.LP.process.notice.deleteTreeNode, 300, 120, function(){
 			treeNode.destroy();
-			treeNode.tree.editor.fireEvent("change");
+			treeNode.tree.editor.fireEvent("change", [{
+				compareName: "."+treeNode.getLevelName() + " [delete]",
+				force: true
+			}]);
     		this.close();
 		}, function(){
 			this.close();
@@ -532,7 +559,9 @@ o2.widget.TreeEditor.Tree.Node = new Class({
 //		this.iconNode.setStyle("background", "transparent");
 //		this.iconNode.title = "";
 
-		this.tree.editor.fireEvent("change");
+		this.tree.editor.fireEvent("change", [{
+			compareName: "."+this.getLevelName() + ".text"
+		}]);
 		
 //		if (addNewItem){
 //			this.arraylist.notAddItem = false;

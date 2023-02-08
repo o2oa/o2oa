@@ -39,6 +39,11 @@ MWF.xApplication.process.FormDesigner.widget.ElCarouselContent = new Class({
 			treeNode.showItemAction();
 
 			treeNode.editItemProperties();
+
+			this.fireEvent("change", [{
+				compareName: " [addSub]",
+				force: true
+			}]);
 		}
 
 	},
@@ -175,6 +180,15 @@ MWF.xApplication.process.FormDesigner.widget.ElCarouselContent.Tree.Node = new C
 			}
 		}.bind(this));
 	},
+	getLevelName: function(){
+		var parentTextList = [];
+		var parent = this;
+		while (parent){
+			parentTextList.push( parent.data.type==="text" ? "文本" : "图片");
+			parent = parent.parentNode;
+		}
+		return parentTextList.reverse().join(".");
+	},
 	editItemProperties: function(){
 
 		var defaultStyles = {
@@ -229,6 +243,9 @@ MWF.xApplication.process.FormDesigner.widget.ElCarouselContent.Tree.Node = new C
 							this.removeStyles( defaultStyles.text );
 							this.copyStyles( defaultStyles.img );
 							this.maplist.reload(this.data.styles);
+							this.tree.editor.fireEvent("change", [{
+								compareName: "."+this.getLevelName() + ".type"
+							}]);
 						}.bind(this)
 					}
 				}).inject( div );
@@ -248,6 +265,9 @@ MWF.xApplication.process.FormDesigner.widget.ElCarouselContent.Tree.Node = new C
 							this.removeStyles( defaultStyles.img );
 							this.copyStyles( defaultStyles.text );
 							this.maplist.reload(this.data.styles);
+							this.tree.editor.fireEvent("change", [{
+								compareName: "."+this.getLevelName() + ".type"
+							}]);
 						}.bind(this)
 					}
 				}).inject( div );
@@ -281,11 +301,17 @@ MWF.xApplication.process.FormDesigner.widget.ElCarouselContent.Tree.Node = new C
 						"collapse": false,
 						"onChange": function () {
 							this.data.styles = maplist.toJson();
+							this.tree.editor.fireEvent("change", [{
+								compareName: "."+this.getLevelName() + ".styles"
+							}]);
 						}.bind(this),
 						"onDelete": function (key) {
 							if (this.data.styles && this.data.styles[key]) {
 								delete this.data.styles[key];
 							}
+							this.tree.editor.fireEvent("change", [{
+								compareName: "."+this.getLevelName() + ".styles"
+							}]);
 						}.bind(this),
 						"isProperty": false
 					});
@@ -308,6 +334,9 @@ MWF.xApplication.process.FormDesigner.widget.ElCarouselContent.Tree.Node = new C
 						"onChange": function(){
 							var json = this.srcScriptEditor.toJson();
 							this.data.srcScript.code = json.code;
+							this.tree.editor.fireEvent("change", [{
+								compareName: "."+this.getLevelName() + ".srcScript.code"
+							}]);
 							//this.data[name].html = json.html;
 						}.bind(this),
 						"onSave": function(){
@@ -341,6 +370,9 @@ MWF.xApplication.process.FormDesigner.widget.ElCarouselContent.Tree.Node = new C
 						"onChange": function(){
 							var json = this.textScriptEditor.toJson();
 							this.data.textScript.code = json.code;
+							this.tree.editor.fireEvent("change", [{
+								compareName: "."+this.getLevelName() + ".textScript.code"
+							}]);
 							//this.data[name].html = json.html;
 						}.bind(this),
 						"onSave": function(){
@@ -369,6 +401,9 @@ MWF.xApplication.process.FormDesigner.widget.ElCarouselContent.Tree.Node = new C
 						"onChange": function(){
 							var json = this.clickScriptEditor.toJson();
 							this.data.clickScript.code = json.code;
+							this.tree.editor.fireEvent("change", [{
+								compareName: "."+this.getLevelName() + ".clickScript.code"
+							}]);
 							//this.data[name].html = json.html;
 						}.bind(this),
 						"onSave": function(){

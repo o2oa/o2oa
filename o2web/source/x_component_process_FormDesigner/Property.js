@@ -221,12 +221,13 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 var treeEditor = new MWF.xApplication.process.FormDesigner.widget.ElTreeEditor(node, {
                     "title": title,
                     "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
-                    "onChange": function(){
+                    "onChange": function(historyOptions){
                         // this.data[name] = Object.assign(this.data[name], treeEditor.toJson());
                         // this.data[name] = treeEditor.toJson();
                         // this.module.json[name] = this.data[name];
                         //
-                        this.checkHistory(name, oldValue, json);
+                        historyOptions = historyOptions || {};
+                        this.checkHistory(name, oldValue, json, false, name + historyOptions.compareName, historyOptions.force);
                         oldValue = Array.clone(json);
                         this.module._refreshTree();
                     }.bind(this)
@@ -251,8 +252,9 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 var treeEditor = new MWF.xApplication.process.FormDesigner.widget.ElDropdownItemEditor(node, {
                     "title": title,
                     "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
-                    "onChange": function(){
-                        this.checkHistory(name, oldValue, json);
+                    "onChange": function(historyOptions){
+                        historyOptions = historyOptions || {};
+                        this.checkHistory(name, oldValue, json, false, name + historyOptions.compareName, historyOptions.force);
                         oldValue = Array.clone(json);
                     }.bind(this)
                 });
@@ -276,8 +278,9 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
                 var treeEditor = new MWF.xApplication.process.FormDesigner.widget.ElCarouselContent(node, {
                     "title": title,
                     "maxObj": this.designer.formContentNode || this.designer.pageContentNode,
-                    "onChange": function(){
-                        this.checkHistory(name, oldValue, json);
+                    "onChange": function( historyOptions ){
+                        historyOptions = historyOptions || {};
+                        this.checkHistory(name, oldValue, json, false, name + historyOptions.compareName, historyOptions.force);
                         oldValue = Array.clone(json);
                     }.bind(this)
                 });
@@ -297,16 +300,25 @@ MWF.xApplication.process.FormDesigner.Property = MWF.FCProperty = new Class({
 			if (!json) json = [];
             this.loadingCount++;
 			MWF.require("MWF.widget.TreeEditor", function(){
+                var oldValue = Array.clone(this.data[name] || []);
 				var treeEditor = new MWF.widget.TreeEditor(node, {
 					"title": title,
 					"maxObj": this.propertyNode.parentElement.parentElement.parentElement,
-					"onChange": function(){
-                        var oldValue = this.data[name];
-						this.data[name] = treeEditor.toJson();
-						this.module.json[name] = this.data[name];
-						this.checkHistory(name, oldValue, this.data[name]);
-						this.module._refreshTree();
-					}.bind(this)
+                    "onChange": function( historyOptions ){
+                        historyOptions = historyOptions || {};
+                        this.data[name] = treeEditor.toJson();
+                        this.module.json[name] = this.data[name];
+                        this.checkHistory(name, oldValue, this.data[name], false, name + historyOptions.compareName, historyOptions.force);
+                        this.module._refreshTree();
+                        oldValue = this.data[name];
+                    }.bind(this)
+					// "onChange": function(){
+                    //     var oldValue = this.data[name];
+					// 	this.data[name] = treeEditor.toJson();
+					// 	this.module.json[name] = this.data[name];
+					// 	this.checkHistory(name, oldValue, this.data[name]);
+					// 	this.module._refreshTree();
+					// }.bind(this)
 				});
 				treeEditor.load(json);
                 this.checkLoaded();
