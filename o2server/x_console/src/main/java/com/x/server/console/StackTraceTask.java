@@ -33,7 +33,7 @@ public class StackTraceTask implements Job {
 			String file = Config.dir_logs().getAbsolutePath() + "/jstack_" + Config.node() + "_"
 					+ DateTools.format(now, DateTools.formatCompact_yyyyMMddHHmmss) + ".txt";
 			String command = Config.command_jstack_path().toString() + " -l -e " + pid + " > " + file;
-			ProcessBuilder processBuilder = new ProcessBuilder();
+			java.lang.ProcessBuilder processBuilder = new java.lang.ProcessBuilder();
 			if (SystemUtils.IS_OS_WINDOWS) {
 				processBuilder.command("cmd", "/c", command);
 			} else {
@@ -41,7 +41,7 @@ public class StackTraceTask implements Job {
 			}
 			Process p = processBuilder.start();
 			String resp = IOUtils.toString(p.getErrorStream(), DefaultCharset.charset_utf_8);
-			LOGGER.print("schedule stack trace to {}.{}", file, resp);
+			LOGGER.print("schedule stack trace to {}, {}.", file, resp);
 			p.destroy();
 			clean(now);
 		} catch (Exception e) {

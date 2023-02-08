@@ -34,6 +34,9 @@ MWF.xApplication.process.FormDesigner.Main = new Class({
 		}
         this.actions = MWF.Actions.get("x_processplatform_assemble_designer");
 		this.lp = MWF.xApplication.process.FormDesigner.LP;
+		if( !this.application && this.options.application ){
+		    this.application = this.options.application;
+        }
 	},
 	
 	loadApplication: function(callback){

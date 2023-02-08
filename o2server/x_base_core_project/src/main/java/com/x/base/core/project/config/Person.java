@@ -37,7 +37,7 @@ public class Person extends ConfigObject {
 
 	public static final String REGULAREXPRESSION_SCRIPT = "^\\((.+?)\\)$";
 
-	public static final String DEFAULT_PASSWORD = "(var v \\u003d person.getMobile();\\u000a return v.substring(v.length - 6))";
+	public static final String DEFAULT_PASSWORD = "(var v = person.getMobile();\\nreturn v.substring(v.length - 6);)";
 	public static final Integer DEFAULT_PASSWORDPERIOD = 0;
 	public static final Integer DEFAULT_FAILUREINTERVAL = 10;
 	public static final Integer DEFAULT_FAILURECOUNT = 5;

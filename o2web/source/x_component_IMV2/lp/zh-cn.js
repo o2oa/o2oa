@@ -41,7 +41,7 @@ MWF.xApplication.IMV2.LP = {
 
 	"modifyGroupName": "修改群名",
 	"groupName": "群名",
-	"clearAllMsg": "清空聊天记录",
+	"deleteConversation": "删除会话",
 
 	"msgMenuItemRevokeMemberMsg": "撤回成员消息",
 	"msgMenuItemRevokeMsg": "撤回",
@@ -54,13 +54,14 @@ MWF.xApplication.IMV2.LP = {
 	"msgShareError": "分享、转发消息失败！",
 	
 	
-	"settingsClearMsg": "是否开启聊天消息清除功能：",
-	"settingsRevokeMsg": "是否开启聊天消息撤回功能：",
+	"settingsClearMsg": " 是否开启会话删除功能",
+	"settingsRevokeMsg": " 是否开启聊天消息撤回功能",
 
 	"enterMessage": "输入消息内容",
 	"send": "发送",
 	"sendKeyTips": "Ctrl + Enter 换行",
 	"file": "[文件]",
 	"messageXadminNotSupport": "xadmin用户无法使用聊聊，请切换正常的用户登录！",
-	"messageClearAllMsgAlert": "确定要清空聊天记录吗，清空后当前会话所有人都将看不到这些聊天记录？"
+	"messageDeleteSingleConversationAlert": "确定要删除当前会话吗，删除后将看不到以前的聊天记录？",
+	"messageDeleteGroupConversationAlert": "确定要删除当前会话吗，这会解散当前群聊并删除聊天记录？"
 };

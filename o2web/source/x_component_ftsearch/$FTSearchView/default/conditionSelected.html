@@ -1,0 +1,11 @@
+<div class="conditionSelected">
+    {{each $.data}}
+    <div class="item mainColor_bg" data-o2-events="click:removeSelectedConditionItem;mouseover:conditionSelectedOver;mouseout:conditionSelectedOut">
+        <span>{{$.parentLabel}}:</span>
+        {{each $.labelList}}
+            <div class="item-text">{{$}}</div>
+        {{end each}}
+        <i class="o2icon-close icon"></i>
+    </div>
+    {{end each}}
+</div>

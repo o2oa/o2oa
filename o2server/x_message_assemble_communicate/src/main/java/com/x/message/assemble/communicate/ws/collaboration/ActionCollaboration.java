@@ -17,7 +17,6 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
-import com.x.base.core.project.tools.ListTools;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;
@@ -38,90 +37,90 @@ import com.x.message.core.entity.Message_;
 
 /**
  * websocket连接
+ * 
  * @author sword
  */
 @ServerEndpoint(value = "/ws/collaboration", configurator = WsConfigurator.class)
 public class ActionCollaboration {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCollaboration.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActionCollaboration.class);
 
-	@OnOpen
-	public void open(Session session) {
-		EffectivePerson effectivePerson = (EffectivePerson) session.getUserProperties().get(HttpToken.X_PERSON);
+    private static final String TAG_HEARTBEAT = "heartbeat";
 
-		LOGGER.debug("OnOpen: tokenType:{}, distinguishedName:{}.", effectivePerson::getTokenType,
-				effectivePerson::getDistinguishedName);
+    @OnOpen
+    public void open(Session session) {
+        EffectivePerson effectivePerson = (EffectivePerson) session.getUserProperties().get(HttpToken.X_PERSON);
 
-		if (!TokenType.anonymous.equals(effectivePerson.getTokenType())) {
-			ThisApplication.wsClients().put(session, effectivePerson.getDistinguishedName());
-			try {
-				List<Message> messages = this.load(effectivePerson);
-				WsMessage ws = null;
-				for (Message o : messages) {
-					ws = new WsMessage();
-					ws.setType(o.getType());
-					ws.setPerson(o.getPerson());
-					ws.setTitle(o.getTitle());
-					JsonElement jsonElement = XGsonBuilder.instance().fromJson(o.getBody(), JsonElement.class);
-					ws.setBody(jsonElement);
-					session.getBasicRemote().sendText(XGsonBuilder.toJson(ws));
-				}
-			} catch (Exception e) {
-				LOGGER.error(e);
-			}
-		}
-	}
+        LOGGER.debug("webSocket OnOpen: tokenType:{}, distinguishedName:{}.", effectivePerson::getTokenType,
+                effectivePerson::getDistinguishedName);
 
-	@OnClose
-	public void close(Session session, CloseReason reason) {
-		ThisApplication.wsClients().remove(session);
-	}
+        if (!TokenType.anonymous.equals(effectivePerson.getTokenType())) {
+            ThisApplication.wsClients().put(session, effectivePerson.getDistinguishedName());
+            try {
+                List<Message> messages = this.load(effectivePerson);
+                WsMessage ws = null;
+                for (Message o : messages) {
+                    ws = new WsMessage();
+                    ws.setType(o.getType());
+                    ws.setPerson(o.getPerson());
+                    ws.setTitle(o.getTitle());
+                    JsonElement jsonElement = XGsonBuilder.instance().fromJson(o.getBody(), JsonElement.class);
+                    ws.setBody(jsonElement);
+                    session.getBasicRemote().sendText(XGsonBuilder.toJson(ws));
+                }
+            } catch (Exception e) {
+                LOGGER.error(e);
+            }
+        }
+    }
 
-	@OnError
-	public void error(Throwable t) {
-		// nothing
-	}
+    @OnClose
+    public void close(Session session, CloseReason reason) {
+        ThisApplication.wsClients().remove(session);
+    }
 
-	@OnMessage
-	public void message(String input, Session session) throws IOException {
-		EffectivePerson effectivePerson = (EffectivePerson) session.getUserProperties().get(HttpToken.X_PERSON);
-		LOGGER.debug("OnMessage receive: message {}, person:{}, ip:{}, client:{} .", () -> input,
-				effectivePerson::getDistinguishedName, effectivePerson::getRemoteAddress,
-				effectivePerson::getUserAgent);
-		if (StringUtils.isBlank(input)) {
-			return;
-		}
-		// 建立心跳，维持websocket链接
-		if (input.equalsIgnoreCase("heartbeat")) {
-			session.getBasicRemote().sendText("heartbeat");
-		}
-	}
+    @OnError
+    public void error(Throwable t) {
+        // nothing
+    }
 
-	private List<Message> load(EffectivePerson effectivePerson) {
-		List<Message> os = new ArrayList<>();
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			EntityManager em = emc.get(Message.class);
-			CriteriaBuilder cb = em.getCriteriaBuilder();
-			CriteriaQuery<Message> cq = cb.createQuery(Message.class);
-			Root<Message> root = cq.from(Message.class);
-			Predicate p = cb.equal(root.get(Message_.person), effectivePerson.getDistinguishedName());
-			p = cb.and(p, cb.equal(root.get(Message_.consumer), MessageConnector.CONSUME_WS));
-			p = cb.and(p, cb.isFalse(root.get(Message_.consumed)));
-			cq.select(root).where(p).orderBy(cb.desc(root.get(JpaObject_.createTime)));
-			os = em.createQuery(cq).getResultList();
-			emc.beginTransaction(Message.class);
-			for (Message o : os) {
-				o.setConsumed(true);
-			}
-			emc.commit();
-			int maxCount = 10;
-			if(os.size() > maxCount) {
-				os = os.subList(0, maxCount);
-			}
-		} catch (Exception e) {
-			LOGGER.error(e);
-		}
-		return os;
-	}
+    @OnMessage
+    public void message(String input, Session session) throws IOException {
+        EffectivePerson effectivePerson = (EffectivePerson) session.getUserProperties().get(HttpToken.X_PERSON);
+        LOGGER.debug("webSocket OnMessage receive: message {}, person:{}, ip:{}, client:{}.", () -> input,
+                effectivePerson::getDistinguishedName, effectivePerson::getRemoteAddress,
+                effectivePerson::getUserAgent);
+        // 建立心跳，维持websocket链接
+        if (StringUtils.equals(input, TAG_HEARTBEAT)) {
+            session.getBasicRemote().sendText(TAG_HEARTBEAT);
+        }
+    }
+
+    private List<Message> load(EffectivePerson effectivePerson) {
+        List<Message> os = new ArrayList<>();
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            EntityManager em = emc.get(Message.class);
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<Message> cq = cb.createQuery(Message.class);
+            Root<Message> root = cq.from(Message.class);
+            Predicate p = cb.equal(root.get(Message_.person), effectivePerson.getDistinguishedName());
+            p = cb.and(p, cb.equal(root.get(Message_.consumer), MessageConnector.CONSUME_WS));
+            p = cb.and(p, cb.isFalse(root.get(Message_.consumed)));
+            cq.select(root).where(p).orderBy(cb.desc(root.get(JpaObject_.createTime)));
+            os = em.createQuery(cq).getResultList();
+            emc.beginTransaction(Message.class);
+            for (Message o : os) {
+                o.setConsumed(true);
+            }
+            emc.commit();
+            int maxCount = 10;
+            if (os.size() > maxCount) {
+                os = os.subList(0, maxCount);
+            }
+        } catch (Exception e) {
+            LOGGER.error(e);
+        }
+        return os;
+    }
 
 }

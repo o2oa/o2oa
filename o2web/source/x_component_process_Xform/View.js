@@ -35,7 +35,7 @@ MWF.xApplication.process.Xform.View = MWF.APPView =  new Class(
          */
         /**
          * 打开视图中的一条记录后执行。
-         * @event MWF.xApplication.process.Xform.View#openDocument
+         * @event MWF.xApplication.process.Xform.View#openDocument，可以通过this.event得到打开的文档参数
          * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
          */
         "moduleEvents": ["load", "beforeLoadView", "loadViewLayout", "loadView", "queryLoad", "postLoad", "select", "openDocument"]
@@ -131,7 +131,7 @@ MWF.xApplication.process.Xform.View = MWF.APPView =  new Class(
                         "options": options,
                         "item": item
                     };
-                    this.fireEvent("openDocument");
+                    this.fireEvent("openDocument", [this.openOptions]);
                     this.openOptions = null;
                 }.bind(this)
             }, this.form.app, this.form.Macro);

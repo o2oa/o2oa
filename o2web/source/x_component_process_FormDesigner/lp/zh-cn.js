@@ -370,7 +370,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "importer": "数据导入",
         "readLog": "阅读记录",
         "writingBoard": "手写板",
-        "tinymceEditor": "Tinymce编辑器"
+        "tinymceEditor": "Tinymce编辑器",
+        "relatedLink": "相关推荐"
     },
     "propertyTemplate": {
         "base": "基本",
@@ -449,6 +450,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "none": "无",
         "default": "默认",
         "byScript": "根据脚本",
+        "byFormat": "根据格式",
+        "table": "表格",
         "languageDefaultInfo": "系统会自动载入名称为 \"lp-\"+o2.language 的数据字典(或脚本)，作为语言包",
 
         "prefix": "前缀",
@@ -466,6 +469,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "compute": "计算",
         "create": "创建",
         "save": "保存",
+        "linkStyles": "条目样式",
 
         "defaultValue": "默认值",
         "verificationScript": "校验脚本",
@@ -749,9 +753,15 @@ MWF.xApplication.process.FormDesigner.LP = {
         "cellpadding": "单元格边距",
         "cellspacing": "单元格间距",
 
+        "containStyle": "容器样式",
+        "containAttribute": "容器属性",
         "titleCellStyle": "标题单元格样式",
         "contentCellStyle": "内容单元格样式",
         "layoutCellStyle": "布局单元格样式",
+
+        "contentTitleCellStyle": "内容标题单元格样式",
+        "contentLineStyle": "内容行样式",
+        "contentLineOverStyle": "内容行经过样式",
 
         "columns": "列数",
         "onTheLeft": "所选之左",
@@ -775,6 +785,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "tableStyle": "表格样式",
         "defaultData": "默认数据",
         "allowAdd": "允许添加",
+        "allowSort": "允许排序",
         "exportImport": "导出导入",
         "enabled": "启用",
         "disabled": "禁用",
@@ -812,6 +823,13 @@ MWF.xApplication.process.FormDesigner.LP = {
         "subform": "子表单",
         "subformScript": "子表单脚本",
 
+        "activeType": "激活方式",
+        "click": "点击激活",
+        "delay": "延迟激活",
+        "immediately": "直接激活",
+        "buttonText": "按钮文本",
+        "delayNote": "选择延时激活时，需要使用this.form.get(moduleId).active()激活",
+
         "viewBox": "视图选择框",
         "viewBoxTitle": "选择框标题",
         "columnTitle": "列标题",
@@ -843,6 +861,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "number": "数字",
         "datetime": "日期",
         "boolean": "布尔",
+        "resultType": "结果保存类型",
         "asDefaultFilter": "作为默认过滤条件",
         "asCustomFilter": "作为自定义过滤数据",
         "logic": "逻辑",
@@ -932,12 +951,14 @@ MWF.xApplication.process.FormDesigner.LP = {
         "defaultExpandCount": "默认展开条数",
         "expandHtml": "展开节点HTML",
         "collapseHtml": "折叠节点HTML",
+        "relativedLinkField": "可选字段：flag,title,createTime,updateTime,creatorPerson,creatorUnit,score",
 
         "fileTemplate": "文件模板",
         "systemTemplate": "系统模板",
         "customTemplate": "自定义模板",
         "selectTemplate": "选择模板",
         "templatePath": "模板路径",
+        "templateId": "模板标识",
         "edit": "编辑",
         "printFile": "打印正文",
         "viewTraces": "查看痕迹",

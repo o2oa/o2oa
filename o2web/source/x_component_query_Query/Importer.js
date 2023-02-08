@@ -189,13 +189,15 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
 
         var data = this.getData();
 
+        debugger;
+
         this.lookupAction.getUUID(function(json){
             this.recordId = json.data;
             this.lookupAction.executImportModel(this.json.id, {
                 "recordId": this.recordId,
                 "data" : data
             }, function () {
-                this.showImportingStatus()
+                this.showImportingStatus( data )
             }.bind(this), function (xhr) {
                 var requestJson = JSON.parse(xhr.responseText);
                 this.app.notice(requestJson.message, "error");
@@ -451,8 +453,10 @@ MWF.xApplication.query.Query.Importer = MWF.QImporter = new Class({
         }
     },
 
-    showImportingStatus: function(){
+    showImportingStatus: function( improtedData ){
         this.progressBar.showImporting( this.recordId, function( data ){
+            data.data = improtedData;
+            data.rowList = this.rowList;
             this.fireEvent("afterImport", data)
         }.bind(this));
     },

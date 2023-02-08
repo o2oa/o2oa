@@ -100,6 +100,21 @@ if (!window.layout || !layout.desktop || !layout.addReady) {
         };
 
         var _openWorkAndroid = function (options) {
+            if (window.o2android && window.o2android.postMessage) {
+                var body = {
+                    type: "openO2Work",
+                    data: {
+                        title : options.title || ""
+                    }
+                };
+                if (options.workId) {
+                    body.data.workId = options.workId;
+                } else if (options.workCompletedId) {
+                    body.data.workCompletedId = options.workCompletedId;
+                }
+                window.o2android.postMessage(JSON.stringify(body));
+                return true;
+            }
             if (window.o2android && window.o2android.openO2Work) {
                 if (options.workId) {
                     window.o2android.openO2Work(options.workId, "", options.title || options.docTitle || "");
@@ -148,8 +163,9 @@ if (!window.layout || !layout.desktop || !layout.addReady) {
             if (job) docurl += ((docurl.indexOf("?") != -1) ? "&" : "?") + "jobid=" + job;
             docurl += ((redirectlink) ? "&redirectlink=" + redirectlink : "");
             docurl += ((layout.debugger) ? "&debugger" : "");
-
-            window.location = o2.filterUrl(docurl);
+            //使用相对路径不需要filterUrl
+            //window.location = o2.filterUrl(docurl);
+            window.location = docurl;
         };
         var _openWork = function (options) {
             if (!_openWorkAndroid(options)) if (!_openWorkIOS(options)) _openWorkHTML(options);
@@ -158,7 +174,17 @@ if (!window.layout || !layout.desktop || !layout.addReady) {
             var title = typeOf(options) === "object" ? (options.docTitle || options.title) : "";
             title = title || "";
             var par = "app=" + encodeURIComponent(appNames) + "&status=" + encodeURIComponent((statusObj) ? JSON.encode(statusObj) : "") + "&option=" + encodeURIComponent((options) ? JSON.encode(options) : "");
-            if (window.o2android && window.o2android.openO2CmsDocumentV2) {
+            if (window.o2android && window.o2android.postMessage) {
+                var body = {
+                    type: "openO2CmsDocument",
+                    data: {
+                        docId : options.documentId,
+                        title: title,
+                        options: options
+                    }
+                };
+                window.o2android.postMessage(JSON.stringify(body));
+            } else if (window.o2android && window.o2android.openO2CmsDocumentV2) {
                 window.o2android.openO2CmsDocumentV2(options.documentId, title, JSON.stringify(options));
             } else if (window.o2android && window.o2android.openO2CmsDocument) {
                 window.o2android.openO2CmsDocument(options.documentId, title);
@@ -173,7 +199,16 @@ if (!window.layout || !layout.desktop || !layout.addReady) {
         };
         var _openCms = function (appNames, options, statusObj) {
             var par = "app=" + encodeURIComponent(appNames) + "&status=" + encodeURIComponent((statusObj) ? JSON.encode(statusObj) : "") + "&option=" + encodeURIComponent((options) ? JSON.encode(options) : "");
-            if (window.o2android && window.o2android.openO2CmsApplication) {
+            if (window.o2android && window.o2android.postMessage) {
+                var body = {
+                    type: "openO2CmsApplication",
+                    data: {
+                        appId : options.columnId,
+                        title: options.title || ""
+                    }
+                };
+                window.o2android.postMessage(JSON.stringify(body));
+            } else if (window.o2android && window.o2android.openO2CmsApplication) {
                 window.o2android.openO2CmsApplication(options.columnId, options.title || "");
             } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openO2CmsApplication) {
                 window.webkit.messageHandlers.openO2CmsApplication.postMessage(options.columnId);
@@ -183,7 +218,13 @@ if (!window.layout || !layout.desktop || !layout.addReady) {
         };
         var _openMeeting = function (appNames, options, statusObj) {
             var par = "app=" + encodeURIComponent(appNames) + "&status=" + encodeURIComponent((statusObj) ? JSON.encode(statusObj) : "") + "&option=" + encodeURIComponent((options) ? JSON.encode(options) : "");
-            if (window.o2android && window.o2android.openO2Meeting) {
+            if (window.o2android && window.o2android.postMessage) {
+                var body = {
+                    type: "openO2Meeting",
+                    data: {}
+                };
+                window.o2android.postMessage(JSON.stringify(body));
+            } else if (window.o2android && window.o2android.openO2Meeting) {
                 window.o2android.openO2Meeting("");
             } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openO2Meeting) {
                 window.webkit.messageHandlers.openO2Meeting.postMessage("");
@@ -194,7 +235,13 @@ if (!window.layout || !layout.desktop || !layout.addReady) {
 
         var _openCalendar = function (appNames, options, statusObj) {
             var par = "app=" + encodeURIComponent(appNames) + "&status=" + encodeURIComponent((statusObj) ? JSON.encode(statusObj) : "") + "&option=" + encodeURIComponent((options) ? JSON.encode(options) : "");
-            if (window.o2android && window.o2android.openO2Calendar) {
+            if (window.o2android && window.o2android.postMessage) {
+                var body = {
+                    type: "openO2Calendar",
+                    data: {}
+                };
+                window.o2android.postMessage(JSON.stringify(body));
+            } else if (window.o2android && window.o2android.openO2Calendar) {
                 window.o2android.openO2Calendar("");
             } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openO2Calendar) {
                 window.webkit.messageHandlers.openO2Calendar.postMessage("");
@@ -208,7 +255,13 @@ if (!window.layout || !layout.desktop || !layout.addReady) {
             if (tab === "done") tab = "taskCompleted";
             if (tab === "readed") tab = "readCompleted";
 
-            if (window.o2android && window.o2android.openO2WorkSpace) {
+            if (window.o2android && window.o2android.postMessage) {
+                var body = {
+                    type: "openO2WorkSpace",
+                    data: { type: tab }
+                };
+                window.o2android.postMessage(JSON.stringify(body));
+            } else if (window.o2android && window.o2android.openO2WorkSpace) {
                 window.o2android.openO2WorkSpace(tab);
             } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.openO2WorkSpace) {
                 window.webkit.messageHandlers.openO2WorkSpace.postMessage(tab);

@@ -27,156 +27,148 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.control.Business;
-import com.x.organization.assemble.control.message.OrgMessageFactory;
 import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Identity_;
 import com.x.organization.core.entity.Unit;
-import com.x.organization.core.entity.Unit_;
 
 class ActionEdit extends BaseAction {
 
-	@SuppressWarnings("unused")
-	private static Logger logger = LoggerFactory.getLogger(ActionEdit.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActionEdit.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, JsonElement jsonElement) throws Exception {
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
-			Business business = new Business(emc);
-			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-			Unit unit = business.unit().pick(flag);
-			Unit oldUnit = unit;
-			boolean checkFlag = false;
+    ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, JsonElement jsonElement) throws Exception {
 
-			if (null == unit) {
-				throw new ExceptionUnitNotExist(flag);
-			}
-			if (!business.editable(effectivePerson, unit)) {
-				throw new ExceptionDenyEditUnit(effectivePerson, flag);
-			}
-			if (StringUtils.isEmpty(wi.getName())) {
-				throw new ExceptionNameEmpty();
-			}
+        LOGGER.debug("execute:{}, flag:{}.", effectivePerson::getDistinguishedName, () -> flag);
 
-			/** pick出来的对象需要重新取出 */
-			emc.beginTransaction(Unit.class);
-			unit = emc.find(unit.getId(), Unit.class);
-			Gson gsontool = new Gson();
-			String strOriginalUnit = gsontool.toJson(unit);
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            ActionResult<Wo> result = new ActionResult<>();
+            Business business = new Business(emc);
+            Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+            Unit unit = business.unit().pick(flag);
+            Unit oldUnit = unit;
+            boolean checkFlag = false;
 
-			unit.setControllerList(ListTools.extractProperty(
-					business.person().pick(ListTools.trim(unit.getControllerList(), true, true)),
-					JpaObject.id_FIELDNAME, String.class, true, true));
-			Wi.copier.copy(wi, unit);
-			/** 如果唯一标识不为空,要检查唯一标识是否唯一 */
-			if (this.duplicateUniqueWhenNotEmpty(business, unit)) {
-				throw new ExceptionDuplicateUnique(unit.getName(), unit.getUnique());
-			}
-			if (this.checkNameInvalid(business, unit)) {
-				throw new ExceptionNameInvalid(unit.getName());
-			}
-			/** 判断同一级别下name不重复 */
-			if (this.duplicateName(business, unit)) {
-				throw new ExceptionDuplicateName(unit.getName());
-			}
-//			/** 判断是否修改了组织级别或组织名称,如果修改了，需要重新计算当前组织及下属组织的组织级别 */
-//			checkFlag = this.checkUnitTypeName(oldUnit, unit);
-//			if (checkFlag) {
-//				business.unit().adjustInherit(unit);
-//			}
-			// 现在由于可能修改了上级组织排序,所以都需要重新计算.
-			business.unit().adjustInherit(unit);
-			emc.check(unit, CheckPersistType.all);
-			emc.commit();
-			CacheManager.notify(Unit.class);
+            if (null == unit) {
+                throw new ExceptionUnitNotExist(flag);
+            }
+            if (!business.editable(effectivePerson, unit)) {
+                throw new ExceptionDenyEditUnit(effectivePerson, flag);
+            }
+            if (StringUtils.isEmpty(wi.getName())) {
+                throw new ExceptionNameEmpty();
+            }
 
-			/** 判断是否修改了组织级别或组织名称,如果修改了，需要重新计算当前组织及下属组织成员的身份（组织名称，组织级别名称） */
-			checkFlag = this.checkUnitTypeName(oldUnit, unit);
-			if (checkFlag) {
-				this.updateIdentityUnitNameAndUnitLevelName(unit, business);
-			}
+            /** pick出来的对象需要重新取出 */
+            emc.beginTransaction(Unit.class);
+            unit = emc.find(unit.getId(), Unit.class);
+            Gson gsontool = new Gson();
+            String strOriginalUnit = gsontool.toJson(unit);
 
-			/** 创建 组织变更org消息通信 */
-			OrgMessageFactory orgMessageFactory = new OrgMessageFactory();
-			orgMessageFactory.createMessageCommunicate("modfiy", "unit", strOriginalUnit, unit, effectivePerson);
+            unit.setControllerList(ListTools.extractProperty(
+                    business.person().pick(ListTools.trim(unit.getControllerList(), true, true)),
+                    JpaObject.id_FIELDNAME, String.class, true, true));
+            Wi.copier.copy(wi, unit);
+            /** 如果唯一标识不为空,要检查唯一标识是否唯一 */
+            if (this.duplicateUniqueWhenNotEmpty(business, unit)) {
+                throw new ExceptionDuplicateUnique(unit.getName(), unit.getUnique());
+            }
+            if (this.checkNameInvalid(business, unit)) {
+                throw new ExceptionNameInvalid(unit.getName());
+            }
+            /** 判断同一级别下name不重复 */
+            if (this.duplicateName(business, unit)) {
+                throw new ExceptionDuplicateName(unit.getName());
+            }
+            // 现在由于可能修改了上级组织排序,所以都需要重新计算.
+            business.unit().adjustInherit(unit);
+            emc.check(unit, CheckPersistType.all);
+            emc.commit();
+            CacheManager.notify(Unit.class);
 
-			Wo wo = new Wo();
-			wo.setId(unit.getId());
-			result.setData(wo);
-			return result;
+            /** 判断是否修改了组织级别或组织名称,如果修改了，需要重新计算当前组织及下属组织成员的身份（组织名称，组织级别名称） */
+            checkFlag = this.checkUnitTypeName(oldUnit, unit);
+            if (checkFlag) {
+                this.updateIdentityUnitNameAndUnitLevelName(unit, business);
+            }
 
-		}
+            Wo wo = new Wo();
+            wo.setId(unit.getId());
+            result.setData(wo);
+            return result;
 
-	}
+        }
 
-	public static class Wo extends WoId {
-	}
+    }
 
-	public static class Wi extends Unit {
+    public static class Wo extends WoId {
+    }
 
-		private static final long serialVersionUID = -7527954993386512109L;
+    public static class Wi extends Unit {
 
-		static WrapCopier<Wi, Unit> copier = WrapCopierFactory.wi(Wi.class, Unit.class, null,
-				ListTools.toList(JpaObject.FieldsUnmodify, Unit.pinyin_FIELDNAME, Unit.pinyinInitial_FIELDNAME,
-						Unit.level_FIELDNAME, Unit.levelName_FIELDNAME));
-	}
+        private static final long serialVersionUID = -7527954993386512109L;
 
-	/**
-	 * 根据组织标志列出身份列表
-	 * @param business
-	 * @param unit
-	 * @return
-	 * @throws Exception
-	 */
-	private List<Identity> listIdentityByUnitFlag(Business business, Unit unit) throws Exception {
-		if (null == unit.getId() || StringUtils.isEmpty(unit.getId()) || null == unit) {
-			throw new ExceptionUnitNotExist(unit.getId());
-		}
-		EntityManager em = business.entityManagerContainer().get(Identity.class);
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Identity> cq = cb.createQuery(Identity.class);
-		Root<Identity> root = cq.from(Identity.class);
-		Predicate p = cb.equal(root.get(Identity_.unit), unit.getId());
-		List<Identity> os = em.createQuery(cq.select(root).where(p)).getResultList();
-		return os;
-	}
+        static WrapCopier<Wi, Unit> copier = WrapCopierFactory.wi(Wi.class, Unit.class, null,
+                ListTools.toList(JpaObject.FieldsUnmodify, Unit.pinyin_FIELDNAME, Unit.pinyinInitial_FIELDNAME,
+                        Unit.level_FIELDNAME, Unit.levelName_FIELDNAME));
+    }
 
-	void updateIdentityUnitNameAndUnitLevelName(Unit unit, Business business) throws Exception {
-		/*
-		 * 同时更新unit下的所有身份的UnitLevelName，UnitName
-		 */
-		List<Unit> unitList = new ArrayList<>();
-		unitList.add(unit);
-		unitList.addAll(business.unit().listSubNestedObject(unit));
-		EntityManagerContainer emc = business.entityManagerContainer();
-		for (Unit u : unitList) {
-			List<Identity> identityList = this.listIdentityByUnitFlag(business, u);
-			if (ListTools.isNotEmpty(identityList)) {
-				String _unitName = u.getName();
-				String _unitLevelName = u.getLevelName();
+    /**
+     * 根据组织标志列出身份列表
+     * 
+     * @param business
+     * @param unit
+     * @return
+     * @throws Exception
+     */
+    private List<Identity> listIdentityByUnitFlag(Business business, Unit unit) throws Exception {
+        if (null == unit.getId() || StringUtils.isEmpty(unit.getId()) || null == unit) {
+            throw new ExceptionUnitNotExist(unit.getId());
+        }
+        EntityManager em = business.entityManagerContainer().get(Identity.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Identity> cq = cb.createQuery(Identity.class);
+        Root<Identity> root = cq.from(Identity.class);
+        Predicate p = cb.equal(root.get(Identity_.unit), unit.getId());
+        List<Identity> os = em.createQuery(cq.select(root).where(p)).getResultList();
+        return os;
+    }
 
-				for (Identity i : identityList) {
-					Identity _identity = emc.find(i.getId(), Identity.class);
-					_identity.setUnitName(_unitName);
-					_identity.setUnitLevelName(_unitLevelName);
-					emc.beginTransaction(Identity.class);
-					emc.check(_identity, CheckPersistType.all);
-					emc.commit();
-					CacheManager.notify(Identity.class);
-				}
-			}
+    void updateIdentityUnitNameAndUnitLevelName(Unit unit, Business business) throws Exception {
+        /*
+         * 同时更新unit下的所有身份的UnitLevelName，UnitName
+         */
+        List<Unit> unitList = new ArrayList<>();
+        unitList.add(unit);
+        unitList.addAll(business.unit().listSubNestedObject(unit));
+        EntityManagerContainer emc = business.entityManagerContainer();
+        for (Unit u : unitList) {
+            List<Identity> identityList = this.listIdentityByUnitFlag(business, u);
+            if (ListTools.isNotEmpty(identityList)) {
+                String _unitName = u.getName();
+                String _unitLevelName = u.getLevelName();
 
-		}
-	}
+                for (Identity i : identityList) {
+                    Identity _identity = emc.find(i.getId(), Identity.class);
+                    _identity.setUnitName(_unitName);
+                    _identity.setUnitLevelName(_unitLevelName);
+                    emc.beginTransaction(Identity.class);
+                    emc.check(_identity, CheckPersistType.all);
+                    emc.commit();
+                    CacheManager.notify(Identity.class);
+                }
+            }
 
-	private boolean checkUnitTypeName(Unit oldUnit, Unit unit) throws Exception {
-		List<String> oldUnitType = oldUnit.getTypeList();
-		List<String> unitType = unit.getTypeList();
-		// 判断两个list是否相同
-		if (oldUnitType.retainAll(unitType) || (!StringUtils.equals(oldUnit.getName(), unit.getName()))
-				|| (!StringUtils.equals(oldUnit.getSuperior(), unit.getSuperior()))) {
-			return true;
-		}
-		return false;
-	}
+        }
+    }
+
+    private boolean checkUnitTypeName(Unit oldUnit, Unit unit) throws Exception {
+        List<String> oldUnitType = oldUnit.getTypeList();
+        List<String> unitType = unit.getTypeList();
+        // 判断两个list是否相同
+        if (oldUnitType.retainAll(unitType) || (!StringUtils.equals(oldUnit.getName(), unit.getName()))
+                || (!StringUtils.equals(oldUnit.getSuperior(), unit.getSuperior()))) {
+            return true;
+        }
+        return false;
+    }
 
 }

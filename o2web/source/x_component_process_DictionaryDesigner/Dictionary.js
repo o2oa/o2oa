@@ -535,21 +535,36 @@ MWF.xApplication.process.DictionaryDesigner.Dictionary.item = new Class({
             this.valueNode.inject(this.nextSibling.valueNode, "before");
         }else{
             if (this.parent){
-                if (this.parent.children.length){
-                    var injectItem = this.parent.children.getLast();
-                    this.itemNode.inject(injectItem.itemNode, "after");
-                    this.typeNode.inject(injectItem.typeNode, "after");
-                    this.valueNode.inject(injectItem.valueNode, "after");
-                }else{
-                    this.itemNode.inject(this.parent.itemNode, "after");
-                    this.typeNode.inject(this.parent.typeNode, "after");
-                    this.valueNode.inject(this.parent.valueNode, "after");
-                }
+                this.itemNode.inject(this.parent.itemChildrenNode);
+                this.typeNode.inject(this.parent.typeChildrenNode);
+                this.valueNode.inject(this.parent.valueChildrenNode);
+
+
+                // if (this.parent.children.length){
+                //     var injectItem = this.parent.children.getLast();
+                //
+                //     var flag = injectItem.exp;
+                //     if (injectItem.exp) injectItem.expOrColChildren();
+                //
+                //     this.itemNode.inject(injectItem.itemNode, "after");
+                //     this.typeNode.inject(injectItem.typeNode, "after");
+                //     this.valueNode.inject(injectItem.valueNode, "after");
+                //
+                //     if (flag) injectItem.expOrColChildren();
+                // }else{
+                //     this.itemNode.inject(this.parent.itemNode, "after");
+                //     this.typeNode.inject(this.parent.typeNode, "after");
+                //     this.valueNode.inject(this.parent.valueNode, "after");
+                // }
             }else{
                 this.itemNode.inject(this.dictionary.itemsNode);
                 this.typeNode.inject(this.dictionary.typesNode);
                 this.valueNode.inject(this.dictionary.valuesNode);
             }
+
+            this.itemChildrenNode = new Element("div.Children", {"styles": {"overflow": "hidden"}}).inject(this.itemNode, "after");
+            this.typeChildrenNode = new Element("div.Children", {"styles": {"overflow": "hidden"}}).inject(this.typeNode, "after");
+            this.valueChildrenNode = new Element("div.Children", {"styles": {"overflow": "hidden"}}).inject(this.valueNode, "after");
         }
 
     },
@@ -573,7 +588,9 @@ MWF.xApplication.process.DictionaryDesigner.Dictionary.item = new Class({
                 this.itemExpColActionNode.destroy();
                 this.itemExpColActionNode = null;
             }
-            if (this.type!="boolean") this.valueTextNode.addEvent("mousedown", function(e){this.editValue();}.bind(this));
+            if (!this.editValueFun) this.editValueFun = function(){this.editValue();}.bind(this);
+            this.valueTextNode.removeEvent("mousedown", this.editValueFun);
+            if (this.type!="boolean") this.valueTextNode.addEvent("mousedown", this.editValueFun);
         }
         if (this.type=="array" || this.type=="object" || (this.parent && this.parent.type=="array")){
             if (!this.itemAddActionNode){
@@ -585,10 +602,14 @@ MWF.xApplication.process.DictionaryDesigner.Dictionary.item = new Class({
             this.itemAddActionNode = null;
         }
 
+        if (!this.selectBooleanValueFun) this.selectBooleanValueFun = function(){this.selectBooleanValue();}.bind(this);
+        if (this.valueSelActionNode) this.valueSelActionNode.removeEvent("click", this.selectBooleanValueFun);
+        this.valueTextNode.removeEvent("click", this.selectBooleanValueFun);
+
         if (this.type=="boolean"){
             if (!this.valueSelActionNode) this.valueSelActionNode = new Element("div", {"styles": this.css.valueSelActionNode}).inject(this.valueActionsAreaNode);
-            this.valueSelActionNode.addEvent("click", function(){this.selectBooleanValue();}.bind(this));
-            this.valueTextNode.addEvent("click", function(){this.selectBooleanValue();}.bind(this));
+            this.valueSelActionNode.addEvent("click", this.selectBooleanValueFun);
+            this.valueTextNode.addEvent("click", this.selectBooleanValueFun);
         }
 
         if (this.parent){
@@ -760,6 +781,7 @@ MWF.xApplication.process.DictionaryDesigner.Dictionary.item = new Class({
     addItem: function(e){
         if (!this.parent){
             this.createChildrenItems();
+            if (!this.exp) this.expOrColChildren();
             this.addChild();
         }else{
             if (this.exp){
@@ -1040,13 +1062,18 @@ MWF.xApplication.process.DictionaryDesigner.Dictionary.item = new Class({
         this.changeTypeObjectToPrimitive(type);
     },
     changeTypePrimitiveToPrimitive: function(type){
+        var value;
         switch(type){
             case "string":
                 value = this.value.toString();
                 break;
             case "number":
-                value = this.value.toFloat();
-                if (isNaN(value)) value = 0
+                try{
+                    value = this.value.toFloat();
+                }catch (e){
+                    value = 0;
+                }
+                if (isNaN(value)) value = 0;
                 break;
             case "boolean":
                 value = true;

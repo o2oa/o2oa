@@ -70,6 +70,7 @@ MWF.xApplication.process.FormDesigner.Module.Html = MWF.FCHtml = new Class({
 		if (this.form.moduleElementNodeList.indexOf(this.node)==-1) this.form.moduleElementNodeList.push(this.node);
 
 		this.textarea.set("value", this.json.text);
+        this.textarea.removeAttribute('disabled');
 		if (this.property){
 			var editNode = this.property.propertyNode.getElement(".MWF_editHtmlText");
 			if (editNode) editNode.set("value", this.textarea.get("value"));
@@ -83,7 +84,6 @@ MWF.xApplication.process.FormDesigner.Module.Html = MWF.FCHtml = new Class({
 		this.textarea.set("value", this.json.text);
 	},
 	_setTextareaHeight: function(){
-
 		this.textarea.setStyle("height", "18px");
 		var scroll = this.textarea.getScrollSize();
 		var size = this.textarea.getSize();
@@ -94,7 +94,7 @@ MWF.xApplication.process.FormDesigner.Module.Html = MWF.FCHtml = new Class({
 	},
 	_setOtherNodeEvent: function(){
 
-		this.textarea.focus();
+		// this.textarea.focus();
 		
 		this.textarea.addEvents({
 			"keydown": function(e){
@@ -121,6 +121,15 @@ MWF.xApplication.process.FormDesigner.Module.Html = MWF.FCHtml = new Class({
 				this.json.text = this.textarea.get("value");
 			}.bind(this)
 		});
+
+		// this.node.addEvents({
+		// 	"mouseenter": function () {
+		// 		this.textarea.disabled = false;
+		// 	}.bind(this),
+		// 	"mouseleave": function () {
+		// 		this.textarea.disabled = true;
+		// 	}.bind(this)
+		// })
 	},
 	_setEditStyle_custom: function(name){
 		if (name=="text"){

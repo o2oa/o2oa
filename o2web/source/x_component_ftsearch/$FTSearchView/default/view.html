@@ -1,0 +1,26 @@
+<div class="ftsearch-wrap">
+    <div class="ftsearch-top" data-o2-element="topNode">
+        <div class="ftsearch-top-inner">
+            <div style="overflow: hidden;">
+<!--                <div data-o2-element="docTotalNode" class="docTotalNode"></div>-->
+                <div>
+                    <div class="view_inputArea mainColor_border">
+                        <i class="view_inputButton o2icon-search1" data-o2-events="click:search:1:;mouseover:iconOver;mouseout:iconOut"></i>
+                        <input class="view_input" data-o2-element="searchInput" placeholder="{{$.lp.searchPlacholder}}" data-o2-events="keydown:searchKeydown" value="{{$.data.query}}"/>
+                    </div>
+
+                    <div class="ftsearch-topButton mainColor_bg" data-o2-events="click:search:1:;">{{$.lp.search}}</div>
+                </div>
+            </div>
+            <div class="index-filter mainColor_border" data-o2-element="filterArea"></div>
+        </div>
+    </div>
+    <div data-o2-element="docContent" class="docContent-ftsearch">
+        <div class="contentWrap-ftsearch">
+<!--            <div data-o2-element="conditionSelectedArea" class="conditionSelected"></div>-->
+<!--            <div data-o2-element="conditionArea"></div>-->
+            <div class="listNode" data-o2-element="docListNode"></div>
+        </div>
+    </div>
+    <div data-o2-element="docPaginationNode" class="index-pagingNode"></div>
+</div>

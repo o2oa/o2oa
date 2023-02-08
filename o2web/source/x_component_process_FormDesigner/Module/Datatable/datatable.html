@@ -68,6 +68,13 @@
                     <input type="radio" name="addable" value="no" text{($.addable==='no')?'checked':''}/>{{$.lp.no}}
                 </td>
             </tr>
+            <tr>
+                <td class="editTableTitle">{{$.lp.allowSort}}:</td>
+                <td class="editTableValue">
+                    <input type="radio" name="sortable" value="yes" text{($.sortable!=='no')?'checked':''}/>{{$.lp.yes}}
+                    <input type="radio" name="sortable" value="no" text{($.sortable==='no')?'checked':''}/>{{$.lp.no}}
+                </td>
+            </tr>
         </table>
         <div class="MWFFormulaArea" name="editableScript" title="{{$.lp.allowEdit}} (S)"></div>
 

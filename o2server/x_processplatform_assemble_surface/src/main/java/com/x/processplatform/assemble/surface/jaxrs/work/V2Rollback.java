@@ -37,114 +37,117 @@ import com.x.processplatform.core.express.service.processing.jaxrs.work.V2Rollba
 
 class V2Rollback extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(V2Rollback.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(V2Rollback.class);
 
-	private Work work;
-	private WorkLog workLog;
-	private Wi wi;
-	private Record record;
-	private List<String> existTaskIds = new ArrayList<>();
-	private String series = StringTools.uniqueToken();
+    private Work work;
+    private WorkLog workLog;
+    private Wi wi;
+    private Record rec;
+    private List<String> existTaskIds = new ArrayList<>();
+    private String series = StringTools.uniqueToken();
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
-		wi = this.convertToWrapIn(jsonElement, Wi.class);
-		ActionResult<Wo> result = new ActionResult<>();
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
+    ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
 
-			work = emc.find(id, Work.class);
-			if (null == work) {
-				throw new ExceptionEntityNotExist(id, Work.class);
-			}
+        LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
-			if (!business.canManageApplicationOrProcess(effectivePerson, work.getApplication(), work.getProcess())) {
-				throw new ExceptionAccessDenied(effectivePerson);
-			}
+        wi = this.convertToWrapIn(jsonElement, Wi.class);
+        ActionResult<Wo> result = new ActionResult<>();
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            Business business = new Business(emc);
 
-			workLog = emc.find(wi.getWorkLog(), WorkLog.class);
+            work = emc.find(id, Work.class);
+            if (null == work) {
+                throw new ExceptionEntityNotExist(id, Work.class);
+            }
 
-			if (null == workLog) {
-				throw new ExceptionEntityNotExist(wi.getWorkLog(), WorkLog.class);
-			}
+            if (!business.canManageApplicationOrProcess(effectivePerson, work.getApplication(), work.getProcess())) {
+                throw new ExceptionAccessDenied(effectivePerson);
+            }
 
-			existTaskIds = emc.idsEqual(Task.class, Task.job_FIELDNAME, work.getJob());
-		}
-		this.rollback();
+            workLog = emc.find(wi.getWorkLog(), WorkLog.class);
 
-		if (wi.getProcessing()) {
-			this.processing();
-		}
+            if (null == workLog) {
+                throw new ExceptionEntityNotExist(wi.getWorkLog(), WorkLog.class);
+            }
 
-		this.record();
+            existTaskIds = emc.idsEqual(Task.class, Task.job_FIELDNAME, work.getJob());
+        }
+        this.rollback();
 
-		Wo wo = Wo.copier.copy(record);
-		result.setData(wo);
-		return result;
+        if (wi.getProcessing()) {
+            this.processing();
+        }
 
-	}
+        this.record();
 
-	private void processing() throws Exception {
-		ProcessingAttributes req = new ProcessingAttributes();
-		req.setType(ProcessingAttributes.TYPE_ROLLBACK);
-		req.setSeries(series);
-		WoId resp = ThisApplication.context().applications()
-				.putQuery(x_processplatform_service_processing.class,
-						Applications.joinQueryUri("work", this.work.getId(), "processing"), req, work.getJob())
-				.getData(WoId.class);
-		if (StringUtils.isBlank(resp.getId())) {
-			throw new ExceptionRetract(this.work.getId());
-		}
-	}
+        Wo wo = Wo.copier.copy(rec);
+        result.setData(wo);
+        return result;
 
-	private void rollback() throws Exception {
-		V2RollbackWi req = new V2RollbackWi();
-		req.setProcessing(wi.getProcessing());
-		req.setWorkLog(workLog.getId());
-		req.setTaskCompletedIdentityList(wi.getTaskCompletedIdentityList());
-		WrapBoolean resp = ThisApplication.context().applications()
-				.putQuery(x_processplatform_service_processing.class,
-						Applications.joinQueryUri("work", "v2", work.getId(), "rollback"), req, work.getJob())
-				.getData(WrapBoolean.class);
-		if (!resp.getValue()) {
-			throw new ExceptionRollback(work.getId());
-		}
-	}
+    }
 
-	private void record() throws Exception {
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			final List<String> nextTaskIdentities = new ArrayList<>();
-			record = new Record(workLog);
-			record.setType(Record.TYPE_ROLLBACK);
-			record.setArrivedActivity(workLog.getFromActivity());
-			record.setArrivedActivityAlias(workLog.getFromActivityAlias());
-			record.setArrivedActivityName(workLog.getFromActivityName());
-			record.setArrivedActivityToken(workLog.getFromActivityToken());
-			record.setArrivedActivityType(workLog.getFromActivityType());
-			List<String> ids = emc.idsEqual(Task.class, Task.job_FIELDNAME, work.getJob());
-			ids = ListUtils.subtract(ids, existTaskIds);
-			List<Task> list = emc.fetch(ids, Task.class,
-					ListTools.toList(Task.identity_FIELDNAME, Task.job_FIELDNAME, Task.work_FIELDNAME,
-							Task.activity_FIELDNAME, Task.activityAlias_FIELDNAME, Task.activityName_FIELDNAME,
-							Task.activityToken_FIELDNAME, Task.activityType_FIELDNAME, Task.identity_FIELDNAME));
-			list.stream().collect(Collectors.groupingBy(Task::getActivity, Collectors.toList())).entrySet().stream()
-					.forEach(o -> {
-						Task task = o.getValue().get(0);
-						NextManual nextManual = new NextManual();
-						nextManual.setActivity(task.getActivity());
-						nextManual.setActivityAlias(task.getActivityAlias());
-						nextManual.setActivityName(task.getActivityName());
-						nextManual.setActivityToken(task.getActivityToken());
-						nextManual.setActivityType(task.getActivityType());
-						for (Task t : o.getValue()) {
-							nextManual.getTaskIdentityList().add(t.getIdentity());
-							nextTaskIdentities.add(t.getIdentity());
-						}
-						record.getProperties().getNextManualList().add(nextManual);
-					});
-			/* 去重 */
-			record.getProperties().setNextManualTaskIdentityList(ListTools.trim(nextTaskIdentities, true, true));
-		}
-		// 生成返回值但是不记录
+    private void processing() throws Exception {
+        ProcessingAttributes req = new ProcessingAttributes();
+        req.setType(ProcessingAttributes.TYPE_ROLLBACK);
+        req.setSeries(series);
+        WoId resp = ThisApplication.context().applications()
+                .putQuery(x_processplatform_service_processing.class,
+                        Applications.joinQueryUri("work", this.work.getId(), "processing"), req, work.getJob())
+                .getData(WoId.class);
+        if (StringUtils.isBlank(resp.getId())) {
+            throw new ExceptionRetract(this.work.getId());
+        }
+    }
+
+    private void rollback() throws Exception {
+        V2RollbackWi req = new V2RollbackWi();
+        req.setProcessing(wi.getProcessing());
+        req.setWorkLog(workLog.getId());
+        req.setTaskCompletedIdentityList(wi.getTaskCompletedIdentityList());
+        WrapBoolean resp = ThisApplication.context().applications()
+                .putQuery(x_processplatform_service_processing.class,
+                        Applications.joinQueryUri("work", "v2", work.getId(), "rollback"), req, work.getJob())
+                .getData(WrapBoolean.class);
+        if (!resp.getValue()) {
+            throw new ExceptionRollback(work.getId());
+        }
+    }
+
+    private void record() throws Exception {
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            final List<String> nextTaskIdentities = new ArrayList<>();
+            rec = new Record(workLog);
+            rec.setType(Record.TYPE_ROLLBACK);
+            rec.setArrivedActivity(workLog.getFromActivity());
+            rec.setArrivedActivityAlias(workLog.getFromActivityAlias());
+            rec.setArrivedActivityName(workLog.getFromActivityName());
+            rec.setArrivedActivityToken(workLog.getFromActivityToken());
+            rec.setArrivedActivityType(workLog.getFromActivityType());
+            List<String> ids = emc.idsEqual(Task.class, Task.job_FIELDNAME, work.getJob());
+            ids = ListUtils.subtract(ids, existTaskIds);
+            List<Task> list = emc.fetch(ids, Task.class,
+                    ListTools.toList(Task.identity_FIELDNAME, Task.job_FIELDNAME, Task.work_FIELDNAME,
+                            Task.activity_FIELDNAME, Task.activityAlias_FIELDNAME, Task.activityName_FIELDNAME,
+                            Task.activityToken_FIELDNAME, Task.activityType_FIELDNAME, Task.identity_FIELDNAME));
+            list.stream().collect(Collectors.groupingBy(Task::getActivity, Collectors.toList())).entrySet().stream()
+                    .forEach(o -> {
+                        Task task = o.getValue().get(0);
+                        NextManual nextManual = new NextManual();
+                        nextManual.setActivity(task.getActivity());
+                        nextManual.setActivityAlias(task.getActivityAlias());
+                        nextManual.setActivityName(task.getActivityName());
+                        nextManual.setActivityToken(task.getActivityToken());
+                        nextManual.setActivityType(task.getActivityType());
+                        for (Task t : o.getValue()) {
+                            nextManual.getTaskIdentityList().add(t.getIdentity());
+                            nextTaskIdentities.add(t.getIdentity());
+                        }
+                        rec.getProperties().getNextManualList().add(nextManual);
+                    });
+            /* 去重 */
+            rec.getProperties().setNextManualTaskIdentityList(ListTools.trim(nextTaskIdentities, true, true));
+        }
+        // 生成返回值但是不记录
 //		WoId resp = ThisApplication.context().applications()
 //				.postQuery(x_processplatform_service_processing.class,
 //						Applications.joinQueryUri("record", "job", work.getJob()), record, this.work.getJob())
@@ -152,18 +155,18 @@ class V2Rollback extends BaseAction {
 //		if (StringUtils.isEmpty(resp.getId())) {
 //			throw new ExceptionRecord(this.work.getId());
 //		}
-	}
+    }
 
-	public static class Wi extends V2RollbackWi {
+    public static class Wi extends V2RollbackWi {
 
-	}
+    }
 
-	public static class Wo extends Record {
+    public static class Wo extends Record {
 
-		private static final long serialVersionUID = -8410749558739884101L;
+        private static final long serialVersionUID = -8410749558739884101L;
 
-		static WrapCopier<Record, Wo> copier = WrapCopierFactory.wo(Record.class, Wo.class, null,
-				JpaObject.FieldsInvisible);
-	}
+        static WrapCopier<Record, Wo> copier = WrapCopierFactory.wo(Record.class, Wo.class, null,
+                JpaObject.FieldsInvisible);
+    }
 
 }

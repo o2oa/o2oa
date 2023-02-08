@@ -28,16 +28,11 @@ public class ActionConversationSetTop extends BaseAction {
 				ext = new IMConversationExt();
 				ext.setConversationId(conversationId);
 				ext.setPerson(effectivePerson.getDistinguishedName());
-				ext.setIsTop(true);
-				emc.beginTransaction(IMConversationExt.class);
-				emc.persist(ext, CheckPersistType.all);
-				emc.commit();
-			} else {
-				ext.setIsTop(true);
-				emc.beginTransaction(IMConversationExt.class);
-				emc.persist(ext, CheckPersistType.all);
-				emc.commit();
 			}
+			ext.setIsTop(true);
+			emc.beginTransaction(IMConversationExt.class);
+			emc.persist(ext, CheckPersistType.all);
+			emc.commit();
 
 			WoId woId = new WoId();
 			woId.setId(ext.getId());

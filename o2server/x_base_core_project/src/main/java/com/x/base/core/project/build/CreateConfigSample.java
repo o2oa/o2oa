@@ -13,37 +13,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.x.base.core.project.config.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 
 import com.x.base.core.project.annotation.FieldDescribe;
-import com.x.base.core.project.config.AppStyle;
-import com.x.base.core.project.config.Cache;
-import com.x.base.core.project.config.Collect;
-import com.x.base.core.project.config.Components;
-import com.x.base.core.project.config.ConfigObject;
-import com.x.base.core.project.config.Dingding;
-import com.x.base.core.project.config.DumpRestoreData;
-import com.x.base.core.project.config.Exmail;
-import com.x.base.core.project.config.ExternalStorageSources;
-import com.x.base.core.project.config.General;
-import com.x.base.core.project.config.HuaweiPushConfig;
-import com.x.base.core.project.config.JpushConfig;
-import com.x.base.core.project.config.MPweixin;
-import com.x.base.core.project.config.Messages;
-import com.x.base.core.project.config.Node;
-import com.x.base.core.project.config.Person;
-import com.x.base.core.project.config.Portal;
-import com.x.base.core.project.config.ProcessPlatform;
-import com.x.base.core.project.config.Qiyeweixin;
-import com.x.base.core.project.config.Query;
-import com.x.base.core.project.config.TernaryManagement;
-import com.x.base.core.project.config.Token;
-import com.x.base.core.project.config.WeLink;
-import com.x.base.core.project.config.WorkTime;
-import com.x.base.core.project.config.ZhengwuDingding;
+import com.x.base.core.project.config.Mpweixin;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.tools.DefaultCharset;
 
@@ -74,7 +51,7 @@ public class CreateConfigSample {
 		// classes.add(Meeting.class);
 		classes.add(Messages.class);
 //		classes.add(Mock.class);
-		classes.add(MPweixin.class);
+		classes.add(Mpweixin.class);
 		classes.add(Node.class);
 //		classes.add(Organization.class);
 		classes.add(Person.class);
@@ -88,6 +65,7 @@ public class CreateConfigSample {
 		classes.add(WorkTime.class);
 		classes.add(ZhengwuDingding.class);
 		classes.add(General.class);
+		classes.add(Cms.class);
 
 		Collections.sort(classes, (c1, c2) -> c1.getCanonicalName().compareTo(c2.getCanonicalName()));
 		for (Class<?> cls : classes) {

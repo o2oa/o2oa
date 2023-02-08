@@ -287,7 +287,7 @@ const removeNode = (e, key)=>{
   item.addClass('item_database_item_del');
   component.confirm("warn", e, lp._storageServer.removeNodeConfigTitle, {html: text}, 560, 230, function(){
     delete storageData.value.store[key];
-    //saveData();
+    saveData();
     this.close();
   }, function(){
     item.removeClass('item_database_item_del');

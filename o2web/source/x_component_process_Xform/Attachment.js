@@ -732,7 +732,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
 
         var lp = MWF.xApplication.process.Xform.LP;
         var css = this.module.form.css;
-        var node = new Element("div", { "styles": css.attachmentPermissionNode }).inject(this.node);
+        var node = new Element("div", { "styles": (layout.mobile ? css.attachmentPermissionNode_mobile : css.attachmentPermissionNode) }).inject(this.node);
         var attNames = new Element("div", { "styles": css.attachmentPermissionNamesNode }).inject(node);
         var attNamesTitle = new Element("div", { "styles": css.attachmentPermissionNamesTitleNode, "text": lp.attachmentPermissionInfo }).inject(attNames);
         var attNamesArea = new Element("div", { "styles": css.attachmentPermissionNamesAreaNode }).inject(attNames);
@@ -753,7 +753,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         title = new Element("div", { "styles": css.attachmentPermissionTitleNode, "text": lp.attachmentController }).inject(editArea);
         var controllerInput = new Element("div", { "styles": css.attachmentPermissionInputNode }).inject(editArea);
 
-        var dlg = o2.DL.open(Object.merge({
+        var options = Object.merge({
             "title": lp.attachmentPermission,
             "style": this.module.form.json.dialogStyle || "user",
             "isResize": false,
@@ -773,7 +773,15 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
                     "action": function () { dlg.close(); }
                 }
             ]
-        }, (this.module.form.json.dialogOptions||{})));
+        }, (this.module.form.json.dialogOptions||{}));
+
+        if( layout.mobile ){
+            var size = $(document.body).getSize();
+            options.width = size.x;
+            options.height = size.y;
+        }
+
+        var dlg = o2.DL.open( options );
 
         if (this.selectedAttachments.length === 1) {
             var data = this.selectedAttachments[0].data;
@@ -895,7 +903,8 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
             var imgNode = new Element("img", { "styles": css.attachmentOCRImageNode }).inject(previewNode);
 
             o2.Actions.get("x_processplatform_assemble_surface").getAttachmentUrl(att.data.id, this.module.form.businessData.work.id, function (url) {
-                imgNode.set("src", o2.filterUrl(url));
+                // imgNode.set("src", o2.filterUrl(url));
+                imgNode.set("src", url);
             });
 
             var areaNode = new Element("div", { "styles": css.attachmentOCRInputAreaNode }).inject(node);
@@ -974,9 +983,9 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
 
             var lp = MWF.xApplication.process.Xform.LP;
             var css = this.module.form.css;
-            var node = new Element("div", { "styles": css.attachmentOrderNode });
+            var node = new Element("div", { "styles": (layout.mobile ? css.attachmentOrderNode_mobile : css.attachmentOrderNode) });
             var infoNode = new Element("div", { "styles": css.attachmentOrderInforNode, "text": lp.attachmentOrderInfo }).inject(node);
-            var attrchmentsNode = new Element("div", { "styles": css.attachmentOrderAreaNode }).inject(node);
+            var attrchmentsNode = new Element("div", { "styles":  (layout.mobile ? css.attachmentOrderAreaNode_mobile : css.attachmentOrderAreaNode) }).inject(node);
 
             var iconUrl = "../x_component_File/$Main/icon.json";
             var icons = null;
@@ -993,8 +1002,8 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
                 var icon = new Element("div", { "styles": css.attachmentOrderItemIconNode }).inject(itemNode);
                 icon.setStyle("background-image", "url('" + iconFolderUrl + "')");
 
-                var actionArea = new Element("div", { "styles": css.attachmentOrderItemActionNode }).inject(itemNode);
-                var text = new Element("div", { "styles": css.attachmentOrderItemTextNode, "text": att.data.name }).inject(itemNode);
+                var actionArea = new Element("div", { "styles": (layout.mobile ? css.attachmentOrderItemActionNode_mobile : css.attachmentOrderItemActionNode) }).inject(itemNode);
+                var text = new Element("div", { "styles":  (layout.mobile ? css.attachmentOrderItemTextNode_mobile : css.attachmentOrderItemTextNode), "text": att.data.name }).inject(itemNode);
 
                 var actionUp = new Element("div", { "styles": css.attachmentOrderItemActionUpNode, "text": lp.attachmentOrderUp }).inject(actionArea);
                 var actionDown = new Element("div", { "styles": css.attachmentOrderItemActionDownNode, "text": lp.attachmentOrderDown }).inject(actionArea);
@@ -1086,7 +1095,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
 
             }.bind(this));
 
-            var dlg = o2.DL.open(Object.merge({
+            var options = Object.merge({
                 "title": lp.attachmentOrderTitle,
                 "style": this.module.form.json.dialogStyle || "user",
                 "isResize": false,
@@ -1130,7 +1139,15 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
                     });
                     dlg.setContentSize();
                 }
-            },  (this.module.form.json.dialogOptions||{})));
+            },  (this.module.form.json.dialogOptions||{}));
+
+            if( layout.mobile ){
+                var size = $(document.body).getSize();
+                options.width = size.x;
+                options.height = size.y;
+            }
+
+            var dlg = o2.DL.open( options );
         }
     },
     sortAttachment: function (node) {
@@ -1866,13 +1883,15 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                 case "mobile":
                     this.form.workAction[actionUrl](att.data.id, workId, function (url) {
                         var xtoken = Cookie.read(o2.tokenName);
-                        window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
+                        // window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
+                        window.location = url + "?"+o2.tokenName+"=" + xtoken;
                     });
                     break;
                 case "pcClient":
                     this.form.workAction[actionUrl](att.data.id, workId, function (url) {
                         var xtoken = Cookie.read(o2.tokenName);
-                        window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
+                        // window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
+                        window.location = url + "?"+o2.tokenName+"=" + xtoken;
                     });
                     break;
                 default:
@@ -1951,13 +1970,15 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
                 case "mobile":
                     this.form.workAction[actionUrl](att.data.id, workId, function (url) {
                         var xtoken = Cookie.read(o2.tokenName);
-                        window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
+                        // window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
+                        window.location = url + "?"+o2.tokenName+"=" + xtoken;
                     });
                     break;
                 case "pcClient":
                     this.form.workAction[actionUrl](att.data.id, workId, function (url) {
                         var xtoken = Cookie.read(o2.tokenName);
-                        window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
+                        // window.location = o2.filterUrl(url + "?"+o2.tokenName+"=" + xtoken);
+                        window.location = url + "?"+o2.tokenName+"=" + xtoken;
                     });
                     break;
                 default:
@@ -2215,11 +2236,20 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
         var zipViewNode = new Element("div",{"text":"loadding..."});
         o2.load(["../o2_lib/jszip/jszip.min.js", "../o2_lib/jszip/jszip-utils.min.js"], function () {
             this.app.getAttachmentUrl(this.att, function (url) {
+                var width, height;
+                if( layout.mobile ){
+                    var size = $(document.body).getSize();
+                    width = size.x+"px";
+                    height = size.y+"px";
+                }else{
+                    width = "660px";
+                    height = "510px";
+                }
                 o2.require("MWF.widget.Tree", function(){
                     var dlg = o2.DL.open({
                         "title": _self.att.data.name,
-                        "width": "660px",
-                        "height": "510px",
+                        "width": width,
+                        "height": height,
                         "mask": true,
                         "content": zipViewNode,
                         "container": null,
@@ -2404,10 +2434,19 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
                         }.bind(this));
 
                     }.bind(this));
+                    var width, height;
+                    if( layout.mobile ){
+                        var size = $(document.body).getSize();
+                        width = size.x+"px";
+                        height = size.y+"px";
+                    }else{
+                        width = "960px";
+                        height = "610px";
+                    }
                     var dlg = o2.DL.open({
                         "title": this.att.data.name,
-                        "width": "960px",
-                        "height": "610px",
+                        "width": width,
+                        "height": height,
                         "mask": true,
                         "content": editorNode,
                         "container": null,

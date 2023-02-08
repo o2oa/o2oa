@@ -1044,11 +1044,27 @@ MWF.xScript.Environment = function(ev){
             // orgActions.personHasRole(data, function(json){v = json.data.value;}, null, false);
             // return v;
         },
+
+        //获取人员,附带身份,身份所在的组织,个人所在群组,个人拥有角色.
+        getPersonData: function(name, async){
+            getOrgActions();
+            var v = null;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+            var promise = orgActions.getPerson(null, cb, null, !!async, {"flag": name});
+            return (!!async) ? promise : v;
+        },
+
         //获取人员--返回人员的对象数组
-        getPerson: function(name, async){
+        getPerson: function(name, async, findCN){
             getOrgActions();
             var data = {"personList": getNameFlag(name)};
-
+            if( o2.typeOf(findCN) === "boolean"){
+                data.useNameFind = findCN;
+            }
             var v = null;
             var cb = function(json){
                 v = json.data;
@@ -1059,9 +1075,6 @@ MWF.xScript.Environment = function(ev){
 
             var promise = orgActions.listPerson(data, cb, null, !!async);
             return (!!async) ? promise : v;
-            // var v = null;
-            // orgActions.listPerson(data, function(json){v = json.data;}, null, false);
-            // return (v && v.length===1) ? v[0] : v;
         },
         //查询下级人员--返回人员的对象数组
         //nested  布尔  true嵌套下级；false直接下级；默认false；
@@ -1317,9 +1330,12 @@ MWF.xScript.Environment = function(ev){
             return (!!async) ? promise : v;
         },
         //列出人员的身份
-        listIdentityWithPerson: function(name, async){
+        listIdentityWithPerson: function(name, async, findCN){
             getOrgActions();
             var data = {"personList":getNameFlag(name)};
+            if( o2.typeOf(findCN) === "boolean"){
+                data.useNameFind = findCN;
+            }
             var v = null;
             var cb = function(json){
                 v = json.data;
@@ -1364,9 +1380,12 @@ MWF.xScript.Environment = function(ev){
 
         //组织**********
         //获取组织
-        getUnit: function(name, async){
+        getUnit: function(name, async, findCN){
             getOrgActions();
             var data = {"unitList":getNameFlag(name)};
+            if( o2.typeOf(findCN) === "boolean"){
+                data.useNameFind = findCN;
+            }
             var v = null;
             var cb = function(json){
                 v = json.data;
@@ -2068,13 +2087,16 @@ MWF.xScript.Environment = function(ev){
         "upload": function (options, callback, async) {
             MWF.xDesktop.requireApp("query.Query", "Importer", function () {
                 var importer = new MWF.xApplication.query.Query.Importer(_form.app.content, options, {}, _form.app, _form.Macro);
+                importer.addEvent("afterImport", function (data) {
+                    if(callback)callback(data);
+                });
                 importer.load();
             }.bind(this));
         },
-        "downloadTemplate": function(options, fileName){
+        "downloadTemplate": function(options, fileName, callback){
             MWF.xDesktop.requireApp("query.Query", "Importer", function () {
                 var importer = new MWF.xApplication.query.Query.Importer(_form.app.content, options, {}, _form.app, _form.Macro);
-                importer.downloadTemplate(fileName);
+                importer.downloadTemplate(fileName, callback);
             }.bind(this));
         }
     };
@@ -3594,10 +3616,14 @@ MWF.xScript.Environment = function(ev){
          * @method openApplication
          * @static
          * @param {String} name - 要打开的component的名称。component对应的名称可以在“控制面板-系统设置-界面设置-模块部署”中找到（即“组件路径”）。
-         * @param {Object} [options] - 打开的component的相关参数
+         * @param {Object} [options] - 打开的component的相关参数，对应该应用源码Main.js中的的options。
+         * @param {Object} [status] - 打开的component的状态，对应用户的操作后的状态。双击桌面模式的应用，在打开应用的浏览器地址上可以查到对应的status。
          * @example
          //打开会议管理
          this.form.openApplication("Meeting");
+         * @example
+         //打开会议管理的周视图
+         this.form.openApplication("Meeting", null, {"action":"toWeek" });
          * @example
          //打开一个流转中的流程实例。与 this.form.openWork(id, "", "work title");效果相同
          this.form.openApplication("process.Work", {
@@ -3608,8 +3634,8 @@ MWF.xScript.Environment = function(ev){
             "appId": "process.Work"+id  //给新打开的component实例一个唯一名称
         });
          */
-        "openApplication":function(name, options){
-            return layout.desktop.openApplication(null, name, options);
+        "openApplication":function(name, options, status){
+            return layout.desktop.openApplication(null, name, options, status);
         },
 
         /**创建一条内容管理文档。

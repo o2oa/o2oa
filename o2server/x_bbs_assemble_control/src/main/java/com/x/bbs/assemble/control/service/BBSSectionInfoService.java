@@ -3,6 +3,8 @@ package com.x.bbs.assemble.control.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.x.base.core.project.gson.XGsonBuilder;
+import com.x.base.core.project.http.EffectivePerson;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -30,7 +32,7 @@ public class BBSSectionInfoService {
 	private static  Logger logger = LoggerFactory.getLogger( BBSSectionInfoService.class );
 	private BBSSubjectInfoService subjectInfoService = new BBSSubjectInfoService();
 	private UserManagerService userManagerService = new UserManagerService();
-	
+
 	/**
 	 * 根据传入的ID从数据库查询BBSSectionInfo对象
 	 * @param id
@@ -92,7 +94,7 @@ public class BBSSectionInfoService {
 				if( StringUtils.isEmpty( _forumInfo_tmp.getReplyMessageNotifyType() )){
 					_forumInfo_tmp.setReplyMessageNotifyType("0,0,0");
 				}
-				emc.check( _forumInfo_tmp, CheckPersistType.all );	
+				emc.check( _forumInfo_tmp, CheckPersistType.all );
 			}
 		}else{
 			_bBSSectionInfo.setCreateTime( _bBSSectionInfo_tmp.getCreateTime() );
@@ -105,13 +107,13 @@ public class BBSSectionInfoService {
 		emc.commit();
 		return _bBSSectionInfo;
 	}
-	
+
 	/**
 	 * 根据ID从数据库中删除BBSSectionInfo对象
 	 * @param id
 	 * @throws Exception
 	 */
-	public void delete( EntityManagerContainer emc, String id ) throws Exception {	
+	public void delete( EntityManagerContainer emc, String id ) throws Exception {
 		if( id == null || id.isEmpty() ){
 			throw new Exception( "id is null, system can not delete any object." );
 		}
@@ -123,10 +125,10 @@ public class BBSSectionInfoService {
 		List<BBSPermissionInfo> permissionList = null;
 		List<BBSPermissionRole> permissionRoleList = null;
 		business = new Business( emc );
-		
+
 		emc.beginTransaction( BBSPermissionInfo.class );
 		emc.beginTransaction( BBSPermissionRole.class );
-		
+
 		//递归删除所有的子版块
 		subSectionIds = business.sectionInfoFactory().listSubSectionIdsByMainSectionId( id );
 		if( ListTools.isNotEmpty( subSectionIds ) ){
@@ -136,7 +138,7 @@ public class BBSSectionInfoService {
 				}
 			}
 		}
-		
+
 		//删除所有的权限以及角色权限关联
 		permissionList = business.permissionInfoFactory().listPermissionByMainSectionId( id );
 		if( ListTools.isNotEmpty( permissionList ) ){
@@ -151,7 +153,7 @@ public class BBSSectionInfoService {
 				emc.remove( permissionInfo, CheckRemoveType.all );
 			}
 		}
-		
+
 		//删除主版块以及子版块所有的主贴和回复, 一次删除1000条
 		subjectIds = business.subjectInfoFactory().listSubjectIdsBySection( id, 1000 );
 		do{
@@ -162,7 +164,7 @@ public class BBSSectionInfoService {
 			}
 			subjectIds = business.subjectInfoFactory().listSubjectIdsBySection( id, 1000 );
 		}while( ListTools.isNotEmpty( subjectIds ) );
-		
+
 		bBSSectionInfo = emc.find(id, BBSSectionInfo.class);
 		if ( null != bBSSectionInfo ) {
 			emc.beginTransaction( BBSForumInfo.class );
@@ -188,7 +190,7 @@ public class BBSSectionInfoService {
 		Business business = new Business( emc );
 		return business.sectionInfoFactory().listAll();
 	}
-	
+
 	public List<String> listByForumId( EntityManagerContainer emc, String forumId ) throws Exception {
 		if( forumId  == null || forumId.isEmpty() ){
 			throw new Exception( "forumId is null!" );
@@ -231,7 +233,7 @@ public class BBSSectionInfoService {
 	 * 根据论坛ID查询论坛中所有的版块信息
 	 * @param forumId
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public List<BBSSectionInfo> listMainSectionByForumId( EntityManagerContainer emc, String forumId ) throws Exception {
 		if( forumId  == null || forumId.isEmpty() ){
@@ -240,12 +242,12 @@ public class BBSSectionInfoService {
 		Business business = new Business( emc );
 		return business.sectionInfoFactory().listMainSectionByForumId( forumId );
 	}
-	
+
 	/**
 	 * 根据论坛ID查询论坛中所有的版块信息
 	 * @param forumId
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public List<BBSSectionInfo> viewMainSectionByForumId(  EntityManagerContainer emc, String forumId, List<String> viewableSectionIds ) throws Exception {
 		if( forumId  == null || forumId.isEmpty() ){
@@ -254,12 +256,12 @@ public class BBSSectionInfoService {
 		Business business = new Business( emc );
 		return business.sectionInfoFactory().viewMainSectionByForumId( forumId, viewableSectionIds );
 	}
-	
+
 	/**
 	 * 根据主版块ID查询所有的子版块信息列表
 	 * @param sectionId
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public List<BBSSectionInfo> viewSubSectionByMainSectionId( EntityManagerContainer emc, String sectionId, List<String> viewableSectionIds  ) throws Exception {
 		if( sectionId  == null || sectionId.isEmpty() ){
@@ -268,12 +270,12 @@ public class BBSSectionInfoService {
 		Business business = new Business( emc );
 		return business.sectionInfoFactory().viewSubSectionByMainSectionId( sectionId, viewableSectionIds );
 	}
-	
+
 	/**
 	 * 根据主版块ID查询所有的子版块信息列表
 	 * @param sectionId
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public List<BBSSectionInfo> listSubSectionByMainSectionId( EntityManagerContainer emc, String sectionId  ) throws Exception {
 		if( sectionId  == null || sectionId.isEmpty() ){
@@ -290,11 +292,11 @@ public class BBSSectionInfoService {
 		BBSSectionInfo sectionInfo = emc.find( sectionId, BBSSectionInfo.class );
 		checkSectionManager( emc, sectionInfo );
 	}
-	
+
 	/**
 	 * 检查版主的权限和角色设置
 	 * @param sectionInfo
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public void checkSectionManager( EntityManagerContainer emc, BBSSectionInfo sectionInfo ) throws Exception {
 		if( sectionInfo == null ){
@@ -373,10 +375,10 @@ public class BBSSectionInfoService {
 						logger.warn("user has no identity!user:" + name );
 						topUnitName = "未知公司";
 					}
-					
+
 					userRole_new.setTopUnitName( topUnitName );
 					userRole_new.setUnitName( unitName );
-					
+
 					emc.persist( userRole_new, CheckPersistType.all );
 				}
 			}
@@ -387,9 +389,9 @@ public class BBSSectionInfoService {
 	/**
 	 * 根据用户权限和论坛ID，获取所有主版块信息ID列表
 	 * @param forumId
-	 * @param sectionIds 
+	 * @param sectionIds
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public List<BBSSectionInfo> listAllViewAbleMainSectionWithUserPermission( EntityManagerContainer emc, String forumId, List<String> sectionIds ) throws Exception {
 		if( forumId  == null || forumId.isEmpty() ){
@@ -400,7 +402,7 @@ public class BBSSectionInfoService {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param viewforumIds
 	 * @param publicStatus 是否公开
 	 * @return
@@ -417,5 +419,28 @@ public class BBSSectionInfoService {
 	public List<BBSSectionInfo> list( EntityManagerContainer emc, List<String> publicSectionIds) throws Exception {
 		Business business = new Business( emc );
 		return business.sectionInfoFactory().list( publicSectionIds );
+	}
+
+	public boolean hasPublishPermission(BBSSectionInfo sectionInfo, EffectivePerson person, List<String> permissionInfoList) throws Exception{
+		String checkUserPermission = "SECTION_SUBJECT_PUBLISH_" + sectionInfo.getId();
+		String allUser = "所有人";
+		System.out.println("可发布人员："+XGsonBuilder.toJson(sectionInfo.getPublishPermissionList()));
+		if (allUser.equals(sectionInfo.getSubjectPublishAble())) {
+			return true;
+		}else if(sectionInfo.getPublishPermissionList().contains(person.getDistinguishedName())) {
+			return true;
+		}else if(sectionInfo.getModeratorNames().contains(checkUserPermission)){
+			return true;
+		}else if(permissionInfoList!=null && permissionInfoList.contains(checkUserPermission)){
+			return true;
+		}else{
+			List<String> unitList = userManagerService.listUnitNamesWithPerson(person.getDistinguishedName());
+			if(ListTools.containsAny(sectionInfo.getPublishPermissionList(), unitList)){
+				return true;
+			}
+
+			Business business = new Business(null);
+			return business.isManager(person);
+		}
 	}
 }

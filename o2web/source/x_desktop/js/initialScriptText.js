@@ -362,7 +362,7 @@ bind.Action = function(root, json){
 bind.Action.applications = bind.applications;
 /**
  * 本文档说明如何在后台脚本中使用Actions调用平台的RESTful服务。<br/>
- * 通过访问以下地址来查询服务列表：http://server:20030/x_program_center/jest/list.html
+ * 通过访问以下地址来查询服务列表：http://server/x_program_center/jest/list.html (v7.2之前版本需要加端口20030)
  * @module server.Actions
  * @o2cn 服务调用
  * @o2category server.common
@@ -378,7 +378,7 @@ bind.Actions = {
      * @method load
      * @methodOf module:server.Actions
      * @instance
-     * @param {String} root 平台RESTful服务根，具体服务列表参见:http://server:20030/x_program_center/jest/list.html。
+     * @param {String} root 平台RESTful服务根，具体服务列表参见:http://server/x_program_center/jest/list.html。(v7.2之前版本需要加端口20030)
      * 如:
      *<pre><code class='language-js'>
      * "x_processplatform_assemble_surface" //流程平台相关服务根
@@ -434,7 +434,7 @@ bind.Actions = {
      * <caption>
      *     <b>样例1:</b>
      *     根据x_processplatform_assemble_surface服务获取当前用户的待办列表：<br/>
-     *     可以通过对应服务的查询页面，http://server:20020/x_processplatform_assemble_surface/jest/index.html<br/>
+     *     可以通过对应服务的查询页面，http://server/x_processplatform_assemble_surface/jest/index.html (v7.2之前版本需要加端口20020)<br/>
      *     可以看到以下界面：<img src="img/module/Actions/Actions.png"/>
      *     我们可以找到TaskAction的V2ListPaging服务是列式当前用户待办的服务。<br/>
      *     该服务有以下信息：<br/>
@@ -757,6 +757,26 @@ bind.org = {
         return this.oPerson.hasRole(nameFlag, getNameFlag(role));
     },
 
+    //获取人员,附带身份,身份所在的组织,个人所在群组,个人拥有角色.
+    /**
+     根据人员标识获取对应的人员对象,附带身份,身份所在的组织,个人所在群组,个人拥有角色.
+     * @method getPersonData
+     * @o2membercategory person
+     * @methodOf module:server.org
+     * @static
+     * @param {String} name - 人员的distinguishedName、id、unique属性值，人员名称。
+     * @return {PersonData|PersonData[]} 返回人员对象。
+     * @o2ActionOut x_organization_assemble_express.PersonAction.listObject|example=Person
+     * @o2syntax
+     * //返回人员对象。
+     * var person = this.org.getPersonData( name );
+     */
+    getPersonData: function(name){
+        var v = this.oPerson.getExt(name);
+        var v_json = (!v) ? null: JSON.parse(v.toString());
+        return v_json;
+    },
+
     //获取人员--返回人员的对象数组
     /**
      根据人员标识获取对应的人员对象或数组：person对象或数组
@@ -765,14 +785,15 @@ bind.org = {
      * @methodOf module:server.org
      * @static
      * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、id、unique属性值，人员对象，或上述属性值和对象的数组。
+     * @param {(Boolean)} [findCN] 是否需要额外查找中文名称（如张三），默认false。如果为true，除匹配unique和distingiushedName外，还会在名称的第一段中查找所有匹配到的人（精确匹配）。
      * @return {PersonData|PersonData[]} 返回人员，单个是Object，多个是Array。
      * @o2ActionOut x_organization_assemble_express.PersonAction.listObject|example=Person
      * @o2syntax
      * //返回人员，单个是对象，多个是数组。
      * var personList = this.org.getPerson( name );
      */
-    getPerson: function(name){
-        var v = this.oPerson.listObject(getNameFlag(name));
+    getPerson: function(name, findCN){
+        var v = this.oPerson.listObject(getNameFlag(name), !!findCN);
         var v_json = (!v || !v.length) ? null: JSON.parse(v.toString());
         // if (!v || !v.length) v = null;
         // return (v && v.length===1) ? v[0] : v;
@@ -1130,15 +1151,16 @@ bind.org = {
      * @o2membercategory unit
      * @methodOf module:server.org
      * @static
-     * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。
+     * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。]
+     * @param {(Boolean)} [findCN] 是否需要额外查找中文名称（如综合部），默认false。如果为true，除匹配unique和distingiushedName外，还会在名称的第一段中查找所有匹配到的部门（精确匹配）。
      * @return {UnitData|UnitData[]} 单个是Object，多个是Array。
      * @o2ActionOut x_organization_assemble_express.UnitAction.listObject|example=Unit
      * @o2syntax
      * //返回组织，单个是对象，多个是数组。
      * var unitList = this.org.getUnit( name );
      */
-    getUnit: function(name){
-        var v = this.oUnit.listObject(getNameFlag(name));
+    getUnit: function(name, findCN){
+        var v = this.oUnit.listObject(getNameFlag(name), !!findCN);
         var v_json = (!v || !v.length) ? null: JSON.parse(v.toString());
         return (v_json && v_json.length===1) ? v_json[0] : v_json;
         // if (!v || !v.length) v = null;

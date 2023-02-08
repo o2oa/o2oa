@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.x.base.core.project.config.Mpweixin;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -16,7 +17,6 @@ import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.MPweixin;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.HttpToken;
@@ -39,12 +39,12 @@ public class ActionLoginWithCode extends BaseAction {
 		if (StringUtils.isEmpty(code)) {
 			throw new ExceptionNoCode();
 		}
-		if (Config.mPweixin() == null || BooleanUtils.isFalse(Config.mPweixin().getEnable())) {
+		if (Config.mpweixin() == null || BooleanUtils.isFalse(Config.mpweixin().getEnable())) {
 			throw new ExceptionConfigError();
 		}
 
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			MPweixin.WeixinAuth2AccessResp resp = Config.mPweixin().mpAuth2(code);
+			Mpweixin.WeixinAuth2AccessResp resp = Config.mpweixin().mpAuth2(code);
 			if (resp == null) {
 				throw new ExceptionGetAccessTokenFail();
 			}

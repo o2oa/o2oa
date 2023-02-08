@@ -74,8 +74,7 @@ public class ScriptFactory extends AbstractFactory {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<Script> root = cq.from(Script.class);
 		Predicate p = cb.equal(root.get(Script_.portal), portalId);
-		List<String> list = em.createQuery(cq.select(root.get(Script_.id)).where(p)).getResultList();
-		return list;
+		return em.createQuery(cq.select(root.get(Script_.id)).where(p)).getResultList();
 	}
 
 	@SuppressWarnings("unchecked")

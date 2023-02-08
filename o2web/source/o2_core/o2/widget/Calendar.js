@@ -17,7 +17,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		"timeOnly": false,
 		"yearOnly" : false,
 		"monthOnly": false,
-		"defaultDate": new Date(),
+		"defaultDate": null,
 
 		"beforeCurrent": true,
 		"clearEnable": true,
@@ -1063,6 +1063,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 					range: [0, 23],
 					initialStep: h.toInt(),
 					onChange: function(value){
+						debugger;
 						var tmp = (value.toInt().toString());
 						if (tmp.length<2){
 							tmp = "0"+tmp

@@ -48,6 +48,30 @@
   },
   {
     "type": "MWFToolBarButton",
+    "img": "submitDelayed.png",
+    "img_over": "submitDelayed_over.png",
+    "title": "定时发布",
+    "action": "publishDocumentDelayed",
+    "text": "定时发布",
+    "id": "action_publishDocumentDelayed",
+    "control": "allowPublishDocumentDelayed",
+    "read": false,
+    "edit" : true
+  },
+  {
+    "type": "MWFToolBarButton",
+    "img": "save.png",
+    "img_over": "save_over.png",
+    "title": "保存草稿",
+    "action": "saveDraftDocument",
+    "text": "保存草稿",
+    "id": "action_saveDraftDocument",
+    "control": "allowPublishDocument",
+    "read": false,
+    "edit" : true
+  },
+  {
+    "type": "MWFToolBarButton",
     "img": "popular.png",
     "img_over": "popular_over.png",
     "title": "设置热点",
@@ -80,5 +104,29 @@
     "id": "action_print",
     "read": true,
     "edit" : true
+  },
+  {
+    "type": "MWFToolBarButton",
+    "img": "top.png",
+    "img_over": "top_over.png",
+    "title": "置顶",
+    "action": "setTop",
+    "text": "置顶",
+    "id": "action_setTop",
+    "read": true,
+    "edit" : true,
+    "control": "allowSetTop"
+  },
+  {
+    "type": "MWFToolBarButton",
+    "img": "topcancel.png",
+    "img_over": "topcancel_over.png",
+    "title": "取消置顶",
+    "action": "cancelTop",
+    "text": "取消置顶",
+    "id": "action_cancelTop",
+    "read": true,
+    "edit" : true,
+    "control": "allowCancelTop"
   }
 ]

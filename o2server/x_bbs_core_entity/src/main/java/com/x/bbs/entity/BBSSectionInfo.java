@@ -1,6 +1,7 @@
 package com.x.bbs.entity;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.Basic;
@@ -32,11 +33,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * 版块信息表
- * 
+ *
  * @author LIYI
  */
 @Schema(name = "BBSSectionInfo", description = "论坛版块信息.")
-@ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
+@ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.element, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.BBSSectionInfo.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.BBSSectionInfo.table + JpaObject.IndexNameMiddle
@@ -48,10 +49,12 @@ public class BBSSectionInfo extends SliceJpaObject {
 	private static final long serialVersionUID = 3856138316794473794L;
 	private static final String TABLE = PersistenceProperties.BBSSectionInfo.table;
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -61,21 +64,9 @@ public class BBSSectionInfo extends SliceJpaObject {
 	@Column(length = length_id, name = ColumnNamePrefix + id_FIELDNAME)
 	private String id = createId();
 
+	@Override
 	public void onPersist() throws Exception {
 	}
-	/*
-	 * =============================================================================
-	 * ===== 以上为 JpaObject 默认字段
-	 * =============================================================================
-	 * =====
-	 */
-
-	/*
-	 * =============================================================================
-	 * ===== 以下为具体不同的业务及数据表字段要求
-	 * =============================================================================
-	 * =====
-	 */
 
 	public static final String sectionName_FIELDNAME = "sectionName";
 	@FieldDescribe("版块名称")
@@ -575,7 +566,7 @@ public class BBSSectionInfo extends SliceJpaObject {
 	public void setReplyMessageNotifyType(final String replyMessageNotifyType) { this.replyMessageNotifyType = replyMessageNotifyType; }
 
 	public List<String> getModeratorNames() {
-		return this.moderatorNames;
+		return this.moderatorNames == null ? Collections.EMPTY_LIST : this.moderatorNames;
 	}
 
 	public void setModeratorNames(final List<String> moderatorNames) {
@@ -601,7 +592,7 @@ public class BBSSectionInfo extends SliceJpaObject {
 	}
 
 	public List<String> getPublishPermissionList() {
-		return publishPermissionList;
+		return publishPermissionList == null ? Collections.EMPTY_LIST : publishPermissionList;
 	}
 
 	public void setPublishPermissionList(List<String> publishPermissionList) {

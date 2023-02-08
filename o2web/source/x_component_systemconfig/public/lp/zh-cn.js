@@ -427,6 +427,7 @@ o2.xApplication.systemconfig.LP = {
         "isEnable": "是否启用",
         "ssoConfigName": "鉴权名称",
         "ssoConfigKey": "密钥",
+        "ssoConfigKeyInfo": "密钥长度8位",
         "removeSSOConfigTitle": "删除鉴权配置确认",
         "removeSSOConfig": "您确定要删除鉴权配置：“{name}” 吗？",
 
@@ -439,7 +440,12 @@ o2.xApplication.systemconfig.LP = {
         "useSSOConfigInfo2": "2、外部系统需要调用O2OA平台的接口服务;",
         "useSSOConfigInfo3": "需要将鉴权的名称，密钥告知外部系统，外部系统采取3DES算法使用密钥对<span style='color: blue'>\"person#timestamp\"</span>文本进行加密，获取到访问O2OA的临时票据（token）。<br/>" +
             "<span style='color: blue'>person</span>：表示指定用户的用户名、唯一编码或员工号。（具体使用哪个要根据外部系统与O2OA的用户关联的字段）<br/>" +
-            "<span style='color: blue'>timestamp</span>：表示为1970年1月1日0时0秒到当前时间的毫秒数。（为了确保token的时效性,有效时间为15分钟）<br/>",
+            "<span style='color: blue'>timestamp</span>：表示为1970年1月1日0时0秒到当前时间的毫秒数。（为了确保token的时效性,有效时间为15分钟）<br/><br>" +
+            "生成token后，外部系统可以直接通过访问以下地址，实现与O2OA的单点认证：<br/>" +
+            "http://servername/x_desktop/sso.html?client={<span style='color: blue'>client</span>}&xtoken={<span style='color: blue'>token</span>}&redirect={<span style='color: blue'>redirect</span>}<br/>" +
+            "<span style='color: blue'>client</span>表示使用的鉴权名称；<br/>" +
+            "<span style='color: blue'>token</span>表示产生的临时票据token；<br/>" +
+            "<span style='color: blue'>redirect</span>表示认证成功后要跳转到的地址；<br/>",
 
         "useSSOConfigInfo4": "更多有关鉴权配置的说明，<a target='_blank' href='https://www.o2oa.net/search.html?q=%E9%89%B4%E6%9D%83'>请点击此处查看</a>。",
 
@@ -903,9 +909,6 @@ o2.xApplication.systemconfig.LP = {
 
         "timerInfo": "O2OA流程平台需要一些定时器来处理流程任务，您可在此处对这些定时器进行配置。（所有对定时器的修改，都需要重启服务器才能生效）",
 
-        "archiveHadoop": "归档到Hadoop",
-        "archiveHadoopInfo": "归档到Hadoop",
-
         "enable": "是否启用",
         "cron": "定时表达式",
         "urge": "催办定时器",
@@ -943,7 +946,7 @@ o2.xApplication.systemconfig.LP = {
         "saveHadoopSuccess": "保存成功",
 
         "merge": "归档定时器",
-        "mergeInfo": "",
+        "mergeInfo": ""
     },
     "_appConfig": {
         "connectConfig": "连接配置",
@@ -983,10 +986,14 @@ o2.xApplication.systemconfig.LP = {
 
         "systemMessageSwitch": "显示系统通知",
         "systemMessageSwitchInfo": "移动App消息列表中是否显示系统通知",
+        "systemMessageCanClickInfo": "移动App系统通知是否可点击打开",
 
 
         "contactPermissionView": "移动App通讯录权限视图",
         "contactPermissionViewInfo": "需要安装应用市场【通讯录】应用，应用内包含通讯录的权限配置视图",
+
+        "appExitAlert": "app退出提示",
+        "appExitAlertInfo": "app退出的时候弹出窗口的提示语，为空就不弹窗",
 
         "nativeAppList": "应用列表",
         "nativeAppListInfo": "您可以在此设置移动端APP中，启用哪些应用，禁用哪些应用",
@@ -1055,6 +1062,7 @@ o2.xApplication.systemconfig.LP = {
             "token": "微信Token",
             "encodingAesKey": "微信encodingAesKey",
             "portalId": "处理完成后跳转到门户",
+            "workUrl": "微信公众号消息打开工作的URL",
             "scriptId": "执行服务脚本",
             "messageEnable": "启用模版消息",
             "tempMessageId": "公众号模版消息id",
@@ -1062,6 +1070,7 @@ o2.xApplication.systemconfig.LP = {
             "tempName": "模版字段",
             "name": "业务字段",
 
+            "workUrlInfo": "微信公众号消息打开工作的url地址，如：https://sample.o2oa.net/x_desktop/",
             "enableInfo": "O2OA支持微信公众号的集成，用户可以通过关注微信公众号进行工作处理。并且支持待办工作的消息提醒。(需要重启服务器)",
             "enableInfo2": "更多O2OA与微信公众号的内容，请查看：<a href='https://www.o2oa.net/search.html?q=%E5%BE%AE%E4%BF%A1%E5%85%AC%E4%BC%97%E5%8F%B7' target='_blank'>微信公众号</a>",
             "enablePublishInfo": "启用菜单发布后，可已将在O2OA中配置好的菜单功能，发布到微信公众号。可在 APP工具-公众号菜单配置 中配置微信公众号菜单",
@@ -1212,7 +1221,9 @@ o2.xApplication.systemconfig.LP = {
                 "file": "file",
                 "hdfs": "hdfs",
                 "cifs": "cifs",
-                "ali": "ali"
+                "ali": "阿里云存储",
+                "s3":"亚马逊云存储",
+                "min":"MinIO存储"
             }
         },
         "removeNodeConfigTitle": "删除存储节点确认",
@@ -1370,7 +1381,6 @@ o2.xApplication.systemconfig.LP = {
         "pushTypeInfo": "O2OA支持极光推送服务和华为推送服务，您可以根据需要选择推送服务",
         "pushTypeData": [
             {"value": "jpush", "label": "jpush", "text": "极光推送服务"},
-            {"value": "huawei", "label": "huawei", "text": "华为推送服务"},
             {"value": "none", "label": "none", "text": "禁用消息推送"}
         ],
 

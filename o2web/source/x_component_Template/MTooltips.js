@@ -296,7 +296,9 @@ var MTooltips = new Class({
             if( this.options.isAutoHide ){
                 this.node.addEvents({
                     "mouseleave" : function(){
-                        this.timer_hide = setTimeout( this.hide.bind(this),this.options.hiddenDelay );
+                        if(this.options.isAutoHide){
+                            this.timer_hide = setTimeout( this.hide.bind(this),this.options.hiddenDelay );
+                        }
                     }.bind(this)
                 });
             }
@@ -656,8 +658,16 @@ var MTooltips = new Class({
         node.setStyles({
             "left" : left,
             "top" : t || top
+        };
+
+        this.fireEvent( "setCoondinates", [obj] );
+
+        node.setStyles({
+            "left" : obj.left,
+            "top" : obj.top
         });
-        this.fireEvent( "postSetCoondinates", [arrowX, arrowY] );
+
+        this.fireEvent( "postSetCoondinates", [arrowX, arrowY, obj] );
     },
     setCoondinates_y : function(){
         var targetCoondinates = this.target ? this.target.getCoordinates( this.container ) : this.targetCoordinates ;
@@ -884,8 +894,16 @@ var MTooltips = new Class({
         node.setStyles({
             "left" : l || left,
             "top" : top
+        };
+
+        this.fireEvent( "setCoondinates", [obj] );
+
+        node.setStyles({
+            "left" : obj.left,
+            "top" : obj.top
         });
-        this.fireEvent( "postSetCoondinates", [arrowX, arrowY] );
+
+        this.fireEvent( "postSetCoondinates", [arrowX, arrowY, obj] );
     },
     getParentOffset: function(){
         var parentNode = this.container;

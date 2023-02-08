@@ -1,13 +1,13 @@
 package com.x.processplatform.service.processing.processor.publish;
 
+import java.util.List;
+
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.element.Publish;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.service.processing.processor.AbstractProcessor;
 import com.x.processplatform.service.processing.processor.AeiObjects;
-
-import java.util.List;
 
 abstract class AbstractPublishProcessor extends AbstractProcessor {
 

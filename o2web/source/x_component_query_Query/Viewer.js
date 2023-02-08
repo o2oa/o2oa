@@ -391,7 +391,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             this.viewJson.selectList.each(function(column){
                 this.entries[column.column] = column;
                 if (column.hideColumn) this.hideColumns.push(column.column);
-                if (!column.allowOpen) this.openColumns.push(column.column);
+                if (column.allowOpen) this.openColumns.push(column.column);
             }.bind(this));
             this.lookup(data, callback);
         }
@@ -2786,13 +2786,13 @@ MWF.xApplication.query.Query.Viewer.Actionbar = new Class({
                     var actionNode = new Element("div", {
                         "id": tool.id,
                         "MWFnodetype": tool.type,
-                        "MWFButtonImage": path+""+this.form.options.style+"/custom/"+iconPath+tool.img,
+                        "MWFButtonImage": path+""+this.options.style+"/custom/"+iconPath+tool.img,
                         "title": tool.title,
                         "MWFButtonAction": "runCustomAction",
                         "MWFButtonText": tool.text
                     }).inject(node);
                     if( this.json.customIconOverStyle ){
-                        actionNode.set("MWFButtonImageOver" , path+""+this.form.options.style +"/custom/"+this.json.customIconOverStyle+ "/" +tool.img );
+                        actionNode.set("MWFButtonImageOver" , path+""+this.options.style +"/custom/"+this.json.customIconOverStyle+ "/" +tool.img );
                     }
                     if( tool.properties ){
                         actionNode.set(tool.properties);

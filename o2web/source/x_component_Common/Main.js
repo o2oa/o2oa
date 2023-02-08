@@ -403,16 +403,19 @@ MWF.xApplication.Common.Main = new Class({
 		this.setContentEvent();
 
 		//if (this.options.title) this.setTitle(this.options.title);
-		if (this.stylePath) o2.loadCss(this.stylePath);
-		//this.content.addClass("appContent");
-
-		this.loadApplication(function(){
-			this.fireAppEvent("postLoadApplication");
-		}.bind(this));
-
-		//this.content.setStyle("height", document.body.getSize().y);
-
-		this.fireAppEvent("postLoad");
+		if (this.stylePath){
+			(this.window.node || this.content).loadCss(this.stylePath, function () {
+				this.loadApplication(function(){
+					this.fireAppEvent("postLoadApplication");
+				}.bind(this));
+				this.fireAppEvent("postLoad");
+			}.bind(this));
+		}else{
+			this.loadApplication(function(){
+				this.fireAppEvent("postLoadApplication");
+			}.bind(this));
+			this.fireAppEvent("postLoad");
+		}
 	},
 
 	openInNewBrowser: function (noClose) {
@@ -824,9 +827,14 @@ MWF.xApplication.Common.Main = new Class({
 			debugger;
 			var x = 0, y = 0;
 			if (e === "center") {
-				var p = o2.getCenterPosition(this.content, width, height);
-				x = p.x;
-				y = p.y;
+				if( layout.mobile ){
+					x = (size.x - parseFloat(width)) / 2;
+					y = (size.y - parseFloat(height)) / 2;
+				}else{
+                    var p = o2.getCenterPosition(this.content, width, height);
+                    x = p.x;
+                    y = p.y;
+				}
 			} else {
 				x = parseFloat(e.event.x);
 				y = parseFloat(e.event.y);

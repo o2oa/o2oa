@@ -405,7 +405,17 @@ MWF.xApplication.process.Xform.LP = {
     "ofdview" : {
         "nofile" : "暂无文件，请上传",
         "upload" : "上传"
-    }
+    },
+    "onlyoffice" : {
+        "noInstall" : "请先安装onlyoffice应用",
+        "filetext" : "文件正文"
+    },
+    "title": "标题",
+    "createTime": "创建时间",
+    "creatorPerson": "创建人",
+    "creatorUnit": "创建组织",
+    "score": "关联度",
+    "updateTime": "更新时间"
 
 };
 MWF.xApplication.process.Xform["lp."+o2.language] = MWF.xApplication.process.Xform.LP;

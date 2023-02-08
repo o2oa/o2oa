@@ -993,9 +993,9 @@ MWF.xApplication.Profile.Main = new Class({
          •>12 : [extremely strong]
          */
         this.getAction( function( ){
-            this.action.checkPassword( password, function( json ){
+            this.action.checkPassword( encodeURIComponent(password), function( json ){
                 if(callback)callback( json.data.value );
-            }.bind(this), null, false );
+            }.bind(this), null, false);
         }.bind(this) );
     },
     getPasswordComplex : function(pwd){
@@ -1045,6 +1045,7 @@ MWF.xApplication.Profile.Main = new Class({
         return sum;
     },
     checkPassowrdStrength: function(pwd){
+
         var i = (this.inBrowser||layout.viewMode=="Default")? 3 : 4;
         var passwordStrengthNode = this.tab.pages[i].contentNode.getElement(".o2_profile_passwordStrengthArea");
         var passwordRemindNode =  this.tab.pages[i].contentNode.getElement(".o2_profile_passwordRemindNode");

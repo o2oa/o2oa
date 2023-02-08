@@ -1,0 +1,110 @@
+<div style="background-color: #FFF; overflow: hidden">
+	<div title="{{$.lp.base}}" class="MWFTab">
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+		  <tr>
+		    <td class="editTableTitle">{{$.lp.id}}:</td>
+		    <td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+		  </tr>
+		  <tr>
+		    <td class="editTableTitle">{{$.lp.name}}</td>
+		    <td class="editTableValue"><input type="text" name="name" value="text{$.name}" class="editTableInput"/></td>
+		  </tr>
+		</table>
+
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.count}}:</td>
+				<td class="editTableValue"><input type="number" name="count" value="text{$.count}" min="1" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.activeType}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="activeType" value="click" text{(!$.activeType || $.activeType=='click')?'checked':''} onclick="if (this.checked){
+						$('text{$.pid}delayArea').setStyle('display', 'none');
+						$('text{$.pid}clickButtonArea').setStyle('display', 'block');
+		    		}"/>{{$.lp.click}}
+					<input type="radio" name="activeType" value="delay" text{($.activeType == 'delay')?'checked':''} onclick="if (this.checked){
+						$('text{$.pid}delayArea').setStyle('display', 'block');
+						$('text{$.pid}clickButtonArea').setStyle('display', 'none');
+					}"/>{{$.lp.delay}}
+					<input type="radio" name="activeType" value="immediately" text{($.activeType == 'immediately')?'checked':''} onclick="if (this.checked){
+						$('text{$.pid}delayArea').setStyle('display', 'none');
+						$('text{$.pid}clickButtonArea').setStyle('display', 'none');
+					}"/>{{$.lp.immediately}}
+				</td>
+			</tr>
+		</table>
+
+		<div style="display: text{($.activeType=='click' || !$.activeType) ?'block':'none'}" id="text{$.pid}clickButtonArea">
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableTitle">{{$.lp.buttonText}}:</td>
+					<td class="editTableValue"><input type="text" name="buttonText" value="text{$.buttonText}" class="editTableInput"/></td>
+				</tr>
+			</table>
+			<div class="MWFMaplist" name="buttonStyles" title="{{$.lp.buttonStyle}}"></div>
+		</div>
+
+		<div style="display: text{($.activeType=='delay') ?'block':'none'}" id="text{$.pid}delayArea">
+			<div style="padding: 10px;">{{$.lp.delayNote}}</div>
+		</div>
+
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.style}}:</td>
+				<td class="editTableValue">
+					<input class="editTableRadio" onclick="if (this.checked){
+		    		$('text{$.pid}tableArea').setStyle('display', 'block');
+		    		$('text{$.pid}displayScriptArea').setStyle('display', 'none');
+		    		$('text{$.pid}textStyleArea').setStyle('display', 'none');
+		    	}" name="mode" text{($.mode=='table')?'checked':''} type="radio" value="table"/>{{$.lp.table}}
+					<input class="editTableRadio" onclick="if (this.checked){
+		    		$('text{$.pid}tableArea').setStyle('display', 'none');
+		    		$('text{$.pid}displayScriptArea').setStyle('display', 'none');
+		    		$('text{$.pid}textStyleArea').setStyle('display', 'block');
+		    	}" name="mode" text{($.mode=='text')?'checked':''} type="radio" value="text"/>{{$.lp.byFormat}}
+					<input class="editTableRadio" onclick="if (this.checked){
+		    		$('text{$.pid}tableArea').setStyle('display', 'none');
+		    	 	$('text{$.pid}displayScriptArea').setStyle('display', 'block');
+		    	 	$('text{$.pid}textStyleArea').setStyle('display', 'none');
+		    	 }"  name="mode" text{($.mode=='script')?'checked':''} type="radio" value="script"/>{{$.lp.byScript}}
+					<br>
+
+				</td>
+			</tr>
+		</table>
+
+		<div class="MWFMaplist" name="styles" title="{{$.lp.containStyle}}"></div>
+		<div class="MWFMaplist" name="properties" title="{{$.lp.containAttribute}}"></div>
+
+		<div style="display: text{($.mode=='table' || !$.mode) ?'block':'none'}" id="text{$.pid}tableArea">
+			<div class="MWFMaplist" name="tableStyles" collapse="true" title="{{$.lp.titleStyle}}"></div>
+			<div class="MWFMaplist" name="tableTitleCellStyles" collapse="true" title="{{$.lp.titleCellStyle}}"></div>
+			<div class="MWFMaplist" name="tableContentLineStyles" collapse="true" title="{{$.lp.contentLineStyle}}"></div>
+			<div class="MWFMaplist" name="tableContentLineStyles_over" collapse="true" title="{{$.lp.contentLineOverStyle}}"></div>
+			<div class="MWFMaplist" name="tableContentCellStyles" collapse="true" title="{{$.lp.contentCellStyle}}"></div>
+			<div class="MWFMaplist" name="tableContentCellStyles_title" collapse="true" title="{{$.lp.contentTitleCellStyle}}"></div>
+		</div>
+
+		<div style="display: text{($.mode=='script') ?'block':'none'}" id="text{$.pid}displayScriptArea">
+			<div style="color:#999; padding:5px; line-height:20px">{{$.lp.relativedLinkField}}</div>
+			<div class="MWFScriptArea" name="displayScript" title="{{$.lp.logFormatScript}} (S)"></div>
+		</div>
+
+		<div style="display: text{($.mode=='default') ?'block':'none'}" id="text{$.pid}textStyleArea">
+			<div style="color:#999; padding:5px; line-height:20px">{{$.lp.relativedLinkField}}</div>
+			<div class="MWFHtmlEditorArea" name="textStyle" title="{{$.lp.logFormat}} (H)"></div>
+		</div>
+
+	</div>
+
+	<div title="{{$.lp.event}}"  class="MWFTab">
+		<div class="MWFEventsArea" name="events"></div>
+	</div>
+	<div title="HTML"  class="MWFTab">
+        <div class="MWFHTMLArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+    <div title="JSON"  class="MWFTab">
+        <div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+    </div>
+</div>

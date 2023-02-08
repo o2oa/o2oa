@@ -345,7 +345,6 @@ MWF.xApplication.Org.PersonExplorer.PersonContent = new Class({
                 },
                 "events": {
                     "click": function(){
-                        debugger;
                         if (_self.data.control.allowEdit){_self.editIdentity(this.data, this.td, this.item);}
                     }
                 }
@@ -486,7 +485,6 @@ MWF.xApplication.Org.PersonExplorer.PersonContent = new Class({
                     },
                     "events": {
                         "click": function(){
-                            debugger;
                             _self.explorer.openRole(this.data, this.td);
                         }
                     }
@@ -529,6 +527,9 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.TitleInfor = new Class({
         if (this.getActionPermission()){
             this.resetPasswordAction = new Element("div", {"styles": this.style.titleInforResetPasswordNode, "text": this.item.explorer.app.lp.resetPassword}).inject(this.nameNode, "before");
             this.resetPasswordAction.addEvent("click", function(e){this.resetPassword(e);}.bind(this));
+
+            this.expiredTimeAction = new Element("div", {"styles": this.style.titleInforUnlockPersonNode, "text": this.item.explorer.app.lp.expiredTime}).inject(this.nameNode, "before");
+            this.expiredTimeAction.addEvent("click", function(e){this.setPasswordExpiredTime(e);}.bind(this));
 
             this.unlockPersonAction = new Element("div", {"styles": this.style.titleInforUnlockPersonNode, "text": this.item.explorer.app.lp.unlockPerson}).inject(this.nameNode, "before");
             this.unlockPersonAction.addEvent("click", function(e){this.unlockPerson(e);}.bind(this));
@@ -574,6 +575,18 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.TitleInfor = new Class({
             text = text.replace("{name}", this.data.name);
             this.item.explorer.app.notice(text, "success");
         }.bind(this));
+    },
+    setPasswordExpiredTime: function(){
+        var form = new MWF.xApplication.Org.PersonExplorer.PasswordExpiredTimeForm(this.explorer, {}, {
+            expiredTime :  this.data.expiredTime || "",
+            onPostOk : function( expiredTime ){
+                o2.Actions.load("x_organization_assemble_control").PersonAction.setPasswordExpiredTime(this.data.id, expiredTime, function(){
+                    this.content.bottomInfor.setPasswordExpiredTime(expiredTime);
+                    this.explorer.app.notice( this.explorer.app.lp.expiredTimeSuccess );
+                }.bind(this))
+            }.bind(this)
+        });
+        form.create();
     },
     changePersonIcon: function(){
         var options = {};
@@ -668,7 +681,12 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BottomInfor = new Class({
 
         text = this.explorer.app.lp.personReadPassword.replace(/{date}/g, (this.data.passwordExpiredTime || " "));
         text = text.replace(/{date2}/g, (this.data.changePasswordTime || " "));
-        this.addInfor(text);
+        this.passwordExpiredTimeNode = this.addInfor(text);
+    },
+    setPasswordExpiredTime: function ( passwordExpiredTime ) {
+        var text = this.explorer.app.lp.personReadPassword.replace(/{date}/g, (passwordExpiredTime || " "));
+        text = text.replace(/{date2}/g, (this.data.changePasswordTime || " "));
+        this.passwordExpiredTimeNode.set("text", text);
     }
 });
 
@@ -989,7 +1007,6 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.BaseInfor = new Class({
             }
         }
         this.explorer.actions.savePerson(data, function(json){
-            debugger;
             Object.merge(this.data, data);
             if (this.data.id){
                 this.data.id = json.data.id;
@@ -1096,3 +1113,100 @@ MWF.xApplication.Org.PersonExplorer.PersonContent.UniqueTooltip = new Class({
         return html;
     }
 });
+
+MWF.xDesktop.requireApp("Template", "MPopupForm", null, false);
+MWF.xApplication.Org.PersonExplorer.PasswordExpiredTimeForm = new Class({
+    Extends: MPopupForm,
+    Implements: [Options, Events],
+    options: {
+        "style": "cms_xform",
+        "width": "580",
+        "height": "220",
+        "hasTop": true,
+        "hasIcon": false,
+        "hasTopIcon" : false,
+        "hasTopContent" : true,
+        "hasBottom": true,
+        "title": MWF.xApplication.Org.LP.expiredTimeTitle,
+        "draggable": true,
+        "closeAction": true,
+        "publishTime": ""
+    },
+    _createTableContent: function () {
+        this.formTopTextNode.addClass("mainColor_color");
+
+        this.formAreaNode.setStyle("z-index", 1002);
+        this.formMaskNode.setStyle("z-index", 1002);
+        this.formTableContainer.setStyles({
+            "margin":"40px 40px 0px 40px"
+        });
+        var html = "<table width='100%' bordr='0' cellpadding='5' cellspacing='0' styles='formTable'>" +
+            "<tr>" +
+            "   <td styles='formTableValue' item='expiredTime'></td>" +
+            "</tr>"+
+            "</table>";
+        this.formTableArea.set("html", html);
+
+        MWF.xDesktop.requireApp("Template", "MForm", function () {
+            this.form = new MForm(this.formTableArea, this.data, {
+                style: "meeting",
+                isEdited: true,
+                itemTemplate: {
+                    expiredTime: {
+                        tType: "date",
+                        notEmpty: true,
+                        value: this.options.expiredTime || "",
+                        attr: {
+                            "readonly":true
+                        },
+                        calendarOptions : {
+                            "secondEnable": false,
+                            "format": "%Y-%m-%d",
+                            "onShow": function () {
+                                this.container.setStyle("z-index", 1003 );
+                            }
+                        }
+                    }
+                }
+            }, this.app, this.css);
+            this.form.load();
+        }.bind(this), true);
+    },
+    _createBottomContent: function () {
+
+        this.closeActionNode = new Element("div.formCancelActionNode", {
+            "styles": this.css.formCancelActionNode,
+            "text": this.lp.cancel
+        }).inject(this.formBottomNode);
+
+        this.closeActionNode.addEvent("click", function (e) {
+            this.cancel(e);
+        }.bind(this));
+
+        this.okActionNode = new Element("div.formOkActionNode", {
+            "styles": this.css.formOkActionNode,
+            "text": this.lp.ok
+        }).inject(this.formBottomNode);
+        this.okActionNode.addClass("mainColor_bg");
+
+        this.okActionNode.addEvent("click", function (e) {
+            this.ok(e);
+        }.bind(this));
+
+
+    },
+    ok: function (e) {
+        this.fireEvent("queryOk");
+
+        var result = this.form.getResult(true, null);
+        if( !result ){
+            this.app.notice(this.lp.inputExpiredTime, "error");
+            return;
+        }
+        (this.formMaskNode || this.formMarkNode).destroy();
+        this.formAreaNode.destroy();
+        this.fireEvent("postOk", result.expiredTime);
+
+    }
+});
+

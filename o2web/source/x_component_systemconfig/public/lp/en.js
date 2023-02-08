@@ -420,6 +420,7 @@ o2.xApplication.systemconfig.LP = {
         "isEnable": "是否启用",
         "ssoConfigName": "鉴权名称",
         "ssoConfigKey": "密钥",
+        "ssoConfigKeyInfo": "密钥长度8位",
         "removeSSOConfigTitle": "删除鉴权配置确认",
         "removeSSOConfig": "您确定要删除鉴权配置：“{name}” 吗？",
 
@@ -432,7 +433,12 @@ o2.xApplication.systemconfig.LP = {
         "useSSOConfigInfo2": "2、外部系统需要调用O2OA平台的接口服务;",
         "useSSOConfigInfo3": "需要将鉴权的名称，密钥告知外部系统，外部系统采取3DES算法使用密钥对<span style='color: blue'>\"person#timestamp\"</span>文本进行加密，获取到访问O2OA的临时票据（token）。<br/>" +
             "<span style='color: blue'>person</span>：表示指定用户的用户名、唯一编码或员工号。（具体使用哪个要根据外部系统与O2OA的用户关联的字段）<br/>" +
-            "<span style='color: blue'>timestamp</span>：表示为1970年1月1日0时0秒到当前时间的毫秒数。（为了确保token的时效性,有效时间为15分钟）<br/>",
+            "<span style='color: blue'>timestamp</span>：表示为1970年1月1日0时0秒到当前时间的毫秒数。（为了确保token的时效性,有效时间为15分钟）<br/><br>" +
+            "生成token后，外部系统可以直接通过访问以下地址，实现与O2OA的单点认证：<br/>" +
+            "http://servername/x_desktop/sso.html?client={<span style='color: blue'>client</span>}&xtoken={<span style='color: blue'>token</span>}&redirect={<span style='color: blue'>redirect</span>}<br/>" +
+            "<span style='color: blue'>client</span>表示使用的鉴权名称；<br/>" +
+            "<span style='color: blue'>token</span>表示产生的临时票据token；<br/>" +
+            "<span style='color: blue'>redirect</span>表示认证成功后要跳转到的地址；<br/>",
 
         "useSSOConfigInfo4": "更多有关鉴权配置的说明，<a target='_blank' href='https://www.o2oa.net/search.html?q=%E9%89%B4%E6%9D%83'>请点击此处查看</a>。",
 
@@ -976,11 +982,16 @@ o2.xApplication.systemconfig.LP = {
 
         "systemMessageSwitch": "显示系统通知",
         "systemMessageSwitchInfo": "移动App消息列表中是否显示系统通知",
+        "systemMessageCanClickInfo": "移动App系统通知是否可点击打开",
 
 
         "contactPermissionView": "移动App通讯录权限视图",
         "contactPermissionViewInfo": "需要安装应用市场【通讯录】应用，应用内包含通讯录的权限配置视图",
 
+        
+        "appExitAlert": "app退出提示",
+        "appExitAlertInfo": "app退出的时候弹出窗口的提示语，为空就不弹窗",
+        
         "nativeAppList": "应用列表",
         "nativeAppListInfo": "您可以在此设置移动端APP中，启用哪些应用，禁用哪些应用",
 
@@ -1204,7 +1215,9 @@ o2.xApplication.systemconfig.LP = {
                 "file": "file",
                 "hdfs": "hdfs",
                 "cifs": "cifs",
-                "ali": "ali"
+                "ali": "阿里云存储",
+                "s3":"亚马逊云存储",
+                "min":"MinIO存储"
             }
         },
         "removeNodeConfigTitle": "删除存储节点确认",
@@ -1362,7 +1375,6 @@ o2.xApplication.systemconfig.LP = {
         "pushTypeInfo": "O2OA支持极光推送服务和华为推送服务，您可以根据需要选择推送服务",
         "pushTypeData": [
             {"value": "jpush", "label": "jpush", "text": "极光推送服务"},
-            {"value": "huawei", "label": "huawei", "text": "华为推送服务"},
             {"value": "none", "label": "none", "text": "禁用消息推送"}
         ],
 

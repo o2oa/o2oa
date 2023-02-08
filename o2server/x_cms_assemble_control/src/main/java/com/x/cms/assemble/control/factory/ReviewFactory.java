@@ -26,7 +26,7 @@ import com.x.cms.core.express.tools.filter.QueryFilter;
  * 文档权限控制信息服务类
  */
 public class ReviewFactory extends AbstractFactory {
-	
+
 	public ReviewFactory( Business business) throws Exception {
 		super(business);
 	}
@@ -34,7 +34,29 @@ public class ReviewFactory extends AbstractFactory {
 	public Review get( String id ) throws Exception {
 		return this.entityManagerContainer().find(id, Review.class, ExceptionWhen.none);
 	}
-	
+
+	public Long countByDocumentAndPerson(String docId, String person) throws Exception {
+		EntityManager em = this.entityManagerContainer().get( Review.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<Review> root = cq.from(Review.class);
+		Predicate p = cb.equal( root.get(Review_.docId), docId );
+		p = cb.and( p, cb.equal( root.get( Review_.permissionObj ), person));
+		cq.select(cb.count(root)).where(p);
+		return em.createQuery(cq).getSingleResult();
+	}
+
+	public List<String> listApp( String person ) throws Exception {
+		EntityManager em = this.entityManagerContainer().get( Review.class );
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery( String.class );
+		Root<Review> root = cq.from( Review.class );
+		Predicate p = cb.equal(root.get( Review_.permissionObj ), person );
+		p = cb.or(p, cb.equal(root.get( Review_.permissionObj ), "*" ));
+		cq.select(root.get( Review_.appId)).distinct(true).where(p);
+		return em.createQuery( cq ).getResultList();
+	}
+
 	public List<String> listByAppId( String appId, Integer maxCount ) throws Exception {
 		if( maxCount == null ) {
 			maxCount = 1000;
@@ -47,7 +69,7 @@ public class ReviewFactory extends AbstractFactory {
 		cq.select( root.get( Review_.id) ).where(p);
 		return em.createQuery( cq ).setMaxResults(maxCount).getResultList();
 	}
-	
+
 	public List<String> listByCategoryId( String categoryId, Integer maxCount ) throws Exception {
 		if( maxCount == null ) {
 			maxCount = 1000;
@@ -60,7 +82,7 @@ public class ReviewFactory extends AbstractFactory {
 		cq.select(root.get( Review_.id)).where(p);
 		return em.createQuery( cq ).setMaxResults(maxCount).getResultList();
 	}
-	
+
 	public List<String> listByDocument( String docId, Integer maxCount ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( Review.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -68,9 +90,14 @@ public class ReviewFactory extends AbstractFactory {
 		Root<Review> root = cq.from( Review.class );
 		Predicate p = cb.equal(root.get( Review_.docId ), docId );
 		cq.select(root.get( Review_.id)).where(p);
-		return em.createQuery( cq ).setMaxResults(maxCount).getResultList();
-	}	
-	
+		if(maxCount != null && maxCount > 0){
+			return em.createQuery( cq ).setMaxResults(maxCount).getResultList();
+		}else{
+			return em.createQuery( cq ).getResultList();
+		}
+
+	}
+
 	public List<String> listByDocumentAndPerson(String docId, String person) throws Exception {
 		if( StringUtils.isEmpty( docId ) ) {
 			throw new Exception("doc id can not be empty!");
@@ -87,7 +114,7 @@ public class ReviewFactory extends AbstractFactory {
 		cq.select(root.get( Review_.id)).where(p);
 		return em.createQuery( cq ).getResultList();
 	}
-	
+
 	public Long countByCategoryId( String categoryId ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( Review.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -97,7 +124,7 @@ public class ReviewFactory extends AbstractFactory {
 		cq.select(cb.count(root)).where(p);
 		return em.createQuery(cq).getSingleResult();
 	}
-	
+
 	public Long countByDocuemnt( String docId ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( Review.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -107,7 +134,7 @@ public class ReviewFactory extends AbstractFactory {
 		cq.select(cb.count(root)).where(p);
 		return em.createQuery(cq).getSingleResult();
 	}
-	
+
 	public Long countByAppId( String appId ) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( Review.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -117,7 +144,7 @@ public class ReviewFactory extends AbstractFactory {
 		cq.select(cb.count(root)).where(p);
 		return em.createQuery(cq).getSingleResult();
 	}
-	
+
 	/**
 	 * 根据条件查询符合条件的文档信息数量
 	 * @param personName
@@ -138,7 +165,7 @@ public class ReviewFactory extends AbstractFactory {
 		cq.select(cb.count(root)).where(p);
 		return em.createQuery(cq).getSingleResult();
 	}
-	
+
 	/**
 	 * 根据条件查询符合条件的文档信息ID
 	 * @param maxCount
@@ -159,14 +186,8 @@ public class ReviewFactory extends AbstractFactory {
 			p_permission = CriteriaBuilderTools.predicate_or( cb, p_permission, cb.equal( root.get( Review_.permissionObj ), personName ) );
 		}
 		Predicate p = CriteriaBuilderTools.composePredicateWithQueryFilter( Review_.class, cb, p_permission, root, queryFilter );
-		
+
 		List<Order> orders = new ArrayList<>();
-		if( !Review.isTop_FIELDNAME.equals( orderField )) {
-			Order isTopOrder = CriteriaBuilderTools.getOrder( cb, root, Review_.class, Review.isTop_FIELDNAME, "desc" );
-			if( isTopOrder != null ){
-				orders.add( isTopOrder );
-			}
-		}
 		Order orderWithField = CriteriaBuilderTools.getOrder( cb, root, Review_.class, orderField, orderType );
 		if( orderWithField != null ){
 			orders.add( orderWithField );
@@ -176,9 +197,9 @@ public class ReviewFactory extends AbstractFactory {
 		}
 		return em.createQuery(cq.where(p)).setMaxResults( maxCount).getResultList();
 	}
-	
-	
-	
+
+
+
 	/**
 	 * 根据条件查询符合条件的文档信息ID，根据上一条的sequnce查询指定数量的信息
 	 * @param maxCount
@@ -209,7 +230,7 @@ public class ReviewFactory extends AbstractFactory {
 			}
 			p = cb.and( p, p_seq);
 		}
-		
+
 		List<Order> orders = new ArrayList<>();
 		if( !Document.isTop_FIELDNAME.equals( orderField )) {
 			Order isTopOrder = CriteriaBuilderTools.getOrder( cb, root, Document_.class, Document.isTop_FIELDNAME, "desc" );
@@ -217,12 +238,12 @@ public class ReviewFactory extends AbstractFactory {
 				orders.add( isTopOrder );
 			}
 		}
-		
+
 		Order orderWithField = CriteriaBuilderTools.getOrder( cb, root, Review_.class, orderField, orderType );
 		if( orderWithField != null ){
 			orders.add( orderWithField );
 		}
-		
+
 		if( ListTools.isNotEmpty( orders )) {
 			cq.orderBy( orders );
 		}
@@ -299,27 +320,27 @@ public class ReviewFactory extends AbstractFactory {
 			p_permission = CriteriaBuilderTools.predicate_or( cb, p_permission, cb.equal( root.get( Review_.permissionObj ), personName ) );
 		}
 		Predicate p = CriteriaBuilderTools.composePredicateWithQueryFilter( Review_.class, cb, p_permission, root, queryFilter );
-		
+
 		//排序，添加排序列，默认使用sequence
 		List<Order> orders = new ArrayList<>();
 		Order orderWithField = CriteriaBuilderTools.getOrder( cb, root, Review_.class, orderField, orderType );
 		if( orderWithField != null ){
 			orders.add( orderWithField );
 		}
-		
+
 		if( !Document.isFieldInSequence(orderField)) {
 			//如果是其他的列，很可能排序值不唯一，所以使用多一列排序列来确定每次查询的顺序
 			orderWithField = CriteriaBuilderTools.getOrder( cb, root, Review_.class, Review.id_FIELDNAME, orderType );
 			if( orderWithField != null ){
 				orders.add( orderWithField );
 			}
-		}		
+		}
 		if( ListTools.isNotEmpty(  orders )){
 			cq.orderBy( orders );
 		}
 		return em.createQuery(cq.where(p)).setMaxResults( maxCount).getResultList();
 	}
-	
+
 	public List<String> listDocIdsWithConditionInReview(String personName, QueryFilter queryFilter, Integer maxCount) throws Exception {
 		EntityManager em = this.entityManagerContainer().get( Review.class );
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -331,10 +352,10 @@ public class ReviewFactory extends AbstractFactory {
 		}
 		Predicate p = CriteriaBuilderTools.composePredicateWithQueryFilter( Review_.class, cb, p_permission, root, queryFilter );
 		cq.select(root.get( Review_.docId )).where(p);
-		
+
 		return em.createQuery(cq.where(p)).setMaxResults( maxCount).getResultList();
 	}
-	
+
 	public List<String> listDocIdsWithConditionInReview(String personName, String orderField, String orderType, QueryFilter queryFilter, Integer maxCount) throws Exception {
 		List<String> docIds = new ArrayList<>();
 		EntityManager em = this.entityManagerContainer().get( Review.class );

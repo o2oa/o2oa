@@ -27,5 +27,16 @@ MWF.xApplication.process.ScriptDesigner.LP = {
 
         "inputName": "请输入脚本名称"
     },
+    "version" : {
+        "title" : "查看脚本版本记录",
+        "close" : "关闭",
+        "no":"序号",
+        "updateTime":"更新时间",
+        "op":"操作",
+        "resume" : "恢复",
+        "resumeConfirm" : "恢复确认",
+        "resumeInfo" : "您确认是否需要执行脚本恢复操作？确认恢复后当前脚本会更新，需要手动保存当前脚本才会生效。",
+        "resumeSuccess" :"恢复成功"
+    },
     "isSave": "正在保存，请稍候..."
 };

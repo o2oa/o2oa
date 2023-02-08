@@ -67,7 +67,7 @@ public class UserManagerService {
 			business = new Business(emc);
 			unitNames = business.organization().unit().listWithPerson(personName);
 			if ( ListTools.isEmpty( unitNames )) {
-				if (personName.endsWith("@P") && personName.split("@P").length == 2) {
+				if (personName.endsWith("@P") && personName.split("@").length == 2) {
 					unitNames = business.organization().unit().listWithPerson( personName.split("@")[0] );
 				}
 			}
@@ -122,7 +122,7 @@ public class UserManagerService {
 			business = new Business(emc);
 			// 兼容一下传过来的perosnName有可能是个人，有可能是身份
 			if( StringUtils.isNotEmpty( personName )){
-				if (personName.endsWith("@P") && personName.split("@P").length == 2) {
+				if (personName.endsWith("@P") && personName.split("@").length == 2) {
 					personName = business.organization().person().get(personName.split("@")[0]);
 				}else{
 					personName = business.organization().person().get(personName);
@@ -169,7 +169,7 @@ public class UserManagerService {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
 			if( StringUtils.isNotEmpty( personName )){
-				if (personName.endsWith("@P") && personName.split("@P").length == 2) {
+				if (personName.endsWith("@P") && personName.split("@").length == 2) {
 					personName = business.organization().person().get(personName.split("@")[0]);
 				}else{
 					personName = business.organization().person().get(personName);
@@ -230,7 +230,7 @@ public class UserManagerService {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
 			if( StringUtils.isNotEmpty( personName )){
-				if (personName.endsWith("@P") && personName.split("@P").length == 2) {
+				if (personName.endsWith("@P") && personName.split("@").length == 2) {
 					personName = business.organization().person().get(personName.split("@")[0]);
 				}else{
 					personName = business.organization().person().get(personName);
@@ -260,7 +260,7 @@ public class UserManagerService {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
 			if( StringUtils.isNotEmpty( personName )){
-				if (personName.endsWith("@P") && personName.split("@P").length == 2) {
+				if (personName.endsWith("@P") && personName.split("@").length == 2) {
 					personName = business.organization().person().get(personName.split("@")[0]);
 				}else{
 					personName = business.organization().person().get(personName);
@@ -288,7 +288,7 @@ public class UserManagerService {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
 			if( StringUtils.isNotEmpty( personName )){
-				if (personName.endsWith("@P") && personName.split("@P").length == 2) {
+				if (personName.endsWith("@P") && personName.split("@").length == 2) {
 					personName = business.organization().person().get(personName.split("@")[0]);
 				}else{
 					personName = business.organization().person().get(personName);
@@ -320,7 +320,7 @@ public class UserManagerService {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
 			if( StringUtils.isNotEmpty( personName )){
-				if (personName.endsWith("@P") && personName.split("@P").length == 2) {
+				if (personName.endsWith("@P") && personName.split("@").length == 2) {
 					personName = business.organization().person().get(personName.split("@")[0]);
 				}else{
 					personName = business.organization().person().get(personName);
@@ -358,7 +358,7 @@ public class UserManagerService {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			business = new Business(emc);
 			if( StringUtils.isNotEmpty( personName )){
-				if (personName.endsWith("@P") && personName.split("@P").length == 2) {
+				if (personName.endsWith("@P") && personName.split("@").length == 2) {
 					personName = business.organization().person().get(personName.split("@")[0]);
 				}else{
 					personName = business.organization().person().get(personName);
@@ -613,10 +613,14 @@ public class UserManagerService {
 	 */
 	public boolean isTopUnit(String unitName) throws Exception {
 		if (StringUtils.isEmpty(unitName)) {
-			throw new Exception("unitName is empty!");
+			return false;
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			Business business = new Business(emc);
+			String[] splitName = unitName.split("@");
+			if(splitName.length == 2){
+				unitName = business.organization().unit().get(splitName[0]);
+			}
 			List<String> unitNames = business.organization().unit().listWithLevel(1);
 			if (ListTools.isNotEmpty(unitNames) && unitNames.contains(unitName)) {
 				return true;

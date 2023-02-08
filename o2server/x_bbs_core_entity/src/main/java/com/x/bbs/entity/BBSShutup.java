@@ -20,7 +20,7 @@ import java.util.Date;
  * @date 2022/05/20 10:53
  **/
 @Schema(name = "BBSShutup", description = "论坛禁言人员.")
-@ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
+@ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.element, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.BBSShutup.table, uniqueConstraints = {
         @UniqueConstraint(name = PersistenceProperties.BBSShutup.table + JpaObject.IndexNameMiddle

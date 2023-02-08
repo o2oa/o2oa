@@ -32,6 +32,8 @@ public class ActionImConfig extends BaseAction {
 				wo = this.convertToWrapIn(je, Wo.class);
 			}
 		}
+		wo.setVersionNo(200);
+		wo.setChangelog("新增群聊删除功能和单聊会话个人删除功能！");
 		result.setData(wo);
 		return result;
 	}
@@ -44,6 +46,26 @@ public class ActionImConfig extends BaseAction {
 		private Boolean enableClearMsg;
 		@FieldDescribe("是否开启撤回聊天消息的功能.")
 		private Boolean enableRevokeMsg;
+		@FieldDescribe("版本号.")
+		private int versionNo;
+		@FieldDescribe("更新内容.")
+		private String changelog;
+
+		public int getVersionNo() {
+			return versionNo;
+		}
+
+		public void setVersionNo(int versionNo) {
+			this.versionNo = versionNo;
+		}
+
+		public String getChangelog() {
+			return changelog;
+		}
+
+		public void setChangelog(String changelog) {
+			this.changelog = changelog;
+		}
 
 		public Boolean getEnableClearMsg() {
 			return enableClearMsg;

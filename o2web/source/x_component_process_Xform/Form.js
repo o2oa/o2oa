@@ -1259,6 +1259,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         if( callback )callback( moduleNodes, jsons, modules )
     },
     _loadModule: function (json, node, beforeLoad, replace) {
+        if( !json )return null;
         //console.log( json.id );
         if (json.type === "Subform" || json.moduleName === "subform") this.subformCount++;
         //if( json.type === "Subform" || json.moduleName === "subform" ){
@@ -1471,6 +1472,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
     saveWork: function (callback, silent) {
 
         if (this.businessData.control["allowSave"]) {
+
+            if (!this.formSaveValidation()) {
+                if (callback) callback();
+                return false;
+            }
+
             this.fireEvent("beforeSave");
             this.fireEvent("beforeSaveWork");
 
@@ -1863,6 +1870,15 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 this.inBrowserDkg(this.getMessageContent(data, 0, MWF.xApplication.process.Xform.LP.taskProcessedMessage));
             }
         }
+    },
+    formSaveValidation: function(){
+        var flag = true;
+        Object.each(this.forms, function (field, key) {
+            if( !field.json.id || field.json.id.indexOf("..") > 0 )return;
+            field.validationMode();
+            if (!field.saveValidation()) flag = false;
+        }.bind(this));
+        return flag;
     },
     formValidation: function (routeName, opinion, medias) {
         if (this.options.readonly) return true;
@@ -2311,10 +2327,11 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                         var item = layout.desktop.message.addMessage(msg);
                     }
                 }
-                if (layout.app && layout.app.inBrowser) {
-                    if (layout.app) layout.app.$openWithSelf = true;
-                    layout.desktop.openApplication(null, "process.Work", { "workId": this.app.options.workId, "action": "processTask" });
-                }
+                // 多次加载的bug
+                // if (layout.app && layout.app.inBrowser) {
+                //     if (layout.app) layout.app.$openWithSelf = true;
+                //     layout.desktop.openApplication(null, "process.Work", { "workId": this.app.options.workId, "action": "processTask" });
+                // }
                 this.app.options.action = "processTask";
                 this.app.reload();
 
@@ -3236,6 +3253,10 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
         html += "<div style=\"line-height: 30px; height: 30px; color: #333333; overflow: hidden;float:right;\"><input class='rollback_flowOption' checked type='checkbox' />"+lp.tryToProcess+"</div>";
         html += "<div style=\"clear:both; max-height: 300px; margin-bottom:10px; margin-top:10px; overflow-y:auto;\"></div>";
         node.set("html", html);
+        if( layout.mobile ){
+            node.getFirst().setStyle("float", "none");
+            node.getFirst().getNext().setStyle("float", "none");
+        }
         var rollbackItemNode = node.getLast();
         this.getRollbackLogs(rollbackItemNode);
         node.inject(this.app.content);
@@ -3245,7 +3266,7 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
             "style": this.json.dialogStyle || "user",
             "isResize": false,
             "content": node,
-            "width": 600,
+            "width": layout.mobile ? "100%" : 600,
             "buttonList": [
                 {
                     "type": "ok",

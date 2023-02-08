@@ -237,6 +237,11 @@
     "text": MWF.xApplication.process.FormDesigner.LP.modules.importer,
     "className": "Importer"
   },
+  "relatedlink": {
+    "icon": "relatedLink.png",
+    "text": MWF.xApplication.process.FormDesigner.LP.modules.relatedLink,
+    "className": "Relatedlink"
+  },
 
   "SmartBI": {
     "icon": "smartbi.png",

@@ -75,8 +75,8 @@ public class LogQueue extends AbstractQueue<NameValuePair> {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			T t = emc.find(o.getId(), cls);
 			if (null != t) {
+			    emc.beginTransaction(cls);
 				o.copyTo(t, JpaObject.FieldsUnmodify);
-				emc.beginTransaction(cls);
 				emc.commit();
 			} else {
 				emc.beginTransaction(cls);

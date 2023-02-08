@@ -29,6 +29,10 @@
       <BaseInput :label="lp._integrationConfig.mpweixinText.encodingAesKey" v-model:value="mPweixinData.encodingAesKey"
                  :label-style="labelStyle"></BaseInput>
       <div class="item_el_info"></div>
+ 
+      <BaseInput :label="lp._integrationConfig.mpweixinText.workUrl" v-model:value="mPweixinData.workUrl"
+                 :label-style="labelStyle"></BaseInput>
+      <div class="item_el_info">{{lp._integrationConfig.mpweixinText.workUrlInfo}}</div>
 
       <BaseSelect :label="lp._integrationConfig.mpweixinText.portalId" v-model:value="mPweixinData.portalId"
                   :label-style="labelStyle" :options="portalList"></BaseSelect>
@@ -109,14 +113,14 @@ const saveWeixin = async () => {
   });
   mPweixinData.value.fieldList= fList;
 
-  await saveConfigData('mPweixin', mPweixinData.value);
+  await saveConfigData('mpweixin', mPweixinData.value);
   component.notice(lp._integrationConfig.mpweixinText.saveMpweixinSuccess, 'success');
 }
 
 const load = ()=>{
-  getConfigData('mPweixin').then((data)=>{
-    mPweixinData.value = data;
-    fieldListEditor.value = data.fieldList || [];
+  getConfigData('mpweixin').then((data)=>{
+    mPweixinData.value = data || {};
+    fieldListEditor.value = mPweixinData.value.fieldList || [];
     checkAddLine();
   });
 

@@ -72,7 +72,7 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 		this.json.isSaved = true;
 	},
 	_loadVue: function(callback){
-		if (!window.Vue){
+		if (!window.Vue || window.Vue.name!=='Vue'){
 			o2.load(["vue_develop", "elementui"], { "sequence": true }, function(){
 				if( window.Vue.config )window.Vue.config = {};
 				window.Vue.config.errorHandler = function (err, vm, info) {
@@ -147,6 +147,7 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 	_createVueData: function(){
 		//var data = this.json;
 		return function(){
+			this.setElStyles();
 			return Object.assign(this.json, this.tmpVueData||{});
 		}.bind(this)
 	},
@@ -186,7 +187,37 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 		if (callback) callback();
 	},
 	_setOtherNodeEvent: function(){},
-
+	setPropertiesOrStyles: function(name){
+		if (name=="styles"){
+			try{
+				this.setCustomStyles();
+			}catch(e){}
+		}else if (name=="elStyles"){
+			this.setElStyles();
+		}else if (name=="properties"){
+			try{
+				this.setCustomProperties();
+			}catch(e){}
+		}
+	},
+	setElStyles: function(){
+		var tmpElStyles = Object.clone(this.json.elStyles || {});
+		if( tmpElStyles.display )delete tmpElStyles.display;
+		if (this.json.elStyles) Object.each(this.json.elStyles, function(value, key){
+			if (key){
+				if (key.toString().toLowerCase()==="display"){
+					if (value.toString().toLowerCase()==="none"){
+						tmpElStyles["opacity"] = 0.3;
+					}else{
+						tmpElStyles["opacity"] = 1;
+					}
+				}else{
+					tmpElStyles[key] = value;
+				}
+			}
+		}.bind(this));
+		this.json.tmpElStyles = tmpElStyles;
+	},
 	_setEditStyle_custom: function(name){
 		switch (name){
 			case "name": this.setPropertyName(); break;
@@ -240,6 +271,9 @@ MWF.xApplication.process.FormDesigner.Module.$ElElement = MWF.FC$ElElement = new
 			this.node.clearStyles();
 			this.node.removeAttribute("class");
 			//if (this.initialStyles) this.node.setStyles(this.initialStyles);
+
+			if( this.json.tmpElStyles )delete this.json.tmpElStyles;
+
 			this.json.recoveryStyles = Object.clone(this.json.styles);
 
 			if (this.json.recoveryStyles) Object.each(this.json.recoveryStyles, function(value, key){

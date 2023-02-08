@@ -48,7 +48,6 @@ import com.x.organization.core.express.Organization;
 import com.x.query.assemble.designer.factory.ImportModelFactory;
 import com.x.query.assemble.designer.factory.ProcessFactory;
 import com.x.query.assemble.designer.factory.QueryFactory;
-import com.x.query.assemble.designer.factory.RevealFactory;
 import com.x.query.assemble.designer.factory.StatFactory;
 import com.x.query.assemble.designer.factory.StatementFactory;
 import com.x.query.assemble.designer.factory.TableFactory;
@@ -168,15 +167,6 @@ public class Business {
 			this.stat = new StatFactory(this);
 		}
 		return stat;
-	}
-
-	private RevealFactory reveal;
-
-	public RevealFactory reveal() throws Exception {
-		if (null == this.reveal) {
-			this.reveal = new RevealFactory(this);
-		}
-		return reveal;
 	}
 
 	private ProcessFactory process;
@@ -344,7 +334,7 @@ public class Business {
 
 		LOGGER.debug("enhance command:{}.", () -> command);
 
-		ProcessBuilder processBuilder = new ProcessBuilder();
+		java.lang.ProcessBuilder processBuilder = new java.lang.ProcessBuilder();
 
 		if (SystemUtils.IS_OS_WINDOWS) {
 			processBuilder.command("cmd", "/c", command);

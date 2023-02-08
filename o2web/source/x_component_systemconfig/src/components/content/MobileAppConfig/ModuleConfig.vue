@@ -18,6 +18,18 @@
       <div class="item_title">{{lp._appConfig.systemMessageSwitch}}</div>
       <div class="item_info" v-html="lp._appConfig.systemMessageSwitchInfo"></div>
       <BaseBoolean v-model:value="appStyle.systemMessageSwitch" @change="(value)=>{appStyle.systemMessageSwitch = value; saveAppStyle(appStyle)}"></BaseBoolean>
+      <div v-if="appStyle.systemMessageSwitch == true">
+        <div class="item_info" v-html="lp._appConfig.systemMessageCanClickInfo"></div>
+        <BaseBoolean v-model:value="appStyle.systemMessageCanClick" @change="(value)=>{appStyle.systemMessageCanClick = value; saveAppStyle(appStyle)}"></BaseBoolean>
+      </div>
+
+      <BaseItem
+          :title="lp._appConfig.appExitAlert"
+          :info="lp._appConfig.appExitAlertInfo"
+          :config="appStyle.appExitAlert"
+          :allowEditor="true"
+          @changeConfig="(value)=>{appStyle.appExitAlert = value; saveAppStyle(appStyle)}"
+      ></BaseItem>
 
       <BaseItem
           :title="lp._appConfig.contactPermissionView"
@@ -70,6 +82,8 @@ const load = ()=>{
       nativeAppList: data.nativeAppList,
       simpleMode: data.simpleMode,
       systemMessageSwitch: data.systemMessageSwitch,
+      systemMessageCanClick: data.systemMessageCanClick,
+      appExitAlert: data.appExitAlert,
       contactPermissionView: data.contactPermissionView
     }
   });

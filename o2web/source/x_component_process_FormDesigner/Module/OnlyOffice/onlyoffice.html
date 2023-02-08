@@ -20,6 +20,16 @@
 					<input type="radio" name="isReadonly" value="false" text{(!$.isReadonly)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
+
+			<tr>
+				<td class="editTableTitle">{{$.lp.allowUpload}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="allowUpload" value="true" text{($.allowUpload)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="allowUpload" value="false" text{(!$.allowUpload)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+
+
 		</table>
 		<div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
 
@@ -30,9 +40,38 @@
 					<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'none'); " name="officeType" text{($.officeType=='docx')?'checked':''} type="radio" value="docx"/>Word <br/>
 					<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'none'); " name="officeType" text{($.officeType=='xlsx')?'checked':''} type="radio" value="xlsx"/>Excel <br/>
 					<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'none'); " name="officeType" text{($.officeType=='pptx')?'checked':''} type="radio" value="pptx"/>PowerPoint <br/>
+					<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'block'); " name="officeType" text{($.officeType=='other')?'checked':''} type="radio" value="other"/>{{$.lp.byTemplate}}
 				</td>
 			</tr>
 		</table>
+		<div id="officeTemplateArea" title="src" style="display: text{($.officeType=='other')?'block':'none'}">
+
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableValue">
+						<input type="radio" onclick="if (this.checked){ $('templateArea').setStyle('display', 'block'); $('templateScriptArea').setStyle('display', 'none')}" name="templateType" value="value" text{($.result!='script')?'checked':''}/>{{$.lp.textValue}}
+						<input type="radio" onclick="if (this.checked){ $('templateArea').setStyle('display', 'none'); $('templateScriptArea').setStyle('display', 'block')}" name="templateType" value="script" text{($.result=='script')?'checked':''}/>{{$.lp.script}}
+					</td>
+				</tr>
+			</table>
+
+			<div id="templateArea" style="display: text{($.templateType=='value')?'block':'none'};">
+				<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+					<tr>
+						<td class="editTableTitle">{{$.lp.templateId}}:</td>
+						<td class="editTableValue">
+							<input type="text" name="template" value="text{$.template}" class="editTableInput"/>
+						</td>
+					</tr>
+				</table>
+			</div>
+
+			<div id="templateScriptArea" style="display: text{($.templateType=='script')?'block':'none'};">
+				<div class="MWFScriptArea" name="templeteScript" title="{{$.lp.editScript}} (S)"></div>
+			</div>
+
+
+		</div>
 		<div class="MWFScriptArea" name="readScript" title="{{$.lp.readonlyCondition}} (S)"></div>
 	</div>
 	<div title="{{$.lp.onlyoffice.config}}" class="MWFTab">
@@ -66,13 +105,13 @@
 					<input type="radio" name="compatibleFeatures" value="false" text{(!$.compatibleFeatures)?'checked':''}/>{{$.lp.no}}
 				</td>
 			</tr>
-<!--			<tr>-->
-<!--				<td class="editTableTitle">强制保存:</td>-->
-<!--				<td class="editTableValue">-->
-<!--					<input type="radio" name="forcesave" value="true" text{($.forcesave)?'checked':''}/>是-->
-<!--					<input type="radio" name="forcesave" value="false" text{(!$.forcesave)?'checked':''}/>否-->
-<!--				</td>-->
-<!--			</tr>-->
+			<!--			<tr>-->
+			<!--				<td class="editTableTitle">强制保存:</td>-->
+			<!--				<td class="editTableValue">-->
+			<!--					<input type="radio" name="forcesave" value="true" text{($.forcesave)?'checked':''}/>是-->
+			<!--					<input type="radio" name="forcesave" value="false" text{(!$.forcesave)?'checked':''}/>否-->
+			<!--				</td>-->
+			<!--			</tr>-->
 			<tr>
 				<td class="editTableTitle">{{$.lp.onlyoffice.plugins}}:</td>
 				<td class="editTableValue">

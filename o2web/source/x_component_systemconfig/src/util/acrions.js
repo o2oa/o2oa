@@ -74,7 +74,15 @@ async function delConfig(name, path) {
 async function saveConfigData(name, data, force) {
     let config = data;
     if (!force){
-        config = (configs[name]) ? configs[name] : (await loadConfig(name));
+        if (configs[name]) {
+            config = (configs[name]);
+        } else {
+            var sConfig = await loadConfig(name);
+            if (sConfig) {
+                config = sConfig;
+            }
+        }
+        // config = (configs[name]) ? configs[name] : (await loadConfig(name));
         Object.assign(config, data);
     }
     o2.Actions.load('x_program_center').ConfigAction.save({

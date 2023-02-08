@@ -25,7 +25,7 @@ MWF.xApplication.process.FormDesigner.Module.Elcolorpicker = MWF.FCElcolorpicker
 			}, this);
 		}
 
-		html += " :style=\"elStyles\">";
+		html += " :style=\"tmpElStyles\">";
 		if (this.json.vueSlot) html += this.json.vueSlot;
 		html += "</el-color-picker>";
 		return html;

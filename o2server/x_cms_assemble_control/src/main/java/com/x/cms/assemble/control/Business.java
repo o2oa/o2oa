@@ -1,8 +1,13 @@
 package com.x.cms.assemble.control;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import com.x.cms.core.entity.CategoryInfo;
+import com.x.cms.core.entity.Document;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.x.base.core.container.EntityManagerContainer;
@@ -41,7 +46,7 @@ import com.x.organization.core.express.Organization;
 
 /**
  * 通用业务类
- * 
+ *
  * @author sword
  */
 public class Business {
@@ -304,7 +309,7 @@ public class Business {
 
 	/**
 	 * 判断用户是否管理员权限
-	 * 
+	 *
 	 * @param person
 	 * @return
 	 * @throws Exception
@@ -324,7 +329,7 @@ public class Business {
 
 	/**
 	 * 判断用户是否管理员权限
-	 * 
+	 *
 	 * @param person
 	 * @return
 	 * @throws Exception
@@ -344,7 +349,7 @@ public class Business {
 
 	/**
 	 * 是否是栏目管理员
-	 * 
+	 *
 	 * @param person
 	 * @param appInfo
 	 * @return
@@ -379,7 +384,7 @@ public class Business {
 
 	/**
 	 * 是否是栏目创建管理员
-	 * 
+	 *
 	 * @param person
 	 * @param appInfo
 	 * @return
@@ -409,6 +414,120 @@ public class Business {
 				}
 			}
 		} else if (isCreatorManager(person)) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * 是否是文档的编辑者
+	 * 文档不存在判断是否是分类或应用的发布者
+	 * @param person
+	 * @param appInfo
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean isDocumentEditor(EffectivePerson person, AppInfo appInfo, CategoryInfo categoryInfo, Document document) throws Exception {
+		if (isManager(person)) {
+			return true;
+		}
+		List<String> unitNames = this.organization().unit().listWithPersonSupNested(person.getDistinguishedName());
+		List<String> groupNames = this.organization().group().listWithPerson(person.getDistinguishedName());
+		if(document!=null){
+			if( ListTools.isNotEmpty( document.getAuthorPersonList() )) {
+				if( document.getAuthorPersonList().contains( getShortTargetFlag(person.getDistinguishedName()) ) ) {
+					return true;
+				}
+			}
+			if( ListTools.isNotEmpty( document.getAuthorUnitList() )) {
+				if( ListTools.containsAny( getShortTargetFlag(unitNames), document.getAuthorUnitList())) {
+					return true;
+				}
+			}
+			if( ListTools.isNotEmpty( document.getAuthorGroupList() )) {
+				if( ListTools.containsAny( getShortTargetFlag(groupNames), document.getAuthorGroupList())) {
+					return true;
+				}
+			}
+		}
+		boolean publishFlag = document == null ? true : false;
+		if (categoryInfo != null) {
+			Set<String> catePersonList = new HashSet<>(categoryInfo.getManageablePersonList());
+			Set<String> cateUnitList = new HashSet<>(categoryInfo.getManageableUnitList());
+			Set<String> cateGroupList = new HashSet<>(categoryInfo.getManageableGroupList());
+			if(document == null){
+				catePersonList.addAll(categoryInfo.getPublishablePersonList());
+				cateUnitList.addAll(categoryInfo.getPublishableUnitList());
+				cateGroupList.addAll(categoryInfo.getPublishableGroupList());
+				if(!categoryInfo.getPublishablePersonList().isEmpty() || !categoryInfo.getPublishableUnitList().isEmpty()
+						|| !categoryInfo.getPublishableGroupList().isEmpty()){
+					publishFlag = false;
+				}
+			}
+			if (catePersonList.size() > 0 && catePersonList.contains(person.getDistinguishedName())) {
+				return true;
+			}
+			if (cateUnitList.size() > 0 && ListTools.containsAny(unitNames, new ArrayList<>(cateUnitList))) {
+				return true;
+			}
+			if (cateGroupList.size() > 0 && ListTools.containsAny(groupNames, new ArrayList<>(cateGroupList))) {
+				return true;
+			}
+		}
+		if (appInfo != null) {
+			Set<String> appPersonList = new HashSet<>(appInfo.getManageablePersonList());
+			Set<String> appUnitList = new HashSet<>(appInfo.getManageableUnitList());
+			Set<String> appGroupList = new HashSet<>(appInfo.getManageableGroupList());
+			if(document == null){
+				appPersonList.addAll(appInfo.getPublishablePersonList());
+				appUnitList.addAll(appInfo.getPublishableUnitList());
+				appGroupList.addAll(appInfo.getPublishableGroupList());
+				if(!appInfo.getPublishablePersonList().isEmpty() || !appInfo.getPublishableUnitList().isEmpty()
+						|| !appInfo.getPublishableGroupList().isEmpty()){
+					publishFlag = false;
+				}
+			}
+			if (appPersonList.size() > 0 && appPersonList.contains(person.getDistinguishedName())) {
+				return true;
+			}
+			if (appUnitList.size() > 0 && ListTools.containsAny(unitNames, new ArrayList<>(appUnitList))) {
+				return true;
+			}
+			if (appGroupList.size() > 0 && ListTools.containsAny(groupNames, new ArrayList<>(appGroupList))) {
+				return true;
+			}
+		}
+		return publishFlag;
+	}
+
+	/**
+	 * 是否是文档的读者
+	 * @param person
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean isDocumentReader(EffectivePerson person, Document document) throws Exception {
+		if (isManager(person)) {
+			return true;
+		}
+		String documentType = "数据";
+		if(documentType.equals(document.getDocumentType())){
+			return true;
+		}
+		if(BooleanUtils.isTrue(document.getIsAllRead())){
+			return true;
+		}
+		String allPerson = "所有人";
+		if( document.getReadPersonList().contains(getShortTargetFlag(person.getDistinguishedName())) ||
+				document.getReadPersonList().contains(allPerson)) {
+			return true;
+		}
+		Long count = this.reviewFactory().countByDocumentAndPerson(document.getId(), person.getDistinguishedName());
+		if(count > 0){
+			return true;
+		}
+		count = this.reviewFactory().countByDocumentAndPerson(document.getId(), "*");
+		if(count > 0){
 			return true;
 		}
 		return false;
@@ -480,5 +599,42 @@ public class Business {
 			}
 		}
 		return false;
+	}
+
+	public static String getShortTargetFlag(String distinguishedName) {
+		String target = distinguishedName;
+		if( StringUtils.isNotEmpty( distinguishedName ) ){
+			String[] array = distinguishedName.split("@");
+			StringBuffer sb = new StringBuffer();
+			if( array.length == 3 ){
+				target = sb.append(array[1]).append("@").append(array[2]).toString();
+			}else if( array.length == 2 ){
+				//2段
+				target = sb.append(array[0]).append("@").append(array[1]).toString();
+			}else{
+				target = array[0];
+			}
+		}
+		return target;
+	}
+
+	public static List<String> getShortTargetFlag(List<String> nameList) {
+		List<String> targetList = new ArrayList<>();
+		if( ListTools.isNotEmpty( nameList ) ){
+			for(String distinguishedName : nameList) {
+				String target = distinguishedName;
+				String[] array = target.split("@");
+				StringBuffer sb = new StringBuffer();
+				if (array.length == 3) {
+					target = sb.append(array[1]).append("@").append(array[2]).toString();
+				} else if (array.length == 2) {
+					target = sb.append(array[0]).append("@").append(array[1]).toString();
+				} else {
+					target = array[0];
+				}
+				targetList.add(target);
+			}
+		}
+		return targetList;
 	}
 }

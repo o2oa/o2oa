@@ -582,6 +582,10 @@ MWF.xApplication.Attendance.MyDetail.DetailStaticExplorer = new Class({
             "name" : "cycleMonth",
             "type" : "select",
             "selectValue" :["","01","02","03","04","05","06","07","08","09","10","11","12"],
+            "defaultValue" : function(){
+                var month = (new Date().getMonth() + 1 ).toString();
+                return  month.length == 1 ? "0"+month : month;
+            },
             "event" : {
                 "change" : function(){ if(_self.dateSelecterTd)_self.createDateSelectTd() }
             }
@@ -793,13 +797,12 @@ MWF.xApplication.Attendance.MyDetail.Document = new Class({
         this.getProcess(id, function(process){
             MWF.xDesktop.requireApp("process.TaskCenter", "ProcessStarter", function(){
                 var starter = new MWF.xApplication.process.TaskCenter.ProcessStarter(process, this.app, {
-                    "latest" : latest,
+                    "latest" : latest || false,
                     "workData" : processData,
                     "onStarted": function(data, title, processName){
                         this.afterStartProcess(data, title, processName);
                     }.bind(this)
                 });
-                debugger;
                 starter.load();
             }.bind(this));
         }.bind(this));

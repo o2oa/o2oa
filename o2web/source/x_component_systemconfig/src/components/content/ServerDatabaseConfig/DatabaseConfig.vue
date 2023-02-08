@@ -57,8 +57,8 @@
           <div class="o2icon-database item_config_icon mainColor_bg"></div>
           <div class="item_server_item_slot item_bold" style="min-width: 340px">{{item.nodeAddress}}:{{item.node.data.tcpPort}}</div>
           <div class="systemconfig_item_info">
-            <el-switch v-if="databaseType==='external'" disabled @click="(e)=>{e.stopPropagation()}" @change="" :value="false"></el-switch>
-            <el-switch v-else @click="(e)=>{e.stopPropagation()}" @change="" v-model="item.node.data.enable"></el-switch>
+<!--            <el-switch v-if="databaseType==='external'" disabled @click="(e)=>{e.stopPropagation()}" @change="" :value="false"></el-switch>-->
+            <el-switch  @click="(e)=>{e.stopPropagation()}" @change="" v-model="item.node.data.enable"></el-switch>
           </div>
         </div>
       </div>
@@ -107,8 +107,6 @@
 
   </div>
 
-
-
 </template>
 
 <script setup>
@@ -125,7 +123,13 @@ const servers = ref([]);
 const dataEntitys = ref([]);
 const databaseType = computed(()=>{
   const d = (externalDatabase.value) ? externalDatabase.value.filter((db)=>{ return db.enable}) : null;
-  return (!d || !d.length) ? 'inner' : 'external';
+  const type = (!d || !d.length) ? 'inner' : 'external';
+  // if (type==='external') {
+    servers.value.forEach((item)=>{
+      item.node.data.enable = (type!=='external');
+    });
+  // }
+  return type;
 });
 const externalEditorArea = ref();
 const innerEditorArea = ref();
@@ -152,52 +156,18 @@ const saveDatabaseConfig = (e)=>{
 
     p.push(saveConfigData('externalDataSources', externalDatabase.value, true));
 
-    //if (databaseType==='external'){
-    //   p.push(loadRuntimeConfig('externalDataSources', true).then((dbData, idx)=>{
-    //     const data = dbData || [];
-    //     data.forEach((d, idx)=>{
-    //       Object.keys(d).forEach((k)=>{
-    //         if (k!=='includes' && k!=='excludes'){
-    //           d[k] = externalDatabase.value[idx][k];
-    //         }
-    //       });
-    //     });
-    //     return saveConfigData('externalDataSources', data, true);
-    //   }));
-    //}else {
-
     p.push(getConfigData('node').then((data) => {
-      // const saveP = [];
-      // if (data && data.length) {
       const saveP = data.map((d, idx) => {
           Object.keys(d.node.data).forEach((k)=>{
             if (k!=='includes' && k!=='excludes'){
               d.node.data[k] = servers.value[idx].node.data[k];
             }
           });
-          // saveP.push(saveConfig('node_' + d.nodeAddress, 'data', d.node.data));
           return saveConfig('node_' + d.nodeAddress, 'data', d.node.data)
         });
-      // }
       return Promise.all(saveP);
     }));
 
-    // p.push(getServers().then((data) => {
-    //   const saveP = [];
-    //   if (data.nodeList && data.nodeList.length) {
-    //     data.nodeList.forEach((d, idx) => {
-    //
-    //       Object.keys(d.node.data).forEach((k)=>{
-    //         if (k!=='includes' && k!=='excludes'){
-    //           d.node.data[k] = servers.value[idx].node.data[k];
-    //         }
-    //       });
-    //       saveP.push(saveConfig('node_' + d.nodeAddress, 'data', d.node.data));
-    //     });
-    //   }
-    //   return Promise.all(saveP);
-    // }));
-    //}
     Promise.all(p).then(()=>{
       component.notice(lp._databaseServer.saveDatabaseConfigSuccess, "success");
     });
@@ -206,19 +176,6 @@ const saveDatabaseConfig = (e)=>{
     this.close();
   }, null, component.content);
 
-
-  // component.confirm("warn", e, lp._databaseServer.saveDatabaseConfig, {html: lp._databaseServer.saveDatabaseConfirm}, 500, 100, function(){
-  //   const p = [saveConfigData('externalDataSources', externalDatabase.value)];
-  //   servers.value.forEach((s)=>{
-  //     p.push(saveConfig('node_'+s.nodeAddress, 'data', s.node.data));
-  //   });
-  //   Promise.all(p).then(()=>{
-  //     component.notice(lp._databaseServer.saveDatabaseConfigSuccess, "success");
-  //   });
-  //   this.close();
-  // }, function(){
-  //   this.close();
-  // }, null, component.content);
 }
 
 const reloadConfig = (e)=>{

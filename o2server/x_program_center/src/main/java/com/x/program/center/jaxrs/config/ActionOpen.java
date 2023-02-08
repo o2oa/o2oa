@@ -46,7 +46,7 @@ public class ActionOpen extends BaseAction {
 			for (String key : Config.nodes().keySet()) {
 				File file = new File(Config.base(),"config/"+NODE_CONFIG+"_"+key+".json");
 				if (!file.exists()) {
-					file = new File(Config.base(),"config/"+NODE_CONFIG+"_"+key+".json");
+					file = new File(Config.base(),"configSample/"+NODE_CONFIG+"_"+key+".json");
 				}
 				if(file.exists()){
 					String json = FileUtils.readFileToString(file, DefaultCharset.charset);

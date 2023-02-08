@@ -27,7 +27,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 @JaxrsDescribe("授权接口")
 public class EmpowerAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(EmpowerAction.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EmpowerAction.class);
 
 	@JaxrsMethodDescribe(value = "查找指定人员的委托办理.", action = ActionListWithIdentityObject.class)
 	@POST
@@ -41,7 +41,7 @@ public class EmpowerAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListWithIdentityObject().execute(effectivePerson, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+		    LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));

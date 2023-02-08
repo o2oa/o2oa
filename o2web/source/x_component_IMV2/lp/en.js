@@ -41,7 +41,7 @@ MWF.xApplication.IMV2.LP = {
 
 	"modifyGroupName": "Modify Name",
 	"groupName": "Name",
-	"clearAllMsg": "Clear chat history",
+	"deleteConversation": "Delete Conversation",
 
 	"msgMenuItemRevokeMemberMsg": "Revoke member message",
 	"msgMenuItemRevokeMsg": "Revoke",
@@ -54,13 +54,14 @@ MWF.xApplication.IMV2.LP = {
 	"msgShareError": "Failed to share and forward messages!",
 
 		
-	"settingsClearMsg": "Enable Clearing msg: ",
-	"settingsRevokeMsg": "Enable Revoke msg: ",
+	"settingsClearMsg": " Enable Clearing msg",
+	"settingsRevokeMsg": " Enable Revoke msg",
 
 	"enterMessage": "Enter message content",
 	"send": "Send",
 	"sendKeyTips": "Ctrl + Enter Line feed",
 	"file": "[File]",
 	"messageXadminNotSupport": "The xadmin cannot use chat, please switch to normal user login!",
-	"messageClearAllMsgAlert": "Are you sure you want to clear the chat records? After clearing, everyone in the current session will not see these chat records?"
+	"messageDeleteSingleConversationAlert": "确定要删除当前会话吗，删除后将看不到以前的聊天记录？",
+	"messageDeleteGroupConversationAlert": "确定要删除当前会话吗，这会解散当前群聊并删除聊天记录？"
 };

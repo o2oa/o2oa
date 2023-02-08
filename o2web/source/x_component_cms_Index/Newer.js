@@ -623,6 +623,28 @@ MWF.xApplication.cms.Index.Newer = new Class({
         }
     },
     afterStartProcess: function(data, title, processName, workData){
+        if (data.work){
+            this.startProcessDraft(data, title, processName, workData);
+        }else{
+            this.startProcessInstance(data, title, processName, workData);
+        }
+    },
+    startProcessDraft: function(data, title, processName, workData){
+        var work = data.work;
+        if(workData){
+            delete workData.identity;
+            delete workData.attachmentList;
+        }
+        var options = {
+            "draft": work,
+            "draftData": workData,
+            "appId": "process.Work"+(new o2.widget.UUID).toString(),
+            "desktopReload": false
+        };
+        var win = this.app.desktop.openApplication(null, "process.Work", options);
+        this.fireEvent("started", ["", workData, win]);
+    },
+    startProcessInstance: function(data, title, processName, workData){
         var workInfors = [];
         var currentTask = [];
 

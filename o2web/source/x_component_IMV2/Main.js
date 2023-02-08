@@ -78,7 +78,7 @@ MWF.xApplication.IMV2.Main = new Class({
 				//设置content
 				this.app.content = this.o2ImMainNode;
 				// 给websocket 添加撤回消息回调函数
-				if (layout.desktop && layout.desktop.socket) {
+				if (layout.desktop && layout.desktop.socket && layout.desktop.socket.addImListener) {
 					layout.desktop.socket.addImListener("im_revoke", this.revokeMsgCallback.bind(this));
 					layout.desktop.socket.addImListener("im_create", this.createNewMsgCallback.bind(this));
 				}
@@ -175,11 +175,13 @@ MWF.xApplication.IMV2.Main = new Class({
 	openSettingsDialog: function () {
 		var settingNode = new Element("div", {"style":"padding:10px;background-color:#fff;"});
 
-		var lineNode = new Element("div", {"style":"height:24px;line-height: 24px;", "text": this.lp.settingsClearMsg}).inject(settingNode);
+		var lineNode = new Element("div", {"style":"height:24px;line-height: 24px;"}).inject(settingNode);
 		var isClearEnableNode = new Element("input", {"type":"checkbox", "checked": this.imConfig.enableClearMsg || false, "name": "clearEnable"}).inject(lineNode);
+		new Element("span", { "text": this.lp.settingsClearMsg}).inject(lineNode);
 
-		var line2Node = new Element("div", {"style":"height:24px;line-height: 24px;", "text": this.lp.settingsRevokeMsg}).inject(settingNode);
+		var line2Node = new Element("div", {"style":"height:24px;line-height: 24px;"}).inject(settingNode);
 		var isRevokeEnableNode = new Element("input", {"type":"checkbox", "checked": this.imConfig.enableRevokeMsg || false, "name": "revokeEnable"}).inject(line2Node);
+		new Element("span", { "text": this.lp.settingsRevokeMsg}).inject(line2Node);
 
 		var dlg = o2.DL.open({
 				"title": this.lp.setting,
@@ -810,22 +812,56 @@ MWF.xApplication.IMV2.ChatNodeBox = new Class({
 		var form = new MWF.xApplication.IMV2.CreateConversationForm(this.main, {}, { "title": this.lp.modifyMember, "personCount": 0, "personSelected": members, "isUpdateMember": true }, { app: this.main.app });
 		form.create()
 	},
-	// 点击菜单 清空聊天记录
-	tapClearMsg: function(e) {
+	// 点击菜单 删除会话
+	tapDeleteConversation: function(e) {
 		var _self = this;
-		MWF.xDesktop.confirm("info", this.chatTitleNode, this.lp.alert, this.lp.messageClearAllMsgAlert, 400, 150, function() {
-			o2.Actions.load("x_message_assemble_communicate").ImAction.clearConversationMsg(_self.conversationId, function (json) {
-				_self._reclickConv();
-			}, function (error) {
-				console.log(error);
-				_self.app.notice(error, "error", _self.app.content);
-			});
-			this.close();
-		}, function(){
-			this.close();
-		}, null, null, "o2");
+		var con = null;
+		for (var i = 0; i < this.main.conversationNodeItemList.length; i++) {
+			var c = this.main.conversationNodeItemList[i];
+			if (this.conversationId == c.data.id) {
+				con = c.data;
+				break;
+			}
+		}
+		if (con) {
+			var msg = this.lp.messageDeleteSingleConversationAlert;
+			if (con.type === "single") {
+				msg = this.lp.messageDeleteSingleConversationAlert;
+			} else {
+				msg = this.lp.messageDeleteGroupConversationAlert;
+			}
+			MWF.xDesktop.confirm("info", this.chatTitleNode, this.lp.alert, msg, 400, 150, function() {
+				if (con.type === "single") {
+					_self.deleteSingleConversation();
+				} else {
+					_self.deleteGroupConversation();
+				}
+				this.close();
+			}, function(){
+				this.close();
+			}, null, null, "o2");
+		} else {
+			console.error('没有找到会话对象。。。。。');
+		}
 	},
-
+	// 删除群聊
+	deleteGroupConversation: function() {
+		o2.Actions.load("x_message_assemble_communicate").ImAction.deleteGroupConversation(this.conversationId, function (json) {
+			this.main.refresh();
+		}.bind(this), function (error) {
+			console.error(error);
+			this.app.notice(error, "error", this.app.content);
+		}.bind(this));
+		
+	},
+	deleteSingleConversation: function() {
+		o2.Actions.load("x_message_assemble_communicate").ImAction.deleteSingleConversation(this.conversationId, function (json) {
+			this.main.refresh();
+		}.bind(this), function (error) {
+			console.error(error);
+			this.app.notice(error, "error", this.app.content);
+		}.bind(this));
+	},
 		//点击表情按钮
 		showEmojiBox: function () {
 			if (!this.emojiBoxNode) {

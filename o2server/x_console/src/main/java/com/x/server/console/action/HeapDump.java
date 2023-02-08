@@ -24,7 +24,7 @@ public class HeapDump {
 			String file = Config.dir_logs().getAbsolutePath() + "/jmap_" + Config.node() + "_"
 					+ DateTools.format(now, DateTools.formatCompact_yyyyMMddHHmmss) + ".hprof";
 			String command = Config.command_jmap_path().toString() + " -dump:format=b,file=" + file + " " + pid;
-			ProcessBuilder processBuilder = new ProcessBuilder();
+			java.lang.ProcessBuilder processBuilder = new java.lang.ProcessBuilder();
 			if (SystemUtils.IS_OS_WINDOWS) {
 				processBuilder.command("cmd", "/c", command);
 			} else {

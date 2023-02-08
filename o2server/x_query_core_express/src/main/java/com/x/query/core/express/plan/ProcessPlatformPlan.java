@@ -23,7 +23,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
-import com.x.base.core.project.config.Config;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -34,8 +33,6 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkCompleted;
 import com.x.processplatform.core.entity.content.WorkCompleted_;
 import com.x.processplatform.core.entity.content.Work_;
-import com.x.processplatform.core.entity.element.Application;
-import com.x.processplatform.core.entity.element.Process;
 import com.x.query.core.entity.Item;
 import com.x.query.core.entity.Item_;
 
@@ -156,7 +153,7 @@ public class ProcessPlatformPlan extends Plan {
 			throws Exception {
 		List<String> list = new TreeList<>();
 		List<CompletableFuture<List<String>>> futures = new TreeList<>();
-		for (List<String> _part_bundles : ListTools.batch(jobs, Config.query().getPlanQueryBatchSize())) {
+		for (List<String> _part_bundles : ListTools.batch(jobs, 500)) {
 			CompletableFuture<List<String>> future = CompletableFuture.supplyAsync(() -> {
 				try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 					EntityManager em = emc.get(Review.class);
@@ -189,7 +186,7 @@ public class ProcessPlatformPlan extends Plan {
 	private List<String> listBundleFilterEntry(List<String> jobs, List<FilterEntry> filterEntries,
 			ExecutorService threadPool) throws Exception {
 		List<String> partJobs = new TreeList<>();
-		List<List<String>> batchJobs = ListTools.batch(jobs, Config.query().getPlanQueryBatchSize());
+		List<List<String>> batchJobs = ListTools.batch(jobs, 500);
 		for (int i = 0; i < filterEntries.size(); i++) {
 			FilterEntry f = filterEntries.get(i);
 			LOGGER.debug("listBundle_filterEntry:{}.", () -> f);

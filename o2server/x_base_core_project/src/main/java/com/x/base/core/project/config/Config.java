@@ -84,6 +84,7 @@ public class Config {
 	public static final String PATH_CONFIG_PUBLICKEY = "config/public.key";
 	public static final String PATH_CONFIG_PRIVATEKEY = "config/private.key";
 	public static final String PATH_CONFIG_PROCESSPLATFORM = "config/processPlatform.json";
+	public static final String PATH_CONFIG_CMS = "config/cms.json";
 	public static final String PATH_CONFIG_QUERY = "config/query.json";
 	public static final String PATH_CONFIG_DINGDING = "config/dingding.json";
 	public static final String PATH_CONFIG_WELINK = "config/weLink.json";
@@ -134,6 +135,7 @@ public class Config {
 	public static final String DIR_LOCAL_BACKUP = "local/backup";
 	public static final String DIR_LOCAL_DUMP = "local/dump";
 	public static final String DIR_LOCAL_REPOSITORY = "local/repository";
+	public static final String DIR_LOCAL_REPOSITORY_INDEX = "local/repository/index";
 	public static final String DIR_LOCAL_UPDATE = "local/update";
 	public static final String DIR_LOCAL_TEMP = "local/temp";
 	public static final String DIR_LOCAL_TEMP_CLASSES = "local/temp/classes";
@@ -964,6 +966,19 @@ public class Config {
 		return instance().pushConfig;
 	}
 
+	private Cms cms;
+
+	public static synchronized Cms cms() throws Exception {
+		if (null == instance().cms) {
+			Cms obj = BaseTools.readConfigObject(PATH_CONFIG_CMS, Cms.class);
+			if (null == obj) {
+				obj = Cms.defaultInstance();
+			}
+			instance().cms = obj;
+		}
+		return instance().cms;
+	}
+
 	private ProcessPlatform processPlatform;
 
 	public static synchronized ProcessPlatform processPlatform() throws Exception {
@@ -1016,16 +1031,16 @@ public class Config {
 		return instance().weLink;
 	}
 
-	private MPweixin mPweixin;
+	private Mpweixin mPweixin;
 
-	public static synchronized MPweixin mPweixin() throws Exception {
+	public static synchronized Mpweixin mpweixin() throws Exception {
 		if (null == instance().mPweixin) {
-			MPweixin obj = BaseTools.readConfigObject(PATH_CONFIG_MPWEIXIN, MPweixin.class);
+			Mpweixin obj = BaseTools.readConfigObject(PATH_CONFIG_MPWEIXIN, Mpweixin.class);
 			if (obj == null) { // 容错 因为生成的配置文件名称有大小写问题
-				obj = BaseTools.readConfigObject(PATH_CONFIG_MPWEIXIN2, MPweixin.class);
+				obj = BaseTools.readConfigObject(PATH_CONFIG_MPWEIXIN2, Mpweixin.class);
 			}
 			if (null == obj) {
-				obj = MPweixin.defaultInstance();
+				obj = Mpweixin.defaultInstance();
 			}
 			instance().mPweixin = obj;
 		}
@@ -1107,19 +1122,6 @@ public class Config {
 		}
 		return instance().initialContext;
 	}
-
-//	public Slice slice;
-//
-//	public static synchronized Slice slice() throws Exception {
-//		if (null == instance().slice) {
-//			Slice obj = BaseTools.readConfigObject(PATH_CONFIG_SLICE, Slice.class);
-//			if (null == obj) {
-//				obj = Slice.defaultInstance();
-//			}
-//			instance().slice = obj;
-//		}
-//		return instance().slice;
-//	}
 
 	public Exmail exmail;
 
@@ -1459,6 +1461,14 @@ public class Config {
 
 	public static Path path_local_dump(boolean force) throws IOException, URISyntaxException {
 		Path path = Paths.get(base(), DIR_LOCAL_DUMP);
+		if ((!Files.exists(path)) && force) {
+			Files.createDirectories(path);
+		}
+		return path;
+	}
+
+	public static Path path_local_repository_index(boolean force) throws IOException, URISyntaxException {
+		Path path = Paths.get(base(), DIR_LOCAL_REPOSITORY_INDEX);
 		if ((!Files.exists(path)) && force) {
 			Files.createDirectories(path);
 		}

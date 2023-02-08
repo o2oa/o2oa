@@ -46,46 +46,62 @@ MWF.xDesktop.Authentication = new Class({
     },
 
     loadLogin: function (node) {
-        if(node)this.loginNode = node;
-        if( !node && this.loginNode )node = this.loginNode;
-        if (layout.config.loginPage && layout.config.loginPage.enable && layout.config.loginPage.portal) {
-            MWF.xDesktop.loadPortal(layout.config.loginPage.portal, this.options.loginParameter);
-            this.fireEvent("openLogin");
-        } else {
-            this.popupOptions = {
-                "draggable": false,
-                "closeAction": false,
-                "hasMask": false,
-                "relativeToApp": false
-            };
-            this.popupPara = {
-                container: node
-            };
-            this.postLogin = function (json) {
-                layout.desktop.session.user = json.data;
-                layout.session.user = json.data;
-                layout.session.token = layout.session.user.token;
-                var user = layout.desktop.session.user;
-                if (!user.identityList) user.identityList = [];
-                if (user.roleList) {
-                    var userRoleName = [];
-                    user.roleList.each(function (role) {
-                        userRoleName.push(role.substring(0, role.indexOf("@")));
-                    });
-                    user.roleList = user.roleList.concat(userRoleName);
+        o2.Actions.load("x_organization_assemble_authentication").EchoAction.get(function () {
+            if (node) this.loginNode = node;
+            if (!node && this.loginNode) node = this.loginNode;
+            if (layout.config.loginPage && layout.config.loginPage.enable && layout.config.loginPage.portal) {
+                MWF.xDesktop.loadPortal(layout.config.loginPage.portal, this.options.loginParameter);
+                this.fireEvent("openLogin");
+            } else {
+                this.popupOptions = {
+                    "draggable": false,
+                    "closeAction": false,
+                    "hasMask": false,
+                    "relativeToApp": false
+                };
+                this.popupPara = {
+                    container: node
+                };
+                this.postLogin = function (json) {
+                    layout.desktop.session.user = json.data;
+                    layout.session.user = json.data;
+                    layout.session.token = layout.session.user.token;
+                    var user = layout.desktop.session.user;
+                    if (!user.identityList) user.identityList = [];
+                    if (user.roleList) {
+                        var userRoleName = [];
+                        user.roleList.each(function (role) {
+                            userRoleName.push(role.substring(0, role.indexOf("@")));
+                        });
+                        user.roleList = user.roleList.concat(userRoleName);
+                    }
+                    var roleLCList = (user.roleList || []).map(function (role) {
+                        return role.toLowerCase();
+                    }.bind(this));
+                    if (roleLCList.isIntersect(["systemmanager", "securitymanager", "auditmanager"])) {
+                        window.location = "../x_desktop/app.html?app=ThreeMember";
+                    } else {
+                        window.location.reload();
+                    }
+                }.bind(this);
+                this.openLoginForm(this.popupOptions);
+                this.fireEvent("openLogin");
+            }
+        }.bind(this), function (xhr) {
+            var message;
+            if (xhr) {
+                try {
+                    var responseJSON = JSON.parse(xhr.responseText);
+                    message = responseJSON.message; //message为错误提示文本
+                } catch (e) {
                 }
-                var roleLCList = (user.roleList || []).map(function(role){
-                    return role.toLowerCase();
-                }.bind(this));
-                if( roleLCList.isIntersect(["systemmanager","securitymanager","auditmanager"]) ){
-                    window.location = "../x_desktop/app.html?app=ThreeMember";
-                }else{
-                    window.location.reload();
-                }
-            }.bind(this);
-            this.openLoginForm(this.popupOptions);
-            this.fireEvent("openLogin");
-        }
+            }
+            if (!message) message = MWF.LP.authentication.accessError;
+            new Element("div", {
+                "style": "font-size:16px;font-weight:bold;",
+                "text": message
+            }).inject(node);
+        }.bind(this));
     },
     safeLogout: function(){
         o2.Actions.get("x_organization_assemble_authentication").safeLogout(function () {
@@ -445,7 +461,7 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
             var _self = this;
             var res = new Request.JSON({
                 "method": "POST",
-                "url": url + "/jaxrs/sso",
+                "url": o2.filterUrl(url + "/jaxrs/sso"),
                 "data": JSON.stringify(json),
                 secure: false,
                 emulation: false,
@@ -494,6 +510,10 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
     },
 
     _createTableContent: function () {
+        if( this.formTopTextNode && this.formTopCloseActionNode ){
+            this.formTopCloseActionNode.inject( this.formTopTextNode, "before" )
+        }
+
         this.loginType = "captcha";
         this.codeLogin = false;
         this.bindLogin = false;
@@ -1000,16 +1020,16 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
             credentialItem.setWarning(this.lp.inputYourUserName, "empty");
             return;
         } else {
-            this.actions.checkCredential(credential, function (json) {
-                if (!json.data.value) {
-                    flag = false;
-                    credentialItem.setWarning(this.lp.userNotExist, "invalid");
-                }
-            }.bind(this), function (errorObj) {
-                flag = false;
-                var error = JSON.parse(errorObj.responseText);
-                credentialItem.setWarning(error.message, "invalid");
-            }.bind(this), false)
+            // this.actions.checkCredential(credential, function (json) {
+            //     if (!json.data.value) {
+            //         flag = false;
+            //         credentialItem.setWarning(this.lp.userNotExist, "invalid");
+            //     }
+            // }.bind(this), function (errorObj) {
+            //     flag = false;
+            //     var error = JSON.parse(errorObj.responseText);
+            //     credentialItem.setWarning(error.message, "invalid");
+            // }.bind(this), false)
         }
         if (!flag) {
             return;
@@ -1019,6 +1039,10 @@ MWF.xDesktop.Authentication.LoginForm = new Class({
         this.actions.createCredentialCode(credential, function (json) {
         }, function (errorObj) {
             var error = JSON.parse(errorObj.responseText);
+            var codeAnswerItem = this.form.getItem("codeAnswer");
+            if(codeAnswerItem){
+                codeAnswerItem.clearWarning("empty");
+            }
             this.setWarning(error.message);
             flag = false
         }.bind(this));
@@ -1214,6 +1238,10 @@ MWF.xDesktop.Authentication.SignUpForm = new Class({
         this._loadCss();
     },
     _createTableContent: function () {
+        if( this.formTopTextNode && this.formTopCloseActionNode ){
+            this.formTopCloseActionNode.inject( this.formTopTextNode, "before" )
+        }
+
         var self = this;
 
         this.actions = MWF.Actions.get("x_organization_assemble_personal");
@@ -1729,6 +1757,11 @@ MWF.xDesktop.Authentication.ResetPasswordForm = new Class({
         this.gotoLoginNode.addEvent("click", function () { this.gotoLogin() }.bind(this));
     },
     _createTableContent: function () {
+
+        if( this.formTopTextNode && this.formTopCloseActionNode ){
+            this.formTopCloseActionNode.inject( this.formTopTextNode, "before" )
+        }
+
         this.formTableContainer.setStyles(this.css.formTableContainer2);
         this.loadSteps();
         this.loadStepForm_1();
@@ -2168,6 +2201,10 @@ MWF.xDesktop.Authentication.ChangePasswordForm = new Class({
     },
     _createTableContent: function () {
         var self = this;
+
+        if( this.formTopTextNode && this.formTopCloseActionNode ){
+            this.formTopCloseActionNode.inject( this.formTopTextNode, "before" )
+        }
 
         this.actions = MWF.Actions.get("x_organization_assemble_personal");
 

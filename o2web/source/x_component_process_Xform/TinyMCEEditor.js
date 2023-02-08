@@ -292,7 +292,7 @@ MWF.xApplication.process.Xform.TinyMCEEditor = MWF.APPTinyMCEEditor = new Class(
 
                 this.errNode = this.createErrorNode(text).inject(this.node, "after");
                 this.showNotValidationMode(this.node);
-                if (!this.node.isIntoView()) this.node.scrollIntoView();
+                if (!this.errNode.isIntoView()) this.errNode.scrollIntoView(false);
             }
         },
         showNotValidationMode: function (node) {

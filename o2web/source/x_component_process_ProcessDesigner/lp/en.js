@@ -97,6 +97,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 	"deleteDutyTitle": "Remove duty confirmation",
 	"deleteDutyText": "Are you sure you want to remove the duty \"{duty}\"?",
 	"selectIcon": "Select Icon",
+	"centerServer": "Center Serve",
 
 	"creatorUnit": "The Unit of the author",
 	"currentUnit": "The Unit of the processor",
@@ -115,9 +116,10 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 	"projectionTitle": "Mapping business data",
 	"projectionActionNode_add": "Add mapping entry",
 	"projectionActionNode_modify": "Modify the mapping entry",
-	"projectionDataName": "Name",
+	"projectionDataName": "DataName",
 	"projectionPath": "Path",
 	"projectionType":"Type",
+    "projectionName":"Name",
 	"projectionInputError": "Please enter the data name and data path",
 	"projectionTypeCountError": "{type} type data mapping entries, up to {count} allowed.",
 	"projectionSameNameError": "Same data name already exists",
@@ -531,7 +533,8 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"byDataPath": "By DataPath",
 		"byDataScript": "By DataScript",
 		"publishTableConfig": "Data table publishing configuration",
-		"queryTableDataPathNote": "Note: the root path is empty, the data table is filled with the data table identifier .data (eg datatable1.data), and the data template is filled with the data template identifier (eg datatemplate1)."
+		"queryTableDataPathNote": "Note: the root path is empty, the data table is filled with the data table identifier .data (eg datatable1.data), and the data template is filled with the data template identifier (eg datatemplate1).",
+		"orgIdPlaceholder" : "Such as: departmentLeader"
 	}
 
 };

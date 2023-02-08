@@ -25,7 +25,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  */
 
 @Schema(name = "BBSPermissionInfo", description = "论坛权限信息.")
-@ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
+@ContainerEntity(dumpSize = 200, type = ContainerEntity.Type.element, reference = ContainerEntity.Reference.strong)
 @Entity
 @Table(name = PersistenceProperties.BBSPermissionInfo.table, uniqueConstraints = {
 		@UniqueConstraint(name = PersistenceProperties.BBSPermissionInfo.table + JpaObject.IndexNameMiddle

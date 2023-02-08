@@ -23,7 +23,7 @@ public class DumpRestoreData extends ConfigObject {
 	public static final String RESTOREOVERRIDE_SKIPEXISTED = "skipExisted";
 
 	public static final Boolean DEFAULT_REDISTRIBUTE = true;
-	public static final Boolean DEFAULT_EXCEPTIONINVALIDSTORAGE = true;
+	public static final Boolean DEFAULT_EXCEPTIONINVALIDSTORAGE = false;
 	public static final Boolean DEFAULT_ATTACHSTORAGE = true;
 	public static final String DEFAULT_ITEMCATEGORY = "";
 	public static final Boolean DEFAULT_PARALLEL = true;

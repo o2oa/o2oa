@@ -33,11 +33,11 @@ import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.express.ProcessingAttributes;
+import com.x.processplatform.core.express.WorkDataHelper;
 import com.x.processplatform.core.express.service.processing.jaxrs.task.ProcessingWi;
 import com.x.processplatform.service.processing.Business;
 import com.x.processplatform.service.processing.MessageFactory;
 import com.x.processplatform.service.processing.WorkContext;
-import com.x.processplatform.service.processing.WorkDataHelper;
 import com.x.processplatform.service.processing.configurator.ProcessingConfigurator;
 import com.x.processplatform.service.processing.processor.AeiObjects;
 
@@ -204,18 +204,6 @@ class ActionProcessing extends BaseAction {
 				Date now = new Date();
 				Long duration = Config.workTime().betweenMinutes(task.getStartTime(), now);
 				TaskCompleted taskCompleted = new TaskCompleted(task, wi.getProcessingType(), now, duration);
-				if (StringUtils.isEmpty(taskCompleted.getOpinion())) {
-					Process process = business.element().get(task.getProcess(), Process.class);
-					if ((null != process) && BooleanUtils.isTrue(process.getRouteNameAsOpinion())) {
-						// 先写入路由意见
-						taskCompleted.setOpinion(StringUtils.trimToEmpty(ListTools.parallel(task.getRouteNameList(),
-								task.getRouteName(), task.getRouteOpinionList())));
-						// 如果路由的名称依然没有获取，那么强制设置为路由名称。
-						if (StringUtils.isEmpty(taskCompleted.getOpinion())) {
-							taskCompleted.setOpinion(task.getRouteName());
-						}
-					}
-				}
 				taskCompleted.onPersist();
 				emc.persist(taskCompleted, CheckPersistType.all);
 				emc.remove(task, CheckRemoveType.all);

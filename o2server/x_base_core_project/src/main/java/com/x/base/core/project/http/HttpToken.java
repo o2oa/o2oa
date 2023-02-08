@@ -25,7 +25,7 @@ import com.x.base.core.project.tools.URLTools;
 
 public class HttpToken {
 
-	private static final Logger logger = LoggerFactory.getLogger(HttpToken.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(HttpToken.class);
 
 	public static final String X_AUTHORIZATION = "authorization";
 	public static final String X_PERSON = "x-person";
@@ -79,14 +79,14 @@ public class HttpToken {
 			try {
 				plain = Crypto.decrypt(token, key, Config.person().getEncryptType());
 			} catch (Exception e) {
-				logger.warn("can not decrypt token:{}, {}, remote address:{}.", token, e.getMessage(), address);
+			    LOGGER.warn("can not decrypt token:{}, {}, remote address:{}.", token, e.getMessage(), address);
 				return EffectivePerson.anonymous();
 			}
 			Pattern pattern = Pattern.compile(REGULAREXPRESSION_TOKEN, Pattern.CASE_INSENSITIVE);
 			Matcher matcher = pattern.matcher(plain);
 			if (!matcher.find()) {
 				// 不报错,跳过错误,将用户设置为anonymous
-				logger.warn("token format error:{}, remote address:{}.", plain, address);
+			    LOGGER.warn("token format error:{}, remote address:{}.", plain, address);
 				return EffectivePerson.anonymous();
 			}
 			Date date = DateUtils.parseDate(matcher.group(2), DateTools.formatCompact_yyyyMMddHHmmss);
@@ -101,7 +101,7 @@ public class HttpToken {
 					String user = URLDecoder.decode(matcher.group(3), StandardCharsets.UTF_8.name());
 					Date threshold = Config.resource_node_tokenThresholds().get(user);
 					if ((null != threshold) && threshold.after(date)) {
-						logger.warn("token expired by safe logout, user:{}, token:{}, remote address:{}.", user, plain,
+					    LOGGER.warn("token expired by safe logout, user:{}, token:{}, remote address:{}.", user, plain,
 								address);
 						return EffectivePerson.anonymous();
 					}
@@ -109,7 +109,7 @@ public class HttpToken {
 
 				if (diff > (60000L * Config.person().getTokenExpiredMinutes())) {
 					// 不报错,跳过错误,将用户设置为anonymous
-					logger.warn("token expired, user:{}, token:{}, remote address:{}.",
+				    LOGGER.warn("token expired, user:{}, token:{}, remote address:{}.",
 							URLDecoder.decode(matcher.group(3), StandardCharsets.UTF_8.name()), plain, address);
 					return EffectivePerson.anonymous();
 				}

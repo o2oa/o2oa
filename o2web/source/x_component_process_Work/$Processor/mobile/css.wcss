@@ -76,7 +76,7 @@
         "padding-left": "20px"
     },
     "routeOpinionArea": {
-        "height": "129px",
+//        "height": "129px",
         "border-bottom": "0px solid #6681a5"
     },
 
@@ -192,6 +192,19 @@
         "margin-left": "5px",
         "background": "url(../x_component_process_Work/$Processor/default/write.png) no-repeat 5px center"
     },
+
+    "inputOpinionHandwritingOkAction": {
+        "float": "right",
+        "overflow": "hidden",
+        "border": "1px solid #dddddd",
+        "border-radius": "3px",
+        "cursor": "pointer",
+        "padding-left": "24px",
+        "padding-right": "5px",
+        "margin-left": "5px",
+        "background": "url(../x_component_process_Work/$Processor/default/writeok.png) no-repeat 5px center"
+    },
+
     "handwritingNode": {
         "position": "absolute",
         "background": "#ffffff"

@@ -405,6 +405,7 @@ MWF.xApplication.process.Application.List = new Class({
 
 								}
 							}
+							result.applicationList = this.filterList.applicationList;
 							this.filterList = result;
 							this.refresh();
 						}.bind(this)
@@ -1063,7 +1064,10 @@ MWF.xApplication.process.Application.DictList = new Class({
 		debugger
 		var options = {
 			"id": id,
-			"application" : this.app.application.id,
+			"application" : {
+				"id": this.app.application.id,
+				"name": this.app.application.name
+			},
 			"appId":  "process.DictionaryDesigner" + id
 		};
 		layout.desktop.openApplication(null, "process.DictionaryDesigner", options);

@@ -205,7 +205,7 @@ MWF.xApplication.process.FormDesigner.widget.ElDropdownItemEditor.Tree.Node = ne
 			}
 
 			this.propertyArea.setStyle("display", "block");
-			this.propertyArea.scrollIntoView();
+			this.propertyArea.scrollIntoView(false);
 			this.setActionPosition();
 
 			this.isEditProperty = true;

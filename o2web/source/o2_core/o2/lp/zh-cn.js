@@ -510,7 +510,8 @@ o2.LP.authentication = {
     "inputYourNewPassword" : "请输入新密码",
     "changePasswordSuccess" : "修改密码成功",
     "userAppCameraHtml" : "<div>打开<div styles='bindTipLinkArea'>APP</div>扫一扫</div>",
-    "loginToPage": "登录网页版"
+    "loginToPage": "登录网页版",
+    "accessError": "访问后台服务失败"
 
 };
 o2.LP.script = {

@@ -30,10 +30,13 @@ MWF.xApplication.process.ScriptDesigner.Main = new Class({
 			this.options.desktopReload = false;
 			this.options.title = this.options.title + "-"+MWF.APPSD.LP.newScript;
 		}
+        if( !this.application && this.options.application ){
+            this.application = this.options.application;
+        }
 
         this.actions = MWF.Actions.get("x_processplatform_assemble_designer");
 		//this.actions = new MWF.xApplication.process.ProcessManager.Actions.RestActions();
-		
+
 		this.lp = MWF.xApplication.process.ScriptDesigner.LP;
 
         this.addEvent("queryClose", function(e){
@@ -43,7 +46,7 @@ MWF.xApplication.process.ScriptDesigner.Main = new Class({
         }.bind(this));
 //		this.processData = this.options.processData;
 	},
-	
+
 	loadApplication: function(callback){
 		this.createNode();
 		if (!this.options.isRefresh){
@@ -322,14 +325,14 @@ MWF.xApplication.process.ScriptDesigner.Main = new Class({
         //};
         //this.desktop.openApplication(e, "process.ScriptDesigner", options);
     },
-	
+
 	//loadContentNode------------------------------
     loadContentNode: function(toolbarCallback, contentCallback){
 		this.contentToolbarNode = new Element("div#contentToolbarNode", {
 			"styles": this.css.contentToolbarNode
 		}).inject(this.contentNode);
 		this.loadContentToolbar(toolbarCallback);
-		
+
 		this.editContentNode = new Element("div", {
 			"styles": this.css.editContentNode
 		}).inject(this.contentNode);
@@ -534,36 +537,36 @@ MWF.xApplication.process.ScriptDesigner.Main = new Class({
             //    new MWF.widget.ScrollBar(this.designNode, {"distance": 100});
             //}.bind(this));
 	},
-	
+
 	//loadProperty------------------------
 	loadProperty: function(){
 		this.propertyTitleNode = new Element("div", {
 			"styles": this.css.propertyTitleNode,
 			"text": MWF.APPSD.LP.property
 		}).inject(this.propertyNode);
-		
+
 		this.propertyResizeBar = new Element("div", {
 			"styles": this.css.propertyResizeBar
 		}).inject(this.propertyNode);
 		this.loadPropertyResize();
-		
+
 		this.propertyContentNode = new Element("div", {
 			"styles": this.css.propertyContentNode
 		}).inject(this.propertyNode);
-		
+
 		this.propertyDomArea = new Element("div", {
 			"styles": this.css.propertyDomArea
 		}).inject(this.propertyContentNode);
-		
+
 		this.propertyDomPercent = 0.3;
 		this.propertyContentResizeNode = new Element("div", {
 			"styles": this.css.propertyContentResizeNode
 		}).inject(this.propertyContentNode);
-		
+
 		this.propertyContentArea = new Element("div", {
 			"styles": this.css.propertyContentArea
 		}).inject(this.propertyContentNode);
-		
+
 		this.loadPropertyContentResize();
 
         this.setPropertyContent();
@@ -608,7 +611,7 @@ MWF.xApplication.process.ScriptDesigner.Main = new Class({
 				var x = (Browser.name=="firefox") ? e.event.clientX : e.event.x;
 				var y = (Browser.name=="firefox") ? e.event.clientY : e.event.y;
 				el.store("position", {"x": x, "y": y});
-				
+
 				var size = this.propertyNode.getSize();
 				el.store("initialWidth", size.x);
 			}.bind(this),
@@ -619,7 +622,7 @@ MWF.xApplication.process.ScriptDesigner.Main = new Class({
 				var position = el.retrieve("position");
 				var initialWidth = el.retrieve("initialWidth").toFloat();
 				var dx = position.x.toFloat()-x.toFloat();
-				
+
 				var width = initialWidth+dx;
 				if (width> bodySize.x/2) width =  bodySize.x/2;
 				if (width<40) width = 40;
@@ -663,16 +666,16 @@ MWF.xApplication.process.ScriptDesigner.Main = new Class({
 		var size = this.propertyContentNode.getSize();
 		var resizeNodeSize = this.propertyContentResizeNode.getSize();
 		var height = size.y-resizeNodeSize.y;
-		
+
 		var domHeight = this.propertyDomPercent*height;
 		var contentHeight = height-domHeight;
-		
+
 		this.propertyDomArea.setStyle("height", ""+domHeight+"px");
 		this.propertyContentArea.setStyle("height", ""+contentHeight+"px");
 	},
-	
 
-	
+
+
 	//resizeNode------------------------------------------------
 	resizeNode: function(){
         if (!this.isMax){
@@ -721,7 +724,7 @@ MWF.xApplication.process.ScriptDesigner.Main = new Class({
             this.scriptListResizeNode.setStyle("height", ""+y+"px");
         }
 	},
-	
+
 	//loadForm------------------------------------------
     loadScript: function(){
         //this.scriptTab.addTab(node, title);
@@ -845,5 +848,83 @@ MWF.xApplication.process.ScriptDesigner.Main = new Class({
             return status;
         }
 		return {"id": this.options.id, "application": application};
-	}
+	},
+    showScriptVersion: function(){
+
+        this.versionNode = new Element("div");
+        this.dlg = o2.DL.open({
+            "title": MWF.APPSD.LP.version["title"],
+            "content": this.versionNode,
+            "offset": {"y": -100},
+            "isMax": false,
+            "width": 500,
+            "height": 300,
+            "buttonList": [
+                {
+                    "type": "cancel",
+                    "text": MWF.APPSD.LP.version["close"],
+                    "action": function(){ this.close(); }
+                }
+            ],
+            "onPostShow": function(){
+                this.loadVersionList();
+            }.bind(this),
+            "onPostClose": function(){
+                this.dlg = null;
+            }.bind(this)
+        });
+    },
+    loadVersionList : function(){
+        var tableHtml = "<table width='100%' cellspacing='0' cellpadding='3' style='margin-top: 1px'><tr>" +
+            "<th>"+MWF.APPSD.LP.version["no"]+"</th>" +
+            "<th>"+MWF.APPSD.LP.version["updateTime"]+"</th>" +
+            "<th>"+MWF.APPSD.LP.version["op"]+"</th>" +
+            "</tr></table>";
+        this.versionNode.set("html", tableHtml);
+        this.versionTable = this.versionNode.getElement("table");
+        this.action = o2.Actions.load("x_processplatform_assemble_designer");
+        this.action.ScriptVersionAction.listWithForm(this.options.id, function(json){
+            this.versionList = json.data;
+            this.versionList.each(function (version,index) {
+                var node = new Element("tr").inject(this.versionTable);
+                var html = "<td>"+(index+1)+"</td>" +
+                    "<td>"+version.updateTime+"</td>" +
+                    "<td></td>";
+                node.set("html", html);
+                var actionNode = new Element("div",{"styles":{
+                        "width": "60px",
+                        "padding": "0px 3px",
+                        "border-radius": "20px",
+                        "cursor" : "pointer",
+                        "color": "#ffffff",
+                        "background-color": "#4A90E2",
+                        "float": "left",
+                        "margin-right": "2px",
+                        "text-align": "center",
+                        "font-weight": "100"
+                    }}).inject(node.getLast("td"));
+                actionNode.set("text", MWF.APPSD.LP.version["resume"]);
+                actionNode.addEvent("click",function (e) {
+
+                    console.log(this);
+                    var _self = this;
+                    this.confirm("warn", e,  MWF.APPSD.LP.version["resumeConfirm"], MWF.APPSD.LP.version["resumeInfo"], 460, 120, function(){
+                        _self.resumeScript(version);
+                        this.close();
+                    }, function(){
+                        this.close();
+                    });
+                }.bind(this));
+            }.bind(this))
+        }.bind(this));
+    },
+    resumeScript : function(version){
+        this.action.ScriptVersionAction.get(version.id, function( json ){
+            var scriptData = JSON.parse(json.data.data);
+            this.script.editor.setValue(scriptData.text)
+
+            this.dlg.close();
+            this.notice(MWF.APPSD.LP.version["resumeSuccess"]);
+        }.bind(this), null, false);
+    },
 });

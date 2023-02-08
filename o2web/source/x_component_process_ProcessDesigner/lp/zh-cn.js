@@ -97,6 +97,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
     "deleteDutyTitle": "移除职务确认",
     "deleteDutyText": "您确认要移除职务“{duty}”吗？",
     "selectIcon": "选择图标",
+	"centerServer": "中心服务",
 
     "creatorUnit": "拟稿人所在组织",
     "currentUnit": "处理人所在组织",
@@ -118,6 +119,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 	"projectionDataName": "数据名称",
 	"projectionPath": "数据路径",
 	"projectionType":"数据类型",
+    "projectionName":"列名",
 	"projectionInputError": "请输入数据名称和数据路径",
 	"projectionTypeCountError": "{type}类型的数据映射条目，最多允许{count}条。",
 	"projectionSameNameError": "相同的数据名称已存在",
@@ -348,7 +350,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"responseScript": "响应脚本",
 
 		"use": "使用",
-		"getJson": "获取响应内容。如果响应内容是JSON格式的字符串，则返回JSON对象；否则返回原始响应内容。",
+		"getJson": "获取响应内容。如果响应内容是JSON格式的字符串，则返回JSON对象；否则返回原始响应内容。如果调用本平台服务管理中的接口，在接口中返回的数据需放在data中，如:{ \"data\" : [] }",
 		"systemRequest": "系统内请求",
 		"restAddr": "REST地址",
 		"requestBodyScript": "消息体脚本",
@@ -545,6 +547,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"byDataPath": "通过数据路径",
 		"byDataScript": "通过数据脚本",
 		"publishTableConfig": "数据表发布配置",
-		"queryTableDataPathNote": "注：根路径为空，数据表格填数据表格标识.data（如datatable1.data），数据模板填数据模板标识（如datatemplate1）。"
+		"queryTableDataPathNote": "注：根路径为空，数据表格填数据表格标识.data（如datatable1.data），数据模板填数据模板标识（如datatemplate1）。",
+		"orgIdPlaceholder" : "如：departmentLeader"
 	}
 };

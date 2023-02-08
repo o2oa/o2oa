@@ -24,6 +24,7 @@ MWF.xApplication.Org.LP = {
     "no": "否",
     "sortByPinYin" : "按拼音排序",
     "sortByPinYinConfirmContent" : "该操作将使本组织内身份按照拼音排序，确定操作？",
+    "sortByManual": "修改",
 
     "search": "搜索",
     "searchText": "请输入关键字",
@@ -221,6 +222,12 @@ MWF.xApplication.Org.LP = {
     "unlockPersonTitle": "解锁登录确认",
     "unlockPersonText": "“{name}”输错密码已经超过规定次数，允许再次登录？",
     "unlockPersonSuccess" : "用户 {name} 已经可以登录了！",
+
+    "expiredTime": "密码到期时间",
+    "expiredTimeTitle": "密码到期时间",
+    "expiredTimeSuccess": "设置密码到期时间成功",
+    "inputExpiredTime": "密码到期时间不能为空",
+    "inputExpiredTime2": "密码到期时间不能早于当前时间",
 
     "attributeName": "属性",
     "attributeValue": "值",

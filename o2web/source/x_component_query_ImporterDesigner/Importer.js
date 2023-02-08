@@ -269,9 +269,9 @@ MWF.xApplication.query.ImporterDesigner.Importer = new Class({
             this.setViewWidth();
 
             if( addToLeft ){
-                this.addColumnLeftNode.scrollIntoView(true);
+                this.addColumnLeftNode.scrollIntoView(false);
             }else{
-                this.addColumnNode.scrollIntoView(true);
+                this.addColumnNode.scrollIntoView(false);
             }
 
         }.bind(this));
@@ -1121,7 +1121,7 @@ MWF.xApplication.query.ImporterDesigner.Importer.CalculateField = new Class({
         this.node.setStyles(this.css.viewCalculateFieldNode_selected);
         // new Fx.Scroll(this.view.areaNode, {"wheelStops": false, "duration": 100}).toElementEdge(this.node);
         try {
-            this.node.scrollIntoView(true);
+            this.node.scrollIntoView(false);
         }catch (e) {
             
         }

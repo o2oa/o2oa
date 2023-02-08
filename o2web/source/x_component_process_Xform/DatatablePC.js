@@ -249,8 +249,11 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.isShowAllSection = this.isAllSectionShow();
 
 			this.editModules = [];
-			this.node.setStyle("overflow-x", "auto");
-			this.node.setStyle("overflow-y", "hidden");
+
+			if( !layout.mobile ){
+				this.node.setStyle("overflow-x", "auto");
+				this.node.setStyle("overflow-y", "hidden");
+			}
 			this.table = this.node.getElement("table");
 			this.tBody = this.table.getElement("tbody");
 
@@ -262,6 +265,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 			this.deleteable = this.json.deleteable !== "no";
 			this.addable = this.json.addable !== "no";
+			this.sortable = this.json.sortable !== "no";
 
 			//允许导入
 			this.importenable  = this.editable && (this.json.impexpType === "impexp" || this.json.impexpType === "imp");
@@ -320,6 +324,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this.reloading = false;
 		},
 		loadDatatable: function(){
+			this.loading = true;
 			this._loadStyles();
 
 			this._loadTitleTr();
@@ -330,6 +335,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			this._loadDatatable(function(){
 				this._loadImportExportAction();
 				this.fieldModuleLoaded = true;
+				this.loading = false;
 				this.fireEvent("postLoad");
 			}.bind(this));
 		},
@@ -373,10 +379,13 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 						}
 					}).inject(actionTh);
 				}
-				var moveTh = new Element("th.mwf_moveaction").inject(this.titleTr, "bottom"); //总计列
+				var moveTh;
+				if( this.sortable ){
+					moveTh = new Element("th.mwf_moveaction").inject(this.titleTr, "bottom"); //总计列
+				}
 				if (this.json.border){
 					Array.each([actionTh,moveTh], function(th){
-						th.setStyles({
+						if(th)th.setStyles({
 							"border-bottom": this.json.border,
 							"border-right": this.json.border
 						})
@@ -384,7 +393,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				}
 				if (this.json.titleStyles){
 					actionTh.setStyles(this.json.titleStyles);
-					moveTh.setStyles(this.json.titleStyles);
+					if(moveTh)moveTh.setStyles(this.json.titleStyles);
 				}
 			}
 		},
@@ -428,10 +437,15 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 			if(this.editable){
 				var eTd = new Element("td.mwf_editaction",{"styles": this.json.actionStyles || {}}).inject(this.templateNode, "top"); //操作列
-				var mTd = new Element("td.mwf_moveaction", {"styles": this.form.css.gridMoveActionCell || {}}).inject(this.templateNode, "bottom"); //排序列
+				this.columnCount = this.columnCount+1;
+				var mTd;
+				if( this.sortable ){
+					mTd= new Element("td.mwf_moveaction", {"styles": this.form.css.gridMoveActionCell || {}}).inject(this.templateNode, "bottom");
+					this.columnCount = this.columnCount+1;
+				} //排序列
 				if (this.json.border){
 					Array.each([eTd,mTd], function(td){
-						td.setStyles({
+						if(td)td.setStyles({
 							"border-bottom": this.json.border,
 							"border-right": this.json.border,
 							"background": "transparent"
@@ -440,9 +454,8 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				}
 				if (this.json.contentStyles){
 					eTd.setStyles(this.json.contentStyles);
-					mTd.setStyles(this.json.contentStyles);
+					if(mTd)mTd.setStyles(this.json.contentStyles);
 				}
-				this.columnCount = this.columnCount+2;
 			}
 
 			this.templateHtml = this.templateNode.get("html");
@@ -570,6 +583,9 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			}.bind(this));
 			data.total = totalData;
 			return totalData;
+		},
+		isTotalNumberModule: function( id ){
+			return this.totalNumberModuleIds.contains(id)
 		},
 
 		isShowSectionKey: function(){
@@ -723,6 +739,9 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 					"border-top": this.json.border,
 					"border-left": this.json.border
 				});
+			}
+			if( this.json.recoveryStyles ){
+				this.node.setStyles(this.json.recoveryStyles);
 			}
 			this.node.setStyles(this.json.styles);
 			this.table.setStyles(this.json.tableStyles);
@@ -935,7 +954,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				}
 			}else{
 				var index = line.options.index;
-				var data = this.getData();
+				var data = this.getInputData();
 				data.data[index] = d;
 				this.setData( data );
 			}
@@ -967,7 +986,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				line.isNewAdd = true;
 			}else{
 				index = this.lineList.length;
-				data = this.getData();
+				data = this.getInputData();
 
 				data.data.push(d||{});
 				this.newLineIndex = index;
@@ -1012,7 +1031,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			}else {
 				index = beforeLine.options.index + 1;
 
-				data = this.getData();
+				data = this.getInputData();
 				data.data.splice(index, 0, {});
 				this.newLineIndex = index;
 				this.setData(data);
@@ -1049,7 +1068,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				line.isNewAdd = true;
 			}else {
 				//使用数据驱动
-				data = this.getData();
+				data = this.getInputData();
 				if (data.data.length < index) return null;
 				data.data.splice(index, 0, d || {});
 				this.setData(data);
@@ -1096,7 +1115,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			if( this.isShowAllSection ){
 				data = this.getBusinessDataById();
 			}else{
-				data = _self.getData();
+				data = _self.getInputData();
 			}
 
 			lines.reverse().each(function(line){
@@ -1158,7 +1177,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				if(this.currentEditedLine === line)this.currentEditedLine = null;
 				this.setAllSectionData( data );
 			}else{
-				data = this.getData();
+				data = this.getInputData();
 				data.data.splice(line.options.index, 1);
 
 				if(this.currentEditedLine === line)this.currentEditedLine = null;
@@ -1196,7 +1215,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			}
 			return true;
 		},
-		_completeLineEdit: function( ev, fireChange ){
+		_completeLineEdit: function( ev, fireChange, ignoerSave ){
 			var line = this.currentEditedLine;
 			if( !line )return true;
 			if( !line.validation() )return false;
@@ -1211,11 +1230,12 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 			line.isNewAdd = false;
 			// line.data = line.getData();
+			line.computeModuleData("save");
 			line.originalData = Object.clone(line.data);
 			line.changeEditMode(false);
 			this._loadTotal();
 			if( line.sectionLine )line.sectionLine._loadTotal();
-			if(line.attachmentChangeFlag){
+			if(line.attachmentChangeFlag && !ignoerSave){
 				this.form.saveFormData();
 				line.attachmentChangeFlag = false;
 			}
@@ -1247,7 +1267,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			}else {
 				if (line.options.index === 0) return;
 
-				data = this.getData();
+				data = this.getInputData();
 				upData = data.data[line.options.index - 1];
 				curData = data.data[line.options.index];
 				data.data[line.options.index] = upData;
@@ -1398,7 +1418,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 		 * @return {Boolean} 是否为空
 		 */
 		isEmpty: function(){
-			var data = this.getData();
+			var data = this.getInputData();
 			if( !data || !data.data )return true;
 			if( o2.typeOf( data.data ) === "array" ){
 				return data.data.length === 0;
@@ -1551,6 +1571,21 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				// 		line.data = line.getData();
 				// 	}
 				// });
+				if( this.multiEditMode){
+					this.lineList.each(function (line) {
+						line.computeModuleData("save");
+					})
+				}
+				return this._getBusinessData();
+			}else{
+				return this._getBusinessData();
+			}
+		},
+		getInputData: function(){
+			if( this.importer ){
+				this.importer.destroySimulateModule();
+			}
+			if (this.editable!==false){
 				return this._getBusinessData();
 			}else{
 				return this._getBusinessData();
@@ -1610,6 +1645,13 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 
 				this.errNode = this.createErrorNode(text).inject(this.node, "after");
 				this.showNotValidationMode(this.node);
+
+				var parentNode = this.errNode;
+				while( parentNode.offsetParent === null ){
+					parentNode = parentNode.getParent();
+				}
+
+				if (!parentNode.isIntoView()) parentNode.scrollIntoView(false);
 			}
 		},
 		showNotValidationMode: function(node){
@@ -1646,7 +1688,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			var flag = (data.status=="all") ? true: (routeName == data.decision);
 			if (flag){
 				//???
-				var n = this.getData();
+				var n = this.getInputData();
 				if( o2.typeOf(n)==="object"){
 					var arr = [];
 					Object.each( n, function (d, key) {
@@ -1720,6 +1762,15 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 			}
 			return true;
 		},
+		saveValidation: function () {
+			return this.validationCurrentEditedLine();
+		},
+		validationCurrentEditedLine: function () {
+			var line = this.currentEditedLine;
+			if( !line )return true;
+			if( !line.validation() )return false;
+			return true;
+		},
 		validation: function(routeName, opinion){
 			if (this.isEdit){
 				if (!this.editValidation()){
@@ -1727,6 +1778,8 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				}
 			}
 			if (!this.validationConfig(routeName, opinion))  return false;
+
+			if( !this.validationCurrentEditedLine() )return false;
 
 			if (!this.json.validation) return true;
 			if (!this.json.validation.code) return true;
@@ -1837,6 +1890,53 @@ MWF.xApplication.process.Xform.DatatablePC$Title = new Class({
 		if(this.json.recoveryStyles){
 			this.node.setStyles(this.json.recoveryStyles);
 		}
+		if (this.json.prefixIcon || this.json.suffixIcon){
+			var text = this.node.get("text");
+			this.node.empty();
+
+			var height = (this.node.offsetParent === null) ? "28" : (this.node.getSize().y - this.getOffsetY());
+            this.wrapNode = new Element("div", {
+                "styles": {
+                    "position":"relative",
+                    "display":"inline-block",
+                    "height": height,
+                    "line-height": height
+                }
+            }).inject(this.node);
+
+			this.textNode = new Element("div", {"styles": {
+				"padding-left": (this.json.prefixIcon) ? "20px" : "0px",
+				"padding-right": (this.json.suffixIcon) ? "20px" : "0px"
+			}, "text": text}).inject(this.wrapNode);
+
+			var  textHeight = (this.node.offsetParent === null) ? "28" : this.textNode.getSize().y;
+			if (this.json.prefixIcon){
+				this.prefixNode = new Element("div", {"styles": {
+					"position": "absolute",
+					"top": "0px",
+					"left": "0px",
+					"width": "20px",
+					"height": ""+ textHeight +"px",
+					"background": "url("+this.json.prefixIcon+") center center no-repeat"
+				}}).inject(this.textNode, "before");
+			}
+			if (this.json.suffixIcon){
+				this.suffixNode = new Element("div", {"styles": {
+					"position": "absolute",
+					"top": "0px",
+					"right": "0px",
+					"width": "20px",
+					"height": ""+textHeight+"px",
+					"background": "url("+this.json.suffixIcon+") center center no-repeat"
+				}}).inject(this.textNode, "before");
+			}
+		}
+	},
+	getOffsetY: function(){
+		return (this.node.getStyle("padding-top") || 0).toInt()
+			+ (this.node.getStyle("padding-bottom") || 0).toInt()
+			+ (this.node.getStyle("border-top") || 0).toInt()
+			+ (this.node.getStyle("border-bottom") || 0).toInt()
 	}
 });
 
@@ -2073,6 +2173,9 @@ MWF.xApplication.process.Xform.DatatablePC.SectionLine =  new Class({
 		}.bind(this));
 		data.total = totalData;
 		return totalData;
+	},
+	isTotalNumberModule: function( id ){
+		return this.totalNumberModuleIds.contains(id)
 	}
 });
 
@@ -2194,6 +2297,28 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 					if( _self.widget )this.widget = _self.widget;
 					this.parentLine = _self;
 					this.parentDatatable = _self.datatable;
+
+					//只读方法值在页面加载的时候或者new的时候计算一下
+					if( this.json.compute === "show" ){
+						var needComputeShow = false;
+						if( _self.datatable.loading ) {
+							needComputeShow = true;
+						}else if( _self.options.isNew && !_self.reloading ){
+							needComputeShow = true;
+						}
+						if( !needComputeShow ){
+							this.json.compute = "create"; //
+							if( this.options.moduleEvents && this.options.moduleEvents.length ){ //恢复compute
+								var eventName = ( this.options.moduleEvents || [] ).contains("afterLoad") ? "afterLoad" : "load";
+								var resetCompute = function () {
+									this.json.compute = "show";
+									this.removeEvent( eventName, resetCompute );
+								}.bind(this)
+								this.addEvent(eventName, resetCompute);
+							}
+						}
+					}
+
 				});
 				if(!module.parentLine)module.parentLine = this;
 				if(!module.parentDatatable)module.parentDatatable = this.datatable;
@@ -2222,7 +2347,11 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 					// }
 					if(this.options.isEdited) {
 						if (json.type !== "Attachment" && json.type !== "AttachmentDg"){
-							this.data[templateJsonId] = module.getData();
+							if( module.json.compute === "save" && module.getInputData ){
+								this.data[templateJsonId] = module.getInputData();
+							}else{
+								this.data[templateJsonId] = module.getData();
+							}
 						}
 					}
 					this.allField[id] = module;
@@ -2235,7 +2364,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 						}.bind(this))
 					}
 					//该字段是合集数值字段
-					if(this.datatable.multiEditMode && this.datatable.totalNumberModuleIds.contains(templateJsonId)){
+					if(this.datatable.multiEditMode && this.isTotalNumberModule(templateJsonId)){
 						//module
 						module.addEvent("change", function(){
 							this.datatable._loadTotal();
@@ -2245,6 +2374,13 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 				}
 			}
 		}.bind(this));
+	},
+	isTotalNumberModule: function(id){
+		if( this.sectionLine ){
+			return this.sectionLine.isTotalNumberModule(id)
+		}else{
+			return this.datatable.isTotalNumberModule(id)
+		}
 	},
 	getIndex: function(){
 		return this.options.index;
@@ -2362,7 +2498,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 			this.createCancelEditAction(editActionTd);
 			this.checkActionDisplay();
 		}
-		this.createMoveAction(moveActionTd);
+		if( moveActionTd )this.createMoveAction(moveActionTd);
 
 	},
 	checkActionDisplay: function(){
@@ -2446,6 +2582,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 		}
 	},
 	reload: function(){
+		this.reloading = true;
 		for(var key in this.all){
 			var module = this.all[key];
 			this.form.modules.erase(module);
@@ -2459,6 +2596,7 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 		}
 		this.init();
 		this.load();
+		this.reloading = false;
 	},
 	clearSubModules: function () { //把module清除掉
 		for(var key in this.all){
@@ -2471,6 +2609,14 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 		}
 		this.node.destroy();
 		this.init();
+	},
+	computeModuleData: function( when ){
+		for( var key in this.allField_templateId){
+			var module = this.allField_templateId[key];
+			if( module.json.compute === when ){
+				this.data[key] = module.getData();
+			}
+		}
 	},
 	getData: function () {
 		var data = this.data;
@@ -2490,7 +2636,9 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 	},
 	validation: function(){
 		if( !this.options.isEdited || !this.options.isEditable )return true;
-		return this.validationFields() && this.validationCompleteLine();
+		if( !this.validationFields())return false;
+		if( !this.validationCompleteLine())return false;
+		return true;
 	},
 	validationFields: function(){
 		if( !this.options.isEdited || !this.options.isEditable )return true;
@@ -2513,13 +2661,14 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 			}
 		}
 		if (flag.toString()!=="true"){
-			this.notValidationMode(flag);
+			var isTr = !layout.mobile;
+			this.notValidationMode(flag, isTr);
 			return false;
 		}
 		return true;
 	},
-	createErrorNode: function(text){
-		var node;
+	createErrorNode: function(text, isTr){
+		var node, tr, td;
 		if( this.form.json.errorStyle ){
 			if( this.form.json.errorStyle.type === "notice" ){
 				if( !this.form.errorNoticing ){ //如果是弹出
@@ -2531,21 +2680,34 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 					});
 				}
 			}else{
+				if( isTr ){
+					tr = new Element("tr");
+					td = new Element("td", {"colspan": this.datatable.columnCount}).inject(tr);
+				}
 				node = new Element("div",{
 					"styles" : this.form.json.errorStyle.node,
 					"text": text
 				});
+				if( td )node.inject(td);
 				if( this.form.json.errorStyle.close ){
 					var closeNode = new Element("div",{
 						"styles" : this.form.json.errorStyle.close ,
 						"events": {
-							"click" : function(){ this.destroy(); }.bind(node)
+							"click" : function(){
+								// (tr || node).destroy();
+								this.validationMode()
+							}.bind(this)
 						}
 					}).inject(node);
 				}
 			}
 		}else{
+			if( isTr ){
+				tr = new Element("tr");
+				td = new Element("td", {"colspan": this.datatable.columnCount}).inject(tr);
+			}
 			node = new Element("div");
+			if( td )node.inject(td);
 			var iconNode = new Element("div", {
 				"styles": {
 					"width": "20px",
@@ -2565,15 +2727,15 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 				"text": text
 			}).inject(node);
 		}
-		return node;
+		return tr || node;
 	},
-	notValidationMode: function(text){
+	notValidationMode: function(text, isTr){
 		if (!this.isNotValidationMode){
 			this.isNotValidationMode = true;
 			this.node.store("borderStyle", this.node.getStyles("border-left", "border-right", "border-top", "border-bottom"));
 			this.node.setStyle("border-color", "red");
 
-			this.errNode = this.createErrorNode(text);
+			this.errNode = this.createErrorNode(text, isTr);
 			//if (this.iconNode){
 			//    this.errNode.inject(this.iconNode, "after");
 			//}else{
@@ -2581,12 +2743,12 @@ MWF.xApplication.process.Xform.DatatablePC.Line =  new Class({
 			//}
 			this.showNotValidationMode(this.node);
 
-			var parentNode = this.node;
+			var parentNode = this.errNode;
 			while( parentNode.offsetParent === null ){
 				parentNode = parentNode.getParent();
 			}
 
-			if (!parentNode.isIntoView()) parentNode.scrollIntoView();
+			if (!parentNode.isIntoView()) parentNode.scrollIntoView(false);
 		}
 	},
 	showNotValidationMode: function(node){

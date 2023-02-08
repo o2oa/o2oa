@@ -393,11 +393,25 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                 // orgActions.personHasRole(data, function(json){v = json.data.value;}, null, false);
                 // return v;
             },
+            //获取人员,附带身份,身份所在的组织,个人所在群组,个人拥有角色.
+            getPersonData: function(name, async){
+                getOrgActions();
+                var v = null;
+                var cb = function(json){
+                    v = json.data;
+                    if (async && o2.typeOf(async)=="function") return async(v);
+                    return v;
+                };
+                var promise = orgActions.getPerson(null, cb, null, !!async, {"flag": name});
+                return (!!async) ? promise : v;
+            },
             //获取人员--返回人员的对象数组
-            getPerson: function (name, async) {
+            getPerson: function (name, async, findCN) {
                 getOrgActions();
                 var data = {"personList": getNameFlag(name)};
-
+                if( o2.typeOf(findCN) === "boolean"){
+                    data.useNameFind = findCN;
+                }
                 var v = null;
                 var cb = function (json) {
                     v = json.data;
@@ -673,9 +687,12 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                 return (!!async) ? promise : v;
             },
             //列出人员的身份
-            listIdentityWithPerson: function (name, async) {
+            listIdentityWithPerson: function (name, async, findCN) {
                 getOrgActions();
                 var data = {"personList": getNameFlag(name)};
+                if( o2.typeOf(findCN) === "boolean"){
+                    data.useNameFind = findCN;
+                }
                 var v = null;
                 var cb = function (json) {
                     v = json.data;
@@ -720,9 +737,12 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
 
             //组织**********
             //获取组织
-            getUnit: function (name, async) {
+            getUnit: function (name, async, findCN) {
                 getOrgActions();
                 var data = {"unitList": getNameFlag(name)};
+                if( o2.typeOf(findCN) === "boolean"){
+                    data.useNameFind = findCN;
+                }
                 var v = null;
                 var cb = function (json) {
                     v = json.data;
@@ -1450,13 +1470,16 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
             "upload": function (options, callback, async) {
                 MWF.xDesktop.requireApp("query.Query", "Importer", function () {
                     var importer = new MWF.xApplication.query.Query.Importer(_form.app.content, options, {}, _form.app, _form.Macro);
+                    importer.addEvent("afterImport", function (data) {
+                        if(callback)callback(data);
+                    });
                     importer.load();
                 }.bind(this));
             },
-            "downloadTemplate": function (options, fileName) {
+            "downloadTemplate": function (options, fileName, callback) {
                 MWF.xDesktop.requireApp("query.Query", "Importer", function () {
                     var importer = new MWF.xApplication.query.Query.Importer(_form.app.content, options, {}, _form.app, _form.Macro);
-                    importer.downloadTemplate(fileName);
+                    importer.downloadTemplate(fileName, callback);
                 }.bind(this));
             }
         };
@@ -2027,8 +2050,8 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
              * @static
              * @see module:form.openApplication
              */
-            "openApplication": function (name, options) {
-                return layout.desktop.openApplication(null, name, options);
+            "openApplication": function (name, options, status) {
+                return layout.desktop.openApplication(null, name, options, status);
             },
             /**创建一个内容管理文档
              * @method createDocument
@@ -2061,7 +2084,14 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                     if (category) {
                         options["category"] = category
                     }
-                    if (window.o2android && window.o2android.createO2CmsDocument){
+                    if (window.o2android && window.o2android.postMessage) {
+                        var body = {
+                            type: "createO2CmsDocument",
+                            data: options
+                        };
+                        window.o2android.postMessage(JSON.stringify(body));
+                        return;
+                    } else if (window.o2android && window.o2android.createO2CmsDocument){
                         window.o2android.createO2CmsDocument(JSON.stringify(options));
                         return;
                     } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.createO2CmsDocument) {

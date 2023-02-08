@@ -828,7 +828,7 @@ if (!window.o2) {
                 if (op.bind) cssText = cssText.bindJson(op.bind);
                 if (op.dom) {
 
-                    var rex = new RegExp("(.+)(?=\\{)", "g");
+                    var rex = new RegExp("(.+)(?=[\\r\\n]*\\{)", "g");
                     var match;
                     var prefix = "." + uuid + " ";
                     while ((match = rex.exec(cssText)) !== null) {
@@ -2749,14 +2749,20 @@ if (!window.o2) {
             if (!layout) layout = {};
             if (layout && !layout.userLayout) layout.userLayout = {};
             layout.userLayout.scale = scale;
-            var s = (1 / layout.userLayout.scale) * 100;
-            var p = s + "%";
-            document.id(document.documentElement).setStyles({
-                "transform": "scale(" + layout.userLayout.scale + ")",
-                "transform-origin": "0 0",
-                "width": p,
-                "height": p
-            });
+            // var s = (1 / layout.userLayout.scale) * 100;
+            // var p = s + "%";
+            // document.id(document.documentElement).setStyles({
+            //     "transform": "scale(" + layout.userLayout.scale + ")",
+            //     "transform-origin": "0 0",
+            //     "width": p,
+            //     "height": p
+            // });
+            document.body.style.zoom = scale;
+            if (layout.desktop){
+                if (layout.desktop.resizeHeight) layout.desktop.resizeHeight();
+            }
+
+
         };
 
         if (String.implement) String.implement({

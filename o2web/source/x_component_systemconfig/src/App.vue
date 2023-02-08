@@ -87,7 +87,7 @@ const contentComponent = computed(() => {
 }
 .menuArea{
   max-width: 300px;
-  min-width: 180px;
+  min-width: 200px;
   width: 15%;
   height: 100%;
   background: #FFFFFF;

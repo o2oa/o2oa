@@ -30,7 +30,7 @@ MWF.xApplication.process.FormDesigner.Module.Elcheckbox = MWF.FCElcheckbox = new
 		html += (this.json.buttonRadio) ? " ><el-checkbox-button" : " ><el-checkbox";
 		html += " :border=\"border\"";
 
-		html += " :style=\"elStyles\"";
+		html += " :style=\"tmpElStyles\"";
 
 		html += " :label=\"id\">{{id}}"+((this.json.buttonRadio) ? "</el-checkbox-button></el-checkbox-group>" : "</el-checkbox></el-checkbox-group>");
 		return html;

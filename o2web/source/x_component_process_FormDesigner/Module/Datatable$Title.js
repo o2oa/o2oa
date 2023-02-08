@@ -37,6 +37,13 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Title = MWF.FCDatatable$T
 		this.Node = null;
 		this.form = form;
 	},
+	_setNodeProperty: function(){
+		if (this.form.moduleList.indexOf(this)==-1) this.form.moduleList.push(this);
+		if (this.form.moduleNodeList.indexOf(this.node)==-1) this.form.moduleNodeList.push(this.node);
+		if (this.form.moduleElementNodeList.indexOf(this.node)==-1) this.form.moduleElementNodeList.push(this.node);
+		this.node.store("module", this);
+		this.setPrefixOrSuffix();
+	},
     setAllStyles: function(){
         Object.each(this.json.styles, function(value, key){
             var reg = /^border\w*/ig;
@@ -300,9 +307,132 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Title = MWF.FCDatatable$T
 		if( name=="isShow" ){
 			this._switchShow( true );
 		}
+		if (name=="prefixIcon" || name=="suffixIcon"){
+			this.setPrefixOrSuffix();
+		}
+		// if (name=="styles"){
+		// 	this.resetPrefixOrSuffix();
+		// }
+	},
+
+	// resetPrefixOrSuffix: function(){
+	// 	if (this.prefixNode){
+	// 		var y = this.textNode.getSize().y;
+	// 		this.prefixNode.setStyle("height", ""+y+"px");
+	// 	}
+	// 	if (this.suffixNode){
+	// 		var y = this.textNode.getSize().y;
+	// 		this.suffixNode.setStyle("height", ""+y+"px");
+	// 	}
+	// },
+	getOffsetY: function(){
+		return (this.node.getStyle("padding-top") || 0).toInt()
+			+ (this.node.getStyle("padding-bottom") || 0).toInt()
+			+ (this.node.getStyle("border-top") || 0).toInt()
+			+ (this.node.getStyle("border-bottom") || 0).toInt()
+	},
+	setPrefixOrSuffix: function(){
+		if (this.json.prefixIcon || this.json.suffixIcon){
+			if (!this.textNode){
+				var text = this.node.get("text");
+				this.node.empty();
+
+				var height = this.node.getSize().y - this.getOffsetY();
+				this.wrapNode = new Element("div", {
+					"styles": {
+						"position":"relative",
+						"display":"inline-block",
+						"height": height,
+						"line-height": height
+					}
+				}).inject(this.node);
+
+				this.textNode = new Element("div", {"styles": {
+						"padding-left": (this.json.prefixIcon) ? "20px" : "0px",
+						"padding-right": (this.json.suffixIcon) ? "20px" : "0px"
+					}, "text": text}).inject(this.wrapNode);
+
+				if (this.json.prefixIcon){
+					this.prefixNode = new Element("div", {"styles": {
+							"position": "absolute",
+							"top": "0px",
+							"left": "0px",
+							"width": "20px",
+							"height": ""+this.textNode.getSize().y+"px",
+							"background": "url("+this.json.prefixIcon+") center center no-repeat"
+						}}).inject(this.textNode, "before");
+				}
+				if (this.json.suffixIcon){
+					this.suffixNode = new Element("div", {"styles": {
+							"position": "absolute",
+							"top": "0px",
+							"right": "0px",
+							"width": "20px",
+							"height": ""+this.textNode.getSize().y+"px",
+							"background": "url("+this.json.suffixIcon+") center center no-repeat"
+						}}).inject(this.textNode, "before");
+				}
+			}else{
+				if (this.json.prefixIcon){
+					if (!this.prefixNode){
+						this.prefixNode = new Element("div", {"styles": {
+								"position": "absolute",
+								"top": "0px",
+								"left": "0px",
+								"width": "20px",
+								"height": ""+this.textNode.getSize().y+"px",
+								"background": "url("+this.json.prefixIcon+") center center no-repeat"
+							}}).inject(this.textNode, "before");
+						this.textNode.setStyle("padding-left", "20px");
+					}else{
+						this.prefixNode.setStyle("background", "url("+this.json.prefixIcon+") center center no-repeat");
+						this.textNode.setStyle("padding-left", "20px");
+					}
+				}else{
+					if (this.prefixNode){
+						this.prefixNode.destroy();
+						this.prefixNode = null;
+					}
+					this.textNode.setStyle("padding-left", "0");
+				}
+				if (this.json.suffixIcon){
+					if (!this.suffixNode){
+						this.suffixNode = new Element("div", {"styles": {
+								"position": "absolute",
+								"top": "0px",
+								"right": "0px",
+								"width": "20px",
+								"height": ""+this.textNode.getSize().y+"px",
+								"background": "url("+this.json.suffixIcon+") center center no-repeat"
+							}}).inject(this.textNode, "before");
+						this.textNode.setStyle("padding-right", "20px");
+					}else{
+						this.suffixNode.setStyle("background", "url("+this.json.suffixIcon+") center center no-repeat");
+						this.textNode.setStyle("padding-right", "20px");
+					}
+				}else{
+					if (this.suffixNode){
+						this.suffixNode.destroy();
+						this.suffixNode = null;
+					}
+					this.textNode.setStyle("padding-right", "0");
+				}
+			}
+
+		}else{
+			//var text = this.textNode.get("text");
+			this.node.empty();
+			if (!this.json.name){
+				this.node.set("text", "DataTitle");
+			}else{
+				this.node.set("text", this.json.name);
+			}
+			this.textNode = null;
+			this.prefixNode = null;
+			this.suffixNode = null;
+		}
 	},
 	_switchShow: function( isChangeTd ){
-		debugger;
 		var tr = this.node.getParent("tr");
 		var table = tr.getParent("table");
 		var colIndex = this.node.cellIndex;

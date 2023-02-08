@@ -176,6 +176,10 @@ MWF.xApplication.query.QueryManager.StatExplorer = new Class({
     _createElement: function(e){
         var _self = this;
         var options = {
+            "application":{
+                "name": _self.app.options.application.name,
+                "id": _self.app.options.application.id
+            },
             "onQueryLoad": function(){
                 this.actions = _self.app.restActions;
                 this.application = _self.app.options.application;
@@ -220,7 +224,11 @@ MWF.xApplication.query.QueryManager.StatExplorer.Stat= new Class({
         var options = {
             "appId": "query.StatDesigner"+_self.data.id,
             "id": _self.data.id,
-            "application":_self.explorer.app.options.application.id,
+            // "application":_self.explorer.app.options.application.id,
+            "application":{
+                "name": _self.explorer.app.options.application.name,
+                "id": _self.explorer.app.options.application.id
+            },
             "onQueryLoad": function(){
                 this.actions = _self.explorer.actions;
                 this.category = _self;

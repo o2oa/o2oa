@@ -28,12 +28,12 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 
 @Path("empowerlog")
-@JaxrsDescribe("委托日志操作")
+@JaxrsDescribe("授权日志操作")
 public class EmpowerLogAction extends StandardJaxrsAction {
 
 	private static Logger logger = LoggerFactory.getLogger(EmpowerLogAction.class);
 
-	@JaxrsMethodDescribe(value = "管理员列示委托日志对象,下一页.", action = ActionListNext.class)
+	@JaxrsMethodDescribe(value = "管理员列示授权日志对象,下一页.", action = ActionListNext.class)
 	@GET
 	@Path("list/{id}/next/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -52,7 +52,7 @@ public class EmpowerLogAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "管理员列示委托日志对象,上一页.", action = ActionListPrev.class)
+	@JaxrsMethodDescribe(value = "管理员列示授权日志对象,上一页.", action = ActionListPrev.class)
 	@GET
 	@Path("list/{id}/prev/{count}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -71,7 +71,7 @@ public class EmpowerLogAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "获取当前人员的委托日志.", action = ActionListWithCurrentPersonPaging.class)
+	@JaxrsMethodDescribe(value = "获取当前人员的授权日志.", action = ActionListWithCurrentPersonPaging.class)
 	@POST
 	@Path("list/currentperson/paging/{page}/size/{size}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -90,7 +90,7 @@ public class EmpowerLogAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
-	@JaxrsMethodDescribe(value = "获取当前人员的被委托日志.", action = ActionListToCurrentPersonPaging.class)
+	@JaxrsMethodDescribe(value = "获取当前人员的被授权日志.", action = ActionListToCurrentPersonPaging.class)
 	@POST
 	@Path("list/to/currentperson/paging/{page}/size/{size}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -109,7 +109,7 @@ public class EmpowerLogAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
-	@JaxrsMethodDescribe(value = "删除委托日志.", action = ActionDelete.class)
+	@JaxrsMethodDescribe(value = "删除授权日志.", action = ActionDelete.class)
 	@DELETE
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -126,7 +126,7 @@ public class EmpowerLogAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
-	@JaxrsMethodDescribe(value = "管理员根据条件查询委托日志.", action = ActionManagerListPaging.class)
+	@JaxrsMethodDescribe(value = "管理员根据条件查询授权日志.", action = ActionManagerListPaging.class)
 	@POST
 	@Path("manager/list/paging/{page}/size/{size}")
 	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)

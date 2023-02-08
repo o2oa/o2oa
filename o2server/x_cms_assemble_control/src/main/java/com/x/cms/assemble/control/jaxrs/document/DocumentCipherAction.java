@@ -52,7 +52,7 @@ public class DocumentCipherAction extends StandardJaxrsAction{
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "直接发布文档信息.", action = ActionPersistPublishByWorkFlow.class)
@@ -74,7 +74,7 @@ public class DocumentCipherAction extends StandardJaxrsAction{
 				logger.error( e, effectivePerson, request, null);
 			}
 		}
-		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result, jsonElement));
 	}
 
 	@JaxrsMethodDescribe(value = "分页查询符合过滤条件的已发布的信息内容(管理员和Ciper使用).", action = ActionQueryListWithFilterPagingAdmin.class)

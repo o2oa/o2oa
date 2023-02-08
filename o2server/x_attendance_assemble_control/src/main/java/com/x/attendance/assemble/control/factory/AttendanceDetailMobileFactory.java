@@ -64,7 +64,7 @@ public class AttendanceDetailMobileFactory extends AbstractFactory {
 		Root<AttendanceDetailMobile> root = cq.from( AttendanceDetailMobile.class);
 		Predicate p = cb.equal( root.get(AttendanceDetailMobile_.empName),  empName );
 		p = cb.and( p, cb.equal( root.get(AttendanceDetailMobile_.recordDateString ),  recordDateString ) );
-		return em.createQuery(cq.where( p )).getResultList();
+		return em.createQuery(cq.where( p ).orderBy(cb.asc(root.get(AttendanceDetailMobile_.recordDate)))).getResultList();
 	}
 	
 	//@MethodDescribe("列示指定Id的AttendanceDetailMobile信息列表")
@@ -137,7 +137,7 @@ public class AttendanceDetailMobileFactory extends AbstractFactory {
 				p = cb.and( p, cb.equal( root.get( AttendanceDetailMobile_.recordDateString ), startDate ) );
 			}
 		}
-		return em.createQuery(cq.where(p)).setMaxResults( selectTotal ).getResultList();
+		return em.createQuery(cq.where(p).orderBy(cb.asc(root.get(AttendanceDetailMobile_.recordDate)))).setMaxResults( selectTotal ).getResultList();
 	}
 
 	public List<AttendanceDetailMobile> listAttendanceDetailMobile( String distinguishedName, String signDate ) throws Exception {

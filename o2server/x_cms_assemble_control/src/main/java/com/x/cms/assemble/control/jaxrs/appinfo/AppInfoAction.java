@@ -430,10 +430,24 @@ public class AppInfoAction extends StandardJaxrsAction {
 		try {
 			result = new ActionListAllAppType().execute(request, effectivePerson);
 		} catch (Exception e) {
-			result = new ActionResult<>();
-			Exception exception = new ExceptionAppInfoProcess(e,
-					"系统在获取所有的栏目分类信息列表时发生异常。Name:" + effectivePerson.getDistinguishedName());
-			result.error(exception);
+			result.error(e);
+			logger.error(e, effectivePerson, request, null);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "获取栏目存在有权限文档的栏目分类列表.", action = ActionListHasDocumentAppType.class)
+	@GET
+	@Path("list/has/document/appType")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listHasDocumentAppType( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request ) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<List<ActionListHasDocumentAppType.Wo>> result = new ActionResult<>();
+		try {
+			result = new ActionListHasDocumentAppType().execute(request, effectivePerson);
+		} catch (Exception e) {
+			result.error(e);
 			logger.error(e, effectivePerson, request, null);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -514,6 +528,41 @@ public class AppInfoAction extends StandardJaxrsAction {
 			result = new ActionResult<>();
 			Exception exception = new ExceptionAppInfoProcess(e, "查询所有应用栏目信息对象时发生异常");
 			result.error(exception);
+			logger.error(e, effectivePerson, request, null);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "获取有权限看到文档的栏目信息列表.", action = ActionListHasDocument.class)
+	@GET
+	@Path("list/has/document")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listHasDocument( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<List<BaseAction.Wo>> result = new ActionResult<>();
+		try {
+			result = new ActionListHasDocument().execute(request, effectivePerson);
+		} catch (Exception e) {
+			result.error(e);
+			logger.error(e, effectivePerson, request, null);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
+	@JaxrsMethodDescribe(value = "获取有权限看到文档并指定分类的栏目列表.", action = ActionListHasDocument_WithAppType.class)
+	@GET
+	@Path("list/has/document/type/{appType}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listHasDocument_WithAppType( @Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+											 @JaxrsParameterDescribe("栏目类别") @PathParam("appType") String appType) {
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		ActionResult<List<BaseAction.Wo>> result = new ActionResult<>();
+		try {
+			result = new ActionListHasDocument_WithAppType().execute(request, effectivePerson, appType);
+		} catch (Exception e) {
+			result.error(e);
 			logger.error(e, effectivePerson, request, null);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));

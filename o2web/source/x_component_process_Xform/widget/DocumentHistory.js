@@ -953,7 +953,6 @@ MWF.xApplication.process.Xform.widget.DocumentHistory.Item = new Class({
         this.load();
     },
     launch: function () {
-        debugger;
         o2.load("../o2_lib/diff-match-patch/diff_match_patch_uncompressed.js", function(){
             var dmp = new diff_match_patch();
             var text1 = this.documentEditor.getFiletextText(this.historyData.json.data);
@@ -966,6 +965,7 @@ MWF.xApplication.process.Xform.widget.DocumentHistory.Item = new Class({
             dmp.diff_cleanupSemantic(d);
             var ds = dmp.diff_prettyHtml(d);
             //ds = ds.replace(/[\n\r]+/g, "<br>");
+            ds = ds.replace(/(?<!\>)(?:&para;)/g, '');
             ds = ds.replace(/(\n\t\t\t)+/g, " | ")
                 .replace(/(\n\t\t)+/g,"\n")
                 .replace(/(\n\t)+/g,"\n")

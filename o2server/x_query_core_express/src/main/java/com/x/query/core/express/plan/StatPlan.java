@@ -232,14 +232,14 @@ public class StatPlan extends GsonPropertyObject {
 										if (StringUtils.equals(calculateEntry.calculateType, Plan.CALCULATE_AVERAGE)) {
 											if (StringUtils.equals(calculateEntry.formatType, CalculateEntry.FORMATTYPE_NUMBER)){
 												cell.value = Double.valueOf(numberFormat
-														.format(values.stream().mapToDouble(d -> d).average().orElse(0)));
+														.format(values.stream().mapToDouble(d -> d).average().orElse(0)).replace(",", ""));
 											} else{
 												cell.value = numberFormat
 														.format(values.stream().mapToDouble(d -> d).average().orElse(0));
 											}
 										} else if (StringUtils.equals(calculateEntry.calculateType, Plan.CALCULATE_SUM)) {
 											if (StringUtils.equals(calculateEntry.formatType, CalculateEntry.FORMATTYPE_NUMBER)){
-												cell.value = Double.valueOf(numberFormat.format(values.stream().mapToDouble(d -> d).sum()));
+												cell.value = Double.valueOf(numberFormat.format(values.stream().mapToDouble(d -> d).sum()).replace(",", ""));
 											} else{
 												cell.value = numberFormat.format(values.stream().mapToDouble(d -> d).sum());
 											}
@@ -304,14 +304,15 @@ public class StatPlan extends GsonPropertyObject {
 								if (StringUtils.equals(calculateEntry.calculateType, Plan.CALCULATE_AVERAGE)) {
 									if (StringUtils.equals(calculateEntry.formatType, CalculateEntry.FORMATTYPE_NUMBER)){
 										cell.value = Double.valueOf(numberFormat
-												.format(values.stream().mapToDouble(d -> d).average().orElse(0)));
+												.format(values.stream().mapToDouble(d -> d).average().orElse(0))
+												.replace(",", ""));
 									} else{
 										cell.value = numberFormat
 												.format(values.stream().mapToDouble(d -> d).average().orElse(0));
 									}
 								} else if (StringUtils.equals(calculateEntry.calculateType, Plan.CALCULATE_SUM)) {
 									if (StringUtils.equals(calculateEntry.formatType, CalculateEntry.FORMATTYPE_NUMBER)){
-										cell.value = Double.valueOf(numberFormat.format(values.stream().mapToDouble(d -> d).sum()));
+										cell.value = Double.valueOf(numberFormat.format(values.stream().mapToDouble(d -> d).sum()).replace(",", ""));
 									} else{
 										cell.value = numberFormat.format(values.stream().mapToDouble(d -> d).sum());
 									}
@@ -339,14 +340,15 @@ public class StatPlan extends GsonPropertyObject {
 							if (StringUtils.equals(calculateEntry.calculateType, Plan.CALCULATE_AVERAGE)) {
 								if (StringUtils.equals(calculateEntry.formatType, CalculateEntry.FORMATTYPE_NUMBER)){
 									cell.value = Double.valueOf(numberFormat
-											.format(values.stream().mapToDouble(d -> d).average().orElse(0)));
+											.format(values.stream().mapToDouble(d -> d).average().orElse(0))
+											.replace(",", ""));
 								} else{
 									cell.value = numberFormat
 											.format(values.stream().mapToDouble(d -> d).average().orElse(0));
 								}
 							} else if (StringUtils.equals(calculateEntry.calculateType, Plan.CALCULATE_SUM)) {
 								if (StringUtils.equals(calculateEntry.formatType, CalculateEntry.FORMATTYPE_NUMBER)){
-									cell.value = Double.valueOf(numberFormat.format(values.stream().mapToDouble(d -> d).sum()));
+									cell.value = Double.valueOf(numberFormat.format(values.stream().mapToDouble(d -> d).sum()).replace(",", ""));
 								} else{
 									cell.value = numberFormat.format(values.stream().mapToDouble(d -> d).sum());
 								}

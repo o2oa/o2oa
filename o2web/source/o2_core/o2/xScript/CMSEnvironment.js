@@ -388,11 +388,25 @@ MWF.xScript.CMSEnvironment = function(ev){
             // orgActions.personHasRole(data, function(json){v = json.data.value;}, null, false);
             // return v;
         },
+        //获取人员,附带身份,身份所在的组织,个人所在群组,个人拥有角色.
+        getPersonData: function(name, async){
+            getOrgActions();
+            var v = null;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+            var promise = orgActions.getPerson(null, cb, null, !!async, {"flag": name});
+            return (!!async) ? promise : v;
+        },
         //获取人员--返回人员的对象数组
-        getPerson: function(name, async){
+        getPerson: function(name, async, findCN){
             getOrgActions();
             var data = {"personList": getNameFlag(name)};
-
+            if( o2.typeOf(findCN) === "boolean"){
+                data.useNameFind = findCN;
+            }
             var v = null;
             var cb = function(json){
                 v = json.data;
@@ -668,9 +682,12 @@ MWF.xScript.CMSEnvironment = function(ev){
             return (!!async) ? promise : v;
         },
         //列出人员的身份
-        listIdentityWithPerson: function(name, async){
+        listIdentityWithPerson: function(name, async, findCN){
             getOrgActions();
             var data = {"personList":getNameFlag(name)};
+            if( o2.typeOf(findCN) === "boolean"){
+                data.useNameFind = findCN;
+            }
             var v = null;
             var cb = function(json){
                 v = json.data;
@@ -715,9 +732,12 @@ MWF.xScript.CMSEnvironment = function(ev){
 
         //组织**********
         //获取组织
-        getUnit: function(name, async){
+        getUnit: function(name, async, findCN){
             getOrgActions();
             var data = {"unitList":getNameFlag(name)};
+            if( o2.typeOf(findCN) === "boolean"){
+                data.useNameFind = findCN;
+            }
             var v = null;
             var cb = function(json){
                 v = json.data;
@@ -1418,13 +1438,16 @@ MWF.xScript.CMSEnvironment = function(ev){
         "upload": function (options, callback, async) {
             MWF.xDesktop.requireApp("query.Query", "Importer", function () {
                 var importer = new MWF.xApplication.query.Query.Importer(_form.app.content, options, {}, _form.app, _form.Macro);
+                importer.addEvent("afterImport", function (data) {
+                    if(callback)callback(data);
+                });
                 importer.load();
             }.bind(this));
         },
-        "downloadTemplate": function(options, fileName){
+        "downloadTemplate": function(options, fileName, callback){
             MWF.xDesktop.requireApp("query.Query", "Importer", function () {
                 var importer = new MWF.xApplication.query.Query.Importer(_form.app.content, options, {}, _form.app, _form.Macro);
-                importer.downloadTemplate(fileName);
+                importer.downloadTemplate(fileName, callback);
             }.bind(this));
         }
     };
@@ -1785,6 +1808,9 @@ MWF.xScript.CMSEnvironment = function(ev){
         //"confirm": function(type, e, title, text, width, height, ok, cancel, callback){
         //    _form.confirm(type, e, title, text, width, height, ok, cancel, callback);
         //},
+        "alert": function(type, title, text, width, height){
+            _form.alert(type, title, text, width, height);
+        },
         "notice": function(content, type, target, where, offset, option){
             _form.notice(content, type, target, where, offset, option);
         },
@@ -1946,8 +1972,8 @@ MWF.xScript.CMSEnvironment = function(ev){
                 }
             });
         },
-        "openApplication":function(name, options){
-            return layout.desktop.openApplication(null, name, options);
+        "openApplication":function(name, options, status){
+            return layout.desktop.openApplication(null, name, options, status);
         },
         "createDocument": function (columnOrOptions, category, data, identity, callback, target, latest, selectColumnEnable, ignoreTitle, restrictToColumn) {
             var column = columnOrOptions;

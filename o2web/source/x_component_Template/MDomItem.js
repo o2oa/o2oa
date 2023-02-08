@@ -158,7 +158,7 @@ var MDomItem = new Class({
                 if( fun.length && /\(\s*([\s\S]*?)\s*\)/.exec(fun)[1].split(/\s*,\s*/)[0] == "callback" ){ //如果有行参(fun.length!=0),并且第一形参是callback，注意，funciont不能bind(this),否则不能判断
                     callbackNameList.push( o );
                 }else{
-                    options[o] = fun( options ); //执行fun
+                    options[o] = fun( options, this ); //执行fun
                 }
             }
         }
@@ -227,6 +227,7 @@ var MDomItem = new Class({
         if(keep)this.save();
         this.options.isEdited = true;
         this.dispose();
+        this.items = [];
         this.load();
     },
     save : function(){
@@ -236,6 +237,7 @@ var MDomItem = new Class({
         if(keep)this.save();
         this.options.isEdited = false;
         this.dispose();
+        this.items = [];
         this.load();
     },
     enable : function(){
@@ -485,24 +487,43 @@ var MDomItem = new Class({
         var flag = true;
 
         //if( value && value != "" && value != " " ){
+        var rule, msg, method, valid;
+        if( typeOf( rules ) === "object" ){
             for(var r in rules ){
-                var valid = true;
-                var rule = rules[r];
+                valid = true;
+                rule = rules[r];
 
                 if( typeof rule == "function"){
                     valid = rule.call( this, value, this );
                 }else if( this.validMethod[r] ){
-                    var method = this.validMethod[r];
+                    method = this.validMethod[r];
                     valid = method.call(this, value, rule, this );
                 }
 
                 if( !valid && isShowWarning ){
-                    var msg = this.getValidMessage( r, rule );
+                    msg = this.getValidMessage( r, rule );
                     if( msg != "" )msgs.push( msg );
                 }
 
                 if( !valid )flag = false;
             }
+        }else if( typeOf( rules ) === "array" ){
+            for( var i = 0; i<rules.length; i++ ){
+                if( typeof rules[i] == "function"){
+                    msg = rules[i].call( this, value, this );
+                    if( msg && typeof msg === "string" ){
+                        flag = false;
+                        if( isShowWarning )msgs.push( msg );
+                    }
+                }
+            }
+        }else if( typeOf( rules ) === "function" ){
+            msg = rules.call( this, value, this );
+            if( msg && typeof msg === "string" ){
+                flag = false;
+                if( isShowWarning )msgs.push( msg );
+            }
+        }
         //}
 
         if( msgs.length > 0 ){
@@ -660,6 +681,45 @@ MDomItem.Util = {
         return calendar;
     },
     selectPerson: function( container, options, callback  ){
+        if( options.type === "custom" ){
+            this._selectCustom(container, options, callback);
+        }else{
+            this._selectPerson(container, options, callback);
+        }
+    },
+    _selectCustom: function( container, options, callback  ){
+        MWF.xDesktop.requireApp("Template", "Selector.Custom", null, false); //加载资源
+
+        var opt  = {
+            "title": options.title,
+            "count" : options.count,
+            "values": options.selectedValues || [],
+            "expand": typeOf( options.expand ) === "boolean" ? options.expand : true,
+            "exclude" : options.exclude || [],
+            "expandSubEnable" : typeOf( options.expandSubEnable ) === "boolean" ? options.expandSubEnable : true,
+            "hasLetter" : false, //是否点击字母搜索
+            "hasTop" : false, //可选、已选的标题
+            // "level1Indent" : 0, //第一层的缩进
+            // "indent" : 36, //第二层及以上的缩进
+            "selectAllEnable" : true, //是否允许多选，如果分类可以被选中，blue_flat样式下失效
+            "width" : "700px", //选中框宽度
+            "height" :"550px", //选中框高度
+            "category": true, //按分类选择
+            "noSelectedContainer" : false, //是否隐藏右侧已选区域
+            "categorySelectable" : false, //分类是否可以被选择，如果可以被选择那么执行的是item的事件
+            "uniqueFlag" : "id", //项目匹配（是否选中）关键字
+            "defaultExpandLevel" : 1, //默认展开项目，0表示折叠所有分类
+            "onComplete": function( array ){
+                if( callback )callback( array );
+            }.bind(this)
+        };
+        if( options.orgOptions ){
+            opt = Object.merge(opt, options.orgOptions);
+        }
+        var selector = new MWF.xApplication.Template.Selector.Custom(container, opt );
+        selector.load();
+    },
+    _selectPerson: function( container, options, callback  ){
         MWF.xDesktop.requireApp("Selector", "package", null, false);
 
         var selectType = "", selectTypeList = [];
@@ -1306,21 +1366,23 @@ MDomItem.Radio = new Class({
             var textNode = new Element( "span", {
                 "text" : selectTexts[i]
             }).inject(item);
-            textNode.addEvent("click", function( ev ){
-                this.input.checked = ! this.input.checked;
-                var envents = MDomItem.Util.getEvents( _self.options.event );
-                if( typeOf( envents ) == "object" ){
-                    if( envents.change ){
-                        envents.change.call( this.input, _self.module, ev );
+
+            textNode.addEvent("click", function (ev) {
+                if( _self.options.attr && _self.options.attr.disabled )return;
+                this.input.checked = !this.input.checked;
+                var envents = MDomItem.Util.getEvents(_self.options.event);
+                if (typeOf(envents) == "object") {
+                    if (envents.change) {
+                        envents.change.call(this.input, _self.module, ev);
                     }
-                    if( envents.click ){
-                        envents.click.call( this.input, _self.module, ev );
+                    if (envents.click) {
+                        envents.click.call(this.input, _self.module, ev);
                     }
                 }
-                if( _self.options.validImmediately ){
-                    _self.module.verify( true );
+                if (_self.options.validImmediately) {
+                    _self.module.verify(true);
                 }
-            }.bind( {input : input} ) );
+            }.bind({input: input}));
 
             if( this.options.validImmediately ){
                 input.addEvent( "click", function(){ this.module.verify( true )}.bind(this) );
@@ -1487,6 +1549,7 @@ MDomItem.Checkbox = new Class({
                 "text" : selectTexts[i]
             }).inject(item);
             textNode.addEvent("click", function( ev ){
+                if( _self.options.attr && _self.options.attr.disabled )return;
                 this.input.checked = ! this.input.checked;
                 var envents = MDomItem.Util.getEvents( _self.options.event );
                 if( typeOf( envents ) == "object" ){
@@ -2754,6 +2817,39 @@ MDomItem.Rtf = new Class({
 
         this.items.push( item );
     },
+    getAttrRegExp: function( attr ){
+        return "\\s+" + attr + "\\s*=\\s*[\"|\'](.*?)[\"|\']";
+    },
+    getAttributeValue: function(str, attribute){
+        var regexp = new RegExp( this.getAttrRegExp(attribute) , "i");
+        var array = str.match( regexp );
+        return (o2.typeOf(array) === "array" && array.length === 2) ? array[1] : "";
+    },
+    addAttribute: function(str, attribute, value){
+        var regexp = new RegExp( "\\/*\\s*>" , "i");
+        return str.replace( regexp, ' ' + attribute + '="' + value + '"' + " />");
+    },
+    removeAttribute: function(str, attribute){
+        var regexp = new RegExp( this.getAttrRegExp(attribute) , "ig");
+        return str.replace( regexp, "" );
+    },
+    replaceHrefJavascriptStr: function( html ){
+        var regexp_a_all = /(i?)(<a)([^>]+>)/gmi;
+        var as = html.match(regexp_a_all);
+        if(as){
+            if (as.length){
+                for (var i=0; i<as.length; i++){
+                    var a = as[i];
+                    var href =  this.getAttributeValue(a, "href");
+                    if( href.indexOf('javascript:') > -1 ){
+                        var a1 = this.removeAttribute(a, "href");
+                        html = html.replace(a, a1);
+                    }
+                }
+            }
+        }
+        return html;
+    },
     loadLazyImage: function(node, html, callback){
         if( this.options && this.options.imageLazyLoading) {
             o2.require("o2.widget.ImageLazyLoader", null, false);
@@ -2762,7 +2858,7 @@ MDomItem.Rtf = new Class({
                 if (callback) callback();
             }.bind(this));
         }else{
-            node.set("html", html);
+            node.set("html", this.replaceHrefJavascriptStr(html));
             if (callback) callback();
         }
     },

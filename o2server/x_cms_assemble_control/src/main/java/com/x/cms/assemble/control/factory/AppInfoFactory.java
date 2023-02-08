@@ -54,6 +54,19 @@ public class AppInfoFactory extends AbstractFactory {
 		return em.createQuery(cq).getResultList();
 	}
 
+	public List<String> listByAppType(String appType) throws Exception {
+		EntityManager em = this.entityManagerContainer().get(AppInfo.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<AppInfo> root = cq.from(AppInfo.class);
+		cq.select(root.get(AppInfo_.id));
+		if (StringUtils.isNotEmpty(appType) && !"全部".equals(appType) && !"all".equalsIgnoreCase(appType)) {
+			Predicate p = cb.equal(root.get(AppInfo_.appType), appType);
+			return em.createQuery(cq.where(p)).getResultList();
+		}
+		return em.createQuery(cq).getResultList();
+	}
+
 	public List<AppInfo> listAll( String appType, String documentType) throws Exception {
 		EntityManager em = this.entityManagerContainer().get(AppInfo.class);
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -126,6 +139,39 @@ public class AppInfoFactory extends AbstractFactory {
 			p = cb.or(p, root.get(AppInfo_.manageableUnitList).in(unitNames));
 		}
 		if(ListTools.isNotEmpty(groupNames)){
+			p = cb.or(p, root.get(AppInfo_.publishableGroupList).in(groupNames));
+			p = cb.or(p, root.get(AppInfo_.manageableGroupList).in(groupNames));
+		}
+		return em.createQuery(cq.where(p)).getResultList().stream().distinct().collect(Collectors.toList());
+	}
+
+	public List<String> listPeopleViewAppInfoIds(String personName, List<String> unitNames, List<String> groupNames, String appType, Boolean isManager) throws Exception {
+		if(BooleanUtils.isTrue(isManager)){
+			return listByAppType(appType);
+		}
+		EntityManager em = this.entityManagerContainer().get(AppInfo.class);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> cq = cb.createQuery(String.class);
+		Root<AppInfo> root = cq.from(AppInfo.class);
+		cq.select(root.get(AppInfo_.id));
+		Predicate p = cb.disjunction();
+		if (StringUtils.isNotEmpty(appType) && !"全部".equals(appType) && !"all".equalsIgnoreCase(appType)) {
+			p = cb.or(p, cb.and(cb.isTrue(root.get(AppInfo_.allPeopleView)), cb.equal(root.get(AppInfo_.appType), appType)));
+		}else{
+			p = cb.or(p, cb.isTrue(root.get(AppInfo_.allPeopleView)));
+		}
+		if (StringUtils.isNotEmpty(personName)) {
+			p = cb.or(p, cb.isMember(personName, root.get(AppInfo_.viewablePersonList)));
+			p = cb.or(p, cb.isMember(personName, root.get(AppInfo_.publishablePersonList)));
+			p = cb.or(p, cb.isMember(personName, root.get(AppInfo_.manageablePersonList)));
+		}
+		if(ListTools.isNotEmpty(unitNames)){
+			p = cb.or(p, root.get(AppInfo_.viewableUnitList).in(unitNames));
+			p = cb.or(p, root.get(AppInfo_.publishableUnitList).in(unitNames));
+			p = cb.or(p, root.get(AppInfo_.manageableUnitList).in(unitNames));
+		}
+		if(ListTools.isNotEmpty(groupNames)){
+			p = cb.or(p, root.get(AppInfo_.viewableGroupList).in(unitNames));
 			p = cb.or(p, root.get(AppInfo_.publishableGroupList).in(groupNames));
 			p = cb.or(p, root.get(AppInfo_.manageableGroupList).in(groupNames));
 		}

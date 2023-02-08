@@ -27,176 +27,175 @@ import com.x.base.core.project.annotation.FieldDescribe;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Deprecated(forRemoval = true)
 @Schema(name = "Widget", description = "门户组件.")
 @Entity
 @ContainerEntity(dumpSize = 1000, type = ContainerEntity.Type.content, reference = ContainerEntity.Reference.strong)
 @Table(name = PersistenceProperties.Widget.table, uniqueConstraints = {
-		@UniqueConstraint(name = PersistenceProperties.Widget.table + JpaObject.IndexNameMiddle
-				+ JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
-						JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
+        @UniqueConstraint(name = PersistenceProperties.Widget.table + JpaObject.IndexNameMiddle
+                + JpaObject.DefaultUniqueConstraintSuffix, columnNames = { JpaObject.IDCOLUMN,
+                        JpaObject.CREATETIMECOLUMN, JpaObject.UPDATETIMECOLUMN, JpaObject.SEQUENCECOLUMN }) })
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Widget extends SliceJpaObject {
 
-	private static final long serialVersionUID = -7592453160980697792L;
+    private static final long serialVersionUID = -7592453160980697792L;
 
-	private static final String TABLE = PersistenceProperties.Widget.table;
+    private static final String TABLE = PersistenceProperties.Widget.table;
 
-	public String getId() {
-		return id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	@FieldDescribe("数据库主键,自动生成.")
-	@Id
-	@Column(length = length_id, name = ColumnNamePrefix + id_FIELDNAME)
-	private String id = createId();
+    @FieldDescribe("数据库主键,自动生成.")
+    @Id
+    @Column(length = length_id, name = ColumnNamePrefix + id_FIELDNAME)
+    private String id = createId();
 
-	/* 以上为 JpaObject 默认字段 */
+    /* 以上为 JpaObject 默认字段 */
 
-	public void onPersist() throws Exception {
-	}
+    public void onPersist() throws Exception {
+    }
 
-	/* flag标志位 */
-	/* Entity 默认字段结束 */
+    /* flag标志位 */
+    /* Entity 默认字段结束 */
 
-	public String getDataOrMobileData() {
-		if (StringUtils.isNotEmpty(this.getData())) {
-			return this.getData();
-		} else if (StringUtils.isNotEmpty(this.getMobileData())) {
-			return this.getMobileData();
-		}
-		return null;
-	}
+    public String getDataOrMobileData() {
+        if (StringUtils.isNotEmpty(this.getData())) {
+            return this.getData();
+        } else if (StringUtils.isNotEmpty(this.getMobileData())) {
+            return this.getMobileData();
+        }
+        return null;
+    }
 
-	public String getMobileDataOrData() {
-		if (StringUtils.isNotEmpty(this.getMobileData())) {
-			return this.getMobileData();
-		} else if (StringUtils.isNotEmpty(this.getData())) {
-			return this.getData();
-		}
-		return null;
-	}
+    public String getMobileDataOrData() {
+        if (StringUtils.isNotEmpty(this.getMobileData())) {
+            return this.getMobileData();
+        } else if (StringUtils.isNotEmpty(this.getData())) {
+            return this.getData();
+        }
+        return null;
+    }
 
-	public static final String name_FIELDNAME = "name";
-	@RestrictFlag
-	@FieldDescribe("名称.")
-	@Column(length = length_255B, name = ColumnNamePrefix + name_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + name_FIELDNAME)
-	@CheckPersist(allowEmpty = false, simplyString = true, citationNotExists =
-	/* 检查在同一Portal下不能重名 */
-	@CitationNotExist(fields = { "name", "id",
-			"alias" }, type = Widget.class, equals = @Equal(property = "portal", field = "portal")))
-	private String name;
+    public static final String name_FIELDNAME = "name";
+    @RestrictFlag
+    @FieldDescribe("名称.")
+    @Column(length = length_255B, name = ColumnNamePrefix + name_FIELDNAME)
+    @Index(name = TABLE + IndexNameMiddle + name_FIELDNAME)
+    @CheckPersist(allowEmpty = false, simplyString = true, citationNotExists =
+    /* 检查在同一Portal下不能重名 */
+    @CitationNotExist(fields = { "name", "id",
+            "alias" }, type = Widget.class, equals = @Equal(property = "portal", field = "portal")))
+    private String name;
 
-	public static final String alias_FIELDNAME = "alias";
-	@RestrictFlag
-	@FieldDescribe("别名.")
-	@Column(length = length_255B, name = ColumnNamePrefix + alias_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + alias_FIELDNAME)
-	@CheckPersist(allowEmpty = true, simplyString = true, citationNotExists =
-	/* 检查在同一应用下不能重名 */
-	@CitationNotExist(fields = { "name", "id",
-			"alias" }, type = Widget.class, equals = @Equal(property = "portal", field = "portal")))
-	private String alias;
+    public static final String alias_FIELDNAME = "alias";
+    @RestrictFlag
+    @FieldDescribe("别名.")
+    @Column(length = length_255B, name = ColumnNamePrefix + alias_FIELDNAME)
+    @Index(name = TABLE + IndexNameMiddle + alias_FIELDNAME)
+    @CheckPersist(allowEmpty = true, simplyString = true, citationNotExists =
+    /* 检查在同一应用下不能重名 */
+    @CitationNotExist(fields = { "name", "id",
+            "alias" }, type = Widget.class, equals = @Equal(property = "portal", field = "portal")))
+    private String alias;
 
-	public static final String description_FIELDNAME = "description";
-	@FieldDescribe("描述.")
-	@Column(length = length_255B, name = ColumnNamePrefix + description_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private String description;
+    public static final String description_FIELDNAME = "description";
+    @FieldDescribe("描述.")
+    @Column(length = length_255B, name = ColumnNamePrefix + description_FIELDNAME)
+    @CheckPersist(allowEmpty = true)
+    private String description;
 
-	public static final String portal_FIELDNAME = "portal";
-	@FieldDescribe("所属的Portal.")
-	@Column(length = JpaObject.length_id, name = ColumnNamePrefix + portal_FIELDNAME)
-	@Index(name = TABLE + IndexNameMiddle + portal_FIELDNAME)
-	@CheckPersist(allowEmpty = false, citationExists = @CitationExist(type = Portal.class, fields = JpaObject.id_FIELDNAME))
-	@IdReference(Portal.class)
-	private String portal;
+    public static final String portal_FIELDNAME = "portal";
+    @FieldDescribe("所属的Portal.")
+    @Column(length = JpaObject.length_id, name = ColumnNamePrefix + portal_FIELDNAME)
+    @Index(name = TABLE + IndexNameMiddle + portal_FIELDNAME)
+    @CheckPersist(allowEmpty = false, citationExists = @CitationExist(type = Portal.class, fields = JpaObject.id_FIELDNAME))
+    @IdReference(Portal.class)
+    private String portal;
 
-	public static final String data_FIELDNAME = "data";
-	@FieldDescribe("文本内容.")
-	@Lob
-	@Basic(fetch = FetchType.EAGER)
-	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + data_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private String data;
+    public static final String data_FIELDNAME = "data";
+    @FieldDescribe("文本内容.")
+    @Lob
+    @Basic(fetch = FetchType.EAGER)
+    @Column(length = JpaObject.length_10M, name = ColumnNamePrefix + data_FIELDNAME)
+    @CheckPersist(allowEmpty = true)
+    private String data;
 
-	public static final String mobileData_FIELDNAME = "mobileData";
-	@FieldDescribe("移动端文本内容.")
-	@Lob
-	@Basic(fetch = FetchType.EAGER)
-	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + mobileData_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
-	private String mobileData;
+    public static final String mobileData_FIELDNAME = "mobileData";
+    @FieldDescribe("移动端文本内容.")
+    @Lob
+    @Basic(fetch = FetchType.EAGER)
+    @Column(length = JpaObject.length_10M, name = ColumnNamePrefix + mobileData_FIELDNAME)
+    @CheckPersist(allowEmpty = true)
+    private String mobileData;
 
-	public static final String hasMobile_FIELDNAME = "hasMobile";
-	@FieldDescribe("是否有移动端内容.")
-	@Column(name = ColumnNamePrefix + hasMobile_FIELDNAME)
-	private Boolean hasMobile;
+    public static final String hasMobile_FIELDNAME = "hasMobile";
+    @FieldDescribe("是否有移动端内容.")
+    @Column(name = ColumnNamePrefix + hasMobile_FIELDNAME)
+    private Boolean hasMobile;
 
-	// public static String[] FLA GS = new String[] { JpaObject.id_FIELDNAME };
+    // public static String[] FLA GS = new String[] { JpaObject.id_FIELDNAME };
 
-	// public static String[] RESTRICTFLA GS = new String[] { name_FIELDNAME,
-	// alias_FIELDNAME };
+    // public static String[] RESTRICTFLA GS = new String[] { name_FIELDNAME,
+    // alias_FIELDNAME };
 
-	public String getData() {
-		return data;
-	}
+    public String getData() {
+        return data;
+    }
 
-	public void setData(String data) {
-		this.data = data;
-	}
+    public void setData(String data) {
+        this.data = data;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getPortal() {
-		return portal;
-	}
+    public String getPortal() {
+        return portal;
+    }
 
-	public void setPortal(String portal) {
-		this.portal = portal;
-	}
+    public void setPortal(String portal) {
+        this.portal = portal;
+    }
 
-	public String getAlias() {
-		return alias;
-	}
+    public String getAlias() {
+        return alias;
+    }
 
-	public void setAlias(String alias) {
-		this.alias = alias;
-	}
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
 
-	public String getMobileData() {
-		return mobileData;
-	}
+    public String getMobileData() {
+        return mobileData;
+    }
 
-	public void setMobileData(String mobileData) {
-		this.mobileData = mobileData;
-	}
+    public void setMobileData(String mobileData) {
+        this.mobileData = mobileData;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public Boolean getHasMobile() {
-		return hasMobile;
-	}
+    public Boolean getHasMobile() {
+        return hasMobile;
+    }
 
-	public void setHasMobile(Boolean hasMobile) {
-		this.hasMobile = hasMobile;
-	}
+    public void setHasMobile(Boolean hasMobile) {
+        this.hasMobile = hasMobile;
+    }
 
 }

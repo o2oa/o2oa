@@ -26,10 +26,22 @@
 			<tr>
 				<td class="editTableTitle">{{$.lp.type}}:</td>
 				<td class="editTableValue">
-					<div style="width: 140px; float: left"><input onclick="if (this.checked){ $('text{$.pid}textareaOptionArea').setStyle('display', 'none');}" type="radio" name="inputType" value="text" text{(!$.inputType || $.inputType=='text')?'checked':''}/>{{$.lp.text}}(text)</div>
-					<div style="width: 140px; float: left"><input onclick="if (this.checked){ $('text{$.pid}textareaOptionArea').setStyle('display', 'block');}" type="radio" name="inputType" value="textarea" text{($.inputType=='textarea')?'checked':''}/>{{$.lp.textarea}}(textarea)</div>
-					<div style="width: 140px; float: left"><input onclick="if (this.checked){ $('text{$.pid}textareaOptionArea').setStyle('display', 'none');}" type="radio" name="inputType" value="number" text{($.inputType=='number')?'checked':''}/>{{$.lp.number}}(number)</div>
-					<div style="width: 140px; float: left"><input onclick="if (this.checked){ $('text{$.pid}textareaOptionArea').setStyle('display', 'none');}" type="radio" name="inputType" value="password" text{($.inputType=='password')?'checked':''}/>{{$.lp.password}}(password)</div>
+					<div style="width: 140px; float: left"><input onclick="if (this.checked){
+						$('text{$.pid}textareaOptionArea').setStyle('display', 'none');
+						$('text{$.pid}resultType').setStyle('display', 'none');
+					}" type="radio" name="inputType" value="text" text{(!$.inputType || $.inputType=='text')?'checked':''}/>{{$.lp.text}}(text)</div>
+					<div style="width: 140px; float: left"><input onclick="if (this.checked){
+						$('text{$.pid}textareaOptionArea').setStyle('display', 'block');
+						$('text{$.pid}resultType').setStyle('display', 'none');
+					}" type="radio" name="inputType" value="textarea" text{($.inputType=='textarea')?'checked':''}/>{{$.lp.textarea}}(textarea)</div>
+					<div style="width: 140px; float: left"><input onclick="if (this.checked){
+						$('text{$.pid}textareaOptionArea').setStyle('display', 'none');
+						$('text{$.pid}resultType').setStyle('display', '');
+					}" type="radio" name="inputType" value="number" text{($.inputType=='number')?'checked':''}/>{{$.lp.number}}(number)</div>
+					<div style="width: 140px; float: left"><input onclick="if (this.checked){
+						$('text{$.pid}textareaOptionArea').setStyle('display', 'none');
+						$('text{$.pid}resultType').setStyle('display', 'none');
+					}" type="radio" name="inputType" value="password" text{($.inputType=='password')?'checked':''}/>{{$.lp.password}}(password)</div>
 <!--					<div style="width: 140px; float: left"><input type="radio" name="inputType" value="search" text{($.inputType=='search')?'checked':''}/>{{$.lp.search}}(search)</div>-->
 <!--					<div style="width: 140px; float: left"><input type="radio" name="inputType" value="color" text{($.inputType=='color')?'checked':''}/>{{$.lp.color}}(color)</div>-->
 <!--					<div style="width: 140px; float: left"><input type="radio" name="inputType" value="email" text{($.inputType=='email')?'checked':''}/>{{$.lp.email}}(email)</div>-->
@@ -38,6 +50,13 @@
 <!--					<div style="width: 140px; float: left"><input type="radio" name="inputType" value="time" text{($.inputType=='time')?'checked':''}/>{{$.lp.time}}(time)</div>-->
 <!--					<div style="width: 140px; float: left"><input type="radio" name="inputType" value="datetime-local" text{($.inputType=='datetime-local')?'checked':''}/>{{$.lp["datetime-local"]}}(datetime-local)</div>-->
 <!--					<div style="width: 140px; float: left"><input type="radio" name="inputType" value="week" text{($.inputType=='week')?'checked':''}/>{{$.lp.week}}(week)</div>-->
+				</td>
+			</tr>
+			<tr id="text{$.pid}resultType" style="display: text{($.inputType==='number')?'':'none'}">
+				<td class="editTableTitle">{{$.lp.resultType}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="resultType" value="string" text{($.resultType!=='number')?'checked':''}/>{{$.lp.text}}
+					<input type="radio" name="resultType" value="number" text{($.resultType==='number')?'checked':''}/>{{$.lp.number}}
 				</td>
 			</tr>
 			<tr>

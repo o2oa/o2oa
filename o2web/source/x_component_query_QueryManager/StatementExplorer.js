@@ -184,6 +184,10 @@ MWF.xApplication.query.QueryManager.StatementExplorer = new Class({
     _createElement: function(e){
         var _self = this;
         var options = {
+            "application":{
+                "name": _self.app.options.application.name,
+                "id": _self.app.options.application.id
+            },
             "onQueryLoad": function(){
                 this.actions = _self.app.restActions;
                 this.application = _self.app.options.application;
@@ -248,7 +252,11 @@ MWF.xApplication.query.QueryManager.StatementExplorer.Statement= new Class({
         var options = {
             "appId": "query.StatementDesigner"+_self.data.id,
             "id": _self.data.id,
-            "application":_self.explorer.app.options.application.id,
+            // "application":_self.explorer.app.options.application.id,
+            "application":{
+                "name": _self.explorer.app.options.application.name,
+                "id": _self.explorer.app.options.application.id
+            },
             "onQueryLoad": function(){
                 this.actions = _self.explorer.actions;
                 this.category = _self;
@@ -294,9 +302,7 @@ MWF.xApplication.query.QueryManager.StatementExplorer.Statement= new Class({
         var name = item.name;
         this.explorer.app.restActions.getStatement(this.data.id, function(json){
             var data = json.data;
-            var dataJson = (data.data) ? JSON.decode(data.data): "";
-            data.data = dataJson;
-            data.data.id = "";
+            data.id = "";
             var oldName = data.name;
             o2.Actions.load("x_query_assemble_designer").StatementAction.manageList(function(dJson){
                 var i=1;

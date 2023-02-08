@@ -330,7 +330,9 @@ public class ManualProcessor extends AbstractManualProcessor {
         if (!(StringUtils.equals(aeiObjects.getWork().getWorkCreateType(), Work.WORKCREATETYPE_SURFACE)
                 && BooleanUtils.isFalse(aeiObjects.getWork().getWorkThroughManual()))) {
             List<String> values = taskIdentities.identities();
+
             values = ListUtils.subtract(values, aeiObjects.getProcessingAttributes().getIgnoreEmpowerIdentityList());
+
             taskIdentities.empower(aeiObjects.business().organization().empower().listWithIdentityObject(
                     aeiObjects.getWork().getApplication(), aeiObjects.getProcess().getEdition(),
                     aeiObjects.getWork().getProcess(), aeiObjects.getWork().getId(), values));
@@ -380,15 +382,18 @@ public class ManualProcessor extends AbstractManualProcessor {
         List<TaskCompleted> taskCompleteds = aeiObjects.getJoinInquireTaskCompletedsRouteNameAvailableWithActivityToken(
                 aeiObjects.getWork().getActivityToken());
         executingCompletedIdentityInTaskCompleteds(aeiObjects, matrix, taskCompleteds);
-
         // 发送ProcessingSignal
         aeiObjects.getProcessingAttributes().push(Signal.manualExecute(aeiObjects.getWork().getActivityToken(), manual,
                 Objects.toString(manual.getManualMode(), ""), matrix.flat()));
         if (matrix.isEmpty() && (!taskCompleteds.isEmpty())) {
             results.add(aeiObjects.getWork());
-            aeiObjects.getTasks().stream().filter(
+            List<Task> tasks = aeiObjects.getTasks().stream().filter(
                     t -> StringUtils.equalsIgnoreCase(t.getActivityToken(), aeiObjects.getWork().getActivityToken()))
-                    .forEach(aeiObjects::deleteTask);
+                    .collect(Collectors.toList());
+            tasks.stream().forEach(aeiObjects::deleteTask);
+            uncompletedTaskToRead(aeiObjects, manual, tasks);
+            // aeiObjects.business().organization().identity().listObject(null)
+
         } else {
             switch (manual.getManualMode()) {
                 case parallel:
@@ -438,16 +443,19 @@ public class ManualProcessor extends AbstractManualProcessor {
         if (matrix.isEmpty()) {
             List<String> identities = new ArrayList<>();
             // 兼容7.2.0之前的版本
+            List<String> deprecatedIdentities = new ArrayList<>();
             if (PropertyUtils.isReadable(aeiObjects.getWork(), DEPRECATED_WORK_FIELD_MANUALTASKIDENTITYLIST)) {
-                identities.addAll((List<String>) PropertyUtils.getProperty(aeiObjects.getWork(),
+                deprecatedIdentities.addAll((List<String>) PropertyUtils.getProperty(aeiObjects.getWork(),
                         DEPRECATED_WORK_FIELD_MANUALTASKIDENTITYLIST));
+                identities.addAll(deprecatedIdentities);
                 identities = aeiObjects.business().organization().identity().list(identities);
             }
             if (identities.isEmpty() && aeiObjects.getJoinInquireTaskCompletedsRouteNameAvailableWithActivityToken(
                     aeiObjects.getWork().getActivityToken()).isEmpty()) {
                 identities = calculateTaskIdentities(aeiObjects, manual);
-                LOGGER.info("工作设置的处理人已经全部无效,且没有已办,重新计算当前环节所有处理人进行处理,标题:{}, id:{}, 设置的处理人:{}.",
-                        aeiObjects.getWork()::getTitle, aeiObjects.getWork()::getId, identities::toString);
+                LOGGER.info("工作设置的处理人 {} 已经全部无效, 且没有已办, 重新计算当前环节所有处理人进行处理, 标题:{}, id:{}, 强制设置的处理人:{}.",
+                        () -> StringUtils.join(deprecatedIdentities), aeiObjects.getWork()::getTitle,
+                        aeiObjects.getWork()::getId, identities::toString);
             }
             matrix = manual.identitiesToManualTaskIdentityMatrix(identities);
         }
@@ -625,9 +633,11 @@ public class ManualProcessor extends AbstractManualProcessor {
             List<TaskCompleted> taskCompleteds) throws Exception {
         if (soleDirect(aeiObjects, taskCompleteds)) {
             matrix.clear();
-            aeiObjects.getTasks().stream().filter(
+            List<Task> tasks = aeiObjects.getTasks().stream().filter(
                     t -> StringUtils.equalsIgnoreCase(t.getActivityToken(), aeiObjects.getWork().getActivityToken()))
-                    .forEach(aeiObjects::deleteTask);
+                    .collect(Collectors.toList());
+            tasks.stream().forEach(aeiObjects::deleteTask);
+            uncompletedTaskToRead(aeiObjects, manual, tasks);
         } else {
             task(aeiObjects, manual, matrix.read());
         }
@@ -638,9 +648,11 @@ public class ManualProcessor extends AbstractManualProcessor {
         // 是否有优先路由
         if (soleDirect(aeiObjects, taskCompleteds)) {
             matrix.clear();
-            aeiObjects.getTasks().stream().filter(
+            List<Task> tasks = aeiObjects.getTasks().stream().filter(
                     t -> StringUtils.equalsIgnoreCase(t.getActivityToken(), aeiObjects.getWork().getActivityToken()))
-                    .forEach(aeiObjects::deleteTask);
+                    .collect(Collectors.toList());
+            tasks.stream().forEach(aeiObjects::deleteTask);
+            uncompletedTaskToRead(aeiObjects, manual, tasks);
         } else {
             task(aeiObjects, manual, matrix.flat());
         }
@@ -650,21 +662,31 @@ public class ManualProcessor extends AbstractManualProcessor {
             List<TaskCompleted> taskCompleteds) throws Exception {
         if (soleDirect(aeiObjects, taskCompleteds)) {
             matrix.clear();
-            aeiObjects.getTasks().stream().filter(
+            List<Task> tasks = aeiObjects.getTasks().stream().filter(
                     t -> StringUtils.equalsIgnoreCase(t.getActivityToken(), aeiObjects.getWork().getActivityToken()))
-                    .forEach(aeiObjects::deleteTask);
+                    .collect(Collectors.toList());
+            tasks.stream().forEach(aeiObjects::deleteTask);
+            uncompletedTaskToRead(aeiObjects, manual, tasks);
         } else {
             task(aeiObjects, manual, matrix.read());
         }
     }
 
+    /**
+     * 存在优先路由,如果有人选择了优先路由那么直接流转.需要判断是否启用了soleDirect,允许存在多个优先路由
+     * 
+     * @param aeiObjects
+     * @param taskCompleteds
+     * @return
+     * @throws Exception
+     */
     private boolean soleDirect(AeiObjects aeiObjects, List<TaskCompleted> taskCompleteds) throws Exception {
-        // 存在优先路由,如果有人选择了优先路由那么直接流转.需要判断是否启用了soleDirect
-        Optional<Route> route = aeiObjects.getRoutes().stream().filter(r -> BooleanUtils.isTrue(r.getSoleDirect()))
-                .findFirst();
-        if (route.isPresent()) {
+        final List<String> soleRouteNames = aeiObjects.getRoutes().stream()
+                .filter(r -> BooleanUtils.isTrue(r.getSoleDirect()))
+                .map(Route::getName).collect(Collectors.toList());
+        if (!soleRouteNames.isEmpty()) {
             Optional<TaskCompleted> taskCompleted = taskCompleteds.stream()
-                    .filter(t -> StringUtils.equals(t.getRouteName(), route.get().getName())).findFirst();
+                    .filter(t -> soleRouteNames.contains(t.getRouteName())).findFirst();
             if (taskCompleted.isPresent()) {
                 return true;
             }
@@ -920,5 +942,24 @@ public class ManualProcessor extends AbstractManualProcessor {
             }
         }
 
+    }
+
+    private void uncompletedTaskToRead(AeiObjects aeiObjects, Manual manual, List<Task> tasks) {
+        if (BooleanUtils.isTrue(manual.getManualUncompletedTaskToRead())) {
+            tasks.stream().forEach(o -> {
+                try {
+                    String identity = aeiObjects.business().organization().identity().get(o.getIdentity());
+                    String unit = aeiObjects.business().organization().unit().getWithIdentity(identity);
+                    String person = aeiObjects.business().organization().person().getWithIdentity(identity);
+                    if (StringUtils.isNotEmpty(identity) && StringUtils.isNotEmpty(unit)
+                            && StringUtils.isNotEmpty(person)) {
+                        aeiObjects.getCreateReads()
+                                .add(new Read(aeiObjects.getWork(), identity, unit, person));
+                    }
+                } catch (Exception e) {
+                    LOGGER.error(e);
+                }
+            });
+        }
     }
 }

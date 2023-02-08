@@ -15,43 +15,47 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.message.assemble.communicate.ThisApplication;
 import com.x.message.assemble.communicate.message.WsMessage;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 class ActionCreate extends BaseAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCreate.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActionCreate.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
+    ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 
-		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+        LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 
-		ActionResult<Wo> result = new ActionResult<>();
-		Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-		Wo wo = new Wo();
-		wo.setValue(false);
+        ActionResult<Wo> result = new ActionResult<>();
+        Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+        Wo wo = new Wo();
+        wo.setValue(false);
 
-		for (Entry<Session, String> entry : ThisApplication.wsClients().entrySet()) {
-			if (StringUtils.equals(entry.getValue(), wi.getPerson())) {
-				Session session = entry.getKey();
-				if (session != null && session.isOpen()) {
-					LOGGER.debug("send ws, message: {}.", () -> wi);
-					session.getBasicRemote().sendText(jsonElement.toString());
-					wo.setValue(true);
-				}
-			}
-		}
+        for (Entry<Session, String> entry : ThisApplication.wsClients().entrySet()) {
+            if (StringUtils.equals(entry.getValue(), wi.getPerson())) {
+                Session session = entry.getKey();
+                if (session != null && session.isOpen()) {
+                    LOGGER.debug("send ws, message: {}.", () -> wi);
+                    session.getBasicRemote().sendText(jsonElement.toString());
+                    wo.setValue(true);
+                }
+            }
+        }
 
-		result.setData(wo);
-		return result;
-	}
+        result.setData(wo);
+        return result;
+    }
 
-	public static class Wi extends WsMessage {
+    @Schema(name = "com.x.message.assemble.communicate.jaxrs.ws.ActionCreate$Wi")
+    public static class Wi extends WsMessage {
 
-		private static final long serialVersionUID = -8691888252305620999L;
-	}
+        private static final long serialVersionUID = -8691888252305620999L;
+    }
 
-	public static class Wo extends WrapBoolean {
+    @Schema(name = "com.x.message.assemble.communicate.jaxrs.ws.ActionCreate$Wo")
+    public static class Wo extends WrapBoolean {
 
-		private static final long serialVersionUID = -7273918635205899723L;
+        private static final long serialVersionUID = -7273918635205899723L;
 
-	}
+    }
 
 }

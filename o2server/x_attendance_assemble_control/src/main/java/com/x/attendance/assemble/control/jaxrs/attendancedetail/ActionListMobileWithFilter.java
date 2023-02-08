@@ -74,7 +74,7 @@ public class ActionListMobileWithFilter extends BaseAction {
 			}
 			if ( StringUtils.isNotEmpty( wrapIn.getStartDate() )) {
 				queryConditionIsNull = false;
-				if ( StringUtils.isNotEmpty( wrapIn.getEndDate() )) {
+				if ( StringUtils.isEmpty( wrapIn.getEndDate() )) {
 					wrapIn.setEndDate(wrapIn.getStartDate());
 				}
 			}

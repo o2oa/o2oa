@@ -264,8 +264,8 @@ class ActionCreate extends BaseAction {
 	private Message v3MpweixinMessage(Wi wi, Consumer consumer) {
 		Message message = null;
 		try {
-			if (BooleanUtils.isTrue(Config.mPweixin().getEnable())
-					&& BooleanUtils.isTrue(Config.mPweixin().getMessageEnable())) {
+			if (BooleanUtils.isTrue(Config.mpweixin().getEnable())
+					&& BooleanUtils.isTrue(Config.mpweixin().getMessageEnable())) {
 				message = this.v3Message(wi, consumer);
 			}
 		} catch (Exception e) {

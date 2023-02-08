@@ -502,9 +502,11 @@ MWF.xDesktop.Actions.RestActions = new Class({
             //var _self = this;
             messageItem.close = function(callback, e){
                 if (this.status=="progress"){
-                    flag = false;
-                    var text = MWF.LP.desktop.action.cancelUpload.replace(/{name}/g, (file.name||""));
-                    MWF.xDesktop.confirm("wram", e, MWF.LP.desktop.action.cancelUploadTitle, text, "400", "140", function(){
+                    var flag = false;
+                    var name = (file.name||"");
+                    name = name.length > 50 ? name.substr(0, 50)+"..." : name;
+                    var text = MWF.LP.desktop.action.cancelUpload.replace(/{name}/g, (name));
+                    MWF.xDesktop.confirm("wram", e, MWF.LP.desktop.action.cancelUploadTitle, text, "400", "180", function(){
                         xhr.abort();
                         //xhr.upload.timeout = 1;
                         this.close();

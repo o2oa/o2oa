@@ -19,93 +19,94 @@ import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
 import com.x.organization.assemble.control.Business;
-import com.x.organization.assemble.control.message.OrgMessageFactory;
 import com.x.organization.core.entity.Identity;
 import com.x.organization.core.entity.Person;
 import com.x.organization.core.entity.Unit;
 
 class ActionEdit extends BaseAction {
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, JsonElement jsonElement) throws Exception {
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
-			Business business = new Business(emc);
-			Identity identity = business.identity().pick(flag);
-			if (null == identity) {
-				throw new ExceptionEntityNotExist(flag, Identity.class);
-			}
-			Person person = emc.find(identity.getPerson(), Person.class);
-			if (null == person) {
-				throw new ExceptionEntityNotExist(identity.getPerson(), Person.class);
-			}
-			Unit unit = business.unit().pick(identity.getUnit());
-			if (null == unit) {
-				throw new ExceptionEntityNotExist(identity.getUnit(), Unit.class);
-			}
-			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-			if (!effectivePerson.isSecurityManager() && !business.editable(effectivePerson, unit)) {
-				throw new ExceptionAccessDenied(effectivePerson, unit);
-			}
-			if (StringUtils.isEmpty(wi.getName())) {
-				throw new ExceptionNameEmpty();
-			}
-			emc.beginTransaction(Identity.class);
-			emc.beginTransaction(Person.class);
-			identity = emc.find(identity.getId(), Identity.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActionEdit.class);
 
-			Gson gsontool = new Gson();
-			String strIdentity = gsontool.toJson(identity);
+    ActionResult<Wo> execute(EffectivePerson effectivePerson, String flag, JsonElement jsonElement) throws Exception {
 
-			Wi.copier.copy(wi, identity);
-			/** 如果唯一标识不为空,要检查唯一标识是否唯一 */
-			if (this.uniqueDuplicateWhenNotEmpty(business, identity)) {
-				throw new ExceptionDuplicateUnique(identity.getName(), identity.getUnique());
-			}
-			identity.setUnit(unit.getId());
-			identity.setUnitLevel(unit.getLevel());
-			identity.setUnitLevelName(unit.getLevelName());
-			identity.setUnitName(unit.getName());
-			/* 设置主身份 */
-			if (BooleanUtils.isTrue(identity.getMajor())) {
-				for (Identity o : emc.listEqual(Identity.class, Identity.person_FIELDNAME, identity.getPerson())) {
-					if (!StringUtils.equals(identity.getId(), o.getId())) {
-						o.setMajor(false);
-					}
-				}
-			}
-			emc.check(identity, CheckPersistType.all);
-			List<Unit> topUnits = business.unit()
-					.pick(ListTools.trim(person.getTopUnitList(), true, true, this.topUnit(business, unit).getId()));
-			person.setTopUnitList(ListTools.extractField(topUnits, Unit.id_FIELDNAME, String.class, true, true));
-			emc.check(person, CheckPersistType.all);
-			emc.commit();
-			CacheManager.notify(Identity.class);
-			CacheManager.notify(Person.class);
+        LOGGER.debug("execute:{}, flag:{}.", effectivePerson::getDistinguishedName, () -> flag);
 
-			/**创建 组织变更org消息通信 */
-			OrgMessageFactory  orgMessageFactory = new OrgMessageFactory();
-			orgMessageFactory.createMessageCommunicate("modfiy", "identity",strIdentity, identity, effectivePerson);
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            ActionResult<Wo> result = new ActionResult<>();
+            Business business = new Business(emc);
+            Identity identity = business.identity().pick(flag);
+            if (null == identity) {
+                throw new ExceptionEntityNotExist(flag, Identity.class);
+            }
+            Person person = emc.find(identity.getPerson(), Person.class);
+            if (null == person) {
+                throw new ExceptionEntityNotExist(identity.getPerson(), Person.class);
+            }
+            Unit unit = business.unit().pick(identity.getUnit());
+            if (null == unit) {
+                throw new ExceptionEntityNotExist(identity.getUnit(), Unit.class);
+            }
+            Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+            if (!effectivePerson.isSecurityManager() && !business.editable(effectivePerson, unit)) {
+                throw new ExceptionAccessDenied(effectivePerson, unit);
+            }
+            if (StringUtils.isEmpty(wi.getName())) {
+                throw new ExceptionNameEmpty();
+            }
+            emc.beginTransaction(Identity.class);
+            emc.beginTransaction(Person.class);
+            identity = emc.find(identity.getId(), Identity.class);
 
+            Gson gsontool = new Gson();
+            String strIdentity = gsontool.toJson(identity);
 
-			Wo wo = new Wo();
-			wo.setId(identity.getId());
-			result.setData(wo);
-			return result;
-		}
-	}
+            Wi.copier.copy(wi, identity);
+            /** 如果唯一标识不为空,要检查唯一标识是否唯一 */
+            if (this.uniqueDuplicateWhenNotEmpty(business, identity)) {
+                throw new ExceptionDuplicateUnique(identity.getName(), identity.getUnique());
+            }
+            identity.setUnit(unit.getId());
+            identity.setUnitLevel(unit.getLevel());
+            identity.setUnitLevelName(unit.getLevelName());
+            identity.setUnitName(unit.getName());
+            /* 设置主身份 */
+            if (BooleanUtils.isTrue(identity.getMajor())) {
+                for (Identity o : emc.listEqual(Identity.class, Identity.person_FIELDNAME, identity.getPerson())) {
+                    if (!StringUtils.equals(identity.getId(), o.getId())) {
+                        o.setMajor(false);
+                    }
+                }
+            }
+            emc.check(identity, CheckPersistType.all);
+            List<Unit> topUnits = business.unit()
+                    .pick(ListTools.trim(person.getTopUnitList(), true, true, this.topUnit(business, unit).getId()));
+            person.setTopUnitList(ListTools.extractField(topUnits, Unit.id_FIELDNAME, String.class, true, true));
+            emc.check(person, CheckPersistType.all);
+            emc.commit();
+            CacheManager.notify(Identity.class);
+            CacheManager.notify(Person.class);
 
-	public static class Wo extends WoId {
+            Wo wo = new Wo();
+            wo.setId(identity.getId());
+            result.setData(wo);
+            return result;
+        }
+    }
 
-	}
+    public static class Wo extends WoId {
 
-	public static class Wi extends Identity {
+    }
 
-		private static final long serialVersionUID = -6314932919066148113L;
+    public static class Wi extends Identity {
 
-		static WrapCopier<Wi, Identity> copier = WrapCopierFactory.wi(Wi.class, Identity.class, null, ListTools
-				.toList(JpaObject.FieldsUnmodify, "pinyin", "pinyinInitial", "unitName", "unitLevel", "unitLevelName"));
-	}
+        private static final long serialVersionUID = -6314932919066148113L;
+
+        static WrapCopier<Wi, Identity> copier = WrapCopierFactory.wi(Wi.class, Identity.class, null, ListTools
+                .toList(JpaObject.FieldsUnmodify, "pinyin", "pinyinInitial", "unitName", "unitLevel", "unitLevelName"));
+    }
 
 }

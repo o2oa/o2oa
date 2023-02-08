@@ -13,6 +13,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.cms.core.entity.enums.DocumentStatus;
+import com.x.cms.core.entity.message.DocumentEvent;
 import org.apache.commons.collections4.list.TreeList;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -96,6 +98,11 @@ public class DocumentPersistService {
 			this.doProjection(emc, projection, data, document);
 			data.setDocument( document );
 			documentDataHelper.update( data );
+			if(DocumentStatus.isEndStatus(document.getDocStatus())){
+				emc.beginTransaction(DocumentEvent.class);
+				DocumentEvent documentEvent = DocumentEvent.updateEventInstance(document);
+				emc.persist(documentEvent);
+			}
 
 			emc.commit();
 			return document;

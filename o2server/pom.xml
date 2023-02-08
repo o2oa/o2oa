@@ -213,7 +213,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.poi</groupId>
-			<artifactId>poi-ooxml-schemas</artifactId>
+			<artifactId>poi-scratchpad</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>fr.opensagres.xdocreport</groupId>
+			<artifactId>fr.opensagres.poi.xwpf.converter.xhtml</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>fr.opensagres.xdocreport</groupId>
@@ -224,40 +228,8 @@
 			<artifactId>tika-core</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.tika</groupId>
-			<artifactId>tika-parsers</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.pdfbox</groupId>
-			<artifactId>pdfbox</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.pdfbox</groupId>
-			<artifactId>fontbox</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.pdfbox</groupId>
-			<artifactId>xmpbox</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.pdfbox</groupId>
-			<artifactId>preflight</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.pdfbox</groupId>
-			<artifactId>pdfbox-tools</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.pdfbox</groupId>
-			<artifactId>jbig2-imageio</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-model</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.adobe.xmp</groupId>
-			<artifactId>xmpcore</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>io.github.classgraph</groupId>
@@ -294,6 +266,10 @@
 		<dependency>
 			<groupId>com.hankcs</groupId>
 			<artifactId>hanlp</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.hankcs.nlp</groupId>
+			<artifactId>hanlp-lucene-plugin</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>de.vandermeer</groupId>
@@ -364,8 +340,7 @@
 			<artifactId>activation</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>
-			net.lingala.zip4j</groupId>
+			<groupId>net.lingala.zip4j</groupId>
 			<artifactId>zip4j</artifactId>
 		</dependency>
 		<dependency>
@@ -427,6 +402,30 @@
 		<dependency>
 			<groupId>org.jsoup</groupId>
 			<artifactId>jsoup</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-queryparser</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-highlighter</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-grouping</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-luke</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.solr</groupId>
+			<artifactId>solr-core</artifactId>
 		</dependency>
 	</dependencies>
 	<build>
@@ -790,73 +789,27 @@
 			<dependency>
 				<groupId>org.apache.poi</groupId>
 				<artifactId>poi</artifactId>
-				<version>4.1.2</version>
+				<version>5.2.3</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.poi</groupId>
 				<artifactId>poi-ooxml</artifactId>
-				<version>4.1.2</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.poi</groupId>
-				<artifactId>poi-ooxml-schemas</artifactId>
-				<version>4.1.2</version>
+				<version>5.2.3</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.poi</groupId>
 				<artifactId>poi-scratchpad</artifactId>
-				<version>4.1.2</version>
+				<version>5.2.3</version>
+			</dependency>
+			<dependency>
+				<groupId>fr.opensagres.xdocreport</groupId>
+				<artifactId>fr.opensagres.poi.xwpf.converter.xhtml</artifactId>
+				<version>2.0.2</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.tika</groupId>
 				<artifactId>tika-core</artifactId>
-				<version>1.27</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.tika</groupId>
-				<artifactId>tika-parsers</artifactId>
-				<version>1.27</version>
-				<exclusions>
-					<exclusion>
-						<groupId>xerces</groupId>
-						<artifactId>xercesImpl</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.pdfbox</groupId>
-				<artifactId>pdfbox</artifactId>
-				<version>2.0.16</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.pdfbox</groupId>
-				<artifactId>fontbox</artifactId>
-				<version>2.0.16</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.pdfbox</groupId>
-				<artifactId>jbig2-imageio</artifactId>
-				<version>3.0.2</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.pdfbox</groupId>
-				<artifactId>xmpbox</artifactId>
-				<version>2.0.16</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.pdfbox</groupId>
-				<artifactId>preflight</artifactId>
-				<version>2.0.16</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.pdfbox</groupId>
-				<artifactId>pdfbox-tools</artifactId>
-				<version>2.0.16</version>
-			</dependency>
-			<dependency>
-				<groupId>com.adobe.xmp</groupId>
-				<artifactId>xmpcore</artifactId>
-				<version>6.1.10</version>
+				<version>2.5.0</version>
 			</dependency>
 			<dependency>
 				<groupId>net.sourceforge.tess4j</groupId>
@@ -912,6 +865,47 @@
 				<groupId>com.hankcs</groupId>
 				<artifactId>hanlp</artifactId>
 				<version>portable-1.8.3</version>
+			</dependency>
+			<dependency>
+				<groupId>com.hankcs.nlp</groupId>
+				<artifactId>hanlp-lucene-plugin</artifactId>
+				<version>1.1.7</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.lucene</groupId>
+				<artifactId>lucene-core</artifactId>
+				<version>9.4.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.lucene</groupId>
+				<artifactId>lucene-queryparser</artifactId>
+				<version>9.4.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.lucene</groupId>
+				<artifactId>lucene-highlighter</artifactId>
+				<version>9.4.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.lucene</groupId>
+				<artifactId>lucene-grouping</artifactId>
+				<version>9.4.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.lucene</groupId>
+				<artifactId>lucene-luke</artifactId>
+				<version>9.4.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.solr</groupId>
+				<artifactId>solr-core</artifactId>
+				<version>8.11.2</version>
+				<exclusions>
+					<exclusion>
+						<groupId>*</groupId>
+						<artifactId>*</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>de.vandermeer</groupId>
@@ -1166,7 +1160,7 @@
 			<dependency>
 				<groupId>javax.cache</groupId>
 				<artifactId>cache-api</artifactId>
-				<version>1.0.0</version>
+				<version>1.1.1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.jsr107.ri</groupId>

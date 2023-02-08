@@ -169,16 +169,23 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
         var v = this._getBusinessData();
         if (!v || !v.length){
             if (this.json.description){
-                var size = this.node.getFirst().getSize();
-                var w = size.x-3;
-                if( this.json.showIcon!='no' && !this.form.json.hideModuleIcon ) {
-                    if (COMMON.Browser.safari) w = w - 20;
+                var size, w;
+                if( this.node.offsetParent === null ){ //隐藏
+                    size = { y: 26 }
+                }else{
+                    size = this.node.getFirst().getSize();
+                    w = size.x-3;
+                    if( this.json.showIcon!='no' && !this.form.json.hideModuleIcon ) {
+                        if (COMMON.Browser.safari) w = w - 20;
+                    }
                 }
                 this.descriptionNode = new Element("div", {"styles": this.form.css.descriptionNode, "text": this.json.description}).inject(this.node);
                 this.descriptionNode.setStyles({
-                    "width": ""+w+"px",
                     "height": ""+size.y+"px",
                     "line-height": ""+size.y+"px"
+                });
+                if( w )this.descriptionNode.setStyles({
+                    "width": ""+w+"px"
                 });
                 this.setDescriptionEvent();
             }
@@ -189,7 +196,16 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
             this.descriptionNode.addEvents({
                 "mousedown": function( ev ){
                     this.descriptionNode.setStyle("display", "none");
-                    this.clickSelect( ev );
+                    if( this.json.isInput ){
+                        if( this.combox ){
+                            if (!this.combox.editItem) this.combox.intoEdit(ev);
+                            window.setTimeout( function () {
+                                this.combox.input.node.focus();
+                            }.bind(this), 300)
+                        }
+                    }else{
+                        this.clickSelect( ev );
+                    }
                 }.bind(this)
             });
         }
@@ -639,8 +655,8 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
                     this.descriptionNode.setStyles({
                         "display": "block",
                         "width": ""+w+"px",
-                        "height": ""+size.y+"px",
-                        "line-height": ""+size.y+"px"
+                        "height": ""+( size.y || 26)+"px",
+                        "line-height": ""+( size.y || 26)+"px"
                     });
                 }else{
                     this.descriptionNode.setStyle("display", "block");

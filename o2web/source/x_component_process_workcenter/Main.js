@@ -286,7 +286,49 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		var startContent = new Element("div.st_area");
 		var url = this.path+this.options.style+"/view/dlg/start.html";
 		this.getStartData().then(function(data){
-			startContent.loadHtml(url, {"bind": {"lp": this.lp, "data": {"app": data[0], "topApp": data[1], "column": data[2]}}, "module": this});
+			var map = {};
+			data[0].each(function (d) {
+				var type = d.applicationCategory || "未分类";
+				if( !map[type] )map[type] = [];
+				map[type].push(d);
+			});
+			data[2].each(function (d) {
+				var type = d.appType || "未分类";
+				if( !map[type] )map[type] = [];
+				map[type].push(d);
+			});
+			var array = [];
+			Object.each(map, function (list, key) {
+				array.push({ key: key, appList: list })
+			});
+
+			array.sort(function (a1, b1) {
+				var a = a1.key, b = b1.key;
+
+				if( a === "未分类" )return 1;
+				if( b === "未分类" )return -1;
+
+				var n = !isNaN(a - 0), n2 = !isNaN(b - 0);
+				if (n && n2) {
+					return a - b;
+				} else if (n) {
+					return -1;
+				} else if (n2) {
+					return 1;
+				}
+
+				var e = escape(a).indexOf("%u") === 0, e2 = escape(b).indexOf("%u") === 0;
+				if (e && e2) {
+					return a.localeCompare(b);
+				} else if (e) {
+					return 1;
+				} else if (e2) {
+					return -1;
+				}
+				return a.localeCompare(b);
+			});
+
+			startContent.loadHtml(url, {"bind": {"lp": this.lp, "data": {"app": data[0], "topApp": data[1], "column": data[2], "appByType":array}}, "module": this});
 		}.bind(this));
 
 		this.appNode.hide();
@@ -296,6 +338,24 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		var node = e.target;
 		var url = this.path+this.options.style+"/view/dlg/processList.html";
 		node.loadHtml(url, {"bind": {"lp": this.lp, "data": data}, "module": this});
+	},
+
+	appCategoryExpandOrCollapse: function(e, data){
+		var node = e.target;
+		while (node && !node.hasClass("st_appCategoryWrap")){ node = node.getParent();}
+		if( node ){
+			var contentNode = node.getElement(".st_appCategoryContent");
+			if( contentNode ){
+				if( contentNode.getStyle("display") === "none" ){
+					contentNode.show();
+					e.target.addClass("o2icon-triangle_down2").removeClass("o2icon-triangle_right2");
+				}else{
+					contentNode.hide();
+					e.target.addClass("o2icon-triangle_right2").removeClass("o2icon-triangle_down2");
+				}
+			}
+		}
+		e.stopPropagation();
 	},
 
 	startAppItemOver: function(e, data){
@@ -315,8 +375,32 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		while (node && !node.hasClass("st_appListItem")){ node = node.getParent();}
 		node.addClass("mainColor_bg_opacity");
 
+		if( node.hasClass("st_tabItem") ){
+			node.addClass("mainColor_border");
+			if( node.hasClass("st_all") ){
+				this.currentTab = "all";
+				this.byTypeNode.removeClass("mainColor_border");
+				this.allContentNode.show();
+				this.byTypeContentNode.hide();
+			}else{
+				this.currentTab = "byType";
+				this.allNode.removeClass("mainColor_border");
+				this.allContentNode.hide();
+				this.byTypeContentNode.show();
+			}
+		}
+
 		var appData;
-		if(data.app){
+		if(data.appList) {
+			appData = {
+				"app": data.appList.filter(function (d) {
+					return !d.appName
+				}),
+				"column": data.appList.filter(function (d) {
+					return d.appName
+				}),
+			};
+		}else if(data.app){
 			appData = data;
 		}else if( data.appName ) {
 			appData = {"column": [data]}
@@ -370,7 +454,6 @@ MWF.xApplication.process.workcenter.Main = new Class({
 	},
 
 	loadColumnItemIcon: function(columnId, e, data){
-		debugger;
 		var node = e.currentTarget;
 		if (data.appIcon){
 			node.setStyle("background-image", "url(data:image/png;base64,"+data.appIcon+")");
@@ -416,7 +499,12 @@ MWF.xApplication.process.workcenter.Main = new Class({
 
 	clearStartProcessSearch: function(e){
 		var pnode = e.target.getParent(".st_processContent");
-		pnode.getElement(".st_all").click();
+
+		if( this.currentTab === "byType" ){
+			this.byTypeNode.click();
+		}else{
+			this.allNode.click();
+		}
 		pnode.getElement("input").set("value", "");
 	},
 	loadItemIcon: function(application, e){

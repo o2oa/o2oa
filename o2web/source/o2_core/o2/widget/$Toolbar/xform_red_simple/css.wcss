@@ -13,7 +13,8 @@
 		"height": "auto",
 		"display":"block",
 		"font-size": "14px",
-		"border-top": "2px solid #cc3d3d"
+		"border-top": "2px solid #cc3d3d",
+		"margin" : "0px auto"
 	},
 	"toolbarSeparator": {
 		"display":"block",

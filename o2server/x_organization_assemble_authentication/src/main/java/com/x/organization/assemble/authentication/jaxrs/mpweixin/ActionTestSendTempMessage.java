@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.x.base.core.project.config.Mpweixin;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -12,8 +13,7 @@ import com.google.gson.JsonObject;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.project.config.Config;
-import com.x.base.core.project.config.MPweixin;
-import com.x.base.core.project.config.MPweixin.MPweixinMessageTemp;
+import com.x.base.core.project.config.Mpweixin.MPweixinMessageTemp;
 import com.x.base.core.project.connection.HttpConnection;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
@@ -48,15 +48,15 @@ public class ActionTestSendTempMessage extends BaseAction  {
                 throw new ExceptionPersonNotExist();
             }
             logger.info(openid);
-            Boolean enable = Config.mPweixin().getMessageEnable();
+            Boolean enable = Config.mpweixin().getMessageEnable();
             if (BooleanUtils.isFalse(enable)) {
                 throw new ExceptionConfigError();
             }
-            String tempId = Config.mPweixin().getTempMessageId();
+            String tempId = Config.mpweixin().getTempMessageId();
             if (StringUtils.isEmpty(tempId)) {
                 throw new ExceptionConfigError();
             }
-            List<MPweixinMessageTemp> list = Config.mPweixin().getFieldList();
+            List<MPweixinMessageTemp> list = Config.mpweixin().getFieldList();
             logger.info("field list size: " +list.size());
             JsonObject object = jsonElement.getAsJsonObject();
             logger.info(object.toString());
@@ -81,7 +81,7 @@ public class ActionTestSendTempMessage extends BaseAction  {
             message.setTopcolor("#fb4747");
             message.setData(data);
             logger.info("发送的消息对象：" + message.toString());
-            String url = MPweixin.default_apiAddress + "/cgi-bin/message/template/send?access_token="+ Config.mPweixin().accessToken();
+            String url = Mpweixin.default_apiAddress + "/cgi-bin/message/template/send?access_token="+ Config.mpweixin().accessToken();
             logger.info("send url:" +url);
             String response = HttpConnection.postAsString(url, null, message.toString());
             logger.info("返回："+response);

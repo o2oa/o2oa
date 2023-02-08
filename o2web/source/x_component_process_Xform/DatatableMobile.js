@@ -306,6 +306,9 @@ MWF.xApplication.process.Xform.DatatableMobile = new Class(
 			}
 		},
 		_loadStyles: function(){
+			if( this.json.recoveryStyles ){
+				this.node.setStyles(this.json.recoveryStyles);
+			}
 			// if (this.json.border) {
 			// 	this.table.setStyles({
 			// 		"border-top": this.json.border,
@@ -576,7 +579,7 @@ MWF.xApplication.process.Xform.DatatableMobile.Line =  new Class({
 	load: function(){
 		if( !this.datatable.multiEditMode && this.options.isEdited )this.datatable.currentEditedLine = this;
 		this.node.addClass("mwf_datatable");
-		this.node.setStyles( Object.merge({"overflow": "hidden", "margin-bottom": "10px"}, this.datatable.json.styles||{} ));
+		this.node.setStyles( Object.merge({"margin-bottom": "10px"}, this.datatable.json.styles||{} )); //"overflow": "hidden",
 
 		this.loadModules();
 		this.loadSequence();

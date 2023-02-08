@@ -861,7 +861,7 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                     }
                 }
             });
-            return result.length > 0 ? result : null;
+            return result;
         },
         getSpecialData: function () {
             var data = this.businessData.data;
@@ -1356,27 +1356,31 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
             };
             debugger;
             this.app.confirm("infor", event, MWF.xApplication.cms.Xform.LP.deleteDocumentTitle, MWF.xApplication.cms.Xform.LP.deleteDocumentText, 380, 120, function () {
-                _self.app.content.mask({
-                    "style": {
-                        "background-color": "#999",
-                        "opacity": 0.6
-                    }
-                });
-
-                _self.fireEvent("beforeDelete");
-                if (_self.app && _self.app.fireEvent) _self.app.fireEvent("beforeDelete");
-
-                _self.documentAction.removeDocument(_self.businessData.document.id, function (json) {
-                    debugger;
-                    _self.fireEvent("afterDelete");
-                    if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterDelete");
-                    _self.app.notice(MWF.xApplication.cms.Xform.LP.documentDelete + ": “" + _self.businessData.document.title + "”", "success");
-                    _self.options.autoSave = false;
-                    _self.options.saveOnClose = false;
-                    _self.fireEvent("postDelete");
-                    _self.app.close();
-                    this.close();
-                }.bind(this));
+                if (layout.mobile) {
+                    _self.deleteDocumentForMobile();
+                } else {
+                    _self.app.content.mask({
+                        "style": {
+                            "background-color": "#999",
+                            "opacity": 0.6
+                        }
+                    });
+    
+                    _self.fireEvent("beforeDelete");
+                    if (_self.app && _self.app.fireEvent) _self.app.fireEvent("beforeDelete");
+    
+                    _self.documentAction.removeDocument(_self.businessData.document.id, function (json) {
+                        debugger;
+                        _self.fireEvent("afterDelete");
+                        if (_self.app && _self.app.fireEvent) _self.app.fireEvent("afterDelete");
+                        _self.app.notice(MWF.xApplication.cms.Xform.LP.documentDelete + ": “" + _self.businessData.document.title + "”", "success");
+                        _self.options.autoSave = false;
+                        _self.options.saveOnClose = false;
+                        _self.fireEvent("postDelete");
+                        _self.app.close();
+                        this.close();
+                    }.bind(this));
+                }
                 //this.close();
             }, function () {
                 this.close();
@@ -1617,7 +1621,13 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
          * 移动端处理关闭
          */
         closeWindowOnMobile: function () {
-            if (window.o2android && window.o2android.closeDocumentWindow) {
+            if (window.o2android && window.o2android.postMessage) {
+                var body = {
+                    type: "closeDocumentWindow",
+                    data: {}
+                };
+                window.o2android.postMessage(JSON.stringify(body));
+            } else if (window.o2android && window.o2android.closeDocumentWindow) {
                 window.o2android.closeDocumentWindow("");
             } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.closeDocumentWindow) {
                 window.webkit.messageHandlers.closeDocumentWindow.postMessage("");

@@ -32,7 +32,7 @@ MWF.xApplication.process.FormDesigner.Module.Elselect = MWF.FCElselect = new Cla
 		// html += " :fetch-suggestions=\"$fetchSuggestions\"";
 
 		// html += " v-model=\"id\"";
-		html += " :placeholder=\"description\"";
+		// html += " :placeholder=\"description\"";
 		html += " :size=\"size\"";
 		html += " :clearable=\"clearable\"";
 		html += " :popper-class=\"popperClass\"";
@@ -46,9 +46,10 @@ MWF.xApplication.process.FormDesigner.Module.Elselect = MWF.FCElselect = new Cla
 		html += " :remote=\"remote\"";
 		html += " :loading-text=\"loadingText\"";
 
-		html += " :style=\"elStyles\"";
+		html += " :style=\"tmpElStyles\"";
 
-		html += " :value=\"id\">";
+		html += " value=\"\"";
+		html += " :placeholder=\"id\">";
 		//html += ">";
 		html += "<el-option label=\"\" value=\"\"></el-option>";
 		if (this.json.vueSlot) html += this.json.vueSlot;
@@ -58,7 +59,8 @@ MWF.xApplication.process.FormDesigner.Module.Elselect = MWF.FCElselect = new Cla
 	_createVueData: function(){
 		//var data = this.json;
 		return function(){
-			this.json[this.json.id] = "";
+			// this.json[this.json.id] = "";
+			this.setElStyles();
 			return Object.assign(this.json, this.tmpVueData||{});
 		}.bind(this)
 	},

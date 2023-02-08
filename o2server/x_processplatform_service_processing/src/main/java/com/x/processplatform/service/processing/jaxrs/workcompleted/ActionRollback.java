@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-import com.x.processplatform.core.entity.content.*;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -24,6 +23,16 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.ListTools;
+import com.x.processplatform.core.entity.content.Attachment;
+import com.x.processplatform.core.entity.content.Read;
+import com.x.processplatform.core.entity.content.ReadCompleted;
+import com.x.processplatform.core.entity.content.Record;
+import com.x.processplatform.core.entity.content.Review;
+import com.x.processplatform.core.entity.content.TaskCompleted;
+import com.x.processplatform.core.entity.content.Work;
+import com.x.processplatform.core.entity.content.WorkCompleted;
+import com.x.processplatform.core.entity.content.WorkLog;
+import com.x.processplatform.core.entity.content.WorkStatus;
 import com.x.processplatform.core.entity.element.Application;
 import com.x.processplatform.core.entity.element.Process;
 import com.x.processplatform.core.entity.element.util.WorkLogTree;
@@ -164,7 +173,10 @@ class ActionRollback extends BaseAction {
 		work.setActivityDescription("");
 		work.setActivityToken(workLog.getFromActivityToken());
 		work.setActivityType(workLog.getFromActivityType());
-		work.setForm(business.element().lookupSuitableForm(work.getProcess(), work.getActivity()));
+		String formId =business.element().lookupSuitableForm(work.getProcess(), work.getActivity()); 
+        if (StringUtils.isNotBlank(formId)) {
+            work.setForm(formId);                   
+        }
 //		work.setErrorRetry(0);
 		work.setWorkStatus(WorkStatus.processing);
 		// 因为workCompleted没有workCreateType属性，回溯到任何环节都必须要有待办，默认置为assign

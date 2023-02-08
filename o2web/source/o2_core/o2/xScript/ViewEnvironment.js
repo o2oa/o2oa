@@ -15,7 +15,7 @@
  * <b>equals</b> 或 <b>==</b> 或：表示等于。<br/>
  * <b>notEquals</b> 或 <b>!=</b> ：表示不等于。<br/>
  * <b>greaterThan</b> 或 <b>></b> ：表示大于。<br/>
- * <b>greaterThanOrEqualTo</b> 或 <b>=></b> ：表示大于或等于。<br/>
+ * <b>greaterThanOrEqualTo</b> 或 <b>>=</b> ：表示大于或等于。<br/>
  * <b>lessThan</b> 或 <b><</b> ：表示小于。<br/>
  * <b>lessThanOrEqualTo</b> 或 <b><=</b> ：表示小于等于。<br/>
  * <b>like</b> ：表示部分匹配。<br/>
@@ -37,7 +37,15 @@
  *    "logic":"and",
  *    "path":"$work.title",
  *    "comparison":"like",
- *    "value":"7月",
+ *    "value":"关于",
+ *    "formatType":"textValue"
+ * }
+ * @example
+ *  {
+ *    "logic":"and",
+ *    "path":"month",
+ *    "comparison":"in",
+ *    "value":"一月,二月,三月",
  *    "formatType":"textValue"
  * }
  */
@@ -806,6 +814,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @static
          * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、id、unique属性值，人员对象，或上述属性值和对象的数组。
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @param {(Boolean)} [findCN] 是否需要额外查找中文名称（如张三），默认false。如果为true，除匹配unique和distingiushedName外，还会在身份的第一段中查找所有匹配到的身份（精确匹配）。
          * @return {Promise|IdentityData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回身份对象数组。
@@ -825,9 +834,12 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *     //identityList 返回的身份对象数组。
          * })
          */
-        listIdentityWithPerson: function(name, async){
+        listIdentityWithPerson: function(name, async, findCN){
             getOrgActions();
             var data = {"personList":getNameFlag(name)};
+            if( o2.typeOf(findCN) === "boolean"){
+                data.useNameFind = findCN;
+            }
             var v = null;
             var cb = function(json){
                 v = json.data;
@@ -912,6 +924,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @static
          * @param {UnitFlag|UnitFlag[]} name - 组织的distinguishedName、id、unique属性值，组织对象，或上述属性值和对象的数组。
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @param {(Boolean)} [findCN] 是否需要额外查找中文名称（如综合部），默认false。如果为true，除匹配unique和distingiushedName外，还会在名称的第一段中查找所有匹配到的部门（精确匹配）。
          * @return {Promise|UnitData|UnitData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回组织，单个是Object，多个是Array。
@@ -931,9 +944,12 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *     //unitList 为返回的组织，单个是对象，多个是数组。
          * })
          */
-        getUnit: function(name, async){
+        getUnit: function(name, async, findCN){
             getOrgActions();
             var data = {"unitList":getNameFlag(name)};
+            if( o2.typeOf(findCN) === "boolean"){
+                data.useNameFind = findCN;
+            }
             var v = null;
             var cb = function(json){
                 v = json.data;
@@ -1407,6 +1423,45 @@ MWF.xScript.ViewEnvironment = function (ev) {
         },
 
         //人员
+        //获取人员,附带身份,身份所在的组织,个人所在群组,个人拥有角色.
+        /**
+         根据人员标识获取对应的人员对象，附带身份,身份所在的组织,个人所在群组,个人拥有角色.
+         * @method getPersonData
+         * @o2membercategory person
+         * @methodOf module:org
+         * @static
+         * @param {String} name - 人员的distinguishedName、id、unique属性值，人员名称。
+         * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @return {Promise|PersonData} 当async为true时，返回
+         * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
+         * 否则返回人员对象。
+         * @o2ActionOut x_organization_assemble_express.PersonAction.listObject|example=Person
+         * @o2syntax
+         * //同步执行，返回人员对象。
+         * var person = this.org.getPersonData( name );
+         *
+         * //异步执行，返回Promise对象
+         * var promise = this.org.getPersonData( name, true);
+         * promise.then(function(person){
+         *     //personList 为返回的人员对象。
+         * })
+         *
+         * //异步执行，在回调方法中获取人员
+         * this.org.getPersonData( name, function(person){
+         *     //personList 为返回的人员对象。
+         * })
+         */
+        getPersonData: function(name, async){
+            getOrgActions();
+            var v = null;
+            var cb = function(json){
+                v = json.data;
+                if (async && o2.typeOf(async)=="function") return async(v);
+                return v;
+            };
+            var promise = orgActions.getPerson(null, cb, null, !!async, {"flag": name});
+            return (!!async) ? promise : v;
+        },
         //获取人员--返回人员的对象数组
         /**
          根据人员标识获取对应的人员对象或数组：person对象或数组
@@ -1416,6 +1471,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @static
          * @param {PersonFlag|PersonFlag[]} name - 人员的distinguishedName、id、unique属性值，人员对象，或上述属性值和对象的数组。
          * @param {(Boolean|Function)} [asyncOrCallback] 当参数为boolean，表示是否异步执行，默认为false。当参数为function，表示回调方法。
+         * @param {(Boolean)} [findCN] 是否需要额外查找中文名称（如张三），默认false。如果为true，除匹配unique和distingiushedName外，还会在名称的第一段中查找所有匹配到的人（精确匹配）。
          * @return {Promise|PersonData|PersonData[]} 当async为true时，返回
          * {@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise|Promise}。
          * 否则返回人员，单个是Object，多个是Array。
@@ -1435,10 +1491,12 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *     //personList 为返回的人员，单个是对象，多个是数组。
          * })
          */
-        getPerson: function(name, async){
+        getPerson: function(name, async, findCN){
             getOrgActions();
             var data = {"personList": getNameFlag(name)};
-
+            if( o2.typeOf(findCN) === "boolean"){
+                data.useNameFind = findCN;
+            }
             var v = null;
             var cb = function(json){
                 v = json.data;
@@ -3533,6 +3591,9 @@ MWF.xScript.ViewEnvironment = function (ev) {
         "upload": function (options, callback, async) {
             MWF.xDesktop.requireApp("query.Query", "Importer", function () {
                 var importer = new MWF.xApplication.query.Query.Importer(_form.app.content, options, {}, _form.app, _form.Macro);
+                importer.addEvent("afterImport", function (data) {
+                    if(callback)callback(data);
+                });
                 importer.load();
             }.bind(this));
 
@@ -3567,14 +3628,14 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *  "application" : "testQuery",
          * },"导入模板", function( object ){
          *     //添加一项
-         *     object.data.push("备注");
+         *     object.data[0].push("备注");
          *     object.colWidthArray.push(300)
          * });
          */
-        "downloadTemplate": function(options, fileName){
+        "downloadTemplate": function(options, fileName,callback){
             MWF.xDesktop.requireApp("query.Query", "Importer", function () {
                 var importer = new MWF.xApplication.query.Query.Importer(_form.app.content, options, {}, _form.app, _form.Macro);
-                importer.downloadTemplate(fileName);
+                importer.downloadTemplate(fileName, callback);
             }.bind(this));
         }
     };
@@ -4533,8 +4594,8 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @methodOf module:queryView
          * @see module:form.openApplication
          */
-        "openApplication": function (name, options) {
-            return layout.desktop.openApplication(null, name, options);
+        "openApplication": function (name, options, status) {
+            return layout.desktop.openApplication(null, name, options, status);
         },
 
         /**创建一个内容管理文档。
@@ -4569,7 +4630,14 @@ MWF.xScript.ViewEnvironment = function (ev) {
                 if (category) {
                     options["category"] = category
                 }
-                if (window.o2android && window.o2android.createO2CmsDocument){
+                if (window.o2android && window.o2android.postMessage) {
+                        var body = {
+                        type: "createO2CmsDocument",
+                        data: options
+                    };
+                    window.o2android.postMessage(JSON.stringify(body));
+                    return;
+                } else if (window.o2android && window.o2android.createO2CmsDocument){
                     window.o2android.createO2CmsDocument(JSON.stringify(options));
                     return;
                 } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.createO2CmsDocument) {
@@ -4739,14 +4807,14 @@ MWF.xScript.ViewEnvironment = function (ev) {
      *    "genderType": "m",                                  //性别
      *    "icon": "...",                                      //头像
      *    "signature": "",                                    //个人签名
-     *    "name": "胡起",                                     //姓名
-     *    "employee": "huqi",                                 //员工号
-     *    "unique": "huqi",                                   //唯一标识
-     *    "distinguishedName": "xx@huqi@P",                   //人员全称
+     *    "name": "张三",                                     //姓名
+     *    "employee": "zhansan",                                 //员工号
+     *    "unique": "zhansan",                                   //唯一标识
+     *    "distinguishedName": "xx@zhansan@P",                   //人员全称
      *    "superior": "",                                     //上级人员id
      *    "changePasswordTime": "2017-03-13",                 //修改密码时间
      *    "lastLoginTime": "2019-01-02",                      //最后登录时间
-     *    "mail": "huqi@zoneland.net",                        //邮件地址
+     *    "mail": "zhansan@zoneland.net",                        //邮件地址
      *    "weixin": "",                                       //微信号
      *    "qq": "",                                           //QQ
      *    "mobile": "18057190078",                            //手机号码
@@ -4795,7 +4863,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
 
     /**
      * 本文档说明如何在前台脚本中使用Actions调用平台的RESTful服务。<br/>
-     * 通过访问以下地址来查询服务列表：http://server:20030/x_program_center/jest/list.html
+     * 通过访问以下地址来查询服务列表：http://server/x_program_center/jest/list.html (v7.2之前版本需要加端口20030)
      * @module Actions
      * @o2cn 服务调用
      * @o2category web
@@ -4810,11 +4878,11 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @method getHost
      * @methodOf module:Actions
      * @static
-     * @param {String} root 平台RESTful服务根，具体服务列表参见:http://server:20030/x_program_center/jest/list.html。
+     * @param {String} root 平台RESTful服务根，具体服务列表参见:http://server/x_program_center/jest/list.html。(v7.2之前版本需要加端口20030)
      *如:<pre><code class='language-js'>
      * "x_processplatform_assemble_surface" //流程平台相关服务根
      * </code></pre>
-     * @return {String} 对应服务跟对应的host。如：http://127.0.0.1:20020
+     * @return {String} 对应服务跟对应的host。如：http://127.0.0.1 (v7.2之前版本可能带端口20020)
      * @o2syntax
      * var actions = this.Actions.getHost( root );
      */
@@ -4824,7 +4892,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @method load
      * @methodOf module:Actions
      * @instance
-     * @param {String} root 平台RESTful服务根，具体服务列表参见:http://server:20030/x_program_center/jest/list.html。
+     * @param {String} root 平台RESTful服务根，具体服务列表参见:http://server/x_program_center/jest/list.html (v7.2之前版本需要加端口20030)。
      * 如:
      *<pre><code class='language-js'>
      * "x_processplatform_assemble_surface" //流程平台相关服务根
@@ -4901,7 +4969,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * <caption>
      *     <b>样例1:</b>
      *     根据x_processplatform_assemble_surface服务获取当前用户的待办列表：<br/>
-     *     可以通过对应服务的查询页面，http://server:20020/x_processplatform_assemble_surface/jest/index.html<br/>
+     *     可以通过对应服务的查询页面，http://server/x_processplatform_assemble_surface/jest/index.html(v7.2之前版本需要带端口20020)<br/>
      *     可以看到以下界面：<img src="img/module/Actions/Actions.png"/>
      *     我们可以找到TaskAction的V2ListPaging服务是列式当前用户待办的服务。<br/>
      *     该服务有以下信息：<br/>
@@ -4981,11 +5049,11 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @deprecated
      * @methodOf module:Actions
      * @instance
-     * @param {String} root 平台RESTful服务根，具体服务列表参见:http://server:20030/x_program_center/jest/list.html。
+     * @param {String} root 平台RESTful服务根，具体服务列表参见:http://server/x_program_center/jest/list.html(v7.2之前版本需要加端口20030)。
      *如:<pre><code class='language-js'>
      *  "x_processplatform_assemble_surface" //流程平台相关服务根
      * </code></pre>
-     * @return {String} 对应服务根的host。如：http://127.0.0.1:20020
+     * @return {String} 对应服务根的host。如：http://127.0.0.1 (v7.2之前版本可能带端口20020)
      * @o2syntax
      * var actions = this.Actions.get( root );
      * actions[ methodName ]( arguements );
@@ -5200,7 +5268,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * @method rowCountWhere
      * @methodOf module:Table
      * @instance
-     * @param {String} where 查询条件，格式为jpql语法,o.name='zhangsan'，允许为空。
+     * @param {String} where 查询条件，格式为jpql语法,o.name='zhangsan'。
      * @param {Function} [success] 调用成功时的回调函数。
      * @param {Function} [failure] 调用错误时的回调函数。
      * @param {Boolean} [async] 是否异步调用，默认为true。

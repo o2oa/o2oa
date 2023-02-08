@@ -3,6 +3,8 @@ package com.x.query.assemble.surface.jaxrs.statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Parameter;
@@ -46,7 +48,7 @@ import com.x.query.core.express.statement.Runtime;
 class ActionExecuteV2 extends BaseAction {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ActionExecuteV2.class);
-	
+
 	private static final String[] keys = { "group by", "GROUP BY", "order by", "ORDER BY", "limit", "LIMIT" };
 	private static final String[] pageKeys = { "GROUP BY", " COUNT(" };
 	private static final String JOIN_KEY = " JOIN ";
@@ -54,6 +56,8 @@ class ActionExecuteV2 extends BaseAction {
 	private static final String SQL_WHERE = "WHERE";
 	private static final String SQL_AND = "AND";
 	private static final String SQL_OR = "OR";
+	private static final Pattern SIMPLY_REGEX = Pattern
+			.compile("^[a-zA-Z0-9\\_\\-]*$");
 
 	ActionResult<Object> execute(EffectivePerson effectivePerson, String flag, String mode, Integer page, Integer size,
 			JsonElement jsonElement) throws Exception {
@@ -62,7 +66,7 @@ class ActionExecuteV2 extends BaseAction {
 				() -> page, () -> size);
 		ClassLoader classLoader = Business.getDynamicEntityClassLoader();
 		Thread.currentThread().setContextClassLoader(classLoader);
-		
+
 		Statement statement = null;
 		ActionResult<Object> result = new ActionResult<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
@@ -317,9 +321,14 @@ class ActionExecuteV2 extends BaseAction {
 				if (size > 1) {
 					list.add("(");
 				}
+				int j = 0;
 				for (int i = 0; i < size; i++) {
 					FilterEntry filterEntry = wi.getFilterList().get(i);
-					if (i > 0) {
+					Matcher matcher = SIMPLY_REGEX.matcher(filterEntry.value);
+					if(!matcher.find()){
+						continue;
+					}
+					if (j++ > 0) {
 						String joinTag = filterEntry.logic;
 						if (StringUtils.isEmpty(joinTag) || !joinTag.equalsIgnoreCase(SQL_OR)) {
 							joinTag = SQL_AND;
@@ -329,6 +338,9 @@ class ActionExecuteV2 extends BaseAction {
 					list.add(filterEntry.path);
 					list.add(Comparison.getMatchCom(filterEntry.comparison));
 					list.add(":" + filterEntry.value);
+				}
+				if(j == 0){
+					list.add("1=1");
 				}
 				if (size > 1) {
 					list.add(")");

@@ -20,10 +20,10 @@ MWF.xApplication.process.Xform.ReadLog = MWF.APPReadLog =  new Class(
         options: {
             /**
              * 加载数据后事件。
-             * @event MWF.xApplication.process.Xform.Log#postLoadData
+             * @event MWF.xApplication.process.Xform.ReadLog#postLoadData
              * @see {@link https://www.yuque.com/o2oa/ixsnyt/hm5uft#i0zTS|组件事件说明}
              * @example
-             * //触发该事件的时候可以获取到流程数据workLog
+             * //触发该事件的时候可以获取到流程数据ReadLog
              * var readLog = this.target.readLog;
              * //可以修改readLog达到定制化流程记录的效果
              * do something

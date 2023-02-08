@@ -217,21 +217,6 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 		}
 	}
 
-	public static class Log {
-
-		private Log() {
-		}
-
-		public static class SignalStackLog {
-
-			private SignalStackLog() {
-			}
-
-			public static final String table = "PP_L_SIGNALSTACKLOG";
-
-		}
-	}
-
 	public static class Message {
 
 		private Message() {
@@ -245,11 +230,24 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 			public static final String table = "PP_M_EVENT";
 
 		}
-	}
 
-	public static class Temporary {
-		public static class ServiceValue {
-			public static final String table = "PP_T_SERVICEVALUE";
+		public static class WorkEvent {
+
+			private WorkEvent() {
+			}
+
+			public static final String table = "PP_M_WORKEVENT";
+
+		}
+
+		public static class WorkCompletedEvent {
+
+			private WorkCompletedEvent() {
+			}
+
+			public static final String table = "PP_M_WORKCOMPLETEDEVENT";
+
 		}
 	}
+
 }
