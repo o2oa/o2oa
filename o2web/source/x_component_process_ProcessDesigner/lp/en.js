@@ -8,6 +8,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 	"unrealized": "This feature is not implemented",
 	"activity": "Activity",
 	"route": "Route",
+	"history": "History",
 	"property": "Property",
 	"showJson": "Show JSON",
 	"all" : "All",

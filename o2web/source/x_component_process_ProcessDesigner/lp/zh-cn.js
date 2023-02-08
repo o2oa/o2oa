@@ -8,6 +8,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 	"unrealized": "此功能未实现",
 	"activity": "活动",
 	"route": "路由",
+	"history": "历史",
 	"property": "属性",
 	"showJson": "查看JSON",
 	"all" : "全部",
@@ -549,5 +550,18 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"publishTableConfig": "数据表发布配置",
 		"queryTableDataPathNote": "注：根路径为空，数据表格填数据表格标识.data（如datatable1.data），数据模板填数据模板标识（如datatemplate1）。",
 		"orgIdPlaceholder" : "如：departmentLeader"
+	},
+	"processAction": {
+		"move": "移动",
+		"copy": "复制",
+		"delete": "删除",
+		"add": "添加",
+		"cut": "剪切",
+		"paste": "黏贴",
+		"open": "打开",
+		"script": "脚本",
+		"create": "创建",
+		"property": "属性",
+		"batchModify": "批量修改"
 	}
 };

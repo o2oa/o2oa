@@ -129,6 +129,8 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 		this.setMenu();
 		this.showProperty();
 		this.showEditionInfor();
+
+		this.loadHistory();
 	},
 	checkLoadRoutes: function(){
 		Object.each(this.routes, function(route){
@@ -1026,6 +1028,8 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
             activity = new MWF.APPPD.Activity[c](activityData, this);
             activity.create(position);
 
+			activity.addHistoryLog( "create", [activity.data] );
+
             if (d=="begin"){
                 this.begin = activity;
                 this.process.begin = activityData;
@@ -1377,7 +1381,47 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
             this.explodePanel.load();
         }.bind(this));
 
-    }
+    },
+	loadHistory: function(){
+		o2.xDesktop.requireApp("process.ProcessDesigner", "History", function () {
+			this.history = new MWF.xApplication.process.ProcessDesigner.History(this, this.historyAreaNode);
+			this.history.load();
+		}.bind(this));
+	},
+	checkPropertyHistory: function(name, oldValue, newValue, compareName, force){
+		if( !this.history )return null;
+		var log = {
+			"type": "property",
+			"force": force,
+			"moduleId": "process",
+			"moduleType": "process",
+			"changeList": [
+				{
+					"name": name,
+					"compareName": compareName,
+					"fromValue": oldValue,
+					"toValue": newValue || this.data[name]
+				}
+			]
+		};
+		this.history.checkProperty(log, this);
+	},
+	checkMultiPropertyHistory: function(name, oldValueList, newValue, modules){
+		if( !this.history )return null;
+		var log = {
+			"type": "multiProperty",
+			"moduleId": "process",
+			"changeList": modules.map(function (module, i) {
+				return {
+					"module": module,
+					"name": name,
+					"fromValue": oldValueList[i],
+					"toValue": newValue || module.json[name]
+				}
+			})
+		};
+		this.history.checkMultiProperty(log, modules);
+	},
 	
 });
 
@@ -1938,6 +1982,13 @@ MWF.xApplication.process.ProcessDesigner.Process.Panel = new Class({
 		    "properties": this.process.css.routeListTable
 		}).inject(this.routeListNode);
 		this.process.routeTable = this.routeTable;
+
+		this.historyListNode = new Element("div", {
+			"styles": this.process.css.routeListNode
+		});
+		this.process.historyListNode = this.historyListNode;
+		this.historyAreaNode = new Element("div").inject(this.historyListNode);
+		this.process.historyAreaNode = this.historyAreaNode;
 		
 		MWF.require("MWF.widget.Tab", function(){
 			this.moduleListTab = new MWF.widget.Tab(this.moduleListContent, {"style": "moduleList"});
@@ -1950,6 +2001,9 @@ MWF.xApplication.process.ProcessDesigner.Process.Panel = new Class({
 			
 			var routeTabPage = this.moduleListTab.addTab(this.routeListNode, MWF.APPPD.LP.route, false);
 			this.process.setScrollBar(routeTabPage.contentNodeArea, "small", null, null);
+
+			var historyTabPage = this.moduleListTab.addTab(this.historyListNode, MWF.APPPD.LP.history, false);
+			this.process.setScrollBar(historyTabPage.contentNodeArea, "small", null, null);
 			
 			activityTabPage.showTab();
 
