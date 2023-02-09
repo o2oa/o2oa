@@ -1460,7 +1460,10 @@ MWF.xApplication.process.FormDesigner.LP = {
         "scriptComponentNote": "Return application path, such as organization management",
         "componentScript": "Apply Path Script",
         "applicationOptions": "Application Options",
-        "applicationStatus": "Application Status"
+        "applicationStatus": "Application Status",
+        "titleAddTo": "Title Line Add",
+        "firstLine": "First Line",
+        "lastLine": "last line"
     },
     "smartbi":{
         "nosetup":"please install SmartBI APP first",

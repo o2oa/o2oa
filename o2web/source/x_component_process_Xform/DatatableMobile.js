@@ -300,7 +300,7 @@ MWF.xApplication.process.Xform.DatatableMobile = new Class(
 			if( !this.addAction ){
 				this.addAction = new Element("div", {"styles": this.form.css.gridMobileActionNode}).inject(this.node, "top");
 				this.addAction.set("text", MWF.xApplication.process.Xform.LP.addLine);
-				this.addAction.addEvent("click", function(){
+				this.addAction.addEvent("click", function(e){
 					this._addLine();
 				}.bind(this));
 			}
