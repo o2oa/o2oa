@@ -255,6 +255,19 @@ MWF.xApplication.process.FormDesigner.History = new Class({
             this.destroyItem(this.preArray[0]);
         }
     },
+    destroy: function(){
+        var it;
+        while( this.nextArray.length ){
+            it = this.nextArray.pop();
+            it.destroy();
+        }
+        while( this.preArray.length ){
+            it = this.preArray.pop();
+            it.destroy();
+        }
+        this.node.destroy();
+        MWF.release(this);
+    },
     destroyItem: function(item){
         this.preArray.erase(item);
         item.destroy();
@@ -369,7 +382,18 @@ MWF.FCWHistory.Item = new Class({
     },
     _redo: function(){
     },
-
+    setBrushStyle: function( type ){
+        var to = this.data.toList[0];
+        var from = this.data.fromList[0];
+        var dom = this.getDomByPath( to.path );
+        if(dom){
+            var module = dom.retrieve("module");
+            if(module){
+                var json = type === "undo" ? (from.json || {}) : (to.json || {});
+                module.setBrushStyle( json );
+            }
+        }
+    },
     destroy: function () {
         this.node.destroy();
         MWF.release(this);
@@ -579,6 +603,9 @@ MWF.FCWHistory.ModuleItem = new Class({
             case "paste":
                 this.deleteModuleList();
                 break;
+            case "styleBrush":
+                this.setBrushStyle( "undo" );
+                break;
         }
         this.unselectModule();
     },
@@ -604,6 +631,9 @@ MWF.FCWHistory.ModuleItem = new Class({
                 break;
             case "paste":
                 this.loadModuleList();
+                break;
+            case "styleBrush":
+                this.setBrushStyle( "redo" );
                 break;
         }
         this.unselectModule();
@@ -704,6 +734,9 @@ MWF.FCWHistory.ModuleTableTdItem = new Class({
                     this.restoreTd( log.path, log.html, log.json, log.jsonObject );
                 }
                 break;
+            case "styleBrush":
+                this.setBrushStyle( "undo" );
+                break;
         }
         this.unselectModule();
     },
@@ -736,6 +769,9 @@ MWF.FCWHistory.ModuleTableTdItem = new Class({
                 //恢复新的单元格
                 var to = this.data.toList[0];
                 this.restoreTd( to.path, to.html, to.json, to.jsonObject );
+                break;
+            case "styleBrush":
+                this.setBrushStyle( "redo" );
                 break;
         }
         this.unselectModule();
@@ -787,6 +823,9 @@ MWF.FCWHistory.ModuleDatatableTdItem = new Class({
             case "deleteCol": //td的操作，删除列
                 this.restoreTds();
                 break;
+            case "styleBrush":
+                this.setBrushStyle( "undo" );
+                break;
         }
         this.unselectModule();
     },
@@ -798,6 +837,9 @@ MWF.FCWHistory.ModuleDatatableTdItem = new Class({
                 break;
             case "deleteCol": //td的操作，删除列
                 this.deleteTds();
+                break;
+            case "styleBrush":
+                this.setBrushStyle( "redo" );
                 break;
         }
         this.unselectModule();
@@ -851,6 +893,9 @@ MWF.FCWHistory.ModuleTabpageItem = new Class({
             case "delete":
                 this.restoreTabage();
                 break;
+            case "styleBrush":
+                this.setBrushStyle( "undo" );
+                break;
         }
         this.unselectModule();
     },
@@ -873,6 +918,9 @@ MWF.FCWHistory.ModuleTabpageItem = new Class({
                 dom = this.getDomByPath( to.path );
                 if(dom)module = dom.retrieve("module");
                 if(module)module._delete();
+                break;
+            case "styleBrush":
+                this.setBrushStyle( "redo" );
                 break;
         }
         this.unselectModule();

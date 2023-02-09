@@ -78,6 +78,10 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
             this.domTree = null;
             this.treeNode = null;
         }
+        if( this.history ){
+        	this.history.destroy();
+			this.history = null;
+		}
         this.currentSelectedModule = null;
         this.propertyMultiTd = null;
 
@@ -382,11 +386,52 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 					"name": name,
 					"fromValue": oldValueList[i],
 					"toValue": newValue || module.json[name]
-				}
+				};
 			})
 		};
 		this.history.checkMultiProperty(log, modules);
 	},
+	// addHistoryLog: function(operation, to, from ){
+	// 	if( !this.form.history )return null;
+	// 	var log = {
+	// 		"operation": operation,
+	// 		"type": "form",
+	// 		"moduleType": "form",
+	// 		"moduleId": "form"
+	// 	};
+	// 	if( to ){
+	// 		log.toList = this.createHistoryLogList( to );
+	// 	}else{
+	// 		to = this.createHistoryLog();
+	// 		log.toList = [to];
+	// 	}
+	//
+	// 	if( from ){
+	// 		log.fromList = o2.typeOf(fromList) === "array" ? fromList : [from];
+	// 	}
+	// 	this.form.history.add( log, this);
+	// },
+	// createHistoryLogList: function( moduleList ){
+	// 	if( !this.form.history )return null;
+	// 	var logList = [];
+	// 	if(moduleList){
+	// 		var list = o2.typeOf(moduleList) === "array" ? moduleList : [moduleList];
+	// 		list.each(function (module) {
+	// 			logList.push( module.createHistoryLog() );
+	// 		}.bind(this));
+	// 	}
+	// 	return logList;
+	// },
+	// createHistoryLog: function ( module ) {
+	// 	if( !this.form.history )return null;
+	// 	if( !module )module = this;
+	// 	var obj = {
+	// 		"json": Object.clone(module.json),
+	// 		"jsonObject": module.data.json,
+	// 		"html": module.node.outerHTML
+	// 	};
+	// 	return obj;
+	// },
 	checkUUID: function(){
 		this.designer.actions.getUUID(function(id){
             this.json.id = id;
