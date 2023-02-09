@@ -7,6 +7,8 @@ MWF.xApplication.process.FormDesigner.LP = {
 
 		"repetitionsId": "重复的元素标识符",
 		"notNullId": "元素标识符不能为空",
+        "history": "历史",
+        "componentTree": "组件树",
 
 		"button":{
 			"ok": "确定",
@@ -62,14 +64,21 @@ MWF.xApplication.process.FormDesigner.LP = {
 			"copy": "复制",
 			"delete": "删除",
 			"add": "添加",
-			"script": "脚本",
+            "cut": "剪切",
+            "paste": "黏贴",
+            "open": "打开",
+            "script": "脚本",
+            "create": "创建",
+            "mergeCell": "合并单元格",
             "styleBrush": "格式刷",
             "insertTop" : "插入到顶部",
             "insertBottom" : "插入到底部",
             "insertBefore" : "插入到前面",
             "insertAfter" : "插入到后面",
             "injectNotice" : "按住Ctrl松开鼠标精确定位",
-            "selectedContainer": "选择父对象"
+            "selectedContainer": "选择父对象",
+            "property": "属性",
+            "batchModify": "批量修改"
 		},
 
         "actionbar": {
@@ -620,7 +629,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "draggable": "允许拖拽",
         "allowDrag": "判断节点能否被拖拽",
         "allowDrop": "拖拽时判定目标节点能否被放置",
-        "emptyText": "内容为空显示的脚本",
+        "emptyText": "内容为空显示的文本",
         "allowDragNote": "this.event为传入节点，'return true'表示允许拖拽",
         "allowDropNote": "this.event 可以获取数据 { draggingNode, dropNode, type }。type 参数有三种情况：'prev'、'inner' 和 'next'，分别表示放置在目标节点前、插入至目标节点和放置在目标节点后。'return true'表示允许插入。",
         "loadFun": "加载子树数据脚本",
@@ -1458,8 +1467,10 @@ MWF.xApplication.process.FormDesigner.LP = {
         "scriptComponentNote": "返回应用路径，如组织管理",
         "componentScript": "应用路径脚本",
         "applicationOptions": "应用options",
-        "applicationStatus": "应用status"
-
+        "applicationStatus": "应用status",
+        "titleAddTo": "标题行添加",
+        "firstLine": "首行",
+        "lastLine": "末行"
     },
     "smartbi":{
         "nosetup":"请先安装SmartBI应用",

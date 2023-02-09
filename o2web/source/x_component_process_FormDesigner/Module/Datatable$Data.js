@@ -221,7 +221,9 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Data = MWF.FCDatatable$Da
 		var colIndex = this.node.cellIndex;
 		var titleTr = table.rows[0];
 		var dataTr = table.rows[1];
-		
+
+		var moduleList = [];
+
 		var baseTh = titleTr.cells[colIndex];
 		for (var m=1; m<=cols; m++){
 			var newTh = new Element("th").inject(baseTh, position);
@@ -229,6 +231,7 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Data = MWF.FCDatatable$Da
 				var moduleData = Object.clone(data);
 				var thElement = new MWF.FCDatatable$Title(this.form);
 				thElement.load(moduleData, newTh, this.parentContainer);
+				moduleList.push(thElement);
 				this.parentContainer.elements.push(thElement);
 			}.bind(this));
 		}
@@ -240,13 +243,15 @@ MWF.xApplication.process.FormDesigner.Module.Datatable$Data = MWF.FCDatatable$Da
 				var moduleData = Object.clone(data);
 				var tdContainer = new MWF.FCDatatable$Data(this.form);
 				tdContainer.load(moduleData, newTd, this.parentContainer);
+				moduleList.push(tdContainer);
 				this.parentContainer.containers.push(tdContainer);
 			}.bind(this));
 		}
 		
 		this.unSelected();
 		this.selected();
-		
+
+		this.addHistoryLog( "insertCol", moduleList );
 	},
 	_deleteCol: function(){
 		var tr = this.node.getParent("tr");

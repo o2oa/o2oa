@@ -27,6 +27,7 @@ MWF.xApplication.cms.FormDesigner.Property = MWF.CMSFCProperty = new Class({
         scriptAreas.each(function(node){
             var title = node.get("title");
             var name = node.get("name");
+            if (!this.data[name]) this.data[name] = {"code": "", "html": ""};
             var scriptContent = this.data[name];
 
             MWF.require("MWF.widget.ScriptArea", function(){
@@ -35,7 +36,14 @@ MWF.xApplication.cms.FormDesigner.Property = MWF.CMSFCProperty = new Class({
                     //"maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                     "maxObj": this.designer.formContentNode,
                     "onChange": function(){
-                        this.data[name] = scriptArea.toJson();
+                        if (!this.data[name]){
+                            this.data[name] = {"code": "", "html": ""};
+                            if (this.module.form.scriptDesigner) this.module.form.scriptDesigner.addScriptItem(this.data[name], "code", this.data, name);
+                        }
+                        var oldValue = this.data[name].code;
+                        var json = scriptArea.toJson();
+                        this.data[name].code = json.code;
+                        this.checkHistory(name+".code", oldValue, json.code);
                     }.bind(this),
                     "onSave": function(){
                         this.designer.saveForm();
@@ -63,15 +71,24 @@ MWF.xApplication.cms.FormDesigner.Property = MWF.CMSFCProperty = new Class({
         multiActionArea.each(function(node){
             var name = node.get("name");
             var actionContent = this.data[name];
-            MWF.xDesktop.requireApp("process.FormDesigner", "widget.ActionsEditor", function(){
-                var actionEditor = new MWF.xApplication.process.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, {
+            var oldValue = actionContent ? JSON.parse( JSON.stringify(actionContent) ) : actionContent;
+            MWF.xDesktop.requireApp("cms.FormDesigner", "widget.ActionsEditor", function(){
+                var options = {
                     "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
                     "isSystemTool" : true,
-                    "onChange": function(){
+                    "target" : node.get("data-target"),
+                    "onChange": function(historyOptions){
+                        historyOptions = historyOptions || {};
                         this.data[name] = actionEditor.data;
-                        this.changeData(name);
+                        this.changeData(name, null, oldValue, true);
+                        this.checkHistory(name, oldValue, null, false, name + historyOptions.compareName, historyOptions.force );
+                        oldValue = JSON.parse( JSON.stringify(this.data[name]) );
                     }.bind(this)
-                });
+                };
+                if(node.get("data-systemToolsAddress")){
+                    options.systemToolsAddress = node.get("data-systemToolsAddress");
+                }
+                var actionEditor = new MWF.xApplication.cms.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, options);
                 actionEditor.load(actionContent);
             }.bind(this));
         }.bind(this));
@@ -80,12 +97,16 @@ MWF.xApplication.cms.FormDesigner.Property = MWF.CMSFCProperty = new Class({
         actionAreas.each(function(node){
             var name = node.get("name");
             var actionContent = this.data[name];
+            var oldValue = actionContent ? JSON.parse( JSON.stringify(actionContent) ) : actionContent;
             MWF.xDesktop.requireApp("cms.FormDesigner", "widget.ActionsEditor", function(){
                 var actionEditor = new MWF.xApplication.cms.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, {
                     "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
-                    "onChange": function(){
+                    "onChange": function(historyOptions){
+                        historyOptions = historyOptions || {};
                         this.data[name] = actionEditor.data;
-                        this.changeData(name);
+                        this.changeData(name, null, oldValue, true);
+                        this.checkHistory(name, oldValue, null, false, name + historyOptions.compareName, historyOptions.force );
+                        oldValue = JSON.parse( JSON.stringify(this.data[name]) );
                     }.bind(this)
                 });
                 actionEditor.load(actionContent);
@@ -114,6 +135,7 @@ MWF.xApplication.cms.FormDesigner.Property = MWF.CMSFCProperty = new Class({
         actionAreas.each(function(node){
             var name = node.get("name");
             var actionContent = this.data[name] || this.module.defaultToolBarsData;
+            var oldValue = actionContent ? JSON.parse( JSON.stringify(actionContent) ) : actionContent;
             MWF.xDesktop.requireApp("cms.FormDesigner", "widget.ActionsEditor", function(){
                 var actionEditor = new MWF.xApplication.cms.FormDesigner.widget.ActionsEditor(node, this.designer, this.data, {
                     "maxObj": this.propertyNode.parentElement.parentElement.parentElement,
@@ -122,10 +144,14 @@ MWF.xApplication.cms.FormDesigner.Property = MWF.CMSFCProperty = new Class({
                     "noDelete": false,
                     "noCode": true,
                     "noReadShow": true,
+                    "target" : node.get("data-target"),
                     "noEditShow": true,
-                    "onChange": function(){
+                    "onChange": function(historyOptions){
+                        historyOptions = historyOptions || {};
                         this.data[name] = actionEditor.data;
-                        this.changeData(name);
+                        this.changeData(name, null, oldValue, true);
+                        this.checkHistory(name, oldValue, null, false, name + historyOptions.compareName, historyOptions.force );
+                        oldValue = JSON.parse( JSON.stringify(this.data[name]) );
                     }.bind(this)
                 });
                 actionEditor.load(actionContent);
@@ -159,9 +185,12 @@ MWF.xApplication.cms.FormDesigner.Property = MWF.CMSFCProperty = new Class({
             MWF.xDesktop.requireApp("cms.FormDesigner", "widget.EventsEditor", function(){
                 var eventsEditor = new MWF.xApplication.cms.FormDesigner.widget.EventsEditor(events, this.designer, {
                     //"maxObj": this.propertyNode.parentElement.parentElement.parentElement,
-                    "maxObj": this.designer.formContentNode
+                    "maxObj": this.designer.formContentNode,
+                    "onChange": function (eventName, newValue, oldValue, compareName) {
+                        this.checkHistory(name+"."+eventName, oldValue, newValue, null, compareName ? (name+"."+compareName) : "");
+                    }.bind(this)
                 });
-                eventsEditor.load(eventsObj);
+                eventsEditor.load(eventsObj, this.data, name);
             }.bind(this));
         }
     },
@@ -173,8 +202,10 @@ MWF.xApplication.cms.FormDesigner.Property = MWF.CMSFCProperty = new Class({
                 MWF.xDesktop.requireApp("cms.FormDesigner", "widget.ValidationEditor", function(){
                     var validationEditor = new MWF.xApplication.cms.FormDesigner.widget.ValidationEditor(node, this.designer, {
                         "onChange": function(){
+                            var oldVaue = this.data[name];
                             var data = validationEditor.getValidationData();
                             this.data[name] = data;
+                            this.checkHistory(name, oldVaue, data);
                         }.bind(this)
                     });
                     validationEditor.load(this.data[name])
@@ -253,7 +284,8 @@ MWF.xApplication.cms.FormDesigner.PropertyMulti = new Class({
     changeJsonDate: function(key, value){
         //alert(key+": "+value );
         this.modules.each(function(module){
-            module.json[key] = value;
+            var v = typeOf(value) === "object" ? Object.clone(value) : value;
+            module.json[key] = v;
         }.bind(this));
     }
 });

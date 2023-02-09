@@ -79,6 +79,7 @@ MWF.xApplication.process.FormDesigner.Module.Html = MWF.FCHtml = new Class({
 	},
 	_createNode: function(){
 		this.node = this.moveNode.clone(true, true);
+		this.node.store("module", this);
 		this.node.setStyles(this.css.moduleNode);
 		this.textarea = this.node.getFirst("textarea");
 		this.textarea.set("value", this.json.text);
@@ -113,9 +114,11 @@ MWF.xApplication.process.FormDesigner.Module.Html = MWF.FCHtml = new Class({
 				// if (editNode) editNode.set("value", this.textarea.get("value"));
 			}.bind(this),
 			"change": function(){
+				this.checkPropertyHistory("text", this.json.text, this.textarea.get("value"));
 				this.json.text = this.textarea.get("value");
 			}.bind(this),
 			"blur": function(){
+				this.checkPropertyHistory("text", this.json.text, this.textarea.get("value"));
 				this.json.text = this.textarea.get("value");
 			}.bind(this)
 		});

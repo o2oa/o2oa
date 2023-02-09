@@ -69,24 +69,32 @@ MWF.xApplication.portal.PageDesigner.Module.Tab = MWF.PCTab = new Class({
             }.bind(this));
         }.bind(this));
     },
-    addPage: function(){
+    addPage: function(ev, historyCallback){
         var tabNode = new Element("div");
         var page = this.tabWidget.addTab(tabNode, "page", false);
 
+        var tabPage, tabContent;
         this.form.getTemplateData("Tab$Page", function(data){
             var moduleData = Object.clone(data);
             moduleData.name = page.tabNode.get("text");
-            var tabPage = new MWF.PCTab$Page(this, page);
+            tabPage = new MWF.PCTab$Page(this, page);
             tabPage.load(moduleData, page.tabNode, this);
             this.elements.push(tabPage);
-        }.bind(this));
+        }.bind(this), false);
         this.form.getTemplateData("Tab$Content", function(data){
             var moduleData = Object.clone(data);
-            var tabContent = new MWF.PCTab$Content(this, page);
+            tabContent = new MWF.PCTab$Content(this, page);
             tabContent.load(moduleData, page.contentNode, this);
             this.containers.push(tabContent);
-        }.bind(this));
+        }.bind(this), false);
         page.showTabIm();
+
+        if( historyCallback ){
+			historyCallback( tabPage );
+		}else{
+			tabPage.addHistoryLog("add")
+		}
+
         return page;
     }
 });

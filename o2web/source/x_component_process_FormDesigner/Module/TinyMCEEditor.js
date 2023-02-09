@@ -68,7 +68,7 @@ MWF.xApplication.process.FormDesigner.Module.TinyMCEEditor = MWF.FCTinyMCEEditor
 
         if (name=="templateCode"){
             if (this.editor) {
-				this.editor.setContent(this.json.templateCode);
+				this.editor.setContent(this.json.templateCode || "");
 			}
         }
 	},

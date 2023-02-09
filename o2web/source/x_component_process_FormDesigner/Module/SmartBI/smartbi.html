@@ -26,8 +26,8 @@
                 <td class="editTableTitle">{{$.lp.smartbi.displayToolbar}}:</td>
                 <td class="editTableValue">
                     <div class="MWFSmartBIDisplayToolbar" name="smartbidisplaytoolbar">
-                        <input type="radio" class="MWFSmartBIToolbar" name="MWFSmartBIToolbar" value="true" text{($.smartbidisplaytoolbar)?'checked':''} /> {{$.lp.smartbi.toolbarShow}}
-                        <input type="radio" class="MWFSmartBIToolbar" name="MWFSmartBIToolbar" value="false" text{(!$.smartbidisplaytoolbar)?'checked':''} /> {{$.lp.smartbi.toolbarHide}}
+                        <input type="radio" class="MWFSmartBIToolbar" name="MWFSmartBIToolbar" value="true" data-notAutoHistory text{($.smartbidisplaytoolbar)?'checked':''} /> {{$.lp.smartbi.toolbarShow}}
+                        <input type="radio" class="MWFSmartBIToolbar" name="MWFSmartBIToolbar" value="false" data-notAutoHistory text{(!$.smartbidisplaytoolbar)?'checked':''} /> {{$.lp.smartbi.toolbarHide}}
                     </div>
                 </td>
             </tr>
@@ -35,8 +35,8 @@
                 <td class="editTableTitle">{{$.lp.smartbi.displayLeftTree}}:</td>
                 <td class="editTableValue">
                     <div class="MWFSmartBIDisplayLeftTree" name="smartbidisplaylefttree">
-                        <input type="radio" class="MWFSmartBILeftTree" name="MWFSmartBILeftTree" value="true" text{($.smartbidisplaylefttree)?'checked':''} /> {{$.lp.smartbi.leftTreeShow}}
-                        <input type="radio" class="MWFSmartBILeftTree" name="MWFSmartBILeftTree" value="false" text{(!$.smartbidisplaylefttree)?'checked':''} /> {{$.lp.smartbi.leftTreeHide}}
+                        <input type="radio" class="MWFSmartBILeftTree" name="MWFSmartBILeftTree" value="true" data-notAutoHistory text{($.smartbidisplaylefttree)?'checked':''} /> {{$.lp.smartbi.leftTreeShow}}
+                        <input type="radio" class="MWFSmartBILeftTree" name="MWFSmartBILeftTree" value="false" data-notAutoHistory text{(!$.smartbidisplaylefttree)?'checked':''} /> {{$.lp.smartbi.leftTreeHide}}
                     </div>
                 </td>
             </tr>

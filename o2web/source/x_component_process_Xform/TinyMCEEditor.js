@@ -141,9 +141,9 @@ MWF.xApplication.process.Xform.TinyMCEEditor = MWF.APPTinyMCEEditor = new Class(
 
                 var htmlData = this._getBusinessData();
                 if (htmlData) {
-                    editorDiv.set("html", htmlData);
+                    editorDiv.set("html", htmlData || "");
                 } else if (this.json.templateCode) {
-                    editorDiv.set("html", this.json.templateCode);
+                    editorDiv.set("html", this.json.templateCode || "");
                 }
                 // var height = this.node.getSize().y;
 

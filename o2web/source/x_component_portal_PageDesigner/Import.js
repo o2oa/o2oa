@@ -113,6 +113,7 @@ MWF.xApplication.portal.PageDesigner.Import = MWF.FormImport = MWF.PageImport = 
                 json.applicationName = this.form.json.applicationName;
                 this.form.reload(data);
                 this.implodePanel.closePanel();
+                this.fireEvent("implode");
             }else{
                 this.form.designer.notice(this.designer.lp.implodeError, "error", this.node);
             }
@@ -234,6 +235,8 @@ MWF.FormImport.Html = new Class({
 
                     this.implodePanel.closePanel();
 
+                    this.fireEvent("implode");
+
                     mask.hide();
                 }catch(e){
                     this.form.designer.notice(e.message, "error", this.node);
@@ -241,6 +244,7 @@ MWF.FormImport.Html = new Class({
                     this.form.json.moduleList = oldModuleList;
                     this.form.data.html = oldHtml;
                     this.form.reload(this.form.data);
+                    this.fireEvent("implode");
                     mask.hide();
                 }finally{
                     oldNodeHtml = null;

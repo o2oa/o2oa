@@ -7,6 +7,8 @@ MWF.xApplication.process.FormDesigner.LP = {
 
     "repetitionsId": "Element ID is not unique",
     "notNullId": "Element ID cannot be empty",
+    "history": "History",
+    "componentTree": "Component Tree",
 
     "button":{
         "ok": "OK",
@@ -62,13 +64,20 @@ MWF.xApplication.process.FormDesigner.LP = {
         "copy": "Copy",
         "delete": "Delete",
         "add": "Add",
+        "cut": "Cut",
+        "paste": "Paste",
+        "open": "Open",
         "script": "Script",
+        "create": "Create",
+        "mergeCell": "Merge Cells",
         "styleBrush": "StyleBrush",
         "insertTop": "Insert Top",
         "insertBottom": "Insert to the bottom",
         "insertBefore": "InsertBefore",
         "insertAfter": "Insert After",
-        "injectNotice": "Hold down Ctrl and release the mouse for precise positioning"
+        "injectNotice": "Hold down Ctrl and release the mouse for precise positioning",
+        "property": "Property",
+        "batchModify": "Batch modify "
     },
 
     "actionbar": {
@@ -621,7 +630,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "draggable": "Dragging allowed",
         "allowDrag": "Judging whether the node can be dragged",
         "allowDrop": "Determine whether the target node can be dropped while dragging",
-        "emptyText": "Script with empty content",
+        "emptyText": "Text with empty content",
         "allowDragNote": "this.event is the incoming node,'return true' means dragging is allowed",
         "allowDropNote": "this.event can get data {draggingNode, dropNode, type }. There are three cases for the type parameter:'prev','inner' and'next', which respectively indicate to be placed in front of the target node, inserted into the target node and Placed after the target node.'return true' means inserting is allowed.",
         "loadFun": "Method of loading subtree data",
@@ -1451,7 +1460,10 @@ MWF.xApplication.process.FormDesigner.LP = {
         "scriptComponentNote": "Return application path, such as organization management",
         "componentScript": "Apply Path Script",
         "applicationOptions": "Application Options",
-        "applicationStatus": "Application Status"
+        "applicationStatus": "Application Status",
+        "titleAddTo": "Title Line Add",
+        "firstLine": "First Line",
+        "lastLine": "last line"
     },
     "smartbi":{
         "nosetup":"please install SmartBI APP first",

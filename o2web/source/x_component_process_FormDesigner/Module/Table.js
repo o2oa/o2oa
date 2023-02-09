@@ -209,6 +209,11 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 	mergerCell: function(){
 
 		if (this.form.selectedModules.length>1){
+
+			debugger;
+			var fromLogList;
+			if(this.form.history)fromLogList = this.createHistoryLogList(this.form.selectedModules);
+
 			var firstModuleObj = this.form._getFirstMultiSelectedModule();
 			var firstModule = firstModuleObj.module;
 			
@@ -266,7 +271,13 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 				}
 			}
 			firstModule.selected();
+
+			this.addHistoryLog("mergeCell", firstModule, fromLogList, firstModule.json.id, firstModule.json.type );
 		}
+
+
+
+
 	},
 	
 	_getContainers: function(){
@@ -428,6 +439,15 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 
 		this.form.json.moduleList[this.json.id] = this.json;
 		this.selected();
+
+		if( this.operation && !this.historyAddDelay ){
+			this.addHistoryLog( this.operation, null, this.fromLog );
+		}
+
+		if( !this.historyAddDelay ){
+			this.operation = null;
+			this.fromLog = null;
+		}
 	},
 	
 	setPropertiesOrStyles: function(name){
@@ -605,6 +625,19 @@ MWF.xApplication.process.FormDesigner.Module.Table = MWF.FCTable = new Class({
 		this.json.recoveryStyles = null;
 		if (!this.table) this.table = this.node.getElement("table");
 		//this.table.setStyle("border-collapse","separate");
+	},
+	loadExistedNodeTd: function (cell, moduleData) {
+		var tdContainer = new MWF.FCTable$Td(this.form);
+		tdContainer.table = this;
+		tdContainer.load(moduleData, cell, this);
+		this.containers.push(tdContainer);
+	},
+	deleteTdWithNode: function (cell) {
+		var module = cell.retrieve("module");
+		if (module){
+			this.containers.erase(module);
+			module.destroy();
+		}
 	}
 	
 });

@@ -92,6 +92,11 @@ MWF.xApplication.process.FormDesigner.widget.ElTreeEditor = new Class({
 
 			var textDivNode = treeNode.textNode.getElement("div");
 			treeNode.editItem(textDivNode);
+
+			this.fireEvent("change", [{
+				compareName: " [addSub]",
+				force: true
+			}]);
 		} 
 		
 	},
@@ -216,7 +221,9 @@ MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree = new Class({
 			treeNode.options.expand = true;
 		}
 		treeNode.setOperateIcon();
-		this.editor.fireEvent("change");
+		this.editor.fireEvent("change", [{
+			compareName: "."+treeNode.getLevelName() + ".expand"
+		}]);
 	},
 	expand: function(treeNode){
 		if (this.fireEvent("queryExpand", [treeNode])){
@@ -462,6 +469,15 @@ MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree.Node = new Class(
 		
 		return treeNode;
 	},
+	getLevelName: function(){
+		var parentTextList = [];
+		var parent = this;
+		while (parent){
+			parentTextList.push( parent.data.label );
+			parent = parent.parentNode;
+		}
+		return parentTextList.reverse().join(".");
+	},
 	expandOrCollapse: function(){
 		this.tree.expandOrCollapseNode(this);
 	},
@@ -670,6 +686,9 @@ MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree.Node = new Class(
 						blur: function () {
 							this.data.label = this.labelInput.get("value");
 							this.textNode.getElement("div").set("text", this.data.label);
+							this.tree.editor.fireEvent("change", [{
+								compareName: "."+this.getLevelName() + ".label"
+							}]);
 						}.bind(this)
 					}
 				}).inject(td);
@@ -682,6 +701,9 @@ MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree.Node = new Class(
 					events: {
 						blur: function () {
 							this.data.id = this.idInput.get("value");
+							this.tree.editor.fireEvent("change", [{
+								compareName: "."+this.getLevelName() + ".id"
+							}]);
 						}.bind(this)
 					}
 				}).inject(td);
@@ -698,11 +720,17 @@ MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree.Node = new Class(
 							for (var key in data) {
 								this.data[key] = data[key]
 							}
+							this.tree.editor.fireEvent("change", [{
+								compareName: "."+this.getLevelName() + ".property"
+							}]);
 						}.bind(this),
 						"onDelete": function (key) {
 							if (this.data[key]) {
 								delete this.data[key];
 							}
+							this.tree.editor.fireEvent("change", [{
+								compareName: "."+this.getLevelName() + ".property"
+							}]);
 						}.bind(this),
 						"isProperty": true
 					});
@@ -741,6 +769,11 @@ MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree.Node = new Class(
 		
 		var textDivNode = treeNode.textNode.getElement("div");
 		treeNode.editItem(textDivNode);
+
+		this.tree.editor.fireEvent("change", [{
+			compareName: "."+this.getLevelName() + " [addSub]",
+			force: true
+		}]);
 		
 	},
 	deleteItem: function(e){
@@ -751,7 +784,10 @@ MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree.Node = new Class(
 
 		MWF.xDesktop.confirm("warn", tmpe, o2.LP.process.notice.deleteTreeNodeTitle, o2.LP.process.notice.deleteTreeNode, 300, 120, function(){
 			treeNode.destroy();
-			treeNode.tree.editor.fireEvent("change");
+			treeNode.tree.editor.fireEvent("change", [{
+				compareName: "."+treeNode.getLevelName() + " [delete]",
+				force: true
+			}]);
     		this.close();
 		}, function(){
 			this.close();
@@ -819,7 +855,9 @@ MWF.xApplication.process.FormDesigner.widget.ElTreeEditor.Tree.Node = new Class(
 
 		if( this.labelInput )this.labelInput.set("value", text);
 
-		this.tree.editor.fireEvent("change");
+		this.tree.editor.fireEvent("change", [{
+			compareName: "."+this.getLevelName() + ".label"
+		}]);
 		
 		return true;
 	}

@@ -107,6 +107,15 @@ MWF.xApplication.process.FormDesigner.Module.Datatemplate = MWF.FCDatatemplate =
 		if (this.form.scriptDesigner) this.form.scriptDesigner.createModuleScript(this.json);
 
 		if( !selectDisabled )this.selected();
+
+		if( this.operation && !this.historyAddDelay ){
+			this.addHistoryLog( this.operation, null, this.fromLog );
+		}
+
+		if( !this.historyAddDelay ){
+			this.operation = null;
+			this.fromLog = null;
+		}
 	},
 	_clearDragComplete : function(){
 		if( this.dragTimeout ){
@@ -272,6 +281,7 @@ MWF.xApplication.process.FormDesigner.Module.Datatemplate = MWF.FCDatatemplate =
 				}.bind(this));
 			}
 
+			var moduleList = [];
 			if( wrapDiv !== "yes" ) {
 				var moduleNodeList = [];
 				containerNode.getChildren().each(function (el) {
@@ -287,10 +297,13 @@ MWF.xApplication.process.FormDesigner.Module.Datatemplate = MWF.FCDatatemplate =
 
 				moduleNodeList.each(function (el) {
 					var json = this.form.getDomjson(el);
-					this.form.loadModule(json, el, parentModule);
+					var module = this.form.loadModule(json, el, parentModule);
+					moduleList.push(module);
 				}.bind(this));
+				this.containerModule = null;
 			}else{
 				this._clearDragComplete();
+				moduleList = [this.containerModule];
 				this.form.parseModules(this.containerModule, containerNode);
 			}
 
@@ -302,6 +315,15 @@ MWF.xApplication.process.FormDesigner.Module.Datatemplate = MWF.FCDatatemplate =
 				if(node && node.retrieve("module")){
 					node.retrieve("module").selected();
 				}
+			}
+
+			if( this.operation && !this.historyAddDelay ){
+				this.addHistoryLog( this.operation, moduleList, this.fromLog, this.json.id, "Datatemplate" );
+			}
+
+			if( !this.historyAddDelay ){
+				this.operation = null;
+				this.fromLog = null;
 			}
 
 		}.bind(this));
