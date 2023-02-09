@@ -79,6 +79,7 @@ MWF.xApplication.process.FormDesigner.Module.Html = MWF.FCHtml = new Class({
 	},
 	_createNode: function(){
 		this.node = this.moveNode.clone(true, true);
+		this.node.store("module", this);
 		this.node.setStyles(this.css.moduleNode);
 		this.textarea = this.node.getFirst("textarea");
 		this.textarea.set("value", this.json.text);
