@@ -377,7 +377,6 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 						"events": {
 							"click": function(e){
 								if( this.json.addTo === "first" ){
-									debugger;
 									this._insertLineByIndex(e.target, 0);
 								}else{
 									this._addLine(e.target, true);
