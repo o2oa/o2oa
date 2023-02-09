@@ -375,7 +375,14 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 					var addLineAction = new Element("div", {
 						"styles": this.form.css.addLineAction,
 						"events": {
-							"click": function(e){ this._addLine(e.target, true); }.bind(this)
+							"click": function(e){
+								if( this.json.addTo === "first" ){
+									debugger;
+									this._insertLineByIndex(e.target, 0);
+								}else{
+									this._addLine(e.target, true);
+								}
+							}.bind(this)
 						}
 					}).inject(actionTh);
 				}
@@ -1071,6 +1078,7 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 				data = this.getInputData();
 				if (data.data.length < index) return null;
 				data.data.splice(index, 0, d || {});
+				this.newLineIndex = index;
 				this.setData(data);
 				line = this.getLine(index);
 				line.isNewAdd = true;
