@@ -64,21 +64,24 @@ MWF.xApplication.process.ProcessDesigner.History = new Class({
         //      }]
         // };
         var item;
-        if( log.type === "module" ){
+        debugger;
+        if( log.type === "activity" ) {
             switch (log.moduleType) {
-                case "Table$Td":
-                    item = new MWF.PDHistory.ModuleTableTdItem(this, log);
-                    break;
-                case "Datatable$Title":
-                case "Datatable$Data":
-                    item = new MWF.PDHistory.ModuleDatatableTdItem(this, log);
-                    break;
-                case "Tab$Page":
-                    item = new MWF.PDHistory.ModuleTabpageItem(this, log);
-                    break;
+                // case "Table$Td":
+                //     item = new MWF.PDHistory.ModuleTableTdItem(this, log);
+                //     break;
+                // case "Datatable$Title":
+                // case "Datatable$Data":
+                //     item = new MWF.PDHistory.ModuleDatatableTdItem(this, log);
+                //     break;
+                // case "Tab$Page":
+                //     item = new MWF.PDHistory.ModuleTabpageItem(this, log);
+                //     break;
                 default:
                     item = new MWF.PDHistory.ModuleItem(this, log);
             }
+        }else if( log.type === "route" ){
+
         }else{
             item = new MWF.PDHistory.Item(this, log);
         }

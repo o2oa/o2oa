@@ -1028,7 +1028,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
             activity = new MWF.APPPD.Activity[c](activityData, this);
             activity.create(position);
 
-			activity.addHistoryLog( "create", [activity.data] );
+			activity.addHistoryLog( "create" );
 
             if (d=="begin"){
                 this.begin = activity;
@@ -1168,6 +1168,8 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 		this.designer.setToolBardisabled("decision");
 		
 		this.setNewRouteProcessData(route);
+
+		route.addHistoryLog( "create" );
 	},
 	setNewRouteProcessData: function(route){
 		this.routes[route.data.id] = route;
@@ -1303,6 +1305,27 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
             _self.designer.shortcut = true;
 			this.close();
 		}, null);
+	},
+	createActivityByData: function(data, type){
+		var activityData = Object.clone(data);
+		var c = type.capitalize();
+
+		activityData.process = this.process.id;
+
+		activity = new MWF.APPPD.Activity[c](activityData, this);
+		activity.create();
+		activity.selected();
+
+		if (type=="begin"){
+			this.begin = activity;
+			this.process.begin = activityData;
+		}else{
+			this[type+"s"][activityData.id] = activity;
+			if (!this.process[type+"List"]){
+				this.process[type+"List"] = [];
+			}
+			this.process[type+"List"].push(activityData);
+		}
 	},
 	copyActivity: function(activity){
 		var activityData = Object.clone(activity.data);

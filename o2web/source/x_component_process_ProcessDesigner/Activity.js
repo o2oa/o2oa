@@ -782,14 +782,13 @@ MWF.xApplication.process.ProcessDesigner.Activity = new Class({
         this.set.remove();
     },
 
-    checkPropertyHistory: function(name, oldValue, newValue, notSetEditStyle, compareName, force){
+    checkPropertyHistory: function(name, oldValue, newValue, compareName, force){
         if( !this.process.history )return null;
         var log = {
             "type": "property",
             "force": force,
-            "moduleId": this.json.id,
-            "moduleType": this.json.type,
-            "notSetEditStyle": notSetEditStyle,
+            "moduleId": this.data.id,
+            "moduleType": this.data.type,
             "changeList": []
         };
 
@@ -798,7 +797,7 @@ MWF.xApplication.process.ProcessDesigner.Activity = new Class({
                 log.changeList.push({
                     "name": n,
                     "fromValue": oldValue[i],
-                    "toValue": newValue[i] || this.getJsonData(n)
+                    "toValue": newValue[i] //|| this.getJsonData(n)
                 });
             }.bind(this));
         }else{
@@ -806,37 +805,30 @@ MWF.xApplication.process.ProcessDesigner.Activity = new Class({
                 "name": name,
                 "compareName": compareName,
                 "fromValue": oldValue,
-                "toValue": newValue || this.getJsonData(name)
+                "toValue": newValue //|| this.getJsonData(name)
             });
         }
-        this.form.history.checkProperty(log, this);
+        this.process.history.checkProperty(log, this);
     },
     addHistoryLog: function(operation, toModuleList, fromList, moduleId, moduleType, html ){
         if( !this.process.history )return null;
         var log = {
             "operation": operation,
-            "type": "module",
+            "type": "activity",
             "moduleType": moduleType || this.data.type,
             "moduleId": moduleId || this.data.id
         };
         if( toModuleList ){
             log.toList = this.createHistoryLogList( toModuleList );
         }else{
-            var to = {
-                "json": Object.clone(this.data)
-                // "path": this.form.history.getPath(this.node)
-            };
-            if( operation !== "move" ){
-                // to.jsonObject = this.getJson();
-                // to.html = html || this.node.outerHTML;
-            }
+            var to = this.createHistoryLog();
             log.toList = [ to ];
         }
 
         if( fromList ){
             log.fromList = o2.typeOf(fromList) === "array" ? fromList : [fromList];
         }
-        this.form.history.add( log, this);
+        this.process.history.add( log, this);
     },
     createHistoryLogList: function( moduleList ){
         if( !this.process.history )return null;
@@ -853,8 +845,9 @@ MWF.xApplication.process.ProcessDesigner.Activity = new Class({
         if( !this.process.history )return null;
         if( !module )module = this;
         var obj = {
-            "json": Object.clone(module.json),
-            // "path": module.form.history.getPath(module.node),
+            "type": module.type,
+            "json": Object.clone(module.data),
+            // "path": module.process.history.getPath(module.node),
             // "jsonObject": module.getJson(),
             // "html": module.node.outerHTML
         };

@@ -1009,7 +1009,84 @@ MWF.xApplication.process.ProcessDesigner.Route = new Class({
                 }
             }
         }
-    }
+    },
+    checkPropertyHistory: function(name, oldValue, newValue, compareName, force){
+        if( !this.process.history )return null;
+        var log = {
+            "type": "property",
+            "force": force,
+            "moduleId": this.data.id,
+            "moduleType": this.data.type,
+            "changeList": []
+        };
+
+        if( typeOf(name) === "array" ){
+            name.each(function (n, i) {
+                log.changeList.push({
+                    "name": n,
+                    "fromValue": oldValue[i],
+                    "toValue": newValue[i] //|| this.getJsonData(n)
+                });
+            }.bind(this));
+        }else{
+            log.changeList.push({
+                "name": name,
+                "compareName": compareName,
+                "fromValue": oldValue,
+                "toValue": newValue //|| this.getJsonData(name)
+            });
+        }
+        this.process.history.checkProperty(log, this);
+    },
+    addHistoryLog: function(operation, toModuleList, fromList, moduleId, moduleType, html ){
+        if( !this.process.history )return null;
+        var log = {
+            "operation": operation,
+            "type": "route",
+            "moduleType": "route",
+            "moduleId": moduleId || this.data.id
+        };
+        if( toModuleList ){
+            log.toList = this.createHistoryLogList( toModuleList );
+        }else{
+            var to = {
+                "json": Object.clone(this.data)
+                // "path": this.process.history.getPath(this.node)
+            };
+            if( operation !== "move" ){
+                // to.jsonObject = this.getJson();
+                // to.html = html || this.node.outerHTML;
+            }
+            log.toList = [ to ];
+        }
+
+        if( fromList ){
+            log.fromList = o2.typeOf(fromList) === "array" ? fromList : [fromList];
+        }
+        this.process.history.add( log, this);
+    },
+    createHistoryLogList: function( moduleList ){
+        if( !this.process.history )return null;
+        var logList = [];
+        if(moduleList){
+            var list = o2.typeOf(moduleList) === "array" ? moduleList : [moduleList];
+            list.each(function (module) {
+                logList.push( module.createHistoryLog() );
+            }.bind(this));
+        }
+        return logList;
+    },
+    createHistoryLog: function ( module ) {
+        if( !this.process.history )return null;
+        if( !module )module = this;
+        var obj = {
+            "json": Object.clone(module.data),
+            // "path": module.process.history.getPath(module.node),
+            // "jsonObject": module.getJson(),
+            // "html": module.node.outerHTML
+        };
+        return obj;
+    },
 });
 
 MWF.xApplication.process.ProcessDesigner.Route.List = new Class({
