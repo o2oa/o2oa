@@ -420,15 +420,23 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 			//	this.treeNode.node.scrollIntoView();
 		}
 
+		var historyLog;
+		if( this.form.brushStyle || this.form.brushInputStyle ){
+			historyLog = this.createHistoryLog();
+		}
 		if (this.form.brushStyle){
 			this.json.styles = Object.clone(this.form.brushStyle);
 			this.setPropertiesOrStyles("styles");
-			if (this.property) this.property.loadMaplist();
+			// if (this.property) this.property.loadMaplist();
 		}
 		if (this.form.brushInputStyle){
 			this.json.inputStyles = Object.clone(this.form.brushInputStyle);
 			this.setPropertiesOrStyles("inputStyles");
+			// if (this.property) this.property.loadMaplist();
+		}
+		if( this.form.brushStyle || this.form.brushInputStyle ){
 			if (this.property) this.property.loadMaplist();
+			this.addHistoryLog("styleBrush", null, historyLog);
 		}
 		this.showProperty();
 	},
@@ -445,6 +453,7 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 
 		this.hideProperty();
 	},
+
 
 	selectedMulti: function(){
 		if (this.form.selectedModules.indexOf(this)==-1){
@@ -480,6 +489,15 @@ MWF.xApplication.process.FormDesigner.Module.$Module = MWF.FC$Module = new Class
 	},
 	hideProperty: function(){
 		if (this.property) this.property.hide();
+	},
+	setBrushStyle: function( json ){
+		this.json.styles = Object.clone(json.styles || {});
+		this.setPropertiesOrStyles("styles");
+
+		this.json.inputStyles = Object.clone(json.inputStyles || {});
+		this.setPropertiesOrStyles("inputStyles");
+
+		if (this.property) this.property.loadMaplist();
 	},
 
 	create: function(data, e, group){

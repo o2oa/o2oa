@@ -1467,8 +1467,10 @@ MWF.xApplication.process.FormDesigner.LP = {
         "scriptComponentNote": "返回应用路径，如组织管理",
         "componentScript": "应用路径脚本",
         "applicationOptions": "应用options",
-        "applicationStatus": "应用status"
-
+        "applicationStatus": "应用status",
+        "titleAddTo": "标题行添加",
+        "firstLine": "首行",
+        "lastLine": "末行"
     },
     "smartbi":{
         "nosetup":"请先安装SmartBI应用",
