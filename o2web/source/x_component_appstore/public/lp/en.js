@@ -28,5 +28,5 @@ MWF.xApplication.appstore.LP = {
     "offlineInstall": "Offline Install",
     "offlineInstallInfo": "You can click here to install the application package offline",
 
-    "configDocUrl": "https://www.yuque.com/o2oa/course/vwgpbg"
+    "configDocUrl": "https://www.o2oa.net/cms/serverdeployment/112.html"
 }
