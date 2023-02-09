@@ -74,12 +74,21 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
         this.selectedModules = [];
         this.container.empty();
 
+        this.widgetList = null;
+        if(this.options.parentpageIdList)this.options.parentpageIdList = null;
+
         if (this.treeNode){
             this.domTree.empty();
             this.domTree.node.destroy();
             this.domTree = null;
             this.treeNode = null;
 		}
+
+		if( this.history ){
+			this.history.destroy();
+			this.history = null;
+		}
+
         this.currentSelectedModule = null;
         this.propertyMultiTd = null;
 

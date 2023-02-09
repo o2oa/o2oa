@@ -72,6 +72,10 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
         this.selectedModules = [];
         this.container.empty();
 
+        this.subformModuleList = null;
+        this.subformList = null;
+		if(this.options.parentformIdList)this.options.parentformIdList = null;
+
         if (this.treeNode){
             this.domTree.empty();
             this.domTree.node.destroy();

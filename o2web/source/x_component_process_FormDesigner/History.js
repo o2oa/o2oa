@@ -105,6 +105,7 @@ MWF.xApplication.process.FormDesigner.History = new Class({
         }else{
             item = new MWF.FCWHistory.Item(this, log);
         }
+        debugger;
         item.load();
 
         this.addItem(item);
