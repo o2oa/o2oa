@@ -458,7 +458,7 @@ MWF.xApplication.IMV2.ShareToConversation = new Class({
     var distinguishedName = layout.session.user.distinguishedName;
 		var time = this._currentTime();
 		var bodyJson = JSON.stringify(this.data.msgBody);
-		var uuid = (new MWF.widget.UUID).toString();
+    var uuid = new MWF.widget.UUID().createTrueUUID();
 		var textMessage = {
 			"id": uuid,
 			"conversationId": conversation.id,
