@@ -1,3 +1,22 @@
+import {exec} from "@o2oa/util";
+
+/**
+ * 换取多语言文字
+ * @param {*} lp 语言包
+ * @param {*} key 文字的key值，多层用.隔开，如 form.name
+ * @param {*} options 变量替换对象，如{name: 'abc'}, 会把 form.name里面的 {name} 替换成 abc
+ * @returns 
+ */
+function lpT(lp, key, options){
+    let v = (exec(`return this.${key}`, lp) || key).toString();
+    if (options){
+        Object.keys(options).forEach((n)=>{
+            const reg = new RegExp(`\{${n}\}`, 'g');
+            v = v.replace(reg, options[n]);
+        })
+    }
+    return v;
+}
 
 /**
  * 给对象设置值
@@ -35,5 +54,6 @@ function setJSONValue(key, v, data) {
 }
 
 export {
-  setJSONValue
+  setJSONValue,
+  lpT
 }

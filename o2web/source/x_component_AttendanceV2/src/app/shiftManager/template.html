@@ -12,14 +12,19 @@
                 <th>{{$.lp.checkInTime}}</th>
                 <th style="width: 10%;">{{$.lp.operate}}</th>
             </thead>
-            <tr>
-                <td>交一重庆移动物联网</td>
-                <td>09:00-17:30</td>
+            <tr oo-each="$.shiftList" oo-item="shift">
+                <td>{{shift.value.shiftName}}</td>
+                <td>{{shift.value.properties.timeList[0].onDutyTime + ' - ' + shift.value.properties.timeList[shift.value.properties.timeList.length-1].offDutyTime}}</td>
                 <td>
-                    <span class="operator_link">编辑</span>
+                    <span class="operator_link"
+                        @click="this.clickEditShift(shift.value.id)">修改</span>
+                    <span class="operator_link"
+                        @click="this.clickDeleteShift(shift.value.id, shift.value.shiftName)">删除</span>
                 </td>
             </tr>
         </table>
     </div>
-     <div class="form"></div>
+    <!-- 分页组件 -->
+    <o-pager oo-prop="$" @refresh-data="loadData"></o-pager>
+    <div class="form"></div>
 </div>

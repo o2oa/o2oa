@@ -10,11 +10,12 @@ export default content({
     bind() {
         return {
             lp,
-             value: "",
-             key:"" // 反写回去的对象key值，多层用.分割 如 form.startTime
+            showClear: false,
+            value: "",
+            key:"" // 反写回去的对象key值，多层用.分割 如 form.startTime
         };
     },
-    beforeRender() {
+    afterRender() {
         MWF.require("MWF.widget.Calendar", function(){
           var defaultView = "day";
           var options = {
@@ -48,10 +49,24 @@ export default content({
             }
           }
           options.baseDate = baseDate;
-          
-          this.calendar = new MWF.widget.Calendar(this.dom, options);
+          let bindDom = this.dom.querySelector(".input");
+          if (!bindDom) {
+            bindDom = this.dom;
+          }
+          this.calendar = new MWF.widget.Calendar(bindDom, options);
           
         }.bind(this));
+    },
+    leaveIcon() {
+      this.bind.showClear = false;
+    },
+    enterIcon() {
+      this.bind.showClear = true;
+    },
+    clickIconClearValue() {
+      if (this.bind.showClear) {
+        this.clearValue();
+      }
     },
     clearValue() {
       this.bind.value = "";
@@ -60,7 +75,6 @@ export default content({
       }
     },
     changeValue(date) {
-      console.debug(date);
       var hour = date.getHours() > 9 ? `${date.getHours()}`:`0${date.getHours()}`;
       var minute = date.getMinutes() > 9 ? `${date.getMinutes()}`:`0${date.getMinutes()}`;
       this.bind.value = `${hour}:${minute}`;

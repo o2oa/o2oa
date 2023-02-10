@@ -24,6 +24,12 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.o2icon-triangle_left:before {
+  content: "\e90c";
+}
+.o2icon-triangle_right:before {
+  content: "\e90d";
+}
 .o2icon-icon_close:before {
   content: "\e928";
 }
@@ -32,4 +38,13 @@
 }
 .o2icon-clock2:before {
   content: "\e9ab";
+}
+.o2icon-icon_arrow_down:before {
+  content: "\e913";
+}
+.o2icon-icon_arrow_up2:before {
+  content: "\e916";
+}
+.o2icon-cancel-circle:before {
+  content: "\ea0d";
 }

@@ -43,6 +43,8 @@
 }
  .att .operator_link {
   color: var(--el-color-primary);
+  margin-left: 10px;
+  cursor: pointer;
  }
  .att .link_btn {
   line-height: 32px;

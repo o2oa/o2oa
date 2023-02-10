@@ -14,7 +14,6 @@ export default content({
             watch: ['action'],
             async load() {
                 const name = this.bind.action;
-                console.log(name + '11111');
                 return (await import (`../${name}/index.js`)).default;
             }
         }

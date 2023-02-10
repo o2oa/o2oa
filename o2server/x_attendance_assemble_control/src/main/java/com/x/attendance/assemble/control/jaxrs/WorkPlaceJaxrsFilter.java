@@ -1,4 +1,4 @@
-package com.x.attendance.assemble.control.jaxrs.v2;
+package com.x.attendance.assemble.control.jaxrs;
 
 import com.x.base.core.project.jaxrs.ManagerUserJaxrsFilter;
 

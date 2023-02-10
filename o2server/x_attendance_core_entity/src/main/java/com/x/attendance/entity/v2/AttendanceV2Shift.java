@@ -99,14 +99,14 @@ public class AttendanceV2Shift extends SliceJpaObject {
 	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
 			+ lateAndEarlyOnTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	private String lateAndEarlyOnTime; // 上班最多可晚时间 上班晚到几分钟，下班须晚走几分钟。 如 00:30 表示30分钟
+	private String lateAndEarlyOnTime; // 上班最多可晚时间 上班晚到几分钟，下班须晚走几分钟。 如 30 表示30分钟
 
 	public static final String lateAndEarlyOffTime_FIELDNAME = "lateAndEarlyOffTime";
 	@FieldDescribe("下班最多可早走时间")
 	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
 			+ lateAndEarlyOffTime_FIELDNAME)
 	@CheckPersist(allowEmpty = true)
-	private String lateAndEarlyOffTime; // 下班最多可早走时间，上班早到几分钟，下班可早走几分钟 如 01:30 表示1小时30分钟
+	private String lateAndEarlyOffTime; // 下班最多可早走时间，上班早到几分钟，下班可早走几分钟 如 90 表示1小时30分钟
 
 
 	public String getOperator() {
