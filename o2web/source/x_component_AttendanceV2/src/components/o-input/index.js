@@ -12,14 +12,11 @@ export default content({
             lp,
             isRequried: false,
             value: "",
-            label: ""
+            label: "",
+            placeholder: "",
         };
     },
-    showBind() {
-      console.log(this.bind);
-    },
     onValueChange() {
-      console.log('onValueChange');
       this.dom.value = this.bind.value;
     }
      

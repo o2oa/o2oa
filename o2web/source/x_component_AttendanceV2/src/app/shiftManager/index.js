@@ -24,7 +24,6 @@ export default content({
   },
   afterRender() {
     // let a = [...new Array(2).keys()];
-    // console.debug(a);
     this.loadShiftList();
   },
   async addShift() {
@@ -46,10 +45,8 @@ export default content({
     this.addShiftVm = await content.generate(".form", { bind: addBind }, this);
   },
   loadData(e) {
-    console.debug('翻页查询，  ', e);
     if (e && e.detail && e.detail.module && e.detail.module.bind && e.detail.module.bind.pagerData) {
       this.bind.pagerData.page = e.detail.module.bind.pagerData.page;
-      console.debug(this.bind);
       this.loadShiftList();
     }
   },
@@ -79,7 +76,6 @@ export default content({
           shiftData.time3 = shift.properties.timeList[2];
         }
         // 修改
-        console.debug("修改班次", shift);
         debugger;
         shiftData.form = shift; // 多一层的
         const content = (await import(`./addShift/index.js`)).default;
@@ -113,7 +109,6 @@ export default content({
     const json = await o2.Actions.load(
       "x_attendance_assemble_control"
     ).ShiftAction.delete(id);
-    console.debug("删除", json);
     this.loadShiftList();
   },
   closeShift() {

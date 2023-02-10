@@ -66,7 +66,6 @@ export default content({
         if (this.bind.form && this.bind.form.id && this.bind.form.id !== '') {
             this.bind.fTitle = this.bind.lp.editShift;
         }
-        console.debug("dddd", this.bind);
     },
     // o time picker 控件使用
     setTimeValue(key, value) {

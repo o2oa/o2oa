@@ -35,9 +35,7 @@ public class ActionUpdate extends BaseAction {
                 throw new ExceptionEmptyParameter("班次名称");
             }
             AttendanceV2ShiftCheckTimeProperties properties = wi.getProperties();
-            if (properties == null || properties.getTimeList() == null || properties.getTimeList().isEmpty()) {
-                throw new ExceptionEmptyParameter("班次上下班打卡时间");
-            }
+            checkShiftProperties(properties);
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("班次post {}", wi.toString());
             }

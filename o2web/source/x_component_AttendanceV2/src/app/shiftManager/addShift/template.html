@@ -9,7 +9,7 @@
             <o-input oo-prop="{'isRequried': true, 'label':$.lp.shiftForm.shiftNameLabel, 'value': $.form.shiftName}"
                 oo-model="form.shiftName"></o-input>
             <div>
-                <div class="item-label">
+                <div class="form-item-label">
                     <span class="required">*</span>
                     {{$.lp.shiftForm.checkInTimeLabel}}
                 </div>
@@ -23,21 +23,21 @@
                         {{$.lp.firstTimeLabel}}
                     </div>
                     <div class="a-card-body">
-                        <div class="item-content">
+                        <div class="form-item-content">
                             <span class="required">*</span>{{$.lp.shiftForm.onDutyTimeLabel}} <o-time-picker 
                                 oo-prop="{'value': $.time1.onDutyTime, 'key': 'time1.onDutyTime'}"  ></o-time-picker>
                         </div>
-                        <div class="item-content" style="margin-top: 10px;">
+                        <div class="form-item-content" style="margin-top: 10px;">
                             {{$.lp.shiftForm.beforeOnDutyTimeLabel}} <o-time-picker style="margin-left: 10px;margin-right: 10px;"
                                 oo-prop="{'value': $.time1.onDutyTimeBeforeLimit, 'key': 'time1.onDutyTimeBeforeLimit'}" ></o-time-picker> -  {{$.lp.shiftForm.afterOnDutyTimeLabel}}
                             <o-time-picker style="margin-left: 10px;"
                                 oo-prop="{'value': $.time1.onDutyTimeAfterLimit, 'key': 'time1.onDutyTimeAfterLimit'}" ></o-time-picker>
                         </div>
-                        <div class="item-content" style="margin-top: 20px;">
+                        <div class="form-item-content" style="margin-top: 20px;">
                             <span class="required">*</span>{{$.lp.shiftForm.offDutyTimeLabel}} <o-time-picker style="margin-left: 10px;"
                                 oo-prop="{'value': $.time1.offDutyTime, 'key': 'time1.offDutyTime'}"  ></o-time-picker>
                         </div>
-                        <div class="item-content" style="margin-top: 10px;">
+                        <div class="form-item-content" style="margin-top: 10px;">
                             {{$.lp.shiftForm.beforeOffDutyTimeLabel}} <o-time-picker style="margin-left: 10px;margin-right: 10px;"
                                 oo-prop="{'value': $.time1.offDutyTimeBeforeLimit, 'key': 'time1.offDutyTimeBeforeLimit'}"  ></o-time-picker> -  {{$.lp.shiftForm.afterOffDutyTimeLabel}}
                             <o-time-picker style="margin-left: 10px;"
@@ -50,21 +50,21 @@
                         {{$.lp.secondTimeLabel}}
                     </div>
                     <div class="a-card-body">
-                        <div class="item-content">
+                        <div class="form-item-content">
                             <span class="required">*</span>{{$.lp.shiftForm.onDutyTimeLabel}} <o-time-picker style="margin-left: 10px;"
                                 oo-prop="{'value': $.time2.onDutyTime,'key': 'time2.onDutyTime'}" ></o-time-picker>
                         </div>
-                        <div class="item-content" style="margin-top: 10px;">
+                        <div class="form-item-content" style="margin-top: 10px;">
                             {{$.lp.shiftForm.beforeOnDutyTimeLabel}} <o-time-picker style="margin-left: 10px;margin-right: 10px;"
                                 oo-prop="{'value': $.time2.onDutyTimeBeforeLimit,'key': 'time2.onDutyTimeBeforeLimit'}"  ></o-time-picker> -> {{$.lp.shiftForm.afterOnDutyTimeLabel}}
                             <o-time-picker style="margin-left: 10px;"
                                 oo-prop="{'value': $.time2.onDutyTimeAfterLimit,'key': 'time2.onDutyTimeAfterLimit'}"  ></o-time-picker>
                         </div>
-                        <div class="item-content" style="margin-top: 20px;">
+                        <div class="form-item-content" style="margin-top: 20px;">
                             <span class="required">*</span>{{$.lp.shiftForm.offDutyTimeLabel}} <o-time-picker style="margin-left: 10px;"
                                 oo-prop="{'value': $.time2.offDutyTime,'key': 'time2.offDutyTime'}"  ></o-time-picker>
                         </div>
-                        <div class="item-content" style="margin-top: 10px;">
+                        <div class="form-item-content" style="margin-top: 10px;">
                             {{$.lp.shiftForm.beforeOffDutyTimeLabel}} <o-time-picker style="margin-left: 10px;margin-right: 10px;"
                                 oo-prop="{'value': $.time2.offDutyTimeBeforeLimit,'key': 'time2.offDutyTimeBeforeLimit'}"  ></o-time-picker> -> {{$.lp.shiftForm.afterOffDutyTimeLabel}}
                             <o-time-picker style="margin-left: 10px;"
@@ -77,21 +77,21 @@
                         {{$.lp.thirdTimeLabel}}
                     </div>
                     <div class="a-card-body">
-                        <div class="item-content" >
+                        <div class="form-item-content" >
                             <span class="required">*</span>{{$.lp.shiftForm.onDutyTimeLabel}} <o-time-picker style="margin-left: 10px;"
                                 oo-prop="{'value': $.time3.onDutyTime, 'key': 'time3.onDutyTime'}"  ></o-time-picker>
                         </div>
-                        <div class="item-content" style="margin-top: 10px;">
+                        <div class="form-item-content" style="margin-top: 10px;">
                             {{$.lp.shiftForm.beforeOnDutyTimeLabel}} <o-time-picker style="margin-left: 10px;margin-right: 10px;"
                                 oo-prop="{'value': $.time3.onDutyTimeBeforeLimit, 'key': 'time3.onDutyTimeBeforeLimit'}"  ></o-time-picker> -> {{$.lp.shiftForm.afterOnDutyTimeLabel}}
                             <o-time-picker style="margin-left: 10px;"
                                 oo-prop="{'value': $.time3.onDutyTimeAfterLimit, 'key': 'time3.onDutyTimeAfterLimit'}" ></o-time-picker>
                         </div>
-                        <div class="item-content" style="margin-top: 20px;">
+                        <div class="form-item-content" style="margin-top: 20px;">
                             <span class="required">*</span>{{$.lp.shiftForm.offDutyTimeLabel}} <o-time-picker style="margin-left: 10px;"
                                 oo-prop="{'value': $.time3.offDutyTime, 'key': 'time3.offDutyTime'}"  ></o-time-picker>
                         </div>
-                        <div class="item-content" style="margin-top: 10px;">
+                        <div class="form-item-content" style="margin-top: 10px;">
                             {{$.lp.shiftForm.beforeOffDutyTimeLabel}} <o-time-picker style="margin-left: 10px;margin-right: 10px;"
                                 oo-prop="{'value': $.time3.offDutyTimeBeforeLimit, 'key': 'time3.offDutyTimeBeforeLimit'}"  ></o-time-picker> -> {{$.lp.shiftForm.afterOffDutyTimeLabel}}
                             <o-time-picker style="margin-left: 10px;"

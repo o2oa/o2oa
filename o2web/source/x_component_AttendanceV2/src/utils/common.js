@@ -19,7 +19,8 @@ function lpT(lp, key, options){
 }
 
 /**
- * 给对象设置值
+ * 给对象设置值，也可以是数组
+ * 比如 key='a.b' v=1 就会给data对象的a属性下的b属性设置值为1 或者 key='0.b' v=1 会给data数组的第一个对象中的b属性设置值为1 
  * @param {*} key 多层用.分割 
  * @param {*} v  存储的值
  * @param {*} data 存储对象

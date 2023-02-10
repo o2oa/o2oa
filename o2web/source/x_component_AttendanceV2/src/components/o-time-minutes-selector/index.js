@@ -43,7 +43,35 @@ export default content({
       let bindDom = this.dom.querySelector(".input");
       bindDom.addEventListener('click', (event) => {
         this.selectorDom.show();
+        this.addCloseEventToParent();
       });
+      
+    },
+    selectorHide() {
+        this.selectorDom.hide();
+        this.$parent.dom.removeEventListener('mousedown', this.hideEvent);
+    },
+    // 选择器关闭
+    selectoOutHide(e) {
+      // 计算下拉框的范围，范围外点击隐藏
+        const eCoor = this.selectorDom.getBoundingClientRect();
+        const elementCoords =  {
+          width: this.selectorDom.clientWidth,
+          height: this.selectorDom.clientHeight,
+          top: eCoor.top,
+          bottom: eCoor.bottom,
+          left: eCoor.left,
+          right: eCoor.right
+        }
+        if(((e.pageX < elementCoords.left || e.pageX > (elementCoords.left + elementCoords.width)) ||
+				(e.pageY < elementCoords.top || e.pageY > (elementCoords.top + elementCoords.height))) ) {
+          this.selectorHide();
+        }
+    },
+    // 添加选择器关闭时间
+    addCloseEventToParent() {
+      this.hideEvent = this.selectorHide.bind(this);
+      this.$parent.dom.addEventListener('mousedown', this.xxx );
     },
     initHourList() {
       let hourList = [];
@@ -74,11 +102,9 @@ export default content({
     // 切换
     changeChooseHour(hour) {
       debugger;
-      console.debug("切换小时", hour);
       this.bind.chooseHour = hour
       this.initMiniteList();
       this.bind.chooseMinute = this.bind.minuteList[0];
-      console.debug(this.bind);
     },
     leaveIcon() {
       this.bind.showClear = false;
@@ -113,9 +139,6 @@ export default content({
     },
     selected(minute) {
       this.bind.chooseMinute = minute;
-      // 显示
-      this.showValueChange();
-      this.selectorDom.hide();
       let v = 0;
       if (this.bind.chooseHour != '') {
         v += parseInt(this.bind.chooseHour) * 60;
@@ -126,6 +149,9 @@ export default content({
       } else {
         this.bind.value = '';
       }
+      // 显示
+      this.showValueChange();
+      this.selectorHide();
       this.spitOutValue();
     },
     spitOutValue() {

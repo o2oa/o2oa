@@ -23,6 +23,7 @@ MWF.xApplication.AttendanceV2.LP = {
         "config": "配置",
         "shiftManager": "班次管理",
         "groupmanager": "考勤组管理",
+        "addressmanger": "工作场所管理",
     },
 
     "alert": "提示",
@@ -32,6 +33,15 @@ MWF.xApplication.AttendanceV2.LP = {
     "add": "添加",
     "dataError": "数据错误！",
 
+    // 组件
+    "components": {
+        "chooseTimePlaceholder": "请选择时间",
+        "timeMinutesSelectorClosePlaceholder": "关闭",
+        "timeMinutesSelectorHour": "小时",
+        "timeMinutesSelectorMinute": "分钟",
+    },
+
+    // 班次
     "shiftTitle": "班次管理",
     "addShift": "新增班次",
     "editShift": "修改班次",
@@ -65,11 +75,9 @@ MWF.xApplication.AttendanceV2.LP = {
         "confirmDelete": "确认要删除这条【{name}】信息？",
     },
     
-
-    "components": {
-        "chooseTimePlaceholder": "请选择时间",
-        "timeMinutesSelectorClosePlaceholder": "关闭",
-        "timeMinutesSelectorHour": "小时",
-        "timeMinutesSelectorMinute": "分钟",
-    }
+    // 工作场所
+    "workAddressManagerTitle": "工作场所管理",
+    "workAddressAdd": "新建工作场所",
+    "workAddressName": "场所名称",
+    "workAddressRange": "误差范围",
 };

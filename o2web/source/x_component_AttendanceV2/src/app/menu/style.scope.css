@@ -35,6 +35,7 @@
 }
 .index_page_nav_menu_title_container .title_sub {
   padding-left: 12px !important;
+  padding-right: 12px !important;
 }
 .index_page_nav_menu_title_container .title_selected {
   font-weight: 700;

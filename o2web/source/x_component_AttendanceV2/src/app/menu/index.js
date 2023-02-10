@@ -58,6 +58,11 @@ export default content({
                     id: 6,
                     title: lp.menu.groupmanager,
                     action: "groupManager"
+                  },
+                  {
+                    id: 7,
+                    title: lp.menu.addressmanger,
+                    action: "addressManager"
                   }
                 ]
               }
