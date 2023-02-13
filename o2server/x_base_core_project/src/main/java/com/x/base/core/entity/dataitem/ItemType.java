@@ -10,7 +10,8 @@ public enum ItemType {
 	 * a:JsonArray
 	 * p:JsonPrimitive 基本类型
 	 * n:JsonNull
+	 * j:JsonElement
 	 * */
-	o, a, p, n;
+	o, a, p, n,j;
 	public static final int length = JpaObject.length_1B;
 }
