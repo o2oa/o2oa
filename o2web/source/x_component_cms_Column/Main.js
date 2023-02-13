@@ -36,6 +36,7 @@ MWF.xApplication.cms.Column.Main = new Class({
         this.node = new Element("div", {
             "styles": this.css.container
         }).inject(this.content);
+        this.node.loadCss("../x_component_cms_Column/$Main"+ this.options.style +"/style.css");
     },
     reload: function(appType, callback){
         // if( appType ){
