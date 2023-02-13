@@ -16,6 +16,7 @@ MWF.xApplication.cms.Column.LP = {
     "cancel": "Cancel",
     "export_ok": "OK",
     "allApp": "All apps",
+    "searchAppPlacholder": "Enter the name to search for the application",
     "column": {
         "title" :"AppInfo Management",
         "create": "New App",

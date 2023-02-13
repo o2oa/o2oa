@@ -16,6 +16,7 @@ MWF.xApplication.cms.Column.LP = {
 	"cancel" : "取消",
 	"export_ok" : "确定",
 	"allApp": "全部栏目",
+	"searchAppPlacholder": "输入名称搜索栏目",
 	"column" : {
 		"title" :"栏目管理",
 		"create" : "新建栏目",

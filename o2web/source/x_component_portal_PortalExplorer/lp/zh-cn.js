@@ -26,6 +26,7 @@ MWF.xApplication.portal.PortalExplorer.LP = MWF.PortalLP = {
     "createApplication_cancel_title": "取消新建门户确认",
     "createApplication_cancel": "您确定要取消新建门户吗?",
     "createApplicationSuccess": "创建门户完成!",
+    "searchAppPlacholder": "输入名称搜索应用",
 
     "application": {
         "export": "导出门户",

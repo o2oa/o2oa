@@ -36,6 +36,7 @@ MWF.xApplication.cms.Column.Main = new Class({
         this.node = new Element("div", {
             "styles": this.css.container
         }).inject(this.content);
+        this.node.loadCss("../x_component_cms_Column/$Main/"+ this.options.style +"/style.css");
     },
     reload: function(appType, callback){
         // if( appType ){
@@ -119,6 +120,39 @@ MWF.xApplication.cms.Column.Main = new Class({
                 }.bind(this)
             });
 
+            this.searchNode = new Element("div.searchNode", {
+                "styles": this.css.columnTop_search
+            }).inject(this.columnToolbarAreaNode);
+
+            this.searchInput = new Element("input.searchInput", {
+                "styles": this.css.columnTop_searchInput,
+                "placeholder": this.lp.searchAppPlacholder
+            }).inject(this.searchNode);
+
+            this.searchButton = new Element("i.o2icon-search", {
+                "styles": this.css.columnTop_searchButton
+            }).inject(this.searchNode);
+
+            this.searchInput.addEvents({
+                focus: function(){
+                    this.searchNode.addClass("mainColor_border");
+                    this.searchButton.addClass("mainColor_color");
+                }.bind(this),
+                blur: function () {
+                    this.searchNode.removeClass("mainColor_border");
+                    this.searchButton.removeClass("mainColor_color");
+                }.bind(this),
+                keydown: function (e) {
+                    if( (e.keyCode || e.code) === 13 ){
+                        this.searchApp();
+                    }
+                }.bind(this)
+            });
+
+            this.searchButton.addEvent("click", function (e) {
+                this.searchApp();
+            }.bind(this));
+
             this.findNode = new Element("div.createColumnNode", {
                 "styles": this.css.findNode,
                 "text": this.lp.column.findDesigner
@@ -144,6 +178,16 @@ MWF.xApplication.cms.Column.Main = new Class({
         //    "styles": this.css.columnToolbarTextNode,
         //    "text": this.lp.column.title
         //}).inject(this.columnToolbarAreaNode);
+    },
+    searchApp: function(){
+        var key = this.searchInput && this.searchInput.get("value");
+        this.columns.each(function (app) {
+            if( !key || app.titleNode.get("text").contains( key )){
+                app.node.show();
+            }else{
+                app.node.hide();
+            }
+        }.bind(this));
     },
     loadAppType : function( appType, callback, noRefreshContent ){
         var _self = this;
@@ -441,6 +485,7 @@ MWF.xApplication.cms.Column.Column = new Class({
             "text": columnName,
             "title": (alias) ? columnName + " (" + alias + ") " : columnName
         }).inject(topNode);
+        this.titleNode = titleNode;
 
         var iconAreaNode = new Element("div",{
             "styles": this.app.css.columnItemIconAreaNode

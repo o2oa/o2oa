@@ -41,6 +41,7 @@ MWF.xApplication.query.QueryExplorer.Main = new Class({
     createApplicationItem: function(appData, where){
         var application = new MWF.xApplication.query.QueryExplorer.Query(this, appData, where);
         application.load();
+		this.applicationList.push(application);
     },
     okCreateApplication: function(e){
         var nameNode = this.applicationCreateFormNode.getElement(".o2_process_AppExp_createApplicationName");
