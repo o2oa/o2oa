@@ -58,15 +58,21 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
         if(this.component){
             try{
                 this.component.close();
-            }catch (e) {}
+                if(this.node)this.node.empty();
+            }catch (e) {
+                console.log(e);
+                if(this.node)this.node.empty();
+            }
             this.component = null;
         }
         if( this.iframe ){
             this.iframe.destroy();
+            if(this.node)this.node.empty();
             this.iframe = null;
         }
     },
     loadApplication: function ( ) {
+        this.clean();
         if(this.node){
             this.node.empty();
             this.node.setStyles({
@@ -74,11 +80,10 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
                 "background-color": "#eee"
             });
         }
-        this.clean();
         var status = this.getComponentStatus() || {};
         var options = this.getComponentOptions() || {};
         this.getComponentPath(function (componentPath) {
-            if( componentPath.indexOf("@url:") === 0 ){
+            if( componentPath && componentPath.indexOf("@url:") === 0 ){
                 this.loadIframe( componentPath.substring(5, componentPath.length ) );
             }else{
                 this.loadComponent( componentPath, status, options );
@@ -127,6 +132,7 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
      */
     loadComponent: function ( path, status, options ) {
         var clazz = MWF.xApplication;
+        if( o2.typeOf(path) !== "string" )return;
         path.split(".").each(function (a) {
             clazz[a] = clazz[a] || {};
             clazz = clazz[a];
@@ -194,11 +200,11 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
             if (this.json.componentSelected && this.json.componentSelected!=="none"){
                 path = this.json.componentSelected;
             }else{
-                path = ""
+                path = "";
             }
         }
         Promise.resolve(path).then(function (p) {
-            callback(p);
+            callback(p || "");
         })
     },
     /**
