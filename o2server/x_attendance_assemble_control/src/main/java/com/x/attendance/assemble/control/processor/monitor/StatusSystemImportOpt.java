@@ -1,9 +1,9 @@
 package com.x.attendance.assemble.control.processor.monitor;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class StatusSystemImportOpt{
 	
@@ -35,7 +35,7 @@ public class StatusSystemImportOpt{
 	/**
 	 * 记录数据导入过程以及校验结果的map
 	 */
-	private static Map<String, StatusImportFileDetail> importFileCheckResultMap = new HashMap<>();
+	private static final Map<String, StatusImportFileDetail> importFileCheckResultMap = new ConcurrentHashMap<>();
 	
 	private StatusSystemImportOpt() {}
 	
