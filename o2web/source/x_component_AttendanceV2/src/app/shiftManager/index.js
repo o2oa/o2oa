@@ -1,6 +1,6 @@
 import { component as content } from "@o2oa/oovm";
 import { lp, o2 } from "@o2oa/component";
-import { lpT } from "../../utils/common";
+import { lpFormat } from "../../utils/common";
 import oPager from '../../components/o-pager';
 import style from "./style.scope.css";
 import template from "./template.html";
@@ -89,7 +89,7 @@ export default content({
   },
   clickDeleteShift(id, name) {
     var _self = this;
-    const c = lpT(this.bind.lp, "shiftForm.confirmDelete", { name: name });
+    const c = lpFormat(this.bind.lp, "shiftForm.confirmDelete", { name: name });
     o2.api.page.confirm(
       "wran",
       this.bind.lp.alert,

@@ -1,6 +1,5 @@
 import { component as content } from "@o2oa/oovm";
 import { lp, o2 } from "@o2oa/component";
-import { lpT } from "../../utils/common";
 import style from "./style.scope.css";
 import template from "./temp.html";
 

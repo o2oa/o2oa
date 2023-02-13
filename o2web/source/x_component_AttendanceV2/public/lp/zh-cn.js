@@ -52,6 +52,8 @@ MWF.xApplication.AttendanceV2.LP = {
         "checkInTimeLabel": "上下班时间",
         "seriousTardinessLateMinutesLabel": "严重迟到分钟数",
         "absenteeismLateMinutesLabel": "旷工迟到分钟数",
+        "seriousTardinessLateMinutesNeedNumber": "严重迟到分钟数必须是数字！",
+        "absenteeismLateMinutesNeedNumber": "旷工迟到分钟数必须是数字！",
         "firstTimeLabel": "第1次上下班",
         "secondTimeLabel": "第2次上下班",
         "thirdTimeLabel": "第3次上下班",

@@ -56,7 +56,7 @@ abstract class BaseAction extends StandardJaxrsAction {
             }
         }
         if (StringUtils.isNotEmpty(time.getOffDutyTimeAfterLimit())) {
-            String offDutyAfter = time.getOnDutyTimeAfterLimit().replace(":", "");
+            String offDutyAfter = time.getOffDutyTimeAfterLimit().replace(":", "");
             if (Integer.parseInt(offDutyAfter) < Integer.parseInt(offDuty)) {
                 throw new ExceptionOnDutyOffDuty("下班后时间不能小于下班时间");
             }

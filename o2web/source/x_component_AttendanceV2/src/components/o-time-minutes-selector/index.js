@@ -70,8 +70,8 @@ export default content({
     },
     // 添加选择器关闭时间
     addCloseEventToParent() {
-      this.hideEvent = this.selectorHide.bind(this);
-      this.$parent.dom.addEventListener('mousedown', this.xxx );
+      this.hideEvent = this.selectoOutHide.bind(this);
+      this.$parent.dom.addEventListener('mousedown', this.hideEvent );
     },
     initHourList() {
       let hourList = [];

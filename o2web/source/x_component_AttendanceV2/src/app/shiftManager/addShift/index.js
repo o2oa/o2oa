@@ -1,5 +1,6 @@
 import {component as content} from '@o2oa/oovm';
 import {lp, o2} from '@o2oa/component';
+import { isPositiveInt } from '../../../utils/common';
 import template from './template.html';
 import oInput from '../../../components/o-input';
 import oTimePicker from '../../../components/o-time-picker';
@@ -17,8 +18,8 @@ export default content({
             fTitle: lp.addShift,
             form: {
                 shiftName: "", //班次名称
-                seriousTardinessLateMinutes: "30", // 严重迟到分钟数
-                absenteeismLateMinutes: "30", // 旷工迟到分钟数
+                seriousTardinessLateMinutes: "0", // 严重迟到分钟数
+                absenteeismLateMinutes: "0", // 旷工迟到分钟数
                 lateAndEarlyOnTime: "", // 上班最多可晚时间
                 lateAndEarlyOffTime: "", // 下班最多可早走时间
             },
@@ -121,6 +122,15 @@ export default content({
             myForm.properties.timeList.push(this.bind.time1);
             myForm.properties.timeList.push(this.bind.time2);
             myForm.properties.timeList.push(this.bind.time3);
+        }
+        debugger
+        if (myForm.seriousTardinessLateMinutes !== "0" && !isPositiveInt(myForm.seriousTardinessLateMinutes)) {
+            o2.api.page.notice(lp.shiftForm.seriousTardinessLateMinutesNeedNumber, 'error');
+            return ;
+        }
+        if (myForm.absenteeismLateMinutes !== "0" && !isPositiveInt(myForm.absenteeismLateMinutes)) {
+            o2.api.page.notice(lp.shiftForm.absenteeismLateMinutesNeedNumber, 'error');
+            return ;
         }
         if (myForm.id && myForm.id !== '') {
             const json = await o2.Actions.load('x_attendance_assemble_control').ShiftAction.shiftUpdate(myForm);
