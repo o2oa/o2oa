@@ -100,6 +100,11 @@ MWF.xApplication.process.ProcessDesigner.Property = new Class({
             if (this.propertyContent) this.propertyContent.setStyle("display", "none");
         }
     },
+    destroy: function(){
+        if (this.propertyContent) {
+            this.propertyContent.destroy();
+        }
+    },
 	
 	loadPropertyTab: function(){
 		var tabNodes = this.propertyContent.getElements(".MWFTab");

@@ -6,6 +6,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 	"unnamed": "未命名",	
 	"unknow": "未知",
 	"unrealized": "此功能未实现",
+	"process": "流程",
 	"activity": "活动",
 	"route": "路由",
 	"history": "历史",

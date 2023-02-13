@@ -1018,7 +1018,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
             //MWF.require("MWF.widget.UUID", function(){
             //activityData.id = (new MWF.widget.UUID()).toString();
 
-            this.designer.actions.getUUID(function(id){activityData.id = id;});
+            this.designer.actions.getUUID(function(id){activityData.id = id;}, false);
 
             activityData.process = this.process.id;
             activityData.createTime = new Date().format('db');
@@ -1027,8 +1027,6 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 			activityData.position = position.x+","+position.y;
             activity = new MWF.APPPD.Activity[c](activityData, this);
             activity.create(position);
-
-			activity.addHistoryLog( "create" );
 
             if (d=="begin"){
                 this.begin = activity;
@@ -1041,6 +1039,8 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
                 this.process[d+"List"].push(activityData);
             }
             this.activitys.push(activity);
+
+			activity.addHistoryLog( "create" );
 
             //		}.bind(this));
 		}.bind(this));
@@ -1312,11 +1312,16 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 
 		activityData.process = this.process.id;
 
-		activity = new MWF.APPPD.Activity[c](activityData, this);
-		activity.create();
-		activity.selected();
+		var activity = new MWF.APPPD.Activity[c](activityData, this);
+		debugger;
+		var pos = activityData.position.split(",");
+		activity.create({
+			x: pos[0].toFloat(),
+			y: pos[1].toFloat()
+		});
+		// activity.selected();
 
-		if (type=="begin"){
+		if (type==="begin"){
 			this.begin = activity;
 			this.process.begin = activityData;
 		}else{
@@ -1326,6 +1331,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
 			}
 			this.process[type+"List"].push(activityData);
 		}
+        this.activitys.push(activity);
 	},
 	copyActivity: function(activity){
 		var activityData = Object.clone(activity.data);
@@ -1357,6 +1363,7 @@ MWF.xApplication.process.ProcessDesigner.Process = new Class({
         var _self = this;
         this.designer.shortcut = false;
 		this.designer.confirm("warn", e, MWF.APPPD.LP.notice.deleteActivityTitle, MWF.APPPD.LP.notice.deleteActivity, 300, 120, function(){
+			activity.addHistoryLog("delete");
 			activity.destroy();
     		delete activity;
             _self.designer.shortcut = true;

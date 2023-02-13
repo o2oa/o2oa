@@ -111,6 +111,7 @@ MWF.xApplication.process.ProcessDesigner.Activity = new Class({
     },
     setEvent: function(){
         if (!this.process.options.isView){
+            var fromList;
             this.set.drag(
                 function(dx, dy, x, y, e){
                     if (!e.rightClick){
@@ -126,11 +127,14 @@ MWF.xApplication.process.ProcessDesigner.Activity = new Class({
                 }.bind(this),
                 function(x, y, e){
                     if (!e.rightClick){
+                        fromList = [];
                         if (this.process.selectedActivitys.length){
                             this.process.selectedActivitys.each(function(activity){
+                                fromList.push( activity.createHistoryLog() );
                                 activity.activityMoveStart();
-                            });
+                            }.bind(this));
                         }else{
+                            fromList.push( this.createHistoryLog() );
                             this.activityMoveStart();
                         }
                     }
@@ -141,9 +145,10 @@ MWF.xApplication.process.ProcessDesigner.Activity = new Class({
                             this.process.selectedActivitys.each(function(activity){
                                 activity.activityMoveEnd();
                             });
-
+                            this.addHistoryLog("move", this.process.selectedActivitys, fromList);
                         }else{
                             this.activityMoveEnd();
+                            this.addHistoryLog("move", [this], fromList);
                         }
                     }
                 }.bind(this)
@@ -408,6 +413,7 @@ MWF.xApplication.process.ProcessDesigner.Activity = new Class({
     },
     activityMove: function(dx, dy, tox, toy){
         //var moveSet = this.set.clone();
+        debugger;
         if (!this.set.isFront){
             this.set.toFront();
             this.set.isFront = true;
@@ -788,6 +794,7 @@ MWF.xApplication.process.ProcessDesigner.Activity = new Class({
             "type": "property",
             "force": force,
             "moduleId": this.data.id,
+            "name": this.data.name,
             "moduleType": this.data.type,
             "changeList": []
         };
@@ -842,6 +849,7 @@ MWF.xApplication.process.ProcessDesigner.Activity = new Class({
         return logList;
     },
     createHistoryLog: function ( module ) {
+        debugger;
         if( !this.process.history )return null;
         if( !module )module = this;
         var obj = {

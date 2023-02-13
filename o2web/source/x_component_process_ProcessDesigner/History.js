@@ -32,20 +32,6 @@ MWF.xApplication.process.ProcessDesigner.History = new Class({
             "moduleId": (this.process.process.name || "process" )
         });
     },
-    //获取domPath
-    // getPath: function (node) {
-    //     var root = this.root;
-    //     var path = [];
-    //     var parent, childrens, nodeIndex;
-    //     while (node && node !== root) {
-    //         parent = node.parentElement;
-    //         childrens = Array.from(parent.children);
-    //         nodeIndex = childrens.indexOf(node);
-    //         path.push(nodeIndex);
-    //         node = parent;
-    //     }
-    //     return path.reverse();
-    // },
     add: function(log, module) {
         // var log = { //也有可能是对象数组
         //     "operation": "create", //操作 create, copy, move, delete, cut, paste
@@ -54,13 +40,11 @@ MWF.xApplication.process.ProcessDesigner.History = new Class({
         //     "moduleId": "", //模块id
         //      "fromList": [{  //原始数据
         //          "json": {},  //原始json
-        //         "jsonObject": {}, //本module所包含的子json
-        //         "html": "", //原始html
+        //         "type": {}, //模块类型
         //      }],
         //      "toList": [{  //结束数据
-        //          "json": {},  //最终json
-        //          "jsonObject": {}, //本module所包含的子json
-        //          "html": "", //最终html
+        //          "json": {},  //原始json
+        //         "type": {}, //模块类型
         //      }]
         // };
         var item;
@@ -78,7 +62,7 @@ MWF.xApplication.process.ProcessDesigner.History = new Class({
                 //     item = new MWF.PDHistory.ModuleTabpageItem(this, log);
                 //     break;
                 default:
-                    item = new MWF.PDHistory.ModuleItem(this, log);
+                    item = new MWF.PDHistory.ActivityItem(this, log);
             }
         }else if( log.type === "route" ){
 
@@ -306,14 +290,16 @@ MWF.PDHistory.Item = new Class({
     _getText: function () {
         if( this.data.title )return this.data.title;
         var lp = MWF.APPPD.LP.processAction;
-        var type = this.getType();
+        var type = this.getTypeText();
         type = type ?  (" <" + type + "> ") : " ";
-        return  ( lp[this.data.operation] || this.data.operation ) + type + this.data.moduleId;
+        return  ( lp[this.data.operation] || this.data.operation ) + type + (this.data.moduleId || "");
     },
     getType: function(){
         var type = (this.data.type || "").toLowerCase();
         switch ( type ) {
-            case "module": case "property":
+            case "activity": case "property":
+                return (this.data.moduleType || "").capitalize();
+            case "route":
                 return (this.data.moduleType || "").capitalize();
             default:
                 return type.capitalize();
@@ -323,10 +309,11 @@ MWF.PDHistory.Item = new Class({
         var type = (this.data.type || "").toLowerCase();
         switch ( type ) {
             case "process": return MWF.APPPD.LP.process;
-            case "module":
+            case "route": return MWF.APPPD.LP.route;
+            case "activity":
                 var moduleType = (this.data.moduleType || "").toLowerCase();
-                var tool = this.history.designer.toolsData[moduleType] || this.history.designer.toolsData[moduleType.capitalize()];
-                return (tool) ? tool.text : moduleType;
+                var tool = MWF.APPPD.LP.menu.newActivityType[moduleType];
+                return tool || moduleType.capitalize();
             default:
                 return "";
         }
@@ -353,154 +340,6 @@ MWF.PDHistory.Item = new Class({
         this.node.destroy();
         MWF.release(this);
     },
-    unselectModule: function () {
-        if(this.process.currentSelectedModule && this.process.currentSelectedModule.unSelected){
-            this.process.currentSelectedModule.unSelected();
-        }
-        this.process.currentSelectedModule = null;
-
-        if( this.process.selectedModules && this.process.selectedModules.length ){
-            this.process.selectedModules = [];
-        }
-    },
-    _selectModule: function (path) {
-        var dom = this.getDomByPath(path);
-        if(dom){
-            var module = dom.retrieve("module");
-            if(module)module.selected();
-        }
-    },
-    deleteModuleList: function(){
-        for( var i=this.data.toList.length-1; i>-1; i-- ){
-            var to = this.data.toList[i];
-            this._deleteModule( to.path );
-        }
-    },
-    _deleteModule: function( path ){
-        var module, dom = this.getDomByPath( path );
-        if(dom)module = dom.retrieve("module");
-        if(module)module.destroy();
-    },
-    loadModuleList: function(){
-        for( var i=0; i<this.data.toList.length; i++ ) {
-            var to = this.data.toList[i];
-            this._loadModule(to.path, to.html, to.json, to.jsonObject);
-        }
-    },
-    _loadModule: function( path, html, json, jsonObject ){
-        var dom = this.injectHtmlByPath( path, html );
-        this.addModulesJson(jsonObject);
-        var parentModule = this.getParentModule(dom);
-        var module = this.process.loadModule(json, dom, parentModule || this.process);
-        module._setEditStyle_custom("id");
-    },
-    //根据路径顺序排序
-    sortByPath: function( arr ){
-        arr.sort(function (a, b) {
-            var max = Math.max(a.path.length, b.path.length);
-            for( var i=0; i< max; i++ ){
-                if( a.path[i] && !b.path[i] && b.path[i]!==0 )return -1;
-                if( b.path[i] && !a.path[i] && a.path[i]!==0 )return 1;
-                if( a.path[i] !== b.path[i] )return a.path[i] - b.path[i];
-            }
-            return -1;
-        });
-    },
-    //根据路径获取dom
-    getDomByPath: function(path){
-        var i, nodeIndex;
-        var node = this.root;
-        for( i=0; i<path.length; i++ ){
-            nodeIndex = path[i];
-            node = node.children[nodeIndex];
-        }
-        return node;
-    },
-    //插入到对应位置
-    injectToByPath: function(path, dom){
-        var i, nodeIndex;
-        var node = this.root;
-        for( i=0; i<path.length - 1; i++ ){
-            nodeIndex = path[i];
-            node = node.children[nodeIndex];
-        }
-        var last = path.getLast();
-        if( last === 0 ){
-            dom.inject( node, "top" );
-        }else{
-            var contains = false;
-            for( i=0; i<last; i++ ){
-                if( node.children[i] === dom ){ //如果位置包含当前dom
-                    contains = true;
-                    break;
-                }
-            }
-            node = node.children[contains ? last : (last-1)];
-            dom.inject(node, "after");
-        }
-        this.resetTreeNode( dom );
-    },
-    //插入HTML到对应位置
-    injectHtmlByPath: function(path, html){
-        var i, nodeIndex;
-        var node = this.root;
-        for( i=0; i<path.length - 1; i++ ){
-            nodeIndex = path[i];
-            node = node.children[nodeIndex];
-        }
-        var dom = new Element("div");
-        var last = path.getLast();
-        var parentNode = node;
-        if( last === 0 ){
-            dom.inject( node, "top" );
-        }else{
-            node = node.children[last-1];
-            dom.inject(node, "after");
-        }
-        dom.outerHTML = html; //dom没了
-        dom = parentNode.children[last];
-        return dom;
-    },
-    resetTreeNode: function(node){
-        var module = node.retrieve("module");
-        if(module){
-            module.parentContainer = this.getParentModule( node );
-            module._resetTreeNode();
-        }
-    },
-    addModulesJson: function( jsonObject ){
-        if(jsonObject){
-            for( var id in jsonObject ){
-                this.process.json.moduleList[id] = jsonObject[id];
-            }
-        }
-    },
-    getParentModule: function (node) {
-        var parent, parentNode = node.getParent();
-        while( parentNode && !parent ){
-            var mwftype = parentNode.get("mwftype");
-            if( mwftype === "process") {
-                parent = this.process;
-            }else if( mwftype ){
-                parent = parentNode.retrieve("module");
-            }else{
-                parentNode = parentNode.getParent();
-            }
-        }
-        return parent;
-    },
-    getParentModuleByType: function( node, moduleType ){
-        var parentNode = node;
-        var module;
-        while( parentNode && !module ){
-            if( parentNode.get("mwftype") === moduleType )module = parentNode.retrieve("module");
-            parentNode = parentNode.getParent();
-        }
-        return module;
-    },
-    selectModule: function(type){
-        this.process.selected();
-    },
     changeJsonDate: function(json, name, value){
         var key = name.split(".");
         var len = key.length-1;
@@ -515,25 +354,78 @@ MWF.PDHistory.Item = new Class({
         }else{
             json[key[len]] = value;
         }
+    },
+    getModuleById: function (id, type) {
+        if( type === "route" ){
+
+        }else{
+            var modules = this.process[type+"s"];
+            if( !modules )return null;
+            return modules[id];
+        }
+    },
+    getModule: function( log ){
+        var type = log.type || log.json.type;
+        if( type === "route" ){
+
+        }else{
+            var modules = this.process[type+"s"];
+            if( !modules )return null;
+            return modules[log.json.id];
+        }
+    },
+    unselectModule: function () {
+        this.process.unSelectedAll();
+    },
+    selectModule: function(type){
+        this.process.unSelectedAll();
+        this.process.showProperty();
+    },
+    deleteModuleList: function(){
+        for( var i=this.data.toList.length-1; i>-1; i-- ){
+            var to = this.data.toList[i];
+            this._deleteModule( to );
+        }
+    },
+    _deleteModule: function( log ){
+        var module = this.getModule( log );
+        if(module){
+            if(module.property)module.property.destroy();
+            module.destroy();
+        }
+    },
+    loadModuleList: function(){
+        for( var i=0; i<this.data.toList.length; i++ ) {
+            var to = this.data.toList[i];
+            this._loadModule( to );
+        }
+    },
+    _loadModule: function( log ){
+        var type = log.type || log.json.type;
+        if( type === "route" ){
+
+        }else{
+            this.process.createActivityByData(log.json, log.type);
+        }
     }
 });
 
-MWF.PDHistory.ModuleItem = new Class({
+MWF.PDHistory.ActivityItem = new Class({
     Extends: MWF.PDHistory.Item,
     _afterLoad: function () {
-        if( this.data.toList && this.data.toList.length > 1 ){
-            this.sortByPath(this.data.toList);
-        }
-        if( this.data.fromList && this.data.fromList.length > 1 ){
-            this.sortByPath(this.data.fromList);
-        }
+        // if( this.data.toList && this.data.toList.length > 1 ){
+        //     this.sortByPath(this.data.toList);
+        // }
+        // if( this.data.fromList && this.data.fromList.length > 1 ){
+        //     this.sortByPath(this.data.fromList);
+        // }
     },
     _getText: function () {
         if( this.data.title )return this.data.title;
         var lp = MWF.APPPD.LP.processAction;
-        var type = this.getType();
+        var type = this.getTypeText();
         type = type ?  (" <" + type + "> ") : " ";
-        return  ( lp[this.data.operation] || this.data.operation ) + type + this.data.moduleId;
+        return  ( lp[this.data.operation] || this.data.operation ) + type + (this.data.name || "");
     },
     _undo: function(){
         switch (this.data.operation) {
@@ -544,10 +436,7 @@ MWF.PDHistory.ModuleItem = new Class({
                 this.deleteModuleList();
                 break;
             case "move":
-                var to = this.data.toList[0];
-                var from = this.data.fromList[0];
-                var dom = this.getDomByPath( to.path );
-                this.injectToByPath( from.path, dom );
+                this.moveModuleList(this.data.toList, this.data.fromList);
                 break;
             case "delete":
                 this.loadModuleList();
@@ -570,10 +459,7 @@ MWF.PDHistory.ModuleItem = new Class({
                 this.loadModuleList();
                 break;
             case "move":
-                var to = this.data.toList[0];
-                var from = this.data.fromList[0];
-                var dom = this.getDomByPath( from.path );
-                this.injectToByPath( to.path, dom );
+                this.moveModuleList(this.data.fromList, this.data.toList);
                 break;
             case "delete":
                 this.deleteModuleList();
@@ -587,12 +473,31 @@ MWF.PDHistory.ModuleItem = new Class({
         }
         this.unselectModule();
     },
-    selectModule: function(type){
-        if( ["delete","cut"].contains(this.data.operation) || this.data.toList.length > 1){
-            this.process.selected();
+    selectModule: function(){
+        var module = this.getModule( this.data.toList[0] );
+        if( module ){
+            module.selected();
         }else{
-            this._selectModule(this.data.toList[0].path);
+            this.process.unSelectedAll();
+            this.process.showProperty();
         }
+    },
+    moveModuleList: function( starts, ends ){
+        this.process.selectedActivitys = starts.map(function (log) {
+            this.getModule(log);
+        }.bind(this));
+        for( var i=0; i<starts.length; i++ ){
+            var module = this.getModule(starts[i]);
+            if( module && ends[i] ){
+                var endPos = ends[i].json.position.split(",").map( function (j) { return j.toFloat(); });
+                var startPos = starts[i].json.position.split(",").map( function (j) { return j.toFloat(); });
+                // module.activityMove(dx, dy, tox, toy);
+                module.activityMoveStart();
+                module.activityMove(endPos[0]-startPos[0], endPos[1]-startPos[1], endPos[0], endPos[1]);
+                module.activityMoveEnd();
+            }
+        }
+        this.process.selectedActivitys = [];
     }
 });
 
