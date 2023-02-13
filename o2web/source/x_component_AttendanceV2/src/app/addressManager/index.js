@@ -1,5 +1,6 @@
 import { component as content } from "@o2oa/oovm";
-import { lp, o2 } from "@o2oa/component";
+import { lp } from "@o2oa/component";
+import { attendanceWorkPlaceV2Action } from '../../utils/actions';
 import style from "./style.scope.css";
 import template from "./temp.html";
 
@@ -17,18 +18,22 @@ export default content({
   afterRender() {
     this.loadWorkAddressData();
   },
-  clickAdd() {
-
+  async clickAdd() {
+     // 添加
+     const content = (await import(`./addAddress/index.js`)).default;
+     this.addAddressVm = await content.generate(".form", {}, this);
   },
   clickDeleteItem(id, name) {
 
   },
   async loadWorkAddressData() {
-    const json = await o2.Actions.load(
-      "x_attendance_assemble_control"
-    ).WorkPlaceV2Action.listAll();
-    if (json) {
-      this.bind.workAddressList = json.data || [];
+    const data = await attendanceWorkPlaceV2Action("listAll");
+    this.bind.workAddressList = data || [];
+  },
+  closeAddForm() {
+    if (this.addAddressVm) {
+      this.addAddressVm.destroy();
     }
+    this.loadWorkAddressData();
   },
 });

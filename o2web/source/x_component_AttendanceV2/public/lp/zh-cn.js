@@ -82,4 +82,14 @@ MWF.xApplication.AttendanceV2.LP = {
     "workAddressAdd": "新建工作场所",
     "workAddressName": "场所名称",
     "workAddressRange": "误差范围",
+    "workAddressForm": {
+        "title": "场所名称",
+        "titlePlaceholder": "请输入场所名称",
+        "titleNotEmpty": "场所名称不能为空！",
+        "range": "打卡范围",
+        "rangePlaceholder": "请输入打卡范围",
+        "rangeNotEmpty": "打卡范围不能为空！",
+        "rangeNeedNumber": "打卡范围必须是数字！",
+        "success": "保存成功！",
+    }
 };

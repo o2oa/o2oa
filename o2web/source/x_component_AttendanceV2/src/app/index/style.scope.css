@@ -170,3 +170,8 @@
   font-size: 12px;
   margin-right: 6px;
 }
+
+.form-alert {
+  color: #999999;
+  font-size: 16px;
+}
