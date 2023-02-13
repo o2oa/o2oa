@@ -310,6 +310,8 @@ public class DataItemConverter<T extends DataItem> {
 					return Objects.equals(t1.getBooleanValue(), t2.getBooleanValue());
 				}
 			}
+		} else if (Objects.equals(t1.getItemType(), ItemType.j)) {
+			return Objects.equals(t1.getStringValue(), t2.getStringValue());
 		}
 		return true;
 	}
@@ -400,6 +402,8 @@ public class DataItemConverter<T extends DataItem> {
 						return Objects.equals(this.item.getBooleanValue(), other.item.getBooleanValue());
 					}
 				}
+			} else if (Objects.equals(this.item.getItemType(), ItemType.j)) {
+				return Objects.equals(this.item.getStringValue(), other.item.getStringValue());
 			}
 			return true;
 		}
