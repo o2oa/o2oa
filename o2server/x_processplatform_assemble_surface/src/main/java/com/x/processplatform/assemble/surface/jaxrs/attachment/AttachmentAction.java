@@ -1611,4 +1611,24 @@ public class AttachmentAction extends StandardJaxrsAction {
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
+
+    @Operation(summary = "获取指定附件的在线编辑信息.", operationId = OPERATIONID_PREFIX + "getOnlineInfo", responses = {
+            @ApiResponse(content = { @Content(schema = @Schema(implementation = ActionOnlineInfo.Wo.class)) }) })
+    @JaxrsMethodDescribe(value = "获取指定附件的在线编辑信息.", action = ActionOnlineInfo.class)
+    @GET
+    @Path("{id}/online/info")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void getOnlineInfo(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                        @JaxrsParameterDescribe("附件标识") @PathParam("id") String id) {
+        ActionResult<ActionOnlineInfo.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionOnlineInfo().execute(effectivePerson, id);
+        } catch (Exception e) {
+            LOGGER.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
 }
