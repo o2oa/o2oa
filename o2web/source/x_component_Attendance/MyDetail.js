@@ -581,7 +581,7 @@ MWF.xApplication.Attendance.MyDetail.DetailStaticExplorer = new Class({
         this.cycleMonth = new MDomItem( td, {
             "name" : "cycleMonth",
             "type" : "select",
-            "selectValue" :["","01","02","03","04","05","06","07","08","09","10","11","12"],
+            "selectValue" :["01","02","03","04","05","06","07","08","09","10","11","12"],
             "defaultValue" : function(){
                 var month = (new Date().getMonth() + 1 ).toString();
                 return  month.length == 1 ? "0"+month : month;
