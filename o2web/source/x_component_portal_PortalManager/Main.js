@@ -32,6 +32,9 @@ MWF.xApplication.portal.PortalManager.Main = new Class({
             if (this.scriptConfigurator){
                 this.scriptConfigurator.keyCopy(e);
             }
+            if (this.dictionaryConfigurator){
+                this.dictionaryConfigurator.keyCopy(e);
+            }
             if (this.widgetConfigurator){
                 this.widgetConfigurator.keyCopy(e);
             }
@@ -44,6 +47,9 @@ MWF.xApplication.portal.PortalManager.Main = new Class({
             }
             if (this.scriptConfigurator){
                 this.scriptConfigurator.keyPaste(e);
+            }
+            if (this.dictionaryConfigurator){
+                this.dictionaryConfigurator.keyPaste(e);
             }
             if (this.widgetConfigurator){
                 this.widgetConfigurator.keyPaste(e);
@@ -98,6 +104,11 @@ MWF.xApplication.portal.PortalManager.Main = new Class({
             if (this.scriptConfigurator) delete this.scriptConfigurator;
             this.scriptConfiguratorContent.destroy();
             this.scriptConfiguratorContent = null;
+        }
+        if (this.dictionaryConfiguratorContent){
+            if (this.dictionaryConfigurator) delete this.dictionaryConfigurator;
+            this.dictionaryConfiguratorContent.destroy();
+            this.dictionaryConfiguratorContent = null;
         }
         if (this.fileConfiguratorContent){
             if (this.fileConfigurator) delete this.fileConfigurator;
@@ -177,6 +188,24 @@ MWF.xApplication.portal.PortalManager.Main = new Class({
                 this.scriptConfigurator = new MWF.xApplication.portal.PortalManager.ScriptExplorer(this.scriptConfiguratorContent, this.restActions);
                 this.scriptConfigurator.app = this;
                 this.scriptConfigurator.load();
+            //}.bind(this));
+        }.bind(this));
+    },
+    dictionaryConfig: function(){
+        this.clearContent();
+        this.dictionaryConfiguratorContent = new Element("div", {
+            "styles": this.css.rightContentNode
+        }).inject(this.node);
+        this.loadDictionaryConfig();
+    },
+    loadDictionaryConfig: function(){
+        MWF.xDesktop.requireApp("portal.PortalManager", "DictionaryExplorer", function(){
+            //MWF.xDesktop.requireApp("portal.PortalManager", "Actions.RestActions", function(){
+            //if (!this.restActions) this.restActions = new MWF.xApplication.portal.PortalManager.Actions.RestActions();
+            if (!this.restActions) this.restActions = MWF.Actions.get("x_portal_assemble_designer");
+            this.dictionaryConfigurator = new MWF.xApplication.portal.PortalManager.Dictionary(this.dictionaryConfiguratorContent, this.restActions);
+            this.dictionaryConfigurator.app = this;
+            this.dictionaryConfigurator.load();
             //}.bind(this));
         }.bind(this));
     },
