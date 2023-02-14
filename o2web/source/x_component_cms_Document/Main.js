@@ -767,7 +767,6 @@ MWF.xApplication.cms.Document.Main = new Class({
                 this.appForm.documentAction = this.action;
                 this.appForm.app = this;
                 this.appForm.load(function(){
-                    console.log("文档load完成");
                     if (window.o2android && window.o2android.postMessage) {
                         layout.appForm = this.appForm;
                     } else if (window.o2android && window.o2android.cmsFormLoaded){
