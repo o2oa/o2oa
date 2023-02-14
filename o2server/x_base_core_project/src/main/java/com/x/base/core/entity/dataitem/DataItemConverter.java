@@ -78,24 +78,24 @@ public class DataItemConverter<T extends DataItem> {
 		T t = clz.getDeclaredConstructor().newInstance();
 		t.path(paths);
 		list.add(t);
-		if (paths.size() < MAX_PATH_DEPTH) {
-			if (root.isJsonPrimitive()) {
-				t.setItemType(ItemType.p);
-				JsonPrimitive jsonPrimitive = root.getAsJsonPrimitive();
-				if (jsonPrimitive.isBoolean()) {
-					t.setItemPrimitiveType(ItemPrimitiveType.b);
-					t.setItemStringValueType(ItemStringValueType.u);
-					t.value(jsonPrimitive.getAsBoolean());
-				} else if (jsonPrimitive.isNumber()) {
-					t.setItemPrimitiveType(ItemPrimitiveType.n);
-					t.setItemStringValueType(ItemStringValueType.u);
-					t.value(jsonPrimitive.getAsDouble());
-				} else if (jsonPrimitive.isString()) {
-					t.setItemPrimitiveType(ItemPrimitiveType.s);
-					t.setItemStringValueType(ItemStringValueType.s);
-					t.value(jsonPrimitive.getAsString());
-				}
-			} else if (root.isJsonArray()) {
+		if (root.isJsonPrimitive()) {
+			t.setItemType(ItemType.p);
+			JsonPrimitive jsonPrimitive = root.getAsJsonPrimitive();
+			if (jsonPrimitive.isBoolean()) {
+				t.setItemPrimitiveType(ItemPrimitiveType.b);
+				t.setItemStringValueType(ItemStringValueType.u);
+				t.value(jsonPrimitive.getAsBoolean());
+			} else if (jsonPrimitive.isNumber()) {
+				t.setItemPrimitiveType(ItemPrimitiveType.n);
+				t.setItemStringValueType(ItemStringValueType.u);
+				t.value(jsonPrimitive.getAsDouble());
+			} else if (jsonPrimitive.isString()) {
+				t.setItemPrimitiveType(ItemPrimitiveType.s);
+				t.setItemStringValueType(ItemStringValueType.s);
+				t.value(jsonPrimitive.getAsString());
+			}
+		} else if (root.isJsonArray()) {
+			if (paths.size() < MAX_PATH_DEPTH) {
 				t.setItemType(ItemType.a);
 				t.setItemPrimitiveType(ItemPrimitiveType.u);
 				t.setItemStringValueType(ItemStringValueType.u);
@@ -105,11 +105,15 @@ public class DataItemConverter<T extends DataItem> {
 					ps.add(Integer.toString(i++));
 					this.disassemble(o, ps, list);
 				}
-			} else if (root.isJsonNull()) {
-				t.setItemType(ItemType.n);
-				t.setItemPrimitiveType(ItemPrimitiveType.u);
-				t.setItemStringValueType(ItemStringValueType.u);
-			} else if (root.isJsonObject()) {
+			} else {
+				disassembleMaxPathDepthToJsonElement(t, root);
+			}
+		} else if (root.isJsonNull()) {
+			t.setItemType(ItemType.n);
+			t.setItemPrimitiveType(ItemPrimitiveType.u);
+			t.setItemStringValueType(ItemStringValueType.u);
+		} else if (root.isJsonObject()) {
+			if (paths.size() < MAX_PATH_DEPTH) {
 				t.setItemType(ItemType.o);
 				t.setItemPrimitiveType(ItemPrimitiveType.u);
 				t.setItemStringValueType(ItemStringValueType.u);
@@ -118,14 +122,24 @@ public class DataItemConverter<T extends DataItem> {
 					ps.add(entry.getKey());
 					this.disassemble(entry.getValue(), ps, list);
 				}
+			} else {
+				disassembleMaxPathDepthToJsonElement(t, root);
 			}
-		} else {
-			t.setItemType(ItemType.j);
-			t.setItemPrimitiveType(ItemPrimitiveType.u);
-			t.setItemStringValueType(ItemStringValueType.u);
-			t.setStringValue(root.toString());
 		}
 		return list;
+	}
+
+	/**
+	 * 将8层以上的对象或者Array直接以jsonElement的toString进行保存,不再进行递归解析
+	 * 
+	 * @param t
+	 * @param root
+	 */
+	private void disassembleMaxPathDepthToJsonElement(T t, JsonElement root) {
+		t.setItemType(ItemType.j);
+		t.setItemPrimitiveType(ItemPrimitiveType.u);
+		t.setItemStringValueType(ItemStringValueType.u);
+		t.setStringValue(root.toString());
 	}
 
 	public JsonElement assemble(List<T> list) {
@@ -137,12 +151,12 @@ public class DataItemConverter<T extends DataItem> {
 		List<T> sorted = new ArrayList<>(list);
 		this.sort(sorted);
 		for (T t : sorted) {
-			root = this.assemble(sorted, t, retract, root);
+			root = this.assemble(t, retract, root);
 		}
 		return root;
 	}
 
-	private JsonElement assemble(List<T> list, T t, Integer retract, JsonElement root) {
+	private JsonElement assemble(T t, Integer retract, JsonElement root) {
 		JsonElement jsonElement = null;
 		if (t.getItemType().equals(ItemType.p)) {
 			if (t.getItemPrimitiveType().equals(ItemPrimitiveType.s)) {
@@ -409,7 +423,17 @@ public class DataItemConverter<T extends DataItem> {
 		}
 	}
 
+	/**
+	 * 提取DataItem纯文本辅助类
+	 * 
+	 * @author ray
+	 *
+	 */
 	public static class ItemText {
+
+		private ItemText() {
+			// nothing
+		}
 
 		private static final Predicate<DataItem> NUMBERPREDICATE = o -> Objects.equals(ItemType.p, o.getItemType())
 				&& Objects.equals(ItemPrimitiveType.n, o.getItemPrimitiveType());
@@ -447,6 +471,18 @@ public class DataItemConverter<T extends DataItem> {
 			return value;
 		};
 
+		/**
+		 * 提取DataItem中的文本,拼接成String
+		 * 
+		 * @param items
+		 * @param escapeNumber
+		 * @param escapeBoolean
+		 * @param escapeId
+		 * @param simplifyDistinguishedName
+		 * @param htmlToText
+		 * @param split
+		 * @return
+		 */
 		public static String text(List<? extends DataItem> items, boolean escapeNumber, boolean escapeBoolean,
 				boolean escapeId, boolean simplifyDistinguishedName, boolean htmlToText, String split) {
 
