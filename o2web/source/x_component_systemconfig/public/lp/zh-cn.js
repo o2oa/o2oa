@@ -1204,6 +1204,7 @@ o2.xApplication.systemconfig.LP = {
         "addStorageNode": "添加存储节点",
         "editStorageNode": "编辑存储节点",
         "inputStorageNodeKey": "请输入存储节点标识",
+        "inputStorageNodeName": "请输入存储节点名称",
 
         "external": {
             "protocol": "协议",
