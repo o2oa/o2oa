@@ -7,6 +7,7 @@ import com.x.base.core.entity.annotation.CheckPersist;
 import com.x.base.core.entity.annotation.ContainerEntity;
 import com.x.base.core.project.annotation.FieldDescribe;
 
+import com.x.base.core.project.tools.StringTools;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import org.apache.commons.lang3.StringUtils;
@@ -45,6 +46,9 @@ public class Document extends SliceJpaObject {
 	/* 以上为 JpaObject 默认字段 */
 	@Override
 	public void onPersist() throws Exception {
+		if (StringTools.utf8Length(this.getTitle()) > length_255B) {
+			this.title = StringTools.utf8SubString(this.getTitle(), length_255B - 3);
+		}
 	}
 
 	public Document() {

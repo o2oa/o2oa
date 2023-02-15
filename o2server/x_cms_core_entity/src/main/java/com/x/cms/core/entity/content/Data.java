@@ -19,7 +19,7 @@ import com.x.cms.core.entity.FileInfo;
 
 public class Data extends ListOrderedMap<String, Object> {
 
-	private static final String DOCUMENT_PROPERTY = "$document";
+	public static final String DOCUMENT_PROPERTY = "$document";
 
 	private static final String ATTACHMENTLIST_PROPERTY = "$attachmentList";
 

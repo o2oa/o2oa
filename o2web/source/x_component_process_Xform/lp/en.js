@@ -177,9 +177,9 @@ MWF.xApplication.process.Xform.LP = {
 
     "attachmentPermission": "Set attachment permission",
     "attachmentPermissionInfo": "You are setting permissions for the following attachments:",
-    "attachmentRead": "Who can view this attachment: (If blank, anyone can read this document)",
-    "attachmentEdit": "Who can edit this attachment: (If blank anyone can edit this document)",
-    "attachmentController": "Who can set permissions of this attachment: ",
+    "attachmentRead": "Who can view and download this attachment: (if it is not empty, you need to choose to edit and set permissions at the same time)",
+    "attachmentEdit": "Who can edit this attachment: (if it is not empty, you need to choose to set permissions at the same time)",
+    "attachmentController": "Who can set the permissions of this attachment",
 
     "attachmentOCRTitle": "Correct the text in the automatically recognized picture",
     "attachmentOCR_saved": "Image text recognition results have been saved",

@@ -644,7 +644,13 @@ o2.xDesktop.Default = new Class({
         var key = this.searchInputNode.get("value");
         if (key){
             if (this.apps["ftsearch"]){
-                this.apps["ftsearch"].doSearch( key );
+                var app = this.apps["ftsearch"];
+                if( app.window ){
+                    app.setCurrent();
+                    app.doSearch( key );
+                }else{
+                    app.close();
+                }
             }
             layout.openApplication(null,"ftsearch", {"query": key});
 

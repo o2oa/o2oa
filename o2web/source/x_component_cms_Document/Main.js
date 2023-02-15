@@ -732,6 +732,7 @@ MWF.xApplication.cms.Document.Main = new Class({
         form.create();
     },
     openDocument: function(){
+        debugger;
         if (this.form){
             // MWF.xDesktop.requireApp("cms.Xform", "Form", function(){
             MWF.xDesktop.requireApp("cms.Xform", "$all", function(){
@@ -765,7 +766,15 @@ MWF.xApplication.cms.Document.Main = new Class({
                 this.appForm.formDataText = this.formDataText;
                 this.appForm.documentAction = this.action;
                 this.appForm.app = this;
-                this.appForm.load();
+                this.appForm.load(function(){
+                    if (window.o2android && window.o2android.postMessage) {
+                        layout.appForm = this.appForm;
+                    } else if (window.o2android && window.o2android.cmsFormLoaded){
+                        layout.appForm = this.appForm;
+                    } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.cmsFormLoaded){
+                        layout.appForm = this.appForm;
+                    }
+                }.bind(this));
             }.bind(this));
         }
     },

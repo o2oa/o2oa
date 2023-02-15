@@ -101,6 +101,33 @@
         "background": "url(../x_component_cms_Column/$Main/default/icon/icon_quanbu_click.png) 0 center no-repeat"
     },
 
+    "columnTop_search":{
+        "float": "right",
+        "width": "130px",
+        "border": "1px solid #DDDDDD",
+        "border-radius": "20px",
+        "margin": "12px 10px 0 0px",
+        "padding": "0 0 0 8px",
+        "overflow": "hidden"
+    },
+    "columnTop_searchInput": {
+        "width": "calc( 100% - 26px )",
+        "height": "24px",
+        "line-height": "24px",
+        "font-size": "13px",
+        "color": "#666",
+        "border": "0",
+        "float": "left"
+    },
+    "columnTop_searchButton":{
+        "cursor": "pointer",
+        "line-height": "20px",
+        "font-size": "13px",
+        "color": "#ccc",
+        "float": "right",
+        "margin-top": "3px",
+        "margin-right": "8px"
+    },
 
     "columnTop_import": {
         "float": "right",

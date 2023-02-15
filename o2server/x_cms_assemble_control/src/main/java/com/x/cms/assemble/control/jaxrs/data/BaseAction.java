@@ -3,9 +3,11 @@ package com.x.cms.assemble.control.jaxrs.data;
 import java.util.List;
 import java.util.Objects;
 
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.cms.assemble.control.DocumentDataHelper;
 import com.x.cms.assemble.control.factory.ProjectionFactory;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Projection;
@@ -46,7 +48,7 @@ public class BaseAction extends StandardJaxrsAction {
 		return jsonElement;
 	}
 
-	/** 将data中的Title 和 serial 字段同步到document中 */
+	/** 将data中的Title字段同步到document中 */
 	void updateTitleSerial(Business business, Document document, JsonElement jsonElement) throws Exception {
 		String title = XGsonBuilder.extractString(jsonElement, title_path);
 		if (null == title) {
@@ -55,10 +57,18 @@ public class BaseAction extends StandardJaxrsAction {
 		if (null != title && !Objects.equals(title, document.getTitle())) {
 			business.entityManagerContainer().beginTransaction(Document.class);
 			business.entityManagerContainer().beginTransaction(Item.class);
-			if ((null != title) && (!Objects.equals(title, document.getTitle()))) {
-				document.setTitle(title);
-			}
+			document.setTitle(title);
 			business.entityManagerContainer().commit();
+
+			JsonObject jsonObject = jsonElement.getAsJsonObject();
+			if(!jsonObject.has(Data.DOCUMENT_PROPERTY)){
+				JsonObject docJson = new JsonObject();
+				docJson.addProperty(Document.title_FIELDNAME, title);
+				jsonObject.add(Data.DOCUMENT_PROPERTY, docJson);
+			}else{
+				jsonObject.getAsJsonObject(Data.DOCUMENT_PROPERTY).addProperty(Document.title_FIELDNAME, title);
+			}
+
 		}
 	}
 

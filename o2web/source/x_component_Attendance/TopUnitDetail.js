@@ -527,7 +527,7 @@ MWF.xApplication.Attendance.TopUnitDetail.DetailStaticExplorer = new Class({
                             var month = (new Date().getMonth() + 1 ).toString();
                             return  month.length == 1 ? "0"+month : month;
                         },
-                        "selectValue" :["","01","02","03","04","05","06","07","08","09","10","11","12"]
+                        "selectValue" :["01","02","03","04","05","06","07","08","09","10","11","12"]
                     },
                     action : { "value" : lp.query, type : "button", className : "filterButton",  clazz:"mainColor_bg", event : {
                         click : function(){

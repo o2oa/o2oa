@@ -40,6 +40,7 @@ MWF.xApplication.portal.PortalExplorer.Main = new Class({
     createApplicationItem: function(appData, where){
         var application = new MWF.xApplication.portal.PortalExplorer.Portal(this, appData, where);
         application.load();
+		this.applicationList.push(application);
     },
     okCreateApplication: function(e){
         var nameNode = this.applicationCreateFormNode.getElement(".o2_process_AppExp_createApplicationName");
