@@ -437,7 +437,7 @@ MWF.xApplication.process.Xform.Select = MWF.APPSelect =  new Class(
 			ops.each(function(op){
 				if (op.selected){
 					var v = op.get("value");
-					if (v) value.push(v);
+					value.push(v || "");
 				}
 			});
 			if (!value.length) return null;
