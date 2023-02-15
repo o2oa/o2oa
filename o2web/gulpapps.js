@@ -48,6 +48,7 @@ var apps = [
     { "folder": "x_component_Org", "tasks": ["move", "min"] },
     { "folder": "x_component_portal_PageDesigner", "tasks": ["move", "min"] },
     { "folder": "x_component_portal_Portal", "tasks": ["move", "min"] },
+    { "folder": "x_component_portal_DictionaryDesigner", "tasks": ["move", "min"] },
     { "folder": "x_component_portal_PortalExplorer", "tasks": ["move", "min"] },
     { "folder": "x_component_portal_PortalManager", "tasks": ["move", "min"] },
     { "folder": "x_component_portal_ScriptDesigner", "tasks": ["move", "min"] },
@@ -64,6 +65,7 @@ var apps = [
     { "folder": "x_component_process_ViewDesigner", "tasks": ["move", "min"] },
     { "folder": "x_component_process_WidgetDesigner", "tasks": ["move", "min"] },
     { "folder": "x_component_process_Work", "tasks": ["move", "min"] },
+    { "folder": "x_component_process_workcenter", "tasks": ["move", "min"] },
     { "folder": "x_component_process_Xform", "tasks": ["move", "min"] },
     { "folder": "x_component_Profile", "tasks": ["move", "min"] },
     { "folder": "x_component_query_ImporterDesigner", "tasks": ["move", "min"] },
@@ -87,7 +89,6 @@ var apps = [
     { "folder": "x_desktop", "tasks": ["move", "min"] },
     { "folder": "x_component_IMV2", "tasks": ["move", "min"] },
     { "folder": "x_component_ConfigDesigner", "tasks": ["move", "min"] },
-    { "folder": "x_component_process_workcenter", "tasks": ["move", "min"] },
     { "folder": "x_component_appstore", "tasks": [] },
     { "folder": "x_component_appstore_application", "tasks": [] },
     { "folder": "x_component_systemconfig", "tasks": [] }
