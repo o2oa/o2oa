@@ -61,6 +61,31 @@ MWF.xApplication.service.ServiceManager.LP = {
         "deletePageTemplate": "是否确定要删除当前接口模板吗？",
         "noPermission" : "您没有管理员权限，不能查看接口。"
     },
+    "dictionary": {
+	    "name": "数据配置",
+        "create": "新建数据字典",
+        "search": "搜索数据字典",
+        "searchText": "请输入关键字",
+
+        "noDictionaryNoticeText": "此应用现在还没有数据字典，您可以点击此处创建一个新数据字典",
+        "noDictionaryNoCreateNoticeText": "此应用现在没有数据字典",
+        "loaded": "数据字典加载完毕",
+        "deleteFormTitle": "删除数据字典确认",
+        "deleteForm": "是否确定要删除当前数据字典？",
+        "noPermission" : "您没有管理员权限，不能查看数据字典。"
+    },
+    "script": {
+        "name": "脚本配置",
+        "create": "新建脚本",
+        "search": "搜索脚本",
+        "searchText": "请输入关键字",
+
+        "noScriptNoticeText": "此应用现在还没有脚本，您可以点击此处创建一个新脚本",
+        "loaded": "脚本加载完毕",
+        "deleteFormTitle": "删除脚本确认",
+        "deleteForm": "是否确定要删除当前脚本？",
+        "noPermission" : "您没有管理员权限，不能查看脚本。"
+    },
 
     "application": {
         "inputApplicationName": "请输入数据应用名称",
@@ -81,5 +106,7 @@ MWF.xApplication.service.ServiceManager.LP = {
 
     "agentConfig" : "代理配置",
     "interfaceConfig" : "接口配置",
+    "scriptConfig": "脚本配置",
+    "dataConfig": "数据配置",
     "disable" : "禁用"
 };

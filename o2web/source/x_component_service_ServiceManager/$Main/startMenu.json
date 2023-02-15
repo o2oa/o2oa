@@ -31,5 +31,21 @@
     "icon": "agent_script.png",
     "expand": false,
     "sub": []
+  },
+  {
+    "title": MWF.xApplication.service.ServiceManager.LP.script.name,
+    "id": "1.3",
+    "action": "scriptConfig",
+    "icon": "agent_script.png",
+    "expand": false,
+    "sub": []
+  },
+  {
+    "title": MWF.xApplication.service.ServiceManager.LP.dictionary.name,
+    "id": "1.4",
+    "action": "dataConfig",
+    "icon": "agent_data.png",
+    "expand": false,
+    "sub": []
   }
 ]

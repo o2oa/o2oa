@@ -203,7 +203,7 @@ MWF.xApplication.portal.PortalManager.Main = new Class({
             //MWF.xDesktop.requireApp("portal.PortalManager", "Actions.RestActions", function(){
             //if (!this.restActions) this.restActions = new MWF.xApplication.portal.PortalManager.Actions.RestActions();
             if (!this.restActions) this.restActions = MWF.Actions.get("x_portal_assemble_designer");
-            this.dictionaryConfigurator = new MWF.xApplication.portal.PortalManager.Dictionary(this.dictionaryConfiguratorContent, this.restActions);
+            this.dictionaryConfigurator = new MWF.xApplication.portal.PortalManager.DictionaryExplorer(this.dictionaryConfiguratorContent, this.restActions);
             this.dictionaryConfigurator.app = this;
             this.dictionaryConfigurator.load();
             //}.bind(this));

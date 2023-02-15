@@ -122,6 +122,37 @@ MWF.xApplication.service.ServiceManager.Main = new Class({
             this.invokeConfigurator.load();
         }.bind(this));
     },
+
+    scriptConfig: function(){
+        this.clearContent();
+        this.scriptConfiguratorContent = new Element("div", {
+            "styles": this.css.rightContentNode
+        }).inject(this.node);
+        this.loadScriptConfig();
+    },
+    loadScriptConfig: function(){
+        MWF.xDesktop.requireApp("service.ServiceManager", "ScriptExplorer", function(){
+            this.scriptConfigurator = new MWF.xApplication.service.ServiceManager.ScriptExplorer(this.scriptConfiguratorContent, this.restActions);
+            this.scriptConfigurator.app = this;
+            this.scriptConfigurator.load();
+        }.bind(this));
+    },
+
+    dataConfig: function(){
+        this.clearContent();
+        this.dictionaryConfiguratorContent = new Element("div", {
+            "styles": this.css.rightContentNode
+        }).inject(this.node);
+        this.loadDataConfig();
+    },
+    loadDataConfig: function(){
+        MWF.xDesktop.requireApp("service.ServiceManager", "DictionaryExplorer", function(){
+            this.dictionaryConfigurator = new MWF.xApplication.service.ServiceManager.DictionaryExplorer(this.dictionaryConfiguratorContent, this.restActions);
+            this.dictionaryConfigurator.app = this;
+            this.dictionaryConfigurator.load();
+        }.bind(this));
+    },
+
     recordStatus: function(){
         var idx = null;
         if (this.menu.currentNavi){
@@ -147,6 +178,14 @@ MWF.xApplication.service.ServiceManager.Main = new Class({
                 this.invokeConfigurator.keyCopy(e);
                 if (e) e.preventDefault();
             }
+            if (this.scriptConfigurator){
+                this.scriptConfigurator.keyCopy(e);
+                if (e) e.preventDefault();
+            }
+            if (this.dictionaryConfigurator){
+                this.dictionaryConfigurator.keyCopy(e);
+                if (e) e.preventDefault();
+            }
         }
     },
     keyPasteItems: function(e){
@@ -156,6 +195,12 @@ MWF.xApplication.service.ServiceManager.Main = new Class({
             }
             if (this.invokeConfigurator){
                 this.invokeConfigurator.keyPaste(e);
+            }
+            if (this.scriptConfigurator){
+                this.scriptConfigurator.keyPaste(e);
+            }
+            if (this.dictionaryConfigurator){
+                this.dictionaryConfigurator.keyPaste(e);
             }
         }
         //if (e) e.preventDefault();

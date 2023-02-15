@@ -58,6 +58,34 @@ MWF.xApplication.service.ServiceManager.LP = {
         "noPermission" : "You are not an administrator and cannot view Service."
     },
 
+    "dictionary": {
+	    "name": "Dictionary",
+        "create": "Create Data Dictionary",
+        "search": "Search Data Dictionary",
+        "searchText": "Please enter a keyword",
+
+        "noDictionaryNoticeText": "This application does not have a data dictionary yet, you can click here to create a new data dictionary",
+        "noDictionaryNoCreateNoticeText": "This application does not have a data dictionary now",
+        "loaded": "Data dictionary loaded",
+        "deleteFormTitle": "Confirm Delete Data Dictionary",
+        "deleteForm": "Are you sure you want to delete the current data dictionary?",
+
+        "noPermission" : "You are not an administrator and cannot view dictionary."
+    },
+    "script": {
+        "name": "Script",
+        "create": "Create Script",
+        "search": "Search Script",
+        "searchText": "Please enter a keyword",
+
+        "noScriptNoticeText": "There is no script for this application, you can click here to create a new script",
+        "loaded": "Script loaded",
+        "deleteFormTitle": "Delete Script Confirmation",
+        "deleteForm": "Are you sure you want to delete the current script?",
+
+        "noPermission" : "You are not an administrator and cannot view script."
+    },
+
     // "application": {
     //     "inputApplicationName": "Enter the data application name",
     //     "property": "数据应用属性",
@@ -77,5 +105,7 @@ MWF.xApplication.service.ServiceManager.LP = {
 
     "agentConfig" : "Agent Config",
     "interfaceConfig" : "Service Config",
+    "scriptConfig": "Script Config",
+    "dataConfig": "Data Config",
     "disable" : "Disabled"
 };
