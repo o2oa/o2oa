@@ -826,10 +826,8 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
             count = 100;
         }else if( differ < 1000 ){
             count = 1000;
-        }else if( differ < 10000 ){
-            count = 10000;
         }else{
-            count = 100000;
+            count = 10000;
         }
         var page = Math.floor( start / count ) + 1;
         var startIndex = start % count;
