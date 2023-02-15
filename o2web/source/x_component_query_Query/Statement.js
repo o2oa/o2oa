@@ -820,12 +820,17 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
         start = start - 1;
         var differ = end - start;
         var count;
-        if( differ < 10 ){
-           count = 10;
-        }else if( differ < 100 ){
-            count = 100;
-        }else if( differ < 1000 ){
-            count = 1000;
+        // if( differ < 10 ){
+        //    count = 10;
+        // }else if( differ < 100 ){
+        //     count = 100;
+        // }else if( differ < 1000 ){
+        //     count = 1000;
+        // }else{
+        //     count = 10000; bai boi bai boy buy boy
+        // }
+        if( differ < 10000 ){
+            count = differ;
         }else{
             count = 10000;
         }
