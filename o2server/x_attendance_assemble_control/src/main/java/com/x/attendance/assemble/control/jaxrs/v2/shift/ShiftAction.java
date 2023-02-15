@@ -25,7 +25,7 @@ import java.util.List;
  * Copyright © 2023 O2. All rights reserved.
  */
 
-@Path("shift")
+@Path("v2/shift")
 @JaxrsDescribe("班次管理")
 public class ShiftAction extends StandardJaxrsAction {
 
@@ -90,7 +90,7 @@ public class ShiftAction extends StandardJaxrsAction {
     }
 
 
-    @JaxrsMethodDescribe(value = "删除班次新.", action = ActionDelete.class)
+    @JaxrsMethodDescribe(value = "删除班次.", action = ActionDelete.class)
     @DELETE
     @Path("delete/{id}")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)

@@ -1,6 +1,7 @@
 import { component as content } from "@o2oa/oovm";
 import { lp, o2 } from "@o2oa/component";
 import { lpFormat } from "../../utils/common";
+import { shiftActionListByPaging, attendanceShiftAction } from "../../utils/actions";
 import oPager from '../../components/o-pager';
 import style from "./style.scope.css";
 import template from "./template.html";
@@ -51,9 +52,7 @@ export default content({
     }
   },
   async loadShiftList() {
-    const json = await o2.Actions.load(
-      "x_attendance_assemble_control"
-    ).ShiftAction.listByPaging(this.bind.pagerData.page, this.bind.pagerData.size, {});
+    const json = await shiftActionListByPaging( this.bind.pagerData.page, this.bind.pagerData.size, {});
     if (json) {
       this.bind.shiftList = json.data || [];
       const count = json.count || 0;
@@ -91,7 +90,7 @@ export default content({
     var _self = this;
     const c = lpFormat(this.bind.lp, "shiftForm.confirmDelete", { name: name });
     o2.api.page.confirm(
-      "wran",
+      "warn",
       this.bind.lp.alert,
       c,
       300,
@@ -106,9 +105,8 @@ export default content({
     );
   },
   async deleteShift(id) {
-    const json = await o2.Actions.load(
-      "x_attendance_assemble_control"
-    ).ShiftAction.delete(id);
+    const json = await attendanceShiftAction("delete", id);
+    console.debug(json);
     this.loadShiftList();
   },
   closeShift() {

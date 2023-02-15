@@ -106,6 +106,16 @@ public class AttendanceV2Group extends SliceJpaObject {
 	@ElementIndex(name = TABLE + unParticipateList_FIELDNAME + ElementIndexNameSuffix)
 	private List<String> unParticipateList; // 无需考勤打卡的人员 只有人员
 
+	public static final String trueParticipantList_FIELDNAME = "trueParticipantList";
+	@FieldDescribe("真实的考勤打卡的人员列表，participateList和unParticipateList组合计算的结果.")
+	@PersistentCollection(fetch = FetchType.EAGER)
+	@OrderColumn(name = ORDERCOLUMNCOLUMN)
+	@ContainerTable(name = TABLE + ContainerTableNameMiddle
+			+ trueParticipantList_FIELDNAME, joinIndex = @org.apache.openjpa.persistence.jdbc.Index(name = TABLE + trueParticipantList_FIELDNAME + JoinIndexNameSuffix))
+	@ElementColumn(length = JpaObject.length_64B, name = ColumnNamePrefix + trueParticipantList_FIELDNAME)
+	@ElementIndex(name = TABLE + trueParticipantList_FIELDNAME + ElementIndexNameSuffix)
+	private List<String> trueParticipantList; // 无需考勤打卡的人员 只有人员
+
 	public static final String workDateList_FIELDNAME = "workDateList";
 	@FieldDescribe("考勤工作日设置.")
 	@Column(length = length_64B, name = ColumnNamePrefix + workDateList_FIELDNAME)
@@ -125,7 +135,7 @@ public class AttendanceV2Group extends SliceJpaObject {
 	private Boolean requiredFieldWorkRemarks;
 
 	public static final String workPlaceIdList_FIELDNAME = "workPlaceIdList";
-	@FieldDescribe("位置id列表.")
+	@FieldDescribe("工作场所列表.")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
@@ -243,5 +253,13 @@ public class AttendanceV2Group extends SliceJpaObject {
 
 	public void setNoNeedCheckInDateList(List<String> noNeedCheckInDateList) {
 		this.noNeedCheckInDateList = noNeedCheckInDateList;
+	}
+
+	public List<String> getTrueParticipantList() {
+		return trueParticipantList;
+	}
+
+	public void setTrueParticipantList(List<String> trueParticipantList) {
+		this.trueParticipantList = trueParticipantList;
 	}
 }

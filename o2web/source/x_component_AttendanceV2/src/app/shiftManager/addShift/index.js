@@ -1,6 +1,7 @@
 import {component as content} from '@o2oa/oovm';
 import {lp, o2} from '@o2oa/component';
-import { isPositiveInt } from '../../../utils/common';
+import { isPositiveInt, isEmpty } from '../../../utils/common';
+import { attendanceShiftAction } from "../../../utils/actions";
 import template from './template.html';
 import oInput from '../../../components/o-input';
 import oTimePicker from '../../../components/o-time-picker';
@@ -81,7 +82,7 @@ export default content({
     },
     async submitAdd() {
         debugger
-        if (!this.bind.form.shiftName || this.bind.form.shiftName === '') {
+        if (isEmpty(this.bind.form.shiftName)) {
             o2.api.page.notice(lp.shiftForm.shiftNameNotEmpty, 'error');
             return ;
         }
@@ -90,32 +91,32 @@ export default content({
             timeList: []
         };
         if (this.bind.timeType === 1) {
-            if (!this.bind.time1.onDutyTime || this.bind.time1.onDutyTime === '') {
+            if (isEmpty(this.bind.time1.onDutyTime)) {
                 o2.api.page.notice(lp.shiftForm.onDutyTimeNotEmpty, 'error');
                 return ;
             }
-            if (!this.bind.time1.offDutyTime || this.bind.time1.offDutyTime === '') {
+            if (isEmpty(this.bind.time1.offDutyTime)) {
                 o2.api.page.notice(lp.shiftForm.offDutyTimeNotEmpty, 'error');
                 return ;
             }
             myForm.properties.timeList.push(this.bind.time1);
         } else if (this.bind.timeType === 2) {
-            if (!this.bind.time1.onDutyTime || this.bind.time1.onDutyTime === '' || !this.bind.time2.onDutyTime || this.bind.time2.onDutyTime === '') {
+            if (isEmpty(this.bind.time1.onDutyTime) || isEmpty(this.bind.time2.onDutyTime)) {
                 o2.api.page.notice(lp.shiftForm.onDutyTimeNotEmpty, 'error');
                 return ;
             }
-            if (!this.bind.time1.offDutyTime || this.bind.time1.offDutyTime === '' || !this.bind.time2.offDutyTime || this.bind.time2.offDutyTime === '') {
+            if (isEmpty(this.bind.time1.offDutyTime) || isEmpty(this.bind.time2.offDutyTime)) {
                 o2.api.page.notice(lp.shiftForm.offDutyTimeNotEmpty, 'error');
                 return ;
             }
             myForm.properties.timeList.push(this.bind.time1);
             myForm.properties.timeList.push(this.bind.time2);
         } else if (this.bind.timeType === 3) {
-            if (!this.bind.time1.onDutyTime || this.bind.time1.onDutyTime === '' || !this.bind.time2.onDutyTime || this.bind.time2.onDutyTime === '' || !this.bind.time3.onDutyTime || this.bind.time3.onDutyTime === '') {
+            if (isEmpty(this.bind.time1.onDutyTime) || isEmpty(this.bind.time2.onDutyTime) || isEmpty(this.bind.time3.onDutyTime)) {
                 o2.api.page.notice(lp.shiftForm.onDutyTimeNotEmpty, 'error');
                 return ;
             }
-            if (!this.bind.time1.offDutyTime || this.bind.time1.offDutyTime === '' || !this.bind.time2.offDutyTime || this.bind.time2.offDutyTime === '' || !this.bind.time3.offDutyTime || this.bind.time3.offDutyTime === '') {
+            if (isEmpty(this.bind.time1.offDutyTime ) || isEmpty(this.bind.time2.offDutyTime) || isEmpty(this.bind.time3.offDutyTime)) {
                 o2.api.page.notice(lp.shiftForm.offDutyTimeNotEmpty, 'error');
                 return ;
             }
@@ -133,10 +134,10 @@ export default content({
             return ;
         }
         if (myForm.id && myForm.id !== '') {
-            const json = await o2.Actions.load('x_attendance_assemble_control').ShiftAction.shiftUpdate(myForm);
+            const json = await attendanceShiftAction("shiftUpdate", myForm);
             console.debug('更新成功', json);
         } else {
-            const json = await o2.Actions.load('x_attendance_assemble_control').ShiftAction.shiftCreate(myForm);
+            const json = await attendanceShiftAction("shiftCreate", myForm);
             console.debug('新增成功', json);
         }
         o2.api.page.notice(lp.shiftForm.success, 'success');

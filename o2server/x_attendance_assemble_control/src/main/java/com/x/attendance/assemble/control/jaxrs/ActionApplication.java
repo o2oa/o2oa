@@ -26,6 +26,7 @@ import com.x.attendance.assemble.control.jaxrs.qywxstatistic.QywxAttendanceStati
 import com.x.attendance.assemble.control.jaxrs.selfholiday.AttendanceSelfHolidayAction;
 import com.x.attendance.assemble.control.jaxrs.selfholiday.AttendanceSelfHolidaySimpleAction;
 import com.x.attendance.assemble.control.jaxrs.uuid.UUIDAction;
+import com.x.attendance.assemble.control.jaxrs.v2.group.GroupAction;
 import com.x.attendance.assemble.control.jaxrs.v2.shift.ShiftAction;
 import com.x.attendance.assemble.control.jaxrs.v2.workplace.WorkPlaceV2Action;
 import com.x.attendance.assemble.control.jaxrs.workplace.AttendanceWorkPlaceAction;
@@ -61,6 +62,7 @@ public class ActionApplication extends AbstractActionApplication {
 
 		// v2
 		this.classes.add(ShiftAction.class);
+		this.classes.add(GroupAction.class);
 		this.classes.add(WorkPlaceV2Action.class);
 		return this.classes;
 	}

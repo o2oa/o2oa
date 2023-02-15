@@ -27,7 +27,7 @@ import java.util.List;
  */
 
 
-@Path("workplacev2")
+@Path("v2/workplace")
 @JaxrsDescribe("工作地点信息管理服务")
 public class WorkPlaceV2Action extends StandardJaxrsAction {
 

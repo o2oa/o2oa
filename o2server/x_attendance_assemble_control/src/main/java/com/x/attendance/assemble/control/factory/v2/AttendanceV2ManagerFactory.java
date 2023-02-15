@@ -2,9 +2,7 @@ package com.x.attendance.assemble.control.factory.v2;
 
 import com.x.attendance.assemble.control.AbstractFactory;
 import com.x.attendance.assemble.control.Business;
-import com.x.attendance.entity.v2.AttendanceV2Shift;
-import com.x.attendance.entity.v2.AttendanceV2Shift_;
-import com.x.attendance.entity.v2.AttendanceV2WorkPlace;
+import com.x.attendance.entity.v2.*;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.EntityManager;
@@ -68,17 +66,22 @@ public class AttendanceV2ManagerFactory  extends AbstractFactory {
         return em.createQuery(cq.select(cb.count(root))).getSingleResult();
     }
 
-
     /**
-     * 全部的工作地点列表
+     * 根据班次id，查询使用到这个班次的所有考勤组
+     * @param shiftId
      * @return
      * @throws Exception
      */
-    public List<AttendanceV2WorkPlace> listWorkPlaceAll() throws Exception {
-        EntityManager em = this.entityManagerContainer().get(AttendanceV2WorkPlace.class);
+    public List<AttendanceV2Group> listGroupWithShiftId(String shiftId) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(AttendanceV2Group.class);
         CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<AttendanceV2WorkPlace> cq = cb.createQuery(AttendanceV2WorkPlace.class);
-        Root<AttendanceV2WorkPlace> root = cq.from(AttendanceV2WorkPlace.class);
-        return em.createQuery(cq.select(root)).getResultList();
+        CriteriaQuery<AttendanceV2Group> cq = cb.createQuery(AttendanceV2Group.class);
+        Root<AttendanceV2Group> root = cq.from(AttendanceV2Group.class);
+        Predicate p = cb.equal(root.get(AttendanceV2Group_.shiftId), shiftId);
+        return em.createQuery(cq.select(root).where(p)).getResultList();
     }
+
+
+
+
 }

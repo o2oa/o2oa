@@ -23,8 +23,7 @@ public class ActionListAll extends BaseAction {
 		ActionResult<List<Wo>> result = new ActionResult<>();
 		List<Wo> wos = new ArrayList<>();
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
-			List<AttendanceV2WorkPlace> list = business.getAttendanceV2ManagerFactory().listWorkPlaceAll();
+			List<AttendanceV2WorkPlace> list = emc.listAll(AttendanceV2WorkPlace.class);
 			if (list != null) {
 				wos = Wo.copier.copy(list);
 			}

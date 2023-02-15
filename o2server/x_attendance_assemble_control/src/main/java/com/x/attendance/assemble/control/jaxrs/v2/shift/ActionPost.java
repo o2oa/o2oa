@@ -3,7 +3,6 @@ package com.x.attendance.assemble.control.jaxrs.v2.shift;
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.entity.v2.AttendanceV2Shift;
-import com.x.attendance.entity.v2.AttendanceV2ShiftCheckTime;
 import com.x.attendance.entity.v2.AttendanceV2ShiftCheckTimeProperties;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -11,15 +10,12 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.exception.PromptException;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import org.apache.commons.lang3.StringUtils;
-
-import java.util.List;
 
 /**
  * Created by fancyLou on 2023/1/31.
