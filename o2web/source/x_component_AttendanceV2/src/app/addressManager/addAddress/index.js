@@ -1,17 +1,15 @@
 import {component as content} from '@o2oa/oovm';
 import {lp, o2} from '@o2oa/component';
-import { isPositiveInt } from '../../../utils/common';
+import { isPositiveInt, isEmpty } from '../../../utils/common';
 import { getPublicData, attendanceWorkPlaceV2Action } from '../../../utils/actions';
 import template from './temp.html';
 import oInput from '../../../components/o-input';
-import oTimePicker from '../../../components/o-time-picker';
-import oTimeMinutesSelector from '../../../components/o-time-minutes-selector';
-import { setJSONValue } from '../../../utils/common';
+import oTextarea from '../../../components/o-textarea';
 
 
 export default content({
     template,
-    components: {oInput, oTimePicker, oTimeMinutesSelector},
+    components: {oInput, oTextarea},
     autoUpdate: true,
     bind(){
         return {
@@ -133,11 +131,15 @@ export default content({
     },
     async submitAdd() {
         let myForm = this.bind.form;
-        if (!myForm.placeName || myForm.placeName === '' || myForm.placeName.replace(/(^s*)|(s*$)/g, "").length == 0 ) {
+        if (isEmpty(myForm.longitude) || isEmpty(myForm.latitude)) {
+            o2.api.page.notice(lp.workAddressForm.lnglatNotEmpty, 'error');
+            return ;
+        }
+        if (isEmpty(myForm.placeName)) {
             o2.api.page.notice(lp.workAddressForm.titleNotEmpty, 'error');
             return ;
         }
-        if (!myForm.errorRange || myForm.errorRange === '' || myForm.errorRange.replace(/(^s*)|(s*$)/g, "").length == 0 ) {
+        if (isEmpty(myForm.errorRange)) {
             o2.api.page.notice(lp.workAddressForm.rangeNotEmpty, 'error');
             return ;
         }

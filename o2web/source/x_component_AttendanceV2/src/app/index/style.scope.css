@@ -1,3 +1,15 @@
+ /* common */
+ .margin-top {
+  margin-top: 10px;
+ }
+ .margin-left {
+  margin-left: 10px;
+ }
+ .light-border-button {
+    border: 1px solid !important;
+    background-color: #FFFFFF !important;
+    border-color: #F23030 !important;
+ }
  .att {
   background-color: white;
   height: 100%;
@@ -52,6 +64,7 @@
   cursor: pointer;
   margin-left: 10px;
  }
+ /* index */
  .index_page_header_container {
   display: flex;
   height: 48px;

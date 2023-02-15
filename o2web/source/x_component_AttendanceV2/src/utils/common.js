@@ -1,5 +1,26 @@
 import { exec } from "@o2oa/util";
 
+
+/**
+ * 是否为空
+ * 数字0也是不为空
+ * @param {*} data 
+ * @returns 
+ */
+function isEmpty(data) {
+  if (data === 0) {
+    return false;
+  }
+  if (!data) {
+    return true;
+  }
+  if (typeof(data) == 'string') {
+    return (data === '' || data.replace(/(^s*)|(s*$)/g, "").length == 0);
+  } else {
+    return false;
+  }
+}
+
 /**
  * 是否整数 包含正负
  * @param {*} inputData 
@@ -98,4 +119,4 @@ function setJSONValue(key, v, data) {
   }
 }
 
-export { setJSONValue, lpFormat, isInt, isNegtiveInt, isPositiveInt };
+export { setJSONValue, lpFormat, isInt, isNegtiveInt, isPositiveInt, isEmpty };

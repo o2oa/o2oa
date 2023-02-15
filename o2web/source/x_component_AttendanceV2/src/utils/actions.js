@@ -11,6 +11,17 @@ function getPublicData(name){
       o2.UD.getPublicData(name, dData=>resolve(dData));
   });
 }
+/**
+ * 设置公共配置
+ * @param {*} name 
+ * @param {*} value 
+ * @returns 
+ */
+function putPublicData(name, value){
+  return new Promise((resolve)=>{
+      o2.UD.putPublicData(name, value, dData=>resolve(dData));
+  });
+}
 
 /**
  * 调用后端api
@@ -46,4 +57,4 @@ function attendanceWorkPlaceV2Action(method, ...args) {
   return doAction('x_attendance_assemble_control', 'WorkPlaceV2Action', method, args);
 }
 
-export { getPublicData, attendanceShiftAction, attendanceWorkPlaceV2Action }
+export { getPublicData, putPublicData, attendanceShiftAction, attendanceWorkPlaceV2Action }
