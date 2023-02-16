@@ -7,7 +7,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.script.ScriptContext;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.JsonElement;

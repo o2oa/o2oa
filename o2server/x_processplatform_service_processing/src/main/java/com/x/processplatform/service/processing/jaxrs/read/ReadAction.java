@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -31,7 +32,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 @JaxrsDescribe("待阅操作")
 public class ReadAction extends StandardJaxrsAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ReadAction.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ReadAction.class);
 
 	@JaxrsMethodDescribe(value = "对工作添加待阅,选择是否重发通知", action = ActionCreateWithWork.class)
 	@POST
@@ -45,7 +46,7 @@ public class ReadAction extends StandardJaxrsAction {
 		try {
 			result = new ActionCreateWithWork().execute(effectivePerson, workId, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+		    LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -65,7 +66,7 @@ public class ReadAction extends StandardJaxrsAction {
 		try {
 			result = new ActionCreateWithWorkCompleted().execute(effectivePerson, workCompletedId, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+		    LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -83,7 +84,7 @@ public class ReadAction extends StandardJaxrsAction {
 		try {
 			result = new ActionProcessing().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+		    LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -101,7 +102,7 @@ public class ReadAction extends StandardJaxrsAction {
 		try {
 			result = new ActionDelete().execute(effectivePerson, id);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, null);
+		    LOGGER.error(e, effectivePerson, request, null);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -119,9 +120,28 @@ public class ReadAction extends StandardJaxrsAction {
 		try {
 			result = new ActionReset().execute(effectivePerson, id, jsonElement);
 		} catch (Exception e) {
-			logger.error(e, effectivePerson, request, jsonElement);
+		    LOGGER.error(e, effectivePerson, request, jsonElement);
 			result.error(e);
 		}
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
+	
+	   @JaxrsMethodDescribe(value = "记录待办访问时间.", action = V2View.class)
+	    @GET
+	    @Path("v2/work/{workId}/person/{person}/view")
+	    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	    @Consumes(MediaType.APPLICATION_JSON)
+	    public void v2View(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+	            @JaxrsParameterDescribe("工作标识") @PathParam("workId") String workId,
+	            @JaxrsParameterDescribe("人员") @PathParam("person") String person) {
+	        ActionResult<V2View.Wo> result = new ActionResult<>();
+	        EffectivePerson effectivePerson = this.effectivePerson(request);
+	        try {
+	            result = new V2View().execute(effectivePerson, workId, person);
+	        } catch (Exception e) {
+	            LOGGER.error(e, effectivePerson, request, null);
+	            result.error(e);
+	        }
+	        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	    }
 }
