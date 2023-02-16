@@ -1,27 +1,27 @@
- /* common */
- .margin-top {
+/* common */
+.margin-top {
   margin-top: 10px;
- }
- .margin-left {
+}
+.margin-left {
   margin-left: 10px;
- }
- .light-border-button {
-    border: 1px solid !important;
-    background-color: #FFFFFF !important;
-    border-color: #F23030 !important;
- }
- .att {
+}
+.light-border-button {
+  border: 1px solid !important;
+  background-color: #ffffff !important;
+  border-color: #f23030 !important;
+}
+.att {
   background-color: white;
   height: 100%;
- }
- .att button {
+}
+.att button {
   border-radius: 100px;
   border: 0;
   padding: 6px 20px;
   cursor: pointer;
   margin-left: 10px;
- }
- .att thead {
+}
+.att thead {
   width: 100%;
   height: 40px;
   background-color: rgb(247, 247, 247);
@@ -29,8 +29,8 @@
   font-weight: normal;
   line-height: 40px;
   font-size: 15px;
- }
- .att th {
+}
+.att th {
   background-color: rgb(247, 247, 247);
   text-align: center;
   line-height: 24px;
@@ -38,34 +38,40 @@
   font-weight: normal;
   border-top: 1px solid rgb(255, 255, 255);
   border-bottom: 1px solid rgb(230, 230, 230);
- }
- .att tr {
+}
+.att tr {
   overflow: hidden;
   background-color: rgb(255, 255, 255);
   min-height: 29px;
   color: rgb(102, 102, 102);
   font-family: "Microsoft YaHei";
   font-size: 14px;
- }
+}
+.att .selector tr {
+  cursor: pointer;
+}
 .att td {
   height: 39px;
-    text-align: center;
-    overflow: hidden;
-    border-bottom: 1px solid rgb(230, 230, 230);
+  text-align: center;
+  overflow: hidden;
+  border-bottom: 1px solid rgb(230, 230, 230);
 }
- .att .operator_link {
+.att .primary_color {
+  color: var(--el-color-primary);
+}
+.att .operator_link {
   color: var(--el-color-primary);
   margin-left: 10px;
   cursor: pointer;
- }
- .att .link_btn {
+}
+.att .link_btn {
   line-height: 32px;
   font-size: 18px;
   cursor: pointer;
   margin-left: 10px;
- }
- /* index */
- .index_page_header_container {
+}
+/* index */
+.index_page_header_container {
   display: flex;
   height: 48px;
   padding: 0 18px;
@@ -120,7 +126,9 @@
     0px 8px 20px rgba(0, 0, 0, 0.08);
   box-sizing: border-box;
   height: 100%;
-  margin: 0 0 0 50%;
+  min-width: 350px;
+  max-width: 600px;
+  margin-left: auto;
   display: flex;
   flex-direction: column;
 }
@@ -158,6 +166,56 @@
   color: #999999;
 }
 .s-dialog-content {
+  padding: 20px;
+  overflow: auto;
+  flex: 1;
+}
+
+.sl-dialog {
+  background-color: rgb(255, 255, 255);
+  overflow: hidden;
+  border: 1px solid rgb(102, 102, 102);
+  border-radius: 10px;
+  position: absolute;
+  box-shadow: 0px 12px 32px 4px rgba(0, 0, 0, 0.04),
+    0px 8px 20px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+}
+.sl-dialog-header {
+  padding: 20px;
+  padding-bottom: 10px;
+  padding-right: 16px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+.sl-dialog-header .title {
+  line-height: 24px;
+  font-size: 18px;
+  color: #333333;
+}
+.sl-dialog-header .close {
+  position: absolute;
+  top: 6px;
+  right: 0;
+  padding: 0;
+  width: 54px;
+  height: 54px;
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #999999;
+}
+.sl-dialog-footer {
+  padding: 20px;
+  padding-top: 10px;
+  padding-right: 16px;
+  text-align: right;
+  border-top: 1px solid #eee;
+}
+.sl-dialog-content {
   padding: 20px;
   overflow: auto;
   flex: 1;

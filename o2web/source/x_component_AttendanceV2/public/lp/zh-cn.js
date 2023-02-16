@@ -28,6 +28,7 @@ MWF.xApplication.AttendanceV2.LP = {
 
     "alert": "提示",
     "operate": "操作",
+    "choose": "选择",
     "save": "保存",
     "positive": "确定",
     "cancel": "取消",
@@ -48,6 +49,7 @@ MWF.xApplication.AttendanceV2.LP = {
     "editShift": "修改班次",
     "shiftName": "班次名称",
     "checkInTime": "考勤时间",
+    "shiftSelector": "选择班次",
     "shiftForm" : {
         "shiftNameLabel": "班次名称",
         "shiftNameLabelPlaceholder": "请输入班次名称",
@@ -77,10 +79,12 @@ MWF.xApplication.AttendanceV2.LP = {
         "offDutyTimeNotEmpty": "下班时间不能为空！",
         "success": "保存成功！",
         "confirmDelete": "确认要删除这条【{name}】信息？",
+        "selectShiftEmpty": "请选择一个班次",
     },
     
     // 工作场所
     "workAddressManagerTitle": "工作场所管理",
+    "workAddressSelector": "选择工作场所",
     "workAddressAdd": "新建工作场所",
     "workAddressName": "场所名称",
     "workAddressRange": "误差范围",
@@ -97,14 +101,15 @@ MWF.xApplication.AttendanceV2.LP = {
         "title": "场所名称",
         "titlePlaceholder": "请输入场所名称",
         "titleNotEmpty": "场所名称不能为空！",
-        "range": "打卡范围",
-        "rangePlaceholder": "请输入打卡范围",
-        "rangeNotEmpty": "打卡范围不能为空！",
+        "range": "打卡范围(米)",
+        "rangePlaceholder": "请输入打卡范围(米)",
+        "rangeNotEmpty": "打卡范围(米)不能为空！",
         "desc": "备注",
         "descPlaceholder": "请输入备注信息",
-        "rangeNeedNumber": "打卡范围必须是数字！",
+        "rangeNeedNumber": "打卡范围(米)必须是数字！",
         "success": "保存成功！",
         "confirmDelete": "确认要删除这个【{name}】工作场所？",
+        "selectWorkAddressEmpty": "请选择至少选择一个工作场所",
     },
     // 考勤组
     "groupManagerTitle": "考勤组管理",
@@ -119,5 +124,9 @@ MWF.xApplication.AttendanceV2.LP = {
         "participatesPlaceholder": "请点击选择参与考勤人员、组织",
         "unParticipates": "无需参与考勤人员",
         "unParticipatesPlaceholder": "请点击选择无需参与考勤人员",
+        "shift": "班次",
+        "shiftPlaceholder": "请点击选择班次",
+        "workPlace": "工作场所",
+        "workPlacePlaceholder": "请选择工作场所",
     },
 };

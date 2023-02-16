@@ -14,6 +14,45 @@
             <o-org-person-selector
                 oo-prop="{'selectorTitle': $.lp.groupForm.unParticipates, 'label':$.lp.groupForm.unParticipates, 'placeholder': $.lp.groupForm.unParticipatesPlaceholder, 'value': $.form.unParticipateList}"
                 oo-model="form.unParticipateList"></o-org-person-selector>
+            <div class="o-input-item margin-top">
+                <div class="o-input-item-label" >
+                    <span class="required">*</span>
+                    {{$.lp.groupForm.shift}}
+                    <!-- <span class="operator_link margin-left" @click="openShiftSelect">添加</span> -->
+                </div>
+                <div class="o-input-item-input">
+                    <span class="{{$.form.shiftId ? 'input' : 'input placeholder'}}" @click="openShiftSelect">{{$.form.shiftId ? $.form.shift.shiftName : $.lp.groupForm.shiftPlaceholder}}</span>
+                </div>
+            </div>
+            <!-- 考勤时间 -->
+            <div class="margin-top">
+                <div class="o-input-item-label" >
+                    <span class="required">*</span>
+                    {{$.lp.groupForm.time}}
+                </div>
+                <div style="display: flex; flex-wrap: wrap;">
+                    <div class="margin-left" style="display: flex;align-items: center;" oo-each="$.days" oo-item="day" @click="this.selectDay(day.value)">
+                        <div class="icon" id="{{'day_' + day.value.value}}"><i class="{{ ($.workDateList.indexOf(day.value.value) > -1) ? 'o2icon-checkbox-checked primary_color' : 'o2icon-checkbox-unchecked'}}"></i></div>
+                        <label style="margin: 5px;" for="{{'day_' + day.value.value}}">{{day.value.name}}</label>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="o-input-item margin-top">
+                <div class="o-input-item-label" >
+                    <span class="required">*</span>
+                    {{$.lp.groupForm.workPlace}}
+                    <span class="operator_link margin-left" @click="openWorkPlaceSelector">添加</span>
+                </div>
+                <div class="o-input-item-input">
+                    <span class=" input placeholder" oo-if=" $.form.workPlaceList.length == 0 ">{{  $.lp.groupForm.workPlacePlaceholder }}</span>
+                    <div style="display: flex; flex-wrap: wrap;"  oo-if=" $.form.workPlaceList.length > 0 ">
+                        <div class="margin-left" style="display: flex; align-items: center;" oo-each="$.form.workPlaceList" oo-item="workPlace" @click="this.deleteWorkPlace(workPlace.value)">
+                            {{workPlace.value.placeName}}
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="s-dialog-footer">
             <span>

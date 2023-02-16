@@ -51,3 +51,17 @@
 .o2icon-icon_bumen3:before {
   content: "\e91e";
 }
+.o2icon-checkbox-checked:before {
+  content: "\ea52";
+}
+.o2icon-checkbox-unchecked:before {
+  content: "\ea53";
+}
+.o2icon-radio-checked:before {
+  content: "\ea54";
+}
+.o2icon-radio-unchecked:before {
+  content: "\ea56";
+}
+
+
