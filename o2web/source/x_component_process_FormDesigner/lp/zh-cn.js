@@ -569,6 +569,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "specifyGroup": "指定群组",
         "exclude": "排除",
         "excludeInfo": "通过编写脚本排除组织、身份、个人和群组的选择范围",
+        "firstLevelSelectable": "允许选择第一层",
 
         "dateTime": "日期时间",
         "dateTime2": "日期时间",

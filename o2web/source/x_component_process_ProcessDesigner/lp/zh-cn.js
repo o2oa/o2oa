@@ -508,6 +508,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"unitType": "组织类型",
 		"exclude": "排除",
 		"excludeInfo": "通过编写脚本排除组织、身份、个人和群组的选择范围",
+		"firstLevelSelectable": "允许选择第一层",
 		"dataStructure": "数据保存",
 		"complete": "完整",
 		"simple": "精简",
