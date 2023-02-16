@@ -325,6 +325,7 @@ o2.LP.widget = {
     "uploadInfor": "请选择要上传的文件",
     "delete": "删除",
     "previewAtt" : "预览",
+    "editAtt" : "编辑",
     "replace": "替换",
     "select": "选择",
 

@@ -1482,6 +1482,9 @@ MWF.xApplication.process.FormDesigner.LP = {
     "wpsoffice":{
         "nosetup":"请先安装WpsOffice应用",
     },
+    "officeonline":{
+        "nosetup":"请先安装OfficeOnline应用",
+    },
     "actionBar": {
         "close":"关闭",
         "closeTitle": "关闭文档",

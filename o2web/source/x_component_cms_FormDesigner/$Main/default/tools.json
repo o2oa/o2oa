@@ -221,6 +221,11 @@
     "text": "onlyOffice",
     "className": "OnlyOffice"
   },
+  "OfficeOnline": {
+    "icon": "officeOnline.png",
+    "text": "officeOnline",
+    "className": "OfficeOnline"
+  },
   "wpsOffice": {
     "icon": "wpsOffice.png",
     "text": "wpsOffice",

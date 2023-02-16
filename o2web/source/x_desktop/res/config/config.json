@@ -1,12 +1,8 @@
 {
   "center": [
     {
-      "port": "20030",
+      "port": "80",
       "host": ""
-    },
-    {
-      "port": "20030",
-      "host": "127.0.0.1"
     }
   ],
   "initManagerChanged": true,

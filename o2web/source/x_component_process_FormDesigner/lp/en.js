@@ -1472,6 +1472,9 @@ MWF.xApplication.process.FormDesigner.LP = {
     "onlyoffice":{
         "nosetup":"please install onlyOffice APP first",
     },
+    "officeonline":{
+        "nosetup":"please install OfficeOnline APP first",
+    },
     "wpsoffice":{
         "nosetup":"please install wpsOffice APP first",
     },

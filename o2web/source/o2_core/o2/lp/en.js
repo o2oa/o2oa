@@ -340,7 +340,7 @@ o2.LP.widget = {
 	"sequence": "Sequence",
 	"icon": "Icon",
 	"preview": "Preview",
-
+	"editAtt" : "Edit",
 
 	"min": "Simple Mode",
 	"max": "Full Mode",

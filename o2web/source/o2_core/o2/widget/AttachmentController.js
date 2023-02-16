@@ -1181,6 +1181,11 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
             if (this.module) this.module.previewAttachment(this.selectedAttachments);
         }
     },
+    editAttachment: function(e, node){
+        if (this.selectedAttachments.length){
+            if (this.module) this.module.editAttachment(this.selectedAttachments);
+        }
+    },
     downloadAttachment: function(e, node){
         if (this.selectedAttachments.length){
             if (this.module) this.module.downloadAttachment(e, node, this.selectedAttachments);

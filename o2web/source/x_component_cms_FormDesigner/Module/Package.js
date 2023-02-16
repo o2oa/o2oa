@@ -47,6 +47,7 @@ MWF.xDesktop.requireApp("cms.FormDesigner", "Module.YozoOffice", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.WpsOffice", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.WpsOffice2", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.OnlyOffice", null, false);
+MWF.xDesktop.requireApp("cms.FormDesigner", "Module.OfficeOnline", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Attachment", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Log", null, false);
 MWF.xDesktop.requireApp("cms.FormDesigner", "Module.Comment", null, false);
