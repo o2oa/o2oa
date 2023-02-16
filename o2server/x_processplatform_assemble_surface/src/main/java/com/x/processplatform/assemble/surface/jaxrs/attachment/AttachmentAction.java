@@ -1519,8 +1519,8 @@ public class AttachmentAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
-    @Operation(summary = "管理员批量删除附件.", operationId = OPERATIONID_PREFIX + "manageBatchDelete", responses = {
-            @ApiResponse(content = { @Content(schema = @Schema(implementation = ActionManageBatchDelete.Wo.class)) }) })
+    @Operation(summary = "上传附件.", operationId = OPERATIONID_PREFIX + "ActionUploadWithUrl", responses = {
+            @ApiResponse(content = { @Content(schema = @Schema(implementation = ActionUploadWithUrl.Wo.class)) }) })
     @JaxrsMethodDescribe(value = "上传附件", action = ActionUploadWithUrl.class)
     @POST
     @Path("upload/with/url")

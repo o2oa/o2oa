@@ -79,6 +79,8 @@ class ActionOnlineInfo extends BaseAction {
 		private String userName;
 		@FieldDescribe("创建时间.")
 		private Date createTime;
+		@FieldDescribe("最后更新时间.")
+		private Date lastUpdateTime;
 		@FieldDescribe("当前用户是否可编辑.")
 		private Boolean canEdit;
 		@FieldDescribe("当前用户是否可阅读.")
@@ -170,6 +172,14 @@ class ActionOnlineInfo extends BaseAction {
 
 		public void setCanRead(Boolean canRead) {
 			this.canRead = canRead;
+		}
+
+		public Date getLastUpdateTime() {
+			return lastUpdateTime;
+		}
+
+		public void setLastUpdateTime(Date lastUpdateTime) {
+			this.lastUpdateTime = lastUpdateTime;
 		}
 	}
 
