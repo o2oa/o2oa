@@ -37,7 +37,6 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
             this.createUpload();
         }
 
-
         this.action = o2.Actions.load("x_onlyofficefile_assemble_control");
         if (!this.json.isNotLoadNow){
             this.data = this.getData();
@@ -60,11 +59,13 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
         var data = {
             "fileName" : MWF.xApplication.process.Xform.LP.onlyoffice.filetext + "." + this.json.officeType,
             "fileType" : this.json.officeType,
-            "relevanceId" : this.form.businessData.work.job
-        }
-        this.action.OnlyofficeAction.create(data,
+            "appToken" : "x_processplatform_assemble_surface",
+            "workId" : this.form.businessData.work.id,
+            "site" : "filetext"
+        };
+        this.action.OnlyofficeAction.createForO2(data,
             function( json ){
-                this.documentId = json.data.id;
+                this.documentId = json.data.fileId;
                 this.setData();
                 if (callback) callback();
             }.bind(this),null, false
@@ -76,13 +77,15 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
             var data = {
                 "fileName": MWF.xApplication.process.Xform.LP.onlyoffice.filetext + "." + json.data.fileModel.document.fileType,
                 "fileType": json.data.fileModel.document.fileType,
-                "relevanceId": this.form.businessData.work.job,
-                "sampleName": this.json.template
-            }
+                "appToken" : "x_processplatform_assemble_surface",
+                "workId" : this.form.businessData.work.id,
+                "site" : "filetext",
+                "tempId": this.json.template
+            };
 
-            this.action.OnlyofficeAction.create(data,
+            this.action.OnlyofficeAction.createForO2(data,
                 function( json ){
-                    this.documentId = json.data.id;
+                    this.documentId = json.data.fileId;
                     this.setData();
                     if (callback) callback();
                 }.bind(this),null, false
@@ -92,27 +95,19 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
     },
     createUpload : function (){
 
-
         this.uploadNode = new Element("div",{"style":"margin:10px;"}).inject(this.node);
-
         var uploadBtn = new Element("button",{"text":MWF.xApplication.process.Xform.LP.ofdview.upload,"style":"margin-left: 15px; color: rgb(255, 255, 255); cursor: pointer; height: 26px; line-height: 26px; padding: 0px 10px; min-width: 40px; background-color: rgb(74, 144, 226); border: 1px solid rgb(82, 139, 204); border-radius: 15px;"}).inject(this.uploadNode);
         uploadBtn.addEvent("click",function (){
-
-            o2.Actions.get("x_onlyofficefile_assemble_control").action.actions = {};
-            o2.Actions.get("x_onlyofficefile_assemble_control").action.actions.upload = {
-                "enctype": "formData",
-                "method": "POST",
-                "uri": "/jaxrs/onlyoffice/upload"
-            };
             o2.require("o2.widget.Upload", null, false);
             var upload = new o2.widget.Upload(this.content, {
-                "action": o2.Actions.get("x_onlyofficefile_assemble_control").action,
-                "method": "upload",
+                "action": o2.Actions.get("x_processplatform_assemble_surface").action,
+                "method": "replaceAttachment",
                 "accept" : ".docx,.xlsx,.pptx",
                 "parameter": {
+                    "id" : this.documentId,
+                    "workid" : this.form.businessData.work.id,
                 },
                 "data":{
-                    "relevanceId" : this.form.businessData.work.job
                 },
                 "onCompleted": function(data){
 
@@ -146,11 +141,27 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
         }.bind(this),null, false);
     },
     getEditor: function (callback) {
-        this.action.OnlyofficeAction.get(this.documentId, function( json ){
-            this.document = json.data;
-            this.document.editor = this.document.fileModel;
-            if (callback) callback();
-        }.bind(this),null,false);
+
+        if(this.data.appToken){
+
+            this.action.OnlyofficeAction[this.mode === "edit"?"appFileEdit":"preview"]({
+                "appToken" : this.data.appToken,
+                "fileId" : this.documentId
+            }, function( json ){
+                this.document = json.data;
+                this.document.editor = this.document.fileModel;
+                if (callback) callback();
+            }.bind(this),null,false);
+
+
+        }else{
+            this.action.OnlyofficeAction.get(this.documentId, function( json ){
+                this.document = json.data;
+                this.document.editor = this.document.fileModel;
+                if (callback) callback();
+            }.bind(this),null,false);
+        }
+
     },
     loadEditor: function () {
 
@@ -313,6 +324,7 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
         }
         docEditor = new DocsAPI.DocEditor("_" + this.documentId, this.document.editor);
         this.onlyOffice = docEditor;
+
     },
     hide: function(){
         this.node.hide();
@@ -331,16 +343,46 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
     getData: function(){
         var data = {
             "documentId" : ""
-        }
+        };
         if(this.form.businessData.data[this.json.id]){
-            data.documentId = this.form.businessData.data[this.json.id].documentId;
+            data = this.form.businessData.data[this.json.id]
         }
         return data;
     },
-    setData: function(){
+    setData: function() {
         var data = {
-            "documentId" : this.documentId
-        }
+            "documentId": this.documentId,
+            "appToken": "x_processplatform_assemble_surface"
+        };
+        this.data = data;
         this._setBusinessData(data);
+
+        var jsonData = {}
+        jsonData[this.json.id] = data;
+
+        o2.Actions.load("x_processplatform_assemble_surface").DataAction.updateWithJob(this.form.businessData.work.job, jsonData, function (json) {
+            data = json.data;
+        })
+    },
+    setBookmark : function (name , value){
+
+        var connector = this.onlyOffice.createConnector();
+        Asc.scope.name = name;
+        Asc.scope.text = value;
+        connector.callCommand(function() {
+            var oDocument = Api.GetDocument();
+            var oRange = oDocument.GetBookmarkRange(Asc.scope.name);
+            var oRangeParagraph = oRange.GetParagraph(0);
+            var aSearch = oRangeParagraph.Search(oRange.GetText());
+            try {
+                oRange.AddText(Asc.scope.text, 'after');
+                aSearch[0].Delete();
+            } catch (err) {
+                oRange.AddText(Asc.scope.text, 'before');
+                aSearch = oRangeParagraph.Search(oRange.GetText());
+                aSearch[0].AddBookmark(Asc.scope.name);
+            }
+        }, function() { console.log("callback command"); });
+        connector.disconnect();
     }
 });
