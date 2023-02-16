@@ -97,6 +97,8 @@ class ActionUploadWithUrl extends BaseAction {
 			if (StringUtils.isEmpty(fileName)) {
 				throw new IllegalStateException("fileName can not empty.");
 			}
+			fileName = this.adjustFileName(business, attachment.getJob(), fileName);
+
 			StorageMapping mapping = ThisApplication.context().storageMappings().random(Attachment.class);
 			attachment.saveContent(mapping, bytes, fileName);
 			attachment.setType((new Tika()).detect(bytes, fileName));
