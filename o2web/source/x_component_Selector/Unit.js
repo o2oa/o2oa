@@ -35,6 +35,8 @@ MWF.xApplication.Selector.Unit = new Class({
         var afterLoadSelectItemFun = this.afterLoadSelectItem.bind(this);
 
         if (this.options.units.length){
+            this.expandSubEnable = this.options.expandSubEnable || this.options.forceShowSubEnable || this.options.firstLevelSelectable;
+
             var unitList = [];
             for( var i=0 ; i<this.options.units.length; i++ ){
                 var unit = this.options.units[i];
@@ -54,22 +56,31 @@ MWF.xApplication.Selector.Unit = new Class({
                 debugger;
                 if (json.data.length){
                     json.data.each( function(data){
+                        var item;
                         if( this.options.expandSubEnable ) {
-                            if (data.subDirectUnitCount){
-                                var category = this._newItemCategory("ItemCategory", data, this, this.itemAreaNode );
-                                this.subCategorys.push(category);
-                                this.subCategoryMap[data.levelName] = category;
+                            if( this.options.firstLevelSelectable ){
+                                item = this._newItem(data, this, this.itemAreaNode );
+                                this.items.push( item );
+                                this.subItems.push(item);
+                            }else{
+                                if (data.subDirectUnitCount){
+                                    var category = this._newItemCategory("ItemCategory", data, this, this.itemAreaNode );
+                                    this.subCategorys.push(category);
+                                    this.subCategoryMap[data.levelName] = category;
+                                }
                             }
                         }else{
-                            var item = this._newItem(data, this, this.itemAreaNode );
+                            item = this._newItem(data, this, this.itemAreaNode );
                             this.items.push( item );
                             this.subItems.push(item);
                         }
                     }.bind(this));
                 }
                 afterLoadSelectItemFun();
-            }.bind(this), afterLoadSelectItemFun )
+            }.bind(this), afterLoadSelectItemFun );
         }else{
+            this.expandSubEnable = this.options.expandSubEnable || this.options.forceShowSubEnable;
+
             this.orgAction.listTopUnit(function(json){
                 // if( this.isCheckStatusOrCount() ) {
                 //     this.loadingCount = "wait";
@@ -389,7 +400,7 @@ MWF.xApplication.Selector.Unit.Item = new Class({
         this.iconNode.setStyle("background-image", "url("+"../x_component_Selector/$Selector/"+style+"/icon/departmenticon.png)");
     },
     loadSubItem: function(){
-        if( !this.selector.options.expandSubEnable && !this.selector.options.forceShowSubEnable )return;
+        if( !this.selector.expandSubEnable )return;
         this.isExpand = (this.selector.options.expand);
         if ( this._hasChild() || this.selector.options.expandEmptyCategory ){
             if (this.selector.options.expand){

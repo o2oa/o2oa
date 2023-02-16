@@ -494,6 +494,7 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"unitType": "Unit Type",
 		"exclude": "Exclude",
 		"excludeInfo": "Exclude the selection of unit, identity, person, and group by scripts",
+		"firstLevelSelectable": "Allowed select the first",
 		"dataStructure": "data Structure",
 		"complete": "Complete",
 		"simple": "Simple",

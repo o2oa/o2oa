@@ -1419,6 +1419,8 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
 
         this.checkDescription();
 
+        this.fieldModuleLoaded = true;
+
         //if (this.readonly) this.loadOrgWidget(values, this.node)
         //this.node.set("text", value);
     },
@@ -2006,7 +2008,8 @@ MWF.APPOrg.UnitOptions = new Class({
             "units": selectUnits,
             "unitType": (this.json.selectUnitType==="all") ? "" : this.json.selectUnitType,
             "storeRange" : this.json.storeRange,
-            "expandSubEnable" : (this.json.unitExpandSubEnable=="no") ? false : true
+            "expandSubEnable" : (this.json.unitExpandSubEnable==="no") ? false : true,
+            "firstLevelSelectable":this.json.firstLevelSelectable==="yes"
         };
     },
     getSearchOptions : function(){
