@@ -37,7 +37,7 @@ public class DataItemConverter<T extends DataItem> {
 
 	private static final Gson gson = XGsonBuilder.instance();
 
-	private static final int MAX_PATH_DEPTH = 7;
+	private static final int MAX_PATH_DEPTH = 8;
 
 	private Class<T> clz;
 
