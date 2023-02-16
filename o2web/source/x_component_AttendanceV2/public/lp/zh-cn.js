@@ -28,6 +28,7 @@ MWF.xApplication.AttendanceV2.LP = {
 
     "alert": "提示",
     "operate": "操作",
+    "save": "保存",
     "positive": "确定",
     "cancel": "取消",
     "add": "添加",
@@ -49,6 +50,7 @@ MWF.xApplication.AttendanceV2.LP = {
     "checkInTime": "考勤时间",
     "shiftForm" : {
         "shiftNameLabel": "班次名称",
+        "shiftNameLabelPlaceholder": "请输入班次名称",
         "checkInTimeLabel": "上下班时间",
         "seriousTardinessLateMinutesLabel": "严重迟到分钟数",
         "absenteeismLateMinutesLabel": "旷工迟到分钟数",
@@ -103,5 +105,19 @@ MWF.xApplication.AttendanceV2.LP = {
         "rangeNeedNumber": "打卡范围必须是数字！",
         "success": "保存成功！",
         "confirmDelete": "确认要删除这个【{name}】工作场所？",
-    }
+    },
+    // 考勤组
+    "groupManagerTitle": "考勤组管理",
+    "groupAdd": "新增考勤组",
+    "groupUpdate": "修改考勤组",
+    "groupForm": {
+        "title": "考勤组名称",
+        "titlePlaceholder": "请输入考勤组名称",
+        "num": "人数",
+        "time": "考勤时间",
+        "participates": "参与考勤人员、组织",
+        "participatesPlaceholder": "请点击选择参与考勤人员、组织",
+        "unParticipates": "无需参与考勤人员",
+        "unParticipatesPlaceholder": "请点击选择无需参与考勤人员",
+    },
 };

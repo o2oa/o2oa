@@ -127,14 +127,16 @@
 .s-dialog-header {
   padding: 20px;
   padding-bottom: 10px;
-  margin-right: 16px;
+  padding-right: 16px;
   text-align: left;
+  border-bottom: 1px solid #eee;
 }
 .s-dialog-footer {
   padding: 20px;
   padding-top: 10px;
-  margin-right: 16px;
+  padding-right: 16px;
   text-align: right;
+  border-top: 1px solid #eee;
 }
 .s-dialog-header .title {
   line-height: 24px;

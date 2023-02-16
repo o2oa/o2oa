@@ -18,6 +18,10 @@ export default content({
     },
     onValueChange() {
       this.dom.value = this.bind.value;
+    },
+    clickIconClearValue() {
+        this.bind.value = "";
+        this.dom.value = "";
     }
      
 });

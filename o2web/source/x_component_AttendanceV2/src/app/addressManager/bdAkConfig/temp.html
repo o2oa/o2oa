@@ -8,14 +8,14 @@
       <div class="s-dialog-content">
         <div class="form-item-content margin-top"><a href='{{$.lp.workAddressBDLink}}' target='_blank'>{{$.lp.workAddressBDLinkTitle}}</a></div>
         <div class="form-item-content margin-top">{{$.lp.workAddressBDkeyConfigDesc}}</div>
-        <o-input class="margin-top" oo-prop="{'label':$.lp.workAddressBDSecretTitle, 'placeholder': $.lp.workAddressBDSecretTitlePlaceholder , 'value': $.baiduAccountKey }"
+        <o-input  oo-prop="{'label':$.lp.workAddressBDSecretTitle, 'placeholder': $.lp.workAddressBDSecretTitlePlaceholder , 'value': $.baiduAccountKey }"
                 oo-model="baiduAccountKey"></o-input>
            
       </div>
       <div class="s-dialog-footer">
           <span>
               <button class="lightColor_bg" @click="close">{{$.lp.cancel}}</button>
-              <button class="mainColor_bg" @click="submitAdd">{{$.lp.positive}}</button>
+              <button class="mainColor_bg" @click="submitAdd">{{$.lp.save}}</button>
           </span>
       </div>
   </div>

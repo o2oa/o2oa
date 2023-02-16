@@ -1,5 +1,32 @@
-<div class="hello">
-    <img class="logo" alt="O2OA logo" src="../../assets/o2logo.png">
-    <h1>这里是考勤管理</h1>
-    
+<div style="position: relative;height: 100%;">
+    <div class="index_page_header_container">
+        <div class="index_page_header_title">{{$.lp.groupManagerTitle}}</div>
+    </div>
+    <div style="padding: 20px;">
+        <div style="margin: 10px 0;float: left;">
+            <button class="mainColor_bg" @click="addGroup">{{$.lp.groupAdd}}</button>
+        </div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0">
+            <thead>
+                <th>{{$.lp.groupForm.title}}</th>
+                <th>{{$.lp.groupForm.num}}</th>
+                <th>{{$.lp.groupForm.time}}</th>
+                <th style="width: 10%;">{{$.lp.operate}}</th>
+            </thead>
+            <tr oo-each="$.groupList" oo-item="group">
+                <td>{{group.value.groupName}}</td>
+                <td>{{group.value.trueParticipantList.length}}</td>
+                <td>{{ this.formatAttendanceTime(group.value) }}</td>
+                <td>
+                    <span class="operator_link"
+                        @click="this.clickEditGroup(group.value.id)">修改</span>
+                    <span class="operator_link"
+                        @click="this.clickDeleteGroup(group.value.id, group.value.groupName)">删除</span>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <!-- 分页组件 -->
+    <o-pager oo-prop="$" @refresh-data="loadData"></o-pager>
+    <div class="form"></div>
 </div>

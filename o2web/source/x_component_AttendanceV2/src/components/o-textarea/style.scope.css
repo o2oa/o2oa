@@ -18,7 +18,7 @@
   margin: 0;
   list-style: none;
   position: relative;
-  display: inline-block;
+  display: flex;
   width: 100%;
   padding: 4px 11px;
   color: #171a1d;

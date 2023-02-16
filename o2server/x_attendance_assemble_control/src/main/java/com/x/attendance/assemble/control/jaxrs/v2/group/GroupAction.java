@@ -18,6 +18,7 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 /**
  * Created by fancyLou on 2023/2/15.
@@ -28,6 +29,26 @@ import javax.ws.rs.core.MediaType;
 public class GroupAction extends StandardJaxrsAction {
 
     private static Logger logger = LoggerFactory.getLogger(GroupAction.class);
+
+
+    @JaxrsMethodDescribe(value = "分页查询考勤组列表.", action = ActionListByPage.class)
+    @POST
+    @Path("list/{page}/size/{size}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void listByPaging(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                             @JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
+                             @JaxrsParameterDescribe("数量") @PathParam("size") Integer size, JsonElement jsonElement) {
+        ActionResult<List<ActionListByPage.Wo>> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionListByPage().execute(effectivePerson, page, size, jsonElement);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, jsonElement);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
 
 
     @JaxrsMethodDescribe(value = "创建或更新考勤组信息.", action = ActionCreateUpdate.class)
