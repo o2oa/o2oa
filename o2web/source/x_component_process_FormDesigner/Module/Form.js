@@ -1324,7 +1324,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
         var cssText = (this.json.css) ? this.json.css.code : "";
         //var head = (document.head || document.getElementsByTagName("head")[0] || document.documentElement);
 
-        var styleNode = $("style"+this.json.id);
+        var styleNode = $("design_style"+this.json.id);
         if (styleNode) styleNode.destroy();
         if (cssText){
             cssText = this.parseCSS(cssText);
@@ -1357,7 +1357,7 @@ MWF.xApplication.process.FormDesigner.Module.Form = MWF.FCForm = new Class({
 
             var styleNode = document.createElement("style");
             styleNode.setAttribute("type", "text/css");
-            styleNode.id="style"+this.json.id;
+            styleNode.id="design_style"+this.json.id;
             styleNode.inject(this.container, "before");
 
             if(styleNode.styleSheet){
