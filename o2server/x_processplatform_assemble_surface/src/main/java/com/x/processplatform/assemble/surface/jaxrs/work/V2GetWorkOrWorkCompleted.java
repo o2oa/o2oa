@@ -93,7 +93,7 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
             for (WoTask woTask : wo.getTaskList()) {
                 wo.getRecordList().add(taskToRecord(woTask));
             }
-            viewTaskRead(effectivePerson, work);
+            jobView(effectivePerson, work);
         } else if (null != workCompleted) {
             CompletableFuture<Void> workCompletedJsonFuture = this.workCompletedJsonFuture(workCompleted, wo);
             CompletableFuture<Void> workCompletedDataFuture = this.workCompletedDataFuture(workCompleted, wo);
@@ -131,18 +131,11 @@ class V2GetWorkOrWorkCompleted extends BaseAction {
      * @param work
      * @throws Exception
      */
-    private void viewTaskRead(EffectivePerson effectivePerson, Work work) throws Exception {
-        // 标记待办已读
+    private void jobView(EffectivePerson effectivePerson, Work work) throws Exception {
         ThisApplication.context().applications()
                 .getQuery(
-                        x_processplatform_service_processing.class, Applications.joinQueryUri("task", "v2", "work",
-                                work.getId(), "person", effectivePerson.getDistinguishedName(), "view"),
-                        work.getJob());
-        // 标记待阅已读
-        ThisApplication.context().applications()
-                .getQuery(
-                        x_processplatform_service_processing.class, Applications.joinQueryUri("read", "v2", "work",
-                                work.getId(), "person", effectivePerson.getDistinguishedName(), "view"),
+                        x_processplatform_service_processing.class, Applications.joinQueryUri("job", "v2",
+                                work.getJob(), "person", effectivePerson.getDistinguishedName(), "view"),
                         work.getJob());
     }
 

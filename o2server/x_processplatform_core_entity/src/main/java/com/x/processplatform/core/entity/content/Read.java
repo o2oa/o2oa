@@ -144,7 +144,6 @@ public class Read extends SliceJpaObject implements ProjectionInterface {
         this.startTime = new Date();
         this.setTitle(work.getTitle());
         this.unit = unit;
-        this.viewed = false;
         this.work = work.getId();
         this.copyProjectionFields(work);
     }
@@ -168,7 +167,6 @@ public class Read extends SliceJpaObject implements ProjectionInterface {
         this.setStartTime(new Date());
         this.setTitle(workCompleted.getTitle());
         this.setUnit(unit);
-        this.setViewed(false);
         this.setWorkCompleted(workCompleted.getId());
         this.copyProjectionFields(workCompleted);
     }
@@ -382,12 +380,6 @@ public class Read extends SliceJpaObject implements ProjectionInterface {
     @Index(name = TABLE + IndexNameMiddle + creatorUnit_FIELDNAME)
     @CheckPersist(allowEmpty = true)
     private String creatorUnit;
-
-    public static final String viewed_FIELDNAME = "viewed";
-    @FieldDescribe("是否查看过.")
-    @Column(name = ColumnNamePrefix + viewed_FIELDNAME)
-    @CheckPersist(allowEmpty = true)
-    private Boolean viewed;
 
     public static final String currentActivityName_FIELDNAME = "currentActivityName";
     @FieldDescribe("当前活动名称.")
@@ -778,14 +770,6 @@ public class Read extends SliceJpaObject implements ProjectionInterface {
 
     public void setActivityToken(String activityToken) {
         this.activityToken = activityToken;
-    }
-
-    public Boolean getViewed() {
-        return viewed;
-    }
-
-    public void setViewed(Boolean viewed) {
-        this.viewed = viewed;
     }
 
     public String getSerial() {
