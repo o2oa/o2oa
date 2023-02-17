@@ -41,7 +41,7 @@ MWF.xApplication.portal.DictionaryDesigner.Main = new Class({
 			this.options.title = this.options.title + "-"+MWF.APPDD.LP.newDictionary;
 		}
 		if (!this.actions){
-		    this.actions = MWF.Actions.get("x_processplatform_assemble_designer");
+		    this.actions = MWF.Actions.get("x_portal_assemble_designer");
             this.actions.application = this.application;
         }
 		

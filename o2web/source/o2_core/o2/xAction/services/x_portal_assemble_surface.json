@@ -33,5 +33,13 @@
   "getWidgetByNameMobile": {"uri": "/jaxrs/widget/{name}/portal/{id}/mobile"},
 
   "readFile": {"uri": "/jaxrs/file/{flag}/portal/{applicationFlag}/content"},
-  "listFile": {"uri": "/jaxrs/file/list/portal/{applicationFlag}"}
+  "listFile": {"uri": "/jaxrs/file/list/portal/{applicationFlag}"},
+
+
+  "listDictionary": {"uri": "/jaxrs/applicationdict/list/application/{application}"},
+  "getDictionary": {"uri": "/jaxrs/applicationdict/{applicationDict}/application/{applicationFlag}"},
+
+  "updataDictionary": {"uri": "/jaxrs/applicationdict/{applicationDictFlag}/application/{applicationFlag}","method": "PUT"},
+
+  "clazz": "x_portal_assemble_surface"
 }
