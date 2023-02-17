@@ -446,7 +446,7 @@ MWF.xDesktop.getServiceAddressConfigObject = function(center, callback, error){
                 //this.serviceAddressList = json.data;
                 //this.centerServer = center;
                 var serviceAddressList = json.data;
-                if (layout.config.proxyApplicationEnable){
+                if (layout.config.proxyApplicationEnable || !layout.config.center){
                     Object.keys(serviceAddressList).forEach(function(k){
                         if (k!=="x_message_assemble_communicate") serviceAddressList[k].port = window.location.port;
                     })
