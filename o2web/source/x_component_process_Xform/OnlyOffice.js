@@ -112,17 +112,20 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
                 "onCompleted": function(data){
 
                     this.documentId = data.id;
-                    this.setData();
-                    this.node.empty();
-                    this.createUpload();
-                    this.loadDocument();
 
+                    this.reload();
                 }.bind(this)
             });
 
             upload.load();
         }.bind(this));
 
+    },
+    reload : function (){
+        this.setData();
+        this.node.empty();
+        this.createUpload();
+        this.loadDocument();
     },
     loadDocument: function () {
         this.getEditor(function () {
@@ -235,7 +238,8 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
             docEditor.setHistoryData(historyData[version - 1]);
         }.bind(this);
         var onRequestHistoryClose = function (event) {
-            document.location.reload();
+            //document.location.reload();
+            _self.reload();
         };
         var onError = function (event) {
             if (event) innerAlert(event.data);
@@ -343,7 +347,7 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
     getData: function(){
         var data = {
             "documentId" : ""
-        };
+        }
         if(this.form.businessData.data[this.json.id]){
             data = this.form.businessData.data[this.json.id]
         }
@@ -353,7 +357,7 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
         var data = {
             "documentId": this.documentId,
             "appToken": "x_processplatform_assemble_surface"
-        };
+        }
         this.data = data;
         this._setBusinessData(data);
 
@@ -384,5 +388,47 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
             }
         }, function() { console.log("callback command"); });
         connector.disconnect();
-    }
+    },
+    save : function (){
+        var connector = this.onlyOffice.createConnector();
+        connector.callCommand(function() {
+            Api.Save();
+        }, function() { console.log("callback command"); });
+        connector.disconnect();
+    },
+    startRevisions : function (){
+        //开启修订
+        var connector = this.onlyOffice.createConnector();
+        connector.callCommand(function() {
+            var oDocument = Api.GetDocument();
+            oDocument.SetTrackRevisions(true);
+        }, function() { console.log("callback command"); });
+        connector.disconnect();
+    },
+    stopRevisions : function (){
+        //关闭修订
+        var connector = this.onlyOffice.createConnector();
+        connector.callCommand(function() {
+            var oDocument = Api.GetDocument();
+            oDocument.SetTrackRevisions(false);
+        }, function() { console.log("callback command"); });
+        connector.disconnect();
+    },
+    acceptAllRevisions : function (){
+        var connector = this.onlyOffice.createConnector();
+        connector.callCommand(function() {
+            var oDocument = Api.GetDocument();
+            oDocument.AcceptAllRevisionChanges();
+        }, function() { console.log("callback command"); });
+        connector.disconnect();
+
+    },
+    rejectAllRevisions : function (){
+        var connector = this.onlyOffice.createConnector();
+        connector.callCommand(function() {
+            var oDocument = Api.GetDocument();
+            oDocument.RejectAllRevisionChanges();
+        }, function() { console.log("callback command"); });
+        connector.disconnect();
+    },
 });
