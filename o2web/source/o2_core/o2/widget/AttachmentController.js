@@ -36,7 +36,7 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
         var iconUrl = this.options.iconConfigUrl ? this.options.iconConfigUrl : "../x_component_File/$Main/icon.json";
         o2.getJSON(iconUrl, function(json){
             this.icons = json;
-        }.bind(this), false, false);
+        }.bind(this), false);
 
         this.module = module;
 

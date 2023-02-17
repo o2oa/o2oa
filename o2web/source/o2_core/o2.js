@@ -1879,7 +1879,7 @@ if (!window.o2) {
         _json.get = function (url, callback, async, nocache) {
             var loadAsync = (async !== false);
             var noJsonCache = (nocache === true);
-            if (url.indexOf("config.json")){
+            if (url.indexOf("config.json") > -1){
                 noJsonCache = true;
             }
 
