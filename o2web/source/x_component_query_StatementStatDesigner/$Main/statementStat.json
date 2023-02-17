@@ -1,0 +1,14 @@
+{
+  "id": "",
+  "name": "newStatementStat",
+  "alias": "",
+  "description": "",
+  "query": "",
+  "executePersonList": [],
+  "executeUnitList": [],
+  "type": "select",
+  "data": "",
+  "beforeScriptText": "",
+  "afterScriptText": "",
+  "table": ""
+}

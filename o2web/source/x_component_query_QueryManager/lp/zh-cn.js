@@ -30,6 +30,7 @@ MWF.xApplication.query.QueryManager.LP = {
     "viewName": "视图",
     "statName": "统计",
     "statementName": "查询",
+    "statementStatName": "查询统计",
     "importerName": "导入",
     "show": "显示",
     "hide": "隐藏",
@@ -119,6 +120,19 @@ MWF.xApplication.query.QueryManager.LP = {
         "deletePageTemplateTitle": "删除查询配置模板确认",
         "deletePageTemplate": "是否确定要删除当前查询配置模板吗？"
     },
+    "statementStat": {
+        "create": "新建查询统计",
+        "search": "搜索查询统计",
+        "searchText": "请输入关键字",
+
+        "noStatNoticeText": "此数据应用现在还没有查询统计，您可以点击此处创建一个新查询统计",
+        "loaded": "数据表加载完毕",
+
+        "deleteProcessTitle": "删除查询统计确认",
+        "deleteProcess": "是否确定要删除当前查询统计？",
+        "deletePageTemplateTitle": "删除查询统计模板确认",
+        "deletePageTemplate": "是否确定要删除当前查询统计模板吗？"
+    },
 
     "application": {
         "inputApplicationName": "请输入数据应用名称",
@@ -166,6 +180,7 @@ MWF.xApplication.query.QueryManager.LP = {
         "statConfig":"统计配置",
         "tableConfig":"数据表",
         "statementConfig":"查询配置",
+        "statementStatConfig": "查询统计",
         "importerConfig": "导入模型",
         "queryProperty":"数据应用属性"
     }

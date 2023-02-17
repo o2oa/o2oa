@@ -35,6 +35,9 @@ MWF.xApplication.query.QueryManager.Main = new Class({
         if (this.statementConfigurator){
             this.statementConfigurator.keyCopy(e);
         }
+        if (this.statementStatConfigurator){
+            this.statementStatConfigurator.keyCopy(e);
+        }
         if (this.importerConfigurator){
             this.importerConfigurator.keyCopy(e);
         }
@@ -52,6 +55,9 @@ MWF.xApplication.query.QueryManager.Main = new Class({
             }
             if (this.statementConfigurator) {
                 this.statementConfigurator.keyPaste(e);
+            }
+            if (this.statementStatConfigurator) {
+                this.statementStatConfigurator.keyPaste(e);
             }
             if (this.importerConfigurator) {
                 this.importerConfigurator.keyPaste(e);
@@ -117,6 +123,11 @@ MWF.xApplication.query.QueryManager.Main = new Class({
             if (this.statementConfigurator) delete this.statementConfigurator;
             this.statementConfiguratorContent.destroy();
             this.statementConfiguratorContent = null;
+        }
+        if (this.statementStatConfiguratorContent){
+            if (this.statementStatConfigurator) delete this.statementStatConfigurator;
+            this.statementStatConfiguratorContent.destroy();
+            this.statementStatConfiguratorContent = null;
         }
         if (this.importerConfiguratorContent){
             if (this.importerConfigurator) delete this.importerConfigurator;
@@ -220,6 +231,20 @@ MWF.xApplication.query.QueryManager.Main = new Class({
             this.statementConfigurator = new MWF.xApplication.query.QueryManager.StatementExplorer(this.statementConfiguratorContent, this.restActions);
             this.statementConfigurator.app = this;
             this.statementConfigurator.load();
+        }.bind(this));
+    },
+    statementStatConfig: function(){
+        this.clearContent();
+        this.statementStatConfiguratorContent = new Element("div", {
+            "styles": this.css.rightContentNode
+        }).inject(this.node);
+        this.loadStatementStatConfig();
+    },
+    loadStatementStatConfig: function(){
+        MWF.xDesktop.requireApp("query.QueryManager", "StatementStatExplorer", function(){
+            this.statementStatConfigurator = new MWF.xApplication.query.QueryManager.StatementStatExplorer(this.statementStatConfiguratorContent, this.restActions);
+            this.statementStatConfigurator.app = this;
+            this.statementStatConfigurator.load();
         }.bind(this));
     },
     importerConfig: function(){
@@ -326,6 +351,9 @@ MWF.xApplication.query.QueryManager.QueryProperty = new Class({
             statementShow: "true",
             statementNumber: 3,
             statementName: lp.statementName,
+            statementStatShow: "true",
+            statementStatNumber: 3,
+            statementStatName: lp.statementStatName,
             importerShow: "true",
             importerNumber: 4,
             importerName: lp.importerName
@@ -357,13 +385,19 @@ MWF.xApplication.query.QueryManager.QueryProperty = new Class({
             "<td item='statementShow' class='formContent'></td> " +
             "<td item='statementName' class='formContent' style='padding:3px 0px;'></td></tr>";
 
+        var statementStat = { index : data.statementStatNumber };
+        statementStat.html = "<tr class='statementStat'>" +
+            "<td class='formContent'><div class='sort'>↑</div>"+lp.statementStatName+"</td>" +
+            "<td item='statementStatShow' class='formContent'></td> " +
+            "<td item='statementStatName' class='formContent' style='padding:3px 0px;'></td></tr>";
+
         var importer = {index : data.importerNumber};
         importer.html = "<tr class='importer'>" +
             "<td class='formContent'><div class='sort'>↑</div>"+lp.importerName+"</td> " +
             "<td item='importerShow' class='formContent'></td> " +
             "<td item='importerName' class='formContent' style='padding:3px 0px;'></td></tr>";
 
-        var array = [view,stat,statement,importer];
+        var array = [view,stat,statement,statementStat,importer];
         array.sort(function(a, b){
             return a.index - b.index;
         });
@@ -399,6 +433,7 @@ MWF.xApplication.query.QueryManager.QueryProperty = new Class({
                     viewShow: { type:"radio", selectValue : ["true","false"], selectText: [lp.show, lp.hide], style: {"display":"inline"} },
                     statShow: { type:"radio", selectValue : ["true","false"], selectText: [lp.show, lp.hide], style: {"display":"inline"} },
                     statementShow: { type:"radio", selectValue : ["true","false"], selectText: [lp.show, lp.hide], style: {"display":"inline"} },
+                    statementStatShow: { type:"radio", selectValue : ["true","false"], selectText: [lp.show, lp.hide], style: {"display":"inline"} },
                     importerShow: { type:"radio", selectValue : ["true","false"], selectText: [lp.show, lp.hide], style: {"display":"inline"} },
                     statName: { event: {
                                 focus: function(node){ node.setStyles(this.app.css.input_focus) }.bind(this),
@@ -411,6 +446,11 @@ MWF.xApplication.query.QueryManager.QueryProperty = new Class({
                         }
                     },
                     statementName: {  event: {
+                            focus: function(node){ node.setStyles(this.app.css.input_focus) }.bind(this),
+                            blur: function(node){ node.setStyles(this.app.css.input) }.bind(this)
+                        }
+                    },
+                    statementStatName: {  event: {
                             focus: function(node){ node.setStyles(this.app.css.input_focus) }.bind(this),
                             blur: function(node){ node.setStyles(this.app.css.input) }.bind(this)
                         }

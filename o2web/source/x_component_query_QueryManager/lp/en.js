@@ -31,6 +31,7 @@ MWF.xApplication.query.QueryManager.LP = {
     "statName": "Statistics",
     "statementName": "Query",
     "importerName": "Import",
+    "statementStatName": "Statistics",
     "show": "Show",
     "hide": "Hide",
     "naviCategory": "Navigation Category",
@@ -165,6 +166,7 @@ MWF.xApplication.query.QueryManager.LP = {
         "statConfig":"Statistics",
         "tableConfig":"Data Table",
         "statementConfig":"Statement",
+        "statementStatConfig": "StatementStat",
         "importerConfig":"ImportModel",
         "queryProperty": "Property"
     }

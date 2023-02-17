@@ -49,6 +49,14 @@
     "sub": []
   },
   {
+    "title": MWF.xApplication.query.QueryManager.LP.navi.statementStatConfig,
+    "id": "1.1",
+    "action": "statementStatConfig",
+    "icon": "query_statementStat.png",
+    "expand": false,
+    "sub": []
+  },
+  {
     "title": MWF.xApplication.query.QueryManager.LP.navi.importerConfig,
     "id": "1.1",
     "action": "importerConfig",

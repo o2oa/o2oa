@@ -4,7 +4,7 @@ if(!MWF.APPDSMD)MWF.APPDSMD = MWF.xApplication.query.StatementDesigner;
 MWF.xApplication.query.ViewDesigner = MWF.xApplication.query.ViewDesigner || {};
 MWF.xDesktop.requireApp("query.ViewDesigner", "lp."+MWF.language, null, false);
 MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.query.ViewDesigner.LP, {
-    "title": "查询设计",
+    "title": "查询配置",
     "newStatement": "新建查询配置",
     "unCategory": "未分类",
     "statement": "查询配置",
