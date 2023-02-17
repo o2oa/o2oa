@@ -59,11 +59,7 @@ export default content({
   },
   submit() {
     if (this.bind.shiftSelected && this.bind.shiftSelected.id) {
-      if (this.$parent.reciveShiftSelect) {
-        this.$parent.reciveShiftSelect(this.bind.shiftSelected);
-      } else {
-        console.error("没有reciveShiftSelect方法");
-      }
+      this.component.updateModel( this.bind.shiftSelected );
       this.closeSelectShift();
     } else {
       o2.api.page.notice(lp.shiftForm.selectShiftEmpty, 'error');

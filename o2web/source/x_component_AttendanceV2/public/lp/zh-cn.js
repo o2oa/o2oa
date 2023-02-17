@@ -128,5 +128,12 @@ MWF.xApplication.AttendanceV2.LP = {
         "shiftPlaceholder": "请点击选择班次",
         "workPlace": "工作场所",
         "workPlacePlaceholder": "请选择工作场所",
+        "fieldWork": "外勤打卡",
+        "allowFieldWork": "是否允许外勤打卡",
+        "requiredFieldWorkRemarks": "外勤打卡备注是否必填",
+        "requiredCheckInDate": "必须打卡的日期",
+        "requiredCheckInDatePlaceholder": "请添加必须打卡的日期",
+        "noNeedCheckInDate": "无需打卡的日期",
+        "noNeedCheckInDatePlaceholder": "请添加无需打卡的日期",
     },
 };

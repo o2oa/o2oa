@@ -21,7 +21,7 @@
                     <!-- <span class="operator_link margin-left" @click="openShiftSelect">添加</span> -->
                 </div>
                 <div class="o-input-item-input">
-                    <span class="{{$.form.shiftId ? 'input' : 'input placeholder'}}" @click="openShiftSelect">{{$.form.shiftId ? $.form.shift.shiftName : $.lp.groupForm.shiftPlaceholder}}</span>
+                    <span class="{{ ($.shiftSelector.shiftSelected && $.shiftSelector.shiftSelected.id) ? 'input' : 'input placeholder'}}" @click="openShiftSelect">{{ ($.shiftSelector.shiftSelected && $.shiftSelector.shiftSelected.id) ? $.shiftSelector.shiftSelected.shiftName : $.lp.groupForm.shiftPlaceholder}}</span>
                 </div>
             </div>
             <!-- 考勤时间 -->
@@ -45,10 +45,60 @@
                     <span class="operator_link margin-left" @click="openWorkPlaceSelector">添加</span>
                 </div>
                 <div class="o-input-item-input">
-                    <span class=" input placeholder" oo-if=" $.form.workPlaceList.length == 0 ">{{  $.lp.groupForm.workPlacePlaceholder }}</span>
-                    <div style="display: flex; flex-wrap: wrap;"  oo-if=" $.form.workPlaceList.length > 0 ">
-                        <div class="margin-left" style="display: flex; align-items: center;" oo-each="$.form.workPlaceList" oo-item="workPlace" @click="this.deleteWorkPlace(workPlace.value)">
+                    <span class=" input placeholder" oo-if=" $.workPlaceSelector.workAddressSelected.length == 0 ">{{  $.lp.groupForm.workPlacePlaceholder }}</span>
+                    <div class="tag-container"  oo-if=" $.workPlaceSelector.workAddressSelected.length > 0 ">
+                        <div class="tag-item"  oo-each="$.workPlaceSelector.workAddressSelected" oo-item="workPlace" @click="this.deleteWorkPlace(workPlace.value)">
                             {{workPlace.value.placeName}}
+                            <i class="o2icon-cancel-circle color-999"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="o-input-item margin-top">
+                <div class="o-input-item-label" >
+                    {{$.lp.groupForm.fieldWork}}
+                </div>
+                <div class="tag-container">
+                    <div class="tag-item" @click="clickAllowFieldWork">
+                        <div class="icon">
+                            <i class="{{ $.form.allowFieldWork ? 'o2icon-checkbox-checked primary_color' : 'o2icon-checkbox-unchecked'}}"></i>
+                        </div>
+                        <label style="margin: 5px;" >{{$.lp.groupForm.allowFieldWork}}</label>
+                    </div>
+                    <div class="tag-item" @click="clickRequiredFieldWorkRemarks">
+                        <div class="icon">
+                            <i class="{{ $.form.requiredFieldWorkRemarks ? 'o2icon-checkbox-checked primary_color' : 'o2icon-checkbox-unchecked'}}"></i>
+                        </div>
+                        <label style="margin: 5px;" >{{$.lp.groupForm.requiredFieldWorkRemarks}}</label>
+                    </div>
+                </div>
+            </div>
+            <div class="o-input-item margin-top">
+                <div class="o-input-item-label" >
+                    {{$.lp.groupForm.requiredCheckInDate}}
+                    <span class="operator_link margin-left" id="requiredDateSelector">添加</span>
+                </div>
+                <div class="o-input-item-input">
+                    <span class=" input placeholder" oo-if=" $.form.requiredCheckInDateList.length == 0 ">{{  $.lp.groupForm.requiredCheckInDatePlaceholder }}</span>
+                    <div class="tag-container"  oo-if=" $.form.requiredCheckInDateList.length > 0 ">
+                        <div class="tag-item"  oo-each="$.form.requiredCheckInDateList" oo-item="rDate" @click="this.deleteRequiredDate(rDate.value)">
+                            {{rDate.value}}
+                            <i class="o2icon-cancel-circle color-999"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="o-input-item margin-top">
+                <div class="o-input-item-label" >
+                    {{$.lp.groupForm.noNeedCheckInDate}}
+                    <span class="operator_link margin-left" id="noNeedDateSelector">添加</span>
+                </div>
+                <div class="o-input-item-input">
+                    <span class=" input placeholder" oo-if=" $.form.noNeedCheckInDateList.length == 0 ">{{  $.lp.groupForm.noNeedCheckInDatePlaceholder }}</span>
+                    <div class="tag-container"  oo-if=" $.form.noNeedCheckInDateList.length > 0 ">
+                        <div class="tag-item"  oo-each="$.form.noNeedCheckInDateList" oo-item="rDate" @click="this.deleteNoNeedDateSelector(rDate.value)">
+                            {{rDate.value}}
+                            <i class="o2icon-cancel-circle color-999"></i>
                         </div>
                     </div>
                 </div>
@@ -61,4 +111,9 @@
             </span>
         </div>
     </div>
+
+    <!-- 班次选择器 -->
+    <select-shift oo-prop="$.shiftSelector" oo-if="$.shiftSelectorOpen" oo-model="shiftSelector.shiftSelected"></select-shift>
+    <!-- 工作场所选择器 -->
+    <address-selector oo-prop="$.workPlaceSelector" oo-if="$.workPlaceSelectorOpen"></address-selector>
 </div>

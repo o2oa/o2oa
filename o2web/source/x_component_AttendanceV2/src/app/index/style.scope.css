@@ -5,6 +5,9 @@
 .margin-left {
   margin-left: 10px;
 }
+.color-999 {
+  color: #999999;
+}
 .light-border-button {
   border: 1px solid !important;
   background-color: #ffffff !important;
@@ -21,7 +24,8 @@
   cursor: pointer;
   margin-left: 10px;
 }
-.att thead {
+/* table */
+.att_table thead {
   width: 100%;
   height: 40px;
   background-color: rgb(247, 247, 247);
@@ -30,7 +34,7 @@
   line-height: 40px;
   font-size: 15px;
 }
-.att th {
+.att_table th {
   background-color: rgb(247, 247, 247);
   text-align: center;
   line-height: 24px;
@@ -39,7 +43,7 @@
   border-top: 1px solid rgb(255, 255, 255);
   border-bottom: 1px solid rgb(230, 230, 230);
 }
-.att tr {
+.att_table tr {
   overflow: hidden;
   background-color: rgb(255, 255, 255);
   min-height: 29px;
@@ -47,15 +51,16 @@
   font-family: "Microsoft YaHei";
   font-size: 14px;
 }
-.att .selector tr {
+.att_table .selector tr {
   cursor: pointer;
 }
-.att td {
+.att_table td {
   height: 39px;
   text-align: center;
   overflow: hidden;
   border-bottom: 1px solid rgb(230, 230, 230);
 }
+
 .att .primary_color {
   color: var(--el-color-primary);
 }
@@ -247,4 +252,16 @@
 .form-alert {
   color: #999999;
   font-size: 16px;
+}
+
+
+.tag-container {
+  display: flex; 
+  flex-wrap: wrap;
+}
+.tag-item {
+  display: flex; 
+  align-items: center;
+  margin-left: 10px;
+  cursor: pointer;
 }
