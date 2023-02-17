@@ -570,6 +570,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "specifyGroup": "Specify Group",
         "exclude": "Exclude",
         "excludeInfo": "Exclude the selection of unit, identity, person, and group by scripts",
+        "firstLevelSelectable": "Allowed select the first",
 
         "dateTime": "DateTime",
         "dateTime2": "DateTime",

@@ -595,17 +595,154 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
         }
     },
 
-
-    // getExportTotalCount: function(){
-    //     return this.count || 0;
-    // },
+    getExportTotalCount: function(){
+        return this.count || 100000;
+    },
     // getExportMaxCount: function(){
     //     return 2000;
     // },
     exportView: function(){
+        var _self = this;
+        var total = this.getExportTotalCount();
 
-        // var excelName = this.statementJson.name + "(" + start + "-" + end + ").xlsx";
+        var lp = this.lp.viewExport;
+        var node = this.exportExcelDlgNode = new Element("div");
+        var html = "<div style=\"line-height: 30px; height: 30px; color: #333333; overflow: hidden;margin-top:20px;\">" + lp.exportRange + "：" +
+            "   <input class='start' value='" + ( this.exportExcelStart || 1) +  "'><span>"+ lp.to +"</span>" +
+            "   <input class='end' value='"+ ( this.exportExcelEnd || total ) +"' ><span>"+lp.item+"</span>" +
+            "</div>";
+        html += "<div style=\"clear:both; max-height: 300px; margin-bottom:10px; margin-top:10px; overflow-y:auto;\">"+( lp.description.replace("{count}", total ))+"</div>";
+        node.set("html", html);
+        var check = function () {
+            if(this.value.length == 1){
+                this.value = this.value.replace(/[^1-9]/g,'');
+            }else{
+                this.value = this.value.replace(/\D/g,'');
+            }
+            if( this.value.toInt() > total ){
+                this.value = total;
+            }
+        }
+        node.getElement(".start").addEvent( "keyup", function(){ check.call(this) } );
+        node.getElement(".end").addEvent( "keyup", function(){ check.call(this) } );
 
+
+        var dlg = o2.DL.open({
+            "title": this.lp.exportExcel,
+            "style": "user",
+            "isResize": false,
+            "content": node,
+            "width": 600,
+            "height" : 260,
+            "buttonList": [
+                {
+                    "type": "ok",
+                    "text": MWF.LP.process.button.ok,
+                    "action": function (d, e) {
+                        var start = node.getElement(".start").get("value");
+                        var end = node.getElement(".end").get("value");
+                        if( !start || !end ){
+                            MWF.xDesktop.notice("error", {"x": "left", "y": "top"}, lp.inputIntegerNotice, node, {"x": 0, "y": 85});
+                            return false;
+                        }
+                        start = Math.max(start.toInt(), 1);
+                        end = end.toInt();
+                        if( end < start ){
+                            MWF.xDesktop.notice("error", {"x": "left", "y": "top"}, lp.startLargetThanEndNotice, node, {"x": 0, "y": 85});
+                            return false;
+                        }
+                        debugger;
+                        this.exportExcelStart = start;
+                        this.exportExcelEnd = end;
+                        this._exportView(start, end);
+                        dlg.close();
+                    }.bind(this)
+                },
+                {
+                    "type": "cancel",
+                    "text": MWF.LP.process.button.cancel,
+                    "action": function () { dlg.close(); }
+                }
+            ]
+        });
+    },
+    // exportView: function(){
+    //     var excelName = this.statementJson.name;
+    //
+    //     var p = this.currentPage;
+    //     var d = {
+    //         "filterList": this.filterList,
+    //         "parameter": this.parameter
+    //     };
+    //
+    //     this.createLoadding();
+    //
+    //     debugger;
+    //
+    //     var exportArray = [];
+    //
+    //     var titleArray = [];
+    //     var colWidthArr = [];
+    //     var dateIndexArray = [];
+    //     var numberIndexArray = [];
+    //     var idx = 0;
+    //     Object.each(this.entries, function (c, k) {
+    //         if (this.hideColumns.indexOf(k) === -1 && c.exportEnable !== false) {
+    //             titleArray.push(c.displayName);
+    //             colWidthArr.push(c.exportWidth || 200);
+    //             if( c.isTime )dateIndexArray.push(idx);
+    //             if( c.isNumber )numberIndexArray.push(idx);
+    //             idx++;
+    //         }
+    //     }.bind(this));
+    //     exportArray.push(titleArray);
+    //
+    //     o2.Actions.load("x_query_assemble_surface").StatementAction.executeV2(
+    //         this.options.statementId || this.options.statementName || this.options.statementAlias ||
+    //         this.json.statementId || this.json.statementName || this.json.statementAlias,
+    //         "data", 1, 100000, d, function (json) {
+    //
+    //             json.data.each(function (d, i) {
+    //                 var dataArray = [];
+    //                 Object.each(this.entries, function (c, k) {
+    //                     if (this.hideColumns.indexOf(k) === -1 && c.exportEnable !== false) {
+    //                         var text = this.getExportText(c, k, d);
+    //                         // if( c.isNumber && typeOf(text) === "string" && (parseFloat(text).toString() !== "NaN") ){
+    //                         //     text = parseFloat(text);
+    //                         // }
+    //                         dataArray.push( text );
+    //                     }
+    //                 }.bind(this));
+    //                 //exportRow事件
+    //                 var argu = {"index":i, "source": d, "data":dataArray};
+    //                 this.fireEvent("exportRow", [argu]);
+    //                 exportArray.push( argu.data || dataArray );
+    //             }.bind(this));
+    //
+    //             //export事件
+    //             var arg = {
+    //                 data : exportArray,
+    //                 colWidthArray : colWidthArr,
+    //                 title : excelName
+    //             };
+    //             this.fireEvent("export", [arg]);
+    //
+    //             if (this.loadingAreaNode) {
+    //                 this.loadingAreaNode.destroy();
+    //                 this.loadingAreaNode = null;
+    //             }
+    //
+    //             new MWF.xApplication.query.Query.Statement.ExcelUtils().exportToExcel(
+    //                 arg.data || exportArray,
+    //                 arg.title || excelName,
+    //                 arg.colWidthArray || colWidthArr,
+    //                 dateIndexArray,  //日期格式列下标
+    //                 numberIndexArray  //数字格式列下标
+    //             );
+    //
+    //         }.bind(this));
+    // },
+    _exportView: function(start, end){
         var excelName = this.statementJson.name;
 
         var p = this.currentPage;
@@ -615,8 +752,6 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
         };
 
         this.createLoadding();
-
-        debugger;
 
         var exportArray = [];
 
@@ -636,12 +771,11 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
         }.bind(this));
         exportArray.push(titleArray);
 
-        o2.Actions.load("x_query_assemble_surface").StatementAction.executeV2(
-            this.options.statementId || this.options.statementName || this.options.statementAlias ||
-            this.json.statementId || this.json.statementName || this.json.statementAlias,
-            "data", 1, 100000, d, function (json) {
-
-                json.data.each(function (d, i) {
+        this.loadExportData(start, end, d, function (dataList) {
+            var index = 0;
+            dataList.each(function (data, j) {
+                data.each(function (d, i) {
+                    index = index + 1;
                     var dataArray = [];
                     Object.each(this.entries, function (c, k) {
                         if (this.hideColumns.indexOf(k) === -1 && c.exportEnable !== false) {
@@ -653,33 +787,87 @@ MWF.xApplication.query.Query.Statement = MWF.QStatement = new Class({
                         }
                     }.bind(this));
                     //exportRow事件
-                    var argu = {"index":i, "source": d, "data":dataArray};
+                    var argu = {"index":index, "source": d, "data":dataArray};
                     this.fireEvent("exportRow", [argu]);
                     exportArray.push( argu.data || dataArray );
                 }.bind(this));
-
-                //export事件
-                var arg = {
-                    data : exportArray,
-                    colWidthArray : colWidthArr,
-                    title : excelName
-                };
-                this.fireEvent("export", [arg]);
-
-                if (this.loadingAreaNode) {
-                    this.loadingAreaNode.destroy();
-                    this.loadingAreaNode = null;
-                }
-
-                new MWF.xApplication.query.Query.Statement.ExcelUtils().exportToExcel(
-                    arg.data || exportArray,
-                    arg.title || excelName,
-                    arg.colWidthArray || colWidthArr,
-                    dateIndexArray,  //日期格式列下标
-                    numberIndexArray  //数字格式列下标
-                );
-
             }.bind(this));
+
+            //export事件
+            var arg = {
+                data : exportArray,
+                colWidthArray : colWidthArr,
+                title : excelName
+            };
+            this.fireEvent("export", [arg]);
+
+            if (this.loadingAreaNode) {
+                this.loadingAreaNode.destroy();
+                this.loadingAreaNode = null;
+            }
+
+            new MWF.xApplication.query.Query.Statement.ExcelUtils().exportToExcel(
+                arg.data || exportArray,
+                arg.title || excelName,
+                arg.colWidthArray || colWidthArr,
+                dateIndexArray,  //日期格式列下标
+                numberIndexArray  //数字格式列下标
+            );
+
+        }.bind(this))
+    },
+    loadExportData: function(start, end, body, callback){
+        start = start - 1;
+        var differ = end - start;
+        var count;
+        // if( differ < 10 ){
+        //    count = 10;
+        // }else if( differ < 100 ){
+        //     count = 100;
+        // }else if( differ < 1000 ){
+        //     count = 1000;
+        // }else{
+        //     count = 10000; bai boi bai boy buy boy
+        // }
+        if( differ < 10000 ){
+            count = differ;
+        }else{
+            count = 10000;
+        }
+        var page = Math.floor( start / count ) + 1;
+        var startIndex = start % count;
+        var endIndex = end % count;
+        var loaded = (page - 1)*count;
+        var list = [];
+        do{
+            var promise = o2.Actions.load("x_query_assemble_surface").StatementAction.executeV2(
+                this.options.statementId || this.options.statementName || this.options.statementAlias ||
+                this.json.statementId || this.json.statementName || this.json.statementAlias,
+                "data", page, count, body);
+            list.push(promise);
+            loaded = loaded + count;
+            page = page + 1;
+        }while( end > loaded );
+        var result = [];
+        Promise.all( list ).then(function (arr) {
+            arr.each(function (json, i) {
+                var data = json.data;
+                var length = json.data.length;
+                if( i === 0 && i === list.length - 1 ){
+                    data.splice( 0, startIndex );
+                    if( length > endIndex && endIndex > 0 ){
+                        data.splice( endIndex - startIndex , length - endIndex );
+                    }
+                }else if( i === 0 ){
+                    data.splice( 0, startIndex );
+                }else if( i=== list.length - 1 ){
+                    if( length > endIndex && endIndex > 0 )data.splice( endIndex, length - endIndex );
+                }
+                result.push(data);
+            });
+            if( callback )callback(result);
+        });
+
     },
     getDataByPath: function (obj, path) {
         var pathList = path.split(".");

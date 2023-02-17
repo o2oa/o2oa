@@ -406,7 +406,7 @@ MWF.xApplication.process.Xform.Checkbox = MWF.APPCheckbox =  new Class(
                 inputs.each(function(input){
                     if (input.checked){
                         var v = input.get("value");
-                        if (v) value.push(v || "");
+                        value.push(v || "");
                     }
                 });
             }

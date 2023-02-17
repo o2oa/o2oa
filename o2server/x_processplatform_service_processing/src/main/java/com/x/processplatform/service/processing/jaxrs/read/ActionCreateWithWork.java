@@ -74,7 +74,6 @@ class ActionCreateWithWork extends BaseAction {
 							Date now = new Date();
 							o.setStartTime(now);
 							o.setStartTimeMonth(DateTools.format(now, DateTools.format_yyyyMM));
-							o.setViewed(false);
 							o.setWork(work.getId());
 							o.setActivity(work.getActivity());
 							o.setActivityName(work.getActivityName());

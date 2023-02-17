@@ -1005,26 +1005,39 @@ MWF.xApplication.portal.PageDesigner.Module.Page = MWF.PCPage = new Class({
         return css;
     },
     reloadCss: function(){
-        cssText = (this.json.css) ? this.json.css.code : "";
+        var cssText = (this.json.css) ? this.json.css.code : "";
         //var head = (document.head || document.getElementsByTagName("head")[0] || document.documentElement);
 
-        var styleNode = $("style"+this.json.id);
+        var styleNode = $("design_style"+this.json.id);
         if (styleNode) styleNode.destroy();
         if (cssText){
             cssText = this.parseCSS(cssText);
             var rex = new RegExp("(.+)(?=\\{)", "g");
             var match;
             var id = this.json.id.replace(/\-/g, "");
+            var prefix = ".css" + id + " ";
+
             while ((match = rex.exec(cssText)) !== null) {
-                var prefix = ".css" + id + " ";
-                var rule = prefix + match[0];
-                cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
-                rex.lastIndex = rex.lastIndex + prefix.length;
+            var rulesStr = match[0];
+				if (rulesStr.indexOf(",")!=-1){
+					var rules = rulesStr.split(/\s*,\s*/g);
+					rules = rules.map(function(r){
+						return prefix + r;
+					});
+					var rule = rules.join(", ");
+					cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
+					rex.lastIndex = rex.lastIndex + (prefix.length*rules.length);
+
+				}else{
+                    var rule = prefix + match[0];
+                    cssText = cssText.substring(0, match.index) + rule + cssText.substring(rex.lastIndex, cssText.length);
+                    rex.lastIndex = rex.lastIndex + prefix.length;
+                }
             }
 
             var styleNode = document.createElement("style");
             styleNode.setAttribute("type", "text/css");
-            styleNode.id="style"+this.json.id;
+            styleNode.id="design_style"+this.json.id;
             styleNode.inject(this.container, "before");
 
             if(styleNode.styleSheet){
