@@ -13,37 +13,36 @@ import com.x.processplatform.assemble.surface.ThisApplication;
 import com.x.processplatform.core.entity.content.Work;
 
 class ActionProcessing extends BaseAction {
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionProcessing.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
-		ActionResult<Wo> result = new ActionResult<>();
-		Work work = null;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActionProcessing.class);
 
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			work = emc.find(id, Work.class);
-			if (null == work) {
-				throw new ExceptionWorkNotExist(id);
-			}
-			emc.beginTransaction(Work.class);
-			/* 标识数据被修改 */
-			work.setDataChanged(true);
-			emc.commit();
-		}
-		Wo wo = ThisApplication.context().applications()
-				.putQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
-						Applications.joinQueryUri("work", work.getId(), "processing"), null, work.getJob())
-				.getData(Wo.class);
-//		work = emc.find(id, Work.class);
-//		if (null != work) {
-//			wo.setId(work.getId());
-//		}
-		result.setData(wo);
-		return result;
-	}
+    ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
 
-	public static class Wo extends WoId {
+        LOGGER.debug("execute;{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
 
-	}
+        ActionResult<Wo> result = new ActionResult<>();
+        Work work = null;
+
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            work = emc.find(id, Work.class);
+            if (null == work) {
+                throw new ExceptionWorkNotExist(id);
+            }
+            emc.beginTransaction(Work.class);
+            /* 标识数据被修改 */
+            work.setDataChanged(true);
+            emc.commit();
+        }
+        Wo wo = ThisApplication.context().applications()
+                .putQuery(effectivePerson.getDebugger(), x_processplatform_service_processing.class,
+                        Applications.joinQueryUri("work", work.getId(), "processing"), null, work.getJob())
+                .getData(Wo.class);
+        result.setData(wo);
+        return result;
+    }
+
+    public static class Wo extends WoId {
+
+    }
 
 }
