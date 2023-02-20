@@ -34,6 +34,7 @@ MWF.xApplication.AttendanceV2.LP = {
     "cancel": "取消",
     "add": "添加",
     "dataError": "数据错误！",
+    "saveSuccess": "保存成功！",
 
     // 组件
     "components": {
@@ -118,16 +119,21 @@ MWF.xApplication.AttendanceV2.LP = {
     "groupForm": {
         "title": "考勤组名称",
         "titlePlaceholder": "请输入考勤组名称",
+        "titleErrorNotEmpty": "考勤组名称不能为空！",
         "num": "人数",
         "time": "考勤时间",
+        "timeErrorNotEmpty": "请选择考勤时间！",
         "participates": "参与考勤人员、组织",
         "participatesPlaceholder": "请点击选择参与考勤人员、组织",
+        "participatesErrorNotEmtpy": "参与考勤人员、组织不能为空！",
         "unParticipates": "无需参与考勤人员",
         "unParticipatesPlaceholder": "请点击选择无需参与考勤人员",
         "shift": "班次",
         "shiftPlaceholder": "请点击选择班次",
+        "shiftErrorNotEmpty": "班次不能为空！",
         "workPlace": "工作场所",
         "workPlacePlaceholder": "请选择工作场所",
+        "workPlaceErrorNotEmpty": "工作场所不能为空！",
         "fieldWork": "外勤打卡",
         "allowFieldWork": "是否允许外勤打卡",
         "requiredFieldWorkRemarks": "外勤打卡备注是否必填",
@@ -135,5 +141,6 @@ MWF.xApplication.AttendanceV2.LP = {
         "requiredCheckInDatePlaceholder": "请添加必须打卡的日期",
         "noNeedCheckInDate": "无需打卡的日期",
         "noNeedCheckInDatePlaceholder": "请添加无需打卡的日期",
+        "confirmDelete": "确认要删除这个【{name}】考勤组？",
     },
 };

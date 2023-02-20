@@ -20,7 +20,19 @@ export default content({
         };
     },
     afterRender() {
-        
+        if (this.bind.value.length > 0) {
+          let newShowValue = [];
+          for (let index = 0; index < this.bind.value.length; index++) {
+            const element = this.bind.value[index];
+            const a = element.split("@");
+            if (a && a.length == 3) {
+              newShowValue.push(a[0]+"@"+a[2]);
+            } else {
+              newShowValue.push(element);
+            }
+          }
+          this.bind.showValue = newShowValue.join(", ");
+        }
     },
     leaveIcon() {
       this.bind.showClear = false;

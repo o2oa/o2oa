@@ -2,6 +2,7 @@ package com.x.attendance.assemble.control.jaxrs.v2.group;
 
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
+import com.x.attendance.assemble.control.jaxrs.v2.ExceptionCannotRepetitive;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionNotExistObject;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionParticipateConflict;
@@ -39,6 +40,15 @@ public class ActionCreateUpdate extends BaseAction {
             Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
             if (StringUtils.isEmpty(wi.getGroupName())) {
                 throw new ExceptionEmptyParameter("考勤组名称");
+            }
+            // 名称不能相同
+            List<AttendanceV2Group> checkNameGroup = emc.listEqual(AttendanceV2Group.class, AttendanceV2Group.groupName_FIELDNAME, wi.getGroupName());
+            if (checkNameGroup != null && !checkNameGroup.isEmpty()) {
+                for (AttendanceV2Group attendanceV2Group : checkNameGroup) {
+                    if (attendanceV2Group.getGroupName().equals(wi.getGroupName()) && !attendanceV2Group.getId().equals(wi.getId())) {
+                        throw new ExceptionCannotRepetitive("考勤组名称");
+                    }
+                }
             }
             if (wi.getParticipateList() == null || wi.getParticipateList().isEmpty()) {
                 throw new ExceptionEmptyParameter("考勤打卡人员、组织");
@@ -85,6 +95,10 @@ public class ActionCreateUpdate extends BaseAction {
             if (groups != null && !groups.isEmpty()) {
                 for (String person : peopleSet) {
                     for (AttendanceV2Group oldG : groups) {
+                        // 自己不用处理
+                        if (oldG.getId().equals(wi.getId())) {
+                            continue;
+                        }
                         if (oldG.getTrueParticipantList().contains(person)) {
                             conflictPersonInOtherGroup.add(person);
                             break;
@@ -101,7 +115,12 @@ public class ActionCreateUpdate extends BaseAction {
 
             wi.setTrueParticipantList(new ArrayList<>(peopleSet));
             // 新增或更新
-            AttendanceV2Group group = Wi.copier.copy(wi);
+            AttendanceV2Group group = emc.find(wi.getId(), AttendanceV2Group.class);
+            if (group == null) { // 新增
+                group = Wi.copier.copy(wi);
+            } else { // 修改
+                Wi.copier.copy(wi, group);
+            }
             group.setOperator(effectivePerson.getDistinguishedName());
             emc.beginTransaction(AttendanceV2Group.class);
             emc.persist(group, CheckPersistType.all);

@@ -1,12 +1,14 @@
 import { component as content } from "@o2oa/oovm";
 import { lp, o2 } from "@o2oa/component";
-import { groupActionListByPaging } from "../../utils/actions";
+import { lpFormat } from "../../utils/common";
+import { groupActionListByPaging, groupAction } from "../../utils/actions";
 import oPager from "../../components/o-pager";
 import template from "./template.html";
 
 export default content({
   template,
   components: { oPager },
+  autoUpdate: true,
   bind() {
     return {
       lp,
@@ -23,7 +25,7 @@ export default content({
   },
   formatAttendanceTime(group) {
     if (group && group.shift) {
-        return group.shift.shiftName + ' '+ group.shift.properties.timeList[0].onDutyTime + ' - ' + group.shift.properties.timeList[group.shift.properties.timeList.length-1].offDutyTime;
+        return group.shift.shiftName + ' ('+ group.shift.properties.timeList[0].onDutyTime + ' - ' + group.shift.properties.timeList[group.shift.properties.timeList.length-1].offDutyTime+')';
     }
     return "";
   },
@@ -51,13 +53,45 @@ export default content({
       this.bind.pagerData.totalCount = count;
     }
   },
-  async clickEditGroup(id) {},
-  async clickDeleteGroup(id, name) {},
+  // 添加
   async addGroup() {
-    // 添加
     const content = (await import(`./editGroup/index.js`)).default;
     this.addGroupVm = await content.generate(".form", {}, this);
   },
+  // 修改
+  async clickEditGroup(id) {
+    const group = this.bind.groupList.find((g)=> g.id === id);
+    if (group) {
+      const content = (await import(`./editGroup/index.js`)).default;
+      this.addGroupVm = await content.generate(".form", {bind: {form: group}}, this);
+    }
+    
+  },
+  // 删除
+  async clickDeleteGroup(id, name) {
+    var _self = this;
+    const c = lpFormat(this.bind.lp, "groupForm.confirmDelete", { name: name });
+    o2.api.page.confirm(
+      "warn",
+      this.bind.lp.alert,
+      c,
+      300,
+      100,
+      function () {
+        _self.deleteGroup(id);
+        this.close();
+      },
+      function () {
+        this.close();
+      }
+    );
+  },
+  async deleteGroup(id) {
+    const json = await groupAction("delete", id);
+    console.debug(json);
+    this.loadGroupList();
+  },
+  // 关闭表单页面
   closeGroup() {
     if (this.addGroupVm) {
       this.addGroupVm.destroy();

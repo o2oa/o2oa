@@ -15,6 +15,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.base.core.project.tools.ListTools;
 
 import java.util.List;
 
@@ -46,6 +47,10 @@ public class ActionListByPage extends BaseAction {
             List<Wo> wos = Wo.copier.copy(list);
             if (wos != null && !wos.isEmpty()) {
                 for (Wo group : wos) {
+                    // 只需要数量，前端不需要显示整个列表
+                    group.setTrueParticipantSize(group.getTrueParticipantList().size());
+                    group.setTrueParticipantList(null);
+                    // 班次对象返回
                     AttendanceV2Shift shift = emc.find(group.getShiftId(), AttendanceV2Shift.class);
                     if (shift != null) {
                         group.setShift(shift);
@@ -77,7 +82,20 @@ public class ActionListByPage extends BaseAction {
 
     public static class Wo extends AttendanceV2Group {
 
+        @FieldDescribe("考勤成员数量")
+        private int trueParticipantSize;
+
+        @FieldDescribe("考勤组的班次对象")
         private AttendanceV2Shift shift;
+
+
+        public int getTrueParticipantSize() {
+            return trueParticipantSize;
+        }
+
+        public void setTrueParticipantSize(int trueParticipantSize) {
+            this.trueParticipantSize = trueParticipantSize;
+        }
 
         public AttendanceV2Shift getShift() {
             return shift;

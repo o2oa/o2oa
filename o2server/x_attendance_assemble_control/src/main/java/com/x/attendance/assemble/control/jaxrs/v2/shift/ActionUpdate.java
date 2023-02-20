@@ -1,6 +1,7 @@
 package com.x.attendance.assemble.control.jaxrs.v2.shift;
 
 import com.google.gson.JsonElement;
+import com.x.attendance.assemble.control.jaxrs.v2.ExceptionCannotRepetitive;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.entity.v2.AttendanceV2Shift;
 import com.x.attendance.entity.v2.AttendanceV2ShiftCheckTimeProperties;
@@ -18,6 +19,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by fancyLou on 2023/1/31.
@@ -33,6 +35,15 @@ public class ActionUpdate extends BaseAction {
             Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
             if (StringUtils.isBlank(wi.getShiftName())) {
                 throw new ExceptionEmptyParameter("班次名称");
+            }
+            // 名称不能相同
+            List<AttendanceV2Shift> checkRepetitive = emc.listEqual(AttendanceV2Shift.class, AttendanceV2Shift.shiftName_FIELDNAME, wi.getShiftName());
+            if (checkRepetitive != null && !checkRepetitive.isEmpty()) {
+                for (AttendanceV2Shift check : checkRepetitive) {
+                    if (check.getShiftName().equals(wi.getShiftName()) && !check.getId().equals(wi.getId())) {
+                        throw new ExceptionCannotRepetitive("班次名称");
+                    }
+                }
             }
             AttendanceV2ShiftCheckTimeProperties properties = wi.getProperties();
             checkShiftProperties(properties);

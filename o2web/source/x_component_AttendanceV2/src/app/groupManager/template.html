@@ -13,15 +13,15 @@
                 <th>{{$.lp.groupForm.time}}</th>
                 <th style="width: 10%;">{{$.lp.operate}}</th>
             </thead>
-            <tr oo-each="$.groupList" oo-item="group">
-                <td>{{group.value.groupName}}</td>
-                <td>{{group.value.trueParticipantList.length}}</td>
-                <td>{{ this.formatAttendanceTime(group.value) }}</td>
+            <tr oo-each="$.groupList" oo-item="g">
+                <td>{{g.value.groupName}}</td>
+                <td>{{g.value.trueParticipantSize}}</td>
+                <td>{{ $m.formatAttendanceTime(g.value) }}</td>
                 <td>
                     <span class="operator_link"
-                        @click="this.clickEditGroup(group.value.id)">修改</span>
+                        @click="this.clickEditGroup(g.value.id)">修改</span>
                     <span class="operator_link"
-                        @click="this.clickDeleteGroup(group.value.id, group.value.groupName)">删除</span>
+                        @click="this.clickDeleteGroup(g.value.id, g.value.groupName)">删除</span>
                 </td>
             </tr>
         </table>

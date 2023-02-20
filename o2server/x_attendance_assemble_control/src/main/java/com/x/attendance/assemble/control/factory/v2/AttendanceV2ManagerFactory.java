@@ -125,6 +125,20 @@ public class AttendanceV2ManagerFactory  extends AbstractFactory {
         return em.createQuery(cq.select(root).where(p)).getResultList();
     }
 
+    /**
+     * 根据工作场所id，查询使用到这个工作场所的所有考勤组
+     * @param workPlaceId
+     * @return
+     * @throws Exception
+     */
+    public List<AttendanceV2Group> listGroupWithWorkPlaceId(String workPlaceId) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(AttendanceV2Group.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<AttendanceV2Group> cq = cb.createQuery(AttendanceV2Group.class);
+        Root<AttendanceV2Group> root = cq.from(AttendanceV2Group.class);
+        Predicate p = cb.isMember(workPlaceId, root.get(AttendanceV2Group_.workPlaceIdList));
+        return em.createQuery(cq.select(root).where(p)).getResultList();
+    }
 
 
 
