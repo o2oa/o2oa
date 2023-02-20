@@ -226,10 +226,6 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
                 this.loadCommonScript(v); break;
             case "ReadLog":
                 this.loadEventsScript(v); break;
-            case "IWebOffice":
-                this.addScriptItem(v.readScript, "code", v, "readScript");
-                this.loadEventsScript(v);
-                break;
             case "WpsOffice":
                 this.addScriptItem(v.readScript, "code", v, "readScript");
                 this.loadEventsScript(v);

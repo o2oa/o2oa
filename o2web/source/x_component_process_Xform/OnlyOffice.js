@@ -147,8 +147,9 @@ MWF.xApplication.process.Xform.OnlyOffice = MWF.APPOnlyOffice =  new Class({
 
         if(this.data.appToken){
 
-            this.action.OnlyofficeAction[this.mode === "edit"?"appFileEdit":"preview"]({
+            this.action.OnlyofficeAction.appFileEdit({
                 "appToken" : this.data.appToken,
+                "mode" : this.mode,
                 "fileId" : this.documentId
             }, function( json ){
                 this.document = json.data;

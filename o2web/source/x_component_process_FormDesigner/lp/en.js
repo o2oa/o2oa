@@ -333,7 +333,6 @@ MWF.xApplication.process.FormDesigner.LP = {
         "htmledit": "Htmleditor",
         "office": "Office",
         "yozoOffice" : "yozoOffice",
-        "iWebOffice" : "iWebOffice",
         "statementSelector": "StatementSelector",
         "statement": "Statement",
         "SmartBI":"SmartBI",

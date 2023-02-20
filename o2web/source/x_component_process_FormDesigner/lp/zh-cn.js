@@ -331,7 +331,6 @@ MWF.xApplication.process.FormDesigner.LP = {
         "htmledit": "HTML编辑器",
         "office": "Office控件",
         "yozoOffice" : "永中控件",
-        "iWebOffice" : "金格控件",
         "statementSelector": "选择查询视图",
         "statement": "嵌入查询视图",
         "SmartBI":"SmartBI报表",

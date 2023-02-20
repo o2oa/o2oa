@@ -217,7 +217,6 @@ function createXFormConcatTask(path, isMin, thisOptions) {
             '!source/' + path + '/WpsOffice.js',
             '!source/' + path + '/WpsOffice2.js',
             '!source/' + path + '/YozoOffice.js',
-            '!source/' + path + '/IWebOffice.js',
             '!source/' + path + '/OnlyOffice.js',
             '!source/' + path + '/OfficeOnline.js',
             '!source/' + path + '/TinyMCEEditor.js'
