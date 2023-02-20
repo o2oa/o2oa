@@ -67,6 +67,9 @@ public class Dingding extends ConfigObject {
 	@FieldDescribe("是否启用考勤信息")
 	private Boolean attendanceSyncEnable;
 
+	@FieldDescribe("是否同步关联组织(上下级组织)")
+	private Boolean syncUnionOrg;
+
 	public static Dingding defaultInstance() {
 		return new Dingding();
 	}
@@ -87,6 +90,7 @@ public class Dingding extends ConfigObject {
 	public static final String default_scanLoginAppId = "";
 	public static final String default_scanLoginAppSecret = "";
 	public static final Boolean default_attendanceSyncEnable = false;
+	public static final Boolean default_syncUnionOrgEnable = true;
 
 	public Dingding() {
 		this.enable = default_enable;
@@ -104,6 +108,7 @@ public class Dingding extends ConfigObject {
 		this.scanLoginAppId = default_scanLoginAppId;
 		this.scanLoginAppSecret = default_scanLoginAppSecret;
 		this.attendanceSyncEnable = default_attendanceSyncEnable;
+		this.syncUnionOrg = default_syncUnionOrgEnable;
 	}
 
 	private static String cachedCorpAccessToken;
@@ -331,5 +336,13 @@ public class Dingding extends ConfigObject {
 
 	public void setEncodingAesKey(String encodingAesKey) {
 		this.encodingAesKey = encodingAesKey;
+	}
+
+	public Boolean getSyncUnionOrg() {
+		return syncUnionOrg;
+	}
+
+	public void setSyncUnionOrg(Boolean syncUnionOrg) {
+		this.syncUnionOrg = syncUnionOrg;
 	}
 }
