@@ -416,23 +416,6 @@ public class ManualProcessor extends AbstractManualProcessor {
         return results;
     }
 
-//	/**
-//	 * 获取当前参与流转的已办,同时过滤路由决策在路由中的已办.
-//	 * 
-//	 * @param aeiObjects
-//	 * @return
-//	 * @throws Exception
-//	 */
-//	private List<TaskCompleted> executingJoinInquireCheckRouteNameTaskCompleteds(AeiObjects aeiObjects)
-//			throws Exception {
-//		List<TaskCompleted> taskCompleteds = aeiObjects
-//				.getJoinInquireTaskCompletedsWithActivityToken(aeiObjects.getWork().getActivityToken());
-//		List<String> routeNames = aeiObjects.getRoutes().stream().map(Route::getName).collect(Collectors.toList());
-//		taskCompleteds = taskCompleteds.stream().filter(t -> routeNames.contains(t.getRouteName()))
-//				.collect(Collectors.toList());
-//		return taskCompleteds;
-//	}
-
     @SuppressWarnings("unchecked")
     @Deprecated(forRemoval = true, since = "8.0")
     private ManualTaskIdentityMatrix executingManualTaskIdentityMatrix(AeiObjects aeiObjects, Manual manual)
