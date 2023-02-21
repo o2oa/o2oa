@@ -1,0 +1,61 @@
+{
+  "query": "",
+  "type": "Stat",
+  "pageSize" : "20",
+  "data": {
+    "noDataText" : "未找到数据",
+   "calculate": {
+      "chart": ["bar"],
+      "isGroup": false,
+      "isAmount": false,
+      "calculateList": []
+    },
+    "selectList": [],
+    "filterList": [],
+    "orderList": [],
+    "group": {},
+    "columnList": [],
+    "events": {
+      "queryLoad" : {
+        "code": "",
+        "html": ""
+      },
+      "postLoad": {
+        "code": "",
+        "html": ""
+      },
+      "postLoadPageData" : {
+        "code": "",
+        "html": ""
+      },
+      "postLoadPage": {
+        "code": "",
+        "html": ""
+      },
+      "queryLoadItemRow": {
+        "code": "",
+        "html": ""
+      },
+      "postLoadItemRow": {
+        "code": "",
+        "html": ""
+      },
+      "selectRow" : {
+        "code": "",
+        "html": ""
+      },
+      "unselectRow" : {
+        "code": "",
+        "html": ""
+      },
+      "export": {
+        "code": "",
+        "html": ""
+      },
+      "exportRow": {
+        "code": "",
+        "html": ""
+      }
+    }
+  }
+}

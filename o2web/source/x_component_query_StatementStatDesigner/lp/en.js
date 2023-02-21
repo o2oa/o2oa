@@ -8,7 +8,8 @@ MWF.xApplication.query.StatementStatDesigner.LP = Object.merge( MWF.xApplication
     "newStatement": "New StatementStat",
     "unCategory": "Uncategorized",
     "statement": "StatementStat",
-
+    "noStatNotice": "Statistics not created, please create them first!",
+    "stat": "Statistics",
     "propertyTemplate": {
 
     }

@@ -3,103 +3,15 @@ MWF.xApplication.query = MWF.xApplication.query || {};
 MWF.xApplication.query.StatementStatDesigner = MWF.xApplication.query.StatementStatDesigner || {};
 MWF.APPDSMSD = MWF.xApplication.query.StatementStatDesigner;
 
+MWF.xDesktop.requireApp("query.StatementDesigner", "Statement", null, false);
 MWF.xDesktop.requireApp("query.StatementStatDesigner", "lp." + MWF.language, null, false);
 MWF.xDesktop.requireApp("query.StatementStatDesigner", "Property", null, false);
-MWF.xDesktop.requireApp("query.ViewDesigner", "View", null, false);
-o2.require("o2.widget.JavascriptEditor", null, false);
-o2.require("o2.widget.UUID", null, false);
 
 
 MWF.xApplication.query.StatementStatDesigner.StatementStat = new Class({
-    Extends: MWF.widget.Common,
+    Extends: MWF.xApplication.query.StatementDesigner.Statement,
     Implements: [Options, Events],
-    options: {
-        "style": "default",
-        "isView": false,
-        "showTab": true,
-        "propertyPath": "../x_component_query_StatementDesigner/$Statement/statement.html"
-    },
-    initialize: function (designer, data, options) {
-        this.setOptions(options);
 
-        this.path = "../x_component_query_StatementDesigner/$Statement/";
-        this.cssPath = "../x_component_query_StatementDesigner/$Statement/" + this.options.style + "/css.wcss";
-
-        this._loadCss();
-
-        this.designer = designer;
-        this.data = data;
-        this.parseData();
-
-        this.node = this.designer.designNode;
-        this.areaNode = new Element("div", {"styles": {"height": "100%", "overflow": "auto"}});
-
-        //this.statementRunNode = this.designer.designerStatementArea;
-
-        if (this.designer.application) this.data.applicationName = this.designer.application.name;
-        if (this.designer.application) this.data.application = this.designer.application.id;
-
-        this.isNewStatement = (this.data.id) ? false : true;
-
-        this.view = this;
-
-        this.autoSave();
-        this.designer.addEvent("queryClose", function () {
-            if (this.autoSaveTimerID) window.clearInterval(this.autoSaveTimerID);
-        }.bind(this));
-    },
-    parseData: function () {
-        this.json = this.data;
-        if (!this.json.type) this.json.type = "select";
-        if (!this.json.format) this.json.format = "jpql";
-        if (!this.json.entityCategory) this.json.entityCategory = "official";
-        if (!this.json.entityClassName) this.json.entityClassName = ""; //"com.x.processplatform.core.entity.content.Task";
-    },
-    autoSave: function () {
-        this.autoSaveTimerID = window.setInterval(function () {
-            if (!this.autoSaveCheckNode) this.autoSaveCheckNode = this.designer.contentToolbarNode.getElement("#MWFAutoSaveCheck");
-            if (this.autoSaveCheckNode) {
-                if (this.autoSaveCheckNode.get("checked")) {
-                    this.save();
-                }
-            }
-        }.bind(this), 60000);
-    },
-    getDefaultEditorData: function(){
-        return {
-            "javascriptEditor": {
-                "monaco_theme": "vs",
-                "fontSize" : "12px",
-                "editor": "monaco"
-            }
-        };
-        // return {
-        //     "javascriptEditor": {
-        //         "theme": "tomorrow",
-        //         "fontSize" : "12px",
-        //         "editor": "ace"
-        //     }
-        // };
-    },
-    getEditorTheme: function(callback){
-        if (!o2.editorData){
-            o2.UD.getData("editor", function(json){
-                if (json.data){
-                    o2.editorData = JSON.decode(json.data);
-                }else{
-                    o2.editorData = this.getDefaultEditorData();
-                }
-                if (callback) callback();
-            }.bind(this));
-        }else{
-            if (callback) callback();
-        }
-    },
-    load : function(){
-        this.getEditorTheme( function () {
-            this._load();
-        }.bind(this))
-    },
     _load: function () {
 
         // this.setAreaNodeSize();
@@ -140,11 +52,7 @@ MWF.xApplication.query.StatementStatDesigner.StatementStat = new Class({
         this.showProperty();
         this.designer.setDesignerStatementResize();
     },
-    unSelected: function () {
-        this.currentSelectedModule = null;
-        this.isSelected = false;
-        this.hideProperty();
-    },
+
     showProperty: function () {
         if (!this.property) {
             this.property = new MWF.xApplication.query.StatementStatDesigner.Property(this, this.designer.designerContentArea, this.designer, {
