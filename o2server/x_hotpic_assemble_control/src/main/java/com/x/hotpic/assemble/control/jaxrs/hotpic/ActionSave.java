@@ -35,10 +35,6 @@ public class ActionSave extends BaseAction {
 			throw new InfoTitleEmptyException();
 		}
 
-		if (wi.getUrl() == null || wi.getUrl().isEmpty()) {
-			throw new InfoUrlEmptyException();
-		}
-
 		try ( EntityManagerContainer emc = EntityManagerContainerFactory.instance().create() ) {
 			HotPictureInfo hotPictureInfo = null;
 			if(StringUtils.isNotBlank(wi.getId())){
@@ -52,7 +48,6 @@ public class ActionSave extends BaseAction {
 				hotPictureInfo.setPicId(wi.getPicId());
 				hotPictureInfo.setSummary(wi.getSummary());
 				hotPictureInfo.setTitle(wi.getTitle());
-				hotPictureInfo.setUrl(wi.getUrl());
 				emc.check(hotPictureInfo, CheckPersistType.all);
 			}else{
 				hotPictureInfo = new HotPictureInfo();
@@ -62,7 +57,6 @@ public class ActionSave extends BaseAction {
 				hotPictureInfo.setPicId(wi.getPicId());
 				hotPictureInfo.setSummary(wi.getSummary());
 				hotPictureInfo.setTitle(wi.getTitle());
-				hotPictureInfo.setUrl(wi.getUrl());
 				emc.persist(hotPictureInfo, CheckPersistType.all);
 			}
 			emc.commit();
