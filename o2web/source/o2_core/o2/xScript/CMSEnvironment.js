@@ -1826,8 +1826,8 @@ MWF.xScript.CMSEnvironment = function(ev){
             op.appId = "process.Work"+(op.workId || op.workCompletedId);
             return layout.desktop.openApplication(this.event, "process.Work", op);
         },
-        "openJob": function(id, choice, options){
-            var workData = null;
+        "openJob": function(id, choice, options, callback){
+            var workData = null, handel;
             o2.Actions.get("x_processplatform_assemble_surface").listWorkByJob(id, function(json){
                 if (json.data) workData = json.data;
             }.bind(this), null, false);
@@ -1859,7 +1859,10 @@ MWF.xScript.CMSEnvironment = function(ev){
                             action.store("work", work);
                             action.addEvent("click", function(e){
                                 var work = e.target.retrieve("work");
-                                if (work) this.openWork(work.id, null, work.title, options);
+                                if (work){
+                                   handel =  this.openWork(work.id, null, work.title, options);
+                                   if(callback)callback( handel );
+                                }
                                 dlg.close();
                             }.bind(this));
 
@@ -1885,7 +1888,10 @@ MWF.xScript.CMSEnvironment = function(ev){
                             action.store("work", work);
                             action.addEvent("click", function(e){
                                 var work = e.target.retrieve("work");
-                                if (work) this.openWork(null, work.id, work.title, options);
+                                if (work){
+                                    handel =  this.openWork(null, work.id, work.title, options);
+                                    if(callback)callback( handel );
+                                }
                                 dlg.close();
                             }.bind(this));
 
@@ -1907,12 +1913,16 @@ MWF.xScript.CMSEnvironment = function(ev){
                             ]
                         });
                     }else{
-                        if (workData.workList.length){
-                            var work =  workData.workList[0];
-                            return this.openWork(work.id, null, work.title, options);
-                        }else{
-                            var work =  workData.workCompletedList[0];
-                            return this.openWork(null, work.id, work.title, options);
+                        if (workData.workList.length) {
+                            var work = workData.workList[0];
+                            handel = this.openWork(work.id, null, work.title, options);
+                            if(callback)callback(handel);
+                            return handel;
+                        } else {
+                            var work = workData.workCompletedList[0];
+                            handel = this.openWork(null, work.id, work.title, options);
+                            if(callback)callback(handel);
+                            return handel;
                         }
                     }
                 }
