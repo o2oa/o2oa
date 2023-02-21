@@ -35,6 +35,9 @@ MWF.xApplication.Selector.Person = new Class({
         "selectSingleItem" : false, //当只有一个候选项的时候，是否默认选中
         "hiddenEmptyCategory" : false,
 
+        "inViewCategory": "", //默认在可视区域的分类
+        "inViewItem": "", //默认在可视区域的item
+
         "flatCategory" : false, //扁平化展现分类,
         "selectType" : "person",
 
@@ -1477,6 +1480,9 @@ MWF.xApplication.Selector.Person = new Class({
         if( this.options.selectSingleItem ){
             this.selectSingleItem()
         }
+
+        this.scrollToView();
+
         this.fireEvent("afterLoadSelectItem", [this]);
     },
     selectSingleItem: function(){
@@ -1583,6 +1589,19 @@ MWF.xApplication.Selector.Person = new Class({
         }else{
             _self.fireEvent("afterCheckSelectSingleItem",[_self])
         }
+    },
+    scrollToView: function(){
+        var node;
+        if( this.inViewItem && this.inViewItem.node ){
+            node = this.inViewItem.node;
+        }else if( this.inViewCategory && this.inViewCategory.node ){
+            node = this.inViewCategory.node;
+        }
+        if( !node )return;
+        while( node.offsetParent === null ){
+            node = node.getParent();
+        }
+        node.scrollIntoView();
     },
     setSize : function(){
 
@@ -1823,6 +1842,33 @@ MWF.xApplication.Selector.Person = new Class({
     },
     addSelectedCount: function( itemOrItemSelected, count ){
 
+    },
+    checkItemInView: function (item) {
+        if( !this.options.inViewItem )return;
+        if( !item || !item.data )return;
+        if( this.checkMatch("inViewItemMap", this.options.inViewItem, item.data) ){
+            this.inViewItem = item;
+        }
+    },
+    checkCategoryInView: function ( category ) {
+        if( !this.options.inViewCategory )return;
+        if( !category || !category.data )return;
+        if( this.checkMatch("inViewCategoryMap", this.options.inViewCategory, category.data) ){
+            this.inViewCategory = category;
+        }
+     },
+    checkMatch: function (mapName, e, object) {
+        if( !this[mapName] ){
+            this[mapName] = {};
+            this[mapName][ typeOf( e ) === "string" ? e : ( e.distinguishedName || e.id || e.unique || e.employee || e.levelName) ] = true;
+        }
+        var map = this[mapName];
+        var d = object;
+        return ( d.distinguishedName && map[ d.distinguishedName ] ) ||
+            ( d.id && map[ d.id ] ) ||
+            ( d.unique && map[ d.unique ] ) ||
+            ( d.employee && map[ d.employee ] ) ||
+            ( d.levelName && map[ d.levelName ] );
     }
     //checkClickFlatCategoryItem : function(categoryItemNode, itemNodeContainer){
     //    if( !this.flatCategorySeqObj_current ){
@@ -1973,6 +2019,8 @@ MWF.xApplication.Selector.Person.Item = new Class({
         this.setEvent();
 
         this.check();
+
+        this.selector.checkItemInView( this );
 
         if( this.clazz === "Item" ) {
             this.selector.fireEvent("postLoadItem", [this]);
@@ -2469,6 +2517,7 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
             }).inject(this.node, "after");
             // this.children.hide();
         }
+        this.selector.checkCategoryInView( this );
     },
     active: function(){
         this.notActive = false;
@@ -2880,7 +2929,8 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
         }
     },
     afterLoad: function(){
-        if (this.level===1) this.clickItem();
+        var notUseFx = this.selector.options.inViewCategory || this.selector.options.inViewItem;
+        if (this.level===1) this.clickItem( null, notUseFx );
     },
     clickFlatCategoryItem : function( callback, hidden ){
         if (this._hasChildItem()){
@@ -2906,33 +2956,44 @@ MWF.xApplication.Selector.Person.ItemCategory = new Class({
             if(callback)callback()
         }
     },
-    clickItem: function( callback ){
+    clickItem: function( callback, notUseFx ){
         if (this._hasChild() || this.selector.options.expandEmptyCategory ){
-            if (!this.fx){
+            if (!this.fx && !notUseFx){
                 this.fx = new Fx.Tween(this.children, {
                     "duration": 200
 //                "transition": Fx.Transitions.Cubic.easeIn
                 });
             }
-            if (!this.fx.isRunning()){
+            if ( !this.fx || !this.fx.isRunning()){
                 var display = this.children.getStyle("display");
                 if (display === "none"){
                     this.children.setStyles({
                         "display": "block",
                         "height": "0px"
                     });
-                    this.fx.start("height", "0px", ""+this.childrenHeight+"px");
+                    if( notUseFx ){
+                        this.children.setStyle("height", ""+this.childrenHeight+"px");
+                    }else{
+                        this.fx.start("height", "0px", ""+this.childrenHeight+"px");
+                    }
                     this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_expand);
                     this.isExpand = true;
                     this.selector.fireEvent("expand", [this] );
                 }else{
-                    if (!this.childrenHeight) this.childrenHeight = this.children.getStyle("height").toFloat();
-                    this.fx.start("height", ""+this.childrenHeight+"px", "0px").chain(function(){
+                    if( notUseFx ){
                         this.children.setStyles({
                             "display": "none",
                             "height": "0px"
                         });
-                    }.bind(this));
+                    }else {
+                        if (!this.childrenHeight) this.childrenHeight = this.children.getStyle("height").toFloat();
+                        this.fx.start("height", "" + this.childrenHeight + "px", "0px").chain(function () {
+                            this.children.setStyles({
+                                "display": "none",
+                                "height": "0px"
+                            });
+                        }.bind(this));
+                    }
                     this.actionNode.setStyles(this.selector.css.selectorItemCategoryActionNode_collapse);
                     this.isExpand = false;
                     this.selector.fireEvent("collapse", [this] );

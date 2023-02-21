@@ -1,12 +1,40 @@
-.o2_query_ssDesignerNode {
+.o2_query_SSDNode {
     height : 360px;
     overflow: hidden;
     padding: 20px;
     box-shadow: 0 0 10px #999999;
     background: #f3f3f3;
     border-bottom: 1px solid #cccccc;
+    width: 100%
 }
-
+.o2_query_SSDStatementListNode{
+    float: left;
+    width: 300px;
+    height: 100%
+}
+.o2_query_SSDStatementListTitleNode{
+    height: 40px;
+    line-height: 40px;
+}
+.o2_query_SSDStatementListTitleTextNode{
+    line-height: 40px;
+    background: #f7f7f7;
+    padding-left: 10px;
+    font-size: 15px;
+}
+.o2_query_SSDStatementListTitleActionNode{
+    float: right;
+    width: 30px;
+    height: 40px;
+    cursor: pointer;
+    background: url("../x_component_query_StatementStatDesigner/$StatementStat/default/action/plus.png") no-repeat center center;
+}
+.o2_query_SSDStatementListContentNode{
+    height: calc( 100% - 36px );
+}
+.o2_query_SSDStatementNode{
+    width: calc( 100% - 300px );
+}
 
 
 .o2_statement_statementRunNode {

@@ -5,9 +5,10 @@ MWF.xApplication.query.ViewDesigner = MWF.xApplication.query.ViewDesigner || {};
 MWF.xDesktop.requireApp("query.StatementDesigner", "lp."+MWF.language, null, false);
 MWF.xApplication.query.StatementStatDesigner.LP = Object.merge( MWF.xApplication.query.StatementDesigner.LP, {
     "title": "查询统计",
-    "newStatement": "新建查询统计",
+    "newStatementStat": "新建查询统计",
     "unCategory": "未分类",
-    "statement": "查询统计",
+    "statement": "查询配置",
+    "statementStat": "查询统计",
     "noStatNotice": "未创建统计，请先创建统计！",
     "stat": "统计",
     "propertyTemplate": {

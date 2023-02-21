@@ -212,7 +212,17 @@ MWF.xApplication.query.StatementStatDesigner.StatementStat = new Class({
     //     }.bind(this));
     // },
     loadStatement: function(){
+        this.loadStatementHtml(function () {
 
+        });
+    },
+    selectStatement: function(){
+        debugger;
+        o2.requireApp("Selector", "package", null, false);
+        new MWF.O2Selector( this.designer.content, {
+            type: "QueryStatement",
+            inViewCategory: this.data.application
+        })
     },
     // loadStatement: function () {
     //     this.loadStatementHtml(function () {
@@ -468,16 +478,17 @@ MWF.xApplication.query.StatementStatDesigner.StatementStat = new Class({
     // },
 
 
-    // loadStatementHtml: function (callback) {
-    //     this.areaNode.loadAll({
-    //         "css": this.path + this.options.style + "/statement.css",
-    //         "html": "../x_component_query_StatementStatDesigner/$StatementStat/statementDesigner.html"
-    //     }, {
-    //         "bind": {"lp": this.designer.lp, "data": this.data}
-    //     }, function () {
-    //         if (callback) callback();
-    //     }.bind(this));
-    // },
+    loadStatementHtml: function (callback) {
+        this.areaNode.loadAll({
+            "css": this.path + this.options.style + "/statement.css",
+            "html": this.path + "statementDesigner.html"
+        }, {
+            "bind": {"lp": this.designer.lp, "data": this.data},
+            "module": this
+        }, function () {
+            if (callback) callback();
+        }.bind(this));
+    },
     loadStatementRunner: function () {
         o2.require("o2.widget.JavascriptEditor", function () {
             this.jsonEditor = new o2.widget.JavascriptEditor(this.runJsonNode, {

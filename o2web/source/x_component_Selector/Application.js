@@ -25,6 +25,7 @@ MWF.xApplication.Selector.Application = new Class({
                     var category = this._newItem(data, this, this.itemAreaNode);
                     this.items.push( category );
                 }.bind(this));
+                if( this.scrollToView )this.scrollToView();
             }.bind(this));
         }else{
             o2.Actions.load("x_processplatform_assemble_surface").ApplicationAction.listWithPerson(function(json){
@@ -32,6 +33,7 @@ MWF.xApplication.Selector.Application = new Class({
                     var category = this._newItem(data, this, this.itemAreaNode);
                     this.items.push( category );
                 }.bind(this));
+                if( this.scrollToView )this.scrollToView();
             }.bind(this));
         }
     },

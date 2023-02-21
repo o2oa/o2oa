@@ -127,7 +127,7 @@ MWF.xApplication.query.StatementStatDesigner.Main = new Class({
     loadStatementListNodes: function(){
         this.statementListTitleNode = new Element("div", {
             "styles": this.css.statementListTitleNode,
-            "text": this.lp.statement
+            "text": this.lp.statementStat
         }).inject(this.statementListNode);
 
         this.statementListResizeNode = new Element("div", {"styles": this.css.statementListResizeNode}).inject(this.statementListNode);
@@ -274,7 +274,7 @@ MWF.xApplication.query.StatementStatDesigner.Main = new Class({
             }.bind(this));
         }.bind(this));
     },
-getFormToolbarHTML: function(callback){
+    getFormToolbarHTML: function(callback){
         var toolbarUrl = this.path+this.options.style+"/toolbars.html";
         var r = new Request.HTML({
             url: toolbarUrl,

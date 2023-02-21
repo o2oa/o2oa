@@ -37,6 +37,7 @@ MWF.xApplication.Selector.QueryStatement = new Class({
                     }
                 }.bind(this));
             }
+            if( this.scrollToView )this.scrollToView();
         }.bind(this));
     },
 
