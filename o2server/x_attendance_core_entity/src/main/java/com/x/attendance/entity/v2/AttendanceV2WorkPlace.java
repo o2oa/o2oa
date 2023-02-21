@@ -57,14 +57,13 @@ public class AttendanceV2WorkPlace extends SliceJpaObject {
 	@FieldDescribe("场所名称")
 	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
 			+ placeName_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
+	@CheckPersist(allowEmpty = false)
 	private String placeName = "";
 
 	public static final String placeAlias_FIELDNAME = "placeAlias";
 	@FieldDescribe("场所别名")
 	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
 			+ placeAlias_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
 	private String placeAlias = "";
 
 	public static final String creator_FIELDNAME = "creator";
@@ -77,25 +76,21 @@ public class AttendanceV2WorkPlace extends SliceJpaObject {
 	public static final String longitude_FIELDNAME = "longitude";
 	@FieldDescribe("经度")
 	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + longitude_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
 	private String longitude = null;
 
 	public static final String latitude_FIELDNAME = "latitude";
 	@FieldDescribe("纬度")
 	@Column(length = JpaObject.length_32B, name = ColumnNamePrefix + latitude_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
 	private String latitude = null;
 
 	public static final String errorRange_FIELDNAME = "errorRange";
 	@FieldDescribe("误差范围")
 	@Column(name = ColumnNamePrefix + errorRange_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
 	private Integer errorRange = 200;
 
 	public static final String description_FIELDNAME = "description";
 	@FieldDescribe("说明备注")
 	@Column(length = JpaObject.length_255B, name = ColumnNamePrefix + description_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
 	private String description = null;
 
 

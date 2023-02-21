@@ -121,6 +121,7 @@ public class ActionCreateUpdate extends BaseAction {
             } else { // 修改
                 Wi.copier.copy(wi, group);
             }
+            group.setCheckType(AttendanceV2Group.CHECKTYPE_Fixed); // 目前固定
             group.setOperator(effectivePerson.getDistinguishedName());
             emc.beginTransaction(AttendanceV2Group.class);
             emc.persist(group, CheckPersistType.all);

@@ -119,7 +119,12 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 	public static class AttendanceV2Group {
 		public static final String table = "ATTEND_V2_GROUP";
 	}
-
+	public static class AttendanceV2CheckInRecord {
+		public static final String table = "ATTEND_V2_CHECKIN_RECORD";
+	}
+	public static class AttendanceV2Detail {
+		public static final String table = "ATTEND_V2_DETAIL";
+	}
 
 
 }

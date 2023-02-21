@@ -71,11 +71,22 @@ public class AttendanceV2Group extends SliceJpaObject {
 	@CheckPersist(allowEmpty = false)
 	private String groupName ;
 
+	// 考勤类型 固定班制 自由打卡 排班制  目前只有一种固定班制
+	public static final String CHECKTYPE_Fixed = "1"; // 固定班制
+	public static final String CHECKTYPE_Free = "2"; // 自由打卡
+	public static final String CHECKTYPE_Arrangement = "3"; // 排班制
+	public static final String checkType_FIELDNAME = "checkType";
+	@FieldDescribe("打卡类型 ")
+	@Column(length = AbstractPersistenceProperties.organization_name_length, name = ColumnNamePrefix
+			+ checkType_FIELDNAME)
+	@CheckPersist(allowEmpty = false)
+	private String checkType;
 
+
+	// 目前是固定班制 所以关联了班次
 	public static final String shiftId_FIELDNAME = "shiftId";
 	@FieldDescribe("关联班次.")
 	@Column(length = length_64B, name = ColumnNamePrefix + shiftId_FIELDNAME)
-	@CheckPersist(allowEmpty = false)
 	private String shiftId;
 
 
@@ -119,19 +130,19 @@ public class AttendanceV2Group extends SliceJpaObject {
 	public static final String workDateList_FIELDNAME = "workDateList";
 	@FieldDescribe("考勤工作日设置.")
 	@Column(length = length_64B, name = ColumnNamePrefix + workDateList_FIELDNAME)
-	@CheckPersist(allowEmpty = false)
-	private String workDateList; // 打卡的工作日设置  如 1;2;3;4;5 。 0-6代表周日到周六
+	
+	private String workDateList; // 打卡的工作日设置  如 1,2,3,4,5 。 0-6代表周日到周六
 
 	public static final String allowFieldWork_FIELDNAME = "allowFieldWork";
 	@FieldDescribe("是否允许外勤打卡.")
 	@Column(name = ColumnNamePrefix + allowFieldWork_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
+	
 	private Boolean allowFieldWork;
 
 	public static final String requiredFieldWorkRemarks_FIELDNAME = "requiredFieldWorkRemarks";
 	@FieldDescribe("外勤打卡备注是否必填.")
 	@Column(name = ColumnNamePrefix + requiredFieldWorkRemarks_FIELDNAME)
-	@CheckPersist(allowEmpty = true)
+	
 	private Boolean requiredFieldWorkRemarks;
 
 	public static final String workPlaceIdList_FIELDNAME = "workPlaceIdList";
@@ -166,6 +177,14 @@ public class AttendanceV2Group extends SliceJpaObject {
 	@ElementIndex(name = TABLE + noNeedCheckInDateList_FIELDNAME + ElementIndexNameSuffix)
 	private List<String> noNeedCheckInDateList;
 
+
+	public String getCheckType() {
+		return checkType;
+	}
+
+	public void setCheckType(String checkType) {
+		this.checkType = checkType;
+	}
 
 	public String getGroupName() {
 		return groupName;
