@@ -104,6 +104,37 @@
             <div class="MWFArraylist" name="data.calculate.groupSpecifiedList" title="{{$.lp.groupSpecifiedList}}"></div>
         </div>
 
+        <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">{{$.lp.executionAuthority}}</div>
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" id="processEditStarter">
+            <tr>
+                <td class="editTableTitle">{{$.lp.anonymousAccess}}:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="anonymousAccessible" text{($.anonymousAccessible===true)?'checked':''} type="radio" value="true"
+                           onclick="if(this.checked){
+                               $('text{$.pid}executePersonListTr').setStyle('display', 'none');
+                               $('text{$.pid}executeUnitListTr').setStyle('display', 'none');
+                            }"/>{{$.lp.allowed}}
+                    <input class="editTableRadio" name="anonymousAccessible" text{($.anonymousAccessible!==true)?'checked':''} type="radio" value="false"
+                           onclick="if(this.checked){
+                               $('text{$.pid}executePersonListTr').setStyle('display', '');
+                               $('text{$.pid}executeUnitListTr').setStyle('display', '');
+                            }"/>{{$.lp.disAllowed}}
+                </td>
+            </tr>
+            <tr id="text{$.pid}executePersonListTr" style="display:text{($.anonymousAccessible==true)?'none':''}">
+                <td class="editTableTitle">{{$.lp.executePerson}}:</td>
+                <td class="editTableValue">
+                    <div class="MWFPersonPerson" name="executePersonList"></div>
+                </td>
+            </tr>
+            <tr id="text{$.pid}executeUnitListTr" style="display:text{($.anonymousAccessible==true)?'none':''}">
+                <td class="editTableTitle">{{$.lp.executeUnit}}:</td>
+                <td class="editTableValue">
+                    <div class="MWFPersonUnit" name="executeUnitList"></div>
+                </td>
+            </tr>
+        </table>
+
     </div>
 
 

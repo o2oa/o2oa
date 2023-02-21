@@ -1,22 +1,21 @@
 {
   "query": "",
   "type": "Stat",
-  "pageSize" : "20",
+  "statementList": [],
+  "executePersonList": [],
+  "executeUnitList": [],
   "data": {
-    "noDataText" : "未找到数据",
-   "calculate": {
-      "chart": ["bar"],
+    "noDataText": "未找到数据",
+    "calculate": {
+      "chart": [
+        "bar"
+      ],
       "isGroup": false,
       "isAmount": false,
       "calculateList": []
     },
-    "selectList": [],
-    "filterList": [],
-    "orderList": [],
-    "group": {},
-    "columnList": [],
     "events": {
-      "queryLoad" : {
+      "queryLoad": {
         "code": "",
         "html": ""
       },
@@ -24,7 +23,7 @@
         "code": "",
         "html": ""
       },
-      "postLoadPageData" : {
+      "postLoadPageData": {
         "code": "",
         "html": ""
       },
@@ -40,11 +39,11 @@
         "code": "",
         "html": ""
       },
-      "selectRow" : {
+      "selectRow": {
         "code": "",
         "html": ""
       },
-      "unselectRow" : {
+      "unselectRow": {
         "code": "",
         "html": ""
       },

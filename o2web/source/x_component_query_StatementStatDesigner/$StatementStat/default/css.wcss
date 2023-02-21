@@ -1,0 +1,453 @@
+{
+    "statementDesignerNode": {
+        "height": "400px",
+        "padding": "20px",
+        "border-bottom" :"1px solid #cccccc"
+    },
+    "viewAreaNode": {
+        "overflow": "hidden"
+    },
+	"viewTitleNode": {
+        "height": "40px",
+        "background-color": "#EEE",
+        "border-bottom": "1px solid #999",
+        "cursor": "pointer"
+    },
+    "viewTitleNode_run": {
+        "height": "140px"
+    },
+    "viewContentScrollNode": {
+        "overflow": "hidden",
+        "border-bottom": "0px solid #999",
+        "cursor": "default"
+    },
+    "viewContentNode": {
+        "overflow": "hidden"
+    },
+    "contentLeftNode": {
+        "width": "30px",
+        "background-color": "#EEE",
+        "border-right": "1px solid #999",
+        "float": "left"
+    },
+    "contentRightNode": {
+        "width": "30px",
+        "background-color": "#EEE",
+        "border-left": "1px solid #999",
+        "float": "right"
+    },
+    "viewContentBodyNode": {
+        "overflow": "hidden",
+        "background-color": "#FFF"
+    },
+    "viewContentTableNode": {
+        "width": "100%"
+    },
+    "viewContentTrNode": {
+    },
+    "viewContentTdNode": {
+        "padding": "3px 5px",
+        "border-bottom": "1px solid #CCC",
+        "border-left": "0px solid #CCC"
+    },
+    "viewContentGroupTdNode": {
+        "padding": "3px 5px",
+        "border-bottom": "1px solid #CCC",
+        "background-color": "#F9F9F9"
+    },
+    "viewContentTdGroupNode": {
+        "overflow": "hidden",
+        "cursor": "pointer"
+    },
+    "viewContentTdGroupIconNode": {
+        "float": "left",
+        "width": "20px",
+        "height": "20px",
+        "background": "url("+"../x_component_query_ViewDesigner/$View/default/icon/right.png) center center no-repeat",
+    },
+    "viewContentTdGroupTextNode": {
+        "height": "20px",
+        "font-weight": "bold",
+        "line-height": "20px",
+        "margin-left": "20px"
+    },
+
+    "refreshNode": {
+        "width": "30px",
+        "height": "40px",
+        "background": "url("+"../x_component_query_ViewDesigner/$View/default/icon/refresh.png) center center no-repeat",
+        "float": "left"
+    },
+    "addColumnNode": {
+        "width": "29px",
+        "height": "40px",
+        "background": "url("+"../x_component_query_ViewDesigner/$View/default/icon/addColumn.png) center center no-repeat",
+        "float": "right"
+    },
+    "addColumnNode_run": {
+        "width": "29px",
+        "height": "140px",
+        "background-position-y": "110px",
+        "float": "right"
+    },
+
+    "viewTitleContentNode": {
+        "margin": "0px 30px",
+        "height": "40px"
+    },
+    "viewTitleTableNode": {
+        "width": "100%",
+        "height": "30px",
+        "border-left": "1px solid #BBB",
+        "border-right": "1px solid #BBB"
+    },
+    "viewTitleTrNode": {
+        "height": "40px",
+        "line-height": "40px"
+    },
+    "viewTitleColumnAreaNode": {
+        "padding": "0px",
+        "background-color": "#EEE",
+        "border-right": "1px solid #BBB",
+        "border-left": "1px solid #FFF",
+        "white-space": "nowrap"
+    },
+
+    "viewTitleColumnNode": {
+        "background-color": "#EEE",
+        "height": "38px",
+        "overflow": "hidden",
+        "border": "1px solid #EEE"
+    },
+    "viewTitleColumnNode_error": {
+        "background-color": "#ffc0cb",
+        "height": "38px",
+        "overflow": "hidden",
+        "border": "1px solid #EEE"
+    },
+    "viewTitleColumnTextNode":{
+        "padding": "0px 10px",
+        "height": "38px",
+        "white-space": "nowrap"
+    },
+    "viewTitleColumnNode_selected": {
+        "background-color": "#FFF",
+        "height": "38px",
+        "border": "1px solid red",
+        "white-space": "nowrap"
+    },
+    "viewTitleColumnNode_over": {
+        "background-color": "#F9F9F9",
+        "height": "38px",
+        "border": "1px dotted blue",
+        "white-space": "nowrap"
+    },
+
+    "propertyTabNode": {
+        "font-size": "12px",
+        "margin-top": "5px"
+    },
+
+    "cloumnListIconNode": {
+        "height": "26px",
+        "width": "26px",
+        "float": "left",
+        "background": "url("+"../x_component_query_ViewDesigner/$View/default/icon/column.png) center center no-repeat"
+    },
+    "cloumnListTextNode": {
+        "margin-left": "26px"
+    },
+
+
+
+    "editTable": {
+
+    },
+    "editTableTitle": {
+        "width": "60px",
+        "font-weight": "bold",
+        "font-size": "12px",
+        "height": "24px",
+        "line-height": "24px",
+        "border-bottom": "1px dashed #CCC"
+    },
+    "editTableValue": {
+        "height": "24px",
+        "line-height": "24px",
+        "border-bottom": "1px dashed #CCC"
+    },
+    "editTableInput": {
+        "width": "98%",
+        "border-top": "1px solid #DDD",
+        "border-left": "1px solid #DDD",
+        "border-bottom": "1px solid #EEE",
+        "border-right": "1px solid #EEE"
+    },
+    "editTableInputDate": {
+        "width": "98%",
+        "border-top": "1px solid #DDD",
+        "border-left": "1px solid #DDD",
+        "border-bottom": "1px solid #EEE",
+        "border-right": "1px solid #EEE"
+    },
+    "editTableInputNoWidth": {
+        "border-top": "1px solid #DDD",
+        "border-left": "1px solid #DDD",
+        "border-bottom": "1px solid #EEE",
+        "border-right": "1px solid #EEE"
+    },
+    "editTableTextarea": {
+        "width": "98%",
+        "height": "100px",
+        "border-top": "1px solid #DDD",
+        "border-left": "1px solid #DDD",
+        "border-bottom": "1px solid #EEE",
+        "border-right": "1px solid #EEE"
+    },
+    "columnFilterInputArea": {
+        "padding": "5px",
+        "overflow": "hidden"
+    },
+    "columnFilterAddNode": {
+        "border": "1px solid #999",
+        "background-color": "#EEE",
+        "width": "35px",
+        "-webkit-user-select": "none",
+        "-moz-user-select": "none",
+        "padding": "0px 8px",
+        "margin-top": "56px",
+        "height": "20px",
+        "line-height": "20px",
+        "float": "left",
+        "text-align": "right",
+        "cursor": "pointer",
+        "font-size": "12px",
+        "background": "url("+"../x_component_query_ViewDesigner/$View/default/icon/add.png) 3px center no-repeat"
+    },
+    "columnFilterValueNode": {
+        "width": "95%",
+        "height": "50px",
+        "border": "1px solid #999",
+        "margin-top": "5px",
+        "overflow": "auto"
+    },
+    "filterTableTitle": {
+        "height": "24px",
+        "background-color": "#EEE",
+        "line-height": "24px",
+        "color": "#000",
+        "font-size": "12px"
+    },
+    "filterTableTd": {
+        "background-color": "#FFF",
+        "color": "#333",
+        "font-size": "12px"
+    },
+    "filterAddActionNode":{
+        "background": "url("+"../x_component_query_ViewDesigner/$View/default/icon/add.png) 3px center no-repeat",
+        "height": "24px",
+        "cursor": "pointer"
+    },
+    "filterDelActionNode":{
+        "background": "url("+"../x_component_query_ViewDesigner/$View/default/icon/del.png) 3px center no-repeat",
+        "height": "24px",
+        "cursor": "pointer"
+    },
+
+    "actionNodeStyles": {
+        "width": "16px",
+        "height": "16px",
+        "margin-left": "2px",
+        "margin-right": "2px",
+        "float": "left",
+        "border": "1px solid #F1F1F1",
+        "cursor": "pointer"
+    },
+    "actionAreaNode": {
+        "display": "none",
+        //	"width": 18*this.options.actions.length,
+        "position": "absolute",
+        "background-color": "#F1F1F1",
+        "padding": "1px",
+        "padding-right": "0px",
+        "border": "1px solid #AAA",
+        "box-shadow": "0px 2px 5px #999",
+        "opacity": 1,
+        "z-index": 100
+    },
+
+    "moveFlagNode": {
+        "height": "40px",
+        //"border": "0px dashed #333",
+        "border-right": "1px solid #BBB",
+        "border-left": "1px solid #FFF",
+        "overflow": "hidden",
+        "display": "block",
+        "background": "#ffa200"
+    },
+    "applicationSelectTitle": {
+        "height": "24px",
+        "line-height": "24px",
+        "background-color": "#EEE",
+        "border-top": "2px solid #999",
+        "text-align": "center"
+    },
+    "applicationSelectContent": {
+        "min-height": "20px",
+        "border-top": "1px solid #999",
+        "padding": "5px 5px 0px 0px",
+        "overflow": "hidden"
+    },
+    "applicationSelectItem": {
+        "border": "1px solid #666",
+        "color": "#FFF",
+        "padding": "0px 5px",
+        "margin-left": "5px",
+        "margin-bottom": "5px",
+        "background-color": "#666",
+        "float": "left"
+    },
+    "applicationSelectAction": {
+        "height": "20px",
+        "margin": "10px auto",
+        "text-align": "center",
+        "width": "70px",
+        "border": "1px solid #999",
+        "background-color": "#F6F6F6",
+        "cursor": "pointer"
+    },
+    "columnHideFlagNode": {
+        "height": "40px",
+        "background": "url("+"../x_component_query_ViewDesigner/$View/default/icon/hidden.png) right center no-repeat",
+        "position": "relative",
+        "margin-right": "8px",
+        "top": "-38px"
+    },
+    "propertyRefreshFormNode": {
+        "width": "24px",
+        "height": "24px",
+        "float": "right",
+        "background": "url("+"../x_component_query_ViewDesigner/$View/default/icon/refresh.png) no-repeat center center",
+        "cursor": "pointer"
+    },
+    "viewGroupTitleNode": {
+        "padding": "0px",
+        "background-color": "#F1F1F1",
+        "border-right": "1px solid #BBB",
+        "border-left": "1px solid #FFF",
+        "white-space": "nowrap"
+    },
+    "viewGroupTitleColumnNode": {
+        "background-color": "#E6F3FF",
+        "height": "38px",
+        "overflow": "hidden",
+        "border": "1px solid #EEE"
+    },
+    "viewGroupTitleColumnTextNode": {
+        "padding": "0px 10px",
+        "height": "38px",
+        "font-weight": "bold",
+        "color": "#1133FF",
+        "white-space": "nowrap"
+    },
+    "columnListTable": {
+        "width": "100%",
+    },
+    "columnListEditTr": {
+        "height": "20px",
+        "background-color": "#f3f3f3",
+    },
+    "cloumnListNode": {
+        "height": "20px",
+        "background-color": "#f3f3f3",
+    },
+    "cloumnListNode_over":{
+        "background-color": "#eaf1fa"
+    },
+    "cloumnListNode_selected": {
+        "background-color": "#cce2ff"
+    },
+    "columnListHeaderTd": {
+        "height": "20px",
+        "line-height": "20px",
+        "font-weight": "bold",
+        "background-color": "#eaf1fa",
+        "text-align": "center",
+        "border-bottom": "1px dotted #999",
+        "border-right": "1px dotted #999"
+    },
+    "columnListTd": {
+        "height": "20px",
+        "line-height": "20px",
+        "border-bottom": "1px dotted #999",
+        "border-right": "1px dotted #999"
+    },
+    "columnListEditInput": {
+        "width": "98%",
+        "border": "0px",
+        "height": "18px",
+        "line-height": "20px",
+    },
+    "columnListEditModifyInput": {
+        "width": "98%",
+        "border": "0px",
+        "height": "18px",
+        "line-height": "20px",
+        "background-color": "#ffffff"
+    },
+    "columnListEditSelect": {
+        "border": "0px",
+        "width": "100%",
+        "height": "18px",
+        "margin-top": "1px",
+        "line-height": "20px",
+    },
+    "columnListEditModifySelect": {
+        "border": "0px",
+        "width": "100%",
+        "height": "18px",
+        "margin-top": "1px",
+        "line-height": "20px",
+        "background-color": "#ffffff"
+    },
+    "tableRunNode": {
+        "width": "30px",
+        "height": "40px",
+        "background": "url("+"../x_component_query_TableDesigner/$Table/default/icon/play.png) center center no-repeat",
+        "float": "left"
+    },
+    "tableRunNode_run": {
+        "width": "30px",
+        "height": "140px",
+        "background-position-y": "10px",
+        "float": "left"
+    },
+    "jpqlAreaNode": {
+        "height": "98px",
+        "background-color": "#ffffff",
+        "border": "1px solid #bbbbbb",
+    },
+    "jpqlOptionArea": {
+        "height": "34px",
+        "line-height": "34px",
+        "border-bottom": "1px solid #bbbbbb",
+        "background-color": "#eeeeee"
+    },
+    "jpqlContentArea": {
+        "overflow": "hidden",
+        "height": "20px"
+    },
+    "jpqlContentWhereArea": {
+        "overflow": "hidden",
+        "height": "63px"
+    },
+    "jpqlOptionInput": {
+        "width": "40px",
+        "border": "1px solid #cccccc",
+        "color": "#666666"
+    },
+    "jpqlTypeSelect": {
+        "border": "1px solid #cccccc",
+        "color": "#666666"
+    }
+}
