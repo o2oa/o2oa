@@ -3404,11 +3404,17 @@ MWF.xScript.Environment = function(ev){
          * @static
          * @param {String} id - 流程的jobId，如果流程拆分后，有多个流程实例（workId会有多个），但jobId是唯一的。
          * @param {Boolean} [choice] - 如果有多个流程实例，是否弹出界面选择。如果传入false,则直接打开第一个工作。
+         * @param {Object} [options] - 打开工作时传入的选项。
+         * @param {Function} [callback] - 打开工作时的回调方法，该方法可以获取打开的工作的对象（桌面模式）或窗口句柄（浏览器页签模式）。
          * @example
          this.form.openJob(jobId, true);
+         * @example
+         this.form.openJob(jobId, true, {}, function(handel){
+            //handel为打开的工作的对象（桌面模式）或窗口句柄（浏览器页签模式）
+         });
          */
-        "openJob": function(id, choice, options){
-            var workData = null;
+        "openJob": function(id, choice, options, callback){
+            var workData = null, handel;
             o2.Actions.get("x_processplatform_assemble_surface").listWorkByJob(id, function(json){
                 if (json.data) workData = json.data;
             }.bind(this), null, false);
@@ -3440,7 +3446,10 @@ MWF.xScript.Environment = function(ev){
                             action.store("work", work);
                             action.addEvent("click", function(e){
                                 var work = e.target.retrieve("work");
-                                if (work) this.openWork(work.id, null, work.title, options);
+                                if (work){
+                                   handel =  this.openWork(work.id, null, work.title, options);
+                                   if(callback)callback( handel );
+                                }
                                 dlg.close();
                             }.bind(this));
 
@@ -3466,7 +3475,10 @@ MWF.xScript.Environment = function(ev){
                             action.store("work", work);
                             action.addEvent("click", function(e){
                                 var work = e.target.retrieve("work");
-                                if (work) this.openWork(null, work.id, work.title, options);
+                                if (work){
+                                    handel =  this.openWork(null, work.id, work.title, options);
+                                    if(callback)callback( handel );
+                                }
                                 dlg.close();
                             }.bind(this));
 
@@ -3490,10 +3502,14 @@ MWF.xScript.Environment = function(ev){
                     }else{
                         if (workData.workList.length){
                             var work =  workData.workList[0];
-                            return this.openWork(work.id, null, work.title, options);
+                            handel = this.openWork(work.id, null, work.title, options);
+                            if(callback)callback(handel);
+                            return handel;
                         }else{
                             var work =  workData.workCompletedList[0];
-                            return this.openWork(null, work.id, work.title, options);
+                            handel = this.openWork(null, work.id, work.title, options);
+                            if(callback)callback(handel);
+                            return handel;
                         }
                     }
                 }

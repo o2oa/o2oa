@@ -4413,8 +4413,8 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @methodOf module:queryView
          * @see module:form.openJob
          */
-        "openJob": function (id, choice, options) {
-            var workData = null;
+        "openJob": function (id, choice, options, callback) {
+            var workData = null, handel;
             o2.Actions.get("x_processplatform_assemble_surface").listWorkByJob(id, function (json) {
                 if (json.data) workData = json.data;
             }.bind(this), null, false);
@@ -4446,7 +4446,10 @@ MWF.xScript.ViewEnvironment = function (ev) {
                             action.store("work", work);
                             action.addEvent("click", function (e) {
                                 var work = e.target.retrieve("work");
-                                if (work) this.openWork(work.id, null, work.title, options);
+                                if (work){
+                                   handel =  this.openWork(work.id, null, work.title, options);
+                                   if(callback)callback( handel );
+                                }
                                 dlg.close();
                             }.bind(this));
 
@@ -4472,7 +4475,10 @@ MWF.xScript.ViewEnvironment = function (ev) {
                             action.store("work", work);
                             action.addEvent("click", function (e) {
                                 var work = e.target.retrieve("work");
-                                if (work) this.openWork(null, work.id, work.title, options);
+                                if (work){
+                                    handel =  this.openWork(null, work.id, work.title, options);
+                                    if(callback)callback( handel );
+                                }
                                 dlg.close();
                             }.bind(this));
 
@@ -4496,10 +4502,14 @@ MWF.xScript.ViewEnvironment = function (ev) {
                     } else {
                         if (workData.workList.length) {
                             var work = workData.workList[0];
-                            return this.openWork(work.id, null, work.title, options);
+                            handel = this.openWork(work.id, null, work.title, options);
+                            if(callback)callback(handel);
+                            return handel;
                         } else {
                             var work = workData.workCompletedList[0];
-                            return this.openWork(null, work.id, work.title, options);
+                            handel = this.openWork(null, work.id, work.title, options);
+                            if(callback)callback(handel);
+                            return handel;
                         }
                     }
                 }
