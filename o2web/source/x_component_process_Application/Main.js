@@ -1,4 +1,4 @@
-MWF.xApplication.process.Application.options.multitask = false;
+MWF.xApplication.process.Application.options.multitask = true;
 o2.xDesktop.requireApp("Selector", "package", null, false);
 MWF.xDesktop.requireApp("Template", "MPopupForm", null, false);
 MWF.xDesktop.requireApp("Template", "MForm", null, false);
