@@ -130,19 +130,16 @@ public class AttendanceV2Group extends SliceJpaObject {
 	public static final String workDateList_FIELDNAME = "workDateList";
 	@FieldDescribe("考勤工作日设置.")
 	@Column(length = length_64B, name = ColumnNamePrefix + workDateList_FIELDNAME)
-	
 	private String workDateList; // 打卡的工作日设置  如 1,2,3,4,5 。 0-6代表周日到周六
 
 	public static final String allowFieldWork_FIELDNAME = "allowFieldWork";
 	@FieldDescribe("是否允许外勤打卡.")
 	@Column(name = ColumnNamePrefix + allowFieldWork_FIELDNAME)
-	
 	private Boolean allowFieldWork;
 
 	public static final String requiredFieldWorkRemarks_FIELDNAME = "requiredFieldWorkRemarks";
 	@FieldDescribe("外勤打卡备注是否必填.")
 	@Column(name = ColumnNamePrefix + requiredFieldWorkRemarks_FIELDNAME)
-	
 	private Boolean requiredFieldWorkRemarks;
 
 	public static final String workPlaceIdList_FIELDNAME = "workPlaceIdList";

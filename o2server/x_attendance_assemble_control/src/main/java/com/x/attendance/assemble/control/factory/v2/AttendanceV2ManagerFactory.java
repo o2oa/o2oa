@@ -140,6 +140,38 @@ public class AttendanceV2ManagerFactory  extends AbstractFactory {
         return em.createQuery(cq.select(root).where(p)).getResultList();
     }
 
+    /**
+     * 查询用户所属的考勤组
+     * @param person distinguishName
+     * @return
+     * @throws Exception
+     */
+    public List<AttendanceV2Group> listGroupWithPerson(String person) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(AttendanceV2Group.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<AttendanceV2Group> cq = cb.createQuery(AttendanceV2Group.class);
+        Root<AttendanceV2Group> root = cq.from(AttendanceV2Group.class);
+        Predicate p = cb.isMember(person, root.get(AttendanceV2Group_.trueParticipantList));
+        return em.createQuery(cq.select(root).where(p)).getResultList();
+    }
+
+
+    /**
+     * 查询打卡记录
+     * @param person distinguishName
+     * @param date 2023-02-20
+     * @return
+     * @throws Exception
+     */
+    public List<AttendanceV2CheckInRecord> listRecordWithPersonAndDate(String person, String date) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(AttendanceV2CheckInRecord.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<AttendanceV2CheckInRecord> cq = cb.createQuery(AttendanceV2CheckInRecord.class);
+        Root<AttendanceV2CheckInRecord> root = cq.from(AttendanceV2CheckInRecord.class);
+        Predicate p = cb.equal(root.get(AttendanceV2CheckInRecord_.userId), person);
+        p = cb.and(p, cb.equal(root.get(AttendanceV2CheckInRecord_.recordDateString), date));
+        return em.createQuery(cq.select(root).where(p).orderBy(cb.asc(root.get(AttendanceV2CheckInRecord_.createTime)))).getResultList();
+    }
 
 
 }

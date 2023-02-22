@@ -632,6 +632,23 @@ public class DateTools {
 	}
 
 	/**
+	 * 指定时间添加指定的分钟数
+	 * @param date
+	 * @param minutes
+	 * @return
+	 */
+	public static Date addMinutes(Date date, int minutes) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(Calendar.MINUTE, minutes);// 指定的时间上加上n分钟
+		date = calendar.getTime();
+		return date;
+	}
+
+
+
+
+	/**
 	 * 时间戳转Unix时间戳
 	 * 
 	 * @param timestamp
