@@ -10,30 +10,128 @@
 .o2_query_SSDStatementListNode{
     float: left;
     width: 300px;
-    height: 100%
+    height: 100%;
+    background: #fff;
 }
 .o2_query_SSDStatementListTitleNode{
     height: 40px;
     line-height: 40px;
+    border-bottom: 1px solid #ddd;
+    background: #f7f7f7;
+    overflow:hidden;
 }
 .o2_query_SSDStatementListTitleTextNode{
+    float: left;
     line-height: 40px;
-    background: #f7f7f7;
     padding-left: 10px;
     font-size: 15px;
 }
-.o2_query_SSDStatementListTitleActionNode{
+.o2_query_SSDStatementListTitleAddNode{
     float: right;
     width: 30px;
     height: 40px;
     cursor: pointer;
     background: url("../x_component_query_StatementStatDesigner/$StatementStat/default/action/plus.png") no-repeat center center;
 }
+.o2_query_SSDStatementListTitleSelectNode{
+     float: right;
+     width: 30px;
+     height: 40px;
+     cursor: pointer;
+     background: url("../x_component_query_StatementStatDesigner/$StatementStat/default/action/select.png") no-repeat center center;
+ }
+.o2_query_SSDStatementListTitleReloadNode{
+    margin-left: 20px;
+    width: 30px;
+    height: 40px;
+    cursor: pointer;
+    display: none;
+    background: url("../x_component_query_StatementStatDesigner/$StatementStat/default/action/reload.png") no-repeat center center;
+}
 .o2_query_SSDStatementListContentNode{
     height: calc( 100% - 36px );
 }
+.o2_query_SSDStatementItemNode{
+    overflow: hidden;
+    line-height: 40px;
+    background: #f7f7f7;
+    font-size: 14px;
+    cursor: pointer;
+    border-top: 1px solid #fff;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+}
+.o2_query_SSDStatementItemNode_current{
+    background: #fff;
+    color: #bf6364;
+}
+.o2_query_SSDStatementItemNode_over{
+    background: #fff;
+}
+.o2_query_SSDStatementItemIconNode{
+    float: left;
+    width: 30px;
+    height: 40px;
+    cursor: pointer;
+    background: url("../x_component_query_StatementDesigner/$Main/default/statement.png") no-repeat center center;
+}
+.o2_query_SSDStatementItemTextNode{
+    float: left;
+    width: calc( 100% - 70px );
+    overflow: hidden;
+    height: 40px;
+    cursor: pointer;
+}
+.o2_query_SSDStatementItemDeleteNode{
+    float: left;
+    width: 20px;
+    height: 40px;
+    cursor: pointer;
+    opacity: 0;
+    background: url("../x_component_query_StatementStatDesigner/$StatementStat/default/action/delete.png") no-repeat center center;
+}
+.o2_query_SSDStatementItemEditNode{
+    float: left;
+    width: 20px;
+    height: 40px;
+    cursor: pointer;
+    opacity: 0;
+    background: url("../x_component_query_StatementStatDesigner/$StatementStat/default/action/edit.png") no-repeat center center;
+}
+.o2_query_SSDStatementTextActionNode{
+    color:#4A90E2;
+    text-decoration: underline solid #4A90E2;
+    cursor: pointer;
+}
+.o2_query_SSDStatementListEmptyNode{
+    text-align: center;
+    line-height: 24px;
+    padding: 30px;
+    font-size:14px;
+    color: #888888;
+}
 .o2_query_SSDStatementNode{
-    width: calc( 100% - 300px );
+    margin-left:310px;
+    width: calc( 100% - 310px );
+    overflow: hidden;
+    height: 100%;
+}
+.o2_query_SSDStatementDetailNode{
+    width: 100%;
+    height: calc( 100% - 36px );
+    background: #fff;
+    display: none;
+}
+.o2_query_SSDStatementEmptyNode{
+    width: 100%;
+    height: calc( 100% - 36px );
+    background: #fff;
+    text-align: center;
+    line-height: 24px;
+    padding: 30px;
+    font-size:14px;
+    color: #888888;
 }
 
 

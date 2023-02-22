@@ -1,13 +1,29 @@
 <div class="o2_query_SSDNode">
     <div class="o2_query_SSDStatementListNode">
         <div class="o2_query_SSDStatementListTitleNode">
-            <div class="o2_query_SSDStatementListTitleActionNode" data-o2-events="click:selectStatement"></div>
+            <div class="o2_query_SSDStatementListTitleSelectNode" data-o2-events="click:selectStatement" title="{{$.lp.selectStatement}}"></div>
+            <div class="o2_query_SSDStatementListTitleAddNode" data-o2-events="click:addStatement" title="{{$.lp.addStatement}}"></div>
             <div class="o2_query_SSDStatementListTitleTextNode">{{$.lp.statement}}</div>
         </div>
-        <div class="o2_query_SSDStatementListContentNode"></div>
+        <div class="o2_query_SSDStatementListContentNode" data-o2-element="statementListContent">
+            <div class="o2_query_SSDStatementListEmptyNode" data-o2-element="statementEmptyNode">
+                <div>{{$.lp.noStatementNote}}</div>
+                <div>
+                    {{$.lp.please}}<span class='o2_query_SSDStatementTextActionNode' data-o2-events="click:addStatement">{{$.lp.add}}</span>{{$.lp.or}}<span class='o2_query_SSDStatementTextActionNode' data-o2-events="click:selectStatement">{{$.lp.select}}</span>{{$.lp.statement}}
+                </div>
+            </div>
+        </div>
     </div>
     <div class="o2_query_SSDStatementNode">
-
+        <div class="o2_query_SSDStatementListTitleNode">
+            <div class="o2_query_SSDStatementListTitleTextNode">{{$.lp.statementDetail}}</div>
+            <div class="o2_query_SSDStatementListTitleReloadNode" data-o2-element="reloadItemNode" data-o2-events="click:reloadItem" title="{{$.lp.reload}}"></div>
+        </div>
+        <div class="o2_query_SSDStatementEmptyNode" data-o2-element="detailEmptyNode">
+            <div>{{$.lp.noStatementDetailNote}}</div>
+        </div>
+        <div class="o2_query_SSDStatementDetailNode" data-o2-element="statementDetailNode">
+        </div>
     </div>
 </div>
 

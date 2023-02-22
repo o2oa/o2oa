@@ -603,6 +603,14 @@ o2.widget.JavascriptEditor = new Class({
             }
         }
     },
+    setReadOnly: function( readonly ){
+        if (this.editor){
+            switch (this.options.type.toLowerCase()) {
+                case "ace": this.editor.setReadOnly(readonly); break;
+                case "monaco": this.editor.updateOptions({readOnly: readonly});
+            }
+        }
+    },
 
     focus: function(){
         if (this.editor){

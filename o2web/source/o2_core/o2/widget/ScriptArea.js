@@ -233,6 +233,7 @@ o2.widget.ScriptArea = new Class({
 
                 this.jsEditor.resize();
                 this.fireEvent("postLoad");
+                this.fireEvent("postLoadEditor");
             }.bind(this),
             "onSave": function(){
                 this.fireEvent("change");
@@ -280,8 +281,12 @@ o2.widget.ScriptArea = new Class({
     },
     destroy: function(){
         this.fireEvent("destroy");
+        if(this.jsEditor)this.jsEditor.destroy();
         this.container.destroy();
         o2.release(this);
+    },
+    setReadOnly: function (readonly) {
+        if(this.jsEditor)this.jsEditor.setReadOnly(readonly);
     }
 });
 

@@ -57,6 +57,7 @@ MWF.xApplication.query.StatementStatDesigner.StatementStat = new Class({
             var url = "../x_component_query_StatementStatDesigner/$StatementStat/stat.json";
             MWF.getJSON(url, {
                 "onSuccess": function (obj) {
+                    if( !this.json.statementList )this.json.statementList = [];
                     if (!this.json.data || o2.typeOf(this.json.data) !== "object" ) this.json.data = obj.data;
                     if (!this.json.data.events) this.json.data.events = obj.data.events;
                     if (!this.json.data.calculate) this.json.data.calculate = obj.data.calculate;
@@ -213,16 +214,23 @@ MWF.xApplication.query.StatementStatDesigner.StatementStat = new Class({
     // },
     loadStatement: function(){
         this.loadStatementHtml(function () {
-
-        });
+            this.list = new MWF.xApplication.query.StatementStatDesigner.StatementList(this, this.statementListContent, this.json.statementList);
+        }.bind(this));
     },
     selectStatement: function(){
         debugger;
         o2.requireApp("Selector", "package", null, false);
         new MWF.O2Selector( this.designer.content, {
             type: "QueryStatement",
-            inViewCategory: this.data.application
-        })
+            inViewCategory: this.data.application,
+            onComplete: function (items) {
+                var data = items.map(function (item) {
+                    this.json.statementList.push(item.data);
+                    return item.data;
+                }.bind(this));
+                this.list.addItems( data );
+            }.bind(this)
+        });
     },
     // loadStatement: function () {
     //     this.loadStatementHtml(function () {
@@ -348,112 +356,6 @@ MWF.xApplication.query.StatementStatDesigner.StatementStat = new Class({
             this.setStatSize();
             this.stat.setContentHeight()
         }
-    },
-    loadStatementScriptEditor: function () {
-        if (!this.scriptEditor) {
-            debugger;
-            o2.require("o2.widget.ScriptArea", function () {
-                this.scriptEditor = new o2.widget.ScriptArea(this.scriptArea, {
-                    "isbind": false,
-                    "api": "../api/server.service.module_parameters.html#server.service.module_parameters",
-                    "maxObj": this.designer.designNode,
-                    "title": this.designer.lp.scriptTitle,
-                    "type": "service",
-                    "onChange": function () {
-                        this.json.scriptText = this.scriptEditor.toJson().code;
-                    }.bind(this)
-                });
-                this.scriptEditor.load({"code": this.json.scriptText})
-            }.bind(this), false);
-        }
-    },
-    //
-    // setRunnerSize: function () {
-    //     debugger;
-    //     var size = this.areaNode.getSize();
-    //     var designerSize = this.designerArea.getComputedSize();
-    //     var reizeNodeSize = this.resizeNode.getComputedSize();
-    //
-    //     var y = size.y - designerSize.totalHeight - reizeNodeSize.totalHeight;
-    //     var mTop = this.runArea.getStyle("margin-top").toInt();
-    //     var mBottom = this.runArea.getStyle("margin-bottom").toInt();
-    //     var pTop = this.runArea.getStyle("padding-top").toInt();
-    //     var pBottom = this.runArea.getStyle("padding-bottom").toInt();
-    //     y = y - mTop - mBottom - pTop - pBottom - 5;
-    //
-    //     var tabSize = this.tabNode.getComputedSize();
-    //     y = y - tabSize.totalHeight;
-    //
-    //     this.runArea.setStyle("height", "" + y + "px");
-    //
-    //     // var titleSize = this.runTitleNode.getComputedSize();
-    //     // y = y - titleSize.totalHeight;
-    //
-    //     this.runContentNode.setStyle("height", "" + y + "px");
-    // },
-    loadStatementEditor: function () {
-        if (!this.editor) {
-            var value;
-            if( !this.json.data ){
-                var table = "table";
-                // switch (this.json.type) {
-                //     case "update":
-                //         value = "UPDATE " + table + " o SET ";
-                //         break;
-                //     case "delete":
-                //         value = "DELETE " + table + " o WHERE ";
-                //         break;
-                //     default:
-                //         value = "SELECT o FROM " + table + " o";
-                // }
-                this.json.data = "SELECT o FROM " + table + " o";
-            }
-            if( this.jpqlEditorNode.offsetParent === null && o2.editorData.javascriptEditor.editor === "monaco" ){
-                var postShowFun = function() {
-                    this._loadStatementEditor();
-                    this.jpqlPage.removeEvent("postShow", postShowFun);
-                }.bind(this);
-                this.jpqlPage.addEvent("postShow", postShowFun);
-            }else{
-                this._loadStatementEditor();
-            }
-        }
-    },
-    _loadStatementEditor: function () {
-        if (!this.editor) {
-            o2.require("o2.widget.JavascriptEditor", function () {
-                this.editor = new o2.widget.JavascriptEditor(this.jpqlEditorNode, {
-                    "title": "JPQL",
-                    "option": {"mode": "sql"}
-                });
-                this.editor.load(function () {
-                    // if (this.json.data) {
-                        this.editor.editor.setValue(this.json.data);
-                    // } else {
-                    //     var table = "table";
-                    //     switch (this.json.type) {
-                    //         case "update":
-                    //             this.editor.editor.setValue("UPDATE " + table + " o SET ");
-                    //             break;
-                    //         case "delete":
-                    //             this.editor.editor.setValue("DELETE " + table + " o WHERE ");
-                    //             break;
-                    //         default:
-                    //             this.editor.editor.setValue("SELECT o FROM " + table + " o");
-                    //     }
-                    // }
-                    // this.json.data = this.editor.editor.getValue();
-
-                    this.editor.addEditorEvent("change", function () {
-                        debugger;
-                        this.data.data = this.editor.getValue();
-                        // this.checkJpqlType();
-                    }.bind(this));
-
-                }.bind(this));
-            }.bind(this), false);
-        }
-
     },
     // setSatementTable: function () {
     //     if (!this.json.type) this.json.type = "select";
@@ -809,8 +711,271 @@ MWF.xApplication.query.StatementStatDesigner.StatementStat = new Class({
             });
             window.open(o2.filterUrl(url), "_blank");
         }.bind(this));
+    },
+    reloadItem: function () {
+        if( this.list && this.list.currentObject && this.list.currentObject.detail)this.list.currentObject.detail.reload();
     }
 });
+
+MWF.xApplication.query.StatementStatDesigner.StatementList = new Class({
+    Implements: [Options, Events],
+    options : {
+        "style" :"default"
+    },
+    initialize: function(statementStat, node, data, options){
+        this.setOptions(options);
+        this.statementStat = statementStat;
+        this.designer = statementStat.designer;
+        this.node = $(node);
+        this.data = data;
+        this.itemList = [];
+        this.load();
+    },
+    load: function(){
+        if( this.data && this.data.length ){
+            this.addItems( this.data );
+        }
+        this.fireEvent("postLoad");
+    },
+    hideEmptyNode: function(){
+      if(this.statementStat.statementEmptyNode){
+          this.statementStat.statementEmptyNode.hide();
+      }
+    },
+    showEmptyNode: function(){
+        if(this.statementStat.statementEmptyNode){
+            this.statementStat.statementEmptyNode.show();
+        }
+    },
+    addItems: function (data) {
+        if( !data || data.length === 0 )return;
+        this.hideEmptyNode();
+        data.each(function (d, idx) {
+            var item = new MWF.xApplication.query.StatementStatDesigner.StatementList.Item(this, this.node, d, {} );
+            if( this.itemList.length === 0 ){
+                item.setCurrent();
+            }
+            this.itemList.push( item );
+        }.bind(this));
+    }
+});
+
+MWF.xApplication.query.StatementStatDesigner.StatementList.Item = new Class({
+    Implements: [Options, Events],
+    options: {
+        "style": "default"
+    },
+    initialize: function ( list, container, data, options) {
+        this.setOptions(options);
+        this.list = list;
+        this.designer = list.designer;
+        this.container = $(container);
+        this.data = data;
+        this.load();
+    },
+    load: function(){
+        var _self = this;
+
+        this.node = new Element("div.o2_query_SSDStatementItemNode").inject(this.container);
+
+        this.iconNode = new Element("i.o2_query_SSDStatementItemIconNode").inject(this.node);
+
+        this.textNode = new Element("div.o2_query_SSDStatementItemTextNode", {
+            "text" : this.data.name,
+            "title" : this.data.name
+        }).inject(this.node);
+
+        this.deleteAction = new Element("i.o2_query_SSDStatementItemDeleteNode", {
+            events:{
+                "click": function (ev) {
+                    _self.delete(ev);
+                }
+            }
+        }).inject(this.node);
+
+        this.editAction = new Element("i.o2_query_SSDStatementItemEditNode", {
+            events:{
+                "click": function (ev) {
+                    _self.edit(ev);
+                }
+            }
+        }).inject(this.node);
+
+        this.node.addEvents({
+            "mouseover": function(){
+                if ( !_self.isCurrent )this.addClass( "o2_query_SSDStatementItemNode_over" );
+                _self.deleteAction.fade("in");
+                _self.editAction.fade("in");
+            },
+            "mouseout": function(){
+                if ( !_self.isCurrent )this.removeClass( "o2_query_SSDStatementItemNode_over" );
+                _self.deleteAction.fade("out");
+                _self.editAction.fade("out");
+            },
+            "click": function (el) {
+                _self.setCurrent();
+            }
+        });
+
+        if( this.isCurrent ){
+            this.setCurrent();
+        }
+    },
+    setCurrent : function(){
+
+        if( this.list.currentObject ){
+            this.list.currentObject.cancelCurrent();
+        }
+
+        this.node.addClass( "o2_query_SSDStatementItemNode_current" );
+        this.isCurrent = true;
+        this.list.currentObject = this;
+        this.loadDetail();
+    },
+    cancelCurrent : function(){
+        this.isCurrent = false;
+        this.node.removeClass( "o2_query_SSDStatementItemNode_current" ).removeClass( "o2_query_SSDStatementItemNode_over" );
+        if( this.detail )this.detail.destroy();
+    },
+    getCategoryId : function(){
+        return null;
+    },
+    delete: function (ev) {
+        var _self = this;
+        this.designer.confirm("wram", ev, this.designer.lp.deleteStatmentTitle, this.designer.lp.deleteStatment, 300, 120, function(){
+            _self._delete(ev);
+            this.close();
+        }, function(){
+            this.close();
+        });
+        ev.stopPropagation();
+    },
+    _delete: function( ev ){
+        if( this.isCurrent ){
+            this.cancelCurrent();
+            this.list.currentObject = null;
+            this.list.itemList.erase( this );
+            if(this.list.itemList && this.list.itemList.length)this.list.itemList[0].setCurrent();
+        }else{
+            this.list.itemList.erase( this );
+        }
+        this.node.destroy();
+        if( this.list.itemList.length === 0 ){
+            this.list.showEmptyNode();
+        }
+        o2.release(this);
+    },
+    edit: function(ev){
+        debugger;
+        layout.openApplication(ev, "query.StatementDesigner", {
+            "appId": "query.StatementDesigner"+this.data.application,
+            "id": this.data.id,
+            "application":{"name": this.data.applicationName,"id": this.data.query }
+        });
+        ev.stopPropagation();
+    },
+    loadDetail : function( searchKey ){
+        this.detail = new MWF.xApplication.query.StatementStatDesigner.StatementDetail(this, this.data);
+    }
+});
+
+
+MWF.xApplication.query.StatementStatDesigner.StatementDetail = new Class({
+    Implements: [Options, Events],
+    options : {
+        "style" :"default"
+    },
+    initialize: function(item, sdata, options){
+        this.setOptions(options);
+        this.statementStat = item.list.statementStat;
+        this.designer = this.statementStat.designer;
+        this.node = this.statementStat.statementDetailNode;
+        this.sdata = sdata;
+        this.load();
+    },
+    reload: function(){
+        this.destroy();
+        this.load();
+    },
+    load: function(){
+        this.statementStat.detailEmptyNode.hide();
+        this.statementStat.reloadItemNode.setStyle("display", "inline-block");
+        this.node.show();
+        var p = o2.Actions.load("x_query_assemble_surface").StatementAction.get( this.sdata.id );
+        p.then(function (json) {
+            this.data = json.data;
+            if( this.data.format === "script" ){
+                this.loadStatementScriptEditor();
+            }else{
+                this.loadStatementEditor();
+            }
+        }.bind(this));
+
+    },
+    destroy: function(){
+        if( this.editor ){
+            this.editor.destroy();
+            this.editor = null;
+        }
+        if( this.scriptEditor ){
+            this.scriptEditor.destroy();
+            this.scriptEditor = null;
+        }
+        this.statementStat.detailEmptyNode.show();
+        this.statementStat.reloadItemNode.hide();
+        this.node.empty();
+    },
+    loadStatementScriptEditor: function () {
+        if (!this.scriptEditor) {
+            debugger;
+            var _self = this;
+            o2.require("o2.widget.ScriptArea", function () {
+                this.scriptEditor = new o2.widget.ScriptArea(this.node, {
+                    "isbind": false,
+                    "isload": true,
+                    "api": "../api/server.service.module_parameters.html#server.service.module_parameters",
+                    "maxObj": this.designer.designNode,
+                    // "title": this.designer.lp.scriptTitle,
+                    "type": "service",
+                    "onPostLoadEditor": function () {
+                        debugger;
+                        this.setReadOnly(true);
+
+                        this.container.setStyle("height", ""+(_self.node.getSize().y-10)+"px");
+                        this.resizeContentNodeSize();
+                    }
+                    // "onChange": function () {
+                    //     this.json.scriptText = this.scriptEditor.toJson().code;
+                    // }.bind(this)
+                });
+                this.scriptEditor.load({"code": this.data.scriptText});
+            }.bind(this), false);
+        }
+    },
+    loadStatementEditor: function () {
+        if (!this.editor) {
+            o2.require("o2.widget.JavascriptEditor", function () {
+                this.editor = new o2.widget.JavascriptEditor(this.node, {
+                    "title": "JPQL",
+                    "option": {"mode": "sql"}
+                });
+                this.editor.load(function () {
+                    this.editor.editor.setValue(this.data.data);
+
+                    this.editor.setReadOnly(true);
+
+                    // this.editor.addEditorEvent("change", function () {
+                    //     this.data.data = this.editor.getValue();
+                    // }.bind(this));
+
+                }.bind(this));
+            }.bind(this), false);
+        }
+
+    }
+});
+
+
 
 MWF.xApplication.query.StatementStatDesigner.Stat = new Class({
     Extends: MWF.xApplication.query.ViewDesigner.View,
