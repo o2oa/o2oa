@@ -86,6 +86,8 @@ MWF.xApplication.cms.FormDesigner.LP = Object.merge( {}, MWF.xApplication.proces
         "setTop": "置顶",
         "setTopTitle": "对文档置顶",
         "cancelTop": "取消置顶",
-        "cancelTopTitle": "取消对文档的置顶"
+        "cancelTopTitle": "取消对文档的置顶",
+        "downloadAll": "一键下载",
+        "downloadAllTitle": "一键下载"
     }
 });
