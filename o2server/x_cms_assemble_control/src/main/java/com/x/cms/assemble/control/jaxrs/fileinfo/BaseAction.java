@@ -17,6 +17,9 @@ import org.apache.commons.lang3.StringUtils;
 
 public class BaseAction extends StandardJaxrsAction {
 
+	protected static final String SITE_SEPARATOR = "~";
+	protected static final String FILE_SEPARATOR = ",";
+
 	protected Cache.CacheCategory cacheCategory = new Cache.CacheCategory(FileInfo.class, Document.class);
 	protected LogService logService = new LogService();
 	protected FileInfoServiceAdv fileInfoServiceAdv = new FileInfoServiceAdv();
