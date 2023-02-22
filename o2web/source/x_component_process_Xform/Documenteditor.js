@@ -2727,188 +2727,190 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 CKEDITOR.disableAutoInline = true;
                 (node || this.layout_filetext).setAttribute('contenteditable', true);
 
-                var editor = CKEDITOR.inline(node || this.layout_filetext, this._getEditorConfig(editorName));
+                var editor;
+                try{
+                    editor = CKEDITOR.inline(node || this.layout_filetext, this._getEditorConfig(editorName));
+                    this[(editorName || "filetextEditor")] = editor;
 
-                this[(editorName || "filetextEditor")] = editor;
-
-                editor.on("instanceReady", function(e){
-                    var　v = e.editor.editable().$.get("text");
-                    if (!v || v=="　　") e.editor.setData(this.json.defaultValue.filetext);
-                    if (callback) callback(e);
-                }.bind(this));
-
-                editor.on( 'focus', function( e ) {
-                    window.setTimeout(function(){
-                        // this.reLocationFiletextToolbar(editorName);
-                        this.locationFiletextToolbar(editorName);
-                    }.bind(this), 10);
-                    var　v = e.editor.editable().$.get("text");
-                    if (!v || v==this.json.defaultValue.filetext){
-                        e.editor.setData("　　");
-                        e.editor.focus();
-                        var range = e.editor.createRange();
-                        range.moveToElementEditEnd(e.editor.editable());
-                        range.select();
-                    }
-                }.bind(this) );
-
-                editor.on( 'blur', function( e ) {
-                    if (!!editorName) this.getAttachmentTextData();
-                    var　v = e.editor.editable().$.get("text");
-                    if (!v || v=="　　") e.editor.setData(this.json.defaultValue.filetext);
-                }.bind(this) );
-
-                editor.on( 'loaded', function( e ) {
-                    editor.element.$.store("module", this);
-                    editor.element.$.store("scale", this.scale);
-                }.bind(this) );
-
-                editor.on( 'afterPaste', function( e ) {
-
-                }.bind(this));
-                editor.on( 'afterPasteFromWord', function( e ) {
-
-                }.bind(this));
-
-                editor.on( 'paste', function( e ) {
-                    var html = e.data.dataValue;
-                    //if (this.json.fullWidth=="y") html = html.replace(/\x20/g, "　");
-                    var rexbr = /\<br\>|\<br \/\>|\<br\/\>/g;
-                    var rexp = /\<p\>/g;
-                    if (rexbr.test(html) && !rexp.test(html)){
-                        var ps = html.split(/\<br\>|\<br \/\>|\<br\/\>/g);
-                        html = "";
-                        ps.each(function(p){
-                            html = html + "<p>"+p+"</p>";
-                        });
-                    }
-
-                    var tmp = new Element("div")
-                    tmp.set("html", html);
-
-                    var pList = tmp.getElements("p");
-                    pList.each(function(p, i){
-                        //if (Browser.name=="ie"){
-                        if (this.json.fullWidth!=="n") this.transWidth(p);
-                        if (!p.getParent("table")){
-                            var text = p.get("text");
-                            var rex = /^\u3000*/;
-                            var m = text.match(rex);
-                            var l = (m[0]) ? Math.max((2-m[0].length), 0): 2;
-                            var txt = "";
-                            // for (var i=0; i<l; i++) txt+="　";
-                            // this.insertFullWidth(p.getFirst(), txt);
-                            for (var i=0; i<l; i++) p.appendText("　","top");
-                        }
-                        //}else{
-                        //    var textIndent = p.getStyle("text-indent");
-                        //    if (textIndent.toInt()) p.appendText("　　","top");
-                        //}
+                    editor.on("instanceReady", function(e){
+                        var　v = e.editor.editable().$.get("text");
+                        if (!v || v=="　　") e.editor.setData(this.json.defaultValue.filetext);
+                        if (callback) callback(e);
                     }.bind(this));
 
-                    var tableList = tmp.getElements("table");
-                    if (tableList && tableList.length){
-                        var w = (node || this.layout_filetext).offsetWidth.toFloat()-2;
-                        tableList.each(function(table){
-                            var twstyle = table.getStyle("width");
-                            var tws = (twstyle) ? (twstyle.toFloat() || 0) : 0;
-                            var twatt = table.get("width");
-                            var twa = (twatt) ? (twatt.toFloat() || 0) : 0;
-                            var tw = Math.max(tws, twa);
-                            if (tw===0 || tw>w){
-                                table.setStyle("width", ""+w+"px");
+                    editor.on( 'focus', function( e ) {
+                        window.setTimeout(function(){
+                            // this.reLocationFiletextToolbar(editorName);
+                            this.locationFiletextToolbar(editorName);
+                        }.bind(this), 10);
+                        var　v = e.editor.editable().$.get("text");
+                        if (!v || v==this.json.defaultValue.filetext){
+                            e.editor.setData("　　");
+                            e.editor.focus();
+                            var range = e.editor.createRange();
+                            range.moveToElementEditEnd(e.editor.editable());
+                            range.select();
+                        }
+                    }.bind(this) );
+
+                    editor.on( 'blur', function( e ) {
+                        if (!!editorName) this.getAttachmentTextData();
+                        var　v = e.editor.editable().$.get("text");
+                        if (!v || v=="　　") e.editor.setData(this.json.defaultValue.filetext);
+                    }.bind(this) );
+
+                    editor.on( 'loaded', function( e ) {
+                        editor.element.$.store("module", this);
+                        editor.element.$.store("scale", this.scale);
+                    }.bind(this) );
+
+                    editor.on( 'afterPaste', function( e ) {
+
+                    }.bind(this));
+                    editor.on( 'afterPasteFromWord', function( e ) {
+
+                    }.bind(this));
+
+                    editor.on( 'paste', function( e ) {
+                        var html = e.data.dataValue;
+                        //if (this.json.fullWidth=="y") html = html.replace(/\x20/g, "　");
+                        var rexbr = /\<br\>|\<br \/\>|\<br\/\>/g;
+                        var rexp = /\<p\>/g;
+                        if (rexbr.test(html) && !rexp.test(html)){
+                            var ps = html.split(/\<br\>|\<br \/\>|\<br\/\>/g);
+                            html = "";
+                            ps.each(function(p){
+                                html = html + "<p>"+p+"</p>";
+                            });
+                        }
+
+                        var tmp = new Element("div")
+                        tmp.set("html", html);
+
+                        var pList = tmp.getElements("p");
+                        pList.each(function(p, i){
+                            //if (Browser.name=="ie"){
+                            if (this.json.fullWidth!=="n") this.transWidth(p);
+                            if (!p.getParent("table")){
+                                var text = p.get("text");
+                                var rex = /^\u3000*/;
+                                var m = text.match(rex);
+                                var l = (m[0]) ? Math.max((2-m[0].length), 0): 2;
+                                var txt = "";
+                                // for (var i=0; i<l; i++) txt+="　";
+                                // this.insertFullWidth(p.getFirst(), txt);
+                                for (var i=0; i<l; i++) p.appendText("　","top");
                             }
-                        });
-                        tableList.setStyles({
-                            "margin-left": "",
-                            "margin-right": "",
-                            "word-break": "break-all"
-                        });
-                    }
-                    var tdList = tmp.getElements("td");
-                    tdList.each(function(td){
-                        var tbw_top = td.getStyle("border-top-width").toFloat() || 0;
-                        var tbw_bottom = td.getStyle("border-bottom-width").toFloat() || 0;
-                        var tbw_left = td.getStyle("border-left-width").toFloat() || 0;
-                        var tbw_right = td.getStyle("border-right-width").toFloat() || 0;
+                            //}else{
+                            //    var textIndent = p.getStyle("text-indent");
+                            //    if (textIndent.toInt()) p.appendText("　　","top");
+                            //}
+                        }.bind(this));
 
-                        td.setStyles({
-                            "border-top-width": (tbw_top/2)+"px",
-                            "border-bottom-width": (tbw_bottom/2)+"px",
-                            "border-left-width": (tbw_left/2)+"px",
-                            "border-right-width": (tbw_right/2)+"px",
-                        });
-                    });
-
-                    e.data.dataValue = tmp.get("html");
-                    tmp.destroy();
-                    this.fireEvent("paste");
-                }.bind(this) );
-
-                editor.on( 'afterPaste', function( e ) {
-                    this.resetNodeSize();
-                    this.fireEvent("afterPaste");
-                }.bind(this) );
-
-                editor.on( 'change', function( e ) {
-                    var h = document.documentElement.scrollTop;
-                    var scrollNode = this.contentNode;
-                    while (scrollNode && (scrollNode.getScrollSize().y<=scrollNode.getSize().y || (scrollNode.getStyle("overflow")!=="auto" &&  scrollNode.getStyle("4-y")!=="auto"))){
-                        scrollNode = scrollNode.getParent();
-                    }
-                    if (scrollNode){
-                        var top = scrollNode.scrollTop.toFloat();
-                        scrollNode.scrollTop = h+top;
-                    }
-                    document.documentElement.scrollTop = 0;
-                    if (!!editorName) this.getAttachmentTextData();
-
-                    o2.defer(this.resetNodeSize, 500, this);
-                }.bind(this) );
-
-
-
-                editor.on( 'insertElement', function( e ) {
-                    if (e.data.$.tagName.toString().toLowerCase()=="table"){
-                        e.data.$.setStyles({
-                            "margin-left": "",
-                            "margin-right": "",
-                            "word-break": "break-all"
-                        });
-                    }
-
-                    var tr = e.data.$.getElement("tr");
-                    if (tr){
-                        var tds = tr.getElements("td");
-                        if (tds && tds.length){
-                            var p = 100/tds.length;
-                            tds.setStyle("width", ""+p+"%");
+                        var tableList = tmp.getElements("table");
+                        if (tableList && tableList.length){
+                            var w = (node || this.layout_filetext).offsetWidth.toFloat()-2;
+                            tableList.each(function(table){
+                                var twstyle = table.getStyle("width");
+                                var tws = (twstyle) ? (twstyle.toFloat() || 0) : 0;
+                                var twatt = table.get("width");
+                                var twa = (twatt) ? (twatt.toFloat() || 0) : 0;
+                                var tw = Math.max(tws, twa);
+                                if (tw===0 || tw>w){
+                                    table.setStyle("width", ""+w+"px");
+                                }
+                            });
+                            tableList.setStyles({
+                                "margin-left": "",
+                                "margin-right": "",
+                                "word-break": "break-all"
+                            });
                         }
-                    }
-                }.bind(this) );
+                        var tdList = tmp.getElements("td");
+                        tdList.each(function(td){
+                            var tbw_top = td.getStyle("border-top-width").toFloat() || 0;
+                            var tbw_bottom = td.getStyle("border-bottom-width").toFloat() || 0;
+                            var tbw_left = td.getStyle("border-left-width").toFloat() || 0;
+                            var tbw_right = td.getStyle("border-right-width").toFloat() || 0;
 
-                if (this.json.textIndent!=="n"){
-                    (node || this.layout_filetext).addEvent("keyup", function(ev){
-                        if (ev.code==13) editor.insertText("　　");
-                    }.bind(this));
+                            td.setStyles({
+                                "border-top-width": (tbw_top/2)+"px",
+                                "border-bottom-width": (tbw_bottom/2)+"px",
+                                "border-left-width": (tbw_left/2)+"px",
+                                "border-right-width": (tbw_right/2)+"px",
+                            });
+                        });
+
+                        e.data.dataValue = tmp.get("html");
+                        tmp.destroy();
+                        this.fireEvent("paste");
+                    }.bind(this) );
+
+                    editor.on( 'afterPaste', function( e ) {
+                        this.resetNodeSize();
+                        this.fireEvent("afterPaste");
+                    }.bind(this) );
+
+                    editor.on( 'change', function( e ) {
+                        var h = document.documentElement.scrollTop;
+                        var scrollNode = this.contentNode;
+                        while (scrollNode && (scrollNode.getScrollSize().y<=scrollNode.getSize().y || (scrollNode.getStyle("overflow")!=="auto" &&  scrollNode.getStyle("4-y")!=="auto"))){
+                            scrollNode = scrollNode.getParent();
+                        }
+                        if (scrollNode){
+                            var top = scrollNode.scrollTop.toFloat();
+                            scrollNode.scrollTop = h+top;
+                        }
+                        document.documentElement.scrollTop = 0;
+                        if (!!editorName) this.getAttachmentTextData();
+
+                        o2.defer(this.resetNodeSize, 500, this);
+                    }.bind(this) );
+
+
+
+                    editor.on( 'insertElement', function( e ) {
+                        if (e.data.$.tagName.toString().toLowerCase()=="table"){
+                            e.data.$.setStyles({
+                                "margin-left": "",
+                                "margin-right": "",
+                                "word-break": "break-all"
+                            });
+                        }
+
+                        var tr = e.data.$.getElement("tr");
+                        if (tr){
+                            var tds = tr.getElements("td");
+                            if (tds && tds.length){
+                                var p = 100/tds.length;
+                                tds.setStyle("width", ""+p+"%");
+                            }
+                        }
+                    }.bind(this) );
+
+                    if (this.json.textIndent!=="n"){
+                        (node || this.layout_filetext).addEvent("keyup", function(ev){
+                            if (ev.code==13) editor.insertText("　　");
+                        }.bind(this));
+                    }
+                    if (this.json.fullWidth!=="n"){
+                        editor.addCommand( 'insertHalfSpace', {
+                            exec: function( editor ) {
+                                editor.insertText(" ");
+                            }
+                        } );
+                        editor.setKeystroke( CKEDITOR.SHIFT + 32, 'insertHalfSpace' );
+
+                        editor.on("key", function(e){
+                            if (this.json.fullWidth!=="n") if (e.data.keyCode==32){
+                                e.editor.insertText("　");
+                                e.cancel();
+                            }
+                        }.bind(this));
+                    }
+                }catch(e){
+                    editor = this[(editorName || "filetextEditor")];
                 }
-                if (this.json.fullWidth!=="n"){
-                    editor.addCommand( 'insertHalfSpace', {
-                        exec: function( editor ) {
-                            editor.insertText(" ");
-                        }
-                    } );
-                    editor.setKeystroke( CKEDITOR.SHIFT + 32, 'insertHalfSpace' );
-
-                    editor.on("key", function(e){
-                        if (this.json.fullWidth!=="n") if (e.data.keyCode==32){
-                            e.editor.insertText("　");
-                            e.cancel();
-                        }
-                    }.bind(this));
-                }
-
-
             }.bind(this));
         }
     },
