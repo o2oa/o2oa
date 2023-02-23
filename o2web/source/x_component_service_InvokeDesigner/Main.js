@@ -710,6 +710,7 @@ MWF.xApplication.service.InvokeDesigner.Main = new Class({
                     url: url,
                     async: false,
                     method: "POST",
+                    withCredentials: true,
                     onSuccess: function(responseText, responseXML){
                         var result;
                         try{
