@@ -40,16 +40,31 @@
      cursor: pointer;
      background: url("../x_component_query_StatementStatDesigner/$StatementStat/default/action/select.png") no-repeat center center;
  }
-.o2_query_SSDStatementListTitleReloadNode{
+.o2_query_SSDStatementListTitleDeleteNode{
     margin-left: 20px;
+    width: 30px;
+    height: 40px;
+    cursor: pointer;
+    display: none;
+    background: url("../x_component_query_StatementStatDesigner/$StatementStat/default/action/delete.png") no-repeat center center;
+}
+.o2_query_SSDStatementListTitleReloadNode{
     width: 30px;
     height: 40px;
     cursor: pointer;
     display: none;
     background: url("../x_component_query_StatementStatDesigner/$StatementStat/default/action/reload.png") no-repeat center center;
 }
+.o2_query_SSDStatementListTitleEditNode{
+    width: 30px;
+    height: 40px;
+    cursor: pointer;
+    display: none;
+    background: url("../x_component_query_StatementStatDesigner/$StatementStat/default/action/edit.png") no-repeat center center;
+}
 .o2_query_SSDStatementListContentNode{
     height: calc( 100% - 36px );
+    overflow: auto;
 }
 .o2_query_SSDStatementItemNode{
     overflow: hidden;
@@ -78,14 +93,14 @@
 }
 .o2_query_SSDStatementItemTextNode{
     float: left;
-    width: calc( 100% - 70px );
+    width: calc( 100% - 80px );
     overflow: hidden;
     height: 40px;
     cursor: pointer;
 }
 .o2_query_SSDStatementItemDeleteNode{
     float: left;
-    width: 20px;
+    width: 25px;
     height: 40px;
     cursor: pointer;
     opacity: 0;
@@ -93,7 +108,7 @@
 }
 .o2_query_SSDStatementItemEditNode{
     float: left;
-    width: 20px;
+    width: 25px;
     height: 40px;
     cursor: pointer;
     opacity: 0;

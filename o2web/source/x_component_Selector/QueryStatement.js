@@ -28,12 +28,18 @@ MWF.xApplication.Selector.QueryStatement = new Class({
                         }.bind(this), null, false);
                     }
                     if (data.statementList && data.statementList.length){
-                        var category = this._newItemCategory(data, this, this.itemAreaNode);
-                        data.statementList.each(function(d){
-                            d.applicationName = data.name;
-                            var item = this._newItem(d, this, category.children);
-                            this.items.push(item);
+                        data.statementList = data.statementList.filter(function(d){
+                           return !this.isExcluded(d);
                         }.bind(this));
+
+                        if( data.statementList.length ){
+                            var category = this._newItemCategory(data, this, this.itemAreaNode);
+                            data.statementList.each(function(d){
+                                d.applicationName = data.name;
+                                var item = this._newItem(d, this, category.children);
+                                this.items.push(item);
+                            }.bind(this));
+                        }
                     }
                 }.bind(this));
             }

@@ -20,7 +20,8 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
         },
 		"actions": null,
 		"category": null,
-		"processData": null
+		"processData": null,
+        "mode": ""
 	},
 
     onQueryLoad: function(){
@@ -123,6 +124,11 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
             "styles": this.css.contentNode
         }).inject(this.node);
         this.formContentNode = this.contentNode;
+
+        if( this.options.mode === "stat" ){
+            this.statementListNode.hide();
+            this.contentNode.setStyle("margin-left", "0px");
+        }
     },
     loadStatementListNodes: function(){
         this.statementListTitleNode = new Element("div", {

@@ -177,6 +177,10 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         this.jpqlPage = this.jpqlTab.addTab(this.tabJpqlNode, this.designer.lp.queryStatement);
         this.countJpqlPage = this.jpqlTab.addTab(this.tabCountJpqlNode, this.designer.lp.countStatement);
 
+        if( this.designer.options.mode === "stat" ){
+            this.countJpqlPage.tabNode.hide();
+        }
+
         this.jpqlPage.showTabIm();
 
         // this.jpqlPage.addEvent("postShow", function(){
@@ -211,6 +215,10 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
 
         this.runPage = this.tab.addTab(this.tabRunNode, this.designer.lp.runTest);
         this.viewPage = this.tab.addTab(this.tabViewNode, this.designer.lp.view);
+
+        if( this.designer.options.mode === "stat" ){
+            this.viewPage.tabNode.hide();
+        }
 
         this.runPage.showTabIm();
 

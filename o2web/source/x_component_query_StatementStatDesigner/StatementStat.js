@@ -223,6 +223,7 @@ MWF.xApplication.query.StatementStatDesigner.StatementStat = new Class({
         new MWF.O2Selector( this.designer.content, {
             type: "QueryStatement",
             inViewCategory: this.data.application,
+            exclude: this.json.statementList,
             onComplete: function (items) {
                 var data = items.map(function (item) {
                     this.json.statementList.push(item.data);
@@ -712,8 +713,14 @@ MWF.xApplication.query.StatementStatDesigner.StatementStat = new Class({
             window.open(o2.filterUrl(url), "_blank");
         }.bind(this));
     },
-    reloadItem: function () {
-        if( this.list && this.list.currentObject && this.list.currentObject.detail)this.list.currentObject.detail.reload();
+    reloadItem: function (ev) {
+        if( this.list && this.list.currentObject && this.list.currentObject.detail)this.list.currentObject.detail.reload(ev);
+    },
+    deleteItem: function (ev) {
+        if( this.list && this.list.currentObject && this.list.currentObject.detail)this.list.currentObject.detail.delete(ev);
+    },
+    editItem: function (ev) {
+        if( this.list && this.list.currentObject && this.list.currentObject.detail)this.list.currentObject.detail.edit(ev);
     }
 });
 
@@ -867,15 +874,67 @@ MWF.xApplication.query.StatementStatDesigner.StatementList.Item = new Class({
     },
     edit: function(ev){
         debugger;
-        layout.openApplication(ev, "query.StatementDesigner", {
-            "appId": "query.StatementDesigner"+this.data.application,
-            "id": this.data.id,
-            "application":{"name": this.data.applicationName,"id": this.data.query }
+
+        this.statementForm = new MWF.xApplication.query.StatementStatDesigner.StatementForm({
+            app: this.designer
+        }, this.data, {
+            title: "编辑查询语句：" + this.data.name
         });
+        this.statementForm.edit();
+
+
+        // layout.openApplication(ev, "query.StatementDesigner", {
+        //     "appId": "query.StatementDesigner"+this.data.query,
+        //     "id": this.data.id,
+        //     "application":{"name": this.data.applicationName,"id": this.data.query }
+        // });
         ev.stopPropagation();
     },
     loadDetail : function( searchKey ){
         this.detail = new MWF.xApplication.query.StatementStatDesigner.StatementDetail(this, this.data);
+    }
+});
+
+MWF.xDesktop.requireApp("Template", "MPopupForm", null, false);
+MWF.xApplication.query.StatementStatDesigner.StatementForm = new Class({
+    Extends: MPopupForm,
+    Implements: [Options, Events],
+    options: {
+        "style": "design",
+        "width": "90%",
+        "height": "90%",
+        "hasTop": true,
+        "hasIcon": false,
+        "hasTopIcon" : false,
+        "hasTopContent" : false,
+        "hasBottom": true,
+        "draggable": true,
+        "closeAction": true
+    },
+    _createTableContent: function () {
+
+        var appNames = "query.StatementDesigner";
+        var options = {
+            "appId": "query.StatementDesigner"+this.data.query,
+            "id": this.data.id,
+            "mode": "stat",
+            "application":{"name": this.data.applicationName,"id": this.data.query }
+        };
+        var par = "app=" + encodeURIComponent(appNames) +  "&option=" + encodeURIComponent((options) ? JSON.encode(options) : "");
+        var url = o2.filterUrl("../x_desktop/app.html?" + par + ((layout.debugger) ? "&debugger" : ""));
+
+        this.formContentNode.empty();
+        var form = new Element("iframe", {
+            styles: {
+                "width": "100%",
+                "height": "calc( 100% - 10px )",
+                "padding-bottom": "10px"
+            },
+            src : url,
+            "frameborder": "0px",
+            "scrolling": "auto",
+            "seamless": "seamless"
+        }).inject(this.formContentNode);
     }
 });
 
@@ -887,19 +946,18 @@ MWF.xApplication.query.StatementStatDesigner.StatementDetail = new Class({
     },
     initialize: function(item, sdata, options){
         this.setOptions(options);
+        this.item = item;
         this.statementStat = item.list.statementStat;
         this.designer = this.statementStat.designer;
         this.node = this.statementStat.statementDetailNode;
         this.sdata = sdata;
         this.load();
     },
-    reload: function(){
-        this.destroy();
-        this.load();
-    },
     load: function(){
         this.statementStat.detailEmptyNode.hide();
         this.statementStat.reloadItemNode.setStyle("display", "inline-block");
+        this.statementStat.deleteItemNode.setStyle("display", "inline-block");
+        this.statementStat.editItemNode.setStyle("display", "inline-block");
         this.node.show();
         var p = o2.Actions.load("x_query_assemble_surface").StatementAction.get( this.sdata.id );
         p.then(function (json) {
@@ -912,6 +970,16 @@ MWF.xApplication.query.StatementStatDesigner.StatementDetail = new Class({
         }.bind(this));
 
     },
+    reload: function(){
+        this.destroy();
+        this.load();
+    },
+    delete: function(ev){
+        this.item.delete(ev);
+    },
+    edit: function(ev){
+        this.item.edit(ev);
+    },
     destroy: function(){
         if( this.editor ){
             this.editor.destroy();
@@ -923,6 +991,8 @@ MWF.xApplication.query.StatementStatDesigner.StatementDetail = new Class({
         }
         this.statementStat.detailEmptyNode.show();
         this.statementStat.reloadItemNode.hide();
+        this.statementStat.deleteItemNode.hide();
+        this.statementStat.editItemNode.hide();
         this.node.empty();
     },
     loadStatementScriptEditor: function () {
