@@ -215,7 +215,36 @@ MWF.xApplication.query.StatementStatDesigner.StatementStat = new Class({
     loadStatement: function(){
         this.loadStatementHtml(function () {
             this.list = new MWF.xApplication.query.StatementStatDesigner.StatementList(this, this.statementListContent, this.json.statementList);
+            this.loadVerticalResize();
+            // this.setRunnerSize();
+            // this.designer.addEvent("resize", this.setRunnerSize.bind(this));
+            this.loadStatementRunner();
         }.bind(this));
+    },
+    addStatement: function(){
+        var statementForm = new MWF.xApplication.query.StatementStatDesigner.StatementForm({
+            app: this.designer
+        }, {}, {
+            title: this.designer.lp.addStatement,
+            onPostOk: function (data) {
+
+                if( data.countData )delete data.countData;
+                if( data.data )delete data.data;
+                if( data.scriptText )delete data.scriptText;
+                if( data.countScriptText )delete data.countScriptText;
+                if( data.testParameters )delete data.testParameters;
+                if( data.view )delete data.view;
+
+                if( data.mid )delete data.mid;
+                if( data.pid )delete data.pid;
+                if( data.vid )delete data.vid;
+                if( data.vtype )delete data.vtype;
+
+                this.json.statementList.push(data);
+                this.list.addItems( [data] );
+            }.bind(this)
+        });
+        statementForm.create();
     },
     selectStatement: function(){
         debugger;
@@ -294,7 +323,7 @@ MWF.xApplication.query.StatementStatDesigner.StatementStat = new Class({
                 var y = (Browser.name=="firefox") ? e.event.clientY : e.event.y;
                 el.store("position", {"x": x, "y": y});
 
-                var size = this.designerArea.getSize(); //designerArea
+                var size = this.statementDesignerArea.getSize(); //statementDesignerArea
                 el.store("initialHeight", size.y);
 
                 var allSize = this.areaNode.getSize();
@@ -329,34 +358,36 @@ MWF.xApplication.query.StatementStatDesigner.StatementStat = new Class({
         var designAreaHeight = this.designerAreaPercent*height - 52;
         // var runAreaHeight = height-designAreaHeight;
 
-        this.designerArea.setStyle("height", ""+designAreaHeight+"px");
+        this.statementDesignerArea.setStyle("height", ""+designAreaHeight+"px");
 
         debugger;
 
-        var editorHeight = designAreaHeight - 98;
+        var editorHeight = designAreaHeight - 40;
+        this.statementDetailNode.setStyle( "height", ""+editorHeight+"px" );
 
-        if(this.jpqlEditorNode)this.jpqlEditorNode.setStyle( "height", ""+editorHeight+"px" );
-        // if(this.countJpqlEditorNode)this.countJpqlEditorNode.setStyle( "height", ""+editorHeight+"px" );
-        if(this.scriptArea)this.scriptArea.setStyle( "height", ""+editorHeight+"px" );
-        // if(this.countScriptArea)this.countScriptArea.setStyle( "height", ""+editorHeight+"px" );
-
-        if( this.editor )this.editor.resize();
-        // if( this.countEditor )this.countEditor.resize();
-        if( this.scriptEditor ){
-            this.scriptEditor.container.setStyle("height", ""+editorHeight+"px");
-            this.scriptEditor.resizeContentNodeSize();
+        var detail = this.list.getCurrentDetail();
+        if( detail ){
+            if( detail.editor )detail.editor.resize();
+            if( detail.scriptEditor ){
+                detail.scriptEditor.container.setStyle("height", ""+editorHeight+"px");
+                detail.scriptEditor.resizeContentNodeSize();
+            }
         }
-        // if( this.countScriptEditor ){
-        //     this.countScriptEditor.container.setStyle("height", ""+editorHeight+"px");
-        //     this.countScriptEditor.resizeContentNodeSize();
+
+        // if(this.jpqlEditorNode)this.jpqlEditorNode.setStyle( "height", ""+editorHeight+"px" );
+        // if(this.scriptArea)this.scriptArea.setStyle( "height", ""+editorHeight+"px" );
+
+        // if( this.editor )this.editor.resize();
+        // if( this.scriptEditor ){
+        //     this.scriptEditor.container.setStyle("height", ""+editorHeight+"px");
+        //     this.scriptEditor.resizeContentNodeSize();
         // }
 
-        // this.tabNode.setStyle("height", ""+runAreaHeight+"px");
-        this.setRunnerSize();
-        if( this.stat ){
-            this.setStatSize();
-            this.stat.setContentHeight()
-        }
+        // this.setRunnerSize();
+        // if( this.stat ){
+        //     this.setStatSize();
+        //     this.stat.setContentHeight()
+        // }
     },
     // setSatementTable: function () {
     //     if (!this.json.type) this.json.type = "select";
@@ -392,6 +423,31 @@ MWF.xApplication.query.StatementStatDesigner.StatementStat = new Class({
             if (callback) callback();
         }.bind(this));
     },
+
+    setRunnerSize: function () {
+        debugger;
+        var size = this.areaNode.getSize();
+        var designerSize = this.statementDesignerArea.getComputedSize();
+        var reizeNodeSize = this.resizeNode.getComputedSize();
+        var statNode = this.statNode.getComputedSize();
+
+        var y = size.y - designerSize.totalHeight - reizeNodeSize.totalHeight - statNode.totalHeight;
+        var mTop = this.runArea.getStyle("margin-top").toInt();
+        var mBottom = this.runArea.getStyle("margin-bottom").toInt();
+        var pTop = this.runArea.getStyle("padding-top").toInt();
+        var pBottom = this.runArea.getStyle("padding-bottom").toInt();
+        y = y - mTop - mBottom - pTop - pBottom - 5;
+
+        // var tabSize = this.tabNode.getComputedSize();
+        // y = y - tabSize.totalHeight;
+
+        this.runArea.setStyle("height", "" + y + "px");
+
+        // var titleSize = this.runTitleNode.getComputedSize();
+        // y = y - titleSize.totalHeight;
+
+        this.runContentNode.setStyle("height", "" + y + "px");
+    },
     loadStatementRunner: function () {
         o2.require("o2.widget.JavascriptEditor", function () {
             this.jsonEditor = new o2.widget.JavascriptEditor(this.runJsonNode, {
@@ -404,85 +460,10 @@ MWF.xApplication.query.StatementStatDesigner.StatementStat = new Class({
         }.bind(this), false);
     },
     setEvent: function () {
-        this.designerArea.addEvent("click", function (e) {
+        this.statementDesignerArea.addEvent("click", function (e) {
             this.selected();
             e.stopPropagation();
         }.bind(this));
-        // this.formatTypeArea.getElements("input").addEvent("click", function (e) {
-        //     if (e.target.checked) {
-        //         var v = e.target.get("value");
-        //         if (v === "script") {
-        //             this.scriptArea.show();
-        //             this.jpqlArea.hide();
-        //             this.loadStatementScriptEditor();
-        //
-        //         } else {
-        //             this.scriptArea.hide();
-        //             this.jpqlArea.show();
-        //             this.loadStatementEditor();
-        //
-        //         }
-        //         this.json.format = v;
-        //     }
-        // }.bind(this));
-        // this.entityCategorySelect.addEvent("change", function (e) {
-        //     var entityCategory = e.target.options[e.target.selectedIndex].value;
-        //     switch (entityCategory) {
-        //         case "dynamic":
-        //             this.officialTableArea.hide();
-        //             this.dynamicTableArea.show();
-        //             this.customTableArea.hide();
-        //             break;
-        //         case "custom":
-        //             this.officialTableArea.hide();
-        //             this.dynamicTableArea.hide();
-        //             this.customTableArea.show();
-        //             break;
-        //         default:
-        //             this.officialTableArea.show();
-        //             this.dynamicTableArea.hide();
-        //             this.customTableArea.hide();
-        //             break;
-        //     }
-        //     this.json.entityCategory = entityCategory;
-        //     // this.loadJpqlTypeSelect();
-        //     this.loadFieldSelect();
-        //     if(this.stat && this.stat.property && this.stat.property.viewFilter)this.view.property.viewFilter.setPathInputSelectOptions();
-        // }.bind(this));
-        //@todo change table
-        // this.officialTableSelect.addEvent("change", function (e) {
-        //     debugger;
-        //     var entityClassName = e.target.options[e.target.selectedIndex].value;
-        //     this.json.entityClassName = entityClassName;
-        //     if( entityClassName ){
-        //         this.changeEditorEntityClassName( entityClassName.split(".").getLast() );
-        //     }
-        //     this.loadFieldSelect();
-        //
-        //     this.json.table = "";
-        //     this.json.tableObj = null;
-        //
-        //     if(this.stat && this.stat.property && this.stat.property.viewFilter)this.stat.property.viewFilter.setPathInputSelectOptions();
-        //
-        //
-        // }.bind(this));
-
-        // this.runActionNode.getFirst().addEvent("click", this.runStatement.bind(this));
-        //
-        // this.dynamicTableSelect.addEvent("click", this.selectTable.bind(this));
-        //
-        // this.fieldSelect.addEvent("change", function (ev) {
-        //     var option = ev.target.options[ev.target.selectedIndex];
-        //     var type = option.retrieve("type");
-        //     var field = option.retrieve("field");
-        //     if( !field )return;
-        //     var text = field.name;
-        //         if( this.data.format === "script" && this.scriptEditor.jsEditor ){
-        //             this.scriptEditor.jsEditor.insertValue( text );
-        //         }else if( this.editor ){
-        //             this.editor.insertValue( text );
-        //         }
-        // }.bind(this))
     },
     // changeEditorEntityClassName : function( entityClassName ){
     //     if (this.json.format == "jpql") {
@@ -506,90 +487,86 @@ MWF.xApplication.query.StatementStatDesigner.StatementStat = new Class({
     // },
 
 
-    // runStatement: function () {
-    //
-    //     this.saveSilence(function () {
-    //         debugger;
-    //         this.execute(function (json) {
-    //             this.executeData = json;
-    //             o2.require("o2.widget.JsonParse", function () {
-    //                 this.runResultNode.empty();
-    //                 var jsonResult = new o2.widget.JsonParse(json, this.runResultNode);
-    //                 jsonResult.load();
-    //             }.bind(this));
-    //             if (this.stat) {
-    //                 var flag = true;
-    //                 // if (this.data.type !== "select") flag = false;
-    //                 if (this.data.format === "script" && !this.data.scriptText) flag = false;
-    //                 if (this.data.format !== "script" && !this.data.data) flag = false;
-    //                 if (flag) this.stat.loadStatData();
-    //             }
-    //             this.setColumnDataPath(json);
-    //         }.bind(this), function () {
-    //         }.bind(this))
-    //     }.bind(this));
-    // },
-    // setColumnDataPath: function (json) {
-    //     if (this.data.format === "script" && !this.data.scriptText) return;
-    //     if (this.data.format !== "script" && !this.data.data) return;
-    //     this.columnDataPathList = [];
-    //     debugger;
-    //     var addPath = function (value, key) {
-    //         if (typeOf(value) === "array") {
-    //             Array.each(value, function (v, idx) {
-    //                 var path = (key || typeOf(key) === "number") ? (key + "." + idx) : idx.toString();
-    //                 if (!this.columnDataPathList.contains(path)) this.columnDataPathList.push(path);
-    //                 if (typeOf(v) === "array" || typeOf(v) === "object") addPath(v, path);
-    //             }.bind(this))
-    //         } else if (typeOf(value) === "object") {
-    //             Object.each(value, function (v, k) {
-    //                 var path = (key || typeOf(key) === "number") ? (key + "." + k) : k;
-    //                 if (!this.columnDataPathList.contains(path)) this.columnDataPathList.push(path);
-    //                 if (typeOf(v) === "array" || typeOf(v) === "object") addPath(v, path);
-    //                 addPath(v, path);
-    //             }.bind(this))
-    //         } else {
-    //             // if( key && !this.columnDataPathList.indexOf(key) )this.columnDataPathList.push(key);
-    //         }
-    //     }.bind(this);
-    //     for (var i = 0; i < json.data.length && i < 10; i++) {
-    //         var d = json.data[i];
-    //         addPath(d);
-    //     }
-    //     this.columnDataPathList.sort();
-    //     if (this.stat && this.stat.items) {
-    //         this.stat.items.each(function (column) {
-    //             column.refreshColumnPathData()
-    //         })
-    //     }
-    // },
-    // getColumnDataPath: function () {
-    //     return this.columnDataPathList || [];
-    // },
-    // execute: function (success, failure) {
-    //     var json = this.jsonEditor.editor.getValue();
-    //     var o = JSON.parse(json);
-    //
-    //     var mode = "data";
-    //     o2.Actions.load("x_query_assemble_designer").StatementAction.executeV2(this.json.id, "data", 1, 50, o, function (json) {
-    //         if (success) success(json)
-    //     }.bind(this), function (xhr, text, error) {
-    //         debugger;
-    //         if (failure) failure();
-    //         var errorText = error;
-    //         if (xhr) {
-    //             var json = JSON.decode(xhr.responseText);
-    //             if (json) {
-    //                 errorText = json.message.trim() || "request json error";
-    //             } else {
-    //                 errorText = "request json error: " + xhr.responseText;
-    //             }
-    //         }
-    //         errorText = errorText.replace(/\</g, "&lt;");
-    //         errorText = errorText.replace(/\</g, "&gt;");
-    //         MWF.xDesktop.notice("error", {x: "right", y: "top"}, errorText);
-    //     }.bind(this))
-    // },
+    runStatement: function () {
+        this.saveSilence(function () {
+            this.execute(function (json) {
+                this.executeData = json;
+                o2.require("o2.widget.JsonParse", function () {
+                    this.runResultNode.empty();
+                    var jsonResult = new o2.widget.JsonParse(json, this.runResultNode);
+                    jsonResult.load();
+                }.bind(this));
+                if (this.stat) {
+                    var flag = true;
+                    // if (this.data.type !== "select") flag = false;
+                    if (this.data.format === "script" && !this.data.scriptText) flag = false;
+                    if (this.data.format !== "script" && !this.data.data) flag = false;
+                    if (flag) this.stat.loadStatData();
+                }
+                // this.setColumnDataPath(json);
+            }.bind(this), function () {
+            }.bind(this))
+        }.bind(this));
+    },
+    setColumnDataPath: function (json) {
+        if (this.data.format === "script" && !this.data.scriptText) return;
+        if (this.data.format !== "script" && !this.data.data) return;
+        this.columnDataPathList = [];
+        debugger;
+        var addPath = function (value, key) {
+            if (typeOf(value) === "array") {
+                Array.each(value, function (v, idx) {
+                    var path = (key || typeOf(key) === "number") ? (key + "." + idx) : idx.toString();
+                    if (!this.columnDataPathList.contains(path)) this.columnDataPathList.push(path);
+                    if (typeOf(v) === "array" || typeOf(v) === "object") addPath(v, path);
+                }.bind(this))
+            } else if (typeOf(value) === "object") {
+                Object.each(value, function (v, k) {
+                    var path = (key || typeOf(key) === "number") ? (key + "." + k) : k;
+                    if (!this.columnDataPathList.contains(path)) this.columnDataPathList.push(path);
+                    if (typeOf(v) === "array" || typeOf(v) === "object") addPath(v, path);
+                    addPath(v, path);
+                }.bind(this))
+            } else {
+                // if( key && !this.columnDataPathList.indexOf(key) )this.columnDataPathList.push(key);
+            }
+        }.bind(this);
+        for (var i = 0; i < json.data.length && i < 10; i++) {
+            var d = json.data[i];
+            addPath(d);
+        }
+        this.columnDataPathList.sort();
+        if (this.stat && this.stat.items) {
+            this.stat.items.each(function (column) {
+                column.refreshColumnPathData()
+            })
+        }
+    },
+    getColumnDataPath: function () {
+        return this.columnDataPathList || [];
+    },
+    execute: function (success, failure) {
+        var json = this.jsonEditor.editor.getValue();
+        var o = JSON.parse(json);
+
+        o2.Actions.load("x_query_assemble_designer").StatementAction.executeV2(this.json.id, "data", 1, 50, o, function (json) {
+            if (success) success(json)
+        }.bind(this), function (xhr, text, error) {
+            if (failure) failure();
+            var errorText = error;
+            if (xhr) {
+                var json = JSON.decode(xhr.responseText);
+                if (json) {
+                    errorText = json.message.trim() || "request json error";
+                } else {
+                    errorText = "request json error: " + xhr.responseText;
+                }
+            }
+            errorText = errorText.replace(/\</g, "&lt;");
+            errorText = errorText.replace(/\</g, "&gt;");
+            MWF.xDesktop.notice("error", {x: "right", y: "top"}, errorText);
+        }.bind(this))
+    },
 
     save: function (callback) {
         debugger;
@@ -672,7 +649,7 @@ MWF.xApplication.query.StatementStatDesigner.StatementStat = new Class({
     setStatSize: function () {
         debugger;
         var size = this.areaNode.getSize();
-        var designerSize = this.designerArea.getComputedSize();
+        var designerSize = this.statementDesignerArea.getComputedSize();
         var reizeNodeSize = this.resizeNode.getComputedSize();
 
         var y = size.y - designerSize.totalHeight - reizeNodeSize.totalHeight;
@@ -764,6 +741,9 @@ MWF.xApplication.query.StatementStatDesigner.StatementList = new Class({
             }
             this.itemList.push( item );
         }.bind(this));
+    },
+    getCurrentDetail: function () {
+        if( this.currentObject && this.currentObject.detail )return this.currentObject.detail;
     }
 });
 
@@ -858,12 +838,15 @@ MWF.xApplication.query.StatementStatDesigner.StatementList.Item = new Class({
         ev.stopPropagation();
     },
     _delete: function( ev ){
+        debugger;
         if( this.isCurrent ){
             this.cancelCurrent();
             this.list.currentObject = null;
             this.list.itemList.erase( this );
+            this.list.statementStat.json.statementList.erase( this.data );
             if(this.list.itemList && this.list.itemList.length)this.list.itemList[0].setCurrent();
         }else{
+            this.list.statementStat.json.statementList.erase( this.data );
             this.list.itemList.erase( this );
         }
         this.node.destroy();
@@ -873,12 +856,14 @@ MWF.xApplication.query.StatementStatDesigner.StatementList.Item = new Class({
         o2.release(this);
     },
     edit: function(ev){
-        debugger;
-
         this.statementForm = new MWF.xApplication.query.StatementStatDesigner.StatementForm({
             app: this.designer
         }, this.data, {
-            title: "编辑查询语句：" + this.data.name
+            title: this.designer.lp.editStatement + "：" + this.data.name,
+            onPostOk: function (data) {
+                this.textNode.set("text", data.name);
+                if( this.detail )this.detail.reload();
+            }.bind(this)
         });
         this.statementForm.edit();
 
@@ -912,32 +897,50 @@ MWF.xApplication.query.StatementStatDesigner.StatementForm = new Class({
         "closeAction": true
     },
     _createTableContent: function () {
-
         var appNames = "query.StatementDesigner";
-        var options = {
-            "appId": "query.StatementDesigner"+this.data.query,
-            "id": this.data.id,
-            "mode": "stat",
-            "application":{"name": this.data.applicationName,"id": this.data.query }
-        };
+        var options;
+        if( this.isNew ){
+            options = {
+                "appId": "query.StatementDesigner",
+                "mode": "stat",
+                "application":{"name": this.app.application.name,"id": this.app.application.id }
+            };
+        }else{
+            options = {
+                "appId": "query.StatementDesigner"+this.data.query,
+                "id": this.data.id,
+                "mode": "stat",
+                "application":{"name": this.data.applicationName,"id": this.data.query }
+            };
+        }
         var par = "app=" + encodeURIComponent(appNames) +  "&option=" + encodeURIComponent((options) ? JSON.encode(options) : "");
         var url = o2.filterUrl("../x_desktop/app.html?" + par + ((layout.debugger) ? "&debugger" : ""));
 
         this.formContentNode.empty();
-        var form = new Element("iframe", {
-            styles: {
+        this.iframe = new Element("iframe", {
+            "styles": {
                 "width": "100%",
                 "height": "calc( 100% - 10px )",
                 "padding-bottom": "10px"
             },
-            src : url,
+            "src" : url,
             "frameborder": "0px",
             "scrolling": "auto",
             "seamless": "seamless"
         }).inject(this.formContentNode);
-    }
+    },
+    ok: function (e) {
+        this.fireEvent("queryOk");
+        this.iframe.contentWindow.layout.app.saveStatement(function (data) {
+            debugger;
+            if( this.formMaskNode )this.formMaskNode.destroy();
+            if( this.formAreaNode )this.formAreaNode.destroy();
+            if( this.app && this.app.notice)this.app.notice(this.isNew ? this.lp.createSuccess : this.lp.updateSuccess, "success");
+            this.fireEvent("postOk", data);
+            this.close();
+        }.bind(this))
+    },
 });
-
 
 MWF.xApplication.query.StatementStatDesigner.StatementDetail = new Class({
     Implements: [Options, Events],

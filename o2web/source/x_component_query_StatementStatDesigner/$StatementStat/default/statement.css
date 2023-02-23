@@ -1,7 +1,7 @@
 .o2_query_SSDNode {
-    height : 360px;
+    height : 280px;
     overflow: hidden;
-    padding: 20px;
+    padding: 10px;
     box-shadow: 0 0 10px #999999;
     background: #f3f3f3;
     border-bottom: 1px solid #cccccc;
@@ -149,64 +149,72 @@
     color: #888888;
 }
 
+.o2_query_SSDResizeNode{
+    height: 3px;
+    background-color: #505050;
+    cursor: row-resize;
+}
 
-.o2_statement_statementRunNode {
-    margin-top: 10px;
-    padding: 0px;
+.o2_query_SSDRunNode {
+    height: 240px;
+    padding: 10px;
     box-shadow: 0 0 10px #999999;
     background: #f3f3f3;
     border-bottom: 1px solid #cccccc;
 }
-.o2_statement_statementRunTitleNode{
-    height: 26px;
-    line-height: 26px;
-    color: #ffffff;
-    padding: 0 10px;
-    font-size: 14px;
-    text-align: center;
-    background-color: #505050;
+/*.o2_query_SSDRunTitleNode{*/
+/*    height: 26px;*/
+/*    line-height: 26px;*/
+/*    color: #ffffff;*/
+/*    padding: 0 10px;*/
+/*    font-size: 14px;*/
+/*    text-align: center;*/
+/*    background-color: #505050;*/
+/*}*/
+.o2_query_SSDRunTitleNode{
+    font-size: 15px;
+    padding-left:10px;
+    height: 40px;
+    line-height: 40px;
+    border-bottom: 1px solid #ddd;
+    background: #f7f7f7;
+    overflow:hidden;
 }
-.o2_statement_statementRunContentNode {
+.o2_query_SSDRunContentNode {
     overflow: hidden;
+    height: 200px;
 }
-.o2_statement_statementRunJsonNode {
+.o2_query_SSDRunJsonNode {
     height: 100%;
     width: 40%;
-    overflow: auto;
+    overflow: hidden;
     float: left;
     background: #ffffff;
 }
-.o2_statement_statementRunActionNode {
+.o2_query_SSDRunActionNode {
     height: 100%;
     width: 8%;
     overflow: hidden;
     float: left;
     background: #f3f3f3;
 }
-.o2_statement_statementRunResultNode {
+.o2_query_SSDRunResultNode {
     height: 100%;
     width: 52%;
     overflow: auto;
     float: left;
     background: #ffffff;
 }
-.o2_statement_statementRunActionContent {
+.o2_query_SSDRunActionContent {
     height: 50px;
     width: 50px;
     background: url("../x_component_query_StatementDesigner/$Statement/default/icon/run.png") center center no-repeat;
     position: relative;
-    top:45%;
+    top:40%;
     margin: auto;
     cursor: pointer;
 }
-.o2_statement_tabNode{
-    height: 32px;
-}
-.o2_statement_statementJpqlTabNode{
-    height: 32px;
-}
-.o2_statement_resizeNode{
-    height: 3px;
-    background-color: #505050;
-    cursor: row-resize;
+
+.o2_query_SSDStatNode{
+    height: 600px;
 }

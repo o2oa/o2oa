@@ -881,7 +881,6 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         // this.runMask.loadNode(this.node);
 
         this.saveSilence(function () {
-            debugger;
             this.execute(function (json) {
                 this.executeData = json;
                 o2.require("o2.widget.JsonParse", function () {
@@ -1002,27 +1001,30 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         if (this.data.type === "select") {
             if (this.data.format === "script") {
                 if (this.data.scriptText && this.data.countScriptText) {
-                    mode = "all"
+                    mode = "all";
                 } else if (this.data.scriptText && !this.data.countScriptText) {
-                    mode = "data"
+                    mode = "data";
                 } else if (!this.data.scriptText && this.data.countScriptText) {
-                    mode = "count"
+                    mode = "count";
                 } else {
                     this.designer.notice(this.designer.lp.inputStatementData, "error");
                     return false;
                 }
             } else {
                 if (this.data.data && this.data.countData) {
-                    mode = "all"
+                    mode = "all";
                 } else if (this.data.data && !this.data.countData) {
-                    mode = "data"
+                    mode = "data";
                 } else if (!this.data.data && this.data.countData) {
-                    mode = "count"
+                    mode = "count";
                 } else {
                     this.designer.notice(this.designer.lp.inputStatementData, "error");
                     return false;
                 }
             }
+        }
+        if( this.designer.options.mode === "stat" ){
+            mode = "data";
         }
         o2.Actions.load("x_query_assemble_designer").StatementAction.executeV2(this.json.id, mode, 1, 50, o, function (json) {
             if (success) success(json)

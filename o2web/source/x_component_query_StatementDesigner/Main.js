@@ -552,12 +552,13 @@ MWF.xApplication.query.StatementDesigner.Main = new Class({
         this.statement.preview();
     },
 
-    saveStatement: function(){
+    saveStatement: function( callbck ){
         this.statement.save(function(){
             var name = this.statement.data.name;
             this.setTitle(MWF.APPDSMD.LP.title + "-"+name);
             this.options.desktopReload = true;
             this.options.id = this.statement.data.id;
+            if(callbck)callbck(this.statement.data);
         }.bind(this));
     },
 

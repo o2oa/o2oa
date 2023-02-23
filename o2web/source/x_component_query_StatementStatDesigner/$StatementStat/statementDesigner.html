@@ -1,4 +1,4 @@
-<div class="o2_query_SSDNode">
+<div class="o2_query_SSDNode" data-o2-element="statementDesignerArea">
     <div class="o2_query_SSDStatementListNode">
         <div class="o2_query_SSDStatementListTitleNode">
             <div class="o2_query_SSDStatementListTitleSelectNode" data-o2-events="click:selectStatement" title="{{$.lp.selectStatement}}"></div>
@@ -29,7 +29,22 @@
     </div>
 </div>
 
-<div class="o2_statement_resizeNode"></div>
+<div class="o2_query_SSDResizeNode" data-o2-element="resizeNode"></div>
+
+<div class="o2_query_SSDRunNode" data-o2-element="runArea">
+    <div class="o2_query_SSDRunTitleNode">{{$.lp.testStatement}}</div>
+    <div class="o2_query_SSDRunContentNode" data-o2-element="runContentNode">
+        <div class="o2_query_SSDRunJsonNode" data-o2-element="runJsonNode">
+        </div>
+        <div class="o2_query_SSDRunActionNode" data-o2-element="runActionNode">
+            <div class="o2_query_SSDRunActionContent" data-o2-events="click:runStatement"></div>
+        </div>
+        <div class="o2_query_SSDRunResultNode" data-o2-element="runResultNode">
+        </div>
+    </div>
+</div>
+
+<div class="o2_query_SSDResizeNode" data-o2-element="resizeNode2"></div>
 
 <!--<div class="o2_statement_tabNode"></div>-->
 
@@ -49,4 +64,4 @@
 
 <!--</div>-->
 
-<div class="o2_statement_statNode"></div>
+<div class="o2_query_SSDStatNode" data-o2-element="statNode"></div>
