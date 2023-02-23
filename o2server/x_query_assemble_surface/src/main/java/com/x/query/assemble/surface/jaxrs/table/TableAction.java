@@ -129,6 +129,27 @@ public class TableAction extends StandardJaxrsAction {
 		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
 	}
 
+	@JaxrsMethodDescribe(value = "分页列示表中的数据", action = ActionListRowPaging.class)
+	@POST
+	@Path("list/table/{tableFlag}/row/paging/{page}/size/{size}")
+	@Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void listRowPaging(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+							  @JaxrsParameterDescribe("表标识") @PathParam("tableFlag") String tableFlag,
+							  @JaxrsParameterDescribe("分页") @PathParam("page") Integer page,
+							  @JaxrsParameterDescribe("每页数量") @PathParam("size") Integer size,
+							  JsonElement jsonElement) {
+		ActionResult<List<?>> result = new ActionResult<>();
+		EffectivePerson effectivePerson = this.effectivePerson(request);
+		try {
+			result = new ActionListRowPaging().execute(effectivePerson, tableFlag, page, size, jsonElement);
+		} catch (Exception e) {
+			logger.error(e, effectivePerson, request, jsonElement);
+			result.error(e);
+		}
+		asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+	}
+
 	@JaxrsMethodDescribe(value = "通过where 统计数量", action = ActionRowCountWhere.class)
 	@GET
 	@Path("{tableFlag}/row/count/where/{where}")
