@@ -54,7 +54,7 @@ public class DingdingFactory {
 		for (Department o : this.orgs()) {
 			Department sub = this.detailOrg(o.getId());
 			if (null != sub) {
-				if(BooleanUtils.isTrue(sub.getIsFromUnionOrg()) && BooleanUtils.isFalse(Config.dingding().getSyncUnionOrg())){
+				if(BooleanUtils.isTrue(sub.getIsFromUnionOrg()) && BooleanUtils.isFalse(Config.dingding().getSyncUnionOrgEnable())){
 					continue;
 				}
 				orgs.add(sub);
