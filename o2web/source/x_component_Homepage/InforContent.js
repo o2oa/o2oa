@@ -477,7 +477,7 @@ MWF.xApplication.Homepage.InforContent.AllInfor = new Class({
                 });
             }
         }else{
-            var appId = "cms.Document"+data.infoId;
+            var appId = "cms.Document"+ (data.infoId || data.id);
             if (this.app.desktop.apps[appId]){
                 this.app.desktop.apps[appId].setCurrent();
             }else {
