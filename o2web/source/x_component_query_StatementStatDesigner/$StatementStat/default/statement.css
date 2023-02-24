@@ -1,5 +1,5 @@
 .o2_query_SSDNode {
-    height : 280px;
+    height : 240px;
     overflow: hidden;
     padding: 10px;
     box-shadow: 0 0 10px #999999;
@@ -156,7 +156,7 @@
 }
 
 .o2_query_SSDRunNode {
-    height: 240px;
+    height: 280px;
     padding: 10px;
     box-shadow: 0 0 10px #999999;
     background: #f3f3f3;
@@ -182,7 +182,7 @@
 }
 .o2_query_SSDRunContentNode {
     overflow: hidden;
-    height: 200px;
+    height: 240px;
 }
 .o2_query_SSDRunJsonNode {
     height: 100%;

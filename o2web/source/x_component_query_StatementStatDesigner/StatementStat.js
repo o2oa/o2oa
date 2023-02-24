@@ -349,6 +349,41 @@ MWF.xApplication.query.StatementStatDesigner.StatementStat = new Class({
 
             }.bind(this)
         });
+
+
+        this.verticalResize2 = new Drag(this.resizeNode2, {
+            "snap": 10,
+            "onStart": function(el, e){
+                var x = (Browser.name=="firefox") ? e.event.clientX : e.event.x;
+                var y = (Browser.name=="firefox") ? e.event.clientY : e.event.y;
+                el.store("position", {"x": x, "y": y});
+
+                var size = this.runArea.getSize(); //statementDesignerArea
+                el.store("initialHeight", size.y);
+
+                var allSize = this.areaNode.getSize();
+                el.store("initialAllHeight", allSize.y);
+            }.bind(this),
+            "onDrag": function(el, e){
+
+                var allHeight = el.retrieve("initialAllHeight").toFloat(); //this.areaNode.getSize();
+
+                //			var x = e.event.x;
+                var y = (Browser.name=="firefox") ? e.event.clientY : e.event.y;
+                var position = el.retrieve("position");
+                var dy = y.toFloat()-position.y.toFloat();
+
+                var initialHeight = el.retrieve("initialHeight").toFloat();
+                var height = initialHeight+dy;
+                if (height < 180) height = 180;
+                if (height > allHeight-180) height = allHeight-180;
+
+                this.runAreaPercent = height/allHeight;
+
+                this.setVerticalResize2();
+
+            }.bind(this)
+        });
     },
     setVerticalResize: function(){
         var size = this.areaNode.getSize();
@@ -388,6 +423,22 @@ MWF.xApplication.query.StatementStatDesigner.StatementStat = new Class({
         //     this.setStatSize();
         //     this.stat.setContentHeight()
         // }
+    },
+    setVerticalResize2: function(){
+        var size = this.areaNode.getSize();
+
+        var height = size.y;
+
+        var runAreaHeight = this.runAreaPercent*height - 52;
+
+        this.runArea.setStyle("height", ""+runAreaHeight+"px");
+
+        debugger;
+
+        var editorHeight = runAreaHeight - 40;
+        this.runContentNode.setStyle( "height", ""+editorHeight+"px" );
+
+        this.jsonEditor.resize();
     },
     // setSatementTable: function () {
     //     if (!this.json.type) this.json.type = "select";
@@ -429,9 +480,9 @@ MWF.xApplication.query.StatementStatDesigner.StatementStat = new Class({
         var size = this.areaNode.getSize();
         var designerSize = this.statementDesignerArea.getComputedSize();
         var reizeNodeSize = this.resizeNode.getComputedSize();
-        var statNode = this.statNode.getComputedSize();
+        var statNodeSize = this.statArea.getComputedSize();
 
-        var y = size.y - designerSize.totalHeight - reizeNodeSize.totalHeight - statNode.totalHeight;
+        var y = size.y - designerSize.totalHeight - reizeNodeSize.totalHeight - statNodeSize.totalHeight;
         var mTop = this.runArea.getStyle("margin-top").toInt();
         var mBottom = this.runArea.getStyle("margin-bottom").toInt();
         var pTop = this.runArea.getStyle("padding-top").toInt();
@@ -549,7 +600,13 @@ MWF.xApplication.query.StatementStatDesigner.StatementStat = new Class({
         var json = this.jsonEditor.editor.getValue();
         var o = JSON.parse(json);
 
-        o2.Actions.load("x_query_assemble_designer").StatementAction.executeV2(this.json.id, "data", 1, 50, o, function (json) {
+        //var id = this.json.id;
+
+        debugger;
+
+        if( !this.json.statementList || this.json.statementList.length === 0 )return;
+
+        o2.Actions.load("x_query_assemble_designer").StatementAction.executeV2(this.json.statementList[0].id, "data", 1, 50, o, function (json) {
             if (success) success(json)
         }.bind(this), function (xhr, text, error) {
             if (failure) failure();
@@ -603,6 +660,9 @@ MWF.xApplication.query.StatementStatDesigner.StatementStat = new Class({
     },
 
     saveSilence: function (callback) {
+        if(callback)callback();
+        return;
+
         if (!this.data.name) {
             this.designer.notice(this.designer.lp.inputStatementName, "error");
             return false;
@@ -638,7 +698,7 @@ MWF.xApplication.query.StatementStatDesigner.StatementStat = new Class({
         if (!this.data.view) {
             this.statJson = {};
         } else {
-            this.statJson = JSON.parse(this.data.view)
+            this.statJson = JSON.parse(this.data.view);
         }
         this.stat = new MWF.xApplication.query.StatementStatDesigner.Stat(this.designer, this, this.statJson, {});
         this.view = this.stat;
@@ -1048,28 +1108,27 @@ MWF.xApplication.query.StatementStatDesigner.StatementDetail = new Class({
     }
 });
 
-
-
 MWF.xApplication.query.StatementStatDesigner.Stat = new Class({
     Extends: MWF.xApplication.query.ViewDesigner.View,
     Implements: [Options, Events],
     options: {
         "style": "default",
         "isView": false,
-        "showTab": true,
-        "propertyPath": "../x_component_query_StatementStatDesigner/$StatementStat/stat.html"
+        "showTab": true
+        // "propertyPath": "../x_component_query_StatementStatDesigner/$StatementStat/stat.html"
     },
 
     initialize: function (designer, statementStat, data, options) {
         this.setOptions(options);
 
         this.path = "../x_component_query_ViewDesigner/$View/";
-        this.cssPath = "../x_component_query_ViewDesigner/$View/" + this.options.style + "/css.wcss";
-
-        this._loadCss();
+        // this.cssPath = "../x_component_query_ViewDesigner/$View/" + this.options.style + "/css.wcss";
+        //
+        // this._loadCss();
 
         this.statementStat = statementStat;
         this.designer = designer;
+        this.css = this.statementStat.css;
         this.data = data;
         this.data.id = this.statementStat.data.id + "_stat";
 
