@@ -4,6 +4,11 @@
   "statementList": [],
   "executePersonList": [],
   "executeUnitList": [],
+  "stat": {
+    "data": {
+      "selectList": []
+    }
+  },
   "data": {
     "noDataText": "未找到数据",
     "calculate": {

@@ -696,10 +696,14 @@ MWF.xApplication.query.StatementStatDesigner.StatementStat = new Class({
         this.setStatSize();
         this.designer.addEvent("resize", this.setStatSize.bind(this));
 
-        if (!this.data.view) {
-            this.statJson = {};
+        if (!this.data.stat) {
+            this.statJson = {
+                data: {
+                    selectList: []
+                }
+            };
         } else {
-            this.statJson = JSON.parse(this.data.view);
+            this.statJson = JSON.parse(this.data.stat);
         }
         debugger;
         this.stat = new MWF.xApplication.query.StatementStatDesigner.Stat(this.designer, this, this.statJson, {});
@@ -713,16 +717,18 @@ MWF.xApplication.query.StatementStatDesigner.StatementStat = new Class({
         var size = this.areaNode.getSize();
         var designerSize = this.statementDesignerArea.getComputedSize();
         var reizeNodeSize = this.resizeNode.getComputedSize();
+        var runSize = this.runArea.getComputedSize();
+        var reizeNode2Size = this.resizeNode2.getComputedSize();
 
-        var y = size.y - designerSize.totalHeight - reizeNodeSize.totalHeight;
+        var y = size.y - designerSize.totalHeight - reizeNodeSize.totalHeight - runSize.totalHeight - reizeNode2Size.totalHeight;
         var mTop = this.statArea.getStyle("margin-top").toInt();
         var mBottom = this.statArea.getStyle("margin-bottom").toInt();
         var pTop = this.statArea.getStyle("padding-top").toInt();
         var pBottom = this.statArea.getStyle("padding-bottom").toInt();
         y = y - mTop - mBottom - pTop - pBottom - 1;
 
-        var tabSize = this.tabNode.getComputedSize();
-        y = y - tabSize.totalHeight;
+        // var tabSize = this.tabNode.getComputedSize();
+        // y = y - tabSize.totalHeight;
 
         this.statArea.setStyle("height", "" + y + "px");
 
@@ -1132,6 +1138,7 @@ MWF.xApplication.query.StatementStatDesigner.Stat = new Class({
         this.designer = designer;
         this.css = this.statementStat.css;
         this.data = data;
+        this.json = this.data;
         this.data.id = this.statementStat.data.id + "_stat";
 
         // this.parseData();
@@ -1146,13 +1153,14 @@ MWF.xApplication.query.StatementStatDesigner.Stat = new Class({
 
     },
     load: function (callback) {
+        debugger;
         this.setAreaNodeSize();
         this.designer.addEvent("resize", this.setAreaNodeSize.bind(this));
         this.areaNode.inject(this.node);
 
         this.domListNode = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.designer.propertyDomArea);
 
-        this.loadTemplateStyle(function () {
+        // this.loadTemplateStyle(function () {
 
 
             this.loadView();
@@ -1165,7 +1173,7 @@ MWF.xApplication.query.StatementStatDesigner.Stat = new Class({
             this.designer.addEvent("resize", this.setViewWidth.bind(this));
 
             if (callback) callback();
-        }.bind(this))
+        // }.bind(this))
     },
     // parseData: function () {
     //     this.json = this.data;
@@ -1702,6 +1710,20 @@ MWF.xApplication.query.StatementStatDesigner.Stat.Column = new Class({
         } else {
             this.property.show();
         }
+    },
+    setCustomStyles : function(){
+        // var viewStyles = this.view.json.data.viewStyles;
+        var border = this.areaNode.getStyle("border");
+        this.areaNode.clearStyles();
+        this.areaNode.setStyles(this.css.viewTitleColumnAreaNode);
+        this.node.setStyle("border", border);
+
+        // if(viewStyles)Object.each(viewStyles.titleTd, function(value, key){
+        //     var reg = /^border\w*/ig;
+        //     if (!key.test(reg)){
+        //         this.node.setStyle(key, value);
+        //     }
+        // }.bind(this));
     },
     selected: function () {
         if (this.stat.statementStat.currentSelectedModule) {
