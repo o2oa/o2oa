@@ -562,6 +562,7 @@ MWF.xApplication.process.workcenter.Main = new Class({
 	},
 	recordProcessData: function(data){
 		debugger;
+		if( data._ )delete data._ ;
 		MWF.UD.getDataJson("taskCenter_startTop", function(json){
 			if (!json || !json.length) json = [];
 			var recordProcess = null;
@@ -581,11 +582,12 @@ MWF.xApplication.process.workcenter.Main = new Class({
 						}
 					}
 				}
+                if( o2.typeOf( process.applicationName ) === "object")process.applicationName = process.applicationName.name || "";
 			}
 			if (recordProcess) {
 				recordProcess.lastStartTime = new Date();
 				recordProcess.count = (recordProcess.count || 0)+1;
-				recordProcess.applicationName = data.applicationName;
+				recordProcess.applicationName = data.applicationName || "";
 			}else{
 				if (json.length<10){
 					data.count = 1;
