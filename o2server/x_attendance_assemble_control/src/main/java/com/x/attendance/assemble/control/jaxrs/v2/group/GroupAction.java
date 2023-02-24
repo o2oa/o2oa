@@ -31,6 +31,44 @@ public class GroupAction extends StandardJaxrsAction {
     private static Logger logger = LoggerFactory.getLogger(GroupAction.class);
 
 
+
+    @JaxrsMethodDescribe(value = "获取考勤组对象.", action = ActionGet.class)
+    @GET
+    @Path("{id}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                       @JaxrsParameterDescribe("考勤组ID") @PathParam("id") String id) {
+        ActionResult<ActionGet.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionGet().execute(effectivePerson, id);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+
+    @JaxrsMethodDescribe(value = "刷新考勤组.", action = ActionRefreshParticipate.class)
+    @GET
+    @Path("{id}/refresh/participate")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void refreshParticipate(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                    @JaxrsParameterDescribe("考勤组ID") @PathParam("id") String id) {
+        ActionResult<ActionRefreshParticipate.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionRefreshParticipate().execute(effectivePerson, id);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
     @JaxrsMethodDescribe(value = "分页查询考勤组列表.", action = ActionListByPage.class)
     @POST
     @Path("list/{page}/size/{size}")
@@ -71,7 +109,7 @@ public class GroupAction extends StandardJaxrsAction {
 
     @JaxrsMethodDescribe(value = "删除考勤组.", action = ActionDelete.class)
     @GET
-    @Path("delete/{id}")
+    @Path("{id}/delete")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
     public void delete(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,

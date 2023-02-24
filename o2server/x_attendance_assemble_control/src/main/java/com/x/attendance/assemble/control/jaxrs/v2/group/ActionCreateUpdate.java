@@ -32,6 +32,7 @@ import java.util.List;
 public class ActionCreateUpdate extends BaseAction {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ActionCreateUpdate.class);
+
     ActionResult<Wo> execute(EffectivePerson effectivePerson,
                              JsonElement jsonElement) throws Exception {
         ActionResult<Wo> result = new ActionResult<>();
@@ -66,54 +67,8 @@ public class ActionCreateUpdate extends BaseAction {
             if (wi.getWorkPlaceIdList() == null || wi.getWorkPlaceIdList().isEmpty()) {
                 throw new ExceptionEmptyParameter("工作场所列表");
             }
-            // 处理考勤组
-            List<String> peopleList = new ArrayList<>();
-            for (String p : wi.getParticipateList()) {
-                if (p.endsWith("@P")) {
-                    peopleList.add(p);
-                } else if (p.endsWith("@I")) {
-                    String person = business.organization().person().getWithIdentity(p);
-                    peopleList.add(person);
-                }else if (p.endsWith("@U")) { // 递归查询人员
-                    List<String> pList = business.organization().person().listWithUnitSubNested( p );
-                    peopleList.addAll(pList);
-                } else {
-                    LOGGER.info("错误的标识？ " + p);
-                }
-            }
-            // 删除排除的人员
-            if (wi.getUnParticipateList() != null && !wi.getUnParticipateList().isEmpty()) {
-                for (String p: wi.getUnParticipateList()) {
-                    peopleList.remove(p);
-                }
-            }
-            // 去重复
-            HashSet<String> peopleSet = new HashSet<>(peopleList);
-            // 判断是否和其它考勤组内的成员冲突
-            List<String> conflictPersonInOtherGroup = new ArrayList<>();
-            List<AttendanceV2Group> groups = emc.listAll(AttendanceV2Group.class);
-            if (groups != null && !groups.isEmpty()) {
-                for (String person : peopleSet) {
-                    for (AttendanceV2Group oldG : groups) {
-                        // 自己不用处理
-                        if (oldG.getId().equals(wi.getId())) {
-                            continue;
-                        }
-                        if (oldG.getTrueParticipantList().contains(person)) {
-                            conflictPersonInOtherGroup.add(person);
-                            break;
-                        }
-                    }
-                }
-            }
-            if (!conflictPersonInOtherGroup.isEmpty()) {
-                throw new ExceptionParticipateConflict(conflictPersonInOtherGroup);
-            }
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("最终考勤组人员数：" + peopleSet.size());
-            }
-
-            wi.setTrueParticipantList(new ArrayList<>(peopleSet));
+            List<String> trueList = calTruePersonFromMixList(emc, business, wi.getId(), wi.getParticipateList(), wi.getUnParticipateList());
+            wi.setTrueParticipantList(trueList);
             // 新增或更新
             AttendanceV2Group group = emc.find(wi.getId(), AttendanceV2Group.class);
             if (group == null) { // 新增

@@ -88,6 +88,11 @@ public class AttendanceV2Detail extends SliceJpaObject {
     private String recordDateString;
 
 
+    public static final String isWorkday_FIELDNAME = "isWorkday";
+    @FieldDescribe("是否工作日")
+    @Column(name = ColumnNamePrefix + isWorkday_FIELDNAME)
+    private Boolean isWorkday = false;
+
 
     //////// 统计相关
     public static final String lateTimeDuration_FIELDNAME = "lateTimeDuration";
@@ -100,11 +105,10 @@ public class AttendanceV2Detail extends SliceJpaObject {
     @Column(name = ColumnNamePrefix + leaveEarlierTimeDuration_FIELDNAME)
     private Long leaveEarlierTimeDuration = 0L;
 
-    public static final String workOvertimeTimeDuration_FIELDNAME = "workOvertimeTimeDuration";
-    @FieldDescribe("加班时长(分钟)")
-    @Column(name = ColumnNamePrefix + workOvertimeTimeDuration_FIELDNAME)
-    @CheckPersist(allowEmpty = false)
-    private Long workOvertimeTimeDuration = 0L;
+//    public static final String workOvertimeTimeDuration_FIELDNAME = "workOvertimeTimeDuration";
+//    @FieldDescribe("加班时长(分钟)")
+//    @Column(name = ColumnNamePrefix + workOvertimeTimeDuration_FIELDNAME)
+//    private Long workOvertimeTimeDuration = 0L;
 
     public static final String workTimeDuration_FIELDNAME = "workTimeDuration";
     @FieldDescribe("工作时长(分钟)")
@@ -181,6 +185,14 @@ public class AttendanceV2Detail extends SliceJpaObject {
     private String shiftName;
 
 
+    public Boolean getWorkday() {
+        return isWorkday;
+    }
+
+    public void setWorkday(Boolean workday) {
+        isWorkday = workday;
+    }
+
     public String getUserId() {
         return userId;
     }
@@ -228,14 +240,14 @@ public class AttendanceV2Detail extends SliceJpaObject {
     public void setLeaveEarlierTimeDuration(Long leaveEarlierTimeDuration) {
         this.leaveEarlierTimeDuration = leaveEarlierTimeDuration;
     }
-
-    public Long getWorkOvertimeTimeDuration() {
-        return workOvertimeTimeDuration;
-    }
-
-    public void setWorkOvertimeTimeDuration(Long workOvertimeTimeDuration) {
-        this.workOvertimeTimeDuration = workOvertimeTimeDuration;
-    }
+//
+//    public Long getWorkOvertimeTimeDuration() {
+//        return workOvertimeTimeDuration;
+//    }
+//
+//    public void setWorkOvertimeTimeDuration(Long workOvertimeTimeDuration) {
+//        this.workOvertimeTimeDuration = workOvertimeTimeDuration;
+//    }
 
     public Long getWorkTimeDuration() {
         return workTimeDuration;

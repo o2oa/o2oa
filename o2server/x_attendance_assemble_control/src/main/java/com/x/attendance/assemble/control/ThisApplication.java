@@ -1,5 +1,7 @@
 package com.x.attendance.assemble.control;
 
+import com.x.attendance.assemble.control.schedule.v2.AttendanceV2DetailGenerateTask;
+import com.x.attendance.assemble.control.schedule.v2.QueueAttendanceV2Detail;
 import org.apache.commons.lang3.BooleanUtils;
 
 import com.x.attendance.assemble.control.processor.monitor.MonitorFileDataOpt;
@@ -36,6 +38,10 @@ public class ThisApplication {
 	public static final QueueAttendanceDetailStatistic detailStatisticQueue = new QueueAttendanceDetailStatistic();
 	public static final String ROLE_AttendanceManager = "AttendanceManager@AttendanceManagerSystemRole@R";
 
+	// V2
+	public static final QueueAttendanceV2Detail queueV2Detail = new QueueAttendanceV2Detail();
+
+
 	public static void init() throws Exception {
 		try {
 			CacheManager.init(context.clazz().getSimpleName());
@@ -59,6 +65,12 @@ public class ThisApplication {
 			// context.schedule(MobileRecordAnalyseTask.class, "0 0 * * * ?");
 			// 每天凌晨1点，计算前一天所有的未签退和未分析的打卡数据
 			context.schedule(DetailLastDayRecordAnalyseTask.class, "0 0 1 * * ?");
+
+
+			///////////////////V2///
+			context.startQueue(queueV2Detail);
+			// 每天凌晨3点，计算前一天的考勤数据
+			context.schedule(AttendanceV2DetailGenerateTask.class, "0 0 3 * * ?");
 
 		} catch (Exception e) {
 			e.printStackTrace();

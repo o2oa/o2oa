@@ -105,13 +105,7 @@ public class ActionListByPage extends BaseAction {
             this.shift = shift;
         }
 
-        public static WrapCopier<AttendanceV2Group, Wo> getCopier() {
-            return copier;
-        }
 
-        public static void setCopier(WrapCopier<AttendanceV2Group, Wo> copier) {
-            Wo.copier = copier;
-        }
 
         static WrapCopier<AttendanceV2Group, Wo> copier = WrapCopierFactory.wo(AttendanceV2Group.class, Wo.class, null,
                 JpaObject.FieldsInvisible);
