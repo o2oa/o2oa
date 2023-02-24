@@ -82,6 +82,21 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
     private Date recordDate;
 
 
+    // 班次信息中的打卡时间 对应到每一条需要打卡的
+    public static final String preDutyTime_FIELDNAME = "preDutyTime";
+    @Column(length = JpaObject.length_32B, name = ColumnNamePrefix + preDutyTime_FIELDNAME)
+    @FieldDescribe("打卡时间")
+    private String preDutyTime;
+    public static final String preDutyTimeBeforeLimit_FIELDNAME = "preDutyTimeBeforeLimit";
+    @Column(length = JpaObject.length_32B, name = ColumnNamePrefix + preDutyTimeBeforeLimit_FIELDNAME)
+    @FieldDescribe("打卡时间前限制打卡时间")
+    private String preDutyTimeBeforeLimit;
+    public static final String preDutyTimeAfterLimit_FIELDNAME = "preDutyTimeAfterLimit";
+    @Column(length = JpaObject.length_32B, name = ColumnNamePrefix + preDutyTimeAfterLimit_FIELDNAME)
+    @FieldDescribe("打卡时间后限制打卡时间")
+    private String preDutyTimeAfterLimit;
+
+
     // 打卡数据来源
     public static final String SOURCE_TYPE_USER_CHECK = "USER_CHECK"; // 用户打卡
     public static final String SOURCE_TYPE_AUTO_CHECK = "AUTO_CHECK"; // 系统自动打卡
@@ -98,12 +113,14 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
     //SeriousLate：严重迟到；
     //Absenteeism：旷工迟到；
     //NotSigned：未打卡
+    //PreCheckIn：预存数据； 为打卡准备
     public static final String CHECKIN_RESULT_NORMAL = "Normal";
     public static final String CHECKIN_RESULT_Early = "Early";
     public static final String CHECKIN_RESULT_Late = "Late";
     public static final String CHECKIN_RESULT_SeriousLate = "SeriousLate";
     public static final String CHECKIN_RESULT_Absenteeism = "Absenteeism";
     public static final String CHECKIN_RESULT_NotSigned = "NotSigned";
+    public static final String CHECKIN_RESULT_PreCheckIn = "PreCheckIn";
 
     public static final String checkInResult_FIELDNAME = "checkInResult";
     @FieldDescribe("打卡结果")
@@ -189,6 +206,30 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
             + placeName_FIELDNAME)
     private String placeName;
 
+
+    public String getPreDutyTime() {
+        return preDutyTime;
+    }
+
+    public void setPreDutyTime(String preDutyTime) {
+        this.preDutyTime = preDutyTime;
+    }
+
+    public String getPreDutyTimeBeforeLimit() {
+        return preDutyTimeBeforeLimit;
+    }
+
+    public void setPreDutyTimeBeforeLimit(String preDutyTimeBeforeLimit) {
+        this.preDutyTimeBeforeLimit = preDutyTimeBeforeLimit;
+    }
+
+    public String getPreDutyTimeAfterLimit() {
+        return preDutyTimeAfterLimit;
+    }
+
+    public void setPreDutyTimeAfterLimit(String preDutyTimeAfterLimit) {
+        this.preDutyTimeAfterLimit = preDutyTimeAfterLimit;
+    }
 
     public String getUserId() {
         return userId;

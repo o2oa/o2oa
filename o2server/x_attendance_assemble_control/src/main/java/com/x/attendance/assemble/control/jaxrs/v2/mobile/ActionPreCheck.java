@@ -18,9 +18,11 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
+ * 当前是查询打卡数据的接口
+ * 在打开之前必须先查询这个接口，根据这个接口返回的打卡结果列表数据进行打卡
+ * 打卡结果checkInResult 中，PreCheckIn是预存数据需要打卡，其它是已经打卡的结果
  * Created by fancyLou on 2023/2/21.
  * Copyright © 2023 O2. All rights reserved.
  */
@@ -62,92 +64,135 @@ public class ActionPreCheck extends BaseAction {
             }
             // 按照时间顺序查询出打卡列表
             List<AttendanceV2CheckInRecord> recordList = business.getAttendanceV2ManagerFactory().listRecordWithPersonAndDate(effectivePerson.getDistinguishedName(), today);
-
-            List<WoCheckInAndRecordItem> recordItemList = new ArrayList<>();
-            int index = 0;
-            for (AttendanceV2ShiftCheckTime attendanceV2ShiftCheckTime : timeList) {
-                // 上班打卡
-                WoCheckInAndRecordItem onDutyItem = new WoCheckInAndRecordItem();
-                onDutyItem.setCheckInType(AttendanceV2CheckInRecord.OnDuty);
-                onDutyItem.setDutyTime(attendanceV2ShiftCheckTime.getOnDutyTime());
-                onDutyItem.setDutyTimeBeforeLimit(attendanceV2ShiftCheckTime.getOnDutyTimeBeforeLimit());
-                onDutyItem.setDutyTimeAfterLimit(attendanceV2ShiftCheckTime.getOnDutyTimeAfterLimit());
-                AttendanceV2CheckInRecord onDutyRecord = hasCheckedRecord(recordList, index, AttendanceV2CheckInRecord.OnDuty);
-                if (onDutyRecord != null) {
-                    onDutyItem.setCheckInRecordId(onDutyRecord.getId());
-                    onDutyItem.setCheckInResult(onDutyRecord.getCheckInResult());
-                    onDutyItem.setRecordDate(onDutyRecord.getRecordDate());
-                } else {
-                    if (StringUtils.isNotEmpty(attendanceV2ShiftCheckTime.getOnDutyTimeAfterLimit())) { // 有结束限制
-                        Date onDutyAfterTime =  DateTools.parse(today+" "+attendanceV2ShiftCheckTime.getOnDutyTimeAfterLimit(), DateTools.format_yyyyMMddHHmm);
-                        if (nowDate.after(onDutyAfterTime)) { // 超过结束时间 生成未打卡数据
-                            AttendanceV2CheckInRecord noCheckRecord = saveNoCheckInRecord(emc, effectivePerson.getDistinguishedName(), AttendanceV2CheckInRecord.OnDuty, group, shift, nowDate, today);
-                            onDutyItem.setCheckInRecordId(noCheckRecord.getId());
-                            onDutyItem.setCheckInResult(noCheckRecord.getCheckInResult());
-                            onDutyItem.setRecordDate(noCheckRecord.getRecordDate());
-                        }
-                    } else {
-                        Date onDutyTime = DateTools.parse(today+" "+attendanceV2ShiftCheckTime.getOnDutyTime(), DateTools.format_yyyyMMddHHmm);
-                        if (nowDate.after(onDutyTime)) {
-                            Date offDutyTime = DateTools.parse(today + " " + attendanceV2ShiftCheckTime.getOffDutyTime(), DateTools.format_yyyyMMddHHmm);
-                            long minutes = (offDutyTime.getTime() - onDutyTime.getTime()) / 60000 / 2; // 一半间隔时间
-                            Date middleTime = DateTools.addMinutes(onDutyTime, (int) minutes);
-                            if (nowDate.after(middleTime)) { // 生成未打卡数据
-                                AttendanceV2CheckInRecord noCheckRecord = saveNoCheckInRecord(emc, effectivePerson.getDistinguishedName(), AttendanceV2CheckInRecord.OnDuty, group, shift, nowDate, today);
-                                onDutyItem.setCheckInRecordId(noCheckRecord.getId());
-                                onDutyItem.setCheckInResult(noCheckRecord.getCheckInResult());
-                                onDutyItem.setRecordDate(noCheckRecord.getRecordDate());
-                            }
-                        }
-                    }
+            // 如果没有数据，先根据班次打卡信息 预存打卡数据
+            if (recordList == null || recordList.isEmpty()) {
+                recordList = new ArrayList<>();
+                for (AttendanceV2ShiftCheckTime shiftCheckTime : timeList) {
+                    // 上班打卡
+                    AttendanceV2CheckInRecord onDutyRecord =  savePreCheckInRecord(emc, effectivePerson.getDistinguishedName(), AttendanceV2CheckInRecord.OnDuty, group, shift, today,
+                            shiftCheckTime.getOnDutyTime(), shiftCheckTime.getOnDutyTimeBeforeLimit(), shiftCheckTime.getOnDutyTimeAfterLimit());
+                    recordList.add(onDutyRecord);
+                    // 下班打卡
+                    AttendanceV2CheckInRecord offDutyRecord =  savePreCheckInRecord(emc, effectivePerson.getDistinguishedName(), AttendanceV2CheckInRecord.OffDuty, group, shift, today,
+                            shiftCheckTime.getOffDutyTime(), shiftCheckTime.getOffDutyTimeBeforeLimit(), shiftCheckTime.getOffDutyTimeAfterLimit());
+                    recordList.add(offDutyRecord);
                 }
-                recordItemList.add(onDutyItem);
-                // 下班打卡
-                WoCheckInAndRecordItem offDutyItem = new WoCheckInAndRecordItem();
-                offDutyItem.setCheckInType(AttendanceV2CheckInRecord.OffDuty);
-                offDutyItem.setDutyTime(attendanceV2ShiftCheckTime.getOffDutyTime());
-                offDutyItem.setDutyTimeBeforeLimit(attendanceV2ShiftCheckTime.getOffDutyTimeBeforeLimit());
-                offDutyItem.setDutyTimeAfterLimit(attendanceV2ShiftCheckTime.getOffDutyTimeAfterLimit());
-                AttendanceV2CheckInRecord offDutyRecord = hasCheckedRecord(recordList, index, AttendanceV2CheckInRecord.OffDuty);
-                if (offDutyRecord != null) {
-                    offDutyItem.setCheckInRecordId(offDutyRecord.getId());
-                    offDutyItem.setCheckInResult(offDutyRecord.getCheckInResult());
-                    offDutyItem.setRecordDate(offDutyRecord.getRecordDate());
-                } else {
-                    if (StringUtils.isNotEmpty(attendanceV2ShiftCheckTime.getOffDutyTimeAfterLimit())) {
-                        Date offDutyAfterTime =  DateTools.parse(today+" "+attendanceV2ShiftCheckTime.getOffDutyTimeAfterLimit(), DateTools.format_yyyyMMddHHmm);
-                        if (nowDate.after(offDutyAfterTime)) { // 超过结束时间 生成未打卡数据
-                            AttendanceV2CheckInRecord noCheckRecord = saveNoCheckInRecord(emc, effectivePerson.getDistinguishedName(), AttendanceV2CheckInRecord.OffDuty, group, shift, nowDate, today);
-                            offDutyItem.setCheckInRecordId(noCheckRecord.getId());
-                            offDutyItem.setCheckInResult(noCheckRecord.getCheckInResult());
-                            offDutyItem.setRecordDate(noCheckRecord.getRecordDate());
-                        }
-                    } else {
-                        Date offDutyTime = DateTools.parse(today + " " + attendanceV2ShiftCheckTime.getOffDutyTime(), DateTools.format_yyyyMMddHHmm);
-                        if ((timeList.size() - 1) > index) {
-                            AttendanceV2ShiftCheckTime nextCheckTime = timeList.get(index+1);
-                            Date nextOnDutyTime = DateTools.parse(today + " " + nextCheckTime.getOnDutyTime(), DateTools.format_yyyyMMddHHmm);
-                            long minutes = (nextOnDutyTime.getTime() - offDutyTime.getTime()) / 60000 / 2; // 一半间隔时间
-                            Date middleTime = DateTools.addMinutes(offDutyTime, (int) minutes);
-                            if (nowDate.after(middleTime)) { // 生成未打卡数据
-                                AttendanceV2CheckInRecord noCheckRecord = saveNoCheckInRecord(emc, effectivePerson.getDistinguishedName(), AttendanceV2CheckInRecord.OffDuty, group, shift, nowDate, today);
-                                onDutyItem.setCheckInRecordId(noCheckRecord.getId());
-                                onDutyItem.setCheckInResult(noCheckRecord.getCheckInResult());
-                                onDutyItem.setRecordDate(noCheckRecord.getRecordDate());
-                            }
-                        }
-                    }
-                }
-                recordItemList.add(offDutyItem);
-
-                index++;
             }
+
+            for (int i = 0; i < recordList.size(); i++) {
+                AttendanceV2CheckInRecord record = recordList.get(i);
+                // 不是预打卡数据 跳过
+                if (record.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn)) {
+                    if (StringUtils.isNotEmpty(record.getPreDutyTimeAfterLimit())) { // 有打卡结束限制
+                        Date onDutyAfterTime =  DateTools.parse(today + " " + record.getPreDutyTimeAfterLimit(), DateTools.format_yyyyMMddHHmm);
+                        if (nowDate.after(onDutyAfterTime)) { // 超过了打卡结束限制时间，直接生成未打卡数据
+                            update2NoCheckInRecord(emc, record);
+                        }
+                    } else {
+                        Date onDutyTime = DateTools.parse(today + " " + record.getPreDutyTime(), DateTools.format_yyyyMMddHHmm);
+                        if (nowDate.after(onDutyTime)) {
+                            // 查询下一条数据 下班打卡
+                            if (i < recordList.size()-1) {
+                                AttendanceV2CheckInRecord nextRecord = recordList.get( i + 1 );
+                                Date offDutyTime = DateTools.parse(today + " " + nextRecord.getPreDutyTime(), DateTools.format_yyyyMMddHHmm);
+                                long minutes = (offDutyTime.getTime() - onDutyTime.getTime()) / 60000 / 2; // 一半间隔时间
+                                Date middleTime = DateTools.addMinutes(onDutyTime, (int) minutes);
+                                if (nowDate.after(middleTime)) { // 生成未打卡数据
+                                    update2NoCheckInRecord(emc, record);
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+
+//
+//            List<WoCheckInAndRecordItem> recordItemList = new ArrayList<>();
+//            int index = 0;
+//            for (AttendanceV2ShiftCheckTime attendanceV2ShiftCheckTime : timeList) {
+//                // 上班打卡
+//                WoCheckInAndRecordItem onDutyItem = new WoCheckInAndRecordItem();
+//                onDutyItem.setCheckInType(AttendanceV2CheckInRecord.OnDuty);
+//                onDutyItem.setDutyTime(attendanceV2ShiftCheckTime.getOnDutyTime());
+//                onDutyItem.setDutyTimeBeforeLimit(attendanceV2ShiftCheckTime.getOnDutyTimeBeforeLimit());
+//                onDutyItem.setDutyTimeAfterLimit(attendanceV2ShiftCheckTime.getOnDutyTimeAfterLimit());
+//                AttendanceV2CheckInRecord onDutyRecord = hasCheckedRecord(recordList, index, AttendanceV2CheckInRecord.OnDuty);
+//                if (onDutyRecord != null) {
+//                    onDutyItem.setCheckInRecordId(onDutyRecord.getId());
+//                    onDutyItem.setCheckInResult(onDutyRecord.getCheckInResult());
+//                    onDutyItem.setRecordDate(onDutyRecord.getRecordDate());
+//                } else {
+//                    if (StringUtils.isNotEmpty(attendanceV2ShiftCheckTime.getOnDutyTimeAfterLimit())) { // 有结束限制
+//                        Date onDutyAfterTime =  DateTools.parse(today+" "+attendanceV2ShiftCheckTime.getOnDutyTimeAfterLimit(), DateTools.format_yyyyMMddHHmm);
+//                        if (nowDate.after(onDutyAfterTime)) { // 超过结束时间 生成未打卡数据
+//                            AttendanceV2CheckInRecord noCheckRecord = saveNoCheckInRecord(emc, effectivePerson.getDistinguishedName(), AttendanceV2CheckInRecord.OnDuty, group, shift, nowDate, today);
+//                            onDutyItem.setCheckInRecordId(noCheckRecord.getId());
+//                            onDutyItem.setCheckInResult(noCheckRecord.getCheckInResult());
+//                            onDutyItem.setRecordDate(noCheckRecord.getRecordDate());
+//                        }
+//                    } else {
+//                        Date onDutyTime = DateTools.parse(today+" "+attendanceV2ShiftCheckTime.getOnDutyTime(), DateTools.format_yyyyMMddHHmm);
+//                        if (nowDate.after(onDutyTime)) {
+//                            Date offDutyTime = DateTools.parse(today + " " + attendanceV2ShiftCheckTime.getOffDutyTime(), DateTools.format_yyyyMMddHHmm);
+//                            long minutes = (offDutyTime.getTime() - onDutyTime.getTime()) / 60000 / 2; // 一半间隔时间
+//                            Date middleTime = DateTools.addMinutes(onDutyTime, (int) minutes);
+//                            if (nowDate.after(middleTime)) { // 生成未打卡数据
+//                                AttendanceV2CheckInRecord noCheckRecord = saveNoCheckInRecord(emc, effectivePerson.getDistinguishedName(), AttendanceV2CheckInRecord.OnDuty, group, shift, nowDate, today);
+//                                onDutyItem.setCheckInRecordId(noCheckRecord.getId());
+//                                onDutyItem.setCheckInResult(noCheckRecord.getCheckInResult());
+//                                onDutyItem.setRecordDate(noCheckRecord.getRecordDate());
+//                            }
+//                        }
+//                    }
+//                }
+//                recordItemList.add(onDutyItem);
+//                // 下班打卡
+//                WoCheckInAndRecordItem offDutyItem = new WoCheckInAndRecordItem();
+//                offDutyItem.setCheckInType(AttendanceV2CheckInRecord.OffDuty);
+//                offDutyItem.setDutyTime(attendanceV2ShiftCheckTime.getOffDutyTime());
+//                offDutyItem.setDutyTimeBeforeLimit(attendanceV2ShiftCheckTime.getOffDutyTimeBeforeLimit());
+//                offDutyItem.setDutyTimeAfterLimit(attendanceV2ShiftCheckTime.getOffDutyTimeAfterLimit());
+//                AttendanceV2CheckInRecord offDutyRecord = hasCheckedRecord(recordList, index, AttendanceV2CheckInRecord.OffDuty);
+//                if (offDutyRecord != null) {
+//                    offDutyItem.setCheckInRecordId(offDutyRecord.getId());
+//                    offDutyItem.setCheckInResult(offDutyRecord.getCheckInResult());
+//                    offDutyItem.setRecordDate(offDutyRecord.getRecordDate());
+//                } else {
+//                    if (StringUtils.isNotEmpty(attendanceV2ShiftCheckTime.getOffDutyTimeAfterLimit())) {
+//                        Date offDutyAfterTime =  DateTools.parse(today+" "+attendanceV2ShiftCheckTime.getOffDutyTimeAfterLimit(), DateTools.format_yyyyMMddHHmm);
+//                        if (nowDate.after(offDutyAfterTime)) { // 超过结束时间 生成未打卡数据
+//                            AttendanceV2CheckInRecord noCheckRecord = saveNoCheckInRecord(emc, effectivePerson.getDistinguishedName(), AttendanceV2CheckInRecord.OffDuty, group, shift, nowDate, today);
+//                            offDutyItem.setCheckInRecordId(noCheckRecord.getId());
+//                            offDutyItem.setCheckInResult(noCheckRecord.getCheckInResult());
+//                            offDutyItem.setRecordDate(noCheckRecord.getRecordDate());
+//                        }
+//                    } else {
+//                        Date offDutyTime = DateTools.parse(today + " " + attendanceV2ShiftCheckTime.getOffDutyTime(), DateTools.format_yyyyMMddHHmm);
+//                        if ((timeList.size() - 1) > index) {
+//                            AttendanceV2ShiftCheckTime nextCheckTime = timeList.get(index+1);
+//                            Date nextOnDutyTime = DateTools.parse(today + " " + nextCheckTime.getOnDutyTime(), DateTools.format_yyyyMMddHHmm);
+//                            long minutes = (nextOnDutyTime.getTime() - offDutyTime.getTime()) / 60000 / 2; // 一半间隔时间
+//                            Date middleTime = DateTools.addMinutes(offDutyTime, (int) minutes);
+//                            if (nowDate.after(middleTime)) { // 生成未打卡数据
+//                                AttendanceV2CheckInRecord noCheckRecord = saveNoCheckInRecord(emc, effectivePerson.getDistinguishedName(), AttendanceV2CheckInRecord.OffDuty, group, shift, nowDate, today);
+//                                onDutyItem.setCheckInRecordId(noCheckRecord.getId());
+//                                onDutyItem.setCheckInResult(noCheckRecord.getCheckInResult());
+//                                onDutyItem.setRecordDate(noCheckRecord.getRecordDate());
+//                            }
+//                        }
+//                    }
+//                }
+//                recordItemList.add(offDutyItem);
+//
+//                index++;
+//            }
 
             Wo wo = new Wo();
             wo.setCanCheckIn(true);
             wo.setAllowFieldWork(group.getAllowFieldWork());
             wo.setRequiredFieldWorkRemarks(group.getRequiredFieldWorkRemarks());
-            wo.setCheckItemList(recordItemList);
+            wo.setCheckItemList(recordList);
             if (group.getWorkPlaceIdList() != null && !group.getWorkPlaceIdList().isEmpty()) {
                 List<AttendanceV2WorkPlace> workPlaceList = new ArrayList<>();
                 for (String id : group.getWorkPlaceIdList()) {
@@ -161,6 +206,47 @@ public class ActionPreCheck extends BaseAction {
         return result;
     }
 
+
+
+    // 预存打卡数据保存
+    private AttendanceV2CheckInRecord savePreCheckInRecord(EntityManagerContainer emc, String person,String dutyType,
+                                                           AttendanceV2Group group, AttendanceV2Shift shift, String today,
+                                                           String dutyTime, String dutyTimeBeforeLimit, String dutyTimeAfterLimit) throws Exception {
+        AttendanceV2CheckInRecord noCheckRecord = new AttendanceV2CheckInRecord();
+        noCheckRecord.setCheckInType(dutyType);
+        noCheckRecord.setCheckInResult(AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn);
+        noCheckRecord.setUserId(person);
+        // 打卡时间
+        Date onDutyTime = DateTools.parse(today+" "+dutyTime, DateTools.format_yyyyMMddHHmm);
+        noCheckRecord.setRecordDate(onDutyTime);
+        noCheckRecord.setRecordDateString(today);
+        noCheckRecord.setPreDutyTime(dutyTime);
+        noCheckRecord.setPreDutyTimeBeforeLimit(dutyTimeBeforeLimit);
+        noCheckRecord.setPreDutyTimeAfterLimit(dutyTimeAfterLimit);
+        noCheckRecord.setSourceType(AttendanceV2CheckInRecord.SOURCE_TYPE_AUTO_CHECK);
+        noCheckRecord.setSourceDevice("其他");
+        noCheckRecord.setDescription("系统生成，预打卡记录");
+        noCheckRecord.setGroupId(group.getId());
+        noCheckRecord.setGroupName(group.getGroupName());
+        noCheckRecord.setShiftId(shift.getId());
+        noCheckRecord.setShiftName(shift.getShiftName());
+        emc.beginTransaction(AttendanceV2CheckInRecord.class);
+        emc.persist(noCheckRecord, CheckPersistType.all);
+        emc.commit();
+        return noCheckRecord;
+    }
+
+    private void update2NoCheckInRecord(EntityManagerContainer emc, AttendanceV2CheckInRecord record) throws Exception {
+        emc.beginTransaction(AttendanceV2CheckInRecord.class);
+        record.setCheckInResult(AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned);
+        record.setSourceType(AttendanceV2CheckInRecord.SOURCE_TYPE_AUTO_CHECK);
+        record.setSourceDevice("其他");
+        record.setDescription("系统生成，未打卡记录");
+        emc.persist(record, CheckPersistType.all);
+        emc.commit();
+    }
+
+    // 未打卡数据保存
     private AttendanceV2CheckInRecord saveNoCheckInRecord(EntityManagerContainer emc, String person,String dutyType, AttendanceV2Group group, AttendanceV2Shift shift, Date nowDate, String today) throws Exception {
         AttendanceV2CheckInRecord noCheckRecord = new AttendanceV2CheckInRecord();
         noCheckRecord.setCheckInType(dutyType);
@@ -202,7 +288,7 @@ public class ActionPreCheck extends BaseAction {
         @FieldDescribe("不能打卡的原因")
         private String cannotCheckInReason;
         @FieldDescribe("打卡列表")
-        private List<WoCheckInAndRecordItem> checkItemList;
+        private List<AttendanceV2CheckInRecord> checkItemList;
         @FieldDescribe("工作场所列表")
         private List<AttendanceV2WorkPlace> workPlaceList;
 
@@ -239,11 +325,11 @@ public class ActionPreCheck extends BaseAction {
             this.cannotCheckInReason = cannotCheckInReason;
         }
 
-        public List<WoCheckInAndRecordItem> getCheckItemList() {
+        public List<AttendanceV2CheckInRecord> getCheckItemList() {
             return checkItemList;
         }
 
-        public void setCheckItemList(List<WoCheckInAndRecordItem> checkItemList) {
+        public void setCheckItemList(List<AttendanceV2CheckInRecord> checkItemList) {
             this.checkItemList = checkItemList;
         }
 

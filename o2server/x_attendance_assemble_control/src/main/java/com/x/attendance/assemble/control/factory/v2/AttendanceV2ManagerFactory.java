@@ -170,7 +170,7 @@ public class AttendanceV2ManagerFactory  extends AbstractFactory {
         Root<AttendanceV2CheckInRecord> root = cq.from(AttendanceV2CheckInRecord.class);
         Predicate p = cb.equal(root.get(AttendanceV2CheckInRecord_.userId), person);
         p = cb.and(p, cb.equal(root.get(AttendanceV2CheckInRecord_.recordDateString), date));
-        return em.createQuery(cq.select(root).where(p).orderBy(cb.asc(root.get(AttendanceV2CheckInRecord_.createTime)))).getResultList();
+        return em.createQuery(cq.select(root).where(p).orderBy(cb.asc(root.get(AttendanceV2CheckInRecord_.recordDate)))).getResultList();
     }
 
 
