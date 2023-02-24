@@ -134,7 +134,7 @@ MWF.xApplication.query.StatementStatDesigner.StatementStat = new Class({
             }
         }.bind(this));
 
-        this.loadStatement();
+        this.loadStatementStat();
         // this.showProperty();
         this.selected();
     },
@@ -212,13 +212,14 @@ MWF.xApplication.query.StatementStatDesigner.StatementStat = new Class({
     //         this.selected();
     //     }.bind(this));
     // },
-    loadStatement: function(){
+    loadStatementStat: function(){
         this.loadStatementHtml(function () {
             this.list = new MWF.xApplication.query.StatementStatDesigner.StatementList(this, this.statementListContent, this.json.statementList);
             this.loadVerticalResize();
             // this.setRunnerSize();
             // this.designer.addEvent("resize", this.setRunnerSize.bind(this));
             this.loadStatementRunner();
+            this.loadStat();
         }.bind(this));
     },
     addStatement: function(){
@@ -700,6 +701,7 @@ MWF.xApplication.query.StatementStatDesigner.StatementStat = new Class({
         } else {
             this.statJson = JSON.parse(this.data.view);
         }
+        debugger;
         this.stat = new MWF.xApplication.query.StatementStatDesigner.Stat(this.designer, this, this.statJson, {});
         this.view = this.stat;
         this.stat.load(function () {
@@ -1188,18 +1190,18 @@ MWF.xApplication.query.StatementStatDesigner.Stat = new Class({
     //     }
     // },
     setEvent: function () {
-        this.areaNode.addEvents({
-            "click": function (e) {
-                this.selected();
-                e.stopPropagation();
-            }.bind(this),
-            "mouseover": function () {
-                if (!this.isSelected) this.areaNode.setStyles(this.css.areaNode_over)
-            }.bind(this),
-            "mouseout": function () {
-                if (!this.isSelected) this.areaNode.setStyles(this.css.areaNode)
-            }.bind(this)
-        });
+        // this.areaNode.addEvents({
+        //     "click": function (e) {
+        //         this.selected();
+        //         e.stopPropagation();
+        //     }.bind(this),
+        //     "mouseover": function () {
+        //         if (!this.isSelected) this.areaNode.setStyles(this.css.areaNode_over)
+        //     }.bind(this),
+        //     "mouseout": function () {
+        //         if (!this.isSelected) this.areaNode.setStyles(this.css.areaNode)
+        //     }.bind(this)
+        // });
         this.refreshNode.addEvent("click", function (e) {
             this.statementStat.runStatement();
             e.stopPropagation();
@@ -1209,45 +1211,45 @@ MWF.xApplication.query.StatementStatDesigner.Stat = new Class({
             e.stopPropagation();
         }.bind(this));
     },
-    selected: function () {
-        if (this.statementStat.currentSelectedModule) {
-            if (this.statementStat.currentSelectedModule == this) {
-                return true;
-            } else {
-                this.statementStat.currentSelectedModule.unSelected();
-            }
-        }
-        this.areaNode.setStyles(this.css.areaNode_selected);
-        this.statementStat.currentSelectedModule = this;
-        this.statementStat.selectMode = "view";
-        this.domListNode.show();
-        this.isSelected = true;
-        this.showProperty();
-        this.statementStat.designer.setDesignerStatementResize();
-    },
-    unSelected: function () {
-        this.statementStat.currentSelectedModule = null;
-        this.isSelected = false;
-        this.areaNode.setStyles(this.css.areaNode);
-        this.hideProperty();
-    },
-
-    showProperty: function () {
-        if (!this.property) {
-            this.property = new MWF.xApplication.query.StatementStatDesigner.Property(this, this.designer.propertyContentArea, this.designer, {
-                "path": this.options.propertyPath,
-                "onPostLoad": function () {
-                    this.property.show();
-                }.bind(this)
-            });
-            this.property.load();
-        } else {
-            this.property.show();
-        }
-    },
-    hideProperty: function () {
-        if (this.property) this.property.hide();
-    },
+    // selected: function () {
+    //     if (this.statementStat.currentSelectedModule) {
+    //         if (this.statementStat.currentSelectedModule == this) {
+    //             return true;
+    //         } else {
+    //             this.statementStat.currentSelectedModule.unSelected();
+    //         }
+    //     }
+    //     this.areaNode.setStyles(this.css.areaNode_selected);
+    //     this.statementStat.currentSelectedModule = this;
+    //     this.statementStat.selectMode = "view";
+    //     this.domListNode.show();
+    //     this.isSelected = true;
+    //     this.showProperty();
+    //     this.statementStat.designer.setDesignerStatementResize();
+    // },
+    // unSelected: function () {
+    //     this.statementStat.currentSelectedModule = null;
+    //     this.isSelected = false;
+    //     this.areaNode.setStyles(this.css.areaNode);
+    //     this.hideProperty();
+    // },
+    //
+    // showProperty: function () {
+    //     if (!this.property) {
+    //         this.property = new MWF.xApplication.query.StatementStatDesigner.Property(this, this.designer.propertyContentArea, this.designer, {
+    //             "path": this.options.propertyPath,
+    //             "onPostLoad": function () {
+    //                 this.property.show();
+    //             }.bind(this)
+    //         });
+    //         this.property.load();
+    //     } else {
+    //         this.property.show();
+    //     }
+    // },
+    // hideProperty: function () {
+    //     if (this.property) this.property.hide();
+    // },
 
     loadStatData: function () {
         debugger;
