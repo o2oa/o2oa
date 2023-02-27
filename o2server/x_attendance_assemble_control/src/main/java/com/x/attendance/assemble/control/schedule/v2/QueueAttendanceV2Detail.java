@@ -172,7 +172,12 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                 v2Detail.setGroupId(group.getId());
                 v2Detail.setGroupName(group.getGroupName());
                 v2Detail.setShiftId(shift.getId());
-                v2Detail.setShiftName(shift.getShiftName());
+                // 班次添加时间
+                String name = shift.getShiftName();
+                if (shift.getProperties() != null && shift.getProperties().getTimeList() != null && !shift.getProperties().getTimeList().isEmpty()) {
+                    name += " " + shift.getProperties().getTimeList().get(0).getOnDutyTime() + " - " + shift.getProperties().getTimeList().get(shift.getProperties().getTimeList().size()-1).getOffDutyTime();
+                }
+                v2Detail.setShiftName(name);
                 emc.beginTransaction(AttendanceV2Detail.class);
                 emc.persist(v2Detail, CheckPersistType.all);
                 emc.commit();

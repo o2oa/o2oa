@@ -5,14 +5,21 @@ import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.schedule.v2.QueueAttendanceV2DetailModel;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.jaxrs.WrapBoolean;
+import com.x.base.core.project.logger.Logger;
+import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.Date;
 
 /**
  * Created by fancyLou on 2023/2/24.
  * Copyright © 2023 O2. All rights reserved.
  */
 public class ActionRebuildDetailWithPersonDate extends BaseAction {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActionRebuildDetailWithPersonDate.class);
+
 
     ActionResult<Wo> execute(String person, String date) throws Exception {
         if (StringUtils.isEmpty(person)) {
@@ -21,8 +28,12 @@ public class ActionRebuildDetailWithPersonDate extends BaseAction {
         if (StringUtils.isEmpty(date)) {
             throw new ExceptionEmptyParameter("date");
         }
-        DateTools.parse(date, DateTools.format_yyyyMMdd); // 检查格式
-
+        Date dateD = DateTools.parse(date, DateTools.format_yyyyMMdd); // 检查格式
+        Date today = new Date();
+        if (dateD.after(today)) {
+            throw new ExceptionDateError();
+        }
+        LOGGER.info("发起考勤数据生成，Date：{} person: {}", date, person);
         ThisApplication.queueV2Detail.send(new QueueAttendanceV2DetailModel(person, date));
         ActionResult<Wo> result = new ActionResult<>();
         Wo wo = new Wo();

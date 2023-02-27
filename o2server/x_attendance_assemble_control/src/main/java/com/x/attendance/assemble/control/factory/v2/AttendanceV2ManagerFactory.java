@@ -191,4 +191,57 @@ public class AttendanceV2ManagerFactory  extends AbstractFactory {
     }
 
 
+
+    /**
+     * 查询考勤详细列表
+     * 分页查询需要
+     * @param adjustPage
+     * @param adjustPageSize
+     * @param userId 可以为空
+     * @param startDate
+     * @param endDate
+     * @return
+     * @throws Exception
+     */
+    public List<AttendanceV2Detail> listDetailByPage(Integer adjustPage,
+                                                           Integer adjustPageSize, String userId, String startDate, String endDate) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(AttendanceV2Detail.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<AttendanceV2Detail> cq = cb.createQuery(AttendanceV2Detail.class);
+        Root<AttendanceV2Detail> root = cq.from(AttendanceV2Detail.class);
+        if (StringUtils.isNotEmpty(userId)) {
+            Predicate p = cb.equal(root.get(AttendanceV2Detail_.userId), userId);
+            p = cb.and(p, cb.lessThanOrEqualTo(root.get(AttendanceV2Detail_.recordDateString), endDate));
+            p = cb.and(p, cb.greaterThanOrEqualTo(root.get(AttendanceV2Detail_.recordDateString), startDate));
+            cq.select(root).where(p).orderBy(cb.asc(root.get(AttendanceV2Detail_.createTime)));
+        } else {
+            Predicate p =  cb.lessThanOrEqualTo(root.get(AttendanceV2Detail_.recordDateString), endDate);
+            p = cb.and(p, cb.greaterThanOrEqualTo(root.get(AttendanceV2Detail_.recordDateString), startDate));
+            cq.select(root).where(p).orderBy(cb.asc(root.get(AttendanceV2Detail_.createTime)));
+        }
+        return em.createQuery(cq).setFirstResult((adjustPage - 1) * adjustPageSize).setMaxResults(adjustPageSize)
+                .getResultList();
+    }
+
+    /**
+     * 查询考勤组总数
+     * 分页查询需要
+     * @param userId 可以为空
+     * @param startDate
+     * @param endDate
+     * @return
+     * @throws Exception
+     */
+    public Long detailCount(String userId, String startDate, String endDate) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(AttendanceV2Detail.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<AttendanceV2Detail> root = cq.from(AttendanceV2Detail.class);
+        Predicate p =  cb.lessThanOrEqualTo(root.get(AttendanceV2Detail_.recordDateString), endDate);
+        p = cb.and(p, cb.greaterThanOrEqualTo(root.get(AttendanceV2Detail_.recordDateString), startDate));
+        if (StringUtils.isNotEmpty(userId)) {
+            p = cb.and(p,  cb.equal(root.get(AttendanceV2Detail_.userId), userId));
+        }
+        return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
+    }
 }

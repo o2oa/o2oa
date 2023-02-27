@@ -30,13 +30,13 @@ export default content({
                 ]
               },
               {
-                title: "考勤统计",
-                access: "admin_dept",
+                title: lp.menu.statistic,
+                access: "admin",
                 sub: [
                   {
                     id: 3,
-                    title: "部门考勤月报",
-                    action: "shiftManager"
+                    title: lp.menu.detailFilter,
+                    action: "detailManager"
                   },
                   {
                     id: 4,

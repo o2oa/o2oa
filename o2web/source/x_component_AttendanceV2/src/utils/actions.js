@@ -109,6 +109,22 @@ function groupAction(method, ...args) {
   return doAction("x_attendance_assemble_control", "GroupAction", method, args);
 }
 
+
+/**
+ * 考勤详细分页查询
+ * @param {*} method
+ * @param  {...any} args
+ * @returns
+ */
+function detailActionListByPaging(...args) {
+  return doActionBackResult(
+    "x_attendance_assemble_control",
+    "DetailAction",
+    "listByPaging",
+    args
+  );
+}
+
 export {
   getPublicData,
   putPublicData,
@@ -117,4 +133,5 @@ export {
   attendanceWorkPlaceV2Action,
   groupActionListByPaging,
   groupAction,
+  detailActionListByPaging
 };

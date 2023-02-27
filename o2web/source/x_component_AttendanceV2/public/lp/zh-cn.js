@@ -21,6 +21,8 @@ MWF.xApplication.AttendanceV2.LP = {
         "myAttendanceMonth": "我的考勤月报",
         "myAttendanceStatistic": "我的考勤统计",
         "config": "配置",
+        "statistic": "考勤统计",
+        "detailFilter": "每日统计",
         "shiftManager": "班次管理",
         "groupmanager": "考勤组管理",
         "addressmanger": "工作场所管理",
@@ -30,6 +32,7 @@ MWF.xApplication.AttendanceV2.LP = {
     "operate": "操作",
     "choose": "选择",
     "save": "保存",
+    "search": "搜索",
     "positive": "确定",
     "cancel": "取消",
     "add": "添加",
@@ -42,6 +45,7 @@ MWF.xApplication.AttendanceV2.LP = {
         "timeMinutesSelectorClosePlaceholder": "关闭",
         "timeMinutesSelectorHour": "小时",
         "timeMinutesSelectorMinute": "分钟",
+        "chooseDatePlaceholder": "请选择日期",
     },
 
     // 班次
@@ -143,4 +147,30 @@ MWF.xApplication.AttendanceV2.LP = {
         "noNeedCheckInDatePlaceholder": "请添加无需打卡的日期",
         "confirmDelete": "确认要删除这个【{name}】考勤组？",
     },
+    // 考勤信息
+    "detailManagerTitle": "考勤统计",
+    "detailTable": {
+        "person": "姓名",
+        "groupName": "考勤组",
+        "shiftName": "班次",
+        "date": "日期",
+        "attendance": "出勤天数",
+        "rest": "休息天数",
+        "workTimeDuration": "工作时长(分钟)",
+        "lateTimes": "迟到次数",
+        "lateTimeDuration": "迟到时长(分钟)",
+        "leaveEarlierTimes": "早退次数",
+        "leaveEarlierTimeDuration": "早退时长(分钟)",
+        "onDutyAbsenceTimes": "上班缺卡次数",
+        "offDutyAbsenceTimes": "下班缺卡次数",
+        "btnRecordList": "打卡记录",
+    },
+    "detailRecordList": {
+        "title": "打卡记录",
+        "dutyTitle": "打卡类型",
+        "time": "打卡时间",
+        "result": "打卡结果",
+
+    },
+
 };
