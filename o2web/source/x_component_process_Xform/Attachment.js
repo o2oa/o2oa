@@ -1837,10 +1837,6 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
     },
     downloadAttachment: function (e, node, attachments) {
 
-        if( this.queryDownload ){
-            if( this.queryDownload(attachments) === false )return;
-        }
-
         var data = this.form.businessData;
         var isWorkCompleted = data.work && data.work.completedTime;
 
@@ -1859,7 +1855,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         var client = this.getDownloadAttachmentClientType();
         console.log(client+" 客户端");
         attachments.each(function (att) {
-            if( !this.queryOpen( att ) )return;
+            if( !this.queryDownload( att ) )return;
 
             switch (client){
                 case "flutter":
