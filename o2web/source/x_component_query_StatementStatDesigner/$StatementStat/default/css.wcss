@@ -94,7 +94,7 @@
     "addColumnNode": {
         "width": "29px",
         "height": "40px",
-        "background": "url(../x_component_query_ViewDesigner/$View/default/icon/addColumn.png) center center no-repeat",
+        "background": "url(../x_component_query_StatementStatDesigner/$StatementStat/default/icon/addColumn.png) center center no-repeat",
         "float": "right"
     },
     "addColumnNode_run": {
@@ -172,7 +172,7 @@
         "height": "26px",
         "width": "26px",
         "float": "left",
-        "background": "url(../x_component_query_ViewDesigner/$View/default/icon/column.png) center center no-repeat"
+        "background": "url(../x_component_query_StatementStatDesigner/$StatementStat/default/icon/column.png) center center no-repeat"
     },
     "cloumnListCategoryIconNode": {
         "height": "26px",
@@ -182,6 +182,10 @@
     },
     "cloumnListTextNode": {
         "margin-left": "26px"
+    },
+    "cloumnListCategoryTextNode": {
+        "margin-left": "26px",
+        "color": "#1133ff"
     },
 
 

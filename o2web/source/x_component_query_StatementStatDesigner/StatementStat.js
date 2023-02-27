@@ -2065,7 +2065,7 @@ MWF.xApplication.query.StatementStatDesigner.Stat.Category = new Class({
             this.listNode.inject(this.domListNode);
         }
         var listIconNode = new Element("div", {"styles": this.css.cloumnListCategoryIconNode}).inject(this.listNode);
-        var listTextNode = new Element("div", {"styles": this.css.cloumnListTextNode}).inject(this.listNode);
+        var listTextNode = new Element("div", {"styles": this.css.cloumnListCategoryTextNode}).inject(this.listNode);
         this.resetTextNode();
     },
     setEvent: function(){
