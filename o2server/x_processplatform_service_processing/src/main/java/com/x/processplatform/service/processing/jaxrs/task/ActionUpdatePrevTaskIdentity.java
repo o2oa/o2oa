@@ -24,87 +24,94 @@ import com.x.processplatform.core.express.service.processing.jaxrs.task.WrapUpda
 
 class ActionUpdatePrevTaskIdentity extends BaseAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionUpdatePrevTaskIdentity.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActionUpdatePrevTaskIdentity.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
+    ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 
-		LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
+        LOGGER.debug("execute:{}.", effectivePerson::getDistinguishedName);
 
-		final Bag bag = new Bag();
-		bag.wi = this.convertToWrapIn(jsonElement, Wi.class);
+        final Bag bag = new Bag();
+        bag.wi = this.convertToWrapIn(jsonElement, Wi.class);
 
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			List<Task> os = emc.fetchIn(Task.class, ListTools.toList(Task.job_FIELDNAME), JpaObject.id_FIELDNAME,
-					bag.wi.getTaskList());
-			if (os.isEmpty()) {
-				Wo wo = new Wo();
-				ActionResult<Wo> result = new ActionResult<>();
-				result.setData(wo);
-				return result;
-			} else {
-				bag.job = os.get(0).getJob();
-			}
-		}
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            List<Task> os = emc.fetchIn(Task.class, ListTools.toList(Task.job_FIELDNAME), JpaObject.id_FIELDNAME,
+                    bag.wi.getTaskList());
+            if (os.isEmpty()) {
+                Wo wo = new Wo();
+                ActionResult<Wo> result = new ActionResult<>();
+                result.setData(wo);
+                return result;
+            } else {
+                bag.job = os.get(0).getJob();
+            }
+        }
 
-		Callable<ActionResult<Wo>> callable = () -> {
-			Wo wo = new Wo();
-			try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-				List<Task> os = emc.listIn(Task.class, JpaObject.id_FIELDNAME, bag.wi.getTaskList());
-				emc.beginTransaction(Task.class);
-				for (Task o : os) {
-					o.getProperties().setPrevTaskIdentityList(
-							ListTools.trim(ListUtils.sum(o.getProperties().getPrevTaskIdentityList(),
-									bag.wi.getPrevTaskIdentityList()), true, true));
-					bag.wi.getPrevTaskList().stream().forEach(p -> {
-						PrevTask prevTask = new PrevTask();
-						prevTask.setCompletedTime(p.getCompletedTime());
-						prevTask.setStartTime(p.getStartTime());
-						prevTask.setPerson(p.getPerson());
-						prevTask.setOpinion(p.getOpinion());
-						prevTask.setIdentity(p.getIdentity());
-						prevTask.setUnit(p.getUnit());
-						prevTask.setRouteName(p.getRouteName());
-						o.getProperties().getPrevTaskList().add(prevTask);
-					});
-					if (null != bag.wi.getPrevTask()) {
-						PrevTask prevTask = new PrevTask();
-						prevTask.setCompletedTime(bag.wi.getPrevTask().getCompletedTime());
-						prevTask.setStartTime(bag.wi.getPrevTask().getStartTime());
-						prevTask.setPerson(bag.wi.getPrevTask().getPerson());
-						prevTask.setOpinion(bag.wi.getPrevTask().getOpinion());
-						prevTask.setIdentity(bag.wi.getPrevTask().getIdentity());
-						prevTask.setUnit(bag.wi.getPrevTask().getUnit());
-						prevTask.setRouteName(bag.wi.getPrevTask().getRouteName());
-						o.getProperties().setPrevTask(prevTask);
-					}
-					emc.check(o, CheckPersistType.all);
-					wo.getValueList().add(o.getId());
-				}
-				emc.commit();
-			}
-			ActionResult<Wo> result = new ActionResult<>();
-			result.setData(wo);
-			return result;
-		};
+        Callable<ActionResult<Wo>> callable = () -> {
+            Wo wo = new Wo();
+            try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+                List<Task> os = emc.listIn(Task.class, JpaObject.id_FIELDNAME, bag.wi.getTaskList());
+                emc.beginTransaction(Task.class);
+                for (Task o : os) {
+                    o.getProperties().setPrevTaskIdentityList(
+                            ListTools.trim(ListUtils.sum(o.getProperties().getPrevTaskIdentityList(),
+                                    bag.wi.getPrevTaskIdentityList()), true, true));
+                    bag.wi.getPrevTaskList().stream().forEach(p -> {
+                        PrevTask prevTask = new PrevTask();
+                        prevTask.setCompletedTime(p.getCompletedTime());
+                        prevTask.setStartTime(p.getStartTime());
+                        prevTask.setPerson(p.getPerson());
+                        prevTask.setOpinion(p.getOpinion());
+                        prevTask.setIdentity(p.getIdentity());
+                        prevTask.setUnit(p.getUnit());
+                        prevTask.setRouteName(p.getRouteName());
+                        prevTask.setActivity(p.getActivity());
+                        prevTask.setActivityName(p.getActivityName());
+                        prevTask.setActivityToken(p.getActivityToken());
 
-		return ProcessPlatformExecutorFactory.get(bag.job).submit(callable).get(300, TimeUnit.SECONDS);
+                        o.getProperties().getPrevTaskList().add(prevTask);
+                    });
+                    if (null != bag.wi.getPrevTask()) {
+                        PrevTask prevTask = new PrevTask();
+                        prevTask.setCompletedTime(bag.wi.getPrevTask().getCompletedTime());
+                        prevTask.setStartTime(bag.wi.getPrevTask().getStartTime());
+                        prevTask.setPerson(bag.wi.getPrevTask().getPerson());
+                        prevTask.setOpinion(bag.wi.getPrevTask().getOpinion());
+                        prevTask.setIdentity(bag.wi.getPrevTask().getIdentity());
+                        prevTask.setUnit(bag.wi.getPrevTask().getUnit());
+                        prevTask.setRouteName(bag.wi.getPrevTask().getRouteName());
+                        prevTask.setActivity(bag.wi.getPrevTask().getActivity());
+                        prevTask.setActivityName(bag.wi.getPrevTask().getActivityName());
+                        prevTask.setActivityToken(bag.wi.getPrevTask().getActivityToken());
+                        o.getProperties().setPrevTask(prevTask);
+                    }
+                    emc.check(o, CheckPersistType.all);
+                    wo.getValueList().add(o.getId());
+                }
+                emc.commit();
+            }
+            ActionResult<Wo> result = new ActionResult<>();
+            result.setData(wo);
+            return result;
+        };
 
-	}
+        return ProcessPlatformExecutorFactory.get(bag.job).submit(callable).get(300, TimeUnit.SECONDS);
 
-	private static class Bag {
-		private Wi wi;
-		private String job;
-	}
+    }
 
-	public static class Wo extends WrapStringList {
+    private static class Bag {
+        private Wi wi;
+        private String job;
+    }
 
-		private static final long serialVersionUID = -449564137697660569L;
-	}
+    public static class Wo extends WrapStringList {
 
-	public static class Wi extends WrapUpdatePrevTaskIdentity {
+        private static final long serialVersionUID = -449564137697660569L;
+    }
 
-		private static final long serialVersionUID = -3748933646812429331L;
+    public static class Wi extends WrapUpdatePrevTaskIdentity {
 
-	}
+        private static final long serialVersionUID = -3748933646812429331L;
+
+    }
 
 }
