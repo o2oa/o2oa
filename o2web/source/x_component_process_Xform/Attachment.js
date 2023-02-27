@@ -1837,6 +1837,10 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
     },
     downloadAttachment: function (e, node, attachments) {
 
+        if( this.queryDownload ){
+            if( this.queryDownload(attachments) === false )return;
+        }
+
         var data = this.form.businessData;
         var isWorkCompleted = data.work && data.work.completedTime;
 
