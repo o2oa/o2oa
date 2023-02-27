@@ -27,6 +27,9 @@ MWF.xApplication.query.StatementStatDesigner.LP = Object.merge( MWF.xApplication
     "updateSuccess": "保存成功",
     "createSuccess": "创建成功",
     "stat": "统计",
+    "addCategory": "添加分类",
+    "addColumn": "添加列",
+    "unnamedCategory": "无标题分类",
     "propertyTemplate": {
         "chart":"图表",
         "bar": "柱状图",

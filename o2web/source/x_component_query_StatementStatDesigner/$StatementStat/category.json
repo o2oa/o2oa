@@ -1,0 +1,32 @@
+{
+  "events": {
+    "loadTitle" : {
+      "code": "",
+      "html": ""
+    },
+    "loadContent" : {
+      "code": "",
+      "html": ""
+    },
+    "click": {
+      "code": "",
+      "html": ""
+    },
+    "mousedown": {
+      "code": "",
+      "html": ""
+    },
+    "mouseup": {
+      "code": "",
+      "html": ""
+    },
+    "mouseout": {
+      "code": "",
+      "html": ""
+    },
+    "mouseover": {
+      "code": "",
+      "html": ""
+    }
+  }
+}

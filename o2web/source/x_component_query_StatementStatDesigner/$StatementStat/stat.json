@@ -6,59 +6,58 @@
   "executeUnitList": [],
   "stat": {
     "data": {
-      "selectList": []
-    }
-  },
-  "data": {
-    "noDataText": "未找到数据",
-    "calculate": {
-      "chart": [
-        "bar"
-      ],
-      "isGroup": false,
-      "isAmount": false,
-      "calculateList": []
-    },
-    "events": {
-      "queryLoad": {
-        "code": "",
-        "html": ""
+      "categoryList": [],
+      "selectList": [],
+      "noDataText": "未找到数据",
+      "calculate": {
+        "chart": [
+          "bar"
+        ],
+        "isGroup": true,
+        "isAmount": false,
+        "calculateList": []
       },
-      "postLoad": {
-        "code": "",
-        "html": ""
-      },
-      "postLoadPageData": {
-        "code": "",
-        "html": ""
-      },
-      "postLoadPage": {
-        "code": "",
-        "html": ""
-      },
-      "queryLoadItemRow": {
-        "code": "",
-        "html": ""
-      },
-      "postLoadItemRow": {
-        "code": "",
-        "html": ""
-      },
-      "selectRow": {
-        "code": "",
-        "html": ""
-      },
-      "unselectRow": {
-        "code": "",
-        "html": ""
-      },
-      "export": {
-        "code": "",
-        "html": ""
-      },
-      "exportRow": {
-        "code": "",
-        "html": ""
+      "events": {
+        "queryLoad": {
+          "code": "",
+          "html": ""
+        },
+        "postLoad": {
+          "code": "",
+          "html": ""
+        },
+        "postLoadPageData": {
+          "code": "",
+          "html": ""
+        },
+        "postLoadPage": {
+          "code": "",
+          "html": ""
+        },
+        "queryLoadItemRow": {
+          "code": "",
+          "html": ""
+        },
+        "postLoadItemRow": {
+          "code": "",
+          "html": ""
+        },
+        "selectRow": {
+          "code": "",
+          "html": ""
+        },
+        "unselectRow": {
+          "code": "",
+          "html": ""
+        },
+        "export": {
+          "code": "",
+          "html": ""
+        },
+        "exportRow": {
+          "code": "",
+          "html": ""
+        }
       }
     }
   }

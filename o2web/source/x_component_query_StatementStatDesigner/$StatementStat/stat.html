@@ -33,7 +33,7 @@
             <tr>
                 <td class="editTableTitle">{{$.lp.noDataText}}:</td>
                 <td class="editTableValue">
-                    <input type="text" name="data.noDataText" value="text{$.data.noDataText}" class="editTableInput"/>
+                    <input type="text" name="stat.data.noDataText" value="text{$.stat.data.noDataText}" class="editTableInput"/>
                 </td>
             </tr>
         </table>
@@ -41,31 +41,30 @@
         <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">{{$.lp.chart}}</div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" id="processEditStarter">
             <tr><td>
-                <input class="editTableRadio" name="data.calculate.chart" text{(($.data.calculate.chart) && $.data.calculate.chart.indexOf('bar')!=-1)?'checked':''} type="checkbox" value="bar"/>{{$.lp.bar}}
-                <input class="editTableRadio" name="data.calculate.chart" text{(($.data.calculate.chart) && $.data.calculate.chart.indexOf('pie')!=-1)?'checked':''} type="checkbox" value="pie"/>{{$.lp.pie}}
-                <input class="editTableRadio" name="data.calculate.chart" text{(($.data.calculate.chart) && $.data.calculate.chart.indexOf('line')!=-1)?'checked':''} type="checkbox" value="line"/>{{$.lp.line}}
+                <input class="editTableRadio" name="stat.data.calculate.chart" text{(($.stat.data.calculate.chart) && $.stat.data.calculate.chart.indexOf('bar')!=-1)?'checked':''} type="checkbox" value="bar"/>{{$.lp.bar}}
+                <input class="editTableRadio" name="stat.data.calculate.chart" text{(($.stat.data.calculate.chart) && $.stat.data.calculate.chart.indexOf('pie')!=-1)?'checked':''} type="checkbox" value="pie"/>{{$.lp.pie}}
+                <input class="editTableRadio" name="stat.data.calculate.chart" text{(($.stat.data.calculate.chart) && $.stat.data.calculate.chart.indexOf('line')!=-1)?'checked':''} type="checkbox" value="line"/>{{$.lp.line}}
             </td></tr>
         </table>
 
 
         <div style="text-align: center; height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">{{$.lp.isGroup}}</div>
-        <!--<div class="MWFIsGroupArea" style="display: text{($.data.calculate.isGroup)?'block':'none'}">-->
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
             <tr>
                 <td class="editTableTitle">{{$.lp.isGroup}}:</td>
                 <td class="editTableValue">
-                    <input class="editTableRadio" name="data.calculate.isGroup" type="radio" onclick="if (this.checked) $('text{$.id}isAmountArea').setStyle('display', 'block');" value="true" text{($.data.calculate.isGroup)===true?'checked':''}/>{{$.lp.yes}}
-                    <input class="editTableRadio" name="data.calculate.isGroup" type="radio" onclick="if (this.checked) $('text{$.id}isAmountArea').setStyle('display', 'none');" value="false" text{($.data.calculate.isGroup)!==true?'checked':''}/>{{$.lp.no}}
+                    <input class="editTableRadio" name="stat.data.calculate.isGroup" type="radio" onclick="if (this.checked) $('text{$.id}isAmountArea').setStyle('display', 'block');" value="true" text{($.stat.data.calculate.isGroup)===true?'checked':''}/>{{$.lp.yes}}
+                    <input class="editTableRadio" name="stat.data.calculate.isGroup" type="radio" onclick="if (this.checked) $('text{$.id}isAmountArea').setStyle('display', 'none');" value="false" text{($.stat.data.calculate.isGroup)!==true?'checked':''}/>{{$.lp.no}}
                 </td>
             </tr>
         </table>
         <!--</div>-->
-        <div id="text{$.id}isAmountArea" style="display: text{($.data.calculate.isGroup)?'block':'none'}">
+        <div id="text{$.id}isAmountArea" style="display: text{($.stat.data.calculate.isGroup)?'block':'none'}">
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
                 <tr>
                     <td class="editTableTitle">{{$.lp.categoryTitle}}:</td>
                     <td class="editTableValue">
-                        <input class="editTableInput" name="data.calculate.title" type="text" value="text{$.data.calculate.title || '{{$.lp.category}}'}"/>
+                        <input class="editTableInput" name="stat.data.calculate.title" type="text" value="text{$.stat.data.calculate.title || '{{$.lp.category}}'}"/>
                     </td>
                 </tr>
             </table>
@@ -73,8 +72,8 @@
                 <tr>
                     <td class="editTableTitle">{{$.lp.isAmount}}:</td>
                     <td class="editTableValue">
-                        <input class="editTableRadio" name="data.calculate.isAmount" type="radio" value="true" text{($.data.calculate.isAmount)===true?'checked':''}/>{{$.lp.yes}}
-                        <input class="editTableRadio" name="data.calculate.isAmount" type="radio" value="false" text{($.data.calculate.isAmount)!==true?'checked':''}/>{{$.lp.no}}
+                        <input class="editTableRadio" name="stat.data.calculate.isAmount" type="radio" value="true" text{($.stat.data.calculate.isAmount)===true?'checked':''}/>{{$.lp.yes}}
+                        <input class="editTableRadio" name="stat.data.calculate.isAmount" type="radio" value="false" text{($.stat.data.calculate.isAmount)!==true?'checked':''}/>{{$.lp.no}}
                     </td>
                 </tr>
             </table>
@@ -85,15 +84,15 @@
                 <tr>
                     <td class="editTableTitle">{{$.lp.categoryDisplay}}:</td>
                     <td class="editTableValue">
-                        <input class="editTableRadio" name="data.calculate.groupMergeType" type="radio" value="item" text{(($.data.calculate.groupMergeType)!='specified' && ($.data.calculate.orderType)!='intersection' && ($.data.calculate.orderType)!='sum')?'checked':''}/>{{$.lp.item}}<br/>
-                        <input class="editTableRadio" name="data.calculate.groupMergeType" type="radio" value="specified" text{($.data.calculate.groupMergeType)=='specified'?'checked':''}/>{{$.lp.specified}}<br/>
-                        <input class="editTableRadio" name="data.calculate.groupMergeType" type="radio" value="intersection" text{($.data.calculate.groupMergeType)=='intersection'?'checked':''}/>{{$.lp.intersection}}<br/>
-                        <input class="editTableRadio" name="data.calculate.groupMergeType" type="radio" value="sum" text{($.data.calculate.groupMergeType)=='sum'?'checked':''}/>{{$.lp.sum1}}
+                        <input class="editTableRadio" name="stat.data.calculate.groupMergeType" type="radio" value="item" text{(($.stat.data.calculate.groupMergeType)!='specified' && ($.stat.data.calculate.orderType)!='intersection' && ($.stat.data.calculate.orderType)!='sum')?'checked':''}/>{{$.lp.item}}<br/>
+                        <input class="editTableRadio" name="stat.data.calculate.groupMergeType" type="radio" value="specified" text{($.stat.data.calculate.groupMergeType)=='specified'?'checked':''}/>{{$.lp.specified}}<br/>
+                        <input class="editTableRadio" name="stat.data.calculate.groupMergeType" type="radio" value="intersection" text{($.stat.data.calculate.groupMergeType)=='intersection'?'checked':''}/>{{$.lp.intersection}}<br/>
+                        <input class="editTableRadio" name="stat.data.calculate.groupMergeType" type="radio" value="sum" text{($.stat.data.calculate.groupMergeType)=='sum'?'checked':''}/>{{$.lp.sum1}}
                     </td>
                 </tr>
             </table>
 
-            <div class="MWFArraylist" name="data.calculate.groupSpecifiedList" title="{{$.lp.groupSpecifiedList}}"></div>
+            <div class="MWFArraylist" name="stat.data.calculate.groupSpecifiedList" title="{{$.lp.groupSpecifiedList}}"></div>
         </div>
 
         <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">{{$.lp.executionAuthority}}</div>
@@ -322,7 +321,7 @@
     </div>
 
     <div title="{{$.lp.event}}"  class="MWFTab">
-        <div class="MWFEventsArea" name="data.events"></div>
+        <div class="MWFEventsArea" name="stat.data.events"></div>
     </div>
 
     <div title="JSON"  class="MWFTab">

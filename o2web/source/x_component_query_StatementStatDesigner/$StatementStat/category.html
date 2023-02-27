@@ -13,33 +13,6 @@
                 <td class="editTableTitle">{{$.lp.defaultValue}}:</td>
                 <td class="editTableValue"><input type="text" name="defaultValue" value="text{$.defaultValue}" class="editTableInput"/></td>
             </tr>
-<!--            <tr>-->
-<!--                <td class="editTableTitle">{{$.lp.openDocument}}:</td>-->
-<!--                <td class="editTableValue">-->
-<!--                    <input class="editTableRadio" name="allowOpen" text{($.allowOpen===true)?'checked':''} type="radio" value="true"-->
-<!--                           onclick="if(this.checked){-->
-<!--                               $('text{$.pid}clickCodeTr').setStyle('display', '');-->
-<!--                               $('text{$.pid}idPathTr').setStyle('display', '');-->
-<!--                           }"/>{{$.lp.yes}}-->
-<!--                    <input class="editTableRadio" name="allowOpen" text{($.allowOpen!==true)?'checked':''} type="radio" value="false"-->
-<!--                           onclick="if(this.checked){-->
-<!--                               $('text{$.pid}clickCodeTr').setStyle('display', 'none');-->
-<!--                               $('text{$.pid}idPathTr').setStyle('display', 'none');-->
-<!--                           }"/>{{$.lp.no}}-->
-<!--                </td>-->
-<!--            </tr>-->
-<!--            <tr id="text{$.pid}clickCodeTr" style="display:text{($.allowOpen===true)?'':'none'}">-->
-<!--                <td class="editTableValue" colspan="2">-->
-<!--                    <div class="MWFFormulaArea" name="clickCode" title="{{$.lp.openDocumentScript}}(S)"></div>-->
-<!--                </td>-->
-<!--            </tr>-->
-<!--            <tr id="text{$.pid}idPathTr" style="display:text{($.allowOpen===true)?'':'none'}">-->
-<!--                <td class="editTableTitle">{{$.lp.idPath}}:</td>-->
-<!--                <td class="editTableValue">-->
-<!--                    <input type="text" name="idPath" value="text{$.idPath}" class="editTableInput"/>-->
-<!--                    <div style="line-height: 20px;color:#999;">{{$.lp.idPathNote}}</div>-->
-<!--                </td>-->
-<!--            </tr>-->
         </table>
 
         <div style="border-top: 1px solid #999; margin-top:10px">
@@ -73,7 +46,7 @@
                         <input class="MWFWorkDataCheck" name="isName" type="radio" value="true" text{($.isName)===true?'checked':''}/>{{$.lp.yes}}
                         <input class="MWFWorkDataCheck" name="isName" type="radio" value="false" text{($.isName)!==true?'checked':''}/>{{$.lp.no}}
                     </td>
-                </tr>
+                </tr> 
             </table>
         </div>
         <div class="MWFFormulaArea" name="code" title="{{$.lp.showScript}}(S)"></div>
