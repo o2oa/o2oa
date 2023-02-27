@@ -30,12 +30,15 @@ MWF.xApplication.query.StatementStatDesigner.LP = Object.merge( MWF.xApplication
     "addCategory": "添加分类",
     "addColumn": "添加列",
     "unnamedCategory": "无标题分类",
+    "deleteCategoryTitle": "删除分类确认",
+    "deleteCategory": "是否确定删除当前分类？",
     "propertyTemplate": {
         "chart":"图表",
         "bar": "柱状图",
         "pie":"饼状图",
         "line":"折线图",
 
+        "display": "展现",
         "category":"分类",
         "isGroup":"分类统计",
         "yes":"是",
@@ -45,10 +48,10 @@ MWF.xApplication.query.StatementStatDesigner.LP = Object.merge( MWF.xApplication
 
         "categoryValue":"分类值",
         "categoryDisplay":"分类显示",
-        "item":"根据列视图计算",
+        "item":"根据查询语句计算结果",
         "specified":"根据指定的分类值",
-        "intersection":"列视图计算与指定分类值的交集",
-        "sum1":"列视图计算与指定分类值的合集",
+        "intersection":"查询语句计算结果与指定分类值的交集",
+        "sum1":"查询语句计算结果与指定分类值的合集",
         "groupSpecifiedList":"指定分类值"
     }
 });

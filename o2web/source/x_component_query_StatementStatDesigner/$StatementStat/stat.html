@@ -47,54 +47,6 @@
             </td></tr>
         </table>
 
-
-        <div style="text-align: center; height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">{{$.lp.isGroup}}</div>
-        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-            <tr>
-                <td class="editTableTitle">{{$.lp.isGroup}}:</td>
-                <td class="editTableValue">
-                    <input class="editTableRadio" name="stat.data.calculate.isGroup" type="radio" onclick="if (this.checked) $('text{$.id}isAmountArea').setStyle('display', 'block');" value="true" text{($.stat.data.calculate.isGroup)===true?'checked':''}/>{{$.lp.yes}}
-                    <input class="editTableRadio" name="stat.data.calculate.isGroup" type="radio" onclick="if (this.checked) $('text{$.id}isAmountArea').setStyle('display', 'none');" value="false" text{($.stat.data.calculate.isGroup)!==true?'checked':''}/>{{$.lp.no}}
-                </td>
-            </tr>
-        </table>
-        <!--</div>-->
-        <div id="text{$.id}isAmountArea" style="display: text{($.stat.data.calculate.isGroup)?'block':'none'}">
-            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-                <tr>
-                    <td class="editTableTitle">{{$.lp.categoryTitle}}:</td>
-                    <td class="editTableValue">
-                        <input class="editTableInput" name="stat.data.calculate.title" type="text" value="text{$.stat.data.calculate.title || '{{$.lp.category}}'}"/>
-                    </td>
-                </tr>
-            </table>
-            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-                <tr>
-                    <td class="editTableTitle">{{$.lp.isAmount}}:</td>
-                    <td class="editTableValue">
-                        <input class="editTableRadio" name="stat.data.calculate.isAmount" type="radio" value="true" text{($.stat.data.calculate.isAmount)===true?'checked':''}/>{{$.lp.yes}}
-                        <input class="editTableRadio" name="stat.data.calculate.isAmount" type="radio" value="false" text{($.stat.data.calculate.isAmount)!==true?'checked':''}/>{{$.lp.no}}
-                    </td>
-                </tr>
-            </table>
-
-            <div style="text-align: center; height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">{{$.lp.categoryValue}}</div>
-
-            <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-                <tr>
-                    <td class="editTableTitle">{{$.lp.categoryDisplay}}:</td>
-                    <td class="editTableValue">
-                        <input class="editTableRadio" name="stat.data.calculate.groupMergeType" type="radio" value="item" text{(($.stat.data.calculate.groupMergeType)!='specified' && ($.stat.data.calculate.orderType)!='intersection' && ($.stat.data.calculate.orderType)!='sum')?'checked':''}/>{{$.lp.item}}<br/>
-                        <input class="editTableRadio" name="stat.data.calculate.groupMergeType" type="radio" value="specified" text{($.stat.data.calculate.groupMergeType)=='specified'?'checked':''}/>{{$.lp.specified}}<br/>
-                        <input class="editTableRadio" name="stat.data.calculate.groupMergeType" type="radio" value="intersection" text{($.stat.data.calculate.groupMergeType)=='intersection'?'checked':''}/>{{$.lp.intersection}}<br/>
-                        <input class="editTableRadio" name="stat.data.calculate.groupMergeType" type="radio" value="sum" text{($.stat.data.calculate.groupMergeType)=='sum'?'checked':''}/>{{$.lp.sum1}}
-                    </td>
-                </tr>
-            </table>
-
-            <div class="MWFArraylist" name="stat.data.calculate.groupSpecifiedList" title="{{$.lp.groupSpecifiedList}}"></div>
-        </div>
-
         <div style="height:24px; text-align: center; line-height: 24px; background-color: #EEE; border-top: 1px solid #999; font-weight: bold">{{$.lp.executionAuthority}}</div>
         <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable" id="processEditStarter">
             <tr>

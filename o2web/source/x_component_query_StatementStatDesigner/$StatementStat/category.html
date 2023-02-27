@@ -38,17 +38,48 @@
             </div>
         </div>
 
-        <div style="border-top: 1px solid #999; margin-top:10px">
+        <!--</div>-->
+
+            <div style="text-align: center; height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">{{$.lp.categoryValue}}</div>
+
             <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
-                <tr class="MWFColumnExportGroup">
-                    <td class="editTableTitle">{{$.lp.org}}:</td>
+                <tr>
+                    <td class="editTableTitle">{{$.lp.categoryDisplay}}:</td>
                     <td class="editTableValue">
-                        <input class="MWFWorkDataCheck" name="isName" type="radio" value="true" text{($.isName)===true?'checked':''}/>{{$.lp.yes}}
-                        <input class="MWFWorkDataCheck" name="isName" type="radio" value="false" text{($.isName)!==true?'checked':''}/>{{$.lp.no}}
+                        <input class="editTableRadio" name="groupMergeType" type="radio" value="item" text{(($.groupMergeType)!='specified' && ($.orderType)!='intersection' && ($.orderType)!='sum')?'checked':''}/>{{$.lp.item}}<br/>
+                        <input class="editTableRadio" name="groupMergeType" type="radio" value="specified" text{($.groupMergeType)=='specified'?'checked':''}/>{{$.lp.specified}}<br/>
+                        <input class="editTableRadio" name="groupMergeType" type="radio" value="intersection" text{($.groupMergeType)=='intersection'?'checked':''}/>{{$.lp.intersection}}<br/>
+                        <input class="editTableRadio" name="groupMergeType" type="radio" value="sum" text{($.groupMergeType)=='sum'?'checked':''}/>{{$.lp.sum1}}
                     </td>
-                </tr> 
+                </tr>
             </table>
-        </div>
+
+            <div class="MWFArraylist" name="groupSpecifiedList" title="{{$.lp.groupSpecifiedList}}"></div>
+
+
+        <div style="text-align: center; height: 28px; font-weight: bold; line-height:28px; background-color: #EEE; padding: 0px 6px; border-top: 1px solid #999">{{$.lp.display}}</div>
+
+
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr>
+                <td class="editTableTitle">{{$.lp.isAmount}}:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="isAmount" type="radio" value="true" text{($.isAmount)===true?'checked':''}/>{{$.lp.yes}}
+                    <input class="editTableRadio" name="isAmount" type="radio" value="false" text{($.isAmount)!==true?'checked':''}/>{{$.lp.no}}
+                </td>
+            </tr>
+        </table>
+
+        <table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+            <tr class="MWFColumnExportGroup">
+                <td class="editTableTitle">{{$.lp.org}}:</td>
+                <td class="editTableValue">
+                    <input class="MWFWorkDataCheck" name="isName" type="radio" value="true" text{($.isName)===true?'checked':''}/>{{$.lp.yes}}
+                    <input class="MWFWorkDataCheck" name="isName" type="radio" value="false" text{($.isName)!==true?'checked':''}/>{{$.lp.no}}
+                </td>
+            </tr>
+        </table>
+
         <div class="MWFFormulaArea" name="code" title="{{$.lp.showScript}}(S)"></div>
 
 	</div>

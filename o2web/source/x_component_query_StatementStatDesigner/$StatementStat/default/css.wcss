@@ -172,7 +172,13 @@
         "height": "26px",
         "width": "26px",
         "float": "left",
-        "background": "url("+"../x_component_query_ViewDesigner/$View/default/icon/column.png) center center no-repeat"
+        "background": "url(../x_component_query_ViewDesigner/$View/default/icon/column.png) center center no-repeat"
+    },
+    "cloumnListCategoryIconNode": {
+        "height": "26px",
+        "width": "26px",
+        "float": "left",
+        "background": "url(../x_component_query_StatementStatDesigner/$StatementStat/default/icon/columnLeft.png) center center no-repeat"
     },
     "cloumnListTextNode": {
         "margin-left": "26px"

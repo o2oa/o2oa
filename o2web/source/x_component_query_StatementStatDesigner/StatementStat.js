@@ -1459,11 +1459,10 @@ MWF.xApplication.query.StatementStatDesigner.Stat = new Class({
             if (!this.json.data.categoryList) this.json.data.categoryList = [];
             this.json.data.categoryList.push(json);
 
-            debugger;
             var next;
             if( this.json.data.selectList && this.json.data.selectList.length){
                 this.items.each(function (item) {
-                    if( item.json === this.json.data.selectList[0].json )next = item;
+                    if( item.json === this.json.data.selectList[0] )next = item;
                 }.bind(this))
             }
             var column = new MWF.xApplication.query.StatementStatDesigner.Stat.Category(json, this, next);
@@ -1975,6 +1974,42 @@ MWF.xApplication.query.StatementStatDesigner.Stat.Column = new Class({
             }.bind(this)
         });
         nodeDrag.start(e);
+    },
+    destroy: function(){
+        if (this.view.currentSelectedModule==this) this.view.currentSelectedModule = null;
+        if (this.actionArea) this.actionArea.destroy();
+        if (this.listNode) this.listNode.destroy();
+        if (this.property) this.property.propertyContent.destroy();
+
+        var idx = this.view.items.indexOf(this);
+
+        if (this.view.viewContentTableNode){
+            var trs = this.view.viewContentTableNode.getElements("tr");
+            trs.each(function(tr){
+                tr.deleteCell(idx);
+            }.bind(this));
+        }
+
+        var sortList = this.view.json.data.orderList || [];
+        var deleteItem = null;
+        sortList.each(function(order){
+            if (order.column==this.json.column){
+                deleteItem = order;
+            }
+        }.bind(this));
+        if (deleteItem) sortList.erase(deleteItem);
+
+        if (this.view.json.data.selectList) this.view.json.data.selectList.erase(this.json);
+        this.view.items.erase(this);
+        if (this.view.property) this.view.property.loadStatColumnSelect();
+
+        this.areaNode.destroy();
+        this.view.statementStat.selected();
+
+        this.view.setViewWidth();
+
+        MWF.release(this);
+        delete this;
     }
 });
 
@@ -2021,6 +2056,17 @@ MWF.xApplication.query.StatementStatDesigner.Stat.Category = new Class({
         this.setEvent();
 
         this.setCustomStyles();
+    },
+    createDomListItem: function(){
+        this.listNode = new Element("div", {"styles": this.css.cloumnListNode});
+        if (this.next){
+            this.listNode.inject(this.next.listNode, "before");
+        }else{
+            this.listNode.inject(this.domListNode);
+        }
+        var listIconNode = new Element("div", {"styles": this.css.cloumnListCategoryIconNode}).inject(this.listNode);
+        var listTextNode = new Element("div", {"styles": this.css.cloumnListTextNode}).inject(this.listNode);
+        this.resetTextNode();
     },
     setEvent: function(){
         this.node.addEvents({
@@ -2158,6 +2204,52 @@ MWF.xApplication.query.StatementStatDesigner.Stat.Category = new Class({
             }.bind(this)
         });
         nodeDrag.start(e);
+    },
+    "delete": function(e){
+        var _self = this;
+        if (!e) e = this.node;
+        this.view.designer.confirm("warn", e, MWF.APPDSMSD.LP.deleteCategoryTitle, MWF.APPDSMSD.LP.deleteCategory, 300, 120, function(){
+            _self.destroy();
+            this.close();
+        }, function(){
+            this.close();
+        }, null);
+    },
+    destroy: function(){
+        if (this.view.currentSelectedModule==this) this.view.currentSelectedModule = null;
+        if (this.actionArea) this.actionArea.destroy();
+        if (this.listNode) this.listNode.destroy();
+        if (this.property) this.property.propertyContent.destroy();
+
+        var idx = this.view.items.indexOf(this);
+
+        if (this.view.viewContentTableNode){
+            var trs = this.view.viewContentTableNode.getElements("tr");
+            trs.each(function(tr){
+                tr.deleteCell(idx);
+            }.bind(this));
+        }
+
+        var sortList = this.view.json.data.orderList || [];
+        var deleteItem = null;
+        sortList.each(function(order){
+            if (order.column==this.json.column){
+                deleteItem = order;
+            }
+        }.bind(this));
+        if (deleteItem) sortList.erase(deleteItem);
+
+        if (this.view.json.data.categoryList) this.view.json.data.categoryList.erase(this.json);
+        this.view.items.erase(this);
+        // if (this.view.property) this.view.property.loadStatColumnSelect();
+
+        this.areaNode.destroy();
+        this.view.statementStat.selected();
+
+        this.view.setViewWidth();
+
+        MWF.release(this);
+        delete this;
     }
 });
 

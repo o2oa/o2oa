@@ -12,10 +12,7 @@
       "calculate": {
         "chart": [
           "bar"
-        ],
-        "isGroup": true,
-        "isAmount": false,
-        "calculateList": []
+        ]
       },
       "events": {
         "queryLoad": {
