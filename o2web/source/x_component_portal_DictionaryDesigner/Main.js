@@ -1,8 +1,6 @@
 MWF.xApplication.process = MWF.xApplication.process || {};
 MWF.xApplication.process.DictionaryDesigner = MWF.xApplication.process.DictionaryDesigner || {};
 MWF.xDesktop.requireApp("process.DictionaryDesigner", "Main", null, false);
-MWF.xDesktop.requireApp("process.DictionaryDesigner", "lp."+MWF.language, null, false);
-MWF.xDesktop.requireApp("process.DictionaryDesigner", "Dictionary", null, false);
 MWF.xApplication.portal.DictionaryDesigner.options = {
 	"multitask": true,
 	"executable": false
@@ -45,7 +43,7 @@ MWF.xApplication.portal.DictionaryDesigner.Main = new Class({
             this.actions.application = this.application;
         }
 		
-		this.lp = MWF.xApplication.process.DictionaryDesigner.LP;
+		this.lp = MWF.xApplication.portal.DictionaryDesigner.LP;
 
         this.addEvent("queryClose", function(e){
             if (this.explorer){

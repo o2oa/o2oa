@@ -3,7 +3,6 @@ MWF.xApplication.portal = MWF.xApplication.portal || {};
 MWF.xApplication.portal.DictionaryDesigner = MWF.xApplication.portal.DictionaryDesigner || {};
 
 MWF.xDesktop.requireApp("process.DictionaryDesigner", "Dictionary", null, false);
-
 MWF.xApplication.portal.DictionaryDesigner.Dictionary = new Class({
     Extends: MWF.xApplication.process.DictionaryDesigner.Dictionary,
 

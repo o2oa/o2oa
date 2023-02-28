@@ -43,11 +43,12 @@
   "removeSource": {"uri": "/jaxrs/source/{id}","method": "DELETE"},
   "updataSource": {"uri": "/jaxrs/source/{id}","method": "PUT"},
 
-  "listDictionary": {"uri": "/jaxrs/applicationdict/list/application/{application}"},
-  "getDictionary": {"uri": "/jaxrs/applicationdict/{applicationDict}"},
-  "addDictionary": {"uri": "/jaxrs/applicationdict", "method": "POST"},
-  "removeDictionary": {"uri": "/jaxrs/applicationdict/{applicationDict}","method": "DELETE"},
-  "updataDictionary": {"uri": "/jaxrs/applicationdict/{applicationDict}","method": "PUT"},
+  "listDictionaryPaging": {"uri": "/jaxrs/dict/list/paging/{page}/size/{size}"},
+  "listDictionary": {"uri": "/jaxrs/dict/list/portal/{portalId}"},
+  "getDictionary": {"uri": "/jaxrs/dict/{id}"},
+  "addDictionary": {"uri": "/jaxrs/dict", "method": "POST"},
+  "removeDictionary": {"uri": "/jaxrs/dict/{id}","method": "DELETE"},
+  "updataDictionary": {"uri": "/jaxrs/dict/{id}","method": "PUT"},
 
   "getScript": {"uri": "/jaxrs/script/{id}"},
   "addScript": {"uri": "/jaxrs/script", "method": "POST"},

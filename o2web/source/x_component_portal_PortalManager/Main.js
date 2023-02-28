@@ -191,7 +191,7 @@ MWF.xApplication.portal.PortalManager.Main = new Class({
             //}.bind(this));
         }.bind(this));
     },
-    dictionaryConfig: function(){
+    dataConfig: function(){
         this.clearContent();
         this.dictionaryConfiguratorContent = new Element("div", {
             "styles": this.css.rightContentNode

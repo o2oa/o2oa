@@ -366,10 +366,10 @@ MWF.xAction.RestActions.Action["x_portal_assemble_designer"] = new Class({
     },
 
     listDictionary: function(application, success, failure, async){
-        this.action.invoke({"name": "listDictionary","async": async, "parameter": {"application": application}, "success": success,	"failure": failure});
+        this.action.invoke({"name": "listDictionary","async": async, "parameter": {"portalId": application}, "success": success,	"failure": failure});
     },
     getDictionary: function(id, success, failure, async){
-        this.action.invoke({"name": "getDictionary","async": async, "parameter": {"applicationDict": id},	"success": success,	"failure": failure});
+        this.action.invoke({"name": "getDictionary","async": async, "parameter": {"id": id},	"success": success,	"failure": failure});
     },
     saveDictionary: function(data, success, failure){
         if (data.id){
@@ -379,7 +379,7 @@ MWF.xAction.RestActions.Action["x_portal_assemble_designer"] = new Class({
         }
     },
     updateDictionary: function(data, success, failure){
-        this.action.invoke({"name": "updataDictionary","data": data,"parameter": {"applicationDict": data.id},"success": success,"failure": failure});
+        this.action.invoke({"name": "updataDictionary","data": data,"parameter": {"id": data.id},"success": success,"failure": failure});
     },
     addDictionary: function(data, success, failure){
         if (!data.id){
@@ -393,6 +393,6 @@ MWF.xAction.RestActions.Action["x_portal_assemble_designer"] = new Class({
         }
     },
     deleteDictionary: function(id, success, failure, async){
-        this.action.invoke({"name": "removeDictionary", "async": async, "parameter": {"applicationDict": id}, "success": success, "failure": failure});
+        this.action.invoke({"name": "removeDictionary", "async": async, "parameter": {"id": id}, "success": success, "failure": failure});
     }
 });
