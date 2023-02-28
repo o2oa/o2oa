@@ -317,6 +317,10 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 			prevTask.setIdentity(task.getProperties().getPrevTask().getIdentity());
 			prevTask.setUnit(task.getProperties().getPrevTask().getUnit());
 			prevTask.setRouteName(task.getProperties().getPrevTask().getRouteName());
+			prevTask.setActivityType(task.getProperties().getPrevTask().getActivityType());
+			prevTask.setActivity(task.getProperties().getPrevTask().getActivity());
+			prevTask.setActivityName(task.getProperties().getPrevTask().getActivityName());
+			prevTask.setActivityToken(task.getProperties().getPrevTask().getActivityName());
 			this.getProperties().setPrevTask(prevTask);
 		}
 		if (null != task.getProperties().getPrevTaskList()) {
@@ -330,6 +334,10 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
 				prevTask.setIdentity(p.getIdentity());
 				prevTask.setUnit(p.getUnit());
 				prevTask.setRouteName(p.getRouteName());
+				prevTask.setActivity(p.getActivity());
+				prevTask.setActivityName(p.getActivityName());
+				prevTask.setActivityToken(p.getActivityName());
+				prevTask.setActivityType(p.getActivityType());
 				this.getProperties().getPrevTaskList().add(prevTask);
 			}
 		}
