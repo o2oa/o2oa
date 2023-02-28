@@ -1,5 +1,6 @@
 package com.x.portal.assemble.designer.jaxrs.output;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -7,11 +8,14 @@ import java.util.stream.Collectors;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.ListTools;
+import com.x.general.core.entity.ApplicationDict;
+import com.x.general.core.entity.wrap.WrapApplicationDict;
 import com.x.portal.assemble.designer.Business;
 import com.x.portal.core.entity.File;
 import com.x.portal.core.entity.Page;
@@ -42,10 +46,13 @@ class ActionList extends BaseAction {
 
 			List<WrapWidget> widgetList = emc.fetchAll(Widget.class, widgetCopier);
 
+			List<WrapApplicationDict> applicationDictList = emc.fetchAll(ApplicationDict.class, applicationDictCopier);
+
 			ListTools.groupStick(wos, pageList, "id", "portal", "pageList");
 			ListTools.groupStick(wos, scriptList, "id", "portal", "scriptList");
 			ListTools.groupStick(wos, fileList, "id", "portal", "fileList");
 			ListTools.groupStick(wos, widgetList, "id", "portal", "widgetList");
+			ListTools.groupStick(wos, applicationDictList, "id", "portal", "applicationDictList");
 			wos = wos.stream()
 					.sorted(Comparator.comparing(Wo::getAlias, Comparator.nullsLast(String::compareTo))
 							.thenComparing(Wo::getName, Comparator.nullsLast(String::compareTo)))
@@ -60,12 +67,16 @@ class ActionList extends BaseAction {
 
 	public static WrapCopier<Script, WrapScript> scriptCopier = WrapCopierFactory.wo(Script.class, WrapScript.class,
 			JpaObject.singularAttributeField(Script.class, true, true), null);
-	
+
 	public static WrapCopier<File, WrapFile> fileCopier = WrapCopierFactory.wo(File.class, WrapFile.class,
 			JpaObject.singularAttributeField(File.class, true, true), null);
 
 	public static WrapCopier<Widget, WrapWidget> widgetCopier = WrapCopierFactory.wo(Widget.class, WrapWidget.class,
 			JpaObject.singularAttributeField(Widget.class, true, true), null);
+
+	public static WrapCopier<ApplicationDict, WrapApplicationDict> applicationDictCopier = WrapCopierFactory.wo(
+			ApplicationDict.class, WrapApplicationDict.class,
+			JpaObject.singularAttributeField(ApplicationDict.class, true, true), null);
 
 	public static class Wo extends WrapPortal {
 

@@ -2,11 +2,7 @@ package com.x.portal.assemble.surface;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.organization.core.express.Organization;
-import com.x.portal.assemble.surface.factory.FileFactory;
-import com.x.portal.assemble.surface.factory.PageFactory;
-import com.x.portal.assemble.surface.factory.PortalFactory;
-import com.x.portal.assemble.surface.factory.ScriptFactory;
-import com.x.portal.assemble.surface.factory.WidgetFactory;
+import com.x.portal.assemble.surface.factory.*;
 import com.x.portal.assemble.surface.factory.cms.CmsFactory;
 import com.x.portal.assemble.surface.factory.process.ProcessFactory;
 
@@ -92,6 +88,24 @@ public class Business {
 			this.process = new ProcessFactory(this);
 		}
 		return process;
+	}
+
+	private ApplicationDictFactory applicationDict;
+
+	public ApplicationDictFactory applicationDict() throws Exception {
+		if (null == this.applicationDict) {
+			this.applicationDict = new ApplicationDictFactory(this);
+		}
+		return applicationDict;
+	}
+
+	private ApplicationDictItemFactory applicationDictItem;
+
+	public ApplicationDictItemFactory applicationDictItem() throws Exception {
+		if (null == this.applicationDictItem) {
+			this.applicationDictItem = new ApplicationDictItemFactory(this);
+		}
+		return applicationDictItem;
 	}
 
 }
