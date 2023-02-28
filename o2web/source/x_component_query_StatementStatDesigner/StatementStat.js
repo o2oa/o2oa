@@ -79,6 +79,11 @@ MWF.xApplication.query.StatementStatDesigner.StatementStat = new Class({
             }, false);
         }
     },
+    refreshViewFilterOption: function(){
+        if( this.property && this.property.viewFilter ){
+            this.property.viewFilter.setApplicableStatementOptions();
+        }
+    },
     autoSave: function () {
         this.autoSaveTimerID = window.setInterval(function () {
             if (!this.autoSaveCheckNode) this.autoSaveCheckNode = this.designer.contentToolbarNode.getElement("#MWFAutoSaveCheck");
@@ -158,9 +163,9 @@ MWF.xApplication.query.StatementStatDesigner.StatementStat = new Class({
                 this.currentSelectedModule.unSelected();
             }
         }
-        if (this.stat && this.stat.domListNode) {
-            this.stat.domListNode.hide();
-        }
+        // if (this.stat && this.stat.domListNode) {
+        //     this.stat.domListNode.hide();
+        // }
 
         this.selectMode = "statementStat";
         this.currentSelectedModule = this;
@@ -254,6 +259,7 @@ MWF.xApplication.query.StatementStatDesigner.StatementStat = new Class({
                 if( data.vtype )delete data.vtype;
 
                 this.json.statementList.push(data);
+                this.refreshViewFilterOption();
                 this.list.addItems( [data] );
             }.bind(this)
         });
@@ -264,7 +270,7 @@ MWF.xApplication.query.StatementStatDesigner.StatementStat = new Class({
         o2.requireApp("Selector", "package", null, false);
         new MWF.O2Selector( this.designer.content, {
             type: "QueryStatement",
-            inViewCategory: this.data.application,
+            // inViewCategory: this.data.application,
             exclude: this.json.statementList,
             onComplete: function (items) {
                 var data = items.map(function (item) {
@@ -272,6 +278,7 @@ MWF.xApplication.query.StatementStatDesigner.StatementStat = new Class({
                     return item.data;
                 }.bind(this));
                 this.list.addItems( data );
+                this.refreshViewFilterOption();
             }.bind(this)
         });
     },
@@ -421,21 +428,6 @@ MWF.xApplication.query.StatementStatDesigner.StatementStat = new Class({
                 detail.scriptEditor.resizeContentNodeSize();
             }
         }
-
-        // if(this.jpqlEditorNode)this.jpqlEditorNode.setStyle( "height", ""+editorHeight+"px" );
-        // if(this.scriptArea)this.scriptArea.setStyle( "height", ""+editorHeight+"px" );
-
-        // if( this.editor )this.editor.resize();
-        // if( this.scriptEditor ){
-        //     this.scriptEditor.container.setStyle("height", ""+editorHeight+"px");
-        //     this.scriptEditor.resizeContentNodeSize();
-        // }
-
-        // this.setRunnerSize();
-        // if( this.stat ){
-        //     this.setStatSize();
-        //     this.stat.setContentHeight()
-        // }
     },
     setVerticalResize2: function(){
         var size = this.areaNode.getSize();
@@ -1150,6 +1142,8 @@ MWF.xApplication.query.StatementStatDesigner.Stat = new Class({
         this.areaNode = new Element("div", {"styles": {"height": "calc(100% - 2px)", "overflow": "auto"}});
         this.areaNode.setStyles(this.css.areaNode);
 
+        this.domListNode = this.designer.domListNode;
+
         this.items = [];
         this.stat = this;
 
@@ -1159,8 +1153,6 @@ MWF.xApplication.query.StatementStatDesigner.Stat = new Class({
         this.setAreaNodeSize();
         this.designer.addEvent("resize", this.setAreaNodeSize.bind(this));
         this.areaNode.inject(this.node);
-
-        this.domListNode = new Element("div", {"styles": {"overflow": "hidden"}}).inject(this.designer.propertyDomArea);
 
         // this.loadTemplateStyle(function () {
 

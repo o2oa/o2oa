@@ -91,6 +91,7 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
                             if (type==="process") this.identitys.push(new MWF.widget.O2Process(data, this.node));
                             if (type==="formfield") this.identitys.push(new MWF.widget.O2FormField(data, this.node));
                             if (type==="cmsformfield") this.identitys.push(new MWF.widget.O2FormField(data, this.node));
+                            if (type==="tablefield") this.identitys.push(new MWF.widget.O2FormField(data, this.node));
                             if (type==="view") this.identitys.push(new MWF.widget.O2View(data, this.node));
                             if (type==="cmsview") this.identitys.push(new MWF.widget.O2CMSView(data, this.node));
                             if (type==="queryview") this.identitys.push(new MWF.widget.O2QueryView(data, this.node));
@@ -160,6 +161,8 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
         this.addNode.addEvent("click", function(e){
             debugger;
 
+            this.fireEvent("click", [this]);
+
             var include = [];
             if( this.options.type.toLowerCase()==="formfield" ){
                 if( this.app.process && this.app.process.routes ){
@@ -183,6 +186,7 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
                 "type": type,
                 "application": this.options.application,
                 "fieldType": this.options.fieldType,
+                "tables": this.options.tables,
                 "count": (this.options.type.toLowerCase()==="duty")? 1: this.options.count,
                 "values": selecteds,
                 "zIndex": 20000,
@@ -216,6 +220,7 @@ MWF.xApplication.process.ProcessDesigner.widget.PersonSelector = new Class({
 
                                 if (type==="formfield") this.identitys.push(new MWF.widget.O2FormField(item.data, this.node));
                                 if (type==="cmsformfield") this.identitys.push(new MWF.widget.O2FormField(item.data, this.node));
+                                if (type==="tablefield") this.identitys.push(new MWF.widget.O2FormField(item.data, this.node));
                                 if (type==="view") this.identitys.push(new MWF.widget.O2View(item.data, this.node));
                                 if (type==="cmsview") this.identitys.push(new MWF.widget.O2CMSView(item.data, this.node));
                                 if (type==="queryview") this.identitys.push(new MWF.widget.O2QueryView(item.data, this.node));

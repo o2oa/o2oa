@@ -84,9 +84,9 @@ MWF.xApplication.query.StatementStatDesigner.Property = MWF.SSDProperty = new Cl
         var parameterData = this.view.data.data.parameterList;
         var customData = this.view.data.data.customFilterList;
         nodes.each(function (node) {
-            MWF.xDesktop.requireApp("query.StatementDesigner", "widget.ViewFilter", function () {
+            MWF.xDesktop.requireApp("query.StatementStatDesigner", "widget.ViewFilter", function () {
                 var _slef = this;
-                this.viewFilter = new MWF.xApplication.query.StatementDesigner.widget.ViewFilter(node, this.view.designer, {
+                this.viewFilter = new MWF.xApplication.query.StatementStatDesigner.widget.ViewFilter(node, this.view.designer, {
                     "parameterData": parameterData,
                     "customData": customData
                 }, {

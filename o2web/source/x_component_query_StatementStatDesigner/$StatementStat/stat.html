@@ -88,13 +88,15 @@
                     <tr id="text{$.id}pathInputSelectTr">
                         <td class="editTableTitle">{{$.lp.select}}:</td>
                         <td class="editTableValue">
-                            <select class="pathInputSelect_vf"></select>
-                            <!--                            <div style="line-height: 20px;color:#999;">注：选择路径后，需在选择的值前面加上"表别名."，如：o.</div>-->
+                            <div class="pathInputSelector_vf"></div>
                         </td>
                     </tr>
                     <tr>
                         <td class="editTableTitle">{{$.lp.title}}:</td>
-                        <td class="editTableValue"><input type="text" class="editTableInput titleInput_vf"/></td>
+                        <td class="editTableValue">
+                            <input type="text" class="editTableInput titleInput_vf"/>
+                            <div id="text{$.id}titleNoteNode" style="line-height: 20px;color:#999;">{{$.lp.titleNote}}</div>
+                        </td>
                     </tr>
                     <tr id="text{$.id}parameterInputTr" style="display: none">
                         <td class="editTableTitle">{{$.lp.parameter}}:</td>
@@ -102,6 +104,12 @@
                             <input type="text" class="editTableInput parameterInput_vf"/>
                             <div style="line-height: 20px;color:#999;">{{$.lp.parameterNote}}</div>
                         </td>
+                    </tr>
+                    <tr>
+                        <td class="editTableTitle">{{$.lp.applicableStatement}}:</td>
+                        <td class="editTableValue"><select class="applicableStatement_vf">
+                            <option value="all" selected>{{$.lp.allStatement}}</option>
+                        </select></td>
                     </tr>
                     <tr id="text{$.id}pathInputTr">
                         <td class="editTableTitle">{{$.lp.path}}:</td>
@@ -132,6 +140,7 @@
                                 $('text{$.id}viewCustomFilterRestrict').setStyle('display', 'none');
                                 $('text{$.id}pathInputTr').setStyle('display', 'none');
                                 $('text{$.id}pathInputSelectTr').setStyle('display', 'none');
+                                $('text{$.id}titleNoteNode').setStyle('display', 'none');
                             }"/>{{$.lp.filterRestrict}}<br>
                             <input type="radio" class="customFilterInput_vf" value="custom" name="text{$.id}viewFilterType" onclick="if (this.checked){
                                 $('text{$.id}viewParameterRestrict').setStyle('display', 'none');
@@ -140,6 +149,7 @@
                                 $('text{$.id}viewCustomFilterRestrict').setStyle('display', 'block');
                                 $('text{$.id}pathInputTr').setStyle('display', 'table-row');
                                 $('text{$.id}pathInputSelectTr').setStyle('display', 'table-row');
+                                $('text{$.id}titleNoteNode').setStyle('display', '');
                             }" checked/>{{$.lp.customFilterRestrict}}
                         </td>
                     </tr>

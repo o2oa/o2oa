@@ -316,6 +316,8 @@ MWF.xApplication.query.StatementStatDesigner.Main = new Class({
         }).inject(this.designerContentNode);
         this.propertyDomArea = this.designerStatementArea;
 
+        this.domListNode = new Element("div.domListNode", {"styles": {"overflow": "hidden"}}).inject(this.propertyDomArea);
+
         this.designerStatementPercent = 0.3;
         this.designerContentResizeNode = new Element("div.designerContentResizeNode", {
             "styles": this.css.designerContentResizeNode
@@ -398,9 +400,9 @@ MWF.xApplication.query.StatementStatDesigner.Main = new Class({
         var size = this.designerContentNode.getSize();
         var contentHeight;
         debugger;
-        if( this.statementStat && this.statementStat.selectMode && this.statementStat.selectMode.contains("view") ){
-            this.designerContentResizeNode.show();
-            this.designerStatementArea.show();
+        // if( this.statementStat && this.statementStat.selectMode && this.statementStat.selectMode.contains("view") ){
+        //     this.designerContentResizeNode.show();
+        //     this.designerStatementArea.show();
 
             var resizeNodeSize = this.designerContentResizeNode.getSize();
             var height = size.y-resizeNodeSize.y;
@@ -410,13 +412,13 @@ MWF.xApplication.query.StatementStatDesigner.Main = new Class({
 
             this.designerStatementArea.setStyle("height", ""+domHeight+"px");
             this.designerContentArea.setStyle("height", ""+contentHeight+"px");
-        }else{
-            contentHeight = size.y;
-            this.designerContentResizeNode.hide();
-            this.designerStatementArea.hide();
-
-            this.designerContentArea.setStyle("height", ""+contentHeight+"px");
-        }
+        // }else{
+        //     contentHeight = size.y;
+        //     this.designerContentResizeNode.hide();
+        //     this.designerStatementArea.hide();
+        //
+        //     this.designerContentArea.setStyle("height", ""+contentHeight+"px");
+        // }
 
         if (this.statementStat){
             if (this.statementStat.currentSelectedModule){

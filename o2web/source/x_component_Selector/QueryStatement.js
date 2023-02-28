@@ -21,29 +21,36 @@ MWF.xApplication.Selector.QueryStatement = new Class({
     loadSelectItems: function(addToNext){
         this.queryAction.listApplication(function(json){
             if (json.data.length){
+                var ps = [];
                 json.data.each(function(data){
+                    var categoryArea = new Element("div").inject(this.itemAreaNode);
                     if (!data.statementList){
-                        this.queryAction.listStatement(data.id, function(statementsJson){
+                        var p = this.queryAction.listStatement(data.id, function(statementsJson){
                             data.statementList = statementsJson.data;
-                        }.bind(this), null, false);
-                    }
-                    if (data.statementList && data.statementList.length){
-                        data.statementList = data.statementList.filter(function(d){
-                           return !this.isExcluded(d);
-                        }.bind(this));
 
-                        if( data.statementList.length ){
-                            var category = this._newItemCategory(data, this, this.itemAreaNode);
-                            data.statementList.each(function(d){
-                                d.applicationName = data.name;
-                                var item = this._newItem(d, this, category.children);
-                                this.items.push(item);
-                            }.bind(this));
-                        }
+                            if (data.statementList && data.statementList.length){
+                                data.statementList = data.statementList.filter(function(d){
+                                    return !this.isExcluded(d);
+                                }.bind(this));
+
+                                if( data.statementList.length ){
+                                    var category = this._newItemCategory(data, this, categoryArea);
+                                    data.statementList.each(function(d){
+                                        d.applicationName = data.name;
+                                        var item = this._newItem(d, this, category.children);
+                                        this.items.push(item);
+                                    }.bind(this));
+                                }
+                            }
+                        }.bind(this));
+                        debugger;
+                        ps.push( p );
                     }
                 }.bind(this));
+                Promise.all( ps ).then(function () {
+                    if( this.scrollToView )this.scrollToView();
+                }.bind(this))
             }
-            if( this.scrollToView )this.scrollToView();
         }.bind(this));
     },
 

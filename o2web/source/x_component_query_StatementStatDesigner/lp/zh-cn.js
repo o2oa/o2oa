@@ -52,6 +52,11 @@ MWF.xApplication.query.StatementStatDesigner.LP = Object.merge( MWF.xApplication
         "specified":"根据指定的分类值",
         "intersection":"查询语句计算结果与指定分类值的交集",
         "sum1":"查询语句计算结果与指定分类值的合集",
-        "groupSpecifiedList":"指定分类值"
+        "groupSpecifiedList":"指定分类值",
+
+        "applicableStatement": "适用查询",
+        "allStatement": "所有",
+
+        "titleNote": "标题一致时将多条过滤合并为一条展现给用户。"
     }
 });
