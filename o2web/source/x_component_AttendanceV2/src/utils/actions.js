@@ -125,6 +125,16 @@ function detailActionListByPaging(...args) {
   );
 }
 
+/**
+ * 考勤配置API
+ * @param {*} method
+ * @param  {...any} args
+ * @returns
+ */
+function configAction(method, ...args) {
+  return doAction("x_attendance_assemble_control", "ConfigAction", method, args);
+}
+
 export {
   getPublicData,
   putPublicData,
@@ -133,5 +143,6 @@ export {
   attendanceWorkPlaceV2Action,
   groupActionListByPaging,
   groupAction,
-  detailActionListByPaging
+  detailActionListByPaging,
+  configAction,
 };

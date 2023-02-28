@@ -31,7 +31,7 @@
                 <td>{{ $m.formatName(d.value.userId)}}</td>
                 <td>{{d.value.groupName}}</td>
                 <td>{{d.value.shiftName}}</td>
-                <td>{{d.value.recordDateString}}</td>
+                <td class="{{ $m.dateClassName(d.value) }}">{{ $m.formatDate(d.value) }}</td>
                 <td>{{d.value.attendance}}</td>
                 <td>{{d.value.rest}}</td>
                 <td>{{d.value.workTimeDuration}}</td>

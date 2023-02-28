@@ -32,7 +32,7 @@ public class DetailAction extends StandardJaxrsAction {
     private static Logger logger = LoggerFactory.getLogger(DetailAction.class);
 
 
-    @JaxrsMethodDescribe(value = "获取考勤组对象.", action = ActionRebuildDetailWithPersonDate.class)
+    @JaxrsMethodDescribe(value = "重新生成考勤信息，人员: 人员DN，日期: yyyy-MM-dd.", action = ActionRebuildDetailWithPersonDate.class)
     @GET
     @Path("rebuild/person/{person}/date/{date}/")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)

@@ -63,6 +63,11 @@ export default content({
                     id: 7,
                     title: lp.menu.addressmanger,
                     action: "addressManager"
+                  },
+                  {
+                    id: 8,
+                    title: lp.menu.configmanager,
+                    action: "configManager"
                   }
                 ]
               }

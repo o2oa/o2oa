@@ -18,7 +18,6 @@
                 <div class="o-input-item-label" >
                     <span class="required">*</span>
                     {{$.lp.groupForm.shift}}
-                    <!-- <span class="operator_link margin-left" @click="openShiftSelect">添加</span> -->
                 </div>
                 <div class="o-input-item-input">
                     <span class="{{ ($.shiftSelector.shiftSelected && $.shiftSelector.shiftSelected.id) ? 'input' : 'input placeholder'}}" @click="openShiftSelect">{{ ($.shiftSelector.shiftSelected && $.shiftSelector.shiftSelected.id) ? $.shiftSelector.shiftSelected.shiftName : $.lp.groupForm.shiftPlaceholder}}</span>
@@ -42,14 +41,14 @@
                 <div class="o-input-item-label" >
                     <span class="required">*</span>
                     {{$.lp.groupForm.workPlace}}
-                    <span class="operator_link margin-left" @click="openWorkPlaceSelector">添加</span>
+                    <span class="operator_link margin-left" @click="openWorkPlaceSelector">{{$.lp.add}}</span>
                 </div>
-                <div class="o-input-item-input">
+                <div class="o-input-item-input  padding-bottom">
                     <span class=" input placeholder" oo-if=" $.workPlaceSelector.workAddressSelected.length == 0 ">{{  $.lp.groupForm.workPlacePlaceholder }}</span>
                     <div class="tag-container"  oo-if=" $.workPlaceSelector.workAddressSelected.length > 0 ">
                         <div class="tag-item"  oo-each="$.workPlaceSelector.workAddressSelected" oo-item="workPlace" @click="this.deleteWorkPlace(workPlace.value)">
                             {{workPlace.value.placeName}}
-                            <i class="o2icon-cancel-circle color-999"></i>
+                            <i class="o2icon-cancel-circle color-999 margin-left-s"></i>
                         </div>
                     </div>
                 </div>
@@ -59,13 +58,13 @@
                     {{$.lp.groupForm.fieldWork}}
                 </div>
                 <div class="tag-container">
-                    <div class="tag-item" @click="clickAllowFieldWork">
+                    <div class="margin-top margin-left flex" @click="clickAllowFieldWork">
                         <div class="icon">
                             <i class="{{ $.form.allowFieldWork ? 'o2icon-checkbox-checked primary_color' : 'o2icon-checkbox-unchecked'}}"></i>
                         </div>
                         <label style="margin: 5px;" >{{$.lp.groupForm.allowFieldWork}}</label>
                     </div>
-                    <div class="tag-item" @click="clickRequiredFieldWorkRemarks">
+                    <div class="margin-top margin-left flex" @click="clickRequiredFieldWorkRemarks">
                         <div class="icon">
                             <i class="{{ $.form.requiredFieldWorkRemarks ? 'o2icon-checkbox-checked primary_color' : 'o2icon-checkbox-unchecked'}}"></i>
                         </div>
@@ -76,29 +75,29 @@
             <div class="o-input-item margin-top">
                 <div class="o-input-item-label" >
                     {{$.lp.groupForm.requiredCheckInDate}}
-                    <span class="operator_link margin-left" id="requiredDateSelector">添加</span>
+                    <span class="operator_link margin-left" id="requiredDateSelector">{{$.lp.add}}</span>
                 </div>
-                <div class="o-input-item-input">
+                <div class="o-input-item-input  padding-bottom">
                     <span class=" input placeholder" oo-if=" $.form.requiredCheckInDateList.length == 0 ">{{  $.lp.groupForm.requiredCheckInDatePlaceholder }}</span>
                     <div class="tag-container"  oo-if=" $.form.requiredCheckInDateList.length > 0 ">
                         <div class="tag-item"  oo-each="$.form.requiredCheckInDateList" oo-item="rDate" @click="this.deleteRequiredDate(rDate.value)">
                             {{rDate.value}}
-                            <i class="o2icon-cancel-circle color-999"></i>
+                            <i class="o2icon-cancel-circle color-999 margin-left-s"></i>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="o-input-item margin-top">
+            <div class="o-input-item margin-top ">
                 <div class="o-input-item-label" >
                     {{$.lp.groupForm.noNeedCheckInDate}}
-                    <span class="operator_link margin-left" id="noNeedDateSelector">添加</span>
+                    <span class="operator_link margin-left" id="noNeedDateSelector">{{$.lp.add}}</span>
                 </div>
-                <div class="o-input-item-input">
+                <div class="o-input-item-input  padding-bottom">
                     <span class=" input placeholder" oo-if=" $.form.noNeedCheckInDateList.length == 0 ">{{  $.lp.groupForm.noNeedCheckInDatePlaceholder }}</span>
                     <div class="tag-container"  oo-if=" $.form.noNeedCheckInDateList.length > 0 ">
                         <div class="tag-item"  oo-each="$.form.noNeedCheckInDateList" oo-item="rDate" @click="this.deleteNoNeedDateSelector(rDate.value)">
                             {{rDate.value}}
-                            <i class="o2icon-cancel-circle color-999"></i>
+                            <i class="o2icon-cancel-circle color-999 margin-left-s"></i>
                         </div>
                     </div>
                 </div>

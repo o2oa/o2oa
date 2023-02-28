@@ -125,4 +125,22 @@ public class GroupAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
+    @JaxrsMethodDescribe(value = "当前考勤组重新生成某一天的考勤数据.", action = ActionRebuildDetailWithGroupDate.class)
+    @GET
+    @Path("rebuild/detail/group/{groupId}/date/{date}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void rebuildDetail(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                       @JaxrsParameterDescribe("考勤组ID") @PathParam("groupId") String groupId, @JaxrsParameterDescribe("日期: yyyy-MM-dd") @PathParam("date") String date) {
+        ActionResult<ActionRebuildDetailWithGroupDate.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionRebuildDetailWithGroupDate().execute(groupId, date);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
 }

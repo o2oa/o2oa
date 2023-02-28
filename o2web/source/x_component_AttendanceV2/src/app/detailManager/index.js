@@ -78,6 +78,35 @@ export default content({
       this.bind.pagerData.totalCount = count;
     }
   },
+  dateClassName(detail) {
+    if (detail && detail.workDay === false) {
+      return "primary_color";
+    }
+    return "";
+  },
+  formatDate(detail) {
+    if (detail && detail.recordDateString) {
+      if (detail.recordDay) {
+        if (detail.recordDay === '0') {
+          return detail.recordDateString + "(周日)";
+        } else if (detail.recordDay === '1') {
+          return detail.recordDateString + "(周一)";
+        } else if (detail.recordDay === '2') {
+          return detail.recordDateString + "(周二)";
+        } else if (detail.recordDay === '3') {
+          return detail.recordDateString + "(周三)";
+        } else if (detail.recordDay === '4') {
+          return detail.recordDateString + "(周四)";
+        } else if (detail.recordDay === '5') {
+          return detail.recordDateString + "(周5⃣️)";
+        } else if (detail.recordDay === '6') {
+          return detail.recordDateString + "(周六)";
+        }
+      }
+      return detail.recordDateString;
+    }
+    return "";
+  },
   formatName(person) {
     if (person && person.indexOf("@") > -1) {
       return person.split("@")[0];

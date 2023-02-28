@@ -54,14 +54,34 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                 String[] workDayList = group.getWorkDateList().split(",");
                 List<Integer> dayList = Arrays.stream(workDayList).map(Integer::parseInt).collect(Collectors.toList());
                 Date date = DateTools.parse(model.getDate(), DateTools.format_yyyyMMdd);
+                // 周几
                 int day = dayForWeek(date);
-                //TODO 还有节假日管理
+                // 是否工作日
                 boolean isWorkDay = dayList.contains(day);
+                // 考勤配置 节假日工作日
+                List<AttendanceV2Config> configs = emc.listAll(AttendanceV2Config.class);
+                if (configs != null && !configs.isEmpty()) {
+                    AttendanceV2Config config = configs.get(0);
+                    // 节假日
+                    if (config.getHolidayList() != null && !config.getHolidayList().isEmpty()) {
+                        if (config.getHolidayList().contains(model.getDate())) {
+                            isWorkDay = false;
+                        }
+                    }
+                    // 工作日
+                    if (config.getWorkDayList() != null && !config.getWorkDayList().isEmpty()) {
+                        if (config.getWorkDayList().contains(model.getDate())) {
+                            isWorkDay = true;
+                        }
+                    }
+                }
+                // 考勤组的无需打卡日
                 if (group.getNoNeedCheckInDateList() != null && !group.getNoNeedCheckInDateList().isEmpty()) {
                     if (group.getNoNeedCheckInDateList().contains(model.getDate())) {
                         isWorkDay = false; // 无需打卡就是休息日
                     }
                 }
+                // 考勤组的必须打卡日
                 if (group.getRequiredCheckInDateList() != null && !group.getRequiredCheckInDateList().isEmpty()) {
                     if (group.getRequiredCheckInDateList().contains(model.getDate())) {
                         isWorkDay = true; // 必须打卡就是休息日
@@ -139,11 +159,13 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                 } else {
                     v2Detail = new AttendanceV2Detail();
                 }
+
                 v2Detail.setUserId(model.getPerson());
                 v2Detail.setYearString(model.getDate().substring(0, 4));
                 v2Detail.setMonthString(model.getDate().substring(5, 7));
-                v2Detail.setRecordDateString(model.getDate());
-                v2Detail.setWorkday(isWorkDay);
+                v2Detail.setRecordDateString(model.getDate()); // 日期
+                v2Detail.setWorkDay(isWorkDay); // 是否工作日
+                v2Detail.setRecordDay(day+""); // 周几
                 v2Detail.setLateTimeDuration(lateMinute);
                 v2Detail.setLateTimes(lateMinute > 0 ? 1 : 0);
                 v2Detail.setLeaveEarlierTimeDuration(earlyMinute);

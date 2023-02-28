@@ -26,6 +26,7 @@ MWF.xApplication.AttendanceV2.LP = {
         "shiftManager": "班次管理",
         "groupmanager": "考勤组管理",
         "addressmanger": "工作场所管理",
+        "configmanager": "配置管理",
     },
 
     "alert": "提示",
@@ -172,5 +173,14 @@ MWF.xApplication.AttendanceV2.LP = {
         "result": "打卡结果",
 
     },
+    // 配置信息
+    "configManagerTitle": "考勤配置",
+    "config": {
+        "holidays": "节假日",
+        "holidayLabels": "设置节假日，将原本为工作日的日期添加到此处，作为节假日",
+        "workdays": "工作日",
+        "workdayLabels": "设置工作日，将原本为非工作日的日期添加到此处，作为工作日",
+    },
+    
 
 };

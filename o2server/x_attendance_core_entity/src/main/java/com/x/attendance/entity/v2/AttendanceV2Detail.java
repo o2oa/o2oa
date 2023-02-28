@@ -87,11 +87,17 @@ public class AttendanceV2Detail extends SliceJpaObject {
     @Column(length = JpaObject.length_32B, name = ColumnNamePrefix + recordDateString_FIELDNAME)
     private String recordDateString;
 
+    public static final String recordDay_FIELDNAME = "recordDay";
+    @FieldDescribe("记录日期的周几，0-6")
+    @Column(length = JpaObject.length_4B, name = ColumnNamePrefix + recordDay_FIELDNAME)
+    private String recordDay;
 
-    public static final String isWorkday_FIELDNAME = "isWorkday";
+
+    public static final String isWorkday_FIELDNAME = "workDay";
     @FieldDescribe("是否工作日")
     @Column(name = ColumnNamePrefix + isWorkday_FIELDNAME)
-    private Boolean isWorkday = false;
+    private Boolean workDay = false;
+
 
 
     //////// 统计相关
@@ -185,12 +191,20 @@ public class AttendanceV2Detail extends SliceJpaObject {
     private String shiftName;
 
 
-    public Boolean getWorkday() {
-        return isWorkday;
+    public String getRecordDay() {
+        return recordDay;
     }
 
-    public void setWorkday(Boolean workday) {
-        isWorkday = workday;
+    public void setRecordDay(String recordDay) {
+        this.recordDay = recordDay;
+    }
+
+    public Boolean getWorkDay() {
+        return workDay;
+    }
+
+    public void setWorkDay(Boolean workDay) {
+        this.workDay = workDay;
     }
 
     public String getUserId() {

@@ -2,8 +2,18 @@
 .margin-top {
   margin-top: 10px;
 }
+.margin-left-s {
+  margin-left: 5px;
+}
 .margin-left {
   margin-left: 10px;
+}
+.padding-bottom {
+  padding-bottom: 10px!important;
+}
+.flex {
+  display: flex;
+  align-items: center;
 }
 .color-999 {
   color: #999999;
@@ -263,5 +273,9 @@
   display: flex; 
   align-items: center;
   margin-left: 10px;
+  margin-top: 8px;
   cursor: pointer;
+  background-color: rgba(17, 31, 44, 0.08) !important;
+  border-radius: 4px !important;
+  padding: 5px;
 }
