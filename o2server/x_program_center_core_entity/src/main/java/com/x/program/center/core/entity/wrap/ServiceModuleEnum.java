@@ -4,7 +4,8 @@ package com.x.program.center.core.entity.wrap;
 public enum ServiceModuleEnum {
 
 	AGENT("service-agent","代理服务"),
-	INVOKE("service-invoke","接口服务");
+	INVOKE("service-invoke","接口服务"),
+	DICT("service-dict","数据字典");
 
 	private String value;
 	private String description;
@@ -13,15 +14,15 @@ public enum ServiceModuleEnum {
 		this.value = value;
 		this.description = description;
 	}
-	
+
 	public String getValue(){
 		return this.value;
 	}
-	
+
 	public String getDescription(){
 		return this.description;
 	}
-	
+
 	public static String getDescriptionByValue(String value){
 		if(value==null || value.equals("")){
 			return "";

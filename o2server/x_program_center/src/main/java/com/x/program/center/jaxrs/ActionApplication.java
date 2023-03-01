@@ -21,6 +21,7 @@ import com.x.program.center.jaxrs.command.CommandAction;
 import com.x.program.center.jaxrs.config.ConfigAction;
 import com.x.program.center.jaxrs.datastructure.DataStructureAction;
 import com.x.program.center.jaxrs.designer.DesignerAction;
+import com.x.program.center.jaxrs.dict.DictAction;
 import com.x.program.center.jaxrs.dingding.DingdingAction;
 import com.x.program.center.jaxrs.distribute.DistributeAction;
 import com.x.program.center.jaxrs.input.InputAction;
@@ -78,6 +79,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(AppPackAction.class);
 		classes.add(AppPackAnonymousAction.class);
 		classes.add(TokenThresholdAction.class);
+		classes.add(DictAction.class);
 		return classes;
 	}
 }

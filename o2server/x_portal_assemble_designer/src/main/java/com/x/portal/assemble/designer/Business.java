@@ -12,8 +12,6 @@ import com.x.portal.core.entity.Portal;
  */
 public class Business {
 
-	public static final String PROJECT_PORTAL = "portal";
-
 	private EntityManagerContainer emc;
 
 	public Business(EntityManagerContainer emc) {

@@ -1,4 +1,4 @@
-package com.x.portal.assemble.designer.jaxrs.dict;
+package com.x.program.center.jaxrs.dict;
 
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
@@ -12,63 +12,46 @@ import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.exception.ExceptionAccessDenied;
-import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.tools.ListTools;
 import com.x.general.core.entity.ApplicationDict;
 import com.x.general.core.entity.ApplicationDictItem;
-import com.x.portal.assemble.designer.Business;
-import com.x.portal.core.entity.Portal;
+import com.x.program.center.Business;
 
-import java.util.Arrays;
 import java.util.List;
 
-class ActionEdit extends BaseAction {
+class ActionCreate extends BaseAction {
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
 			Business business = new Business(emc);
-			ApplicationDict dict = emc.find(id, ApplicationDict.class);
-			if (null == dict) {
-				throw new ExceptionEntityNotExist(id);
-			}
-			Portal application = emc.find(wi.getApplication(), Portal.class);
-			if (null == application) {
-				throw new ExceptionEntityNotExist(wi.getApplication(), Portal.class);
-			}
-			if (!business.editable(effectivePerson, application)) {
-				throw new ExceptionAccessDenied(effectivePerson);
+			if(!business.serviceControlAble(effectivePerson)) {
+				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 			}
 			emc.beginTransaction(ApplicationDict.class);
 			emc.beginTransaction(ApplicationDictItem.class);
-			Wi.copier.copy(wi, dict);
-			dict.setApplication(application.getId());
-			dict.setProject(ApplicationDict.PROJECT_PORTAL);
-			emc.check(dict, CheckPersistType.all);
+			ApplicationDict applicationDict = new ApplicationDict();
+			Wi.copier.copy(wi, applicationDict);
+			applicationDict.setApplication(ApplicationDict.PROJECT_SERVICE);
+			applicationDict.setProject(ApplicationDict.PROJECT_SERVICE);
+			emc.persist(applicationDict, CheckPersistType.all);
 			DataItemConverter<ApplicationDictItem> converter = new DataItemConverter<>(ApplicationDictItem.class);
-			List<ApplicationDictItem> exists = business.applicationDictItem().listWithApplicationDictObject(id);
-			List<ApplicationDictItem> currents = converter.disassemble(wi.getData());
-			List<ApplicationDictItem> removes = converter.subtract(exists, currents);
-			List<ApplicationDictItem> adds = converter.subtract(currents, exists);
-			for (ApplicationDictItem o : removes) {
-				emc.remove(o);
-			}
-			for (ApplicationDictItem o : adds) {
-				o.setItemCategory(ItemCategory.portal_dict);
-				o.setBundle(dict.getId());
-				/** 将数据字典和数据存放在同一个分区 */
-				o.setDistributeFactor(dict.getDistributeFactor());
-				o.setApplication(application.getId());
+			List<ApplicationDictItem> list = converter.disassemble(wi.getData());
+			for (ApplicationDictItem o : list) {
+				o.setBundle(applicationDict.getId());
+				o.setDistributeFactor(applicationDict.getDistributeFactor());
+				o.setApplication(ApplicationDict.PROJECT_SERVICE);
+				o.setItemCategory(ItemCategory.service_dict);
 				emc.persist(o, CheckPersistType.all);
 			}
 			emc.commit();
 			CacheManager.notify(ApplicationDict.class);
 			Wo wo = new Wo();
-			wo.setId(dict.getId());
+			wo.setId(applicationDict.getId());
 			result.setData(wo);
 			return result;
 		}
@@ -76,14 +59,15 @@ class ActionEdit extends BaseAction {
 
 	public static class Wo extends WoId {
 
+		private static final long serialVersionUID = -2714867252705825023L;
 	}
 
 	public static class Wi extends ApplicationDict {
 
-		private static final long serialVersionUID = 7020926328082641485L;
+		private static final long serialVersionUID = -2234895947066232221L;
 
 		static WrapCopier<Wi, ApplicationDict> copier = WrapCopierFactory.wi(Wi.class, ApplicationDict.class, null,
-				ListTools.toList(JpaObject.FieldsUnmodifyExcludeId, ApplicationDict.project_FIELDNAME));
+				ListTools.toList(JpaObject.FieldsUnmodifyExcludeId, ApplicationDict.project_FIELDNAME, ApplicationDict.application_FIELDNAME));
 
 		@FieldDescribe("字典数据(json格式).")
 		private JsonElement data;

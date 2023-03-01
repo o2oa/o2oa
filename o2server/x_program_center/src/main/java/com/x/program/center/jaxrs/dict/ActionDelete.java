@@ -1,4 +1,4 @@
-package com.x.portal.assemble.designer.jaxrs.dict;
+package com.x.program.center.jaxrs.dict;
 
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -11,8 +11,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
 import com.x.general.core.entity.ApplicationDict;
 import com.x.general.core.entity.ApplicationDictItem;
-import com.x.portal.assemble.designer.Business;
-import com.x.portal.core.entity.Portal;
+import com.x.program.center.Business;
 
 import java.util.List;
 
@@ -22,16 +21,12 @@ class ActionDelete extends BaseAction {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<Wo> result = new ActionResult<>();
 			Business business = new Business(emc);
+			if(!business.serviceControlAble(effectivePerson)) {
+				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
+			}
 			ApplicationDict dict = emc.find(id, ApplicationDict.class);
 			if (null == dict) {
 				throw new ExceptionEntityNotExist(id);
-			}
-			Portal application = emc.find(dict.getApplication(), Portal.class);
-			if (null == application) {
-				throw new ExceptionEntityNotExist(dict.getApplication(), Portal.class);
-			}
-			if (!business.editable(effectivePerson, application)) {
-				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			List<String> ids = business.applicationDictItem().listWithApplicationDict(id);
 			this.delete_batch(emc, ids);

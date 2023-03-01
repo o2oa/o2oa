@@ -9,6 +9,10 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.x.base.core.entity.dataitem.DataItemConverter;
+import com.x.general.core.entity.ApplicationDict;
+import com.x.general.core.entity.ApplicationDictItem;
+import com.x.general.core.entity.wrap.WrapApplicationDict;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -66,10 +70,10 @@ class ActionCover extends BaseAction {
 				persistObjects.add(obj);
 			}
 			if (StringUtils.isNotEmpty(obj.getAlias())) {
-				obj.setAlias( this.idleAliasWithEntity(business, obj.getAlias(), Agent.class, obj.getId()));
+				obj.setAlias( this.idleAliasWithEntity(business, null, obj.getAlias(), Agent.class, obj.getId()));
 			}
 			if (StringUtils.isNotEmpty(obj.getName())) {
-				obj.setName(this.idleNameWithEntity(business, obj.getName(), Agent.class, obj.getId()));
+				obj.setName(this.idleNameWithEntity(business, null, obj.getName(), Agent.class, obj.getId()));
 			}
 		}
 
@@ -82,15 +86,49 @@ class ActionCover extends BaseAction {
 				persistObjects.add(obj);
 			}
 			if (StringUtils.isNotEmpty(obj.getAlias())) {
-				obj.setAlias( this.idleAliasWithEntity(business, obj.getAlias(), Invoke.class, obj.getId()));
+				obj.setAlias( this.idleAliasWithEntity(business, null, obj.getAlias(), Invoke.class, obj.getId()));
 			}
 			if (StringUtils.isNotEmpty(obj.getName())) {
-				obj.setName(this.idleNameWithEntity(business, obj.getName(), Invoke.class, obj.getId()));
+				obj.setName(this.idleNameWithEntity(business, null, obj.getName(), Invoke.class, obj.getId()));
 			}
 		}
-		
+
+		for (WrapApplicationDict _o : wi.getDictList()) {
+			ApplicationDict obj = business.entityManagerContainer().find(_o.getId(), ApplicationDict.class);
+			if (null != obj) {
+				for (ApplicationDictItem o : business.applicationDictItem()
+						.listWithApplicationDictObject(obj.getId())) {
+					removeObjects.add(o);
+				}
+				WrapApplicationDict.inCopier.copy(_o, obj);
+			} else {
+				obj = WrapApplicationDict.inCopier.copy(_o);
+				persistObjects.add(obj);
+			}
+			DataItemConverter<ApplicationDictItem> converter = new DataItemConverter<>(ApplicationDictItem.class);
+			List<ApplicationDictItem> list = converter.disassemble(_o.getData());
+			for (ApplicationDictItem o : list) {
+				o.setBundle(obj.getId());
+				/** 将数据字典和数据存放在同一个分区 */
+				o.setDistributeFactor(obj.getDistributeFactor());
+				o.setApplication(obj.getApplication());
+				persistObjects.add(o);
+			}
+			if (StringUtils.isNotEmpty(obj.getAlias())) {
+				obj.setAlias(this.idleAliasWithEntity(business, ApplicationDict.PROJECT_SERVICE, obj.getAlias(), ApplicationDict.class, obj.getId()));
+			}
+			if (StringUtils.isNotEmpty(obj.getName())) {
+				obj.setName(this.idleAliasWithEntity(business, ApplicationDict.PROJECT_SERVICE, obj.getName(),
+						ApplicationDict.class, obj.getId()));
+			}
+			obj.setApplication(ApplicationDict.PROJECT_SERVICE);
+			obj.setProject(ApplicationDict.PROJECT_SERVICE);
+		}
+
 		business.entityManagerContainer().beginTransaction(Invoke.class);
 		business.entityManagerContainer().beginTransaction(Agent.class);
+		business.entityManagerContainer().beginTransaction(ApplicationDict.class);
+		business.entityManagerContainer().beginTransaction(ApplicationDictItem.class);
 
 		for (JpaObject o : removeObjects) {
 			business.entityManagerContainer().remove(o);
@@ -98,7 +136,7 @@ class ActionCover extends BaseAction {
 		for (JpaObject o : persistObjects) {
 			business.entityManagerContainer().persist(o);
 		}
-		
+
 		business.entityManagerContainer().commit();
 
 		if(!wi.getAgentList().isEmpty()){
@@ -106,6 +144,9 @@ class ActionCover extends BaseAction {
 		}
 		if(!wi.getInvokeList().isEmpty()){
 			CacheManager.notify(Invoke.class);
+		}
+		if(!wi.getDictList().isEmpty()){
+			CacheManager.notify(ApplicationDict.class);
 		}
 		return serviceModuleEnum;
 	}
@@ -119,7 +160,7 @@ class ActionCover extends BaseAction {
 	 * @return
 	 * @throws Exception
 	 */
-	private <T extends JpaObject> String idleNameWithEntity(Business business, String name,
+	private <T extends JpaObject> String idleNameWithEntity(Business business, String appId, String name,
 			Class<T> cls, String excludeId) throws Exception {
 		if (StringUtils.isEmpty(name)) {
 			return "";
@@ -135,6 +176,9 @@ class ActionCover extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<T> root = cq.from(cls);
 		Predicate p = root.get("name").in(list);
+		if(StringUtils.isNotBlank(appId) && cls.getSimpleName().equals(ApplicationDict.class.getSimpleName())){
+			p = cb.and(p, cb.equal(root.get("application"), appId));
+		}
 		if (StringUtils.isNotEmpty(excludeId)) {
 			p = cb.and(p, cb.notEqual(root.get(JpaObject.id_FIELDNAME), excludeId));
 		}
@@ -153,7 +197,7 @@ class ActionCover extends BaseAction {
 	 * @return
 	 * @throws Exception
 	 */
-	private <T extends JpaObject> String idleAliasWithEntity(Business business, String alias,
+	private <T extends JpaObject> String idleAliasWithEntity(Business business, String appId, String alias,
 			Class<T> cls, String excludeId) throws Exception {
 		if (StringUtils.isEmpty(alias)) {
 			return "";
@@ -169,6 +213,9 @@ class ActionCover extends BaseAction {
 		CriteriaQuery<String> cq = cb.createQuery(String.class);
 		Root<T> root = cq.from(cls);
 		Predicate p = root.get("alias").in( list );
+		if(StringUtils.isNotBlank(appId) && cls.getSimpleName().equals(ApplicationDict.class.getSimpleName())){
+			p = cb.and(p, cb.equal(root.get("application"), appId));
+		}
 		if (StringUtils.isNotEmpty(excludeId)) {
 			p = cb.and(p, cb.notEqual(root.get(JpaObject.id_FIELDNAME), excludeId));
 		}
@@ -177,7 +224,7 @@ class ActionCover extends BaseAction {
 		list = ListUtils.subtract(list, os);
 		return list.get(0);
 	}
-	
+
 	public static class Wi extends WrapServiceModule {
 
 	}

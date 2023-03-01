@@ -8,6 +8,7 @@ import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.dataitem.DataItemConverter;
+import com.x.base.core.project.cache.CacheManager;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -102,7 +103,7 @@ class ActionCreate extends BaseAction {
 			}
 			obj = WrapApplicationDict.inCopier.copy(_o);
 			obj.setApplication(portal.getId());
-			obj.setProject(Business.PROJECT_PORTAL);
+			obj.setProject(ApplicationDict.PROJECT_PORTAL);
 			persistObjects.add(obj);
 			DataItemConverter<ApplicationDictItem> converter = new DataItemConverter<>(ApplicationDictItem.class);
 			List<ApplicationDictItem> list = converter.disassemble(_o.getData());
@@ -125,6 +126,12 @@ class ActionCreate extends BaseAction {
 			business.entityManagerContainer().persist(o);
 		}
 		business.entityManagerContainer().commit();
+		CacheManager.notify(ApplicationDictItem.class);
+		CacheManager.notify(ApplicationDict.class);
+		CacheManager.notify(Script.class);
+		CacheManager.notify(Page.class);
+		CacheManager.notify(Widget.class);
+		CacheManager.notify(Portal.class);
 		return portal;
 	}
 

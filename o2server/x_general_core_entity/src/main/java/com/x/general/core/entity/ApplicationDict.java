@@ -27,6 +27,8 @@ public class ApplicationDict extends SliceJpaObject {
 
 	private static final long serialVersionUID = -8292188532826223591L;
 	private static final String TABLE = PersistenceProperties.ApplicationDict.table;
+	public static final String PROJECT_PORTAL = "portal";
+	public static final String PROJECT_SERVICE = "service";
 
 	@Override
 	public String getId() {

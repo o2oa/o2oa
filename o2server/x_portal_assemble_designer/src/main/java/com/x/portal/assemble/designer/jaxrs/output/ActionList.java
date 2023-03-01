@@ -48,11 +48,11 @@ class ActionList extends BaseAction {
 
 			List<WrapApplicationDict> applicationDictList = emc.fetchAll(ApplicationDict.class, applicationDictCopier);
 
-			ListTools.groupStick(wos, pageList, "id", "portal", "pageList");
-			ListTools.groupStick(wos, scriptList, "id", "portal", "scriptList");
-			ListTools.groupStick(wos, fileList, "id", "portal", "fileList");
-			ListTools.groupStick(wos, widgetList, "id", "portal", "widgetList");
-			ListTools.groupStick(wos, applicationDictList, "id", "portal", "applicationDictList");
+			ListTools.groupStick(wos, pageList, JpaObject.id_FIELDNAME, Page.portal_FIELDNAME, "pageList");
+			ListTools.groupStick(wos, scriptList, JpaObject.id_FIELDNAME, Script.portal_FIELDNAME, "scriptList");
+			ListTools.groupStick(wos, fileList, JpaObject.id_FIELDNAME, File.portal_FIELDNAME, "fileList");
+			ListTools.groupStick(wos, widgetList, JpaObject.id_FIELDNAME, Widget.portal_FIELDNAME, "widgetList");
+			ListTools.groupStick(wos, applicationDictList, JpaObject.id_FIELDNAME, ApplicationDict.application_FIELDNAME, "applicationDictList");
 			wos = wos.stream()
 					.sorted(Comparator.comparing(Wo::getAlias, Comparator.nullsLast(String::compareTo))
 							.thenComparing(Wo::getName, Comparator.nullsLast(String::compareTo)))

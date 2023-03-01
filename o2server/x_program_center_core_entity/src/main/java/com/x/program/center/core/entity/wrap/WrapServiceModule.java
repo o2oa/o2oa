@@ -7,6 +7,7 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.tools.ListTools;
+import com.x.general.core.entity.wrap.WrapApplicationDict;
 
 public class WrapServiceModule extends GsonPropertyObject {
 
@@ -24,11 +25,18 @@ public class WrapServiceModule extends GsonPropertyObject {
         return ListTools.extractProperty(this.getInvokeList(), JpaObject.id_FIELDNAME, String.class, true, true);
     }
 
+    public List<String> listDictId() throws Exception {
+        return ListTools.extractProperty(this.getDictList(), JpaObject.id_FIELDNAME, String.class, true, true);
+    }
+
     @FieldDescribe("接口服务")
     private List<WrapInvoke> invokeList = new ArrayList<>();
 
     @FieldDescribe("代理服务")
     private List<WrapAgent> agentList = new ArrayList<>();
+
+    @FieldDescribe("代理服务")
+    private List<WrapApplicationDict> dictList = new ArrayList<>();
 
     public String getId() {
         return id;
@@ -60,6 +68,14 @@ public class WrapServiceModule extends GsonPropertyObject {
 
     public void setAgentList(List<WrapAgent> agentList) {
         this.agentList = agentList;
+    }
+
+    public List<WrapApplicationDict> getDictList() {
+        return dictList;
+    }
+
+    public void setDictList(List<WrapApplicationDict> dictList) {
+        this.dictList = dictList;
     }
 
     public static WrapServiceModule copy(ServiceModuleEnum serviceModuleEnum){

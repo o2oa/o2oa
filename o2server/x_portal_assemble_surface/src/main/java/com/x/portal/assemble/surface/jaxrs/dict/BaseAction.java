@@ -46,7 +46,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 		}
 		for (ApplicationDictItem o : adds) {
 			o.setBundle(applicationDict.getId());
-			o.setItemCategory(ItemCategory.pp_dict);
+			o.setItemCategory(ItemCategory.portal_dict);
 			o.setDistributeFactor(applicationDict.getDistributeFactor());
 			o.setApplication(applicationDict.getApplication());
 			emc.persist(o);
@@ -87,7 +87,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			List<ApplicationDictItem> adds = converter.disassemble(jsonElement, ps);
 			for (ApplicationDictItem o : adds) {
 				o.setBundle(applicationDict.getId());
-				o.setItemCategory(ItemCategory.pp_dict);
+				o.setItemCategory(ItemCategory.portal_dict);
 				o.setDistributeFactor(applicationDict.getDistributeFactor());
 				o.setApplication(applicationDict.getApplication());
 				emc.persist(o);
@@ -97,7 +97,7 @@ abstract class BaseAction extends StandardJaxrsAction {
 			List<ApplicationDictItem> adds = converter.disassemble(jsonElement, paths);
 			for (ApplicationDictItem o : adds) {
 				o.setBundle(applicationDict.getId());
-				o.setItemCategory(ItemCategory.pp_dict);
+				o.setItemCategory(ItemCategory.portal_dict);
 				o.setDistributeFactor(applicationDict.getDistributeFactor());
 				o.setApplication(applicationDict.getApplication());
 				emc.persist(o);

@@ -177,7 +177,7 @@ class ActionCover extends BaseAction {
 						ApplicationDict.class, obj.getId()));
 			}
 			obj.setApplication(portal.getId());
-			obj.setProject(Business.PROJECT_PORTAL);
+			obj.setProject(ApplicationDict.PROJECT_PORTAL);
 		}
 		business.entityManagerContainer().beginTransaction(Portal.class);
 		business.entityManagerContainer().beginTransaction(Widget.class);

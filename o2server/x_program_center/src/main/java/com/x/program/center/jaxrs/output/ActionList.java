@@ -10,6 +10,8 @@ import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
+import com.x.general.core.entity.ApplicationDict;
+import com.x.general.core.entity.wrap.WrapApplicationDict;
 import com.x.program.center.core.entity.Agent;
 import com.x.program.center.core.entity.Invoke;
 import com.x.program.center.core.entity.wrap.ServiceModuleEnum;
@@ -32,6 +34,9 @@ class ActionList extends BaseAction {
 			List<WrapInvoke> invokeList = emc.fetchAll(Invoke.class, invokeCopier);
 			wo.setInvokeList(invokeList);
 			wos.add(wo);
+			List<WrapApplicationDict> dictList = emc.fetchAll(ApplicationDict.class, dictCopier);
+			wo.setDictList(dictList);
+			wos.add(wo);
 
 			result.setData(wos);
 			return result;
@@ -43,6 +48,9 @@ class ActionList extends BaseAction {
 
 	public static WrapCopier<Invoke, WrapInvoke> invokeCopier = WrapCopierFactory.wo(Invoke.class, WrapInvoke.class,
 			JpaObject.singularAttributeField(Invoke.class, true, true), null);
+
+	public static WrapCopier<ApplicationDict, WrapApplicationDict> dictCopier = WrapCopierFactory.wo(ApplicationDict.class, WrapApplicationDict.class,
+			JpaObject.singularAttributeField(ApplicationDict.class, true, true), null);
 
 
 	public static class Wo extends WrapServiceModule {
