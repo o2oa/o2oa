@@ -5757,11 +5757,17 @@ if( !MWF.xScript.createDict ){
             if( typeOf( options ) == "string" ){
                 options = {
                     name : options,
-                    type: appType
+                    type: appType,
+                    application: application
                 };
             }
             var name = this.name = options.name;
-            var type = ( options.type && options.application ) ?  options.type : "process";
+            var type;
+            if( options.type === "service"){
+                type = options.type;
+            }else{
+                type = ( options.type && options.application ) ?  options.type : "process";
+            }
             var applicationId = options.application || application;
             var enableAnonymous = ( options.enableAnonymous || options.anonymous ) || false;
 
