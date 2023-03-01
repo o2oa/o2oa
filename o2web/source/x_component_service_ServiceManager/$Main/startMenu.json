@@ -20,7 +20,7 @@
     "title": MWF.xApplication.service.ServiceManager.LP.agent.name,
     "id": "1.1",
     "action": "agentConfig",
-    "icon": "agent_script.png",
+    "icon": "query_agent.png",
     "expand": false,
     "sub": []
  },
@@ -28,7 +28,7 @@
     "title": MWF.xApplication.service.ServiceManager.LP.invoke.name,
     "id": "1.1",
     "action": "invokeConfig",
-    "icon": "agent_script.png",
+    "icon": "query_invoke.png",
     "expand": false,
     "sub": []
   },
@@ -36,7 +36,7 @@
     "title": MWF.xApplication.service.ServiceManager.LP.script.name,
     "id": "1.3",
     "action": "scriptConfig",
-    "icon": "agent_script.png",
+    "icon": "query_script.png",
     "expand": false,
     "sub": []
   },
@@ -44,7 +44,7 @@
     "title": MWF.xApplication.service.ServiceManager.LP.dictionary.name,
     "id": "1.4",
     "action": "dataConfig",
-    "icon": "agent_data.png",
+    "icon": "query_data.png",
     "expand": false,
     "sub": []
   }

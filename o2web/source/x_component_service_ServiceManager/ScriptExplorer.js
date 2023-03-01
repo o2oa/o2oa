@@ -210,7 +210,7 @@ MWF.xApplication.service.ServiceManager.ScriptExplorer = new Class({
         data.alias = someItem.alias;
         data.isNewScript = false;
 
-        this.app.restActions.saveScript(data, function(){
+        this.app.restActions.updateScript(data, function(){
             if (success) success();
         }.bind(this), function(){
             if (failure) failure();
@@ -229,7 +229,7 @@ MWF.xApplication.service.ServiceManager.ScriptExplorer = new Class({
         data.id = "";
         data.isNewScript = true;
 
-        this.app.restActions.saveScript(data, function(){
+        this.app.restActions.addScript(data, function(){
             if (success) success();
         }.bind(this), function(){
             if (failure) failure();

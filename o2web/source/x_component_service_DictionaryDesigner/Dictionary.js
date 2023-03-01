@@ -11,7 +11,7 @@ MWF.xApplication.service.DictionaryDesigner.Dictionary = new Class({
     createRootItem: function() {
         this.items.push(new MWF.xApplication.service.DictionaryDesigner.Dictionary.item("ROOT", this.data.data, null, 0, this, true));
     },
-    saveSilence: function(){
+    saveSilence: function(callback){
         if (!this.isSave){
 
             if( this.scriptPage.isShow ){
@@ -39,9 +39,10 @@ MWF.xApplication.service.DictionaryDesigner.Dictionary = new Class({
 
             this.isSave = true;
 
-            this.designer.actions.saveDictionary(this.data, function(json){
+            this.saveDictionary(function(json){
                 this.isSave = false;
                 this.data.id = json.data.id;
+                this.designer.propertyIdNode.set("text", json.data.id);
                 if (callback) callback();
             }.bind(this), function(xhr, text, error){
                 this.isSave = false;
@@ -81,11 +82,13 @@ MWF.xApplication.service.DictionaryDesigner.Dictionary = new Class({
             }
 
             this.isSave = true;
-            this.designer.actions.saveDictionary(this.data, function(json){
+            this.saveDictionary(function(json){
                 this.isSave = false;
                 this.designer.notice(this.designer.lp.notice.save_success, "success", this.node, {"x": "left", "y": "bottom"});
                 this.data.isNewDictionary = false;
                 this.isNewDictionary = false;
+
+                this.designer.propertyIdNode.set("text", json.data.id);
 
                 this.data.id = json.data.id;
                 this.page.textNode.set("text", this.data.name);
@@ -105,7 +108,14 @@ MWF.xApplication.service.DictionaryDesigner.Dictionary = new Class({
         }
 
     },
-
+    saveDictionary: function (callback) {
+        if (this.data.id){
+            this.designer.actions.updateDictionary(this.data.id, this.data, callback);
+        }else{
+            delete this.data.id;
+            this.designer.actions.addDictionary(this.data, callback);
+        }
+    }
 });
 
 MWF.xApplication.service.DictionaryDesigner.Dictionary.item = new Class({

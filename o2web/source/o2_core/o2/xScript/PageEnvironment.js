@@ -173,7 +173,7 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
         _redefineTaskProperties(_redefineWorkProperties(this.workContext.getTask()));
 
         //dict
-        this.Dict = MWF.xScript.createDict(_form.json.application);
+        this.Dict = MWF.xScript.createDict(_form.json.application, "portal");
         //org
         var orgActions = null;
         var getOrgActions = function () {
@@ -2789,7 +2789,7 @@ if (!MWF.xScript.createDict) {
         }
     };
 
-    MWF.xScript.createDict = function (application) {
+    MWF.xScript.createDict = function (application, appType) {
         //optionsOrName : {
         //  type : "", //默认为process, 可以为  process  cms
         //  application : "", //流程/CMS的名称/别名/id, 默认为当前应用
@@ -2800,7 +2800,10 @@ if (!MWF.xScript.createDict) {
         return function (optionsOrName) {
             var options = optionsOrName;
             if (typeOf(options) == "string") {
-                options = {name: options};
+                options = {
+                    name: options,
+                    type: appType
+                };
             }
             var name = this.name = options.name;
             var type = (options.type && options.application) ? options.type : "process";
@@ -2819,10 +2822,16 @@ if (!MWF.xScript.createDict) {
             // this.dictData = dictLoaded[key];
 
             //MWF.require("MWF.xScript.Actions.DictActions", null, false);
-            if (type == "cms") {
-                var action = MWF.Actions.get("x_cms_assemble_control");
+            var action;
+            if (type === "cms") {
+                action = MWF.Actions.get("x_cms_assemble_control");
+            } else if( type === "portal" ){
+                action = MWF.Actions.get("x_portal_assemble_surface");
+            }else if( type === "service" ){
+                key = name+type+enableAnonymous;
+                action = MWF.Actions.get("x_program_center");
             } else {
-                var action = MWF.Actions.get("x_processplatform_assemble_surface");
+                action = MWF.Actions.get("x_processplatform_assemble_surface");
             }
 
             var encodePath = function (path) {
@@ -2830,7 +2839,7 @@ if (!MWF.xScript.createDict) {
                 var ar = arr.map(function (v) {
                     return encodeURIComponent(v);
                 });
-                return ar.join("/");
+                return ( type === "portal" || type === "service" ) ? ar.join(".") : ar.join("/");
             };
 
             this.get = function (path, success, failure, async, refresh) {
@@ -2866,12 +2875,20 @@ if (!MWF.xScript.createDict) {
                 };
 
                 var promise;
-                if (path) {
-                    var p = encodePath(path);
-                    //var p = path.replace(/\./g, "/");
-                    promise = action[((enableAnonymous && type == "cms") ? "getDictDataAnonymous" : "getDictData")](encodeURIComponent(this.name), applicationId, p, cb, null, !!async, false);
-                } else {
-                    promise = action[((enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot")](this.name, applicationId, cb, null, !!async, false);
+                if( type === "service" ){
+                    if (path){
+                        var p = encodePath( path );
+                        promise = action.getDictData(encodeURIComponent(this.name), p, cb, null, !!async, false);
+                    }else{
+                        promise = action.getDictRoot(this.name, cb, null, !!async, false);
+                    }
+                }else{
+                    if (path) {
+                        var p = encodePath(path);
+                        promise = action[((enableAnonymous && type == "cms") ? "getDictDataAnonymous" : "getDictData")](encodeURIComponent(this.name), applicationId, p, cb, null, !!async, false);
+                    } else {
+                        promise = action[((enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot")](this.name, applicationId, cb, null, !!async, false);
+                    }
                 }
                 return (!!async) ? promise : value;
 
@@ -2903,32 +2920,50 @@ if (!MWF.xScript.createDict) {
             this.set = function (path, value, success, failure) {
                 var p = encodePath(path);
                 //var p = path.replace(/\./g, "/");
-                return action.setDictData(encodeURIComponent(this.name), applicationId, p, value, function (json) {
+                var successCallback = function(json){
                     MWF.xScript.setDictToCache(key, path, value);
                     if (success) return success(json.data);
-                }, function (xhr, text, error) {
+                };
+                var failureCallback = function(xhr, text, error){
                     if (failure) return failure(xhr, text, error);
-                }, false, false);
+                };
+                if( type === "service" ){
+                    return action.setDictData(encodeURIComponent(this.name), p, value, successCallback, failureCallback, false, false);
+                }else{
+                    return action.setDictData(encodeURIComponent(this.name), applicationId, p, value, successCallback, failureCallback, false, false);
+                }
             };
             this.add = function (path, value, success, failure) {
                 var p = encodePath(path);
                 //var p = path.replace(/\./g, "/");
-                return action.addDictData(encodeURIComponent(this.name), applicationId, p, value, function (json) {
+                var successCallback = function(json){
                     MWF.xScript.insertDictToCache(key, path, value);
                     if (success) return success(json.data);
-                }, function (xhr, text, error) {
+                };
+                var failureCallback = function(xhr, text, error){
                     if (failure) return failure(xhr, text, error);
-                }, false, false);
+                };
+                if( type === "service" ) {
+                    return action.addDictData(encodeURIComponent(this.name), p, value, successCallback, failureCallback, false, false);
+                }else{
+                    return action.addDictData(encodeURIComponent(this.name), applicationId, p, value, successCallback, failureCallback, false, false);
+                }
             };
             this["delete"] = function (path, success, failure) {
                 var p = encodePath(path);
                 //var p = path.replace(/\./g, "/");
-                return action.deleteDictData(encodeURIComponent(this.name), applicationId, p, function (json) {
+                var successCallback = function(json){
                     MWF.xScript.deleteDictToCache(key, path);
                     if (success) return success(json.data);
-                }, function (xhr, text, error) {
+                };
+                var failureCallback = function(xhr, text, error){
                     if (failure) return failure(xhr, text, error);
-                }, false, false);
+                };
+                if( type === "service" ) {
+                    return action.deleteDictData(encodeURIComponent(this.name), p, successCallback, failureCallback, false, false);
+                }else{
+                    return action.deleteDictData(encodeURIComponent(this.name), applicationId, p, successCallback, failureCallback, false, false);
+                }
             };
             this.destory = this["delete"];
         }

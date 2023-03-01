@@ -261,7 +261,8 @@ MWF.xScript.ViewEnvironment = function (ev) {
 
     //dict
     /**
-     * this.Dict是一个工具类，如果您在流程、门户中创建了数据字典，可以使用this.Dict类对数据字典进行增删改查操作。
+     * this.Dict是一个工具类，如果您在流程、内容管理、门户中创建了数据字典，可以使用this.Dict类对数据字典进行增删改查操作。
+     * 从8.0版本开始，支持在门户和服务管理中创建数据字典。
      * @module Dict
      * @o2cn 数据字典
      * @o2category web
@@ -272,13 +273,14 @@ MWF.xScript.ViewEnvironment = function (ev) {
      * </code></pre>
      * <div>如果需要对其他应用的数据字典进行操作，将options设置为JsonObject</div>
      * <pre><code class='language-js'>var dict = new this.Dict({
-     *     //type: 应用类型。可以为process  cms。
-     *     //如果没有该选项或者值为空字符串，则表示应用脚本和被应用的脚本配置类型相同。
+     *     //type: 应用类型。可以为process  cms  portal service。
+     *     //在流程和内容管理中如果没有该选项或者值为空字符串，则表示应用脚本和被应用的脚本配置类型相同。
      *     //比如在流程的A应用脚本中引用流程B应用的脚本配置，则type可以省略。
+     *     //为了兼容老版本，在门户中使用需要指定type，否则默认值为process
      *    type : "cms",
-     *    application : "bulletin", //流程、CMS的名称、别名、id, 默认为当前应用
+     *    application : "bulletin", //数据字典所在的流程、门户、CMS的名称、别名、id, 默认为当前应用，服务管理中忽略该参数
      *    name : "bulletinDictionary", // 数据字典的名称、别名、id
-     *    anonymous : true //允许用户在未登录的情况下读取cms的数据字典, type为process的时候此参数无效，默认为false，该参数名也可以是 enableAnonymous
+     *    anonymous : true //允许用户在未登录的情况下读取cms的数据字典, type为cms的时候改参数才有效，默认为false，该参数名也可以是 enableAnonymous
      * });
      * </code></pre>
      * @return {Object} Dict对象
@@ -5528,7 +5530,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
     this.Table = MWF.xScript.createTable();
 };
 
-MWF.xScript.createTable = function(){
+if( !MWF.xScript.createTable )MWF.xScript.createTable = function(){
     return function(name){
         this.name = name;
         this.action = o2.Actions.load("x_query_assemble_surface").TableAction;
@@ -5742,7 +5744,7 @@ if( !MWF.xScript.createDict ){
     };
 
 
-    MWF.xScript.createDict = function(application){
+    MWF.xScript.createDict = function(application, appType){
         //optionsOrName : {
         //  type : "", //默认为process, 可以为  process  cms
         //  application : "", //流程/CMS的名称/别名/id, 默认为当前应用
@@ -5753,7 +5755,10 @@ if( !MWF.xScript.createDict ){
         return function(optionsOrName){
             var options = optionsOrName;
             if( typeOf( options ) == "string" ){
-                options = { name : options };
+                options = {
+                    name : options,
+                    type: appType
+                };
             }
             var name = this.name = options.name;
             var type = ( options.type && options.application ) ?  options.type : "process";
@@ -5772,10 +5777,16 @@ if( !MWF.xScript.createDict ){
             // this.dictData = dictLoaded[key];
 
             //MWF.require("MWF.xScript.Actions.DictActions", null, false);
-            if( type == "cms" ){
-                var action = MWF.Actions.get("x_cms_assemble_control");
-            }else{
-                var action = MWF.Actions.get("x_processplatform_assemble_surface");
+            var action;
+            if (type === "cms") {
+                action = MWF.Actions.get("x_cms_assemble_control");
+            } else if( type === "portal" ){
+                action = MWF.Actions.get("x_portal_assemble_surface");
+            }else if( type === "service" ){
+                key = name+type+enableAnonymous;
+                action = MWF.Actions.get("x_program_center");
+            } else {
+                action = MWF.Actions.get("x_processplatform_assemble_surface");
             }
 
             var encodePath = function( path ){
@@ -5783,7 +5794,7 @@ if( !MWF.xScript.createDict ){
                 var ar = arr.map(function(v){
                     return encodeURIComponent(v);
                 });
-                return ar.join("/");
+                return ( type === "portal" || type === "service" ) ? ar.join(".") : ar.join("/");
             };
 
             this.get = function(path, success, failure, async, refresh){
@@ -5819,12 +5830,20 @@ if( !MWF.xScript.createDict ){
                 };
 
                 var promise;
-                if (path){
-                    var p = encodePath( path );
-                    //var p = path.replace(/\./g, "/");
-                    promise = action[ ( (enableAnonymous && type == "cms") ? "getDictDataAnonymous" : "getDictData" ) ](encodeURIComponent(this.name), applicationId, p, cb, null, !!async, false);
+                if( type === "service" ){
+                    if (path){
+                        var p = encodePath( path );
+                        promise = action.getDictData(encodeURIComponent(this.name), p, cb, null, !!async, false);
+                    }else{
+                        promise = action.getDictRoot(this.name, cb, null, !!async, false);
+                    }
                 }else{
-                    promise = action[ ( (enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot" ) ](this.name, applicationId, cb, null, !!async, false);
+                    if (path){
+                        var p = encodePath( path );
+                        promise = action[ ( (enableAnonymous && type == "cms") ? "getDictDataAnonymous" : "getDictData" ) ](encodeURIComponent(this.name), applicationId, p, cb, null, !!async, false);
+                    }else{
+                        promise = action[ ( (enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot" ) ](this.name, applicationId, cb, null, !!async, false);
+                    }
                 }
                 return (!!async) ? promise : value;
 
@@ -5856,32 +5875,50 @@ if( !MWF.xScript.createDict ){
             this.set = function(path, value, success, failure){
                 var p = encodePath( path );
                 //var p = path.replace(/\./g, "/");
-                return action.setDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
+                var successCallback = function(json){
                     MWF.xScript.setDictToCache(key, path, value);
                     if (success) return success(json.data);
-                }, function(xhr, text, error){
+                };
+                var failureCallback = function(xhr, text, error){
                     if (failure) return failure(xhr, text, error);
-                }, false, false);
+                };
+                if( type === "service" ){
+                    return action.setDictData(encodeURIComponent(this.name), p, value, successCallback, failureCallback, false, false);
+                }else{
+                    return action.setDictData(encodeURIComponent(this.name), applicationId, p, value, successCallback, failureCallback, false, false);
+                }
             };
             this.add = function(path, value, success, failure){
                 var p = encodePath( path );
                 //var p = path.replace(/\./g, "/");
-                return action.addDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
+                var successCallback = function(json){
                     MWF.xScript.insertDictToCache(key, path, value);
                     if (success) return success(json.data);
-                }, function(xhr, text, error){
+                };
+                var failureCallback = function(xhr, text, error){
                     if (failure) return failure(xhr, text, error);
-                }, false, false);
+                };
+                if( type === "service" ) {
+                    return action.addDictData(encodeURIComponent(this.name), p, value, successCallback, failureCallback, false, false);
+                }else{
+                    return action.addDictData(encodeURIComponent(this.name), applicationId, p, value, successCallback, failureCallback, false, false);
+                }
             };
             this["delete"] = function(path, success, failure){
                 var p = encodePath( path );
                 //var p = path.replace(/\./g, "/");
-                return action.deleteDictData(encodeURIComponent(this.name), applicationId, p, function(json){
+                var successCallback = function(json){
                     MWF.xScript.deleteDictToCache(key, path);
                     if (success) return success(json.data);
-                }, function(xhr, text, error){
+                };
+                var failureCallback = function(xhr, text, error){
                     if (failure) return failure(xhr, text, error);
-                }, false, false);
+                };
+                if( type === "service" ) {
+                    return action.deleteDictData(encodeURIComponent(this.name), p, successCallback, failureCallback, false, false);
+                }else{
+                    return action.deleteDictData(encodeURIComponent(this.name), applicationId, p, successCallback, failureCallback, false, false);
+                }
             };
             this.destory = this["delete"];
         }

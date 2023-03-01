@@ -1,8 +1,6 @@
 MWF.xApplication.process = MWF.xApplication.process || {};
 MWF.xApplication.process.DictionaryDesigner = MWF.xApplication.process.DictionaryDesigner || {};
 MWF.xDesktop.requireApp("process.DictionaryDesigner", "Main", null, false);
-MWF.xDesktop.requireApp("process.DictionaryDesigner", "lp."+MWF.language, null, false);
-MWF.xDesktop.requireApp("process.DictionaryDesigner", "Dictionary", null, false);
 MWF.xApplication.service.DictionaryDesigner.options = {
 	"multitask": true,
 	"executable": false
@@ -120,7 +118,7 @@ MWF.xApplication.service.DictionaryDesigner.Main = new Class({
 
 
     loadDictionaryList: function(){
-        this.actions.listDictionary(this.application.id || this.application, function (json) {
+        this.actions.listDictionary(function (json) {
             json.data.each(function(dictionary){
                 this.createListDictionaryItem(dictionary);
             }.bind(this));

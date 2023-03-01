@@ -208,7 +208,7 @@ MWF.xApplication.service.ServiceManager.DictionaryExplorer = new Class({
         data.name = someItem.name;
         data.alias = someItem.alias;
 
-        this.app.restActions.saveDictionary(data, function(){
+        this.app.restActions.updataDictionary(data.id, data, function(){
             if (success) success();
         }.bind(this), function(){
             if (failure) failure();
@@ -223,9 +223,9 @@ MWF.xApplication.service.ServiceManager.DictionaryExplorer = new Class({
             data.alias = oldName+"_copy"+i;
             i++;
         }
-        data.id = "";
+        delete data.id;
 
-        this.app.restActions.saveDictionary(data, function(){
+        this.app.restActions.addDictionary(data, function(){
             if (success) success();
         }.bind(this), function(){
             if (failure) failure();
@@ -263,7 +263,7 @@ MWF.xApplication.service.ServiceManager.DictionaryExplorer.Dictionary = new Clas
 		};
 	},
 	deleteDictionary: function(callback){
-		this.explorer.app.restActions.deleteDictionary(this.data.id, function(){
+		this.explorer.app.restActions.removeDictionary(this.data.id, function(){
 			this.node.destroy();
 			if (callback) callback();
 		}.bind(this));

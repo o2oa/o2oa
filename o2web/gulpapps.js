@@ -83,6 +83,8 @@ var apps = [
     { "folder": "x_component_service_AgentDesigner", "tasks": ["move", "min"] },
     { "folder": "x_component_service_InvokeDesigner", "tasks": ["move", "min"] },
     { "folder": "x_component_service_ServiceManager", "tasks": ["move", "min"] },
+    { "folder": "x_component_service_DictionaryDesigner", "tasks": ["move", "min"] },
+    { "folder": "x_component_service_ScriptDesigner", "tasks": ["move", "min"] },
     { "folder": "x_component_Setting", "tasks": ["move", "min"] },
     { "folder": "x_component_Template", "tasks": ["move", "min"] },
     { "folder": "x_component_ThreeMember", "tasks": ["move", "min"] },

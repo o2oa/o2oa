@@ -75,6 +75,16 @@ MWF.xApplication.service.ServiceManager.Main = new Class({
             this.invokeConfiguratorContent.destroy();
             this.invokeConfiguratorContent = null;
         }
+        if (this.scriptConfiguratorContent){
+            if (this.scriptConfigurator) delete this.scriptConfigurator;
+            this.scriptConfiguratorContent.destroy();
+            this.scriptConfiguratorContent = null;
+        }
+        if (this.dictionaryConfiguratorContent){
+            if (this.dictionaryConfigurator) delete this.dictionaryConfigurator;
+            this.dictionaryConfiguratorContent.destroy();
+            this.dictionaryConfiguratorContent = null;
+        }
     },
 
 
