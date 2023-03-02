@@ -626,7 +626,20 @@ MWF.xApplication.AppCenter.Exporter = new Class({
                     "background": "url("+this.app.path+this.app.options.style+"/icon/arrow_down.png) center center no-repeat"
                 }
             }).inject(node, "top");
-            spanNode.addEvent("click",function (){
+            spanNode.addEvent("click",function (ev){
+                if(spanNode.retrieve("collapse")){
+                    node.getNext().show();
+                    spanNode.store("collapse", false);
+                    spanNode.setStyle("background-image", "url("+this.app.path+this.app.options.style+"/icon/arrow_down.png)");
+                }else {
+                    node.getNext().hide();
+                    spanNode.store("collapse", true);
+                    spanNode.setStyle("background-image", "url("+this.app.path+this.app.options.style+"/icon/arrow_up.png)");
+                }
+                ev.stopPropagation();
+            }.bind(this));
+
+            node.addEvent("click",function (){
                 if(spanNode.retrieve("collapse")){
                     node.getNext().show();
                     spanNode.store("collapse", false);
@@ -640,18 +653,20 @@ MWF.xApplication.AppCenter.Exporter = new Class({
 
 
             var inverseAction = new Element("div", {"styles": this.css.moduleSelectContentTitleButtonActionNode, "text": this.lp.inverse}).inject(node);
-            inverseAction.addEvent("click", function(){
+            inverseAction.addEvent("click", function(ev){
                 var type = node.get("data-type");
                 this[type+"ListNodes"].each(function( element ){
                     element.selectAll( false );
                 }.bind(this));
+                ev.stopPropagation();
             }.bind(this));
             var selectAllAction = new Element("div", {"styles": this.css.moduleSelectContentTitleButtonActionNode, "text": this.lp.selectAll}).inject(node);
-            selectAllAction.addEvent("click", function(){
+            selectAllAction.addEvent("click", function(ev){
                 var type = node.get("data-type");
                 this[type+"ListNodes"].each(function( element ){
                     element.selectAll( true );
                 }.bind(this));
+                ev.stopPropagation();
             }.bind(this));
         }.bind(this));
 
