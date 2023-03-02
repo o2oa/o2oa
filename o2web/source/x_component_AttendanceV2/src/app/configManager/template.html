@@ -37,7 +37,30 @@
                 </div>
             </div>
         </div>
-        
+        <!-- 补卡申请配置 -->
+        <div class="margin-top">
+            <div class="form-item-label">
+                {{$.lp.config.appealConfig}}
+            </div>
+            <div class="form-item-content margin-top padding-bottom">
+                <!-- 是否启用补卡申请 -->
+                <div class="margin-top margin-left flex" @click="clickEnableAppeal">
+                    <label style="margin-right: 8px;">{{$.lp.config.appealEnableLabel}}</label>
+                    <div class="icon">
+                        <i
+                            class="{{ $.form.appealEnable ? 'o2icon-checkbox-checked primary_color' : 'o2icon-checkbox-unchecked'}}"></i>
+                    </div>
+                </div>
+                <div class="margin-top margin-left">
+                    <!-- 自定义流程 -->
+                    <o-selector-process oo-prop="$.processSelector" ></o-selector-process>
+                </div>
+
+
+
+            </div>
+        </div>
+
         <div style="margin-top: 32px;">
             <button class="mainColor_bg" @click="submit">{{$.lp.save}}</button>
         </div>

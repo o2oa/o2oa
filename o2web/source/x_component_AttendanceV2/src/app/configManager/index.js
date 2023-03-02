@@ -1,19 +1,30 @@
 import { component as content } from "@o2oa/oovm";
-import { lp, o2 } from "@o2oa/component";
+import { lp, o2, component as c } from "@o2oa/component";
 import { configAction } from "../../utils/actions";
 import template from "./template.html";
 import style from './style.scope.css';
+import oInput from '../../components/o-input';
+import oSelectorProcess from '../../components/o-selector-process';
 
 export default content({
   style,
   template,
   autoUpdate: true,
+  components: {oInput, oSelectorProcess},
   bind() {
     return {
       lp,
-      form: {},
+      form: {
+        appealEnable: true,
+      },
       holidayList: [],
       workDayList: [],
+      processSelector : {
+        selectorTitle: lp.config.appealProcessTypeProcessLabel,
+        value: [], // 流程对象列表
+        showValue: "",
+        placeholder: lp.config.appealProcessTypeProcessPlaceholder, // 没有数据的时候显示的内容
+      },
     };
   },
   beforeRender() {
@@ -23,6 +34,19 @@ export default content({
     this.loadConfig();
     this.loadHolidayDateSelector();
     this.loadWorkdayDateSelector();
+  },
+  loadProcessSelector() {
+    MWF.requireApp("Selector","package", function(){
+      var options = {
+          "types": ["process"],
+          "title": "1111",
+          "onComplete": function(items) {
+            console.debug(items);
+          }.bind(this)
+      };
+      this.processSelector = new MWF.O2Selector(document.body, options)
+    }.bind(this));
+     
   },
   // 获取配置对象
   async loadConfig() {
@@ -35,13 +59,33 @@ export default content({
       if (json.workDayList) {
         this.bind.workDayList = json.workDayList;
       }
+      if (typeof(json.appealEnable) == "undefined") {
+        this.bind.form.appealEnable = true;
+      }
+      if (json.processId && json.processName) {
+        this.bind.processSelector.value = [
+          {
+            "id": json.processId,
+            "name" : json.processName
+          }
+        ];
+        this.showProcessSelectorValueFun();
+      }
+      console.debug(this.bind);
     }
   },
   // 保存
   async submit() {
+    console.debug(this.bind);
     const form = this.bind.form;
     form.holidayList = this.bind.holidayList;
     form.workDayList = this.bind.workDayList;
+    if (form.appealEnable && this.bind.processSelector.value.length < 1) {
+      o2.api.page.notice(lp.config.appealProcessTypeProcessPlaceholder, 'error');
+      return;
+    }
+    form.processId = this.bind.processSelector.value[0]["id"] || "";
+    form.processName = this.bind.processSelector.value[0]["name"] || "";
     const result = await configAction("post", form);
     console.log(result);
     o2.api.page.notice(lp.saveSuccess, 'success');
@@ -136,5 +180,18 @@ export default content({
       this.bind.workDayList.splice(i, 1);
     }
   },
-
+  // 是否启用补卡申请
+  clickEnableAppeal() {
+    this.bind.form.appealEnable = !this.bind.form.appealEnable;
+  },
+  showProcessSelectorValueFun() {
+    if (this.bind.processSelector.value.length > 0) {
+      let newShowValue = [];
+      for (let index = 0; index < this.bind.processSelector.value.length; index++) {
+        const element = this.bind.processSelector.value[index];
+        newShowValue.push(element["name"]||""); // name字段
+      }
+      this.bind.processSelector.showValue = newShowValue.join(", ");
+    }
+  },
 });

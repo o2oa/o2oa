@@ -47,6 +47,7 @@ MWF.xApplication.AttendanceV2.LP = {
         "timeMinutesSelectorHour": "小时",
         "timeMinutesSelectorMinute": "分钟",
         "chooseDatePlaceholder": "请选择日期",
+        "selectPlaceholder": "请选择",
     },
 
     // 班次
@@ -180,6 +181,14 @@ MWF.xApplication.AttendanceV2.LP = {
         "holidayLabels": "设置节假日，将原本为工作日的日期添加到此处，作为节假日",
         "workdays": "工作日",
         "workdayLabels": "设置工作日，将原本为非工作日的日期添加到此处，作为工作日",
+        "appealConfig": "补卡申请配置",
+        "appealEnableLabel": "是否启用补卡申请功能",
+        
+        "appealProcessTypeInnerLabel": "内置固定流程",
+        "appealProcessTypeProcessLabel": "自定义流程",
+        "appealProcessTypeProcessPlaceholder": "请选择自定义流程",
+        
+
     },
     
 

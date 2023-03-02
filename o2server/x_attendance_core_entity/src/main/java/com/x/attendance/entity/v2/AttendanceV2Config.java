@@ -86,6 +86,93 @@ public class AttendanceV2Config extends SliceJpaObject {
     private List<String> workDayList;
 
 
+    public static final String appealEnable_FIELDNAME = "appealEnable";
+    @FieldDescribe("是否开启补卡功能")
+    @Column(name = ColumnNamePrefix + appealEnable_FIELDNAME)
+    private Boolean appealEnable = true;
+
+    public static final String appealProcessType_Inner = "inner";
+    public static final String appealProcessType_Process = "process";
+
+    public static final String appealProcessType_FIELDNAME = "appealProcessType";
+    @FieldDescribe("补卡流程类型： inner-内置固定流程 ，process-自定义流程")
+    @Column(length = length_32B, name = ColumnNamePrefix + appealProcessType_FIELDNAME)
+    private String appealProcessType = appealProcessType_Inner;
+
+    public static final String innerProcessAuditType_person = "1";
+    public static final String innerProcessAuditType_superior = "2";
+    public static final String innerProcessAuditType_duty = "3";
+
+    public static final String innerProcessAuditType_FIELDNAME = "innerProcessAuditType";
+    @FieldDescribe("内置固定流程的审核人确定方式： 1-指定人 ，2-汇报对象，3-所属部门职务")
+    @Column(length = length_32B, name = ColumnNamePrefix + innerProcessAuditType_FIELDNAME)
+    private String innerProcessAuditType = innerProcessAuditType_person; // 1，3 需要在下面的innerProcessAuditContent字段填入对应的内容，2直接从个人信息中获取
+
+    public static final String innerProcessAuditContent_FIELDNAME = "innerProcessAuditContent";
+    @FieldDescribe("内置固定流程的审核人确定内容")
+    @Column(length = length_255B, name = ColumnNamePrefix + innerProcessAuditContent_FIELDNAME)
+    private String innerProcessAuditContent;
+
+
+    public static final String processId_FIELDNAME = "processId";
+    @FieldDescribe("自定义流程id")
+    @Column(length = length_255B, name = ColumnNamePrefix + processId_FIELDNAME)
+    private String processId;
+
+    public static final String processName_FIELDNAME = "processName";
+    @FieldDescribe("自定义流程名称")
+    @Column(length = length_255B, name = ColumnNamePrefix + processName_FIELDNAME)
+    private String processName;
+
+
+    public Boolean getAppealEnable() {
+        return appealEnable;
+    }
+
+    public void setAppealEnable(Boolean appealEnable) {
+        this.appealEnable = appealEnable;
+    }
+
+    public String getAppealProcessType() {
+        return appealProcessType;
+    }
+
+    public void setAppealProcessType(String appealProcessType) {
+        this.appealProcessType = appealProcessType;
+    }
+
+    public String getInnerProcessAuditType() {
+        return innerProcessAuditType;
+    }
+
+    public void setInnerProcessAuditType(String innerProcessAuditType) {
+        this.innerProcessAuditType = innerProcessAuditType;
+    }
+
+    public String getInnerProcessAuditContent() {
+        return innerProcessAuditContent;
+    }
+
+    public void setInnerProcessAuditContent(String innerProcessAuditContent) {
+        this.innerProcessAuditContent = innerProcessAuditContent;
+    }
+
+    public String getProcessId() {
+        return processId;
+    }
+
+    public void setProcessId(String processId) {
+        this.processId = processId;
+    }
+
+    public String getProcessName() {
+        return processName;
+    }
+
+    public void setProcessName(String processName) {
+        this.processName = processName;
+    }
+
     public List<String> getHolidayList() {
         return holidayList;
     }
