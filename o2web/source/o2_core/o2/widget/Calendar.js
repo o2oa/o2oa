@@ -711,6 +711,9 @@ o2.widget.Calendar = o2.Calendar = new Class({
 			baseDate.setDate(1);
 			baseDate.setFullYear(year);
 			baseDate.setMonth(month);
+			baseDate.setHours( this.options.baseDate.getHours() );
+			baseDate.setMinutes( this.options.baseDate.getMinutes() );
+			baseDate.setSeconds( this.options.baseDate.getSeconds() );
 		}
 
 		var tbody = dayTable.getElement("tbody");
