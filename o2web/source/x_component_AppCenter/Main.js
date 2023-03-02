@@ -494,10 +494,10 @@ MWF.xApplication.AppCenter.Exporter = new Class({
     },
     showStatusList: function(){
         this.showStatusItemList("processPlatformList", ["processList", "formList", "applicationDictList", "scriptList", "fileList"]);
-        this.showStatusItemList("portalList", ["pageList", "scriptList", "widgetList", "fileList"]);
+        this.showStatusItemList("portalList", ["pageList", "scriptList", "widgetList", "applicationDictList","fileList"]);
         this.showStatusItemList("cmsList", ["categoryInfoList", "formList", "appDictList", "scriptList"]);
         this.showStatusItemList("queryList", ["viewList", "statList", "tableList", "statementList", "importModelList"]);
-        this.showStatusItemList("serviceModuleList", ["agentList", "invokeList"]);
+        this.showStatusItemList("serviceModuleList", ["agentList", "invokeList", "scriptList", "dictList"]);
 
     },
     showStatusItemList: function(listName, subList){
@@ -598,32 +598,60 @@ MWF.xApplication.AppCenter.Exporter = new Class({
         // //this.processArea = new Element("div", {"styles": this.css.moduleSetupListAreaNode}).inject(this.contentNode);
         //
         // this.listAreaNode = new Element("div").inject(this.contentAreaNode);
-        this.processAreaTitle = new Element("div.moduleSetupListAreaTitle", {"styles": this.css.moduleSetupListAreaTitleNode, "text": this.lp.process}).inject(this.contentAreaNode);
+        this.processAreaTitle = new Element("div.moduleSetupListAreaTitle", {"styles": this.css.moduleSetupListAreaTitleNode, "text": this.lp.process, "data-type":"process"}).inject(this.contentAreaNode);
         this.processAreaContent = new Element("div.", {"styles": this.css.moduleSetupListAreaContentNode}).inject(this.contentAreaNode);
 
-        this.portalAreaTitle = new Element("div.moduleSetupListAreaTitle", {"styles": this.css.moduleSetupListAreaTitleNode, "text": this.lp.portal}).inject(this.contentAreaNode);
+        this.portalAreaTitle = new Element("div.moduleSetupListAreaTitle", {"styles": this.css.moduleSetupListAreaTitleNode, "text": this.lp.portal, "data-type":"portal"}).inject(this.contentAreaNode);
         this.portalAreaContent = new Element("div", {"styles": this.css.moduleSetupListAreaContentNode}).inject(this.contentAreaNode);
 
-        this.cmsAreaTitle = new Element("div.moduleSetupListAreaTitle", {"styles": this.css.moduleSetupListAreaTitleNode, "text": this.lp.cms}).inject(this.contentAreaNode);
+        this.cmsAreaTitle = new Element("div.moduleSetupListAreaTitle", {"styles": this.css.moduleSetupListAreaTitleNode, "text": this.lp.cms, "data-type":"cms"}).inject(this.contentAreaNode);
         this.cmsAreaContent = new Element("div", {"styles": this.css.moduleSetupListAreaContentNode}).inject(this.contentAreaNode);
 
-        this.queryAreaTitle = new Element("div.moduleSetupListAreaTitle", {"styles": this.css.moduleSetupListAreaTitleNode, "text": this.lp.query}).inject(this.contentAreaNode);
+        this.queryAreaTitle = new Element("div.moduleSetupListAreaTitle", {"styles": this.css.moduleSetupListAreaTitleNode, "text": this.lp.query, "data-type":"query"}).inject(this.contentAreaNode);
         this.queryAreaContent = new Element("div", {"styles": this.css.moduleSetupListAreaContentNode}).inject(this.contentAreaNode);
 
 
-        this.serviceAreaTitle = new Element("div.moduleSetupListAreaTitle", {"styles": this.css.moduleSetupListAreaTitleNode, "text": this.lp.service}).inject(this.contentAreaNode);
+        this.serviceAreaTitle = new Element("div.moduleSetupListAreaTitle", {"styles": this.css.moduleSetupListAreaTitleNode, "text": this.lp.service, "data-type":"service"}).inject(this.contentAreaNode);
         this.serviceAreaContent = new Element("div", {"styles": this.css.moduleSetupListAreaContentNode}).inject(this.contentAreaNode);
 
         this.contentAreaNode.getElements(".moduleSetupListAreaTitle").each(function (node){
-            var spanNode = new Element("span",{"text":"︽","style":"float:right;font-size:16px;padding-right:15px;cursor:pointer"}).inject(node);
-            spanNode.addEvent("click",function (){
-                if(spanNode.get("text") === "︽"){
-                    node.getNext().hide();
-                    spanNode.set("text","︾");
-                }else {
-                    node.getNext().show();
-                    spanNode.set("text","︽");
+            debugger;
+            var spanNode = new Element("div",{
+                styles: {
+                    "float": "left",
+                    "padding-right": "10px",
+                    "cursor": "pointer",
+                    "width": "24px",
+                    "height": "30px",
+                    "background": "url("+this.app.path+this.app.options.style+"/icon/arrow_down.png) center center no-repeat"
                 }
+            }).inject(node, "top");
+            spanNode.addEvent("click",function (){
+                if(spanNode.retrieve("collapse")){
+                    node.getNext().show();
+                    spanNode.store("collapse", false);
+                    spanNode.setStyle("background-image", "url("+this.app.path+this.app.options.style+"/icon/arrow_down.png)");
+                }else {
+                    node.getNext().hide();
+                    spanNode.store("collapse", true);
+                    spanNode.setStyle("background-image", "url("+this.app.path+this.app.options.style+"/icon/arrow_up.png)");
+                }
+            }.bind(this));
+
+
+            var inverseAction = new Element("div", {"styles": this.css.moduleSelectContentTitleButtonActionNode, "text": this.lp.inverse}).inject(node);
+            inverseAction.addEvent("click", function(){
+                var type = node.get("data-type");
+                this[type+"ListNodes"].each(function( element ){
+                    element.selectAll( false );
+                }.bind(this));
+            }.bind(this));
+            var selectAllAction = new Element("div", {"styles": this.css.moduleSelectContentTitleButtonActionNode, "text": this.lp.selectAll}).inject(node);
+            selectAllAction.addEvent("click", function(){
+                var type = node.get("data-type");
+                this[type+"ListNodes"].each(function( element ){
+                    element.selectAll( true );
+                }.bind(this));
             }.bind(this));
         }.bind(this));
 
@@ -728,14 +756,17 @@ MWF.xApplication.AppCenter.Exporter.Element = new Class({
             this.selectElements();
         }.bind(this));
     },
-    selectAll: function(){
+    isAllSelected: function( selectData ){
+        return selectData.processList.length===this.data.processList.length &&
+            selectData.formList.length===this.data.formList.length &&
+            selectData.applicationDictList.length===this.data.applicationDictList.length &&
+            selectData.scriptList.length===this.data.scriptList.length &&
+            selectData.fileList.length===this.data.fileList.length;
+    },
+    selectAll: function( forceStatus ){
         var selectData = this.postData;
         if (selectData.processList.length || selectData.formList.length || selectData.applicationDictList.length || selectData.scriptList.length || selectData.fileList.length){
-            if (selectData.processList.length===this.data.processList.length &&
-                selectData.formList.length===this.data.formList.length &&
-                selectData.applicationDictList.length===this.data.applicationDictList.length &&
-                selectData.scriptList.length===this.data.scriptList.length &&
-                selectData.fileList.length===this.data.fileList.length){
+            if ( this.isAllSelected( selectData ) ){
                 selectData =  {
                     "processList": [],
                     "formList": [],
@@ -761,7 +792,11 @@ MWF.xApplication.AppCenter.Exporter.Element = new Class({
                 "fileList": this.data.fileList
             };
         }
-
+        if( forceStatus === true && !this.isAllSelected(selectData) ){
+            return;
+        }else if( forceStatus === false && this.isAllSelected(selectData) ){
+            return;
+        }
         this.checkSelect(selectData);
     },
     getNameContent: function(){
@@ -783,11 +818,7 @@ MWF.xApplication.AppCenter.Exporter.Element = new Class({
         this.exporter.selectData.processPlatformList.erase(this.postData);
         if (selectData.processList.length || selectData.formList.length || selectData.applicationDictList.length || selectData.scriptList.length || selectData.fileList.length){
             this.exporter.selectData.processPlatformList.push(this.postData);
-            if (selectData.processList.length==this.data.processList.length &&
-                selectData.formList.length==this.data.formList.length &&
-                selectData.applicationDictList.length==this.data.applicationDictList.length &&
-                selectData.scriptList.length==this.data.scriptList.length &&
-                selectData.fileList.length==this.data.fileList.length){
+            if ( this.isAllSelected( selectData ) ){
                 this.iconNode.setStyle("background", "url("+this.app.path+this.app.options.style+"/icon/sel_all.png) center center no-repeat");
             }else{
                 this.iconNode.setStyle("background", "url("+this.app.path+this.app.options.style+"/icon/sel_part.png) center center no-repeat");
@@ -812,20 +843,26 @@ MWF.xApplication.AppCenter.Exporter.PortalElement = new Class({
             "pageList": [],
             "scriptList": [],
             "widgetList": [],
+            "applicationDictList": [],
             "fileList": []
         };
     },
-    selectAll: function(){
-        var selectData = this.postData;
-        if (selectData.pageList.length || selectData.scriptList.length || selectData.widgetList.length || selectData.fileList.length){
-            if (selectData.pageList.length===this.data.pageList.length &&
+    isAllSelected: function( selectData ){
+        return selectData.pageList.length===this.data.pageList.length &&
                 selectData.scriptList.length===this.data.scriptList.length &&
                 selectData.widgetList.length===this.data.widgetList.length &&
-                selectData.fileList.length===this.data.fileList.length){
+                selectData.applicationDictList.length===this.data.applicationDictList.length &&
+                selectData.fileList.length===this.data.fileList.length;
+    },
+    selectAll: function( forceStatus ){
+        var selectData = this.postData;
+        if (selectData.pageList.length || selectData.scriptList.length || selectData.widgetList.length || selectData.applicationDictList.length || selectData.fileList.length){
+            if ( this.isAllSelected( selectData )){
                 selectData =  {
                     "pageList": [],
                     "scriptList": [],
                     "widgetList": [],
+                    "applicationDictList": [],
                     "fileList": []
                 };
             }else{
@@ -833,6 +870,7 @@ MWF.xApplication.AppCenter.Exporter.PortalElement = new Class({
                     "pageList": this.data.pageList,
                     "scriptList": this.data.scriptList,
                     "widgetList": this.data.widgetList,
+                    "applicationDictList": this.data.applicationDictList,
                     "fileList": this.data.fileList
                 };
             }
@@ -841,8 +879,14 @@ MWF.xApplication.AppCenter.Exporter.PortalElement = new Class({
                 "pageList": this.data.pageList,
                 "scriptList": this.data.scriptList,
                 "widgetList": this.data.widgetList,
+                "applicationDictList": this.data.applicationDictList,
                 "fileList": this.data.fileList
             };
+        }
+        if( forceStatus === true && !this.isAllSelected(selectData) ){
+            return;
+        }else if( forceStatus === false && this.isAllSelected(selectData) ){
+            return;
         }
         this.checkSelect(selectData);
     },
@@ -853,15 +897,13 @@ MWF.xApplication.AppCenter.Exporter.PortalElement = new Class({
         this.postData.pageList = selectData.pageList;
         this.postData.scriptList = selectData.scriptList;
         this.postData.widgetList = selectData.widgetList;
+        this.postData.applicationDictList = selectData.applicationDictList;
         this.postData.fileList = selectData.fileList;
 
         this.exporter.selectData.portalList.erase(this.postData);
-        if (selectData.pageList.length || selectData.scriptList.length || selectData.widgetList.length || selectData.fileList.length){
+        if (selectData.pageList.length || selectData.scriptList.length || selectData.widgetList.length || selectData.applicationDictList.length || selectData.fileList.length){
             this.exporter.selectData.portalList.push(this.postData);
-            if (selectData.pageList.length==this.data.pageList.length &&
-                selectData.scriptList.length==this.data.scriptList.length &&
-                selectData.widgetList.length==this.data.widgetList.length &&
-                selectData.fileList.length==this.data.fileList.length){
+            if ( this.isAllSelected( selectData ) ){
                 this.iconNode.setStyle("background", "url("+this.app.path+this.app.options.style+"/icon/sel_all.png) center center no-repeat");
             }else{
                 this.iconNode.setStyle("background", "url("+this.app.path+this.app.options.style+"/icon/sel_part.png) center center no-repeat");
@@ -896,14 +938,17 @@ MWF.xApplication.AppCenter.Exporter.CmsElement = new Class({
     selectElements: function(){
         new MWF.xApplication.AppCenter.Exporter.Element.CmsSelector(this, this.data);
     },
-    selectAll: function(){
+    isAllSelected: function( selectData ){
+        return selectData.categoryInfoList.length===this.data.categoryInfoList.length &&
+            selectData.formList.length===this.data.formList.length &&
+            selectData.appDictList.length===this.data.appDictList.length &&
+            selectData.scriptList.length===this.data.scriptList.length &&
+            selectData.fileList.length===this.data.fileList.length;
+    },
+    selectAll: function( forceStatus ){
         var selectData = this.postData;
         if (selectData.categoryInfoList.length || selectData.formList.length || selectData.appDictList.length || selectData.scriptList.length || selectData.fileList.length){
-            if (selectData.categoryInfoList.length===this.data.categoryInfoList.length &&
-                selectData.formList.length===this.data.formList.length &&
-                selectData.appDictList.length===this.data.appDictList.length &&
-                selectData.scriptList.length===this.data.scriptList.length &&
-                selectData.fileList.length===this.data.fileList.length){
+            if ( this.isAllSelected(selectData) ){
                 selectData =  {
                     "categoryInfoList": [],
                     "formList": [],
@@ -929,6 +974,11 @@ MWF.xApplication.AppCenter.Exporter.CmsElement = new Class({
                 "fileList": this.data.fileList
             };
         }
+        if( forceStatus === true && !this.isAllSelected(selectData) ){
+            return;
+        }else if( forceStatus === false && this.isAllSelected(selectData) ){
+            return;
+        }
         this.checkSelect(selectData);
     },
     checkSelect: function(selectData){
@@ -940,11 +990,7 @@ MWF.xApplication.AppCenter.Exporter.CmsElement = new Class({
         this.exporter.selectData.cmsList.erase(this.postData);
         if (selectData.categoryInfoList.length || selectData.formList.length || selectData.appDictList.length || selectData.scriptList.length || selectData.fileList.length){
             this.exporter.selectData.cmsList.push(this.postData);
-            if (selectData.categoryInfoList.length===this.data.categoryInfoList.length &&
-                selectData.formList.length===this.data.formList.length &&
-                selectData.appDictList.length===this.data.appDictList.length &&
-                selectData.scriptList.length===this.data.scriptList.length &&
-                selectData.fileList.length===this.data.fileList.length){
+            if ( this.isAllSelected(selectData) ){
                 this.iconNode.setStyle("background", "url("+this.app.path+this.app.options.style+"/icon/sel_all.png) center center no-repeat");
             }else{
                 this.iconNode.setStyle("background", "url("+this.app.path+this.app.options.style+"/icon/sel_part.png) center center no-repeat");
@@ -973,14 +1019,17 @@ MWF.xApplication.AppCenter.Exporter.QueryElement = new Class({
     selectElements: function(){
         new MWF.xApplication.AppCenter.Exporter.Element.QuerySelector(this, this.data);
     },
-    selectAll: function(){
+    isAllSelected: function( selectData ){
+        return selectData.viewList.length===this.data.viewList.length &&
+            selectData.statList.length===this.data.statList.length &&
+            selectData.statementList.length===this.data.statementList.length &&
+            selectData.tableList.length===this.data.tableList.length &&
+            selectData.importModelList.length===this.data.importModelList.length;
+    },
+    selectAll: function( forceStatus ){
         var selectData = this.postData;
         if (selectData.viewList.length || selectData.statList.length || selectData.statementList.length|| selectData.tableList.length|| selectData.importModelList.length){
-            if (selectData.viewList.length===this.data.viewList.length &&
-                selectData.statList.length===this.data.statList.length &&
-                selectData.statementList.length===this.data.statementList.length &&
-                selectData.tableList.length===this.data.tableList.length &&
-                selectData.importModelList.length===this.data.importModelList.length){
+            if ( this.isAllSelected( selectData ) ){
                 selectData =  {
                     "viewList": [],
                     "statList": [],
@@ -1006,6 +1055,11 @@ MWF.xApplication.AppCenter.Exporter.QueryElement = new Class({
                 "importModelList": this.data.importModelList
             };
         }
+        if( forceStatus === true && !this.isAllSelected(selectData) ){
+            return;
+        }else if( forceStatus === false && this.isAllSelected(selectData) ){
+            return;
+        }
         this.checkSelect(selectData);
     },
     checkSelect: function(selectData){
@@ -1021,11 +1075,7 @@ MWF.xApplication.AppCenter.Exporter.QueryElement = new Class({
         //|| selectData.revealList.length
         if (selectData.viewList.length || selectData.statList.length || selectData.statementList.length|| selectData.tableList.length|| selectData.importModelList.length){
             this.exporter.selectData.queryList.push(this.postData);
-            if (selectData.viewList.length==this.data.viewList.length &&
-                selectData.statList.length==this.data.statList.length &&
-                selectData.statementList.length==this.data.statementList.length &&
-                selectData.tableList.length==this.data.tableList.length &&
-                selectData.importModelList.length==this.data.importModelList.length){
+            if ( this.isAllSelected( selectData ) ){
                 this.iconNode.setStyle("background", "url("+this.app.path+this.app.options.style+"/icon/sel_all.png) center center no-repeat");
             }else{
                 this.iconNode.setStyle("background", "url("+this.app.path+this.app.options.style+"/icon/sel_part.png) center center no-repeat");
@@ -1045,44 +1095,65 @@ MWF.xApplication.AppCenter.Exporter.ServiceElement = new Class({
             "alias": this.data.alias,
             "description": this.data.description,
             "agentList": [],
-            "invokeList": []
+            "invokeList": [],
+            "scriptList": [],
+            "dictList": []
         };
     },
     selectElements: function(){
         new MWF.xApplication.AppCenter.Exporter.Element.ServiceSelector(this, this.data);
     },
-    selectAll: function(){
+    isAllSelected: function( selectData ){
+        return selectData.agentList.length===this.data.agentList.length &&
+            selectData.invokeList.length===this.data.invokeList.length &&
+            selectData.scriptList.length===this.data.scriptList.length &&
+            selectData.dictList.length===this.data.dictList.length;
+    },
+    selectAll: function( forceStatus ){
+        if( !this.data.scriptList )this.data.scriptList = [];
         var selectData = this.postData;
-        if (selectData.agentList.length  || selectData.invokeList.length){
-            if (selectData.agentList.length===this.data.agentList.length  || selectData.invokeList.length===this.data.invokeList.length){
+        if( selectData.scriptList )selectData.scriptList = [];
+        if (selectData.agentList.length  || selectData.invokeList.length || selectData.scriptList.length || selectData.dictList.length){
+            if (  this.isAllSelected(selectData) ){
                 selectData =  {
                     "agentList": [],
-                    "invokeList": []
+                    "invokeList": [],
+                    "scriptList": [],
+                    "dictList": []
                 };
             }else{
                 selectData =  {
                     "agentList": this.data.agentList,
-                    "invokeList": this.data.invokeList
+                    "invokeList": this.data.invokeList,
+                    "scriptList": this.data.scriptList,
+                    "dictList": this.data.dictList
                 };
             }
         }else{
             selectData =  {
                 "agentList": this.data.agentList,
-                "invokeList": this.data.invokeList
+                "invokeList": this.data.invokeList,
+                "scriptList": this.data.scriptList,
+                "dictList": this.data.dictList
             };
+        }
+        if( forceStatus === true && !this.isAllSelected(selectData) ){
+            return;
+        }else if( forceStatus === false && this.isAllSelected(selectData) ){
+            return;
         }
         this.checkSelect(selectData);
     },
     checkSelect: function(selectData){
         this.postData.agentList = selectData.agentList;
         this.postData.invokeList = selectData.invokeList;
+        this.postData.scriptList = selectData.scriptList || [];
+        this.postData.dictList = selectData.dictList;
 
         this.exporter.selectData.serviceModuleList.erase(this.postData);
-        if (selectData.agentList.length || selectData.invokeList.length ){
+        if (selectData.agentList.length || selectData.invokeList.length || selectData.scriptList.length || selectData.dictList.length){
             this.exporter.selectData.serviceModuleList.push(this.postData);
-            if (selectData.agentList.length===this.data.agentList.length &&
-                selectData.invokeList.length===this.data.invokeList.length
-            ){
+            if ( this.isAllSelected( selectData ) ){
                 this.iconNode.setStyle("background", "url("+this.app.path+this.app.options.style+"/icon/sel_all.png) center center no-repeat");
             }else{
                 this.iconNode.setStyle("background", "url("+this.app.path+this.app.options.style+"/icon/sel_part.png) center center no-repeat");
@@ -1294,6 +1365,7 @@ MWF.xApplication.AppCenter.Exporter.Element.PortalSelector = new Class({
             "pageList": [],
             "scriptList": [],
             "widgetList": [],
+            "applicationDictList": [],
             "fileList": []
         }
     },
@@ -1301,6 +1373,7 @@ MWF.xApplication.AppCenter.Exporter.Element.PortalSelector = new Class({
         this.selectData.pageList = this.getCheckedList(this.listPageContent);
         this.selectData.scriptList = this.getCheckedList(this.listScriptContent);
         this.selectData.widgetList = this.getCheckedList(this.listWidgetContent);
+        this.selectData.applicationDictList = this.getCheckedList(this.listDictContent);
         this.selectData.fileList = this.getCheckedList(this.listFileContent);
         this.element.checkSelect(this.selectData);
         this.hide();
@@ -1310,6 +1383,7 @@ MWF.xApplication.AppCenter.Exporter.Element.PortalSelector = new Class({
         this.listPageContent = this.listProcess("pageList");
         this.listScriptContent = this.listProcess("scriptList");
         this.listWidgetContent = this.listProcess("widgetList");
+        this.listDictContent = this.listProcess("applicationDictList");
         this.listFileContent = this.listProcess("fileList");
     }
 });
@@ -1381,12 +1455,16 @@ MWF.xApplication.AppCenter.Exporter.Element.ServiceSelector = new Class({
     initData: function(){
         return {
             "agentList": [],
-            "invokeList": []
+            "invokeList": [],
+            "scriptList": [],
+            "dictList": []
         }
     },
     checkSelect: function() {
         this.selectData.agentList = this.getCheckedList(this.listAgentContent);
         this.selectData.invokeList = this.getCheckedList(this.listInvokeContent);
+        this.selectData.scriptList = this.getCheckedList(this.listScriptContent);
+        this.selectData.dictList = this.getCheckedList(this.listDictContent);
 
         this.element.checkSelect(this.selectData);
         this.hide();
@@ -1396,6 +1474,8 @@ MWF.xApplication.AppCenter.Exporter.Element.ServiceSelector = new Class({
 
         this.listAgentContent = this.listProcess("agentList");
         this.listInvokeContent = this.listProcess("invokeList");
+        this.listScriptContent = this.listProcess("scriptList");
+        this.listDictContent = this.listProcess("dictList");
 
     },
     getItemName: function(item){
