@@ -610,6 +610,9 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
     },
 
     loadRowToColumn: function(){
+
+        this.isRowToColumn = !this.isRowToColumn;
+
         if (this.selectedRows.length || this.selectedCols.length) this.selectAll();
         this.statGridData = this.rowToColumn(this.statGridData);
 
@@ -773,7 +776,7 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
             "cellSpacing": "0"
         }).inject(this.tableAreaNode);
 
-        _self = this;
+        var _self = this;
         this.headTr = this.table.insertRow();
         this.selectAllTd = (this.headTr.insertCell()).setStyles(this.css.statAllSelectTd).set("title", this.lp.selecteAll);
         this.selectAllTd.addEvent("click", function(){
@@ -797,7 +800,7 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
 
         this.titleTr = this.table.insertRow();
         this.selectGroupTd = (this.titleTr.insertCell()).setStyles(this.css.statAllRowSelectTd).set("title", this.lp.selecteAllRow);
-        this.selectGroupTd.addEvent("click", this.selectAllRow())
+        this.selectGroupTd.addEvent("click", this.selectAllRow.bind(this))
 
         this.categoryTitleTd = new Element("th", {
             "styles": this.css.statHeadTh,
@@ -1008,6 +1011,24 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
         }else{
             td.setStyles(this.css.statTableSelectedTd);
             this.selectedRows.push(dataIndex);
+        }
+        this.checkSelectedCells();
+        this.reloadChart();
+    },
+    selectAllRow: function(){
+        if (this.selectedRows.length){
+            this.selectedRows = [];
+            var trs = this.table.getElements("tr[class!='totalTr']");
+            for (var n=2; n<trs.length; n++){
+               trs[n].getElement("td").setStyles(this.css.statTableSelectTd);
+            }
+        }else{
+            this.selectedRows = [];
+            var seltrs = this.table.getElements("tr[class!='totalTr']");
+            for (var n=2; n<seltrs.length; n++){
+                this.selectedRows.push(n-2);
+                seltrs[n].getElement("td").setStyles(this.css.statTableSelectedTd);
+            }
         }
         this.checkSelectedCells();
         this.reloadChart();
