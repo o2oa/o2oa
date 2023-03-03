@@ -797,6 +797,8 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
 
         this.titleTr = this.table.insertRow();
         this.selectGroupTd = (this.titleTr.insertCell()).setStyles(this.css.statAllRowSelectTd).set("title", this.lp.selecteAllRow);
+        this.selectGroupTd.addEvent("click", this.selectAllRow())
+
         this.categoryTitleTd = new Element("th", {
             "styles": this.css.statHeadTh,
             "text": this.data.calculate.title || this.lp.category
@@ -826,6 +828,7 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
             //     }
             // }
 
+            var total = [];
             this.statGridData.each(function(d){
                 var tr = this.table.insertRow();
                 var selectTd = tr.insertCell().setStyles(this.css.statRowSelectTd);
@@ -838,12 +841,36 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
                 // }
                 var categoryTh = new Element("th", {"styles": this.css.statHeadTh, "text": text}).inject(tr);
 
-                d.list.each(function(l){
+                d.list.each(function(l, i){
                     var td = new Element("td", {"styles": this.css.statContentTdNode}).inject(tr);
                     td.set("text", l.value);
                     this.setDragEvent(td);
+
+                    var addv = ( l.value || "0" ).toFloat();
+                    if( total.length > i ){
+                        total[i] = total[i].plus(addv);
+                    }else{
+                        total.push( new Decimal(addv) );
+                    }
+
                 }.bind(this));
+
             }.bind(this));
+
+            if( this.data.calculate.isAmount ){
+                var tr = this.table.insertRow();
+                tr.addClass("totalTr");
+                var td = new Element("td", {"styles": this.css.statHeadTh}).inject(tr);
+                td.setStyle("background", "#ffffff");
+
+                var th = new Element("th", {"styles": this.css.statHeadTh, "text": this.lp.amount}).inject(tr);
+                th.setStyle("background", "#f3f3f3");
+                total.each(function(l) {
+                    var td = new Element("td", {"styles": this.css.statContentTdNode}).inject(tr);
+                    td.setStyle("background", "#f3f3f3");
+                    td.set("text", l.toString());
+                }.bind(this))
+            }
         }
     },
     setDragEvent: function(td){
@@ -911,10 +938,18 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
         var toCellIndex = cellIndex+cols;
         var toRowIndex = rowIndex+rows;
 
+        var statRowIndex;
+        var statRow = this.table.getElement(".totalTr");
+        if( statRow )statRowIndex = statRow.rowIndex - 2;
+
         if (toRowIndex>rowIndex){
-            for (var i=rowIndex; i<=toRowIndex; i++) this.selectedRows.push(i);
+            for (var i=rowIndex; i<=toRowIndex; i++){
+                if( i !== statRowIndex )this.selectedRows.push(i);
+            }
         }else{
-            for (var i=toRowIndex; i<=rowIndex; i++) this.selectedRows.push(i);
+            for (var i=toRowIndex; i<=rowIndex; i++){
+                if( i !== statRowIndex )this.selectedRows.push(i);
+            }
         }
         if (toCellIndex>cellIndex){
             for (var i=cellIndex; i<=toCellIndex; i++) this.selectedCols.push(i);
@@ -924,7 +959,19 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
         this.checkSelectedCells();
     },
     completeDrag: function(td, e){
-        var trs = this.table.getElements("tr");
+        //设置选中样式
+        var trs = this.table.getElements("tr[class!='totalTr']");
+        //取消全部选中
+        trs.each(function (tr, i) {
+            if( i === 0 ){
+                tr.getElements("td").each(function (td, i) {
+                    if( i > 1 )td.setStyles(this.css.statTableSelectTd);
+                }.bind(this));
+            }else if( i > 1 ){
+                tr.getElement("td").setStyles(this.css.statTableSelectTd);
+            }
+        }.bind(this))
+
         var tds = trs[0].getElements("td");
 
         this.selectedCols.each(function(i){
@@ -968,7 +1015,7 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
     selectAllCol: function(){
         if (this.selectedCols.length){
             this.selectedCols = [];
-            var trs = this.table.getElements("tr");
+            var trs = this.table.getElements("tr[class!='totalTr']");
             var tds = trs[0].getElements("td");
             for (var i=2; i<tds.length; i++){
                 tds[i].setStyles(this.css.statTableSelectTd);
@@ -977,7 +1024,7 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
             //    trs[n].getElement("td").setStyles(this.css.statTableSelectTd);
             //}
         }else{
-            var seltrs = this.table.getElements("tr");
+            var seltrs = this.table.getElements("tr[class!='totalTr']");
             var seltds = seltrs[0].getElements("td");
             for (var n=2; n<seltds.length; n++){
                 this.selectedCols.push(n-2);
@@ -989,11 +1036,12 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
     },
 
     selectAll: function(){
+        debugger;
         if (this.selectedRows.length || this.selectedCols.length){
             this.selectedRows = [];
             this.selectedCols = [];
 
-            var trs = this.table.getElements("tr");
+            var trs = this.table.getElements("tr[class!='totalTr']");
             var tds = trs[0].getElements("td");
             for (var i=2; i<tds.length; i++){
                 tds[i].setStyles(this.css.statTableSelectTd);
@@ -1002,7 +1050,7 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
                 trs[n].getElement("td").setStyles(this.css.statTableSelectTd);
             }
         }else{
-            var seltrs = this.table.getElements("tr");
+            var seltrs = this.table.getElements("tr[class!='totalTr']");
             var seltds = seltrs[0].getElements("td");
             for (var seli=2; seli<seltds.length; seli++){
                 this.selectedCols.push(seli-2);
@@ -1026,7 +1074,7 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
 
     checkSelectedCells: function(){
         this.selectedData = [];
-        var rows = this.table.getElements("tr");
+        var rows = this.table.getElements("tr[class!='totalTr']");
         for (var rowIdx = 2; rowIdx<rows.length; rowIdx++){
             var o = {
                 "group": this.statGridData[rowIdx-2].group,
