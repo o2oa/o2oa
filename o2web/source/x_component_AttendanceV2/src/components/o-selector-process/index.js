@@ -13,16 +13,17 @@ export default content({
             showClear: false,
             label: "", // 标题文字
             isRequried: false, // 红星
-            selectorTitle: "", // 选择器上的标题
-            value: [], // 流程对象列表
-            showValue: "", // 流程对象name
-            placeholder: "", // 没有数据的时候显示的内容
+            // selectorTitle: "", // 选择器上的标题
+            // value: [], // 流程对象列表
+            // showValue: "", // 流程对象name
+            // placeholder: "", // 没有数据的时候显示的内容
         };
     },
     afterRender() {
         this.showValueFun();
     },
     showValueFun() {
+      debugger;
       if (this.bind.value.length > 0) {
         let newShowValue = [];
         for (let index = 0; index < this.bind.value.length; index++) {
@@ -39,8 +40,6 @@ export default content({
       this.bind.showClear = true;
     },
     clickOpenO2Selector() {
-      console.debug("开始啦。。。。");
-      console.debug(this.bind);
       MWF.requireApp("Selector","package", function(){
         var options = {
             "types": ["process"],

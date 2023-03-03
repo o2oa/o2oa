@@ -20,6 +20,7 @@ MWF.xApplication.AttendanceV2.LP = {
         "myAttendance": "我的考勤",
         "myAttendanceMonth": "我的考勤月报",
         "myAttendanceStatistic": "我的考勤统计",
+        "myAppealList": "我的考勤异常",
         "config": "配置",
         "statistic": "考勤统计",
         "detailFilter": "每日统计",
@@ -39,6 +40,9 @@ MWF.xApplication.AttendanceV2.LP = {
     "add": "添加",
     "dataError": "数据错误！",
     "saveSuccess": "保存成功！",
+    "onDuty": "上班打卡",
+    "offDuty": "下班打卡",
+    
 
     // 组件
     "components": {
@@ -187,9 +191,17 @@ MWF.xApplication.AttendanceV2.LP = {
         "appealProcessTypeInnerLabel": "内置固定流程",
         "appealProcessTypeProcessLabel": "自定义流程",
         "appealProcessTypeProcessPlaceholder": "请选择自定义流程",
-        
-
     },
     
+    // 申诉
+    "appealManagerTitle": "考勤异常数据",
+    "appeal": {
+        "date": "日期",
+        "dutyType": "打卡类型",
+        "recordTime": "打卡时间",
+        "recordResult": "打卡结果",
+        "status": "状态",
+        "startProcess": "发起流程",
+    },
 
 };

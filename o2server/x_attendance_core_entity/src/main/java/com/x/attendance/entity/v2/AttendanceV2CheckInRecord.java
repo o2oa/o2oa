@@ -207,6 +207,21 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
     private String placeName;
 
 
+
+    public static final String appealId_FIELDNAME = "appealId";
+    @FieldDescribe("考勤申诉信息记录ID(申诉成功后记录).")
+    @Column( length = JpaObject.length_id, name = ColumnNamePrefix + appealId_FIELDNAME)
+    private String appealId;
+
+
+    public String getAppealId() {
+        return appealId;
+    }
+
+    public void setAppealId(String appealId) {
+        this.appealId = appealId;
+    }
+
     public String getPreDutyTime() {
         return preDutyTime;
     }

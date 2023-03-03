@@ -244,4 +244,66 @@ public class AttendanceV2ManagerFactory  extends AbstractFactory {
         }
         return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
     }
+
+    /**
+     * 查询申诉记录 根据打卡记录的id
+     * @param recordId 打卡记录的id
+     * @return
+     * @throws Exception
+     */
+    public List<AttendanceV2AppealInfo> listAppealInfoWithRecordId(String recordId) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(AttendanceV2AppealInfo.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<AttendanceV2AppealInfo> cq = cb.createQuery(AttendanceV2AppealInfo.class);
+        Root<AttendanceV2AppealInfo> root = cq.from(AttendanceV2AppealInfo.class);
+        Predicate p = cb.equal(root.get(AttendanceV2AppealInfo_.recordId), recordId);
+        return em.createQuery(cq.select(root).where(p)).getResultList();
+    }
+
+
+
+    /**
+     * 查询申诉记录
+     * 分页查询需要
+     * @param adjustPage
+     * @param adjustPageSize
+     * @param userId
+     * @return
+     * @throws Exception
+     */
+    public List<AttendanceV2AppealInfo> listAppealInfoByPage(Integer adjustPage,
+                                                     Integer adjustPageSize, String userId) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(AttendanceV2AppealInfo.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<AttendanceV2AppealInfo> cq = cb.createQuery(AttendanceV2AppealInfo.class);
+        Root<AttendanceV2AppealInfo> root = cq.from(AttendanceV2AppealInfo.class);
+        if (StringUtils.isNotEmpty(userId)) {
+            Predicate p = cb.equal(root.get(AttendanceV2AppealInfo_.userId), userId);
+            cq.select(root).where(p).orderBy(cb.desc(root.get(AttendanceV2AppealInfo_.recordDate)));
+        } else {
+            cq.select(root).orderBy(cb.desc(root.get(AttendanceV2AppealInfo_.recordDate)));
+        }
+        return em.createQuery(cq).setFirstResult((adjustPage - 1) * adjustPageSize).setMaxResults(adjustPageSize)
+                .getResultList();
+    }
+
+    /**
+     * 查询申诉记录总数
+     * 分页查询需要
+     * @param userId
+     * @return
+     * @throws Exception
+     */
+    public Long appealCount(String userId) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(AttendanceV2AppealInfo.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<AttendanceV2AppealInfo> root = cq.from(AttendanceV2AppealInfo.class);
+        if (StringUtils.isNotEmpty(userId)) {
+            Predicate p = cb.equal(root.get(AttendanceV2AppealInfo_.userId), userId);
+            return em.createQuery(cq.select(cb.count(root)).where(p)).getSingleResult();
+        } else {
+            return em.createQuery(cq.select(cb.count(root))).getSingleResult();
+        }
+    }
 }

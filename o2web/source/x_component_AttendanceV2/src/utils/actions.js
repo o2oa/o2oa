@@ -135,6 +135,23 @@ function configAction(method, ...args) {
   return doAction("x_attendance_assemble_control", "ConfigAction", method, args);
 }
 
+
+
+/**
+ * 申诉分页查询
+ * @param {*} method
+ * @param  {...any} args
+ * @returns
+ */
+function appealInfoActionListByPaging(...args) {
+  return doActionBackResult(
+    "x_attendance_assemble_control",
+    "AppealInfoAction",
+    "listByPaging",
+    args
+  );
+}
+
 export {
   getPublicData,
   putPublicData,
@@ -145,4 +162,5 @@ export {
   groupAction,
   detailActionListByPaging,
   configAction,
+  appealInfoActionListByPaging,
 };

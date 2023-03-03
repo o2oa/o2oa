@@ -2,15 +2,15 @@ import { component as content } from "@o2oa/oovm";
 import { lp, o2, component as c } from "@o2oa/component";
 import { configAction } from "../../utils/actions";
 import template from "./template.html";
-import style from './style.scope.css';
-import oInput from '../../components/o-input';
-import oSelectorProcess from '../../components/o-selector-process';
+import style from "./style.scope.css";
+import oInput from "../../components/o-input";
+import oSelectorProcess from "../../components/o-selector-process";
 
 export default content({
   style,
   template,
   autoUpdate: true,
-  components: {oInput, oSelectorProcess},
+  components: { oInput, oSelectorProcess },
   bind() {
     return {
       lp,
@@ -19,7 +19,7 @@ export default content({
       },
       holidayList: [],
       workDayList: [],
-      processSelector : {
+      processSelector: {
         selectorTitle: lp.config.appealProcessTypeProcessLabel,
         value: [], // 流程对象列表
         showValue: "",
@@ -27,26 +27,11 @@ export default content({
       },
     };
   },
-  beforeRender() {
-    
-  },
+  beforeRender() {},
   afterRender() {
     this.loadConfig();
     this.loadHolidayDateSelector();
     this.loadWorkdayDateSelector();
-  },
-  loadProcessSelector() {
-    MWF.requireApp("Selector","package", function(){
-      var options = {
-          "types": ["process"],
-          "title": "1111",
-          "onComplete": function(items) {
-            console.debug(items);
-          }.bind(this)
-      };
-      this.processSelector = new MWF.O2Selector(document.body, options)
-    }.bind(this));
-     
   },
   // 获取配置对象
   async loadConfig() {
@@ -59,19 +44,20 @@ export default content({
       if (json.workDayList) {
         this.bind.workDayList = json.workDayList;
       }
-      if (typeof(json.appealEnable) == "undefined") {
-        this.bind.form.appealEnable = true;
+      if (typeof json.appealEnable == "undefined") {
+        this.bind.form.appealEnable = false;
       }
+      debugger;
       if (json.processId && json.processName) {
         this.bind.processSelector.value = [
           {
-            "id": json.processId,
-            "name" : json.processName
-          }
+            id: json.processId,
+            name: json.processName,
+          },
         ];
         this.showProcessSelectorValueFun();
       }
-      console.debug(this.bind);
+      //console.debug(this.bind);
     }
   },
   // 保存
@@ -81,52 +67,65 @@ export default content({
     form.holidayList = this.bind.holidayList;
     form.workDayList = this.bind.workDayList;
     if (form.appealEnable && this.bind.processSelector.value.length < 1) {
-      o2.api.page.notice(lp.config.appealProcessTypeProcessPlaceholder, 'error');
+      o2.api.page.notice(
+        lp.config.appealProcessTypeProcessPlaceholder,
+        "error"
+      );
       return;
     }
-    form.processId = this.bind.processSelector.value[0]["id"] || "";
-    form.processName = this.bind.processSelector.value[0]["name"] || "";
+    if (this.bind.processSelector.value.length > 0) {
+      form.processId = this.bind.processSelector.value[0]["id"] || "";
+      form.processName = this.bind.processSelector.value[0]["name"] || "";
+    }
+
     const result = await configAction("post", form);
     console.log(result);
-    o2.api.page.notice(lp.saveSuccess, 'success');
+    o2.api.page.notice(lp.saveSuccess, "success");
     this.loadConfig();
   },
 
   // 节假日日期选择器
   loadHolidayDateSelector() {
-    MWF.require("MWF.widget.Calendar", function(){
-      const options = {
-          "style": "xform",
-          "secondEnable" : false,
-          "timeSelectType" : "select",
-          "clearEnable": false,
-          "isTime": false,
-          "timeOnly": false,
-          "monthOnly" : false,
-          "yearOnly" : false,
-          "defaultDate": null,
-          "defaultView" : "day",
-          "target":  this.dom,
-          "baseDate": new Date(),
-          "onComplate": function(formateDate, date){
+    MWF.require(
+      "MWF.widget.Calendar",
+      function () {
+        const options = {
+          style: "xform",
+          secondEnable: false,
+          timeSelectType: "select",
+          clearEnable: false,
+          isTime: false,
+          timeOnly: false,
+          monthOnly: false,
+          yearOnly: false,
+          defaultDate: null,
+          defaultView: "day",
+          target: this.dom,
+          baseDate: new Date(),
+          onComplate: function (formateDate, date) {
             const year = date.getFullYear();
-            const month = (date.getMonth() + 1) > 9 ? `${date.getMonth() + 1}`:`0${(date.getMonth() + 1)}`;
-            const day = (date.getDate()) > 9 ? `${date.getDate()}`:`0${date.getDate()}`;
+            const month =
+              date.getMonth() + 1 > 9
+                ? `${date.getMonth() + 1}`
+                : `0${date.getMonth() + 1}`;
+            const day =
+              date.getDate() > 9 ? `${date.getDate()}` : `0${date.getDate()}`;
             const chooseDate = `${year}-${month}-${day}`;
             if (this.bind.holidayList.indexOf(chooseDate) < 0) {
               this.bind.holidayList.push(chooseDate);
             }
           }.bind(this),
-      };
-      const bindDom = this.dom.querySelector("#holidaysDateSelector");
-      new MWF.widget.Calendar(bindDom, options);
-    }.bind(this));
+        };
+        const bindDom = this.dom.querySelector("#holidaysDateSelector");
+        new MWF.widget.Calendar(bindDom, options);
+      }.bind(this)
+    );
   },
-   //   删除一个节假日
-   deleteHolidayDateSelector(value) {
+  //   删除一个节假日
+  deleteHolidayDateSelector(value) {
     let i = -1;
-    for (let index = 0; index <  this.bind.holidayList.length; index++) {
-      const element =  this.bind.holidayList[index];
+    for (let index = 0; index < this.bind.holidayList.length; index++) {
+      const element = this.bind.holidayList[index];
       if (value === element) {
         i = index;
         break;
@@ -136,41 +135,48 @@ export default content({
       this.bind.holidayList.splice(i, 1);
     }
   },
-   // 工作日日期选择器
-   loadWorkdayDateSelector() {
-    MWF.require("MWF.widget.Calendar", function(){
-      const options = {
-          "style": "xform",
-          "secondEnable" : false,
-          "timeSelectType" : "select",
-          "clearEnable": false,
-          "isTime": false,
-          "timeOnly": false,
-          "monthOnly" : false,
-          "yearOnly" : false,
-          "defaultDate": null,
-          "defaultView" : "day",
-          "target":  this.dom,
-          "baseDate": new Date(),
-          "onComplate": function(formateDate, date){
+  // 工作日日期选择器
+  loadWorkdayDateSelector() {
+    MWF.require(
+      "MWF.widget.Calendar",
+      function () {
+        const options = {
+          style: "xform",
+          secondEnable: false,
+          timeSelectType: "select",
+          clearEnable: false,
+          isTime: false,
+          timeOnly: false,
+          monthOnly: false,
+          yearOnly: false,
+          defaultDate: null,
+          defaultView: "day",
+          target: this.dom,
+          baseDate: new Date(),
+          onComplate: function (formateDate, date) {
             const year = date.getFullYear();
-            const month = (date.getMonth() + 1) > 9 ? `${date.getMonth() + 1}`:`0${(date.getMonth() + 1)}`;
-            const day = (date.getDate()) > 9 ? `${date.getDate()}`:`0${date.getDate()}`;
+            const month =
+              date.getMonth() + 1 > 9
+                ? `${date.getMonth() + 1}`
+                : `0${date.getMonth() + 1}`;
+            const day =
+              date.getDate() > 9 ? `${date.getDate()}` : `0${date.getDate()}`;
             const chooseDate = `${year}-${month}-${day}`;
             if (this.bind.workDayList.indexOf(chooseDate) < 0) {
               this.bind.workDayList.push(chooseDate);
             }
           }.bind(this),
-      };
-      const bindDom = this.dom.querySelector("#workdaysDateSelector");
-      new MWF.widget.Calendar(bindDom, options);
-    }.bind(this));
+        };
+        const bindDom = this.dom.querySelector("#workdaysDateSelector");
+        new MWF.widget.Calendar(bindDom, options);
+      }.bind(this)
+    );
   },
   //   删除一个工作日
   deleteWorkdayDateSelector(value) {
     let i = -1;
-    for (let index = 0; index <  this.bind.workDayList.length; index++) {
-      const element =  this.bind.workDayList[index];
+    for (let index = 0; index < this.bind.workDayList.length; index++) {
+      const element = this.bind.workDayList[index];
       if (value === element) {
         i = index;
         break;
@@ -187,9 +193,13 @@ export default content({
   showProcessSelectorValueFun() {
     if (this.bind.processSelector.value.length > 0) {
       let newShowValue = [];
-      for (let index = 0; index < this.bind.processSelector.value.length; index++) {
+      for (
+        let index = 0;
+        index < this.bind.processSelector.value.length;
+        index++
+      ) {
         const element = this.bind.processSelector.value[index];
-        newShowValue.push(element["name"]||""); // name字段
+        newShowValue.push(element["name"]); // name字段
       }
       this.bind.processSelector.showValue = newShowValue.join(", ");
     }

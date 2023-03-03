@@ -9,6 +9,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.queue.AbstractQueue;
 import com.x.base.core.project.tools.DateTools;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -59,9 +60,10 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                 // 是否工作日
                 boolean isWorkDay = dayList.contains(day);
                 // 考勤配置 节假日工作日
+                AttendanceV2Config config = null;
                 List<AttendanceV2Config> configs = emc.listAll(AttendanceV2Config.class);
                 if (configs != null && !configs.isEmpty()) {
-                    AttendanceV2Config config = configs.get(0);
+                    config = configs.get(0);
                     // 节假日
                     if (config.getHolidayList() != null && !config.getHolidayList().isEmpty()) {
                         if (config.getHolidayList().contains(model.getDate())) {
@@ -165,7 +167,7 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                 v2Detail.setMonthString(model.getDate().substring(5, 7));
                 v2Detail.setRecordDateString(model.getDate()); // 日期
                 v2Detail.setWorkDay(isWorkDay); // 是否工作日
-                v2Detail.setRecordDay(day+""); // 周几
+                v2Detail.setRecordDay(day + ""); // 周几
                 v2Detail.setLateTimeDuration(lateMinute);
                 v2Detail.setLateTimes(lateMinute > 0 ? 1 : 0);
                 v2Detail.setLeaveEarlierTimeDuration(earlyMinute);
@@ -197,7 +199,7 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                 // 班次添加时间
                 String name = shift.getShiftName();
                 if (shift.getProperties() != null && shift.getProperties().getTimeList() != null && !shift.getProperties().getTimeList().isEmpty()) {
-                    name += " " + shift.getProperties().getTimeList().get(0).getOnDutyTime() + " - " + shift.getProperties().getTimeList().get(shift.getProperties().getTimeList().size()-1).getOffDutyTime();
+                    name += " " + shift.getProperties().getTimeList().get(0).getOnDutyTime() + " - " + shift.getProperties().getTimeList().get(shift.getProperties().getTimeList().size() - 1).getOffDutyTime();
                 }
                 v2Detail.setShiftName(name);
                 emc.beginTransaction(AttendanceV2Detail.class);
@@ -205,6 +207,44 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                 emc.commit();
                 if (logger.isDebugEnabled()) {
                     logger.debug("考勤数据处理完成, {}", v2Detail.toString());
+                }
+                // 如果有异常打卡数据生成对应的数据
+                generateAppealInfo(emc, business, config, recordList);
+            }
+        }
+    }
+
+    /**
+     * 如果开启了是否开启补卡申请功能 生成对应的异常打卡申请数据
+     *
+     * @param recordList
+     * @throws Exception
+     */
+    private void generateAppealInfo(EntityManagerContainer emc, Business business, AttendanceV2Config config, List<AttendanceV2CheckInRecord> recordList) throws Exception {
+        if (emc != null && business != null
+                && config != null && BooleanUtils.isTrue(config.getAppealEnable())
+                && recordList != null && !recordList.isEmpty()) {
+            List<AttendanceV2CheckInRecord> list = recordList.stream().filter(
+                    record -> (!record.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn)&&!record.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL))
+            ).collect(Collectors.toList());
+            if (!list.isEmpty()) {
+                for (AttendanceV2CheckInRecord record : list) {
+                    List<AttendanceV2AppealInfo> appealList = business.getAttendanceV2ManagerFactory().listAppealInfoWithRecordId(record.getId());
+                    if (appealList != null && !appealList.isEmpty()) {
+                        logger.info("当前打卡记录已经有申诉数据存在，不需要重复生成！{}", record.getId());
+                        continue;
+                    }
+                    AttendanceV2AppealInfo appealInfo = new AttendanceV2AppealInfo();
+                    appealInfo.setRecordId(record.getId());
+                    appealInfo.setRecordDateString(record.getRecordDateString());
+                    appealInfo.setRecordDate(record.getRecordDate());
+                    appealInfo.setUserId(record.getUserId());
+                    emc.beginTransaction(AttendanceV2AppealInfo.class);
+                    emc.persist(appealInfo, CheckPersistType.all);
+                    emc.commit();
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("生成对应的异常打卡申请数据, {}", appealInfo.toString());
+                    }
                 }
             }
         }

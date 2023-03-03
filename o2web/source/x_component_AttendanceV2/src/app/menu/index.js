@@ -12,20 +12,25 @@ export default content({
     bind(){
         return {
             lp,
-            currentMenuId: 5,
+            currentMenuId: '1-1',
             menuData: [
               {
                 title: lp.menu.myAttendance,
                 sub: [
                   {
-                    id: 1,
+                    id: '1-1',
                     title: lp.menu.myAttendanceMonth,
                     action: "shiftManager"
                   },
                   {
-                    id: 2,
+                    id: '1-2',
                     title: lp.menu.myAttendanceStatistic,
                     action: "shiftManager"
+                  },
+                  {
+                    id: '1-3',
+                    title: lp.menu.myAppealList,
+                    action: "appealManager"
                   }
                 ]
               },
@@ -34,12 +39,12 @@ export default content({
                 access: "admin",
                 sub: [
                   {
-                    id: 3,
+                    id: '2-1',
                     title: lp.menu.detailFilter,
                     action: "detailManager"
                   },
                   {
-                    id: 4,
+                    id: '2-2',
                     title: "个人考勤统计",
                     action: "shiftManager"
                   }
@@ -50,22 +55,22 @@ export default content({
                 access: "admin",
                 sub: [
                   {
-                    id: 5,
+                    id: '3-1',
                     title: lp.menu.shiftManager,
                     action: "shiftManager"
                   },
                   {
-                    id: 6,
+                    id: '3-2',
                     title: lp.menu.groupmanager,
                     action: "groupManager"
                   },
                   {
-                    id: 7,
+                    id: '3-3',
                     title: lp.menu.addressmanger,
                     action: "addressManager"
                   },
                   {
-                    id: 8,
+                    id: '3-4',
                     title: lp.menu.configmanager,
                     action: "configManager"
                   }

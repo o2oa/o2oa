@@ -91,7 +91,7 @@ public class ShiftAction extends StandardJaxrsAction {
 
 
     @JaxrsMethodDescribe(value = "删除班次.", action = ActionDelete.class)
-    @DELETE
+    @GET
     @Path("delete/{id}")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
