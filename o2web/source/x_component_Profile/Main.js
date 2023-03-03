@@ -52,8 +52,14 @@ MWF.xApplication.Profile.Main = new Class({
             this.tab = new MWF.widget.Tab(this.contentNode, {"style": "profileV2"});
             this.tab.load();
 
+            var firstPage;
             pageConfigNodes.each(function(node){
-                this.tab.addTab(node, node.get("title"));
+                var page = this.tab.addTab(node, node.get("title"));
+                if( node.getStyle("display") === "none" ){
+                    page.tabNode.hide();
+                }else if( !firstPage ){
+                    firstPage = page;
+                }
             }.bind(this));
             this.contentNode.getElement("[name=MWFcontentNodeContainer]").setStyles({
                 "height":"calc(100% - 50px)",
@@ -81,9 +87,12 @@ MWF.xApplication.Profile.Main = new Class({
                 this.tab.pages[this.options.tab].tabNode.addClass("mainColor_border");
                 this.tab.pages[this.options.tab].textNode.addClass("mainColor_color");
             }else{
-                this.tab.pages[0].showIm();
-                this.tab.pages[0].tabNode.addClass("mainColor_border");
-                this.tab.pages[0].textNode.addClass("mainColor_color");
+                firstPage.showIm();
+                firstPage.tabNode.addClass("mainColor_border");
+                firstPage.textNode.addClass("mainColor_color");
+                // this.tab.pages[0].showIm();
+                // this.tab.pages[0].tabNode.addClass("mainColor_border");
+                // this.tab.pages[0].textNode.addClass("mainColor_color");
             }
 
             this.loadInforConfigActions();

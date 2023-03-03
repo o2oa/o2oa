@@ -1855,7 +1855,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         var client = this.getDownloadAttachmentClientType();
         console.log(client+" 客户端");
         attachments.each(function (att) {
-            if( !this.queryOpen( att ) )return;
+            if( !this.queryDownload( att ) )return;
 
             switch (client){
                 case "flutter":

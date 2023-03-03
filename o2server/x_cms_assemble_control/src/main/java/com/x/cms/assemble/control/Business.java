@@ -1,12 +1,15 @@
 package com.x.cms.assemble.control;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
+import com.x.base.core.project.config.StorageMapping;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
+import com.x.cms.core.entity.FileInfo;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -50,6 +53,9 @@ import com.x.organization.core.express.Organization;
  * @author sword
  */
 public class Business {
+
+	public static final String[] FILENAME_SENSITIVES_KEY = new String[] { "/", ":", "*", "?", "<<", ">>", "|", "<", ">", "\\" };
+	public static final String[] FILENAME_SENSITIVES_EMPTY = new String[] { "", "", "", "", "", "", "", "", "", "" };
 
 	private EntityManagerContainer emc;
 
@@ -636,5 +642,57 @@ public class Business {
 			}
 		}
 		return targetList;
+	}
+
+	/**
+	 * 下载附件并打包为zip
+	 *
+	 * @param attachmentList
+	 * @param os
+	 * @throws Exception
+	 */
+	public void downToZip(List<FileInfo> attachmentList, OutputStream os, Map<String, byte[]> otherAttMap)
+			throws Exception {
+		Map<String, FileInfo> filePathMap = new HashMap<>();
+		List<String> emptyFolderList = new ArrayList<>();
+		/* 生成zip压缩文件内的目录结构 */
+		if (attachmentList != null) {
+			for (FileInfo att : attachmentList) {
+				if (filePathMap.containsKey(att.getName())) {
+					filePathMap.put(att.getSite() + "-" + att.getName(), att);
+				} else {
+					filePathMap.put(att.getName(), att);
+				}
+			}
+		}
+		try (ZipOutputStream zos = new ZipOutputStream(os)) {
+			for (Map.Entry<String, FileInfo> entry : filePathMap.entrySet()) {
+				zos.putNextEntry(new ZipEntry(StringUtils.replaceEach(entry.getKey(),
+						FILENAME_SENSITIVES_KEY,
+						FILENAME_SENSITIVES_EMPTY)));
+				StorageMapping mapping = ThisApplication.context().storageMappings().get(FileInfo.class,
+						entry.getValue().getStorage());
+				try (ByteArrayOutputStream os1 = new ByteArrayOutputStream()) {
+					entry.getValue().readContent(mapping, os1);
+					byte[] bs = os1.toByteArray();
+					os1.close();
+					zos.write(bs);
+				}
+			}
+
+			if (otherAttMap != null) {
+				for (Map.Entry<String, byte[]> entry : otherAttMap.entrySet()) {
+					zos.putNextEntry(new ZipEntry(StringUtils.replaceEach(entry.getKey(),
+							FILENAME_SENSITIVES_KEY,
+							FILENAME_SENSITIVES_EMPTY)));
+					zos.write(entry.getValue());
+				}
+			}
+
+			// 往zip里添加空文件夹
+			for (String emptyFolder : emptyFolderList) {
+				zos.putNextEntry(new ZipEntry(emptyFolder));
+			}
+		}
 	}
 }

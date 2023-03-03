@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
+import com.x.processplatform.core.entity.element.ActivityType;
 
 public class WrapUpdatePrevTaskIdentity extends GsonPropertyObject {
 
@@ -86,6 +87,42 @@ public class WrapUpdatePrevTaskIdentity extends GsonPropertyObject {
 		private String opinion;
 		private Date startTime;
 		private Date completedTime;
+		private String activity;
+		private String activityName;
+		private String activityToken;
+		private ActivityType activityType;
+
+		public ActivityType getActivityType() {
+			return activityType;
+		}
+
+		public void setActivityType(ActivityType activityType) {
+			this.activityType = activityType;
+		}
+
+		public String getActivity() {
+			return activity;
+		}
+
+		public void setActivity(String activity) {
+			this.activity = activity;
+		}
+
+		public String getActivityName() {
+			return activityName;
+		}
+
+		public void setActivityName(String activityName) {
+			this.activityName = activityName;
+		}
+
+		public String getActivityToken() {
+			return activityToken;
+		}
+
+		public void setActivityToken(String activityToken) {
+			this.activityToken = activityToken;
+		}
 
 		public String getIdentity() {
 			return identity;

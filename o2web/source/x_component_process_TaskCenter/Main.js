@@ -1142,20 +1142,21 @@ MWF.xApplication.process.TaskCenter.Process = new Class({
                         }
                     }
                 }
+                if( o2.typeOf( process.applicationName ) === "object")process.applicationName = process.applicationName.name || "";
             }
             if (recordProcess) {
                 recordProcess.lastStartTime = new Date();
                 recordProcess.count = (recordProcess.count || 0)+1;
-                recordProcess.applicationName = this.applicationData.name;
+                recordProcess.applicationName = this.applicationData.name || "";
             }else{
                 if (json.length<10){
                     this.data.count = 1;
-                    this.data.applicationName = this.applicationData.name;
+                    this.data.applicationName = this.applicationData.name || "";
                     json.push(this.data);
                 }else{
                     json.splice(earlyProcessIdx, 1);
                     this.data.count = 1;
-                    this.data.applicationName = this.applicationData.name;
+                    this.data.applicationName = this.applicationData.name || "";
                     json.push(this.data);
                 }
             }
@@ -1465,7 +1466,7 @@ MWF.xApplication.process.TaskCenter.Starter = new Class({
                         if (pro.name.indexOf(key)!==-1){
                             var data = Object.clone(pro);
                             data.applicationName = app.name;
-                            new MWF.xApplication.process.TaskCenter.Process(data, {"app": this.app, "starter": this}, {"name": app}, proListNode);
+                            new MWF.xApplication.process.TaskCenter.Process(data, {"app": this.app, "starter": this}, {"name": app.applicationName || app.appName || app.name }, proListNode);
                         }
                     }.bind(this));
                 }.bind(this));
@@ -1588,7 +1589,7 @@ MWF.xApplication.process.TaskCenter.Starter = new Class({
                         new Element("div", {"styles": this.css.applicationChildTitleNode, "text": app.name}).inject(this.startProcessListNode);
                         var appChildNode = new Element("div", {"styles": this.css.applicationChildChildNode}).inject(this.startProcessListNode);
                         app.processList.each(function(process){
-                            new MWF.xApplication.process.TaskCenter.Process(process, this, app, appChildNode);
+                            new MWF.xApplication.process.TaskCenter.Process(process, this, {"name": app.applicationName || app.appName || app.name }, appChildNode);
                         }.bind(this));
                     }.bind(this));
                 }.bind(this));
