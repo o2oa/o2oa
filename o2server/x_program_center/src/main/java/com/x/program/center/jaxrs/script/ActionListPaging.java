@@ -26,8 +26,7 @@ class ActionListPaging extends BaseAction {
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson, Integer page, Integer size) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
-			Business business = new Business(emc);
-			if(!business.serviceControlAble(effectivePerson)) {
+			if(effectivePerson.isAnonymous()) {
 				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 			}
 			EntityManager em = emc.get(Script.class);

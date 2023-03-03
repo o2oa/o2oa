@@ -18,9 +18,8 @@ import java.util.stream.Collectors;
 class ActionList extends BaseAction {
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			Business business = new Business(emc);
 			ActionResult<List<Wo>> result = new ActionResult<>();
-			if(!business.serviceControlAble(effectivePerson)) {
+			if(effectivePerson.isAnonymous()) {
 				throw new ExceptionAccessDenied(effectivePerson.getDistinguishedName());
 			}
 			List<Wo> wos = emc.fetchAll(Script.class, Wo.copier);
