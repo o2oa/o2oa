@@ -973,7 +973,6 @@ o2.widget.AttachmentController = o2.widget.ATTER  = new Class({
 
                 var isContinue = true;
                 if (beforeUpload) isContinue = beforeUpload(files);
-                debugger;
                 if (isContinue){
                     var accepts = (accept) ? accept.split(o2.splitStr) : null;
 

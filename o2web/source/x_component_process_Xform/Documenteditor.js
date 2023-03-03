@@ -773,12 +773,12 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             if (table && !table.hasClass("doc_layout_headIssuance")) {
                 var unitWidth = o2.getTextSize(this.layout_issuanceUnit.get("text"), {
                     "font-size": "16pt",
-                    "font-family": "'Times New Roman',仿宋",
+                    "font-family": "'Times New Roman',仿宋_GB2312",
                     "letter-spacing": "-0.4pt"
                 }).x;
                 var dateWidth = o2.getTextSize(this.layout_issuanceDate.get("text"), {
                     "font-size": "16pt",
-                    "font-family": "'Times New Roman',仿宋",
+                    "font-family": "'Times New Roman',仿宋_GB2312",
                     "letter-spacing": "-0.4pt"
                 }).x;
 
@@ -2478,7 +2478,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 name: '标题二(三号楷体)',
                 element: 'div',
                 styles: {
-                    'font-family': '楷体',
+                    'font-family': '楷体_GB2312',
                     'font-size': '16pt'
                 }
             },
@@ -2486,7 +2486,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             //     name: '标题三',
             //     element: 'div',
             //     styles: {
-            //         'font-family': '仿宋',
+            //         'font-family': '仿宋_GB2312',
             //         'font-size': '16pt'
             //     }
             // },
@@ -2494,7 +2494,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
             //     name: '标题四',
             //     element: 'div',
             //     styles: {
-            //         'font-family': '仿宋',
+            //         'font-family': '仿宋_GB2312',
             //         'font-size': '16pt'
             //     }
             // },
@@ -2502,7 +2502,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 name: '正文(标题三,四)',
                 element: 'div',
                 styles: {
-                    'font-family': '仿宋',
+                    'font-family': '仿宋_GB2312',
                     'font-size': '16pt'
                 }
             }
@@ -2723,6 +2723,7 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
 
     loadCkeditorFiletext: function(callback, inline, node, editorName){
         if (node || this.layout_filetext){
+            o2.loadCss('../x_desktop/fonts/fonts.css');
             o2.load("../o2_lib/htmleditor/ckeditor4161/ckeditor.js", function(){
                 CKEDITOR.disableAutoInline = true;
                 (node || this.layout_filetext).setAttribute('contenteditable', true);
@@ -3530,12 +3531,12 @@ MWF.xApplication.process.Xform.Documenteditor = MWF.APPDocumenteditor =  new Cla
                 if (table && !table.hasClass("doc_layout_headIssuance")){
                     var unitWidth = o2.getTextSize(this.layout_issuanceUnit.get("text"), {
                         "font-size":"16pt",
-                        "font-family":"'Times New Roman',仿宋",
+                        "font-family":"'Times New Roman',仿宋_GB2312",
                         "letter-spacing": "-0.2pt"
                     }).x;
                     var dateWidth = o2.getTextSize(this.layout_issuanceDate.get("text"), {
                         "font-size":"16pt",
-                        "font-family":"'Times New Roman',仿宋",
+                        "font-family":"'Times New Roman',仿宋_GB2312",
                         "letter-spacing": "-0.2pt"
                     }).x;
 
