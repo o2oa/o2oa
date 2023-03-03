@@ -201,7 +201,20 @@ MWF.xApplication.AttendanceV2.LP = {
         "recordTime": "打卡时间",
         "recordResult": "打卡结果",
         "status": "状态",
+
+        "absenteeism": "旷工迟到",
+        "early": "早退",
+        "late": "迟到",
+        "seriousLate": "严重迟到",
+        "notSigned": "未打卡",
+
+        "status0": "待处理",
+        "status1": "审批中",
+        "status2": "审批通过",
+        "status3": "审批不通过",
+
         "startProcess": "发起流程",
+        "startProcessNoConfigError": "没有配置申诉流程，无法启动流程！",
     },
 
 };

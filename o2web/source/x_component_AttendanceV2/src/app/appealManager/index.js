@@ -1,7 +1,6 @@
 import { component as content } from "@o2oa/oovm";
-import { lp, o2 } from "@o2oa/component";
-import { lpFormat } from "../../utils/common";
-import { appealInfoActionListByPaging } from "../../utils/actions";
+import { lp, component as app } from "@o2oa/component";
+import { appealInfoActionListByPaging, configAction, appealInfoAction, processAction } from "../../utils/actions";
 import oPager from "../../components/o-pager";
 import template from "./template.html";
 
@@ -50,15 +49,15 @@ export default content({
   formatRecordResult(record) {
     if (record && record.checkInResult) {
       if (record.checkInResult == 'Absenteeism') {
-        return "旷工迟到";
+        return lp.appeal.absenteeism;
       } else if (record.checkInResult == 'Early') {
-        return "早退";
+        return lp.appeal.early;
       } else if (record.checkInResult == 'Late') {
-        return "迟到";
+        return lp.appeal.late;
       } else if (record.checkInResult == 'SeriousLate') {
-        return "严重迟到";
+        return lp.appeal.seriousLate;
       } else if (record.checkInResult == 'NotSigned') {
-        return "未打卡";
+        return lp.appeal.notSigned;
       }
     }
     return "";
@@ -66,19 +65,52 @@ export default content({
   formatAppealStatus(appeal) {
     if (appeal) {
       if (appeal.status === 0) {
-        return "待处理";
-      } else if (record.checkInResult === 1) {
-        return "审批中";
-      } else if (record.checkInResult === 2) {
-        return "审批通过";
-      } else if (record.checkInResult === 3) {
-        return "审批不通过";
+        return  lp.appeal.status0;
+      } else if (appeal.status=== 1) {
+        return  lp.appeal.status1;
+      } else if (appeal.status === 2) {
+        return lp.appeal.status2;
+      } else if (appeal.status === 3) {
+        return lp.appeal.status3;
       }  
     }
     return "";
   },
-  startProcess(id) {
-    console.debug(id);
+  async startProcess(appeal) {
+    // 查询配置
+    const json = await configAction("get");
+    if (json && json.appealEnable && json.processId) {
+      const process = await processAction("get", json.processId);
+      MWF.xDesktop.requireApp("process.TaskCenter", "ProcessStarter", function(){
+        console.debug("流程", process);
+        var starter = new MWF.xApplication.process.TaskCenter.ProcessStarter(process, app, {
+            "latest" : false,
+            "workData" : { "appealId": appeal.id, "record": appeal.record }, // 把id和打卡记录传给流程
+            "onStarted": function(data, title, processName){
+              console.debug("启动流程成功", data);
+                this._afterStartProcess(data, appeal.id);
+            }.bind(this)
+        });
+        starter.load();
+      }.bind(this));
+    } else {
+      o2.api.page.notice(lp.appeal.startProcessNoConfigError, 'error');
+    }
+  },
+  // 流程启动后 打开工作文档并更新数据
+  async _afterStartProcess(data, id){
+    var currentTask = [];
+    data.each(function(work){
+        if (work.currentTaskIndex !== -1) currentTask.push(work.taskList[work.currentTaskIndex].work);
+    });
+    // 打开流程工作文档
+    if (currentTask.length===1){
+        o2.api.page.openWork(currentTask[0]);
+    }
+    // 更新数据
+    const json = await appealInfoAction("startProcess", id);
+    console.debug('更新成功', json);
+    this.loadAppealList();
   },
   // 关闭表单页面
   closeGroup() {

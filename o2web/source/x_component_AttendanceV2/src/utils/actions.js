@@ -152,6 +152,27 @@ function appealInfoActionListByPaging(...args) {
   );
 }
 
+
+/**
+ * 申诉API
+ * @param {*} method
+ * @param  {...any} args
+ * @returns
+ */
+function appealInfoAction(method, ...args) {
+  return doAction("x_attendance_assemble_control", "AppealInfoAction", method, args);
+}
+/**
+ * 流程API
+ * @param {*} method 
+ * @param  {...any} args 
+ * @returns 
+ */
+function processAction(method, ...args) {
+  return doAction("x_processplatform_assemble_surface", "ProcessAction", method, args);
+}
+
+
 export {
   getPublicData,
   putPublicData,
@@ -163,4 +184,6 @@ export {
   detailActionListByPaging,
   configAction,
   appealInfoActionListByPaging,
+  appealInfoAction,
+  processAction,
 };

@@ -15,7 +15,7 @@ export default content({
     return {
       lp,
       form: {
-        appealEnable: true,
+        appealEnable: false,
       },
       holidayList: [],
       workDayList: [],
@@ -76,6 +76,9 @@ export default content({
     if (this.bind.processSelector.value.length > 0) {
       form.processId = this.bind.processSelector.value[0]["id"] || "";
       form.processName = this.bind.processSelector.value[0]["name"] || "";
+    } else {
+      form.processId =   "";
+      form.processName =  "";
     }
 
     const result = await configAction("post", form);
