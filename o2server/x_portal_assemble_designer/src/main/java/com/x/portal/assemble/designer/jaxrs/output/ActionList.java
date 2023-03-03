@@ -1,14 +1,8 @@
 package com.x.portal.assemble.designer.jaxrs.output;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
-import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.ActionResult;
@@ -17,24 +11,18 @@ import com.x.base.core.project.tools.ListTools;
 import com.x.general.core.entity.ApplicationDict;
 import com.x.general.core.entity.wrap.WrapApplicationDict;
 import com.x.portal.assemble.designer.Business;
-import com.x.portal.core.entity.File;
-import com.x.portal.core.entity.Page;
-import com.x.portal.core.entity.Portal;
-import com.x.portal.core.entity.Script;
-import com.x.portal.core.entity.Widget;
-import com.x.portal.core.entity.wrap.WrapFile;
-import com.x.portal.core.entity.wrap.WrapPage;
-import com.x.portal.core.entity.wrap.WrapPortal;
-import com.x.portal.core.entity.wrap.WrapScript;
-import com.x.portal.core.entity.wrap.WrapWidget;
+import com.x.portal.core.entity.*;
+import com.x.portal.core.entity.wrap.*;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 class ActionList extends BaseAction {
 
 	ActionResult<List<Wo>> execute(EffectivePerson effectivePerson) throws Exception {
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
 			ActionResult<List<Wo>> result = new ActionResult<>();
-
-			Business business = new Business(emc);
 
 			List<Wo> wos = emc.fetchAll(Portal.class, Wo.copier);
 
@@ -46,7 +34,8 @@ class ActionList extends BaseAction {
 
 			List<WrapWidget> widgetList = emc.fetchAll(Widget.class, widgetCopier);
 
-			List<WrapApplicationDict> applicationDictList = emc.fetchAll(ApplicationDict.class, applicationDictCopier);
+			List<WrapApplicationDict> applicationDictList = emc.fetchEqual(ApplicationDict.class, applicationDictCopier,
+					ApplicationDict.project_FIELDNAME, ApplicationDict.PROJECT_PORTAL);
 
 			ListTools.groupStick(wos, pageList, JpaObject.id_FIELDNAME, Page.portal_FIELDNAME, "pageList");
 			ListTools.groupStick(wos, scriptList, JpaObject.id_FIELDNAME, Script.portal_FIELDNAME, "scriptList");

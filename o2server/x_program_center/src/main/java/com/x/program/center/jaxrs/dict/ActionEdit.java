@@ -77,7 +77,7 @@ class ActionEdit extends BaseAction {
 
 		private static final long serialVersionUID = -903147978817129105L;
 		static WrapCopier<Wi, ApplicationDict> copier = WrapCopierFactory.wi(Wi.class, ApplicationDict.class, null,
-				ListTools.toList(JpaObject.FieldsUnmodifyExcludeId, ApplicationDict.project_FIELDNAME, ApplicationDict.application_FIELDNAME));
+				ListTools.toList(JpaObject.FieldsUnmodify, ApplicationDict.project_FIELDNAME, ApplicationDict.application_FIELDNAME));
 
 		@FieldDescribe("字典数据(json格式).")
 		private JsonElement data;

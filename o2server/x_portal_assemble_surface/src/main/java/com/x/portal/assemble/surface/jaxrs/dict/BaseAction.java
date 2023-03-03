@@ -16,7 +16,7 @@ import java.util.List;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
-	protected static final String PATH_SPLIT = ".";
+	protected static final String PATH_SPLIT = "\\.";
 
 	JsonElement get(Business business, ApplicationDict applicationDict, String... paths) throws Exception {
 		List<ApplicationDictItem> list = business.applicationDictItem()

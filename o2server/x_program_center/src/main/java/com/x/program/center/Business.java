@@ -172,6 +172,15 @@ public class Business {
 		return group;
 	}
 
+	private ScriptFactory script;
+
+	public ScriptFactory script() throws Exception {
+		if (null == this.script) {
+			this.script = new ScriptFactory(this);
+		}
+		return script;
+	}
+
 	private ApplicationDictFactory applicationDict;
 
 	public ApplicationDictFactory applicationDict() throws Exception {

@@ -25,6 +25,10 @@ public class WrapServiceModule extends GsonPropertyObject {
         return ListTools.extractProperty(this.getInvokeList(), JpaObject.id_FIELDNAME, String.class, true, true);
     }
 
+    public List<String> listScriptId() throws Exception {
+        return ListTools.extractProperty(this.getScriptList(), JpaObject.id_FIELDNAME, String.class, true, true);
+    }
+
     public List<String> listDictId() throws Exception {
         return ListTools.extractProperty(this.getDictList(), JpaObject.id_FIELDNAME, String.class, true, true);
     }
@@ -35,7 +39,10 @@ public class WrapServiceModule extends GsonPropertyObject {
     @FieldDescribe("代理服务")
     private List<WrapAgent> agentList = new ArrayList<>();
 
-    @FieldDescribe("代理服务")
+    @FieldDescribe("脚本")
+    private List<WrapScript> scriptList = new ArrayList<>();
+
+    @FieldDescribe("数据字典")
     private List<WrapApplicationDict> dictList = new ArrayList<>();
 
     public String getId() {
@@ -76,6 +83,14 @@ public class WrapServiceModule extends GsonPropertyObject {
 
     public void setDictList(List<WrapApplicationDict> dictList) {
         this.dictList = dictList;
+    }
+
+    public List<WrapScript> getScriptList() {
+        return scriptList;
+    }
+
+    public void setScriptList(List<WrapScript> scriptList) {
+        this.scriptList = scriptList;
     }
 
     public static WrapServiceModule copy(ServiceModuleEnum serviceModuleEnum){

@@ -19,10 +19,8 @@ import com.x.general.core.entity.wrap.WrapApplicationDict;
 import com.x.program.center.Business;
 import com.x.program.center.core.entity.Agent;
 import com.x.program.center.core.entity.Invoke;
-import com.x.program.center.core.entity.wrap.ServiceModuleEnum;
-import com.x.program.center.core.entity.wrap.WrapAgent;
-import com.x.program.center.core.entity.wrap.WrapInvoke;
-import com.x.program.center.core.entity.wrap.WrapServiceModule;
+import com.x.program.center.core.entity.Script;
+import com.x.program.center.core.entity.wrap.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -70,6 +68,9 @@ class ActionSelect extends BaseAction {
 		}
 		if(ServiceModuleEnum.INVOKE.getValue().equals(wo.getId())) {
 			wo.setInvokeList(WrapInvoke.outCopier.copy(business.entityManagerContainer().list(Invoke.class, wi.listInvokeId())));
+		}
+		if(ServiceModuleEnum.SCRIPT.getValue().equals(wo.getId())) {
+			wo.setScriptList(WrapScript.outCopier.copy(business.entityManagerContainer().list(Script.class, wi.listScriptId())));
 		}
 		if(ServiceModuleEnum.DICT.getValue().equals(wo.getId())) {
 			wo.setDictList(this.listDict(business, wi));

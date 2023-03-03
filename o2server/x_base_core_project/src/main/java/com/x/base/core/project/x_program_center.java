@@ -13,6 +13,7 @@ import com.x.base.core.project.annotation.ModuleType;
 		"com.x.program.center.core.entity.validation.Meta", "com.x.program.center.core.entity.InstallLog",
 		"com.x.program.center.core.entity.Application", "com.x.program.center.core.entity.Attachment",
 		"com.x.program.center.core.entity.MPWeixinMenu", "com.x.program.center.core.entity.ScheduleLog",
+		"com.x.program.center.core.entity.Script",
 		"com.x.portal.core.entity.Page", "com.x.portal.core.entity.Portal", "com.x.organization.core.entity.Group",
 		"com.x.organization.core.entity.Custom", "com.x.organization.core.entity.Role",
 		"com.x.organization.core.entity.Person", "com.x.organization.core.entity.Identity",

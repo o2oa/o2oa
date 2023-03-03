@@ -13,6 +13,8 @@ import com.x.base.core.entity.dataitem.DataItemConverter;
 import com.x.general.core.entity.ApplicationDict;
 import com.x.general.core.entity.ApplicationDictItem;
 import com.x.general.core.entity.wrap.WrapApplicationDict;
+import com.x.program.center.core.entity.Script;
+import com.x.program.center.core.entity.wrap.*;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -30,10 +32,6 @@ import com.x.base.core.project.tools.StringTools;
 import com.x.program.center.Business;
 import com.x.program.center.core.entity.Agent;
 import com.x.program.center.core.entity.Invoke;
-import com.x.program.center.core.entity.wrap.ServiceModuleEnum;
-import com.x.program.center.core.entity.wrap.WrapAgent;
-import com.x.program.center.core.entity.wrap.WrapInvoke;
-import com.x.program.center.core.entity.wrap.WrapServiceModule;
 
 class ActionCover extends BaseAction {
 
@@ -93,6 +91,22 @@ class ActionCover extends BaseAction {
 			}
 		}
 
+		for (WrapScript _o : wi.getScriptList()) {
+			Script obj = business.entityManagerContainer().find(_o.getId(), Script.class);
+			if (null != obj) {
+				WrapScript.inCopier.copy(_o, obj);
+			} else {
+				obj = WrapScript.inCopier.copy(_o);
+				persistObjects.add(obj);
+			}
+			if (StringUtils.isNotEmpty(obj.getAlias())) {
+				obj.setAlias(this.idleAliasWithEntity(business, null, obj.getAlias(), Script.class, obj.getId()));
+			}
+			if (StringUtils.isNotEmpty(obj.getName())) {
+				obj.setName(this.idleNameWithEntity(business, null, obj.getName(), Script.class, obj.getId()));
+			}
+		}
+
 		for (WrapApplicationDict _o : wi.getDictList()) {
 			ApplicationDict obj = business.entityManagerContainer().find(_o.getId(), ApplicationDict.class);
 			if (null != obj) {
@@ -127,6 +141,7 @@ class ActionCover extends BaseAction {
 
 		business.entityManagerContainer().beginTransaction(Invoke.class);
 		business.entityManagerContainer().beginTransaction(Agent.class);
+		business.entityManagerContainer().beginTransaction(Script.class);
 		business.entityManagerContainer().beginTransaction(ApplicationDict.class);
 		business.entityManagerContainer().beginTransaction(ApplicationDictItem.class);
 
@@ -147,6 +162,9 @@ class ActionCover extends BaseAction {
 		}
 		if(!wi.getDictList().isEmpty()){
 			CacheManager.notify(ApplicationDict.class);
+		}
+		if(!wi.getScriptList().isEmpty()){
+			CacheManager.notify(Script.class);
 		}
 		return serviceModuleEnum;
 	}
