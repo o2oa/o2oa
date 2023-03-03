@@ -911,6 +911,7 @@ MWF.xApplication.query.StatementStatDesigner.StatementList.Item = new Class({
             this.list.statementStat.json.statementList.erase( this.data );
             this.list.itemList.erase( this );
         }
+        this.list.statementStat.refreshViewFilterOption();
         this.node.destroy();
         if( this.list.itemList.length === 0 ){
             this.list.showEmptyNode();

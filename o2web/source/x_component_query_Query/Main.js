@@ -22,6 +22,7 @@ MWF.xApplication.query.Query.Main = new Class({
             this.options.viewId = this.status.viewId;
             this.options.statId = this.status.statId;
             this.options.statementId = this.status.statementId;
+            this.options.statementStatId = this.status.statementStatId;
             this.options.importerId = this.status.importerId;
         }
 	},
@@ -69,6 +70,10 @@ MWF.xApplication.query.Query.Main = new Class({
                 statementNumber: 3,
                 statementName: lp.statement,
                 statementIcon: "../x_component_query_Query/$Main/"+this.options.style+"/icon/statement_new.png",
+                statementStatShow: "true",
+                statementStatNumber: 3.5,
+                statementStatName: lp.statementStat,
+                statementStatIcon: "../x_component_query_Query/$Main/"+this.options.style+"/icon/statement_new.png",
                 importerShow: "true",
                 importerNumber: 4,
                 importerName: lp.importer,
@@ -142,6 +147,18 @@ MWF.xApplication.query.Query.Main = new Class({
             });
         }
 
+        if( data.statementStatShow !== "false" && data.statementStatShow !== false ) {
+            this.naviStatementStatTitleNode = new Element("div", {"styles": this.css.naviCategoryNode });
+            // this.naviStatementTitleNode = new Element("div", {"styles": this.css.naviStatementTitleNode, "text": data.statementName});
+            this.naviStatementStatContentNode = new Element("div", {"styles": this.css.naviStatementContentNode});
+            object.push({
+                "type": "statementStat",
+                "index": data.statementStatNumber,
+                "titleNode": this.naviStatementStatTitleNode,
+                "contentNode": this.naviStatementStatContentNode
+            });
+        }
+
         if( data.importerShow !== "false" && data.importerShow !== false ) {
             this.naviImporterTitleNode = new Element("div", {"styles": this.css.naviCategoryNode });
             // this.naviImporterTitleNode = new Element("div", {
@@ -212,10 +229,10 @@ MWF.xApplication.query.Query.Main = new Class({
     },
     createNavi: function(){
 	    debugger;
-	    var viewLoaded,statLoaded, statementLoaded,importerLoaded;
+	    var viewLoaded,statLoaded, statementLoaded, statementStatLoaded, importerLoaded;
 	    var callback = function () {
-	        if( this.viewItemSelected || this.statItemSelected || this.statementItemSelected || this.importerItemSelected )return;
-            if(viewLoaded && statLoaded && statementLoaded && importerLoaded){
+	        if( this.viewItemSelected || this.statItemSelected || this.statementItemSelected || this.statementStatItemSelected || this.importerItemSelected )return;
+            if(viewLoaded && statLoaded && statementLoaded && statementStatLoaded && importerLoaded){
                 for( var i=0; i<this.naviArray.length; i++ ){
                     var items = this[this.naviArray[i].type+'Items'];
                     if( items && items.length ){
@@ -238,6 +255,12 @@ MWF.xApplication.query.Query.Main = new Class({
 
         this.createStatementNavi(function () {
             statementLoaded = true;
+            callback();
+        }.bind(this));
+
+
+        this.createStatementStatNavi(function () {
+            statementStatLoaded = true;
             callback();
         }.bind(this));
 
@@ -344,6 +367,41 @@ MWF.xApplication.query.Query.Main = new Class({
             callback();
         }
     },
+    createStatementStatNavi: function(callback){
+        var data = this.interfaceData;
+        this.statementStatItems = [];
+        this.statementStatItemSelected = false;
+        if( data.statementStatShow !== "flase" && data.statementStatShow !== false ) {
+            MWF.Actions.load("x_query_assemble_surface").StatementAction.listWithQuery(this.options.id, {
+                "justSelect": true,
+                "hasView": true
+            }, function (json) {
+                //this.action.listStat(this.options.id, function(json){
+                if (json.data) {
+                    if(json.data.length === 0){
+                        this.naviStatementStatTitleNode.hide();
+                        this.naviStatementStatContentNode.hide();
+                    }
+                    (json.data || []).sort(function(a, b){
+                        return (a.orderNumber || 999999999) - (b.orderNumber || 999999999 );
+                    });
+                    json.data.each(function (statementStat) {
+                        if (statementStat.display !== false ) {
+                            var item = this.createStatementStatNaviItem(statementStat);
+                            this.statementStatItems.push(item);
+                            if (statementStat.id === this.options.statementStatId) {
+                                item.selected();
+                                this.statementStatItemSelected = true;
+                            }
+                        }
+                    }.bind(this));
+                }
+                callback();
+            }.bind(this));
+        }else{
+            callback();
+        }
+    },
     createImporterNavi: function(callback){
         var data = this.interfaceData;
         this.importerItems = [];
@@ -386,6 +444,10 @@ MWF.xApplication.query.Query.Main = new Class({
     },
     createStatementNaviItem: function(statement){
         var item = new MWF.xApplication.query.Query.StatementItem(statement, this);
+        return item;
+    },
+    createStatementStatNaviItem: function(statementStat){
+        var item = new MWF.xApplication.query.Query.StatementStatItem(statementStat, this);
         return item;
     },
     createImporterNaviItem: function(importer){
@@ -512,6 +574,35 @@ MWF.xApplication.query.Query.StatementItem = new Class({
                 "application": this.view.query,
                 "statementName": this.view.name,
                 "statementId" : this.view.id
+            },{
+                "onLoadLayout": function () {
+                    this.viewAreaNode.setStyles({
+                        "padding-left": "10px",
+                        "padding-right": "10px"
+                    });
+                    if( this.viewJson && this.viewJson.customFilterList && this.viewJson.customFilterList.length ) {
+                    }else{
+                        this.viewAreaNode.setStyles({"padding-top": "10px"})
+                    }
+                }
+            }, this.app);
+        }.bind(this));
+    }
+});
+
+
+MWF.xApplication.query.Query.StatementStatItem = new Class({
+    Extends: MWF.xApplication.query.Query.ViewItem,
+    getContentNode: function(){
+        return this.app.naviStatementStatContentNode;
+    },
+    loadView: function(){
+        MWF.xDesktop.requireApp("query.Query", "StatementStat",function(){
+            this.viewContent.empty();
+            this.viewer = new MWF.QStatementStat( this.viewContent, {
+                "application": this.view.query,
+                "statementStatName": this.view.name,
+                "statementStatId" : this.view.id
             },{
                 "onLoadLayout": function () {
                     this.viewAreaNode.setStyles({
