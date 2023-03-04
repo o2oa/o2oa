@@ -12,7 +12,7 @@ MWF.xApplication.Homepage.LP = o2.HPLP = {
 	"noHotpic": "暂时没有热点新闻",
 	"noInforItem": "暂时没有信息",
 	"noCalendar": "当天没有日程",
-	"noFile": "点击此处访问企业网盘",
+	"noFile": "点击此处访问网盘",
 	"moreInfor": "更多信息",
 	"allInfor": "最新信息",
 	"moreMeeting": "更多会议",

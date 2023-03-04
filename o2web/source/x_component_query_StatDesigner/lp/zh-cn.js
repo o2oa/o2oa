@@ -21,6 +21,7 @@ MWF.xApplication.query.StatDesigner.LP = {
     "ok" : "确定",
     "cancel" : "取消",
     "view" : "视图",
+    "saveViewNotice" : "请先保存统计！",
 
     "action": {
         "move": "移动",
