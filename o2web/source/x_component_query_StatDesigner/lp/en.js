@@ -21,6 +21,7 @@ MWF.xApplication.query.StatDesigner.LP = {
     "ok": "OK",
     "cancel": "Cancel",
     "view": "View",
+    "saveViewNotice" : "Please save statistics first！",
 
     "action": {
         "move": "Move",

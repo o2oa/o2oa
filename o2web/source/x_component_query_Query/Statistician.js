@@ -779,12 +779,12 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
         var _self = this;
         this.headTr = this.table.insertRow();
         this.selectAllTd = (this.headTr.insertCell()).setStyles(this.css.statAllSelectTd).set("title", this.lp.selecteAll);
-        this.selectAllTd.addEvent("click", function(){
+        this.selectAllTd.addClass("selectAllTd").addEvent("click", function(){
             _self.selectAll(this);
         });
 
         this.selectEntryTd = (this.headTr.insertCell()).setStyles(this.css.statAllColSelectTd).set("title", this.lp.selecteAllCol);
-        this.selectEntryTd.addEvent("click", function(){
+        this.selectEntryTd.addClass("selectAllColTd").addEvent("click", function(){
             _self.selectAllCol(this);
         });
 
@@ -792,15 +792,19 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
             this.statGridData[0].list.each(function(d){
                 var title = d.displayName;
                 selectTd = (this.headTr.insertCell()).setStyles(this.css.statColSelectTd);
-                selectTd.addEvent("click", function(){
+                selectTd.addClass("selectColTd").addEvent("click", function(){
                     _self.selectCol(this);
                 });
             }.bind(this));
         }
 
+        if( this.isRowToColumn && this.data.calculate.isAmount ){
+            this.totalBlankTd = new Element("td.blankTd", {"styles": this.css.blankTd}).inject(this.headTr);
+        }
+
         this.titleTr = this.table.insertRow();
         this.selectGroupTd = (this.titleTr.insertCell()).setStyles(this.css.statAllRowSelectTd).set("title", this.lp.selecteAllRow);
-        this.selectGroupTd.addEvent("click", this.selectAllRow.bind(this))
+        this.selectGroupTd.addClass("selectAllRowTd").addEvent("click", this.selectAllRow.bind(this));
 
         this.categoryTitleTd = new Element("th", {
             "styles": this.css.statHeadTh,
@@ -817,6 +821,10 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
                 }).inject(this.titleTr);
             }.bind(this));
         }
+
+        if( this.isRowToColumn && this.data.calculate.isAmount ){
+           this.totalTh = new Element("th.totalTh", {"styles": this.css.totalHeadTh, "text": this.lp.amount}).inject(this.titleTr);
+        }
     },
 
     createTableData: function(){
@@ -831,11 +839,11 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
             //     }
             // }
 
-            var total = [];
+
             this.statGridData.each(function(d){
-                var tr = this.table.insertRow();
-                var selectTd = tr.insertCell().setStyles(this.css.statRowSelectTd);
-                selectTd.addEvent("click", function(){
+                var tr = this.table.insertRow().addClass("dataTr");
+                var selectTd = tr.insertCell().setStyles(this.css.statRowSelectTd).addClass("selectTd");
+                selectTd.addClass("selectRowTd").addEvent("click", function(){
                     _self.selectRow(this);
                 });
                 var text = d.group;
@@ -844,33 +852,43 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
                 // }
                 var categoryTh = new Element("th", {"styles": this.css.statHeadTh, "text": text}).inject(tr);
 
+                var total = new Decimal(0);
                 d.list.each(function(l, i){
-                    var td = new Element("td", {"styles": this.css.statContentTdNode}).inject(tr);
+                    var td = new Element("td.dataTd", {"styles": this.css.statContentTdNode}).inject(tr);
                     td.set("text", l.value);
                     this.setDragEvent(td);
 
-                    var addv = ( l.value || "0" ).toFloat();
-                    if( total.length > i ){
-                        total[i] = total[i].plus(addv);
-                    }else{
-                        total.push( new Decimal(addv) );
-                    }
-
+                    total = total.plus( ( l.value || "0" ).toFloat() )
                 }.bind(this));
+
+                if( this.isRowToColumn && this.data.calculate.isAmount ) {
+                    var td = new Element("td.totalTd", {"styles": this.css.totalContentTdNode}).inject(tr);
+                    td.set("text", total.toString());
+                }
 
             }.bind(this));
 
-            if( this.data.calculate.isAmount ){
+            if( !this.isRowToColumn && this.data.calculate.isAmount ){
+                var totals = [];
+                this.statGridData.each(function(d){
+                    d.list.each(function(l, i){
+                        var addv = ( l.value || "0" ).toFloat();
+                        if( totals.length > i ){
+                            totals[i] = totals[i].plus(addv);
+                        }else{
+                            totals.push( new Decimal(addv) );
+                        }
+
+                    }.bind(this));
+                }.bind(this));
+
                 var tr = this.table.insertRow();
                 tr.addClass("totalTr");
-                var td = new Element("td", {"styles": this.css.statHeadTh}).inject(tr);
-                td.setStyle("background", "#ffffff");
+                var td = new Element("td.blankTd", {"styles": this.css.blankTd}).inject(tr);
 
-                var th = new Element("th", {"styles": this.css.statHeadTh, "text": this.lp.amount}).inject(tr);
-                th.setStyle("background", "#f3f3f3");
-                total.each(function(l) {
-                    var td = new Element("td", {"styles": this.css.statContentTdNode}).inject(tr);
-                    td.setStyle("background", "#f3f3f3");
+                var th = new Element("th.totalTh", {"styles": this.css.totalHeadTh, "text": this.lp.amount}).inject(tr);
+                totals.each(function(l) {
+                    var td = new Element("td.totalTd", {"styles": this.css.totalContentTdNode}).inject(tr);
                     td.set("text", l.toString());
                 }.bind(this))
             }
@@ -942,8 +960,10 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
         var toRowIndex = rowIndex+rows;
 
         var statRowIndex;
-        var statRow = this.table.getElement(".totalTr");
-        if( statRow )statRowIndex = statRow.rowIndex - 2;
+        if( !this.isRowToColumn && this.data.calculate.isAmount ){
+            var statRow = this.table.getElement(".totalTr");
+            if( statRow )statRowIndex = statRow.rowIndex - 2;
+        }
 
         if (toRowIndex>rowIndex){
             for (var i=rowIndex; i<=toRowIndex; i++){
@@ -954,10 +974,19 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
                 if( i !== statRowIndex )this.selectedRows.push(i);
             }
         }
+
+        var statColIndex;
+        if( this.isRowToColumn && this.data.calculate.isAmount ){
+            statColIndex = (this.totalBlankTd || this.totalTh).cellIndex - 2;
+        }
         if (toCellIndex>cellIndex){
-            for (var i=cellIndex; i<=toCellIndex; i++) this.selectedCols.push(i);
+            for (var i=cellIndex; i<=toCellIndex; i++){
+                if( i !== statColIndex )this.selectedCols.push(i);
+            }
         }else{
-            for (var i=toCellIndex; i<=cellIndex; i++) this.selectedCols.push(i);
+            for (var i=toCellIndex; i<=cellIndex; i++) {
+                if( i !== statColIndex )this.selectedCols.push(i);
+            }
         }
         this.checkSelectedCells();
     },
@@ -968,7 +997,7 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
         trs.each(function (tr, i) {
             if( i === 0 ){
                 tr.getElements("td").each(function (td, i) {
-                    if( i > 1 )td.setStyles(this.css.statTableSelectTd);
+                    if( i > 1 && td.hasClass("selectColTd") )td.setStyles(this.css.statTableSelectTd);
                 }.bind(this));
             }else if( i > 1 ){
                 tr.getElement("td").setStyles(this.css.statTableSelectTd);
@@ -978,10 +1007,12 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
         var tds = trs[0].getElements("td");
 
         this.selectedCols.each(function(i){
-            tds[i+2].setStyles(this.css.statTableSelectedTd);
+            var td = tds[i+2];
+            if(td.hasClass("selectColTd"))td.setStyles(this.css.statTableSelectedTd);
         }.bind(this));
         this.selectedRows.each(function(i){
-            trs[i+2].getElement("td").setStyles(this.css.statTableSelectedTd);
+            var td = trs[i+2].getElement("td");
+            if(td.hasClass("selectRowTd"))td.setStyles(this.css.statTableSelectedTd);
         }.bind(this));
         this.reloadChart();
     },
@@ -1065,7 +1096,7 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
             var trs = this.table.getElements("tr[class!='totalTr']");
             var tds = trs[0].getElements("td");
             for (var i=2; i<tds.length; i++){
-                tds[i].setStyles(this.css.statTableSelectTd);
+                if( tds[i].hasClass("selectColTd") )tds[i].setStyles(this.css.statTableSelectTd);
             }
             for (var n=2; n<trs.length; n++){
                 trs[n].getElement("td").setStyles(this.css.statTableSelectTd);
@@ -1074,8 +1105,10 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
             var seltrs = this.table.getElements("tr[class!='totalTr']");
             var seltds = seltrs[0].getElements("td");
             for (var seli=2; seli<seltds.length; seli++){
-                this.selectedCols.push(seli-2);
-                seltds[seli].setStyles(this.css.statTableSelectedTd);
+                if( seltds[seli].hasClass("selectColTd") ){
+                    this.selectedCols.push(seli-2);
+                    seltds[seli].setStyles(this.css.statTableSelectedTd);
+                }
             }
             for (var seln=2; seln<seltrs.length; seln++){
                 this.selectedRows.push(seln-2);
@@ -1103,7 +1136,7 @@ MWF.xApplication.query.Query.Statistician.GroupStat = new Class({
             };
             var cols = rows[rowIdx].getElements("td");
             for (var colIdx = 1; colIdx<cols.length; colIdx++){
-                if (this.checkIsSelected(colIdx-1, rowIdx-2)){
+                if ( cols[colIdx].hasClass("dataTd") && this.checkIsSelected(colIdx-1, rowIdx-2)){
                     cols[colIdx].setStyles(this.css.statContentTdNode_selected);
                     o.list.push({
                         "column": this.statGridData[rowIdx-2].list[colIdx-1].column,

@@ -42,6 +42,24 @@
     "viewLoadingTextNode": {
         "margin-left": "28px"
     },
+    "blankTd": {
+        "border-right": "1px solid #DFDFDF",
+        "border-bottom": "1px solid #DFDFDF"
+    },
+    "totalHeadTh": {
+        "height": "30px",
+        "line-height": "30px",
+        "background-color": "#f3f3f3",
+        "border-right": "1px solid #DFDFDF",
+        "border-bottom": "1px solid #DFDFDF"
+    },
+    "totalContentTdNode": {
+        "text-align": "center",
+        "padding": "3px",
+        "background-color": "#f3f3f3",
+        "border-right": "1px solid #DFDFDF",
+        "border-bottom": "1px solid #DFDFDF"
+    },
     "statChartNode": {
         //"margin-left": "180px",
         "height": "350px",
