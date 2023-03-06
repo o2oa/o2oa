@@ -158,6 +158,7 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
      * 1.活动环节设置允许召回
      * 2.多人活动(串并行)中没有人已经处理过,也就是没有当前活动的已办
      * 3.回溯活动如果经过一些非人工环节那么也可以召回.
+     * 
      * @param business
      * @param effectivePerson
      * @param work
@@ -170,9 +171,10 @@ class ActionGetWorkOrWorkCompleted extends BaseAction {
             Activity activity) throws Exception {
         if (BooleanUtils
                 .isTrue(PropertyTools.getOrElse(activity, Manual.allowRetract_FIELDNAME, Boolean.class, false))
-                && (business.entityManagerContainer().countEqualAndEqual(TaskCompleted.class,
+                && (business.entityManagerContainer().countEqualAndEqualAndNotEqual(TaskCompleted.class,
                         TaskCompleted.job_FIELDNAME, work.getJob(),
-                        TaskCompleted.activityToken_FIELDNAME, work.getActivityToken()) == 0)) {
+                        TaskCompleted.activityToken_FIELDNAME, work.getActivityToken(),
+                        TaskCompleted.joinInquire_FIELDNAME, false) == 0)) {
             Node node = this.workLogTree(business, work.getJob()).location(work);
             if (null != node) {
                 Nodes ups = node.upTo(ActivityType.manual, ActivityType.agent, ActivityType.choice,
