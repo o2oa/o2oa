@@ -5,6 +5,7 @@ import com.x.organization.core.express.Organization;
 import com.x.portal.assemble.surface.factory.*;
 import com.x.portal.assemble.surface.factory.cms.CmsFactory;
 import com.x.portal.assemble.surface.factory.process.ProcessFactory;
+import com.x.portal.assemble.surface.factory.service.CenterServiceFactory;
 
 public class Business {
 
@@ -106,6 +107,15 @@ public class Business {
 			this.applicationDictItem = new ApplicationDictItemFactory(this);
 		}
 		return applicationDictItem;
+	}
+
+	private CenterServiceFactory centerService;
+
+	public CenterServiceFactory centerService() throws Exception {
+		if (null == this.centerService) {
+			this.centerService = new CenterServiceFactory(this);
+		}
+		return centerService;
 	}
 
 }

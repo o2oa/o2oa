@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.x.cms.assemble.control.factory.service.CenterServiceFactory;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
 import org.apache.commons.lang3.BooleanUtils;
@@ -286,6 +287,15 @@ public class Business {
 			this.portal = new PortalFactory(this);
 		}
 		return portal;
+	}
+
+	private CenterServiceFactory centerService;
+
+	public CenterServiceFactory centerService() throws Exception {
+		if (null == this.centerService) {
+			this.centerService = new CenterServiceFactory(this);
+		}
+		return centerService;
 	}
 
 	public boolean isHasPlatformRole(String personName, String roleName) throws Exception {

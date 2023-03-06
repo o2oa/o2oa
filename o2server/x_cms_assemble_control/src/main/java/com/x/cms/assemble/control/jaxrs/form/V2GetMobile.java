@@ -139,6 +139,14 @@ class V2GetMobile extends BaseAction {
 					list.add(p.getId() + p.getUpdateTime().getTime());
 				}
 				break;
+			case RelatedScript.TYPE_SERVICE:
+				com.x.program.center.core.entity.Script cs = bus.centerService().script().pick(entry.getKey());
+				if (null != cs) {
+					map.put(entry.getKey(),
+							new RelatedScript(cs.getId(), cs.getName(), cs.getAlias(), cs.getText(), entry.getValue()));
+					list.add(cs.getId() + cs.getUpdateTime().getTime());
+				}
+				break;
 			default:
 				break;
 			}
