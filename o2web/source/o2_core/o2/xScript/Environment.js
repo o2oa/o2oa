@@ -2192,7 +2192,7 @@ MWF.xScript.Environment = function(ev){
         var name = options.name;
         var type;
         if( options.type === "service" ){
-            type === "service";
+            type = options.type;
         }else{
             type = ( options.type && options.application ) ?  options.type : "process";
         }

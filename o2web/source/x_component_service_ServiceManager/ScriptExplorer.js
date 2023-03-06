@@ -47,6 +47,14 @@ MWF.xApplication.service.ServiceManager.ScriptExplorer = new Class({
         };
         this.app.desktop.openApplication(e, "service.ScriptDesigner", options);
     },
+    setTooltip: function(){
+        this.options.tooltip = {
+            "create": MWF.xApplication.service.ServiceManager.LP.script.create,
+            "search": MWF.xApplication.service.ServiceManager.LP.script.search,
+            "searchText": MWF.xApplication.service.ServiceManager.LP.script.searchText,
+            "noElement": MWF.xApplication.service.ServiceManager.LP.script.noScriptNoticeText
+        };
+    },
     loadElementList: function(){
         if( MWF.AC.isServiceManager() ){
             this._loadItemDataList(function(json){
@@ -281,7 +289,7 @@ MWF.xApplication.service.ServiceManager.ScriptExplorer.Script = new Class({
 //		});
 //	},
     deleteScript: function(callback){
-		this.explorer.app.restActions.deleteScript(this.data.id, function(){
+		this.explorer.app.restActions.removeScript(this.data.id, function(){
 			this.node.destroy();
 			if (callback) callback();
 		}.bind(this));

@@ -1,7 +1,7 @@
 MWF.xScript = MWF.xScript || {};
 MWF.xScript.Actions = MWF.xScript.Actions || {};
 MWF.require("MWF.xDesktop.Actions.RestActions", null, false);
-MWF.xScript.Actions.CMSScriptActions = new Class({
+MWF.xScript.Actions.ServiceScriptActions = new Class({
 	initialize: function(){
 		this.action = new MWF.xDesktop.Actions.RestActions("", "x_program_center");
         this.action.getActions = function(callback){
