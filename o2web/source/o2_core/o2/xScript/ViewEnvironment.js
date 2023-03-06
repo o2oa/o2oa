@@ -261,7 +261,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
 
     //dict
     /**
-     * this.Dict是一个工具类，如果您在流程、内容管理、门户中创建了数据字典，可以使用this.Dict类对数据字典进行增删改查操作。<br/>
+     * this.Dict是一个工具类，如果您在流程、内容管理、门户和服务管理中创建了数据字典，可以使用this.Dict类对数据字典进行增删改查操作。<br/>
      * 从v8.0版本开始，支持在门户和服务管理中创建数据字典。
      * @module Dict
      * @o2cn 数据字典

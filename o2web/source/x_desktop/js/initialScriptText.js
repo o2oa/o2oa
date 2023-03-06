@@ -1627,7 +1627,22 @@ bind.cmsActions = new bind.Action("x_cms_assemble_control", {
     "getScript": {"uri": "/jaxrs/script/{flag}/appInfo/{appInfoFlag}", "method": "POST"},
 });
 bind.portalActions = new bind.Action("x_portal_assemble_surface", {
-    "getScript":  {"uri": "/jaxrs/script/portal/{portal}/name/{ }","method": "POST"}
+    "getDictionary": {"uri": "/jaxrs/dict/{dictFlag}/portal/{portalFlag}"},
+    "getDictRoot": {"uri": "/jaxrs/dict/{dictFlag}/portal/{portalFlag}/data"},
+    "getDictData": {"uri": "/jaxrs/dict/{dictFlag}/portal/{portalFlag}/{path}/data"},
+    "setDictData": {"uri": "/jaxrs/dict/{dictFlag}/portal/{portalFlag}/{path}/data", "method": "PUT"},
+    "addDictData": {"uri": "/jaxrs/dict/{dictFlag}/portal/{portalFlag}/{path}/data", "method": "POST"},
+    "deleteDictData": {"uri": "/jaxrs/dict/{dictFlag}/portal/{portalFlag}/{path}/data", "method": "DELETE"},
+    "getScript":  {"uri": "/jaxrs/script/portal/{portal}/name/{name}","method": "POST"}
+});
+bind.serviceActions = new bind.Action("x_program_center", {
+    "getDictionary": {"uri": "/jaxrs/dict/{id}"},
+    "getDictRoot": {"uri": "/jaxrs/dict/{dictFlag}/data"},
+    "getDictData": {"uri": "/jaxrs/dict/{dictFlag}/{path}/data"},
+    "setDictData": {"uri": "/jaxrs/dict/{dictFlag}/{path}/data", "method": "PUT"},
+    "addDictData": {"uri": "/jaxrs/dict/{dictFlag}/{path}/data", "method": "POST"},
+    "deleteDictData": {"uri": "/jaxrs/dict/{dictFlag}/{path}/data", "method": "DELETE"},
+    "getScript":  {"uri": "/jaxrs/script/name/{name}","method": "POST"}
 });
 
 //include 引用脚本
@@ -1640,7 +1655,8 @@ bind.portalActions = new bind.Action("x_portal_assemble_surface", {
 var includedScripts = bind.includedScripts || {};
 bind.includedScripts = includedScripts;
 /**
- * this.include是一个方法，当您在流程、门户或者内容管理中创建了脚本配置，可以使用this.include()用来引用脚本配置。<br/>
+ * this.include是一个方法，当您在流程、门户、内容管理或服务管理中创建了脚本配置，可以使用this.include()用来引用脚本配置。<br/>
+ * v8.0及以后版本中增加了服务管理的脚本配置。<br/>
  * @module include()
  * @o2cn 脚本引用
  * @o2category server.common
@@ -1653,9 +1669,7 @@ bind.includedScripts = includedScripts;
  *
  * //如果需要引用其他应用的脚本配置，将options设置为Object;
  * this.include({
- *       //type: 应用类型。可以为 portal  process  cms。
- *       //如果没有该选项或者值为空字符串，则表示应用脚本和被应用的脚本配置类型相同。
- *       //比如在门户的A应用脚本中引用门户B应用的脚本配置，则type可以省略。
+ *       //type: 应用类型。可以为 portal  process  cms  service。默认为process
  *       type : "portal",
  *       application : "首页", // 门户、流程、CMS的名称、别名、id。 默认为当前应用
  *       name : "initScript" // 脚本配置的名称、别名或id
@@ -1707,8 +1721,13 @@ bind.include = function( optionsOrName , callback ){
         options = { name : options };
     }
     var name = options.name;
-    var type = ( options.type && options.application ) ?  options.type : "process";
-    var application = options.application
+    var type;
+    if( options.type === "service" ){
+        type = options.type;
+    }else{
+        type  = ( options.type && options.application ) ?  options.type : "process";
+    }
+    var application = type === "service" ? "service" : options.application;
 
     if (!name || !type || !application){
         console.log("include", new _Error("can not find script. missing script name or application"));
@@ -1749,6 +1768,14 @@ bind.include = function( optionsOrName , callback ){
                 }
             }.bind(this));
             break;
+        case "service" :
+            bind.serviceActions.getScript(name, {"importedList":includedScripts[application]}, function(json){
+                if (json.data){
+                    includedScripts[application] = includedScripts[application].concat(json.data.importedList);
+                    scriptData = json.data;
+                }
+            }.bind(this));
+            break;
     }
     includedScripts[application].push(name);
     if (scriptData && scriptData.text){
@@ -1765,7 +1792,8 @@ bind.include = function( optionsOrName , callback ){
 //}
 //或者name: "" // 数据字典名称/别名/id
 /**
- * this.Dict是一个工具类，如果您在流程、门户中创建了数据字典，可以使用this.Dict类对数据字典进行增删改查操作。
+ * this.Dict是一个工具类，如果您在流程、内容管理、门户和服务管理中创建了数据字典，可以使用this.Dict类对数据字典进行增删改查操作。<br/>
+ * 从v8.0版本开始，支持在门户和服务管理中创建数据字典。
  * @module server.Dict
  * @o2cn 数据字典
  * @o2category server.common
@@ -1775,9 +1803,7 @@ bind.include = function( optionsOrName , callback ){
  * var dict = new this.Dict( options )
  * @example
  * var dict = new this.Dict({
- *     //type: 应用类型。可以为process  cms。
- *     //如果没有该选项或者值为空字符串，则表示应用脚本和被应用的脚本配置类型相同。
- *     //比如在流程的A应用脚本中引用流程B应用的脚本配置，则type可以省略。
+ *     //type: 应用类型。可以为process  cms portal service。默认为process。
  *    type : "cms",
  *    application : "bulletin", //流程、CMS的名称、别名、id, 默认为当前应用
  *    name : "bulletinDictionary", // 数据字典的名称、别名、id
@@ -1789,15 +1815,25 @@ bind.Dict = function(optionsOrName){
         options = { name : options };
     }
     var name = this.name = options.name;
-    var type = ( options.type && options.application ) ?  options.type : "process";
+    var type;
+    if( options.type === "service"){
+        type = options.type;
+    }else{
+        type = ( options.type && options.application ) ?  options.type : "process";
+    }
     var applicationId = options.application || ((bind.java_workContext) ? bind.java_workContext.getWork().application : "");
     var enableAnonymous = options.enableAnonymous || false;
 
     //MWF.require("MWF.xScript.Actions.DictActions", null, false);
+    var action;
     if( type == "cms" ){
-        var action = bind.cmsActions;
+        action = bind.cmsActions;
+    }else if( type == "service" ){
+        action = bind.serviceActions;
+    }else if( type == "portal" ){
+        action = bind.portalActions;
     }else{
-        var action = bind.processActions;
+        action = bind.processActions;
     }
 
     var encodePath = function( path ){
@@ -1805,7 +1841,7 @@ bind.Dict = function(optionsOrName){
         var ar = arr.map(function(v){
             return encodeURIComponent(v);
         });
-        return ar.join("/");
+        return ( type === "portal" || type === "service" ) ? ar.join(".") : ar.join("/");
     };
     /**
      * 根据路径获取数据字典中的数据。
@@ -1883,21 +1919,40 @@ bind.Dict = function(optionsOrName){
      */
     this.get = function(path, success, failure){
         var value = null;
-        if (path){
-            var p = encodePath( path );
-            action[(enableAnonymous && type == "cms") ? "getDictDataAnonymous" : "getDictData"](encodeURIComponent(this.name), applicationId, p, function(json){
-                value = json.data;
-                if (success) success(json.data);
-            }, function(xhr, text, error){
-                if (failure) failure(xhr, text, error);
-            });
+        if( type === "service" ){
+            if (path){
+                var p = encodePath( path );
+                action.getDictData(encodeURIComponent(this.name), p, function(json){
+                    value = json.data;
+                    if (success) success(json.data);
+                }, function(xhr, text, error){
+                    if (failure) failure(xhr, text, error);
+                });
+            }else{
+                action.getDictRoot(encodeURIComponent(this.name), function(json){
+                    value = json.data;
+                    if (success) success(json.data);
+                }, function(xhr, text, error){
+                    if (failure) failure(xhr, text, error);
+                }, false);
+            }
         }else{
-            action[(enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot"](encodeURIComponent(this.name), applicationId, function(json){
-                value = json.data;
-                if (success) success(json.data);
-            }, function(xhr, text, error){
-                if (failure) failure(xhr, text, error);
-            }, false);
+            if (path){
+                var p = encodePath( path );
+                action[(enableAnonymous && type == "cms") ? "getDictDataAnonymous" : "getDictData"](encodeURIComponent(this.name), applicationId, p, function(json){
+                    value = json.data;
+                    if (success) success(json.data);
+                }, function(xhr, text, error){
+                    if (failure) failure(xhr, text, error);
+                });
+            }else{
+                action[(enableAnonymous && type == "cms") ? "getDictRootAnonymous" : "getDictRoot"](encodeURIComponent(this.name), applicationId, function(json){
+                    value = json.data;
+                    if (success) success(json.data);
+                }, function(xhr, text, error){
+                    if (failure) failure(xhr, text, error);
+                }, false);
+            }
         }
 
         return value;
@@ -2036,11 +2091,19 @@ bind.Dict = function(optionsOrName){
     this.set = function(path, value, success, failure){
         var p = encodePath( path );
         //var p = path.replace(/\./g, "/");
-        action.setDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
-            if (success) success(json.data);
-        }, function(xhr, text, error){
-            if (failure) failure(xhr, text, error);
-        }, false, false);
+        if( type === "service" ){
+            action.setDictData(encodeURIComponent(this.name), p, value, function(json){
+                if (success) success(json.data);
+            }, function(xhr, text, error){
+                if (failure) failure(xhr, text, error);
+            }, false, false);
+        }else{
+            action.setDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
+                if (success) success(json.data);
+            }, function(xhr, text, error){
+                if (failure) failure(xhr, text, error);
+            }, false, false);
+        }
     };
     /**
      * 根据路径新增数据字典的数据。
@@ -2178,11 +2241,19 @@ bind.Dict = function(optionsOrName){
     this.add = function(path, value, success, failure){
         var p = encodePath( path );
         //var p = path.replace(/\./g, "/");
-        action.addDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
-            if (success) success(json.data);
-        }, function(xhr, text, error){
-            if (failure) failure(xhr, text, error);
-        }, false, false);
+        if( type === "service" ) {
+            action.addDictData(encodeURIComponent(this.name), p, value, function(json){
+                if (success) success(json.data);
+            }, function(xhr, text, error){
+                if (failure) failure(xhr, text, error);
+            }, false, false);
+        }else{
+            action.addDictData(encodeURIComponent(this.name), applicationId, p, value, function(json){
+                if (success) success(json.data);
+            }, function(xhr, text, error){
+                if (failure) failure(xhr, text, error);
+            }, false, false);
+        }
     };
     /**
      * 根据路径删除数据字典的数据。<b>流程设计后台脚本中无此方法。</b>
@@ -2295,11 +2366,19 @@ bind.Dict = function(optionsOrName){
     this["delete"] = function(path, success, failure){
         var p = encodePath( path );
         //var p = path.replace(/\./g, "/");
-        action.deleteDictData(encodeURIComponent(this.name), applicationId, p, function(json){
-            if (success) success(json.data);
-        }, function(xhr, text, error){
-            if (failure) failure(xhr, text, error);
-        }, false, false);
+        if( type === "service" ) {
+            action.deleteDictData(encodeURIComponent(this.name), p, function(json){
+                if (success) success(json.data);
+            }, function(xhr, text, error){
+                if (failure) failure(xhr, text, error);
+            }, false, false);
+        }else{
+            action.deleteDictData(encodeURIComponent(this.name), applicationId, p, function(json){
+                if (success) success(json.data);
+            }, function(xhr, text, error){
+                if (failure) failure(xhr, text, error);
+            }, false, false);
+        }
     };
     this.destory = this["delete"];
 };
