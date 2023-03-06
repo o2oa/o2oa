@@ -8,7 +8,7 @@ MWF.xApplication.service.ServiceManager.ScriptExplorer = new Class({
             "create": MWF.xApplication.service.ServiceManager.LP.script.create,
             "search": MWF.xApplication.service.ServiceManager.LP.script.search,
             "searchText": MWF.xApplication.service.ServiceManager.LP.script.searchText,
-            "noElement": MWF.xApplication.service.ServiceManager.LP.script.noProcessNoticeText
+            "noElement": MWF.xApplication.service.ServiceManager.LP.script.noScriptNoticeText
         }
     },
     openFindDesigner: function(){

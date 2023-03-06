@@ -262,7 +262,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
     //dict
     /**
      * this.Dict是一个工具类，如果您在流程、内容管理、门户中创建了数据字典，可以使用this.Dict类对数据字典进行增删改查操作。<br/>
-     * 从8.0版本开始，支持在门户和服务管理中创建数据字典。
+     * 从v8.0版本开始，支持在门户和服务管理中创建数据字典。
      * @module Dict
      * @o2cn 数据字典
      * @o2category web
@@ -3661,9 +3661,17 @@ MWF.xScript.ViewEnvironment = function (ev) {
             options = { name: options };
         }
         var name = options.name;
-        var type = (options.type && options.application) ? options.type : "portal";
+        var type;
+        if( options.type === "service" ){
+            type === "service";
+        }else{
+            type = (options.type && options.application) ? options.type : "portal";
+        }
         var application = options.application || _form.json.application;
         var key = type + "-" + application + "-" + name;
+        if( type === "service" ){
+            key = type + "-" + name;
+        }
         if (includedScripts.indexOf(key) > -1) {
             if (callback) callback.apply(this);
             return;
@@ -3716,8 +3724,17 @@ MWF.xScript.ViewEnvironment = function (ev) {
                         scriptAction = this.scriptActionCMS = new MWF.xScript.Actions.CMSScriptActions();
                     }
                     break;
+                case "service" :
+                    if (this.scriptActionService) {
+                        scriptAction = this.scriptActionService;
+                    } else {
+                        MWF.require("MWF.xScript.Actions.ServiceScriptActions", null, false);
+                        scriptAction = this.scriptActionService = new MWF.xScript.Actions.ServiceScriptActions();
+                    }
+                    break;
             }
-            scriptAction.getScriptByName(application, name, includedScripts, function (json) {
+
+            var successCallback = function (json) {
                 if (json.data) {
                     includedScripts.push(key);
 
@@ -3735,6 +3752,8 @@ MWF.xScript.ViewEnvironment = function (ev) {
                             includedScripts.push( type + "-" + json.data.application + "-" + flag );
                             if( json.data.appName )includedScripts.push( type + "-" + json.data.appName + "-" + flag );
                             if( json.data.appAlias )includedScripts.push( type + "-" + json.data.appAlias + "-" + flag );
+                        }else if (type === "service") {
+                            includedScripts.push(type + "-" + flag);
                         }
                     });
 
@@ -3744,7 +3763,13 @@ MWF.xScript.ViewEnvironment = function (ev) {
                 } else {
                     if (callback) callback.apply(this);
                 }
-            }.bind(this), null, !!async);
+            }.bind(this);
+
+            if( type === "service" ){
+                scriptAction.getScriptByName(name, includedScripts, successCallback, null, !!async);
+            }else{
+                scriptAction.getScriptByName(application, name, includedScripts, successCallback, null, !!async);
+            }
         }
     };
     this.include = function( optionsOrName , callback, async){

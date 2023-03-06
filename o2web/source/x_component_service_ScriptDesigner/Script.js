@@ -52,7 +52,7 @@ MWF.xApplication.service.ScriptDesigner.Script = new Class({
             this.data.text = this.editor.getValue();
 
             this.isSave = true;
-            this.designer.actions.saveScript(this.data, function(json){
+            var successCallback = function (json) {
                 this.isSave = false;
                 this.data.isNewScript = false;
                 this.isChanged = false;
@@ -63,13 +63,20 @@ MWF.xApplication.service.ScriptDesigner.Script = new Class({
                 this.designer.notice(this.designer.lp.notice.save_success, "success", this.node, {"x": "left", "y": "bottom"});
                 this.data.id = json.data.id;
                 if (callback) callback();
-            }.bind(this), function(xhr, text, error){
+            }.bind(this);
+            var failCallback = function(xhr, text, error){
                 this.isSave = false;
 
                 var errorText = error+":"+text;
                 if (xhr) errorText = xhr.responseText;
                 MWF.xDesktop.notice("error", {x: "right", y:"top"}, "request json error: "+errorText);
-            }.bind(this));
+            }.bind(this);
+
+            if (!this.data.id){
+                this.designer.actions.addScript( this.data, successCallback, failCallback );
+            }else{
+                this.designer.actions.updateScript( this.data.id, this.data, successCallback, failCallback );
+            }
         }else{
             MWF.xDesktop.notice("info", {x: "right", y:"top"}, this.designer.lp.isSave);
         }
@@ -95,7 +102,7 @@ MWF.xApplication.service.ScriptDesigner.Script = new Class({
             this.data.text = this.editor.getValue();
 
             this.isSave = true;
-            this.designer.actions.saveScript(this.data, function(json){
+            var successCallback = function(json){
                 this.isSave = false;
                 this.data.isNewScript = false;
                 this.isChanged = false;
@@ -105,13 +112,17 @@ MWF.xApplication.service.ScriptDesigner.Script = new Class({
                 }
                 this.data.id = json.data.id;
                 if (callback) callback();
-            }.bind(this), function(xhr, text, error){
+            }.bind(this);
+            var failCallback = function(xhr, text, error){
                 this.isSave = false;
-
-            }.bind(this));
+            }.bind(this);
+            if (!this.data.id){
+                this.designer.actions.addScript( this.data, successCallback, failCallback );
+            }else{
+                this.designer.actions.updateScript( this.data.id, this.data, successCallback, failCallback );
+            }
         }else{
             MWF.xDesktop.notice("info", {x: "right", y:"top"}, this.designer.lp.isSave);
         }
     }
-
 });

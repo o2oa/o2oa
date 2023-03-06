@@ -1,5 +1,6 @@
 MWF.xApplication.process = MWF.xApplication.process || {};
 MWF.xApplication.process.ScriptDesigner = MWF.xApplication.process.ScriptDesigner || {};
+MWF.xDesktop.requireApp("process.ScriptDesigner", "Main", null, false);
 MWF.xApplication.service.ScriptDesigner.options = {
 	"multitask": true,
 	"executable": false
@@ -16,7 +17,7 @@ MWF.xApplication.service.ScriptDesigner.Main = new Class({
 		"appTitle": MWF.APPSD.LP.title,
 		"id": "",
 		"actions": null,
-		"category": null,
+		"category": null
 	},
 	onQueryLoad: function(){
 		if (this.status){
@@ -26,9 +27,6 @@ MWF.xApplication.service.ScriptDesigner.Main = new Class({
 			this.options.desktopReload = false;
 			this.options.title = this.options.title + "-"+MWF.APPSD.LP.newScript;
 		}
-        if( !this.application && this.options.application ){
-            this.application = this.options.application;
-        }
 
         this.actions = MWF.Actions.get("x_program_center");
 
@@ -57,7 +55,7 @@ MWF.xApplication.service.ScriptDesigner.Main = new Class({
 
 
     addIncludeToList: function(name){
-        this.actions.getScriptByName(name, this.application.id, function(json){
+        this.actions.getScriptByName(name, function(json){
             var script = json.data;
             var includeScriptItem = new Element("div", {"styles": this.css.includeScriptItem}).inject(this.propertyIncludeListArea);
             var includeScriptItemAction = new Element("div", {"styles": this.css.includeScriptItemAction}).inject(includeScriptItem);
@@ -78,7 +76,33 @@ MWF.xApplication.service.ScriptDesigner.Main = new Class({
             this.scriptTab.showPage.script.data.dependScriptList.erase(name);
         }.bind(this));
     },
+    loadScriptByData: function(node, e){
+        var script = node.retrieve("script");
 
+        var openNew = true;
+        for (var i = 0; i<this.scriptTab.pages.length; i++){
+            if (script.id==this.scriptTab.pages[i].script.data.id){
+                this.scriptTab.pages[i].showTabIm();
+                openNew = false;
+                break;
+            }
+        }
+        if (openNew){
+            this.loadScriptData(script.id, function(data){
+                var script = new MWF.xApplication.service.ScriptDesigner.Script(this, data);
+                script.load();
+            }.bind(this), true);
+        }
+        //var _self = this;
+        //var options = {
+        //    "onQueryLoad": function(){
+        //        this.actions = _self.actions;
+        //        this.options.id = script.id;
+        //        this.application = _self.application;
+        //    }
+        //};
+        //this.desktop.openApplication(e, "process.ScriptDesigner", options);
+    },
 	//loadForm------------------------------------------
     loadScript: function(){
         //this.scriptTab.addTab(node, title);
@@ -104,10 +128,10 @@ MWF.xApplication.service.ScriptDesigner.Main = new Class({
 	},
 
     loadNewScriptData: function(callback){
-        this.actions.getUUID(function(id){
+        // this.actions.getUUID(function(id){
             var data = {
                 "name": "",
-                "id": id,
+               // "id": id,
                 "alias": "",
                 "description": "",
                 "language": "javascript",
@@ -117,7 +141,7 @@ MWF.xApplication.service.ScriptDesigner.Main = new Class({
             };
             this.createListScriptItem(data, true);
             if (callback) callback(data);
-        }.bind(this))
+        // }.bind(this))
 	},
     loadScriptData: function(id, callback, notSetTile){
 		this.actions.getScript(id, function(json){

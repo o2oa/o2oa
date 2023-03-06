@@ -35,7 +35,7 @@ MWF.xApplication.service.ServiceManager.LP = {
         "search": "搜索代理",
         "searchText": "请输入关键字",
 
-        "noAgentNoticeText": "此数据应用现在还没有代理，您可以点击此处创建一个新代理",
+        "noAgentNoticeText": "服务管理现在还没有代理，您可以点击此处创建一个新代理",
         "loaded": "代理加载完毕",
 
         "deleteProcessTitle": "删除代理确认",
@@ -52,7 +52,7 @@ MWF.xApplication.service.ServiceManager.LP = {
         "search": "搜索接口",
         "searchText": "请输入关键字",
 
-        "noAgentNoticeText": "此数据应用现在还没有接口，您可以点击此处创建一个新接口",
+        "noAgentNoticeText": "服务管理现在还没有接口，您可以点击此处创建一个新接口",
         "loaded": "接口加载完毕",
 
         "deleteProcessTitle": "删除接口确认",
@@ -67,7 +67,7 @@ MWF.xApplication.service.ServiceManager.LP = {
         "search": "搜索数据字典",
         "searchText": "请输入关键字",
 
-        "noDictionaryNoticeText": "此应用现在还没有数据字典，您可以点击此处创建一个新数据字典",
+        "noDictionaryNoticeText": "服务管理现在还没有数据字典，您可以点击此处创建一个新数据字典",
         "noDictionaryNoCreateNoticeText": "此应用现在没有数据字典",
         "loaded": "数据字典加载完毕",
         "deleteFormTitle": "删除数据字典确认",
@@ -80,7 +80,7 @@ MWF.xApplication.service.ServiceManager.LP = {
         "search": "搜索脚本",
         "searchText": "请输入关键字",
 
-        "noScriptNoticeText": "此应用现在还没有脚本，您可以点击此处创建一个新脚本",
+        "noScriptNoticeText": "服务管理现在还没有脚本，您可以点击此处创建一个新脚本",
         "loaded": "脚本加载完毕",
         "deleteFormTitle": "删除脚本确认",
         "deleteForm": "是否确定要删除当前脚本？",

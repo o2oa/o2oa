@@ -1503,9 +1503,17 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                 options = {name: options};
             }
             var name = options.name;
-            var type = (options.type && options.application) ? options.type : "portal";
+            var type;
+            if( options.type === "service" ){
+                type === "service";
+            }else{
+                type = (options.type && options.application) ? options.type : "portal";
+            }
             var application = options.application || _form.json.application;
             var key = type + "-" + application + "-" + name;
+            if( type === "service" ){
+                key = type + "-" + name;
+            }
             if (includedScripts.indexOf(key) > -1) {
                 if (callback) callback.apply(this);
                 return;
@@ -1558,8 +1566,17 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                             scriptAction = this.scriptActionCMS = new MWF.xScript.Actions.CMSScriptActions();
                         }
                         break;
+                    case "service" :
+                        if (this.scriptActionService) {
+                            scriptAction = this.scriptActionService;
+                        } else {
+                            MWF.require("MWF.xScript.Actions.ServiceScriptActions", null, false);
+                            scriptAction = this.scriptActionService = new MWF.xScript.Actions.ServiceScriptActions();
+                        }
+                        break;
                 }
-                scriptAction.getScriptByName(application, name, includedScripts, function (json) {
+
+                var successCallback = function (json) {
                     if (json.data) {
                         includedScripts.push(key);
 
@@ -1577,6 +1594,8 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                                 includedScripts.push(type + "-" + json.data.application + "-" + flag);
                                 if (json.data.appName) includedScripts.push(type + "-" + json.data.appName + "-" + flag);
                                 if (json.data.appAlias) includedScripts.push(type + "-" + json.data.appAlias + "-" + flag);
+                            }else if (type === "service") {
+                                includedScripts.push(type + "-" + flag);
                             }
                         });
 
@@ -1586,7 +1605,13 @@ if (!MWF.xScript || !MWF.xScript.PageEnvironment) {
                     } else {
                         if (callback) callback.apply(this);
                     }
-                }.bind(this), null, !!async);
+                }.bind(this);
+
+            if( type === "service" ){
+                scriptAction.getScriptByName(name, includedScripts, successCallback, null, !!async);
+            }else{
+                scriptAction.getScriptByName(application, name, includedScripts, successCallback, null, !!async);
+            }
             }
         };
         this.include = function (optionsOrName, callback, async) {

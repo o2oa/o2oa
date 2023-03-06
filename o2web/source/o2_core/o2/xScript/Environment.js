@@ -2116,7 +2116,8 @@ MWF.xScript.Environment = function(ev){
     // }
 
     /**
-     * this.include是一个方法，当您在流程、门户或者内容管理中创建了脚本配置，可以使用this.include()用来引用脚本配置。<br/>
+     * this.include是一个方法，当您在流程、门户、内容管理或服务管理中创建了脚本配置，可以使用this.include()用来引用脚本配置。<br/>
+     * v8.0及以后版本中增加了服务管理的脚本配置。<br/>
      * <b>（建议使用表单中的预加载脚本，需要判断加载的时候才使用本方法加载脚本，此时建议异步加载有助于表单加载速度。）</b><br/>
      * @module include
      * @o2cn 脚本引用
@@ -2130,11 +2131,11 @@ MWF.xScript.Environment = function(ev){
      *
      * //如果需要引用其他应用的脚本配置，将options设置为Object或者Object Array;
      * this.include({
-     *       //type: 应用类型。可以为 portal  process  cms。
+     *       //type: 应用类型。可以为 portal  process  cms  service。
      *       //如果没有该选项或者值为空字符串，则表示应用脚本和被应用的脚本配置类型相同。
      *       //比如在门户的A应用脚本中引用门户B应用的脚本配置，则type可以省略。
      *       type : "portal",
-     *       application : "首页", // 门户、流程、CMS的名称、别名、id。 默认为当前应用
+     *       application : "首页", // 门户、流程、CMS的名称、别名、id。 默认为当前应用，如果脚本在服务管理中忽略该参数
      *       name : "initScript" // 脚本配置的名称、别名或id
      * })
      * this.include([  //也可以对象和字符串混合数组
@@ -2189,9 +2190,17 @@ MWF.xScript.Environment = function(ev){
             options = { name : options };
         }
         var name = options.name;
-        var type = ( options.type && options.application ) ?  options.type : "process";
+        var type;
+        if( options.type === "service" ){
+            type === "service";
+        }else{
+            type = ( options.type && options.application ) ?  options.type : "process";
+        }
         var application = options.application || _form.json.application;
         var key = type +"-" + application + "-"  + name;
+        if( type === "service" ){
+            key = type + "-" + name;
+        }
         if (includedScripts.indexOf( key )> -1){
             if (callback) callback.apply(this);
             return;
@@ -2244,9 +2253,17 @@ MWF.xScript.Environment = function(ev){
                         scriptAction = this.scriptActionCMS = new MWF.xScript.Actions.CMSScriptActions();
                     }
                     break;
+                case "service" :
+                    if (this.scriptActionService) {
+                        scriptAction = this.scriptActionService;
+                    } else {
+                        MWF.require("MWF.xScript.Actions.ServiceScriptActions", null, false);
+                        scriptAction = this.scriptActionService = new MWF.xScript.Actions.ServiceScriptActions();
+                    }
+                    break;
             }
 
-            scriptAction.getScriptByName(application, name, includedScripts, function (json) {
+            var successCallback = function (json) {
                 if (json.data) {
                     includedScripts.push(key);
 
@@ -2264,6 +2281,8 @@ MWF.xScript.Environment = function(ev){
                             includedScripts.push(type + "-" + json.data.application + "-" + flag);
                             if (json.data.appName) includedScripts.push(type + "-" + json.data.appName + "-" + flag);
                             if (json.data.appAlias) includedScripts.push(type + "-" + json.data.appAlias + "-" + flag);
+                        }else if (type === "service") {
+                            includedScripts.push(type + "-" + flag);
                         }
                     });
                     includedScripts = includedScripts.concat(json.data.importedList);
@@ -2273,7 +2292,13 @@ MWF.xScript.Environment = function(ev){
                 } else {
                     if (callback) callback.apply(this);
                 }
-            }.bind(this), null, !!async);
+            }.bind(this);
+
+            if( type === "service" ){
+                scriptAction.getScriptByName(name, includedScripts, successCallback, null, !!async);
+            }else{
+                scriptAction.getScriptByName(application, name, includedScripts, successCallback, null, !!async);
+            }
         }
     };
     this.include = function( optionsOrName , callback, async){

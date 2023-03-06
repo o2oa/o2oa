@@ -64,7 +64,7 @@ MWF.xApplication.service.ServiceManager.LP = {
         "search": "Search Data Dictionary",
         "searchText": "Please enter a keyword",
 
-        "noDictionaryNoticeText": "This application does not have a data dictionary yet, you can click here to create a new data dictionary",
+        "noDictionaryNoticeText": "There is no data dictionary, you can click here to create a new data dictionary",
         "noDictionaryNoCreateNoticeText": "This application does not have a data dictionary now",
         "loaded": "Data dictionary loaded",
         "deleteFormTitle": "Confirm Delete Data Dictionary",
@@ -78,7 +78,7 @@ MWF.xApplication.service.ServiceManager.LP = {
         "search": "Search Script",
         "searchText": "Please enter a keyword",
 
-        "noScriptNoticeText": "There is no script for this application, you can click here to create a new script",
+        "noScriptNoticeText": "There is no script, you can click here to create a new script",
         "loaded": "Script loaded",
         "deleteFormTitle": "Delete Script Confirmation",
         "deleteForm": "Are you sure you want to delete the current script?",

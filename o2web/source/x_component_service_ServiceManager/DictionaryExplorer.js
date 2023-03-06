@@ -208,7 +208,7 @@ MWF.xApplication.service.ServiceManager.DictionaryExplorer = new Class({
         data.name = someItem.name;
         data.alias = someItem.alias;
 
-        this.app.restActions.updataDictionary(data.id, data, function(){
+        this.app.restActions.updateDictionary(data.id, data, function(){
             if (success) success();
         }.bind(this), function(){
             if (failure) failure();
