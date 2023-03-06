@@ -6,27 +6,38 @@ import com.x.base.core.project.annotation.FieldDescribe;
 
 public class ManualProperties extends JsonProperties {
 
-	private static final long serialVersionUID = -8141148907781411801L;
-	@FieldDescribe("活动自定义数据")
-	private JsonElement customData;
+    private static final long serialVersionUID = -8141148907781411801L;
+    @FieldDescribe("活动自定义数据")
+    private JsonElement customData;
 
-	@FieldDescribe("是否允许加签")
-	private Boolean allowAddTask;
+    @FieldDescribe("是否允许加签")
+    private Boolean allowAddTask;
 
-	public JsonElement getCustomData() {
-		return customData;
-	}
+    @FieldDescribe("同一处理人不同身份代码合并处理一次.")
+    private Boolean processingTaskOnceUnderSamePerson;
 
-	public void setCustomData(JsonElement customData) {
-		this.customData = customData;
-	}
+    public JsonElement getCustomData() {
+        return customData;
+    }
 
-	public Boolean getAllowAddTask() {
-		return allowAddTask;
-	}
+    public void setCustomData(JsonElement customData) {
+        this.customData = customData;
+    }
 
-	public void setAllowAddTask(Boolean allowAddTask) {
-		this.allowAddTask = allowAddTask;
-	}
+    public Boolean getAllowAddTask() {
+        return allowAddTask;
+    }
+
+    public void setAllowAddTask(Boolean allowAddTask) {
+        this.allowAddTask = allowAddTask;
+    }
+
+    public Boolean getProcessingTaskOnceUnderSamePerson() {
+        return processingTaskOnceUnderSamePerson;
+    }
+
+    public void setProcessingTaskOnceUnderSamePerson(Boolean processingTaskOnceUnderSamePerson) {
+        this.processingTaskOnceUnderSamePerson = processingTaskOnceUnderSamePerson;
+    }
 
 }

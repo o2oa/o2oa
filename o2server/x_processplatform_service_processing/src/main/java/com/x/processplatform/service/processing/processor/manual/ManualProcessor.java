@@ -381,7 +381,7 @@ public class ManualProcessor extends AbstractManualProcessor {
         ManualTaskIdentityMatrix matrix = executingManualTaskIdentityMatrix(aeiObjects, manual);
         List<TaskCompleted> taskCompleteds = aeiObjects.getJoinInquireTaskCompletedsRouteNameAvailableWithActivityToken(
                 aeiObjects.getWork().getActivityToken());
-        executingCompletedIdentityInTaskCompleteds(aeiObjects, matrix, taskCompleteds);
+        executingCompletedIdentityInTaskCompleteds(aeiObjects, manual, matrix, taskCompleteds);
         // 发送ProcessingSignal
         aeiObjects.getProcessingAttributes().push(Signal.manualExecute(aeiObjects.getWork().getActivityToken(), manual,
                 Objects.toString(manual.getManualMode(), ""), matrix.flat()));
@@ -447,14 +447,25 @@ public class ManualProcessor extends AbstractManualProcessor {
         return matrix;
     }
 
-    private void executingCompletedIdentityInTaskCompleteds(AeiObjects aeiObjects, ManualTaskIdentityMatrix matrix,
+    /**
+     * 将已办人员从办理身份矩阵中剔除,如果选择了'同一处理人不同身份代码合并处理一次',按人员再剔除一遍
+     * 
+     * @param aeiObjects
+     * @param manual
+     * @param matrix
+     * @param taskCompleteds
+     * @throws Exception
+     */
+    private void executingCompletedIdentityInTaskCompleteds(AeiObjects aeiObjects, Manual manual,
+            ManualTaskIdentityMatrix matrix,
             List<TaskCompleted> taskCompleteds) throws Exception {
         if (!matrix.isEmpty()) {
             List<String> identities = matrix.flat();
-            List<String> people = ListTools.extractProperty(taskCompleteds, TaskCompleted.person_FIELDNAME,
-                    String.class, true, true);
             taskCompleteds.stream().forEach(o -> identities.removeAll(matrix.completed(o.getIdentity())));
-            if (!identities.isEmpty()) {
+            // 如果选择了'同一处理人不同身份代码合并处理一次',按人员再剔除一遍
+            if (BooleanUtils.isNotFalse(manual.getProcessingTaskOnceUnderSamePerson()) && (!identities.isEmpty())) {
+                List<String> people = ListTools.extractProperty(taskCompleteds, TaskCompleted.person_FIELDNAME,
+                        String.class, true, true);
                 aeiObjects.business().organization().person().listPairIdentity(identities).stream().forEach(p -> {
                     if (people.contains(p.getPerson())) {
                         matrix.completed(p.getIdentity());
