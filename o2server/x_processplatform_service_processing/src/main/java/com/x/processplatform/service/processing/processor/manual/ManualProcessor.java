@@ -448,7 +448,7 @@ public class ManualProcessor extends AbstractManualProcessor {
     }
 
     /**
-     * 将已办人员从办理身份矩阵中剔除,如果选择了'同一处理人不同身份代码合并处理一次',按人员再剔除一遍
+     * 将已办人员从办理身份矩阵中剔除,如果选择了'同一处理人不同身份待办合并处理一次',按人员再剔除一遍
      * 
      * @param aeiObjects
      * @param manual
@@ -462,7 +462,7 @@ public class ManualProcessor extends AbstractManualProcessor {
         if (!matrix.isEmpty()) {
             List<String> identities = matrix.flat();
             taskCompleteds.stream().forEach(o -> identities.removeAll(matrix.completed(o.getIdentity())));
-            // 如果选择了'同一处理人不同身份代码合并处理一次',按人员再剔除一遍
+            // 如果选择了'同一处理人不同身份待办合并处理一次',按人员再剔除一遍
             if (BooleanUtils.isNotFalse(manual.getProcessingTaskOnceUnderSamePerson()) && (!identities.isEmpty())) {
                 List<String> people = ListTools.extractProperty(taskCompleteds, TaskCompleted.person_FIELDNAME,
                         String.class, true, true);

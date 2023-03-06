@@ -13,7 +13,7 @@ public class ManualProperties extends JsonProperties {
     @FieldDescribe("是否允许加签")
     private Boolean allowAddTask;
 
-    @FieldDescribe("同一处理人不同身份代码合并处理一次.")
+    @FieldDescribe("同一处理人不同身份待办合并处理一次.")
     private Boolean processingTaskOnceUnderSamePerson;
 
     public JsonElement getCustomData() {
