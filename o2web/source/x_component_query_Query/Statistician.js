@@ -369,6 +369,30 @@ MWF.xApplication.query.Query.Statistician.Stat = new Class({
             }
         }
         MWF.release(this);
+    },
+    reloadChart: function(){
+        if (this.json.isChart && this.charts.length > 0 ){
+            if (this.bar) this.bar.destroy();
+            this.bar = null;
+            if (this.chartFlagNode){
+                this.chartFlagNode.destroy();
+                this.chartFlagNode = null;
+            }
+            if (this.chartNode)this.chartNode.empty();
+            switch (this.currentChart){
+                case "bar":
+                    this.loadChartBar();
+                    break;
+                case "pie":
+                    this.loadChartPie();
+                    break;
+                case "line":
+                    this.loadChartLine();
+                    break;
+                default:
+                    this.loadChartBar();
+            }
+        }
     }
 });
 MWF.xApplication.query.Query.Statistician.GroupStat = new Class({

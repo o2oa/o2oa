@@ -9,7 +9,7 @@ MWF.xApplication.query.Query.StatementStat = MWF.QStatementStat = new Class({
         "style": "default",
         "resizeNode": true
     },
-    initialize: function(app, container, json, options){
+    initialize: function(container, json, options, app){
         this.setOptions(options);
 
         this.path = "../x_component_query_Query/$StatementStat/";
@@ -21,8 +21,10 @@ MWF.xApplication.query.Query.StatementStat = MWF.QStatementStat = new Class({
         this.container = $(container);
         this.json = json;
 
-        this.statJson = null;
-        this.gridJson = null;
+        this.statementJson = null; //查询统计配置
+        this.data = null;   //查询统计数据
+        this.statJson = null; //查询统计里的统计配置
+        this.calculateGrid = []; //分类配置+数据，列配置+数据
 
         this.load();
     },
@@ -50,18 +52,85 @@ MWF.xApplication.query.Query.StatementStat = MWF.QStatementStat = new Class({
     },
     loadStatData: function(node){
         this.createLoadding();
-        MWF.Actions.get("x_query_assemble_surface").loadStat(this.json.statName, this.json.application, null, function(json){
-            if (this.loadingAreaNode){
+        //this.json.statName, this.json.application, null
+        var p1 = MWF.getJSON( o2.filterUrl("../x_component_query_Query/$Main/statement_test.json"), null, false );
+        var p2 = MWF.Actions.load("x_query_assemble_surface").StatementAction.executeV2("stat","data", 1, 10, {});
+        Promise.all([p1, p2]).then(function (array) {
+            this.statementJson = array[0]; //查询统计配置
+            this.data = array[1];  //查询统计数据
+            this.statJson = JSON.parse(this.statementJson.stat).data; //查询统计里的统计配置
+            if( !this.statJson.categoryList )this.statJson.categoryList = [];
+            if( !this.statJson.selectList )this.statJson.selectList = [];
+
+            if( this.statJson.categoryList.length ){
+                this.isGroup = true;
+                this.data.data.each(function (d) {
+                    var ar = [];
+                    this.statJson.categoryList.each(function (category) {
+                        var value, c = Object.clone(category);
+                        if( c.path )value = this.getDataByPath( d, c.path );
+                        if( ["string"].contains(typeOf(value)) ){
+                            c.value = c.isName ? o2.name.cn(value) : value;
+                        }
+                        ar.push( c );
+                    }.bind(this));
+                    this.statJson.selectList.each(function (select) {
+                        var value, s = Object.clone(select);
+                        if( s.path )value = this.getDataByPath( d, s.path );
+                        if( ["string","number"].contains(typeOf(value)) ){
+                            s.value = value.toFloat();
+                        }
+                        ar.push( s );
+                    }.bind(this));
+                    this.calculateGrid.push( ar );
+                }.bind(this));
+            }else{
+                this.calculateGrid = Array.clone(this.statJson.selectList);
+                this.data.data.each(function (d) {
+                    var ar = [];
+                    this.calculateGrid.each(function (s) {
+                        var value;
+                        if( s.path )value = this.getDataByPath( d, s.path );
+                        if( ["string","number"].contains(typeOf(value)) ){
+                            s.value = ( s.value || 0 ) + value.toFloat();
+                        }
+                    }.bind(this));
+                }.bind(this));
+            }
+
+
+
+            debugger;
+            if (this.loadingAreaNode) {
                 this.loadingAreaNode.destroy();
                 this.loadingAreaNode = null;
             }
-            if (json.data.calculate.isGroup){
-                this.stat = new MWF.xApplication.query.Query.StatementStat.GroupStat(this, json.data);
+
+            if ( this.statJson.categoryList.length ){
+                this.stat = new MWF.xApplication.query.Query.StatementStat.GroupStat(this);
             }else{
-                this.stat = new MWF.xApplication.query.Query.StatementStat.Stat(this, json.data);
+
+                this.stat = new MWF.xApplication.query.Query.StatementStat.Stat(this);
             }
             this.fireEvent("loaded");
-        }.bind(this));
+        }.bind(this))
+    },
+    getDataByPath: function (obj, path) {
+        var pathList = path.split(".");
+        for (var i = 0; i < pathList.length; i++) {
+            var p = pathList[i];
+            if ((/(^[1-9]\d*$)/.test(p))) p = p.toInt();
+            if (obj[p]) {
+                obj = obj[p];
+            } else if(obj[p] === undefined || obj[p] === null) {
+                obj = "";
+                break;
+            } else {
+                obj = obj[p];
+                break;
+            }
+        }
+        return obj
     },
     setContentHeight: function(){
         if(this.resizeTimeout){
@@ -90,25 +159,30 @@ MWF.xApplication.query.Query.StatementStat = MWF.QStatementStat = new Class({
 });
 
 MWF.xApplication.query.Query.StatementStat.Stat = new Class({
-    initialize: function(statementStat, data){
+    initialize: function(statementStat){
         //this.explorer = explorer;
         this.statementStat = statementStat;
         this.json = this.statementStat.json;
-        this.data = data;
-        this.statGridData = Array.clone(this.data.calculateGrid);
+        this.data = this.statementStat.data;
+        this.statementJson = this.statementStat.statementJson;
+        this.statJson = this.statementStat.statJson;
+        this.calculateGrid = this.statementStat.calculateGrid;
         this.css = this.statementStat.css;
         this.lp = this.statementStat.lp;
         this.node = this.statementStat.node;
         this.load();
     },
     load: function(){
-        this.charts = this.data.calculate.chart;
+        this.charts = this.statJson.calculate.chart;
         if( !this.charts ){
             this.charts = ["bar", "pie", "line"];
         }else if( typeOf( this.charts ) === "string" ){
             this.charts = [this.charts];
         }
 
+        if (this.json.isSearch ){
+
+        }
         if (this.json.isChart) this.chartAreaNode = new Element("div", {"styles": this.css.statChartAreaNode}).inject(this.node);
         if (this.json.isTable) this.tableAreaNode = new Element("div#tableAreaNode", {"styles": this.css.statTableAreaNode}).inject(this.node);
         this.loadData();
@@ -116,8 +190,10 @@ MWF.xApplication.query.Query.StatementStat.Stat = new Class({
         if (this.json.isChart) this.createChart();
     },
     loadData: function(){
-        var entries = {};
-        this.data.calculate.calculateList.each(function(entry){entries[entry.column] = entry;}.bind(this));
+        // var entries = {};
+        // this.statJson.selectList.each(function(entry){
+        //     entries[entry.column] = entry;
+        // }.bind(this));
     },
     createChart: function(){
         this.chartToolbarNode = new Element("div", {"styles": this.css.statChartToolbarNode}).inject(this.chartAreaNode);
@@ -126,7 +202,7 @@ MWF.xApplication.query.Query.StatementStat.Stat = new Class({
         }else{
             this.chartAreaNode.setStyles( this.css.statChartAreaNode_noChart )
         }
-        if( this.charts.length > 0 || this.data.calculate.isGroup ){
+        if( this.charts.length > 0 || this.statementStat.isGroup ){
             this.loadChartToolbar();
         }else{
             this.chartAreaNode.hide();
@@ -173,7 +249,7 @@ MWF.xApplication.query.Query.StatementStat.Stat = new Class({
                     "MWFButtonText": this.lp.chart.line
                 }).inject(this.chartToolbarNode);
             }
-            if (this.data.calculate.isGroup ){
+            if ( this.statementStat.isGroup ){
                 var actionNode = new Element("div", {
                     "MWFnodeid": "rowToColumn",
                     "MWFnodetype": "MWFToolBarButton",
@@ -227,29 +303,33 @@ MWF.xApplication.query.Query.StatementStat.Stat = new Class({
         this.reloadChart();
     },
     toFloat: function(value){
-        if (value.substr(0,1)==="￥") value = value.substr(1, value.length);
-        value = value.replace(/,/g, "");
-        value = value.replace(/\s/g, "");
+        if( typeOf(value) === "string" ){
+            if (value.substr(0,1)==="￥") value = value.substr(1, value.length);
+            value = value.replace(/,/g, "");
+            value = value.replace(/\s/g, "");
+        }
         return value.toFloat()
     },
     loadChartBar: function(){
         MWF.require("MWF.widget.chart.Bar", function(){
             var maxLength = 0, marginLeft = 40;
-            if (this.statGridData.length){
-                this.statGridData.each(function(d){
+            if (this.calculateGrid.length){
+                this.calculateGrid.each(function(d){
                     maxLength = Math.max( (d.value || "" ).length, maxLength);
                 });
                 if( maxLength > 6 ){
                     marginLeft = marginLeft + (maxLength - 6) * 7;
                 }
             }
-            this.bar = new MWF.widget.chart.Bar(this.chartNode, this.statGridData, "displayName", {"delay": 0, "style": "monthly", "marginLeft": marginLeft});
+            this.bar = new MWF.widget.chart.Bar(this.chartNode, this.calculateGrid, "displayName", {"delay": 0, "style": "monthly", "marginLeft": marginLeft});
             //this.bar.addBar("value");
             this.bar.addBar(function(d){
                 var value = d.value;
-                if (value.substr(0,1)==="￥") value = value.substr(1, value.length);
-                value = value.replace(/,/g, "");
-                value = value.replace(/\s/g, "");
+                if( typeOf(value) === "string" ){
+                    if (value.substr(0,1)==="￥") value = value.substr(1, value.length);
+                    value = value.replace(/,/g, "");
+                    value = value.replace(/\s/g, "");
+                }
                 return value.toFloat()
             }, function(d){
                 return d.value;
@@ -280,7 +360,7 @@ MWF.xApplication.query.Query.StatementStat.Stat = new Class({
             // this.data.calculateGrid.each(function(d){
             //     total += this.toFloat(d.value);
             // }.bind(this));
-            this.data.calculateGrid.each(function(d){
+            this.calculateGrid.each(function(d){
                 var v = this.toFloat(d.value);
                 // var percent = ((v/total)*10000).toInt()/100;
                 // percent = ""+ percent +"%";
@@ -294,21 +374,23 @@ MWF.xApplication.query.Query.StatementStat.Stat = new Class({
     loadChartLine: function(){
         MWF.require("MWF.widget.chart.Line", function(){
             var maxLength = 0, marginLeft = 40;
-            if (this.statGridData.length){
-                this.statGridData.each(function(d){
+            if (this.calculateGrid.length){
+                this.calculateGrid.each(function(d){
                     maxLength = Math.max( (d.value || "" ).length, maxLength);
                 });
                 if( maxLength > 6 ){
                     marginLeft = marginLeft + (maxLength - 6) * 7;
                 }
             }
-            this.bar = new MWF.widget.chart.Line(this.chartNode, this.statGridData, "displayName", {"delay": 0, "style": "monthly", "marginLeft": marginLeft});
+            this.bar = new MWF.widget.chart.Line(this.chartNode, this.calculateGrid, "displayName", {"delay": 0, "style": "monthly", "marginLeft": marginLeft});
             //this.bar.addBar("value");
             this.bar.addBar(function(d){
                 var value = d.value;
-                if (value.substr(0,1)==="￥") value = value.substr(1, value.length);
-                value = value.replace(/,/g, "");
-                value = value.replace(/\s/g, "");
+                if( typeOf(value) === "string" ){
+                    if (value.substr(0,1)==="￥") value = value.substr(1, value.length);
+                    value = value.replace(/,/g, "");
+                    value = value.replace(/\s/g, "");
+                }
                 return value.toFloat()
             }, function(d){
                 return d.value;
@@ -341,18 +423,42 @@ MWF.xApplication.query.Query.StatementStat.Stat = new Class({
         }).inject(this.tableAreaNode);
         this.headTr = new Element("tr").inject(this.table);
 
-        this.data.calculate.calculateList.each(function(title){
+        this.calculateGrid.each(function(title){
             var th = new Element("th", {
                 "styles": this.css.statHeadTh,
                 "text": title.displayName
             }).inject(this.headTr);
         }.bind(this));
     },
+    reloadChart: function(){
+        if (this.json.isChart && this.charts.length > 0 ){
+            if (this.bar) this.bar.destroy();
+            this.bar = null;
+            if (this.chartFlagNode){
+                this.chartFlagNode.destroy();
+                this.chartFlagNode = null;
+            }
+            if (this.chartNode)this.chartNode.empty();
+            switch (this.currentChart){
+                case "bar":
+                    this.loadChartBar();
+                    break;
+                case "pie":
+                    this.loadChartPie();
+                    break;
+                case "line":
+                    this.loadChartLine();
+                    break;
+                default:
+                    this.loadChartBar();
+            }
+        }
+    },
 
     createTableData: function(){
-        if (this.statGridData.length){
+        if (this.calculateGrid.length){
             var tr = new Element("tr").inject(this.table);
-            this.statGridData.each(function(d){
+            this.calculateGrid.each(function(d){
                 var td = new Element("td", {"styles": this.css.statContentTdNode}).inject(tr);
                 td.set("text", d.value);
             }.bind(this));
@@ -370,6 +476,7 @@ MWF.xApplication.query.Query.StatementStat.Stat = new Class({
         MWF.release(this);
     }
 });
+
 MWF.xApplication.query.Query.StatementStat.GroupStat = new Class({
     Extends: MWF.xApplication.query.Query.StatementStat.Stat,
 

@@ -228,7 +228,6 @@ MWF.xApplication.query.Query.Main = new Class({
         this.naviContentNode.setStyle("height", ""+y+"px");
     },
     createNavi: function(){
-	    debugger;
 	    var viewLoaded,statLoaded, statementLoaded, statementStatLoaded, importerLoaded;
 	    var callback = function () {
 	        if( this.viewItemSelected || this.statItemSelected || this.statementItemSelected || this.statementStatItemSelected || this.importerItemSelected )return;
@@ -602,16 +601,22 @@ MWF.xApplication.query.Query.StatementStatItem = new Class({
             this.viewer = new MWF.QStatementStat( this.viewContent, {
                 "application": this.view.query,
                 "statementStatName": this.view.name,
-                "statementStatId" : this.view.id
+                "statementStatId" : this.view.id,
+                "isSearch": true,
+                "isTable": true,
+                "isChart": true,
+                "isLegend": true
             },{
                 "onLoadLayout": function () {
-                    this.viewAreaNode.setStyles({
+                    this.node.setStyles({
                         "padding-left": "10px",
-                        "padding-right": "10px"
+                        "padding-right": "10px",
+                        "padding-top": "10px",
+                        "padding-bottom": "10px"
                     });
                     if( this.viewJson && this.viewJson.customFilterList && this.viewJson.customFilterList.length ) {
                     }else{
-                        this.viewAreaNode.setStyles({"padding-top": "10px"})
+                        // this.viewAreaNode.setStyles({"padding-top": "10px"})
                     }
                 }
             }, this.app);
