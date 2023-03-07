@@ -1,10 +1,4 @@
 {
-  "center": [
-    {
-      "port": "80",
-      "host": ""
-    }
-  ],
   "initManagerChanged": true,
   "initManagerName": "",
   "initManagerPassword": "",
