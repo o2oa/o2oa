@@ -12,7 +12,7 @@ MWF.xApplication.Homepage.LP = o2.HPLP = {
 	"noHotpic": "No hot news at the moment",
 	"noInforItem": "No information temporarily",
 	"noCalendar": "No schedule on the day",
-	"noFile": "Click here to visit the Enterprise Network Disk",
+	"noFile": "Click here to visit the Network Disk",
 	"moreInfor": "More...",
 	"allInfor": "Latest news",
 	"moreMeeting": "More...",
