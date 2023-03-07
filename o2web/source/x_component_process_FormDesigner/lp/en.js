@@ -333,7 +333,6 @@ MWF.xApplication.process.FormDesigner.LP = {
         "htmledit": "Htmleditor",
         "office": "Office",
         "yozoOffice" : "yozoOffice",
-        "iWebOffice" : "iWebOffice",
         "statementSelector": "StatementSelector",
         "statement": "Statement",
         "SmartBI":"SmartBI",
@@ -1472,6 +1471,9 @@ MWF.xApplication.process.FormDesigner.LP = {
     },
     "onlyoffice":{
         "nosetup":"please install onlyOffice APP first",
+    },
+    "officeonline":{
+        "nosetup":"please install OfficeOnline APP first",
     },
     "wpsoffice":{
         "nosetup":"please install wpsOffice APP first",

@@ -1365,10 +1365,10 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                             "opacity": 0.6
                         }
                     });
-    
+
                     _self.fireEvent("beforeDelete");
                     if (_self.app && _self.app.fireEvent) _self.app.fireEvent("beforeDelete");
-    
+
                     _self.documentAction.removeDocument(_self.businessData.document.id, function (json) {
                         debugger;
                         _self.fireEvent("afterDelete");
@@ -1617,6 +1617,31 @@ MWF.xApplication.cms.Xform.Form = MWF.CMSForm = new Class(
                 this.close();
             });
         },
+        /**
+         * @summary 一键下载表单和附件.
+         * @method downloadAll
+         * @memberof CMSForm
+         * @example
+         * this.form.getApp().appForm.downloadAll();
+         */
+        downloadAll: function () {
+            o2.Actions.load("x_cms_assemble_control").FileInfoAction.uploadWorkInfo(this.businessData.document.id, "pdf", {
+                "workHtml": encodeURIComponent(this.app.content.get("html")),
+                "pageWidth": 1000
+            }, function (json) {
+                var htmlFormId = json.data.id;
+                htmlFormId = htmlFormId.replace("#", "%23");
+                var url = "/x_cms_assemble_control/jaxrs/fileinfo/batch/download/doc/" + this.businessData.document.id + "/site/(0)";
+                url = o2.filterUrl(o2.Actions.getHost("x_processplatform_assemble_surface") + url);
+                var downloadUrl = o2.filterUrl(url + "?fileName=&flag=" + htmlFormId);
+                if ((o2.thirdparty.isDingdingPC() || o2.thirdparty.isQywxPC())) {
+                    var xtoken = Cookie.read(o2.tokenName);
+                    downloadUrl += "&" + o2.tokenName + "=" + xtoken;
+                }
+                window.open(downloadUrl);
+            }.bind(this));
+        },
+
         /**
          * 移动端处理关闭
          */

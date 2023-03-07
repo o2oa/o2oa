@@ -206,11 +206,6 @@
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.office,
     "className": "Office"
   },
-  "iWebOffice": {
-    "icon": "iWebOffice.png",
-    "text": MWF.xApplication.cms.FormDesigner.LP.modules.iWebOffice,
-    "className": "IWebOffice"
-  },
   "yozoOffice": {
     "icon": "yozoOffice.png",
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.yozoOffice,
@@ -220,6 +215,11 @@
     "icon": "onlyOffice.png",
     "text": "onlyOffice",
     "className": "OnlyOffice"
+  },
+  "OfficeOnline": {
+    "icon": "officeOnline.png",
+    "text": "officeOnline",
+    "className": "OfficeOnline"
   },
   "wpsOffice": {
     "icon": "wpsOffice.png",

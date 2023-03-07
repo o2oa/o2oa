@@ -135,6 +135,42 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         //     // }
         // }
     },
+
+    checkEditAttAction: function () {
+
+        if(layout.mobile){
+            this.setActionDisabled(this.editAttAction);
+        } else if (this.options.isEditAtt === "hidden" ){
+            this.setActionHidden(this.editAttAction);
+        } else if (!this.options.isEditAtt){
+            this.setActionDisabled(this.editAttAction);
+            //this.setActionDisabled(this.min_downloadAction);
+        }else{
+            if (this.selectedAttachments.length){
+                var flag = false;
+                for (var i = 0; i < this.selectedAttachments.length; i++) {
+                    var att = this.selectedAttachments[i];
+
+                    if (["doc","docx","xls","xlsx","ppt","pptx"].contains(att.data.extension)) {
+
+                        if(layout.serviceAddressList["x_onlyofficefile_assemble_control"]){
+                            flag = true;
+                            break;
+                        }
+                    }
+                }
+                if(flag){
+                    this.setActionEnabled(this.editAttAction);
+                    //this.setActionEnabled(this.min_downloadAction);
+                }
+
+            }else{
+                this.setActionDisabled(this.editAttAction);
+                //this.setActionDisabled(this.min_downloadAction);
+            }
+        }
+    },
+
     checkPreviewAttAction: function () {
         if(layout.mobile){
             this.setActionDisabled(this.previewAttAction);
@@ -461,6 +497,9 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
         this.checkDeleteAction();
         this.checkReplaceAction();
         this.checkPreviewAttAction();
+
+        this.checkEditAttAction();
+
         //this.checkOfficeAction();
         this.checkDownloadAction();
         this.checkSizeAction();
@@ -481,7 +520,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
     },
     checkEditActionBox: function(){
         var isShowEdit = false;
-        ["isUpload", "isDelete", "isReplace", "isPreviewAtt"].each(function( key ){
+        ["isUpload", "isDelete", "isReplace", "isPreviewAtt", "isEditAtt"].each(function( key ){
             if( key === "isReplace" && this.options.isReplaceHidden )return;
             if( key === "isPreviewAtt" && layout.mobile )return;
             if( this.options[key] !== "hidden" )isShowEdit = true;
@@ -622,6 +661,14 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
                 this.previewAttachment(e, node);
             }.bind(this));
         }
+
+        if(!layout.mobile){
+            this.editAttAction = this.createAction(this.editActionsGroupNode, "editAtt", o2.LP.widget["editAtt"], function (e, node) {
+                this.editAttachment(e, node);
+            }.bind(this));
+        }
+
+
         if (!this.options.isReplaceHidden) {
             this.replaceAction = this.createAction(this.editActionsGroupNode, "replace", o2.LP.widget.replace, function (e, node) {
                 this.replaceAttachment(e, node);
@@ -1378,6 +1425,7 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             "isReplace": this.getFlagDefaultFalse("isReplace"),
             "isDownload": this.getFlagDefaultFalse("isDownload"),
             "isPreviewAtt": this.getFlagDefaultFalse("isPreviewAtt"),
+            "isEditAtt": this.getFlagDefaultFalse("isEditAtt"),
             "isSizeChange": this.getFlagDefaultFalse("isSizeChange"),
             "isConfig": this.getFlagDefaultTrue("isConfig"),
             "isOrder": this.getFlagDefaultTrue("isOrder"),
@@ -1627,6 +1675,25 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
         }, function () {
             this.close();
         }, null, null, this.form.json.confirmStyle);
+    },
+    editAttachment: function (attachments) {
+        var att = attachments[0];
+        var jars ;
+        if(att.data.activity){
+            jars = "x_processplatform_assemble_surface";
+        }
+        if(att.data.categoryId){
+            jars = "x_cms_assemble_control";
+        }
+
+        var options = {
+            "documentId": att.data.id,
+            "mode":"edit",
+            "jars" : jars,
+            "appId":  "OnlyOfficeEditor" + att.data.id
+        };
+        layout.openApplication(null, "OnlyOfficeEditor", options);
+
     },
     previewAttachment: function (attachments) {
         var att = attachments[0];
