@@ -1664,16 +1664,41 @@ bind.includedScripts = includedScripts;
  *
  * @param {(String|Object)} optionsOrName 可以是脚本标识字符串或者是对象。<b>流程设计中的脚本只支持字符串。</b>
  * <pre><code class='language-js'>
- * //如果需要引用本应用的脚本配置，将options设置为String。
- * this.include("initScript") //脚本配置的名称、别名或id
  *
  * //如果需要引用其他应用的脚本配置，将options设置为Object;
  * this.include({
  *       //type: 应用类型。可以为 portal  process  cms  service。默认为process
  *       type : "portal",
- *       application : "首页", // 门户、流程、CMS的名称、别名、id。 默认为当前应用
+ *       application : "首页", // 门户、流程、CMS的名称、别名、id。 引用服务管理的脚本则忽略该参数。
  *       name : "initScript" // 脚本配置的名称、别名或id
- * })
+ * });
+ *
+ * //引用服务管理中的脚本
+ * this.include({
+ *   "type": "service",
+ *   "name": "scriptName"
+ * });
+ *
+ * //引用流程管理中的脚本
+ * this.include({
+ *   "type": "process",
+ *   "application": "appName",
+ *   "name": "scriptName"
+ * });
+ *
+ * //引用内容管理中的脚本
+ * this.include({
+ *   "type": "cms",
+ *   "application": "appName",
+ *   "name": "scriptName"
+ * });
+ *
+ * //引用门户管理中的脚本
+ * this.include({
+ *   "type": "portal",
+ *   "application": "appName",
+ *   "name": "scriptName"
+ * });
  * </code></pre>
  * @param {Function} [callback] 加载后执行的回调方法。
  *
@@ -1805,8 +1830,35 @@ bind.include = function( optionsOrName , callback ){
  * var dict = new this.Dict({
  *     //type: 应用类型。可以为process  cms portal service。默认为process。
  *    type : "cms",
- *    application : "bulletin", //流程、CMS的名称、别名、id, 默认为当前应用
+ *    application : "bulletin", //流程、CMS、门户管理的名称、别名、id。引用服务管理的数组字典则忽略该参数。
  *    name : "bulletinDictionary", // 数据字典的名称、别名、id
+ * });
+ *
+ * //引用服务管理中的数据字典
+ * var dict = new this.Dict({
+ *   "type": "service",
+ *   "name": "dictName"
+ * });
+ *
+ * //引用流程管理中的数据字典
+ * var dict = new this.Dict({
+ *   "type": "process",
+ *   "application": "appName",
+ *   "name": "dictName"
+ * });
+ *
+ * //引用内容管理中的数据字典
+ * var dict = new this.Dict({
+ *   "type": "cms",
+ *   "application": "appName",
+ *   "name": "dictName"
+ * });
+ *
+ * //引用门户管理中的数据字典
+ * var dict = new this.Dict({
+ *   "type": "portal",
+ *   "application": "appName",
+ *   "name": "dictName"
  * });
  */
 bind.Dict = function(optionsOrName){
@@ -1861,11 +1913,9 @@ bind.Dict = function(optionsOrName){
      * <img src='img/module/Dict/dict.png' />
      * </caption>
      * var dict = new this.Dict({
-     *     //type: 应用类型。可以为process  cms。
-     *     //如果没有该选项或者值为空字符串，则表示应用脚本和被应用的脚本配置类型相同。
-     *     //比如在流程的A应用脚本中引用流程B应用的脚本配置，则type可以省略。
+     *     //type: 应用类型。可以为process  cms portal service。默认为process。
      *    type : "cms",
-     *    application : "bulletin", //流程、CMS的名称、别名、id, 默认为当前应用
+     *    application : "bulletin", //流程、CMS、门户管理的名称、别名、id。引用服务管理的数组字典则忽略该参数。
      *    name : "bulletinDictionary", // 数据字典的名称、别名、id
      * });
      *
@@ -1970,11 +2020,9 @@ bind.Dict = function(optionsOrName){
      * dict.set( path, data, success, failure )
      * @example
      * var dict = new this.Dict({
-     *     //type: 应用类型。可以为process  cms。
-     *     //如果没有该选项或者值为空字符串，则表示应用脚本和被应用的脚本配置类型相同。
-     *     //比如在流程的A应用脚本中引用流程B应用的脚本配置，则type可以省略。
+     *     //type: 应用类型。可以为process  cms portal service。默认为process。
      *    type : "cms",
-     *    application : "bulletin", //流程、CMS的名称、别名、id, 默认为当前应用
+     *    application : "bulletin", //流程、CMS、门户管理的名称、别名、id。引用服务管理的数组字典则忽略该参数。
      *    name : "bulletinDictionary", // 数据字典的名称、别名、id
      * });
      *
@@ -1991,11 +2039,9 @@ bind.Dict = function(optionsOrName){
      *     对Example add的数据字典进行赋值，如下：
      * </caption>
      * var dict = new this.Dict({
-     *     //type: 应用类型。可以为process  cms。
-     *     //如果没有该选项或者值为空字符串，则表示应用脚本和被应用的脚本配置类型相同。
-     *     //比如在流程的A应用脚本中引用流程B应用的脚本配置，则type可以省略。
+     *     //type: 应用类型。可以为process  cms portal service。默认为process。
      *    type : "cms",
-     *    application : "bulletin", //流程、CMS的名称、别名、id, 默认为当前应用
+     *    application : "bulletin", //流程、CMS、门户管理的名称、别名、id。引用服务管理的数组字典则忽略该参数。
      *    name : "bulletinDictionary", // 数据字典的名称、别名、id
      * });
      *
@@ -2118,11 +2164,9 @@ bind.Dict = function(optionsOrName){
      * dict.add( path, data, success, failure )
      * @example
      * var dict = new this.Dict({
-     *     //type: 应用类型。可以为process  cms。
-     *     //如果没有该选项或者值为空字符串，则表示应用脚本和被应用的脚本配置类型相同。
-     *     //比如在流程的A应用脚本中引用流程B应用的脚本配置，则type可以省略。
+     *     //type: 应用类型。可以为process  cms portal service。默认为process。
      *    type : "cms",
-     *    application : "bulletin", //流程、CMS的名称、别名、id, 默认为当前应用
+     *    application : "bulletin", //流程、CMS、门户管理的名称、别名、id。引用服务管理的数组字典则忽略该参数。
      *    name : "bulletinDictionary", // 数据字典的名称、别名、id
      * });
      *
@@ -2139,11 +2183,9 @@ bind.Dict = function(optionsOrName){
      *     对get方法样例的数据字典进行赋值，如下：
      * </caption>
      * var dict = new this.Dict({
-     *     //type: 应用类型。可以为process  cms。
-     *     //如果没有该选项或者值为空字符串，则表示应用脚本和被应用的脚本配置类型相同。
-     *     //比如在流程的A应用脚本中引用流程B应用的脚本配置，则type可以省略。
+     *     //type: 应用类型。可以为process  cms portal service。默认为process。
      *    type : "cms",
-     *    application : "bulletin", //流程、CMS的名称、别名、id, 默认为当前应用
+     *    application : "bulletin", //流程、CMS、门户管理的名称、别名、id。引用服务管理的数组字典则忽略该参数。
      *    name : "bulletinDictionary", // 数据字典的名称、别名、id
      * });
      *
@@ -2267,12 +2309,10 @@ bind.Dict = function(optionsOrName){
      * dict.delete( path, success, failure )
      * @example
      * var dict = new this.Dict({
-     *     //type: 应用类型。可以为process  cms。
-     *     //如果没有该选项或者值为空字符串，则表示应用脚本和被应用的脚本配置类型相同。
-     *     //比如在流程的A应用脚本中引用流程B应用的脚本配置，则type可以省略。
+     *    //type: 应用类型。可以为process  cms portal service。默认为process。
      *    type : "cms",
      *    application : "bulletin", //流程、CMS的名称、别名、id, 默认为当前应用
-     *    name : "bulletinDictionary", // 数据字典的名称、别名、id
+     *    name : "bulletinDictionary", //流程、CMS、门户管理的名称、别名、id。引用服务管理的数组字典则忽略该参数。
      * });
      *
      * dict.delete( "category", function(){

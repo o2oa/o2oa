@@ -2146,6 +2146,33 @@ MWF.xScript.Environment = function(ev){
      *  },
      *  "initScript2"
      * ])
+     *
+     * //引用服务管理中的脚本
+     * this.include({
+     *   "type": "service",
+     *   "name": "scriptName"
+     * });
+     *
+     * //引用流程管理中的脚本
+     * this.include({
+     *   "type": "process",
+     *   "application": "appName",
+     *   "name": "scriptName"
+     * });
+     *
+     * //引用内容管理中的脚本
+     * this.include({
+     *   "type": "cms",
+     *   "application": "appName",
+     *   "name": "scriptName"
+     * });
+     *
+     * //引用门户管理中的脚本
+     * this.include({
+     *   "type": "portal",
+     *   "application": "appName",
+     *   "name": "scriptName"
+     * });
      * </code></pre>
      * @param {Function} [callback] 加载后执行的回调方法
      * @param {Boolean} [async] 是否异步加载

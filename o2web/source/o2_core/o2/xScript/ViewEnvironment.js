@@ -282,6 +282,34 @@ MWF.xScript.ViewEnvironment = function (ev) {
      *    name : "bulletinDictionary", // 数据字典的名称、别名、id
      *    anonymous : true //允许用户在未登录的情况下读取cms的数据字典, type为cms的时候改参数才有效，默认为false，该参数名也可以是 enableAnonymous
      * });
+     *
+     * //引用服务管理中的数据字典
+     * var dict = new this.Dict({
+     *   "type": "service",
+     *   "name": "dictName"
+     * });
+     *
+     * //引用流程管理中的数据字典
+     * var dict = new this.Dict({
+     *   "type": "process",
+     *   "application": "appName",
+     *   "name": "dictName"
+     * });
+     *
+     * //引用内容管理中的数据字典
+     * var dict = new this.Dict({
+     *   "type": "cms",
+     *   "application": "appName",
+     *   "name": "dictName"
+     * });
+     *
+     * //引用门户管理中的数据字典
+     * var dict = new this.Dict({
+     *   "type": "portal",
+     *   "application": "appName",
+     *   "name": "dictName"
+     * });
+     *
      * </code></pre>
      * @return {Object} Dict对象
      * @o2syntax
