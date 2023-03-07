@@ -752,7 +752,12 @@ MWF.xApplication.process.Xform.Form = MWF.APPForm = new Class(
                 this.multiToolsJson = JSON.parse(jsonStr);
                 var json = Array.clone(this.multiToolsJson);
                 json.each(function (tool) {
-                    var flag = this._checkDefaultMobileActionItem(tool, this.options.readonly);
+                    var flag;
+                    if( tool.system ){
+                        flag = this._checkDefaultMobileActionItem(tool, this.options.readonly);
+                    }else{
+                        flag = this._checkCustomMobileActionItem(tool, this.options.readonly)
+                    }
                     if (flag) tools.push(tool);
                 }.bind(this));
             }else{
