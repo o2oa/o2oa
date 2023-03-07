@@ -363,5 +363,36 @@ MWF.xAction.RestActions.Action["x_portal_assemble_designer"] = new Class({
     },
     changeApplicationIcon: function(applicationId, success, failure, formData, file){
         this.action.invoke({"name": "updateApplicationIcon", "parameter": {"id": applicationId},"data": formData,"file": file,"success": success,"failure": failure});
+    },
+
+    listDictionary: function(application, success, failure, async){
+        this.action.invoke({"name": "listDictionary","async": async, "parameter": {"portalId": application}, "success": success,	"failure": failure});
+    },
+    getDictionary: function(id, success, failure, async){
+        this.action.invoke({"name": "getDictionary","async": async, "parameter": {"id": id},	"success": success,	"failure": failure});
+    },
+    saveDictionary: function(data, success, failure){
+        if (data.id){
+            this.updateDictionary(data, success, failure);
+        }else{
+            this.addDictionary(data, success, failure);
+        }
+    },
+    updateDictionary: function(data, success, failure){
+        this.action.invoke({"name": "updataDictionary","data": data,"parameter": {"id": data.id},"success": success,"failure": failure});
+    },
+    addDictionary: function(data, success, failure){
+        if (!data.id){
+            var dirData = Object.clone(data);
+            this.getUUID(function(id){
+                dirData.id = id;
+                this.action.invoke({"name": "addDictionary","data": dirData,"success": success,"failure": failure});
+            }.bind(this));
+        }else{
+            this.action.invoke({"name": "addDictionary","data": data,"success": success,"failure": failure});
+        }
+    },
+    deleteDictionary: function(id, success, failure, async){
+        this.action.invoke({"name": "removeDictionary", "async": async, "parameter": {"id": id}, "success": success, "failure": failure});
     }
 });

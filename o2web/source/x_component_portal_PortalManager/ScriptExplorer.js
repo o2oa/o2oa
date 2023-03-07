@@ -8,7 +8,7 @@ MWF.xApplication.portal.PortalManager.ScriptExplorer = new Class({
             "create": MWF.xApplication.portal.PortalManager.LP.script.create,
             "search": MWF.xApplication.portal.PortalManager.LP.script.search,
             "searchText": MWF.xApplication.portal.PortalManager.LP.script.searchText,
-            "noElement": MWF.xApplication.portal.PortalManager.LP.script.noProcessNoticeText
+            "noElement": MWF.xApplication.portal.PortalManager.LP.script.noScriptNoticeText
         }
     },
     openFindDesigner: function(){
@@ -192,11 +192,36 @@ MWF.xApplication.portal.PortalManager.ScriptExplorer = new Class({
     },
     setTooltip: function(){
         this.options.tooltip = {
-            "create": MWF.APPPM.LP.script.create,
-            "search": MWF.APPPM.LP.script.search,
-            "searchText": MWF.APPPM.LP.script.searchText,
-            "noElement": MWF.APPPM.LP.script.noScriptNoticeText
+            "create": MWF.xApplication.portal.PortalManager.LP.script.create,
+            "search": MWF.xApplication.portal.PortalManager.LP.script.search,
+            "searchText": MWF.xApplication.portal.PortalManager.LP.script.searchText,
+            "noElement": MWF.xApplication.portal.PortalManager.LP.script.noScriptNoticeText
         };
+    },
+    loadElementList: function(){
+	    debugger;
+        this._loadItemDataList(function(json){
+            if (json.data.length){
+                json.data.each(function(item){
+                    var itemObj = this._getItemObject(item);
+                    itemObj.load()
+                }.bind(this));
+            }else{
+                var noElementNode = new Element("div.noElementNode", {
+                    "styles": this.css.noElementNode,
+                    "text": (this.options.noCreate) ? this.options.tooltip.noElement : this.options.tooltip.noElement
+                }).inject(this.elementContentListNode);
+                if (!this.options.noCreate){
+                    noElementNode.addEvent("click", function(e){
+                        this._createElement(e);
+                    }.bind(this));
+                }
+            }
+            if( !this.isSetContentSize ){
+                this.setContentSize();
+                this.isSetContentSize = true;
+            }
+        }.bind(this));
     },
     deleteItems: function(){
         this.hideDeleteAction();

@@ -202,10 +202,16 @@ MWF.xApplication.process.FormDesigner.widget.EventsEditor.Item = new Class({
 		} 
 		if (this.editor.currentEditItem!=this){
 			if (!this.codeEditor){
+				var moduleType = this.editor.module.type;
+				if( moduleType === "Datatable" ){
+					if( this.editor.app && this.editor.app.currentDesignerMode ){
+						moduleType = moduleType + this.editor.app.currentDesignerMode;
+					}
+				}
 				this.codeEditor = new MWF.widget.ScriptArea(this.codeNode, {
 					"style": "event",
 					"isbind": false,
-					"api": "../api/MWF.xApplication.process.Xform."+this.editor.module.type+".html#event:"+this.event,
+					"api": "../api/MWF.xApplication.process.Xform."+moduleType+".html#event:"+this.event,
 					"title": "on"+this.event+" (S)",
 					"maxObj": this.editor.options.maxObj,
 					"onChange": function(){

@@ -164,7 +164,11 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
                 this.component.load();
                 this.component.setEventTarget(this.form.app);
             }else{
-                this.form.app.notice(this.form.app.lp.applicationNotFound+":"+path, "error");
+                if( MWF.xApplication.process && MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.LP ){
+                    this.form.app.notice(MWF.xApplication.process.Xform.LP.applicationNotFound+":"+path, "error");
+                }else{
+                    this.form.app.notice(this.form.app.lp.applicationNotFound+":"+path, "error");
+                }
             }
         }.bind(this);
 
