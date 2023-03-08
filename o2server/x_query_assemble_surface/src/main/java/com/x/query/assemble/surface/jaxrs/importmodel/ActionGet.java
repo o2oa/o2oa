@@ -27,9 +27,6 @@ class ActionGet extends BaseAction {
 			if (null == query) {
 				throw new ExceptionEntityNotExist(model.getQuery(), Query.class);
 			}
-			if (!business.readable(effectivePerson, query)) {
-				throw new ExceptionAccessDenied(effectivePerson, query);
-			}
 			if (!business.readable(effectivePerson, model)) {
 				throw new ExceptionAccessDenied(effectivePerson, model);
 			}

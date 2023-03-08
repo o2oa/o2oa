@@ -1,14 +1,10 @@
 package com.x.query.assemble.surface.jaxrs.stat;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
-import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.exception.ExceptionEntityNotExist;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -17,6 +13,9 @@ import com.x.query.assemble.surface.Business;
 import com.x.query.core.entity.Query;
 import com.x.query.core.entity.Stat;
 import com.x.query.core.entity.View;
+
+import java.util.ArrayList;
+import java.util.List;
 
 class ActionListWithQuery extends BaseAction {
 
@@ -28,9 +27,6 @@ class ActionListWithQuery extends BaseAction {
 			Query query = business.pick(queryFlag, Query.class);
 			if (null == query) {
 				throw new ExceptionEntityNotExist(queryFlag, Query.class);
-			}
-			if (!business.readable(effectivePerson, query)) {
-				throw new ExceptionAccessDenied(effectivePerson);
 			}
 			for (String id : emc.idsEqual(Stat.class, Stat.query_FIELDNAME, query.getId())) {
 				Stat o = business.pick(id, Stat.class);
