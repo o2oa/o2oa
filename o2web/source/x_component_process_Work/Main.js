@@ -509,6 +509,7 @@ MWF.xApplication.process.Work.Main = new Class({
 
         var listNode = new Element("div", {"styles": this.css.identitySelectNodeList}).inject(node);
 
+        if (!layout.session.user.iconUrl) layout.session.user.iconUrl = o2.filterUrl(o2.Actions.get("x_organization_assemble_control").getPersonIcon(layout.session.user.id));
         tasks.forEach(function(task){
             var id = layout.session.user.identityList.find(function(i){ return i.distinguishedName === task.identity });
             o2.Actions.load("x_organization_assemble_express").UnitDutyAction.listNameWithIdentity({"identityList": [id.distinguishedName]}, function(json){
