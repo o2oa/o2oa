@@ -867,6 +867,7 @@ MWF.xApplication.process.workcenter.List = new Class({
 	},
 	openTask: function(e, data){
 		o2.api.form.openWork(data.work, "", data.title, {
+            "taskId": data.id,
 			"onPostClose": function(){
 				if (this.refresh) this.refresh();
 			}.bind(this)

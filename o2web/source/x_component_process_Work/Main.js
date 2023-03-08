@@ -118,8 +118,9 @@ MWF.xApplication.process.Work.Main = new Class({
             this.$events = {};
         }
         if (data){
-            this.parseData(data);
-            this.openWork();
+            this.parseData(data).then(function(){
+                this.openWork();
+            }.bind(this));
         }else{
             this.loadWork();
         }
@@ -162,20 +163,21 @@ MWF.xApplication.process.Work.Main = new Class({
         var check = function(){
              if (loadWorkFlag && loadFormFlag && loadModuleFlag){
                 if (json_work && json_control && json_form && json_log){
-                    this.parseData(json_work.data, json_control.data, json_form.data, json_log.data, json_work.data.recordList, json_work.data.attachmentList);
-                    if (this.mask) this.mask.hide();
-                    //if (layout.mobile) this.loadMobileActions();
-                    if (layout.session && layout.session.user){
-                        this.openWork();
-                        this.unLoading();
-                    }else{
-                        if (layout.sessionPromise){
-                            layout.sessionPromise.then(function(){
-                                this.openWork();
-                                this.unLoading();
-                            }.bind(this), function(){});
+                    this.parseData(json_work.data, json_control.data, json_form.data, json_log.data, json_work.data.recordList, json_work.data.attachmentList).then(function(){
+                        if (this.mask) this.mask.hide();
+                        //if (layout.mobile) this.loadMobileActions();
+                        if (layout.session && layout.session.user){
+                            this.openWork();
+                            this.unLoading();
+                        }else{
+                            if (layout.sessionPromise){
+                                layout.sessionPromise.then(function(){
+                                    this.openWork();
+                                    this.unLoading();
+                                }.bind(this), function(){});
+                            }
                         }
-                    }
+                    }.bind(this));
                 } else{
                     if (this.options.jobId || this.options.jobid || this.options.job){
                         delete this.options.workCompletedId;
@@ -270,66 +272,6 @@ MWF.xApplication.process.Work.Main = new Class({
             loadModuleFlag = true;
             check();
         });
-
-        // if (this.options.form && this.options.form.id && this.options.form.app){
-        //     o2.Actions.invokeAsync([
-        //         {"action": this.action, "name": "loadWork"},
-        //         {"action": this.action, "name": "getWorkLog"},
-        //         {"action": this.action, "name": "getRecordLog"},
-        //         {"action": this.action, "name": "getWorkControl"},
-        //         {"action": this.action, "name": "listAttachments"},
-        //         {"action": this.action, "name": "getForm"}
-        //     ], {"success": function(json_work, json_log, json_record, json_control, json_att, json_form){
-        //             if (json_work && json_control && json_form && json_log && json_att){
-        //                 this.parseData(json_work.data, json_control.data, json_form.data, json_log.data, json_record.data, json_att.data);
-        //                 if (this.mask) this.mask.hide();
-        //                 //if (layout.mobile) this.loadMobileActions();
-        //                 this.openWork();
-        //                 this.unLoading();
-        //             } else{
-        //                 if (this.options.jobId || this.options.jobid || this.options.job){
-        //                     delete this.options.workCompletedId;
-        //                     delete this.options.workId;
-        //                     delete this.options.workid;
-        //                     delete this.options.workcompletedid;
-        //                     this.loadWork();
-        //                 }else{
-        //                     this.close();
-        //                 }
-        //             }
-        //         }.bind(this), "failure": function(){
-        //             //this.close();
-        //         }.bind(this)}, id, id, id, id, id, [this.options.form.id, this.options.form.app]);
-        // }else{
-            // o2.Actions.invokeAsync([
-            //     {"action": this.action, "name": "loadWork"},
-            //     {"action": this.action, "name": "getWorkLog"},
-            //     {"action": this.action, "name": "getRecordLog"},
-            //     {"action": this.action, "name": "getWorkControl"},
-            //     {"action": this.action, "name": "listAttachments"},
-            //     {"action": this.action, "name": (layout.mobile) ? "getWorkFormMobile": "getWorkForm"}
-            // ], {"success": function(json_work, json_log, json_record, json_control, json_att, json_form){
-            //         if (json_work && json_control && json_form && json_log && json_att){
-            //             this.parseData(json_work.data, json_control.data, json_form.data, json_log.data, json_record.data, json_att.data);
-            //             if (this.mask) this.mask.hide();
-            //             //if (layout.mobile) this.loadMobileActions();
-            //             this.openWork();
-            //             this.unLoading();
-            //         } else{
-            //             if (this.options.jobId || this.options.jobid || this.options.job){
-            //                 delete this.options.workCompletedId;
-            //                 delete this.options.workId;
-            //                 delete this.options.workid;
-            //                 delete this.options.workcompletedid;
-            //                 this.loadWork();
-            //             }else{
-            //                 this.close();
-            //             }
-            //         }
-            //     }.bind(this), "failure": function(){
-            //         //this.close();
-            //     }.bind(this)}, id);
-        //}
     },
     loadWorkByJob: function(jobId){
         MWF.Actions.get("x_processplatform_assemble_surface").listWorkByJob(jobId, function(json){
@@ -395,20 +337,22 @@ MWF.xApplication.process.Work.Main = new Class({
                     "allowDelete": true
                 };
 
-                this.parseData(workData, control, json_form.data, [], [], []);
-                if (this.mask) this.mask.hide();
+                this.parseData(workData, control, json_form.data, [], [], []).then(function(){
+                    if (this.mask) this.mask.hide();
 
-                if (layout.session && layout.session.user){
-                    this.openWork();
-                    this.unLoading();
-                }else{
-                    if (layout.sessionPromise){
-                        layout.sessionPromise.then(function(){
-                            this.openWork();
-                            this.unLoading();
-                        }.bind(this), function(){});
+                    if (layout.session && layout.session.user){
+                        this.openWork();
+                        this.unLoading();
+                    }else{
+                        if (layout.sessionPromise){
+                            layout.sessionPromise.then(function(){
+                                this.openWork();
+                                this.unLoading();
+                            }.bind(this), function(){});
+                        }
                     }
-                }
+                }.bind(this));
+
 
                 // this.openWork();
                 // this.unLoading();
@@ -483,34 +427,17 @@ MWF.xApplication.process.Work.Main = new Class({
         }
         return "";
     },
-    parseData: function(workData, controlData, formData, logData, recordData, attData){
-        debugger;
+    parseWorkData: function(workData, controlData, formData, logData, recordData, attData){
 
+    },
+    parseData: function(workData, controlData, formData, logData, recordData, attData){
         var title = workData.work.title;
-        //this.setTitle(this.options.title+"-"+title);
         this.setTitle(title || this.options.title);
 
-        //routeList 等字段放在 properties 中了，这段代码是兼容以前的脚本
-        //( workData.taskList || [] ).each(function(task){
-        //    if( task.properties && typeOf( task.properties ) === "object"){
-        //        if( !task.routeList )task.routeList = task.properties.routeList;
-        //        if( !task.routeNameList )task.routeNameList = task.properties.routeNameList;
-        //        if( !task.routeOpinionList )task.routeOpinionList = task.properties.routeOpinionList;
-        //        if( !task.routeDecisionOpinionList )task.routeDecisionOpinionList = task.properties.routeDecisionOpinionList;
-        //    }
-        //});
-        // if (workData.activity && workData.activity.customData){
-        //     try{
-        //         var customData = JSON.parse(workData.activity.customData);
-        //         workData.activity.customData = customData;
-        //     }catch(e){
-        //         console.error(e);
-        //     }
-        // }
         this.activity = workData.activity;
         this.data = workData.data;
         this.taskList = workData.taskList;
-        this.currentTask = this.getCurrentTaskData(workData);
+
         this.taskList = workData.taskList;
         this.readList = workData.readList;
         this.routeList = workData.routeList;
@@ -520,25 +447,13 @@ MWF.xApplication.process.Work.Main = new Class({
         this.workLogList = logData;
         this.recordList = recordData;
         this.attachmentList = attData;
-        //this.inheritedAttachmentList = data.inheritedAttachmentList;
-
 
         this.control = controlData;
-        if( !this.currentTask && this.control.allowReset ){
-            this.control.allowReset = false;
-        }
 
         if (formData){
             if (formData.form){
                 this.formDataText = (formData.form.data) ? MWF.decodeJsonString(formData.form.data) : "";
                 this.form = (this.formDataText) ? JSON.decode(this.formDataText): null;
-
-                //this.form = (formData.form.data) ? MWF.decodeJsonString(formData.form.data): null;
-                //
-                // var rex = /mwftype="subform"/gi;
-                //
-                //
-                // debugger;
                 this.relatedFormMap = formData.relatedFormMap;
                 this.relatedScriptMap = formData.relatedScriptMap;
                 this.relatedLanguage = formData.relatedLanguage;
@@ -553,30 +468,96 @@ MWF.xApplication.process.Work.Main = new Class({
                 this.formInfor = formData;
             }
         }
+
+        return new Promise(function (resolve, reject){
+            var currentTask = this.getCurrentTaskData(workData);
+            if (o2.typeOf(currentTask)==="array"){
+                if (currentTask.length){
+                    this.selectPersonIdentity(currentTask, resolve);
+                }else{
+                    resolve();
+                }
+            }else{
+                this.currentTask = this.getCurrentTaskData(workData);
+                if( !this.currentTask && this.control.allowReset ){
+                    this.control.allowReset = false;
+                }
+                resolve();
+            }
+        }.bind(this));
+    },
+    selectPersonIdentity: function(tasks, callback){
+        var size = this.content.getSize();
+        var area = new Element("div", {"styles": this.css.identitySelectArea}).inject(this.content);
+        var node = new Element("div", {"styles": this.css.identitySelectNode}).inject(area);
+        var height = size.y*0.8;
+        var margin = size.y*0.1;
+        node.setStyles({
+            "height": height+"px",
+            "margin-top": margin+"px"
+        });
+
+        var titleNode = new Element("div", {
+            "styles": this.css.identitySelectNodeTitle,
+            "text": this.lp.selectIdentity
+        }).inject(node);
+
+        var infoNode = new Element("div", {
+            "styles": this.css.identitySelectNodeInfo,
+            "text": this.lp.selectIdentityInfo
+        }).inject(node);
+
+        var listNode = new Element("div", {"styles": this.css.identitySelectNodeList}).inject(node);
+
+        tasks.forEach(function(task){
+            var id = layout.session.user.identityList.find(function(i){ return i.distinguishedName === task.identity });
+            o2.Actions.load("x_organization_assemble_express").UnitDutyAction.listNameWithIdentity({"identityList": [id.distinguishedName]}, function(json){
+                var duty = json.data.nameList.join(', ');
+                var idNode = new Element("div", {"styles": this.css.identitySelectNodeItem}).inject(listNode);
+                var html = "<div style=\"height: 50px; margin-bottom: 5px;\">\n" +
+                    "                    <div style=\"height: 50px; width: 50px; border-radius: 25px; overflow: hidden; float: left;\"><img\n" +
+                    "                        width=\"50\" height=\"50\" border=\"0\"\n" +
+                    "                        src=\"data:image/png;base64,"+layout.session.user.icon+"\">\n" +
+                    "                    </div>\n" +
+                    "                    <div\n" +
+                    "                        style=\"height: 40px; line-height: 40px; overflow: hidden; float: left; margin-left: 10px; margin-right: 30px; width: 150px; color: rgb(51, 51, 51); font-size: 16px; text-align: left;\">huqi开发\n" +
+                    "                    </div>\n" +
+                    "                </div>\n" +
+                    "                <div style=\"height: 36px; line-height: 40px; overflow: hidden; font-size: 14px;\">\n" +
+                    "                    <div style=\"color: rgb(0, 0, 0); width: 40px; float: left;\">"+this.lp.org+"</div>\n" +
+                    "                    <div title=\""+id.unitLevelName+"\"\n" +
+                    "                         style=\"margin-left: 40px; text-align: left; color: rgb(153, 153, 153);\">"+id.unitLevelName+"\n" +
+                    "                    </div>\n" +
+                    "                </div>\n" +
+                    "                <div style=\"height: 36px; line-height: 40px; overflow: hidden; font-size: 14px;\">\n" +
+                    "                    <div style=\"color: rgb(0, 0, 0); width: 40px; float: left;\">"+this.lp.duty+"</div>\n" +
+                    "                    <div title=\""+duty+"\" style=\"margin-left: 40px; text-align: left; color: rgb(153, 153, 153);\">"+duty+"</div>\n" +
+                    "                </div>\n" +
+                    "                <div class=\"mainColor_color\"\n" +
+                    "                     style=\"position: absolute; float: right; top: 14px; right: 14px;\">【"+id.unitName+"】\n" +
+                    "                </div>";
+                idNode.set("html", html);
+
+                idNode.addEvents({
+                    "mouseover": function(){
+                        this.setStyle("border", "1px solid rgb(74, 144, 226)");
+                    },
+                    "mouseout": function(){
+                        this.setStyle("border", "1px solid rgb(230, 230, 230)");
+                    },
+                    "click": function(){
+                        this.currentTask = task;
+                        if( !this.currentTask && this.control.allowReset ){
+                            this.control.allowReset = false;
+                        }
+                        area.destroy();
+                        callback();
+                    }.bind(this)
+                });
+            }.bind(this));
+        }.bind(this))
     },
 
-    // loadWork2: function(){
-    //     var method = "";
-    //     var id = "";
-    //
-    //     if (this.options.workCompletedId){
-    //         method = (layout.mobile) ? "getJobByWorkCompletedMobile" : "getJobByWorkCompleted";
-    //         id = this.options.workCompletedId;
-    //     }else if (this.options.workId) {
-    //         method = (layout.mobile) ? "getJobByWorkMobile" : "getJobByWork";
-    //         id = this.options.workId;
-    //     }
-    //     if (method && id){
-    //         this.action[method](function(json){
-    //             if (this.mask) this.mask.hide();
-    //             this.parseData(json.data);
-    //             if (layout.mobile) this.loadMobileActions();
-    //             this.openWork();
-    //         }.bind(this), function(){
-    //             this.close();
-    //         }.bind(this), id);
-    //     }
-    // },
     loadMobileActions: function(){
         if( this.control.allowSave || this.control.allowProcessing ){
             this.mobileActionBarNode = new Element("div", {"styles": this.css.mobileActionBarNode}).inject(this.node, "after");
@@ -642,86 +623,31 @@ MWF.xApplication.process.Work.Main = new Class({
         this.node.set("text", "openError");
     },
     getCurrentTaskData: function(data){
-        if ((data.currentTaskIndex || data.currentTaskIndex===0) && data.currentTaskIndex != -1){
-            this.options.taskId = this.taskList[data.currentTaskIndex].id;
-            return this.taskList[data.currentTaskIndex];
+        if (data.activity.hasOwnProperty('processingTaskOnceUnderSamePerson') && !data.activity.processingTaskOnceUnderSamePerson){
+            //不进行待办合并处理，需要用户选择一个身份后继续
+            var _self = this;
+            var task = (this.options.taskId) ?  this.taskList.find(function(t){
+                return t.id === _self.options.taskId;
+            }) : null;
+
+            if (task) return task;
+
+            var taskList = this.taskList.filter(function(t){
+                return t.person === layout.session.user.distinguishedName;
+            });
+            return (taskList.length && taskList.length===1) ? taskList[0] : taskList;
+        }else{
+            //进行待办合并处理
+            if ((data.currentTaskIndex || data.currentTaskIndex===0) && data.currentTaskIndex != -1){
+                this.options.taskId = this.taskList[data.currentTaskIndex].id;
+                return this.taskList[data.currentTaskIndex];
+            }
         }
-        //if (this.taskList){
-        //    if (this.taskList.length==1){
-        //        this.options.taskId = this.taskList[0].id;
-        //        return this.taskList[0];
-        //    }
-        //}
         return null;
     },
-    // parseData: function(data){
-    //     var title = "";
-    //     if (this.options.taskId){
-    //         title = data.work.title;
-    //         this.options.workId = data.work.id;
-    //     }else if (this.options.workCompletedId){
-    //         title = data.workCompleted.title;
-    //         this.options.workCompleted = data.workCompleted.id;
-    //     }else if (this.options.workId) {
-    //         title = data.work.title;
-    //         this.options.workId = data.work.id;
-    //     }
-    //
-    //     this.setTitle(this.options.title+"-"+title);
-    //
-    //     this.activity = data.activity;
-    //     this.data = data.data;
-    //     this.taskList = data.taskList;
-    //     this.currentTask = this.getCurrentTaskData(data);
-    //     this.taskList = data.taskList;
-    //     this.readList = data.readList;
-    //     this.work = data.work;
-    //     this.workCompleted = data.workCompleted;
-    //     this.workLogList = data.workLogList;
-    //     this.attachmentList = data.attachmentList;
-    //     this.inheritedAttachmentList = data.inheritedAttachmentList;
-    //     this.control = data.control;
-    //     this.form = (data.form) ? JSON.decode(MWF.decodeJsonString(data.form.data)): null;
-    //     this.formInfor = data.form;
-    // },
     openWork: function(){
         if (this.form){
             if( this.options.readonly )this.readonly = true;
-
-            //this.readonly = true;
-            //if (this.currentTask) {
-            //    this.readonly = false;
-            //}else if(this.options.isControl && this.work){
-            //    this.readonly = false;
-            //}
-
-            // MWF.xDesktop.requireApp("process.Xform", "Package", function(){
-            //     MWF.xApplication.process.Xform.require(function(){
-            //         this.appForm = new MWF.APPForm(this.formNode, this.form, {});
-            //         this.appForm.businessData = {
-            //             "data": this.data,
-            //             "taskList": this.taskList,
-            //             "readList": this.readList,
-            //             "work": this.work,
-            //             "workCompleted": this.workCompleted,
-            //             "control": this.control,
-            //             "activity": this.activity,
-            //             "task": this.currentTask,
-            //             "workLogList": this.workLogList,
-            //             "attachmentList": this.attachmentList,
-            //             "inheritedAttachmentList": this.inheritedAttachmentList,
-            //             "formInfor": this.formInfor,
-            //             "status": {
-            //                 //"readonly": (this.options.readonly) ? true : false
-            //                 "readonly": this.readonly
-            //             }
-            //         };
-            //         this.appForm.workAction = this.action;
-            //         this.appForm.app = this;
-            //         this.appForm.load();
-            //     }.bind(this));
-            // }.bind(this));
-
             this.formNode.empty();
             this.formNode.setStyles(this.css.formNode);
             var uri = window.location.href;

@@ -381,8 +381,12 @@ MWF.xApplication.process.ProcessDesigner.LP = {
 		"grab": "抢办",
 		"grabInfo": "谁先打开待办就由谁处理",
 		"readForUntreated": "给未处理待办的人发待阅",
-		"mergeTask": "合并待办",
-		"mergeTaskInfo": "（ 如果选“是”，同一身份在此节点上的待办会被合并 ）",
+		"mergeTask": "合并分支待办",
+		"mergeTaskInfo": "（ 如果选“是”，当流程拆分状态下，同一身份在此活动上的多个待办会被合并为一个 ）",
+
+        "mergeTaskProcess": "合并待办处理",
+        "mergeTaskProcessInfo": "（ 如果选“是”，当同一人员的不同身份在此活动中产生多个待办时，只需要处理一次 ）",
+
 		"activityGroup": "活动组",
 		"opinionGroup": "意见组",
 		"taskPerson": "处理人",

@@ -78,7 +78,9 @@ MWF.xDesktop.MessageV2 = new Class({
 			this.node.setStyles({"display": "block", "z-index": index});
 			var position = this.node.getPosition(this.node.getOffsetParent());
 			var size = this.node.getSize();
-			var left = position.x-size.x;
+
+            var scale = layout.userLayout.scale || 1;
+			var left = position.x*scale-size.x;
 
 			this.maskMorph.start({"left": ""+left+"px", "z-index":index});
 			this.morph.start({"left": ""+left+"px", "z-index":index}).chain(function(){
@@ -104,7 +106,8 @@ MWF.xDesktop.MessageV2 = new Class({
 			}
 			var position = this.node.getPosition(this.node.getOffsetParent());
 			var size = this.node.getSize();
-			var left = position.x+size.x;
+            var scale = layout.userLayout.scale || 1;
+			var left = position.x*scale+size.x;
 			
 			this.maskMorph.start({"left": ""+left+"px"}).chain(function(){
 				this.maskNode.setStyle("display", "none");

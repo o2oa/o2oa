@@ -412,6 +412,7 @@ MWF.xApplication.Homepage.TaskContent.Task = new Class({
     open: function(e, d){
         //     this._getJobByTask(function(data){
         var options = {
+            "taskId": d.id,
             "workId": d.work, "appId": "process.Work"+d.work,
             "onAfterProcess": this.reloadTasks.bind(this),
             "onAfterReset": this.reloadTasks.bind(this),
