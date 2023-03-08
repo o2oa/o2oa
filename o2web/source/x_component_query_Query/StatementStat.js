@@ -61,6 +61,8 @@ MWF.xApplication.query.Query.StatementStat = MWF.QStatementStat = new Class({
             this.statJson = JSON.parse(this.statementJson.stat).data; //查询统计里的统计配置
             if( !this.statJson.categoryList )this.statJson.categoryList = [];
             if( !this.statJson.selectList )this.statJson.selectList = [];
+            
+            debugger;
 
             if( this.statJson.categoryList.length ){
                 this.isGroup = true;
@@ -91,22 +93,26 @@ MWF.xApplication.query.Query.StatementStat = MWF.QStatementStat = new Class({
                     this.calculateGrid.each(function (s) {
                         var value;
                         if( s.path )value = this.getDataByPath( d, s.path );
+
                         if( ["string","number"].contains(typeOf(value)) ){
                             s.value = ( s.value || 0 ) + value.toFloat();
                         }
                     }.bind(this));
                 }.bind(this));
+
+                this.calculateGrid.each(function (s) {
+                    if( s.code ){
+                        s.value = MWF.Macro.exec(s.code, {"value": value, "data": d, "json": s})
+                    }
+                }.bind(this));
             }
 
-
-
-            debugger;
             if (this.loadingAreaNode) {
                 this.loadingAreaNode.destroy();
                 this.loadingAreaNode = null;
             }
 
-            if ( this.statJson.categoryList.length ){
+            if ( this.isGroup ){
                 this.stat = new MWF.xApplication.query.Query.StatementStat.GroupStat(this);
             }else{
 

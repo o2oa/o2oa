@@ -1,232 +1,494 @@
 {
-  "name": "test11",
-  "id": "97499527-eeb1-416d-befc-f0758f465768",
-  "query": "de6d9aa1-8bc4-430d-b4ff-ef4be7dd68e0",
+  "id": "76ada070-17c4-4f8c-966f-57fd84971782",
+  "name": "test555013344",
   "alias": "",
+  "format": "jpql",
   "description": "",
-  "type": "cms",
-  "data": {
-    "events": {
-      "queryLoad": {
-        "code": "",
-        "html": ""
+  "query": "89f1e01a-78a3-484e-8084-5d355f56bf68",
+  "type": "select",
+  "executePersonList": [],
+  "executeUnitList": [],
+  "executeGroupList": [],
+  "data": "SELECT o FROM BaoxiaoTable o",
+  "countData": "SELECT count(o) FROM BaoxiaoTable o",
+  "view": "{"
+  data
+  ":{"
+  categoryList
+  ":[{"
+  id
+  ":"
+  CA32413CFC500001F4D9A91E14C07FC0
+  ","
+  type
+  ":"
+  category
+  ","
+  column
+  ":"
+  CA32413CFC500001F4D9A91E14C07FC0
+  ","
+  displayName
+  ":"
+  无标题分类
+  ","
+  orderType
+  ":"
+  original
+  ","
+  events
+  ":{"
+  loadTitle
+  ":{"
+  code
+  ":"
+  ","
+  html
+  ":"
+  "},"
+  loadContent
+  ":{"
+  code
+  ":"
+  ","
+  html
+  ":"
+  "},"
+  click
+  ":{"
+  code
+  ":"
+  ","
+  html
+  ":"
+  "},"
+  mousedown
+  ":{"
+  code
+  ":"
+  ","
+  html
+  ":"
+  "},"
+  mouseup
+  ":{"
+  code
+  ":"
+  ","
+  html
+  ":"
+  "},"
+  mouseout
+  ":{"
+  code
+  ":"
+  ","
+  html
+  ":"
+  "},"
+  mouseover
+  ":{"
+  code
+  ":"
+  ","
+  html
+  ":"
+  "}},"
+  vid
+  ":"
+  76ada070-17c4-4f8c-966f-57fd84971782_stat
+  ","
+  pid
+  ":"
+  76ada070-17c4-4f8c-966f-57fd84971782_statCA32413CFC500001F4D9A91E14C07FC0
+  ","
+  mid
+  ":"
+  CA32413CFC500001F4D9A91E14C07FC0
+  ","
+  groupMergeType
+  ":"
+  item
+  ","
+  isAmount
+  ":false,"
+  isName
+  ":false}],"
+  selectList
+  ":[{"
+  id
+  ":"
+  CA32413C0ED00001B98B755D1CD317B0
+  ","
+  type
+  ":"
+  column
+  ","
+  column
+  ":"
+  CA32413C0ED00001B98B755D1CD317B0
+  ","
+  displayName
+  ":"
+  无标题列
+  ","
+  orderType
+  ":"
+  original
+  ","
+  events
+  ":{"
+  loadTitle
+  ":{"
+  code
+  ":"
+  ","
+  html
+  ":"
+  "},"
+  loadContent
+  ":{"
+  code
+  ":"
+  ","
+  html
+  ":"
+  "},"
+  click
+  ":{"
+  code
+  ":"
+  ","
+  html
+  ":"
+  "},"
+  mousedown
+  ":{"
+  code
+  ":"
+  ","
+  html
+  ":"
+  "},"
+  mouseup
+  ":{"
+  code
+  ":"
+  ","
+  html
+  ":"
+  "},"
+  mouseout
+  ":{"
+  code
+  ":"
+  ","
+  html
+  ":"
+  "},"
+  mouseover
+  ":{"
+  code
+  ":"
+  ","
+  html
+  ":"
+  "}},"
+  vid
+  ":"
+  76ada070-17c4-4f8c-966f-57fd84971782_stat
+  ","
+  pid
+  ":"
+  76ada070-17c4-4f8c-966f-57fd84971782_statCA32413C0ED00001B98B755D1CD317B0
+  ","
+  mid
+  ":"
+  CA32413C0ED00001B98B755D1CD317B0
+  ","
+  isName
+  ":false,"
+  code
+  ":"
+  return
+  \
+  \
+  "aa\\"
+  "}],"
+  noDataText
+  ":"
+  未找到数据
+  ","
+  calculate
+  ":{"
+  chart
+  ":["
+  bar
+  "]},"
+  events
+  ":{"
+  queryLoad
+  ":{"
+  code
+  ":"
+  ","
+  html
+  ":"
+  "},"
+  postLoad
+  ":{"
+  code
+  ":"
+  ","
+  html
+  ":"
+  "},"
+  postLoadPageData
+  ":{"
+  code
+  ":"
+  ","
+  html
+  ":"
+  "},"
+  postLoadPage
+  ":{"
+  code
+  ":"
+  ","
+  html
+  ":"
+  "},"
+  queryLoadItemRow
+  ":{"
+  code
+  ":"
+  ","
+  html
+  ":"
+  "},"
+  postLoadItemRow
+  ":{"
+  code
+  ":"
+  ","
+  html
+  ":"
+  "},"
+  selectRow
+  ":{"
+  code
+  ":"
+  ","
+  html
+  ":"
+  "},"
+  unselectRow
+  ":{"
+  code
+  ":"
+  ","
+  html
+  ":"
+  "},"
+  export
+  ":{"
+  code
+  ":"
+  ","
+  html
+  ":"
+  "},"
+  exportRow
+  ":{"
+  code
+  ":"
+  ","
+  html
+  ":"
+  "}},"
+  group
+  ":{}},"
+  id
+  ":"
+  76ada070-17c4-4f8c-966f-57fd84971782_stat
+  ","
+  pageSize
+  ":"
+  20
+  "}",
+  "creatorPerson": "程剑@chengjian@P",
+  "lastUpdateTime": "2023-03-07 14:08:37",
+  "lastUpdatePerson": "蔡祥熠@cxy@P",
+  "table": "34488be8-1d42-4f87-9a1f-f5bd855c3a4c",
+  "entityClassName": "",
+  "entityCategory": "dynamic",
+  "testParameters": "{\r\n    "
+  stri
+  ": "
+  a
+  "\r\n}",
+  "anonymousAccessible": false,
+  "display": true,
+  "createTime": "2021-06-15 11:10:57",
+  "updateTime": "2023-03-07 14:08:37",
+  "statementList": [],
+  "stat": {
+    "data": {
+      "categoryList": [
+        {
+          "id": "CA32413CFC500001F4D9A91E14C07FC0",
+          "type": "category",
+          "column": "CA32413CFC500001F4D9A91E14C07FC0",
+          "displayName": "无标题分类",
+          "orderType": "original",
+          "events": {
+            "loadTitle": {
+              "code": "",
+              "html": ""
+            },
+            "loadContent": {
+              "code": "",
+              "html": ""
+            },
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "vid": "76ada070-17c4-4f8c-966f-57fd84971782_stat",
+          "pid": "76ada070-17c4-4f8c-966f-57fd84971782_statCA32413CFC500001F4D9A91E14C07FC0",
+          "mid": "CA32413CFC500001F4D9A91E14C07FC0",
+          "groupMergeType": "item",
+          "isAmount": false,
+          "isName": false
+        }
+      ],
+      "selectList": [
+        {
+          "id": "CA32413C0ED00001B98B755D1CD317B0",
+          "type": "column",
+          "column": "CA32413C0ED00001B98B755D1CD317B0",
+          "displayName": "无标题列",
+          "orderType": "original",
+          "events": {
+            "loadTitle": {
+              "code": "",
+              "html": ""
+            },
+            "loadContent": {
+              "code": "",
+              "html": ""
+            },
+            "click": {
+              "code": "",
+              "html": ""
+            },
+            "mousedown": {
+              "code": "",
+              "html": ""
+            },
+            "mouseup": {
+              "code": "",
+              "html": ""
+            },
+            "mouseout": {
+              "code": "",
+              "html": ""
+            },
+            "mouseover": {
+              "code": "",
+              "html": ""
+            }
+          },
+          "vid": "76ada070-17c4-4f8c-966f-57fd84971782_stat",
+          "pid": "76ada070-17c4-4f8c-966f-57fd84971782_statCA32413C0ED00001B98B755D1CD317B0",
+          "mid": "CA32413C0ED00001B98B755D1CD317B0",
+          "isName": false,
+          "code": "return \\"
+          aa
+          \
+          \
+          ""
+        }
+      ],
+      "noDataText": "未找到数据",
+      "calculate": {
+        "chart": [
+          "bar"
+        ]
       },
-      "postLoad": {
-        "code": "",
-        "html": ""
+      "events": {
+        "queryLoad": {
+          "code": "",
+          "html": ""
+        },
+        "postLoad": {
+          "code": "",
+          "html": ""
+        },
+        "postLoadPageData": {
+          "code": "",
+          "html": ""
+        },
+        "postLoadPage": {
+          "code": "",
+          "html": ""
+        },
+        "queryLoadItemRow": {
+          "code": "",
+          "html": ""
+        },
+        "postLoadItemRow": {
+          "code": "",
+          "html": ""
+        },
+        "selectRow": {
+          "code": "",
+          "html": ""
+        },
+        "unselectRow": {
+          "code": "",
+          "html": ""
+        },
+        "export": {
+          "code": "",
+          "html": ""
+        },
+        "exportRow": {
+          "code": "",
+          "html": ""
+        }
       },
-      "queryImportData": {
-        "code": "",
-        "html": ""
-      },
-      "postImportData": {
-        "code": "",
-        "html": ""
-      },
-      "queryImportRowData": {
-        "code": "",
-        "html": ""
-      },
-      "postImportRowData": {
-        "code": "",
-        "html": ""
-      }
+      "group": {}
     },
-    "querytable":[{"name":"declaration","id":"b44d3df5-63d1-491c-b316-587dcb04e89e"}],
-    "selectList": [
-      {
-        "id": "C9482DD3ACC000016AB1C5701D801823",
-        "displayName": "标题",
-        "events": {
-          "queryLoad": {
-            "code": "",
-            "html": ""
-          },
-          "postLoad": {
-            "code": "",
-            "html": ""
-          }
-        },
-        "vid": "97499527-eeb1-416d-befc-f0758f465768",
-        "vtype": "cms",
-        "pid": "97499527-eeb1-416d-befc-f0758f465768C9482DD3ACC000016AB1C5701D801823",
-        "isName": false,
-        "dataType_CMSProcess" : "string",
-        "path": "subject"
-      },
-      {
-        "id": "C9482DD3CE20000114B8F3881A656F20",
-        "displayName": "日期",
-        "events": {
-          "queryLoad": {
-            "code": "",
-            "html": ""
-          },
-          "postLoad": {
-            "code": "",
-            "html": ""
-          }
-        },
-        "vid": "97499527-eeb1-416d-befc-f0758f465768",
-        "vtype": "cms",
-        "pid": "97499527-eeb1-416d-befc-f0758f465768C9482DD3CE20000114B8F3881A656F20",
-        "isName": false,
-        "dataType_CMSProcess" : "date",
-        "path": "date.data1"
-      },
-      {
-        "id": "C9482DD3EFA000013A6F1B3D815016C5",
-        "displayName": "数字",
-        "events": {
-          "queryLoad": {
-            "code": "",
-            "html": ""
-          },
-          "postLoad": {
-            "code": "",
-            "html": ""
-          }
-        },
-        "vid": "97499527-eeb1-416d-befc-f0758f465768",
-        "vtype": "cms",
-        "pid": "97499527-eeb1-416d-befc-f0758f465768C9482DD3EFA000013A6F1B3D815016C5",
-        "isName": false,
-        "dataType_CMSProcess" : "number",
-        "path": "number"
-      },
-      {
-        "id": "C9482DD47A10000132A71D231EA0FC20",
-        "displayName": "布尔值",
-        "events": {
-          "queryLoad": {
-            "code": "",
-            "html": ""
-          },
-          "postLoad": {
-            "code": "",
-            "html": ""
-          }
-        },
-        "vid": "97499527-eeb1-416d-befc-f0758f465768",
-        "vtype": "cms",
-        "pid": "97499527-eeb1-416d-befc-f0758f465768C9482DD47A10000132A71D231EA0FC20",
-        "isName": false,
-        "dataType_CMSProcess" : "boolean",
-        "path": "boolean"
-      },
-      {
-        "id": "C9482DD500E000018C58F6F01F9D3700",
-        "displayName": "文本数组",
-        "events": {
-          "queryLoad": {
-            "code": "",
-            "html": ""
-          },
-          "postLoad": {
-            "code": "",
-            "html": ""
-          }
-        },
-        "vid": "97499527-eeb1-416d-befc-f0758f465768",
-        "vtype": "cms",
-        "pid": "97499527-eeb1-416d-befc-f0758f465768C9482DD500E000018C58F6F01F9D3700",
-        "isName": false,
-        "dataType_CMSProcess" : "stringList",
-        "path": "stringList"
-      },
-      {
-        "id": "C9482DD51F50000186C41CE0193A1241",
-        "displayName": "日期数组",
-        "events": {
-          "queryLoad": {
-            "code": "",
-            "html": ""
-          },
-          "postLoad": {
-            "code": "",
-            "html": ""
-          }
-        },
-        "vid": "97499527-eeb1-416d-befc-f0758f465768",
-        "vtype": "cms",
-        "pid": "97499527-eeb1-416d-befc-f0758f465768C9482DD51F50000186C41CE0193A1241",
-        "isName": false,
-        "dataType_CMSProcess" : "dateList",
-        "path": "date"
-      },
-      {
-        "id": "C9482E4C8C900001CEE19E001BF0138F",
-        "displayName": "身份",
-        "events": {
-          "queryLoad": {
-            "code": "",
-            "html": ""
-          },
-          "postLoad": {
-            "code": "",
-            "html": ""
-          }
-        },
-        "vid": "97499527-eeb1-416d-befc-f0758f465768",
-        "vtype": "cms",
-        "pid": "97499527-eeb1-416d-befc-f0758f465768C9482E4C8C900001CEE19E001BF0138F",
-        "isName": true,
-        "dataType_CMSProcess" : "string",
-        "path": "org"
-      }
-    ],
-    "calculateFieldList": [
-      {
-        "id": "C9482DF45F200001FE257880BB043D00",
-        "displayName": "计算_身份",
-        "events": {
-          "queryLoad": {
-            "code": "",
-            "html": ""
-          },
-          "postLoad": {
-            "code": "",
-            "html": ""
-          }
-        },
-        "vid": "97499527-eeb1-416d-befc-f0758f465768",
-        "vtype": "cms",
-        "pid": "97499527-eeb1-416d-befc-f0758f465768C9482DF45F200001FE257880BB043D00",
-        "isName": true,
-        "dataType_CMSProcess" : "string",
-        "valueScript" : "return this.target.data.subject + \"_aaa\"",
-        "path": "cal_org"
-      },
-      {
-        "id": "C9482E382C50000165A216601F242230",
-        "displayName": "计算_文本数组",
-        "events": {
-          "queryLoad": {
-            "code": "",
-            "html": ""
-          },
-          "postLoad": {
-            "code": "",
-            "html": ""
-          }
-        },
-        "vid": "97499527-eeb1-416d-befc-f0758f465768",
-        "vtype": "cms",
-        "pid": "97499527-eeb1-416d-befc-f0758f465768C9482E382C50000165A216601F242230",
-        "isName": false,
-        "valueScript" : "return this.target.data.subject + \"_bbb\"",
-        "dataType_CMSProcess" : "stringList",
-        "path": "cal_stringList"
-      }
-    ]
+    "id": "76ada070-17c4-4f8c-966f-57fd84971782_stat",
+    "pageSize": "20"
   },
-  "availableIdentityList": [],
-  "availableUnitList": [],
-  "isNewImporter": true,
-  "application": "de6d9aa1-8bc4-430d-b4ff-ef4be7dd68e0",
-  "applicationName": "BUG管理",
-  "vid": "97499527-eeb1-416d-befc-f0758f465768",
-  "vtype": "Importer",
-  "pid": "97499527-eeb1-416d-befc-f0758f46576897499527-eeb1-416d-befc-f0758f465768",
-  "queryName": "BUG管理"
+  "applicationName": "BUG管理01",
+  "application": "89f1e01a-78a3-484e-8084-5d355f56bf68",
+  "vid": "76ada070-17c4-4f8c-966f-57fd84971782",
+  "vtype": "select",
+  "pid": "76ada070-17c4-4f8c-966f-57fd8497178276ada070-17c4-4f8c-966f-57fd84971782",
+  "mid": "76ada070-17c4-4f8c-966f-57fd84971782",
+  "76ada070-17c4-4f8c-966f-57fd84971782viewFilterType": "custom",
+  "viewParameterValueType": "input",
+  "viewCustomFilterValueType": "input",
+  "queryName": "BUG管理01"
 }
