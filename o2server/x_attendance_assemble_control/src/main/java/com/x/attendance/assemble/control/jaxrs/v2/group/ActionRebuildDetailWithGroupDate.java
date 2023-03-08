@@ -11,7 +11,9 @@ import com.x.attendance.entity.v2.AttendanceV2Group;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
+import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -30,7 +32,7 @@ public class ActionRebuildDetailWithGroupDate  extends BaseAction {
     private static final Logger LOGGER = LoggerFactory.getLogger(ActionRebuildDetailWithGroupDate.class);
 
 
-    ActionResult<Wo> execute(String groupId, String date) throws Exception {
+    ActionResult<Wo> execute(EffectivePerson effectivePerson, String groupId, String date) throws Exception {
         if (StringUtils.isEmpty(groupId)) {
             throw new ExceptionEmptyParameter("groupId");
         }
@@ -43,11 +45,14 @@ public class ActionRebuildDetailWithGroupDate  extends BaseAction {
             throw new ExceptionDateError();
         }
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            Business business = new Business(emc);
+            if(!business.isManager(effectivePerson)){
+                throw new ExceptionAccessDenied(effectivePerson);
+            }
             AttendanceV2Group group = emc.find(groupId, AttendanceV2Group.class);
             if (group == null) {
                 throw new ExceptionNotExistObject("考勤组"+groupId);
             }
-            Business business = new Business(emc);
             List<String> trueList =  calTruePersonFromMixList(emc, business, group.getId(), group.getParticipateList(), group.getUnParticipateList());
             group.setTrueParticipantList(trueList);
             emc.beginTransaction(AttendanceV2Group.class);

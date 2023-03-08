@@ -13,6 +13,7 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -35,6 +36,9 @@ public class ActionCreateUpdate extends BaseAction {
         ActionResult<Wo> result = new ActionResult<>();
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Business business = new Business(emc);
+            if(!business.isManager(effectivePerson)){
+                throw new ExceptionAccessDenied(effectivePerson);
+            }
             Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
             if (StringUtils.isEmpty(wi.getGroupName())) {
                 throw new ExceptionEmptyParameter("考勤组名称");

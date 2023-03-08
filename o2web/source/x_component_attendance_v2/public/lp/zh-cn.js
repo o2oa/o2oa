@@ -17,17 +17,22 @@ MWF.xApplication.attendancev2.LP = {
     "inputSomething": "请输入一些内容",
 
     "menu": {
+        // 我的
         "myAttendance": "我的考勤",
         "myAttendanceMonth": "我的考勤月报",
         "myAttendanceStatistic": "我的考勤统计",
         "myAppealList": "我的考勤异常",
-        "config": "配置",
+        // 统计考勤
         "statistic": "考勤统计",
+        "detailStatisticFilter": "汇总统计",
         "detailFilter": "每日统计",
+        // 管理配置
+        "config": "配置",
         "shiftManager": "班次管理",
         "groupmanager": "考勤组管理",
         "addressmanger": "工作场所管理",
         "configmanager": "配置管理",
+        
     },
 
     "alert": "提示",
@@ -42,6 +47,7 @@ MWF.xApplication.attendancev2.LP = {
     "saveSuccess": "保存成功！",
     "onDuty": "上班打卡",
     "offDuty": "下班打卡",
+    "until": "至",
     
 
     // 组件
@@ -52,6 +58,7 @@ MWF.xApplication.attendancev2.LP = {
         "timeMinutesSelectorMinute": "分钟",
         "chooseDatePlaceholder": "请选择日期",
         "selectPlaceholder": "请选择",
+        "selectOrgPersonOverCount": "只能选择({count})个数据！",
     },
 
     // 班次
@@ -162,14 +169,25 @@ MWF.xApplication.attendancev2.LP = {
         "date": "日期",
         "attendance": "出勤天数",
         "rest": "休息天数",
-        "workTimeDuration": "工作时长(分钟)",
+        "absenteeismDays": "旷工天数",
+        "workTimeDuration": "工作时长",
+        "averageWorkTimeDuration": "平均工时",
         "lateTimes": "迟到次数",
         "lateTimeDuration": "迟到时长(分钟)",
         "leaveEarlierTimes": "早退次数",
         "leaveEarlierTimeDuration": "早退时长(分钟)",
         "onDutyAbsenceTimes": "上班缺卡次数",
         "offDutyAbsenceTimes": "下班缺卡次数",
+        "absenceTimes": "缺卡次数",
         "btnRecordList": "打卡记录",
+    },
+    "detailStatisticList":{
+        "filterEmptyPlaceholder": "请选择需要查询人员或组织!",
+        "filterSelectTitle": "查询统计的人员或组织",
+        "participatesPlaceholder": "请点击选择参与考勤人员、组织",
+        "participatesErrorNotEmtpy": "参与考勤人员、组织不能为空！",
+        "startDateEmptyPlaceholder": "请选择开始日期!",
+        "endDateEmptyPlaceholder": "请选择结束日期!",
     },
     "detailRecordList": {
         "title": "打卡记录",
@@ -213,7 +231,8 @@ MWF.xApplication.attendancev2.LP = {
         "status2": "审批通过",
         "status3": "审批不通过",
 
-        "startProcess": "发起流程",
+        "startProcess": "发起申诉",
+        "openJob": "查看申诉",
         "startProcessNoConfigError": "没有配置申诉流程，无法启动流程！",
     },
 

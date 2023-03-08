@@ -9,6 +9,7 @@ import com.x.attendance.entity.v2.AttendanceV2Group;
 import com.x.attendance.entity.v2.AttendanceV2WorkPlace;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.WrapOutBoolean;
@@ -30,11 +31,14 @@ public class ActionDelete extends BaseAction {
             throw new ExceptionEmptyParameter("id");
         }
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            Business business = new Business(emc);
+            if(!business.isManager(effectivePerson)){
+                throw new ExceptionAccessDenied(effectivePerson);
+            }
             AttendanceV2WorkPlace workPlace = emc.find(id, AttendanceV2WorkPlace.class);
             if (workPlace == null) {
                 throw new ExceptionNotExistObject(id+"工作地点");
             }
-            Business business = new Business(emc);
             List<AttendanceV2Group> groupList = business.getAttendanceV2ManagerFactory().listGroupWithWorkPlaceId(id);
             if (groupList != null && !groupList.isEmpty()) {
                 throw new ExceptionWorkPlaceUsed(groupList);

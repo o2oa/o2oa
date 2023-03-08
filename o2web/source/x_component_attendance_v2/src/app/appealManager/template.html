@@ -1,4 +1,4 @@
-<div style="position: relative;height: 100%;">
+<div class="manager-box">
     <div class="index_page_header_container">
         <div class="index_page_header_title">{{$.lp.appealManagerTitle}}</div>
     </div>
@@ -26,6 +26,9 @@
                 <td>
                     <span class="operator_link" oo-if="g.value.status === 0"
                         @click="this.startProcess(g.value)">{{$.lp.appeal.startProcess}}</span>
+                    <span class="operator_link" oo-if="g.value.status !== 0"
+                        @click="this.openJob(g.value.jobId)">{{$.lp.appeal.openJob}}</span>
+                    
                 </td>
             </tr>
         </table>

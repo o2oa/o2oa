@@ -9,6 +9,7 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
@@ -33,8 +34,8 @@ public class ActionListByPage extends BaseAction {
             LOGGER.debug("execute:{}, page:{}, size:{}.", effectivePerson.getDistinguishedName(), page, size);
         }
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-            ActionResult<List<Wo>> result = new ActionResult<>();
             Business business = new Business(emc);
+            ActionResult<List<Wo>> result = new ActionResult<>();
             Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
             if (wi == null) {
                 wi = new Wi();

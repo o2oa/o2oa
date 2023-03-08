@@ -135,7 +135,7 @@ public class GroupAction extends StandardJaxrsAction {
         ActionResult<ActionRebuildDetailWithGroupDate.Wo> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
-            result = new ActionRebuildDetailWithGroupDate().execute(groupId, date);
+            result = new ActionRebuildDetailWithGroupDate().execute(effectivePerson, groupId, date);
         } catch (Exception e) {
             logger.error(e, effectivePerson, request, null);
             result.error(e);

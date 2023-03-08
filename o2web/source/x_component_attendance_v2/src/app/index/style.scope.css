@@ -11,6 +11,9 @@
 .margin-left {
   margin-left: 10px;
 }
+.margin-right {
+  margin-right: 10px;
+}
 .padding-bottom {
   padding-bottom: 10px!important;
 }
@@ -36,6 +39,12 @@
   padding: 6px 20px;
   cursor: pointer;
   margin-left: 10px;
+}
+/* 主页顶层样式 */
+.manager-box {
+  position: relative;
+  height: 100%;
+  overflow: auto;
 }
 /* table */
 .att_table thead {

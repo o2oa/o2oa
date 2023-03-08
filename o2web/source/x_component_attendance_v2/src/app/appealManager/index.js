@@ -82,12 +82,10 @@ export default content({
     if (json && json.appealEnable && json.processId) {
       const process = await processAction("get", json.processId);
       MWF.xDesktop.requireApp("process.TaskCenter", "ProcessStarter", function(){
-        console.debug("流程", process);
         var starter = new MWF.xApplication.process.TaskCenter.ProcessStarter(process, app, {
             "latest" : false,
             "workData" : { "appealId": appeal.id, "record": appeal.record }, // 把id和打卡记录传给流程
             "onStarted": function(data, title, processName){
-              console.debug("启动流程成功", data);
                 this._afterStartProcess(data, appeal.id);
             }.bind(this)
         });
@@ -111,6 +109,11 @@ export default content({
     const json = await appealInfoAction("startProcess", id);
     console.debug('更新成功', json);
     this.loadAppealList();
+  },
+  openJob(jobId) {
+    if (jobId) {
+      o2.api.page.openJob(jobId);
+    }
   },
   // 关闭表单页面
   closeGroup() {

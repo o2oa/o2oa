@@ -1,5 +1,6 @@
 import {component as content} from '@o2oa/oovm';
 import {lp, o2, component} from '@o2oa/component';
+import {lpFormat} from '../../utils/common';
 import style from './style.scope.css';
 import template from './temp.html';
 
@@ -17,6 +18,8 @@ export default content({
             value: [],
             showValue: "",
             placeholder: "",
+            types: ["person", "unit"], // 选择器类型
+            count: 0 , // 0是多选 其它是固定数据选择
         };
     },
     afterRender() {
@@ -43,7 +46,8 @@ export default content({
     clickOpenO2Selector() {
       MWF.requireApp("Selector","package", function(){
         var options = {
-            "types": ["person", "unit"],
+            "types": this.bind.types,
+            "count": this.bind.count,
             "title": this.bind.selectorTitle,
             "values": this.bind.value,
             "onComplete": function(items) {
@@ -68,12 +72,17 @@ export default content({
        let newValue = [];
        let newShowValue = [];
        if (items) {
+        if (items.length > this.bind.count) {
+          const message = lpFormat(lp, "components.selectOrgPersonOverCount", {count: this.bind.count});
+          o2.api.page.notice(message, 'error');
+          return;
+        }
         items.forEach(element => {
           if (element.data && element.data.distinguishedName) {
             newValue.push(element.data.distinguishedName);
             const a = element.data.distinguishedName.split("@");
-            if (a && a.length == 3) {
-              newShowValue.push(a[0]+"@"+a[2]);
+            if (a && a.length > 0 ) {
+              newShowValue.push(a[0]);
             } else {
               newShowValue.push(element.data.distinguishedName);
             }

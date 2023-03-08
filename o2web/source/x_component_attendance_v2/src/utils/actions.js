@@ -125,6 +125,15 @@ function detailActionListByPaging(...args) {
   );
 }
 
+function detailAction(method, ...args) {
+  return doAction(
+    "x_attendance_assemble_control",
+    "DetailAction",
+    method,
+    args
+  );
+}
+
 /**
  * 考勤配置API
  * @param {*} method
@@ -182,6 +191,7 @@ export {
   groupActionListByPaging,
   groupAction,
   detailActionListByPaging,
+  detailAction,
   configAction,
   appealInfoActionListByPaging,
   appealInfoAction,

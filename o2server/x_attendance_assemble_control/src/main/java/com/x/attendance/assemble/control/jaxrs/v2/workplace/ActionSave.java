@@ -1,6 +1,7 @@
 package com.x.attendance.assemble.control.jaxrs.v2.workplace;
 
 import com.google.gson.JsonElement;
+import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionCannotRepetitive;
 import com.x.attendance.assemble.control.jaxrs.workplace.BaseAction;
 import com.x.attendance.assemble.control.jaxrs.workplace.ExceptionLatitudeEmpty;
@@ -14,6 +15,7 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -52,6 +54,10 @@ public class ActionSave extends BaseAction {
 			logger.debug("保存工作地点，{}", wrapIn.toString());
 		}
 		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+			Business business = new Business(emc);
+			if(!business.isManager(effectivePerson)){
+				throw new ExceptionAccessDenied(effectivePerson);
+			}
 			// 名称不能相同
 			List<AttendanceV2WorkPlace> checkRepetitive = emc.listEqual(AttendanceV2WorkPlace.class, AttendanceV2WorkPlace.placeName_FIELDNAME, wrapIn.getPlaceName());
 			if (checkRepetitive != null && !checkRepetitive.isEmpty()) {

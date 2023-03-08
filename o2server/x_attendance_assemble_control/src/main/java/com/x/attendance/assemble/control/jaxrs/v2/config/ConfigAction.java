@@ -40,7 +40,7 @@ public class ConfigAction extends StandardJaxrsAction {
         ActionResult<ActionPost.Wo> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
-            result = new ActionPost().execute(jsonElement);
+            result = new ActionPost().execute(effectivePerson, jsonElement);
         } catch (Exception e) {
             logger.error(e, effectivePerson, request, jsonElement);
             result.error(e);

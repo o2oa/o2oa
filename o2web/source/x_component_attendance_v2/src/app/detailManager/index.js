@@ -1,6 +1,6 @@
 import { component as content } from "@o2oa/oovm";
 import { lp, o2 } from "@o2oa/component";
-import { lpFormat } from "../../utils/common";
+import { convertMinutesToHoursAndMinutes } from "../../utils/common";
 import { detailActionListByPaging } from "../../utils/actions";
 import oPager from "../../components/o-pager";
 import oDatePicker from "../../components/o-date-picker";
@@ -112,6 +112,10 @@ export default content({
       return person.split("@")[0];
     }
     return person;
+  },
+  // 格式化工作时长
+  formatWorkTimeDuration(workTime) {
+    return convertMinutesToHoursAndMinutes(workTime);
   },
   async openRecordList(detail) {
     const content = (await import(`./recordList/index.js`)).default;

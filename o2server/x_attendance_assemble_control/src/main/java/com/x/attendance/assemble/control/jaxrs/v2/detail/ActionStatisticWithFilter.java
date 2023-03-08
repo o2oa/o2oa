@@ -47,12 +47,12 @@ public class ActionStatisticWithFilter extends BaseAction {
             if (startDate.after(endDate)) {
                 throw new ExceptionDateEndBeforeStartError();
             }
-            int different = DateTools.differentDays(startDate, endDate);
-            // 包含前后 所以+1
-            different += 1;
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("时间天数：" + different);
-            }
+//            int different = DateTools.differentDays(startDate, endDate);
+//            // 包含前后 所以+1
+//            different += 1;
+//            if (LOGGER.isDebugEnabled()) {
+//                LOGGER.debug("时间天数：" + different);
+//            }
             List<String> userList = new ArrayList<>();
             Business business = new Business(emc);
             if (wi.getFilter().endsWith("@U")) { // 组织转化成人员列表
@@ -68,7 +68,7 @@ public class ActionStatisticWithFilter extends BaseAction {
             }
             // 根据人员循环查询 并统计数据
             List<Wo> wos = new ArrayList<>();
-            statisticDetail(wi, different, userList, business, wos);
+            statisticDetail(wi, userList, business, wos);
             result.setData(wos);
             return result;
         }
@@ -77,13 +77,12 @@ public class ActionStatisticWithFilter extends BaseAction {
     /**
      * 统计数据
      * @param wi
-     * @param different
      * @param userList
      * @param business
      * @param wos
      * @throws Exception
      */
-    private void statisticDetail(Wi wi, int different, List<String> userList, Business business, List<Wo> wos) throws Exception {
+    private void statisticDetail(Wi wi, List<String> userList, Business business, List<Wo> wos) throws Exception {
         for (String person : userList) {
             Wo wo = new Wo();
             wo.setUserId(person); //
@@ -96,7 +95,11 @@ public class ActionStatisticWithFilter extends BaseAction {
                  Integer lateTimes = 0;
                  Integer leaveEarlierTimes = 0;
                  Integer absenceTimes = 0;
+                 int workDayCount = 0;
                 for (AttendanceV2Detail attendanceV2Detail : list) {
+                    if (attendanceV2Detail.getWorkDay()) {
+                        workDayCount += 1; //工作日加1
+                    }
                     if (attendanceV2Detail.getWorkTimeDuration() > 0) {
                         workTimeDuration += attendanceV2Detail.getWorkTimeDuration();
                     }
@@ -122,8 +125,10 @@ public class ActionStatisticWithFilter extends BaseAction {
                         absenceTimes += attendanceV2Detail.getOffDutyAbsenceTimes();
                     }
                 }
-                DecimalFormat df = new DecimalFormat("0.0");
-                wo.setAverageWorkTimeDuration(df.format((float)workTimeDuration.intValue() / different));
+                if (workDayCount > 0) {
+                    DecimalFormat df = new DecimalFormat("0.0");
+                    wo.setAverageWorkTimeDuration(df.format(((float) workTimeDuration.intValue() / workDayCount)/60));
+                }
                 wo.setWorkTimeDuration(workTimeDuration);
                 wo.setAttendance(attendance);
                 wo.setRest(rest);
@@ -145,7 +150,7 @@ public class ActionStatisticWithFilter extends BaseAction {
 
         @FieldDescribe("工作时长(分钟)")
         private Long workTimeDuration = 0L;
-        @FieldDescribe("平均工作时长(分钟)") // 除查询天数
+        @FieldDescribe("平均工时，工作时长/工作日数量，(小时)") //
         private String averageWorkTimeDuration = "0.0";
 
 

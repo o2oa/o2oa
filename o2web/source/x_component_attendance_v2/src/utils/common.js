@@ -1,11 +1,10 @@
 import { exec } from "@o2oa/util";
 
-
 /**
  * 是否为空
  * 数字0也是不为空
- * @param {*} data 
- * @returns 
+ * @param {*} data
+ * @returns
  */
 function isEmpty(data) {
   if (data === 0) {
@@ -14,8 +13,8 @@ function isEmpty(data) {
   if (!data) {
     return true;
   }
-  if (typeof(data) == 'string') {
-    return (data === '' || data.replace(/(^s*)|(s*$)/g, "").length == 0);
+  if (typeof data == "string") {
+    return data === "" || data.replace(/(^s*)|(s*$)/g, "").length == 0;
   } else {
     return false;
   }
@@ -23,41 +22,41 @@ function isEmpty(data) {
 
 /**
  * 是否整数 包含正负
- * @param {*} inputData 
- * @returns 
+ * @param {*} inputData
+ * @returns
  */
 function isInt(inputData) {
-    if(isPositiveInt(inputData) || isNegtiveInt(inputData)){
-        return true;
-    }else{
-        return false;
-    }
+  if (isPositiveInt(inputData) || isNegtiveInt(inputData)) {
+    return true;
+  } else {
+    return false;
+  }
 }
 /**
  * 是否负整数 包含0
- * @param {*} inputData 
- * @returns 
+ * @param {*} inputData
+ * @returns
  */
 function isNegtiveInt(inputData) {
-    const regNeg = /^\-[1-9][0-9]*$/; // 负整数
-    if(regNeg.test(inputData)){
-        return true;
-    }else{
-        return false;
-    }
+  const regNeg = /^\-[1-9][0-9]*$/; // 负整数
+  if (regNeg.test(inputData)) {
+    return true;
+  } else {
+    return false;
+  }
 }
 /**
  * 是否正整数
- * @param {*} inputData 
- * @returns 
+ * @param {*} inputData
+ * @returns
  */
 function isPositiveInt(inputData) {
-    const regPos = /^\d+$/; // 正整数
-    if(regPos.test(inputData)){
-        return true;
-    }else{
-        return false;
-    }
+  const regPos = /^\d+$/; // 正整数
+  if (regPos.test(inputData)) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 /**
@@ -119,4 +118,40 @@ function setJSONValue(key, v, data) {
   }
 }
 
-export { setJSONValue, lpFormat, isInt, isNegtiveInt, isPositiveInt, isEmpty };
+// 格式化日期为 YYYY-MM-DD 格式
+const formatDate = (date) => {
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  return `${year}-${month < 10 ? "0" + month : month}-${
+    day < 10 ? "0" + day : day
+  }`;
+};
+
+// 格式化分钟数为 xx小时xx分钟
+const convertMinutesToHoursAndMinutes = (minutes) => {
+  var hours = Math.floor(minutes / 60); // 取得小时数
+  var remainingMinutes = minutes % 60; // 取得剩余的分钟数
+  var result = "";
+
+  if (hours > 0) {
+    result += hours + "小时";
+  }
+
+  if (remainingMinutes > 0 || result === "") {
+    result += remainingMinutes + "分钟";
+  }
+
+  return result;
+};
+
+export {
+  setJSONValue,
+  lpFormat,
+  isInt,
+  isNegtiveInt,
+  isPositiveInt,
+  isEmpty,
+  formatDate,
+  convertMinutesToHoursAndMinutes,
+};

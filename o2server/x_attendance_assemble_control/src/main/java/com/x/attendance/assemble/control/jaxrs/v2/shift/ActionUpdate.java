@@ -1,6 +1,7 @@
 package com.x.attendance.assemble.control.jaxrs.v2.shift;
 
 import com.google.gson.JsonElement;
+import com.x.attendance.assemble.control.Business;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionCannotRepetitive;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.entity.v2.AttendanceV2Shift;
@@ -11,6 +12,7 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WoId;
@@ -32,6 +34,10 @@ public class ActionUpdate extends BaseAction {
                              JsonElement jsonElement) throws Exception {
         ActionResult<Wo> result = new ActionResult<>();
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            Business business = new Business(emc);
+            if(!business.isManager(effectivePerson)){
+                throw new ExceptionAccessDenied(effectivePerson);
+            }
             Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
             if (StringUtils.isBlank(wi.getShiftName())) {
                 throw new ExceptionEmptyParameter("班次名称");

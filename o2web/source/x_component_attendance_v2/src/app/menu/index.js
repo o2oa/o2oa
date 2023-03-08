@@ -40,13 +40,13 @@ export default content({
                 sub: [
                   {
                     id: '2-1',
-                    title: lp.menu.detailFilter,
-                    action: "detailManager"
-                  },
+                    title: lp.menu.detailStatisticFilter,
+                    action: "detailStatisticManager"
+                  }, 
                   {
                     id: '2-2',
-                    title: "个人考勤统计",
-                    action: "shiftManager"
+                    title: lp.menu.detailFilter,
+                    action: "detailManager"
                   }
                 ]
               },

@@ -1,6 +1,7 @@
 package com.x.attendance.assemble.control.jaxrs.v2.config;
 
 import com.google.gson.JsonElement;
+import com.x.attendance.assemble.control.Business;
 import com.x.attendance.entity.v2.AttendanceV2Config;
 import com.x.attendance.entity.v2.AttendanceV2Group;
 import com.x.base.core.container.EntityManagerContainer;
@@ -9,7 +10,9 @@ import com.x.base.core.entity.JpaObject;
 import com.x.base.core.entity.annotation.CheckPersistType;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
+import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapBoolean;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
@@ -25,8 +28,12 @@ public class ActionPost extends BaseAction {
     private static final Logger LOGGER = LoggerFactory.getLogger(ActionPost.class);
 
 
-    ActionResult<Wo> execute(JsonElement jsonElement) throws Exception {
+    ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            Business business = new Business(emc);
+            if(!business.isManager(effectivePerson)){
+                throw new ExceptionAccessDenied(effectivePerson);
+            }
             ActionResult<Wo> result = new ActionResult<>();
             Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
             AttendanceV2Config config;

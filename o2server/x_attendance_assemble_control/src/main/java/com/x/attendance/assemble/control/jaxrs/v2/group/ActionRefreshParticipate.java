@@ -7,6 +7,7 @@ import com.x.attendance.entity.v2.AttendanceV2Group;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.annotation.CheckPersistType;
+import com.x.base.core.project.exception.ExceptionAccessDenied;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.http.WrapOutBoolean;
@@ -26,11 +27,14 @@ public class ActionRefreshParticipate extends BaseAction {
             throw new ExceptionEmptyParameter("id");
         }
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            Business business = new Business(emc);
+            if(!business.isManager(effectivePerson)){
+                throw new ExceptionAccessDenied(effectivePerson);
+            }
             AttendanceV2Group group = emc.find(id, AttendanceV2Group.class);
             if (group == null) {
                 throw new ExceptionNotExistObject(id+"考勤组");
             }
-            Business business = new Business(emc);
             List<String> trueList = calTruePersonFromMixList(emc, business, group.getId(), group.getParticipateList(), group.getUnParticipateList());
             group.setTrueParticipantList(trueList);
             emc.beginTransaction(AttendanceV2Group.class);
