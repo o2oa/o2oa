@@ -117,21 +117,24 @@ public class TaskCompleted extends SliceJpaObject implements ProjectionInterface
         if (Objects.isNull(this.processingType)) {
             this.processingType = PROCESSINGTYPE_TASK;
         }
-        switch (this.processingType) {
-            case PROCESSINGTYPE_APPENDTASK:
-            case PROCESSINGTYPE_BEAPPENDEDTASK:
-            case PROCESSINGTYPE_REROUTE:
-            case PROCESSINGTYPE_RETRACT:
-            case PROCESSINGTYPE_ROLLBACK:
-            case PROCESSINGTYPE_EMPOWER:
-            case PROCESSINGTYPE_RESET:
-            case PROCESSINGTYPE_EXTEND:
-            case PROCESSINGTYPE_ADD:
-                this.joinInquire = false;
-                break;
-            default:
-                this.joinInquire = true;
-                break;
+        // 如果没有joinInquire那么根据类型进行判断
+        if (null == this.joinInquire) {
+            switch (this.processingType) {
+                case PROCESSINGTYPE_APPENDTASK:
+                case PROCESSINGTYPE_BEAPPENDEDTASK:
+                case PROCESSINGTYPE_REROUTE:
+                case PROCESSINGTYPE_RETRACT:
+                case PROCESSINGTYPE_ROLLBACK:
+                case PROCESSINGTYPE_EMPOWER:
+                case PROCESSINGTYPE_RESET:
+                case PROCESSINGTYPE_EXTEND:
+                case PROCESSINGTYPE_ADD:
+                    this.joinInquire = false;
+                    break;
+                default:
+                    this.joinInquire = true;
+                    break;
+            }
         }
 
         if (StringTools.utf8Length(this.getProperties().getTitle()) > length_255B) {

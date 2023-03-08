@@ -2,7 +2,9 @@ package com.x.processplatform.service.processing.jaxrs.work;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -24,6 +26,7 @@ import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.processplatform.ManualTaskIdentityMatrix;
 import com.x.base.core.project.tools.ListTools;
+import com.x.processplatform.core.entity.content.TaskCompleted;
 import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2AddManualTaskIdentityMatrixWi;
 import com.x.processplatform.core.express.service.processing.jaxrs.work.V2AddManualTaskIdentityMatrixWo;
@@ -91,6 +94,7 @@ class V2AddManualTaskIdentityMatrix extends BaseAction {
                     throw new ExceptionEntityNotExist(id, Work.class);
                 }
                 matrix = work.getManualTaskIdentityMatrix();
+                List<String> flat = matrix.flat();
                 // 需要将ADD_POSITION_AFTER挑选出来进行逆序执行
                 List<V2AddManualTaskIdentityMatrixWi.Option> afterOptionList = optionList.stream()
                         .filter(o -> StringUtils.equals(ManualTaskIdentityMatrix.ADD_POSITION_AFTER, o.getPosition()))
@@ -99,16 +103,32 @@ class V2AddManualTaskIdentityMatrix extends BaseAction {
                         .filter(o -> !StringUtils.equals(ManualTaskIdentityMatrix.ADD_POSITION_AFTER, o.getPosition()))
                         .collect(Collectors.toList());
                 Collections.reverse(afterOptionList);
+                Set<String> combineIdentities = new HashSet<>();
                 for (V2AddManualTaskIdentityMatrixWi.Option option : ListUtils.sum(afterOptionList, otherOptionList)) {
                     List<String> identities = business.organization().identity().list(option.getIdentityList());
-                    LOGGER.debug("add identites:{}.", identities);
+                    identities = ListUtils.subtract(identities, flat);
                     if (!ListTools.isEmpty(identities)) {
+                        LOGGER.debug("add identites:{}.", identities);
                         matrix.add(identity, option.getPosition(), identities);
+                        combineIdentities.addAll(identities);
                     }
                 }
                 if (BooleanUtils.isTrue(remove)) {
                     matrix.remove(identity);
                 }
+                // 将当前环节可能已经存在的已办标记为不参与办理
+                emc.beginTransaction(TaskCompleted.class);
+                emc.listEqualAndEqualAndNotEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME, work.getJob(),
+                        TaskCompleted.activityToken_FIELDNAME,
+                        work.getActivityToken(), TaskCompleted.joinInquire_FIELDNAME, false).stream()
+                        .filter(o -> combineIdentities.contains(o.getIdentity())).forEach(p -> {
+                            try {
+                                p.setJoinInquire(false);
+                                emc.check(p, CheckPersistType.all);
+                            } catch (Exception e) {
+                                LOGGER.error(e);
+                            }
+                        });
                 work.setManualTaskIdentityMatrix(matrix);
                 emc.check(work, CheckPersistType.all);
                 emc.commit();
