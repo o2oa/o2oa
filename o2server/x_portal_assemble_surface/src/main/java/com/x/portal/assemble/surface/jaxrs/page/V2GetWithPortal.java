@@ -123,6 +123,14 @@ class V2GetWithPortal extends BaseAction {
 									list.add(cms.getId() + cms.getUpdateTime().getTime());
 								}
 								break;
+							case RelatedScript.TYPE_SERVICE:
+								com.x.program.center.core.entity.Script cs = bus.centerService().script().pick(entry.getKey());
+								if (null != cs) {
+									map.put(entry.getKey(), new RelatedScript(cs.getId(), cs.getName(), cs.getAlias(),
+											cs.getText(), entry.getValue()));
+									list.add(cs.getId() + cs.getUpdateTime().getTime());
+								}
+								break;
 							case RelatedScript.TYPE_PORTAL:
 								Script p = bus.script().pick(entry.getKey());
 								if (null != p) {

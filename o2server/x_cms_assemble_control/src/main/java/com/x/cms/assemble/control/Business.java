@@ -6,6 +6,7 @@ import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import com.x.cms.assemble.control.factory.service.CenterServiceFactory;
 import com.x.base.core.project.config.StorageMapping;
 import com.x.cms.core.entity.CategoryInfo;
 import com.x.cms.core.entity.Document;
@@ -292,6 +293,15 @@ public class Business {
 			this.portal = new PortalFactory(this);
 		}
 		return portal;
+	}
+
+	private CenterServiceFactory centerService;
+
+	public CenterServiceFactory centerService() throws Exception {
+		if (null == this.centerService) {
+			this.centerService = new CenterServiceFactory(this);
+		}
+		return centerService;
 	}
 
 	public boolean isHasPlatformRole(String personName, String roleName) throws Exception {

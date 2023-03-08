@@ -21,6 +21,7 @@ import com.x.program.center.jaxrs.command.CommandAction;
 import com.x.program.center.jaxrs.config.ConfigAction;
 import com.x.program.center.jaxrs.datastructure.DataStructureAction;
 import com.x.program.center.jaxrs.designer.DesignerAction;
+import com.x.program.center.jaxrs.dict.DictAction;
 import com.x.program.center.jaxrs.dingding.DingdingAction;
 import com.x.program.center.jaxrs.distribute.DistributeAction;
 import com.x.program.center.jaxrs.input.InputAction;
@@ -33,6 +34,7 @@ import com.x.program.center.jaxrs.output.OutputAction;
 import com.x.program.center.jaxrs.prompterrorlog.PromptErrorLogAction;
 import com.x.program.center.jaxrs.qiyeweixin.QiyeweixinAction;
 import com.x.program.center.jaxrs.schedule.ScheduleAction;
+import com.x.program.center.jaxrs.script.ScriptAction;
 import com.x.program.center.jaxrs.tokenthreshold.TokenThresholdAction;
 import com.x.program.center.jaxrs.unexpectederrorlog.UnexpectedErrorLogAction;
 import com.x.program.center.jaxrs.validation.ValidationAction;
@@ -43,6 +45,7 @@ import com.x.program.center.jaxrs.zhengwudingding.ZhengwuDingdingAction;
 @ApplicationPath("jaxrs")
 public class ActionApplication extends AbstractActionApplication {
 
+	@Override
 	public Set<Class<?>> getClasses() {
 		classes.add(AdminLoginAction.class);
 		classes.add(ApplicationsAction.class);
@@ -78,6 +81,8 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(AppPackAction.class);
 		classes.add(AppPackAnonymousAction.class);
 		classes.add(TokenThresholdAction.class);
+		classes.add(DictAction.class);
+		classes.add(ScriptAction.class);
 		return classes;
 	}
 }
