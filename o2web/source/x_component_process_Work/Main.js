@@ -517,10 +517,10 @@ MWF.xApplication.process.Work.Main = new Class({
                 var html = "<div style=\"height: 50px; margin-bottom: 5px;\">\n" +
                     "                    <div style=\"height: 50px; width: 50px; border-radius: 25px; overflow: hidden; float: left;\"><img\n" +
                     "                        width=\"50\" height=\"50\" border=\"0\"\n" +
-                    "                        src=\"data:image/png;base64,"+layout.session.user.icon+"\">\n" +
+                    "                        src=\""+layout.session.user.iconUrl+"\">\n" +
                     "                    </div>\n" +
                     "                    <div\n" +
-                    "                        style=\"height: 40px; line-height: 40px; overflow: hidden; float: left; margin-left: 10px; margin-right: 30px; width: 150px; color: rgb(51, 51, 51); font-size: 16px; text-align: left;\">huqi开发\n" +
+                    "                        style=\"height: 40px; line-height: 40px; overflow: hidden; float: left; margin-left: 10px; margin-right: 30px; width: 150px; color: rgb(51, 51, 51); font-size: 16px; text-align: left;\">"+id.name+"\n" +
                     "                    </div>\n" +
                     "                </div>\n" +
                     "                <div style=\"height: 36px; line-height: 40px; overflow: hidden; font-size: 14px;\">\n" +
