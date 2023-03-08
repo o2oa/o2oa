@@ -33,5 +33,10 @@
     "icon": "comment.png",
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.comment,
     "className": "Comment"
+  },
+  "commend": {
+    "icon": "commend.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.commend,
+    "className": "Commend"
   }
 }

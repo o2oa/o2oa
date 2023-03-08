@@ -84,7 +84,11 @@
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.button,
     "className": "Button"
   },
-
+  "commend": {
+    "icon": "commend.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.commend,
+    "className": "Commend"
+  },
   "Address": {
     "icon": "address.png",
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.Address,

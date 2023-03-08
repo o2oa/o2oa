@@ -16,6 +16,7 @@ MWF.xApplication.cms.FormDesigner.LP = Object.merge( {}, MWF.xApplication.proces
     },
     "modules": {
         "reader": "Reader",
+        "commend": "Commend",
         "author": "Author",
         "log": "Readed Log",
         "comment": "Comment"

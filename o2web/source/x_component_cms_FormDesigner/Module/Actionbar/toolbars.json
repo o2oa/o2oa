@@ -132,6 +132,7 @@
   {
     "type": "MWFToolBarButton",
     "img": "downloadAll.png",
+    "img_over": "downloadAll_over.png",
     "title": "{{$.lp.downloadAllTitle}}",
     "action": "downloadAll",
     "text": "{{$.lp.downloadAll}}",
