@@ -6,6 +6,7 @@ import javax.ws.rs.ApplicationPath;
 
 import com.x.base.core.project.jaxrs.AbstractActionApplication;
 import com.x.portal.assemble.designer.jaxrs.designer.DesignerAction;
+import com.x.portal.assemble.designer.jaxrs.dict.DictAction;
 import com.x.portal.assemble.designer.jaxrs.file.FileAction;
 import com.x.portal.assemble.designer.jaxrs.id.IdAction;
 import com.x.portal.assemble.designer.jaxrs.input.InputAction;
@@ -32,6 +33,7 @@ public class ActionApplication extends AbstractActionApplication {
 		classes.add(OutputAction.class);
 		classes.add(InputAction.class);
 		classes.add(DesignerAction.class);
+		classes.add(DictAction.class);
 		return classes;
 	}
 

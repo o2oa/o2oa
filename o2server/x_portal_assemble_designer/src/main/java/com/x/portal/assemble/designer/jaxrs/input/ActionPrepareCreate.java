@@ -12,6 +12,8 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.WrapPair;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import com.x.general.core.entity.ApplicationDict;
+import com.x.general.core.entity.wrap.WrapApplicationDict;
 import com.x.portal.assemble.designer.Business;
 import com.x.portal.core.entity.File;
 import com.x.portal.core.entity.Page;
@@ -67,6 +69,13 @@ class ActionPrepareCreate extends BaseAction {
 		for (WrapFile wrap : wi.getFileList()) {
 			File exist_file = business.entityManagerContainer().find(wrap.getId(), File.class);
 			if (null != exist_file) {
+				wos.add(new Wo(wrap.getId(), JpaObject.createId()));
+			}
+		}
+		for (WrapApplicationDict wrap : wi.getApplicationDictList()) {
+			ApplicationDict exist_applicationDict = business.entityManagerContainer().find(wrap.getId(),
+					ApplicationDict.class);
+			if (null != exist_applicationDict) {
 				wos.add(new Wo(wrap.getId(), JpaObject.createId()));
 			}
 		}

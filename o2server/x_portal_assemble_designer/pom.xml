@@ -21,6 +21,10 @@
 			<groupId>net.o2oa</groupId>
 			<artifactId>x_organization_core_express</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>net.o2oa</groupId>
+			<artifactId>x_general_core_entity</artifactId>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
