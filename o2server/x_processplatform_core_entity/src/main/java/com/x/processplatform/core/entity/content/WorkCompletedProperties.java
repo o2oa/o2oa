@@ -162,6 +162,7 @@ public class WorkCompletedProperties extends JsonProperties {
 		public static final String TYPE_PROCESSPLATFORM = "processPlatform";
 		public static final String TYPE_CMS = "cms";
 		public static final String TYPE_PORTAL = "portal";
+		public static final String TYPE_SERVICE = "service";
 
 		public RelatedScript() {
 

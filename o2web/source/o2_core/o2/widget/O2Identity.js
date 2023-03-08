@@ -763,7 +763,7 @@ o2.widget.O2Script = new Class({
         });
     },
     open : function (e) {
-        if( this.data.id && this.data.appId &&  this.data.appType){
+        if( this.data.id && this.data.appId && this.data.appType){
             var appName;
             if( this.data.appType === "cms" ){
                 appName = "cms.ScriptDesigner";
@@ -771,6 +771,8 @@ o2.widget.O2Script = new Class({
                 appName = "portal.ScriptDesigner";
             }else if( this.data.appType === "process" ) {
                 appName = "process.ScriptDesigner";
+            }else if( this.data.appType === "service" ) {
+                appName = "service.ScriptDesigner";
             }
             var appId = appName + this.data.id;
             if (layout.desktop.apps[appId]){

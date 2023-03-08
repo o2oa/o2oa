@@ -528,7 +528,12 @@ MWF.xApplication.process.Application.List = new Class({
 		this._initTempate();
 		this.loadListTitle();
 
-		this.loadToolBar(this.toolbarItems.unSelect);
+		if(this.toolbarItems.unSelect.length>0){
+			this.loadToolBar(this.toolbarItems.unSelect);
+		}else {
+			this.loadToolBar(this.toolbarItems.default,true);
+		}
+
 		this.selectedList = [];
 		this.loadData().then(function(data){
 			_self.hide();
@@ -539,6 +544,9 @@ MWF.xApplication.process.Application.List = new Class({
 	_initToolBar : function (){
 
 		this.toolbarItems = {
+			"default":[
+
+			],
 			"unSelect":[
 
 			],
@@ -551,12 +559,13 @@ MWF.xApplication.process.Application.List = new Class({
 		}
 
 	},
-	loadToolBar : function (availableTool){
+	loadToolBar : function (availableTool,disabled){
 
 		this.toolBarNode.empty();
 		this.toolbar = new MWF.xApplication.process.Application.Toolbar(this.toolBarNode, this, {
 			viewType : this.options.defaultViewType,
 			type : this.type,
+			disabled : !!disabled,
 			availableTool : availableTool
 		});
 		this.toolbar.load();
@@ -699,7 +708,13 @@ MWF.xApplication.process.Application.List = new Class({
 	},
 	_setToolBar : function (){
 		if(this.selectedList.length === 0 ){
-			this.loadToolBar(this.toolbarItems.unSelect);
+
+			if(this.toolbarItems.unSelect.length>0){
+				this.loadToolBar(this.toolbarItems.unSelect);
+			}else {
+				this.loadToolBar(this.toolbarItems.default,true);
+			}
+
 		} else if (this.selectedList.length === 1){
 			this.loadToolBar(this.toolbarItems.selected);
 		}else{
@@ -951,6 +966,11 @@ MWF.xApplication.process.Application.WorkList = new Class({
 	_initToolBar : function (){
 
 		this.toolbarItems = {
+			"default":[
+				["delWork","jump","sendRead"],
+				["processing","endWork","addReview"],
+				["manage"]
+			],
 			"unSelect":[
 			],
 			"selected":[
@@ -988,6 +1008,11 @@ MWF.xApplication.process.Application.WorkCompletedList = new Class({
 	_initToolBar : function (){
 
 		this.toolbarItems = {
+			"default":[
+				["delCompletedWork"],
+				["rollback","sendRead","addReview"],
+				["manage"]
+			],
 			"unSelect":[
 			],
 			"selected":[
@@ -1026,7 +1051,12 @@ MWF.xApplication.process.Application.SnapList = new Class({
 	_initToolBar : function (){
 
 		this.toolbarItems = {
+			"default":[
+				["delSnap"],
+				["restore"]
+			],
 			"unSelect":[
+
 			],
 			"selected":[
 				["delSnap"],
@@ -1064,10 +1094,7 @@ MWF.xApplication.process.Application.DictList = new Class({
 		debugger
 		var options = {
 			"id": id,
-			"application" : {
-				"id": this.app.application.id,
-				"name": this.app.application.name
-			},
+			"application" : this.app.application.id,
 			"appId":  "process.DictionaryDesigner" + id
 		};
 		layout.desktop.openApplication(null, "process.DictionaryDesigner", options);
@@ -1094,6 +1121,8 @@ MWF.xApplication.process.Application.SerialList = new Class({
 	_initToolBar : function (){
 
 		this.toolbarItems = {
+			"default":[
+			],
 			"unSelect":[
 				["addSerial"]
 			],
@@ -1114,7 +1143,8 @@ MWF.xApplication.process.Application.Toolbar = new Class({
 	options: {
 		"style": "default",
 		"viewType" : "list",
-		"type" : "all"
+		"type" : "all",
+		"disabled" : false
 	},
 	initialize : function( container, explorer, options ) {
 
@@ -1148,8 +1178,8 @@ MWF.xApplication.process.Application.Toolbar = new Class({
 			},
 			delCompletedWork : {
 				action : "delCompletedWork",
-					text : this.lp.actionList.delete,
-					icon : "icon-upload"
+				text : this.lp.actionList.delete,
+				icon : "icon-upload"
 			},
 			processing :{
 				action : "processing",
@@ -1236,14 +1266,22 @@ MWF.xApplication.process.Application.Toolbar = new Class({
 				}
 
 				var tool = this.tools[ t ];
+				var toolNode;
 
-				var toolNode = new Element( "div", {
-					class : className,
-					style : "cursor:pointer;height:30px;line-height:30px;padding-left:12px;padding-right:12px;background: #4A90E2;font-size: 13px;color: #FFFFFF;font-weight: 400;",
-					events : {
-						click : function( ev ){ this[tool.action]( ev ) }.bind(this)
-					}
-				}).inject( toolgroupNode );
+				if(this.options.disabled){
+					toolNode = new Element( "div", {
+						class : className,
+						style : "height:30px;line-height:30px;padding-left:12px;padding-right:12px;background: rgb(123 177 240);font-size: 13px;color: #FFFFFF;font-weight: 400;",
+					}).inject( toolgroupNode );
+				}else {
+					toolNode = new Element( "div", {
+						class : className,
+						style : "cursor:pointer;height:30px;line-height:30px;padding-left:12px;padding-right:12px;background: #4A90E2;font-size: 13px;color: #FFFFFF;font-weight: 400;",
+						events : {
+							click : function( ev ){ this[tool.action]( ev ) }.bind(this)
+						}
+					}).inject( toolgroupNode );
+				}
 
 				//var iconNode = new Element("icon",{"class":"o2WorkApplication " + tool.icon,"style":"margin-right:6px"}).inject(toolNode);
 				var textNode = new Element("span").inject(toolNode);

@@ -158,6 +158,15 @@
                 </td>
             </tr>
             <tr>
+                <td class="editTableTitle">{{$.lp.allowEdit}}:</td>
+                <td class="editTableValue">
+                    <input class="editTableRadio" name="isEditAtt" text{($.isEditAtt=='y')?'checked':''} type="radio" value="y"/>{{$.lp.allow}}
+                    <input class="editTableRadio" name="isEditAtt" text{($.isEditAtt=='n')?'checked':''} type="radio" value="n"/>{{$.lp.notAllow}}
+                    <input class="editTableRadio" name="isEditAtt" text{($.isEditAtt=='hidden')?'checked':''} type="radio" value="hidden"/>{{$.lp.hide}}
+                    <br/>
+                </td>
+            </tr>
+            <tr>
                 <td class="editTableTitle">{{$.lp.allowDownload}}:</td>
                 <td class="editTableValue">
                     <input class="editTableRadio" name="isDownload" text{($.isDownload!=='n' && $.isDownload!=='hidden')?'checked':''} type="radio" value="y"/>{{$.lp.allow}}

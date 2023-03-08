@@ -1,0 +1,86 @@
+<div style="background-color: #FFF; overflow: hidden">
+	<div title="{{$.lp.base}}" class="MWFTab">
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.id}}:</td>
+				<td class="editTableValue"><input type="text" name="id" value="text{$.id}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.name}}:</td>
+				<td class="editTableValue"><input type="text" name="companyName" value="text{$.companyName}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.description}}:</td>
+				<td class="editTableValue"><input type="text" name="description" value="text{$.description}" class="editTableInput"/></td>
+			</tr>
+			<tr>
+				<td class="editTableTitle">{{$.lp.readonly}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="isReadonly" value="true" text{($.isReadonly)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="isReadonly" value="false" text{(!$.isReadonly)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+
+			<tr>
+				<td class="editTableTitle">{{$.lp.allowUpload}}:</td>
+				<td class="editTableValue">
+					<input type="radio" name="allowUpload" value="true" text{($.allowUpload)?'checked':''}/>{{$.lp.yes}}
+					<input type="radio" name="allowUpload" value="false" text{(!$.allowUpload)?'checked':''}/>{{$.lp.no}}
+				</td>
+			</tr>
+
+
+		</table>
+		<div class="MWFMaplist" name="styles" title="{{$.lp.style}}"></div>
+
+		<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+			<tr>
+				<td class="editTableTitle">{{$.lp.type}}:</td>
+				<td class="editTableValue">
+					<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'none'); " name="officeType" text{($.officeType=='docx')?'checked':''} type="radio" value="docx"/>Word <br/>
+					<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'none'); " name="officeType" text{($.officeType=='xlsx')?'checked':''} type="radio" value="xlsx"/>Excel <br/>
+					<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'none'); " name="officeType" text{($.officeType=='pptx')?'checked':''} type="radio" value="pptx"/>PowerPoint <br/>
+					<input class="editTableRadio" onclick="if (this.checked) $('officeTemplateArea').setStyle('display', 'block'); " name="officeType" text{($.officeType=='other')?'checked':''} type="radio" value="other"/>{{$.lp.byTemplate}}
+				</td>
+			</tr>
+		</table>
+		<div id="officeTemplateArea" title="src" style="display: text{($.officeType=='other')?'block':'none'}">
+
+			<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+				<tr>
+					<td class="editTableValue">
+						<input type="radio" onclick="if (this.checked){ $('templateArea').setStyle('display', 'block'); $('templateScriptArea').setStyle('display', 'none')}" name="templateType" value="value" text{($.result!='script')?'checked':''}/>{{$.lp.textValue}}
+						<input type="radio" onclick="if (this.checked){ $('templateArea').setStyle('display', 'none'); $('templateScriptArea').setStyle('display', 'block')}" name="templateType" value="script" text{($.result=='script')?'checked':''}/>{{$.lp.script}}
+					</td>
+				</tr>
+			</table>
+
+			<div id="templateArea" style="display: text{($.templateType=='value')?'block':'none'};">
+				<table width="100%" border="0" cellpadding="5" cellspacing="0" class="editTable">
+					<tr>
+						<td class="editTableTitle">{{$.lp.templateId}}:</td>
+						<td class="editTableValue">
+							<input type="text" name="template" value="text{$.template}" class="editTableInput"/>
+						</td>
+					</tr>
+				</table>
+			</div>
+
+			<div id="templateScriptArea" style="display: text{($.templateType=='script')?'block':'none'};">
+				<div class="MWFScriptArea" name="templeteScript" title="{{$.lp.editScript}} (S)"></div>
+			</div>
+
+
+		</div>
+		<div class="MWFScriptArea" name="readScript" title="{{$.lp.readonlyCondition}} (S)"></div>
+	</div>
+	<div title="{{$.lp.event}}"  class="MWFTab">
+		<div class="MWFEventsArea" name="events"></div>
+	</div>
+	<div title="HTML"  class="MWFTab">
+		<div class="MWFHTMLArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+	<div title="JSON"  class="MWFTab">
+		<div class="MWFJSONArea" style="font-family: Verdana, Geneva, sans-serif; font-size:14px"></div>
+	</div>
+</div>

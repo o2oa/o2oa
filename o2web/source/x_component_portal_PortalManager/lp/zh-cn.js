@@ -22,6 +22,7 @@ MWF.xApplication.portal.PortalManager.LP = {
     "scriptConfig": "脚本配置",
     "fileConfig": "资源文件",
     "applicationConfig": "门户属性",
+    "dataConfig": "数据配置",
 
     "edit": "编辑",
     "save": "保存",
@@ -77,6 +78,17 @@ MWF.xApplication.portal.PortalManager.LP = {
         "deleteViewTitle": "删除数据源确认",
         "deleteView": "是否确定要删除当前数据源？"
 
+    },
+    "dictionary": {
+        "create": "新建数据字典",
+        "search": "搜索数据字典",
+        "searchText": "请输入关键字",
+
+        "noDictionaryNoticeText": "此应用现在还没有数据字典，您可以点击此处创建一个新数据字典",
+        "noDictionaryNoCreateNoticeText": "此应用现在没有数据字典",
+        "loaded": "数据字典加载完毕",
+        "deleteFormTitle": "删除数据字典确认",
+        "deleteForm": "是否确定要删除当前数据字典？"
     },
     "script": {
         "create": "新建脚本",

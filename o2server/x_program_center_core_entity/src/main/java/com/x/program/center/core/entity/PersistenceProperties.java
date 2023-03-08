@@ -128,4 +128,11 @@ public final class PersistenceProperties extends AbstractPersistenceProperties {
 		}
 	}
 
+	public static class Script {
+		private Script() {
+		}
+
+		public static final String table = "CTE_SCRIPT";
+	}
+
 }

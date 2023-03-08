@@ -331,7 +331,6 @@ MWF.xApplication.process.FormDesigner.LP = {
         "htmledit": "HTML编辑器",
         "office": "Office控件",
         "yozoOffice" : "永中控件",
-        "iWebOffice" : "金格控件",
         "statementSelector": "选择查询视图",
         "statement": "嵌入查询视图",
         "SmartBI":"SmartBI报表",
@@ -1482,6 +1481,9 @@ MWF.xApplication.process.FormDesigner.LP = {
     },
     "wpsoffice":{
         "nosetup":"请先安装WpsOffice应用",
+    },
+    "officeonline":{
+        "nosetup":"请先安装OfficeOnline应用",
     },
     "actionBar": {
         "close":"关闭",
