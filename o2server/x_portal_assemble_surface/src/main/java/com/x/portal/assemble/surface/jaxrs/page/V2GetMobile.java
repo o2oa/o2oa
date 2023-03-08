@@ -34,9 +34,9 @@ class V2GetMobile extends BaseAction {
 	private static final Logger LOGGER = LoggerFactory.getLogger(V2GetMobile.class);
 
 	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id) throws Exception {
-		
+
 		LOGGER.debug("execute:{}, id:{}.", effectivePerson::getDistinguishedName, () -> id);
-		
+
 		ActionResult<Wo> result = new ActionResult<>();
 		CacheKey cacheKey = new CacheKey(this.getClass(), id);
 		Optional<?> optional = CacheManager.get(cacheCategory, cacheKey);
@@ -104,6 +104,14 @@ class V2GetMobile extends BaseAction {
 								map.put(entry.getKey(), new RelatedScript(cms.getId(), cms.getName(), cms.getAlias(),
 										cms.getText(), entry.getValue()));
 								list.add(cms.getId() + cms.getUpdateTime().getTime());
+							}
+							break;
+						case RelatedScript.TYPE_SERVICE:
+							com.x.program.center.core.entity.Script cs = bus.centerService().script().pick(entry.getKey());
+							if (null != cs) {
+								map.put(entry.getKey(), new RelatedScript(cs.getId(), cs.getName(), cs.getAlias(),
+										cs.getText(), entry.getValue()));
+								list.add(cs.getId() + cs.getUpdateTime().getTime());
 							}
 							break;
 						case RelatedScript.TYPE_PORTAL:

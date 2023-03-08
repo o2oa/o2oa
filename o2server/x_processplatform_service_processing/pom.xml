@@ -37,6 +37,10 @@
 			<groupId>net.o2oa</groupId>
 			<artifactId>x_portal_core_entity</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>net.o2oa</groupId>
+			<artifactId>x_program_center_core_entity</artifactId>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
