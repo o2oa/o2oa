@@ -1,4 +1,4 @@
-MWF.xApplication.AttendanceV2.LP = {
+MWF.xApplication.attendancev2.LP = {
     "title": "Attendance",
     "welcome": "Welcome to O2OA Component",
     "taskListTitle": "Here are your top 5 task",

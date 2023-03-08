@@ -1,4 +1,4 @@
-MWF.xApplication.AttendanceV2.LP = {
+MWF.xApplication.attendancev2.LP = {
     "title": "考勤管理",
     "welcome": "Welcome to O2OA Component",
     "taskListTitle": "此处列出您的5个最新待办",

@@ -190,6 +190,26 @@ public class AttendanceV2ManagerFactory  extends AbstractFactory {
         return em.createQuery(cq.select(root).where(p)).getResultList();
     }
 
+    /**
+     * 根据人员和开始结束日期 查询考勤详细
+     * @param person
+     * @param startDate
+     * @param endDate
+     * @return
+     * @throws Exception
+     */
+    public List<AttendanceV2Detail> listDetailWithPersonAndStartEndDate(String person, String startDate, String endDate) throws Exception {
+        EntityManager em = this.entityManagerContainer().get(AttendanceV2Detail.class);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<AttendanceV2Detail> cq = cb.createQuery(AttendanceV2Detail.class);
+        Root<AttendanceV2Detail> root = cq.from(AttendanceV2Detail.class);
+        Predicate p = cb.equal(root.get(AttendanceV2Detail_.userId), person);
+        p = cb.and(p, cb.lessThanOrEqualTo(root.get(AttendanceV2Detail_.recordDateString), endDate));
+        p = cb.and(p, cb.greaterThanOrEqualTo(root.get(AttendanceV2Detail_.recordDateString), startDate));
+        cq.select(root).where(p).orderBy(cb.asc(root.get(AttendanceV2Detail_.createTime)));
+        return em.createQuery(cq.select(root).where(p)).getResultList();
+    }
+
 
 
     /**

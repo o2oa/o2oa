@@ -1,9 +1,9 @@
 
 @font-face {
   font-family: "o2Attendance";
-  src: url("../x_component_AttendanceV2/$Main/default/fonts/o2Attendance.ttf?d70j3k") format("truetype"),
-    url("../x_component_AttendanceV2/$Main/default/fonts/o2Attendance.woff?d70j3k") format("woff"),
-    url("../x_component_AttendanceV2/$Main/default/fonts/o2Attendance.svg?d70j3k#o2Attendance") format("svg");
+  src: url("../x_component_attendancev2/$Main/default/fonts/o2Attendance.ttf?d70j3k") format("truetype"),
+    url("../x_component_attendancev2/$Main/default/fonts/o2Attendance.woff?d70j3k") format("woff"),
+    url("../x_component_attendancev2/$Main/default/fonts/o2Attendance.svg?d70j3k#o2Attendance") format("svg");
   font-weight: normal;
   font-style: normal;
   font-display: block;

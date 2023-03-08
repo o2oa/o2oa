@@ -70,4 +70,21 @@ public class DetailAction extends StandardJaxrsAction {
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
+
+    @JaxrsMethodDescribe(value = "统计查询.", action = ActionStatisticWithFilter.class)
+    @POST
+    @Path("statistic/filter")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void statistic(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,  JsonElement jsonElement) {
+        ActionResult<List<ActionStatisticWithFilter.Wo>> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionStatisticWithFilter().execute( jsonElement );
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, jsonElement);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
 }
