@@ -160,7 +160,7 @@ public class Dingding extends ConfigObject {
 				&& (cachedJsapiTicketDate.after(new Date()))) {
 			return cachedJsapiTicket;
 		} else {
-			String address = "https://oapi.dingtalk.com/get_jsapi_ticket?access_token=" + corpAccessToken()
+			String address = this.getOapiAddress() + "/get_jsapi_ticket?access_token=" + corpAccessToken()
 					+ "&type=jsapi";
 			JsapiTicketResp resp = HttpConnection.getAsObject(address, null, JsapiTicketResp.class);
 			cachedJsapiTicket = resp.getTicket();
