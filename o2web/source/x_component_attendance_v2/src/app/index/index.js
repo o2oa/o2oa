@@ -23,7 +23,7 @@ export default content({
         let menu = this.normalMenuData();
         // 管理员 增加菜单
         if (o2.AC.isAttendanceManager() && o2.AC.isAdministrator()) {
-            menu.push.apply(menu, this.adminMenuData());
+            menu.push.apply(menu, this.adminMenuData()); // 合并数组
         }
         this.bind.menu.menuData = menu;
         this.bind.menu.currentMenu = menu[0].sub[0];
