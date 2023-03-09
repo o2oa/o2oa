@@ -1,7 +1,6 @@
 MWF.xScript = MWF.xScript || {};
 MWF.xScript.CMSMacro = MWF.CMSMacro = {
     "swapSpace": {},
-    "scriptSpace": {},
 
     expression: function(code, bind){},
     runEvent: function(code, bind, arg){},
@@ -9,52 +8,35 @@ MWF.xScript.CMSMacro = MWF.CMSMacro = {
     exec: function(code, bind){
         var returnValue;
         if (!bind) bind = window;
-
-        var n = 0;
-        var o = "f"+"_"+n;
-        while (MWF.CMSMacro.scriptSpace[o]){ n++; o = "f"+"_"+n; }
-        //MWF.Macro.scriptSpace[o] = bind;
-
         if (o2.session.isDebugger){
-            var f = "MWF.CMSMacro.scriptSpace[\""+o+"\"] = function(){\n"+code+"\n}";
-            Browser.exec(f);
-            returnValue = (o2.CMSMacro.scriptSpace[o]) ? o2.CMSMacro.scriptSpace[o].apply(bind) : null;
+            try {
+                var f = eval("(function(){return function(){\n"+code+"\n}})();");
+                returnValue = f.apply(bind);
+            }catch(e){
+                console.log(o2.LP.script.error);
+                if (code.length>500){
+                    var t = code.substr(0,500)+"\n...\n";
+                    console.log(t);
+                }else{
+                    console.log(code);
+                }
+                console.log(e);
+            }
         }else{
-            var f = "MWF.CMSMacro.scriptSpace[\""+o+"\"] = function(){try{\n"+code+"\n}catch(e){console.error(e)}}";
-            Browser.exec(f);
-            returnValue = (o2.CMSMacro.scriptSpace[o]) ? o2.CMSMacro.scriptSpace[o].apply(bind) : null;
+            try {
+                var f = eval("(function(){return function(){\n"+code+"\n}})();");
+                returnValue = f.apply(bind);
+            }catch(e){
+                console.log(o2.LP.script.error);
+                if (code.length>500){
+                    var t = code.substr(0,500)+"\n...\n";
+                    console.log(t);
+                }else{
+                    console.log(code);
+                }
+                console.log(e);
+            }
         }
-        o2.CMSMacro.scriptSpace[o] = null;
-
-        // if (o2.session.isDebugger){
-        //     try {
-        //         var f = eval("(function(){return function(){\n"+code+"\n}})();");
-        //         returnValue = f.apply(bind);
-        //     }catch(e){
-        //         console.log(o2.LP.script.error);
-        //         if (code.length>500){
-        //             var t = code.substr(0,500)+"\n...\n";
-        //             console.log(t);
-        //         }else{
-        //             console.log(code);
-        //         }
-        //         console.log(e);
-        //     }
-        // }else{
-        //     try {
-        //         var f = eval("(function(){return function(){\n"+code+"\n}})();");
-        //         returnValue = f.apply(bind);
-        //     }catch(e){
-        //         console.log(o2.LP.script.error);
-        //         if (code.length>500){
-        //             var t = code.substr(0,500)+"\n...\n";
-        //             console.log(t);
-        //         }else{
-        //             console.log(code);
-        //         }
-        //         console.log(e);
-        //     }
-        // }
         return returnValue;
     }
 };
