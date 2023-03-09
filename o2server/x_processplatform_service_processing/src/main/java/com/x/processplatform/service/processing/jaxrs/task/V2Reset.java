@@ -82,7 +82,7 @@ class V2Reset extends BaseAction {
                 if (!ListTools.isEmpty(identities)) {
                     emc.beginTransaction(Work.class);
                     ManualTaskIdentityMatrix matrix = work.getManualTaskIdentityMatrix();
-                    matrix.reset(task.getIdentity(), null, null, identities, !keep);
+                    matrix.reset(task.getIdentity(), null, identities, null, !keep);
                     emc.beginTransaction(TaskCompleted.class);
                     emc.listEqualAndEqualAndNotEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME, work.getJob(),
                             TaskCompleted.activityToken_FIELDNAME,
@@ -99,31 +99,6 @@ class V2Reset extends BaseAction {
                     emc.check(work, CheckPersistType.all);
                     emc.commit();
                 }
-                // if (!ListTools.isEmpty(identities)) {
-//                    emc.beginTransaction(Work.class);
-//                    ManualTaskIdentityMatrix matrix = work.getManualTaskIdentityMatrix();
-//                    if (Objects.equals(manual.getManualMode(), ManualMode.single)
-//                            || Objects.equals(manual.getManualMode(), ManualMode.grab)) {
-//                        matrix.add(task.getIdentity(), ManualTaskIdentityMatrix.ADD_POSITION_EXTEND, identities);
-//                    } else {
-//                        matrix.add(task.getIdentity(), ManualTaskIdentityMatrix.ADD_POSITION_AFTER, identities);
-//                    }
-//                    emc.beginTransaction(TaskCompleted.class);
-//                    emc.listEqualAndEqualAndNotEqual(TaskCompleted.class, TaskCompleted.job_FIELDNAME, work.getJob(),
-//                            TaskCompleted.activityToken_FIELDNAME,
-//                            work.getActivityToken(), TaskCompleted.joinInquire_FIELDNAME, false).stream()
-//                            .filter(o -> identities.contains(o.getIdentity())).forEach(p -> {
-//                                try {
-//                                    p.setJoinInquire(false);
-//                                    emc.check(p, CheckPersistType.all);
-//                                } catch (Exception e) {
-//                                    LOGGER.error(e);
-//                                }
-//                            });
-//                    work.setManualTaskIdentityMatrix(matrix);
-//                    emc.check(work, CheckPersistType.all);
-//                    emc.commit();
-//                }
             }
             Wo wo = new Wo();
             wo.setValue(true);
