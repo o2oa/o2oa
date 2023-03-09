@@ -108,9 +108,11 @@ MWF.xApplication.process.ApplicationExplorer.Main = new Class({
 			});
 		}
 
-		this.searchButton.addEvent("click", function (e) {
-			this.searchApp();
-		}.bind(this));
+		if(this.searchButton){
+			this.searchButton.addEvent("click", function (e) {
+				this.searchApp();
+			}.bind(this));
+		}
 
 	},
 	searchApp: function(){
