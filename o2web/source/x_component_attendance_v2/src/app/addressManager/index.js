@@ -55,7 +55,6 @@ export default content({
   },
   async loadWorkAddressData() {
     const data = await attendanceWorkPlaceV2Action("listAll");
-    console.debug(data);
     this.bind.workAddressList = data || [];
   },
   closeAddForm() {
