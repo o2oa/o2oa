@@ -112,7 +112,7 @@ function dragstart(e){
     x: p.x-e.clientX,
     y: p.y-e.clientY
   };
-  emit('dragItem', {node, offset, size});
+  emit('dragItem', {node, offset, size, type: itemType.value});
 }
 function dragend(e){
   const iconNode = e.currentTarget;

@@ -2015,11 +2015,14 @@ o2.xDesktop.Default.StartMenu.Item = new Class({
         var ey = y+2;
 
         var overItem = null;
+        var thisItem = this;
         this.menu.items.each(function(item){
             if (!item.isDrag){
                 if (item.iconAreaNode.isInPointInRect(x,y,ex,ey)){
-                    item.dragOver();
-                    overItem = item;
+                    if (thisItem.data.type!=="group"){
+                        item.dragOver();
+                        overItem = item;
+                    }
                 }else{
                     item.dragOut();
                 }
