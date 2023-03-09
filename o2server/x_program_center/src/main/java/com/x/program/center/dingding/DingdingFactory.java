@@ -269,22 +269,4 @@ public class DingdingFactory {
 		}
 	}
 
-	public static void main(String[] args) throws Exception{
-		Dingding dingding = new Dingding();
-		String accessToken = "1d6201f7c3903779b0b1aa7afeab4a61";
-//		String accessToken = dingding.corpAccessToken();
-		System.out.println(accessToken);
-		System.out.println("1================432497204");
-		String address = "https://oapi.dingtalk.com/department/get?access_token=" + accessToken;
-		address += "&id=" + 432497204;
-		String resp = HttpConnection.getAsString(address, null);
-		System.out.println(resp);
-		System.out.println("2================1174653");
-		address = "https://oapi.dingtalk.com/topapi/v2/department/get?access_token=" + accessToken;
-		Map<String,Object> map = new HashMap<>();
-		map.put("dept_id", 432497204);
-		resp = HttpConnection.postAsString(address, null, XGsonBuilder.toJson(map));
-		System.out.println(resp);
-	}
-
 }

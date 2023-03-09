@@ -77,7 +77,7 @@ public class QueueDingdingAttendance extends AbstractQueue<DingdingQywxSyncRecor
         //人员查询地址
         String uri = "person/list/(0)/next/50";
         //钉钉考勤同步接口地址
-        String dingdingUrl = "https://oapi.dingtalk.com/attendance/list?access_token=" + Config.dingding().corpAccessToken();
+        String dingdingUrl = Config.dingding().getOapiAddress() + "/attendance/list?access_token=" + Config.dingding().corpAccessToken();
         int saveNumber = 0;
         while (hasNextPerson) {
             logger.info("uri:"+ uri);
