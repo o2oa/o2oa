@@ -20,7 +20,7 @@ MWF.xApplication.cms.FormDesigner.LP = Object.merge( {}, MWF.xApplication.proces
         "author": "作者",
         "log": "阅读记录",
         "comment": "评论",
-
+        "logCommend" : "点赞记录",
         "group_cms": "内容管理组件"
     },
     "formStyle":{

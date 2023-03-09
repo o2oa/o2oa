@@ -240,6 +240,11 @@
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.log,
     "className": "Log"
   },
+  "logCommend": {
+    "icon": "logCommend.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.logCommend,
+    "className": "LogCommend"
+  },
   "comment": {
     "icon": "comment.png",
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.comment,

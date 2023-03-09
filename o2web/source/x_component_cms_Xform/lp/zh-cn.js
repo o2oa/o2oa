@@ -43,6 +43,13 @@ MWF.xApplication.cms.Xform.LP = Object.merge({}, MWF.xApplication.process.Xform.
     "readedCountText" : "共{person}人、{count}次阅读",
     "defaultReadedLogText" : "<font style='color:#00F;'>{person}</font>（{department}） 阅于<font style='color:#00F'>{date}</font>，共<font style='color:#00F'>{count}</font>次",
 
+    "commendLogTitle" : "点赞记录",
+    "commendLogPerson" : "点赞人员",
+    "commendLogTime" : "点赞时间",
+    "commendCountText" : "共{count}次点赞",
+    "defaultCommendLogText" : "<font style='color:#00F;'>{person}</font> 点赞于<font style='color:#00F'>{date}</font>",
+
+
     "reply" : "评论",
     "commentTitle" : "评论区域",
     "commentCountText" : "共{count}次评论",
