@@ -19,8 +19,7 @@ MWF.xApplication.attendancev2.LP = {
     "menu": {
         // 我的
         "myAttendance": "我的考勤",
-        "myAttendanceMonth": "我的考勤月报",
-        "myAttendanceStatistic": "我的考勤统计",
+        "myStatistic": "我的统计",
         "myAppealList": "我的考勤异常",
         // 统计考勤
         "statistic": "考勤统计",
@@ -60,6 +59,8 @@ MWF.xApplication.attendancev2.LP = {
         "selectPlaceholder": "请选择",
         "selectOrgPersonOverCount": "只能选择({count})个数据！",
     },
+    // 我的
+    "myAttendanceTitle": "我的统计",
 
     // 班次
     "shiftTitle": "班次管理",

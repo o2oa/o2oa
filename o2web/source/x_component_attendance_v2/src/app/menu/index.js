@@ -19,13 +19,8 @@ export default content({
                 sub: [
                   {
                     id: '1-1',
-                    title: lp.menu.myAttendanceMonth,
-                    action: "shiftManager"
-                  },
-                  {
-                    id: '1-2',
-                    title: lp.menu.myAttendanceStatistic,
-                    action: "shiftManager"
+                    title: lp.menu.myStatistic,
+                    action: "myAttendace"
                   },
                   {
                     id: '1-3',
