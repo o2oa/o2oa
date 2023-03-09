@@ -236,6 +236,16 @@
     align-items: center;
     justify-content: center;
 }
+.listItemUnit{
+    min-width: 40px;
+    width: 8%;
+    height: 59px;
+    float: right;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 .listItemActivityText{
     max-height: 38px;
     overflow: hidden;

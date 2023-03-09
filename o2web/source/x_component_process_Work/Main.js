@@ -36,6 +36,7 @@ MWF.xApplication.process.Work.Main = new Class({
             if( this.options.readonly === "true" )this.options.readonly=true;
         } else {
             this.options.workId = this.status.workId;
+            this.options.taskId = this.status.taskId;
             this.options.workCompletedId = this.status.workCompletedId;
             this.options.jobId = this.status.jobId;
             this.options.draftId = this.status.draftId;
@@ -720,7 +721,7 @@ MWF.xApplication.process.Work.Main = new Class({
 
     recordStatus: function(){
 	    debugger;
-        return {"workId": this.options.workId, "workCompletedId": this.options.workCompletedId, "jobId": this.options.jobId, "draftId": this.options.draftId, "priorityWork": this.options.priorityWork, "readonly": this.readonly};
+        return {"workId": this.options.workId, "taskId": this.options.taskId, "workCompletedId": this.options.workCompletedId, "jobId": this.options.jobId, "draftId": this.options.draftId, "priorityWork": this.options.priorityWork, "readonly": this.readonly};
     },
     onPostClose: function(){
         if (this.appForm){
