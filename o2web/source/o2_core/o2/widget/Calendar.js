@@ -29,13 +29,13 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		// "disabledDate": function (date) {  //一个function，参数为日期，return true不可选
 		// 	return date > new Date();
 		// },
-		"disabledHours": function (date) {
-			if( date > new Date() ){
-				return [];
-			}else{
-				return [[0, 8], [16, 24]];
-			}
-		}, //一个function, 参数为日期
+		// "disabledHours": function (date) {
+		// 	if( date > new Date() ){
+		// 		return [];
+		// 	}else{
+		// 		return [[0, 8], [16, 24]];
+		// 	}
+		// }, //一个function, 参数为日期
 		"disabledMinutes": null,  //一个function, 参数为日期，hour
 		"disabledSeconds": null,  //一个function, 参数为日期，hour，mintues
 	},
