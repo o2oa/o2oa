@@ -36,8 +36,8 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		// 		return [[0, 8], [16, 24]];
 		// 	}
 		// }, //一个function, 参数为日期
-		"disabledMinutes": null,  //一个function, 参数为日期，hour
-		"disabledSeconds": null,  //一个function, 参数为日期，hour，mintues
+		// "disabledMinutes": null,  //一个function, 参数为日期，hour
+		// "disabledSeconds": null,  //一个function, 参数为日期，hour，mintues
 	},
 	initialize: function(node, options){
 		Locale.use("zh-CHS");
@@ -1197,13 +1197,13 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		new Element("span",{"text": o2.LP.widget.hour + "："}).inject(this.itmeHNode);
 		this.itmeSelectHNode = new Element("select").inject(this.itmeHNode);
 		if( typeOf(h) !== "null" ){
-			this.currentHour = h.toInt();
+			this.cHour = h.toInt();
 		}else if( typeOf(this.selectedHour) !== "null" ){
-			this.currentHour = this.selectedHour;
-		}else{ //if( typeOf(this.currentHour) === "null" ){
-			this.currentHour = 0;
+			this.cHour = this.selectedHour;
+		}else{ //if( typeOf(this.cHour) === "null" ){
+			this.cHour = 0;
 		}
-		if( this.isDisabledHour(thisDate, this.currentHour) )this.currentHour = null;
+		if( this.isDisabledHour(thisDate, this.cHour) )this.cHour = null;
 		for( var i=0; i<24; i++ ){
 			if( !this.isDisabledHour(thisDate, i) ){
 				var opt = new Element("option",{
@@ -1211,15 +1211,15 @@ o2.widget.Calendar = o2.Calendar = new Class({
 					"value" : this.addZero(i, 2 ),
 					"styles" : this.css.calendarTimeSelectItem_mobile
 				}).inject( this.itmeSelectHNode );
-				if( this.currentHour === null )this.currentHour = i;
-				if( i === this.currentHour )opt.set("selected", true);
+				if( this.cHour === null )this.cHour = i;
+				if( i === this.cHour )opt.set("selected", true);
 			}
 		}
-		// this.itmeSelectHNode.set("value",this.addZero( this.currentHour, 2));
-		this.showHNode.set("text", this.addZero( this.currentHour, 2) );
+		// this.itmeSelectHNode.set("value",this.addZero( this.cHour, 2));
+		this.showHNode.set("text", this.addZero( this.cHour, 2) );
 		this.itmeSelectHNode.addEvent("change",function(){
-			this.currentHour = this.itmeSelectHNode.get("value").toInt();
-			this.selectedHour = this.currentHour;
+			this.cHour = this.itmeSelectHNode.get("value").toInt();
+			this.selectedHour = this.cHour;
 			this.showHNode.set("text", this.itmeSelectHNode.get("value") );
 			if( this.options.disabledMinutes )this.loadMintueSelect();
 			if( this.options.disabledSeconds )this.loadSecondSelect();
@@ -1231,29 +1231,29 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		new Element("span", {"text": o2.LP.widget.minute + "："}).inject(this.itmeMNode);
 		this.itmeSelectMNode = new Element("select").inject(this.itmeMNode);
 		if( typeOf(m) !== "null" ){
-			this.currentMintue = m.toInt();
+			this.cMintue = m.toInt();
 		}else if( typeOf(this.selectedMintue) !== "null" ){
-			this.currentMintue = this.selectedMintue;
-		}else{ //if( typeOf(this.currentMintue) === "null" ){
-			this.currentMintue = 0;
+			this.cMintue = this.selectedMintue;
+		}else{ //if( typeOf(this.cMintue) === "null" ){
+			this.cMintue = 0;
 		}
-		if( this.isDisabledMintue(thisDate, this.currentHour, this.currentMintue) )this.currentMintue = null;
+		if( this.isDisabledMintue(thisDate, this.cHour, this.cMintue) )this.cMintue = null;
 		for (var i = 0; i < 60; i++) {
-			if (!this.isDisabledMintue(thisDate, this.currentHour || 0, i)) {
+			if (!this.isDisabledMintue(thisDate, this.cHour || 0, i)) {
 				var opt = new Element("option", {
 					"text": this.addZero(i, 2),
 					"value": this.addZero(i, 2),
 					"styles": this.css.calendarTimeSelectItem_mobile
 				}).inject(this.itmeSelectMNode);
-				if( this.currentMintue === null )this.currentMintue = i;
-				if( i === this.currentMintue )opt.set("selected", true);
+				if( this.cMintue === null )this.cMintue = i;
+				if( i === this.cMintue )opt.set("selected", true);
 			}
 		}
-		// this.itmeSelectMNode.set("value", this.addZero(this.currentMintue, 2));
-		this.showMNode.set("text", this.addZero( this.currentMintue, 2) );
+		// this.itmeSelectMNode.set("value", this.addZero(this.cMintue, 2));
+		this.showMNode.set("text", this.addZero( this.cMintue, 2) );
 		this.itmeSelectMNode.addEvent("change", function () {
-			this.currentMintue = this.itmeSelectMNode.get("value").toInt();
-			this.selectedMintue = this.currentMintue;
+			this.cMintue = this.itmeSelectMNode.get("value").toInt();
+			this.selectedMintue = this.cMintue;
 			this.showMNode.set("text", this.itmeSelectMNode.get("value"));
 			if( this.options.disabledSeconds )this.loadSecondSelect();
 		}.bind(this));
@@ -1261,34 +1261,34 @@ o2.widget.Calendar = o2.Calendar = new Class({
 	loadSecondSelect: function (s) {
 		var thisDate = this.currentTextNode.retrieve("date");
 		this.itmeSNode = this.contentTimeTable.getElement(".MWF_calendar_time_s").empty();
-		this.currentSecond = typeOf(s) !== "null" ? s.toInt() : 0;
+		this.cSecond = typeOf(s) !== "null" ? s.toInt() : 0;
 		if( this.options.secondEnable && this.itmeSNode ){
 			new Element("span",{"text":o2.LP.widget.second + "："}).inject(this.itmeSNode);
 			this.itmeSelectSNode = new Element("select").inject(this.itmeSNode);
 			if( typeOf(s) !== "null" ){
-				this.currentSecond = s.toInt();
+				this.cSecond = s.toInt();
 		    }else if( typeOf(this.selectedSecond) !== "null" ){
-			    this.currentSecond = this.selectedSecond;
-			}else{  //if( typeOf(this.currentSecond) === "null" ){
-				this.currentSecond = 0;
+			    this.cSecond = this.selectedSecond;
+			}else{  //if( typeOf(this.cSecond) === "null" ){
+				this.cSecond = 0;
 			}
-			if( this.isDisabledSecond(thisDate, this.currentHour, this.currentMintue, this.currentSecond) )this.currentSecond = null;
+			if( this.isDisabledSecond(thisDate, this.cHour, this.cMintue, this.cSecond) )this.cSecond = null;
 			for( var i=0; i<60; i++ ){
-				if( !this.isDisabledSecond(thisDate, this.currentHour || 0, this.currentMintue || 0, i) ){
+				if( !this.isDisabledSecond(thisDate, this.cHour || 0, this.cMintue || 0, i) ){
 					var opt = new Element("option",{
 						"text" : this.addZero(i, 2 ),
 						"value" : this.addZero(i, 2 ),
 						"styles" : this.css.calendarTimeSelectItem_mobile
 					}).inject( this.itmeSelectSNode );
-					if( this.currentSecond === null )this.currentSecond = i;
-					if( i === this.currentSecond )opt.set("selected", true);
+					if( this.cSecond === null )this.cSecond = i;
+					if( i === this.cSecond )opt.set("selected", true);
 				}
 			}
-			// this.itmeSelectSNode.set("value",this.addZero( this.currentSecond, 2));
-			this.showSNode.set("text", this.addZero( this.currentSecond, 2) );
+			// this.itmeSelectSNode.set("value",this.addZero( this.cSecond, 2));
+			this.showSNode.set("text", this.addZero( this.cSecond, 2) );
 			this.itmeSelectSNode.addEvent("change",function(){
-				this.currentSecond = this.itmeSelectSNode.get("value").toInt();
-			    this.selectedSecond = this.currentSecond;
+				this.cSecond = this.itmeSelectSNode.get("value").toInt();
+			    this.selectedSecond = this.cSecond;
 				this.showSNode.set("text", this.itmeSelectSNode.get("value") );
 			}.bind(this));
 		}
