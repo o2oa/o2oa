@@ -88,19 +88,19 @@ export default content({
     if (detail && detail.recordDateString) {
       if (detail.recordDay) {
         if (detail.recordDay === '0') {
-          return detail.recordDateString + "(周日)";
+          return detail.recordDateString + "("+lp.day.Sunday+")";
         } else if (detail.recordDay === '1') {
-          return detail.recordDateString + "(周一)";
+          return detail.recordDateString + "("+lp.day.Monday+")";
         } else if (detail.recordDay === '2') {
-          return detail.recordDateString + "(周二)";
+          return detail.recordDateString + "("+lp.day.Tuesday+")";
         } else if (detail.recordDay === '3') {
-          return detail.recordDateString + "(周三)";
+          return detail.recordDateString + "("+lp.day.Wednesday+")";
         } else if (detail.recordDay === '4') {
-          return detail.recordDateString + "(周四)";
+          return detail.recordDateString + "("+lp.day.Thursday+")";
         } else if (detail.recordDay === '5') {
-          return detail.recordDateString + "(周5⃣️)";
+          return detail.recordDateString + "("+lp.day.Friday+")";
         } else if (detail.recordDay === '6') {
-          return detail.recordDateString + "(周六)";
+          return detail.recordDateString + "("+lp.day.Saturday+")";
         }
       }
       return detail.recordDateString;

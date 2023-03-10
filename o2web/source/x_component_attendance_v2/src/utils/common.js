@@ -145,6 +145,21 @@ const convertMinutesToHoursAndMinutes = (minutes) => {
   return result;
 };
 
+/**
+ * 数组转化为二维数组
+ * @param {*} arr 一维数组
+ * @param {*} subSize 子数组长度
+ * @returns 
+ */
+const  convertTo2DArray = (arr, subSize) => {
+  const result = [];
+  for (let i = 0; i < arr.length; i += subSize) {
+    result.push(arr.slice(i, i + subSize));
+  }
+  return result;
+}
+
+
 export {
   setJSONValue,
   lpFormat,
@@ -154,4 +169,5 @@ export {
   isEmpty,
   formatDate,
   convertMinutesToHoursAndMinutes,
+  convertTo2DArray,
 };

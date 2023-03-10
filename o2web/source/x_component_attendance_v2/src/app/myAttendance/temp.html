@@ -3,7 +3,43 @@
       <div class="index_page_header_title">{{$.lp.myAttendanceTitle}}</div>
   </div>
   <div style="padding: 20px;">
+    <div class="legend">
+      <div class="legend-item">
+        <div class="item-record-status record-status-normal"></div> <span>{{$.lp.appeal.normal}}</span>  
+      </div> 
+      <div class="legend-item">
+        <div class="item-record-status record-status-early"></div> <span>{{$.lp.appeal.early}}</span>  
+      </div> 
+      <div class="legend-item">
+        <div class="item-record-status record-status-late"></div> <span>{{$.lp.appeal.late}}</span>  
+      </div> 
+      <div class="legend-item">
+        <div class="item-record-status record-status-serilate"></div> <span>{{$.lp.appeal.seriousLate}}</span>  
+      </div> 
+      <div class="legend-item">
+        <div class="item-record-status record-status-nosign"></div> <span>{{$.lp.appeal.notSigned}}</span>  
+      </div> 
+      <div class="legend-item">
+        <div class="item-record-status record-status-appeal"></div> <span>{{$.lp.appeal.appeal}}</span>  
+      </div> 
 
+    </div>
+    <div class="my-cal-header">
+      <div class="my-cal-header-item" oo-each="$.dayList" oo-item="day">{{day.value.name}}</div>
+    </div>
+    <div class="my-cal-body">
+      <div class="my-cal-body-line" oo-each="$.dateWithData" oo-item="line">
+        <div oo-each="line.value" oo-item="item" class="{{this.formatCalItemClass(item.value)}}">
+          <div>{{item.value.date}}</div>
+          <div class="item-record-parent" oo-if="item.value.detail">
+            <div class="item-record-child"  oo-each="item.value.detail.recordList" oo-item="record">
+              <div class="{{this.formatRecordStatusClass(record.value)}}"></div> 
+              <div>{{ $m.formatRecord(record.value) }}</div> 
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
 </div>

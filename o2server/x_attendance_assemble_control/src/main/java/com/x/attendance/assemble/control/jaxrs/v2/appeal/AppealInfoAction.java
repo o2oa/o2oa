@@ -53,6 +53,25 @@ public class AppealInfoAction extends StandardJaxrsAction {
 
 
 
+    @JaxrsMethodDescribe(value = "申诉数据获取.", action = ActionGet.class)
+    @GET
+    @Path("{id}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                       @JaxrsParameterDescribe("申诉数据ID") @PathParam("id") String id) {
+        ActionResult<ActionGet.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionGet().execute(id);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+
 
     @JaxrsMethodDescribe(value = "启动流程后修改状态.", action = ActionUpdateForStart.class)
     @GET

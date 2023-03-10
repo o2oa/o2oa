@@ -45,9 +45,19 @@ MWF.xApplication.attendancev2.LP = {
     "dataError": "数据错误！",
     "saveSuccess": "保存成功！",
     "onDuty": "上班打卡",
+    "onDutySimple": "上班",
     "offDuty": "下班打卡",
+    "offDutySimple": "下班",
     "until": "至",
-    
+    "day": {
+        "Sunday": "周日",
+        "Monday": "周一",
+        "Tuesday": "周二",
+        "Wednesday": "周三",
+        "Thursday": "周四",
+        "Friday": "周五",
+        "Saturday": "周六",
+    },
 
     // 组件
     "components": {
@@ -221,11 +231,13 @@ MWF.xApplication.attendancev2.LP = {
         "recordResult": "打卡结果",
         "status": "状态",
 
+        "normal": "正常",
         "absenteeism": "旷工迟到",
         "early": "早退",
         "late": "迟到",
         "seriousLate": "严重迟到",
         "notSigned": "未打卡",
+        "appeal": "申诉",
 
         "status0": "待处理",
         "status1": "审批中",

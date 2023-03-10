@@ -182,6 +182,17 @@ function processAction(method, ...args) {
 }
 
 
+/**
+ * 我的考勤API
+ * @param {*} method
+ * @param  {...any} args
+ * @returns
+ */
+function myAction(method, ...args) {
+  return doAction("x_attendance_assemble_control", "MyAction", method, args);
+}
+
+
 export {
   getPublicData,
   putPublicData,
@@ -196,4 +207,5 @@ export {
   appealInfoActionListByPaging,
   appealInfoAction,
   processAction,
+  myAction,
 };

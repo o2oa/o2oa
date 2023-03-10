@@ -31,6 +31,7 @@ import com.x.attendance.assemble.control.jaxrs.v2.config.ConfigAction;
 import com.x.attendance.assemble.control.jaxrs.v2.detail.DetailAction;
 import com.x.attendance.assemble.control.jaxrs.v2.group.GroupAction;
 import com.x.attendance.assemble.control.jaxrs.v2.mobile.MobileAction;
+import com.x.attendance.assemble.control.jaxrs.v2.my.MyAction;
 import com.x.attendance.assemble.control.jaxrs.v2.shift.ShiftAction;
 import com.x.attendance.assemble.control.jaxrs.v2.workplace.WorkPlaceV2Action;
 import com.x.attendance.assemble.control.jaxrs.workplace.AttendanceWorkPlaceAction;
@@ -72,6 +73,7 @@ public class ActionApplication extends AbstractActionApplication {
 		this.classes.add(DetailAction.class);
 		this.classes.add(ConfigAction.class);
 		this.classes.add(AppealInfoAction.class);
+		this.classes.add(MyAction.class);
 		return this.classes;
 	}
 
