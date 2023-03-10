@@ -2640,7 +2640,7 @@ o2.xDesktop.Default.StartMenu.QueryItem = new Class({
         this.iconNode.setStyle("background-image", "url("+icon+")");
         this.icon = icon;
     },
-    addLnk: function(){
+    addLnk: function(dragTargetLnk, dragPosition){
         lnkdata = {
             "name": "query.Query",
             "title": this.data.name,
