@@ -103,11 +103,11 @@
 
     "columnTop_search":{
         "float": "right",
-        "width": "130px",
+        "width": "132px",
         "border": "1px solid #DDDDDD",
         "border-radius": "20px",
         "margin": "12px 10px 0 0px",
-        "padding": "0 0 0 8px",
+        "padding": "0 0 0 10px",
         "overflow": "hidden"
     },
     "columnTop_searchInput": {
@@ -117,7 +117,8 @@
         "font-size": "13px",
         "color": "#666",
         "border": "0",
-        "float": "left"
+        "float": "left",
+        "background": "inherit"
     },
     "columnTop_searchButton":{
         "cursor": "pointer",

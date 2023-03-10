@@ -37,9 +37,6 @@ class ActionExecute extends BaseAction {
 			if (null == query) {
 				throw new ExceptionEntityNotExist(stat.getQuery(), Query.class);
 			}
-			if (!business.readable(effectivePerson, query)) {
-				throw new ExceptionAccessDenied(effectivePerson, query);
-			}
 			if (!business.readable(effectivePerson, stat)) {
 				throw new ExceptionAccessDenied(effectivePerson, stat);
 			}

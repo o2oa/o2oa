@@ -1,11 +1,5 @@
 package com.x.query.assemble.surface.jaxrs.view;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.collections4.list.TreeList;
-
 import com.google.gson.JsonElement;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -27,6 +21,11 @@ import com.x.query.core.entity.Query;
 import com.x.query.core.entity.View;
 import com.x.query.core.express.plan.FilterEntry;
 import com.x.query.core.express.plan.Runtime;
+import org.apache.commons.collections4.list.TreeList;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 class ActionBundle extends BaseAction {
 
@@ -47,9 +46,6 @@ class ActionBundle extends BaseAction {
 			Query query = business.pick(view.getQuery(), Query.class);
 			if (null == query) {
 				throw new ExceptionEntityNotExist(view.getQuery(), Query.class);
-			}
-			if (!business.readable(effectivePerson, query)) {
-				throw new ExceptionAccessDenied(effectivePerson, query);
 			}
 			if (!business.readable(effectivePerson, view)) {
 				throw new ExceptionAccessDenied(effectivePerson, view);
