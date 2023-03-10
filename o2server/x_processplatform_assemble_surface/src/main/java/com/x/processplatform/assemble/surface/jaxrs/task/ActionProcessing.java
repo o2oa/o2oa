@@ -24,7 +24,6 @@ import com.x.base.core.project.jaxrs.WoId;
 import com.x.base.core.project.jaxrs.WrapStringList;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
-import com.x.base.core.project.tools.ListTools;
 import com.x.base.core.project.tools.StringTools;
 import com.x.processplatform.assemble.surface.Business;
 import com.x.processplatform.assemble.surface.RecordBuilder;
@@ -59,7 +58,6 @@ class ActionProcessing extends BaseAction {
     private Wi wi;
     private Task task;
     private WorkLog workLog;
-    private Work work;
     private String taskCompletedId;
     private String type = TYPE_TASK;
     private Boolean asyncSupported = true;
@@ -172,8 +170,8 @@ class ActionProcessing extends BaseAction {
         if (null == workLog) {
             throw new ExceptionEntityNotExist(WorkLog.class);
         }
-        this.work = emc.find(this.task.getWork(), Work.class);
-        if (null == this.work) {
+        Work work = emc.find(this.task.getWork(), Work.class);
+        if (null == work) {
             throw new ExceptionEntityNotExist(this.task.getWork(), Work.class);
         }
         if ((!effectivePerson.isCipher()) && effectivePerson.isNotPerson(this.task.getPerson())) {
@@ -191,7 +189,11 @@ class ActionProcessing extends BaseAction {
                 this.task.setRouteName(this.wi.getRouteName());
             }
             // 如果有新的流程意见那么覆盖原有流程意见
-            if (StringUtils.isNotEmpty(this.wi.getOpinion())) {
+//            if (StringUtils.isNotEmpty(this.wi.getOpinion())) {
+//                this.task.setOpinion(this.wi.getOpinion());
+//            }
+            // 如果有新的流程意见那么覆盖原有流程意见,null表示没有传过来,""可能是前端传过来的改为空值.
+            if (null != this.wi.getOpinion()) {
                 this.task.setOpinion(this.wi.getOpinion());
             }
             // 强制覆盖多媒体意见
@@ -290,7 +292,6 @@ class ActionProcessing extends BaseAction {
             this.rec.getProperties().setOpinion(this.task.getOpinion());
             this.rec.getProperties().setRouteName(this.task.getRouteName());
             rec.setCompleted(true);
-            // RecordBuilder.processing(rec);
         }
     }
 
@@ -304,7 +305,7 @@ class ActionProcessing extends BaseAction {
         if (StringUtils.isBlank(resp.getId())) {
             throw new ExceptionProcessingTask(task.getId());
         } else {
-            /* 获得已办id */
+            // 获得已办id
             return resp.getId();
         }
     }
