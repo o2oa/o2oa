@@ -1097,6 +1097,11 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		var calendar = this;
 
 		if ( COMMON.Browser.Platform.isMobile ){
+			this.showHNode.set("text", this.addZero( h.toInt(), 2) );
+			this.showMNode.set("text", this.addZero( m.toInt(), 2));
+			if( this.options.secondEnable && this.showSNode ){
+				this.showSNode.set("text", this.addZero( s.toInt(), 2) );
+			}
 		}else{
 			if(this.options.timeSelectType === "select"){
 				this.loadHourSelect(h);
@@ -1146,13 +1151,14 @@ o2.widget.Calendar = o2.Calendar = new Class({
 					});
 					this.itmeSNode.getFirst().set("text", s);
 				}
+
+				this.showHNode.set("text", this.addZero( h.toInt(), 2) );
+				this.showMNode.set("text", this.addZero( m.toInt(), 2));
+				if( this.options.secondEnable && this.showSNode ){
+					this.showSNode.set("text", this.addZero( s.toInt(), 2) );
+				}
 			}
 
-		}
-		this.showHNode.set("text", this.addZero( h.toInt(), 2) );
-		this.showMNode.set("text", this.addZero( m.toInt(), 2));
-		if( this.options.secondEnable && this.showSNode ){
-			this.showSNode.set("text", this.addZero( s.toInt(), 2) );
 		}
 
 		if (!this.okButton){
@@ -1192,9 +1198,12 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		this.itmeSelectHNode = new Element("select").inject(this.itmeHNode);
 		if( typeOf(h) !== "null" ){
 			this.currentHour = h.toInt();
-		}else if( typeOf(this.currentHour) === "null" ){
+		}else if( typeOf(this.selectedHour) !== "null" ){
+			this.currentHour = this.selectedHour;
+		}else{ //if( typeOf(this.currentHour) === "null" ){
 			this.currentHour = 0;
 		}
+		if( this.isDisabledHour(thisDate, this.currentHour) )this.currentHour = null;
 		for( var i=0; i<24; i++ ){
 			if( !this.isDisabledHour(thisDate, i) ){
 				var opt = new Element("option",{
@@ -1202,14 +1211,15 @@ o2.widget.Calendar = o2.Calendar = new Class({
 					"value" : this.addZero(i, 2 ),
 					"styles" : this.css.calendarTimeSelectItem_mobile
 				}).inject( this.itmeSelectHNode );
-				if( i === this.currentHour ){
-					opt.set("selected", true);
-				}
+				if( this.currentHour === null )this.currentHour = i;
+				if( i === this.currentHour )opt.set("selected", true);
 			}
 		}
-		this.itmeSelectHNode.set("value",this.addZero( this.currentHour, 2));
+		// this.itmeSelectHNode.set("value",this.addZero( this.currentHour, 2));
+		this.showHNode.set("text", this.addZero( this.currentHour, 2) );
 		this.itmeSelectHNode.addEvent("change",function(){
 			this.currentHour = this.itmeSelectHNode.get("value").toInt();
+			this.selectedHour = this.currentHour;
 			this.showHNode.set("text", this.itmeSelectHNode.get("value") );
 			if( this.options.disabledMinutes )this.loadMintueSelect();
 			if( this.options.disabledSeconds )this.loadSecondSelect();
@@ -1222,24 +1232,28 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		this.itmeSelectMNode = new Element("select").inject(this.itmeMNode);
 		if( typeOf(m) !== "null" ){
 			this.currentMintue = m.toInt();
-		}else if( typeOf(this.currentMintue) === "null" ){
+		}else if( typeOf(this.selectedMintue) !== "null" ){
+			this.currentMintue = this.selectedMintue;
+		}else{ //if( typeOf(this.currentMintue) === "null" ){
 			this.currentMintue = 0;
 		}
+		if( this.isDisabledMintue(thisDate, this.currentHour, this.currentMintue) )this.currentMintue = null;
 		for (var i = 0; i < 60; i++) {
-			if (!this.isDisabledMintue(thisDate, this.currentMintue || 0, i)) {
+			if (!this.isDisabledMintue(thisDate, this.currentHour || 0, i)) {
 				var opt = new Element("option", {
 					"text": this.addZero(i, 2),
 					"value": this.addZero(i, 2),
 					"styles": this.css.calendarTimeSelectItem_mobile
 				}).inject(this.itmeSelectMNode);
-				if( i === this.currentMintue ){
-					opt.set("selected", true);
-				}
+				if( this.currentMintue === null )this.currentMintue = i;
+				if( i === this.currentMintue )opt.set("selected", true);
 			}
 		}
-		this.itmeSelectMNode.set("value", this.addZero(this.currentMintue, 2));
+		// this.itmeSelectMNode.set("value", this.addZero(this.currentMintue, 2));
+		this.showMNode.set("text", this.addZero( this.currentMintue, 2) );
 		this.itmeSelectMNode.addEvent("change", function () {
 			this.currentMintue = this.itmeSelectMNode.get("value").toInt();
+			this.selectedMintue = this.currentMintue;
 			this.showMNode.set("text", this.itmeSelectMNode.get("value"));
 			if( this.options.disabledSeconds )this.loadSecondSelect();
 		}.bind(this));
@@ -1253,9 +1267,12 @@ o2.widget.Calendar = o2.Calendar = new Class({
 			this.itmeSelectSNode = new Element("select").inject(this.itmeSNode);
 			if( typeOf(s) !== "null" ){
 				this.currentSecond = s.toInt();
-			}else if( typeOf(this.currentSecond) === "null" ){
+		    }else if( typeOf(this.selectedSecond) !== "null" ){
+			    this.currentSecond = this.selectedSecond;
+			}else{  //if( typeOf(this.currentSecond) === "null" ){
 				this.currentSecond = 0;
 			}
+			if( this.isDisabledSecond(thisDate, this.currentHour, this.currentMintue, this.currentSecond) )this.currentSecond = null;
 			for( var i=0; i<60; i++ ){
 				if( !this.isDisabledSecond(thisDate, this.currentHour || 0, this.currentMintue || 0, i) ){
 					var opt = new Element("option",{
@@ -1263,14 +1280,15 @@ o2.widget.Calendar = o2.Calendar = new Class({
 						"value" : this.addZero(i, 2 ),
 						"styles" : this.css.calendarTimeSelectItem_mobile
 					}).inject( this.itmeSelectSNode );
-					if( i === this.itmeSelectSNode ){
-						opt.set("selected", true);
-					}
+					if( this.currentSecond === null )this.currentSecond = i;
+					if( i === this.currentSecond )opt.set("selected", true);
 				}
 			}
-			this.itmeSelectSNode.set("value",this.addZero( this.currentSecond, 2));
+			// this.itmeSelectSNode.set("value",this.addZero( this.currentSecond, 2));
+			this.showSNode.set("text", this.addZero( this.currentSecond, 2) );
 			this.itmeSelectSNode.addEvent("change",function(){
 				this.currentSecond = this.itmeSelectSNode.get("value").toInt();
+			    this.selectedSecond = this.currentSecond;
 				this.showSNode.set("text", this.itmeSelectSNode.get("value") );
 			}.bind(this));
 		}
