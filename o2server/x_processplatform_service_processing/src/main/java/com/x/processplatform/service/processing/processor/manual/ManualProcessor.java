@@ -3,7 +3,6 @@ package com.x.processplatform.service.processing.processor.manual;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -50,7 +49,6 @@ import com.x.processplatform.core.entity.content.Work;
 import com.x.processplatform.core.entity.content.WorkLog;
 import com.x.processplatform.core.entity.element.ActivityType;
 import com.x.processplatform.core.entity.element.Manual;
-import com.x.processplatform.core.entity.element.ManualMode;
 import com.x.processplatform.core.entity.element.Route;
 import com.x.processplatform.core.entity.element.util.WorkLogTree;
 import com.x.processplatform.core.entity.element.util.WorkLogTree.Node;
@@ -612,10 +610,10 @@ public class ManualProcessor extends AbstractManualProcessor {
      * @throws Exception
      */
     private Optional<String> chooseMaxCountOrLatest(Triple<List<TaskCompleted>, List<Route>, Manual> triple) {
-        if (!Objects.equals(ManualMode.parallel, triple.getRight().getManualMode())) {
-            return triple.getLeft().stream().sorted(Comparator.comparing(TaskCompleted::getCreateTime).reversed())
-                    .findFirst().map(TaskCompleted::getRouteName);
-        }
+//        if (!Objects.equals(ManualMode.parallel, triple.getRight().getManualMode())) {
+//            return triple.getLeft().stream().sorted(Comparator.comparing(TaskCompleted::getCreateTime).reversed())
+//                    .findFirst().map(TaskCompleted::getRouteName);
+//        }
         return triple.getLeft().stream().collect(Collectors.groupingBy(TaskCompleted::getRouteName)).entrySet().stream()
                 .max((o1, o2) -> {
                     int c = o1.getValue().size() - o2.getValue().size();
