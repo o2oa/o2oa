@@ -84,7 +84,11 @@
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.button,
     "className": "Button"
   },
-
+  "commend": {
+    "icon": "commend.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.commend,
+    "className": "Commend"
+  },
   "Address": {
     "icon": "address.png",
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.Address,
@@ -235,6 +239,11 @@
     "icon": "log.png",
     "text": MWF.xApplication.cms.FormDesigner.LP.modules.log,
     "className": "Log"
+  },
+  "logCommend": {
+    "icon": "logCommend.png",
+    "text": MWF.xApplication.cms.FormDesigner.LP.modules.logCommend,
+    "className": "LogCommend"
   },
   "comment": {
     "icon": "comment.png",
