@@ -25,7 +25,19 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		"range": false,
 		"rangeNodes": [],
 		"rangeRule": "asc",  //asc + ,  des -
-		"target": null
+		"target": null,
+		// "disabledDate": function (date) {  //一个function，参数为日期，return true不可选
+		// 	return date > new Date();
+		// },
+		"disabledHours": function (date) {
+			if( date > new Date() ){
+				return [];
+			}else{
+				return [[0, 8], [16, 24]];
+			}
+		}, //一个function, 参数为日期
+		"disabledMinutes": null,  //一个function, 参数为日期，hour
+		"disabledSeconds": null,  //一个function, 参数为日期，hour，mintues
 	},
 	initialize: function(node, options){
 		Locale.use("zh-CHS");
@@ -321,6 +333,10 @@ o2.widget.Calendar = o2.Calendar = new Class({
 	},
 	getNextDate: function(){
 		var date = this.currentTextNode.retrieve("date");
+		if( this.options.disabledDate ){
+			var d = date.clone().increment("day", 1);
+			if( this.isDisabledDate(d) )return;
+		}
 		// var year = this.currentTextNode.retrieve("year");
 		// var month = this.currentTextNode.retrieve("month");
 		// month--;
@@ -328,11 +344,21 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		// var date = new Date(year, month, day);
 		date.increment("day", 1);
 		this._setTimeTitle(null, date);
+		if( this.options.disabledHours || this.options.disabledMinutes || this.options.disabledSeconds ){
+			this._resetTimeDate();
+		}
 	},
 	getPrevDate: function(){
 		var date = this.currentTextNode.retrieve("date");
+		if( this.options.disabledDate ){
+			var d = date.clone().increment("day", -1);
+			if( this.isDisabledDate(d) )return;
+		}
 		date.increment("day", -1);
 		this._setTimeTitle(null, date);
+		if( this.options.disabledHours || this.options.disabledMinutes || this.options.disabledSeconds ){
+			this._resetTimeDate();
+		}
 	},
 	getNextDay: function(){
 		var year = this.currentTextNode.retrieve("year");
@@ -725,6 +751,17 @@ o2.widget.Calendar = o2.Calendar = new Class({
 
 		var tmpDate = firstDate.clone();
 		for (var i=day-1; i>=0; i--){
+
+			if( this.options.disabledDate ){
+				if( this.isDisabledDate(firstDate) ){
+					tds[i].addClass("disable_"+this.options.style);
+					tds[i].setStyles(this.css["disable_"+this.options.style]);
+				}else{
+					tds[i].removeClass("disable_"+this.options.style);
+					tds[i].setStyles(this.css["notdisable_"+this.options.style]);
+				}
+			}
+
 			tmpDate.increment("day", -1);
 			tds[i].set("text", tmpDate.getDate());
 			tds[i].addClass("gray_"+this.options.style);
@@ -734,6 +771,17 @@ o2.widget.Calendar = o2.Calendar = new Class({
 
 		for (var i=day; i<tds.length; i++){
 			tds[i].set("text", firstDate.getDate());
+
+			if( this.options.disabledDate ){
+				if( this.isDisabledDate(firstDate) ){
+					tds[i].addClass("disable_"+this.options.style);
+					tds[i].setStyles(this.css["disable_"+this.options.style]);
+				}else{
+					tds[i].removeClass("disable_"+this.options.style);
+					tds[i].setStyles(this.css["notdisable_"+this.options.style]);
+				}
+			}
+
 			if (firstDate.toString() == this.options.baseDate.toString()){
 				tds[i].addClass("current_"+this.options.style);
 				tds[i].setStyles(this.css["current_"+this.options.style]);
@@ -769,10 +817,84 @@ o2.widget.Calendar = o2.Calendar = new Class({
 			}
 
 
-			tds[i].store("dateValue", firstDate.toString())
+			tds[i].store("dateValue", firstDate.toString());
 			firstDate.increment("day", 1);
 		}
 	},
+	isDisabledDate: function(date){
+		var fun = this.options.disabledDate;
+		if( fun && typeOf(fun) === "function" ){
+			var d = typeOf( date ) === "string" ? new Date(date) : date;
+			if( fun( d ) === true ){
+				return true;
+			}
+		}
+		return false;
+	},
+	getDisabledHours: function(date){
+		var fun = this.options.disabledHours;
+		if( fun && typeOf(fun) === "function" ){
+			var d = typeOf( date ) === "string" ? new Date(date) : date;
+			return fun( d );
+		}
+		return null;
+	},
+	isDisabledHour: function (thisDate, hour) {
+		var hs = this.getDisabledHours( thisDate );
+		if( !hs || !hs.length )return false;
+		if( typeOf(hs[0]) === "array" ){
+			for( var i=0; i< hs.length; i++ ){
+				var dhs = hs[i];
+				if(  dhs[0] <= hour && hour <= dhs[1] )return true;
+			}
+		}else{
+			if(  hs[0] <= hour && hour <= hs[1] )return true;
+		}
+		return false;
+	},
+	getDisabledMinutes: function(date, h){
+		var fun = this.options.disabledMinutes;
+		if( fun && typeOf(fun) === "function" ){
+			var d = typeOf( date ) === "string" ? new Date(date) : date;
+			return fun( d, h );
+		}
+		return null;
+	},
+	isDisabledMintue: function (thisDate, hour, mintue) {
+		var ms = this.getDisabledMinutes( thisDate, hour );
+		if( !ms || !ms.length )return false;
+		if( typeOf(ms[0]) === "array" ){
+			for( var i=0; i< ms.length; i++ ){
+				var dms = ms[i];
+				if(  dms[0] <= mintue && mintue <= dms[1] )return true;
+			}
+		}else{
+			if(  ms[0] <= mintue && mintue <= ms[1] )return true;
+		}
+		return false;
+	},
+	getDisabledSeconds: function(date, h, m){
+		var fun = this.options.disabledSeconds;
+		if( fun && typeOf(fun) === "function" ){
+			var d = typeOf( date ) === "string" ? new Date(date) : date;
+			return fun( d, h, m );
+		}
+		return null;
+	},
+	isDisabledSecond: function (thisDate, hour, mintue, second) {
+		var ss = this.getDisabledSeconds( thisDate, hour, mintue );
+		if( !ss || !ss.length )return false;
+		if( typeOf(ss[0]) === "array" ){
+			for( var i=0; i< ss.length; i++ ){
+				var dss = ss[i];
+				if(  dss[0] <= second && second <= dss[1] )return true;
+			}
+		}else{
+			if(  ss[0] <= second && second <= ss[1] )return true;
+		}
+		return false;
+	},
+
 
 	changeViewToTime: function(date){
 		this.currentView = "time";
@@ -975,98 +1097,16 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		var calendar = this;
 
 		if ( COMMON.Browser.Platform.isMobile ){
-			//this.itmeHNode.empty();
-			//this.itmeHNode.removeClass("calendarTimeSlider");
-			//this.itmeHNode.setStyles(this.css.calendarTimeSliderNoStyle);
-			//var sel = new Element("select").inject(this.itmeHNode);
-			//for (i=0; i<=23; i++){
-			//	var v = (i<10) ? "0"+i: i;
-			//	var o = new Element("option", {
-			//		"value": v,
-			//		"text": v
-			//	}).inject(sel);
-			//	if (h==i) o.set("selected", true);
-			//}
-			//sel.addEvent("change", function(){
-			//	calendar.showHNode.set("text", this.options[this.selectedIndex].get("value"));
-			//});
-			//this.showHNode.set("text", sel.options[sel.selectedIndex].get("value"));
-			//
-			//this.itmeMNode.empty();
-			//this.itmeMNode.removeClass("calendarTimeSlider");
-			//this.itmeMNode.setStyles(this.css.calendarTimeSliderNoStyle);
-			//sel = new Element("select").inject(this.itmeMNode);
-			//for (i=0; i<=59; i++){
-			//	var v = (i<10) ? "0"+i: i;
-			//	var o = new Element("option", {
-			//		"value": v,
-			//		"text": v
-			//	}).inject(sel);
-			//	if (m==i) o.set("selected", true);
-			//}
-			//sel.addEvent("change", function(){
-			//	calendar.showMNode.set("text", this.options[this.selectedIndex].get("value"));
-			//});
-			//this.showMNode.set("text", sel.options[sel.selectedIndex].get("value"));
 		}else{
-
 			if(this.options.timeSelectType === "select"){
-
-				this.itmeHNode = this.contentTimeTable.getElement(".MWF_calendar_time_h").empty();
-				this.itmeMNode = this.contentTimeTable.getElement(".MWF_calendar_time_m").empty();
-				this.itmeSNode = this.contentTimeTable.getElement(".MWF_calendar_time_s").empty();
-
-				new Element("span",{"text": o2.LP.widget.hour + "："}).inject(this.itmeHNode);
-				this.itmeSelectHNode = new Element("select").inject(this.itmeHNode);
-				for( var i=0; i<24; i++ ){
-					new Element("option",{
-						"text" : this.addZero(i, 2 ),
-						"value" : this.addZero(i, 2 ),
-						"styles" : this.css.calendarTimeSelectItem_mobile
-					}).inject( this.itmeSelectHNode );
-				}
-				this.itmeSelectHNode.set("value",this.addZero( h.toInt(), 2));
-				this.itmeSelectHNode.addEvent("change",function(){
-					this.showHNode.set("text", this.itmeSelectHNode.get("value") );
-				}.bind(this));
-
-				new Element("span",{"text":o2.LP.widget.minute + "："}).inject(this.itmeMNode);
-				this.itmeSelectMNode = new Element("select").inject(this.itmeMNode);
-				for( var i=0; i<60; i++ ){
-					new Element("option",{
-						"text" : this.addZero(i, 2 ),
-						"value" : this.addZero(i, 2 ),
-						"styles" : this.css.calendarTimeSelectItem_mobile
-					}).inject( this.itmeSelectMNode );
-				}
-				this.itmeSelectMNode.set("value",this.addZero( m.toInt(), 2));
-				this.itmeSelectMNode.addEvent("change",function(){
-					this.showMNode.set("text", this.itmeSelectMNode.get("value") );
-				}.bind(this));
-
-				if( this.options.secondEnable && this.itmeSNode ){
-					new Element("span",{"text":o2.LP.widget.second + "："}).inject(this.itmeSNode);
-					this.itmeSelectSNode = new Element("select").inject(this.itmeSNode);
-					for( var i=0; i<60; i++ ){
-						new Element("option",{
-							"text" : this.addZero(i, 2 ),
-							"value" : this.addZero(i, 2 ),
-							"styles" : this.css.calendarTimeSelectItem_mobile
-						}).inject( this.itmeSelectSNode );
-					}
-					this.itmeSelectSNode.set("value",this.addZero( s.toInt(), 2));
-					this.itmeSelectSNode.addEvent("change",function(){
-						this.showSNode.set("text", this.itmeSelectSNode.get("value") );
-					}.bind(this));
-				}
-
-
+				this.loadHourSelect(h);
+				this.loadMintueSelect(m);
+				this.loadSecondSelect(s);
 			}else {
 				var hSlider = new Slider(this.itmeHNode, this.itmeHNode.getFirst(), {
 					range: [0, 23],
 					initialStep: h.toInt(),
 					onChange: function(value){
-						debugger;
 						var tmp = (value.toInt().toString());
 						if (tmp.length<2){
 							tmp = "0"+tmp
@@ -1134,6 +1174,105 @@ o2.widget.Calendar = o2.Calendar = new Class({
 				this.hide();
 			}.bind(this));
 			this.clearButton.setStyles(this.css.calendarActionShowButton);
+		}
+	},
+	_resetTimeDate: function(){
+		if(this.options.timeSelectType === "select"){
+			this.loadHourSelect();
+			this.loadMintueSelect();
+			this.loadSecondSelect();
+		}else {
+
+		}
+	},
+	loadHourSelect: function (h) {
+		var thisDate = this.currentTextNode.retrieve("date");
+		this.itmeHNode = this.contentTimeTable.getElement(".MWF_calendar_time_h").empty();
+		new Element("span",{"text": o2.LP.widget.hour + "："}).inject(this.itmeHNode);
+		this.itmeSelectHNode = new Element("select").inject(this.itmeHNode);
+		if( typeOf(h) !== "null" ){
+			this.currentHour = h.toInt();
+		}else if( typeOf(this.currentHour) === "null" ){
+			this.currentHour = 0;
+		}
+		for( var i=0; i<24; i++ ){
+			if( !this.isDisabledHour(thisDate, i) ){
+				var opt = new Element("option",{
+					"text" : this.addZero(i, 2 ),
+					"value" : this.addZero(i, 2 ),
+					"styles" : this.css.calendarTimeSelectItem_mobile
+				}).inject( this.itmeSelectHNode );
+				if( i === this.currentHour ){
+					opt.set("selected", true);
+				}
+			}
+		}
+		this.itmeSelectHNode.set("value",this.addZero( this.currentHour, 2));
+		this.itmeSelectHNode.addEvent("change",function(){
+			this.currentHour = this.itmeSelectHNode.get("value").toInt();
+			this.showHNode.set("text", this.itmeSelectHNode.get("value") );
+			if( this.options.disabledMinutes )this.loadMintueSelect();
+			if( this.options.disabledSeconds )this.loadSecondSelect();
+		}.bind(this));
+	},
+	loadMintueSelect: function (m) {
+		var thisDate = this.currentTextNode.retrieve("date");
+		this.itmeMNode = this.contentTimeTable.getElement(".MWF_calendar_time_m").empty();
+		new Element("span", {"text": o2.LP.widget.minute + "："}).inject(this.itmeMNode);
+		this.itmeSelectMNode = new Element("select").inject(this.itmeMNode);
+		if( typeOf(m) !== "null" ){
+			this.currentMintue = m.toInt();
+		}else if( typeOf(this.currentMintue) === "null" ){
+			this.currentMintue = 0;
+		}
+		for (var i = 0; i < 60; i++) {
+			if (!this.isDisabledMintue(thisDate, this.currentMintue || 0, i)) {
+				var opt = new Element("option", {
+					"text": this.addZero(i, 2),
+					"value": this.addZero(i, 2),
+					"styles": this.css.calendarTimeSelectItem_mobile
+				}).inject(this.itmeSelectMNode);
+				if( i === this.currentMintue ){
+					opt.set("selected", true);
+				}
+			}
+		}
+		this.itmeSelectMNode.set("value", this.addZero(this.currentMintue, 2));
+		this.itmeSelectMNode.addEvent("change", function () {
+			this.currentMintue = this.itmeSelectMNode.get("value").toInt();
+			this.showMNode.set("text", this.itmeSelectMNode.get("value"));
+			if( this.options.disabledSeconds )this.loadSecondSelect();
+		}.bind(this));
+	},
+	loadSecondSelect: function (s) {
+		var thisDate = this.currentTextNode.retrieve("date");
+		this.itmeSNode = this.contentTimeTable.getElement(".MWF_calendar_time_s").empty();
+		this.currentSecond = typeOf(s) !== "null" ? s.toInt() : 0;
+		if( this.options.secondEnable && this.itmeSNode ){
+			new Element("span",{"text":o2.LP.widget.second + "："}).inject(this.itmeSNode);
+			this.itmeSelectSNode = new Element("select").inject(this.itmeSNode);
+			if( typeOf(s) !== "null" ){
+				this.currentSecond = s.toInt();
+			}else if( typeOf(this.currentSecond) === "null" ){
+				this.currentSecond = 0;
+			}
+			for( var i=0; i<60; i++ ){
+				if( !this.isDisabledSecond(thisDate, this.currentHour || 0, this.currentMintue || 0, i) ){
+					var opt = new Element("option",{
+						"text" : this.addZero(i, 2 ),
+						"value" : this.addZero(i, 2 ),
+						"styles" : this.css.calendarTimeSelectItem_mobile
+					}).inject( this.itmeSelectSNode );
+					if( i === this.itmeSelectSNode ){
+						opt.set("selected", true);
+					}
+				}
+			}
+			this.itmeSelectSNode.set("value",this.addZero( this.currentSecond, 2));
+			this.itmeSelectSNode.addEvent("change",function(){
+				this.currentSecond = this.itmeSelectSNode.get("value").toInt();
+				this.showSNode.set("text", this.itmeSelectSNode.get("value") );
+			}.bind(this));
 		}
 	},
 	addZero : function( str, length ){
@@ -1285,7 +1424,10 @@ o2.widget.Calendar = o2.Calendar = new Class({
 			tds.addEvent("click", function(){
 				switch (calendar.currentView) {
 					case "day" :
-						calendar._selectDate(this.retrieve("dateValue"), this);
+						var d = this.retrieve("dateValue");
+						if( !calendar.isDisabledDate(d) ){
+							calendar._selectDate(d, this);
+						}
 						break;
 					case "month" :
 						debugger;
@@ -1392,12 +1534,27 @@ o2.widget.Calendar = o2.Calendar = new Class({
 				//nothing;
 			}
 
-
 			tds.addEvent("mouseover", function(){
-				this.setStyle("border", "1px solid #999999");
+				switch (calendar.currentView) {
+					case "day" :
+						var d = this.retrieve("dateValue");
+						if (!calendar.isDisabledDate(d)) this.setStyle("border", "1px solid #999999");
+						break;
+					default:
+						this.setStyle("border", "1px solid #999999");
+						break;
+				}
 			});
 			tds.addEvent("mouseout", function(){
-				this.setStyle("border", "1px solid #FFF");
+				switch (calendar.currentView) {
+					case "day" :
+						var d = this.retrieve("dateValue");
+						if (!calendar.isDisabledDate(d)) this.setStyle("border", "1px solid #FFF");
+						break;
+					default:
+						this.setStyle("border", "1px solid #FFF");
+						break;
+				}
 			});
 		}else{
 			switch (this.currentView) {
