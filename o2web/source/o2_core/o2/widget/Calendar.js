@@ -37,7 +37,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		// 	}
 		//}, //一个function, 参数为日期
 		// "disabledMinutes": null,  //一个function, 参数为日期，hour
-		// "disabledSeconds": null,  //一个function, 参数为日期，hour，mintues
+		// "disabledSeconds": null,  //一个function, 参数为日期，hour，minutes
 	},
 	initialize: function(node, options){
 		Locale.use("zh-CHS");
@@ -867,23 +867,23 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		}
 		return null;
 	},
-	getEnableMintues: function(date, h){
+	getEnableMinutes: function(date, h){
 		var range = [0, 59];
 		var ar = this.getDisabledMinutes(date, h);
 		if( !ar || !ar.length )return [range];
 		if( typeOf(ar[0]) !== "array" )ar = [ar];
 		return o2.Calendar.RangeArrayUtils.complementary(range, ar, null, 1);
 	},
-	isDisabledMintue: function (thisDate, hour, mintue) {
+	isDisabledMinute: function (thisDate, hour, minute) {
 		var ms = this.getDisabledMinutes( thisDate, hour );
 		if( !ms || !ms.length )return false;
 		if( typeOf(ms[0]) === "array" ){
 			for( var i=0; i< ms.length; i++ ){
 				var dms = ms[i];
-				if(  dms[0] <= mintue && mintue <= dms[1] )return true;
+				if(  dms[0] <= minute && minute <= dms[1] )return true;
 			}
 		}else{
-			if(  ms[0] <= mintue && mintue <= ms[1] )return true;
+			if(  ms[0] <= minute && minute <= ms[1] )return true;
 		}
 		return false;
 	},
@@ -902,8 +902,8 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		if( typeOf(ar[0]) !== "array" )ar = [ar];
 		return o2.Calendar.RangeArrayUtils.complementary(range, ar, null, 1);
 	},
-	isDisabledSecond: function (thisDate, hour, mintue, second) {
-		var ss = this.getDisabledSeconds( thisDate, hour, mintue );
+	isDisabledSecond: function (thisDate, hour, minute, second) {
+		var ss = this.getDisabledSeconds( thisDate, hour, minute );
 		if( !ss || !ss.length )return false;
 		if( typeOf(ss[0]) === "array" ){
 			for( var i=0; i< ss.length; i++ ){
@@ -1127,7 +1127,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		}else{
 			if(this.options.timeSelectType === "select"){
 				this.loadHourSelect(h);
-				this.loadMintueSelect(m);
+				this.loadMinuteSelect(m);
 				this.loadSecondSelect(s);
 			}else {
 				this.calculateCurrentHour(h);
@@ -1144,11 +1144,11 @@ o2.widget.Calendar = o2.Calendar = new Class({
 							this.itmeHNode.getFirst().set("text", this.addZero(v, 2));
 
 							if( this.options.disabledMinutes ){
-								this.calculateCurrentMintue();
+								this.calculateCurrentMinute();
 								this.createDisabledNodes(this.itmeMNode, 60, "m");
-								this.mSlider.set( this.cMintue );
-								this.itmeMNode.getFirst().set("text", this.addZero( this.cMintue, 2));
-								this.showMNode.set("text", this.addZero( this.cMintue, 2));
+								this.mSlider.set( this.cMinute );
+								this.itmeMNode.getFirst().set("text", this.addZero( this.cMinute, 2));
+								this.showMNode.set("text", this.addZero( this.cMinute, 2));
 							}
 							if( this.options.disabledSeconds && this.sSlider ){
 								this.calculateCurrentSecond();
@@ -1163,16 +1163,16 @@ o2.widget.Calendar = o2.Calendar = new Class({
 				this.itmeHNode.getFirst().set("text", this.addZero( this.cHour, 2));
 				this.showHNode.set("text", this.addZero( this.cHour, 2) );
 
-				this.calculateCurrentMintue(m);
+				this.calculateCurrentMinute(m);
 				this.createDisabledNodes(this.itmeMNode, 60, "m");
 				this.mSlider = new Slider(this.itmeMNode, this.itmeMNode.getFirst(), {
 					range: [0, 59],
-					initialStep: this.cMintue,
+					initialStep: this.cMinute,
 					onChange: function(value){
 						var v = value.toInt();
-					    if( !this.isDisabledMintue(this.cDate, this.cHour, v) ){
-                            this.selectedMintue = v;
-                            this.cMintue = v;
+					    if( !this.isDisabledMinute(this.cDate, this.cHour, v) ){
+                            this.selectedMinute = v;
+                            this.cMinute = v;
                             this.showMNode.set("text", this.addZero( v, 2));
                             this.itmeMNode.getFirst().set("text", this.addZero( v, 2));
 
@@ -1186,8 +1186,8 @@ o2.widget.Calendar = o2.Calendar = new Class({
 						}
 					}.bind(this)
 				});
-				this.itmeMNode.getFirst().set("text", this.addZero( this.cMintue, 2));
-				this.showMNode.set("text", this.addZero( this.cMintue, 2));
+				this.itmeMNode.getFirst().set("text", this.addZero( this.cMinute, 2));
+				this.showMNode.set("text", this.addZero( this.cMinute, 2));
 
 				if( this.options.secondEnable && this.itmeSNode ){
 					this.calculateCurrentSecond(s);
@@ -1197,7 +1197,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 						initialStep: this.cSecond,
 						onChange: function(value){
 							var v = value.toInt();
-                            if( !this.isDisabledSecond(this.cDate, this.cHour, this.cMintue, v) ){
+                            if( !this.isDisabledSecond(this.cDate, this.cHour, this.cMinute, v) ){
                                 this.selectedSecond = v;
                                 this.cSecond = v;
                                 this.showSNode.set("text", this.addZero( v, 2));
@@ -1242,7 +1242,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 	_resetTimeDate: function(){
 		if(this.options.timeSelectType === "select"){
 			if( this.options.disabledHours )this.loadHourSelect();
-			if( this.options.disabledMinutes )this.loadMintueSelect();
+			if( this.options.disabledMinutes )this.loadMinuteSelect();
 			if( this.options.disabledSeconds )this.loadSecondSelect();
 		}else {
 			if( this.options.disabledHours ){
@@ -1253,11 +1253,11 @@ o2.widget.Calendar = o2.Calendar = new Class({
 				this.showHNode.set("text", this.addZero( this.cHour, 2) );
 			}
 			if( this.options.disabledMinutes ){
-				this.calculateCurrentMintue();
+				this.calculateCurrentMinute();
 				this.createDisabledNodes(this.itmeMNode, 60, "m");
-				this.mSlider.set( this.cMintue );
-				this.itmeMNode.getFirst().set("text", this.addZero( this.cMintue, 2));
-				this.showMNode.set("text", this.addZero( this.cMintue, 2));
+				this.mSlider.set( this.cMinute );
+				this.itmeMNode.getFirst().set("text", this.addZero( this.cMinute, 2));
+				this.showMNode.set("text", this.addZero( this.cMinute, 2));
 			}
 			if( this.options.disabledSeconds && this.sSlider ){
 				this.calculateCurrentSecond();
@@ -1289,30 +1289,30 @@ o2.widget.Calendar = o2.Calendar = new Class({
 			this.cHour = this.itmeSelectHNode.get("value").toInt();
 			this.selectedHour = this.cHour;
 			this.showHNode.set("text", this.itmeSelectHNode.get("value") );
-			if( this.options.disabledMinutes )this.loadMintueSelect();
+			if( this.options.disabledMinutes )this.loadMinuteSelect();
 			if( this.options.disabledSeconds )this.loadSecondSelect();
 		}.bind(this));
 	},
-	loadMintueSelect: function (m) {
+	loadMinuteSelect: function (m) {
 		this.itmeMNode = this.contentTimeTable.getElement(".MWF_calendar_time_m").empty();
 		new Element("span", {"text": o2.LP.widget.minute + "："}).inject(this.itmeMNode);
 		this.itmeSelectMNode = new Element("select").inject(this.itmeMNode);
-		this.calculateCurrentMintue(m);
+		this.calculateCurrentMinute(m);
 		for (var i = 0; i < 60; i++) {
-			if (!this.isDisabledMintue(this.cDate, this.cHour || 0, i)) {
+			if (!this.isDisabledMinute(this.cDate, this.cHour || 0, i)) {
 				var opt = new Element("option", {
 					"text": this.addZero(i, 2),
 					"value": this.addZero(i, 2),
 					"styles": this.css.calendarTimeSelectItem_mobile
 				}).inject(this.itmeSelectMNode);
-				if( i === this.cMintue )opt.set("selected", true);
+				if( i === this.cMinute )opt.set("selected", true);
 			}
 		}
-		// this.itmeSelectMNode.set("value", this.addZero(this.cMintue, 2));
-		this.showMNode.set("text", this.addZero( this.cMintue, 2) );
+		// this.itmeSelectMNode.set("value", this.addZero(this.cMinute, 2));
+		this.showMNode.set("text", this.addZero( this.cMinute, 2) );
 		this.itmeSelectMNode.addEvent("change", function () {
-			this.cMintue = this.itmeSelectMNode.get("value").toInt();
-			this.selectedMintue = this.cMintue;
+			this.cMinute = this.itmeSelectMNode.get("value").toInt();
+			this.selectedMinute = this.cMinute;
 			this.showMNode.set("text", this.itmeSelectMNode.get("value"));
 			if( this.options.disabledSeconds )this.loadSecondSelect();
 		}.bind(this));
@@ -1325,7 +1325,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 			this.itmeSelectSNode = new Element("select").inject(this.itmeSNode);
 			this.calculateCurrentSecond(s);
 			for( var i=0; i<60; i++ ){
-				if( !this.isDisabledSecond(this.cDate, this.cHour || 0, this.cMintue || 0, i) ){
+				if( !this.isDisabledSecond(this.cDate, this.cHour || 0, this.cMinute || 0, i) ){
 					var opt = new Element("option",{
 						"text" : this.addZero(i, 2 ),
 						"value" : this.addZero(i, 2 ),
@@ -1358,19 +1358,19 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		}
 		return this.cHour;
 	},
-	calculateCurrentMintue: function(m){
+	calculateCurrentMinute: function(m){
 		if( typeOf(m) !== "null" ){
-			this.cMintue = m.toInt();
-		}else if( typeOf(this.selectedMintue) !== "null" ){
-			this.cMintue = this.selectedMintue;
+			this.cMinute = m.toInt();
+		}else if( typeOf(this.selectedMinute) !== "null" ){
+			this.cMinute = this.selectedMinute;
 		}else{
-			this.cMintue = 0;
+			this.cMinute = 0;
 		}
-		if( this.isDisabledMintue(this.cDate, this.cHour, this.cMintue) ){
-			var eMintues = this.getEnableMintues(this.cDate, this.cHour);
-			this.cMintue = eMintues.length ? eMintues[0][0] : 0;
+		if( this.isDisabledMinute(this.cDate, this.cHour, this.cMinute) ){
+			var eMinutes = this.getEnableMinutes(this.cDate, this.cHour);
+			this.cMinute = eMinutes.length ? eMinutes[0][0] : 0;
 		}
-		return this.cMintue;
+		return this.cMinute;
 	},
 	calculateCurrentSecond: function(s){
 		if( typeOf(s) !== "null" ){
@@ -1380,8 +1380,8 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		}else{
 			this.cSecond = 0;
 		}
-		if( this.isDisabledSecond(this.cDate, this.cHour, this.cMintue, this.cSecond) ){
-			var eSeconds = this.getEnableSeconds(this.cDate, this.cHour, this.cMintue);
+		if( this.isDisabledSecond(this.cDate, this.cHour, this.cMinute, this.cSecond) ){
+			var eSeconds = this.getEnableSeconds(this.cDate, this.cHour, this.cMinute);
 			this.cSecond = eSeconds.length ? eSeconds[0][0] : 0;
 		}
 		return this.cSecond;
@@ -1392,7 +1392,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		switch(type){
 			case "h": array = this.getDisabledHours(this.cDate); break;
 			case "m": array = this.getDisabledMinutes(this.cDate, this.cHour || 0); break;
-			case "s": array = this.getDisabledSeconds(this.cDate, this.cHour || 0, this.cMintue || 0); break;
+			case "s": array = this.getDisabledSeconds(this.cDate, this.cHour || 0, this.cMinute || 0); break;
 		}
 		if( !array || !array.length )return false;
 		area.setStyle("position", "relative");
@@ -1406,7 +1406,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 	},
 	createDisabledNode: function(area, length, range){
 		var s = area.getSize();
-		var width = s.x / length * (range[1] - range[0]);
+		var width = s.x / length * (range[1] - range[0] + 1);
 		var left = s.x / length * range[0];
 		new Element("div.disable_node", {
 			styles: {
