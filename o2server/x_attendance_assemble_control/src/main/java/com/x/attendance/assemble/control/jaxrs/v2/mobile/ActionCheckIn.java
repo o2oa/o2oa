@@ -15,6 +15,7 @@ import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.tools.DateTools;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
@@ -45,7 +46,7 @@ public class ActionCheckIn extends BaseAction {
             if (StringUtils.isEmpty(wi.getLatitude()) || StringUtils.isEmpty(wi.getLongitude())) {
                 throw new ExceptionEmptyParameter("经纬度");
             }
-            if ((wi.getFieldWork() == null || !wi.getFieldWork()) && StringUtils.isEmpty(wi.getWorkPlaceId())) {
+            if ((BooleanUtils.isFalse(wi.getFieldWork())) && StringUtils.isEmpty(wi.getWorkPlaceId())) {
                 throw new ExceptionEmptyParameter("打卡工作场所id");
             }
             // 查询当前用户的考勤组
@@ -392,7 +393,7 @@ public class ActionCheckIn extends BaseAction {
         private String workPlaceId;
 
         @FieldDescribe("是否外勤打卡.")
-        private Boolean isFieldWork;
+        private Boolean fieldWork;
 
         @FieldDescribe("外勤打卡说明")
         private String signDescription;
@@ -438,11 +439,11 @@ public class ActionCheckIn extends BaseAction {
         }
 
         public Boolean getFieldWork() {
-            return isFieldWork;
+            return fieldWork;
         }
 
         public void setFieldWork(Boolean fieldWork) {
-            isFieldWork = fieldWork;
+            this.fieldWork = fieldWork;
         }
 
         public String getSignDescription() {

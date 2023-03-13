@@ -1,6 +1,7 @@
 package com.x.attendance.assemble.control.jaxrs.v2.my;
 
 import com.google.gson.JsonElement;
+import com.x.attendance.assemble.control.jaxrs.v2.detail.ActionStatisticWithFilter;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
 import com.x.base.core.project.http.ActionResult;
@@ -45,6 +46,23 @@ public class MyAction extends StandardJaxrsAction {
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
             result = new ActionListDetailWithDate().execute(effectivePerson, jsonElement);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, jsonElement);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+    @JaxrsMethodDescribe(value = "根据日期查询我的考勤统计.", action = ActionMyStatistic.class)
+    @POST
+    @Path("statistic")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void statistic(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request, JsonElement jsonElement) {
+        ActionResult<ActionStatisticWithFilter.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionMyStatistic().execute(effectivePerson, jsonElement);
         } catch (Exception e) {
             logger.error(e, effectivePerson, request, jsonElement);
             result.error(e);

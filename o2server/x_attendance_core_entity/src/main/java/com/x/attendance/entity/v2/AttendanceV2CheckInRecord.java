@@ -167,10 +167,10 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
     @Column(length = JpaObject.length_255B, name = ColumnNamePrefix + signDescription_FIELDNAME)
     private String signDescription;
 
-    public static final String isFieldWork_FIELDNAME = "isFieldWork";
+    public static final String fieldWork_FIELDNAME = "fieldWork";
     @FieldDescribe("是否外勤打卡.")
-    @Column(name = ColumnNamePrefix + isFieldWork_FIELDNAME)
-    private Boolean isFieldWork;
+    @Column(name = ColumnNamePrefix + fieldWork_FIELDNAME)
+    private Boolean fieldWork;
 
 
     public static final String groupId_FIELDNAME = "groupId";
@@ -244,6 +244,14 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
 
     public void setPreDutyTimeAfterLimit(String preDutyTimeAfterLimit) {
         this.preDutyTimeAfterLimit = preDutyTimeAfterLimit;
+    }
+
+    public Boolean getFieldWork() {
+        return fieldWork;
+    }
+
+    public void setFieldWork(Boolean fieldWork) {
+        this.fieldWork = fieldWork;
     }
 
     public String getUserId() {
@@ -342,13 +350,6 @@ public class AttendanceV2CheckInRecord extends SliceJpaObject {
         this.signDescription = signDescription;
     }
 
-    public Boolean getFieldWork() {
-        return isFieldWork;
-    }
-
-    public void setFieldWork(Boolean fieldWork) {
-        isFieldWork = fieldWork;
-    }
 
     public String getGroupId() {
         return groupId;
