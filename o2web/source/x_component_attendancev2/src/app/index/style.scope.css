@@ -24,6 +24,13 @@
 .color-999 {
   color: #999999;
 }
+.o2-divider--horizontal {
+  display: block;
+  height: 1px;
+  width: 100%;
+  margin: 24px 0;
+  border-top: 1px #dcdfe6 solid;
+}
 .light-border-button {
   border: 1px solid !important;
   background-color: #ffffff !important;

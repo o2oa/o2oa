@@ -52,6 +52,8 @@ export default content({
         return lp.appeal.absenteeism;
       } else if (record.checkInResult == 'Early') {
         return lp.appeal.early;
+      }  else if (record.checkInResult == 'Normal') {
+        return lp.appeal.normal;
       } else if (record.checkInResult == 'Late') {
         return lp.appeal.late;
       } else if (record.checkInResult == 'SeriousLate') {

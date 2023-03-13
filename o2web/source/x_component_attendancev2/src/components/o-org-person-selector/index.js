@@ -28,8 +28,8 @@ export default content({
           for (let index = 0; index < this.bind.value.length; index++) {
             const element = this.bind.value[index];
             const a = element.split("@");
-            if (a && a.length == 3) {
-              newShowValue.push(a[0]+"@"+a[2]);
+            if (a && a.length > 0 ) {
+              newShowValue.push(a[0]);
             } else {
               newShowValue.push(element);
             }
@@ -72,7 +72,7 @@ export default content({
        let newValue = [];
        let newShowValue = [];
        if (items) {
-        if (items.length > this.bind.count) {
+        if (this.bind.count > 0 && items.length > this.bind.count) {
           const message = lpFormat(lp, "components.selectOrgPersonOverCount", {count: this.bind.count});
           o2.api.page.notice(message, 'error');
           return;

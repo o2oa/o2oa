@@ -17,9 +17,9 @@ export default content({
   },
   formatDutyType(dutyType) {
     if (dutyType === 'OnDuty') {
-      return '上班打卡';
+      return lp.onDuty;
     } else {
-      return '下班打卡';
+      return lp.offDuty;
     }
   },
   formatTime(time) {
@@ -31,21 +31,21 @@ export default content({
   },
   formatResult(result) {
     if (result === 'PreCheckIn') {
-      return '预存数据';
+      return '';
     } else if (result === 'NotSigned') {
-      return '未打卡';
+      return lp.appeal.notSigned;
     }  else if (result === 'Normal') {
-      return '正常';
+      return lp.appeal.normal;
     } else if (result === 'Early') {
-      return '早退';
+      return lp.appeal.early;
     } else if (result === 'Late') {
-      return '迟到';
+      return lp.appeal.late;
     } else if (result === 'SeriousLate') {
-      return '严重迟到';
+      return lp.appeal.seriousLate;
     } else if (result === 'Absenteeism') {
-      return '旷工';
+      return lp.appeal.absenteeism;
     } else { 
-      return '未知';
+      return '';
     }
   },
   

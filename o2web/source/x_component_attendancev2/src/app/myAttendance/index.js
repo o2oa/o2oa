@@ -1,7 +1,7 @@
 import { component as content } from "@o2oa/oovm";
 import { lp, o2 } from "@o2oa/component";
 import { myAction } from "../../utils/actions";
-import { convertTo2DArray } from "../../utils/common";
+import { convertTo2DArray, convertMinutesToHoursAndMinutes } from "../../utils/common";
 import template from "./temp.html";
 import style from "./style.scope.css";
 
@@ -15,6 +15,7 @@ export default content({
       startFromMonday: true, // 是否从星期一开始 
       dayList: [], // 星期列表
       dateWithData: [], // 日历数据包含业务数据
+      // statistic 统计数据
     };
   },
   afterRender() {
@@ -97,7 +98,7 @@ export default content({
     // 查询当月的打卡数据
     const startDate = `${currentYear}-${(currentMonth + 1) < 10 ? "0" + (currentMonth + 1) : (currentMonth + 1)}-01`;
     const endDate = `${currentYear}-${(currentMonth + 1) < 10 ? "0" + (currentMonth + 1) : (currentMonth + 1)}-${daysInMonth}`;
-    let reqBody = {
+    const reqBody = {
       startDate: startDate,
       endDate: endDate,
     };
@@ -140,6 +141,14 @@ export default content({
     });
     // 输出日期数组
     this.bind.dateWithData = convertTo2DArray(newDates, 7);
+    // 统计信息
+    this.loadMyStatistic(reqBody);
+  },
+  async loadMyStatistic(body) {
+    const statistic = (await myAction("statistic", body));
+    if (statistic) {
+      this.bind.statistic = statistic;
+    }
   },
   // 日历方块的class
   formatCalItemClass(item) {
@@ -190,5 +199,9 @@ export default content({
       statusClassName =  "item-record-status record-status-appeal";
     }
     return statusClassName;
+  },
+   // 格式化工作时长
+   formatWorkTimeDuration(workTime) {
+    return convertMinutesToHoursAndMinutes(workTime);
   }
 });

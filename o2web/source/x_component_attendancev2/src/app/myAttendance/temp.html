@@ -40,6 +40,18 @@
         </div>
       </div>
     </div>
+    <div class="o2-divider--horizontal"></div>
+    <div class="my-statistic-parent" oo-if="$.statistic">
+      <div class="margin-right">{{$.lp.detailTable.averageWorkTimeDuration}}: {{$.statistic.averageWorkTimeDuration}}</div>
+      <div class="margin-right">{{$.lp.detailTable.workTimeDuration}}: {{ $m.formatWorkTimeDuration($.statistic.workTimeDuration) }}</div>
+      <div class="margin-right">{{$.lp.detailTable.attendance}}: {{$.statistic.attendance}}</div>
+      <div class="margin-right">{{$.lp.detailTable.rest}}: {{$.statistic.rest}}</div>
+      <div class="margin-right">{{$.lp.detailTable.absenteeismDays}}: {{$.statistic.absenteeismDays}}</div>
+      <div class="margin-right">{{$.lp.detailTable.lateTimes}}: {{$.statistic.lateTimes}}</div>
+      <div class="margin-right">{{$.lp.detailTable.leaveEarlierTimes}}: {{$.statistic.leaveEarlierTimes}}</div>
+      <div class="margin-right">{{$.lp.detailTable.absenceTimes}}: {{$.statistic.absenceTimes}}</div>
+    </div>
   </div>
+  
 
 </div>
