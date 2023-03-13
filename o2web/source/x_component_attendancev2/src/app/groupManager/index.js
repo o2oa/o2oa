@@ -62,7 +62,7 @@ export default content({
     const group = this.bind.groupList.find((g)=> g.id === id);
     if (group) {
       const content = (await import(`./editGroup/index.js`)).default;
-      this.addGroupVm = await content.generate(".form", {bind: {form: group}}, this);
+      this.addGroupVm = await content.generate(".form", {bind: {updateId: group.id}}, this);
     }
     
   },

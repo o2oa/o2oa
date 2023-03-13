@@ -3,9 +3,11 @@ package com.x.attendance.assemble.control.jaxrs.v2.group;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionNotExistObject;
 import com.x.attendance.entity.v2.AttendanceV2Group;
+import com.x.attendance.entity.v2.AttendanceV2Shift;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
 import com.x.base.core.entity.JpaObject;
+import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.bean.WrapCopier;
 import com.x.base.core.project.bean.WrapCopierFactory;
 import com.x.base.core.project.http.ActionResult;
@@ -29,6 +31,11 @@ public class ActionGet extends BaseAction {
                 throw new ExceptionNotExistObject(id+"考勤组");
             }
             Wo wo = Wo.copier.copy(group);
+            // 班次对象返回
+            AttendanceV2Shift shift = emc.find(group.getShiftId(), AttendanceV2Shift.class);
+            if (shift != null) {
+                wo.setShift(shift);
+            }
             result.setData(wo);
         }
         return result;
@@ -40,7 +47,15 @@ public class ActionGet extends BaseAction {
 
         static WrapCopier<AttendanceV2Group, Wo> copier = WrapCopierFactory.wo(AttendanceV2Group.class, Wo.class, null,
                 JpaObject.FieldsInvisible);
+        @FieldDescribe("考勤组的班次对象")
+        private AttendanceV2Shift shift;
 
+        public AttendanceV2Shift getShift() {
+            return shift;
+        }
 
+        public void setShift(AttendanceV2Shift shift) {
+            this.shift = shift;
+        }
     }
 }

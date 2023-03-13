@@ -69,6 +69,16 @@ export default content({
       ],
     };
   },
+  // 先查询数据
+  async beforeRender() {
+    if (this.bind.updateId) {
+      const group = await groupAction("get", this.bind.updateId);
+      if (group) {
+        this.bind.form = group;
+        console.debug(group);
+      }
+    }
+  },
   afterRender() {
     if (this.bind.form && this.bind.form.id && this.bind.form.id !== "") { // 修改
       this.bind.fTitle = this.bind.lp.groupUpdate;
