@@ -57,12 +57,10 @@ export default content({
         ];
         this.showProcessSelectorValueFun();
       }
-      //console.debug(this.bind);
     }
   },
   // 保存
   async submit() {
-    console.debug(this.bind);
     const form = this.bind.form;
     form.holidayList = this.bind.holidayList;
     form.workDayList = this.bind.workDayList;

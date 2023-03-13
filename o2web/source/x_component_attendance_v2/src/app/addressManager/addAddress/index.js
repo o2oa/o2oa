@@ -71,9 +71,6 @@ export default content({
     // 创建地图ui
     createMap( position ){
         let point = null;
-        // if (position && position.coords){
-        //     point = new BMap.Point(position.coords.longitude, position.coords.latitude);
-        // }
         if( !point ){
             if( this.markerData && this.markerData.length > 0){
                 let json = this.markerData[0];
@@ -82,7 +79,6 @@ export default content({
                 point = new BMap.Point(120.135431, 30.27412);
             }
         }
-        console.debug(point);
         this.map = new BMap.Map(this.mapNode);    // 创建Map实例
         this.map.centerAndZoom(point, 15);  // 初始化地图,设置中心点坐标和地图级别
         this.map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放

@@ -21,7 +21,6 @@ export default content({
   },
   async openBdAKConfig() {
     const bdKey = (await getPublicData("baiduAccountKey")) || "";
-    console.debug(bdKey);
     const content = (await import('./bdAkConfig/index.js')).default;
     this.configBdAKVm = await content.generate(".form", {bind: {"baiduAccountKey": bdKey}} , this);
   },
@@ -50,7 +49,7 @@ export default content({
   },
   async deleteWorkplace(id) {
     const data = await attendanceWorkPlaceV2Action("delete", id);
-    console.debug(data);
+    console.info(data);
     this.loadWorkAddressData();
   },
   async loadWorkAddressData() {

@@ -33,7 +33,6 @@ export default content({
   },
   // 计算用，缺少一个计算
   numberCalc(totalCount) {
-    console.debug("numberCalc ...." + totalCount);
     let totalPage = parseInt(
       this.bind.totalCount / this.bind.size
     );
@@ -87,7 +86,6 @@ export default content({
     this.loadDataEvent();
   },
   clickFirstPage() {
-    console.debug(this.bind);
     this.bind.page = 1;
     this.loadDataEvent();
   },

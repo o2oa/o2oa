@@ -78,7 +78,6 @@ export default content({
       this.bind.showValue = this.showValueFun();
       this.selectorHide();
       this.component.updateModel(this.bind.result);
-      console.debug(this.bind.result);
     },
     clearValue() {
       this.bind.result = {};

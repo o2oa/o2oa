@@ -52,7 +52,6 @@ export default content({
     }
   },
   chooseShift(v) {
-    console.debug(v);
     if (v && v.id) {
       this.bind.shiftSelected = v; 
     }

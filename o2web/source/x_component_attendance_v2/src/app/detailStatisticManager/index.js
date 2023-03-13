@@ -57,7 +57,6 @@ export default content({
     const form = this.bind.form;
     form.filter = this.bind.filterList[0];
     const json = await detailAction("statistic", form);
-    console.debug(json);
     this.bind.statisticList = json || [];
   },
   // 格式化用户姓名

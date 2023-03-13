@@ -43,9 +43,7 @@ export default content({
     if (json) {
       this.bind.appealList = json.data || [];
       const count = json.count || 0;
-      console.debug("count : " +  count);
       this.bind.pagerData.totalCount = count;
-      console.debug(this.bind.pagerData);
     }
   },
   formatRecordResult(record) {
