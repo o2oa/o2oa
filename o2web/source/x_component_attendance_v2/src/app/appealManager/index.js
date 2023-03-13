@@ -15,6 +15,7 @@ export default content({
       pagerData: {
         page: 1,
         totalCount: 0,
+        totalPage: 1,
         size: 15, // 每页条目数
       },
     };
@@ -27,10 +28,9 @@ export default content({
       e &&
       e.detail &&
       e.detail.module &&
-      e.detail.module.bind &&
-      e.detail.module.bind.pagerData
+      e.detail.module.bind
     ) {
-      this.bind.pagerData.page = e.detail.module.bind.pagerData.page;
+      this.bind.pagerData.page = e.detail.module.bind.page || 1;
       this.loadAppealList();
     }
   },
@@ -43,7 +43,9 @@ export default content({
     if (json) {
       this.bind.appealList = json.data || [];
       const count = json.count || 0;
+      console.debug("count : " +  count);
       this.bind.pagerData.totalCount = count;
+      console.debug(this.bind.pagerData);
     }
   },
   formatRecordResult(record) {

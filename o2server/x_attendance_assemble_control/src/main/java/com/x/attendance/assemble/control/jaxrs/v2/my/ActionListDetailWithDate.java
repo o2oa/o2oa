@@ -16,12 +16,12 @@ import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.tools.DateTools;
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by fancyLou on 2023/3/9.
@@ -46,37 +46,41 @@ public class ActionListDetailWithDate extends BaseAction {
             if (startDate.after(endDate)) {
                 throw new ExceptionDateEndBeforeStartError();
             }
-            boolean showRest = false;
-            if (BooleanUtils.isTrue(wi.getShowRest())) {
-                showRest = true;
-            }
             Business business = new Business(emc);
             List<Wo> wos = new ArrayList<>();
             List<AttendanceV2Detail> list = business.getAttendanceV2ManagerFactory().listDetailWithPersonAndStartEndDate(person.getDistinguishedName(), wi.getStartDate(), wi.getEndDate());
             if (list != null && !list.isEmpty()) {
                 for (AttendanceV2Detail detail : list) {
-                    if (showRest || detail.getWorkDay()) {
-                        Wo wo = Wo.copier.copy(detail);
-                        List<String> ids = detail.getRecordIdList();
-                        if (ids != null && !ids.isEmpty()) {
-                            List<AttendanceV2CheckInRecord> recordList = new ArrayList<>();
-                            for (String id : ids) {
-                                AttendanceV2CheckInRecord record = emc.find(id, AttendanceV2CheckInRecord.class);
-                                if (record != null) {
-                                    recordList.add(record);
-                                }
+                    Wo wo = Wo.copier.copy(detail);
+                    List<String> ids = detail.getRecordIdList();
+                    if (ids != null && !ids.isEmpty()) {
+                        List<AttendanceV2CheckInRecord> recordList = new ArrayList<>();
+                        for (String id : ids) {
+                            AttendanceV2CheckInRecord record = emc.find(id, AttendanceV2CheckInRecord.class);
+                            if (record != null) {
+                                recordList.add(record);
                             }
+                        }
+                        // 如果是休息日 只有在有打卡记录的时候才提供数据，否则是无效数据
+                        if (!detail.getWorkDay()) {
+                            List<AttendanceV2CheckInRecord> signList = recordList.stream().filter((r) -> (!r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn) && !r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned)))
+                                    .collect(Collectors.toList());
+                            if (!signList.isEmpty()) {
+                                wo.setRecordList(recordList);
+                            } else { // 空数组前端好处理
+                                wo.setRecordList(new ArrayList<>());
+                            }
+                        } else {
                             wo.setRecordList(recordList);
                         }
-                        wos.add(wo);
                     }
+                    wos.add(wo);
                 }
             }
             result.setData(wos);
             return result;
         }
     }
-
 
 
     public static class Wi extends GsonPropertyObject {
@@ -86,16 +90,7 @@ public class ActionListDetailWithDate extends BaseAction {
         private String startDate;
         @FieldDescribe("结束日期")
         private String endDate;
-        @FieldDescribe("是否显示休息日")
-        private Boolean showRest;
 
-        public Boolean getShowRest() {
-            return showRest;
-        }
-
-        public void setShowRest(Boolean showRest) {
-            this.showRest = showRest;
-        }
 
         public String getStartDate() {
             return startDate;
@@ -117,7 +112,7 @@ public class ActionListDetailWithDate extends BaseAction {
     public static class Wo extends AttendanceV2Detail {
 
         private static final long serialVersionUID = 4645923067324854260L;
-        static WrapCopier<AttendanceV2Detail,  Wo> copier = WrapCopierFactory.wo(AttendanceV2Detail.class,  Wo.class, null,
+        static WrapCopier<AttendanceV2Detail, Wo> copier = WrapCopierFactory.wo(AttendanceV2Detail.class, Wo.class, null,
                 JpaObject.FieldsInvisible);
 
         @FieldDescribe("打卡记录")

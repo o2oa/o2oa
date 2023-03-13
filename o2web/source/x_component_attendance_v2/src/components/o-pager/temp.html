@@ -4,8 +4,8 @@
       <div class="pager-prev o2icon-triangle_left" @click="clickPrePage"></div>
       <div class="pager-last" @click="clickLastPage">最后一页</div>
       <div class="pager-next o2icon-triangle_right" @click="clickNextPage"></div>
-      <div class="pager-number-area">{{$m.numberCalc($.pagerData.totalCount)}}
-          <div oo-each="$.pageList" oo-item="index" class="{{$.pagerData.page == index.value ? 'pager-item mainColor_bg':'pager-item'}}" @click="this.clickNumberPage(index.value)">{{index.value}}</div>
+      <div class="pager-number-area">{{ $m.numberCalc($.totalCount) }}
+          <div oo-each="$.pageList" oo-item="index" class="{{$.page == index.value ? 'pager-item mainColor_bg':'pager-item'}}" @click="this.clickNumberPage(index.value)">{{index.value}}</div>
       </div>
      
   </div>

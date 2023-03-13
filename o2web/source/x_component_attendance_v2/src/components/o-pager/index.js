@@ -11,13 +11,17 @@ export default content({
     return {
       lp,
       pageList: ["1"],
-      pagerData: {
-        // 父组件通过oo-prop传入这个对象 主要是需要传入 size，totalCount
-        page: 1, //页码
-        totalPage: 1,
-        totalCount: 0,
-        size: 15, // 条目数
-      },
+      // pagerData: {
+      //   // 父组件通过oo-prop传入这个对象 主要是需要传入 size，totalCount
+      //   page: 1, //页码
+      //   totalPage: 1,
+      //   totalCount: content.watch(function() {
+      //     console.debug("watch totalCount .....");
+      //     console.debug(this.bind);
+      //     this.numberCalc();
+      //   },0),
+      //   size: 15, // 条目数
+      // },
     };
   },
   afterRender() {
@@ -28,28 +32,29 @@ export default content({
     this.component.dispatchEvent("refresh-data");
   },
   // 计算用，缺少一个计算
-  numberCalc() {
+  numberCalc(totalCount) {
+    console.debug("numberCalc ...." + totalCount);
     let totalPage = parseInt(
-      this.bind.pagerData.totalCount / this.bind.pagerData.size
+      this.bind.totalCount / this.bind.size
     );
-    const m = this.bind.pagerData.totalCount % this.bind.pagerData.size;
+    const m = this.bind.totalCount % this.bind.size;
     if (m > 0) {
       totalPage += 1;
     }
     if (totalPage == 0) {
       totalPage = 1; // 最少是1
     }
-    this.bind.pagerData.totalPage = totalPage;
+    this.bind.totalPage = totalPage;
     let pageList = [];
     if (totalPage > 11) {
       // 最多11条
-      if (this.bind.pagerData.page < 6) {
+      if (this.bind.page < 6) {
         for (let index = 0; index < 11; index++) {
           pageList.push(`${index + 1}`);
         }
       } else {
-        const start = this.bind.pagerData.page - 5;
-        let end = this.bind.pagerData.page + 5;
+        const start = this.bind.page - 5;
+        let end = this.bind.page + 5;
         if (end > totalPage) {
           end = totalPage;
         }
@@ -66,27 +71,28 @@ export default content({
     return ""; // 没用
   },
   clickNumberPage(number) {
-    this.bind.pagerData.page = parseInt(number);
+    this.bind.page = parseInt(number);
     this.loadDataEvent();
   },
   clickPrePage() {
-    if (this.bind.pagerData.page > 1) {
-      this.bind.pagerData.page -= 1;
+    if (this.bind.page > 1) {
+      this.bind.page -= 1;
     }
     this.loadDataEvent();
   },
   clickNextPage() {
-    if (this.bind.pagerData.page < this.bind.pagerData.totalPage) {
-      this.bind.pagerData.page += 1;
+    if (this.bind.page < this.bind.totalPage) {
+      this.bind.page += 1;
     }
     this.loadDataEvent();
   },
   clickFirstPage() {
-    this.bind.pagerData.page = 1;
+    console.debug(this.bind);
+    this.bind.page = 1;
     this.loadDataEvent();
   },
   clickLastPage() {
-    this.bind.pagerData.page = this.bind.pagerData.totalPage;
+    this.bind.page = this.bind.totalPage;
     this.loadDataEvent();
   },
 });

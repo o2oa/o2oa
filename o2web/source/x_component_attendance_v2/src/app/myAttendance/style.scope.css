@@ -50,6 +50,10 @@
 .my-cal-body-line .out {
   opacity: 0.5!important;
 }
+.item-cal-date {
+  font-size: 16px;
+  font-weight: 600;
+}
 .item-record-parent {
   width: 100%;
   display: flex;
@@ -57,7 +61,6 @@
   /* flex-flow: row wrap;
   align-content: flex-start; */
 }
-
 .item-record-child {
   /* flex: 0 0 50%; */
   display: flex;

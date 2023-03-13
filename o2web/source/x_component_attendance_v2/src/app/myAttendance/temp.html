@@ -30,9 +30,9 @@
     <div class="my-cal-body">
       <div class="my-cal-body-line" oo-each="$.dateWithData" oo-item="line">
         <div oo-each="line.value" oo-item="item" class="{{this.formatCalItemClass(item.value)}}">
-          <div>{{item.value.date}}</div>
+          <div class="item-cal-date">{{item.value.date}}</div>
           <div class="item-record-parent" oo-if="item.value.detail">
-            <div class="item-record-child"  oo-each="item.value.detail.recordList" oo-item="record">
+            <div class="item-record-child margin-left"  oo-each="item.value.detail.recordList" oo-item="record">
               <div class="{{this.formatRecordStatusClass(record.value)}}"></div> 
               <div>{{ $m.formatRecord(record.value) }}</div> 
             </div>

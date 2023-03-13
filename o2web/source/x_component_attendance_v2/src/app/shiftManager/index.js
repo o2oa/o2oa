@@ -46,8 +46,8 @@ export default content({
     this.addShiftVm = await content.generate(".form", { bind: addBind }, this);
   },
   loadData(e) {
-    if (e && e.detail && e.detail.module && e.detail.module.bind && e.detail.module.bind.pagerData) {
-      this.bind.pagerData.page = e.detail.module.bind.pagerData.page;
+    if (e && e.detail && e.detail.module && e.detail.module.bind) {
+      this.bind.pagerData.page =  e.detail.module.bind.page || 1;
       this.loadShiftList();
     }
   },

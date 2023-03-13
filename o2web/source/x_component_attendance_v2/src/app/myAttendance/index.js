@@ -85,14 +85,8 @@ export default content({
     // 获取当月的天数
     const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
     // 获取当月第一天是星期几
-    const nextMonthFirstDate = new Date(currentYear, currentMonth, 1);
-    const firstDayOfMonth = nextMonthFirstDate.getDay();
+    const firstDayOfMonth =  new Date(currentYear, currentMonth, 1).getDay();
     // 获取当月最后一天是星期几
-    // var lastDayOfMonth = new Date(
-    //   currentYear,
-    //   currentMonth,
-    //   daysInMonth
-    // ).getDay();
     // 计算需要补齐的天数
     const daysToPad = (7 - ((daysInMonth + firstDayOfMonth) % 7) + start) % 7;
     // 计算需要补齐的前一个月的天数
@@ -100,12 +94,12 @@ export default content({
     const daysInPrevMonth = lastMonthEndDate.getDate();
     // 创建一个数组来存储日期
     let dates = [];
+    // 查询当月的打卡数据
     const startDate = `${currentYear}-${(currentMonth + 1) < 10 ? "0" + (currentMonth + 1) : (currentMonth + 1)}-01`;
     const endDate = `${currentYear}-${(currentMonth + 1) < 10 ? "0" + (currentMonth + 1) : (currentMonth + 1)}-${daysInMonth}`;
     let reqBody = {
       startDate: startDate,
       endDate: endDate,
-      showRest: false,
     };
     const list = (await myAction("listDetailWithDate", reqBody)) || [];
     // 添加需要补齐的前一个月的日期
@@ -114,45 +108,38 @@ export default content({
       i <= daysInPrevMonth;
       i++
     ) {
-      const item = {
+      dates.push({
         date: i,
         notCurrent: 1, // 是否当前月份
         dateYmd: `${lastMonthEndDate.getFullYear()}-${(lastMonthEndDate.getMonth() + 1)  < 10 ? "0" + (lastMonthEndDate.getMonth() + 1) : (lastMonthEndDate.getMonth() + 1) }-${i}`
-      };
-      dates.push(item);
+      });
     }
     // 添加当前月份的所有日期
     for (let i = 1; i <= daysInMonth; i++) {
       const dateYmd = `${currentYear}-${(currentMonth + 1) < 10 ? "0" + (currentMonth + 1) : (currentMonth + 1)}-${i < 10 ? "0"+i : i}`;
-      let detail = null;
-      for (let index = 0; index < list.length; index++) {
-        const element = list[index];
-        if (element.recordDateString === dateYmd) {
-          detail = element;
-          break;
-        }
-      }
-      const item = {
+      dates.push({
         date: i,
         notCurrent: 0, 
         dateYmd: dateYmd,
-        detail: detail
-      };
-      dates.push(item);
+      });
     }
     // 添加需要补齐的下一个月的日期
+    const nextMonthFirstDate = new Date(currentYear, currentMonth + 1, 1);
     for (let i = 1; i <= daysToPad; i++) {
-      const item = {
+      dates.push({
         date: i,
         notCurrent: 1,
         dateYmd: `${nextMonthFirstDate.getFullYear()}-${ (nextMonthFirstDate.getMonth() + 1) < 10 ? "0" + (nextMonthFirstDate.getMonth() + 1) : (nextMonthFirstDate.getMonth() + 1) }-0${i}`
-      };
-      dates.push(item);
+      });
     }
+    // 数据合并到日历中
+    const newDates = dates.map(date => {
+      const detail = list.find(element => element.recordDateString === date.dateYmd) || null;
+      date.detail = detail;
+      return date;
+    });
     // 输出日期数组
-    // return dates;
-    const _2DArray = convertTo2DArray(dates, 7);
-    this.bind.dateWithData = _2DArray;
+    this.bind.dateWithData = convertTo2DArray(newDates, 7);
   },
   // 日历方块的class
   formatCalItemClass(item) {
@@ -160,7 +147,7 @@ export default content({
     if (item.notCurrent === 1) {
       className = 'item out';
     }
-    if (item.detail) {
+    if (item.detail && item.detail.recordList && item.detail.recordList.length > 0) {
       className = 'item full';
     }
     return className;
