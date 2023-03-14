@@ -105,3 +105,11 @@
   flex-flow: row wrap;
   align-content: flex-start;
 }
+.my-statistic-label {
+  font-size: 14px;
+}
+.my-statistic-value {
+  padding-left: 4px;
+  font-size: 16px;
+  color: #666666;
+}

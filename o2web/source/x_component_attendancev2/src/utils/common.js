@@ -1,4 +1,5 @@
 import { exec } from "@o2oa/util";
+import { lp } from "@o2oa/component";
 
 /**
  * 是否为空
@@ -135,11 +136,11 @@ const convertMinutesToHoursAndMinutes = (minutes) => {
   var result = "";
 
   if (hours > 0) {
-    result += hours + "小时";
+    result += hours + " " + lp.hour;
   }
 
   if (remainingMinutes > 0 || result === "") {
-    result += remainingMinutes + "分钟";
+    result += remainingMinutes + " " + lp.minute;
   }
 
   return result;

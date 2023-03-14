@@ -31,6 +31,12 @@
   margin: 24px 0;
   border-top: 1px #dcdfe6 solid;
 }
+.o2-h2 {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  font-size: 16px;
+}
 .light-border-button {
   border: 1px solid !important;
   background-color: #ffffff !important;
@@ -114,7 +120,7 @@
   border-bottom: 1px solid #eee;
 }
 .index_page_header_title {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
   line-height: 24px;
   color: #171a1d;

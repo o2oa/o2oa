@@ -58,6 +58,10 @@ MWF.xApplication.attendancev2.LP = {
         "Friday": "周五",
         "Saturday": "周六",
     },
+    "minute": "小时",
+    "hour": "小时",
+    "classifierDay": "天",
+    "times": "次",
 
     // 组件
     "components": {
@@ -71,6 +75,8 @@ MWF.xApplication.attendancev2.LP = {
     },
     // 我的
     "myAttendanceTitle": "我的统计",
+    "myAttendanceCalendar": "考勤日历",
+    "myAttendanceStatistic": "考勤统计",
 
     // 班次
     "shiftTitle": "班次管理",

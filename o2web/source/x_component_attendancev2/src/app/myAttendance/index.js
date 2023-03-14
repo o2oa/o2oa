@@ -141,6 +141,7 @@ export default content({
     });
     // 输出日期数组
     this.bind.dateWithData = convertTo2DArray(newDates, 7);
+    this.bind.cycleDate = startDate + " - " + endDate;
     // 统计信息
     this.loadMyStatistic(reqBody);
   },
