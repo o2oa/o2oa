@@ -1,9 +1,6 @@
 package com.x.program.center.qiyeweixin;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.x.base.core.project.config.Config;
@@ -37,8 +34,13 @@ public class QiyeweixinFactory {
 		return this.orgs;
 	}
 
+	// 2023-03-14 新的api根据应用的权限来同步组织，组织不一定是根节点，根节点id==1的判断已经失效
 	public List<Department> roots() {
-		return orgs.stream().filter(o -> 1L == o.getId()).collect(Collectors.toList());
+//		return orgs.stream().filter(o -> 1L == o.getId()).collect(Collectors.toList());
+		Set<Long> ids = orgs.stream().map(Department::getId).collect(Collectors.toSet());
+		return orgs.stream()
+				.filter(dept -> !ids.contains(dept.getParentid()))
+				.collect(Collectors.toList());
 	}
 
 	private List<Department> orgs() throws Exception {
