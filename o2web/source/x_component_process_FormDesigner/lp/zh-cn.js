@@ -508,6 +508,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "sectionAmountCellStyle": "区段总计单元格样式",
         "showAllSection": "显示所有区段",
 
+        "restriction": "限制",
+
         "decimal": "小数点",
 
         "showCard": "显示卡片",

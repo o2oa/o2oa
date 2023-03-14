@@ -26,6 +26,9 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		"rangeNodes": [],
 		"rangeRule": "asc",  //asc + ,  des -
 		"target": null,
+
+
+
 		// "disabledDate": function (date) {  //一个function，参数为日期，return true不可选
 		// 	return date > new Date();
 		// },
