@@ -15,7 +15,6 @@ MWF.xApplication.process.Application.LP = {
 	"work" : "流转中工作",
 	"workcompleted" : "已完成工作",
 	"workdelete" : "已删除工作",
-	"draft" : "草稿",
 	"dict" : "数据配置",
 	"serial" : "编号配置",
 	"startProcess" : "发起流程",
@@ -96,12 +95,9 @@ MWF.xApplication.process.Application.LP = {
 	"resetAction" : "转交",
 	"resetActionFor" : "转交给",
 	"readProcess" : "待阅处理",
-	"editAction" : "维护",
+	"editAction" : "维护"
 
 
-
-	"firstPage": "第一页",
-	"lastPage": "最后一页",
 
 
 };
