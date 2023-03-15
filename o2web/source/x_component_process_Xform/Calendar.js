@@ -232,6 +232,8 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
                     }.bind(this)
                 };
                 options.baseDate = this.getBaseDate();
+
+                this.setRange( options );
                 /**
                  * @summary 日期弹出选择界面，只读情况下无此成员.
                  * @member {MWF.widget.Calendar}
@@ -268,6 +270,49 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
             }
         }
         return d;
+    },
+    setRange: function( options ){
+        var r;
+        switch ( this.json.rangeType ) {
+            case "dateTime":
+                if (this.json.dateTimeRangeScript && this.json.dateTimeRangeScript.code) {
+                    r = this.form.Macro.fire(this.json.dateTimeRangeScript.code, this);
+                    if (typeOf(r) === "array") options.datetimeRange = r;
+                }
+                break;
+            case "dateAndTime":
+                if (this.json.dateRangeScript && this.json.dateRangeScript.code) {
+                    r = this.form.Macro.fire(this.json.dateRangeScript.code, this);
+                    if (typeOf(r) === "array") options.dateRange = r;
+                }
+                if (this.json.timeRangeScript && this.json.timeRangeScript.code) {
+                    r = this.form.Macro.fire(this.json.timeRangeScript.code, this);
+                    if (typeOf(r) === "array") options.timeRange = r;
+                }
+                break;
+            case "other":
+                if (this.json.enableDate && this.json.enableDate.code) {
+                    options.enableDate = function (date) {
+                        return this.form.Macro.fire(this.json.enableDate.code, this, {date: date});
+                    }.bind(this)
+                }
+                if (this.json.enableHours && this.json.enableHours.code) {
+                    options.enableHours = function (date) {
+                        return this.form.Macro.fire(this.json.enableHours.code, this, {date: date});
+                    }.bind(this)
+                }
+                if (this.json.enableMinutes && this.json.enableMinutes.code) {
+                    options.enableMinutes = function (date, hour) {
+                        return this.form.Macro.fire(this.json.enableMinutes.code, this, {date: date, hour: hour});
+                    }.bind(this)
+                }
+                if (this.json.enableSeconds && this.json.enableSeconds.code) {
+                    options.enableSeconds = function (date, hour, mintue) {
+                        return this.form.Macro.fire(this.json.enableSeconds.code, this, {date: date, hour: hour, mintue: mintue});
+                    }.bind(this)
+                }
+                break;
+        }
     },
     unformatDate : function( dateStr ){
         var formatStr = this.json.format;
