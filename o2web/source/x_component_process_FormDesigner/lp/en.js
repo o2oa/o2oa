@@ -509,6 +509,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "sectionAmountCellStyle": "section total cell style",
         "showAllSection": "Show All Sections",
 
+        "restriction": "restriction",
+
         "decimal": "Decimal",
 
         "showCard": "Show Card",
