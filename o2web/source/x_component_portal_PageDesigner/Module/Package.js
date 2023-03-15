@@ -38,3 +38,4 @@ MWF.xDesktop.requireApp("portal.PageDesigner", "Module.Importer", null, false);
 MWF.xDesktop.requireApp("portal.PageDesigner", "Module.Application", null, false);
 MWF.xDesktop.requireApp("portal.PageDesigner", "Module.SmartBI", null, false);
 MWF.xDesktop.requireApp("portal.PageDesigner", "Module.ElementUI", null, false);
+MWF.xDesktop.requireApp("portal.PageDesigner", "Module.Htmleditor", null, false);
