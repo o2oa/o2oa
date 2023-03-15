@@ -1,6 +1,7 @@
 package com.x.attendance.assemble.control.jaxrs.v2.detail;
 
 import com.google.gson.JsonElement;
+import com.x.attendance.assemble.control.jaxrs.v2.detail.model.StatisticWo;
 import com.x.base.core.project.annotation.JaxrsDescribe;
 import com.x.base.core.project.annotation.JaxrsMethodDescribe;
 import com.x.base.core.project.annotation.JaxrsParameterDescribe;
@@ -77,12 +78,30 @@ public class DetailAction extends StandardJaxrsAction {
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
     @Consumes(MediaType.APPLICATION_JSON)
     public void statistic(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,  JsonElement jsonElement) {
-        ActionResult<List<ActionStatisticWithFilter.Wo>> result = new ActionResult<>();
+        ActionResult<List<StatisticWo>> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
             result = new ActionStatisticWithFilter().execute( jsonElement );
         } catch (Exception e) {
             logger.error(e, effectivePerson, request, jsonElement);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
+    @JaxrsMethodDescribe(value = "统计导出.", action = ActionStatisticExportExcel.class)
+    @GET
+    @Path("statistic/export/filter/{filter}/start/{start}/end/{end}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void statisticExport(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,  @JaxrsParameterDescribe("人员或组织的DN，组织会递归下面所有的人员，如xxx@xxx@P、xxx@xxx@U") @PathParam("filter") String filter,
+                                @JaxrsParameterDescribe("开始日期：yyyy-MM-dd") @PathParam("start") String start, @JaxrsParameterDescribe("结束日期：yyyy-MM-dd") @PathParam("end") String end) {
+        ActionResult<ActionStatisticExportExcel.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionStatisticExportExcel().execute( filter, start ,end );
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
             result.error(e);
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));

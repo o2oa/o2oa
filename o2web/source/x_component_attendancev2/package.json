@@ -6,7 +6,7 @@
   "scripts": {
     "build": "cross-env NODE_ENV=production BUILD_PATH=dist PUBLIC_URL=/x_component_attendancev2/ webpack",
     "start": "cross-env NODE_ENV=development BUILD_PATH=dist PUBLIC_URL=/x_component_attendancev2/ webpack-dev-server",
-    "o2-deploy": "cross-env NODE_ENV=production BUILD_PATH=../../dest/x_component_attendancev2 PUBLIC_URL=../x_component_attendancev2/ webpack",
+    "o2-deploy": "cross-env NODE_ENV=production BUILD_PATH=../../dest/x_component_attendancev2 PUBLIC_URL=/x_component_attendancev2/ webpack",
     "o2-build": "cross-env NODE_ENV=production BUILD_PATH=../../../target/o2server/servers/webServer/x_component_attendancev2 PUBLIC_URL=../x_component_attendancev2/ webpack"
   },
   "repository": {
@@ -31,3 +31,4 @@
     "ie 11"
   ]
 }
+

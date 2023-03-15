@@ -37,20 +37,54 @@ export default content({
   afterRender() {
      
   },
-  search() {
+  validateForm() {
     if (this.bind.filterList.length < 1) {
       o2.api.page.notice(lp.detailStatisticList.filterEmptyPlaceholder, 'error');
-      return ;
+      return false;
     }
     if (isEmpty(this.bind.form.startDate)) {
       o2.api.page.notice(lp.detailStatisticList.startDateEmptyPlaceholder, 'error');
-      return ;
+      return false;
     }
     if (isEmpty(this.bind.form.endDate)) {
       o2.api.page.notice(lp.detailStatisticList.endDateEmptyPlaceholder, 'error');
-      return ;
+      return false;
     }
-    this.loadDetailList();
+    return true;
+  },
+  search() {
+    if (this.validateForm()) {this.loadDetailList();}
+  },
+  // 导出 
+  statisticExport() {
+    if (this.validateForm()) {
+      var _self = this;
+      o2.api.page.confirm(
+        "warn",
+        this.bind.lp.alert,
+        this.bind.lp.detailExportConfirmMsg,
+        300,
+        100,
+        function () {
+          _self.exportExcel();
+          this.close();
+        },
+        function () {
+          this.close();
+        }
+      );
+     
+    }
+  },
+  exportExcel() {
+    const dAction = o2.Actions.load("x_attendance_assemble_control").DetailAction.action;
+    let url =  dAction.getAddress() + dAction.actions.statisticExport.uri;
+    console.debug(url);
+    url = url.replace("{filter}", encodeURIComponent(this.bind.filterList[0]));
+    url = url.replace("{start}", encodeURIComponent(this.bind.form.startDate));
+    url = url.replace("{end}", encodeURIComponent(this.bind.form.endDate));
+    console.debug(url);
+    window.open(o2.filterUrl(url));
   },
    
   async loadDetailList() {

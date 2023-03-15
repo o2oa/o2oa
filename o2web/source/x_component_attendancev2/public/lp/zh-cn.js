@@ -39,6 +39,7 @@ MWF.xApplication.attendancev2.LP = {
     "choose": "选择",
     "save": "保存",
     "search": "搜索",
+    "statisticExport": "导出(递归)",
     "positive": "确定",
     "cancel": "取消",
     "add": "添加",
@@ -198,6 +199,7 @@ MWF.xApplication.attendancev2.LP = {
         "absenceTimes": "缺卡次数",
         "btnRecordList": "打卡记录",
     },
+    "detailExportConfirmMsg": "导出操作比较耗时，请不要关闭浏览器，等待一会儿！",
     "detailStatisticList":{
         "filterEmptyPlaceholder": "请选择需要查询人员或组织!",
         "filterSelectTitle": "查询统计的人员或组织",
@@ -211,7 +213,6 @@ MWF.xApplication.attendancev2.LP = {
         "dutyTitle": "打卡类型",
         "time": "打卡时间",
         "result": "打卡结果",
-
     },
     // 配置信息
     "configManagerTitle": "考勤配置",

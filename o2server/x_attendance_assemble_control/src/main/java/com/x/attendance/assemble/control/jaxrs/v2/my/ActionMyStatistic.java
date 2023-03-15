@@ -5,6 +5,8 @@ import com.x.attendance.assemble.control.ThisApplication;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.detail.ActionStatisticWithFilter;
 import com.x.attendance.assemble.control.jaxrs.v2.detail.ExceptionDateEndBeforeStartError;
+import com.x.attendance.assemble.control.jaxrs.v2.detail.model.StatisticWi;
+import com.x.attendance.assemble.control.jaxrs.v2.detail.model.StatisticWo;
 import com.x.base.core.project.annotation.FieldDescribe;
 import com.x.base.core.project.gson.GsonPropertyObject;
 import com.x.base.core.project.http.ActionResult;
@@ -27,9 +29,9 @@ public class ActionMyStatistic extends BaseAction {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ActionMyStatistic.class);
 
-    ActionResult<ActionStatisticWithFilter.Wo> execute(EffectivePerson person, JsonElement jsonElement) throws Exception {
+    ActionResult<StatisticWo> execute(EffectivePerson person, JsonElement jsonElement) throws Exception {
 
-        Wi thisWi = this.convertToWrapIn(jsonElement, Wi.class);
+        StatisticWi thisWi = this.convertToWrapIn(jsonElement, StatisticWi.class);
         if (StringUtils.isEmpty(thisWi.getStartDate())) {
             throw new ExceptionEmptyParameter("开始日期");
         }
@@ -42,43 +44,15 @@ public class ActionMyStatistic extends BaseAction {
         if (startDate.after(endDate)) {
             throw new ExceptionDateEndBeforeStartError();
         }
-        ActionResult<ActionStatisticWithFilter.Wo> result = new ActionResult<>();
-        ActionStatisticWithFilter.Wi wi = new ActionStatisticWithFilter.Wi();
-        wi.setStartDate(thisWi.getStartDate());
-        wi.setEndDate(thisWi.getEndDate());
-        wi.setFilter(person.getDistinguishedName());
-        List<ActionStatisticWithFilter.Wo> res = ThisApplication.context().applications().postQuery( x_attendance_assemble_control.class, "v2/detail/statistic/filter", wi).getDataAsList(ActionStatisticWithFilter.Wo.class);
+        ActionResult<StatisticWo> result = new ActionResult<>();
+        thisWi.setFilter(person.getDistinguishedName());
+        List<StatisticWo> res = ThisApplication.context().applications().postQuery( x_attendance_assemble_control.class, "v2/detail/statistic/filter", thisWi).getDataAsList(StatisticWo.class);
         if (res != null && !res.isEmpty()) {
             result.setData(res.get(0));
         } else {
-            result.setData(new ActionStatisticWithFilter.Wo());
+            result.setData(new StatisticWo());
         }
         return result;
     }
 
-    public static class Wi extends GsonPropertyObject {
-
-
-        @FieldDescribe("开始日期，包含")
-        private String startDate;
-        @FieldDescribe("结束日期， 包含")
-        private String endDate;
-
-
-        public String getStartDate() {
-            return startDate;
-        }
-
-        public void setStartDate(String startDate) {
-            this.startDate = startDate;
-        }
-
-        public String getEndDate() {
-            return endDate;
-        }
-
-        public void setEndDate(String endDate) {
-            this.endDate = endDate;
-        }
-    }
 }
