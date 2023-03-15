@@ -143,7 +143,9 @@ MWF.xApplication.AppCenter.Main = new Class({
             this.moduleList = json.data;
             if (this.moduleList.length){
                 this.moduleList.each(function(module){
-                    new MWF.xApplication.AppCenter.Module(this, module);
+                    if( module && module.id ){
+                        new MWF.xApplication.AppCenter.Module(this, module);
+                    }
                 }.bind(this));
             }else{
                 this.createEmptyElement();
