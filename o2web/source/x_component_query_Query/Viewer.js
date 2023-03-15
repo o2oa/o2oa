@@ -2257,7 +2257,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         }
         this.isSelected = false;
         this.view.fireEvent("unselectRow", [this]);
-        this.view.fireEvent("select", [{
+        this.view.fireEvent("unselect", [{
             "selected": false,
             "item": this,
             "data": this.data
