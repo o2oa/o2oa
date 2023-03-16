@@ -153,6 +153,9 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                     }
                 }
 
+                // 外勤打卡
+                List<AttendanceV2CheckInRecord> fieldWorkList = recordList.stream().filter(AttendanceV2CheckInRecord::getFieldWork).collect(Collectors.toList());
+
                 // 考勤对象
                 List<AttendanceV2Detail> details = business.getAttendanceV2ManagerFactory().listDetailWithPersonAndDate(model.getPerson(), model.getDate());
                 AttendanceV2Detail v2Detail;
@@ -161,7 +164,6 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                 } else {
                     v2Detail = new AttendanceV2Detail();
                 }
-
                 v2Detail.setUserId(model.getPerson());
                 v2Detail.setYearString(model.getDate().substring(0, 4));
                 v2Detail.setMonthString(model.getDate().substring(5, 7));
@@ -181,17 +183,20 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                 if (!isWorkDay) {
                     v2Detail.setRest(1);
                 } else {
-                    // 旷工
-                    v2Detail.setAbsenteeismDays(workTimeDuration == 0 ? 1 : 0);
+                    // 旷工 有正常打卡记录就不算旷工？
+                    v2Detail.setAbsenteeismDays(attendanceList.size() > 0 ? 0 : 1);
+                    // 上班缺卡
                     List<AttendanceV2CheckInRecord> noCheckInOnDutyList = recordList.stream().filter(
                                     (r) -> r.getCheckInType().equals(AttendanceV2CheckInRecord.OnDuty) && r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned))
                             .collect(Collectors.toList());
                     v2Detail.setOnDutyAbsenceTimes(noCheckInOnDutyList.size());
+                    // 下班缺卡
                     List<AttendanceV2CheckInRecord> noCheckInOffDutyList = recordList.stream().filter(
                                     (r) -> r.getCheckInType().equals(AttendanceV2CheckInRecord.OffDuty) && r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned))
                             .collect(Collectors.toList());
                     v2Detail.setOffDutyAbsenceTimes(noCheckInOffDutyList.size());
                 }
+                v2Detail.setFieldWorkTimes(fieldWorkList.size());
                 v2Detail.setRecordIdList(recordList.stream().map(AttendanceV2CheckInRecord::getId).collect(Collectors.toList()));
                 v2Detail.setGroupId(group.getId());
                 v2Detail.setGroupName(group.getGroupName());

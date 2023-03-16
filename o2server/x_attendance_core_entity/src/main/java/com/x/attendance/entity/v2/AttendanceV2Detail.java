@@ -156,6 +156,11 @@ public class AttendanceV2Detail extends SliceJpaObject {
     @Column(name = ColumnNamePrefix + offDutyAbsenceTimes_FIELDNAME)
     private Integer offDutyAbsenceTimes = 0;
 
+    public static final String fieldWorkTimes_FIELDNAME = "fieldWorkTimes";
+    @FieldDescribe("外勤打卡次数")
+    @Column(name = ColumnNamePrefix + fieldWorkTimes_FIELDNAME)
+    private Integer fieldWorkTimes = 0;
+
 
     ///// 关联
     public static final String recordIdList_FIELDNAME = "recordIdList";
@@ -190,6 +195,14 @@ public class AttendanceV2Detail extends SliceJpaObject {
             + shiftName_FIELDNAME)
     private String shiftName;
 
+
+    public Integer getFieldWorkTimes() {
+        return fieldWorkTimes;
+    }
+
+    public void setFieldWorkTimes(Integer fieldWorkTimes) {
+        this.fieldWorkTimes = fieldWorkTimes;
+    }
 
     public String getRecordDay() {
         return recordDay;

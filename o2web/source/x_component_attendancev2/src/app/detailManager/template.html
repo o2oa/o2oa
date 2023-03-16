@@ -3,6 +3,12 @@
         <div class="index_page_header_title">{{$.lp.detailManagerTitle}}</div>
     </div>
     <div style="padding: 20px;">
+         <!--人员组织选择  -->
+         <div style="margin-right: 10px;float: left;">
+            <o-org-person-selector
+            oo-prop="{  'selectorTitle': $.lp.detailTable.filterSelectTitle,  'placeholder': $.lp.detailTable.filterEmptyPlaceholder,  'count':1, 'value': $.filterList, 'types': ['person']}"
+            oo-model="filterList"></o-org-person-selector>
+         </div>
         <div style="margin: 10px 0;float: left;">
              <o-date-picker oo-prop="{'value': $.form.startDate}" oo-model="form.startDate"></o-date-picker> <span style="margin: 0 10px;">至</span> <o-date-picker oo-prop="{'value': $.form.endDate}" oo-model="form.endDate"></o-date-picker>
         </div>
@@ -24,6 +30,7 @@
                 <th>{{$.lp.detailTable.leaveEarlierTimeDuration}}</th>
                 <th>{{$.lp.detailTable.onDutyAbsenceTimes}}</th>
                 <th>{{$.lp.detailTable.offDutyAbsenceTimes}}</th>
+                <th>{{$.lp.detailTable.fieldWorkTimes}}</th>
                 
                 <th style="width: 10%;">{{$.lp.operate}}</th>
             </thead>
@@ -41,6 +48,7 @@
                 <td>{{d.value.leaveEarlierTimeDuration}}</td>
                 <td>{{d.value.onDutyAbsenceTimes}}</td>
                 <td>{{d.value.offDutyAbsenceTimes}}</td>
+                <td>{{d.value.fieldWorkTimes}}</td>
                
                 <td>
                     <span class="operator_link" @click="this.openRecordList(d.value)">{{$.lp.detailTable.btnRecordList}}</span>

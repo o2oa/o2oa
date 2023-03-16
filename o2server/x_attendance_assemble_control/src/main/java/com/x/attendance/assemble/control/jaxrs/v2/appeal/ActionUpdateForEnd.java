@@ -45,7 +45,7 @@ public class ActionUpdateForEnd extends BaseAction {
             throw new ExceptionEmptyParameter("jobId");
         }
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("审批结束数据回填：", wi.toString());
+            LOGGER.debug("审批结束数据回填：{}", wi.toString());
         }
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             AttendanceV2AppealInfo info = emc.find(id, AttendanceV2AppealInfo.class);

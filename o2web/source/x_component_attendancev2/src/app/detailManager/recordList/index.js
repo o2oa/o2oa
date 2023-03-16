@@ -29,24 +29,33 @@ export default content({
       return time;
     }
   },
-  formatResult(result) {
-    if (result === 'PreCheckIn') {
-      return '';
-    } else if (result === 'NotSigned') {
-      return lp.appeal.notSigned;
-    }  else if (result === 'Normal') {
-      return lp.appeal.normal;
-    } else if (result === 'Early') {
-      return lp.appeal.early;
-    } else if (result === 'Late') {
-      return lp.appeal.late;
-    } else if (result === 'SeriousLate') {
-      return lp.appeal.seriousLate;
-    } else if (result === 'Absenteeism') {
-      return lp.appeal.absenteeism;
-    } else { 
-      return '';
+  formatResult(record) {
+    // 外勤打卡的颜色 #f7b55e
+    let span = "";
+    if (record.fieldWork) {
+      span = lp.appeal.fieldWork;
+    } else {
+      const result = record.checkInResult;
+      if (result === 'PreCheckIn') {
+        span = "";
+      } else if (result === 'NotSigned') {
+        span =  lp.appeal.notSigned;
+      }  else if (result === 'Normal') {
+        span =   lp.appeal.normal;
+      } else if (result === 'Early') {
+        span =   lp.appeal.early;
+      } else if (result === 'Late') {
+        span =   lp.appeal.late;
+      } else if (result === 'SeriousLate') {
+        span =   lp.appeal.seriousLate;
+      } else if (result === 'Absenteeism') {
+        span =   lp.appeal.absenteeism;
+      } else { 
+        span = "" ;
+      }
     }
+    return span;
+
   },
   
   // 关闭当前窗口

@@ -33,6 +33,17 @@ public class StatisticWo extends GsonPropertyObject {
     private Integer leaveEarlierTimes = 0;
     @FieldDescribe("缺卡次数") // 上下班次数相加
     private Integer absenceTimes = 0;
+    @FieldDescribe("外勤打卡次数")
+    private Integer fieldWorkTimes = 0;
+
+
+    public Integer getFieldWorkTimes() {
+        return fieldWorkTimes;
+    }
+
+    public void setFieldWorkTimes(Integer fieldWorkTimes) {
+        this.fieldWorkTimes = fieldWorkTimes;
+    }
 
     public String getUserId() {
         return userId;

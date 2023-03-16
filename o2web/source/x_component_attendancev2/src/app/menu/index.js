@@ -17,17 +17,5 @@ export default content({
     },
     clickMenu(submenu) {
       this.bind.currentMenu = submenu;
-      // for (let index = 0; index < this.bind.menuData.length; index++) {
-      //   const element = this.bind.menuData[index];
-      //   const subList = element.sub;
-      //   if (subList && subList.length > 0) {
-      //     for (let j = 0; j < subList.length; j++) {
-      //       const s = subList[j];
-      //       if (s && s.id == submenu.id) {
-      //         this.$parent.openApp(s);
-      //       }
-      //     }
-      //   }
-      // }
     }
 });

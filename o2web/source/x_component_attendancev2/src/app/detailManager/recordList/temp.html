@@ -16,7 +16,10 @@
               <tr oo-each="$.recordList" oo-item="r">
                   <td>{{$m.formatDutyType(r.value.checkInType)}}</td>
                   <td>{{$m.formatTime(r.value.recordDate)}}</td>
-                  <td>{{$m.formatResult(r.value.checkInResult)}}</td>
+                  <td>
+                    <span style="color: #f7b55e;" oo-if="r.value.fieldWork">{{$m.formatResult(r.value)}}</span>  
+                    <span  oo-else="r.value.fieldWork">{{$m.formatResult(r.value)}}</span> 
+                  </td>
               </tr>
           </table>
       </div>

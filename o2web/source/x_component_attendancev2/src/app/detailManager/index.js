@@ -3,12 +3,13 @@ import { lp, o2 } from "@o2oa/component";
 import { convertMinutesToHoursAndMinutes } from "../../utils/common";
 import { detailActionListByPaging } from "../../utils/actions";
 import oPager from "../../components/o-pager";
+import oOrgPersonSelector from "../../components/o-org-person-selector";
 import oDatePicker from "../../components/o-date-picker";
 import template from "./template.html";
 
 export default content({
   template,
-  components: { oPager, oDatePicker },
+  components: { oPager, oDatePicker, oOrgPersonSelector },
   autoUpdate: true,
   bind() {
     return {
@@ -19,6 +20,7 @@ export default content({
         startDate: '',
         endDate: ''
       },
+      filterList: [],
       detailList: [],
       pagerData: {
         page: 1,
@@ -66,10 +68,16 @@ export default content({
     }
   },
   async loadDetailList() {
+    let form = this.bind.form;
+    if (this.bind.filterList && this.bind.filterList.length>0) {
+      form.userId = this.bind.filterList[0];
+    } else {
+      form.userId = "";
+    }
     const json = await detailActionListByPaging(
       this.bind.pagerData.page,
       this.bind.pagerData.size,
-      this.bind.form
+      form
     );
     if (json) {
       this.bind.detailList = json.data || [];

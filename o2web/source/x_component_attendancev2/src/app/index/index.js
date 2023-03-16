@@ -38,9 +38,6 @@ export default content({
             
         };
     },
-    // openApp(menu) {
-    //     this.bind.currentMenu = menu;
-    // },
     // 普通菜单数据
     normalMenuData() {
         return  [

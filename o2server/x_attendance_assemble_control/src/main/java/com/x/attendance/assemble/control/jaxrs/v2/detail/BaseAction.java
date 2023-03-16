@@ -5,6 +5,7 @@ import com.x.attendance.assemble.control.jaxrs.v2.detail.model.StatisticWi;
 import com.x.attendance.assemble.control.jaxrs.v2.detail.model.StatisticWo;
 import com.x.attendance.entity.v2.AttendanceV2Detail;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
+import org.apache.commons.lang3.BooleanUtils;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -30,40 +31,44 @@ abstract class BaseAction extends StandardJaxrsAction {
             List<AttendanceV2Detail> list = business.getAttendanceV2ManagerFactory().listDetailWithPersonAndStartEndDate(person, wi.getStartDate(), wi.getEndDate());
             if (list != null && !list.isEmpty()) {
                 Long workTimeDuration = 0L;
-                Integer attendance = 0;
-                Integer rest = 0;
-                Integer absenteeismDays = 0;
-                Integer lateTimes = 0;
-                Integer leaveEarlierTimes = 0;
-                Integer absenceTimes = 0;
+                int attendance = 0;
+                int rest = 0;
+                int absenteeismDays = 0;
+                int lateTimes = 0;
+                int leaveEarlierTimes = 0;
+                int absenceTimes = 0;
                 int workDayCount = 0;
+                int fieldWorkTimes = 0;
                 for (AttendanceV2Detail attendanceV2Detail : list) {
-                    if (attendanceV2Detail.getWorkDay()) {
+                    if (BooleanUtils.isTrue( attendanceV2Detail.getWorkDay())) {
                         workDayCount += 1; //工作日加1
                     }
-                    if (attendanceV2Detail.getWorkTimeDuration() > 0) {
+                    if (attendanceV2Detail.getWorkTimeDuration() != null && attendanceV2Detail.getWorkTimeDuration() > 0) {
                         workTimeDuration += attendanceV2Detail.getWorkTimeDuration();
                     }
-                    if (attendanceV2Detail.getAttendance() > 0) {
+                    if (attendanceV2Detail.getAttendance() != null && attendanceV2Detail.getAttendance() > 0) {
                         attendance += attendanceV2Detail.getAttendance();
                     }
-                    if (attendanceV2Detail.getRest() > 0) {
+                    if (attendanceV2Detail.getRest() != null && attendanceV2Detail.getRest() > 0) {
                         rest += attendanceV2Detail.getRest();
                     }
-                    if (attendanceV2Detail.getAbsenteeismDays() > 0) {
+                    if (attendanceV2Detail.getAbsenteeismDays() != null && attendanceV2Detail.getAbsenteeismDays() > 0) {
                         absenteeismDays += attendanceV2Detail.getAbsenteeismDays();
                     }
-                    if (attendanceV2Detail.getLateTimes() > 0) {
+                    if (attendanceV2Detail.getLateTimes() != null && attendanceV2Detail.getLateTimes() > 0) {
                         lateTimes += attendanceV2Detail.getLateTimes();
                     }
-                    if (attendanceV2Detail.getLeaveEarlierTimes() > 0) {
+                    if (attendanceV2Detail.getLeaveEarlierTimes() != null && attendanceV2Detail.getLeaveEarlierTimes() > 0) {
                         leaveEarlierTimes += attendanceV2Detail.getLeaveEarlierTimes();
                     }
-                    if (attendanceV2Detail.getOnDutyAbsenceTimes() > 0) {
+                    if (attendanceV2Detail.getOnDutyAbsenceTimes() != null  && attendanceV2Detail.getOnDutyAbsenceTimes() > 0) {
                         absenceTimes += attendanceV2Detail.getOnDutyAbsenceTimes();
                     }
-                    if (attendanceV2Detail.getOffDutyAbsenceTimes() > 0) {
+                    if (attendanceV2Detail.getOffDutyAbsenceTimes() != null && attendanceV2Detail.getOffDutyAbsenceTimes() > 0) {
                         absenceTimes += attendanceV2Detail.getOffDutyAbsenceTimes();
+                    }
+                    if (attendanceV2Detail.getFieldWorkTimes() != null && attendanceV2Detail.getFieldWorkTimes() > 0) {
+                        fieldWorkTimes += attendanceV2Detail.getFieldWorkTimes();
                     }
                 }
                 if (workDayCount > 0) {
@@ -77,6 +82,7 @@ abstract class BaseAction extends StandardJaxrsAction {
                 wo.setLateTimes(lateTimes);
                 wo.setLeaveEarlierTimes(leaveEarlierTimes);
                 wo.setAbsenceTimes(absenceTimes);
+                wo.setFieldWorkTimes(fieldWorkTimes);
             }
             wos.add(wo);
         }

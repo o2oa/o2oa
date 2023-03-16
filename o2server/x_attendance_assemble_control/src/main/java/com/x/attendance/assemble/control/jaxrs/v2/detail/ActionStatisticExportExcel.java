@@ -114,6 +114,7 @@ public class ActionStatisticExportExcel extends BaseAction {
         row.createCell(6).setCellValue("迟到次数");
         row.createCell(7).setCellValue("早退次数");
         row.createCell(8).setCellValue("缺卡次数");
+        row.createCell(9).setCellValue("外勤次数");
         if (wos != null && !wos.isEmpty()) {
             for (int i = 0; i < wos.size(); i++) {
                 Row _row = sheet.createRow( i + 1 );
@@ -131,6 +132,7 @@ public class ActionStatisticExportExcel extends BaseAction {
                 _row.createCell(6).setCellValue(wo.getLateTimes());
                 _row.createCell(7).setCellValue(wo.getLeaveEarlierTimes());
                 _row.createCell(8).setCellValue(wo.getAbsenceTimes());
+                _row.createCell(9).setCellValue(wo.getFieldWorkTimes());
             }
         }
 
