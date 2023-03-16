@@ -12,17 +12,17 @@ import org.apache.openjpa.enhance.PCEnhancer;
 
 public class Enhance {
 
-	private static final String DOT_CLASS = ".class";
+    private static final String DOT_CLASS = ".class";
 
-	public static void main(String... args) throws Exception {
+    public static void main(String... args) {
 
-		Collection<File> files = FileUtils.listFiles(new File(args[0]), FileFilterUtils.suffixFileFilter(DOT_CLASS),
-				DirectoryFileFilter.INSTANCE);
-		Set<String> paths = new TreeSet<>();
-		for (File f : files) {
-			paths.add(f.getAbsolutePath());
-		}
-		PCEnhancer.main(paths.toArray(new String[] {}));
-	}
+        Collection<File> files = FileUtils.listFiles(new File(args[0]), FileFilterUtils.suffixFileFilter(DOT_CLASS),
+                DirectoryFileFilter.INSTANCE);
+        Set<String> paths = new TreeSet<>();
+        for (File f : files) {
+            paths.add(f.getAbsolutePath());
+        }
+        PCEnhancer.main(paths.toArray(new String[] {}));
+    }
 
 }

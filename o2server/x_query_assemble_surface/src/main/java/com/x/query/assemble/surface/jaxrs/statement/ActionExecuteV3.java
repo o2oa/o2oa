@@ -45,9 +45,9 @@ import com.x.query.core.express.plan.Comparison;
 import com.x.query.core.express.plan.FilterEntry;
 import com.x.query.core.express.statement.Runtime;
 
-class ActionExecuteV2 extends BaseAction {
+class ActionExecuteV3 extends BaseAction {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ActionExecuteV2.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActionExecuteV3.class);
 
     private static final String[] keys = { "group by", "GROUP BY", "order by", "ORDER BY", "limit", "LIMIT" };
     private static final String[] pageKeys = { "GROUP BY", " COUNT(" };
@@ -111,16 +111,15 @@ class ActionExecuteV2 extends BaseAction {
                 result.setCount((Long) count);
                 break;
             default:
-                if (StringUtils.equals(statement.getFormat(), Statement.FORMAT_SCRIPT)) {
-                    data = this.script(effectivePerson, statement, runtime, Statement.MODE_DATA, wi);
-                    count = this.script(effectivePerson, statement, runtime, Statement.MODE_COUNT, wi);
-                } else if (StringUtils.equals(statement.getFormat(), Statement.FORMAT_NATIVESCRIPT)) {
-
-                } else if (StringUtils.equals(statement.getFormat(), Statement.FORMAT_NATIVESQL)) {
-
-                } else {
-                    data = this.jpql(statement, runtime, Statement.MODE_DATA, wi);
-                    count = this.jpql(statement, runtime, Statement.MODE_COUNT, wi);
+                switch (Objects.toString(statement.getFormat(), "")) {
+                    case Statement.FORMAT_SCRIPT:
+                        data = this.script(effectivePerson, statement, runtime, Statement.MODE_DATA, wi);
+                        count = this.script(effectivePerson, statement, runtime, Statement.MODE_COUNT, wi);
+                        break;
+                    default:
+                        data = this.jpql(statement, runtime, Statement.MODE_DATA, wi);
+                        count = this.jpql(statement, runtime, Statement.MODE_COUNT, wi);
+                        break;
                 }
                 result.setData(data);
                 result.setCount((Long) count);

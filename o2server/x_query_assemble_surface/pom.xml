@@ -39,13 +39,19 @@
 		<dependency>
 			<groupId>net.o2oa</groupId>
 			<artifactId>x_cms_core_entity</artifactId>
-		</dependency><dependency>
+		</dependency>
+		<dependency>
 			<groupId>net.o2oa</groupId>
 			<artifactId>x_cms_core_express</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>net.o2oa</groupId>
 			<artifactId>x_general_core_entity</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.github.jsqlparser</groupId>
+			<artifactId>jsqlparser</artifactId>
+			<version>3.2</version>
 		</dependency>
 	</dependencies>
 	<build>
@@ -71,7 +77,6 @@
 							</arguments>
 						</configuration>
 					</execution>
-
 					<execution>
 						<id>apiBuilder</id>
 						<phase>prepare-package</phase>
@@ -143,6 +148,18 @@
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<webResources>
+						<resource>
+							<directory>ext</directory>
+							<targetPath>WEB-INF/ext</targetPath>
+						</resource>
+					</webResources>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
