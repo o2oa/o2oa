@@ -868,7 +868,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     hide: function(){
         this.node.setStyle("display", "none");
     },
-    reload: function(){
+    reload: function( callback ){
         if( this.lookuping || this.pageloading )return;
         this.node.setStyle("display", "block");
         if (this.loadingAreaNode) this.loadingAreaNode.setStyle("display", "block");
@@ -882,7 +882,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         this.closeCustomSearch();
 
         this.viewAreaNode.empty();
-        this.createViewNode({"filterList": this.json.filter ? this.json.filter.clone() : null});
+        this.createViewNode({"filterList": this.json.filter ? this.json.filter.clone() : null}, callback);
     },
     getFilter: function(){
         var filterData = [];

@@ -28,19 +28,18 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		"target": null,
 
 
-
-		// "disabledDate": function (date) {  //一个function，参数为日期，return true不可选
+		// "enableDate": function (date) {  //一个function，参数为日期，return true不可选
 		// 	return date > new Date();
 		// },
-		// "disabledHours": function (date) {
+		// "enableHours": function (date) {
 		// 	if( date > new Date() ){
 		// 		return [];
 		// 	}else{
 		// 		return [[0, 8], [16, 24]];
 		// 	}
 		//}, //一个function, 参数为日期
-		// "disabledMinutes": null,  //一个function, 参数为日期，hour
-		// "disabledSeconds": null,  //一个function, 参数为日期，hour，minutes
+		// "enableMinutes": null,  //一个function, 参数为日期，hour
+		// "enableSeconds": null,  //一个function, 参数为日期，hour，minutes
 	},
 	initialize: function(node, options){
 		Locale.use("zh-CHS");
@@ -85,7 +84,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 
 		this.visible = false;
 
-
+		this.setRange();
 
 		this.container = this.createContainer();
 
@@ -193,7 +192,6 @@ o2.widget.Calendar = o2.Calendar = new Class({
 			this.move();
 		}.bind(this));
 	},
-
 	changeView: function(){
 		var view = "day";
 		switch (this.currentView) {
@@ -336,9 +334,9 @@ o2.widget.Calendar = o2.Calendar = new Class({
 	},
 	getNextDate: function(){
 		var date = this.currentTextNode.retrieve("date");
-		if( this.options.disabledDate ){
+		if( this.options.enableDate ){
 			var d = date.clone().increment("day", 1);
-			if( this.isDisabledDate(d) )return;
+			if( !this.isEnableDate(d) )return;
 		}
 		// var year = this.currentTextNode.retrieve("year");
 		// var month = this.currentTextNode.retrieve("month");
@@ -347,19 +345,19 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		// var date = new Date(year, month, day);
 		date.increment("day", 1);
 		this._setTimeTitle(null, date);
-		if( this.options.disabledHours || this.options.disabledMinutes || this.options.disabledSeconds ){
+		if( this.options.enableHours || this.options.enableMinutes || this.options.enableSeconds ){
 			this._resetTimeDate();
 		}
 	},
 	getPrevDate: function(){
 		var date = this.currentTextNode.retrieve("date");
-		if( this.options.disabledDate ){
+		if( this.options.enableDate ){
 			var d = date.clone().increment("day", -1);
-			if( this.isDisabledDate(d) )return;
+			if( !this.isEnableDate(d) )return;
 		}
 		date.increment("day", -1);
 		this._setTimeTitle(null, date);
-		if( this.options.disabledHours || this.options.disabledMinutes || this.options.disabledSeconds ){
+		if( this.options.enableHours || this.options.enableMinutes || this.options.enableSeconds ){
 			this._resetTimeDate();
 		}
 	},
@@ -755,8 +753,8 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		var tmpDate = firstDate.clone();
 		for (var i=day-1; i>=0; i--){
 
-			if( this.options.disabledDate ){
-				if( this.isDisabledDate(firstDate) ){
+			if( this.options.enableDate ){
+				if( !this.isEnableDate(firstDate) ){
 					tds[i].addClass("disable_"+this.options.style);
 					tds[i].setStyles(this.css["disable_"+this.options.style]);
 				}else{
@@ -775,8 +773,8 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		for (var i=day; i<tds.length; i++){
 			tds[i].set("text", firstDate.getDate());
 
-			if( this.options.disabledDate ){
-				if( this.isDisabledDate(firstDate) ){
+			if( this.options.enableDate ){
+				if( !this.isEnableDate(firstDate) ){
 					tds[i].addClass("disable_"+this.options.style);
 					tds[i].setStyles(this.css["disable_"+this.options.style]);
 				}else{
@@ -824,102 +822,6 @@ o2.widget.Calendar = o2.Calendar = new Class({
 			firstDate.increment("day", 1);
 		}
 	},
-	isDisabledDate: function(date){
-		var fun = this.options.disabledDate;
-		if( fun && typeOf(fun) === "function" ){
-			var d = typeOf( date ) === "string" ? new Date(date) : date;
-			if( fun( d ) === true ){
-				return true;
-			}
-		}
-		return false;
-	},
-	getDisabledHours: function(date){
-		var fun = this.options.disabledHours;
-		if( fun && typeOf(fun) === "function" ){
-			var d = typeOf( date ) === "string" ? new Date(date) : date;
-			return fun( d );
-		}
-		return null;
-	},
-	getEnableHours: function(date){
-		var range = [0, 23];
-		var ar = this.getDisabledHours(date);
-		if( !ar || !ar.length )return [range];
-		if( typeOf(ar[0]) !== "array" )ar = [ar];
-		return o2.Calendar.RangeArrayUtils.complementary(range, ar, null, 1);
-	},
-	isDisabledHour: function (thisDate, hour) {
-		var hs = this.getDisabledHours( thisDate );
-		if( !hs || !hs.length )return false;
-		if( typeOf(hs[0]) === "array" ){
-			for( var i=0; i< hs.length; i++ ){
-				var dhs = hs[i];
-				if(  dhs[0] <= hour && hour <= dhs[1] )return true;
-			}
-		}else{
-			if(  hs[0] <= hour && hour <= hs[1] )return true;
-		}
-		return false;
-	},
-	getDisabledMinutes: function(date, h){
-		var fun = this.options.disabledMinutes;
-		if( fun && typeOf(fun) === "function" ){
-			var d = typeOf( date ) === "string" ? new Date(date) : date;
-			return fun( d, h );
-		}
-		return null;
-	},
-	getEnableMinutes: function(date, h){
-		var range = [0, 59];
-		var ar = this.getDisabledMinutes(date, h);
-		if( !ar || !ar.length )return [range];
-		if( typeOf(ar[0]) !== "array" )ar = [ar];
-		return o2.Calendar.RangeArrayUtils.complementary(range, ar, null, 1);
-	},
-	isDisabledMinute: function (thisDate, hour, minute) {
-		var ms = this.getDisabledMinutes( thisDate, hour );
-		if( !ms || !ms.length )return false;
-		if( typeOf(ms[0]) === "array" ){
-			for( var i=0; i< ms.length; i++ ){
-				var dms = ms[i];
-				if(  dms[0] <= minute && minute <= dms[1] )return true;
-			}
-		}else{
-			if(  ms[0] <= minute && minute <= ms[1] )return true;
-		}
-		return false;
-	},
-	getDisabledSeconds: function(date, h, m){
-		var fun = this.options.disabledSeconds;
-		if( fun && typeOf(fun) === "function" ){
-			var d = typeOf( date ) === "string" ? new Date(date) : date;
-			return fun( d, h, m );
-		}
-		return null;
-	},
-	getEnableSeconds: function(date, h, m){
-		var range = [0, 59];
-		var ar = this.getDisabledSeconds(date, h, m);
-		if( !ar || !ar.length )return [range];
-		if( typeOf(ar[0]) !== "array" )ar = [ar];
-		return o2.Calendar.RangeArrayUtils.complementary(range, ar, null, 1);
-	},
-	isDisabledSecond: function (thisDate, hour, minute, second) {
-		var ss = this.getDisabledSeconds( thisDate, hour, minute );
-		if( !ss || !ss.length )return false;
-		if( typeOf(ss[0]) === "array" ){
-			for( var i=0; i< ss.length; i++ ){
-				var dss = ss[i];
-				if(  dss[0] <= second && second <= dss[1] )return true;
-			}
-		}else{
-			if(  ss[0] <= second && second <= ss[1] )return true;
-		}
-		return false;
-	},
-
-
 	changeViewToTime: function(date){
 		this.currentView = "time";
 
@@ -1140,20 +1042,20 @@ o2.widget.Calendar = o2.Calendar = new Class({
 					initialStep: this.cHour,
 					onChange: function(value){
 						var v = value.toInt();
-						if( !this.isDisabledHour(this.cDate, v) ){
+						if( this.isEnableHour(this.cDate, v) ){
 							this.selectedHour = v;
 							this.cHour = v;
 							this.showHNode.set("text", this.addZero(v, 2));
 							this.itmeHNode.getFirst().set("text", this.addZero(v, 2));
 
-							if( this.options.disabledMinutes ){
+							if( this.options.enableMinutes ){
 								this.calculateCurrentMinute();
 								this.createDisabledNodes(this.itmeMNode, 60, "m");
 								this.mSlider.set( this.cMinute );
 								this.itmeMNode.getFirst().set("text", this.addZero( this.cMinute, 2));
 								this.showMNode.set("text", this.addZero( this.cMinute, 2));
 							}
-							if( this.options.disabledSeconds && this.sSlider ){
+							if( this.options.enableSeconds && this.sSlider ){
 								this.calculateCurrentSecond();
 								this.createDisabledNodes(this.itmeSNode, 60, "s");
 								this.sSlider.set( this.cSecond );
@@ -1173,13 +1075,13 @@ o2.widget.Calendar = o2.Calendar = new Class({
 					initialStep: this.cMinute,
 					onChange: function(value){
 						var v = value.toInt();
-					    if( !this.isDisabledMinute(this.cDate, this.cHour, v) ){
+					    if( this.isEnableMinute(this.cDate, this.cHour, v) ){
                             this.selectedMinute = v;
                             this.cMinute = v;
                             this.showMNode.set("text", this.addZero( v, 2));
                             this.itmeMNode.getFirst().set("text", this.addZero( v, 2));
 
-							if( this.options.disabledSeconds && this.sSlider ){
+							if( this.options.enableSeconds && this.sSlider ){
 								this.calculateCurrentSecond();
 								this.createDisabledNodes(this.itmeSNode, 60, "s");
 								this.sSlider.set( this.cSecond );
@@ -1200,7 +1102,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 						initialStep: this.cSecond,
 						onChange: function(value){
 							var v = value.toInt();
-                            if( !this.isDisabledSecond(this.cDate, this.cHour, this.cMinute, v) ){
+                            if( this.isEnableSecond(this.cDate, this.cHour, this.cMinute, v) ){
                                 this.selectedSecond = v;
                                 this.cSecond = v;
                                 this.showSNode.set("text", this.addZero( v, 2));
@@ -1244,25 +1146,25 @@ o2.widget.Calendar = o2.Calendar = new Class({
 	},
 	_resetTimeDate: function(){
 		if(this.options.timeSelectType === "select"){
-			if( this.options.disabledHours )this.loadHourSelect();
-			if( this.options.disabledMinutes )this.loadMinuteSelect();
-			if( this.options.disabledSeconds )this.loadSecondSelect();
+			if( this.options.enableHours )this.loadHourSelect();
+			if( this.options.enableMinutes )this.loadMinuteSelect();
+			if( this.options.enableSeconds )this.loadSecondSelect();
 		}else {
-			if( this.options.disabledHours ){
+			if( this.options.enableHours ){
 				this.calculateCurrentHour();
 				this.createDisabledNodes(this.itmeHNode, 24, "h");
 				this.hSlider.set( this.cHour );
 				this.itmeHNode.getFirst().set("text", this.addZero( this.cHour, 2));
 				this.showHNode.set("text", this.addZero( this.cHour, 2) );
 			}
-			if( this.options.disabledMinutes ){
+			if( this.options.enableMinutes ){
 				this.calculateCurrentMinute();
 				this.createDisabledNodes(this.itmeMNode, 60, "m");
 				this.mSlider.set( this.cMinute );
 				this.itmeMNode.getFirst().set("text", this.addZero( this.cMinute, 2));
 				this.showMNode.set("text", this.addZero( this.cMinute, 2));
 			}
-			if( this.options.disabledSeconds && this.sSlider ){
+			if( this.options.enableSeconds && this.sSlider ){
 				this.calculateCurrentSecond();
 				this.createDisabledNodes(this.itmeSNode, 60, "s");
 				this.sSlider.set( this.cSecond );
@@ -1277,7 +1179,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		this.itmeSelectHNode = new Element("select").inject(this.itmeHNode);
 		this.calculateCurrentHour(h);
 		for( var i=0; i<24; i++ ){
-			if( !this.isDisabledHour(this.cDate, i) ){
+			if( this.isEnableHour(this.cDate, i) ){
 				var opt = new Element("option",{
 					"text" : this.addZero(i, 2 ),
 					"value" : this.addZero(i, 2 ),
@@ -1292,8 +1194,8 @@ o2.widget.Calendar = o2.Calendar = new Class({
 			this.cHour = this.itmeSelectHNode.get("value").toInt();
 			this.selectedHour = this.cHour;
 			this.showHNode.set("text", this.itmeSelectHNode.get("value") );
-			if( this.options.disabledMinutes )this.loadMinuteSelect();
-			if( this.options.disabledSeconds )this.loadSecondSelect();
+			if( this.options.enableMinutes )this.loadMinuteSelect();
+			if( this.options.enableSeconds )this.loadSecondSelect();
 		}.bind(this));
 	},
 	loadMinuteSelect: function (m) {
@@ -1302,7 +1204,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		this.itmeSelectMNode = new Element("select").inject(this.itmeMNode);
 		this.calculateCurrentMinute(m);
 		for (var i = 0; i < 60; i++) {
-			if (!this.isDisabledMinute(this.cDate, this.cHour || 0, i)) {
+			if (this.isEnableMinute(this.cDate, this.cHour || 0, i)) {
 				var opt = new Element("option", {
 					"text": this.addZero(i, 2),
 					"value": this.addZero(i, 2),
@@ -1317,7 +1219,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 			this.cMinute = this.itmeSelectMNode.get("value").toInt();
 			this.selectedMinute = this.cMinute;
 			this.showMNode.set("text", this.itmeSelectMNode.get("value"));
-			if( this.options.disabledSeconds )this.loadSecondSelect();
+			if( this.options.enableSeconds )this.loadSecondSelect();
 		}.bind(this));
 	},
 	loadSecondSelect: function (s) {
@@ -1328,7 +1230,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 			this.itmeSelectSNode = new Element("select").inject(this.itmeSNode);
 			this.calculateCurrentSecond(s);
 			for( var i=0; i<60; i++ ){
-				if( !this.isDisabledSecond(this.cDate, this.cHour || 0, this.cMinute || 0, i) ){
+				if( this.isEnableSecond(this.cDate, this.cHour || 0, this.cMinute || 0, i) ){
 					var opt = new Element("option",{
 						"text" : this.addZero(i, 2 ),
 						"value" : this.addZero(i, 2 ),
@@ -1355,7 +1257,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		}else{
 			this.cHour = 0;
 		}
-		if( this.isDisabledHour(this.cDate, this.cHour) ) {
+		if( !this.isEnableHour(this.cDate, this.cHour) ) {
 			var eHours = this.getEnableHours(this.cDate);
 			this.cHour = eHours.length ? eHours[0][0] : 0;
 		}
@@ -1369,7 +1271,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		}else{
 			this.cMinute = 0;
 		}
-		if( this.isDisabledMinute(this.cDate, this.cHour, this.cMinute) ){
+		if( !this.isEnableMinute(this.cDate, this.cHour, this.cMinute) ){
 			var eMinutes = this.getEnableMinutes(this.cDate, this.cHour);
 			this.cMinute = eMinutes.length ? eMinutes[0][0] : 0;
 		}
@@ -1383,7 +1285,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		}else{
 			this.cSecond = 0;
 		}
-		if( this.isDisabledSecond(this.cDate, this.cHour, this.cMinute, this.cSecond) ){
+		if( !this.isEnableSecond(this.cDate, this.cHour, this.cMinute, this.cSecond) ){
 			var eSeconds = this.getEnableSeconds(this.cDate, this.cHour, this.cMinute);
 			this.cSecond = eSeconds.length ? eSeconds[0][0] : 0;
 		}
@@ -1572,7 +1474,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 				switch (calendar.currentView) {
 					case "day" :
 						var d = this.retrieve("dateValue");
-						if( !calendar.isDisabledDate(d) ){
+						if( calendar.isEnableDate(d) ){
 							calendar._selectDate(d, this);
 						}
 						break;
@@ -1685,7 +1587,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 				switch (calendar.currentView) {
 					case "day" :
 						var d = this.retrieve("dateValue");
-						if (!calendar.isDisabledDate(d)) this.setStyle("border", "1px solid #999999");
+						if (calendar.isEnableDate(d)) this.setStyle("border", "1px solid #999999");
 						break;
 					default:
 						this.setStyle("border", "1px solid #999999");
@@ -1696,7 +1598,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 				switch (calendar.currentView) {
 					case "day" :
 						var d = this.retrieve("dateValue");
-						if (!calendar.isDisabledDate(d)) this.setStyle("border", "1px solid #FFF");
+						if (calendar.isEnableDate(d)) this.setStyle("border", "1px solid #FFF");
 						break;
 					default:
 						this.setStyle("border", "1px solid #FFF");
@@ -1779,6 +1681,269 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		}
 
 		return table;
+	},
+
+	setRange: function(){
+		debugger;
+		if( this.options.datetimeRange && this.options.datetimeRange.length ){
+			this.setDatetimeRange();
+		}else{
+			if(this.options.dateRange && this.options.dateRange.length){
+				this.setDateRange();
+			}
+			if(this.options.timeRange && this.options.timeRange.length){
+				this.setTimeRange();
+			}
+		}
+	},
+	setDatetimeRange: function(){
+		var arr = this.options.datetimeRange;
+		var _2dArray = typeOf(arr[0]) !== "array" ? [arr] : arr;
+		if( !_2dArray[0][0] && !_2dArray[0][1] )return;
+		this.datetimeRange = [];
+		this.dateRange = [];
+		this.dateOnlyRange = [];
+		_2dArray.each(function(a){
+			var ds, de, ds1, de1, de2;
+			if(a[0])ds = typeOf(a[0]) === "date" ? a[0] : Date.parse(a[0]);
+			if(a[1])de = typeOf(a[1]) === "date" ? a[1] : Date.parse(a[1]);
+			this.datetimeRange.push([ds, de]);
+			if(ds){
+				ds1 = ds.clone().clearTime();
+			}
+			if(de){
+				de1 = de.clone().set({hr:23, min:59, sec:59});
+				de2 = de.clone().clearTime();
+			}
+			this.dateRange.push([ds1, de1]);
+			this.dateOnlyRange.push([ds1, de2]);
+		}.bind(this));
+
+		this.options.enableDate = function (date) {
+			var d = typeOf(date) === "string" ? Date.parse(date) : date;
+			for( var i=0; i<this.dateRange.length; i++ ){
+				var ar = this.dateRange[i];
+				if( !ar[0] && this.isLessEquals(d, ar[1]) )return true;
+				if( !ar[1] && this.isLessEquals(ar[0], d) )return true;
+				if( this.isLessEquals(ar[0], d) && this.isLessEquals(d, ar[1]) )return true;
+			}
+			return false;
+		}.bind(this);
+
+		this.options.enableHours = function (date) {
+			var d = typeOf(date) === "string" ? Date.parse(date) : date;
+			var hours = [];
+			for( var i=0; i<this.dateOnlyRange.length; i++ ){
+				var ar = this.dateOnlyRange[i];
+				var s = this.isEquals(ar[0], d) ? this.datetimeRange[i][0].get("hr") : 0;
+				var e = this.isEquals(d, ar[1]) ? this.datetimeRange[i][1].get("hr") : 23;
+				hours.push( [s, e] );
+			}
+			return o2.Calendar.RangeArrayUtils.union(hours)
+		}.bind(this);
+
+		this.options.enableMinutes = function (date, hour) {
+			debugger;
+			var d = typeOf(date) === "string" ? Date.parse(date) : date;
+			var minutes = [];
+			for( var i=0; i<this.dateOnlyRange.length; i++ ){
+				var ar = this.dateOnlyRange[i];
+				var ardt = this.datetimeRange[i];
+				var s = (this.isEquals(ar[0], d) && hour === ardt[0].get("hr")) ? ardt[0].get("min") : 0;
+				var e = (this.isEquals(d, ar[1]) && hour === ardt[1].get("hr")) ? ardt[1].get("min") : 59;
+				minutes.push( [s, e] );
+			}
+			return o2.Calendar.RangeArrayUtils.union(minutes)
+		}.bind(this);
+
+		this.options.enableSeconds = function (date, hour, minute) {
+			var d = typeOf(date) === "string" ? Date.parse(date) : date;
+			var seconds = [];
+			for( var i=0; i<this.dateOnlyRange.length; i++ ){
+				var ar = this.dateOnlyRange[i];
+				var ardt = this.datetimeRange[i];
+				var s = (this.isEquals(ar[0], d) && hour === ardt[0].get("hr") && minute === ardt[0].get("min")) ? ardt[0].get("sec") : 0;
+				var e = (this.isEquals(d, ar[1]) && hour === ardt[1].get("hr") && minute === ardt[1].get("min")) ? ardt[1].get("sec") : 59;
+				seconds.push( [s, e] );
+			}
+			return o2.Calendar.RangeArrayUtils.union(seconds);
+		}.bind(this);
+	},
+	setDateRange: function(){
+		var arr = this.options.dateRange;
+		var _2dArray = typeOf(arr[0]) !== "array" ? [arr] : arr;
+		if( !_2dArray[0][0] && !_2dArray[0][1] )return;
+		this.dateRange = [];
+		_2dArray.each(function(a){
+			var ds, de, ds1, de1;
+			if(a[0])ds = typeOf(a[0]) === "date" ? a[0] : Date.parse(a[0]);
+			if(a[1])de = typeOf(a[1]) === "date" ? a[1] : Date.parse(a[1]);
+			if(ds)ds1 = ds.clearTime();
+			if(de)de1 = de.set({hr:23, min:59, sec:59});
+			this.dateRange.push([ds1, de1]);
+		}.bind(this));
+
+		this.options.enableDate = function (date) {
+			var d = typeOf(date) === "string" ? Date.parse(date) : date;
+			for( var i=0; i<this.dateRange.length; i++ ){
+				var ar = this.dateRange[i];
+				if( !ar[0] && this.isLessEquals(d, ar[1]) )return true;
+				if( !ar[1] && this.isLessEquals(ar[0], d) )return true;
+				if( this.isLessEquals(ar[0], d) && this.isLessEquals(d , ar[1]) )return true;
+			}
+			return false;
+		}.bind(this);
+	},
+	setTimeRange: function(){
+		var arr = this.options.timeRange;
+		var _2dArray = typeOf(arr[0]) !== "array" ? [arr] : arr;
+		if( !_2dArray[0][0] && !_2dArray[0][1] )return;
+		this.datetimeRange2 = [];
+		_2dArray.each(function(a){
+			var ds, de, ds1, de1;
+			if(a[0])ds = Date.parse("2020-01-01 "+a[0]);
+			if(a[1])de = Date.parse("2020-01-01 "+a[1]);
+			this.datetimeRange2.push([ds, de]);
+		}.bind(this));
+
+		this.options.enableHours = function (date) {
+			// var d = typeOf(date) === "string" ? Date.parse(date) : date;
+			if(this.hourRange)return this.hourRange;
+			var hours = [];
+			for( var i=0; i<this.datetimeRange2.length; i++ ){
+				var ar = this.datetimeRange2[i];
+				var s = ar[0] ? ar[0].get("hr") : 0;
+				var e = ar[1] ? ar[1].get("hr") : 23;
+				hours.push( [s, e] );
+			}
+			this.hourRange = o2.Calendar.RangeArrayUtils.union(hours);
+			return this.hourRange;
+		}.bind(this);
+
+		this.options.enableMinutes = function (date, hour) {
+			// var d = typeOf(date) === "string" ? Date.parse(date) : date;
+			var minutes = [];
+			for( var i=0; i<this.datetimeRange2.length; i++ ){
+				var ar = this.datetimeRange2[i];
+				var s = (ar[0] && hour === ar[0].get("hr")) ? ar[0].get("min") : 0;
+				var e = (ar[1] && hour === ar[1].get("hr")) ? ar[1].get("min") : 59;
+				minutes.push( [s, e] );
+			}
+			return o2.Calendar.RangeArrayUtils.union(minutes)
+		}.bind(this);
+
+		this.options.enableSeconds = function (date, hour, minute) {
+			// var d = typeOf(date) === "string" ? Date.parse(date) : date;
+			var seconds = [];
+			for( var i=0; i<this.datetimeRange2.length; i++ ){
+				var ar = this.datetimeRange2[i];
+				var s = (ar[0] && hour === ar[0].get("hr") && minute === ar[0].get("min")) ? ar[0].get("sec") : 0;
+				var e = (ar[1] && hour === ar[1].get("hr") && minute === ar[1].get("min")) ? ar[1].get("sec") : 59;
+				seconds.push( [s, e] );
+			}
+			return o2.Calendar.RangeArrayUtils.union(seconds)
+		}.bind(this);
+	},
+	isGreatEquals: function( d1, d2 ){
+		return (d1 > d2) || ((d1 - d2) === 0);
+	},
+	isLessEquals: function( d1, d2 ){
+		// console.log( d1.format("%Y-%m-%d %H:%M:%S"), d2.format("%Y-%m-%d %H:%M:%S") , "(d1 < d2) && ((d1 - d2) === 0)", (d1 < d2) && ((d1 - d2) === 0))
+		return (d1 < d2) || ((d1 - d2) === 0);
+	},
+	isEquals: function(d1, d2){
+		return (d1 - d2) === 0;
+	},
+	isEnableDate: function(date){
+		var fun = this.options.enableDate;
+		if( fun && typeOf(fun) === "function" ){
+			var d = typeOf( date ) === "string" ? new Date(date) : date;
+			if( fun( d ) === false ){
+				return false;
+			}
+		}
+		return true;
+	},
+	getEnableHours: function(date){
+		var fun = this.options.enableHours;
+		if( fun && typeOf(fun) === "function" ){
+			var d = typeOf( date ) === "string" ? new Date(date) : date;
+			return fun( d );
+		}
+		return [0, 23];
+	},
+	getDisabledHours: function(date){
+		var ar = this.getEnableHours(date);
+		if( !ar || !ar.length || (ar[0] === 0 && ar[1] === 23) )return [];
+		if( typeOf(ar[0]) !== "array" )ar = [ar];
+		return o2.Calendar.RangeArrayUtils.complementary([0, 23], ar, null, 1);
+	},
+	isEnableHour: function (thisDate, hour) {
+		var hs = this.getEnableHours( thisDate );
+		if( !hs || !hs.length || (hs[0] === 0 && hs[1] === 23) )return true;
+		if( typeOf(hs[0]) === "array" ){
+			for( var i=0; i< hs.length; i++ ){
+				var dhs = hs[i];
+				if(  dhs[0] <= hour && hour <= dhs[1] )return true;
+			}
+		}else{
+			if(  hs[0] <= hour && hour <= hs[1] )return true;
+		}
+		return false;
+	},
+	getEnableMinutes: function(date, h){
+		var fun = this.options.enableMinutes;
+		if( fun && typeOf(fun) === "function" ){
+			var d = typeOf( date ) === "string" ? new Date(date) : date;
+			return fun( d, h );
+		}
+		return [0, 59];
+	},
+	getDisabledMinutes: function(date, h){
+		var ar = this.getEnableMinutes(date, h);
+		if( !ar || !ar.length || (ar[0] === 0 && ar[1] === 59))return [];
+		if( typeOf(ar[0]) !== "array" )ar = [ar];
+		return o2.Calendar.RangeArrayUtils.complementary([0, 59], ar, null, 1);
+	},
+	isEnableMinute: function (thisDate, hour, minute) {
+		var ms = this.getEnableMinutes( thisDate, hour );
+		if( !ms || !ms.length || (ms[0] === 0 && ms[1] === 59))return true;
+		if( typeOf(ms[0]) === "array" ){
+			for( var i=0; i< ms.length; i++ ){
+				var dms = ms[i];
+				if(  dms[0] <= minute && minute <= dms[1] )return true;
+			}
+		}else{
+			if(  ms[0] <= minute && minute <= ms[1] )return true;
+		}
+		return false;
+	},
+	getEnableSeconds: function(date, h, m){
+		var fun = this.options.enableSeconds;
+		if( fun && typeOf(fun) === "function" ){
+			var d = typeOf( date ) === "string" ? new Date(date) : date;
+			return fun( d, h, m );
+		}
+		return [0, 59];
+	},
+	getDisabledSeconds: function(date, h, m){
+		var ar = this.getEnableSeconds(date, h, m);
+		if( !ar || !ar.length || (ar[0] === 0 && ar[1] === 59))return [];
+		if( typeOf(ar[0]) !== "array" )ar = [ar];
+		return o2.Calendar.RangeArrayUtils.complementary([0, 59], ar, null, 1);
+	},
+	isEnableSecond: function (thisDate, hour, minute, second) {
+		var ss = this.getEnableSeconds( thisDate, hour, minute );
+		if( !ss || !ss.length || (ss[0] === 0 && ss[1] === 59))return true;
+		if( typeOf(ss[0]) === "array" ){
+			for( var i=0; i< ss.length; i++ ){
+				var dss = ss[i];
+				if(  dss[0] <= second && second <= dss[1] )return true;
+			}
+		}else{
+			if(  ss[0] <= second && second <= ss[1] )return true;
+		}
+		return false;
 	}
 
 });
@@ -1982,6 +2147,35 @@ o2.Calendar.RangeArrayUtils = {
 		}
 
 		return this.parse( newRangeList, type );
+	},
+	//取区域交集rangeList  [ [start1, end1], [ start2, end2 ] ... ]，需要测试
+	intersection: function( ranges, type ){
+		if( !ranges || ranges.length == 0 )return ranges; //this.parse(this.getRangeObject( ranges ) ) ;
+		if( ranges.length === 1 )return ranges[1];
+		var rangeList = Array.clone( ranges );
+		for( var i=0; i<rangeList.length; i++ ){
+			rangeList[i] = this.getRangeObject( rangeList[i] );
+		}
+		rangeList.sort( function( a, b ){
+			return a.start - b.start;
+		});
+
+		var newRange = rangeList.shift();
+		while( rangeList.length > 0 ){
+			var nextRange = rangeList.shift();
+			if( this.isIntersection( newRange, nextRange ) ){
+				newRange.start = nextRange.start;
+				newRange.end =  Math.min( newRange.end, nextRange.end );
+			}else{
+				return [];
+			}
+		}
+
+		if( type && type === "date" ){
+			return [ Date.parse(newRange.start), Date.parse(newRange.end) ];
+		}else{
+			return [newRange.start, newRange.end];
+		}
 	},
 	//区域是否相交
 	isIntersection : function( range1, range2 ){
