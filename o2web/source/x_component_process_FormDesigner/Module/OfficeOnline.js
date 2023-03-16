@@ -116,7 +116,7 @@ MWF.xApplication.process.FormDesigner.Module.OnlyOffice = MWF.FCOfficeOnline = n
         }).inject(this.iconNode);
 
         this.setIcon();
-        if(!layout.serviceAddressList["x_officeonlinefile_assemble_control"]){
+        if(!layout.serviceAddressList["x_officeonline_assemble_control"]){
             this.tipNode = new Element("div",{"style":"text-align:center"}).inject(this.node);
             this.tipNode.set("html","<h3><font color=red>" + MWF.APPFD.LP.officeonline.nosetup + "</font></h3>");
         }

@@ -410,6 +410,10 @@ MWF.xApplication.process.Xform.LP = {
         "noInstall" : "请先安装onlyoffice应用",
         "filetext" : "文件正文"
     },
+    "officeonline" : {
+        "noInstall" : "请先安装officeonline应用",
+        "filetext" : "文件正文"
+    },
     "title": "标题",
     "createTime": "创建时间",
     "creatorPerson": "创建人",
