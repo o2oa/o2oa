@@ -1178,6 +1178,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		new Element("span",{"text": o2.LP.widget.hour + "："}).inject(this.itmeHNode);
 		this.itmeSelectHNode = new Element("select").inject(this.itmeHNode);
 		this.calculateCurrentHour(h);
+		debugger;
 		for( var i=0; i<24; i++ ){
 			if( this.isEnableHour(this.cDate, i) ){
 				var opt = new Element("option",{
@@ -1292,6 +1293,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		return this.cSecond;
 	},
 	createDisabledNodes: function(area, length, type){
+		debugger;
 		area.getElements(".disable_node").destroy();
 		var array;
 		switch(type){
@@ -1720,7 +1722,8 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		}.bind(this));
 
 		this.options.enableDate = function (date) {
-			var d = typeOf(date) === "string" ? Date.parse(date) : date;
+			var d = typeOf(date) === "string" ? Date.parse(date) : date.clone();
+			d.clearTime();
 			for( var i=0; i<this.dateRange.length; i++ ){
 				var ar = this.dateRange[i];
 				if( !ar[0] && this.isLessEquals(d, ar[1]) )return true;
@@ -1731,42 +1734,55 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		}.bind(this);
 
 		this.options.enableHours = function (date) {
-			var d = typeOf(date) === "string" ? Date.parse(date) : date;
+			var d = typeOf(date) === "string" ? Date.parse(date) : date.clone();
+			d.clearTime();
 			var hours = [];
 			for( var i=0; i<this.dateOnlyRange.length; i++ ){
 				var ar = this.dateOnlyRange[i];
-				var s = this.isEquals(ar[0], d) ? this.datetimeRange[i][0].get("hr") : 0;
-				var e = this.isEquals(d, ar[1]) ? this.datetimeRange[i][1].get("hr") : 23;
-				hours.push( [s, e] );
+				var equal1 = this.isEquals(ar[0], d), equal2 = this.isEquals(d, ar[1]);
+				if( equal1 || equal2){
+					var s = equal1 ? this.datetimeRange[i][0].get("hr") : 0;
+					var e = equal2 ? this.datetimeRange[i][1].get("hr") : 23;
+					hours.push( [s, e] );
+				}
 			}
-			return o2.Calendar.RangeArrayUtils.union(hours)
+			return hours.length ? o2.Calendar.RangeArrayUtils.union(hours) : [0, 23];
 		}.bind(this);
 
 		this.options.enableMinutes = function (date, hour) {
-			debugger;
-			var d = typeOf(date) === "string" ? Date.parse(date) : date;
+			var d = typeOf(date) === "string" ? Date.parse(date) : date.clone();
+			d.clearTime();
 			var minutes = [];
 			for( var i=0; i<this.dateOnlyRange.length; i++ ){
 				var ar = this.dateOnlyRange[i];
 				var ardt = this.datetimeRange[i];
-				var s = (this.isEquals(ar[0], d) && hour === ardt[0].get("hr")) ? ardt[0].get("min") : 0;
-				var e = (this.isEquals(d, ar[1]) && hour === ardt[1].get("hr")) ? ardt[1].get("min") : 59;
-				minutes.push( [s, e] );
+				var equal1 = (this.isEquals(ar[0], d) && hour === ardt[0].get("hr"));
+				var equal2 = (this.isEquals(d, ar[1]) && hour === ardt[1].get("hr"));
+				if( equal1 || equal2 ){
+					var s = equal1 ? ardt[0].get("min") : 0;
+					var e = equal2 ? ardt[1].get("min") : 59;
+					minutes.push( [s, e] );
+				}
 			}
-			return o2.Calendar.RangeArrayUtils.union(minutes)
+			return minutes.length ? o2.Calendar.RangeArrayUtils.union(minutes) : [0, 59];
 		}.bind(this);
 
 		this.options.enableSeconds = function (date, hour, minute) {
-			var d = typeOf(date) === "string" ? Date.parse(date) : date;
+			var d = typeOf(date) === "string" ? Date.parse(date) : date.clone();
+			d.clearTime();
 			var seconds = [];
 			for( var i=0; i<this.dateOnlyRange.length; i++ ){
 				var ar = this.dateOnlyRange[i];
 				var ardt = this.datetimeRange[i];
-				var s = (this.isEquals(ar[0], d) && hour === ardt[0].get("hr") && minute === ardt[0].get("min")) ? ardt[0].get("sec") : 0;
-				var e = (this.isEquals(d, ar[1]) && hour === ardt[1].get("hr") && minute === ardt[1].get("min")) ? ardt[1].get("sec") : 59;
-				seconds.push( [s, e] );
+				var equal1 = (this.isEquals(ar[0], d) && hour === ardt[0].get("hr") && minute === ardt[0].get("min"));
+				var equal2 = (this.isEquals(d, ar[1]) && hour === ardt[1].get("hr") && minute === ardt[1].get("min"));
+				if( equal1 || equal2 ){
+					var s = equal1 ? ardt[0].get("sec") : 0;
+					var e =  equal2 ? ardt[1].get("sec") : 59;
+					seconds.push( [s, e] );
+				}
 			}
-			return o2.Calendar.RangeArrayUtils.union(seconds);
+			return seconds.length ? o2.Calendar.RangeArrayUtils.union(seconds) : [0, 59];
 		}.bind(this);
 	},
 	setDateRange: function(){
@@ -1784,7 +1800,8 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		}.bind(this));
 
 		this.options.enableDate = function (date) {
-			var d = typeOf(date) === "string" ? Date.parse(date) : date;
+			var d = typeOf(date) === "string" ? Date.parse(date) : date.clone();
+			d.clearTime();
 			for( var i=0; i<this.dateRange.length; i++ ){
 				var ar = this.dateRange[i];
 				if( !ar[0] && this.isLessEquals(d, ar[1]) )return true;
@@ -1825,11 +1842,15 @@ o2.widget.Calendar = o2.Calendar = new Class({
 			var minutes = [];
 			for( var i=0; i<this.datetimeRange2.length; i++ ){
 				var ar = this.datetimeRange2[i];
-				var s = (ar[0] && hour === ar[0].get("hr")) ? ar[0].get("min") : 0;
-				var e = (ar[1] && hour === ar[1].get("hr")) ? ar[1].get("min") : 59;
-				minutes.push( [s, e] );
+				var equal1 = (ar[0] && hour === ar[0].get("hr"));
+				var equal2 = (ar[1] && hour === ar[1].get("hr"));
+				if( equal1 || equal2 ){
+					var s = equal1 ? ar[0].get("min") : 0;
+					var e = equal2 ? ar[1].get("min") : 59;
+					minutes.push( [s, e] );
+				}
 			}
-			return o2.Calendar.RangeArrayUtils.union(minutes)
+			return minutes.length ? o2.Calendar.RangeArrayUtils.union(minutes) : [0, 59];
 		}.bind(this);
 
 		this.options.enableSeconds = function (date, hour, minute) {
@@ -1837,11 +1858,15 @@ o2.widget.Calendar = o2.Calendar = new Class({
 			var seconds = [];
 			for( var i=0; i<this.datetimeRange2.length; i++ ){
 				var ar = this.datetimeRange2[i];
-				var s = (ar[0] && hour === ar[0].get("hr") && minute === ar[0].get("min")) ? ar[0].get("sec") : 0;
-				var e = (ar[1] && hour === ar[1].get("hr") && minute === ar[1].get("min")) ? ar[1].get("sec") : 59;
-				seconds.push( [s, e] );
+				var equal1 = (ar[0] && hour === ar[0].get("hr") && minute === ar[0].get("min"));
+				var equal2 = (ar[1] && hour === ar[1].get("hr") && minute === ar[1].get("min"));
+				if( equal1 || equal2 ){
+					var s = equal1 ? ar[0].get("sec") : 0;
+					var e = equal2 ? ar[1].get("sec") : 59;
+					seconds.push( [s, e] );
+				}
 			}
-			return o2.Calendar.RangeArrayUtils.union(seconds)
+			return seconds.length ? o2.Calendar.RangeArrayUtils.union(seconds) : [0, 59];
 		}.bind(this);
 	},
 	isGreatEquals: function( d1, d2 ){
@@ -1879,6 +1904,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		return o2.Calendar.RangeArrayUtils.complementary([0, 23], ar, null, 1);
 	},
 	isEnableHour: function (thisDate, hour) {
+		debugger;
 		var hs = this.getEnableHours( thisDate );
 		if( !hs || !hs.length || (hs[0] === 0 && hs[1] === 23) )return true;
 		if( typeOf(hs[0]) === "array" ){
@@ -2078,13 +2104,6 @@ o2.Calendar.RangeArrayUtils = {
 		if( !rangeList || rangeList.length == 0 )return this.parse( [r] , type);
 		var unitedList = this.union( rangeList );
 
-		if(offset){
-			for( var i=0; i<unitedList.length; i++ ){
-				unitedList[i][0] = unitedList[i][0] - offset;
-				unitedList[i][1] = unitedList[i][1] + offset;
-			}
-		}
-
 		var newRange = {};
 		if( unitedList[0][0] > r.start ){
 			newRange.start = r.start;
@@ -2113,7 +2132,16 @@ o2.Calendar.RangeArrayUtils = {
 		}
 		newRange.end = r.end;
 		newList.push( Object.clone(newRange ));
-		return this.parse( newList, type );
+		var array = this.parse( newList, type );
+		if( offset ){
+			return array.map(function (a) {
+				if( a[0] !== r.start )a[0] = a[0] + offset;
+				if( a[1] !== r.end )a[1] = a[1] - offset;
+				return a;
+			})
+		}else{
+			return array;
+		}
 	},
 	//取区域并集rangeList  [ [start1, end1], [ start2, end2 ] ... ]
 	union : function( ranges, type ){
