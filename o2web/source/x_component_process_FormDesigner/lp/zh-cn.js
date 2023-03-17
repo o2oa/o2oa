@@ -713,6 +713,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "allowPreview": "允许预览",
         "allowDownload": "允许下载",
         "allowEdit": "允许编辑",
+        "officeTool": "Office预览/编辑工具",
         "allowDelete": "允许删除",
         "allowDelMyAtt": "仅允许本人上传的文件",
         "allowDelCurActivityAtt": "仅允许本活动上传的文件",

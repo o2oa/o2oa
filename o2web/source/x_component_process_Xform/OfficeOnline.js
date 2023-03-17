@@ -15,7 +15,7 @@ MWF.xApplication.process.Xform.OfficeOnline = MWF.APPOfficeOnline =  new Class({
         this.json = json;
         this.form = form;
         this.documentId = "";
-        this.mode = "edit";
+        this.mode = "write";
         this.appToken = "x_processplatform_assemble_surface";
         this.workId = this.form.businessData.work.id;
     },
@@ -151,27 +151,27 @@ MWF.xApplication.process.Xform.OfficeOnline = MWF.APPOfficeOnline =  new Class({
         this.officeAPI = {
             "docx" : {
                 "view" : "/wv/wordviewerframe.aspx?1=1",
-                "edit" : "/we/wordeditorframe.aspx?1=1"
+                "write" : "/we/wordeditorframe.aspx?1=1"
             },
             "doc" : {
                 "view" : "/wv/wordviewerframe.aspx?1=1",
-                "edit" : "/we/wordeditorframe.aspx?1=1"
+                "write" : "/we/wordeditorframe.aspx?1=1"
             },
             "xlsx" : {
                 "view" : "/x/_layouts/xlviewerinternal.aspx?ui=zh-CN&rs=zh-CN",
-                "edit" : "/x/_layouts/xlviewerinternal.aspx?edit=1"
+                "write" : "/x/_layouts/xlviewerinternal.aspx?edit=1"
             },
             "xls" : {
                 "view" : "/x/_layouts/xlviewerinternal.aspx?ui=zh-CN&rs=zh-CN",
-                "edit" : "/x/_layouts/xlviewerinternal.aspx?edit=1"
+                "write" : "/x/_layouts/xlviewerinternal.aspx?edit=1"
             },
             "pptx" : {
                 "view" : "/p/PowerPointFrame.aspx?PowerPointView=ReadingView",
-                "edit" : "/p/PowerPointFrame.aspx?PowerPointView=EditView"
+                "write" : "/p/PowerPointFrame.aspx?PowerPointView=EditView"
             },
             "ppt" : {
                 "view" : "/p/PowerPointFrame.aspx?PowerPointView=ReadingView",
-                "edit" : "/p/PowerPointFrame.aspx?PowerPointView=EditView"
+                "write" : "/p/PowerPointFrame.aspx?PowerPointView=EditView"
             }
         }
         if (callback) callback();
@@ -192,6 +192,7 @@ MWF.xApplication.process.Xform.OfficeOnline = MWF.APPOfficeOnline =  new Class({
             WOPISrc = WOPISrc + "&appToken=" + this.appToken;
 
             this.action.ConfigAction.getOfficeOnlineUrl().then(function (json){
+                console.log(json)
                 this.officeOnlineUrl = json.data.value;
 
                 this.fileUrl = this.officeOnlineUrl + this.officeAPI[extension][this.mode] + "&WOPISrc=" + encodeURIComponent(WOPISrc);

@@ -709,6 +709,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "allowPreview": "Allow Preview",
         "allowDownload": "Allow Download",
         "allowEdit": "Allow Edit",
+        "officeTool": "Office Tool",
         "allowDelete": "Allow Delete",
         "allowDelMyAtt": "Only allow delete files uploaded by yourself",
         "allowDelCurActivityAtt": "Only allow delete files uploaded on current activity",
