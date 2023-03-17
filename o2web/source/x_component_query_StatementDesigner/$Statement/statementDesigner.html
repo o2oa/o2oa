@@ -3,8 +3,10 @@
     <div class="o2_statement_statementDesignerFormatLine">
         <div class="o2_statement_statementDesignerFormatTitle">{{$.lp.statementFormat}} </div>
         <div class="o2_statement_statementDesignerFormatContent" style="float: left; margin-right: 20px">
-            <input name="format" type="radio" value="jpql" {{if $.data.format!=='script'}} checked {{end if}} />{{$.lp.statementJpql}}
+            <input name="format" type="radio" value="jpql" {{if !$.data.format || $.data.format=='jpql'}} checked {{end if}} />{{$.lp.statementJpql}}
             <input name="format" type="radio" value="script" {{if $.data.format=='script'}} checked {{end if}} />{{$.lp.statementScript}}
+            <input name="format" type="radio" value="sql" {{if $.data.format=='sql'}} checked {{end if}} />{{$.lp.nativeSql}}
+            <input name="format" type="radio" value="sqlScript" {{if $.data.format=='sqlScript'}} checked {{end if}} />{{$.lp.nativeSqlScript}}
         </div>
 
         <div class="o2_statement_statementDesignerFormatTitle">{{$.lp.statementCategory}}: </div>
@@ -63,27 +65,32 @@
         </div>
 
     </div>
-    <div class="o2_statement_statementJpqlTabNode"></div>
+    <div class="o2_statement_statementTabNode"></div>
 
-    <div class="o2_statement_statementJpqlTabPageNode">
-        <div class="o2_statement_statementDesignerJpql" style="{{if $.data.format=='script'}} display: none {{end if}}">
-
+    <div class="o2_statement_statementQueryTabPageNode">
+        <div class="o2_statement_statementDesignerJpql" style="{{if !$.data.format || $.data.format!=='jpql'}} display: none {{end if}}">
             <div class="o2_statement_statementDesignerJpqlLine">
-
             </div>
         </div>
-        <div class="o2_statement_statementDesignerScript" style="{{if $.data.format!=='script'}} display: none {{end if}}">
+        <div class="o2_statement_statementDesignerScript" style="{{if $.data.format!=='script'}} display: none {{end if}}"></div>
 
+        <div class="o2_statement_statementDesignerSql" style="{{if $.data.format!=='sql'}} display: none {{end if}}">
+            <div class="o2_statement_statementDesignerSqlLine">
+            </div>
         </div>
+        <div class="o2_statement_statementDesignerSqlScript" style="{{if $.data.format!=='sqlScript'}} display: none {{end if}}"></div>
     </div>
 
-
-    <div class="o2_statement_statementCountJpqlTabPageNode">
-        <div class="o2_statement_statementDesignerCountJpql" style="{{if $.data.format=='script'}} display: none {{end if}}">
+    <div class="o2_statement_statementCountTabPageNode">
+        <div class="o2_statement_statementDesignerCountJpql" style="{{if !$.data.format || $.data.format!=='jpql'}} display: none {{end if}}">
             <div class="o2_statement_statementDesignerCountJpqlLine"></div>
         </div>
-        <div class="o2_statement_statementDesignerCountScript" style="{{if $.data.format!=='script'}} display: none {{end if}}">
+        <div class="o2_statement_statementDesignerCountScript" style="{{if $.data.format!=='script'}} display: none {{end if}}"></div>
+
+        <div class="o2_statement_statementDesignerCountSql" style="{{if $.data.format=='sql'}} display: none {{end if}}">
+            <div class="o2_statement_statementDesignerCountSqlLine"></div>
         </div>
+        <div class="o2_statement_statementDesignerCountSqlScript" style="{{if $.data.format!=='sqlScript'}} display: none {{end if}}"></div>
     </div>
 </div>
 

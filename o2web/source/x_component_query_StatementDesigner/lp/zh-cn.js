@@ -23,9 +23,11 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
     "field" : "字段",
     "fileldSelectNote" : "-选择后在语句中插入字段-",
 
-    "statementFormat": "如何创建语句：",
-    "statementJpql": "直接编写JPQL创建语句",
-    "statementScript": "通过脚本创建语句",
+    "statementFormat": "语句格式：",
+    "statementJpql": "JPQL",
+    "statementScript": "JPQL脚本",
+    "nativeSql": "原生SQL",
+    "nativeSqlScript": "原生SQL脚本",
 
     "statementCategory": "访问对象类型",
     "scriptTitle": "通过脚本创建JPQL",
