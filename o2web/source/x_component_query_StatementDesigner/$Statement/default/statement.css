@@ -68,6 +68,30 @@
     border: 1px solid #cccccc;
     background: #ffffff;
 }
+.o2_statement_statementDesignerSqlLine {
+    height: 260px;
+    margin-top: 10px;
+    border: 1px solid #cccccc;
+    background: #ffffff;
+}
+.o2_statement_statementDesignerCountSqlLine {
+    height: 260px;
+    margin-top: 10px;
+    border: 1px solid #cccccc;
+    background: #ffffff;
+}
+.o2_statement_statementDesignerSqlScript {
+    height: 260px;
+    margin-top: 10px;
+    border: 1px solid #cccccc;
+    background: #ffffff;
+}
+.o2_statement_statementDesignerCountSqlScript {
+    height: 260px;
+    margin-top: 10px;
+    border: 1px solid #cccccc;
+    background: #ffffff;
+}
 .o2_statement_statementRunNode {
     margin-top: 10px;
     padding: 0px;
