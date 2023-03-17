@@ -138,11 +138,12 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
 
     checkEditAttAction: function () {
 
+
         if(layout.mobile){
             this.setActionDisabled(this.editAttAction);
         } else if (this.options.isEditAtt === "hidden" ){
             this.setActionHidden(this.editAttAction);
-        } else if (!this.options.isEditAtt){
+        } else if (!this.options.isEditAtt || this.options.readonly){
             this.setActionDisabled(this.editAttAction);
             //this.setActionDisabled(this.min_downloadAction);
         }else{
