@@ -30,6 +30,7 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
     "statementCategory": "Access Object Type",
     "scriptTitle": "Create JPQL by script",
     "sqlScriptTitle": "Create SQL by script",
+    "countMethod": "Count Statement",
 
     "jpqlType": "JPQL Type",
     "jpqlFromResult": "Query start entry",

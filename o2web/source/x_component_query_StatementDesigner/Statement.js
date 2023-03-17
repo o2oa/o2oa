@@ -53,6 +53,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         if (!this.json.type) this.json.type = "select";
         if (!this.json.format) this.json.format = "jpql";
         if (!this.json.entityCategory) this.json.entityCategory = "official";
+        if (!this.json.countMethod)this.json.countMethod = "auto";
         if (!this.json.entityClassName) this.json.entityClassName = ""; //"com.x.processplatform.core.entity.content.Task";
     },
     autoSave: function () {
@@ -276,6 +277,9 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             this.statementTypeSelect = this.areaNode.getElement(".o2_statement_statementDesignerTypeContent").getElement("select");
             this.loadStatementTypeSelect();
 
+            this.countMethodSelect = this.areaNode.getElement(".o2_statement_statementDesignerCountMethodContent").getElement("select");
+            this.loadCountMethodSelect();
+
             // this.jpqlSelectEditor = this.areaNode.getElement(".o2_statement_statementDesignerJpql_select");
             // this.jpqlUpdateEditor = this.areaNode.getElement(".o2_statement_statementDesignerJpql_update");
             // this.jpqlDeleteEditor = this.areaNode.getElement(".o2_statement_statementDesignerJpql_sdelete");
@@ -326,6 +330,13 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             this.setEvent();
             this.loadVerticalResize();
         }.bind(this));
+    },
+    loadCountMethodSelect: function(){
+        this.countMethodSelect.getElements("option").each(function(o){
+            if( this.json.countMethod === o.value ){
+                o.selected = true;
+            }
+        }.bind(this))
     },
     loadStatementTypeSelect : function(){
       this.statementTypeSelect.empty();
@@ -616,7 +627,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
 
     loadSqlCountEditor: function () {
         if (!this.sqlCountEditor) {
-            if( !this.json.sqlCountData )this.json.sqlCountData = "SELECT count(id) FROM table";
+            if( !this.json.sqlCount )this.json.sqlCount = "SELECT count(id) FROM table";
             if( this.sqlCountEditorNode.offsetParent === null && o2.editorData.javascriptEditor.editor === "monaco" ){
                 var postShowFun = function() {
                     this._loadSqlCountEditor();
@@ -635,9 +646,9 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                 "option": {"mode": "sql"}
             });
             this.sqlCountEditor.load(function () {
-                this.sqlCountEditor.editor.setValue(this.json.sqlCountData);
+                this.sqlCountEditor.editor.setValue(this.json.sqlCount);
                 this.sqlCountEditor.addEditorEvent("change", function () {
-                    this.data.sqlCountData = this.sqlCountEditor.getValue();
+                    this.data.sqlCount = this.sqlCountEditor.getValue();
                 }.bind(this));
             }.bind(this));
         }.bind(this), false);
@@ -930,6 +941,10 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             }
         }.bind(this));
 
+        this.countMethodSelect.addEvent("change", function () {
+            this.json.countMethod = this.countMethodSelect.options[this.countMethodSelect.selectedIndex].value;
+        }.bind(this));
+
         this.fieldSelect.addEvent("change", function (ev) {
             var option = ev.target.options[ev.target.selectedIndex];
             var type = option.retrieve("type");
@@ -1004,10 +1019,10 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             }
 
             if( this.sqlCountEditor ){
-                v = replaceClassName( re, this.json.sqlCountData);
+                v = replaceClassName( re, this.json.sqlCount);
                 if (v) {
-                    this.json.sqlCountData = v;
-                    this.sqlCountEditor.editor.setValue(this.json.sqlCountData);
+                    this.json.sqlCount = v;
+                    this.sqlCountEditor.editor.setValue(this.json.sqlCount);
                 }
             }
         }
@@ -1143,7 +1158,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                     mode = getMode("sqlScriptText", "sqlCountScriptText");
                     break;
                 case "sql":
-                    mode = getMode("sql", "sqlCountText");
+                    mode = getMode("sql", "sqlCount");
                     break;
                 default:
                     mode = getMode("data", "countData");

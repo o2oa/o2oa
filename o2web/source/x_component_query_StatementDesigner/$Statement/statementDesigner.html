@@ -9,8 +9,17 @@
             <input name="format" type="radio" value="sqlScript" {{if $.data.format=='sqlScript'}} checked {{end if}} />{{$.lp.nativeSqlScript}}
         </div>
 
+        <div class="o2_statement_statementDesignerFormatTitle">{{$.lp.statementType}}: </div>
+        <div class="o2_statement_statementDesignerTypeContent" style="float: left;margin-right: 20px">
+            <select>
+                <!--                <option value="select">SELECT</option>-->
+                <!--                <option value="update">UPDATE</option>-->
+                <!--                <option value="delete">DELETE</option>-->
+            </select>
+        </div>
+
         <div class="o2_statement_statementDesignerFormatTitle">{{$.lp.statementCategory}}: </div>
-        <div class="o2_statement_statementDesignerCategoryContent" style="float: left">
+        <div class="o2_statement_statementDesignerCategoryContent" style="float: left; ">
             <select>
                 <option value="official" {{if $.data.entityCategory!=='dynamic' && $.data.entityCategory!=='custom'}} selected {{end if}}>{{$.lp.systemTable}}</option>
                 <option value="dynamic" {{if $.data.entityCategory=='dynamic'}} selected {{end if}}>{{$.lp.customTable}}</option>
@@ -19,17 +28,8 @@
     </div>
 
     <div class="o2_statement_statementDesignerLine">
-        <div class="o2_statement_statementDesignerTitle">{{$.lp.statementType}}: </div>
-        <div class="o2_statement_statementDesignerTypeContent">
-            <select>
-<!--                <option value="select">SELECT</option>-->
-<!--                <option value="update">UPDATE</option>-->
-<!--                <option value="delete">DELETE</option>-->
-            </select>
-        </div>
-
         <div class="o2_statement_statementDesignerTableArea_dynamic" style="{{if $.data.entityCategory!=='dynamic'}} display: none {{end if}}">
-            <div style="margin-left: 30px;" class="o2_statement_statementDesignerTitle">{{$.lp.statementTable}}: </div>
+            <div class="o2_statement_statementDesignerTitle">{{$.lp.statementTable}}: </div>
             <div>
                 <div class="o2_statement_statementDesignerTableContent"></div>
                 <div class="o2_statement_statementDesignerSelectTable">{{$.lp.selectTable}}</div>
@@ -38,7 +38,7 @@
 
 
         <div class="o2_statement_statementDesignerTableArea_official" style="{{if $.data.entityCategory=='dynamic' || $.data.entityCategory=='custom'}} display: none {{end if}}">
-            <div style="margin-left: 30px;" class="o2_statement_statementDesignerTitle">{{$.lp.statementTable}}: </div>
+            <div class="o2_statement_statementDesignerTitle">{{$.lp.statementTable}}: </div>
             <div class="o2_statement_statementDesignerOfficialTable">
                 <select>
                     <option value=""></option>
@@ -56,6 +56,15 @@
 
         <div class="o2_statement_statementDesignerTableArea_custom" style="{{if $.data.entityCategory!=='custom'}} display: none {{end if}}">
 
+        </div>
+
+        <div class="o2_statement_statementDesignerTitle" style="float: left;">{{$.lp.countMethod}}: </div>
+        <div class="o2_statement_statementDesignerCountMethodContent" style="float: left;margin-right: 20px">
+            <select>
+                <option value="ignore">忽略</option>
+                <option value="auto">自动</option>
+                <option value="assign">指定</option>
+            </select>
         </div>
 
         <div class="o2_statement_statementDesignerTableArea_field">

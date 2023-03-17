@@ -32,6 +32,7 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
     "statementCategory": "访问对象类型",
     "scriptTitle": "通过脚本创建JPQL",
     "sqlScriptTitle": "通过脚本创建SQL",
+    "countMethod": "总数语句",
 
     "jpqlType": "JPQL类型",
     "jpqlFromResult": "查询开始条目",
