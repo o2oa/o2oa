@@ -61,7 +61,7 @@ class ActionEdit extends BaseAction {
 			emc.beginTransaction(Table.class);
 			table.setLastUpdatePerson(effectivePerson.getDistinguishedName());
 			table.setLastUpdateTime(new Date());
-			if (Table.STATUS_build.equals(table.getStatus())) {
+			if (Table.STATUS_BUILD.equals(table.getStatus())) {
 				table.setData(table.getDraftData());
 			} else {
 				table.setData("");
@@ -90,8 +90,8 @@ class ActionEdit extends BaseAction {
 		private static final long serialVersionUID = -5237741099036357033L;
 
 		static WrapCopier<Wi, Table> copier = WrapCopierFactory.wi(Wi.class, Table.class, null,
-				ListTools.toList(JpaObject.FieldsUnmodify, Table.creatorPerson_FIELDNAME,
-						Table.lastUpdatePerson_FIELDNAME, Table.lastUpdateTime_FIELDNAME, Table.data_FIELDNAME,
-						Table.status_FIELDNAME, Table.name_FIELDNAME, Table.alias_FIELDNAME));
+				ListTools.toList(JpaObject.FieldsUnmodify, Table.CREATORPERSON_FIELDNAME,
+						Table.LASTUPDATEPERSON_FIELDNAME, Table.LASTUPDATETIME_FIELDNAME, Table.DATA_FIELDNAME,
+						Table.STATUS_FIELDNAME, Table.NAME_FIELDNAME, Table.ALIAS_FIELDNAME));
 	}
 }

@@ -62,7 +62,7 @@ class ActionCreate extends BaseAction {
 				throw new ExceptionAccessDenied(effectivePerson, query);
 			}
 			if (StringUtils.isEmpty(statement.getName())) {
-				throw new ExceptionEntityFieldEmpty(Statement.class, Table.name_FIELDNAME);
+				throw new ExceptionEntityFieldEmpty(Statement.class, Table.NAME_FIELDNAME);
 			}
 			if (StringUtils.isNotEmpty(emc.conflict(Statement.class, statement))) {
 				throw new ExceptionDuplicateFlag(Statement.class, emc.conflict(Statement.class, statement));
@@ -93,8 +93,8 @@ class ActionCreate extends BaseAction {
 		private static final long serialVersionUID = -5237741099036357033L;
 
 		static WrapCopier<Wi, Statement> copier = WrapCopierFactory.wi(Wi.class, Statement.class, null,
-				ListTools.toList(JpaObject.FieldsUnmodify, Statement.creatorPerson_FIELDNAME,
-						Statement.lastUpdatePerson_FIELDNAME, Statement.lastUpdateTime_FIELDNAME));
+				ListTools.toList(JpaObject.FieldsUnmodify, Statement.CREATORPERSON_FIELDNAME,
+						Statement.LASTUPDATEPERSON_FIELDNAME, Statement.LASTUPDATETIME_FIELDNAME));
 	}
 
 }

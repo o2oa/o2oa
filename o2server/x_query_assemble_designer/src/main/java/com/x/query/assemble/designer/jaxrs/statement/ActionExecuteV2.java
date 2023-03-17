@@ -262,7 +262,7 @@ class ActionExecuteV2 extends BaseAction {
 			sql = sql.replaceAll("\\.", ".x");
 			sql = sql.replaceAll("\\.x\\*", ".*");
 			List<Table> tables = business.entityManagerContainer().fetchEqual(Table.class,
-					ListTools.toList(Table.name_FIELDNAME), Table.status_FIELDNAME, Table.STATUS_build);
+					ListTools.toList(Table.NAME_FIELDNAME), Table.STATUS_FIELDNAME, Table.STATUS_BUILD);
 			for (Table table : tables) {
 				sql = sql.replaceAll(" " + table.getName() + " ",
 						" " + DynamicEntity.TABLE_PREFIX + table.getName().toUpperCase() + " ");
