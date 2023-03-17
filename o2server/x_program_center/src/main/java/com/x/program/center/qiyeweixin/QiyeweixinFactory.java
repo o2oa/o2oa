@@ -1,9 +1,6 @@
 package com.x.program.center.qiyeweixin;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.x.base.core.project.config.Config;
@@ -38,7 +35,12 @@ public class QiyeweixinFactory {
 	}
 
 	public List<Department> roots() {
-		return orgs.stream().filter(o -> 1L == o.getId()).collect(Collectors.toList());
+//		return orgs.stream().filter(o -> 1L == o.getId()).collect(Collectors.toList());
+		Set<Long> ids = orgs.stream().map(Department::getId).collect(Collectors.toSet());
+		return orgs.stream()
+				.filter(dept -> !ids.contains(dept.getParentid()))
+				.collect(Collectors.toList());
+
 	}
 
 	private List<Department> orgs() throws Exception {
