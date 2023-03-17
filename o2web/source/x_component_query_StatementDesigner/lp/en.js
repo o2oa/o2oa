@@ -16,7 +16,7 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
     "selectTable": "Select Data Table",
     "save_success": "The query configuration was saved successfully!",
     "inputStatementName": "Please enter the query configuration name",
-    "inputStatementData": "Please edit the JPQL query statement",
+    "inputStatementData": "Please edit the statement",
     "saveStatementNotice": "Please save!",
     "noViewNotice": "The view has not been created, please create the view!",
     "previewNotSelectStatementNotice": "Only when the statement type is ‘Select’ can it be previewed",
