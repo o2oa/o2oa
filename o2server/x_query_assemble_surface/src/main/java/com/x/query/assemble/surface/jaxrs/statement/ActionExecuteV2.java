@@ -45,6 +45,9 @@ import com.x.query.core.express.plan.Comparison;
 import com.x.query.core.express.plan.FilterEntry;
 import com.x.query.core.express.statement.Runtime;
 
+import net.sf.jsqlparser.parser.CCJSqlParserUtil;
+import net.sf.jsqlparser.statement.select.Select;
+
 class ActionExecuteV2 extends BaseAction {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ActionExecuteV2.class);
@@ -85,7 +88,7 @@ class ActionExecuteV2 extends BaseAction {
         Runtime runtime = this.runtime(effectivePerson, wi.getParameter(), page, size);
 
         Object data = null;
-        Object count = null;
+        Long count = null;
         switch (mode) {
             case Statement.MODE_DATA:
                 switch (Objects.toString(statement.getFormat(), "")) {
@@ -111,21 +114,43 @@ class ActionExecuteV2 extends BaseAction {
                 result.setCount((Long) count);
                 break;
             default:
-                if (StringUtils.equals(statement.getFormat(), Statement.FORMAT_SCRIPT)) {
-                    data = this.script(effectivePerson, statement, runtime, Statement.MODE_DATA, wi);
-                    count = this.script(effectivePerson, statement, runtime, Statement.MODE_COUNT, wi);
-                } else if (StringUtils.equals(statement.getFormat(), Statement.FORMAT_NATIVESCRIPT)) {
-
-                } else if (StringUtils.equals(statement.getFormat(), Statement.FORMAT_NATIVESQL)) {
-
+                if (StringUtils.equals(statement.getFormat(), Statement.FORMAT_SQL)
+                        || StringUtils.equals(statement.getFormat(), Statement.FORMAT_SQLSCRIPT)) {
+                    String sql = "";
+                    if (StringUtils.equals(statement.getFormat(), Statement.FORMAT_SQL)) {
+                        sql = statement.getSql();
+                    } else {
+                        sql = script(effectivePerson, statement, runtime, statement.getSqlScriptText());
+                    }
+                    data = executeSql();
+                    count = executeSqlCount();
                 } else {
-                    data = this.jpql(statement, runtime, Statement.MODE_DATA, wi);
-                    count = this.jpql(statement, runtime, Statement.MODE_COUNT, wi);
+                    String jpql = "";
+                    if (StringUtils.equals(statement.getFormat(), Statement.FORMAT_JPQL)) {
+                        jpql = statement.getData();
+                    } else {
+                        jpql = script(effectivePerson, statement, runtime, statement.getScriptText());
+                    }
+                    data = executeJpql();
+                    count = executeJpqlCount();
                 }
                 result.setData(data);
-                result.setCount((Long) count);
+                result.setCount(count);
         }
         return result;
+    }
+
+    private String script(EffectivePerson effectivePerson, Statement statement, Runtime runtime, String scriptText) {
+        String text = "";
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            Business business = new Business(emc);
+            ScriptContext scriptContext = this.scriptContext(effectivePerson, business, runtime);
+            CompiledScript cs = ScriptingFactory.functionalizationCompile(scriptText);
+            text = JsonScriptingExecutor.evalString(cs, scriptContext);
+        } catch (Exception e) {
+            LOGGER.error(e);
+        }
+        return text;
     }
 
     private Object script(EffectivePerson effectivePerson, Statement statement, Runtime runtime, String mode, Wi wi)
@@ -187,37 +212,21 @@ class ActionExecuteV2 extends BaseAction {
         return data;
     }
 
-    private Object jpql(Statement statement, Runtime runtime, String mode, Wi wi) throws Exception {
+    private Object jpql(Statement statement, Runtime runtime, String jpql, Wi wi) throws Exception {
         Object data = null;
         try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
             Business business = new Business(emc);
             Class<? extends JpaObject> cls = this.clazz(business, statement);
+            net.sf.jsqlparser.statement.Statement stmt = CCJSqlParserUtil.parse(jpql);
             EntityManager em;
             if (StringUtils.equalsIgnoreCase(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)
-                    && StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)) {
+                    && stmt instanceof net.sf.jsqlparser.statement.select.Select) {
                 em = business.entityManagerContainer().get(DynamicBaseEntity.class);
             } else {
                 em = business.entityManagerContainer().get(cls);
             }
-            String jpql = statement.getData();
-            if (Statement.MODE_COUNT.equals(mode)) {
-                jpql = statement.getCountData();
-            }
-            jpql = joinSql(jpql, wi, business);
-            LOGGER.info("执行的sql：{}", jpql::toString);
-            Query query;
-            String upJpql = jpql.toUpperCase();
-            if (upJpql.indexOf(JOIN_KEY) > -1 && upJpql.indexOf(JOIN_ON_KEY) > -1) {
-                query = em.createNativeQuery(jpql);
-                if (runtime.getParameters().size() > 0) {
-                    List<Object> values = new ArrayList<>(runtime.getParameters().values());
-                    for (int i = 0; i < values.size(); i++) {
-                        query.setParameter(i + 1, values.get(i));
-                    }
-                }
-            } else {
-                query = em.createQuery(jpql);
-            }
+            LOGGER.debug("执行的jpql：{}.", jpql::toString);
+            Query query = em.createQuery(jpql);
             for (Parameter<?> p : query.getParameters()) {
                 if (runtime.hasParameter(p.getName())) {
                     query.setParameter(p.getName(), runtime.getParameter(p.getName()));

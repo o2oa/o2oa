@@ -57,8 +57,8 @@ public class Statement extends SliceJpaObject {
 
     public static final String FORMAT_JPQL = "jpql";
     public static final String FORMAT_SCRIPT = "script";
-    public static final String FORMAT_NATIVESQL = "nativeSql";
-    public static final String FORMAT_NATIVESCRIPT = "nativeSqlScript";
+    public static final String FORMAT_SQL = "sql";
+    public static final String FORMAT_SQLSCRIPT = "sqlScript";
 
     public static final String ENTITYCATEGORY_DYNAMIC = "dynamic";
     public static final String ENTITYCATEGORY_OFFICIAL = "official";
@@ -83,7 +83,7 @@ public class Statement extends SliceJpaObject {
 
     @Override
     public void onPersist() throws Exception {
-        //nothing
+        // nothing
     }
 
     public String getEntityCategory() {
@@ -180,6 +180,14 @@ public class Statement extends SliceJpaObject {
     @CheckPersist(allowEmpty = true)
     private String data;
 
+    public static final String SQL_FIELDNAME = "sql";
+    @FieldDescribe("sql语句.")
+    @Lob
+    @Basic(fetch = FetchType.EAGER)
+    @Column(length = JpaObject.length_32K, name = ColumnNamePrefix + SQL_FIELDNAME)
+    @CheckPersist(allowEmpty = true)
+    private String sql;
+
     public static final String SCRIPTTEXT_FIELDNAME = "scriptText";
     @FieldDescribe("类型为script的执行脚本.")
     @Lob
@@ -187,6 +195,14 @@ public class Statement extends SliceJpaObject {
     @Column(length = JpaObject.length_1M, name = ColumnNamePrefix + SCRIPTTEXT_FIELDNAME)
     @CheckPersist(allowEmpty = true)
     private String scriptText;
+
+    public static final String SQLSCRIPTTEXT_FIELDNAME = "sqlScriptText";
+    @FieldDescribe("sqlScript的执行脚本.")
+    @Lob
+    @Basic(fetch = FetchType.EAGER)
+    @Column(length = JpaObject.length_1M, name = ColumnNamePrefix + SQLSCRIPTTEXT_FIELDNAME)
+    @CheckPersist(allowEmpty = true)
+    private String sqlScriptText;
 
     public static final String COUNTDATA_FIELDNAME = "countData";
     @FieldDescribe("jpql语句，用于查询总数.")
@@ -457,4 +473,21 @@ public class Statement extends SliceJpaObject {
     public void setExecuteGroupList(List<String> executeGroupList) {
         this.executeGroupList = executeGroupList;
     }
+
+    public String getSql() {
+        return sql;
+    }
+
+    public void setSql(String sql) {
+        this.sql = sql;
+    }
+
+    public String getSqlScriptText() {
+        return sqlScriptText;
+    }
+
+    public void setSqlScriptText(String sqlScriptText) {
+        this.sqlScriptText = sqlScriptText;
+    }
+
 }
