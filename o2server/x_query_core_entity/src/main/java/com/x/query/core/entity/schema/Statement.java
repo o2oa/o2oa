@@ -64,6 +64,10 @@ public class Statement extends SliceJpaObject {
     public static final String ENTITYCATEGORY_OFFICIAL = "official";
     public static final String ENTITYCATEGORY_CUSTOM = "custom";
 
+    public static final String COUNTMETHOD_IGNORE = "ignore";
+    public static final String COUNTMETHOD_AUTO = "auto";
+    public static final String COUNTMETHOD_ASSIGN = "assign";
+
     @Override
     public String getId() {
         return id;
@@ -180,14 +184,6 @@ public class Statement extends SliceJpaObject {
     @CheckPersist(allowEmpty = true)
     private String data;
 
-    public static final String SQL_FIELDNAME = "sql";
-    @FieldDescribe("sql语句.")
-    @Lob
-    @Basic(fetch = FetchType.EAGER)
-    @Column(length = JpaObject.length_32K, name = ColumnNamePrefix + SQL_FIELDNAME)
-    @CheckPersist(allowEmpty = true)
-    private String sql;
-
     public static final String SCRIPTTEXT_FIELDNAME = "scriptText";
     @FieldDescribe("类型为script的执行脚本.")
     @Lob
@@ -195,14 +191,6 @@ public class Statement extends SliceJpaObject {
     @Column(length = JpaObject.length_1M, name = ColumnNamePrefix + SCRIPTTEXT_FIELDNAME)
     @CheckPersist(allowEmpty = true)
     private String scriptText;
-
-    public static final String SQLSCRIPTTEXT_FIELDNAME = "sqlScriptText";
-    @FieldDescribe("sqlScript的执行脚本.")
-    @Lob
-    @Basic(fetch = FetchType.EAGER)
-    @Column(length = JpaObject.length_1M, name = ColumnNamePrefix + SQLSCRIPTTEXT_FIELDNAME)
-    @CheckPersist(allowEmpty = true)
-    private String sqlScriptText;
 
     public static final String COUNTDATA_FIELDNAME = "countData";
     @FieldDescribe("jpql语句，用于查询总数.")
@@ -219,6 +207,38 @@ public class Statement extends SliceJpaObject {
     @Column(length = JpaObject.length_1M, name = ColumnNamePrefix + COUNTSCRIPTTEXT_FIELDNAME)
     @CheckPersist(allowEmpty = true)
     private String countScriptText;
+
+    public static final String SQL_FIELDNAME = "sql";
+    @FieldDescribe("sql语句.")
+    @Lob
+    @Basic(fetch = FetchType.EAGER)
+    @Column(length = JpaObject.length_32K, name = ColumnNamePrefix + SQL_FIELDNAME)
+    @CheckPersist(allowEmpty = true)
+    private String sql;
+
+    public static final String SQLSCRIPTTEXT_FIELDNAME = "sqlScriptText";
+    @FieldDescribe("sqlScript的执行脚本.")
+    @Lob
+    @Basic(fetch = FetchType.EAGER)
+    @Column(length = JpaObject.length_1M, name = ColumnNamePrefix + SQLSCRIPTTEXT_FIELDNAME)
+    @CheckPersist(allowEmpty = true)
+    private String sqlScriptText;
+
+    public static final String SQLCOUNT_FIELDNAME = "sqlCount";
+    @FieldDescribe("sql总数统计语句.")
+    @Lob
+    @Basic(fetch = FetchType.EAGER)
+    @Column(length = JpaObject.length_32K, name = ColumnNamePrefix + SQLCOUNT_FIELDNAME)
+    @CheckPersist(allowEmpty = true)
+    private String sqlCount;
+
+    public static final String SQLCOUNTSCRIPTTEXT_FIELDNAME = "sqlCountScriptText";
+    @FieldDescribe("sql总数统计语句脚本.")
+    @Lob
+    @Basic(fetch = FetchType.EAGER)
+    @Column(length = JpaObject.length_1M, name = ColumnNamePrefix + SQLCOUNTSCRIPTTEXT_FIELDNAME)
+    @CheckPersist(allowEmpty = true)
+    private String sqlCountScriptText;
 
     public static final String VIEW_FIELDNAME = "view";
     @FieldDescribe("展现视图.")
@@ -289,6 +309,37 @@ public class Statement extends SliceJpaObject {
     @Column(name = ColumnNamePrefix + ORDERNUMBER_FIELDNAME)
     @Index(name = TABLE + IndexNameMiddle + ORDERNUMBER_FIELDNAME)
     private Integer orderNumber;
+
+    public static final String COUNTMETHOD_FIELDNAME = "countMethod";
+    @FieldDescribe("数量总计方法,ignore:忽略,auto:自动,assign:指定.")
+    @Column(length = length_16B, name = ColumnNamePrefix + COUNTMETHOD_FIELDNAME)
+    @Index(name = TABLE + IndexNameMiddle + COUNTMETHOD_FIELDNAME)
+    @CheckPersist(allowEmpty = false)
+    private String countMethod;
+
+    public String getSqlCount() {
+        return sqlCount;
+    }
+
+    public void setSqlCount(String sqlCount) {
+        this.sqlCount = sqlCount;
+    }
+
+    public String getSqlCountScriptText() {
+        return sqlCountScriptText;
+    }
+
+    public void setSqlCountScriptText(String sqlCountScriptText) {
+        this.sqlCountScriptText = sqlCountScriptText;
+    }
+
+    public String getCountMethod() {
+        return countMethod;
+    }
+
+    public void setCountMethod(String countMethod) {
+        this.countMethod = countMethod;
+    }
 
     public void setEntityCategory(String entityCategory) {
         this.entityCategory = entityCategory;
