@@ -51,7 +51,7 @@ class ActionListWithQuery extends BaseAction {
 
 		static WrapCopier<Statement, Wo> copier = WrapCopierFactory.wo(Statement.class, Wo.class,
 				ListTools.toList(JpaObject.singularAttributeField(Statement.class, true, true),
-						Statement.executePersonList_FIELDNAME, Statement.executeUnitList_FIELDNAME),
+						Statement.EXECUTEPERSONLIST_FIELDNAME, Statement.EXECUTEUNITLIST_FIELDNAME),
 				JpaObject.FieldsInvisible);
 	}
 }

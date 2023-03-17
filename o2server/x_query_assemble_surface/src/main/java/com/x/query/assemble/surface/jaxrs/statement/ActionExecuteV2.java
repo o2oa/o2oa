@@ -40,6 +40,7 @@ import com.x.query.core.entity.schema.Table;
 import com.x.query.core.express.plan.FilterEntry;
 import com.x.query.core.express.statement.Runtime;
 
+import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
@@ -200,6 +201,7 @@ class ActionExecuteV2 extends BaseAction {
         net.sf.jsqlparser.statement.Statement stmt = CCJSqlParserUtil.parse(jpql);
         if (stmt instanceof net.sf.jsqlparser.statement.select.Select) {
             Select select = (Select) stmt;
+            System.out.println("!!!!!!!!!!!!!!!!!!!" + jpql);
             try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
                 Business business = new Business(emc);
                 EntityManager em;
@@ -210,11 +212,15 @@ class ActionExecuteV2 extends BaseAction {
                     em = business.entityManagerContainer().get(cls);
                 }
                 PlainSelect plainSelect = (PlainSelect) select.getSelectBody();
-                Table table = (Table) plainSelect.getFromItem();
-                String txt = "select count(o) from " + table.getName() + " o";
-                String whereClause = plainSelect.getWhere().toString();
-                if (StringUtils.isNotBlank(whereClause)) {
-                    txt += " " + whereClause;
+                System.out.println(plainSelect.toString() + "!!!!!!!!!!!!!!!!@");
+                net.sf.jsqlparser.schema.Table table = (net.sf.jsqlparser.schema.Table) plainSelect.getFromItem();
+                String txt = "select count(o) from " + table.getFullyQualifiedName() + " o";
+                Expression exp = plainSelect.getWhere();
+                if (null != exp) {
+                    String whereClause = exp.toString();
+                    if (StringUtils.isNotBlank(whereClause)) {
+                        txt += " " + whereClause;
+                    }
                 }
                 LOGGER.debug("executeCountJpqlAuto：{}.", txt::toString);
                 Query query = em.createQuery(txt);

@@ -30,6 +30,7 @@ class ActionTest extends BaseAction {
             SelectExpressionItem selectExpressionItem = (SelectExpressionItem) plainSelect.getSelectItems().get(0);
 
             Table table = (Table) plainSelect.getFromItem();
+            System.out.println("!!!!!!!!!!!!!!!" + table.getFullyQualifiedName());
 
             Expression exp = plainSelect.getWhere();
             exp.accept(new ExpressionVisitorAdapter() {
@@ -37,13 +38,13 @@ class ActionTest extends BaseAction {
                 public void visit(AndExpression expr) {
                     if (expr.getLeftExpression() instanceof AndExpression) {
                         expr.getLeftExpression().accept(this);
-                    } else if ((expr.getLeftExpression() instanceof EqualsTo)){
+                    } else if ((expr.getLeftExpression() instanceof EqualsTo)) {
                         System.out.println(expr.getLeftExpression());
                     }
                     System.out.println(expr.getRightExpression());
                 }
-             });
-     
+            });
+
         }
         ActionResult result = new ActionResult<>();
         return result;

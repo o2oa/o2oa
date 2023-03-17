@@ -31,11 +31,11 @@ class ActionStatusBuild extends BaseAction {
 			Business business = new Business(emc);
 			this.check(effectivePerson, business, table);
 			if (StringUtils.isEmpty(table.getDraftData())) {
-				throw new ExceptionEntityFieldEmpty(Table.class, Table.draftData_FIELDNAME);
+				throw new ExceptionEntityFieldEmpty(Table.class, Table.DRAFTDATA_FIELDNAME);
 			}
 			emc.beginTransaction(Table.class);
 			table.setData(table.getDraftData());
-			table.setStatus(Table.STATUS_build);
+			table.setStatus(Table.STATUS_BUILD);
 			emc.commit();
 			CacheManager.notify(Table.class);
 			CacheManager.notify(Statement.class);

@@ -49,7 +49,7 @@ class ActionCreate extends BaseAction {
 			Table table = Wi.copier.copy(wi);
 			table.setQuery(query.getId());
 			if (StringUtils.isEmpty(table.getName())) {
-				throw new ExceptionEntityFieldEmpty(Table.class, Table.name_FIELDNAME);
+				throw new ExceptionEntityFieldEmpty(Table.class, Table.NAME_FIELDNAME);
 			}
 			if (StringUtils.isNotEmpty(emc.conflict(Table.class, table))) {
 				throw new ExceptionDuplicateFlag(Table.class, emc.conflict(Table.class, table));
@@ -71,7 +71,7 @@ class ActionCreate extends BaseAction {
 			table.setLastUpdatePerson(effectivePerson.getDistinguishedName());
 			table.setLastUpdateTime(new Date());
 			table.setData("");
-			table.setStatus(Table.STATUS_draft);
+			table.setStatus(Table.STATUS_DRAFT);
 			table.setBuildSuccess(false);
 			emc.persist(table, CheckPersistType.all);
 			emc.commit();
@@ -94,9 +94,9 @@ class ActionCreate extends BaseAction {
 		private static final long serialVersionUID = -5237741099036357033L;
 
 		static WrapCopier<Wi, Table> copier = WrapCopierFactory.wi(Wi.class, Table.class, null,
-				ListTools.toList(JpaObject.FieldsUnmodify, Table.creatorPerson_FIELDNAME,
-						Table.lastUpdatePerson_FIELDNAME, Table.lastUpdateTime_FIELDNAME, Table.data_FIELDNAME,
-						Table.status_FIELDNAME));
+				ListTools.toList(JpaObject.FieldsUnmodify, Table.CREATORPERSON_FIELDNAME,
+						Table.LASTUPDATEPERSON_FIELDNAME, Table.LASTUPDATETIME_FIELDNAME, Table.DATA_FIELDNAME,
+						Table.STATUS_FIELDNAME));
 	}
 
 }
