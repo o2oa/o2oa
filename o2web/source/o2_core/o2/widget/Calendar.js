@@ -334,7 +334,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 	},
 	getNextDate: function(){
 		var date = this.currentTextNode.retrieve("date");
-		if( this.options.enableDate ){
+		if( this.currentView === "time" && this.options.enableDate ){
 			var d = date.clone().increment("day", 1);
 			if( !this.isEnableDate(d) )return;
 		}
@@ -351,7 +351,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 	},
 	getPrevDate: function(){
 		var date = this.currentTextNode.retrieve("date");
-		if( this.options.enableDate ){
+		if( this.currentView === "time" && this.options.enableDate ){
 			var d = date.clone().increment("day", -1);
 			if( !this.isEnableDate(d) )return;
 		}
@@ -645,6 +645,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		var thisNode = node || this.currentTextNode;
 		thisNode.set("text", beginYear+"-"+endYear);
 		thisNode.store("year", thisYear);
+		this.setTitleStyle();
 	},
 	_setYearDate: function(table, beginYear, endYear, year){
 		var yearTable = table || this.contentYearTable;
@@ -694,6 +695,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		var thisNode = node || this.currentTextNode;
 		thisNode.set("text", thisYear);
 		thisNode.store("year", thisYear);
+		this.setTitleStyle();
 	},
 	_setMonthDate: function(table, year, month){
 		//var months = Locale.get("Date").months;
@@ -756,6 +758,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 
 		thisNode.store("year", thisYear);
 		thisNode.store("month", thisMonth);
+		this.setTitleStyle();
 	},
 	_setDayDate: function(table, year, month){
 		var dayTable = table || this.contentTable;
@@ -911,6 +914,7 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		thisNode.set("text", text);
 		thisNode.store("date", date);
 		this.cDate = date;
+		this.setTitleStyle();
 	},
 	_setTimeDate_mobile: function(node, h, m, s){
 		var _self = this;
@@ -1455,6 +1459,26 @@ o2.widget.Calendar = o2.Calendar = new Class({
 			item.set("text", days_abbr[idx]);
 		});
 		return cells;
+	},
+	setTitleStyle: function(){
+		if( this.options.enableDate ){
+			if( this.currentView === "time" ){
+				var date = this.currentTextNode.retrieve("date");
+				if( this.isEnableDate(date.clone().decrement()) ){
+					this.prevNode.setStyles(this.css["notdisable_"+this.options.style]);
+				}else{
+					this.prevNode.setStyles(this.css["disable_"+this.options.style]);
+				}
+				if( this.isEnableDate(date.clone().increment()) ){
+					this.nextNode.setStyles(this.css["notdisable_"+this.options.style]);
+				}else{
+					this.nextNode.setStyles(this.css["disable_"+this.options.style]);
+				}
+			}else{
+				this.prevNode.setStyles(this.css["notdisable_"+this.options.style]);
+				this.nextNode.setStyles(this.css["notdisable_"+this.options.style]);
+			}
+		}
 	},
 
 	createContainer: function(){
