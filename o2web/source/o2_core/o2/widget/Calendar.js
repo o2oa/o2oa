@@ -663,6 +663,16 @@ o2.widget.Calendar = o2.Calendar = new Class({
 			}else{
 				item.removeClass("current_"+this.options.style);
 			}
+
+			if( this.options.enableDate ){
+				if( !this.isEnableDate(y+"-01-01") && !this.isEnableDate(y+"-12-12") ){
+					// item.addClass("disable_"+this.options.style);
+					item.setStyles(this.css["disable_"+this.options.style]);
+				}else{
+					// item.removeClass("disable_"+this.options.style);
+					item.setStyles(this.css["notdisable_"+this.options.style]);
+				}
+			}
 		}.bind(this));
 	},
 	showMonth: function(year, month){
@@ -704,6 +714,23 @@ o2.widget.Calendar = o2.Calendar = new Class({
 				item.addClass("current_"+this.options.style);
 			}else{
 				item.removeClass("current_"+this.options.style);
+			}
+
+			if( this.options.enableDate ){
+				var flag = false;
+				var m = this.addZero(idx + 1, 2 );
+				if (this.isEnableDate(thisYear+"-"+m+"-01")){
+					flag = true;
+				}else if(this.isEnableDate(thisYear+"-"+m+"-"+new Date(thisYear+"-"+m+"-01").get('lastdayofmonth'))){
+					flag = true;
+				}
+				if( !flag ){
+					// item.addClass("disable_"+this.options.style);
+					item.setStyles(this.css["disable_"+this.options.style]);
+				}else{
+					// item.removeClass("disable_"+this.options.style);
+					item.setStyles(this.css["notdisable_"+this.options.style]);
+				}
 			}
 		}.bind(this));
 	},
@@ -775,10 +802,10 @@ o2.widget.Calendar = o2.Calendar = new Class({
 
 			if( this.options.enableDate ){
 				if( !this.isEnableDate(firstDate) ){
-					tds[i].addClass("disable_"+this.options.style);
+					// tds[i].addClass("disable_"+this.options.style);
 					tds[i].setStyles(this.css["disable_"+this.options.style]);
 				}else{
-					tds[i].removeClass("disable_"+this.options.style);
+					// tds[i].removeClass("disable_"+this.options.style);
 					tds[i].setStyles(this.css["notdisable_"+this.options.style]);
 				}
 			}
@@ -1260,7 +1287,11 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		}
 		if( !this.isEnableHour(this.cDate, this.cHour) ) {
 			var eHours = this.getEnableHours(this.cDate);
-			this.cHour = eHours.length ? eHours[0][0] : 0;
+			if( eHours.length ){
+				this.cHour = typeOf( eHours[0] ) === "array" ? eHours[0][0] : eHours[0]
+			}else{
+				this.cHour = 0;
+			}
 		}
 		return this.cHour;
 	},
@@ -1274,7 +1305,11 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		}
 		if( !this.isEnableMinute(this.cDate, this.cHour, this.cMinute) ){
 			var eMinutes = this.getEnableMinutes(this.cDate, this.cHour);
-			this.cMinute = eMinutes.length ? eMinutes[0][0] : 0;
+			if( eMinutes.length ){
+				this.cMinute = typeOf( eMinutes[0] ) === "array" ? eMinutes[0][0] : eMinutes[0]
+			}else{
+				this.cMinute = 0;
+			}
 		}
 		return this.cMinute;
 	},
@@ -1288,7 +1323,11 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		}
 		if( !this.isEnableSecond(this.cDate, this.cHour, this.cMinute, this.cSecond) ){
 			var eSeconds = this.getEnableSeconds(this.cDate, this.cHour, this.cMinute);
-			this.cSecond = eSeconds.length ? eSeconds[0][0] : 0;
+			if( eSeconds.length ){
+				this.cSecond = typeOf( eSeconds[0] ) === "array" ? eSeconds[0][0] : eSeconds[0]
+			}else{
+				this.cSecond = 0;
+			}
 		}
 		return this.cSecond;
 	},
@@ -1481,20 +1520,35 @@ o2.widget.Calendar = o2.Calendar = new Class({
 						}
 						break;
 					case "month" :
-						debugger;
-						if( calendar.options.monthOnly ){
-							var m = calendar.addZero(this.retrieve("month").toInt() + 1, 2 );
-							calendar._selectDate(this.retrieve("year")+"-"+ m , this);
-						}else{
-							calendar.changeViewToDay(this.retrieve("year"), this.retrieve("month"));
-						}
+					    var flag = true;
+					    if( calendar.options.enableDate ){
+					        flag = false;
+					        d = calendar.addZero(this.retrieve("month").toInt() + 1, 2 );
+							var y = this.retrieve("year");
+							if (calendar.isEnableDate(y+"-"+d+"-01")){
+								flag = true;
+							}else if(calendar.isEnableDate(y+"-"+d+"-"+new Date(y+"-"+d+"-01").get('lastdayofmonth'))){
+								flag = true;
+							}
+					    }
+					    if( flag ){
+                            if( calendar.options.monthOnly ){
+                                var m = calendar.addZero(this.retrieve("month").toInt() + 1, 2 );
+                                calendar._selectDate(this.retrieve("year")+"-"+ m , this);
+                            }else{
+                                calendar.changeViewToDay(this.retrieve("year"), this.retrieve("month"));
+                            }
+					    }
 						break;
 					case "year" :
-						if( calendar.options.yearOnly ){
-							calendar._selectDate(this.retrieve("year"), this);
-						}else{
-							calendar.changeViewToMonth(this.retrieve("year"));
-						}
+					    d = this.retrieve("year");
+					    if (calendar.isEnableDate(d+"-01-01") || calendar.isEnableDate(d+"-12-12")){
+                            if( calendar.options.yearOnly ){
+                                calendar._selectDate(this.retrieve("year"), this);
+                            }else{
+                                calendar.changeViewToMonth(this.retrieve("year"));
+                            }
+					    }
 						break;
 					case "time" :
 						//nothing
@@ -1586,10 +1640,28 @@ o2.widget.Calendar = o2.Calendar = new Class({
 			}
 
 			tds.addEvent("mouseover", function(){
+				var d;
 				switch (calendar.currentView) {
 					case "day" :
-						var d = this.retrieve("dateValue");
+						d = this.retrieve("dateValue");
 						if (calendar.isEnableDate(d)) this.setStyle("border", "1px solid #999999");
+						break;
+					case "month" :
+						if( calendar.options.enableDate ){
+							d = calendar.addZero(this.retrieve("month").toInt() + 1, 2 );
+							var y = this.retrieve("year");
+							if (calendar.isEnableDate(y+"-"+d+"-01")){
+								this.setStyle("border", "1px solid #999999");
+							}else if(calendar.isEnableDate(y+"-"+d+"-"+new Date(y+"-"+d+"-01").get('lastdayofmonth'))){
+								this.setStyle("border", "1px solid #999999");
+							}
+						}else{
+							this.setStyle("border", "1px solid #999999");
+						}
+						break;
+					case "year" :
+						d = this.retrieve("year");
+						if (calendar.isEnableDate(d+"-01-01") || calendar.isEnableDate(d+"-12-12")) this.setStyle("border", "1px solid #999999");
 						break;
 					default:
 						this.setStyle("border", "1px solid #999999");
@@ -1597,15 +1669,17 @@ o2.widget.Calendar = o2.Calendar = new Class({
 				}
 			});
 			tds.addEvent("mouseout", function(){
-				switch (calendar.currentView) {
-					case "day" :
-						var d = this.retrieve("dateValue");
-						if (calendar.isEnableDate(d)) this.setStyle("border", "1px solid #FFF");
-						break;
-					default:
-						this.setStyle("border", "1px solid #FFF");
-						break;
-				}
+				this.setStyle("border", "1px solid #FFF");
+				// var d;
+				// switch (calendar.currentView) {
+				// 	case "day" :
+				// 		d = this.retrieve("dateValue");
+				// 		if (calendar.isEnableDate(d)) this.setStyle("border", "1px solid #FFF");
+				// 		break;
+				// 	default:
+				// 		this.setStyle("border", "1px solid #FFF");
+				// 		break;
+				// }
 			});
 		}else{
 			switch (this.currentView) {

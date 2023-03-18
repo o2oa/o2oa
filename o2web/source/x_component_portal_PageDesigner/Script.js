@@ -363,6 +363,13 @@ MWF.xApplication.portal.PageDesigner.Script = new Class({
         this.addScriptItem(data.defaultValue, "code", data, "defaultValue");
         this.addScriptItem(data.validation, "code", data, "validation");
         this.addScriptItem(data.sectionByScript, "code", data, "sectionByScript");
+        this.addScriptItem(data.dateTimeRangeScript, "code", data, "dateTimeRangeScript");
+        this.addScriptItem(data.dateRangeScript, "code", data, "dateRangeScript");
+        this.addScriptItem(data.timeRangeScript, "code", data, "timeRangeScript"); 
+        this.addScriptItem(data.enableDate, "code", data, "enableDate");
+        this.addScriptItem(data.enableHours, "code", data, "enableHours");
+        this.addScriptItem(data.enableMinutes, "code", data, "enableMinutes");
+        this.addScriptItem(data.enableSeconds, "code", data, "enableSeconds");
         this.loadEventsScript(data);
     },
     loadCheckboxScript: function(data){
