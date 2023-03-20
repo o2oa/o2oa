@@ -307,8 +307,8 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
                     }.bind(this)
                 }
                 if (this.json.enableSeconds && this.json.enableSeconds.code) {
-                    options.enableSeconds = function (date, hour, mintue) {
-                        return this.form.Macro.fire(this.json.enableSeconds.code, this, {date: date, hour: hour, mintue: mintue});
+                    options.enableSeconds = function (date, hour, minute) {
+                        return this.form.Macro.fire(this.json.enableSeconds.code, this, {date: date, hour: hour, minute: minute});
                     }.bind(this)
                 }
                 break;
