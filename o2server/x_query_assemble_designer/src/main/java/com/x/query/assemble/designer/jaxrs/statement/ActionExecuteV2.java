@@ -1,8 +1,6 @@
 package com.x.query.assemble.designer.jaxrs.statement;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Parameter;
@@ -28,7 +26,7 @@ import com.x.base.core.project.logger.LoggerFactory;
 import com.x.base.core.project.script.AbstractResources;
 import com.x.base.core.project.scripting.JsonScriptingExecutor;
 import com.x.base.core.project.scripting.ScriptingFactory;
-import com.x.base.core.project.tools.ListTools;
+import com.x.base.core.project.tools.NumberTools;
 import com.x.base.core.project.webservices.WebservicesClient;
 import com.x.organization.core.express.Organization;
 import com.x.query.assemble.designer.Business;
@@ -37,252 +35,357 @@ import com.x.query.core.entity.schema.Statement;
 import com.x.query.core.entity.schema.Table;
 import com.x.query.core.express.statement.Runtime;
 
+import net.sf.jsqlparser.expression.Expression;
+import net.sf.jsqlparser.parser.CCJSqlParserUtil;
+import net.sf.jsqlparser.statement.select.PlainSelect;
+import net.sf.jsqlparser.statement.select.Select;
+
 class ActionExecuteV2 extends BaseAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionExecuteV2.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActionExecuteV2.class);
 
-	private static final String[] pageKeys = { "GROUP BY", " COUNT(" };
-	private static final String JOIN_KEY = " JOIN ";
-	private static final String JOIN_ON_KEY = " ON ";
+    ActionResult<Object> execute(EffectivePerson effectivePerson, String flag, String mode, Integer page, Integer size,
+            JsonElement jsonElement) throws Exception {
 
-	ActionResult<Object> execute(EffectivePerson effectivePerson, String flag, String mode, Integer page, Integer size,
-			JsonElement jsonElement) throws Exception {
+        LOGGER.debug("execute:{}, flag:{}, mode:{}, page:{}, size:{}, jsonElement:{}.",
+                effectivePerson::getDistinguishedName,
+                () -> flag,
+                () -> mode, () -> page, () -> size, () -> jsonElement);
+        ClassLoader classLoader = Business.getDynamicEntityClassLoader();
+        Thread.currentThread().setContextClassLoader(classLoader);
 
-		LOGGER.debug("execute:{}, flag:{}, page:{}, size:{}.", effectivePerson::getDistinguishedName, () -> flag,
-				() -> page, () -> size);
-		ClassLoader classLoader = Business.getDynamicEntityClassLoader();
-		Thread.currentThread().setContextClassLoader(classLoader);
+        Statement statement = null;
+        ActionResult<Object> result = new ActionResult<>();
+        Runtime runtime = null;
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            Business business = new Business(emc);
+            statement = emc.flag(flag, Statement.class);
+            if (null == statement) {
+                throw new ExceptionEntityNotExist(flag, Statement.class);
+            }
+            if (!business.executable(effectivePerson, statement)) {
+                throw new ExceptionAccessDenied(effectivePerson, statement);
+            }
+            runtime = this.runtime(effectivePerson, jsonElement, business, page, size);
+        }
+        Optional<Object> data = Optional.empty();
+        Optional<Long> count = Optional.empty();
+        if (StringUtils.equals(statement.getFormat(), Statement.FORMAT_SQL)
+                || StringUtils.equals(statement.getFormat(), Statement.FORMAT_SQLSCRIPT)) {
+            String sql = "";
+            if (StringUtils.equals(statement.getFormat(), Statement.FORMAT_SQL)) {
+                sql = statement.getSql();
+            } else {
+                sql = script(effectivePerson, runtime, statement.getSqlScriptText());
+            }
+            net.sf.jsqlparser.statement.Statement stmt = CCJSqlParserUtil.parse(sql);
+            data = executeSql(statement, sql, stmt, runtime);
+            count = executeSqlCount(effectivePerson, statement, stmt, runtime);
+        } else {
+            String jpql = "";
+            if (StringUtils.equals(statement.getFormat(), Statement.FORMAT_JPQL)) {
+                jpql = statement.getData();
+            } else {
+                jpql = script(effectivePerson, runtime, statement.getScriptText());
+            }
+            net.sf.jsqlparser.statement.Statement stmt = CCJSqlParserUtil.parse(jpql);
+            data = executeJpql(statement, jpql, stmt, runtime);
+            count = executeJpqlCount(effectivePerson, statement, stmt, runtime);
+        }
+        if (data.isPresent()) {
+            result.setData(data.get());
+        }
+        if (count.isPresent()) {
+            result.setCount(count.get());
+        }
+        return result;
+    }
 
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Object> result = new ActionResult<>();
-			Business business = new Business(emc);
-			Statement statement = emc.flag(flag, Statement.class);
-			if (null == statement) {
-				throw new ExceptionEntityNotExist(flag, Statement.class);
-			}
-			if (!business.executable(effectivePerson, statement)) {
-				throw new ExceptionAccessDenied(effectivePerson, statement);
-			}
+    private Optional<Object> executeSql(Statement statement, String sql, net.sf.jsqlparser.statement.Statement stmt,
+            Runtime runtime) {
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            Business business = new Business(emc);
+            Class<? extends JpaObject> cls = this.clazz(business, statement);
+            EntityManager em;
+            if (StringUtils.equalsIgnoreCase(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)
+                    && stmt instanceof net.sf.jsqlparser.statement.select.Select) {
+                em = business.entityManagerContainer().get(DynamicBaseEntity.class);
+            } else {
+                em = business.entityManagerContainer().get(cls);
+            }
+            LOGGER.debug("executeSql：{}.", sql::toString);
+            Query query = em.createNativeQuery(sql);
+            for (Parameter<?> p : query.getParameters()) {
+                if (runtime.hasParameter(p.getName())) {
+                    query.setParameter(p.getName(), runtime.getParameter(p.getName()));
+                }
+            }
+            if (stmt instanceof net.sf.jsqlparser.statement.select.Select) {
+                if (NumberTools.greaterThan(runtime.page, 0) && NumberTools.greaterThan(runtime.size, 0)) {
+                    query.setFirstResult((runtime.page - 1) * runtime.size);
+                    query.setMaxResults(runtime.size);
+                }
+                return Optional.of(query.getResultList());
+            } else {
+                business.entityManagerContainer().beginTransaction(cls);
+                Object data = Integer.valueOf(query.executeUpdate());
+                business.entityManagerContainer().commit();
+                return Optional.of(data);
+            }
+        } catch (Exception e) {
+            LOGGER.error(e);
+        }
+        return Optional.empty();
+    }
 
-			Runtime runtime = this.runtime(effectivePerson, jsonElement, business, page, size);
+    private Optional<Object> executeJpql(Statement statement, String jpql, net.sf.jsqlparser.statement.Statement stmt,
+            Runtime runtime) {
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            Business business = new Business(emc);
+            Class<? extends JpaObject> cls = this.clazz(business, statement);
+            EntityManager em;
+            if (StringUtils.equalsIgnoreCase(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)
+                    && stmt instanceof net.sf.jsqlparser.statement.select.Select) {
+                em = business.entityManagerContainer().get(DynamicBaseEntity.class);
+            } else {
+                em = business.entityManagerContainer().get(cls);
+            }
+            LOGGER.debug("executeJpql：{}.", jpql::toString);
+            Query query = em.createQuery(jpql);
+            for (Parameter<?> p : query.getParameters()) {
+                if (runtime.hasParameter(p.getName())) {
+                    query.setParameter(p.getName(), runtime.getParameter(p.getName()));
+                }
+            }
+            if (stmt instanceof net.sf.jsqlparser.statement.select.Select) {
+                if (NumberTools.greaterThan(runtime.page, 0) && NumberTools.greaterThan(runtime.size, 0)) {
+                    query.setFirstResult((runtime.page - 1) * runtime.size);
+                    query.setMaxResults(runtime.size);
+                }
+                return Optional.of(query.getResultList());
+            } else {
+                business.entityManagerContainer().beginTransaction(cls);
+                Object data = Integer.valueOf(query.executeUpdate());
+                business.entityManagerContainer().commit();
+                return Optional.of(data);
+            }
+        } catch (Exception e) {
+            LOGGER.error(e);
+        }
+        return Optional.empty();
+    }
 
-			Object data = null;
-			Object count = null;
-			switch (mode) {
-			case Statement.MODE_DATA:
-				switch (Objects.toString(statement.getFormat(), "")) {
-				case Statement.FORMAT_SCRIPT:
-					data = this.script(effectivePerson, business, classLoader, statement, runtime, mode);
-					break;
-				default:
-					data = this.jpql(business, classLoader, statement, runtime, mode);
-					break;
-				}
-				result.setData(data);
-				break;
-			case Statement.MODE_COUNT:
-				switch (Objects.toString(statement.getFormat(), "")) {
-				case Statement.FORMAT_SCRIPT:
-					count = this.script(effectivePerson, business, classLoader, statement, runtime, mode);
-					break;
-				default:
-					count = this.jpql(business, classLoader, statement, runtime, mode);
-					break;
-				}
-				result.setData(count);
-				result.setCount((Long) count);
-				break;
-			default:
-				switch (Objects.toString(statement.getFormat(), "")) {
-				case Statement.FORMAT_SCRIPT:
-					data = this.script(effectivePerson, business, classLoader, statement, runtime, Statement.MODE_DATA);
-					count = this.script(effectivePerson, business, classLoader, statement, runtime,
-							Statement.MODE_COUNT);
-					break;
-				default:
-					data = this.jpql(business, classLoader, statement, runtime, Statement.MODE_DATA);
-					count = this.jpql(business, classLoader, statement, runtime, Statement.MODE_COUNT);
-					break;
-				}
-				result.setData(data);
-				result.setCount((Long) count);
-			}
-			return result;
-		}
-	}
+    private Optional<Long> executeSqlCount(EffectivePerson effectivePerson, Statement statement,
+            net.sf.jsqlparser.statement.Statement stmt, Runtime runtime) throws Exception {
+        if ((!(stmt instanceof net.sf.jsqlparser.statement.select.Select))
+                || (StringUtils.equalsIgnoreCase(statement.getCountMethod(), Statement.COUNTMETHOD_IGNORE))) {
+            return Optional.empty();
+        }
+        if (StringUtils.equalsIgnoreCase(statement.getCountMethod(), Statement.COUNTMETHOD_AUTO)) {
+            return executeCountSqlAuto(statement, stmt, runtime);
+        } else {
+            return executeCountSqlAssign(effectivePerson, statement, runtime);
+        }
+    }
 
-	private Object script(EffectivePerson effectivePerson, Business business, ClassLoader classLoader,
-			Statement statement, Runtime runtime, String mode) throws Exception {
-		Object data = null;
-		ScriptContext scriptContext = this.scriptContext(effectivePerson, runtime);
-		String scriptText = statement.getScriptText();
-		if (Statement.MODE_COUNT.equals(mode)) {
-			scriptText = statement.getCountScriptText();
-		}
-		CompiledScript cs = ScriptingFactory.functionalizationCompile(scriptText);
-		String jpql = JsonScriptingExecutor.evalString(cs, scriptContext);
-		Class<? extends JpaObject> cls = this.clazz(business, classLoader, statement);
-		EntityManager em;
-		if (StringUtils.equalsIgnoreCase(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)
-				&& StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)) {
-			em = business.entityManagerContainer().get(DynamicBaseEntity.class);
-		} else {
-			em = business.entityManagerContainer().get(cls);
-		}
-		jpql = this.joinSql(jpql, business);
-		Query query;
-		String upJpql = jpql.toUpperCase();
-		LOGGER.debug("script jpql:{}.", jpql);
-		if (upJpql.indexOf(JOIN_KEY) > -1 && upJpql.indexOf(JOIN_ON_KEY) > -1) {
-			query = em.createNativeQuery(jpql);
-		} else {
-			query = em.createQuery(jpql);
-		}
-		for (Parameter<?> p : query.getParameters()) {
-			if (runtime.hasParameter(p.getName())) {
-				query.setParameter(p.getName(), runtime.getParameter(p.getName()));
-			}
-		}
-		if (StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)) {
-			if (Statement.MODE_COUNT.equals(mode)) {
-				data = query.getSingleResult();
-			} else {
-				if (isPageSql(jpql)) {
-					query.setFirstResult((runtime.page - 1) * runtime.size);
-					query.setMaxResults(runtime.size);
-				}
-				data = query.getResultList();
-			}
-		} else {
-			business.entityManagerContainer().beginTransaction(cls);
-			data = query.executeUpdate();
-			business.entityManagerContainer().commit();
-		}
-		return data;
-	}
+    private Optional<Long> executeCountSqlAuto(Statement statement,
+            net.sf.jsqlparser.statement.Statement stmt, Runtime runtime)
+            throws Exception {
+        Select select = (Select) stmt;
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            Business business = new Business(emc);
+            EntityManager em;
+            if (StringUtils.equalsIgnoreCase(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)) {
+                em = business.entityManagerContainer().get(DynamicBaseEntity.class);
+            } else {
+                Class<? extends JpaObject> cls = this.clazz(business, statement);
+                em = business.entityManagerContainer().get(cls);
+            }
+            PlainSelect plainSelect = (PlainSelect) select.getSelectBody();
+            Table table = (Table) plainSelect.getFromItem();
+            String txt = "select count(*) from " + table.getName();
+            String whereClause = plainSelect.getWhere().toString();
+            if (StringUtils.isNotBlank(whereClause)) {
+                txt += " " + whereClause;
+            }
+            LOGGER.debug("executeCountSqlAuto：{}.", txt::toString);
+            Query query = em.createQuery(txt);
+            for (Parameter<?> p : query.getParameters()) {
+                if (runtime.hasParameter(p.getName())) {
+                    query.setParameter(p.getName(), runtime.getParameter(p.getName()));
+                }
+            }
+            return Optional.of((Long) query.getSingleResult());
+        }
+    }
 
-	private Object jpql(Business business, ClassLoader classLoader, Statement statement, Runtime runtime, String mode)
-			throws Exception {
-		Object data = null;
-		Class<? extends JpaObject> cls = this.clazz(business, classLoader, statement);
-		EntityManager em;
-		if (StringUtils.equalsIgnoreCase(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)
-				&& StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)) {
-			em = business.entityManagerContainer().get(DynamicBaseEntity.class);
-		} else {
-			em = business.entityManagerContainer().get(cls);
-		}
-		String jpql = statement.getData();
-		if (Statement.MODE_COUNT.equals(mode)) {
-			jpql = statement.getCountData();
-		}
-		jpql = this.joinSql(jpql, business);
-		Query query;
-		String upJpql = jpql.toUpperCase();
-		LOGGER.debug("jpql:{}.", jpql);
-		if (upJpql.indexOf(JOIN_KEY) > -1 && upJpql.indexOf(JOIN_ON_KEY) > -1) {
-			query = em.createNativeQuery(jpql);
-			if (runtime.getParameters().size() > 0) {
-				List<Object> values = new ArrayList<>(runtime.getParameters().values());
-				for (int i = 0; i < values.size(); i++) {
-					query.setParameter(i + 1, values.get(i));
-				}
-			}
-		} else {
-			query = em.createQuery(jpql);
-		}
-		for (Parameter<?> p : query.getParameters()) {
-			if (runtime.hasParameter(p.getName())) {
-				query.setParameter(p.getName(), runtime.getParameter(p.getName()));
-			}
-		}
-		if (StringUtils.equalsIgnoreCase(statement.getType(), Statement.TYPE_SELECT)) {
-			if (Statement.MODE_COUNT.equals(mode)) {
-				data = query.getSingleResult();
-			} else {
-				if (isPageSql(jpql)) {
-					query.setFirstResult((runtime.page - 1) * runtime.size);
-					query.setMaxResults(runtime.size);
-				}
-				data = query.getResultList();
-			}
-		} else {
-			business.entityManagerContainer().beginTransaction(cls);
-			data = Integer.valueOf(query.executeUpdate());
-			business.entityManagerContainer().commit();
-		}
-		return data;
-	}
+    private Optional<Long> executeCountSqlAssign(EffectivePerson effectivePerson, Statement statement,
+            Runtime runtime) {
+        String sql = "";
+        if (StringUtils.equals(statement.getFormat(), Statement.FORMAT_SQL)) {
+            sql = statement.getSqlCount();
+        } else {
+            sql = script(effectivePerson, runtime, statement.getSqlCountScriptText());
+        }
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            Business business = new Business(emc);
+            EntityManager em;
+            if (StringUtils.equalsIgnoreCase(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)) {
+                em = business.entityManagerContainer().get(DynamicBaseEntity.class);
+            } else {
+                Class<? extends JpaObject> cls = this.clazz(business, statement);
+                em = business.entityManagerContainer().get(cls);
+            }
+            LOGGER.debug("executeCountSqlAssign：{}.", sql::toString);
+            Query query = em.createQuery(sql);
+            for (Parameter<?> p : query.getParameters()) {
+                if (runtime.hasParameter(p.getName())) {
+                    query.setParameter(p.getName(), runtime.getParameter(p.getName()));
+                }
+            }
+            return Optional.of((Long) query.getSingleResult());
+        } catch (Exception e) {
+            LOGGER.error(e);
+        }
+        return Optional.empty();
+    }
 
-	private boolean isPageSql(String sql) {
-		sql = sql.toUpperCase().replaceAll("\\s{1,}", " ");
-		for (String key : pageKeys) {
-			if (sql.indexOf(key) > -1) {
-				return false;
-			}
-		}
-		return true;
-	}
+    private Optional<Long> executeJpqlCount(EffectivePerson effectivePerson, Statement statement,
+            net.sf.jsqlparser.statement.Statement stmt, Runtime runtime) throws Exception {
+        if ((!(stmt instanceof net.sf.jsqlparser.statement.select.Select))
+                || (StringUtils.equalsIgnoreCase(statement.getCountMethod(), Statement.COUNTMETHOD_IGNORE))) {
+            return Optional.empty();
+        }
+        if (StringUtils.equalsIgnoreCase(statement.getCountMethod(), Statement.COUNTMETHOD_AUTO)) {
+            return executeCountJpqlAuto(statement, stmt, runtime);
+        } else {
+            return executeCountJpqlAssign(effectivePerson, statement, runtime);
+        }
+    }
 
-	@SuppressWarnings("unchecked")
-	private Class<? extends JpaObject> clazz(Business business, ClassLoader classLoader, Statement statement)
-			throws Exception {
-		Class<? extends JpaObject> cls = null;
-		if (StringUtils.equals(Statement.ENTITYCATEGORY_OFFICIAL, statement.getEntityCategory())
-				|| StringUtils.equals(Statement.ENTITYCATEGORY_CUSTOM, statement.getEntityCategory())) {
-			cls = (Class<? extends JpaObject>) classLoader.loadClass(statement.getEntityClassName());
-		} else {
-			Table table = business.entityManagerContainer().flag(statement.getTable(), Table.class);
-			if (null == table) {
-				throw new ExceptionEntityNotExist(statement.getTable(), Table.class);
-			}
-			DynamicEntity dynamicEntity = new DynamicEntity(table.getName());
-			cls = (Class<? extends JpaObject>) classLoader.loadClass(dynamicEntity.className());
-		}
-		return cls;
-	}
+    private Optional<Long> executeCountJpqlAuto(Statement statement,
+            net.sf.jsqlparser.statement.Statement stmt, Runtime runtime)
+            throws Exception {
+        Select select = (Select) stmt;
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            Business business = new Business(emc);
+            EntityManager em;
+            if (StringUtils.equalsIgnoreCase(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)) {
+                em = business.entityManagerContainer().get(DynamicBaseEntity.class);
+            } else {
+                Class<? extends JpaObject> cls = this.clazz(business, statement);
+                em = business.entityManagerContainer().get(cls);
+            }
+            PlainSelect plainSelect = (PlainSelect) select.getSelectBody();
+            net.sf.jsqlparser.schema.Table table = (net.sf.jsqlparser.schema.Table) plainSelect.getFromItem();
+            String txt = "select count(o) from " + table.getFullyQualifiedName() + " o";
+            Expression exp = plainSelect.getWhere();
+            if (null != exp) {
+                String whereClause = exp.toString();
+                if (StringUtils.isNotBlank(whereClause)) {
+                    txt += " " + whereClause;
+                }
+            }
+            LOGGER.debug("executeCountJpqlAuto：{}.", txt::toString);
+            Query query = em.createQuery(txt);
+            for (Parameter<?> p : query.getParameters()) {
+                if (runtime.hasParameter(p.getName())) {
+                    query.setParameter(p.getName(), runtime.getParameter(p.getName()));
+                }
+            }
+            return Optional.of((Long) query.getSingleResult());
+        }
+    }
 
-	private ScriptContext scriptContext(EffectivePerson effectivePerson, Runtime runtime) throws Exception {
-		ScriptContext scriptContext = ScriptingFactory.scriptContextEvalInitialServiceScript();
-		Resources resources = new Resources();
-		resources.setContext(ThisApplication.context());
-		resources.setApplications(ThisApplication.context().applications());
-		resources.setWebservicesClient(new WebservicesClient());
-		resources.setOrganization(new Organization(ThisApplication.context()));
-		Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
-		bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_RESOURCES, resources);
-		bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_EFFECTIVEPERSON, effectivePerson);
-		bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_PARAMETERS, gson.toJson(runtime.getParameters()));
-		return scriptContext;
-	}
+    private Optional<Long> executeCountJpqlAssign(EffectivePerson effectivePerson, Statement statement,
+            Runtime runtime) {
+        String jpql = "";
+        if (StringUtils.equals(statement.getFormat(), Statement.FORMAT_JPQL)) {
+            jpql = statement.getCountData();
+        } else {
+            jpql = script(effectivePerson, runtime, statement.getCountScriptText());
+        }
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            Business business = new Business(emc);
+            EntityManager em;
+            if (StringUtils.equalsIgnoreCase(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)) {
+                em = business.entityManagerContainer().get(DynamicBaseEntity.class);
+            } else {
+                Class<? extends JpaObject> cls = this.clazz(business, statement);
+                em = business.entityManagerContainer().get(cls);
+            }
+            LOGGER.debug("executeCountJpqlAssign：{}.", jpql::toString);
+            Query query = em.createQuery(jpql);
+            for (Parameter<?> p : query.getParameters()) {
+                if (runtime.hasParameter(p.getName())) {
+                    query.setParameter(p.getName(), runtime.getParameter(p.getName()));
+                }
+            }
+            return Optional.of((Long) query.getSingleResult());
+        } catch (Exception e) {
+            LOGGER.error(e);
+        }
+        return Optional.empty();
+    }
 
-	private String joinSql(String sql, Business business) throws Exception {
-		String upSql = sql.toUpperCase();
-		if (upSql.indexOf(JOIN_KEY) > -1 && upSql.indexOf(JOIN_ON_KEY) > -1) {
-			sql = sql.replaceAll("\\.", ".x");
-			sql = sql.replaceAll("\\.x\\*", ".*");
-			List<Table> tables = business.entityManagerContainer().fetchEqual(Table.class,
-					ListTools.toList(Table.NAME_FIELDNAME), Table.STATUS_FIELDNAME, Table.STATUS_BUILD);
-			for (Table table : tables) {
-				sql = sql.replaceAll(" " + table.getName() + " ",
-						" " + DynamicEntity.TABLE_PREFIX + table.getName().toUpperCase() + " ");
-			}
-		}
-		return sql;
-	}
+    private String script(EffectivePerson effectivePerson, Runtime runtime, String scriptText) {
+        String text = "";
+        try {
+            ScriptContext scriptContext = this.scriptContext(effectivePerson, runtime);
+            CompiledScript cs = ScriptingFactory.functionalizationCompile(scriptText);
+            text = JsonScriptingExecutor.evalString(cs, scriptContext);
+        } catch (Exception e) {
+            LOGGER.error(e);
+        }
+        return text;
+    }
 
-	public static class Resources extends AbstractResources {
+    @SuppressWarnings("unchecked")
+    private Class<? extends JpaObject> clazz(Business business, Statement statement) throws Exception {
+        Class<? extends JpaObject> cls = null;
+        if (StringUtils.equals(Statement.ENTITYCATEGORY_OFFICIAL, statement.getEntityCategory())
+                || StringUtils.equals(Statement.ENTITYCATEGORY_CUSTOM, statement.getEntityCategory())) {
+            cls = (Class<? extends JpaObject>) Thread.currentThread().getContextClassLoader()
+                    .loadClass(statement.getEntityClassName());
+        } else {
+            Table table = business.entityManagerContainer().flag(statement.getTable(), Table.class);
+            if (null == table) {
+                throw new ExceptionEntityNotExist(statement.getTable(), Table.class);
+            }
+            DynamicEntity dynamicEntity = new DynamicEntity(table.getName());
+            cls = (Class<? extends JpaObject>) Thread.currentThread().getContextClassLoader()
+                    .loadClass(dynamicEntity.className());
+        }
+        return cls;
+    }
 
-		private Organization organization;
+    private ScriptContext scriptContext(EffectivePerson effectivePerson, Runtime runtime)
+            throws Exception {
+        ScriptContext scriptContext = ScriptingFactory.scriptContextEvalInitialServiceScript();
+        Resources resources = new Resources();
+        resources.setContext(ThisApplication.context());
+        resources.setApplications(ThisApplication.context().applications());
+        resources.setWebservicesClient(new WebservicesClient());
+        resources.setOrganization(new Organization(ThisApplication.context()));
+        Bindings bindings = scriptContext.getBindings(ScriptContext.ENGINE_SCOPE);
+        bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_RESOURCES, resources);
+        bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_EFFECTIVEPERSON, effectivePerson);
+        bindings.put(ScriptingFactory.BINDING_NAME_SERVICE_PARAMETERS, gson.toJson(runtime.getParameters()));
+        return scriptContext;
+    }
 
-		public Organization getOrganization() {
-			return organization;
-		}
+    public static class Resources extends AbstractResources {
 
-		public void setOrganization(Organization organization) {
-			this.organization = organization;
-		}
+        private Organization organization;
 
-	}
+        public Organization getOrganization() {
+            return organization;
+        }
+
+        public void setOrganization(Organization organization) {
+            this.organization = organization;
+        }
+
+    }
 
 }
