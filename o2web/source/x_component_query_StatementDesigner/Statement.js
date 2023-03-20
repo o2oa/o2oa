@@ -1294,10 +1294,15 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
 
         if (this.jsonEditor) this.data.testParameters = this.jsonEditor.editor.getValue();
 
+        //暂时不需要type
+        var type = this.data.type;
+        delete  this.data.type;
+
         this.designer.actions.saveStatement(this.data, function (json) {
             this.designer.notice(this.designer.lp.save_success, "success", this.node, {"x": "left", "y": "bottom"});
 
             this.data.id = json.data.id;
+            this.data.type = type;
             if (this.lisNode) {
                 this.lisNode.getLast().set("text", this.data.name + "(" + this.data.alias + ")");
             }
@@ -1323,11 +1328,15 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         // if (this.jpqlScriptEditor) this.data.scriptText = this.jpqlScriptEditor.toJson().code;
 
         if (this.jsonEditor) this.data.testParameters = this.jsonEditor.editor.getValue();
+        //暂时不需要type
+        var type = this.data.type;
+        delete this.data.type;
 
         this.designer.actions.saveStatement(this.data, function (json) {
             //this.designer.notice(this.designer.lp.save_success, "success", this.node, {"x": "left", "y": "bottom"});
 
             this.data.id = json.data.id;
+            this.data.type = type;
             if (this.lisNode) {
                 this.lisNode.getLast().set("text", this.data.name + "(" + this.data.alias + ")");
             }
