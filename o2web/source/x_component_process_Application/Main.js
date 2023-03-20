@@ -101,7 +101,7 @@ MWF.xApplication.process.Application.Main = new Class({
 			this.countData.readCompleted = json.data.readCompleted;
 		}.bind(this));
 		this.action.DraftAction.listMyPaging(1,1, {"applicationList":[this.application.id]}).then(function(json){
-			this.countData.draft = json.size;
+			this.countData.draft = json.count;
 		}.bind(this));
 	},
 	loadList: function(type,ev,data){
@@ -836,6 +836,9 @@ MWF.xApplication.process.Application.DraftList = new Class({
 
 	},
 	_fixData : function (dataList){
+		dataList.each(function(d){
+			if(d.title === "") d.title = this.lp.unnamed;
+		}.bind(this));
 		return dataList;
 	},
 	loadFilter: function () {
