@@ -53,7 +53,13 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         if (!this.json.type) this.json.type = "select";
         if (!this.json.format) this.json.format = "jpql";
         if (!this.json.entityCategory) this.json.entityCategory = "official";
-        if (!this.json.countMethod)this.json.countMethod = "auto";
+        if (!this.json.countMethod){
+            if( this.json.countData || this.json.countScriptText ){
+                this.json.countMethod = "assign";
+            }else{
+                this.json.countMethod = "auto";
+            }
+        }
         if (!this.json.entityClassName) this.json.entityClassName = ""; //"com.x.processplatform.core.entity.content.Task";
     },
     autoSave: function () {
@@ -172,10 +178,52 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         this.tabQueryNode = Element("div");
         this.queryTabPageNode.inject(this.tabQueryNode);
         this.queryPage = this.statementTab.addTab(this.tabQueryNode, this.designer.lp.queryStatement);
+        this.queryPage.addEvent("postShow", function(){
+            switch (this.json.format) {
+                case "script":
+                    if( this.jpqlScriptEditor ){
+                        this.jpqlScriptEditor.container.setStyle("height", ""+this.getEditorHeight()+"px");
+                        this.jpqlScriptEditor.resizeContentNodeSize();
+                    }
+                    break;
+                case "sql":
+                    if(this.sqlEditor)this.sqlEditor.resize();
+                    break;
+                case "sqlScript":
+                    if( this.sqlScriptEditor ){
+                        this.sqlScriptEditor.container.setStyle("height", ""+this.getEditorHeight()+"px");
+                        this.sqlScriptEditor.resizeContentNodeSize();
+                    }
+                    break;
+                default:
+                    if(this.jpqlEditor)this.jpqlEditor.resize();
+            }
+        }.bind(this))
 
         this.tabCountNode = Element("div");
         this.countTabPageNode.inject(this.tabCountNode);
         this.countPage = this.statementTab.addTab(this.tabCountNode, this.designer.lp.countStatement);
+        this.countPage.addEvent("postShow", function(){
+            switch (this.json.format) {
+                case "script":
+                    if( this.jpqlCountScriptEditor ){
+                        this.jpqlCountScriptEditor.container.setStyle("height", ""+this.getEditorHeight()+"px");
+                        this.jpqlCountScriptEditor.resizeContentNodeSize();
+                    }
+                    break;
+                case "sql":
+                    if( this.sqlCountEditor )this.sqlCountEditor.resize();
+                    break;
+                case "sqlScript":
+                    if( this.sqlCountScriptEditor ){
+                        this.sqlCountScriptEditor.container.setStyle("height", ""+this.getEditorHeight()+"px");
+                        this.sqlCountScriptEditor.resizeContentNodeSize();
+                    }
+                    break;
+                default:
+                    if( this.jpqlCountEditor )this.jpqlCountEditor.resize();
+            }
+        }.bind(this))
 
         // this.tabSqlNode = Element("div");
         // this.sqlTabPageNode.inject(this.tabSqlNode);
@@ -185,6 +233,10 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
 
 
         this.queryPage.showTabIm();
+
+        if( ["auto", "ignore"].contains(this.json.countMethod) ){
+            this.countPage.disableTab();
+        }
 
         // this.queryPage.addEvent("postShow", function(){
         //     if( this.view ){
@@ -362,7 +414,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         if( flag ){
             this.statementTypeSelect.options[0].selected = true;
             this.json.type = this.statementTypeSelect.options[0].value;
-            this.statementTypeSelect.fireEvent("change");
+            // this.statementTypeSelect.fireEvent("change");
         }
     },
     loadFieldSelect : function(){
@@ -434,8 +486,6 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
 
         this.designerArea.setStyle("height", ""+designAreaHeight+"px");
 
-        debugger;
-
         var editorHeight = designAreaHeight - 98;
 
         if(this.jpqlEditorNode)this.jpqlEditorNode.setStyle( "height", ""+editorHeight+"px" );
@@ -476,6 +526,12 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             this.setViewSize();
             this.view.setContentHeight()
         }
+    },
+    getEditorHeight: function(){
+        var size = this.areaNode.getSize();
+        var height = size.y;
+        var designAreaHeight = this.designerAreaPercent*height - 52;
+        return designAreaHeight - 98;
     },
 
     setRunnerSize: function () {
@@ -528,6 +584,8 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             }else{
                 this._loadJpqlEditor();
             }
+        }else{
+            this.jpqlEditor.resize();
         }
     },
     _loadJpqlEditor: function () {
@@ -560,6 +618,8 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             }else{
                 this._loadJpqlCountEditor();
             }
+        }else{
+            this.jpqlCountEditor.resize();
         }
     },
     _loadJpqlCountEditor : function(){
@@ -604,6 +664,8 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             }else{
                 this._loadSqlEditor();
             }
+        }else{
+            this.sqlEditor.resize();
         }
     },
     _loadSqlEditor: function () {
@@ -637,6 +699,9 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             }else{
                 this._loadSqlCountEditor();
             }
+        }else{
+            // this.sqlCountEditorNode.setStyle( "height", ""+editorHeight+"px" );
+            this.sqlCountEditor.resize();
         }
     },
     _loadSqlCountEditor : function(){
@@ -936,13 +1001,29 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                 this.runPage.showTabIm();
                 this.viewPage.disableTab();
             } else {
-                this.countPage.enableTab(true);
+                if( this.json.countMethod === "assign" )this.countPage.enableTab(true);
                 this.viewPage.enableTab(true);
             }
         }.bind(this));
 
         this.countMethodSelect.addEvent("change", function () {
             this.json.countMethod = this.countMethodSelect.options[this.countMethodSelect.selectedIndex].value;
+            switch (this.json.countMethod) {
+                case "auto":
+                case "ignore":
+                    if (this.json.type === "select") {
+                        this.queryPage.showTabIm();
+                        this.countPage.disableTab();
+                    }
+                    break;
+                // case "assign":
+                //     break;
+                default:
+                    if (this.json.type === "select") {
+                        this.countPage.enableTab();
+                    }
+                    break;
+            }
         }.bind(this));
 
         this.fieldSelect.addEvent("change", function (ev) {
@@ -1140,14 +1221,21 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
         var mode = "data";
         if (this.data.type === "select") {
             var getMode = function (queryName, countName) {
-                if (this.data[queryName] && this.data[countName]) {
-                    return "all";
-                } else if (this.data[queryName] && !this.data[countName]) {
-                    return "data";
-                } else if (!this.data[queryName] && this.data[countName]) {
-                    return "count";
-                } else {
-                    return false;
+                switch (this.data.countMethod) {
+                    case "ignore":
+                        return this.data[queryName] ? "data" : false;
+                    case "auto":
+                        return this.data[queryName] ? "all" : false;
+                    default:
+                        if (this.data[queryName] && this.data[countName]) {
+                            return "all";
+                        } else if (this.data[queryName] && !this.data[countName]) {
+                            return "data";
+                        } else if (!this.data[queryName] && this.data[countName]) {
+                            return "count";
+                        } else {
+                            return false;
+                        }
                 }
             }.bind(this);
             switch (this.data.format) {

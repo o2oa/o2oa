@@ -44,6 +44,10 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
     "queryStatement": "查询语句",
     "countStatement": "总数语句",
 
+    "ignore": "忽略",
+    "auto": "自动",
+    "assign": "指定",
+
     "mastInputParameter" : "请输入参数",
     "pathExecption" : "路径的写法是\"表别名.字段名\",格式不正确",
 

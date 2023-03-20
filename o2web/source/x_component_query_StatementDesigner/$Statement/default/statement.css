@@ -26,6 +26,7 @@
     line-height: 30px;
     float: left;
     margin-right: 10px;
+    user-select: text;
 }
 .o2_statement_statementDesignerSelectTable {
     width: 80px;

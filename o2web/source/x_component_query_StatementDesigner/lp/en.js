@@ -24,8 +24,10 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
     "fileldSelectNote": "-Insert a field after select-",
 
     "statementFormat": "How to create a statement:",
-    "statementJpql": "Write JPQL",
-    "statementScript": "Write Script",
+    "statementJpql": "JPQL",
+    "statementScript": "JPQL Script",
+    "nativeSql": "SQL",
+    "nativeSqlScript": "SQL Script",
 
     "statementCategory": "Access Object Type",
     "scriptTitle": "Create JPQL by script",
@@ -42,6 +44,10 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
     "newLineJsonError": "Insert data error, data format is wrong",
     "queryStatement": "Query Statement",
     "countStatement": "Count Statement",
+
+    "ignore": "Ignore",
+    "auto": "Auto",
+    "assign": "Assign",
 
     "mastInputParameter": "Please enter a parameter",
     "pathExecption": "The path is written as \"table alias. Field name\", the format is incorrect",
