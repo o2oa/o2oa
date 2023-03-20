@@ -95,8 +95,8 @@ MWF.xApplication.process.Application.LP = {
 	"resetAction" : "转交",
 	"resetActionFor" : "转交给",
 	"readProcess" : "待阅处理",
-	"editAction" : "维护"
-
+	"editAction" : "维护",
+	"unnamed" : "无标题"
 
 
 
