@@ -3,6 +3,7 @@ package com.x.attendance.assemble.control.jaxrs.v2.group;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionEmptyParameter;
 import com.x.attendance.assemble.control.jaxrs.v2.ExceptionNotExistObject;
 import com.x.attendance.entity.v2.AttendanceV2Group;
+import com.x.attendance.entity.v2.AttendanceV2GroupWorkDayProperties;
 import com.x.attendance.entity.v2.AttendanceV2Shift;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -32,14 +33,16 @@ public class ActionGet extends BaseAction {
             }
             Wo wo = Wo.copier.copy(group);
             // 班次对象返回
-            AttendanceV2Shift shift = emc.find(group.getShiftId(), AttendanceV2Shift.class);
-            if (shift != null) {
-                wo.setShift(shift);
+            if (group.getWorkDateProperties() != null && AttendanceV2Group.CHECKTYPE_Fixed.equals( group.getCheckType())) {
+                AttendanceV2GroupWorkDayProperties properties = group.getWorkDateProperties();
+                setPropertiesShiftData(emc, properties);
             }
             result.setData(wo);
         }
         return result;
     }
+
+
 
     public static class Wo extends AttendanceV2Group {
 
@@ -47,15 +50,6 @@ public class ActionGet extends BaseAction {
 
         static WrapCopier<AttendanceV2Group, Wo> copier = WrapCopierFactory.wo(AttendanceV2Group.class, Wo.class, null,
                 JpaObject.FieldsInvisible);
-        @FieldDescribe("考勤组的班次对象")
-        private AttendanceV2Shift shift;
 
-        public AttendanceV2Shift getShift() {
-            return shift;
-        }
-
-        public void setShift(AttendanceV2Shift shift) {
-            this.shift = shift;
-        }
     }
 }

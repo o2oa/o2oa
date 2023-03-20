@@ -55,16 +55,19 @@ public class ActionCreateUpdate extends BaseAction {
             if (wi.getParticipateList() == null || wi.getParticipateList().isEmpty()) {
                 throw new ExceptionEmptyParameter("考勤打卡人员、组织");
             }
-            if (StringUtils.isEmpty(wi.getShiftId())) {
-                throw new ExceptionEmptyParameter("关联班次");
+            // 固定班制
+            if (AttendanceV2Group.CHECKTYPE_Fixed.equals(wi.getCheckType())) {
+                if (wi.getWorkDateProperties() == null || !wi.getWorkDateProperties().validateNotEmpty()) {
+                    throw new ExceptionEmptyParameter("考勤工作日设置");
+                }
+            } else if (AttendanceV2Group.CHECKTYPE_Free.equals(wi.getCheckType())) { // 自由班制
+                if (StringUtils.isEmpty(wi.getWorkDateList())) {
+                    throw new ExceptionEmptyParameter("考勤工作日设置");
+                }
+            } else {
+                throw new   ExceptionEmptyParameter("打卡类型");
             }
-            AttendanceV2Shift shift = emc.find(wi.getShiftId(), AttendanceV2Shift.class);
-            if (shift == null) {
-                throw new ExceptionNotExistObject("关联班次"+wi.getShiftId());
-            }
-            if (StringUtils.isEmpty(wi.getWorkDateList())) {
-                throw new ExceptionEmptyParameter("考勤工作日设置");
-            }
+
             if (wi.getWorkPlaceIdList() == null || wi.getWorkPlaceIdList().isEmpty()) {
                 throw new ExceptionEmptyParameter("工作场所列表");
             }
@@ -77,7 +80,7 @@ public class ActionCreateUpdate extends BaseAction {
             } else { // 修改
                 Wi.copier.copy(wi, group);
             }
-            group.setCheckType(AttendanceV2Group.CHECKTYPE_Fixed); // 目前固定
+            group.setCheckType(wi.getCheckType());
             group.setOperator(effectivePerson.getDistinguishedName());
             emc.beginTransaction(AttendanceV2Group.class);
             emc.persist(group, CheckPersistType.all);

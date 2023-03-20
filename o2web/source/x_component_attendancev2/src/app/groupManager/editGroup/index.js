@@ -18,6 +18,7 @@ export default content({
       fTitle: lp.groupAdd,
       form: {
         groupName: "",
+        checkType: "1", // 1 固定班制 2 自由打卡
         participateList: [],
         unParticipateList: [],
         workPlaceIdList: [],
@@ -29,6 +30,7 @@ export default content({
       // 班次选择器使用
       shiftSelectorOpen: false,
       shiftSelector: {
+        key: "all", // 当前给那个地方选择班次
         shiftSelected: {},
       },
       // 工作场所选择器使用
@@ -36,35 +38,75 @@ export default content({
       workPlaceSelector: {
         workAddressSelected: []
       },
+
+      // 固定班制 选择班次和打卡日子
+      workDay: {
+        monday: {
+          checked: true,
+          shiftId: "",
+          shiftSelected: {},
+        },
+        tuesday: {
+          checked: true,
+          shiftId: "",
+          shiftSelected: {},
+        },
+        wednesday: {
+          checked: true,
+          shiftId: "",
+          shiftSelected: {},
+        },
+        thursday: {
+          checked: true,
+          shiftId: "",
+          shiftSelected: {},
+        },
+        friday: {
+          checked: true,
+          shiftId: "",
+          shiftSelected: {},
+        },
+        saturday: {
+          checked: false,
+          shiftId: "",
+          shiftSelected: {},
+        },
+        sunday: {
+          checked: false,
+          shiftId: "",
+          shiftSelected: {},
+        },
+      },
+      // 自由工时 选择打卡日子
       workDateList: [], // 选中的days
       days: [
         {
-          name: "周日",
-          value: "0",
-        },
-        {
-          name: "周一",
+          name: lp.day.Monday,
           value: "1",
         },
         {
-          name: "周二",
+          name: lp.day.Tuesday,
           value: "2",
         },
         {
-          name: "周三",
+          name: lp.day.Wednesday,
           value: "3",
         },
         {
-          name: "周四",
+          name: lp.day.Thursday,
           value: "4",
         },
         {
-          name: "周五",
+          name: lp.day.Friday,
           value: "5",
         },
         {
-          name: "周六",
+          name: lp.day.Saturday,
           value: "6",
+        },
+        {
+          name: lp.day.Sunday,
+          value: "0",
         },
       ],
     };
@@ -74,29 +116,82 @@ export default content({
     if (this.bind.updateId) {
       const group = await groupAction("get", this.bind.updateId);
       if (group) {
-        this.bind.form = group;
         console.debug(group);
+        this.bind.form = group;
+        if (group.workDateProperties) {
+          // 处理成前端使用的对象 
+          const dayList = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
+          for (let key of dayList) {
+            if (group.workDateProperties[key]) {
+              let day = group.workDateProperties[key];
+              if (day && day.shift) {
+                day.shiftSelected = day.shift;
+                group.workDateProperties[key] = day;
+              }
+            } else {
+              group.workDateProperties[key] = {
+                checked: false
+              }
+            }
+          }
+          this.bind.workDay = group.workDateProperties;
+        }
       }
     }
   },
   afterRender() {
     if (this.bind.form && this.bind.form.id && this.bind.form.id !== "") { // 修改
       this.bind.fTitle = this.bind.lp.groupUpdate;
-      // 班次对象
-      this.bind.shiftSelector.shiftSelected = this.bind.form.shift;
       // 回查工作场所对象
       this.loadWorkPlaceObjectsByIds(this.bind.form.workPlaceIdList);
       // 日期列表分拆
-      const dateList = this.bind.form.workDateList.split(",");
-      this.bind.workDateList= dateList || [];
+      if (this.bind.form.workDateList) {
+        const dateList = this.bind.form.workDateList.split(",");
+        this.bind.workDateList= dateList || [];
+      }
     }
     // 时间选择器
     this.loadRequiredDateSelector();
     this.loadNoNeedDateSelector();
   },
-  // 打开班次选择器
-  async openShiftSelect() {
+  // 选择工作日
+  changeWorkDayChecked(key) {
+    if (key && this.bind.workDay[key]) {
+      this.bind.workDay[key].checked = !this.bind.workDay[key].checked;
+      if (!this.bind.workDay[key].checked) {
+        this.bind.workDay[key].shiftSelected = {}; 
+      }
+    }
+  },
+  // 打开班次选择器 批量设置 已经选择的
+  openShiftSelect(key) {
+    this.bind.shiftSelector.key = key || "all";
     this.bind.shiftSelectorOpen = true;
+  },
+  // 班次选择器调用 返回选中的班次对象
+  setShiftData(shift) {
+    if (!shift) {
+      return;
+    }
+    // 新对象 清除绑定信息
+    const newShift =  {
+      id: shift.id,
+      shiftName: shift.shiftName,
+    };
+    if (this.bind.shiftSelector.key  === "all") {
+      this.bind.shiftSelector.shiftSelected = newShift;
+      // 其它班次
+      for (let prop in this.bind.workDay) {
+        if (this.bind.workDay[prop] && this.bind.workDay[prop].checked) {
+          this.bind.workDay[prop].shiftSelected = newShift;
+        }
+      }
+    } else {
+      if (this.bind.workDay[this.bind.shiftSelector.key]) {
+        this.bind.workDay[this.bind.shiftSelector.key].shiftSelected = newShift;
+      }
+    }
+    console.debug(this.bind);
   },
   // 关闭班次选择器
   closeShiftSelect() {
@@ -117,6 +212,10 @@ export default content({
     const list = await attendanceWorkPlaceV2Action("listWithWorkPlaceObject", {"idList": ids});
     this.bind.workPlaceSelector.workAddressSelected = list || [];
     
+  },
+  // 切换考勤类型
+  clickChangeType(type) {
+    this.bind.form.checkType = type;
   },
   // 打开工作场所选择器
   async openWorkPlaceSelector() {
@@ -141,9 +240,11 @@ export default content({
       this.bind.workPlaceSelector.workAddressSelected.splice(i, 1);
     }
   },
+  // 是否允许外勤
   clickAllowFieldWork() {
     this.bind.form.allowFieldWork = !this.bind.form.allowFieldWork;
   },
+  // 外勤是否必填说明
   clickRequiredFieldWorkRemarks() {
     this.bind.form.requiredFieldWorkRemarks = !this.bind.form.requiredFieldWorkRemarks;
   },
@@ -253,19 +354,51 @@ export default content({
       o2.api.page.notice(lp.groupForm.participatesErrorNotEmtpy, 'error');
       return ;
     }
-    // 班次选择
-    const shiftSelected = this.bind.shiftSelector.shiftSelected;
-    if (!shiftSelected || isEmpty(shiftSelected.id)) {
-      o2.api.page.notice(lp.groupForm.shiftErrorNotEmpty, 'error');
-      return ;
+    // 根据考勤类型判断
+    if (myForm.checkType === "1") {
+        let flag = false;
+        let isBreak = false;
+        let workDateProperties = {};
+        for (let key in this.bind.workDay) {
+          const day = this.bind.workDay[key];
+          if (day.checked && (!day.shiftSelected || isEmpty(day.shiftSelected.id))) {
+            isBreak = true;
+            break;
+          }
+          if (day.checked && day.shiftSelected && !isEmpty(day.shiftSelected.id)) {
+            flag = true;
+            workDateProperties[key] = {
+              shiftId: day.shiftSelected.id,
+              checked: day.checked,
+            };
+          }
+          if (!day.checked) {
+            workDateProperties[key] = {
+              checked: false,
+            };
+          }
+        }
+        if (isBreak) {
+          o2.api.page.notice(lp.groupForm.shiftErrorNotEmpty, 'error');
+          return;
+        }
+        if (!flag) {
+          o2.api.page.notice(lp.groupForm.timeErrorNotEmpty, 'error');
+          return ;
+        }
+        myForm.workDateProperties = workDateProperties;
+    } else if (myForm.checkType === "2") {
+        // 工作日期 day
+        if (this.bind.workDateList.length < 1) {
+          o2.api.page.notice(lp.groupForm.timeErrorNotEmpty, 'error');
+          return ;
+        }
+        myForm.workDateList = this.bind.workDateList.join(",");
+    } else {
+      o2.api.page.notice(lp.groupForm.checkTypeError, 'error');
+      return;
     }
-    myForm.shiftId = shiftSelected.id; // 班次
-    // 工作日期 day
-    if (this.bind.workDateList.length < 1) {
-      o2.api.page.notice(lp.groupForm.timeErrorNotEmpty, 'error');
-      return ;
-    }
-    myForm.workDateList = this.bind.workDateList.join(",");
+    
     // 工作地址
     if ( this.bind.workPlaceSelector.workAddressSelected.length < 1) {
       o2.api.page.notice(lp.groupForm.workPlaceErrorNotEmpty, 'error');

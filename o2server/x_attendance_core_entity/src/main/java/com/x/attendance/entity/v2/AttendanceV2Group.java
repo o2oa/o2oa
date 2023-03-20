@@ -128,9 +128,16 @@ public class AttendanceV2Group extends SliceJpaObject {
 	private List<String> trueParticipantList; // 无需考勤打卡的人员 只有人员
 
 	public static final String workDateList_FIELDNAME = "workDateList";
-	@FieldDescribe("考勤工作日设置.")
+	@FieldDescribe("考勤工作日设置.打卡类型为 自由打卡 的时候需要配置，如 1,2,3,4,5 。 0-6代表周日到周六.")
 	@Column(length = length_64B, name = ColumnNamePrefix + workDateList_FIELDNAME)
 	private String workDateList; // 打卡的工作日设置  如 1,2,3,4,5 。 0-6代表周日到周六
+
+	public static final String workDateProperties_FIELDNAME = "workDateProperties";
+	@FieldDescribe("考勤工作日设置. 打卡类型为 固定班制 的时候需要配置，可以为每个打卡日配置班次")
+	@Persistent
+	@Strategy(JsonPropertiesValueHandler)
+	@Column(length = JpaObject.length_10M, name = ColumnNamePrefix + workDateProperties_FIELDNAME)
+	private AttendanceV2GroupWorkDayProperties workDateProperties;
 
 	public static final String allowFieldWork_FIELDNAME = "allowFieldWork";
 	@FieldDescribe("是否允许外勤打卡.")
@@ -175,6 +182,14 @@ public class AttendanceV2Group extends SliceJpaObject {
 	private List<String> noNeedCheckInDateList;
 
 
+	public AttendanceV2GroupWorkDayProperties getWorkDateProperties() {
+		return workDateProperties;
+	}
+
+	public void setWorkDateProperties(AttendanceV2GroupWorkDayProperties workDateProperties) {
+		this.workDateProperties = workDateProperties;
+	}
+
 	public String getCheckType() {
 		return checkType;
 	}
@@ -191,13 +206,6 @@ public class AttendanceV2Group extends SliceJpaObject {
 		this.groupName = groupName;
 	}
 
-	public String getShiftId() {
-		return shiftId;
-	}
-
-	public void setShiftId(String shiftId) {
-		this.shiftId = shiftId;
-	}
 
 	public String getOperator() {
 		return operator;

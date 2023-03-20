@@ -3,6 +3,7 @@ package com.x.attendance.assemble.control.jaxrs.v2.group;
 import com.google.gson.JsonElement;
 import com.x.attendance.assemble.control.Business;
 import com.x.attendance.entity.v2.AttendanceV2Group;
+import com.x.attendance.entity.v2.AttendanceV2GroupWorkDayProperties;
 import com.x.attendance.entity.v2.AttendanceV2Shift;
 import com.x.base.core.container.EntityManagerContainer;
 import com.x.base.core.container.factory.EntityManagerContainerFactory;
@@ -15,6 +16,7 @@ import com.x.base.core.project.http.ActionResult;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.logger.Logger;
 import com.x.base.core.project.logger.LoggerFactory;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
@@ -50,9 +52,9 @@ public class ActionListByPage extends BaseAction {
                     group.setTrueParticipantSize(group.getTrueParticipantList().size());
                     group.setTrueParticipantList(null);
                     // 班次对象返回
-                    AttendanceV2Shift shift = emc.find(group.getShiftId(), AttendanceV2Shift.class);
-                    if (shift != null) {
-                        group.setShift(shift);
+                    if (group.getWorkDateProperties() != null && AttendanceV2Group.CHECKTYPE_Fixed.equals( group.getCheckType())) {
+                        AttendanceV2GroupWorkDayProperties properties = group.getWorkDateProperties();
+                        setPropertiesShiftData(emc, properties);
                     }
                 }
             }

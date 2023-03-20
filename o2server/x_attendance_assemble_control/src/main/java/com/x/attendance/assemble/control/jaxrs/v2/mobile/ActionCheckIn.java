@@ -55,16 +55,6 @@ public class ActionCheckIn extends BaseAction {
             if (groups == null || groups.isEmpty()) {
                 throw new ExceptionNotExistObject("考勤组信息");
             }
-            AttendanceV2Group group = groups.get(0);
-            // 查询班次对象
-            AttendanceV2Shift shift = emc.find(group.getShiftId(), AttendanceV2Shift.class);
-            if (shift == null || shift.getProperties() == null) {
-                throw new ExceptionNotExistObject("班次信息");
-            }
-            List<AttendanceV2ShiftCheckTime> timeList = shift.getProperties().getTimeList();
-            if (timeList == null || timeList.isEmpty()) {
-                throw new ExceptionNotExistObject("对应的上下班打卡时间");
-            }
             AttendanceV2WorkPlace workPlace = null;
             if (StringUtils.isNotEmpty(wi.getWorkPlaceId())) {
                 workPlace = emc.find(wi.getWorkPlaceId(), AttendanceV2WorkPlace.class);
@@ -79,235 +69,104 @@ public class ActionCheckIn extends BaseAction {
             if (record == null) {
                 throw new ExceptionNotExistObject("打卡记录");
             }
-            if (StringUtils.isNotEmpty(record.getPreDutyTimeBeforeLimit())) {
-                Date beforeOnDuty = DateTools.parse(today + " " + record.getPreDutyTimeBeforeLimit(), DateTools.format_yyyyMMddHHmm);
-                if (nowDate.before(beforeOnDuty)) { // 不到开始时间不能打卡
-                    throw new ExceptionTimeError("不到开始时间不能打卡");
+            String checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL;
+            // 是否有班次信息
+            if (StringUtils.isNotEmpty(record.getShiftId())) {
+                AttendanceV2Shift shift = emc.find(record.getShiftId(), AttendanceV2Shift.class);
+                if (shift == null) {
+                    throw new ExceptionNotExistObject("班次对象");
                 }
-            }
-            if (StringUtils.isNotEmpty(record.getPreDutyTimeAfterLimit())) {
-                Date afterDuty = DateTools.parse(today + " " + record.getPreDutyTimeAfterLimit(), DateTools.format_yyyyMMddHHmm);
-                if (nowDate.after(afterDuty)) { // 超过结束时间不能打卡
-                    throw new ExceptionTimeError("超过结束时间不能打卡");
+                if (StringUtils.isNotEmpty(record.getPreDutyTimeBeforeLimit())) {
+                    Date beforeOnDuty = DateTools.parse(today + " " + record.getPreDutyTimeBeforeLimit(), DateTools.format_yyyyMMddHHmm);
+                    if (nowDate.before(beforeOnDuty)) { // 不到开始时间不能打卡
+                        throw new ExceptionTimeError("不到开始时间不能打卡");
+                    }
                 }
-            }
-            // 上班打卡
-            if (record.getCheckInType().equals(AttendanceV2CheckInRecord.OnDuty)) {
+                if (StringUtils.isNotEmpty(record.getPreDutyTimeAfterLimit())) {
+                    Date afterDuty = DateTools.parse(today + " " + record.getPreDutyTimeAfterLimit(), DateTools.format_yyyyMMddHHmm);
+                    if (nowDate.after(afterDuty)) { // 超过结束时间不能打卡
+                        throw new ExceptionTimeError("超过结束时间不能打卡");
+                    }
+                }
+                // 上班打卡
+                if (record.getCheckInType().equals(AttendanceV2CheckInRecord.OnDuty)) {
 
-                Date dutyTime = DateTools.parse(today + " " + record.getPreDutyTime(), DateTools.format_yyyyMMddHHmm);
-                String checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL;
-                // 迟到
-                if (nowDate.after(dutyTime)) {
-                    checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_Late;
-                }
-                // 严重迟到
-                if (shift.getSeriousTardinessLateMinutes() > 0) {
-                    Date seriousLateTime = DateTools.addMinutes(dutyTime, shift.getSeriousTardinessLateMinutes());
-                    if (nowDate.after(seriousLateTime)) {
-                        checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_SeriousLate;
+                    Date dutyTime = DateTools.parse(today + " " + record.getPreDutyTime(), DateTools.format_yyyyMMddHHmm);
+                    checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL;
+                    // 迟到
+                    if (nowDate.after(dutyTime)) {
+                        checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_Late;
                     }
-                }
-                // 可以晚到
-                if (StringUtils.isNotEmpty(shift.getLateAndEarlyOnTime())) {
-                    int minute = -1;
-                    try {
-                        minute = Integer.parseInt(shift.getLateAndEarlyOnTime());
-                    }catch (Exception ignored) {
-                    }
-                    if (minute > 0) {
-                        Date lateAndEarlyOnTime = DateTools.addMinutes(dutyTime, minute);
-                        if (nowDate.before(lateAndEarlyOnTime)) {
-                            checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL;
+                    // 严重迟到
+                    if (shift.getSeriousTardinessLateMinutes() > 0) {
+                        Date seriousLateTime = DateTools.addMinutes(dutyTime, shift.getSeriousTardinessLateMinutes());
+                        if (nowDate.after(seriousLateTime)) {
+                            checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_SeriousLate;
                         }
                     }
-                }
-                // 更新打卡
-                emc.beginTransaction(AttendanceV2CheckInRecord.class);
-                record.setRecordDate(nowDate);
-                record.setSourceType(AttendanceV2CheckInRecord.SOURCE_TYPE_USER_CHECK);
-                record.setCheckInResult(checkInResult);
-                record.setSourceDevice(wi.getSourceDevice());
-                record.setDescription(wi.getDescription());
-                if (workPlace != null) {
-                    record.setWorkPlaceId(workPlace.getId());
-                    record.setPlaceName(workPlace.getPlaceName());
-                }
-                record.setFieldWork(wi.getFieldWork());
-                record.setSignDescription(wi.getSignDescription());
-                record.setLatitude(wi.getLatitude());
-                record.setLongitude(wi.getLongitude());
-                record.setRecordAddress(wi.getRecordAddress());
-                emc.check(record, CheckPersistType.all);
-                emc.commit();
-                Wo wo = new Wo();
-                wo.setCheckInResult(checkInResult);
-                wo.setRecordDate(nowDate);
-                wo.setCheckInRecordId(record.getId());
-                result.setData(wo);
-            } else if (record.getCheckInType().equals(AttendanceV2CheckInRecord.OffDuty)) {
-                Date offDutyTime = DateTools.parse(today + " " + record.getPreDutyTime(), DateTools.format_yyyyMMddHHmm);
-                String checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL;
-                // 早退
-                if (nowDate.before(offDutyTime)) {
-                    checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_Early;
-                }
-                // 可以早走
-                if (StringUtils.isNotEmpty(shift.getLateAndEarlyOffTime())) {
-                    int minute = -1;
-                    try {
-                        minute = Integer.parseInt(shift.getLateAndEarlyOffTime());
-                    }catch (Exception e) {
-                    }
-                    if (minute > 0) {
-                        Date lateAndEarlyOffTime = DateTools.addMinutes(offDutyTime, -minute);
-                        if (nowDate.after(lateAndEarlyOffTime)) {
-                            checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL;
+                    // 可以晚到
+                    if (StringUtils.isNotEmpty(shift.getLateAndEarlyOnTime())) {
+                        int minute = -1;
+                        try {
+                            minute = Integer.parseInt(shift.getLateAndEarlyOnTime());
+                        }catch (Exception ignored) {
+                        }
+                        if (minute > 0) {
+                            Date lateAndEarlyOnTime = DateTools.addMinutes(dutyTime, minute);
+                            if (nowDate.before(lateAndEarlyOnTime)) {
+                                checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL;
+                            }
                         }
                     }
+
+                } else if (record.getCheckInType().equals(AttendanceV2CheckInRecord.OffDuty)) {
+                    Date offDutyTime = DateTools.parse(today + " " + record.getPreDutyTime(), DateTools.format_yyyyMMddHHmm);
+                    checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL;
+                    // 早退
+                    if (nowDate.before(offDutyTime)) {
+                        checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_Early;
+                    }
+                    // 可以早走
+                    if (StringUtils.isNotEmpty(shift.getLateAndEarlyOffTime())) {
+                        int minute = -1;
+                        try {
+                            minute = Integer.parseInt(shift.getLateAndEarlyOffTime());
+                        }catch (Exception e) {
+                        }
+                        if (minute > 0) {
+                            Date lateAndEarlyOffTime = DateTools.addMinutes(offDutyTime, -minute);
+                            if (nowDate.after(lateAndEarlyOffTime)) {
+                                checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL;
+                            }
+                        }
+                    }
+
                 }
-                // 更新打卡
-                emc.beginTransaction(AttendanceV2CheckInRecord.class);
-                record.setRecordDate(nowDate);
-                record.setSourceType(AttendanceV2CheckInRecord.SOURCE_TYPE_USER_CHECK);
-                record.setCheckInResult(checkInResult);
-                record.setSourceDevice(wi.getSourceDevice());
-                record.setDescription(wi.getDescription());
-                if (workPlace != null) {
-                    record.setWorkPlaceId(workPlace.getId());
-                    record.setPlaceName(workPlace.getPlaceName());
-                }
-                record.setFieldWork(wi.getFieldWork());
-                record.setSignDescription(wi.getSignDescription());
-                record.setLatitude(wi.getLatitude());
-                record.setLongitude(wi.getLongitude());
-                record.setRecordAddress(wi.getRecordAddress());
-                emc.check(record, CheckPersistType.all);
-                emc.commit();
-                Wo wo = new Wo();
-                wo.setCheckInResult(checkInResult);
-                wo.setRecordDate(nowDate);
-                wo.setCheckInRecordId(record.getId());
-                result.setData(wo);
             }
 
-
-//
-//
-//            // 按照时间顺序查询出打卡列表
-//            List<AttendanceV2CheckInRecord> recordList = business.getAttendanceV2ManagerFactory().listRecordWithPersonAndDate(effectivePerson.getDistinguishedName(), today);
-//
-//            int index = 0;
-//            for (AttendanceV2ShiftCheckTime attendanceV2ShiftCheckTime : timeList) {
-//                // 上班打卡
-//                if (wi.getCheckInType().equals(AttendanceV2CheckInRecord.OnDuty)) {
-//                    AttendanceV2CheckInRecord onDutyRecord = hasCheckedRecord(recordList, index, AttendanceV2CheckInRecord.OnDuty);
-//                    if (onDutyRecord == null) {
-//                        if (StringUtils.isNotEmpty(attendanceV2ShiftCheckTime.getOnDutyTimeBeforeLimit())) {
-//                            Date beforeOnDuty = DateTools.parse(today + " " + attendanceV2ShiftCheckTime.getOnDutyTimeBeforeLimit(), DateTools.format_yyyyMMddHHmm);
-//                            if (nowDate.before(beforeOnDuty)) { // 不到开始时间不能打卡
-//                                if (LOGGER.isDebugEnabled()) {
-//                                    LOGGER.debug("不到开始时间不能打卡!!!!");
-//                                }
-//                                break;
-//                            }
-//                        }
-//                        if (StringUtils.isNotEmpty(attendanceV2ShiftCheckTime.getOnDutyTimeAfterLimit())) {
-//                            Date afterDuty = DateTools.parse(today + " " + attendanceV2ShiftCheckTime.getOnDutyTimeAfterLimit(), DateTools.format_yyyyMMddHHmm);
-//                            if (nowDate.after(afterDuty)) { // 超过结束时间不能打卡
-//                                if (LOGGER.isDebugEnabled()) {
-//                                    LOGGER.debug("超过结束时间不能打卡!!!!");
-//                                }
-//                                break;
-//                            }
-//                        }
-//                        Date dutyTime = DateTools.parse(today + " " + attendanceV2ShiftCheckTime.getOnDutyTime(), DateTools.format_yyyyMMddHHmm);
-//                        String checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL;
-//                        // 迟到
-//                        if (nowDate.after(dutyTime)) {
-//                            checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_Late;
-//                        }
-//                        // 严重迟到
-//                        if (shift.getSeriousTardinessLateMinutes() > 0) {
-//                            Date seriousLateTime = DateTools.addMinutes(dutyTime, shift.getSeriousTardinessLateMinutes());
-//                            if (nowDate.after(seriousLateTime)) {
-//                                checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_SeriousLate;
-//                            }
-//                        }
-//                        // 可以晚到
-//                        if (StringUtils.isNotEmpty(shift.getLateAndEarlyOnTime())) {
-//                            int minute = -1;
-//                            try {
-//                                minute = Integer.parseInt(shift.getLateAndEarlyOnTime());
-//                            }catch (Exception ignored) {
-//                            }
-//                            if (minute > 0) {
-//                                Date lateAndEarlyOnTime = DateTools.addMinutes(dutyTime, minute);
-//                                if (nowDate.before(lateAndEarlyOnTime)) {
-//                                    checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL;
-//                                }
-//                            }
-//                        }
-//                        AttendanceV2CheckInRecord record = saveCheckInRecord(emc, effectivePerson.getDistinguishedName(), wi.getCheckInType(), group, shift, nowDate, today, wi, checkInResult, workPlace);
-//                        Wo wo = new Wo();
-//                        wo.setCheckInResult(checkInResult);
-//                        wo.setRecordDate(nowDate);
-//                        wo.setCheckInRecordId(record.getId());
-//                        result.setData(wo);
-//                        break;
-//                    }
-//                } else if (wi.getCheckInType().equals(AttendanceV2CheckInRecord.OffDuty)) {
-//                    AttendanceV2CheckInRecord offDutyRecord = hasCheckedRecord(recordList, index, AttendanceV2CheckInRecord.OffDuty);
-//                    if (offDutyRecord == null) {
-//                        if (StringUtils.isNotEmpty(attendanceV2ShiftCheckTime.getOffDutyTimeBeforeLimit())) {
-//                            Date beforeOffDuty = DateTools.parse(today + " " + attendanceV2ShiftCheckTime.getOffDutyTimeBeforeLimit(), DateTools.format_yyyyMMddHHmm);
-//                            if (nowDate.before(beforeOffDuty)) { // 不到开始时间不能打卡
-//                                if (LOGGER.isDebugEnabled()) {
-//                                    LOGGER.debug("不到开始时间不能打卡!!!! 下班");
-//                                }
-//                                break;
-//                            }
-//                        }
-//                        if (StringUtils.isNotEmpty(attendanceV2ShiftCheckTime.getOffDutyTimeAfterLimit())) {
-//                            Date afterOffDuty = DateTools.parse(today + " " + attendanceV2ShiftCheckTime.getOffDutyTimeAfterLimit(), DateTools.format_yyyyMMddHHmm);
-//                            if (nowDate.after(afterOffDuty)) { // 超过结束时间不能打卡
-//                                if (LOGGER.isDebugEnabled()) {
-//                                    LOGGER.debug("超过结束时间不能打卡!!!! 下班");
-//                                }
-//                                break;
-//                            }
-//                        }
-//                        Date offDutyTime = DateTools.parse(today + " " + attendanceV2ShiftCheckTime.getOffDutyTime(), DateTools.format_yyyyMMddHHmm);
-//                        String checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL;
-//                        // 早退
-//                        if (nowDate.before(offDutyTime)) {
-//                            checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_Early;
-//                        }
-//                        // 可以早走
-//                        if (StringUtils.isNotEmpty(shift.getLateAndEarlyOffTime())) {
-//                            int minute = -1;
-//                            try {
-//                                minute = Integer.parseInt(shift.getLateAndEarlyOffTime());
-//                            }catch (Exception e) {
-//                            }
-//                            if (minute > 0) {
-//                                Date lateAndEarlyOffTime = DateTools.addMinutes(offDutyTime, -minute);
-//                                if (nowDate.after(lateAndEarlyOffTime)) {
-//                                    checkInResult = AttendanceV2CheckInRecord.CHECKIN_RESULT_NORMAL;
-//                                }
-//                            }
-//                        }
-//                        AttendanceV2CheckInRecord record = saveCheckInRecord(emc, effectivePerson.getDistinguishedName(), wi.getCheckInType(), group, shift, nowDate, today, wi, checkInResult, workPlace);
-//                        Wo wo = new Wo();
-//                        wo.setCheckInResult(checkInResult);
-//                        wo.setRecordDate(nowDate);
-//                        wo.setCheckInRecordId(record.getId());
-//                        result.setData(wo);
-//                        break;
-//                    }
-//                }
-//                index++;
-//            }
-//
+            // 更新打卡
+            emc.beginTransaction(AttendanceV2CheckInRecord.class);
+            record.setRecordDate(nowDate);
+            record.setSourceType(AttendanceV2CheckInRecord.SOURCE_TYPE_USER_CHECK);
+            record.setCheckInResult(checkInResult);
+            record.setSourceDevice(wi.getSourceDevice());
+            record.setDescription(wi.getDescription());
+            if (workPlace != null) {
+                record.setWorkPlaceId(workPlace.getId());
+                record.setPlaceName(workPlace.getPlaceName());
+            }
+            record.setFieldWork(wi.getFieldWork());
+            record.setSignDescription(wi.getSignDescription());
+            record.setLatitude(wi.getLatitude());
+            record.setLongitude(wi.getLongitude());
+            record.setRecordAddress(wi.getRecordAddress());
+            emc.check(record, CheckPersistType.all);
+            emc.commit();
+            Wo wo = new Wo();
+            wo.setCheckInResult(checkInResult);
+            wo.setRecordDate(nowDate);
+            wo.setCheckInRecordId(record.getId());
+            result.setData(wo);
         }
         if (result.getData() == null) {
             throw new ExceptionNoCheckInResult();
@@ -315,37 +174,6 @@ public class ActionCheckIn extends BaseAction {
         return result;
     }
 
-
-    private AttendanceV2CheckInRecord saveCheckInRecord(EntityManagerContainer emc, String person, String dutyType,
-                                                        AttendanceV2Group group, AttendanceV2Shift shift,
-                                                        Date nowDate, String today, Wi wi, String checkInResult, AttendanceV2WorkPlace workPlace) throws Exception {
-        AttendanceV2CheckInRecord noCheckRecord = new AttendanceV2CheckInRecord();
-        noCheckRecord.setCheckInType(dutyType);
-        noCheckRecord.setCheckInResult(checkInResult);
-        noCheckRecord.setUserId(person);
-        noCheckRecord.setRecordDate(nowDate);
-        noCheckRecord.setRecordDateString(today);
-        noCheckRecord.setSourceType(AttendanceV2CheckInRecord.SOURCE_TYPE_USER_CHECK);
-        noCheckRecord.setSourceDevice(wi.getSourceDevice());
-        noCheckRecord.setDescription(wi.getDescription());
-        if (workPlace != null) {
-            noCheckRecord.setWorkPlaceId(workPlace.getId());
-            noCheckRecord.setPlaceName(workPlace.getPlaceName());
-        }
-        noCheckRecord.setFieldWork(wi.getFieldWork());
-        noCheckRecord.setSignDescription(wi.getSignDescription());
-        noCheckRecord.setLatitude(wi.getLatitude());
-        noCheckRecord.setLongitude(wi.getLongitude());
-        noCheckRecord.setRecordAddress(wi.getRecordAddress());
-        noCheckRecord.setGroupId(group.getId());
-        noCheckRecord.setGroupName(group.getGroupName());
-        noCheckRecord.setShiftId(shift.getId());
-        noCheckRecord.setShiftName(shift.getShiftName());
-        emc.beginTransaction(AttendanceV2CheckInRecord.class);
-        emc.persist(noCheckRecord, CheckPersistType.all);
-        emc.commit();
-        return noCheckRecord;
-    }
 
 
     public static class Wo extends GsonPropertyObject {

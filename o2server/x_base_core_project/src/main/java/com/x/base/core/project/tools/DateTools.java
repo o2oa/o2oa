@@ -617,6 +617,19 @@ public class DateTools {
 	}
 
 	/**
+	 * 判断当前日期是星期几
+	 *
+	 * @param dateTime 修要判断的时间
+	 * @return 0-6 代表 星期天-星期六
+	 * @Exception 发生异常
+	 */
+	public static int dayForWeekAttendanceV2(Date dateTime) throws Exception {
+		Calendar c = Calendar.getInstance();
+		c.setTime(dateTime);
+		return c.get(Calendar.DAY_OF_WEEK) - 1;
+	}
+
+	/**
 	 * 指定的日期，添加指定的天数
 	 *
 	 * @param date

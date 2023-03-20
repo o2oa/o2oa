@@ -23,9 +23,83 @@ export default content({
   afterRender() {
     this.loadGroupList();
   },
+  // 班次信息展现 
   formatAttendanceTime(group) {
-    if (group && group.shift) {
-        return group.shift.shiftName + ' ('+ group.shift.properties.timeList[0].onDutyTime + ' - ' + group.shift.properties.timeList[group.shift.properties.timeList.length-1].offDutyTime+')';
+    if (!group) {
+      return "";
+    }
+    if (group.checkType === "1" && group.workDateProperties) { // 如果是固定班制 展现周一或周二的班次信息
+      let map = {};
+      let restList = [];
+      for (let key in group.workDateProperties) {
+        const day = group.workDateProperties[key];
+        const dayLp = this.day2Lang(key);
+        if (dayLp === "") {
+          continue;
+        }
+        if (day.checked) {
+          if (map[day.shiftId]) {
+            map[day.shiftId]["dayList"].push(dayLp);
+          } else {
+            map[day.shiftId] = {
+              dayList: [dayLp],
+              shift: day.shift
+            }
+          }
+        } else {
+          restList.push(dayLp);
+        }
+      }
+      let retStr = "";
+      for (let id in map) {
+        retStr += map[id].dayList.join("、") + " " + map[id].shift.shiftName + " ("+ map[id].shift.properties.timeList[0].onDutyTime + " - " + map[id].shift.properties.timeList[map[id].shift.properties.timeList.length-1].offDutyTime+") | ";
+      }
+      if (restList.length > 0) {
+        retStr += restList.join("、") + " " + lp.groupForm.shiftEmpty;
+      } else {
+        retStr = retStr.substring(0, retStr.length - 2);
+      }
+      return retStr;
+    } else if (group.checkType === "2") {// 如果是自由工时 直接展现
+        const dayList = group.workDateList.split(",").map((d) => {
+          switch(d) {
+            case "1":
+              return lp.day.Monday;
+            case "2":
+              return lp.day.Tuesday;
+            case "3":
+                return lp.day.Wednesday;
+            case "4":
+              return lp.day.Thursday;
+            case "5":
+              return lp.day.Friday;
+            case "6":
+              return lp.day.Saturday;
+            case "0":
+              return lp.day.Sunday;
+          }
+          return "";
+        });
+        return dayList.join("、") + " " + lp.groupForm.checkTypeFree;
+    }
+    return "";
+  },
+  day2Lang(day) {
+    switch(day) {
+      case "monday":
+        return lp.day.Monday;
+      case "tuesday":
+        return lp.day.Tuesday;
+      case "wednesday":
+          return lp.day.Wednesday;
+      case "thursday":
+        return lp.day.Thursday;
+      case "friday":
+        return lp.day.Friday;
+      case "saturday":
+        return lp.day.Saturday;
+      case "sunday":
+        return lp.day.Sunday;
     }
     return "";
   },

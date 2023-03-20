@@ -58,7 +58,11 @@ export default content({
   },
   submit() {
     if (this.bind.shiftSelected && this.bind.shiftSelected.id) {
-      this.component.updateModel( this.bind.shiftSelected );
+      //this.component.updateModel( this.bind.shiftSelected );
+      // 返回对象给父组件
+      if (this.$parent && this.$parent.setShiftData) {
+        this.$parent.setShiftData(this.bind.shiftSelected);
+      }
       this.closeSelectShift();
     } else {
       o2.api.page.notice(lp.shiftForm.selectShiftEmpty, 'error');
