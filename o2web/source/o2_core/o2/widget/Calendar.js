@@ -927,61 +927,90 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		this.showActionNode = this.contentTimeTable.getElement(".MWF_calendar_action_show");
 
 		var calendar = this;
+		var div, count;
 
+		this.calculateCurrentHour(h);
 		if( !this.hMobileSelect ){
-			for( var i=0; i<24; i++ ){
-				new Element("div",{
-					"text" : this.addZero(i, 2 ),
-					"styles" : this.css.calendarTimeSelectItem_mobile
-				}).inject( this.itmeHNode );
+			count = 0;
+			for( var i=0; i<24; i++ ) {
+				div = new Element("div.hselect", {
+					"text": this.addZero(i, 2),
+					"styles": this.css.calendarTimeSelectItem_mobile
+				}).inject(this.itmeHNode);
+				div.store("d", i);
+				if (!this.isEnableHour(this.cDate, i)){
+					div.hide();
+				}else{
+					count++;
+				}
 			}
 			this.selectedHour = this.addZero(h, 2 );
 			this.hMobileSelect = new o2.Calendar.MobileSelect( this.itmeHNode.getParent(), {
 				"lineHeight" : 40,
-				"itemSize" : 24,
+				"itemSize" : count, //24,
 				"itemIndex" : parseInt(h),
 				"onChange": function(value){
 					this.selectedHour = this.addZero(value, 2 );
 					//this.showHNode.set("text", this.addZero(i, 2 ));
 					//this.itmeHNode.getFirst().set("text", this.addZero(i, 2 ));
+
+
 				}.bind(this)
 			});
 			this.hMobileSelect.load();
 		}
 
+		this.calculateCurrentMinute(m);
 		if( !this.mMobileSelect ) {
+			count = 0;
 			for (var i = 0; i < 60; i++) {
-				new Element("div", {
+				div = new Element("div.mselect", {
 					"text": this.addZero(i, 2),
 					"styles": this.css.calendarTimeSelectItem_mobile
 				}).inject(this.itmeMNode);
+				div.store("d", i);
+				if (!this.isEnableMinute(this.cDate, this.cHour, i)) {
+					div.hide();
+				}else{
+					count++;
+				}
 			}
 			this.selectedMinute = this.addZero(m, 2);
 			this.mMobileSelect = new o2.Calendar.MobileSelect(this.itmeMNode.getParent(), {
 				"lineHeight": 40,
-				"itemSize": 60,
+				"itemSize": count, //60,
 				"itemIndex": parseInt(m),
 				"onChange": function (value) {
 					this.selectedMinute = this.addZero(value, 2);
 					//this.showHNode.set("text", this.addZero(i, 2 ));
 					//this.itmeHNode.getFirst().set("text", this.addZero(i, 2 ));
+					if( this.options.enableMinutes )this._resetMinuteSelect_mobile();
+					if( this.options.enableSeconds )this._resetSecondSelect_mobile();
 				}.bind(this)
 			});
 			this.mMobileSelect.load();
 		}
 
 		if(this.options.secondEnable ){
+			this.calculateCurrentSecond(s);
 			if(!this.sMobileSelect){
+				count = 0;
 				for( var i=0; i<60; i++ ){
-					new Element("div",{
+					div = new Element("div.sselect",{
 						"text" : this.addZero(i, 2 ),
 						"styles" : this.css.calendarTimeSelectItem_mobile
 					}).inject( this.itmeSNode );
+					div.store("d", i);
+					if (!this.isEnableMinute(this.cDate, this.cHour, this.cMinute, i)) {
+						div.hide();
+					}else{
+						count++;
+					}
 				}
 				this.selectedSecond = this.addZero(s, 2 );
 				this.sMobileSelect = new o2.Calendar.MobileSelect( this.itmeSNode.getParent(), {
 					"lineHeight" : 40,
-					"itemSize" : 60,
+					"itemSize" : count, //60,
 					"itemIndex" : parseInt(s),
 					"onChange": function(value){
 						this.selectedSecond = this.addZero(value, 2 );
@@ -1176,32 +1205,84 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		}
 	},
 	_resetTimeDate: function(){
-		if(this.options.timeSelectType === "select"){
-			if( this.options.enableHours )this.loadHourSelect();
-			if( this.options.enableMinutes )this.loadMinuteSelect();
-			if( this.options.enableSeconds )this.loadSecondSelect();
-		}else {
-			if( this.options.enableHours ){
-				this.calculateCurrentHour();
-				this.createDisabledNodes(this.itmeHNode, 24, "h");
-				this.hSlider.set( this.cHour );
-				this.itmeHNode.getFirst().set("text", this.addZero( this.cHour, 2));
-				this.showHNode.set("text", this.addZero( this.cHour, 2) );
+		if( this.options.style.indexOf("mobile") > -1 ){
+			if( this.options.enableHours )this._resetHourSelect_mobile();
+            if( this.options.enableMinutes )this._resetMinuteSelect_mobile();
+			if( this.options.enableSeconds )this._resetSecondSelect_mobile();
+		}else{
+			if(this.options.timeSelectType === "select"){
+				if( this.options.enableHours )this.loadHourSelect();
+				if( this.options.enableMinutes )this.loadMinuteSelect();
+				if( this.options.enableSeconds )this.loadSecondSelect();
+			}else {
+				if( this.options.enableHours ){
+					this.calculateCurrentHour();
+					this.createDisabledNodes(this.itmeHNode, 24, "h");
+					this.hSlider.set( this.cHour );
+					this.itmeHNode.getFirst().set("text", this.addZero( this.cHour, 2));
+					this.showHNode.set("text", this.addZero( this.cHour, 2) );
+				}
+				if( this.options.enableMinutes ){
+					this.calculateCurrentMinute();
+					this.createDisabledNodes(this.itmeMNode, 60, "m");
+					this.mSlider.set( this.cMinute );
+					this.itmeMNode.getFirst().set("text", this.addZero( this.cMinute, 2));
+					this.showMNode.set("text", this.addZero( this.cMinute, 2));
+				}
+				if( this.options.enableSeconds && this.sSlider ){
+					this.calculateCurrentSecond();
+					this.createDisabledNodes(this.itmeSNode, 60, "s");
+					this.sSlider.set( this.cSecond );
+					this.itmeSNode.getFirst().set("text", this.addZero( this.cSecond, 2));
+					this.showSNode.set("text", this.addZero( this.cSecond, 2) );
+				}
 			}
-			if( this.options.enableMinutes ){
-				this.calculateCurrentMinute();
-				this.createDisabledNodes(this.itmeMNode, 60, "m");
-				this.mSlider.set( this.cMinute );
-				this.itmeMNode.getFirst().set("text", this.addZero( this.cMinute, 2));
-				this.showMNode.set("text", this.addZero( this.cMinute, 2));
-			}
-			if( this.options.enableSeconds && this.sSlider ){
-				this.calculateCurrentSecond();
-				this.createDisabledNodes(this.itmeSNode, 60, "s");
-				this.sSlider.set( this.cSecond );
-				this.itmeSNode.getFirst().set("text", this.addZero( this.cSecond, 2));
-				this.showSNode.set("text", this.addZero( this.cSecond, 2) );
-			}
+		}
+
+	},
+	_resetHourSelect_mobile: function(){
+		if( this.options.enableHours ){
+			this.calculateCurrentHour();
+			var count = 0;
+			this.itmeHNode.getElements(".hselect").each(function(div){
+				if( this.isEnableHour(this.cDate, div.retrieve("d")) ){
+					count++;
+					div.show();
+				}else{
+					div.hide();
+				}
+			}.bind(this));
+			this.hMobileSelect.resetItemSize(count);
+		}
+	},
+	_resetMinuteSelect_mobile: function(){
+		if( this.options.enableMinutes ) {
+			this.calculateCurrentMinute();
+			var count = 0;
+			this.itmeMNode.getElements(".mselect").each(function(div){
+				if( this.isEnableMinute(this.cDate, this.cHour, div.retrieve("d")) ){
+					count++;
+					div.show();
+				}else{
+					div.hide();
+				}
+			}.bind(this));
+			this.mMobileSelect.resetItemSize(count);
+		}
+	},
+	_resetSecondSelect_mobile: function(){
+		if( this.options.enableSeconds && this.options.secondEnable ){
+			this.calculateCurrentSecond();
+			var count = 0;
+			this.itmeSNode.getElements(".sselect").each(function(div){
+				if( this.isEnableSecond(this.cDate, this.cHour, this.cMinute, div.retrieve("d")) ){
+					count++;
+					div.show();
+				}else{
+					div.hide();
+				}
+			}.bind(this));
+			if(this.sMobileSelect)this.sMobileSelect.resetItemSize(count);
 		}
 	},
 	loadHourSelect: function (h) {
@@ -2090,13 +2171,13 @@ o2.Calendar.MobileSelect = new Class({
 		var _this = this;
 		this.curDistance = 0;
 		this.sliderNode.style.transform = "translate3d(0px, 80px, 0px)";
-		this.wheelNode.addEventListener('touchstart', function () {
+		this.wheelNode.addEventListener('touchstart', function (event) {
 			_this.touch(event);
 		}, false);
-		this.wheelNode.addEventListener('touchend', function () {
+		this.wheelNode.addEventListener('touchend', function (event) {
 			_this.touch(event);
 		}, false);
-		this.wheelNode.addEventListener('touchmove', function () {
+		this.wheelNode.addEventListener('touchmove', function (event) {
 			_this.touch(event);
 		}, false);
 		this.locatePostion( this.options.itemIndex );
@@ -2160,6 +2241,10 @@ o2.Calendar.MobileSelect = new Class({
 				this.oldOverTime = this.overTime;
 				break;
 		}
+	},
+	resetItemSize: function( itemSize ){
+		this.options.itemSize = itemSize;
+		this.oversizeBorder = - ( this.options.itemSize - 3) * this.options.lineHeight;
 	},
 	calcDistance: function (index) {
 		return 2 * this.options.lineHeight - index * this.options.lineHeight;
