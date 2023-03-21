@@ -1497,7 +1497,7 @@ MWF.xApplication.process.TaskCenter.Starter = new Class({
                 this.allApplicationStarter.selected();
 
                 json_process.data.each(function (app) {
-                    new MWF.xApplication.process.TaskCenter.Application(app, this);
+                    if (app.processList && app.processList.length) new MWF.xApplication.process.TaskCenter.Application(app, this);
                 }.bind(this));
 
                 json_column.data.each(function (column) {

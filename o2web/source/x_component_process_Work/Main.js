@@ -652,11 +652,9 @@ MWF.xApplication.process.Work.Main = new Class({
             MWF.xDesktop.requireApp("process.Xform", cl, function(){
             //MWF.xDesktop.requireApp("process.Xform", "Form", function(){
                 this.appForm = new MWF.APPForm(this.formNode, this.form, {"readonly": this.readonly});
-
                 if( !this.currentTask && this.control.allowReset ){
                     this.control.allowReset = false;
                 }
-
                 this.appForm.businessData = {
                     "data": this.data,
                     "originalData" : Object.clone( this.data ),

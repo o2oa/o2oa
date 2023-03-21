@@ -288,9 +288,11 @@ MWF.xApplication.process.workcenter.Main = new Class({
 		this.getStartData().then(function(data){
 			var map = {};
 			data[0].each(function (d) {
-				var type = d.applicationCategory || "未分类";
-				if( !map[type] )map[type] = [];
-				map[type].push(d);
+                if (d.processList && d.processList.length){
+                    var type = d.applicationCategory || "未分类";
+                    if( !map[type] )map[type] = [];
+                    map[type].push(d);
+                }
 			});
 			data[2].each(function (d) {
 				var type = d.appType || "未分类";
