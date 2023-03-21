@@ -293,26 +293,39 @@ MWF.xApplication.process.Xform.Calendar = MWF.APPCalendar =  new Class(
             case "other":
                 if (this.json.enableDate && this.json.enableDate.code) {
                     options.enableDate = function (date) {
-                        return this.form.Macro.fire(this.json.enableDate.code, this, {date: date});
-                    }.bind(this)
+                        var d = this.getPureDate( date );
+                        return this.form.Macro.fire(this.json.enableDate.code, this, {date: d});
+                    }.bind(this);
                 }
                 if (this.json.enableHours && this.json.enableHours.code) {
                     options.enableHours = function (date) {
-                        return this.form.Macro.fire(this.json.enableHours.code, this, {date: date});
-                    }.bind(this)
+                        var d = this.getPureDate( date );
+                        return this.form.Macro.fire(this.json.enableHours.code, this, {date: d});
+                    }.bind(this);
                 }
                 if (this.json.enableMinutes && this.json.enableMinutes.code) {
                     options.enableMinutes = function (date, hour) {
-                        return this.form.Macro.fire(this.json.enableMinutes.code, this, {date: date, hour: hour});
-                    }.bind(this)
+                        var d = this.getPureDate( date );
+                        return this.form.Macro.fire(this.json.enableMinutes.code, this, {date: d, hour: hour.toInt()});
+                    }.bind(this);
                 }
                 if (this.json.enableSeconds && this.json.enableSeconds.code) {
                     options.enableSeconds = function (date, hour, minute) {
-                        return this.form.Macro.fire(this.json.enableSeconds.code, this, {date: date, hour: hour, minute: minute});
-                    }.bind(this)
+                        var d = this.getPureDate( date );
+                        return this.form.Macro.fire(this.json.enableSeconds.code, this, {date: d, hour: hour.toInt(), minute: minute.toInt()});
+                    }.bind(this);
                 }
                 break;
         }
+    },
+    getPureDate: function (date) {
+        var d;
+        switch (typeOf(date)) {
+            case "string": d = Date.parse(date); break;
+            case "date": d = date.clone(); break;
+            default: return null;
+        }
+        return d.clearTime();
     },
     unformatDate : function( dateStr ){
         var formatStr = this.json.format;
