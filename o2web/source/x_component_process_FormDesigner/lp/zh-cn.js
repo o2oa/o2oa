@@ -508,6 +508,16 @@ MWF.xApplication.process.FormDesigner.LP = {
         "sectionAmountCellStyle": "区段总计单元格样式",
         "showAllSection": "显示所有区段",
 
+        "rangeByDatetime": "日期时间范围",
+        "rangeByDateAndTime": "日期范围和时间范围",
+        "rangeByDate": "日期范围",
+        "rangeByTime": "时间范围",
+        "rangeByOhter": "其他",
+        "enableDate": "有效日期",
+        "enableHours": "有效小时范围",
+        "enableMinutes": "有效分钟范围",
+        "enableSeconds": "有效秒范围",
+
         "decimal": "小数点",
 
         "showCard": "显示卡片",

@@ -76,6 +76,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "insertBefore": "InsertBefore",
         "insertAfter": "Insert After",
         "injectNotice": "Hold down Ctrl and release the mouse for precise positioning",
+        "selectedContainer": "Select Parent",
         "property": "Property",
         "batchModify": "Batch modify "
     },
@@ -147,7 +148,6 @@ MWF.xApplication.process.FormDesigner.LP = {
         "modify": "Modify",
         "when": "When ",
         "as": "",
-
         "inputDecisionName": "Please enter the name of the decision",
         "inputValue": "Please enter a value",
         "inputPrompt": "Please enter the prompt content",
@@ -356,6 +356,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "el_cascader": "Cascader",
         "el_number": "Number",
         "el_switch": "Switch",
+        "el_slider": "Slider",
         "el_time": "Time",
         "el_date": "Date",
         "el_datetime": "Datetime",
@@ -508,6 +509,16 @@ MWF.xApplication.process.FormDesigner.LP = {
         "totalRow": "Total Row",
         "sectionAmountCellStyle": "section total cell style",
         "showAllSection": "Show All Sections",
+
+        "rangeByDatetime": "Datetime range",
+         "rangeByDateAndTime": "Date range and time range",
+         "rangeByDate": "Date Range",
+         "rangeByTime": "Time Range",
+         "rangeByOhter": "Other",
+         "enableDate": "Effective Date",
+         "enableHours": "Enable Hours Range",
+         "enableMinutes": "Effective minutes range",
+         "enableSeconds": "Enabled seconds range",
 
         "decimal": "Decimal",
 
@@ -665,6 +676,11 @@ MWF.xApplication.process.FormDesigner.LP = {
 
         "addressStyle": "Address Style",
 
+        "location": "location",
+         "right": "right",
+         "left": "left",
+         "relocate": "Relocate",
+
         "image": "Image",
         "selectSrc": "Select Resources",
 
@@ -721,6 +737,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "openAtt": "Open",
         "previewFirst": "Preview First",
         "previewAttachmentNote": "The following file formats can be previewed directly: zip, pdf, ofd, png, jpg, bmp, jpeg, gif, js, css, java, json, xml, php, html, htm, xhtml, log, md, txt. The following formats need to install liberoffice: doc, docx, xls, xlsx, ppt, pptx. Directly open attachments that are not in the above formats.",
+
         "actionBar": "Action Bar",
         "hideEditButton": "Hide Edit Buttons",
         "hideReadButton": "Hide Read Buttons",
@@ -749,12 +766,11 @@ MWF.xApplication.process.FormDesigner.LP = {
         "cellpadding": "cellpadding",
         "cellspacing": "cellspacing",
 
+        "containStyle": "Container Style",
+         "containAttribute": "Container Attribute",
         "titleCellStyle": "Title Cell Style",
         "contentCellStyle": "Content Cell Style",
         "layoutCellStyle": "Layout Cell Style",
-
-        "containStyle": "Contain Style",
-        "containAttribute": "Contain Attribute",
 
         "contentTitleCellStyle": "Content Title Cell Style",
         "contentLineStyle": "Content Line Style",
@@ -790,10 +806,11 @@ MWF.xApplication.process.FormDesigner.LP = {
         "onlyImport": "Import Only",
         "exportInfo": "Note: Serial numbers, image, writingBoard, attachment and hidden columns cannot be imported or exported.",
         "buttonLocation": "Button Location",
-        "centerTop": "centerTop",
-        "centerBottom": "centerBottom",
+        "centertop": "centerTop",
+        "centerbottom": "centerBottom",
         "importText": "Import Button Text",
         "importExcel": "Import Excel",
+        "exportExcel": "Export Excel",
         "importButtonStyle": "Import Button Style",
         "exportFileName": "Export Filename",
         "actionCellStyles": "Action Cell Styles",
@@ -857,6 +874,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "number": "Number",
         "datetime": "Datetime",
         "boolean": "Boolean",
+        "resultType": "Result type",
         "asDefaultFilter": "As default filter",
         "asCustomFilter": "As custom filter",
         "logic": "logic",
@@ -1002,9 +1020,9 @@ MWF.xApplication.process.FormDesigner.LP = {
         "config": "Config",
         "copiesSecretPriority": "Copies Secret And Priority",
         "isShow": "Whether to show",
-        "showScript": "Show Script",
         "copies": "Copies",
         "auto": "Auto",
+        "showScript": "Show Script",
         "bindValue": "Bind Value",
         "bindValueScript": "Bind Value Script",
         "secret": "Secret",
@@ -1041,8 +1059,8 @@ MWF.xApplication.process.FormDesigner.LP = {
         "tinymceInfo": "For more attribute help, please see",
         "tinymceInfo2": "Return TinyMCE's Config object for editor initialization",
         "tinymceInfo3": "queryLoad,postLoad, load and afterLoad events are O2 platform events, other events are Tinymce editor events, please see",
-        "Base64Encode ":" Image Base64 Encode",
-        "ImagePreview ":" View larger images",
+        "base64Encode ":" Image Base64 Encode",
+        "imagePreview ":" View larger images",
 
         "ieOnly": "Only available in IE browser",
         "keepHistory": "Whether to keep the historical version",
@@ -1473,11 +1491,11 @@ MWF.xApplication.process.FormDesigner.LP = {
     "onlyoffice":{
         "nosetup":"please install onlyOffice APP first",
     },
-    "officeonline":{
-        "nosetup":"please install OfficeOnline APP first",
-    },
     "wpsoffice":{
         "nosetup":"please install wpsOffice APP first",
+    },
+    "officeonline":{
+        "nosetup":"please install OfficeOnline APP first",
     },
     "actionBar": {
         "close":"Close",

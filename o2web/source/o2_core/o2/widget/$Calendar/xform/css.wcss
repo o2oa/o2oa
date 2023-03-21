@@ -150,6 +150,14 @@
 		"border": "0px solid #FFF",
 		"color": "#000"
 	},
+	"disable_xform": {
+		"opacity": "0.3",
+		"cursor": "not-allowed"
+	},
+	"notdisable_xform": {
+		"opacity": "1",
+		"cursor": "pointer"
+	},
 	"dateBottom": {
 		"display": "none"
 	},

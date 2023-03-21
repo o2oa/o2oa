@@ -1,4 +1,4 @@
-window.RangeArrayUtils = {
+window.RangeArrayUtils = o2.RangeArrayUtils = {
     //补集 range [ start, end ]  rangeList  [ [start1, end1], [ start2, end2 ] ... ]
     complementary : function( range, rangeList, type ){
         if( !range )return range;
