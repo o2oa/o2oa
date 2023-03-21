@@ -112,8 +112,21 @@
 <div class="o2_statement_statementRunNode">
 <!--    <div class="o2_statement_statementRunTitleNode">{{$.lp.runTest}}</div>-->
     <div class="o2_statement_statementRunContentNode">
-        <div class="o2_statement_statementRunJsonNode">
-<!--            <div class="o2_statement_statementRunJsonContent"></div>-->
+        <div class="o2_statement_statementRunLeftNode">
+            <div class="o2_statement_statementRunDefaultNode" style="overflow: hidden">
+                <div style="font-weight: bold;float:left;width: 100px;line-height: 30px;">{{$.lp.defaultCondition}}</div>
+                <div style="margin-left: 100px;line-height: 30px;" class="o2_statement_statementRunDefaultContent">
+                    <input name="text{$.id}viewParameterTextFormula" type="checkbox" value="@person" />{{$.lp.currentPerson}}
+                    <input name="text{$.id}viewParameterTextFormula" type="checkbox" value="@identityList" />{{$.lp.currentIdentity}}
+                    <input name="text{$.id}viewParameterTextFormula" type="checkbox" value="@unitList" />{{$.lp.currentPersonDirectUnit}}
+                    <input name="text{$.id}viewParameterTextFormula" type="checkbox" value="@unitAllList" />{{$.lp.currentPersonAllUnit}}
+                    <input name="text{$.id}viewParameterTextFormula" type="checkbox" value="@groupList" />{{$.lp.currentPersonGroupList}}
+                    <input name="text{$.id}viewParameterTextFormula" type="checkbox" value="@roleList" />{{$.lp.currentPersonRoleList}}
+                </div>
+            </div>
+            <div class="o2_statement_statementRunJsonNode">
+    <!--            <div class="o2_statement_statementRunJsonContent"></div>-->
+            </div>
         </div>
         <div class="o2_statement_statementRunActionNode">
             <div class="o2_statement_statementRunActionContent"></div>

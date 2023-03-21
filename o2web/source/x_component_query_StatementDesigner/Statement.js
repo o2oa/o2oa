@@ -350,9 +350,10 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             this.runArea = this.areaNode.getElement(".o2_statement_statementRunNode");
             // this.runTitleNode = this.areaNode.getElement(".o2_statement_statementRunTitleNode");
             this.runContentNode = this.areaNode.getElement(".o2_statement_statementRunContentNode");
-            this.runJsonNode = this.runContentNode.getFirst();
-            this.runActionNode = this.runJsonNode.getNext();
-            this.runResultNode = this.runContentNode.getLast();
+            this.runJsonNode = this.runContentNode.getElement(".o2_statement_statementRunJsonNode");
+            this.runActionNode = this.runContentNode.getElement(".o2_statement_statementRunActionNode");
+            this.runResultNode = this.runContentNode.getElement(".o2_statement_statementRunResultNode");
+            this.runDefaultNode = this.runContentNode.getElements(".o2_statement_statementRunDefaultContent");
             this.setRunnerSize();
             this.designer.addEvent("resize", this.setRunnerSize.bind(this));
             switch (this.json.format) {
@@ -372,6 +373,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                     this.loadJpqlEditor();
                     this.loadJpqlCountEditor();
             }
+            this.loadDefaultCondition();
             this.loadStatementRunner();
 
             this.viewArea = this.areaNode.getElement(".o2_statement_viewNode");
@@ -382,6 +384,13 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             this.setEvent();
             this.loadVerticalResize();
         }.bind(this));
+    },
+    loadDefaultCondition: function(){
+        ["person","identityList","unitList","unitAllList","groupList","roleList"].each(function (key) {
+            new Element("div", {
+                style
+            });
+        }.bind(this))
     },
     loadCountMethodSelect: function(){
         this.countMethodSelect.getElements("option").each(function(o){
