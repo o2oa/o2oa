@@ -58,5 +58,10 @@
     "icon": "datatemplate.png",
     "text": MWF.APPPOD.LP.modules.datatemplate,
     "className": "Datatemplate"
+  },
+  "htmledit": {
+    "icon": "htmleditor.png",
+    "text": MWF.APPPOD.LP.modules.htmledit,
+    "className": "Htmleditor"
   }
 }

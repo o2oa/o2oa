@@ -38,7 +38,13 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
          * @memberOf MWF.xApplication.process.Xform.Application#
          */
         this.node.empty();
-        this.loadApplication();
+        if( !o2.api ){
+            MWF.require("MWF.framework", function () {
+                this.loadApplication();
+            }.bind(this));
+        }else{
+            this.loadApplication();
+        }
     },
     /**
      * @summary 重新加载嵌入对象
@@ -163,6 +169,14 @@ MWF.xApplication.process.Xform.Application = MWF.APPApplication =  new Class(
                 this.fireEvent("queryLoadApplication", this.component);
                 this.component.load();
                 this.component.setEventTarget(this.form.app);
+                var _self = this;
+                this.component.refresh = function () {
+                    if( layout.inBrowser ){
+                        window.location.reload();
+                    }else{
+                        _self.form.app.refresh();
+                    }
+                };
             }else{
                 if( MWF.xApplication.process && MWF.xApplication.process.Xform && MWF.xApplication.process.Xform.LP ){
                     this.form.app.notice(MWF.xApplication.process.Xform.LP.applicationNotFound+":"+path, "error");

@@ -3995,6 +3995,16 @@ MWF.xScript.ViewEnvironment = function (ev) {
 
 
     /**
+     * 重新加载查询视图。
+     * @method reload
+     * @methodOf module:queryStatement
+     * @static
+     * @o2syntax
+     * this.queryStatement.reload( callback );
+     */
+
+
+    /**
      * queryView对象可在视图中可用。它的很多方法与form类似。<b>（仅前端脚本可用）</b><br/>
      * @module queryView
      * @o2cn 视图
@@ -4332,9 +4342,9 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * @methodOf module:queryView
          * @static
          * @o2syntax
-         * this.queryView.reload();
+         * this.queryView.reload( callback );
          */
-        "reload" : function () { _form.reload(); },
+        "reload" : function ( callback ) { _form.reload( callback ); },
 
         // "getInfor": function () { return ev.pageInfor; },
         // "infor": ev.pageInfor,

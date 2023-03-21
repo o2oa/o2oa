@@ -1,0 +1,93 @@
+{
+	"id": "",
+	"name": "",
+	"type": "Htmleditor",
+	"description": "",
+	"events": {
+		"beforeCommandExec": {
+			"code": "",
+			"html": ""
+		},
+		"afterCommandExec": {
+			"code": "",
+			"html": ""
+		},
+		"blur": {
+			"code": "",
+			"html": ""
+		},
+		"change": {
+			"code": "",
+			"html": ""
+		},
+		"destroy": {
+			"code": "",
+			"html": ""
+		},
+		"focus": {
+			"code": "",
+			"html": ""
+		},
+		"getData": {
+			"code": "",
+			"html": ""
+		},
+		"insertElement": {
+			"code": "",
+			"html": ""
+		},
+		"insertHtml": {
+			"code": "",
+			"html": ""
+		},
+		"insertText": {
+			"code": "",
+			"html": ""
+		},
+		"key": {
+			"code": "",
+			"html": ""
+		},
+		"loaded": {
+			"code": "",
+			"html": ""
+		},
+		"maximize": {
+			"code": "",
+			"html": ""
+		},
+		"paste": {
+			"code": "",
+			"html": ""
+		},
+		"resize": {
+			"code": "",
+			"html": ""
+		},
+		"save": {
+			"code": "",
+			"html": ""
+		}
+	},
+	"editorProperties": {
+		"autoGrow_maxHeight": 400,
+		"autoGrow_minHeight": 300,
+		"resize_enabled": true,
+		"resize_maxHeight": "3000",
+		"resize_minHeight": "200",
+		"autoParagraph": true,
+		"autoUpdateElement": true,
+		"enterMode": 1,
+		"height": "200", 
+		"width": "",
+		"readOnly": false,
+		"title": ""
+	},
+    "config": {
+      "code": "",
+      "html": ""
+    },
+	"class": "",
+	"styles": {},
+	"container": ""
+}

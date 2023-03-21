@@ -63,27 +63,27 @@ MWF.xApplication.process.Xform.View = MWF.APPView =  new Class(
      * @example
      * this.form.get("fieldId").reload()
      */
-    reload: function(){
+    reload: function( callback ){
         if (this.view){
             if (this.view.loadViewRes && this.view.loadViewRes.res) if (this.view.loadViewRes.res.isRunning()) this.view.loadViewRes.res.cancel();
             if (this.view.getViewRes && this.view.getViewRes.res) if (this.view.getViewRes.res.isRunning()) this.view.getViewRes.res.cancel();
         }
         this.node.empty();
-        this.loadView();
+        this.loadView( callback );
     },
     /**
      * @summary 当视图被设置为延迟加载（未立即载入），通过active方法激活
      * @example
      * this.form.get("fieldId").active()
      */
-    active: function(){
+    active: function( callback ){
         if (this.view){
-            if (!this.view.loadingAreaNode) this.view.loadView();
+            if (!this.view.loadingAreaNode) this.view.loadView( callback );
         }else{
-            this.loadView();
+            this.loadView( callback );
         }
     },
-    loadView: function(){
+    loadView: function( callback ){
         if (!this.json.queryView || !this.json.queryView.name || !this.json.queryView.appName) return "";
         var filter = null;
         if (this.json.filterList && this.json.filterList.length){
@@ -121,6 +121,7 @@ MWF.xApplication.process.Xform.View = MWF.APPView =  new Class(
                 }.bind(this),
                 "onLoadView": function(){
                     this.fireEvent("loadView");
+                    if(callback)callback();
                 }.bind(this),
                 "onSelect": function(item){
                     debugger;

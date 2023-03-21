@@ -138,11 +138,12 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
 
     checkEditAttAction: function () {
 
+
         if(layout.mobile){
             this.setActionDisabled(this.editAttAction);
         } else if (this.options.isEditAtt === "hidden" ){
             this.setActionHidden(this.editAttAction);
-        } else if (!this.options.isEditAtt){
+        } else if (!this.options.isEditAtt || this.options.readonly){
             this.setActionDisabled(this.editAttAction);
             //this.setActionDisabled(this.min_downloadAction);
         }else{
@@ -153,10 +154,8 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
 
                     if (["doc","docx","xls","xlsx","ppt","pptx"].contains(att.data.extension)) {
 
-                        if(layout.serviceAddressList["x_onlyofficefile_assemble_control"]){
-                            flag = true;
-                            break;
-                        }
+                        flag = true;
+                        break;
                     }
                 }
                 if(flag){
@@ -189,10 +188,8 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
                         break;
                     }
                     if (["doc","docx","xls","xlsx","ppt","pptx"].contains(att.data.extension)) {
-                        if(layout.config.previewOffice){
-                            flag = true;
-                            break;
-                        }
+                        flag = true;
+                        break;
                     }
                 }
                 if(flag){
@@ -1224,9 +1221,7 @@ MWF.xApplication.process.Xform.AttachmentController = new Class({
             flag = true;
         }
         if (["doc","docx","xls","xlsx","ppt","pptx"].contains(att.data.extension)) {
-            if(layout.serviceAddressList["x_libreoffice_assemble_control"] && layout.config.previewOffice){
-                flag = true;
-            }
+            flag = true;
         }
         if( flag ){
             this.module.previewAttachment([att])
@@ -1678,6 +1673,43 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
     },
     editAttachment: function (attachments) {
         var att = attachments[0];
+
+        switch (this.json.officeTool) {
+            case "LibreOffice":
+                this.editLibreOffice(att);
+                break;
+            case "OfficeOnline":
+                this.editOfficeOnline(att);
+                break;
+            case "OnlyOffice":
+                this.editOnlyOffice(att);
+                break;
+            default :
+                this.editLibreOffice(att);
+
+        }
+
+    },
+    editOfficeOnline : function (att){
+
+        var jars ;
+        if(att.data.activity){
+            jars = "x_processplatform_assemble_surface";
+        }
+        if(att.data.categoryId){
+            jars = "x_cms_assemble_control";
+        }
+
+        var options = {
+            "documentId": att.data.id,
+            "mode":"write",
+            "jars" : jars,
+            "appId":  "OfficeOnlineEditor" + att.data.id
+        };
+        layout.openApplication(null, "OfficeOnlineEditor", options);
+    },
+    editOnlyOffice : function (att){
+
         var jars ;
         if(att.data.activity){
             jars = "x_processplatform_assemble_surface";
@@ -1693,8 +1725,13 @@ MWF.xApplication.process.Xform.Attachment = MWF.APPAttachment = new Class(
             "appId":  "OnlyOfficeEditor" + att.data.id
         };
         layout.openApplication(null, "OnlyOfficeEditor", options);
-
     },
+    editLibreOffice : function (att){
+
+        this.form.notice("not support");
+    },
+
+
     previewAttachment: function (attachments) {
         var att = attachments[0];
         new MWF.xApplication.process.Xform.AttachmenPreview(att,this);
@@ -2447,6 +2484,67 @@ MWF.xApplication.process.Xform.AttachmenPreview = new Class({
         });
     },
     previewOffice : function(){
+
+
+        switch (this.app.json.officeTool) {
+            case "LibreOffice":
+                this.previewLibreOffice();
+                break;
+            case "OfficeOnline":
+                this.previewOfficeOnline();
+                break;
+            case "OnlyOffice":
+                this.previewOnlyOffice();
+                break;
+            default :
+                this.previewLibreOffice();
+
+        }
+
+
+    },
+    previewOfficeOnline : function (){
+        var att = this.att;
+        var jars ;
+        if(att.data.activity){
+            jars = "x_processplatform_assemble_surface";
+        }
+        if(att.data.categoryId){
+            jars = "x_cms_assemble_control";
+        }
+
+        var options = {
+            "documentId": att.data.id,
+            "mode":"view",
+            "jars" : jars,
+            "appId":  "OfficeOnlineEditor" + att.data.id
+        };
+        layout.openApplication(null, "OfficeOnlineEditor", options);
+    },
+    previewOnlyOffice : function (){
+        var att = this.att;
+        var jars ;
+        if(att.data.activity){
+            jars = "x_processplatform_assemble_surface";
+        }
+        if(att.data.categoryId){
+            jars = "x_cms_assemble_control";
+        }
+
+        var options = {
+            "documentId": att.data.id,
+            "mode":"view",
+            "jars" : jars,
+            "appId":  "OnlyOfficeEditor" + att.data.id
+        };
+        layout.openApplication(null, "OnlyOfficeEditor", options);
+    },
+    previewLibreOffice : function (){
+
+        if(!layout.serviceAddressList["x_libreoffice_assemble_control"]){
+            this.app.form.notice("Please Install LibreOffice");
+            return;
+        }
         var srv = layout.serviceAddressList["x_libreoffice_assemble_control"];
         var protocol = window.location.protocol;
         var module;

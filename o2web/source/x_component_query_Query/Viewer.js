@@ -68,12 +68,12 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         }
 
     },
-    loadView: function(){
+    loadView: function( callback ){
         if (this.viewJson){
-            this.reload();
+            this.reload( callback );
         }else{
             this.init(function(){
-                this.load();
+                this.load( callback );
             }.bind(this));
         }
     },
@@ -85,21 +85,21 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
             this.getView(callback);
         }
     },
-    load: function(){
+    load: function( callback ){
         this.loadResource( function () {
             this._loadModuleEvents();
             if (this.fireEvent("queryLoad")){
-                this._loadUserInterface();
+                this._loadUserInterface( callback );
                 //this._loadStyles();
                 this._loadDomEvents();
             }
         }.bind(this))
     },
-    _loadUserInterface : function(){
+    _loadUserInterface : function( callback ){
         this.loadLayout();
         this.createActionbarNode();
         this.createSearchNode();
-        this.createViewNode({"filterList": this.json.filter  ? this.json.filter.clone() : null});
+        this.createViewNode({"filterList": this.json.filter  ? this.json.filter.clone() : null}, callback);
 
         if (this.options.resizeNode){
             this.setContentHeightFun = this.setContentHeight.bind(this);
@@ -868,7 +868,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
     hide: function(){
         this.node.setStyle("display", "none");
     },
-    reload: function(){
+    reload: function( callback ){
         if( this.lookuping || this.pageloading )return;
         this.node.setStyle("display", "block");
         if (this.loadingAreaNode) this.loadingAreaNode.setStyle("display", "block");
@@ -882,7 +882,7 @@ MWF.xApplication.query.Query.Viewer = MWF.QViewer = new Class({
         this.closeCustomSearch();
 
         this.viewAreaNode.empty();
-        this.createViewNode({"filterList": this.json.filter ? this.json.filter.clone() : null});
+        this.createViewNode({"filterList": this.json.filter ? this.json.filter.clone() : null}, callback);
     },
     getFilter: function(){
         var filterData = [];
@@ -2257,7 +2257,7 @@ MWF.xApplication.query.Query.Viewer.Item = new Class({
         }
         this.isSelected = false;
         this.view.fireEvent("unselectRow", [this]);
-        this.view.fireEvent("select", [{
+        this.view.fireEvent("unselect", [{
             "selected": false,
             "item": this,
             "data": this.data

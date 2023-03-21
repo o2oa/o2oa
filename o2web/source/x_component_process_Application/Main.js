@@ -101,7 +101,7 @@ MWF.xApplication.process.Application.Main = new Class({
 			this.countData.readCompleted = json.data.readCompleted;
 		}.bind(this));
 		this.action.DraftAction.listMyPaging(1,1, {"applicationList":[this.application.id]}).then(function(json){
-			this.countData.draft = json.size;
+			this.countData.draft = json.count;
 		}.bind(this));
 	},
 	loadList: function(type,ev,data){
@@ -836,6 +836,9 @@ MWF.xApplication.process.Application.DraftList = new Class({
 
 	},
 	_fixData : function (dataList){
+		dataList.each(function(d){
+			if(d.title === "") d.title = this.lp.unnamed;
+		}.bind(this));
 		return dataList;
 	},
 	loadFilter: function () {
@@ -991,6 +994,52 @@ MWF.xApplication.process.Application.WorkList = new Class({
 		};
 		layout.desktop.openApplication(null, "process.Work", options);
 
+	},
+	manage : function (id,ev,dataList){
+		var data ;
+		for(var i = 0 ; i < dataList.length;i++){
+			if(dataList[i].id === id){
+				data = dataList[i];
+				break ;
+			}
+		}
+
+		this._manage(data);
+	},
+	_manage : function (data){
+		var form;
+		form = new MWF.xApplication.process.Application.ManageWorkForm({app: this.app}, data );
+		form.open();
+	},
+	delete : function(id,e){
+		var _self = this;
+
+		this.app.confirm("warn", e,"删除确认！！", {
+			"html": "<br/>请选择删除方式？ <br/><input type='radio' value='soft' name='delete_type'/>软删除（可恢复）" +
+				"<br/><input type='radio' value='delete' name='delete_type'/>硬删除（不能恢复）<div class='checkInfor'></div>"
+
+		}, 400, 200, function(){
+			var inputs = this.content.getElements("input");
+
+			var flag = "";
+			for (var i=0; i<inputs.length; i++){
+				if (inputs[i].checked){
+					flag = inputs[i].get("value");
+					break;
+				}
+			}
+			if (flag){
+				_self.action[flag === "soft"?"SnapAction":"WorkAction"][flag === "soft"?"typeAbandoned":"delete"]( id , function(){
+					_self.app.notice("成功删除工作。");
+					_self.refresh();
+				});
+				this.close();
+			}else{
+				this.content.getElement(".checkInfor").set("text", "请选择删除方式！").setStyle("color", "red");
+			}
+		}, function(){
+			this.close();
+		});
 	}
 });
 MWF.xApplication.process.Application.WorkCompletedList = new Class({
@@ -1025,7 +1074,6 @@ MWF.xApplication.process.Application.WorkCompletedList = new Class({
 				["sendRead","addReview"]
 			]
 		}
-
 	},
 	open : function (id){
 		debugger
@@ -1035,6 +1083,52 @@ MWF.xApplication.process.Application.WorkCompletedList = new Class({
 		};
 		layout.desktop.openApplication(null, "process.Work", options);
 
+	},
+	manage : function (id,ev,dataList){
+		var data ;
+		for(var i = 0 ; i < dataList.length;i++){
+			if(dataList[i].id === id){
+				data = dataList[i];
+				break ;
+			}
+		}
+
+		this._manage(data);
+	},
+	_manage : function (data){
+		var form;
+		form = new MWF.xApplication.process.Application.ManageWorkCompletedForm({app: this.app}, data );
+		form.open();
+	},
+	delete : function(id,e){
+		var _self = this;
+
+		this.app.confirm("warn", e,"删除确认！！", {
+			"html": "<br/>请选择删除方式？ <br/><input type='radio' value='soft' name='delete_type'/>软删除（可恢复）" +
+				"<br/><input type='radio' value='delete' name='delete_type'/>硬删除（不能恢复）<div class='checkInfor'></div>"
+
+		}, 400, 200, function(){
+			var inputs = this.content.getElements("input");
+
+			var flag = "";
+			for (var i=0; i<inputs.length; i++){
+				if (inputs[i].checked){
+					flag = inputs[i].get("value");
+					break;
+				}
+			}
+			if (flag){
+				_self.action[flag === "soft"?"SnapAction":"WorkCompletedAction"][flag === "soft"?"typeAbandonedWorkCompleted":"manageDelete"]( id , function(){
+					_self.app.notice("成功删除工作。");
+					_self.refresh();
+				});
+				this.close();
+			}else{
+				this.content.getElement(".checkInfor").set("text", "请选择删除方式！").setStyle("color", "red");
+			}
+		}, function(){
+			this.close();
+		});
 	}
 });
 MWF.xApplication.process.Application.SnapList = new Class({
@@ -1077,6 +1171,19 @@ MWF.xApplication.process.Application.SnapList = new Class({
 		};
 		layout.desktop.openApplication(null, "process.Work", options);
 
+	},
+	delete : function(id,e){
+		var _self = this;
+		this.app.confirm("warn", e, "删除确认", "删除后不能恢复。", 350, 120, function () {
+
+			_self.action.SnapAction.delete( id , function(){
+				_self.app.notice("成功删除");
+				_self.refresh();
+			});
+			this.close();
+		}, function () {
+			this.close();
+		});
 	}
 });
 MWF.xApplication.process.Application.DictList = new Class({

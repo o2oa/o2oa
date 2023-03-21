@@ -72,7 +72,7 @@ MWF.xApplication.process.workcenter.Main = new Class({
 			// this.readCompletedCountNode.set("text", json.data.readCompleted);
 		}.bind(this));
 		this.action.DraftAction.listMyPaging(1,1, {}).then(function(json){
-			this.countData.draft = json.size;
+			this.countData.draft = json.count;
 			// this.pageData = Object.assign(this.pageData, {"draft": json.size});
 			// this.draftCountNode.set("text", json.size);
 		}.bind(this));

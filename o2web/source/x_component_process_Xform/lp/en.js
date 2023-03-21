@@ -410,6 +410,10 @@ MWF.xApplication.process.Xform.LP = {
         "noInstall" : "no install",
         "filetext" : "filetext"
     },
+    "officeonline" : {
+        "noInstall" : "no install",
+        "filetext" : "filetext"
+    },
     "title": "Title",
     "createTime": "Created Time",
     "creatorPerson": "Creator",

@@ -197,8 +197,10 @@ public class SyncOrganization {
         logger.info("正在删除组织{}.", unit.getDistinguishedName());
         List<Unit> os = new ArrayList<>();
         os.add(unit);
-        os.addAll(business.unit().listSupNestedObject(unit));
-        os = os.stream().sorted(Comparator.comparing(Unit::getLevel, Comparator.nullsLast(Integer::compareTo)))
+        // unit本身要删除 把所有子组织查询出来一起删除
+        os.addAll(business.unit().listSubNestedObject(unit));
+        // level大的 先删除
+        os = os.stream().sorted(Comparator.comparing(Unit::getLevel, Comparator.nullsLast(Integer::compareTo)).reversed())
                 .collect(Collectors.toList());
         for (Unit o : os) {
             this.removeSingleUnit(business, result, o);
@@ -531,7 +533,7 @@ public class SyncOrganization {
         /* 组织单独方法删除 */
         List<Unit> allUnit = this.listUnit(business);
         List<Unit> removeUnits = ListUtils.subtract(allUnit, units).stream()
-                .sorted(Comparator.comparing(Unit::getLevel, Comparator.nullsLast(Integer::compareTo)))
+                .sorted(Comparator.comparing(Unit::getLevel, Comparator.nullsLast(Integer::compareTo)).reversed())
                 .collect(Collectors.toList());
         for (Unit unit : removeUnits) {
             this.removeSingleUnit(business, result, unit);

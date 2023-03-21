@@ -198,8 +198,8 @@ public class SyncOrganization {
         logger.print("正在删除组织{}.", unit.getDistinguishedName());
         List<Unit> os = new ArrayList<>();
         os.add(unit);
-        os.addAll(business.unit().listSupNestedObject(unit));
-        os = os.stream().sorted(Comparator.comparing(Unit::getLevel, Comparator.nullsLast(Integer::compareTo)))
+        os.addAll(business.unit().listSubNestedObject(unit));
+        os = os.stream().sorted(Comparator.comparing(Unit::getLevel, Comparator.nullsLast(Integer::compareTo)).reversed())
                 .collect(Collectors.toList());
         for (Unit o : os) {
             this.removeSingleUnit(business, result, o);
@@ -207,15 +207,6 @@ public class SyncOrganization {
     }
 
     private void removeSingleUnit(Business business, PullResult result, Unit unit) throws Exception {
-
-        logger.print("正在检查下级组织{}，如果存在下级组织，则先删除下级组织.", unit.getDistinguishedName());
-        List<Unit> subUnits = business.unit().listSubNestedObject(unit);
-        if (ListTools.isNotEmpty(subUnits)) {
-            for (Unit subUnit : subUnits) {
-                removeSingleUnit(business, result, subUnit);
-            }
-        }
-
         logger.print("正在尝试删除单个组织{}.", unit.getDistinguishedName());
         EntityManagerContainer emc = business.entityManagerContainer();
         // 检查一下，该组织是否已经被删除过了
@@ -522,7 +513,7 @@ public class SyncOrganization {
         /* 组织单独方法删除 */
         List<Unit> allUnit = this.listUnit(business);
         List<Unit> removeUnits = ListUtils.subtract(allUnit, units).stream()
-                .sorted(Comparator.comparing(Unit::getLevel, Comparator.nullsLast(Integer::compareTo)))
+                .sorted(Comparator.comparing(Unit::getLevel, Comparator.nullsLast(Integer::compareTo)).reversed())
                 .collect(Collectors.toList());
         for (Unit unit : removeUnits) {
             this.removeSingleUnit(business, result, unit);

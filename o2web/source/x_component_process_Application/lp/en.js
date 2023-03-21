@@ -98,10 +98,6 @@ MWF.xApplication.process.Application.LP = {
     "readProcess" : "Pending read processing",
     "editAction" : "Maintenance",
 
-
-
-    "firstPage": "First Page",
-    "lastPage": "Last Page",
-
+    "unnamed" : "No Title"
 
 };
