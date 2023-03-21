@@ -1127,6 +1127,9 @@ o2.widget.Calendar = o2.Calendar = new Class({
 						}
 					}.bind(this)
 				});
+				// if( this.options.enableHours ){
+				// 	this.hSlider.setRange( this.getEnableHourStartEnd(this.cDate) );
+				// }
 				this.itmeHNode.getFirst().set("text", this.addZero( this.cHour, 2));
 				this.showHNode.set("text", this.addZero( this.cHour, 2) );
 
@@ -2085,6 +2088,10 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		if( typeOf(ar[0]) !== "array" )ar = [ar];
 		return o2.Calendar.RangeArrayUtils.complementary([0, 23], ar, null, 1);
 	},
+	// getEnableHourStartEnd: function(date){
+	// 	var ar = this.getEnableHours(date);
+	// 	return this._getEnableStartEnd( ar, 0, 23 );
+	// },
 	isEnableHour: function (thisDate, hour) {
 		var hs = this.getEnableHours( thisDate );
 		if( !hs || !hs.length || (hs[0] === 0 && hs[1] === 23) )return true;
@@ -2152,6 +2159,20 @@ o2.widget.Calendar = o2.Calendar = new Class({
 		}
 		return false;
 	}
+	// _getEnableStartEnd: function( ar, start, end ){
+	// 	if( !ar || !ar.length || (ar[0] === start && ar[1] === 23) )return [start, 23];
+	// 	var s, e;
+	// 	if( typeOf( ar[0] === "array" ) ){
+	// 		ar.each(function(a, i){
+	// 			s = i === 0 ? (a[0] || start ) : Math.min( s , a[0] || start );
+	// 			e = i === 0 ? (a[1] || end ) : Math.max( e, a[1] || end );
+	// 		})
+	// 	}else{
+	// 		s = ar[0] || start;
+	// 		e = ar[1] || end;
+	// 	}
+	// 	return [s, e];
+	// }
 
 });
 
@@ -2168,7 +2189,8 @@ o2.Calendar.MobileSelect = new Class({
 		this.setOptions( options );
 		this.wheelNode = wheelNode;
 		this.sliderNode = wheelNode.getFirst();
-		this.options.itemIndex = this.options.items.indexOf(this.options.currentItem)
+		this.options.itemIndex = this.options.items.indexOf(this.options.currentItem);
+		if( this.options.itemIndex < 0 )this.options.itemIndex = 0;
 	},
 	load : function(){
 		var _this = this;
@@ -2250,6 +2272,7 @@ o2.Calendar.MobileSelect = new Class({
 		this.options.items = items;
 		this.options.currentItem = currentItem;
 		this.options.itemIndex = this.options.items.indexOf(this.options.currentItem);
+		if( this.options.itemIndex < 0 )this.options.itemIndex = 0;
 		this.oversizeBorder = - ( this.options.items.length - 3) * this.options.lineHeight;
 		this.locatePostion( this.options.itemIndex );
 	},
