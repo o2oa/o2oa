@@ -1,5 +1,5 @@
 MWF.require("o2.widget.Paging", null, false);
-MWF.require("o2.widget.Mask", null, false);
+// MWF.require("o2.widget.Mask", null, false);
 o2.requireApp("Template", "MTooltips", null, false);
 MWF.xApplication.ftsearch.FTSearchView = new Class({
     Extends: MWF.widget.Common,
@@ -113,8 +113,8 @@ MWF.xApplication.ftsearch.FTSearchView = new Class({
         }
     },
     _search: function( pageNum, query, callback ){
-        this.mask = new o2.widget.Mask({ "style": "desktop", "zIndex": 50000 });
-        this.mask.loadNode(this.app.content);
+        // this.mask = new o2.widget.Mask({ "style": "desktop", "zIndex": 50000 });
+        // this.mask.loadNode(this.app.content);
 
         pageNum = o2.typeOf(pageNum) === "number" ? pageNum : null;
         this.docPageNum = pageNum || 1;
@@ -141,7 +141,7 @@ MWF.xApplication.ftsearch.FTSearchView = new Class({
                 }
                 if( typeOf(callback) === "function" )callback();
             }
-            if (this.mask) { this.mask.hide(); this.mask = null; }
+            // if (this.mask) { this.mask.hide(); this.mask = null; }
         }.bind(this);
 
         if( this.currentKey ){
