@@ -431,7 +431,16 @@ MWF.xApplication.Profile.Main = new Class({
                 {width:"30%","title": this.lp.empower.title,  "field": "subject","formatter":function(data,target){
                         new Element("a",{"text":data.title,"style":"cursor:pointer"}).inject(target).addEvent("click",function(e){
                             var options = {"workId": data.work, "appId": "process.Work"+data.work};
-                            _this.desktop.openApplication(e, "process.Work", options);
+                            o2.Actions.load("x_processplatform_assemble_surface").WorkAction.getWithWorkOrWorkCompleted(data.work, function (json) {
+                                if( json.data && (json.data.work || json.data.workCompleted) ){
+                                    _this.desktop.openApplication(e, "process.Work", options);
+                                }else{
+                                    _this.notice( _this.lp.workDeletedNote, "info");
+                                }
+                            }, function () {
+                                _this.notice(_this.lp.workDeletedNote, "info");
+                                return true;
+                            });
                         });
                     }},
                 type=="myEmPowerLog"?{width:"10%","title": this.lp.empower.toPerson,  "field": "toPerson","formatter":function(data,target){

@@ -19,6 +19,7 @@ MWF.xApplication.Profile.LP = {
     "saveIdea": "Save frequently opinions",
     "saveIdeaDefault": "Save as default opinions",
     "ideaSaveOk": "Frequently opinions saved",
+    "workDeletedNote": "The job has been deleted or you do not have permission to open it.",
 
     "icon": "Avatar",
     "changeIcon": "Change",

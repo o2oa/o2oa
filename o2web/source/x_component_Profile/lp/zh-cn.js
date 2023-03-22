@@ -19,6 +19,7 @@ MWF.xApplication.Profile.LP = {
     "saveIdea": "保存常用意见",
     "saveIdeaDefault": "保存为默认常用意见",
     "ideaSaveOk": "常用意见保存完成",
+    "workDeletedNote": "该工作已经被删除或您没有权限打开。",
 
     "icon": "头像",
     "changeIcon": "更换头像",
