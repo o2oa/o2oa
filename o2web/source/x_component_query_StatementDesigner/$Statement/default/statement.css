@@ -93,6 +93,13 @@
     border: 1px solid #cccccc;
     background: #ffffff;
 }
+
+.o2_statement_statementRunDefaultNode {
+    /*overflow: auto;*/
+    /*float: left;*/
+    background: #ffffff;
+}
+
 .o2_statement_statementRunNode {
     margin-top: 10px;
     padding: 0px;
@@ -112,10 +119,17 @@
 .o2_statement_statementRunContentNode {
     overflow: hidden;
 }
+/*.o2_statement_statementRunLeftNode{*/
+/*    height: 100%;*/
+/*    width: 40%;*/
+/*    !*overflow: auto;*!*/
+/*    float: left;*/
+/*    background: #ffffff;*/
+/*}*/
 .o2_statement_statementRunJsonNode {
     height: 100%;
     width: 40%;
-    overflow: auto;
+    overflow: hidden;
     float: left;
     background: #ffffff;
 }

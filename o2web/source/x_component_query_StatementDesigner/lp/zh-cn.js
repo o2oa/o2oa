@@ -44,6 +44,14 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
     "queryStatement": "查询语句",
     "countStatement": "总数语句",
 
+    "currentPerson":"当前人",
+    "currentIdentity":"当前身份",
+    "currentPersonDirectUnit":"当前人所在直接组织",
+    "currentPersonAllUnit":"当前人所在所有组织",
+    "currentPersonGroupList": "当前人所在群组",
+    "currentPersonRoleList": "当前人所拥有角色",
+    "defaultCondition": "自动赋值条件：",
+
     "ignore": "忽略",
     "auto": "自动",
     "assign": "指定",

@@ -45,6 +45,14 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
     "queryStatement": "Query Statement",
     "countStatement": "Count Statement",
 
+    "currentPerson":"currentPerson",
+    "currentIdentity":"Current Identity",
+    "currentPersonDirectUnit":"The current person's direct organization",
+    "currentPersonAllUnit":"All organizations where the current person belongs",
+    "currentPersonGroupList": "The current person's group",
+    "currentPersonRoleList": "Roles owned by the current person",
+    "defaultCondition": "Automatic assignment condition:",
+
     "ignore": "Ignore",
     "auto": "Auto",
     "assign": "Assign",
