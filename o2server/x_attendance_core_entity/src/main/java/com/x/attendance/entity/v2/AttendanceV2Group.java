@@ -83,9 +83,8 @@ public class AttendanceV2Group extends SliceJpaObject {
 	private String checkType;
 
 
-	// 目前是固定班制 所以关联了班次
 	public static final String shiftId_FIELDNAME = "shiftId";
-	@FieldDescribe("关联班次.")
+	@FieldDescribe("节假日调班的工作班次id.")
 	@Column(length = length_64B, name = ColumnNamePrefix + shiftId_FIELDNAME)
 	private String shiftId;
 
@@ -188,6 +187,15 @@ public class AttendanceV2Group extends SliceJpaObject {
 
 	public void setWorkDateProperties(AttendanceV2GroupWorkDayProperties workDateProperties) {
 		this.workDateProperties = workDateProperties;
+	}
+
+
+	public String getShiftId() {
+		return shiftId;
+	}
+
+	public void setShiftId(String shiftId) {
+		this.shiftId = shiftId;
 	}
 
 	public String getCheckType() {

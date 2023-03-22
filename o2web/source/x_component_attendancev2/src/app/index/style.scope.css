@@ -366,3 +366,34 @@
   color: #999999;
   cursor: pointer;
 }
+
+/* selector */
+.o2-selctor {
+  position: absolute;
+  z-index: 1050;
+  font-size: 14px;
+  white-space: nowrap;
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 3px 6px -4px rgb(0 0 0 / 12%), 0 6px 16px 0 rgb(0 0 0 / 8%),
+    0 9px 28px 8px rgb(0 0 0 / 5%);
+}
+.o2-selctor-ul {
+  margin: 0;
+  list-style: none;
+  display: inline-block;
+  min-width: 111px;
+  padding: 4px 0;
+  overflow: auto;
+  vertical-align: top;
+  border-right: 1px solid #f0f0f0;
+}
+.o2-selctor-li {
+  padding: 5px 12px;
+  overflow: hidden;
+  line-height: 22px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition: all 0.3s;
+}

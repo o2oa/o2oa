@@ -56,7 +56,16 @@ public class ActionPreCheck extends BaseAction {
             AttendanceV2Group group = groups.get(0); // 考勤组
             // 固定班制
             if (group.getCheckType().equals(AttendanceV2Group.CHECKTYPE_Fixed)) {
+                // 正常的班次id
                 String shiftId = group.getWorkDateProperties().shiftIdWithDate(nowDate);
+                // 是否特殊工作日
+                if (StringUtils.isEmpty(shiftId)) {
+                    shiftId = specialWorkDayShift(emc, today, group);
+                }
+                // 是否特殊节假日 清空shiftid
+                if (StringUtils.isNotEmpty(shiftId) && isSpecialRestDay(emc, today, group)) {
+                    shiftId = null;
+                }
                 if (StringUtils.isNotEmpty(shiftId)) {
                     AttendanceV2Shift shift  = emc.find(shiftId, AttendanceV2Shift.class);
                     if (shift != null) { // 有班次对象
@@ -80,33 +89,7 @@ public class ActionPreCheck extends BaseAction {
                             }
                         }
                         // 自动处理 已经过来的打卡记录 记录为未打卡
-                        for (int i = 0; i < recordList.size(); i++) {
-                            AttendanceV2CheckInRecord record = recordList.get(i);
-                            // 不是预打卡数据 跳过
-                            if (record.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn)) {
-                                if (StringUtils.isNotEmpty(record.getPreDutyTimeAfterLimit())) { // 有打卡结束限制
-                                    Date onDutyAfterTime =  DateTools.parse(today + " " + record.getPreDutyTimeAfterLimit(), DateTools.format_yyyyMMddHHmm);
-                                    if (nowDate.after(onDutyAfterTime)) { // 超过了打卡结束限制时间，直接生成未打卡数据
-                                        update2NoCheckInRecord(emc, record);
-                                    }
-                                } else {
-                                    Date onDutyTime = DateTools.parse(today + " " + record.getPreDutyTime(), DateTools.format_yyyyMMddHHmm);
-                                    if (nowDate.after(onDutyTime)) {
-                                        // 查询下一条数据 下班打卡
-                                        if (i < recordList.size()-1) {
-                                            AttendanceV2CheckInRecord nextRecord = recordList.get( i + 1 );
-                                            Date offDutyTime = DateTools.parse(today + " " + nextRecord.getPreDutyTime(), DateTools.format_yyyyMMddHHmm);
-                                            long minutes = (offDutyTime.getTime() - onDutyTime.getTime()) / 60000 / 2; // 一半间隔时间
-                                            Date middleTime = DateTools.addMinutes(onDutyTime, (int) minutes);
-                                            if (nowDate.after(middleTime)) { // 生成未打卡数据
-                                                update2NoCheckInRecord(emc, record);
-                                            }
-                                        }
-
-                                    }
-                                }
-                            }
-                        }
+                        dealWithOvertimeRecord(emc, nowDate, today, recordList);
                     }
                 }
             }
@@ -141,9 +124,132 @@ public class ActionPreCheck extends BaseAction {
         return result;
     }
 
+    /**
+     * 是否特殊节假日
+     * @param emc
+     * @param date
+     * @param group
+     * @return
+     * @throws Exception
+     */
+    private boolean isSpecialRestDay(EntityManagerContainer emc, String date, AttendanceV2Group group) throws Exception {
+        boolean isRestDay = false;
+        // 考勤配置 节假日工作日
+        AttendanceV2Config config = null;
+        List<AttendanceV2Config> configs = emc.listAll(AttendanceV2Config.class);
+        if (configs != null && !configs.isEmpty()) {
+            config = configs.get(0);
+            // 节假日
+            if (config.getHolidayList() != null && !config.getHolidayList().isEmpty()) {
+                if (config.getHolidayList().contains(date)) {
+                    isRestDay = true;
+                }
+            }
+
+        }
+        // 考勤组的无需打卡日
+        if (group.getNoNeedCheckInDateList() != null && !group.getNoNeedCheckInDateList().isEmpty()) {
+            if (group.getNoNeedCheckInDateList().contains(date)) {
+                isRestDay = true;// 无需打卡就是休息日
+            }
+        }
+       return isRestDay;
+    }
+
+    /**
+     * 是否特殊工作日 并返回工作日的班次id
+     * @param emc
+     * @param date
+     * @param group
+     * @return
+     * @throws Exception
+     */
+    private String specialWorkDayShift(EntityManagerContainer emc, String date, AttendanceV2Group group) throws Exception {
+        String shiftId = null;
+        // 考勤配置 节假日工作日
+        AttendanceV2Config config = null;
+        List<AttendanceV2Config> configs = emc.listAll(AttendanceV2Config.class);
+        if (configs != null && !configs.isEmpty()) {
+            config = configs.get(0);
+            // 工作日
+            if (config.getWorkDayList() != null && !config.getWorkDayList().isEmpty()) {
+                if (config.getWorkDayList().contains(date)) {
+                    shiftId = group.getShiftId();
+                }
+            }
+        }
+       
+        // 考勤组的必须打卡日
+        if (group.getRequiredCheckInDateList() != null && !group.getRequiredCheckInDateList().isEmpty()) {
+            for (String d : group.getRequiredCheckInDateList()) { // 包含日期 ｜ 班次id ｜ 是否循环
+                String[] dArray = d.split("\\|");
+                if (dArray.length < 3) {
+                    // 格式不正确
+                    continue;
+                }
+                if (dArray[0].equals(date)) {
+                    shiftId = dArray[1];
+                    break;
+                }
+                if (dArray[2].equals("week") && DateTools.dateIsInWeekCycle(DateTools.parse(dArray[0], DateTools.format_yyyyMMdd), DateTools.parse(date, DateTools.format_yyyyMMdd))) { // 每周
+                    shiftId = dArray[1];
+                    break;
+                }
+                if (dArray[2].equals("twoWeek") && DateTools.dateIsInTwoWeekCycle(DateTools.parse(dArray[0], DateTools.format_yyyyMMdd), DateTools.parse(date, DateTools.format_yyyyMMdd))) { // 每周
+                    shiftId = dArray[1];
+                    break;
+                }
+                if (dArray[2].equals("month") && DateTools.dateIsInMonthCycle(DateTools.parse(dArray[0], DateTools.format_yyyyMMdd), DateTools.parse(date, DateTools.format_yyyyMMdd))) { // 每周
+                    shiftId = dArray[1];
+                    break;
+                }
+            }
+        }
+        return shiftId;
+    }
+
+    /**
+     * 处理超过时间的打卡记录 标记为未打卡
+     * @param emc
+     * @param nowDate
+     * @param today
+     * @param recordList
+     * @throws Exception
+     */
+    private void dealWithOvertimeRecord(EntityManagerContainer emc, Date nowDate, String today, List<AttendanceV2CheckInRecord> recordList) throws Exception {
+        for (int i = 0; i < recordList.size(); i++) {
+            AttendanceV2CheckInRecord record = recordList.get(i);
+            // 不是预打卡数据 跳过
+            if (record.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_PreCheckIn)) {
+                if (StringUtils.isNotEmpty(record.getPreDutyTimeAfterLimit())) { // 有打卡结束限制
+                    Date onDutyAfterTime =  DateTools.parse(today + " " + record.getPreDutyTimeAfterLimit(), DateTools.format_yyyyMMddHHmm);
+                    if (nowDate.after(onDutyAfterTime)) { // 超过了打卡结束限制时间，直接生成未打卡数据
+                        update2NoCheckInRecord(emc, record);
+                    }
+                } else {
+                    Date onDutyTime = DateTools.parse(today + " " + record.getPreDutyTime(), DateTools.format_yyyyMMddHHmm);
+                    if (nowDate.after(onDutyTime)) {
+                        // 查询下一条数据 下班打卡
+                        if (i < recordList.size()-1) {
+                            AttendanceV2CheckInRecord nextRecord = recordList.get( i + 1 );
+                            Date offDutyTime = DateTools.parse(today + " " + nextRecord.getPreDutyTime(), DateTools.format_yyyyMMddHHmm);
+                            long minutes = (offDutyTime.getTime() - onDutyTime.getTime()) / 60000 / 2; // 一半间隔时间
+                            Date middleTime = DateTools.addMinutes(onDutyTime, (int) minutes);
+                            if (nowDate.after(middleTime)) { // 生成未打卡数据
+                                update2NoCheckInRecord(emc, record);
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+    }
 
 
-    // 预存打卡数据保存
+    /**
+     * 预存打卡数据保存
+     */
     private AttendanceV2CheckInRecord savePreCheckInRecord(EntityManagerContainer emc, String person,String dutyType,
                                                            AttendanceV2Group group, AttendanceV2Shift shift, String today,
                                                            String dutyTime, String dutyTimeBeforeLimit, String dutyTimeAfterLimit) throws Exception {
@@ -181,6 +287,12 @@ public class ActionPreCheck extends BaseAction {
         return noCheckRecord;
     }
 
+    /**
+     * 更新为 未打卡
+     * @param emc
+     * @param record
+     * @throws Exception
+     */
     private void update2NoCheckInRecord(EntityManagerContainer emc, AttendanceV2CheckInRecord record) throws Exception {
         emc.beginTransaction(AttendanceV2CheckInRecord.class);
         record.setCheckInResult(AttendanceV2CheckInRecord.CHECKIN_RESULT_NotSigned);

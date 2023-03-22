@@ -17,9 +17,9 @@
                 <td>{{shift.value.properties.timeList[0].onDutyTime + ' - ' + shift.value.properties.timeList[shift.value.properties.timeList.length-1].offDutyTime}}</td>
                 <td>
                     <span class="operator_link"
-                        @click="this.clickEditShift(shift.value.id)">修改</span>
+                        @click="this.clickEditShift(shift.value.id)">{{$.lp.update}}</span>
                     <span class="operator_link"
-                        @click="this.clickDeleteShift(shift.value.id, shift.value.shiftName)">删除</span>
+                        @click="this.clickDeleteShift(shift.value.id, shift.value.shiftName)">{{$.lp.delete}}</span>
                 </td>
             </tr>
         </table>

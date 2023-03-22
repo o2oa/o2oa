@@ -1,5 +1,9 @@
 package com.x.base.core.project.tools;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
@@ -628,6 +632,47 @@ public class DateTools {
 		c.setTime(dateTime);
 		return c.get(Calendar.DAY_OF_WEEK) - 1;
 	}
+
+	/**
+	 * 两个日期是否在每周循环上
+	 * @param originDate
+	 * @param judgeDate
+	 * @return
+	 */
+	public static boolean dateIsInWeekCycle(Date originDate, Date judgeDate) {
+		LocalDate origin =  originDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		LocalDate judge =  judgeDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		long daysBetween = ChronoUnit.DAYS.between(origin, judge);
+		return (daysBetween % 7 == 0) ;
+	}
+
+	/**
+	 * 两个日期是否在每个14天循环上
+	 * @param originDate
+	 * @param judgeDate
+	 * @return
+	 */
+	public static boolean dateIsInTwoWeekCycle(Date originDate, Date judgeDate) {
+		LocalDate origin =  originDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		LocalDate judge =  judgeDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		long daysBetween = ChronoUnit.DAYS.between(origin, judge);
+		return (daysBetween % 14 == 0) ;
+	}
+
+
+	/**
+	 * 两个日期是否在每月循环上
+	 * @param originDate
+	 * @param judgeDate
+	 * @return
+	 */
+	public static boolean dateIsInMonthCycle(Date originDate, Date judgeDate) {
+		LocalDate origin =  originDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		LocalDate judge =  judgeDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		Period period = Period.between(origin, judge);
+		return (period.getDays() == 0) ;
+	}
+
 
 	/**
 	 * 指定的日期，添加指定的天数

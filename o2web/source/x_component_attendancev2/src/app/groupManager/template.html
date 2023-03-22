@@ -19,9 +19,9 @@
                 <td>{{ $m.formatAttendanceTime(g.value) }}</td>
                 <td>
                     <span class="operator_link"
-                        @click="this.clickEditGroup(g.value.id)">修改</span>
+                        @click="this.clickEditGroup(g.value.id)">{{$.lp.update}}</span>
                     <span class="operator_link"
-                        @click="this.clickDeleteGroup(g.value.id, g.value.groupName)">删除</span>
+                        @click="this.clickDeleteGroup(g.value.id, g.value.groupName)">{{$.lp.delete}}</span>
                 </td>
             </tr>
         </table>

@@ -208,7 +208,43 @@
                     {{$.lp.groupForm.requiredCheckInDate}}
                     <span class="operator_link margin-left" id="requiredDateSelector">{{$.lp.add}}</span>
                 </div>
-                <div class="o-input-item-input  padding-bottom">
+                <div class="margin-top" oo-if="$.requiredCheckInDateForTableList.length > 0">
+                    <table width="100%" border="0" cellpadding="5" cellspacing="0" class="att_table margin-top">
+                        <thead>
+                            <th>{{$.lp.groupForm.requiredCheckInDateThDate}}</th>
+                            <th>{{$.lp.groupForm.requiredCheckInDateThShift}}</th>
+                            <th>{{$.lp.groupForm.requiredCheckInDateThCycle}}</th>
+                            <th  >{{$.lp.operate}}</th>
+                        </thead>
+                        <tr oo-each="$.requiredCheckInDateForTableList" oo-item="rDate">
+                            <td>
+                                {{rDate.value.date}}
+                            </td>
+                            <td>{{ (rDate.value.shift) ? rDate.value.shift.shiftName : $.lp.dateCycle.none }}</td>
+                            <td>
+                                <!-- <div style=" position: relative;">
+                                    <div style="height: 39px; min-width: 48px; line-height: 39px;" id="{{ 'o2-required-date-' + rDate.value.date  }}" @click="this.showRequiredDateCycleSelector( rDate.value.date)">{{ (rDate.value.cycle) ? rDate.value.cycle.name : $.lp.dateCycle.none }}</div>
+                                    <div class="o2-selctor" style="display: none;" id="{{ 'o2-selector-' + rDate.value.date  }}">
+                                        <ul class="o2-selctor-ul ">
+                                            <li oo-each="$.dateCycleList" oo-item="cycle" class="{{ (rDate.value.cycle && cycle.value.value == rDate.value.cycle.value) ? 'lightColor_bg o2-selctor-li' : 'o2-selctor-li' }}" @click="this.chooseDateCycleItem(rDate.value.date, cycle.value)">{{ cycle.value.name }}</li>
+                                        </ul>
+                                    </div>
+                                   
+                                </div> -->
+                                <select name="{{ 'o2-selector-name-' + rDate.value.date  }}"  id="{{ 'o2-selector-' + rDate.value.date  }}" @change="chooseDateCycleItem2">
+                                    <option oo-each="$.dateCycleList" oo-item="cycle" value="{{cycle.value.value}}"  .selected="(rDate.value.cycle && cycle.value.value === rDate.value.cycle.value)" >{{ cycle.value.name }} </option>
+                                </select>
+                            </td>
+                            <td>
+                                <span class="operator_link"
+                                    @click="this.openShiftSelect('requiredCheckIn-' + rDate.value.date)">{{$.lp.groupForm.shiftChange}}</span>
+                                <span class="operator_link"
+                                    @click="this.deleteRequiredDate(rDate.value.date)">{{$.lp.delete}}</span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <!-- <div class="o-input-item-input  padding-bottom">
                     <span class=" input placeholder" oo-if=" $.form.requiredCheckInDateList.length == 0 ">{{  $.lp.groupForm.requiredCheckInDatePlaceholder }}</span>
                     <div class="tag-container"  oo-if=" $.form.requiredCheckInDateList.length > 0 ">
                         <div class="tag-item"  oo-each="$.form.requiredCheckInDateList" oo-item="rDate" @click="this.deleteRequiredDate(rDate.value)">
@@ -216,14 +252,34 @@
                             <i class="o2icon-cancel-circle color-999 margin-left-s"></i>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
             <div class="o-input-item margin-top ">
                 <div class="o-input-item-label" >
                     {{$.lp.groupForm.noNeedCheckInDate}}
                     <span class="operator_link margin-left" id="noNeedDateSelector">{{$.lp.add}}</span>
                 </div>
-                <div class="o-input-item-input  padding-bottom">
+                <div class="margin-top" oo-if="$.form.noNeedCheckInDateList.length > 0">
+                    <table width="100%" border="0" cellpadding="5" cellspacing="0" class="att_table margin-top">
+                        <thead>
+                            <th>{{$.lp.groupForm.requiredCheckInDateThDate}}</th>
+                            <th>{{$.lp.groupForm.requiredCheckInDateThShift}}</th>
+                            <th  >{{$.lp.operate}}</th>
+                        </thead>
+                        <!-- 周一 -->
+                        <tr oo-each="$.form.noNeedCheckInDateList" oo-item="rDate">
+                            <td>
+                                {{rDate.value}}
+                            </td>
+                            <td>{{ $.lp.groupForm.shiftEmpty }}</td>
+                            <td>
+                                <span class="operator_link"
+                                    @click="this.deleteNoNeedDateSelector(rDate.value)">{{$.lp.delete}}</span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <!-- <div class="o-input-item-input  padding-bottom">
                     <span class=" input placeholder" oo-if=" $.form.noNeedCheckInDateList.length == 0 ">{{  $.lp.groupForm.noNeedCheckInDatePlaceholder }}</span>
                     <div class="tag-container"  oo-if=" $.form.noNeedCheckInDateList.length > 0 ">
                         <div class="tag-item"  oo-each="$.form.noNeedCheckInDateList" oo-item="rDate" @click="this.deleteNoNeedDateSelector(rDate.value)">
@@ -231,7 +287,7 @@
                             <i class="o2icon-cancel-circle color-999 margin-left-s"></i>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
         <div class="s-dialog-footer">

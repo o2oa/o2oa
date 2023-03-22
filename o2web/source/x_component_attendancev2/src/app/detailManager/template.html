@@ -10,7 +10,7 @@
             oo-model="filterList"></o-org-person-selector>
          </div>
         <div style="margin: 10px 0;float: left;">
-             <o-date-picker oo-prop="{'value': $.form.startDate}" oo-model="form.startDate"></o-date-picker> <span style="margin: 0 10px;">至</span> <o-date-picker oo-prop="{'value': $.form.endDate}" oo-model="form.endDate"></o-date-picker>
+             <o-date-picker oo-prop="{'value': $.form.startDate}" oo-model="form.startDate"></o-date-picker> <span style="margin: 0 10px;">{{$.lp.until}}</span> <o-date-picker oo-prop="{'value': $.form.endDate}" oo-model="form.endDate"></o-date-picker>
         </div>
         <div style="margin: 10px 0;float: left;">
             <button class="mainColor_bg" @click="search">{{$.lp.search}}</button>

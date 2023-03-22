@@ -38,7 +38,6 @@ export default content({
       workPlaceSelector: {
         workAddressSelected: []
       },
-
       // 固定班制 选择班次和打卡日子
       workDay: {
         monday: {
@@ -109,6 +108,13 @@ export default content({
           value: "0",
         },
       ],
+      dateCycleList: [
+        {name: lp.dateCycle.none, value: ""}, 
+        {name: lp.dateCycle.week, value: "week"}, 
+        {name: lp.dateCycle.twoWeek, value: "twoWeek"}, 
+        {name: lp.dateCycle.month, value: "month"}, 
+      ],
+      requiredCheckInDateForTableList: [], // 必须打卡的日期, 里面存对象 date, shift, cycle
     };
   },
   // 先查询数据
@@ -178,7 +184,18 @@ export default content({
       id: shift.id,
       shiftName: shift.shiftName,
     };
-    if (this.bind.shiftSelector.key  === "all") {
+    // requiredCheckIn- 开头的key 表示在必需打卡日期的配置
+    if (this.bind.shiftSelector.key.startsWith('requiredCheckIn-')) {
+      const date = this.bind.shiftSelector.key.substring('requiredCheckIn-'.length);
+      console.debug(date);
+      for (let index = 0; index < this.bind.requiredCheckInDateForTableList.length; index++) {
+        const element = this.bind.requiredCheckInDateForTableList[index];
+        if (element.date === date) {
+          element.shift = newShift;
+          this.bind.requiredCheckInDateForTableList[index] = element;
+        }
+      }
+    } else if (this.bind.shiftSelector.key  === "all") {
       this.bind.shiftSelector.shiftSelected = newShift;
       // 其它班次
       for (let prop in this.bind.workDay) {
@@ -270,8 +287,18 @@ export default content({
             let month = (date.getMonth() + 1) > 9 ? `${date.getMonth() + 1}`:`0${(date.getMonth() + 1)}`;
             let day = (date.getDate()) > 9 ? `${date.getDate()}`:`0${date.getDate()}`;
             const chooseDate = `${year}-${month}-${day}`;
-            if (this.bind.form.requiredCheckInDateList.indexOf(chooseDate) < 0) {
-              this.bind.form.requiredCheckInDateList.push(chooseDate);
+            let isIn = false;
+            for (let index = 0; index < this.bind.requiredCheckInDateForTableList.length; index++) {
+              const element = this.bind.requiredCheckInDateForTableList[index];
+              if (element.date === date) {
+                isIn = true;
+                break;
+              }
+            }
+            if (!isIn) {
+              this.bind.requiredCheckInDateForTableList.push({
+                date: chooseDate,
+              });
             }
           }.bind(this),
       };
@@ -280,17 +307,55 @@ export default content({
     }.bind(this));
   },
   // 必须打卡日期删除
-  deleteRequiredDate(value) {
+  deleteRequiredDate(date) {
     let i = -1;
-    for (let index = 0; index <  this.bind.form.requiredCheckInDateList.length; index++) {
-      const element =  this.bind.form.requiredCheckInDateList[index];
-      if (value === element) {
+    for (let index = 0; index < this.bind.requiredCheckInDateForTableList.length; index++) {
+      const element = this.bind.requiredCheckInDateForTableList[index];
+      if (date === element.date) {
         i = index;
         break;
       }
     }
     if (i > -1) {
-      this.bind.form.requiredCheckInDateList.splice(i, 1);
+      this.bind.requiredCheckInDateForTableList.splice(i, 1);
+    }
+  },
+  // 周期选择 下拉框 显示
+  showRequiredDateCycleSelector(id) {
+    console.debug("show selecotr");
+    const selector = this.dom.querySelector("#o2-selector-"+id);
+    const brother = this.dom.querySelector("#o2-required-date-"+id);
+    const x = brother.getBoundingClientRect().left + document.documentElement.scrollLeft;
+    const y = brother.getBoundingClientRect().top + document.documentElement.scrollTop;
+    console.debug("show selecotr ..........x:" + x+ " y: "+y);
+    selector.style.left = x + "px";
+    selector.style.top = (y+40)+"px";
+    selector.style.position = "fixed";
+    selector.show();
+  },
+  // 选择周期
+  chooseDateCycleItem(date, cycle) {
+    console.debug(date, cycle)
+    for (let index = 0; index < this.bind.requiredCheckInDateForTableList.length; index++) {
+      const element = this.bind.requiredCheckInDateForTableList[index];
+      if (element.date === date) {
+        element.cycle = cycle;
+        this.bind.requiredCheckInDateForTableList[index] = element;
+      }
+    }
+    this.dom.querySelector("#o2-selector-"+date).hide();
+  },
+  chooseDateCycleItem2(e) {
+    const id = e.target.id;
+    const value = e.target.value;
+    const date = id.substring('o2-selector-'.length);
+    const cycle = this.bind.dateCycleList.filter(c => c.value === value);
+    for (let index = 0; index < this.bind.requiredCheckInDateForTableList.length; index++) {
+      const element = this.bind.requiredCheckInDateForTableList[index];
+      if (element.date === date) {
+        element.cycle = cycle;
+        this.bind.requiredCheckInDateForTableList[index] = element;
+      }
     }
   },
   loadNoNeedDateSelector() {
@@ -410,6 +475,23 @@ export default content({
       workPlaceIdList.push(element.id);
     }
     myForm.workPlaceIdList = workPlaceIdList;
+    // 必须打卡的日期
+    const rCheckInDateList = this.bind.requiredCheckInDateForTableList.map((d) => {
+      const date = d.date;
+      const shiftId = (d.shift && d.shift.id) ? d.shift.id : "";
+      const cycle = (d.cycle && d.cycle.value) ?  d.cycle.value :  "";
+      if (shiftId === "") {
+        return "";
+      }
+      return date+"|"+shiftId+"|"+cycle;
+    }).filter(str => !!str);
+    
+    if (this.bind.requiredCheckInDateForTableList.length > 0 && rCheckInDateList.length < 1) {
+      o2.api.page.notice("必须打卡的日期得配置班次！", 'error');
+      return;
+    }
+    myForm.requiredCheckInDateList = rCheckInDateList;
+
     const result = await groupAction("createOrUpdate", myForm);
     console.log(result);
     o2.api.page.notice(lp.saveSuccess, 'success');

@@ -48,44 +48,101 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                 // 查询打卡数据
                 List<AttendanceV2CheckInRecord> recordList = business.getAttendanceV2ManagerFactory().listRecordWithPersonAndDate(model.getPerson(), model.getDate());
                 AttendanceV2Group group = groups.get(0);
+                String shiftId = null;
                 AttendanceV2Shift shift = null;
+                // 考勤配置 工作日
+                AttendanceV2Config config = null;
+                List<AttendanceV2Config> configs = emc.listAll(AttendanceV2Config.class);
+                if (configs != null && !configs.isEmpty()) {
+                    config = configs.get(0);
+                    // 工作日
+                    if (config.getWorkDayList() != null && !config.getWorkDayList().isEmpty()) {
+                        if (config.getWorkDayList().contains(model.getDate())) {
+                            isWorkDay = true;
+                            shiftId = group.getShiftId();
+                        }
+                    }
+                }
+                // 考勤组的必须打卡日
+                if (group.getRequiredCheckInDateList() != null && !group.getRequiredCheckInDateList().isEmpty()) {
+                    for (String d : group.getRequiredCheckInDateList()) { // 包含日期 ｜ 班次id ｜ 是否循环
+                        String[] dArray = d.split("\\|");
+                        if (dArray.length < 3) {
+                            // 格式不正确
+                            continue;
+                        }
+                        if (dArray[0].equals(model.getDate())) {
+                            shiftId = dArray[1];
+                            isWorkDay = true;
+                            break;
+                        }
+                        if (dArray[2].equals("week") && DateTools.dateIsInWeekCycle(DateTools.parse(dArray[0], DateTools.format_yyyyMMdd), DateTools.parse(model.getDate(), DateTools.format_yyyyMMdd))) { // 每周
+                            shiftId = dArray[1];
+                            isWorkDay = true;
+                            break;
+                        }
+                        if (dArray[2].equals("twoWeek") && DateTools.dateIsInTwoWeekCycle(DateTools.parse(dArray[0], DateTools.format_yyyyMMdd), DateTools.parse(model.getDate(), DateTools.format_yyyyMMdd))) { // 每周
+                            shiftId = dArray[1];
+                            isWorkDay = true;
+                            break;
+                        }
+                        if (dArray[2].equals("month") && DateTools.dateIsInMonthCycle(DateTools.parse(dArray[0], DateTools.format_yyyyMMdd), DateTools.parse(model.getDate(), DateTools.format_yyyyMMdd))) { // 每周
+                            shiftId = dArray[1];
+                            isWorkDay = true;
+                            break;
+                        }
+                    }
+                }
 
                 if (group.getCheckType().equals(AttendanceV2Group.CHECKTYPE_Fixed)) { // 固定班制
                     // 查询是否有对应的班次
-                    String shiftId = group.getWorkDateProperties().shiftIdWithDate(date);
+                    if (StringUtils.isEmpty(shiftId)) {
+                        shiftId = group.getWorkDateProperties().shiftIdWithDate(date);
+                    }
+                    if (StringUtils.isNotEmpty(shiftId) && isRestDay(configs, model.getDate(), group)) {
+                        shiftId = null; // 特殊节假日 清空
+                    }
                     if (StringUtils.isNotEmpty(shiftId)) {
+                        isWorkDay = true;
                         // 查询班次对象
                         shift = emc.find(shiftId, AttendanceV2Shift.class);
-                        if (shift != null) {
-                            List<AttendanceV2ShiftCheckTime> timeList = shift.getProperties().getTimeList();
-                            if (timeList == null || timeList.isEmpty()) {
-                                throw new ExceptionQueueAttendanceV2Detail(shift.getShiftName() + "没有对应的上下班打卡时间!");
-                            }
-                            // 工作日 没有数据 生成未打卡数据
-                            if (recordList == null || recordList.isEmpty()) {
-                                recordList = new ArrayList<>();
-                                for (AttendanceV2ShiftCheckTime shiftCheckTime : timeList) {
-                                    // 上班打卡
-                                    AttendanceV2CheckInRecord onDutyRecord = saveNoCheckInRecord(emc, model.getPerson(), AttendanceV2CheckInRecord.OnDuty, group, shift, model.getDate(),
-                                            shiftCheckTime.getOnDutyTime(), shiftCheckTime.getOnDutyTimeBeforeLimit(), shiftCheckTime.getOnDutyTimeAfterLimit());
-                                    recordList.add(onDutyRecord);
-                                    // 下班打卡
-                                    AttendanceV2CheckInRecord offDutyRecord = saveNoCheckInRecord(emc, model.getPerson(), AttendanceV2CheckInRecord.OffDuty, group, shift, model.getDate(),
-                                            shiftCheckTime.getOffDutyTime(), shiftCheckTime.getOffDutyTimeBeforeLimit(), shiftCheckTime.getOffDutyTimeAfterLimit());
-                                    recordList.add(offDutyRecord);
-                                }
+                        if (shift == null) {
+                            throw new ExceptionQueueAttendanceV2Detail("班次对象查询不到，id："+shiftId);
+                        }
+                        List<AttendanceV2ShiftCheckTime> timeList = shift.getProperties().getTimeList();
+                        if (timeList == null || timeList.isEmpty()) {
+                            throw new ExceptionQueueAttendanceV2Detail(shift.getShiftName() + "没有对应的上下班打卡时间!");
+                        }
+                        // 工作日 没有数据 生成未打卡数据
+                        if (recordList == null || recordList.isEmpty()) {
+                            recordList = new ArrayList<>();
+                            for (AttendanceV2ShiftCheckTime shiftCheckTime : timeList) {
+                                // 上班打卡
+                                AttendanceV2CheckInRecord onDutyRecord = saveNoCheckInRecord(emc, model.getPerson(), AttendanceV2CheckInRecord.OnDuty, group, shift, model.getDate(),
+                                        shiftCheckTime.getOnDutyTime(), shiftCheckTime.getOnDutyTimeBeforeLimit(), shiftCheckTime.getOnDutyTimeAfterLimit());
+                                recordList.add(onDutyRecord);
+                                // 下班打卡
+                                AttendanceV2CheckInRecord offDutyRecord = saveNoCheckInRecord(emc, model.getPerson(), AttendanceV2CheckInRecord.OffDuty, group, shift, model.getDate(),
+                                        shiftCheckTime.getOffDutyTime(), shiftCheckTime.getOffDutyTimeBeforeLimit(), shiftCheckTime.getOffDutyTimeAfterLimit());
+                                recordList.add(offDutyRecord);
                             }
                         }
                     }
                 } else if (group.getCheckType().equals(AttendanceV2Group.CHECKTYPE_Free)) { // 自由工时
-                    // 判断休息日还是工作日
-                    if (StringUtils.isEmpty(group.getWorkDateList())) {
-                        throw new ExceptionQueueAttendanceV2Detail("考勤工作日设置为空！");
+                    if (!isWorkDay) { // 如果已经是工作日 下面不需要判断了
+                        // 判断休息日还是工作日
+                        if (StringUtils.isEmpty(group.getWorkDateList())) {
+                            throw new ExceptionQueueAttendanceV2Detail("考勤工作日设置为空！");
+                        }
+                        String[] workDayList = group.getWorkDateList().split(",");
+                        List<Integer> dayList = Arrays.stream(workDayList).map(Integer::parseInt).collect(Collectors.toList());
+                        // 是否工作日
+                        isWorkDay = dayList.contains(day);
                     }
-                    String[] workDayList = group.getWorkDateList().split(",");
-                    List<Integer> dayList = Arrays.stream(workDayList).map(Integer::parseInt).collect(Collectors.toList());
-                    // 是否工作日
-                    isWorkDay = dayList.contains(day);
+                    // 特殊节假日
+                    if (isWorkDay && isRestDay(configs, model.getDate(), group)) {
+                        isWorkDay = false;
+                    }
                 }
 
                 // 如果没有数据，可能是自由工时 或者 休息日没有班次信息的情况下 只需要生成一条上班一条下班的打卡记录
@@ -108,36 +165,7 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                     }
                 }
 
-                // 考勤配置 节假日工作日
-                AttendanceV2Config config = null;
-                List<AttendanceV2Config> configs = emc.listAll(AttendanceV2Config.class);
-                if (configs != null && !configs.isEmpty()) {
-                    config = configs.get(0);
-                    // 节假日
-                    if (config.getHolidayList() != null && !config.getHolidayList().isEmpty()) {
-                        if (config.getHolidayList().contains(model.getDate())) {
-                            isWorkDay = false;
-                        }
-                    }
-                    // 工作日
-                    if (config.getWorkDayList() != null && !config.getWorkDayList().isEmpty()) {
-                        if (config.getWorkDayList().contains(model.getDate())) {
-                            isWorkDay = true;
-                        }
-                    }
-                }
-                // 考勤组的无需打卡日
-                if (group.getNoNeedCheckInDateList() != null && !group.getNoNeedCheckInDateList().isEmpty()) {
-                    if (group.getNoNeedCheckInDateList().contains(model.getDate())) {
-                        isWorkDay = false; // 无需打卡就是休息日
-                    }
-                }
-                // 考勤组的必须打卡日
-                if (group.getRequiredCheckInDateList() != null && !group.getRequiredCheckInDateList().isEmpty()) {
-                    if (group.getRequiredCheckInDateList().contains(model.getDate())) {
-                        isWorkDay = true; // 必须打卡就是休息日
-                    }
-                }
+
 
                 // 迟到
                 List<AttendanceV2CheckInRecord> late = recordList.stream().filter((r) -> r.getCheckInResult().equals(AttendanceV2CheckInRecord.CHECKIN_RESULT_Late)).collect(Collectors.toList());
@@ -244,6 +272,34 @@ public class QueueAttendanceV2Detail extends AbstractQueue<QueueAttendanceV2Deta
                 generateAppealInfo(emc, business, config, recordList);
             }
         }
+    }
+
+    /**
+     * 是否休息日
+     * @param configs
+     * @param date
+     * @param group
+     * @return
+     */
+    private boolean isRestDay(List<AttendanceV2Config> configs, String date, AttendanceV2Group group) {
+        boolean isRestDay = false;
+        if (configs != null && !configs.isEmpty()) {
+            AttendanceV2Config config = configs.get(0);
+            // 节假日
+            if (config.getHolidayList() != null && !config.getHolidayList().isEmpty()) {
+                if (config.getHolidayList().contains(date)) {
+                    isRestDay = true;
+                }
+            }
+
+        }
+        // 考勤组的无需打卡日
+        if (group.getNoNeedCheckInDateList() != null && !group.getNoNeedCheckInDateList().isEmpty()) {
+            if (group.getNoNeedCheckInDateList().contains(date)) {
+                isRestDay = true; // 无需打卡就是休息日
+            }
+        }
+        return isRestDay;
     }
 
     /**
