@@ -3,10 +3,10 @@
     <div class="o2_statement_statementDesignerFormatLine">
         <div class="o2_statement_statementDesignerFormatTitle">{{$.lp.statementFormat}} </div>
         <div class="o2_statement_statementDesignerFormatContent" style="float: left; margin-right: 20px">
-            <input name="format" type="radio" value="jpql" {{if !$.data.format || $.data.format=='jpql'}} checked {{end if}} />{{$.lp.statementJpql}}
-            <input name="format" type="radio" value="script" {{if $.data.format=='script'}} checked {{end if}} />{{$.lp.statementScript}}
-            <input name="format" type="radio" value="sql" {{if $.data.format=='sql'}} checked {{end if}} />{{$.lp.nativeSql}}
-            <input name="format" type="radio" value="sqlScript" {{if $.data.format=='sqlScript'}} checked {{end if}} />{{$.lp.nativeSqlScript}}
+            <input id="{{$.data.id}}formatjpql" name="format" type="radio" value="jpql" {{if !$.data.format || $.data.format=='jpql'}} checked {{end if}} /><label for="{{$.data.id}}formatjpql">{{$.lp.statementJpql}}</label>
+            <input id="{{$.data.id}}formatscript" name="format" type="radio" value="script" {{if $.data.format=='script'}} checked {{end if}} /><label for="{{$.data.id}}formatscript">{{$.lp.statementScript}}</label>
+            <input id="{{$.data.id}}formatsql" name="format" type="radio" value="sql" {{if $.data.format=='sql'}} checked {{end if}} /><label for="{{$.data.id}}formatsql">{{$.lp.nativeSql}}</label>
+            <input id="{{$.data.id}}formatsqlscript" name="format" type="radio" value="sqlScript" {{if $.data.format=='sqlScript'}} checked {{end if}} /><label for="{{$.data.id}}formatsqlscript">{{$.lp.nativeSqlScript}}</label>
         </div>
 
 
@@ -103,6 +103,13 @@
         </div>
         <div class="o2_statement_statementDesignerCountSqlScript" style="{{if $.data.format!=='sqlScript'}} display: none {{end if}}"></div>
     </div>
+
+<!--    <div class="o2_statement_statementRunDefaultNode" style="overflow: hidden">-->
+<!--        <div style="font-weight: bold;float:left;width: 100px;line-height: 30px;">{{$.lp.defaultCondition}}</div>-->
+<!--        <div style="margin-left: 100px;line-height: 30px;" class="o2_statement_statementRunDefaultContent">-->
+<!--        </div>-->
+<!--    </div>-->
+
 </div>
 
 <div class="o2_statement_resizeNode"></div>
@@ -113,17 +120,6 @@
 <!--    <div class="o2_statement_statementRunTitleNode">{{$.lp.runTest}}</div>-->
     <div class="o2_statement_statementRunContentNode">
         <div class="o2_statement_statementRunLeftNode">
-            <div class="o2_statement_statementRunDefaultNode" style="overflow: hidden">
-                <div style="font-weight: bold;float:left;width: 100px;line-height: 30px;">{{$.lp.defaultCondition}}</div>
-                <div style="margin-left: 100px;line-height: 30px;" class="o2_statement_statementRunDefaultContent">
-                    <input name="text{$.id}viewParameterTextFormula" type="checkbox" value="@person" />{{$.lp.currentPerson}}
-                    <input name="text{$.id}viewParameterTextFormula" type="checkbox" value="@identityList" />{{$.lp.currentIdentity}}
-                    <input name="text{$.id}viewParameterTextFormula" type="checkbox" value="@unitList" />{{$.lp.currentPersonDirectUnit}}
-                    <input name="text{$.id}viewParameterTextFormula" type="checkbox" value="@unitAllList" />{{$.lp.currentPersonAllUnit}}
-                    <input name="text{$.id}viewParameterTextFormula" type="checkbox" value="@groupList" />{{$.lp.currentPersonGroupList}}
-                    <input name="text{$.id}viewParameterTextFormula" type="checkbox" value="@roleList" />{{$.lp.currentPersonRoleList}}
-                </div>
-            </div>
             <div class="o2_statement_statementRunJsonNode">
     <!--            <div class="o2_statement_statementRunJsonContent"></div>-->
             </div>

@@ -88,13 +88,13 @@
 /**
  * StatementParameter  查询视图的过滤条件值参数，对查询语句where语句的形如":person"的参数部分进行赋值<br/>
  * 有以下规则：<br/>
- * 1、参数名称为下列值时，后台自动赋值：person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组)。<br/>
+ * 1、参数名称为下列值时，后台自动赋值：person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组)。v8.0以后系统自动解析，不需要再传这类参数。<br/>
  * 2、如果对比的是日期，需要传入 Date 类型。<br/>
  * 3、如果运算符用的是 like, noLike，模糊查询，值为 "%{value}%"。
  * @typedef {Object} StatementParameter
  * @example
  * {
- *    "person" : "",
+ *    "person" : "", //v8.0以后系统自动解析，不需要再传这类参数。
  *    "startTime" : (new Date("2020-01-01")),
  *    "applicationName" : "%test%",
  *    "processName" : "test流程" //其他写确定的值
@@ -3309,7 +3309,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *       }
          *  ],
          *  parameter : {
-         *       "person" : "", //参数名称为下列值时，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组)
+         *       "person" : "", //参数名称为下列值时，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组),roleList(当前人拥有的角色)。v8.0以后系统自动解析，不需要再传这类参数。
          *       "startTime" : (new Date("2020-01-01")), //如果对比的是日期，需要传入 Date 类型
          *       "applicationName" : "%test%", //如果运算符用的是 like, noLike，模糊查询
          *       "processName" : "test流程" //其他写确定的值
@@ -3344,7 +3344,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *      }
          * ],
          * "parameter" : {
-         *     "person" : "", //参数名称为下列值时，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组)
+         *     "person" : "", //参数名称为下列值时，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组),roleList(当前人拥有的角色)。v8.0以后系统自动解析，不需要再传这类参数。
          *     "startTime" : (new Date("2020-01-01")), //如果对比的是日期，需要传入 Date 类型
          *     "applicationName" : "%test%", //如果运算符用的是 like, noLike，模糊查询
          *     "processName" : "test流程" //其他写确定的值
@@ -3368,7 +3368,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *      }
          * ],
          * "parameter" : {
-         *     "person" : "", //参数名称为下列值时，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组)
+         *     "person" : "", //参数名称为下列值时，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组),roleList(当前人拥有的角色)。v8.0以后系统自动解析，不需要再传这类参数。
          *     "startTime" : (new Date("2020-01-01")), //如果对比的是日期，需要传入 Date 类型
          *     "applicationName" : "%test%", //如果运算符用的是 like, noLike，模糊查询
          *     "processName" : "test流程" //其他写确定的值
@@ -3469,7 +3469,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *       }
          *  ],
          *  parameter : {
-         *       "person" : "", //参数名称为下列值时，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组)
+         *       "person" : "", //参数名称为下列值时，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组),roleList(当前人拥有的角色)。v8.0以后系统自动解析，不需要再传这类参数。
          *       "startTime" : (new Date("2020-01-01")), //如果对比的是日期，需要传入 Date 类型
          *       "applicationName" : "%test%", //如果运算符用的是 like, noLike，模糊查询
          *       "processName" : "test流程" //其他写确定的值
@@ -4240,7 +4240,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          * //假设语句为 select count(o.id) from Read o where (o.person = :person) and (o.startTime > :startTime) and (o.applicationName like :applicationName) and (o.processName = :processName)。
          * //那么可能的参数如下：
          * {
-         *    "person" : "", //出于安全考虑参数名称为下列值时，不需要填写参数值，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组)
+         *    "person" : "", //出于安全考虑参数名称为下列值时，不需要填写参数值，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组),roleList(当前人拥有的角色)。v8.0以后系统自动解析，不需要再传这类参数。
          *    "startTime" : (new Date("2020-01-01")), //如果对比的是日期，需要传入 Date 类型
          *    "applicationName" : "%test%", //如果运算符用的是 like, noLike，模糊查询
          *    "processName" : "test流程" //其他写确定的值
@@ -4314,7 +4314,7 @@ MWF.xScript.ViewEnvironment = function (ev) {
          *     ],
          *     //假设语句为 select count(o.id) from Read o where (o.person = :person) and (o.startTime > :startTime) and (o.applicationName like :applicationName) and (o.processName = :processName)
          *     "parameter" : { //可选，对查询语句where语句的形如":person"的参数部分进行赋值
-         *       "person" : "", //出于安全考虑参数名称为下列值时，不需要填写参数值，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组)
+         *       "person" : "", //出于安全考虑参数名称为下列值时，不需要填写参数值，后台默认赋值，person(当前人),identityList(当前人身份列表),unitList(当前人所在直接组织), unitAllList(当前人所在所有组织), groupList(当前人所在群组),roleList(当前人拥有的角色)。v8.0以后系统自动解析，不需要再传这类参数。
          *       "startTime" : (new Date("2020-01-01")), //如果对比的是日期，需要传入 Date 类型
          *       "applicationName" : "%test%", //如果运算符用的是 like, noLike，模糊查询
          *       "processName" : "test流程" //其他写确定的值

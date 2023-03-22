@@ -353,7 +353,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             this.runJsonNode = this.runContentNode.getElement(".o2_statement_statementRunJsonNode");
             this.runActionNode = this.runContentNode.getElement(".o2_statement_statementRunActionNode");
             this.runResultNode = this.runContentNode.getElement(".o2_statement_statementRunResultNode");
-            this.runDefaultNode = this.runContentNode.getElements(".o2_statement_statementRunDefaultContent");
+            // this.runDefaultNode = this.runContentNode.getElement(".o2_statement_statementRunDefaultContent");
             this.setRunnerSize();
             this.designer.addEvent("resize", this.setRunnerSize.bind(this));
             switch (this.json.format) {
@@ -373,7 +373,7 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
                     this.loadJpqlEditor();
                     this.loadJpqlCountEditor();
             }
-            this.loadDefaultCondition();
+            // this.loadDefaultCondition();
             this.loadStatementRunner();
 
             this.viewArea = this.areaNode.getElement(".o2_statement_viewNode");
@@ -385,13 +385,24 @@ MWF.xApplication.query.StatementDesigner.Statement = new Class({
             this.loadVerticalResize();
         }.bind(this));
     },
-    loadDefaultCondition: function(){
-        ["person","identityList","unitList","unitAllList","groupList","roleList"].each(function (key) {
-            new Element("div", {
-                style
-            });
-        }.bind(this))
-    },
+    // loadDefaultCondition: function(){
+    //     var lp = ["currentPerson","currentIdentity","currentPersonDirectUnit","currentPersonAllUnit","currentPersonGroupList","currentPersonRoleList"];
+    //     ["person","identityList","unitList","unitAllList","groupList","roleList"].each(function (key, i) {
+    //         var div = new Element("div", {
+    //             style: "float:left;margin-right:10px;"
+    //         }).inject(this.runDefaultNode);
+    //         new Element("input", {
+    //             type: "checkbox",
+    //             value: "@"+key,
+    //             name: this.json.id + "defaultConditoin",
+    //             id: this.json.id + "defaultConditoin" + key
+    //         }).inject(div);
+    //         new Element("label", {
+    //             for: this.json.id + "defaultConditoin" + key,
+    //             text: this.designer.lp[lp[i]]
+    //         }).inject(div);
+    //     }.bind(this));
+    // },
     loadCountMethodSelect: function(){
         this.countMethodSelect.getElements("option").each(function(o){
             if( this.json.countMethod === o.value ){
