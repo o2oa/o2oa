@@ -119,18 +119,18 @@
 .o2_statement_statementRunContentNode {
     overflow: hidden;
 }
-.o2_statement_statementRunLeftNode{
-    height: 100%;
-    width: 40%;
-    /*overflow: auto;*/
-    float: left;
-    background: #ffffff;
-}
+/*.o2_statement_statementRunLeftNode{*/
+/*    height: 100%;*/
+/*    width: 40%;*/
+/*    !*overflow: auto;*!*/
+/*    float: left;*/
+/*    background: #ffffff;*/
+/*}*/
 .o2_statement_statementRunJsonNode {
     height: 100%;
-    width: 100%;
+    width: 40%;
     overflow: hidden;
-    /*float: left;*/
+    float: left;
     background: #ffffff;
 }
 .o2_statement_statementRunActionNode {
