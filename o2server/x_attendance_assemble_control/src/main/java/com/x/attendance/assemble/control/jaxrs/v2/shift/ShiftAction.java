@@ -108,4 +108,22 @@ public class ShiftAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
+    @JaxrsMethodDescribe(value = "获取班次.", action = ActionGet.class)
+    @GET
+    @Path("{id}")
+    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void get(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
+                                     @JaxrsParameterDescribe("班次ID") @PathParam("id") String id) {
+        ActionResult<ActionGet.Wo> result = new ActionResult<>();
+        EffectivePerson effectivePerson = this.effectivePerson(request);
+        try {
+            result = new ActionGet().execute(id);
+        } catch (Exception e) {
+            logger.error(e, effectivePerson, request, null);
+            result.error(e);
+        }
+        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
+    }
+
 }

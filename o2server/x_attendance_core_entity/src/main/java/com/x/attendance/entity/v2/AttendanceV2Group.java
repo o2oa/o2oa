@@ -160,7 +160,7 @@ public class AttendanceV2Group extends SliceJpaObject {
 
 
 	public static final String requiredCheckInDateList_FIELDNAME = "requiredCheckInDateList";
-	@FieldDescribe("必须打卡的日期，如 2023-01-01.")
+	@FieldDescribe("必须打卡的日期，包含日期 ｜ 班次id ｜ 是否循环，如 2023-01-01|shiftId|week.")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle
@@ -171,7 +171,7 @@ public class AttendanceV2Group extends SliceJpaObject {
 
 
 	public static final String noNeedCheckInDateList_FIELDNAME = "noNeedCheckInDateList";
-	@FieldDescribe("无需打卡的日期，如 2023-01-01.")
+	@FieldDescribe("无需打卡的日期，包含日期 ｜ 是否循环 如 2023-01-01|week .")
 	@PersistentCollection(fetch = FetchType.EAGER)
 	@OrderColumn(name = ORDERCOLUMNCOLUMN)
 	@ContainerTable(name = TABLE + ContainerTableNameMiddle

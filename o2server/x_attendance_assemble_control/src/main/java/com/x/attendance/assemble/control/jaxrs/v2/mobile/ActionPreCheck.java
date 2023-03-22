@@ -149,9 +149,33 @@ public class ActionPreCheck extends BaseAction {
         }
         // 考勤组的无需打卡日
         if (group.getNoNeedCheckInDateList() != null && !group.getNoNeedCheckInDateList().isEmpty()) {
-            if (group.getNoNeedCheckInDateList().contains(date)) {
-                isRestDay = true;// 无需打卡就是休息日
+//            if (group.getNoNeedCheckInDateList().contains(date)) {
+//                isRestDay = true;// 无需打卡就是休息日
+//            }
+            for (String d : group.getNoNeedCheckInDateList()) { // 包含日期 ｜ 是否循环
+                String[] dArray = d.split("\\|");
+                if (dArray.length < 2) {
+                    // 格式不正确
+                    continue;
+                }
+                if (dArray[0].equals(date)) {
+                    isRestDay = true;// 无需打卡就是休息日
+                    break;
+                }
+                if (dArray[1].equals("week") && DateTools.dateIsInWeekCycle(DateTools.parse(dArray[0], DateTools.format_yyyyMMdd), DateTools.parse(date, DateTools.format_yyyyMMdd))) { // 每周
+                    isRestDay = true;// 无需打卡就是休息日
+                    break;
+                }
+                if (dArray[1].equals("twoWeek") && DateTools.dateIsInTwoWeekCycle(DateTools.parse(dArray[0], DateTools.format_yyyyMMdd), DateTools.parse(date, DateTools.format_yyyyMMdd))) { // 每周
+                    isRestDay = true;// 无需打卡就是休息日
+                    break;
+                }
+                if (dArray[1].equals("month") && DateTools.dateIsInMonthCycle(DateTools.parse(dArray[0], DateTools.format_yyyyMMdd), DateTools.parse(date, DateTools.format_yyyyMMdd))) { // 每周
+                    isRestDay = true;// 无需打卡就是休息日
+                    break;
+                }
             }
+
         }
        return isRestDay;
     }
