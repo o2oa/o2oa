@@ -447,12 +447,18 @@ MWF.xApplication.Profile.Main = new Class({
                                 if( json.data && (json.data.work || json.data.workCompleted) ){
                                     _this.desktop.openApplication(e, "process.Work", options);
                                 }else{
-                                    _this.notice( _this.lp.workDeletedNote.replace("{title}", data.title), "info" );
-                                    //confirm();
+                                    if( type === "receiveEmPowerLog" ){
+                                        confirm();
+                                    }else{
+                                        _this.notice( _this.lp.workDeletedNote.replace("{title}", data.title), "info" );
+                                    }
                                 }
                             }, function () {
-                                _this.notice( _this.lp.workDeletedNote.replace("{title}", data.title), "info" );
-                                //confirm();
+                                if( type === "receiveEmPowerLog" ){
+                                    confirm();
+                                }else{
+                                    _this.notice( _this.lp.workDeletedNote.replace("{title}", data.title), "info" );
+                                }
                                 return true;
                             });
                         });
