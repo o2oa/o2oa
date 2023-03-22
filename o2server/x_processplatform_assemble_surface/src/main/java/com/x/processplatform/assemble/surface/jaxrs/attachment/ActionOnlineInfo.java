@@ -67,6 +67,8 @@ class ActionOnlineInfo extends BaseAction {
 		private String job;
 		@FieldDescribe("附件名称.")
 		private String name;
+		@FieldDescribe("扩展名.")
+		private String extension;
 		@FieldDescribe("附件大小.")
 		private Long length;
 		@FieldDescribe("创建用户ID.")
@@ -180,6 +182,14 @@ class ActionOnlineInfo extends BaseAction {
 
 		public void setLastUpdateTime(Date lastUpdateTime) {
 			this.lastUpdateTime = lastUpdateTime;
+		}
+
+		public String getExtension() {
+			return extension;
+		}
+
+		public void setExtension(String extension) {
+			this.extension = extension;
 		}
 	}
 
