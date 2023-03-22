@@ -792,7 +792,10 @@ MWF.xApplication.process.Application.TaskDoneList = new Class({
 	Extends: MWF.xApplication.process.Application.List,
 	loadData: function(){
 		var _self = this;
-		return this.action.TaskCompletedAction.V2ListPaging(this.page, this.size, this.filterList||{}).then(function(json){
+		this.filterList = this.filterList||{};
+		this.filterList.latest = true;
+
+		return this.action.TaskCompletedAction.V2ListPaging(this.page, this.size, this.filterList).then(function(json){
 			_self.fireEvent("loadData");
 			_self.total = json.count;
 			return _self._fixData(json.data);
