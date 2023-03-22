@@ -19,7 +19,7 @@ public class Runtime extends GsonPropertyObject {
     public static final String PARAMETER_ROLELIST = "roleList";
 
     @FieldDescribe("参数")
-    private Map<String, Object> parameters = new HashMap<>();
+    public Map<String, Object> parameters = new HashMap<>();
 
     public Map<String, Object> getParameters() {
         return parameters;
