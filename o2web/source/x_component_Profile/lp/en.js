@@ -19,6 +19,10 @@ MWF.xApplication.Profile.LP = {
     "saveIdea": "Save frequently opinions",
     "saveIdeaDefault": "Save as default opinions",
     "ideaSaveOk": "Frequently opinions saved",
+    "workDeletedNote": "Job '{title}' has been deleted or you do not have permission to open it.",
+    "workDeletedTitle": "No job found",
+    "workDeletedContent": "Job '{title}' has been deleted or you do not have permission to open it. Do you want to delete this authorization record?",
+    "deleteSuccess": "Delete successful",
 
     "icon": "Avatar",
     "changeIcon": "Change",

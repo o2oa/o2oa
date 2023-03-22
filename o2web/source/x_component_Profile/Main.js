@@ -429,9 +429,32 @@ MWF.xApplication.Profile.Main = new Class({
             ],
             "columns": [
                 {width:"30%","title": this.lp.empower.title,  "field": "subject","formatter":function(data,target){
+                        var _content = this;
                         new Element("a",{"text":data.title,"style":"cursor:pointer"}).inject(target).addEvent("click",function(e){
+                            var confirm = function () {
+                                _this.confirm("warn", e, _this.lp.workDeletedTitle, _this.lp.workDeletedContent.replace("{title}", data.title), 300, 120, function(){
+                                    o2.Actions.load("x_organization_assemble_personal").EmpowerLogAction.delete( data.id, function () {
+                                        _content.pagination.toPage();
+                                        _this.notice( _this.lp.deleteSuccess );
+                                    });
+                                    this.close();
+                                }, function(){
+                                    this.close();
+                                });
+                            }.bind(this);
                             var options = {"workId": data.work, "appId": "process.Work"+data.work};
-                            _this.desktop.openApplication(e, "process.Work", options);
+                            o2.Actions.load("x_processplatform_assemble_surface").WorkAction.getWithWorkOrWorkCompleted(data.work, function (json) {
+                                if( json.data && (json.data.work || json.data.workCompleted) ){
+                                    _this.desktop.openApplication(e, "process.Work", options);
+                                }else{
+                                    _this.notice( _this.lp.workDeletedNote.replace("{title}", data.title), "info" );
+                                    //confirm();
+                                }
+                            }, function () {
+                                _this.notice( _this.lp.workDeletedNote.replace("{title}", data.title), "info" );
+                                //confirm();
+                                return true;
+                            });
                         });
                     }},
                 type=="myEmPowerLog"?{width:"10%","title": this.lp.empower.toPerson,  "field": "toPerson","formatter":function(data,target){
