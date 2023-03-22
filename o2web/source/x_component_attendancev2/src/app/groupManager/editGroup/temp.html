@@ -221,7 +221,7 @@
                             <td>
                                 {{rDate.value.date}}
                             </td>
-                            <td>{{ (rDate.value.shift) ? rDate.value.shift.shiftName : $.lp.dateCycle.none }}</td>
+                            <td>{{ ($.form.checkType === '1') ? ( (rDate.value.shift) ? rDate.value.shift.shiftName : $.lp.dateCycle.none ) : '自由工时' }}</td>
                             <td>
                                 <!-- <div style=" position: relative;">
                                     <div style="height: 39px; min-width: 48px; line-height: 39px;" id="{{ 'o2-required-date-' + rDate.value.date  }}" @click="this.showRequiredDateCycleSelector( rDate.value.date)">{{ (rDate.value.cycle) ? rDate.value.cycle.name : $.lp.dateCycle.none }}</div>
@@ -237,7 +237,7 @@
                                 </select>
                             </td>
                             <td>
-                                <span class="operator_link"
+                                <span class="operator_link" oo-if=" $.form.checkType === '1' "
                                     @click="this.openShiftSelect('requiredCheckIn-' + rDate.value.date)">{{$.lp.groupForm.shiftChange}}</span>
                                 <span class="operator_link"
                                     @click="this.deleteRequiredDate(rDate.value.date)">{{$.lp.delete}}</span>
@@ -273,7 +273,7 @@
                             </td>
                             <td>
                                 <span class="operator_link"
-                                    @click="this.deleteNoNeedDateSelector(rDate.value)">{{$.lp.delete}}</span>
+                                    @click="this.deleteNoNeedDateSelector(rDate.value.date)">{{$.lp.delete}}</span>
                             </td>
                         </tr>
                     </table>

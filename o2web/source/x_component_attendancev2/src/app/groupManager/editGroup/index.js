@@ -544,21 +544,31 @@ export default content({
     }
     myForm.workPlaceIdList = workPlaceIdList;
     // 必须打卡的日期
-    const rCheckInDateList = this.bind.requiredCheckInDateForTableList.map((d) => {
-      const date = d.date;
-      const shiftId = (d.shift && d.shift.id) ? d.shift.id : "";
-      const cycle = (d.cycle && d.cycle.value) ?  d.cycle.value :  "";
-      if (shiftId === "") {
-        return "";
+    if (myForm.checkType === "1") { // 固定班制 一定要配置班次
+      const rCheckInDateList = this.bind.requiredCheckInDateForTableList.map((d) => {
+        const date = d.date;
+        const shiftId = (d.shift && d.shift.id) ? d.shift.id : "";
+        const cycle = (d.cycle && d.cycle.value) ?  d.cycle.value :  "";
+        if (shiftId === "") {
+          return "";
+        }
+        return date+"|"+shiftId+"|"+cycle;
+      }).filter(str => !!str);
+      
+      if (this.bind.requiredCheckInDateForTableList.length > 0 && rCheckInDateList.length < 1) {
+        o2.api.page.notice("必须打卡的日期得配置班次！", 'error');
+        return;
       }
-      return date+"|"+shiftId+"|"+cycle;
-    }).filter(str => !!str);
-    
-    if (this.bind.requiredCheckInDateForTableList.length > 0 && rCheckInDateList.length < 1) {
-      o2.api.page.notice("必须打卡的日期得配置班次！", 'error');
-      return;
-    }
-    myForm.requiredCheckInDateList = rCheckInDateList;
+      myForm.requiredCheckInDateList = rCheckInDateList;
+    } else if (myForm.checkType === "2") { // 自由工时 不需要班次
+      const rCheckInDateList = this.bind.requiredCheckInDateForTableList.map((d) => {
+        const date = d.date;
+        const shiftId =  "";
+        const cycle = (d.cycle && d.cycle.value) ?  d.cycle.value :  "";
+        return date+"|"+shiftId+"|"+cycle;
+      });
+      myForm.requiredCheckInDateList = rCheckInDateList;
+     }
 
     // 无需打卡的日期
     const noNeedCheckInDateList = this.bind.noNeedCheckInDateForTableList.map((d) => {
