@@ -21,7 +21,7 @@ class ActionTest extends BaseAction {
     private static final Logger LOGGER = LoggerFactory.getLogger(ActionTest.class);
 
     ActionResult<Object> execute(EffectivePerson effectivePerson) throws Exception {
-        String sql = "SELECT 1 FROM dual WHERE a = b and c=:c";
+        String sql = "SELECT xid FROM PP_C_TASK WHERE xidentity=:identity";
         Statement statement = CCJSqlParserUtil.parse(sql);
         if (statement instanceof Select) {
             Select select = (Select) statement;

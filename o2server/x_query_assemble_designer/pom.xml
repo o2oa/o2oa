@@ -142,29 +142,6 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>copy-war</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>../store</outputDirectory>
-							<resources>
-								<resource>
-									<directory>target</directory>
-									<includes>
-										<include>${project.artifactId}.war</include>
-									</includes>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-deploy-plugin</artifactId>
 				<version>3.0.0-M2</version>
