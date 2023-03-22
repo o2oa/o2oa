@@ -19,7 +19,10 @@ MWF.xApplication.Profile.LP = {
     "saveIdea": "保存常用意见",
     "saveIdeaDefault": "保存为默认常用意见",
     "ideaSaveOk": "常用意见保存完成",
-    "workDeletedNote": "该工作已经被删除或您没有权限打开。",
+    "workDeletedNote": "工作\"{title}\"已经被删除或您没有权限打开。",
+    "workDeletedTitle": "未找到工作",
+    "workDeletedContent": "工作\"{title}\"已经被删除或您没有权限打开。是否要删除这条授权记录？",
+    "deleteSuccess": "删除成功",
 
     "icon": "头像",
     "changeIcon": "更换头像",
