@@ -108,7 +108,7 @@ function clearIcon(){
 <style scoped>
 .item{
   overflow: hidden;
-  padding: 10px 20px;
+  padding: 10px 30px;
   font-size: 14px;
   color: #666666;
   clear: both;

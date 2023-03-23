@@ -19,9 +19,9 @@
 
     <div class="item_hide" ref="changePasswordNode">
       <form>
-        <BaseInput :label="lp._passwordConfig.oldPassword" input-type="password" :show-password="true" v-model:value="oldPassword"></BaseInput>
-        <BaseInput :label="lp._passwordConfig.newPassword" input-type="password" :show-password="true" v-model:value="newPassword"></BaseInput>
-        <BaseInput :label="lp._passwordConfig.confirmPassword" input-type="password" :show-password="true" v-model:value="confirmPassword"></BaseInput>
+        <BaseInput :label="lp._passwordConfig.oldPassword" input-type="password" :labelStyle="{width: '100px'}" :show-password="true" v-model:value="oldPassword"></BaseInput>
+        <BaseInput :label="lp._passwordConfig.newPassword" input-type="password" :labelStyle="{width: '100px'}" :show-password="true" v-model:value="newPassword"></BaseInput>
+        <BaseInput :label="lp._passwordConfig.confirmPassword" input-type="password" :labelStyle="{width: '100px'}" :show-password="true" v-model:value="confirmPassword"></BaseInput>
       </form>
     </div>
 
@@ -86,7 +86,7 @@ const encryptPassword = (password)=>{
   });
 }
 
-const checkPassword = ()=>{
+const checkPassword = (dlg)=>{
   if (!oldPassword.value || !newPassword.value || !confirmPassword.value) {
     component.notice(lp._passwordConfig.passwordEmpty, "error", dlg.node, {x: 'right', y: 'top'}, {x: 10, y: 10});
     return false;
@@ -113,7 +113,7 @@ const commitChangePassword = async (credential) => {
 
 const changeAdminPassword = (title, credential)=>{
   openDlg(title, async (dlg) => {
-    if (checkPassword()){
+    if (checkPassword(dlg)){
       await commitChangePassword(credential);
       dlg.close();
     }
