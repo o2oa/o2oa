@@ -619,7 +619,7 @@ MWF.xApplication.process.Work.Main = new Class({
         this.node.set("text", "openError");
     },
     getCurrentTaskData: function(data){
-        if (data.activity.hasOwnProperty('processingTaskOnceUnderSamePerson') && !data.activity.processingTaskOnceUnderSamePerson){
+        if (data.activity && data.activity.hasOwnProperty('processingTaskOnceUnderSamePerson') && !data.activity.processingTaskOnceUnderSamePerson){
             //不进行待办合并处理，需要用户选择一个身份后继续
             var _self = this;
             var task = (this.options.taskId) ?  this.taskList.find(function(t){
@@ -634,9 +634,11 @@ MWF.xApplication.process.Work.Main = new Class({
             return (taskList.length && taskList.length===1) ? taskList[0] : taskList;
         }else{
             //进行待办合并处理
-            if ((data.currentTaskIndex || data.currentTaskIndex===0) && data.currentTaskIndex != -1){
-                this.options.taskId = this.taskList[data.currentTaskIndex].id;
-                return this.taskList[data.currentTaskIndex];
+            if ( this.taskList && (data.currentTaskIndex || data.currentTaskIndex===0) && data.currentTaskIndex != -1){
+                if( this.taskList[data.currentTaskIndex] ){
+                    this.options.taskId = this.taskList[data.currentTaskIndex].id;
+                    return this.taskList[data.currentTaskIndex];
+                }
             }
         }
         return null;

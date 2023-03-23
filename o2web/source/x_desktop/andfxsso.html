@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta charset="UTF-8">
+    <title>登录中...</title>
+    <script src="../o2_core/o2.min.js"></script>
+    <script src="js/sso.min.js"></script>
+    <script>
+        o2.addReady(function(){
+            o2.JSON.get("res/config/config.json", function(config){
+                if (config.proxyCenterEnable){
+                    if (o2.typeOf(config.center)==="array"){
+                        config.center.forEach(function(c){
+                            c.port = window.location.port || 80;
+                        })
+                    }else{
+                        config.port = window.location.port || 80;
+                    }
+                }
+                layout.config = config;
+                getServiceAddress(config, function(){
+                    var locate = window.location;
+                    var protocol = locate.protocol;
+                    var addressObj = layout.serviceAddressList["x_organization_assemble_authentication"];
+                    var address = protocol+"//"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context;
+
+                    var uri = new URI(window.location.toString());
+                    var token = uri.getData("token");
+                    var enterId = uri.getData("enterId");
+                    var redirect = uri.getData("redirect");
+                    var path = "/jaxrs/andfx/moa/sso/token/"+token+"/enter/"+enterId;
+
+                    if (token && enterId){
+                        var res = new Request.JSON({
+                            url: o2.filterUrl(address+path+"&date="+(new Date()).getTime()),
+                            secure: false,
+                            method: "GET",
+                            noCache: true,
+                            withCredentials: true,
+                            onSuccess: function(responseJSON, responseText){
+                                var result = responseJSON.data.value;
+								if(result){
+									if (redirect){
+                                        window.location = redirect;
+									}else{
+										window.location = "/";
+									}
+								}else{
+									$("ssoerror").set("html","单点失败！"+responseJSON.message);
+									$("ssoerror").show();
+								}
+                            }.bind(this),
+                            onFailure: function(xhr){
+                                $("ssoerror").show();
+                            }.bind(this),
+                            onError: function(text, error){
+                                $("ssoerror").show();
+                            }.bind(this)
+                        });
+
+                        res.send();
+                    }else{
+						$("ssoerror").set("html","单点失败，认证token或enterId为空！");
+                        $("ssoerror").show();
+                    }
+                });
+            });
+
+        });
+    </script>
+</head>
+<body style="background: rgb(239, 239, 244);">
+<div id="ssoerror" style="text-align:center;display:none;">单点失败，请联系管理员！</div>
+</body>
+</html>
