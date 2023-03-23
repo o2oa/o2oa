@@ -465,6 +465,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "readonly": "Readonly",
         "AIInput": "AI Input",
         "inputStyle": "Input Style",
+        "itemStyle": "Item Style",
         "actionStyles": "Button Styles",
         "imageStyles": "Picture Style",
         "compute": "Compute",

@@ -1468,7 +1468,7 @@ MWF.xApplication.process.Xform.Org = MWF.APPOrg =  new Class(
                             data: data,
                             item: this
                         }])
-                    }}
+                    }, "styles": this.json.itemStyles || "" };
 
                 var widget;
                 switch (flag.toLowerCase()){
