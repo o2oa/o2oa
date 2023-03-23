@@ -770,6 +770,13 @@ MWF.xApplication.cms.Document.Main = new Class({
                 this.appForm.formDataText = this.formDataText;
                 this.appForm.documentAction = this.action;
                 this.appForm.app = this;
+
+                if( this.$events && this.$events.queryLoadForm ){
+                    this.appForm.addEvent( "queryLoad", function () {
+                        this.fireEvent("queryLoadForm", [this]);
+                    }.bind(this));
+                }
+
                 this.appForm.load(function(){
                     if (window.o2android && window.o2android.postMessage) {
                         layout.appForm = this.appForm;
@@ -778,6 +785,8 @@ MWF.xApplication.cms.Document.Main = new Class({
                     } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.cmsFormLoaded){
                         layout.appForm = this.appForm;
                     }
+
+                    this.fireEvent("postLoadForm", [this]);
                 }.bind(this));
             }.bind(this));
         }
