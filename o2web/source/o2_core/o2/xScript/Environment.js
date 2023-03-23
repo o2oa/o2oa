@@ -4639,7 +4639,6 @@ if( !MWF.xScript.createDict ){
 
             this.set = function(path, value, success, failure){
                 var p = encodePath( path );
-                if( value === 0 )value = "0";
                 //var p = path.replace(/\./g, "/");
                 var successCallback = function(json){
                     MWF.xScript.setDictToCache(key, path, value);
