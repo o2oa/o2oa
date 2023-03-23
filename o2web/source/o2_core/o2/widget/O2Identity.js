@@ -9,7 +9,8 @@ o2.widget.O2Identity = new Class({
 		"style": "default",
         "canRemove": false,
         "lazy": false,
-        "disableInfor" : false
+        "disableInfor" : false,
+        "styles": ""
 	},
 	initialize: function(data, container, options){
 
@@ -55,6 +56,9 @@ o2.widget.O2Identity = new Class({
 
         if (!this.options.lazy && !this.options.disableInfor) this.getPersonData();
         this.node = new Element("div", {"styles": style }).inject(this.container);
+        if( this.options.styles ){
+            this.node.setStyles( this.options.styles );
+        }
         this.setText();
 
         if (this.options.canRemove){
@@ -92,6 +96,9 @@ o2.widget.O2Identity = new Class({
                     //     this.style.identityNode_over_mobile : this.style.identityNode_over;
 
                     this.node.setStyles( this.style.identityNode_over ); //style_over
+                    if( this.options.styles ){
+                        this.node.setStyles( this.options.styles );
+                    }
                 }.bind(this),
                 "mouseout": function(){
 
@@ -99,6 +106,9 @@ o2.widget.O2Identity = new Class({
                     //     this.style.identityNode_mobile : this.style.identityNode;
 
                     this.node.setStyles( this.style.identityNode ); //style
+                    if( this.options.styles ){
+                        this.node.setStyles( this.options.styles );
+                    }
                 }.bind(this)
             });
         }

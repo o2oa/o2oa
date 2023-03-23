@@ -463,6 +463,7 @@ MWF.xApplication.process.FormDesigner.LP = {
         "readonly": "是否只读",
         "AIInput": "智能输入",
         "inputStyle": "Input样式",
+        "itemStyle": "条目样式",
         "actionStyles": "按钮样式",
         "imageStyles": "图片样式",
         "compute": "计算",
