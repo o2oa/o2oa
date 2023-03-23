@@ -9,6 +9,7 @@ layout.addReady(function(){
                 "application": ""
             },
             "options": {},
+            "dialog": o2.xApplication.Common.Main.prototype.dialog,
             "confirm": o2.xApplication.Common.Main.prototype.confirm,
             "alert": function(type, title, text, width, height){
                 var p = o2.getCenterPosition(document.body, width, height);

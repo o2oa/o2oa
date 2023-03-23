@@ -279,4 +279,24 @@ MWF.xApplication.attendancev2.LP = {
     openJob: "查看申诉",
     startProcessNoConfigError: "没有配置申诉流程，无法启动流程！",
   },
+
+
+  /// mobile
+
+  mobile: {
+      menu: {
+        checkIn: '打卡',
+        statistic: '统计',
+        settings: '设置',
+      },
+      unCheckIn: '未打卡',
+      locationIng: '定位中.......',
+      locationError: '定位失败，请开启定位权限！',
+      checkInWithTime: '已打卡{time}',
+      updateCheckInBtn: '更新打卡',
+      outsideTitle: '外勤打卡',
+      outsideNotAllow: '不允许外勤打卡！',
+      outsideRemarkPlaceholder: '请输入外勤打卡说明！',
+  }
+
 };

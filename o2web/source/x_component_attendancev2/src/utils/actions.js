@@ -191,6 +191,25 @@ function processAction(method, ...args) {
 function myAction(method, ...args) {
   return doAction("x_attendance_assemble_control", "MyAction", method, args);
 }
+/**
+ * 打卡API
+ * @param {*} method
+ * @param  {...any} args
+ * @returns
+ */
+function mobileAction(method, ...args) {
+  return doAction("x_attendance_assemble_control", "MobileAction", method, args);
+}
+
+/**
+ * 人员API
+ * @param {*} method
+ * @param  {...any} args
+ * @returns
+ */
+function personAction(method, ...args) {
+  return doAction("x_organization_assemble_control", "PersonAction", method, args);
+}
 
 
 export {
@@ -208,4 +227,6 @@ export {
   appealInfoAction,
   processAction,
   myAction,
+  mobileAction,
+  personAction,
 };

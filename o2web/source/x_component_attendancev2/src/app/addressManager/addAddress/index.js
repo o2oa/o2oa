@@ -45,43 +45,81 @@ export default content({
     _initBDMap() {
         console.debug("地图加载API加载完成，开始载入地图！");
         window.BDMapV2ApiLoaded = true;
-        if (navigator.geolocation){
-            try{
-                navigator.geolocation.getCurrentPosition(this.initBDMap.bind(this), this.initBDMap.bind(this));
-            }catch( e ){
-                console.error(e);
-                this.initBDMap();
-            }
-        }else{
-            this.initBDMap();
-        }
+        const geolocation = new BMap.Geolocation();
+        var self = this;
+        geolocation.getCurrentPosition(function(r){
+            console.debug("定位返回", r);
+            if(this.getStatus() == BMAP_STATUS_SUCCESS){
+                console.debug('您的位置：'+r.point.lng+','+r.point.lat);
+                self.renderMap(r.point);
+            } else {
+                const point = new BMap.Point(120.135431, 30.27412);
+                self.renderMap(point);
+            } 
+        });
+
+        // if (navigator.geolocation){
+        //     try{
+        //         navigator.geolocation.getCurrentPosition(this.initBDMap.bind(this), this.initBDMap.bind(this));
+        //     }catch( e ){
+        //         console.error(e);
+        //         this.initBDMap();
+        //     }
+        // }else{
+        //     this.initBDMap();
+        // }
     },
      // 初始化地图
-    initBDMap(position) {
-        console.debug("位置信息", position);
-        this.mapNode = this.dom.querySelector(".bd-map");
-        if (this.mapNode) {
-            this.createMap(position);
-            this.addControls();
-            this.addMapClick();
-        } else {
-            console.error("map node 不存在？？？");
-        }
-    },
+    // initBDMap(position) {
+    //     console.debug("位置信息", position);
+    //     this.mapNode = this.dom.querySelector(".bd-map");
+    //     if (this.mapNode) {
+    //         this.createMap(position);
+    //     } else {
+    //         console.error("map node 不存在？？？");
+    //     }
+    // },
     // 创建地图ui
-    createMap( position ){
-        let point = null;
-        if( !point ){
-            if( this.markerData && this.markerData.length > 0){
-                let json = this.markerData[0];
-                point = new BMap.Point(json.longitude, json.latitude);
-            }else{
-                point = new BMap.Point(120.135431, 30.27412);
-            }
-        }
+    // createMap( position ){
+    //     let point = null;
+    //     if( !point ){
+    //         if( this.markerData && this.markerData.length > 0){
+    //             let json = this.markerData[0];
+    //             point = new BMap.Point(json.longitude, json.latitude);
+    //             this.renderMap(point);
+    //         } else {
+    //             let longitude = 120.135431;
+    //             let latitude = 30.27412;
+    //             if (position && position.coords) {
+    //                 latitude = position.coords.latitude || 30.27412;
+    //                 longitude = position.coords.longitude || 120.135431;
+    //             }
+    //             const gpsPoint = new BMap.Point(longitude, latitude);
+    //             const convertor = new BMap.Convertor();
+    //             const pointArr = [];
+    //             pointArr.push(gpsPoint);
+    //             console.debug("开始转化百度位置");
+    //             convertor.translate(pointArr, 1, 5, this.translateBMapPoint.bind(this));
+    //         }
+    //     }
+        
+    // },
+    // 转化百度坐标
+    // translateBMapPoint(data) {
+    //     console.debug("转化百度位置成功", data);
+    //     if (data.status === 0 && data.points && data.points[0]) {
+    //         this.renderMap(data.points[0]);
+    //     }
+    // },
+    // 加载百度地图
+    renderMap(point) {
+        console.debug("渲染地图", point);
         this.map = new BMap.Map(this.mapNode);    // 创建Map实例
         this.map.centerAndZoom(point, 15);  // 初始化地图,设置中心点坐标和地图级别
         this.map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+        //
+        this.addControls();
+        this.addMapClick();
     },
     // 添加地图控件
     addControls(){
