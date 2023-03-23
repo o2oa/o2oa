@@ -8,6 +8,84 @@
     <script src="js/sso.min.js"></script>
     <script>
         o2.addReady(function(){
+
+            var who = function( unloginCallback, loginCallback, failure){
+                var locate = window.location;
+                var protocol = locate.protocol;
+                var addressObj = layout.serviceAddressList["x_organization_assemble_authentication"];
+                var address = protocol+"//"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context;
+
+                var res = new Request.JSON({
+                    url: o2.filterUrl(address+"/jaxrs/authentication"),
+                    secure: false,
+                    method: "GET",
+                    noCache: true,
+                    withCredentials: true,
+                    onSuccess: function(responseJSON, responseText){
+                        if( responseJSON.data.tokenType === "anonymous" ){
+                            unloginCallback()
+                        }else{
+                            loginCallback()
+                        }
+                    }.bind(this),
+                    onFailure: function(xhr){
+                        failure()
+                    }.bind(this),
+                    onError: function(text, error){
+                        failure()
+                    }.bind(this)
+                });
+                res.send();
+            };
+
+            var login = function(){
+                var locate = window.location;
+                var protocol = locate.protocol;
+
+                var addressObj = layout.serviceAddressList["x_organization_assemble_authentication"];
+                var address = protocol+"//"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context;
+
+                var uri = new URI(window.location.toString());
+                var token = uri.getData("token");
+                var enterId = uri.getData("enterId");
+                var redirect = uri.getData("redirect");
+                var path = "/jaxrs/andfx/moa/sso/token/"+token+"/enter/"+enterId;
+
+                if (token && enterId){
+                    var res = new Request.JSON({
+                        url: o2.filterUrl(address+path+"&date="+(new Date()).getTime()),
+                        secure: false,
+                        method: "GET",
+                        noCache: true,
+                        withCredentials: true,
+                        onSuccess: function(responseJSON, responseText){
+                            var result = responseJSON.data.id;
+                            if(result){
+                                if (redirect){
+                                    window.location = redirect;
+                                }else{
+                                    window.location = "../x_desktop/appMobile.html?app=process.TaskCenter";
+                                }
+                            }else{
+                                $("ssoerror").set("html","单点失败！"+responseJSON.message);
+                                $("ssoerror").show();
+                            }
+                        }.bind(this),
+                        onFailure: function(xhr){
+                            $("ssoerror").show();
+                        }.bind(this),
+                        onError: function(text, error){
+                            $("ssoerror").show();
+                        }.bind(this)
+                    });
+
+                    res.send();
+                }else{
+                    $("ssoerror").set("html","单点失败，认证token或enterId为空！");
+                    $("ssoerror").show();
+                }
+            };
+
             o2.JSON.get("res/config/config.json", function(config){
                 if (config.proxyCenterEnable){
                     if (o2.typeOf(config.center)==="array"){
@@ -20,50 +98,12 @@
                 }
                 layout.config = config;
                 getServiceAddress(config, function(){
-                    var locate = window.location;
-                    var protocol = locate.protocol;
-                    var addressObj = layout.serviceAddressList["x_organization_assemble_authentication"];
-                    var address = protocol+"//"+addressObj.host+(addressObj.port==80 ? "" : ":"+addressObj.port)+addressObj.context;
 
-                    var uri = new URI(window.location.toString());
-                    var token = uri.getData("token");
-                    var enterId = uri.getData("enterId");
-                    var redirect = uri.getData("redirect");
-                    var path = "/jaxrs/andfx/moa/sso/token/"+token+"/enter/"+enterId;
+                    who( login, function(){
+                        window.location = "../x_desktop/appMobile.html?app=process.TaskCenter";
+                    }, login)
 
-                    if (token && enterId){
-                        var res = new Request.JSON({
-                            url: o2.filterUrl(address+path+"&date="+(new Date()).getTime()),
-                            secure: false,
-                            method: "GET",
-                            noCache: true,
-                            withCredentials: true,
-                            onSuccess: function(responseJSON, responseText){
-                                var result = responseJSON.data.value;
-								if(result){
-									if (redirect){
-                                        window.location = redirect;
-									}else{
-										window.location = "/";
-									}
-								}else{
-									$("ssoerror").set("html","单点失败！"+responseJSON.message);
-									$("ssoerror").show();
-								}
-                            }.bind(this),
-                            onFailure: function(xhr){
-                                $("ssoerror").show();
-                            }.bind(this),
-                            onError: function(text, error){
-                                $("ssoerror").show();
-                            }.bind(this)
-                        });
 
-                        res.send();
-                    }else{
-						$("ssoerror").set("html","单点失败，认证token或enterId为空！");
-                        $("ssoerror").show();
-                    }
                 });
             });
 

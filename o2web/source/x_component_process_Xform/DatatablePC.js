@@ -398,8 +398,12 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 					}.bind(this));
 				}
 				if (this.json.titleStyles){
-					actionTh.setStyles(this.json.titleStyles);
-					if(moveTh)moveTh.setStyles(this.json.titleStyles);
+					Object.each(this.json.titleStyles, function( value, key ){
+						if( key && key.toLowerCase() !== "width" ){
+							actionTh.setStyle(key, value);
+							if(moveTh)moveTh.setStyle(key, value);
+						}
+					});
 				}
 			}
 		},
@@ -459,8 +463,16 @@ MWF.xApplication.process.Xform.DatatablePC = new Class(
 					}.bind(this));
 				}
 				if (this.json.contentStyles){
-					eTd.setStyles(this.json.contentStyles);
-					if(mTd)mTd.setStyles(this.json.contentStyles);
+
+					Object.each(this.json.contentStyles, function( value, key ){
+						if( key && key.toLowerCase() !== "width" ){
+							eTd.setStyle(key, value);
+							if(mTd)mTd.setStyle(key, value);
+						}
+					});
+
+					// eTd.setStyles(this.json.contentStyles);
+					// if(mTd)mTd.setStyles(this.json.contentStyles);
 				}
 			}
 
