@@ -3,31 +3,43 @@
     <div class="o2_statement_statementDesignerFormatLine">
         <div class="o2_statement_statementDesignerFormatTitle">{{$.lp.statementFormat}} </div>
         <div class="o2_statement_statementDesignerFormatContent" style="float: left; margin-right: 20px">
-            <input name="format" type="radio" value="jpql" {{if $.data.format!=='script'}} checked {{end if}} />{{$.lp.statementJpql}}
-            <input name="format" type="radio" value="script" {{if $.data.format=='script'}} checked {{end if}} />{{$.lp.statementScript}}
+            <input id="{{$.data.id}}formatjpql" name="format" type="radio" value="jpql" {{if !$.data.format || $.data.format=='jpql'}} checked {{end if}} /><label for="{{$.data.id}}formatjpql">{{$.lp.statementJpql}}</label>
+            <input id="{{$.data.id}}formatscript" name="format" type="radio" value="script" {{if $.data.format=='script'}} checked {{end if}} /><label for="{{$.data.id}}formatscript">{{$.lp.statementScript}}</label>
+            <input id="{{$.data.id}}formatsql" name="format" type="radio" value="sql" {{if $.data.format=='sql'}} checked {{end if}} /><label for="{{$.data.id}}formatsql">{{$.lp.nativeSql}}</label>
+            <input id="{{$.data.id}}formatsqlscript" name="format" type="radio" value="sqlScript" {{if $.data.format=='sqlScript'}} checked {{end if}} /><label for="{{$.data.id}}formatsqlscript">{{$.lp.nativeSqlScript}}</label>
         </div>
 
-        <div class="o2_statement_statementDesignerFormatTitle">{{$.lp.statementCategory}}: </div>
-        <div class="o2_statement_statementDesignerCategoryContent" style="float: left">
+
+        <div class="o2_statement_statementDesignerFormatTitle">{{$.lp.countMethod}}: </div>
+        <div class="o2_statement_statementDesignerCountMethodContent" style="float: left;margin-right: 20px">
             <select>
-                <option value="official" {{if $.data.entityCategory!=='dynamic' && $.data.entityCategory!=='custom'}} selected {{end if}}>{{$.lp.systemTable}}</option>
-                <option value="dynamic" {{if $.data.entityCategory=='dynamic'}} selected {{end if}}>{{$.lp.customTable}}</option>
+                <option value="ignore">{{$.lp.ignore}}</option>
+                <option value="auto">{{$.lp.auto}}</option>
+                <option value="assign">{{$.lp.assign}}</option>
+            </select>
+        </div>
+
+        <div class="o2_statement_statementDesignerFormatTitle" >{{$.lp.statementType}}: </div>
+        <div class="o2_statement_statementDesignerTypeContent" style="float: left;margin-right: 20px;">
+            <select>
+                <!--                <option value="select">SELECT</option>-->
+                <!--                <option value="update">UPDATE</option>-->
+                <!--                <option value="delete">DELETE</option>-->
             </select>
         </div>
     </div>
 
     <div class="o2_statement_statementDesignerLine">
-        <div class="o2_statement_statementDesignerTitle">{{$.lp.statementType}}: </div>
-        <div class="o2_statement_statementDesignerTypeContent">
+        <div class="o2_statement_statementDesignerTitle" style="float: left;">{{$.lp.statementCategory}}: </div>
+        <div class="o2_statement_statementDesignerCategoryContent" style="float: left;margin-right:20px;">
             <select>
-<!--                <option value="select">SELECT</option>-->
-<!--                <option value="update">UPDATE</option>-->
-<!--                <option value="delete">DELETE</option>-->
+                <option value="official" {{if $.data.entityCategory!=='dynamic' && $.data.entityCategory!=='custom'}} selected {{end if}}>{{$.lp.systemTable}}</option>
+                <option value="dynamic" {{if $.data.entityCategory=='dynamic'}} selected {{end if}}>{{$.lp.customTable}}</option>
             </select>
         </div>
 
         <div class="o2_statement_statementDesignerTableArea_dynamic" style="{{if $.data.entityCategory!=='dynamic'}} display: none {{end if}}">
-            <div style="margin-left: 30px;" class="o2_statement_statementDesignerTitle">{{$.lp.statementTable}}: </div>
+            <div class="o2_statement_statementDesignerTitle">{{$.lp.statementTable}}: </div>
             <div>
                 <div class="o2_statement_statementDesignerTableContent"></div>
                 <div class="o2_statement_statementDesignerSelectTable">{{$.lp.selectTable}}</div>
@@ -36,7 +48,7 @@
 
 
         <div class="o2_statement_statementDesignerTableArea_official" style="{{if $.data.entityCategory=='dynamic' || $.data.entityCategory=='custom'}} display: none {{end if}}">
-            <div style="margin-left: 30px;" class="o2_statement_statementDesignerTitle">{{$.lp.statementTable}}: </div>
+            <div class="o2_statement_statementDesignerTitle">{{$.lp.statementTable}}: </div>
             <div class="o2_statement_statementDesignerOfficialTable">
                 <select>
                     <option value=""></option>
@@ -56,35 +68,48 @@
 
         </div>
 
+
         <div class="o2_statement_statementDesignerTableArea_field">
-            <div style="margin-left: 30px;" class="o2_statement_statementDesignerTitle">{{$.lp.field}}: </div>
+            <div style="margin-left: 15px;" class="o2_statement_statementDesignerTitle">{{$.lp.field}}: </div>
             <select style="max-width: 300px;">
             </select>
         </div>
 
     </div>
-    <div class="o2_statement_statementJpqlTabNode"></div>
+    <div class="o2_statement_statementTabNode"></div>
 
-    <div class="o2_statement_statementJpqlTabPageNode">
-        <div class="o2_statement_statementDesignerJpql" style="{{if $.data.format=='script'}} display: none {{end if}}">
-
+    <div class="o2_statement_statementQueryTabPageNode">
+        <div class="o2_statement_statementDesignerJpql" style="{{if !$.data.format || $.data.format!=='jpql'}} display: none {{end if}}">
             <div class="o2_statement_statementDesignerJpqlLine">
-
             </div>
         </div>
-        <div class="o2_statement_statementDesignerScript" style="{{if $.data.format!=='script'}} display: none {{end if}}">
+        <div class="o2_statement_statementDesignerScript" style="{{if $.data.format!=='script'}} display: none {{end if}}"></div>
 
+        <div class="o2_statement_statementDesignerSql" style="{{if $.data.format!=='sql'}} display: none {{end if}}">
+            <div class="o2_statement_statementDesignerSqlLine">
+            </div>
         </div>
+        <div class="o2_statement_statementDesignerSqlScript" style="{{if $.data.format!=='sqlScript'}} display: none {{end if}}"></div>
     </div>
 
-
-    <div class="o2_statement_statementCountJpqlTabPageNode">
-        <div class="o2_statement_statementDesignerCountJpql" style="{{if $.data.format=='script'}} display: none {{end if}}">
+    <div class="o2_statement_statementCountTabPageNode">
+        <div class="o2_statement_statementDesignerCountJpql" style="{{if !$.data.format || $.data.format!=='jpql'}} display: none {{end if}}">
             <div class="o2_statement_statementDesignerCountJpqlLine"></div>
         </div>
-        <div class="o2_statement_statementDesignerCountScript" style="{{if $.data.format!=='script'}} display: none {{end if}}">
+        <div class="o2_statement_statementDesignerCountScript" style="{{if $.data.format!=='script'}} display: none {{end if}}"></div>
+
+        <div class="o2_statement_statementDesignerCountSql" style="{{if $.data.format=='sql'}} display: none {{end if}}">
+            <div class="o2_statement_statementDesignerCountSqlLine"></div>
         </div>
+        <div class="o2_statement_statementDesignerCountSqlScript" style="{{if $.data.format!=='sqlScript'}} display: none {{end if}}"></div>
     </div>
+
+<!--    <div class="o2_statement_statementRunDefaultNode" style="overflow: hidden">-->
+<!--        <div style="font-weight: bold;float:left;width: 100px;line-height: 30px;">{{$.lp.defaultCondition}}</div>-->
+<!--        <div style="margin-left: 100px;line-height: 30px;" class="o2_statement_statementRunDefaultContent">-->
+<!--        </div>-->
+<!--    </div>-->
+
 </div>
 
 <div class="o2_statement_resizeNode"></div>
@@ -95,7 +120,7 @@
 <!--    <div class="o2_statement_statementRunTitleNode">{{$.lp.runTest}}</div>-->
     <div class="o2_statement_statementRunContentNode">
         <div class="o2_statement_statementRunJsonNode">
-<!--            <div class="o2_statement_statementRunJsonContent"></div>-->
+            <!--            <div class="o2_statement_statementRunJsonContent"></div>-->
         </div>
         <div class="o2_statement_statementRunActionNode">
             <div class="o2_statement_statementRunActionContent"></div>

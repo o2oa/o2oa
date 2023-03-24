@@ -13,7 +13,6 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
-
 	<developers>
 		<developer>
 			<name>o2oa</name>
@@ -21,14 +20,12 @@
 			<organization>o2oa.net</organization>
 		</developer>
 	</developers>
-
 	<scm>
 		<tag>o2oa</tag>
 		<url>https://github.com/o2oa/o2oa</url>
 		<connection>scm:git:https://github.com/o2oa/o2oa.git</connection>
 		<developerConnection>scm:git:https://github.com/o2oa/o2oa.git</developerConnection>
 	</scm>
-
 	<properties>
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
@@ -427,6 +424,10 @@
 			<groupId>org.apache.solr</groupId>
 			<artifactId>solr-core</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.github.jsqlparser</groupId>
+			<artifactId>jsqlparser</artifactId>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>${project.artifactId}</finalName>
@@ -561,7 +562,6 @@
 						</execution>
 					</executions>
 				</plugin>
-
 			</plugins>
 		</pluginManagement>
 		<plugins>
@@ -768,7 +768,6 @@
 				<artifactId>cxf-rt-ws-addr</artifactId>
 				<version>3.5.2</version>
 			</dependency>
-
 			<dependency>
 				<groupId>com.fasterxml.woodstox</groupId>
 				<artifactId>woodstox-core</artifactId>
@@ -779,13 +778,11 @@
 				<artifactId>stax2-api</artifactId>
 				<version>4.2.1</version>
 			</dependency>
-
 			<dependency>
 				<groupId>org.apache.neethi</groupId>
 				<artifactId>neethi</artifactId>
 				<version>3.1.1</version>
 			</dependency>
-
 			<dependency>
 				<groupId>org.apache.poi</groupId>
 				<artifactId>poi</artifactId>
@@ -1212,6 +1209,11 @@
 				<artifactId>jsoup</artifactId>
 				<version>1.15.3</version>
 			</dependency>
+			<dependency>
+				<groupId>com.github.jsqlparser</groupId>
+				<artifactId>jsqlparser</artifactId>
+				<version>4.6</version>
+			</dependency>
 			<!-- tika needs -->
 			<dependency>
 				<groupId>com.zaxxer</groupId>
@@ -1220,7 +1222,6 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
 	<!--	中心仓库发布地址-->
 	<!--distributionManagement>
 		<snapshotRepository>
@@ -1232,7 +1233,6 @@
 			<url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
 	</distributionManagement-->
-
 	<!--repositories>
 		<repository>
 			<id>nexus-o2oa</id>

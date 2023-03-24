@@ -29,72 +29,72 @@ import com.x.query.core.entity.schema.Table;
 
 class ActionCreate extends BaseAction {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ActionCreate.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActionCreate.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
-		LOGGER.debug("execute;{}.", effectivePerson::getDistinguishedName);
-		ClassLoader classLoader = Business.getDynamicEntityClassLoader();
-		Thread.currentThread().setContextClassLoader(classLoader);
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
-			Business business = new Business(emc);
-			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-			Statement statement = Wi.copier.copy(wi);
-			Query query = emc.flag(wi.getQuery(), Query.class);
-			if (null == query) {
-				throw new ExceptionEntityNotExist(wi.getQuery(), Query.class);
-			}
-			statement.setQuery(query.getId());
-			if (StringUtils.equals(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)) {
-				Table table = emc.flag(wi.getTable(), Table.class);
-				if (null == table) {
-					throw new ExceptionEntityNotExist(wi.getTable(), Table.class);
-				}
-				statement.setTable(table.getId());
-			} else {
-				try {
-					classLoader.loadClass(statement.getEntityClassName());
-				} catch (Exception e) {
-					throw new ExceptionEntityClass(statement.getEntityClassName());
-				}
-			}
-			if (!business.editable(effectivePerson, query)) {
-				throw new ExceptionAccessDenied(effectivePerson, query);
-			}
-			if (StringUtils.isEmpty(statement.getName())) {
-				throw new ExceptionEntityFieldEmpty(Statement.class, Table.name_FIELDNAME);
-			}
-			if (StringUtils.isNotEmpty(emc.conflict(Statement.class, statement))) {
-				throw new ExceptionDuplicateFlag(Statement.class, emc.conflict(Statement.class, statement));
-			}
-			emc.beginTransaction(Statement.class);
+    ActionResult<Wo> execute(EffectivePerson effectivePerson, JsonElement jsonElement) throws Exception {
+        LOGGER.debug("execute:{}, jsonElement:{}.", effectivePerson::getDistinguishedName, () -> jsonElement);
+        ClassLoader classLoader = Business.getDynamicEntityClassLoader();
+        Thread.currentThread().setContextClassLoader(classLoader);
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            ActionResult<Wo> result = new ActionResult<>();
+            Business business = new Business(emc);
+            Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+            Statement statement = Wi.copier.copy(wi);
+            Query query = emc.flag(wi.getQuery(), Query.class);
+            if (null == query) {
+                throw new ExceptionEntityNotExist(wi.getQuery(), Query.class);
+            }
+            statement.setQuery(query.getId());
+            if (StringUtils.equals(statement.getEntityCategory(), Statement.ENTITYCATEGORY_DYNAMIC)) {
+                Table table = emc.flag(wi.getTable(), Table.class);
+                if (null == table) {
+                    throw new ExceptionEntityNotExist(wi.getTable(), Table.class);
+                }
+                statement.setTable(table.getId());
+            } else {
+                try {
+                    classLoader.loadClass(statement.getEntityClassName());
+                } catch (Exception e) {
+                    throw new ExceptionEntityClass(statement.getEntityClassName());
+                }
+            }
+            if (!business.editable(effectivePerson, query)) {
+                throw new ExceptionAccessDenied(effectivePerson, query);
+            }
+            if (StringUtils.isEmpty(statement.getName())) {
+                throw new ExceptionEntityFieldEmpty(Statement.class, Table.NAME_FIELDNAME);
+            }
+            if (StringUtils.isNotEmpty(emc.conflict(Statement.class, statement))) {
+                throw new ExceptionDuplicateFlag(Statement.class, emc.conflict(Statement.class, statement));
+            }
+            emc.beginTransaction(Statement.class);
 
-			statement.setCreatorPerson(effectivePerson.getDistinguishedName());
-			statement.setLastUpdatePerson(effectivePerson.getDistinguishedName());
-			statement.setLastUpdateTime(new Date());
-			emc.persist(statement, CheckPersistType.all);
-			emc.commit();
-			CacheManager.notify(Statement.class);
-			Wo wo = new Wo();
-			wo.setId(statement.getId());
-			result.setData(wo);
-			return result;
-		}
-	}
+            statement.setCreatorPerson(effectivePerson.getDistinguishedName());
+            statement.setLastUpdatePerson(effectivePerson.getDistinguishedName());
+            statement.setLastUpdateTime(new Date());
+            emc.persist(statement, CheckPersistType.all);
+            emc.commit();
+            CacheManager.notify(Statement.class);
+            Wo wo = new Wo();
+            wo.setId(statement.getId());
+            result.setData(wo);
+            return result;
+        }
+    }
 
-	public static class Wo extends WoId {
+    public static class Wo extends WoId {
 
-		private static final long serialVersionUID = -6780522841538599608L;
+        private static final long serialVersionUID = -6780522841538599608L;
 
-	}
+    }
 
-	public static class Wi extends Statement {
+    public static class Wi extends Statement {
 
-		private static final long serialVersionUID = -5237741099036357033L;
+        private static final long serialVersionUID = -5237741099036357033L;
 
-		static WrapCopier<Wi, Statement> copier = WrapCopierFactory.wi(Wi.class, Statement.class, null,
-				ListTools.toList(JpaObject.FieldsUnmodify, Statement.creatorPerson_FIELDNAME,
-						Statement.lastUpdatePerson_FIELDNAME, Statement.lastUpdateTime_FIELDNAME));
-	}
+        static WrapCopier<Wi, Statement> copier = WrapCopierFactory.wi(Wi.class, Statement.class, null,
+                ListTools.toList(JpaObject.FieldsUnmodify, Statement.CREATORPERSON_FIELDNAME,
+                        Statement.LASTUPDATEPERSON_FIELDNAME, Statement.LASTUPDATETIME_FIELDNAME));
+    }
 
 }

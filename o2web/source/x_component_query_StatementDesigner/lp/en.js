@@ -16,7 +16,7 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
     "selectTable": "Select Data Table",
     "save_success": "The query configuration was saved successfully!",
     "inputStatementName": "Please enter the query configuration name",
-    "inputStatementData": "Please edit the JPQL query statement",
+    "inputStatementData": "Please edit the statement",
     "saveStatementNotice": "Please save!",
     "noViewNotice": "The view has not been created, please create the view!",
     "previewNotSelectStatementNotice": "Only when the statement type is ‘Select’ can it be previewed",
@@ -24,11 +24,15 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
     "fileldSelectNote": "-Insert a field after select-",
 
     "statementFormat": "How to create a statement:",
-    "statementJpql": "Write JPQL",
-    "statementScript": "Write Script",
+    "statementJpql": "JPQL",
+    "statementScript": "JPQL Script",
+    "nativeSql": "SQL",
+    "nativeSqlScript": "SQL Script",
 
     "statementCategory": "Access Object Type",
     "scriptTitle": "Create JPQL by script",
+    "sqlScriptTitle": "Create SQL by script",
+    "countMethod": "Count Statement",
 
     "jpqlType": "JPQL Type",
     "jpqlFromResult": "Query start entry",
@@ -40,6 +44,18 @@ MWF.xApplication.query.StatementDesigner.LP = Object.merge( MWF.xApplication.que
     "newLineJsonError": "Insert data error, data format is wrong",
     "queryStatement": "Query Statement",
     "countStatement": "Count Statement",
+
+    "currentPerson":"currentPerson",
+    "currentIdentity":"Current Identity",
+    "currentPersonDirectUnit":"The current person's direct organization",
+    "currentPersonAllUnit":"All organizations where the current person belongs",
+    "currentPersonGroupList": "The current person's group",
+    "currentPersonRoleList": "Roles owned by the current person",
+    "defaultCondition": "Automatic assignment condition:",
+
+    "ignore": "Ignore",
+    "auto": "Auto",
+    "assign": "Assign",
 
     "mastInputParameter": "Please enter a parameter",
     "pathExecption": "The path is written as \"table alias. Field name\", the format is incorrect",

@@ -97,7 +97,7 @@ class ActionExecute extends BaseAction {
 
 	private CompiledScript getCompiledScriptOfScriptText(Statement statement) throws ScriptException {
 		CompiledScript compiledScript = null;
-		CacheKey cacheKey = new CacheKey(this.getClass(), statement.getId(), Statement.scriptText_FIELDNAME);
+		CacheKey cacheKey = new CacheKey(this.getClass(), statement.getId(), Statement.SCRIPTTEXT_FIELDNAME);
 		Optional<?> optional = CacheManager.get(cache, cacheKey);
 		if (optional.isPresent()) {
 			compiledScript = (CompiledScript) optional.get();
