@@ -1,6 +1,7 @@
 package com.x.query.assemble.designer.jaxrs.statement;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -43,6 +44,7 @@ import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
+import net.sf.jsqlparser.statement.select.SelectItem;
 
 /**
  * DATA,COUNT分别执行
@@ -72,6 +74,9 @@ class ActionExecuteV2 extends BaseAction {
     private static final String KEY_FROM = "FROM";
     private static final String KEY_WHERE = "WHERE";
     private static final String KEY_SPACE = " ";
+
+    private static final String[] AGGREGATE_FUNCTION_STARTS = new String[] { "AVG(", "COUNT(", "DISTINCT(", "MAX(",
+            "MIN(", "SUM(" };
 
     ActionResult<Object> execute(EffectivePerson effectivePerson, String flag, String mode, Integer page, Integer size,
             JsonElement jsonElement) throws Exception {
@@ -134,8 +139,8 @@ class ActionExecuteV2 extends BaseAction {
             if (StringUtils.equalsIgnoreCase(statement.getCountMethod(), Statement.COUNTMETHOD_IGNORE)) {
                 optionalCount = Optional.empty();
             } else if (StringUtils.equalsIgnoreCase(statement.getCountMethod(), Statement.COUNTMETHOD_AUTO)) {
-                optionalCount = Optional.of(concreteExecuteTargetSqlCountAuto(effectivePerson, business,
-                        runtime, sql, data.getNamedParam()));
+                optionalCount = concreteExecuteTargetSqlCountAuto(effectivePerson, business,
+                        runtime, sql, data.getNamedParam());
             } else {
                 optionalCount = Optional
                         .of(concreteExecuteTargetSqlCountAssign(effectivePerson, business, statement, runtime,
@@ -162,9 +167,8 @@ class ActionExecuteV2 extends BaseAction {
             if (StringUtils.equalsIgnoreCase(statement.getCountMethod(), Statement.COUNTMETHOD_IGNORE)) {
                 optionalCount = Optional.empty();
             } else if (StringUtils.equalsIgnoreCase(statement.getCountMethod(), Statement.COUNTMETHOD_AUTO)) {
-                optionalCount = Optional
-                        .of(concreteExecuteTargetJpqlCountAuto(effectivePerson, business, runtime, jpql,
-                                data.getNamedParam()));
+                optionalCount = concreteExecuteTargetJpqlCountAuto(effectivePerson, business, runtime, jpql,
+                        data.getNamedParam());
             } else {
                 optionalCount = Optional
                         .of(concreteExecuteTargetJpqlCountAssign(effectivePerson, business, statement, runtime,
@@ -187,10 +191,14 @@ class ActionExecuteV2 extends BaseAction {
     }
 
     // 创建 SQL COUNT AUTO
-    private ExecuteTarget concreteExecuteTargetSqlCountAuto(EffectivePerson effectivePerson, Business business,
+    private Optional<ExecuteTarget> concreteExecuteTargetSqlCountAuto(EffectivePerson effectivePerson,
+            Business business,
             Runtime runtime, String sql, Map<String, Object> prevNamedParam) throws Exception {
         Select select = (Select) CCJSqlParserUtil.parse(sql);
         PlainSelect plainSelect = (PlainSelect) select.getSelectBody();
+        if (onlyAggregateFunction(plainSelect.getSelectItems())) {
+            return Optional.empty();
+        }
         net.sf.jsqlparser.schema.Table table = (net.sf.jsqlparser.schema.Table) plainSelect.getFromItem();
         StringBuilder builder = new StringBuilder();
         builder.append(KEY_SELECT).append(KEY_SPACE).append(KEY_COUNTSQL).append(KEY_SPACE)
@@ -200,7 +208,14 @@ class ActionExecuteV2 extends BaseAction {
             builder.append(KEY_SPACE).append(KEY_WHERE).append(KEY_SPACE).append(whereClause);
         }
         // 将在生成DATA语句中的参数对象PARAM传入避免重复计算
-        return new ExecuteTarget(effectivePerson, business, builder.toString(), runtime, prevNamedParam);
+        return Optional
+                .of(new ExecuteTarget(effectivePerson, business, builder.toString(), runtime, prevNamedParam));
+    }
+
+    private boolean onlyAggregateFunction(List<SelectItem> selectItems) {
+        Optional<SelectItem> optional = selectItems.stream()
+                .filter(o -> !StringUtils.startsWithAny(o.toString(), AGGREGATE_FUNCTION_STARTS)).findAny();
+        return optional.isEmpty();
     }
 
     private ExecuteTarget concreteExecuteTargetJpqlCountAssign(EffectivePerson effectivePerson, Business business,
@@ -214,11 +229,15 @@ class ActionExecuteV2 extends BaseAction {
         return new ExecuteTarget(effectivePerson, business, jpql, runtime, prevNamedParam);
     }
 
-    private ExecuteTarget concreteExecuteTargetJpqlCountAuto(EffectivePerson effectivePerson, Business business,
+    private Optional<ExecuteTarget> concreteExecuteTargetJpqlCountAuto(EffectivePerson effectivePerson,
+            Business business,
             Runtime runtime, String jpql, Map<String, Object> prevNamedParam)
             throws Exception {
         Select select = (Select) CCJSqlParserUtil.parse(jpql);
         PlainSelect plainSelect = (PlainSelect) select.getSelectBody();
+        if (onlyAggregateFunction(plainSelect.getSelectItems())) {
+            return Optional.empty();
+        }
         net.sf.jsqlparser.schema.Table table = (net.sf.jsqlparser.schema.Table) plainSelect.getFromItem();
         StringBuilder builder = new StringBuilder();
         builder.append(KEY_SELECT).append(KEY_SPACE).append(KEY_COUNT).append(KEY_LEFT_PARENTHESIS)
@@ -232,7 +251,7 @@ class ActionExecuteV2 extends BaseAction {
                 builder.append(KEY_SPACE).append(KEY_WHERE).append(KEY_SPACE).append(whereClause);
             }
         }
-        return new ExecuteTarget(effectivePerson, business, builder.toString(), runtime, prevNamedParam);
+        return Optional.of(new ExecuteTarget(effectivePerson, business, builder.toString(), runtime, prevNamedParam));
     }
 
     private Optional<Object> executeData(Statement statement, Runtime runtime, ExecuteTarget executeTarget) {
