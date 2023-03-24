@@ -141,7 +141,7 @@ public class StatementAction extends StandardJaxrsAction {
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
     }
 
-    @JaxrsMethodDescribe(value = "V8版本新版本查询语句,取消mode参数,增加自动count,增加自动内置参数判断.", action = ActionExecuteV2.class)
+    @JaxrsMethodDescribe(value = "V8版本新版本查询语句,取消mode参数,增加自动count,增加自动内置参数判断,替换V2版本.", action = ActionExecuteV2.class)
     @POST
     @Path("{flag}/execute/page/{page}/size/{size}")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)

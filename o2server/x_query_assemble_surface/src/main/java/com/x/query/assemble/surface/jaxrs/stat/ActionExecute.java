@@ -23,61 +23,61 @@ import com.x.query.core.express.plan.StatPlan;
 
 class ActionExecute extends BaseAction {
 
-	private static Logger logger = LoggerFactory.getLogger(ActionExecute.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActionExecute.class);
 
-	ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
-		try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
-			ActionResult<Wo> result = new ActionResult<>();
-			Business business = new Business(emc);
-			Stat stat = business.pick(id, Stat.class);
-			if (null == stat) {
-				throw new ExceptionEntityNotExist(id, Stat.class);
-			}
-			Query query = business.pick(stat.getQuery(), Query.class);
-			if (null == query) {
-				throw new ExceptionEntityNotExist(stat.getQuery(), Query.class);
-			}
-			if (!business.readable(effectivePerson, stat)) {
-				throw new ExceptionAccessDenied(effectivePerson, stat);
-			}
-			Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
-			/** 有可能前台不传任何参数 */
-			if (null == wi) {
-				wi = new Wi();
-			}
-			logger.debug("wi:{}", wi);
-			this.append(effectivePerson, business, wi);
-			StatPlan statPlan = new StatPlan(emc, stat, wi, ThisApplication.threadPool());
-			statPlan.access();
-			Wo wo = new Wo();
-			wo.setCalculate(statPlan.getCalculate());
-			wo.setCalculateGrid(statPlan.getCalculateGrid());
-			result.setData(wo);
-			return result;
-		}
-	}
+    ActionResult<Wo> execute(EffectivePerson effectivePerson, String id, JsonElement jsonElement) throws Exception {
+        try (EntityManagerContainer emc = EntityManagerContainerFactory.instance().create()) {
+            ActionResult<Wo> result = new ActionResult<>();
+            Business business = new Business(emc);
+            Stat stat = business.pick(id, Stat.class);
+            if (null == stat) {
+                throw new ExceptionEntityNotExist(id, Stat.class);
+            }
+            Query query = business.pick(stat.getQuery(), Query.class);
+            if (null == query) {
+                throw new ExceptionEntityNotExist(stat.getQuery(), Query.class);
+            }
+            if (!business.readable(effectivePerson, stat)) {
+                throw new ExceptionAccessDenied(effectivePerson, stat);
+            }
+            Wi wi = this.convertToWrapIn(jsonElement, Wi.class);
+            /** 有可能前台不传任何参数 */
+            if (null == wi) {
+                wi = new Wi();
+            }
+            LOGGER.debug("wi:{}", wi);
+            this.append(effectivePerson, business, wi);
+            StatPlan statPlan = new StatPlan(emc, stat, wi, ThisApplication.threadPool());
+            statPlan.access();
+            Wo wo = new Wo();
+            wo.setCalculate(statPlan.getCalculate());
+            wo.setCalculateGrid(statPlan.getCalculateGrid());
+            result.setData(wo);
+            return result;
+        }
+    }
 
-	public static class Wo extends GsonPropertyObject {
-		private Calculate calculate;
-		private List<?> calculateGrid = new ArrayList<>();
+    public static class Wo extends GsonPropertyObject {
+        private Calculate calculate;
+        private List<?> calculateGrid = new ArrayList<>();
 
-		public Calculate getCalculate() {
-			return calculate;
-		}
+        public Calculate getCalculate() {
+            return calculate;
+        }
 
-		public void setCalculate(Calculate calculate) {
-			this.calculate = calculate;
-		}
+        public void setCalculate(Calculate calculate) {
+            this.calculate = calculate;
+        }
 
-		public List<?> getCalculateGrid() {
-			return calculateGrid;
-		}
+        public List<?> getCalculateGrid() {
+            return calculateGrid;
+        }
 
-		public void setCalculateGrid(List<?> calculateGrid) {
-			this.calculateGrid = calculateGrid;
-		}
-	}
+        public void setCalculateGrid(List<?> calculateGrid) {
+            this.calculateGrid = calculateGrid;
+        }
+    }
 
-	public static class Wi extends Runtime {
-	}
+    public static class Wi extends Runtime {
+    }
 }

@@ -9,12 +9,13 @@ import com.google.gson.reflect.TypeToken;
 import com.x.base.core.project.gson.XGsonBuilder;
 import com.x.base.core.project.http.EffectivePerson;
 import com.x.base.core.project.jaxrs.StandardJaxrsAction;
-import com.x.query.assemble.designer.Business;
+import com.x.organization.core.express.Organization;
 import com.x.query.core.express.statement.Runtime;
 
 abstract class BaseAction extends StandardJaxrsAction {
 
-    protected Runtime runtime(EffectivePerson effectivePerson, JsonElement jsonElement, Business business, Integer page,
+    protected Runtime concreteRuntime(EffectivePerson effectivePerson, JsonElement jsonElement, Organization organization,
+            Integer page,
             Integer size) throws Exception {
         Runtime runtime = new Runtime();
         if (null == jsonElement || jsonElement.isJsonNull()) {
@@ -32,23 +33,23 @@ abstract class BaseAction extends StandardJaxrsAction {
         }
         if (keys.contains(Runtime.PARAMETER_IDENTITYLIST)) {
             runtime.parameters.put(Runtime.PARAMETER_IDENTITYLIST,
-                    business.organization().identity().listWithPerson(effectivePerson));
+                    organization.identity().listWithPerson(effectivePerson));
         }
         if (keys.contains(Runtime.PARAMETER_UNITLIST)) {
             runtime.parameters.put(Runtime.PARAMETER_UNITLIST,
-                    business.organization().unit().listWithPerson(effectivePerson));
+                    organization.unit().listWithPerson(effectivePerson));
         }
         if (keys.contains(Runtime.PARAMETER_UNITALLLIST)) {
             runtime.parameters.put(Runtime.PARAMETER_UNITALLLIST,
-                    business.organization().unit().listWithPersonSupNested(effectivePerson));
+                    organization.unit().listWithPersonSupNested(effectivePerson));
         }
         if (keys.contains(Runtime.PARAMETER_GROUPLIST)) {
             runtime.parameters.put(Runtime.PARAMETER_GROUPLIST,
-                    business.organization().group().listWithPerson(effectivePerson));
+                    organization.group().listWithPerson(effectivePerson));
         }
         if (keys.contains(Runtime.PARAMETER_ROLELIST)) {
             runtime.parameters.put(Runtime.PARAMETER_ROLELIST,
-                    business.organization().role().listWithPerson(effectivePerson));
+                    organization.role().listWithPerson(effectivePerson));
         }
 
         return runtime;
