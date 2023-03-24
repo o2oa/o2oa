@@ -30,9 +30,9 @@ import com.x.base.core.project.logger.LoggerFactory;
 @JaxrsDescribe("语句")
 public class StatementAction extends StandardJaxrsAction {
 
-    private static Logger logger = LoggerFactory.getLogger(StatementAction.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(StatementAction.class);
 
-    @JaxrsMethodDescribe(value = "执行语句.", action = ActionExecute.class)
+    @JaxrsMethodDescribe(value = "V8版本新版本查询语句,取消mode参数,增加自动count,增加自动内置参数判断,替换V2版本.", action = ActionExecuteV2.class)
     @POST
     @Path("{flag}/execute/page/{page}/size/{size}")
     @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
@@ -44,9 +44,9 @@ public class StatementAction extends StandardJaxrsAction {
         ActionResult<Object> result = new ActionResult<>();
         EffectivePerson effectivePerson = this.effectivePerson(request);
         try {
-            result = new ActionExecute().execute(effectivePerson, flag, page, size, jsonElement);
+            result = new ActionExecuteV2().execute(effectivePerson, flag, null, page, size, jsonElement);
         } catch (Exception e) {
-            logger.error(e, effectivePerson, request, jsonElement);
+            LOGGER.error(e, effectivePerson, request, jsonElement);
             result.error(e);
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -64,7 +64,7 @@ public class StatementAction extends StandardJaxrsAction {
         try {
             result = new ActionListWithQuery().execute(effectivePerson, queryFlag, jsonElement);
         } catch (Exception e) {
-            logger.error(e, effectivePerson, request, jsonElement);
+            LOGGER.error(e, effectivePerson, request, jsonElement);
             result.error(e);
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -82,7 +82,7 @@ public class StatementAction extends StandardJaxrsAction {
         try {
             result = new ActionGet().execute(effectivePerson, id);
         } catch (Exception e) {
-            logger.error(e, effectivePerson, request, null);
+            LOGGER.error(e, effectivePerson, request, null);
             result.error(e);
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
@@ -103,44 +103,7 @@ public class StatementAction extends StandardJaxrsAction {
         try {
             result = new ActionExecuteV2().execute(effectivePerson, flag, mode, page, size, jsonElement);
         } catch (Exception e) {
-            logger.error(e, effectivePerson, request, jsonElement);
-            result.error(e);
-        }
-        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-    }
-
-    @JaxrsMethodDescribe(value = "执行原生sql查询语句.", action = ActionExecuteNative.class)
-    @POST
-    @Path("{flag}/execute/native/page/{page}/size/{size}")
-    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void executeNative(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request,
-            @JaxrsParameterDescribe("标识") @PathParam("flag") String flag,
-            @JaxrsParameterDescribe("页码") @PathParam("page") Integer page,
-            @JaxrsParameterDescribe("每页数量") @PathParam("size") Integer size, JsonElement jsonElement) {
-        ActionResult<Object> result = new ActionResult<>();
-        EffectivePerson effectivePerson = this.effectivePerson(request);
-        try {
-            result = new ActionExecuteNative().execute(effectivePerson, flag, page, size, jsonElement);
-        } catch (Exception e) {
-            logger.error(e, effectivePerson, request, jsonElement);
-            result.error(e);
-        }
-        asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));
-    }
-
-    @JaxrsMethodDescribe(value = "执行原生sql查询语句.", action = ActionExecuteNative.class)
-    @GET
-    @Path("test")
-    @Produces(HttpMediaType.APPLICATION_JSON_UTF_8)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void test(@Suspended final AsyncResponse asyncResponse, @Context HttpServletRequest request) {
-        ActionResult<Object> result = new ActionResult<>();
-        EffectivePerson effectivePerson = this.effectivePerson(request);
-        try {
-            result = new ActionTest().execute(effectivePerson);
-        } catch (Exception e) {
-            logger.error(e, effectivePerson, request, null);
+            LOGGER.error(e, effectivePerson, request, jsonElement);
             result.error(e);
         }
         asyncResponse.resume(ResponseFactory.getEntityTagActionResultResponse(request, result));

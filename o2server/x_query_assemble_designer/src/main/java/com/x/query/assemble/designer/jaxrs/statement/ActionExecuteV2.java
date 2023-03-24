@@ -1,11 +1,8 @@
 package com.x.query.assemble.designer.jaxrs.statement;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -38,6 +35,7 @@ import com.x.query.assemble.designer.Business;
 import com.x.query.assemble.designer.ThisApplication;
 import com.x.query.core.entity.schema.Statement;
 import com.x.query.core.entity.schema.Table;
+import com.x.query.core.express.statement.ExecuteTarget;
 import com.x.query.core.express.statement.Runtime;
 
 import net.sf.jsqlparser.expression.Expression;
@@ -62,9 +60,6 @@ import net.sf.jsqlparser.statement.select.SelectItem;
 class ActionExecuteV2 extends BaseAction {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ActionExecuteV2.class);
-
-    public static final Pattern QUESTMARK_PARAMETER_REGEX = Pattern.compile("(\\?\\d+)");
-    public static final Pattern NAMED_PARAMETER_REGEX = Pattern.compile("(:(\\w+))");
 
     private static final String KEY_SELECT = "SELECT";
     private static final String KEY_COUNT = "COUNT";
@@ -99,8 +94,8 @@ class ActionExecuteV2 extends BaseAction {
             if (!business.executable(effectivePerson, statement)) {
                 throw new ExceptionAccessDenied(effectivePerson, statement);
             }
-            runtime = this.runtime(effectivePerson, jsonElement, business, page, size);
-            executeTargetPair = concreteExecuteTarget(effectivePerson, business, statement, runtime);
+            runtime = this.concreteRuntime(effectivePerson, jsonElement, business.organization(), page, size);
+            executeTargetPair = concreteExecuteTarget(effectivePerson, business.organization(), statement, runtime);
         }
         ExecuteTarget data = executeTargetPair.first();
         Optional<ExecuteTarget> optionalCount = executeTargetPair.second();
@@ -113,18 +108,19 @@ class ActionExecuteV2 extends BaseAction {
 
     // 创建运行对象
     private Pair<ExecuteTarget, Optional<ExecuteTarget>> concreteExecuteTarget(
-            EffectivePerson effectivePerson, Business business, Statement statement, Runtime runtime) throws Exception {
+            EffectivePerson effectivePerson, Organization organization, Statement statement, Runtime runtime)
+            throws Exception {
         if (StringUtils.equalsAnyIgnoreCase(statement.getFormat(), Statement.FORMAT_SQL,
                 Statement.FORMAT_SQLSCRIPT)) {
-            return concreteExecuteTargetSql(effectivePerson, business, statement, runtime);
+            return concreteExecuteTargetSql(effectivePerson, organization, statement, runtime);
         } else {
-            return concreteExecuteTargetJpql(effectivePerson, business, statement, runtime);
+            return concreteExecuteTargetJpql(effectivePerson, organization, statement, runtime);
         }
     }
 
     // 创建 SQL 运行对象
     private Pair<ExecuteTarget, Optional<ExecuteTarget>> concreteExecuteTargetSql(
-            EffectivePerson effectivePerson, Business business, Statement statement,
+            EffectivePerson effectivePerson, Organization organization, Statement statement,
             Runtime runtime) throws Exception {
         ExecuteTarget data;
         Optional<ExecuteTarget> optionalCount = Optional.empty();
@@ -134,16 +130,16 @@ class ActionExecuteV2 extends BaseAction {
         } else {
             sql = script(effectivePerson, runtime, statement.getSqlScriptText());
         }
-        data = new ExecuteTarget(effectivePerson, business, sql, runtime, null);
+        data = new ExecuteTarget(effectivePerson, organization, sql, runtime, null);
         if (data.getParsedStatement() instanceof net.sf.jsqlparser.statement.select.Select) {
             if (StringUtils.equalsIgnoreCase(statement.getCountMethod(), Statement.COUNTMETHOD_IGNORE)) {
                 optionalCount = Optional.empty();
             } else if (StringUtils.equalsIgnoreCase(statement.getCountMethod(), Statement.COUNTMETHOD_AUTO)) {
-                optionalCount = concreteExecuteTargetSqlCountAuto(effectivePerson, business,
+                optionalCount = concreteExecuteTargetSqlCountAuto(effectivePerson, organization,
                         runtime, sql, data.getNamedParam());
             } else {
                 optionalCount = Optional
-                        .of(concreteExecuteTargetSqlCountAssign(effectivePerson, business, statement, runtime,
+                        .of(concreteExecuteTargetSqlCountAssign(effectivePerson, organization, statement, runtime,
                                 data.getNamedParam()));
             }
         }
@@ -152,7 +148,7 @@ class ActionExecuteV2 extends BaseAction {
 
     // 创建 JPQL 运行对象
     private Pair<ExecuteTarget, Optional<ExecuteTarget>> concreteExecuteTargetJpql(
-            EffectivePerson effectivePerson, Business business, Statement statement,
+            EffectivePerson effectivePerson, Organization organization, Statement statement,
             Runtime runtime) throws Exception {
         ExecuteTarget data;
         Optional<ExecuteTarget> optionalCount = Optional.empty();
@@ -162,16 +158,16 @@ class ActionExecuteV2 extends BaseAction {
         } else {
             jpql = script(effectivePerson, runtime, statement.getScriptText());
         }
-        data = new ExecuteTarget(effectivePerson, business, jpql, runtime, null);
+        data = new ExecuteTarget(effectivePerson, organization, jpql, runtime, null);
         if (data.getParsedStatement() instanceof net.sf.jsqlparser.statement.select.Select) {
             if (StringUtils.equalsIgnoreCase(statement.getCountMethod(), Statement.COUNTMETHOD_IGNORE)) {
                 optionalCount = Optional.empty();
             } else if (StringUtils.equalsIgnoreCase(statement.getCountMethod(), Statement.COUNTMETHOD_AUTO)) {
-                optionalCount = concreteExecuteTargetJpqlCountAuto(effectivePerson, business, runtime, jpql,
+                optionalCount = concreteExecuteTargetJpqlCountAuto(effectivePerson, organization, runtime, jpql,
                         data.getNamedParam());
             } else {
                 optionalCount = Optional
-                        .of(concreteExecuteTargetJpqlCountAssign(effectivePerson, business, statement, runtime,
+                        .of(concreteExecuteTargetJpqlCountAssign(effectivePerson, organization, statement, runtime,
                                 data.getNamedParam()));
             }
         }
@@ -179,7 +175,8 @@ class ActionExecuteV2 extends BaseAction {
     }
 
     // 创建 SQL COUNT ASSIGN
-    private ExecuteTarget concreteExecuteTargetSqlCountAssign(EffectivePerson effectivePerson, Business business,
+    private ExecuteTarget concreteExecuteTargetSqlCountAssign(EffectivePerson effectivePerson,
+            Organization organization,
             Statement statement, Runtime runtime, Map<String, Object> prevNamedParam) throws Exception {
         String sql = "";
         if (StringUtils.equals(statement.getFormat(), Statement.FORMAT_SQL)) {
@@ -187,13 +184,13 @@ class ActionExecuteV2 extends BaseAction {
         } else {
             sql = script(effectivePerson, runtime, statement.getSqlCountScriptText());
         }
-        return new ExecuteTarget(effectivePerson, business, sql, runtime, prevNamedParam);
+        return new ExecuteTarget(effectivePerson, organization, sql, runtime, prevNamedParam);
     }
 
     // 创建 SQL COUNT AUTO
     private Optional<ExecuteTarget> concreteExecuteTargetSqlCountAuto(EffectivePerson effectivePerson,
-            Business business,
-            Runtime runtime, String sql, Map<String, Object> prevNamedParam) throws Exception {
+            Organization organization, Runtime runtime, String sql, Map<String, Object> prevNamedParam)
+            throws Exception {
         Select select = (Select) CCJSqlParserUtil.parse(sql);
         PlainSelect plainSelect = (PlainSelect) select.getSelectBody();
         if (onlyAggregateFunction(plainSelect.getSelectItems())) {
@@ -209,7 +206,7 @@ class ActionExecuteV2 extends BaseAction {
         }
         // 将在生成DATA语句中的参数对象PARAM传入避免重复计算
         return Optional
-                .of(new ExecuteTarget(effectivePerson, business, builder.toString(), runtime, prevNamedParam));
+                .of(new ExecuteTarget(effectivePerson, organization, builder.toString(), runtime, prevNamedParam));
     }
 
     private boolean onlyAggregateFunction(List<SelectItem> selectItems) {
@@ -218,7 +215,8 @@ class ActionExecuteV2 extends BaseAction {
         return optional.isEmpty();
     }
 
-    private ExecuteTarget concreteExecuteTargetJpqlCountAssign(EffectivePerson effectivePerson, Business business,
+    private ExecuteTarget concreteExecuteTargetJpqlCountAssign(EffectivePerson effectivePerson,
+            Organization organization,
             Statement statement, Runtime runtime, Map<String, Object> prevNamedParam) throws Exception {
         String jpql = "";
         if (StringUtils.equals(statement.getFormat(), Statement.FORMAT_JPQL)) {
@@ -226,11 +224,11 @@ class ActionExecuteV2 extends BaseAction {
         } else {
             jpql = script(effectivePerson, runtime, statement.getCountScriptText());
         }
-        return new ExecuteTarget(effectivePerson, business, jpql, runtime, prevNamedParam);
+        return new ExecuteTarget(effectivePerson, organization, jpql, runtime, prevNamedParam);
     }
 
     private Optional<ExecuteTarget> concreteExecuteTargetJpqlCountAuto(EffectivePerson effectivePerson,
-            Business business,
+            Organization organization,
             Runtime runtime, String jpql, Map<String, Object> prevNamedParam)
             throws Exception {
         Select select = (Select) CCJSqlParserUtil.parse(jpql);
@@ -251,7 +249,8 @@ class ActionExecuteV2 extends BaseAction {
                 builder.append(KEY_SPACE).append(KEY_WHERE).append(KEY_SPACE).append(whereClause);
             }
         }
-        return Optional.of(new ExecuteTarget(effectivePerson, business, builder.toString(), runtime, prevNamedParam));
+        return Optional
+                .of(new ExecuteTarget(effectivePerson, organization, builder.toString(), runtime, prevNamedParam));
     }
 
     private Optional<Object> executeData(Statement statement, Runtime runtime, ExecuteTarget executeTarget) {
@@ -448,103 +447,6 @@ class ActionExecuteV2 extends BaseAction {
             this.organization = organization;
         }
 
-    }
-
-    public class ExecuteTarget {
-        private String sql;
-        private Map<String, Object> questionMarkParam = new LinkedHashMap<>();
-        private Map<String, Object> namedParam = new LinkedHashMap<>();
-        private net.sf.jsqlparser.statement.Statement parsedStatement;
-
-        public String getSql() {
-            return sql;
-        }
-
-        public Map<String, Object> getQuestionMarkParam() {
-            return questionMarkParam;
-        }
-
-        public Map<String, Object> getNamedParam() {
-            return namedParam;
-        }
-
-        public net.sf.jsqlparser.statement.Statement getParsedStatement() {
-            return parsedStatement;
-        }
-
-        public ExecuteTarget(EffectivePerson effectivePerson, Business business, String sql,
-                Runtime runtime, Map<String, Object> prevNamedParam) throws Exception {
-            questionMarkParameter(effectivePerson, business, runtime, sql);
-            this.sql = namedParameterChangeToQuestionMark(effectivePerson, business, runtime, sql, prevNamedParam);
-            parsedStatement = CCJSqlParserUtil.parse(this.sql);
-        }
-
-        // 读取 QUESTION MARK PARAMETER
-        // 的值,所有形如?1的参数只可能通过前端传递过来,通过runtime读取到.如果没有读到就直接设置为null
-        private void questionMarkParameter(EffectivePerson effectivePerson, Business business,
-                Runtime runtime, String sql) throws Exception {
-            Matcher matcher = QUESTMARK_PARAMETER_REGEX.matcher(sql);
-            while (matcher.find()) {
-                String p = matcher.group(1);
-                Object object = getParameterFromRuntime(effectivePerson, business.organization(), p, runtime);
-                this.questionMarkParam.put(p, object);
-            }
-        }
-
-        // 将 NAMED PARAMETER 转换成 QUESTION MARK PARAMETER,在传入前次的PREVNAMEDPARAM中查找,减少运行次数
-        private String namedParameterChangeToQuestionMark(EffectivePerson effectivePerson, Business business,
-                Runtime runtime, String sql, Map<String, Object> prevNamedParam) throws Exception {
-            Matcher matcher = NAMED_PARAMETER_REGEX.matcher(sql);
-            while (matcher.find()) {
-                String p = usableQuestionMark(questionMarkParam);
-                String name = matcher.group(2);
-                if ((null != prevNamedParam) && prevNamedParam.containsKey(name)) {
-                    Object object = prevNamedParam.get(name);
-                    this.namedParam.put(name, object);
-                    this.questionMarkParam.put(p, object);
-                } else {
-                    Object object = getParameterFromRuntime(effectivePerson, business.organization(), name, runtime);
-                    this.namedParam.put(name, object);
-                    this.questionMarkParam.put(p, object);
-                }
-                sql = StringUtils.replaceOnce(sql, matcher.group(1), p);
-            }
-            return sql;
-        }
-
-        private Object getParameterFromRuntime(EffectivePerson effectivePerson, Organization organization, String name,
-                Runtime runtime) throws Exception {
-            if (StringUtils.equalsIgnoreCase(name, Runtime.PARAMETER_PERSON)) {
-                return effectivePerson.getDistinguishedName();
-            }
-            if (StringUtils.equalsIgnoreCase(name, Runtime.PARAMETER_IDENTITYLIST)) {
-                return organization.identity().listWithPerson(effectivePerson);
-            }
-            if (StringUtils.equalsIgnoreCase(name, Runtime.PARAMETER_UNITLIST)) {
-                return organization.unit().listWithPerson(effectivePerson);
-            }
-            if (StringUtils.equalsIgnoreCase(name, Runtime.PARAMETER_UNITALLLIST)) {
-                return organization.unit().listWithPersonSupNested(effectivePerson);
-            }
-            if (StringUtils.equalsIgnoreCase(name, Runtime.PARAMETER_GROUPLIST)) {
-                return organization.group().listWithPerson(effectivePerson);
-            }
-            if (StringUtils.equalsIgnoreCase(name, Runtime.PARAMETER_ROLELIST)) {
-                return organization.role().listWithPerson(effectivePerson);
-            }
-            if (runtime.hasParameter(name)) {
-                return runtime.getParameter(name);
-            }
-            return null;
-        }
-
-        private String usableQuestionMark(Map<String, Object> map) {
-            int p = 1;
-            while (map.keySet().contains("?" + p)) {
-                p++;
-            }
-            return "?" + p;
-        }
     }
 
 }
